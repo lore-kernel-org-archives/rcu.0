@@ -2,203 +2,218 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 595B9C001B2
-	for <rcu@archiver.kernel.org>; Wed, 14 Dec 2022 10:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D9AAC4332F
+	for <rcu@archiver.kernel.org>; Wed, 14 Dec 2022 12:09:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238035AbiLNKrc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Dec 2022 05:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54952 "EHLO
+        id S238424AbiLNMJc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Dec 2022 07:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237750AbiLNKrb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Dec 2022 05:47:31 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D630233B6;
-        Wed, 14 Dec 2022 02:47:30 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id cf42so9767189lfb.1;
-        Wed, 14 Dec 2022 02:47:30 -0800 (PST)
+        with ESMTP id S237325AbiLNMJM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 14 Dec 2022 07:09:12 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5BF252BB;
+        Wed, 14 Dec 2022 04:06:35 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id b2so43966423eja.7;
+        Wed, 14 Dec 2022 04:06:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OOfDqnDmZreJyIzvRztZ+g+nyHtC9YBDCnmJg83zL7o=;
-        b=mfCSH/TqUf403/6Wtp2CVDcx3k9l7ZFQ5K41iZXw2QGkR5x7NEcC4SIovztp2ztR+O
-         PVLkxwmhLLpaVpqujuddSZfF/NrR1+XoYLslQYjBi1A/WBSQEmj739Q0Ar6eTurfJuai
-         o0LU4gYanImwFYiuIXtD4FWwhmR5rH+/rjKLgz5OR7bCseHTyh03h0Np4PobmHsqlkmj
-         m0HS/FJxxymNQFOCf8+TJtSBOmxYzzPd1+wKedGvGKp5BajG086vybDLpIoEQgF6a0CW
-         OjvcfaCy5Hnll//+iU4Hh9EnPDHI7zrpInmVc0zUhPDry8zbiqCu9LXeKEdSHkSxQrbj
-         aq3w==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cGHrcvs5+OP3ZPeuQyDZLjj/ME4Z3YSiejlbgxIfAXQ=;
+        b=EMtD07JGB7T+sh9g4yTXyb73+hzn6wq1orwr1MJXO92XmsAilPiIvvsJEmPvuGoTZ7
+         u8ikJCECJQGSbuKuH7FS99JefZ6JMuOXMspcs6macLK9Kj2VuFl2qoAuWdSJbsG0jzD2
+         SAV16hA+Ee3z3jRPprY3PFzRqjwz2fP9P28IJyrdrfepta/EVs1Lvj2hErbxqHdxmO+f
+         iVzDy6y4p3fxlY1SjRXQ1yOi75UWUy0FudtHoaG0IvCD6whMceSMHXOdqTOwHp2jYBQt
+         4yWqCzT8oPCkCPVnCaT0tOeuZOtqW12+uvEGWlUaXjR9SZUKhPZ4YbcOCNW5OXr3Zhsi
+         JqBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OOfDqnDmZreJyIzvRztZ+g+nyHtC9YBDCnmJg83zL7o=;
-        b=E0wDV91xkO6cxyRalK+FQTAzKPXgMJFNPNbwLkx+4KYtih9fq3GXGkNj3BTDM0qXyJ
-         lZMSpK3uXdcboZiFhQeGz2Inz9mihxICTlSy1PMhppCF9b4uDflxLXroN0KDE7ELmByY
-         Vcqnj5DUfQ3Ax61Pc1UTSuz1oE0/oYUCKO257iJYknfobnW3vXTuMQvcZmof6vK8araU
-         EVDDlDtRSIecyH2PrnbFgUwwt9eaV+q4sVQfL3wBuvw8FpYvCuGBMZv8C0/ROkgKPlOB
-         dH1bkne13bjWoJwYL+xCRNKS6jr1OvpnT1TBLBDysxThk7K8NcBCCVu7Z58B/sKnIUtB
-         ZBqg==
-X-Gm-Message-State: ANoB5plfPwJKYzPF0FmVZ6r6YNvXX4vdhi6lg0NfPB1mz3kHrTdsKPmd
-        smYN/XhZrJUFBpLNsyECQSWCTdqn/l+cvuJq3r4=
-X-Google-Smtp-Source: AA0mqf4oC063wWy1jk/2G2pZYBeB0lqoqdYLKypw1R5NdhTdWxq4Pz/Gtx3VCgAjjQjN3oxtX5t/xMRgI2B9ARowx3E=
-X-Received: by 2002:ac2:5a50:0:b0:4b5:4387:8e1c with SMTP id
- r16-20020ac25a50000000b004b543878e1cmr12271490lfn.58.1671014848402; Wed, 14
- Dec 2022 02:47:28 -0800 (PST)
+        bh=cGHrcvs5+OP3ZPeuQyDZLjj/ME4Z3YSiejlbgxIfAXQ=;
+        b=nx1Wf5UiSmMAdYAwSQh8z6sAvWfE0vi6+nPtxkp/9XXMDDfzKVqzYhxfOZKNco1WEd
+         kByWuBPUrJzhv/q9UEkV2JtM6gUmGMv47JLRgHxqIxRme4t63V7rwM6DH04tRF+9t5/U
+         fypG/fg9x7g90f7Pkkus7wKLnoItMxPPDK+JGKGcVilRhD6CsvBwuhURbKcpEoL3SnL7
+         H3XEmYL0cRdihWQB0Qkza5FfJMA+n0u1dMSakQT2a3mo+9LZ0BvfCtFraC2MQNEblX28
+         1ucmtK4Mno2N0kSt4Nre6puXBEDhN11xcY+8uZwFfMbalOgKrW8T3mjUl91vVZkXacCv
+         axMA==
+X-Gm-Message-State: ANoB5pldHuuGAgt3pM8rLOHwfOpw0hVhHm3YjX9kdHJfaNe7G67hXMiS
+        MjQtzpGhgObkVmQUhgmVamJmI0FDi5E=
+X-Google-Smtp-Source: AA0mqf7LsyELz1xplUzkgtkZLXZkbJTwGNz7woYc6+BugkDJX2tPkzEI8bqMtS0iG0qJJjwmoHdtZw==
+X-Received: by 2002:a17:906:3694:b0:78d:f454:3762 with SMTP id a20-20020a170906369400b0078df4543762mr8307359ejc.5.1671019593473;
+        Wed, 14 Dec 2022 04:06:33 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id d17-20020a170906305100b007c0b28b85c5sm5669875ejd.138.2022.12.14.04.06.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Dec 2022 04:06:32 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: [PATCH 1/2] rcu/kvfree: Carefully reset number of objects in krcp
+Date:   Wed, 14 Dec 2022 13:06:29 +0100
+Message-Id: <20221214120630.379527-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20221212003711.24977-1-laoar.shao@gmail.com> <c43d8d42-ecb1-a044-eb9a-b68d5808562a@suse.cz>
- <CALOAHbC7xWFAYz0qc1XpREbw8=nAquFNTi5k4TA02UQ_7w5k0A@mail.gmail.com>
- <Y5iSsdDmXhC5nxuM@hyeyoo> <6f9bb391-580e-cfc2-e039-25f47d162d17@suse.cz> <20221213192156.GS4001@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221213192156.GS4001@paulmck-ThinkPad-P17-Gen-1>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 14 Dec 2022 18:46:52 +0800
-Message-ID: <CALOAHbBxim-ahGQ8AQz5B4NCMFCza+Pzm9+jiQHPerMKHg_6Eg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/9] mm, bpf: Add BPF into /proc/meminfo
-To:     paulmck@kernel.org
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, tj@kernel.org, dennis@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev,
-        linux-mm@kvack.org, bpf@vger.kernel.org, rcu@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 14, 2022 at 3:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Tue, Dec 13, 2022 at 04:52:09PM +0100, Vlastimil Babka wrote:
-> > On 12/13/22 15:56, Hyeonggon Yoo wrote:
-> > > On Tue, Dec 13, 2022 at 07:52:42PM +0800, Yafang Shao wrote:
-> > >> On Tue, Dec 13, 2022 at 1:54 AM Vlastimil Babka <vbabka@suse.cz> wrote:
-> > >> >
-> > >> > On 12/12/22 01:37, Yafang Shao wrote:
-> > >> > > Currently there's no way to get BPF memory usage, while we can only
-> > >> > > estimate the usage by bpftool or memcg, both of which are not reliable.
-> > >> > >
-> > >> > > - bpftool
-> > >> > >   `bpftool {map,prog} show` can show us the memlock of each map and
-> > >> > >   prog, but the memlock is vary from the real memory size. The memlock
-> > >> > >   of a bpf object is approximately
-> > >> > >   `round_up(key_size + value_size, 8) * max_entries`,
-> > >> > >   so 1) it can't apply to the non-preallocated bpf map which may
-> > >> > >   increase or decrease the real memory size dynamically. 2) the element
-> > >> > >   size of some bpf map is not `key_size + value_size`, for example the
-> > >> > >   element size of htab is
-> > >> > >   `sizeof(struct htab_elem) + round_up(key_size, 8) + round_up(value_size, 8)`
-> > >> > >   That said the differece between these two values may be very great if
-> > >> > >   the key_size and value_size is small. For example in my verifaction,
-> > >> > >   the size of memlock and real memory of a preallocated hash map are,
-> > >> > >
-> > >> > >   $ grep BPF /proc/meminfo
-> > >> > >   BPF:             1026048 B <<< the size of preallocated memalloc pool
-> > >> > >
-> > >> > >   (create hash map)
-> > >> > >
-> > >> > >   $ bpftool map show
-> > >> > >   3: hash  name count_map  flags 0x0
-> > >> > >           key 4B  value 4B  max_entries 1048576  memlock 8388608B
-> > >> > >
-> > >> > >   $ grep BPF /proc/meminfo
-> > >> > >   BPF:            84919344 B
-> > >> > >
-> > >> > >   So the real memory size is $((84919344 - 1026048)) which is 83893296
-> > >> > >   bytes while the memlock is only 8388608 bytes.
-> > >> > >
-> > >> > > - memcg
-> > >> > >   With memcg we only know that the BPF memory usage is less than
-> > >> > >   memory.usage_in_bytes (or memory.current in v2). Furthermore, we only
-> > >> > >   know that the BPF memory usage is less than $MemTotal if the BPF
-> > >> > >   object is charged into root memcg :)
-> > >> > >
-> > >> > > So we need a way to get the BPF memory usage especially there will be
-> > >> > > more and more bpf programs running on the production environment. The
-> > >> > > memory usage of BPF memory is not trivial, which deserves a new item in
-> > >> > > /proc/meminfo.
-> > >> > >
-> > >> > > This patchset introduce a solution to calculate the BPF memory usage.
-> > >> > > This solution is similar to how memory is charged into memcg, so it is
-> > >> > > easy to understand. It counts three types of memory usage -
-> > >> > >  - page
-> > >> > >    via kmalloc, vmalloc, kmem_cache_alloc or alloc pages directly and
-> > >> > >    their families.
-> > >> > >    When a page is allocated, we will count its size and mark the head
-> > >> > >    page, and then check the head page at page freeing.
-> > >> > >  - slab
-> > >> > >    via kmalloc, kmem_cache_alloc and their families.
-> > >> > >    When a slab object is allocated, we will mark this object in this
-> > >> > >    slab and check it at slab object freeing. That said we need extra memory
-> > >> > >    to store the information of each object in a slab.
-> > >> > >  - percpu
-> > >> > >    via alloc_percpu and its family.
-> > >> > >    When a percpu area is allocated, we will mark this area in this
-> > >> > >    percpu chunk and check it at percpu area freeing. That said we need
-> > >> > >    extra memory to store the information of each area in a percpu chunk.
-> > >> > >
-> > >> > > So we only need to annotate the allcation to add the BPF memory size,
-> > >> > > and the sub of the BPF memory size will be handled automatically at
-> > >> > > freeing. We can annotate it in irq, softirq or process context. To avoid
-> > >> > > counting the nested allcations, for example the percpu backing allocator,
-> > >> > > we reuse the __GFP_ACCOUNT to filter them out. __GFP_ACCOUNT also make
-> > >> > > the count consistent with memcg accounting.
-> > >> >
-> > >> > So you can't easily annotate the freeing places as well, to avoid the whole
-> > >> > tracking infrastructure?
-> > >>
-> > >> The trouble is kfree_rcu().  for example,
-> > >>     old_item = active_vm_item_set(ACTIVE_VM_BPF);
-> > >>     kfree_rcu();
-> > >>     active_vm_item_set(old_item);
-> > >> If we want to pass the ACTIVE_VM_BPF into the deferred rcu context, we
-> > >> will change lots of code in the RCU subsystem. I'm not sure if it is
-> > >> worth it.
-> > >
-> > > (+Cc rcu folks)
-> > >
-> > > IMO adding new kfree_rcu() varient for BPF that accounts BPF memory
-> > > usage would be much less churn :)
-> >
-> > Alternatively, just account the bpf memory as freed already when calling
-> > kfree_rcu()? I think the amount of memory "in flight" to be freed by rcu is
-> > a separate issue (if it's actually an issue) and not something each
-> > kfree_rcu() user should think about separately?
->
-> If the in-flight memory really does need to be accounted for, then one
-> straightforward approach is to use call_rcu() and do the first part of
-> the needed accounting at the call_rcu() callsite and the rest of the
-> accounting when the callback is invoked.  Or, if memory must be freed
-> quickly even on ChromeOS and Android, use call_rcu_hurry() instead
-> of call_rcu().
->
+Problem. A schedule_delayed_monitor_work() relays on the
+number of pointers queued into krcp. Based on that number
+and threshold the work is rearmed with different delayed
+intervals, i.e. sooner or later.
 
-Right, call_rcu() can make it work.
-But I'm not sure if all kfree_rcu() in kernel/bpf can be replaced by call_rcu().
-Alexei, any comment on it ?
+There are three pipes where pointers can be placed. When
+any pipe is offloaded the krcp->count counter is set to
+zero - what is wrong. Because another pipes might not be
+empty.
 
-$ grep -r "kfree_rcu" kernel/bpf/
-kernel/bpf/local_storage.c:     kfree_rcu(new, rcu);
-kernel/bpf/lpm_trie.c:          kfree_rcu(node, rcu);
-kernel/bpf/lpm_trie.c:          kfree_rcu(parent, rcu);
-kernel/bpf/lpm_trie.c:          kfree_rcu(node, rcu);
-kernel/bpf/lpm_trie.c:  kfree_rcu(node, rcu);
-kernel/bpf/bpf_inode_storage.c:         kfree_rcu(local_storage, rcu);
-kernel/bpf/bpf_task_storage.c:          kfree_rcu(local_storage, rcu);
-kernel/bpf/trampoline.c:        kfree_rcu(im, rcu);
-kernel/bpf/core.c:      kfree_rcu(progs, rcu);
-kernel/bpf/core.c:       * no need to call kfree_rcu(), just call
-kfree() directly.
-kernel/bpf/core.c:              kfree_rcu(progs, rcu);
-kernel/bpf/bpf_local_storage.c:  * kfree(), else do kfree_rcu().
-kernel/bpf/bpf_local_storage.c:         kfree_rcu(local_storage, rcu);
-kernel/bpf/bpf_local_storage.c:         kfree_rcu(selem, rcu);
-kernel/bpf/bpf_local_storage.c:         kfree_rcu(selem, rcu);
-kernel/bpf/bpf_local_storage.c:                 kfree_rcu(local_storage, rcu);
+Fix it by maintaining a counter individually per a pipe.
+In order to get a number of objects per a krcp introduce
+a krc_count() helper.
 
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tree.c | 40 ++++++++++++++++++++++++++++++----------
+ 1 file changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d155f2594317..312cb0dee117 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2785,7 +2785,8 @@ struct kfree_rcu_cpu_work {
+  * @lock: Synchronize access to this structure
+  * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+  * @initialized: The @rcu_work fields have been initialized
+- * @count: Number of objects for which GP not started
++ * @head_count: Number of objects in rcu_head singular list
++ * @bulk_count: Number of objects in bulk-list
+  * @bkvcache:
+  *	A simple cache list that contains objects for reuse purpose.
+  *	In order to save some per-cpu space the list is singular.
+@@ -2803,13 +2804,19 @@ struct kfree_rcu_cpu_work {
+  * the interactions with the slab allocators.
+  */
+ struct kfree_rcu_cpu {
++	// Objects queued on a linked list
++	// through their rcu_head structures.
+ 	struct rcu_head *head;
++	atomic_t head_count;
++
++	// Objects queued on a bulk-list.
+ 	struct list_head bulk_head[FREE_N_CHANNELS];
++	atomic_t bulk_count[FREE_N_CHANNELS];
++
+ 	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+ 	raw_spinlock_t lock;
+ 	struct delayed_work monitor_work;
+ 	bool initialized;
+-	int count;
+ 
+ 	struct delayed_work page_cache_work;
+ 	atomic_t backoff_page_cache_fill;
+@@ -3032,12 +3039,23 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
+ 	return !!READ_ONCE(krcp->head);
+ }
+ 
++static int krc_count(struct kfree_rcu_cpu *krcp)
++{
++	int sum = atomic_read(&krcp->head_count);
++	int i;
++
++	for (i = 0; i < FREE_N_CHANNELS; i++)
++		sum += atomic_read(&krcp->bulk_count[i]);
++
++	return sum;
++}
++
+ static void
+ schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
+ {
+ 	long delay, delay_left;
+ 
+-	delay = READ_ONCE(krcp->count) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
++	delay = krc_count(krcp) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
+ 	if (delayed_work_pending(&krcp->monitor_work)) {
+ 		delay_left = krcp->monitor_work.timer.expires - jiffies;
+ 		if (delay < delay_left)
+@@ -3075,8 +3093,10 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 			// Channel 1 corresponds to the SLAB-pointer bulk path.
+ 			// Channel 2 corresponds to vmalloc-pointer bulk path.
+ 			for (j = 0; j < FREE_N_CHANNELS; j++) {
+-				if (list_empty(&krwp->bulk_head_free[j]))
++				if (list_empty(&krwp->bulk_head_free[j])) {
+ 					list_replace_init(&krcp->bulk_head[j], &krwp->bulk_head_free[j]);
++					atomic_set(&krcp->bulk_count[j], 0);
++				}
+ 			}
+ 
+ 			// Channel 3 corresponds to both SLAB and vmalloc
+@@ -3084,6 +3104,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 			if (!krwp->head_free) {
+ 				krwp->head_free = krcp->head;
+ 				WRITE_ONCE(krcp->head, NULL);
++				atomic_set(&krcp->head_count, 0);
+ 
+ 				// Take a snapshot for this krwp. Please note no more
+ 				// any objects can be added to attached head_free channel
+@@ -3091,8 +3112,6 @@ static void kfree_rcu_monitor(struct work_struct *work)
+ 				krwp->head_free_gp_snap = get_state_synchronize_rcu();
+ 			}
+ 
+-			WRITE_ONCE(krcp->count, 0);
+-
+ 			// One work is per one batch, so there are three
+ 			// "free channels", the batch can handle. It can
+ 			// be that the work is in the pending state when
+@@ -3229,6 +3248,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 	// Finally insert and update the GP for this page.
+ 	bnode->records[bnode->nr_records++] = ptr;
+ 	bnode->gp_snap = get_state_synchronize_rcu();
++	atomic_inc(&(*krcp)->bulk_count[idx]);
++
+ 	return true;
+ }
+ 
+@@ -3282,11 +3303,10 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ 		head->func = ptr;
+ 		head->next = krcp->head;
+ 		WRITE_ONCE(krcp->head, head);
++		atomic_inc(&krcp->head_count);
+ 		success = true;
+ 	}
+ 
+-	WRITE_ONCE(krcp->count, krcp->count + 1);
+-
+ 	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
+ 		schedule_delayed_monitor_work(krcp);
+@@ -3317,7 +3337,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+-		count += READ_ONCE(krcp->count);
++		count += krc_count(krcp);
+ 		count += READ_ONCE(krcp->nr_bkv_objs);
+ 		atomic_set(&krcp->backoff_page_cache_fill, 1);
+ 	}
+@@ -3334,7 +3354,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		int count;
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+-		count = krcp->count;
++		count = krc_count(krcp);
+ 		count += drain_page_cache(krcp);
+ 		kfree_rcu_monitor(&krcp->monitor_work.work);
+ 
 -- 
-Regards
-Yafang
+2.30.2
+
