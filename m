@@ -2,167 +2,113 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A394C4332F
-	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 20:14:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C10BC4332F
+	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 20:33:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbiLOUOD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Dec 2022 15:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        id S229752AbiLOUd5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Dec 2022 15:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiLOUOA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Dec 2022 15:14:00 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5053C2F65F;
-        Thu, 15 Dec 2022 12:13:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EFCC1B81C44;
-        Thu, 15 Dec 2022 20:13:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94106C433D2;
-        Thu, 15 Dec 2022 20:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671135236;
-        bh=i13fFd0vVoW19qKA7a1/ZjxtdH485J2NXxuF+yBDT/A=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=A0KEf2Wqn6A8qu4NhFe73fk8nbFNYdIHJxzWPs4cnmogUvDTqp6ysYgnwy0jW2hlf
-         tCw9cjL5pR+Z1cz+UtNpvauieWynZNcKEmdMwXOrqZGlrLvlSVRBsm8nIgghy8gbd2
-         jO/bwTCA1ULQQyoHhB4+TiKWSLZZTpZ+3SSpgxkdwr5kbQZ6Qc6oG3kk7UCcZDuRIX
-         jkyqrqoi7nSl8L6kbjtGgV2iURFu3REZkKa870gQvZrLM+i/1rkCPD9fKKU51v4rA+
-         a9RxYLRuVKSpOz34wECKy4LBWhkWtjPU/kzQsobuqydp39ApyUGlFuSO++FiOh5ehv
-         UvVFwemvAq7/g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 34DD15C09D0; Thu, 15 Dec 2022 12:13:56 -0800 (PST)
-Date:   Thu, 15 Dec 2022 12:13:56 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S229728AbiLOUdz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Dec 2022 15:33:55 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B312272E
+        for <rcu@vger.kernel.org>; Thu, 15 Dec 2022 12:33:53 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id b3so293045lfv.2
+        for <rcu@vger.kernel.org>; Thu, 15 Dec 2022 12:33:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8qqlXfGIzU/VNt4feEbI0o+f3b02zt3V3jQlCWIaHak=;
+        b=ghojc+OzDLr88cTONimsYx13zSlU8yBoxGyDHdCA3Zs5HzhVUhXT1ZdOGnCdRKxTp+
+         ibvguzA3sHLg4u60hUtR/+lU4VC5yUCKEU2YBTBl8wjdiY2xclHa7p2N+794gTdStd35
+         +cwO5EFx+f0aOKBx1v+4hbHJIFR2uArNi3fJc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8qqlXfGIzU/VNt4feEbI0o+f3b02zt3V3jQlCWIaHak=;
+        b=SfuHOeHiDXQwHqyxQdLGQsit1oX4AikYlmXS7U6oFj8CN+GeLq+LdLOdxz7CNRZ8cU
+         NMrDD+qqUJQygFbuW9kpNmf9wyUHJynzMCFaSNhdnER0rtbZoQg2cdHeQqpe+1ik9Qp2
+         Juf70FgpRyEkrtAI0TIMtrqnd+osn/lhKJuV+DtgsR5VzMT04rC6xqKzoeDmGJpbInPl
+         4L6gaTfyUX1gRTVWYmqGQd9INk1rOtXrJzdPVr6drONQUU+16SXHV00ra+9muCbEStRU
+         HFMVryOipn2RS0FoG24V0t7ru7/FOOhwblJgLwAj2+mAbvPJaoPur4iNJhEONDiz7zeH
+         aDEw==
+X-Gm-Message-State: ANoB5pme0qOdEzB6cnSiiM210U+UJMtZ4GbhdU2/mwghM6otQpgkjSpU
+        JjjdHirMSMDWh1pBz8KP/1rXXFIGasbD8Ud5PKvGjJsMc12bSsHy
+X-Google-Smtp-Source: AA0mqf550WKtC84YH7YSU0aIML9lP/X0h56FM5X4YQztqAbrrSH+oCgfDzKKymm7ExPii8QF8BdTtQwkFI+mER59z5U=
+X-Received: by 2002:a05:6512:224c:b0:4b5:ad89:8174 with SMTP id
+ i12-20020a056512224c00b004b5ad898174mr2306563lfu.84.1671136431317; Thu, 15
+ Dec 2022 12:33:51 -0800 (PST)
+MIME-Version: 1.0
+References: <20221214191355.GA2596199@paulmck-ThinkPad-P17-Gen-1>
+ <20221215165452.GA1957735@lothringen> <20221215170834.GH4001@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YTSW9kr3DsJm6hTQ0FfwVbVjzDa8=7H29+ysD10ZCbnHA@mail.gmail.com>
+ <20221215195854.GL4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YSnwXA6Bn3Av3O0Tm=AnqKULGZJBA3Z7ZaLE814XABU6g@mail.gmail.com>
+In-Reply-To: <CAEXW_YSnwXA6Bn3Av3O0Tm=AnqKULGZJBA3Z7ZaLE814XABU6g@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 15 Dec 2022 15:33:39 -0500
+Message-ID: <CAEXW_YSGWgkesu7xz8HXVmH82=uN1ESUdPs2Qtkv4isNjGy-Ww@mail.gmail.com>
+Subject: Re: [PATCH RFC] srcu: Yet more detail for srcu_readers_active_idx_check()
+ comments
+To:     paulmck@kernel.org
 Cc:     Frederic Weisbecker <frederic@kernel.org>, boqun.feng@gmail.com,
         neeraj.iitr10@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] srcu: Yet more detail for
- srcu_readers_active_idx_check() comments
-Message-ID: <20221215201356.GM4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221214191355.GA2596199@paulmck-ThinkPad-P17-Gen-1>
- <20221215165452.GA1957735@lothringen>
- <20221215170834.GH4001@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTSW9kr3DsJm6hTQ0FfwVbVjzDa8=7H29+ysD10ZCbnHA@mail.gmail.com>
- <CAEXW_YQEZSdny005w314zNQMmS7MHMjp-WwAvV6k9hDhhzQmdA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YQEZSdny005w314zNQMmS7MHMjp-WwAvV6k9hDhhzQmdA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 15, 2022 at 05:58:14PM +0000, Joel Fernandes wrote:
-> On Thu, Dec 15, 2022 at 5:48 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+On Thu, Dec 15, 2022 at 3:03 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> Hi Paul,
+>
+> On Thu, Dec 15, 2022 at 2:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> [...]
+> > > If the first read section's srcu_read_unlock() and its corresponding
+> > > smp_mb()  happened before the flip, then the increment of old idx
+> > > would happen only once. The next srcu_read_lock() will read the new
+> > > index. If the srcu_read_unlock() and it's corresponding smp_mb()
+> > > happened after the flip, the old_idx will be sampled again and can be
+> > > incremented twice. So it depends on how the flip races with
+> > > srcu_read_unlock().
 > >
-> > On Thu, Dec 15, 2022 at 5:08 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > I do understand that a number of people like reasoning about
+> > memory-barrier ordering, courtesy of the sequentially consistent portions
+> > of the C and C++ memory models, but thinking in terms of the accesses
+> > surrounding the memory barriers has been far less error-prone.
+>
+> Sure, but we are already talking in terms of the access to idx right?
+> That's what we're saying is visible by memory barriers and we are
+> trying to reason here about the ordering (flip does the write to idx
+> and followed by smp_mb(), and there is corresponding read of idx on
+> the srcu_read_lock() side. So we are indeed talking in terms of
+> access, but let me know if I missed something.
+>
+> > > Also, since this is all hard to reason about I started making some
+> > > diagrams, LOL. For your amusement, here is why need to scan both idx
+> > > during grace period detection: https://i.imgur.com/jz4bNKd.png
 > >
-> > > > Scenario for the reader to increment the old idx once:
-> > > >
-> > > > _ Assume ssp->srcu_idx is initially 0.
-> > > > _ The READER reads idx that is 0
-> > > > _ The updater runs and flips the idx that is now 1
-> > > > _ The reader resumes with 0 as an index but on the next srcu_read_lock()
-> > > >   it will see the new idx which is 1
-> > > >
-> > > > What could be the scenario for it to increment the old idx twice?
-> > >
-> > > Unless I am missing something, the reader must reference the
-> > > srcu_unlock_count[old_idx] and then do smp_mb() before it will be
-> > > absolutely guaranteed of seeing the new value of ->srcu_idx.
+> > Nice!
 > >
-> > I think both of you are right depending on how the flip raced with the
-> > first reader's unlock in that specific task.
+> > I suggest placing a gap between GP 2 and GP 3.  That way, you can make it
+> > very clear that Reader 1's critical section starts after the end of GP 2
+> > (thus clearly never blocking GP 2) and before GP 3 (thus possibly having
+> > a reference to some data that is going to be freed at the end of GP 3).
 > >
-> > If the first read section's srcu_read_unlock() and its corresponding
-> > smp_mb()  happened before the flip, then the increment of old idx
-> > would happen only once. The next srcu_read_lock() will read the new
-> > index. If the srcu_read_unlock() and it's corresponding smp_mb()
-> > happened after the flip, the old_idx will be sampled again and can be
-> > incremented twice. So it depends on how the flip races with
-> > srcu_read_unlock().
-> 
-> I am sorry this is inverted, but my statement's gist stands I believe:
-> 
-> 1. Flip+smp_mb() happened before unlock's smp_mb() -- reader will not
-> increment old_idx the second time.
+> > I also suggest coloring Reader 1 red and Reader 2 green, given that the
+> > color red generally indicates danger.
+>
+> Thanks for these suggestions! I will make the update. I am planning to
+> make a number of diagrams for other scenarios as well, as it helps
+> visualize. Google drawing is nice for these. I am happy to share these
+> with you all if there is interest :).
 
-By "increment old_idx" you mean "increment ->srcu_lock_count[old_idx]",
-correct?
+I made these updates, please see: https://i.imgur.com/hoKLvtt.png
 
-Again, the important ordering isn't the smp_mb(), but the accesses,
-in this case, the accesses to ->srcu_unlock_count[idx].
+Feel free to use the image for any purpose and thanks ;-)
 
-> 2. unlock()'s smp_mb() happened before Flip+smp_mb() , now the reader
-> has no new smp_mb() that happens AFTER the flip happened. So it can
-> totally sample the old idx again -- that particular reader will
-> increment twice, but the next time, it will see the flipped one.
-
-I will let you transliterate both.  ;-)
-
-> Did I get that right? Thanks.
-
-So why am I unhappy with orderings of smp_mb()?
-
-To see this, let's take the usual store-buffering litmus test:
-
-	CPU 0			CPU 1
-	WRITE_ONCE(x, 1);	WRITE_ONCE(y, 1);
-	smp_mb();		smp_mb();
-	r0 = READ_ONCE(y);	r1 = READ_ONCE(x);
-
-Suppose CPU 0's smp_mb() happens before that of CPU 1:
-
-	CPU 0			CPU 1
-	WRITE_ONCE(x, 1);	WRITE_ONCE(y, 1);
-	smp_mb();
-				smp_mb();
-	r0 = READ_ONCE(y);	r1 = READ_ONCE(x);
-
-We get r0 == r1 == 1.
-
-Compare this to CPU 1's smp_mb() happening before that of CPU 0:
-
-	CPU 0			CPU 1
-	WRITE_ONCE(x, 1);	WRITE_ONCE(y, 1);
-				smp_mb();
-	smp_mb();
-	r0 = READ_ONCE(y);	r1 = READ_ONCE(x);
-
-We still get r0 == r1 == 1.  Reversing the order of the two smp_mb()
-calls changed nothing.
-
-But, if we order CPU 1's write to follow CPU 0's read, then we have
-this:
-
-	CPU 0			CPU 1
-	WRITE_ONCE(x, 1);
-	smp_mb();
-	r0 = READ_ONCE(y);
-				WRITE_ONCE(y, 1);
-				smp_mb();
-				r1 = READ_ONCE(x);
-
-Here, given that r0 had the final value of zero, we know that
-r1 must have a final value of 1.
-
-And suppose we reverse this:
-
-	CPU 0			CPU 1
-				WRITE_ONCE(y, 1);
-				smp_mb();
-				r1 = READ_ONCE(x);
-	WRITE_ONCE(x, 1);
-	smp_mb();
-	r0 = READ_ONCE(y);
-
-Now there is a software-visible difference in behavior.  The value of
-r0 is now 1 instead of zero and the value of r1 is now 0 instead of 1.
-
-Does this make sense?
-
-							Thanx, Paul
+ - Joel
