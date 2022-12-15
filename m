@@ -2,89 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2AC8C4332F
-	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 21:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C8F9C4332F
+	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 21:39:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbiLOVdy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Dec 2022 16:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
+        id S229453AbiLOVjF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Dec 2022 16:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbiLOVdx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Dec 2022 16:33:53 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE868164A5;
-        Thu, 15 Dec 2022 13:33:52 -0800 (PST)
+        with ESMTP id S229469AbiLOVjE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Dec 2022 16:39:04 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB25E2BB21;
+        Thu, 15 Dec 2022 13:39:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 82A68B81BD9;
-        Thu, 15 Dec 2022 21:33:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 129D4C433D2;
-        Thu, 15 Dec 2022 21:33:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 67DCF61F26;
+        Thu, 15 Dec 2022 21:39:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2FADC433EF;
+        Thu, 15 Dec 2022 21:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671140030;
-        bh=hJ5iqgm1GdV3GX3WP99vnbdxZys/wv6qdwFnAzEj01I=;
+        s=k20201202; t=1671140340;
+        bh=KLN4u/CdDUK5RCz8K9nt56ZrKSnN4zE+POw0bXmlcTY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pkpnQLsoLob9PaTp2AKLede44mzd5JDlF43sQVYY9FP709piXsmb/d3LMXzYiieWD
-         3w4Ai8odpv8jqScKRQNdNM8yBesvcrqkxhyc4Ni3Cyy22mPMKWEbWR/xnajOrIBxE8
-         X7/ZqyZvfE3Q/7shTkZWW4y4o2oZC4/9HvvmQmT4mrUZPiDM5Gal2qsIDqYQ852Xjo
-         kV6g8zJcTkKr+LM0fLlKr40kFUL76olwCuMbkyZrsDwHhdSeuJimHDY0IWT4KeAHkZ
-         sN842dPRpaMfVbK0N2a2UQNsfPSksukGl5LGA12apn8hLk5lyBbjxuowcg+vrieK2R
-         sHW2rNn6zujeQ==
+        b=f84yWDjmxw4Wk21gxFCvLpp1CpBdO6kK9BN73rgQ442W+IZjdO/1l+gksPzbJMOEZ
+         sUhC8UnNVS1KZGe58WXjQvWfGybbwpVu+1In1QMMlzqClx/mfT8waHdskqr8r/hCz0
+         DpYW3sbeUwtkXyaJEKFIc1nFzjTpvAlkXej3HuK9ad7wmW/oMLbdPUY60I/Tr0Qagw
+         jhZlYt/QrLNJBbfxFmsOg2ZwCUIfRZtKKm0ctvYpwa36pkldC/Np7/D4SLIC2WZpNd
+         PzfvMO8zhEOc/to3+Ubdgji1WGAIU8AFLwbS9AxwVYlKoHo5iCFD+d4fYKeU+hzB8W
+         BMNBEIS6jydbw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A69095C1C5B; Thu, 15 Dec 2022 13:33:49 -0800 (PST)
-Date:   Thu, 15 Dec 2022 13:33:49 -0800
+        id 6351B5C1C5B; Thu, 15 Dec 2022 13:39:00 -0800 (PST)
+Date:   Thu, 15 Dec 2022 13:39:00 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 1/2] rcu/kvfree: Carefully reset number of objects in krcp
-Message-ID: <20221215213349.GP4001@paulmck-ThinkPad-P17-Gen-1>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, boqun.feng@gmail.com,
+        neeraj.iitr10@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] srcu: Yet more detail for
+ srcu_readers_active_idx_check() comments
+Message-ID: <20221215213900.GQ4001@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221214120630.379527-1-urezki@gmail.com>
- <20221215204022.GN4001@paulmck-ThinkPad-P17-Gen-1>
- <Y5uOnzBA7D30VUQY@pc636>
+References: <20221214191355.GA2596199@paulmck-ThinkPad-P17-Gen-1>
+ <20221215165452.GA1957735@lothringen>
+ <20221215170834.GH4001@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YTSW9kr3DsJm6hTQ0FfwVbVjzDa8=7H29+ysD10ZCbnHA@mail.gmail.com>
+ <20221215195854.GL4001@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSnwXA6Bn3Av3O0Tm=AnqKULGZJBA3Z7ZaLE814XABU6g@mail.gmail.com>
+ <CAEXW_YSGWgkesu7xz8HXVmH82=uN1ESUdPs2Qtkv4isNjGy-Ww@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y5uOnzBA7D30VUQY@pc636>
+In-Reply-To: <CAEXW_YSGWgkesu7xz8HXVmH82=uN1ESUdPs2Qtkv4isNjGy-Ww@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 15, 2022 at 10:16:15PM +0100, Uladzislau Rezki wrote:
-> On Thu, Dec 15, 2022 at 12:40:22PM -0800, Paul E. McKenney wrote:
-> > On Wed, Dec 14, 2022 at 01:06:29PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > Problem. A schedule_delayed_monitor_work() relays on the
-> > > number of pointers queued into krcp. Based on that number
-> > > and threshold the work is rearmed with different delayed
-> > > intervals, i.e. sooner or later.
-> > > 
-> > > There are three pipes where pointers can be placed. When
-> > > any pipe is offloaded the krcp->count counter is set to
-> > > zero - what is wrong. Because another pipes might not be
-> > > empty.
-> > > 
-> > > Fix it by maintaining a counter individually per a pipe.
-> > > In order to get a number of objects per a krcp introduce
-> > > a krc_count() helper.
-> > > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > 
-> > Queued and pushed for further review and testing, and with the usual
-> > wordsmithing.  Much better use of workqueue handlers, thank you!!!
-> > 
-> <snip>
->    This commit therefore maintains per-pipe counters, and introduces a a
->    krc_count() helper to access the aggregate value of those
->    counters.
-> <snip>
+On Thu, Dec 15, 2022 at 03:33:39PM -0500, Joel Fernandes wrote:
+> On Thu, Dec 15, 2022 at 3:03 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > Hi Paul,
+> >
+> > On Thu, Dec 15, 2022 at 2:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > [...]
+> > > > If the first read section's srcu_read_unlock() and its corresponding
+> > > > smp_mb()  happened before the flip, then the increment of old idx
+> > > > would happen only once. The next srcu_read_lock() will read the new
+> > > > index. If the srcu_read_unlock() and it's corresponding smp_mb()
+> > > > happened after the flip, the old_idx will be sampled again and can be
+> > > > incremented twice. So it depends on how the flip races with
+> > > > srcu_read_unlock().
+> > >
+> > > I do understand that a number of people like reasoning about
+> > > memory-barrier ordering, courtesy of the sequentially consistent portions
+> > > of the C and C++ memory models, but thinking in terms of the accesses
+> > > surrounding the memory barriers has been far less error-prone.
+> >
+> > Sure, but we are already talking in terms of the access to idx right?
+> > That's what we're saying is visible by memory barriers and we are
+> > trying to reason here about the ordering (flip does the write to idx
+> > and followed by smp_mb(), and there is corresponding read of idx on
+> > the srcu_read_lock() side. So we are indeed talking in terms of
+> > access, but let me know if I missed something.
+> >
+> > > > Also, since this is all hard to reason about I started making some
+> > > > diagrams, LOL. For your amusement, here is why need to scan both idx
+> > > > during grace period detection: https://i.imgur.com/jz4bNKd.png
+> > >
+> > > Nice!
+> > >
+> > > I suggest placing a gap between GP 2 and GP 3.  That way, you can make it
+> > > very clear that Reader 1's critical section starts after the end of GP 2
+> > > (thus clearly never blocking GP 2) and before GP 3 (thus possibly having
+> > > a reference to some data that is going to be freed at the end of GP 3).
+> > >
+> > > I also suggest coloring Reader 1 red and Reader 2 green, given that the
+> > > color red generally indicates danger.
+> >
+> > Thanks for these suggestions! I will make the update. I am planning to
+> > make a number of diagrams for other scenarios as well, as it helps
+> > visualize. Google drawing is nice for these. I am happy to share these
+> > with you all if there is interest :).
 > 
-> a a ? :)
+> I made these updates, please see: https://i.imgur.com/hoKLvtt.png
+> 
+> Feel free to use the image for any purpose and thanks ;-)
 
-Good eyes!  I will fix on my next rebase.
+Very good, thank you!
+
+Would it be possible to have an arrow marked "X" or "reference to X"
+from the beginning of the 'Mark "x" for GC' box to the box labeled
+'Enter RSCS (access "X")'?
 
 							Thanx, Paul
