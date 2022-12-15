@@ -2,84 +2,116 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 779F9C4332F
-	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 08:55:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23FDEC4332F
+	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 16:55:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbiLOIzR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Dec 2022 03:55:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
+        id S230038AbiLOQzC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Dec 2022 11:55:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbiLOIyz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Dec 2022 03:54:55 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E112C658;
-        Thu, 15 Dec 2022 00:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1671094494; x=1702630494;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Uev9S5ocS7bK1HqwVkJ4NTAo0vUxSsTQB2xMcXsLcAw=;
-  b=BreZfMrcKeDrDHjqakC9qCEOaVT0kB8LX7nZGM4l9SneICIpU5VOqNoo
-   BZjOa/ODz0lVlSOPsprms1m5NbqRIFDDD7b4SYAQJhokjcb8F8lKbBxeF
-   V72gvUaU4xelSlSIu49c6wIe9ztV4yw/6Kdb+QhinuM7CXnCDle2A6iU2
-   nA4VAnXTTAy9r+iivJctEx3NDDngO09Nuq86tQ1SUWO0vm0I/K3MKzwfj
-   QSPslb11JnOUtNCAeKFgGGADKL9AP8YUp/BVxXMJtBjQg8+8SEUwY4Wql
-   pT04XGQcsI5R7QErCb5a1wdnHp9g/DeKQ5i3UTjeE2loMOquyzUgqnMHW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="316263154"
-X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; 
-   d="scan'208";a="316263154"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2022 00:54:54 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="642838888"
-X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; 
-   d="scan'208";a="642838888"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2022 00:54:52 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads affinity
-Date:   Thu, 15 Dec 2022 17:00:29 +0800
-Message-Id: <20221215090029.2972236-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S230110AbiLOQzA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Dec 2022 11:55:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BED937F90;
+        Thu, 15 Dec 2022 08:54:58 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0E3AFB81C0E;
+        Thu, 15 Dec 2022 16:54:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40042C433D2;
+        Thu, 15 Dec 2022 16:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671123295;
+        bh=+ERCEp+XeQUNXuVbXvVYV1Fyz7Xx1xxX4O1QV9ZMhBI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uos9iNVaUowdgauSz9llkV4BQPebgviJKtn0STKfLLSIoubYdkSfVhsvug0ziQxLM
+         Q7GIycAceDoXQtB461gKurycXNhjGCzZxNW9lWkLCXBYx+08DyEnZneWYoqaQgMR3a
+         OC9uYWjsZMzVX7WOq9WqpBEqg7trAhikLkwxG5eoPv8YGUikkeMQffN0TBAsC4LEir
+         7RfMEk/Joy0f12I7phv+6DmVXMXEA8+aTq3jRdl3JTor4Jg0qW9h9q8Lh4JB1fWOFs
+         8SpVxdoME4xKK2X5JbkVcucuso5cXEaCUp8/aKWYLLaHOpEHHG/kJye52csxYa5eS6
+         SYoiFVJJ4Lmuw==
+Date:   Thu, 15 Dec 2022 17:54:52 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     boqun.feng@gmail.com, joel@joelfernandes.org,
+        neeraj.iitr10@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] srcu: Yet more detail for
+ srcu_readers_active_idx_check() comments
+Message-ID: <20221215165452.GA1957735@lothringen>
+References: <20221214191355.GA2596199@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221214191355.GA2596199@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, when CPUs going offline, the rcu boost kthreads CPU
-affinity has been reset in rcutree_offline_cpu(), therefore this
-commit remove duplicate settings in rcutree_dead_cpu().
+On Wed, Dec 14, 2022 at 11:13:55AM -0800, Paul E. McKenney wrote:
+> The comment in srcu_readers_active_idx_check() following the smp_mb()
+> is out of date, hailing from a simpler time when preemption was disabled
+> across the bulk of __srcu_read_lock().  The fact that preemption was
+> disabled meant that the number of tasks that had fetched the old index
+> but not yet incremented counters was limited by the number of CPUs.
+> 
+> In our more complex modern times, the number of CPUs is no longer a limit.
+> This commit therefore updates this comment, additionally giving more
+> memory-ordering detail.
+> 
+> Reported-by: Boqun Feng <boqun.feng@gmail.com>
+> Reported-by: Frederic Weisbecker <frederic@kernel.org>
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree.c | 5 -----
- 1 file changed, 5 deletions(-)
+Not really, while you guys were debating on that comment, I was still starring
+at the previous one (as usual).
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 65f3dd2fd3ae..20de83ed0c7e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4122,15 +4122,10 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
-  */
- int rcutree_dead_cpu(unsigned int cpu)
- {
--	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
--
- 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
- 		return 0;
- 
- 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
--	/* Adjust any no-longer-needed kthreads. */
--	rcu_boost_kthread_setaffinity(rnp, -1);
- 	// Stop-machine done, so allow nohz_full to disable tick.
- 	tick_dep_clear(TICK_DEP_BIT_RCU);
- 	return 0;
--- 
-2.25.1
+Or to put it in an SRCU way, while you guys saw the flipped idx, I was still
+using the old one :)
 
+> -	 * OK, how about nesting?  This does impose a limit on nesting
+> -	 * of floor(ULONG_MAX/NR_CPUS/2), which should be sufficient,
+> -	 * especially on 64-bit systems.
+> +	 * It can clearly do so once, given that it has already fetched
+> +	 * the old value of ->srcu_idx and is just about to use that value
+> +	 * to index its increment of ->srcu_lock_count[idx].  But as soon as
+> +	 * it leaves that SRCU read-side critical section, it will increment
+> +	 * ->srcu_unlock_count[idx], which must follow the updater's above
+> +	 * read from that same value.  Thus, as soon the reading task does
+> +	 * an smp_mb() and a later fetch from ->srcu_idx, that task will be
+> +	 * guaranteed to get the new index.  Except that the increment of
+> +	 * ->srcu_unlock_count[idx] in __srcu_read_unlock() is after the
+> +	 * smp_mb(), and the fetch from ->srcu_idx in __srcu_read_lock()
+> +	 * is before the smp_mb().  Thus, that task might not see the new
+> +	 * value of ->srcu_idx until the -second- __srcu_read_lock(),
+> +	 * which in turn means that this task might well increment
+> +	 * ->srcu_lock_count[idx] for the old value of ->srcu_idx twice,
+> +	 * not just once.
+
+You lost me on that one.
+
+      UPDATER                               READER
+      -------                               ------
+      //srcu_readers_lock_idx               //srcu_read_lock
+      idx = ssp->srcu_idx;                  idx = ssp->srcu_idx;
+      READ srcu_lock_count[idx ^ 1]         srcu_lock_count[idx]++
+      smp_mb();                             smp_mb();
+      //flip_index                          /* srcu_read_unlock (ignoring on purpose) */
+      ssp->srcu_idx++;                      /* smp_mb(); */
+      smp_mb();                             /* srcu_unlock_count[old_idx]++ */
+      //srcu_readers_lock_idx               //srcu_read_lock again
+      idx = ssp->srcu_idx;                  idx = ssp->srcu_idx;
+      READ srcu_lock_count[idx ^ 1]
+                                            
+
+Scenario for the reader to increment the old idx once:
+
+_ Assume ssp->srcu_idx is initially 0.
+_ The READER reads idx that is 0
+_ The updater runs and flips the idx that is now 1
+_ The reader resumes with 0 as an index but on the next srcu_read_lock()
+  it will see the new idx which is 1
+
+What could be the scenario for it to increment the old idx twice?
+
+Thanks.
