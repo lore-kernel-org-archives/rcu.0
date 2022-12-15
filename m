@@ -2,148 +2,84 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FF38C4332F
-	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 08:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 779F9C4332F
+	for <rcu@archiver.kernel.org>; Thu, 15 Dec 2022 08:55:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbiLOIdF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Dec 2022 03:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35518 "EHLO
+        id S229667AbiLOIzR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Dec 2022 03:55:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiLOIdE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Dec 2022 03:33:04 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C161F636
-        for <rcu@vger.kernel.org>; Thu, 15 Dec 2022 00:33:03 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-381662c78a9so31644217b3.7
-        for <rcu@vger.kernel.org>; Thu, 15 Dec 2022 00:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zw/RhO20UZoC9G6TTtJdTuGGtmTIwLpJWlVSECXA/JQ=;
-        b=gcsIYuVB82zmxWO/jv48MxPYs/gdG0Rzgpy4wX731BSR6Ttm6idl29NDWcRjsNF2Fw
-         KM3t76IuqbWGol7of0hQGE0hHket69xGNdMfpqVWd8Ec4c4wIcV7CylfuKzhKOHKg6yh
-         pK4VsYzt/CuGw0wlVvfQWeImLnu1VtMQGODFp3UUiLMGJ1WdH8+umfjBSGtNUSYss9rV
-         vYX4NRdzDPMvtbcC3HpAotwqT86gCotG5RM1KTgPGSmadSZoriXzdSpdmODGSEm4YDD/
-         892saize8LGzjzv2uXxazAbI7+oio/WylRwWh/5jhPzLnzLYa/CSjiTyWhSCd2R2NglO
-         MDRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zw/RhO20UZoC9G6TTtJdTuGGtmTIwLpJWlVSECXA/JQ=;
-        b=l9+p+51+rooR9uTGnqg9U1xV67Favs4ZYu63E197iONOscz2acKxlfEwp0nzdPyZYM
-         /+1h2xOuvzRpNv6vxK1KRe01i64VJyIg+fkkidgXqR7VWgE31/CAsxhm1xYVRe80vikR
-         O7Tw3xpQSjJ/QT56GwYvEUSRmGKNDa6AJZQPmCnxSvRpMa7KcCMnngSVX/vNWNFNMBtp
-         22/JEalatI8sgES5Tkq+VvHmS1lYVOZgzu77tCMl/07oy538L33aIF7Xly/u++4Ywuwu
-         kJdodRKRKZQku6jSeDm7V77LXK+apIhsNjO9z49I9Sp7ysAllPcdNaqaCUQ1khHuKyYh
-         YelQ==
-X-Gm-Message-State: ANoB5plIr8a1d4NFujBPP+Hu4+vvFMefSIOohWuojON6dJUD7siGXjiZ
-        CPmED4P8Fwothz4h3SNVd9ZpaCHyX+7cLRgz45qROA==
-X-Google-Smtp-Source: AA0mqf6cRDw1YzTC3hDYy0SnSaLdyQgBIFRKlD+OEaTHlI7sxKEzblretR0JoOMFb3J2KB25ISksl50/IuhdDqdsXRM=
-X-Received: by 2002:a81:9188:0:b0:379:3bb4:596f with SMTP id
- i130-20020a819188000000b003793bb4596fmr26819268ywg.238.1671093181145; Thu, 15
- Dec 2022 00:33:01 -0800 (PST)
+        with ESMTP id S229805AbiLOIyz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Dec 2022 03:54:55 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E112C658;
+        Thu, 15 Dec 2022 00:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1671094494; x=1702630494;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Uev9S5ocS7bK1HqwVkJ4NTAo0vUxSsTQB2xMcXsLcAw=;
+  b=BreZfMrcKeDrDHjqakC9qCEOaVT0kB8LX7nZGM4l9SneICIpU5VOqNoo
+   BZjOa/ODz0lVlSOPsprms1m5NbqRIFDDD7b4SYAQJhokjcb8F8lKbBxeF
+   V72gvUaU4xelSlSIu49c6wIe9ztV4yw/6Kdb+QhinuM7CXnCDle2A6iU2
+   nA4VAnXTTAy9r+iivJctEx3NDDngO09Nuq86tQ1SUWO0vm0I/K3MKzwfj
+   QSPslb11JnOUtNCAeKFgGGADKL9AP8YUp/BVxXMJtBjQg8+8SEUwY4Wql
+   pT04XGQcsI5R7QErCb5a1wdnHp9g/DeKQ5i3UTjeE2loMOquyzUgqnMHW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="316263154"
+X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; 
+   d="scan'208";a="316263154"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2022 00:54:54 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="642838888"
+X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; 
+   d="scan'208";a="642838888"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2022 00:54:52 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads affinity
+Date:   Thu, 15 Dec 2022 17:00:29 +0800
+Message-Id: <20221215090029.2972236-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CA+G9fYvcmmOh93nOti72+woKvE+XvLg7apCYDUfu6oKtjPkHKw@mail.gmail.com>
-In-Reply-To: <CA+G9fYvcmmOh93nOti72+woKvE+XvLg7apCYDUfu6oKtjPkHKw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 15 Dec 2022 09:32:24 +0100
-Message-ID: <CANpmjNOwsvfnJXzaFOUCYFRT_TM-z1YWqHv-nx3DY_V2f3xBhg@mail.gmail.com>
-Subject: Re: BUG: KCSAN: data-race in do_page_fault / spectre_v4_enable_task_mitigation
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, kunit-dev@googlegroups.com,
-        lkft-triage@lists.linaro.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, 15 Dec 2022 at 08:32, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> [Please ignore if it is already reported, and not an expert of KCSAN]
->
-> On Linux next-20221215 tag arm64 allmodconfig boot failed due to following
-> data-race reported by KCSAN.
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> [    0.000000][    T0] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
-> [    0.000000][    T0] Linux version 6.1.0-next-20221214
-> (tuxmake@tuxmake) (aarch64-linux-gnu-gcc (Debian 12.2.0-9) 12.2.0, GNU
-> ld (GNU Binutils for Debian) 2.39) #2 SMP PREEMPT_DYNAMIC @1671022464
-> [    0.000000][    T0] random: crng init done
-> [    0.000000][    T0] Machine model: linux,dummy-virt
-> ...
-> [ 1067.461794][  T132] BUG: KCSAN: data-race in do_page_fault /
-> spectre_v4_enable_task_mitigation
-> [ 1067.467529][  T132]
-> [ 1067.469146][  T132] write to 0xffff80000f00bfb8 of 8 bytes by task
-> 93 on cpu 0:
-> [ 1067.473790][  T132]  spectre_v4_enable_task_mitigation+0x2f8/0x340
-> [ 1067.477964][  T132]  __switch_to+0xc4/0x200
+Currently, when CPUs going offline, the rcu boost kthreads CPU
+affinity has been reset in rcutree_offline_cpu(), therefore this
+commit remove duplicate settings in rcutree_dead_cpu().
 
-Please provide line numbers with all reports - you can use the script
-scripts/decode_stacktrace.sh (requires the vmlinux you found this
-with) to do so.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-It would be good to do this immediately, because having anyone else do
-so is nearly impossible - and without line numbers this report will
-very likely be ignored.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 65f3dd2fd3ae..20de83ed0c7e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4122,15 +4122,10 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
+  */
+ int rcutree_dead_cpu(unsigned int cpu)
+ {
+-	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+-	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+-
+ 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+ 		return 0;
+ 
+ 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+-	/* Adjust any no-longer-needed kthreads. */
+-	rcu_boost_kthread_setaffinity(rnp, -1);
+ 	// Stop-machine done, so allow nohz_full to disable tick.
+ 	tick_dep_clear(TICK_DEP_BIT_RCU);
+ 	return 0;
+-- 
+2.25.1
 
-Thanks,
--- Marco
-
-> [ 1067.480877][  T132]  __schedule+0x5ec/0x6c0
-> [ 1067.483764][  T132]  schedule+0x6c/0x100
-> [ 1067.486526][  T132]  worker_thread+0x7d8/0x8c0
-> [ 1067.489581][  T132]  kthread+0x1b8/0x200
-> [ 1067.492483][  T132]  ret_from_fork+0x10/0x20
-> [ 1067.495450][  T132]
-> [ 1067.497034][  T132] read to 0xffff80000f00bfb8 of 8 bytes by task
-> 132 on cpu 0:
-> [ 1067.501684][  T132]  do_page_fault+0x568/0xa40
-> [ 1067.504938][  T132]  do_mem_abort+0x7c/0x180
-> [ 1067.508051][  T132]  el0_da+0x64/0x100
-> [ 1067.510712][  T132]  el0t_64_sync_handler+0x90/0x180
-> [ 1067.514191][  T132]  el0t_64_sync+0x1a4/0x1a8
-> [ 1067.517200][  T132]
-> [ 1067.518758][  T132] 1 lock held by (udevadm)/132:
-> [ 1067.521883][  T132]  #0: ffff00000b802c28
-> (&mm->mmap_lock){++++}-{3:3}, at: do_page_fault+0x480/0xa40
-> [ 1067.528399][  T132] irq event stamp: 1461
-> [ 1067.531041][  T132] hardirqs last  enabled at (1460):
-> [<ffff80000af83e40>] preempt_schedule_irq+0x40/0x100
-> [ 1067.537176][  T132] hardirqs last disabled at (1461):
-> [<ffff80000af82c84>] __schedule+0x84/0x6c0
-> [ 1067.542788][  T132] softirqs last  enabled at (1423):
-> [<ffff800008020688>] fpsimd_restore_current_state+0x148/0x1c0
-> [ 1067.549480][  T132] softirqs last disabled at (1421):
-> [<ffff8000080205fc>] fpsimd_restore_current_state+0xbc/0x1c0
-> [ 1067.556127][  T132]
-> [ 1067.557687][  T132] value changed: 0x0000000060000000 -> 0x0000000060001000
-> [ 1067.562039][  T132]
-> [ 1067.563631][  T132] Reported by Kernel Concurrency Sanitizer on:
-> [ 1067.567480][  T132] CPU: 0 PID: 132 Comm: (udevadm) Tainted: G
->           T  6.1.0-next-20221214 #2
-> 4185b46758ba972fed408118afddb8c426bff43a
-> [ 1067.575669][  T132] Hardware name: linux,dummy-virt (DT)
->
->
-> metadata:
->   repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/?h=next-20221214
->   config: allmodconfig
->   arch: arm64
->   Build details:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20221214/
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
