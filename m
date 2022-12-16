@@ -2,185 +2,198 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A2B0C4332F
-	for <rcu@archiver.kernel.org>; Fri, 16 Dec 2022 16:52:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 993C5C4167B
+	for <rcu@archiver.kernel.org>; Fri, 16 Dec 2022 16:54:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbiLPQwR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Dec 2022 11:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S231542AbiLPQyd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Dec 2022 11:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbiLPQvy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Dec 2022 11:51:54 -0500
+        with ESMTP id S231393AbiLPQy1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Dec 2022 11:54:27 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32C4EE;
-        Fri, 16 Dec 2022 08:51:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30D82DFB
+        for <rcu@vger.kernel.org>; Fri, 16 Dec 2022 08:54:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DCDB6218C;
-        Fri, 16 Dec 2022 16:51:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87019C433D2;
-        Fri, 16 Dec 2022 16:51:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AC9A621AA
+        for <rcu@vger.kernel.org>; Fri, 16 Dec 2022 16:54:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2AA6C433EF;
+        Fri, 16 Dec 2022 16:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671209504;
-        bh=0hb/MJls16WL36VuUKuWGxKZpEmgVcdJEgDtAMt34GQ=;
+        s=k20201202; t=1671209665;
+        bh=0pB/maphZcSL4irhcGTqEXfiq/+q45ghdqDsozMAIc4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SQKLkqy0iGnLoq3dZ7fi5Ctww6L1vl4qFurAYaHlZZtGnA3LQJ5nfYTyHEx8XLhqz
-         z/yu4YXGh/TPrQ5uqt+43Cqsms74PWfIWFibZF8ANtSM1a8aYJPxN5GOxqPulxzS5I
-         402Rglycu6IMcei7UUqgYjWo57YTzAF8yFwbgi2z9UIjyJrtA6hoc8hu/xYVm9rGiv
-         o/BVybtGgnaUA+oIxILxijRDX9bqQ/m//tTXbAO66G99jHw9Jbc2rU0k5ZJrsZMdBj
-         HH1TP0HZZYjrTImp6QEFDg66RBp1SA5Y7VGvhzu1DrWA1HvpmCsGLqWDLfEYRhOoDa
-         qeQCUrpUdrIAQ==
+        b=RoXLLuoRkehY8nHcLLWMtzdSVl1bBkRRURFCFnNjdKGLsNFahTm5tZXJUnOB3PwIF
+         6fhaCXOLw3sEpt8fLSd277SiMAO3+4SE4KxwNuNryaOzxOP/eHYL5pu+R2S8ezXCuA
+         39akgJ57vBwcv7ngA/q1ASLd+O5hzrao2CRoc2g6lRkXPc7e1l1HgW2oFWhGKWVsOi
+         iZS+RLcXK4SGXS+wxzKs6qwrp+t53WWu/DNj2X/YNzAbzY5ilwQ0s2D1N1V7InGlYY
+         FJIjEdLfAVHNAQO2sSTDIwTDp2+Bw5Ut8J0lkN7+I+BDo28QQA0fP33O4q8B7i6smT
+         QrO6jH4XSPk+g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2AD3E5C0AC7; Fri, 16 Dec 2022 08:51:44 -0800 (PST)
-Date:   Fri, 16 Dec 2022 08:51:44 -0800
+        id 4B0B65C0AC7; Fri, 16 Dec 2022 08:54:25 -0800 (PST)
+Date:   Fri, 16 Dec 2022 08:54:25 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, boqun.feng@gmail.com,
-        neeraj.iitr10@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] srcu: Yet more detail for
- srcu_readers_active_idx_check() comments
-Message-ID: <20221216165144.GA4001@paulmck-ThinkPad-P17-Gen-1>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Pingfan Liu <piliu@redhat.com>, rcu@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Subject: Re: [PATCHv2] srcu: Eliminate the requirement of SRCU_SIZE_WAIT_CALL
+Message-ID: <20221216165425.GB4001@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221215201356.GM4001@paulmck-ThinkPad-P17-Gen-1>
- <EE4EC3CC-395E-475D-BEBE-545955AB97C8@joelfernandes.org>
- <20221216010914.GX4001@paulmck-ThinkPad-P17-Gen-1>
- <Y5ydp2YPRqGHq+eM@google.com>
+References: <20221128082816.28518-2-kernelfans@gmail.com>
+ <20221130033459.16372-1-piliu@redhat.com>
+ <20221202221713.GH4001@paulmck-ThinkPad-P17-Gen-1>
+ <Y5h1USSj0lqahJPN@piliu.users.ipa.redhat.com>
+ <20221213200207.GT4001@paulmck-ThinkPad-P17-Gen-1>
+ <Y5qWhWMPMfdrs7kC@piliu.users.ipa.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y5ydp2YPRqGHq+eM@google.com>
+In-Reply-To: <Y5qWhWMPMfdrs7kC@piliu.users.ipa.redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 16, 2022 at 04:32:39PM +0000, Joel Fernandes wrote:
-> On Thu, Dec 15, 2022 at 05:09:14PM -0800, Paul E. McKenney wrote:
-> [...]
-> > > >> 2. unlock()'s smp_mb() happened before Flip+smp_mb() , now the reader
-> > > >> has no new smp_mb() that happens AFTER the flip happened. So it can
-> > > >> totally sample the old idx again -- that particular reader will
-> > > >> increment twice, but the next time, it will see the flipped one.
+On Thu, Dec 15, 2022 at 11:37:41AM +0800, Pingfan Liu wrote:
+> On Tue, Dec 13, 2022 at 12:02:07PM -0800, Paul E. McKenney wrote:
+> > On Tue, Dec 13, 2022 at 08:51:29PM +0800, Pingfan Liu wrote:
+> > > Sorry to reply late. I was interrupted by something else.
+> > > 
+> > > On Fri, Dec 02, 2022 at 02:17:13PM -0800, Paul E. McKenney wrote:
+> > > > On Wed, Nov 30, 2022 at 11:34:59AM +0800, Pingfan Liu wrote:
+> > > > > From: Pingfan Liu <kernelfans@gmail.com>
+> > > > > 
+> > > > > The state SRCU_SIZE_WAIT_CALL is only used in srcu_gp_start_if_needed().
+> > > > > And it is not needed. Because counter_wrap_check has guarantee that both
+> > > > > srcu_gp_seq_needed and srcu_gp_seq_needed_exp are not far behind
+> > > > > srcu_gp_seq and no false alarm will be raised by the statement in
+> > > > > srcu_gp_start_if_needed()
+> > > > > 
+> > > > >   ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)
+> > > > > 
+> > > > > As a result, once if SRCU_SIZE_WAIT_BARRIER is seen, the tree snp can be
+> > > > > used immediately, not need to wait for another srcu_gp_end() to update
+> > > > > the srcu_gp_seq_needed and srcu_gp_seq_needed_exp to avoid false alarm.
 > > > > 
-> > > > I will let you transliterate both.  ;-)
+> > > > During the SRCU_SIZE_WAIT_BARRIER state, all callbacks are queued onto
+> > > > the boot CPU's callback list, but the srcu_barrier() function scans all
+> > > > of the CPUs' callback lists.
 > > > 
-> > > I think I see what you mean now :)
-> > > 
-> > > I believe the access I am referring to is the read of idx on one side and
-> > > the write to idx on the other. However that is incomplete and I need to
-> > > pair that with some of other access on both sides.
-> > > 
-> > > So perhaps this:
-> > > 
-> > > Writer does flip + smp_mb + read unlock counts [1]
-> > > 
-> > > Reader does:
-> > >  read idx + smp_mb() + increment lock counts [2]
-> > > 
-> > > And subsequently reader does
-> > > Smp_mb() + increment unlock count. [3]
-> > > 
-> > > So [1] races with either [2] or [2]+[3].
-> > > 
-> > > Is that fair?
+> > > So at present, your concern is around how it affects srcu_barrier(), right?
 > > 
-> > That does look much better, thank you!
+> > At present, as always, I am concerned about all potential added bugs
+> > and potential added complexity, both in terms of lines of code and in
+> > terms of size and irregularity of state space.
+> > 
+> > And yes, part of the concern about both correctness and complexity is
+> > the interaction between call_srcu() and srcu_barrier().  Right now, the
+> > design very straightforwardly ensures that rcu_barrier() and the rest of
+> > SRCU is looking at all CPU's callback lists before call_srcu() places any
+> > callbacks on non-boot CPUs.  This is because all the srcu_barrier() calls
+> > that think that the system is still in SRCU_SIZE_SMALL or SRCU_SIZE_ALLOC
+> > mode must have completed before any call_srcu() invocation uses a non-boot
+> > CPU's callback list.
+> > 
 > 
-> Perhaps a comment with an ASCII diagram will help?
+> Catch your point. Thanks for patient explanation. And indeed this does
+> not rely on anything like memory order to build a total order, and more
+> reliable.
 > 
+> > Your change causes rcu_barrier() and call_srcu() to start using non-boot
+> > CPUs' callback lists at the same time.  This change therefore introduces
+> > significant state-space complexity.  And maybe even bugs, if not today
+> > then some later time when someone makes a change that looks obviously
+> > correct on the surface, but which subtly weakens the ordering.
+> > 
 > 
-> Case 2:
-> Both the reader and the updater see each other's writes too late, but because
-> of memory barriers on both sides, they will eventually see each other's write
-> with respect to their own. This is similar to the store-buffer problem. This
-> let's a single reader contribute a maximum (unlock minus lock) imbalance of 2.
+> Yes, that is true.
 > 
-> The following diagram shows the subtle worst case followed by a simplified
-> store-buffer explanation.
+> > > > So can't this cause srcu_gp_start_if_needed() to rcu_segcblist_advance()
+> > > > and rcu_segcblist_accelerate() a callback list that is guaranteed to be
+> > > > empty?  Without this change, the might-not-be-empty boot CPU's callback
+> > > > list is dealt with.
+> > > 
+> > > Is it a problem that srcu_gp_start_if_needed() asks
+> > > rcu_segcblist_advance() and rcu_segcblist_accelerate() to manipulate an
+> > > not-be-empty callback list ? At SRCU_SIZE_WAIT_BARRIER state,
+> > > srcu_barrier() will take care of all cpus' callback list.
+> > 
+> > The other way around, please.  My concern is instead that it *fails*
+> > to rcu_segcblist_advance() and rcu_segcblist_accelerate() the
+> > might-not-be-empty callback lists.
+> > 
+> > > > What am I missing here?  More specifically, what benefits does this
+> > > > change provide?  I am not yet seeing any.
+> > > 
+> > > I am trying to improve the note around SRCU_SIZE_xx, and this is a
+> > > trivial improve from 8 SRCU_SIZE state to 5.
+> > 
+> > I do understand that you would like to remove SRCU_SIZE_* states.
+> > What I need from you is why it is important to remove these states.
+> > What is being gained by removing them?  Why is that gain so important
+> > that we should (at the very least) make the state space more complex?
+> > And does this change really avoid introducing bugs?
+> > 
 > 
-> READER                  UPDATER
-> -------------           ----------
->                            // idx is initially 0.
-> read_lock() {
->   READ(idx) = 0;
->   lock[0]++; --------------------------------------------,
->                            flip() {                      |               
->                               smp_mb();                  |
->   smp_mb();                                              |
-> }                                                        |
->                                                          |
-> // RSCS                                                  |
->                                                          |
-> read_unlock() {                                          |
->   smp_mb();                                              |
->                               idx++;  // P               |
->                               smp_mb();                  |
->                            }                             |
->                                                          |
->                            scan_readers_idx(0) {         |
->                                count all unlock[0];      |
->                                    |                     |
->                                    |                     |
->   unlock[0]++; //X <--not-counted--`-----,               |
->                                          |               |
-> }                                        V               `------,
->                                // Will make sure next scan      |
->                                // will not miss this unlock (X) |
->                                // if other side saw flip (P) ,--`
->                                // Call this MB [1]           |
->                                // Order write(idx) with      |
->                                // next scan's unlock.        |
->                                smp_mb();                 ,---`
-> read_lock() {                                            |
->   READ(idx)=0;                                           |
->   lock[0]++; ----------------> count all lock[0];        |
->   smp_mb();         |     }                              |
-> }     |             |                                    V
->       |             `---> // Incorrect contribution to lock counting
->       |                   // upto a maximum of 2 times.
->       |
->        `---> // Pairs with MB [1]. Makes sure that
->              // the next read_lock()'s' idx read (Y) is ordered
->              // with above write to unlock[0] (X).
->                             |
-> rcu_read_unlock() {         |
->   smp_mb(); <---------------`
->   unlock[0]++; 
-> }
+> I am driven by the curiosity about the size state machine, and try to
+> document it as Frederic asked [1].
 > 
-> read_lock() {
->   READ(idx) = 1; //Y
->   lock[1]++;
->   ...
-> }
->                            scan_readers_idx(0) {
->                                count all unlock[0]; //Q
->                                ...
+> And yes as you demand, it should not introduce any complexity without
+> gains.
 > 
-> 
-> thanks,
-> 
->  - Joel
-> 
->                           }
-> 
-> This makes it similar to the store buffer pattern. Using X, Y, P and Q
-> annotated above, we get:
-> 
-> READER                    UPDATER
-> X (write)                 P (write)
-> 
-> smp_mb();                 smp_mb();
-> 
-> Y (read)                  Q (read)
+> Again, appreciate for your detailed explanation. I have a better
+> understainding of the design. Later I will try to document it with a
+> patch.
 
-Given that this diagram is more than 50 lines long, it might go better in
-a design document describing this part of RCU.  Perhaps less detail or
-segmented, but the same general idea as this guy:
+That sounds good, and I look forward to seeing your state-explanation
+patch!
 
-Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+							Thanx, Paul
 
-Thoughts?
-
-						Thanx, Paul
+> [1]: https://lore.kernel.org/rcu/20221117142025.GE839309@lothringen/
+> 
+> > 							Thanx, Paul
+> > 
+> > > Thanks,
+> > > 
+> > > 	Pingfan
+> > > 
+> > > > 							Thanx, Paul
+> > > > 
+> > > > > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+> > > > > To: rcu@vger.kernel.org
+> > > > > ---
+> > > > > v1 -> v2:
+> > > > >  rebase onto dev branch
+> > > > >  kernel/rcu/srcutree.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > > index b25f77df9e5e..b0278d1e9c1f 100644
+> > > > > --- a/kernel/rcu/srcutree.c
+> > > > > +++ b/kernel/rcu/srcutree.c
+> > > > > @@ -1165,7 +1165,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> > > > >  	 */
+> > > > >  	idx = __srcu_read_lock_nmisafe(ssp);
+> > > > >  	ss_state = smp_load_acquire(&ssp->srcu_size_state);
+> > > > > -	if (ss_state < SRCU_SIZE_WAIT_CALL)
+> > > > > +	if (ss_state < SRCU_SIZE_WAIT_BARRIER)
+> > > > >  		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
+> > > > >  	else
+> > > > >  		sdp = raw_cpu_ptr(ssp->sda);
+> > > > > -- 
+> > > > > 2.31.1
+> > > > > 
