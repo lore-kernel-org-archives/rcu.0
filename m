@@ -2,218 +2,194 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CC6BC4332F
-	for <rcu@archiver.kernel.org>; Fri, 16 Dec 2022 16:54:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D1AEC001B2
+	for <rcu@archiver.kernel.org>; Fri, 16 Dec 2022 17:14:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbiLPQyk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Dec 2022 11:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
+        id S231463AbiLPROA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Dec 2022 12:14:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbiLPQyd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Dec 2022 11:54:33 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50642B7C1
-        for <rcu@vger.kernel.org>; Fri, 16 Dec 2022 08:54:32 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id i20so3126225qtw.9
-        for <rcu@vger.kernel.org>; Fri, 16 Dec 2022 08:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SU5Z/KiaXFmce3kuMWeEeLnco0PMLsZOUUzW/Vik9+g=;
-        b=DQG3uAfmxLoNHwCKq1X/2aXOojYLsMQxXyBsvm86xcnPndHCB1G87yfSu5Yun39kGb
-         R0JgymBx1ZaeXarwoYeGOtJoTsXymQHh2H1eyo3mJaqbj5pa6LGXRraKcji+gfSq/zJq
-         9D3+IqxVgUmyEoZZdZO1JPb43Z1wgUy6ggJK8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SU5Z/KiaXFmce3kuMWeEeLnco0PMLsZOUUzW/Vik9+g=;
-        b=yeAepFhfpm1gv7BxTU63+GxKRXSZ1l2S6pUXYrs0NwyJki9YVCRiDUcI0dezm+k/Qe
-         jJJhUUIoMRL6EywjWSqMbgHNdy6NPLz2GIzOJPkLb2HNitTGnINiKSYdUOd+3U/SHsUO
-         kDKgs4aLKtMz/OD1NWw1XTMFk6w2tC0jC5bxZl9bL70mBZwpcpsMZLCIrshuP8ago1fK
-         V99CZoJ76Hf0/h8LB2jb99Q7uv6d34WONxKltK5lqYXyJHEtCuQbt3xxrcECc6ixQ5kY
-         BilmlpSi6Lauh/Dg/wb8B8/72ijGgiMF0JE/lBuPOMQjaa0JEJw8Vcbpp4UA4ECepeoI
-         VjhQ==
-X-Gm-Message-State: ANoB5pmnKo5OfeoqKpihesKYgrn5IJ+3lHDpKxrzPPQay+b25/M0BpaT
-        wRRhcoh4ukXCyHQKjVqHQg/5TQ==
-X-Google-Smtp-Source: AA0mqf4kEbRmKx0UN2D8mGGO561sa5ZlDZuo8ptaMT3qNbhm0Lhuwye8yNbLu3/CtTzbFYi16nzNvA==
-X-Received: by 2002:ac8:5292:0:b0:3a7:f183:7f66 with SMTP id s18-20020ac85292000000b003a7f1837f66mr45207492qtn.22.1671209671201;
-        Fri, 16 Dec 2022 08:54:31 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id x21-20020ac85395000000b003a50248b89esm1568333qtp.26.2022.12.16.08.54.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Dec 2022 08:54:30 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH RFC] srcu: Yet more detail for srcu_readers_active_idx_check() comments
-Date:   Fri, 16 Dec 2022 11:54:19 -0500
-Message-Id: <54F1102C-2577-4238-83B3-D38BA7ED9087@joelfernandes.org>
-References: <20221216165144.GA4001@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S231361AbiLPRN7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Dec 2022 12:13:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B863D6F486;
+        Fri, 16 Dec 2022 09:13:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5618D61FD7;
+        Fri, 16 Dec 2022 17:13:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADAC8C43392;
+        Fri, 16 Dec 2022 17:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671210833;
+        bh=Ak/KrxWAvOEGVghN8qPaao3p3gxmWCwZ3TbtWtqLEss=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Y83nK8Pe0WSMx5wUME8cdVo9TlXuMvitz9j1r8ztbcdAq31xiN3aXcvOq+I6dtRlL
+         7Gadqf44vdHjfcBYiF4h6MN84u6QzzswYYq5CUa7hotFarC8Ajp8pWqXk65lkhZ5Ps
+         7qBLp5MTJeOhPgGfV6YlGkZP5duV8qEZzTXewzz/r/ZdqowWay9cD574Y6kpKN/XOB
+         iX2KcRCcCm3SYuYnj6fRILh0P0DpBno7Fn4NOco5T+4otWqByZc+58sUTAaRpBe0cw
+         /NKNaYW3dAlgrzNw+fZOWP1NzOHoVbiEQApIGDE3cRsexcG7AqRrUr8XGacV8vYaIt
+         jXyVPTYrscDCw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4CBEB5C0AC7; Fri, 16 Dec 2022 09:13:53 -0800 (PST)
+Date:   Fri, 16 Dec 2022 09:13:53 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>, boqun.feng@gmail.com,
         neeraj.iitr10@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20221216165144.GA4001@paulmck-ThinkPad-P17-Gen-1>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (20B101)
+Subject: Re: [PATCH RFC] srcu: Yet more detail for
+ srcu_readers_active_idx_check() comments
+Message-ID: <20221216171353.GC4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221216165144.GA4001@paulmck-ThinkPad-P17-Gen-1>
+ <54F1102C-2577-4238-83B3-D38BA7ED9087@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <54F1102C-2577-4238-83B3-D38BA7ED9087@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Dec 16, 2022 at 11:54:19AM -0500, Joel Fernandes wrote:
+> 
+> 
+> > On Dec 16, 2022, at 11:51 AM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > ﻿On Fri, Dec 16, 2022 at 04:32:39PM +0000, Joel Fernandes wrote:
+> >> On Thu, Dec 15, 2022 at 05:09:14PM -0800, Paul E. McKenney wrote:
+> >> [...]
+> >>>>>> 2. unlock()'s smp_mb() happened before Flip+smp_mb() , now the reader
+> >>>>>> has no new smp_mb() that happens AFTER the flip happened. So it can
+> >>>>>> totally sample the old idx again -- that particular reader will
+> >>>>>> increment twice, but the next time, it will see the flipped one.
+> >>>>> 
+> >>>>> I will let you transliterate both.  ;-)
+> >>>> 
+> >>>> I think I see what you mean now :)
+> >>>> 
+> >>>> I believe the access I am referring to is the read of idx on one side and
+> >>>> the write to idx on the other. However that is incomplete and I need to
+> >>>> pair that with some of other access on both sides.
+> >>>> 
+> >>>> So perhaps this:
+> >>>> 
+> >>>> Writer does flip + smp_mb + read unlock counts [1]
+> >>>> 
+> >>>> Reader does:
+> >>>> read idx + smp_mb() + increment lock counts [2]
+> >>>> 
+> >>>> And subsequently reader does
+> >>>> Smp_mb() + increment unlock count. [3]
+> >>>> 
+> >>>> So [1] races with either [2] or [2]+[3].
+> >>>> 
+> >>>> Is that fair?
+> >>> 
+> >>> That does look much better, thank you!
+> >> 
+> >> Perhaps a comment with an ASCII diagram will help?
+> >> 
+> >> 
+> >> Case 2:
+> >> Both the reader and the updater see each other's writes too late, but because
+> >> of memory barriers on both sides, they will eventually see each other's write
+> >> with respect to their own. This is similar to the store-buffer problem. This
+> >> let's a single reader contribute a maximum (unlock minus lock) imbalance of 2.
+> >> 
+> >> The following diagram shows the subtle worst case followed by a simplified
+> >> store-buffer explanation.
+> >> 
+> >> READER                  UPDATER
+> >> -------------           ----------
+> >>                           // idx is initially 0.
+> >> read_lock() {
+> >>  READ(idx) = 0;
+> >>  lock[0]++; --------------------------------------------,
+> >>                           flip() {                      |               
+> >>                              smp_mb();                  |
+> >>  smp_mb();                                              |
+> >> }                                                        |
+> >>                                                         |
+> >> // RSCS                                                  |
+> >>                                                         |
+> >> read_unlock() {                                          |
+> >>  smp_mb();                                              |
+> >>                              idx++;  // P               |
+> >>                              smp_mb();                  |
+> >>                           }                             |
+> >>                                                         |
+> >>                           scan_readers_idx(0) {         |
+> >>                               count all unlock[0];      |
+> >>                                   |                     |
+> >>                                   |                     |
+> >>  unlock[0]++; //X <--not-counted--`-----,               |
+> >>                                         |               |
+> >> }                                        V               `------,
+> >>                               // Will make sure next scan      |
+> >>                               // will not miss this unlock (X) |
+> >>                               // if other side saw flip (P) ,--`
+> >>                               // Call this MB [1]           |
+> >>                               // Order write(idx) with      |
+> >>                               // next scan's unlock.        |
+> >>                               smp_mb();                 ,---`
+> >> read_lock() {                                            |
+> >>  READ(idx)=0;                                           |
+> >>  lock[0]++; ----------------> count all lock[0];        |
+> >>  smp_mb();         |     }                              |
+> >> }     |             |                                    V
+> >>      |             `---> // Incorrect contribution to lock counting
+> >>      |                   // upto a maximum of 2 times.
+> >>      |
+> >>       `---> // Pairs with MB [1]. Makes sure that
+> >>             // the next read_lock()'s' idx read (Y) is ordered
+> >>             // with above write to unlock[0] (X).
+> >>                            |
+> >> rcu_read_unlock() {         |
+> >>  smp_mb(); <---------------`
+> >>  unlock[0]++; 
+> >> }
+> >> 
+> >> read_lock() {
+> >>  READ(idx) = 1; //Y
+> >>  lock[1]++;
+> >>  ...
+> >> }
+> >>                           scan_readers_idx(0) {
+> >>                               count all unlock[0]; //Q
+> >>                               ...
+> >> 
+> >> 
+> >> thanks,
+> >> 
+> >> - Joel
+> >> 
+> >>                          }
+> >> 
+> >> This makes it similar to the store buffer pattern. Using X, Y, P and Q
+> >> annotated above, we get:
+> >> 
+> >> READER                    UPDATER
+> >> X (write)                 P (write)
+> >> 
+> >> smp_mb();                 smp_mb();
+> >> 
+> >> Y (read)                  Q (read)
+> > 
+> > Given that this diagram is more than 50 lines long, it might go better in
+> > a design document describing this part of RCU.  Perhaps less detail or
+> > segmented, but the same general idea as this guy:
+> > 
+> > Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> 
+> Yes, this sounds like a good place to add it and perhaps we refer to
+> it from the C source file? I can take this up to do over the holidays,
+> if you prefer.
 
+Indeed, that comment is quite large already, arguably obscuring the code!
+It would be good to offload some of it.
 
-> On Dec 16, 2022, at 11:51 AM, Paul E. McKenney <paulmck@kernel.org> wrote:=
-
->=20
-> =EF=BB=BFOn Fri, Dec 16, 2022 at 04:32:39PM +0000, Joel Fernandes wrote:
->> On Thu, Dec 15, 2022 at 05:09:14PM -0800, Paul E. McKenney wrote:
->> [...]
->>>>>> 2. unlock()'s smp_mb() happened before Flip+smp_mb() , now the reader=
-
->>>>>> has no new smp_mb() that happens AFTER the flip happened. So it can
->>>>>> totally sample the old idx again -- that particular reader will
->>>>>> increment twice, but the next time, it will see the flipped one.
->>>>>=20
->>>>> I will let you transliterate both.  ;-)
->>>>=20
->>>> I think I see what you mean now :)
->>>>=20
->>>> I believe the access I am referring to is the read of idx on one side a=
-nd
->>>> the write to idx on the other. However that is incomplete and I need to=
-
->>>> pair that with some of other access on both sides.
->>>>=20
->>>> So perhaps this:
->>>>=20
->>>> Writer does flip + smp_mb + read unlock counts [1]
->>>>=20
->>>> Reader does:
->>>> read idx + smp_mb() + increment lock counts [2]
->>>>=20
->>>> And subsequently reader does
->>>> Smp_mb() + increment unlock count. [3]
->>>>=20
->>>> So [1] races with either [2] or [2]+[3].
->>>>=20
->>>> Is that fair?
->>>=20
->>> That does look much better, thank you!
->>=20
->> Perhaps a comment with an ASCII diagram will help?
->>=20
->>=20
->> Case 2:
->> Both the reader and the updater see each other's writes too late, but bec=
-ause
->> of memory barriers on both sides, they will eventually see each other's w=
-rite
->> with respect to their own. This is similar to the store-buffer problem. T=
-his
->> let's a single reader contribute a maximum (unlock minus lock) imbalance o=
-f 2.
->>=20
->> The following diagram shows the subtle worst case followed by a simplifie=
-d
->> store-buffer explanation.
->>=20
->> READER                  UPDATER
->> -------------           ----------
->>                           // idx is initially 0.
->> read_lock() {
->>  READ(idx) =3D 0;
->>  lock[0]++; --------------------------------------------,
->>                           flip() {                      |              =20=
-
->>                              smp_mb();                  |
->>  smp_mb();                                              |
->> }                                                        |
->>                                                         |
->> // RSCS                                                  |
->>                                                         |
->> read_unlock() {                                          |
->>  smp_mb();                                              |
->>                              idx++;  // P               |
->>                              smp_mb();                  |
->>                           }                             |
->>                                                         |
->>                           scan_readers_idx(0) {         |
->>                               count all unlock[0];      |
->>                                   |                     |
->>                                   |                     |
->>  unlock[0]++; //X <--not-counted--`-----,               |
->>                                         |               |
->> }                                        V               `------,
->>                               // Will make sure next scan      |
->>                               // will not miss this unlock (X) |
->>                               // if other side saw flip (P) ,--`
->>                               // Call this MB [1]           |
->>                               // Order write(idx) with      |
->>                               // next scan's unlock.        |
->>                               smp_mb();                 ,---`
->> read_lock() {                                            |
->>  READ(idx)=3D0;                                           |
->>  lock[0]++; ----------------> count all lock[0];        |
->>  smp_mb();         |     }                              |
->> }     |             |                                    V
->>      |             `---> // Incorrect contribution to lock counting
->>      |                   // upto a maximum of 2 times.
->>      |
->>       `---> // Pairs with MB [1]. Makes sure that
->>             // the next read_lock()'s' idx read (Y) is ordered
->>             // with above write to unlock[0] (X).
->>                            |
->> rcu_read_unlock() {         |
->>  smp_mb(); <---------------`
->>  unlock[0]++;=20
->> }
->>=20
->> read_lock() {
->>  READ(idx) =3D 1; //Y
->>  lock[1]++;
->>  ...
->> }
->>                           scan_readers_idx(0) {
->>                               count all unlock[0]; //Q
->>                               ...
->>=20
->>=20
->> thanks,
->>=20
->> - Joel
->>=20
->>                          }
->>=20
->> This makes it similar to the store buffer pattern. Using X, Y, P and Q
->> annotated above, we get:
->>=20
->> READER                    UPDATER
->> X (write)                 P (write)
->>=20
->> smp_mb();                 smp_mb();
->>=20
->> Y (read)                  Q (read)
->=20
-> Given that this diagram is more than 50 lines long, it might go better in
-> a design document describing this part of RCU.  Perhaps less detail or
-> segmented, but the same general idea as this guy:
->=20
-> Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-
-Yes, this sounds like a good place to add it and perhaps we refer to it from=
- the C source file? I can take this up to do over the holidays, if you prefe=
-r.
-
-Thanks,
-
-  - Joel
-
-
->=20
-> Thoughts?
->=20
->                        Thanx, Paul
+							Thanx, Paul
