@@ -2,96 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D24C4332F
-	for <rcu@archiver.kernel.org>; Sat, 17 Dec 2022 01:03:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D556DC4332F
+	for <rcu@archiver.kernel.org>; Sat, 17 Dec 2022 01:09:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiLQBDs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Dec 2022 20:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
+        id S229966AbiLQBJW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Dec 2022 20:09:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbiLQBDr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Dec 2022 20:03:47 -0500
+        with ESMTP id S229985AbiLQBJV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Dec 2022 20:09:21 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B971A836;
-        Fri, 16 Dec 2022 17:03:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B2D26489;
+        Fri, 16 Dec 2022 17:09:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3495462295;
-        Sat, 17 Dec 2022 01:03:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930ACC433D2;
-        Sat, 17 Dec 2022 01:03:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2349362295;
+        Sat, 17 Dec 2022 01:09:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE18C433EF;
+        Sat, 17 Dec 2022 01:09:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671239025;
-        bh=w9On+uZB4e7roiFnK6EGr6v5XURJWc3Mq8xBPv2QiR8=;
+        s=k20201202; t=1671239359;
+        bh=8xpp5MLvKY8KzVXKEqfKMt8HVvfyO0C36vgYBC8BXg4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UaM0Gof9fRgjOLAAvXSs1di556bXuZDWTNPA+0WzaO4rcpT11h02RmcvXPtnwmYJS
-         vo+flpgrU57bTQ72decuPSybDhxfXiUsT1UJUqGYTVzZgV787WUzXjZyE/aSJUX2dq
-         seZ8vyDpAfwlsAoM4Jz8Yen+M+izlRi+j6GoDZrwKKHUofVidGFsXxPsMqUye+f+er
-         1nyUAJffjNerIO9zZkMUnnTsOE+JjgfYAMOtWGBxeDnZ6ER4HQyqcxsJSpNfyTM8MM
-         yfG5KVujWZGyi4moPVINT3gEAYCW2pZVQjsGiSfOMJgOnvMLawuKae8ynvi+ThaeMY
-         zql35FDmc4HJw==
+        b=Ac2sr7K4EDW2JK34cSpmEXQmOaOV+p3SSawEjRXnz7IfpjXBn409LfOtFWfQOHYbo
+         2/YjKiBoS0oE4ZoZ/gtn5ggCIas7gdp6SSOHbdiYGLte+0MOJ4BR/Ub9lZAKiaFq45
+         ck9DyqI8tPUsviSIrByuXGeOwGP2LKnOWU8O7SOD4le7OCdNEaaET/tMe86ZI6zSTg
+         1Vq7JWcHT7837HJk/aaERJJPlyO9I8pYsrCS8OYSZrWal6QD48JCRTB6boHfbvpeFD
+         agFaZdDkwN7Ct9cN3vkM4Z55h1eHQXyCvePQ+zn2hSj2wH2RLfmA5KU5CUpm0oE5Wr
+         mVoS5A+J3/eJg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 331B85C0A2D; Fri, 16 Dec 2022 17:03:45 -0800 (PST)
-Date:   Fri, 16 Dec 2022 17:03:45 -0800
+        id 234F85C0A2D; Fri, 16 Dec 2022 17:09:19 -0800 (PST)
+Date:   Fri, 16 Dec 2022 17:09:19 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zqiang <qiang1.zhang@intel.com>
 Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix opposite might_sleep() check in
- rcu_blocking_is_gp()
-Message-ID: <20221217010345.GF4001@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads
+ affinity
+Message-ID: <20221217010919.GG4001@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221215035755.2820163-1-qiang1.zhang@intel.com>
+References: <20221215090029.2972236-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221215035755.2820163-1-qiang1.zhang@intel.com>
+In-Reply-To: <20221215090029.2972236-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 15, 2022 at 11:57:55AM +0800, Zqiang wrote:
-> Currently, if the system is in the RCU_SCHEDULER_INACTIVE state, invoke
-> synchronize_rcu_*() will implies a grace period and return directly,
-> so there is no sleep action due to waiting for a grace period to end,
-> but this might_sleep() check is the opposite. therefore, this commit
-> puts might_sleep() check in the correct palce.
+On Thu, Dec 15, 2022 at 05:00:29PM +0800, Zqiang wrote:
+> Currently, when CPUs going offline, the rcu boost kthreads CPU
+> affinity has been reset in rcutree_offline_cpu(), therefore this
+> commit remove duplicate settings in rcutree_dead_cpu().
 > 
 > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Queued for testing and review, thank you!
+One question...
 
-I was under the impression that might_sleep() did some lockdep-based
-checking, but I am unable to find it.  If there really is such checking,
-that would be a potential argument for leaving this code as it is.
+Given that rcutree_offline_cpu() causes rcu_boost_kthread_setaffinity()
+to be invoked with the number of the outgoing CPU, but rcutree_dead_cpu()
+instead passes in -1, are these two invocations really redundant?
 
-But in the meantime, full speed ahead!  ;-)
-
-						Thanx, Paul
+							Thanx, paul
 
 > ---
->  kernel/rcu/tree.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  kernel/rcu/tree.c | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index ee8a6a711719..65f3dd2fd3ae 100644
+> index 65f3dd2fd3ae..20de83ed0c7e 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -3379,9 +3379,10 @@ void __init kfree_rcu_scheduler_running(void)
+> @@ -4122,15 +4122,10 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
 >   */
->  static int rcu_blocking_is_gp(void)
+>  int rcutree_dead_cpu(unsigned int cpu)
 >  {
-> -	if (rcu_scheduler_active != RCU_SCHEDULER_INACTIVE)
-> +	if (rcu_scheduler_active != RCU_SCHEDULER_INACTIVE) {
-> +		might_sleep();
->  		return false;
-> -	might_sleep();  /* Check for RCU read-side critical section. */
-> +	}
->  	return true;
->  }
+> -	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> -	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+> -
+>  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+>  		return 0;
 >  
+>  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> -	/* Adjust any no-longer-needed kthreads. */
+> -	rcu_boost_kthread_setaffinity(rnp, -1);
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+>  	return 0;
 > -- 
 > 2.25.1
 > 
