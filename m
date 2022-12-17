@@ -2,294 +2,276 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA722C4167B
-	for <rcu@archiver.kernel.org>; Sat, 17 Dec 2022 06:32:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C83F1C4332F
+	for <rcu@archiver.kernel.org>; Sat, 17 Dec 2022 13:02:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbiLQGck (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 17 Dec 2022 01:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S229526AbiLQNCM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 17 Dec 2022 08:02:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbiLQGcj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 17 Dec 2022 01:32:39 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B770240AA
-        for <rcu@vger.kernel.org>; Fri, 16 Dec 2022 22:32:38 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id i20so4434281qtw.9
-        for <rcu@vger.kernel.org>; Fri, 16 Dec 2022 22:32:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EF7B0ARRl+lb5m5FqHRPeUTxhDADJbbf7N7t8C12qSo=;
-        b=U71cEmfEuci2Emp+/jsEWh2wxHVTqoDU5j+kNN1+RMTXphkEVBN8njuU6ERvMj5wwX
-         /sU1SR/iY7L7VllGylhLAppHxoUtrQK0jNMTJjI0LMi7ot4xsH66a2Tdilhq9J5Z3rlD
-         A8WauUF5bNZvzsIWcL+s6BFH802ugql7vK+58=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EF7B0ARRl+lb5m5FqHRPeUTxhDADJbbf7N7t8C12qSo=;
-        b=Qy8gNc/thp4Ah3d+7JxEfwR36j76Pm670ACE9MRKRiJqM2z8HzDbs1Jg/A0v4rJKcB
-         itBK/bQ0ZEXqNTycbxFl+Y9NHWNYHMzGDd8RsIRAjOVstLGyhIMcVbUP3oqPrhosTkqj
-         x7IPgM2i1sN0oVhH4BTo8EZHOIpaRr+F2EOOvWXoepyaW2BKVqAIfX1KFCGRDeKAMh9l
-         oh2DhYWf0562Pe1COOaTvQNjciiSFNjrT+amuHw+doKCW4WJObHnYnZsF4eNpyBeQuxA
-         QH4jjxReP7Fc10Ejk6WG1uk5IxfLmPKYmeryVhFr/3wz08vPf64lj9KkUlKeqiGHgF67
-         ncqQ==
-X-Gm-Message-State: ANoB5plGwXtdXvBUR6I0GnorX+b+IL0PtIDKZ63gomjP0m/A9i4bV7n0
-        bSKca6hOSaB0ycG3AglkDVEnN2A8u/pHz4YxV1E=
-X-Google-Smtp-Source: AA0mqf4a1Ppnx2bxq2P6kOE5kCJxQImOF8nqdP7G0GEm85lZATfwfM9mOuia4wTcivVkRBaFfdXjMA==
-X-Received: by 2002:ac8:7c8:0:b0:3a7:ee95:cc37 with SMTP id m8-20020ac807c8000000b003a7ee95cc37mr46663329qth.14.1671258757011;
-        Fri, 16 Dec 2022 22:32:37 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id fy21-20020a05622a5a1500b0039cb59f00fcsm2606290qtb.30.2022.12.16.22.32.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Dec 2022 22:32:36 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
+        with ESMTP id S229452AbiLQNCL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 17 Dec 2022 08:02:11 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F8A15F37;
+        Sat, 17 Dec 2022 05:02:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1671282130; x=1702818130;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=qNEfzLjMUCJCvCdBBFw+k8Msn3P6ILwKaB77bR2D55c=;
+  b=ZE8z8dyr/G7/bBQA9F2fFdS22k6Ar8f1DVtIXzxnJ1GX5ZKF4U8UVH9+
+   zHU9qlIZxOYUE6RzNnk9TxrzrN1M3rU9O6jgzt8r6H5wcQw2Kecz7D99l
+   wfuOt1MbNcq+kNQF8VEVYdRy+Hm2Y3Xza89m2L0mFXKEImvfH1BdEmp0g
+   7HbDQGB/1Ux5VqQYe98zZHSi8RExSggpWD4uiGhR+Xr/3cEx9fr+N+gRV
+   /0tesLAeTKmwmb1COHqz1+f9VzOTNZB18l8PuhmLXo5ynb6o6Wpm/W6NX
+   H9UkludNLZ48bkB0Zeq+L6rsch80ziwM/6ksi1A6MbRxSkUa+cq4f+QGR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10563"; a="299459502"
+X-IronPort-AV: E=Sophos;i="5.96,252,1665471600"; 
+   d="scan'208";a="299459502"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2022 05:02:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10563"; a="824393916"
+X-IronPort-AV: E=Sophos;i="5.96,252,1665471600"; 
+   d="scan'208";a="824393916"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga005.jf.intel.com with ESMTP; 17 Dec 2022 05:02:07 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Sat, 17 Dec 2022 05:02:07 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Sat, 17 Dec 2022 05:02:06 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Sat, 17 Dec 2022 05:02:06 -0800
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.43) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Sat, 17 Dec 2022 05:02:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A7FnS9muHTc3gxjJZlgvSBKV1I2nrn9VvtmdHI8qPbCgNYskoElJoxJeeo5DU0fZn3TyDW+eLT7SQZ+o7AREIPEXCodRS9BRsD01mwJDreCDx7fYBjqqFFjdzFOS7l64QiTUXAO3AVPbA2e1KQaFkGlTySXXxBcdGnp7YamI9hB+1E8YTq+XxlohAMsX1B5EhFPrBdILSezsGny0KlLlIJXphBbFPdovXq/4ySJegBspfwHyNIEtSomLtCQr08/hLzeWhz4kxMmyE8ziLuqYvy+OPuAPUEKE1oKezLYrGXeXACDYUDrU3gsLcUOu3g/7OKq9VyvbgUMcre1xqBP4Hg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XKdrp3sC+91aB0/C+sd/9/yiOo2oDir07281rql5I7U=;
+ b=V463FojbKmbPa9+A75QnfLKjWNVgtAgJGtpdENgSwkEvoLA7kzFuQbozLWAtX1BtCpc2QyY5KMPg0gCYqrLeSs/wXkR/yDOhLWJxk+iC8/rARq/Bmv2msl5XZU98sg73CcxiZt+ZfUvJ36/wLWdtayuk7wbpg82otMo3n+sy0lnOy44CZpXi0pfUmQ+6a0v7MUCBTGEBlbH6Dgn1JFg6B6un216Nmdvj3vXPYViRmLVu7bwfUXUGClSXexvOeFie+v6kxE0ysR5ks5BeZJT5VqteDWriG+3VqnHkDiEydpl09mwwUgQoZHd6dzhD/HVNe3uHUerbkLiZVD6b7FyoVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
+ by BL3PR11MB6507.namprd11.prod.outlook.com (2603:10b6:208:38e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.11; Sat, 17 Dec
+ 2022 13:02:04 +0000
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::114c:5805:e63f:6018]) by PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::114c:5805:e63f:6018%4]) with mapi id 15.20.5924.011; Sat, 17 Dec 2022
+ 13:02:04 +0000
+From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads
+ affinity
+Thread-Topic: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads
+ affinity
+Thread-Index: AQHZEGMOnvxGUFjU2Uq5+RiLJLzbVq5xR5qAgAABybCAAMOa8A==
+Date:   Sat, 17 Dec 2022 13:02:03 +0000
+Message-ID: <PH0PR11MB58806ABF242993103390A6F5DAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20221215090029.2972236-1-qiang1.zhang@intel.com>
+ <20221217010919.GG4001@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB5880B9403488CAB5DF9810FFDAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB5880B9403488CAB5DF9810FFDAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|BL3PR11MB6507:EE_
+x-ms-office365-filtering-correlation-id: 82d22b41-450c-4a04-234c-08dae02ee4fa
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RSs8w8IYhcdsV3CVeik02ykJQGqpMGmVOvX6be/wtimKky+TTpDLjxqkWXHIkeknch37aQzZlThRXqaDP1t3QynEgE3zpyX53p8Cd/kMHk1aPehMyPAjzlO9vx1rpCGwbxQGG1t7eEwHK/Lc1dF1eJ9XHwOoRvBC1IDgbOBtpNHVGTKc06Y/QU1NNFsd6pslvpCQYV/4xfR+k9HXIENX3xy93rJWdAilxrK0JAMjcCUtb6U5pLkljLGoode1WV3Eo0h3Nf4ujfAdp/sfvLIUFZyLqrUA21UjxjCOGK63ymGM7OGMCiE/HaH6nsPfnvANLGwqdxMkR64/mHLPv2Vimc/z5jKTkMVYogiLdIV8aYfVAlbsgHxwJlU25zMCBPHSbGIIrOaEzVfb1MCkJoDF1/vfFfAkpKJXZkALCjHoliE9MqlOx4KEWlh8z+tZzfz1UUu6KzIhiKE01YxL2R/8eDQyWUscl3XqUta554t6foRxZ2T86bGV5u36Kh8/5touDJU7B1V3oMbET5SG40b3fN2F8SZ/G7efARy5zr7kKh02Ro2CkahxV4p1J2tYZO7Owq2oHChRSi/TRUf7wr/+643oTYc2U40F6VCk+wZQS1VGE8GY0+asnNXDrqwoKWCL6U0jF+tOd4iT6RBOor8AijCiwfV1OjJ1ZYeF+uPDlgjSoqhp0wnCDqX9nIzgagoQOJtWtU3MM2xdhkN1XY1jcg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(39860400002)(366004)(346002)(136003)(376002)(451199015)(5660300002)(86362001)(38100700002)(83380400001)(66556008)(82960400001)(8676002)(2906002)(8936002)(122000001)(38070700005)(76116006)(41300700001)(66476007)(4326008)(66446008)(64756008)(52536014)(66946007)(2940100002)(55016003)(71200400001)(6506007)(26005)(7696005)(110136005)(186003)(54906003)(66574015)(316002)(9686003)(478600001)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?kBmL0rPVInEFmYfmbWPie6Oam7ZHW56E7MwXTLlcS2te5Xv1ky/kjt4/vy6r?=
+ =?us-ascii?Q?OwuYs08jnf0gw8r8eZ0hhRdHALnSj48L0cj5jbaNVy4+L8ANTRIYuFCfUJo6?=
+ =?us-ascii?Q?q7TdFKEPmzWSsfAhQAxQypHVxZpebX6VxrHeVACqWuZhddxrbxkpDUmZNJ7g?=
+ =?us-ascii?Q?glFnui+PlAZRVz3/JqygTdrvxmfjlKrFiRxCMj0R4ceSF2Ym2vAOJiWlZgZj?=
+ =?us-ascii?Q?9IiOl07fLSpN5nsGunQHndKvfUzLqCNYnK0tX7TXDxpf+D6PYJPj76QFOKlP?=
+ =?us-ascii?Q?AKlK4QuO2a2pm60McGH7FWYifz+MduMh1XBO9xHC4fcW+08y8WETm8urOu5D?=
+ =?us-ascii?Q?sfIBbxpnyGAozodNLuFTqm2B55flBUZuznk4BLRYDehixJMRyUZv+6HiFzl6?=
+ =?us-ascii?Q?CRyNvUIPmQlxGUEnrunIbeHXJ4BUODKRoGh9iPmdIHTKMDFqAtF1vP8jaB15?=
+ =?us-ascii?Q?zLEUBBtxkXG3s5C6cesypMWUoecd4ZW9QIaotSsKNVtxE34YGnZ904ZrMUre?=
+ =?us-ascii?Q?216aKw5Uji9dlhViH7zdbDxHRBh3pW72RS8DW7zubCEWe/0HiZEj7r5Xy3dX?=
+ =?us-ascii?Q?D/ZVPtrsvlj2OjdbgvklkYJ6xvzXG6qsdeEICPtAsIdnQrK+f0gmTf1aLTJU?=
+ =?us-ascii?Q?Vr3wB2UYz0ypcmYTl5RYrs64FSZVXIr+iBiG1S9rFtpZqRtNZtpwc2udA5Au?=
+ =?us-ascii?Q?2ijckoPW7JwYSnGEdIOkFNHIhfqngKBmOoOSfZPDCuWEAzDy8MSjmkjgB0TK?=
+ =?us-ascii?Q?Ugkm1OSTXSLLHyzqzAcTFGeVGs6ZqGfqrqPotTOw/5S6wm+TjgfVg4rYbQxc?=
+ =?us-ascii?Q?KF9Xg2c8U8vOJ2J3cIidd1HgUeygHXlH16pB3GpEzwGdskgU8E04IYNIkQTH?=
+ =?us-ascii?Q?NLq3Rz9+lvcsKXyHztS411ZAq+F+Sa7mWvQCoTrRlBH72DMWW7L0+mVuulXH?=
+ =?us-ascii?Q?2ROnyH8diu6ZQg0mfilHbyQLBblStuzhi1QRdoh+LKfnodMUG97XyQU4nIqO?=
+ =?us-ascii?Q?ztrFOvKVoMnLja/gTKOLPYtwXTiRquUWmpnRvhYxL5ndB2GAG3qP9ya9angw?=
+ =?us-ascii?Q?1/kwT685GxGXEo8Xks02aKCtfqSDdX1/DlCYpwkzf8rlqYcuALEY0GeNo6jH?=
+ =?us-ascii?Q?Zxq8oZzedallknBjsKeaRJl4mSweRToIgVtih76/6Gc08wlV7hN9ThARFPU/?=
+ =?us-ascii?Q?TjdsGQWQqzSKapk4gL9CSHMuSERKp0c19SuTkYOOhmDfjj+VQaFo50lIYxcr?=
+ =?us-ascii?Q?5HQx1I2U0Iyqh6Pf5BM8dsp2/qLiSu29iZ10P2StAXlcq/KxW5R1mMs6mYht?=
+ =?us-ascii?Q?oGLKJ6Gs14/bnjL3iJYWOx25sbah23CmHYIzi57A2FJLUnAw26Igqh0FDRKJ?=
+ =?us-ascii?Q?1q4IZCVtgGCnwjNgP6+pZlRQoSBcOUIsGaSRN5FYhJiWwAwvoQ4Elkbfd9IT?=
+ =?us-ascii?Q?aXJN6iw3eNQU7JRQk8EEctQX5TnbOm+lFqqmzOG6rqsg0owcEEpExBIkhCAp?=
+ =?us-ascii?Q?m/CaxHMLkZd8eLkOaiNlGoCizYqKe7x7yVyfTRp3fNUzR9uyHCwMnYIzaaP8?=
+ =?us-ascii?Q?RzD2aAz6GZn4I/TyvrGSPBwNN8Bo4BLHhUFUDtn0?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH RFC] srcu: Yet more detail for srcu_readers_active_idx_check() comments
-Date:   Sat, 17 Dec 2022 01:32:25 -0500
-Message-Id: <BF7A41E0-883D-45BD-A214-A2444A913B47@joelfernandes.org>
-References: <20221217051519.GI4001@paulmck-ThinkPad-P17-Gen-1>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, boqun.feng@gmail.com,
-        neeraj.iitr10@gmail.com, urezki@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20221217051519.GI4001@paulmck-ThinkPad-P17-Gen-1>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (20B101)
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82d22b41-450c-4a04-234c-08dae02ee4fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2022 13:02:04.0593
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YTHKEsN/im4Y2yacwYyNvjOx5X4ULZMlObg2GV29QrVz5j86gqF3G751seCsSGs58yhFtWYNuqDEtmkY1UU/XA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6507
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-> On Dec 17, 2022, at 12:15 AM, Paul E. McKenney <paulmck@kernel.org> wrote:=
-
+On Thu, Dec 15, 2022 at 05:00:29PM +0800, Zqiang wrote:
+> Currently, when CPUs going offline, the rcu boost kthreads CPU
+> affinity has been reset in rcutree_offline_cpu(), therefore this
+> commit remove duplicate settings in rcutree_dead_cpu().
 >=20
-> =EF=BB=BFOn Fri, Dec 16, 2022 at 10:21:25PM -0500, Joel Fernandes wrote:
->>> On Fri, Dec 16, 2022 at 10:19 PM Joel Fernandes <joel@joelfernandes.org>=
- wrote:
->>>=20
->>> Hi,
->>> On the related subject of this function, I drew a diagram for one of
->>> the reasons why per-CPU unlock counts have to be scanned first, for a
->>> particular index, before the per-CPU lock counts, and not the other
->>> way. Otherwise, a reader that got preempted after reading the index,
->>> can suddenly get scheduled during the inactive index's scan, and cause
->>> the total lock and unlock counts to falsely match:
->>> https://i.imgur.com/79fDWdQ.png
->>=20
->> Better diagram: https://i.imgur.com/PXKJnmW.png
->> (Added the preemption reasoning for Reader 0).
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>
+>One question...
+>
+>Given that rcutree_offline_cpu() causes rcu_boost_kthread_setaffinity()
+>to be invoked with the number of the outgoing CPU, but rcutree_dead_cpu()
+>instead passes in -1, are these two invocations really redundant?
+>
+>Although -1 is passed in, but at this time, the outgoing CPU has been remo=
+ved from=20
+>rcu_rnp_online_cpus(rnp),  in other words, we will eliminate the same CPU,=
+ which is
+>also  we passed in cpu in the rcutree_offline_cpu() before.
+>
+
+I also used " qemu -smp 4 "for a simple test.
+
+1) rcutree_offline_cpu()
+
+(gdb) bt
+#0  set_cpus_allowed_ptr (p=3Dp@entry=3D0xffff888100bd9cc0, new_mask=3Dnew_=
+mask@entry=3D0xffff888100ce7cd0)
+    at kernel/sched/core.c:2939
+#1  0xffffffff811be169 in rcu_boost_kthread_setaffinity (rnp=3D0xffffffff83=
+7a4c00 <rcu_state>,
+    outgoingcpu=3Doutgoingcpu@entry=3D3) at kernel/rcu/tree_plugin.h:1250
+#2  0xffffffff811cfa9f in rcutree_affinity_setting (outgoing=3D3, cpu=3D3) =
+at kernel/rcu/tree.c:4297
+#3  rcutree_offline_cpu (cpu=3D3) at kernel/rcu/tree.c:4341
+#4  0xffffffff810c4e6f in cpuhp_invoke_callback (cpu=3Dcpu@entry=3D3, state=
+=3Dstate@entry=3DCPUHP_AP_RCUTREE_ONLINE,
+    bringup=3Dbringup@entry=3Dfalse, node=3D<optimized out>, lastp=3Dlastp@=
+entry=3D0xffff88815b027568) at kernel/cpu.c:192
+#5  0xffffffff810c6e24 in cpuhp_thread_fun (cpu=3D<optimized out>) at kerne=
+l/cpu.c:785
+#6  0xffffffff8111784e in smpboot_thread_fn (data=3D0xffff88810014c3c0) at =
+kernel/smpboot.c:164
+#7  0xffffffff8110c88e in kthread (_create=3D0xffff8881009b8b00) at kernel/=
+kthread.c:376
+#8  0xffffffff81002902 in ret_from_fork () at arch/x86/entry/entry_64.S:306
+#9  0x0000000000000000 in ?? ()
+
+(gdb) p/x *0xffff888100ce7cd0
+$1 =3D 0x7
+
+2) rcutree_dead_cpu()
+
+#0  set_cpus_allowed_ptr (p=3Dp@entry=3D0xffff888100bd9cc0, new_mask=3Dnew_=
+mask@entry=3D0xffff888109fc7948)
+    at kernel/sched/core.c:2939
+#1  0xffffffff811be169 in rcu_boost_kthread_setaffinity (rnp=3D0xffffffff83=
+7a4c00 <rcu_state>,
+    outgoingcpu=3Doutgoingcpu@entry=3D-1) at kernel/rcu/tree_plugin.h:1250
+#2  0xffffffff811cf4a1 in rcutree_dead_cpu (cpu=3D3) at kernel/rcu/tree.c:4=
+176
+#3  0xffffffff810c4e6f in cpuhp_invoke_callback (cpu=3Dcpu@entry=3D3, state=
+=3DCPUHP_RCUTREE_PREP, bringup=3Dbringup@entry=3Dfalse,
+    node=3Dnode@entry=3D0x0 <fixed_percpu_data>, lastp=3Dlastp@entry=3D0x0 =
+<fixed_percpu_data>) at kernel/cpu.c:192
+#4  0xffffffff810c58f5 in cpuhp_invoke_callback_range (bringup=3Dbringup@en=
+try=3Dfalse, cpu=3Dcpu@entry=3D3,
+    st=3Dst@entry=3D0xffff88815b027540, target=3Dtarget@entry=3DCPUHP_OFFLI=
+NE) at kernel/cpu.c:675
+#5  0xffffffff827a5f6a in cpuhp_down_callbacks (target=3DCPUHP_OFFLINE, st=
+=3D0xffff88815b027540, cpu=3D3) at kernel/cpu.c:1170
+#6  _cpu_down (cpu=3Dcpu@entry=3D3, tasks_frozen=3Dtasks_frozen@entry=3D0, =
+target=3Dtarget@entry=3DCPUHP_OFFLINE) at kernel/cpu.c:1170
+#7  0xffffffff810c6ff8 in cpu_down_maps_locked (target=3DCPUHP_OFFLINE, cpu=
+=3D3) at kernel/cpu.c:1202
+#8  cpu_down (cpu=3D3, target=3Dtarget@entry=3DCPUHP_OFFLINE) at kernel/cpu=
+.c:1210
+#9  0xffffffff810c7906 in cpu_device_down (dev=3Ddev@entry=3D0xffff88815b02=
+6988) at kernel/cpu.c:1227
+
+(gdb) p/x *0xffff888109fc7948
+$2 =3D 0x7
+
+As can be seen from the above, we have set the same cpumask twice for the s=
+ame boost kthreads.
+
+Thanks
+Zqiang
+
+
+>Thanks
+>Zqiang
+
+>
+>							Thanx, paul
+
+> ---
+>  kernel/rcu/tree.c | 5 -----
+>  1 file changed, 5 deletions(-)
 >=20
-> Nice!!!
-
-Thanks!
-
-> The other way to look at this is using a memory-ordering viewpoint.
-> This is a member of the message-passing litmus-test family, and the reader=
-
-> must read the variables in the opposite order that the writer writes them.=
-
-
-Exactly, thanks. If we read the unlock counts first, which includes the unlo=
-ck count of that spurious reader 0 in my figure, then would have already see=
-n the reader 0=E2=80=99s lock count when we sum up the lock counts, thanks t=
-o MP pattern - so that spurious reader cannot do any damage or imbalance in t=
-he delta between the lock and unlock counts.   In MP pattern, if we see the f=
-lag, then we would have already seen the data (message). And on the other CP=
-U the data is written first followed by the write to the flag. Which is exac=
-tly what we do in the SRCU as you mentioned with the reversal of the orderin=
-g of the variables we read. I will reason about it this way as well in my no=
-tes, thank you!
-
-The other way I reason is, during scanning, if we count unlocks first before=
- locks, it=E2=80=99s OK to miss some unlocks, as that just means we will fal=
-sely delay ending of GP. However if we count locks first and then unlocks, w=
-e are screwed if we miss counting a lock, because if we count the unlock cou=
-nt for that missed lock, then we might end the GP sooner than we should!!!
-
-Thanks,
-
-  - Joel=20
-
-
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 65f3dd2fd3ae..20de83ed0c7e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4122,15 +4122,10 @@ static void rcu_cleanup_dead_rnp(struct rcu_node =
+*rnp_leaf)
+>   */
+>  int rcutree_dead_cpu(unsigned int cpu)
+>  {
+> -	struct rcu_data *rdp =3D per_cpu_ptr(&rcu_data, cpu);
+> -	struct rcu_node *rnp =3D rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+> -
+>  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+>  		return 0;
+> =20
+>  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> -	/* Adjust any no-longer-needed kthreads. */
+> -	rcu_boost_kthread_setaffinity(rnp, -1);
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+>  	return 0;
+> --=20
+> 2.25.1
 >=20
-> (See the infamous test6.pdf file, "MP" pattern.)
->=20
->                            Thanx, Paul
->=20
->> thanks,
->>=20
->> - Joel
->>=20
->>=20
->>> Cheers,
->>>=20
->>> - Joel
->>>=20
->>>=20
->>>=20
->>> On Fri, Dec 16, 2022 at 11:54 AM Joel Fernandes <joel@joelfernandes.org>=
- wrote:
->>>>=20
->>>>=20
->>>>=20
->>>>> On Dec 16, 2022, at 11:51 AM, Paul E. McKenney <paulmck@kernel.org> wr=
-ote:
->>>>>=20
->>>>> =EF=BB=BFOn Fri, Dec 16, 2022 at 04:32:39PM +0000, Joel Fernandes wrot=
-e:
->>>>>> On Thu, Dec 15, 2022 at 05:09:14PM -0800, Paul E. McKenney wrote:
->>>>>> [...]
->>>>>>>>>> 2. unlock()'s smp_mb() happened before Flip+smp_mb() , now the re=
-ader
->>>>>>>>>> has no new smp_mb() that happens AFTER the flip happened. So it c=
-an
->>>>>>>>>> totally sample the old idx again -- that particular reader will
->>>>>>>>>> increment twice, but the next time, it will see the flipped one.
->>>>>>>>>=20
->>>>>>>>> I will let you transliterate both.  ;-)
->>>>>>>>=20
->>>>>>>> I think I see what you mean now :)
->>>>>>>>=20
->>>>>>>> I believe the access I am referring to is the read of idx on one si=
-de and
->>>>>>>> the write to idx on the other. However that is incomplete and I nee=
-d to
->>>>>>>> pair that with some of other access on both sides.
->>>>>>>>=20
->>>>>>>> So perhaps this:
->>>>>>>>=20
->>>>>>>> Writer does flip + smp_mb + read unlock counts [1]
->>>>>>>>=20
->>>>>>>> Reader does:
->>>>>>>> read idx + smp_mb() + increment lock counts [2]
->>>>>>>>=20
->>>>>>>> And subsequently reader does
->>>>>>>> Smp_mb() + increment unlock count. [3]
->>>>>>>>=20
->>>>>>>> So [1] races with either [2] or [2]+[3].
->>>>>>>>=20
->>>>>>>> Is that fair?
->>>>>>>=20
->>>>>>> That does look much better, thank you!
->>>>>>=20
->>>>>> Perhaps a comment with an ASCII diagram will help?
->>>>>>=20
->>>>>>=20
->>>>>> Case 2:
->>>>>> Both the reader and the updater see each other's writes too late, but=
- because
->>>>>> of memory barriers on both sides, they will eventually see each other=
-'s write
->>>>>> with respect to their own. This is similar to the store-buffer proble=
-m. This
->>>>>> let's a single reader contribute a maximum (unlock minus lock) imbala=
-nce of 2.
->>>>>>=20
->>>>>> The following diagram shows the subtle worst case followed by a simpl=
-ified
->>>>>> store-buffer explanation.
->>>>>>=20
->>>>>> READER                  UPDATER
->>>>>> -------------           ----------
->>>>>>                          // idx is initially 0.
->>>>>> read_lock() {
->>>>>> READ(idx) =3D 0;
->>>>>> lock[0]++; --------------------------------------------,
->>>>>>                          flip() {                      |
->>>>>>                             smp_mb();                  |
->>>>>> smp_mb();                                              |
->>>>>> }                                                        |
->>>>>>                                                        |
->>>>>> // RSCS                                                  |
->>>>>>                                                        |
->>>>>> read_unlock() {                                          |
->>>>>> smp_mb();                                              |
->>>>>>                             idx++;  // P               |
->>>>>>                             smp_mb();                  |
->>>>>>                          }                             |
->>>>>>                                                        |
->>>>>>                          scan_readers_idx(0) {         |
->>>>>>                              count all unlock[0];      |
->>>>>>                                  |                     |
->>>>>>                                  |                     |
->>>>>> unlock[0]++; //X <--not-counted--`-----,               |
->>>>>>                                        |               |
->>>>>> }                                        V               `------,
->>>>>>                              // Will make sure next scan      |
->>>>>>                              // will not miss this unlock (X) |
->>>>>>                              // if other side saw flip (P) ,--`
->>>>>>                              // Call this MB [1]           |
->>>>>>                              // Order write(idx) with      |
->>>>>>                              // next scan's unlock.        |
->>>>>>                              smp_mb();                 ,---`
->>>>>> read_lock() {                                            |
->>>>>> READ(idx)=3D0;                                           |
->>>>>> lock[0]++; ----------------> count all lock[0];        |
->>>>>> smp_mb();         |     }                              |
->>>>>> }     |             |                                    V
->>>>>>     |             `---> // Incorrect contribution to lock counting
->>>>>>     |                   // upto a maximum of 2 times.
->>>>>>     |
->>>>>>      `---> // Pairs with MB [1]. Makes sure that
->>>>>>            // the next read_lock()'s' idx read (Y) is ordered
->>>>>>            // with above write to unlock[0] (X).
->>>>>>                           |
->>>>>> rcu_read_unlock() {         |
->>>>>> smp_mb(); <---------------`
->>>>>> unlock[0]++;
->>>>>> }
->>>>>>=20
->>>>>> read_lock() {
->>>>>> READ(idx) =3D 1; //Y
->>>>>> lock[1]++;
->>>>>> ...
->>>>>> }
->>>>>>                          scan_readers_idx(0) {
->>>>>>                              count all unlock[0]; //Q
->>>>>>                              ...
->>>>>>=20
->>>>>>=20
->>>>>> thanks,
->>>>>>=20
->>>>>> - Joel
->>>>>>=20
->>>>>>                         }
->>>>>>=20
->>>>>> This makes it similar to the store buffer pattern. Using X, Y, P and Q=
-
->>>>>> annotated above, we get:
->>>>>>=20
->>>>>> READER                    UPDATER
->>>>>> X (write)                 P (write)
->>>>>>=20
->>>>>> smp_mb();                 smp_mb();
->>>>>>=20
->>>>>> Y (read)                  Q (read)
->>>>>=20
->>>>> Given that this diagram is more than 50 lines long, it might go better=
- in
->>>>> a design document describing this part of RCU.  Perhaps less detail or=
-
->>>>> segmented, but the same general idea as this guy:
->>>>>=20
->>>>> Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
->>>>=20
->>>> Yes, this sounds like a good place to add it and perhaps we refer to it=
- from the C source file? I can take this up to do over the holidays, if you p=
-refer.
->>>>=20
->>>> Thanks,
->>>>=20
->>>>  - Joel
->>>>=20
->>>>=20
->>>>>=20
->>>>> Thoughts?
->>>>>=20
->>>>>                       Thanx, Paul
