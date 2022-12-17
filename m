@@ -2,35 +2,35 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11661C3DA6E
-	for <rcu@archiver.kernel.org>; Sat, 17 Dec 2022 00:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 988C6C4332F
+	for <rcu@archiver.kernel.org>; Sat, 17 Dec 2022 00:14:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbiLQANS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Dec 2022 19:13:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S230322AbiLQAOP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Dec 2022 19:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbiLQAMS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Dec 2022 19:12:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BD9175AA;
-        Fri, 16 Dec 2022 16:11:03 -0800 (PST)
+        with ESMTP id S230229AbiLQANS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Dec 2022 19:13:18 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EBB747FF;
+        Fri, 16 Dec 2022 16:11:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8953DB81E54;
-        Sat, 17 Dec 2022 00:11:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D56EC433F0;
-        Sat, 17 Dec 2022 00:11:00 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 69BEFB81E54;
+        Sat, 17 Dec 2022 00:11:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DF3C433EF;
+        Sat, 17 Dec 2022 00:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671235861;
-        bh=xQSnoJUDlQ16f2L8CuWavgbI1e8D0xygcd69tyFUEqg=;
+        s=k20201202; t=1671235879;
+        bh=psW9D7HuHQR8IbgKxb7fKgnTBW7O+7/ybDF+u7UdMx0=;
         h=From:To:Cc:Subject:Date:From;
-        b=NFS2d06NkQsoRTY6muccCoLm66auuE79J3xo8YPivunWAjuJ4fwWSKRcxEs5yrvWU
-         9jEHgTWZ9457r6tXDueIVdivDGRs/i6N5alQ/eRyFrF/ADe1jaE0xXeD9ErIUYFKX6
-         OABwKbqKKNOrlqtn/YurkMzOA50dNbY26Xo3vRG4ZPKOn2Dwyhd5Hn1W2oItEIWJyN
-         Jk8yhpjDHLrf003i2bTK3pSq5eNkm7RsAMtj2LOami0AFERHhaB4oNQ9nSnWIzszM2
-         FquPDSuHb5fGRE2jiq9mKIDdORg9/BRD7eR6EeYkDb4p2NBpZf1FwF5SfeKszV5Cgg
-         gxrFut6s81fxw==
+        b=MtBxOD1E5ktAcz6j37i3oXenvYRVW7zINq9B4L5caB5MgR1OOp8aksz9gzJ9w2iUY
+         lRMgXH3g0XhHFMQNfWbfjF1l72Q2JjQzfcI75S1Qm9KpmZY3q034jbtSt48Dtf0rGS
+         y9lxv4Hig23NdT1MJGCQkoPL3n9O74gmKdwpkjHz4Pf20B1o6G25gGmTVzslFZfgBA
+         8OWzmZ2IMf/V60PYR9l/UiaDOqzHNGHBwundDTWFJ1uXPAZypF80jNr2MrhIMlyniM
+         ugCsMhtHzPghdYkt40ZrV+q5sDuy4S39Pi+m96p7Kx+tvmgEI7Q+NN0CWSRoRHyjc+
+         sfvWRSNxOHrnw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zqiang <qiang1.zhang@intel.com>,
@@ -39,9 +39,9 @@ Cc:     Zqiang <qiang1.zhang@intel.com>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
         rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 1/5] rcu: Fix __this_cpu_read() lockdep warning in rcu_force_quiescent_state()
-Date:   Fri, 16 Dec 2022 19:10:53 -0500
-Message-Id: <20221217001058.41426-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 1/2] rcu: Fix __this_cpu_read() lockdep warning in rcu_force_quiescent_state()
+Date:   Fri, 16 Dec 2022 19:11:14 -0500
+Message-Id: <20221217001116.41497-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-stable: review
@@ -90,10 +90,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b10d6bcea77d..3fe7c75c371b 100644
+index 5797cf2909b0..615283404d9d 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2650,7 +2650,7 @@ void rcu_force_quiescent_state(void)
+@@ -2317,7 +2317,7 @@ void rcu_force_quiescent_state(void)
  	struct rcu_node *rnp_old = NULL;
  
  	/* Funnel through hierarchy to reduce memory contention. */
@@ -101,7 +101,7 @@ index b10d6bcea77d..3fe7c75c371b 100644
 +	rnp = raw_cpu_read(rcu_data.mynode);
  	for (; rnp != NULL; rnp = rnp->parent) {
  		ret = (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) ||
- 		       !raw_spin_trylock(&rnp->fqslock);
+ 		      !raw_spin_trylock(&rnp->fqslock);
 -- 
 2.35.1
 
