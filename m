@@ -2,54 +2,53 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73116C4332F
-	for <rcu@archiver.kernel.org>; Sun, 18 Dec 2022 21:19:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCAD0C4332F
+	for <rcu@archiver.kernel.org>; Sun, 18 Dec 2022 21:30:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbiLRVTX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 18 Dec 2022 16:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S231145AbiLRVat (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 18 Dec 2022 16:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbiLRVTW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 18 Dec 2022 16:19:22 -0500
+        with ESMTP id S231142AbiLRVas (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 18 Dec 2022 16:30:48 -0500
 Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3664BC75A
-        for <rcu@vger.kernel.org>; Sun, 18 Dec 2022 13:19:20 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id y25so11075080lfa.9
-        for <rcu@vger.kernel.org>; Sun, 18 Dec 2022 13:19:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A9A25CE
+        for <rcu@vger.kernel.org>; Sun, 18 Dec 2022 13:30:46 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id bf43so11115495lfb.6
+        for <rcu@vger.kernel.org>; Sun, 18 Dec 2022 13:30:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ArF/hNCkka4Q7GmG8OAXZMd8vi/1dRX9Scjd3gEhvuE=;
-        b=C4OUeddWTE/ou50N5jqsOOvjYcZ4GqcOphIlMaUhd38NlQbcfuWoXFCet+EY/t4GW6
-         OI0ykoYrWgbwrcXMduB8xF7oT+5yaYTopDUvEvZSZ5iD0AW+EbRt/KkCBjnDYqybEg/Y
-         Ms+d8sQdqkUNNhDpcvK1lnJublXYzbqG16L6I=
+        bh=5tn4rQjGQE4F2w5zAfUAbUUjhc9QUg0oaUSmUi2xx9M=;
+        b=tXBlq3ZbJVtEkMb+4WNJTrayFU2u+Mp81ndpU7nJkBwkXh+yLzGGznERsG9MvuWU+H
+         lvXoOXU5zt6S4c0Be95uK9at1y+DKszWLMN4EbG09R2SfixFRC2M7D3tOJOePSqtBryv
+         MjMhc4Qq1yRheRk28x6YqUDf4BuaCD7+qZCP4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ArF/hNCkka4Q7GmG8OAXZMd8vi/1dRX9Scjd3gEhvuE=;
-        b=o0P2b438prDMQAbBByQQPMdzL+0Y/STeWJsv24AYWysP4//X7eHVuvf8nydVDM9SnV
-         RDI2HhWQh8hqLt01F3N7czZ+f4/9cmql68GHP+5+lNRDN4OknAD5hTMpPSkAqE0Y1ZQX
-         zV77WDIAJKArnGdZrEDfKFsN3Ttc6JrlNKyhdK3bIqnTFpb6aNy0rNXfgquqGe/MSrVT
-         V4r24xNpVspGp8zltvdFemI4FA+LmqUKwBw21xWEVoY6sF665Z9ZUod70qAepynWXmo0
-         tDwoTEIIKeS+E2p/s5Ym7aEtrzxEAkWbLEBufB6iwnEdi6uq3/y9i+2H7Q3ez5df3hCy
-         hxDQ==
-X-Gm-Message-State: ANoB5pnwq7eNBXZR2+B5JW3yzmiX1BjJ01f3zSk4vnmaVxEVIrxt0J7V
-        uWAStJvhgUglgUFcUEDY0g6+2yTG4KLDEGxlnyQ/jQG8tGyMzmbktRs=
-X-Google-Smtp-Source: AA0mqf7eD0aSXGl+QmVr0R7hMy5mlgRJb8GqtX0/Q8mVS9Ch0ETqqz2xr3IMPTsWChjMo2v+wj/NTKTkNuE1GCPfLNk=
-X-Received: by 2002:a05:6512:3248:b0:4aa:148d:5168 with SMTP id
- c8-20020a056512324800b004aa148d5168mr32025495lfr.561.1671398359262; Sun, 18
- Dec 2022 13:19:19 -0800 (PST)
+        bh=5tn4rQjGQE4F2w5zAfUAbUUjhc9QUg0oaUSmUi2xx9M=;
+        b=cZ97ETO5QB4JCxYNBDnNzFuXwICrRVpJdTz3F7/cV2mB6Q6lZVneQ9+7oT2ttigVQt
+         cEdpJVVXK7A5MHDJdy3LGQbXg2Up9obuc2Ae6aHuHgwLUnf1uuQNaR751sToFnH+C4cb
+         gaHqQPXBTP8hEzwWIU0s/kh231xWgX8+EFiGaeL1NP6oas+CL/Hw+mXPgdm7tLgVQ2/L
+         MJtmyclg+TGxHHaQgWx3d3yTHrYA54RY9R6huCDkB2/R3lMhBoaXyyah+/UdRJA45AkR
+         4uxM3I/S/ik/i8i/XNx5ctBI9OihIVfNy+C1wI5J4YMB7XbkHjm8E4RzpFIsJrbo0Jtc
+         FHNQ==
+X-Gm-Message-State: ANoB5pkiOxeVLkXZjkBIrl6zv8mUKIU0kf5tmVCTL0hqSxcXZgPdqzPe
+        evQNNv1z2j0nqcxw9qNIKuAzNpV15RHiq02UbjX+kg==
+X-Google-Smtp-Source: AA0mqf4GUwjr2MjyB2dINXrnDS4QDmgfXIfOhAmL7j00lduo95kzujD2CNUQuFo+ydQvOahXJtG4fvvGzc+cgGwo1g0=
+X-Received: by 2002:ac2:4347:0:b0:4a4:782a:42ac with SMTP id
+ o7-20020ac24347000000b004a4782a42acmr31546237lfl.468.1671399045022; Sun, 18
+ Dec 2022 13:30:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20221218191310.130904-1-joel@joelfernandes.org>
- <20221218191310.130904-2-joel@joelfernandes.org> <db4cccb8-e7fd-3d54-c5c8-3df90c5ddc49@efficios.com>
-In-Reply-To: <db4cccb8-e7fd-3d54-c5c8-3df90c5ddc49@efficios.com>
+References: <20221218191310.130904-1-joel@joelfernandes.org> <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com>
+In-Reply-To: <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sun, 18 Dec 2022 16:19:07 -0500
-Message-ID: <CAEXW_YRSKRkVc=+HiknQYkLrBGwWfUn3cCp3Btj5AAeqY7KKZw@mail.gmail.com>
-Subject: Re: [RFC 1/2] srcu: Remove comment about prior read lock counts
+Date:   Sun, 18 Dec 2022 16:30:33 -0500
+Message-ID: <CAEXW_YQHpz3dNqW1ocqjr-e9qn09Rkg4kQ19byZORGbO18Xckg@mail.gmail.com>
+Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
 To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
@@ -62,143 +61,63 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 Hi Mathieu,
-Thanks a lot for sharing details of side-rcu, I will review it over
-the holidays! I agree we can/should borrow from that implementation
-where possible. I replied to the comments below:
 
-On Sun, Dec 18, 2022 at 4:07 PM Mathieu Desnoyers
+On Sun, Dec 18, 2022 at 3:56 PM Mathieu Desnoyers
 <mathieu.desnoyers@efficios.com> wrote:
 >
 > On 2022-12-18 14:13, Joel Fernandes (Google) wrote:
-> > The comment says that if an updater saw lock count updates, then
-> > ensure the reader does not see the new srcu_idx.
+> > Hello, I believe the pre-flip memory barrier is not required. The only reason I
+> > can say to remove it, other than the possibility that it is unnecessary, is to
+> > not have extra code that does not help. However, since we are issuing a fully
+> > memory-barrier after the flip, I cannot say that it hurts to do it anyway.
 > >
-> > However, there is no memory barrier between a READER reading srcu_idx
-> > with respect to incrementing the lock count for that srcu_idx.
+> > For this reason, please consider these patches as "informational", than a
+> > "please merge". :-) Though, feel free to consider merging if you agree!
 > >
-> > So what is really happening is, both "B" and "C" will order the current
-> > reader's unlock count update, and the _next_ readers lock count update, with
-> > respect to the write to the currently active index.
-> >
-> > Consider first the case of the unlock count update being seen by the UPDATER:
-> >
-> > (for brevity, the pseudocode shortens "srcu_idx" to "idx")
-> >
-> > READER                            UPDATER
-> >
-> > rcu_read_lock() {
-> >      idx = READ(idx);
-> >      lock_count[idx]++;
-> >
-> >      smp_mb();    // B
-> > }
-> >                                  srcu_flip() {
-> >                                      smp_mb(); //E
-> >                                      idx++;
-> >                                      smp_mb();
-> >                                  }
-> > rcu_read_unlock() {
-> >      smp_mb();    // C
-> >      unlock_count[idx]++;
-> > }
-> >
-> > Consider that the updater saw the unlock count update, and due to this, we
-> > expect "E" to make sure that the reader only used the old srcu_idx.
-> >
-> > However, say the reader used the new srcu_idx because we dropped "E".  That is
-> > totally OK because both unlock and lock counts of this reader will negate each
-> > other during the next scan of the srcu_idx. So we don't have to guarantee at
-> > all that the reader used the old srcu_idx, that does not buy us anything
-> > because if it used the new one, we would just ignore it during the next scan
-> > anyway (the reader is "done").
-> >
-> > Now lets look at the following case:
-> >
-> > READER                            UPDATER
-> >
-> > rcu_read_lock() {
-> >      idx = READ(idx);
-> >      lock_count[idx]++;
-> >
-> >      smp_mb();    // B
-> > }
-> >
-> > rcu_read_unlock() {
-> >      smp_mb();    // C
-> >      unlock_count[idx]++;
-> > }
-> >                                  srcu_flip() {
-> >                                      smp_mb(); //E
-> >                                      idx++;
-> > rcu_read_lock() {
-> >      idx = READ(idx);
-> >      lock_count[idx]++;
-> >
-> >      smp_mb();    // B
-> >                                      smp_mb();
-> >                                  }
-> > }
-> >
-> > Consider that the updater saw the lock count update of the second
-> > rcu_read_lock(). It does not matter that we guarantee that the reader sees only
-> > the old srcu_idx. This is because, a reader could totally just sample
-> > srcu_idx, and stay preempted for long periods of time. So, during any scan, we
-> > already have the issue of a preempted-reader randomly springing up with a copy
-> > of the index which we consider the "new index". So guaranteeing that the reader
-> > saw the old srcu_idx instead of the new one if we saw its lock count updates,
-> > also does not buy us anything.
-> >
-> > Due to these reasons, drop the argument that the reader has to see a certain
-> > srcu_idx since we have no control over that anyway, and guaranteeing that does not
-> > buy us anything.
+> > All SRCU scenarios pass with these, with 6 hours of testing.
 >
-> I don't understand why this first patch only removes a comment about the
-> need to order things, when in fact it's the entire memory barrier /* E
-> */ that is useless.
+> Hi Joel,
 >
-> I suspect we should just remove the comment along with the barrier
-> without this added step.
+> Please have a look at the comments in my side-rcu implementation [1, 2].
+> It is similar to what SRCU does (per-cpu counter based grace period
+> tracking), but implemented for userspace. The comments explain why this
+> works without the memory barrier you identify as useless in SRCU.
+>
+> Following my implementation of side-rcu, I reviewed the SRCU comments
+> and identified that the barrier "/* E */" appears to be useless. I even
+> discussed this privately with Paul E. McKenney.
+>
+> My implementation and comments go further though, and skip the period
+> "flip" entirely if the first pass observes that all readers (in both
+> periods) are quiescent.
 
-Yes, this is what I do in patch 2/2. I just wanted to break it down
-because the change log would be too big otherwise. There were 2
-reasons given for the "E" memory barrier, so I split it into 2 patches
-for that reason so both patches can be discussed possibly separately.
-But no issues with squashing as well and merging change logs.
+Actually in SRCU, the first pass scans only 1 index, then does the
+flip, and the second pass scans the second index. Without doing a
+flip, an index cannot be scanned for forward progress reasons because
+it is still "active". So I am curious how you can skip flip and still
+scan both indexes? I will dig more into your implementation to learn more.
 
-> What SRCU fundamentally does is detect quiescence of all SRCU readers
-> between the beginning of the grace period and its completion. In order
-> to ensure forward progress, it does so in a two-phase algorithm. What
-> the grace period does to detect quiescence is to observe that each of
-> the periods (0/1) have no active reader at a given point in the grace
-> period.
+> The most relevant comment in side-rcu is:
+>
+>   * The grace period completes when it observes that there are no active
+>   * readers within each of the periods.
+>   *
+>   * The active_readers state is initially true for each period, until the
+>   * grace period observes that no readers are present for each given
+>   * period, at which point the active_readers state becomes false.
+>
+> So I agree with the clarifications you propose here, but I think we can
+> improve the grace period implementation further by clarifying the SRCU
+> grace period model.
 
-Yes agreed! By deactivating an index, it is possible to ensure new
-readers don't show up on the deactivated one, and so we are bound in
-scan time / forward progress. (Except for the special case where a
-reader was preempted after picking up the index, and then suddenly
-shows up in the scan).
-
-> Then the fact that the period is flipped to send new-coming
-> readers into a different period is just to ensure forward progress, and
-> is basically irrelevant (order-wise) with the fact that the grace period
-> scans both periods and validates that both periods are observed to have
-> no active readers.
-
-Yes.
-
-> I'd favor just clarifying the SRCU model in this way, and then remove
-> the useless barrier, and also implement improvements to the SRCU
-> algorithm and skip the "flip" entirely when we notice (early) that no
-> active readers are present in both periods. This is actually similar to
-> what I implemented in side-rcu.
-> Thoughts ?
-
-Agreed! Thanks so much for sharing this, and I will take a look on my
-side and study it. Interesting on that optimization to skip the flip!
+Thanks a lot, I am curious how you do the "detection of no new
+readers" part without globally doing some kind of synchronization. I
+will dig more into your implementation to learn more.
 
 Thanks,
 
  - Joel
+
 
 
 >
@@ -206,32 +125,24 @@ Thanks,
 >
 > Mathieu
 >
+>
+> [1] https://github.com/efficios/libside/blob/master/src/rcu.h
+> [2] https://github.com/efficios/libside/blob/master/src/rcu.c
+>
 > >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >   kernel/rcu/srcutree.c | 10 ++++------
-> >   1 file changed, 4 insertions(+), 6 deletions(-)
+> > thanks,
 > >
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 1c304fec89c0..d6a4c2439ca6 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -983,12 +983,10 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
-> >   static void srcu_flip(struct srcu_struct *ssp)
-> >   {
-> >       /*
-> > -      * Ensure that if this updater saw a given reader's increment
-> > -      * from __srcu_read_lock(), that reader was using an old value
-> > -      * of ->srcu_idx.  Also ensure that if a given reader sees the
-> > -      * new value of ->srcu_idx, this updater's earlier scans cannot
-> > -      * have seen that reader's increments (which is OK, because this
-> > -      * grace period need not wait on that reader).
-> > +      * Ensure that if a given reader sees the new value of ->srcu_idx, this
-> > +      * updater's earlier scans cannot have seen that reader's increments
-> > +      * (which is OK, because this grace period need not wait on that
-> > +      * reader).
-> >        */
-> >       smp_mb(); /* E */  /* Pairs with B and C. */
+> >   - Joel
+> >
+> > Joel Fernandes (Google) (2):
+> > srcu: Remove comment about prior read lock counts
+> > srcu: Remove memory barrier "E" as it is not required
+> >
+> > kernel/rcu/srcutree.c | 10 ----------
+> > 1 file changed, 10 deletions(-)
+> >
+> > --
+> > 2.39.0.314.g84b9a713c41-goog
 > >
 >
 > --
