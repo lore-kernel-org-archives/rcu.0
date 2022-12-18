@@ -2,147 +2,88 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C634C4332F
-	for <rcu@archiver.kernel.org>; Sun, 18 Dec 2022 18:30:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0536C10F1E
+	for <rcu@archiver.kernel.org>; Sun, 18 Dec 2022 19:13:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbiLRSaG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 18 Dec 2022 13:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
+        id S229611AbiLRTNT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 18 Dec 2022 14:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbiLRS33 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 18 Dec 2022 13:29:29 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A668110F2;
-        Sun, 18 Dec 2022 10:06:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 65E74B80ACD;
-        Sun, 18 Dec 2022 18:06:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1847FC433EF;
-        Sun, 18 Dec 2022 18:06:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671386799;
-        bh=+4b8SHIncr61S7nWnckzDHjes+eO28WU/zoZBZUfYIc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=X1pzg+BWsZgY6ueR9PUtwbTVDU5BouRHuV7TP2e4StpCRs1EmPGAaiLbZOiZQl8gf
-         oEXvk4oqhy/NzRVsuDySFEo8pJcSgkfhJyiGrCGSHHMPF+g21ggm+sX4tUHo2k6JGY
-         8ULptkkc5GxqsBh4NtIGXGEiNfcpe/7n1a8yMpYzjkXbDDvxzxFxdunFmriGB6l/G7
-         yu67/Yu8dwBKocEIcgr1cGJ2M2BWQ6nnPLsjivQCP0XvQhboGZu3kP/g3SWbPhm6IK
-         sq96U4ZbW4jHni6JMozP+DairwijYeWW9Ykz22yLgtC0mmoWucg4xbVFUR1lmeYpBf
-         NrxQ8yVBhBYww==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A8CFC5C0A43; Sun, 18 Dec 2022 10:06:38 -0800 (PST)
-Date:   Sun, 18 Dec 2022 10:06:38 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Fix opposite might_sleep() check in
- rcu_blocking_is_gp()
-Message-ID: <20221218180638.GR4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221215035755.2820163-1-qiang1.zhang@intel.com>
- <20221217010345.GF4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880526CB255AFF91F0D76A2DAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
- <PH0PR11MB588000890D537044BBAA209EDAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20221217051759.GK4001@paulmck-ThinkPad-P17-Gen-1>
- <Y550Z+MOq1IX3Wb4@google.com>
+        with ESMTP id S230383AbiLRTNS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 18 Dec 2022 14:13:18 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80075B860
+        for <rcu@vger.kernel.org>; Sun, 18 Dec 2022 11:13:17 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id bw27so4669269qtb.3
+        for <rcu@vger.kernel.org>; Sun, 18 Dec 2022 11:13:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6wBQIku0dQkyfB58N1D5s2KPLrixlbfwvdwL9dUxK98=;
+        b=lroTRSYT+lpaoGdLTvSe0vNJT4ct3IB3eeOKCL3YQRvVP5j2VrdsOPUcLi8fN4+xcQ
+         tqx9I1ei9F8C2t0E6UYlk4BJAjVqoiJuWOBCAE31g+550nlQkhBhVROKlRx+VoNaGB/1
+         bWNL2XgieQGjgcDJbwvxzTqS2q3XrhB/3WDXQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6wBQIku0dQkyfB58N1D5s2KPLrixlbfwvdwL9dUxK98=;
+        b=NHtAjD2tQI9d/vz9Y6B1AkzybvY4Ep+bMXe4Q6H7cgLNloofIZQM4FgBgnCwt9fQph
+         dk6jiDTA05T5XMPvl5KO6RWiXojO1CdFbj2ss5uddPv+z93rjW5D9VP3xAfilv8QkK8z
+         9TwhPikPtfUbmwH36+djEUf1I0U+Oe6l/VP3aWiTegP8fcXzhwYc0mKVmMvZ6UQRYaRQ
+         IuxpF57Tl7Q/EhvM80PqcKdRSZSOQ2QKnocHeGuHjz+3d5Ur8X57iEdO+dpXbVGjbKcI
+         zHbYp3HDtR5I9MhcR/XqJJU0aOxHUd8JVlXRfDwcBfzzvZRbJAEa2ZzKSFS/Da0o5Gbx
+         sPCg==
+X-Gm-Message-State: ANoB5plaejCPpL3v/7tydiv83wQk8Md2N1E9TjfUonQ5B9SpZ5WXETVd
+        o0fYH4fwlxLz/pfghbn1k5wlhw==
+X-Google-Smtp-Source: AA0mqf7J6UsYdtU3I+7qCCh94ebdBJCmtFyROhsopD/KPQRuOlbhn8h1ckK0lufGxdBXEQVLb6pAww==
+X-Received: by 2002:ac8:1019:0:b0:39c:da20:683 with SMTP id z25-20020ac81019000000b0039cda200683mr46753016qti.38.1671390796655;
+        Sun, 18 Dec 2022 11:13:16 -0800 (PST)
+Received: from joelboxx.c.googlers.com.com (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id cq8-20020a05622a424800b003a591194221sm4952864qtb.7.2022.12.18.11.13.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Dec 2022 11:13:15 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [RFC 0/2] srcu: Remove pre-flip memory barrier
+Date:   Sun, 18 Dec 2022 19:13:07 +0000
+Message-Id: <20221218191310.130904-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y550Z+MOq1IX3Wb4@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Dec 18, 2022 at 02:01:11AM +0000, Joel Fernandes wrote:
-> On Fri, Dec 16, 2022 at 09:17:59PM -0800, Paul E. McKenney wrote:
-> > On Sat, Dec 17, 2022 at 02:44:47AM +0000, Zhang, Qiang1 wrote:
-> > > 
-> > > On Thu, Dec 15, 2022 at 11:57:55AM +0800, Zqiang wrote:
-> > > > Currently, if the system is in the RCU_SCHEDULER_INACTIVE state, invoke
-> > > > synchronize_rcu_*() will implies a grace period and return directly,
-> > > > so there is no sleep action due to waiting for a grace period to end,
-> > > > but this might_sleep() check is the opposite. therefore, this commit
-> > > > puts might_sleep() check in the correct palce.
-> > > > 
-> > > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > > >
-> > > >Queued for testing and review, thank you!
-> > > >
-> > > >I was under the impression that might_sleep() did some lockdep-based
-> > > >checking, but I am unable to find it.  If there really is such checking,
-> > > >that would be a potential argument for leaving this code as it is.
-> > > >
-> > > >
-> > > >__might_sleep
-> > > >   __might_resched(file, line, 0)
-> > > >      rcu_sleep_check()
-> > > >
-> > > >Does it refer to this rcu_sleep_check() ?
-> > > >
-> > > >If so, when in the RCU_SCHEDULER_INACTIVE state,  the debug_lockdep_rcu_enabled() is always
-> > > >return false, so the RCU_LOCKDEP_WARN() also does not produce an actual warning.
-> > > 
-> > > and when the system_state == SYSTEM_BOOTING, we just did  rcu_sleep_check()  and then  return.
-> > 
-> > Very good, thank you!
-> > 
-> > Thoughts from others?
-> 
-> Please consider this as a best-effort comment that might be missing details:
-> 
-> The might_sleep() was added in 18fec7d8758d ("rcu: Improve synchronize_rcu()
-> diagnostics")
-> 
-> Since it is illegal to call a blocking API like synchronize_rcu() in a
-> non-preemptible section, is there any harm in just calling might_sleep()
-> uncomditionally in rcu_block_is_gp() ? I think it is a bit irrelevant if
-> synchronize_rcu() is called from a call path, before scheduler is
-> initialized, or after. The fact that it was even called from a
-> non-preemptible section is a red-flag, considering if such non-preemptible
-> section may call synchronize_rcu() API in the future, after full boot up,
-> even if rarely.
-> 
-> For this reason, IMHO there is still value in doing the might_sleep() check
-> unconditionally. Say if a common code path is invoked both before
-> RCU_SCHEDULER_INIT and *very rarely* after RCU_SCHEDULER_INIT.
-> 
-> Or is there more of a point in doing this check if scheduler is initialized
-> from RCU perspective ?
+Hello, I believe the pre-flip memory barrier is not required. The only reason I
+can say to remove it, other than the possibility that it is unnecessary, is to
+not have extra code that does not help. However, since we are issuing a fully
+memory-barrier after the flip, I cannot say that it hurts to do it anyway.
 
-One advantage of its current placement would be if might_sleep() ever
-unconditionally checks for interrupts being disabled.
+For this reason, please consider these patches as "informational", than a
+"please merge". :-) Though, feel free to consider merging if you agree!
 
-I don't believe that might_sleep() will do that any time soon given the
-likely fallout from code invoked at early boot as well as from runtime,
-but why be in the way of that additional diagnostic check?
+All SRCU scenarios pass with these, with 6 hours of testing.
 
-							Thanx, Paul
+thanks,
 
-> If not, I would do something like this:
-> 
-> ---8<-----------------------
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 79aea7df4345..23c2303de9f4 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3435,11 +3435,12 @@ static int rcu_blocking_is_gp(void)
->  {
->  	int ret;
->  
-> +	might_sleep();  /* Check for RCU read-side critical section. */
-> +
->  	// Invoking preempt_model_*() too early gets a splat.
->  	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE ||
->  	    preempt_model_full() || preempt_model_rt())
->  		return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
-> -	might_sleep();  /* Check for RCU read-side critical section. */
->  	preempt_disable();
->  	/*
->  	 * If the rcu_state.n_online_cpus counter is equal to one,
+ - Joel
+
+Joel Fernandes (Google) (2):
+srcu: Remove comment about prior read lock counts
+srcu: Remove memory barrier "E" as it is not required
+
+kernel/rcu/srcutree.c | 10 ----------
+1 file changed, 10 deletions(-)
+
+--
+2.39.0.314.g84b9a713c41-goog
+
