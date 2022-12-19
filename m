@@ -2,319 +2,450 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30448C4167B
-	for <rcu@archiver.kernel.org>; Mon, 19 Dec 2022 20:30:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AB50C3DA7C
+	for <rcu@archiver.kernel.org>; Mon, 19 Dec 2022 20:30:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbiLSUaT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Dec 2022 15:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49480 "EHLO
+        id S232507AbiLSUaW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Dec 2022 15:30:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbiLSUaD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S232635AbiLSUaD (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 19 Dec 2022 15:30:03 -0500
 Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C989767F;
-        Mon, 19 Dec 2022 12:29:58 -0800 (PST)
-Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJJoue0011960;
-        Mon, 19 Dec 2022 20:29:43 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1B39582;
+        Mon, 19 Dec 2022 12:29:59 -0800 (PST)
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJJOigi017410;
+        Mon, 19 Dec 2022 20:29:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pps0720;
- bh=sM4Tumpims+OtpD2j4ymbG2RWDwxkOit/SUN90kBxjg=;
- b=TBtBjm9J4r239rCE2d4UwtxqNvr0bo5JjAMWCkE1jOJDPAp2NCP45L7TJDhpBav/Z+0f
- 5f1xDFM9O6wY3HIDpgal3YZ1O8VFsW/r3OOw02Xg77qp9B7iwOSXpPlxj8EulsGC6xOO
- CzFM6WfIgG/tS3ujUCqxnNAZHo/mRAyaTvQ5BnbXUQXB3PZKVmkhqolWBVRVnkldjURw
- N1+NYQaxDixTMQMvodCizrU7+MZU2HHxZKn9tJ/9zKP70JYfzhn4x/ULUCiwNY7qlVlN
- atzmQWYyIxZQWZZHBASuWKbGvxB4f9eYa5zvzM2H5H8SHZiiDMKfj2gEZDHLwyvMwHlj dA== 
-Received: from p1lg14881.it.hpe.com (p1lg14881.it.hpe.com [16.230.97.202])
-        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3mjx3mrdjp-1
+ bh=0ROCRnzk94uQKB9hFXedgn0T1ir63wjm+lzksBC+x48=;
+ b=YEH+2sfquvZx5fwJcv47RHK/ljj/7a87XAzyJW/gr65VyWvBBA4TcvfdV4a6Wdq6fibe
+ zq0drfo0z6RT835kNfy4qAlZ+IYBRJRFCDgHZsowTth0UBNKeU/TfWMUnvsepSeOR+s5
+ AFM3fDuacsMCcSok09+E94hGLJaqZrQ6eXhZl9TaUYxVHKRa8Ya/FOolBYUoGs3Xa6Iw
+ hgV2iyud08nD6sXrnf84uVOUnLxpsywNYyjVBvAT/fJoQurCQwIjHO8YYYPAw5gJHVkg
+ YggKt4AXboVPkDKoPlp4izRkTob1jpmX2S/w9JGSaqVVS4stggbkVz2cJ2PtWcMKeffh AQ== 
+Received: from p1lg14879.it.hpe.com (p1lg14879.it.hpe.com [16.230.97.200])
+        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3mjx3b0d4m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Dec 2022 20:29:43 +0000
+        Mon, 19 Dec 2022 20:29:45 +0000
 Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 5C2E2800EC3;
-        Mon, 19 Dec 2022 20:29:42 +0000 (UTC)
+        by p1lg14879.it.hpe.com (Postfix) with ESMTPS id BBBD64AC60;
+        Mon, 19 Dec 2022 20:29:44 +0000 (UTC)
 Received: from adevxp033-sys.us.rdlabs.hpecorp.net (unknown [16.231.227.36])
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id E05168064A8;
-        Mon, 19 Dec 2022 20:29:41 +0000 (UTC)
+        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id 49DAE8064BE;
+        Mon, 19 Dec 2022 20:29:44 +0000 (UTC)
 From:   Robert Elliott <elliott@hpe.com>
 To:     herbert@gondor.apana.org.au, davem@davemloft.net,
         paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
         josh@joshtriplett.org
 Cc:     linux-crypto@vger.kernel.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, Robert Elliott <elliott@hpe.com>
-Subject: [PATCH 1/3] rcu: genericize RCU stall suppression functions
-Date:   Mon, 19 Dec 2022 14:29:08 -0600
-Message-Id: <20221219202910.3063036-2-elliott@hpe.com>
+Subject: [PATCH 3/3] crypto: tcrypt - suppress RCU stall warnings during speed tests
+Date:   Mon, 19 Dec 2022 14:29:10 -0600
+Message-Id: <20221219202910.3063036-4-elliott@hpe.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221219202910.3063036-1-elliott@hpe.com>
 References: <20221219202910.3063036-1-elliott@hpe.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: _DWClsvXR85ZUkNJB2RiHeq_UM1-A9eC
-X-Proofpoint-ORIG-GUID: _DWClsvXR85ZUkNJB2RiHeq_UM1-A9eC
+X-Proofpoint-ORIG-GUID: b8j5S8cYNvBcF4NRwQ6rkCjGZ592I-ZJ
+X-Proofpoint-GUID: b8j5S8cYNvBcF4NRwQ6rkCjGZ592I-ZJ
 X-HPE-SCL: -1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-19_01,2022-12-15_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- clxscore=1015 suspectscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212190180
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ clxscore=1015 impostorscore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2212190180
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Convert the functions that temporarily suppress RCU CPU
-stall reporting:
-	rcu_sysrq_start()
-	rcu_sysrq_end()
+Suppress RCU CPU stall warnings while running speed tests.
 
-to more generic functions that may be called by functions
-other than the SysRq handler:
-	rcu_suppress_start()
-	rcu_suppress_end()
+The tcrypt module is intended only for developer usage, so
+RCU stalls induced by those tests are not necessarily representative
+of real problems.
 
-Covert the underlying variable:
-	rcu_cpu_stall_suppress
+Speed tests need to disable interrupts or preemption to get results
+that are not distorted by such interruptions. This triggers more
+RCU stalls than normal invocations of the crypto functions.
 
-to an atomic variable so multiple threads can manipulate it at the
-same time, incrementing it in start() and decrementing in end().
-
-Expose that in sysfs in a read-only
-	/sys/module/rcupdate/parameters/rcu_cpu_stall_suppress_dyn
-
-Keep
-	/sys/module/rcupdate/parameters/rcu_cpu_stall_suppress
-as writeable by userspace, but OR that into the equations rather than
-directly manipulate the atomic value.
+If an RCU stall is triggered and reported, the time to print to the
+console distorts the speed results.
 
 Signed-off-by: Robert Elliott <elliott@hpe.com>
 ---
- .../RCU/Design/Requirements/Requirements.rst  |  6 +++---
- Documentation/RCU/stallwarn.rst               | 19 +++++++++++++++----
- arch/parisc/kernel/process.c                  |  2 +-
- drivers/tty/sysrq.c                           |  4 ++--
- include/linux/rcupdate.h                      |  8 ++++----
- kernel/rcu/rcu.h                              | 11 ++++++-----
- kernel/rcu/tree_stall.h                       | 18 ++++++++++--------
- kernel/rcu/update.c                           | 11 ++++++++++-
- 8 files changed, 51 insertions(+), 28 deletions(-)
+ crypto/tcrypt.c | 113 ++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 94 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 49387d823619..5083490bb6fc 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -1639,9 +1639,9 @@ against mishaps and misuse:
-    ``rcupdate.rcu_cpu_stall_suppress`` to suppress the splats. This
-    kernel parameter may also be set via ``sysfs``. Furthermore, RCU CPU
-    stall warnings are counter-productive during sysrq dumps and during
--   panics. RCU therefore supplies the rcu_sysrq_start() and
--   rcu_sysrq_end() API members to be called before and after long
--   sysrq dumps. RCU also supplies the rcu_panic() notifier that is
-+   panics. RCU therefore supplies the rcu_suppress_start() and
-+   rcu_suppress_end() API members to be called before and after long
-+   CPU usage. RCU also supplies the rcu_panic() notifier that is
-    automatically invoked at the beginning of a panic to suppress further
-    RCU CPU stall warnings.
+diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+index 8645e72a7099..3e9e4adeef02 100644
+--- a/crypto/tcrypt.c
++++ b/crypto/tcrypt.c
+@@ -27,6 +27,7 @@
+ #include <linux/init.h>
+ #include <linux/gfp.h>
+ #include <linux/module.h>
++#include <linux/rcupdate.h>
+ #include <linux/scatterlist.h>
+ #include <linux/string.h>
+ #include <linux/moduleparam.h>
+@@ -191,12 +192,16 @@ static int test_mb_aead_jiffies(struct test_mb_aead_data *data, int enc,
+ 	if (!rc)
+ 		return -ENOMEM;
  
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index e38c587067fc..9e6fba72f56d 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -135,13 +135,24 @@ see include/trace/events/rcu.h.
- Fine-Tuning the RCU CPU Stall Detector
- ======================================
- 
--The rcuupdate.rcu_cpu_stall_suppress module parameter disables RCU's
--CPU stall detector, which detects conditions that unduly delay RCU grace
--periods.  This module parameter enables CPU stall detection by default,
--but may be overridden via boot-time parameter or at runtime via sysfs.
-+RCU's CPU stall detector detects conditions that unduly delay RCU grace
-+periods.  CPU stall detection is enabled by default, but may be overridden
-+via boot-time parameter or at runtime via sysfs (accessible via
-+/sys/module/rcupdate/parameters).
-+
-+The rcupdate.rcu_cpu_stall_suppress module parameter disables RCU's
-+CPU stall detector.
-+
-+/sys/module/rcu_cpu_stall_suppress_dyn reports an internal semaphore
-+used by the RCU's CPU stall detector. Functions holding a CPU for a
-+long time (e.g., sysrq printouts) increment this value before use
-+and decrement it when done, so the value reports the number of
-+functions currently disabling stalls.
-+
- The stall detector's idea of what constitutes "unduly delayed" is
- controlled by a set of kernel configuration variables and cpp macros:
- 
-+
- CONFIG_RCU_CPU_STALL_TIMEOUT
- ----------------------------
- 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index c4f8374c7018..038378fe7bfa 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -126,7 +126,7 @@ void machine_power_off(void)
- 	       "Please power this system off now.");
- 
- 	/* prevent soft lockup/stalled CPU messages for endless loop. */
--	rcu_sysrq_start();
 +	rcu_suppress_start();
- 	lockup_detector_soft_poweroff();
- 	for (;;);
- }
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index d2b2720db6ca..81ab63a473a7 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -579,7 +579,7 @@ void __handle_sysrq(int key, bool check_mask)
- 	orig_suppress_printk = suppress_printk;
- 	suppress_printk = 0;
- 
--	rcu_sysrq_start();
-+	rcu_suppress_start();
- 	rcu_read_lock();
- 	/*
- 	 * Raise the apparent loglevel to maximum so that the sysrq header
-@@ -623,7 +623,7 @@ void __handle_sysrq(int key, bool check_mask)
- 		console_loglevel = orig_log_level;
+ 	for (start = jiffies, end = start + secs * HZ, bcount = 0;
+ 	     time_before(jiffies, end); bcount++) {
+ 		ret = do_mult_aead_op(data, enc, num_mb, rc, prefix);
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
  	}
- 	rcu_read_unlock();
--	rcu_sysrq_end();
 +	rcu_suppress_end();
  
- 	suppress_printk = orig_suppress_printk;
- }
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 03abf883a281..c0d8a4aae7ff 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -131,11 +131,11 @@ static inline void rcu_init_tasks_generic(void) { }
- #endif
+ 	pr_info("%s %8d operations in %d seconds (%12llu bytes)\n",
+ 		prefix, bcount * num_mb, secs, (u64)bcount * blen * num_mb);
+@@ -218,19 +223,25 @@ static int test_mb_aead_cycles(struct test_mb_aead_data *data, int enc,
+ 		return -ENOMEM;
  
- #ifdef CONFIG_RCU_STALL_COMMON
--void rcu_sysrq_start(void);
--void rcu_sysrq_end(void);
-+void rcu_suppress_start(void);
-+void rcu_suppress_end(void);
- #else /* #ifdef CONFIG_RCU_STALL_COMMON */
--static inline void rcu_sysrq_start(void) { }
--static inline void rcu_sysrq_end(void) { }
-+static inline void rcu_suppress_start(void) { }
-+static inline void rcu_suppress_end(void) { }
- #endif /* #else #ifdef CONFIG_RCU_STALL_COMMON */
+ 	/* Warm-up run. */
++	rcu_suppress_start();
+ 	for (i = 0; i < 4; i++) {
+ 		ret = do_mult_aead_op(data, enc, num_mb, rc, prefix);
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 	}
++	rcu_suppress_end();
  
- #if defined(CONFIG_NO_HZ_FULL) && (!defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK))
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index c5aa934de59b..a658955a1174 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -224,24 +224,25 @@ extern int rcu_cpu_stall_ftrace_dump;
- extern int rcu_cpu_stall_suppress;
- extern int rcu_cpu_stall_timeout;
- extern int rcu_exp_cpu_stall_timeout;
-+extern atomic_t rcu_cpu_stall_suppress_dyn;
- int rcu_jiffies_till_stall_check(void);
- int rcu_exp_jiffies_till_stall_check(void);
+ 	/* The real thing. */
+ 	for (i = 0; i < 8; i++) {
+ 		cycles_t start, end;
  
- static inline bool rcu_stall_is_suppressed(void)
- {
--	return rcu_stall_is_suppressed_at_boot() || rcu_cpu_stall_suppress;
-+	return rcu_stall_is_suppressed_at_boot() ||
-+	       rcu_cpu_stall_suppress ||
-+	       atomic_read(&rcu_cpu_stall_suppress_dyn);
- }
++		rcu_suppress_start();
+ 		start = get_cycles();
+ 		ret = do_mult_aead_op(data, enc, num_mb, rc, prefix);
+ 		end = get_cycles();
++		rcu_suppress_end();
  
- #define rcu_ftrace_dump_stall_suppress() \
- do { \
--	if (!rcu_cpu_stall_suppress) \
--		rcu_cpu_stall_suppress = 3; \
-+	atomic_inc(&rcu_cpu_stall_suppress_dyn); \
- } while (0)
+ 		if (ret)
+ 			goto out;
+@@ -470,6 +481,7 @@ static int test_aead_jiffies(struct aead_request *req, int enc,
+ 	int bcount;
+ 	int ret;
  
- #define rcu_ftrace_dump_stall_unsuppress() \
- do { \
--	if (rcu_cpu_stall_suppress == 3) \
--		rcu_cpu_stall_suppress = 0; \
-+	atomic_dec(&rcu_cpu_stall_suppress_dyn); \
- } while (0)
++	rcu_suppress_start();
+ 	for (start = jiffies, end = start + secs * HZ, bcount = 0;
+ 	     time_before(jiffies, end); bcount++) {
+ 		if (enc)
+@@ -477,9 +489,12 @@ static int test_aead_jiffies(struct aead_request *req, int enc,
+ 		else
+ 			ret = do_one_aead_op(req, crypto_aead_decrypt(req));
  
- #else /* #endif #ifdef CONFIG_RCU_STALL_COMMON */
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 5653560573e2..260748bc5bc8 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -103,23 +103,25 @@ bool rcu_gp_might_be_stalled(void)
- 	return !time_before(j, READ_ONCE(rcu_state.gp_start) + d);
- }
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			return ret;
++		}
+ 	}
++	rcu_suppress_end();
  
--/* Don't do RCU CPU stall warnings during long sysrq printouts. */
--void rcu_sysrq_start(void)
-+/* Don't do RCU CPU stall warnings during functions holding the CPU
-+ * for a long period of time such as long sysrq printouts.
-+ */
-+void rcu_suppress_start(void)
- {
--	if (!rcu_cpu_stall_suppress)
--		rcu_cpu_stall_suppress = 2;
-+	atomic_inc(&rcu_cpu_stall_suppress_dyn);
- }
-+EXPORT_SYMBOL_GPL(rcu_suppress_start);
+ 	pr_info("%s %8d operations in %d seconds (%12llu bytes)\n",
+ 	        prefix, bcount, secs, (u64)bcount * blen);
+@@ -494,26 +509,32 @@ static int test_aead_cycles(struct aead_request *req, int enc,
+ 	int i;
  
--void rcu_sysrq_end(void)
-+void rcu_suppress_end(void)
- {
--	if (rcu_cpu_stall_suppress == 2)
--		rcu_cpu_stall_suppress = 0;
-+	atomic_dec(&rcu_cpu_stall_suppress_dyn);
- }
-+EXPORT_SYMBOL_GPL(rcu_suppress_end);
+ 	/* Warm-up run. */
++	rcu_suppress_start();
+ 	for (i = 0; i < 4; i++) {
+ 		if (enc)
+ 			ret = do_one_aead_op(req, crypto_aead_encrypt(req));
+ 		else
+ 			ret = do_one_aead_op(req, crypto_aead_decrypt(req));
  
- /* Don't print RCU CPU stall warnings during a kernel panic. */
- static int rcu_panic(struct notifier_block *this, unsigned long ev, void *ptr)
- {
--	rcu_cpu_stall_suppress = 1;
-+	atomic_inc(&rcu_cpu_stall_suppress_dyn);
- 	return NOTIFY_DONE;
- }
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 	}
++	rcu_suppress_end();
  
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index f5e6a2f95a2a..ceee9d777384 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -501,11 +501,18 @@ EXPORT_SYMBOL_GPL(rcutorture_sched_setaffinity);
- #ifdef CONFIG_RCU_STALL_COMMON
- int rcu_cpu_stall_ftrace_dump __read_mostly;
- module_param(rcu_cpu_stall_ftrace_dump, int, 0644);
--int rcu_cpu_stall_suppress __read_mostly; // !0 = suppress stall warnings.
-+
-+int rcu_cpu_stall_suppress __read_mostly; // !0 = suppress stall warnings from sysfs
- EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress);
- module_param(rcu_cpu_stall_suppress, int, 0644);
-+
-+atomic_t rcu_cpu_stall_suppress_dyn __read_mostly; // !0 = suppress stall warnings from functions
-+EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress_dyn);
-+module_param_named(rcu_cpu_stall_suppress_dyn, rcu_cpu_stall_suppress_dyn.counter, int, 0444);
-+
- int rcu_cpu_stall_timeout __read_mostly = CONFIG_RCU_CPU_STALL_TIMEOUT;
- module_param(rcu_cpu_stall_timeout, int, 0644);
-+
- int rcu_exp_cpu_stall_timeout __read_mostly = CONFIG_RCU_EXP_CPU_STALL_TIMEOUT;
- module_param(rcu_exp_cpu_stall_timeout, int, 0644);
- #endif /* #ifdef CONFIG_RCU_STALL_COMMON */
-@@ -616,6 +623,8 @@ void __init rcupdate_announce_bootup_oddness(void)
- 		pr_info("\tAll grace periods are expedited (rcu_expedited).\n");
- 	if (rcu_cpu_stall_suppress)
- 		pr_info("\tRCU CPU stall warnings suppressed (rcu_cpu_stall_suppress).\n");
-+	if (atomic_read(&rcu_cpu_stall_suppress_dyn))
-+		pr_info("\tDynamic RCU CPU stall warnings suppressed (rcu_cpu_stall_suppress_dyn).\n");
- 	if (rcu_cpu_stall_timeout != CONFIG_RCU_CPU_STALL_TIMEOUT)
- 		pr_info("\tRCU CPU stall warnings timeout set to %d (rcu_cpu_stall_timeout).\n", rcu_cpu_stall_timeout);
- 	rcu_tasks_bootup_oddness();
+ 	/* The real thing. */
+ 	for (i = 0; i < 8; i++) {
+ 		cycles_t start, end;
+ 
++		rcu_suppress_start();
+ 		start = get_cycles();
+ 		if (enc)
+ 			ret = do_one_aead_op(req, crypto_aead_encrypt(req));
+ 		else
+ 			ret = do_one_aead_op(req, crypto_aead_decrypt(req));
+ 		end = get_cycles();
++		rcu_suppress_end();
+ 
+ 		if (ret)
+ 			goto out;
+@@ -746,12 +767,16 @@ static int test_ahash_jiffies_digest(struct ahash_request *req, int blen,
+ 	int bcount;
+ 	int ret;
+ 
++	rcu_suppress_start();
+ 	for (start = jiffies, end = start + secs * HZ, bcount = 0;
+ 	     time_before(jiffies, end); bcount++) {
+ 		ret = do_one_ahash_op(req, crypto_ahash_digest(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			return ret;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	pr_info("%s %6u opers/sec, %9lu bytes/sec\n",
+ 	       prefix, bcount / secs, ((long)bcount * blen) / secs);
+@@ -769,21 +794,29 @@ static int test_ahash_jiffies(struct ahash_request *req, int blen,
+ 	if (plen == blen)
+ 		return test_ahash_jiffies_digest(req, blen, secs, prefix);
+ 
++	rcu_suppress_start();
+ 	for (start = jiffies, end = start + secs * HZ, bcount = 0;
+ 	     time_before(jiffies, end); bcount++) {
+ 		ret = do_one_ahash_op(req, crypto_ahash_init(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			return ret;
++		}
+ 		for (pcount = 0; pcount < blen; pcount += plen) {
+ 			ret = do_one_ahash_op(req, crypto_ahash_update(req));
+-			if (ret)
++			if (ret) {
++				rcu_suppress_end();
+ 				return ret;
++			}
+ 		}
+ 
+ 		ret = do_one_ahash_op(req, crypto_ahash_final(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			return ret;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	pr_info("%s %6u opers/sec, %9lu bytes/sec\n",
+ 		prefix, bcount / secs, ((long)bcount * blen) / secs);
+@@ -798,23 +831,31 @@ static int test_ahash_cycles_digest(struct ahash_request *req, int blen,
+ 	int ret, i;
+ 
+ 	/* Warm-up run. */
++	rcu_suppress_start();
+ 	for (i = 0; i < 4; i++) {
+ 		ret = do_one_ahash_op(req, crypto_ahash_digest(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	/* The real thing. */
+ 	for (i = 0; i < 8; i++) {
+ 		cycles_t start, end;
+ 
++		rcu_suppress_start();
+ 		start = get_cycles();
+ 
+ 		ret = do_one_ahash_op(req, crypto_ahash_digest(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 
+ 		end = get_cycles();
++		rcu_suppress_end();
+ 
+ 		cycles += end - start;
+ 	}
+@@ -839,24 +880,33 @@ static int test_ahash_cycles(struct ahash_request *req, int blen,
+ 		return test_ahash_cycles_digest(req, blen, prefix);
+ 
+ 	/* Warm-up run. */
++	rcu_suppress_start();
+ 	for (i = 0; i < 4; i++) {
+ 		ret = do_one_ahash_op(req, crypto_ahash_init(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 		for (pcount = 0; pcount < blen; pcount += plen) {
+ 			ret = do_one_ahash_op(req, crypto_ahash_update(req));
+-			if (ret)
++			if (ret) {
++				rcu_suppress_end();
+ 				goto out;
++			}
+ 		}
+ 		ret = do_one_ahash_op(req, crypto_ahash_final(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	/* The real thing. */
+ 	for (i = 0; i < 8; i++) {
+ 		cycles_t start, end;
+ 
++		rcu_suppress_start();
+ 		start = get_cycles();
+ 
+ 		ret = do_one_ahash_op(req, crypto_ahash_init(req));
+@@ -864,14 +914,19 @@ static int test_ahash_cycles(struct ahash_request *req, int blen,
+ 			goto out;
+ 		for (pcount = 0; pcount < blen; pcount += plen) {
+ 			ret = do_one_ahash_op(req, crypto_ahash_update(req));
+-			if (ret)
++			if (ret) {
++				rcu_suppress_end();
+ 				goto out;
++			}
+ 		}
+ 		ret = do_one_ahash_op(req, crypto_ahash_final(req));
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 
+ 		end = get_cycles();
++		rcu_suppress_end();
+ 
+ 		cycles += end - start;
+ 	}
+@@ -1039,12 +1094,16 @@ static int test_mb_acipher_jiffies(struct test_mb_skcipher_data *data, int enc,
+ 	if (!rc)
+ 		return -ENOMEM;
+ 
++	rcu_suppress_start();
+ 	for (start = jiffies, end = start + secs * HZ, bcount = 0;
+ 	     time_before(jiffies, end); bcount++) {
+ 		ret = do_mult_acipher_op(data, enc, num_mb, rc, prefix);
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	pr_info("%s %8d operations in %d seconds (%12llu bytes)\n",
+ 		prefix, bcount * num_mb, secs, (u64)bcount * blen * num_mb);
+@@ -1066,19 +1125,25 @@ static int test_mb_acipher_cycles(struct test_mb_skcipher_data *data, int enc,
+ 		return -ENOMEM;
+ 
+ 	/* Warm-up run. */
++	rcu_suppress_start();
+ 	for (i = 0; i < 4; i++) {
+ 		ret = do_mult_acipher_op(data, enc, num_mb, rc, prefix);
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	/* The real thing. */
+ 	for (i = 0; i < 8; i++) {
+ 		cycles_t start, end;
+ 
++		rcu_suppress_start();
+ 		start = get_cycles();
+ 		ret = do_mult_acipher_op(data, enc, num_mb, rc, prefix);
+ 		end = get_cycles();
++		rcu_suppress_end();
+ 
+ 		if (ret)
+ 			goto out;
+@@ -1270,6 +1335,7 @@ static int test_acipher_jiffies(struct skcipher_request *req, int enc,
+ 	int bcount;
+ 	int ret;
+ 
++	rcu_suppress_start();
+ 	for (start = jiffies, end = start + secs * HZ, bcount = 0;
+ 	     time_before(jiffies, end); bcount++) {
+ 		if (enc)
+@@ -1279,9 +1345,12 @@ static int test_acipher_jiffies(struct skcipher_request *req, int enc,
+ 			ret = do_one_acipher_op(req,
+ 						crypto_skcipher_decrypt(req));
+ 
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			return ret;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	pr_info("%s %8d operations in %d seconds (%12llu bytes)\n",
+ 		prefix, bcount, secs, (u64)bcount * blen);
+@@ -1296,6 +1365,7 @@ static int test_acipher_cycles(struct skcipher_request *req, int enc,
+ 	int i;
+ 
+ 	/* Warm-up run. */
++	rcu_suppress_start();
+ 	for (i = 0; i < 4; i++) {
+ 		if (enc)
+ 			ret = do_one_acipher_op(req,
+@@ -1304,14 +1374,18 @@ static int test_acipher_cycles(struct skcipher_request *req, int enc,
+ 			ret = do_one_acipher_op(req,
+ 						crypto_skcipher_decrypt(req));
+ 
+-		if (ret)
++		if (ret) {
++			rcu_suppress_end();
+ 			goto out;
++		}
+ 	}
++	rcu_suppress_end();
+ 
+ 	/* The real thing. */
+ 	for (i = 0; i < 8; i++) {
+ 		cycles_t start, end;
+ 
++		rcu_suppress_start();
+ 		start = get_cycles();
+ 		if (enc)
+ 			ret = do_one_acipher_op(req,
+@@ -1320,6 +1394,7 @@ static int test_acipher_cycles(struct skcipher_request *req, int enc,
+ 			ret = do_one_acipher_op(req,
+ 						crypto_skcipher_decrypt(req));
+ 		end = get_cycles();
++		rcu_suppress_end();
+ 
+ 		if (ret)
+ 			goto out;
 -- 
 2.38.1
 
