@@ -2,135 +2,82 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD267C4332F
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 22:45:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89997C4332F
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 22:58:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbiLTWpE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 17:45:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        id S229720AbiLTW6S (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 17:58:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiLTWpE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 17:45:04 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C1DFCD8;
-        Tue, 20 Dec 2022 14:45:03 -0800 (PST)
+        with ESMTP id S234140AbiLTW6M (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 17:58:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377CB1F2F1;
+        Tue, 20 Dec 2022 14:58:02 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2875B61502;
-        Tue, 20 Dec 2022 22:45:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC4A1C433D2;
-        Tue, 20 Dec 2022 22:45:01 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EAE67B81A01;
+        Tue, 20 Dec 2022 22:58:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 271BCC433EF;
+        Tue, 20 Dec 2022 22:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671576302;
-        bh=5IELGNaBxVETUQUabu4l0UoJNA+N6l/vC4jUFz5K578=;
+        s=k20201202; t=1671577079;
+        bh=8+lijh8xkYJmCW+tgcGnoiFR5gOK2W4q0pc0yUXBS2w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jqOFxGduPFwaIXvWUGHJrw+Bk/wQyGVrQ0l4gQf8rIfoxKqmrL1D/sarA9sj68/yf
-         lPc8SPAW7Bo+qdpY/sx87YZXOZbFabl3LhFDZHYuXRjTESSxCkj0fr9Up8Hc6tLOTT
-         6/WRx+Ho5rKdlqW4lCuxT6UEk5qT60vDQDldrnoRgaYGWw07U4beumuYrIblKtIw50
-         c+UFdnzctNI2u7AGMyYwK86z9E36O1549IDqlJ/e8xgF+0mzNmLxermsLfBVNPoGcm
-         fCD9LJ81qUN3uWBhR6rQOQlkEAWi0CW10s5dRH/bYYbB1lksptFwaebm+wJFhTwI6z
-         YUtj1imCiC8Cg==
-Date:   Tue, 20 Dec 2022 23:44:59 +0100
+        b=hdjsc4KMNZycrNr4Kh6u0XxZnE8UVFNrAgQlXeYr8IUtudF+K9G8k53HrZSorZdqN
+         d3gWl1tbuO8jWghgJbxNR2XuRaMx1Ts7FMznRo/hZG8TKbKHAsjG6SNGjUcEwETUCU
+         x1jiEC3ptSHNdHFryr3BXldur0+N1fbUmJTTatKPqbXwx9vha14pA3FPy4NHExQJoM
+         Q+xO9UdirY2zcEp8SCn5kS4Ggzyawo5fn7S7B1zi528meJur9GibenGyikCu+GKvG7
+         IvJBf8g3tpHOW0bRKGFBzgrUjVmiI85tZ3wJevcEvxLRXETqfIaNbg21LU8BwcV1to
+         5Kyk4J44Y8Qnw==
+Date:   Tue, 20 Dec 2022 23:57:56 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Message-ID: <20221220224459.GA25175@lothringen>
-References: <20221220140714.GB22763@lothringen>
- <CA83E649-8C79-4D39-9BFE-BBEF95968B98@joelfernandes.org>
+Message-ID: <20221220225756.GB26563@lothringen>
+References: <6438d903-ab97-48c7-c338-9f0bc2686f94@efficios.com>
+ <7A9876BA-C375-42A7-A5C9-FD940D2898D7@joelfernandes.org>
+ <5bd5ee4a-710a-96bc-abe8-772b2e60f478@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA83E649-8C79-4D39-9BFE-BBEF95968B98@joelfernandes.org>
+In-Reply-To: <5bd5ee4a-710a-96bc-abe8-772b2e60f478@efficios.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 09:20:08AM -0500, Joel Fernandes wrote:
-> > On Dec 20, 2022, at 9:07 AM, Frederic Weisbecker <frederic@kernel.org> wrote:
+On Tue, Dec 20, 2022 at 02:01:30PM -0500, Mathieu Desnoyers wrote:
+> On 2022-12-20 13:29, Joel Fernandes wrote:
 > > 
-> > ﻿On Tue, Dec 20, 2022 at 08:44:40AM -0500, Joel Fernandes wrote:
-> >>> C w-depend-r
-> >>> 
-> >>> {
-> >>>   PLOCK=LOCK0;
-> >>> }
-> >>> 
-> >>> // updater
-> >>> P0(int *LOCK1, int **PLOCK)
-> >>> {
-> >>>   int lock1;
-> >>> 
-> >>>   lock1 = READ_ONCE(*LOCK1); // READ from inactive idx
-> >>>   smp_mb();
-> >>>   WRITE_ONCE(*PLOCK, LOCK1); // Flip idx
-> >>> }
-> >>> 
-> >>> // reader
-> >>> P1(int **PLOCK)
-> >>> {
-> >>>   int *plock;
-> >>> 
-> >>>   plock = READ_ONCE(*PLOCK);    // Read active idx
-> >>>   WRITE_ONCE(*plock, 1); // Write to active idx
-> >> 
-> >> I am a bit lost here, why would the reader want to write to the active idx?
-> >> The reader does not update the idx, only the lock count.
-> > 
-> > So &ssp->sda->srcu_lock_count is the base address and idx is the offset, right?
-> > The write is then displayed that way:
-> > 
-> >     this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
-> > 
-> > But things could be also thought the other way around with idx being the base address and
-> > ssp->sda->srcu_lock_count being the offset.
-> > 
-> >     this_cpu_inc(idx[ssp->sda->srcu_lock_count].counter);
-> > 
-> > That would require to change some high level types but the result would be the same from
-> > the memory point of view (and even from the ASM point of view). In the end we
-> > are dealing with the same address and access.
-> > 
-> > Now ssp->sda->srcu_lock_count is a constant address value. It doesn't change.
-> > So it can be zero for example. Then the above increment becomes:
-> > 
-> >   this_cpu_inc(idx.counter);
-> > 
-> > And then it can be modelized as in the above litmus test.
-> > 
-> > I had to play that trick because litmus doesn't support arrays but I believe
-> > it stands. Now of course I may well have got something wrong since I've always
-> > been terrible at maths...
 > 
-> Ah ok, I get where you were going with that. Yes there is address dependency
-> between reading idx and writing lock count. But IMHO, the access on the update
-> side is trying to order write to index, and reads from a lock count of a
-> previous index (as far as E / B+C is concerned). So IMHO, on the read side you
-> have to consider 2 consecutive readers and not the same reader in order to
-> pair the same accesses correctly. But I could be missing something.
+> > I do want to finish my memory barrier studies of SRCU over the holidays since I have been deep in the hole with that already. Back to the post flip memory barrier here since I think now even that might not be needed…
+> 
+> I strongly suspect the memory barrier after flip is useless for the same
+> reasons I mentioned explaining why the barrier before the flip is useless.
+> 
+> However, we need to double-check that we have memory barriers at the
+> beginning and end of synchronize_srcu, and between load of "unlock" counters
+> and load of "lock" counters.
+> 
+> Where is the barrier at the beginning of synchronize_srcu ?
 
-And you're right, for the first part of the comment (let's call that (1)):
+rcu_seq_snap() ?
 
-	 * Ensure that if this updater saw a given reader's increment
-	 * from __srcu_read_lock(), that reader was using an old value
-	 * of ->srcu_idx.
-
-My litmus test shows the ordering displayed in the second part of the comment
-(call it (2)):
-
-         * Also ensure that if a given reader sees the
-	 * new value of ->srcu_idx, this updater's earlier scans cannot
-	 * have seen that reader's increments (which is OK, because this
-	 * grace period need not wait on that reader).
-
-_ In (1), E indeed pairs with B and C
-_ In (2), E pairs with the address-dependency between idx and lock_count.
-
-Thanks.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+> 
