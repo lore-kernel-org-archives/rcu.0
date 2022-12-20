@@ -2,113 +2,95 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24944C4332F
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 14:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A26DCC4167B
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 14:11:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbiLTOHZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 09:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        id S231790AbiLTOLq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 09:11:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbiLTOHS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 09:07:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DDCDF95;
-        Tue, 20 Dec 2022 06:07:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E87EE61468;
-        Tue, 20 Dec 2022 14:07:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFCE5C433EF;
-        Tue, 20 Dec 2022 14:07:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671545237;
-        bh=kjxsA1RKba1sAwK7HkKMsn1Ci5sL+fSF3MvywZYYKxo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bEBs1w7WNlsh7yDburfMLoIzQ5V2rqciIrYUzki1SZHyoAydD6E0iyjn559MuR0x/
-         TIM5Z/KtR0YkQagzYRs2UshkbwS/CCNptGIYNEoDGZlhHLQYEYv9Cl7ZqcHz8NT+Y0
-         D+JYfXdrR+LcqxHalVQI73Ow94IS1aIvmFV0qtglqHunk73e7+mz2ln99fEpxaFb6U
-         FQRDfCTUVeNdFbIuRlKGQgCrtrecDbjm5sbjb2z0Oo0upnOlJOvCxOV+5JJeKzkIGN
-         B9ZfuOGdtCrL8ThvXOHVDTMJCxmIpD9ewWqK18dgb82sotvAkZUjX43q4z+pcTTVGK
-         9bwSbkuQxt9MA==
-Date:   Tue, 20 Dec 2022 15:07:14 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Message-ID: <20221220140714.GB22763@lothringen>
-References: <20221220124033.GA22763@lothringen>
- <D358FF0F-6F7C-413A-8CA6-7D36E9A64DB6@joelfernandes.org>
+        with ESMTP id S233895AbiLTOLT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 09:11:19 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9621CDEE7;
+        Tue, 20 Dec 2022 06:10:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1671545452; x=1703081452;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+CovmIj2Qxzr2m1kZzvu2XhklJ2GFoRQHFoqU6y1iWk=;
+  b=Yn8aETjIetu0qqFW59a5eg7JLv3Tf9Tsln8JSQXANy1Ez/bjoIIKbDSf
+   QCZn12ZLW3ZD1ThYXVevhc083t+Ew+7kxQghty4MJL2AGlxZIuvmHu/cV
+   4vU1Lxnqk1IEvil+sNLpou/UMuywRd8QEDjq1CBQ7LNgCwl9b9ipI4STC
+   2xRXr7CFE9JHD2i63ZxLcJEmoHGM2p9Z6wnPJVOY2YB6/f+uH+izC/MS8
+   xARQIJCQe+lFg9qsaLndIIPa3RKBfizC0zuCKamHAH6JoG/WgawUmWj4J
+   NrFJYs8nkyC9jxrh1+DPWWe5IU9/22QoBnTrXY3H5VkaEilXsxHchMFFQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10567"; a="299294511"
+X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; 
+   d="scan'208";a="299294511"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2022 06:10:52 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10567"; a="739773833"
+X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; 
+   d="scan'208";a="739773833"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2022 06:10:50 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
+Date:   Tue, 20 Dec 2022 22:16:25 +0800
+Message-Id: <20221220141625.3612085-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <D358FF0F-6F7C-413A-8CA6-7D36E9A64DB6@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 08:44:40AM -0500, Joel Fernandes wrote:
-> > C w-depend-r
-> > 
-> > {
-> >    PLOCK=LOCK0;
-> > }
-> > 
-> > // updater
-> > P0(int *LOCK1, int **PLOCK)
-> > {
-> >    int lock1;
-> > 
-> >    lock1 = READ_ONCE(*LOCK1); // READ from inactive idx
-> >    smp_mb();
-> >    WRITE_ONCE(*PLOCK, LOCK1); // Flip idx
-> > }
-> > 
-> > // reader
-> > P1(int **PLOCK)
-> > {
-> >    int *plock;
-> > 
-> >    plock = READ_ONCE(*PLOCK);    // Read active idx
-> >    WRITE_ONCE(*plock, 1); // Write to active idx
-> 
-> I am a bit lost here, why would the reader want to write to the active idx?
-> The reader does not update the idx, only the lock count.
+This commit add TICK_DEP_MASK_RCU_EXP dependency check in
+check_tick_dependency(), fix commit df1e849ae4559 ("rcu: Enable
+tick for nohz_full CPUs slow to provide expedited QS").
 
-So &ssp->sda->srcu_lock_count is the base address and idx is the offset, right?
-The write is then displayed that way:
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ include/trace/events/timer.h | 3 ++-
+ kernel/time/tick-sched.c     | 5 +++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-     this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
+diff --git a/include/trace/events/timer.h b/include/trace/events/timer.h
+index 2e713a7d9aa3..3e8619c72f77 100644
+--- a/include/trace/events/timer.h
++++ b/include/trace/events/timer.h
+@@ -371,7 +371,8 @@ TRACE_EVENT(itimer_expire,
+ 		tick_dep_name(PERF_EVENTS)		\
+ 		tick_dep_name(SCHED)			\
+ 		tick_dep_name(CLOCK_UNSTABLE)		\
+-		tick_dep_name_end(RCU)
++		tick_dep_name(RCU)			\
++		tick_dep_name_end(RCU_EXP)
+ 
+ #undef tick_dep_name
+ #undef tick_dep_mask_name
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index b0e3c9205946..ba2ac1469d47 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -281,6 +281,11 @@ static bool check_tick_dependency(atomic_t *dep)
+ 		return true;
+ 	}
+ 
++	if (val & TICK_DEP_MASK_RCU_EXP) {
++		trace_tick_stop(0, TICK_DEP_MASK_RCU_EXP);
++		return true;
++	}
++
+ 	return false;
+ }
+ 
+-- 
+2.25.1
 
-But things could be also thought the other way around with idx being the base address and
-ssp->sda->srcu_lock_count being the offset.
-
-     this_cpu_inc(idx[ssp->sda->srcu_lock_count].counter);
-
-That would require to change some high level types but the result would be the same from
-the memory point of view (and even from the ASM point of view). In the end we
-are dealing with the same address and access.
-
-Now ssp->sda->srcu_lock_count is a constant address value. It doesn't change.
-So it can be zero for example. Then the above increment becomes:
-
-   this_cpu_inc(idx.counter);
-
-And then it can be modelized as in the above litmus test.
-
-I had to play that trick because litmus doesn't support arrays but I believe
-it stands. Now of course I may well have got something wrong since I've always
-been terrible at maths...
-
-> 
-> Further, the comment does not talk about implicit memory ordering, it’s talking about explicit ordering due to B+C on one side, and E on the other.
-
-Not arguing I'm also still confused by the comment...
-
-Thanks.
