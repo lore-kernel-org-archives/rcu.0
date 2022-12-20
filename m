@@ -2,152 +2,117 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2DC4C4332F
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 04:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8598BC4332F
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 11:19:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbiLTEHd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Dec 2022 23:07:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
+        id S229861AbiLTLTu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 06:19:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiLTEHb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Dec 2022 23:07:31 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EC138B5
-        for <rcu@vger.kernel.org>; Mon, 19 Dec 2022 20:07:30 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id f34so1551718lfv.10
-        for <rcu@vger.kernel.org>; Mon, 19 Dec 2022 20:07:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qDu+2HB9LCelBr6OwQ3TS8ifZcPH8YwgroAjWq1C00k=;
-        b=Y86xtdv3XMJ+nN6oow1JLrJgBuF3civOC/ytVGb1nq+LnnsmCdw6yZQ1wsodZHZu+h
-         ln3X2He+1mz1o7S8y46L4rQlGaYaBQ3m+ZhGRpa0x2Dr6YQUhUY/Or9zntk/NTPI0NQ4
-         QIH1W0OWhRa+DH724vkVR9Fb504i+gqDmStIQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qDu+2HB9LCelBr6OwQ3TS8ifZcPH8YwgroAjWq1C00k=;
-        b=dVw3A/eCZ/sVbVSExfRPY5pXeAgbk6x6OwgsbUJ6UHFA0tSgoxf6aZHdAYc0GRjMXp
-         FibIQoqq//2ZZiBEcOiya07DRKvnRymvYPHb0L8kuLDx5gIuiFF06/m3Up4cMgXLFJo1
-         qgtEM/xKW9D71eugGqgOq+DD04Elonnoy9jSXyugEtpDvWdZ+PwgrkGgmpbF5/1uHuEo
-         ymMf8jlSxwHui/myaKlgPl6LjXrXFuHN0Bekaevp2IBM92/Geh1rFUFqB3VlbXRxUBjn
-         wRTiBv6kogXqB4HggSIGeHpoOR9IVsVz+bJe60Jqbze53/8XDgBNTBwV551n4ZuDW2mZ
-         Phkg==
-X-Gm-Message-State: ANoB5pmItnNxnYgwtOFN6HAYvOA0fgkKnAJhkmtBKoMKaQlwKn4QF+NH
-        buZaGfboWx0nkhc44hsEmxhGFBKz1JwiTpuMf4CUXQ==
-X-Google-Smtp-Source: AA0mqf6VnHU/0i+jLya+GHkKML+2c0Byt6jC+vJK2QzrSvQpzsNLCtjhYeKCE9zL7w5NgiRdEhGskhzdRPYMZSBcSdU=
-X-Received: by 2002:a05:6512:224c:b0:4b5:ad89:8174 with SMTP id
- i12-20020a056512224c00b004b5ad898174mr3579330lfu.84.1671509248402; Mon, 19
- Dec 2022 20:07:28 -0800 (PST)
+        with ESMTP id S229522AbiLTLTt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 06:19:49 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0E55F9B;
+        Tue, 20 Dec 2022 03:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1671535188; x=1703071188;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SzQJswxVRxcpqFv6eaWlB/9VJizojsPMop7gx5A5odg=;
+  b=SE6KkStud9tEq8niFaOJKz9kgnWR1l2Qcn1ZH3AegCB1Gz0RfmYLvetV
+   riI65t5XERXAby4ocfWI+IPWIJ6G+PNwmUJxDtZNSXZgDWI9B0unFg7Mq
+   CFp3bR4KCUSEDHGWDldboiXU9gURpbiYfp5c9YoEMPYOo1UpruybYKm4v
+   q05Dnv1MApJkto0Dxvk+c5IlbVTj7OIjnE4Gg7WYEOTZjhqYrwaKdQme3
+   70BKLPh9FwCFKXV4OrUGTyz4GsiB6DaEv74O39b0YMzJ6IyqJCMb4G8Ua
+   j+G1DFeHGRhiyurEXo+I0v03pgdB+821JGATsLO4ygMD0Q47Tr9Bs0UeF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10566"; a="307271012"
+X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; 
+   d="scan'208";a="307271012"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2022 03:19:47 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10566"; a="681608481"
+X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; 
+   d="scan'208";a="681608481"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2022 03:19:45 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP bitmask
+Date:   Tue, 20 Dec 2022 19:25:20 +0800
+Message-Id: <20221220112520.3596920-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20221218191310.130904-1-joel@joelfernandes.org>
-In-Reply-To: <20221218191310.130904-1-joel@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 19 Dec 2022 23:07:17 -0500
-Message-ID: <CAEXW_YRjAsx0HCnmjvth+yi0COTiynPRvjyT2sf1utMw5bTgiw@mail.gmail.com>
-Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-To:     linux-kernel@vger.kernel.org
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Dec 18, 2022 at 2:13 PM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> Hello, I believe the pre-flip memory barrier is not required. The only reason I
-> can say to remove it, other than the possibility that it is unnecessary, is to
-> not have extra code that does not help. However, since we are issuing a fully
-> memory-barrier after the flip, I cannot say that it hurts to do it anyway.
->
-> For this reason, please consider these patches as "informational", than a
-> "please merge". :-) Though, feel free to consider merging if you agree!
->
-> All SRCU scenarios pass with these, with 6 hours of testing.
->
-> thanks,
->
->  - Joel
->
-> Joel Fernandes (Google) (2):
-> srcu: Remove comment about prior read lock counts
-> srcu: Remove memory barrier "E" as it is not required
+For the kernel bulit with CONFIG_NO_HZ_FULL enabled and the following
+cpus is nohz_full cpus:
 
-And litmus tests confirm that "E" does not really do what the comments
-say, PTAL:
-Test 1:
-C mbe
-(*
- * Result: sometimes
- * Does previous scan see old reader's lock count, if a new reader saw
-the new srcu_idx?
- *)
+	CPU1                                                 CPU2
+rcu_report_exp_cpu_mult                          synchronize_rcu_expedited_wait
+   acquires rnp->lock                               mask = rnp->expmask;
+                                                    for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+   rnp->expmask = rnp->expmask & ~mask;                rdp = per_cpu_ptr(&rcu_data, cpu1);
+   for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+      rdp = per_cpu_ptr(&rcu_data, cpu1);
+      if (!rdp->rcu_forced_tick_exp)
+             continue;                                 rdp->rcu_forced_tick_exp = true;
+                                                       tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
 
-{}
+In the above scenario, after CPU1 reported the quiescent state, CPU1
+misses the opportunity to clear the TICK_DEP_BIT_RCU_EXP bitmask, it
+will not be cleared until the next expedited grace period starts and
+the CPU1 quiescent state is reported again. during this window period,
+the CPU1 whose tick can not be stopped, if CPU1 has only one runnable
+task and this task has aggressive real-time response constraints, this
+task may have one of the worst response times.
 
-P0(int *lockcount, int *srcu_idx) // updater
-{
-        int r0;
-        r0 = READ_ONCE(*lockcount);
-        smp_mb();       // E
-        WRITE_ONCE(*srcu_idx, 1);
-}
+Therefore, this commit add rnp->lock when set TICK_DEP_BIT_RCU_EXP
+bitmask to fix this race.
 
-P1(int *lockcount, int *srcu_idx) // reader
-{
-        int r0;
-        WRITE_ONCE(*lockcount, 1); // previous reader
-        smp_mb();       // B+C
-        r0 = READ_ONCE(*srcu_idx); // new reader
-}
-exists (0:r0=0 /\ 1:r0=1) (* Bad outcome. *)
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree_exp.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Test 2:
-C mbe2
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 927abaf6c822..e5fe0099488b 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -593,6 +593,7 @@ static void synchronize_rcu_expedited_wait(void)
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+ 	struct rcu_node *rnp_root = rcu_get_root();
++	unsigned long flags;
+ 
+ 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
+ 	jiffies_stall = rcu_exp_jiffies_till_stall_check();
+@@ -601,17 +602,17 @@ static void synchronize_rcu_expedited_wait(void)
+ 		if (synchronize_rcu_expedited_wait_once(1))
+ 			return;
+ 		rcu_for_each_leaf_node(rnp) {
++			raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 			mask = READ_ONCE(rnp->expmask);
+ 			for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
+ 				rdp = per_cpu_ptr(&rcu_data, cpu);
+ 				if (rdp->rcu_forced_tick_exp)
+ 					continue;
+ 				rdp->rcu_forced_tick_exp = true;
+-				preempt_disable();
+ 				if (cpu_online(cpu))
+ 					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
+-				preempt_enable();
+ 			}
++			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		}
+ 		j = READ_ONCE(jiffies_till_first_fqs);
+ 		if (synchronize_rcu_expedited_wait_once(j + HZ))
+-- 
+2.25.1
 
-(*
- * Result: sometimes
- * If updater saw reader's lock count, was that reader using the old idx?
- *)
-
-{}
-
-P0(int *lockcount, int *srcu_idx) // updater
-{
-        int r0;
-        r0 = READ_ONCE(*lockcount);
-        smp_mb();       // E
-        WRITE_ONCE(*srcu_idx, 1);
-}
-
-P1(int *lockcount, int *srcu_idx) // reader
-{
-        int r0;
-        int r1;
-        r1 = READ_ONCE(*srcu_idx); // previous reader
-        WRITE_ONCE(*lockcount, 1); // previous reader
-        smp_mb();       // B+C
-        r0 = READ_ONCE(*srcu_idx); // new reader
-}
-exists (0:r0=1 /\ 1:r1=1) (* Bad outcome. *)
-
-thanks,
-
- - Joel
-
-
->
-> kernel/rcu/srcutree.c | 10 ----------
-> 1 file changed, 10 deletions(-)
->
-> --
-> 2.39.0.314.g84b9a713c41-goog
->
