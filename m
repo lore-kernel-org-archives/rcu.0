@@ -2,156 +2,193 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7E34C4332F
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 14:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06238C10F1E
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 17:00:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbiLTOVr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 09:21:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
+        id S229628AbiLTRAi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 12:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233882AbiLTOVP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 09:21:15 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A6D1C123
-        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 06:20:21 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id x65so5797205vkg.11
-        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 06:20:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jXqd4DeCvaiHMvVaq9cytI+IuzgZuGKPfi29NnINfkE=;
-        b=dAZyD+m3bgniuwaWLPaRBC5YwocyRFsx0wGLSyIYl2gLqm7j1bmSOaHcu00h/BuPyQ
-         F6xpcobLLoNenZ9jpBOf04uQ11ooByc1VQCu9Py7RC3QULBl9Xb5Ez5bHqGjfLYpnXWb
-         xbRYg0GjJQixNJWkXPg4jj9nxEicaarM01r2I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jXqd4DeCvaiHMvVaq9cytI+IuzgZuGKPfi29NnINfkE=;
-        b=S/BOWYhIk+u6K+v7X2IUEhhL/Qfhofnd35jCYDdlNZ7akjcwZ/06lTulcuy7Hq/Tyn
-         tjJhS1zp6FjaYVc+wW74m391VcdR1wcP6SqfzsvHKpqGI9VDdFGHlbGVf1qbauwcWurU
-         KrqhLsWdPKsu1Vu60d4TmIgDG5gVhGN9eG0ywHVU1uyfT+WOMLwkiz8LBKcCyhcj7Ixm
-         NmDsLJk2H2p9MTKdf6BF7I/D9ZP3lAnGum4D04n/wLPThZRO99It7fmHXkHFEZHt15pX
-         AQhlN5TMiyJ1oZaSXm35X7YchIeHO0k7oV0/X0Ok7RzyWt+Iq94Ofq0Z8a0Q0gvATKzM
-         Xwxw==
-X-Gm-Message-State: AFqh2kpBEXijUizpbfROVTICm4W+lOlIJ1HapNW2J9mPRILkmoOM/d/O
-        p1lsGUh0xUEJljc/xpQfyaBtsA==
-X-Google-Smtp-Source: AMrXdXtJ2GG+nwNShqyvaTrXXvUFXW/zWGMJEZCBt4H5k90N6WB2mU9+U6pbmaxHFQ+cAvol6kMqrg==
-X-Received: by 2002:a1f:9ed1:0:b0:3bc:961f:d9c with SMTP id h200-20020a1f9ed1000000b003bc961f0d9cmr4330132vke.8.1671546020224;
-        Tue, 20 Dec 2022 06:20:20 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id 195-20020a370ccc000000b006eee3a09ff3sm8818979qkm.69.2022.12.20.06.20.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Dec 2022 06:20:19 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
+        with ESMTP id S233854AbiLTRAg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 12:00:36 -0500
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D672186F2;
+        Tue, 20 Dec 2022 09:00:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1671555633;
+        bh=KHnjxMK7PefH8VFRsh3Ja4HLDbLno+j0FUqpkmX8Wsc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=tMB18aBWdAfBmoRE8kNyVshK864YvE7rtarXEt2b77/7opfByNHsOP3FTVqtrmCo8
+         h91X+ec62xRNYYfMdJhiIDDkJha9Mxdr7kMQoy7z4U4JLpR7U0kzAaNzdOY2k4B99q
+         2hym8bO65ZW6ic2e6rbuWKhZ4mK0Zrp+aRq0q73A9E1y6EynwV+oQlNKzgXlRGXukW
+         SCJgcjFoa+gqfYtLWGLgEMA6+owwvz+8/GNQ0fIDj+16G1YYcO5wCirJRrzuMLZXxr
+         J+0R4bbyzij/3lw8Fox1JxsF4ivuWnjlhQYrHx26v4dukC0a6oK15JDDkSE4+t+35d
+         Xef4jMRGqYE2A==
+Received: from [10.1.0.203] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Nc2rd3jcDzc7W;
+        Tue, 20 Dec 2022 12:00:33 -0500 (EST)
+Message-ID: <35293ec4-40a1-cf6b-3bdd-0e3e30819c06@efficios.com>
+Date:   Tue, 20 Dec 2022 12:00:58 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Date:   Tue, 20 Dec 2022 09:20:08 -0500
-Message-Id: <CA83E649-8C79-4D39-9BFE-BBEF95968B98@joelfernandes.org>
-References: <20221220140714.GB22763@lothringen>
+Content-Language: en-US
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-In-Reply-To: <20221220140714.GB22763@lothringen>
-To:     Frederic Weisbecker <frederic@kernel.org>
-X-Mailer: iPhone Mail (20B101)
+References: <20221218191310.130904-1-joel@joelfernandes.org>
+ <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com>
+ <CAEXW_YQHpz3dNqW1ocqjr-e9qn09Rkg4kQ19byZORGbO18Xckg@mail.gmail.com>
+ <2da94283-4fce-9aff-ac5d-ba181fa0f008@efficios.com>
+ <CAEXW_YQBmwynuBOWbV6_L2itRr_i3BZUxQ91PDC2We2vXhpztQ@mail.gmail.com>
+ <CAEXW_YTyZaE4ULvm-HygFN2BGm-jayHTbpnYbrJFoo_GOsYKQg@mail.gmail.com>
+ <659763b0-eee4-10dd-5f4a-37241173809c@efficios.com>
+ <CAEXW_YQ+NTaM43Va5FG8kYSxr2gsbjar4_f3xnpSAHzgUVZ-+g@mail.gmail.com>
+ <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On 2022-12-19 20:04, Joel Fernandes wrote:
+> On Mon, Dec 19, 2022 at 7:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>>
+>> On Sun, Dec 18, 2022 at 8:49 PM Mathieu Desnoyers
+>> <mathieu.desnoyers@efficios.com> wrote:
+>> [...]
+>>>>>>>>
+>>>>>>>> On 2022-12-18 14:13, Joel Fernandes (Google) wrote:
+[...]
 
+>>>>>
+>>>>> I think this is a bit dangerous. Yes there is the preemption thing you
+>>>>> mentioned above, but that is bounded since you can only have a fixed
+>>>>> number of tasks that underwent that preemption, and it is quite rare
+>>>>> in the sense, each reader should get preempted just after sampling idx
+>>>>> but not incrementing lock count.
+>>>>>
+>>>>> However, if we scan while new readers appear (outside of the above
+>>>>> preemption problem), we can have counter wrap causing a false match
+>>>>> much quicker.
+>>>>> The scan loop is:
+>>>>> check_readers(idx) {
+>>>>>      count_all_unlocks(idx);
+>>>>>      smp_mb();
+>>>>>      count_all_locks(idx);
+>>>>>      bool done = (locks == unlocks)
+>>>>>      if (done) {
+>>>>>            // readers are done, end scan for this idx.
+>>>>>      } else {
+>>>>>            // try again later
+>>>>>      }
+>>>>> }
+>>>>>
+>>>>> So if check_readers() got preempted just after the smp_mb(), then you
+>>>>> can have lots of tasks enter and exit the read-side critical section
+>>>>> and increment the locks count. Eventually locks == unlocks will
+>>>>> happen, and it is screwed. Sure this is also theoretical, but yeah
+>>>>> that issue can be made "worse" by scanning active readers
+>>>>> deliberately, especially when such readers can also nest arbitrarily.
+>>>>>
+>>>>>> As a result, flipping between periods 0/1 is just relevant for forward
+>>>>>> progress, not for correctness.
+>>>>>
+>>>>> Sure, agreed, forward progress.
+>>>>
+>>>> Adding to the last statement "But also correctness as described above".
+>>>
+>>> Exactly how many entry/exit of the read-side critical section while the
+>>> grace period is preempted do you need to trigger this ?
+>>
+>> It depends on how many readers are active during the preemption of the
+>> scan code. Say the preemption happened after per-CPU unlock counts
+>> were totalled. Then AFAICS, if there are N active readers which need
+>> the grace period to wait, you need (2^sizeof(int) - N) number of
+>> lock+unlock to happen.
+> 
+> Sorry, here I meant (2^(sizeof(unsigned long) * 8) - N) which is 2^32
+> on 32-bit systems.
 
-> On Dec 20, 2022, at 9:07 AM, Frederic Weisbecker <frederic@kernel.org> wro=
-te:
->=20
-> =EF=BB=BFOn Tue, Dec 20, 2022 at 08:44:40AM -0500, Joel Fernandes wrote:
->>> C w-depend-r
->>>=20
->>> {
->>>   PLOCK=3DLOCK0;
->>> }
->>>=20
->>> // updater
->>> P0(int *LOCK1, int **PLOCK)
->>> {
->>>   int lock1;
->>>=20
->>>   lock1 =3D READ_ONCE(*LOCK1); // READ from inactive idx
->>>   smp_mb();
->>>   WRITE_ONCE(*PLOCK, LOCK1); // Flip idx
->>> }
->>>=20
->>> // reader
->>> P1(int **PLOCK)
->>> {
->>>   int *plock;
->>>=20
->>>   plock =3D READ_ONCE(*PLOCK);    // Read active idx
->>>   WRITE_ONCE(*plock, 1); // Write to active idx
->>=20
->> I am a bit lost here, why would the reader want to write to the active id=
-x?
->> The reader does not update the idx, only the lock count.
->=20
-> So &ssp->sda->srcu_lock_count is the base address and idx is the offset, r=
-ight?
-> The write is then displayed that way:
->=20
->     this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter);
->=20
-> But things could be also thought the other way around with idx being the b=
-ase address and
-> ssp->sda->srcu_lock_count being the offset.
->=20
->     this_cpu_inc(idx[ssp->sda->srcu_lock_count].counter);
->=20
-> That would require to change some high level types but the result would be=
- the same from
-> the memory point of view (and even from the ASM point of view). In the end=
- we
-> are dealing with the same address and access.
->=20
-> Now ssp->sda->srcu_lock_count is a constant address value. It doesn't chan=
-ge.
-> So it can be zero for example. Then the above increment becomes:
->=20
->   this_cpu_inc(idx.counter);
->=20
-> And then it can be modelized as in the above litmus test.
->=20
-> I had to play that trick because litmus doesn't support arrays but I belie=
-ve
-> it stands. Now of course I may well have got something wrong since I've al=
-ways
-> been terrible at maths...
+And 2^64 on 64-bit systems.
 
-Ah ok, I get where you were going with that. Yes there is address dependency=
- between reading idx and writing lock count. But IMHO, the access on the upd=
-ate side is trying to order write to index, and reads from a lock count of a=
- previous index (as far as E / B+C is concerned). So IMHO, on the read side y=
-ou have to consider 2 consecutive readers and not the same reader in order t=
-o pair the same accesses correctly. But I could be missing something.
+> 
+> thanks,
+> 
+>   - Joel
+> 
+> 
+>>> On a 64-bit system, where 64-bit counters are used, AFAIU this need to
+>>> be exactly 2^64 read-side critical sections.
+>>
+>> Yes, but what about 32-bit systems?
 
->> Further, the comment does not talk about implicit memory ordering, it=E2=80=
-=99s talking about explicit ordering due to B+C on one side, and E on the ot=
-her.
->=20
-> Not arguing I'm also still confused by the comment...
+The overflow indeed happens after 2^32 increments, just like seqlock.
+The question we need to ask is therefore: if 2^32 is good enough for 
+seqlock, why isn't it good enough for SRCU ?
 
-;-)
+>>
+>>> There are other synchronization algorithms such as seqlocks which are
+>>> quite happy with much less protection against overflow (using a 32-bit
+>>> counter even on 64-bit architectures).
+>>
+>> The seqlock is an interesting point.
+>>
+>>> For practical purposes, I suspect this issue is really just theoretical.
+>>
+>> I have to ask, what is the benefit of avoiding a flip and scanning
+>> active readers? Is the issue about grace period delay or performance?
+>> If so, it might be worth prototyping that approach and measuring using
+>> rcutorture/rcuscale. If there is significant benefit to current
+>> approach, then IMO it is worth exploring.
+
+The main benefit I expect is improved performance of the grace period 
+implementation in common cases where there are few or no readers 
+present, especially on machines with many cpus.
+
+It allows scanning both periods (0/1) for each cpu within the same pass, 
+therefore loading both period's unlock counters sitting in the same 
+cache line at once (improved locality), and then loading both period's 
+lock counters, also sitting in the same cache line.
+
+It also allows skipping the period flip entirely if there are no readers 
+present, which is an -arguably- tiny performance improvement as well.
 
 Thanks,
 
- - Joel
+Mathieu
 
+>>
+>>> Or am I missing your point ?
+>>
+>> No, I think you are not. Let me know if I missed something.
+>>
+>> Thanks,
+>>
+>>   - Joel
+>>
+>>
+>>>
+>>>
+>>>>
+>>>> thanks,
+>>>>
+>>>>    - Joel
+>>>
+>>> --
+>>> Mathieu Desnoyers
+>>> EfficiOS Inc.
+>>> https://www.efficios.com
+>>>
 
->=20
-> Thanks.
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
