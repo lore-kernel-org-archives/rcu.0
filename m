@@ -2,227 +2,89 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8127AC4332F
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 01:04:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E27C4332F
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 01:42:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbiLTBEm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Dec 2022 20:04:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S233140AbiLTBm3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Dec 2022 20:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiLTBEl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Dec 2022 20:04:41 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC0663EF
-        for <rcu@vger.kernel.org>; Mon, 19 Dec 2022 17:04:39 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id y4so10909822ljc.9
-        for <rcu@vger.kernel.org>; Mon, 19 Dec 2022 17:04:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oD/I6FKTmpuvG8SNtihhznjsvA9ma6Z63rTmzRotItM=;
-        b=CQ7R5k6JcuMP6whbWAE7xVbMEBK72Y3xULg7ylWXO8woQJM/mGHSVyGTZOHvJtEpQM
-         9h0u5NNs5yN5CxMnG4jfTN1CmlqkvpE4OvYAXi7YlP7ClvpZYw15st5mXDK5gcMkLvCT
-         s3fP8TdqRl6u/4EJQHEEEN7XVl3Uf7wIwCklA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oD/I6FKTmpuvG8SNtihhznjsvA9ma6Z63rTmzRotItM=;
-        b=OW47qrOm2WKobNtvwWrl1gUCkxkfPNirxjzjxCdvnvlfTUh1k5zKnLiBaqL1668rYT
-         J6NdzBRqaIDihuswce3UO/yCb6JkfKnLVgWXupQM1Qszb9CnI8Zmx88W+qngGtT2SDmE
-         AQqXiONmh/HQQxd2CFHh4PbBqvpKwifLjWS4uXZUXYjbHg562k6JXST1eljJb5TPyYto
-         7PLL2D216j4HweNf7+Z7K6vu+YYy/usL0T7keXsoqilzTyTBHJnBmJslJBGUS9KDqr3U
-         913RcYY4oT5fmbfZGhhVBXim96Qluhe/tSaeFzNyAk1y9kq1VVuaPa74mUn4oqBbWLPm
-         A5ig==
-X-Gm-Message-State: ANoB5plOtJHfeSlAbPpKwG6B4xn8/GoEO1hU/6KWa3FLZxifJyjCPJEB
-        xyncTyIFJJRldBgEjW66EV93Zup4sYs/JUa0MZWRnw==
-X-Google-Smtp-Source: AA0mqf7SZMtF0wQFLm4ZeidgYegTzM5fWcb+V6TMjN/aL+7Tt0bElfiKoCHcbh0UIPIUunEMyae1KbdlN057r+pqniA=
-X-Received: by 2002:a05:651c:160b:b0:276:4462:2d20 with SMTP id
- f11-20020a05651c160b00b0027644622d20mr23893994ljq.19.1671498278203; Mon, 19
- Dec 2022 17:04:38 -0800 (PST)
+        with ESMTP id S233148AbiLTBmI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Dec 2022 20:42:08 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32B71FCC4;
+        Mon, 19 Dec 2022 17:29:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D4AC61230;
+        Tue, 20 Dec 2022 01:29:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9334C433D2;
+        Tue, 20 Dec 2022 01:29:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671499746;
+        bh=CzMOONJds4355vEVodv5P3MSV2ciisK6U6eGKiAsX+8=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=CseRq+aP5oZUpjjA0SyL3jLdIjcIbmWUkE7/hMpLMbChi1mlIKSRG4xPTdk+CsTHA
+         tTVg1clRlf3fAMXlSLlWtEmTWlGCGWEDAHIXZHFU5UbFjRqYtRY8kqpKR8XA6LErPF
+         zpfaflwN+E19NiTda59iJGGUkVFzqgZ7YyKpnTJHbkjXoQBVpjPUWQfYUF9LY+6tI5
+         OgYVyqSdVGOX0xrGMJdn66m6dlxVc3M3QgE1Seg5HKm0Yar/arsd3yRzPsuFa87dCN
+         sO62X3XGXyZ5u5Qcj8LazSKhYwRaC5oXAimc9G3wQQFRHlAEq64YlI3yHfboEKaHA5
+         N5X1gc1Ox8JUA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5CD9C5C09C9; Mon, 19 Dec 2022 17:29:06 -0800 (PST)
+Date:   Mon, 19 Dec 2022 17:29:06 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rcu@vger.kernel.org, kernel-team@fb.com, rostedt@goodmis.org
+Subject: [GIT PULL] Avoid synchronize_rcu() false positives in semi-early boot
+Message-ID: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-References: <20221218191310.130904-1-joel@joelfernandes.org>
- <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com> <CAEXW_YQHpz3dNqW1ocqjr-e9qn09Rkg4kQ19byZORGbO18Xckg@mail.gmail.com>
- <2da94283-4fce-9aff-ac5d-ba181fa0f008@efficios.com> <CAEXW_YQBmwynuBOWbV6_L2itRr_i3BZUxQ91PDC2We2vXhpztQ@mail.gmail.com>
- <CAEXW_YTyZaE4ULvm-HygFN2BGm-jayHTbpnYbrJFoo_GOsYKQg@mail.gmail.com>
- <659763b0-eee4-10dd-5f4a-37241173809c@efficios.com> <CAEXW_YQ+NTaM43Va5FG8kYSxr2gsbjar4_f3xnpSAHzgUVZ-+g@mail.gmail.com>
-In-Reply-To: <CAEXW_YQ+NTaM43Va5FG8kYSxr2gsbjar4_f3xnpSAHzgUVZ-+g@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 19 Dec 2022 20:04:32 -0500
-Message-ID: <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com>
-Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Dec 19, 2022 at 7:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Sun, Dec 18, 2022 at 8:49 PM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
-> [...]
-> > >>>>>
-> > >>>>> On 2022-12-18 14:13, Joel Fernandes (Google) wrote:
-> > >>>>>> Hello, I believe the pre-flip memory barrier is not required. The only reason I
-> > >>>>>> can say to remove it, other than the possibility that it is unnecessary, is to
-> > >>>>>> not have extra code that does not help. However, since we are issuing a fully
-> > >>>>>> memory-barrier after the flip, I cannot say that it hurts to do it anyway.
-> > >>>>>>
-> > >>>>>> For this reason, please consider these patches as "informational", than a
-> > >>>>>> "please merge". :-) Though, feel free to consider merging if you agree!
-> > >>>>>>
-> > >>>>>> All SRCU scenarios pass with these, with 6 hours of testing.
-> > >>>>>
-> > >>>>> Hi Joel,
-> > >>>>>
-> > >>>>> Please have a look at the comments in my side-rcu implementation [1, 2].
-> > >>>>> It is similar to what SRCU does (per-cpu counter based grace period
-> > >>>>> tracking), but implemented for userspace. The comments explain why this
-> > >>>>> works without the memory barrier you identify as useless in SRCU.
-> > >>>>>
-> > >>>>> Following my implementation of side-rcu, I reviewed the SRCU comments
-> > >>>>> and identified that the barrier "/* E */" appears to be useless. I even
-> > >>>>> discussed this privately with Paul E. McKenney.
-> > >>>>>
-> > >>>>> My implementation and comments go further though, and skip the period
-> > >>>>> "flip" entirely if the first pass observes that all readers (in both
-> > >>>>> periods) are quiescent.
-> > >>>>
-> > >>>> Actually in SRCU, the first pass scans only 1 index, then does the
-> > >>>> flip, and the second pass scans the second index. Without doing a
-> > >>>> flip, an index cannot be scanned for forward progress reasons because
-> > >>>> it is still "active". So I am curious how you can skip flip and still
-> > >>>> scan both indexes? I will dig more into your implementation to learn more.
-> > >>>
-> > >>> If we look at SRCU read-side:
-> > >>>
-> > >>> int __srcu_read_lock(struct srcu_struct *ssp)
-> > >>> {
-> > >>>           int idx;
-> > >>>
-> > >>>           idx = READ_ONCE(ssp->srcu_idx) & 0x1;
-> > >>>           this_cpu_inc(ssp->sda->srcu_lock_count[idx]);
-> > >>>           smp_mb(); /* B */  /* Avoid leaking the critical section. */
-> > >>>           return idx;
-> > >>> }
-> > >>>
-> > >>> If the thread is preempted for a long period of time between load of
-> > >>> ssp->srcu_idx and increment of srcu_lock_count[idx], this means this
-> > >>> thread can appear as a "new reader" for the idx period at any arbitrary
-> > >>> time in the future, independently of which period is the current one
-> > >>> within a future grace period.
-> > >>>
-> > >>> As a result, the grace period algorithm needs to inherently support the
-> > >>> fact that a "new reader" can appear in any of the two periods,
-> > >>> independently of the current period state.
-> > >>>
-> > >>> As a result, this means that while within period "0", we _need_ to allow
-> > >>> newly coming readers to appear as we scan period "0".
-> > >>
-> > >> Sure, it already does handle it but that is I believe it is a corner
-> > >> case, not the norm.
-> > >>
-> > >>> As a result, we can simply scan both periods 0/1 for reader quiescence,
-> > >>> even while new readers appear within those periods.
-> > >>
-> > >> I think this is a bit dangerous. Yes there is the preemption thing you
-> > >> mentioned above, but that is bounded since you can only have a fixed
-> > >> number of tasks that underwent that preemption, and it is quite rare
-> > >> in the sense, each reader should get preempted just after sampling idx
-> > >> but not incrementing lock count.
-> > >>
-> > >> However, if we scan while new readers appear (outside of the above
-> > >> preemption problem), we can have counter wrap causing a false match
-> > >> much quicker.
-> > >> The scan loop is:
-> > >> check_readers(idx) {
-> > >>     count_all_unlocks(idx);
-> > >>     smp_mb();
-> > >>     count_all_locks(idx);
-> > >>     bool done = (locks == unlocks)
-> > >>     if (done) {
-> > >>           // readers are done, end scan for this idx.
-> > >>     } else {
-> > >>           // try again later
-> > >>     }
-> > >> }
-> > >>
-> > >> So if check_readers() got preempted just after the smp_mb(), then you
-> > >> can have lots of tasks enter and exit the read-side critical section
-> > >> and increment the locks count. Eventually locks == unlocks will
-> > >> happen, and it is screwed. Sure this is also theoretical, but yeah
-> > >> that issue can be made "worse" by scanning active readers
-> > >> deliberately, especially when such readers can also nest arbitrarily.
-> > >>
-> > >>> As a result, flipping between periods 0/1 is just relevant for forward
-> > >>> progress, not for correctness.
-> > >>
-> > >> Sure, agreed, forward progress.
-> > >
-> > > Adding to the last statement "But also correctness as described above".
-> >
-> > Exactly how many entry/exit of the read-side critical section while the
-> > grace period is preempted do you need to trigger this ?
->
-> It depends on how many readers are active during the preemption of the
-> scan code. Say the preemption happened after per-CPU unlock counts
-> were totalled. Then AFAICS, if there are N active readers which need
-> the grace period to wait, you need (2^sizeof(int) - N) number of
-> lock+unlock to happen.
+Hello, Linus,
 
-Sorry, here I meant (2^(sizeof(unsigned long) * 8) - N) which is 2^32
-on 32-bit systems.
+Another merge window, another fix for another regression noted by Steve
+Rostedt.  In the true spirit of closing the barn door after the horse
+has escaped, the following commit is queued on -rcu to detect this sort
+of bug in the future:
 
-thanks,
+f13c14392ebc ("rcu: Test synchronous RCU grace periods at the end of rcu_init()")
 
- - Joel
+The fix simply avoids consulting lockdep about interrupts-disabled
+state before the scheduler has been initialized.  After all, before that
+time, it is perfectly legal to invoke synchronize_rcu() with interrupts
+disabled.
 
+The following changes since commit 31d8aaa87fcef1be5932f3813ea369e21bd3b11d:
 
-> > On a 64-bit system, where 64-bit counters are used, AFAIU this need to
-> > be exactly 2^64 read-side critical sections.
->
-> Yes, but what about 32-bit systems?
->
-> > There are other synchronization algorithms such as seqlocks which are
-> > quite happy with much less protection against overflow (using a 32-bit
-> > counter even on 64-bit architectures).
->
-> The seqlock is an interesting point.
->
-> > For practical purposes, I suspect this issue is really just theoretical.
->
-> I have to ask, what is the benefit of avoiding a flip and scanning
-> active readers? Is the issue about grace period delay or performance?
-> If so, it might be worth prototyping that approach and measuring using
-> rcutorture/rcuscale. If there is significant benefit to current
-> approach, then IMO it is worth exploring.
->
-> > Or am I missing your point ?
->
-> No, I think you are not. Let me know if I missed something.
->
-> Thanks,
->
->  - Joel
->
->
-> >
-> >
-> > >
-> > > thanks,
-> > >
-> > >   - Joel
-> >
-> > --
-> > Mathieu Desnoyers
-> > EfficiOS Inc.
-> > https://www.efficios.com
-> >
+  rcu: Keep synchronize_rcu() from enabling irqs in early boot (2022-10-20 15:34:49 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.12.17a
+
+for you to fetch changes up to 3f6c3d29df58f391cf487b50a24ebd24045ba569:
+
+  rcu: Don't assert interrupts enabled too early in boot (2022-12-17 16:12:20 -0800)
+
+----------------------------------------------------------------
+Urgent RCU pull request for v6.2
+
+This commit fixes a lockdep false positive in synchronize_rcu() that
+can otherwise occur during early boot.  Theis fix simply avoids invoking
+lockdep if the scheduler has not yet been initialized, that is, during
+that portion of boot when interrupts are disabled.
+
+----------------------------------------------------------------
+Paul E. McKenney (1):
+      rcu: Don't assert interrupts enabled too early in boot
+
+ kernel/rcu/tree.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
