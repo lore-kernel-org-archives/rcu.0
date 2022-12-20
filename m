@@ -2,89 +2,152 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E27C4332F
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 01:42:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2DC4C4332F
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 04:07:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233140AbiLTBm3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Dec 2022 20:42:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        id S232394AbiLTEHd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Dec 2022 23:07:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbiLTBmI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Dec 2022 20:42:08 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32B71FCC4;
-        Mon, 19 Dec 2022 17:29:30 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D4AC61230;
-        Tue, 20 Dec 2022 01:29:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9334C433D2;
-        Tue, 20 Dec 2022 01:29:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671499746;
-        bh=CzMOONJds4355vEVodv5P3MSV2ciisK6U6eGKiAsX+8=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=CseRq+aP5oZUpjjA0SyL3jLdIjcIbmWUkE7/hMpLMbChi1mlIKSRG4xPTdk+CsTHA
-         tTVg1clRlf3fAMXlSLlWtEmTWlGCGWEDAHIXZHFU5UbFjRqYtRY8kqpKR8XA6LErPF
-         zpfaflwN+E19NiTda59iJGGUkVFzqgZ7YyKpnTJHbkjXoQBVpjPUWQfYUF9LY+6tI5
-         OgYVyqSdVGOX0xrGMJdn66m6dlxVc3M3QgE1Seg5HKm0Yar/arsd3yRzPsuFa87dCN
-         sO62X3XGXyZ5u5Qcj8LazSKhYwRaC5oXAimc9G3wQQFRHlAEq64YlI3yHfboEKaHA5
-         N5X1gc1Ox8JUA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5CD9C5C09C9; Mon, 19 Dec 2022 17:29:06 -0800 (PST)
-Date:   Mon, 19 Dec 2022 17:29:06 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rcu@vger.kernel.org, kernel-team@fb.com, rostedt@goodmis.org
-Subject: [GIT PULL] Avoid synchronize_rcu() false positives in semi-early boot
-Message-ID: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        with ESMTP id S229454AbiLTEHb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Dec 2022 23:07:31 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EC138B5
+        for <rcu@vger.kernel.org>; Mon, 19 Dec 2022 20:07:30 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id f34so1551718lfv.10
+        for <rcu@vger.kernel.org>; Mon, 19 Dec 2022 20:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qDu+2HB9LCelBr6OwQ3TS8ifZcPH8YwgroAjWq1C00k=;
+        b=Y86xtdv3XMJ+nN6oow1JLrJgBuF3civOC/ytVGb1nq+LnnsmCdw6yZQ1wsodZHZu+h
+         ln3X2He+1mz1o7S8y46L4rQlGaYaBQ3m+ZhGRpa0x2Dr6YQUhUY/Or9zntk/NTPI0NQ4
+         QIH1W0OWhRa+DH724vkVR9Fb504i+gqDmStIQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qDu+2HB9LCelBr6OwQ3TS8ifZcPH8YwgroAjWq1C00k=;
+        b=dVw3A/eCZ/sVbVSExfRPY5pXeAgbk6x6OwgsbUJ6UHFA0tSgoxf6aZHdAYc0GRjMXp
+         FibIQoqq//2ZZiBEcOiya07DRKvnRymvYPHb0L8kuLDx5gIuiFF06/m3Up4cMgXLFJo1
+         qgtEM/xKW9D71eugGqgOq+DD04Elonnoy9jSXyugEtpDvWdZ+PwgrkGgmpbF5/1uHuEo
+         ymMf8jlSxwHui/myaKlgPl6LjXrXFuHN0Bekaevp2IBM92/Geh1rFUFqB3VlbXRxUBjn
+         wRTiBv6kogXqB4HggSIGeHpoOR9IVsVz+bJe60Jqbze53/8XDgBNTBwV551n4ZuDW2mZ
+         Phkg==
+X-Gm-Message-State: ANoB5pmItnNxnYgwtOFN6HAYvOA0fgkKnAJhkmtBKoMKaQlwKn4QF+NH
+        buZaGfboWx0nkhc44hsEmxhGFBKz1JwiTpuMf4CUXQ==
+X-Google-Smtp-Source: AA0mqf6VnHU/0i+jLya+GHkKML+2c0Byt6jC+vJK2QzrSvQpzsNLCtjhYeKCE9zL7w5NgiRdEhGskhzdRPYMZSBcSdU=
+X-Received: by 2002:a05:6512:224c:b0:4b5:ad89:8174 with SMTP id
+ i12-20020a056512224c00b004b5ad898174mr3579330lfu.84.1671509248402; Mon, 19
+ Dec 2022 20:07:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20221218191310.130904-1-joel@joelfernandes.org>
+In-Reply-To: <20221218191310.130904-1-joel@joelfernandes.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 19 Dec 2022 23:07:17 -0500
+Message-ID: <CAEXW_YRjAsx0HCnmjvth+yi0COTiynPRvjyT2sf1utMw5bTgiw@mail.gmail.com>
+Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
+To:     linux-kernel@vger.kernel.org
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+On Sun, Dec 18, 2022 at 2:13 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> Hello, I believe the pre-flip memory barrier is not required. The only reason I
+> can say to remove it, other than the possibility that it is unnecessary, is to
+> not have extra code that does not help. However, since we are issuing a fully
+> memory-barrier after the flip, I cannot say that it hurts to do it anyway.
+>
+> For this reason, please consider these patches as "informational", than a
+> "please merge". :-) Though, feel free to consider merging if you agree!
+>
+> All SRCU scenarios pass with these, with 6 hours of testing.
+>
+> thanks,
+>
+>  - Joel
+>
+> Joel Fernandes (Google) (2):
+> srcu: Remove comment about prior read lock counts
+> srcu: Remove memory barrier "E" as it is not required
 
-Another merge window, another fix for another regression noted by Steve
-Rostedt.  In the true spirit of closing the barn door after the horse
-has escaped, the following commit is queued on -rcu to detect this sort
-of bug in the future:
+And litmus tests confirm that "E" does not really do what the comments
+say, PTAL:
+Test 1:
+C mbe
+(*
+ * Result: sometimes
+ * Does previous scan see old reader's lock count, if a new reader saw
+the new srcu_idx?
+ *)
 
-f13c14392ebc ("rcu: Test synchronous RCU grace periods at the end of rcu_init()")
+{}
 
-The fix simply avoids consulting lockdep about interrupts-disabled
-state before the scheduler has been initialized.  After all, before that
-time, it is perfectly legal to invoke synchronize_rcu() with interrupts
-disabled.
+P0(int *lockcount, int *srcu_idx) // updater
+{
+        int r0;
+        r0 = READ_ONCE(*lockcount);
+        smp_mb();       // E
+        WRITE_ONCE(*srcu_idx, 1);
+}
 
-The following changes since commit 31d8aaa87fcef1be5932f3813ea369e21bd3b11d:
+P1(int *lockcount, int *srcu_idx) // reader
+{
+        int r0;
+        WRITE_ONCE(*lockcount, 1); // previous reader
+        smp_mb();       // B+C
+        r0 = READ_ONCE(*srcu_idx); // new reader
+}
+exists (0:r0=0 /\ 1:r0=1) (* Bad outcome. *)
 
-  rcu: Keep synchronize_rcu() from enabling irqs in early boot (2022-10-20 15:34:49 -0700)
+Test 2:
+C mbe2
 
-are available in the Git repository at:
+(*
+ * Result: sometimes
+ * If updater saw reader's lock count, was that reader using the old idx?
+ *)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.12.17a
+{}
 
-for you to fetch changes up to 3f6c3d29df58f391cf487b50a24ebd24045ba569:
+P0(int *lockcount, int *srcu_idx) // updater
+{
+        int r0;
+        r0 = READ_ONCE(*lockcount);
+        smp_mb();       // E
+        WRITE_ONCE(*srcu_idx, 1);
+}
 
-  rcu: Don't assert interrupts enabled too early in boot (2022-12-17 16:12:20 -0800)
+P1(int *lockcount, int *srcu_idx) // reader
+{
+        int r0;
+        int r1;
+        r1 = READ_ONCE(*srcu_idx); // previous reader
+        WRITE_ONCE(*lockcount, 1); // previous reader
+        smp_mb();       // B+C
+        r0 = READ_ONCE(*srcu_idx); // new reader
+}
+exists (0:r0=1 /\ 1:r1=1) (* Bad outcome. *)
 
-----------------------------------------------------------------
-Urgent RCU pull request for v6.2
+thanks,
 
-This commit fixes a lockdep false positive in synchronize_rcu() that
-can otherwise occur during early boot.  Theis fix simply avoids invoking
-lockdep if the scheduler has not yet been initialized, that is, during
-that portion of boot when interrupts are disabled.
+ - Joel
 
-----------------------------------------------------------------
-Paul E. McKenney (1):
-      rcu: Don't assert interrupts enabled too early in boot
 
- kernel/rcu/tree.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> kernel/rcu/srcutree.c | 10 ----------
+> 1 file changed, 10 deletions(-)
+>
+> --
+> 2.39.0.314.g84b9a713c41-goog
+>
