@@ -2,193 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06238C10F1E
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 17:00:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEC2DC4332F
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 18:06:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbiLTRAi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 12:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
+        id S233281AbiLTSGE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 13:06:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233854AbiLTRAg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 12:00:36 -0500
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D672186F2;
-        Tue, 20 Dec 2022 09:00:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1671555633;
-        bh=KHnjxMK7PefH8VFRsh3Ja4HLDbLno+j0FUqpkmX8Wsc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=tMB18aBWdAfBmoRE8kNyVshK864YvE7rtarXEt2b77/7opfByNHsOP3FTVqtrmCo8
-         h91X+ec62xRNYYfMdJhiIDDkJha9Mxdr7kMQoy7z4U4JLpR7U0kzAaNzdOY2k4B99q
-         2hym8bO65ZW6ic2e6rbuWKhZ4mK0Zrp+aRq0q73A9E1y6EynwV+oQlNKzgXlRGXukW
-         SCJgcjFoa+gqfYtLWGLgEMA6+owwvz+8/GNQ0fIDj+16G1YYcO5wCirJRrzuMLZXxr
-         J+0R4bbyzij/3lw8Fox1JxsF4ivuWnjlhQYrHx26v4dukC0a6oK15JDDkSE4+t+35d
-         Xef4jMRGqYE2A==
-Received: from [10.1.0.203] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Nc2rd3jcDzc7W;
-        Tue, 20 Dec 2022 12:00:33 -0500 (EST)
-Message-ID: <35293ec4-40a1-cf6b-3bdd-0e3e30819c06@efficios.com>
-Date:   Tue, 20 Dec 2022 12:00:58 -0500
+        with ESMTP id S233940AbiLTSGB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 13:06:01 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D419380
+        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 10:05:59 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id bf43so19801453lfb.6
+        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 10:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zT6l/y+/pcaCmWRWjjyqwx7biICVm4k76H1yPF1TiAw=;
+        b=VAfEntZvS7ozYFIxBpP/w6QhPifNGUsxboGKFqt1S0S/XZ+YCl4fhf+qIGjQfYD92T
+         LzbWusQn88EBEl65Laq9d42wzF7FBu8ll3I4WMRaEvXq3R5Wp6+0jLUMUnX/fs0Deh8R
+         oG4A2WJ5KfmpCukTCWe9uhlqiElFhxas/MOec=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zT6l/y+/pcaCmWRWjjyqwx7biICVm4k76H1yPF1TiAw=;
+        b=aKHS7TYMQ77t4WSf94xx1mwLp2sA1X65yynQ6t+dyWUFyAHB+WJfaw6DCCEcI70d3B
+         AS2p+OfJFdiZUya1OlGN1E/BG1xdShF8eNOxuAZDmOHxKtOEEbErJxtjIz1auQj+N5UR
+         7RboJbn9T8PxgUEcUnseG63uq8OIkWDAljdCBC0CnLUDvJIGkMOFInp4tu5G2fVRMdyR
+         lvXg4n5K2HFupDTW3f5VJXVhgaKZ1Jgc1robWeMIa0m+duIPaaE2d1T699RLLeQnURED
+         Fjt2y0/ICcVCM9qZulKf7pFBqJzsKfQ7A2eCToHABcbSSXq2QraxsdmOVvrdmNWrJ6qC
+         Yrrg==
+X-Gm-Message-State: ANoB5plyo6gBXcgU5vU1mpDGqwqKlbzDhH8I0ggr2M0aE2J8n4jAHwFu
+        hIIQPJSLK+v4W9DqhG+WUVx5xHt3zMmJQuWUnZ1c3K72UnmzzQpj
+X-Google-Smtp-Source: AA0mqf7ACIOYyaWFZgZT0P2Gp4sAUR/fuzWXWMMqzGPI5InVmVPUWObxItqzpZSl0PiAcalJyRXzIh2J80hkTXXfcp4=
+X-Received: by 2002:ac2:4347:0:b0:4a4:782a:42ac with SMTP id
+ o7-20020ac24347000000b004a4782a42acmr31861231lfl.468.1671559557915; Tue, 20
+ Dec 2022 10:05:57 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
+References: <20221218191310.130904-1-joel@joelfernandes.org>
+ <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com> <CAEXW_YQHpz3dNqW1ocqjr-e9qn09Rkg4kQ19byZORGbO18Xckg@mail.gmail.com>
+ <2da94283-4fce-9aff-ac5d-ba181fa0f008@efficios.com> <CAEXW_YQBmwynuBOWbV6_L2itRr_i3BZUxQ91PDC2We2vXhpztQ@mail.gmail.com>
+ <CAEXW_YTyZaE4ULvm-HygFN2BGm-jayHTbpnYbrJFoo_GOsYKQg@mail.gmail.com>
+ <659763b0-eee4-10dd-5f4a-37241173809c@efficios.com> <CAEXW_YQ+NTaM43Va5FG8kYSxr2gsbjar4_f3xnpSAHzgUVZ-+g@mail.gmail.com>
+ <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com> <35293ec4-40a1-cf6b-3bdd-0e3e30819c06@efficios.com>
+In-Reply-To: <35293ec4-40a1-cf6b-3bdd-0e3e30819c06@efficios.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 20 Dec 2022 18:05:46 +0000
+Message-ID: <CAEXW_YR194jzDQM7YZr0H8pDjhxUdymFbaheOGsMXq8judgGEQ@mail.gmail.com>
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Content-Language: en-US
-To:     Joel Fernandes <joel@joelfernandes.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-References: <20221218191310.130904-1-joel@joelfernandes.org>
- <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com>
- <CAEXW_YQHpz3dNqW1ocqjr-e9qn09Rkg4kQ19byZORGbO18Xckg@mail.gmail.com>
- <2da94283-4fce-9aff-ac5d-ba181fa0f008@efficios.com>
- <CAEXW_YQBmwynuBOWbV6_L2itRr_i3BZUxQ91PDC2We2vXhpztQ@mail.gmail.com>
- <CAEXW_YTyZaE4ULvm-HygFN2BGm-jayHTbpnYbrJFoo_GOsYKQg@mail.gmail.com>
- <659763b0-eee4-10dd-5f4a-37241173809c@efficios.com>
- <CAEXW_YQ+NTaM43Va5FG8kYSxr2gsbjar4_f3xnpSAHzgUVZ-+g@mail.gmail.com>
- <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-12-19 20:04, Joel Fernandes wrote:
-> On Mon, Dec 19, 2022 at 7:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->>
->> On Sun, Dec 18, 2022 at 8:49 PM Mathieu Desnoyers
->> <mathieu.desnoyers@efficios.com> wrote:
->> [...]
->>>>>>>>
->>>>>>>> On 2022-12-18 14:13, Joel Fernandes (Google) wrote:
+Hi Mathieu,
+
+On Tue, Dec 20, 2022 at 5:00 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> On 2022-12-19 20:04, Joel Fernandes wrote:
+> > On Mon, Dec 19, 2022 at 7:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
 [...]
+> >>> On a 64-bit system, where 64-bit counters are used, AFAIU this need to
+> >>> be exactly 2^64 read-side critical sections.
+> >>
+> >> Yes, but what about 32-bit systems?
+>
+> The overflow indeed happens after 2^32 increments, just like seqlock.
+> The question we need to ask is therefore: if 2^32 is good enough for
+> seqlock, why isn't it good enough for SRCU ?
 
->>>>>
->>>>> I think this is a bit dangerous. Yes there is the preemption thing you
->>>>> mentioned above, but that is bounded since you can only have a fixed
->>>>> number of tasks that underwent that preemption, and it is quite rare
->>>>> in the sense, each reader should get preempted just after sampling idx
->>>>> but not incrementing lock count.
->>>>>
->>>>> However, if we scan while new readers appear (outside of the above
->>>>> preemption problem), we can have counter wrap causing a false match
->>>>> much quicker.
->>>>> The scan loop is:
->>>>> check_readers(idx) {
->>>>>      count_all_unlocks(idx);
->>>>>      smp_mb();
->>>>>      count_all_locks(idx);
->>>>>      bool done = (locks == unlocks)
->>>>>      if (done) {
->>>>>            // readers are done, end scan for this idx.
->>>>>      } else {
->>>>>            // try again later
->>>>>      }
->>>>> }
->>>>>
->>>>> So if check_readers() got preempted just after the smp_mb(), then you
->>>>> can have lots of tasks enter and exit the read-side critical section
->>>>> and increment the locks count. Eventually locks == unlocks will
->>>>> happen, and it is screwed. Sure this is also theoretical, but yeah
->>>>> that issue can be made "worse" by scanning active readers
->>>>> deliberately, especially when such readers can also nest arbitrarily.
->>>>>
->>>>>> As a result, flipping between periods 0/1 is just relevant for forward
->>>>>> progress, not for correctness.
->>>>>
->>>>> Sure, agreed, forward progress.
->>>>
->>>> Adding to the last statement "But also correctness as described above".
->>>
->>> Exactly how many entry/exit of the read-side critical section while the
->>> grace period is preempted do you need to trigger this ?
->>
->> It depends on how many readers are active during the preemption of the
->> scan code. Say the preemption happened after per-CPU unlock counts
->> were totalled. Then AFAICS, if there are N active readers which need
->> the grace period to wait, you need (2^sizeof(int) - N) number of
->> lock+unlock to happen.
-> 
-> Sorry, here I meant (2^(sizeof(unsigned long) * 8) - N) which is 2^32
-> on 32-bit systems.
+I think Paul said wrap around does happen with SRCU on 32-bit but I'll
+let him talk more about it. If 32-bit is good enough, let us also drop
+the size of the counters for 64-bit then?
 
-And 2^64 on 64-bit systems.
+> >>> There are other synchronization algorithms such as seqlocks which are
+> >>> quite happy with much less protection against overflow (using a 32-bit
+> >>> counter even on 64-bit architectures).
+> >>
+> >> The seqlock is an interesting point.
+> >>
+> >>> For practical purposes, I suspect this issue is really just theoretical.
+> >>
+> >> I have to ask, what is the benefit of avoiding a flip and scanning
+> >> active readers? Is the issue about grace period delay or performance?
+> >> If so, it might be worth prototyping that approach and measuring using
+> >> rcutorture/rcuscale. If there is significant benefit to current
+> >> approach, then IMO it is worth exploring.
+>
+> The main benefit I expect is improved performance of the grace period
+> implementation in common cases where there are few or no readers
+> present, especially on machines with many cpus.
+>
+> It allows scanning both periods (0/1) for each cpu within the same pass,
+> therefore loading both period's unlock counters sitting in the same
+> cache line at once (improved locality), and then loading both period's
+> lock counters, also sitting in the same cache line.
+>
+> It also allows skipping the period flip entirely if there are no readers
+> present, which is an -arguably- tiny performance improvement as well.
 
-> 
-> thanks,
-> 
->   - Joel
-> 
-> 
->>> On a 64-bit system, where 64-bit counters are used, AFAIU this need to
->>> be exactly 2^64 read-side critical sections.
->>
->> Yes, but what about 32-bit systems?
+The issue of counter wrap aside, what if a new reader always shows up
+in the active index being scanned, then can you not delay the GP
+indefinitely? It seems like writer-starvation is possible then (sure
+it is possible also with preemption after reader-index-sampling, but
+scanning active index deliberately will make that worse). Seqlock does
+not have such writer starvation just because the writer does not care
+about what the readers are doing.
 
-The overflow indeed happens after 2^32 increments, just like seqlock.
-The question we need to ask is therefore: if 2^32 is good enough for 
-seqlock, why isn't it good enough for SRCU ?
+That said, the approach of scanning both counters does seem attractive
+for when there are no readers, for the reasons you mentioned. Maybe a
+heuristic to count the number of readers might help? If we are not
+reader-heavy, then scan both. Otherwise, just scan the inactive ones,
+and also couple that heuristic with the number of CPUs. I am
+interested in working on such a design with you! Let us do it and
+prototype/measure. ;-)
 
->>
->>> There are other synchronization algorithms such as seqlocks which are
->>> quite happy with much less protection against overflow (using a 32-bit
->>> counter even on 64-bit architectures).
->>
->> The seqlock is an interesting point.
->>
->>> For practical purposes, I suspect this issue is really just theoretical.
->>
->> I have to ask, what is the benefit of avoiding a flip and scanning
->> active readers? Is the issue about grace period delay or performance?
->> If so, it might be worth prototyping that approach and measuring using
->> rcutorture/rcuscale. If there is significant benefit to current
->> approach, then IMO it is worth exploring.
-
-The main benefit I expect is improved performance of the grace period 
-implementation in common cases where there are few or no readers 
-present, especially on machines with many cpus.
-
-It allows scanning both periods (0/1) for each cpu within the same pass, 
-therefore loading both period's unlock counters sitting in the same 
-cache line at once (improved locality), and then loading both period's 
-lock counters, also sitting in the same cache line.
-
-It also allows skipping the period flip entirely if there are no readers 
-present, which is an -arguably- tiny performance improvement as well.
-
-Thanks,
-
-Mathieu
-
->>
->>> Or am I missing your point ?
->>
->> No, I think you are not. Let me know if I missed something.
->>
->> Thanks,
->>
->>   - Joel
->>
->>
->>>
->>>
->>>>
->>>> thanks,
->>>>
->>>>    - Joel
->>>
->>> --
->>> Mathieu Desnoyers
->>> EfficiOS Inc.
->>> https://www.efficios.com
->>>
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Thanks.
