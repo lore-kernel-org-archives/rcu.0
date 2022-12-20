@@ -2,117 +2,177 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8598BC4332F
-	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 11:19:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 288FDC4332F
+	for <rcu@archiver.kernel.org>; Tue, 20 Dec 2022 12:34:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbiLTLTu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 06:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        id S229657AbiLTMeu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 07:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbiLTLTt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 06:19:49 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0E55F9B;
-        Tue, 20 Dec 2022 03:19:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1671535188; x=1703071188;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=SzQJswxVRxcpqFv6eaWlB/9VJizojsPMop7gx5A5odg=;
-  b=SE6KkStud9tEq8niFaOJKz9kgnWR1l2Qcn1ZH3AegCB1Gz0RfmYLvetV
-   riI65t5XERXAby4ocfWI+IPWIJ6G+PNwmUJxDtZNSXZgDWI9B0unFg7Mq
-   CFp3bR4KCUSEDHGWDldboiXU9gURpbiYfp5c9YoEMPYOo1UpruybYKm4v
-   q05Dnv1MApJkto0Dxvk+c5IlbVTj7OIjnE4Gg7WYEOTZjhqYrwaKdQme3
-   70BKLPh9FwCFKXV4OrUGTyz4GsiB6DaEv74O39b0YMzJ6IyqJCMb4G8Ua
-   j+G1DFeHGRhiyurEXo+I0v03pgdB+821JGATsLO4ygMD0Q47Tr9Bs0UeF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10566"; a="307271012"
-X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; 
-   d="scan'208";a="307271012"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2022 03:19:47 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10566"; a="681608481"
-X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; 
-   d="scan'208";a="681608481"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2022 03:19:45 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP bitmask
-Date:   Tue, 20 Dec 2022 19:25:20 +0800
-Message-Id: <20221220112520.3596920-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229738AbiLTMet (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 07:34:49 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716039582;
+        Tue, 20 Dec 2022 04:34:48 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C5D7861361;
+        Tue, 20 Dec 2022 12:34:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A742AC433D2;
+        Tue, 20 Dec 2022 12:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671539687;
+        bh=8eug8XIIHc+WnkDu4WAtT/tZ70RrOELqcMx9toNkkIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nVm+y8EYKAVS0OSRdl4ykO0kvWavbrvx3wTzHw8FzJiY8Py8AqxSc4+7YAPEusTCM
+         Czhy/9FeOup13C+L8bH20o2tRuF4MA0CJIPEuGd+E+mjkIoA6/BbM0Cn7wIXb470Sq
+         VNKsXFJOvughbkBLyKcogieeKULD+sxmLrYMB35L99qwAEyJ6V9goWaeTSJUgGdBJU
+         +HBs826mrWw0/vSsVoo/uwjS7JxTJQB+H4mfwCRcE6WWanWpMcA1eFLSFGYzQyhLAh
+         jXYnrTwzl/LvdsGZdO3u7IQ2RJz45RyvoWpIIHR7Foof7wMwZraKDnxn46u9PiFBSU
+         hT7aHPb5g2C4w==
+Date:   Tue, 20 Dec 2022 13:34:43 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
+Message-ID: <20221220123443.GA21796@lothringen>
+References: <20221218191310.130904-1-joel@joelfernandes.org>
+ <CAEXW_YRjAsx0HCnmjvth+yi0COTiynPRvjyT2sf1utMw5bTgiw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YRjAsx0HCnmjvth+yi0COTiynPRvjyT2sf1utMw5bTgiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For the kernel bulit with CONFIG_NO_HZ_FULL enabled and the following
-cpus is nohz_full cpus:
+On Mon, Dec 19, 2022 at 11:07:17PM -0500, Joel Fernandes wrote:
+> On Sun, Dec 18, 2022 at 2:13 PM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > Hello, I believe the pre-flip memory barrier is not required. The only reason I
+> > can say to remove it, other than the possibility that it is unnecessary, is to
+> > not have extra code that does not help. However, since we are issuing a fully
+> > memory-barrier after the flip, I cannot say that it hurts to do it anyway.
+> >
+> > For this reason, please consider these patches as "informational", than a
+> > "please merge". :-) Though, feel free to consider merging if you agree!
+> >
+> > All SRCU scenarios pass with these, with 6 hours of testing.
+> >
+> > thanks,
+> >
+> >  - Joel
+> >
+> > Joel Fernandes (Google) (2):
+> > srcu: Remove comment about prior read lock counts
+> > srcu: Remove memory barrier "E" as it is not required
+> 
+> And litmus tests confirm that "E" does not really do what the comments
+> say, PTAL:
+> Test 1:
+> C mbe
+> (*
+>  * Result: sometimes
+>  * Does previous scan see old reader's lock count, if a new reader saw
+> the new srcu_idx?
+>  *)
+> 
+> {}
+> 
+> P0(int *lockcount, int *srcu_idx) // updater
+> {
+>         int r0;
+>         r0 = READ_ONCE(*lockcount);
+>         smp_mb();       // E
+>         WRITE_ONCE(*srcu_idx, 1);
+> }
+> 
+> P1(int *lockcount, int *srcu_idx) // reader
+> {
+>         int r0;
+>         WRITE_ONCE(*lockcount, 1); // previous reader
+>         smp_mb();       // B+C
+>         r0 = READ_ONCE(*srcu_idx); // new reader
+> }
+> exists (0:r0=0 /\ 1:r0=1) (* Bad outcome. *)
+> 
+> Test 2:
+> C mbe2
+> 
+> (*
+>  * Result: sometimes
+>  * If updater saw reader's lock count, was that reader using the old idx?
+>  *)
+> 
+> {}
+> 
+> P0(int *lockcount, int *srcu_idx) // updater
+> {
+>         int r0;
+>         r0 = READ_ONCE(*lockcount);
+>         smp_mb();       // E
+>         WRITE_ONCE(*srcu_idx, 1);
+> }
+> 
+> P1(int *lockcount, int *srcu_idx) // reader
+> {
+>         int r0;
+>         int r1;
+>         r1 = READ_ONCE(*srcu_idx); // previous reader
+>         WRITE_ONCE(*lockcount, 1); // previous reader
+>         smp_mb();       // B+C
+>         r0 = READ_ONCE(*srcu_idx); // new reader
+> }
+> exists (0:r0=1 /\ 1:r1=1) (* Bad outcome. *)
 
-	CPU1                                                 CPU2
-rcu_report_exp_cpu_mult                          synchronize_rcu_expedited_wait
-   acquires rnp->lock                               mask = rnp->expmask;
-                                                    for_each_leaf_node_cpu_mask(rnp, cpu, mask)
-   rnp->expmask = rnp->expmask & ~mask;                rdp = per_cpu_ptr(&rcu_data, cpu1);
-   for_each_leaf_node_cpu_mask(rnp, cpu, mask)
-      rdp = per_cpu_ptr(&rcu_data, cpu1);
-      if (!rdp->rcu_forced_tick_exp)
-             continue;                                 rdp->rcu_forced_tick_exp = true;
-                                                       tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
+Actually, starring at this some more, there is some form of dependency
+on the idx in order to build the address where the reader must write the
+lockcount to. Litmus doesn't support arrays but assuming that
+&ssp->sda->srcu_lock_count == 0 (note the & in the beginning), it
+could be modelized that way (I'm eluding the unlock part to simplify):
 
-In the above scenario, after CPU1 reported the quiescent state, CPU1
-misses the opportunity to clear the TICK_DEP_BIT_RCU_EXP bitmask, it
-will not be cleared until the next expedited grace period starts and
-the CPU1 quiescent state is reported again. during this window period,
-the CPU1 whose tick can not be stopped, if CPU1 has only one runnable
-task and this task has aggressive real-time response constraints, this
-task may have one of the worst response times.
-
-Therefore, this commit add rnp->lock when set TICK_DEP_BIT_RCU_EXP
-bitmask to fix this race.
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
- kernel/rcu/tree_exp.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+C w-depend-r
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 927abaf6c822..e5fe0099488b 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -593,6 +593,7 @@ static void synchronize_rcu_expedited_wait(void)
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
- 	struct rcu_node *rnp_root = rcu_get_root();
-+	unsigned long flags;
- 
- 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
- 	jiffies_stall = rcu_exp_jiffies_till_stall_check();
-@@ -601,17 +602,17 @@ static void synchronize_rcu_expedited_wait(void)
- 		if (synchronize_rcu_expedited_wait_once(1))
- 			return;
- 		rcu_for_each_leaf_node(rnp) {
-+			raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 			mask = READ_ONCE(rnp->expmask);
- 			for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
- 				rdp = per_cpu_ptr(&rcu_data, cpu);
- 				if (rdp->rcu_forced_tick_exp)
- 					continue;
- 				rdp->rcu_forced_tick_exp = true;
--				preempt_disable();
- 				if (cpu_online(cpu))
- 					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
--				preempt_enable();
- 			}
-+			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		}
- 		j = READ_ONCE(jiffies_till_first_fqs);
- 		if (synchronize_rcu_expedited_wait_once(j + HZ))
--- 
-2.25.1
+{
+	PLOCK=LOCK0;
+}
 
+// updater
+P0(int *LOCK0, int *LOCK1, int **PLOCK)
+{
+	int lock1;
+
+	lock1 = READ_ONCE(*LOCK1); // READ from inactive idx
+	smp_mb();
+	WRITE_ONCE(*PLOCK, LOCK1); // Flip idx
+}
+
+// reader
+P1(int **PLOCK)
+{
+	int *plock;
+
+	plock = READ_ONCE(*PLOCK); 	// Read active idx
+	WRITE_ONCE(*plock, 1); // Write to active idx
+}
+
+exists (0:lock0=1) // never happens
+---
+
+* Is it an address dependency? But the LKMM refers to that only in
+  terms of LOAD - LOAD ordering.
+
+* Is it a control dependency? But the LKMM refers to that only in
+  terms of branch with "if".
+
+So I don't know the name of the pattern but it makes litmus happy.
+
+Thanks.
