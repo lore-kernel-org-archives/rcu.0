@@ -2,132 +2,68 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08327C4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 17:11:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D23E8C10F1B
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 17:19:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbiLURLm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Dec 2022 12:11:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        id S234891AbiLURTp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 12:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234778AbiLURLX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Dec 2022 12:11:23 -0500
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13696AE5C;
-        Wed, 21 Dec 2022 09:11:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1671642677;
-        bh=ksJ8oib5hNthsIEV5bELiEdvWQP+tk9zdr8VeG0K7Xs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bIVw7gAgF1vptnGgLJLkVmJLtCdSXoXIFF38aT0CiGW8QwLYIVXCoPDhNFiJq9ZH4
-         9GFMMAvZI3KZYZEDyfXPXTaLmJKryrPxihT4gx0ikP2eC733WJAR2dcS5dbCDT4D1I
-         RTSDOEpN/36BhUuVd4kORMilxibAGXlbo0Mn56fiRjSp45Y2r+CbGxambzWovBeskC
-         TCCMdYQaGpzNjmMUN2YPQFcXYKet2JVc7yHde9uZkEUMYatZe0c0tcHWccDjJyH2/C
-         /28tW44tg7HMYTFmihkqb5+3fVriD4qTTXXBGSzu9BMENhz+nIwtJFLnmREA/kq9PL
-         VB6cpyqWioETA==
-Received: from [10.1.0.30] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Ncg2Y1MzBzc9V;
-        Wed, 21 Dec 2022 12:11:17 -0500 (EST)
-Message-ID: <bb794e83-992e-8181-d9b9-acc68536ce5a@efficios.com>
-Date:   Wed, 21 Dec 2022 12:11:42 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <6438d903-ab97-48c7-c338-9f0bc2686f94@efficios.com>
- <7A9876BA-C375-42A7-A5C9-FD940D2898D7@joelfernandes.org>
- <5bd5ee4a-710a-96bc-abe8-772b2e60f478@efficios.com>
- <20221220225756.GB26563@lothringen>
- <c085be21-b45f-4186-6f41-5082771c79ca@efficios.com>
- <20221221115924.GA34934@lothringen>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20221221115924.GA34934@lothringen>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S229578AbiLURTW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 12:19:22 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4582B264B5;
+        Wed, 21 Dec 2022 09:18:28 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D687F61871;
+        Wed, 21 Dec 2022 17:18:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3CDF8C433EF;
+        Wed, 21 Dec 2022 17:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671643107;
+        bh=vgtePbIt1Yp7RasEd6oI91vjprm/wps3RcyTr9l+lJY=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=RjTqSGqeTq52/fB5yaUvRKKY3Oc3PpIoqZ8D+r8hVKHZyJ3YFmsrLXWQCpL6yrbuF
+         DDQr9N5WanjtD8pH0sp1Jmf8ES+cl5w17GxN+STh8Iw0FkVfHwpfcDUmHxIn21U5ze
+         enw27ZK9KjUrTlu/rKAh0wVtartTWBjNngC5PEuY1muUUrCdufx34OA/W8rP/7bx8s
+         HcVCbxGJr3fVc2HYEzpwT3k2h3oU2SgQmif9woyPtxPOvJMbqvdlJ7/3WtP1dTYFLw
+         cR4ejxaOu/6sqBc9YwqQfrukADx99XrfUfdJoUnpPssacBxl6OA73hyu5tfTMvJZBN
+         BOsPbhtG1RW6g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2A85EC395DF;
+        Wed, 21 Dec 2022 17:18:27 +0000 (UTC)
+Subject: Re: [GIT PULL] Avoid synchronize_rcu() false positives in semi-early boot
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
+References: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
+X-PR-Tracked-List-Id: <rcu.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.12.17a
+X-PR-Tracked-Commit-Id: 3f6c3d29df58f391cf487b50a24ebd24045ba569
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 19822e3ee4c891e1e8434e290fbca0af52490240
+Message-Id: <167164310717.3046.7874278338213977672.pr-tracker-bot@kernel.org>
+Date:   Wed, 21 Dec 2022 17:18:27 +0000
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rcu@vger.kernel.org, kernel-team@fb.com, rostedt@goodmis.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-12-21 06:59, Frederic Weisbecker wrote:
-> On Tue, Dec 20, 2022 at 10:34:19PM -0500, Mathieu Desnoyers wrote:
-[...]
->>
->> The memory ordering constraint I am concerned about here is:
->>
->>   * [...] In addition,
->>   * each CPU having an SRCU read-side critical section that extends beyond
->>   * the return from synchronize_srcu() is guaranteed to have executed a
->>   * full memory barrier after the beginning of synchronize_srcu() and before
->>   * the beginning of that SRCU read-side critical section. [...]
->>
->> So if we have a SRCU read-side critical section that begins after the beginning
->> of synchronize_srcu, but before its first memory barrier, it would miss the
->> guarantee that the full memory barrier is issued before the beginning of that
->> SRCU read-side critical section. IOW, that memory barrier needs to be at the
->> very beginning of the grace period.
-> 
-> I'm confused, what's wrong with this ?
-> 
-> UPDATER                  READER
-> -------                  ------
-> STORE X = 1              STORE srcu_read_lock++
-> // rcu_seq_snap()        smp_mb()
-> smp_mb()                 READ X
-> // scans
-> READ srcu_read_lock
+The pull request you sent on Mon, 19 Dec 2022 17:29:06 -0800:
 
-What you refer to here is only memory ordering of the store to X and 
-load from X wrt loading/increment of srcu_read_lock, which is internal 
-to the srcu implementation. If we really want to model the provided 
-high-level memory ordering guarantees, we should consider a scenario 
-where SRCU is used for its memory ordering properties to synchronize 
-other variables.
+> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.12.17a
 
-I'm concerned about the following Dekker scenario, where 
-synchronize_srcu() and srcu_read_lock/unlock would be used instead of 
-memory barriers:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/19822e3ee4c891e1e8434e290fbca0af52490240
 
-Initial state: X = 0, Y = 0
-
-Thread A                   Thread B
----------------------------------------------
-STORE X = 1                STORE Y = 1
-synchronize_srcu()
-                            srcu_read_lock()
-                            r1 = LOAD X
-                            srcu_read_unlock()
-r0 = LOAD Y
-
-BUG_ON(!r0 && !r1)
-
-So in the synchronize_srcu implementation, there appears to be two
-major scenarios: either srcu_gp_start_if_needed starts a gp or expedited 
-gp, or it uses an already started gp/expedited gp. When snapshotting 
-with rcu_seq_snap, the fact that the memory barrier is after the 
-ssp->srcu_gp_seq load means that it does not order prior memory accesses 
-before that load. This sequence value is then used to identify which 
-gp_seq to wait for when piggy-backing on another already-started gp. I 
-worry about reordering between STORE X = 1 and load of ssp->srcu_gp_seq, 
-which is then used to piggy-back on an already-started gp.
-
-I suspect that the implicit barrier in srcu_read_lock() invoked at the
-beginning of srcu_gp_start_if_needed() is really the barrier that makes
-all this behave as expected. But without documentation it's rather hard 
-to follow.
-
-Thanks,
-
-Mathieu
+Thank you!
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
