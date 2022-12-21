@@ -2,165 +2,120 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D327C4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 20:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7398C4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 20:16:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbiLUUIx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Dec 2022 15:08:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S234765AbiLUUQh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 15:16:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbiLUUIw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Dec 2022 15:08:52 -0500
+        with ESMTP id S234754AbiLUUQg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 15:16:36 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F49720BD5;
-        Wed, 21 Dec 2022 12:08:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C5CBDE;
+        Wed, 21 Dec 2022 12:16:35 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C72586190C;
-        Wed, 21 Dec 2022 20:08:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DA51C433EF;
-        Wed, 21 Dec 2022 20:08:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3679961926;
+        Wed, 21 Dec 2022 20:16:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90ED4C433D2;
+        Wed, 21 Dec 2022 20:16:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671653330;
-        bh=tgkhlusnoqrOCl0ix0q96zvD0vmGeJvGQZl1TUQm6RY=;
+        s=k20201202; t=1671653794;
+        bh=hg2Kn9h2HBlKWh0BcTWlEi5gwHmpS1nBQDmwTLKHBcQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hbvMqFvykjoKg8wpcFafh8mkGa/u9xDVhBnXv5zWLFL9m3MIgQttaCNAS7ZSR295Y
-         SSzp+f/9rZnr5oRc0J00Tapb1G2TIzACEigpNdGqMjD8MprhYrRYe6t+8B44mPf89J
-         L9bP7AfzVf+qopkYV7vS+yhpi+Eb7B9LTutXuFh4H80eo/X3sKuMvawyH+Y7LM9L5l
-         LF9MkDuNQMq2Hu0F7Nl+2b9v15AXJGFQhdWxEzeUUcsGqh6zkCRHCtILvnktQw/7mN
-         m8bI/OVlQ1OxAVcmVobr1stof8D65QYvRYXcPkpFnuV/X6ZpmaWtqMvrisGwDMdMPO
-         6HMzk14wmaSsg==
+        b=aN6NkNgmUlJRWyexy7G/rLGPauYIOmxbia55zJCognHglSuZUlBaJZeA9WqD2xxP6
+         noHNbQnG66pkJzglrEOZGuztVkMJBeFt4wSOai/Xto931au9FrZVL4wex1R5PgyK1v
+         IJwXSNmy3Hpap64eIZw4K8bSSKEg5ZNHAS8F+JVrmlJccNB0FoTQSGqTvlkSIMNWog
+         51z6H2eLv4hGK/Y01ZaNSXWCm7UqmismF1BDaRImAIJymfJP396ntfY6Ri8cWxK6ld
+         /TIAdP2wdOGUNYpkDnWI1Mg4QynWf388o0Vj4sOfGHJDssc0yhCWFhJYdFio2F9dRV
+         wlohh9saZ0yAA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A1D395C0989; Wed, 21 Dec 2022 12:08:49 -0800 (PST)
-Date:   Wed, 21 Dec 2022 12:08:49 -0800
+        id 2C9F15C12EC; Wed, 21 Dec 2022 12:16:34 -0800 (PST)
+Date:   Wed, 21 Dec 2022 12:16:34 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zqiang <qiang1.zhang@intel.com>
 Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP
- bitmask
-Message-ID: <20221221200849.GG4001@paulmck-ThinkPad-P17-Gen-1>
+Subject: Re: [PATCH] rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
+Message-ID: <20221221201634.GH4001@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221220112520.3596920-1-qiang1.zhang@intel.com>
+References: <20221220141625.3612085-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221220112520.3596920-1-qiang1.zhang@intel.com>
+In-Reply-To: <20221220141625.3612085-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 07:25:20PM +0800, Zqiang wrote:
-> For the kernel bulit with CONFIG_NO_HZ_FULL enabled and the following
-> cpus is nohz_full cpus:
-> 
-> 	CPU1                                                 CPU2
-> rcu_report_exp_cpu_mult                          synchronize_rcu_expedited_wait
->    acquires rnp->lock                               mask = rnp->expmask;
->                                                     for_each_leaf_node_cpu_mask(rnp, cpu, mask)
->    rnp->expmask = rnp->expmask & ~mask;                rdp = per_cpu_ptr(&rcu_data, cpu1);
->    for_each_leaf_node_cpu_mask(rnp, cpu, mask)
->       rdp = per_cpu_ptr(&rcu_data, cpu1);
->       if (!rdp->rcu_forced_tick_exp)
->              continue;                                 rdp->rcu_forced_tick_exp = true;
->                                                        tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
-> 
-> In the above scenario, after CPU1 reported the quiescent state, CPU1
-> misses the opportunity to clear the TICK_DEP_BIT_RCU_EXP bitmask, it
-> will not be cleared until the next expedited grace period starts and
-> the CPU1 quiescent state is reported again. during this window period,
-> the CPU1 whose tick can not be stopped, if CPU1 has only one runnable
-> task and this task has aggressive real-time response constraints, this
-> task may have one of the worst response times.
-> 
-> Therefore, this commit add rnp->lock when set TICK_DEP_BIT_RCU_EXP
-> bitmask to fix this race.
+On Tue, Dec 20, 2022 at 10:16:25PM +0800, Zqiang wrote:
+> This commit add TICK_DEP_MASK_RCU_EXP dependency check in
+> check_tick_dependency(), fix commit df1e849ae4559 ("rcu: Enable
+> tick for nohz_full CPUs slow to provide expedited QS").
 > 
 > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Good eyes, thank you!!!
+Again, good eyes, thank you!!!
 
-Queued for testing and further review as follows, as always, please
-check for errors.
+I have queued this for further review and testing, given that it affects
+pretty much only RCU.  However, if someone else would rather take it:
+
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
 							Thanx, Paul
 
 ------------------------------------------------------------------------
 
-commit acfe689f2e473fb59b6d2c95af5fe36198bb9a84
+commit f22caef6cda5ed19a55ec2e703f60f1fa85e52bc
 Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Tue Dec 20 19:25:20 2022 +0800
+Date:   Tue Dec 20 22:16:25 2022 +0800
 
-    rcu: Fix set/clear TICK_DEP_BIT_RCU_EXP bitmask race
+    rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
     
-    For kernels built with CONFIG_NO_HZ_FULL=y, the following scenario can result
-    in the scheduling-clock interrupt remaining enabled on a holdout CPU after
-    its quiescent state has been reported:
+    This commit adds checks for the TICK_DEP_MASK_RCU_EXP bit, thus enabling
+    RCU expedited grace periods to actually force-enable scheduling-clock
+    interrupts on holdout CPUs.
     
-            CPU1                                                 CPU2
-    rcu_report_exp_cpu_mult                          synchronize_rcu_expedited_wait
-       acquires rnp->lock                               mask = rnp->expmask;
-                                                        for_each_leaf_node_cpu_mask(rnp, cpu, mask)
-       rnp->expmask = rnp->expmask & ~mask;                rdp = per_cpu_ptr(&rcu_data, cpu1);
-       for_each_leaf_node_cpu_mask(rnp, cpu, mask)
-          rdp = per_cpu_ptr(&rcu_data, cpu1);
-          if (!rdp->rcu_forced_tick_exp)
-                 continue;                                 rdp->rcu_forced_tick_exp = true;
-                                                           tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
-    
-    The problem is that CPU2's sampling of rnp->expmask is obsolete by the
-    time it invokes tick_dep_set_cpu(), and CPU1 is not guaranteed to see
-    CPU2's store to ->rcu_forced_tick_exp in time to clear it.  And even if
-    CPU1 does see that store, it might invoke tick_dep_clear_cpu() before
-    CPU2 got around to executing its tick_dep_set_cpu(), which would still
-    leave the victim CPU with its scheduler-clock tick running.
-    
-    Either way, an nohz_full real-time application running on the victim
-    CPU would have its latency needlessly degraded.
-    
-    Note that expedited RCU grace periods look at context-tracking
-    information, and so if the CPU is executing in nohz_full usermode
-    throughout, that CPU cannot be victimized in this manner.
-    
-    This commit therefore causes synchronize_rcu_expedited_wait to hold
-    the rcu_node structure's ->lock when checking for holdout CPUs, setting
-    TICK_DEP_BIT_RCU_EXP, and invoking tick_dep_set_cpu(), thus preventing
-    this race.
-    
+    Fixes: df1e849ae455 ("rcu: Enable tick for nohz_full CPUs slow to provide expedited QS")
     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Cc: Steven Rostedt <rostedt@goodmis.org>
+    Cc: Masami Hiramatsu <mhiramat@kernel.org>
+    Cc: Frederic Weisbecker <fweisbec@gmail.com>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Ingo Molnar <mingo@kernel.org>
+    Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 249c2967d9e6c..7cc4856da0817 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -594,6 +594,7 @@ static void synchronize_rcu_expedited_wait(void)
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
- 	struct rcu_node *rnp_root = rcu_get_root();
-+	unsigned long flags;
+diff --git a/include/trace/events/timer.h b/include/trace/events/timer.h
+index 2e713a7d9aa3a..3e8619c72f774 100644
+--- a/include/trace/events/timer.h
++++ b/include/trace/events/timer.h
+@@ -371,7 +371,8 @@ TRACE_EVENT(itimer_expire,
+ 		tick_dep_name(PERF_EVENTS)		\
+ 		tick_dep_name(SCHED)			\
+ 		tick_dep_name(CLOCK_UNSTABLE)		\
+-		tick_dep_name_end(RCU)
++		tick_dep_name(RCU)			\
++		tick_dep_name_end(RCU_EXP)
  
- 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
- 	jiffies_stall = rcu_exp_jiffies_till_stall_check();
-@@ -602,17 +603,17 @@ static void synchronize_rcu_expedited_wait(void)
- 		if (synchronize_rcu_expedited_wait_once(1))
- 			return;
- 		rcu_for_each_leaf_node(rnp) {
-+			raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 			mask = READ_ONCE(rnp->expmask);
- 			for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
- 				rdp = per_cpu_ptr(&rcu_data, cpu);
- 				if (rdp->rcu_forced_tick_exp)
- 					continue;
- 				rdp->rcu_forced_tick_exp = true;
--				preempt_disable();
- 				if (cpu_online(cpu))
- 					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
--				preempt_enable();
- 			}
-+			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		}
- 		j = READ_ONCE(jiffies_till_first_fqs);
- 		if (synchronize_rcu_expedited_wait_once(j + HZ))
+ #undef tick_dep_name
+ #undef tick_dep_mask_name
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index b0e3c9205946f..ba2ac1469d473 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -281,6 +281,11 @@ static bool check_tick_dependency(atomic_t *dep)
+ 		return true;
+ 	}
+ 
++	if (val & TICK_DEP_MASK_RCU_EXP) {
++		trace_tick_stop(0, TICK_DEP_MASK_RCU_EXP);
++		return true;
++	}
++
+ 	return false;
+ }
+ 
