@@ -2,65 +2,65 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3512AC4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 04:26:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB899C4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 05:03:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbiLUE02 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 23:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        id S233934AbiLUFDH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 00:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234369AbiLUE00 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 23:26:26 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA645E087
-        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 20:26:24 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id pv25so9609702qvb.1
-        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 20:26:24 -0800 (PST)
+        with ESMTP id S229591AbiLUFDE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 00:03:04 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9599C1EECC
+        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 21:03:00 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id pv25so9655096qvb.1
+        for <rcu@vger.kernel.org>; Tue, 20 Dec 2022 21:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TCgpNOZquvWN/9Ttvx6v+EBz7WzNJvsJWIJuT0Mli4o=;
-        b=rsydt1487DQ+I36CTrPO9KN4tP5ytKwJD9mZbgEOkURy38DZoBqVFTo8J7Cr8nll8s
-         huS0jz1y88YJVXoI06pAUoqTPxYiKPJlI1kDGDe6rV14henfbVsolzaxgq3ETm1Ia8tk
-         XO4ugVh72EGwTa+BW87vcpOvfB0lDbb27iUkk=
+        bh=VwujNE44iVgoBOHodnRgRRanSX+Q9n1m4X8xH8g+7sM=;
+        b=ap85Sybm93zsxVaMi8bpUlC8wEntx/SEma58OrHgtIrcDSqOXU4eEzxbaKx5ctrgjR
+         trJxr7ikyZe7ZeHZAp2KJkE5kjJH5edzeDLHiQAWqxqBhH/DXwzrwZtkjCsKScIwXBXh
+         B+jK5Ixm5ZucyHAS2BvtVpA0XyNLCZJAVzAW8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
          :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TCgpNOZquvWN/9Ttvx6v+EBz7WzNJvsJWIJuT0Mli4o=;
-        b=QgDO5AH1jTyyYo3WYqhFL8QMqi22fO0hJEBXb4Qik/TZf/RAga/+/Ou6tK7zuCn4cq
-         Vd/gqlmdgtHsPF7YKmvbW/4ZNu4XI3JpyMIX4C7nHUfjfhBk2p04VMGfuSoBCdm0iWtI
-         aOQr1/w0dkNSO/n/oGWJoBx3A60DETDQqbmKeoy9pugYJUblJf9V4yE3xBAL7wyuapad
-         kBLthyfSM9qgDEP+YXqCfo1bS9ONz8xEgmqozJ5OOxaQN6qe9w5IvU+1y8BJXNGyivgo
-         45WEIdGPysEccXwSn01uvncTEmTLdTxKQIzoqq4W/BqfFLn5oD/sTLuUHjCf2+wkkp6K
-         5ttQ==
-X-Gm-Message-State: AFqh2krSqXsuAONvFQZBERy1Rw+GMOmXSEJjZGS2HiUKg7Iyf0BymFKa
-        GcNpOJM3kLhAJVCqfBtxOMGtMA==
-X-Google-Smtp-Source: AMrXdXuIgc10HzBZ3I3C3kZF2bbt5BV3lGXNCccWEyFVLPGrrgUNKt9Ho3ZiWcKwn7QLbLo2DCe47Q==
-X-Received: by 2002:a0c:ed34:0:b0:4d8:42df:19d7 with SMTP id u20-20020a0ced34000000b004d842df19d7mr176862qvq.36.1671596783841;
-        Tue, 20 Dec 2022 20:26:23 -0800 (PST)
+        bh=VwujNE44iVgoBOHodnRgRRanSX+Q9n1m4X8xH8g+7sM=;
+        b=087GVnoLd351GJixKi5H2OfyPEt21d/M8k5U4er4Fu4dVp6bpYyMN0guRycJFIdLLx
+         zCLV21yFn2Pe4jeoy0ew2afR3qhlt07TATtV3Gj4RRSIVkHvfrnuFMgnbbsBtDd4r9es
+         NtIcO1P5QR04ZvVinq1qTtLB0KXdmeOu2gSYnW5N4GZeV/zbf0v2mhYd9a76oh54q2Vz
+         Z5HBe7tRsJE7PMyd73Meom7xfWggeb+nx27/1Fc/+E4KAzX9j6m299cTVdgP/tFQ/6xL
+         /BKmf7X0nMFAp3q5IZnfsAzSxJKVU/b4IUHMqQBE1opZxo96HfXMVQnG3tC7TDh0BGIE
+         PnjQ==
+X-Gm-Message-State: AFqh2krKk2GcGx4n9NBbsE884u5Xlm7DV6sOJsLr9xv64wOCEXG5dq+v
+        cEUrCSFHozIgQd4Y9E3lOBVnYg==
+X-Google-Smtp-Source: AMrXdXuSLNHKjeBWuGm1h5b1to192LogWAy1QpRlpAQxP5nonBRhmpywfufNttvQjpwpmSR9bHU6Xg==
+X-Received: by 2002:a0c:ea51:0:b0:51a:a201:5619 with SMTP id u17-20020a0cea51000000b0051aa2015619mr747057qvp.13.1671598979604;
+        Tue, 20 Dec 2022 21:02:59 -0800 (PST)
 Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id dm36-20020a05620a1d6400b006bbc3724affsm10030526qkb.45.2022.12.20.20.26.22
+        by smtp.gmail.com with ESMTPSA id bm32-20020a05620a19a000b0070209239b87sm10119612qkb.41.2022.12.20.21.02.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Dec 2022 20:26:23 -0800 (PST)
+        Tue, 20 Dec 2022 21:02:58 -0800 (PST)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 From:   Joel Fernandes <joel@joelfernandes.org>
 Mime-Version: 1.0 (1.0)
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Date:   Tue, 20 Dec 2022 23:26:12 -0500
-Message-Id: <6BD506EA-77D2-4AC9-87A5-C8781594CF0F@joelfernandes.org>
-References: <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+Date:   Wed, 21 Dec 2022 00:02:48 -0500
+Message-Id: <969CAAB7-5CBE-45F4-AE12-93E51D13F146@joelfernandes.org>
+References: <d010a8ca-79a4-bd25-dff1-cb7dee627365@efficios.com>
+Cc:     Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
         linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-In-Reply-To: <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
+In-Reply-To: <d010a8ca-79a4-bd25-dff1-cb7dee627365@efficios.com>
 To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
@@ -69,70 +69,195 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-> On Dec 20, 2022, at 10:43 PM, Mathieu Desnoyers <mathieu.desnoyers@efficio=
+> On Dec 20, 2022, at 10:51 PM, Mathieu Desnoyers <mathieu.desnoyers@efficio=
 s.com> wrote:
 >=20
-> =EF=BB=BFOn 2022-12-20 19:58, Frederic Weisbecker wrote:
->>> On Wed, Dec 21, 2022 at 01:49:57AM +0100, Frederic Weisbecker wrote:
->>> On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
->>>> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.or=
-g> wrote:
->>>> Agreed about (1).
->>>>=20
->>>>> _ In (2), E pairs with the address-dependency between idx and lock_cou=
-nt.
->>>>=20
->>>> But that is not the only reason. If that was the only reason for (2),
->>>> then there is an smp_mb() just before the next-scan post-flip before
->>>> the lock counts are read.
+> =EF=BB=BFOn 2022-12-20 15:55, Joel Fernandes wrote:
+>>>> On Dec 20, 2022, at 1:29 PM, Joel Fernandes <joel@joelfernandes.org> wr=
+ote:
 >>>=20
->>> The post-flip barrier makes sure the new idx is visible on the next READ=
-ER's
->>> turn, but it doesn't protect against the fact that "READ idx then WRITE l=
-ock[idx]"
->>> may appear unordered from the update side POV if there is no barrier bet=
-ween the
->>> scan and the flip.
+>>> =EF=BB=BF
 >>>=20
->>> If you remove the smp_mb() from the litmus test I sent, things explode.
->> Or rather, look at it the other way, if there is no barrier between the l=
-ock
->> scan and the index flip (E), then the index flip can appear to be written=
- before the
->> lock is read. Which means you may start activating the index before you f=
-inish
->> reading it (at least it appears that way from the readers pont of view).
+>>>>> On Dec 20, 2022, at 1:13 PM, Mathieu Desnoyers <mathieu.desnoyers@effi=
+cios.com> wrote:
+>>>>>=20
+>>>>> =EF=BB=BFOn 2022-12-20 13:05, Joel Fernandes wrote:
+>>>>> Hi Mathieu,
+>>>>>> On Tue, Dec 20, 2022 at 5:00 PM Mathieu Desnoyers
+>>>>>> <mathieu.desnoyers@efficios.com> wrote:
+>>>>>>=20
+>>>>>> On 2022-12-19 20:04, Joel Fernandes wrote:
+>>>>>>>> On Mon, Dec 19, 2022 at 7:55 PM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+>>>>> [...]
+>>>>>>>>> On a 64-bit system, where 64-bit counters are used, AFAIU this nee=
+d to
+>>>>>>>>> be exactly 2^64 read-side critical sections.
+>>>>>>>>=20
+>>>>>>>> Yes, but what about 32-bit systems?
+>>>>>>=20
+>>>>>> The overflow indeed happens after 2^32 increments, just like seqlock.=
+
+>>>>>> The question we need to ask is therefore: if 2^32 is good enough for
+>>>>>> seqlock, why isn't it good enough for SRCU ?
+>>>>> I think Paul said wrap around does happen with SRCU on 32-bit but I'll=
+
+>>>>> let him talk more about it. If 32-bit is good enough, let us also drop=
+
+>>>>> the size of the counters for 64-bit then?
+>>>>>>>>> There are other synchronization algorithms such as seqlocks which a=
+re
+>>>>>>>>> quite happy with much less protection against overflow (using a 32=
+-bit
+>>>>>>>>> counter even on 64-bit architectures).
+>>>>>>>>=20
+>>>>>>>> The seqlock is an interesting point.
+>>>>>>>>=20
+>>>>>>>>> For practical purposes, I suspect this issue is really just theore=
+tical.
+>>>>>>>>=20
+>>>>>>>> I have to ask, what is the benefit of avoiding a flip and scanning
+>>>>>>>> active readers? Is the issue about grace period delay or performanc=
+e?
+>>>>>>>> If so, it might be worth prototyping that approach and measuring us=
+ing
+>>>>>>>> rcutorture/rcuscale. If there is significant benefit to current
+>>>>>>>> approach, then IMO it is worth exploring.
+>>>>>>=20
+>>>>>> The main benefit I expect is improved performance of the grace period=
+
+>>>>>> implementation in common cases where there are few or no readers
+>>>>>> present, especially on machines with many cpus.
+>>>>>>=20
+>>>>>> It allows scanning both periods (0/1) for each cpu within the same pa=
+ss,
+>>>>>> therefore loading both period's unlock counters sitting in the same
+>>>>>> cache line at once (improved locality), and then loading both period'=
+s
+>>>>>> lock counters, also sitting in the same cache line.
+>>>>>>=20
+>>>>>> It also allows skipping the period flip entirely if there are no read=
+ers
+>>>>>> present, which is an -arguably- tiny performance improvement as well.=
+
+>>>>> The issue of counter wrap aside, what if a new reader always shows up
+>>>>> in the active index being scanned, then can you not delay the GP
+>>>>> indefinitely? It seems like writer-starvation is possible then (sure
+>>>>> it is possible also with preemption after reader-index-sampling, but
+>>>>> scanning active index deliberately will make that worse). Seqlock does=
+
+>>>>> not have such writer starvation just because the writer does not care
+>>>>> about what the readers are doing.
+>>>>=20
+>>>> No, it's not possible for "current index" readers to starve the g.p. wi=
+th the side-rcu scheme, because the initial pass (sampling both periods) onl=
+y opportunistically skips flipping the period if there happens to be no read=
+ers in both periods.
+>>>>=20
+>>>> If there are readers in the "non-current" period, the grace period wait=
+s for them.
+>>>>=20
+>>>> If there are readers in the "current" period, it flips the period and t=
+hen waits for them.
+>>>=20
+>>> Ok glad you already do that, this is what I was sort of leaning at in my=
+ previous email as well, that is doing a hybrid approach. Sorry I did not kn=
+ow the details of your side-RCU to know you were already doing something lik=
+e that.
+>>>=20
+>>>>=20
+>>>>> That said, the approach of scanning both counters does seem attractive=
+
+>>>>> for when there are no readers, for the reasons you mentioned. Maybe a
+>>>>> heuristic to count the number of readers might help? If we are not
+>>>>> reader-heavy, then scan both. Otherwise, just scan the inactive ones,
+>>>>> and also couple that heuristic with the number of CPUs. I am
+>>>>> interested in working on such a design with you! Let us do it and
+>>>>> prototype/measure. ;-)
+>>>>=20
+>>>> Considering that it would add extra complexity, I'm unsure what that ex=
+tra heuristic would improve over just scanning both periods in the first pas=
+s.
+>>>=20
+>>> Makes sense, I think you indirectly implement a form of heuristic alread=
+y by flipping in case scanning both was not fruitful.
+>>>=20
+>>>> I'll be happy to work with you on such a design :) I think we can borro=
+w quite a few concepts from side-rcu for this. Please be aware that my time i=
+s limited though, as I'm currently supposed to be on vacation. :)
+>>>=20
+>>> Oh, I was more referring to after the holidays. I am also starting vacat=
+ion soon and limited In cycles ;-). It is probably better to enjoy the holid=
+ays and come back to this after.
+>>>=20
+>>> I do want to finish my memory barrier studies of SRCU over the holidays s=
+ince I have been deep in the hole with that already. Back to the post flip m=
+emory barrier here since I think now even that might not be needed=E2=80=A6
+>> In my view,  the mb between the totaling of unlocks and totaling of locks=
+ serves as the mb that is required to enforce the GP guarantee, which I thin=
+k is what Mathieu is referring to.
 >=20
-> Considering that you can have pre-existing readers from arbitrary index ap=
-pearing anywhere in the grace period (because a reader can fetch the
-> index and be preempted for an arbitrary amount of time before incrementing=
- the lock count), the grace period algorithm needs to deal with the fact tha=
-t a newcoming reader can appear in a given index either before or after the f=
-lip.
+> No, AFAIU you also need barriers at the beginning and end of synchronize_s=
+rcu to provide those guarantees:
+
+My bad, I got too hung up on the scan code. Indeed we need additional orderi=
+ng on synchronize side.
+
+Anyway, the full memory barriers are already implemented in the synchronize c=
+ode AFAICS (beginning and end). At least one of them full memory barriers di=
+rectly appears at the end of __synchronize_srcu(). But I dont want to say so=
+mething stupid in the middle of the night, so I will take my time to get bac=
+k on that.
+
+Thanks,
+
+Joel
+
+
 >=20
-> I don't see how flipping the index before or after loading the unlock/lock=
- values would break anything (except for unlikely counter overflow situation=
-s as previously discussed).
+> * There are memory-ordering constraints implied by synchronize_srcu().
+>=20
+> Need for a barrier at the end of synchronize_srcu():
+>=20
+> * On systems with more than one CPU, when synchronize_srcu() returns,
+> * each CPU is guaranteed to have executed a full memory barrier since
+> * the end of its last corresponding SRCU read-side critical section
+> * whose beginning preceded the call to synchronize_srcu().
+>=20
+> Need for a barrier at the beginning of synchronize_srcu():
+>=20
+> * In addition,
+> * each CPU having an SRCU read-side critical section that extends beyond
+> * the return from synchronize_srcu() is guaranteed to have executed a
+> * full memory barrier after the beginning of synchronize_srcu() and before=
 
-If you say unlikely, that means it can happen some times which is bad enough=
- ;-). Maybe you mean impossible. I would not settle for anything less than k=
-eeping the memory barrier around if it helps unlikely cases, but only D does=
- help for the theoretical wrapping/overflow issue. E is broken and does not e=
-ven help the theoretical issue IMO. And both D and E do not affect correctne=
-ss IMO.
-
-Anyway in all likelihood, I will be trying to remove E completely and clarif=
-y docs on D in the coming weeks. And also try to drop the size of the counte=
-rs per our discussions
-
-Thanks.
-
-
-
+> * the beginning of that SRCU read-side critical section.  Note that these
+> * guarantees include CPUs that are offline, idle, or executing in user mod=
+e,
+> * as well as CPUs that are executing in the kernel.
 >=20
 > Thanks,
 >=20
 > Mathieu
+>=20
+>> Neeraj, do you agree?
+>> Thanks.
+>>>=20
+>>> Cheers,
+>>>=20
+>>> - Joel
+>>>=20
+>>>=20
+>>>>=20
+>>>> Thanks,
+>>>>=20
+>>>> Mathieu
+>>>>=20
+>>>> --=20
+>>>> Mathieu Desnoyers
+>>>> EfficiOS Inc.
+>>>> https://www.efficios.com
+>>>>=20
 >=20
 > --=20
 > Mathieu Desnoyers
