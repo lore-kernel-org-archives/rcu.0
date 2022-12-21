@@ -2,268 +2,123 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8E77C4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 16:02:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8884EC4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 16:30:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbiLUQCg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Dec 2022 11:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
+        id S229968AbiLUQai (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 11:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbiLUQCf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Dec 2022 11:02:35 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BF3B4B0;
-        Wed, 21 Dec 2022 08:02:34 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-3b48b139b46so216772477b3.12;
-        Wed, 21 Dec 2022 08:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=v/dIy32+bdBLKf6bYmj0NQoaoS07b6I7Gj7D7Gwvwhc=;
-        b=c6XVE6A8KzSMPeO7XY4RHwcJly+GCDwbpJmvgd4IIo2xDUXqt+8mr9GSm4dIf11+C9
-         NAqmbqSpgUN3NBHZt779WgIBkn710Y1jP+/kfBodx6vbJ7fDCiFnngH4NgZcg5gysCoR
-         /QR07YNbaaJicPLX7L1ExOB9eN5ju5VsgzEBPSJvNjI1NdEVpQ8uAas3b1rYRNgQUq/H
-         ZIddBEYxZJMgP5r5Oo5zBJXIfuY+pYDEfIWb5tnSI3Y5F+JGTOAw1qu/VOAg5refmknd
-         HAOeSyIbw62Smiwm9fFZIzpLRYnrW1b3oEm0O8TEF4+MtomcwpRZn3U2aBS5vx3XPmXB
-         WK1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v/dIy32+bdBLKf6bYmj0NQoaoS07b6I7Gj7D7Gwvwhc=;
-        b=drML6r8Quj/HUNJ+UYdSF8qWTZhyG3g33EoI0QrQy8tKgsxUGliWnIo8CkfrjhISlo
-         AM3MXh9q1yjDav2yK3rGM61MH9dKOHwmJGc2VaaJnpYKDKguapgrAKaWqphNEQpoSy28
-         YLiVmQVKMvfGC0iZTJpIz/QIR7vGBpARYKR16BW+UeSYKr05TD8LrS9L2QWWZJlhhJjE
-         D2B0Bm6D7aR5RAkCTElNxdyxCAv1CXOGzUVH2kGoZsG7xnfMDJ6J+ivy6vaPZfoRN19d
-         wtw4qsD8DFXSiT5A24zngcKy7gIq1L7UQN5FHcxG3r8saBAJ+0ON14h1gktd7faYt1JJ
-         0PIw==
-X-Gm-Message-State: AFqh2kpLVJs2zVAxb3JKf3I8CkyG2Mr9e8ixNGigtc72PLboaCbll6v2
-        yPOBsFcOtyIH9+NlPxkBNHs=
-X-Google-Smtp-Source: AMrXdXto/kMVLWr4vZ7kB13HDsLShKqEcDA1nkiPuuGeGBMOPkOUqhb0qXVGFUOhNGFK6B3x42xL1w==
-X-Received: by 2002:a05:7500:5721:b0:ea:f07d:857e with SMTP id by33-20020a057500572100b000eaf07d857emr170903gab.54.1671638553186;
-        Wed, 21 Dec 2022 08:02:33 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id az39-20020a05620a172700b006fbbdc6c68fsm10976740qkb.68.2022.12.21.08.02.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Dec 2022 08:02:32 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 3928127C0054;
-        Wed, 21 Dec 2022 11:02:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 21 Dec 2022 11:02:32 -0500
-X-ME-Sender: <xms:Fi6jY20cyt98arwcrf9gue6NwLFDr2CStMd8a8NDVLZ1J4C_gaPEbg>
-    <xme:Fi6jY5EkCuEGh58FM-60VEgO5I0ZpQTqICy67A0wqh5V4B_bkhi9CAMi0U9ug1qQN
-    zeswUE956H67rssyg>
-X-ME-Received: <xmr:Fi6jY-4vOFnvgmVibyateQ6RO3JbFccJ0x3I0ecMvtAl4s6looZ3B8JUv8UHP9g9oHn9Qyu3AvCJJW30IOv47Y5uZmpif7jTNjk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeekgdekgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudekhffg
-    geelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:Fi6jY32oR1A2y807QkuXfU-TdBL0IHAry0q61_SboK-cUYa75lN3iQ>
-    <xmx:Fi6jY5HPYoWyzNuAr2dS-s6O60WVqzQJYFtEkFXeyNSCPmV4TdDXpw>
-    <xmx:Fi6jYw9DISq7xXWEi643FQ2D1XJzVwHw90QXqtFFy9K--GIyhtzI9g>
-    <xmx:Fy6jY_bvKkf-5zy3XFrG9erUk0tBDlDysj7ukwr7p67JTNBBhH2DYQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 21 Dec 2022 11:02:30 -0500 (EST)
-Date:   Wed, 21 Dec 2022 08:02:28 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        with ESMTP id S233016AbiLUQah (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 11:30:37 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9978F23BC5;
+        Wed, 21 Dec 2022 08:30:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1671640233;
+        bh=r4HjUR3ibF30w+11NPYLmcKi3ymguCvxvHZK2X7qefU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MQTkUCVgWOJnNSf3M5hdebbCIIClLz8Gr2MAyNwA8hx7evEAjBQs+SyGQQoJ8ScUo
+         ld4WPu3VW524hgLapnAsCxQuSwRjjbl+3AYUwU4EUTptz7IiKMJ7fGIMPlmptwdemj
+         DUdg4/d7WSl0mrRQ4+10BeJJo+kapeqs0bi/holP2/eyWNSylFfWkNT4GvIjhXomcF
+         90KOASri+Zuw4ctcTTKBq3apsZIOP6seMx+ysAIBmviCxvLS36SubDSzMpYwYFQU7i
+         xykwbTbHCttHA33mFpQDMBLPMyzEieWPiHaxM7DgFdq+li3HdQSYodGBM4pN1OzFqO
+         WqDYKKojXFC/Q==
+Received: from [10.1.0.30] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Ncf7Y2xpzzc12;
+        Wed, 21 Dec 2022 11:30:33 -0500 (EST)
+Message-ID: <9586cbdf-4525-412b-3a53-c0041d171149@efficios.com>
+Date:   Wed, 21 Dec 2022 11:30:58 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
+Content-Language: en-US
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Message-ID: <Y6MuFH2ZMY7mV06q@Boquns-Mac-mini.local>
-References: <20221221004957.GA29021@lothringen>
- <0B1950D8-9319-4F25-B14B-4ED949A57BE0@joelfernandes.org>
- <20221221112629.GA29427@lothringen>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
+ <6BD506EA-77D2-4AC9-87A5-C8781594CF0F@joelfernandes.org>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <6BD506EA-77D2-4AC9-87A5-C8781594CF0F@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221221112629.GA29427@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 12:26:29PM +0100, Frederic Weisbecker wrote:
-> On Tue, Dec 20, 2022 at 09:41:17PM -0500, Joel Fernandes wrote:
-> > 
-> > 
-> > > On Dec 20, 2022, at 7:50 PM, Frederic Weisbecker <frederic@kernel.org> wrote:
-> > > 
-> > > ﻿On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
-> > >> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> > >> Agreed about (1).
-> > >> 
-> > >>> _ In (2), E pairs with the address-dependency between idx and lock_count.
-> > >> 
-> > >> But that is not the only reason. If that was the only reason for (2),
-> > >> then there is an smp_mb() just before the next-scan post-flip before
-> > >> the lock counts are read.
-> > > 
-> > > The post-flip barrier makes sure the new idx is visible on the next READER's
-> > > turn, but it doesn't protect against the fact that "READ idx then WRITE lock[idx]"
-> > > may appear unordered from the update side POV if there is no barrier between the
-> > > scan and the flip.
-> > > 
-> > > If you remove the smp_mb() from the litmus test I sent, things explode.
-> > 
-> > Sure I see what you are saying and it’s a valid point as well. However why do you need memory barrier D (labeled such in the kernel code) for that? You already have a memory barrier A before the lock count is read. That will suffice for the ordering pairing with the addr dependency.
-> > In other words, if updater sees readers lock counts, then reader would be making those lock count updates on post-flip inactive index, not the one being scanned as you wanted, and you will accomplish that just with the mem barrier A.
-> > 
-> > So D fixes the above issue you are talking about (lock count update), however that is already fixed by the memory barrier A. But you still need D for the issue I mentioned (unlock counts vs flip).
-> > 
-> > That’s just my opinion and let’s discuss more because I cannot rule out that I
-> > am missing something with this complicated topic ;-)
+On 2022-12-20 23:26, Joel Fernandes wrote:
 > 
-> I must be missing something. I often do.
 > 
-> Ok let's put that on litmus:
+>> On Dec 20, 2022, at 10:43 PM, Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> ﻿On 2022-12-20 19:58, Frederic Weisbecker wrote:
+>>>> On Wed, Dec 21, 2022 at 01:49:57AM +0100, Frederic Weisbecker wrote:
+>>>> On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
+>>>>> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+>>>>> Agreed about (1).
+>>>>>
+>>>>>> _ In (2), E pairs with the address-dependency between idx and lock_count.
+>>>>>
+>>>>> But that is not the only reason. If that was the only reason for (2),
+>>>>> then there is an smp_mb() just before the next-scan post-flip before
+>>>>> the lock counts are read.
+>>>>
+>>>> The post-flip barrier makes sure the new idx is visible on the next READER's
+>>>> turn, but it doesn't protect against the fact that "READ idx then WRITE lock[idx]"
+>>>> may appear unordered from the update side POV if there is no barrier between the
+>>>> scan and the flip.
+>>>>
+>>>> If you remove the smp_mb() from the litmus test I sent, things explode.
+>>> Or rather, look at it the other way, if there is no barrier between the lock
+>>> scan and the index flip (E), then the index flip can appear to be written before the
+>>> lock is read. Which means you may start activating the index before you finish
+>>> reading it (at least it appears that way from the readers pont of view).
+>>
+>> Considering that you can have pre-existing readers from arbitrary index appearing anywhere in the grace period (because a reader can fetch the
+>> index and be preempted for an arbitrary amount of time before incrementing the lock count), the grace period algorithm needs to deal with the fact that a newcoming reader can appear in a given index either before or after the flip.
+>>
+>> I don't see how flipping the index before or after loading the unlock/lock values would break anything (except for unlikely counter overflow situations as previously discussed).
 > 
-> ----
-> C srcu
-> 
-> {}
-> 
-> // updater
-> P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
-> {
-> 	int lock1;
-> 	int unlock1;
-> 	int lock0;
-> 	int unlock0;
-> 
-> 	// SCAN1
-> 	unlock1 = READ_ONCE(*UNLOCK1);
-> 	smp_mb(); // A
-> 	lock1 = READ_ONCE(*LOCK1);
-> 	
-> 	// FLIP
-> 	smp_mb(); // E
+> If you say unlikely, that means it can happen some times which is bad enough ;-). Maybe you mean impossible.
 
-In real code there is a control dependency between the READ_ONCE() above
-and the WRITE_ONCE() before, i.e. only flip the idx when lock1 ==
-unlock1, maybe try with the P0 below? Untested due to not having herd on
-this computer ;-)
+I mean that if we have a synchronize_srcu preemption long enough to get 
+2^32 or 2^64 concurrent srcu read-side critical sections, I strongly 
+suspect that RCU stall detection will yell loudly. And if it does not 
+already, then we should make it so.
 
-> 	WRITE_ONCE(*IDX, 1);
-> 	smp_mb(); // D
-> 	
-> 	// SCAN2
-> 	unlock0 = READ_ONCE(*UNLOCK0);
-> 	smp_mb(); // A
-> 	lock0 = READ_ONCE(*LOCK0);
-> }
-> 
-	P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
-	{
-		int lock1;
-		int unlock1;
-		int lock0;
-		int unlock0;
+So I mean "impossible unless the system is already unusable", rather 
+than just "unlikely".
 
-		// SCAN1
-		unlock1 = READ_ONCE(*UNLOCK1);
-		smp_mb(); // A
-		lock1 = READ_ONCE(*LOCK1);
-		
-		// FLIP
-		if (unlock1 == lock1) {
-			smp_mb(); // E
-			WRITE_ONCE(*IDX, 1);
-			smp_mb(); // D
-			
-			// SCAN2
-			unlock0 = READ_ONCE(*UNLOCK0);
-			smp_mb(); // A
-			lock0 = READ_ONCE(*LOCK0);
-		}
-	}
+Thanks,
 
-Regards,
-Boqun
+Mathieu
 
-> // reader
-> P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
-> {
-> 	int tmp;
-> 	int idx;
+> I would not settle for anything less than keeping the memory barrier around if it helps unlikely cases, but only D does help for the theoretical wrapping/overflow issue. E is broken and does not even help the theoretical issue IMO. And both D and E do not affect correctness IMO.
 > 
-> 	// 1st reader
-> 	idx = READ_ONCE(*IDX);
-> 	if (idx == 0) {
-> 		tmp = READ_ONCE(*LOCK0);
-> 		WRITE_ONCE(*LOCK0, tmp + 1);
-> 		smp_mb(); /* B and C */
-> 		tmp = READ_ONCE(*UNLOCK0);
-> 		WRITE_ONCE(*UNLOCK0, tmp + 1);
-> 	} else {
-> 		tmp = READ_ONCE(*LOCK1);
-> 		WRITE_ONCE(*LOCK1, tmp + 1);
-> 		smp_mb(); /* B and C */
-> 		tmp = READ_ONCE(*UNLOCK1);
-> 		WRITE_ONCE(*UNLOCK1, tmp + 1);
-> 	}
-> 	
-> 	// second reader
-> 	idx = READ_ONCE(*IDX);
-> 	if (idx == 0) {
-> 		tmp = READ_ONCE(*LOCK0);
-> 		WRITE_ONCE(*LOCK0, tmp + 1);
-> 		smp_mb(); /* B and C */
-> 		tmp = READ_ONCE(*UNLOCK0);
-> 		WRITE_ONCE(*UNLOCK0, tmp + 1);
-> 	} else {
-> 		tmp = READ_ONCE(*LOCK1);
-> 		WRITE_ONCE(*LOCK1, tmp + 1);
-> 		smp_mb(); /* B and C */
-> 		tmp = READ_ONCE(*UNLOCK1);
-> 		WRITE_ONCE(*UNLOCK1, tmp + 1);
-> 	}
-> }
+> Anyway in all likelihood, I will be trying to remove E completely and clarify docs on D in the coming weeks. And also try to drop the size of the counters per our discussions
 > 
-> exists (0:lock1!=0)
-> ---
+> Thanks.
 > 
-> This gives:
 > 
-> Test srcu Allowed
-> States 1
-> 0:lock1=0;
-> No
-> Witnesses
-> Positive: 0 Negative: 9
-> Condition exists (not (0:lock1=0))
-> Observation srcu Never 0 9
-> Time srcu 0.57
-> Hash=855d17de503814d2421602174f307c59
 > 
-> Now if I comment out the "smp_mb() /* E */" line this gives:
-> 
-> Test srcu Allowed
-> States 3
-> 0:lock1=0;
-> 0:lock1=1;
-> 0:lock1=2;
-> Ok
-> Witnesses
-> Positive: 4 Negative: 9
-> Condition exists (not (0:lock1=0))
-> Observation srcu Sometimes 4 9
-> 
-> Thanks
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>> -- 
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+>>
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
