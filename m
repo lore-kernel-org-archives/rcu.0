@@ -2,169 +2,357 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 975E0C4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 19:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EBD2C4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 19:33:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbiLUT01 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Dec 2022 14:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        id S234209AbiLUTdZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 14:33:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234210AbiLUT00 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Dec 2022 14:26:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA944252B1;
-        Wed, 21 Dec 2022 11:26:25 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 67CC2B81C08;
-        Wed, 21 Dec 2022 19:26:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19CEDC433D2;
-        Wed, 21 Dec 2022 19:26:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671650783;
-        bh=C/lj6yGccwZckTCKpHVGZugFfXG5pDoxRQVY7QKnaWc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gIACsbrSKbS0wsDZ0uBmXKjIbxOJ0FAbw0Dv9+RffZ2ZkHlsxLSXec/Xh6BHTlboC
-         9Qq5Japy8gGgG7xl/1KMObe3L5a76juNdo765U5G/I+iZt/jmeFEYxA5bi7AEVUiqr
-         +vSP6sQxtI886oaoMMx5SKnNi/GMEpur6vAe94AeL2QEIlvisFxoc1fc4B41/YGZ5V
-         MEkzLd5VAj5s0Hq1MFRgiMGfNidbCMKaiG9XeLnUVZvtmOH3Ehwslui4oEt0DOGP62
-         xcxcLw2gbMRIRZpfpEgL4u2476GKUzicEtd6TrY3B4hkSXdZIFJDaFx6j004WqWsyI
-         e458ENEPhPsMQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A9CDF5C0989; Wed, 21 Dec 2022 11:26:22 -0800 (PST)
-Date:   Wed, 21 Dec 2022 11:26:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads
- affinity
-Message-ID: <20221221192622.GD4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221215090029.2972236-1-qiang1.zhang@intel.com>
- <20221217010919.GG4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880B9403488CAB5DF9810FFDAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
- <PH0PR11MB58806ABF242993103390A6F5DAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S234744AbiLUTdY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 14:33:24 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7415240B4
+        for <rcu@vger.kernel.org>; Wed, 21 Dec 2022 11:33:23 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id p36so24954911lfa.12
+        for <rcu@vger.kernel.org>; Wed, 21 Dec 2022 11:33:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AVp2NcubVkYcnUWhCqoYzp6ihe4lVahqimbpG9zg+F4=;
+        b=lRSXNOU+8+kuu2jclxxc78LqOBk5vvSjTxEQFHOD8GJr/ItwF+Mn5NMg3pLTQ8rXpt
+         JtQFyZULsj6iBXWqPLaml1ftQhzwBguEKINZUVYFOP0jjCMZnBDMBWr00umnjrWNhbkX
+         VfqYyGTE3NKvUClko+mRsbjN93A3JhudwlMJU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AVp2NcubVkYcnUWhCqoYzp6ihe4lVahqimbpG9zg+F4=;
+        b=kpUj3B4KruEdn7qAPh21UxHwIwFEIyEUJo2z3yv9x7ugs8lgTKGm0iY4qVdSZEFv+B
+         YnC3lA70GjJ3N6nqHh+vkLDnUU0rsq8DNjzpHV5WsaT+jMWZDayQQhGglyknRLAbVS7G
+         dm7ch72EI9z/pLg1SOeLFghtluXbpHGapKYHzR7bi4D/vC/8G9rFj+vlGuoCW8cl5Xgq
+         EAunkTHK4ukGMI2GJaf7bORIVwycclFgyc+Uqx3T0NRuua5rvTqogfTXrgAB8TXCj3WC
+         pVq1BXa//HZAoHHGTpMtdpo+N+XnES58d+jUI2VTERsK9+xD7T13CCIBv8m8WC9uD6q2
+         3RHg==
+X-Gm-Message-State: AFqh2kpsY1B1xYihPfRQV3CO3eYb0jhFt0bqfYDuVbXqHZ82Y+iAkbP/
+        sidHntuRQQLrK4JP1koQ31aze8OEOe7IrMuHZf6YbA==
+X-Google-Smtp-Source: AMrXdXvk61JrBCfhAE91c3Dgb7kDwkf7lfIJQu05woddN2+r7eQOjcJNflmKz4X6WixMRS3AfvzzT13qpS+6PgVr95E=
+X-Received: by 2002:a19:4905:0:b0:4ba:caf8:a948 with SMTP id
+ w5-20020a194905000000b004bacaf8a948mr172836lfa.169.1671651201988; Wed, 21 Dec
+ 2022 11:33:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB58806ABF242993103390A6F5DAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20221221004957.GA29021@lothringen> <0B1950D8-9319-4F25-B14B-4ED949A57BE0@joelfernandes.org>
+ <20221221112629.GA29427@lothringen> <Y6MuFH2ZMY7mV06q@Boquns-Mac-mini.local> <20221221173005.GB37362@lothringen>
+In-Reply-To: <20221221173005.GB37362@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 21 Dec 2022 19:33:10 +0000
+Message-ID: <CAEXW_YRe=h0tuRyp=2N1mB9ytsiFLL6U4UX=Od5PN-=7FwuDsg@mail.gmail.com>
+Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 01:02:03PM +0000, Zhang, Qiang1 wrote:
-> On Thu, Dec 15, 2022 at 05:00:29PM +0800, Zqiang wrote:
-> > Currently, when CPUs going offline, the rcu boost kthreads CPU
-> > affinity has been reset in rcutree_offline_cpu(), therefore this
-> > commit remove duplicate settings in rcutree_dead_cpu().
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Ah Frederic, I think you nailed it. E is required to order the flip
+write with the control-dependency on the READ side. I can confirm the
+below test with bad condition shows the previous reader sees the
+post-flip index when it shouldn't have. Please see below modifications
+to your Litmus test.
+
+I think we should document it in the code that E pairs with the
+control-dependency between idx read and lock count write.
+
+C srcu
+{}
+// updater
+P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+        int lock1;
+        int unlock1;
+        int lock0;
+        int unlock0;
+
+        // SCAN1
+        unlock1 =3D READ_ONCE(*UNLOCK1);
+        smp_mb(); // A
+        lock1 =3D READ_ONCE(*LOCK1);
+
+        // FLIP
+        smp_mb(); // E -------------------- required to make the bad
+condition not happen.
+        WRITE_ONCE(*IDX, 1);
+        smp_mb(); // D
+
+        // SCAN2
+        unlock0 =3D READ_ONCE(*UNLOCK0);
+        smp_mb(); // A
+        lock0 =3D READ_ONCE(*LOCK0);
+}
+
+// reader
+P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+        int tmp;
+        int idx1;
+        int idx2;
+
+        // 1st reader
+        idx1 =3D READ_ONCE(*IDX);
+        if (idx1 =3D=3D 0) {
+                tmp =3D READ_ONCE(*LOCK0);
+                WRITE_ONCE(*LOCK0, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp =3D READ_ONCE(*UNLOCK0);
+                WRITE_ONCE(*UNLOCK0, tmp + 1);
+        } else {
+                tmp =3D READ_ONCE(*LOCK1);
+                WRITE_ONCE(*LOCK1, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp =3D READ_ONCE(*UNLOCK1);
+                WRITE_ONCE(*UNLOCK1, tmp + 1);
+        }
+
+        // second reader
+        idx2 =3D READ_ONCE(*IDX);
+        if (idx2 =3D=3D 0) {
+                tmp =3D READ_ONCE(*LOCK0);
+                WRITE_ONCE(*LOCK0, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp =3D READ_ONCE(*UNLOCK0);
+                WRITE_ONCE(*UNLOCK0, tmp + 1);
+        } else {
+                tmp =3D READ_ONCE(*LOCK1);
+                WRITE_ONCE(*LOCK1, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp =3D READ_ONCE(*UNLOCK1);
+                WRITE_ONCE(*UNLOCK1, tmp + 1);
+        }
+}
+
+exists (0:lock1=3D1 /\ 1:idx1=3D1 /\ 1:idx2=3D1 )  (* bad condition: 1st
+reader saw flip *)
+
+
+
+
+
+On Wed, Dec 21, 2022 at 5:30 PM Frederic Weisbecker <frederic@kernel.org> w=
+rote:
+>
+> On Wed, Dec 21, 2022 at 08:02:28AM -0800, Boqun Feng wrote:
+> > On Wed, Dec 21, 2022 at 12:26:29PM +0100, Frederic Weisbecker wrote:
+> > > On Tue, Dec 20, 2022 at 09:41:17PM -0500, Joel Fernandes wrote:
+> > > >
+> > > >
+> > > > > On Dec 20, 2022, at 7:50 PM, Frederic Weisbecker <frederic@kernel=
+.org> wrote:
+> > > > >
+> > > > > =EF=BB=BFOn Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes=
+ wrote:
+> > > > >> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@ke=
+rnel.org> wrote:
+> > > > >> Agreed about (1).
+> > > > >>
+> > > > >>> _ In (2), E pairs with the address-dependency between idx and l=
+ock_count.
+> > > > >>
+> > > > >> But that is not the only reason. If that was the only reason for=
+ (2),
+> > > > >> then there is an smp_mb() just before the next-scan post-flip be=
+fore
+> > > > >> the lock counts are read.
+> > > > >
+> > > > > The post-flip barrier makes sure the new idx is visible on the ne=
+xt READER's
+> > > > > turn, but it doesn't protect against the fact that "READ idx then=
+ WRITE lock[idx]"
+> > > > > may appear unordered from the update side POV if there is no barr=
+ier between the
+> > > > > scan and the flip.
+> > > > >
+> > > > > If you remove the smp_mb() from the litmus test I sent, things ex=
+plode.
+> > > >
+> > > > Sure I see what you are saying and it=E2=80=99s a valid point as we=
+ll. However why do you need memory barrier D (labeled such in the kernel co=
+de) for that? You already have a memory barrier A before the lock count is =
+read. That will suffice for the ordering pairing with the addr dependency.
+> > > > In other words, if updater sees readers lock counts, then reader wo=
+uld be making those lock count updates on post-flip inactive index, not the=
+ one being scanned as you wanted, and you will accomplish that just with th=
+e mem barrier A.
+> > > >
+> > > > So D fixes the above issue you are talking about (lock count update=
+), however that is already fixed by the memory barrier A. But you still nee=
+d D for the issue I mentioned (unlock counts vs flip).
+> > > >
+> > > > That=E2=80=99s just my opinion and let=E2=80=99s discuss more becau=
+se I cannot rule out that I
+> > > > am missing something with this complicated topic ;-)
+> > >
+> > > I must be missing something. I often do.
+> > >
+> > > Ok let's put that on litmus:
+> > >
+> > > ----
+> > > C srcu
+> > >
+> > > {}
+> > >
+> > > // updater
+> > > P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+> > > {
+> > >     int lock1;
+> > >     int unlock1;
+> > >     int lock0;
+> > >     int unlock0;
+> > >
+> > >     // SCAN1
+> > >     unlock1 =3D READ_ONCE(*UNLOCK1);
+> > >     smp_mb(); // A
+> > >     lock1 =3D READ_ONCE(*LOCK1);
+> > >
+> > >     // FLIP
+> > >     smp_mb(); // E
 > >
-> >One question...
+> > In real code there is a control dependency between the READ_ONCE() abov=
+e
+> > and the WRITE_ONCE() before, i.e. only flip the idx when lock1 =3D=3D
+> > unlock1, maybe try with the P0 below? Untested due to not having herd o=
+n
+> > this computer ;-)
 > >
-> >Given that rcutree_offline_cpu() causes rcu_boost_kthread_setaffinity()
-> >to be invoked with the number of the outgoing CPU, but rcutree_dead_cpu()
-> >instead passes in -1, are these two invocations really redundant?
+> > >     WRITE_ONCE(*IDX, 1);
+> > >     smp_mb(); // D
+> > >
+> > >     // SCAN2
+> > >     unlock0 =3D READ_ONCE(*UNLOCK0);
+> > >     smp_mb(); // A
+> > >     lock0 =3D READ_ONCE(*LOCK0);
+> > > }
+> > >
+> >       P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+> >       {
+> >               int lock1;
+> >               int unlock1;
+> >               int lock0;
+> >               int unlock0;
 > >
-> >Although -1 is passed in, but at this time, the outgoing CPU has been removed from 
-> >rcu_rnp_online_cpus(rnp),  in other words, we will eliminate the same CPU, which is
-> >also  we passed in cpu in the rcutree_offline_cpu() before.
+> >               // SCAN1
+> >               unlock1 =3D READ_ONCE(*UNLOCK1);
+> >               smp_mb(); // A
+> >               lock1 =3D READ_ONCE(*LOCK1);
 > >
-> 
-> I also used " qemu -smp 4 "for a simple test.
-> 
-> 1) rcutree_offline_cpu()
-> 
-> (gdb) bt
-> #0  set_cpus_allowed_ptr (p=p@entry=0xffff888100bd9cc0, new_mask=new_mask@entry=0xffff888100ce7cd0)
->     at kernel/sched/core.c:2939
-> #1  0xffffffff811be169 in rcu_boost_kthread_setaffinity (rnp=0xffffffff837a4c00 <rcu_state>,
->     outgoingcpu=outgoingcpu@entry=3) at kernel/rcu/tree_plugin.h:1250
-> #2  0xffffffff811cfa9f in rcutree_affinity_setting (outgoing=3, cpu=3) at kernel/rcu/tree.c:4297
-> #3  rcutree_offline_cpu (cpu=3) at kernel/rcu/tree.c:4341
-> #4  0xffffffff810c4e6f in cpuhp_invoke_callback (cpu=cpu@entry=3, state=state@entry=CPUHP_AP_RCUTREE_ONLINE,
->     bringup=bringup@entry=false, node=<optimized out>, lastp=lastp@entry=0xffff88815b027568) at kernel/cpu.c:192
-> #5  0xffffffff810c6e24 in cpuhp_thread_fun (cpu=<optimized out>) at kernel/cpu.c:785
-> #6  0xffffffff8111784e in smpboot_thread_fn (data=0xffff88810014c3c0) at kernel/smpboot.c:164
-> #7  0xffffffff8110c88e in kthread (_create=0xffff8881009b8b00) at kernel/kthread.c:376
-> #8  0xffffffff81002902 in ret_from_fork () at arch/x86/entry/entry_64.S:306
-> #9  0x0000000000000000 in ?? ()
-> 
-> (gdb) p/x *0xffff888100ce7cd0
-> $1 = 0x7
-> 
-> 2) rcutree_dead_cpu()
-> 
-> #0  set_cpus_allowed_ptr (p=p@entry=0xffff888100bd9cc0, new_mask=new_mask@entry=0xffff888109fc7948)
->     at kernel/sched/core.c:2939
-> #1  0xffffffff811be169 in rcu_boost_kthread_setaffinity (rnp=0xffffffff837a4c00 <rcu_state>,
->     outgoingcpu=outgoingcpu@entry=-1) at kernel/rcu/tree_plugin.h:1250
-> #2  0xffffffff811cf4a1 in rcutree_dead_cpu (cpu=3) at kernel/rcu/tree.c:4176
-> #3  0xffffffff810c4e6f in cpuhp_invoke_callback (cpu=cpu@entry=3, state=CPUHP_RCUTREE_PREP, bringup=bringup@entry=false,
->     node=node@entry=0x0 <fixed_percpu_data>, lastp=lastp@entry=0x0 <fixed_percpu_data>) at kernel/cpu.c:192
-> #4  0xffffffff810c58f5 in cpuhp_invoke_callback_range (bringup=bringup@entry=false, cpu=cpu@entry=3,
->     st=st@entry=0xffff88815b027540, target=target@entry=CPUHP_OFFLINE) at kernel/cpu.c:675
-> #5  0xffffffff827a5f6a in cpuhp_down_callbacks (target=CPUHP_OFFLINE, st=0xffff88815b027540, cpu=3) at kernel/cpu.c:1170
-> #6  _cpu_down (cpu=cpu@entry=3, tasks_frozen=tasks_frozen@entry=0, target=target@entry=CPUHP_OFFLINE) at kernel/cpu.c:1170
-> #7  0xffffffff810c6ff8 in cpu_down_maps_locked (target=CPUHP_OFFLINE, cpu=3) at kernel/cpu.c:1202
-> #8  cpu_down (cpu=3, target=target@entry=CPUHP_OFFLINE) at kernel/cpu.c:1210
-> #9  0xffffffff810c7906 in cpu_device_down (dev=dev@entry=0xffff88815b026988) at kernel/cpu.c:1227
-> 
-> (gdb) p/x *0xffff888109fc7948
-> $2 = 0x7
-> 
-> As can be seen from the above, we have set the same cpumask twice for the same boost kthreads.
-
-Very good, thank you for checking!
-
-I have queued this as shown below, so please let me know of any issues.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 5815245b56229198d5f5d0c48c26d3c0c53ee222
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Wed Dec 21 11:15:43 2022 -0800
-
-    rcu: Remove redundant call to rcu_boost_kthread_setaffinity()
-    
-    The rcu_boost_kthread_setaffinity() function is invoked at
-    rcutree_online_cpu() and rcutree_offline_cpu() time, early in the online
-    timeline and late in the offline timeline, respectively.  It is also
-    invoked from rcutree_dead_cpu(), however, in the absence of userspace
-    manipulations (for which userspace must take responsibility), this call
-    is redundant with that from rcutree_offline_cpu().  This redundancy can
-    be demonstrated by printing out the relevant cpumasks
-    
-    This commit therefore removes the call to rcu_boost_kthread_setaffinity()
-    from rcutree_dead_cpu().
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c3255d27286c4..a6181b76fd5ab 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4165,15 +4165,10 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
-  */
- int rcutree_dead_cpu(unsigned int cpu)
- {
--	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
--
- 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
- 		return 0;
- 
- 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
--	/* Adjust any no-longer-needed kthreads. */
--	rcu_boost_kthread_setaffinity(rnp, -1);
- 	// Stop-machine done, so allow nohz_full to disable tick.
- 	tick_dep_clear(TICK_DEP_BIT_RCU);
- 	return 0;
+> >               // FLIP
+> >               if (unlock1 =3D=3D lock1) {
+> >                       smp_mb(); // E
+> >                       WRITE_ONCE(*IDX, 1);
+> >                       smp_mb(); // D
+> >
+> >                       // SCAN2
+> >                       unlock0 =3D READ_ONCE(*UNLOCK0);
+> >                       smp_mb(); // A
+> >                       lock0 =3D READ_ONCE(*LOCK0);
+> >               }
+> >       }
+>
+> That becomes the below (same effect).
+>
+> C D
+>
+> {}
+>
+> // updater
+> P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+> {
+>         int lock1;
+>         int unlock1;
+>         int lock0;
+>         int unlock0;
+>
+>         // SCAN1
+>         unlock1 =3D READ_ONCE(*UNLOCK1);
+>         smp_mb(); // A
+>         lock1 =3D READ_ONCE(*LOCK1);
+>
+>         if (unlock1 =3D=3D lock1) {
+>                 // FLIP
+>                 smp_mb(); // E
+>                 WRITE_ONCE(*IDX, 1);
+>                 smp_mb(); // D
+>
+>                 // SCAN 2
+>                 unlock0 =3D READ_ONCE(*UNLOCK0);
+>                 smp_mb(); // A
+>                 lock0 =3D READ_ONCE(*LOCK0);
+>         }
+> }
+>
+> // reader
+> P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+> {
+>         int tmp;
+>         int idx;
+>
+>         // 1st reader
+>         idx =3D READ_ONCE(*IDX);
+>         if (idx =3D=3D 0) {
+>                 tmp =3D READ_ONCE(*LOCK0);
+>                 WRITE_ONCE(*LOCK0, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp =3D READ_ONCE(*UNLOCK0);
+>                 WRITE_ONCE(*UNLOCK0, tmp + 1);
+>         } else {
+>                 tmp =3D READ_ONCE(*LOCK1);
+>                 WRITE_ONCE(*LOCK1, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp =3D READ_ONCE(*UNLOCK1);
+>                 WRITE_ONCE(*UNLOCK1, tmp + 1);
+>         }
+>
+>         // second reader
+>         idx =3D READ_ONCE(*IDX);
+>         if (idx =3D=3D 0) {
+>                 tmp =3D READ_ONCE(*LOCK0);
+>                 WRITE_ONCE(*LOCK0, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp =3D READ_ONCE(*UNLOCK0);
+>                 WRITE_ONCE(*UNLOCK0, tmp + 1);
+>         } else {
+>                 tmp =3D READ_ONCE(*LOCK1);
+>                 WRITE_ONCE(*LOCK1, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp =3D READ_ONCE(*UNLOCK1);
+>                 WRITE_ONCE(*UNLOCK1, tmp + 1);
+>         }
+>
+>         // third reader
+>         idx =3D READ_ONCE(*IDX);
+>         if (idx =3D=3D 0) {
+>                 tmp =3D READ_ONCE(*LOCK0);
+>                 WRITE_ONCE(*LOCK0, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp =3D READ_ONCE(*UNLOCK0);
+>                 WRITE_ONCE(*UNLOCK0, tmp + 1);
+>         } else {
+>                 tmp =3D READ_ONCE(*LOCK1);
+>                 WRITE_ONCE(*LOCK1, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp =3D READ_ONCE(*UNLOCK1);
+>                 WRITE_ONCE(*UNLOCK1, tmp + 1);
+>         }
+> }
+>
+> exists (0:unlock0=3D0 /\ 1:idx=3D0)
+>
