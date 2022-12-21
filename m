@@ -2,36 +2,36 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56970C4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 11:59:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C01FAC4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 12:11:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbiLUL7a (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Dec 2022 06:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S229476AbiLUML1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 07:11:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbiLUL73 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Dec 2022 06:59:29 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0831EEC2;
-        Wed, 21 Dec 2022 03:59:28 -0800 (PST)
+        with ESMTP id S229472AbiLUML0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 07:11:26 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146332628;
+        Wed, 21 Dec 2022 04:11:24 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 170866177C;
-        Wed, 21 Dec 2022 11:59:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA8FAC433D2;
-        Wed, 21 Dec 2022 11:59:26 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BA1DCB81B80;
+        Wed, 21 Dec 2022 12:11:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C44B4C433D2;
+        Wed, 21 Dec 2022 12:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671623967;
-        bh=RhUtI+yfvlUrG20LX+fSJIl/g8QjDb7Vy3ku58UrgAw=;
+        s=k20201202; t=1671624681;
+        bh=Yi1sF85S9MiMleKMdbGeKCC7UjazMd8nprfYlJnsE3w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TPC6FOHm0AWuiwsRBaLYSWvGzuj1QG2/0cO92VBXGZZ3ZdynaOgONE28rigpEQigf
-         1tB/8X6p5lKP7Ob5fQO0QEfm8bCGhbxtVXQHaxX/oMS4JOMO0DjbQlVI6L3FQ7y0R3
-         /NuBw6/Gft5/5h4ykkku4KZ61mdYn/OJ3WYVKBpBOYKi1zJJCcRktSkPZT9ekRZUaI
-         kaxdyNiIWGGmO10s8g69GjWawqOukwgA1jL7pHRe9NvZr+s025q0WxsUIwRKqtcseQ
-         vAR5kcWvdwebWWyO3k+5kgWrOEthhaF9b98FVb8av2JDaAPJHZx1eAw06yOYaVeZPH
-         BJzFeX/nIngIg==
-Date:   Wed, 21 Dec 2022 12:59:24 +0100
+        b=S4coD86hzo9BMcqjlDxy02GuxStiRxBs7xL/tkcssh1jWhItk0rGK2OU6Y+XqdM+m
+         5bCE/Dvs25Y8XxNOf/CZBK5cTmRJcCeRcqKyiDe4Bnu4OCTQ7MEIaSzAHGC0QFVSba
+         8LasEW8ba5HXLLdduosoIp5JXLoVPLvCt6pULlbHDcqp1mP/qTaarv3nm3vuNQXrkW
+         Oiv/KPZDSZixi0sPUpL/Bv4jaknANlXpZb67jJCbfdqA8Y+HkEJ++L8zaa8UKLefwN
+         dpIVZr/qXVfJ/NCEpKj+cVjmA3rtzmHnLTNuhUFDBPBdgDeHOE89mBRejlQlaQqeN4
+         miJmNHppBoxmg==
+Date:   Wed, 21 Dec 2022 13:11:18 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc:     Joel Fernandes <joel@joelfernandes.org>,
@@ -41,98 +41,71 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Message-ID: <20221221115924.GA34934@lothringen>
-References: <6438d903-ab97-48c7-c338-9f0bc2686f94@efficios.com>
- <7A9876BA-C375-42A7-A5C9-FD940D2898D7@joelfernandes.org>
- <5bd5ee4a-710a-96bc-abe8-772b2e60f478@efficios.com>
- <20221220225756.GB26563@lothringen>
- <c085be21-b45f-4186-6f41-5082771c79ca@efficios.com>
+Message-ID: <20221221121118.GA35081@lothringen>
+References: <20221220140714.GB22763@lothringen>
+ <CA83E649-8C79-4D39-9BFE-BBEF95968B98@joelfernandes.org>
+ <20221220224459.GA25175@lothringen>
+ <CAEXW_YSAv+MzZoW9RK9H3E6DAyZH+wB=4bMy5nXTOExSwgSwAg@mail.gmail.com>
+ <20221221004957.GA29021@lothringen>
+ <20221221005858.GA29316@lothringen>
+ <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c085be21-b45f-4186-6f41-5082771c79ca@efficios.com>
+In-Reply-To: <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 10:34:19PM -0500, Mathieu Desnoyers wrote:
-> On 2022-12-20 17:57, Frederic Weisbecker wrote:
-> > On Tue, Dec 20, 2022 at 02:01:30PM -0500, Mathieu Desnoyers wrote:
-> > > On 2022-12-20 13:29, Joel Fernandes wrote:
+On Tue, Dec 20, 2022 at 10:43:25PM -0500, Mathieu Desnoyers wrote:
+> On 2022-12-20 19:58, Frederic Weisbecker wrote:
+> > On Wed, Dec 21, 2022 at 01:49:57AM +0100, Frederic Weisbecker wrote:
+> > > On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
+> > > > On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> > > > Agreed about (1).
 > > > > 
+> > > > > _ In (2), E pairs with the address-dependency between idx and lock_count.
+> > > > 
+> > > > But that is not the only reason. If that was the only reason for (2),
+> > > > then there is an smp_mb() just before the next-scan post-flip before
+> > > > the lock counts are read.
 > > > 
-> > > > I do want to finish my memory barrier studies of SRCU over the holidays since I have been deep in the hole with that already. Back to the post flip memory barrier here since I think now even that might not be needed…
+> > > The post-flip barrier makes sure the new idx is visible on the next READER's
+> > > turn, but it doesn't protect against the fact that "READ idx then WRITE lock[idx]"
+> > > may appear unordered from the update side POV if there is no barrier between the
+> > > scan and the flip.
 > > > 
-> > > I strongly suspect the memory barrier after flip is useless for the same
-> > > reasons I mentioned explaining why the barrier before the flip is useless.
-> > > 
-> > > However, we need to double-check that we have memory barriers at the
-> > > beginning and end of synchronize_srcu, and between load of "unlock" counters
-> > > and load of "lock" counters.
-> > > 
-> > > Where is the barrier at the beginning of synchronize_srcu ?
+> > > If you remove the smp_mb() from the litmus test I sent, things explode.
 > > 
-> > rcu_seq_snap() ?
+> > Or rather, look at it the other way, if there is no barrier between the lock
+> > scan and the index flip (E), then the index flip can appear to be written before the
+> > lock is read. Which means you may start activating the index before you finish
+> > reading it (at least it appears that way from the readers pont of view).
 > 
-> The memory barrier in rcu_seq_snap is not at the very beginning of synchronize_srcu.
-> 
-> For example we have:
-> 
-> unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
-> {
->         // Any prior manipulation of SRCU-protected data must happen
->         // before the load from ->srcu_gp_seq.
->         smp_mb();
->         return rcu_seq_snap(&ssp->srcu_gp_seq);
-> 
-> which happens to have an explicit barrier before issuing rcu_seq_snap().
+> Considering that you can have pre-existing readers from arbitrary index
+> appearing anywhere in the grace period (because a reader can fetch the
+> index and be preempted for an arbitrary amount of time before incrementing
+> the lock count), the grace period algorithm needs to deal with the fact that
+> a newcoming reader can appear in a given index either before or after the
+> flip.
 
-SRCU (or even RCU) polling is special in that it may rely on a concurrent updater
-to start the grace period, hence why you need two more barriers here (the second
-is in poll_state_synchronize_srcu()) so that:
+True but the number of preempted tasks is bound and there is a forward progress guarantee.
 
-* If the polling updater started polling (calling get_state_synchronize_srcu())
-  before the traditional updater started the grace period, the latter must
-  propagate the changes from the polling updater to all CPUs.
+> I don't see how flipping the index before or after loading the unlock/lock
+> values would break anything (except for unlikely counter overflow situations
+> as previously discussed).
 
-* If the polling updater started polling (calling get_state_synchronize_srcu())
-  after the traditional updater started the grace period, it must wait for a
-  subsequent grace period (rcu_seq_snap() will return that subsequent sequence).
+Forward progress guarantee.
 
-* If the polling updater checks (and thereby finishes) polling (calling poll_state_synchronize_srcu())
-  after the traditional updater completes the grace period, the polling updater sees
-  the propagated barrier.
-
-* If the polling updater checks polling (calling poll_state_synchronize_srcu())
-  before the traditional updater completes the grace period, keep polling.
-
-> So my question still stands: where is the memory barrier at the beginning of
-> synchronize_srcu ?
-
-I still think rcu_seq_snap() is what you're looking for.
+Thanks.
 
 > 
-> The memory ordering constraint I am concerned about here is:
+> Thanks,
 > 
->  * [...] In addition,
->  * each CPU having an SRCU read-side critical section that extends beyond
->  * the return from synchronize_srcu() is guaranteed to have executed a
->  * full memory barrier after the beginning of synchronize_srcu() and before
->  * the beginning of that SRCU read-side critical section. [...]
+> Mathieu
 > 
-> So if we have a SRCU read-side critical section that begins after the beginning
-> of synchronize_srcu, but before its first memory barrier, it would miss the
-> guarantee that the full memory barrier is issued before the beginning of that
-> SRCU read-side critical section. IOW, that memory barrier needs to be at the
-> very beginning of the grace period.
-
-I'm confused, what's wrong with this ?
-
-UPDATER                  READER
--------                  ------
-STORE X = 1              STORE srcu_read_lock++
-// rcu_seq_snap()        smp_mb()
-smp_mb()                 READ X
-// scans
-READ srcu_read_lock
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+> 
