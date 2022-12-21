@@ -2,103 +2,195 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE28C4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 03:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E36A6C4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 03:52:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbiLUDqm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 22:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52058 "EHLO
+        id S229482AbiLUDvw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 22:51:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbiLUDql (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 22:46:41 -0500
+        with ESMTP id S229652AbiLUDvv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 22:51:51 -0500
 Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554B1BE6;
-        Tue, 20 Dec 2022 19:46:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409FF1CFDE;
+        Tue, 20 Dec 2022 19:51:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1671594399;
-        bh=2ppGBTNEKO9ZGf5Jmr6Z5lBYQ/V8tObp7/FB4z0ImVk=;
+        s=smtpout1; t=1671594709;
+        bh=AJdVhqN3gg7ANzTOKJ6n8INFL0UmXnPWOux3e6+8cwQ=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JumEZRgUYwBTvJFjedBpRAwFKMWPt91RPx8l1x8EB8Nuk+HafrrTJ1d7ZHKNw9IwU
-         Z6v/YgAOZO9AD2TFEE2afW24EJxUTEtFhiW4FxO/Q/gLPEfo7JeK7nfPlhnscq/OhI
-         3pjGPY4q9zlh+lsV0L7T5fGW5dSQyQNmzHc6qbjo2o39lMGeOgW+T18iBsxix/0XWa
-         pYkIixIXtekn0NK9W5jPW8ThcmaBJ9xtOyGcviYa/qE1u/DTrxb2Y4iolbvevf2el9
-         GZk9b3+nfgMl9VKEyUtTRkETe8+hpe0Rxnf55Tziu1VGM9ygRYN0KlTN2BRbSFpKt8
-         BvROH7PFufK8A==
+        b=hzKv3bgTs3+oE+9YYqC3poj9l6mcQ0vMmcY7AmglRGR48ztgtRWIApMV2se3pJd+7
+         cg7VrWSs0OA+wm760g5oWERjRJ0HohBpTb2VL8Z1DsU6U0QozAqSEK/jQaOn3mz85i
+         3HbRPB4Ns2J9LHv7Qqqu3vz8CxePOjI40AQj/DBB5Bs3QNL5QLOVo8khNjGQIOL4/Z
+         f6Ii2Lpus53UVffEWqLfqFPGWt9/N4pXc8turspKCiR/ftKp5A0W+t0Y9+jLWVh1QN
+         ZTnVKioyEg3hrie9EpNAolJsks3iyuV8HwM+gcZ+C0WTaokrn1O4gnoFerpV4r3u4u
+         99cpEsWcj8LNw==
 Received: from [10.1.0.30] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4NcKB73dhWzbTD;
-        Tue, 20 Dec 2022 22:46:39 -0500 (EST)
-Message-ID: <bcb9eb90-9261-ce96-859d-af4cc1d03baa@efficios.com>
-Date:   Tue, 20 Dec 2022 22:47:04 -0500
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4NcKJ52zp1zc07;
+        Tue, 20 Dec 2022 22:51:49 -0500 (EST)
+Message-ID: <d010a8ca-79a4-bd25-dff1-cb7dee627365@efficios.com>
+Date:   Tue, 20 Dec 2022 22:52:14 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
 Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org,
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-References: <20221218191310.130904-1-joel@joelfernandes.org>
- <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com>
- <CAEXW_YQHpz3dNqW1ocqjr-e9qn09Rkg4kQ19byZORGbO18Xckg@mail.gmail.com>
- <2da94283-4fce-9aff-ac5d-ba181fa0f008@efficios.com>
- <CAEXW_YQBmwynuBOWbV6_L2itRr_i3BZUxQ91PDC2We2vXhpztQ@mail.gmail.com>
- <CAEXW_YTyZaE4ULvm-HygFN2BGm-jayHTbpnYbrJFoo_GOsYKQg@mail.gmail.com>
- <659763b0-eee4-10dd-5f4a-37241173809c@efficios.com>
- <CAEXW_YQ+NTaM43Va5FG8kYSxr2gsbjar4_f3xnpSAHzgUVZ-+g@mail.gmail.com>
- <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com>
- <35293ec4-40a1-cf6b-3bdd-0e3e30819c06@efficios.com>
- <20221221000715.GA27352@lothringen>
+References: <7A9876BA-C375-42A7-A5C9-FD940D2898D7@joelfernandes.org>
+ <B9B73CDE-4C2C-4BC6-A23C-A59C22AD2EB1@joelfernandes.org>
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20221221000715.GA27352@lothringen>
+In-Reply-To: <B9B73CDE-4C2C-4BC6-A23C-A59C22AD2EB1@joelfernandes.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-12-20 19:07, Frederic Weisbecker wrote:
-> On Tue, Dec 20, 2022 at 12:00:58PM -0500, Mathieu Desnoyers wrote:
->> On 2022-12-19 20:04, Joel Fernandes wrote:
->> The main benefit I expect is improved performance of the grace period
->> implementation in common cases where there are few or no readers present,
->> especially on machines with many cpus.
+On 2022-12-20 15:55, Joel Fernandes wrote:
+> 
+> 
+>> On Dec 20, 2022, at 1:29 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
 >>
->> It allows scanning both periods (0/1) for each cpu within the same pass,
->> therefore loading both period's unlock counters sitting in the same cache
->> line at once (improved locality), and then loading both period's lock
->> counters, also sitting in the same cache line.
+>> ﻿
 >>
->> It also allows skipping the period flip entirely if there are no readers
->> present, which is an -arguably- tiny performance improvement as well.
+>>>> On Dec 20, 2022, at 1:13 PM, Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+>>>>
+>>>> ﻿On 2022-12-20 13:05, Joel Fernandes wrote:
+>>>> Hi Mathieu,
+>>>>> On Tue, Dec 20, 2022 at 5:00 PM Mathieu Desnoyers
+>>>>> <mathieu.desnoyers@efficios.com> wrote:
+>>>>>
+>>>>> On 2022-12-19 20:04, Joel Fernandes wrote:
+>>>>>>> On Mon, Dec 19, 2022 at 7:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>>>> [...]
+>>>>>>>> On a 64-bit system, where 64-bit counters are used, AFAIU this need to
+>>>>>>>> be exactly 2^64 read-side critical sections.
+>>>>>>>
+>>>>>>> Yes, but what about 32-bit systems?
+>>>>>
+>>>>> The overflow indeed happens after 2^32 increments, just like seqlock.
+>>>>> The question we need to ask is therefore: if 2^32 is good enough for
+>>>>> seqlock, why isn't it good enough for SRCU ?
+>>>> I think Paul said wrap around does happen with SRCU on 32-bit but I'll
+>>>> let him talk more about it. If 32-bit is good enough, let us also drop
+>>>> the size of the counters for 64-bit then?
+>>>>>>>> There are other synchronization algorithms such as seqlocks which are
+>>>>>>>> quite happy with much less protection against overflow (using a 32-bit
+>>>>>>>> counter even on 64-bit architectures).
+>>>>>>>
+>>>>>>> The seqlock is an interesting point.
+>>>>>>>
+>>>>>>>> For practical purposes, I suspect this issue is really just theoretical.
+>>>>>>>
+>>>>>>> I have to ask, what is the benefit of avoiding a flip and scanning
+>>>>>>> active readers? Is the issue about grace period delay or performance?
+>>>>>>> If so, it might be worth prototyping that approach and measuring using
+>>>>>>> rcutorture/rcuscale. If there is significant benefit to current
+>>>>>>> approach, then IMO it is worth exploring.
+>>>>>
+>>>>> The main benefit I expect is improved performance of the grace period
+>>>>> implementation in common cases where there are few or no readers
+>>>>> present, especially on machines with many cpus.
+>>>>>
+>>>>> It allows scanning both periods (0/1) for each cpu within the same pass,
+>>>>> therefore loading both period's unlock counters sitting in the same
+>>>>> cache line at once (improved locality), and then loading both period's
+>>>>> lock counters, also sitting in the same cache line.
+>>>>>
+>>>>> It also allows skipping the period flip entirely if there are no readers
+>>>>> present, which is an -arguably- tiny performance improvement as well.
+>>>> The issue of counter wrap aside, what if a new reader always shows up
+>>>> in the active index being scanned, then can you not delay the GP
+>>>> indefinitely? It seems like writer-starvation is possible then (sure
+>>>> it is possible also with preemption after reader-index-sampling, but
+>>>> scanning active index deliberately will make that worse). Seqlock does
+>>>> not have such writer starvation just because the writer does not care
+>>>> about what the readers are doing.
+>>>
+>>> No, it's not possible for "current index" readers to starve the g.p. with the side-rcu scheme, because the initial pass (sampling both periods) only opportunistically skips flipping the period if there happens to be no readers in both periods.
+>>>
+>>> If there are readers in the "non-current" period, the grace period waits for them.
+>>>
+>>> If there are readers in the "current" period, it flips the period and then waits for them.
+>>
+>> Ok glad you already do that, this is what I was sort of leaning at in my previous email as well, that is doing a hybrid approach. Sorry I did not know the details of your side-RCU to know you were already doing something like that.
+>>
+>>>
+>>>> That said, the approach of scanning both counters does seem attractive
+>>>> for when there are no readers, for the reasons you mentioned. Maybe a
+>>>> heuristic to count the number of readers might help? If we are not
+>>>> reader-heavy, then scan both. Otherwise, just scan the inactive ones,
+>>>> and also couple that heuristic with the number of CPUs. I am
+>>>> interested in working on such a design with you! Let us do it and
+>>>> prototype/measure. ;-)
+>>>
+>>> Considering that it would add extra complexity, I'm unsure what that extra heuristic would improve over just scanning both periods in the first pass.
+>>
+>> Makes sense, I think you indirectly implement a form of heuristic already by flipping in case scanning both was not fruitful.
+>>
+>>> I'll be happy to work with you on such a design :) I think we can borrow quite a few concepts from side-rcu for this. Please be aware that my time is limited though, as I'm currently supposed to be on vacation. :)
+>>
+>> Oh, I was more referring to after the holidays. I am also starting vacation soon and limited In cycles ;-). It is probably better to enjoy the holidays and come back to this after.
+>>
+>> I do want to finish my memory barrier studies of SRCU over the holidays since I have been deep in the hole with that already. Back to the post flip memory barrier here since I think now even that might not be needed…
 > 
-> I would indeed expect performance improvement if there are no readers in the
-> active period/idx but if there are, it's a performance penalty due to the extra
-> scans.
+> In my view,  the mb between the totaling of unlocks and totaling of locks serves as the mb that is required to enforce the GP guarantee, which I think is what Mathieu is referring to.
 > 
-> So my mean questions are:
-> 
-> * Is the no-present-readers the most likely case? I guess it depends on the ssp.
-> 
-> * Does the SRCU update side deserve to be optimized with added code (because
->    we are not debating about removing the flip, rather about adding a fast-path
->    and keep the flip as a slow-path)
->    
-> * The SRCU machinery is already quite complicated. Look how we little things lock
->    ourselves in for days doing our exegesis of SRCU state machine. And halfway
->    through it we are still debating some ordering. Is it worth adding a new path there?
 
-I'm not arguing for making things more complex unless there are good 
-reasons to do so. However I think we badly need to improve the 
-documentation of the memory barriers in SRCU, because the claimed 
-barrier pairing is odd.
+No, AFAIU you also need barriers at the beginning and end of synchronize_srcu to provide those guarantees:
+
+  * There are memory-ordering constraints implied by synchronize_srcu().
+
+Need for a barrier at the end of synchronize_srcu():
+
+  * On systems with more than one CPU, when synchronize_srcu() returns,
+  * each CPU is guaranteed to have executed a full memory barrier since
+  * the end of its last corresponding SRCU read-side critical section
+  * whose beginning preceded the call to synchronize_srcu().
+
+Need for a barrier at the beginning of synchronize_srcu():
+
+  * In addition,
+  * each CPU having an SRCU read-side critical section that extends beyond
+  * the return from synchronize_srcu() is guaranteed to have executed a
+  * full memory barrier after the beginning of synchronize_srcu() and before
+  * the beginning of that SRCU read-side critical section.  Note that these
+  * guarantees include CPUs that are offline, idle, or executing in user mode,
+  * as well as CPUs that are executing in the kernel.
 
 Thanks,
 
 Mathieu
+
+> Neeraj, do you agree?
+> 
+> Thanks.
+> 
+> 
+> 
+> 
+> 
+>>
+>> Cheers,
+>>
+>> - Joel
+>>
+>>
+>>>
+>>> Thanks,
+>>>
+>>> Mathieu
+>>>
+>>> -- 
+>>> Mathieu Desnoyers
+>>> EfficiOS Inc.
+>>> https://www.efficios.com
+>>>
 
 -- 
 Mathieu Desnoyers
