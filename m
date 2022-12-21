@@ -2,120 +2,129 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8884EC4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 16:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08327C4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 17:11:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbiLUQai (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Dec 2022 11:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
+        id S234762AbiLURLm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 12:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbiLUQah (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Dec 2022 11:30:37 -0500
+        with ESMTP id S234778AbiLURLX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 12:11:23 -0500
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9978F23BC5;
-        Wed, 21 Dec 2022 08:30:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13696AE5C;
+        Wed, 21 Dec 2022 09:11:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1671640233;
-        bh=r4HjUR3ibF30w+11NPYLmcKi3ymguCvxvHZK2X7qefU=;
+        s=smtpout1; t=1671642677;
+        bh=ksJ8oib5hNthsIEV5bELiEdvWQP+tk9zdr8VeG0K7Xs=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MQTkUCVgWOJnNSf3M5hdebbCIIClLz8Gr2MAyNwA8hx7evEAjBQs+SyGQQoJ8ScUo
-         ld4WPu3VW524hgLapnAsCxQuSwRjjbl+3AYUwU4EUTptz7IiKMJ7fGIMPlmptwdemj
-         DUdg4/d7WSl0mrRQ4+10BeJJo+kapeqs0bi/holP2/eyWNSylFfWkNT4GvIjhXomcF
-         90KOASri+Zuw4ctcTTKBq3apsZIOP6seMx+ysAIBmviCxvLS36SubDSzMpYwYFQU7i
-         xykwbTbHCttHA33mFpQDMBLPMyzEieWPiHaxM7DgFdq+li3HdQSYodGBM4pN1OzFqO
-         WqDYKKojXFC/Q==
+        b=bIVw7gAgF1vptnGgLJLkVmJLtCdSXoXIFF38aT0CiGW8QwLYIVXCoPDhNFiJq9ZH4
+         9GFMMAvZI3KZYZEDyfXPXTaLmJKryrPxihT4gx0ikP2eC733WJAR2dcS5dbCDT4D1I
+         RTSDOEpN/36BhUuVd4kORMilxibAGXlbo0Mn56fiRjSp45Y2r+CbGxambzWovBeskC
+         TCCMdYQaGpzNjmMUN2YPQFcXYKet2JVc7yHde9uZkEUMYatZe0c0tcHWccDjJyH2/C
+         /28tW44tg7HMYTFmihkqb5+3fVriD4qTTXXBGSzu9BMENhz+nIwtJFLnmREA/kq9PL
+         VB6cpyqWioETA==
 Received: from [10.1.0.30] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Ncf7Y2xpzzc12;
-        Wed, 21 Dec 2022 11:30:33 -0500 (EST)
-Message-ID: <9586cbdf-4525-412b-3a53-c0041d171149@efficios.com>
-Date:   Wed, 21 Dec 2022 11:30:58 -0500
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Ncg2Y1MzBzc9V;
+        Wed, 21 Dec 2022 12:11:17 -0500 (EST)
+Message-ID: <bb794e83-992e-8181-d9b9-acc68536ce5a@efficios.com>
+Date:   Wed, 21 Dec 2022 12:11:42 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
 Content-Language: en-US
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
         linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-References: <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
- <6BD506EA-77D2-4AC9-87A5-C8781594CF0F@joelfernandes.org>
+References: <6438d903-ab97-48c7-c338-9f0bc2686f94@efficios.com>
+ <7A9876BA-C375-42A7-A5C9-FD940D2898D7@joelfernandes.org>
+ <5bd5ee4a-710a-96bc-abe8-772b2e60f478@efficios.com>
+ <20221220225756.GB26563@lothringen>
+ <c085be21-b45f-4186-6f41-5082771c79ca@efficios.com>
+ <20221221115924.GA34934@lothringen>
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <6BD506EA-77D2-4AC9-87A5-C8781594CF0F@joelfernandes.org>
+In-Reply-To: <20221221115924.GA34934@lothringen>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-12-20 23:26, Joel Fernandes wrote:
-> 
-> 
->> On Dec 20, 2022, at 10:43 PM, Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On 2022-12-21 06:59, Frederic Weisbecker wrote:
+> On Tue, Dec 20, 2022 at 10:34:19PM -0500, Mathieu Desnoyers wrote:
+[...]
 >>
->> ﻿On 2022-12-20 19:58, Frederic Weisbecker wrote:
->>>> On Wed, Dec 21, 2022 at 01:49:57AM +0100, Frederic Weisbecker wrote:
->>>> On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
->>>>> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.org> wrote:
->>>>> Agreed about (1).
->>>>>
->>>>>> _ In (2), E pairs with the address-dependency between idx and lock_count.
->>>>>
->>>>> But that is not the only reason. If that was the only reason for (2),
->>>>> then there is an smp_mb() just before the next-scan post-flip before
->>>>> the lock counts are read.
->>>>
->>>> The post-flip barrier makes sure the new idx is visible on the next READER's
->>>> turn, but it doesn't protect against the fact that "READ idx then WRITE lock[idx]"
->>>> may appear unordered from the update side POV if there is no barrier between the
->>>> scan and the flip.
->>>>
->>>> If you remove the smp_mb() from the litmus test I sent, things explode.
->>> Or rather, look at it the other way, if there is no barrier between the lock
->>> scan and the index flip (E), then the index flip can appear to be written before the
->>> lock is read. Which means you may start activating the index before you finish
->>> reading it (at least it appears that way from the readers pont of view).
+>> The memory ordering constraint I am concerned about here is:
 >>
->> Considering that you can have pre-existing readers from arbitrary index appearing anywhere in the grace period (because a reader can fetch the
->> index and be preempted for an arbitrary amount of time before incrementing the lock count), the grace period algorithm needs to deal with the fact that a newcoming reader can appear in a given index either before or after the flip.
+>>   * [...] In addition,
+>>   * each CPU having an SRCU read-side critical section that extends beyond
+>>   * the return from synchronize_srcu() is guaranteed to have executed a
+>>   * full memory barrier after the beginning of synchronize_srcu() and before
+>>   * the beginning of that SRCU read-side critical section. [...]
 >>
->> I don't see how flipping the index before or after loading the unlock/lock values would break anything (except for unlikely counter overflow situations as previously discussed).
+>> So if we have a SRCU read-side critical section that begins after the beginning
+>> of synchronize_srcu, but before its first memory barrier, it would miss the
+>> guarantee that the full memory barrier is issued before the beginning of that
+>> SRCU read-side critical section. IOW, that memory barrier needs to be at the
+>> very beginning of the grace period.
 > 
-> If you say unlikely, that means it can happen some times which is bad enough ;-). Maybe you mean impossible.
+> I'm confused, what's wrong with this ?
+> 
+> UPDATER                  READER
+> -------                  ------
+> STORE X = 1              STORE srcu_read_lock++
+> // rcu_seq_snap()        smp_mb()
+> smp_mb()                 READ X
+> // scans
+> READ srcu_read_lock
 
-I mean that if we have a synchronize_srcu preemption long enough to get 
-2^32 or 2^64 concurrent srcu read-side critical sections, I strongly 
-suspect that RCU stall detection will yell loudly. And if it does not 
-already, then we should make it so.
+What you refer to here is only memory ordering of the store to X and 
+load from X wrt loading/increment of srcu_read_lock, which is internal 
+to the srcu implementation. If we really want to model the provided 
+high-level memory ordering guarantees, we should consider a scenario 
+where SRCU is used for its memory ordering properties to synchronize 
+other variables.
 
-So I mean "impossible unless the system is already unusable", rather 
-than just "unlikely".
+I'm concerned about the following Dekker scenario, where 
+synchronize_srcu() and srcu_read_lock/unlock would be used instead of 
+memory barriers:
+
+Initial state: X = 0, Y = 0
+
+Thread A                   Thread B
+---------------------------------------------
+STORE X = 1                STORE Y = 1
+synchronize_srcu()
+                            srcu_read_lock()
+                            r1 = LOAD X
+                            srcu_read_unlock()
+r0 = LOAD Y
+
+BUG_ON(!r0 && !r1)
+
+So in the synchronize_srcu implementation, there appears to be two
+major scenarios: either srcu_gp_start_if_needed starts a gp or expedited 
+gp, or it uses an already started gp/expedited gp. When snapshotting 
+with rcu_seq_snap, the fact that the memory barrier is after the 
+ssp->srcu_gp_seq load means that it does not order prior memory accesses 
+before that load. This sequence value is then used to identify which 
+gp_seq to wait for when piggy-backing on another already-started gp. I 
+worry about reordering between STORE X = 1 and load of ssp->srcu_gp_seq, 
+which is then used to piggy-back on an already-started gp.
+
+I suspect that the implicit barrier in srcu_read_lock() invoked at the
+beginning of srcu_gp_start_if_needed() is really the barrier that makes
+all this behave as expected. But without documentation it's rather hard 
+to follow.
 
 Thanks,
 
 Mathieu
-
-> I would not settle for anything less than keeping the memory barrier around if it helps unlikely cases, but only D does help for the theoretical wrapping/overflow issue. E is broken and does not even help the theoretical issue IMO. And both D and E do not affect correctness IMO.
-> 
-> Anyway in all likelihood, I will be trying to remove E completely and clarify docs on D in the coming weeks. And also try to drop the size of the counters per our discussions
-> 
-> Thanks.
-> 
-> 
-> 
->>
->> Thanks,
->>
->> Mathieu
->>
->> -- 
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
->>
 
 -- 
 Mathieu Desnoyers
