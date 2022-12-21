@@ -2,120 +2,71 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4C3CC4167B
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 00:27:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F81BC4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 00:50:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbiLUA1g (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 19:27:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
+        id S229451AbiLUAuF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 19:50:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbiLUA1f (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 19:27:35 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995C819282;
-        Tue, 20 Dec 2022 16:27:34 -0800 (PST)
+        with ESMTP id S229448AbiLUAuE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 19:50:04 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F2214020;
+        Tue, 20 Dec 2022 16:50:03 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 305746162C;
-        Wed, 21 Dec 2022 00:27:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 077B7C433F1;
-        Wed, 21 Dec 2022 00:27:32 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9EB4CB81AC3;
+        Wed, 21 Dec 2022 00:50:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D55BFC433EF;
+        Wed, 21 Dec 2022 00:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671582453;
-        bh=QZMiVBXSoqyLx9N5rvN6rX9ub6C1WA1HR+6Nwve0IgU=;
+        s=k20201202; t=1671583800;
+        bh=UQfaCMmNKemVUDC7EJVOsBtsfVKMwNk1684fgHLkLl4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XhQPzt5ZLWLgRAoiTtDiQTndEfBXw2Y+uJLrmGyktVaJSIgnc8u5hCwxgQGPeivGG
-         cEthzGEOMxgXeOpXd7xuwRyfvx+JiS6xwh/WWL0+jAxElKHGcAQGLVVG7E+DhjU/xr
-         hghHasgmD4sFPa1B92G7Meee/MsSt/iPle+Za45gDgx78j+n9EZHaIvO+Luq9odISE
-         dqjxNXdJ1T/9U5NUn3LyfRTC6YP4NHe2i3WVqrPAutUuVKIVVK0ufNWkr1BF/5hnd3
-         zYBwBfDMpiGdWKuDWaovPsx1KwQnFwaSrX9NIN3v25ZHFsjxZSoYPMp7fFBMISOpag
-         R+ODbPF2MW4mA==
-Date:   Wed, 21 Dec 2022 01:27:30 +0100
+        b=f9lU+Szrwvol+FSib7YYWiFxVvwz7C3RMHTQKHFEUDlF7Jv1kVwYIHw29dJP1xldZ
+         qBaS1zsTuIQ1RE7XBRVHburjYI6La/xr7KBiMhs0faR0gsd+rGlhn/m/3ExA7vLT5x
+         48Y9Jsv5osTCS0jrbQ1wiE8SdO2TIyeGSn7ucCgGQeAaeGcuDWUY4N5Je7X5Dhv7FS
+         dmmnUmZRvI5fM4J/sCIdA5XZFtfg4DHvFnlR7N0ujT2PnAqwzlm06kVHIh4Xtwem1i
+         l2g3PSvLW1Tnn7emFZcQinc+w0j69QbOBj4Uxsvyv+BjVMT3m7fNg+uU9plAkpIpAH
+         OBEw2qRxs3vGw==
+Date:   Wed, 21 Dec 2022 01:49:57 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Message-ID: <20221221002730.GA28629@lothringen>
-References: <6438d903-ab97-48c7-c338-9f0bc2686f94@efficios.com>
- <7A9876BA-C375-42A7-A5C9-FD940D2898D7@joelfernandes.org>
- <5bd5ee4a-710a-96bc-abe8-772b2e60f478@efficios.com>
- <CAEXW_YRFbsCzT9iPdVfmeZ5qK+2fnVAwSzxbj1EXmU+vepOKdg@mail.gmail.com>
- <20221220230521.GC26563@lothringen>
- <CAEXW_YRw76oCBevJwFvwRRTyNGJZW2H0Zbg1WNX7D4R3bTvsHw@mail.gmail.com>
+Message-ID: <20221221004957.GA29021@lothringen>
+References: <20221220140714.GB22763@lothringen>
+ <CA83E649-8C79-4D39-9BFE-BBEF95968B98@joelfernandes.org>
+ <20221220224459.GA25175@lothringen>
+ <CAEXW_YSAv+MzZoW9RK9H3E6DAyZH+wB=4bMy5nXTOExSwgSwAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YRw76oCBevJwFvwRRTyNGJZW2H0Zbg1WNX7D4R3bTvsHw@mail.gmail.com>
+In-Reply-To: <CAEXW_YSAv+MzZoW9RK9H3E6DAyZH+wB=4bMy5nXTOExSwgSwAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Dec 20, 2022 at 06:46:10PM -0500, Joel Fernandes wrote:
-> On Tue, Dec 20, 2022 at 6:05 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> >
-> > On Tue, Dec 20, 2022 at 07:06:57PM +0000, Joel Fernandes wrote:
-> > > On Tue, Dec 20, 2022 at 7:01 PM Mathieu Desnoyers
-> > > <mathieu.desnoyers@efficios.com> wrote:
-> > > >
-> > > > On 2022-12-20 13:29, Joel Fernandes wrote:
-> > > > >
-> > > >
-> > > > > I do want to finish my memory barrier studies of SRCU over the holidays since I have been deep in the hole with that already. Back to the post flip memory barrier here since I think now even that might not be needed…
-> > > >
-> > > > I strongly suspect the memory barrier after flip is useless for the same
-> > > > reasons I mentioned explaining why the barrier before the flip is useless.
-> > > >
-> > > > However, we need to double-check that we have memory barriers at the
-> > > > beginning and end of synchronize_srcu, and between load of "unlock"
-> > > > counters and load of "lock" counters.
-> > > >
-> > > > Where is the barrier at the beginning of synchronize_srcu ?
-> > >
-> > > I believe we don't need another memory barrier at the beginning of
-> > > synchronize_srcu() (but this part of my SRCU study is still pending
-> > > ;)) . The grace period guarantee (read-side critical sections don't
-> > > span the GP) is already enforced by the memory barrier between
-> > > scanning for all unlocks, and scanning for all locks (Paired with
-> > > corresponding memory barriers on the read-side).
-> > >
-> > > Accordingly, before we scan all locks and match lock == unlock, there
-> > > is an smp_mb(). Why is that not sufficient?
-> >
-> > That's not enough, you still need a barrier between the updater's pre-GP
-> > accesses and the scans, so that post-GP read side sees the updater's pre-GP
-> > accesses:
-> >
-> >
-> >             UPDATER                        READER
-> >             -------                        ------
-> >             WRITE A                        WRITE srcu_read_lock
-> >             smp_mb() //rcu_seq_snap()      smp_mb()
-> >             READ srcu_read_lock //scans    READ A
+On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
+> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> Agreed about (1).
 > 
-> But see the comments also in srcu_readers_active_idx_check()
+> > _ In (2), E pairs with the address-dependency between idx and lock_count.
 > 
-> * Needs to be a smp_mb() as the read side may
-> * contain a read from a variable that is written to before the
-> * synchronize_srcu() in the write side
-> 
-> So that appears to be already covered. Or is your point that the scans
-> are not happening on the same CPU as the pre-GP writer, as scans are
-> happening from workqueue ?
+> But that is not the only reason. If that was the only reason for (2),
+> then there is an smp_mb() just before the next-scan post-flip before
+> the lock counts are read.
 
-Nah I think you're right. Although I guess we still need the barrier between
-updater's pre-gp accesses and srcu_unlock scans...
+The post-flip barrier makes sure the new idx is visible on the next READER's
+turn, but it doesn't protect against the fact that "READ idx then WRITE lock[idx]"
+may appear unordered from the update side POV if there is no barrier between the
+scan and the flip.
 
-
-> 
-> Perhaps that comment misled me.
-> 
-> Confused,
-> 
->  - Joel
+If you remove the smp_mb() from the litmus test I sent, things explode.
