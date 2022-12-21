@@ -2,92 +2,99 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B4D6C4332F
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 03:43:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE28C4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 03:46:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbiLUDnJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Dec 2022 22:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S229727AbiLUDqm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Dec 2022 22:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiLUDnI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Dec 2022 22:43:08 -0500
+        with ESMTP id S229482AbiLUDql (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Dec 2022 22:46:41 -0500
 Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5A21EAD6;
-        Tue, 20 Dec 2022 19:43:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554B1BE6;
+        Tue, 20 Dec 2022 19:46:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1671594180;
-        bh=AwTHZsJE1OHmZw07jiGlqjcJAYhW0GUTvOa719wrfcw=;
+        s=smtpout1; t=1671594399;
+        bh=2ppGBTNEKO9ZGf5Jmr6Z5lBYQ/V8tObp7/FB4z0ImVk=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=g5Egj5vaNGMMyKDGyVK12hdPytUVLvpAYJlg5fhmDr2lN1H0B2+29ItSjzJA5gQL/
-         3zF6gYuGrb6EJrrcOwre55oGT4vYz0Nwp2P3nzh49RLBim0oOTnWJl2CxwovVpu246
-         SzK9ScSOWWln1fhaZulfuvND4o4PIEWv61jZRAgouqK0YOYwurQ3dvXLUuKx5TWk8q
-         MQhX4hxvIp5kL0WQw702zFsQoL2f+067xBRGvt6xhctB+hRRHOCbgLuq9rFd2L5Dmu
-         nk7beGL+LYfF7uy65mU2ZbmQm7QUfbIRpp8GZ3c5TiDIr/N52N7c+qiiovTivU20KM
-         w64WGCwJw99zw==
+        b=JumEZRgUYwBTvJFjedBpRAwFKMWPt91RPx8l1x8EB8Nuk+HafrrTJ1d7ZHKNw9IwU
+         Z6v/YgAOZO9AD2TFEE2afW24EJxUTEtFhiW4FxO/Q/gLPEfo7JeK7nfPlhnscq/OhI
+         3pjGPY4q9zlh+lsV0L7T5fGW5dSQyQNmzHc6qbjo2o39lMGeOgW+T18iBsxix/0XWa
+         pYkIixIXtekn0NK9W5jPW8ThcmaBJ9xtOyGcviYa/qE1u/DTrxb2Y4iolbvevf2el9
+         GZk9b3+nfgMl9VKEyUtTRkETe8+hpe0Rxnf55Tziu1VGM9ygRYN0KlTN2BRbSFpKt8
+         BvROH7PFufK8A==
 Received: from [10.1.0.30] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4NcK5w5GFlzbvj;
-        Tue, 20 Dec 2022 22:43:00 -0500 (EST)
-Message-ID: <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
-Date:   Tue, 20 Dec 2022 22:43:25 -0500
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4NcKB73dhWzbTD;
+        Tue, 20 Dec 2022 22:46:39 -0500 (EST)
+Message-ID: <bcb9eb90-9261-ce96-859d-af4cc1d03baa@efficios.com>
+Date:   Tue, 20 Dec 2022 22:47:04 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
 Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
 Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-References: <20221220140714.GB22763@lothringen>
- <CA83E649-8C79-4D39-9BFE-BBEF95968B98@joelfernandes.org>
- <20221220224459.GA25175@lothringen>
- <CAEXW_YSAv+MzZoW9RK9H3E6DAyZH+wB=4bMy5nXTOExSwgSwAg@mail.gmail.com>
- <20221221004957.GA29021@lothringen> <20221221005858.GA29316@lothringen>
+References: <20221218191310.130904-1-joel@joelfernandes.org>
+ <589da7c9-5fb7-5f6f-db88-ca464987997e@efficios.com>
+ <CAEXW_YQHpz3dNqW1ocqjr-e9qn09Rkg4kQ19byZORGbO18Xckg@mail.gmail.com>
+ <2da94283-4fce-9aff-ac5d-ba181fa0f008@efficios.com>
+ <CAEXW_YQBmwynuBOWbV6_L2itRr_i3BZUxQ91PDC2We2vXhpztQ@mail.gmail.com>
+ <CAEXW_YTyZaE4ULvm-HygFN2BGm-jayHTbpnYbrJFoo_GOsYKQg@mail.gmail.com>
+ <659763b0-eee4-10dd-5f4a-37241173809c@efficios.com>
+ <CAEXW_YQ+NTaM43Va5FG8kYSxr2gsbjar4_f3xnpSAHzgUVZ-+g@mail.gmail.com>
+ <CAEXW_YRqscm++0TP9bEnM0PQNLMe4cXFWAdRvHh2M5chERm+UA@mail.gmail.com>
+ <35293ec4-40a1-cf6b-3bdd-0e3e30819c06@efficios.com>
+ <20221221000715.GA27352@lothringen>
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20221221005858.GA29316@lothringen>
+In-Reply-To: <20221221000715.GA27352@lothringen>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2022-12-20 19:58, Frederic Weisbecker wrote:
-> On Wed, Dec 21, 2022 at 01:49:57AM +0100, Frederic Weisbecker wrote:
->> On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
->>> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.org> wrote:
->>> Agreed about (1).
->>>
->>>> _ In (2), E pairs with the address-dependency between idx and lock_count.
->>>
->>> But that is not the only reason. If that was the only reason for (2),
->>> then there is an smp_mb() just before the next-scan post-flip before
->>> the lock counts are read.
+On 2022-12-20 19:07, Frederic Weisbecker wrote:
+> On Tue, Dec 20, 2022 at 12:00:58PM -0500, Mathieu Desnoyers wrote:
+>> On 2022-12-19 20:04, Joel Fernandes wrote:
+>> The main benefit I expect is improved performance of the grace period
+>> implementation in common cases where there are few or no readers present,
+>> especially on machines with many cpus.
 >>
->> The post-flip barrier makes sure the new idx is visible on the next READER's
->> turn, but it doesn't protect against the fact that "READ idx then WRITE lock[idx]"
->> may appear unordered from the update side POV if there is no barrier between the
->> scan and the flip.
+>> It allows scanning both periods (0/1) for each cpu within the same pass,
+>> therefore loading both period's unlock counters sitting in the same cache
+>> line at once (improved locality), and then loading both period's lock
+>> counters, also sitting in the same cache line.
 >>
->> If you remove the smp_mb() from the litmus test I sent, things explode.
+>> It also allows skipping the period flip entirely if there are no readers
+>> present, which is an -arguably- tiny performance improvement as well.
 > 
-> Or rather, look at it the other way, if there is no barrier between the lock
-> scan and the index flip (E), then the index flip can appear to be written before the
-> lock is read. Which means you may start activating the index before you finish
-> reading it (at least it appears that way from the readers pont of view).
+> I would indeed expect performance improvement if there are no readers in the
+> active period/idx but if there are, it's a performance penalty due to the extra
+> scans.
+> 
+> So my mean questions are:
+> 
+> * Is the no-present-readers the most likely case? I guess it depends on the ssp.
+> 
+> * Does the SRCU update side deserve to be optimized with added code (because
+>    we are not debating about removing the flip, rather about adding a fast-path
+>    and keep the flip as a slow-path)
+>    
+> * The SRCU machinery is already quite complicated. Look how we little things lock
+>    ourselves in for days doing our exegesis of SRCU state machine. And halfway
+>    through it we are still debating some ordering. Is it worth adding a new path there?
 
-Considering that you can have pre-existing readers from arbitrary index 
-appearing anywhere in the grace period (because a reader can fetch the
-index and be preempted for an arbitrary amount of time before 
-incrementing the lock count), the grace period algorithm needs to deal 
-with the fact that a newcoming reader can appear in a given index either 
-before or after the flip.
-
-I don't see how flipping the index before or after loading the 
-unlock/lock values would break anything (except for unlikely counter 
-overflow situations as previously discussed).
+I'm not arguing for making things more complex unless there are good 
+reasons to do so. However I think we badly need to improve the 
+documentation of the memory barriers in SRCU, because the claimed 
+barrier pairing is odd.
 
 Thanks,
 
