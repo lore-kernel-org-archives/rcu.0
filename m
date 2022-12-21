@@ -2,68 +2,130 @@ Return-Path: <rcu-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D23E8C10F1B
-	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 17:19:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DCC4C4332F
+	for <rcu@archiver.kernel.org>; Wed, 21 Dec 2022 17:21:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234891AbiLURTp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 21 Dec 2022 12:19:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
+        id S234936AbiLURVd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 21 Dec 2022 12:21:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbiLURTW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 21 Dec 2022 12:19:22 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4582B264B5;
-        Wed, 21 Dec 2022 09:18:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D687F61871;
-        Wed, 21 Dec 2022 17:18:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3CDF8C433EF;
-        Wed, 21 Dec 2022 17:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671643107;
-        bh=vgtePbIt1Yp7RasEd6oI91vjprm/wps3RcyTr9l+lJY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=RjTqSGqeTq52/fB5yaUvRKKY3Oc3PpIoqZ8D+r8hVKHZyJ3YFmsrLXWQCpL6yrbuF
-         DDQr9N5WanjtD8pH0sp1Jmf8ES+cl5w17GxN+STh8Iw0FkVfHwpfcDUmHxIn21U5ze
-         enw27ZK9KjUrTlu/rKAh0wVtartTWBjNngC5PEuY1muUUrCdufx34OA/W8rP/7bx8s
-         HcVCbxGJr3fVc2HYEzpwT3k2h3oU2SgQmif9woyPtxPOvJMbqvdlJ7/3WtP1dTYFLw
-         cR4ejxaOu/6sqBc9YwqQfrukADx99XrfUfdJoUnpPssacBxl6OA73hyu5tfTMvJZBN
-         BOsPbhtG1RW6g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2A85EC395DF;
-        Wed, 21 Dec 2022 17:18:27 +0000 (UTC)
-Subject: Re: [GIT PULL] Avoid synchronize_rcu() false positives in semi-early boot
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
-References: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
-X-PR-Tracked-List-Id: <rcu.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20221220012906.GA3102709@paulmck-ThinkPad-P17-Gen-1>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.12.17a
-X-PR-Tracked-Commit-Id: 3f6c3d29df58f391cf487b50a24ebd24045ba569
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 19822e3ee4c891e1e8434e290fbca0af52490240
-Message-Id: <167164310717.3046.7874278338213977672.pr-tracker-bot@kernel.org>
-Date:   Wed, 21 Dec 2022 17:18:27 +0000
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rcu@vger.kernel.org, kernel-team@fb.com, rostedt@goodmis.org
+        with ESMTP id S234953AbiLURU5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 21 Dec 2022 12:20:57 -0500
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C5A26481;
+        Wed, 21 Dec 2022 09:20:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1671643209;
+        bh=n/YGAUOunLlUSiLTzekbIHtWmgD98wLpsvCgDOv+sUA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=m7UkjoEn+NoL7YN3Px0a2JFzA75foGkf4ODQZ68ThavqzywQ01kWUs16juIR1JM+R
+         17etM2pfHgilo6f4V+zTSVI0fRSPBSdSITfatkkrxEG8uPFVh3wFJMItqbZHesvZYC
+         ubXuIroWh6VHAdnO6+4ILa+YgNmYLmvs4GSXney+/BgoGoNGhmBwF/yS83VbApTcVt
+         cg6152LRMQnAhFmIRKfVGynsFnzdBQnkRuOYjWmttIZ9o9zaBSpP0/Je+UmEQzy1MX
+         aFl4wLTEpTyY/btGjPv4c+ofgttKC5Z0Fuk57vAjolKQ79CDMSHBFQCoqeZxJYidY1
+         SV1d4D8XPu31g==
+Received: from [10.1.0.30] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4NcgDn12cLzbg1;
+        Wed, 21 Dec 2022 12:20:09 -0500 (EST)
+Message-ID: <edd76fa9-c7aa-9433-9ef2-42daec0ab268@efficios.com>
+Date:   Wed, 21 Dec 2022 12:20:34 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
+Content-Language: en-US
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <20221220140714.GB22763@lothringen>
+ <CA83E649-8C79-4D39-9BFE-BBEF95968B98@joelfernandes.org>
+ <20221220224459.GA25175@lothringen>
+ <CAEXW_YSAv+MzZoW9RK9H3E6DAyZH+wB=4bMy5nXTOExSwgSwAg@mail.gmail.com>
+ <20221221004957.GA29021@lothringen> <20221221005858.GA29316@lothringen>
+ <f4199d1f-306c-681f-8bb9-26d66ecf5121@efficios.com>
+ <20221221121118.GA35081@lothringen>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20221221121118.GA35081@lothringen>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The pull request you sent on Mon, 19 Dec 2022 17:29:06 -0800:
+On 2022-12-21 07:11, Frederic Weisbecker wrote:
+> On Tue, Dec 20, 2022 at 10:43:25PM -0500, Mathieu Desnoyers wrote:
+>> On 2022-12-20 19:58, Frederic Weisbecker wrote:
+>>> On Wed, Dec 21, 2022 at 01:49:57AM +0100, Frederic Weisbecker wrote:
+>>>> On Tue, Dec 20, 2022 at 07:15:00PM -0500, Joel Fernandes wrote:
+>>>>> On Tue, Dec 20, 2022 at 5:45 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+>>>>> Agreed about (1).
+>>>>>
+>>>>>> _ In (2), E pairs with the address-dependency between idx and lock_count.
+>>>>>
+>>>>> But that is not the only reason. If that was the only reason for (2),
+>>>>> then there is an smp_mb() just before the next-scan post-flip before
+>>>>> the lock counts are read.
+>>>>
+>>>> The post-flip barrier makes sure the new idx is visible on the next READER's
+>>>> turn, but it doesn't protect against the fact that "READ idx then WRITE lock[idx]"
+>>>> may appear unordered from the update side POV if there is no barrier between the
+>>>> scan and the flip.
+>>>>
+>>>> If you remove the smp_mb() from the litmus test I sent, things explode.
+>>>
+>>> Or rather, look at it the other way, if there is no barrier between the lock
+>>> scan and the index flip (E), then the index flip can appear to be written before the
+>>> lock is read. Which means you may start activating the index before you finish
+>>> reading it (at least it appears that way from the readers pont of view).
+>>
+>> Considering that you can have pre-existing readers from arbitrary index
+>> appearing anywhere in the grace period (because a reader can fetch the
+>> index and be preempted for an arbitrary amount of time before incrementing
+>> the lock count), the grace period algorithm needs to deal with the fact that
+>> a newcoming reader can appear in a given index either before or after the
+>> flip.
+> 
+> True but the number of preempted tasks is bound and there is a forward progress guarantee.
+> 
+>> I don't see how flipping the index before or after loading the unlock/lock
+>> values would break anything (except for unlikely counter overflow situations
+>> as previously discussed).
+> 
+> Forward progress guarantee.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu-urgent.2022.12.17a
+Considering a coherent cache, the store-buffer will ensure that the 
+index flip eventually reaches all readers. This bounds the time during 
+which readers can flood the current index, and therefore guarantees 
+forward progress. AFAIK the Linux kernel does not support architectures 
+with incoherent caches.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/19822e3ee4c891e1e8434e290fbca0af52490240
+So I still don't see how having the barrier before or after the index 
+flip is useful for forward progress.
 
-Thank you!
+Thanks,
+
+Mathieu
+
+> 
+> Thanks.
+> 
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>> -- 
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+>>
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
