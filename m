@@ -2,77 +2,73 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ED11C4332F
-	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 09:42:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98C61C4332F
+	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 09:48:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235119AbiLVJmf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Dec 2022 04:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
+        id S235237AbiLVJsT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Dec 2022 04:48:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235100AbiLVJme (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Dec 2022 04:42:34 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFF163F7;
-        Thu, 22 Dec 2022 01:42:33 -0800 (PST)
+        with ESMTP id S235128AbiLVJsS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Dec 2022 04:48:18 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B63EAA;
+        Thu, 22 Dec 2022 01:48:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1671702153; x=1703238153;
+  t=1671702497; x=1703238497;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=d/WEBnAr0jBEkQ/kJ0YTKcJfJMJiRE7OSxp0ZVdKh5c=;
-  b=R+Qw8LtvYkc25ECqicjf/HbmUBRJgUspzapSwgRabf/7goSWqbuEgXq2
-   oXzE5GIMzFXOxtDuc8sy6gESxKeQljbkAvAaBMFnu1LZnVdVEbG+P3D5g
-   AUxkYOYg4eM26ZwY0NuvMBjg5x8TRnV1FJuVeRNCXFH50RGbWhoGxgoMm
-   0WrFJMCNkJNU1hQGoRfwCjb/ILM3ZG7IMBK2yJvl+hbpz9Bl2oVkyWUtj
-   CA1urvy9Qm/FEe4/bTtYS2vkb0lTyV2W0I0fe17NNbmxypHEVnBcsqwxF
-   y63U/0KnZo78/H2afiMGZ9wWHwd8WSgMHAAYW7Dxox/R6c4Dqaa/ZgtwK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="307773671"
+  bh=C3QT4IaDm70kIzscU6EcieKxBdhYK/pYk4iMvzEVM4I=;
+  b=Xokb/jhyDe1qlicIaxgEOM5YtpnvLc+pYOziC+mg5uwP0Hat/G332djT
+   hoIjVFI8k+eAiVHyuQolbIWLw0WRKIkJK9kBvynOeM5ShRK1qafBMZQBD
+   alfulKlXSz1VsZEJALERj5P9dzS8v+iOKHMTao3OhxlLaJNRH3rJ5eRaB
+   ++xOOBy+3zAd4DsAIVDDjts7ACDGTzKN69Blhlg98iz5lvrEs6h7IhI6s
+   691Lu/kpPmvLHVStFuUY+4XGsQ8vyKluzAzz5s8B9hBC+ACB5Hua/pw9c
+   zoxAbXo+eXLawDflq4KB0CRJXAYdXyUxPePb9zg2sv+4MTGLsZ0SxRDz7
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="321272312"
 X-IronPort-AV: E=Sophos;i="5.96,265,1665471600"; 
-   d="scan'208";a="307773671"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2022 01:42:25 -0800
+   d="scan'208";a="321272312"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2022 01:48:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="740490585"
+X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="601833384"
 X-IronPort-AV: E=Sophos;i="5.96,265,1665471600"; 
-   d="scan'208";a="740490585"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP; 22 Dec 2022 01:42:25 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+   d="scan'208";a="601833384"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga003.jf.intel.com with ESMTP; 22 Dec 2022 01:48:16 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Thu, 22 Dec 2022 01:42:25 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ 15.1.2507.16; Thu, 22 Dec 2022 01:48:16 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Thu, 22 Dec 2022 01:42:24 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Thu, 22 Dec 2022 01:42:24 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ 15.1.2507.16 via Frontend Transport; Thu, 22 Dec 2022 01:48:16 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Thu, 22 Dec 2022 01:42:20 -0800
+ 15.1.2507.16; Thu, 22 Dec 2022 01:48:16 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oSJQg3hN+4cLZvL6purnNy0l72aQz0YVKfZCZ8vilcG2uurlBlJzwsQGrY6lCPXGJ9W99K/tVU9VK+YO7nXkXgWNKoDyMHX9q9dyl/YJHPq87PQM3TwkM8tQ/2xha/Sr6zgYhknW28sQFV8mt0/KmO6WSKkrspXYyIEh8cYUC7cHciAm6qpi0cHvBwEPCMEInk2BFl3NsVI/3LLSA1c41GDQM38Ruv1CKmyMfksg3mreuBaK4XuiZ2j6AgzOinkTJiG49MsGKczb/h/99/oje2b1cfcf0ubd+4+QsEWQJJ5Y6n5/ffnvu7uTyCc58mHOu5IuL6X3rgLV6ND3HSSuKg==
+ b=V25fDI0M6GsB8fvSh/t4jpXUJiJou1Cf5b+8BjMlRcEXFfbpQkWS2aM5oRLrTpjZqNaQloe/L14yGiNYVC2SfwAe/PPIKJDDwnSV6hrF70Lhq/ydHLBae1dmCJfJfJIpwoUGCJ3HV+t1WXjmUvo1g8ccV80RyvFN97eCotbQtMJpTyiRp9zXA26Y09wEsRUiKfTMrzlBpZ2AoaJWdotQNZk9PU64sP0VtnTw1tFfzC6cjxGss9gtEt2qfCsmL56MkeWLGEdaIXDjal6u6HBASk9mhJa+ZX4IbVAEI3wiKk2wTJcXVPVNKAcebJoaLdQ5CFr0BFhxh0uW1D9tEySxLw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w4OqHQqR5GP/sGMwH8LZ5PLRlStAOmX9e26VbiSHPdQ=;
- b=HCuzGX7tjhnSM59b0SzzA9O1bQ8Igx3j7GRcSvrb/jLYJDk9l+tpuYVaoLG97n6rLL1O3D4mcOhWA1gkEOTVx/Mk1AfOrr03FoaSYqkbyIw+Q9zcbkay29GUCbOjT4epaffKbfnfZzbTPwgFGD1DOYFnvhNnCWGxxnAKeuxyLRlceoBzIK4OP6c+xh8/6Wcfo0Ulz0UJAgx2OAEO2nMBkd+7S7OzVrAawHTHiBiLy5GzOI6Ku/ZCiNU7I0m04sKkmwwYkP7e002O2QMkq7vl9AjFOaLzMHfM3KRruKohFLqQpROF9Xc460yO7BBl670y7aBkVwHGmhWeS9PI0g/7KQ==
+ bh=AMwSNrGm8voxGMHI/S9LpTc6cIdeF0AsOFSa2uxvyHE=;
+ b=MkBPkjsy8/HpMURLIHC8eriDQFSs+KBV/yVTbZ0IyLS6uhxuogm+tvMbkimcZmSoQXxxkaIJ8MbjPz2035xQZzpSNmv+YtuJ9pwf2TqBE+h5X5OtD1rLd1zI0Az1LNzE3P+ebEocOfgNijKM0BqsFHxoCa2wlu6VsXms5CywAIglxUxKsYaKpNyu4LRk32Ysc99gJfU01UHDtHmB3kfnaZxXUnztBSWFtXv5SjxDsAgjQlRtvz+bogxsqmfykxGhWO64rHwuDA1HEuHj6VCOUXRgXpEWzlX/MOe+C/pwbk6JcLI1n6a02B/hPvnNZf6YkD077XGxR92xYElmvbBuBA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by PH7PR11MB6699.namprd11.prod.outlook.com (2603:10b6:510:1ad::16) with
+ by SJ0PR11MB5662.namprd11.prod.outlook.com (2603:10b6:a03:3af::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5924.16; Thu, 22 Dec
- 2022 09:42:19 +0000
+ 2022 09:48:14 +0000
 Received: from PH0PR11MB5880.namprd11.prod.outlook.com
  ([fe80::114c:5805:e63f:6018]) by PH0PR11MB5880.namprd11.prod.outlook.com
  ([fe80::114c:5805:e63f:6018%6]) with mapi id 15.20.5924.016; Thu, 22 Dec 2022
- 09:42:19 +0000
+ 09:48:14 +0000
 From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
 To:     "paulmck@kernel.org" <paulmck@kernel.org>
 CC:     "frederic@kernel.org" <frederic@kernel.org>,
@@ -80,19 +76,16 @@ CC:     "frederic@kernel.org" <frederic@kernel.org>,
         "joel@joelfernandes.org" <joel@joelfernandes.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads
- affinity
-Thread-Topic: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads
- affinity
-Thread-Index: AQHZEGMOnvxGUFjU2Uq5+RiLJLzbVq5xR5qAgAABybCAAMOa8IAGtnQAgADtg5A=
-Date:   Thu, 22 Dec 2022 09:42:19 +0000
-Message-ID: <PH0PR11MB58802F8D66E4FBA455E15CC8DAE89@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20221215090029.2972236-1-qiang1.zhang@intel.com>
- <20221217010919.GG4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880B9403488CAB5DF9810FFDAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
- <PH0PR11MB58806ABF242993103390A6F5DAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20221221192622.GD4001@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20221221192622.GD4001@paulmck-ThinkPad-P17-Gen-1>
+Subject: RE: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP
+ bitmask
+Thread-Topic: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP
+ bitmask
+Thread-Index: AQHZFGUUOrkEkQdHgkyyhC/0ix1REa54x0mAgADkn5A=
+Date:   Thu, 22 Dec 2022 09:48:14 +0000
+Message-ID: <PH0PR11MB58806135271427BC1A13AF34DAE89@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20221220112520.3596920-1-qiang1.zhang@intel.com>
+ <20221221200849.GG4001@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221221200849.GG4001@paulmck-ThinkPad-P17-Gen-1>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -100,202 +93,188 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|PH7PR11MB6699:EE_
-x-ms-office365-filtering-correlation-id: 7ca6b262-b1a5-476e-591c-08dae400d1a0
+x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|SJ0PR11MB5662:EE_
+x-ms-office365-filtering-correlation-id: deda7f00-9738-4d9a-661d-08dae401a548
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: y1Rdg7m2tKs8kYlXtwuo5dGd4QvrvKbdeAOhPKAn3lg2F3+yDQhLqkfKAxmrNZe3DZoBaBhem3Hy9QJ9vh46dgupgbwenOwocysATG3y0YgDL0YN3IZn/tTFN2zO9psUZTL7Bs7kF091yEv8d1mxUKHwlVOixaVJddML6kdbEaGcg4DEztttwsa36hey1Axo/gqblNatoQuC3QUbvd9j6t5phnAFZGlFsT/x3fZF5e9rCFWih3tIKBtkoeJcuuJhhx9lEe3Cm93TWjsAkcOFfepJDy5mvNG2EpTVHCd+zdFRnEIYO3CA7Tw/+Ky9NKwjfiLHZaGl+s+YisFdL6/KKrlJT2bfssBmiN1YQq1weAfWP4jvPkhp4Zl1Yt55/2fto3WiB0+QFzWaux+0wut2tN03WuDysU2RD5hwPmeW+VQvKFAM0wWWGYPkMZQlWHQ2v3lMB6KIwiIdXPIFHSZlxkQVIGR8NplVRgrxuqzHHaUE07jPjRedPl0Jo6PzaSJU/P+zvbuv+Zt6Y1qAia2xR9juH7pvhCb8KznHPzy2yr1ijfSCxT4aZGCgFiFjeJiX2mqSvSlbKF6OaSgjjvVcmZsXRnL6B3di1Hail/u3A+lVYe81FfOuwSBBGgNA+Uj/D1h+7whVvKnpEH7nX+SE9688mDgpSReVbrNuzy4pMyadr/93c99A8sZ7lG19H5gVN783O9mLTPeH/1J33dqRug==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(366004)(39860400002)(136003)(376002)(346002)(451199015)(38100700002)(82960400001)(41300700001)(8936002)(122000001)(52536014)(76116006)(66476007)(8676002)(4326008)(64756008)(66946007)(5660300002)(66556008)(66446008)(6506007)(83380400001)(478600001)(54906003)(66574015)(6916009)(316002)(38070700005)(2906002)(9686003)(71200400001)(33656002)(26005)(186003)(7696005)(86362001)(55016003);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: XMdyVNWt4W0xhL7IODh7sLlctIfA2NUs+o+6WQ5U8eElNVyJCc2aP79ts3DLlNcgpgx162nBnBelTTP+QR6ZJxug0sUnX7yNn8FW000L9LHBZxno2A43oj79VrUPoCwNfZ81CazzQsXSbMqrM5GmljpsbvfERpUYw6B2MSskM654VgLHtlu8BybtWDWAKQH6MN6jKMv/bGqyRDPBmVNsSR45gJsMacZTdSpviAQxal0fnal4u0zhx3esSNRYzFzQf8/zYctIlt0GyoafD3oTfvWxkRixLK+JhSR0OoPQ8MfL574bTT0SALpRUy51fHVJM9VRIgGW091DqzY87uaRM/m7JvSxGyDyxIy0XIsLJiTrGwN1TMxWRWb/ZnPr7mdBbT3z0bC8FNQH5QwEMEyXMw5fA6sBrGnkt4nK/zOjUaIUhQP98HRBjJXNFTeO9wIfHFl6pL5GcXmoctN8Z9/eNg/wJoAtBctiKn5PoiIOH7diTXv+wa508g4K60dDrN+IYJNzxGagMReaFcfkh/zO6sWgy1l/vW11tlAUVENlkBDy1hk6G2c0jdV+JYY7htvJ/dTFjPmVXYnRtEHofLte7u8X1RPpVRwJCJPXvrjmiecPED55+NwRYSuR0Cl9emM88KRV1QWAyrTPOYs3juLHcmK5nZpSW1OYNhQ3wkDZ8OzzruraQVNxvsLJq3A5YUcVWanL3Ks1BxIWI9DMKVCwxQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(346002)(136003)(366004)(396003)(39860400002)(451199015)(478600001)(6506007)(7696005)(71200400001)(55016003)(186003)(2906002)(86362001)(38070700005)(26005)(9686003)(76116006)(54906003)(66476007)(8676002)(66446008)(4326008)(66946007)(66556008)(64756008)(8936002)(6916009)(122000001)(66574015)(41300700001)(83380400001)(33656002)(38100700002)(82960400001)(316002)(52536014)(5660300002);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/9bQCWiXPDHxtVJT0wG4WovwWp2YmdUBG0I7UTtMHG6M6Wop5bP2mTo0uHsL?=
- =?us-ascii?Q?A42s46sKkERQ1qbU++ieKvWnpZfUCu/79f4CGrzan7C/E74P4vyoQMaMp+y0?=
- =?us-ascii?Q?8rry6BR6X1S3Dg0rwweUP6GmAaMwXudWYE2zKTBCr3T9GTA3bwBcD13P+Aud?=
- =?us-ascii?Q?h6NErjZX6MMNK/3HVbrhAPlgME0KdYUOnWikPcPv7OqfR+s6BVhHCg76zCYh?=
- =?us-ascii?Q?QSuOhd0SeI9s+9cHClhVffwgIgQ27gAxweXsh5yl+kgxP3aG9zI9URQF3qkv?=
- =?us-ascii?Q?M7MpXzEWhea5QyOaluhvfl7i9fzWlu8om2zdphPsrHt+/D1cFDNQFEWgpMBE?=
- =?us-ascii?Q?/lTPzQ1reeDS3C2cpG4zOeNUHgfJl8x/2sUFLxkJ3zBZ5BLpycOPoRHgorZM?=
- =?us-ascii?Q?j+/S3+rdZwwgW/mH0bCfHJhxquF3XKdk0fyVcQ6hnxdIShAsAvmimSVdRwHv?=
- =?us-ascii?Q?IxA/kkrpXehW13fUbYXqtXf+UIJjbGMIy2QrnhrIber6AetPO/1QjY/XXI7H?=
- =?us-ascii?Q?fyrJOQVY27vUMHMi8I0CJdX5L8i1CPxt7D5uFOpntazaPJlP/edLt4fEieEr?=
- =?us-ascii?Q?I4NQ6uBlN17kYseu8+q/TzCAG1o9PtnDv90mZogNzY+KRZnxgVjpYfwcPueP?=
- =?us-ascii?Q?Pq0YCKpoBGa4nlCozE2DoXikgf+SkYRp6exUYAXc8Mm+W0c+loGSAdrgTQjp?=
- =?us-ascii?Q?o1o/OfHV9jflkOrHpSyX/Pg8nGVLUZ6I07b3vQ9x33+eqI4JcaFLzpC6ya6x?=
- =?us-ascii?Q?syqaVaGnD2vz56FkxTz206w7RTJYtFtYtlN75Q4YflufmkCY4Gdy6waoUyGd?=
- =?us-ascii?Q?t9XDKu6tROmFYNq/PVO44bTnv/cdIgKUjsef4lm6OPZfg/PcUNgw5Aa7FsGa?=
- =?us-ascii?Q?Oebz3+fDyiCq7upla2nMqJLcGFmh4jK1CmCo+ULxGLGPW9L3y9dDWmAzh60T?=
- =?us-ascii?Q?VvqAjR5Lwia1ZzSTkJ+vPgfpqQ79LPDliyV0lYBdy4BdHgSSIkmXn+JO/hpI?=
- =?us-ascii?Q?HOJ8B3G/vfaZxeFWffqQZhKaUMsRtOzW3NCnML5E2WJgEBIa5NMJMk9v3Lp6?=
- =?us-ascii?Q?evMzO4Adw/BKrfd+ocdxSnX5sd1T36DOU4aEmKmb/FMz6oeLCZhSmr2sxJgV?=
- =?us-ascii?Q?ACZITkK7p9eEItdOooI6v+JmYZrRwRsFDdJgA8RGCNpjBHBtBQH5TyyOZfAY?=
- =?us-ascii?Q?toXuWBQ9rtek0qhXXRno3SvpVcM347QKNYuIvLS9pXnkxvT1F2IsKP0tTAKx?=
- =?us-ascii?Q?+4J5+z81Dp4j3+b2R3FXEhPcOUGK7Auf6Lg25aIG0baoT0hXL9EZhsj9h88X?=
- =?us-ascii?Q?vllnnVnhR+2ZkrrF5SNOtp2tLBQPes4+9xWqUyEtcF9U+/Wmzf6WXLiVrnO0?=
- =?us-ascii?Q?m3VQECCteYILarudCPtsF+sH+M58paklx2TV4Avt43ueTn/PQ82euvxIh+c1?=
- =?us-ascii?Q?ZJUYaAl1iFEMHckwtDl7Q3W0eYI01V+2vXuuYJhq/h462SJ3KYJpoN7y/SQA?=
- =?us-ascii?Q?K59ZiEqoDvzfdnafCn0PHMY6/m/vUdF+sdLBXDq3/xaTXbGJKYShrA5Us8rY?=
- =?us-ascii?Q?RwcJ2NBsU2JDDndTHtRS/LNRiCYLU6aGvl/dbcTq?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5pzgTeXrQDWEghve0TGUe3CwQ5NZWbxz0bx3mSITXIQKHS9NCwgn8PxZNG/7?=
+ =?us-ascii?Q?MIE2dtQP2asplZpM+7kADlP7I+INJfFcXoa8JDTKdvoq4dgdy7zTD2HKXSvg?=
+ =?us-ascii?Q?aFVW4md68ZW/vEXqjtF4dVydmaem70idoI6sq08zDzrVYU2GHTEWerwEN76A?=
+ =?us-ascii?Q?76WCDIp6PNIidzlxtgGVPcRDl3KyNQVC4YGFmWkZ9CGthS2AvLXNUSp6V2ng?=
+ =?us-ascii?Q?mQdmNQ/yJwRVwLrfUinxz7KP/mBySOnM2VhitCkXPIA5dpGWHf/h+8Ctjzrk?=
+ =?us-ascii?Q?D/fewXmlzBzcKpbPXU3mmwQhGV4jhlY/KT9tZpiXTS/i6cCVi7xP6fFR8ld9?=
+ =?us-ascii?Q?RwJOPgVr5jFk+vFkkyGAa/6BwHfCqc3U3ojc8mkUX6cGpyGcLWsCuEshmceq?=
+ =?us-ascii?Q?gfG4uI0Rgms7xgCnHNs7M7S2iJt1VIIrYZ+6z0ACn9OQ4FrwLh0bOp77gC/D?=
+ =?us-ascii?Q?4qMgJS2mR5/xSUlAvidKK/GAToBnKDng+s6COiJZZRjzkQRUAz9jh7vtdOOC?=
+ =?us-ascii?Q?NPJbaVvJ9kiMUsI8A2VLx7rfdGxlakjNi/xTwlMgCx30gAXSrgb7ta7OdBiR?=
+ =?us-ascii?Q?ljYF6Ym732LywBuAyXgWPPHyOnYeeYL/Z7KyIwxam6beHOpHSJs3bfTtO/2C?=
+ =?us-ascii?Q?U/nfX7ky0XVP9+sLW1iysJfVaRoY1G7KLGsEr0KQcy+/7ju3g2AE6Yqs4V/b?=
+ =?us-ascii?Q?5g880IpAjkmOIC6ZxKlf26WzXOvF6nl6qJYgqPEQM1y79HIQXu4XPqaKCnW5?=
+ =?us-ascii?Q?xux+Xeqja6dBFrU7ZcYsKwPDnjc1CaTlj5cOoPBtrNerG1S+XowDYGojHr7G?=
+ =?us-ascii?Q?C8C5Nx2tUNWyHEAD2T+g2Ye5J2QQQqYau3SF+3fRJa6xPVU0ZTXGUwZBv4N8?=
+ =?us-ascii?Q?ymrKOQWC+P6Aa+3dNhtLpRAxFSP7I54ICEDz16P04Ui2zGwUk6FR+ZGIz0uv?=
+ =?us-ascii?Q?UWW4WN11usb1B4GLHRn7PfYOkEVAsp/SsdS1cYfL8Ya4yPYu1zgosSOreX4Q?=
+ =?us-ascii?Q?umV7yJTzkOS0y6YLBX4E2a3Jw1lFv+4jAS3k4ukVhuMF6z44k3OT21DVahYS?=
+ =?us-ascii?Q?LsfhTILBJufC9MWs10sbCcsH3moNEV/ZhPo8xRauDpfjeRMpUYXylCiwxlcM?=
+ =?us-ascii?Q?REfSLG5Q4I7WBURIDSI2dzDCqR5/tEuHSM1Pu3BJ+6vzLkvFqWpedTcbLa7F?=
+ =?us-ascii?Q?UXXJWTGJGvKiCpyU1o/XsjlK2/vVEe1Y9+UgHcJSjw2h7ZUjsaz6oR3rtBzB?=
+ =?us-ascii?Q?tXy0yg++yHk8V5i1YkuKWjP88O7ZPYIbDb14UdKNEgIIJnVWIXY6mt15seK0?=
+ =?us-ascii?Q?ZMAbxSUfny6KmIPROGIDkEFkk9duzfiaW4Ifhyklg2Wt0cpBE+mU9mc9+BNI?=
+ =?us-ascii?Q?W9m07mS1VeZeiMOhYviQGppbHBe/c6FEYO3OyhJZIjR7wJ01BfDF+Hro6xNP?=
+ =?us-ascii?Q?Y2v+AH6EvYfjSa+Iv1W4/qhYi8iE601NgYLBxnyJfbFCc+ZfjdOvrZ05IMqx?=
+ =?us-ascii?Q?REnAC2P96V+zAH7mp0dG6FpdT8VsKYXOM/peASZZyxLm20tm2W7DThDLVCos?=
+ =?us-ascii?Q?UB5BQKy1rOX4YOfCFoMHI6jGz3Xhb1TIPL8qRqJg?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ca6b262-b1a5-476e-591c-08dae400d1a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2022 09:42:19.4269
+X-MS-Exchange-CrossTenant-Network-Message-Id: deda7f00-9738-4d9a-661d-08dae401a548
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2022 09:48:14.4963
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3KEva6d6yoUaS2kbyGulerGArVgay62EX8njHzbxl1LX85t+la3Ine5tdo/uc1/MGtnV2V6ozR84os6JUYOWmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6699
+X-MS-Exchange-CrossTenant-userprincipalname: qYn229u0OUxQWZT+cHZkepKlsnBwCJRFDJ4Yv4LGrVahI86AmMshDHtFcHvpoJoWOUcB3D7yaenKrXCNbCyaSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5662
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Dec 17, 2022 at 01:02:03PM +0000, Zhang, Qiang1 wrote:
-> On Thu, Dec 15, 2022 at 05:00:29PM +0800, Zqiang wrote:
-> > Currently, when CPUs going offline, the rcu boost kthreads CPU
-> > affinity has been reset in rcutree_offline_cpu(), therefore this
-> > commit remove duplicate settings in rcutree_dead_cpu().
-> >=20
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> >
-> >One question...
-> >
-> >Given that rcutree_offline_cpu() causes rcu_boost_kthread_setaffinity()
-> >to be invoked with the number of the outgoing CPU, but rcutree_dead_cpu(=
-)
-> >instead passes in -1, are these two invocations really redundant?
-> >
-> >Although -1 is passed in, but at this time, the outgoing CPU has been re=
-moved from=20
-> >rcu_rnp_online_cpus(rnp),  in other words, we will eliminate the same CP=
-U, which is
-> >also  we passed in cpu in the rcutree_offline_cpu() before.
-> >
+> For the kernel bulit with CONFIG_NO_HZ_FULL enabled and the following=20
+> cpus is nohz_full cpus:
 >=20
-> I also used " qemu -smp 4 "for a simple test.
+> 	CPU1                                                 CPU2
+> rcu_report_exp_cpu_mult                          synchronize_rcu_expedite=
+d_wait
+>    acquires rnp->lock                               mask =3D rnp->expmask=
+;
+>                                                     for_each_leaf_node_cp=
+u_mask(rnp, cpu, mask)
+>    rnp->expmask =3D rnp->expmask & ~mask;                rdp =3D per_cpu_=
+ptr(&rcu_data, cpu1);
+>    for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+>       rdp =3D per_cpu_ptr(&rcu_data, cpu1);
+>       if (!rdp->rcu_forced_tick_exp)
+>              continue;                                 rdp->rcu_forced_ti=
+ck_exp =3D true;
+>                                                       =20
+> tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
 >=20
-> 1) rcutree_offline_cpu()
+> In the above scenario, after CPU1 reported the quiescent state, CPU1=20
+> misses the opportunity to clear the TICK_DEP_BIT_RCU_EXP bitmask, it=20
+> will not be cleared until the next expedited grace period starts and=20
+> the CPU1 quiescent state is reported again. during this window period,=20
+> the CPU1 whose tick can not be stopped, if CPU1 has only one runnable=20
+> task and this task has aggressive real-time response constraints, this=20
+> task may have one of the worst response times.
 >=20
-> (gdb) bt
-> #0  set_cpus_allowed_ptr (p=3Dp@entry=3D0xffff888100bd9cc0, new_mask=3Dne=
-w_mask@entry=3D0xffff888100ce7cd0)
->     at kernel/sched/core.c:2939
-> #1  0xffffffff811be169 in rcu_boost_kthread_setaffinity (rnp=3D0xffffffff=
-837a4c00 <rcu_state>,
->     outgoingcpu=3Doutgoingcpu@entry=3D3) at kernel/rcu/tree_plugin.h:1250
-> #2  0xffffffff811cfa9f in rcutree_affinity_setting (outgoing=3D3, cpu=3D3=
-) at kernel/rcu/tree.c:4297
-> #3  rcutree_offline_cpu (cpu=3D3) at kernel/rcu/tree.c:4341
-> #4  0xffffffff810c4e6f in cpuhp_invoke_callback (cpu=3Dcpu@entry=3D3, sta=
-te=3Dstate@entry=3DCPUHP_AP_RCUTREE_ONLINE,
->     bringup=3Dbringup@entry=3Dfalse, node=3D<optimized out>, lastp=3Dlast=
-p@entry=3D0xffff88815b027568) at kernel/cpu.c:192
-> #5  0xffffffff810c6e24 in cpuhp_thread_fun (cpu=3D<optimized out>) at ker=
-nel/cpu.c:785
-> #6  0xffffffff8111784e in smpboot_thread_fn (data=3D0xffff88810014c3c0) a=
-t kernel/smpboot.c:164
-> #7  0xffffffff8110c88e in kthread (_create=3D0xffff8881009b8b00) at kerne=
-l/kthread.c:376
-> #8  0xffffffff81002902 in ret_from_fork () at arch/x86/entry/entry_64.S:3=
-06
-> #9  0x0000000000000000 in ?? ()
+> Therefore, this commit add rnp->lock when set TICK_DEP_BIT_RCU_EXP=20
+> bitmask to fix this race.
 >=20
-> (gdb) p/x *0xffff888100ce7cd0
-> $1 =3D 0x7
->=20
-> 2) rcutree_dead_cpu()
->=20
-> #0  set_cpus_allowed_ptr (p=3Dp@entry=3D0xffff888100bd9cc0, new_mask=3Dne=
-w_mask@entry=3D0xffff888109fc7948)
->     at kernel/sched/core.c:2939
-> #1  0xffffffff811be169 in rcu_boost_kthread_setaffinity (rnp=3D0xffffffff=
-837a4c00 <rcu_state>,
->     outgoingcpu=3Doutgoingcpu@entry=3D-1) at kernel/rcu/tree_plugin.h:125=
-0
-> #2  0xffffffff811cf4a1 in rcutree_dead_cpu (cpu=3D3) at kernel/rcu/tree.c=
-:4176
-> #3  0xffffffff810c4e6f in cpuhp_invoke_callback (cpu=3Dcpu@entry=3D3, sta=
-te=3DCPUHP_RCUTREE_PREP, bringup=3Dbringup@entry=3Dfalse,
->     node=3Dnode@entry=3D0x0 <fixed_percpu_data>, lastp=3Dlastp@entry=3D0x=
-0 <fixed_percpu_data>) at kernel/cpu.c:192
-> #4  0xffffffff810c58f5 in cpuhp_invoke_callback_range (bringup=3Dbringup@=
-entry=3Dfalse, cpu=3Dcpu@entry=3D3,
->     st=3Dst@entry=3D0xffff88815b027540, target=3Dtarget@entry=3DCPUHP_OFF=
-LINE) at kernel/cpu.c:675
-> #5  0xffffffff827a5f6a in cpuhp_down_callbacks (target=3DCPUHP_OFFLINE, s=
-t=3D0xffff88815b027540, cpu=3D3) at kernel/cpu.c:1170
-> #6  _cpu_down (cpu=3Dcpu@entry=3D3, tasks_frozen=3Dtasks_frozen@entry=3D0=
-, target=3Dtarget@entry=3DCPUHP_OFFLINE) at kernel/cpu.c:1170
-> #7  0xffffffff810c6ff8 in cpu_down_maps_locked (target=3DCPUHP_OFFLINE, c=
-pu=3D3) at kernel/cpu.c:1202
-> #8  cpu_down (cpu=3D3, target=3Dtarget@entry=3DCPUHP_OFFLINE) at kernel/c=
-pu.c:1210
-> #9  0xffffffff810c7906 in cpu_device_down (dev=3Ddev@entry=3D0xffff88815b=
-026988) at kernel/cpu.c:1227
->=20
-> (gdb) p/x *0xffff888109fc7948
-> $2 =3D 0x7
->=20
-> As can be seen from the above, we have set the same cpumask twice for the=
- same boost kthreads.
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 >
->Very good, thank you for checking!
+>Good eyes, thank you!!!
 >
->I have queued this as shown below, so please let me know of any issues.
+>Queued for testing and further review as follows, as always, please check =
+for errors.
+>
 
-I have checked and thank you for the clear description.
+It looks more clear now, thank you!
 
 Thanks
 Zqiang
 
->
 >							Thanx, Paul
 >
 >------------------------------------------------------------------------
 
-commit 5815245b56229198d5f5d0c48c26d3c0c53ee222
+commit acfe689f2e473fb59b6d2c95af5fe36198bb9a84
 Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Wed Dec 21 11:15:43 2022 -0800
+Date:   Tue Dec 20 19:25:20 2022 +0800
 
-    rcu: Remove redundant call to rcu_boost_kthread_setaffinity()
+    rcu: Fix set/clear TICK_DEP_BIT_RCU_EXP bitmask race
    =20
-    The rcu_boost_kthread_setaffinity() function is invoked at
-    rcutree_online_cpu() and rcutree_offline_cpu() time, early in the onlin=
-e
-    timeline and late in the offline timeline, respectively.  It is also
-    invoked from rcutree_dead_cpu(), however, in the absence of userspace
-    manipulations (for which userspace must take responsibility), this call
-    is redundant with that from rcutree_offline_cpu().  This redundancy can
-    be demonstrated by printing out the relevant cpumasks
+    For kernels built with CONFIG_NO_HZ_FULL=3Dy, the following scenario ca=
+n result
+    in the scheduling-clock interrupt remaining enabled on a holdout CPU af=
+ter
+    its quiescent state has been reported:
    =20
-    This commit therefore removes the call to rcu_boost_kthread_setaffinity=
-()
-    from rcutree_dead_cpu().
+            CPU1                                                 CPU2
+    rcu_report_exp_cpu_mult                          synchronize_rcu_expedi=
+ted_wait
+       acquires rnp->lock                               mask =3D rnp->expma=
+sk;
+                                                        for_each_leaf_node_=
+cpu_mask(rnp, cpu, mask)
+       rnp->expmask =3D rnp->expmask & ~mask;                rdp =3D per_cp=
+u_ptr(&rcu_data, cpu1);
+       for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+          rdp =3D per_cpu_ptr(&rcu_data, cpu1);
+          if (!rdp->rcu_forced_tick_exp)
+                 continue;                                 rdp->rcu_forced_=
+tick_exp =3D true;
+                                                           tick_dep_set_cpu=
+(cpu1, TICK_DEP_BIT_RCU_EXP);
+   =20
+    The problem is that CPU2's sampling of rnp->expmask is obsolete by the
+    time it invokes tick_dep_set_cpu(), and CPU1 is not guaranteed to see
+    CPU2's store to ->rcu_forced_tick_exp in time to clear it.  And even if
+    CPU1 does see that store, it might invoke tick_dep_clear_cpu() before
+    CPU2 got around to executing its tick_dep_set_cpu(), which would still
+    leave the victim CPU with its scheduler-clock tick running.
+   =20
+    Either way, an nohz_full real-time application running on the victim
+    CPU would have its latency needlessly degraded.
+   =20
+    Note that expedited RCU grace periods look at context-tracking
+    information, and so if the CPU is executing in nohz_full usermode
+    throughout, that CPU cannot be victimized in this manner.
+   =20
+    This commit therefore causes synchronize_rcu_expedited_wait to hold
+    the rcu_node structure's ->lock when checking for holdout CPUs, setting
+    TICK_DEP_BIT_RCU_EXP, and invoking tick_dep_set_cpu(), thus preventing
+    this race.
    =20
     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c3255d27286c4..a6181b76fd5ab 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4165,15 +4165,10 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *r=
-np_leaf)
-  */
- int rcutree_dead_cpu(unsigned int cpu)
- {
--	struct rcu_data *rdp =3D per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp =3D rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
--
- 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
- 		return 0;
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h index 249c2967d9=
+e6c..7cc4856da0817 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -594,6 +594,7 @@ static void synchronize_rcu_expedited_wait(void)
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+ 	struct rcu_node *rnp_root =3D rcu_get_root();
++	unsigned long flags;
 =20
- 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
--	/* Adjust any no-longer-needed kthreads. */
--	rcu_boost_kthread_setaffinity(rnp, -1);
- 	// Stop-machine done, so allow nohz_full to disable tick.
- 	tick_dep_clear(TICK_DEP_BIT_RCU);
- 	return 0;
+ 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("=
+startwait"));
+ 	jiffies_stall =3D rcu_exp_jiffies_till_stall_check();
+@@ -602,17 +603,17 @@ static void synchronize_rcu_expedited_wait(void)
+ 		if (synchronize_rcu_expedited_wait_once(1))
+ 			return;
+ 		rcu_for_each_leaf_node(rnp) {
++			raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 			mask =3D READ_ONCE(rnp->expmask);
+ 			for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
+ 				rdp =3D per_cpu_ptr(&rcu_data, cpu);
+ 				if (rdp->rcu_forced_tick_exp)
+ 					continue;
+ 				rdp->rcu_forced_tick_exp =3D true;
+-				preempt_disable();
+ 				if (cpu_online(cpu))
+ 					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
+-				preempt_enable();
+ 			}
++			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		}
+ 		j =3D READ_ONCE(jiffies_till_first_fqs);
+ 		if (synchronize_rcu_expedited_wait_once(j + HZ))
