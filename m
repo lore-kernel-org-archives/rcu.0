@@ -2,138 +2,179 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 499B6C4332F
-	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 16:43:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70838C4332F
+	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 18:19:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbiLVQnI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Dec 2022 11:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
+        id S231209AbiLVSTU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Dec 2022 13:19:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbiLVQnH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Dec 2022 11:43:07 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB99F3055A;
-        Thu, 22 Dec 2022 08:43:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7DAB9B81F16;
-        Thu, 22 Dec 2022 16:43:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CEBBC433EF;
-        Thu, 22 Dec 2022 16:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671727383;
-        bh=iBoboq8V+MkKG68qcYOvNkQ11HNT4uTZp8kdEy42vO8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ayITOcRHJKR4pPiNfFByHMll3uOo45twcRMAsr9RR8Q+uI+UN0Rs7IY9qZM8vmvmj
-         l9O1Y57/fF42G+Na8VOHsXmRyAUHS5sGhC/wdiiUma6Se9kGNmtuMICJ2SsHMAes4K
-         TJHaXtVjIiTh2YnVWtdfF1vabWGycsFdzGAFG1GNFWOoBP0o0hK4jM1gCMiNjLhfx1
-         1OISM2/qKInjgEG2QPBxYwY2P+gE7cKEZuPMGjRpFee9TlOYcDDaiCb1Wo3kaGGyLl
-         86bmGjQqjBv1iqPcD+fzQjVflRYMsK5QPCkvoGzvz0vUHrxw1e1bOkjwNvkbnwZd8L
-         c4hQts2lF1pig==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B89205C146C; Thu, 22 Dec 2022 08:43:02 -0800 (PST)
-Date:   Thu, 22 Dec 2022 08:43:02 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        with ESMTP id S230183AbiLVSTU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Dec 2022 13:19:20 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6082181
+        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 10:19:19 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id bq12so1983869qtb.3
+        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 10:19:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=izSwWPJ6y3lH+EuzVUHTuzemZUg/0p3iz1ZnqBmNFPM=;
+        b=GpVLjzXsRu45a4gBSDavXvutE25nTliJ4P2mtVxJkep7KehSEiSWGfSjbQmQnw+Yej
+         bnUa+iGpSkotXgVj4fGHQTpK37ZKEW+zuBVepi+0zPwVcvLxtjt0SaUBlk7PRkyfYCuN
+         cMg8BNFNGjB/UrSx4mt1I5m4KtU33+KrkkTvI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=izSwWPJ6y3lH+EuzVUHTuzemZUg/0p3iz1ZnqBmNFPM=;
+        b=3BPy6tsrf6okwQvF0zqfi3xvqFK74rXdxhqXhindmfdqVvnSboFPSTiww72taJJigR
+         YdegLmeazNBqrRt0J9TG67ZMcZ8A4evyB2H20pJk/3qG/NCKAX9LBm5OjKl0wSbYckhr
+         Iqa4e/+putGDk0WAJmJ22hyD7Zy+P9d4OVM7a/Aec92XeNXFq5ynoYhFIrh3vhFW4i8J
+         N+l68M+qkZ+O+FGYVkI9J9OBRgnfNdZ14vQw5MCqIqDCLAfxvlSBJyvU9U9KUGag27Ie
+         bxeYgI5pxL57VxkV3HhZJXnPo6PqurIShy/aVqtg/VSt1NHQsfzaPmFz1Bs4RI7UgcfW
+         Yn9w==
+X-Gm-Message-State: AFqh2krE4Nv2YDOJETYwAS8OEgBHAqVQGREm1iy2Gq0jFgVSqkizCyxb
+        pMj3vYMYAO6GuzkIozM4o6Xn3A==
+X-Google-Smtp-Source: AMrXdXuQQBYYNbPy/pST2ZGImpqOqF2KaAebZWKwXGOXWrjQn2ReNkclQVmbNnJreRG0Cz8FBcfg7A==
+X-Received: by 2002:a05:622a:2516:b0:3a9:70a2:2c59 with SMTP id cm22-20020a05622a251600b003a970a22c59mr9525514qtb.39.1671733158072;
+        Thu, 22 Dec 2022 10:19:18 -0800 (PST)
+Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id r18-20020a05620a299200b006f9f714cb6asm730727qkp.50.2022.12.22.10.19.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Dec 2022 10:19:17 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
+Date:   Thu, 22 Dec 2022 13:19:06 -0500
+Message-Id: <71C23049-158C-4E43-A54F-714640393682@joelfernandes.org>
+References: <20221222164302.GP4001@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Message-ID: <20221222164302.GP4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <6438d903-ab97-48c7-c338-9f0bc2686f94@efficios.com>
- <7A9876BA-C375-42A7-A5C9-FD940D2898D7@joelfernandes.org>
- <5bd5ee4a-710a-96bc-abe8-772b2e60f478@efficios.com>
- <20221220225756.GB26563@lothringen>
- <c085be21-b45f-4186-6f41-5082771c79ca@efficios.com>
- <20221221115924.GA34934@lothringen>
- <bb794e83-992e-8181-d9b9-acc68536ce5a@efficios.com>
- <20221222124010.GC44777@lothringen>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221222124010.GC44777@lothringen>
+In-Reply-To: <20221222164302.GP4001@paulmck-ThinkPad-P17-Gen-1>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 01:40:10PM +0100, Frederic Weisbecker wrote:
-> On Wed, Dec 21, 2022 at 12:11:42PM -0500, Mathieu Desnoyers wrote:
-> > On 2022-12-21 06:59, Frederic Weisbecker wrote:
-> > > On Tue, Dec 20, 2022 at 10:34:19PM -0500, Mathieu Desnoyers wrote:
-> > [...]
-> > > > 
-> > > > The memory ordering constraint I am concerned about here is:
-> > > > 
-> > > >   * [...] In addition,
-> > > >   * each CPU having an SRCU read-side critical section that extends beyond
-> > > >   * the return from synchronize_srcu() is guaranteed to have executed a
-> > > >   * full memory barrier after the beginning of synchronize_srcu() and before
-> > > >   * the beginning of that SRCU read-side critical section. [...]
-> > > > 
-> > > > So if we have a SRCU read-side critical section that begins after the beginning
-> > > > of synchronize_srcu, but before its first memory barrier, it would miss the
-> > > > guarantee that the full memory barrier is issued before the beginning of that
-> > > > SRCU read-side critical section. IOW, that memory barrier needs to be at the
-> > > > very beginning of the grace period.
-> > > 
-> > > I'm confused, what's wrong with this ?
-> > > 
-> > > UPDATER                  READER
-> > > -------                  ------
-> > > STORE X = 1              STORE srcu_read_lock++
-> > > // rcu_seq_snap()        smp_mb()
-> > > smp_mb()                 READ X
-> > > // scans
-> > > READ srcu_read_lock
-> > 
-> > What you refer to here is only memory ordering of the store to X and load
-> > from X wrt loading/increment of srcu_read_lock, which is internal to the
-> > srcu implementation. If we really want to model the provided high-level
-> > memory ordering guarantees, we should consider a scenario where SRCU is used
-> > for its memory ordering properties to synchronize other variables.
-> > 
-> > I'm concerned about the following Dekker scenario, where synchronize_srcu()
-> > and srcu_read_lock/unlock would be used instead of memory barriers:
-> > 
-> > Initial state: X = 0, Y = 0
-> > 
-> > Thread A                   Thread B
-> > ---------------------------------------------
-> > STORE X = 1                STORE Y = 1
-> > synchronize_srcu()
-> >                            srcu_read_lock()
-> >                            r1 = LOAD X
-> >                            srcu_read_unlock()
-> > r0 = LOAD Y
-> > 
-> > BUG_ON(!r0 && !r1)
-> > 
-> > So in the synchronize_srcu implementation, there appears to be two
-> > major scenarios: either srcu_gp_start_if_needed starts a gp or expedited gp,
-> > or it uses an already started gp/expedited gp. When snapshotting with
-> > rcu_seq_snap, the fact that the memory barrier is after the ssp->srcu_gp_seq
-> > load means that it does not order prior memory accesses before that load.
-> > This sequence value is then used to identify which gp_seq to wait for when
-> > piggy-backing on another already-started gp. I worry about reordering
-> > between STORE X = 1 and load of ssp->srcu_gp_seq, which is then used to
-> > piggy-back on an already-started gp.
-> > 
-> > I suspect that the implicit barrier in srcu_read_lock() invoked at the
-> > beginning of srcu_gp_start_if_needed() is really the barrier that makes
-> > all this behave as expected. But without documentation it's rather hard to
-> > follow.
-> 
-> Oh ok I see now. It might be working that way by accident or on forgotten
-> purpose. In any case, we really want to add a comment above that
-> __srcu_read_lock_nmisafe() call.
 
-Another test for the safety (or not) of removing either D or E is
-to move that WRITE_ONCE() to follow (or, respectively, precede) the
-adjacent scans.
 
-							Thanx, Paul
+> On Dec 22, 2022, at 11:43 AM, Paul E. McKenney <paulmck@kernel.org> wrote:=
+
+>=20
+> =EF=BB=BFOn Thu, Dec 22, 2022 at 01:40:10PM +0100, Frederic Weisbecker wro=
+te:
+>>> On Wed, Dec 21, 2022 at 12:11:42PM -0500, Mathieu Desnoyers wrote:
+>>> On 2022-12-21 06:59, Frederic Weisbecker wrote:
+>>>>> On Tue, Dec 20, 2022 at 10:34:19PM -0500, Mathieu Desnoyers wrote:
+>>> [...]
+>>>>>=20
+>>>>> The memory ordering constraint I am concerned about here is:
+>>>>>=20
+>>>>>  * [...] In addition,
+>>>>>  * each CPU having an SRCU read-side critical section that extends bey=
+ond
+>>>>>  * the return from synchronize_srcu() is guaranteed to have executed a=
+
+>>>>>  * full memory barrier after the beginning of synchronize_srcu() and b=
+efore
+>>>>>  * the beginning of that SRCU read-side critical section. [...]
+>>>>>=20
+>>>>> So if we have a SRCU read-side critical section that begins after the b=
+eginning
+>>>>> of synchronize_srcu, but before its first memory barrier, it would mis=
+s the
+>>>>> guarantee that the full memory barrier is issued before the beginning o=
+f that
+>>>>> SRCU read-side critical section. IOW, that memory barrier needs to be a=
+t the
+>>>>> very beginning of the grace period.
+>>>>=20
+>>>> I'm confused, what's wrong with this ?
+>>>>=20
+>>>> UPDATER                  READER
+>>>> -------                  ------
+>>>> STORE X =3D 1              STORE srcu_read_lock++
+>>>> // rcu_seq_snap()        smp_mb()
+>>>> smp_mb()                 READ X
+>>>> // scans
+>>>> READ srcu_read_lock
+>>>=20
+>>> What you refer to here is only memory ordering of the store to X and loa=
+d
+>>> from X wrt loading/increment of srcu_read_lock, which is internal to the=
+
+>>> srcu implementation. If we really want to model the provided high-level
+>>> memory ordering guarantees, we should consider a scenario where SRCU is u=
+sed
+>>> for its memory ordering properties to synchronize other variables.
+>>>=20
+>>> I'm concerned about the following Dekker scenario, where synchronize_src=
+u()
+>>> and srcu_read_lock/unlock would be used instead of memory barriers:
+>>>=20
+>>> Initial state: X =3D 0, Y =3D 0
+>>>=20
+>>> Thread A                   Thread B
+>>> ---------------------------------------------
+>>> STORE X =3D 1                STORE Y =3D 1
+>>> synchronize_srcu()
+>>>                           srcu_read_lock()
+>>>                           r1 =3D LOAD X
+>>>                           srcu_read_unlock()
+>>> r0 =3D LOAD Y
+>>>=20
+>>> BUG_ON(!r0 && !r1)
+>>>=20
+>>> So in the synchronize_srcu implementation, there appears to be two
+>>> major scenarios: either srcu_gp_start_if_needed starts a gp or expedited=
+ gp,
+>>> or it uses an already started gp/expedited gp. When snapshotting with
+>>> rcu_seq_snap, the fact that the memory barrier is after the ssp->srcu_gp=
+_seq
+>>> load means that it does not order prior memory accesses before that load=
+.
+>>> This sequence value is then used to identify which gp_seq to wait for wh=
+en
+>>> piggy-backing on another already-started gp. I worry about reordering
+>>> between STORE X =3D 1 and load of ssp->srcu_gp_seq, which is then used t=
+o
+>>> piggy-back on an already-started gp.
+>>>=20
+>>> I suspect that the implicit barrier in srcu_read_lock() invoked at the
+>>> beginning of srcu_gp_start_if_needed() is really the barrier that makes
+>>> all this behave as expected. But without documentation it's rather hard t=
+o
+>>> follow.
+>>=20
+>> Oh ok I see now. It might be working that way by accident or on forgotten=
+
+>> purpose. In any case, we really want to add a comment above that
+>> __srcu_read_lock_nmisafe() call.
+>=20
+> Another test for the safety (or not) of removing either D or E is
+> to move that WRITE_ONCE() to follow (or, respectively, precede) the
+> adjacent scans.
+
+Good idea, though I believe the MBs that the above talk about are not the fl=
+ip ones. They are the ones in synchronize_srcu() beginning and end, that ord=
+er with respect to grace period start and end.
+
+So that (flipping MBs) is unrelated, or did I miss something?
+
+Thanks.
+
+
+
+>=20
+>                            Thanx, Paul
