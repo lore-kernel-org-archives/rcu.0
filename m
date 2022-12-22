@@ -2,173 +2,178 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5940AC4332F
-	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 13:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59EF2C4332F
+	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 15:18:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235405AbiLVNVW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Dec 2022 08:21:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        id S229630AbiLVPSp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Dec 2022 10:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235371AbiLVNUt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Dec 2022 08:20:49 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DA33055F
-        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 05:19:45 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id c11so1263031qtn.11
-        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 05:19:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wk3pBbo7oihlFPssQ1OxlDxm4sHEv8p5gdZtboMH1O8=;
-        b=CwiqSPCeU2+iq/h+7Wqn9UbqgHDma4zL0XpdC/uAoJscoDx58v4b3nIuiYo1IL3C8m
-         fb/n6QHlP/tK0xWeewSjDkKnXDPO+ZPG3Svru2MpWQt+ndo8e1cLhw0HwfSElewDp1SI
-         deH/2zs4rzUsYGvGVMzDiHCRfXgIFm09wPAKI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wk3pBbo7oihlFPssQ1OxlDxm4sHEv8p5gdZtboMH1O8=;
-        b=O9W8ICV9Kox6BRGlQo0Db56o6hgAt/wIhX7IOer8VlKhJ6JbwBnoxLJZNX2wi+cGrC
-         EAwVJkjJvDZXKVaWKL4OxgLejwls9m0NytVN3QWUjCNQ6qjura0087MMDZpnZB23pmzE
-         1Gossssx6hNNcoAyYqZwebQ1EUNA7039JxgkfdaQHUe2OWZMaLoe1YjmxMFOVc1Q+2tN
-         upH4hM53KNDkp+jKtB/nHumjlNpdPrkxKKs/R3uDXn422C+GArZWrVpdhWlTN+FFWTnc
-         c4JorA420Npbg5ghpZrxwEf0U+HZ7y9kkLyA8GlvTFd8HpV8d0cuaq3O0zNfD8yXTQIl
-         eGaA==
-X-Gm-Message-State: AFqh2kocdTLdGMlTNGVu4oNe1M9ke7uwLqIueJUCwhi1F/a1hE17mkq+
-        s2JNaDsVo39gdHmfKpDOIPEAbA==
-X-Google-Smtp-Source: AMrXdXuLTbH3P0acYDjpZG3Gox2r2i9YrmLKNqeb32hxqsQpiZugkP0ANftLbKKTmkWlST1SXpZung==
-X-Received: by 2002:a05:622a:400c:b0:3a9:80b6:8347 with SMTP id cf12-20020a05622a400c00b003a980b68347mr7037764qtb.1.1671715183976;
-        Thu, 22 Dec 2022 05:19:43 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id r12-20020ac8520c000000b0039a55f78792sm325244qtn.89.2022.12.22.05.19.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Dec 2022 05:19:43 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC 0/2] srcu: Remove pre-flip memory barrier
-Date:   Thu, 22 Dec 2022 08:19:32 -0500
-Message-Id: <318A1705-D3B8-42B1-9BB1-AA9027166C96@joelfernandes.org>
-References: <20221222124010.GC44777@lothringen>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-In-Reply-To: <20221222124010.GC44777@lothringen>
-To:     Frederic Weisbecker <frederic@kernel.org>
-X-Mailer: iPhone Mail (20B101)
+        with ESMTP id S229763AbiLVPSj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Dec 2022 10:18:39 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74823B3A;
+        Thu, 22 Dec 2022 07:18:38 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1129A61BFE;
+        Thu, 22 Dec 2022 15:18:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E362C433F0;
+        Thu, 22 Dec 2022 15:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671722317;
+        bh=5a9OAoDX+zFY//uri2cR0evJiOLLaWYnsfGzbWxO+hk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uZHdjiib8JFDli0eByjTdDCqRgeRrrdii3XDp2dOaxL/yAfeUGLWSSOuvVaVkljol
+         VIboc8R4HFOGmZqRhr7zriwFI6fuMkBrZ76l6qS3luS3SXFJAVNPBYyfoCr/3E40G/
+         gTGZ4qQ5Uobxl7efJG0NPy3JdIOlx6f4CLvOQ2xdQfoBT5XmXOofQ5s8rTms4bt389
+         lqktb/gZA3uRWwjjKX7/a6tnFx7bk+Dv3l9J9kqlitt9gOhVrez4IP0KuC/CbIe7ip
+         vWYyd9GIE3Ase50+G3Uv4hIKOnBO0THDEhgCG2BLO5Y20usdFU1cVSTpa+M7dl9Pa3
+         39MUeqWSx3XFA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E42E85C0F2E; Thu, 22 Dec 2022 07:18:36 -0800 (PST)
+Date:   Thu, 22 Dec 2022 07:18:36 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP
+ bitmask
+Message-ID: <20221222151836.GM4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221220112520.3596920-1-qiang1.zhang@intel.com>
+ <20221221200849.GG4001@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB58806135271427BC1A13AF34DAE89@PH0PR11MB5880.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB58806135271427BC1A13AF34DAE89@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Dec 22, 2022 at 09:48:14AM +0000, Zhang, Qiang1 wrote:
+> > For the kernel bulit with CONFIG_NO_HZ_FULL enabled and the following 
+> > cpus is nohz_full cpus:
+> > 
+> > 	CPU1                                                 CPU2
+> > rcu_report_exp_cpu_mult                          synchronize_rcu_expedited_wait
+> >    acquires rnp->lock                               mask = rnp->expmask;
+> >                                                     for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+> >    rnp->expmask = rnp->expmask & ~mask;                rdp = per_cpu_ptr(&rcu_data, cpu1);
+> >    for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+> >       rdp = per_cpu_ptr(&rcu_data, cpu1);
+> >       if (!rdp->rcu_forced_tick_exp)
+> >              continue;                                 rdp->rcu_forced_tick_exp = true;
+> >                                                        
+> > tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
+> > 
+> > In the above scenario, after CPU1 reported the quiescent state, CPU1 
+> > misses the opportunity to clear the TICK_DEP_BIT_RCU_EXP bitmask, it 
+> > will not be cleared until the next expedited grace period starts and 
+> > the CPU1 quiescent state is reported again. during this window period, 
+> > the CPU1 whose tick can not be stopped, if CPU1 has only one runnable 
+> > task and this task has aggressive real-time response constraints, this 
+> > task may have one of the worst response times.
+> > 
+> > Therefore, this commit add rnp->lock when set TICK_DEP_BIT_RCU_EXP 
+> > bitmask to fix this race.
+> > 
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> >
+> >Good eyes, thank you!!!
+> >
+> >Queued for testing and further review as follows, as always, please check for errors.
+> >
+> 
+> It looks more clear now, thank you!
 
+Thank you for checking them both!
 
-> On Dec 22, 2022, at 7:40 AM, Frederic Weisbecker <frederic@kernel.org> wro=
-te:
->=20
-> =EF=BB=BFOn Wed, Dec 21, 2022 at 12:11:42PM -0500, Mathieu Desnoyers wrote=
-:
->>> On 2022-12-21 06:59, Frederic Weisbecker wrote:
->>> On Tue, Dec 20, 2022 at 10:34:19PM -0500, Mathieu Desnoyers wrote:
->> [...]
->>>>=20
->>>> The memory ordering constraint I am concerned about here is:
->>>>=20
->>>>  * [...] In addition,
->>>>  * each CPU having an SRCU read-side critical section that extends beyo=
-nd
->>>>  * the return from synchronize_srcu() is guaranteed to have executed a
->>>>  * full memory barrier after the beginning of synchronize_srcu() and be=
-fore
->>>>  * the beginning of that SRCU read-side critical section. [...]
->>>>=20
->>>> So if we have a SRCU read-side critical section that begins after the b=
-eginning
->>>> of synchronize_srcu, but before its first memory barrier, it would miss=
- the
->>>> guarantee that the full memory barrier is issued before the beginning o=
-f that
->>>> SRCU read-side critical section. IOW, that memory barrier needs to be a=
-t the
->>>> very beginning of the grace period.
->>>=20
->>> I'm confused, what's wrong with this ?
->>>=20
->>> UPDATER                  READER
->>> -------                  ------
->>> STORE X =3D 1              STORE srcu_read_lock++
->>> // rcu_seq_snap()        smp_mb()
->>> smp_mb()                 READ X
->>> // scans
->>> READ srcu_read_lock
->>=20
->> What you refer to here is only memory ordering of the store to X and load=
+							Thanx, Paul
 
->> from X wrt loading/increment of srcu_read_lock, which is internal to the
->> srcu implementation. If we really want to model the provided high-level
->> memory ordering guarantees, we should consider a scenario where SRCU is u=
-sed
->> for its memory ordering properties to synchronize other variables.
->>=20
->> I'm concerned about the following Dekker scenario, where synchronize_srcu=
-()
->> and srcu_read_lock/unlock would be used instead of memory barriers:
->>=20
->> Initial state: X =3D 0, Y =3D 0
->>=20
->> Thread A                   Thread B
->> ---------------------------------------------
->> STORE X =3D 1                STORE Y =3D 1
->> synchronize_srcu()
->>                           srcu_read_lock()
->>                           r1 =3D LOAD X
->>                           srcu_read_unlock()
->> r0 =3D LOAD Y
->>=20
->> BUG_ON(!r0 && !r1)
->>=20
->> So in the synchronize_srcu implementation, there appears to be two
->> major scenarios: either srcu_gp_start_if_needed starts a gp or expedited g=
-p,
->> or it uses an already started gp/expedited gp. When snapshotting with
->> rcu_seq_snap, the fact that the memory barrier is after the ssp->srcu_gp_=
-seq
->> load means that it does not order prior memory accesses before that load.=
-
->> This sequence value is then used to identify which gp_seq to wait for whe=
-n
->> piggy-backing on another already-started gp. I worry about reordering
->> between STORE X =3D 1 and load of ssp->srcu_gp_seq, which is then used to=
-
->> piggy-back on an already-started gp.
->>=20
->> I suspect that the implicit barrier in srcu_read_lock() invoked at the
->> beginning of srcu_gp_start_if_needed() is really the barrier that makes
->> all this behave as expected. But without documentation it's rather hard t=
-o
->> follow.
->=20
-> Oh ok I see now. It might be working that way by accident or on forgotten
-> purpose. In any case, we really want to add a comment above that
-> __srcu_read_lock_nmisafe() call.
-
-Agreed on the analysis and the need for comments, thanks!
-
-I think we also ought to document some more cases like, how the memory barri=
-ers here relate to the other memory barrier A inside the scan loop. But I gu=
-ess for me I need to understand the GP guarantee ordering first before attem=
-pting documenting that aspect. Oh well, thank God for holidays. ;-)
-
-Thanks,
-
- - Joel
-
-
-
->=20
+> Thanks
+> Zqiang
+> 
+> >							Thanx, Paul
+> >
+> >------------------------------------------------------------------------
+> 
+> commit acfe689f2e473fb59b6d2c95af5fe36198bb9a84
+> Author: Zqiang <qiang1.zhang@intel.com>
+> Date:   Tue Dec 20 19:25:20 2022 +0800
+> 
+>     rcu: Fix set/clear TICK_DEP_BIT_RCU_EXP bitmask race
+>     
+>     For kernels built with CONFIG_NO_HZ_FULL=y, the following scenario can result
+>     in the scheduling-clock interrupt remaining enabled on a holdout CPU after
+>     its quiescent state has been reported:
+>     
+>             CPU1                                                 CPU2
+>     rcu_report_exp_cpu_mult                          synchronize_rcu_expedited_wait
+>        acquires rnp->lock                               mask = rnp->expmask;
+>                                                         for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+>        rnp->expmask = rnp->expmask & ~mask;                rdp = per_cpu_ptr(&rcu_data, cpu1);
+>        for_each_leaf_node_cpu_mask(rnp, cpu, mask)
+>           rdp = per_cpu_ptr(&rcu_data, cpu1);
+>           if (!rdp->rcu_forced_tick_exp)
+>                  continue;                                 rdp->rcu_forced_tick_exp = true;
+>                                                            tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
+>     
+>     The problem is that CPU2's sampling of rnp->expmask is obsolete by the
+>     time it invokes tick_dep_set_cpu(), and CPU1 is not guaranteed to see
+>     CPU2's store to ->rcu_forced_tick_exp in time to clear it.  And even if
+>     CPU1 does see that store, it might invoke tick_dep_clear_cpu() before
+>     CPU2 got around to executing its tick_dep_set_cpu(), which would still
+>     leave the victim CPU with its scheduler-clock tick running.
+>     
+>     Either way, an nohz_full real-time application running on the victim
+>     CPU would have its latency needlessly degraded.
+>     
+>     Note that expedited RCU grace periods look at context-tracking
+>     information, and so if the CPU is executing in nohz_full usermode
+>     throughout, that CPU cannot be victimized in this manner.
+>     
+>     This commit therefore causes synchronize_rcu_expedited_wait to hold
+>     the rcu_node structure's ->lock when checking for holdout CPUs, setting
+>     TICK_DEP_BIT_RCU_EXP, and invoking tick_dep_set_cpu(), thus preventing
+>     this race.
+>     
+>     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h index 249c2967d9e6c..7cc4856da0817 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -594,6 +594,7 @@ static void synchronize_rcu_expedited_wait(void)
+>  	struct rcu_data *rdp;
+>  	struct rcu_node *rnp;
+>  	struct rcu_node *rnp_root = rcu_get_root();
+> +	unsigned long flags;
+>  
+>  	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
+>  	jiffies_stall = rcu_exp_jiffies_till_stall_check();
+> @@ -602,17 +603,17 @@ static void synchronize_rcu_expedited_wait(void)
+>  		if (synchronize_rcu_expedited_wait_once(1))
+>  			return;
+>  		rcu_for_each_leaf_node(rnp) {
+> +			raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>  			mask = READ_ONCE(rnp->expmask);
+>  			for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
+>  				rdp = per_cpu_ptr(&rcu_data, cpu);
+>  				if (rdp->rcu_forced_tick_exp)
+>  					continue;
+>  				rdp->rcu_forced_tick_exp = true;
+> -				preempt_disable();
+>  				if (cpu_online(cpu))
+>  					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
+> -				preempt_enable();
+>  			}
+> +			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  		}
+>  		j = READ_ONCE(jiffies_till_first_fqs);
+>  		if (synchronize_rcu_expedited_wait_once(j + HZ))
