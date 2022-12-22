@@ -2,121 +2,240 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D3DC4167B
-	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 11:34:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19E63C4332F
+	for <rcu@archiver.kernel.org>; Thu, 22 Dec 2022 12:12:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbiLVLe3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 22 Dec 2022 06:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
+        id S235220AbiLVMMJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 22 Dec 2022 07:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235095AbiLVLe2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 22 Dec 2022 06:34:28 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7D61116B
-        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 03:34:27 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2BMAd30P016595
-        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 11:34:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : to : from : cc : subject : content-type :
- content-transfer-encoding; s=qcppdkim1;
- bh=uoFeOnVuTd5BVqFbg2YJQ9AObzE5s5nMs36gm+rTnWE=;
- b=QnOp97v1IneQfrkt8008IxWAQvhYnsrOZM5T89/Edrt3zJRfOUEz/rCOysA2LI3fT+SB
- biRK88VqXAhXGbZW8P1vJubUQ34a2ZZUxXBqHBpvqpH82HSa4iR9GGZ9W31zcC+0ep90
- 8xVEz05XVppD6mN7ivL8Ie2rF3voGeSgSxNKeT2d4iwStc4Nj3zs2/nb2kxHReh5NPap
- RqS6QnPA1CypmNRLIScefJi2CKwPHKofGN9nzDULPFfDBqlnReYVVMNUSiPWAbCS6aX/
- nQF6wHrHiWV5GRKMg8Pnt+R/oDvYqqf74ONYCDTOfW5lmbWZjdHkUGGp64v1l85Yi/SK ng== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mm5r2j0kt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 11:34:27 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BMBYQRT010059
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <rcu@vger.kernel.org>; Thu, 22 Dec 2022 11:34:26 GMT
-Received: from [10.216.26.128] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Thu, 22 Dec
- 2022 03:34:25 -0800
-Message-ID: <0fc6b3b3-465b-0b64-fbdf-c80db18a9f88@quicinc.com>
-Date:   Thu, 22 Dec 2022 17:04:22 +0530
+        with ESMTP id S235777AbiLVMLe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 22 Dec 2022 07:11:34 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5196B36D42;
+        Thu, 22 Dec 2022 04:03:25 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 4F7F3CE19BB;
+        Thu, 22 Dec 2022 12:03:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F10E6C433D2;
+        Thu, 22 Dec 2022 12:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671710602;
+        bh=juXlLY89CiB9bJ9o17px1v8bs7xEFLxq9o/YkeYNwvg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BxxeCHxAMVIThDcrxhuGCdBUO2YtMPtf5b0Acf6+0I8BGI7do+Tclh9jQgSSqEgyW
+         dVgpCG6SSH5CzjlfPTZ7kylDtjvA4WMECdQEXSopfTE+O/nu+PatRbvNyGMsUI/3hE
+         0UnYbgAKzG9G8wa9MwxAwyJS2kF9mKd8CXyX+lH4eOkGZ2Vzu6qzVa+RB4YwbUm41g
+         MLK4+xh3SK/W4B67xN/gcHzrmWMvgwnOgbe91MuVcpg4Fr4uhMfiJ42JQw2OUFRL9p
+         MO557ODWyoovr88Y/RnW2NKOd7CcYLkjQ7xb28qpFwsVVA2WiPwtYxB3iYilDcs/YR
+         BX12fqUGDv8dQ==
+Date:   Thu, 22 Dec 2022 13:03:19 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>, neeraj.iitr10@gmail.com
+Subject: Re: [PATCH] srcu: Remove memory barrier "E" as it does not do
+ anything
+Message-ID: <20221222120319.GA44533@lothringen>
+References: <20221222002011.1858494-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Content-Language: en-US
-To:     <rcu@vger.kernel.org>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-CC:     <quic_mojha@quicinc.com>
-Subject: NULL pointer issue in rcu_do_batch()
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: c4R4HsTQP6OftMkoAkUPnK97HXl-wti9
-X-Proofpoint-ORIG-GUID: c4R4HsTQP6OftMkoAkUPnK97HXl-wti9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-22_05,2022-12-22_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=660 malwarescore=0 bulkscore=0
- impostorscore=0 spamscore=0 clxscore=1015 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2212220100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221222002011.1858494-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi All,
+On Thu, Dec 22, 2022 at 12:20:11AM +0000, Joel Fernandes (Google) wrote:
+> During a flip, we have a full memory barrier before srcu_idx is incremented.
+> 
+> The idea is we intend to order the first phase scan's read of lock
+> counters with the flipping of the index.
+> 
+> However, such ordering is already enforced because of the
+> control-dependency between the 2 scans. We would be flipping the index
+> only if lock and unlock counts matched.
+> 
+> But such match will not happen if there was a pending reader before the flip
+> in the first place (observation courtesy Mathieu Desnoyers).
+> 
+> The litmus test below shows this:
+> (test courtesy Frederic Weisbecker, Changes for ctrldep by Boqun/me):
+> 
+> C srcu
+> 
+> {}
+> 
+> // updater
+> P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+> {
+>         int lock1;
+>         int unlock1;
+>         int lock0;
+>         int unlock0;
+> 
+>         // SCAN1
+>         unlock1 = READ_ONCE(*UNLOCK1);
+>         smp_mb(); // A
+>         lock1 = READ_ONCE(*LOCK1);
+> 
+>         // FLIP
+>         if (lock1 == unlock1) {         // Control dep
+>                 smp_mb(); // E
+>                 WRITE_ONCE(*IDX, 1);
+>                 smp_mb(); // D
+> 
+>                 // SCAN2
+>                 unlock0 = READ_ONCE(*UNLOCK0);
+>                 smp_mb(); // A
+>                 lock0 = READ_ONCE(*LOCK0);
+>         }
+> }
+> 
+> // reader
+> P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+> {
+>         int tmp;
+>         int idx1;
+>         int idx2;
+> 
+>         // 1st reader
+>         idx1 = READ_ONCE(*IDX);
+>         if (idx1 == 0) {
+>                 tmp = READ_ONCE(*LOCK0);
+>                 WRITE_ONCE(*LOCK0, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp = READ_ONCE(*UNLOCK0);
+>                 WRITE_ONCE(*UNLOCK0, tmp + 1);
+>         } else {
+>                 tmp = READ_ONCE(*LOCK1);
+>                 WRITE_ONCE(*LOCK1, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp = READ_ONCE(*UNLOCK1);
+>                 WRITE_ONCE(*UNLOCK1, tmp + 1);
+>         }
+> 
+>         // second reader
+>         idx2 = READ_ONCE(*IDX);
+>         if (idx2 == 0) {
+>                 tmp = READ_ONCE(*LOCK0);
+>                 WRITE_ONCE(*LOCK0, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp = READ_ONCE(*UNLOCK0);
+>                 WRITE_ONCE(*UNLOCK0, tmp + 1);
+>         } else {
+>                 tmp = READ_ONCE(*LOCK1);
+>                 WRITE_ONCE(*LOCK1, tmp + 1);
+>                 smp_mb(); /* B and C */
+>                 tmp = READ_ONCE(*UNLOCK1);
+>                 WRITE_ONCE(*UNLOCK1, tmp + 1);
+>         }
+> }
+> 
+> The following bad condition will not occur even if memory barrier E
+> is dropped:
+> 
+> (* bad condition: SCAN1 saw lock count changes though 1st reader saw flip *)
+>  exists (0:lock1=1 /\ 1:idx1=1 /\ 1:idx2=1)
 
-We are observing NULL pointer dereference issue in rcu_do_batch() in 
-5.15, although it is very hard to hit.
+Good catch!
 
-Wanted to check if it is been reported and fixed in recent kernel ?
+The litmus test can be shorten with removing the second reader and limit the
+exists clause to 0:lock1=1 :
+
+---
+C srcu-E
+
+{}
+
+// updater
+P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+	int lock1;
+	int unlock1;
+	int lock0;
+	int unlock0;
+
+	// SCAN1
+	unlock1 = READ_ONCE(*UNLOCK1);
+	smp_mb(); // A
+	lock1 = READ_ONCE(*LOCK1);
+
+	// FLIP
+	if (lock1 == unlock1) {         // Control dep
+		WRITE_ONCE(*IDX, 1);
+		smp_mb(); // D
+
+		// SCAN2
+		unlock0 = READ_ONCE(*UNLOCK0);
+		smp_mb(); // A
+		lock0 = READ_ONCE(*LOCK0);
+	}
+}
+
+// reader
+P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+	int tmp;
+	int idx1;
+	int idx2;
+
+	// 1st reader
+	idx1 = READ_ONCE(*IDX);
+	if (idx1 == 0) {
+		tmp = READ_ONCE(*LOCK0);
+		WRITE_ONCE(*LOCK0, tmp + 1);
+		smp_mb(); /* B and C */
+		tmp = READ_ONCE(*UNLOCK0);
+		WRITE_ONCE(*UNLOCK0, tmp + 1);
+	} else {
+		tmp = READ_ONCE(*LOCK1);
+		WRITE_ONCE(*LOCK1, tmp + 1);
+		smp_mb(); /* B and C */
+		tmp = READ_ONCE(*UNLOCK1);
+		WRITE_ONCE(*UNLOCK1, tmp + 1);
+	}
+}
+exists (0:lock1=1) (* only happens if the control dep is removed *)
+--
+
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 1c304fec89c0..d1368d64fdba 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -983,15 +983,9 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
+>  static void srcu_flip(struct srcu_struct *ssp)
+>  {
+>  	/*
+> -	 * Ensure that if this updater saw a given reader's increment
+> -	 * from __srcu_read_lock(), that reader was using an old value
+> -	 * of ->srcu_idx.  Also ensure that if a given reader sees the
+> -	 * new value of ->srcu_idx, this updater's earlier scans cannot
+> -	 * have seen that reader's increments (which is OK, because this
+> -	 * grace period need not wait on that reader).
+> +	 * Control dependency locks==unlocks ensures that if a reader sees the
+> +	 * flip, previous scan would only see before-flip reader lock counts.
+
+I would personally prefer that we keep the detailed comment explaining the
+ordering requirements here, just mentioning it's performed via control
+dependency now. This way we don't need to debate that again in 10 years.
+
+Thanks.
 
 
-<1>[16.814014] [pid:    58] Unable to handle kernel NULL pointer 
-dereference at virtual address 0000000000000000
-<0>[16.814027] [pid:    58] PC Code: bad value
-<0>[16.814034] [pid:    58] LR Code: f81e03a8 b5000068 d10083a8 f81e83a8 
-aa1f03f6 91127319 d10083b7 f9434b68 d503201f f9400408 910006d6 f900041f 
-d63f0100 (91004308) b8bfc108 374001c8 97ffff2b 9111e308 38bfc108 72001d1f
-
-<4>[16.814359] [pid:    58] CPU: 7 PID: 58 Comm: rcuop/5 Tainted: G S 
-   W  OE     5.15.41-android13-8-25574579-abS911USQU1AVLL #1
-<4>[16.814361] [pid:    58] Hardware name: XXXXX
-<4>[16.814362] [pid:    58] pstate: 42400805 (nZcv daif +PAN -UAO +TCO 
--DIT -SSBS BTYPE=-c)
-<4>[16.814364] [pid:    58] pc : 0x0
-<4>[16.814365] [pid:    58] lr : rcu_do_batch+0x328/0xcd8
-
-
-rcu_data for CPU5 contains additional 12 RCU callback heads in the 
-segment of RCU_DONE_TAIL whose func is NULL. It doesn’t seem to be a 
-random memory corruption since only rhp->func is set to null across 
-multiple objects.
-
-There is one more occurrence with CONFIG_CFI_CLANG enabled.
-
-[123587.101222][   T44] Kernel panic - not syncing: CFI failure (target: 
-0x0)
-[123587.101249][   T44] CPU: 0 PID: 44 Comm: rcuop/3 Tainted: G S 
-WC OE     5.15.41 #1
-[123587.101263][   T44] Hardware name: XXXXX
-[123587.101274][   T44] Call trace:
-[123587.101283][   T44]  dump_backtrace.cfi_jt+0x0/0x8
-[123587.101298][   T44]  show_stack+0x1c/0x2c
-[123587.101311][   T44]  dump_stack_lvl+0x94/0x100
-[123587.101326][   T44]  panic+0x17c/0x450
-[123587.101338][   T44]  find_check_fn+0x0/0x210
-[123587.101349][   T44]  rcu_do_batch+0x368/0x6f8
-[123587.101362][   T44]  nocb_cb_wait+0x80/0x450
-[123587.101374][   T44]  rcu_nocb_cb_kthread+0x54/0x90
-[123587.101386][   T44]  kthread+0x174/0x1d8
-[123587.101398][   T44]  ret_from_fork+0x10/0x20
-[123587.101410][   T44] SMP: stopping secondary CPUs
-[123587.101670][    C4] VendorHooks: CPU4: stopping
-
--Mukesh
+>  	 */
+> -	smp_mb(); /* E */  /* Pairs with B and C. */
+> -
+>  	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+>  
+>  	/*
+> -- 
+> 2.39.0.314.g84b9a713c41-goog
+> 
