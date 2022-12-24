@@ -2,44 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D87AAC4332F
-	for <rcu@archiver.kernel.org>; Fri, 23 Dec 2022 21:15:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1AD0C4332F
+	for <rcu@archiver.kernel.org>; Sat, 24 Dec 2022 05:20:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbiLWVPP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 23 Dec 2022 16:15:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
+        id S229535AbiLXFU1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 24 Dec 2022 00:20:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbiLWVPO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 23 Dec 2022 16:15:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FF1B1FE;
-        Fri, 23 Dec 2022 13:15:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 95C5961842;
-        Fri, 23 Dec 2022 21:15:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86FBAC433EF;
-        Fri, 23 Dec 2022 21:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671830112;
-        bh=hMpQQNYK95cKuQwDk/zAG80cKOmSryIgdedTMIx1SF8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ogqwyKefV3Obx8cU+3fu5TsIGJETglAJ6stHhNCSa7k2Ry5Ba9OB9yJgD7+sRMTcc
-         apPnpnaamAHiM+C2tqxA2W05sPQ2rbUuegF7z4L0B1zmcjpvA3rQNgb/zZuPAfupHA
-         h7qI3PvX2RFVdJDt9QAKZLn78C0xRh4rYSXQ09F/5GbdRFSrDNyIK3lAdvOcSOd3hm
-         2TKI9JJnqMGOX5XYxrLZMwoNvsgM6L7iCDfxFilrODBFEgi+EDLtfGHGuthR5qkj6J
-         CE+YJyLGYuAUtaJND85aYHT1H22Z1Hbrd+R6Qo467nOggUInxs3da7mOATmZslH8e6
-         Gt8azMO2vCY2w==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH] entry/rcu: Check TIF_RESCHED _after_ delayed RCU wake-up
-Date:   Fri, 23 Dec 2022 22:15:07 +0100
-Message-Id: <20221223211507.84249-1-frederic@kernel.org>
+        with ESMTP id S229445AbiLXFUZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 24 Dec 2022 00:20:25 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9C018687;
+        Fri, 23 Dec 2022 21:20:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1671859223; x=1703395223;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=S40gLU/6WKa7SgaWDOJhy4OtsZ/xWarbNmOK4WXAaGM=;
+  b=CYj+eaxdpW+hPgKNz9iOZbpXVS/xoukVd/yNt4TECJFh21hTKCgFZoir
+   U/qX+vRD/kLSp1wPmaNMowPpaQjUk63D9q86PcnofOfe8EHReGOwZYmOp
+   UxbSKS1ptxBqxI+tCzvxW93ms5skSDrYR4uyKBlaVEwFtAsmCq87WgV33
+   9iN4zW0/ppJraKZ/i62mDgQLbCfRGqxcaK7llKRkmstaggwcdZPJVbY6t
+   31F1XfvVraqmYZXdJU47fgvg8FUntiOcLeY5oAQO+G5NxgzIsXR7HU8yx
+   6fK1OUKahWTHYTS7NRLO6qn232e0yYs5jj42x8FdpttznrKRx2pSrCY08
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10570"; a="320466535"
+X-IronPort-AV: E=Sophos;i="5.96,270,1665471600"; 
+   d="scan'208";a="320466535"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2022 21:20:23 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10570"; a="826428622"
+X-IronPort-AV: E=Sophos;i="5.96,270,1665471600"; 
+   d="scan'208";a="826428622"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2022 21:20:21 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Safe access to rcu_node structure's->exp_tasks
+Date:   Sat, 24 Dec 2022 13:25:53 +0800
+Message-Id: <20221224052553.263199-1-qiang1.zhang@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -47,45 +51,57 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RCU sometimes needs to perform a delayed wake up for specific kthreads
-handling callbacks offloading (RCU_NOCB). This is handled through timers
-and upon entry to idle (also guest and user on nohz_full).
+For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario
+can result system oops.
 
-However the delayed wake-up on kernel exit is actually performed after
-the thread flags are fetched towards the fast path check for work to
-do on exit to user. As a result, and if there is no other pending work
-to do upon that kernel exit, the current task will resume to userspace
-with TIF_RESCHED set and the pending wake up ignored.
+           CPU1                                           CPU2
+rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
+  if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
+    raw_spin_lock_rcu_node
+    np = rcu_next_node_entry(t, rnp)
+    if (&t->rcu_node_entry == rnp->exp_tasks)
+      WRITE_ONCE(rnp->exp_tasks, np)
+      ....
+      raw_spin_unlock_irqrestore_rcu_node
+                                                    raw_spin_lock_irqsave_rcu_node
+                                                    t = list_entry(rnp->exp_tasks->prev,
+                                                        struct task_struct, rcu_node_entry)
+                                                    (if rnp->exp_tasks is NULL
+                                                       will trigger oops)
 
-Fix this with fetching the thread flags _after_ the delayed RCU-nocb
-kthread wake-up.
+This problem is that CPU2 accesses rcu_node structure's->exp_tasks
+without holding the rcu_node structure's ->lock and CPU2 did not
+observe CPU1's change to rcu_node structure's->exp_tasks in time,
+if rcu_node structure's->exp_tasks is set null pointer by CPU1, after
+that CPU2 accesses members of rcu_node structure's->exp_tasks will
+trigger oops.
 
-Fixes: 47b8ff194c1f ("entry: Explicitly flush pending rcuog wakeup before last rescheduling point")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+This commit therefore allows rcu_node structure's->exp_tasks to be
+accessed while holding rcu_node structure's ->lock.
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
- kernel/entry/common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_exp.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 846add8394c4..a134e26b58c6 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -192,13 +192,14 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 7cc4856da081..902e7c8709c7 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -803,9 +803,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+ 	int ndetected = 0;
+ 	struct task_struct *t;
  
- static void exit_to_user_mode_prepare(struct pt_regs *regs)
- {
--	unsigned long ti_work = read_thread_flags();
-+	unsigned long ti_work;
- 
- 	lockdep_assert_irqs_disabled();
- 
- 	/* Flush pending rcuog wakeup before the last need_resched() check */
- 	tick_nohz_user_enter_prepare();
- 
-+	ti_work = read_thread_flags();
- 	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
- 		ti_work = exit_to_user_mode_loop(regs, ti_work);
- 
+-	if (!READ_ONCE(rnp->exp_tasks))
+-		return 0;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	if (!READ_ONCE(rnp->exp_tasks)) {
++		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++		return 0;
++	}
+ 	t = list_entry(rnp->exp_tasks->prev,
+ 		       struct task_struct, rcu_node_entry);
+ 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
 -- 
 2.25.1
 
