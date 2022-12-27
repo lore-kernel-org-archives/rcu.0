@@ -2,89 +2,62 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E31ABC46467
-	for <rcu@archiver.kernel.org>; Tue, 27 Dec 2022 19:22:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BCEFC4167B
+	for <rcu@archiver.kernel.org>; Tue, 27 Dec 2022 19:55:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbiL0TWl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 27 Dec 2022 14:22:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
+        id S229884AbiL0TzP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 27 Dec 2022 14:55:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbiL0TWk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 27 Dec 2022 14:22:40 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68838D4C;
-        Tue, 27 Dec 2022 11:22:39 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 193F3B810A9;
-        Tue, 27 Dec 2022 19:22:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D798C433D2;
-        Tue, 27 Dec 2022 19:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672168956;
-        bh=HQogRMPkd4mTd9GL8MsC9tWHVut88yOyJXgzfE2Mg/8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vDLqcDB61J3uvKTRrDb2HTD3ZgflRoB2EjpBVWxzA4nFFZPKELz3A1ATtPhJR7nuL
-         pkNiAu21YNCmlcuILqK/UTlowtfwJiO+fcIoJ1RSFVvuZRMCzHgVY64shOCgOFFAVQ
-         hE6EABBBgJRC3y+nyI54+sp/U8XuXpVx9s2H3htxUu1g26mvnJixurxR0kJKPPTwnM
-         PYBECaM3VLbY+MvgJk1ZlQt+SnYFvTV/ECNyD+qvNWTODSyJ5zxwp7cygtqTVbbcgi
-         8R5Daa7u2KjSf7C/ZM9eoYbiE3kTkS9lygWpZGGrvEa49em6AmNCXL36qB+aDU6iNL
-         Jzk2YVAe/ljSg==
-From:   SeongJae Park <sj@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     alexander.h.duyck@linux.intel.com, paulmck@kernel.org,
-        linux-mm@kvack.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>
-Subject: [PATCH] mm/page_reporting: replace rcu_access_pointer() with rcu_dereference_protected()
-Date:   Tue, 27 Dec 2022 19:21:58 +0000
-Message-Id: <20221227192158.2553-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231972AbiL0TzM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 27 Dec 2022 14:55:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF3426E0;
+        Tue, 27 Dec 2022 11:55:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zpbjvSCk+EA51UMWboDDrs33iyLVu5VoWtLxS3V5gMw=; b=f/LnLhttpMtg/qiw0quRr7RVgS
+        tc6p96mH9LqPWEvk93/M7XerMyC+4gENbVshpT2Sed66AubxHDagtrugbFpzn+lmq/jHEGYMVJQVy
+        K1jJaNylZ25/llXQfRQAujlGE2Np/WDAZW7pzg5eHazJ93m4KIfsH3BkYr2Jqf5NdQi90vfoRqbXL
+        FV0tCDN8tMvuyveI9bkl50tDd5WMtYCUmBsszQGXHjCjxdJkOTgS8dY5LnxB+dy92cxAdi3f5cf8A
+        lNXxUu4nDys9QnPmqHekS3P8gjDtvwBoznRZpVOM4gTtgcXb70889+LNUShXfl4/TsZybCidk9EAn
+        NsssFbJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pAG2X-008GpV-Bv; Tue, 27 Dec 2022 19:55:09 +0000
+Date:   Tue, 27 Dec 2022 19:55:09 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     akpm@linux-foundation.org, alexander.h.duyck@linux.intel.com,
+        paulmck@kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_reporting: replace rcu_access_pointer() with
+ rcu_dereference_protected()
+Message-ID: <Y6tNnQvGGV+JVgC7@casper.infradead.org>
+References: <20221227192158.2553-1-sj@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221227192158.2553-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Page reporting fetches pr_dev_info using rcu_access_pointer(), which is
-for safely fetching a pointer that will not be dereferenced but could
-concurrently updated.  The code indeed does not dereference pr_dev_info
-after fetcing it using rcu_access_pointer(), but it fetches the pointer
-while concurrent updtes to the pointer is avoided by holding the update
-side lock, page_reporting_mutex.
+On Tue, Dec 27, 2022 at 07:21:58PM +0000, SeongJae Park wrote:
+> +++ b/mm/page_reporting.c
+> @@ -356,7 +356,7 @@ int page_reporting_register(struct page_reporting_dev_info *prdev)
+>  	mutex_lock(&page_reporting_mutex);
+>  
+>  	/* nothing to do if already in use */
+> -	if (rcu_access_pointer(pr_dev_info)) {
+> +	if (rcu_dereference_protected(pr_dev_info, true)) {
 
-In the case, rcu_dereference_protected() is recommended because it
-provides better readability and performance on some cases, as
-rcu_dereference_protected() avoids use of READ_ONCE().  Replace the
-rcu_access_pointer() calls with rcu_dereference_protected().
+Pretty sure that passing a bare 'true' is an antipattern.
+Instead, document _what_ lock protects us, ie:
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- mm/page_reporting.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+	if (rcu_dereference_protected(pr_dev_info,
+				      lockdep_is_held(&page_reporting_mutex))) {
 
-diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-index 79a8554f024c..079e0ebe1fb7 100644
---- a/mm/page_reporting.c
-+++ b/mm/page_reporting.c
-@@ -356,7 +356,7 @@ int page_reporting_register(struct page_reporting_dev_info *prdev)
- 	mutex_lock(&page_reporting_mutex);
- 
- 	/* nothing to do if already in use */
--	if (rcu_access_pointer(pr_dev_info)) {
-+	if (rcu_dereference_protected(pr_dev_info, true)) {
- 		err = -EBUSY;
- 		goto err_out;
- 	}
-@@ -401,7 +401,7 @@ void page_reporting_unregister(struct page_reporting_dev_info *prdev)
- {
- 	mutex_lock(&page_reporting_mutex);
- 
--	if (rcu_access_pointer(pr_dev_info) == prdev) {
-+	if (rcu_dereference_protected(pr_dev_info, true) == prdev) {
- 		/* Disable page reporting notification */
- 		RCU_INIT_POINTER(pr_dev_info, NULL);
- 		synchronize_rcu();
--- 
-2.25.1
-
+Obviously, we took it just one line up, but if code moves around, it
+may save us.
