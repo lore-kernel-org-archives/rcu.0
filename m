@@ -2,111 +2,103 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 011F9C4332F
-	for <rcu@archiver.kernel.org>; Thu, 29 Dec 2022 12:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EDC1C4332F
+	for <rcu@archiver.kernel.org>; Thu, 29 Dec 2022 16:10:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbiL2M0S (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Dec 2022 07:26:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
+        id S231217AbiL2QKc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Dec 2022 11:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbiL2M0R (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Dec 2022 07:26:17 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00AF2618;
-        Thu, 29 Dec 2022 04:26:15 -0800 (PST)
-Received: from dggpeml100012.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NjSJR40vkzmWwG;
-        Thu, 29 Dec 2022 20:24:55 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 29 Dec 2022 20:26:14 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <frederic@kernel.org>
-CC:     <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
-        <josh@joshtriplett.org>, <linux-kernel@vger.kernel.org>,
-        <mathieu.desnoyers@efficios.com>, <paulmck@kernel.org>,
-        <quic_neeraju@quicinc.com>, <rcu@vger.kernel.org>,
-        <rostedt@goodmis.org>, <zhengyejian1@huawei.com>,
-        <mhiramat@kernel.org>
-Subject: Re: [PATCH] rcu: Fix kernel stack overflow caused by kprobe on rcu_irq_enter_check_tick()
-Date:   Thu, 29 Dec 2022 12:27:31 +0000
-Message-ID: <20221229122731.1603031-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221205132353.GB1796992@lothringen>
-References: <20221205132353.GB1796992@lothringen>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
+        with ESMTP id S229615AbiL2QKb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Dec 2022 11:10:31 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9957311A37
+        for <rcu@vger.kernel.org>; Thu, 29 Dec 2022 08:10:30 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 186so21022818ybe.8
+        for <rcu@vger.kernel.org>; Thu, 29 Dec 2022 08:10:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0SlNJLfS96B1Ap7tev1XkTq1jXyL6cDjILqwD2QbOmc=;
+        b=hk2Oghj+PA6RJQ262xlgf9G9dCHc5PZO+KeGiNMN1m1VWTXYypgncHv9arriXyENnk
+         8EVXcWxXi00oRvr6x6R/YLIe/xzLee6ProhYHWHV9/E939HHu84hO1qrb6AS6b2yNj7f
+         oe8gYCCkSN3f55KDq2Notv+9y6cQexVKFrTLs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0SlNJLfS96B1Ap7tev1XkTq1jXyL6cDjILqwD2QbOmc=;
+        b=uFYGF4nydq7pTZ+AJUr+osimnLHD8Xad5ZbD9+BbIv6xZ2kqFLDRoL+tmc+JWjlHFw
+         3vtPKjwZPqLWFCLousc2+1UVb/kxmdoZ6+xTZn67kgs6PdFKwuS+Coi64HKk6BrafFbn
+         /mEPcy/K80kjoFAnzPjx/4Q2OoaqRcM3mCb8GCFzkYHsh2DIpe9UqmZAzcT11teK1W5b
+         aXkuoQYfeogvf4mxr8UTorzrsrNg4cGGRJ32ZkFbtz+JYBRAL/ufPe2/SU0Gi9jXxXJP
+         losTDmR3LAAC3VAlxfa9E4yHRFVFYwo+0RUDzZyexXILFtwBPHEOyW2LYR/I1mk5yZj9
+         Z5VQ==
+X-Gm-Message-State: AFqh2korHK53bRamhm5Z7yfw/7PUvOrnz8Astl1eVqeO91hEXasFdup/
+        LODG0TNd81T+JWc64FARjY6cwwjgoHI2zNO6
+X-Google-Smtp-Source: AMrXdXsDkBpvI443hkmgNVkCjHLvFqZhpRaPn6HGiPqeQIRPAiZ95SqSldA5Fnwp4aZoO4RR0o8XUg==
+X-Received: by 2002:a05:6902:4e9:b0:77f:e6fd:eefd with SMTP id w9-20020a05690204e900b0077fe6fdeefdmr13226012ybs.50.1672330229258;
+        Thu, 29 Dec 2022 08:10:29 -0800 (PST)
+Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id s4-20020a05620a254400b006feb158e5e7sm13486607qko.70.2022.12.29.08.10.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Dec 2022 08:10:28 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Please apply to v5.10 stable: 4d60b475f858 ("rcu: Prevent lockdep-RCU splats on lock acquisition/release")
+Date:   Thu, 29 Dec 2022 11:10:17 -0500
+Message-Id: <FA3EA215-5F84-4CFF-BC32-4B9CB7643948@joelfernandes.org>
+References: <Y6z9ygSGmPNz5hfd@google.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org
+In-Reply-To: <Y6z9ygSGmPNz5hfd@google.com>
+To:     stable@vger.kernel.org
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 5 Dec 2022 14:23:53 +0100, Frederic Weisbecker wrote:
-> On Mon, Nov 21, 2022 at 11:57:03AM -0800, Paul E. McKenney wrote:
-> > On Sat, Nov 19, 2022 at 12:00:49PM +0800, Zheng Yejian wrote:
-> > > Register kprobe on __rcu_irq_enter_check_tick() can cause kernel stack
-> > > overflow [1]. This issue is first found in v5.10 and can be reproduced
-> > > by enabling CONFIG_NO_HZ_FULL and doing like:
-> > >   # cd /sys/kernel/debug/tracing/
-> > >   # echo 'p:mp1 __rcu_irq_enter_check_tick' >> kprobe_events
-> > >   # echo 1 > events/kprobes/enable
-> > > 
-> > > So __rcu_irq_enter_check_tick() should not be kprobed, mark it as noinstr.
-> > 
-> > Good catch!
-> > 
-> > I am inclined to queue this, but noticed that one of its callers need
-> > it to be noinstr but that the others do not.
-> > 
-> > Need noinstr:
-> > 
-> > o	enter_from_kernel_mode() -> __enter_from_kernel_mode() ->
-> >	rcu_irq_enter_check_tick() -> __rcu_irq_enter_check_tick()
-> > 
-> > Doesn't need noinstr:
-> > 
-> > o	ct_nmi_enter() -> rcu_irq_enter_check_tick() ->
-> >	__rcu_irq_enter_check_tick(), courtesy of the call to
-> >	instrumentation_begin() in ct_nmi_enter() that precedes the call
-> >	to rcu_irq_enter_check_tick().
-> > 
-> > o	irqentry_enter() -> rcu_irq_enter_check_tick() ->
-> >	__rcu_irq_enter_check_tick(), courtesy of the call to
-> >	instrumentation_begin() in irqentry_enter() that precedes the
-> >	call to rcu_irq_enter_check_tick().
-> > 
-> > Is tagging __rcu_irq_enter_check_tick() with noinstr as
-> > proposed in this patch the right thing to do, or should there
-> > be calls to instrumentation_begin() and instrumentation_end() in
-> > enter_from_kernel_mode()?  Or something else entirely?
-> 
-> Tagging as noinstr doesn't look right as there are functions in
-> __rcu_irq_enter_check_tick() that can be traced anyway. Also that
-> function has the constraint that it can't be called while RCU is idle
-> so it's up to the caller to call instrumentation_begin()/end().
 
-This problem is due to __rcu_irq_enter_check_tick() being kprobe-ed, so
-how about adding __rcu_irq_enter_check_tick() into kprobe blacklist by
-tagging with NOKPROBE_SYMBOL:
 
-  diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-  index cf34a961821a..41606d3ed083 100644
-  --- a/kernel/rcu/tree.c
-  +++ b/kernel/rcu/tree.c
-  @@ -659,6 +659,7 @@ void __rcu_irq_enter_check_tick(void)
-          }
-          raw_spin_unlock_rcu_node(rdp->mynode);
-   }
-  +NOKPROBE_SYMBOL(__rcu_irq_enter_check_tick);
-   #endif /* CONFIG_NO_HZ_FULL */
+> On Dec 28, 2022, at 9:39 PM, Joel Fernandes <joel@joelfernandes.org> wrote=
+:
+>=20
+> =EF=BB=BFHello,
+> Please apply to v5.10 stable: 4d60b475f858 ("rcu: Prevent lockdep-RCU spla=
+ts
+> on lock acquisition/release"). The patch made it in v5.11
+>=20
+> Without it, I get the follow splat on TREE05 rcutorture testing:
+>=20
+> [    1.253678] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.10.162-rc1+ #6
+> [    1.253678] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.=
+15.0-1 04/01/2014
+> [    1.253678] Call Trace:
+> [    1.253678]
+> [    1.253678] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [    1.253678] WARNING: suspicious RCU usage
+> [    1.253678] 5.10.162-rc1+ #6 Not tainted
+> [    1.253678] -----------------------------
+> [    1.253678] kernel/kprobes.c:300 RCU-list traversed in non-reader secti=
+on!!
+>=20
+> I tested with the patch and the warning is gone.
 
-+Cc: <mhiramat@kernel.org>
+Please hold off on this particular one. After a 12 hour test, I am seeing so=
+me new warnings. Will update the thread after some more debug.
 
---
-Best regards,
-Zheng Yejian
+Sorry for the noise,
+
+ - Joel
+
+
+>=20
+> thanks,
+>=20
+> - Joel
+>=20
