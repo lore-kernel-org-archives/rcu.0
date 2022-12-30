@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A8ECC10F1B
-	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 04:12:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B4C9C3DA7C
+	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 04:12:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbiL3EML (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Dec 2022 23:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S234388AbiL3EMM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Dec 2022 23:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234007AbiL3EMJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S229667AbiL3EMJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 29 Dec 2022 23:12:09 -0500
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B7418695;
-        Thu, 29 Dec 2022 20:12:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0B2E0C3;
+        Thu, 29 Dec 2022 20:12:05 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NjsKD5F9Gz4f3nq1;
-        Fri, 30 Dec 2022 12:12:00 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NjsKC081Mz4f3mT2;
+        Fri, 30 Dec 2022 12:11:59 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S8;
-        Fri, 30 Dec 2022 12:12:03 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S5;
+        Fri, 30 Dec 2022 12:12:01 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
@@ -34,31 +34,31 @@ Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: [RFC PATCH bpf-next 4/6] bpf: Introduce BPF_MA_NO_REUSE for bpf memory allocator
-Date:   Fri, 30 Dec 2022 12:11:49 +0800
-Message-Id: <20221230041151.1231169-5-houtao@huaweicloud.com>
+Subject: [RFC PATCH bpf-next 1/6] bpf: Support ctor in bpf memory allocator
+Date:   Fri, 30 Dec 2022 12:11:46 +0800
+Message-Id: <20221230041151.1231169-2-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20221230041151.1231169-1-houtao@huaweicloud.com>
 References: <20221230041151.1231169-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFW3Kw18JFyDGr1rAFWxXrb_yoW3CFy5pF
-        ZxCry8Aw4kXF4IgFWaqw4vyr43Kr40gw17KrWj9ryrCr1fZryDtrn7Ary7AF15Crs7AFWI
-        9rZ0kFyfAr4UXFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-        xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
+X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S5
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF1kuw4xur48XrW5ur1kGrg_yoW7KFy7pF
+        W7Gr18Aws8XFsrWa12gws2kayaq340gF17Kay3XryF9r1rWrnrGF4kJry7ZF909r4jyayf
+        Ar1vgrW8Z3yUArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2mL9UUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -67,256 +67,174 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Currently the freed element in bpf memory allocator may be reused by new
-allocation, the reuse may lead to two problems. One problem is that the
-lookup procedure may get incorrect result if the found element is freed
-and then reused. Another problem is that lookup procedure may still use
-special fields in map value or allocated object and at the same time
-these special fields are reinitialized by new allocation. The latter
-problem can be mitigated by using ctor in bpf memory allocator, but it
-only works for case in which all elements have the same type.
+Currently the freed element in bpf memory allocator may be immediately
+reused, for htab map the reuse will reinitialize special fields in map
+value (e.g., bpf_spin_lock), but lookup procedure may still access
+these special fields, and it may lead to hard-lockup as shown below:
 
-So introducing BPF_MA_NO_REUSE to disable immediate reuse of freed
-elements. These freed elements will be moved into a global per-cpu free
-list instead. After the number of freed elements reaches the threshold,
-these free elements will be moved into a dymaically allocated object
-and being freed by a global per-cpu worker through
-call_rcu_tasks_trace().
+ NMI backtrace for cpu 16
+ CPU: 16 PID: 2574 Comm: htab.bin Tainted: G             L     6.1.0+ #1
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+ RIP: 0010:queued_spin_lock_slowpath+0x283/0x2c0
+ ......
+ Call Trace:
+  <TASK>
+  copy_map_value_locked+0xb7/0x170
+  bpf_map_copy_value+0x113/0x3c0
+  __sys_bpf+0x1c67/0x2780
+  __x64_sys_bpf+0x1c/0x20
+  do_syscall_64+0x30/0x60
+  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+ ......
+  </TASK>
 
+For htab map, just like the preallocated case, these is no need to
+initialize these special fields in map value again once these fields
+have been initialized, but now only bpf memory allocator knows whether
+or not an allocated object is reused or not. So introducing ctor support
+in bpf memory allocator and calling ctor for the allocated object only
+when it is newly allocated.
+
+Fixes: 0fd7c5d43339 ("bpf: Optimize call_rcu in non-preallocated hash map.")
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- include/linux/bpf_mem_alloc.h |   2 +
- kernel/bpf/memalloc.c         | 175 +++++++++++++++++++++++++++++++++-
- 2 files changed, 173 insertions(+), 4 deletions(-)
+ include/linux/bpf_mem_alloc.h |  4 +++-
+ kernel/bpf/core.c             |  2 +-
+ kernel/bpf/hashtab.c          | 16 ++++++++++++----
+ kernel/bpf/memalloc.c         | 10 +++++++++-
+ 4 files changed, 25 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
-index b9f6b9155fa5..2a10b721832d 100644
+index 3e164b8efaa9..3c287db087e7 100644
 --- a/include/linux/bpf_mem_alloc.h
 +++ b/include/linux/bpf_mem_alloc.h
-@@ -19,6 +19,8 @@ struct bpf_mem_alloc {
- /* flags for bpf_mem_alloc_init() */
- enum {
- 	BPF_MA_PERCPU = 1,
-+	/* Don't reuse freed elements during allocation */
-+	BPF_MA_NO_REUSE = 2,
+@@ -12,9 +12,11 @@ struct bpf_mem_alloc {
+ 	struct bpf_mem_caches __percpu *caches;
+ 	struct bpf_mem_cache __percpu *cache;
+ 	struct work_struct work;
++	void (*ctor)(struct bpf_mem_alloc *ma, void *obj);
  };
  
- int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags,
+-int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
++int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu,
++		       void (*ctor)(struct bpf_mem_alloc *, void *));
+ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
+ 
+ /* kmalloc/kfree equivalent: */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 7f98dec6e90f..6da2f9a6b085 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2755,7 +2755,7 @@ static int __init bpf_global_ma_init(void)
+ {
+ 	int ret;
+ 
+-	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
++	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false, NULL);
+ 	bpf_global_ma_set = !ret;
+ 	return ret;
+ }
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 5aa2b5525f79..3d6557ec4b92 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -453,6 +453,15 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+ 	return 0;
+ }
+ 
++static void htab_elem_ctor(struct bpf_mem_alloc *ma, void *obj)
++{
++	struct bpf_htab *htab = container_of(ma, struct bpf_htab, ma);
++	struct htab_elem *elem = obj;
++
++	check_and_init_map_value(&htab->map,
++				 elem->key + round_up(htab->map.key_size, 8));
++}
++
+ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ {
+ 	bool percpu = (attr->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+@@ -565,12 +574,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 				goto free_prealloc;
+ 		}
+ 	} else {
+-		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false);
++		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false,
++					 htab_elem_ctor);
+ 		if (err)
+ 			goto free_map_locked;
+ 		if (percpu) {
+ 			err = bpf_mem_alloc_init(&htab->pcpu_ma,
+-						 round_up(htab->map.value_size, 8), true);
++						 round_up(htab->map.value_size, 8), true, NULL);
+ 			if (err)
+ 				goto free_map_locked;
+ 		}
+@@ -1004,8 +1014,6 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 			l_new = ERR_PTR(-ENOMEM);
+ 			goto dec_count;
+ 		}
+-		check_and_init_map_value(&htab->map,
+-					 l_new->key + round_up(key_size, 8));
+ 	}
+ 
+ 	memcpy(l_new->key, key, key_size);
 diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 454c86596111..e5eaf765624b 100644
+index ebcc3dd0fa19..ac5b92fece14 100644
 --- a/kernel/bpf/memalloc.c
 +++ b/kernel/bpf/memalloc.c
-@@ -35,6 +35,23 @@
+@@ -98,6 +98,7 @@ struct bpf_mem_cache {
+ 	int free_cnt;
+ 	int low_watermark, high_watermark, batch;
+ 	int percpu_size;
++	struct bpf_mem_alloc *ma;
+ 
+ 	struct rcu_head rcu;
+ 	struct llist_head free_by_rcu;
+@@ -188,6 +189,9 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+ 			obj = __alloc(c, node);
+ 			if (!obj)
+ 				break;
++			/* Only do initialize for newly allocated object */
++			if (c->ma->ctor)
++				c->ma->ctor(c->ma, obj);
+ 		}
+ 		if (IS_ENABLED(CONFIG_PREEMPT_RT))
+ 			/* In RT irq_work runs in per-cpu kthread, so disable
+@@ -374,7 +378,8 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
+  * kmalloc/kfree. Max allocation size is 4096 in this case.
+  * This is bpf_dynptr and bpf_kptr use case.
   */
- #define LLIST_NODE_SZ sizeof(struct llist_node)
- 
-+#define BPF_MA_FREE_TYPE_NR 2
-+
-+struct bpf_ma_free_context {
-+	raw_spinlock_t lock;
-+	local_t active;
-+	/* For both no per-cpu and per-cpu */
-+	struct llist_head to_free[BPF_MA_FREE_TYPE_NR];
-+	unsigned int to_free_cnt[BPF_MA_FREE_TYPE_NR];
-+	struct llist_head to_free_extra[BPF_MA_FREE_TYPE_NR];
-+	struct delayed_work dwork;
-+};
-+
-+struct bpf_ma_free_batch {
-+	struct rcu_head rcu;
-+	struct llist_node *to_free[BPF_MA_FREE_TYPE_NR];
-+};
-+
- /* similar to kmalloc, but sizeof == 8 bucket is gone */
- static u8 size_index[24] __ro_after_init = {
- 	3,	/* 8 */
-@@ -63,6 +80,9 @@ static u8 size_index[24] __ro_after_init = {
- 	2	/* 192 */
- };
- 
-+static DEFINE_PER_CPU(struct bpf_ma_free_context, percpu_free_ctx);
-+static struct workqueue_struct *bpf_ma_free_wq;
-+
- static int bpf_mem_cache_idx(size_t size)
+-int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
++int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu,
++		       void (*ctor)(struct bpf_mem_alloc *, void *))
  {
- 	if (!size || size > 4096)
-@@ -609,14 +629,11 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
-  * add it to the free_llist of the current cpu.
-  * Let kfree() logic deal with it when it's later called from irq_work.
-  */
--static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
-+static void notrace reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
- {
--	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
- 	unsigned long flags;
- 	int cnt = 0;
+ 	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+ 	struct bpf_mem_caches *cc, __percpu *pcc;
+@@ -382,6 +387,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 	struct obj_cgroup *objcg = NULL;
+ 	int cpu, i, unit_size, percpu_size = 0;
  
--	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
--
- 	local_irq_save(flags);
- 	if (local_inc_return(&c->active) == 1) {
- 		__llist_add(llnode, &c->free_llist);
-@@ -638,6 +655,137 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
- 		irq_work_raise(c);
- }
- 
-+static void batch_free_rcu(struct rcu_head *rcu)
-+{
-+	struct bpf_ma_free_batch *batch = container_of(rcu, struct bpf_ma_free_batch, rcu);
-+
-+	free_llist(batch->to_free[0], false);
-+	free_llist(batch->to_free[1], true);
-+	kfree(batch);
-+}
-+
-+static void batch_free_rcu_tasks_trace(struct rcu_head *rcu)
-+{
-+	if (rcu_trace_implies_rcu_gp())
-+		batch_free_rcu(rcu);
-+	else
-+		call_rcu(rcu, batch_free_rcu);
-+}
-+
-+static void bpf_ma_schedule_free_dwork(struct bpf_ma_free_context *ctx)
-+{
-+	long delay, left;
-+	u64 to_free_cnt;
-+
-+	to_free_cnt = ctx->to_free_cnt[0] + ctx->to_free_cnt[1];
-+	delay = to_free_cnt >= 256 ? 1 : HZ;
-+	if (delayed_work_pending(&ctx->dwork)) {
-+		left = ctx->dwork.timer.expires - jiffies;
-+		if (delay < left)
-+			mod_delayed_work(bpf_ma_free_wq, &ctx->dwork, delay);
-+		return;
-+	}
-+	queue_delayed_work(bpf_ma_free_wq, &ctx->dwork, delay);
-+}
-+
-+static void bpf_ma_splice_to_free_list(struct bpf_ma_free_context *ctx, struct llist_node **to_free)
-+{
-+	struct llist_node *tmp[BPF_MA_FREE_TYPE_NR];
-+	unsigned long flags;
-+	unsigned int i;
-+
-+	raw_spin_lock_irqsave(&ctx->lock, flags);
-+	for (i = 0; i < ARRAY_SIZE(tmp); i++) {
-+		tmp[i] = __llist_del_all(&ctx->to_free[i]);
-+		ctx->to_free_cnt[i] = 0;
-+	}
-+	raw_spin_unlock_irqrestore(&ctx->lock, flags);
-+
-+	for (i = 0; i < ARRAY_SIZE(tmp); i++) {
-+		struct llist_node *first, *last;
-+
-+		first = llist_del_all(&ctx->to_free_extra[i]);
-+		if (!first) {
-+			to_free[i] = tmp[i];
-+			continue;
-+		}
-+		last = first;
-+		while (last->next)
-+			last = last->next;
-+		to_free[i] = first;
-+		last->next = tmp[i];
-+	}
-+}
-+
-+static inline bool bpf_ma_has_to_free(const struct bpf_ma_free_context *ctx)
-+{
-+	return !llist_empty(&ctx->to_free[0]) || !llist_empty(&ctx->to_free[1]) ||
-+	       !llist_empty(&ctx->to_free_extra[0]) || !llist_empty(&ctx->to_free_extra[1]);
-+}
-+
-+static void bpf_ma_free_dwork(struct work_struct *work)
-+{
-+	struct bpf_ma_free_context *ctx = container_of(to_delayed_work(work),
-+						       struct bpf_ma_free_context, dwork);
-+	struct llist_node *to_free[BPF_MA_FREE_TYPE_NR];
-+	struct bpf_ma_free_batch *batch;
-+	unsigned long flags;
-+
-+	bpf_ma_splice_to_free_list(ctx, to_free);
-+
-+	batch = kmalloc(sizeof(*batch), GFP_NOWAIT | __GFP_NOWARN);
-+	if (!batch) {
-+		/* TODO: handle ENOMEM case better ? */
-+		rcu_barrier_tasks_trace();
-+		rcu_barrier();
-+		free_llist(to_free[0], false);
-+		free_llist(to_free[1], true);
-+		goto check;
-+	}
-+
-+	batch->to_free[0] = to_free[0];
-+	batch->to_free[1] = to_free[1];
-+	call_rcu_tasks_trace(&batch->rcu, batch_free_rcu_tasks_trace);
-+check:
-+	raw_spin_lock_irqsave(&ctx->lock, flags);
-+	if (bpf_ma_has_to_free(ctx))
-+		bpf_ma_schedule_free_dwork(ctx);
-+	raw_spin_unlock_irqrestore(&ctx->lock, flags);
-+}
-+
-+static void notrace direct_free(struct bpf_mem_cache *c, struct llist_node *llnode)
-+{
-+	struct bpf_ma_free_context *ctx;
-+	bool percpu = !!c->percpu_size;
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	ctx = this_cpu_ptr(&percpu_free_ctx);
-+	if (local_inc_return(&ctx->active) == 1) {
-+		raw_spin_lock(&ctx->lock);
-+		__llist_add(llnode, &ctx->to_free[percpu]);
-+		ctx->to_free_cnt[percpu] += 1;
-+		bpf_ma_schedule_free_dwork(ctx);
-+		raw_spin_unlock(&ctx->lock);
-+	} else {
-+		llist_add(llnode, &ctx->to_free_extra[percpu]);
-+	}
-+	local_dec(&ctx->active);
-+	local_irq_restore(flags);
-+}
-+
-+static inline void unit_free(struct bpf_mem_cache *c, void *ptr)
-+{
-+	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
-+
-+	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
-+
-+	if (c->ma->flags & BPF_MA_NO_REUSE)
-+		direct_free(c, llnode);
-+	else
-+		reuse_free(c, llnode);
-+}
-+
- /* Called from BPF program or from sys_bpf syscall.
-  * In both cases migration is disabled.
-  */
-@@ -686,3 +834,22 @@ void notrace bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr)
- 
- 	unit_free(this_cpu_ptr(ma->cache), ptr);
- }
-+
-+static int __init bpf_ma_init(void)
-+{
-+	int cpu;
-+
-+	bpf_ma_free_wq = alloc_workqueue("bpf_ma_free", WQ_MEM_RECLAIM, 0);
-+	BUG_ON(!bpf_ma_free_wq);
-+
-+	for_each_possible_cpu(cpu) {
-+		struct bpf_ma_free_context *ctx;
-+
-+		ctx = per_cpu_ptr(&percpu_free_ctx, cpu);
-+		raw_spin_lock_init(&ctx->lock);
-+		INIT_DELAYED_WORK(&ctx->dwork, bpf_ma_free_dwork);
-+	}
-+
-+	return 0;
-+}
-+fs_initcall(bpf_ma_init);
++	ma->ctor = ctor;
+ 	if (size) {
+ 		pc = __alloc_percpu_gfp(sizeof(*pc), 8, GFP_KERNEL);
+ 		if (!pc)
+@@ -402,6 +408,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 			c->unit_size = unit_size;
+ 			c->objcg = objcg;
+ 			c->percpu_size = percpu_size;
++			c->ma = ma;
+ 			prefill_mem_cache(c, cpu);
+ 		}
+ 		ma->cache = pc;
+@@ -424,6 +431,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 			c = &cc->cache[i];
+ 			c->unit_size = sizes[i];
+ 			c->objcg = objcg;
++			c->ma = ma;
+ 			prefill_mem_cache(c, cpu);
+ 		}
+ 	}
 -- 
 2.29.2
 
