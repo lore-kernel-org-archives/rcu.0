@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB160C4708E
-	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 04:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D5AEC4332F
+	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 04:12:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbiL3EMO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Dec 2022 23:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
+        id S234024AbiL3EMP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Dec 2022 23:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234024AbiL3EMJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S234095AbiL3EMJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 29 Dec 2022 23:12:09 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59821186DF;
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7522A186C5;
         Thu, 29 Dec 2022 20:12:07 -0800 (PST)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NjsKD1stSz4f3k5d;
-        Fri, 30 Dec 2022 12:12:00 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NjsKF6DnKz4f3nqS;
+        Fri, 30 Dec 2022 12:12:01 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S7;
-        Fri, 30 Dec 2022 12:12:02 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S10;
+        Fri, 30 Dec 2022 12:12:04 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
@@ -34,31 +34,31 @@ Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: [RFC PATCH bpf-next 3/6] bpf: Pass bitwise flags to bpf_mem_alloc_init()
-Date:   Fri, 30 Dec 2022 12:11:48 +0800
-Message-Id: <20221230041151.1231169-4-houtao@huaweicloud.com>
+Subject: [RFC PATCH bpf-next 6/6] selftests/bpf: Add test case for element reuse in htab map
+Date:   Fri, 30 Dec 2022 12:11:51 +0800
+Message-Id: <20221230041151.1231169-7-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20221230041151.1231169-1-houtao@huaweicloud.com>
 References: <20221230041151.1231169-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr4xCryxKFyfuryfArW3trb_yoW5ur18pF
-        Z7Gr48AFs0qF4kua17Krs7Aay5Xw1Fg3WxGay5XryFvr1rWrnrWr4DJryaqF909r4jyayf
-        ArnYgrW0y34UZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
+X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S10
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw1DKw45Kr43GF1rWr13XFb_yoWrAF4Upa
+        yrC34UKrWxXwn8Ww15Jan7KF4ftw1rZay5AFn3Ww1avw1UZr9avr1xKFW7tF1fCrZ3Xryr
+        Zayfta15Zr48Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+        xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAI
+        cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+        IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -67,95 +67,164 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Extend a boolean argument to a bitwise flags argument for
-bpf_mem_alloc_init(), so more new flags can be added later.
+The immediate reuse of free htab elements can lead to two problems:
+1) lookup may get unexpected map value if the found element is deleted
+and then reused.
+2) the reinitialization of spin-lock in map value after reuse may
+corrupt lookup with BPF_F_LOCK flag and result in hard lock-up.
+
+So add one test case to demonostrate these two problems.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- include/linux/bpf_mem_alloc.h | 8 +++++++-
- kernel/bpf/core.c             | 2 +-
- kernel/bpf/hashtab.c          | 5 +++--
- kernel/bpf/memalloc.c         | 4 +++-
- 4 files changed, 14 insertions(+), 5 deletions(-)
+ .../selftests/bpf/prog_tests/htab_reuse.c     | 111 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/htab_reuse.c  |  19 +++
+ 2 files changed, 130 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_reuse.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_reuse.c
 
-diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
-index 3c287db087e7..b9f6b9155fa5 100644
---- a/include/linux/bpf_mem_alloc.h
-+++ b/include/linux/bpf_mem_alloc.h
-@@ -13,9 +13,15 @@ struct bpf_mem_alloc {
- 	struct bpf_mem_cache __percpu *cache;
- 	struct work_struct work;
- 	void (*ctor)(struct bpf_mem_alloc *ma, void *obj);
-+	unsigned int flags;
- };
- 
--int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu,
-+/* flags for bpf_mem_alloc_init() */
-+enum {
-+	BPF_MA_PERCPU = 1,
+diff --git a/tools/testing/selftests/bpf/prog_tests/htab_reuse.c b/tools/testing/selftests/bpf/prog_tests/htab_reuse.c
+new file mode 100644
+index 000000000000..995972958d1d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/htab_reuse.c
+@@ -0,0 +1,111 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
++#define _GNU_SOURCE
++#include <sched.h>
++#include <stdbool.h>
++#include <test_progs.h>
++#include "htab_reuse.skel.h"
++
++struct htab_op_ctx {
++	int fd;
++	int loop;
++	bool stop;
 +};
 +
-+int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags,
- 		       void (*ctor)(struct bpf_mem_alloc *, void *));
- void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 6da2f9a6b085..ca9a698c3f08 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2755,7 +2755,7 @@ static int __init bpf_global_ma_init(void)
- {
- 	int ret;
- 
--	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false, NULL);
-+	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, 0, NULL);
- 	bpf_global_ma_set = !ret;
- 	return ret;
- }
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 3d6557ec4b92..623111d4276d 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -574,13 +574,14 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 				goto free_prealloc;
- 		}
- 	} else {
--		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false,
-+		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, 0,
- 					 htab_elem_ctor);
- 		if (err)
- 			goto free_map_locked;
- 		if (percpu) {
- 			err = bpf_mem_alloc_init(&htab->pcpu_ma,
--						 round_up(htab->map.value_size, 8), true, NULL);
-+						 round_up(htab->map.value_size, 8),
-+						 BPF_MA_PERCPU, NULL);
- 			if (err)
- 				goto free_map_locked;
- 		}
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 3ad2e25946b5..454c86596111 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -383,7 +383,7 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
-  * kmalloc/kfree. Max allocation size is 4096 in this case.
-  * This is bpf_dynptr and bpf_kptr use case.
-  */
--int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu,
-+int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags,
- 		       void (*ctor)(struct bpf_mem_alloc *, void *))
- {
- 	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
-@@ -391,7 +391,9 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu,
- 	struct bpf_mem_cache *c, __percpu *pc;
- 	struct obj_cgroup *objcg = NULL;
- 	int cpu, i, unit_size, percpu_size = 0;
-+	bool percpu = (flags & BPF_MA_PERCPU);
- 
-+	ma->flags = flags;
- 	ma->ctor = ctor;
- 	if (size) {
- 		pc = __alloc_percpu_gfp(sizeof(*pc), 8, GFP_KERNEL);
++struct htab_val {
++	unsigned int lock;
++	unsigned int data;
++};
++
++static void *htab_lookup_fn(void *arg)
++{
++	struct htab_op_ctx *ctx = arg;
++	int ret = 0, i = 0;
++
++        while (i++ < ctx->loop && !ctx->stop) {
++		struct htab_val value;
++		unsigned int key;
++		int err;
++
++		/*
++		 * Use BPF_F_LOCK to use spin-lock in map value. And also
++		 * check whether or not an unexpected value is returned.
++		 */
++		key = 7;
++                err = bpf_map_lookup_elem_flags(ctx->fd, &key, &value, BPF_F_LOCK);
++		if (!err && key != value.data)
++			ret = EINVAL;
++        }
++
++        return (void *)(long)ret;
++}
++
++static void *htab_update_fn(void *arg)
++{
++	struct htab_op_ctx *ctx = arg;
++	int i = 0;
++
++        while (i++ < ctx->loop && !ctx->stop) {
++		struct htab_val value;
++                unsigned int key;
++
++		key = 7;
++		value.lock = 0;
++		value.data = key;
++                bpf_map_update_elem(ctx->fd, &key, &value, BPF_F_LOCK);
++		bpf_map_delete_elem(ctx->fd, &key);
++
++		key = 24;
++		value.lock = 0;
++		value.data = key;
++                bpf_map_update_elem(ctx->fd, &key, &value, BPF_F_LOCK);
++		bpf_map_delete_elem(ctx->fd, &key);
++        }
++
++        return NULL;
++}
++
++void test_htab_reuse(void)
++{
++	unsigned int i, wr_nr = 1, rd_nr = 4;
++	pthread_t tids[wr_nr + rd_nr];
++	struct htab_reuse *skel;
++	struct htab_op_ctx ctx;
++	int err;
++
++	skel = htab_reuse__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "htab_reuse__open_and_load"))
++		return;
++
++	ctx.fd = bpf_map__fd(skel->maps.htab);
++	ctx.loop = 500;
++	ctx.stop = false;
++
++	memset(tids, 0, sizeof(tids));
++	for (i = 0; i < wr_nr; i++) {
++		err = pthread_create(&tids[i], NULL, htab_update_fn, &ctx);
++		if (!ASSERT_OK(err, "pthread_create")) {
++			ctx.stop = true;
++			goto reap;
++		}
++	}
++	for (i = 0; i < rd_nr; i++) {
++		err = pthread_create(&tids[i + wr_nr], NULL, htab_lookup_fn, &ctx);
++		if (!ASSERT_OK(err, "pthread_create")) {
++			ctx.stop = true;
++			goto reap;
++		}
++	}
++
++reap:
++	for (i = 0; i < wr_nr + rd_nr; i++) {
++		void *thread_err;
++
++		if (!tids[i])
++			continue;
++		thread_err = NULL;
++		pthread_join(tids[i], &thread_err);
++		ASSERT_NULL(thread_err, "thread error");
++	}
++	htab_reuse__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/htab_reuse.c b/tools/testing/selftests/bpf/progs/htab_reuse.c
+new file mode 100644
+index 000000000000..e6dcc70517f9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/htab_reuse.c
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") = "GPL";
++
++struct htab_val {
++	struct bpf_spin_lock lock;
++	unsigned int data;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 64);
++	__type(key, unsigned int);
++	__type(value, struct htab_val);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++} htab SEC(".maps");
 -- 
 2.29.2
 
