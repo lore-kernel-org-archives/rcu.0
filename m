@@ -2,123 +2,142 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E95C4C3DA7A
-	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 01:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C31B8C4332F
+	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 04:12:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbiL3BCk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Dec 2022 20:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
+        id S234335AbiL3EML (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Dec 2022 23:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbiL3BCk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Dec 2022 20:02:40 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1759BC02
-        for <rcu@vger.kernel.org>; Thu, 29 Dec 2022 17:02:38 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id p2so5309579ljn.7
-        for <rcu@vger.kernel.org>; Thu, 29 Dec 2022 17:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3iu66IXaYWbK0UFw1ZBZT29FpWCa6Vb+57KKmvLtbkM=;
-        b=xCV9gXX503oKit//7hQNRIyYp/Ul+NBBup1ItzCa0hDX+cqQl+St2c6Q947j5h4XUE
-         0toehrSNQwzYZo8ZZNDppqnEesPFt+WgUUgVnR1C93KVNaP/G2m8W+Mmwi+e4+4qt+vt
-         Y+i25BXtYyab2qk6yubpOWo4MvSiOw6OCSiN0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3iu66IXaYWbK0UFw1ZBZT29FpWCa6Vb+57KKmvLtbkM=;
-        b=nHgAmDt7E+hxeQiVOf3XHtkukR2DcRhueL5WHCt4Z06CX2xjYAGPpGsdi7rkkk+S8b
-         OLMezNc92RhBK5hifBFFRQm5hDsumxAyFna03EKNVZaGOD6BU3eWpn5y+mHBwq7bIEsj
-         yHOx0aQPbX8f3dQiDOW2M3S77mSXwFdzlSAs/fR4BN0CFbarN4WkG0CJlajWN3LL1ANX
-         mRF0idhkZrMVeNIMu3bMph9INrl9SaRiYp4+8Ay3WOcm5yIjXdumMv6CYLhbgNFeCllu
-         Tk3W1eMVnNU+KBxDZQbjM/iEhkxWnvZQw3mQpwEluHLsnFvWkt7U4/Wkwk6n4wNh5pyj
-         CwOw==
-X-Gm-Message-State: AFqh2kozZ/5ZqC9FRjUPxe9FFpYBWZ7sYXTcXPZxtzonIw4PHSl0LtlC
-        uJjpMEx/JW4D85zvEc2+TL54qKw53wp+VhGY+pu4gA==
-X-Google-Smtp-Source: AMrXdXtTDPKgOoxiS3bsYrIi0oAEix+DZcAlAqrz8JRNbyAr8y7p6EmymmNnGK8ofvFZAzj6RHsoEkw7na7I6PUr4fo=
-X-Received: by 2002:a2e:3c15:0:b0:27f:dca1:8584 with SMTP id
- j21-20020a2e3c15000000b0027fdca18584mr205922lja.313.1672362156936; Thu, 29
- Dec 2022 17:02:36 -0800 (PST)
+        with ESMTP id S229624AbiL3EMJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Dec 2022 23:12:09 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C15B18397;
+        Thu, 29 Dec 2022 20:12:05 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NjsKB35M3z4f3mLG;
+        Fri, 30 Dec 2022 12:11:58 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S4;
+        Fri, 30 Dec 2022 12:12:01 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+Date:   Fri, 30 Dec 2022 12:11:45 +0800
+Message-Id: <20221230041151.1231169-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <Y6z9ygSGmPNz5hfd@google.com> <FA3EA215-5F84-4CFF-BC32-4B9CB7643948@joelfernandes.org>
-In-Reply-To: <FA3EA215-5F84-4CFF-BC32-4B9CB7643948@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 30 Dec 2022 01:02:25 +0000
-Message-ID: <CAEXW_YSBW-vfn6DzLY5vmCRRu6GJfVUFAT7vdj=ZPyDqz1U-3Q@mail.gmail.com>
-Subject: Re: Please apply to v5.10 stable: 4d60b475f858 ("rcu: Prevent
- lockdep-RCU splats on lock acquisition/release")
-To:     stable@vger.kernel.org
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw4UGw18urWxKw4kAr4ruFg_yoWrJw1fpa
+        yS9w15JFyv9ryfKw1xZws7WF1rCws3GFW7GF12qryUuw4rWrn7Ar1Ika1YvFWrCFs3JF90
+        qrn0vwn3Z3s8C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Dec 29, 2022 at 4:10 PM Joel Fernandes <joel@joelfernandes.org> wro=
-te:
->
->
->
-> > On Dec 28, 2022, at 9:39 PM, Joel Fernandes <joel@joelfernandes.org> wr=
-ote:
-> >
-> > =EF=BB=BFHello,
-> > Please apply to v5.10 stable: 4d60b475f858 ("rcu: Prevent lockdep-RCU s=
-plats
-> > on lock acquisition/release"). The patch made it in v5.11
-> >
-> > Without it, I get the follow splat on TREE05 rcutorture testing:
-> >
-> > [    1.253678] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.10.162-rc1+ =
-#6
-> > [    1.253678] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
- 1.15.0-1 04/01/2014
-> > [    1.253678] Call Trace:
-> > [    1.253678]
-> > [    1.253678] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > [    1.253678] WARNING: suspicious RCU usage
-> > [    1.253678] 5.10.162-rc1+ #6 Not tainted
-> > [    1.253678] -----------------------------
-> > [    1.253678] kernel/kprobes.c:300 RCU-list traversed in non-reader se=
-ction!!
-> >
-> > I tested with the patch and the warning is gone.
->
-> Please hold off on this particular one. After a 12 hour test, I am seeing=
- some new warnings. Will update the thread after some more debug.
->
+From: Hou Tao <houtao1@huawei.com>
 
-Weirdly enough, the warning seems to be a false-positive from the
-rcutorture scripts:
+Hi,
 
-WARNING: Assertion failure in
-/root/.jenkins/workspace/rcutorture_stable_linux-5.10.y@2/tools/testing/sel=
-ftests/rcutorture/res/2022.12.29-02.23.56/TREE05/console.log
-TREE05
-WARNING: Summary:
+The patchset tries to fix the problems found when checking how htab map
+handles element reuse in bpf memory allocator. The immediate reuse of
+freed elements may lead to two problems in htab map:
 
-But opening the console.log shows a normal flow followed by SUCCESS
-message from the rcutorture kernel module.
-Also "Summary:" is supposed to provide more information.
+(1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
+    htab map value and it may corrupt lookup procedure with BFP_F_LOCK
+    flag which acquires bpf-spin-lock during value copying. The
+    corruption of bpf-spin-lock may result in hard lock-up.
+(2) lookup procedure may get incorrect map value if the found element is
+    freed and then reused.
 
-Here are some logs:
-1. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.10.y=
-/10/console
-   (Scroll to the end)
-2. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.10.y=
-/10/artifact/tools/testing/selftests/rcutorture/res/2022.12.29-02.23.56/RUD=
-E01/console.log
+Because the type of htab map elements are the same, so problem #1 can be
+fixed by supporting ctor in bpf memory allocator. The ctor initializes
+these special fields in map element only when the map element is newly
+allocated. If it is just a reused element, there will be no
+reinitialization.
 
-So this is probably something wrong with my setup, say something
-interfered with the test. Or, there is something weird with the
-scripts.
+Problem #2 exists for both non-preallocated and preallocated htab map.
+By adding seq in htab element, doing reuse check and retrying the
+lookup procedure may be a feasible solution, but it will make the
+lookup API being hard to use, because the user needs to check whether
+the found element is reused or not and repeat the lookup procedure if it
+is reused. A simpler solution would be just disabling freed elements
+reuse and freeing these elements after lookup procedure ends.
 
-Anyway, re-running it with this patch overnight again!
+In order to reduce the overhead of call_rcu_tasks_trace() for each freed
+elements, freeing these elements in batch by moving these freed elements
+into a global per-cpu free list firstly, then after the number of freed
+elements reaches the threshold, these freed elements will be moved into
+a dymaically allocated object and being freed by a global per-cpu worker
+by calling call_rcu_tasks_trace().
 
- - Joel
+Because the solution frees memory by allocating new memory, so if there
+is no memory available, the global per-cpu worker will call
+rcu_barrier_tasks_trace() to wait for the expiration of RCU grace period
+and free these free elements which have been spliced into a temporary
+list. And the newly freed elements will be freed after another round of
+rcu_barrier_tasks_trace() if there is still no memory. Maybe need to
+reserve some bpf_ma_free_batch to speed up the free. Now also doesn't
+consider the scenario when RCU grace period is slow. Because these
+newly-allocated memory (aka bpf_ma_free_batch) will be freed after the
+expiration of RCU grace period, so if grace period is slow, there may be
+too much bpf_ma_free_batch being allocated.
+
+Aftering applying BPF_MA_NO_REUSE in htab map, the performance of
+"./map_perf_test 4 18 8192" drops from 520K to 330K events per sec on
+one CPU. It is a big performance degradation, so hope to get some
+feedbacks on whether or not it is necessary and how to better fixing the
+reuse problem in htab map (global allocated object may have the same
+problems as htab map). Comments are always welcome.
+
+Regards,
+Hou
+
+Hou Tao (6):
+  bpf: Support ctor in bpf memory allocator
+  bpf: Factor out a common helper free_llist()
+  bpf: Pass bitwise flags to bpf_mem_alloc_init()
+  bpf: Introduce BPF_MA_NO_REUSE for bpf memory allocator
+  bpf: Use BPF_MA_NO_REUSE in htab map
+  selftests/bpf: Add test case for element reuse in htab map
+
+ include/linux/bpf_mem_alloc.h                 |  12 +-
+ kernel/bpf/core.c                             |   2 +-
+ kernel/bpf/hashtab.c                          |  17 +-
+ kernel/bpf/memalloc.c                         | 218 ++++++++++++++++--
+ .../selftests/bpf/prog_tests/htab_reuse.c     | 111 +++++++++
+ .../testing/selftests/bpf/progs/htab_reuse.c  |  19 ++
+ 6 files changed, 353 insertions(+), 26 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_reuse.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_reuse.c
+
+-- 
+2.29.2
+
