@@ -2,144 +2,94 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07195C4167B
-	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 13:18:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41406C4167B
+	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 15:32:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbiL3NSP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Dec 2022 08:18:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
+        id S229812AbiL3Pcg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 30 Dec 2022 10:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbiL3NSO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Dec 2022 08:18:14 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BCC1A23D
-        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 05:18:12 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id jr11so17125947qtb.7
-        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 05:18:12 -0800 (PST)
+        with ESMTP id S229456AbiL3Pcf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 30 Dec 2022 10:32:35 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0992D55B3
+        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 07:32:34 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-47fc4e98550so159180227b3.13
+        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 07:32:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mNKbJyWVmEQaBKNSqhwilGGI/lpzT6OeBLkHWXd9xzQ=;
-        b=blObeyR8hkigKkNKFmBpe6p7JTzjTLkpLrtG55HhKKga4rwSs3vLaiQwqLXt8GUtvh
-         kT7uGaoToyNYB3CulzYCYSsoQzZokwqgZgZnZ8jLEGKGbJYGYM5AyH3omXxX8C2SvWSi
-         DE6zd78UKHLpAnbSYqm8OUflTK21HD1o/lPsg=
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2R+Iw0I7AIBMP3oD3VCJ7gCAV7aVBjAMojy2VXR83o=;
+        b=RgDOQYadLakjt2UroFuF0tXcma+aN76Jzl2OltZHMzHe9OryL505SwviDv1HAzdCp5
+         gU2sJZpqvJX2oy5gRodKdxEw2E/f+cQ7ZH0R91pE8Wx0ILoJG2rqtSOLXup0mvyq/Cs9
+         gujP/YqUVaGlY5hDUB5clieTyr+0sgoQW5Cgc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mNKbJyWVmEQaBKNSqhwilGGI/lpzT6OeBLkHWXd9xzQ=;
-        b=pbPJjHPLdiiSteS+puMVvoSXadSzsviXHBEcHYvKqmnamSoDGyBhQUV/ZwxGSLKkJR
-         CSrtDCXud7tY/1zDee2zYz06nodFTnysY3dNK1E5rtz+AL4+iprmXUhZ0vStfbiOl2zY
-         3bsxe+pB9siPUPBkp5UnpTncaZQ8gqNXF6BZTfvVe3e0bes92yoAIgQxrP9CdNkJOhq2
-         nL8ljvOhSJtj7ezYtyBKKNHkRXrTpmb37rfsk3Y6SGZVaTpzqZBI1vv0EgHcCXsJSLSr
-         bJhIKSZDDrkH7rA66VPizOgdVLllCMbYZ6NlCSCiQhyelX3qHj5Wdw4zliAtu80G7OMc
-         1iZQ==
-X-Gm-Message-State: AFqh2kobPS0QxygmsKYquWNylpEJqvPWfn82ZB3mmkvlEwXO5/tydKyy
-        kMPSgMpy6+q4A6KLs5pEFSUtJg==
-X-Google-Smtp-Source: AMrXdXuvs7jo6hCfe2Sf2NNwK+HsB9uXbGW1q4VXHzebXGl2vmjh6T+YWCM9rjqMyXWZpIdpfaKNiw==
-X-Received: by 2002:a05:622a:1f09:b0:3a7:eb01:5dde with SMTP id ca9-20020a05622a1f0900b003a7eb015ddemr37252938qtb.14.1672406291973;
-        Fri, 30 Dec 2022 05:18:11 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id a20-20020ac87214000000b003a57eb7f212sm12891916qtp.10.2022.12.30.05.18.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Dec 2022 05:18:11 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC] Catch dwmw2's deadlock
-Date:   Fri, 30 Dec 2022 08:18:00 -0500
-Message-Id: <54057376-2A57-4D8B-B05D-DE768F506819@joelfernandes.org>
-References: <122f38e724aae9ae8ab474233da1ba19760c20d2.camel@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        Michal Luczaj <mhal@rbox.co>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-In-Reply-To: <122f38e724aae9ae8ab474233da1ba19760c20d2.camel@infradead.org>
-To:     David Woodhouse <dwmw2@infradead.org>
-X-Mailer: iPhone Mail (20B101)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E2R+Iw0I7AIBMP3oD3VCJ7gCAV7aVBjAMojy2VXR83o=;
+        b=1OW3UD412WDlwdIaYU21htuPB7rieEDmQGEABn8C3n646bpzj3xKxXvmZRqYpQO2ru
+         bvYrJzlG5V4S0P6zTQ4crAeWz0XU7PqPttDnKKTt2t3vjGyH+umHEJanT/9SNFr9ETJA
+         eFpi1EO+swAhoseeRUIMPgV/Yr5go2Grq6KRWzeX+rXSUgv301EUGGYfLQ87gxtv6A4m
+         IS5BiqdEONgN9N0eVTxtHPQJzfmTPR4imXPo91sXvvsDFOxbZ2r3SiSJoUppG1JbV0yM
+         l98CBIxKiVkoBaAW7eHWgjcFtc5OXb+piOkNqp42mlrMUwwu3qA/ttQ1hN0M0PBxBiPX
+         6HYA==
+X-Gm-Message-State: AFqh2kpoxjzOUeRJHjG/T8bgE24t17CE3xXv8L4VBE3O9nqUy3upLW0R
+        Mwo5LQ0YZp3vOqOUuvkPmMQmrw==
+X-Google-Smtp-Source: AMrXdXuXL80qaggUZG978MbRGe5sIWFU5CYxiAVW0/oxTG+QizD2dKUps7v/a9uE0beg0qKrID6DQQ==
+X-Received: by 2002:a05:7500:6601:b0:ef:bb1c:c01e with SMTP id ix1-20020a057500660100b000efbb1cc01emr916989gab.26.1672414353045;
+        Fri, 30 Dec 2022 07:32:33 -0800 (PST)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id w29-20020a05620a0e9d00b006ec62032d3dsm15177813qkm.30.2022.12.30.07.32.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Dec 2022 07:32:32 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     stable@vger.kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH v5.10 1/2] torture: Exclude "NOHZ tick-stop error" from fatal errors
+Date:   Fri, 30 Dec 2022 15:32:13 +0000
+Message-Id: <20221230153215.1333921-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
+commit 8d68e68a781db80606c8e8f3e4383be6974878fd upstream.
 
-> On Dec 30, 2022, at 7:28 AM, David Woodhouse <dwmw2@infradead.org> wrote:
->=20
-> =EF=BB=BFOn Fri, 2022-12-30 at 11:38 +0000, Matthew Wilcox wrote:
->>=20
->> <dwmw2> why doesn't lockdep catch us calling synchronize_srcu() with
->>    a lock held, and elsewhere obtaining that lock within an srcu critical=
+The "NOHZ tick-stop error: Non-RCU local softirq work is pending"
+warning happens frequently and appears to be irrelevant to the various
+torture tests.  This commit therefore filters it out.
 
->>    region ("read lock") ?
->>=20
->> Because synchronize_srcu() doesn't acquire the lock, merely checks that
->> it isn't held.
->>=20
->> Would this work?  Not even compile tested.
->>=20
->> You can put my SoB on this if it works.
->>=20
->=20
-> Thanks. Not sure if this addresses the issue I was talking about.
->=20
-> There exists a completely unrelated mutex, let's call it kvm->lock.
->=20
-> One code path *holds* kvm->lock while calling synchronize_srcu().
-> Another code path is in a read-side section and attempts to obtain the
-> same kvm->lock.
->=20
-> Described here:
->=20
-> https://lore.kernel.org/kvm/20221229211737.138861-1-mhal@rbox.co/T/#m594c1=
-068d7a659f0a1aab3b64b0903836919bb0a
+If there proves to be a need to pay attention to it a later commit will
+add an "advice" category to allow the user to immediately see that
+although something happened, it was not an indictment of the system
+being tortured.
 
-I think the patch from Matthew Wilcox will address it because the read side s=
-ection already acquires the dep_map. So lockdep subsystem should be able to n=
-ail the dependency. One comment on that below:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: <stable@vger.kernel.org> # 5.10.x
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ tools/testing/selftests/rcutorture/bin/console-badness.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->=20
->> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->> index ca4b5dcec675..e9c2ab8369c0 100644
->> --- a/kernel/rcu/srcutree.c
->> +++ b/kernel/rcu/srcutree.c
->> @@ -1267,11 +1267,11 @@ static void __synchronize_srcu(struct srcu_struct=
- *ssp, bool do_norm)
->>  {
->>         struct rcu_synchronize rcu;
->> =20
->> -       RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
->> -                        lock_is_held(&rcu_bh_lock_map) ||
->> +       rcu_lock_acquire(&ssp->dep_map);
->> +       RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
->>                          lock_is_held(&rcu_lock_map) ||
->>                          lock_is_held(&rcu_sched_lock_map),
->> -                        "Illegal synchronize_srcu() in same-type SRCU (o=
-r in RCU) read-side critical section");
->> +                        "Illegal synchronize_srcu() in RCU read-side cri=
-tical section");
->> =20
->>         if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_INACTIVE)
->>                 return;
+diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+index 0e4c0b2eb7f0..80ae7f08b363 100755
+--- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
++++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+@@ -13,4 +13,5 @@
+ egrep 'Badness|WARNING:|Warn|BUG|===========|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
+ grep -v 'ODEBUG: ' |
+ grep -v 'This means that this is a DEBUG kernel and it is' |
+-grep -v 'Warning: unable to open an initial console'
++grep -v 'Warning: unable to open an initial console' |
++grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
+-- 
+2.39.0.314.g84b9a713c41-goog
 
-Should you not release here?
-
-Thanks,
-
-- Joel=20
-
-
->> @@ -1282,6 +1282,7 @@ static void __synchronize_srcu(struct srcu_struct *=
-ssp, bool do_norm)
->>         __call_srcu(ssp, &rcu.head, wakeme_after_rcu, do_norm);
->>         wait_for_completion(&rcu.completion);
->>         destroy_rcu_head_on_stack(&rcu.head);
->> +       rcu_lock_release(&ssp->dep_map);
->> =20
->>         /*
->>          * Make sure that later code is ordered after the SRCU grace
->=20
