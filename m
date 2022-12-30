@@ -2,60 +2,57 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7847C46467
-	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 15:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C99DAC4167B
+	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 15:41:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbiL3Pch (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Dec 2022 10:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
+        id S235103AbiL3Plm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 30 Dec 2022 10:41:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiL3Pch (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Dec 2022 10:32:37 -0500
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D3E1B1D6
-        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 07:32:35 -0800 (PST)
-Received: by mail-vs1-xe2b.google.com with SMTP id k4so17489705vsc.4
-        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 07:32:35 -0800 (PST)
+        with ESMTP id S235416AbiL3Pku (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 30 Dec 2022 10:40:50 -0500
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B854632C
+        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 07:40:48 -0800 (PST)
+Received: by mail-vs1-xe34.google.com with SMTP id i188so21599572vsi.8
+        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 07:40:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f9CTSN/sMpQvJw4AMVj0+6rBFZ/obq4voGPkfdqn1X8=;
-        b=MibP40V7gf40s5S3WXQyqQXw6ZdilFQ4CB6GPH9nqjE0t5NYa4H0NJA03MNQD2+wc2
-         jxoRLn9PeCGSOToSDaQjZemvh/wBx1iSdaplGIslNS+43UzkXb9iCBThTpr/bkTWRGw5
-         4C5tq5KofRfYEbw+dWJArwzSMUI0RKV4/YNCY=
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aIMd1LWhkroXdGwdivEGj9erxBWvA/SmDnMPje3G3Co=;
+        b=lgwF6CnkrLtrwV+zjhVSGdlBl468LnfuMr3N/KU/LvEZ8x4RNxsIDvsF9H/QGGwHcL
+         DRDiR6esJ6clvzw2JOSaB4TxEJV9cchdk+y8980YRb7CkRCGGlA3pZNyroRlUVnxOCGT
+         V3mlwldc+LCyEUXw2bHFib3o3O9PZNDWI/5Gk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f9CTSN/sMpQvJw4AMVj0+6rBFZ/obq4voGPkfdqn1X8=;
-        b=nx9xZnlmfAzt+pUa3ctyqN4jJCw4OlxJPAiJ672paq8590sp82wRM7f15N+CNfCII7
-         Pwzvu4Y6P5KCrVrkR8fsFZZ1u1ZI7HxyIPH8rY02shDiy/BePxnvjA0qQ9aN4teTyif1
-         eFjb2ZjpmLbHlf+WhnOzpcv2TmxpFHRZ48nzbTBLHNmuUJAmz2do8yqzGGNP2cAsVowR
-         5ztoK/w8IqztRb2vhq59KzInnglVbP+3ctZxWcaDGI0H52Yt0o3+WcWWjxZ97A98uo+j
-         8BHOVgOCeAuIb4JkgzlNwx6H+82FEXcah/5VfiLVWkTlDRhd/Yj3GPw2tsBkCxmPAo7N
-         v3ZQ==
-X-Gm-Message-State: AFqh2kre3I/NKD39DayP9oea7rHtRJS+vx31Ty1kxPNq4akh5GZNcBO7
-        t+Q2nlrX9iomdpji8rIP/UsVFQ==
-X-Google-Smtp-Source: AMrXdXtwuIZ9/yXlJQNDrzMVB6ENDODzPcmS1xI8EEdV5d1dTWctS1Eg5strGrK1x6iHWnSUTmtvVQ==
-X-Received: by 2002:a05:6102:a2a:b0:3cb:12be:14f2 with SMTP id 10-20020a0561020a2a00b003cb12be14f2mr3952701vsb.31.1672414354724;
-        Fri, 30 Dec 2022 07:32:34 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aIMd1LWhkroXdGwdivEGj9erxBWvA/SmDnMPje3G3Co=;
+        b=qPEwyYXDVw5/8HQapCzf/pdqv9WDmx5Tjo4uiKwRfcfjGCtJWxRb537Qx1xTAvly+m
+         IfsLwQ0NZoXrNDQggk+ahAoJvHmCgcd6LwLxTeGwyLMz27X/jRIp6WfIgaB1dPWVKy11
+         7jm2o6pRDX4+f5ZR+7wTQy5/BjLMAywtznQNAu/z0Wo0D99idV6jIk4RTXc3An8gVgKZ
+         guCmbd0VNyiiMHr7DFgtCktCOmG5eiceo7fE/zEn+llyl8t/XykPKXGXLSBYAXESVYQE
+         y7OhgQbsjKZ7SZvzvyS7oiUb4sKrjOB49rfnpSk30Mi31TmrIhzQ1Ks1y4u+Cyo7t5Ni
+         9rHw==
+X-Gm-Message-State: AFqh2kr4KzE57Q20teVHBQvHY84Xo9tXwG8GPWlYAgi8cpRr+0JwsjIR
+        KM1nSX3qd8avYhXql4of28Xxgg==
+X-Google-Smtp-Source: AMrXdXsYNydnUCPoQhwV+uLUBo2IK8+osQMCJ8zPGzqsmkRzEJrQnmDEOEha7/5uiZK0vJtOCZ98Xw==
+X-Received: by 2002:a05:6102:41a7:b0:3ca:3e2b:b56f with SMTP id cd39-20020a05610241a700b003ca3e2bb56fmr8685691vsb.4.1672414847476;
+        Fri, 30 Dec 2022 07:40:47 -0800 (PST)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id w29-20020a05620a0e9d00b006ec62032d3dsm15177813qkm.30.2022.12.30.07.32.33
+        by smtp.gmail.com with ESMTPSA id t29-20020a37ea1d000000b006fc40dafaa2sm15182168qkj.8.2022.12.30.07.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Dec 2022 07:32:33 -0800 (PST)
+        Fri, 30 Dec 2022 07:40:46 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH v5.10 2/2] rcu: Prevent lockdep-RCU splats on lock acquisition/release
-Date:   Fri, 30 Dec 2022 15:32:14 +0000
-Message-Id: <20221230153215.1333921-2-joel@joelfernandes.org>
+Subject: [PATCH v5.15] rcu-tasks: Simplify trc_read_check_handler() atomic operations
+Date:   Fri, 30 Dec 2022 15:40:09 +0000
+Message-Id: <20221230154009.2628728-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-In-Reply-To: <20221230153215.1333921-1-joel@joelfernandes.org>
-References: <20221230153215.1333921-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -64,132 +61,117 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-commit 4d60b475f858ebdb06c1339f01a890f287b5e587 upstream.
+commit 96017bf9039763a2e02dcc6adaa18592cd73a39d upstream.
 
-The rcu_cpu_starting() and rcu_report_dead() functions transition the
-current CPU between online and offline state from an RCU perspective.
-Unfortunately, this means that the rcu_cpu_starting() function's lock
-acquisition and the rcu_report_dead() function's lock releases happen
-while the CPU is offline from an RCU perspective, which can result
-in lockdep-RCU splats about using RCU from an offline CPU.  And this
-situation can also result in too-short grace periods, especially in
-guest OSes that are subject to vCPU preemption.
+Currently, trc_wait_for_one_reader() atomically increments
+the trc_n_readers_need_end counter before sending the IPI
+invoking trc_read_check_handler().  All failure paths out of
+trc_read_check_handler() and also from the smp_call_function_single()
+within trc_wait_for_one_reader() must carefully atomically decrement
+this counter.  This is more complex than it needs to be.
 
-This commit therefore uses sequence-count-like synchronization to forgive
-use of RCU while RCU thinks a CPU is offline across the full extent of
-the rcu_cpu_starting() and rcu_report_dead() function's lock acquisitions
-and releases.
+This commit therefore simplifies things and saves a few lines of
+code by dispensing with the atomic decrements in favor of having
+trc_read_check_handler() do the atomic increment only in the success case.
+In theory, this represents no change in functionality.
 
-One approach would have been to use the actual sequence-count primitives
-provided by the Linux kernel.  Unfortunately, the resulting code looks
-completely broken and wrong, and is likely to result in patches that
-break RCU in an attempt to address this appearance of broken wrongness.
-Plus there is no net savings in lines of code, given the additional
-explicit memory barriers required.
-
-Therefore, this sequence count is instead implemented by a new ->ofl_seq
-field in the rcu_node structure.  If this counter's value is an odd
-number, RCU forgives RCU read-side critical sections on other CPUs covered
-by the same rcu_node structure, even if those CPUs are offline from
-an RCU perspective.  In addition, if a given leaf rcu_node structure's
-->ofl_seq counter value is an odd number, rcu_gp_init() delays starting
-the grace period until that counter value changes.
-
-[ paulmck: Apply Peter Zijlstra feedback. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: <stable@vger.kernel.org> # 5.10.x
+Cc: <stable@vger.kernel.org> # 5.15.x
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 21 ++++++++++++++++++++-
- kernel/rcu/tree.h |  1 +
- 2 files changed, 21 insertions(+), 1 deletion(-)
+I confirmed the patch fixes the following splat which happens twice on TRACE02 rcutorture test:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3fe7c75c371b..9cce4e13af41 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1157,7 +1157,7 @@ bool rcu_lockdep_current_cpu_online(void)
- 	preempt_disable_notrace();
- 	rdp = this_cpu_ptr(&rcu_data);
- 	rnp = rdp->mynode;
--	if (rdp->grpmask & rcu_rnp_online_cpus(rnp))
-+	if (rdp->grpmask & rcu_rnp_online_cpus(rnp) || READ_ONCE(rnp->ofl_seq) & 0x1)
- 		ret = true;
- 	preempt_enable_notrace();
- 	return ret;
-@@ -1724,6 +1724,7 @@ static void rcu_strict_gp_boundary(void *unused)
-  */
- static bool rcu_gp_init(void)
- {
-+	unsigned long firstseq;
- 	unsigned long flags;
- 	unsigned long oldmask;
- 	unsigned long mask;
-@@ -1767,6 +1768,12 @@ static bool rcu_gp_init(void)
- 	 */
- 	rcu_state.gp_state = RCU_GP_ONOFF;
- 	rcu_for_each_leaf_node(rnp) {
-+		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
-+		firstseq = READ_ONCE(rnp->ofl_seq);
-+		if (firstseq & 0x1)
-+			while (firstseq == READ_ONCE(rnp->ofl_seq))
-+				schedule_timeout_idle(1);  // Can't wake unless RCU is watching.
-+		smp_mb(); // Pair with barriers used when updating ->ofl_seq to even values.
- 		raw_spin_lock(&rcu_state.ofl_lock);
- 		raw_spin_lock_irq_rcu_node(rnp);
- 		if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
-@@ -4107,6 +4114,9 @@ void rcu_cpu_starting(unsigned int cpu)
+[  765.941351] WARNING: CPU: 0 PID: 80 at kernel/rcu/tasks.h:895 trc_read_check_handler+0x61/0xe0
+[  765.949880] Modules linked in:
+[  765.953006] CPU: 0 PID: 80 Comm: rcu_torture_rea Not tainted 5.15.86-rc1+ #25
+[  765.959982] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
+[  765.967964] RIP: 0010:trc_read_check_handler+0x61/0xe0
+[  765.973050] Code: 01 00 89 c0 48 03 2c c5 80 f8 a5 ae c6 45 00 00 [..]
+[  765.991768] RSP: 0000:ffffa64ac0003fb0 EFLAGS: 00010047
+[  765.997042] RAX: ffffffffad4f8610 RBX: ffffa26b41bd3000 RCX: ffffa26b5f4ac8c0
+[  766.004418] RDX: 0000000000000000 RSI: ffffffffae978121 RDI: ffffa26b41bd3000
+[  766.011502] RBP: ffffa26b41bd6000 R08: ffffa26b41bd3000 R09: 0000000000000000
+[  766.018778] R10: 0000000000000000 R11: ffffa64ac0003ff8 R12: 0000000000000000
+[  766.025943] R13: ffffa26b5f4ac8c0 R14: 0000000000000000 R15: 0000000000000000
+[  766.034383] FS:  0000000000000000(0000) GS:ffffa26b5f400000(0000) knlGS:0000000000000000
+[  766.042925] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  766.048775] CR2: 0000000000000000 CR3: 0000000001924000 CR4: 00000000000006f0
+[  766.055991] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  766.063135] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  766.070711] Call Trace:
+[  766.073515]  <IRQ>
+[  766.075807]  flush_smp_call_function_queue+0xec/0x1a0
+[  766.081087]  __sysvec_call_function_single+0x3e/0x1d0
+[  766.086466]  sysvec_call_function_single+0x89/0xc0
+[  766.091431]  </IRQ>
+[  766.093713]  <TASK>
+[  766.095930]  asm_sysvec_call_function_single+0x16/0x20
+
+ kernel/rcu/tasks.h | 20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index ae8396032b5d..4bd07cc3c0ea 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -892,32 +892,24 @@ static void trc_read_check_handler(void *t_in)
  
- 	rnp = rdp->mynode;
- 	mask = rdp->grpmask;
-+	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
-+	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
-+	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
- 	newcpu = !(rnp->expmaskinitnext & mask);
-@@ -4124,6 +4134,9 @@ void rcu_cpu_starting(unsigned int cpu)
- 	} else {
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	// If the task is no longer running on this CPU, leave.
+ 	if (unlikely(texp != t)) {
+-		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+-			wake_up(&trc_wait);
+ 		goto reset_ipi; // Already on holdout list, so will check later.
  	}
-+	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
-+	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
-+	WARN_ON_ONCE(rnp->ofl_seq & 0x1);
- 	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
+ 
+ 	// If the task is not in a read-side critical section, and
+ 	// if this is the last reader, awaken the grace-period kthread.
+ 	if (likely(!READ_ONCE(t->trc_reader_nesting))) {
+-		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+-			wake_up(&trc_wait);
+-		// Mark as checked after decrement to avoid false
+-		// positives on the above WARN_ON_ONCE().
+ 		WRITE_ONCE(t->trc_reader_checked, true);
+ 		goto reset_ipi;
+ 	}
+ 	// If we are racing with an rcu_read_unlock_trace(), try again later.
+-	if (unlikely(READ_ONCE(t->trc_reader_nesting) < 0)) {
+-		if (WARN_ON_ONCE(atomic_dec_and_test(&trc_n_readers_need_end)))
+-			wake_up(&trc_wait);
++	if (unlikely(READ_ONCE(t->trc_reader_nesting) < 0))
+ 		goto reset_ipi;
+-	}
+ 	WRITE_ONCE(t->trc_reader_checked, true);
+ 
+ 	// Get here if the task is in a read-side critical section.  Set
+ 	// its state so that it will awaken the grace-period kthread upon
+ 	// exit from that critical section.
++	atomic_inc(&trc_n_readers_need_end); // One more to wait on.
+ 	WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs));
+ 	WRITE_ONCE(t->trc_reader_special.b.need_qs, true);
+ 
+@@ -1017,21 +1009,15 @@ static void trc_wait_for_one_reader(struct task_struct *t,
+ 		if (per_cpu(trc_ipi_to_cpu, cpu) || t->trc_ipi_to_cpu >= 0)
+ 			return;
+ 
+-		atomic_inc(&trc_n_readers_need_end);
+ 		per_cpu(trc_ipi_to_cpu, cpu) = true;
+ 		t->trc_ipi_to_cpu = cpu;
+ 		rcu_tasks_trace.n_ipis++;
+-		if (smp_call_function_single(cpu,
+-					     trc_read_check_handler, t, 0)) {
++		if (smp_call_function_single(cpu, trc_read_check_handler, t, 0)) {
+ 			// Just in case there is some other reason for
+ 			// failure than the target CPU being offline.
+ 			rcu_tasks_trace.n_ipis_fails++;
+ 			per_cpu(trc_ipi_to_cpu, cpu) = false;
+ 			t->trc_ipi_to_cpu = cpu;
+-			if (atomic_dec_and_test(&trc_n_readers_need_end)) {
+-				WARN_ON_ONCE(1);
+-				wake_up(&trc_wait);
+-			}
+ 		}
+ 	}
  }
- 
-@@ -4150,6 +4163,9 @@ void rcu_report_dead(unsigned int cpu)
- 
- 	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
- 	mask = rdp->grpmask;
-+	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
-+	WARN_ON_ONCE(!(rnp->ofl_seq & 0x1));
-+	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
- 	raw_spin_lock(&rcu_state.ofl_lock);
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
- 	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
-@@ -4162,6 +4178,9 @@ void rcu_report_dead(unsigned int cpu)
- 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	raw_spin_unlock(&rcu_state.ofl_lock);
-+	smp_mb(); // Pair with rcu_gp_cleanup()'s ->ofl_seq barrier().
-+	WRITE_ONCE(rnp->ofl_seq, rnp->ofl_seq + 1);
-+	WARN_ON_ONCE(rnp->ofl_seq & 0x1);
- 
- 	rdp->cpu_started = false;
- }
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index e4f66b8f7c47..6e8c77729a47 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -56,6 +56,7 @@ struct rcu_node {
- 				/*  Initialized from ->qsmaskinitnext at the */
- 				/*  beginning of each grace period. */
- 	unsigned long qsmaskinitnext;
-+	unsigned long ofl_seq;	/* CPU-hotplug operation sequence count. */
- 				/* Online CPUs for next grace period. */
- 	unsigned long expmask;	/* CPUs or groups that need to check in */
- 				/*  to allow the current expedited GP */
 -- 
 2.39.0.314.g84b9a713c41-goog
 
