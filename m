@@ -2,147 +2,137 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F6ACC3DA7C
-	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 04:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77663C4332F
+	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 04:44:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbiL3EMS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 29 Dec 2022 23:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S234431AbiL3EoK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 29 Dec 2022 23:44:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234158AbiL3EMJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 29 Dec 2022 23:12:09 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59880186E2;
-        Thu, 29 Dec 2022 20:12:07 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4NjsKC4w7sz4f3lXL;
-        Fri, 30 Dec 2022 12:11:59 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAHcLMPZa5j3H4SAw--.35465S6;
-        Fri, 30 Dec 2022 12:12:02 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: [RFC PATCH bpf-next 2/6] bpf: Factor out a common helper free_llist()
-Date:   Fri, 30 Dec 2022 12:11:47 +0800
-Message-Id: <20221230041151.1231169-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20221230041151.1231169-1-houtao@huaweicloud.com>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+        with ESMTP id S234435AbiL3EoF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 29 Dec 2022 23:44:05 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0C61658A
+        for <rcu@vger.kernel.org>; Thu, 29 Dec 2022 20:44:04 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id f20so21202000lja.4
+        for <rcu@vger.kernel.org>; Thu, 29 Dec 2022 20:44:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z7QSHQY92PKl6Csv4DinNtxhvZYHxHaJepsou+rj5ec=;
+        b=pe9uzRfBWiCos9FkvzlQ/NwDE0KjJlKerVVnHGmTd5X8e3Y6cfm2Hdl2C2Xobpt42/
+         RK6s+qVisi7SYxmUNOD3rTYiSFdJ84n8mxjD0NGgDwtPvtiEYiDSn3PEPYGiO3ToePIC
+         sCjUPHXypUoA1PNrGYXw7M3rP6aMCsOFpdzAU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z7QSHQY92PKl6Csv4DinNtxhvZYHxHaJepsou+rj5ec=;
+        b=HPqtG40r3fk93jVJz8A0wpXix++3d8SrN0tv0VQtaC+b1mnWwxw8IdDpYZPqj2QSqy
+         oKHgrlyDWwb+VKi0boSQN6TML8Y1jKbjRUrUXG8x9pJXwdGkoRWeKapTL/CxJhTcNODr
+         BSiSLQVDeCJUHsT2b2Qp5sKjK6Ug1lNY8ziUJu39bibWJZ++fiTFUNFekMUnim+L+fyZ
+         LetwSVmPIM11rNThIDFCSnOfVjCwVVT2rM2OhitinVwp4Ey9DMEzuCEgFEYuYlCoeAew
+         2/UQROZrcQG+FkHQQ49LlcPTUGHt22rayRSFqZ/yUq24rBZWmEmk3wTbEQ+5FApxIh04
+         6rbA==
+X-Gm-Message-State: AFqh2kqBKwN6eeGFVmkGeGNrsnlwHw192xM0lopD02u4+llJyxUWjvip
+        Ss4LerSLIDvJA9eER5uaR72X5vzg1Y9J0SNdv2Zgwg==
+X-Google-Smtp-Source: AMrXdXtChccg0kx8a8ChzWda57Y8At9qQMbMUtOm7Xvrx+KxJdSkccVNlL5sX2QwDSKYp7OQv44eAzPLydw7bJDxSdE=
+X-Received: by 2002:a2e:9c8d:0:b0:27f:c11a:b6c8 with SMTP id
+ x13-20020a2e9c8d000000b0027fc11ab6c8mr1245699lji.167.1672375442347; Thu, 29
+ Dec 2022 20:44:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHcLMPZa5j3H4SAw--.35465S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr43AF4ruF48Xry5Jw1xGrg_yoW5Ww48pF
-        y3Gry8Jr4kAFsrua1xtrn7Cas8Xw1Fqa47K3yUu34Skr13Zwn7tFWIkryIgFy5urW8t3y3
-        Ar4vgr1xGay8JFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+References: <Y6z9ygSGmPNz5hfd@google.com> <FA3EA215-5F84-4CFF-BC32-4B9CB7643948@joelfernandes.org>
+ <CAEXW_YSBW-vfn6DzLY5vmCRRu6GJfVUFAT7vdj=ZPyDqz1U-3Q@mail.gmail.com>
+In-Reply-To: <CAEXW_YSBW-vfn6DzLY5vmCRRu6GJfVUFAT7vdj=ZPyDqz1U-3Q@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 30 Dec 2022 04:43:50 +0000
+Message-ID: <CAEXW_YSOPgpHYWmN3qQA5PHv6L7ssN1ouWr600GKG2bPEiMbyA@mail.gmail.com>
+Subject: Re: Please apply to v5.10 stable: 4d60b475f858 ("rcu: Prevent
+ lockdep-RCU splats on lock acquisition/release")
+To:     stable@vger.kernel.org
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Fri, Dec 30, 2022 at 1:02 AM Joel Fernandes <joel@joelfernandes.org> wro=
+te:
+>
+> On Thu, Dec 29, 2022 at 4:10 PM Joel Fernandes <joel@joelfernandes.org> w=
+rote:
+> >
+> >
+> >
+> > > On Dec 28, 2022, at 9:39 PM, Joel Fernandes <joel@joelfernandes.org> =
+wrote:
+> > >
+> > > =EF=BB=BFHello,
+> > > Please apply to v5.10 stable: 4d60b475f858 ("rcu: Prevent lockdep-RCU=
+ splats
+> > > on lock acquisition/release"). The patch made it in v5.11
+> > >
+> > > Without it, I get the follow splat on TREE05 rcutorture testing:
+> > >
+> > > [    1.253678] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.10.162-rc1=
++ #6
+> > > [    1.253678] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BI=
+OS 1.15.0-1 04/01/2014
+> > > [    1.253678] Call Trace:
+> > > [    1.253678]
+> > > [    1.253678] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > [    1.253678] WARNING: suspicious RCU usage
+> > > [    1.253678] 5.10.162-rc1+ #6 Not tainted
+> > > [    1.253678] -----------------------------
+> > > [    1.253678] kernel/kprobes.c:300 RCU-list traversed in non-reader =
+section!!
+> > >
+> > > I tested with the patch and the warning is gone.
+> >
+> > Please hold off on this particular one. After a 12 hour test, I am seei=
+ng some new warnings. Will update the thread after some more debug.
+> >
+>
+> Weirdly enough, the warning seems to be a false-positive from the
+> rcutorture scripts:
+>
+> WARNING: Assertion failure in
+> /root/.jenkins/workspace/rcutorture_stable_linux-5.10.y@2/tools/testing/s=
+elftests/rcutorture/res/2022.12.29-02.23.56/TREE05/console.log
+> TREE05
+> WARNING: Summary:
+>
+> But opening the console.log shows a normal flow followed by SUCCESS
+> message from the rcutorture kernel module.
+> Also "Summary:" is supposed to provide more information.
+>
+> Here are some logs:
+> 1. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.10=
+.y/10/console
+>    (Scroll to the end)
+> 2. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.10=
+.y/10/artifact/tools/testing/selftests/rcutorture/res/2022.12.29-02.23.56/R=
+UDE01/console.log
+>
+> So this is probably something wrong with my setup, say something
+> interfered with the test. Or, there is something weird with the
+> scripts.
+>
+> Anyway, re-running it with this patch overnight again!
 
-Factor out a common helper free_llist() to free normal elements or
-per-cpu elements on a lock-less list.
+I think I found it, v5.10 is also missing this patch which made it in
+v5.11: 8d68e68a781d ("torture: Exclude "NOHZ tick-stop error" from
+fatal errors")
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/memalloc.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+That is needed along with the $SUBJECT patch.
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index ac5b92fece14..3ad2e25946b5 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -217,9 +217,9 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
- 	mem_cgroup_put(memcg);
- }
- 
--static void free_one(struct bpf_mem_cache *c, void *obj)
-+static void free_one(void *obj, bool percpu)
- {
--	if (c->percpu_size) {
-+	if (percpu) {
- 		free_percpu(((void **)obj)[1]);
- 		kfree(obj);
- 		return;
-@@ -228,14 +228,19 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
- 	kfree(obj);
- }
- 
--static void __free_rcu(struct rcu_head *head)
-+static void free_llist(struct llist_node *llnode, bool percpu)
- {
--	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
--	struct llist_node *llnode = llist_del_all(&c->waiting_for_gp);
- 	struct llist_node *pos, *t;
- 
- 	llist_for_each_safe(pos, t, llnode)
--		free_one(c, pos);
-+		free_one(pos, percpu);
-+}
-+
-+static void __free_rcu(struct rcu_head *head)
-+{
-+	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-+
-+	free_llist(llist_del_all(&c->waiting_for_gp), !!c->percpu_size);
- 	atomic_set(&c->call_rcu_in_progress, 0);
- }
- 
-@@ -441,7 +446,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu,
- 
- static void drain_mem_cache(struct bpf_mem_cache *c)
- {
--	struct llist_node *llnode, *t;
-+	bool percpu = !!c->percpu_size;
- 
- 	/* No progs are using this bpf_mem_cache, but htab_map_free() called
- 	 * bpf_mem_cache_free() for all remaining elements and they can be in
-@@ -450,14 +455,10 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
- 	 * Except for waiting_for_gp list, there are no concurrent operations
- 	 * on these lists, so it is safe to use __llist_del_all().
- 	 */
--	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
--		free_one(c, llnode);
--	llist_for_each_safe(llnode, t, llist_del_all(&c->waiting_for_gp))
--		free_one(c, llnode);
--	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist))
--		free_one(c, llnode);
--	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist_extra))
--		free_one(c, llnode);
-+	free_llist(__llist_del_all(&c->free_by_rcu), percpu);
-+	free_llist(llist_del_all(&c->waiting_for_gp), percpu);
-+	free_llist(__llist_del_all(&c->free_llist), percpu);
-+	free_llist(__llist_del_all(&c->free_llist_extra), percpu);
- }
- 
- static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
--- 
-2.29.2
+I will re-run my 5.10 tests again with both these to see if everything
+is now green.
 
+
+ - Joel
