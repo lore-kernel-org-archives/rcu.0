@@ -2,246 +2,91 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1426AC4332F
-	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 02:04:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 006A2C4332F
+	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 02:14:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbiLaCEt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Dec 2022 21:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
+        id S236184AbiLaCOQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 30 Dec 2022 21:14:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236158AbiLaCEp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Dec 2022 21:04:45 -0500
-X-Greylist: delayed 2235 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 30 Dec 2022 18:04:44 PST
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [IPv6:2a0c:5a00:149::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128D71B9C1
-        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 18:04:43 -0800 (PST)
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-        by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <mhal@rbox.co>)
-        id 1pBQeS-004pYb-EE; Sat, 31 Dec 2022 02:27:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-        s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-        bh=nlpVX1Sbmsf5z+yXMCFhtrvbAQrJwqCTOEWddreTX+o=; b=J4LnD1nJiK47slObC/Fh0UQdNn
-        PUjCDt203nW+8hzPsU2f5kL7tfL/LlQ8d9/43AMuJbxf+GOYaYZf5zMbGR9zFt3Rr2CpoiVSuyk60
-        fCzsyD9fTM7BlHPT9kG+/hXvwhNNXgJB9Ey2a2J784nE4KpTphHfnC3ZRtKZ8KzNCcMp58sYpvva7
-        iyXlRodqb1QyxSMAB23eUs2yRhDFbdCDhWbLi7dpQmtHHNayQ7VQgYvckv9ciUlkTnMX7l3FWaFiF
-        XXRBWhnQb10lF+oGs/Qq3du5Mr1DdPXMnGl1AtxpQXvaTuHhdEPzt5UJ16kLXxIAKlVZMKlFEfRnm
-        DBr+o3EQ==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-        by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-        (envelope-from <mhal@rbox.co>)
-        id 1pBQeQ-0000w3-M8; Sat, 31 Dec 2022 02:27:06 +0100
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        id 1pBQeA-0005dz-NY; Sat, 31 Dec 2022 02:26:50 +0100
-Message-ID: <15599980-bd2e-b6c2-1479-e1eef02da0b5@rbox.co>
-Date:   Sat, 31 Dec 2022 02:26:49 +0100
+        with ESMTP id S236182AbiLaCOP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 30 Dec 2022 21:14:15 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532711C900
+        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 18:14:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id AC4C0CE19FF
+        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 02:14:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F22DAC433EF;
+        Sat, 31 Dec 2022 02:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672452851;
+        bh=HNEEf6d/3BrHj+HTtTUE343jOwHIXmfI4Tj6Z6PFX9U=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=p2BuMGQ6H7YphL2aJv7Al7OlxNaNX/r3Rwv4AapKgl7Yc2AeYV3vQVSEkw3WYR89C
+         JPX3VElOvnRVjQdQ0voREPeKAu/DqMNj9fwmL/U9M2DT1RaRk0Cr5UxlCOI/Oj9ep1
+         rfCx80brIHc9LdXOpFpAo9luc55Re5yv3Kjp2UohLVbojJv72zmXz7UZjG1dVyRE7+
+         D3EsNGE0j26n1M1qzYycktsfDvPSLGclGMq3nFA7SJVvRCMiQBGDTj3vurh/zRL58c
+         o0548TQdLC/2Wq6MjzT8WV0IG5cLQsBjoWT0UOvcIS2wqoaNpHbydVcRhvTRt1YvQ0
+         unyeBf89xGwyw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9D26D5C097E; Fri, 30 Dec 2022 18:14:10 -0800 (PST)
+Date:   Fri, 30 Dec 2022 18:14:10 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu <rcu@vger.kernel.org>, Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: RCU stalls with TREE07 on v6.0 kernel
+Message-ID: <20221231021410.GP4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CAEXW_YR+FCLUoXH=ND=qSU4Bt9f8LpaR+qXKVf204RKXZZY9Tw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Thunderbird
-Subject: Re: [RFC] Catch dwmw2's deadlock
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-References: <122f38e724aae9ae8ab474233da1ba19760c20d2.camel@infradead.org>
- <54057376-2A57-4D8B-B05D-DE768F506819@joelfernandes.org>
-Content-Language: pl-PL, en-GB
-From:   Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <54057376-2A57-4D8B-B05D-DE768F506819@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YR+FCLUoXH=ND=qSU4Bt9f8LpaR+qXKVf204RKXZZY9Tw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 12/30/22 14:18, Joel Fernandes wrote:
-> I think the patch from Matthew Wilcox will address it because the
-> read side section already acquires the dep_map. So lockdep subsystem
-> should be able to nail the dependency. (...)
+On Fri, Dec 30, 2022 at 08:42:24PM -0500, Joel Fernandes wrote:
+> Hello,
+> 
+> I have been firefighting a hang on 6.0.y stable kernels with
+> rcutorture. It happens mostly consistently when TREE07 is shutting
+> down.
+> 
+> It appears that the RCU torture threads are attempted to stop but the
+> shutdown thread, but are constantly awakened by a timer softirq
+> handler in ksoftirqd context. When they wake up, they immediately goto
+> sleep in uninterruptible state until the next time a timer handler
+> wakes them up. It appears the timer softirq is long enough to cause
+> RCU stalls and I see it calling 100s of timer function handlers
+> (call_timer_fn).
+> 
+> I am doing some more investigation with trace_printk(s):
+> https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=stable/trace-hang-6.0.y&id=b779b1e92c97f29333a282ee8f548da02f64de2b
+> 
+> Regarding the timer handlers, I was wondering if it is possible that a
+> large number of timer handlers constantly queued can cause RCU stalls
+> due to the timer softirq taking a very long time. That certainly
+> appears to be the case here. Shouldn't the timer softirq also do
+> rcu_softirq_qs() similar to the ksoftirq loop, in case there are too
+> many of them?
 
-Perhaps it's something misconfigured on my side, but I still don't see any
-lockdep splats, just the usual task hang warning after 120s.
+That is certainly a good thing to try!
 
-If that's any help, here's a crude selftest (actually a severed version of
-xen_shinfo_test). Under current mainline 6.2.0-rc1 it results in exactly
-the type of deadlocks described by David.
+> Here is a full log with trace dump if you anyone wants to take a look:
+> http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-6.0.y/11/artifact/tools/testing/selftests/rcutorture/res/2022.12.30-22.57.13/TREE07.2/console.log
+> And the res directory:
+> http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-6.0.y/11/artifact/tools/testing/selftests/rcutorture/res/2022.12.30-22.57.13/TREE07.2/
+> 
+> Any thoughts on any patches 6.0 might be missing?
 
-Michal
+This doesn't happen on current mainline?
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 1750f91dd936..0f02a4fe9374 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -61,6 +61,7 @@ TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
- # Compiled test targets
- TEST_GEN_PROGS_x86_64 = x86_64/cpuid_test
- TEST_GEN_PROGS_x86_64 += x86_64/cr4_cpuid_sync_test
-+TEST_GEN_PROGS_x86_64 += x86_64/deadlocks_test
- TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
- TEST_GEN_PROGS_x86_64 += x86_64/exit_on_emulation_failure_test
- TEST_GEN_PROGS_x86_64 += x86_64/fix_hypercall_test
-diff --git a/tools/testing/selftests/kvm/x86_64/deadlocks_test.c b/tools/testing/selftests/kvm/x86_64/deadlocks_test.c
-new file mode 100644
-index 000000000000..e6150a624905
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/deadlocks_test.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <stdio.h>
-+#include <string.h>
-+#include <pthread.h>
-+
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+#define RACE_ITERATIONS			0x1000
-+
-+#define EVTCHN_PORT			1
-+#define XEN_HYPERCALL_MSR		0x40000000
-+
-+#define EVTCHNSTAT_interdomain		2
-+#define __HYPERVISOR_event_channel_op	32
-+#define EVTCHNOP_send			4
-+
-+#define VCPU_INFO_REGION_GPA		0xc0000000ULL
-+#define VCPU_INFO_REGION_SLOT		10
-+
-+struct evtchn_send {
-+	u32 port;
-+};
-+
-+static void evtchn_assign(struct kvm_vm *vm)
-+{
-+	struct kvm_xen_hvm_attr assign = {
-+		.type = KVM_XEN_ATTR_TYPE_EVTCHN,
-+		.u.evtchn = {
-+			.flags = 0,
-+			.send_port = EVTCHN_PORT,
-+			.type = EVTCHNSTAT_interdomain,
-+			.deliver.port = {
-+				.port = EVTCHN_PORT,
-+				.priority = KVM_IRQ_ROUTING_XEN_EVTCHN_PRIO_2LEVEL,
-+				.vcpu = 0
-+			}
-+		}
-+	};
-+
-+	vm_ioctl(vm, KVM_XEN_HVM_SET_ATTR, &assign);
-+}
-+
-+static void *set_msr_filter(void *arg)
-+{
-+	struct kvm_vm *vm = (struct kvm_vm *)arg;
-+
-+	struct kvm_msr_filter filter = {
-+		.flags = KVM_MSR_FILTER_DEFAULT_ALLOW,
-+		.ranges = {}
-+	};
-+
-+	for (;;) {
-+		vm_ioctl(vm, KVM_X86_SET_MSR_FILTER, &filter);
-+		pthread_testcancel();
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *set_pmu_filter(void *arg)
-+{
-+	struct kvm_vm *vm = (struct kvm_vm *)arg;
-+
-+	struct kvm_pmu_event_filter filter = {
-+		.action = KVM_PMU_EVENT_ALLOW,
-+		.flags = 0,
-+		.nevents = 0
-+	};
-+
-+	for (;;) {
-+		vm_ioctl(vm, KVM_SET_PMU_EVENT_FILTER, &filter);
-+		pthread_testcancel();
-+	}
-+
-+	return NULL;
-+}
-+
-+static void guest_code(void)
-+{
-+	struct evtchn_send s = { .port = EVTCHN_PORT };
-+
-+	for (;;) {
-+		asm volatile("vmcall"
-+			     :
-+			     : "a" (__HYPERVISOR_event_channel_op),
-+			       "D" (EVTCHNOP_send),
-+			       "S" (&s)
-+			     : "memory");
-+		GUEST_SYNC(0);
-+	}
-+}
-+
-+static void race_against(struct kvm_vcpu *vcpu, void *(*func)(void *))
-+{
-+	pthread_t thread;
-+	int i, ret;
-+
-+	ret = pthread_create(&thread, NULL, func, (void *)vcpu->vm);
-+	TEST_ASSERT(ret == 0, "pthread_create() failed: %s", strerror(ret));
-+
-+	for (i = 0; i < RACE_ITERATIONS; ++i) {
-+		fprintf(stderr, ".");
-+		vcpu_run(vcpu);
-+	}
-+	printf("\n");
-+
-+	ret = pthread_cancel(thread);
-+	TEST_ASSERT(ret == 0, "pthread_cancel() failed: %s", strerror(ret));
-+
-+	ret = pthread_join(thread, 0);
-+	TEST_ASSERT(ret == 0, "pthread_join() failed: %s", strerror(ret));
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	unsigned int xen_caps;
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_vm *vm;
-+
-+	xen_caps = kvm_check_cap(KVM_CAP_XEN_HVM);
-+	TEST_REQUIRE(xen_caps & KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL);
-+
-+	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
-+	vcpu_set_hv_cpuid(vcpu);
-+
-+	struct kvm_xen_hvm_attr ha = {
-+		.type = KVM_XEN_ATTR_TYPE_SHARED_INFO,
-+		.u.shared_info.gfn = KVM_XEN_INVALID_GFN,
-+	};
-+	vm_ioctl(vm, KVM_XEN_HVM_SET_ATTR, &ha);
-+
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-+				    VCPU_INFO_REGION_GPA, VCPU_INFO_REGION_SLOT, 1, 0);
-+
-+	struct kvm_xen_vcpu_attr vi = {
-+		.type = KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO,
-+		.u.gpa = VCPU_INFO_REGION_GPA,
-+	};
-+	vcpu_ioctl(vcpu, KVM_XEN_VCPU_SET_ATTR, &vi);
-+
-+	struct kvm_xen_hvm_config hvmc = {
-+		.flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL,
-+		.msr = XEN_HYPERCALL_MSR
-+	};
-+	vm_ioctl(vm, KVM_XEN_HVM_CONFIG, &hvmc);
-+
-+	evtchn_assign(vm);
-+
-+	race_against(vcpu, set_msr_filter);
-+	race_against(vcpu, set_pmu_filter);
-+
-+	kvm_vm_free(vm);
-+	return 0;
-+}
+(It doesn't for me, but then again, it didn't on v6.0, either.)
+
+> Meanwhile, debug here continues... thanks,
+
+							Thanx, Paul
