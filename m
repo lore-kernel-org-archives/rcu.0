@@ -2,64 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 466C6C4332F
-	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 16:19:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70C72C4332F
+	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 16:47:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbiLaQS7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 31 Dec 2022 11:18:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        id S235829AbiLaQrJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 31 Dec 2022 11:47:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbiLaQSz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 31 Dec 2022 11:18:55 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1167E5FC9
-        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 08:18:54 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id y25so35820612lfa.9
-        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 08:18:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4xAAhDrPXjf74vut+mqAuaSR76XtPp3YWi3/GW1n8ok=;
-        b=dj4GZZLEn8+HkeD2IYmYSDh6xdHoeVcudAqkUUcB5GbMdr3WxsidLusa/OMSZzFoXJ
-         CYaoQy1rMbkO6NvTYGGzK7vGyF9NY2GYirM3/BA3J8aazX6f7KnZeqWdP/8h71dVjrdu
-         CwN9vM8pb8zZcAapF3AGO77NowAcK2wzkkNaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4xAAhDrPXjf74vut+mqAuaSR76XtPp3YWi3/GW1n8ok=;
-        b=3gJAGgx5T/Km4i690Z6vdG4N2bgeFDqyK66b4NjMhiqdy4bmomETQVEmkiwE3vxBOl
-         iD0dHiMYfNprLje2Pxr32fqXJBxJ1z6ZDpJ2eMFxd1lC6Fde/2TaQiRSMFZ8cns85U1x
-         Uko3w06o8hiJOhztDa/IOXCOWzvW891G7qScGztYjAIQWv/HNNmYc3prXOvdPFtiHCd0
-         cZ7GU9JYeLnwMHbiHqHFONg9doRlR3AZFbGA7+E18MXlzsxRgGqcFzeIKTipils+3FLd
-         iuys3xhV1eFef2hLmUxYJ18x3+rPqVSRpDBIF2lDF4rt/L5Jp2i0qX6jJ0UPNPOiOeI8
-         Vc5A==
-X-Gm-Message-State: AFqh2krkwapljemP4dyZN0ucJ2/7A8f7UnGDSWq+ZMDya51eMIgMlPLq
-        gpBRImfLzA2rsVD/vDUjwi0nr9fiXPmL7XBImrWb2Q==
-X-Google-Smtp-Source: AMrXdXs/vkYBd6o7F8n8NimY4o7DlVOc20RBHBV1lzDXDzFeQbRskqPSZpX94JqRMTcogBNV7EG06VPHPIUb8sius/I=
-X-Received: by 2002:a05:6512:b26:b0:4ca:f6de:1c49 with SMTP id
- w38-20020a0565120b2600b004caf6de1c49mr1156367lfu.582.1672503532390; Sat, 31
- Dec 2022 08:18:52 -0800 (PST)
-MIME-Version: 1.0
-References: <CAEXW_YR+FCLUoXH=ND=qSU4Bt9f8LpaR+qXKVf204RKXZZY9Tw@mail.gmail.com>
- <20221231021410.GP4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YStxQFB1qRyHhqFE_hjeO2f+_U-=KY07SewM0LHWv2Q+g@mail.gmail.com>
- <20221231160755.GR4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YQQphezde-o4OrzUSr42BFd-gtcJ6V9d5WG5aXVDU8VxA@mail.gmail.com>
-In-Reply-To: <CAEXW_YQQphezde-o4OrzUSr42BFd-gtcJ6V9d5WG5aXVDU8VxA@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sat, 31 Dec 2022 16:18:40 +0000
-Message-ID: <CAEXW_YSGEYnhMROQWuizY8+UDK8K2bhX6tHBHdBDxV2k3euGEQ@mail.gmail.com>
-Subject: Re: RCU stalls with TREE07 on v6.0 kernel
-To:     paulmck@kernel.org
+        with ESMTP id S235723AbiLaQqy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 31 Dec 2022 11:46:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F46A194
+        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 08:46:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 53BA260BFF
+        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 16:46:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEF6BC433EF;
+        Sat, 31 Dec 2022 16:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672505210;
+        bh=AoFbzk9o3jMCCiTx3iazSLAEIiTSsp/sI9df+3U9WlM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KUgzmdBUzjLyXHkYK3LDxZiIR6t3F+Yse36syygjl/4rhIsboonI39Z9tSLhIPHTz
+         Z/2gH0Nn4RvuWLK8gtQlxkKfv9bmBpEU89wbTf6UTo5xjGieYSIOIOVR4YoN14BiKw
+         YVU84Vj61qeub2kj9+HXCVt1PJ/n6m934kGxey5q7xt3E0IYj7VeOycFGTPZHnPMwL
+         RkZmqVJZlut/2NXo8Rjk2xjPuK6+o28Wr8uvx8z3ZPvxgIg3raQfqSWmAB3AHF2MKc
+         tMrOffQW1ycRbeAWtj0oa+aY3f4SN5Zq6l4rjIFeI5zmJEjywkSdyhzKw5pPA7ypyz
+         IaDB74bXoivTQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5BE8A5C0A59; Sat, 31 Dec 2022 08:46:50 -0800 (PST)
+Date:   Sat, 31 Dec 2022 08:46:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     rcu <rcu@vger.kernel.org>, Frederic Weisbecker <fweisbec@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: RCU stalls with TREE07 on v6.0 kernel
+Message-ID: <20221231164650.GU4001@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CAEXW_YR+FCLUoXH=ND=qSU4Bt9f8LpaR+qXKVf204RKXZZY9Tw@mail.gmail.com>
+ <20221231021410.GP4001@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YStxQFB1qRyHhqFE_hjeO2f+_U-=KY07SewM0LHWv2Q+g@mail.gmail.com>
+ <20221231160755.GR4001@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YQQphezde-o4OrzUSr42BFd-gtcJ6V9d5WG5aXVDU8VxA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YQQphezde-o4OrzUSr42BFd-gtcJ6V9d5WG5aXVDU8VxA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Dec 31, 2022 at 4:16 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
+On Sat, Dec 31, 2022 at 04:16:25PM +0000, Joel Fernandes wrote:
 > On Sat, Dec 31, 2022 at 4:07 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
 > > On Sat, Dec 31, 2022 at 12:28:10AM -0500, Joel Fernandes wrote:
@@ -100,10 +94,12 @@ On Sat, Dec 31, 2022 at 4:16 PM Joel Fernandes <joel@joelfernandes.org> wrote:
 > > >                         expire_timers(base, heads + levels);
 > >
 > > Might you need to put it inside the body of this "while" loop?
->
+> 
 > I could but even doing the below did not help. Do you see any reason
 > putting inside the loop helps? Let me know.
->
+
+OK, inside expires_timers()?  But that might be a bit intrusive.
+
 > > > +               rcu_softirq_qs();
 > > >         }
 > > >
@@ -116,12 +112,12 @@ On Sat, Dec 31, 2022 at 4:16 PM Joel Fernandes <joel@joelfernandes.org> wrote:
 > > reason the loop cannot just stop.  But if the loop cannot just stop,
 > > that leads me to believe that there is a bug elsewhere.  After all, given
 > > that the test is ending, why shouldn't all the loops be able to just stop?
->
+> 
 > Sorry I meant uninterruptible sleep. So
 > schedule_timeout_uninterruptible(). But I still cannot nail where in
 > the torture test it is coming from. Now I put a trace_dump_stack()
 > directly in the schedule loop() and I am hoping it will show:
->
+> 
 > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
 > index c2bb0cd4225d5..d79bc3b91818a 100644
 > --- a/kernel/sched/core.c
@@ -146,17 +142,44 @@ On Sat, Dec 31, 2022 at 4:16 PM Joel Fernandes <joel@joelfernandes.org> wrote:
 > + }
 > +
 > /*
+> * __schedule() ttwu()
+> * prev_state = prev->state; if (p->on_rq && ...
+> 
+> I agree with you, it could be that the loops in the test stop but
+> something else in the kernel is looping (via an API that the test
+> called), which is doing uninterruptible sleep loops. Weird indeed.
+> 
+> > (Maybe it is waiting on a buggy child task, for example.)
+> 
+> Hmm, it is the kernel threads (rcu_torture_read,
+> rcu_torture_fakewriter etc) though, not userspace, that are
+> waking/sleeping.
+> 
+> keep you posted, thanks,
 
-Ok found the uninterruptible sleep, it is coming from here:
+schedule_timeout_uninterruptible(), you say?
 
-[ 1359.592979] rcu_tort-160      15d.... 346177086us : <stack trace>
-[ 1359.592979]  => __ftrace_trace_stack
-[ 1359.592979]  => __schedule
-[ 1359.592979]  => schedule
-[ 1359.592979]  => schedule_timeout
-[ 1359.592979]  => torture_kthread_stopping
-[ 1359.592979]  => rcu_torture_reader
-[ 1359.592979]  => kthread
-[ 1359.592979]  => ret_from_fork
+There is a candidate in rcu_torture_stall(), but one could argue that
+making a stall overlap the end of the test is a user error.  (Would
+not hurt to fix, though.)
 
-Thoughts?
+There are some candidates in rcu_torture_read_exit(), which are waiting
+on read_exit_child_stop to be set.  Except that this variable is set
+before rcu_torture_cleanup() attempts to stop the readers and fakewriters.
+But maybe the cleanup protocol needs to be less hacky.
+
+If you see "parking due to system shutdown" on the console, then maybe
+there is some confusion in the calls to torture_shutdown_absorb().
+
+Hmmm...  Some of the tasks run at relatively high priority.  Maybe they
+need to de-prioritize themselves before looping waiting to be stopped.
+These loops look like this:
+
+	while (!kthread_should_stop()) {
+		torture_shutdown_absorb("rcu_torture_boost");
+		schedule_timeout_uninterruptible(1);
+	}
+
+Or it might be something else...
+
+							Thanx, Paul
