@@ -2,133 +2,89 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25B76C3DA7C
-	for <rcu@archiver.kernel.org>; Fri, 30 Dec 2022 23:25:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F9DBC4332F
+	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 01:42:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235711AbiL3XZR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Dec 2022 18:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
+        id S236012AbiLaBm1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 30 Dec 2022 20:42:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235880AbiL3XY7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Dec 2022 18:24:59 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1552E1EC46
-        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 15:24:29 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 38452B81DAD
-        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 23:24:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02A36C433EF;
-        Fri, 30 Dec 2022 23:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672442667;
-        bh=ZgEg3PP7WRXKFijQsNf+vWjIfFHrQt5bz2TLXuHlKX0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jsfG1dF99F5NqopW3yowGuQogjBn/x/bBVYU/+8Wb+2/qnLAPj6SX4uX0bFGfMe9e
-         twZ2JRG4M5udhTTjKYGLjvC2gvfk1mBiNqGiBF0RtC15sCk9hZS+gnoeerKNxin1Nf
-         fvvF97pk7t3U1uzuMR7siu4xQtxKPqsWkRWS0RT80zfBXnqv5smsxWHj91DVPPS3Ks
-         bxE/KNfsAW1baJUL5ZktIBBtlfEBXewW68BHkFMRLvSZosraxIf3aoyu/exoZFLbkY
-         xvy7EnUKkP7N+MJhj+bqB7Rg0YgtAgrx9zCN9sDDicencGp/DL49QDTgB+XUVAyfoL
-         tOLm7iceiUQwQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 944B45C097E; Fri, 30 Dec 2022 15:24:26 -0800 (PST)
-Date:   Fri, 30 Dec 2022 15:24:26 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC] Catch dwmw2's deadlock
-Message-ID: <20221230232426.GO4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <Y67NrWVLaL7B/EuO@casper.infradead.org>
- <20221230203012.GN4001@paulmck-ThinkPad-P17-Gen-1>
- <Y69e/1h+xZbS7hlg@casper.infradead.org>
+        with ESMTP id S235900AbiLaBm0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 30 Dec 2022 20:42:26 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EE0E0FD
+        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 17:42:25 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id e13so21060197ljn.0
+        for <rcu@vger.kernel.org>; Fri, 30 Dec 2022 17:42:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zvu5rK255mNjHpR8OA2QmBKKNteL/lda4a09qaxqAIs=;
+        b=WbxA8oCfzl+Nh4hDbaDwiWKdCEDXlNIpZC+LBQfkIFUIerknwQfYjzBkGHtjdgua7E
+         GozyU9w9Yd+22Hz55XVdc9Kph46CCiZ+UPyCEdf5OYN03P2pJ4/hIIsxxzmsSsLqQeTf
+         HlNFnmGEruJ0rba6XvlR1yIMW68y8+IalI7Lc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zvu5rK255mNjHpR8OA2QmBKKNteL/lda4a09qaxqAIs=;
+        b=btC51NyMyAtE2J6wPTk6uPvu/NWc82n6sfdG+DAqAdiWZ17n7DzP/EDeVxhug6qYvP
+         /lablhs5UbvTE0VBEmUF9pf5B0FJDNkQfbmOOvfBo3ueX3zW3uFxCyJ8L1CVU4hFgydj
+         mSlbM5Ywg6Wlak/UHvrSfdFKHoaCkJO2UjJ0YOh03r9Xex4rscZkE0WuEkc6r1n5HAbg
+         NevSH9/ZdCj+9velrAcSFB61hoV/EBnOqcHn4O1C5R2wkSRIDY+ou2dhhPo82M+XPB4Y
+         wmzwk80IL20RiMtLreFgYUr+vBCB59prTTR4XreFVmMT5Z9J0S73yrmVpIdFxnZTMDXz
+         q4uw==
+X-Gm-Message-State: AFqh2kpWfIC+LyIJt/SUH2aBl5LPhwV2MkEIRgG4fdCAiaLZJ5GkXpUg
+        IS4dVWrVPpTD85vPSy1XNoTFcf4bBudbm8C6BFiAl4J8ofEmn9PAlWY=
+X-Google-Smtp-Source: AMrXdXs1IPw5lolMqqsKOo+WHQX6BEI08axReuQEnMkkz3ufOYVvIPQApLmdiX8aGMchH4OlsdHRqUgCkRi5EM1ZCMg=
+X-Received: by 2002:a2e:3215:0:b0:27f:b98c:7a0e with SMTP id
+ y21-20020a2e3215000000b0027fb98c7a0emr1757969ljy.356.1672450943405; Fri, 30
+ Dec 2022 17:42:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y69e/1h+xZbS7hlg@casper.infradead.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 30 Dec 2022 20:42:24 -0500
+Message-ID: <CAEXW_YR+FCLUoXH=ND=qSU4Bt9f8LpaR+qXKVf204RKXZZY9Tw@mail.gmail.com>
+Subject: RCU stalls with TREE07 on v6.0 kernel
+To:     rcu <rcu@vger.kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Dec 30, 2022 at 09:58:23PM +0000, Matthew Wilcox wrote:
-> On Fri, Dec 30, 2022 at 12:30:12PM -0800, Paul E. McKenney wrote:
-> > On Fri, Dec 30, 2022 at 11:38:21AM +0000, Matthew Wilcox wrote:
-> > > 
-> > > <dwmw2> why doesn't lockdep catch us calling synchronize_srcu() with
-> > >    a lock held, and elsewhere obtaining that lock within an srcu critical
-> > >    region ("read lock") ?
-> > > 
-> > > Because synchronize_srcu() doesn't acquire the lock, merely checks that
-> > > it isn't held.
-> > > 
-> > > Would this work?  Not even compile tested.
-> > > 
-> > > You can put my SoB on this if it works.
-> > > 
-> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > index ca4b5dcec675..e9c2ab8369c0 100644
-> > > --- a/kernel/rcu/srcutree.c
-> > > +++ b/kernel/rcu/srcutree.c
-> > > @@ -1267,11 +1267,11 @@ static void __synchronize_srcu(struct srcu_struct *ssp, bool do_norm)
-> > >  {
-> > >  	struct rcu_synchronize rcu;
-> > >  
-> > > -	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
-> > > -			 lock_is_held(&rcu_bh_lock_map) ||
-> > > +	rcu_lock_acquire(&ssp->dep_map);
-> > 
-> > If this does do anything, why doesn't lockdep complain about things
-> > like this?
-> > 
-> > 	i1 = srcu_read_lock(&my_srcu);
-> > 	i2 = srcu_read_lock(&my_srcu);
-> > 	srcu_read_unlock(&my_srcu, i2);
-> > 	srcu_read_unlock(&my_srcu, i1);
-> > 
-> > Or does it in fact complain and I have somehow managed to confuse things
-> > such that rcutorture does not detect such complaints?  I would expect
-> > rcutorture_extend_mask_max() to make this happen, but then again, RCU
-> > has confused me in the past.
-> 
-> static inline void rcu_lock_acquire(struct lockdep_map *map)
-> {
->         lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
-> }
-> 
-> That's clear as mud, of course.  The fourth argument, which has value
-> '2' is documented as 'int read', and that has the meaning:
-> 
->  * Values for "read":
->  *
->  *   0: exclusive (write) acquire
->  *   1: read-acquire (no recursion allowed)
->  *   2: read-acquire with same-instance recursion allowed
-> 
-> But that's enough to establish the locking hierarchy.  ie if you do:
-> 
-> read-lock-A
-> write-lock-B
-> 
-> in one thread and in the other thread do:
-> 
-> write-lock-B
-> read-lock-A
-> 
-> lockdep is still going to detect that as a deadly embrace.  Isn't it?
+Hello,
 
-Maybe?
+I have been firefighting a hang on 6.0.y stable kernels with
+rcutorture. It happens mostly consistently when TREE07 is shutting
+down.
 
-> In any case, I was just trying to point out the general outlines of
-> something I saw as a potential solution.  If we need to turn that into
-> lock_acquire(map, 0, 0, 0, 0, NULL, _THIS_IP), that's fine.  And Joel
-> is right, there needs to be a release in that other path.
-> 
-> But I am not an expert in RCU, lockdep, or working while travelling,
-> so I was rather hoping someone like dwmw2 would pick up the sketch,
-> make it compile, and then test it.
+It appears that the RCU torture threads are attempted to stop but the
+shutdown thread, but are constantly awakened by a timer softirq
+handler in ksoftirqd context. When they wake up, they immediately goto
+sleep in uninterruptible state until the next time a timer handler
+wakes them up. It appears the timer softirq is long enough to cause
+RCU stalls and I see it calling 100s of timer function handlers
+(call_timer_fn).
 
-Sounds like a plan to me!
+I am doing some more investigation with trace_printk(s):
+https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=stable/trace-hang-6.0.y&id=b779b1e92c97f29333a282ee8f548da02f64de2b
 
-							Thanx, Paul
+Regarding the timer handlers, I was wondering if it is possible that a
+large number of timer handlers constantly queued can cause RCU stalls
+due to the timer softirq taking a very long time. That certainly
+appears to be the case here. Shouldn't the timer softirq also do
+rcu_softirq_qs() similar to the ksoftirq loop, in case there are too
+many of them?
+
+Here is a full log with trace dump if you anyone wants to take a look:
+http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-6.0.y/11/artifact/tools/testing/selftests/rcutorture/res/2022.12.30-22.57.13/TREE07.2/console.log
+And the res directory:
+http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-6.0.y/11/artifact/tools/testing/selftests/rcutorture/res/2022.12.30-22.57.13/TREE07.2/
+
+Any thoughts on any patches 6.0 might be missing?
+
+Meanwhile, debug here continues... thanks,
+
+ - Joel
