@@ -2,108 +2,208 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F830C4332F
-	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 19:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 089F4C4332F
+	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 21:49:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229450AbiLaTBW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 31 Dec 2022 14:01:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S229684AbiLaVtQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 31 Dec 2022 16:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbiLaTBL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 31 Dec 2022 14:01:11 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F154D6443;
-        Sat, 31 Dec 2022 11:01:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8D554B8090C;
-        Sat, 31 Dec 2022 19:01:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21F48C433D2;
-        Sat, 31 Dec 2022 19:01:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672513268;
-        bh=yo27LeGfId5w1N61OZHuH1V62uhnqGg2AL4EiDV0L3g=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Blpx8A8dBUcOsIaWfuTtlD96705jN2IErUw17fFhsNtyScpYNm6w271/zBM3gRAaR
-         wKYSb9HgmhdfAkFKzB7rLVoB70cJihsqnjCn9x4tZcv4je4Z9218zO67PUuAIKlbC0
-         Yl5ha/6LgkrIb2At+8nlNU+JZEB8ylMXxGBvomQNxdhjxMXtinIhpBb5xDOcDg43lO
-         lG4CtZZj+e+wIIwpwN8rEBVWu7Jr9p0DhadWXszG3X7Xk4QSDOTV4CetsWAQ5aVKXu
-         nH2E/88SK33dtrCNxs3Kko1NxMd+8iUZZQ2wRreSG6o9dLVOcCnAKVyFhaUdLJGX3y
-         PhD7tiu3h/VTw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BD5455C0A59; Sat, 31 Dec 2022 11:01:07 -0800 (PST)
-Date:   Sat, 31 Dec 2022 11:01:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Zqiang <qiang1.zhang@intel.com>, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP
- bitmask
-Message-ID: <20221231190107.GX4001@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221220112520.3596920-1-qiang1.zhang@intel.com>
- <20221221200849.GG4001@paulmck-ThinkPad-P17-Gen-1>
- <20221231182508.GB205110@lothringen>
+        with ESMTP id S229628AbiLaVtP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 31 Dec 2022 16:49:15 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451906472
+        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 13:49:10 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id cf42so36564820lfb.1
+        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 13:49:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v/mE4nOidqN4pUHurlqzOCbLBEBzjdm3WeEYYC3+RiU=;
+        b=jtEPVoI9TeZd97TeJoSwQ7lkAbkQRz7EKU82SIgEhcM6o/4cioyNujomqr46tM/Pjw
+         O/1Lif/GX/kngAFM3n4c7KgQfEcRbhpo9aC97z4YWYXfaERPWKu3fQQ3E43O/TazBtMh
+         QRMxkGRYwUxaRc1fwu+8JhsE51mr6WXKlKvxg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v/mE4nOidqN4pUHurlqzOCbLBEBzjdm3WeEYYC3+RiU=;
+        b=myUNyhWNsF8SUzJFQvh5HTA+dxfbVPEhoXy+K6GXhRduw/jLgXGT0VWQGFJttmZ4Ox
+         kyUAdPI+bfbSQ+uBeL45QMu1yFoGcg4CGQd7xVh4fQzYRJnErthCNSJjiG6rC/j0ib8/
+         GFMZTSesb4JwmEclJnQs68hRz4V2WgrxJ0ggteGa0dL8Vqxsn8RWOesFC9sLMwVf6ebJ
+         sRhTYjKbGvwF4QHMlQtcHIeOkV14ypYjXgiH+EHIfR2vvJMRQi5MvMcG1MtrIZZ6H12l
+         gUTiigSYF1m/gqHzilRBVMgwo8ufbdwXxb4Lyz33hH91J3ZRyw4KS80A7GArcTZlSVKu
+         isGQ==
+X-Gm-Message-State: AFqh2kqEsV2hCdaoUdQWc/+bztBV5MsJVzBOn5yuUdu877dyWLMcgVvH
+        yJo0hhVjZhixott9Z+GUtoko8Tgv6rnIvzxuRyl2Sg==
+X-Google-Smtp-Source: AMrXdXtCQrpFAspkxOuWqC0eASc3mIYpDXmHGknKao0d8BRZ5Szk7YkE4D9XH+j+d8JTGQlby6vXTZrVcKX9nucPz1E=
+X-Received: by 2002:ac2:59ca:0:b0:4cb:3b:846e with SMTP id x10-20020ac259ca000000b004cb003b846emr929744lfn.128.1672523348525;
+ Sat, 31 Dec 2022 13:49:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221231182508.GB205110@lothringen>
+References: <CAEXW_YR+FCLUoXH=ND=qSU4Bt9f8LpaR+qXKVf204RKXZZY9Tw@mail.gmail.com>
+ <20221231021410.GP4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YStxQFB1qRyHhqFE_hjeO2f+_U-=KY07SewM0LHWv2Q+g@mail.gmail.com>
+ <20221231160755.GR4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YQQphezde-o4OrzUSr42BFd-gtcJ6V9d5WG5aXVDU8VxA@mail.gmail.com>
+ <20221231164650.GU4001@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20221231164650.GU4001@paulmck-ThinkPad-P17-Gen-1>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 31 Dec 2022 16:49:02 -0500
+Message-ID: <CAEXW_YT9dAUc69igExbL0OC4C_Re58uvQ=oa3s2CQZ_xbefMQQ@mail.gmail.com>
+Subject: Re: RCU stalls with TREE07 on v6.0 kernel
+To:     paulmck@kernel.org
+Cc:     rcu <rcu@vger.kernel.org>, Frederic Weisbecker <fweisbec@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Dec 31, 2022 at 07:25:08PM +0100, Frederic Weisbecker wrote:
-> On Wed, Dec 21, 2022 at 12:08:49PM -0800, Paul E. McKenney wrote:
-> > diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> > index 249c2967d9e6c..7cc4856da0817 100644
-> > --- a/kernel/rcu/tree_exp.h
-> > +++ b/kernel/rcu/tree_exp.h
-> > @@ -594,6 +594,7 @@ static void synchronize_rcu_expedited_wait(void)
-> >  	struct rcu_data *rdp;
-> >  	struct rcu_node *rnp;
-> >  	struct rcu_node *rnp_root = rcu_get_root();
-> > +	unsigned long flags;
-> >  
-> >  	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
-> >  	jiffies_stall = rcu_exp_jiffies_till_stall_check();
-> > @@ -602,17 +603,17 @@ static void synchronize_rcu_expedited_wait(void)
-> >  		if (synchronize_rcu_expedited_wait_once(1))
-> >  			return;
-> >  		rcu_for_each_leaf_node(rnp) {
-> > +			raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> >  			mask = READ_ONCE(rnp->expmask);
-> >  			for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
-> >  				rdp = per_cpu_ptr(&rcu_data, cpu);
-> >  				if (rdp->rcu_forced_tick_exp)
-> >  					continue;
-> >  				rdp->rcu_forced_tick_exp = true;
-> > -				preempt_disable();
-> >  				if (cpu_online(cpu))
-> >  					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-> > -				preempt_enable();
-> >  			}
-> > +			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> >  		}
-> >  		j = READ_ONCE(jiffies_till_first_fqs);
-> >  		if (synchronize_rcu_expedited_wait_once(j + HZ))
-> 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+On Sat, Dec 31, 2022 at 11:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Sat, Dec 31, 2022 at 04:16:25PM +0000, Joel Fernandes wrote:
+> > On Sat, Dec 31, 2022 at 4:07 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Sat, Dec 31, 2022 at 12:28:10AM -0500, Joel Fernandes wrote:
+> > > > On Fri, Dec 30, 2022 at 9:14 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, Dec 30, 2022 at 08:42:24PM -0500, Joel Fernandes wrote:
+> > > > > > Hello,
+> > > > > >
+> > > > > > I have been firefighting a hang on 6.0.y stable kernels with
+> > > > > > rcutorture. It happens mostly consistently when TREE07 is shutting
+> > > > > > down.
+> > > > > >
+> > > > > > It appears that the RCU torture threads are attempted to stop but the
+> > > > > > shutdown thread, but are constantly awakened by a timer softirq
+> > > > > > handler in ksoftirqd context. When they wake up, they immediately goto
+> > > > > > sleep in uninterruptible state until the next time a timer handler
+> > > > > > wakes them up. It appears the timer softirq is long enough to cause
+> > > > > > RCU stalls and I see it calling 100s of timer function handlers
+> > > > > > (call_timer_fn).
+> > > > > >
+> > > > > > I am doing some more investigation with trace_printk(s):
+> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=stable/trace-hang-6.0.y&id=b779b1e92c97f29333a282ee8f548da02f64de2b
+> > > > > >
+> > > > > > Regarding the timer handlers, I was wondering if it is possible that a
+> > > > > > large number of timer handlers constantly queued can cause RCU stalls
+> > > > > > due to the timer softirq taking a very long time. That certainly
+> > > > > > appears to be the case here. Shouldn't the timer softirq also do
+> > > > > > rcu_softirq_qs() similar to the ksoftirq loop, in case there are too
+> > > > > > many of them?
+> > > > >
+> > > > > That is certainly a good thing to try!
+> > > >
+> > > > I am trying something like this just for testing, let's see what happens ;-)
+> > > >
+> > > > @@ -1788,9 +1796,14 @@ static inline void __run_timers(struct timer_base *base)
+> > > >
+> > > >                 while (levels--)
+> > > >                         expire_timers(base, heads + levels);
+> > >
+> > > Might you need to put it inside the body of this "while" loop?
+> >
+> > I could but even doing the below did not help. Do you see any reason
+> > putting inside the loop helps? Let me know.
+>
+> OK, inside expires_timers()?  But that might be a bit intrusive.
+>
+> > > > +               rcu_softirq_qs();
+> > > >         }
+> > > >
+> > > > I guess I am also wondering why the rcu reader does not stop queuing
+> > > > timers. It is doing schedule_timeout_interruptible() constantly even
+> > > > though the test is being stopped.
+> > >
+> > > As in it is doing schedule_timeout_interruptible() in a loop that does
+> > > not check torture_must_stop()?  That would be bad unless there is some
+> > > reason the loop cannot just stop.  But if the loop cannot just stop,
+> > > that leads me to believe that there is a bug elsewhere.  After all, given
+> > > that the test is ending, why shouldn't all the loops be able to just stop?
+> >
+> > Sorry I meant uninterruptible sleep. So
+> > schedule_timeout_uninterruptible(). But I still cannot nail where in
+> > the torture test it is coming from. Now I put a trace_dump_stack()
+> > directly in the schedule loop() and I am hoping it will show:
+> >
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index c2bb0cd4225d5..d79bc3b91818a 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -6390,6 +6390,8 @@ pick_next_task(struct rq *rq, struct task_struct
+> > *prev, struct rq_flags *rf)
+> > *
+> > * WARNING: must be called with preemption disabled!
+> > */
+> > +static int rcu_tort_ds;
+> > +
+> > static void __sched notrace __schedule(unsigned int sched_mode)
+> > {
+> > struct task_struct *prev, *next;
+> > @@ -6452,6 +6454,11 @@ static void __sched notrace __schedule(unsigned
+> > int sched_mode)
+> > if (prev->sched_contributes_to_load)
+> > rq->nr_uninterruptible++;
+> > + // Dump stack for uninterruptible every 10 stacks.
+> > +   if (prev_state & TASK_UNINTERRUPTIBLE && ((rcu_tort_ds++ % 10) == 0)) {
+> > +       trace_dump_stack(0);
+> > + }
+> > +
+> > /*
+> > * __schedule() ttwu()
+> > * prev_state = prev->state; if (p->on_rq && ...
+> >
+> > I agree with you, it could be that the loops in the test stop but
+> > something else in the kernel is looping (via an API that the test
+> > called), which is doing uninterruptible sleep loops. Weird indeed.
+> >
+> > > (Maybe it is waiting on a buggy child task, for example.)
+> >
+> > Hmm, it is the kernel threads (rcu_torture_read,
+> > rcu_torture_fakewriter etc) though, not userspace, that are
+> > waking/sleeping.
+> >
+> > keep you posted, thanks,
+>
+> schedule_timeout_uninterruptible(), you say?
+>
+> There is a candidate in rcu_torture_stall(), but one could argue that
+> making a stall overlap the end of the test is a user error.  (Would
+> not hurt to fix, though.)
+>
+> There are some candidates in rcu_torture_read_exit(), which are waiting
+> on read_exit_child_stop to be set.  Except that this variable is set
+> before rcu_torture_cleanup() attempts to stop the readers and fakewriters.
+> But maybe the cleanup protocol needs to be less hacky.
+>
+> If you see "parking due to system shutdown" on the console, then maybe
+> there is some confusion in the calls to torture_shutdown_absorb().
+>
+I don't see that but I see this before the stall:
+ rcu-torture: torture_shutdown task shutting down system
 
-Thank you!
+> Hmmm...  Some of the tasks run at relatively high priority.  Maybe they
+> need to de-prioritize themselves before looping waiting to be stopped.
+> These loops look like this:
+>
+>         while (!kthread_should_stop()) {
+>                 torture_shutdown_absorb("rcu_torture_boost");
+>                 schedule_timeout_uninterruptible(1);
+>         }
 
-> BTW why are we forcing the tick on the whole node?
+Yes, it appears this tight loop is live locked with the timer softirq.
+I am trying a run with higher timeout to see if it helps.
 
-Now that you mention it, that would be more precise.
+>
+> Or it might be something else...
 
-> And shouldn't we set the tick dependency from rcu_exp_handler() instead?
+I see that kthread_should_stop() returns false, but
+torture_must_stop_irq() returns true in the tight while loop mentioned
+above. So it seems like the shutdown notifier triggered first. I am
+seeing various "is stopping" messages. However I see no "End-test"
+messages, which means I think the torture_shutdown_hook() never ran
+properly, or something. Anyway now I am doing heavy tracing in
+rcu_torture_cleanup() to see what it is upto. My suspicion is it did
+not even call torture_stop_kthread() and we are stuck without the
+kthreads being stopped.
 
-Because it never occurred to me to check whether this could be invoked
-from an interrupt handler?  ;-)
-
-But that does sound like it might be a better approach.
-
-Zqiang, would you be willing to look into this?
-
-							Thanx, Paul
+Thanks.
