@@ -2,104 +2,123 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22AFFC3DA7D
-	for <rcu@archiver.kernel.org>; Sat, 31 Dec 2022 23:10:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59ECEC4332F
+	for <rcu@archiver.kernel.org>; Sun,  1 Jan 2023 01:26:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235813AbiLaXKv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 31 Dec 2022 18:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
+        id S229886AbjAAB0h (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 31 Dec 2022 20:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbiLaXKu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 31 Dec 2022 18:10:50 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A972C7
-        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 15:10:48 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id cf42so36721116lfb.1
-        for <rcu@vger.kernel.org>; Sat, 31 Dec 2022 15:10:48 -0800 (PST)
+        with ESMTP id S229628AbjAAB0g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 31 Dec 2022 20:26:36 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9B9CCB;
+        Sat, 31 Dec 2022 17:26:34 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id 17so25814699pll.0;
+        Sat, 31 Dec 2022 17:26:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KOW3tt/2SsOpKZK2d/vDrt1RGpWtKJ4l1BkGt0vJpcc=;
-        b=lcp++zvjuO9FLDk3y04zGkPba5NflUQWhUHzptssvwerEGEqvEhp6BCdTXkiJFEujt
-         Y/a9JbOJtlhEQl8VlyvVecbeNf0Ujni/8kzn1mfVurE5zSoJoJmg+WRaV7l2M+4mY5HY
-         5SeEQWDFadsIQGX6qaVhBb3/xCBXPQJtk2uVw=
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YXmArirWOKCsQqCkNHR2H0NTz1sBS3ob8z6XYfcJhSM=;
+        b=EkVi5mqEApUhYw8yprhreYLai5e3q3lxe+INSuDsewQ3EQ48mQvzHn6HbETqUW05R+
+         xrIPH87p3ltq6jXww+1C9edquRfLZKhbuDxgRsHbvybJ1N51VYjbf/peuwq1wAPC6YEK
+         rjs+aXPITNrQoqWZtJk/Dv+pdQYfwEKUzBt5Bheon1LAF/NrfLhaYDu1VboUp4Bw52rb
+         d5szHOBAMLRaioeL4LKRj+lwvxZIofEShhmiS3FjXbBrH89EK4N/9xolw2Ef0wxQ2Si4
+         0jx/0j2nsQwQ8O5lt8OrI8wM9N5sNKIW47FXM8qXjjuBs1feuxAUYgfIWg9PQvjEqHXJ
+         zgmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KOW3tt/2SsOpKZK2d/vDrt1RGpWtKJ4l1BkGt0vJpcc=;
-        b=PHGveVcl2RsNF08Zagn6yAPJtQwGf+m5FgqelEfBpknOwddJP/tT4ndWFehAOi8V8Y
-         xp34XL4vWSuDiQWQv35iqtNhIava/BDZnxHLCPSorZUkfo3to9i7DP0pi9ISKD3//lW8
-         hxZZ7HXyI6JKlC8tdHAyuwYptLcP3BSTLUuXUY6DZbO18dzheyXNGF9zOwBa/gTrOaoQ
-         2LMtw3ERjfAn4fdb8bI/R1/8mkhQT9AXMterHUETIUaac0RU+0EFdzg3yqxmfPrw8Abo
-         0e2VkbFEGcilRuRbf5UU2TOCRuQ5Ts3f42nRFsyYU8bjz5goRIs7VXHcBPCh6vFRr7Kc
-         +qcQ==
-X-Gm-Message-State: AFqh2kpWQAl93l1/az7DBPTMMg9s2loxtbuTyaW9gms57QBgiYrDKZkn
-        2qIKN+IiEU6n7SoXHvyMWP6a8Qd0TOgG1VVUeiQXgA==
-X-Google-Smtp-Source: AMrXdXvVhPlj+0X1qR+PXI54Mu40t+gMN0SY9NhSP4U88rj6FxhGp6Y1We8JywEQn7baoQ5Y+fSTuewcSsbu2ADNH5Y=
-X-Received: by 2002:ac2:5985:0:b0:4ca:fa1b:ebc7 with SMTP id
- w5-20020ac25985000000b004cafa1bebc7mr1101323lfn.169.1672528246659; Sat, 31
- Dec 2022 15:10:46 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YXmArirWOKCsQqCkNHR2H0NTz1sBS3ob8z6XYfcJhSM=;
+        b=tVMNzJybuN0hZfPZjsAHE8TaeaVLQVFHdiQWK8NRJlJCb4hqY2236v13QZNRjKnmhe
+         qj03ywrnWd9Q0JETKqOjsn6cjSS8p6o5eprLXlgxk8LRuQQT00iMZHYOtTgvzSGDLms5
+         haz7om5XNL+KeFR/yhao1BBeAl6T1mElCrlEi0lzfRSk9SDy6fs1PYzYuLLx7BWuVr/w
+         BNuM3JIEDs+qwansM3mGkCcdDVlP834/GVkjQGHRJQJSBiq7Q226MP9TgXHGmf9e7IQo
+         wkx4jD7zgovev7NcGUlcbxCcc76S19WIv2MfAKA3B+O4JdRuMM5xU1YfBoe/UeelokWT
+         8Ktg==
+X-Gm-Message-State: AFqh2kqHrFj1dfcK/4YjB4pf7ngreYGy4IDwY+NzYMuSKC1xKXlb/oMv
+        clxp6+xRRY2HnyGCGHjBP/c=
+X-Google-Smtp-Source: AMrXdXsTBnCWk7472F4WmCpZRZXDkmFWIlofS1s0e2dhVoI6r3MpgId5n8Lcix3+7LC2tVVRXm4JXQ==
+X-Received: by 2002:a17:903:230d:b0:192:a174:178f with SMTP id d13-20020a170903230d00b00192a174178fmr16633582plh.37.1672536394008;
+        Sat, 31 Dec 2022 17:26:34 -0800 (PST)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:1385])
+        by smtp.gmail.com with ESMTPSA id l3-20020a170902e2c300b00192bf7eaf28sm1216327plc.286.2022.12.31.17.26.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Dec 2022 17:26:33 -0800 (PST)
+Date:   Sat, 31 Dec 2022 17:26:29 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+Message-ID: <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
-References: <CAEXW_YR+FCLUoXH=ND=qSU4Bt9f8LpaR+qXKVf204RKXZZY9Tw@mail.gmail.com>
- <20221231021410.GP4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YStxQFB1qRyHhqFE_hjeO2f+_U-=KY07SewM0LHWv2Q+g@mail.gmail.com>
- <20221231160755.GR4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YQQphezde-o4OrzUSr42BFd-gtcJ6V9d5WG5aXVDU8VxA@mail.gmail.com>
- <20221231164650.GU4001@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YT9dAUc69igExbL0OC4C_Re58uvQ=oa3s2CQZ_xbefMQQ@mail.gmail.com>
-In-Reply-To: <CAEXW_YT9dAUc69igExbL0OC4C_Re58uvQ=oa3s2CQZ_xbefMQQ@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sat, 31 Dec 2022 18:10:40 -0500
-Message-ID: <CAEXW_YTwH-XyxWq3gNRo-xBxPEH-gYLjQt+aGp81TFGwuYsGtA@mail.gmail.com>
-Subject: Re: RCU stalls with TREE07 on v6.0 kernel
-To:     paulmck@kernel.org
-Cc:     rcu <rcu@vger.kernel.org>, Frederic Weisbecker <fweisbec@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221230041151.1231169-1-houtao@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Dec 31, 2022 at 4:49 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Sat, Dec 31, 2022 at 11:46 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-[...]
-> > Hmmm...  Some of the tasks run at relatively high priority.  Maybe they
-> > need to de-prioritize themselves before looping waiting to be stopped.
-> > These loops look like this:
-> >
-> >         while (!kthread_should_stop()) {
-> >                 torture_shutdown_absorb("rcu_torture_boost");
-> >                 schedule_timeout_uninterruptible(1);
-> >         }
->
-> Yes, it appears this tight loop is live locked with the timer softirq.
-> I am trying a run with higher timeout to see if it helps.
->
-> >
-> > Or it might be something else...
->
-> I see that kthread_should_stop() returns false, but
-> torture_must_stop_irq() returns true in the tight while loop mentioned
-> above. So it seems like the shutdown notifier triggered first. I am
-> seeing various "is stopping" messages. However I see no "End-test"
-> messages, which means I think the torture_shutdown_hook() never ran
-> properly, or something. Anyway now I am doing heavy tracing in
-> rcu_torture_cleanup() to see what it is upto. My suspicion is it did
-> not even call torture_stop_kthread() and we are stuck without the
-> kthreads being stopped.
+On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> Hi,
+> 
+> The patchset tries to fix the problems found when checking how htab map
+> handles element reuse in bpf memory allocator. The immediate reuse of
+> freed elements may lead to two problems in htab map:
+> 
+> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
+>     htab map value and it may corrupt lookup procedure with BFP_F_LOCK
+>     flag which acquires bpf-spin-lock during value copying. The
+>     corruption of bpf-spin-lock may result in hard lock-up.
+> (2) lookup procedure may get incorrect map value if the found element is
+>     freed and then reused.
+> 
+> Because the type of htab map elements are the same, so problem #1 can be
+> fixed by supporting ctor in bpf memory allocator. The ctor initializes
+> these special fields in map element only when the map element is newly
+> allocated. If it is just a reused element, there will be no
+> reinitialization.
 
-Now all tests pass always if I do the following change in torture_stopping():
+Instead of adding the overhead of ctor callback let's just
+add __GFP_ZERO to flags in __alloc().
+That will address the issue 1 and will make bpf_mem_alloc behave just
+like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
+will behave the same way.
 
-- schedule_timeout_uninterruptible(1);
-+ schedule_timeout_uninterruptible(50);
+> Problem #2 exists for both non-preallocated and preallocated htab map.
+> By adding seq in htab element, doing reuse check and retrying the
+> lookup procedure may be a feasible solution, but it will make the
+> lookup API being hard to use, because the user needs to check whether
+> the found element is reused or not and repeat the lookup procedure if it
+> is reused. A simpler solution would be just disabling freed elements
+> reuse and freeing these elements after lookup procedure ends.
 
-Current theory is, the timer softirq preempts the cleanup thread
-before it can call kthread_stop().
+You've proposed this 'solution' twice already in qptrie thread and both
+times the answer was 'no, we cannot do this' with reasons explained.
+The 3rd time the answer is still the same.
+This 'issue 2' existed in hashmap since very beginning for many years.
+It's a known quirk. There is nothing to fix really.
 
-Anyway, let me know if this is an acceptable change (or not). I think
-checking for shutdown state 20 times per seconds instead of 1000 times
-per second is kind of reasonable.
-
-thanks,
-
- - Joel
+The graph apis (aka new gen data structs) with link list and rbtree are
+in active development. Soon bpf progs will be able to implement their own
+hash maps with explicit bpf_rcu_read_lock. At that time the progs will
+be making the trade off between performance and lookup/delete race.
+So please respin with just __GFP_ZERO and update the patch 6
+to check for lockup only.
