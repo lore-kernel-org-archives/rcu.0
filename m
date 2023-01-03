@@ -2,49 +2,49 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3213C53210
-	for <rcu@archiver.kernel.org>; Tue,  3 Jan 2023 17:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 236C2C3DA7D
+	for <rcu@archiver.kernel.org>; Tue,  3 Jan 2023 17:58:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238203AbjACRxk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Jan 2023 12:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        id S230173AbjACR5d (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Jan 2023 12:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238185AbjACRxh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Jan 2023 12:53:37 -0500
+        with ESMTP id S238277AbjACR5I (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Jan 2023 12:57:08 -0500
 Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220066478
-        for <rcu@vger.kernel.org>; Tue,  3 Jan 2023 09:53:37 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id c7so25102053qtw.8
-        for <rcu@vger.kernel.org>; Tue, 03 Jan 2023 09:53:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2510011472
+        for <rcu@vger.kernel.org>; Tue,  3 Jan 2023 09:57:07 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id g7so25141388qts.1
+        for <rcu@vger.kernel.org>; Tue, 03 Jan 2023 09:57:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K3lJPOWgS9gmsVyQJhhMopaN46rhZdwXt5/TWv91+AM=;
-        b=sx78T575rkzRQ1xyJ0XJDbAOm3msaUet2neJ8FxIbPzxNm+/Pj5IJHNyWd949YDqCx
-         N/h11soxlNwdyogCcdguHHnd8pSD1NxwlN6iK5PStXTFe2mbAXRRhb6MNrgvs+ttR0f6
-         8ldUuEl3RadmySoPBmcYvN12ot2mpRUEGC+nk=
+        bh=ixGyFkrV0xqrkiJ3p7VqvfkszCi48OTsH11wl3xFQLU=;
+        b=sRUosVhssD0en5joF9vLLUpX8V0Mn5UlDYOilUJ2tyvRYgMexyinwnRJCc3npDcj9I
+         geM1NnHZAfGfSpvgKWqCzimVnD6QWlnqEenqostnemsBY4KDrX8lFXhtceyrzwT9moVs
+         Jc1VYidMjKKFAdRJEyu7HFp5pWDwhhcubFJ1g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=K3lJPOWgS9gmsVyQJhhMopaN46rhZdwXt5/TWv91+AM=;
-        b=SSTgf5dKC6byzbCzcVeMAKO3lRbMCV3eGaUX3a1mB1SmKzZCc97W9PF7zE68MkfFqb
-         dtePmNfH36KulP/elnTso9hW65Y8jEYvji5OhloA59CQlo+8iSORu/HMMRwp0TKwDQfV
-         gu6QrDE8kGKJc1o5aEJusg+z9/H6lsAJgseilEh5i/MA5H0s6MXNeZPopOndqlrGD9TN
-         XCZdFarQ/2une5ZfRdSilyMbsrNI9lRZqvmeS9TvNfgrU7f5g8oaqnjGHx93gn+yG7Is
-         8aTDPEfOGjPMJQ/TmY4t7tzRkFRNtBkajlGfFwV4u/NYFrmN6AMgoi8sRXaZdw2Pyvyn
-         Zgmw==
-X-Gm-Message-State: AFqh2kqeY8XDr64SNTxf5tg7p5Fl+n3VCXxfDgTqLV/kVo2FH5U9nuXx
-        HAN91dadR32aE+UjdlG8bmcGHg==
-X-Google-Smtp-Source: AMrXdXutdee2UENiJl42RFuOVUHGIRRJgHkozXbKmn9JZf/efMbI2kZ377ReUqxftt3A7Kc0UV6jkQ==
-X-Received: by 2002:ac8:5481:0:b0:3a7:e2df:e868 with SMTP id h1-20020ac85481000000b003a7e2dfe868mr54522820qtq.41.1672768416180;
-        Tue, 03 Jan 2023 09:53:36 -0800 (PST)
+        bh=ixGyFkrV0xqrkiJ3p7VqvfkszCi48OTsH11wl3xFQLU=;
+        b=vDDnIxjjou2vy0neMyFzpcWycJmG1P58gkFKxIsqkI+7J+iVjWin4uijdKrq+lbsAw
+         4LWDOuS6tES+cwz/pijMhqIXZ9RBu3kzJkXbwMtCUJIuC+vIzjKKLPWHjbEUZWAtDL+i
+         wIpftwv0odOTVnKu07tKpBlyuQgo4mw17BmfnomWldjdE01R/SSFY0cSxka+/F/BOeUs
+         O56vsjo33QXpKXQeX6Qptz7WRmUj0/FDTp18UEyyM3l+vjNtJIoMy0vPZ41XRA8OshQP
+         D1Yf/FtDKyq+d+FIQz60WcThzwb8vJEox9VYGKjgGpt1dNSNZBtcYLAtmk3XyQvAYQVQ
+         zi7Q==
+X-Gm-Message-State: AFqh2ko3N5pmnvsSWCwlGq3i6a4hAEU6otFWfPpEZZ/sJPkctNCRNLtB
+        01WIFI+jIvUTZxn7iVE0W0s7Tw==
+X-Google-Smtp-Source: AMrXdXv19UfqJyggz6tYWC0TuSnV2Pq7G45UznkmBJIcBdaSQp4fc0yOJ0tlHOvTs2CpB4BwE5SVhg==
+X-Received: by 2002:ac8:4602:0:b0:3ab:6312:f306 with SMTP id p2-20020ac84602000000b003ab6312f306mr64154599qtn.4.1672768626223;
+        Tue, 03 Jan 2023 09:57:06 -0800 (PST)
 Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id u15-20020a37ab0f000000b006fafc111b12sm22253412qke.83.2023.01.03.09.53.35
+        by smtp.gmail.com with ESMTPSA id d21-20020ac86695000000b0038b684a1642sm19136842qtp.32.2023.01.03.09.57.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Jan 2023 09:53:35 -0800 (PST)
+        Tue, 03 Jan 2023 09:57:05 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -55,9 +55,9 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>, neeraj.iitr10@gmail.com
-Subject: [PATCH v2] srcu: Remove memory barrier "E" as it does not do anything
-Date:   Tue,  3 Jan 2023 17:53:21 +0000
-Message-Id: <20230103175321.1910864-1-joel@joelfernandes.org>
+Subject: [PATCH v3] srcu: Remove memory barrier "E" as it does not do anything
+Date:   Tue,  3 Jan 2023 17:56:54 +0000
+Message-Id: <20230103175654.1913192-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -143,6 +143,9 @@ P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
 
 exists (0:lock1=1 /\ 1:idx1=1)
 
+This commit therefore removes memory barrier E, as memory barriers are not
+free, and clarifies the old comment.
+
 Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
 Co-developed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
@@ -150,6 +153,7 @@ Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
 ---
 v1->v2: Update changelog, keep old comments.
+v2->v3: Moar changelog updates.
 
 
  kernel/rcu/srcutree.c | 16 ++++++++--------
