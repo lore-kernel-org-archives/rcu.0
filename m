@@ -2,135 +2,186 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 479D1C3DA7D
-	for <rcu@archiver.kernel.org>; Tue,  3 Jan 2023 13:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3213C53210
+	for <rcu@archiver.kernel.org>; Tue,  3 Jan 2023 17:53:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237498AbjACNsF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Jan 2023 08:48:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S238203AbjACRxk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Jan 2023 12:53:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237654AbjACNsB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Jan 2023 08:48:01 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAC21144E;
-        Tue,  3 Jan 2023 05:47:59 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NmYvr6HV4z4f3v6S;
-        Tue,  3 Jan 2023 21:47:52 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgDn2ugCMrRj6SAPBA--.49839S2;
-        Tue, 03 Jan 2023 21:47:49 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Yonghong Song <yhs@meta.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
-Date:   Tue, 3 Jan 2023 21:47:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S238185AbjACRxh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Jan 2023 12:53:37 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220066478
+        for <rcu@vger.kernel.org>; Tue,  3 Jan 2023 09:53:37 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id c7so25102053qtw.8
+        for <rcu@vger.kernel.org>; Tue, 03 Jan 2023 09:53:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=K3lJPOWgS9gmsVyQJhhMopaN46rhZdwXt5/TWv91+AM=;
+        b=sx78T575rkzRQ1xyJ0XJDbAOm3msaUet2neJ8FxIbPzxNm+/Pj5IJHNyWd949YDqCx
+         N/h11soxlNwdyogCcdguHHnd8pSD1NxwlN6iK5PStXTFe2mbAXRRhb6MNrgvs+ttR0f6
+         8ldUuEl3RadmySoPBmcYvN12ot2mpRUEGC+nk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K3lJPOWgS9gmsVyQJhhMopaN46rhZdwXt5/TWv91+AM=;
+        b=SSTgf5dKC6byzbCzcVeMAKO3lRbMCV3eGaUX3a1mB1SmKzZCc97W9PF7zE68MkfFqb
+         dtePmNfH36KulP/elnTso9hW65Y8jEYvji5OhloA59CQlo+8iSORu/HMMRwp0TKwDQfV
+         gu6QrDE8kGKJc1o5aEJusg+z9/H6lsAJgseilEh5i/MA5H0s6MXNeZPopOndqlrGD9TN
+         XCZdFarQ/2une5ZfRdSilyMbsrNI9lRZqvmeS9TvNfgrU7f5g8oaqnjGHx93gn+yG7Is
+         8aTDPEfOGjPMJQ/TmY4t7tzRkFRNtBkajlGfFwV4u/NYFrmN6AMgoi8sRXaZdw2Pyvyn
+         Zgmw==
+X-Gm-Message-State: AFqh2kqeY8XDr64SNTxf5tg7p5Fl+n3VCXxfDgTqLV/kVo2FH5U9nuXx
+        HAN91dadR32aE+UjdlG8bmcGHg==
+X-Google-Smtp-Source: AMrXdXutdee2UENiJl42RFuOVUHGIRRJgHkozXbKmn9JZf/efMbI2kZ377ReUqxftt3A7Kc0UV6jkQ==
+X-Received: by 2002:ac8:5481:0:b0:3a7:e2df:e868 with SMTP id h1-20020ac85481000000b003a7e2dfe868mr54522820qtq.41.1672768416180;
+        Tue, 03 Jan 2023 09:53:36 -0800 (PST)
+Received: from joelboxx.c.googlers.com.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
+        by smtp.gmail.com with ESMTPSA id u15-20020a37ab0f000000b006fafc111b12sm22253412qke.83.2023.01.03.09.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Jan 2023 09:53:35 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>, neeraj.iitr10@gmail.com
+Subject: [PATCH v2] srcu: Remove memory barrier "E" as it does not do anything
+Date:   Tue,  3 Jan 2023 17:53:21 +0000
+Message-Id: <20230103175321.1910864-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
 MIME-Version: 1.0
-In-Reply-To: <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgDn2ugCMrRj6SAPBA--.49839S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZry7Xr1fXF47Gw48Ww4DArb_yoW5ArW3pF
-        WSga15ArWkCw1I9w42vwnxGFyUKw4fGFy7Grn8A34UCrsYgrn3trWSqa15CFyUAFZ5GF1q
-        qF1qq393Zw1aya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UdxhLUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+During a flip, we have a full memory barrier before srcu_idx is incremented.
 
-On 1/2/2023 2:48 AM, Yonghong Song wrote:
->
->
-> On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
->> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> Hi,
->>>
->>> The patchset tries to fix the problems found when checking how htab map
->>> handles element reuse in bpf memory allocator. The immediate reuse of
->>> freed elements may lead to two problems in htab map:
->>>
->>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
->>>      htab map value and it may corrupt lookup procedure with BFP_F_LOCK
->>>      flag which acquires bpf-spin-lock during value copying. The
->>>      corruption of bpf-spin-lock may result in hard lock-up.
->>> (2) lookup procedure may get incorrect map value if the found element is
->>>      freed and then reused.
->>>
->>> Because the type of htab map elements are the same, so problem #1 can be
->>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
->>> these special fields in map element only when the map element is newly
->>> allocated. If it is just a reused element, there will be no
->>> reinitialization.
->>
->> Instead of adding the overhead of ctor callback let's just
->> add __GFP_ZERO to flags in __alloc().
->> That will address the issue 1 and will make bpf_mem_alloc behave just
->> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
->> will behave the same way.
->
-> Patch https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/
-> tried to address a similar issue for lru hash table.
-> Maybe we need to do similar things after bpf_mem_cache_alloc() for
-> hash table?
-IMO ctor or __GFP_ZERO will fix the issue. Did I miss something here ?
->
->
->>
->>> Problem #2 exists for both non-preallocated and preallocated htab map.
->>> By adding seq in htab element, doing reuse check and retrying the
->>> lookup procedure may be a feasible solution, but it will make the
->>> lookup API being hard to use, because the user needs to check whether
->>> the found element is reused or not and repeat the lookup procedure if it
->>> is reused. A simpler solution would be just disabling freed elements
->>> reuse and freeing these elements after lookup procedure ends.
->>
->> You've proposed this 'solution' twice already in qptrie thread and both
->> times the answer was 'no, we cannot do this' with reasons explained.
->> The 3rd time the answer is still the same.
->> This 'issue 2' existed in hashmap since very beginning for many years.
->> It's a known quirk. There is nothing to fix really.
->>
->> The graph apis (aka new gen data structs) with link list and rbtree are
->> in active development. Soon bpf progs will be able to implement their own
->> hash maps with explicit bpf_rcu_read_lock. At that time the progs will
->> be making the trade off between performance and lookup/delete race.
->> So please respin with just __GFP_ZERO and update the patch 6
->> to check for lockup only.
+The idea is we intend to order the first phase scan's read of lock
+counters with the flipping of the index.
 
+However, such ordering is already enforced because of the
+control-dependency between the 2 scans. We would be flipping the index
+only if lock and unlock counts matched.
+
+But such match will not happen if there was a pending reader before the flip
+in the first place (observation courtesy Mathieu Desnoyers).
+
+The litmus test below shows this:
+(test courtesy Frederic Weisbecker, Changes for ctrldep by Boqun/me):
+
+C srcu
+(*
+ * bad condition: P0's first scan (SCAN1) saw P1's idx=0 LOCK count inc, though P1 saw flip.
+ *
+ * So basically, the ->po ordering on both P0 and P1 is enforced via ->ppo
+ * (control deps) on both sides, and both P0 and P1 are interconnected by ->rf
+ * relations. Combining the ->ppo with ->rf, a cycle is impossible.
+ *)
+
+{}
+
+// updater
+P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+        int lock1;
+        int unlock1;
+        int lock0;
+        int unlock0;
+
+        // SCAN1
+        unlock1 = READ_ONCE(*UNLOCK1);
+        smp_mb(); // A
+        lock1 = READ_ONCE(*LOCK1);
+
+        // FLIP
+        if (lock1 == unlock1) {   // Control dep
+                smp_mb(); // E    // Remove E and still passes.
+                WRITE_ONCE(*IDX, 1);
+                smp_mb(); // D
+
+                // SCAN2
+                unlock0 = READ_ONCE(*UNLOCK0);
+                smp_mb(); // A
+                lock0 = READ_ONCE(*LOCK0);
+        }
+}
+
+// reader
+P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+        int tmp;
+        int idx1;
+        int idx2;
+
+        // 1st reader
+        idx1 = READ_ONCE(*IDX);
+        if (idx1 == 0) {         // Control dep
+                tmp = READ_ONCE(*LOCK0);
+                WRITE_ONCE(*LOCK0, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp = READ_ONCE(*UNLOCK0);
+                WRITE_ONCE(*UNLOCK0, tmp + 1);
+        } else {
+                tmp = READ_ONCE(*LOCK1);
+                WRITE_ONCE(*LOCK1, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp = READ_ONCE(*UNLOCK1);
+                WRITE_ONCE(*UNLOCK1, tmp + 1);
+        }
+}
+
+exists (0:lock1=1 /\ 1:idx1=1)
+
+Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
+Co-developed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+---
+v1->v2: Update changelog, keep old comments.
+
+
+ kernel/rcu/srcutree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 1c304fec89c0..0f9ba0f9fd12 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -983,15 +983,15 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
+ static void srcu_flip(struct srcu_struct *ssp)
+ {
+ 	/*
+-	 * Ensure that if this updater saw a given reader's increment
+-	 * from __srcu_read_lock(), that reader was using an old value
+-	 * of ->srcu_idx.  Also ensure that if a given reader sees the
+-	 * new value of ->srcu_idx, this updater's earlier scans cannot
+-	 * have seen that reader's increments (which is OK, because this
+-	 * grace period need not wait on that reader).
++	 * Control dependencies on both reader and updater side ensures that if
++	 * this updater saw a given reader's increment from __srcu_read_lock(),
++	 * that reader was using an old value of ->srcu_idx.  Also ensures that
++	 * if a given reader sees the new value of ->srcu_idx, this updater's
++	 * earlier scans cannot have seen that reader's increments (which is
++	 * OK, because this grace period need not wait on that reader).
++	 *
++	 * So no need for an smp_mb() before incrementing srcu_idx.
+ 	 */
+-	smp_mb(); /* E */  /* Pairs with B and C. */
+-
+ 	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 
+ 	/*
+-- 
+2.39.0.314.g84b9a713c41-goog
