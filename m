@@ -2,80 +2,135 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CADAC3DA7D
-	for <rcu@archiver.kernel.org>; Tue,  3 Jan 2023 12:14:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1F31C46467
+	for <rcu@archiver.kernel.org>; Tue,  3 Jan 2023 13:40:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjACMOB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Jan 2023 07:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
+        id S230006AbjACNkq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Jan 2023 08:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237521AbjACMOA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Jan 2023 07:14:00 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8CB101CA;
-        Tue,  3 Jan 2023 04:13:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4D26AB80EC1;
-        Tue,  3 Jan 2023 12:13:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69EB4C433EF;
-        Tue,  3 Jan 2023 12:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672748036;
-        bh=bzCWDaEPdr7JZjES33xBZJhsQwEVh7CU6xNE8sJYyY4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oLllcBfpPFlc0iu4AyrX4aMJ49Yp//4+xXkLkPi+223M3u/mFLWu0C/ElKDY/UNwz
-         4GaRGZSLYYh1In49K1tHBH/nkIhKgn2VBSrr44GHL33S/0Aqgp+bxBDBVU624NrDeV
-         CYlju1ImB83Rsl4yn+uzAIKwz2oTTaONcdTvofbBoes+BAo2uX14E8MSJW9E15XzUc
-         Wi0O2L8NGgj7GMK2wRkUSg7ChIAHAq2R/e3EuqgdAGPD9rJMWJfW1332RbP1XrMJB1
-         FHs3ePc2uBjA36Q4leeoOmgJZRkOWKZMs85zprWa2Qmf99LpE8SzbDqTEEVxmAP9tm
-         GAA0+LXO/NfFA==
-Date:   Tue, 3 Jan 2023 13:13:53 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu: Fix race in set and clear TICK_DEP_BIT_RCU_EXP
- bitmask
-Message-ID: <Y7QcAe+l2J3NtRB6@lothringen>
-References: <20221220112520.3596920-1-qiang1.zhang@intel.com>
- <20221221200849.GG4001@paulmck-ThinkPad-P17-Gen-1>
- <20221231182508.GB205110@lothringen>
- <20221231190107.GX4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB588001E32A306F2166D55622DAF69@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S231432AbjACNkm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Jan 2023 08:40:42 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B8610FE8;
+        Tue,  3 Jan 2023 05:40:40 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4NmYlP0J09z4f3s6S;
+        Tue,  3 Jan 2023 21:40:33 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgDXyuhPMLRjw9QOBA--.36969S2;
+        Tue, 03 Jan 2023 21:40:35 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <2f875cf9-88ac-1406-4ad0-f7647fb92883@huaweicloud.com>
+Date:   Tue, 3 Jan 2023 21:40:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB588001E32A306F2166D55622DAF69@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgDXyuhPMLRjw9QOBA--.36969S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCryxCF13XryDWFyrtF1UJrb_yoW5tr47pF
+        WSg3W3Ar4kG34I9rsrXw4DWF17Jws3GFy7Jry5tryUur4rWrnayFyfta1rCFW5AFWkGFyq
+        qF1qv393Zwn0937anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jan 01, 2023 at 09:41:57AM +0000, Zhang, Qiang1 wrote:
-> > > >On Sat, Dec 31, 2022 at 07:25:08PM +0100, Frederic Weisbecker wrote:
-> 
-> Yes,    and I have a question,  we forcing the tick dependency because the expedited grace period
-> is not end for the first time, this means that it is not to set the tick dependency every time.
-> if we set the tick dependency in rcu_exp_handler(), does this mean that every time the expedited
-> grace period starts the tick dependency will be set unconditionally ?
-> 
-> Thoughts ?
+Hi,
 
-Only if rcu_exp_handler() fails to report a quiescent state. Then it means we
-must poll on the CPU looking for a future one.
+On 1/1/2023 9:26 AM, Alexei Starovoitov wrote:
+> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Hi,
+>>
+>> The patchset tries to fix the problems found when checking how htab map
+>> handles element reuse in bpf memory allocator. The immediate reuse of
+>> freed elements may lead to two problems in htab map:
+>>
+>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
+>>     htab map value and it may corrupt lookup procedure with BFP_F_LOCK
+>>     flag which acquires bpf-spin-lock during value copying. The
+>>     corruption of bpf-spin-lock may result in hard lock-up.
+>> (2) lookup procedure may get incorrect map value if the found element is
+>>     freed and then reused.
+>>
+>> Because the type of htab map elements are the same, so problem #1 can be
+>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
+>> these special fields in map element only when the map element is newly
+>> allocated. If it is just a reused element, there will be no
+>> reinitialization.
+> Instead of adding the overhead of ctor callback let's just
+> add __GFP_ZERO to flags in __alloc().
+> That will address the issue 1 and will make bpf_mem_alloc behave just
+> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
+> will behave the same way.
+Use __GPF_ZERO will be simpler, but the overhead of memset() for every allocated
+object may be bigger than ctor callback when the size of allocated object is
+large. And it also introduces unnecessary memory zeroing if there is no special
+field in the map value.
 
-In fact the tick dependency should be set when rdp->cpu_no_qs.b.exp is set to
-true and cleared when rdp->cpu_no_qs.b.exp is set to false.
+>> Problem #2 exists for both non-preallocated and preallocated htab map.
+>> By adding seq in htab element, doing reuse check and retrying the
+>> lookup procedure may be a feasible solution, but it will make the
+>> lookup API being hard to use, because the user needs to check whether
+>> the found element is reused or not and repeat the lookup procedure if it
+>> is reused. A simpler solution would be just disabling freed elements
+>> reuse and freeing these elements after lookup procedure ends.
+> You've proposed this 'solution' twice already in qptrie thread and both
+> times the answer was 'no, we cannot do this' with reasons explained.
+> The 3rd time the answer is still the same.
+This time a workable demo which calls call_rcu_task_trace() in batch is provided
+:) Also because I can not find a better solution for the reuse problem. But you
+are right, although don't reuse the freed element will make the implementation
+of map simpler, the potential OOM problem is hard to solve specially when RCU
+tasks trace grace period is slow. Hope Paul can provide some insight about the
+problem.
+> This 'issue 2' existed in hashmap since very beginning for many years.
+> It's a known quirk. There is nothing to fix really.
+Do we need to document the unexpected behavior somewhere, because I really don't
+know nothing about the quirk ?
+>
+> The graph apis (aka new gen data structs) with link list and rbtree are
+> in active development. Soon bpf progs will be able to implement their own
+> hash maps with explicit bpf_rcu_read_lock. At that time the progs will
+> be making the trade off between performance and lookup/delete race.
+It seems these new gen data struct also need to solve the reuse problem because
+a global bpf memory allocator is used.
+> So please respin with just __GFP_ZERO and update the patch 6
+> to check for lockup only.
+> .
 
-Thanks.
-
-> 
-> Thanks
-> Zqiang
-> 
-> >
-> >							Thanx, Paul
