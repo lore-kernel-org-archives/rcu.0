@@ -2,84 +2,122 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30830C53210
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:45:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D74BC46467
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:49:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbjAEApr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S229787AbjAEAsZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjAEAot (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:44:49 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD7D49146
-        for <rcu@vger.kernel.org>; Wed,  4 Jan 2023 16:43:09 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d3so37796492plr.10
-        for <rcu@vger.kernel.org>; Wed, 04 Jan 2023 16:43:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tv4XxWzlc+KkvsWck6iKHS0aGLu9UROX1I0JLU1j3G0=;
-        b=YbCPGdRn5GRl5GA3sRGZFyLnbsgHCC4HEZDRkzTsRUiBYHdTyNIeLkd9DRdYaltJdu
-         R5Ghr/VMFTa1ETvMH/5KkCaZnzzLpgnHxc9Mq17olANx6GeUlZF4c3a81jP1XDo0dkze
-         G+lPFE7Q5lHMaqAKnVbHwee44CBK8lqd+2UUbqvfWT48vHYOWnnDOAgqxWKiUFPT6Bl2
-         aQ8hKsDkkqcUPa//YBWEx99eE5bWGNQ0iLljdouNzmKeqUcsmFQgjQHwzzLGnf5lYlQB
-         dyrVzjpAvQnFMEeUUpd/VfVLv7k/44aCOtUNYbEIHW7i0wGtNPqbKptuwvA1GRQInK4E
-         qYyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tv4XxWzlc+KkvsWck6iKHS0aGLu9UROX1I0JLU1j3G0=;
-        b=dGZAnfXveaz+CKWoBCiTJmEtBt1PP4esVNCCdJRCQt3HixzUX1rTh/rzDpBQRWazkM
-         q4ISSeRjp2XQn/dcCrYdnGaYpepLpL+hEgshxEwNMSKKfffHyKNT+zk1ktebzek/bflM
-         VJvJzHeQ6lElD5yaaQW2iya1tCKnRgEJnvZ4+l4Jcneuzc4IJuBusuyI7dVeKRuE+Gsu
-         xY9R+vE8QIsDDTqW4mHN4NT0xzCHkF7XyEs8sxmKNsuXOzSekF6MPPGfFr72qGTsoWAd
-         +jL6sZbK7z8qLtroemcf7ZKd8gZX7DlWxRXNrRHH9eWkR0FdsxcqFLX27FC6UCpBQkc+
-         wY+Q==
-X-Gm-Message-State: AFqh2kqTEYng/GFtbns3dkiJ1BH4q2Pc8ANpzJ9EOH3oh4xYCGYylndw
-        TKhz9rDaMOru9+6BELmt59cYCyfRWXw6rX5f
-X-Google-Smtp-Source: AMrXdXtpXcKKU0u9CdeIo9cWE+harAer2+Dw/8LAE0nO384r5K4bs6Z8Gxi87gFLRRQBJ79CCSlQLg==
-X-Received: by 2002:a17:903:3311:b0:189:d0fa:230f with SMTP id jk17-20020a170903331100b00189d0fa230fmr12987588plb.4.1672879388922;
-        Wed, 04 Jan 2023 16:43:08 -0800 (PST)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id jd6-20020a170903260600b00192a8d795f3sm11780565plb.192.2023.01.04.16.43.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Jan 2023 16:43:08 -0800 (PST)
-Message-ID: <1a9d0cdf-d39e-7eb5-39dd-3e425016c579@kernel.dk>
-Date:   Wed, 4 Jan 2023 17:43:07 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH rcu 07/27] block: Remove "select SRCU"
-Content-Language: en-US
-To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+        with ESMTP id S229923AbjAEAsG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:48:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA6F30543;
+        Wed,  4 Jan 2023 16:45:05 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4B736189A;
+        Thu,  5 Jan 2023 00:45:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34D39C43392;
+        Thu,  5 Jan 2023 00:45:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672879503;
+        bh=bsB5dxI29c3QNEaB4l1cl2DOXyvWSbIPCGoroiZvYMU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bhANtMsA9RsT0hm3RhSk6Nk27I3yIQpk0zTwJgLZOymKm/HRxRCkvmLaC5baJKeVJ
+         S32SqHWbJ4wV1M+Q5CVpQgBYsSyFwGlpZ3BbxptzM/nSdc5o7gO6skKD1uToCae+vh
+         TMfQAxM4GXtxTFjacJxj+BaH+QtpnLQEgEAv1c7UR3Xua8d8eG3dzrJdPfTdDESrdL
+         8Fm+2zLa8GBqaNHwFv5XQZu5mk+FT27Z7Xsy67SsOSbr+WPDaSaJCoCs6On97jgMMY
+         F0ThLq8zu57KI1x37uViYVJHEeLwlGI+zKRkxXrkI1kCoIXINc26WPEHIsBaPwsMDI
+         GmA7lbQeW9Abw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DF4195C1456; Wed,  4 Jan 2023 16:45:02 -0800 (PST)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, linux-block@vger.kernel.org
-References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-7-paulmck@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230105003813.1770367-7-paulmck@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/7] refscale: Provide for initialization failure
+Date:   Wed,  4 Jan 2023 16:44:52 -0800
+Message-Id: <20230105004501.1771332-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
+References: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 1/4/23 5:37 PM, Paul E. McKenney wrote:
-> Now that the SRCU Kconfig option is unconditionally selected, there is
-> no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> Kconfig statements.
+Current tests all have init() functions that are guaranteed to succeed.
+But upcoming tests will need to allocate memory, thus possibly failing.
+This commit therefore handles init() function failure.
 
-I'm assuming something earlier made this true (only CC'ed on this patch,
-not the cover letter or interesting btis...), then:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/refscale.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 435c884c02b5c..7f12168627a1f 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -124,7 +124,7 @@ static int exp_idx;
+ 
+ // Operations vector for selecting different types of tests.
+ struct ref_scale_ops {
+-	void (*init)(void);
++	bool (*init)(void);
+ 	void (*cleanup)(void);
+ 	void (*readsection)(const int nloops);
+ 	void (*delaysection)(const int nloops, const int udl, const int ndl);
+@@ -162,8 +162,9 @@ static void ref_rcu_delay_section(const int nloops, const int udl, const int ndl
+ 	}
+ }
+ 
+-static void rcu_sync_scale_init(void)
++static bool rcu_sync_scale_init(void)
+ {
++	return true;
+ }
+ 
+ static struct ref_scale_ops rcu_ops = {
+@@ -315,9 +316,10 @@ static struct ref_scale_ops refcnt_ops = {
+ // Definitions for rwlock
+ static rwlock_t test_rwlock;
+ 
+-static void ref_rwlock_init(void)
++static bool ref_rwlock_init(void)
+ {
+ 	rwlock_init(&test_rwlock);
++	return true;
+ }
+ 
+ static void ref_rwlock_section(const int nloops)
+@@ -351,9 +353,10 @@ static struct ref_scale_ops rwlock_ops = {
+ // Definitions for rwsem
+ static struct rw_semaphore test_rwsem;
+ 
+-static void ref_rwsem_init(void)
++static bool ref_rwsem_init(void)
+ {
+ 	init_rwsem(&test_rwsem);
++	return true;
+ }
+ 
+ static void ref_rwsem_section(const int nloops)
+@@ -833,7 +836,10 @@ ref_scale_init(void)
+ 		goto unwind;
+ 	}
+ 	if (cur_ops->init)
+-		cur_ops->init();
++		if (!cur_ops->init()) {
++			firsterr = -EUCLEAN;
++			goto unwind;
++		}
+ 
+ 	ref_scale_print_module_parms(cur_ops, "Start of test");
+ 
 -- 
-Jens Axboe
-
+2.31.1.189.g2e36527f23
 
