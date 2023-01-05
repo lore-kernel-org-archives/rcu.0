@@ -2,50 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61168C54EF0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C16E6C63705
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbjAEAlD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
+        id S235494AbjAEAlE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240711AbjAEAiv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995B0C52;
-        Wed,  4 Jan 2023 16:38:19 -0800 (PST)
+        with ESMTP id S240724AbjAEAix (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:53 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BDCDE2;
+        Wed,  4 Jan 2023 16:38:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 44EB26189D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DEB71618BC;
         Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A025C433AF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2F88C4332E;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=CxNoIVnojblXsI8lyz2C7HZU+DjFixYiXxVzbQ0VHio=;
+        bh=UjkrzubYnsQygg5xUFcf0zzRRPdEO1lA8NbpaEs5Q3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GxIGer1xiDRSnTm9x+cgEIpwPFleN8jJWt7nMRRFCSNe+IWTPwYTPyl5NaUl3Z4aU
-         dadJN77L9NqR9PdFB9lFm8MfKtwIQ6jpV4quuiu01+O8ajM3E35AQh8cZdUl6nZBLZ
-         nBXuH8yoJRw/hekFt71mCZkAz/R1CalnZBztCaLfVhLzuIZzJSRXdfAv22QWX6MG8E
-         u76P2bubsn8cWa8WvKGHPc+Cq0NjeBXz+u6wzGCT0E+EZf7NEOCx3kHPSTYMCnit4b
-         2mty9hdlvm3dC5fGSWvfeQLF7dP3gNWcdXW6PFQljLNrS9r5FAP33KYolJbT8xWfwz
-         EENLg03YirXsA==
+        b=ka31L00eyKKuwmjxEQfuPzindN6L982vKDLeYcs5CqFzznr2US1FdPPZGWI6RNCtt
+         kIaSdU7QLvxIA0Ct0SbEVEuTk4A1RwDtZgT5mqh5eD07DktJnn3TZV73fhMB7+jB0o
+         Pw3nDIQOh4XvBiarU0nsq85ZUtvEZVJuX13KRpL7Y7e2TxfRmUXhLRibixbJknQTdd
+         9cgjP4kvahLo5X8fifk8m2U7zmuhH8U2Mq3BC0og6GoakLn5fzEa3yYnOihpnQelhV
+         /mAENSBTNHcbfxgU+NUf3ztwXlPj3++PpnRsQNps1QJHj1JUYCWNY6LKzQu/lONyJn
+         QUvWoVN/opOuA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C5AAC5C1C5D; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id D48045C1C9B; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Subject: [PATCH rcu 09/27] drivers/clk: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:55 -0800
-Message-Id: <20230105003813.1770367-9-paulmck@kernel.org>
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: [PATCH rcu 17/27] drivers/pci/controller: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:38:03 -0800
+Message-Id: <20230105003813.1770367-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -56,25 +59,28 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: <linux-clk@vger.kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: "Krzysztof Wilczyński" <kw@linux.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: <linux-pci@vger.kernel.org>
 ---
- drivers/clk/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/pci/controller/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index d79905f3e1744..b6c5bf69a2b2c 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -23,7 +23,6 @@ menuconfig COMMON_CLK
- 	depends on !HAVE_LEGACY_CLK
- 	select HAVE_CLK_PREPARE
- 	select HAVE_CLK
--	select SRCU
- 	select RATIONAL
+diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+index 1569d9a3ada0b..b09cdc59bfd02 100644
+--- a/drivers/pci/controller/Kconfig
++++ b/drivers/pci/controller/Kconfig
+@@ -258,7 +258,7 @@ config PCIE_MEDIATEK_GEN3
+ 	  MediaTek SoCs.
+ 
+ config VMD
+-	depends on PCI_MSI && X86_64 && SRCU && !UML
++	depends on PCI_MSI && X86_64 && !UML
+ 	tristate "Intel Volume Management Device Driver"
  	help
- 	  The common clock framework is a single definition of struct
+ 	  Adds support for the Intel Volume Management Device (VMD). VMD is a
 -- 
 2.31.1.189.g2e36527f23
 
