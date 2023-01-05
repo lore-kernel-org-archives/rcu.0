@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AD5BC54EBC
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 263F3C46467
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235485AbjAEAKT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52524 "EHLO
+        id S235362AbjAEAKV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235230AbjAEAKC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S235330AbjAEAKC (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 4 Jan 2023 19:10:02 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B41F43A1C;
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF32543A2E;
         Wed,  4 Jan 2023 16:09:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2131B618B3;
-        Thu,  5 Jan 2023 00:09:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9EDC433A8;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5EA08B81982;
+        Thu,  5 Jan 2023 00:09:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E3D7C433F0;
         Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672877397;
-        bh=zIuR6b+M23FgJhA/VuiF85BlWyIsIRWHp9NsUOE91v0=;
+        bh=V2Z8QYT5z//Jt9zS0OsjC84Q9vVqZBpFtFH0qHjU5P8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=elPQLO5e8H5+eFqhwK9LEoENtRiade+LxinnMZqzUoMWV0qLqr8+S++1iGnGp1pdb
-         M9vJ8WBN0kT/t7ZOcqfbYJwKg9cBZPtp2X1u0dm3KBMr9DufCJ0GGMIhbVMseqC5RI
-         EoiRmB0i1EaxecSzROwjLOg4iDyxVZ4Qw/23XEJ2VkRWLMEaSMD49D8JT65Ypw06+k
-         9dEDPQ1BTkIUQhYZUFu4fiKzlragpb166oJ6WLn4d+pUtBxyPTPMD+ZxqvipjrxwyB
-         sw/Vunp88O3qA8wudFQRkiBwCShx1uvOs+c4oyFEg3Pl/H78asTvL3HdgHXCY+oVtr
-         SDsueunfADNew==
+        b=XEIEU+aT+PoiGBDGyH0Jr2XrApzwbVTa/rft5ZuyOBGPDvSsUC6JvbZsXxtoPRgRe
+         hdgh4gFvPiiiG5WWV5hRs7feCMXw4KEawKe0sNkzTRunuGd0xyNDUddKMaoFcIfxFR
+         L+lXK6MJaMVI2Rpc+HZ8EbENlZVzd//qdnTFFmIWRM+QFwH7m0veJk4Cw2iEwRw+5X
+         0e7QcAYg7CCjK1UpQAJW0zLsgg6XkZ+v4WISVPeDN6O+PAaEEFIpuCNHWnr4J4aO9S
+         2rtnz/IcPVOEGj8BdmrOnP2Q2BiBwKIvMGzhb51UKTgVqwVrXl0Uo1gF5B+YbIaHFh
+         0QvsCtISup8uQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D69A45C1C77; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
+        id C7D0A5C08E5; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 11/15] doc: Update whatisRCU.rst
-Date:   Wed,  4 Jan 2023 16:09:51 -0800
-Message-Id: <20230105000955.1767218-11-paulmck@kernel.org>
+Subject: [PATCH rcu 03/15] doc: Update rcubarrier.rst
+Date:   Wed,  4 Jan 2023 16:09:43 -0800
+Message-Id: <20230105000955.1767218-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
@@ -49,332 +49,324 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit updates whatisRCU.rst with wordsmithing and updates provokes
-by the passage of time.
+This commit updates rcubarrier.txt to reflect RCU additions and changes
+over the past few years.
+
+[ paulmck: Apply Stephen Rothwell feedback. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/whatisRCU.rst | 193 +++++++++++++++++++++-----------
- 1 file changed, 125 insertions(+), 68 deletions(-)
+ Documentation/RCU/rcubarrier.rst | 196 +++++++++++++++++--------------
+ 1 file changed, 110 insertions(+), 86 deletions(-)
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index 1c747ac3f2c8e..2c5563a91998f 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -16,18 +16,23 @@ to start learning about RCU:
- | 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
- |	2019 Big API Table           https://lwn.net/Articles/777165/
+diff --git a/Documentation/RCU/rcubarrier.rst b/Documentation/RCU/rcubarrier.rst
+index 3b4a248774961..5a643e5233d5f 100644
+--- a/Documentation/RCU/rcubarrier.rst
++++ b/Documentation/RCU/rcubarrier.rst
+@@ -5,37 +5,12 @@ RCU and Unloadable Modules
  
-+For those preferring video:
-+
-+| 1.	Unraveling RCU Mysteries: Fundamentals          https://www.linuxfoundation.org/webinars/unraveling-rcu-usage-mysteries
-+| 2.	Unraveling RCU Mysteries: Additional Use Cases  https://www.linuxfoundation.org/webinars/unraveling-rcu-usage-mysteries-additional-use-cases
-+
+ [Originally published in LWN Jan. 14, 2007: http://lwn.net/Articles/217484/]
  
- What is RCU?
- 
- RCU is a synchronization mechanism that was added to the Linux kernel
- during the 2.5 development effort that is optimized for read-mostly
--situations.  Although RCU is actually quite simple once you understand it,
--getting there can sometimes be a challenge.  Part of the problem is that
--most of the past descriptions of RCU have been written with the mistaken
--assumption that there is "one true way" to describe RCU.  Instead,
--the experience has been that different people must take different paths
--to arrive at an understanding of RCU.  This document provides several
--different paths, as follows:
-+situations.  Although RCU is actually quite simple, making effective use
-+of it requires you to think differently about your code.  Another part
-+of the problem is the mistaken assumption that there is "one true way" to
-+describe and to use RCU.  Instead, the experience has been that different
-+people must take different paths to arrive at an understanding of RCU,
-+depending on their experiences and use cases.  This document provides
-+several different paths, as follows:
- 
- :ref:`1.	RCU OVERVIEW <1_whatisRCU>`
- 
-@@ -157,34 +162,36 @@ rcu_read_lock()
- ^^^^^^^^^^^^^^^
- 	void rcu_read_lock(void);
- 
--	Used by a reader to inform the reclaimer that the reader is
--	entering an RCU read-side critical section.  It is illegal
--	to block while in an RCU read-side critical section, though
--	kernels built with CONFIG_PREEMPT_RCU can preempt RCU
--	read-side critical sections.  Any RCU-protected data structure
--	accessed during an RCU read-side critical section is guaranteed to
--	remain unreclaimed for the full duration of that critical section.
--	Reference counts may be used in conjunction with RCU to maintain
--	longer-term references to data structures.
-+	This temporal primitive is used by a reader to inform the
-+	reclaimer that the reader is entering an RCU read-side critical
-+	section.  It is illegal to block while in an RCU read-side
-+	critical section, though kernels built with CONFIG_PREEMPT_RCU
-+	can preempt RCU read-side critical sections.  Any RCU-protected
-+	data structure accessed during an RCU read-side critical section
-+	is guaranteed to remain unreclaimed for the full duration of that
-+	critical section.  Reference counts may be used in conjunction
-+	with RCU to maintain longer-term references to data structures.
- 
- rcu_read_unlock()
- ^^^^^^^^^^^^^^^^^
- 	void rcu_read_unlock(void);
- 
--	Used by a reader to inform the reclaimer that the reader is
--	exiting an RCU read-side critical section.  Note that RCU
--	read-side critical sections may be nested and/or overlapping.
-+	This temporal primitives is used by a reader to inform the
-+	reclaimer that the reader is exiting an RCU read-side critical
-+	section.  Note that RCU read-side critical sections may be nested
-+	and/or overlapping.
- 
- synchronize_rcu()
- ^^^^^^^^^^^^^^^^^
- 	void synchronize_rcu(void);
- 
--	Marks the end of updater code and the beginning of reclaimer
--	code.  It does this by blocking until all pre-existing RCU
--	read-side critical sections on all CPUs have completed.
--	Note that synchronize_rcu() will **not** necessarily wait for
--	any subsequent RCU read-side critical sections to complete.
--	For example, consider the following sequence of events::
-+	This temporal primitive marks the end of updater code and the
-+	beginning of reclaimer code.  It does this by blocking until
-+	all pre-existing RCU read-side critical sections on all CPUs
-+	have completed.  Note that synchronize_rcu() will **not**
-+	necessarily wait for any subsequent RCU read-side critical
-+	sections to complete.  For example, consider the following
-+	sequence of events::
- 
- 	         CPU 0                  CPU 1                 CPU 2
- 	     ----------------- ------------------------- ---------------
-@@ -211,13 +218,13 @@ synchronize_rcu()
- 	to be useful in all but the most read-intensive situations,
- 	synchronize_rcu()'s overhead must also be quite small.
- 
--	The call_rcu() API is a callback form of synchronize_rcu(),
--	and is described in more detail in a later section.  Instead of
--	blocking, it registers a function and argument which are invoked
--	after all ongoing RCU read-side critical sections have completed.
--	This callback variant is particularly useful in situations where
--	it is illegal to block or where update-side performance is
--	critically important.
-+	The call_rcu() API is an asynchronous callback form of
-+	synchronize_rcu(), and is described in more detail in a later
-+	section.  Instead of blocking, it registers a function and
-+	argument which are invoked after all ongoing RCU read-side
-+	critical sections have completed.  This callback variant is
-+	particularly useful in situations where it is illegal to block
-+	or where update-side performance is critically important.
- 
- 	However, the call_rcu() API should not be used lightly, as use
- 	of the synchronize_rcu() API generally results in simpler code.
-@@ -236,11 +243,13 @@ rcu_assign_pointer()
- 	would be cool to be able to declare a function in this manner.
- 	(Compiler experts will no doubt disagree.)
- 
--	The updater uses this function to assign a new value to an
-+	The updater uses this spatial macro to assign a new value to an
- 	RCU-protected pointer, in order to safely communicate the change
--	in value from the updater to the reader.  This macro does not
--	evaluate to an rvalue, but it does execute any memory-barrier
--	instructions required for a given CPU architecture.
-+	in value from the updater to the reader.  This is a spatial (as
-+	opposed to temporal) macro.  It does not evaluate to an rvalue,
-+	but it does execute any memory-barrier instructions required
-+	for a given CPU architecture.  Its ordering properties are that
-+	of a store-release operation.
- 
- 	Perhaps just as important, it serves to document (1) which
- 	pointers are protected by RCU and (2) the point at which a
-@@ -255,14 +264,15 @@ rcu_dereference()
- 	Like rcu_assign_pointer(), rcu_dereference() must be implemented
- 	as a macro.
- 
--	The reader uses rcu_dereference() to fetch an RCU-protected
--	pointer, which returns a value that may then be safely
--	dereferenced.  Note that rcu_dereference() does not actually
--	dereference the pointer, instead, it protects the pointer for
--	later dereferencing.  It also executes any needed memory-barrier
--	instructions for a given CPU architecture.  Currently, only Alpha
--	needs memory barriers within rcu_dereference() -- on other CPUs,
--	it compiles to nothing, not even a compiler directive.
-+	The reader uses the spatial rcu_dereference() macro to fetch
-+	an RCU-protected pointer, which returns a value that may
-+	then be safely dereferenced.  Note that rcu_dereference()
-+	does not actually dereference the pointer, instead, it
-+	protects the pointer for later dereferencing.  It also
-+	executes any needed memory-barrier instructions for a given
-+	CPU architecture.  Currently, only Alpha needs memory barriers
-+	within rcu_dereference() -- on other CPUs, it compiles to a
-+	volatile load.
- 
- 	Common coding practice uses rcu_dereference() to copy an
- 	RCU-protected pointer to a local variable, then dereferences
-@@ -355,12 +365,15 @@ reader, updater, and reclaimer.
- 	      synchronize_rcu() & call_rcu()
- 
- 
--The RCU infrastructure observes the time sequence of rcu_read_lock(),
-+The RCU infrastructure observes the temporal sequence of rcu_read_lock(),
- rcu_read_unlock(), synchronize_rcu(), and call_rcu() invocations in
- order to determine when (1) synchronize_rcu() invocations may return
- to their callers and (2) call_rcu() callbacks may be invoked.  Efficient
- implementations of the RCU infrastructure make heavy use of batching in
- order to amortize their overhead over many uses of the corresponding APIs.
-+The rcu_assign_pointer() and rcu_dereference() invocations communicate
-+spatial changes via stores to and loads from the RCU-protected pointer in
-+question.
- 
- There are at least three flavors of RCU usage in the Linux kernel. The diagram
- above shows the most common one. On the updater side, the rcu_assign_pointer(),
-@@ -392,7 +405,9 @@ b.	RCU applied to networking data structures that may be subjected
- c.	RCU applied to scheduler and interrupt/NMI-handler tasks.
- 
- Again, most uses will be of (a).  The (b) and (c) cases are important
--for specialized uses, but are relatively uncommon.
-+for specialized uses, but are relatively uncommon.  The SRCU, RCU-Tasks,
-+RCU-Tasks-Rude, and RCU-Tasks-Trace have similar relationships among
-+their assorted primitives.
- 
- .. _3_whatisRCU:
- 
-@@ -468,7 +483,7 @@ So, to sum up:
- -	Within an RCU read-side critical section, use rcu_dereference()
- 	to dereference RCU-protected pointers.
- 
---	Use some solid scheme (such as locks or semaphores) to
-+-	Use some solid design (such as locks or semaphores) to
- 	keep concurrent updates from interfering with each other.
- 
- -	Use rcu_assign_pointer() to update an RCU-protected pointer.
-@@ -579,6 +594,14 @@ to avoid having to write your own callback::
- 
- 	kfree_rcu(old_fp, rcu);
- 
-+If the occasional sleep is permitted, the single-argument form may
-+be used, omitting the rcu_head structure from struct foo.
-+
-+	kfree_rcu(old_fp);
-+
-+This variant of kfree_rcu() almost never blocks, but might do so by
-+invoking synchronize_rcu() in response to memory-allocation failure.
-+
- Again, see checklist.rst for additional rules governing the use of RCU.
- 
- .. _5_whatisRCU:
-@@ -596,7 +619,7 @@ lacking both functionality and performance.  However, they are useful
- in getting a feel for how RCU works.  See kernel/rcu/update.c for a
- production-quality implementation, and see:
- 
--	http://www.rdrop.com/users/paulmck/RCU
-+	https://docs.google.com/document/d/1X0lThx8OK0ZgLMqVoXiR4ZrGURHrXK6NyLRbeXe3Xac/edit
- 
- for papers describing the Linux kernel RCU implementation.  The OLS'01
- and OLS'02 papers are a good introduction, and the dissertation provides
-@@ -929,6 +952,8 @@ unfortunately any spinlock in a ``SLAB_TYPESAFE_BY_RCU`` object must be
- initialized after each and every call to kmem_cache_alloc(), which renders
- reference-free spinlock acquisition completely unsafe.  Therefore, when
- using ``SLAB_TYPESAFE_BY_RCU``, make proper use of a reference counter.
-+(Those willing to use a kmem_cache constructor may also use locking,
-+including cache-friendly sequence locking.)
- 
- With traditional reference counting -- such as that implemented by the
- kref library in Linux -- there is typically code that runs when the last
-@@ -1047,6 +1072,30 @@ sched::
- 	rcu_read_lock_sched_held
- 
- 
-+RCU-Tasks::
-+
-+	Critical sections	Grace period		Barrier
-+
-+	N/A			call_rcu_tasks		rcu_barrier_tasks
-+				synchronize_rcu_tasks
-+
-+
-+RCU-Tasks-Rude::
-+
-+	Critical sections	Grace period		Barrier
-+
-+	N/A			call_rcu_tasks_rude	rcu_barrier_tasks_rude
-+				synchronize_rcu_tasks_rude
-+
-+
-+RCU-Tasks-Trace::
-+
-+	Critical sections	Grace period		Barrier
-+
-+	rcu_read_lock_trace	call_rcu_tasks_trace	rcu_barrier_tasks_trace
-+	rcu_read_unlock_trace	synchronize_rcu_tasks_trace
-+
-+
- SRCU::
- 
- 	Critical sections	Grace period		Barrier
-@@ -1087,35 +1136,43 @@ list can be helpful:
- 
- a.	Will readers need to block?  If so, you need SRCU.
- 
--b.	What about the -rt patchset?  If readers would need to block
--	in an non-rt kernel, you need SRCU.  If readers would block
--	in a -rt kernel, but not in a non-rt kernel, SRCU is not
--	necessary.  (The -rt patchset turns spinlocks into sleeplocks,
--	hence this distinction.)
-+b.	Will readers need to block and are you doing tracing, for
-+	example, ftrace or BPF?  If so, you need RCU-tasks,
-+	RCU-tasks-rude, and/or RCU-tasks-trace.
-+
-+c.	What about the -rt patchset?  If readers would need to block in
-+	an non-rt kernel, you need SRCU.  If readers would block when
-+	acquiring spinlocks in a -rt kernel, but not in a non-rt kernel,
-+	SRCU is not necessary.	(The -rt patchset turns spinlocks into
-+	sleeplocks, hence this distinction.)
- 
--c.	Do you need to treat NMI handlers, hardirq handlers,
-+d.	Do you need to treat NMI handlers, hardirq handlers,
- 	and code segments with preemption disabled (whether
- 	via preempt_disable(), local_irq_save(), local_bh_disable(),
- 	or some other mechanism) as if they were explicit RCU readers?
--	If so, RCU-sched is the only choice that will work for you.
+-RCU (read-copy update) is a synchronization mechanism that can be thought
+-of as a replacement for read-writer locking (among other things), but with
+-very low-overhead readers that are immune to deadlock, priority inversion,
+-and unbounded latency. RCU read-side critical sections are delimited
+-by rcu_read_lock() and rcu_read_unlock(), which, in non-CONFIG_PREEMPTION
+-kernels, generate no code whatsoever.
 -
--d.	Do you need RCU grace periods to complete even in the face
--	of softirq monopolization of one or more of the CPUs?  For
--	example, is your code subject to network-based denial-of-service
--	attacks?  If so, you should disable softirq across your readers,
--	for example, by using rcu_read_lock_bh().
+-This means that RCU writers are unaware of the presence of concurrent
+-readers, so that RCU updates to shared data must be undertaken quite
+-carefully, leaving an old version of the data structure in place until all
+-pre-existing readers have finished. These old versions are needed because
+-such readers might hold a reference to them. RCU updates can therefore be
+-rather expensive, and RCU is thus best suited for read-mostly situations.
 -
--e.	Is your workload too update-intensive for normal use of
-+	If so, RCU-sched readers are the only choice that will work
-+	for you, but since about v4.20 you use can use the vanilla RCU
-+	update primitives.
+-How can an RCU writer possibly determine when all readers are finished,
+-given that readers might well leave absolutely no trace of their
+-presence? There is a synchronize_rcu() primitive that blocks until all
+-pre-existing readers have completed. An updater wishing to delete an
+-element p from a linked list might do the following, while holding an
+-appropriate lock, of course::
+-
+-	list_del_rcu(p);
+-	synchronize_rcu();
+-	kfree(p);
+-
+-But the above code cannot be used in IRQ context -- the call_rcu()
+-primitive must be used instead. This primitive takes a pointer to an
+-rcu_head struct placed within the RCU-protected data structure and
+-another pointer to a function that may be invoked later to free that
+-structure. Code to delete an element p from the linked list from IRQ
+-context might then be as follows::
++RCU updaters sometimes use call_rcu() to initiate an asynchronous wait for
++a grace period to elapse.  This primitive takes a pointer to an rcu_head
++struct placed within the RCU-protected data structure and another pointer
++to a function that may be invoked later to free that structure. Code to
++delete an element p from the linked list from IRQ context might then be
++as follows::
+ 
+ 	list_del_rcu(p);
+ 	call_rcu(&p->rcu, p_callback);
+@@ -54,7 +29,7 @@ IRQ context. The function p_callback() might be defined as follows::
+ Unloading Modules That Use call_rcu()
+ -------------------------------------
+ 
+-But what if p_callback is defined in an unloadable module?
++But what if the p_callback() function is defined in an unloadable module?
+ 
+ If we unload the module while some RCU callbacks are pending,
+ the CPUs executing these callbacks are going to be severely
+@@ -67,20 +42,21 @@ grace period to elapse, it does not wait for the callbacks to complete.
+ 
+ One might be tempted to try several back-to-back synchronize_rcu()
+ calls, but this is still not guaranteed to work. If there is a very
+-heavy RCU-callback load, then some of the callbacks might be deferred
+-in order to allow other processing to proceed. Such deferral is required
+-in realtime kernels in order to avoid excessive scheduling latencies.
++heavy RCU-callback load, then some of the callbacks might be deferred in
++order to allow other processing to proceed. For but one example, such
++deferral is required in realtime kernels in order to avoid excessive
++scheduling latencies.
+ 
+ 
+ rcu_barrier()
+ -------------
+ 
+-We instead need the rcu_barrier() primitive.  Rather than waiting for
+-a grace period to elapse, rcu_barrier() waits for all outstanding RCU
+-callbacks to complete.  Please note that rcu_barrier() does **not** imply
+-synchronize_rcu(), in particular, if there are no RCU callbacks queued
+-anywhere, rcu_barrier() is within its rights to return immediately,
+-without waiting for a grace period to elapse.
++This situation can be handled by the rcu_barrier() primitive.  Rather
++than waiting for a grace period to elapse, rcu_barrier() waits for all
++outstanding RCU callbacks to complete.  Please note that rcu_barrier()
++does **not** imply synchronize_rcu(), in particular, if there are no RCU
++callbacks queued anywhere, rcu_barrier() is within its rights to return
++immediately, without waiting for anything, let alone a grace period.
+ 
+ Pseudo-code using rcu_barrier() is as follows:
+ 
+@@ -89,19 +65,22 @@ Pseudo-code using rcu_barrier() is as follows:
+    3. Allow the module to be unloaded.
+ 
+ There is also an srcu_barrier() function for SRCU, and you of course
+-must match the flavor of rcu_barrier() with that of call_rcu().  If your
+-module uses multiple flavors of call_rcu(), then it must also use multiple
+-flavors of rcu_barrier() when unloading that module.  For example, if
+-it uses call_rcu(), call_srcu() on srcu_struct_1, and call_srcu() on
+-srcu_struct_2, then the following three lines of code will be required
+-when unloading::
++must match the flavor of srcu_barrier() with that of call_srcu().
++If your module uses multiple srcu_struct structures, then it must also
++use multiple invocations of srcu_barrier() when unloading that module.
++For example, if it uses call_rcu(), call_srcu() on srcu_struct_1, and
++call_srcu() on srcu_struct_2, then the following three lines of code
++will be required when unloading::
+ 
+  1 rcu_barrier();
+  2 srcu_barrier(&srcu_struct_1);
+  3 srcu_barrier(&srcu_struct_2);
+ 
+-The rcutorture module makes use of rcu_barrier() in its exit function
+-as follows::
++If latency is of the essence, workqueues could be used to run these
++three functions concurrently.
 +
-+e.	Do you need RCU grace periods to complete even in the face of
-+	softirq monopolization of one or more of the CPUs?  For example,
-+	is your code subject to network-based denial-of-service attacks?
-+	If so, you should disable softirq across your readers, for
-+	example, by using rcu_read_lock_bh().  Since about v4.20 you
-+	use can use the vanilla RCU update primitives.
++An ancient version of the rcutorture module makes use of rcu_barrier()
++in its exit function as follows::
+ 
+  1  static void
+  2  rcu_torture_cleanup(void)
+@@ -190,16 +169,17 @@ Quick Quiz #1:
+ :ref:`Answer to Quick Quiz #1 <answer_rcubarrier_quiz_1>`
+ 
+ Your module might have additional complications. For example, if your
+-module invokes call_rcu() from timers, you will need to first cancel all
+-the timers, and only then invoke rcu_barrier() to wait for any remaining
++module invokes call_rcu() from timers, you will need to first refrain
++from posting new timers, cancel (or wait for) all the already-posted
++timers, and only then invoke rcu_barrier() to wait for any remaining
+ RCU callbacks to complete.
+ 
+-Of course, if you module uses call_rcu(), you will need to invoke
++Of course, if your module uses call_rcu(), you will need to invoke
+ rcu_barrier() before unloading.  Similarly, if your module uses
+ call_srcu(), you will need to invoke srcu_barrier() before unloading,
+ and on the same srcu_struct structure.  If your module uses call_rcu()
+-**and** call_srcu(), then you will need to invoke rcu_barrier() **and**
+-srcu_barrier().
++**and** call_srcu(), then (as noted above) you will need to invoke
++rcu_barrier() **and** srcu_barrier().
+ 
+ 
+ Implementing rcu_barrier()
+@@ -211,27 +191,40 @@ queues. His implementation queues an RCU callback on each of the per-CPU
+ callback queues, and then waits until they have all started executing, at
+ which point, all earlier RCU callbacks are guaranteed to have completed.
+ 
+-The original code for rcu_barrier() was as follows::
+-
+- 1  void rcu_barrier(void)
+- 2  {
+- 3    BUG_ON(in_interrupt());
+- 4    /* Take cpucontrol mutex to protect against CPU hotplug */
+- 5    mutex_lock(&rcu_barrier_mutex);
+- 6    init_completion(&rcu_barrier_completion);
+- 7    atomic_set(&rcu_barrier_cpu_count, 0);
+- 8    on_each_cpu(rcu_barrier_func, NULL, 0, 1);
+- 9    wait_for_completion(&rcu_barrier_completion);
+- 10   mutex_unlock(&rcu_barrier_mutex);
+- 11 }
+-
+-Line 3 verifies that the caller is in process context, and lines 5 and 10
++The original code for rcu_barrier() was roughly as follows::
 +
-+f.	Is your workload too update-intensive for normal use of
- 	RCU, but inappropriate for other synchronization mechanisms?
- 	If so, consider SLAB_TYPESAFE_BY_RCU (which was originally
- 	named SLAB_DESTROY_BY_RCU).  But please be careful!
++ 1   void rcu_barrier(void)
++ 2   {
++ 3     BUG_ON(in_interrupt());
++ 4     /* Take cpucontrol mutex to protect against CPU hotplug */
++ 5     mutex_lock(&rcu_barrier_mutex);
++ 6     init_completion(&rcu_barrier_completion);
++ 7     atomic_set(&rcu_barrier_cpu_count, 1);
++ 8     on_each_cpu(rcu_barrier_func, NULL, 0, 1);
++ 9     if (atomic_dec_and_test(&rcu_barrier_cpu_count))
++ 10       complete(&rcu_barrier_completion);
++ 11    wait_for_completion(&rcu_barrier_completion);
++ 12    mutex_unlock(&rcu_barrier_mutex);
++ 13  }
++
++Line 3 verifies that the caller is in process context, and lines 5 and 12
+ use rcu_barrier_mutex to ensure that only one rcu_barrier() is using the
+ global completion and counters at a time, which are initialized on lines
+ 6 and 7. Line 8 causes each CPU to invoke rcu_barrier_func(), which is
+ shown below. Note that the final "1" in on_each_cpu()'s argument list
+ ensures that all the calls to rcu_barrier_func() will have completed
+-before on_each_cpu() returns. Line 9 then waits for the completion.
++before on_each_cpu() returns. Line 9 removes the initial count from
++rcu_barrier_cpu_count, and if this count is now zero, line 10 finalizes
++the completion, which prevents line 11 from blocking.  Either way,
++line 11 then waits (if needed) for the completion.
++
++.. _rcubarrier_quiz_2:
++
++Quick Quiz #2:
++	Why doesn't line 8 initialize rcu_barrier_cpu_count to zero,
++	thereby avoiding the need for lines 9 and 10?
++
++:ref:`Answer to Quick Quiz #2 <answer_rcubarrier_quiz_2>`
  
--f.	Do you need read-side critical sections that are respected
--	even though they are in the middle of the idle loop, during
--	user-mode execution, or on an offlined CPU?  If so, SRCU is the
--	only choice that will work for you.
-+g.	Do you need read-side critical sections that are respected even
-+	on CPUs that are deep in the idle loop, during entry to or exit
-+	from user-mode execution, or on an offlined CPU?  If so, SRCU
-+	and RCU Tasks Trace are the only choices that will work for you,
-+	with SRCU being strongly preferred in almost all cases.
+ This code was rewritten in 2008 and several times thereafter, but this
+ still gives the general idea.
+@@ -253,7 +246,7 @@ to post an RCU callback, as follows::
+ Lines 3 and 4 locate RCU's internal per-CPU rcu_data structure,
+ which contains the struct rcu_head that needed for the later call to
+ call_rcu(). Line 7 picks up a pointer to this struct rcu_head, and line
+-8 increments a global counter. This counter will later be decremented
++8 increments the global counter. This counter will later be decremented
+ by the callback. Line 9 then registers the rcu_barrier_callback() on
+ the current CPU's queue.
  
--g.	Otherwise, use RCU.
-+h.	Otherwise, use RCU.
+@@ -267,27 +260,28 @@ reaches zero, as follows::
+  4     complete(&rcu_barrier_completion);
+  5 }
  
- Of course, this all assumes that you have determined that RCU is in fact
- the right tool for your job.
+-.. _rcubarrier_quiz_2:
++.. _rcubarrier_quiz_3:
+ 
+-Quick Quiz #2:
++Quick Quiz #3:
+ 	What happens if CPU 0's rcu_barrier_func() executes
+ 	immediately (thus incrementing rcu_barrier_cpu_count to the
+ 	value one), but the other CPU's rcu_barrier_func() invocations
+ 	are delayed for a full grace period? Couldn't this result in
+ 	rcu_barrier() returning prematurely?
+ 
+-:ref:`Answer to Quick Quiz #2 <answer_rcubarrier_quiz_2>`
++:ref:`Answer to Quick Quiz #3 <answer_rcubarrier_quiz_3>`
+ 
+ The current rcu_barrier() implementation is more complex, due to the need
+ to avoid disturbing idle CPUs (especially on battery-powered systems)
+ and the need to minimally disturb non-idle CPUs in real-time systems.
+-However, the code above illustrates the concepts.
++In addition, a great many optimizations have been applied.  However,
++the code above illustrates the concepts.
+ 
+ 
+ rcu_barrier() Summary
+ ---------------------
+ 
+-The rcu_barrier() primitive has seen relatively little use, since most
++The rcu_barrier() primitive is used relatively infrequently, since most
+ code using RCU is in the core kernel rather than in modules. However, if
+ you are using RCU from an unloadable module, you need to use rcu_barrier()
+ so that your module may be safely unloaded.
+@@ -318,6 +312,39 @@ Answer: Interestingly enough, rcu_barrier() was not originally
+ .. _answer_rcubarrier_quiz_2:
+ 
+ Quick Quiz #2:
++	Why doesn't line 8 initialize rcu_barrier_cpu_count to zero,
++	thereby avoiding the need for lines 9 and 10?
++
++Answer: Suppose that the on_each_cpu() function shown on line 8 was
++	delayed, so that CPU 0's rcu_barrier_func() executed and
++	the corresponding grace period elapsed, all before CPU 1's
++	rcu_barrier_func() started executing.  This would result in
++	rcu_barrier_cpu_count being decremented to zero, so that line
++	11's wait_for_completion() would return immediately, failing to
++	wait for CPU 1's callbacks to be invoked.
++
++	Note that this was not a problem when the rcu_barrier() code
++	was first added back in 2005.  This is because on_each_cpu()
++	disables preemption, which acted as an RCU read-side critical
++	section, thus preventing CPU 0's grace period from completing
++	until on_each_cpu() had dealt with all of the CPUs.  However,
++	with the advent of preemptible RCU, rcu_barrier() no longer
++	waited on nonpreemptible regions of code in preemptible kernels,
++	that being the job of the new rcu_barrier_sched() function.
++
++	However, with the RCU flavor consolidation around v4.20, this
++	possibility was once again ruled out, because the consolidated
++	RCU once again waits on nonpreemptible regions of code.
++
++	Nevertheless, that extra count might still be a good idea.
++	Relying on these sort of accidents of implementation can result
++	in later surprise bugs when the implementation changes.
++
++:ref:`Back to Quick Quiz #2 <rcubarrier_quiz_2>`
++
++.. _answer_rcubarrier_quiz_3:
++
++Quick Quiz #3:
+ 	What happens if CPU 0's rcu_barrier_func() executes
+ 	immediately (thus incrementing rcu_barrier_cpu_count to the
+ 	value one), but the other CPU's rcu_barrier_func() invocations
+@@ -336,18 +363,15 @@ Answer: This cannot happen. The reason is that on_each_cpu() has its last
+ 
+ 	Therefore, on_each_cpu() disables preemption across its call
+ 	to smp_call_function() and also across the local call to
+-	rcu_barrier_func(). This prevents the local CPU from context
+-	switching, again preventing grace periods from completing. This
++	rcu_barrier_func(). Because recent RCU implementations treat
++	preemption-disabled regions of code as RCU read-side critical
++	sections, this prevents grace periods from completing. This
+ 	means that all CPUs have executed rcu_barrier_func() before
+ 	the first rcu_barrier_callback() can possibly execute, in turn
+ 	preventing rcu_barrier_cpu_count from prematurely reaching zero.
+ 
+-	Currently, -rt implementations of RCU keep but a single global
+-	queue for RCU callbacks, and thus do not suffer from this
+-	problem. However, when the -rt RCU eventually does have per-CPU
+-	callback queues, things will have to change. One simple change
+-	is to add an rcu_read_lock() before line 8 of rcu_barrier()
+-	and an rcu_read_unlock() after line 8 of this same function. If
+-	you can think of a better change, please let me know!
++	But if on_each_cpu() ever decides to forgo disabling preemption,
++	as might well happen due to real-time latency considerations,
++	initializing rcu_barrier_cpu_count to one will save the day.
+ 
+-:ref:`Back to Quick Quiz #2 <rcubarrier_quiz_2>`
++:ref:`Back to Quick Quiz #3 <rcubarrier_quiz_3>`
 -- 
 2.31.1.189.g2e36527f23
 
