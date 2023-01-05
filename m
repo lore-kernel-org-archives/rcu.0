@@ -2,105 +2,91 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B17CFC53210
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:09:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34825C53210
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234332AbjAEAJu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:09:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
+        id S234496AbjAEAJ7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbjAEAJt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:09:49 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDA043A1C;
-        Wed,  4 Jan 2023 16:09:48 -0800 (PST)
+        with ESMTP id S234393AbjAEAJ7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:09:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CC343A1C;
+        Wed,  4 Jan 2023 16:09:58 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9CE4DB8167B;
-        Thu,  5 Jan 2023 00:09:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F468C433EF;
-        Thu,  5 Jan 2023 00:09:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B0E396188D;
+        Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7A4C433D2;
+        Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672877386;
-        bh=tPn2crWok3L9h4Dun1XVImkEdEdU+OpyUGdb6h6Vx9E=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=WcKPoU2pbHrjNxilmZOibmaHKkcRxLJ9ewwc+C16GvjfwTBSuJjHhPKL1RAjUtOFe
-         gXg5VhNafN7HsHfR+JpPgQv7Wm95+/BTrjObARQn99ipEqWHDgCIH/mHkxb4TcqqpE
-         IRcI9FT+SllkgkObg29lUs3n3D48uYYjGTSX4idcsRAjnODANxWIr0O7WX9N25VYX7
-         wd3phZnuw6GT0YP5hL/eGv2Yzr7fLwdKCHkzKF/EWYmUTk1QT1+Ke/4NKGx5cDM03v
-         PRhvJZiaBkkj4IvgJIj32W3NeaQeFjIP/SAiP9FgkjoIo5Ir61DcjWFudDTTUR+wC/
-         9SvEOWLGyQ1MQ==
+        s=k20201202; t=1672877397;
+        bh=PS7RJ6ca0uDsIciwHIe/Mb/Re+MAuOv96kNuEUv2OMY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DoS72ule2hem61lv95M9JtiH09qkzU0Hj+5layKP/VVObizNp1Qa758AhEzAY+c2H
+         4ci22oFx051LnFLTWeEMlh62giV84SNZwwxe/9AQ48PJjgmLeL3A1udcDgovMaMQs3
+         jokz193nPTkox7VXTabjpZyxqgUCB+BK+uJTuXSBOZWW0wD/d/qAihab4tCepYrx12
+         cO52GjTe/8nByNjeAMAKT5mYFiRokf8sxZFWhlTmbiG1VBrSh+zkGZbyf4Mi87AzBZ
+         zV/qn3Zz4cwczFI6Zc/LOWyKcMPqzk7sDoQqCPhYe/istlvax/utbJfbzkVrjYlHON
+         l4RS4Q0QPW49g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DED605C05CA; Wed,  4 Jan 2023 16:09:45 -0800 (PST)
-Date:   Wed, 4 Jan 2023 16:09:45 -0800
+        id C36105C05CA; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/15] Documentation updates for v6.3
-Message-ID: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 01/15] doc: Further updates to RCU's lockdep.rst
+Date:   Wed,  4 Jan 2023 16:09:41 -0800
+Message-Id: <20230105000955.1767218-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
+References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+This commit wordsmiths RCU's lockdep.rst.
 
-This series contains documentation updates:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/RCU/lockdep.rst | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-1.	Further updates to RCU's lockdep.rst.
+diff --git a/Documentation/RCU/lockdep.rst b/Documentation/RCU/lockdep.rst
+index 9308f1bdba05d..2749f43ec1b03 100644
+--- a/Documentation/RCU/lockdep.rst
++++ b/Documentation/RCU/lockdep.rst
+@@ -69,9 +69,8 @@ checking of rcu_dereference() primitives:
+ 		value of the pointer itself, for example, against NULL.
+ 
+ The rcu_dereference_check() check expression can be any boolean
+-expression, but would normally include a lockdep expression.  However,
+-any boolean expression can be used.  For a moderately ornate example,
+-consider the following::
++expression, but would normally include a lockdep expression.  For a
++moderately ornate example, consider the following::
+ 
+ 	file = rcu_dereference_check(fdt->fd[fd],
+ 				     lockdep_is_held(&files->file_lock) ||
+@@ -97,10 +96,10 @@ code, it could instead be written as follows::
+ 					 atomic_read(&files->count) == 1);
+ 
+ This would verify cases #2 and #3 above, and furthermore lockdep would
+-complain if this was used in an RCU read-side critical section unless one
+-of these two cases held.  Because rcu_dereference_protected() omits all
+-barriers and compiler constraints, it generates better code than do the
+-other flavors of rcu_dereference().  On the other hand, it is illegal
++complain even if this was used in an RCU read-side critical section unless
++one of these two cases held.  Because rcu_dereference_protected() omits
++all barriers and compiler constraints, it generates better code than do
++the other flavors of rcu_dereference().  On the other hand, it is illegal
+ to use rcu_dereference_protected() if either the RCU-protected pointer
+ or the RCU-protected data that it points to can change concurrently.
+ 
+-- 
+2.31.1.189.g2e36527f23
 
-2.	Update NMI-RCU.rst.
-
-3.	Update rcubarrier.rst.
-
-4.	Update rcu_dereference.rst.
-
-5.	Update and wordsmith rculist_nulls.rst.
-
-6.	Update rcu.rst.
-
-7.	Update stallwarn.rst.
-
-8.	Update torture.rst.
-
-9.	Update UP.rst.
-
-10.	Update rcu.rst URL to RCU publications.
-
-11.	Update whatisRCU.rst.
-
-12.	Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information,
-	courtesy of Zhen Lei.
-
-13.	docs/RCU/rcubarrier: Adjust 'Answer' parts of QQs as
-	definition-lists, courtesy of Akira Yokosawa.
-
-14.	docs/RCU/rcubarrier: Right-adjust line numbers in code snippets,
-	courtesy of Akira Yokosawa.
-
-15.	Fix htmldocs build warnings of stallwarn.rst, courtesy of
-	Zhen Lei.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/RCU/rcu.rst               |    3 
- Documentation/RCU/rcubarrier.rst        |  177 ++++++++++++++--------------
- Documentation/RCU/stallwarn.rst         |  144 +++++++++++++++++++----
- b/Documentation/RCU/NMI-RCU.rst         |    4 
- b/Documentation/RCU/UP.rst              |   13 +-
- b/Documentation/RCU/lockdep.rst         |   13 --
- b/Documentation/RCU/rcu.rst             |    3 
- b/Documentation/RCU/rcu_dereference.rst |   21 ++-
- b/Documentation/RCU/rcubarrier.rst      |  196 +++++++++++++++++---------------
- b/Documentation/RCU/rculist_nulls.rst   |  109 ++++++++---------
- b/Documentation/RCU/stallwarn.rst       |   43 ++++---
- b/Documentation/RCU/torture.rst         |   89 +++++++++++++-
- b/Documentation/RCU/whatisRCU.rst       |  193 ++++++++++++++++++++-----------
- 13 files changed, 646 insertions(+), 362 deletions(-)
