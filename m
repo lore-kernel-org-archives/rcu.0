@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61FFDC64981
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1B52C46467
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235540AbjAEAlF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S235530AbjAEAlG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240728AbjAEAix (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:53 -0500
+        with ESMTP id S240697AbjAEAis (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:48 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C45DE3;
-        Wed,  4 Jan 2023 16:38:23 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D9AC2D;
+        Wed,  4 Jan 2023 16:38:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0169618B9;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7669B618AC;
         Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBEC5C43339;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2D78C4332B;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=9ltLnmPueyNAThHqCnMBk2/jo7HOn9NSQikvjiJ8fT0=;
+        bh=CNDCwOrRVxUy3ujKbfGE7sGTvn3Vq+9DqFQxAJ7ZB+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bpbiHeVxHb1z++NPrcNY8YC7ux8CBWGapwm3Cdo9I1onoMWT3TpKY3DEpEl2HpuAd
-         FJfasS/kV/CL3uWODdyThwoYPhsLjQX61lVXkw/MRHAKfhN9X2IV4AA4bmDh/6WbvM
-         jx/ddyNNbTzlTHruR8B0oHLBdKisKaIFZ7b72LLDFKFX9l7DBuOJzuB/H1oZbgGe6l
-         uKmFt5YFpA9YXrm/fBOaL1npNhxhHRgx2pFv7TtmKnnAuXple2mx1IhnMVxN5Nt08P
-         6qgdu22rI828gX6qsXzNaT4gqHQ6jNG5zHqYO/OqqM5DbemEaTLjlhgVsFPgsS7UzO
-         +kmZiuiIfwgWQ==
+        b=SMaaDhhKZ0MrSTVLCvLXZQMerWIWXg9Cmx8ITsLfD7eS/7W0ZL/uYWoRg4DJoYrA2
+         BSeXZ76gZTElV/Z3NAhtMpVAZbpadsQIs9o3D9EvZd9gnpTxWTjJWfVPtMNsvGydvZ
+         SXWQo/mM+DQ1epJyiNoY85T6V0sAGb7Th9TKEYyR0sP9M6H/sIAGPpG/ZQqzTF/mNg
+         p5tS/v/17Qd8tNkfl1GwoII/gpiTGJGH/GaQ6VM3CKRvzanZjFOPLKg08URm5NBWc5
+         43zER5ex/EwPEy6+/ot1ZSkb6Pkfjzu8CrsbxJLbZt3/+BGrMvex2cC+EyHu67EpfY
+         mEOr3RN5u0erA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E7F0E5C1CE5; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id D83965C1C9E; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>
-Subject: [PATCH rcu 27/27] rcu: Remove CONFIG_SRCU
-Date:   Wed,  4 Jan 2023 16:38:13 -0800
-Message-Id: <20230105003813.1770367-27-paulmck@kernel.org>
+        Christine Caulfield <ccaulfie@redhat.com>,
+        David Teigland <teigland@redhat.com>, cluster-devel@redhat.com
+Subject: [PATCH rcu 19/27] fs/dlm: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:38:05 -0800
+Message-Id: <20230105003813.1770367-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
@@ -51,45 +51,30 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now that all references to CONFIG_SRCU have been removed, it is time to
-remove CONFIG_SRCU itself.
+Now that the SRCU Kconfig option is unconditionally selected, there is
+no longer any point in selecting it.  Therefore, remove the "select SRCU"
+Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>
+Cc: Christine Caulfield <ccaulfie@redhat.com>
+Cc: David Teigland <teigland@redhat.com>
+Cc: <cluster-devel@redhat.com>
 ---
- kernel/rcu/Kconfig                                          | 3 ---
- tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt | 4 ----
- 2 files changed, 7 deletions(-)
+ fs/dlm/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index ab62074174c32..9071182b1284b 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -53,9 +53,6 @@ config RCU_EXPERT
- 
- 	  Say N if you are unsure.
- 
--config SRCU
--	def_bool y
--
- config TINY_SRCU
- 	bool
- 	default y if TINY_RCU
-diff --git a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-index 42acb1a64ce10..3f5fb66f16df7 100644
---- a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-+++ b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
-@@ -71,9 +71,5 @@ CONFIG_TASKS_RCU
- 
- 	These are controlled by CONFIG_PREEMPT and/or CONFIG_SMP.
- 
--CONFIG_SRCU
--
--	Selected by CONFIG_RCU_TORTURE_TEST, so cannot disable.
--
- 
- boot parameters ignored: TBD
+diff --git a/fs/dlm/Kconfig b/fs/dlm/Kconfig
+index 1105ce3c80cbd..b3b86dbdc1878 100644
+--- a/fs/dlm/Kconfig
++++ b/fs/dlm/Kconfig
+@@ -4,7 +4,6 @@ menuconfig DLM
+ 	depends on INET
+ 	depends on SYSFS && CONFIGFS_FS && (IPV6 || IPV6=n)
+ 	select IP_SCTP
+-	select SRCU
+ 	help
+ 	A general purpose distributed lock manager for kernel or userspace
+ 	applications.
 -- 
 2.31.1.189.g2e36527f23
 
