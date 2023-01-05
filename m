@@ -2,92 +2,92 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C777C3DA7D
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:46:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 708FBC54EBD
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:48:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbjAEPqE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 10:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        id S234433AbjAEPsf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 10:48:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234012AbjAEPqC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 10:46:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AC410BB;
-        Thu,  5 Jan 2023 07:46:01 -0800 (PST)
+        with ESMTP id S234780AbjAEPse (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 10:48:34 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414814BD53;
+        Thu,  5 Jan 2023 07:48:33 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3C9DEB81B22;
-        Thu,  5 Jan 2023 15:46:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2E65C433D2;
-        Thu,  5 Jan 2023 15:45:58 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EDF12B8199B;
+        Thu,  5 Jan 2023 15:48:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7EEEC433D2;
+        Thu,  5 Jan 2023 15:48:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672933558;
-        bh=jOgKAbukbrjdYiUUmVYlAD25dxO8wgbG9gGqqgI0av4=;
+        s=k20201202; t=1672933710;
+        bh=yCNCkr5VzIXt98C2D4zbMi7v5ISBOFLwXiuOYk5O40w=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qSiDOAWv1/A3nr7wJuhdGMInKqir0Z2ZdM5Z9IhITI3s73KtWJ7M2GgUZdqdLRbw2
-         +ND7WcOyNHgIaLzCXSa0CB53rQeLggtabKelMBgaxf1t1KK6m+uRetQ7LT9PdIbTBQ
-         hpB2FaakyO+X6PvIKMLKQm1jwgeL+68NwIAPNJFGfxFTN+8Q2E3BdJH+ooHj6E2oW7
-         7tAndcn61xjD1cyV/4gEH+7D0+bhqak2exlWaLI9J+veX8Fv3A3v9TeJE4LrqoH8dY
-         S+zjC2XaW0HkHToMP8QuYWwz68nMZG+Y9eJ8P8Ejg01lad1x/76t/aClv0WRPFSZmV
-         QGaE31oqTSwJg==
+        b=F1KtVeH4oiYy3MWCNN0ZTszzWywtawrffg+X9XnLB4Bm+U8OxBpJAkFjnxeJogxPb
+         YKY7dftd4tUguJ4lmuVmb1VIMhzDowhUqhbu6CyzuSv2vg6THSV1bJpAbIPtwcokbM
+         BXal/aFnPy/zhu7a/Q3fMiZqGeTgkiH3ludIxQvY74S/QfwjjeMM+R88FPe8znNiUB
+         oQ2rGwET1w0au++btMG5GYJwAVgyLcxRfYoTpIkuwMVquDoex1r8UXhY+ESihadeWi
+         QRkVjcptr2+XSU9ppAiqSi5ymZVjloZ9k6kYz0S7L3qIM/8KgtijDNfJXgOjrt20m5
+         ijZ05Pocbs2Rg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7F9115C029A; Thu,  5 Jan 2023 07:45:58 -0800 (PST)
-Date:   Thu, 5 Jan 2023 07:45:58 -0800
+        id 50C575C029A; Thu,  5 Jan 2023 07:48:30 -0800 (PST)
+Date:   Thu, 5 Jan 2023 07:48:30 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org, Jan Kara <jack@suse.com>
-Subject: Re: [PATCH rcu 21/27] fs/quota: Remove "select SRCU"
-Message-ID: <20230105154558.GV4028633@paulmck-ThinkPad-P17-Gen-1>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Heiko Carstens <hca@linux.ibm.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH rcu 07/27] block: Remove "select SRCU"
+Message-ID: <20230105154830.GW4028633@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-21-paulmck@kernel.org>
- <20230105113015.6f3ikdgmnhweoish@quack3>
+ <20230105003813.1770367-7-paulmck@kernel.org>
+ <1a9d0cdf-d39e-7eb5-39dd-3e425016c579@kernel.dk>
+ <Y7aE2zzdTyjNId6w@osiris>
+ <20230105153314.GS4028633@paulmck-ThinkPad-P17-Gen-1>
+ <f4dc3c65-c9e6-b961-cf94-f8058a67e256@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230105113015.6f3ikdgmnhweoish@quack3>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f4dc3c65-c9e6-b961-cf94-f8058a67e256@kernel.dk>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 12:30:15PM +0100, Jan Kara wrote:
-> On Wed 04-01-23 16:38:07, Paul E. McKenney wrote:
-> > Now that the SRCU Kconfig option is unconditionally selected, there is
-> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> > Kconfig statements.
+On Thu, Jan 05, 2023 at 08:36:43AM -0700, Jens Axboe wrote:
+> On 1/5/23 8:33 AM, Paul E. McKenney wrote:
+> > On Thu, Jan 05, 2023 at 09:05:47AM +0100, Heiko Carstens wrote:
+> >> On Wed, Jan 04, 2023 at 05:43:07PM -0700, Jens Axboe wrote:
+> >>> On 1/4/23 5:37 PM, Paul E. McKenney wrote:
+> >>>> Now that the SRCU Kconfig option is unconditionally selected, there is
+> >>>> no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> >>>> Kconfig statements.
+> >>>
+> >>> I'm assuming something earlier made this true (only CC'ed on this patch,
+> >>> not the cover letter or interesting btis...), then:
+> >>
+> >> I was wondering the same. But it is already unconditionally enabled
+> >> since commit 0cd7e350abc4 ("rcu: Make SRCU mandatory").
 > > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Jan Kara <jack@suse.com>
-> > ---
-> >  fs/quota/Kconfig | 1 -
-> >  1 file changed, 1 deletion(-)
+> > Ah, apologies for the terseness!
+> > 
+> > I took the coward's way out by making CONFIG_SRCU unconditional during
+> > the last merge window and removing all references during this merge
+> > window.  ;-)
 > 
-> Sure. You can add:
-> 
-> Acked-by: Jan Kara <jack@suse.cz>
+> Are you intending for maintainers to pick up these patches, or are you
+> collecting acks for sending the series separately? That part is also
+> not clear :-)
 
-Thank you, Jan!  I will apply both on my next rebase.
+Fair point!
 
-> 								Honza
-> 
-> > 
-> > diff --git a/fs/quota/Kconfig b/fs/quota/Kconfig
-> > index b59cd172b5f97..d5a85a8062d05 100644
-> > --- a/fs/quota/Kconfig
-> > +++ b/fs/quota/Kconfig
-> > @@ -6,7 +6,6 @@
-> >  config QUOTA
-> >  	bool "Quota support"
-> >  	select QUOTACTL
-> > -	select SRCU
-> >  	help
-> >  	  If you say Y here, you will be able to set per user limits for disk
-> >  	  usage (also called disk quotas). Currently, it works for the
-> > -- 
-> > 2.31.1.189.g2e36527f23
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Maintainer's choice.  By default, I collect acks and send it.  But if
+(for example) this change is in a high-traffic area, the maintainer
+might want to take it, in which case I drop it from my tree.
+
+Either way works for me, as long as you let me know.  ;-)
+
+							Thanx, Paul
