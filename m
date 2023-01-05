@@ -2,48 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E652FC54EF0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A20A9C678DF
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235810AbjAEAlJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
+        id S238925AbjAEAlL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240657AbjAEAiq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:46 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2985EB0E;
-        Wed,  4 Jan 2023 16:38:16 -0800 (PST)
+        with ESMTP id S240630AbjAEAio (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876C0B2D;
+        Wed,  4 Jan 2023 16:38:18 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B1DED61888;
-        Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128B8C433F0;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2174FB81987;
+        Thu,  5 Jan 2023 00:38:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 916B4C43323;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=y8xRrU76YdOECfRSbYnfV2Bk66MTu1Uv/uSklehNSxg=;
+        bh=zQrOASeiQkWJ2fTAnSKZb1lM+olIZOfGqaBBzWSL5Os=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IeGs2XWr+ifvcauS1t6kJhZsfDir+pO9qE+SmEvi+Sog0DQIef3EBJu8ofLTX4FnO
-         q2N17PIMXbO7h0rvE8z+Fruvfjfv6KIx6z4FtNuanxUPURmQnX1ygqH/KTGWSghf15
-         LR9BybAtj5nsWOWUx+8XI/hox2tkt/vcRHRdj4neuMipbmrnO20QywihHplvL4DsKL
-         4umYJ40GGFSOqElocb6+wrqdin9x2kbu3XyAbWhc4IUMkRqLa/JlEE8Rdwm71HI2cO
-         ed6lnoNZ7JEPvsESENzfaYpM8timAtBosa6km+HOTgCcKLn3s5jcfehpvrfodSD+4Y
-         M+59Q57JyUvHg==
+        b=st3dkbbgHwtbilG5So1Lzkk0fgRX5Eq6lT3vyl8jLa/WC/soo489AykwAVP6KCJSd
+         dRUEfg2RnrIn0m9pSaO7J06wTbTU11Z6C3S+I3/xOvj4H/2fk8Swz3zTFP4xpORiT7
+         MUQpUMrEw+F2pFEAXofRXAH4nrUEC7J1DndkjcblZNz+2ySfaTF06QQMJCVCNojXID
+         IeV5X6viB08711cPeFqw4cPblG8syj+hHmsAdozXmwuX56CjxkrNQ5VtoBl1evOa+0
+         3mswbNhX+HqxEEdepbe2FVgZKN4iz1LZscAXADU4Dx4TMdo8cFDyY4PvGZVfudKXeD
+         nCz3CSLOzoWdA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B9D2B5C08E5; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id D0DD85C1C99; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH rcu 03/27] arch/mips/kvm: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:49 -0800
-Message-Id: <20230105003813.1770367-3-paulmck@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
+Subject: [PATCH rcu 15/27] drivers/net: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:38:01 -0800
+Message-Id: <20230105003813.1770367-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
@@ -58,27 +58,27 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: <linux-mips@vger.kernel.org>
-Cc: <kvm@vger.kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: <netdev@vger.kernel.org>
 ---
- arch/mips/kvm/Kconfig | 1 -
+ drivers/net/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/mips/kvm/Kconfig b/arch/mips/kvm/Kconfig
-index 91d197bee9c0a..591f46a5d7be1 100644
---- a/arch/mips/kvm/Kconfig
-+++ b/arch/mips/kvm/Kconfig
-@@ -26,7 +26,6 @@ config KVM
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select KVM_MMIO
- 	select MMU_NOTIFIER
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 9e63b8c43f3e2..12910338ea1a0 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -334,7 +334,6 @@ config NETCONSOLE_DYNAMIC
+ 
+ config NETPOLL
+ 	def_bool NETCONSOLE
 -	select SRCU
- 	select INTERVAL_TREE
- 	help
- 	  Support for hosting Guest kernels.
+ 
+ config NET_POLL_CONTROLLER
+ 	def_bool NETPOLL
 -- 
 2.31.1.189.g2e36527f23
 
