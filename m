@@ -2,146 +2,104 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E3DAC54E76
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:54:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9778C46467
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:54:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjAEAy3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:54:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        id S230162AbjAEAyZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjAEAxm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:53:42 -0500
+        with ESMTP id S230260AbjAEAxk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:53:40 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D61353702;
-        Wed,  4 Jan 2023 16:50:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1100A50F66;
+        Wed,  4 Jan 2023 16:50:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 88255B81992;
-        Thu,  5 Jan 2023 00:45:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA3BC433D2;
-        Thu,  5 Jan 2023 00:45:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 83BB1B81986;
+        Thu,  5 Jan 2023 00:44:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34CC0C433F0;
+        Thu,  5 Jan 2023 00:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672879503;
-        bh=rw0C2QSJ5sl128boZVsbR5s1JFsI7AQxvQksYOm1VeU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q7BnZbOK68eBMjsP4z+hTX2ZcJVhuqwKGpHwjXDXWxmleDVcYxBtztgmAscNqYp63
-         9SXSPg+VmGOR3B830nin81ZlqcR5+EiXrcxPTGZsRfu3jauyuuvrrF324PKrhp1PUS
-         IUjxjqMnYbPmG6R7c48bZKDJmj7/4UzRjcmllJDWN+eUtL7rJ28guS631WC2Pr4OMt
-         2+cJQTPSyhQCtmq/MJ7gJDLxGm4YSLLfrOEIK2Ib+RisvC//aLk1qaRue9XSII5Mko
-         E3CxxMMO2vJKqyl4no/Xneasgnso/0HBxMbkdDjQikmcSF+K/a6vlThh9NaJEBoz9A
-         cRCzMnFanTtJg==
+        s=k20201202; t=1672879495;
+        bh=JpJUIfKj2grmhASneCvm4eoguqoWrw7JCeey0tMxfOI=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=iX6ueXCrM2bNMyjTcgpS52x4ATQqWLIkzqo5g/DVioAbfTB6T3kKArlOsxGew1Q3F
+         BhCjgunWbupeqEk4v943C1gYoYcTmKSuB+xNaczshH+Bqp3g7vuWdMCVvoJY6ytelV
+         UGmMJhFTQO98UaflEJ/PTXjrKeZh1arQTdjPpGIcczqb6m42gFp87v0Ib2/hMfPMlx
+         HCKNtq4DXolyBFr/1qnqyYl4UQLgYL6G4Jc4m5jgLdbkcbKpt5yHHyA4mUOomID4Oa
+         PK4U7neecoPc7irjhOTyvkVmpWJ0vjUWms9GtubIxe4bfIJuKBAz5eCuWegjUkmhrl
+         fRZruENvWszxA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DD52F5C08E5; Wed,  4 Jan 2023 16:45:02 -0800 (PST)
+        id D3F875C05CA; Wed,  4 Jan 2023 16:44:54 -0800 (PST)
+Date:   Wed, 4 Jan 2023 16:44:54 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>
-Subject: [PATCH rcu 2/6] rcu-tasks: Improve comments explaining tasks_rcu_exit_srcu purpose
-Date:   Wed,  4 Jan 2023 16:44:51 -0800
-Message-Id: <20230105004501.1771332-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
-References: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/7] Torture-test updates for v6.3
+Message-ID: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+Hello!
 
-Make sure we don't need to look again into the depths of git blame in
-order not to miss a subtle part about how rcu-tasks is dealing with
-exiting tasks.
+This series provides torture-testing updates:
 
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tasks.h | 37 +++++++++++++++++++++++++++++--------
- 1 file changed, 29 insertions(+), 8 deletions(-)
+1.	rcu-tasks: Use accurate runstart time for RCU Tasks boot-time
+	testing, courtesy of Zqiang.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index c418aa1c038a9..50d4c0ec7a89f 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -827,11 +827,21 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
- static void rcu_tasks_postscan(struct list_head *hop)
- {
- 	/*
--	 * Wait for tasks that are in the process of exiting.  This
--	 * does only part of the job, ensuring that all tasks that were
--	 * previously exiting reach the point where they have disabled
--	 * preemption, allowing the later synchronize_rcu() to finish
--	 * the job.
-+	 * Exiting tasks may escape the tasklist scan. Those are vulnerable
-+	 * until their final schedule() with TASK_DEAD state. To cope with
-+	 * this, divide the fragile exit path part in two intersecting
-+	 * read side critical sections:
-+	 *
-+	 * 1) An _SRCU_ read side starting before calling exit_notify(),
-+	 *    which may remove the task from the tasklist, and ending after
-+	 *    the final preempt_disable() call in do_exit().
-+	 *
-+	 * 2) An _RCU_ read side starting with the final preempt_disable()
-+	 *    call in do_exit() and ending with the final call to schedule()
-+	 *    with TASK_DEAD state.
-+	 *
-+	 * This handles the part 1). And postgp will handle part 2) with a
-+	 * call to synchronize_rcu().
- 	 */
- 	synchronize_srcu(&tasks_rcu_exit_srcu);
- }
-@@ -898,7 +908,10 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
- 	 *
- 	 * In addition, this synchronize_rcu() waits for exiting tasks
- 	 * to complete their final preempt_disable() region of execution,
--	 * cleaning up after the synchronize_srcu() above.
-+	 * cleaning up after synchronize_srcu(&tasks_rcu_exit_srcu),
-+	 * enforcing the whole region before tasklist removal until
-+	 * the final schedule() with TASK_DEAD state to be an RCU TASKS
-+	 * read side critical section.
- 	 */
- 	synchronize_rcu();
- }
-@@ -988,7 +1001,11 @@ void show_rcu_tasks_classic_gp_kthread(void)
- EXPORT_SYMBOL_GPL(show_rcu_tasks_classic_gp_kthread);
- #endif // !defined(CONFIG_TINY_RCU)
- 
--/* Do the srcu_read_lock() for the above synchronize_srcu().  */
-+/*
-+ * Contribute to protect against tasklist scan blind spot while the
-+ * task is exiting and may be removed from the tasklist. See
-+ * corresponding synchronize_srcu() for further details.
-+ */
- void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
- {
- 	preempt_disable();
-@@ -996,7 +1013,11 @@ void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
- 	preempt_enable();
- }
- 
--/* Do the srcu_read_unlock() for the above synchronize_srcu().  */
-+/*
-+ * Contribute to protect against tasklist scan blind spot while the
-+ * task is exiting and may be removed from the tasklist. See
-+ * corresponding synchronize_srcu() for further details.
-+ */
- void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
- {
- 	struct task_struct *t = current;
--- 
-2.31.1.189.g2e36527f23
+2.	Seed torture_random_state on CPU.
 
+3.	rcu-tasks: Improve comments explaining tasks_rcu_exit_srcu
+	purpose, courtesy of Frederic Weisbecker.
+
+4.	Provide for initialization failure.
+
+5.	rcu-tasks: Remove preemption disablement around
+	srcu_read_[un]lock() calls, courtesy of Frederic Weisbecker.
+
+6.	Add tests using SLAB_TYPESAFE_BY_RCU.
+
+7.	Allow non-rtmutex lock types to be boosted, courtesy of "Joel
+	Fernandes (Google)".
+
+8.	rcu-tasks: Fix synchronize_rcu_tasks() VS zap_pid_ns_processes(),
+	courtesy of Frederic Weisbecker.
+
+9.	Make the rt_boost factor a tunable, courtesy of "Joel Fernandes
+	(Google)".
+
+10.	rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug,
+	courtesy of Zqiang.
+
+11.	rcu-tasks: Handle queue-shrink/callback-enqueue race condition,
+	courtesy of Zqiang.
+
+12.	Drop sparse lock-acquisition annotations.
+
+13.	Fix hang during kthread shutdown phase, courtesy of "Joel
+	Fernandes (Google)".
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcupdate.h     |    2 
+ b/kernel/locking/locktorture.c |   99 +++++++++--------
+ b/kernel/pid_namespace.c       |   17 ++
+ b/kernel/rcu/rcutorture.c      |   12 +-
+ b/kernel/rcu/refscale.c        |   16 +-
+ b/kernel/rcu/tasks.h           |    8 -
+ b/kernel/torture.c             |    2 
+ kernel/locking/locktorture.c   |   12 +-
+ kernel/rcu/refscale.c          |  236 +++++++++++++++++++++++++++++++++++++++++
+ kernel/rcu/tasks.h             |   77 +++++++++----
+ kernel/torture.c               |    2 
+ 11 files changed, 393 insertions(+), 90 deletions(-)
