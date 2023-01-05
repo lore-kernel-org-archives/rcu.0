@@ -2,44 +2,47 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E822C53210
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C990C54E76
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235520AbjAEAKW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
+        id S235451AbjAEAKX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbjAEAKQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:10:16 -0500
+        with ESMTP id S235433AbjAEAKR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:10:17 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F3543A26;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF2644348;
         Wed,  4 Jan 2023 16:10:03 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2F156B81988;
-        Thu,  5 Jan 2023 00:09:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79707C433A4;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2B3CEB8198A;
+        Thu,  5 Jan 2023 00:10:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E14C43444;
         Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672877397;
-        bh=lNPz8fsxYbYIrwgfENvy5JR5By4h6WSZrBDq8U/etz0=;
+        bh=50t2JhGfBuLq9wZOJgcb1sE9TNLXRw/1jZ3BmOlQGeY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NiUoxGUwWUOcqSNhxX31YIaSXGdjqoMOHZ1LsmXkpn2F31w8zTU0CQ78aHtJW3VfX
-         2P4+4lOB7oSwsSwazthyRznygJRYt0YumJLiCioyahJUu2+ADfLtnKvrWlv5B2ngKe
-         WQhHpkDe6sU+yERVH/g3iA4T9Vqy/5HV+fHKsFXpR/UqCMHQpP8bkqjCW+cHtS8XOD
-         +f3DCzMWtSGOE15SJiHvTBYBqb/b4W7po0AAilXlRSrL1R5+5vZ0caSqTlmd2tEDex
-         8lqSfePl59A+edjLrGAbUZ84MZeumfCrEUDgyO5FP6+TAxASIyxjJuew50hP12ir4b
-         d21RoF1Scm4Gw==
+        b=dSIC4AuizxrG9CF/+aE7ID2IVaxuhXgCIZuFAtDsNyVoU01fkkRdq0HUAIecpB4rk
+         49hyTHjAt+PgZMWw+qNNmW3IjJcV81xFKQaIWvHsP46Pnm4ucgJ5a00UjVjZ1VObm8
+         71wkNt179WJOfZCVnZXEmOOvFKupbGSHQpOe+wHyr0rgh+A/J3uzMbc/kX6gt+O3QI
+         vL3JW5wdZAI5+feEl/iqoTsHPJovFRgevkG7lNN05d0bzOnrUycf1jRF1rFF2rrhsA
+         1+y01t1yvhIDm0Rpelz7UC+LSI4aD4MQlhDivcBKK/Cgetxnpkn6k0PZetx5/beG5O
+         2VFCIonb04ooA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D45E65C03B9; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
+        id DDE215C1C99; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 10/15] doc: Update rcu.rst URL to RCU publications
-Date:   Wed,  4 Jan 2023 16:09:50 -0800
-Message-Id: <20230105000955.1767218-10-paulmck@kernel.org>
+        rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 15/15] doc: Fix htmldocs build warnings of stallwarn.rst
+Date:   Wed,  4 Jan 2023 16:09:55 -0800
+Message-Id: <20230105000955.1767218-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
@@ -49,24 +52,131 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Also add the more recent thicket of Google Documents.
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
+Documentation/RCU/stallwarn.rst:
+401: WARNING: Literal block expected; none found.
+428: WARNING: Literal block expected; none found.
+445: WARNING: Literal block expected; none found.
+459: WARNING: Literal block expected; none found.
+468: WARNING: Literal block expected; none found.
+
+The literal block needs to be indented, so this commit adds two spaces
+to each line.
+
+In addition, ':', which is used as a boundary in the literal block, is
+replaced by '|'.
+
+Link: https://lore.kernel.org/linux-next/20221123163255.48653674@canb.auug.org.au/
+Fixes: 3d2788ba4573 ("doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Tested-by: Akira Yokosawa <akiyks@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/rcu.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/RCU/stallwarn.rst | 56 ++++++++++++++++++---------------
+ 1 file changed, 30 insertions(+), 26 deletions(-)
 
-diff --git a/Documentation/RCU/rcu.rst b/Documentation/RCU/rcu.rst
-index 381cb86f657d8..bf6617b330a74 100644
---- a/Documentation/RCU/rcu.rst
-+++ b/Documentation/RCU/rcu.rst
-@@ -89,4 +89,5 @@ Frequently Asked Questions
- - Where can I find more information on RCU?
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index c1e92dfef40d5..ca7b7cd806a16 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -398,9 +398,9 @@ In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
+ rcupdate.rcu_cpu_stall_cputime=1, the following additional information
+ is supplied with each RCU CPU stall warning::
  
-   See the Documentation/RCU/RTFP.txt file.
--  Or point your browser at (http://www.rdrop.com/users/paulmck/RCU/).
-+  Or point your browser at (https://docs.google.com/document/d/1X0lThx8OK0ZgLMqVoXiR4ZrGURHrXK6NyLRbeXe3Xac/edit)
-+  or (https://docs.google.com/document/d/1GCdQC8SDbb54W1shjEXqGZ0Rq8a6kIeYutdSIajfpLA/edit?usp=sharing).
+-rcu:          hardirqs   softirqs   csw/system
+-rcu:  number:      624         45            0
+-rcu: cputime:       69          1         2425   ==> 2500(ms)
++  rcu:          hardirqs   softirqs   csw/system
++  rcu:  number:      624         45            0
++  rcu: cputime:       69          1         2425   ==> 2500(ms)
+ 
+ These statistics are collected during the sampling period. The values
+ in row "number:" are the number of hard interrupts, number of soft
+@@ -412,22 +412,24 @@ in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
+ stalls, these tasks are typically kernel tasks, which is why only the
+ system CPU time are considered.
+ 
+-The sampling period is shown as follows:
+-:<------------first timeout---------->:<-----second timeout----->:
+-:<--half timeout-->:<--half timeout-->:                          :
+-:                  :<--first period-->:                          :
+-:                  :<-----------second sampling period---------->:
+-:                  :                  :                          :
+-:          snapshot time point    1st-stall                  2nd-stall
++The sampling period is shown as follows::
+ 
++  |<------------first timeout---------->|<-----second timeout----->|
++  |<--half timeout-->|<--half timeout-->|                          |
++  |                  |<--first period-->|                          |
++  |                  |<-----------second sampling period---------->|
++  |                  |                  |                          |
++             snapshot time point    1st-stall                  2nd-stall
+ 
+ The following describes four typical scenarios:
+ 
+-1. A CPU looping with interrupts disabled.::
++1. A CPU looping with interrupts disabled.
+ 
+-   rcu:          hardirqs   softirqs   csw/system
+-   rcu:  number:        0          0            0
+-   rcu: cputime:        0          0            0   ==> 2500(ms)
++   ::
++
++     rcu:          hardirqs   softirqs   csw/system
++     rcu:  number:        0          0            0
++     rcu: cputime:        0          0            0   ==> 2500(ms)
+ 
+    Because interrupts have been disabled throughout the measurement
+    interval, there are no interrupts and no context switches.
+@@ -440,11 +442,11 @@ The following describes four typical scenarios:
+ 
+    This is similar to the previous example, but with non-zero number of
+    and CPU time consumed by hard interrupts, along with non-zero CPU
+-   time consumed by in-kernel execution.::
++   time consumed by in-kernel execution::
+ 
+-   rcu:          hardirqs   softirqs   csw/system
+-   rcu:  number:      624          0            0
+-   rcu: cputime:       49          0         2446   ==> 2500(ms)
++     rcu:          hardirqs   softirqs   csw/system
++     rcu:  number:      624          0            0
++     rcu: cputime:       49          0         2446   ==> 2500(ms)
+ 
+    The fact that there are zero softirqs gives a hint that these were
+    disabled, perhaps via local_bh_disable().  It is of course possible
+@@ -454,20 +456,22 @@ The following describes four typical scenarios:
+ 
+ 3. A CPU looping with preemption disabled.
+ 
+-   Here, only the number of context switches is zero.::
++   Here, only the number of context switches is zero::
+ 
+-   rcu:          hardirqs   softirqs   csw/system
+-   rcu:  number:      624         45            0
+-   rcu: cputime:       69          1         2425   ==> 2500(ms)
++     rcu:          hardirqs   softirqs   csw/system
++     rcu:  number:      624         45            0
++     rcu: cputime:       69          1         2425   ==> 2500(ms)
+ 
+    This situation hints that the stalled CPU was looping with preemption
+    disabled.
+ 
+-4. No looping, but massive hard and soft interrupts.::
++4. No looping, but massive hard and soft interrupts.
++
++   ::
+ 
+-   rcu:          hardirqs   softirqs   csw/system
+-   rcu:  number:       xx         xx            0
+-   rcu: cputime:       xx         xx            0   ==> 2500(ms)
++     rcu:          hardirqs   softirqs   csw/system
++     rcu:  number:       xx         xx            0
++     rcu: cputime:       xx         xx            0   ==> 2500(ms)
+ 
+    Here, the number and CPU time of hard interrupts are all non-zero,
+    but the number of context switches and the in-kernel CPU time consumed
 -- 
 2.31.1.189.g2e36527f23
 
