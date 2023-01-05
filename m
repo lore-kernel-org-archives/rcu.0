@@ -2,46 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29F82C53210
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A755BC54E76
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbjAEAKZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
+        id S235540AbjAEAK1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:10:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbjAEAKQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:10:16 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667A744347;
-        Wed,  4 Jan 2023 16:10:03 -0800 (PST)
+        with ESMTP id S235356AbjAEAKE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:10:04 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BB843A37;
+        Wed,  4 Jan 2023 16:10:00 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D8D83B81984;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 14DA7B81985;
         Thu,  5 Jan 2023 00:09:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89BC8C433AC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E43C433A1;
         Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672877397;
-        bh=C6HzkjFAA72iQ6ev+Vk91gXKITUtU7V20ZYXLoH/gA8=;
+        bh=IqhCvimGfZ6hCH77O9U7PJxJALGcr3RAART03cZb3mE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIiqFL1tgkDtve0tSWcO9gciiwj029HJ1kZkVPw0gOpLA2IlP/PHZvBrND3zXB18l
-         P/adILooJ5HQY8ScS9AD8Y2M95QfEj7CuCJRkJgnhf3Gr8ajx5FP46jSzCoyAcce9Y
-         Vo699GpNpct5W6G15CRLwmctBsXMSq46A5zTGu8O8Uh1ZfCPb0VaH9Iwi31ZJPp+C7
-         X/1ylbNo9a0WIPXAQ1N5Qvex8j+pxxgBusof6vWO9ccycjs5FUdOsaa8+IOUCS3pJg
-         MpCAxDUy/ELJMB2NW3hoiozlWgAzcdlb6m2nA+pXyAdxLoU9tUl5OJWTXKH3B7RwLB
-         u1sUXNyTpZ0fw==
+        b=jOJumSyHIUQLJHJH8yAGISoWY3aVL31iHDHdYPe1G5fcVVIkI+dmUweZGgjAqjTdM
+         l6oFc/DTvPx1DE1GszgTuRH2K2hLKgrCcxaUrRMJEngB3EWHS8eaF+/XhwR1WROQTB
+         wZ8LGjpDAEt9mg9VMq/I5gFlisDaxwMJCyaiIYaznH6n1sd8LDu09V9GT0gRXIc/jN
+         YLHseN62xSBFcJPu+D+XY4PBKSStSVPw+qzPR3ltzJNJp9h991yErAJYLs2AWYcagF
+         IAnj+5y8oKCJtDCkLWOOVNbtKS0h4mHViaTu/opXeH/H+BS0TkCipxU74y9O2QSy35
+         10IfXarPBv3Qg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D85835C1C78; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
+        id CF7085C1AE0; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 12/15] doc: Document CONFIG_RCU_CPU_STALL_CPUTIME=y stall information
-Date:   Wed,  4 Jan 2023 16:09:52 -0800
-Message-Id: <20230105000955.1767218-12-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 07/15] doc: Update stallwarn.rst
+Date:   Wed,  4 Jan 2023 16:09:47 -0800
+Message-Id: <20230105000955.1767218-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
@@ -51,117 +49,96 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+This commit updates stallwarn.rst to reflect RCU additions and changes
+over the past few years.
 
-This commit documents the additional RCU CPU stall warning output
-produced by kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted
-with rcupdate.rcu_cpu_stall_cputime=1.
-
-[ paulmck: Apply wordsmithing. ]
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/stallwarn.rst | 88 +++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+ Documentation/RCU/stallwarn.rst | 43 +++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 18 deletions(-)
 
 diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index dfa4db8c0931e..c1e92dfef40d5 100644
+index e38c587067fc8..dfa4db8c0931e 100644
 --- a/Documentation/RCU/stallwarn.rst
 +++ b/Documentation/RCU/stallwarn.rst
-@@ -390,3 +390,91 @@ for example, "P3421".
+@@ -25,10 +25,10 @@ warnings:
  
- It is entirely possible to see stall warnings from normal and from
- expedited grace periods at about the same time during the same run.
+ -	A CPU looping with bottom halves disabled.
+ 
+--	For !CONFIG_PREEMPTION kernels, a CPU looping anywhere in the kernel
+-	without invoking schedule().  If the looping in the kernel is
+-	really expected and desirable behavior, you might need to add
+-	some calls to cond_resched().
++-	For !CONFIG_PREEMPTION kernels, a CPU looping anywhere in the
++	kernel without potentially invoking schedule().  If the looping
++	in the kernel is really expected and desirable behavior, you
++	might need to add some calls to cond_resched().
+ 
+ -	Booting Linux using a console connection that is too slow to
+ 	keep up with the boot-time console-message rate.  For example,
+@@ -108,16 +108,17 @@ warnings:
+ 
+ -	A bug in the RCU implementation.
+ 
+--	A hardware failure.  This is quite unlikely, but has occurred
+-	at least once in real life.  A CPU failed in a running system,
+-	becoming unresponsive, but not causing an immediate crash.
+-	This resulted in a series of RCU CPU stall warnings, eventually
+-	leading the realization that the CPU had failed.
++-	A hardware failure.  This is quite unlikely, but is not at all
++	uncommon in large datacenter.  In one memorable case some decades
++	back, a CPU failed in a running system, becoming unresponsive,
++	but not causing an immediate crash.  This resulted in a series
++	of RCU CPU stall warnings, eventually leading the realization
++	that the CPU had failed.
+ 
+-The RCU, RCU-sched, and RCU-tasks implementations have CPU stall warning.
+-Note that SRCU does *not* have CPU stall warnings.  Please note that
+-RCU only detects CPU stalls when there is a grace period in progress.
+-No grace period, no CPU stall warnings.
++The RCU, RCU-sched, RCU-tasks, and RCU-tasks-trace implementations have
++CPU stall warning.  Note that SRCU does *not* have CPU stall warnings.
++Please note that RCU only detects CPU stalls when there is a grace period
++in progress.  No grace period, no CPU stall warnings.
+ 
+ To diagnose the cause of the stall, inspect the stack traces.
+ The offending function will usually be near the top of the stack.
+@@ -205,16 +206,21 @@ RCU_STALL_RAT_DELAY
+ rcupdate.rcu_task_stall_timeout
+ -------------------------------
+ 
+-	This boot/sysfs parameter controls the RCU-tasks stall warning
+-	interval.  A value of zero or less suppresses RCU-tasks stall
+-	warnings.  A positive value sets the stall-warning interval
+-	in seconds.  An RCU-tasks stall warning starts with the line:
++	This boot/sysfs parameter controls the RCU-tasks and
++	RCU-tasks-trace stall warning intervals.  A value of zero or less
++	suppresses RCU-tasks stall warnings.  A positive value sets the
++	stall-warning interval in seconds.  An RCU-tasks stall warning
++	starts with the line:
+ 
+ 		INFO: rcu_tasks detected stalls on tasks:
+ 
+ 	And continues with the output of sched_show_task() for each
+ 	task stalling the current RCU-tasks grace period.
+ 
++	An RCU-tasks-trace stall warning starts (and continues) similarly:
 +
-+RCU_CPU_STALL_CPUTIME
-+=====================
++		INFO: rcu_tasks_trace detected stalls on tasks
 +
-+In kernels built with CONFIG_RCU_CPU_STALL_CPUTIME=y or booted with
-+rcupdate.rcu_cpu_stall_cputime=1, the following additional information
-+is supplied with each RCU CPU stall warning::
-+
-+rcu:          hardirqs   softirqs   csw/system
-+rcu:  number:      624         45            0
-+rcu: cputime:       69          1         2425   ==> 2500(ms)
-+
-+These statistics are collected during the sampling period. The values
-+in row "number:" are the number of hard interrupts, number of soft
-+interrupts, and number of context switches on the stalled CPU. The
-+first three values in row "cputime:" indicate the CPU time in
-+milliseconds consumed by hard interrupts, soft interrupts, and tasks
-+on the stalled CPU.  The last number is the measurement interval, again
-+in milliseconds.  Because user-mode tasks normally do not cause RCU CPU
-+stalls, these tasks are typically kernel tasks, which is why only the
-+system CPU time are considered.
-+
-+The sampling period is shown as follows:
-+:<------------first timeout---------->:<-----second timeout----->:
-+:<--half timeout-->:<--half timeout-->:                          :
-+:                  :<--first period-->:                          :
-+:                  :<-----------second sampling period---------->:
-+:                  :                  :                          :
-+:          snapshot time point    1st-stall                  2nd-stall
-+
-+
-+The following describes four typical scenarios:
-+
-+1. A CPU looping with interrupts disabled.::
-+
-+   rcu:          hardirqs   softirqs   csw/system
-+   rcu:  number:        0          0            0
-+   rcu: cputime:        0          0            0   ==> 2500(ms)
-+
-+   Because interrupts have been disabled throughout the measurement
-+   interval, there are no interrupts and no context switches.
-+   Furthermore, because CPU time consumption was measured using interrupt
-+   handlers, the system CPU consumption is misleadingly measured as zero.
-+   This scenario will normally also have "(0 ticks this GP)" printed on
-+   this CPU's summary line.
-+
-+2. A CPU looping with bottom halves disabled.
-+
-+   This is similar to the previous example, but with non-zero number of
-+   and CPU time consumed by hard interrupts, along with non-zero CPU
-+   time consumed by in-kernel execution.::
-+
-+   rcu:          hardirqs   softirqs   csw/system
-+   rcu:  number:      624          0            0
-+   rcu: cputime:       49          0         2446   ==> 2500(ms)
-+
-+   The fact that there are zero softirqs gives a hint that these were
-+   disabled, perhaps via local_bh_disable().  It is of course possible
-+   that there were no softirqs, perhaps because all events that would
-+   result in softirq execution are confined to other CPUs.  In this case,
-+   the diagnosis should continue as shown in the next example.
-+
-+3. A CPU looping with preemption disabled.
-+
-+   Here, only the number of context switches is zero.::
-+
-+   rcu:          hardirqs   softirqs   csw/system
-+   rcu:  number:      624         45            0
-+   rcu: cputime:       69          1         2425   ==> 2500(ms)
-+
-+   This situation hints that the stalled CPU was looping with preemption
-+   disabled.
-+
-+4. No looping, but massive hard and soft interrupts.::
-+
-+   rcu:          hardirqs   softirqs   csw/system
-+   rcu:  number:       xx         xx            0
-+   rcu: cputime:       xx         xx            0   ==> 2500(ms)
-+
-+   Here, the number and CPU time of hard interrupts are all non-zero,
-+   but the number of context switches and the in-kernel CPU time consumed
-+   are zero. The number and cputime of soft interrupts will usually be
-+   non-zero, but could be zero, for example, if the CPU was spinning
-+   within a single hard interrupt handler.
-+
-+   If this type of RCU CPU stall warning can be reproduced, you can
-+   narrow it down by looking at /proc/interrupts or by writing code to
-+   trace each interrupt, for example, by referring to show_interrupts().
+ 
+ Interpreting RCU's CPU Stall-Detector "Splats"
+ ==============================================
+@@ -248,7 +254,8 @@ dynticks counter, which will have an even-numbered value if the CPU
+ is in dyntick-idle mode and an odd-numbered value otherwise.  The hex
+ number between the two "/"s is the value of the nesting, which will be
+ a small non-negative number if in the idle loop (as shown above) and a
+-very large positive number otherwise.
++very large positive number otherwise.  The number following the final
++"/" is the NMI nesting, which will be a small non-negative number.
+ 
+ The "softirq=" portion of the message tracks the number of RCU softirq
+ handlers that the stalled CPU has executed.  The number before the "/"
 -- 
 2.31.1.189.g2e36527f23
 
