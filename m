@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7538AC54E76
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD03C54E76
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbjAEAKA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52426 "EHLO
+        id S235315AbjAEAKC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbjAEAJ7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:09:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8360543A1D;
-        Wed,  4 Jan 2023 16:09:58 -0800 (PST)
+        with ESMTP id S235063AbjAEAKB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:10:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB7543A16;
+        Wed,  4 Jan 2023 16:09:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C4A686185D;
-        Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28564C433F2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2552F6189F;
+        Thu,  5 Jan 2023 00:09:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F23AC433A0;
         Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672877397;
-        bh=+AiKtda+llbq2fzplOX6DNXjkIDDWzakm6PNDaSoAkU=;
+        bh=b7i4mGR/FuXTcyH6kks7yRlm8D/4PuTAENFbH1OA8wg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ceQcRjLOz/Rn8fggvDh6YDzDjjtD9/K2vNLtGKS2jDGfc5860/nLKqyseHDt1s8kK
-         NH9Q/DncskK9gkJ3SPYPPdVFYM1ow0HSu/3hMJgs+HlxYXAUV0oMFCWqGPmLCFLrTk
-         a1RNVUel2N2fdr7zWWVllDK7WKz9vw+RVNhBg402LouHogSDy4xzLLtH+jfiewsoNy
-         VdrkOzbj0eZy4kA0Mn/t1rpUWe/4A2/Bvq/MEbLAV7FmffL9KBGU1MVx0AWSdZgQMg
-         vnLogOaJuwGCc6iavccKwB76BCOMuqIGgShsxYyAD0V0aVP4zZd0vpcb+0re7fIEPJ
-         6b2mJMEclNp2w==
+        b=OMSOFYzS1xnbA9wpLTLSK1S80Tuk4cu339hnuEsXF0+nH7/4n/hUt/Chf/1xHIyDo
+         +nk9Dr2r9VtlWYWW6eXzeNYN0FA4fDj48PnsTo+CyEFWqdx7wjzns2MOcUYrmGCk1t
+         dRHwCf3vzxS89y9huoBaTMhHzyVu0iffvG+YSqAYvTC9AbXwz/QDK9Lfq/HnnkaQfa
+         /hcIOtO+PMVEwjdAyJOE9zOfYz6nraJkpEYVtqE0G1IBMN8YbsMdY4WpO08pZj8dXG
+         O7ylODSJe9rn3XGLIU/wjRPKEC6bupjyrNm6ay65AXWZHphd/SPhW9Ppt2jZsQOmQh
+         KEW6zDE4YF63w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C9BF55C1456; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
+        id D2EB75C1C5D; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 04/15] doc: Update rcu_dereference.rst
-Date:   Wed,  4 Jan 2023 16:09:44 -0800
-Message-Id: <20230105000955.1767218-4-paulmck@kernel.org>
+Subject: [PATCH rcu 09/15] doc: Update UP.rst
+Date:   Wed,  4 Jan 2023 16:09:49 -0800
+Message-Id: <20230105000955.1767218-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
@@ -49,97 +49,52 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit updates rcu_dereference.rst to reflect RCU additions and
-changes over the past few years
+This commit updates UP.rst to reflect changes over the past few years,
+including the advent of userspace RCU libraries for constrained systems.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/rcu_dereference.rst | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ Documentation/RCU/UP.rst | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/RCU/rcu_dereference.rst b/Documentation/RCU/rcu_dereference.rst
-index 81e828c8313b8..3b739f6243c85 100644
---- a/Documentation/RCU/rcu_dereference.rst
-+++ b/Documentation/RCU/rcu_dereference.rst
-@@ -19,8 +19,9 @@ Follow these rules to keep your RCU code working properly:
- 	can reload the value, and won't your code have fun with two
- 	different values for a single pointer!  Without rcu_dereference(),
- 	DEC Alpha can load a pointer, dereference that pointer, and
--	return data preceding initialization that preceded the store of
--	the pointer.
-+	return data preceding initialization that preceded the store
-+	of the pointer.  (As noted later, in recent kernels READ_ONCE()
-+	also prevents DEC Alpha from playing these tricks.)
+diff --git a/Documentation/RCU/UP.rst b/Documentation/RCU/UP.rst
+index e26dda27430c8..8b20fd45f2558 100644
+--- a/Documentation/RCU/UP.rst
++++ b/Documentation/RCU/UP.rst
+@@ -38,7 +38,7 @@ by having call_rcu() directly invoke its arguments only if it was called
+ from process context.  However, this can fail in a similar manner.
  
- 	In addition, the volatile cast in rcu_dereference() prevents the
- 	compiler from deducing the resulting pointer value.  Please see
-@@ -34,7 +35,7 @@ Follow these rules to keep your RCU code working properly:
- 	takes on the role of the lockless_dereference() primitive that
- 	was removed in v4.15.
+ Suppose that an RCU-based algorithm again scans a linked list containing
+-elements A, B, and C in process contexts, but that it invokes a function
++elements A, B, and C in process context, but that it invokes a function
+ on each element as it is scanned.  Suppose further that this function
+ deletes element B from the list, then passes it to call_rcu() for deferred
+ freeing.  This may be a bit unconventional, but it is perfectly legal
+@@ -59,7 +59,8 @@ Example 3: Death by Deadlock
+ Suppose that call_rcu() is invoked while holding a lock, and that the
+ callback function must acquire this same lock.  In this case, if
+ call_rcu() were to directly invoke the callback, the result would
+-be self-deadlock.
++be self-deadlock *even if* this invocation occurred from a later
++call_rcu() invocation a full grace period later.
  
---	You are only permitted to use rcu_dereference on pointer values.
-+-	You are only permitted to use rcu_dereference() on pointer values.
- 	The compiler simply knows too much about integral values to
- 	trust it to carry dependencies through integer operations.
- 	There are a very few exceptions, namely that you can temporarily
-@@ -240,6 +241,7 @@ precautions.  To see this, consider the following code fragment::
- 		struct foo *q;
- 		int r1, r2;
+ In some cases, it would possible to restructure to code so that
+ the call_rcu() is delayed until after the lock is released.  However,
+@@ -85,6 +86,14 @@ Quick Quiz #2:
  
-+		rcu_read_lock();
- 		p = rcu_dereference(gp2);
- 		if (p == NULL)
- 			return;
-@@ -248,7 +250,10 @@ precautions.  To see this, consider the following code fragment::
- 		if (p == q) {
- 			/* The compiler decides that q->c is same as p->c. */
- 			r2 = p->c; /* Could get 44 on weakly order system. */
-+		} else {
-+			r2 = p->c - r1; /* Unconditional access to p->c. */
- 		}
-+		rcu_read_unlock();
- 		do_something_with(r1, r2);
- 	}
+ :ref:`Answers to Quick Quiz <answer_quick_quiz_up>`
  
-@@ -297,6 +302,7 @@ Then one approach is to use locking, for example, as follows::
- 		struct foo *q;
- 		int r1, r2;
++It is important to note that userspace RCU implementations *do*
++permit call_rcu() to directly invoke callbacks, but only if a full
++grace period has elapsed since those callbacks were queued.  This is
++the case because some userspace environments are extremely constrained.
++Nevertheless, people writing userspace RCU implementations are strongly
++encouraged to avoid invoking callbacks from call_rcu(), thus obtaining
++the deadlock-avoidance benefits called out above.
++
+ Summary
+ -------
  
-+		rcu_read_lock();
- 		p = rcu_dereference(gp2);
- 		if (p == NULL)
- 			return;
-@@ -306,7 +312,12 @@ Then one approach is to use locking, for example, as follows::
- 		if (p == q) {
- 			/* The compiler decides that q->c is same as p->c. */
- 			r2 = p->c; /* Locking guarantees r2 == 144. */
-+		} else {
-+			spin_lock(&q->lock);
-+			r2 = q->c - r1;
-+			spin_unlock(&q->lock);
- 		}
-+		rcu_read_unlock();
- 		spin_unlock(&p->lock);
- 		do_something_with(r1, r2);
- 	}
-@@ -364,7 +375,7 @@ the exact value of "p" even in the not-equals case.  This allows the
- compiler to make the return values independent of the load from "gp",
- in turn destroying the ordering between this load and the loads of the
- return values.  This can result in "p->b" returning pre-initialization
--garbage values.
-+garbage values on weakly ordered systems.
- 
- In short, rcu_dereference() is *not* optional when you are going to
- dereference the resulting pointer.
-@@ -430,7 +441,7 @@ member of the rcu_dereference() to use in various situations:
- SPARSE CHECKING OF RCU-PROTECTED POINTERS
- -----------------------------------------
- 
--The sparse static-analysis tool checks for direct access to RCU-protected
-+The sparse static-analysis tool checks for non-RCU access to RCU-protected
- pointers, which can result in "interesting" bugs due to compiler
- optimizations involving invented loads and perhaps also load tearing.
- For example, suppose someone mistakenly does something like this::
 -- 
 2.31.1.189.g2e36527f23
 
