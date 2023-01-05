@@ -2,88 +2,92 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D96C54EF0
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4CD0C3DA7A
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:52:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbjAEPvM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 10:51:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
+        id S234460AbjAEPvo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 10:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234547AbjAEPuk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 10:50:40 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF36D5E0BC
-        for <rcu@vger.kernel.org>; Thu,  5 Jan 2023 07:50:38 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id v2so19691383ioe.4
-        for <rcu@vger.kernel.org>; Thu, 05 Jan 2023 07:50:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x5N+tQSXR3a1Z2OXWXkb2lYzYjkzFSaH5GpFM4+ANT4=;
-        b=cIYPykcI4c0tm0JrP8L5kXUAhZiIVY6Aiw2+PLkjAwaIysgc8bjoVZFY0RE1LJLRVr
-         oSYfQ9BkvxF/72S5ZH/KyrqHqtbI8oURpC/F/SefBNrQvfzu679lNUx9Yz8TsNjrOBi3
-         ru7vsqzBZaG0Jg5DMEbQxOFlduZBSdhwFzmTJBIfdIssycK2KSGG9LIN+LGyLv2zfwQ5
-         N8WBLsmWxZ2p+Bi5WNS1LZWHXjzQjsX8oB8ZpO73KTRI4H9dyJf/9+VebWZO3raUqchA
-         3047OPkhL7I+UYpMu0q8PCkN0CxUcEvn6gxCEGblEKYXANzfvQL1OKLH9ohRBg5p/uaa
-         Vafg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x5N+tQSXR3a1Z2OXWXkb2lYzYjkzFSaH5GpFM4+ANT4=;
-        b=j0JRMT6bQ0ryLFzAdazM2e0YsYdDoFsrjwVOCqMDyxSZ5BYDbq6ck8KcAhJJUni5Fg
-         fkKoDre4NAuOCus4MuE+ZLqyYKSdiOTqCBHzRD5asOzcTpJwr+V4muEo23AiuYBbgnKc
-         QNpm9Ti5qWaqigYsjqL3egANePVBg1t++J4psdmIBt/+HvQ7MvMj2oi84FYkFcsDr+F+
-         vtYZFhxD79EoxRm3jLnwKwcZ5SoA+dkypOzTOHZYfA18LRSKs1qA81SG+4BW8EV+A/C6
-         KKYFePlHKX5D9LrKyD/TorHwAZZlp/dGFRVafjck3yY8eBSbHY8a3TgH2ITMdK62x8LQ
-         6BJA==
-X-Gm-Message-State: AFqh2koJL+ANthDTladU9RIZMs1a3cQTkwwvQsqL0xK6Y4MTyn/qChRk
-        fSh6EsLPhWZkFUlNvBULlAeGuA==
-X-Google-Smtp-Source: AMrXdXsjnlZwcoNllvJnOHFnPUEI0F8/jX8TyxLtYEQ4cLiggavuVDXW8VLsDOF9BWnHpzILm8ROpA==
-X-Received: by 2002:a5d:990e:0:b0:6df:128f:ca12 with SMTP id x14-20020a5d990e000000b006df128fca12mr6265742iol.1.1672933838201;
-        Thu, 05 Jan 2023 07:50:38 -0800 (PST)
-Received: from [127.0.0.1] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id j2-20020a02cc62000000b00363362cd476sm12180995jaq.101.2023.01.05.07.50.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Jan 2023 07:50:37 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S234875AbjAEPvJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 10:51:09 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC343201C;
+        Thu,  5 Jan 2023 07:51:07 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 68D6F61AF8;
+        Thu,  5 Jan 2023 15:51:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C34C9C433D2;
+        Thu,  5 Jan 2023 15:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672933866;
+        bh=pqruQOkYq+O0ZoZtIexmJem3EBjsqfOKE7sNKH0p2ME=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JPijei3viTGiT/tTvAsm0e10zWWgIobtJA1/BIbjXAQrVJ0RMW4eKJQb09URcEhMQ
+         WrhYAJ8YOYU6fhRDDZGyeQeyIrprGBvGxAOXEN5exUsc2s/wbuZ5y0YxaVwvKjdFI8
+         mRltvMp6B34GAd29Sjz4Rfg/Fr9OlLIMlMXmn+1tTNBJK3k3hnHVqZedefJcglSDpJ
+         q5lYb5zfcq74s4OAg6OT9Q4E5r6XppwHlM+UtJ14JnkZVtes6iAOpcgP1KRyeWtHFp
+         qroBAGrLmYIm7web9r7EIwflQHVj0S20OC5fAFawownnyE1D/sNXw0InnmuX+YQxXY
+         yoXXOmkQ8XntQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6B44A5C029A; Thu,  5 Jan 2023 07:51:06 -0800 (PST)
+Date:   Thu, 5 Jan 2023 07:51:06 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH rcu 10/27] drivers/cpufreq: Remove "select SRCU"
+Message-ID: <20230105155106.GX4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
-Subject: Re: (subset) [PATCH rcu 0/27] Unconditionally enable SRCU
-Message-Id: <167293383749.9409.12809142428621928168.b4-ty@kernel.dk>
-Date:   Thu, 05 Jan 2023 08:50:37 -0700
+ <20230105003813.1770367-10-paulmck@kernel.org>
+ <CAJZ5v0j4M3Xco7bSPNog9h-zDgEuHE+jqktWNoRZKyLZCVJeBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-7ab1d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0j4M3Xco7bSPNog9h-zDgEuHE+jqktWNoRZKyLZCVJeBA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-On Wed, 04 Jan 2023 16:37:59 -0800, Paul E. McKenney wrote:
-> This series removes Kconfig "select" clauses and #ifdef directives that
-> are no longer necessary give that SRCU is now unconditionally enabled,
-> courtesy of new-age printk() requirements.  Finally, the SRCU Kconfig
-> option is removed entirely.
+On Thu, Jan 05, 2023 at 04:09:38PM +0100, Rafael J. Wysocki wrote:
+> On Thu, Jan 5, 2023 at 1:38 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > Kconfig statements.
+> >
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> > Cc: <linux-pm@vger.kernel.org>
 > 
-> 1.	arch/x86: Remove "select SRCU".
-> 
-> [...]
+> Acked-by: "Rafael J. Wysocki" <rafael@kernel.org>
 
-Applied, thanks!
+Thank you, Rafael!  I will apply both on my next rebase.
 
-[07/27] block: Remove "select SRCU"
-        commit: b2b50d572135c5c6e10c2ff79cd828d5a8141ef6
+							Thanx, Paul
 
-Best regards,
--- 
-Jens Axboe
-
-
+> > ---
+> >  drivers/cpufreq/Kconfig | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+> > index 2a84fc63371e2..785541df59379 100644
+> > --- a/drivers/cpufreq/Kconfig
+> > +++ b/drivers/cpufreq/Kconfig
+> > @@ -3,7 +3,6 @@ menu "CPU Frequency scaling"
+> >
+> >  config CPU_FREQ
+> >         bool "CPU Frequency scaling"
+> > -       select SRCU
+> >         help
+> >           CPU Frequency scaling allows you to change the clock speed of
+> >           CPUs on the fly. This is a nice method to save power, because
+> > --
+> > 2.31.1.189.g2e36527f23
+> >
