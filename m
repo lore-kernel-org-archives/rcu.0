@@ -2,93 +2,105 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 052A5C46467
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:49:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15EB3C54E76
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:49:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbjAEAt3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:49:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
+        id S229457AbjAEAt2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:49:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjAEAsH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:48:07 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7805230576;
-        Wed,  4 Jan 2023 16:45:06 -0800 (PST)
+        with ESMTP id S229493AbjAEAsG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:48:06 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F57630572;
+        Wed,  4 Jan 2023 16:45:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 592ECB81716;
-        Thu,  5 Jan 2023 00:44:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D286C433EF;
-        Thu,  5 Jan 2023 00:44:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4116618A0;
+        Thu,  5 Jan 2023 00:45:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34C8EC433EF;
+        Thu,  5 Jan 2023 00:45:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672879474;
-        bh=WH4x6VZKnbwZlnPEWcHvQT9ihrLtRVqakgjvyj7uwNI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f6g9ioP2ZK+RKiubpiaLTESRzMdvdQyEeSmjcOTYqjnHOqbHQFu5fNU+Ti1xMl+7g
-         wLhV+Mdav4WV+IswAu0GaQYKMR5EXACs2E1qhIRA2yr7eKa470X1IgWGSSEZqcYSSz
-         axrDrCP5KY8EPubHhqg+O6DLorDamc3caADmXp7hcRXpr71RZnTirbJdT6NhTf3HxV
-         MnFnUigvZTqKwBEJswhwOq3V9ssOXk6+EScDX16Ou/mx9rJiHCXD0wQe5/3XwIS/bw
-         DcGiJ2pqmUQFT3CwKYPMkFHil381Mc0Ajw8T6FHvYKkYAWNK6QcMqcTceLRuKz3J0W
-         6rZmQacc5W/qQ==
-Received: by mail-lf1-f43.google.com with SMTP id g13so52904014lfv.7;
-        Wed, 04 Jan 2023 16:44:33 -0800 (PST)
-X-Gm-Message-State: AFqh2kq0wFXF19rL0Kiekb7JR88RBY7e3Xtjx2ftrxvH4f0oarQP5+/O
-        wIvd+q1L0vh8Hp5ZnYNBg3aJu4+Ke2xgZSLITpw=
-X-Google-Smtp-Source: AMrXdXtprpsBrqI3b3IFTlFhxNSRfwqsK8W3eL1jzaanesPzAA6Cg+EmGpeS+vdg9VSSspb9DeFkw6mWAHBLV8d6UoM=
-X-Received: by 2002:a19:640f:0:b0:4b6:e71d:94a6 with SMTP id
- y15-20020a19640f000000b004b6e71d94a6mr3543316lfb.476.1672879472160; Wed, 04
- Jan 2023 16:44:32 -0800 (PST)
+        s=k20201202; t=1672879503;
+        bh=kVT1HGBSl7LGywi0JFiEDrUmFvLHman/Yt/MTgK22Cc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QZg3Vmw+pnalljHEBPfGidZfVJkNWzTbNxrTJFrdmuXLqMrtlKhIyYsJJGwxSCfVm
+         GyJGL7lJPn4EJ+Q60cntcETE+DTa4JH8nyT4Yl/ED+9N5xeiMWVsaBhKUWsktO3Xlo
+         VMwSNlq3HcA4h8Urxcn0wXUeeb8t5FNXnRWK+WcntYtmyvkq/8O4ALU/nBAMr+sQ3i
+         RwQx2iTPhm7b3GNoxCk4rdJXhUXqC4HJbPZIw7L0Shs1cXWNhwD3+u26B/O+5Kgu9+
+         zOofsWii/ioo/yezCYFuy+9nIdNSMYHzfq9MgxKK5UB6iCDWFK7ivgbxZRpZ8ROy5l
+         ucIF1h1pRWU1Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E11DC5C149B; Wed,  4 Jan 2023 16:45:02 -0800 (PST)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: [PATCH rcu 3/6] rcu-tasks: Remove preemption disablement around srcu_read_[un]lock() calls
+Date:   Wed,  4 Jan 2023 16:44:53 -0800
+Message-Id: <20230105004501.1771332-5-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
+References: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1> <20230105003813.1770367-14-paulmck@kernel.org>
-In-Reply-To: <20230105003813.1770367-14-paulmck@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 4 Jan 2023 16:44:19 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6g4g_02iK3YwpkRQMwr8DBQSdVWnrOx0oYdaNWAWcX5g@mail.gmail.com>
-Message-ID: <CAPhsuW6g4g_02iK3YwpkRQMwr8DBQSdVWnrOx0oYdaNWAWcX5g@mail.gmail.com>
-Subject: Re: [PATCH rcu 14/27] drivers/md: Remove "select SRCU"
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        linux-raid@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 4, 2023 at 4:38 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Now that the SRCU Kconfig option is unconditionally selected, there is
-> no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> Kconfig statements.
->
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Alasdair Kergon <agk@redhat.com>
-> Cc: Mike Snitzer <snitzer@kernel.org>
-> Cc: <dm-devel@redhat.com>
-> Cc: <linux-raid@vger.kernel.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-Acked-by: Song Liu <song@kernel.org>
+Ever since the following commit:
 
-> ---
->  drivers/md/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-> index 998a5cfdbc4e9..5f1e2593fad7e 100644
-> --- a/drivers/md/Kconfig
-> +++ b/drivers/md/Kconfig
-> @@ -6,7 +6,6 @@
->  menuconfig MD
->         bool "Multiple devices driver support (RAID and LVM)"
->         depends on BLOCK
-> -       select SRCU
->         help
->           Support multiple physical spindles through a single logical device.
->           Required for RAID and logical volume management.
-> --
-> 2.31.1.189.g2e36527f23
->
+	5a41344a3d83 ("srcu: Simplify __srcu_read_unlock() via this_cpu_dec()")
+
+SRCU doesn't rely anymore on preemption to be disabled in order to
+modify the per-CPU counter. And even then it used to be done from the API
+itself.
+
+Therefore and after checking further, it appears to be safe to remove
+the preemption disablement around __srcu_read_[un]lock() in
+exit_tasks_rcu_start() and exit_tasks_rcu_finish()
+
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Suggested-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tasks.h | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 50d4c0ec7a89f..fbaed2637a7ff 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1008,9 +1008,7 @@ EXPORT_SYMBOL_GPL(show_rcu_tasks_classic_gp_kthread);
+  */
+ void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+ {
+-	preempt_disable();
+ 	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
+-	preempt_enable();
+ }
+ 
+ /*
+@@ -1022,9 +1020,7 @@ void exit_tasks_rcu_finish(void) __releases(&tasks_rcu_exit_srcu)
+ {
+ 	struct task_struct *t = current;
+ 
+-	preempt_disable();
+ 	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
+-	preempt_enable();
+ 	exit_tasks_rcu_finish_trace(t);
+ }
+ 
+-- 
+2.31.1.189.g2e36527f23
+
