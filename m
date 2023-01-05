@@ -2,114 +2,160 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6297DC3DA7D
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 08:07:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF64CC5479D
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 09:07:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbjAEIHG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 03:07:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        id S231783AbjAEJHD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 04:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjAEIHF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 03:07:05 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDF7544F3;
-        Thu,  5 Jan 2023 00:07:05 -0800 (PST)
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3057kGWt005426;
-        Thu, 5 Jan 2023 08:06:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=em0hYjDj0abFWoDkUwKCbrdF0k41o839F18VwMFiLbQ=;
- b=r5SbpYYMV7SfkmKmBgrnFjKFuMAC3R7tY8OfcVgbKHy5sBghZmuk5jiky1sc4AuE4bbL
- wfM5lrCKuQE6qW2wwEqM37nEstHy7n0ACWgNED9hPp0r4S8yO5GwcvjTCAakDODz7b1z
- zSQsC6GsHgnBd9zEeFYtgDrOMJFq+yU2f2sEBV9ZMWyWYd7e6bnSBrpzPJrJTEC5ha2x
- BOpAauydOjlX8dI0VD1aIhTtMYeRrm6IPGSVWO8ehDFb/fV/wJpBgocd96Dvqw+Emo8p
- mDpZjVHLC4P3T5/CSA+a5WDqgAnN++VXbe7hWgh2b4XjgW124lvm5GaFLUxCix2HC4Su YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mwtf18ejp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Jan 2023 08:06:34 +0000
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3057vaZ9013612;
-        Thu, 5 Jan 2023 08:06:34 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mwtf18ej1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Jan 2023 08:06:34 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30518CNv008371;
-        Thu, 5 Jan 2023 08:06:32 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma06fra.de.ibm.com (PPS) with ESMTPS id 3mtcbfmqxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Jan 2023 08:06:32 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30586SbA24510954
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Jan 2023 08:06:28 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A3F720043;
-        Thu,  5 Jan 2023 08:06:28 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BFE4420040;
-        Thu,  5 Jan 2023 08:06:27 +0000 (GMT)
-Received: from osiris (unknown [9.171.68.186])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu,  5 Jan 2023 08:06:27 +0000 (GMT)
-Date:   Thu, 5 Jan 2023 09:06:26 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH rcu 06/27] arch/s390/kvm: Remove "select SRCU"
-Message-ID: <Y7aFAqmgF4eu6SNH@osiris>
+        with ESMTP id S232404AbjAEJG3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 04:06:29 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2065.outbound.protection.outlook.com [40.107.22.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E06050159;
+        Thu,  5 Jan 2023 01:06:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QGEk3duM2rh2gl/wU72Qin+QvilR4diYYquYnpD4VchoALrr+qXqpRoHgPxei8vvk8kVnXe5KuIT6EqydV9kDrkSn61df4s4i87qWywDKkIb+tXUTIzizPIKCgy7my03zHe5RW53e/LqBly8B7l4kb6Q0CPcWoJjTCcNpykHSmKfBFWQ5+gtSPtU19UEZmsbymKeA8feJy4MWJXZP6B0ldSw4AS6m2XyUlqOjqoknn3jPHdZO+IyLsa2D3brbCFbgRQz/Sv77+sjA4N+i2EOO2g92LV2XhXDtf7oNebSxGoqqvPawAwPP/o+IevNtSDbXOVUdHPfJ/QeQC3qXQtw6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RJMKL/CvJq/pZDv853N4swfnXEDFYxCPFYQMCrQiZUQ=;
+ b=apy3L1LeGryTbCv9nIvCNUxWFQfIShvEu1+UIiWiWSGcYGAopXjJsUUx2cSOid9f3q/TC9Ipdh03HZ1Dy2d9NVjthe2wXjbRPwKtOHcaggqTJRBEnmjNURT2sEoLatLIGe235YO4vaCmdRnIKpJiy2dMJAvRZqp0nipPD+4slAs4cNJSLb4tmtuqIMeH6MIK64sdr868VLJwjItjO57FXZWSLTXjnn2IBci+MeLcMbe7aRU1xuthsw3aTVXooiTKzd0r5xjNJcSiHFsylj//3W3xNoWgVMMraZ1LE8lFynNN4W8lYtR2ZZw1sVL5awiW6yZIUikKGAfGJH3a6VN1NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RJMKL/CvJq/pZDv853N4swfnXEDFYxCPFYQMCrQiZUQ=;
+ b=NujT8fbXz6Anxwsdcglf43Yh2BcSfBUiIXpKG3j9IbSV0D0R3XMOAExCE74yK5A0qLDGT+WDSt5XTBcOYJThd/2tcgZ64kJq2JVSLEfmvTQ5LmLmxkiccAxoH7y1I4ejmOZZRt07QZ+6aO1Y0XgC/Rlyx/8THIN/gWegtowoE0Z79cHMmUqQM9wBoALgnFOL8kTxaOhqBMdE3yudb1lGXwrRACoF9ZmY8vbKSRj46Sx2uxAXdajeyjvxguyCOJvxIEIURw19SLBCUFbPPq4wDDm1pn/ucjFIvs2z1+0pX5vpDI1O0xQHoB/FpyYrSCewzv7o5GPEWK9zFdXbz8KwCw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
+ by AS8PR04MB8835.eurprd04.prod.outlook.com (2603:10a6:20b:42e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Thu, 5 Jan
+ 2023 09:06:26 +0000
+Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::5c50:6906:e9a4:5b9f]) by AS8PR04MB8465.eurprd04.prod.outlook.com
+ ([fe80::5c50:6906:e9a4:5b9f%9]) with mapi id 15.20.5944.019; Thu, 5 Jan 2023
+ 09:06:20 +0000
+Message-ID: <ba9a15cd-5d95-d766-19a7-17e0925bc63c@suse.com>
+Date:   Thu, 5 Jan 2023 17:06:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH rcu 18/27] fs/btrfs: Remove "select SRCU"
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-6-paulmck@kernel.org>
+ <20230105003813.1770367-18-paulmck@kernel.org>
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <20230105003813.1770367-18-paulmck@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0223.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::18) To AS8PR04MB8465.eurprd04.prod.outlook.com
+ (2603:10a6:20b:348::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230105003813.1770367-6-paulmck@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bFKzjL5BSCYr32RZTpDpfBd6VwtgBcQx
-X-Proofpoint-ORIG-GUID: YJxYUOCrB21-BA5binzfh_-OHRIhi9Jk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-05_02,2023-01-04_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 phishscore=0 mlxlogscore=361 impostorscore=0 spamscore=0
- suspectscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301050066
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AS8PR04MB8835:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b53966d-f4bd-4157-bac1-08daeefc1c5e
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uG5Y8QHjMewTjqHHLkfY7A1e8Fckb1lByPx1rxw1RaOTmnifpMxcRajh+UIKhTDlPstmSmptsZ2xxNsnlZw36bvEuUFJtycYN9bXlxpqcm9er2mlfvV+Bp5k8Gn1XlVO93LtXSk8AiMMjs+sdAj667wbQZz/W59YOYL5lgiN+8Tn3Ff4fQBc/J96+wisbzSfs2OngoTHTerC7E1A9cDgVLr+3A2A3dehA/qriioAAIIEhj1F4LikhiOTfag4qr84eTSGX3qGg5JhvbLwUAxVWtyiwSGpG6I4mwDG6n6kdBYcpzmdxjAnWBpPj8YPF6HtUk/3I3PeEP3+qmTX30NMOBn/v+8AXXlAbYJV/vNdF057dyoRFXgAT24rskmxpWXSN5EYPNAlY44uGY6EqOqzb8juk9km572AGLdOoHEviLzoQEHHp4z9Zve3M7wBWSrsAiwfUhSVCzdz+a+OAXqenqe4BNIAgifb8fmh5Fmx5AOkBaKwENDG4pE4ki2+KAWJF5tOz9RogcNct36ujNB6X0VuzpTS+wHiqjnoMTT1ICtaf6hLYYv5yUR1833dVZZ9Lv+1xytXA0jCp8RhqkFpbvZQAs5Dtyugm4wCmSDqzuR5qGRvTt26p9yAjPr7FU36vA53ZfPTMHDIQ/jx1BNqpMlemWop9H5boscnV2VdQNM8bN+Y3q6MyQDlMEVaYEISGlsB8lu8OUOFfl8tFdk1g37yN3gds2iAEa5h44XXiKU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(396003)(136003)(346002)(376002)(39860400002)(451199015)(316002)(2616005)(478600001)(31696002)(186003)(6512007)(6486002)(36756003)(6506007)(86362001)(5660300002)(54906003)(53546011)(2906002)(83380400001)(41300700001)(8936002)(31686004)(4744005)(6666004)(38100700002)(4326008)(8676002)(66476007)(66556008)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TTVtYVNtWkpvNlVNdzR1RmRidGY2RURpRXZLS0JSbFc2Z1VBWFVzaXlQSXRY?=
+ =?utf-8?B?VVJtcEwzZi9aOTVrRVJDNHYyOUNUZDZ1ZXl0SmdnWDM2TU10M25SOGtaa2Y3?=
+ =?utf-8?B?a010Mm96Ui9STjFrbks1U0UxbmNJb2M4OVgvUWkrQlp2UHBXUXh3TUZDVi9m?=
+ =?utf-8?B?ekFEK0Q3ajE0Q1dHbTdIOWhZYnh2a2ZaT2lwZlpNOTZ6TEltU1NiNlMwQWpm?=
+ =?utf-8?B?dmZxS1V1UGMrSGx5T3RIcFVlN01RZ1NQb0E3M0xaWVpnQ3N5L2dZbWMxN011?=
+ =?utf-8?B?cTZGTmcwNXZNOE94eG1rb1Z4S0VDb2REUUZ3QU9odTRBRlBRVjdQbXdPVmFl?=
+ =?utf-8?B?c0V3UVZDNTJ3eXVHbHhaR2trNUNYdmJFVko3VktBK3V5MDMyeHZ3bUYyWHRh?=
+ =?utf-8?B?c2czV1UrL0lBM1N6dUgzOFpDQlRFblViWnYvY2N4dDdlK1lMeHNnQzFjT3lz?=
+ =?utf-8?B?cmZUMVZ4RmJmNG5JSUllMkRySmdMOEVOanE2d2hlMS9iaEY0UXZOQXpmRi9N?=
+ =?utf-8?B?dmw3OTVEVnZQOWhzaW1QRytOdnpmb2R2eUFFWlVmc0NCYVlCZDY4SkVMczBr?=
+ =?utf-8?B?dFd3OVlWbnZBZ2lsRkRxK1c3UHR3U3VNb3EyWDlUeVJTMTZoaVVaMmFDK2pE?=
+ =?utf-8?B?SzdXOXZzV004VHV1ODZnSlVJTGR0ek5YOHBMMkQvdklleUdXcTRpcjZ0TGZa?=
+ =?utf-8?B?dGh6TGNJSTRETmR4Y1BrckR1WXFQRnZ5SkVpNUdOdVBBSk9sOFBvZkxrOWtW?=
+ =?utf-8?B?M2pxcFprVE5BdlBBTmpsMTF6OGJGSkhxUGNZeEF2aHh5eUdLSDF6SjlqRW9m?=
+ =?utf-8?B?RXRIbWJWdSswSEZoNmdsQ25SdElvMHhVQjlGVnB6aWJtQ3hRVk1EbEVKMU9h?=
+ =?utf-8?B?KzlsdzIrSUlYOFFKdk9wL3p0cnRWR2c1VmFDT1RzbUZUM3ZuUlJLUTV5eUFk?=
+ =?utf-8?B?NzFnd3p5bnpMUnFseGxHMFJFT0xWRjFCT0JEbSsyL1NQUk1SS1BZWXZMUnZm?=
+ =?utf-8?B?dTJYY3Vra3NaQkVqdUJNYVhmK3BLRWlGODJpendnWi91ZnZ2RzBWbkZpMk1k?=
+ =?utf-8?B?QmIwby81STFvcExjdkc2dEcxNmdHU3NDb2FPMjNDR1o1K0tsVW9nN3pka1BT?=
+ =?utf-8?B?cGM1SkhwU1p6TFlDTGJUSDV1TnMxT3ExYWV4VXFvZEU1Szl6SEcrQktiNllT?=
+ =?utf-8?B?UWRGSkNaQWRTOXJ4YTVQR3hsenE2N0JqN0p1QU50TWlLaUltSWVPb2M2NXAz?=
+ =?utf-8?B?OFJPZndDR2JSWCtDeWo2OTZqUXgveHNqczh6alloUVRQQTUrc1MxTmJVMW45?=
+ =?utf-8?B?dDNNazBNRHlrNjhpVXlqUk10U2dmeUUwODdkdHFhRmxkQXFvS2U1dWZZS0k4?=
+ =?utf-8?B?VFQyUFgvc3VGSGpCYjdYWUhxS2d3aTNhUzVlRjNlOFJheFdKTHhDWmQ3cFpR?=
+ =?utf-8?B?T0dLM1FqWHovZGxFWnRab1dsR0htaDcrL25PaUwvbTJGUENOMndPMloxTElN?=
+ =?utf-8?B?bnBDd0d5dFIxWEtMeHJoejh3bmZRVnlDcnZNaHQzMW45WGxDcFMwazVVZi9D?=
+ =?utf-8?B?eWovSVArYW1BTjkzQlpGTWlQcnlTZlo4cDhzWXJhQnMxRkpVanpGcG53dUd2?=
+ =?utf-8?B?bnQ0SnRGckZ3NU9CVUVwWGYxcjg1RjRaVDZROU9TUXUzcGNCbUJwNHNCTGh5?=
+ =?utf-8?B?QUZVbE0zeHZUTmJHNVFObng0U1NEVVFqOUI3NEsxNGFsWVVOd1BHR3pUVm9S?=
+ =?utf-8?B?NFdZYzhJTkdkZ1ZwYk5WUDUra1ErS21Ra1RHU3JCbk0xcXhETnZGeU04VFVn?=
+ =?utf-8?B?MUJJc2UwVUR0K3UrejR4S1FNbHhOMzc3WnBlcUc0Q3RqNmQ1OVErT04ya3do?=
+ =?utf-8?B?WkVzaGwvY0Q0OERFV3BJNVl5MW9RNnBOaXdhOURXYWpDcFdTYjNPa2s4WE1C?=
+ =?utf-8?B?N3FpTVg5TDV5bG5pOFZRcjNvbkVtQUVEbzZmOHRVSHoyMWFDUi93TXlpdEFv?=
+ =?utf-8?B?RDJhN0tTZ21tNVZnSWhlSHduWDM1Y3Q4VmloOFdFVWhFL1lDR0NsQ1ZRdmxu?=
+ =?utf-8?B?SUsrQ2ErSnZSM1R1WlVJcjBuUCtHYU8wek9LSk53TjdtOWdObXFHZzhWMEFM?=
+ =?utf-8?B?MGo5aVEzV040a2Z1UWpZWFR1OUpnM29sRURESHBvSXB4aTA3dXQxWWlhSFI4?=
+ =?utf-8?Q?/SZiIk31z7jb+98Ygq0l2sg=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b53966d-f4bd-4157-bac1-08daeefc1c5e
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2023 09:06:20.5547
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ldn5zjHJM7C9/FAERhUAMrDcmXmWjfBlaVEPHBndGn0pggP3uU11LfK/cl1aYTQT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8835
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 04, 2023 at 04:37:52PM -0800, Paul E. McKenney wrote:
+
+
+On 2023/1/5 08:38, Paul E. McKenney wrote:
 > Now that the SRCU Kconfig option is unconditionally selected, there is
 > no longer any point in selecting it.  Therefore, remove the "select SRCU"
 > Kconfig statements.
 > 
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-> Cc: Janosch Frank <frankja@linux.ibm.com>
-> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> Cc: Sven Schnelle <svens@linux.ibm.com>
-> Cc: <kvm@vger.kernel.org>
-> Cc: <linux-s390@vger.kernel.org>
-> ---
->  arch/s390/kvm/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: <linux-btrfs@vger.kernel.org>
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+In fact, since commit c75e839414d3 ("btrfs: kill the subvol_srcu"), we 
+can completely remove any SRCU related configs and even includes.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
+> ---
+>   fs/btrfs/Kconfig | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> index 183e5c4aed348..37b6bab90c835 100644
+> --- a/fs/btrfs/Kconfig
+> +++ b/fs/btrfs/Kconfig
+> @@ -17,7 +17,6 @@ config BTRFS_FS
+>   	select FS_IOMAP
+>   	select RAID6_PQ
+>   	select XOR_BLOCKS
+> -	select SRCU
+>   	depends on PAGE_SIZE_LESS_THAN_256KB
+>   
+>   	help
