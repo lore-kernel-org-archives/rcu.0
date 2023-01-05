@@ -2,53 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C528C54EBE
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE442C678DA
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240351AbjAEAlN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
+        id S240105AbjAEAlL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240674AbjAEAir (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:47 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187A333F;
-        Wed,  4 Jan 2023 16:38:16 -0800 (PST)
+        with ESMTP id S240707AbjAEAiu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:50 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993B2C4D;
+        Wed,  4 Jan 2023 16:38:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AD8FC6188D;
-        Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14406C433EF;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7985FB8198C;
+        Thu,  5 Jan 2023 00:38:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF63AC4332C;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=4Nam+o5lyarcNVckvSQPxI6mOyMmetTwa/zR7Zpt5dg=;
+        bh=uoGgcjGPKW6WOc/kv1zTqKaKBuXUOztQUJ0azz/FjbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p31EY/XwrnyaoU5mSIzNPoW4ikWf781bZ0fmTYW2HaiK9mCVATGR2ZXFMOZP7N75X
-         ripItCzffheM0p38Wg08REEWDHdk2Sp9CludjYuuvOSKHP9qmOw8x4IAxrzgDJI1JU
-         Kv/vZtE1ULUTBZEOfBJRrEsov/O8lb0rSFIdEu8lQAhHHh0DlLj98Suoj5QoIytXek
-         khI72ic3Q+37832+KmKAHpl+QJZBIyeTqlpB23L0qLF4fqnxsUwP7QEvpY5UVWd5Sv
-         m+uIUaj5NIv4+Wp84Bpt2oVlrnz6NO/iT0ZsipBtGE76sCC0B+G3HduELXPJ0AwNHu
-         kpzBWOO1HNTPw==
+        b=mE82tqRjiTJ3LsNUM1pJG7Fd5iOdFe20DdzmxMYspIJIpqnztEbWgIsMeB2Uu+XgP
+         imAOCjUHCBenTW19vhpGOW9IVC1l80oqLd4xAYyJBAbkcH55zeAFF75YFwkIDZLBdv
+         9CRBNn4LFSoIETi5tP6d0XEN3QqO0X74dxFA1mK1pLR4ahGAKJRc1+WkWdw1sw5pDw
+         C9r5ec0M+UaYk9tUNZO8dl5xCRQ2QkdhYAPb60lVegWFn/IWcEq1JkPY1/RuKtrJvt
+         Y0pN1D0qzmpvWjMY/IOCLhs7DnZn4w6acwMNXsFyeLCuHY2nARw7rF+Gef0u1mmgzh
+         9u9+Hmh4jEI7w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B850B5C086D; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id DA7AB5C1C9F; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu
-Subject: [PATCH rcu 02/27] arch/arm64/kvm: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:48 -0800
-Message-Id: <20230105003813.1770367-2-paulmck@kernel.org>
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH rcu 20/27] fs/notify: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:38:06 -0800
+Message-Id: <20230105003813.1770367-20-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
@@ -63,32 +56,25 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Oliver Upton <oliver.upton@linux.dev>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: <linux-arm-kernel@lists.infradead.org>
-Cc: <kvmarm@lists.linux.dev>
-Cc: <kvmarm@lists.cs.columbia.edu>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: <linux-fsdevel@vger.kernel.org>
 ---
- arch/arm64/kvm/Kconfig | 1 -
+ fs/notify/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index 05da3c8f7e88f..312f0e9869111 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -28,7 +28,6 @@ menuconfig KVM
- 	select KVM_MMIO
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
- 	select KVM_XFER_TO_GUEST_WORK
+diff --git a/fs/notify/Kconfig b/fs/notify/Kconfig
+index c020d26ba223e..c6c72c90fd253 100644
+--- a/fs/notify/Kconfig
++++ b/fs/notify/Kconfig
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config FSNOTIFY
+ 	def_bool n
 -	select SRCU
- 	select KVM_VFIO
- 	select HAVE_KVM_EVENTFD
- 	select HAVE_KVM_IRQFD
+ 
+ source "fs/notify/dnotify/Kconfig"
+ source "fs/notify/inotify/Kconfig"
 -- 
 2.31.1.189.g2e36527f23
 
