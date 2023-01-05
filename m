@@ -2,51 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E75D8C54EBD
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26BF4C54EBE
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:56:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbjAEAzg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:55:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
+        id S229885AbjAEAzh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjAEAyo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230246AbjAEAyo (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 4 Jan 2023 19:54:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F76647335;
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D054D730;
         Wed,  4 Jan 2023 16:51:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0A5CBB818F0;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3F2DCB81983;
         Thu,  5 Jan 2023 00:51:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 996F2C433F1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B930C433F2;
         Thu,  5 Jan 2023 00:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879887;
-        bh=4aIDMnvVK/cTLHasisTKiXTMm58qBLZArVpwD6fnVeo=;
+        bh=a9j2iXVLoC1TD3lQ/10Gw2Pvt/B4K6hHFOFLrRwW1Dc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nGnOL3uQlRZc4QbM4HI+eNT1H2o82vAbdbiVxk7xy4nZLxwOjZzo5o4QNn6+qZDoH
-         k4LbN1YcOBhEPdvBD2OvCM+1p18h2xO40Y9YN2RiXu27XdL+Q7h9FUWzR1wENH4h7P
-         L6fULio4gg+0e0cFjdBckAcJRX8WYGrwv9Mda9UdPMThOczSkF47+BBKuImpeQgqQl
-         WxDg3Fvs6chDNP6+qY31WRX/LeVYVTjNI5xuXVhn8agW8FgurUyiZS5xv+GkmkVZWx
-         CAbvgzgYYJid38BvxFB06kOJ62k04e23UADvUnv2udVFiNK0MrRtErd0Kf4r6+nXDh
-         sbJHBhAifMI5g==
+        b=XzYY8NJbzzoB8B0ZzIvvzNz+KpyoRzc2GqLb2niUTABfa/LQsT+r65gP22WcxsbGM
+         z8gt+860oprHMixmLDBNlW+qYTVAW6ITC0ZMfGzAd5KAfxXjQQKTG2bIGpdBgWRn/+
+         UjTzjWOR/SntEOgajwvN+hmAaBXIVPZtW03pxWPgAwZJnq8hQ5+mFc89geOGyHYEHm
+         yG9heL833MlrxE3ACZ8eKlGEufE34O2MQXGifrm4yFdNE7Ou1cYSnfVyaCslke8Bn0
+         SQqM7rO5DpVcFG2IzevyK2SVx2H2X1KuQPrH8yMkeU07PDcCs/0IcZr0gFsTWpfyQK
+         hTaJXjLr9mkhQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4EE055C05CA; Wed,  4 Jan 2023 16:51:27 -0800 (PST)
+        id 513905C086D; Wed,  4 Jan 2023 16:51:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Elliott@paulmck-ThinkPad-P17-Gen-1.home, Robert <elliott@hpe.com>,
-        Tejun Heo <tj@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Josh Don <joshdon@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Josh Don <joshdon@google.com>, Tejun Heo <tj@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/6] genirq: Fix the return type of kstat_cpu_irqs_sum()
-Date:   Wed,  4 Jan 2023 16:51:21 -0800
-Message-Id: <20230105005126.1772294-1-paulmck@kernel.org>
+Subject: [PATCH rcu 2/6] sched: Add helper kstat_cpu_softirqs_sum()
+Date:   Wed,  4 Jan 2023 16:51:22 -0800
+Message-Id: <20230105005126.1772294-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105005105.GA1772125@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105005105.GA1772125@paulmck-ThinkPad-P17-Gen-1>
@@ -58,37 +55,42 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Zhen Lei <thunder.leizhen@huawei.com>
 
-The type of member ->irqs_sum is unsigned long, but kstat_cpu_irqs_sum()
-returns int, which can result in truncation.  Therefore, change the
-kstat_cpu_irqs_sum() function's return value to unsigned long to avoid
-truncation.
+Add a kstat_cpu_softirqs_sum() function that is similar to
+kstat_cpu_irqs_sum(), but which counts software interrupts since boot
+on the specified CPU.
 
-Fixes: f2c66cd8eedd ("/proc/stat: scalability of irq num per cpu")
-Reported-by: Elliott, Robert (Servers) <elliott@hpe.com>
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
 Cc: Josh Don <joshdon@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/kernel_stat.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/kernel_stat.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
-index ddb5a358fd829..90e2fdc17d79f 100644
+index 90e2fdc17d79f..898076e173a92 100644
 --- a/include/linux/kernel_stat.h
 +++ b/include/linux/kernel_stat.h
-@@ -75,7 +75,7 @@ extern unsigned int kstat_irqs_usr(unsigned int irq);
- /*
-  * Number of interrupts per cpu, since bootup
-  */
--static inline unsigned int kstat_cpu_irqs_sum(unsigned int cpu)
-+static inline unsigned long kstat_cpu_irqs_sum(unsigned int cpu)
- {
- 	return kstat_cpu(cpu).irqs_sum;
+@@ -67,6 +67,17 @@ static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
+        return kstat_cpu(cpu).softirqs[irq];
  }
+ 
++static inline unsigned int kstat_cpu_softirqs_sum(int cpu)
++{
++	int i;
++	unsigned int sum = 0;
++
++	for (i = 0; i < NR_SOFTIRQS; i++)
++		sum += kstat_softirqs_cpu(i, cpu);
++
++	return sum;
++}
++
+ /*
+  * Number of interrupts per specific IRQ source, since bootup
+  */
 -- 
 2.31.1.189.g2e36527f23
 
