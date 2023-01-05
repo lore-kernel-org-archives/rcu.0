@@ -2,85 +2,84 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4FFCC3DA7D
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:10:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6724C53210
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:24:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbjAEPKW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 10:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
+        id S233256AbjAEPX4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 10:23:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbjAEPJy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 10:09:54 -0500
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C7B5C916;
-        Thu,  5 Jan 2023 07:09:53 -0800 (PST)
-Received: by mail-ej1-f53.google.com with SMTP id jo4so90752514ejb.7;
-        Thu, 05 Jan 2023 07:09:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NPqwtXJcnV/yOJo+keiiaPa7yqhjqKpHG2APIjKSvok=;
-        b=5zdNsGkjQRhBg1srr5FM3lHU8jOfLhgKZc9ONhDhWsNVKmfFNLoFBgtgJwnEdn2775
-         otefr91u1N6DSwCVjPpfuIePFr/xESP0jJAPU6ttlHGWZ8fNwZ/t/sGKBRHWbxHHI705
-         4nbio46xFEKkAB2T69FqxSinA7vrttraye85dH1sEFLVn38Ajs23QqQw36/Whptd0Xcr
-         ICCRU5lMhSoWF5DQfrxQhqu/DJaWLlYm2Vz/RvQQoWWL1x2DPx3t2XQBSmCokjSwkuHV
-         BrrBkTqiaVZ9HAyJ4sD/z05QhFKsUfw5xq/ZZylhcjSh4K3uSTZlr+eZTpXqoSOBzArc
-         VUNg==
-X-Gm-Message-State: AFqh2kqoRynqXxaKj/yDLEMefOnipiYWLNo5h13cFxwdAEoWHSlTDRcE
-        upfoJ+OJ9usL5txTTJovQbOodUbcM7xJqjEU+6A=
-X-Google-Smtp-Source: AMrXdXv/fN/pEqOjc1QOCIu41MbCtvDo3E6LWlWwMv2mxzajBEOM5qCK33X3iMg1PTKam1yyLerMwnFZ6ZINn09a7S8=
-X-Received: by 2002:a17:907:6d2a:b0:7c0:efba:b39c with SMTP id
- sa42-20020a1709076d2a00b007c0efbab39cmr5537944ejc.209.1672931391939; Thu, 05
- Jan 2023 07:09:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1> <20230105003813.1770367-10-paulmck@kernel.org>
-In-Reply-To: <20230105003813.1770367-10-paulmck@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 5 Jan 2023 16:09:38 +0100
-Message-ID: <CAJZ5v0j4M3Xco7bSPNog9h-zDgEuHE+jqktWNoRZKyLZCVJeBA@mail.gmail.com>
-Subject: Re: [PATCH rcu 10/27] drivers/cpufreq: Remove "select SRCU"
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S234694AbjAEPXx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 10:23:53 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5312E7;
+        Thu,  5 Jan 2023 07:23:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22ED961A8B;
+        Thu,  5 Jan 2023 15:23:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 862E5C433EF;
+        Thu,  5 Jan 2023 15:23:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1672932231;
+        bh=1t+dUPzSA0ksnrUuc8/Bbo1ZUCkWyj4rbPQo9hsDiJ8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ekE8Rde3RBggbbEDkhEA60YtQl5GRgO3hi1QwU9aBreHSl7bI3+UCqBNHFNPhuDWo
+         OZwnBLCy/Ttx+tOPXCJf2d4D/+hW9y7bBdQUBv2OOuOFVChia7xIwse1vlRbQKHymC
+         0jXxVSOvRFqmHz7ddIjpvjnuFx822i/JUP1WKeA9PZb3iqMZApZewGSgVPlo0ujiqo
+         C5u4ux6OfcDnNR69LAriJgAwj4S4d2yWtkx950jmyHPlerjL6LL81Yrjt5RMBE6XD/
+         m6r0wDcYagxFLnM8xW5rAojK4nVYjWKi5DgQdNksOo+ylZUXfK2NWDAey+c2+btzus
+         YaN8KHkDZuxhw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 22D145C029A; Thu,  5 Jan 2023 07:23:51 -0800 (PST)
+Date:   Thu, 5 Jan 2023 07:23:51 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     John Ogness <john.ogness@linutronix.de>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH rcu 27/27] rcu: Remove CONFIG_SRCU
+Message-ID: <20230105152351.GP4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+ <20230105003813.1770367-27-paulmck@kernel.org>
+ <87r0w9csqn.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r0w9csqn.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 5, 2023 at 1:38 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Now that the SRCU Kconfig option is unconditionally selected, there is
-> no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> Kconfig statements.
->
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: <linux-pm@vger.kernel.org>
+On Thu, Jan 05, 2023 at 09:10:16AM +0106, John Ogness wrote:
+> On 2023-01-04, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > Now that all references to CONFIG_SRCU have been removed, it is time to
+> > remove CONFIG_SRCU itself.
+> 
+> I think "all references" is a bit misleading since there still are
+> several places in the kernel code that use it:
+> 
+> $ git grep CONFIG_SRCU
+> drivers/base/core.c:#ifdef CONFIG_SRCU
+> drivers/base/core.c:#else /* !CONFIG_SRCU */
+> drivers/base/core.c:#endif /* !CONFIG_SRCU */
+> fs/locks.c:#if IS_ENABLED(CONFIG_SRCU)
+> fs/locks.c:#else /* !IS_ENABLED(CONFIG_SRCU) */
+> fs/locks.c:#endif /* IS_ENABLED(CONFIG_SRCU) */
+> kernel/notifier.c:#ifdef CONFIG_SRCU
+> kernel/notifier.c:#endif /* CONFIG_SRCU */
 
-Acked-by: "Rafael J. Wysocki" <rafael@kernel.org>
+In the -rcu tree, these are removed by these commits:
 
-> ---
->  drivers/cpufreq/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-> index 2a84fc63371e2..785541df59379 100644
-> --- a/drivers/cpufreq/Kconfig
-> +++ b/drivers/cpufreq/Kconfig
-> @@ -3,7 +3,6 @@ menu "CPU Frequency scaling"
->
->  config CPU_FREQ
->         bool "CPU Frequency scaling"
-> -       select SRCU
->         help
->           CPU Frequency scaling allows you to change the clock speed of
->           CPUs on the fly. This is a nice method to save power, because
-> --
-> 2.31.1.189.g2e36527f23
->
+1798c5b6b0ea ("drivers/base: Remove CONFIG_SRCU")
+19aa50512372 ("fs: Remove CONFIG_SRCU")
+fe0c9bd625ad ("kernel/notifier: Remove CONFIG_SRCU")
+
+> Should those be removed before this patch?
+
+When I merge the -rcu tree's "dev" branch with current mainline, "git
+grep CONFIG_SRCU" gives me no output.  Am I fat-fingering something here?
+
+							Thanx, Paul
