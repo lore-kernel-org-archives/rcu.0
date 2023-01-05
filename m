@@ -2,110 +2,60 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 004BEC3DA7D
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 09:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A17CC54EBD
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 11:24:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjAEJiJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 04:38:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
+        id S232771AbjAELYE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 06:24:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbjAEJiI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 04:38:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718BE568A3;
-        Thu,  5 Jan 2023 01:38:07 -0800 (PST)
+        with ESMTP id S232877AbjAELYC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 06:24:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF7A4E42B;
+        Thu,  5 Jan 2023 03:24:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 16B27B81A3F;
-        Thu,  5 Jan 2023 09:38:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C80CC433EF;
-        Thu,  5 Jan 2023 09:38:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672911484;
-        bh=kHAI8zX0uBtCstQDgOED+LDtgDTq97uWCIZyDoDKHu4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W7XrrmflgJ9P/ki81ddlfeirNnY/o+GQpNfTUolbTUMYk5lZ09CJFHnMKZXeax9vN
-         9V7lRtw2jUy+r0QzkzTAMyHizXGNlRgqwYxg88212lubeTPkU/prRvQPTTQRbJUp2/
-         TdbSWZQnUXHHxvN6gv32zL91nzzmlo+z9v22OqmvagWrW69yjwvW2e1q8ioJ3GWXg4
-         wYTYSGWiKRig54wnZyfWrx33CoeAcmX4kpMzig+xcV08eNEUMIpydWcWiaC0JcgUiq
-         0civdiFzurUDcZPPeY3KuWpv/lV0fFyAC2Ma5/Q//1qDM0BAcJR3N7h5KoLGUQ5KjM
-         xk2x+0zhstyrw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1pDMhF-00GxQu-TI;
-        Thu, 05 Jan 2023 09:38:02 +0000
-Date:   Thu, 05 Jan 2023 09:38:01 +0000
-Message-ID: <86mt6x724m.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E60B61997;
+        Thu,  5 Jan 2023 11:24:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47C74C433F2;
+        Thu,  5 Jan 2023 11:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1672917840;
+        bh=nS7/An3gAPnKAsG2kkYXAHXBBKZ+anq4EmfORINPbBM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MywkGDUgzc30amWmJlhZ6MnBYsFEQ9JPPNHFVSRJXLj8B27nKlq9xjGLo8sAjrSNC
+         2ET9TCZY+cfzvHY9YmSgNTIF4R+b7ZiOWOW6mehY0uJJIZI/rt3xLgfSiy3ENMHEXe
+         xoaE8GIwIEZ2rLxHWpI0fBgIAAo1LQ8e8XFfjGPM=
+Date:   Thu, 5 Jan 2023 12:23:57 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH rcu 02/27] arch/arm64/kvm: Remove "select SRCU"
-In-Reply-To: <20230105003813.1770367-2-paulmck@kernel.org>
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH rcu 08/27] drivers/base: Remove CONFIG_SRCU
+Message-ID: <Y7azTf7LuVDU3M9s@kroah.com>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
-        <20230105003813.1770367-2-paulmck@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, oliver.upton@linux.dev, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvmarm@lists.cs.columbia.edu
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+ <20230105003813.1770367-8-paulmck@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230105003813.1770367-8-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, 05 Jan 2023 00:37:48 +0000,
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
+On Wed, Jan 04, 2023 at 04:37:54PM -0800, Paul E. McKenney wrote:
 > Now that the SRCU Kconfig option is unconditionally selected, there is
-> no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> Kconfig statements.
+> no longer any point in conditional compilation based on CONFIG_SRCU.
+> Therefore, remove the #ifdef and throw away the #else clause.
 > 
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Oliver Upton <oliver.upton@linux.dev>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Cc: <kvmarm@lists.linux.dev>
-> Cc: <kvmarm@lists.cs.columbia.edu>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 > ---
->  arch/arm64/kvm/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-> index 05da3c8f7e88f..312f0e9869111 100644
-> --- a/arch/arm64/kvm/Kconfig
-> +++ b/arch/arm64/kvm/Kconfig
-> @@ -28,7 +28,6 @@ menuconfig KVM
->  	select KVM_MMIO
->  	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
->  	select KVM_XFER_TO_GUEST_WORK
-> -	select SRCU
->  	select KVM_VFIO
->  	select HAVE_KVM_EVENTFD
->  	select HAVE_KVM_IRQFD
+>  drivers/base/core.c | 42 ------------------------------------------
+>  1 file changed, 42 deletions(-)
 
-Acked-by: Marc Zyngier <maz@kernel.org>
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
