@@ -2,144 +2,80 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF02C63705
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AD3AC7113B
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240503AbjAEAlW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        id S240525AbjAEAl0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240643AbjAEAio (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D07AC5;
-        Wed,  4 Jan 2023 16:38:02 -0800 (PST)
+        with ESMTP id S240701AbjAEAit (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:49 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9854FC4A;
+        Wed,  4 Jan 2023 16:38:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 34409B8167B;
-        Thu,  5 Jan 2023 00:38:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC522C433D2;
-        Thu,  5 Jan 2023 00:37:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 71D7C618A9;
+        Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF5BDC43329;
+        Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672879080;
-        bh=YzuyfztP3LvU0R5JDum5PIxAVt6t/0MVi/7Xpg7pR8s=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=ZKMpWq6qEReudGh4tkDMG84FeVdzhdQI+gyEum4ji61+CiLuepwFcZpAtWPtNsNyc
-         suYsuMu2gvRiaeZn3ryAD65eLDxoKCVY0V6w4LiDQDUlmumBRnkBqnmeleJcAdb8+C
-         2mybshgd5vEroEwBgaZZrnugGzk9lxC3HOifH+TKNJsb7JDtrkfKJHWuzG8rYTrIw1
-         nIxKXgVsYei+WNGQTea9hZjRNCRx8InIGY06NX4t6NXAisF8CZU4h67ugd7kQLp/hh
-         8i0kNDS54RUjvK6hd8n1GjRBHLpm6d24k7iG+nnbsj2YEQSM0R2+ghUW4Rtc/Q20bK
-         pMS4BzGWSUSEA==
+        s=k20201202; t=1672879095;
+        bh=F+eE9IH0Y6vz1maiMyupWMIpzNBkwY0owmUSVTgPU/M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bJASdM3AzhLsv/qlYLK/h5tDWvhjs4W09Nb9Xo7nKT+72tTVAptBqZNjZ5WGRBO62
+         MPP6gTpem8itu/jvn0eooIzOTZc2wy5HtkXzpFilOXSQR5yPonmHCdMyLsBw2StRrJ
+         IyXR+d1B7Rq337qkaCQUbat8YIo24BRCFKPTh/EVbff9hJQaEM3DMWmp98WHBJmdh4
+         9x9GcMsVN0uTBy94xMYu72XqYKxhj/5kkr8ig942qU+FFeiynGph7RjXj5n4JdiJac
+         XqLRLgdSqrtWlS/rD01rsC5Z4fvlFRykqbs/02GxYBGmvQuvm5ubSt99o17YuGYQnr
+         TpMNlQDS8wRug==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 861D45C05CA; Wed,  4 Jan 2023 16:37:59 -0800 (PST)
-Date:   Wed, 4 Jan 2023 16:37:59 -0800
+        id D2AB85C1C9A; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/27] Unconditionally enable SRCU
-Message-ID: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH rcu 16/27] drivers/opp: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:38:02 -0800
+Message-Id: <20230105003813.1770367-16-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Now that the SRCU Kconfig option is unconditionally selected, there is
+no longer any point in selecting it.  Therefore, remove the "select SRCU"
+Kconfig statements.
 
-This series removes Kconfig "select" clauses and #ifdef directives that
-are no longer necessary give that SRCU is now unconditionally enabled,
-courtesy of new-age printk() requirements.  Finally, the SRCU Kconfig
-option is removed entirely.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Viresh Kumar <vireshk@kernel.org>
+Cc: Nishanth Menon <nm@ti.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: <linux-pm@vger.kernel.org>
+---
+ drivers/opp/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-1.	arch/x86: Remove "select SRCU".
+diff --git a/drivers/opp/Kconfig b/drivers/opp/Kconfig
+index e8ce47b327359..d7c649a1a981c 100644
+--- a/drivers/opp/Kconfig
++++ b/drivers/opp/Kconfig
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config PM_OPP
+ 	bool
+-	select SRCU
+ 	help
+ 	  SOCs have a standard set of tuples consisting of frequency and
+ 	  voltage pairs that the device will support per voltage domain. This
+-- 
+2.31.1.189.g2e36527f23
 
-2.	arch/arm64/kvm: Remove "select SRCU".
-
-3.	arch/mips/kvm: Remove "select SRCU".
-
-4.	arch/powerpc/kvm: Remove "select SRCU".
-
-5.	arch/riscv/kvm: Remove "select SRCU".
-
-6.	arch/s390/kvm: Remove "select SRCU".
-
-7.	block: Remove "select SRCU".
-
-8.	drivers/base: Remove CONFIG_SRCU.
-
-9.	drivers/clk: Remove "select SRCU".
-
-10.	drivers/cpufreq: Remove "select SRCU".
-
-11.	drivers/dax: Remove "select SRCU".
-
-12.	drivers/devfreq: Remove "select SRCU".
-
-13.	drivers/hwtracing/stm: Remove "select SRCU".
-
-14.	drivers/md: Remove "select SRCU".
-
-15.	drivers/net: Remove "select SRCU".
-
-16.	drivers/opp: Remove "select SRCU".
-
-17.	drivers/pci/controller: Remove "select SRCU".
-
-18.	fs/btrfs: Remove "select SRCU".
-
-19.	fs/dlm: Remove "select SRCU".
-
-20.	fs/notify: Remove "select SRCU".
-
-21.	fs/quota: Remove "select SRCU".
-
-22.	init: Remove "select SRCU".
-
-23.	kernel/power: Remove "select SRCU".
-
-24.	mm: Remove "select SRCU".
-
-25.	fs: Remove CONFIG_SRCU.
-
-26.	kernel/notifier: Remove CONFIG_SRCU.
-
-27.	rcu: Remove CONFIG_SRCU.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- arch/arm64/kvm/Kconfig                                      |    1 
- arch/mips/kvm/Kconfig                                       |    1 
- arch/powerpc/kvm/Kconfig                                    |    1 
- arch/riscv/kvm/Kconfig                                      |    1 
- arch/s390/kvm/Kconfig                                       |    1 
- arch/x86/Kconfig                                            |    2 
- arch/x86/kvm/Kconfig                                        |    1 
- block/Kconfig                                               |    1 
- drivers/base/core.c                                         |   42 ------------
- drivers/clk/Kconfig                                         |    1 
- drivers/cpufreq/Kconfig                                     |    1 
- drivers/dax/Kconfig                                         |    1 
- drivers/devfreq/Kconfig                                     |    1 
- drivers/hwtracing/stm/Kconfig                               |    1 
- drivers/md/Kconfig                                          |    1 
- drivers/net/Kconfig                                         |    1 
- drivers/opp/Kconfig                                         |    1 
- drivers/pci/controller/Kconfig                              |    2 
- fs/btrfs/Kconfig                                            |    1 
- fs/dlm/Kconfig                                              |    1 
- fs/locks.c                                                  |   25 -------
- fs/notify/Kconfig                                           |    1 
- fs/quota/Kconfig                                            |    1 
- init/Kconfig                                                |    1 
- kernel/notifier.c                                           |    3 
- kernel/power/Kconfig                                        |    1 
- kernel/rcu/Kconfig                                          |    3 
- mm/Kconfig                                                  |    1 
- tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt |    4 -
- 29 files changed, 1 insertion(+), 102 deletions(-)
