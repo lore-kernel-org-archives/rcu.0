@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE5B6C46467
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AD5BC54EBC
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235443AbjAEAKS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
+        id S235485AbjAEAKT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235185AbjAEAKB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:10:01 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0570B43A30;
+        with ESMTP id S235230AbjAEAKC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:10:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B41F43A1C;
         Wed,  4 Jan 2023 16:09:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 92951B81986;
-        Thu,  5 Jan 2023 00:09:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A7E8C43392;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2131B618B3;
+        Thu,  5 Jan 2023 00:09:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9EDC433A8;
         Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672877397;
-        bh=isoqPsWCBoxvya3XBG1XQQhxkGdrk+wCUjPVtX+gzXw=;
+        bh=zIuR6b+M23FgJhA/VuiF85BlWyIsIRWHp9NsUOE91v0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jFreSwbNJSbKqmLpsZzxoF5Ds/4w0toLRX7JzauJIPSeOFRSk9YrhYOafx6lfw26T
-         Lhc/NYW+a1yz9S+AwjRdG5OIHbc/A3W5oowXWdrv15kBE0P7QGyhIs9vchGiFkO8db
-         a9xRRLURF4aiFfnGYA5GZzRatkitmPPjn+FojoANVMUuFhlxf9UMryvr6nzgBwoRza
-         uXUtsahWe7tdLN1zI2GqzKax19BRZ45qLsqrmMBda4bGgx8vyybkaCOICykR6+2vVr
-         BT/kb4yWqsZlc4A5bsYh9Vkyzg0tCqoUTcuPLwU4B/mgfbPkAzHY2f1FqkxBjJsBGl
-         diMHdQA3RxRnQ==
+        b=elPQLO5e8H5+eFqhwK9LEoENtRiade+LxinnMZqzUoMWV0qLqr8+S++1iGnGp1pdb
+         M9vJ8WBN0kT/t7ZOcqfbYJwKg9cBZPtp2X1u0dm3KBMr9DufCJ0GGMIhbVMseqC5RI
+         EoiRmB0i1EaxecSzROwjLOg4iDyxVZ4Qw/23XEJ2VkRWLMEaSMD49D8JT65Ypw06+k
+         9dEDPQ1BTkIUQhYZUFu4fiKzlragpb166oJ6WLn4d+pUtBxyPTPMD+ZxqvipjrxwyB
+         sw/Vunp88O3qA8wudFQRkiBwCShx1uvOs+c4oyFEg3Pl/H78asTvL3HdgHXCY+oVtr
+         SDsueunfADNew==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CBC1A5C149B; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
+        id D69A45C1C77; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/15] doc: Update and wordsmith rculist_nulls.rst
-Date:   Wed,  4 Jan 2023 16:09:45 -0800
-Message-Id: <20230105000955.1767218-5-paulmck@kernel.org>
+Subject: [PATCH rcu 11/15] doc: Update whatisRCU.rst
+Date:   Wed,  4 Jan 2023 16:09:51 -0800
+Message-Id: <20230105000955.1767218-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
@@ -49,223 +49,332 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Do some wordsmithing and breaking up of RCU readers.
+This commit updates whatisRCU.rst with wordsmithing and updates provokes
+by the passage of time.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/rculist_nulls.rst | 109 ++++++++++++++--------------
- 1 file changed, 54 insertions(+), 55 deletions(-)
+ Documentation/RCU/whatisRCU.rst | 193 +++++++++++++++++++++-----------
+ 1 file changed, 125 insertions(+), 68 deletions(-)
 
-diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-index ca4692775ad41..f84d6970758bc 100644
---- a/Documentation/RCU/rculist_nulls.rst
-+++ b/Documentation/RCU/rculist_nulls.rst
-@@ -14,19 +14,19 @@ Using 'nulls'
- =============
+diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+index 1c747ac3f2c8e..2c5563a91998f 100644
+--- a/Documentation/RCU/whatisRCU.rst
++++ b/Documentation/RCU/whatisRCU.rst
+@@ -16,18 +16,23 @@ to start learning about RCU:
+ | 6.	The RCU API, 2019 Edition    https://lwn.net/Articles/777036/
+ |	2019 Big API Table           https://lwn.net/Articles/777165/
  
- Using special makers (called 'nulls') is a convenient way
--to solve following problem :
-+to solve following problem.
- 
--A typical RCU linked list managing objects which are
--allocated with SLAB_TYPESAFE_BY_RCU kmem_cache can
--use following algos :
-+Without 'nulls', a typical RCU linked list managing objects which are
-+allocated with SLAB_TYPESAFE_BY_RCU kmem_cache can use the following
-+algorithms:
- 
--1) Lookup algo
----------------
-+1) Lookup algorithm
-+-------------------
- 
- ::
- 
--  rcu_read_lock()
-   begin:
-+  rcu_read_lock()
-   obj = lockless_lookup(key);
-   if (obj) {
-     if (!try_get_ref(obj)) // might fail for free objects
-@@ -38,6 +38,7 @@ use following algos :
-     */
-     if (obj->key != key) { // not the object we expected
-       put_ref(obj);
-+      rcu_read_unlock();
-       goto begin;
-     }
-   }
-@@ -52,9 +53,9 @@ but a version with an additional memory barrier (smp_rmb())
-   {
-     struct hlist_node *node, *next;
-     for (pos = rcu_dereference((head)->first);
--        pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
--        ({ tpos = hlist_entry(pos, typeof(*tpos), member); 1; });
--        pos = rcu_dereference(next))
-+         pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
-+         ({ tpos = hlist_entry(pos, typeof(*tpos), member); 1; });
-+         pos = rcu_dereference(next))
-       if (obj->key == key)
-         return obj;
-     return NULL;
-@@ -64,9 +65,9 @@ And note the traditional hlist_for_each_entry_rcu() misses this smp_rmb()::
- 
-   struct hlist_node *node;
-   for (pos = rcu_dereference((head)->first);
--        pos && ({ prefetch(pos->next); 1; }) &&
--        ({ tpos = hlist_entry(pos, typeof(*tpos), member); 1; });
--        pos = rcu_dereference(pos->next))
-+       pos && ({ prefetch(pos->next); 1; }) &&
-+       ({ tpos = hlist_entry(pos, typeof(*tpos), member); 1; });
-+       pos = rcu_dereference(pos->next))
-    if (obj->key == key)
-      return obj;
-   return NULL;
-@@ -82,36 +83,32 @@ Quoting Corey Minyard::
-   solved by pre-fetching the "next" field (with proper barriers) before
-   checking the key."
- 
--2) Insert algo
----------------
-+2) Insertion algorithm
-+----------------------
- 
- We need to make sure a reader cannot read the new 'obj->obj_next' value
--and previous value of 'obj->key'. Or else, an item could be deleted
-+and previous value of 'obj->key'. Otherwise, an item could be deleted
- from a chain, and inserted into another chain. If new chain was empty
--before the move, 'next' pointer is NULL, and lockless reader can
--not detect it missed following items in original chain.
-+before the move, 'next' pointer is NULL, and lockless reader can not
-+detect the fact that it missed following items in original chain.
- 
- ::
- 
-   /*
--  * Please note that new inserts are done at the head of list,
--  * not in the middle or end.
--  */
-+   * Please note that new inserts are done at the head of list,
-+   * not in the middle or end.
-+   */
-   obj = kmem_cache_alloc(...);
-   lock_chain(); // typically a spin_lock()
-   obj->key = key;
--  /*
--  * we need to make sure obj->key is updated before obj->next
--  * or obj->refcnt
--  */
--  smp_wmb();
--  atomic_set(&obj->refcnt, 1);
-+  atomic_set_release(&obj->refcnt, 1); // key before refcnt
-   hlist_add_head_rcu(&obj->obj_node, list);
-   unlock_chain(); // typically a spin_unlock()
- 
- 
--3) Remove algo
----------------
-+3) Removal algorithm
-+--------------------
++For those preferring video:
 +
- Nothing special here, we can use a standard RCU hlist deletion.
- But thanks to SLAB_TYPESAFE_BY_RCU, beware a deleted object can be reused
- very very fast (before the end of RCU grace period)
-@@ -133,7 +130,7 @@ Avoiding extra smp_rmb()
- ========================
++| 1.	Unraveling RCU Mysteries: Fundamentals          https://www.linuxfoundation.org/webinars/unraveling-rcu-usage-mysteries
++| 2.	Unraveling RCU Mysteries: Additional Use Cases  https://www.linuxfoundation.org/webinars/unraveling-rcu-usage-mysteries-additional-use-cases
++
  
- With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup()
--and extra smp_wmb() in insert function.
-+and extra _release() in insert function.
+ What is RCU?
  
- For example, if we choose to store the slot number as the 'nulls'
- end-of-list marker for each slot of the hash table, we can detect
-@@ -142,59 +139,61 @@ to another chain) checking the final 'nulls' value if
- the lookup met the end of chain. If final 'nulls' value
- is not the slot number, then we must restart the lookup at
- the beginning. If the object was moved to the same chain,
--then the reader doesn't care : It might eventually
-+then the reader doesn't care: It might occasionally
- scan the list again without harm.
+ RCU is a synchronization mechanism that was added to the Linux kernel
+ during the 2.5 development effort that is optimized for read-mostly
+-situations.  Although RCU is actually quite simple once you understand it,
+-getting there can sometimes be a challenge.  Part of the problem is that
+-most of the past descriptions of RCU have been written with the mistaken
+-assumption that there is "one true way" to describe RCU.  Instead,
+-the experience has been that different people must take different paths
+-to arrive at an understanding of RCU.  This document provides several
+-different paths, as follows:
++situations.  Although RCU is actually quite simple, making effective use
++of it requires you to think differently about your code.  Another part
++of the problem is the mistaken assumption that there is "one true way" to
++describe and to use RCU.  Instead, the experience has been that different
++people must take different paths to arrive at an understanding of RCU,
++depending on their experiences and use cases.  This document provides
++several different paths, as follows:
+ 
+ :ref:`1.	RCU OVERVIEW <1_whatisRCU>`
+ 
+@@ -157,34 +162,36 @@ rcu_read_lock()
+ ^^^^^^^^^^^^^^^
+ 	void rcu_read_lock(void);
+ 
+-	Used by a reader to inform the reclaimer that the reader is
+-	entering an RCU read-side critical section.  It is illegal
+-	to block while in an RCU read-side critical section, though
+-	kernels built with CONFIG_PREEMPT_RCU can preempt RCU
+-	read-side critical sections.  Any RCU-protected data structure
+-	accessed during an RCU read-side critical section is guaranteed to
+-	remain unreclaimed for the full duration of that critical section.
+-	Reference counts may be used in conjunction with RCU to maintain
+-	longer-term references to data structures.
++	This temporal primitive is used by a reader to inform the
++	reclaimer that the reader is entering an RCU read-side critical
++	section.  It is illegal to block while in an RCU read-side
++	critical section, though kernels built with CONFIG_PREEMPT_RCU
++	can preempt RCU read-side critical sections.  Any RCU-protected
++	data structure accessed during an RCU read-side critical section
++	is guaranteed to remain unreclaimed for the full duration of that
++	critical section.  Reference counts may be used in conjunction
++	with RCU to maintain longer-term references to data structures.
+ 
+ rcu_read_unlock()
+ ^^^^^^^^^^^^^^^^^
+ 	void rcu_read_unlock(void);
+ 
+-	Used by a reader to inform the reclaimer that the reader is
+-	exiting an RCU read-side critical section.  Note that RCU
+-	read-side critical sections may be nested and/or overlapping.
++	This temporal primitives is used by a reader to inform the
++	reclaimer that the reader is exiting an RCU read-side critical
++	section.  Note that RCU read-side critical sections may be nested
++	and/or overlapping.
+ 
+ synchronize_rcu()
+ ^^^^^^^^^^^^^^^^^
+ 	void synchronize_rcu(void);
+ 
+-	Marks the end of updater code and the beginning of reclaimer
+-	code.  It does this by blocking until all pre-existing RCU
+-	read-side critical sections on all CPUs have completed.
+-	Note that synchronize_rcu() will **not** necessarily wait for
+-	any subsequent RCU read-side critical sections to complete.
+-	For example, consider the following sequence of events::
++	This temporal primitive marks the end of updater code and the
++	beginning of reclaimer code.  It does this by blocking until
++	all pre-existing RCU read-side critical sections on all CPUs
++	have completed.  Note that synchronize_rcu() will **not**
++	necessarily wait for any subsequent RCU read-side critical
++	sections to complete.  For example, consider the following
++	sequence of events::
+ 
+ 	         CPU 0                  CPU 1                 CPU 2
+ 	     ----------------- ------------------------- ---------------
+@@ -211,13 +218,13 @@ synchronize_rcu()
+ 	to be useful in all but the most read-intensive situations,
+ 	synchronize_rcu()'s overhead must also be quite small.
+ 
+-	The call_rcu() API is a callback form of synchronize_rcu(),
+-	and is described in more detail in a later section.  Instead of
+-	blocking, it registers a function and argument which are invoked
+-	after all ongoing RCU read-side critical sections have completed.
+-	This callback variant is particularly useful in situations where
+-	it is illegal to block or where update-side performance is
+-	critically important.
++	The call_rcu() API is an asynchronous callback form of
++	synchronize_rcu(), and is described in more detail in a later
++	section.  Instead of blocking, it registers a function and
++	argument which are invoked after all ongoing RCU read-side
++	critical sections have completed.  This callback variant is
++	particularly useful in situations where it is illegal to block
++	or where update-side performance is critically important.
+ 
+ 	However, the call_rcu() API should not be used lightly, as use
+ 	of the synchronize_rcu() API generally results in simpler code.
+@@ -236,11 +243,13 @@ rcu_assign_pointer()
+ 	would be cool to be able to declare a function in this manner.
+ 	(Compiler experts will no doubt disagree.)
+ 
+-	The updater uses this function to assign a new value to an
++	The updater uses this spatial macro to assign a new value to an
+ 	RCU-protected pointer, in order to safely communicate the change
+-	in value from the updater to the reader.  This macro does not
+-	evaluate to an rvalue, but it does execute any memory-barrier
+-	instructions required for a given CPU architecture.
++	in value from the updater to the reader.  This is a spatial (as
++	opposed to temporal) macro.  It does not evaluate to an rvalue,
++	but it does execute any memory-barrier instructions required
++	for a given CPU architecture.  Its ordering properties are that
++	of a store-release operation.
+ 
+ 	Perhaps just as important, it serves to document (1) which
+ 	pointers are protected by RCU and (2) the point at which a
+@@ -255,14 +264,15 @@ rcu_dereference()
+ 	Like rcu_assign_pointer(), rcu_dereference() must be implemented
+ 	as a macro.
+ 
+-	The reader uses rcu_dereference() to fetch an RCU-protected
+-	pointer, which returns a value that may then be safely
+-	dereferenced.  Note that rcu_dereference() does not actually
+-	dereference the pointer, instead, it protects the pointer for
+-	later dereferencing.  It also executes any needed memory-barrier
+-	instructions for a given CPU architecture.  Currently, only Alpha
+-	needs memory barriers within rcu_dereference() -- on other CPUs,
+-	it compiles to nothing, not even a compiler directive.
++	The reader uses the spatial rcu_dereference() macro to fetch
++	an RCU-protected pointer, which returns a value that may
++	then be safely dereferenced.  Note that rcu_dereference()
++	does not actually dereference the pointer, instead, it
++	protects the pointer for later dereferencing.  It also
++	executes any needed memory-barrier instructions for a given
++	CPU architecture.  Currently, only Alpha needs memory barriers
++	within rcu_dereference() -- on other CPUs, it compiles to a
++	volatile load.
+ 
+ 	Common coding practice uses rcu_dereference() to copy an
+ 	RCU-protected pointer to a local variable, then dereferences
+@@ -355,12 +365,15 @@ reader, updater, and reclaimer.
+ 	      synchronize_rcu() & call_rcu()
  
  
--1) lookup algo
----------------
-+1) lookup algorithm
-+-------------------
+-The RCU infrastructure observes the time sequence of rcu_read_lock(),
++The RCU infrastructure observes the temporal sequence of rcu_read_lock(),
+ rcu_read_unlock(), synchronize_rcu(), and call_rcu() invocations in
+ order to determine when (1) synchronize_rcu() invocations may return
+ to their callers and (2) call_rcu() callbacks may be invoked.  Efficient
+ implementations of the RCU infrastructure make heavy use of batching in
+ order to amortize their overhead over many uses of the corresponding APIs.
++The rcu_assign_pointer() and rcu_dereference() invocations communicate
++spatial changes via stores to and loads from the RCU-protected pointer in
++question.
  
- ::
+ There are at least three flavors of RCU usage in the Linux kernel. The diagram
+ above shows the most common one. On the updater side, the rcu_assign_pointer(),
+@@ -392,7 +405,9 @@ b.	RCU applied to networking data structures that may be subjected
+ c.	RCU applied to scheduler and interrupt/NMI-handler tasks.
  
-   head = &table[slot];
--  rcu_read_lock();
-   begin:
-+  rcu_read_lock();
-   hlist_nulls_for_each_entry_rcu(obj, node, head, member) {
-     if (obj->key == key) {
--      if (!try_get_ref(obj)) // might fail for free objects
-+      if (!try_get_ref(obj)) { // might fail for free objects
-+	rcu_read_unlock();
-         goto begin;
-+      }
-       if (obj->key != key) { // not the object we expected
-         put_ref(obj);
-+	rcu_read_unlock();
-         goto begin;
-       }
--    goto out;
-+      goto out;
-+    }
-+  }
-+  
-+  // If the nulls value we got at the end of this lookup is
-+  // not the expected one, we must restart lookup.
-+  // We probably met an item that was moved to another chain.
-+  if (get_nulls_value(node) != slot) {
-+    put_ref(obj);
-+    rcu_read_unlock();
-+    goto begin;
-   }
--  /*
--  * if the nulls value we got at the end of this lookup is
--  * not the expected one, we must restart lookup.
--  * We probably met an item that was moved to another chain.
--  */
--  if (get_nulls_value(node) != slot)
--  goto begin;
-   obj = NULL;
+ Again, most uses will be of (a).  The (b) and (c) cases are important
+-for specialized uses, but are relatively uncommon.
++for specialized uses, but are relatively uncommon.  The SRCU, RCU-Tasks,
++RCU-Tasks-Rude, and RCU-Tasks-Trace have similar relationships among
++their assorted primitives.
  
-   out:
-   rcu_read_unlock();
+ .. _3_whatisRCU:
  
--2) Insert function
--------------------
-+2) Insert algorithm
-+-------------------
+@@ -468,7 +483,7 @@ So, to sum up:
+ -	Within an RCU read-side critical section, use rcu_dereference()
+ 	to dereference RCU-protected pointers.
  
- ::
+--	Use some solid scheme (such as locks or semaphores) to
++-	Use some solid design (such as locks or semaphores) to
+ 	keep concurrent updates from interfering with each other.
  
-   /*
--  * Please note that new inserts are done at the head of list,
--  * not in the middle or end.
--  */
-+   * Please note that new inserts are done at the head of list,
-+   * not in the middle or end.
-+   */
-   obj = kmem_cache_alloc(cachep);
-   lock_chain(); // typically a spin_lock()
-   obj->key = key;
-+  atomic_set_release(&obj->refcnt, 1); // key before refcnt
-   /*
--  * changes to obj->key must be visible before refcnt one
--  */
--  smp_wmb();
--  atomic_set(&obj->refcnt, 1);
--  /*
--  * insert obj in RCU way (readers might be traversing chain)
--  */
-+   * insert obj in RCU way (readers might be traversing chain)
-+   */
-   hlist_nulls_add_head_rcu(&obj->obj_node, list);
-   unlock_chain(); // typically a spin_unlock()
+ -	Use rcu_assign_pointer() to update an RCU-protected pointer.
+@@ -579,6 +594,14 @@ to avoid having to write your own callback::
+ 
+ 	kfree_rcu(old_fp, rcu);
+ 
++If the occasional sleep is permitted, the single-argument form may
++be used, omitting the rcu_head structure from struct foo.
++
++	kfree_rcu(old_fp);
++
++This variant of kfree_rcu() almost never blocks, but might do so by
++invoking synchronize_rcu() in response to memory-allocation failure.
++
+ Again, see checklist.rst for additional rules governing the use of RCU.
+ 
+ .. _5_whatisRCU:
+@@ -596,7 +619,7 @@ lacking both functionality and performance.  However, they are useful
+ in getting a feel for how RCU works.  See kernel/rcu/update.c for a
+ production-quality implementation, and see:
+ 
+-	http://www.rdrop.com/users/paulmck/RCU
++	https://docs.google.com/document/d/1X0lThx8OK0ZgLMqVoXiR4ZrGURHrXK6NyLRbeXe3Xac/edit
+ 
+ for papers describing the Linux kernel RCU implementation.  The OLS'01
+ and OLS'02 papers are a good introduction, and the dissertation provides
+@@ -929,6 +952,8 @@ unfortunately any spinlock in a ``SLAB_TYPESAFE_BY_RCU`` object must be
+ initialized after each and every call to kmem_cache_alloc(), which renders
+ reference-free spinlock acquisition completely unsafe.  Therefore, when
+ using ``SLAB_TYPESAFE_BY_RCU``, make proper use of a reference counter.
++(Those willing to use a kmem_cache constructor may also use locking,
++including cache-friendly sequence locking.)
+ 
+ With traditional reference counting -- such as that implemented by the
+ kref library in Linux -- there is typically code that runs when the last
+@@ -1047,6 +1072,30 @@ sched::
+ 	rcu_read_lock_sched_held
+ 
+ 
++RCU-Tasks::
++
++	Critical sections	Grace period		Barrier
++
++	N/A			call_rcu_tasks		rcu_barrier_tasks
++				synchronize_rcu_tasks
++
++
++RCU-Tasks-Rude::
++
++	Critical sections	Grace period		Barrier
++
++	N/A			call_rcu_tasks_rude	rcu_barrier_tasks_rude
++				synchronize_rcu_tasks_rude
++
++
++RCU-Tasks-Trace::
++
++	Critical sections	Grace period		Barrier
++
++	rcu_read_lock_trace	call_rcu_tasks_trace	rcu_barrier_tasks_trace
++	rcu_read_unlock_trace	synchronize_rcu_tasks_trace
++
++
+ SRCU::
+ 
+ 	Critical sections	Grace period		Barrier
+@@ -1087,35 +1136,43 @@ list can be helpful:
+ 
+ a.	Will readers need to block?  If so, you need SRCU.
+ 
+-b.	What about the -rt patchset?  If readers would need to block
+-	in an non-rt kernel, you need SRCU.  If readers would block
+-	in a -rt kernel, but not in a non-rt kernel, SRCU is not
+-	necessary.  (The -rt patchset turns spinlocks into sleeplocks,
+-	hence this distinction.)
++b.	Will readers need to block and are you doing tracing, for
++	example, ftrace or BPF?  If so, you need RCU-tasks,
++	RCU-tasks-rude, and/or RCU-tasks-trace.
++
++c.	What about the -rt patchset?  If readers would need to block in
++	an non-rt kernel, you need SRCU.  If readers would block when
++	acquiring spinlocks in a -rt kernel, but not in a non-rt kernel,
++	SRCU is not necessary.	(The -rt patchset turns spinlocks into
++	sleeplocks, hence this distinction.)
+ 
+-c.	Do you need to treat NMI handlers, hardirq handlers,
++d.	Do you need to treat NMI handlers, hardirq handlers,
+ 	and code segments with preemption disabled (whether
+ 	via preempt_disable(), local_irq_save(), local_bh_disable(),
+ 	or some other mechanism) as if they were explicit RCU readers?
+-	If so, RCU-sched is the only choice that will work for you.
+-
+-d.	Do you need RCU grace periods to complete even in the face
+-	of softirq monopolization of one or more of the CPUs?  For
+-	example, is your code subject to network-based denial-of-service
+-	attacks?  If so, you should disable softirq across your readers,
+-	for example, by using rcu_read_lock_bh().
+-
+-e.	Is your workload too update-intensive for normal use of
++	If so, RCU-sched readers are the only choice that will work
++	for you, but since about v4.20 you use can use the vanilla RCU
++	update primitives.
++
++e.	Do you need RCU grace periods to complete even in the face of
++	softirq monopolization of one or more of the CPUs?  For example,
++	is your code subject to network-based denial-of-service attacks?
++	If so, you should disable softirq across your readers, for
++	example, by using rcu_read_lock_bh().  Since about v4.20 you
++	use can use the vanilla RCU update primitives.
++
++f.	Is your workload too update-intensive for normal use of
+ 	RCU, but inappropriate for other synchronization mechanisms?
+ 	If so, consider SLAB_TYPESAFE_BY_RCU (which was originally
+ 	named SLAB_DESTROY_BY_RCU).  But please be careful!
+ 
+-f.	Do you need read-side critical sections that are respected
+-	even though they are in the middle of the idle loop, during
+-	user-mode execution, or on an offlined CPU?  If so, SRCU is the
+-	only choice that will work for you.
++g.	Do you need read-side critical sections that are respected even
++	on CPUs that are deep in the idle loop, during entry to or exit
++	from user-mode execution, or on an offlined CPU?  If so, SRCU
++	and RCU Tasks Trace are the only choices that will work for you,
++	with SRCU being strongly preferred in almost all cases.
+ 
+-g.	Otherwise, use RCU.
++h.	Otherwise, use RCU.
+ 
+ Of course, this all assumes that you have determined that RCU is in fact
+ the right tool for your job.
 -- 
 2.31.1.189.g2e36527f23
 
