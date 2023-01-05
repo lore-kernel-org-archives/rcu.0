@@ -2,71 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A1A5C3DA7A
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 08:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E46DC3DA7D
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 08:06:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjAEIFC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 03:05:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
+        id S231233AbjAEIGC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 03:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbjAEIFA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 03:05:00 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5838F4435A;
-        Thu,  5 Jan 2023 00:04:59 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1672905896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LBxY4x0lJECD3Q95isd05EdO7m7NX7/uYbQPzo0bI20=;
-        b=0Dgu5ClJpyieIj/9iUZxjMDW8ZJTVlPIqbiIIB5fG5R3kHFQJnrurr6kHDTZKle0oJL0mg
-        OTnCbmLG2qKdm7+hbkk/BIx0Y50Dq4JG3csa8Nik4hZa6FeOo6qAqLHaSdW6/BnNvw9iTB
-        CWTnysWkJEwhnHHQLTG1ktMai44ctieGiIS5zW84DV4Pcth2sHqKl2e9T/bq1BmXmh9xlZ
-        6CIBvV48TZrGH1/SZ5gO8z/+5gkMVszNFqXVDZ6qv7fX1Om9rCbOC/FUTN1WaDCj6L2rfb
-        BQG8vZWhbsFxj2OAbrG8ePSgISnOFnzk8dcQ67WBDLGgOjP5vW1R67k0V7QLeA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1672905896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LBxY4x0lJECD3Q95isd05EdO7m7NX7/uYbQPzo0bI20=;
-        b=tsKbdvhJYyQ43xpUDWVbw6FN9BbvrqYVO/pzQdu+9Tvot04pDwEtjq7LEPHq8nmTcmf1Uk
-        p3rew6Rk5+ddrUDQ==
-To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH rcu 27/27] rcu: Remove CONFIG_SRCU
-In-Reply-To: <20230105003813.1770367-27-paulmck@kernel.org>
+        with ESMTP id S231432AbjAEIGB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 03:06:01 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0544086D;
+        Thu,  5 Jan 2023 00:06:00 -0800 (PST)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3057MfYq032307;
+        Thu, 5 Jan 2023 08:05:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=fOrCrBR39K3gwlEhzZZbNnz3h0BbHtsclLCHEbf+Mq0=;
+ b=itX8SP5mM+sMYFaxNKk4yq4R7Cya3DSMd0RxTo/7X0M1W8/mhdKCrlm3w59nH8xwVIQI
+ gRGQjk22oQligKETm88N9QqPbASSaXD/MpWdhxvr6JCWNuNmVHkOMj0ydc7hWpK1Of0d
+ F/6ocAMUhJsaBYKoSPCj+a42o7QgzNNlwzUkbd0XkvnJfvXZxD1xr/9MClQzI5Yjh8FR
+ R/nmDiJyyj3p0VZ4Pk+F4KWb/Jo+LIFvwHLTkgXZ2JPnxp6vK+oUGVZ2S5tWOEkPdzbt
+ uhQ5bcpJgog7HqRwmoR8PbUauhbIWYf5H7/BVrKoVVGzPMBF+FVjRZ1PZVx+zoj57z1b dg== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mwsxns4jp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Jan 2023 08:05:54 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 305535xK001543;
+        Thu, 5 Jan 2023 08:05:52 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3mtcbfeegn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Jan 2023 08:05:52 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 30585nU948628010
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Jan 2023 08:05:49 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CCA3A20043;
+        Thu,  5 Jan 2023 08:05:49 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52CE020040;
+        Thu,  5 Jan 2023 08:05:49 +0000 (GMT)
+Received: from osiris (unknown [9.171.68.186])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu,  5 Jan 2023 08:05:49 +0000 (GMT)
+Date:   Thu, 5 Jan 2023 09:05:47 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH rcu 07/27] block: Remove "select SRCU"
+Message-ID: <Y7aE2zzdTyjNId6w@osiris>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-27-paulmck@kernel.org>
-Date:   Thu, 05 Jan 2023 09:10:16 +0106
-Message-ID: <87r0w9csqn.fsf@jogness.linutronix.de>
+ <20230105003813.1770367-7-paulmck@kernel.org>
+ <1a9d0cdf-d39e-7eb5-39dd-3e425016c579@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1a9d0cdf-d39e-7eb5-39dd-3e425016c579@kernel.dk>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: eWEV7vV7VjxkHgEDcwbCLUDx6EPtEpk7
+X-Proofpoint-GUID: eWEV7vV7VjxkHgEDcwbCLUDx6EPtEpk7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2023-01-05_02,2023-01-04_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 malwarescore=0 clxscore=1011 suspectscore=0 bulkscore=0
+ mlxlogscore=597 mlxscore=0 adultscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301050066
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2023-01-04, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> Now that all references to CONFIG_SRCU have been removed, it is time to
-> remove CONFIG_SRCU itself.
+On Wed, Jan 04, 2023 at 05:43:07PM -0700, Jens Axboe wrote:
+> On 1/4/23 5:37 PM, Paul E. McKenney wrote:
+> > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > Kconfig statements.
+> 
+> I'm assuming something earlier made this true (only CC'ed on this patch,
+> not the cover letter or interesting btis...), then:
 
-I think "all references" is a bit misleading since there still are
-several places in the kernel code that use it:
-
-$ git grep CONFIG_SRCU
-drivers/base/core.c:#ifdef CONFIG_SRCU
-drivers/base/core.c:#else /* !CONFIG_SRCU */
-drivers/base/core.c:#endif /* !CONFIG_SRCU */
-fs/locks.c:#if IS_ENABLED(CONFIG_SRCU)
-fs/locks.c:#else /* !IS_ENABLED(CONFIG_SRCU) */
-fs/locks.c:#endif /* IS_ENABLED(CONFIG_SRCU) */
-kernel/notifier.c:#ifdef CONFIG_SRCU
-kernel/notifier.c:#endif /* CONFIG_SRCU */
-
-Should those be removed before this patch?
-
-John Ogness
+I was wondering the same. But it is already unconditionally enabled
+since commit 0cd7e350abc4 ("rcu: Make SRCU mandatory").
