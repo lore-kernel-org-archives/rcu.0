@@ -2,107 +2,92 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B9E5C3DA7A
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C777C3DA7D
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:46:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbjAEPmf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 10:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60684 "EHLO
+        id S229536AbjAEPqE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 10:46:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234440AbjAEPmc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 10:42:32 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00469559C6;
-        Thu,  5 Jan 2023 07:42:30 -0800 (PST)
+        with ESMTP id S234012AbjAEPqC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 10:46:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AC410BB;
+        Thu,  5 Jan 2023 07:46:01 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FABE61B0B;
-        Thu,  5 Jan 2023 15:42:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9863C433EF;
-        Thu,  5 Jan 2023 15:42:29 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3C9DEB81B22;
+        Thu,  5 Jan 2023 15:46:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2E65C433D2;
+        Thu,  5 Jan 2023 15:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672933350;
-        bh=rYLLvAR7qCxC2NW9cBbIijuxkUi6aKDT/oIR1nZIP0M=;
+        s=k20201202; t=1672933558;
+        bh=jOgKAbukbrjdYiUUmVYlAD25dxO8wgbG9gGqqgI0av4=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cg04Q+e7do/v/m0+12IJZWJ5GKocxU/KF12DQzObMGjVXX9zK8O0gph4aU/xSBjNx
-         XweZrbr+bDOZ1UG0T7I6sw0qsJi5rwZe8j+Zd0tlid4bfLI3vjiF++Ol4qCdw4NWbN
-         JnR23TehDqtluNXjLUXseVhVlzICw8Md/oc+7Ek7lvMHjB+6ohWp+/+uL/XyziPQ5E
-         IE2vCl5thcdTljW5u1t+90Dzbl2rnmNqxevHP2wxY8xYjiFoLTSNmL3XgLIdCkFLvt
-         F5NETytG4OcOyo7+Pqr3JA++hk4k1tw9L5iexaPMj1IGLTbgGh6JH2DHgAsPH7p+Fe
-         bKIZ4rIMH4xRQ==
+        b=qSiDOAWv1/A3nr7wJuhdGMInKqir0Z2ZdM5Z9IhITI3s73KtWJ7M2GgUZdqdLRbw2
+         +ND7WcOyNHgIaLzCXSa0CB53rQeLggtabKelMBgaxf1t1KK6m+uRetQ7LT9PdIbTBQ
+         hpB2FaakyO+X6PvIKMLKQm1jwgeL+68NwIAPNJFGfxFTN+8Q2E3BdJH+ooHj6E2oW7
+         7tAndcn61xjD1cyV/4gEH+7D0+bhqak2exlWaLI9J+veX8Fv3A3v9TeJE4LrqoH8dY
+         S+zjC2XaW0HkHToMP8QuYWwz68nMZG+Y9eJ8P8Ejg01lad1x/76t/aClv0WRPFSZmV
+         QGaE31oqTSwJg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 81DA35C029A; Thu,  5 Jan 2023 07:42:29 -0800 (PST)
-Date:   Thu, 5 Jan 2023 07:42:29 -0800
+        id 7F9115C029A; Thu,  5 Jan 2023 07:45:58 -0800 (PST)
+Date:   Thu, 5 Jan 2023 07:45:58 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
+To:     Jan Kara <jack@suse.cz>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH rcu 02/27] arch/arm64/kvm: Remove "select SRCU"
-Message-ID: <20230105154229.GU4028633@paulmck-ThinkPad-P17-Gen-1>
+        kernel-team@meta.com, rostedt@goodmis.org, Jan Kara <jack@suse.com>
+Subject: Re: [PATCH rcu 21/27] fs/quota: Remove "select SRCU"
+Message-ID: <20230105154558.GV4028633@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-2-paulmck@kernel.org>
- <86mt6x724m.wl-maz@kernel.org>
+ <20230105003813.1770367-21-paulmck@kernel.org>
+ <20230105113015.6f3ikdgmnhweoish@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86mt6x724m.wl-maz@kernel.org>
+In-Reply-To: <20230105113015.6f3ikdgmnhweoish@quack3>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 09:38:01AM +0000, Marc Zyngier wrote:
-> On Thu, 05 Jan 2023 00:37:48 +0000,
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
+On Thu, Jan 05, 2023 at 12:30:15PM +0100, Jan Kara wrote:
+> On Wed 04-01-23 16:38:07, Paul E. McKenney wrote:
 > > Now that the SRCU Kconfig option is unconditionally selected, there is
 > > no longer any point in selecting it.  Therefore, remove the "select SRCU"
 > > Kconfig statements.
 > > 
 > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: James Morse <james.morse@arm.com>
-> > Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-> > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > Cc: Oliver Upton <oliver.upton@linux.dev>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: <linux-arm-kernel@lists.infradead.org>
-> > Cc: <kvmarm@lists.linux.dev>
-> > Cc: <kvmarm@lists.cs.columbia.edu>
+> > Cc: Jan Kara <jack@suse.com>
 > > ---
-> >  arch/arm64/kvm/Kconfig | 1 -
+> >  fs/quota/Kconfig | 1 -
 > >  1 file changed, 1 deletion(-)
+> 
+> Sure. You can add:
+> 
+> Acked-by: Jan Kara <jack@suse.cz>
+
+Thank you, Jan!  I will apply both on my next rebase.
+
+> 								Honza
+> 
 > > 
-> > diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-> > index 05da3c8f7e88f..312f0e9869111 100644
-> > --- a/arch/arm64/kvm/Kconfig
-> > +++ b/arch/arm64/kvm/Kconfig
-> > @@ -28,7 +28,6 @@ menuconfig KVM
-> >  	select KVM_MMIO
-> >  	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
-> >  	select KVM_XFER_TO_GUEST_WORK
+> > diff --git a/fs/quota/Kconfig b/fs/quota/Kconfig
+> > index b59cd172b5f97..d5a85a8062d05 100644
+> > --- a/fs/quota/Kconfig
+> > +++ b/fs/quota/Kconfig
+> > @@ -6,7 +6,6 @@
+> >  config QUOTA
+> >  	bool "Quota support"
+> >  	select QUOTACTL
 > > -	select SRCU
-> >  	select KVM_VFIO
-> >  	select HAVE_KVM_EVENTFD
-> >  	select HAVE_KVM_IRQFD
-> 
-> Acked-by: Marc Zyngier <maz@kernel.org>
-
-Thank you, Marc!  I will apply this on my next rebase.
-
-							Thanx, Paul
-
-> 	M.
-> 
+> >  	help
+> >  	  If you say Y here, you will be able to set per user limits for disk
+> >  	  usage (also called disk quotas). Currently, it works for the
+> > -- 
+> > 2.31.1.189.g2e36527f23
+> > 
 > -- 
-> Without deviation from the norm, progress is not possible.
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
