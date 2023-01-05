@@ -2,45 +2,47 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0037C71133
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 143E2C71134
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240520AbjAEAlZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S240516AbjAEAlZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 4 Jan 2023 19:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46838 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240700AbjAEAit (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S240699AbjAEAit (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 4 Jan 2023 19:38:49 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98255C42;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981D6C3C;
         Wed,  4 Jan 2023 16:38:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 485156185C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5467C61880;
         Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69826C433AC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7572EC433B0;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=U+JNmGaLukQdGfoV+R2DP604qkOvEolb/RV2Clv2XIc=;
+        bh=+L9zhcB+hUYsHjcRcqemJqoGzF3x7d5CEb6FU4DWqac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jW9kE9w6GphGhw9Iug5nV0iloFRPqQiTQ8wW71s9lbUkhgxc7BmTwcbu3skPCx1wW
-         svAa1qvvIIS2bpDtotm89534twxgMEmdZUlM5Zwq+hBHjoWkamazXtWpweY7ltoTvu
-         zla2ZFlCg7vWAeNEe+uLfX3Y13swrX/AK+UavD+229AP4Q89RnHfhI1xGBQKB273eH
-         ELiNK5JQhm3IFumgktlKoQ94sq1VdOn5VoahKNH4HGDItv+jLoLadiPAVX7Op0KZ/N
-         o3Shumzvdy2zTutzws9tyNKAe5yMc+K15Q67rhWjLlVBdyVBMitKiEIkPEq5bfaRwC
-         6iW0iv4KG+uKA==
+        b=WL687Kncqgklk45rSEUmRACcroNljnbgdpcKFptf5DqAPBW78Z/NNWYc82CjT/bfO
+         93+pVhh35Tpt42P19/AQy5ZApRuyxi/sI3TyhwCvvbun9E6KuGt5yaCmeNtCGroKoi
+         8uasysST/D8M9m3fpl6tLCsIFIW55apBrWDSzGi5lpOXne0QRbUlkKea1xSnMgZ9zo
+         LWQkR2MYB7IkIm+9bKOsPE6jO6HAXsmMp2wTx5jxvtaz4cqquAGRVIBNVuyv7BxA4M
+         5lQWjMkYF0uwYjaMRGpdjKo/oS2Ly/ox3gef7rEinayWupH6pkvCPGv3MO0B1isom5
+         Uskow1uXCa+zQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C1FD55C1AE0; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id C96D55C1C77; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
-Subject: [PATCH rcu 07/27] block: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:53 -0800
-Message-Id: <20230105003813.1770367-7-paulmck@kernel.org>
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, nvdimm@lists.linux.dev
+Subject: [PATCH rcu 11/27] drivers/dax: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:37:57 -0800
+Message-Id: <20230105003813.1770367-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
@@ -55,24 +57,26 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: linux-block@vger.kernel.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: <nvdimm@lists.linux.dev>
 ---
- block/Kconfig | 1 -
+ drivers/dax/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/block/Kconfig b/block/Kconfig
-index 444c5ab3b67e2..5d9d9c84d5165 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -6,7 +6,6 @@ menuconfig BLOCK
-        bool "Enable the block layer" if EXPERT
-        default y
-        select SBITMAP
--       select SRCU
-        help
- 	 Provide block layer support for the kernel.
+diff --git a/drivers/dax/Kconfig b/drivers/dax/Kconfig
+index 5fdf269a822e5..2bf5123e48279 100644
+--- a/drivers/dax/Kconfig
++++ b/drivers/dax/Kconfig
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig DAX
+ 	tristate "DAX: direct access to differentiated memory"
+-	select SRCU
+ 	default m if NVDIMM_DAX
  
+ if DAX
 -- 
 2.31.1.189.g2e36527f23
 
