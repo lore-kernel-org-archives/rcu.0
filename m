@@ -2,93 +2,80 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04222C678DD
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA424C54EBC
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbjAEAlO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
+        id S240293AbjAEAlM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240691AbjAEAis (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:48 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9725BC23;
-        Wed,  4 Jan 2023 16:38:19 -0800 (PST)
+        with ESMTP id S240979AbjAEAkX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:40:23 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C33A1AD8A;
+        Wed,  4 Jan 2023 16:40:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5685D618A0;
-        Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 697C2C433AA;
-        Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2C52AB81716;
+        Thu,  5 Jan 2023 00:40:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4FC5C433D2;
+        Thu,  5 Jan 2023 00:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672879095;
-        bh=DG7Pd7Nd4SDFQ0Z2L3qtkeDuW2Mx222F1hGW9El87wY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T0KeEQevUbKVz3bYSLrR93Wal79fsjYKnTPR7SX3CUYnrv4rH+W31Q3tgM6QGP1Mt
-         Aw/KQZprQxWswMUcgXu1wkPPvaZlLoQgoHr+mhiZGSFiN2GsR9gBScMSVUus3LR8cF
-         wLx8T5/6+3CEe6BoSUse4eie7lsotO9KAm0FANz60tJ7VG9dTVbiXxdEhTrSqARvb1
-         /mM383P0IXDH53usLPqMDLlh/4gsUS/B7KzyQRRWX7zdUyiYevbmm9pP6guj6sfJfn
-         qrBMGJ0iXoc7rDcEtcsIHvn94QWqiz9PpYq6HY7ej7nxpPwj99UnEOb8z+ErJihzc5
-         owDecVACEulCA==
+        s=k20201202; t=1672879218;
+        bh=4dHRyMC3bi4JwnYGiWFSI19lQtcZCbWZ3/6W5LWfhO8=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=TPNop0ZcfYsaKsSsxpbmHl96feJjXEU3iLMUPKcjVoSNYNahh6rTvbnPHkK0jwYG0
+         1qhW0bNAxdO3dp7hFQL9KMoO1Nka0ApC52QwPk4NKPH532Izwq7iB7k8IHtwcYhaVM
+         wzcj0/RdspOFVi9P9omdQAY5RfiEOrM58DrQcVm7Fagn714Tul+ZOdmz1n6+63mTO1
+         tJaLgTgWEqyUvYByyHFaXE6erjoyoJKARbEsv2auLQ8aYtzCg+S74EpGc6CtYwKPlw
+         SN6hxYScFiP+FyBIaOrv2tk7ujpGhegJ5LYdQeU4NTvr2Ki6CHBVWUmZnGytvHuxm8
+         25+ihHs2uT4PQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C028C5C1ADF; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id 7BD695C05CA; Wed,  4 Jan 2023 16:40:18 -0800 (PST)
+Date:   Wed, 4 Jan 2023 16:40:18 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: [PATCH rcu 06/27] arch/s390/kvm: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:52 -0800
-Message-Id: <20230105003813.1770367-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
-References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/6] RCU Tasks updates for v6.3
+Message-ID: <20230105004018.GA1770640@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now that the SRCU Kconfig option is unconditionally selected, there is
-no longer any point in selecting it.  Therefore, remove the "select SRCU"
-Kconfig statements.
+Hello!
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Janosch Frank <frankja@linux.ibm.com>
-Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: <kvm@vger.kernel.org>
-Cc: <linux-s390@vger.kernel.org>
----
- arch/s390/kvm/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+This series provides some RCU Tasks updates:
 
-diff --git a/arch/s390/kvm/Kconfig b/arch/s390/kvm/Kconfig
-index 33f4ff909476c..45fdf2a9b2e32 100644
---- a/arch/s390/kvm/Kconfig
-+++ b/arch/s390/kvm/Kconfig
-@@ -31,7 +31,6 @@ config KVM
- 	select HAVE_KVM_IRQ_ROUTING
- 	select HAVE_KVM_INVALID_WAKEUPS
- 	select HAVE_KVM_NO_POLL
--	select SRCU
- 	select KVM_VFIO
- 	select INTERVAL_TREE
- 	select MMU_NOTIFIER
--- 
-2.31.1.189.g2e36527f23
+1.	rcu-tasks: Use accurate runstart time for RCU Tasks boot-time
+	testing, courtesy of Zqiang.
 
+2.	rcu-tasks: Improve comments explaining tasks_rcu_exit_srcu
+	purpose, courtesy of Frederic Weisbecker.
+
+3.	rcu-tasks: Remove preemption disablement around
+	srcu_read_[un]lock() calls, courtesy of Frederic Weisbecker.
+
+4.	rcu-tasks: Fix synchronize_rcu_tasks() VS zap_pid_ns_processes(),
+	courtesy of Frederic Weisbecker.
+
+5.	rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug,
+	courtesy of Zqiang.
+
+6.	rcu-tasks: Handle queue-shrink/callback-enqueue race condition,
+	courtesy of Zqiang.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcupdate.h |    2 +
+ b/kernel/pid_namespace.c   |   17 +++++++++
+ b/kernel/rcu/tasks.h       |    8 +---
+ kernel/rcu/tasks.h         |   77 ++++++++++++++++++++++++++++++---------------
+ 4 files changed, 75 insertions(+), 29 deletions(-)
