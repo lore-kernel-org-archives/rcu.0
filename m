@@ -2,75 +2,81 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84336C46467
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28DBFC53210
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:52:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbjAEAwH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        id S229783AbjAEAwS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjAEAvv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:51:51 -0500
+        with ESMTP id S229799AbjAEAwA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:52:00 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FE950F71;
-        Wed,  4 Jan 2023 16:46:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD004544C3;
+        Wed,  4 Jan 2023 16:46:56 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A50D76188F;
-        Thu,  5 Jan 2023 00:46:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B62EC433D2;
-        Thu,  5 Jan 2023 00:46:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4616861890;
+        Thu,  5 Jan 2023 00:46:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5455C433EF;
+        Thu,  5 Jan 2023 00:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672879607;
-        bh=tJya2/iQZ3L5zGRm70FEzxNq6pnyLaInRqQjwPOtMGU=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=C2D5grO+ISTNJDrkI45mNrBgBNBcgb99WihvLWvxoSSUy4lT8NRSfaBgI1lNXIEy8
-         JvfGozMV9UoJmT0O95vmOld/UmmmPqC2q1CEAEESEezkRTuF+0kfiwovfDSUUwm/86
-         xfiV9dWXpTvY6S+ySC/ebb9eCIVQyjwjx36vHNJFbPdKe9vHBhvJ8L2OQ7xYcytgzs
-         TuQn4RtQBwp9Im48uccP0Y3+u3nYj28SfXj9zYTpi/psfca996GyJokYD/CkcLyY+0
-         ADuLh+YyFihoEBba9acibVpgAuFCO6Xyr7pW5DEJM5QaTDARQZ1L6ANxzFIwCOYL3h
-         XwZqy+m4FJ2XA==
+        s=k20201202; t=1672879615;
+        bh=G9iXV2wVbhOZbCfZMGnwzoNe/h9I0GEx2kSS1ZeTvUQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ow9MundN2/lILLz2oSpNKiNUXSdqapyFA+EwxubE6Vy5Dw2+gLM6Hjjvjd1PAjrrU
+         fJDGWAXzw9tGXM8gr94auGGEofcwi5GmVEuy1IjCDOJCpjjez1Q71L1s7UoHmdr9Lr
+         UNZzsliOyazP328TukuEZ0jmCK0FvjIYSyuBeYmK0lm4nLT/dfRcNd+Va55qHPkNmQ
+         q+vD7f/ql8fY9ZcqakmQeemgAG09W4sVhH1kxv365LtAXDgr1wtYcMlALz/7bnjex+
+         KdeIeMd1PWSa8vtB5li2/CHBffifSdXlqg04R+AzYTWjB3O8Jy0zpTkzEdO3j6dD8d
+         bLjNz5QlwtEtA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7B1515C05CA; Wed,  4 Jan 2023 16:46:46 -0800 (PST)
-Date:   Wed, 4 Jan 2023 16:46:46 -0800
+        id 604EA5C08E5; Wed,  4 Jan 2023 16:46:55 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/4] Torture-test scripting updates for v6.3
-Message-ID: <20230105004646.GA1771551@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 3/4] torture: Permit double-quoted-string Kconfig options
+Date:   Wed,  4 Jan 2023 16:46:51 -0800
+Message-Id: <20230105004652.1771676-3-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20230105004646.GA1771551@paulmck-ThinkPad-P17-Gen-1>
+References: <20230105004646.GA1771551@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Currently, the presence of any quoted-string Kconfig option in the
+scenario files or the CFcommon file (aside from the special-cased
+CONFIG_INITRAMFS_SOURCE option) will result in an "improperly set"
+diagnostic.  This commit updates configcheck.sh to strip double quotes
+in order to permit string-valued Kconfig options to be handled correctly.
 
-This series provides torture-test scripting updates:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/configcheck.sh | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-1.	make kvm-find-errors.sh check for compressed vmlinux files.
+diff --git a/tools/testing/selftests/rcutorture/bin/configcheck.sh b/tools/testing/selftests/rcutorture/bin/configcheck.sh
+index 83fac1852ab23..b92dfeb7fbbfe 100755
+--- a/tools/testing/selftests/rcutorture/bin/configcheck.sh
++++ b/tools/testing/selftests/rcutorture/bin/configcheck.sh
+@@ -10,10 +10,9 @@
+ T="`mktemp -d ${TMPDIR-/tmp}/configcheck.sh.XXXXXX`"
+ trap 'rm -rf $T' 0
+ 
+-cat $1 > $T/.config
++sed -e 's/"//g' < $1 > $T/.config
+ 
+-cat $2 | sed -e 's/\(.*\)=n/# \1 is not set/' -e 's/^#CHECK#//' |
+-grep -v '^CONFIG_INITRAMFS_SOURCE' |
++sed -e 's/"//g' -e 's/\(.*\)=n/# \1 is not set/' -e 's/^#CHECK#//' < $2 |
+ awk	'
+ {
+ 		print "if grep -q \"" $0 "\" < '"$T/.config"'";
+-- 
+2.31.1.189.g2e36527f23
 
-2.	rcutorture: Use "grep -E" instead of "egrep", courtesy of
-	Tiezhu Yang.
-
-3.	Permit double-quoted-string Kconfig options.
-
-4.	Permit string-valued Kconfig options in kvm.sh.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/tools/testing/selftests/rcutorture/bin/configcheck.sh     |    5 ++---
- b/tools/testing/selftests/rcutorture/bin/console-badness.sh |    2 +-
- b/tools/testing/selftests/rcutorture/bin/kvm-build.sh       |    4 ++--
- b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh |    2 +-
- b/tools/testing/selftests/rcutorture/bin/kvm.sh             |    4 ++--
- b/tools/testing/selftests/rcutorture/bin/parse-console.sh   |   10 +++++-----
- tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh   |    4 ++--
- tools/testing/selftests/rcutorture/bin/kvm.sh               |    2 +-
- 8 files changed, 16 insertions(+), 17 deletions(-)
