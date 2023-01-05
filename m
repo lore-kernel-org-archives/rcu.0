@@ -2,46 +2,51 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C62F1C53210
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E75D8C54EBD
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:56:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbjAEAzb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:55:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        id S229880AbjAEAzg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbjAEAyn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:54:43 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F544D726;
-        Wed,  4 Jan 2023 16:51:28 -0800 (PST)
+        with ESMTP id S230239AbjAEAyo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:54:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F76647335;
+        Wed,  4 Jan 2023 16:51:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 43A8A61892;
-        Thu,  5 Jan 2023 00:51:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB9CC43392;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0A5CBB818F0;
+        Thu,  5 Jan 2023 00:51:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 996F2C433F1;
         Thu,  5 Jan 2023 00:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879887;
-        bh=KvTTOEuf3w3HlqviVybOzjEM5gng/swpX4BJIk+B47g=;
+        bh=4aIDMnvVK/cTLHasisTKiXTMm58qBLZArVpwD6fnVeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NGyVkmIQee17I1jwvZ64LOwKtzTsgwKuE0my358MPYotRSPRdZhIZ3vtVkzDvbKz5
-         ZAIIt/oVOVISlenv3a+kWgsc8VbatWUXzybT92E7FQelrR85cuDLjTbjmbdZVxYcUT
-         K6y1Q/8lF1SxKprLJKDuYOxvVWiOXBn4T4S666bnBjBa6XsGEbJFMzOUhkP8WNrJs/
-         Be+frtvWL4W/NnvgnZFen+zoKiya4EP6ACJPFk98n//QO3s1+uOxyrY1H3ME2+f8Cp
-         rLLno0Fur/WiCmHb96lAI9CH1+KBQZmxQV1l3oM6qc+SXR9rb9HzZRmHatQfRJGkql
-         uP7lTROTxuaEg==
+        b=nGnOL3uQlRZc4QbM4HI+eNT1H2o82vAbdbiVxk7xy4nZLxwOjZzo5o4QNn6+qZDoH
+         k4LbN1YcOBhEPdvBD2OvCM+1p18h2xO40Y9YN2RiXu27XdL+Q7h9FUWzR1wENH4h7P
+         L6fULio4gg+0e0cFjdBckAcJRX8WYGrwv9Mda9UdPMThOczSkF47+BBKuImpeQgqQl
+         WxDg3Fvs6chDNP6+qY31WRX/LeVYVTjNI5xuXVhn8agW8FgurUyiZS5xv+GkmkVZWx
+         CAbvgzgYYJid38BvxFB06kOJ62k04e23UADvUnv2udVFiNK0MrRtErd0Kf4r6+nXDh
+         sbJHBhAifMI5g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 574A75C1ADF; Wed,  4 Jan 2023 16:51:27 -0800 (PST)
+        id 4EE055C05CA; Wed,  4 Jan 2023 16:51:27 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, Zhen Lei <thunder.leizhen@huawei.com>,
+        Elliott@paulmck-ThinkPad-P17-Gen-1.home, Robert <elliott@hpe.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Don <joshdon@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/6] rcu: Align the output of RCU CPU stall warning messages
-Date:   Wed,  4 Jan 2023 16:51:25 -0800
-Message-Id: <20230105005126.1772294-5-paulmck@kernel.org>
+Subject: [PATCH rcu 1/6] genirq: Fix the return type of kstat_cpu_irqs_sum()
+Date:   Wed,  4 Jan 2023 16:51:21 -0800
+Message-Id: <20230105005126.1772294-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105005105.GA1772125@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105005105.GA1772125@paulmck-ThinkPad-P17-Gen-1>
@@ -53,52 +58,37 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Time stamps are added to the output in kernels built with
-CONFIG_PRINTK_TIME=y, which causes misaligned output.  Therefore,
-replace pr_cont() with pr_err(), which fixes alignment and gets
-rid of a couple of despised pr_cont() calls.
+The type of member ->irqs_sum is unsigned long, but kstat_cpu_irqs_sum()
+returns int, which can result in truncation.  Therefore, change the
+kstat_cpu_irqs_sum() function's return value to unsigned long to avoid
+truncation.
 
-Before:
-[   37.567343] rcu: INFO: rcu_preempt self-detected stall on CPU
-[   37.567839] rcu:     0-....: (1500 ticks this GP) idle=***
-[   37.568270]  (t=1501 jiffies g=4717 q=28 ncpus=4)
-[   37.568668] CPU: 0 PID: 313 Comm: test0 Not tainted 6.1.0-rc4 #8
-
-After:
-[   36.762074] rcu: INFO: rcu_preempt self-detected stall on CPU
-[   36.762543] rcu:     0-....: (1499 ticks this GP) idle=***
-[   36.763003] rcu:     (t=1500 jiffies g=5097 q=27 ncpus=4)
-[   36.763522] CPU: 0 PID: 313 Comm: test0 Not tainted 6.1.0-rc4 #9
-
+Fixes: f2c66cd8eedd ("/proc/stat: scalability of irq num per cpu")
+Reported-by: Elliott, Robert (Servers) <elliott@hpe.com>
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Josh Don <joshdon@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/kernel_stat.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 6de15fb10bc47..f360894f5599d 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -619,7 +619,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 
- 	for_each_possible_cpu(cpu)
- 		totqlen += rcu_get_n_cbs_cpu(cpu);
--	pr_cont("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu ncpus=%d)\n",
-+	pr_err("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu ncpus=%d)\n",
- 	       smp_processor_id(), (long)(jiffies - gps),
- 	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
- 	if (ndetected) {
-@@ -680,7 +680,7 @@ static void print_cpu_stall(unsigned long gps)
- 	raw_spin_unlock_irqrestore_rcu_node(rdp->mynode, flags);
- 	for_each_possible_cpu(cpu)
- 		totqlen += rcu_get_n_cbs_cpu(cpu);
--	pr_cont("\t(t=%lu jiffies g=%ld q=%lu ncpus=%d)\n",
-+	pr_err("\t(t=%lu jiffies g=%ld q=%lu ncpus=%d)\n",
- 		jiffies - gps,
- 		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
- 
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index ddb5a358fd829..90e2fdc17d79f 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -75,7 +75,7 @@ extern unsigned int kstat_irqs_usr(unsigned int irq);
+ /*
+  * Number of interrupts per cpu, since bootup
+  */
+-static inline unsigned int kstat_cpu_irqs_sum(unsigned int cpu)
++static inline unsigned long kstat_cpu_irqs_sum(unsigned int cpu)
+ {
+ 	return kstat_cpu(cpu).irqs_sum;
+ }
 -- 
 2.31.1.189.g2e36527f23
 
