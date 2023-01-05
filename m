@@ -2,89 +2,158 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE98C46467
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3F84C54EBC
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:32:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbjAEAcH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:32:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S234716AbjAEAcI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:32:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235300AbjAEAcA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S235336AbjAEAcA (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 4 Jan 2023 19:32:00 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C4F4A976;
-        Wed,  4 Jan 2023 16:28:47 -0800 (PST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172F34FD48;
+        Wed,  4 Jan 2023 16:29:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F1E96185C;
-        Thu,  5 Jan 2023 00:28:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0454C433EF;
-        Thu,  5 Jan 2023 00:28:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C1406188D;
+        Thu,  5 Jan 2023 00:28:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4D6DC43398;
+        Thu,  5 Jan 2023 00:28:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672878526;
-        bh=f8yR/DtHUbezKXgVkqs6Ex/em/iJfg177cWRXF1n5Xo=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=iayiSBaCfbxo7F+VSHW/rCkuW7+GGg5U/Uw+LiSlqMc3WO2Qc6ScNg2c4YFQ7slrJ
-         DiSIPnIl3iGRLT38ycB9Ch9P67rS6nkH2kaeD70/eu+mr1ggI+SL7I4msyrmqMBffG
-         v1mAeOXZpMN4NuBwodZscvFqfAlGTjCn/OztzmrvqddPWXJ1aGSgCAFB+DICPoSRee
-         UoasHZXROmeRyzakeWRjnbqPHMH/ivVmpv/5WsNiaVv/nqdx+cqQL3mohmzczcwvT0
-         FdHsUEkQvQbm+FIQ3/IsWxoXuuJo8pQTEwLok3URJYpC8DkO8jBsnDrTvEq0V0e5Qu
-         HMeE80NK3wbQw==
+        s=k20201202; t=1672878534;
+        bh=clwCQkPF4F/ngvkSd6SVUnihXMpKsLHfzXEpdQWvTm4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iS7d50S2mQghaxAq24TLspOJsEYbJeunuWsteD3ipT5NcOhtdv2rVxEHbtSyQCQAx
+         xGsszsTs9p2Rk0l3NBK1g7G8zz2HHQ8bVGTANND6+tDvk6gJ/KVrAie4SoscTgJs6P
+         89mkFn6y/fLZKQOOYjWHXNUjiIXB0xs/Y28jFf0KJtNYDkRjx7m4hmeODHvNaUShTu
+         9a+ZkLpGMADrXoY6v0cmkdtvZ7wC8lLG8fe2XkOkuaaFdBs8PpWOLSLJ1mq9LP4jXO
+         4WvU9s15B1iFoQLBChKH7UELDxErkPUYhG6leSzCfV+55sutahh+z/BbFGocvlLN0c
+         hOc4sEY7rgFaw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9EDDD5C05CA; Wed,  4 Jan 2023 16:28:45 -0800 (PST)
-Date:   Wed, 4 Jan 2023 16:28:45 -0800
+        id 549935C1C5D; Wed,  4 Jan 2023 16:28:54 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/9] SRCU updates for v6.3
-Message-ID: <20230105002845.GA1769240@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Subject: [PATCH rcu 9/9] srcu: Update comment after the index flip
+Date:   Wed,  4 Jan 2023 16:28:53 -0800
+Message-Id: <20230105002853.1769401-9-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20230105002845.GA1769240@paulmck-ThinkPad-P17-Gen-1>
+References: <20230105002845.GA1769240@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Because there is not guaranteed to be a full memory barrier between
+the ->srcu_unlock_count increment of an srcu_read_unlock() and the
+->srcu_lock_count increment of the next srcu_read_lock(), this next
+srcu_read_lock() is not guaranteed to see the effect of the index flip
+just prior to this comment.  However, this next srcu_read_lock() will
+execute a full memory barrier, so the srcu_read_lock() after that is
+guaranteed to see that index flip.
 
-This series provides SRCU updates, perhaps most notably the addition
-of a srcu_down_read() and srcu_up_read() that act like srcu_read_lock()
-and srcu_read_unlock(), but which permit the srcu_up_read() to be invoked
-from a different context than the srcu_down_read().
-
-1.	Release early_srcu resources when no longer in use, courtesy
-	of Zqiang.
-
-2.	Delegate work to the boot cpu if using SRCU_SIZE_SMALL, courtesy
-	of Pingfan Liu.
-
-3.	Fix a misspelling in comment, courtesy of Pingfan Liu.
-
-4.	Fix the comparision in srcu_invl_snp_seq(), courtesy of Pingfan
-	Liu.
-
-5.	Add srcu_down_read() and srcu_up_read().
-
-6.	Add test code for semaphore-like SRCU readers.
-
-7.	Remove needless rcu_seq_done() check while holding read lock,
-	courtesy of Pingfan Liu.
-
-8.	Yet more detail for srcu_readers_active_idx_check() comments.
-
-9.	Update comment after the index flip.
-
-						Thanx, Paul
+This guarantee is illustrated by the following diagram of events and
+the litmus test following that.
 
 ------------------------------------------------------------------------
 
- b/include/linux/srcu.h     |   45 ++++++++++++++++++++++
- b/include/linux/srcutree.h |    2 -
- b/kernel/rcu/srcutree.c    |    9 ++--
- b/kernel/rcu/update.c      |    1 
- kernel/rcu/srcutree.c      |   89 ++++++++++++++++++++++++++++++++-------------
- kernel/rcu/update.c        |    3 +
- 6 files changed, 119 insertions(+), 30 deletions(-)
+READER                  UPDATER
+-------------           ----------
+                           // idx is initially 0.
+
+                           srcu_flip() {
+                              smp_mb();
+// RSCS
+
+srcu_read_unlock() {
+  smp_mb();
+                              idx++;    // P
+                              smp_mb(); // QQ
+                           }
+
+                           srcu_readers_unlock_idx(0) {
+        ,--counted------------ count all unlock[0]; // Q
+        |
+  unlock[0]++;  // X
+
+}
+                               smp_mb();
+srcu_read_lock() {
+  READ(idx) = 0;         ,---- count all lock[0]; // contributes imbalance of 1.
+  lock[0]++;  ----counted              |
+  smp_mb(); // PP          }           |
+}                                      |
+                                       |
+// RSCS                             not going to effect above scan
+                                       |
+srcu_read_unlock() {                   |
+  smp_mb();                            |
+  unlock[0]++;                         |
+}                                      |
+                                      /
+                                     /
+srcu_read_lock() {                  |
+  READ(idx);  // Y  -----cannot be counted because of P (has to sample idx as 1)
+  lock[1]++;
+  ...
+}
+
+------------------------------------------------------------------------
+
+This makes it similar to the store buffer pattern. Using X, Y, P and Q
+annotated above, we get:
+
+------------------------------------------------------------------------
+
+READER                    UPDATER
+X (write)                 P (write)
+
+smp_mb(); //PP            smp_mb(); //QQ
+
+Y (read)                  Q (read)
+
+------------------------------------------------------------------------
+
+ASCII art courtesy of Joel Fernandes.
+
+Reported-by: Joel Fernandes <joel@joelfernandes.org>
+Reported-by: Boqun Feng <boqun.feng@gmail.com>
+Reported-by: Frederic Weisbecker <frederic@kernel.org>
+Reported-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/srcutree.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index d2d2e31c42b13..ab4ee58af84bf 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1098,10 +1098,11 @@ static void srcu_flip(struct srcu_struct *ssp)
+ 
+ 	/*
+ 	 * Ensure that if the updater misses an __srcu_read_unlock()
+-	 * increment, that task's next __srcu_read_lock() will see the
+-	 * above counter update.  Note that both this memory barrier
+-	 * and the one in srcu_readers_active_idx_check() provide the
+-	 * guarantee for __srcu_read_lock().
++	 * increment, that task's __srcu_read_lock() following its next
++	 * __srcu_read_lock() or __srcu_read_unlock() will see the above
++	 * counter update.  Note that both this memory barrier and the
++	 * one in srcu_readers_active_idx_check() provide the guarantee
++	 * for __srcu_read_lock().
+ 	 */
+ 	smp_mb(); /* D */  /* Pairs with C. */
+ }
+-- 
+2.31.1.189.g2e36527f23
+
