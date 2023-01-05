@@ -2,83 +2,92 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A20A9C678DF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC8E5C7112B
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238925AbjAEAlL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
+        id S240387AbjAEAlQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240630AbjAEAio (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:44 -0500
+        with ESMTP id S240709AbjAEAiv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:51 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876C0B2D;
-        Wed,  4 Jan 2023 16:38:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B368C56;
+        Wed,  4 Jan 2023 16:38:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2174FB81987;
+        by ams.source.kernel.org (Postfix) with ESMTPS id A21C4B8198B;
         Thu,  5 Jan 2023 00:38:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 916B4C43323;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC264C4333B;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=zQrOASeiQkWJ2fTAnSKZb1lM+olIZOfGqaBBzWSL5Os=;
+        bh=mKsNoUjuRkefu8oWnwwhbiT27WpnrGkS6A7pHvB9XEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=st3dkbbgHwtbilG5So1Lzkk0fgRX5Eq6lT3vyl8jLa/WC/soo489AykwAVP6KCJSd
-         dRUEfg2RnrIn0m9pSaO7J06wTbTU11Z6C3S+I3/xOvj4H/2fk8Swz3zTFP4xpORiT7
-         MUQpUMrEw+F2pFEAXofRXAH4nrUEC7J1DndkjcblZNz+2ySfaTF06QQMJCVCNojXID
-         IeV5X6viB08711cPeFqw4cPblG8syj+hHmsAdozXmwuX56CjxkrNQ5VtoBl1evOa+0
-         3mswbNhX+HqxEEdepbe2FVgZKN4iz1LZscAXADU4Dx4TMdo8cFDyY4PvGZVfudKXeD
-         nCz3CSLOzoWdA==
+        b=rydFqGWdFKNTiCXwXkCtTLgXPrcIws9xkyksZRUmeHArYPiZ6nHJwuMpMhM5iH7Z4
+         Trs1F6Jjn2SZcJHkq5+A9TYMnJpkN6ugjcU5FugLmAKAJYuktsbkmeOh57I5lbRUSu
+         XkcbAj+g+OP0utYvGrT5HaY1XOL8sdEh0QLl6hzh9O7+J2BBH60JRRYM4MUC9ut8jE
+         zoR2puFlIX2wfvw7HQWj+jIDu1jKHlEaZ6KMQfsAjLro3XOqBtqtVSXxcyQN7bDY4i
+         m4xTZ7+vVbeLCmvPo7nwP2whE1k3DzfE6OpOKjZ4poK9AOMHXun0OMuL3hUdWFE50m
+         jps2Cm/ulA9YA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D0DD85C1C99; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id E625D5C1CBC; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Subject: [PATCH rcu 15/27] drivers/net: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:38:01 -0800
-Message-Id: <20230105003813.1770367-15-paulmck@kernel.org>
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Borislav Petkov <bp@suse.de>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: [PATCH rcu 26/27] kernel/notifier: Remove CONFIG_SRCU
+Date:   Wed,  4 Jan 2023 16:38:12 -0800
+Message-Id: <20230105003813.1770367-26-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 Now that the SRCU Kconfig option is unconditionally selected, there is
-no longer any point in selecting it.  Therefore, remove the "select SRCU"
-Kconfig statements.
+no longer any point in conditional compilation based on CONFIG_SRCU.
+Therefore, remove the #ifdef.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: <netdev@vger.kernel.org>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: "Michał Mirosław" <mirq-linux@rere.qmqm.pl>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Alan Stern <stern@rowland.harvard.edu>
 ---
- drivers/net/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/notifier.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-index 9e63b8c43f3e2..12910338ea1a0 100644
---- a/drivers/net/Kconfig
-+++ b/drivers/net/Kconfig
-@@ -334,7 +334,6 @@ config NETCONSOLE_DYNAMIC
+diff --git a/kernel/notifier.c b/kernel/notifier.c
+index ab75637fd904f..d353e4b5402d7 100644
+--- a/kernel/notifier.c
++++ b/kernel/notifier.c
+@@ -456,7 +456,6 @@ int raw_notifier_call_chain(struct raw_notifier_head *nh,
+ }
+ EXPORT_SYMBOL_GPL(raw_notifier_call_chain);
  
- config NETPOLL
- 	def_bool NETCONSOLE
--	select SRCU
+-#ifdef CONFIG_SRCU
+ /*
+  *	SRCU notifier chain routines.    Registration and unregistration
+  *	use a mutex, and call_chain is synchronized by SRCU (no locks).
+@@ -573,8 +572,6 @@ void srcu_init_notifier_head(struct srcu_notifier_head *nh)
+ }
+ EXPORT_SYMBOL_GPL(srcu_init_notifier_head);
  
- config NET_POLL_CONTROLLER
- 	def_bool NETPOLL
+-#endif /* CONFIG_SRCU */
+-
+ static ATOMIC_NOTIFIER_HEAD(die_chain);
+ 
+ int notrace notify_die(enum die_val val, const char *str,
 -- 
 2.31.1.189.g2e36527f23
 
