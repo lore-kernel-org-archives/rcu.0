@@ -2,47 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 823E2C6379F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61FFDC64981
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbjAEAlH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        id S235540AbjAEAlF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240642AbjAEAio (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585FEB27;
-        Wed,  4 Jan 2023 16:38:18 -0800 (PST)
+        with ESMTP id S240728AbjAEAix (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:53 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C45DE3;
+        Wed,  4 Jan 2023 16:38:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EDAF2B81986;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F0169618B9;
         Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7163AC433A8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBEC5C43339;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=pmxqtakK705BzwWvBQE+dFM2C0amDkuSHY8pS0YL7kk=;
+        bh=9ltLnmPueyNAThHqCnMBk2/jo7HOn9NSQikvjiJ8fT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HpSI7DbJwfDBWYWgnC3IJV+TI4i6HhdV6ftIZTP9kjj7A2r1PmhVeTQws6/gUgjDs
-         XEQy8I/22rLla93nUH7+psF462w8zVdSkSxfm653ChDRnwsKoUFdeSzNOlfaovrG8x
-         SLJEf0QpDfhXfqRdoVtBFf8VKGvauavkCOaXK10ECfChVXH2aK0a+7HLrGlIhPkZ3y
-         fZe8ZgdnI434TREiF11EoMDELv0sEtrlHlO3Ae/mVYE6Y93BmNBBNInfpU9p2JWKJ/
-         dUMSkDfHSDLbUoLKVeBuja49ZAfWR/pM2lv4uHfIw6UHW7TNcg1NOqyAKScHLYVh2D
-         xEpk9dir8p4mA==
+        b=bpbiHeVxHb1z++NPrcNY8YC7ux8CBWGapwm3Cdo9I1onoMWT3TpKY3DEpEl2HpuAd
+         FJfasS/kV/CL3uWODdyThwoYPhsLjQX61lVXkw/MRHAKfhN9X2IV4AA4bmDh/6WbvM
+         jx/ddyNNbTzlTHruR8B0oHLBdKisKaIFZ7b72LLDFKFX9l7DBuOJzuB/H1oZbgGe6l
+         uKmFt5YFpA9YXrm/fBOaL1npNhxhHRgx2pFv7TtmKnnAuXple2mx1IhnMVxN5Nt08P
+         6qgdu22rI828gX6qsXzNaT4gqHQ6jNG5zHqYO/OqqM5DbemEaTLjlhgVsFPgsS7UzO
+         +kmZiuiIfwgWQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C78D35C1C64; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id E7F0E5C1CE5; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org
-Subject: [PATCH rcu 10/27] drivers/cpufreq: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:56 -0800
-Message-Id: <20230105003813.1770367-10-paulmck@kernel.org>
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Subject: [PATCH rcu 27/27] rcu: Remove CONFIG_SRCU
+Date:   Wed,  4 Jan 2023 16:38:13 -0800
+Message-Id: <20230105003813.1770367-27-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
@@ -52,30 +51,45 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Now that the SRCU Kconfig option is unconditionally selected, there is
-no longer any point in selecting it.  Therefore, remove the "select SRCU"
-Kconfig statements.
+Now that all references to CONFIG_SRCU have been removed, it is time to
+remove CONFIG_SRCU itself.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: <linux-pm@vger.kernel.org>
+Cc: John Ogness <john.ogness@linutronix.de>
+Cc: Petr Mladek <pmladek@suse.com>
 ---
- drivers/cpufreq/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/rcu/Kconfig                                          | 3 ---
+ tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt | 4 ----
+ 2 files changed, 7 deletions(-)
 
-diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-index 2a84fc63371e2..785541df59379 100644
---- a/drivers/cpufreq/Kconfig
-+++ b/drivers/cpufreq/Kconfig
-@@ -3,7 +3,6 @@ menu "CPU Frequency scaling"
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index ab62074174c32..9071182b1284b 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -53,9 +53,6 @@ config RCU_EXPERT
  
- config CPU_FREQ
- 	bool "CPU Frequency scaling"
--	select SRCU
- 	help
- 	  CPU Frequency scaling allows you to change the clock speed of 
- 	  CPUs on the fly. This is a nice method to save power, because 
+ 	  Say N if you are unsure.
+ 
+-config SRCU
+-	def_bool y
+-
+ config TINY_SRCU
+ 	bool
+ 	default y if TINY_RCU
+diff --git a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
+index 42acb1a64ce10..3f5fb66f16df7 100644
+--- a/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
++++ b/tools/testing/selftests/rcutorture/doc/TREE_RCU-kconfig.txt
+@@ -71,9 +71,5 @@ CONFIG_TASKS_RCU
+ 
+ 	These are controlled by CONFIG_PREEMPT and/or CONFIG_SMP.
+ 
+-CONFIG_SRCU
+-
+-	Selected by CONFIG_RCU_TORTURE_TEST, so cannot disable.
+-
+ 
+ boot parameters ignored: TBD
 -- 
 2.31.1.189.g2e36527f23
 
