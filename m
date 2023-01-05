@@ -2,49 +2,51 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19154C63707
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C739C7112F
 	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240474AbjAEAlT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        id S240439AbjAEAlS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240570AbjAEAil (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516B4B1F;
-        Wed,  4 Jan 2023 16:38:18 -0800 (PST)
+        with ESMTP id S240655AbjAEAip (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:45 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BAC327;
+        Wed,  4 Jan 2023 16:38:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 030D3B81988;
-        Thu,  5 Jan 2023 00:38:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE29C433AE;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A23C261886;
+        Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B91FC433D2;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=F6aQ6vvbp0e6OcVSUyTnleHkOEpf+ZhLzaidGHNo6qg=;
+        bh=Csa7ZOvocT4iHE2+eFHJkdwdqaRGDl3I3p+hry5hXgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LRc1BevFOo0jEMuP3psUfI8LN5nfq+xryqEO+ola5YGJyy7JmBqkDxjpE/1bpzyQj
-         z3nSL9AKI6u/H69Bbsi3gQcOdx8T7p1wovRH18XFg4Sno1H3wgegFqi3D9FDkknX6x
-         QZbVKOSalV0H9d9v7wlTnGjizbf8HoaFSsz+gGJXNNQf9eCHhd5AJBQL2cSEMNxcBy
-         BqvNTNjTv9d4IMjw8xXLTRo4BYCl+W6lZVdCwNn37bH0pVLkH3qLtoygxCrn+qZ/CD
-         00loVj9LJNoL9C5s6cLimc+bLiPZK8rDPGJITohY3LD5T4HKhvWxl1bzwjPpt4T6Ex
-         2r3BVymwwEB6w==
+        b=uQIDbChw8YO6o7XPlNJcgIE+x0DZX/DlurmnU8opQn7/BIOPNsCDUollJiqi4bc55
+         FUAUQqBDPi1gvF8QBqkZFaMxtinhx5MAqAXqXTpEYUr4z6pB0aopwLXBxpdevF3RW3
+         jrGk9OUAXy2NOoLkaYXy3LdJ3LfCxEIL+IRL2JMDu5Ygi9IQWVcnm7v8xHtYihzuaW
+         c7yoiYtYFTE7KJYPkpEPRWnOhdsZV3W6448meglV3pNnV9XLZQ4iBnJch8YSZ85PWK
+         jcJYS4wfOrvgIoTJ7X3VHrpRcLwRiYiT0jZzpnjX4JoN4h/hIF2Qd/a6/9T9Q5ede1
+         QB26Gbw1B5aoQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CD2585C1C89; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id B54025C05CA; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH rcu 13/27] drivers/hwtracing/stm: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:59 -0800
-Message-Id: <20230105003813.1770367-13-paulmck@kernel.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org
+Subject: [PATCH rcu 01/27] arch/x86: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:37:47 -0800
+Message-Id: <20230105003813.1770367-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
@@ -59,27 +61,52 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: <linux-stm32@st-md-mailman.stormreply.com>
-Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: <x86@kernel.org>
+Cc: <kvm@vger.kernel.org>
 ---
- drivers/hwtracing/stm/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/Kconfig     | 2 --
+ arch/x86/kvm/Kconfig | 1 -
+ 2 files changed, 3 deletions(-)
 
-diff --git a/drivers/hwtracing/stm/Kconfig b/drivers/hwtracing/stm/Kconfig
-index aad594fe79cc5..eda6b11d40a1f 100644
---- a/drivers/hwtracing/stm/Kconfig
-+++ b/drivers/hwtracing/stm/Kconfig
-@@ -2,7 +2,6 @@
- config STM
- 	tristate "System Trace Module devices"
- 	select CONFIGFS_FS
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 3604074a878b8..4a9175fe7dd18 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -283,7 +283,6 @@ config X86
+ 	select RTC_LIB
+ 	select RTC_MC146818_LIB
+ 	select SPARSE_IRQ
 -	select SRCU
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select THREAD_INFO_IN_TASK
+ 	select TRACE_IRQFLAGS_SUPPORT
+@@ -1938,7 +1937,6 @@ config X86_SGX
+ 	depends on X86_64 && CPU_SUP_INTEL && X86_X2APIC
+ 	depends on CRYPTO=y
+ 	depends on CRYPTO_SHA256=y
+-	select SRCU
+ 	select MMU_NOTIFIER
+ 	select NUMA_KEEP_MEMINFO if NUMA
+ 	select XARRAY_MULTI
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index fbeaa9ddef598..9306d99585188 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -46,7 +46,6 @@ config KVM
+ 	select KVM_XFER_TO_GUEST_WORK
+ 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+ 	select KVM_VFIO
+-	select SRCU
+ 	select INTERVAL_TREE
+ 	select HAVE_KVM_PM_NOTIFIER if PM
  	help
- 	  A System Trace Module (STM) is a device exporting data in System
- 	  Trace Protocol (STP) format as defined by MIPI STP standards.
 -- 
 2.31.1.189.g2e36527f23
 
