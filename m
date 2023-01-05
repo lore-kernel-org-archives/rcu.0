@@ -2,45 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 431CCC46467
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D81D9C46467
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:37:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240333AbjAEAe3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
+        id S234866AbjAEAeb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:34:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240763AbjAEAdw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S240764AbjAEAdw (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 4 Jan 2023 19:33:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03D44FCE1;
-        Wed,  4 Jan 2023 16:28:57 -0800 (PST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40434FD40;
+        Wed,  4 Jan 2023 16:29:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C1588B81981;
-        Thu,  5 Jan 2023 00:28:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 853ADC433EF;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 32357CE1934;
+        Thu,  5 Jan 2023 00:28:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE60C433A4;
         Thu,  5 Jan 2023 00:28:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672878534;
-        bh=hSjmp4sjEzmbSkEIAKK15jlSiwyoY8kTt04q71SUIS0=;
+        bh=5vxYK89j5YHZsxfS7wUlDVPwottBntvIs8Ry6959CXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hxB50AKWzaKZck5WKGmkQazuHQjc3Pq7OsWtL5qJIgNzr82Uw2OxINzwK5Ul5aRJw
-         rXaDsrSEswOINrHJ8n8UlCq8syqqYaPtG0Yzu9GytOqWvLqnNJh871dLWAM/WYll2U
-         YdHF63iVu165rSaXWEsdC3xFcjDJ7onWUcWSwVZs4EYRBm18VtmXknMOPIH8t/pHM+
-         vdy3XqodLcfDPInFdCB8YHWwPysgaZuwATa5fXeBzr1XEbPAf4lj+YOFTpCE4MzoHs
-         Qf1I5cOp3L52eM36o4bMu86YdnItDR7YrS+tlbi8ZQCNn3C0Uku7/UA/veX6VcH+Vo
-         aVK3xCe4xUJNA==
+        b=BMI3YdMe4ld43vl64CAmjxCRj9DZLg3Mei2P2/Zd3Cz5nSOMMuqWdA0o3/0fJCBIi
+         iZ18cmqtU07LtxFzmxjCiqNjkvzi1sQRr2lejr1wKZXgV3kPbi8ERwVttXV8GArmK6
+         y1ISvfbgtUAvHqmpKpXXg1MpsgpSR4O/EM/0bLiO+GgwWp4Ba6EBwtC0a2BTXvB8br
+         D2BaJww9OukS9YJzopMYrCZHgYgHRXIzZMSGy1j7/MorE28s2aFPFbcE22KJL3OfiT
+         DxET4eOqCkd6kJEUZPIftqpkWLM7U3YE3FbB66gKmk8D71v+7rXo1S+TntF2zje+EO
+         kEIJ+9KLfpH8A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 435AB5C05CA; Wed,  4 Jan 2023 16:28:54 -0800 (PST)
+        id 4EE8A5C1ADF; Wed,  4 Jan 2023 16:28:54 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/9] srcu: Release early_srcu resources when no longer in use
-Date:   Wed,  4 Jan 2023 16:28:45 -0800
-Message-Id: <20230105002853.1769401-1-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 6/9] rcu: Add test code for semaphore-like SRCU readers
+Date:   Wed,  4 Jan 2023 16:28:50 -0800
+Message-Id: <20230105002853.1769401-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105002845.GA1769240@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105002845.GA1769240@paulmck-ThinkPad-P17-Gen-1>
@@ -50,35 +49,31 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+This commit adds trivial test code for srcu_down_read() and
+srcu_up_read().
 
-Kernels built with the CONFIG_TREE_SRCU Kconfig option set and then
-booted with rcupdate.rcu_self_test=1 and srcutree.convert_to_big=1 will
-test Tree SRCU during early boot.  The early_srcu structure's srcu_node
-array will be allocated when init_srcu_struct_fields() is invoked,
-but after the test completes this early_srcu structure will not be used.
-
-This commit therefore invokes cleanup_srcu_struct() to free that srcu_node
-structure.
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/update.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/update.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index f5e6a2f95a2a0..a5b4abbee6439 100644
+index a5b4abbee6439..a72f98c120f09 100644
 --- a/kernel/rcu/update.c
 +++ b/kernel/rcu/update.c
-@@ -586,6 +586,7 @@ static int rcu_verify_early_boot_tests(void)
- 		early_boot_test_counter++;
- 		srcu_barrier(&early_srcu);
- 		WARN_ON_ONCE(!poll_state_synchronize_srcu(&early_srcu, early_srcu_cookie));
-+		cleanup_srcu_struct(&early_srcu);
- 	}
- 	if (rcu_self_test_counter != early_boot_test_counter) {
- 		WARN_ON(1);
+@@ -555,9 +555,12 @@ struct early_boot_kfree_rcu {
+ static void early_boot_test_call_rcu(void)
+ {
+ 	static struct rcu_head head;
++	int idx;
+ 	static struct rcu_head shead;
+ 	struct early_boot_kfree_rcu *rhp;
+ 
++	idx = srcu_down_read(&early_srcu);
++	srcu_up_read(&early_srcu, idx);
+ 	call_rcu(&head, test_callback);
+ 	early_srcu_cookie = start_poll_synchronize_srcu(&early_srcu);
+ 	call_srcu(&early_srcu, &shead, test_callback);
 -- 
 2.31.1.189.g2e36527f23
 
