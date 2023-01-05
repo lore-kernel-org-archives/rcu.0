@@ -2,53 +2,51 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C16E6C63705
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 823E2C6379F
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235494AbjAEAlE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        id S235680AbjAEAlH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240724AbjAEAix (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:53 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BDCDE2;
-        Wed,  4 Jan 2023 16:38:23 -0800 (PST)
+        with ESMTP id S240642AbjAEAio (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585FEB27;
+        Wed,  4 Jan 2023 16:38:18 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DEB71618BC;
+        by ams.source.kernel.org (Postfix) with ESMTPS id EDAF2B81986;
         Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2F88C4332E;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7163AC433A8;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=UjkrzubYnsQygg5xUFcf0zzRRPdEO1lA8NbpaEs5Q3k=;
+        bh=pmxqtakK705BzwWvBQE+dFM2C0amDkuSHY8pS0YL7kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ka31L00eyKKuwmjxEQfuPzindN6L982vKDLeYcs5CqFzznr2US1FdPPZGWI6RNCtt
-         kIaSdU7QLvxIA0Ct0SbEVEuTk4A1RwDtZgT5mqh5eD07DktJnn3TZV73fhMB7+jB0o
-         Pw3nDIQOh4XvBiarU0nsq85ZUtvEZVJuX13KRpL7Y7e2TxfRmUXhLRibixbJknQTdd
-         9cgjP4kvahLo5X8fifk8m2U7zmuhH8U2Mq3BC0og6GoakLn5fzEa3yYnOihpnQelhV
-         /mAENSBTNHcbfxgU+NUf3ztwXlPj3++PpnRsQNps1QJHj1JUYCWNY6LKzQu/lONyJn
-         QUvWoVN/opOuA==
+        b=HpSI7DbJwfDBWYWgnC3IJV+TI4i6HhdV6ftIZTP9kjj7A2r1PmhVeTQws6/gUgjDs
+         XEQy8I/22rLla93nUH7+psF462w8zVdSkSxfm653ChDRnwsKoUFdeSzNOlfaovrG8x
+         SLJEf0QpDfhXfqRdoVtBFf8VKGvauavkCOaXK10ECfChVXH2aK0a+7HLrGlIhPkZ3y
+         fZe8ZgdnI434TREiF11EoMDELv0sEtrlHlO3Ae/mVYE6Y93BmNBBNInfpU9p2JWKJ/
+         dUMSkDfHSDLbUoLKVeBuja49ZAfWR/pM2lv4uHfIw6UHW7TNcg1NOqyAKScHLYVh2D
+         xEpk9dir8p4mA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D48045C1C9B; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id C78D35C1C64; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: [PATCH rcu 17/27] drivers/pci/controller: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:38:03 -0800
-Message-Id: <20230105003813.1770367-17-paulmck@kernel.org>
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Subject: [PATCH rcu 10/27] drivers/cpufreq: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:37:56 -0800
+Message-Id: <20230105003813.1770367-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -59,28 +57,25 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: "Krzysztof Wilczyński" <kw@linux.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: <linux-pci@vger.kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: <linux-pm@vger.kernel.org>
 ---
- drivers/pci/controller/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index 1569d9a3ada0b..b09cdc59bfd02 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -258,7 +258,7 @@ config PCIE_MEDIATEK_GEN3
- 	  MediaTek SoCs.
+diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+index 2a84fc63371e2..785541df59379 100644
+--- a/drivers/cpufreq/Kconfig
++++ b/drivers/cpufreq/Kconfig
+@@ -3,7 +3,6 @@ menu "CPU Frequency scaling"
  
- config VMD
--	depends on PCI_MSI && X86_64 && SRCU && !UML
-+	depends on PCI_MSI && X86_64 && !UML
- 	tristate "Intel Volume Management Device Driver"
+ config CPU_FREQ
+ 	bool "CPU Frequency scaling"
+-	select SRCU
  	help
- 	  Adds support for the Intel Volume Management Device (VMD). VMD is a
+ 	  CPU Frequency scaling allows you to change the clock speed of 
+ 	  CPUs on the fly. This is a nice method to save power, because 
 -- 
 2.31.1.189.g2e36527f23
 
