@@ -2,45 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97EF4C53210
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01D2CC53210
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbjAEAKI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:10:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        id S235423AbjAEAKQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:10:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235155AbjAEAKB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S235212AbjAEAKB (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 4 Jan 2023 19:10:01 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BE843A2D;
-        Wed,  4 Jan 2023 16:09:59 -0800 (PST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D9443A32;
+        Wed,  4 Jan 2023 16:10:00 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BE396188F;
-        Thu,  5 Jan 2023 00:09:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92851C433AA;
+        by ams.source.kernel.org (Postfix) with ESMTPS id F3585B81980;
+        Thu,  5 Jan 2023 00:09:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7389CC4339E;
         Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672877397;
-        bh=ho1bxeu1IhGy97GpWjdnxhE2TC9LF5q8tcAiwvvPzeQ=;
+        bh=0etIo6hBjooXT6XtfpnKLk00LP5yH/3ZBijhs3GTztk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NJ3zgjmmeVYRUZWKz3Hc3b4JA/1xhMBBNSCPzttQ53K1KG0VdevBIr+rUJdITVKnZ
-         dHtVC2CfB3z+rzT4NEKQO++KJFVpV7lhTcRIPd7Xtw44wTFG2I8J6LGbeKK4lXASsP
-         x/L9YC7/SOGNohGoUdj2eY7/DTOfW3Lj5ZG/QpoUlA2ifquhafpk9t8TwyIdxAvcou
-         gtb/BQmMP5ov+Rvz7wW1MuFOAuUNgk5eSA684ynLxPYjMJQll70kEM57xJ8OY5iuD0
-         YxpXeTw/5Tf2nj3ulELuWxc5ylVvv4i+7WqQEP3CaXA3hJfL7U95mEBUlx+ccg2r/n
-         iLKQm+rkenU+Q==
+        b=fUnjV/KbazTXNXp3MyXoNTfMfc5z1c0VQmlRw8Kiyih+n7dYcRBhcPyVnyzNsq7rw
+         s2kQmfcaxtwiBk2EN0kPbBPVrGRunRgDo4Yb9dLrzXfi67QBmsytKYjQeMaKQMipw7
+         EXNpIGlYdJvIxZ3sMuT8taahFKM3ayenjPMVqSQrhcdlZ9DatEGtkA+/wVL40R8t0I
+         ivB4IuDaqlOKr3+X5lwQozkWg+1xK7N/UCvyfNKZWUpcHN02g3IUQSf9nFJqn3XsxU
+         lnPjC2hgjXDcmSRYMkdZJkQG2XU8Geh/w81H9DcRMTiDKcLmEASg6TvVLXmdEcOcO/
+         hjk49VXyz2DJw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DBD785C1C98; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
+        id CDA165C1ADF; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Akira Yokosawa <akiyks@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 14/15] docs/RCU/rcubarrier: Right-adjust line numbers in code snippets
-Date:   Wed,  4 Jan 2023 16:09:54 -0800
-Message-Id: <20230105000955.1767218-14-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 06/15] doc: Update rcu.rst
+Date:   Wed,  4 Jan 2023 16:09:46 -0800
+Message-Id: <20230105000955.1767218-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
@@ -50,242 +49,33 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Akira Yokosawa <akiyks@gmail.com>
+This commit provides a couple of updates based on the inexorable passage
+of time.
 
-Line numbers in code snippets in rcubarrier.rst have beed left adjusted
-since commit 4af498306ffd ("doc: Convert to rcubarrier.txt to ReST").
-This might have been because right adjusting them had confused Sphinx.
-
-The rules around a literal block in reST are:
-
-  - Need a blank line above it.
-  - A line with the same indent level as the line above it is regarded
-    as the end of it.
-
-Those line numbers can be right adjusted by keeping indents at two-
-digit numbers. While at it, add some spaces between the column of line
-numbers and the code area for better readability.
-
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/rcubarrier.rst | 168 +++++++++++++++----------------
- 1 file changed, 84 insertions(+), 84 deletions(-)
+ Documentation/RCU/rcu.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/RCU/rcubarrier.rst b/Documentation/RCU/rcubarrier.rst
-index 9fb9ed7773552..6da7f66da2a80 100644
---- a/Documentation/RCU/rcubarrier.rst
-+++ b/Documentation/RCU/rcubarrier.rst
-@@ -72,9 +72,9 @@ For example, if it uses call_rcu(), call_srcu() on srcu_struct_1, and
- call_srcu() on srcu_struct_2, then the following three lines of code
- will be required when unloading::
+diff --git a/Documentation/RCU/rcu.rst b/Documentation/RCU/rcu.rst
+index 3cfe01ba9a494..381cb86f657d8 100644
+--- a/Documentation/RCU/rcu.rst
++++ b/Documentation/RCU/rcu.rst
+@@ -77,12 +77,13 @@ Frequently Asked Questions
+   search for the string "Patent" in Documentation/RCU/RTFP.txt to find them.
+   Of these, one was allowed to lapse by the assignee, and the
+   others have been contributed to the Linux kernel under GPL.
++  Many (but not all) have long since expired.
+   There are now also LGPL implementations of user-level RCU
+   available (https://liburcu.org/).
  
-- 1 rcu_barrier();
-- 2 srcu_barrier(&srcu_struct_1);
-- 3 srcu_barrier(&srcu_struct_2);
-+  1  rcu_barrier();
-+  2  srcu_barrier(&srcu_struct_1);
-+  3  srcu_barrier(&srcu_struct_2);
+ - I hear that RCU needs work in order to support realtime kernels?
  
- If latency is of the essence, workqueues could be used to run these
- three functions concurrently.
-@@ -82,69 +82,69 @@ three functions concurrently.
- An ancient version of the rcutorture module makes use of rcu_barrier()
- in its exit function as follows::
+-  Realtime-friendly RCU can be enabled via the CONFIG_PREEMPT_RCU
++  Realtime-friendly RCU are enabled via the CONFIG_PREEMPTION
+   kernel configuration parameter.
  
-- 1  static void
-- 2  rcu_torture_cleanup(void)
-- 3  {
-- 4    int i;
-- 5
-- 6    fullstop = 1;
-- 7    if (shuffler_task != NULL) {
-- 8     VERBOSE_PRINTK_STRING("Stopping rcu_torture_shuffle task");
-- 9     kthread_stop(shuffler_task);
-- 10   }
-- 11   shuffler_task = NULL;
-+  1  static void
-+  2  rcu_torture_cleanup(void)
-+  3  {
-+  4    int i;
-+  5
-+  6    fullstop = 1;
-+  7    if (shuffler_task != NULL) {
-+  8      VERBOSE_PRINTK_STRING("Stopping rcu_torture_shuffle task");
-+  9      kthread_stop(shuffler_task);
-+ 10    }
-+ 11    shuffler_task = NULL;
-  12
-- 13   if (writer_task != NULL) {
-- 14     VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
-- 15     kthread_stop(writer_task);
-- 16   }
-- 17   writer_task = NULL;
-+ 13    if (writer_task != NULL) {
-+ 14      VERBOSE_PRINTK_STRING("Stopping rcu_torture_writer task");
-+ 15      kthread_stop(writer_task);
-+ 16    }
-+ 17    writer_task = NULL;
-  18
-- 19   if (reader_tasks != NULL) {
-- 20     for (i = 0; i < nrealreaders; i++) {
-- 21       if (reader_tasks[i] != NULL) {
-- 22         VERBOSE_PRINTK_STRING(
-- 23           "Stopping rcu_torture_reader task");
-- 24         kthread_stop(reader_tasks[i]);
-- 25       }
-- 26       reader_tasks[i] = NULL;
-- 27     }
-- 28     kfree(reader_tasks);
-- 29     reader_tasks = NULL;
-- 30   }
-- 31   rcu_torture_current = NULL;
-+ 19    if (reader_tasks != NULL) {
-+ 20      for (i = 0; i < nrealreaders; i++) {
-+ 21        if (reader_tasks[i] != NULL) {
-+ 22          VERBOSE_PRINTK_STRING(
-+ 23            "Stopping rcu_torture_reader task");
-+ 24          kthread_stop(reader_tasks[i]);
-+ 25        }
-+ 26        reader_tasks[i] = NULL;
-+ 27      }
-+ 28      kfree(reader_tasks);
-+ 29      reader_tasks = NULL;
-+ 30    }
-+ 31    rcu_torture_current = NULL;
-  32
-- 33   if (fakewriter_tasks != NULL) {
-- 34     for (i = 0; i < nfakewriters; i++) {
-- 35       if (fakewriter_tasks[i] != NULL) {
-- 36         VERBOSE_PRINTK_STRING(
-- 37           "Stopping rcu_torture_fakewriter task");
-- 38         kthread_stop(fakewriter_tasks[i]);
-- 39       }
-- 40       fakewriter_tasks[i] = NULL;
-- 41     }
-- 42     kfree(fakewriter_tasks);
-- 43     fakewriter_tasks = NULL;
-- 44   }
-+ 33    if (fakewriter_tasks != NULL) {
-+ 34      for (i = 0; i < nfakewriters; i++) {
-+ 35        if (fakewriter_tasks[i] != NULL) {
-+ 36          VERBOSE_PRINTK_STRING(
-+ 37            "Stopping rcu_torture_fakewriter task");
-+ 38          kthread_stop(fakewriter_tasks[i]);
-+ 39        }
-+ 40        fakewriter_tasks[i] = NULL;
-+ 41      }
-+ 42      kfree(fakewriter_tasks);
-+ 43      fakewriter_tasks = NULL;
-+ 44    }
-  45
-- 46   if (stats_task != NULL) {
-- 47     VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
-- 48     kthread_stop(stats_task);
-- 49   }
-- 50   stats_task = NULL;
-+ 46    if (stats_task != NULL) {
-+ 47      VERBOSE_PRINTK_STRING("Stopping rcu_torture_stats task");
-+ 48      kthread_stop(stats_task);
-+ 49    }
-+ 50    stats_task = NULL;
-  51
-- 52   /* Wait for all RCU callbacks to fire. */
-- 53   rcu_barrier();
-+ 52    /* Wait for all RCU callbacks to fire. */
-+ 53    rcu_barrier();
-  54
-- 55   rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
-+ 55    rcu_torture_stats_print(); /* -After- the stats thread is stopped! */
-  56
-- 57   if (cur_ops->cleanup != NULL)
-- 58     cur_ops->cleanup();
-- 59   if (atomic_read(&n_rcu_torture_error))
-- 60     rcu_torture_print_module_parms("End of test: FAILURE");
-- 61   else
-- 62     rcu_torture_print_module_parms("End of test: SUCCESS");
-- 63 }
-+ 57    if (cur_ops->cleanup != NULL)
-+ 58      cur_ops->cleanup();
-+ 59    if (atomic_read(&n_rcu_torture_error))
-+ 60      rcu_torture_print_module_parms("End of test: FAILURE");
-+ 61    else
-+ 62      rcu_torture_print_module_parms("End of test: SUCCESS");
-+ 63  }
- 
- Line 6 sets a global variable that prevents any RCU callbacks from
- re-posting themselves. This will not be necessary in most cases, since
-@@ -193,16 +193,16 @@ which point, all earlier RCU callbacks are guaranteed to have completed.
- 
- The original code for rcu_barrier() was roughly as follows::
- 
-- 1   void rcu_barrier(void)
-- 2   {
-- 3     BUG_ON(in_interrupt());
-- 4     /* Take cpucontrol mutex to protect against CPU hotplug */
-- 5     mutex_lock(&rcu_barrier_mutex);
-- 6     init_completion(&rcu_barrier_completion);
-- 7     atomic_set(&rcu_barrier_cpu_count, 1);
-- 8     on_each_cpu(rcu_barrier_func, NULL, 0, 1);
-- 9     if (atomic_dec_and_test(&rcu_barrier_cpu_count))
-- 10       complete(&rcu_barrier_completion);
-+  1  void rcu_barrier(void)
-+  2  {
-+  3    BUG_ON(in_interrupt());
-+  4    /* Take cpucontrol mutex to protect against CPU hotplug */
-+  5    mutex_lock(&rcu_barrier_mutex);
-+  6    init_completion(&rcu_barrier_completion);
-+  7    atomic_set(&rcu_barrier_cpu_count, 1);
-+  8    on_each_cpu(rcu_barrier_func, NULL, 0, 1);
-+  9    if (atomic_dec_and_test(&rcu_barrier_cpu_count))
-+ 10      complete(&rcu_barrier_completion);
-  11    wait_for_completion(&rcu_barrier_completion);
-  12    mutex_unlock(&rcu_barrier_mutex);
-  13  }
-@@ -232,16 +232,16 @@ still gives the general idea.
- The rcu_barrier_func() runs on each CPU, where it invokes call_rcu()
- to post an RCU callback, as follows::
- 
-- 1  static void rcu_barrier_func(void *notused)
-- 2  {
-- 3    int cpu = smp_processor_id();
-- 4    struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
-- 5    struct rcu_head *head;
-- 6
-- 7    head = &rdp->barrier;
-- 8    atomic_inc(&rcu_barrier_cpu_count);
-- 9    call_rcu(head, rcu_barrier_callback);
-- 10 }
-+  1  static void rcu_barrier_func(void *notused)
-+  2  {
-+  3    int cpu = smp_processor_id();
-+  4    struct rcu_data *rdp = &per_cpu(rcu_data, cpu);
-+  5    struct rcu_head *head;
-+  6
-+  7    head = &rdp->barrier;
-+  8    atomic_inc(&rcu_barrier_cpu_count);
-+  9    call_rcu(head, rcu_barrier_callback);
-+ 10  }
- 
- Lines 3 and 4 locate RCU's internal per-CPU rcu_data structure,
- which contains the struct rcu_head that needed for the later call to
-@@ -254,11 +254,11 @@ The rcu_barrier_callback() function simply atomically decrements the
- rcu_barrier_cpu_count variable and finalizes the completion when it
- reaches zero, as follows::
- 
-- 1 static void rcu_barrier_callback(struct rcu_head *notused)
-- 2 {
-- 3   if (atomic_dec_and_test(&rcu_barrier_cpu_count))
-- 4     complete(&rcu_barrier_completion);
-- 5 }
-+  1  static void rcu_barrier_callback(struct rcu_head *notused)
-+  2  {
-+  3    if (atomic_dec_and_test(&rcu_barrier_cpu_count))
-+  4      complete(&rcu_barrier_completion);
-+  5  }
- 
- .. _rcubarrier_quiz_3:
- 
+ - Where can I find more information on RCU?
 -- 
 2.31.1.189.g2e36527f23
 
