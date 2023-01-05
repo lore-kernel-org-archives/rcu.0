@@ -2,103 +2,75 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84FFCC53210
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84336C46467
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:52:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjAEAui (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S229489AbjAEAwH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:52:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjAEAuS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:50:18 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDD658318;
-        Wed,  4 Jan 2023 16:46:09 -0800 (PST)
+        with ESMTP id S229505AbjAEAvv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:51:51 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FE950F71;
+        Wed,  4 Jan 2023 16:46:52 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C85686189D;
-        Thu,  5 Jan 2023 00:45:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E7EC433F1;
-        Thu,  5 Jan 2023 00:45:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A50D76188F;
+        Thu,  5 Jan 2023 00:46:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B62EC433D2;
+        Thu,  5 Jan 2023 00:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672879503;
-        bh=HEwgkfItho+scdtz7EMh//sZ9TZpxPJIVeZwBitEPbE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cQureTlSGVqziMDCkl6CBkxBIl/wji10X2T/xwK6J4INqCDExjd4j+B3rDy9T0HS0
-         C3iSONGip2Ym678wJH7gmmSDx8tDAgzLXwlpg5MX376HWtMBz2EwAvpSfV7qSPh9oH
-         6Y77ejI6pC8ylHgjTObWCACt6+F6+QVjQeT3WkCOnVsSyl0zU6phny4+/Cz9xalx4M
-         gGOkrqlLi1sYEGR17OD2FxDgnB/UbDix00q7cd4VbtuRGhlDFey6+pE2vkjLfsAFfV
-         iRbiKof/gRaTgPzLsN7771VpB+ZCIV9tWgUvr48YBNP13BX6lvmJlG01pwyOI466RR
-         zhT9n+2BRDYrw==
+        s=k20201202; t=1672879607;
+        bh=tJya2/iQZ3L5zGRm70FEzxNq6pnyLaInRqQjwPOtMGU=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=C2D5grO+ISTNJDrkI45mNrBgBNBcgb99WihvLWvxoSSUy4lT8NRSfaBgI1lNXIEy8
+         JvfGozMV9UoJmT0O95vmOld/UmmmPqC2q1CEAEESEezkRTuF+0kfiwovfDSUUwm/86
+         xfiV9dWXpTvY6S+ySC/ebb9eCIVQyjwjx36vHNJFbPdKe9vHBhvJ8L2OQ7xYcytgzs
+         TuQn4RtQBwp9Im48uccP0Y3+u3nYj28SfXj9zYTpi/psfca996GyJokYD/CkcLyY+0
+         ADuLh+YyFihoEBba9acibVpgAuFCO6Xyr7pW5DEJM5QaTDARQZ1L6ANxzFIwCOYL3h
+         XwZqy+m4FJ2XA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D7B9B5C05CA; Wed,  4 Jan 2023 16:45:02 -0800 (PST)
+        id 7B1515C05CA; Wed,  4 Jan 2023 16:46:46 -0800 (PST)
+Date:   Wed, 4 Jan 2023 16:46:46 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/6] rcu-tasks: Use accurate runstart time for RCU Tasks boot-time testing
-Date:   Wed,  4 Jan 2023 16:44:49 -0800
-Message-Id: <20230105004501.1771332-1-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
-References: <20230105004454.GA1771168@paulmck-ThinkPad-P17-Gen-1>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/4] Torture-test scripting updates for v6.3
+Message-ID: <20230105004646.GA1771551@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+Hello!
 
-Currently, test_rcu_tasks_callback() reads from the jiffies counter only
-once when this function is invoked.  This introduces inaccuracies because
-of the latencies induced by the synchronize_rcu_tasks*() invocations.
-This commit therefore re-reads the jiffies counter at the beginning
-of each test, thus avoiding penalizing later tests for the latencies
-induced by earlier tests.
+This series provides torture-test scripting updates:
 
-Therefore, this commit at the start of each RCU Tasks test, re-fetch the
-jiffies time as the runstart time.
+1.	make kvm-find-errors.sh check for compressed vmlinux files.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tasks.h | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+2.	rcutorture: Use "grep -E" instead of "egrep", courtesy of
+	Tiezhu Yang.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index fe9840d90e960..c418aa1c038a9 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1815,23 +1815,21 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
- 
- static void rcu_tasks_initiate_self_tests(void)
- {
--	unsigned long j = jiffies;
--
- 	pr_info("Running RCU-tasks wait API self tests\n");
- #ifdef CONFIG_TASKS_RCU
--	tests[0].runstart = j;
-+	tests[0].runstart = jiffies;
- 	synchronize_rcu_tasks();
- 	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
- #endif
- 
- #ifdef CONFIG_TASKS_RUDE_RCU
--	tests[1].runstart = j;
-+	tests[1].runstart = jiffies;
- 	synchronize_rcu_tasks_rude();
- 	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
- #endif
- 
- #ifdef CONFIG_TASKS_TRACE_RCU
--	tests[2].runstart = j;
-+	tests[2].runstart = jiffies;
- 	synchronize_rcu_tasks_trace();
- 	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
- #endif
--- 
-2.31.1.189.g2e36527f23
+3.	Permit double-quoted-string Kconfig options.
 
+4.	Permit string-valued Kconfig options in kvm.sh.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/tools/testing/selftests/rcutorture/bin/configcheck.sh     |    5 ++---
+ b/tools/testing/selftests/rcutorture/bin/console-badness.sh |    2 +-
+ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh       |    4 ++--
+ b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh |    2 +-
+ b/tools/testing/selftests/rcutorture/bin/kvm.sh             |    4 ++--
+ b/tools/testing/selftests/rcutorture/bin/parse-console.sh   |   10 +++++-----
+ tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh   |    4 ++--
+ tools/testing/selftests/rcutorture/bin/kvm.sh               |    2 +-
+ 8 files changed, 16 insertions(+), 17 deletions(-)
