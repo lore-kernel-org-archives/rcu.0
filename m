@@ -2,47 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 143E2C71134
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C69C71131
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:41:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240516AbjAEAlZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        id S240510AbjAEAlY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:41:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240699AbjAEAit (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Jan 2023 19:38:49 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981D6C3C;
-        Wed,  4 Jan 2023 16:38:19 -0800 (PST)
+        with ESMTP id S240708AbjAEAiv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Jan 2023 19:38:51 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995F5C55;
+        Wed,  4 Jan 2023 16:38:20 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5467C61880;
-        Thu,  5 Jan 2023 00:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7572EC433B0;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 91DA8B8198D;
+        Thu,  5 Jan 2023 00:38:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C419EC4332D;
         Thu,  5 Jan 2023 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672879095;
-        bh=+L9zhcB+hUYsHjcRcqemJqoGzF3x7d5CEb6FU4DWqac=;
+        bh=tTPpQxCe30EzZFaC8M8h6GJmnI2dQGjCQpcbnqvTzS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WL687Kncqgklk45rSEUmRACcroNljnbgdpcKFptf5DqAPBW78Z/NNWYc82CjT/bfO
-         93+pVhh35Tpt42P19/AQy5ZApRuyxi/sI3TyhwCvvbun9E6KuGt5yaCmeNtCGroKoi
-         8uasysST/D8M9m3fpl6tLCsIFIW55apBrWDSzGi5lpOXne0QRbUlkKea1xSnMgZ9zo
-         LWQkR2MYB7IkIm+9bKOsPE6jO6HAXsmMp2wTx5jxvtaz4cqquAGRVIBNVuyv7BxA4M
-         5lQWjMkYF0uwYjaMRGpdjKo/oS2Ly/ox3gef7rEinayWupH6pkvCPGv3MO0B1isom5
-         Uskow1uXCa+zQ==
+        b=qv+kcb288Gibon1xC+W5aPz+TYF7FmP0Id4z1GWhP8X2I0HPBM93VkZON5J8FaI6L
+         xO37MP/VyZVMaaeVVUxfY6VFsuwfqFdyd36Vjj+UMMhMPTRfn3ZaTSBSCaNyw3k0xd
+         eKxooI0lPoQB1tb6g+jUcv1R7/YWT3w4KsBAMgdsqeoS9NUrhC4G1T28hBL2eSexSe
+         oDwBdsa+BzjX+tr9+bpLorTjZrjr+Pom0Ohfo1ebufb9Iw7bVHXQONAeHCJARAX4qb
+         jjPXsLjPWBS+GwDv9CS/Zby6oom5jQ10t0gKWrhTJzcMaYzFt/soq6bicsHgviIOr6
+         xZ2FeGiIlm9dw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C96D55C1C77; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
+        id DC4A65C1CA0; Wed,  4 Jan 2023 16:38:14 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, nvdimm@lists.linux.dev
-Subject: [PATCH rcu 11/27] drivers/dax: Remove "select SRCU"
-Date:   Wed,  4 Jan 2023 16:37:57 -0800
-Message-Id: <20230105003813.1770367-11-paulmck@kernel.org>
+        Jan Kara <jack@suse.com>
+Subject: [PATCH rcu 21/27] fs/quota: Remove "select SRCU"
+Date:   Wed,  4 Jan 2023 16:38:07 -0800
+Message-Id: <20230105003813.1770367-21-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
@@ -57,26 +55,23 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: <nvdimm@lists.linux.dev>
+Cc: Jan Kara <jack@suse.com>
 ---
- drivers/dax/Kconfig | 1 -
+ fs/quota/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/dax/Kconfig b/drivers/dax/Kconfig
-index 5fdf269a822e5..2bf5123e48279 100644
---- a/drivers/dax/Kconfig
-+++ b/drivers/dax/Kconfig
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig DAX
- 	tristate "DAX: direct access to differentiated memory"
+diff --git a/fs/quota/Kconfig b/fs/quota/Kconfig
+index b59cd172b5f97..d5a85a8062d05 100644
+--- a/fs/quota/Kconfig
++++ b/fs/quota/Kconfig
+@@ -6,7 +6,6 @@
+ config QUOTA
+ 	bool "Quota support"
+ 	select QUOTACTL
 -	select SRCU
- 	default m if NVDIMM_DAX
- 
- if DAX
+ 	help
+ 	  If you say Y here, you will be able to set per user limits for disk
+ 	  usage (also called disk quotas). Currently, it works for the
 -- 
 2.31.1.189.g2e36527f23
 
