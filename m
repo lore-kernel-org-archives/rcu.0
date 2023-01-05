@@ -2,44 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD03C54E76
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6411FC53210
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 00:10:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235315AbjAEAKC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:10:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
+        id S235368AbjAEAKF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Jan 2023 19:10:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbjAEAKB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S235064AbjAEAKB (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 4 Jan 2023 19:10:01 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB7543A16;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C9D43A1D;
         Wed,  4 Jan 2023 16:09:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2552F6189F;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F4D8618A8;
         Thu,  5 Jan 2023 00:09:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F23AC433A0;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90BC9C433B0;
         Thu,  5 Jan 2023 00:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1672877397;
-        bh=b7i4mGR/FuXTcyH6kks7yRlm8D/4PuTAENFbH1OA8wg=;
+        bh=fcSC4bGknuyVNiSTBAA/pbbBIR+9W/cdpVsAscN6+Mc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OMSOFYzS1xnbA9wpLTLSK1S80Tuk4cu339hnuEsXF0+nH7/4n/hUt/Chf/1xHIyDo
-         +nk9Dr2r9VtlWYWW6eXzeNYN0FA4fDj48PnsTo+CyEFWqdx7wjzns2MOcUYrmGCk1t
-         dRHwCf3vzxS89y9huoBaTMhHzyVu0iffvG+YSqAYvTC9AbXwz/QDK9Lfq/HnnkaQfa
-         /hcIOtO+PMVEwjdAyJOE9zOfYz6nraJkpEYVtqE0G1IBMN8YbsMdY4WpO08pZj8dXG
-         O7ylODSJe9rn3XGLIU/wjRPKEC6bupjyrNm6ay65AXWZHphd/SPhW9Ppt2jZsQOmQh
-         KEW6zDE4YF63w==
+        b=PWhA9VAJbsgRQBpx1Anbzy+QLG23qhY/U+SxRPbJwOLe8kAQQrqoOtX5cyJjEjAN+
+         LfDYA+wZofCcoAg8JQDyKZypwMrlRvMI6WbEbmtlMipAInx9XLKzaUpgm7fxXzUYBq
+         CfyuuFf4Nw98PbEDDIZ5epb401mhiFz4+v5/aDTsPuQ0ibrQSueRhfbDSh1cAhVoEq
+         P2P7z5FFYySpcXA1Vo16kc+JWvUQr5bhV2P3DU9+mw47Bkv5AV2q5uMtO3sb8m0Yhh
+         QJWc+RH0ybefuANKoQICZ/w2usva+7Z7jbg0TxKeEf1zhusWb068q8QbRAiiXPzE8y
+         5OofSaoKy6+ow==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D2EB75C1C5D; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
+        id DA0075C1C89; Wed,  4 Jan 2023 16:09:56 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 09/15] doc: Update UP.rst
-Date:   Wed,  4 Jan 2023 16:09:49 -0800
-Message-Id: <20230105000955.1767218-9-paulmck@kernel.org>
+        rostedt@goodmis.org, Akira Yokosawa <akiyks@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 13/15] docs/RCU/rcubarrier: Adjust 'Answer' parts of QQs as definition-lists
+Date:   Wed,  4 Jan 2023 16:09:53 -0800
+Message-Id: <20230105000955.1767218-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105000945.GA1767128@paulmck-ThinkPad-P17-Gen-1>
@@ -49,52 +50,54 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit updates UP.rst to reflect changes over the past few years,
-including the advent of userspace RCU libraries for constrained systems.
+From: Akira Yokosawa <akiyks@gmail.com>
 
+The "Answer" parts of QQs divert from proper format of definition-lists
+as described at [1] and are not rendered as such.
+
+Adjust them.
+
+Link: [1] https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#definition-lists
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/UP.rst | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ Documentation/RCU/rcubarrier.rst | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/RCU/UP.rst b/Documentation/RCU/UP.rst
-index e26dda27430c8..8b20fd45f2558 100644
---- a/Documentation/RCU/UP.rst
-+++ b/Documentation/RCU/UP.rst
-@@ -38,7 +38,7 @@ by having call_rcu() directly invoke its arguments only if it was called
- from process context.  However, this can fail in a similar manner.
+diff --git a/Documentation/RCU/rcubarrier.rst b/Documentation/RCU/rcubarrier.rst
+index 5a643e5233d5f..9fb9ed7773552 100644
+--- a/Documentation/RCU/rcubarrier.rst
++++ b/Documentation/RCU/rcubarrier.rst
+@@ -296,7 +296,8 @@ Quick Quiz #1:
+ 	Is there any other situation where rcu_barrier() might
+ 	be required?
  
- Suppose that an RCU-based algorithm again scans a linked list containing
--elements A, B, and C in process contexts, but that it invokes a function
-+elements A, B, and C in process context, but that it invokes a function
- on each element as it is scanned.  Suppose further that this function
- deletes element B from the list, then passes it to call_rcu() for deferred
- freeing.  This may be a bit unconventional, but it is perfectly legal
-@@ -59,7 +59,8 @@ Example 3: Death by Deadlock
- Suppose that call_rcu() is invoked while holding a lock, and that the
- callback function must acquire this same lock.  In this case, if
- call_rcu() were to directly invoke the callback, the result would
--be self-deadlock.
-+be self-deadlock *even if* this invocation occurred from a later
-+call_rcu() invocation a full grace period later.
+-Answer: Interestingly enough, rcu_barrier() was not originally
++Answer:
++	Interestingly enough, rcu_barrier() was not originally
+ 	implemented for module unloading. Nikita Danilov was using
+ 	RCU in a filesystem, which resulted in a similar situation at
+ 	filesystem-unmount time. Dipankar Sarma coded up rcu_barrier()
+@@ -315,7 +316,8 @@ Quick Quiz #2:
+ 	Why doesn't line 8 initialize rcu_barrier_cpu_count to zero,
+ 	thereby avoiding the need for lines 9 and 10?
  
- In some cases, it would possible to restructure to code so that
- the call_rcu() is delayed until after the lock is released.  However,
-@@ -85,6 +86,14 @@ Quick Quiz #2:
+-Answer: Suppose that the on_each_cpu() function shown on line 8 was
++Answer:
++	Suppose that the on_each_cpu() function shown on line 8 was
+ 	delayed, so that CPU 0's rcu_barrier_func() executed and
+ 	the corresponding grace period elapsed, all before CPU 1's
+ 	rcu_barrier_func() started executing.  This would result in
+@@ -351,7 +353,8 @@ Quick Quiz #3:
+ 	are delayed for a full grace period? Couldn't this result in
+ 	rcu_barrier() returning prematurely?
  
- :ref:`Answers to Quick Quiz <answer_quick_quiz_up>`
- 
-+It is important to note that userspace RCU implementations *do*
-+permit call_rcu() to directly invoke callbacks, but only if a full
-+grace period has elapsed since those callbacks were queued.  This is
-+the case because some userspace environments are extremely constrained.
-+Nevertheless, people writing userspace RCU implementations are strongly
-+encouraged to avoid invoking callbacks from call_rcu(), thus obtaining
-+the deadlock-avoidance benefits called out above.
-+
- Summary
- -------
- 
+-Answer: This cannot happen. The reason is that on_each_cpu() has its last
++Answer:
++	This cannot happen. The reason is that on_each_cpu() has its last
+ 	argument, the wait flag, set to "1". This flag is passed through
+ 	to smp_call_function() and further to smp_call_function_on_cpu(),
+ 	causing this latter to spin until the cross-CPU invocation of
 -- 
 2.31.1.189.g2e36527f23
 
