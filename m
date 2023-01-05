@@ -2,92 +2,79 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4CD0C3DA7A
-	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25081C3DA7A
+	for <rcu@archiver.kernel.org>; Thu,  5 Jan 2023 15:53:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234460AbjAEPvo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 10:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39020 "EHLO
+        id S232319AbjAEPxy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 10:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234875AbjAEPvJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 10:51:09 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC343201C;
-        Thu,  5 Jan 2023 07:51:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 68D6F61AF8;
-        Thu,  5 Jan 2023 15:51:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C34C9C433D2;
-        Thu,  5 Jan 2023 15:51:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672933866;
-        bh=pqruQOkYq+O0ZoZtIexmJem3EBjsqfOKE7sNKH0p2ME=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JPijei3viTGiT/tTvAsm0e10zWWgIobtJA1/BIbjXAQrVJ0RMW4eKJQb09URcEhMQ
-         WrhYAJ8YOYU6fhRDDZGyeQeyIrprGBvGxAOXEN5exUsc2s/wbuZ5y0YxaVwvKjdFI8
-         mRltvMp6B34GAd29Sjz4Rfg/Fr9OlLIMlMXmn+1tTNBJK3k3hnHVqZedefJcglSDpJ
-         q5lYb5zfcq74s4OAg6OT9Q4E5r6XppwHlM+UtJ14JnkZVtes6iAOpcgP1KRyeWtHFp
-         qroBAGrLmYIm7web9r7EIwflQHVj0S20OC5fAFawownnyE1D/sNXw0InnmuX+YQxXY
-         yoXXOmkQ8XntQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6B44A5C029A; Thu,  5 Jan 2023 07:51:06 -0800 (PST)
-Date:   Thu, 5 Jan 2023 07:51:06 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+        with ESMTP id S234903AbjAEPxg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 10:53:36 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E464BC0B;
+        Thu,  5 Jan 2023 07:53:22 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1672934000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eFN2JUnnjmOiZqK5WqhsGGMNgDSJTA2VQpZUv4AE5Po=;
+        b=NGnLo08NePVHH8A1VWzRfNn1V++LFk0R5om2N6Q/gMi3z5O1D5+gN6GihF1DEGxX2dvheZ
+        NoO+dPLac0Z3cNKKSRjRYCDnV9HpYTNmf61QGFRPk73eVJjZnXZq8Gs7rJ5TcEpEgr6yMC
+        +bQyvJ3L94T0G8xa1WcZ/nyjq3HITqQ1YvFZyKFAd/VaIwP1aB/BMEhDtunK1kOAiunOTY
+        Ceml8ue+WHGKLzV9XrAn6g+YMaN5TEp3/eSd5pii7ghRGn7hRVMF1YTVneSbpep/rOTGKf
+        qL37yMu+vM0PmpDuGmH9rnJejDUh/Yrh5Z90KxlU6UoWQV/AElOByGmvKwUsCg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1672934000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eFN2JUnnjmOiZqK5WqhsGGMNgDSJTA2VQpZUv4AE5Po=;
+        b=3UuVruMNYXHk31m2N/6lYkzsgHzhkHSUt8/FGJjLL9wr3dK+wwkX3IC0zZz5GtLZAfz0p1
+        caJaYFL3XjX9lyDw==
+To:     paulmck@kernel.org
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH rcu 10/27] drivers/cpufreq: Remove "select SRCU"
-Message-ID: <20230105155106.GX4028633@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH rcu 27/27] rcu: Remove CONFIG_SRCU
+In-Reply-To: <20230105152351.GP4028633@paulmck-ThinkPad-P17-Gen-1>
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-10-paulmck@kernel.org>
- <CAJZ5v0j4M3Xco7bSPNog9h-zDgEuHE+jqktWNoRZKyLZCVJeBA@mail.gmail.com>
+ <20230105003813.1770367-27-paulmck@kernel.org>
+ <87r0w9csqn.fsf@jogness.linutronix.de>
+ <20230105152351.GP4028633@paulmck-ThinkPad-P17-Gen-1>
+Date:   Thu, 05 Jan 2023 16:58:40 +0106
+Message-ID: <871qo9c71z.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0j4M3Xco7bSPNog9h-zDgEuHE+jqktWNoRZKyLZCVJeBA@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 04:09:38PM +0100, Rafael J. Wysocki wrote:
-> On Thu, Jan 5, 2023 at 1:38 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > Now that the SRCU Kconfig option is unconditionally selected, there is
-> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> > Kconfig statements.
-> >
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> > Cc: <linux-pm@vger.kernel.org>
-> 
-> Acked-by: "Rafael J. Wysocki" <rafael@kernel.org>
+On 2023-01-05, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>> $ git grep CONFIG_SRCU
+>> drivers/base/core.c:#ifdef CONFIG_SRCU
+>> drivers/base/core.c:#else /* !CONFIG_SRCU */
+>> drivers/base/core.c:#endif /* !CONFIG_SRCU */
+>> fs/locks.c:#if IS_ENABLED(CONFIG_SRCU)
+>> fs/locks.c:#else /* !IS_ENABLED(CONFIG_SRCU) */
+>> fs/locks.c:#endif /* IS_ENABLED(CONFIG_SRCU) */
+>> kernel/notifier.c:#ifdef CONFIG_SRCU
+>> kernel/notifier.c:#endif /* CONFIG_SRCU */
+>
+> In the -rcu tree, these are removed by these commits:
+>
+> 1798c5b6b0ea ("drivers/base: Remove CONFIG_SRCU")
+> 19aa50512372 ("fs: Remove CONFIG_SRCU")
+> fe0c9bd625ad ("kernel/notifier: Remove CONFIG_SRCU")
+>
+>> Should those be removed before this patch?
+>
+> When I merge the -rcu tree's "dev" branch with current mainline, "git
+> grep CONFIG_SRCU" gives me no output.  Am I fat-fingering something
+> here?
 
-Thank you, Rafael!  I will apply both on my next rebase.
+Sorry, I checked against the wrong branch. You are good.
 
-							Thanx, Paul
-
-> > ---
-> >  drivers/cpufreq/Kconfig | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-> > index 2a84fc63371e2..785541df59379 100644
-> > --- a/drivers/cpufreq/Kconfig
-> > +++ b/drivers/cpufreq/Kconfig
-> > @@ -3,7 +3,6 @@ menu "CPU Frequency scaling"
-> >
-> >  config CPU_FREQ
-> >         bool "CPU Frequency scaling"
-> > -       select SRCU
-> >         help
-> >           CPU Frequency scaling allows you to change the clock speed of
-> >           CPUs on the fly. This is a nice method to save power, because
-> > --
-> > 2.31.1.189.g2e36527f23
-> >
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
