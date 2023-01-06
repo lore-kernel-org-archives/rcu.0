@@ -2,265 +2,245 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27D71C4708D
-	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 12:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A4FC4708D
+	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 14:34:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbjAFM6k (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Jan 2023 07:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
+        id S233287AbjAFOex (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Jan 2023 09:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234094AbjAFM6O (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Jan 2023 07:58:14 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9F4736EE;
-        Fri,  6 Jan 2023 04:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673009892; x=1704545892;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=SD67aBQnma9FHdf+bzFc0XgfZEakO3gra5N3eJ3oOQk=;
-  b=PhkmqyBxTtmK+vYzETTuuWMF8NYHT8Svpr1EItOY2GapporfNau2fqrv
-   As4WBQpxwPOSi7aMFpQseuYW0M0NovIwNDiEHjarl7YGujn0CyKfgVnXq
-   MFQIVIDg4rTZMpz5so1bO1JVudZ/kWocGJIKVPtaK8c1Rp99XvImCcEXo
-   aL5S8dsxo/5+j2COOqVV0ncyWz8oob8hl1VwUBjyBT/fNV3hhNvcYFeKB
-   kYAhWaGy3DgZ3nNVKbpe2VOhCgoF8IVdMlHjiUzMYNjYGBX6UP3ghlgd3
-   7NjS1/eBgk6WUTr82D8Dd6LrmPRb07yg8OpJAHvqgJ4/rqzzIDR2PcNyJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10581"; a="320175784"
-X-IronPort-AV: E=Sophos;i="5.96,305,1665471600"; 
-   d="scan'208";a="320175784"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2023 04:58:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10581"; a="763514130"
-X-IronPort-AV: E=Sophos;i="5.96,305,1665471600"; 
-   d="scan'208";a="763514130"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Jan 2023 04:58:12 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Fri, 6 Jan 2023 04:58:12 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Fri, 6 Jan 2023 04:58:11 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Fri, 6 Jan 2023 04:58:11 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Fri, 6 Jan 2023 04:58:11 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KO2nD4WUZiWzwlG1bSOX2a2A7taGGiQGM8hyAwDAJhFmk5cBgSGiPtToK8ugnfuL5WLWrtgV2qajyR3KgLgFk2oxS5fhDmrSilPCzlAGE3au2lRpNB4eI0YKSN0YulpgfTszv+Sy+CHgJeL5T2Z3uNdA6foPbqh4uLG+2tK2pm65uZSUkqxEjVkqgJvi/ZtjsO39FCvFRETC7u85Lgn7SZG1ytvze1td24WmSdedmcVgJfIUdXSTXz0aJ9v4e1ldkYLBzATKH5F6LtCyq3Q8/xWFEaHwmDUyul24WN9tJi07UcCPgdi6GfN1IvR4Gi9CZjkkI/wu76/K4Rld0P9rTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z2VV0jJZAEI+VDiVmakmZ5cCog8qJIh9Ys7okL/Ug7E=;
- b=oSG3BtVzpoDA3A9Pjor/Py2YL5idJefqIk+zbNt/AA9tKonEz8ns82AVoGYCdoHCiNyMBrAr6zJka4NlXxlwE2y9nrjgmTEL+7nMc53TTlRIibm/0rV4QgbDH+Pm1OmkcnO6CHhBgygB+h8I2rfG6RxGgt/IQKySkihwWoPQWEPvbuTvm1slVJYJYb7rrOiMugcfwVH6y8TLj2fgv6vT88oDkbIYr1wxtxS+xwYq2DAwRP5Ae6p0zwwiO4G2l5SzHAAgXQNSEjY+x6pLoQUhq5ThTpA5fsQTlBJShp1frJebYcdt5jPu/3Ug2PtWuzyNixKtn8Geqo4D6wvou2RC9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by CY5PR11MB6236.namprd11.prod.outlook.com (2603:10b6:930:23::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5944.19; Fri, 6 Jan
- 2023 12:58:10 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::114c:5805:e63f:6018]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::114c:5805:e63f:6018%5]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
- 12:58:09 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] rcu: Safe access to rcu_node structure's->exp_tasks
-Thread-Topic: [PATCH] rcu: Safe access to rcu_node structure's->exp_tasks
-Thread-Index: AQHZF1d1vL7vqzT7Rk6Qh2aIcidsQa6Q0uoAgACaqqA=
-Date:   Fri, 6 Jan 2023 12:58:09 +0000
-Message-ID: <PH0PR11MB5880A02CB83F4AC48A99E9F8DAFB9@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20221224052553.263199-1-qiang1.zhang@intel.com>
- <20230106034146.GM4028633@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20230106034146.GM4028633@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|CY5PR11MB6236:EE_
-x-ms-office365-filtering-correlation-id: 96992f40-9963-4a39-ce0b-08daefe5a9a1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OjfOdPSU/DENLg1mm7sn7VfEyMsa9SDhOa5z1vkrKONUP4XnP6in6tOIDzV7PyGz/2/FNSFdggOogsYoAfIlOKjDlXrv/rMqQ5YlbCL/XbU4CenXTirRSg/fQ0bBrkhboowjJ3ouNGqk4zGCXzv06Fl7+yaNOBQXBYPOlOJsXiViDrGBOjNXKR3/FIl0yowg9F4d8wSi5tMSChh/tmEz8OkWHsDBFW1kvGw9R/nionk9SUQhzIKWFJEJ809UmdEr+MaQVnpz5wA/YMpphqAh7c+MPWbpK+JqrYXZ1ZeRuEY8iX+puyg4M3RAVM9m96Yk0wrgQKPiKrp2Vg0JfVXLq9fQ8MstrNJ+Oh+7TnGEG2FpPuPZNBqMwT1BYdF2yiNyy8jrpz1ZLrM424c/qx4RGP5HfTw9OygU48r+UtCFb3OIoYzK12dkGrkDlGa7QMRizvpvUM5HmLNlUYeLmdbMIfYoxRgTtpCOveqbVpB4gHGnV2IRXqB3LQnhY4gdTFuGqqeVoUhMTlNvYhh3Kgtd6PD6zXK77C87P8NFLHKPUSMOusPCk9FpKiFTUfeioL2xNuSii/j6dBP64pZpXxTJo6bFxBNWuJ9FL50vmiMkJMEWwr/XVkKZwY5Aw/V2hFrOmh2/WmxqSutiyONuTmQ08OEuFah7BO52uSYlN8DtDF5FCx2C+oSNGYqTQY1imh+GL1O0BuhdnUeD77nWcg1RDg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(366004)(346002)(136003)(39860400002)(396003)(451199015)(76116006)(66946007)(66556008)(4326008)(66446008)(41300700001)(64756008)(38070700005)(316002)(8676002)(66476007)(54906003)(2906002)(86362001)(5660300002)(52536014)(82960400001)(38100700002)(122000001)(55016003)(33656002)(6506007)(9686003)(478600001)(8936002)(26005)(186003)(83380400001)(71200400001)(7696005)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+f9vvApkmVOceHzTLNh9CzOG17ZxeEF8j/GMHnDzUsLBc9bjG5nMTlWzWdR9?=
- =?us-ascii?Q?qFxKVvtjfXo/FBDEJLXQMNHZh7TWWkepUNi9QT7p9g2iA0EkeGVB30fNqA5z?=
- =?us-ascii?Q?5Ehvc6EmYS2A1aYvgGvDIC9f62HsEEojibtG0/7MejdZcuUNkbLaG0XMRC+f?=
- =?us-ascii?Q?REPaX6vSM92GHWMoW+/IcSf28U0tULhVS2rlKBIShfErAXmxgYMS8rHykg4s?=
- =?us-ascii?Q?wJ486s6P4H4NkAyvZ6gUpiVpZnRLn5VC0RBTPjdGlDax7v5tpA4N98ebp1XW?=
- =?us-ascii?Q?4Q9rVwYOweD6kLiZtFwP6kQ3Mw2At6GGA9fRtU0VhNFHAM3R1p6HWwAyCLoJ?=
- =?us-ascii?Q?t/2gUfJwia2FHtr53ooE17HrLi6e1rDAe+vnGa+MKnRo69WdmkdWuUBHAZJG?=
- =?us-ascii?Q?DeTfpBgFDH4QQ4OGlvMVPP2Y0DvhConW6DYEX6FFWyyjzcOFgCtf0nMJObNI?=
- =?us-ascii?Q?+5hAkGGdvf5/JkE/kjgrjME6aG7GtVI/6OUbbE9WGd9OQD1Fd3KKCaDUKkxJ?=
- =?us-ascii?Q?npkEY/1oJWloeFIxUo7WeYjPoWIBeegUpPFgQC/UAsFWT1cq0ET0Z14Ezyu7?=
- =?us-ascii?Q?ZsFFIurNaSVQzBLsiHAc0T2ctvj60tkGBmqm9Eo28jFULHthxo0tD5QJJcZE?=
- =?us-ascii?Q?TLJVqiltkfuhfW8ZQbgBcmv+kpAWFATiLfQVcuDP0nd4TtYbuwlU6IYn5duK?=
- =?us-ascii?Q?p3EqErqMt1ODa08aL+lBEkaIjMCS/2CZr38ZsWHNAhPMbXzDWli+CEAIvyuS?=
- =?us-ascii?Q?52vshQhThLyTV1/a3SGa3EUFAAVDJ767kxZBnkD/nfyVZwrkv5PFV4SFiHz8?=
- =?us-ascii?Q?E7Bq3XgX4NlmWBfcHPeEY6F44wt44FRlDtajdGvVzp0UCiD412zXo+rctrtm?=
- =?us-ascii?Q?HWBPKqulzBoS5XjwE3c4xupx17se84HpCbznr9gD+JzzJdFdUqvpr0aVtHoA?=
- =?us-ascii?Q?IO32IAm0jW8fjyz2Ix32mmrmYp6+kUZblIRvAKZGQukYPQD9WwdEWn1K+xKb?=
- =?us-ascii?Q?5Y4whPUl7EuKdigS3TOgM9ByE7AYRGEhOdfAGVpA+KfRj5NkaawT9KRpvAfG?=
- =?us-ascii?Q?dtwJI6/uMCPSBVYndzyiaP2Oz+/dzwP9ZDJnILmog+Pp5tmVO6z+ySLqFH3w?=
- =?us-ascii?Q?8FzpYGh4zhpPN5c84rIE/y+6GucjZS5kJCv5gRLIMgKOBpK0M4LVmkI9nBPk?=
- =?us-ascii?Q?yW3eVJLgkMBdHxfCrqbWzKgTvq/RzpHALR4FF//Dgjh7bQSDI/36EOBa1vNS?=
- =?us-ascii?Q?L1VVFzqxr9ndjtXNSKOl/kt+X84njbWG8cluuPGgBd3XXNoXbrLt/p77xOjY?=
- =?us-ascii?Q?fNSO2eBk5QC0BiuktlTFJ6u0Zim8ts7CNLAZmhX2Bt3uV+0r9b5VKxGu3UKM?=
- =?us-ascii?Q?qAjx+2QZp/FnMZ/vs++kk1hxKYPq3edZOWJ8nKU/QSohtizAoONO0vkK89Mc?=
- =?us-ascii?Q?JSi4e61+GnMogbVXAVHOKAySvtK7orGN0yZa5q8qTlW4IKnxPgFWJrC/IbMJ?=
- =?us-ascii?Q?bhBPNIk8iWcgCGutE2E4h9xUVe5q1nBzZBSXxXUfI7gW43IeMHeZdA3enrou?=
- =?us-ascii?Q?8rswx4kdZjVkJ4MZLpmVMMZ2rKjsOrmy5Mez7g4N?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S235416AbjAFOe0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Jan 2023 09:34:26 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C146080ADD;
+        Fri,  6 Jan 2023 06:33:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 21666B81CE3;
+        Fri,  6 Jan 2023 14:33:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC912C433D2;
+        Fri,  6 Jan 2023 14:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673015631;
+        bh=XVpxKL7TTqyd1QB/TD46lGJzUufjp1Ko5c61ln9yd1M=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=h9ao09jPhqgSgUUJ4HeRzbi0vZobiEV7r66ZQroWtjJVdJPozeYo2ZoC0M5mbF49F
+         +GTgbN+PTWdLjLZP6bftWGJwnD3cODBU/MIwe/jUSpwn7n6hNSEl0X6yCg1gZ5mqBA
+         KJDSkAXslMFvxs1V//FMBQAE9NhxpwVcuDDtx2OtOCUyqprCRsNxoYIWaaJfeI6V5I
+         5FxHVfgoMLGuN7Q/3Ok7o8medEhq/3NLrPTKS3rzLACKsuLNgjDq8b1VP1MpTO9isf
+         Tmr2+BoO6JRq8vQsMYiUprE+jZMfF4HfJ2Xf2OBTK52UvTziF4Ny1pifWBl0nFosg+
+         xa00GENKPEmLQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5E5865C1C66; Fri,  6 Jan 2023 06:33:51 -0800 (PST)
+Date:   Fri, 6 Jan 2023 06:33:51 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH linux-next] mark access to tick_do_timer_cpu with
+ READ_ONCE/WRITE_ONCE
+Message-ID: <20230106143351.GP4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221219052128.18190-1-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96992f40-9963-4a39-ce0b-08daefe5a9a1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2023 12:58:09.8693
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CuVqgRcNVywSWPbgT3HSxAWbNLKeKItVrAMUh7fwjBT+ATyU3ahL/rDmXvB/0u6ea6eThX7ggp0kxrzOIk8h1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6236
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221219052128.18190-1-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> For kernels built with CONFIG_PREEMPT_RCU=3Dy, the following scenario
-> can result system oops.
->=20
->            CPU1                                           CPU2
-> rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stal=
-l
->   if (special.b.blocked)                            READ_ONCE(rnp->exp_ta=
-sks) !=3D NULL
->     raw_spin_lock_rcu_node
->     np =3D rcu_next_node_entry(t, rnp)
->     if (&t->rcu_node_entry =3D=3D rnp->exp_tasks)
->       WRITE_ONCE(rnp->exp_tasks, np)
->       ....
->       raw_spin_unlock_irqrestore_rcu_node
->                                                     raw_spin_lock_irqsave=
-_rcu_node
->                                                     t =3D list_entry(rnp-=
->exp_tasks->prev,
->                                                         struct task_struc=
-t, rcu_node_entry)
->                                                     (if rnp->exp_tasks is=
- NULL
->                                                        will trigger oops)
->=20
-> This problem is that CPU2 accesses rcu_node structure's->exp_tasks
-> without holding the rcu_node structure's ->lock and CPU2 did not
-> observe CPU1's change to rcu_node structure's->exp_tasks in time,
-> if rcu_node structure's->exp_tasks is set null pointer by CPU1, after
-> that CPU2 accesses members of rcu_node structure's->exp_tasks will
-> trigger oops.
->=20
-> This commit therefore allows rcu_node structure's->exp_tasks to be
-> accessed while holding rcu_node structure's ->lock.
->=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->
->Apologies for the delay and thank you for the reminder!
->
->Please check the wordsmithed version below, which I have queued.
+On Mon, Dec 19, 2022 at 01:21:28PM +0800, Zhouyi Zhou wrote:
+> mark access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE to fix concurrency bug
+> reported by KCSAN.
+> 
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
+This does indeed get rid of some KCSAN complaints, thank you!!!
 
-Thanks for wordsmithed, this description is more clear.
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
 
-Thanks
-Zqiang
-
-
->
->						Thanx, Paul
->
->------------------------------------------------------------------------
->
->commit 389b0eafd72829fd63548f7ff4e8d6ac90fa1f98
->Author: Zqiang <qiang1.zhang@intel.com>
->Date:   Sat Dec 24 13:25:53 2022 +0800
->
->    rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
->   =20
->    For kernels built with CONFIG_PREEMPT_RCU=3Dy, the following scenario =
-can
->    result in a NULL-pointer dereference:
->   =20
->               CPU1                                           CPU2
->    rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_s=
-tall
->      if (special.b.blocked)                            READ_ONCE(rnp->exp=
-_tasks) !=3D NULL
->        raw_spin_lock_rcu_node
->        np =3D rcu_next_node_entry(t, rnp)
->        if (&t->rcu_node_entry =3D=3D rnp->exp_tasks)
->          WRITE_ONCE(rnp->exp_tasks, np)
->          ....
->          raw_spin_unlock_irqrestore_rcu_node
->                                                        raw_spin_lock_irqs=
-ave_rcu_node
->                                                        t =3D list_entry(r=
-np->exp_tasks->prev,
->                                                            struct task_st=
-ruct, rcu_node_entry)
->                                                        (if rnp->exp_tasks=
- is NULL, this
->                                                           will dereferenc=
-e a NULL pointer)
->   =20
->    The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
->    field without holding the rcu_node structure's ->lock and CPU2 did
->    not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
->    Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NUL=
-L,
->    then CPU2 might dereference that NULL pointer.
->   =20
->    This commit therefore holds the rcu_node structure's ->lock while
->    accessing that structure's->exp_tasks field.
->   =20
->    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
->diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
->index 7cc4856da0817..902e7c8709c7e 100644
->--- a/kernel/rcu/tree_exp.h
->+++ b/kernel/rcu/tree_exp.h
->@@ -803,9 +803,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *=
-rnp)
-> 	int ndetected =3D 0;
-> 	struct task_struct *t;
->=20
->-	if (!READ_ONCE(rnp->exp_tasks))
->-		return 0;
-> 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
->+	if (!READ_ONCE(rnp->exp_tasks)) {
->+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->+		return 0;
->+	}
-> 	t =3D list_entry(rnp->exp_tasks->prev,
-> 		       struct task_struct, rcu_node_entry);
-> 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
+> ---
+> During the rcutorture test on linux-next,
+> ./tools/testing/selftests/rcutorture/bin/torture.sh --do-kcsan  --kcsan-kmake-arg "CC=clang-12"
+> following KCSAN BUG is reported:
+> [   35.397089] BUG: KCSAN: data-race in tick_nohz_idle_stop_tick / tick_nohz_next_event^M
+> [   35.400593] ^M
+> [   35.401377] write to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 3:^M
+> [   35.405325]  tick_nohz_idle_stop_tick+0x14c/0x3e0^M
+> [   35.407162]  do_idle+0xf3/0x2a0^M
+> [   35.408016]  cpu_startup_entry+0x15/0x20^M
+> [   35.409084]  start_secondary+0x8f/0x90^M
+> [   35.410207]  secondary_startup_64_no_verify+0xe1/0xeb^M
+> [   35.411607] ^M
+> [   35.412042] no locks held by swapper/3/0.^M
+> [   35.413172] irq event stamp: 53048^M
+> [   35.414175] hardirqs last  enabled at (53047): [<ffffffffb41f8404>] tick_nohz_idle_enter+0x104/0x140^M
+> [   35.416681] hardirqs last disabled at (53048): [<ffffffffb41229f1>] do_idle+0x91/0x2a0^M
+> [   35.418988] softirqs last  enabled at (53038): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
+> [   35.421347] softirqs last disabled at (53029): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
+> [   35.423685] ^M
+> [   35.424119] read to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 0:^M
+> [   35.425870]  tick_nohz_next_event+0x233/0x2b0^M
+> [   35.427119]  tick_nohz_idle_stop_tick+0x8f/0x3e0^M
+> [   35.428386]  do_idle+0xf3/0x2a0^M
+> [   35.429265]  cpu_startup_entry+0x15/0x20^M
+> [   35.430429]  rest_init+0x20c/0x210^M
+> [   35.431382]  arch_call_rest_init+0xe/0x10^M
+> [   35.432508]  start_kernel+0x544/0x600^M
+> [   35.433519]  secondary_startup_64_no_verify+0xe1/0xeb^M
+> 
+> fix above bug by marking access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
+> 
+> Thanks
+> Zhouyi
+> --
+>  kernel/time/tick-common.c | 16 ++++++++--------
+>  kernel/time/tick-sched.c  | 28 +++++++++++++++-------------
+>  2 files changed, 23 insertions(+), 21 deletions(-)
+> 
+> diff --git a/kernel/time/tick-common.c b/kernel/time/tick-common.c
+> index 46789356f856..a7753465a0be 100644
+> --- a/kernel/time/tick-common.c
+> +++ b/kernel/time/tick-common.c
+> @@ -84,7 +84,7 @@ int tick_is_oneshot_available(void)
+>   */
+>  static void tick_periodic(int cpu)
+>  {
+> -	if (tick_do_timer_cpu == cpu) {
+> +	if (READ_ONCE(tick_do_timer_cpu) == cpu) {
+>  		raw_spin_lock(&jiffies_lock);
+>  		write_seqcount_begin(&jiffies_seq);
+>  
+> @@ -184,9 +184,9 @@ static void giveup_do_timer(void *info)
+>  {
+>  	int cpu = *(unsigned int *)info;
+>  
+> -	WARN_ON(tick_do_timer_cpu != smp_processor_id());
+> +	WARN_ON(READ_ONCE(tick_do_timer_cpu) != smp_processor_id());
+>  
+> -	tick_do_timer_cpu = cpu;
+> +	WRITE_ONCE(tick_do_timer_cpu, cpu);
+>  }
+>  
+>  static void tick_take_do_timer_from_boot(void)
+> @@ -217,8 +217,8 @@ static void tick_setup_device(struct tick_device *td,
+>  		 * If no cpu took the do_timer update, assign it to
+>  		 * this cpu:
+>  		 */
+> -		if (tick_do_timer_cpu == TICK_DO_TIMER_BOOT) {
+> -			tick_do_timer_cpu = cpu;
+> +		if (READ_ONCE(tick_do_timer_cpu) == TICK_DO_TIMER_BOOT) {
+> +			WRITE_ONCE(tick_do_timer_cpu, cpu);
+>  
+>  			tick_next_period = ktime_get();
+>  #ifdef CONFIG_NO_HZ_FULL
+> @@ -235,7 +235,7 @@ static void tick_setup_device(struct tick_device *td,
+>  						!tick_nohz_full_cpu(cpu)) {
+>  			tick_take_do_timer_from_boot();
+>  			tick_do_timer_boot_cpu = -1;
+> -			WARN_ON(tick_do_timer_cpu != cpu);
+> +			WARN_ON(READ_ONCE(tick_do_timer_cpu) != cpu);
+>  #endif
+>  		}
+>  
+> @@ -407,8 +407,8 @@ EXPORT_SYMBOL_GPL(tick_broadcast_oneshot_control);
+>   */
+>  void tick_handover_do_timer(void)
+>  {
+> -	if (tick_do_timer_cpu == smp_processor_id())
+> -		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
+> +	if (READ_ONCE(tick_do_timer_cpu) == smp_processor_id())
+> +		WRITE_ONCE(tick_do_timer_cpu, cpumask_first(cpu_online_mask));
+>  }
+>  
+>  /*
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index b0e3c9205946..2dac94b3187f 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -186,16 +186,16 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+>  	 * If nohz_full is enabled, this should not happen because the
+>  	 * tick_do_timer_cpu never relinquishes.
+>  	 */
+> -	if (unlikely(tick_do_timer_cpu == TICK_DO_TIMER_NONE)) {
+> +	if (unlikely(READ_ONCE(tick_do_timer_cpu) == TICK_DO_TIMER_NONE)) {
+>  #ifdef CONFIG_NO_HZ_FULL
+>  		WARN_ON_ONCE(tick_nohz_full_running);
+>  #endif
+> -		tick_do_timer_cpu = cpu;
+> +		WRITE_ONCE(tick_do_timer_cpu, cpu);
+>  	}
+>  #endif
+>  
+>  	/* Check, if the jiffies need an update */
+> -	if (tick_do_timer_cpu == cpu)
+> +	if (READ_ONCE(tick_do_timer_cpu) == cpu)
+>  		tick_do_update_jiffies64(now);
+>  
+>  	/*
+> @@ -534,7 +534,7 @@ static int tick_nohz_cpu_down(unsigned int cpu)
+>  	 * timers, workqueues, timekeeping, ...) on behalf of full dynticks
+>  	 * CPUs. It must remain online when nohz full is enabled.
+>  	 */
+> -	if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
+> +	if (tick_nohz_full_running && READ_ONCE(tick_do_timer_cpu) == cpu)
+>  		return -EBUSY;
+>  	return 0;
+>  }
+> @@ -849,8 +849,9 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
+>  	 * Otherwise we can sleep as long as we want.
+>  	 */
+>  	delta = timekeeping_max_deferment();
+> -	if (cpu != tick_do_timer_cpu &&
+> -	    (tick_do_timer_cpu != TICK_DO_TIMER_NONE || !ts->do_timer_last))
+> +	if (cpu != READ_ONCE(tick_do_timer_cpu) &&
+> +	    (READ_ONCE(tick_do_timer_cpu) != TICK_DO_TIMER_NONE
+> +	     || !ts->do_timer_last))
+>  		delta = KTIME_MAX;
+>  
+>  	/* Calculate the next expiry time */
+> @@ -883,10 +884,10 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+>  	 * do_timer() never invoked. Keep track of the fact that it
+>  	 * was the one which had the do_timer() duty last.
+>  	 */
+> -	if (cpu == tick_do_timer_cpu) {
+> -		tick_do_timer_cpu = TICK_DO_TIMER_NONE;
+> +	if (cpu == READ_ONCE(tick_do_timer_cpu)) {
+> +		WRITE_ONCE(tick_do_timer_cpu, TICK_DO_TIMER_NONE);
+>  		ts->do_timer_last = 1;
+> -	} else if (tick_do_timer_cpu != TICK_DO_TIMER_NONE) {
+> +	} else if (READ_ONCE(tick_do_timer_cpu) != TICK_DO_TIMER_NONE) {
+>  		ts->do_timer_last = 0;
+>  	}
+>  
+> @@ -1049,8 +1050,8 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+>  	 * invoked.
+>  	 */
+>  	if (unlikely(!cpu_online(cpu))) {
+> -		if (cpu == tick_do_timer_cpu)
+> -			tick_do_timer_cpu = TICK_DO_TIMER_NONE;
+> +		if (cpu == READ_ONCE(tick_do_timer_cpu))
+> +			WRITE_ONCE(tick_do_timer_cpu, TICK_DO_TIMER_NONE);
+>  		/*
+>  		 * Make sure the CPU doesn't get fooled by obsolete tick
+>  		 * deadline if it comes back online later.
+> @@ -1073,11 +1074,12 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+>  		 * Keep the tick alive to guarantee timekeeping progression
+>  		 * if there are full dynticks CPUs around
+>  		 */
+> -		if (tick_do_timer_cpu == cpu)
+> +		if (READ_ONCE(tick_do_timer_cpu) == cpu)
+>  			return false;
+>  
+>  		/* Should not happen for nohz-full */
+> -		if (WARN_ON_ONCE(tick_do_timer_cpu == TICK_DO_TIMER_NONE))
+> +		if (WARN_ON_ONCE(READ_ONCE(tick_do_timer_cpu)
+> +				 == TICK_DO_TIMER_NONE))
+>  			return false;
+>  	}
+>  
+> -- 
+> 2.34.1
+> 
