@@ -2,42 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C5DC3DA7A
-	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 03:53:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF511C3DA7A
+	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 07:10:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjAFDxC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 22:53:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
+        id S230465AbjAFHKT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Jan 2023 02:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjAFDxB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 22:53:01 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C8F4BD6E;
-        Thu,  5 Jan 2023 19:52:59 -0800 (PST)
-Received: from dggpeml100012.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Np8XK3HmYz16LyF;
-        Fri,  6 Jan 2023 11:51:29 +0800 (CST)
+        with ESMTP id S232171AbjAFHKG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Jan 2023 02:10:06 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE71278155;
+        Thu,  5 Jan 2023 23:09:55 -0800 (PST)
+Received: from dggpeml100012.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NpDqs0VJ2zqTmv;
+        Fri,  6 Jan 2023 15:05:13 +0800 (CST)
 Received: from localhost.localdomain (10.67.175.61) by
  dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 6 Jan 2023 11:52:57 +0800
+ 15.1.2375.34; Fri, 6 Jan 2023 15:09:54 +0800
 From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <frederic@kernel.org>, <paulmck@kernel.org>
-CC:     <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
-        <josh@joshtriplett.org>, <linux-kernel@vger.kernel.org>,
-        <mathieu.desnoyers@efficios.com>, <mhiramat@kernel.org>,
-        <quic_neeraju@quicinc.com>, <rcu@vger.kernel.org>,
-        <rostedt@goodmis.org>, <peterz@infradead.org>,
-        <zhengyejian1@huawei.com>
-Subject: [PATCH] rcu: Avoid kernel stack overflow due to rcu_irq_enter_check_tick() being kprobe-ed
-Date:   Fri, 6 Jan 2023 11:54:23 +0800
-Message-ID: <20230106035423.3376283-1-zhengyejian1@huawei.com>
+To:     <zhengyejian1@huawei.com>
+CC:     <frederic@kernel.org>, <jiangshanlai@gmail.com>,
+        <joel@joelfernandes.org>, <josh@joshtriplett.org>,
+        <linux-kernel@vger.kernel.org>, <mathieu.desnoyers@efficios.com>,
+        <mhiramat@kernel.org>, <paulmck@kernel.org>,
+        <peterz@infradead.org>, <quic_neeraju@quicinc.com>,
+        <rcu@vger.kernel.org>, <rostedt@goodmis.org>
+Subject: [PATCH v2] rcu: Avoid stack overflow due to __rcu_irq_enter_check_tick() being kprobe-ed
+Date:   Fri, 6 Jan 2023 15:09:34 +0800
+Message-ID: <20230106070934.3434031-1-zhengyejian1@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230106035423.3376283-1-zhengyejian1@huawei.com>
+References: <20230106035423.3376283-1-zhengyejian1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml100012.china.huawei.com (7.185.36.121)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -150,6 +152,11 @@ Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 ---
  kernel/rcu/tree.c | 1 +
  1 file changed, 1 insertion(+)
+
+Change since v1:
+  Make commit tile clear:
+  - rcu_irq_enter_check_tick()  ==>  __rcu_irq_enter_check_tick()
+  - kernel stack overflow  ==>  stack overflow
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
 index cf34a961821a..41606d3ed083 100644
