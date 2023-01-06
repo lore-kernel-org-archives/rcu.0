@@ -2,145 +2,167 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94CF0C4708D
-	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 03:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C5DC3DA7A
+	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 03:53:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbjAFDlt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 5 Jan 2023 22:41:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
+        id S229516AbjAFDxC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 5 Jan 2023 22:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjAFDlt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 5 Jan 2023 22:41:49 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE4B3E868;
-        Thu,  5 Jan 2023 19:41:48 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 01DB161CD7;
-        Fri,  6 Jan 2023 03:41:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58993C433EF;
-        Fri,  6 Jan 2023 03:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1672976507;
-        bh=/NJ6JHgebWXiCCli7ngAfOmm/46OZs0BToYL8An7kCA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PCi6o7ET/ARK+6SYQaihKx1uTFLPqqHhoet5YsBmvmK70R913R2ik23KPjsVPBOHC
-         kMaiGd8gtgQE7vfJj70y1mFAiKalqqDdMynA0yovvKJUE/gfcKPeDQMv0CLAB4HYAQ
-         BgXGyuYEp+4vJJ8tLHtE3Kk7OdhsnO0M7KA6LIP0qONTxsm5oxcLzqi1fm1TjW4Y86
-         1JoAKSw8X++GijX2MKEPNkPSXMrrG7KsCuBGRCfJMeh8i2+7pmipQCpqujp7IwkD27
-         A1FZLOO+j2zFqfp+35RfgFcIXOrkjZgxicnz+JSTDKOF3qL8mUHbnhSN+s5bfYQuYQ
-         jVucrMw0dA/Pg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0171E5C0544; Thu,  5 Jan 2023 19:41:46 -0800 (PST)
-Date:   Thu, 5 Jan 2023 19:41:46 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Safe access to rcu_node structure's->exp_tasks
-Message-ID: <20230106034146.GM4028633@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221224052553.263199-1-qiang1.zhang@intel.com>
+        with ESMTP id S229509AbjAFDxB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 5 Jan 2023 22:53:01 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C8F4BD6E;
+        Thu,  5 Jan 2023 19:52:59 -0800 (PST)
+Received: from dggpeml100012.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Np8XK3HmYz16LyF;
+        Fri,  6 Jan 2023 11:51:29 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 6 Jan 2023 11:52:57 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <frederic@kernel.org>, <paulmck@kernel.org>
+CC:     <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
+        <josh@joshtriplett.org>, <linux-kernel@vger.kernel.org>,
+        <mathieu.desnoyers@efficios.com>, <mhiramat@kernel.org>,
+        <quic_neeraju@quicinc.com>, <rcu@vger.kernel.org>,
+        <rostedt@goodmis.org>, <peterz@infradead.org>,
+        <zhengyejian1@huawei.com>
+Subject: [PATCH] rcu: Avoid kernel stack overflow due to rcu_irq_enter_check_tick() being kprobe-ed
+Date:   Fri, 6 Jan 2023 11:54:23 +0800
+Message-ID: <20230106035423.3376283-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221224052553.263199-1-qiang1.zhang@intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml100012.china.huawei.com (7.185.36.121)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Dec 24, 2022 at 01:25:53PM +0800, Zqiang wrote:
-> For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario
-> can result system oops.
-> 
->            CPU1                                           CPU2
-> rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
->   if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
->     raw_spin_lock_rcu_node
->     np = rcu_next_node_entry(t, rnp)
->     if (&t->rcu_node_entry == rnp->exp_tasks)
->       WRITE_ONCE(rnp->exp_tasks, np)
->       ....
->       raw_spin_unlock_irqrestore_rcu_node
->                                                     raw_spin_lock_irqsave_rcu_node
->                                                     t = list_entry(rnp->exp_tasks->prev,
->                                                         struct task_struct, rcu_node_entry)
->                                                     (if rnp->exp_tasks is NULL
->                                                        will trigger oops)
-> 
-> This problem is that CPU2 accesses rcu_node structure's->exp_tasks
-> without holding the rcu_node structure's ->lock and CPU2 did not
-> observe CPU1's change to rcu_node structure's->exp_tasks in time,
-> if rcu_node structure's->exp_tasks is set null pointer by CPU1, after
-> that CPU2 accesses members of rcu_node structure's->exp_tasks will
-> trigger oops.
-> 
-> This commit therefore allows rcu_node structure's->exp_tasks to be
-> accessed while holding rcu_node structure's ->lock.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Register kprobe on __rcu_irq_enter_check_tick() can cause kernel stack
+overflow [1]. This issue can be reproduced by enabling CONFIG_NO_HZ_FULL
+and boot kernel with argument "nohz_full=" then execute like:
+  # cd /sys/kernel/tracing/
+  # echo 'p:mp1 __rcu_irq_enter_check_tick' >> kprobe_events
+  # echo 1 > events/kprobes/enable
 
-Apologies for the delay and thank you for the reminder!
+It seems __rcu_irq_enter_check_tick() should not be kprobe-ed, so add
+it into kprobe blacklist with NOKPROBE_SYMBOL(). This may have less impact
+than tagging as 'noinstr' which was discussed but not concluded in
+Link: https://lore.kernel.org/all/20221119040049.795065-1-zhengyejian1@huawei.com/
 
-Please check the wordsmithed version below, which I have queued.
+[1]
+Insufficient stack space to handle exception!
+ESR: 0x00000000f2000004 -- BRK (AArch64)
+FAR: 0x0000ffffccf3e510
+Task stack:     [0xffff80000ad30000..0xffff80000ad38000]
+IRQ stack:      [0xffff800008050000..0xffff800008058000]
+Overflow stack: [0xffff089c36f9f310..0xffff089c36fa0310]
+CPU: 5 PID: 190 Comm: bash Not tainted 6.2.0-rc2-00320-g1f5abbd77e2c #19
+Hardware name: linux,dummy-virt (DT)
+pstate: 400003c5 (nZcv DAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __rcu_irq_enter_check_tick+0x0/0x1b8
+lr : ct_nmi_enter+0x11c/0x138
+sp : ffff80000ad30080
+x29: ffff80000ad30080 x28: ffff089c82e20000 x27: 0000000000000000
+x26: 0000000000000000 x25: ffff089c02a8d100 x24: 0000000000000000
+x23: 00000000400003c5 x22: 0000ffffccf3e510 x21: ffff089c36fae148
+x20: ffff80000ad30120 x19: ffffa8da8fcce148 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: ffffa8da8e44ea6c
+x14: ffffa8da8e44e968 x13: ffffa8da8e03136c x12: 1fffe113804d6809
+x11: ffff6113804d6809 x10: 0000000000000a60 x9 : dfff800000000000
+x8 : ffff089c026b404f x7 : 00009eec7fb297f7 x6 : 0000000000000001
+x5 : ffff80000ad30120 x4 : dfff800000000000 x3 : ffffa8da8e3016f4
+x2 : 0000000000000003 x1 : 0000000000000000 x0 : 0000000000000000
+Kernel panic - not syncing: kernel stack overflow
+CPU: 5 PID: 190 Comm: bash Not tainted 6.2.0-rc2-00320-g1f5abbd77e2c #19
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0xf8/0x108
+ show_stack+0x20/0x30
+ dump_stack_lvl+0x68/0x84
+ dump_stack+0x1c/0x38
+ panic+0x214/0x404
+ add_taint+0x0/0xf8
+ panic_bad_stack+0x144/0x160
+ handle_bad_stack+0x38/0x58
+ __bad_stack+0x78/0x7c
+ __rcu_irq_enter_check_tick+0x0/0x1b8
+ arm64_enter_el1_dbg.isra.0+0x14/0x20
+ el1_dbg+0x2c/0x90
+ el1h_64_sync_handler+0xcc/0xe8
+ el1h_64_sync+0x64/0x68
+ __rcu_irq_enter_check_tick+0x0/0x1b8
+ arm64_enter_el1_dbg.isra.0+0x14/0x20
+ el1_dbg+0x2c/0x90
+ el1h_64_sync_handler+0xcc/0xe8
+ el1h_64_sync+0x64/0x68
+ __rcu_irq_enter_check_tick+0x0/0x1b8
+ arm64_enter_el1_dbg.isra.0+0x14/0x20
+ el1_dbg+0x2c/0x90
+ el1h_64_sync_handler+0xcc/0xe8
+ el1h_64_sync+0x64/0x68
+ __rcu_irq_enter_check_tick+0x0/0x1b8
+ [...]
+ el1_dbg+0x2c/0x90
+ el1h_64_sync_handler+0xcc/0xe8
+ el1h_64_sync+0x64/0x68
+ __rcu_irq_enter_check_tick+0x0/0x1b8
+ arm64_enter_el1_dbg.isra.0+0x14/0x20
+ el1_dbg+0x2c/0x90
+ el1h_64_sync_handler+0xcc/0xe8
+ el1h_64_sync+0x64/0x68
+ __rcu_irq_enter_check_tick+0x0/0x1b8
+ arm64_enter_el1_dbg.isra.0+0x14/0x20
+ el1_dbg+0x2c/0x90
+ el1h_64_sync_handler+0xcc/0xe8
+ el1h_64_sync+0x64/0x68
+ __rcu_irq_enter_check_tick+0x0/0x1b8
+ el1_interrupt+0x28/0x60
+ el1h_64_irq_handler+0x18/0x28
+ el1h_64_irq+0x64/0x68
+ __ftrace_set_clr_event_nolock+0x98/0x198
+ __ftrace_set_clr_event+0x58/0x80
+ system_enable_write+0x144/0x178
+ vfs_write+0x174/0x738
+ ksys_write+0xd0/0x188
+ __arm64_sys_write+0x4c/0x60
+ invoke_syscall+0x64/0x180
+ el0_svc_common.constprop.0+0x84/0x160
+ do_el0_svc+0x48/0xe8
+ el0_svc+0x34/0xd0
+ el0t_64_sync_handler+0xb8/0xc0
+ el0t_64_sync+0x190/0x194
+SMP: stopping secondary CPUs
+Kernel Offset: 0x28da86000000 from 0xffff800008000000
+PHYS_OFFSET: 0xfffff76600000000
+CPU features: 0x00000,01a00100,0000421b
+Memory Limit: none
 
-						Thanx, Paul
+Cc: stable@vger.kernel.org
+Fixes: aaf2bc50df1f ("rcu: Abstract out rcu_irq_enter_check_tick() from rcu_nmi_enter()")
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/rcu/tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-------------------------------------------------------------------------
-
-commit 389b0eafd72829fd63548f7ff4e8d6ac90fa1f98
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Sat Dec 24 13:25:53 2022 +0800
-
-    rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
-    
-    For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario can
-    result in a NULL-pointer dereference:
-    
-               CPU1                                           CPU2
-    rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
-      if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
-        raw_spin_lock_rcu_node
-        np = rcu_next_node_entry(t, rnp)
-        if (&t->rcu_node_entry == rnp->exp_tasks)
-          WRITE_ONCE(rnp->exp_tasks, np)
-          ....
-          raw_spin_unlock_irqrestore_rcu_node
-                                                        raw_spin_lock_irqsave_rcu_node
-                                                        t = list_entry(rnp->exp_tasks->prev,
-                                                            struct task_struct, rcu_node_entry)
-                                                        (if rnp->exp_tasks is NULL, this
-                                                           will dereference a NULL pointer)
-    
-    The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
-    field without holding the rcu_node structure's ->lock and CPU2 did
-    not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
-    Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NULL,
-    then CPU2 might dereference that NULL pointer.
-    
-    This commit therefore holds the rcu_node structure's ->lock while
-    accessing that structure's->exp_tasks field.
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 7cc4856da0817..902e7c8709c7e 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -803,9 +803,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
- 	int ndetected = 0;
- 	struct task_struct *t;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index cf34a961821a..41606d3ed083 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -659,6 +659,7 @@ void __rcu_irq_enter_check_tick(void)
+ 	}
+ 	raw_spin_unlock_rcu_node(rdp->mynode);
+ }
++NOKPROBE_SYMBOL(__rcu_irq_enter_check_tick);
+ #endif /* CONFIG_NO_HZ_FULL */
  
--	if (!READ_ONCE(rnp->exp_tasks))
--		return 0;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	if (!READ_ONCE(rnp->exp_tasks)) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		return 0;
-+	}
- 	t = list_entry(rnp->exp_tasks->prev,
- 		       struct task_struct, rcu_node_entry);
- 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
+ /*
+-- 
+2.25.1
+
