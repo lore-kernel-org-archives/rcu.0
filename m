@@ -2,174 +2,162 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF511C3DA7A
-	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 07:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA63EC3DA7A
+	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 12:51:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbjAFHKT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Jan 2023 02:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
+        id S230294AbjAFMv3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 6 Jan 2023 07:51:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232171AbjAFHKG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Jan 2023 02:10:06 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE71278155;
-        Thu,  5 Jan 2023 23:09:55 -0800 (PST)
-Received: from dggpeml100012.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NpDqs0VJ2zqTmv;
-        Fri,  6 Jan 2023 15:05:13 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml100012.china.huawei.com (7.185.36.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 6 Jan 2023 15:09:54 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <zhengyejian1@huawei.com>
-CC:     <frederic@kernel.org>, <jiangshanlai@gmail.com>,
-        <joel@joelfernandes.org>, <josh@joshtriplett.org>,
-        <linux-kernel@vger.kernel.org>, <mathieu.desnoyers@efficios.com>,
-        <mhiramat@kernel.org>, <paulmck@kernel.org>,
-        <peterz@infradead.org>, <quic_neeraju@quicinc.com>,
-        <rcu@vger.kernel.org>, <rostedt@goodmis.org>
-Subject: [PATCH v2] rcu: Avoid stack overflow due to __rcu_irq_enter_check_tick() being kprobe-ed
-Date:   Fri, 6 Jan 2023 15:09:34 +0800
-Message-ID: <20230106070934.3434031-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230106035423.3376283-1-zhengyejian1@huawei.com>
-References: <20230106035423.3376283-1-zhengyejian1@huawei.com>
+        with ESMTP id S230208AbjAFMv2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 6 Jan 2023 07:51:28 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9DD1ADB8
+        for <rcu@vger.kernel.org>; Fri,  6 Jan 2023 04:51:26 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id b3so1836604lfv.2
+        for <rcu@vger.kernel.org>; Fri, 06 Jan 2023 04:51:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VRkNgPU9Z0vuXvRCyDjiBL7MgDxi1pBgzHic6defyP4=;
+        b=dU1SK6f05Q9HD62jZhE4rldG2q7S+j3MfO2ck6cVSyE7Vbm/XIp3iPG1aLw4Na1awJ
+         wymng/OM0Q+i5PxgubeGkSzXd23FMywFVAyHMPzhz+zbWphUL+YeO+yPY+jR3Mea90Md
+         kJfkoE3U1E0LdFCc6LLaffGWZ9uWlbLLTe5+D1H0WKjKlwenQ5rB8gOFZvAvyCh3/i/o
+         KYxCBP4kKNvrSfA8ckl4RJyBn8pBUE2AoJM1Q/iJdLXTuUYdchMUiYmzVKPW6VIXbohp
+         nGrjiC/FIHYVdVMFbZWoFWhco9HGQcmGjT3/mwCZMmbaZsJH6/X0KNR7cNn/5SpWjn8L
+         d2qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VRkNgPU9Z0vuXvRCyDjiBL7MgDxi1pBgzHic6defyP4=;
+        b=CDinrcTuY04qoM4MACxPcpAKFE/F8MFLLZEUn9I+euhwCrZQBNg1VVHXEf+oaN7JEa
+         DxHq5Xh+vpgfJjMNzr4Lr4GslP49wuHcbEWPG3AXraG91PWpqbOAebWUgiL5kp+RY6ry
+         zCeO0ao6OY7OURR+aUqzsnadeMjLzalI7Z/IvPebY+ivPSWQMOW+tA9BHqBEEGGafKP0
+         wA/HYhDEoql2jbIXl0nSYJDlbMY/6eeov+iP2osq0d5BiOFGHcx1so7UyfwiOtcwX9ip
+         +XZjeLvt+YgsRtzvC+pEQ3lwAS5Ok7acHmyvFQpG+JgJv01R7b+JchH3BEMRy67ly+NH
+         lm7A==
+X-Gm-Message-State: AFqh2kq/mKPTCbDlKSHDZdkuBe/JIPv6oxGq4S6Y5a4y5tNeaG+EBECA
+        aWO4hOQ8RpxqUm0O3yb4BMvFeqyRrAqlwMzZDg==
+X-Google-Smtp-Source: AMrXdXvoSKa9Z1kNow0rnX9LY8bAVzlRw0Fpfkkyyc76Nk9sMLTmfbZVaPUuQpEOGb/e8bCDAk3L0ei8vhB+KiDEcsw=
+X-Received: by 2002:a05:6512:6ce:b0:4cb:3df9:b23b with SMTP id
+ u14-20020a05651206ce00b004cb3df9b23bmr692075lff.308.1673009485147; Fri, 06
+ Jan 2023 04:51:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
+References: <20221223130228.40737-1-kernelfans@gmail.com> <20230104204318.GJ4028633@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20230104204318.GJ4028633@paulmck-ThinkPad-P17-Gen-1>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Fri, 6 Jan 2023 20:51:13 +0800
+Message-ID: <CAFgQCTvWT4Xdx8-vVBAYG+CBcx6YHBVd1jEhD01BQuJTvjCPmw@mail.gmail.com>
+Subject: Re: [PATCH] srcu: Add comments for srcu_size_state
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Register kprobe on __rcu_irq_enter_check_tick() can cause kernel stack
-overflow [1]. This issue can be reproduced by enabling CONFIG_NO_HZ_FULL
-and boot kernel with argument "nohz_full=" then execute like:
-  # cd /sys/kernel/tracing/
-  # echo 'p:mp1 __rcu_irq_enter_check_tick' >> kprobe_events
-  # echo 1 > events/kprobes/enable
+On Thu, Jan 5, 2023 at 4:43 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Dec 23, 2022 at 09:02:28PM +0800, Pingfan Liu wrote:
+> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>,
+> > Cc: Josh Triplett <josh@joshtriplett.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+> > To: rcu@vger.kernel.org
+>
+> Queued, thank you!
+>
+> After the inevitable wordsmithing, it appears as follows.  Could you
 
-It seems __rcu_irq_enter_check_tick() should not be kprobe-ed, so add
-it into kprobe blacklist with NOKPROBE_SYMBOL(). This may have less impact
-than tagging as 'noinstr' which was discussed but not concluded in
-Link: https://lore.kernel.org/all/20221119040049.795065-1-zhengyejian1@huawei.com/
+Sorry for the poor English expression.
 
-[1]
-Insufficient stack space to handle exception!
-ESR: 0x00000000f2000004 -- BRK (AArch64)
-FAR: 0x0000ffffccf3e510
-Task stack:     [0xffff80000ad30000..0xffff80000ad38000]
-IRQ stack:      [0xffff800008050000..0xffff800008058000]
-Overflow stack: [0xffff089c36f9f310..0xffff089c36fa0310]
-CPU: 5 PID: 190 Comm: bash Not tainted 6.2.0-rc2-00320-g1f5abbd77e2c #19
-Hardware name: linux,dummy-virt (DT)
-pstate: 400003c5 (nZcv DAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __rcu_irq_enter_check_tick+0x0/0x1b8
-lr : ct_nmi_enter+0x11c/0x138
-sp : ffff80000ad30080
-x29: ffff80000ad30080 x28: ffff089c82e20000 x27: 0000000000000000
-x26: 0000000000000000 x25: ffff089c02a8d100 x24: 0000000000000000
-x23: 00000000400003c5 x22: 0000ffffccf3e510 x21: ffff089c36fae148
-x20: ffff80000ad30120 x19: ffffa8da8fcce148 x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000 x15: ffffa8da8e44ea6c
-x14: ffffa8da8e44e968 x13: ffffa8da8e03136c x12: 1fffe113804d6809
-x11: ffff6113804d6809 x10: 0000000000000a60 x9 : dfff800000000000
-x8 : ffff089c026b404f x7 : 00009eec7fb297f7 x6 : 0000000000000001
-x5 : ffff80000ad30120 x4 : dfff800000000000 x3 : ffffa8da8e3016f4
-x2 : 0000000000000003 x1 : 0000000000000000 x0 : 0000000000000000
-Kernel panic - not syncing: kernel stack overflow
-CPU: 5 PID: 190 Comm: bash Not tainted 6.2.0-rc2-00320-g1f5abbd77e2c #19
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0xf8/0x108
- show_stack+0x20/0x30
- dump_stack_lvl+0x68/0x84
- dump_stack+0x1c/0x38
- panic+0x214/0x404
- add_taint+0x0/0xf8
- panic_bad_stack+0x144/0x160
- handle_bad_stack+0x38/0x58
- __bad_stack+0x78/0x7c
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- [...]
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- arm64_enter_el1_dbg.isra.0+0x14/0x20
- el1_dbg+0x2c/0x90
- el1h_64_sync_handler+0xcc/0xe8
- el1h_64_sync+0x64/0x68
- __rcu_irq_enter_check_tick+0x0/0x1b8
- el1_interrupt+0x28/0x60
- el1h_64_irq_handler+0x18/0x28
- el1h_64_irq+0x64/0x68
- __ftrace_set_clr_event_nolock+0x98/0x198
- __ftrace_set_clr_event+0x58/0x80
- system_enable_write+0x144/0x178
- vfs_write+0x174/0x738
- ksys_write+0xd0/0x188
- __arm64_sys_write+0x4c/0x60
- invoke_syscall+0x64/0x180
- el0_svc_common.constprop.0+0x84/0x160
- do_el0_svc+0x48/0xe8
- el0_svc+0x34/0xd0
- el0t_64_sync_handler+0xb8/0xc0
- el0t_64_sync+0x190/0x194
-SMP: stopping secondary CPUs
-Kernel Offset: 0x28da86000000 from 0xffff800008000000
-PHYS_OFFSET: 0xfffff76600000000
-CPU features: 0x00000,01a00100,0000421b
-Memory Limit: none
+> please check it?  (And yes, it does take advantage of 100 columns.)
+>
 
-Cc: stable@vger.kernel.org
-Fixes: aaf2bc50df1f ("rcu: Abstract out rcu_irq_enter_check_tick() from rcu_nmi_enter()")
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
----
- kernel/rcu/tree.c | 1 +
- 1 file changed, 1 insertion(+)
+It looks better to me.
 
-Change since v1:
-  Make commit tile clear:
-  - rcu_irq_enter_check_tick()  ==>  __rcu_irq_enter_check_tick()
-  - kernel stack overflow  ==>  stack overflow
+Thanks,
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cf34a961821a..41606d3ed083 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -659,6 +659,7 @@ void __rcu_irq_enter_check_tick(void)
- 	}
- 	raw_spin_unlock_rcu_node(rdp->mynode);
- }
-+NOKPROBE_SYMBOL(__rcu_irq_enter_check_tick);
- #endif /* CONFIG_NO_HZ_FULL */
- 
- /*
--- 
-2.25.1
+    Pingfan
 
+
+>                                                         Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> commit 9c473f0ef9eb8f3ac76d8295cfb4065a738b07a1
+> Author: Pingfan Liu <kernelfans@gmail.com>
+> Date:   Wed Jan 4 12:29:01 2023 -0800
+>
+>     srcu: Add comments for srcu_size_state
+>
+>     The SRCU_SIZE_* names are not self-explanatory, so this commit therefore
+>     adds comments to the definitions.
+>
+>     Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+>     Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+>     Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>     Cc: Frederic Weisbecker <frederic@kernel.org>,
+>     Cc: Josh Triplett <josh@joshtriplett.org>
+>     Cc: Steven Rostedt <rostedt@goodmis.org>
+>     Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>     Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+>     To: rcu@vger.kernel.org
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 558057b517b74..a6910805f9c51 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -92,16 +92,29 @@ struct srcu_struct {
+>         struct lockdep_map dep_map;
+>  };
+>
+> -/* Values for size state variable (->srcu_size_state). */
+> -#define SRCU_SIZE_SMALL                0
+> -#define SRCU_SIZE_ALLOC                1
+> -#define SRCU_SIZE_WAIT_BARRIER 2
+> -#define SRCU_SIZE_WAIT_CALL    3
+> -#define SRCU_SIZE_WAIT_CBS1    4
+> -#define SRCU_SIZE_WAIT_CBS2    5
+> -#define SRCU_SIZE_WAIT_CBS3    6
+> -#define SRCU_SIZE_WAIT_CBS4    7
+> -#define SRCU_SIZE_BIG          8
+> +// Values for size state variable (->srcu_size_state).  Once the state
+> +// has been set to SRCU_SIZE_ALLOC, the grace-period code advances through
+> +// this state machine one step per grace period until the SRCU_SIZE_BIG state
+> +// is reached.  Otherwise, the state machine remains in the SRCU_SIZE_SMALL
+> +// state indefinitely.
+> +#define SRCU_SIZE_SMALL                0       // No srcu_node combining tree, ->node == NULL
+> +#define SRCU_SIZE_ALLOC                1       // An srcu_node tree is being allocated, initialized,
+> +                                       //  and then referenced by ->node.  It will not be used.
+> +#define SRCU_SIZE_WAIT_BARRIER 2       // The srcu_node tree starts being used by everything
+> +                                       //  except call_srcu(), especially by srcu_barrier().
+> +                                       //  By the end of this state, all CPUs and threads
+> +                                       //  are aware of this tree's existence.
+> +#define SRCU_SIZE_WAIT_CALL    3       // The srcu_node tree starts being used by call_srcu().
+> +                                       //  By the end of this state, all of the call_srcu()
+> +                                       //  invocations that were running on a non-boot CPU
+> +                                       //  and using the boot CPU's callback queue will have
+> +                                       //  completed.
+> +#define SRCU_SIZE_WAIT_CBS1    4       // Don't trust the ->srcu_have_cbs[] grace-period
+> +#define SRCU_SIZE_WAIT_CBS2    5       //  sequence elements or the ->srcu_data_have_cbs[]
+> +#define SRCU_SIZE_WAIT_CBS3    6       //  CPU-bitmask elements until all four elements of
+> +#define SRCU_SIZE_WAIT_CBS4    7       //  each array have been initialized.
+> +#define SRCU_SIZE_BIG          8       // The srcu_node combining tree is fully initialized
+> +                                       //  and all aspects of it are being put to use.
+>
+>  /* Values for state variable (bottom bits of ->srcu_gp_seq). */
+>  #define SRCU_STATE_IDLE                0
