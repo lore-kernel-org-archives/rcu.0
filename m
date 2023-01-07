@@ -2,72 +2,71 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D499C46467
-	for <rcu@archiver.kernel.org>; Sat,  7 Jan 2023 21:39:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57164C54EBC
+	for <rcu@archiver.kernel.org>; Sat,  7 Jan 2023 22:11:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbjAGVjd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 7 Jan 2023 16:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
+        id S232859AbjAGWLq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 7 Jan 2023 17:11:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjAGVjb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 7 Jan 2023 16:39:31 -0500
+        with ESMTP id S230205AbjAGWLl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 7 Jan 2023 17:11:41 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B967360FC;
-        Sat,  7 Jan 2023 13:39:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD053DBC7;
+        Sat,  7 Jan 2023 14:11:39 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5CB05B80816;
-        Sat,  7 Jan 2023 21:39:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68BE7C433D2;
-        Sat,  7 Jan 2023 21:39:25 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 939E3B80184;
+        Sat,  7 Jan 2023 22:11:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE1EAC433EF;
+        Sat,  7 Jan 2023 22:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673127565;
-        bh=X45kMdlDNxaqxDxmSIkrPks0CTIZ+F9IiqElqXlNkEY=;
+        s=k20201202; t=1673129497;
+        bh=M+/EBt/sWdGB+tEfsnFShXEaSccBFX+MO9MGYX+lhHw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qVePZD/GGkp09FGcBjE1NDWMv0pNyzK3d0MA4TnFTl85q4MLclJ4aZM6sdpLpayur
-         gbPSXPw55S+HjgSatCXDMKV5ebKPDLW9wC5ZWygjxSFz5wrZKXse0Ayy8b9nFG5zX0
-         AOEYNKrjKa0Z8m/AmQ5vKLqh5TnAKBQbYk1hf7qOnMjWynNcrQrbU7b9QqtKkmEJd2
-         v4InyJS8ni0GMmbHUTAEZdCrocK2ROI2APJKdoqPXtoPuFKJrdfCCxKLGTZWY+5gdT
-         7HIIVQA+FNDmuYbRiUPCvsd9AV0GroQZ0EIrwfJkZLl8Glf278A/JnZeVyDoteNu5p
-         CJp393eQrydbA==
-Date:   Sat, 7 Jan 2023 22:39:22 +0100
+        b=qi5HlktYw3sPrJ+4CuJjHoa1SHWvcckTnYmtXlnS9Jxfvf4ZC0pvU7KqQAHlH6dDI
+         eLmMb6OGiGDvQAkkVwm95V8MuF6BA+yxtcmh5baiWNqc8lgAgkOix/lro5+KE8lu5i
+         y660iRBnpRVDRHK4QlRkRJx1GRGjn+lJEmfoC/6Ls6KtkCTIAIENxFi9cJ1YmXitQ/
+         SwR2Cnppeo6MSx57jpAvh9IuS5I4cL3NVAfRcSva7F+fpgXb7/pfWFAUny9QCgb436
+         XSJb5LPbo56vJz3miq+er1WcuSIEdTZ6yAsvdsd3iqraEwrX96zs+IdenODcncsIi9
+         HciIXMkBsq/pQ==
+Date:   Sat, 7 Jan 2023 23:11:34 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Zqiang <qiang1.zhang@intel.com>, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     paulmck@kernel.org, Zqiang <qiang1.zhang@intel.com>,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
-Message-ID: <Y7nmihQ126cjqEss@lothringen>
-References: <20221220141625.3612085-1-qiang1.zhang@intel.com>
- <20221221201634.GH4001@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <Y7nuFrJ3gjNzXmCz@lothringen>
+References: <20221221201634.GH4001@paulmck-ThinkPad-P17-Gen-1>
+ <344A2A3B-628E-467C-BBDF-11C3AB63D432@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221221201634.GH4001@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <344A2A3B-628E-467C-BBDF-11C3AB63D432@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 12:16:34PM -0800, Paul E. McKenney wrote:
-> On Tue, Dec 20, 2022 at 10:16:25PM +0800, Zqiang wrote:
-> > This commit add TICK_DEP_MASK_RCU_EXP dependency check in
-> > check_tick_dependency(), fix commit df1e849ae4559 ("rcu: Enable
-> > tick for nohz_full CPUs slow to provide expedited QS").
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> 
-> Again, good eyes, thank you!!!
-> 
-> I have queued this for further review and testing, given that it affects
-> pretty much only RCU.  However, if someone else would rather take it:
-> 
-> Acked-by: Paul E. McKenney <paulmck@kernel.org>
+On Fri, Jan 06, 2023 at 07:01:28PM -0500, Joel Fernandes wrote:
+> (lost html content)
+
+I can't find a place where the exp grace period sends an IPI to
+CPUs slow to report a QS. But anyway you really need the tick to poll
+periodically on the CPU to chase a quiescent state.
+
+Now arguably it's probably only useful when CONFIG_PREEMPT_COUNT=y
+and rcu_exp_handler() has interrupted a preempt-disabled or bh-disabled
+section. Although rcu_exp_handler() sets TIF_RESCHED, which is handled
+by preempt_enable() and local_bh_enable() when CONFIG_PREEMPT=y.
+So probably it's only useful when CONFIG_PREEMPT_COUNT=y and CONFIG_PREEMPT=n
+(and there is also PREEMPT_DYNAMIC to consider).
+
+If CONFIG_PREEMPT_COUNT=n, the tick can only report idle and user
+as QS, but those are already reported explicitly on ct_kernel_exit() ->
+rcu_preempt_deferred_qs().
+
+Thanks.
 
 
-Thanks for picking it up! Please also add the following tags:
-
-Fixes: df1e849ae455 ("rcu: Enable tick for nohz_full CPUs slow to provide expedited QS")
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
-
-Thanks!
