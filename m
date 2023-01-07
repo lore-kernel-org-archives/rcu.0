@@ -2,104 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F32A8C46467
-	for <rcu@archiver.kernel.org>; Sat,  7 Jan 2023 16:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32EC4C46467
+	for <rcu@archiver.kernel.org>; Sat,  7 Jan 2023 16:31:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbjAGQDJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 7 Jan 2023 11:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        id S229695AbjAGQbs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 7 Jan 2023 11:31:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbjAGQDI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 7 Jan 2023 11:03:08 -0500
+        with ESMTP id S229621AbjAGQbr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 7 Jan 2023 11:31:47 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81124F13F;
-        Sat,  7 Jan 2023 08:03:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7494410DB;
+        Sat,  7 Jan 2023 08:31:45 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7BF6AB80951;
-        Sat,  7 Jan 2023 16:03:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2920FC433D2;
-        Sat,  7 Jan 2023 16:03:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2D8E7B81C25;
+        Sat,  7 Jan 2023 16:31:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7E37C433D2;
+        Sat,  7 Jan 2023 16:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673107385;
-        bh=1hG2Re5Bx7ubivhRbIbvVITI44UJptNZ8stv4wtQE9s=;
+        s=k20201202; t=1673109102;
+        bh=8BQadlA5r0bj6mFF/oMVQ7+e1WLYb+LKAF7ZSrHkYTg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=l2yG0NujUjGd6IAJ9nY8oZ8h8wCPANX6iws/+UQPV5e98d347cVUVCvPSx45SKYL9
-         Mi3hnDa9JKw42K/N53pLG0Npt4NRsgOyPDOt5ezN/yJO/85pcpGfc2FaVMCLaIWzUv
-         61bRk01JRJay8sAKHDz4LdodS8tpvpfImB/DftGVSUFyODz9Jj2TJg07yTY872Lom+
-         zk/zEL1AZSJdMiMEggIG/oS8yXVkSm3QG7odp8eWJXJ+72ZU8iQD5YoVRZhugEZ+cn
-         EctlV3xHNqOzBD5zj/1h0jE3hsJhxCxXnv/VvpFhphbK4mNogJNBPDhKkXZHtYu48c
-         E47ZUzKxkgwxw==
+        b=i+TwWQv6vFW9A5pSK7okqAYgbqY4vRfxPwQi9FZDoT0vRYmItlycGi7J1LZUWxpX6
+         BnvjtIrLvzheRBKII0ijiDgTTwJVrmSMELFq2MvFrgt6vLdCIXimC2MHmCtsbhZpV8
+         G5VyQ+RqQ9SNJD1h3z25DpObAzUTnsd946un/Icdr9yztwYF2nN9qo2DT37xV3UTu7
+         TjGTHzVgRef3ksGyKo+yBtQmSDMujRNCTqJwi9BLpIy52lHskzSdlIsavKhmiUpFPa
+         y2xcNnl12XTvWRqmYf/c3O2mjQSQ8UPkMAkYfmr6z7SE0CfHIlLGzl8eUa1Nsh28r+
+         TPDCZhLTyjo1A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BD5835C09F1; Sat,  7 Jan 2023 08:03:04 -0800 (PST)
-Date:   Sat, 7 Jan 2023 08:03:04 -0800
+        id 768ED5C09F1; Sat,  7 Jan 2023 08:31:42 -0800 (PST)
+Date:   Sat, 7 Jan 2023 08:31:42 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Anup Patel <anup@brainfault.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH rcu 05/27] arch/riscv/kvm: Remove "select SRCU"
-Message-ID: <20230107160304.GZ4028633@paulmck-ThinkPad-P17-Gen-1>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] rcu: Rework tick dependency setting into
+ rcu_exp_handler()
+Message-ID: <20230107163142.GC4028633@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-5-paulmck@kernel.org>
- <CAAhSdy1VsT48WPQHZ5Pj5WNZRPUQvciFPF2LySawVv27tehD+g@mail.gmail.com>
+References: <20230105034000.971748-1-qiang1.zhang@intel.com>
+ <20230105051146.GN4028633@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB5880A74D08B09F139D9AC19ADAFB9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <Y7ikmpPbhy6wVxmy@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAAhSdy1VsT48WPQHZ5Pj5WNZRPUQvciFPF2LySawVv27tehD+g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Y7ikmpPbhy6wVxmy@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jan 07, 2023 at 03:28:06PM +0530, Anup Patel wrote:
-> On Thu, Jan 5, 2023 at 6:08 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > Now that the SRCU Kconfig option is unconditionally selected, there is
-> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> > Kconfig statements.
-> >
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Anup Patel <anup@brainfault.org>
-> > Cc: Atish Patra <atishp@atishpatra.org>
-> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Albert Ou <aou@eecs.berkeley.edu>
-> > Cc: <kvm@vger.kernel.org>
-> > Cc: <kvm-riscv@lists.infradead.org>
-> > Cc: <linux-riscv@lists.infradead.org>
+On Fri, Jan 06, 2023 at 11:45:46PM +0100, Frederic Weisbecker wrote:
+> On Fri, Jan 06, 2023 at 02:42:59AM +0000, Zhang, Qiang1 wrote:
+> > On Thu, Jan 05, 2023 at 11:40:00AM +0800, Zqiang wrote:
+> > > Currently, when first find out the expedited grace period is not end 
+> > > and timeout occurred, we set tick dependency for CPUs that have not 
+> > > yet reported the quiescent state in the rcu_node structure's->expmask 
+> > > but need to eliminate races between set and clear tick dependency, 
+> > > setting CPU tick dependency need to hold rcu_node structure's->lock.
+> > > 
+> > > This commit move tick dependency setting into rcu_exp_handler(), set 
+> > > tick dependency when fail to report a quiescent state and clear tick 
+> > > dependency in rcu_report_exp_rdp(). [from Frederic Weisbecker 
+> > > suggestion]
+> > > 
+> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > >
+> > >First, a big "thank you" to you an Frederic for investigating this approach!
+> > >
+> > >So which is better, this patch or the one that I already have queued?
+> > >
+> > >The advantage of the patch of yours that I already have queued is that CPUs that respond in some other way within a millisecond do not get hit with an additional scheduling-clock interrupt.
+> > >
+> > >On the other hand, if the CPU goes through a quiescent state before the next scheduling-clock interrupt arrives, rcu_report_exp_cpu_mult() will shut down the tick before it happens.  Plus if the CPU waits a full tick before reaching a quiescent state, then the tick_dep_set_cpu() called from
+> > >synchronize_rcu_expedited_wait() is going to send along an IPI anyway.
+> > 
+> > Agreed, this new patch is set tick dependency immediately when we can't report a quiescent state
+> > in rcu_exp_handler(), this seems a little too aggressive.
+> > 
+> > 
+> > >
+> > >Except that invoking tick_dep_set_cpu() on the CPU itself will also do an IPI from tick_dep_set_cpu() because of IRQ_WORK_INIT_HARD(), right?
+> > >Which means that the patch below gets us an extra self-IPI, right?
+> > >Or am I misreading the code?
+> > 
+> > Yes, This looks like it will trigger an additional IPI interrupt.
+> > 
+> > >
+> > >In addition, doesn't tick_dep_clear_cpu() just clear a bit?  Won't that mean that the next scheduling-clock interrupt will happen, just that the one after that won't?  (Give or take kernel-to-user or kernel-to-idle transitions that might happen in the meantime.)
+> > 
+> > Yes, tick_dep_clear_cpu() just only clear a bit. next scheduling-clock interrupt will happen.
+> > 
+> > So I also want to know which one is better 😊?
 > 
-> For KVM RISC-V:
-> Acked-by: Anup Patel <anup@brainfault.org>
+> Right, I may have misled you with this change. I missed the fact that a chance
+> is given for 1 jiffy to nohz_full CPUs to report a QS before the tick is forced
+> there.
+> 
+> Sorry about that. Your first patch is still a good fix though!
 
-Thank you, Anup!  I will apply this on my next rebase.
+And I have it queued, with Frederic's Reviewed-by.
+
+And hey, if you don't miss a thing or two once in a while, you are not
+reviewing sufficiently challenging code.  ;-)
+
+So I repeat my earlier "thank you" to both of you for looking into this!
 
 							Thanx, Paul
-
-> Thanks,
-> Anup
-> 
-> > ---
-> >  arch/riscv/kvm/Kconfig | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-> > index f36a737d5f96d..6bc9b290c1283 100644
-> > --- a/arch/riscv/kvm/Kconfig
-> > +++ b/arch/riscv/kvm/Kconfig
-> > @@ -27,7 +27,6 @@ config KVM
-> >         select KVM_XFER_TO_GUEST_WORK
-> >         select HAVE_KVM_VCPU_ASYNC_IOCTL
-> >         select HAVE_KVM_EVENTFD
-> > -       select SRCU
-> >         help
-> >           Support hosting virtualized guest machines.
-> >
-> > --
-> > 2.31.1.189.g2e36527f23
-> >
