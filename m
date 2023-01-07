@@ -2,104 +2,107 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CFFEC61DB3
-	for <rcu@archiver.kernel.org>; Fri,  6 Jan 2023 22:45:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93677C54EBE
+	for <rcu@archiver.kernel.org>; Sat,  7 Jan 2023 10:04:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjAFWpy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 6 Jan 2023 17:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
+        id S230360AbjAGKEU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 7 Jan 2023 05:04:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbjAFWpx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 6 Jan 2023 17:45:53 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D7E3C0FF;
-        Fri,  6 Jan 2023 14:45:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2FB79B81C39;
-        Fri,  6 Jan 2023 22:45:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 610A5C433D2;
-        Fri,  6 Jan 2023 22:45:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673045149;
-        bh=XiYZECjPbSbS5QC+pGrewcmGMdZ9/elc47NnAGKckCU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sUX5G8MMEWoC5w5EktAfc+XU7DoDZPgpk1Sy6bM/IHD6xYHCZZcgmm5XpoDt45mVA
-         fz8w+dLGjlMlIx9laluMApPil3YBUGVXqK7P6e9ylHy0gW0H/jN7TTN4P/tBf0jJGR
-         5p2g6bAQmvqmjBOQo6Wqo2s0D/fES8VCB3HJPEDSTU9rFuMag2BZMWQPZItAzjvYgM
-         fIAsieS9N6nvpx5V5ivVFXg1RNI3S8JPiriQ8uinxtDW3NuYR/jZyASQuZ3X6+aCAe
-         mcb0ceyJkPEjYU6ODCjzIpRIf4FR7B3jgIUrnlLO3xu5U5fdlN0syL6+h2BGoeV3bt
-         GwIvezObrv92Q==
-Date:   Fri, 6 Jan 2023 23:45:46 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] rcu: Rework tick dependency setting into
- rcu_exp_handler()
-Message-ID: <Y7ikmpPbhy6wVxmy@lothringen>
-References: <20230105034000.971748-1-qiang1.zhang@intel.com>
- <20230105051146.GN4028633@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880A74D08B09F139D9AC19ADAFB9@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S237253AbjAGKDj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 7 Jan 2023 05:03:39 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1563632D
+        for <rcu@vger.kernel.org>; Sat,  7 Jan 2023 01:59:56 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id c34so5498577edf.0
+        for <rcu@vger.kernel.org>; Sat, 07 Jan 2023 01:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/G9FcPlsL/ZYj6GpUzWdxZcsGx3VidjRMEnUyipGwTQ=;
+        b=ycWZqSuFZ74To3dd3tRCQ6yRVxeq0UgluFKJfCwP7NMrAi4WhtdoXJFHq0fmn1PcGZ
+         BidASz6yKHGfquMRO74r2wrv8n+3X0DaZHkvkUeed47LjYLFsCzlUSCcaNFJrkFwxmoe
+         XAHqOJ+UooXB9uvMJr8qlJIPmNmP37tWffvmpi4nX/A3FuNHaVXj1ce3Qn+8CeG8GX3Y
+         MbyMb8D/6efptMLg4LLEfs6zzrHmW6u41Vva+hK3pWH/RbLaTmU0G1JtluVSjaq/fitt
+         rTRyEpJadF8DorfLe9vcUfJby2JEfhmaVxAxCymp+VXVioibcnYNPo8pOZlOma6G5xX6
+         DZ9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/G9FcPlsL/ZYj6GpUzWdxZcsGx3VidjRMEnUyipGwTQ=;
+        b=tafJMGEo9tebf9+cmdQe0x++mu8DCkQwcFNkla87T8JDQqpM3hUDGRr27zApd3JIqI
+         uSyBEWmBVhU0acbANHIlKV0Sf+Q77UPhAqtqwJjaOMoxaXIUpP9XCyVfIUovMdiZadpN
+         hUGdRLiD3l/T0KtgO/VRlhzs9eSB5n9iSUmBC5oPZsr4FrKmRBMs/9CgNhP9gUuurfl2
+         y+7UDqgIXaYspUOa6ac2iZ4tZ8+QX662Bcxyt4crkwrx/OV8G2OOaQsIFGsjA9OTMKDo
+         ZYvOV7fDvr334c+a1sGEZFBpIFTt/uCRM3EIHBrgSL7DAAjyjQZniarK6XWjCuaoBUS8
+         bI/w==
+X-Gm-Message-State: AFqh2kolpfAEvHoSc7sQUUkpoKNF5awyakTbQrk2Y9/PMyVF5fPoSmSP
+        x3D9Zz9aAYmmmL/YAF5SApCNYmEU/g6jakXBE5YhCA==
+X-Google-Smtp-Source: AMrXdXtLzFeJ9Ad5w+6FMr/1aURZJ28sV0J+AoE7j06eU9sJC8r/2qmYF8xl4P6NBEVpO98LES7s9yYkIY+u5wURJzM=
+X-Received: by 2002:a05:6402:43cf:b0:48d:5b18:b009 with SMTP id
+ p15-20020a05640243cf00b0048d5b18b009mr2154665edc.49.1673085498197; Sat, 07
+ Jan 2023 01:58:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB5880A74D08B09F139D9AC19ADAFB9@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1> <20230105003813.1770367-5-paulmck@kernel.org>
+In-Reply-To: <20230105003813.1770367-5-paulmck@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Sat, 7 Jan 2023 15:28:06 +0530
+Message-ID: <CAAhSdy1VsT48WPQHZ5Pj5WNZRPUQvciFPF2LySawVv27tehD+g@mail.gmail.com>
+Subject: Re: [PATCH rcu 05/27] arch/riscv/kvm: Remove "select SRCU"
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 06, 2023 at 02:42:59AM +0000, Zhang, Qiang1 wrote:
-> On Thu, Jan 05, 2023 at 11:40:00AM +0800, Zqiang wrote:
-> > Currently, when first find out the expedited grace period is not end 
-> > and timeout occurred, we set tick dependency for CPUs that have not 
-> > yet reported the quiescent state in the rcu_node structure's->expmask 
-> > but need to eliminate races between set and clear tick dependency, 
-> > setting CPU tick dependency need to hold rcu_node structure's->lock.
-> > 
-> > This commit move tick dependency setting into rcu_exp_handler(), set 
-> > tick dependency when fail to report a quiescent state and clear tick 
-> > dependency in rcu_report_exp_rdp(). [from Frederic Weisbecker 
-> > suggestion]
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> >
-> >First, a big "thank you" to you an Frederic for investigating this approach!
-> >
-> >So which is better, this patch or the one that I already have queued?
-> >
-> >The advantage of the patch of yours that I already have queued is that CPUs that respond in some other way within a millisecond do not get hit with an additional scheduling-clock interrupt.
-> >
-> >On the other hand, if the CPU goes through a quiescent state before the next scheduling-clock interrupt arrives, rcu_report_exp_cpu_mult() will shut down the tick before it happens.  Plus if the CPU waits a full tick before reaching a quiescent state, then the tick_dep_set_cpu() called from
-> >synchronize_rcu_expedited_wait() is going to send along an IPI anyway.
-> 
-> Agreed, this new patch is set tick dependency immediately when we can't report a quiescent state
-> in rcu_exp_handler(), this seems a little too aggressive.
-> 
-> 
-> >
-> >Except that invoking tick_dep_set_cpu() on the CPU itself will also do an IPI from tick_dep_set_cpu() because of IRQ_WORK_INIT_HARD(), right?
-> >Which means that the patch below gets us an extra self-IPI, right?
-> >Or am I misreading the code?
-> 
-> Yes, This looks like it will trigger an additional IPI interrupt.
-> 
-> >
-> >In addition, doesn't tick_dep_clear_cpu() just clear a bit?  Won't that mean that the next scheduling-clock interrupt will happen, just that the one after that won't?  (Give or take kernel-to-user or kernel-to-idle transitions that might happen in the meantime.)
-> 
-> Yes, tick_dep_clear_cpu() just only clear a bit. next scheduling-clock interrupt will happen.
-> 
-> So I also want to know which one is better 😊?
+On Thu, Jan 5, 2023 at 6:08 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> Now that the SRCU Kconfig option is unconditionally selected, there is
+> no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> Kconfig statements.
+>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Anup Patel <anup@brainfault.org>
+> Cc: Atish Patra <atishp@atishpatra.org>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: <kvm@vger.kernel.org>
+> Cc: <kvm-riscv@lists.infradead.org>
+> Cc: <linux-riscv@lists.infradead.org>
 
-Right, I may have misled you with this change. I missed the fact that a chance
-is given for 1 jiffy to nohz_full CPUs to report a QS before the tick is forced
-there.
+For KVM RISC-V:
+Acked-by: Anup Patel <anup@brainfault.org>
 
-Sorry about that. Your first patch is still a good fix though!
+Thanks,
+Anup
 
-Thanks!
+> ---
+>  arch/riscv/kvm/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
+> index f36a737d5f96d..6bc9b290c1283 100644
+> --- a/arch/riscv/kvm/Kconfig
+> +++ b/arch/riscv/kvm/Kconfig
+> @@ -27,7 +27,6 @@ config KVM
+>         select KVM_XFER_TO_GUEST_WORK
+>         select HAVE_KVM_VCPU_ASYNC_IOCTL
+>         select HAVE_KVM_EVENTFD
+> -       select SRCU
+>         help
+>           Support hosting virtualized guest machines.
+>
+> --
+> 2.31.1.189.g2e36527f23
+>
