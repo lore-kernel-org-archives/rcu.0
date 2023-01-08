@@ -2,132 +2,127 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD48C54EBC
-	for <rcu@archiver.kernel.org>; Sun,  8 Jan 2023 02:55:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AEE3C54EBC
+	for <rcu@archiver.kernel.org>; Sun,  8 Jan 2023 23:10:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbjAHCzg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 7 Jan 2023 21:55:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60062 "EHLO
+        id S233496AbjAHXKO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 8 Jan 2023 18:10:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjAHCzf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 7 Jan 2023 21:55:35 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E365F392C2
-        for <rcu@vger.kernel.org>; Sat,  7 Jan 2023 18:55:34 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id s5so951824qtx.6
-        for <rcu@vger.kernel.org>; Sat, 07 Jan 2023 18:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=94VSKeewKQqz3/G+JzLpoWpxUxDnKLtB9JPUkyqWDYY=;
-        b=jSGmaf2LjAm4LbCT4TUN3tOjD6YzGbMeXFn2kCYtuo2jVWeVr5VgCLN/h51cZUnIsI
-         J37RC47iZoFPsVLcjMn1hNzIEh6sIdqtJnA43ZEXyXLBu5vClsT8AfAmCN5X+Mm1ysOE
-         MoSKz+N1GiJ5d6yYf6HwFXKMIVFFr71vS1FyE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=94VSKeewKQqz3/G+JzLpoWpxUxDnKLtB9JPUkyqWDYY=;
-        b=Wv7l+O/CHMN0OWkjGwL9OXxtjVQjtPv5mFpGSdk3W7JnMeudC7Wois0u70PyCHQL33
-         nvZ6QYTuHXUTGQjM17JBzup7z9bt/3rFj0xUkGtmbzmBX8Ml9GJR0KC88O154W4AKg3g
-         MTOETNtUN0cO4ZHXcb1oRK+LnoOCZXs4PgXgTJpW8KHtWr7h9ZDkeXDCxlaZX0d54FGm
-         GWEm1OIHgqWSea7lIaP6B5f2GOe/FkTiLPYjYfFgtLgkJeJTAZjDh8+pnhZevouTn2mr
-         4K/HubJkm0aS3bHAZjN6R0PU0oIXURjpTKhIxxrrynX+GD/qObUgGeDiy4ydPZcvDiqF
-         1e3Q==
-X-Gm-Message-State: AFqh2kqN61NBEIqtNfHAL2gHGS0IKV3Cj4lJd15Jchi0n8YM7YtXD9rb
-        ude/qcG4OBbrEHEaSeD0nNSRIQ==
-X-Google-Smtp-Source: AMrXdXuyn/qox9tbjXom/kxe34t7sYA3lHGzPubUtOj0H5bzQSk8e89U+tEsuNczLqtQQAbuw+Nw4g==
-X-Received: by 2002:ac8:7ed8:0:b0:3a7:ed21:ac47 with SMTP id x24-20020ac87ed8000000b003a7ed21ac47mr83673227qtj.18.1673146533997;
-        Sat, 07 Jan 2023 18:55:33 -0800 (PST)
-Received: from smtpclient.apple ([2600:1003:b86e:d9d2:d5be:1589:426a:b60])
-        by smtp.gmail.com with ESMTPSA id l13-20020ac8724d000000b00399fe4aac3esm2677044qtp.50.2023.01.07.18.55.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Jan 2023 18:55:33 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
-Date:   Sat, 7 Jan 2023 21:55:22 -0500
-Message-Id: <D445A93C-8315-4407-A8E4-C377BF63058A@joelfernandes.org>
-References: <0BF2065B-1E02-498C-B999-EB52F005B62E@joelfernandes.org>
+        with ESMTP id S234052AbjAHXJ5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 8 Jan 2023 18:09:57 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE5FB4B0;
+        Sun,  8 Jan 2023 15:09:56 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C6C5AB80BAB;
+        Sun,  8 Jan 2023 23:09:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9711C433D2;
+        Sun,  8 Jan 2023 23:09:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673219393;
+        bh=CiXV87sI2yjAaSQoUCZaHTnYMhLou3ZeeRv1qp4rNx4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fk8qmE2/OqsB0wSJYz3QuN1T4ivvteaepTMxvx51v9utqUMse7IN1brSIsTa75hrq
+         HwvtdVoJ/ESrWRLC20JBeEjP0WzYzSulmkzTwcxPQRvGPuDj+sjkarkb+ajFLwd6Az
+         CwhNVvaS6/DBOyZTkiuD7d8sZZRb4VrhtRV28c3QzzNZZsNxJ9pybdNGr0/YdDWY3B
+         f6aYNKURzLehMt/JotJxzpvMef9qaFzlaIMOOZBGgPWAfnEo5QY3ECN0Ydcyei93po
+         gWZ/M+xOgXX3ofvp7ktxyLzxXL2fDXrEAy/UxeKqLy/b8JK+oDIQPGc7t8Ydmq0Q2m
+         zyu4KX+U6id2Q==
+Date:   Mon, 9 Jan 2023 00:09:48 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     paulmck@kernel.org, Zqiang <qiang1.zhang@intel.com>,
         quic_neeraju@quicinc.com, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <0BF2065B-1E02-498C-B999-EB52F005B62E@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-X-Mailer: iPhone Mail (20B101)
+Subject: Re: [PATCH] rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
+Message-ID: <Y7tNPF4x+HYJUwjK@lothringen>
+References: <0BF2065B-1E02-498C-B999-EB52F005B62E@joelfernandes.org>
+ <D445A93C-8315-4407-A8E4-C377BF63058A@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D445A93C-8315-4407-A8E4-C377BF63058A@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Sat, Jan 07, 2023 at 09:55:22PM -0500, Joel Fernandes wrote:
+> 
+> 
+> > On Jan 7, 2023, at 9:48 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
+> > 
+> > ﻿
+> >>> On Jan 7, 2023, at 5:11 PM, Frederic Weisbecker <frederic@kernel.org> wrote:
+> >>> 
+> >>> ﻿On Fri, Jan 06, 2023 at 07:01:28PM -0500, Joel Fernandes wrote:
+> >>> (lost html content)
+> > 
+> > My problem is the iPhone wises up when I put a web link in an email. I want to look into smtp relays but then if I spent time on fixing that, I might not get time to learn from emails like these... 
+> > 
+> >> I can't find a place where the exp grace period sends an IPI to
+> >> CPUs slow to report a QS. But anyway you really need the tick to poll
+> >> periodically on the CPU to chase a quiescent state.
+> > 
+> > Ok.
+> > 
+> >> Now arguably it's probably only useful when CONFIG_PREEMPT_COUNT=y
+> >> and rcu_exp_handler() has interrupted a preempt-disabled or bh-disabled
+> >> section. Although rcu_exp_handler() sets TIF_RESCHED, which is handled
+> >> by preempt_enable() and local_bh_enable() when CONFIG_PREEMPT=y.
+> >> So probably it's only useful when CONFIG_PREEMPT_COUNT=y and CONFIG_PREEMPT=n
+> >> (and there is also PREEMPT_DYNAMIC to consider).
+> > 
+> > Makes sense. I think I was missing this use case and was going by the general design of exp grace periods.  I was incorrectly assuming the IPIs were being sent repeatedly for hold out CPUs, which is not the case I think. But that would another way to fix it?
+> > 
+> > But yeah I get your point, the first set of IPIs missed it, so we need the rescue-tick for long non-rcu_read_lock() implicit critical sections.. 
+> > 
+> >> If CONFIG_PREEMPT_COUNT=n, the tick can only report idle and user
+> >> as QS, but those are already reported explicitly on ct_kernel_exit() ->
+> >> rcu_preempt_deferred_qs().
+> > 
+> > Oh hmm, because that function is a NOOP for PREEMPT_COUNT=y and PREEMPT=n and will not report the deferred QS?  Maybe it should then. However I think the tick is still useful if after the preempt disabled section, will still did not exit the kernel.
+> 
+> I think meant I here, an atomic section (like bh or Irq disabled). There is no such thing as disabling preemption for CONFIG_PREEMPT=n. Or maybe I am confused again.  This RCU thing…
 
+Right, so when CONFIG_PREEMPT_COUNT=n, there is no way for a tick to tell if the
+the interrupted code is safely considered as a QS. That's because
+preempt_disable() <-> preempt_enable() are no-ops so the whole kernel is
+assumed non-preemptible, and therefore the whole kernel is a READ side critical
+section, except for the explicit points reporting a QS.
 
-> On Jan 7, 2023, at 9:48 PM, Joel Fernandes <joel@joelfernandes.org> wrote:=
+The only exception is when the tick interrupts idle (or user with
+nohz_full). But we already have an exp QS reported on idle (and user with
+nohz_full) entry through ct_kernel_exit(), and that happens on all RCU_TREE
+configs (PREEMPT or not). Therefore the tick doesn't appear to be helpful at
+all on a nohz_full CPU with CONFIG_PREEMPT_COUNT=n.
 
->=20
-> =EF=BB=BF
->>> On Jan 7, 2023, at 5:11 PM, Frederic Weisbecker <frederic@kernel.org> wr=
-ote:
->>>=20
->>> =EF=BB=BFOn Fri, Jan 06, 2023 at 07:01:28PM -0500, Joel Fernandes wrote:=
+I suggest we don't bother optimizing that case though...
 
->>> (lost html content)
->=20
-> My problem is the iPhone wises up when I put a web link in an email. I wan=
-t to look into smtp relays but then if I spent time on fixing that, I might n=
-ot get time to learn from emails like these...=20
->=20
->> I can't find a place where the exp grace period sends an IPI to
->> CPUs slow to report a QS. But anyway you really need the tick to poll
->> periodically on the CPU to chase a quiescent state.
->=20
-> Ok.
->=20
->> Now arguably it's probably only useful when CONFIG_PREEMPT_COUNT=3Dy
->> and rcu_exp_handler() has interrupted a preempt-disabled or bh-disabled
->> section. Although rcu_exp_handler() sets TIF_RESCHED, which is handled
->> by preempt_enable() and local_bh_enable() when CONFIG_PREEMPT=3Dy.
->> So probably it's only useful when CONFIG_PREEMPT_COUNT=3Dy and CONFIG_PRE=
-EMPT=3Dn
->> (and there is also PREEMPT_DYNAMIC to consider).
->=20
-> Makes sense. I think I was missing this use case and was going by the gene=
-ral design of exp grace periods.  I was incorrectly assuming the IPIs were b=
-eing sent repeatedly for hold out CPUs, which is not the case I think. But t=
-hat would another way to fix it?
->=20
-> But yeah I get your point, the first set of IPIs missed it, so we need the=
- rescue-tick for long non-rcu_read_lock() implicit critical sections..=20
->=20
->> If CONFIG_PREEMPT_COUNT=3Dn, the tick can only report idle and user
->> as QS, but those are already reported explicitly on ct_kernel_exit() ->
->> rcu_preempt_deferred_qs().
->=20
-> Oh hmm, because that function is a NOOP for PREEMPT_COUNT=3Dy and PREEMPT=3D=
-n and will not report the deferred QS?  Maybe it should then. However I thin=
-k the tick is still useful if after the preempt disabled section, will still=
- did not exit the kernel.
+To summarize:
 
-I think meant I here, an atomic section (like bh or Irq disabled). There is n=
-o such thing as disabling preemption for CONFIG_PREEMPT=3Dn. Or maybe I am c=
-onfused again.  This RCU thing=E2=80=A6
+1) nohz_full && !CONFIG_PREEMPT_COUNT && !CONFIG_PREEMPT_RCU:
+  Tick isn't helpful. It can only report idle/user QS, but that is
+  already reported explicitly.
+
+2) nohz_full && CONFIG_PREEMPT_COUNT && !CONFIG_PREEMPT_RCU:
+  Tick is very helpful because it can tell if the kernel is in
+  a QS state.
+
+3) nohz_full && CONFIG_PREEMPT_RCU:
+   Tick doesn't appear to be helpful because:
+       - If the rcu_exp_handler() fires in an rcu_read_lock'ed section, then the
+         exp QS is reported on rcu_read_unlock()
+       - If the rcu_exp_handler() fires in a preempt/bh disabled section,
+         TIF_RESCHED is forced which is handled on preempt/bh re-enablement,
+	 reporting a QS.
+   
+  
+The case 2) is a niche, only useful for debugging. But anyway I'm not sure it's
+worth changing/optimizing the current state. Might be worth add a comment
+though.
 
 Thanks.
-
-
->=20
-> We ought to start another Google doc on all of this if we have not yet=E2=80=
-=A6
->=20
-> Thanks!
->=20
-> - Joel
->=20
->>=20
->> Thanks.
->>=20
->>=20
