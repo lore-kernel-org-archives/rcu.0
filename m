@@ -2,118 +2,149 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B8B5C5479D
-	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 13:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F1BBC63797
+	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 13:21:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234962AbjAINOU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Jan 2023 08:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
+        id S233844AbjAINVd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Jan 2023 08:21:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236428AbjAINN2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Jan 2023 08:13:28 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B52F2C;
-        Mon,  9 Jan 2023 05:13:27 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id w4-20020a17090ac98400b002186f5d7a4cso12762973pjt.0;
-        Mon, 09 Jan 2023 05:13:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RUPWQ00I4B+FeAT4uW8sz7LlGf270FM7v3Ovcdol5eo=;
-        b=dNoYjm6G2UptA+miOjROgT/3AYYHiuu0qY1GE8xiov6fo0JV/29wYEpFRR0aspzTEM
-         Y+3lJ7m+F3vwEsCU9+WSfDH51n7JRARreaSrvHJPegJMlClrsaVkLGQFopidghxYZMAa
-         LcojnCYBZ/ndV/8vidGnxhZpjZPQUbHLyLj+raYZFdrFQ8fRIQtfoyZwLoU9fo6KzJkW
-         ASe1ES1EyB5CzD+ZdEVbiDhEaU3ktVOrJAQ5KVOyoPhEFXHfoqNBl8ebpgAxKO22jKPZ
-         5EGR3oiyYdZKnpNH5peYAVu5P+aR/dhUotlQhHP535ugn7Gm/Ys8B8L+5yjbkv3M291r
-         n1qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RUPWQ00I4B+FeAT4uW8sz7LlGf270FM7v3Ovcdol5eo=;
-        b=SHGvfdUYxCAnAKu1UtFZmwR6iIZ/aD8P+rBzIQehtnHqDvL4gTFoFETkoQMskO2B7k
-         qesqMBwh+r+8g3uQPNKqjMAwwfisYczZg5zmOsoR4QHrS1xkY7J1A39lw1pgXaltrDbt
-         cDwbEgIIzwfvnr5+owHYVbDCOgfLZ+OiFdCZs6Jvfij652JPRA1u4jzsoLkO/Pu2nAWO
-         E/hezRRzaDWpJWuhxVfFY+QOOgHyJHx4GFT4Fb4aNUaze1QigEGNRBMOU3nlk0j1JYfe
-         VCf1o3LYAAN5NOPv5ZNUJ/A9QuUVJOwq06Ek9XJxwhDZ0j5q3wcxgUN7UoDeqp2p/gdx
-         ZTgw==
-X-Gm-Message-State: AFqh2komwUvizQy2eBOqfHcV+6dcoB6UqIyL1AOztxedVBqqOEh4qQGr
-        XWVU+z2ocN7K0c1P6LznPh5KJjPZTx/VSFI0tw8=
-X-Google-Smtp-Source: AMrXdXuuDHkYzhUBc9S6KSEjjk9PX/agNgN+0E2m+o5wvl3vbiNBnA5cS5FiCpd9n7ObqMiEPfhDR22SERyEQ/gpZb0=
-X-Received: by 2002:a17:90a:9b17:b0:226:2a7c:9ba9 with SMTP id
- f23-20020a17090a9b1700b002262a7c9ba9mr2509758pjp.128.1673270001870; Mon, 09
- Jan 2023 05:13:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20221219052128.18190-1-zhouzhouyi@gmail.com> <Y7wN0TKU1jDyTZs5@lothringen>
-In-Reply-To: <Y7wN0TKU1jDyTZs5@lothringen>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Mon, 9 Jan 2023 21:13:10 +0800
-Message-ID: <CAABZP2wpc3JB8Yx7+F5jt5HTFwCrCZz4QqO-JXNypp6_7vBF9Q@mail.gmail.com>
-Subject: Re: [PATCH linux-next] mark access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        paulmck@kernel.org, rcu@vger.kernel.org,
+        with ESMTP id S237204AbjAINVK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Jan 2023 08:21:10 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D7318C;
+        Mon,  9 Jan 2023 05:21:06 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A3FF46105C;
+        Mon,  9 Jan 2023 13:21:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8036FC433EF;
+        Mon,  9 Jan 2023 13:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673270465;
+        bh=A8Z7PC5fQ2LhCYjjgfJ+OrKuPgq9Nqpw7uPlNhfuLeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NJzKHS0xacz55kBjwSiTEi8rSR3hWX0H3TWY+nYjq5hCm2ir1cXbCdHTLwCVZ3h04
+         YoCEt8OTDzpWfBsIaQAQC2VdGT/+/03wicO4wRV3M2nF+EDnzFx64fE8GGb5/MR+xb
+         LDjUedYg7jA4aEg0kEV1PADnOYdZ/0K11yQ5HVUh0z867zutCPTrOAQU/3VsStJ6CA
+         0IGqIKh+m95e/tQ3d7gKwceTZHW9FD1suEdzcoLajR14xC27FcmYJ/R6ZCweh90Niu
+         cs2i0STYqEWOlh/CZ9Ysq18FHlhBKY/FD1r2/1mL/dWfHicU2c10D8kcoNwyzFh3RB
+         tmlOPtMcCrEzw==
+Date:   Mon, 9 Jan 2023 14:21:01 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Zqiang <qiang1.zhang@intel.com>, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] rcu: Safe access to rcu_node structure's->exp_tasks
+Message-ID: <Y7wUvZ/kVmpxvm14@lothringen>
+References: <20221224052553.263199-1-qiang1.zhang@intel.com>
+ <20230106034146.GM4028633@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230106034146.GM4028633@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 9, 2023 at 8:51 PM Frederic Weisbecker <frederic@kernel.org> wrote:
->
-> On Mon, Dec 19, 2022 at 01:21:28PM +0800, Zhouyi Zhou wrote:
-> > mark access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE to fix concurrency bug
-> > reported by KCSAN.
-> >
-> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > ---
-> > During the rcutorture test on linux-next,
-> > ./tools/testing/selftests/rcutorture/bin/torture.sh --do-kcsan  --kcsan-kmake-arg "CC=clang-12"
-> > following KCSAN BUG is reported:
-> > [   35.397089] BUG: KCSAN: data-race in tick_nohz_idle_stop_tick / tick_nohz_next_event^M
-> > [   35.400593] ^M
-> > [   35.401377] write to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 3:^M
-> > [   35.405325]  tick_nohz_idle_stop_tick+0x14c/0x3e0^M
-> > [   35.407162]  do_idle+0xf3/0x2a0^M
-> > [   35.408016]  cpu_startup_entry+0x15/0x20^M
-> > [   35.409084]  start_secondary+0x8f/0x90^M
-> > [   35.410207]  secondary_startup_64_no_verify+0xe1/0xeb^M
-> > [   35.411607] ^M
-> > [   35.412042] no locks held by swapper/3/0.^M
-> > [   35.413172] irq event stamp: 53048^M
-> > [   35.414175] hardirqs last  enabled at (53047): [<ffffffffb41f8404>] tick_nohz_idle_enter+0x104/0x140^M
-> > [   35.416681] hardirqs last disabled at (53048): [<ffffffffb41229f1>] do_idle+0x91/0x2a0^M
-> > [   35.418988] softirqs last  enabled at (53038): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
-> > [   35.421347] softirqs last disabled at (53029): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
-> > [   35.423685] ^M
-> > [   35.424119] read to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 0:^M
-> > [   35.425870]  tick_nohz_next_event+0x233/0x2b0^M
-> > [   35.427119]  tick_nohz_idle_stop_tick+0x8f/0x3e0^M
-> > [   35.428386]  do_idle+0xf3/0x2a0^M
-> > [   35.429265]  cpu_startup_entry+0x15/0x20^M
-> > [   35.430429]  rest_init+0x20c/0x210^M
-> > [   35.431382]  arch_call_rest_init+0xe/0x10^M
-> > [   35.432508]  start_kernel+0x544/0x600^M
-> > [   35.433519]  secondary_startup_64_no_verify+0xe1/0xeb^M
-> >
-> > fix above bug by marking access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
->
-> This has been discussed before with passion:
->
-> http://archive.lwn.net:8080/linux-kernel/1C65422C-FFA4-4651-893B-300FAF9C49DE@lca.pw/T/
->
-Thank you for your guidance, yes, the discussion is very passionate
-;-) and I learned a lot from the above thread ;-)
-> To me data_race() would be more appropriate but that would need a changelog with
-> proper analysis of the tick_do_timer_cpu state machine.
-I Agree, and also I learned to do more rigorous technology research.
->
-> One more thing on my TODO list, but feel free to beat me at it :-)
-Thank you for your concern ;-)
+On Thu, Jan 05, 2023 at 07:41:46PM -0800, Paul E. McKenney wrote:
+> On Sat, Dec 24, 2022 at 01:25:53PM +0800, Zqiang wrote:
+> > For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario
+> > can result system oops.
+> > 
+> >            CPU1                                           CPU2
+> > rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
+> >   if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
+> >     raw_spin_lock_rcu_node
+> >     np = rcu_next_node_entry(t, rnp)
+> >     if (&t->rcu_node_entry == rnp->exp_tasks)
+> >       WRITE_ONCE(rnp->exp_tasks, np)
+> >       ....
+> >       raw_spin_unlock_irqrestore_rcu_node
+> >                                                     raw_spin_lock_irqsave_rcu_node
+> >                                                     t = list_entry(rnp->exp_tasks->prev,
+> >                                                         struct task_struct, rcu_node_entry)
+> >                                                     (if rnp->exp_tasks is NULL
+> >                                                        will trigger oops)
+> > 
+> > This problem is that CPU2 accesses rcu_node structure's->exp_tasks
+> > without holding the rcu_node structure's ->lock and CPU2 did not
+> > observe CPU1's change to rcu_node structure's->exp_tasks in time,
+> > if rcu_node structure's->exp_tasks is set null pointer by CPU1, after
+> > that CPU2 accesses members of rcu_node structure's->exp_tasks will
+> > trigger oops.
+> > 
+> > This commit therefore allows rcu_node structure's->exp_tasks to be
+> > accessed while holding rcu_node structure's ->lock.
+> > 
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> 
+> Apologies for the delay and thank you for the reminder!
+> 
+> Please check the wordsmithed version below, which I have queued.
+> 
+> 						Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 389b0eafd72829fd63548f7ff4e8d6ac90fa1f98
+> Author: Zqiang <qiang1.zhang@intel.com>
+> Date:   Sat Dec 24 13:25:53 2022 +0800
+> 
+>     rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
+>     
+>     For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario can
+>     result in a NULL-pointer dereference:
+>     
+>                CPU1                                           CPU2
+>     rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
+>       if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
+>         raw_spin_lock_rcu_node
+>         np = rcu_next_node_entry(t, rnp)
+>         if (&t->rcu_node_entry == rnp->exp_tasks)
+>           WRITE_ONCE(rnp->exp_tasks, np)
+>           ....
+>           raw_spin_unlock_irqrestore_rcu_node
+>                                                         raw_spin_lock_irqsave_rcu_node
+>                                                         t = list_entry(rnp->exp_tasks->prev,
+>                                                             struct task_struct, rcu_node_entry)
+>                                                         (if rnp->exp_tasks is NULL, this
+>                                                            will dereference a NULL pointer)
+>     
+>     The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
+>     field without holding the rcu_node structure's ->lock and CPU2 did
+>     not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
+>     Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NULL,
+>     then CPU2 might dereference that NULL pointer.
+>     
+>     This commit therefore holds the rcu_node structure's ->lock while
+>     accessing that structure's->exp_tasks field.
+>     
+>     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index 7cc4856da0817..902e7c8709c7e 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -803,9 +803,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+>  	int ndetected = 0;
+>  	struct task_struct *t;
+>  
+> -	if (!READ_ONCE(rnp->exp_tasks))
+> -		return 0;
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +	if (!READ_ONCE(rnp->exp_tasks)) {
 
-Thanks
-Zhouyi
->
-> Thanks.
+Does it have to be READ_ONCE then?
+
+Thanks.
+
+> +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +		return 0;
+> +	}
+>  	t = list_entry(rnp->exp_tasks->prev,
+>  		       struct task_struct, rcu_node_entry);
+>  	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
