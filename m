@@ -2,90 +2,97 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 746E0C54EBE
-	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 10:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE83BC54EBD
+	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 12:51:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbjAIKM1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Jan 2023 05:12:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        id S233551AbjAIMvz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Jan 2023 07:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236971AbjAIKLi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Jan 2023 05:11:38 -0500
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D512B15831;
-        Mon,  9 Jan 2023 02:10:24 -0800 (PST)
-Received: by mail-qv1-f42.google.com with SMTP id p17so5903320qvn.1;
-        Mon, 09 Jan 2023 02:10:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+eo6tmCzXWkWNQyGQ2z8UwN/W/4YHU6wHtrG3LPCA6o=;
-        b=rOcqaScSLbJkq4Dz9IuFiS82wo/G0uSwH3MNr19NdMGb/RZAmKLtU2vu2uBSS144Rr
-         q84OM3TYBUqBGoHKHm8GdctHGtHaNPekPt9zfTV3H4EYJZbb9T4vfuViSZ4Tzv+IomTN
-         ARYw2Bt1h+DFX+ZZBhiZvHKsZ1uAJRl0UpcNNm2eR4Wr79UqSTpSWYMvQ5P8p/yPTeDq
-         y8drnciD3e0AjIW6HHPVdcFgjYHtpslo3ecpZ7cbxyZzQ1rBxxhQxkhlbrbGiN2KSdvO
-         b2l4Nh85kiet2FQOisLGhkU6gEsXWk9yyvYj8HLsZs0prJizsXWmdrNpmsnuKIKaTGsQ
-         Inlw==
-X-Gm-Message-State: AFqh2kqW3HTPmSAC3aOXGJDYd048pD5f3LFDGil9UfQYtyiTGqmQxOav
-        vp389pMB4tHSuRRsw7ueV4Hmwd6dBRFwjg==
-X-Google-Smtp-Source: AMrXdXvIh1vFGfP8JViQZonPEDjxWjYNewL8+RyI0sSZrOwP0oKZZO64EOS3DIQ9IsNPOMvtIlx7Mw==
-X-Received: by 2002:a0c:d602:0:b0:52d:937c:cd7b with SMTP id c2-20020a0cd602000000b0052d937ccd7bmr88560948qvj.21.1673259023728;
-        Mon, 09 Jan 2023 02:10:23 -0800 (PST)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id h23-20020a05620a13f700b006fefa5f7fc9sm4998432qkl.134.2023.01.09.02.10.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Jan 2023 02:10:23 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-4c186ff0506so106649927b3.6;
-        Mon, 09 Jan 2023 02:10:22 -0800 (PST)
-X-Received: by 2002:a81:ac18:0:b0:475:f3f5:c6c with SMTP id
- k24-20020a81ac18000000b00475f3f50c6cmr203733ywh.358.1673259022692; Mon, 09
- Jan 2023 02:10:22 -0800 (PST)
+        with ESMTP id S234182AbjAIMvh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Jan 2023 07:51:37 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8A46369;
+        Mon,  9 Jan 2023 04:51:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B9254B80D6D;
+        Mon,  9 Jan 2023 12:51:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 155F3C433D2;
+        Mon,  9 Jan 2023 12:51:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673268692;
+        bh=FLtPDF70FGfxYG+fPIQA1yKaLTx9bihKTRpDvvNDcIU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pk11NsK0SySFIjt4dNC3ISnWFkbe6NQUX5iLw+RD8t+djc29Oe+x9Etl0zxqJzm54
+         uj/VrgIAWrIKMibFIjsd8T2MamtQlvZpBO855C1/kU6YhgQ9+axL8eoK6OjTItAuGY
+         tbmopaf0Kr2OLvlL5DvmaL6T4ef5TlwB825l8RpzeRi1AqLkDW20Gt343rk/R+4wpS
+         sXgPAQSREqH20pbWB602cn0W98UsZTtWi/m5zm8F0r7ZxCOhTQslt/WTkyA1cb93Vb
+         ndu3nV0HgIySwv/GrloC/3+LIrc9oB5ScjpJm5zuUhDO1PJAPh8p/RfXEiVIX96Apc
+         EV6fZB1rbZYfA==
+Date:   Mon, 9 Jan 2023 13:51:29 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
+        paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH linux-next] mark access to tick_do_timer_cpu with
+ READ_ONCE/WRITE_ONCE
+Message-ID: <Y7wN0TKU1jDyTZs5@lothringen>
+References: <20221219052128.18190-1-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
-References: <20230105005105.GA1772125@paulmck-ThinkPad-P17-Gen-1> <20230105005126.1772294-6-paulmck@kernel.org>
-In-Reply-To: <20230105005126.1772294-6-paulmck@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Jan 2023 11:10:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU_+t=msiusxi3BxgFVxMO8Y-mMDoTLnx_RUzPXVWrdOQ@mail.gmail.com>
-Message-ID: <CAMuHMdU_+t=msiusxi3BxgFVxMO8Y-mMDoTLnx_RUzPXVWrdOQ@mail.gmail.com>
-Subject: Re: [PATCH rcu 6/6] rcu: Allow up to five minutes expedited RCU CPU
- stall-warning timeouts
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Dave Chinner <david@fromorbit.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221219052128.18190-1-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+On Mon, Dec 19, 2022 at 01:21:28PM +0800, Zhouyi Zhou wrote:
+> mark access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE to fix concurrency bug
+> reported by KCSAN.
+> 
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> ---
+> During the rcutorture test on linux-next,
+> ./tools/testing/selftests/rcutorture/bin/torture.sh --do-kcsan  --kcsan-kmake-arg "CC=clang-12"
+> following KCSAN BUG is reported:
+> [   35.397089] BUG: KCSAN: data-race in tick_nohz_idle_stop_tick / tick_nohz_next_event^M
+> [   35.400593] ^M
+> [   35.401377] write to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 3:^M
+> [   35.405325]  tick_nohz_idle_stop_tick+0x14c/0x3e0^M
+> [   35.407162]  do_idle+0xf3/0x2a0^M
+> [   35.408016]  cpu_startup_entry+0x15/0x20^M
+> [   35.409084]  start_secondary+0x8f/0x90^M
+> [   35.410207]  secondary_startup_64_no_verify+0xe1/0xeb^M
+> [   35.411607] ^M
+> [   35.412042] no locks held by swapper/3/0.^M
+> [   35.413172] irq event stamp: 53048^M
+> [   35.414175] hardirqs last  enabled at (53047): [<ffffffffb41f8404>] tick_nohz_idle_enter+0x104/0x140^M
+> [   35.416681] hardirqs last disabled at (53048): [<ffffffffb41229f1>] do_idle+0x91/0x2a0^M
+> [   35.418988] softirqs last  enabled at (53038): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
+> [   35.421347] softirqs last disabled at (53029): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
+> [   35.423685] ^M
+> [   35.424119] read to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 0:^M
+> [   35.425870]  tick_nohz_next_event+0x233/0x2b0^M
+> [   35.427119]  tick_nohz_idle_stop_tick+0x8f/0x3e0^M
+> [   35.428386]  do_idle+0xf3/0x2a0^M
+> [   35.429265]  cpu_startup_entry+0x15/0x20^M
+> [   35.430429]  rest_init+0x20c/0x210^M
+> [   35.431382]  arch_call_rest_init+0xe/0x10^M
+> [   35.432508]  start_kernel+0x544/0x600^M
+> [   35.433519]  secondary_startup_64_no_verify+0xe1/0xeb^M
+> 
+> fix above bug by marking access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
 
-Thanks for your patch, which is now commit 0d49d9123dcf41f7 ("rcu:
-Allow up to five minutes expedited RCU CPU stall-warning timeouts")
-in next-20230109.
+This has been discussed before with passion:
 
-On Thu, Jan 5, 2023 at 2:10 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> The maximum value of RCU CPU stall-warning timeouts has historically been
-> five minutes (300 seconds).  However, the recently introduced expedited
-> RCU CPU stall-warning timeout is instead limited to 21 seconds.  This
-> causes problems for CI/fuzzing services such as syzkaller by obscuring
-> the issue in question with expedited RCU CPU stall-warning timeout splats.
->
-> This commit therefore sets the RCU_EXP_CPU_STALL_TIMEOUT Kconfig options
-> upper bound to 300000 milliseconds, which is 300 seconds and 5 minutes.
+http://archive.lwn.net:8080/linux-kernel/1C65422C-FFA4-4651-893B-300FAF9C49DE@lca.pw/T/
 
-s/and/or/
+To me data_race() would be more appropriate but that would need a changelog with
+proper analysis of the tick_do_timer_cpu state machine.
 
-Gr{oetje,eeting}s,
+One more thing on my TODO list, but feel free to beat me at it :-)
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks.
