@@ -2,105 +2,78 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF5AC54EBD
-	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 19:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F652C5479D
+	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 19:29:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbjAITWd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Jan 2023 14:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
+        id S237683AbjAIT3O (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Jan 2023 14:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234934AbjAITWb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Jan 2023 14:22:31 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221436C2BE;
-        Mon,  9 Jan 2023 11:22:30 -0800 (PST)
+        with ESMTP id S237692AbjAIT3A (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Jan 2023 14:29:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2668462A;
+        Mon,  9 Jan 2023 11:28:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D44C61115;
-        Mon,  9 Jan 2023 19:22:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC67C433EF;
-        Mon,  9 Jan 2023 19:22:28 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 48E78B80F98;
+        Mon,  9 Jan 2023 19:28:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2C26C433EF;
+        Mon,  9 Jan 2023 19:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673292148;
-        bh=htbtetKp6LvDEmtxfygdNB2SYbLgZM+2mVnnjewbqS4=;
+        s=k20201202; t=1673292481;
+        bh=JnBnjMw8xHojNM712myCFe1VMmK89/7cGKUSJ3U6/bs=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Au6Y+DeU+7zTdmR/w13Bb2913aWfnKsrBWT0WL1Y3humfk2O8vXhFYp79RSotXbeO
-         UyA5cheMgKBO9b7e8zwAffWSNfK4JxvxGqoR76OjH9KY66SzDyhFppU39clTt4MaiC
-         qdRyxEhFg6DtGiHRp3jWinivHMTG8QYQe2NnenFmxXniV81gj2w3TxzfrP2eL4J+bl
-         p3/55maqNVSYx+05YCUYY0qUAwPMGCF6z7XJ2CVIZz9fhAnO1Je5mjinxq9OTCNEX6
-         Jf8n4BNeHBZXif/YbFp+0DEKuVrGf++Gw8sfTHQw8y3fqwZT7iq1kEzZrHqnQ6V+VY
-         tGsnWVp5c+L2Q==
+        b=dWVj/ddC7JqKTDwHPaytugN0owtKirLQlyY0qUwBHfa8APiEu06nesO81qRPsivbk
+         +AKBTAs+UnrKNphPYOP1dR8gw7fnH2FG7TbbhIrvgkE37+NYzqUzak+tpUOsYPkvi5
+         X4iJOcSTpgT8XvGQeopXTh3qprLmexIx23jLHGKDN+0sfceG7jpN77X8gtS4zGw/mC
+         b5c3++RzPS/BIFHYIwQd4RUzgErZitWyUV3VHhiPlpyo1qtfRFgalM2SEtlDSlSZgV
+         +b/2O15pr+zXT2Kurp9jwYO/Fnazw/HRdcvvOmQ6OdXVyCzJiTQASRI+VEA9kHQIdM
+         3qk4bc1JTGdWg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 78CF65C05C8; Mon,  9 Jan 2023 11:22:28 -0800 (PST)
-Date:   Mon, 9 Jan 2023 11:22:28 -0800
+        id 77C6C5C05C8; Mon,  9 Jan 2023 11:28:01 -0800 (PST)
+Date:   Mon, 9 Jan 2023 11:28:01 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH rcu 01/27] arch/x86: Remove "select SRCU"
-Message-ID: <20230109192228.GV4028633@paulmck-ThinkPad-P17-Gen-1>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Zqiang <qiang1.zhang@intel.com>, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
+Message-ID: <20230109192801.GW4028633@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-1-paulmck@kernel.org>
- <Y7xSO2dW1sy21RVz@google.com>
+References: <20221220141625.3612085-1-qiang1.zhang@intel.com>
+ <20221221201634.GH4001@paulmck-ThinkPad-P17-Gen-1>
+ <Y7nmihQ126cjqEss@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y7xSO2dW1sy21RVz@google.com>
+In-Reply-To: <Y7nmihQ126cjqEss@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 05:43:23PM +0000, Sean Christopherson wrote:
-> On Wed, Jan 04, 2023, Paul E. McKenney wrote:
-> > Now that the SRCU Kconfig option is unconditionally selected, there is
-> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> > Kconfig statements.
+On Sat, Jan 07, 2023 at 10:39:22PM +0100, Frederic Weisbecker wrote:
+> On Wed, Dec 21, 2022 at 12:16:34PM -0800, Paul E. McKenney wrote:
+> > On Tue, Dec 20, 2022 at 10:16:25PM +0800, Zqiang wrote:
+> > > This commit add TICK_DEP_MASK_RCU_EXP dependency check in
+> > > check_tick_dependency(), fix commit df1e849ae4559 ("rcu: Enable
+> > > tick for nohz_full CPUs slow to provide expedited QS").
+> > > 
+> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 > > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: <x86@kernel.org>
-> > Cc: <kvm@vger.kernel.org>
-> > ---
+> > Again, good eyes, thank you!!!
+> > 
+> > I have queued this for further review and testing, given that it affects
+> > pretty much only RCU.  However, if someone else would rather take it:
+> > 
+> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> ...
+> Thanks for picking it up! Please also add the following tags:
 > 
-> > diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> > index fbeaa9ddef598..9306d99585188 100644
-> > --- a/arch/x86/kvm/Kconfig
-> > +++ b/arch/x86/kvm/Kconfig
-> > @@ -46,7 +46,6 @@ config KVM
-> >  	select KVM_XFER_TO_GUEST_WORK
-> >  	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
-> >  	select KVM_VFIO
-> > -	select SRCU
-> 
-> Would it be too much trouble to bundle all of the KVM changes into a single patch?
-> The SRCU requirement is a generic KVM requirement that's handled in the arch Kconfigs
-> purely because of KVM's somewhat roundabout Kconfig setup.
+> Fixes: df1e849ae455 ("rcu: Enable tick for nohz_full CPUs slow to provide expedited QS")
+> Acked-by: Frederic Weisbecker <frederic@kernel.org>
 
-No problem, and will do on my next rebase.  I might end up with a long
-list of Cc's, but so it goes.  I will of course send the result as a
-reply to this message.
+Thank you for looking it over!  I will apply these on my next rebase.
 
 							Thanx, Paul
-
-> >  	select INTERVAL_TREE
-> >  	select HAVE_KVM_PM_NOTIFIER if PM
-> >  	help
-> > -- 
-> > 2.31.1.189.g2e36527f23
-> > 
