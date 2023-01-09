@@ -2,123 +2,111 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E9BBC54EBD
-	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 15:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D798C5479D
+	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 17:43:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbjAIP73 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Jan 2023 10:59:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S236966AbjAIRna (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Jan 2023 12:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237268AbjAIP7X (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Jan 2023 10:59:23 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFAB3B902;
-        Mon,  9 Jan 2023 07:59:17 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id jl4so9964840plb.8;
-        Mon, 09 Jan 2023 07:59:17 -0800 (PST)
+        with ESMTP id S233499AbjAIRn2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Jan 2023 12:43:28 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5611A229
+        for <rcu@vger.kernel.org>; Mon,  9 Jan 2023 09:43:27 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 7so6405083pga.1
+        for <rcu@vger.kernel.org>; Mon, 09 Jan 2023 09:43:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gnaAG4YDJhYITmoc4JFALivyXUFRt7jauTm0mQYzMbQ=;
-        b=CrmUUFgEgmvDxgs5A/ywFQsggyIunQbSDeV8ufkm1vBRaa/INDWTY+EsCaw8oXK2/S
-         FlWVQQPAGncAry0fIZS3oV95zVShMeJ35dEndt4MBH7cH6D/KbzFXwTenGx0e4gN6pz3
-         ze1OWOZGTq5BQhKmGfiHESF7eX96nqM1a1Dymd78oGwSKFKxI6wdkpb4hOVqz6aSA6kF
-         PlnEEqn7IcEaiemhdsL8KC92Ngjv69jnXx2VCoh/tZuQNIWaVTAI2wXqRIdWIkiglgtU
-         fxTq+eUA7d359jNUK4fT4Js77L/+4nz7XNMiNxK21CARbh0+73CPEahjd+lySbtYVRUJ
-         /OVg==
+        d=google.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GSSXv+I+w/8fq5Yx5Ez6ORBTwPIwCfMMjmGhcpp+UqU=;
+        b=g0eGXd1q88kKO1UBdVGzjP/95p/jpiFOz1tlu9gArFeF2qE16G4bVRKZnTw+XZWtP+
+         EXrJCYtuU4eMsLsoIGwLHGE/k07Dndjexhtc4+89wiIh6t0htZq88FgfPeF2HiM+62gW
+         6bVYPLutu6hFNdoSRn3rQ3obSPWJsZ/DaHbp0ph0JiEXjk2KMis4Qd8AW9xA1OlPRfcO
+         IRE2Tydovrr2fE+hnvN0agTBvFC49yxzQWirTToKPy0kam/RY/O5O+6uTm/r2z8YrQ3h
+         YOdKyhwgMJMT55xd9yRJf6srnW5aApxQjTtPOI1niagvZTpis4FDOtgy/qD+Nl8IXzWT
+         vPfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gnaAG4YDJhYITmoc4JFALivyXUFRt7jauTm0mQYzMbQ=;
-        b=REPESrHgwJh3g2adS3S3+5i/e4ETH4ASVGFfTOihynKUjt00rrz+YOI1wcThRkQA0E
-         Mit32a4pILvQnbUHV+gfZz3+ZFyaHQgeIsfzb15vFZ+jXfhfP3wfvitm1kFQtb9n84cV
-         gNzAHvzcpWybtAwrSDyLViJ7CBVnsBsLp30UFH22UqBKH4Gi6/0wcKhyOj2IwrWp9tvL
-         1EoJP3j77JZQuKzvn17qT5Ma8wIU8HD80tgIaKZ53cbiDZxQjL94GMRnfs2p1DZq22dn
-         egJDM0FOgxATGjs9tdzO+QRRW5oCv1UeT8xM+6l9Gpm2kngvwpB1dNNm3rKQV+mPAEdw
-         V/dw==
-X-Gm-Message-State: AFqh2komyn9eJZcNU3NcWhwTaFqLto7waOQlfkUUBSFhkpSK39WWoUSK
-        RUpbM0k7g0ThwRWPVYctM5WZrOaO4O7D+Bc62d4vnbufnZ0=
-X-Google-Smtp-Source: AMrXdXsIHcMFGh8C6JVsndP5O7Yb37EfmTQB1MHMl1BJsI+OTAQfZHN0Hpm0fEvZmMEB9rBptlXxKbpReH1BjBeDTsc=
-X-Received: by 2002:a17:90a:4311:b0:214:291f:87b5 with SMTP id
- q17-20020a17090a431100b00214291f87b5mr5835174pjg.115.1673279956980; Mon, 09
- Jan 2023 07:59:16 -0800 (PST)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GSSXv+I+w/8fq5Yx5Ez6ORBTwPIwCfMMjmGhcpp+UqU=;
+        b=t/xP8INvZvxPJ/soOkqe17Q5q7Z6ouLMAiiwHYpEsU8vdh6OguTGPoSTJEdM5swtEQ
+         neCYdtaly1YHLvXj/p9Hs0CSAsPQF3Itf8KlzFP99ySxSWO8FgX+b0PD3mKQ1QKgtw1y
+         MUIqsU/apsCQeuKxiHTX6MwYbP8/TeoJtTKK2WgX5tIsBdk4gJ7yK+CNozBUn8KCh9ia
+         sCU/XQLwXbqaUD51zpFBgffafcPhxDIITY1o9QOIrqkb76GlcY3bSRtq216flF9F86u4
+         ZkDvmG/ceH3l26+VXMTh3bjzdi81LQaXXHD5+W0pCNpdm9n0Dcwone2yzH9LuIN+YbIT
+         yihg==
+X-Gm-Message-State: AFqh2krnLVFDWzoz6Y2R1DoVMFnm6StxLzH7NSjK92GGhDMa/WlOllHS
+        X2C+kcWjfso0Jdy1klsC5mTgnw==
+X-Google-Smtp-Source: AMrXdXuahdX5fT5IrjPkz4RnJUA4Kk4OaigXHUxhSIcCKVvee6MrvxGtSvPNdBbAdchzeYDmGAb45w==
+X-Received: by 2002:aa7:9249:0:b0:576:9252:d06 with SMTP id 9-20020aa79249000000b0057692520d06mr740111pfp.0.1673286207259;
+        Mon, 09 Jan 2023 09:43:27 -0800 (PST)
+Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
+        by smtp.gmail.com with ESMTPSA id k197-20020a6284ce000000b00574b86040a4sm6350861pfd.3.2023.01.09.09.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 09:43:26 -0800 (PST)
+Date:   Mon, 9 Jan 2023 17:43:23 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH rcu 01/27] arch/x86: Remove "select SRCU"
+Message-ID: <Y7xSO2dW1sy21RVz@google.com>
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+ <20230105003813.1770367-1-paulmck@kernel.org>
 MIME-Version: 1.0
-References: <20221219052128.18190-1-zhouzhouyi@gmail.com> <Y7wN0TKU1jDyTZs5@lothringen>
- <20230109152505.GA4070882@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20230109152505.GA4070882@paulmck-ThinkPad-P17-Gen-1>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Mon, 9 Jan 2023 23:59:05 +0800
-Message-ID: <CAABZP2waOx0K=qLHmUoQZ2_g9q7LJQbCyYLaQRMPMGhiLTrcPQ@mail.gmail.com>
-Subject: Re: [PATCH linux-next] mark access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
-To:     paulmck@kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>, fweisbec@gmail.com,
-        tglx@linutronix.de, mingo@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230105003813.1770367-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 9, 2023 at 11:25 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, Jan 09, 2023 at 01:51:29PM +0100, Frederic Weisbecker wrote:
-> > On Mon, Dec 19, 2022 at 01:21:28PM +0800, Zhouyi Zhou wrote:
-> > > mark access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE to fix concurrency bug
-> > > reported by KCSAN.
-> > >
-> > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > ---
-> > > During the rcutorture test on linux-next,
-> > > ./tools/testing/selftests/rcutorture/bin/torture.sh --do-kcsan  --kcsan-kmake-arg "CC=clang-12"
-> > > following KCSAN BUG is reported:
-> > > [   35.397089] BUG: KCSAN: data-race in tick_nohz_idle_stop_tick / tick_nohz_next_event^M
-> > > [   35.400593] ^M
-> > > [   35.401377] write to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 3:^M
-> > > [   35.405325]  tick_nohz_idle_stop_tick+0x14c/0x3e0^M
-> > > [   35.407162]  do_idle+0xf3/0x2a0^M
-> > > [   35.408016]  cpu_startup_entry+0x15/0x20^M
-> > > [   35.409084]  start_secondary+0x8f/0x90^M
-> > > [   35.410207]  secondary_startup_64_no_verify+0xe1/0xeb^M
-> > > [   35.411607] ^M
-> > > [   35.412042] no locks held by swapper/3/0.^M
-> > > [   35.413172] irq event stamp: 53048^M
-> > > [   35.414175] hardirqs last  enabled at (53047): [<ffffffffb41f8404>] tick_nohz_idle_enter+0x104/0x140^M
-> > > [   35.416681] hardirqs last disabled at (53048): [<ffffffffb41229f1>] do_idle+0x91/0x2a0^M
-> > > [   35.418988] softirqs last  enabled at (53038): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
-> > > [   35.421347] softirqs last disabled at (53029): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
-> > > [   35.423685] ^M
-> > > [   35.424119] read to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 0:^M
-> > > [   35.425870]  tick_nohz_next_event+0x233/0x2b0^M
-> > > [   35.427119]  tick_nohz_idle_stop_tick+0x8f/0x3e0^M
-> > > [   35.428386]  do_idle+0xf3/0x2a0^M
-> > > [   35.429265]  cpu_startup_entry+0x15/0x20^M
-> > > [   35.430429]  rest_init+0x20c/0x210^M
-> > > [   35.431382]  arch_call_rest_init+0xe/0x10^M
-> > > [   35.432508]  start_kernel+0x544/0x600^M
-> > > [   35.433519]  secondary_startup_64_no_verify+0xe1/0xeb^M
-> > >
-> > > fix above bug by marking access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
-> >
-> > This has been discussed before with passion:
-> >
-> > http://archive.lwn.net:8080/linux-kernel/1C65422C-FFA4-4651-893B-300FAF9C49DE@lca.pw/T/
-> >
-> > To me data_race() would be more appropriate but that would need a changelog with
-> > proper analysis of the tick_do_timer_cpu state machine.
->
-> Please also an analysis of why the compiler cannot do any destructive
-> optimizations in this case.  Maybe also comments.
-I want to try the analysis above, as a newbie I have taught myself
-LLVM for 3 years in my spare time ;-)
->
-> > One more thing on my TODO list, but feel free to beat me at it :-)
-Please take your time ;-)   Please don't look my next possible email
-as a reminder ;-)
->
-> I know that feeling!  ;-)
->
-Thanx, Zhouyi
->                                                         Thanx, Paul
+On Wed, Jan 04, 2023, Paul E. McKenney wrote:
+> Now that the SRCU Kconfig option is unconditionally selected, there is
+> no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> Kconfig statements.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: <x86@kernel.org>
+> Cc: <kvm@vger.kernel.org>
+> ---
+
+...
+
+> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> index fbeaa9ddef598..9306d99585188 100644
+> --- a/arch/x86/kvm/Kconfig
+> +++ b/arch/x86/kvm/Kconfig
+> @@ -46,7 +46,6 @@ config KVM
+>  	select KVM_XFER_TO_GUEST_WORK
+>  	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+>  	select KVM_VFIO
+> -	select SRCU
+
+Would it be too much trouble to bundle all of the KVM changes into a single patch?
+The SRCU requirement is a generic KVM requirement that's handled in the arch Kconfigs
+purely because of KVM's somewhat roundabout Kconfig setup.
+
+>  	select INTERVAL_TREE
+>  	select HAVE_KVM_PM_NOTIFIER if PM
+>  	help
+> -- 
+> 2.31.1.189.g2e36527f23
+> 
