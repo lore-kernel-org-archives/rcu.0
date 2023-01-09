@@ -2,149 +2,78 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F1BBC63797
-	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 13:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C121C61DB3
+	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 15:15:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbjAINVd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Jan 2023 08:21:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S236152AbjAIPPO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Jan 2023 10:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237204AbjAINVK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Jan 2023 08:21:10 -0500
+        with ESMTP id S234146AbjAIPOp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Jan 2023 10:14:45 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D7318C;
-        Mon,  9 Jan 2023 05:21:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247FA1EC7A;
+        Mon,  9 Jan 2023 07:13:38 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A3FF46105C;
-        Mon,  9 Jan 2023 13:21:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8036FC433EF;
-        Mon,  9 Jan 2023 13:21:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B711C61182;
+        Mon,  9 Jan 2023 15:13:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A67C433D2;
+        Mon,  9 Jan 2023 15:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673270465;
-        bh=A8Z7PC5fQ2LhCYjjgfJ+OrKuPgq9Nqpw7uPlNhfuLeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NJzKHS0xacz55kBjwSiTEi8rSR3hWX0H3TWY+nYjq5hCm2ir1cXbCdHTLwCVZ3h04
-         YoCEt8OTDzpWfBsIaQAQC2VdGT/+/03wicO4wRV3M2nF+EDnzFx64fE8GGb5/MR+xb
-         LDjUedYg7jA4aEg0kEV1PADnOYdZ/0K11yQ5HVUh0z867zutCPTrOAQU/3VsStJ6CA
-         0IGqIKh+m95e/tQ3d7gKwceTZHW9FD1suEdzcoLajR14xC27FcmYJ/R6ZCweh90Niu
-         cs2i0STYqEWOlh/CZ9Ysq18FHlhBKY/FD1r2/1mL/dWfHicU2c10D8kcoNwyzFh3RB
-         tmlOPtMcCrEzw==
-Date:   Mon, 9 Jan 2023 14:21:01 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Zqiang <qiang1.zhang@intel.com>, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Safe access to rcu_node structure's->exp_tasks
-Message-ID: <Y7wUvZ/kVmpxvm14@lothringen>
-References: <20221224052553.263199-1-qiang1.zhang@intel.com>
- <20230106034146.GM4028633@paulmck-ThinkPad-P17-Gen-1>
+        s=k20201202; t=1673277217;
+        bh=AMs5OuZG5+W3JYSxa9vgyOdLUbMCf90Na5I+i3c8ilc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=oyY1tWmY0gkV+FHbgETSaJy8QlHLLr5mA97sbTOfwL0tfxJXifd9AI/jSh16FgLYR
+         kF8z9TGQvLHP7kvbearhyaWbXZ97gVxTpaTIQhRAFP1BItTEBjmrGoFpPD9ClWXbwq
+         4WSQsokjThf49wX7ew65b5wY6ywPfq7sihvPBoBp9/xAIy//uXTMkpiW3LqswCR2wd
+         YOnLdJKZkD6uWzUCOdKa8vEYVWVkIFV70QB/iJfWVjvzcMEw2hqXSZdH0dY7jqqQOB
+         e19G9MD44/WWPansMWfkwG3NO5f1ZWSz+tSmdSN1qFw49uTYXFI886wt4/CKcaHgOr
+         ViKbbckzDJebQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B0E125C03F3; Mon,  9 Jan 2023 07:13:36 -0800 (PST)
+Date:   Mon, 9 Jan 2023 07:13:36 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Dave Chinner <david@fromorbit.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH rcu 6/6] rcu: Allow up to five minutes expedited RCU CPU
+ stall-warning timeouts
+Message-ID: <20230109151336.GO4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230105005105.GA1772125@paulmck-ThinkPad-P17-Gen-1>
+ <20230105005126.1772294-6-paulmck@kernel.org>
+ <CAMuHMdU_+t=msiusxi3BxgFVxMO8Y-mMDoTLnx_RUzPXVWrdOQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230106034146.GM4028633@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <CAMuHMdU_+t=msiusxi3BxgFVxMO8Y-mMDoTLnx_RUzPXVWrdOQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 05, 2023 at 07:41:46PM -0800, Paul E. McKenney wrote:
-> On Sat, Dec 24, 2022 at 01:25:53PM +0800, Zqiang wrote:
-> > For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario
-> > can result system oops.
-> > 
-> >            CPU1                                           CPU2
-> > rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
-> >   if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
-> >     raw_spin_lock_rcu_node
-> >     np = rcu_next_node_entry(t, rnp)
-> >     if (&t->rcu_node_entry == rnp->exp_tasks)
-> >       WRITE_ONCE(rnp->exp_tasks, np)
-> >       ....
-> >       raw_spin_unlock_irqrestore_rcu_node
-> >                                                     raw_spin_lock_irqsave_rcu_node
-> >                                                     t = list_entry(rnp->exp_tasks->prev,
-> >                                                         struct task_struct, rcu_node_entry)
-> >                                                     (if rnp->exp_tasks is NULL
-> >                                                        will trigger oops)
-> > 
-> > This problem is that CPU2 accesses rcu_node structure's->exp_tasks
-> > without holding the rcu_node structure's ->lock and CPU2 did not
-> > observe CPU1's change to rcu_node structure's->exp_tasks in time,
-> > if rcu_node structure's->exp_tasks is set null pointer by CPU1, after
-> > that CPU2 accesses members of rcu_node structure's->exp_tasks will
-> > trigger oops.
-> > 
-> > This commit therefore allows rcu_node structure's->exp_tasks to be
-> > accessed while holding rcu_node structure's ->lock.
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+On Mon, Jan 09, 2023 at 11:10:10AM +0100, Geert Uytterhoeven wrote:
+> Hi Paul,
 > 
-> Apologies for the delay and thank you for the reminder!
+> Thanks for your patch, which is now commit 0d49d9123dcf41f7 ("rcu:
+> Allow up to five minutes expedited RCU CPU stall-warning timeouts")
+> in next-20230109.
 > 
-> Please check the wordsmithed version below, which I have queued.
+> On Thu, Jan 5, 2023 at 2:10 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > The maximum value of RCU CPU stall-warning timeouts has historically been
+> > five minutes (300 seconds).  However, the recently introduced expedited
+> > RCU CPU stall-warning timeout is instead limited to 21 seconds.  This
+> > causes problems for CI/fuzzing services such as syzkaller by obscuring
+> > the issue in question with expedited RCU CPU stall-warning timeout splats.
+> >
+> > This commit therefore sets the RCU_EXP_CPU_STALL_TIMEOUT Kconfig options
+> > upper bound to 300000 milliseconds, which is 300 seconds and 5 minutes.
 > 
-> 						Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 389b0eafd72829fd63548f7ff4e8d6ac90fa1f98
-> Author: Zqiang <qiang1.zhang@intel.com>
-> Date:   Sat Dec 24 13:25:53 2022 +0800
-> 
->     rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
->     
->     For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario can
->     result in a NULL-pointer dereference:
->     
->                CPU1                                           CPU2
->     rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
->       if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
->         raw_spin_lock_rcu_node
->         np = rcu_next_node_entry(t, rnp)
->         if (&t->rcu_node_entry == rnp->exp_tasks)
->           WRITE_ONCE(rnp->exp_tasks, np)
->           ....
->           raw_spin_unlock_irqrestore_rcu_node
->                                                         raw_spin_lock_irqsave_rcu_node
->                                                         t = list_entry(rnp->exp_tasks->prev,
->                                                             struct task_struct, rcu_node_entry)
->                                                         (if rnp->exp_tasks is NULL, this
->                                                            will dereference a NULL pointer)
->     
->     The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
->     field without holding the rcu_node structure's ->lock and CPU2 did
->     not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
->     Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NULL,
->     then CPU2 might dereference that NULL pointer.
->     
->     This commit therefore holds the rcu_node structure's ->lock while
->     accessing that structure's->exp_tasks field.
->     
->     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 7cc4856da0817..902e7c8709c7e 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -803,9 +803,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
->  	int ndetected = 0;
->  	struct task_struct *t;
->  
-> -	if (!READ_ONCE(rnp->exp_tasks))
-> -		return 0;
->  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> +	if (!READ_ONCE(rnp->exp_tasks)) {
+> s/and/or/
 
-Does it have to be READ_ONCE then?
+Good eyes!  I will apply with attribution on my next rebase.
 
-Thanks.
-
-> +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> +		return 0;
-> +	}
->  	t = list_entry(rnp->exp_tasks->prev,
->  		       struct task_struct, rcu_node_entry);
->  	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
+							Thanx, Paul
