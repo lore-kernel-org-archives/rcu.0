@@ -2,58 +2,40 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46FFCC54EBD
-	for <rcu@archiver.kernel.org>; Tue, 10 Jan 2023 00:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3647C5479D
+	for <rcu@archiver.kernel.org>; Tue, 10 Jan 2023 00:37:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237789AbjAJAFY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Jan 2023 19:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
+        id S234368AbjAJAhB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Jan 2023 19:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234906AbjAJAFX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Jan 2023 19:05:23 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8401A200
-        for <rcu@vger.kernel.org>; Mon,  9 Jan 2023 16:05:22 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id h192so7049655pgc.7
-        for <rcu@vger.kernel.org>; Mon, 09 Jan 2023 16:05:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ywk5kgimgzqnnPT+XZy47dxy0OlRvssJgYFxBD/Z4aE=;
-        b=K4f/fsCYEekdsxkKz3b7M4aYBHvLignDAyYA6AqVyL50HxvhGB45l9SqOIKmd8BK2f
-         IlrSNlIpag5PruA+qorMeir3g/F+EHk1PKs0fBSj+74ZdN2IeVOF+TkMYzI4AwiHoWci
-         TMeFBaDMn1Oio3riXZu/BoqjYcLw0cPfBOo9OGYZ5VE+3AZVM/2pjsJKxaEbcdM/go/e
-         XMkAYcTLCXXvWeZsngWu9lPJFmNb6DPZyF1bhj6OHbmY2JRlqaD7Z8Tq0lAL/cCf1wGT
-         8Ttnt7CDs5ZmpN8TCM+v+ZpUSG6iwIrYVyoec7tjahfjSete7GQvRMl85kwK/EzjMSZx
-         iYiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ywk5kgimgzqnnPT+XZy47dxy0OlRvssJgYFxBD/Z4aE=;
-        b=ufRt7w6peLD+f54jzM7o5iAICI+vttKCgeJ4GFdZq8GEL270p8gWgsLgOGXzLjjXoG
-         j5qQUQWNDfzgAKbqLdjCxHL+91pDKwheM+42vVTJf9am/APFn3gEaTEg5sGOm7Lntc6f
-         NN9uqHkMU9neaqPBq5AjS1zf3rhhN6GZrBDNM/G4DOi+U+Zp483ONa30+CaV2ddflNyB
-         zhD9Ykyn7NFzmQUv8GYelKLUiP/YtTAFam3FxX+P7nmDRq/R+PfiXi3iD9u/BmPOEJci
-         4HhKflFDX7gjzZpJOeqVn288BsPbg41Dr0AHCCectSuGSXCyKdB7+JQY40vFC3r77t8I
-         ZUyw==
-X-Gm-Message-State: AFqh2kpwBBkCj8ju4Y5e8kJeDBiv2UzZqO3y2l56pwLPm9ATIlMmlHJ+
-        uOSETp9uNBpmMrEZ0bs8jWDIJ7qMh+y+uCjpSnTNCg==
-X-Google-Smtp-Source: AMrXdXtVwTLcBMamWsZkIKTNdshS3/u/EDgTWfUDOvfa4R33160dUHhm6rUdQJgg1hNJiNk3fCDNzcMdRKlWw9lh5+8=
-X-Received: by 2002:a63:4943:0:b0:478:e6cf:c24c with SMTP id
- y3-20020a634943000000b00478e6cfc24cmr5160343pgk.365.1673309121880; Mon, 09
- Jan 2023 16:05:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-22-paulmck@kernel.org> <CAKwvOdmt7mnP_dfCMO_YUV792Zgtirk=NFqe8XH0z88-b0e23A@mail.gmail.com>
-In-Reply-To: <CAKwvOdmt7mnP_dfCMO_YUV792Zgtirk=NFqe8XH0z88-b0e23A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 9 Jan 2023 16:05:10 -0800
-Message-ID: <CAKwvOdnQX1H9-8QnsUiXi+eK4udGdO34isHZ-PEzNDZwJbJ41w@mail.gmail.com>
-Subject: Re: [PATCH rcu 22/27] init: Remove "select SRCU"
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S234752AbjAJAhA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Jan 2023 19:37:00 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3167DF03C;
+        Mon,  9 Jan 2023 16:36:58 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 69FF9614A7;
+        Tue, 10 Jan 2023 00:36:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B3CC433EF;
+        Tue, 10 Jan 2023 00:36:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673311017;
+        bh=4plEmWhJeJfE5GdKckggdpdil5hs4qzmsldtX3BEnP0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=oK2iL9OldgcwSnSMgtOZ1qhrwxaTN1u30xdy8ajerh+rd1GVo0orelMBm6YL8kzB5
+         t6aKBfozkjBxmyjqXSiEwDIMKPtnbK6q4u61+UyDtZaBmSFsxl5Ww8Z3n5V5r7312N
+         Y++v77hTt6ra4p1C9Sr8FiIJs8+58jx3RgDQDZJTtQ3mh1nFRqlKW7j9uqTEqmIMhg
+         qZeJF9aT3r/J1qwBFCUrEVgsYX72Ofpi/HPhOaWdmqp6jA/U0C4tWpZ6yuOPQjNXVI
+         AJ+q/c0h3cVmUpYlC7ZtIpXzjmmCgh43ixM2VhdFRGTcMwbGgqDbSoRMpPrLTzVyF3
+         OupuYMvG6sAew==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1A4905C0623; Mon,  9 Jan 2023 16:36:57 -0800 (PST)
+Date:   Mon, 9 Jan 2023 16:36:57 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -66,24 +48,35 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Aaron Tomlin <atomlin@redhat.com>, Tejun Heo <tj@kernel.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH rcu 22/27] init: Remove "select SRCU"
+Message-ID: <20230110003657.GE4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+ <20230105003813.1770367-22-paulmck@kernel.org>
+ <CAKwvOdmt7mnP_dfCMO_YUV792Zgtirk=NFqe8XH0z88-b0e23A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmt7mnP_dfCMO_YUV792Zgtirk=NFqe8XH0z88-b0e23A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 9, 2023 at 4:02 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
+On Mon, Jan 09, 2023 at 04:02:48PM -0800, Nick Desaulniers wrote:
 > On Wed, Jan 4, 2023 at 4:38 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
 > > Now that the SRCU Kconfig option is unconditionally selected, there is
 > > no longer any point in selecting it.  Therefore, remove the "select SRCU"
 > > Kconfig statements.
->
+> 
 > Looks like that's the case as of
 > commit 0cd7e350abc4 ("rcu: Make SRCU mandatory")
 > in v6.2-rc1.
->
-> >
+
+I freely confess that I took the cowardly way out by making it
+unconditional in the last merge window and getting rid of references in
+the next merge window.  ;-)
+
 > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > > Cc: Andrew Morton <akpm@linux-foundation.org>
 > > Cc: Nick Desaulniers <ndesaulniers@google.com>
@@ -98,19 +91,45 @@ On Mon, Jan 9, 2023 at 4:02 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
 > > Cc: Aaron Tomlin <atomlin@redhat.com>
 > > Cc: Tejun Heo <tj@kernel.org>
 > > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
->
+> 
 > Patch LGTM
 > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
->
+
+Thank you!  I will apply this on my next rebase.
+
 > Note that there's quite a few more of these though. Perhaps best to
 > remove them all together? Or perhaps you already have individual
 > patches out already for all of these?
 
-Ah indeed, I missed that this was part of such a series:
-https://lore.kernel.org/lkml/20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1/
+I have these:
 
+e73b36cbeb8eb arch/x86: Remove "select SRCU"
+8bde7256e3bdc kvm: Remove "select SRCU"
+047bbf23dd4f2 drivers/base: Remove CONFIG_SRCU
+1b63789c861c1 drivers/clk: Remove "select SRCU"
+3fe724041d29d drivers/cpufreq: Remove "select SRCU"
+e8dc9f0f97d6f drivers/dax: Remove "select SRCU"
+0be2fa022bcde drivers/devfreq: Remove "select SRCU"
+e4ac435cd24da drivers/hwtracing/stm: Remove "select SRCU"
+159ce13a6c500 drivers/md: Remove "select SRCU"
+dbe417fa57042 drivers/net: Remove "select SRCU"
+7cc598f342ae4 drivers/pci/controller: Remove "select SRCU"
+fba630f40b15d fs/btrfs: Remove "select SRCU"
+a17c8daaee218 fs/dlm: Remove "select SRCU"
+fd77fd4fe1852 fs/notify: Remove "select SRCU"
+47a84e7a9c1c6 fs/quota: Remove "select SRCU"
+e5bc2dc08a416 init: Remove "select SRCU"
+b7f8ff0898c04 kernel/power: Remove "select SRCU"
+db389dace41db mm: Remove "select SRCU"
+e5316ffd44aa1 fs: Remove CONFIG_SRCU
+2d07d1c58fad7 kernel/notifier: Remove CONFIG_SRCU
+c761c79f1e72f rcu: Remove CONFIG_SRCU
 
->
+Plus there are three more that people wanted to take via their own
+trees.  And I am fine either way.
+
+But as long as you generated the list...
+
 > $ grep -rn 'select SRCU'
 > mm/Kconfig:670: select SRCU
 > kernel/power/Kconfig:121: select SRCU
@@ -136,7 +155,18 @@ https://lore.kernel.org/lkml/20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1
 > drivers/hwtracing/stm/Kconfig:5: select SRCU
 > drivers/cpufreq/Kconfig:6: select SRCU
 > drivers/opp/Kconfig:4: select SRCU
->
+
+And it does look like I missed security/tomoyo/Kconfig, so thank you
+for checking!  I have queued the patch.
+
+The other one missing from -next is drivers/opp/Kconfig, which Viresh
+said that he was taking.
+
+There is no trace of CONFIG_SRCU in -next, which is the more worrying
+one.
+
+							Thanx, Paul
+
 > > ---
 > >  init/Kconfig | 1 -
 > >  1 file changed, 1 deletion(-)
@@ -156,14 +186,8 @@ https://lore.kernel.org/lkml/20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1
 > > --
 > > 2.31.1.189.g2e36527f23
 > >
->
->
-> --
+> 
+> 
+> -- 
 > Thanks,
 > ~Nick Desaulniers
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
