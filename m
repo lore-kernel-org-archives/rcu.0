@@ -2,122 +2,61 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3894C54EBD
-	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 01:10:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC036C54EBD
+	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 04:42:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbjAMBK4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Jan 2023 20:10:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        id S230473AbjAMEmC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Jan 2023 23:42:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234936AbjAMBKy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Jan 2023 20:10:54 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E9C103;
-        Thu, 12 Jan 2023 17:10:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C82D4B82033;
-        Fri, 13 Jan 2023 01:10:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75E75C433EF;
-        Fri, 13 Jan 2023 01:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673572250;
-        bh=XjG0tJLnw6e6BwzsRY23cqQwSiXN5RtMYzj3WAIhllg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lx9fvr6FX1p7zN00Cb5+Is5PRX66Sm5W52bWEx7WdhNVLeBrFkejAw4uYXnO1o1pv
-         o/EPR+8+PSWRl1SVjd5dDKlMbglxL2aTUsQayvT4zCEv7psLJ0ku5v4zcBW1vi4nLg
-         ON9zUgI6V416Ly/zDTbI24elwUXvRhoyCffNP0cPlOVnwVDSkHw7i2wWBGRkF+0bB7
-         RRI105FGtkBi27tf6aWzsq9iELQQyGJ2btVr2BElq/Q67KSIt7MEna9s9XYSJpsGDs
-         tN1duGyQlnUl9ip0mRTRxCHS7x2xbHV7wIYNEYZqET1aN4/Xk8g6sM8BshAqzvv/4g
-         QLaKEvIdPgbqA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 186565C1C8C; Thu, 12 Jan 2023 17:10:50 -0800 (PST)
-Date:   Thu, 12 Jan 2023 17:10:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH rcu v2 09/20] fs: Remove CONFIG_SRCU
-Message-ID: <20230113011050.GV4028633@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
- <20230113001132.3375334-9-paulmck@kernel.org>
- <2060f8d47dd0fd1999733b87b1919f6642b6e9e1.camel@kernel.org>
+        with ESMTP id S232088AbjAMEl7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Jan 2023 23:41:59 -0500
+X-Greylist: delayed 4195 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 Jan 2023 20:41:57 PST
+Received: from mail.gigabizplan.pl (mail.gigabizplan.pl [51.195.90.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5929834D44
+        for <rcu@vger.kernel.org>; Thu, 12 Jan 2023 20:41:57 -0800 (PST)
+Received: by mail.gigabizplan.pl (Postfix, from userid 1002)
+        id 6873125B9B; Tue, 10 Jan 2023 09:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gigabizplan.pl;
+        s=mail; t=1673347134;
+        bh=XwhyqI/moZPDJ7KCfcA6Gip8fA7ZKcg5SWsKuF/26zk=;
+        h=Date:From:To:Subject:From;
+        b=Aq6a5YlVnVsRYcQs3K+tZoG6qDQSKCtvowUO7T1PnPOPpVfViKADD+3z3rOCcwr3J
+         mAxOq4EXkD5YAOd2yM5i5jkWxsn8gxcrUH82nTpZ8mBE0NkX7cKrGzlmgSr9xIpq6Z
+         HAmA1RY/rbtn4AMyDJayrAoGVLNjOozlh4BETUzcVHmCNWP9glncUF3ckJuNU4t00x
+         kLx/8KxrKaWndJwYqAS4zBDoMh33bfi28twTNuIS+afTyh9Yb2WGu4tY+/kfTJRefY
+         OdyOnVC5nvGsX3FpYiPH6h47kFIT13h8cDWsEpZw64rZ1zrTKydpELOLPClxVlaucX
+         Wyhj4XZv1TkNA==
+Received: by mail.gigabizplan.pl for <rcu@vger.kernel.org>; Tue, 10 Jan 2023 09:06:00 GMT
+Message-ID: <20230110074500-0.1.3e.jfnh.0.0yt5gt4c3u@gigabizplan.pl>
+Date:   Tue, 10 Jan 2023 09:06:00 GMT
+From:   "Dominik Perkowski" <dominik.perkowski@gigabizplan.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Pozycjonowanie- informacja
+X-Mailer: mail.gigabizplan.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2060f8d47dd0fd1999733b87b1919f6642b6e9e1.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 08:03:48PM -0500, Jeff Layton wrote:
-> On Thu, 2023-01-12 at 16:11 -0800, Paul E. McKenney wrote:
-> > Now that the SRCU Kconfig option is unconditionally selected, there is
-> > no longer any point in conditional compilation based on CONFIG_SRCU.
-> > Therefore, remove the #ifdef and throw away the #else clause.
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Jeff Layton <jlayton@kernel.org>
-> > Cc: Chuck Lever <chuck.lever@oracle.com>
-> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > Cc: <linux-fsdevel@vger.kernel.org>
-> > Reviewed-by: John Ogness <john.ogness@linutronix.de>
-> > ---
-> >  fs/locks.c | 25 -------------------------
-> >  1 file changed, 25 deletions(-)
-> > 
-> > diff --git a/fs/locks.c b/fs/locks.c
-> > index 8f01bee177159..1909a9de242c8 100644
-> > --- a/fs/locks.c
-> > +++ b/fs/locks.c
-> > @@ -1889,7 +1889,6 @@ int generic_setlease(struct file *filp, long arg, struct file_lock **flp,
-> >  }
-> >  EXPORT_SYMBOL(generic_setlease);
-> >  
-> > -#if IS_ENABLED(CONFIG_SRCU)
-> >  /*
-> >   * Kernel subsystems can register to be notified on any attempt to set
-> >   * a new lease with the lease_notifier_chain. This is used by (e.g.) nfsd
-> > @@ -1923,30 +1922,6 @@ void lease_unregister_notifier(struct notifier_block *nb)
-> >  }
-> >  EXPORT_SYMBOL_GPL(lease_unregister_notifier);
-> >  
-> > -#else /* !IS_ENABLED(CONFIG_SRCU) */
-> > -static inline void
-> > -lease_notifier_chain_init(void)
-> > -{
-> > -}
-> > -
-> > -static inline void
-> > -setlease_notifier(long arg, struct file_lock *lease)
-> > -{
-> > -}
-> > -
-> > -int lease_register_notifier(struct notifier_block *nb)
-> > -{
-> > -	return 0;
-> > -}
-> > -EXPORT_SYMBOL_GPL(lease_register_notifier);
-> > -
-> > -void lease_unregister_notifier(struct notifier_block *nb)
-> > -{
-> > -}
-> > -EXPORT_SYMBOL_GPL(lease_unregister_notifier);
-> > -
-> > -#endif /* IS_ENABLED(CONFIG_SRCU) */
-> > -
-> >  /**
-> >   * vfs_setlease        -       sets a lease on an open file
-> >   * @filp:	file pointer
-> 
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Dzie=C5=84 dobry,=20
 
-Thank you!  I will apply this on my next rebase.
+jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
+j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
+e Google.=20
 
-							Thanx, Paul
+Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
+=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
+w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
+owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
+dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
+
+Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
+edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
+edstawi=C4=87 ofert=C4=99?=20
+
+
+Pozdrawiam serdecznie,
+Dominik Perkowski
