@@ -2,145 +2,154 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0CD9C54EBD
-	for <rcu@archiver.kernel.org>; Mon,  9 Jan 2023 23:56:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD8CFC5479D
+	for <rcu@archiver.kernel.org>; Tue, 10 Jan 2023 00:03:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbjAIX4C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Jan 2023 18:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S233656AbjAJADE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Jan 2023 19:03:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237717AbjAIXz7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Jan 2023 18:55:59 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E912FF69;
-        Mon,  9 Jan 2023 15:55:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id ACB9DB80AD5;
-        Mon,  9 Jan 2023 23:55:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 131C5C433EF;
-        Mon,  9 Jan 2023 23:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673308554;
-        bh=d2PcXOaVy6FyBVtZaPfSiTqbNPTuX2NFJs+b75ZfvvA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M8v+snmwHqkXwWhs4EjMyIdbPC2VwXf1vMsdqyLNFlJY+RW3mnrsdWGh1P49N2vLb
-         3Tb7HV0BYe+ZG2a1OAWIFTgaulHhMRObmDzlPgqXSLSSP5bZ5LJNYOG2HDV792VfTi
-         f9k6JxF9/NOZvg5S7mgBlsXdmjXHBPs4qQuNbjdYn3AiXUZtlVNCxZRygcFz4EOUFx
-         +S8HGXW4EDGE78oaSjKujQ1hESOgQfUb/4TA3YKsN2AClbom7XLz07zBLOI+0igbG4
-         /mq9AFnGAWwLs2ZhLiK5q6JS+USjmWo3g13W6g2tnvZBzAFUZVtdIeizelVHK6R9NU
-         eg5jYk2eqkjDA==
-Date:   Tue, 10 Jan 2023 00:55:51 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Zqiang <qiang1.zhang@intel.com>, quic_neeraju@quicinc.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
-Message-ID: <Y7yph3aMNbxGa7o5@lothringen>
-References: <0BF2065B-1E02-498C-B999-EB52F005B62E@joelfernandes.org>
- <D445A93C-8315-4407-A8E4-C377BF63058A@joelfernandes.org>
- <Y7tNPF4x+HYJUwjK@lothringen>
- <20230109193226.GX4028633@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S237777AbjAJADC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Jan 2023 19:03:02 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F3B1EEC7
+        for <rcu@vger.kernel.org>; Mon,  9 Jan 2023 16:03:01 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id 17so11437530pll.0
+        for <rcu@vger.kernel.org>; Mon, 09 Jan 2023 16:03:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=j8xKmx/6dFVmm2efFsDSsl9YQyAJHEnSGQ2/e2NGlbw=;
+        b=DkbmJFj9U2D2y8oYBC4N5/IBVDLBcLwjTVMrYSBWmD5dzn6FU7B4cK/V8k4Y4G1I7F
+         UnijwFmcdv47bR79JuO5ugHbnNuuZkgQ9n9Cl7DUTJTNSxq7VUmm1CAT5LViY20XrIz3
+         YWtE+5qKWQFKoIHXNm8CKICk5QQMvsxoJQDgX9s333sC7ym5GyI8Ek1x3miAvP7Q7+8E
+         Aj3WakOz0ksfG17g+di82TP69xYDpWh+r6mUF9PP/aYejp/G60GkJvqPTv6RKg5eFYX8
+         /0VKfVL5dsvY1RHyztck/Ct3d9eqKJfr0ZuBGuACyOtjldpLLRFv/dHCQN4KpQG3RV12
+         p7hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j8xKmx/6dFVmm2efFsDSsl9YQyAJHEnSGQ2/e2NGlbw=;
+        b=BzLa7fyu3CXcx4OqwocWt9q9TOFRZTBlp4VDRkq8pyn0MYaCkv1W/zSIFHIH0YF50s
+         1g0nx4S8LhA3uHBXKlYsOwH5rdHQ1WVHCLm4TfKTh4z1LAaQlWeQhYxAG9xeHy/v4ZhB
+         uhRdySDZXsg30YmiTCroEYORAfyAaXui3VaHOLvth3tAVQ2pIeIT8jIbKRZA0omnus2J
+         +t7WaATQoFoQ8F5afsXY5/MSntqZaVFERfThJwMR/N3jdIZqmdtU89ueo+kjc97ip8Us
+         0Oo4n+Rs4ed5I8e5nWCupiZTvpwGahqi8rDCDuoGpAHACVj3GFDD3uYURmc0MMeu1slq
+         wA+g==
+X-Gm-Message-State: AFqh2kodk7pUO7RnInx30MR/APV7peftBuEgJpec8nn+9Ynh5Ht8Wyry
+        ln9dOZIQqSfnakFFRHa7z+fO97rduqJnl7HnKXlEJw==
+X-Google-Smtp-Source: AMrXdXtjmBcgdv8YybRfNjAPG3T9XcOotaMhL9vqmkJ4YtqytQW7gQEGDz3m1wjCErdeiDno1GuPOPszf1xcTBopexM=
+X-Received: by 2002:a17:902:c94d:b0:191:24d1:3b31 with SMTP id
+ i13-20020a170902c94d00b0019124d13b31mr2872837pla.94.1673308980354; Mon, 09
+ Jan 2023 16:03:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230109193226.GX4028633@paulmck-ThinkPad-P17-Gen-1>
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1> <20230105003813.1770367-22-paulmck@kernel.org>
+In-Reply-To: <20230105003813.1770367-22-paulmck@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 9 Jan 2023 16:02:48 -0800
+Message-ID: <CAKwvOdmt7mnP_dfCMO_YUV792Zgtirk=NFqe8XH0z88-b0e23A@mail.gmail.com>
+Subject: Re: [PATCH rcu 22/27] init: Remove "select SRCU"
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Aaron Tomlin <atomlin@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 11:32:26AM -0800, Paul E. McKenney wrote:
-> On Mon, Jan 09, 2023 at 12:09:48AM +0100, Frederic Weisbecker wrote:
-> > On Sat, Jan 07, 2023 at 09:55:22PM -0500, Joel Fernandes wrote:
-> > > 
-> > > 
-> > > > On Jan 7, 2023, at 9:48 PM, Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > 
-> > > > ﻿
-> > > >>> On Jan 7, 2023, at 5:11 PM, Frederic Weisbecker <frederic@kernel.org> wrote:
-> > > >>> 
-> > > >>> ﻿On Fri, Jan 06, 2023 at 07:01:28PM -0500, Joel Fernandes wrote:
-> > > >>> (lost html content)
-> > > > 
-> > > > My problem is the iPhone wises up when I put a web link in an email. I want to look into smtp relays but then if I spent time on fixing that, I might not get time to learn from emails like these... 
-> > > > 
-> > > >> I can't find a place where the exp grace period sends an IPI to
-> > > >> CPUs slow to report a QS. But anyway you really need the tick to poll
-> > > >> periodically on the CPU to chase a quiescent state.
-> > > > 
-> > > > Ok.
-> > > > 
-> > > >> Now arguably it's probably only useful when CONFIG_PREEMPT_COUNT=y
-> > > >> and rcu_exp_handler() has interrupted a preempt-disabled or bh-disabled
-> > > >> section. Although rcu_exp_handler() sets TIF_RESCHED, which is handled
-> > > >> by preempt_enable() and local_bh_enable() when CONFIG_PREEMPT=y.
-> > > >> So probably it's only useful when CONFIG_PREEMPT_COUNT=y and CONFIG_PREEMPT=n
-> > > >> (and there is also PREEMPT_DYNAMIC to consider).
-> > > > 
-> > > > Makes sense. I think I was missing this use case and was going by the general design of exp grace periods.  I was incorrectly assuming the IPIs were being sent repeatedly for hold out CPUs, which is not the case I think. But that would another way to fix it?
-> > > > 
-> > > > But yeah I get your point, the first set of IPIs missed it, so we need the rescue-tick for long non-rcu_read_lock() implicit critical sections.. 
-> > > > 
-> > > >> If CONFIG_PREEMPT_COUNT=n, the tick can only report idle and user
-> > > >> as QS, but those are already reported explicitly on ct_kernel_exit() ->
-> > > >> rcu_preempt_deferred_qs().
-> > > > 
-> > > > Oh hmm, because that function is a NOOP for PREEMPT_COUNT=y and PREEMPT=n and will not report the deferred QS?  Maybe it should then. However I think the tick is still useful if after the preempt disabled section, will still did not exit the kernel.
-> > > 
-> > > I think meant I here, an atomic section (like bh or Irq disabled). There is no such thing as disabling preemption for CONFIG_PREEMPT=n. Or maybe I am confused again.  This RCU thing…
-> > 
-> > Right, so when CONFIG_PREEMPT_COUNT=n, there is no way for a tick to tell if the
-> > the interrupted code is safely considered as a QS. That's because
-> > preempt_disable() <-> preempt_enable() are no-ops so the whole kernel is
-> > assumed non-preemptible, and therefore the whole kernel is a READ side critical
-> > section, except for the explicit points reporting a QS.
-> > 
-> > The only exception is when the tick interrupts idle (or user with
-> > nohz_full). But we already have an exp QS reported on idle (and user with
-> > nohz_full) entry through ct_kernel_exit(), and that happens on all RCU_TREE
-> > configs (PREEMPT or not). Therefore the tick doesn't appear to be helpful at
-> > all on a nohz_full CPU with CONFIG_PREEMPT_COUNT=n.
-> > 
-> > I suggest we don't bother optimizing that case though...
-> > 
-> > To summarize:
-> > 
-> > 1) nohz_full && !CONFIG_PREEMPT_COUNT && !CONFIG_PREEMPT_RCU:
-> >   Tick isn't helpful. It can only report idle/user QS, but that is
-> >   already reported explicitly.
-> > 
-> > 2) nohz_full && CONFIG_PREEMPT_COUNT && !CONFIG_PREEMPT_RCU:
-> >   Tick is very helpful because it can tell if the kernel is in
-> >   a QS state.
-> > 
-> > 3) nohz_full && CONFIG_PREEMPT_RCU:
-> >    Tick doesn't appear to be helpful because:
-> >        - If the rcu_exp_handler() fires in an rcu_read_lock'ed section, then the
-> >          exp QS is reported on rcu_read_unlock()
-> >        - If the rcu_exp_handler() fires in a preempt/bh disabled section,
-> >          TIF_RESCHED is forced which is handled on preempt/bh re-enablement,
-> > 	 reporting a QS.
-> >    
-> >   
-> > The case 2) is a niche, only useful for debugging. But anyway I'm not sure it's
-> > worth changing/optimizing the current state. Might be worth add a comment
-> > though.
-> 
-> Thank you both for the analysis!  I would welcome a comment.
+On Wed, Jan 4, 2023 at 4:38 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> Now that the SRCU Kconfig option is unconditionally selected, there is
+> no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> Kconfig statements.
 
-I'm preparing that.
+Looks like that's the case as of
+commit 0cd7e350abc4 ("rcu: Make SRCU mandatory")
+in v6.2-rc1.
 
-> One could argue that we should increase the delay before turning the
-> tick on, but my experience is that expedited grace periods almost always
-> complete in less than a jiffy, so there would almost never be any benefit
-> in doing so.  But if some large NO_HZ_FULL system with long RCU readers
-> starts having trouble with too-frequent tick enablement, that is one
-> possible fix.
+>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Miguel Ojeda <ojeda@kernel.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Aaron Tomlin <atomlin@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-And last but not least: wait for anybody to complain before changing anything
-;-))
+Patch LGTM
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Thanks.
+Note that there's quite a few more of these though. Perhaps best to
+remove them all together? Or perhaps you already have individual
+patches out already for all of these?
+
+$ grep -rn 'select SRCU'
+mm/Kconfig:670: select SRCU
+kernel/power/Kconfig:121: select SRCU
+arch/mips/kvm/Kconfig:29: select SRCU
+arch/riscv/kvm/Kconfig:30: select SRCU
+arch/s390/kvm/Kconfig:34: select SRCU
+arch/powerpc/kvm/Kconfig:25: select SRCU
+arch/x86/kvm/Kconfig:49: select SRCU
+arch/x86/Kconfig:286: select SRCU
+arch/x86/Kconfig:1941: select SRCU
+arch/arm64/kvm/Kconfig:31: select SRCU
+init/Kconfig:1868: select SRCU
+security/tomoyo/Kconfig:9: select SRCU
+fs/btrfs/Kconfig:20: select SRCU
+fs/dlm/Kconfig:7: select SRCU
+fs/quota/Kconfig:9: select SRCU
+fs/notify/Kconfig:4: select SRCU
+drivers/md/Kconfig:9: select SRCU
+drivers/clk/Kconfig:26: select SRCU
+drivers/dax/Kconfig:4: select SRCU
+drivers/devfreq/Kconfig:4: select SRCU
+drivers/net/Kconfig:337: select SRCU
+drivers/hwtracing/stm/Kconfig:5: select SRCU
+drivers/cpufreq/Kconfig:6: select SRCU
+drivers/opp/Kconfig:4: select SRCU
+
+> ---
+>  init/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 7e5c3ddc341de..af511c726d695 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1865,7 +1865,6 @@ config PERF_EVENTS
+>         default y if PROFILING
+>         depends on HAVE_PERF_EVENTS
+>         select IRQ_WORK
+> -       select SRCU
+>         help
+>           Enable kernel support for various performance events provided
+>           by software and hardware.
+> --
+> 2.31.1.189.g2e36527f23
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
