@@ -2,253 +2,404 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 499D5C54EBE
-	for <rcu@archiver.kernel.org>; Tue, 10 Jan 2023 05:03:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 894BEC61DB3
+	for <rcu@archiver.kernel.org>; Tue, 10 Jan 2023 06:07:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjAJFDU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Jan 2023 00:03:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        id S229755AbjAJGHY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Jan 2023 01:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbjAJFDC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Jan 2023 00:03:02 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D64C41A59;
-        Mon,  9 Jan 2023 21:02:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0083E6147A;
-        Tue, 10 Jan 2023 05:02:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383FEC433EF;
-        Tue, 10 Jan 2023 05:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673326974;
-        bh=CfqP6C+1zm3vTwLIb7TUuSEyH6Zrafjq1dDxaIx2qX4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hfDjR2qYT34whMPxcsgaO6+YL9GI9wb9yrqrAd6lO6dSJxpN3AMwyQlePsxm3cnH4
-         9RY3FVQOO1TCQvpl7xdwn1z1Q2VSCTbvXhdaRTVPkUFelKUnKDk8OiTWG0PWgrj/tR
-         RY1w14hDy3dZepWuDq3Hy4KUzA3WuKZ58NA0DCUDEh4ZgR3BbGFs7kDJji4DoUnYVr
-         kYWXu/mYiNYzJk73uMnDf+9qTLRxY3w1OZmNpsDd9s2wLUX1QHj87/N8lpPByX1084
-         NwpMeKaf2uH/KTS5cNfMBHYEwwINiu47y5f1XvRl07FKMFXro/WgfVAO5FiuQFtHlE
-         Fn8yggtRPkZMg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CEFA65C0A1A; Mon,  9 Jan 2023 21:02:53 -0800 (PST)
-Date:   Mon, 9 Jan 2023 21:02:53 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "Liu, Yujie" <yujie.liu@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        lkp <lkp@intel.com>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] rcu-tasks: Make rude RCU-Tasks work well with CPU
- hotplug
-Message-ID: <20230110050253.GA3798705@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221130234533.1983769-1-qiang1.zhang@intel.com>
- <202212181914.f5a305f3-yujie.liu@intel.com>
- <PH0PR11MB5880EB31D9AFD82EFA3073A6DAE59@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20221221193325.GE4001@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB588092AB6A014F30420D697CDAE89@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20230105182220.GF4028633@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB5880273B1F5A6FF2CB782051DAFB9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20230110021012.GI4028633@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230110021012.GI4028633@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S229538AbjAJGHX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Jan 2023 01:07:23 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600B41C927
+        for <rcu@vger.kernel.org>; Mon,  9 Jan 2023 22:07:20 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id z12so10103660qtv.5
+        for <rcu@vger.kernel.org>; Mon, 09 Jan 2023 22:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jbaDMv7Z9j3Qczwppqgh+TS9yK6GrMsXJliPAS8AcaM=;
+        b=DXCTyq/RNTiGcRaOvWGDB4JGtwAMMbJHxI0EP+C+GCQdxf1NITIAOxdDhMzKsAN8Ey
+         fTqekihJkYwfKLWaSeYSxDxWB77wCh2SHOrW7DMrYZRHeYzVN2vYXryC80qtQ3xs1wb6
+         ZsGpBSyQpOTlJm68LtMuezHmSw0jDUhK5zvPQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jbaDMv7Z9j3Qczwppqgh+TS9yK6GrMsXJliPAS8AcaM=;
+        b=RXuXYZAWrV0EPc3Lfm6xswl5/J768HaovPIR7jGczlsBCwu7jxWk+AqfpI2LJmZ1Kh
+         1KeUfs4FKZklveS04a8vnYLb0yebKNbHy6kZssL8h1kERqLgIHEGLQfq2e5MAkakCepI
+         EtR88jb4GCWg6lrsI4kRn0Kjae5zaXoBUQsRSqL2LVq+M6HEY/2RRefrefXEq3MLMori
+         BxCAbURA71Za9icap8uuDJzGC4xYhtL5xXVqh1oIX4IxWuEar2bRjyith/okXsOQlGIf
+         4lojLjayMxTAlS6yFfMYAjB08aZchRmKszB2XZ32KDqoADcQ/iiPyTVKQxzjU/6qoXk+
+         kb0Q==
+X-Gm-Message-State: AFqh2krYd+g1CH9utbmWrMRYHJJaL4rzUTK9xCDtiWryy79mlNRQ09Jx
+        hL5EqDT0EE3NZr0kRNEYnQtP8Q==
+X-Google-Smtp-Source: AMrXdXsk+xCnOE6LQ9p9KhbnJnZaLHBwjcN6YkvUIEjF+LbKscGl2doB4cnHo6I+w9GKVZPw24j6Bg==
+X-Received: by 2002:ac8:4245:0:b0:3a9:8082:8991 with SMTP id r5-20020ac84245000000b003a980828991mr92523794qtm.5.1673330839355;
+        Mon, 09 Jan 2023 22:07:19 -0800 (PST)
+Received: from smtpclient.apple ([2600:1003:b110:1f87:f047:ffed:9f93:3fb6])
+        by smtp.gmail.com with ESMTPSA id d16-20020ac85350000000b003a689a5b177sm5624673qto.8.2023.01.09.22.07.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Jan 2023 22:07:18 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 1/3] rcu: genericize RCU stall suppression functions
+Date:   Tue, 10 Jan 2023 01:07:07 -0500
+Message-Id: <8105AAEA-F018-4246-AA6F-AE8ED6A65433@joelfernandes.org>
+References: <20221221185613.GB4001@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Robert Elliott <elliott@hpe.com>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, linux-crypto@vger.kernel.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20221221185613.GB4001@paulmck-ThinkPad-P17-Gen-1>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 09, 2023 at 06:10:12PM -0800, Paul E. McKenney wrote:
-> On Fri, Jan 06, 2023 at 02:48:56AM +0000, Zhang, Qiang1 wrote:
-> > 
-> > On Thu, Dec 22, 2022 at 09:35:06AM +0000, Zhang, Qiang1 wrote:
-> > > >On Mon, Dec 19, 2022 at 02:21:01AM +0000, Zhang, Qiang1 wrote:
-> > > > >Greeting,
-> > > > >FYI, we noticed WARNING:at_kernel/rcu/rcutorture.c:#rcu_torture_fwd_prog_cr[rcutorture] due to commit (built with gcc-11):
-> > > > >
-> > > > >commit: 572a17843591d3c03ad891492939a06833fdd17d ("[PATCH v4] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug")
-> > > > >url: https://github.com/intel-lab-lkp/linux/commits/Zqiang/rcu-tasks-Make-rude-RCU-Tasks-work-well-with-CPU-hotplug/20221201-074127
-> > > > >base: https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev
-> > > > >patch link: https://lore.kernel.org/all/20221130234533.1983769-1-qiang1.zhang@intel.com/
-> > > > >patch subject: [PATCH v4] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
-> > > > >
-> > > > >in testcase: rcutorture
-> > > > >version: 
-> > > > >with following parameters:
-> > > > >
-> > > > >	runtime: 300s
-> > > > >	test: cpuhotplug
-> > > > >	torture_type: tasks-rude
-> > > > >
-> > > > >test-description: rcutorture is rcutorture kernel module load/unload test.
-> > > > >test-url: https://www.kernel.org/doc/Documentation/RCU/torture.txt
-> > > > >
-> > > > >on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> > > > >
-> > > > >caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > > > >
-> > > > >
-> > > > >[  106.051532][  T583] rcu_torture_fwd_prog: Starting forward-progress test 0
-> > > > >[  106.052085][  T583] rcu_torture_fwd_prog_cr: Starting forward-progress test 0
-> > > > >[  133.611262][  T583] rcu_torture_fwd_prog_cr: Waiting for CBs: rcu_barrier_tasks_rude+0x0/0x10() 0
-> > > > >[  146.800051][  T583] ------------[ cut here ]------------
-> > > > >[  146.800411][  T583] WARNING: CPU: 1 PID: 583 at kernel/rcu/rcutorture.c:2806 rcu_torture_fwd_prog_cr+0x22c/0x2a7 [rcutorture]
-> > > > >[  146.801075][  T583] Modules linked in: rcutorture torture ipmi_msghandler crc32c_intel serio_raw processor fuse
-> > > > >[  146.801894][  T583] CPU: 1 PID: 583 Comm: rcu_torture_fwd Not tainted 6.1.0-rc1-00180-g572a17843591 #1 0cc09f902db70bae111a0c12c137296733dde4a9
-> > > > >[  146.802916][  T583] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-debian-1.16.0-5 04/01/2014
-> > > > >[  146.803693][  T583] EIP: rcu_torture_fwd_prog_cr+0x22c/0x2a7 [rcutorture]
-> > > > >[  146.804177][  T583] Code: 89 d8 e8 fc c5 ff ff e8 67 49 03 00 83 c4 10 84 c0 75 79 a0 96 c6 10 ef 84 c0 75 70 e8 c8 ee ff ff 84 c0 75 67 83 fe 63 7f 02 <0f> 0b 8b 45 f0 8b 15 40 25 8a c2 ff 75 e8 ff 75 e0 01 f8 2b 45 dc
-> > > > >[  146.805599][  T583] EAX: 00000000 EBX: ecee3800 ECX: 00000000 EDX: 00000000
-> > > > >[  146.805992][  T583] ESI: 00000000 EDI: 0000c350 EBP: ed9d5f64 ESP: ed9d5f40
-> > > > >[  146.806491][  T583] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010293
-> > > > >[  146.807010][  T583] CR0: 80050033 CR2: 08082ff0 CR3: 2daaf000 CR4: 000406d0
-> > > > >[  146.807484][  T583] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> > > > >[  146.808031][  T583] DR6: fffe0ff0 DR7: 00000400
-> > > > >[  146.808384][  T583] Call Trace:
-> > > > >[  146.808634][  T583]  rcu_torture_fwd_prog.cold+0x3b/0xee [rcutorture 6754ed9afe4685f50ef7fade6309181c73794538]
-> > > > >[  146.809348][  T583]  kthread+0xc8/0xf0
-> > > > >[  146.809635][  T583]  ? rcu_torture_fwd_prog_cbfree+0x80/0x80 [rcutorture 6754ed9afe4685f50ef7fade6309181c73794538]
-> > > > >[  146.810347][  T583]  ? kthread_complete_and_exit+0x20/0x20
-> > > > >[  146.810734][  T583]  ret_from_fork+0x1c/0x28
-> > > > >[  146.811075][  T583] irq event stamp: 205883
-> > > > >[  146.811400][  T583] hardirqs last  enabled at (205891): [<c114bb06>] __up_console_sem+0x66/0x80
-> > > > >[  146.811960][  T583] hardirqs last disabled at (205898): [<c114baed>] __up_console_sem+0x4d/0x80
-> > > > >[  146.812583][  T583] softirqs last  enabled at (205880): [<c1ecb40b>] __do_softirq+0x2bb/0x440
-> > > > >[  146.813079][  T583] softirqs last disabled at (205871): [<c10845f0>] call_on_stack+0x40/0x50
-> > > > >[  146.813567][  T583] ---[ end trace 0000000000000000 ]---
-> > > > >[  146.813926][  T583] rcu_torture_fwd_prog_cr Duration 2411 barrier: 3960 pending 50000 n_launders: 0 n_launders_sa: 0 n_max_gps: 0 n_max_cbs: 50000 cver 1 gps 0
-> > > > >[  147.914266][  T583] rcu_torture_fwd_cb_hist: Callback-invocation histogram 0 (duration 6702 jiffies): 1s/10: 0:0 2s/10: 
-> > > > >[  149.453780][  T557] ------------[ cut here ]------------
-> > > > >[  149.454322][  T557] rcu_torture_writer: rtort_pipe_count: 4
-> > > > >[  149.454817][  T557] WARNING: CPU: 1 PID: 557 at kernel/rcu/rcutorture.c:1583 rcu_torture_writer+0x71d/0xc80 [rcutorture]
-> > > > 
-> > > > 
-> > > > This is not a bug.  this is caused by grace period taking too long time, the previous callback
-> > > > has not been completed.  from the dmesg, can be found that the cpuhotplug test is being
-> > > > performed periodically, this may cause the rude RCU-Tasks  grace period to take more time,
-> > > > due to we need to acquire the cpus_read_lock, and the CPU0 always bootup failed, that is to
-> > > > say, only one CPU of your system is online at this time.
-> > > >
-> > > >Onlining of a CPU failing with EIO is a new one on me.  Especially
-> > > >persistent failure.
-> > > 
-> > > I use the kernel configuration file in the attachment and  base on:
-> > > https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev
-> > > 
-> > > use "echo 1 > /sys/devices/system/cpu/cpu0/online" can reproduce this problem,
-> > > the CPU0 always fails to go online.  
-> > > 
-> > > Debug found CPU0 is always not set in cpu_initialized_mask.
-> > > causes the do_boot_cpu() to return -1.
-> > > 
-> > > do_boot_cpu()
-> > >      wakeup_cpu_via_init_nmi();
-> > >      if (!boot_error) {
-> > >                 /*
-> > >                  * Wait 10s total for first sign of life from AP
-> > >                  */
-> > >                 boot_error = -1;
-> > >                 timeout = jiffies + 10*HZ;
-> > >                 while (time_before(jiffies, timeout)) {
-> > >                         if (cpumask_test_cpu(cpu, cpu_initialized_mask)) {
-> > >                                 /*
-> > >                                  * Tell AP to proceed with initialization
-> > >                                  */
-> > >                                 cpumask_set_cpu(cpu, cpu_callout_mask);
-> > >                                 boot_error = 0;
-> > >                                 break;
-> > >                         }
-> > >                         schedule();
-> > >                 }
-> > >         }
-> > > 
-> > > This looks related to this modification e1c467e69040c("x86, hotplug: 
-> > > Wake up CPU0 via NMI instead of INIT, SIPI, SIPI ").
-> > > 
-> > > 
-> > > The following modification can make CPU0 go online successfully(This
-> > > is just a test, not sure if there are other effects).
-> > >
-> > >
-> > >Thank you for tracking this down!!!
-> > >
-> > >Huh.  CPU 0 is normally the boot CPU.  Back in the day, it could not
-> > >be offlined.  Given that your testing indicates that CPU 0 can now be
-> > >taken offline, maybe this "if" statement is a holdover that someone
-> > >forgot to remove?
-> > >
-> > >But I must defer to those who know a lot more about this level of
-> > >x86 code than I do.
-> > 
-> > I found relevant modification information, maybe it will be of some help
-> > 
-> > commit e1c467e69040c3be68959332959c07fb3d818e87
-> > Author: Fenghua Yu <fenghua.yu@intel.com>
-> > Date:   Wed Nov 14 04:36:53 2012 -0800
-> > 
-> >     x86, hotplug: Wake up CPU0 via NMI instead of INIT, SIPI, SIPI
-> > 
-> >     Instead of waiting for STARTUP after INITs, BSP will execute the BIOS boot-strap
-> >     code which is not a desired behavior for waking up BSP. To avoid the boot-strap
-> >     code, wake up CPU0 by NMI instead.
-> > 
-> >     This works to wake up soft offlined CPU0 only. If CPU0 is hard offlined (i.e.
-> >     physically hot removed and then hot added), NMI won't wake it up. We'll change
-> >     this code in the future to wake up hard offlined CPU0 if real platform and
-> >     request are available.
-> > 
-> >     AP is still waken up as before by INIT, SIPI, SIPI sequence.
-> > 
-> >     Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> >     Link: http://lkml.kernel.org/r/1352896613-25957-1-git-send-email-fenghua.yu@intel.com
-> >     Signed-off-by: H. Peter Anvin <hpa@linux.intel.com>
-> 
-> Interesting!
-> 
-> When I run rcutorture on x86 (under qemu/KVM), it refuses to attempt to
-> offline CPU 0.  The reason is that cpu_is_hotpluggable(0) returns false.
-> 
-> If I comment out that check, I get this:
-> 
-> 	rcu-torture:torture_onoff task: offline 0 failed: errno -1
-> 
-> A bit of digging turned up the CONFIG_BOOTPARAM_HOTPLUG_CPU0 Kconfig
-> option.  Setting that causes CPU 0 to be offlined.
-> 
-> I clearly need to add this to one of the scenarios.  I arbitrarily
-> chose TREE01, but please let me know if some other scenario or
-> group of scenarios would be better.
 
-For example, like this.
 
-						Thanx, Paul
+> On Dec 21, 2022, at 1:56 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+>=20
+> =EF=BB=BFOn Mon, Dec 19, 2022 at 02:29:08PM -0600, Robert Elliott wrote:
+>> Convert the functions that temporarily suppress RCU CPU
+>> stall reporting:
+>>    rcu_sysrq_start()
+>>    rcu_sysrq_end()
+>>=20
+>> to more generic functions that may be called by functions
+>> other than the SysRq handler:
+>>    rcu_suppress_start()
+>>    rcu_suppress_end()
+>>=20
+>> Covert the underlying variable:
+>>    rcu_cpu_stall_suppress
+>>=20
+>> to an atomic variable so multiple threads can manipulate it at the
+>> same time, incrementing it in start() and decrementing in end().
+>>=20
+>> Expose that in sysfs in a read-only
+>>    /sys/module/rcupdate/parameters/rcu_cpu_stall_suppress_dyn
 
-------------------------------------------------------------------------
+Robert,
 
-commit 6c11be38a0363b61db36352555e6746920711a1f
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Mon Jan 9 21:01:12 2023 -0800
+What is the use of exposing this read-only node?
 
-    rcutorture: Set CONFIG_BOOTPARAM_HOTPLUG_CPU0 to offline CPU 0
-    
-    There is now a BOOTPARAM_HOTPLUG_CPU0 Kconfig option that allows CPU 0
-    to be offlined on x86 systems.  This commit therefore sets this option in
-    the TREE01 rcutorture scenario in order to regularly test this capability.
-    
-    Reported-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+I find it hard to believe anyone or any tool would be reading it during a sc=
+enario where stalls are required to be dynamically suppressed.
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE01 b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-index 8ae41d5f81a3e..04831ef1f9b55 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-@@ -15,3 +15,4 @@ CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_RCU_BOOST=n
- CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
-+CONFIG_BOOTPARAM_HOTPLUG_CPU0=y
+Or maybe I missed the point of this patch as I am late to the party.
+
+Thanks,
+
+ - J
+
+
+>>=20
+>> Keep
+>>    /sys/module/rcupdate/parameters/rcu_cpu_stall_suppress
+>> as writeable by userspace, but OR that into the equations rather than
+>> directly manipulate the atomic value.
+>>=20
+>> Signed-off-by: Robert Elliott <elliott@hpe.com>
+>=20
+> I really like the idea of making the suppressing and unsuppressing of
+> RCU CPU stall warnings SMP-safe, thank you!  Yes, as far as I know,
+> there have been no problems due to this, but accidents waiting to happen
+> and all that.
+>=20
+> Some comments and questions below.
+>=20
+>> ---
+>> .../RCU/Design/Requirements/Requirements.rst  |  6 +++---
+>> Documentation/RCU/stallwarn.rst               | 19 +++++++++++++++----
+>> arch/parisc/kernel/process.c                  |  2 +-
+>> drivers/tty/sysrq.c                           |  4 ++--
+>> include/linux/rcupdate.h                      |  8 ++++----
+>> kernel/rcu/rcu.h                              | 11 ++++++-----
+>> kernel/rcu/tree_stall.h                       | 18 ++++++++++--------
+>> kernel/rcu/update.c                           | 11 ++++++++++-
+>> 8 files changed, 51 insertions(+), 28 deletions(-)
+>>=20
+>> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Doc=
+umentation/RCU/Design/Requirements/Requirements.rst
+>> index 49387d823619..5083490bb6fc 100644
+>> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+>> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+>> @@ -1639,9 +1639,9 @@ against mishaps and misuse:
+>>    ``rcupdate.rcu_cpu_stall_suppress`` to suppress the splats. This
+>>    kernel parameter may also be set via ``sysfs``. Furthermore, RCU CPU
+>>    stall warnings are counter-productive during sysrq dumps and during
+>> -   panics. RCU therefore supplies the rcu_sysrq_start() and
+>> -   rcu_sysrq_end() API members to be called before and after long
+>> -   sysrq dumps. RCU also supplies the rcu_panic() notifier that is
+>> +   panics. RCU therefore supplies the rcu_suppress_start() and
+>> +   rcu_suppress_end() API members to be called before and after long
+>> +   CPU usage. RCU also supplies the rcu_panic() notifier that is
+>>    automatically invoked at the beginning of a panic to suppress further
+>>    RCU CPU stall warnings.
+>>=20
+>> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwar=
+n.rst
+>> index e38c587067fc..9e6fba72f56d 100644
+>> --- a/Documentation/RCU/stallwarn.rst
+>> +++ b/Documentation/RCU/stallwarn.rst
+>> @@ -135,13 +135,24 @@ see include/trace/events/rcu.h.
+>> Fine-Tuning the RCU CPU Stall Detector
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>=20
+>> -The rcuupdate.rcu_cpu_stall_suppress module parameter disables RCU's
+>> -CPU stall detector, which detects conditions that unduly delay RCU grace=
+
+>> -periods.  This module parameter enables CPU stall detection by default,
+>> -but may be overridden via boot-time parameter or at runtime via sysfs.
+>> +RCU's CPU stall detector detects conditions that unduly delay RCU grace
+>> +periods.  CPU stall detection is enabled by default, but may be overridd=
+en
+>> +via boot-time parameter or at runtime via sysfs (accessible via
+>> +/sys/module/rcupdate/parameters).
+>> +
+>> +The rcupdate.rcu_cpu_stall_suppress module parameter disables RCU's
+>> +CPU stall detector.
+>> +
+>> +/sys/module/rcu_cpu_stall_suppress_dyn reports an internal semaphore
+>=20
+> Actually an atomically updated variable as opposed to a semaphore,
+> correct?  Replacing "an internal semaphore" with something like "a
+> variable" would be fine from my viewpoint.
+>=20
+>> +used by the RCU's CPU stall detector. Functions holding a CPU for a
+>> +long time (e.g., sysrq printouts) increment this value before use
+>> +and decrement it when done, so the value reports the number of
+>> +functions currently disabling stalls.
+>> +
+>> The stall detector's idea of what constitutes "unduly delayed" is
+>> controlled by a set of kernel configuration variables and cpp macros:
+>>=20
+>> +
+>> CONFIG_RCU_CPU_STALL_TIMEOUT
+>> ----------------------------
+>=20
+> And thank you for updating the documentation!
+>=20
+>> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+>> index c4f8374c7018..038378fe7bfa 100644
+>> --- a/arch/parisc/kernel/process.c
+>> +++ b/arch/parisc/kernel/process.c
+>> @@ -126,7 +126,7 @@ void machine_power_off(void)
+>>           "Please power this system off now.");
+>>=20
+>>    /* prevent soft lockup/stalled CPU messages for endless loop. */
+>> -    rcu_sysrq_start();
+>> +    rcu_suppress_start();
+>>    lockup_detector_soft_poweroff();
+>>    for (;;);
+>> }
+>> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+>> index d2b2720db6ca..81ab63a473a7 100644
+>> --- a/drivers/tty/sysrq.c
+>> +++ b/drivers/tty/sysrq.c
+>> @@ -579,7 +579,7 @@ void __handle_sysrq(int key, bool check_mask)
+>>    orig_suppress_printk =3D suppress_printk;
+>>    suppress_printk =3D 0;
+>>=20
+>> -    rcu_sysrq_start();
+>> +    rcu_suppress_start();
+>>    rcu_read_lock();
+>>    /*
+>>     * Raise the apparent loglevel to maximum so that the sysrq header
+>> @@ -623,7 +623,7 @@ void __handle_sysrq(int key, bool check_mask)
+>>        console_loglevel =3D orig_log_level;
+>>    }
+>>    rcu_read_unlock();
+>> -    rcu_sysrq_end();
+>> +    rcu_suppress_end();
+>>=20
+>>    suppress_printk =3D orig_suppress_printk;
+>> }
+>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+>> index 03abf883a281..c0d8a4aae7ff 100644
+>> --- a/include/linux/rcupdate.h
+>> +++ b/include/linux/rcupdate.h
+>> @@ -131,11 +131,11 @@ static inline void rcu_init_tasks_generic(void) { }=
+
+>> #endif
+>>=20
+>> #ifdef CONFIG_RCU_STALL_COMMON
+>> -void rcu_sysrq_start(void);
+>> -void rcu_sysrq_end(void);
+>> +void rcu_suppress_start(void);
+>> +void rcu_suppress_end(void);
+>> #else /* #ifdef CONFIG_RCU_STALL_COMMON */
+>> -static inline void rcu_sysrq_start(void) { }
+>> -static inline void rcu_sysrq_end(void) { }
+>> +static inline void rcu_suppress_start(void) { }
+>> +static inline void rcu_suppress_end(void) { }
+>> #endif /* #else #ifdef CONFIG_RCU_STALL_COMMON */
+>>=20
+>> #if defined(CONFIG_NO_HZ_FULL) && (!defined(CONFIG_GENERIC_ENTRY) || !def=
+ined(CONFIG_KVM_XFER_TO_GUEST_WORK))
+>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+>> index c5aa934de59b..a658955a1174 100644
+>> --- a/kernel/rcu/rcu.h
+>> +++ b/kernel/rcu/rcu.h
+>> @@ -224,24 +224,25 @@ extern int rcu_cpu_stall_ftrace_dump;
+>> extern int rcu_cpu_stall_suppress;
+>> extern int rcu_cpu_stall_timeout;
+>> extern int rcu_exp_cpu_stall_timeout;
+>> +extern atomic_t rcu_cpu_stall_suppress_dyn;
+>> int rcu_jiffies_till_stall_check(void);
+>> int rcu_exp_jiffies_till_stall_check(void);
+>>=20
+>> static inline bool rcu_stall_is_suppressed(void)
+>> {
+>> -    return rcu_stall_is_suppressed_at_boot() || rcu_cpu_stall_suppress;
+>> +    return rcu_stall_is_suppressed_at_boot() ||
+>> +           rcu_cpu_stall_suppress ||
+>> +           atomic_read(&rcu_cpu_stall_suppress_dyn);
+>> }
+>>=20
+>> #define rcu_ftrace_dump_stall_suppress() \
+>> do { \
+>> -    if (!rcu_cpu_stall_suppress) \
+>> -        rcu_cpu_stall_suppress =3D 3; \
+>=20
+> One thing we are losing here is the ability to see what is suppressing
+> the current stall, for example, from a crash dump.  Maybe that is OK,
+> as I haven't needed to debug that sort of thing.
+>=20
+> Thoughts from those who have had this debugging experience?
+>=20
+>> +    atomic_inc(&rcu_cpu_stall_suppress_dyn); \
+>> } while (0)
+>>=20
+>> #define rcu_ftrace_dump_stall_unsuppress() \
+>> do { \
+>> -    if (rcu_cpu_stall_suppress =3D=3D 3) \
+>> -        rcu_cpu_stall_suppress =3D 0; \
+>> +    atomic_dec(&rcu_cpu_stall_suppress_dyn); \
+>> } while (0)
+>>=20
+>> #else /* #endif #ifdef CONFIG_RCU_STALL_COMMON */
+>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+>> index 5653560573e2..260748bc5bc8 100644
+>> --- a/kernel/rcu/tree_stall.h
+>> +++ b/kernel/rcu/tree_stall.h
+>> @@ -103,23 +103,25 @@ bool rcu_gp_might_be_stalled(void)
+>>    return !time_before(j, READ_ONCE(rcu_state.gp_start) + d);
+>> }
+>>=20
+>> -/* Don't do RCU CPU stall warnings during long sysrq printouts. */
+>> -void rcu_sysrq_start(void)
+>> +/* Don't do RCU CPU stall warnings during functions holding the CPU
+>> + * for a long period of time such as long sysrq printouts.
+>> + */
+>> +void rcu_suppress_start(void)
+>> {
+>> -    if (!rcu_cpu_stall_suppress)
+>> -        rcu_cpu_stall_suppress =3D 2;
+>=20
+> And the same point here.
+>=20
+>> +    atomic_inc(&rcu_cpu_stall_suppress_dyn);
+>> }
+>> +EXPORT_SYMBOL_GPL(rcu_suppress_start);
+>=20
+> If this is being exported to modules, the question of who suppressed
+> the CPU stalls might at some point become more urgent.
+>=20
+> If the problem was reproducible, I would simply attach a BPF program to
+> rcu_suppress_start() and rcu_suppress_end() counting the stack traces of
+> all callers to these functions.  This might or might not make everyone
+> happy, though.
+>=20
+>> -void rcu_sysrq_end(void)
+>> +void rcu_suppress_end(void)
+>> {
+>> -    if (rcu_cpu_stall_suppress =3D=3D 2)
+>> -        rcu_cpu_stall_suppress =3D 0;
+>> +    atomic_dec(&rcu_cpu_stall_suppress_dyn);
+>> }
+>> +EXPORT_SYMBOL_GPL(rcu_suppress_end);
+>>=20
+>> /* Don't print RCU CPU stall warnings during a kernel panic. */
+>> static int rcu_panic(struct notifier_block *this, unsigned long ev, void *=
+ptr)
+>> {
+>> -    rcu_cpu_stall_suppress =3D 1;
+>> +    atomic_inc(&rcu_cpu_stall_suppress_dyn);
+>>    return NOTIFY_DONE;
+>> }
+>>=20
+>> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+>> index f5e6a2f95a2a..ceee9d777384 100644
+>> --- a/kernel/rcu/update.c
+>> +++ b/kernel/rcu/update.c
+>> @@ -501,11 +501,18 @@ EXPORT_SYMBOL_GPL(rcutorture_sched_setaffinity);
+>> #ifdef CONFIG_RCU_STALL_COMMON
+>> int rcu_cpu_stall_ftrace_dump __read_mostly;
+>> module_param(rcu_cpu_stall_ftrace_dump, int, 0644);
+>> -int rcu_cpu_stall_suppress __read_mostly; // !0 =3D suppress stall warni=
+ngs.
+>> +
+>> +int rcu_cpu_stall_suppress __read_mostly; // !0 =3D suppress stall warni=
+ngs from sysfs
+>> EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress);
+>> module_param(rcu_cpu_stall_suppress, int, 0644);
+>> +
+>> +atomic_t rcu_cpu_stall_suppress_dyn __read_mostly; // !0 =3D suppress st=
+all warnings from functions
+>> +EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress_dyn);
+>> +module_param_named(rcu_cpu_stall_suppress_dyn, rcu_cpu_stall_suppress_dy=
+n.counter, int, 0444);
+>=20
+> I am not seeing a valid use case for specifying an initial
+> value on the kernel command line.  Or does this somehow prevent
+> rcupdate.rcu_cpu_stall_suppress_dyn from being specified on the kernel
+> command line?
+>=20
+> If something like rcupdate.rcu_cpu_stall_suppress_dyn=3D3 can be specified=
+
+> (incorrectly, in my current view) on the kernel command line, maybe
+> something as shown below would help?
+>=20
+>> +
+>> int rcu_cpu_stall_timeout __read_mostly =3D CONFIG_RCU_CPU_STALL_TIMEOUT;=
+
+>> module_param(rcu_cpu_stall_timeout, int, 0644);
+>> +
+>> int rcu_exp_cpu_stall_timeout __read_mostly =3D CONFIG_RCU_EXP_CPU_STALL_=
+TIMEOUT;
+>> module_param(rcu_exp_cpu_stall_timeout, int, 0644);
+>> #endif /* #ifdef CONFIG_RCU_STALL_COMMON */
+>> @@ -616,6 +623,8 @@ void __init rcupdate_announce_bootup_oddness(void)
+>>        pr_info("\tAll grace periods are expedited (rcu_expedited).\n");
+>>    if (rcu_cpu_stall_suppress)
+>>        pr_info("\tRCU CPU stall warnings suppressed (rcu_cpu_stall_suppre=
+ss).\n");
+>> +    if (atomic_read(&rcu_cpu_stall_suppress_dyn))
+>> +        pr_info("\tDynamic RCU CPU stall warnings suppressed (rcu_cpu_st=
+all_suppress_dyn).\n");
+>=20
+> Should this instead be a WARN_ON() placed somewhere so that it won't
+> mess up the printing of the other parameters?
+>=20
+> Or maybe have this code set it to back to zero, with the message
+> indicating that this is being done?
+>=20
+>>    if (rcu_cpu_stall_timeout !=3D CONFIG_RCU_CPU_STALL_TIMEOUT)
+>>        pr_info("\tRCU CPU stall warnings timeout set to %d (rcu_cpu_stall=
+_timeout).\n", rcu_cpu_stall_timeout);
+>>    rcu_tasks_bootup_oddness();
+>> --=20
+>> 2.38.1
+>>=20
