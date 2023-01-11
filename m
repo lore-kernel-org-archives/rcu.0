@@ -2,121 +2,80 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A992C46467
-	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 13:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3160C46467
+	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 14:44:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbjAKNLX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 08:11:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
+        id S231720AbjAKOoF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Jan 2023 09:44:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbjAKNLT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 08:11:19 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5008E39;
-        Wed, 11 Jan 2023 05:11:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673442674; x=1704978674;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tPgiAxXLY4gShdjl9d7GsMDyiml/2QFNArrDwpdyHfc=;
-  b=msv4S96QkMlQX3+6eDtKfocmPauL1J9o4wfTiDOzv3cr4G7lI3JD7Pdf
-   f4zXFJwFJIPbS064SfD6R8LcTd9uM6Dedwdz5TP8GX4a9yFjXObXjlMdX
-   O2o7svmvrs4FPMFwJr4b168BpAajE4GJJud+Wu/mWQwRoajgwd6j5DIQP
-   0jRNAFV8HwIOaG5zrasTDoweWrVV9fi2FPQnJt9MMR7lBNgX+ikHQMlHx
-   7qryoZwsZszYRJmYsTHCOPKCu0bOtiAThZt8B55KmbLjy34DD7xV3FNdt
-   BdJQZbVTchfYPV9QQbiTHQSH64M9m8r1QBlRLmjTo13FBeETXusbs3iJu
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="409651827"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; 
-   d="scan'208";a="409651827"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2023 05:09:44 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="650746989"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; 
-   d="scan'208";a="650746989"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2023 05:09:33 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Fix the start_poll_synchronize_rcu_expedited() be invoked very early
-Date:   Wed, 11 Jan 2023 21:14:53 +0800
-Message-Id: <20230111131453.1626214-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S238088AbjAKOnv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Jan 2023 09:43:51 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F8B2D1
+        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 06:43:49 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id bp15so23824742lfb.13
+        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 06:43:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9ZUfxLtIiOnVrvMcb+ThhoaPRzZmZBsJui0v7FIoz5M=;
+        b=RHv3FypXIhYMmqsD5JIcUeN9uT11r7gFT+QEXTRsM5aCk/6yVnxqqqZ4jqvi66a5IQ
+         GbJ8Rp+gFgDLVfdTDj4MEP41JLwAukQxQvC158Z6FpAeDHxV6m8AtcJIwRGisMYZEUTz
+         k75g+VtNFCD2PQOj57NGzY+1PIbNJYz66XozY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9ZUfxLtIiOnVrvMcb+ThhoaPRzZmZBsJui0v7FIoz5M=;
+        b=Y6SLmqNMyvhnDpBkGzd+wz3eXgyzO3DE6pespi/Hg0tSXXHelS9FU4VMxpWntTKcq1
+         3XLV6nVh847Vbyh84WbA6YK50Vy2yJdWmqlKQYhTdmetEd6iMr3epWoNgNOy83AVduyT
+         tn7F2rdDJ5YsYXTQ8OGeeh91rhbCLNHgzntcs8xXHpAekmauwplnUJLfV/u0ZOA5V2bD
+         A/itSQrzOsqP3jQ5J5GmjEH/icPHHNi8WqL0y0fRh8dSvUwIRWKA3nQmioAhp6SDAlSz
+         EDrhdZNZaXX/faMO2S/CYG7Fwq3dMHqwWj/Yk24djhdwMv9/O3KPzamqNOU250Vj3Aat
+         SKRw==
+X-Gm-Message-State: AFqh2krgfzSb3l9NLq4YDAxAf6jspBxKX6Zaoq8XAc8kFaqfG9jWK0Kc
+        1ngcL1OiWvCmJHdg0rme0+77M1IgBZfkiLb0Ec+dog==
+X-Google-Smtp-Source: AMrXdXtc0yiR0uWurfegKHD7ZovezSP+0/6Bj8oAX7lK/sPBj9q8AJ7KjIWfMBWYJ/agnbAqJZG5eK3ydH33NZo5CIk=
+X-Received: by 2002:a19:f607:0:b0:4cc:598c:41bd with SMTP id
+ x7-20020a19f607000000b004cc598c41bdmr1033221lfe.468.1673448227877; Wed, 11
+ Jan 2023 06:43:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 11 Jan 2023 14:43:36 +0000
+Message-ID: <CAEXW_YRfDB8Pqf1ppagF=s-Ks=2DBYb=iVtdHdFSz+F36weBqg@mail.gmail.com>
+Subject: LSFMMBPF proposal [General/MM]: SRCU: a case study in memory ordering
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-mm <linux-mm@kvack.org>, rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, the start_poll_synchronize_rcu_expedited() can be invoked
-very early. before rcu_init(), the rcu_data structure's->mynode is not
-initialized, if invoke start_poll_synchronize_rcu_expedited() before
-rcu_init(), will access to NULL mynode pointer.
+Title: SRCU: a case study in memory ordering
 
-This commit therefore add exp_seq_poll_rq member to rcu_state structure
-to store snap seq number
+Description:
+Memory ordering guarantees are the backbone of SRCU, an important RCU
+synchronization mechanism in the kernel. Can we use the Linux kernel
+memory model to understand complex concurrent code better?
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree.c     | 3 ++-
- kernel/rcu/tree.h     | 1 +
- kernel/rcu/tree_exp.h | 6 ++++--
- 3 files changed, 7 insertions(+), 3 deletions(-)
+In this talk, we will go over:
+- SRCU internals overview and why it works
+- Discuss in detail, all the 8 or so memory barriers in SRCU and why
+they are needed.
+- Comparable access patterns to each barrier (LB, MP etc)
+- Linux kernel memory model (LKMM) experiments on studying effects of
+each memory barrier, along with execution candidate graphs generated
+by herd7.
+- Possible formal methods / models.
+- Discuss both correctness and forward progress issues tackled by
+these memory barriers.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 63545d79da51..34b13d6bd8c4 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -92,6 +92,7 @@ static struct rcu_state rcu_state = {
- 	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
- 	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
- 	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
-+	.exp_seq_poll_rq = RCU_GET_STATE_COMPLETED,
- };
- 
- /* Dump rcu_node combining tree at boot to verify correct setup. */
-@@ -4938,7 +4939,7 @@ void __init rcu_init(void)
- 		qovld_calc = qovld;
- 
- 	// Kick-start any polled grace periods that started early.
--	if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
-+	if (!(rcu_state.exp_seq_poll_rq & 0x1))
- 		(void)start_poll_synchronize_rcu_expedited();
- 
- 	rcu_test_sync_prims();
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 192536916f9a..dbc7c7484a7e 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -397,6 +397,7 @@ struct rcu_state {
- 						/* Synchronize offline with */
- 						/*  GP pre-initialization. */
- 	int nocb_is_setup;			/* nocb is setup from boot */
-+	unsigned long exp_seq_poll_rq;
- };
- 
- /* Values for rcu_state structure's gp_flags field. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 956cd459ba7f..5964d1cccab1 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -1068,9 +1068,11 @@ unsigned long start_poll_synchronize_rcu_expedited(void)
- 	if (rcu_init_invoked())
- 		raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
- 	if (!poll_state_synchronize_rcu(s)) {
--		rnp->exp_seq_poll_rq = s;
--		if (rcu_init_invoked())
-+		if (rcu_init_invoked()) {
-+			rnp->exp_seq_poll_rq = s;
- 			queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-+		} else
-+			rcu_state.exp_seq_poll_rq = s;
- 	}
- 	if (rcu_init_invoked())
- 		raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
--- 
-2.25.1
+(Resending as my previous email got messed up by mail client, thanks).
 
+- Joel
