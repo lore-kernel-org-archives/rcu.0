@@ -2,83 +2,72 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 443A3C5479D
-	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 14:49:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4FDAC5479D
+	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 19:52:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbjAKOtH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 09:49:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54082 "EHLO
+        id S235376AbjAKTwz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Jan 2023 14:52:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234188AbjAKOtC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 09:49:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3433411C2C;
-        Wed, 11 Jan 2023 06:48:49 -0800 (PST)
+        with ESMTP id S238445AbjAKTwc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Jan 2023 14:52:32 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0064318C;
+        Wed, 11 Jan 2023 11:50:28 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D975FB81C0A;
-        Wed, 11 Jan 2023 14:48:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06D82C433D2;
-        Wed, 11 Jan 2023 14:48:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E8EE461E06;
+        Wed, 11 Jan 2023 19:50:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54557C433EF;
+        Wed, 11 Jan 2023 19:50:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673448526;
-        bh=UEfl0KhVxYyXipkkr67e2P9gmRximnKB5GfIk2W8EsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dzzVw6+qEMqRcc74jyTIdwny/0zFquyCQRecNUHhIgC4TAhKlfPSzjOmLFOJYxx6Y
-         dby7NZLeH7KuotpImqA062vIQbVEaE6P1yIyonxoVPGOth5lHX/kM5QDVyM2E7wnfC
-         eTkgxEM4YwCFbRFV3KhvPMj0iWWu9LVNGNRldO+qwQO3PLiQUe1FqxSb2iQIRSOAc7
-         ZMZeLrjCDIWOoYiWB12E+2L9sNb2vSclVnXd7WlVyPlqaMqToS7mNsn/Wsywz4QWLg
-         PqDgwzBWtRnT9GsgY+VCgVBA2ftABOEBnypUjjuJHWdKCjCTSQ7MIFBipCWZXe+K5N
-         OZmbpZ+r6QVgA==
-Date:   Wed, 11 Jan 2023 15:48:43 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix the start_poll_synchronize_rcu_expedited() be
- invoked very early
-Message-ID: <Y77MS0+8Hjoxaog+@lothringen>
-References: <20230111131453.1626214-1-qiang1.zhang@intel.com>
+        s=k20201202; t=1673466627;
+        bh=1rnb9bDgHwGMTz5A20UrPy/V5pD9T4YnbPxjYPkWHAI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=i5ZNYw3Ebh8thAcUTckqN52yigjE+h6oq6/G88H0UhzaOGUKGN5vdA+EF5g5rL7pj
+         loRFg/dW095QC7jUpNadqR8MmrXJolYcycA8Kx//51alA7FoceRUaBrRzh5GlseZlX
+         lMOqovMN7GdRjCpbHrKPJfnsP5FMmKGEpQQVDn72iVhpk2sE3zK1Y74CHA59zHZhuH
+         ovS+jC6zQ+K9TgQid6EsDsPw1xUojE9k9Hk1yJzSij/KfyTnCDKhQJ4GbjqHLVl/RH
+         5qBP1zMIfMmf+rTAE7gCglvlgDCy0L7q8bf/1dmfoN2eDSTqZtS4U+QJkVGBLtGIpr
+         Ika4JJdwRndUw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 011FB5C0920; Wed, 11 Jan 2023 11:50:26 -0800 (PST)
+Date:   Wed, 11 Jan 2023 11:50:26 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH rcu 09/27] drivers/clk: Remove "select SRCU"
+Message-ID: <20230111195026.GY4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+ <20230105003813.1770367-9-paulmck@kernel.org>
+ <c59b64de02161ceeed11b43230cd46d0.sboyd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230111131453.1626214-1-qiang1.zhang@intel.com>
+In-Reply-To: <c59b64de02161ceeed11b43230cd46d0.sboyd@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 11, 2023 at 09:14:53PM +0800, Zqiang wrote:
-> Currently, the start_poll_synchronize_rcu_expedited() can be invoked
-> very early. before rcu_init(), the rcu_data structure's->mynode is not
-> initialized, if invoke start_poll_synchronize_rcu_expedited() before
-> rcu_init(), will access to NULL mynode pointer.
+On Wed, Jan 11, 2023 at 11:37:15AM -0800, Stephen Boyd wrote:
+> Quoting Paul E. McKenney (2023-01-04 16:37:55)
+> > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > Kconfig statements.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Michael Turquette <mturquette@baylibre.com>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: <linux-clk@vger.kernel.org>
+> > ---
 > 
-> This commit therefore add exp_seq_poll_rq member to rcu_state structure
-> to store snap seq number
+> Applied to clk-next
 
-Is it even sane to poll that early in the morning? :-)
+Thank you!  I will drop it from my tree on my next rebase.
 
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/tree.c     | 3 ++-
->  kernel/rcu/tree.h     | 1 +
->  kernel/rcu/tree_exp.h | 6 ++++--
->  3 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 63545d79da51..34b13d6bd8c4 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -92,6 +92,7 @@ static struct rcu_state rcu_state = {
->  	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
->  	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
->  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
-> +	.exp_seq_poll_rq = RCU_GET_STATE_COMPLETED,
-
-I don't know if we really want to fix this, but assuming we do,
-can we rename it to boot_exp_seq_poll_rq? To avoid later confusion.
-
-Thanks.
+							Thanx, Paul
