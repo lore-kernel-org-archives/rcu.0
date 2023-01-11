@@ -2,69 +2,121 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F74EC67871
-	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 09:05:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A992C46467
+	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 13:11:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238312AbjAKJFq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 04:05:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
+        id S231848AbjAKNLX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Jan 2023 08:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238284AbjAKJE5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 04:04:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE1B140FB;
-        Wed, 11 Jan 2023 01:03:16 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1673427757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NdAF7zwaAIgx1nns+ekhQw7lkO0ao3fpQZq9T7cyisQ=;
-        b=nW4lBkbe0G3VGzhleCOD8KoELkTbP4MJMiwslw5wPvgBeEEmn5aF4QD9Gc+Tbwg63IjH2h
-        yr/NJB5Dz4P46zRYZfgzyfJJ5L0ZLPq8o26+qKQlGmw4Dyz4PJtII5NfLptGAIHWEcrUE2
-        lDuWExr+gYABoTr38kyzcqz+a3ItMSfLveMAP2+5Dow+2A1fDUMdCLU0tFKT+EhV+KHRcm
-        kDZ41shZL8Sr+wBYW3K3ZSHBMtKR5adcqaF/bVGZiKeP81NZM9dXDI7JELCV4jqgQozMSQ
-        ujIcmPPK4b6g75FNenov7Oc3CoQjSLCnaefN4pKjjrAJbUq1zjzttjmtGttRXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1673427757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NdAF7zwaAIgx1nns+ekhQw7lkO0ao3fpQZq9T7cyisQ=;
-        b=gAvvbx4tX/Jg4O327/LL4sctFvjdYXQ/HN77RsqxpXr9n61ei77oPm5cLEMVWQyFOMctwM
-        6mNT4A6wDlxDiBDw==
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     fweisbec@gmail.com, mingo@kernel.org, paulmck@kernel.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH linux-next] mark access to tick_do_timer_cpu with
- READ_ONCE/WRITE_ONCE
-In-Reply-To: <Y7wN0TKU1jDyTZs5@lothringen>
-References: <20221219052128.18190-1-zhouzhouyi@gmail.com>
- <Y7wN0TKU1jDyTZs5@lothringen>
-Date:   Wed, 11 Jan 2023 10:02:37 +0100
-Message-ID: <87tu0xiguq.ffs@tglx>
+        with ESMTP id S232027AbjAKNLT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Jan 2023 08:11:19 -0500
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5008E39;
+        Wed, 11 Jan 2023 05:11:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1673442674; x=1704978674;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tPgiAxXLY4gShdjl9d7GsMDyiml/2QFNArrDwpdyHfc=;
+  b=msv4S96QkMlQX3+6eDtKfocmPauL1J9o4wfTiDOzv3cr4G7lI3JD7Pdf
+   f4zXFJwFJIPbS064SfD6R8LcTd9uM6Dedwdz5TP8GX4a9yFjXObXjlMdX
+   O2o7svmvrs4FPMFwJr4b168BpAajE4GJJud+Wu/mWQwRoajgwd6j5DIQP
+   0jRNAFV8HwIOaG5zrasTDoweWrVV9fi2FPQnJt9MMR7lBNgX+ikHQMlHx
+   7qryoZwsZszYRJmYsTHCOPKCu0bOtiAThZt8B55KmbLjy34DD7xV3FNdt
+   BdJQZbVTchfYPV9QQbiTHQSH64M9m8r1QBlRLmjTo13FBeETXusbs3iJu
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="409651827"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; 
+   d="scan'208";a="409651827"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2023 05:09:44 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="650746989"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; 
+   d="scan'208";a="650746989"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2023 05:09:33 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Fix the start_poll_synchronize_rcu_expedited() be invoked very early
+Date:   Wed, 11 Jan 2023 21:14:53 +0800
+Message-Id: <20230111131453.1626214-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 09 2023 at 13:51, Frederic Weisbecker wrote:
-> On Mon, Dec 19, 2022 at 01:21:28PM +0800, Zhouyi Zhou wrote:
->> fix above bug by marking access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
->
-> This has been discussed before with passion:
->
-> http://archive.lwn.net:8080/linux-kernel/1C65422C-FFA4-4651-893B-300FAF9C49DE@lca.pw/T/
->
-> To me data_race() would be more appropriate but that would need a changelog with
-> proper analysis of the tick_do_timer_cpu state machine.
+Currently, the start_poll_synchronize_rcu_expedited() can be invoked
+very early. before rcu_init(), the rcu_data structure's->mynode is not
+initialized, if invoke start_poll_synchronize_rcu_expedited() before
+rcu_init(), will access to NULL mynode pointer.
 
-Proper analysis and comments in the code are required independent of
-READ/WRITE_ONCE() or data_race().
+This commit therefore add exp_seq_poll_rq member to rcu_state structure
+to store snap seq number
 
-Thanks,
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree.c     | 3 ++-
+ kernel/rcu/tree.h     | 1 +
+ kernel/rcu/tree_exp.h | 6 ++++--
+ 3 files changed, 7 insertions(+), 3 deletions(-)
 
-        tglx
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 63545d79da51..34b13d6bd8c4 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -92,6 +92,7 @@ static struct rcu_state rcu_state = {
+ 	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
+ 	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
+ 	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
++	.exp_seq_poll_rq = RCU_GET_STATE_COMPLETED,
+ };
+ 
+ /* Dump rcu_node combining tree at boot to verify correct setup. */
+@@ -4938,7 +4939,7 @@ void __init rcu_init(void)
+ 		qovld_calc = qovld;
+ 
+ 	// Kick-start any polled grace periods that started early.
+-	if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
++	if (!(rcu_state.exp_seq_poll_rq & 0x1))
+ 		(void)start_poll_synchronize_rcu_expedited();
+ 
+ 	rcu_test_sync_prims();
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 192536916f9a..dbc7c7484a7e 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -397,6 +397,7 @@ struct rcu_state {
+ 						/* Synchronize offline with */
+ 						/*  GP pre-initialization. */
+ 	int nocb_is_setup;			/* nocb is setup from boot */
++	unsigned long exp_seq_poll_rq;
+ };
+ 
+ /* Values for rcu_state structure's gp_flags field. */
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 956cd459ba7f..5964d1cccab1 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -1068,9 +1068,11 @@ unsigned long start_poll_synchronize_rcu_expedited(void)
+ 	if (rcu_init_invoked())
+ 		raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
+ 	if (!poll_state_synchronize_rcu(s)) {
+-		rnp->exp_seq_poll_rq = s;
+-		if (rcu_init_invoked())
++		if (rcu_init_invoked()) {
++			rnp->exp_seq_poll_rq = s;
+ 			queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
++		} else
++			rcu_state.exp_seq_poll_rq = s;
+ 	}
+ 	if (rcu_init_invoked())
+ 		raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
+-- 
+2.25.1
+
