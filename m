@@ -2,132 +2,82 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE8FAC5479D
-	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 21:27:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A1F4C5479D
+	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 23:49:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbjAKV1l (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 16:27:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
+        id S235333AbjAKXtO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Jan 2023 18:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234409AbjAKV1k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 16:27:40 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EB9B05
-        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 13:27:39 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232344AbjAKXtN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Jan 2023 18:49:13 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5ED33D45;
+        Wed, 11 Jan 2023 15:49:11 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0AF38B81D5C
-        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 21:27:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B211FC433D2;
-        Wed, 11 Jan 2023 21:27:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673472456;
-        bh=My8dcVm18qlVfA6iZTsvu/bkWrJSZ41EorgT8PWmMfQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=D/vsGkIjyvjJL0AweoCh1F7xFSewMJW7O4ZlWVE+kRvONDZxVZvnRlMf+9YEKshkI
-         86oofuxtMQcHs9DbIUSyuUBcGmuWzI5TPys59yol/VtFhcgpEhzqcgeP1VPIS72M8J
-         MAFmKv7C31/9VR1RbM6EQvzBFUn8d2ZWKQM291k8pzLxZXBo6FTC0pnVqk3mtiycb8
-         KDHJbEDeYZKfSU/Funs4Uu7x2XQ1D7ZGSgfUoaTKaO/P1OcFY5nZyfmp5TzZglBQG9
-         1I5cCecwgelYhx+IGoOLJoxJurhBjxISfS32W48ojOt5zzRI2wLoF5CancnTXT8UUP
-         v7KvZT0+Xl2GQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5DC455C0920; Wed, 11 Jan 2023 13:27:36 -0800 (PST)
-Date:   Wed, 11 Jan 2023 13:27:36 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     broonie@kernel.org
-Cc:     rcu@vger.kernel.org, quic_neeraju@quicinc.com
-Subject: Diagnosing stall in synchronize_srcu() from rcu_tasks_postscan()
-Message-ID: <20230111212736.GA1062057@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Nsksv2jQhz4xwq;
+        Thu, 12 Jan 2023 10:49:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1673480948;
+        bh=TO/ocmhMcHhsC/mqRwZMtfMXh7M3wWSE08jEbN0UeLg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=o2sBrft+so5KCuv0rKQ2RDo0CxlMgp5/wA1agHH5jMAmc0z8DK2QaB14Zt9Zh4TA8
+         lA0ZD+uPhEV7I7fXYlPAL+8oJ3TlP0KvnaNadhGAnJYQa2LkxFh4wtyuN3MBKAFyu+
+         Y78Zr6oIECFdgxscUQzixUKK3fyeE4vrHYDmj+POR2jlkvT+Gpvlxyabcb5Tlo4wrR
+         lFI4NaI3C5EA1PW3t8PJM0jvKPRGY2Rm4bUtJvIkmWuMn/5ApkMN08LIGzCo+JTa+y
+         AGlTSbK1KdoPzk6jF+PSPM+sx5iOO3KKHucOS1dtf79iX+LOLgX5b4CPnPwJSX/s7i
+         mllhGHAOrh8Yg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH rcu 04/27] arch/powerpc/kvm: Remove "select SRCU"
+In-Reply-To: <20230105003813.1770367-4-paulmck@kernel.org>
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+ <20230105003813.1770367-4-paulmck@kernel.org>
+Date:   Thu, 12 Jan 2023 10:49:04 +1100
+Message-ID: <87h6wwhbtb.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Mark,
+"Paul E. McKenney" <paulmck@kernel.org> writes:
+> Now that the SRCU Kconfig option is unconditionally selected, there is
+> no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> Kconfig statements.
+>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: <linuxppc-dev@lists.ozlabs.org>
+> ---
+>  arch/powerpc/kvm/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
 
-A few days ago you mentioned stalls in RCU tasks.  Neeraj has supplied
-the following diagnostic patch, which will confirm or invalidate my
-assumptions about the cause of the stall.
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-Could you please try it out and let us know the outcome?
+cheers
 
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 1e464bd08ee844fb43594b69f471c05eaeda5cda
-Author: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Date:   Wed Jan 11 13:15:00 2023 +0530
-
-    rcu-tasks: Report stalls during synchronize_srcu() in rcu_tasks_postscan()
-    
-    The call to synchronize_srcu() from rcu_tasks_postscan() can be stalled
-    by a task getting stuck in do_exit() between that function's calls to
-    exit_tasks_rcu_start() and exit_tasks_rcu_finish().   To ease diagnosis
-    of this situation, print a stall warning message every rcu_task_stall_info
-    period when rcu_tasks_postscan() is stalled.
-    
-    Reported-by: Mark Brown <broonie@kernel.org>
-    Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index bfb5e1549f2b2..53eb95748b4f0 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -139,6 +139,12 @@ static struct rcu_tasks rt_name =							\
- /* Track exiting tasks in order to allow them to be waited for. */
- DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
- 
-+#ifdef CONFIG_TASKS_RCU
-+/* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
-+static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
-+static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
-+#endif
-+
- /* Avoid IPIing CPUs early in the grace period. */
- #define RCU_TASK_IPI_DELAY (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) ? HZ / 2 : 0)
- static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
-@@ -830,6 +836,11 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
- /* Processing between scanning taskslist and draining the holdout list. */
- static void rcu_tasks_postscan(struct list_head *hop)
- {
-+	int rtsi = READ_ONCE(rcu_task_stall_info);
-+
-+	tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
-+	add_timer(&tasks_rcu_exit_srcu_stall_timer);
-+
- 	/*
- 	 * Exiting tasks may escape the tasklist scan. Those are vulnerable
- 	 * until their final schedule() with TASK_DEAD state. To cope with
-@@ -848,6 +859,7 @@ static void rcu_tasks_postscan(struct list_head *hop)
- 	 * call to synchronize_rcu().
- 	 */
- 	synchronize_srcu(&tasks_rcu_exit_srcu);
-+	del_timer_sync(&tasks_rcu_exit_srcu_stall_timer);
- }
- 
- /* See if tasks are still holding out, complain if so. */
-@@ -923,6 +935,18 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
- void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
- DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
- 
-+static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
-+{
-+	int rtsi = READ_ONCE(rcu_task_stall_info);
-+
-+	pr_info("%s: %s grace period number %lu (since boot) gp_state: %s is %lu jiffies old.\n",
-+		__func__, rcu_tasks.kname, rcu_tasks.tasks_gp_seq,
-+		tasks_gp_state_getname(&rcu_tasks), jiffies - rcu_tasks.gp_jiffies);
-+	pr_info("Please check any exiting tasks stuck between calls to exit_tasks_rcu_start() and exit_tasks_rcu_finish()\n");
-+	tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
-+	add_timer(&tasks_rcu_exit_srcu_stall_timer);
-+}
-+
- /**
-  * call_rcu_tasks() - Queue an RCU for invocation task-based grace period
-  * @rhp: structure to be used for queueing the RCU updates.
+> diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
+> index a9f57dad6d916..902611954200d 100644
+> --- a/arch/powerpc/kvm/Kconfig
+> +++ b/arch/powerpc/kvm/Kconfig
+> @@ -22,7 +22,6 @@ config KVM
+>  	select PREEMPT_NOTIFIERS
+>  	select HAVE_KVM_EVENTFD
+>  	select HAVE_KVM_VCPU_ASYNC_IOCTL
+> -	select SRCU
+>  	select KVM_VFIO
+>  	select IRQ_BYPASS_MANAGER
+>  	select HAVE_KVM_IRQ_BYPASS
+> -- 
+> 2.31.1.189.g2e36527f23
