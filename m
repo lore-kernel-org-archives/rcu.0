@@ -2,111 +2,105 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED93AC54EBD
-	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 15:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE9E3C54EBD
+	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 15:37:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjALP3k (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Jan 2023 10:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
+        id S240477AbjALPhm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Jan 2023 10:37:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240425AbjALP2d (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Jan 2023 10:28:33 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCAFC78;
-        Thu, 12 Jan 2023 07:20:52 -0800 (PST)
+        with ESMTP id S231615AbjALPg5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Jan 2023 10:36:57 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6916B3DBEA;
+        Thu, 12 Jan 2023 07:27:37 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id E5A8ACE1E5E;
-        Thu, 12 Jan 2023 15:20:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AD5C433EF;
-        Thu, 12 Jan 2023 15:20:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 03D266206B;
+        Thu, 12 Jan 2023 15:27:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55010C433D2;
+        Thu, 12 Jan 2023 15:27:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673536849;
-        bh=BCtqMXLEe/UrckfTQBcikiufFT6uV7gISnRdD1HnshI=;
+        s=k20201202; t=1673537256;
+        bh=fS1kwoEtuWcLTAyzGfZlawQt98T9uK8H6KyRyWZYtJs=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rLIAB4+YH0UkEjySHkRENtPC/rBWbpv589rl+z7ZX09HHf3UqIEsEYEaOSAFTkLhH
-         Xp8o8rGAg+HFhCmfPublTEgYRnW3MkEvPuprCQm7z5gyJG2R0ZlkTkv+llEUd/qhT9
-         9hX143H78hyJzyub1ma/iIkrxUozsRG2th0G0+TgBBkdhWsbrmO4307R55MVVFoJ9U
-         d+KyF3qo+ozgNPR2vuugPofojy6gHDiU0BSiW4laDRPOoqnnWv59bmyORkJzRajufJ
-         t8v6oABnPEVmBdBJMjusHsRGRai3V4AbFqK75vsPhb8fHZo4sEMLIDoenZ/lTMrAjQ
-         ZaZGtbbqXRi7A==
+        b=BXqyGcgh6guKnPATECXsTYXgep4B3lulg8Ygtgcpb5TDnNlo0nlOsCQ1DZE4n6Fsb
+         lYy1WsuvlEHVDRrs5b3NabZrCKnLz5NstTgicgG9U+Q6OvuSJgU6O9t9ZFVLXBfZSX
+         tvZ3NoK/IH6eVhBw/R7L0pal2wZK7lvAskYuWRKY5whd8oNw09PpJSuQOImtCPSLDA
+         mmxZMh2YD3Iw3jXODisI47wRLEzXTi/pGhSK7NT1v2Pzn6LPQWOIbUmbFGs61drlG8
+         LHXgP6SD8DLFKgQwydNvLc4RJmlETXsaWOi6fCqF8MLFivXEGMBkgkmEY59pE4vr1O
+         nCY6eM7IoL67w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 933835C0AF8; Thu, 12 Jan 2023 07:20:48 -0800 (PST)
-Date:   Thu, 12 Jan 2023 07:20:48 -0800
+        id F18375C0AF8; Thu, 12 Jan 2023 07:27:35 -0800 (PST)
+Date:   Thu, 12 Jan 2023 07:27:35 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, seanjc@google.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        Michal Luczaj <mhal@rbox.co>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] Documentation: kvm: fix SRCU locking order docs
-Message-ID: <20230112152048.GJ4028633@paulmck-ThinkPad-P17-Gen-1>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: Re: [PATCH rcu 17/27] drivers/pci/controller: Remove "select SRCU"
+Message-ID: <20230112152735.GK4028633@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20230111183031.2449668-1-pbonzini@redhat.com>
- <a14a13a690277d4cc95a4b26aa2d9a4d9b392a74.camel@infradead.org>
+References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
+ <20230105003813.1770367-17-paulmck@kernel.org>
+ <Y8AbHEzbVv4ebeXU@lpieralisi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a14a13a690277d4cc95a4b26aa2d9a4d9b392a74.camel@infradead.org>
+In-Reply-To: <Y8AbHEzbVv4ebeXU@lpieralisi>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 08:24:16AM +0000, David Woodhouse wrote:
-> On Wed, 2023-01-11 at 13:30 -0500, Paolo Bonzini wrote:
+On Thu, Jan 12, 2023 at 03:37:16PM +0100, Lorenzo Pieralisi wrote:
+> On Wed, Jan 04, 2023 at 04:38:03PM -0800, Paul E. McKenney wrote:
+> > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > Kconfig statements.
 > > 
-> > +- ``synchronize_srcu(&kvm->srcu)`` is called inside critical sections
-> > +† for kvm->lock, vcpu->mutex and kvm->slots_lock.† These locks _cannot_
-> > +† be taken inside a kvm->srcu read-side critical section; that is, the
-> > +† following is broken::
-> > +
-> > +††††† srcu_read_lock(&kvm->srcu);
-> > +††††† mutex_lock(&kvm->slots_lock);
-> > +
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> > Cc: Rob Herring <robh@kernel.org>
+> > Cc: "Krzysztof Wilczy≈Ñski" <kw@linux.com>
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: <linux-pci@vger.kernel.org>
+> > ---
+> >  drivers/pci/controller/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> "Don't tell me. Tell lockdep!"
+> Acked-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
 > 
-> Did we conclude in
-> https://lore.kernel.org/kvm/122f38e724aae9ae8ab474233da1ba19760c20d2.camel@infradead.org/
-> that lockdep *could* be clever enough to catch a violation of this rule
-> by itself?
-> 
-> The general case of the rule would be that 'if mutex A is taken in a
-> read-section for SCRU B, then any synchronize_srcu(B) while mutex A is
-> held shall be verboten'. And vice versa.
-> 
-> If we can make lockdep catch it automatically, yay!
+> I assume I don't have to pick this up and it will go via
+> a separate route upstream, if I am wrong please let me know.
 
-Unfortunately, lockdep needs to see a writer to complain, and that patch
-just adds a reader.  And adding that writer would make lockdep complain
-about things that are perfectly fine.  It should be possible to make
-lockdep catch this sort of thing, but from what I can see, doing so
-requires modifications to lockdep itself.
+Thank you!
 
-> If not, I'm inclined to suggest that we have explicit wrappers of our
-> own for kvm_mutex_lock() which will do the check directly.
-
-This does allow much more wiggle room.  For example, you guys could decide
-to let lockdep complain about things that other SRCU users want to do.
-For completeness, here is one such scenario:
-
-CPU 0:  read_lock(&rla); srcu_read_lock(&srcua); ...
-
-CPU 1:  srcu_read_lock(&srcua); read_lock(&rla); ...
-
-CPU 2:  synchronize_srcu(&srcua);
-
-CPU 3: 	write_lock(&rla); ...
-
-If you guys are OK with lockdep complaining about this, then doing a
-currently mythical rcu_write_acquire()/rcu_write_release() pair around
-your calls to synchronize_srcu() should catch the other issue.
-
-And probably break something else, but you have to start somewhere!  ;-)
+I will apply your ack on my next rebase and send it along into the
+upcoming merge window.  If you later decide that you would like to take
+it, just let me know, either way works for me.
 
 							Thanx, Paul
+
+> Thanks,
+> Lorenzo
+> 
+> > diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> > index 1569d9a3ada0b..b09cdc59bfd02 100644
+> > --- a/drivers/pci/controller/Kconfig
+> > +++ b/drivers/pci/controller/Kconfig
+> > @@ -258,7 +258,7 @@ config PCIE_MEDIATEK_GEN3
+> >  	  MediaTek SoCs.
+> >  
+> >  config VMD
+> > -	depends on PCI_MSI && X86_64 && SRCU && !UML
+> > +	depends on PCI_MSI && X86_64 && !UML
+> >  	tristate "Intel Volume Management Device Driver"
+> >  	help
+> >  	  Adds support for the Intel Volume Management Device (VMD). VMD is a
+> > -- 
+> > 2.31.1.189.g2e36527f23
+> > 
