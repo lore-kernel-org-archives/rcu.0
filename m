@@ -2,82 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A1F4C5479D
-	for <rcu@archiver.kernel.org>; Wed, 11 Jan 2023 23:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 576D6C5479D
+	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 00:01:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235333AbjAKXtO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 18:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        id S229949AbjALABh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Jan 2023 19:01:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbjAKXtN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 18:49:13 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5ED33D45;
-        Wed, 11 Jan 2023 15:49:11 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        with ESMTP id S230424AbjALABg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Jan 2023 19:01:36 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A81DF1F;
+        Wed, 11 Jan 2023 16:01:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Nsksv2jQhz4xwq;
-        Thu, 12 Jan 2023 10:49:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1673480948;
-        bh=TO/ocmhMcHhsC/mqRwZMtfMXh7M3wWSE08jEbN0UeLg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=o2sBrft+so5KCuv0rKQ2RDo0CxlMgp5/wA1agHH5jMAmc0z8DK2QaB14Zt9Zh4TA8
-         lA0ZD+uPhEV7I7fXYlPAL+8oJ3TlP0KvnaNadhGAnJYQa2LkxFh4wtyuN3MBKAFyu+
-         Y78Zr6oIECFdgxscUQzixUKK3fyeE4vrHYDmj+POR2jlkvT+Gpvlxyabcb5Tlo4wrR
-         lFI4NaI3C5EA1PW3t8PJM0jvKPRGY2Rm4bUtJvIkmWuMn/5ApkMN08LIGzCo+JTa+y
-         AGlTSbK1KdoPzk6jF+PSPM+sx5iOO3KKHucOS1dtf79iX+LOLgX5b4CPnPwJSX/s7i
-         mllhGHAOrh8Yg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0F056B81D79;
+        Thu, 12 Jan 2023 00:01:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA52CC433D2;
+        Thu, 12 Jan 2023 00:01:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673481692;
+        bh=gp3ixmSzBGJy8uTYxS5ADZZFIL2F1SvM+d/vmQgSrEU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sxkg91jNJBJYH7USijDsMpk3B7Rh+pgZSq9kVREeqMKTlsIraCQc2xugar4BcIY30
+         15TqShLgLOsylkvcbhLbEEJwOcyf5HWdcJDQ98MpdAb2iHVzT3VnL7QQN8I6kGoENx
+         4q4cAn1LtVbSg7wtPN53/Nh1vkJIHkv/3GxRmrt4X9ISye/UhBm+6tPDO5SrSmj1f3
+         HxWA1nht/9YSii1cMJY2yU0gamKhpuNX4A9PJDk2XEvyJ8pWnG+iHFn1X4pAIk4GIj
+         rB0wg+LRmAMlFp/jZocqp/R42AFuuzFxU1xtYyiYY1NpsBi3yBRg/jX0fJZZzTNDMk
+         zUmgANE3Zsj4g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5C4965C0AF8; Wed, 11 Jan 2023 16:01:32 -0800 (PST)
+Date:   Wed, 11 Jan 2023 16:01:32 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
         Nicholas Piggin <npiggin@gmail.com>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         linuxppc-dev@lists.ozlabs.org
 Subject: Re: [PATCH rcu 04/27] arch/powerpc/kvm: Remove "select SRCU"
-In-Reply-To: <20230105003813.1770367-4-paulmck@kernel.org>
+Message-ID: <20230112000132.GC4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
  <20230105003813.1770367-4-paulmck@kernel.org>
-Date:   Thu, 12 Jan 2023 10:49:04 +1100
-Message-ID: <87h6wwhbtb.fsf@mpe.ellerman.id.au>
+ <87h6wwhbtb.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h6wwhbtb.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
-> Now that the SRCU Kconfig option is unconditionally selected, there is
-> no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> Kconfig statements.
->
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: <linuxppc-dev@lists.ozlabs.org>
-> ---
->  arch/powerpc/kvm/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
+On Thu, Jan 12, 2023 at 10:49:04AM +1100, Michael Ellerman wrote:
+> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > Kconfig statements.
+> >
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Nicholas Piggin <npiggin@gmail.com>
+> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > Cc: <linuxppc-dev@lists.ozlabs.org>
+> > ---
+> >  arch/powerpc/kvm/Kconfig | 1 -
+> >  1 file changed, 1 deletion(-)
+> 
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Thank you!  I will apply on the next rebase.
 
-cheers
+							Thanx, Paul
 
-> diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
-> index a9f57dad6d916..902611954200d 100644
-> --- a/arch/powerpc/kvm/Kconfig
-> +++ b/arch/powerpc/kvm/Kconfig
-> @@ -22,7 +22,6 @@ config KVM
->  	select PREEMPT_NOTIFIERS
->  	select HAVE_KVM_EVENTFD
->  	select HAVE_KVM_VCPU_ASYNC_IOCTL
-> -	select SRCU
->  	select KVM_VFIO
->  	select IRQ_BYPASS_MANAGER
->  	select HAVE_KVM_IRQ_BYPASS
-> -- 
-> 2.31.1.189.g2e36527f23
+> cheers
+> 
+> > diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
+> > index a9f57dad6d916..902611954200d 100644
+> > --- a/arch/powerpc/kvm/Kconfig
+> > +++ b/arch/powerpc/kvm/Kconfig
+> > @@ -22,7 +22,6 @@ config KVM
+> >  	select PREEMPT_NOTIFIERS
+> >  	select HAVE_KVM_EVENTFD
+> >  	select HAVE_KVM_VCPU_ASYNC_IOCTL
+> > -	select SRCU
+> >  	select KVM_VFIO
+> >  	select IRQ_BYPASS_MANAGER
+> >  	select HAVE_KVM_IRQ_BYPASS
+> > -- 
+> > 2.31.1.189.g2e36527f23
