@@ -2,146 +2,204 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A0D6C54EBE
-	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 19:19:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F4E4C63797
+	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 19:33:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbjALTTJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Jan 2023 14:19:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        id S240342AbjALTdL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Jan 2023 14:33:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240122AbjALTSL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Jan 2023 14:18:11 -0500
+        with ESMTP id S240399AbjALTcn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Jan 2023 14:32:43 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6519E3BEA2;
-        Thu, 12 Jan 2023 11:06:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4048BAE52;
+        Thu, 12 Jan 2023 11:27:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 73E216213D;
-        Thu, 12 Jan 2023 19:06:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA799C433EF;
-        Thu, 12 Jan 2023 19:06:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B67AF6215D;
+        Thu, 12 Jan 2023 19:27:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF9DC433EF;
+        Thu, 12 Jan 2023 19:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673550416;
-        bh=L6td8u37p3/93Vuok87y1k2WME9s+yPEFii+VbI0kWY=;
+        s=k20201202; t=1673551645;
+        bh=knR8cl3o+HfVzBhq/zdyoNjRSHVV4P+0dXDoWli0Txw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fNbtgLyQO2odHeu/Alfe4ScVq9Fos9OnyoRZGi/2ETCntIj/JDNqs9aQDepQj+wvK
-         cWzEuRGLQ17iqJ6pKlnFnqA4pM5ehRgzJc0IYTvohW0Or7GOp3o29oL25PBGsIB8Oj
-         qLrKh70TmNZnwyW6UvRwn2H2AhpzMtFllmPxghXFzNzaqlELsxZguD7cril3x8ys4Z
-         xCOnj/A3ZOXuqAx3WDnP+Gpi7l7q0K5RDMYvHveEM/dVkj39Ds+n7VWt0P/Otr1IvZ
-         6RopgcW/ZC741pQk5rdh0KeOMnJsdZxAZ9U9BQnD76k/8LgfwKQ0EIBdikCwhp+isK
-         LCOJxoTUuUmLQ==
+        b=GcZluJXo7+9YmFaADjGPdfhmvj5WxPIHBMO0HGqkM2KQUGYclHP0JAsxTpLB4ATLf
+         /nnJfKuqjbwCf2EzYjinzfuJw98quMujcKZKPQV4eWNDxvEZ+yk8eMXTPqSGRlJzru
+         dHJXr2oQ1GuF62qdAaBr1Yg1YvtL32LUk8ohyZ00ke8dGYAbl/f3kysYgpTn6Y/jYT
+         BfDexzSoH3lsA9lqt/PXElDDPRxgSIaVL8EhR9DJEFOybO+IaDUX8Rt4TIx1MuQxP/
+         qb9uZmJTVTve1U8zRmB0E1NuMP5SuQv70SQCekziPDJ4NVQxgNqS5/bjBXTdj1pxAn
+         Qlh4rE3qmMjEg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6820B5C0AF8; Thu, 12 Jan 2023 11:06:56 -0800 (PST)
-Date:   Thu, 12 Jan 2023 11:06:56 -0800
+        id BC5A05C0AF8; Thu, 12 Jan 2023 11:27:24 -0800 (PST)
+Date:   Thu, 12 Jan 2023 11:27:24 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Fix the start_poll_synchronize_rcu_expedited()
- be invoked very early
-Message-ID: <20230112190656.GR4028633@paulmck-ThinkPad-P17-Gen-1>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        fweisbec@gmail.com, urezki@gmail.com
+Subject: Re: [PATCH v2 rcu/dev 1/2] rcu: Track laziness during boot and
+ suspend
+Message-ID: <20230112192724.GA3610129@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20230112075629.1661429-1-qiang1.zhang@intel.com>
+References: <20230112005223.2329802-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230112075629.1661429-1-qiang1.zhang@intel.com>
+In-Reply-To: <20230112005223.2329802-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 03:56:29PM +0800, Zqiang wrote:
-> Currently, the start_poll_synchronize_rcu_expedited() can be invoked
-> very early. before rcu_init(), the rcu_data structure's->mynode is not
-> initialized, if invoke start_poll_synchronize_rcu_expedited() before
-> rcu_init(), will trigger a null rcu_node structure's->exp_seq_poll access.
+On Thu, Jan 12, 2023 at 12:52:22AM +0000, Joel Fernandes (Google) wrote:
+> During boot and suspend/resume, it is desired to prevent RCU laziness from
+> effecting performance and in some cases failures like with suspend.
 > 
-> This commit add boot_exp_seq_poll_rq member to rcu_state structure to
-> store seq number return by invoke start_poll_synchronize_rcu_expedited()
-> very early.
+> Track whether RCU laziness is to be ignored or not, in kernels with
+> CONFIG_RCU_LAZY enabled. We do such tracking for expedited-RCU already, however
+> since Android currently expedites synchronous_rcu() always, we cannot rely on
+> that. The next patch ignores laziness hints based on this tracking.
 > 
-> Fixes: d96c52fe4907 ("rcu: Add polled expedited grace-period primitives")
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> Paul, could we take this and the next one for 6.2 -rc cycle?
+> 
+> I also booted debian Linux and verified the flag is reset correctly after boot
+> completes. Thanks.
 
-First off, excellent catch, Zqiang!!!
+After going back and forth a bit, I took these two as-is (aside from
+the usual commit-log wordsmithing).
 
-And thank you for Frederic and Joel for your reviews.
+At some point, the state-change-notification from things like boot,
+suspend/resume, sysrq-t, and panic() should probably be refactored.
+But I do not believe that we are yet at that point, and there is not
+much point in half-refactorings in cases such as this one.
 
-But I believe that this can be simplified, for example, as shown in
-the (untested) patch below.
+I added the Fixes tags, and, if testing goes well, I plan to submit
+them into the upcoming merge window.  I have no reason to believe that
+anyone is hitting this, it is only a few weeks away anyhow, and a good
+chunk of that would be consumed by testing and review.
 
-Thoughts?
+And if someone does hit it, we do have your fixes to send to them, so
+thank you for that!
 
-And yes, I did presumptuously add Frederic's and Joel's reviews.
-Please let me know if you disagree, and if so what different approach
-you would prefer.  (Though of course simple disagreement is sufficient
-for me to remove your tag.  Not holding you hostage for improvements,
-not yet, anyway!)
+(These won't become visible on -rcu until I complete today's rebase,
+in case you were wondering.)
 
-							Thanx, Paul
+						Thanx, Paul
 
-------------------------------------------------------------------------
-
-commit e05af5cb3858e669c9e6b70e0aca708cc70457da
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Thu Jan 12 10:48:29 2023 -0800
-
-    rcu: Permit start_poll_synchronize_rcu_expedited() to be invoked early
-    
-    According to the commit log of the patch that added it to the kernel,
-    start_poll_synchronize_rcu_expedited() can be invoked very early, as
-    in long before rcu_init() has been invoked.  But before rcu_init(),
-    the rcu_data structure's ->mynode field has not yet been initialized.
-    This means that the start_poll_synchronize_rcu_expedited() function's
-    attempt to set the CPU's leaf rcu_node structure's ->exp_seq_poll_rq
-    field will result in a segmentation fault.
-    
-    This commit therefore causes start_poll_synchronize_rcu_expedited() to
-    set ->exp_seq_poll_rq only after rcu_init() has initialized all CPUs'
-    rcu_data structures' ->mynode fields.  It also removes the check from
-    the rcu_init() function so that start_poll_synchronize_rcu_expedited(
-    is unconditionally invoked.  Yes, this might result in an unnecessary
-    boot-time grace period, but this is down in the noise.  Besides, there
-    only has to be one call_rcu() invoked prior to scheduler initialization
-    to make this boot-time grace period necessary.
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-    Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 63545d79da51c..f2e3a23778c06 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4937,9 +4937,8 @@ void __init rcu_init(void)
- 	else
- 		qovld_calc = qovld;
- 
--	// Kick-start any polled grace periods that started early.
--	if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
--		(void)start_poll_synchronize_rcu_expedited();
-+	// Kick-start in case any polled grace periods started early.
-+	(void)start_poll_synchronize_rcu_expedited();
- 
- 	rcu_test_sync_prims();
- }
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 956cd459ba7f3..3b7abb58157df 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -1068,9 +1068,10 @@ unsigned long start_poll_synchronize_rcu_expedited(void)
- 	if (rcu_init_invoked())
- 		raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
- 	if (!poll_state_synchronize_rcu(s)) {
--		rnp->exp_seq_poll_rq = s;
--		if (rcu_init_invoked())
-+		if (rcu_init_invoked()) {
-+			rnp->exp_seq_poll_rq = s;
- 			queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-+		}
- 	}
- 	if (rcu_init_invoked())
- 		raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
+>  kernel/rcu/rcu.h    |  6 ++++++
+>  kernel/rcu/tree.c   |  2 ++
+>  kernel/rcu/update.c | 40 +++++++++++++++++++++++++++++++++++++++-
+>  5 files changed, 55 insertions(+), 1 deletion(-)
+>  create mode 100644 cc_list
+>  create mode 100644 to_list
+> 
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 5c8013f7085f..115616ac3bfa 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -449,14 +449,20 @@ do {									\
+>  /* Tiny RCU doesn't expedite, as its purpose in life is instead to be tiny. */
+>  static inline bool rcu_gp_is_normal(void) { return true; }
+>  static inline bool rcu_gp_is_expedited(void) { return false; }
+> +static inline bool rcu_async_should_hurry(void) { return false; }
+>  static inline void rcu_expedite_gp(void) { }
+>  static inline void rcu_unexpedite_gp(void) { }
+> +static inline void rcu_async_hurry(void) { }
+> +static inline void rcu_async_relax(void) { }
+>  static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
+>  #else /* #ifdef CONFIG_TINY_RCU */
+>  bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+>  bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+> +bool rcu_async_should_hurry(void);  /* Internal RCU use. */
+>  void rcu_expedite_gp(void);
+>  void rcu_unexpedite_gp(void);
+> +void rcu_async_hurry(void);
+> +void rcu_async_relax(void);
+>  void rcupdate_announce_bootup_oddness(void);
+>  #ifdef CONFIG_TASKS_RCU_GENERIC
+>  void show_rcu_tasks_gp_kthreads(void);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 63545d79da51..78b2e999c904 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4504,11 +4504,13 @@ static int rcu_pm_notify(struct notifier_block *self,
+>  	switch (action) {
+>  	case PM_HIBERNATION_PREPARE:
+>  	case PM_SUSPEND_PREPARE:
+> +		rcu_async_hurry();
+>  		rcu_expedite_gp();
+>  		break;
+>  	case PM_POST_HIBERNATION:
+>  	case PM_POST_SUSPEND:
+>  		rcu_unexpedite_gp();
+> +		rcu_async_relax();
+>  		break;
+>  	default:
+>  		break;
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 3893022f8ed8..19bf6fa3ee6a 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -144,8 +144,45 @@ bool rcu_gp_is_normal(void)
+>  }
+>  EXPORT_SYMBOL_GPL(rcu_gp_is_normal);
+>  
+> -static atomic_t rcu_expedited_nesting = ATOMIC_INIT(1);
+> +static atomic_t rcu_async_hurry_nesting = ATOMIC_INIT(1);
+> +/*
+> + * Should call_rcu() callbacks be processed with urgency or are
+> + * they OK being executed with arbitrary delays?
+> + */
+> +bool rcu_async_should_hurry(void)
+> +{
+> +	return !IS_ENABLED(CONFIG_RCU_LAZY) ||
+> +	       atomic_read(&rcu_async_hurry_nesting);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_async_should_hurry);
+> +
+> +/**
+> + * rcu_async_hurry - Make future async RCU callbacks not lazy.
+> + *
+> + * After a call to this function, future calls to call_rcu()
+> + * will be processed in a timely fashion.
+> + */
+> +void rcu_async_hurry(void)
+> +{
+> +	if (IS_ENABLED(CONFIG_RCU_LAZY))
+> +		atomic_inc(&rcu_async_hurry_nesting);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_async_hurry);
+>  
+> +/**
+> + * rcu_async_relax - Make future async RCU callbacks lazy.
+> + *
+> + * After a call to this function, future calls to call_rcu()
+> + * will be processed in a lazy fashion.
+> + */
+> +void rcu_async_relax(void)
+> +{
+> +	if (IS_ENABLED(CONFIG_RCU_LAZY))
+> +		atomic_dec(&rcu_async_hurry_nesting);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_async_relax);
+> +
+> +static atomic_t rcu_expedited_nesting = ATOMIC_INIT(1);
+>  /*
+>   * Should normal grace-period primitives be expedited?  Intended for
+>   * use within RCU.  Note that this function takes the rcu_expedited
+> @@ -195,6 +232,7 @@ static bool rcu_boot_ended __read_mostly;
+>  void rcu_end_inkernel_boot(void)
+>  {
+>  	rcu_unexpedite_gp();
+> +	rcu_async_relax();
+>  	if (rcu_normal_after_boot)
+>  		WRITE_ONCE(rcu_normal, 1);
+>  	rcu_boot_ended = true;
+> -- 
+> 2.39.0.314.g84b9a713c41-goog
