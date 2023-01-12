@@ -2,116 +2,194 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15E94C5479D
-	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 00:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 178DEC5479D
+	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 01:29:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235045AbjALAwk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 19:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        id S230294AbjALB3x (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Jan 2023 20:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235857AbjALAwh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 19:52:37 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796EA202F
-        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 16:52:36 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id bp44so15436505qtb.0
-        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 16:52:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N2I5oixqy8XG8QqDsD5/7LMDpKsPL0rc5X+pW+Qf7+8=;
-        b=q1DDpxic5REbf6LMrOSAX1yU3yqN66bHX+glJbgrl5t72Vyhcb9G9oZ5pevdW6yry6
-         UAmgnfolaFiM2NkVZOZMAYAT4iUCBFHGg+euQNQPXu9uIdP8dtfsBCE7sauksSvo8R3p
-         Xn/nSAGpI9CMssRbe5GZaqYuhaHzjLk7KEZg8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N2I5oixqy8XG8QqDsD5/7LMDpKsPL0rc5X+pW+Qf7+8=;
-        b=shBzbgWjotXj+dQkHnRv+2tiHj/UGmQ4+6nE6QLmk1HQJMslMRAgtK6X3gsssh1CQ4
-         yAtACpl9/GtR5vqGLE2UtU/7fYIY2vYaFMMJDDrWn2WOeTJlnqdW+mwHineUjP2mleQ8
-         /lBMVivBCwWT/yIfO/x5r42+XoKeCh5YQANETA/MYUfm5W7VQx6WM/z46gIpD1c4rsrY
-         YwCaciL5Y+7DZPEt2noT9iixOqW6NQWnf9lgcI3Kn6YWixJ17X9Gt3DmwgvQmSgPfuq4
-         D3EBLUmwQKrTWb2TLkeqk5/G/ubPCVEm815DBM6H9l+66fcyopTgC2ueUJw4nO43cbzO
-         bM8A==
-X-Gm-Message-State: AFqh2krO8g3a5bUslLhrqyRnw4T/lvxWyej9liTbf6Vprw6+9h5zS4Cv
-        vixkeCQf78UGQOkDqGYZJ2PUmQlvLu2Leg/q
-X-Google-Smtp-Source: AMrXdXt3O42e8rpTmZw72BUQy3v4/sPg0KY+2T2Bz5Vxtgi01MUfm9iywFoeYlRJslhu4I9nFRd0bw==
-X-Received: by 2002:a05:622a:4a1a:b0:3a5:f9cb:8869 with SMTP id fv26-20020a05622a4a1a00b003a5f9cb8869mr109878938qtb.12.1673484755586;
-        Wed, 11 Jan 2023 16:52:35 -0800 (PST)
-Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id z9-20020ac87ca9000000b003a7e2aea23esm8307523qtv.86.2023.01.11.16.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jan 2023 16:52:33 -0800 (PST)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        with ESMTP id S230270AbjALB3w (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Jan 2023 20:29:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF78265E8;
+        Wed, 11 Jan 2023 17:29:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5398861F1C;
+        Thu, 12 Jan 2023 01:29:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0441C433EF;
+        Thu, 12 Jan 2023 01:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673486990;
+        bh=luOxm3+i/J9Q/Ezer2VdFlolnQ7fylcdvzVjPTHlZW0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Dd4tYj20l/gEgLbXUmWmL3KJlnKalbUwOBfXBBaRgLVcLPsy3gMQbNaIBPQgueGGf
+         Cphs5P4hvjK+8QPo6TmOXOdwEzuZ5QHrLxe6/RjS0xk+Yi7CRPBo0xcd8z57i7QUwX
+         /oGgJYEZWKGJArz/6wopodabV80KTBJ92pRS/5JdtLconKVD6hDaeqNKc+Yw7sf6bV
+         N08smO4BHslniKtjUS4N/ZVBAqgPwXnrqWC7ELusNkLDBZDh2eoRNeZb2NuB0y0b78
+         bsndBU7Z5CLUsL8d/vtROw4Tt1OX/blwDCf3QDi2t8l9b866P+RWENU26oh+GgJ0nP
+         iRHymdtxed2Ew==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3CB6A5C06D0; Wed, 11 Jan 2023 17:29:50 -0800 (PST)
+Date:   Wed, 11 Jan 2023 17:29:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, fweisbec@gmail.com,
-        urezki@gmail.com
-Subject: [PATCH v2 rcu/dev 2/2] rcu: Disable laziness if lazy-tracking says so
-Date:   Thu, 12 Jan 2023 00:52:23 +0000
-Message-Id: <20230112005223.2329802-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.39.0.314.g84b9a713c41-goog
-In-Reply-To: <20230112005223.2329802-1-joel@joelfernandes.org>
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        fweisbec@gmail.com, urezki@gmail.com
+Subject: Re: [PATCH v2 rcu/dev 1/2] rcu: Track laziness during boot and
+ suspend
+Message-ID: <20230112012950.GE4028633@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20230112005223.2329802-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230112005223.2329802-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-During suspend, we see failures to suspend 1 in 300-500 suspends.
-Looking closer, it appears that asynchronous RCU callbacks are being
-queued as lazy even though synchronous callbacks are expedited. These
-delays appear to not be very welcome by the suspend/resume code as
-evidenced by these occasional suspend failures.
+On Thu, Jan 12, 2023 at 12:52:22AM +0000, Joel Fernandes (Google) wrote:
+> During boot and suspend/resume, it is desired to prevent RCU laziness from
+> effecting performance and in some cases failures like with suspend.
+> 
+> Track whether RCU laziness is to be ignored or not, in kernels with
+> CONFIG_RCU_LAZY enabled. We do such tracking for expedited-RCU already, however
+> since Android currently expedites synchronous_rcu() always, we cannot rely on
+> that. The next patch ignores laziness hints based on this tracking.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> Paul, could we take this and the next one for 6.2 -rc cycle?
 
-This commit modifies call_rcu() to check if rcu_async_should_hurry(),
-which will return true if we are in suspend or in-kernel boot.
+Given how late it is in v6.2, I would need you to make it all depend on
+CONFIG_RCU_LAZY, so that it is blindingly and immediately obvious that
+there is no change in behavior for kernels built with CONFIG_RCU_LAZY=n.
 
-Ignoring the lazy hint makes the 3000 suspend/resume cycles pass
-reliably on a 12th gen 12-core Intel CPU, and there is some evidence
-that it also slightly speeds up boot performance.
+If you are OK with the v6.3 merge window and backports, what you have
+likely suffices, modulo review and testing.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+So, how would you like to proceed?
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 78b2e999c904..c71e38d7815a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2594,12 +2594,12 @@ static void check_cb_ovld(struct rcu_data *rdp)
- }
- 
- static void
--__call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
-+__call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
- {
- 	static atomic_t doublefrees;
- 	unsigned long flags;
- 	struct rcu_data *rdp;
--	bool was_alldone;
-+	bool was_alldone, lazy;
- 
- 	/* Misaligned rcu_head! */
- 	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
-@@ -2622,6 +2622,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
- 	kasan_record_aux_stack_noalloc(head);
- 	local_irq_save(flags);
- 	rdp = this_cpu_ptr(&rcu_data);
-+	lazy = lazy_in && !rcu_async_should_hurry();
- 
- 	/* Add the callback to our list. */
- 	if (unlikely(!rcu_segcblist_is_enabled(&rdp->cblist))) {
--- 
-2.39.0.314.g84b9a713c41-goog
+							Thanx, Paul
 
+> I also booted debian Linux and verified the flag is reset correctly after boot
+> completes. Thanks.
+> 
+>  kernel/rcu/rcu.h    |  6 ++++++
+>  kernel/rcu/tree.c   |  2 ++
+>  kernel/rcu/update.c | 40 +++++++++++++++++++++++++++++++++++++++-
+>  5 files changed, 55 insertions(+), 1 deletion(-)
+>  create mode 100644 cc_list
+>  create mode 100644 to_list
+> 
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 5c8013f7085f..115616ac3bfa 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -449,14 +449,20 @@ do {									\
+>  /* Tiny RCU doesn't expedite, as its purpose in life is instead to be tiny. */
+>  static inline bool rcu_gp_is_normal(void) { return true; }
+>  static inline bool rcu_gp_is_expedited(void) { return false; }
+> +static inline bool rcu_async_should_hurry(void) { return false; }
+>  static inline void rcu_expedite_gp(void) { }
+>  static inline void rcu_unexpedite_gp(void) { }
+> +static inline void rcu_async_hurry(void) { }
+> +static inline void rcu_async_relax(void) { }
+>  static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
+>  #else /* #ifdef CONFIG_TINY_RCU */
+>  bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+>  bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+> +bool rcu_async_should_hurry(void);  /* Internal RCU use. */
+>  void rcu_expedite_gp(void);
+>  void rcu_unexpedite_gp(void);
+> +void rcu_async_hurry(void);
+> +void rcu_async_relax(void);
+>  void rcupdate_announce_bootup_oddness(void);
+>  #ifdef CONFIG_TASKS_RCU_GENERIC
+>  void show_rcu_tasks_gp_kthreads(void);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 63545d79da51..78b2e999c904 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4504,11 +4504,13 @@ static int rcu_pm_notify(struct notifier_block *self,
+>  	switch (action) {
+>  	case PM_HIBERNATION_PREPARE:
+>  	case PM_SUSPEND_PREPARE:
+> +		rcu_async_hurry();
+>  		rcu_expedite_gp();
+>  		break;
+>  	case PM_POST_HIBERNATION:
+>  	case PM_POST_SUSPEND:
+>  		rcu_unexpedite_gp();
+> +		rcu_async_relax();
+>  		break;
+>  	default:
+>  		break;
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 3893022f8ed8..19bf6fa3ee6a 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -144,8 +144,45 @@ bool rcu_gp_is_normal(void)
+>  }
+>  EXPORT_SYMBOL_GPL(rcu_gp_is_normal);
+>  
+> -static atomic_t rcu_expedited_nesting = ATOMIC_INIT(1);
+> +static atomic_t rcu_async_hurry_nesting = ATOMIC_INIT(1);
+> +/*
+> + * Should call_rcu() callbacks be processed with urgency or are
+> + * they OK being executed with arbitrary delays?
+> + */
+> +bool rcu_async_should_hurry(void)
+> +{
+> +	return !IS_ENABLED(CONFIG_RCU_LAZY) ||
+> +	       atomic_read(&rcu_async_hurry_nesting);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_async_should_hurry);
+> +
+> +/**
+> + * rcu_async_hurry - Make future async RCU callbacks not lazy.
+> + *
+> + * After a call to this function, future calls to call_rcu()
+> + * will be processed in a timely fashion.
+> + */
+> +void rcu_async_hurry(void)
+> +{
+> +	if (IS_ENABLED(CONFIG_RCU_LAZY))
+> +		atomic_inc(&rcu_async_hurry_nesting);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_async_hurry);
+>  
+> +/**
+> + * rcu_async_relax - Make future async RCU callbacks lazy.
+> + *
+> + * After a call to this function, future calls to call_rcu()
+> + * will be processed in a lazy fashion.
+> + */
+> +void rcu_async_relax(void)
+> +{
+> +	if (IS_ENABLED(CONFIG_RCU_LAZY))
+> +		atomic_dec(&rcu_async_hurry_nesting);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_async_relax);
+> +
+> +static atomic_t rcu_expedited_nesting = ATOMIC_INIT(1);
+>  /*
+>   * Should normal grace-period primitives be expedited?  Intended for
+>   * use within RCU.  Note that this function takes the rcu_expedited
+> @@ -195,6 +232,7 @@ static bool rcu_boot_ended __read_mostly;
+>  void rcu_end_inkernel_boot(void)
+>  {
+>  	rcu_unexpedite_gp();
+> +	rcu_async_relax();
+>  	if (rcu_normal_after_boot)
+>  		WRITE_ONCE(rcu_normal, 1);
+>  	rcu_boot_ended = true;
+> -- 
+> 2.39.0.314.g84b9a713c41-goog
