@@ -2,236 +2,123 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A732C5479D
-	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 01:57:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB9E7C54EBD
+	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 07:51:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbjALB5P (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 20:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
+        id S236504AbjALHvn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Jan 2023 02:51:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235934AbjALB5M (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 20:57:12 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4591B13F72
-        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 17:57:11 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id fd15so5490605qtb.9
-        for <rcu@vger.kernel.org>; Wed, 11 Jan 2023 17:57:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Pk4n6j74pVPRfGLW3MNGLi4Yk38ZJHY8XUjjy5UlLg4=;
-        b=qAQv12wBcOdEvg/ENr7CxeYsPZmUrWh3bCIhmiMsYqgLptlzcf82tzIfYocJSa+Pca
-         2TCAbq7REraCC3tGZfN5nTOEjClY/U35NytH/2qWnm2tpk0vLqZM0SaBrDLzYV5dWGSN
-         Dmc14jvgr3U5b1MDlz3eEmqsIr791uPz9mpBY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pk4n6j74pVPRfGLW3MNGLi4Yk38ZJHY8XUjjy5UlLg4=;
-        b=ciG5AvUk69LFhHiDb/I3fF0bkR0Z+2lNDOSV0tyC8U/byDw4iJF3ixSX40shwa0H9Z
-         oFhqEn6GER2JnEUR9bWqjdQD3GDjUhg8RXeDMlXBkiY8ETpUr+ze0WS3g3fEBz8ZqyWM
-         3dfMSCIMBUNQTT+2WMmMZsE8Pn8v87W8hVwCXi4TgIPHU/kUMuMcXzknyMHE1IWR8U7O
-         KLYILEJQjKcW0yN86BCzJoBK0HBE6xQ0TxSkZWn7Z2rQlj+mWqrKXBHi4ldXGnTGKcxE
-         0wMN4I0qFgnt+czWwQIIgtGOAVoLbzpgowLEVcVrIKeAgQQA8v47YPG0IF7LQAkg3wPZ
-         RmOQ==
-X-Gm-Message-State: AFqh2kpL4g2QET2T4wYj30ErsSGfgoSEiJYkMvNwjHt1sNvl4NcK1Rvw
-        S8uxwyfUdYxyQ1gXXieadnFwVRbenWxpEw0a
-X-Google-Smtp-Source: AMrXdXvc475eC4ao1HQtlgbhiAmDl3T6dmQbbHaT8TfGR1LYpElSpZGvcbFhAkiKRTF33oUfiWqBJw==
-X-Received: by 2002:ac8:7ca:0:b0:3b0:fe24:9b89 with SMTP id m10-20020ac807ca000000b003b0fe249b89mr4455097qth.63.1673488630248;
-        Wed, 11 Jan 2023 17:57:10 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id d15-20020a05620a140f00b006fc92cf4703sm9852628qkj.132.2023.01.11.17.57.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jan 2023 17:57:08 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 rcu/dev 1/2] rcu: Track laziness during boot and suspend
-Date:   Wed, 11 Jan 2023 20:56:57 -0500
-Message-Id: <CED4D47F-BEA3-4F53-9934-939454DDEE2B@joelfernandes.org>
-References: <20230112012950.GE4028633@paulmck-ThinkPad-P17-Gen-1>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        fweisbec@gmail.com, urezki@gmail.com
-In-Reply-To: <20230112012950.GE4028633@paulmck-ThinkPad-P17-Gen-1>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (20B101)
+        with ESMTP id S239589AbjALHv0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Jan 2023 02:51:26 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDF13726A;
+        Wed, 11 Jan 2023 23:51:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1673509874; x=1705045874;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Yn345f6A8xT4Ihg6H07aIdh08XFZ516Tsct5gO5ktsE=;
+  b=HCgUh5dH+Dp0z3DRdc5hX427gz3+eG7bc4ljFNPcj9SIH81AVgz8NsB+
+   r9IQfB+bu2MONbuRjB849djVSfMHfYBkgZFD2DSQ1z9YZeDUlFIH+pTQx
+   zFkPvEyVK3qn91gWvuE8AkbUEIp1nKpMy+EVRkc5gQuQjcZIVSUr4s5nF
+   GAPcDnBaXJwFYWAZaUSVjV6E3bSil8TaFTDIyfygyNVuFPVXdTVLo57m8
+   VVZgWg0qa53xmWQJO83QpIg+4O/rhY29FM7WfTdCaqm9hevmnlpWaW1aj
+   bgfEdMY+9SEKGV8CFhLPAPNhiwcmdXg1+7D2c9xYG9SqkK467JV07vxv5
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="307159888"
+X-IronPort-AV: E=Sophos;i="5.96,319,1665471600"; 
+   d="scan'208";a="307159888"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2023 23:51:12 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="726213355"
+X-IronPort-AV: E=Sophos;i="5.96,319,1665471600"; 
+   d="scan'208";a="726213355"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2023 23:51:09 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rcu: Fix the start_poll_synchronize_rcu_expedited() be invoked very early
+Date:   Thu, 12 Jan 2023 15:56:29 +0800
+Message-Id: <20230112075629.1661429-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Currently, the start_poll_synchronize_rcu_expedited() can be invoked
+very early. before rcu_init(), the rcu_data structure's->mynode is not
+initialized, if invoke start_poll_synchronize_rcu_expedited() before
+rcu_init(), will trigger a null rcu_node structure's->exp_seq_poll access.
 
+This commit add boot_exp_seq_poll_rq member to rcu_state structure to
+store seq number return by invoke start_poll_synchronize_rcu_expedited()
+very early.
 
-> On Jan 11, 2023, at 8:29 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Thu, Jan 12, 2023 at 12:52:22AM +0000, Joel Fernandes (Google)=
- wrote:
->> During boot and suspend/resume, it is desired to prevent RCU laziness fro=
-m
->> effecting performance and in some cases failures like with suspend.
->>=20
->> Track whether RCU laziness is to be ignored or not, in kernels with
->> CONFIG_RCU_LAZY enabled. We do such tracking for expedited-RCU already, h=
-owever
->> since Android currently expedites synchronous_rcu() always, we cannot rel=
-y on
->> that. The next patch ignores laziness hints based on this tracking.
->>=20
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> ---
->> Paul, could we take this and the next one for 6.2 -rc cycle?
->=20
-> Given how late it is in v6.2, I would need you to make it all depend on
-> CONFIG_RCU_LAZY, so that it is blindingly and immediately obvious that
-> there is no change in behavior for kernels built with CONFIG_RCU_LAZY=3Dn.=
+Fixes: d96c52fe4907 ("rcu: Add polled expedited grace-period primitives")
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree.c     | 3 ++-
+ kernel/rcu/tree.h     | 1 +
+ kernel/rcu/tree_exp.h | 6 ++++--
+ 3 files changed, 7 insertions(+), 3 deletions(-)
 
->=20
-> If you are OK with the v6.3 merge window and backports, what you have
-> likely suffices, modulo review and testing.
->=20
-> So, how would you like to proceed?
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 63545d79da51..12f0891ce7f4 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -92,6 +92,7 @@ static struct rcu_state rcu_state = {
+ 	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
+ 	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
+ 	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
++	.boot_exp_seq_poll_rq = RCU_GET_STATE_COMPLETED,
+ };
+ 
+ /* Dump rcu_node combining tree at boot to verify correct setup. */
+@@ -4938,7 +4939,7 @@ void __init rcu_init(void)
+ 		qovld_calc = qovld;
+ 
+ 	// Kick-start any polled grace periods that started early.
+-	if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
++	if (!(rcu_state.boot_exp_seq_poll_rq & 0x1))
+ 		(void)start_poll_synchronize_rcu_expedited();
+ 
+ 	rcu_test_sync_prims();
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 192536916f9a..ae50ca6853ad 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -397,6 +397,7 @@ struct rcu_state {
+ 						/* Synchronize offline with */
+ 						/*  GP pre-initialization. */
+ 	int nocb_is_setup;			/* nocb is setup from boot */
++	unsigned long boot_exp_seq_poll_rq;
+ };
+ 
+ /* Values for rcu_state structure's gp_flags field. */
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 956cd459ba7f..1b35a1e233d9 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -1068,9 +1068,11 @@ unsigned long start_poll_synchronize_rcu_expedited(void)
+ 	if (rcu_init_invoked())
+ 		raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
+ 	if (!poll_state_synchronize_rcu(s)) {
+-		rnp->exp_seq_poll_rq = s;
+-		if (rcu_init_invoked())
++		if (rcu_init_invoked()) {
++			rnp->exp_seq_poll_rq = s;
+ 			queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
++		} else
++			rcu_state.boot_exp_seq_poll_rq = s;
+ 	}
+ 	if (rcu_init_invoked())
+ 		raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
+-- 
+2.25.1
 
-Yes that is fine with me. Though, it is right now fully compile-time depende=
-nt on the lazy config, except the definition of the integer which I can=E2=80=
-=99t put behind a config because of ugly ifdefs. I would expect LTO to remov=
-e the integer definition automatically. But it has no effect otherwise.
-
-I do worry a bit about users who are not using stable and have their own ker=
-nel versions with backports. But maybe a fixes tag will get their attention?=
-
-
-Android and ChromeOS should both be fine though, given they swear by stable.=
-
-
-Thanks,
-
- - Joel=20
-
-
->=20
->                            Thanx, Paul
->=20
->> I also booted debian Linux and verified the flag is reset correctly after=
- boot
->> completes. Thanks.
->>=20
->> kernel/rcu/rcu.h    |  6 ++++++
->> kernel/rcu/tree.c   |  2 ++
->> kernel/rcu/update.c | 40 +++++++++++++++++++++++++++++++++++++++-
->> 5 files changed, 55 insertions(+), 1 deletion(-)
->> create mode 100644 cc_list
->> create mode 100644 to_list
->>=20
->> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
->> index 5c8013f7085f..115616ac3bfa 100644
->> --- a/kernel/rcu/rcu.h
->> +++ b/kernel/rcu/rcu.h
->> @@ -449,14 +449,20 @@ do {                                    \
->> /* Tiny RCU doesn't expedite, as its purpose in life is instead to be tin=
-y. */
->> static inline bool rcu_gp_is_normal(void) { return true; }
->> static inline bool rcu_gp_is_expedited(void) { return false; }
->> +static inline bool rcu_async_should_hurry(void) { return false; }
->> static inline void rcu_expedite_gp(void) { }
->> static inline void rcu_unexpedite_gp(void) { }
->> +static inline void rcu_async_hurry(void) { }
->> +static inline void rcu_async_relax(void) { }
->> static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
->> #else /* #ifdef CONFIG_TINY_RCU */
->> bool rcu_gp_is_normal(void);     /* Internal RCU use. */
->> bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
->> +bool rcu_async_should_hurry(void);  /* Internal RCU use. */
->> void rcu_expedite_gp(void);
->> void rcu_unexpedite_gp(void);
->> +void rcu_async_hurry(void);
->> +void rcu_async_relax(void);
->> void rcupdate_announce_bootup_oddness(void);
->> #ifdef CONFIG_TASKS_RCU_GENERIC
->> void show_rcu_tasks_gp_kthreads(void);
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index 63545d79da51..78b2e999c904 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -4504,11 +4504,13 @@ static int rcu_pm_notify(struct notifier_block *s=
-elf,
->>    switch (action) {
->>    case PM_HIBERNATION_PREPARE:
->>    case PM_SUSPEND_PREPARE:
->> +        rcu_async_hurry();
->>        rcu_expedite_gp();
->>        break;
->>    case PM_POST_HIBERNATION:
->>    case PM_POST_SUSPEND:
->>        rcu_unexpedite_gp();
->> +        rcu_async_relax();
->>        break;
->>    default:
->>        break;
->> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
->> index 3893022f8ed8..19bf6fa3ee6a 100644
->> --- a/kernel/rcu/update.c
->> +++ b/kernel/rcu/update.c
->> @@ -144,8 +144,45 @@ bool rcu_gp_is_normal(void)
->> }
->> EXPORT_SYMBOL_GPL(rcu_gp_is_normal);
->>=20
->> -static atomic_t rcu_expedited_nesting =3D ATOMIC_INIT(1);
->> +static atomic_t rcu_async_hurry_nesting =3D ATOMIC_INIT(1);
->> +/*
->> + * Should call_rcu() callbacks be processed with urgency or are
->> + * they OK being executed with arbitrary delays?
->> + */
->> +bool rcu_async_should_hurry(void)
->> +{
->> +    return !IS_ENABLED(CONFIG_RCU_LAZY) ||
->> +           atomic_read(&rcu_async_hurry_nesting);
->> +}
->> +EXPORT_SYMBOL_GPL(rcu_async_should_hurry);
->> +
->> +/**
->> + * rcu_async_hurry - Make future async RCU callbacks not lazy.
->> + *
->> + * After a call to this function, future calls to call_rcu()
->> + * will be processed in a timely fashion.
->> + */
->> +void rcu_async_hurry(void)
->> +{
->> +    if (IS_ENABLED(CONFIG_RCU_LAZY))
->> +        atomic_inc(&rcu_async_hurry_nesting);
->> +}
->> +EXPORT_SYMBOL_GPL(rcu_async_hurry);
->>=20
->> +/**
->> + * rcu_async_relax - Make future async RCU callbacks lazy.
->> + *
->> + * After a call to this function, future calls to call_rcu()
->> + * will be processed in a lazy fashion.
->> + */
->> +void rcu_async_relax(void)
->> +{
->> +    if (IS_ENABLED(CONFIG_RCU_LAZY))
->> +        atomic_dec(&rcu_async_hurry_nesting);
->> +}
->> +EXPORT_SYMBOL_GPL(rcu_async_relax);
->> +
->> +static atomic_t rcu_expedited_nesting =3D ATOMIC_INIT(1);
->> /*
->>  * Should normal grace-period primitives be expedited?  Intended for
->>  * use within RCU.  Note that this function takes the rcu_expedited
->> @@ -195,6 +232,7 @@ static bool rcu_boot_ended __read_mostly;
->> void rcu_end_inkernel_boot(void)
->> {
->>    rcu_unexpedite_gp();
->> +    rcu_async_relax();
->>    if (rcu_normal_after_boot)
->>        WRITE_ONCE(rcu_normal, 1);
->>    rcu_boot_ended =3D true;
->> --=20
->> 2.39.0.314.g84b9a713c41-goog
