@@ -2,93 +2,110 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 576D6C5479D
-	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 00:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A405EC46467
+	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 00:05:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbjALABh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Jan 2023 19:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
+        id S231801AbjALAFZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Jan 2023 19:05:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjALABg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Jan 2023 19:01:36 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A81DF1F;
-        Wed, 11 Jan 2023 16:01:35 -0800 (PST)
+        with ESMTP id S230085AbjALAFZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Jan 2023 19:05:25 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E760332191;
+        Wed, 11 Jan 2023 16:05:22 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0F056B81D79;
-        Thu, 12 Jan 2023 00:01:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA52CC433D2;
-        Thu, 12 Jan 2023 00:01:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F64A61EF6;
+        Thu, 12 Jan 2023 00:05:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8F15C433D2;
+        Thu, 12 Jan 2023 00:05:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673481692;
-        bh=gp3ixmSzBGJy8uTYxS5ADZZFIL2F1SvM+d/vmQgSrEU=;
+        s=k20201202; t=1673481921;
+        bh=B68EjfGhPUeZkY/oEyQdlKSXswgp8PB775kXN5cu0cA=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sxkg91jNJBJYH7USijDsMpk3B7Rh+pgZSq9kVREeqMKTlsIraCQc2xugar4BcIY30
-         15TqShLgLOsylkvcbhLbEEJwOcyf5HWdcJDQ98MpdAb2iHVzT3VnL7QQN8I6kGoENx
-         4q4cAn1LtVbSg7wtPN53/Nh1vkJIHkv/3GxRmrt4X9ISye/UhBm+6tPDO5SrSmj1f3
-         HxWA1nht/9YSii1cMJY2yU0gamKhpuNX4A9PJDk2XEvyJ8pWnG+iHFn1X4pAIk4GIj
-         rB0wg+LRmAMlFp/jZocqp/R42AFuuzFxU1xtYyiYY1NpsBi3yBRg/jX0fJZZzTNDMk
-         zUmgANE3Zsj4g==
+        b=aIBO9Rz7Khf/U1lEgBAfrSL26JGaGd3HT9POJoAIjCHY5nBODdEVH2oxvZFmRMmMl
+         7/o8QworZKAYLppGXlobxvaDIp32cYTleQeI3EknErXKV2c+efe+lOxeT8McYF/zMm
+         idGddiTkJ7nwDPPN5ApmkQlgWntG6yft1+4LUVczL49RYprDCV1d/0KS/QpdgM48Ip
+         ApJdg7F3toGm650mW73ISN19Tx7QiebwKm/j/kewDDHf+tWeipkzvbZ/LRdXf1lsL0
+         rKTp/Fb8Bb4tyXDuWJWRO77DrndpGUFXdr7EFoPs+DO25gGCcx/+oRnW6/BH9aM9J7
+         5LlCGquK1AgXw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5C4965C0AF8; Wed, 11 Jan 2023 16:01:32 -0800 (PST)
-Date:   Wed, 11 Jan 2023 16:01:32 -0800
+        id 733E35C0AF8; Wed, 11 Jan 2023 16:05:21 -0800 (PST)
+Date:   Wed, 11 Jan 2023 16:05:21 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
+To:     Sean Christopherson <seanjc@google.com>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH rcu 04/27] arch/powerpc/kvm: Remove "select SRCU"
-Message-ID: <20230112000132.GC4028633@paulmck-ThinkPad-P17-Gen-1>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH rcu 01/27] arch/x86: Remove "select SRCU"
+Message-ID: <20230112000521.GA3036960@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <20230105003759.GA1769545@paulmck-ThinkPad-P17-Gen-1>
- <20230105003813.1770367-4-paulmck@kernel.org>
- <87h6wwhbtb.fsf@mpe.ellerman.id.au>
+ <20230105003813.1770367-1-paulmck@kernel.org>
+ <Y7xSO2dW1sy21RVz@google.com>
+ <20230109192228.GV4028633@paulmck-ThinkPad-P17-Gen-1>
+ <20230109200553.GA4154229@paulmck-ThinkPad-P17-Gen-1>
+ <Y73CoUO63TOxmmnC@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87h6wwhbtb.fsf@mpe.ellerman.id.au>
+In-Reply-To: <Y73CoUO63TOxmmnC@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 10:49:04AM +1100, Michael Ellerman wrote:
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> > Now that the SRCU Kconfig option is unconditionally selected, there is
-> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> > Kconfig statements.
-> >
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Nicholas Piggin <npiggin@gmail.com>
-> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > Cc: <linuxppc-dev@lists.ozlabs.org>
-> > ---
-> >  arch/powerpc/kvm/Kconfig | 1 -
-> >  1 file changed, 1 deletion(-)
+On Tue, Jan 10, 2023 at 07:55:13PM +0000, Sean Christopherson wrote:
+> On Mon, Jan 09, 2023, Paul E. McKenney wrote:
+> > On Mon, Jan 09, 2023 at 11:22:28AM -0800, Paul E. McKenney wrote:
+> > > On Mon, Jan 09, 2023 at 05:43:23PM +0000, Sean Christopherson wrote:
+> > > > On Wed, Jan 04, 2023, Paul E. McKenney wrote:
+> > > > > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > > > > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > > > > Kconfig statements.
+> > > > > 
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > > > Cc: Borislav Petkov <bp@alien8.de>
+> > > > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > > > > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > > > > Cc: Sean Christopherson <seanjc@google.com>
+> > > > > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > > > > Cc: <x86@kernel.org>
+> > > > > Cc: <kvm@vger.kernel.org>
+> > > > > ---
+> > > > 
+> > > > ...
+> > > > 
+> > > > > diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> > > > > index fbeaa9ddef598..9306d99585188 100644
+> > > > > --- a/arch/x86/kvm/Kconfig
+> > > > > +++ b/arch/x86/kvm/Kconfig
+> > > > > @@ -46,7 +46,6 @@ config KVM
+> > > > >  	select KVM_XFER_TO_GUEST_WORK
+> > > > >  	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+> > > > >  	select KVM_VFIO
+> > > > > -	select SRCU
+> > > > 
+> > > > Would it be too much trouble to bundle all of the KVM changes into a single patch?
+> > > > The SRCU requirement is a generic KVM requirement that's handled in the arch Kconfigs
+> > > > purely because of KVM's somewhat roundabout Kconfig setup.
+> > > 
+> > > No problem, and will do on my next rebase.  I might end up with a long
+> > > list of Cc's, but so it goes.  I will of course send the result as a
+> > > reply to this message.
+> > 
+> > Like this?
 > 
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> Ya, looks good!
 
-Thank you!  I will apply on the next rebase.
+Glad you like it!  May I have your ack?  Or would you take this one?
 
 							Thanx, Paul
-
-> cheers
-> 
-> > diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
-> > index a9f57dad6d916..902611954200d 100644
-> > --- a/arch/powerpc/kvm/Kconfig
-> > +++ b/arch/powerpc/kvm/Kconfig
-> > @@ -22,7 +22,6 @@ config KVM
-> >  	select PREEMPT_NOTIFIERS
-> >  	select HAVE_KVM_EVENTFD
-> >  	select HAVE_KVM_VCPU_ASYNC_IOCTL
-> > -	select SRCU
-> >  	select KVM_VFIO
-> >  	select IRQ_BYPASS_MANAGER
-> >  	select HAVE_KVM_IRQ_BYPASS
-> > -- 
-> > 2.31.1.189.g2e36527f23
