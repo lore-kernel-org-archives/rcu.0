@@ -2,148 +2,104 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC63AC54EBC
-	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 15:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1312C54EBC
+	for <rcu@archiver.kernel.org>; Thu, 12 Jan 2023 15:16:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240308AbjALPGk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Jan 2023 10:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
+        id S234936AbjALPQ3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Jan 2023 10:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240015AbjALPGB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Jan 2023 10:06:01 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D9461476
-        for <rcu@vger.kernel.org>; Thu, 12 Jan 2023 06:54:40 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id v14so16609897qtq.3
-        for <rcu@vger.kernel.org>; Thu, 12 Jan 2023 06:54:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dT0ykU70TtL3YPQYLpqbW6lCkoFtNucTYqrJdjbf/MQ=;
-        b=w9jMuuWxlRO8/5Q+i//ZqW872iSURFz0Q9hMydq6vN7JIprkLCZcbt4Ge0VEM8V/8s
-         4J6WCMcI8d7nGyjL9KzZ3Z2EujK9aqteocXhgrBOZ1XwqziTm1+ctiQBfT+A2UOa3/hP
-         V8s54JleXW2P+uTp7qem6UCiHV+ZjoUaoXmic=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dT0ykU70TtL3YPQYLpqbW6lCkoFtNucTYqrJdjbf/MQ=;
-        b=kg9k3gr98Gfu8cJgFvuDmxVZ3JE9E3H1x8eTbj4CIwfNZbs0pYk/jp9h2Uo9720ccZ
-         RjoVnLGjhupSUbk0jOZ041p9NZ/3afnsNMjDBJdGF1IOzwmZoznhhEMiTbXKsXGoD9+4
-         9f57UI2dhD3+xWTuLBkYNYj+2wHSCTj8UueWjrjvRdfCEo8o37CE3D3Lc0791P6LffQx
-         wuh9tHyuXBqL7clqeY7bVWwYjz3DdhPxzqpQ8MUxIdl5TEBYMyba6+7nKfgQJTAkoeXO
-         7gNfspMr3MwittL/Ki1+XkLXAxPu3XRUxMXfrXoAQ3j9KNTdukmINSf4X3i39BMlCrdM
-         kBKw==
-X-Gm-Message-State: AFqh2koScsDx/wGep8yq59MlXgN4ngzpXNQBcZvmPx/dxSD/2mjfoxCk
-        veXLXFsOO1n6vrJsDgX3G69W6g==
-X-Google-Smtp-Source: AMrXdXvo8p/7hsbVuJxPx9MiUNwCabZ7q9GTkh+gU/CfUZBjgofLKwofPt3EP0rO6Amn19hbayVFbg==
-X-Received: by 2002:a05:622a:244e:b0:3a5:17f0:e718 with SMTP id bl14-20020a05622a244e00b003a517f0e718mr104818998qtb.14.1673535279317;
-        Thu, 12 Jan 2023 06:54:39 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id l17-20020ac848d1000000b003ab43dabfb1sm9206133qtr.55.2023.01.12.06.54.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Jan 2023 06:54:38 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2] rcu: Fix the start_poll_synchronize_rcu_expedited() be invoked very early
-Date:   Thu, 12 Jan 2023 09:54:26 -0500
-Message-Id: <13E7FFFD-9F91-4221-B52C-E6CB1EFBC2AB@joelfernandes.org>
-References: <20230112075629.1661429-1-qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230112075629.1661429-1-qiang1.zhang@intel.com>
-To:     Zqiang <qiang1.zhang@intel.com>
-X-Mailer: iPhone Mail (20B101)
+        with ESMTP id S240362AbjALPPx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Jan 2023 10:15:53 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D0C3C3A8;
+        Thu, 12 Jan 2023 07:07:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E6E2762036;
+        Thu, 12 Jan 2023 15:07:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2857C433D2;
+        Thu, 12 Jan 2023 15:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673536030;
+        bh=RYC7OJ01AKIFCO3BEi4odVSTc9VcQo0r2QTBNIOjcT0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OfFt8d64p368aPW00H8FPPmms+mpKYz5fyPJ4w3Ko1lQtUwaDgzx0gJWYtuD9Hj7M
+         uAuDbuqw2WtJpp3ECiEku+cgW3HfqzCOTvNksWaNHfRYRngZMTHglFuJOP7szqCHOV
+         yt7qB70CU4aPJOhD4PP/mG6x0+aJkZGnA0LCfoSKAglLiu0dbPaRd+nGpHGu5x0pKa
+         LN4thza51itIHDhfl3OWr+NYf93k1rIAOQPXF4FgQD7jSah/KmHmvke4WOyUwkXOXb
+         sfI4t1Mqr1F8Lg46EX1/VLhS+ss0N5z5V+5ZZRuZhCx+D5DEZ1He74BhjSIDtBL6SR
+         nzBLgsz22oicw==
+Date:   Thu, 12 Jan 2023 16:07:07 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rcu: Remove duplicate settings for rcu boost kthreads
+ affinity
+Message-ID: <Y8AiGy6iYiUk7iB+@lothringen>
+References: <20221215090029.2972236-1-qiang1.zhang@intel.com>
+ <20221217010919.GG4001@paulmck-ThinkPad-P17-Gen-1>
+ <PH0PR11MB5880B9403488CAB5DF9810FFDAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <PH0PR11MB58806ABF242993103390A6F5DAE79@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <20221221192622.GD4001@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221221192622.GD4001@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Dec 21, 2022 at 11:26:22AM -0800, Paul E. McKenney wrote:
+> On Sat, Dec 17, 2022 at 01:02:03PM +0000, Zhang, Qiang1 wrote:
+> commit 5815245b56229198d5f5d0c48c26d3c0c53ee222
+> Author: Zqiang <qiang1.zhang@intel.com>
+> Date:   Wed Dec 21 11:15:43 2022 -0800
+> 
+>     rcu: Remove redundant call to rcu_boost_kthread_setaffinity()
+>     
+>     The rcu_boost_kthread_setaffinity() function is invoked at
+>     rcutree_online_cpu() and rcutree_offline_cpu() time, early in the online
+>     timeline and late in the offline timeline, respectively.  It is also
+>     invoked from rcutree_dead_cpu(), however, in the absence of userspace
+>     manipulations (for which userspace must take responsibility), this call
+>     is redundant with that from rcutree_offline_cpu().  This redundancy can
+>     be demonstrated by printing out the relevant cpumasks
+>     
+>     This commit therefore removes the call to rcu_boost_kthread_setaffinity()
+>     from rcutree_dead_cpu().
+>     
+>     Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-> On Jan 12, 2023, at 2:51 AM, Zqiang <qiang1.zhang@intel.com> wrote:
->=20
-> =EF=BB=BFCurrently, the start_poll_synchronize_rcu_expedited() can be invo=
-ked
-> very early. before rcu_init(), the rcu_data structure's->mynode is not
-> initialized, if invoke start_poll_synchronize_rcu_expedited() before
-> rcu_init(), will trigger a null rcu_node structure's->exp_seq_poll access.=
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
->=20
-> This commit add boot_exp_seq_poll_rq member to rcu_state structure to
-> store seq number return by invoke start_poll_synchronize_rcu_expedited()
-> very early.
->=20
-> Fixes: d96c52fe4907 ("rcu: Add polled expedited grace-period primitives")
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Thanks.
+Thanks!
 
 
-
-> ---
-> kernel/rcu/tree.c     | 3 ++-
-> kernel/rcu/tree.h     | 1 +
-> kernel/rcu/tree_exp.h | 6 ++++--
-> 3 files changed, 7 insertions(+), 3 deletions(-)
->=20
+> 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 63545d79da51..12f0891ce7f4 100644
+> index c3255d27286c4..a6181b76fd5ab 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -92,6 +92,7 @@ static struct rcu_state rcu_state =3D {
->    .exp_mutex =3D __MUTEX_INITIALIZER(rcu_state.exp_mutex),
->    .exp_wake_mutex =3D __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
->    .ofl_lock =3D __ARCH_SPIN_LOCK_UNLOCKED,
-> +    .boot_exp_seq_poll_rq =3D RCU_GET_STATE_COMPLETED,
-> };
->=20
-> /* Dump rcu_node combining tree at boot to verify correct setup. */
-> @@ -4938,7 +4939,7 @@ void __init rcu_init(void)
->        qovld_calc =3D qovld;
->=20
->    // Kick-start any polled grace periods that started early.
-> -    if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
-> +    if (!(rcu_state.boot_exp_seq_poll_rq & 0x1))
->        (void)start_poll_synchronize_rcu_expedited();
->=20
->    rcu_test_sync_prims();
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index 192536916f9a..ae50ca6853ad 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -397,6 +397,7 @@ struct rcu_state {
->                        /* Synchronize offline with */
->                        /*  GP pre-initialization. */
->    int nocb_is_setup;            /* nocb is setup from boot */
-> +    unsigned long boot_exp_seq_poll_rq;
-> };
->=20
-> /* Values for rcu_state structure's gp_flags field. */
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 956cd459ba7f..1b35a1e233d9 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -1068,9 +1068,11 @@ unsigned long start_poll_synchronize_rcu_expedited(=
-void)
->    if (rcu_init_invoked())
->        raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
->    if (!poll_state_synchronize_rcu(s)) {
-> -        rnp->exp_seq_poll_rq =3D s;
-> -        if (rcu_init_invoked())
-> +        if (rcu_init_invoked()) {
-> +            rnp->exp_seq_poll_rq =3D s;
->            queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-> +        } else
-> +            rcu_state.boot_exp_seq_poll_rq =3D s;
->    }
->    if (rcu_init_invoked())
->        raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
-> --=20
-> 2.25.1
->=20
+> @@ -4165,15 +4165,10 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
+>   */
+>  int rcutree_dead_cpu(unsigned int cpu)
+>  {
+> -	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> -	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+> -
+>  	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+>  		return 0;
+>  
+>  	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+> -	/* Adjust any no-longer-needed kthreads. */
+> -	rcu_boost_kthread_setaffinity(rnp, -1);
+>  	// Stop-machine done, so allow nohz_full to disable tick.
+>  	tick_dep_clear(TICK_DEP_BIT_RCU);
+>  	return 0;
