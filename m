@@ -2,188 +2,74 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3195AC54EBD
-	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 15:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E3C7C54EBE
+	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 16:03:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjAMPeh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Jan 2023 10:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
+        id S230134AbjAMQDP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Jan 2023 11:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbjAMPeI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Jan 2023 10:34:08 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EB39B281;
-        Fri, 13 Jan 2023 07:27:36 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EBD12B8212E;
-        Fri, 13 Jan 2023 15:27:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA7AC433EF;
-        Fri, 13 Jan 2023 15:27:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673623653;
-        bh=mdjjde/kpGhKz7LWQy4Ha4KJulKpEmB/IfM4LXUBeF8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZOy91bzf8j+p7kuD/QdLpI/BRf8Ov+HaJmoNbgd1BIPqdKVYjAyqpFdKsBjx660nS
-         894QZSriFopWyVtoQxIDNcKuaNdDLXwpAY8LJP/H1CUqs9lDjDnvtCrBxV0EKdHa1l
-         Xh9GQhh83MYfUCioCwHdlsybkUKDVZY5rLusl6CtXAuRDHNW9vxOXzVzt1poxbM+kN
-         BeevhEBmWFEaQJCjDw6J6Afv/1y0/fEE1M4yoM1A+YCmG/NAmLOEUJbegY56WUMgRY
-         mcgQai03dVt7lr/PfaPfCHBiV07HqIp0oIitFEpZU4lYDM+IOGc8wrrhModu/RzUBd
-         Dw8q47b8VF2fw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1FF1B5C0964; Fri, 13 Jan 2023 07:27:33 -0800 (PST)
-Date:   Fri, 13 Jan 2023 07:27:33 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] rcu: Fix the start_poll_synchronize_rcu_expedited()
- be invoked very early
-Message-ID: <20230113152733.GZ4028633@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230112075629.1661429-1-qiang1.zhang@intel.com>
- <20230112190656.GR4028633@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB588074A87AC454A7F0E42A5ADAC29@PH0PR11MB5880.namprd11.prod.outlook.com>
- <PH0PR11MB588008A9BBAFA6BEEC8685ABDAC29@PH0PR11MB5880.namprd11.prod.outlook.com>
- <20230113144919.GY4028633@paulmck-ThinkPad-P17-Gen-1>
- <PH0PR11MB588004418C299781FE6738BFDAC29@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S230254AbjAMQCt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Jan 2023 11:02:49 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF09BC351;
+        Fri, 13 Jan 2023 07:52:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1673625162; x=1705161162;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=rVAuAq0BfESy5E3fTHeb28N28gn8YJ95tDzKu9Kp8Ik=;
+  b=F6RRLtpsBrWcSmaAEP2j3RiYetPh1Yep1EZUBgHn1J2z6ONrxlUaMvKZ
+   bg7EGmYmuReLSKZ9UQwnzWIOJDGIzi6cJ1Yx6e4JfetZ/vpuOEoqdCJb3
+   qQCMiCqJDzFldZDiKBEgNuXn6gfxnxdQDD1SpkXy5ySADhF67agLBZmgL
+   13lY2GYv/DFBcEntOlvmTqTiLDv9NO+ccqZUGrehAbZcp+PGUMZjO6XBo
+   5aPTdpdY595e+z2tnxd1exqMC9/gwk8w5XJDXJk3lrMnmtW9kOIKCFjaZ
+   no5iTpwMkJF3/eawU3XP+Y9AMlnIqOkM9AgA7j48hGHxCsEdAZkjt0ipI
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="325279470"
+X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; 
+   d="scan'208";a="325279470"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2023 07:52:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="800627291"
+X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; 
+   d="scan'208";a="800627291"
+Received: from ubik.fi.intel.com (HELO localhost) ([10.237.72.184])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Jan 2023 07:52:38 -0800
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        John Ogness <john.ogness@linutronix.de>,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH rcu v2 05/20] drivers/hwtracing/stm: Remove "select SRCU"
+In-Reply-To: <20230113001132.3375334-5-paulmck@kernel.org>
+References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
+ <20230113001132.3375334-5-paulmck@kernel.org>
+Date:   Fri, 13 Jan 2023 17:52:37 +0200
+Message-ID: <871qnysa7u.fsf@ubik.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB588004418C299781FE6738BFDAC29@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 13, 2023 at 03:02:54PM +0000, Zhang, Qiang1 wrote:
-> On Fri, Jan 13, 2023 at 12:10:47PM +0000, Zhang, Qiang1 wrote:
-> > 
-> > > Currently, the start_poll_synchronize_rcu_expedited() can be invoked
-> > > very early. before rcu_init(), the rcu_data structure's->mynode is not
-> > > initialized, if invoke start_poll_synchronize_rcu_expedited() before
-> > > rcu_init(), will trigger a null rcu_node structure's->exp_seq_poll access.
-> > > 
-> > > This commit add boot_exp_seq_poll_rq member to rcu_state structure to
-> > > store seq number return by invoke start_poll_synchronize_rcu_expedited()
-> > > very early.
-> > > 
-> > > Fixes: d96c52fe4907 ("rcu: Add polled expedited grace-period primitives")
-> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > >
-> > >First off, excellent catch, Zqiang!!!
-> > >
-> > >And thank you for Frederic and Joel for your reviews.
-> > >	
-> > >But I believe that this can be simplified, for example, as shown in
-> > >the (untested) patch below.
-> > >
-> > >Thoughts?
-> > >
-> > >Agree, thanks for wordsmithed  😊.
-> > >
-> > >
-> > >And yes, I did presumptuously add Frederic's and Joel's reviews.
-> > >Please let me know if you disagree, and if so what different approach
-> > >you would prefer.  (Though of course simple disagreement is sufficient
-> > >for me to remove your tag.  Not holding you hostage for improvements,
-> > >not yet, anyway!)
-> > >
-> > >							Thanx, Paul
-> > >
-> > >------------------------------------------------------------------------
-> > >
-> > >commit e05af5cb3858e669c9e6b70e0aca708cc70457da
-> > >Author: Zqiang <qiang1.zhang@intel.com>
-> > >Date:   Thu Jan 12 10:48:29 2023 -0800
-> > >
-> > >    rcu: Permit start_poll_synchronize_rcu_expedited() to be invoked early
-> > >    
-> > >    According to the commit log of the patch that added it to the kernel,
-> > >    start_poll_synchronize_rcu_expedited() can be invoked very early, as
-> > >    in long before rcu_init() has been invoked.  But before rcu_init(),
-> > >    the rcu_data structure's ->mynode field has not yet been initialized.
-> > >    This means that the start_poll_synchronize_rcu_expedited() function's
-> > >    attempt to set the CPU's leaf rcu_node structure's ->exp_seq_poll_rq
-> > >    field will result in a segmentation fault.
-> > >    
-> > >    This commit therefore causes start_poll_synchronize_rcu_expedited() to
-> > >    set ->exp_seq_poll_rq only after rcu_init() has initialized all CPUs'
-> > >    rcu_data structures' ->mynode fields.  It also removes the check from
-> > >    the rcu_init() function so that start_poll_synchronize_rcu_expedited(
-> > >    is unconditionally invoked.  Yes, this might result in an unnecessary
-> > >    boot-time grace period, but this is down in the noise.  Besides, there
-> > >    only has to be one call_rcu() invoked prior to scheduler initialization
-> > >    to make this boot-time grace period necessary.
-> > 
-> > A little confused, why  call_rcu() invoked prior to scheduler initialization to make this boot-time
-> > grace period necessary 😊?
-> >
-> >Because then there will be a callback queued that will require a grace
-> >period to run anyway.
-> >
-> >Or maybe you are asking if those callbacks will really be able to use
-> >that first grace period?
-> 
-> Yes, because even if we queue work to rcu_gp_wq workqueue, this also requires us to wait until
-> the workqueue_init() is invoked, our work can be execute. and also need to wait for the
-> rcu_gp kthread to be created, after this, our first grace period can begin, the callbacks has the
-> opportunity to be called.  the call_rcu() require a grace period, but we require is expedited grace period.
+"Paul E. McKenney" <paulmck@kernel.org> writes:
 
-Good catch, thank you!  I will update the commit log accordingly.
+> Now that the SRCU Kconfig option is unconditionally selected, there is
+> no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> Kconfig statements.
 
-							Thanx, Paul
+Accidentally acked the previous version. This appears to be the same.
 
-> Thanks
-> Zqiang
-> 
-> >
-> >							Thanx, Paul
-> 
-> > Thanks
-> > Zqiang
-> > 
-> > 
-> > >    
-> > >    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > >    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> > >    Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > >
-> > >diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > >index 63545d79da51c..f2e3a23778c06 100644
-> > >--- a/kernel/rcu/tree.c
-> > >+++ b/kernel/rcu/tree.c
-> > >@@ -4937,9 +4937,8 @@ void __init rcu_init(void)
-> > > 	else
-> > > 		qovld_calc = qovld;
-> > > 
-> > >-	// Kick-start any polled grace periods that started early.
-> > >-	if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
-> > >-		(void)start_poll_synchronize_rcu_expedited();
-> > >+	// Kick-start in case any polled grace periods started early.
-> > >+	(void)start_poll_synchronize_rcu_expedited();
-> > > 
-> > > 	rcu_test_sync_prims();
-> > > }
-> > >diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> > >index 956cd459ba7f3..3b7abb58157df 100644
-> > >--- a/kernel/rcu/tree_exp.h
-> > >+++ b/kernel/rcu/tree_exp.h
-> > >@@ -1068,9 +1068,10 @@ unsigned long start_poll_synchronize_rcu_expedited(void)
-> > > 	if (rcu_init_invoked())
-> > > 		raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
-> > > 	if (!poll_state_synchronize_rcu(s)) {
-> > >-		rnp->exp_seq_poll_rq = s;
-> > >-		if (rcu_init_invoked())
-> > >+		if (rcu_init_invoked()) {
-> > >+			rnp->exp_seq_poll_rq = s;
-> > > 			queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-> > >+		}
-> > > 	}
-> > > 	if (rcu_init_invoked())
-> > > 		raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
+Acked-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+
+Regards,
+--
+Alex
