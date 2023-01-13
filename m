@@ -2,120 +2,302 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58CF1C3DA78
-	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 22:26:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A93ADC677F1
+	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 23:57:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjAMW0v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Jan 2023 17:26:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
+        id S230305AbjAMX5k (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Jan 2023 18:57:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjAMW0u (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Jan 2023 17:26:50 -0500
-Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [IPv6:2a0c:5a00:149::26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C076E76AE9;
-        Fri, 13 Jan 2023 14:26:48 -0800 (PST)
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-        by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <mhal@rbox.co>)
-        id 1pGSVY-005JCK-Je; Fri, 13 Jan 2023 23:26:44 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-        s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-        bh=2a+4kzQ6dFuhK25afJPp6fpl3dbzUdByM7s2DZ5lNqI=; b=mNbChxh+BQB0p01St8K1jzOgNW
-        I7eFp9Y9u9t9oMjl2hZDWCOw1DIBibltPdWqBCJzYRtFiqxZgI5d7/RVHndRx4hLC1B+/DhJJkOzR
-        yStOgK0qj8DVi6kV/LkRn+AZsXVJVUjLJH5x8RmBZStNSzz3YyhOpqudd+/zbcecioQVljNjlZNE5
-        +qrmmXTBoZYgLR3oINLh9BPETlnjUF34vv1DZw6TtVOh5b6++Q7uBfSmKo41wc3UAtm6KWcUgX7i0
-        BLNNp3RyTasGXRAAOLvTRmziZWc39Ckt8883K+PIAAZCvOWQsowr2zvCh3rglazS/1kc7sy23rA0t
-        dl/SALbg==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-        by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-        (envelope-from <mhal@rbox.co>)
-        id 1pGSVW-0004wp-CD; Fri, 13 Jan 2023 23:26:42 +0100
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        id 1pGSVE-0008CI-MI; Fri, 13 Jan 2023 23:26:24 +0100
-Message-ID: <93e647dc-4465-5e28-e102-3e5fdd6697fe@rbox.co>
-Date:   Fri, 13 Jan 2023 23:26:19 +0100
-MIME-Version: 1.0
-User-Agent: Thunderbird
-Subject: Re: [PATCH] Documentation: kvm: fix SRCU locking order docs
-Content-Language: pl-PL
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        with ESMTP id S231142AbjAMX5i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Jan 2023 18:57:38 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46011869DC;
+        Fri, 13 Jan 2023 15:57:37 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id fd15so10494091qtb.9;
+        Fri, 13 Jan 2023 15:57:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=04WipWzvi3fgLXeN3WQIiUmtsXJgHxnpbmFiZjQ6EeQ=;
+        b=QBxD6UJhEwCxoDKZHBBFwJseq/TT/58ZrBsDNTfB8TXXX28Tuj328/Z2O1fxlpawwH
+         2ihQbx9jlf3Y/qBAS3f+Dv6WbLc16s3OqYHBZiq5U0cQUVCGcF2pAYsStqHBUhQq+xiR
+         ypkQxW5NXD1p5hjXXTApSd8kZuABF6v2Ulgpa6OvARuQcqbcBaV4y9ruz9EnVjUTJAXC
+         5QEhd1x8mr8KKPBK6bW4K7Pz6hR1ASB0GMr5NXSZDF2vDfNTC3cC10L5oBLNrg5xV5yQ
+         BnW+AZF4jHQbFKWgypUlv5hgWpgYQc2d4iWO9UHSXWEgX5/ugL0Xkze0QWCsRjDSAeg+
+         RYLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=04WipWzvi3fgLXeN3WQIiUmtsXJgHxnpbmFiZjQ6EeQ=;
+        b=DIeARyEQkPBa4gRl4FdOfwXCRNTxwHwnij8PAWfO+M9b3M3/+BRjd45m6AUwTHUx8Y
+         Z6ncx+qHUnYjayOeyoHjJQZMN9NT9gsqt7O7fzG+PpUHeHZrNgnkQX5X01mLpVUAhB7x
+         mKcvFhwmyLoIHxF34Kc6lMUmG2iJMgNN9um7F/VzepWZ7AnKfCmwRtZT1+JcNK8IGhTM
+         bvm2xzExalZjNmKGzEQ7HApdfimWHOck827k9cNCEuJjSHLR6kmM8CQAorNa0PbQr7El
+         FmyKSZwKXd4nfqFcIrl8vwsxxh6skozGnXupynOsQt2LuyIBR79qM/JjOCeDfuwfVaVo
+         QR2A==
+X-Gm-Message-State: AFqh2kpb/X/ZTU713wO/Y43ghk1bDMt5rgmW4/QMnAsk8H9DyVguFDhU
+        giuUeTpE2KU42QCaUXkc7eU=
+X-Google-Smtp-Source: AMrXdXu4QLs5zM7t68JijViTTXpRKsMlqQVVej1K4Dq7BJ1vqtn9igYcToVOW9xPrM3isTtKzkFypQ==
+X-Received: by 2002:ac8:6755:0:b0:3b1:546e:e6b6 with SMTP id n21-20020ac86755000000b003b1546ee6b6mr12854568qtp.35.1673654256400;
+        Fri, 13 Jan 2023 15:57:36 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id d12-20020a05620a240c00b006fcc3858044sm13953432qkn.86.2023.01.13.15.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Jan 2023 15:57:33 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 0873E27C0054;
+        Fri, 13 Jan 2023 18:57:32 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 13 Jan 2023 18:57:33 -0500
+X-ME-Sender: <xms:7O_BY51Ue0qj6M9-j2f1LMSILgt4pQhNnz8yFA_Vf9l6datDtMNgFw>
+    <xme:7O_BYwExOvNVe9InD66U0vRt2OyXxqkcxZOuGEPUwCyhBCCboEZ-GvaApXY2WKyTX
+    tSbWTelUSG3y3MKKg>
+X-ME-Received: <xmr:7O_BY54bGtpisgWMPl6sjDUR4e-wG9fNSNgjU-XmG0J4Eda6UeKUlhzBeOo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrleelgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfevffeiueejhfeuiefggeeuheeg
+    gefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:7O_BY20ieRCA9QSFYbShpwdK2QmiAFFTv38axVVArepg0IxcwvFDBA>
+    <xmx:7O_BY8FaQVeEolybmZaOOjrOyKocQTDauvw7EVxbIPuA0ldiyIAXTQ>
+    <xmx:7O_BY3-mL2fj1rHtfW9Ituc3WxKr2YPM9E_cO9B-ma5DXSlAzL1THQ>
+    <xmx:7O_BYxKyRk9Vixay-ess8fIBrdss39flZdvTB9yUJOuWsS-huTB-XA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Jan 2023 18:57:31 -0500 (EST)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
         Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        seanjc@google.com, Joel Fernandes <joel@joelfernandes.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
+        Joel Fernandes <joel@joelfernandes.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230111183031.2449668-1-pbonzini@redhat.com>
- <a14a13a690277d4cc95a4b26aa2d9a4d9b392a74.camel@infradead.org>
- <20230112152048.GJ4028633@paulmck-ThinkPad-P17-Gen-1>
- <Y8EF24o932lcshKs@boqun-archlinux>
- <d1d44f07-558c-e0ed-403e-61a854c868cb@redhat.com>
- <023e131b3de80c4bc2b6711804a4769466b90c6f.camel@infradead.org>
- <41fad1dc90c2bef4f2f17f1495c2f85105707d9f.camel@infradead.org>
-From:   Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <41fad1dc90c2bef4f2f17f1495c2f85105707d9f.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Michal Luczaj <mhal@rbox.co>
+Subject: [PATCH 4/3] locking/lockdep: Improve the deadlock scenario print for sync and read lock
+Date:   Fri, 13 Jan 2023 15:57:22 -0800
+Message-Id: <20230113235722.1226525-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20230113065955.815667-1-boqun.feng@gmail.com>
+References: <20230113065955.815667-1-boqun.feng@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 1/13/23 12:03, David Woodhouse wrote:
-> On Fri, 2023-01-13 at 10:33 +0000, David Woodhouse wrote:
->> So everything seems to be working as it should... *except* for the fact
->> that I don't quite understand why xen_shinfo_test didn't trigger the
->> warning. Michal, I guess you already worked that out when you came up
->> with your deadlock-test instead... is there something we should add to
->> xen_shinfo_test that would mean it *would* have triggered?
+Lock scenario print is always a weak spot of lockdep splats. Improvement
+can be made if we rework the dependency search and the error printing.
 
-No, I didn't implement those deadlock selftests out of xen_shinfo_test
-because there was some problem. I just wanted to have a cleaner workspace
-and then, maybe, move them to xen_shinfo_test, which, well, did not happen
-:) I guess there's no need for them filthy races anymore; lockdep does a
-better job.
+However without touching the graph search, we can improve a little for
+the circular deadlock case, since we have the to-be-added lock
+dependency, and know whether these two locks are read/write/sync.
 
-> Got it. It only happens when kvm_xen_set_evtchn() takes the slow path
-> when kvm_xen_set_evtchn_fast() fails.
+In order to know whether a held_lock is sync or not, a bit was
+"stolen" from ->references, which reduce our limit for the same lock
+class nesting from 2^12 to 2^11, and it should still be good enough.
 
-I fully agree. And sorry for late reply.
+Besides, since we now have bit in held_lock for sync, we don't need the
+"hardirqoffs being 1" trick, and also we can avoid the __lock_release()
+if we jump out of __lock_acquire() before the held_lock stored.
 
-> Not utterly sure why that works
-> in your deadlock_test but I can make it happen in xen_shinfo_test just
-> by invalidating the GPC by changing the memslots:
+With these changes, a deadlock case evolved with read lock and sync gets
+a better print-out from:
 
-Could it be that deadlocks_test starts with the right conditions, i.e.
-invalid KVM_XEN_ATTR_TYPE_SHARED_INFO along with valid
-KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO? xen_shinfo_test, on the other hand, have
-them both valid, and so the fast path is taken.
+	[...]  Possible unsafe locking scenario:
+	[...]
+	[...]        CPU0                    CPU1
+	[...]        ----                    ----
+	[...]   lock(srcuA);
+	[...]                                lock(srcuB);
+	[...]                                lock(srcuA);
+	[...]   lock(srcuB);
 
-I suppose instead of changing memslots, you can invalidate the
-KVM_XEN_ATTR_TYPE_SHARED_INFO for that particular test unit, e.g.
+to
 
-	struct kvm_xen_hvm_attr ha = {
-		.type = KVM_XEN_ATTR_TYPE_SHARED_INFO,
-		.u.shared_info.gfn = KVM_XEN_INVALID_GFN,
-	};
-	vm_ioctl(vm, KVM_XEN_HVM_SET_ATTR, &ha);
+	[...]  Possible unsafe locking scenario:
+	[...]
+	[...]        CPU0                    CPU1
+	[...]        ----                    ----
+	[...]   rlock(srcuA);
+	[...]                                lock(srcuB);
+	[...]                                lock(srcuA);
+	[...]   sync(srcuB);
 
-One more thing concerning the lockdep priming you did in kvm_create_vm();
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ include/linux/lockdep.h  |  3 ++-
+ kernel/locking/lockdep.c | 48 ++++++++++++++++++++++++++--------------
+ 2 files changed, 34 insertions(+), 17 deletions(-)
 
-	mutex_lock(&kvm->lock);
-	synchronize_srcu(&kvm->srcu);
-	mutex_unlock(&kvm->lock)
-
-It seems that deadlocks_test's set_msr_filter() effectively did the same
-thanks to kvm_vm_ioctl_set_msr_filter()'s sync-under-mutex (which won't
-happen if those I-used-to-be-a-deadlock optimization patches[*] get
-merged). Naturally, xen_shinfo_test do not mess with MSR filters, so that
-could be another reason for inconsistencies you've noticed before the
-priming?
-
-[*] https://lore.kernel.org/kvm/20230107001256.2365304-1-mhal@rbox.co/
-
-Michal
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index ba09df6a0872..febd7ecc225c 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -134,7 +134,8 @@ struct held_lock {
+ 	unsigned int read:2;        /* see lock_acquire() comment */
+ 	unsigned int check:1;       /* see lock_acquire() comment */
+ 	unsigned int hardirqs_off:1;
+-	unsigned int references:12;					/* 32 bits */
++	unsigned int sync:1;
++	unsigned int references:11;					/* 32 bits */
+ 	unsigned int pin_count;
+ };
+ 
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index cffa026a765f..4031d87f6829 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -1880,6 +1880,8 @@ print_circular_lock_scenario(struct held_lock *src,
+ 	struct lock_class *source = hlock_class(src);
+ 	struct lock_class *target = hlock_class(tgt);
+ 	struct lock_class *parent = prt->class;
++	int src_read = src->read;
++	int tgt_read = tgt->read;
+ 
+ 	/*
+ 	 * A direct locking problem where unsafe_class lock is taken
+@@ -1907,7 +1909,10 @@ print_circular_lock_scenario(struct held_lock *src,
+ 	printk(" Possible unsafe locking scenario:\n\n");
+ 	printk("       CPU0                    CPU1\n");
+ 	printk("       ----                    ----\n");
+-	printk("  lock(");
++	if (tgt_read != 0)
++		printk("  rlock(");
++	else
++		printk("  lock(");
+ 	__print_lock_name(target);
+ 	printk(KERN_CONT ");\n");
+ 	printk("                               lock(");
+@@ -1916,7 +1921,12 @@ print_circular_lock_scenario(struct held_lock *src,
+ 	printk("                               lock(");
+ 	__print_lock_name(target);
+ 	printk(KERN_CONT ");\n");
+-	printk("  lock(");
++	if (src_read != 0)
++		printk("  rlock(");
++	else if (src->sync)
++		printk("  sync(");
++	else
++		printk("  lock(");
+ 	__print_lock_name(source);
+ 	printk(KERN_CONT ");\n");
+ 	printk("\n *** DEADLOCK ***\n\n");
+@@ -4530,7 +4540,13 @@ mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
+ 					return 0;
+ 		}
+ 	}
+-	if (!hlock->hardirqs_off) {
++
++	/*
++	 * For lock_sync(), don't mark the ENABLED usage, since lock_sync()
++	 * creates no critical section and no extra dependency can be introduced
++	 * by interrupts
++	 */
++	if (!hlock->hardirqs_off && !hlock->sync) {
+ 		if (hlock->read) {
+ 			if (!mark_lock(curr, hlock,
+ 					LOCK_ENABLED_HARDIRQ_READ))
+@@ -4909,7 +4925,7 @@ static int __lock_is_held(const struct lockdep_map *lock, int read);
+ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 			  int trylock, int read, int check, int hardirqs_off,
+ 			  struct lockdep_map *nest_lock, unsigned long ip,
+-			  int references, int pin_count)
++			  int references, int pin_count, int sync)
+ {
+ 	struct task_struct *curr = current;
+ 	struct lock_class *class = NULL;
+@@ -4960,7 +4976,8 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 
+ 	class_idx = class - lock_classes;
+ 
+-	if (depth) { /* we're holding locks */
++	if (depth && !sync) {
++		/* we're holding locks and the new held lock is not a sync */
+ 		hlock = curr->held_locks + depth - 1;
+ 		if (hlock->class_idx == class_idx && nest_lock) {
+ 			if (!references)
+@@ -4994,6 +5011,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 	hlock->trylock = trylock;
+ 	hlock->read = read;
+ 	hlock->check = check;
++	hlock->sync = !!sync;
+ 	hlock->hardirqs_off = !!hardirqs_off;
+ 	hlock->references = references;
+ #ifdef CONFIG_LOCK_STAT
+@@ -5055,6 +5073,10 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 	if (!validate_chain(curr, hlock, chain_head, chain_key))
+ 		return 0;
+ 
++	/* For lock_sync(), we are done here since no actual critical section */
++	if (hlock->sync)
++		return 1;
++
+ 	curr->curr_chain_key = chain_key;
+ 	curr->lockdep_depth++;
+ 	check_chain_key(curr);
+@@ -5196,7 +5218,7 @@ static int reacquire_held_locks(struct task_struct *curr, unsigned int depth,
+ 				    hlock->read, hlock->check,
+ 				    hlock->hardirqs_off,
+ 				    hlock->nest_lock, hlock->acquire_ip,
+-				    hlock->references, hlock->pin_count)) {
++				    hlock->references, hlock->pin_count, 0)) {
+ 		case 0:
+ 			return 1;
+ 		case 1:
+@@ -5666,7 +5688,7 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 
+ 	lockdep_recursion_inc();
+ 	__lock_acquire(lock, subclass, trylock, read, check,
+-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
++		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0, 0);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+ }
+@@ -5699,11 +5721,6 @@ EXPORT_SYMBOL_GPL(lock_release);
+  * APIs are used to wait for one or multiple critical sections (on other CPUs
+  * or threads), and it means that calling these APIs inside these critical
+  * sections is potential deadlock.
+- *
+- * This annotation acts as an acqurie+release anontation pair with hardirqoff
+- * being 1. Since there's no critical section, no interrupt can create extra
+- * dependencies "inside" the annotation, hardirqoff == 1 allows us to avoid
+- * false positives.
+  */
+ void lock_sync(struct lockdep_map *lock, unsigned subclass, int read,
+ 	       int check, struct lockdep_map *nest_lock, unsigned long ip)
+@@ -5717,10 +5734,9 @@ void lock_sync(struct lockdep_map *lock, unsigned subclass, int read,
+ 	check_flags(flags);
+ 
+ 	lockdep_recursion_inc();
+-	__lock_acquire(lock, subclass, 0, read, check, 1, nest_lock, ip, 0, 0);
+-
+-	if (__lock_release(lock, ip))
+-		check_chain_key(current);
++	__lock_acquire(lock, subclass, 0, read, check,
++		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0, 1);
++	check_chain_key(current);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+ }
+-- 
+2.38.1
 
