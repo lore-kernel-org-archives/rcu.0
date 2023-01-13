@@ -2,188 +2,238 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C71C67871
-	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 17:18:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9777C54EBD
+	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 18:14:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbjAMRS4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Jan 2023 12:18:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55720 "EHLO
+        id S230495AbjAMSOs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Jan 2023 13:14:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjAMRSV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Jan 2023 12:18:21 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9E69151C;
-        Fri, 13 Jan 2023 09:13:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xKZzQLm4481MAkYjQuuWCB83GRbGQN4diSnDkd1Q3KE=; b=CZK4jHiZAgBlmxZ5W9gA2fH6og
-        iQK55DszA6tzKpMMvNV9ep5Sk0YeQ3k/3S7w3NOuOAnMsYRUea5RL0xvWrttvAaC90xYmydRmt1Ci
-        /Bj7m0bsAgal3G5yNyV3UQBS/N5vECzIn/bkbGvjwDzuThGUe7bT9zDEd0sci9bg3RgXihV79DGAK
-        oX6MneVhs6Mm+V4CHyn/0Y5KW/aknouxwgwAugwh8FV1fibsNHyodUMmZjUrC0pHV9XnP9rc2uHnq
-        txmNXJPQ4ZaxJ0QRnGwaBdbe6qpwyYsn6jqKc6IFf8FHluXge4EPNfMtpAr7Qcf0Y823kQ0CeHMxX
-        pdB+paxQ==;
-Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pGNcE-006HJd-Sx; Fri, 13 Jan 2023 17:13:19 +0000
-Message-ID: <ea5fe6ced5c167ab0cae7dc1609ddfb9fe521782.camel@infradead.org>
-Subject: Re: [PATCH 2/3] KVM: selftests: Use enum for test numbers in
- xen_shinfo_test
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S231283AbjAMSNw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Jan 2023 13:13:52 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96634A7B6D;
+        Fri, 13 Jan 2023 10:05:34 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-4a2f8ad29d5so295541397b3.8;
+        Fri, 13 Jan 2023 10:05:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z4pto12rSouFh/dIEU2H2b7i14PEpI0T9dvCoGHqSWA=;
+        b=BpnMJiIhqYiZz3eigM1emJUaY9PCw/NmetqKfb/O8lZnOaBfZtSWXZzjNRwYtD9CVw
+         Uxf67lk8Qxx7EEqcggwL81GNDNjCzsrKRTHDDMzMQsYffiCYsLJrkHJXfuH0LCK3RibT
+         AqzLfsaXq7tAH3g6r7yA0AmCwbjg0P5PED6GBuoFRcVE+j/cWZufPTuxbPTc5kFp1hoP
+         C/grHHgFpJ1UQihJSYKdkK6tLRukmvXwb7omrNxLFnbV/va4DY7A3E8s2gnOdUixN+3x
+         W455CeOkNY3dTViTLWJw1OT+RBbfNU0h7eRJHJLsQwg11wHLWHq2uiwInBK7BOxJF8Pd
+         dETg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z4pto12rSouFh/dIEU2H2b7i14PEpI0T9dvCoGHqSWA=;
+        b=aNoRRBjOED+C4ZbDSrILeIEnuKLXioiJve5IQglXcNCQPuFa55ZRhUxL+KWleowLIU
+         rpGGzGjq934QfnhBBKsCnLNweMlmuBXtlQqnYuO02E2oXH66fUHn/YDRyP/+vFXqF+sv
+         gfwxhpaEr/FtQbZuKfSZ3bI1E8mOSforFbzEbntstQNt9yrckKU4e1cBrHUWZH51sAAk
+         4PImpaBbNFD1yT1gYBiSoqSnxRj1rrbuLmXyaAngJxzdtrkxpXbYPt4MzAAsf8bknOpY
+         ny7l7UbXIPUDYssW1ab7DE5I6YU9HQu0wfX3ezcayppo92COOFDlUI0M23Vy3i5R2bQX
+         FLMw==
+X-Gm-Message-State: AFqh2kq5Lf8b7eGOUScoqQBTl/Jg49rnYUhVh12B/eyeB47/NSwD6/G+
+        /8G2qTAI6E6xQ6pL+kIuruA=
+X-Google-Smtp-Source: AMrXdXtalijBBdCMZhQ8k7FyN+Oiyguirc34cGy+spxk2vmWC3AHP1oHn2Dyy/oD+Rs4wXKe4GAj5Q==
+X-Received: by 2002:a05:7500:2897:b0:ee:2795:1b41 with SMTP id de23-20020a057500289700b000ee27951b41mr4290706gab.20.1673633133188;
+        Fri, 13 Jan 2023 10:05:33 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id t13-20020a05620a450d00b006fba0a389a4sm13204179qkp.88.2023.01.13.10.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Jan 2023 10:05:32 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 9C66827C0054;
+        Fri, 13 Jan 2023 13:05:31 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 13 Jan 2023 13:05:31 -0500
+X-ME-Sender: <xms:aZ3BY-qoWGqcNKRKnvQs2pyB43z0nKMXiXle27FNu2kV3ZIZWcBJ3w>
+    <xme:aZ3BY8pDMNvXAuti_tQaaE5Mv_Hsp4jxxPPpU9kqIizmrhm83VoR2Z3wpZaAK6PKO
+    su7TfdSxwMDFJH8tQ>
+X-ME-Received: <xmr:aZ3BYzOxDFJPOk_6tNlHxfLNQguqTRbDR0n8ilQv8uFRA97V0ksImf_oNDQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrleekgddutdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:aZ3BY96wgjDfxqkkvQNliEHTmo8TZMvZ8uMHDzkJwEUKicEB9an_DQ>
+    <xmx:aZ3BY96GeN-VuxoRwYh8u5YrxzCBTCR_Jju1Kw7fi-FDwx1MPFVvzA>
+    <xmx:aZ3BY9h8C8l7mTixeAvIczYmIu27p17yZZ5Q-fJTZ6wagd8kXFsNnA>
+    <xmx:a53BY-NDPVaEk5u2mXPQTDAkKFU-D77WYVlaAqfXfVSGyahlKcr5jA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Jan 2023 13:05:29 -0500 (EST)
+Date:   Fri, 13 Jan 2023 10:05:22 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Waiman Long <longman@redhat.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        David Woodhouse <dwmw2@infradead.org>,
         Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
         Joel Fernandes <joel@joelfernandes.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Luczaj <mhal@rbox.co>
-Date:   Fri, 13 Jan 2023 17:13:04 +0000
-In-Reply-To: <20230113124606.10221-3-dwmw2@infradead.org>
+Subject: Re: [PATCH 2/3] rcu: Equip sleepable RCU with lockdep dependency
+ graph checks
+Message-ID: <Y8GdYgSBtyKwf/qj@boqun-archlinux>
 References: <20230113065955.815667-1-boqun.feng@gmail.com>
-         <20230113124606.10221-1-dwmw2@infradead.org>
-         <20230113124606.10221-3-dwmw2@infradead.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-5Sz92Co1BWRP51WkckZo"
-User-Agent: Evolution 3.44.4-0ubuntu1 
+ <20230113065955.815667-3-boqun.feng@gmail.com>
+ <20230113112949.GX4028633@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230113112949.GX4028633@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Jan 13, 2023 at 03:29:49AM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 12, 2023 at 10:59:54PM -0800, Boqun Feng wrote:
+> > Although all flavors of RCU are annotated correctly with lockdep as
+> > recursive read locks, their 'check' parameter of lock_acquire() is
+> > unset. It means that RCU read locks are not added into the lockdep
+> > dependency graph therefore deadlock detection based on dependency graph
+> > won't catch deadlock caused by RCU. This is fine for "non-sleepable" RCU
+> > flavors since wait-context detection and other context based detection
+> > can catch these deadlocks. However for sleepable RCU, this is limited.
+> > 
+> > Actually we can detect the deadlocks caused by SRCU by 1) making
+> > srcu_read_lock() a 'check'ed recursive read lock and 2) making
+> > synchronize_srcu() a empty write lock critical section. Even better,
+> > with the newly introduced lock_sync(), we can avoid false positives
+> > about irq-unsafe/safe. So do it.
+> > 
+> > Note that NMI safe SRCU read side critical sections are currently not
+> > annonated, since step-by-step approach can help us deal with
+> > false-positives. These may be annotated in the future.
+> > 
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> 
+> Nice, thank you!!!
+> 
+> Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> Or if you would prefer that I take the series through -rcu, please just
+> let me know.
+> 
 
---=-5Sz92Co1BWRP51WkckZo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+I prefer that the first two patches go through your tree, because it
+reduces the synchronization among locking, rcu and KVM trees to the
+synchronization betwen rcu and KVM trees.
 
-T24gRnJpLCAyMDIzLTAxLTEzIGF0IDEyOjQ2ICswMDAwLCBEYXZpZCBXb29kaG91c2Ugd3JvdGU6
-Cj4gQEAgLTQzOSw2ICs0NjksNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+
-IMKgwqDCoMKgwqDCoMKgwqBib29sIHZlcmJvc2U7Cj4gwqDCoMKgwqDCoMKgwqDCoGludCByZXQ7
-Cj4gwqAKPiArwqDCoMKgwqDCoMKgwqBwcmludGYoIlRFU1RfRE9ORSBpcyAlZFxuIiwgVEVTVF9E
-T05FKTsKPiDCoMKgwqDCoMKgwqDCoMKgdmVyYm9zZSA9IGFyZ2MgPiAxICYmICghc3RybmNtcChh
-cmd2WzFdLCAiLXYiLCAzKSB8fAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAhc3RybmNtcChhcmd2WzFdLCAiLS12ZXJib3NlIiwg
-MTApKTsKPiDCoAoKRGFtbWl0Lgo=
+For patch #3, since it's not really ready yet, so I don't know, but I
+guess when it's finished, probably better go through -rcu.
 
+Regards,
+Boqun
 
---=-5Sz92Co1BWRP51WkckZo
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMTEzMTcxMzA0WjAvBgkqhkiG9w0BCQQxIgQgOlMMkgkR
-SIMX1KJOqCvNC8a7r4pvk17uWKjilQzIXvwwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgACnZnsEYBUQiTVFKAmRWCQzUOUr4i42o7g
-iqCXPxenwHxTsqiM0YbFzs8YGBubgeRggbVSGk+ADE4a54zm7FkF3SXnfYMXeZ5moT7V/qKhNdG6
-48HSMXb0PWiVxzZMKNUBm2tykmd4oIsrYjd+1Mr+xjb6ffd9q+k9T3uf2LJtMF8CDxTDTEyMw7DG
-oAbaFP1TV9h8oC7TwfK4zxwXpw5XDyjIPkhRIjcvlzAOop7yzDbb7Vj4wJJGvQUuR6otAjBvSP20
-PT0CEFh0M4a2pRyXRjUmRfOFmeqb3VM+tjb8r5Jz/jZGeAVRV2anseGNw0rcfQPO149BWMGMzphc
-0RmQ3xumD7Or/UbSvOy32ktJiWXshHuyl7cY3stObgI3s6dqFxTnVJCvAnCM7B41wTNY0qtP79gf
-ZDzbOHccR1N+7ZCSKKaOgrgePdXzw2+OELzjlGuy0rg/hCW0aHoU2aPbV8eso32veks5xsHpgWLR
-6FysHmYFeAypMZSOMJCv6Pn0I99dlJwnF1+yS2Vab5J9ExJQNdn+p+n6MSR4bF19z+mgDrvubR0r
-7fB5OwNTw+0wNWd5NHhOxRVfN/ljpNt1bnrlf421TQecwEyBJnjv4fiYgmRqKS0Vp2RrmwSIL2zB
-RsHrUq+cQori1zorA7+8ibhwJ+kMUw+lLNs5ClQUmwAAAAAAAA==
-
-
---=-5Sz92Co1BWRP51WkckZo--
+> 							Thanx, Paul
+> 
+> > ---
+> >  include/linux/srcu.h  | 23 +++++++++++++++++++++--
+> >  kernel/rcu/srcutiny.c |  2 ++
+> >  kernel/rcu/srcutree.c |  2 ++
+> >  3 files changed, 25 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> > index 9b9d0bbf1d3c..a1595f8c5155 100644
+> > --- a/include/linux/srcu.h
+> > +++ b/include/linux/srcu.h
+> > @@ -102,6 +102,21 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+> >  	return lock_is_held(&ssp->dep_map);
+> >  }
+> >  
+> > +static inline void srcu_lock_acquire(struct lockdep_map *map)
+> > +{
+> > +	lock_map_acquire_read(map);
+> > +}
+> > +
+> > +static inline void srcu_lock_release(struct lockdep_map *map)
+> > +{
+> > +	lock_map_release(map);
+> > +}
+> > +
+> > +static inline void srcu_lock_sync(struct lockdep_map *map)
+> > +{
+> > +	lock_map_sync(map);
+> > +}
+> > +
+> >  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> >  
+> >  static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+> > @@ -109,6 +124,10 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+> >  	return 1;
+> >  }
+> >  
+> > +#define srcu_lock_acquire(m) do { } while (0)
+> > +#define srcu_lock_release(m) do { } while (0)
+> > +#define srcu_lock_sync(m) do { } while (0)
+> > +
+> >  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> >  
+> >  #define SRCU_NMI_UNKNOWN	0x0
+> > @@ -182,7 +201,7 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+> >  
+> >  	srcu_check_nmi_safety(ssp, false);
+> >  	retval = __srcu_read_lock(ssp);
+> > -	rcu_lock_acquire(&(ssp)->dep_map);
+> > +	srcu_lock_acquire(&(ssp)->dep_map);
+> >  	return retval;
+> >  }
+> >  
+> > @@ -226,7 +245,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
+> >  {
+> >  	WARN_ON_ONCE(idx & ~0x1);
+> >  	srcu_check_nmi_safety(ssp, false);
+> > -	rcu_lock_release(&(ssp)->dep_map);
+> > +	srcu_lock_release(&(ssp)->dep_map);
+> >  	__srcu_read_unlock(ssp, idx);
+> >  }
+> >  
+> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> > index b12fb0cec44d..336af24e0fe3 100644
+> > --- a/kernel/rcu/srcutiny.c
+> > +++ b/kernel/rcu/srcutiny.c
+> > @@ -197,6 +197,8 @@ void synchronize_srcu(struct srcu_struct *ssp)
+> >  {
+> >  	struct rcu_synchronize rs;
+> >  
+> > +	srcu_lock_sync(&ssp->dep_map);
+> > +
+> >  	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
+> >  			lock_is_held(&rcu_bh_lock_map) ||
+> >  			lock_is_held(&rcu_lock_map) ||
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index ca4b5dcec675..408088c73e0e 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -1267,6 +1267,8 @@ static void __synchronize_srcu(struct srcu_struct *ssp, bool do_norm)
+> >  {
+> >  	struct rcu_synchronize rcu;
+> >  
+> > +	srcu_lock_sync(&ssp->dep_map);
+> > +
+> >  	RCU_LOCKDEP_WARN(lockdep_is_held(ssp) ||
+> >  			 lock_is_held(&rcu_bh_lock_map) ||
+> >  			 lock_is_held(&rcu_lock_map) ||
+> > -- 
+> > 2.38.1
+> > 
