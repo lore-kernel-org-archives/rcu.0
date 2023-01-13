@@ -2,129 +2,88 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90925C63797
-	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 00:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70095C54EBD
+	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 00:12:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240690AbjAMAMb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S240696AbjAMAMb (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 12 Jan 2023 19:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240290AbjAMALn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S240277AbjAMALn (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 12 Jan 2023 19:11:43 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5C95DE46;
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E239228;
         Thu, 12 Jan 2023 16:11:38 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id CB98FCE1FBA;
+        by ams.source.kernel.org (Postfix) with ESMTPS id D93E3B8203F;
         Fri, 13 Jan 2023 00:11:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E78FFC43392;
-        Fri, 13 Jan 2023 00:11:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CC89C4331D;
+        Fri, 13 Jan 2023 00:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1673568695;
-        bh=jkXE0W2CNP0e27Ckg1RXZA3NItagopfVWSUudCHUD9U=;
+        bh=OLEBLqHH4bCdLtcu6EWaCDE8DoFoBtvYvEr/xhgnxAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dbj/CuJD9xDxQdyPWfyMl08K0cLhg5VSagcd6Ztf2ZBnWMXB1dlX6QWfECKAk3uyK
-         4Cyc+6MK8O2PMAY0rj6JWtCk0BlqurrNsYRn6AAfamIFzvPL2TObRRnQEVo8AJy1Ff
-         DjKtqwUTcaEV899A/oRpdKC6AePf/7QowsTVNEo0y6BEbNZFkGsMo1DO7840j4zamF
-         e92enptQIJV6WRSlMFXWps5sxR7KFNYvcLsm8KpA2/Hr4uspO9hw/+55SlcCqGRRzU
-         fD2WsfoFQzj95/pzmYmZvtLBgGA0NGw+ecVBJjBHcB71P+CaRsl2iT2GAFah4MDgWh
-         N+BwOXPiM5MkQ==
+        b=bPoaqT1FehOp1LBHAmkfdd4LFvYnB2WCJuO9nk0LRxttWsQZcsqs1Lb31Px+MZssC
+         7LowPRVcwUDUnzSq+xvfNyu8U4euiESns26jfBaGsdZoCNjhVU98MmYHgVyP/mdimF
+         vvWuZOoZ8tINYJnzvmZ2HLt780zdkU4ibkOOSHWVTh9VBg12SHodnrAnZw8APD47vS
+         8Uc9RP1K/Cb27OESL0jS44ZGk6qB/r+wWEP1csW9EXRklmYD2hyVD0FfQF/eMuN0fp
+         mjWfUgG7WaiIjnnJG/1dSFTPVakVOdBnTfV74Et5Gnpohjjq+bvEamPUOqXEQYDvUM
+         OXpWx2CWuIT9Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 987685C0AF8; Thu, 12 Jan 2023 16:11:34 -0800 (PST)
+        id A49985C13DF; Thu, 12 Jan 2023 16:11:34 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
         John Ogness <john.ogness@linutronix.de>
-Subject: [PATCH rcu v2 02/20] drivers/base: Remove CONFIG_SRCU
-Date:   Thu, 12 Jan 2023 16:11:14 -0800
-Message-Id: <20230113001132.3375334-2-paulmck@kernel.org>
+Subject: [PATCH rcu v2 08/20] drivers/pci/controller: Remove "select SRCU"
+Date:   Thu, 12 Jan 2023 16:11:20 -0800
+Message-Id: <20230113001132.3375334-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
 References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 Now that the SRCU Kconfig option is unconditionally selected, there is
-no longer any point in conditional compilation based on CONFIG_SRCU.
-Therefore, remove the #ifdef and throw away the #else clause.
+no longer any point in selecting it.  Therefore, remove the "select SRCU"
+Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: "Krzysztof Wilczyński" <kw@linux.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: <linux-pci@vger.kernel.org>
+Acked-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
 Reviewed-by: John Ogness <john.ogness@linutronix.de>
 ---
- drivers/base/core.c | 42 ------------------------------------------
- 1 file changed, 42 deletions(-)
+ drivers/pci/controller/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index a3e14143ec0cf..bb36aca8d1b7a 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -181,7 +181,6 @@ void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
- }
- EXPORT_SYMBOL_GPL(fw_devlink_purge_absent_suppliers);
+diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+index 1569d9a3ada0b..b09cdc59bfd02 100644
+--- a/drivers/pci/controller/Kconfig
++++ b/drivers/pci/controller/Kconfig
+@@ -258,7 +258,7 @@ config PCIE_MEDIATEK_GEN3
+ 	  MediaTek SoCs.
  
--#ifdef CONFIG_SRCU
- static DEFINE_MUTEX(device_links_lock);
- DEFINE_STATIC_SRCU(device_links_srcu);
- 
-@@ -220,47 +219,6 @@ static void device_link_remove_from_lists(struct device_link *link)
- 	list_del_rcu(&link->s_node);
- 	list_del_rcu(&link->c_node);
- }
--#else /* !CONFIG_SRCU */
--static DECLARE_RWSEM(device_links_lock);
--
--static inline void device_links_write_lock(void)
--{
--	down_write(&device_links_lock);
--}
--
--static inline void device_links_write_unlock(void)
--{
--	up_write(&device_links_lock);
--}
--
--int device_links_read_lock(void)
--{
--	down_read(&device_links_lock);
--	return 0;
--}
--
--void device_links_read_unlock(int not_used)
--{
--	up_read(&device_links_lock);
--}
--
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--int device_links_read_lock_held(void)
--{
--	return lockdep_is_held(&device_links_lock);
--}
--#endif
--
--static inline void device_link_synchronize_removal(void)
--{
--}
--
--static void device_link_remove_from_lists(struct device_link *link)
--{
--	list_del(&link->s_node);
--	list_del(&link->c_node);
--}
--#endif /* !CONFIG_SRCU */
- 
- static bool device_is_ancestor(struct device *dev, struct device *target)
- {
+ config VMD
+-	depends on PCI_MSI && X86_64 && SRCU && !UML
++	depends on PCI_MSI && X86_64 && !UML
+ 	tristate "Intel Volume Management Device Driver"
+ 	help
+ 	  Adds support for the Intel Volume Management Device (VMD). VMD is a
 -- 
 2.31.1.189.g2e36527f23
 
