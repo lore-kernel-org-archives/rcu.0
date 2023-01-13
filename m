@@ -2,54 +2,50 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70095C54EBD
-	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 00:12:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5C0CC54EBD
+	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 00:12:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240696AbjAMAMb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 12 Jan 2023 19:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        id S240706AbjAMAMc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 12 Jan 2023 19:12:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240277AbjAMALn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 12 Jan 2023 19:11:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E239228;
-        Thu, 12 Jan 2023 16:11:38 -0800 (PST)
+        with ESMTP id S239969AbjAMALo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 12 Jan 2023 19:11:44 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD625DE51;
+        Thu, 12 Jan 2023 16:11:39 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D93E3B8203F;
-        Fri, 13 Jan 2023 00:11:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CC89C4331D;
+        by sin.source.kernel.org (Postfix) with ESMTPS id D746DCE1FCC;
+        Fri, 13 Jan 2023 00:11:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AB2DC43324;
         Fri, 13 Jan 2023 00:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1673568695;
-        bh=OLEBLqHH4bCdLtcu6EWaCDE8DoFoBtvYvEr/xhgnxAA=;
+        bh=wRbexw5jnaHrbh9n8mN2FpRr5IUUSVBu5XxkrsWfwno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bPoaqT1FehOp1LBHAmkfdd4LFvYnB2WCJuO9nk0LRxttWsQZcsqs1Lb31Px+MZssC
-         7LowPRVcwUDUnzSq+xvfNyu8U4euiESns26jfBaGsdZoCNjhVU98MmYHgVyP/mdimF
-         vvWuZOoZ8tINYJnzvmZ2HLt780zdkU4ibkOOSHWVTh9VBg12SHodnrAnZw8APD47vS
-         8Uc9RP1K/Cb27OESL0jS44ZGk6qB/r+wWEP1csW9EXRklmYD2hyVD0FfQF/eMuN0fp
-         mjWfUgG7WaiIjnnJG/1dSFTPVakVOdBnTfV74Et5Gnpohjjq+bvEamPUOqXEQYDvUM
-         OXpWx2CWuIT9Q==
+        b=uogPZF70alJN72ZhI7hM13HuMZa7CZKAKyxOc350SAWSN5kF3wqT8SQhyL0MOrx2T
+         CaXAuBQkqmlrbyqVwZqH6kEQiJ6PCzH2bZwaY9Ddk4wKaPsz35mzlNRFdyPDa6Sl4c
+         8A53znSetjFXLrgzeuH/XAKYaqA4YYlw6V83jcmGsr+MfuQEzRyHUT3CVnq7HjUfFS
+         fXoziNWiQ4lC+UN/uhKV8VGpLxfTb4DDt0qjJgfdcgI1w4cYrSSc3TWsIe+gUvx3eQ
+         M/7DIK0ic5j49dZfCICre8Kg9lj7kMswnMCYmEpPy9DNe+TC6mY1GFQG3Kfolp3XcG
+         JJRIP0knb2n1Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A49985C13DF; Thu, 12 Jan 2023 16:11:34 -0800 (PST)
+        id AE3985C1C6D; Thu, 12 Jan 2023 16:11:34 -0800 (PST)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Jan Kara <jack@suse.com>, Jan Kara <jack@suse.cz>,
         John Ogness <john.ogness@linutronix.de>
-Subject: [PATCH rcu v2 08/20] drivers/pci/controller: Remove "select SRCU"
-Date:   Thu, 12 Jan 2023 16:11:20 -0800
-Message-Id: <20230113001132.3375334-8-paulmck@kernel.org>
+Subject: [PATCH rcu v2 13/20] fs/quota: Remove "select SRCU"
+Date:   Thu, 12 Jan 2023 16:11:25 -0800
+Message-Id: <20230113001132.3375334-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
 References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -60,30 +56,25 @@ no longer any point in selecting it.  Therefore, remove the "select SRCU"
 Kconfig statements.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: "Krzysztof Wilczyński" <kw@linux.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: <linux-pci@vger.kernel.org>
-Acked-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Jan Kara <jack@suse.com>
+Acked-by: Jan Kara <jack@suse.cz>
 Reviewed-by: John Ogness <john.ogness@linutronix.de>
 ---
- drivers/pci/controller/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/quota/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index 1569d9a3ada0b..b09cdc59bfd02 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -258,7 +258,7 @@ config PCIE_MEDIATEK_GEN3
- 	  MediaTek SoCs.
- 
- config VMD
--	depends on PCI_MSI && X86_64 && SRCU && !UML
-+	depends on PCI_MSI && X86_64 && !UML
- 	tristate "Intel Volume Management Device Driver"
+diff --git a/fs/quota/Kconfig b/fs/quota/Kconfig
+index b59cd172b5f97..d5a85a8062d05 100644
+--- a/fs/quota/Kconfig
++++ b/fs/quota/Kconfig
+@@ -6,7 +6,6 @@
+ config QUOTA
+ 	bool "Quota support"
+ 	select QUOTACTL
+-	select SRCU
  	help
- 	  Adds support for the Intel Volume Management Device (VMD). VMD is a
+ 	  If you say Y here, you will be able to set per user limits for disk
+ 	  usage (also called disk quotas). Currently, it works for the
 -- 
 2.31.1.189.g2e36527f23
 
