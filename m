@@ -2,74 +2,88 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB7B2C3DA78
-	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 19:47:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56A4EC6379F
+	for <rcu@archiver.kernel.org>; Fri, 13 Jan 2023 20:58:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbjAMTrf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Jan 2023 14:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
+        id S229490AbjAMU6w (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Jan 2023 15:58:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjAMTre (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Jan 2023 14:47:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512FED2FB;
-        Fri, 13 Jan 2023 11:47:33 -0800 (PST)
+        with ESMTP id S231335AbjAMU6Y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Jan 2023 15:58:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC77989BDD
+        for <rcu@vger.kernel.org>; Fri, 13 Jan 2023 12:56:48 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EAC22B821AC;
-        Fri, 13 Jan 2023 19:47:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E834C433D2;
-        Fri, 13 Jan 2023 19:47:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6368B6232D
+        for <rcu@vger.kernel.org>; Fri, 13 Jan 2023 20:56:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B77B0C433D2;
+        Fri, 13 Jan 2023 20:56:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673639250;
-        bh=trURWyxaGIWMItlm7vEr9MA2H7W42GYsbU5eJZfOv+I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Vi1q5cQe53U1qisWzw2QCE3TVQu3x1Pnp+CYvmhe5fg/p4CqjzkmweqqEZjx1RT0s
-         xHjRIR460pZ7/fVG+g42/zrZmF1rg36U0XhdHI5VGWftkYKUXds7x1/qMG653sLG40
-         Fv1SUUKCYTIeO18X50MVFfIbqVN+9fRqVbkM0dHRugU+EnQKOykVItQ7H6uwie91EQ
-         wlOEYuaPfqEnph3JceeT79Z8Iiyv4x+v83O8DSnLBYhEoLEyu9sg/juMeUJGAffrSf
-         wB8n4+yOCeGbHMiS0uSxjckIK+o9FdIjYMLd1/ahisAgg2vDZYNY7w21SYVd4wPt0m
-         pGqOdSXIK51sA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1D5525C06D0; Fri, 13 Jan 2023 11:47:30 -0800 (PST)
-Date:   Fri, 13 Jan 2023 11:47:30 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH rcu v2 05/20] drivers/hwtracing/stm: Remove "select SRCU"
-Message-ID: <20230113194730.GG4028633@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
- <20230113001132.3375334-5-paulmck@kernel.org>
- <871qnysa7u.fsf@ubik.fi.intel.com>
+        s=k20201202; t=1673643407;
+        bh=QY4PGtszzV4T88VVpV89TXZuSwoJ7zVd9hIBQsNKDhE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tGC+rJEh1X182Z5FkZLc3jO36D8xEcIZVIgyG742uHEFe5/LItlsuwkJkU8LZZ2CD
+         R61jtRXW57vVWRShmE5aT7NcOnh8F66xQTFabSpgrvcuorXNIdPTnjpKU/fSQqRjFs
+         xbF/E3Y8qH88bVBM1d7yIzQ6b97abEev22Lof8OH9KtmVN2GWCpO7cKAdRmEqTjAM/
+         K4yJSFdy1M1Gf3iueYSNva120J5epID7C6TYdjBKBY5y6TBPfv2R14GjXMRFBr58B3
+         nhfE2jNjWWvaZ6ztzRZq30SH4q7q8QwnMxJUPGx05u/ID5j9JVLpV1XFwpJLjbkrO4
+         RcyGGr0xliQ0A==
+Date:   Fri, 13 Jan 2023 20:56:43 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, quic_neeraju@quicinc.com
+Subject: Re: Diagnosing stall in synchronize_srcu() from rcu_tasks_postscan()
+Message-ID: <Y8HFi/4kGc7gSAL0@sirena.org.uk>
+References: <20230111212736.GA1062057@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FRkblmk1UN+FOtnv"
 Content-Disposition: inline
-In-Reply-To: <871qnysa7u.fsf@ubik.fi.intel.com>
+In-Reply-To: <20230111212736.GA1062057@paulmck-ThinkPad-P17-Gen-1>
+X-Cookie: I know how to do SPECIAL EFFECTS!!
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 13, 2023 at 05:52:37PM +0200, Alexander Shishkin wrote:
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> 
-> > Now that the SRCU Kconfig option is unconditionally selected, there is
-> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> > Kconfig statements.
-> 
-> Accidentally acked the previous version. This appears to be the same.
 
-I somehow missed that ack, probably fat-fingered it.  :-/
+--FRkblmk1UN+FOtnv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Acked-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+On Wed, Jan 11, 2023 at 01:27:36PM -0800, Paul E. McKenney wrote:
+> Hello, Mark,
+>=20
+> A few days ago you mentioned stalls in RCU tasks.  Neeraj has supplied
+> the following diagnostic patch, which will confirm or invalidate my
+> assumptions about the cause of the stall.
+>=20
+> Could you please try it out and let us know the outcome?
 
-Thank you!  I will apply this on my next rebase.
+As I mentioned the other day I'm having trouble getting anything I build
+to show the problem, I'm noticing it only for jobs submitted by KernelCI
+to my test lab.  I'm still poking at it a bit, and trying to persuade
+the automation to process the branch I have which should be able to
+trigger on random commits which would hopefully also let me trigger
+things that way, but at the minute anything I build myself appears to
+run fine even when I try to use the same toolchain and so on.
 
-							Thanx, Paul
+--FRkblmk1UN+FOtnv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPBxYoACgkQJNaLcl1U
+h9As4Af/UQNC7om8pPovl0s6w2rFfJQfOV+PJrRnO5G4zB+xFxnRNoEbYGHBJlVm
+iGKq24olRr+mrpswr38kejqf8QuiBsVwQl09cm1Ye6H2Avcl87zdmfP/fJ5ab9ys
+LChch8/W1/FVGKnxwq2/TlXUlrN0iotlzvArrE1p/rVfj1Uw5L3DFPJSKPrD02V8
+N+0QZlmF7S+qFx3ePvBBwZ4J6ISNgEnoD1fLTHI1XfPaSMJ9zfmYnE8tVyb8n+Vi
+ClIxL4brJSsLZ+HKtVP/xCoEnUCPJmb6WJCX+j5SzE8NBHfhOr+FXWlnsXEbGzMg
+e33c1H0luRcF8QsoY+2IS6oYhYOSCw==
+=6WXt
+-----END PGP SIGNATURE-----
+
+--FRkblmk1UN+FOtnv--
