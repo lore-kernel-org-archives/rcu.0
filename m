@@ -2,55 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D37C3DA78
-	for <rcu@archiver.kernel.org>; Sun, 15 Jan 2023 21:29:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE77DC46467
+	for <rcu@archiver.kernel.org>; Sun, 15 Jan 2023 21:35:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbjAOV3x (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 15 Jan 2023 16:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42346 "EHLO
+        id S231570AbjAOVfN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 15 Jan 2023 16:35:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231528AbjAOV3v (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 15 Jan 2023 16:29:51 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4B216313
-        for <rcu@vger.kernel.org>; Sun, 15 Jan 2023 13:29:50 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id q2so28199568ljp.6
-        for <rcu@vger.kernel.org>; Sun, 15 Jan 2023 13:29:50 -0800 (PST)
+        with ESMTP id S231604AbjAOVfM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 15 Jan 2023 16:35:12 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED1D1632E
+        for <rcu@vger.kernel.org>; Sun, 15 Jan 2023 13:35:10 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id g14so28136371ljh.10
+        for <rcu@vger.kernel.org>; Sun, 15 Jan 2023 13:35:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=imIrwUXXSpGxJHX2IXIa4NzC1jMkxA/rgCDVCw5pEFE=;
-        b=RWVPMLhj3nzukWBHC/0nsGVSXNfSsDSgW+QuchB/+fHdme4dQ77rAF0NrXjm/cnSO2
-         +BxKMpMgJY85/EBZEaFUcTlSWeJ8CLONuZIKfYc0s00ztKHQhXEVDA8sMmdOyx/O21v8
-         Kk6vJ1oidhdWGFl/HL5l5WvkmJvKlPhfletg0=
+        bh=391zf2b5ENaKFkCj6QTLOk5UN8b8armr47ewORXci1I=;
+        b=qrY7GorZ2uAyWw8gyWUH04gaIjRAb54N1FQ2Ifu965qgJyTnD9Xan+FI+1qTrvxbK0
+         pN5yb1cT1YDzU1nnd51INMBhFK+SHUTRm1HQQVdewSUwXZpmlJkkd/lCyTT7618sl+DT
+         WFfiNfHGO1CFd4YBgHMlW3gp15sGd+gr7DKpQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=imIrwUXXSpGxJHX2IXIa4NzC1jMkxA/rgCDVCw5pEFE=;
-        b=BO//l031L+kWy1f/EdaiC38WAYoZd0hHLnItgkdr8ZxKQfjEkHc8YJw5cOQ87PfMnv
-         hteXHIYftSk7T+Gkw6dVnVp1ay3IEG1bf+N9k9hu0KnQqS0MLU0Bb5hc2TbShk+c7Ujt
-         YbjfGk2YRoBZ/r5X/U0jNGcmUs6flzek7VWnop9gAEimIPipt1tsZTeUMocFQ34UohKv
-         47LvnyktJT4zRgrxpBZHxCPhp6wNQZfB1uWvtv2pe9C51uUQTFKCoN+kqeu/ixczV/D2
-         /aQJk6lPZWfOSDrHF0qH8oB2hUMp0ZzoSYYhMzVEgaZclL47w5/1g6s6XW7BW2+FoUUC
-         1PhA==
-X-Gm-Message-State: AFqh2kocWdIlM08mMiHD1FvSxlaUpuMAe+X5ou4HY3Ds8UVML1HU8Q64
-        tJ6Iw8wRs7imKEVrxcfC+7lMyekAIl+S8tPTcxOUcg==
-X-Google-Smtp-Source: AMrXdXvdy3taN11/dVs1uCoBkLM5Z3BbpAjjzT+Zg+zoauO3zWwSUCc2PjBReQ+vjgGadCr0ti/wUuBGWqao0CT5PVk=
-X-Received: by 2002:a2e:964c:0:b0:284:6390:1f8 with SMTP id
- z12-20020a2e964c000000b00284639001f8mr2589023ljh.167.1673818188816; Sun, 15
- Jan 2023 13:29:48 -0800 (PST)
+        bh=391zf2b5ENaKFkCj6QTLOk5UN8b8armr47ewORXci1I=;
+        b=zFQ055KmcDRr2GTvbpYBaE2X5kYXK4B+qQ57O4n0E2zEGd0/8l8AODaIgMLiB8EARy
+         Ytln4pMI9Ug64GOu354P8GU8bdwdqfIizcjMnXBLAvET/XEi+8SVEQM/vz7lR7AZG1f3
+         EBpR6zFKpu9BejkUKNrmeumC0HNpu4MUjmgP0MTEvuNdQCT498QJS2QyoMclgPd8qur+
+         Hs8FbjaerM1wMbEvBtQd1ybM4oklyDppqCRxaMsmn2GZ6+6NxUlZAj8dnxXM/gR23tG4
+         r/jbu2rGPjyLrQRIaJbWtjBcazNFHVIO8CDo8z66vIqiA79KInpYEkgeM9zaTpinwx2D
+         kZ2A==
+X-Gm-Message-State: AFqh2kqMp4ZWHbuWxEfVp31iorpkHUTlIeBWg95UF67cHrw90BIbEjJZ
+        q5h+4WmBt1NutReFJqvlWnWlWV6AFAfpTO/+pP8k5A==
+X-Google-Smtp-Source: AMrXdXvdYUOIvgaM/UeqVwSFKCLoUWOMuCGIpAaN0CT3tYDyEawaZgtyhzd+Cw9PjEaik5HsrET7og7aLaKefubmKSI=
+X-Received: by 2002:a2e:be89:0:b0:27f:b85b:3e26 with SMTP id
+ a9-20020a2ebe89000000b0027fb85b3e26mr3669361ljr.382.1673818508782; Sun, 15
+ Jan 2023 13:35:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20230112005223.2329802-1-joel@joelfernandes.org>
- <20230112005223.2329802-2-joel@joelfernandes.org> <20230115155455.0fb66c12@rorschach.local.home>
-In-Reply-To: <20230115155455.0fb66c12@rorschach.local.home>
+References: <20230112005223.2329802-1-joel@joelfernandes.org> <20230115162504.08ef72b0@rorschach.local.home>
+In-Reply-To: <20230115162504.08ef72b0@rorschach.local.home>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sun, 15 Jan 2023 16:29:38 -0500
-Message-ID: <CAEXW_YRjV0CqoALU6F_9LZKD_e84gWQ3a8juucmXxLUuDQ7DHw@mail.gmail.com>
-Subject: Re: [PATCH v2 rcu/dev 2/2] rcu: Disable laziness if lazy-tracking
- says so
+Date:   Sun, 15 Jan 2023 16:34:58 -0500
+Message-ID: <CAEXW_YSNurO-hK+q2amP6wa96jr0KkZ_ggF+5x_sTHESC9vpNw@mail.gmail.com>
+Subject: Re: [PATCH v2 rcu/dev 1/2] rcu: Track laziness during boot and suspend
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
@@ -63,49 +61,79 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jan 15, 2023 at 3:55 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Sun, Jan 15, 2023 at 4:25 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Thu, 12 Jan 2023 00:52:23 +0000
+> On Thu, 12 Jan 2023 00:52:22 +0000
 > "Joel Fernandes (Google)" <joel@joelfernandes.org> wrote:
 >
+> > -- a/kernel/rcu/update.c
+> > +++ b/kernel/rcu/update.c
+> > @@ -144,8 +144,45 @@ bool rcu_gp_is_normal(void)
+> >  }
+> >  EXPORT_SYMBOL_GPL(rcu_gp_is_normal);
 > >
-> >  static void
-> > -__call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
-> > +__call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
-> >  {
-> >       static atomic_t doublefrees;
-> >       unsigned long flags;
-> >       struct rcu_data *rdp;
-> > -     bool was_alldone;
-> > +     bool was_alldone, lazy;
->
-> I'm curious to why the the extra variable.
->
+> > -static atomic_t rcu_expedited_nesting = ATOMIC_INIT(1);
+> > +static atomic_t rcu_async_hurry_nesting = ATOMIC_INIT(1);
+> > +/*
+> > + * Should call_rcu() callbacks be processed with urgency or are
+> > + * they OK being executed with arbitrary delays?
+> > + */
+> > +bool rcu_async_should_hurry(void)
+> > +{
+> > +     return !IS_ENABLED(CONFIG_RCU_LAZY) ||
+> > +            atomic_read(&rcu_async_hurry_nesting);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rcu_async_should_hurry);
+> > +
+> > +/**
+> > + * rcu_async_hurry - Make future async RCU callbacks not lazy.
+> > + *
+> > + * After a call to this function, future calls to call_rcu()
+> > + * will be processed in a timely fashion.
+> > + */
+> > +void rcu_async_hurry(void)
+> > +{
+> > +     if (IS_ENABLED(CONFIG_RCU_LAZY))
+> > +             atomic_inc(&rcu_async_hurry_nesting);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rcu_async_hurry);
 > >
-> >       /* Misaligned rcu_head! */
-> >       WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
-> > @@ -2622,6 +2622,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy)
-> >       kasan_record_aux_stack_noalloc(head);
-> >       local_irq_save(flags);
-> >       rdp = this_cpu_ptr(&rcu_data);
-> > +     lazy = lazy_in && !rcu_async_should_hurry();
 >
-> Wouldn't just having:
+> Where do you plan on calling these externally, as they are being
+> marked exported?
 >
->         lazy = lazy && !rcu_async_should_hurry();
->
-> be sufficient?
+> If you allow random drivers to enable this, I can see something
+> enabling it and hitting an error path that causes it to never disable
+> it.
 
-I prefer to not overwrite function arguments, it makes debugging harder IMHO.
+You mean, just like rcu_expedite_gp() ?
+
+> I wouldn't have EXPORT_SYMBOL_GPL() unless you really know that it is
+> needed externally.
+
+At the moment it is not called externally but in the future, it could
+be from rcutorture. If you see rcu_expedite_gp(), that is exported
+too. I was just modeling it around that API.
+
+thanks,
 
  - Joel
-
-
 
 >
 > -- Steve
 >
-> >
-> >       /* Add the callback to our list. */
-> >       if (unlikely(!rcu_segcblist_is_enabled(&rdp->cblist))) {
-> > --
+>
+> > +/**
+> > + * rcu_async_relax - Make future async RCU callbacks lazy.
+> > + *
+> > + * After a call to this function, future calls to call_rcu()
+> > + * will be processed in a lazy fashion.
+> > + */
+> > +void rcu_async_relax(void)
+> > +{
+> > +     if (IS_ENABLED(CONFIG_RCU_LAZY))
+> > +             atomic_dec(&rcu_async_hurry_nesting);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rcu_async_relax);
+> > +
+> > +static atomic_t rcu_expedited_nesting = ATOMIC_INIT(1);
