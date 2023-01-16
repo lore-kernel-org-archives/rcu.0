@@ -2,119 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38F05C54EBE
-	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 17:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D71C67871
+	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 17:59:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232697AbjAPR6F (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 12:58:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
+        id S234148AbjAPR7D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Jan 2023 12:59:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232280AbjAPR5g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 12:57:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F04E5C0D9
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 09:36:48 -0800 (PST)
+        with ESMTP id S232280AbjAPR6G (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Jan 2023 12:58:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4730E4902D
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 09:37:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673890607;
+        s=mimecast20190719; t=1673890675;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e7aEA9Zb0uDCPpMjGds8ZZV+xITOhP/XEPwhcG9Jlbk=;
-        b=cgiPpwLh4y4qlQIn8LRnxjdmmIWTdtmUyrOJSXxCK/NfAf9gy1sy8vG/yI3QyaDtl6jV9W
-        pJh6baEpv5NaptVsLJPLo/6iFqHSzEFxFmzYU+iKb243VecKN7LJ6xFda2QPLTVLWsO7Ke
-        012DrN9e5+CBDL9NYnsJUj1u+pJeMBI=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=AM3cLoP8TWPmrgmRZcDwyPuhd6tlFOUEOcdOzvKctl4=;
+        b=Xh1YQb7OsmRKfzgQTDrGERbDM/FqdLFdpNcDrApOYk6B4EnnlLNyb1lMTCV8yiJ1F+OGR0
+        EsRqbvwScrTs18weG+uvkqSvZUFmdX1syezR1nt+b7NENp8k1LoI5/nAiRVNRHzar9l4sw
+        CwOgIGgft3oNaZiWWda0FJspVML+Hm8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-479-IwzbUqfhOTi4cmwCSwDOuw-1; Mon, 16 Jan 2023 12:36:46 -0500
-X-MC-Unique: IwzbUqfhOTi4cmwCSwDOuw-1
-Received: by mail-ej1-f69.google.com with SMTP id oz11-20020a1709077d8b00b007c0dd8018b6so20146979ejc.17
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 09:36:46 -0800 (PST)
+ us-mta-584-mHvO_Y7vOJunCchukQs4nQ-1; Mon, 16 Jan 2023 12:37:54 -0500
+X-MC-Unique: mHvO_Y7vOJunCchukQs4nQ-1
+Received: by mail-ed1-f70.google.com with SMTP id b15-20020a056402350f00b0048477a5114bso19294370edd.2
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 09:37:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e7aEA9Zb0uDCPpMjGds8ZZV+xITOhP/XEPwhcG9Jlbk=;
-        b=U8Ppy278EGklGfBjTo3W7vrN0IHEoQw0NboF5Xvdpustq/So04fz5hQ3R6r+5CVXFS
-         1mql+FD5CG1IHkKkDMOw0sx/Lui7VBO2aEbEjUfj7yiZbnr5apAN8qQoq4hCF9pmGY84
-         VyHgHC2Lc1S9DlcdQBMCzNjJWnph+YGRqCMf6sWYxinHm0B0EePqLAi6ptihjb1hgB4G
-         dL6wjT0RIJGE4VSBrpR8sBSlW9LnGW3pJJwQZeNrUQ3aStU+zkgmrSikFCp7weB1xbCz
-         E7E/iH3xO7eWpvq+WmqAqNWnqUKvZsfcKGT8EehF33C1fJw74FbkgfaRXqFc6NF8ZuF1
-         HVRA==
-X-Gm-Message-State: AFqh2krfsmllM2l0m1gnXVEK8v55tcRd4p15h4V7WApb7Z3+6GP5tWwD
-        yscaIP2o1EM7vpLgU1vc5IDK70IJZF1d5cPVxKBNHR0/1/IE0GClB5rorc6ZXONEHmUB9D2JnEP
-        BlHOJA4Fgnac4
-X-Received: by 2002:a17:906:cd0b:b0:84d:463f:3787 with SMTP id oz11-20020a170906cd0b00b0084d463f3787mr26828247ejb.5.1673890605560;
-        Mon, 16 Jan 2023 09:36:45 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXvwkGf/AMfNoy3aPwRb/Z8qBXr1VRjGO1z90RbOn2KENCWUu1gPXT7V040gp3/OtMwrPzsLHg==
-X-Received: by 2002:a17:906:cd0b:b0:84d:463f:3787 with SMTP id oz11-20020a170906cd0b00b0084d463f3787mr26828236ejb.5.1673890605384;
-        Mon, 16 Jan 2023 09:36:45 -0800 (PST)
+        bh=AM3cLoP8TWPmrgmRZcDwyPuhd6tlFOUEOcdOzvKctl4=;
+        b=DTU8UO7t82AALxa48BHB9aU5T9n4ap4XfqqjPCn/6hEuWsuP84qX+pb0wwslvVL52K
+         dUjA/Dt3GQxdx7afvcDdLu3hfPICe2cA/BVpuVuwUid4Scc/v5Tdx2ka5aB+goQKUIct
+         kw6n8uqhypbmK4qAe2PIuYAmNJwWEk60xw80/p0FppZ8F5J41udbASToxyJCNJ4YU76J
+         feg6/Lfo6XTTSSp9W2afQ60UxmYfXTMrQmhkDyrpKaOPvo2vAYDKsC6C54Y9nicdTg7R
+         q76hCTgdyrw3kn0yRyyn2SIAHublWQjTvQ0+kc5x3o+13puhX8FwUnD5LVRuh9TSckBp
+         Vl1A==
+X-Gm-Message-State: AFqh2kpUJ2WqGURjOhjJ3sqxu/aawh4rdXCmNPlDEBB7I88d0lxuXasA
+        +gBqIt+hinDrH6d8zm8SiBtqx4f5kwiTzu7Am/8M+ByA9bIATjy+iJH2Na04HAM1sSL/Evgmv4/
+        nT4YfWvszq4LL
+X-Received: by 2002:a17:907:c11:b0:844:79b1:ab36 with SMTP id ga17-20020a1709070c1100b0084479b1ab36mr18134632ejc.25.1673890673111;
+        Mon, 16 Jan 2023 09:37:53 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXvxAktoVxqLbdOoIJzCFzA1FFlFx58XcCCbvaWacxz4nXnLR6H0c+d24xfdoV/jYoPocchgDQ==
+X-Received: by 2002:a17:907:c11:b0:844:79b1:ab36 with SMTP id ga17-20020a1709070c1100b0084479b1ab36mr18134606ejc.25.1673890672894;
+        Mon, 16 Jan 2023 09:37:52 -0800 (PST)
 Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id e6-20020a170906314600b00781be3e7badsm12131965eje.53.2023.01.16.09.36.43
+        by smtp.googlemail.com with ESMTPSA id g17-20020a17090670d100b007bb86679a32sm12121592ejk.217.2023.01.16.09.37.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Jan 2023 09:36:44 -0800 (PST)
-Message-ID: <456f6c15-3043-6da2-349d-c0c3880c1a55@redhat.com>
-Date:   Mon, 16 Jan 2023 18:36:43 +0100
+        Mon, 16 Jan 2023 09:37:52 -0800 (PST)
+Message-ID: <c08f1e98-03fe-1996-bc2c-43d90ec78613@redhat.com>
+Date:   Mon, 16 Jan 2023 18:37:51 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.1
-Subject: Re: [PATCH 2/3] rcu: Equip sleepable RCU with lockdep dependency
- graph checks
+Subject: Re: [PATCH] Documentation: kvm: fix SRCU locking order docs
 Content-Language: en-US
-To:     paulmck@kernel.org, Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Woodhouse <dwmw2@infradead.org>, seanjc@google.com,
-        Joel Fernandes <joel@joelfernandes.org>,
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com, Joel Fernandes <joel@joelfernandes.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Michal Luczaj <mhal@rbox.co>
-References: <20230113065955.815667-1-boqun.feng@gmail.com>
- <20230113065955.815667-3-boqun.feng@gmail.com>
- <20230113112949.GX4028633@paulmck-ThinkPad-P17-Gen-1>
- <Y8GdYgSBtyKwf/qj@boqun-archlinux>
- <20230113191120.GB4028633@paulmck-ThinkPad-P17-Gen-1>
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        Michal Luczaj <mhal@rbox.co>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20230111183031.2449668-1-pbonzini@redhat.com>
+ <a14a13a690277d4cc95a4b26aa2d9a4d9b392a74.camel@infradead.org>
+ <20230112152048.GJ4028633@paulmck-ThinkPad-P17-Gen-1>
+ <Y8EF24o932lcshKs@boqun-archlinux>
+ <d1d44f07-558c-e0ed-403e-61a854c868cb@redhat.com>
+ <023e131b3de80c4bc2b6711804a4769466b90c6f.camel@infradead.org>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230113191120.GB4028633@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <023e131b3de80c4bc2b6711804a4769466b90c6f.camel@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 1/13/23 20:11, Paul E. McKenney wrote:
-> On Fri, Jan 13, 2023 at 10:05:22AM -0800, Boqun Feng wrote:
->> On Fri, Jan 13, 2023 at 03:29:49AM -0800, Paul E. McKenney wrote:
->> I prefer that the first two patches go through your tree, because it
->> reduces the synchronization among locking, rcu and KVM trees to the
->> synchronization betwen rcu and KVM trees.
-> 
-> Very well, I have queued and pushed these with the usual wordsmithing,
-> thank you!
+On 1/13/23 11:33, David Woodhouse wrote:
+>> It's missing an important testcase; if it passes (does not warn), then
+>> it should work:
+>
+> I think it does.
 
-I'm worried about this case:
-
-	CPU 0				CPU 1
-	--------------------		------------------
-	lock A				srcu lock B
-	srcu lock B			lock A
-	srcu unlock B			unlock A
-	unlock A			srcu unlock B
-
-While a bit unclean, there is nothing that downright forbids this; as 
-long as synchronize_srcu does not happen inside lock A, no deadlock can 
-occur.
-
-However, if srcu is replaced with an rwlock then lockdep should and does 
-report a deadlock.  Boqun, do you get a false positive or do your 
-patches correctly suppress this?
+What I'm worried about is a false positive, not a false negative, so I'm 
+afraid your test may not cover this.  I replied in the thread with 
+Boqun's patches.
 
 Paolo
 
