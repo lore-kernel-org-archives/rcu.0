@@ -2,58 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96679C54EBE
-	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 22:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C62DC46467
+	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 22:43:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbjAPWiQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 17:38:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
+        id S234102AbjAPWnT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Jan 2023 17:43:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbjAPWiO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 17:38:14 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EE0234D4
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 14:38:13 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id b3so44584351lfv.2
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 14:38:13 -0800 (PST)
+        with ESMTP id S233226AbjAPWnS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Jan 2023 17:43:18 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B2D2387F
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 14:43:17 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id y19so10115625ljq.7
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 14:43:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KtRzvTolYa3Uc4kvMVMuZai5HuAGzAcSM732ubQWs58=;
-        b=Nga4WVhSFh5VaIeR4TOXQOImgfKeO2t4RSxqUZoCTL76vPrFW408FhvsotbdSI9a+M
-         sgr518IxmcwwItW06k65uNR+IGYTxFeleMm859G+p3QWrzH28MoKbLqRvZSFygAl9YMw
-         X/pfaAJ7W+0UkayVBz6a+J0tlFtEhn6Un9kfA=
+        bh=CFItsAc0yAK/mg8krnPXwMCaEzlI1PgLaCB9Y1SfUcw=;
+        b=BK6o9EOOqXyBDhlFiR4U5WltpdX10MbbJ6JrBzs6UaZTo5MdvMoX5eX6F+7yTYDdD6
+         346zOSNpSWCKq6alGUVXjCzBoXRatoUij2Qvbq1HRi+imiNlFbUtRlUKnXTmBmDMKdrv
+         h/yRKaSdN41fNY+XiPf0jYZTywLbJe/N5V/Kk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KtRzvTolYa3Uc4kvMVMuZai5HuAGzAcSM732ubQWs58=;
-        b=MhhaEFj60X57Q9C5OuMkOTB92AlAYEHNHRR387lVAvVVLA7YCcYUnnI30pOWiqFVlA
-         fSHur+zwRCieEkEHP6MiQlmCj7up/CdX8Jm1bxRVfHGqsKtzaFJEPtMybaRsnGPEgQkU
-         GVqQyG1jZ6q+XGpRbTweOXjvC8EtFZIUkdJCAtKuEycuNzZackwCIX+OV6BfJ1yYrTDY
-         w0nZuaIuZtJwnefsXJr9pd9gei/44ohOf0/4OFjCuxbJWnJrocD2moTuE6Nerzdc2TNi
-         S59BicQwEFRLm0vzCB9GtuUqvoxTRI2uLLisfHKK1SytV/lByOin41XpXuXqXFxt4K8s
-         y/Lg==
-X-Gm-Message-State: AFqh2kod+CMuGii/xQYa2+UjQCEivNCOUhrDeXUiTJSxK4sAJbJgh1SI
-        pSpz64bnrRl4sqnKztNIMPxDzbdF9RhgavmCH2OdSQ==
-X-Google-Smtp-Source: AMrXdXuZCQ9iKh4hUpy+hgY8cHk2N0xsk2CE/McnuNDABBj6p8WikZ3i4KfnlOxbHU1mOUHeUL15IyoxsP5xuhgtG+s=
-X-Received: by 2002:a05:6512:230a:b0:4cc:598c:41bd with SMTP id
- o10-20020a056512230a00b004cc598c41bdmr29835lfu.468.1673908691882; Mon, 16 Jan
- 2023 14:38:11 -0800 (PST)
+        bh=CFItsAc0yAK/mg8krnPXwMCaEzlI1PgLaCB9Y1SfUcw=;
+        b=adUh4TN1esPgj+q7nosI6Q0CaaX2VftRXRPpITWv8w7NtbSXq03VVSaZ0iJVxqjFYT
+         l01A4qLAii0jgi9r5kLg/ye/h8plAe6m9P+t7teqipXbZc9dqdcpdU3J3V9JEfXxOspz
+         VGY4JrgjNzD5Bu0Byg8yiDwxo0AquV5SKUd5+PIiC+pbGkVYv0mo7Imjg/STDmYmDex+
+         JiKwGz0kD4mlj0VSzpVd+fiwngP6dak0pmj4Pnx6WOZ2MV6INnEiZVr9qbH62aK1EOs9
+         LFBBU0jNV+Gq+fpXr0rHtr6oterhluERp7Af00DgWtf9KTGm/6lJF0sKRxi/zdo+q0g5
+         8Gbg==
+X-Gm-Message-State: AFqh2kqi8ZOGReSRp+orsSYs2tMrvqQqbMG//vYL00HAGAL0VaIylh7n
+        ikNij93w/d5GFtW/xyYal8W9GtYy2+swz26/7i4OqA==
+X-Google-Smtp-Source: AMrXdXs7nVti3bLG8Lk0H7OXczVsnq3074gRDCbZW+wvMGSky2TezBAvnQGiDuDOBCo0K+t+BruTGRRHPeTtfXUjl2s=
+X-Received: by 2002:a2e:7019:0:b0:284:6390:1f8 with SMTP id
+ l25-20020a2e7019000000b00284639001f8mr130379ljc.167.1673908995635; Mon, 16
+ Jan 2023 14:43:15 -0800 (PST)
 MIME-Version: 1.0
 References: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
- <CAABZP2xnCCfCf5DLQuiTXBVbpEgsoedqxA8JsWBLs4SyLOLuFw@mail.gmail.com>
-In-Reply-To: <CAABZP2xnCCfCf5DLQuiTXBVbpEgsoedqxA8JsWBLs4SyLOLuFw@mail.gmail.com>
+ <864jsqnyql.wl-maz@kernel.org>
+In-Reply-To: <864jsqnyql.wl-maz@kernel.org>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 16 Jan 2023 17:38:00 -0500
-Message-ID: <CAEXW_YQsUN_80FiXcts+5KgWo999KXWZDbkuPjmFCb8LiiLBzw@mail.gmail.com>
+Date:   Mon, 16 Jan 2023 17:43:03 -0500
+Message-ID: <CAEXW_YRqktsV=onGsrp-DSxoWKRoZ4UabMpXg_k=LAAO7CtrMw@mail.gmail.com>
 Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
 Cc:     "moderated list:ARM/STM32 ARCHITECTURE" 
         <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         rcu <rcu@vger.kernel.org>,
@@ -63,12 +63,15 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Zhouyi,
+Hi Marc,
+Thanks a lot for taking a look.
 
-On Mon, Jan 16, 2023 at 1:33 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+On Mon, Jan 16, 2023 at 1:03 PM Marc Zyngier <maz@kernel.org> wrote:
 >
-[..]
-> On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> Hi Joel,
+>
+> On Mon, 16 Jan 2023 17:03:31 +0000,
+> Joel Fernandes <joel@joelfernandes.org> wrote:
 > >
 > > Hello,
 > > I am seeing -EBUSY returned a lot during torture_onoff() when running
@@ -86,40 +89,58 @@ On Mon, Jan 16, 2023 at 1:33 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
 > > boot CPU)? I'd personally need these warnings to go away for my tests
 > > as this causes rcutorture's tests to not cleanly pass for me. It
 > > appears remove_cpu() -> device_offline() is what returns the error.
-> >
-> I guess this probably because CPU 0 is the tick_do_timer_cpu in
-> nohz_full mode, which prevent that cpu from
-> going offline [1]. We have discussed this topic, but there is no
-> agreement on how to solve it yet.
+>
+> I've taken your kernel for a ride as a KVM guest (probably similar to
+> what you are doing), and saw the same thing (CPU0 not offlining):
+>
+> [   64.555845] Detected VIPT I-cache on CPU4
+> [   64.556146] GICv3: CPU4: found redistributor 4 region 0:0x000000003ff70000
+> [   64.556689] CPU4: Booted secondary processor 0x0000000004 [0x612f0290]
+> [   69.823670] rcu-torture:torture_onoff task: offline 0 failed: errno -16
+> [   73.991960] psci: CPU7 killed (polled 0 ms)
+> [   74.239626] rcu-torture: rcu_torture_read_exit: Start of episode
+> [   74.243863] rcu-torture: rcu_torture_read_exit: End of episode
+>
+> I then tried v6.2-rc4 with defconfig + RCU_TORTURE and your command
+> line, and CPU0 does seem to hotplug off correctly:
 
-But I am seeing the issue in TRACE02 config which is:
-CONFIG_NO_HZ_IDLE=y
-# CONFIG_NO_HZ_FULL is not set
+Interesting, can you try the Config fragment of the failing config on
+the 6.2-rc4 [1] ?
 
-So that is not NO_HZ_FULL:
-http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TRACE02/console.log.diags/
-However, I can't seem to find the full kernel logs for that.
+[1] http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/ConfigFragment
 
-Also, other than the TRACE02 fail, I only see the issue with configs
-with CONFIG_NO_HZ_FULL=y
+Notable, it has the following which Zhoui said he was able to repro
+with on another arch as well:
+CONFIG_NO_HZ_IDLE=n
+CONFIG_NO_HZ_FULL=y
 
-Can you try TRACE02 specifically, and see if you can reproduce the
-same issue on your setup? Meanwhile, I'll try to trace what is
-returning the -EBUSY.
+> [   47.217109] psci: CPU3 killed (polled 0 ms)
+> [   52.241009] Detected VIPT I-cache on CPU3
+> [   52.241227] cacheinfo: Unable to detect cache hierarchy for CPU 3
+> [   52.241481] GICv3: CPU3: found redistributor 3 region 0:0x000000003ff50000
+> [   52.241849] CPU3: Booted secondary processor 0x0000000003 [0x612f0290]
+> [   56.337011] psci: CPU0 killed (polled 0 ms)
+> [...]
+> [  121.090339] rcu-torture: Free-Block Circulation:  922 920 919 918 917 916 914 913 912 911 0
+> [  125.574311] Detected VIPT I-cache on CPU0
+> [  125.574557] cacheinfo: Unable to detect cache hierarchy for CPU 0
+> [  125.574901] GICv3: CPU0: found redistributor 0 region 0:0x000000003fef0000
+> [  125.575322] CPU0: Booted secondary processor 0x0000000000 [0x612f0290]
+> [  130.176893] rcu-torture: rcu_torture_read_exit: Start of episode
+> [  130.317001] psci: CPU0 killed (polled 0 ms)
+> [...]
+> [  225.588999] Detected VIPT I-cache on CPU0
+> [  225.589224] cacheinfo: Unable to detect cache hierarchy for CPU 0
+> [  225.589535] GICv3: CPU0: found redistributor 0 region 0:0x000000003fef0000
+> [  225.589946] CPU0: Booted secondary processor 0x0000000000 [0x612f0290]
+>
+> No such error is being reported.
+>
+> Is there anything special in your config that would help triggering
+> this with the current tip of tree?
+
+Perhaps, your config needs the options in the config fragment I mentioned above.
 
 Thanks!
 
  - Joel
-
->
-> [1] https://lore.kernel.org/lkml/20221127175317.GF4001@paulmck-ThinkPad-P17-Gen-1/T/
->
-> Thanks
-> Zhouyi
-> > You can browse through all the torture test artifacts here which
-> > contains everything (build logs, vmlinux, etc).
-> > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/
-> >
-> > Thanks for your help!
-> >
-> >  - Joel
