@@ -2,130 +2,176 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DECD0C54EBE
-	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 18:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5E6FC54EBE
+	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 21:57:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbjAPS4f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 13:56:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        id S234605AbjAPV5c (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Jan 2023 16:57:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjAPS4e (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 13:56:34 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329F318B35;
-        Mon, 16 Jan 2023 10:56:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S234602AbjAPV5a (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Jan 2023 16:57:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4613B24482
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 13:56:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673906202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eh4V/toS718E68IlYB64s6hGtbmtJ10ieSzmAkeBliY=;
+        b=bwE+l87Ig12ROPnmXrtKYbXeF56ha+BovqgS9TDs766qeOfwiX0HznEQCwYBwwpSxaWeXT
+        FurNy6J1GOFeE33vX0ABfeMdex+bGicnE+PR4ZeL9v9RC2YnmT21Y9Dlszf9ygO9uefTuq
+        86f1Mzqldcz2679wz2dt7F7hi0G0tfs=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-10-U40D2aN6NBmROTEJPDDCCg-1; Mon, 16 Jan 2023 16:56:39 -0500
+X-MC-Unique: U40D2aN6NBmROTEJPDDCCg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C34B161117;
-        Mon, 16 Jan 2023 18:56:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A0F2C433EF;
-        Mon, 16 Jan 2023 18:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673895392;
-        bh=DuMYZOnr0bMZvp7GSH2TEtxIL4JXiMj6qVLcpIaZmVw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nNscdUa5yyar00y4JkXqh/nP1LwzCLEY3fydqzu6fthUBWQOwSIevYrYNrDeChQR3
-         D8F6MGD1axAjkWcOE9CUsxvsxv+drEgsIAI3kRi9eBVUNaybBz/SaSx+WO2PiUSYeu
-         ZAmA+HZE8m3lkKINt/rCVtquL3O/WI0gvQiI3NvuCbePGAdKsIsI3lyE0QSx5Fm2Mu
-         k6slx5iTdh2aeBbVdphF/sXLKgCDo1sBOiEjbXDVZQw18FqNKLJY7QpNCY90I21QBT
-         Y7FkrZ+SSN9B2j7NTeILgbOMm2VrGEaNX/MLj5EKYpM9tN/HfVUz6eIO76gITp2f6k
-         fdIdMW5fVn/uA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CB7385C0687; Mon, 16 Jan 2023 10:56:31 -0800 (PST)
-Date:   Mon, 16 Jan 2023 10:56:31 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, kvm@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3D27A29A9CA2;
+        Mon, 16 Jan 2023 21:56:38 +0000 (UTC)
+Received: from [10.22.18.0] (unknown [10.22.18.0])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 215C3C15BA0;
+        Mon, 16 Jan 2023 21:56:37 +0000 (UTC)
+Message-ID: <0f67aad4-45fb-c679-a11a-6046a1a74628@redhat.com>
+Date:   Mon, 16 Jan 2023 16:56:36 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH 1/3] locking/lockdep: Introduce lock_sync()
+Content-Language: en-US
+To:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Woodhouse <dwmw2@infradead.org>, seanjc@google.com,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
         Joel Fernandes <joel@joelfernandes.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Luczaj <mhal@rbox.co>
-Subject: Re: [PATCH 2/3] rcu: Equip sleepable RCU with lockdep dependency
- graph checks
-Message-ID: <20230116185631.GY2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
 References: <20230113065955.815667-1-boqun.feng@gmail.com>
- <20230113065955.815667-3-boqun.feng@gmail.com>
- <20230113112949.GX4028633@paulmck-ThinkPad-P17-Gen-1>
- <Y8GdYgSBtyKwf/qj@boqun-archlinux>
- <20230113191120.GB4028633@paulmck-ThinkPad-P17-Gen-1>
- <456f6c15-3043-6da2-349d-c0c3880c1a55@redhat.com>
- <Y8WPWJ6TKg5ikZYr@Boquns-Mac-mini.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y8WPWJ6TKg5ikZYr@Boquns-Mac-mini.local>
+ <20230113065955.815667-2-boqun.feng@gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230113065955.815667-2-boqun.feng@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 16, 2023 at 09:54:32AM -0800, Boqun Feng wrote:
-> On Mon, Jan 16, 2023 at 06:36:43PM +0100, Paolo Bonzini wrote:
-> > On 1/13/23 20:11, Paul E. McKenney wrote:
-> > > On Fri, Jan 13, 2023 at 10:05:22AM -0800, Boqun Feng wrote:
-> > > > On Fri, Jan 13, 2023 at 03:29:49AM -0800, Paul E. McKenney wrote:
-> > > > I prefer that the first two patches go through your tree, because it
-> > > > reduces the synchronization among locking, rcu and KVM trees to the
-> > > > synchronization betwen rcu and KVM trees.
-> > > 
-> > > Very well, I have queued and pushed these with the usual wordsmithing,
-> > > thank you!
-> > 
-> > I'm worried about this case:
-> > 
-> > 	CPU 0				CPU 1
-> > 	--------------------		------------------
-> > 	lock A				srcu lock B
-> > 	srcu lock B			lock A
-> > 	srcu unlock B			unlock A
-> > 	unlock A			srcu unlock B
-> > 
-> > While a bit unclean, there is nothing that downright forbids this; as long
-> > as synchronize_srcu does not happen inside lock A, no deadlock can occur.
-> > 
-> 
-> First, even with my change, lockdep won't report this as a deadlock
-> because srcu_read_lock() is annotated as a recursive (unfair) read lock
-> (the "read" parameter for lock_acquire() is 2) and in this case lockdep
-> knows that it won't cause deadlock.
-> 
-> For SRCU, the annotation mapping that is 1) srcu_read_lock() is marked
-> as recursive read lock and 2) synchronize_srcu() is marked as write lock
-> sync, recursive read locks themselves cannot cause deadlocks and lockdep
-> is aware of it.
-> 
-> Will add a selftest for this later.
-> 
-> > However, if srcu is replaced with an rwlock then lockdep should and does
-> > report a deadlock.  Boqun, do you get a false positive or do your patches
-> 
-> To be more precise, to have a deadlock, the read lock on CPU 0 has to be
-> a *fair* read lock (i.e. non-recursive reader, the "read" parameter for
-> lock_acquire is 1)
-> 
-> > correctly suppress this?
-> 
-> I'm pretty sure that lockdep handles this ;-)
+On 1/13/23 01:59, Boqun Feng wrote:
+> Currently, in order to annonate functions like synchronize_srcu() for
+> lockdep, a trick as follow can be used:
+>
+> 	lock_acquire();
+> 	lock_release();
+>
+> , which indicates synchronize_srcu() acts like an empty critical section
+> that waits for other (read-side) critical sections to finish. This
+> surely can catch some deadlock, but as discussion brought up by Paul
+> Mckenney [1], this could introduce false positives because of
+> irq-safe/unsafe detection. Extra tricks might help this:
+>
+> 	local_irq_disable(..);
+> 	lock_acquire();
+> 	lock_release();
+> 	local_irq_enable(...);
+>
+> But it's better that lockdep could provide an annonation for
+> synchronize_srcu() like functions, so that people won't need to repeat
+> the ugly tricks above. Therefore introduce lock_sync(). It's simply an
+> lock+unlock pair with no irq safe/unsafe deadlock check, since the
+> to-be-annontated functions don't create real critical sections therefore
+> there is no way that irq can create extra dependencies.
+>
+> [1]: https://lore.kernel.org/lkml/20180412021233.ewncg5jjuzjw3x62@tardis/
+>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>   include/linux/lockdep.h  |  5 +++++
+>   kernel/locking/lockdep.c | 34 ++++++++++++++++++++++++++++++++++
+>   2 files changed, 39 insertions(+)
+>
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 1f1099dac3f0..ba09df6a0872 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -268,6 +268,10 @@ extern void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>   
+>   extern void lock_release(struct lockdep_map *lock, unsigned long ip);
+>   
+> +extern void lock_sync(struct lockdep_map *lock, unsigned int subclass,
+> +		      int read, int check, struct lockdep_map *nest_lock,
+> +		      unsigned long ip);
+> +
+>   /* lock_is_held_type() returns */
+>   #define LOCK_STATE_UNKNOWN	-1
+>   #define LOCK_STATE_NOT_HELD	0
+> @@ -555,6 +559,7 @@ do {									\
+>   #define lock_map_acquire_read(l)		lock_acquire_shared_recursive(l, 0, 0, NULL, _THIS_IP_)
+>   #define lock_map_acquire_tryread(l)		lock_acquire_shared_recursive(l, 0, 1, NULL, _THIS_IP_)
+>   #define lock_map_release(l)			lock_release(l, _THIS_IP_)
+> +#define lock_map_sync(l)			lock_sync(l, 0, 0, 1, NULL, _THIS_IP_)
+>   
+>   #ifdef CONFIG_PROVE_LOCKING
+>   # define might_lock(lock)						\
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index e3375bc40dad..cffa026a765f 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -5692,6 +5692,40 @@ void lock_release(struct lockdep_map *lock, unsigned long ip)
+>   }
+>   EXPORT_SYMBOL_GPL(lock_release);
+>   
+> +/*
+> + * lock_sync() - A special annotation for synchronize_{s,}rcu()-like API.
+> + *
+> + * No actual critical section is created by the APIs annotated with this: these
+> + * APIs are used to wait for one or multiple critical sections (on other CPUs
+> + * or threads), and it means that calling these APIs inside these critical
+> + * sections is potential deadlock.
+> + *
+> + * This annotation acts as an acqurie+release anontation pair with hardirqoff
+> + * being 1. Since there's no critical section, no interrupt can create extra
+> + * dependencies "inside" the annotation, hardirqoff == 1 allows us to avoid
+> + * false positives.
+> + */
+> +void lock_sync(struct lockdep_map *lock, unsigned subclass, int read,
+> +	       int check, struct lockdep_map *nest_lock, unsigned long ip)
+> +{
+> +	unsigned long flags;
+> +
+> +	if (unlikely(!lockdep_enabled()))
+> +		return;
+> +
+> +	raw_local_irq_save(flags);
+> +	check_flags(flags);
+> +
+> +	lockdep_recursion_inc();
+> +	__lock_acquire(lock, subclass, 0, read, check, 1, nest_lock, ip, 0, 0);
+> +
+> +	if (__lock_release(lock, ip))
+> +		check_chain_key(current);
+> +	lockdep_recursion_finish();
+> +	raw_local_irq_restore(flags);
+> +}
+> +EXPORT_SYMBOL_GPL(lock_sync);
+> +
+>   noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+>   {
+>   	unsigned long flags;
 
-And lockdep agrees, refusing to complain about the following:
+This patch looks good to me.
 
-	idx = srcu_read_lock(&srcu1);
-	mutex_lock(&mut1);
-	mutex_unlock(&mut1);
-	srcu_read_unlock(&srcu1, idx);
+Acked-by: Waiman Long <longman@redhat.com>
 
-	mutex_lock(&mut1);
-	idx = srcu_read_lock(&srcu1);
-	srcu_read_unlock(&srcu1, idx);
-	mutex_unlock(&mut1);
-
-							Thanx, Paul
