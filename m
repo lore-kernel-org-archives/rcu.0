@@ -2,132 +2,103 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 273C0C46467
-	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 18:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0690C46467
+	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 18:41:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbjAPSRE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 13:17:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
+        id S232433AbjAPSlB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Jan 2023 13:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbjAPSQG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 13:16:06 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11E2CDF6
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 10:03:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 89C8BB810B0
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 18:03:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FFF6C433EF;
-        Mon, 16 Jan 2023 18:03:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673892197;
-        bh=NFPsiNZYg4maqAu/06zPYzHMj1FCUnnXkDYxZ2MpxEc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K2daj6F/sWXHBc1T1hyseidPZRFaUN+hNWgOF1yR1ig6Z18wiiUFRdGTLxVQ2/c2F
-         AC6LZzwCMgPaodpgyYdm/TH5jOup/AwTzwH7SwRypI51Mp0kOPy+q4DmKWhybLqPOM
-         wIIob3R4jm70BkM5/MF/9S0WwV/YjBcm5OMRk/v8JZXk+r3flIjMYdP9oEUnY6hdpo
-         uCNSDBR8fkVlRI/7HNJ1M9t+LVaNzMWEyK/4i+r8YTretW0lJqLYf1Th0pIN5xQFxN
-         4CNkEm2tGzv0W4thafzYbaj2evi26/dhNGc2aIb5d5SG3kG5G6IMOOEMzMp2UHF2Eg
-         FLXCd+q9ucmbg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1pHTpC-002ELD-RM;
-        Mon, 16 Jan 2023 18:03:14 +0000
-Date:   Mon, 16 Jan 2023 18:03:14 +0000
-Message-ID: <864jsqnyql.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
+        with ESMTP id S235103AbjAPSk1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Jan 2023 13:40:27 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835B1222F0
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 10:33:09 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9so31112254pll.9
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 10:33:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YTc6GNly3oXKI3Efn3Ml3fC1lK4k/JboFhP5u7ZeAzI=;
+        b=Ow25YtDANinHPEU0QcJeFjWGqjH92ivDrHMBEjCq7LMBUb6gXtK3B3Jk9pVGPGDHcS
+         RyIXYiGwD/a8X47u93Mw+6DxIRzpVxenHl3wpXusCRi5prFaOVRJlZbcL92eLDaImg13
+         dMsopxmOSKeHoTtTaXOphA6lHuH7mUkyi9gaIHaEFKTQuh//glJSuoHl9kZmOKRRjJsq
+         CeBqhkbKy1YHwoL68ERmtpSUdZeszCJu/0+7nz09uNt5N4A+5b16zAt6LLqOrX2AVBG9
+         cnUd0U+x2uRy5SRTjy4RYaJiwdsnni5n+Q3lqizIotQKGSOxjQd/2YCl6yBTPEBOXLxs
+         WaJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YTc6GNly3oXKI3Efn3Ml3fC1lK4k/JboFhP5u7ZeAzI=;
+        b=0cwWsM0/nDYRkiADP5HSjNpMBaZhRDzdwoFgVGUXeZ1sEDHhajE0enmv2vX8YW2ULj
+         Eoz1wt604obK/ty+r+RzMRIqpPp7zN54oz+liufVIMgam+MlOnhTKzNw3BG8NBOeXZIW
+         2DsXoCckdxUKzFYClaannpR9+6CZf5NUCwj4MN6iVsrVmBE7cx3xcks7OSMtPc3yvvkr
+         UfLts9JSoctbo01DA+iFYCqnxsSCPhYws7Hs9KLhKs3+Izyesm/bN5fh9prYhdGF88zu
+         0EbtdHlGEu/su9K5cnyU7WNCpXRX7Hzv+/U/d1KXaRUjvtCwIzRrAQNfcfRmtKGeSGpR
+         3Rmw==
+X-Gm-Message-State: AFqh2kqJY59FjU8DQfJlfoEzE+Opmu/xICORqJyQOMVZ/ShQ7ObXMDiR
+        rfVJdm9403H5/OxdNrDOwf/UDlORq/uYc3295/M=
+X-Google-Smtp-Source: AMrXdXsFgNIbKxbB+QERyBKq+ZbtbDlivuCFmzXaMjt6V8SLsOAP4tKjfWhrwj0RYS5ewlnhkd1GjEnD9A+hBVq/GiQ=
+X-Received: by 2002:a17:902:9041:b0:194:721e:6118 with SMTP id
+ w1-20020a170902904100b00194721e6118mr55069plz.44.1673893989013; Mon, 16 Jan
+ 2023 10:33:09 -0800 (PST)
+MIME-Version: 1.0
+References: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
+In-Reply-To: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Tue, 17 Jan 2023 02:32:57 +0800
+Message-ID: <CAABZP2xnCCfCf5DLQuiTXBVbpEgsoedqxA8JsWBLs4SyLOLuFw@mail.gmail.com>
+Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
 To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     "moderated list:ARM/STM32 ARCHITECTURE" 
         <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         rcu <rcu@vger.kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-In-Reply-To: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
-References: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: joel@joelfernandes.org, linux-arm-kernel@lists.infradead.org, will@kernel.org, mark.rutland@arm.com, catalin.marinas@arm.com, rcu@vger.kernel.org, paulmck@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Joel,
+Hi Joel
 
-On Mon, 16 Jan 2023 17:03:31 +0000,
-Joel Fernandes <joel@joelfernandes.org> wrote:
-> 
+On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+>
 > Hello,
 > I am seeing -EBUSY returned a lot during torture_onoff() when running
 > rcutorture on arm64. This causes hotplug failure 30% of the time. I am
 > also seeing this in 6.1-rc kernels. I believe see this only for CPU0.
-> 
+>
 > This causes warnings in torture tests:
 > [  217.582290] rcu-torture:torture_onoff task: offline 0 failed: errno -16
 > [  221.866362] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> 
+>
 > Full kernel log here:
 > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/console.log
-> 
+>
 > Any ideas on why this is happening and only for CPU 0 (presumably the
 > boot CPU)? I'd personally need these warnings to go away for my tests
 > as this causes rcutorture's tests to not cleanly pass for me. It
 > appears remove_cpu() -> device_offline() is what returns the error.
+>
+I guess this probably because CPU 0 is the tick_do_timer_cpu in
+nohz_full mode, which prevent that cpu from
+going offline [1]. We have discussed this topic, but there is no
+agreement on how to solve it yet.
 
-I've taken your kernel for a ride as a KVM guest (probably similar to
-what you are doing), and saw the same thing (CPU0 not offlining):
+[1] https://lore.kernel.org/lkml/20221127175317.GF4001@paulmck-ThinkPad-P17-Gen-1/T/
 
-[   64.555845] Detected VIPT I-cache on CPU4
-[   64.556146] GICv3: CPU4: found redistributor 4 region 0:0x000000003ff70000
-[   64.556689] CPU4: Booted secondary processor 0x0000000004 [0x612f0290]
-[   69.823670] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-[   73.991960] psci: CPU7 killed (polled 0 ms)
-[   74.239626] rcu-torture: rcu_torture_read_exit: Start of episode
-[   74.243863] rcu-torture: rcu_torture_read_exit: End of episode
-
-I then tried v6.2-rc4 with defconfig + RCU_TORTURE and your command
-line, and CPU0 does seem to hotplug off correctly:
-
-[   47.217109] psci: CPU3 killed (polled 0 ms)
-[   52.241009] Detected VIPT I-cache on CPU3
-[   52.241227] cacheinfo: Unable to detect cache hierarchy for CPU 3
-[   52.241481] GICv3: CPU3: found redistributor 3 region 0:0x000000003ff50000
-[   52.241849] CPU3: Booted secondary processor 0x0000000003 [0x612f0290]
-[   56.337011] psci: CPU0 killed (polled 0 ms)
-[...]
-[  121.090339] rcu-torture: Free-Block Circulation:  922 920 919 918 917 916 914 913 912 911 0
-[  125.574311] Detected VIPT I-cache on CPU0
-[  125.574557] cacheinfo: Unable to detect cache hierarchy for CPU 0
-[  125.574901] GICv3: CPU0: found redistributor 0 region 0:0x000000003fef0000
-[  125.575322] CPU0: Booted secondary processor 0x0000000000 [0x612f0290]
-[  130.176893] rcu-torture: rcu_torture_read_exit: Start of episode
-[  130.317001] psci: CPU0 killed (polled 0 ms)
-[...]
-[  225.588999] Detected VIPT I-cache on CPU0
-[  225.589224] cacheinfo: Unable to detect cache hierarchy for CPU 0
-[  225.589535] GICv3: CPU0: found redistributor 0 region 0:0x000000003fef0000
-[  225.589946] CPU0: Booted secondary processor 0x0000000000 [0x612f0290]
-
-No such error is being reported.
-
-Is there anything special in your config that would help triggering
-this with the current tip of tree?
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Thanks
+Zhouyi
+> You can browse through all the torture test artifacts here which
+> contains everything (build logs, vmlinux, etc).
+> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/
+>
+> Thanks for your help!
+>
+>  - Joel
