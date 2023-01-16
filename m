@@ -2,103 +2,130 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0690C46467
-	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 18:41:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DECD0C54EBE
+	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 18:56:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjAPSlB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 13:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
+        id S232969AbjAPS4f (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Jan 2023 13:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235103AbjAPSk1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 13:40:27 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835B1222F0
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 10:33:09 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9so31112254pll.9
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 10:33:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YTc6GNly3oXKI3Efn3Ml3fC1lK4k/JboFhP5u7ZeAzI=;
-        b=Ow25YtDANinHPEU0QcJeFjWGqjH92ivDrHMBEjCq7LMBUb6gXtK3B3Jk9pVGPGDHcS
-         RyIXYiGwD/a8X47u93Mw+6DxIRzpVxenHl3wpXusCRi5prFaOVRJlZbcL92eLDaImg13
-         dMsopxmOSKeHoTtTaXOphA6lHuH7mUkyi9gaIHaEFKTQuh//glJSuoHl9kZmOKRRjJsq
-         CeBqhkbKy1YHwoL68ERmtpSUdZeszCJu/0+7nz09uNt5N4A+5b16zAt6LLqOrX2AVBG9
-         cnUd0U+x2uRy5SRTjy4RYaJiwdsnni5n+Q3lqizIotQKGSOxjQd/2YCl6yBTPEBOXLxs
-         WaJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YTc6GNly3oXKI3Efn3Ml3fC1lK4k/JboFhP5u7ZeAzI=;
-        b=0cwWsM0/nDYRkiADP5HSjNpMBaZhRDzdwoFgVGUXeZ1sEDHhajE0enmv2vX8YW2ULj
-         Eoz1wt604obK/ty+r+RzMRIqpPp7zN54oz+liufVIMgam+MlOnhTKzNw3BG8NBOeXZIW
-         2DsXoCckdxUKzFYClaannpR9+6CZf5NUCwj4MN6iVsrVmBE7cx3xcks7OSMtPc3yvvkr
-         UfLts9JSoctbo01DA+iFYCqnxsSCPhYws7Hs9KLhKs3+Izyesm/bN5fh9prYhdGF88zu
-         0EbtdHlGEu/su9K5cnyU7WNCpXRX7Hzv+/U/d1KXaRUjvtCwIzRrAQNfcfRmtKGeSGpR
-         3Rmw==
-X-Gm-Message-State: AFqh2kqJY59FjU8DQfJlfoEzE+Opmu/xICORqJyQOMVZ/ShQ7ObXMDiR
-        rfVJdm9403H5/OxdNrDOwf/UDlORq/uYc3295/M=
-X-Google-Smtp-Source: AMrXdXsFgNIbKxbB+QERyBKq+ZbtbDlivuCFmzXaMjt6V8SLsOAP4tKjfWhrwj0RYS5ewlnhkd1GjEnD9A+hBVq/GiQ=
-X-Received: by 2002:a17:902:9041:b0:194:721e:6118 with SMTP id
- w1-20020a170902904100b00194721e6118mr55069plz.44.1673893989013; Mon, 16 Jan
- 2023 10:33:09 -0800 (PST)
+        with ESMTP id S230465AbjAPS4e (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Jan 2023 13:56:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329F318B35;
+        Mon, 16 Jan 2023 10:56:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C34B161117;
+        Mon, 16 Jan 2023 18:56:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A0F2C433EF;
+        Mon, 16 Jan 2023 18:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673895392;
+        bh=DuMYZOnr0bMZvp7GSH2TEtxIL4JXiMj6qVLcpIaZmVw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nNscdUa5yyar00y4JkXqh/nP1LwzCLEY3fydqzu6fthUBWQOwSIevYrYNrDeChQR3
+         D8F6MGD1axAjkWcOE9CUsxvsxv+drEgsIAI3kRi9eBVUNaybBz/SaSx+WO2PiUSYeu
+         ZAmA+HZE8m3lkKINt/rCVtquL3O/WI0gvQiI3NvuCbePGAdKsIsI3lyE0QSx5Fm2Mu
+         k6slx5iTdh2aeBbVdphF/sXLKgCDo1sBOiEjbXDVZQw18FqNKLJY7QpNCY90I21QBT
+         Y7FkrZ+SSN9B2j7NTeILgbOMm2VrGEaNX/MLj5EKYpM9tN/HfVUz6eIO76gITp2f6k
+         fdIdMW5fVn/uA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CB7385C0687; Mon, 16 Jan 2023 10:56:31 -0800 (PST)
+Date:   Mon, 16 Jan 2023 10:56:31 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, kvm@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        David Woodhouse <dwmw2@infradead.org>, seanjc@google.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Luczaj <mhal@rbox.co>
+Subject: Re: [PATCH 2/3] rcu: Equip sleepable RCU with lockdep dependency
+ graph checks
+Message-ID: <20230116185631.GY2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230113065955.815667-1-boqun.feng@gmail.com>
+ <20230113065955.815667-3-boqun.feng@gmail.com>
+ <20230113112949.GX4028633@paulmck-ThinkPad-P17-Gen-1>
+ <Y8GdYgSBtyKwf/qj@boqun-archlinux>
+ <20230113191120.GB4028633@paulmck-ThinkPad-P17-Gen-1>
+ <456f6c15-3043-6da2-349d-c0c3880c1a55@redhat.com>
+ <Y8WPWJ6TKg5ikZYr@Boquns-Mac-mini.local>
 MIME-Version: 1.0
-References: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
-In-Reply-To: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 17 Jan 2023 02:32:57 +0800
-Message-ID: <CAABZP2xnCCfCf5DLQuiTXBVbpEgsoedqxA8JsWBLs4SyLOLuFw@mail.gmail.com>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        rcu <rcu@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y8WPWJ6TKg5ikZYr@Boquns-Mac-mini.local>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Joel
+On Mon, Jan 16, 2023 at 09:54:32AM -0800, Boqun Feng wrote:
+> On Mon, Jan 16, 2023 at 06:36:43PM +0100, Paolo Bonzini wrote:
+> > On 1/13/23 20:11, Paul E. McKenney wrote:
+> > > On Fri, Jan 13, 2023 at 10:05:22AM -0800, Boqun Feng wrote:
+> > > > On Fri, Jan 13, 2023 at 03:29:49AM -0800, Paul E. McKenney wrote:
+> > > > I prefer that the first two patches go through your tree, because it
+> > > > reduces the synchronization among locking, rcu and KVM trees to the
+> > > > synchronization betwen rcu and KVM trees.
+> > > 
+> > > Very well, I have queued and pushed these with the usual wordsmithing,
+> > > thank you!
+> > 
+> > I'm worried about this case:
+> > 
+> > 	CPU 0				CPU 1
+> > 	--------------------		------------------
+> > 	lock A				srcu lock B
+> > 	srcu lock B			lock A
+> > 	srcu unlock B			unlock A
+> > 	unlock A			srcu unlock B
+> > 
+> > While a bit unclean, there is nothing that downright forbids this; as long
+> > as synchronize_srcu does not happen inside lock A, no deadlock can occur.
+> > 
+> 
+> First, even with my change, lockdep won't report this as a deadlock
+> because srcu_read_lock() is annotated as a recursive (unfair) read lock
+> (the "read" parameter for lock_acquire() is 2) and in this case lockdep
+> knows that it won't cause deadlock.
+> 
+> For SRCU, the annotation mapping that is 1) srcu_read_lock() is marked
+> as recursive read lock and 2) synchronize_srcu() is marked as write lock
+> sync, recursive read locks themselves cannot cause deadlocks and lockdep
+> is aware of it.
+> 
+> Will add a selftest for this later.
+> 
+> > However, if srcu is replaced with an rwlock then lockdep should and does
+> > report a deadlock.  Boqun, do you get a false positive or do your patches
+> 
+> To be more precise, to have a deadlock, the read lock on CPU 0 has to be
+> a *fair* read lock (i.e. non-recursive reader, the "read" parameter for
+> lock_acquire is 1)
+> 
+> > correctly suppress this?
+> 
+> I'm pretty sure that lockdep handles this ;-)
 
-On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> Hello,
-> I am seeing -EBUSY returned a lot during torture_onoff() when running
-> rcutorture on arm64. This causes hotplug failure 30% of the time. I am
-> also seeing this in 6.1-rc kernels. I believe see this only for CPU0.
->
-> This causes warnings in torture tests:
-> [  217.582290] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> [  221.866362] rcu-torture:torture_onoff task: offline 0 failed: errno -16
->
-> Full kernel log here:
-> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/console.log
->
-> Any ideas on why this is happening and only for CPU 0 (presumably the
-> boot CPU)? I'd personally need these warnings to go away for my tests
-> as this causes rcutorture's tests to not cleanly pass for me. It
-> appears remove_cpu() -> device_offline() is what returns the error.
->
-I guess this probably because CPU 0 is the tick_do_timer_cpu in
-nohz_full mode, which prevent that cpu from
-going offline [1]. We have discussed this topic, but there is no
-agreement on how to solve it yet.
+And lockdep agrees, refusing to complain about the following:
 
-[1] https://lore.kernel.org/lkml/20221127175317.GF4001@paulmck-ThinkPad-P17-Gen-1/T/
+	idx = srcu_read_lock(&srcu1);
+	mutex_lock(&mut1);
+	mutex_unlock(&mut1);
+	srcu_read_unlock(&srcu1, idx);
 
-Thanks
-Zhouyi
-> You can browse through all the torture test artifacts here which
-> contains everything (build logs, vmlinux, etc).
-> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/
->
-> Thanks for your help!
->
->  - Joel
+	mutex_lock(&mut1);
+	idx = srcu_read_lock(&srcu1);
+	srcu_read_unlock(&srcu1, idx);
+	mutex_unlock(&mut1);
+
+							Thanx, Paul
