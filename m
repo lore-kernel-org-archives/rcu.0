@@ -2,123 +2,74 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 360D6C3DA78
-	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 15:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 938EFC3DA78
+	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 21:08:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjAQPUG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 Jan 2023 10:20:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
+        id S229738AbjAQVIT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Jan 2023 16:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232443AbjAQPTo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 17 Jan 2023 10:19:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1923A3FF0B;
-        Tue, 17 Jan 2023 07:19:43 -0800 (PST)
+        with ESMTP id S229696AbjAQVGd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Jan 2023 16:06:33 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A76390864;
+        Tue, 17 Jan 2023 11:32:29 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D02D2B81647;
-        Tue, 17 Jan 2023 15:19:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EF28C433EF;
-        Tue, 17 Jan 2023 15:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673968780;
-        bh=rLGxGIdl3NzqeAdz9fWHriOufesH0VZrGgGDRzB17t0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UQetiuaVBWCGC5zS4dMFhwIjHGkR25Ko1JDJP8sgx3+FVwDar2Oz8OZss2Km03Wtl
-         UDyhOj4z4pGSXRBg1gTe53F/7pgmZIufeA34MmwTdOiOu06hlXzpveeCHcNBpbjIb/
-         QXLc2kRm/++cP8Bs744BqsBzLKg/buGDwDHTyVurLFa/Oo/szLqaEIzWNY1SECDVZX
-         DuSVMX2iVFXa3not3x3W5dfisY+iNgKh/JJVeBG23w7j5S3hguH6DpnESgUKnfu8CN
-         EEJHxOinuy4dCRXKAQTQHDepEpiTUozsDxt4pGrEaSKsAJsKF1qNMnwhYcVbR8MI6a
-         JxX2eMinn6ubQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 11E615C0543; Tue, 17 Jan 2023 07:19:40 -0800 (PST)
-Date:   Tue, 17 Jan 2023 07:19:40 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangwen@coolpad.com, Yue Hu <huyue2@coolpad.com>
-Subject: Re: [PATCH] rcu/rcutorture: Eliminate variable
- n_rcu_torture_boost_rterror
-Message-ID: <20230117151940.GJ2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230117055310.3408-1-zbestahu@gmail.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 95E75B81A19;
+        Tue, 17 Jan 2023 19:32:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D85DC433D2;
+        Tue, 17 Jan 2023 19:32:26 +0000 (UTC)
+Date:   Tue, 17 Jan 2023 14:32:24 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        fweisbec@gmail.com, urezki@gmail.com
+Subject: Re: [PATCH v2 rcu/dev 1/2] rcu: Track laziness during boot and
+ suspend
+Message-ID: <20230117143224.6fbf7da8@gandalf.local.home>
+In-Reply-To: <CAEXW_YSNurO-hK+q2amP6wa96jr0KkZ_ggF+5x_sTHESC9vpNw@mail.gmail.com>
+References: <20230112005223.2329802-1-joel@joelfernandes.org>
+        <20230115162504.08ef72b0@rorschach.local.home>
+        <CAEXW_YSNurO-hK+q2amP6wa96jr0KkZ_ggF+5x_sTHESC9vpNw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230117055310.3408-1-zbestahu@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 01:53:10PM +0800, Yue Hu wrote:
-> From: Yue Hu <huyue2@coolpad.com>
-> 
-> After commit 8b700983de82 ("sched: Remove sched_set_*() return value"),
-> this variable is not used anymore. So eliminate it entirely.
-> 
-> Signed-off-by: Yue Hu <huyue2@coolpad.com>
+On Sun, 15 Jan 2023 16:34:58 -0500
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
-Good eyes!  Applied, thank you!
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/rcutorture.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
+> > > +EXPORT_SYMBOL_GPL(rcu_async_hurry);
+> > >  
+> >
+> > Where do you plan on calling these externally, as they are being
+> > marked exported?
+> >
+> > If you allow random drivers to enable this, I can see something
+> > enabling it and hitting an error path that causes it to never disable
+> > it.  
 > 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 634df26a2c27..327c8fbb7e00 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -179,7 +179,6 @@ static atomic_t n_rcu_torture_mbchk_tries;
->  static atomic_t n_rcu_torture_error;
->  static long n_rcu_torture_barrier_error;
->  static long n_rcu_torture_boost_ktrerror;
-> -static long n_rcu_torture_boost_rterror;
->  static long n_rcu_torture_boost_failure;
->  static long n_rcu_torture_boosts;
->  static atomic_long_t n_rcu_torture_timers;
-> @@ -2194,12 +2193,11 @@ rcu_torture_stats_print(void)
->  		atomic_read(&n_rcu_torture_alloc),
->  		atomic_read(&n_rcu_torture_alloc_fail),
->  		atomic_read(&n_rcu_torture_free));
-> -	pr_cont("rtmbe: %d rtmbkf: %d/%d rtbe: %ld rtbke: %ld rtbre: %ld ",
-> +	pr_cont("rtmbe: %d rtmbkf: %d/%d rtbe: %ld rtbke: %ld ",
->  		atomic_read(&n_rcu_torture_mberror),
->  		atomic_read(&n_rcu_torture_mbchk_fail), atomic_read(&n_rcu_torture_mbchk_tries),
->  		n_rcu_torture_barrier_error,
-> -		n_rcu_torture_boost_ktrerror,
-> -		n_rcu_torture_boost_rterror);
-> +		n_rcu_torture_boost_ktrerror);
->  	pr_cont("rtbf: %ld rtb: %ld nt: %ld ",
->  		n_rcu_torture_boost_failure,
->  		n_rcu_torture_boosts,
-> @@ -2217,15 +2215,13 @@ rcu_torture_stats_print(void)
->  	if (atomic_read(&n_rcu_torture_mberror) ||
->  	    atomic_read(&n_rcu_torture_mbchk_fail) ||
->  	    n_rcu_torture_barrier_error || n_rcu_torture_boost_ktrerror ||
-> -	    n_rcu_torture_boost_rterror || n_rcu_torture_boost_failure ||
-> -	    i > 1) {
-> +	    n_rcu_torture_boost_failure || i > 1) {
->  		pr_cont("%s", "!!! ");
->  		atomic_inc(&n_rcu_torture_error);
->  		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mberror));
->  		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mbchk_fail));
->  		WARN_ON_ONCE(n_rcu_torture_barrier_error);  // rcu_barrier()
->  		WARN_ON_ONCE(n_rcu_torture_boost_ktrerror); // no boost kthread
-> -		WARN_ON_ONCE(n_rcu_torture_boost_rterror); // can't set RT prio
->  		WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost failed (TIMER_SOFTIRQ RT prio?)
->  		WARN_ON_ONCE(i > 1); // Too-short grace period
->  	}
-> @@ -3540,7 +3536,6 @@ rcu_torture_init(void)
->  	atomic_set(&n_rcu_torture_error, 0);
->  	n_rcu_torture_barrier_error = 0;
->  	n_rcu_torture_boost_ktrerror = 0;
-> -	n_rcu_torture_boost_rterror = 0;
->  	n_rcu_torture_boost_failure = 0;
->  	n_rcu_torture_boosts = 0;
->  	for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++)
-> -- 
-> 2.17.1
+> You mean, just like rcu_expedite_gp() ?
 > 
+> > I wouldn't have EXPORT_SYMBOL_GPL() unless you really know that it is
+> > needed externally.  
+> 
+> At the moment it is not called externally but in the future, it could
+> be from rcutorture. If you see rcu_expedite_gp(), that is exported
+> too. I was just modeling it around that API.
+
+The reason for the export should have been mentioned in the change log if
+the patch is not obvious to why it is being exported.
+
+Thanks,
+
+-- Steve
