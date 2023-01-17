@@ -2,63 +2,92 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42D85C00A5A
-	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 22:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26DCCC38142
+	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 23:57:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjAQW5v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 Jan 2023 17:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
+        id S229567AbjAQX5V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Jan 2023 18:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjAQW5a (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 17 Jan 2023 17:57:30 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4963577C7;
-        Tue, 17 Jan 2023 13:41:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C4DF6155C;
-        Tue, 17 Jan 2023 21:40:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88F27C433D2;
-        Tue, 17 Jan 2023 21:40:33 +0000 (UTC)
-Date:   Tue, 17 Jan 2023 16:40:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
+        with ESMTP id S229464AbjAQX5E (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Jan 2023 18:57:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9C77ED6D
+        for <rcu@vger.kernel.org>; Tue, 17 Jan 2023 15:08:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673996932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hLUhE+N6wNGcOFfTldSYxDCBe/hAkHMsdAmNF17Xymc=;
+        b=HXeyKLdve5pTWwYYydsS0ZZuA3CFKnb1jMHBGYNrWA1vvTkF3cVtx45f/oRxrl/pv0FhX1
+        AvBlj9s1a1Qn3emjHQ7dnGCqZiM67esmF0Wx7pzxXDqM70k7SVGqCztKP2F06FaTbluzc9
+        sZfz4kwt4tOEjWI84c57gqbsFU3YwGY=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-158-MZCsqO9VPhaLa9l7CyEcbQ-1; Tue, 17 Jan 2023 18:08:48 -0500
+X-MC-Unique: MZCsqO9VPhaLa9l7CyEcbQ-1
+Received: by mail-qv1-f72.google.com with SMTP id p12-20020a0cc3cc000000b005350e8146a2so3207779qvi.10
+        for <rcu@vger.kernel.org>; Tue, 17 Jan 2023 15:08:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hLUhE+N6wNGcOFfTldSYxDCBe/hAkHMsdAmNF17Xymc=;
+        b=usuvvbMnPG3QSp67FHkjiHBAV5bJOhgfWE97PfjR7NtMZjrxoexnPoGS9vSNOgf6Lc
+         23jkWK+qRa8i6T0PiQAFIXMNGuut1Vr3E1qeuOiMV7UI3bqf5Gk1AZtpGDRTgp+OB4TE
+         wUWP5I6MHrbVeSqsIiqUspG5p/Ifb4EiybbEJNRLb3xPdk7LDxLv10YPjiGPIYB3AsnS
+         WKq/atP4qkLNuORZKjQJLcL/5J/JJ9iMvr07dw26TekcfxdGBajiN7E0muEJY8cGhYcf
+         8XuJ7I7cAbf6gmyCs7QDf6Peaaw9ubD5voJJSo6P9//GuQWDrvkY+XjldajlwtH6RLE4
+         +XCQ==
+X-Gm-Message-State: AFqh2kqetWwLPFXcG+sEwMCC/3YOVHqx+eYuZjxPpD/Bts7Si4AEC77f
+        MkRYWiimKf/3X7J4ciKo1Nqg6pv3JsI/iz/V3kBdGOA8xb937IMOfedXWgS7l+q+IE4jxzTX+v9
+        gCllV63ccDLU=
+X-Received: by 2002:a05:622a:1dc4:b0:3b0:12fc:ff96 with SMTP id bn4-20020a05622a1dc400b003b012fcff96mr5892360qtb.23.1673996928003;
+        Tue, 17 Jan 2023 15:08:48 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXs0vPxyl1XT+dxMILItLl3+pLEGdNv9Sv+NcGT7bP7sh98JIs9rjlnuL0rLpT8TgvsCATdexQ==
+X-Received: by 2002:a05:622a:1dc4:b0:3b0:12fc:ff96 with SMTP id bn4-20020a05622a1dc400b003b012fcff96mr5892349qtb.23.1673996927779;
+        Tue, 17 Jan 2023 15:08:47 -0800 (PST)
+Received: from localhost (pool-68-160-145-102.bstnma.fios.verizon.net. [68.160.145.102])
+        by smtp.gmail.com with ESMTPSA id p15-20020ac8460f000000b003ae33f9260dsm4659239qtn.49.2023.01.17.15.08.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Jan 2023 15:08:47 -0800 (PST)
+Date:   Tue, 17 Jan 2023 18:08:46 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, fweisbec@gmail.com, urezki@gmail.com
-Subject: Re: [PATCH v2 rcu/dev 1/2] rcu: Track laziness during boot and
- suspend
-Message-ID: <20230117164029.434a2336@gandalf.local.home>
-In-Reply-To: <20230117193734.GO2948950@paulmck-ThinkPad-P17-Gen-1>
-References: <20230112005223.2329802-1-joel@joelfernandes.org>
-        <20230115162504.08ef72b0@rorschach.local.home>
-        <CAEXW_YSNurO-hK+q2amP6wa96jr0KkZ_ggF+5x_sTHESC9vpNw@mail.gmail.com>
-        <20230117143224.6fbf7da8@gandalf.local.home>
-        <20230117193734.GO2948950@paulmck-ThinkPad-P17-Gen-1>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH rcu v2 06/20] drivers/md: Remove "select SRCU"
+Message-ID: <Y8cqfvrfd3pL9ToJ@redhat.com>
+References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
+ <20230113001132.3375334-6-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230113001132.3375334-6-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 17 Jan 2023 11:37:34 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Thu, Jan 12 2023 at  7:11P -0500,
+Paul E. McKenney <paulmck@kernel.org> wrote:
 
-> > The reason for the export should have been mentioned in the change log if
-> > the patch is not obvious to why it is being exported.  
+> Now that the SRCU Kconfig option is unconditionally selected, there is
+> no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> Kconfig statements.
 > 
-> Would something like this suffice?  With attribution, of course.
-> 
-> 	Export rcu_async_should_hurry(), rcu_async_hurry(), and
-> 	rcu_async_relax() for later use by rcutorture.
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Alasdair Kergon <agk@redhat.com>
+> Cc: Mike Snitzer <snitzer@kernel.org>
+> Cc: <dm-devel@redhat.com>
+> Cc: <linux-raid@vger.kernel.org>
+> Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
-Yes thanks. That way, at least a git blame will give some rationale for the
-export.
+Acked-by: Mike Snitzer <snitzer@kernel.org>
 
--- Steve
