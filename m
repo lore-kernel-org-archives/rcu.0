@@ -2,145 +2,132 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C62DC46467
-	for <rcu@archiver.kernel.org>; Mon, 16 Jan 2023 22:43:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE3A5C46467
+	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 00:15:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjAPWnT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 17:43:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
+        id S230420AbjAQAPL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Jan 2023 19:15:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233226AbjAPWnS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 17:43:18 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B2D2387F
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 14:43:17 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id y19so10115625ljq.7
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 14:43:17 -0800 (PST)
+        with ESMTP id S233684AbjAQAPK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Jan 2023 19:15:10 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A28233E5
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 16:15:09 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id q10so20572242qvt.10
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 16:15:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CFItsAc0yAK/mg8krnPXwMCaEzlI1PgLaCB9Y1SfUcw=;
-        b=BK6o9EOOqXyBDhlFiR4U5WltpdX10MbbJ6JrBzs6UaZTo5MdvMoX5eX6F+7yTYDdD6
-         346zOSNpSWCKq6alGUVXjCzBoXRatoUij2Qvbq1HRi+imiNlFbUtRlUKnXTmBmDMKdrv
-         h/yRKaSdN41fNY+XiPf0jYZTywLbJe/N5V/Kk=
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DIC0NTdL/gZNzAp24dsZkyIJXUTc51NvXJMuZcPT/6E=;
+        b=crsNgCC2NiG7nSJfJY+wIx1ZFmgMWtgqhn4BBF6aIDEFjxhsuZP1vj43r2abWWfF7G
+         eXxV1nXprXx//OwnUuhPiUZ31P5IC9ZmUZLYr/xJO3QZpBuZgEG/b3Urq4coa5D1ZRJE
+         sBxu6R/jZ2RATIhYTPCZgYV1Ta2Tiov3Rb9II=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CFItsAc0yAK/mg8krnPXwMCaEzlI1PgLaCB9Y1SfUcw=;
-        b=adUh4TN1esPgj+q7nosI6Q0CaaX2VftRXRPpITWv8w7NtbSXq03VVSaZ0iJVxqjFYT
-         l01A4qLAii0jgi9r5kLg/ye/h8plAe6m9P+t7teqipXbZc9dqdcpdU3J3V9JEfXxOspz
-         VGY4JrgjNzD5Bu0Byg8yiDwxo0AquV5SKUd5+PIiC+pbGkVYv0mo7Imjg/STDmYmDex+
-         JiKwGz0kD4mlj0VSzpVd+fiwngP6dak0pmj4Pnx6WOZ2MV6INnEiZVr9qbH62aK1EOs9
-         LFBBU0jNV+Gq+fpXr0rHtr6oterhluERp7Af00DgWtf9KTGm/6lJF0sKRxi/zdo+q0g5
-         8Gbg==
-X-Gm-Message-State: AFqh2kqi8ZOGReSRp+orsSYs2tMrvqQqbMG//vYL00HAGAL0VaIylh7n
-        ikNij93w/d5GFtW/xyYal8W9GtYy2+swz26/7i4OqA==
-X-Google-Smtp-Source: AMrXdXs7nVti3bLG8Lk0H7OXczVsnq3074gRDCbZW+wvMGSky2TezBAvnQGiDuDOBCo0K+t+BruTGRRHPeTtfXUjl2s=
-X-Received: by 2002:a2e:7019:0:b0:284:6390:1f8 with SMTP id
- l25-20020a2e7019000000b00284639001f8mr130379ljc.167.1673908995635; Mon, 16
- Jan 2023 14:43:15 -0800 (PST)
-MIME-Version: 1.0
-References: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
- <864jsqnyql.wl-maz@kernel.org>
-In-Reply-To: <864jsqnyql.wl-maz@kernel.org>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DIC0NTdL/gZNzAp24dsZkyIJXUTc51NvXJMuZcPT/6E=;
+        b=IR0+flIws2dR232B+6D3MCupy/h65/w5iEtTef7ES9FdTGcy5nIhz3RkreUC5KHOmx
+         IPTbU52I0Vi+vyg9grtuawvG6JeOevcggJHk1xLTXl8zAINeOQBioozb6iS3s+F1d8FR
+         /3Ky001JotAwAaeW8IQm0Dakj6090REvsg0giQJFH3nP/oIMWb8W7duZ5cHMmGYjj0i+
+         f7d1kipWePUvAS9QBBBYxCbGO7NEOywTSqI5bXdO307nLYjJes8SroTRuevnWUmE4Ul8
+         JV0stV/fKZHZYo70Z4ccXpuFCPncoJ0W18W7u9OEfo0p0mu5Chi1wYc/NELv9LI4Ir7j
+         N1Pw==
+X-Gm-Message-State: AFqh2koexbJgxU2PcN1oHGcghmUvkPxNz0A+4+P2KD9pq4rX7FmCN7cG
+        Zx8QlbC800PLOecF9Ed7kLswwQ==
+X-Google-Smtp-Source: AMrXdXuCu49wSWg4RBAobfIwQ6s1NTMGMAE+8SmW2CvxJf7lLEMbK0mY/sgizwykBxSjxV6Pm0H+ZA==
+X-Received: by 2002:a05:6214:5811:b0:534:2684:dbeb with SMTP id mk17-20020a056214581100b005342684dbebmr1930266qvb.43.1673914508525;
+        Mon, 16 Jan 2023 16:15:08 -0800 (PST)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id s18-20020a05620a255200b006eeb3165565sm19198479qko.80.2023.01.16.16.15.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Jan 2023 16:15:07 -0800 (PST)
+Date:   Tue, 17 Jan 2023 00:15:07 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 16 Jan 2023 17:43:03 -0500
-Message-ID: <CAEXW_YRqktsV=onGsrp-DSxoWKRoZ4UabMpXg_k=LAAO7CtrMw@mail.gmail.com>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-To:     Marc Zyngier <maz@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
 Cc:     "moderated list:ARM/STM32 ARCHITECTURE" 
         <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         rcu <rcu@vger.kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
+Message-ID: <Y8Xoi3UvMs+Oy78O@google.com>
+References: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
+ <CAABZP2xnCCfCf5DLQuiTXBVbpEgsoedqxA8JsWBLs4SyLOLuFw@mail.gmail.com>
+ <CAEXW_YQsUN_80FiXcts+5KgWo999KXWZDbkuPjmFCb8LiiLBzw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YQsUN_80FiXcts+5KgWo999KXWZDbkuPjmFCb8LiiLBzw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Marc,
-Thanks a lot for taking a look.
-
-On Mon, Jan 16, 2023 at 1:03 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> Hi Joel,
->
-> On Mon, 16 Jan 2023 17:03:31 +0000,
-> Joel Fernandes <joel@joelfernandes.org> wrote:
+On Mon, Jan 16, 2023 at 05:38:00PM -0500, Joel Fernandes wrote:
+> Hi Zhouyi,
+> 
+> On Mon, Jan 16, 2023 at 1:33 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
 > >
-> > Hello,
-> > I am seeing -EBUSY returned a lot during torture_onoff() when running
-> > rcutorture on arm64. This causes hotplug failure 30% of the time. I am
-> > also seeing this in 6.1-rc kernels. I believe see this only for CPU0.
-> >
-> > This causes warnings in torture tests:
-> > [  217.582290] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> > [  221.866362] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> >
-> > Full kernel log here:
-> > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/console.log
-> >
-> > Any ideas on why this is happening and only for CPU 0 (presumably the
-> > boot CPU)? I'd personally need these warnings to go away for my tests
-> > as this causes rcutorture's tests to not cleanly pass for me. It
-> > appears remove_cpu() -> device_offline() is what returns the error.
->
-> I've taken your kernel for a ride as a KVM guest (probably similar to
-> what you are doing), and saw the same thing (CPU0 not offlining):
->
-> [   64.555845] Detected VIPT I-cache on CPU4
-> [   64.556146] GICv3: CPU4: found redistributor 4 region 0:0x000000003ff70000
-> [   64.556689] CPU4: Booted secondary processor 0x0000000004 [0x612f0290]
-> [   69.823670] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> [   73.991960] psci: CPU7 killed (polled 0 ms)
-> [   74.239626] rcu-torture: rcu_torture_read_exit: Start of episode
-> [   74.243863] rcu-torture: rcu_torture_read_exit: End of episode
->
-> I then tried v6.2-rc4 with defconfig + RCU_TORTURE and your command
-> line, and CPU0 does seem to hotplug off correctly:
+> [..]
+> > On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
+> > > Hello,
+> > > I am seeing -EBUSY returned a lot during torture_onoff() when running
+> > > rcutorture on arm64. This causes hotplug failure 30% of the time. I am
+> > > also seeing this in 6.1-rc kernels. I believe see this only for CPU0.
+> > >
+> > > This causes warnings in torture tests:
+> > > [  217.582290] rcu-torture:torture_onoff task: offline 0 failed: errno -16
+> > > [  221.866362] rcu-torture:torture_onoff task: offline 0 failed: errno -16
+> > >
+> > > Full kernel log here:
+> > > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/console.log
+> > >
+> > > Any ideas on why this is happening and only for CPU 0 (presumably the
+> > > boot CPU)? I'd personally need these warnings to go away for my tests
+> > > as this causes rcutorture's tests to not cleanly pass for me. It
+> > > appears remove_cpu() -> device_offline() is what returns the error.
+> > >
+> > I guess this probably because CPU 0 is the tick_do_timer_cpu in
+> > nohz_full mode, which prevent that cpu from
+> > going offline [1]. We have discussed this topic, but there is no
+> > agreement on how to solve it yet.
+> 
+> But I am seeing the issue in TRACE02 config which is:
+> CONFIG_NO_HZ_IDLE=y
+> # CONFIG_NO_HZ_FULL is not set
+> 
+> So that is not NO_HZ_FULL:
+> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TRACE02/console.log.diags/
+> However, I can't seem to find the full kernel logs for that.
+> 
+> Also, other than the TRACE02 fail, I only see the issue with configs
+> with CONFIG_NO_HZ_FULL=y
+> 
+> Can you try TRACE02 specifically, and see if you can reproduce the
+> same issue on your setup? Meanwhile, I'll try to trace what is
+> returning the -EBUSY.
 
-Interesting, can you try the Config fragment of the failing config on
-the 6.2-rc4 [1] ?
+How about something simple like the following? (untested)
 
-[1] http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/ConfigFragment
+---8<-----------------------
 
-Notable, it has the following which Zhoui said he was able to repro
-with on another arch as well:
-CONFIG_NO_HZ_IDLE=n
-CONFIG_NO_HZ_FULL=y
-
-> [   47.217109] psci: CPU3 killed (polled 0 ms)
-> [   52.241009] Detected VIPT I-cache on CPU3
-> [   52.241227] cacheinfo: Unable to detect cache hierarchy for CPU 3
-> [   52.241481] GICv3: CPU3: found redistributor 3 region 0:0x000000003ff50000
-> [   52.241849] CPU3: Booted secondary processor 0x0000000003 [0x612f0290]
-> [   56.337011] psci: CPU0 killed (polled 0 ms)
-> [...]
-> [  121.090339] rcu-torture: Free-Block Circulation:  922 920 919 918 917 916 914 913 912 911 0
-> [  125.574311] Detected VIPT I-cache on CPU0
-> [  125.574557] cacheinfo: Unable to detect cache hierarchy for CPU 0
-> [  125.574901] GICv3: CPU0: found redistributor 0 region 0:0x000000003fef0000
-> [  125.575322] CPU0: Booted secondary processor 0x0000000000 [0x612f0290]
-> [  130.176893] rcu-torture: rcu_torture_read_exit: Start of episode
-> [  130.317001] psci: CPU0 killed (polled 0 ms)
-> [...]
-> [  225.588999] Detected VIPT I-cache on CPU0
-> [  225.589224] cacheinfo: Unable to detect cache hierarchy for CPU 0
-> [  225.589535] GICv3: CPU0: found redistributor 0 region 0:0x000000003fef0000
-> [  225.589946] CPU0: Booted secondary processor 0x0000000000 [0x612f0290]
->
-> No such error is being reported.
->
-> Is there anything special in your config that would help triggering
-> this with the current tip of tree?
-
-Perhaps, your config needs the options in the config fragment I mentioned above.
-
-Thanks!
-
- - Joel
+diff --git a/kernel/torture.c b/kernel/torture.c
+index bc8fb361efc0..cd64110694c0 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -220,6 +220,9 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
+ 			// PCI probe frequently disables hotplug during boot.
+ 			(*n_offl_attempts)--;
+ 			s = " (-EBUSY forgiven during boot)";
++		} else if (tick_nohz_full_running && ret == -EBUSY) {
++			(*n_offl_attempts)--;
++			s = " (-EBUSY forgiven if nohz_full is running)";
+ 		}
+ 		if (verbose)
+ 			pr_alert("%s" TORTURE_FLAG
