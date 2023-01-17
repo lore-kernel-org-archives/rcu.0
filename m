@@ -2,74 +2,91 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 938EFC3DA78
-	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 21:08:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B5DFC3DA78
+	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 21:16:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjAQVIT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 Jan 2023 16:08:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
+        id S229557AbjAQVQ2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Jan 2023 16:16:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjAQVGd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 17 Jan 2023 16:06:33 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A76390864;
-        Tue, 17 Jan 2023 11:32:29 -0800 (PST)
+        with ESMTP id S229702AbjAQVPH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Jan 2023 16:15:07 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3353B0D4;
+        Tue, 17 Jan 2023 11:37:36 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 95E75B81A19;
-        Tue, 17 Jan 2023 19:32:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D85DC433D2;
-        Tue, 17 Jan 2023 19:32:26 +0000 (UTC)
-Date:   Tue, 17 Jan 2023 14:32:24 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ED4D861514;
+        Tue, 17 Jan 2023 19:37:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60EB4C433D2;
+        Tue, 17 Jan 2023 19:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673984255;
+        bh=t6g2SSM3g8PpaGH31BjO5/jj+xwDslS5NO8uD6va4Dk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qiDs3bkWnP14mvlyz7SIVFjUhWxhf1YTO3Uo5P5IO9Uvne5aFZKEYmG863Nw4vURX
+         tgoCvlVbtnp7BYXhiqgGFVqE7TcmuqiQ6SZqzDwyvgUAb+alPnKxZrGK/x50chrimo
+         pH67AEptS+Ku9QSetT2pM6ynOhjPxZWbI6UXJo9/+ypiM7jcxsnsLwGL/XI1zR35jn
+         Pfk3rZC2w6QVnzmicuojaHfU4AZq9fCYQLRo2VrutsctsE82FS8JjKBSWT33lkESda
+         SREPYLkesLoRvWxhH7oeQWAHjWw3VDbLnoh13DDCb1gYoLipDGuYA2mCJeOoL4M/I4
+         xMCKC3tLlk/cg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F23A35C0543; Tue, 17 Jan 2023 11:37:34 -0800 (PST)
+Date:   Tue, 17 Jan 2023 11:37:34 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        fweisbec@gmail.com, urezki@gmail.com
+        rcu@vger.kernel.org, fweisbec@gmail.com, urezki@gmail.com
 Subject: Re: [PATCH v2 rcu/dev 1/2] rcu: Track laziness during boot and
  suspend
-Message-ID: <20230117143224.6fbf7da8@gandalf.local.home>
-In-Reply-To: <CAEXW_YSNurO-hK+q2amP6wa96jr0KkZ_ggF+5x_sTHESC9vpNw@mail.gmail.com>
+Message-ID: <20230117193734.GO2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20230112005223.2329802-1-joel@joelfernandes.org>
-        <20230115162504.08ef72b0@rorschach.local.home>
-        <CAEXW_YSNurO-hK+q2amP6wa96jr0KkZ_ggF+5x_sTHESC9vpNw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20230115162504.08ef72b0@rorschach.local.home>
+ <CAEXW_YSNurO-hK+q2amP6wa96jr0KkZ_ggF+5x_sTHESC9vpNw@mail.gmail.com>
+ <20230117143224.6fbf7da8@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230117143224.6fbf7da8@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, 15 Jan 2023 16:34:58 -0500
-Joel Fernandes <joel@joelfernandes.org> wrote:
-
-> > > +EXPORT_SYMBOL_GPL(rcu_async_hurry);
-> > >  
-> >
-> > Where do you plan on calling these externally, as they are being
-> > marked exported?
-> >
-> > If you allow random drivers to enable this, I can see something
-> > enabling it and hitting an error path that causes it to never disable
-> > it.  
+On Tue, Jan 17, 2023 at 02:32:24PM -0500, Steven Rostedt wrote:
+> On Sun, 15 Jan 2023 16:34:58 -0500
+> Joel Fernandes <joel@joelfernandes.org> wrote:
 > 
-> You mean, just like rcu_expedite_gp() ?
+> > > > +EXPORT_SYMBOL_GPL(rcu_async_hurry);
+> > > >  
+> > >
+> > > Where do you plan on calling these externally, as they are being
+> > > marked exported?
+> > >
+> > > If you allow random drivers to enable this, I can see something
+> > > enabling it and hitting an error path that causes it to never disable
+> > > it.  
+> > 
+> > You mean, just like rcu_expedite_gp() ?
+> > 
+> > > I wouldn't have EXPORT_SYMBOL_GPL() unless you really know that it is
+> > > needed externally.  
+> > 
+> > At the moment it is not called externally but in the future, it could
+> > be from rcutorture. If you see rcu_expedite_gp(), that is exported
+> > too. I was just modeling it around that API.
 > 
-> > I wouldn't have EXPORT_SYMBOL_GPL() unless you really know that it is
-> > needed externally.  
-> 
-> At the moment it is not called externally but in the future, it could
-> be from rcutorture. If you see rcu_expedite_gp(), that is exported
-> too. I was just modeling it around that API.
+> The reason for the export should have been mentioned in the change log if
+> the patch is not obvious to why it is being exported.
 
-The reason for the export should have been mentioned in the change log if
-the patch is not obvious to why it is being exported.
+Would something like this suffice?  With attribution, of course.
 
-Thanks,
+	Export rcu_async_should_hurry(), rcu_async_hurry(), and
+	rcu_async_relax() for later use by rcutorture.
 
--- Steve
+							Thanx, Paul
