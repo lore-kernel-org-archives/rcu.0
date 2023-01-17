@@ -2,108 +2,123 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 018A2C677F1
-	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 14:03:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 360D6C3DA78
+	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 15:20:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbjAQODK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 Jan 2023 09:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
+        id S230183AbjAQPUG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Jan 2023 10:20:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjAQODJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 17 Jan 2023 09:03:09 -0500
+        with ESMTP id S232443AbjAQPTo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Jan 2023 10:19:44 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0F538B78;
-        Tue, 17 Jan 2023 06:03:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1923A3FF0B;
+        Tue, 17 Jan 2023 07:19:43 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5C143B8163C;
-        Tue, 17 Jan 2023 14:03:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9463AC433D2;
-        Tue, 17 Jan 2023 14:03:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D02D2B81647;
+        Tue, 17 Jan 2023 15:19:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EF28C433EF;
+        Tue, 17 Jan 2023 15:19:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673964185;
-        bh=009ZkaKNNYtdbuuDx1qA9wZr22kzjPWN7yIb2q0DdEA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dktz/WYJgv4QvyvDV2LbvZmxjtWZWLprYGVoku3jmdDH79C6Rr5ME968EUSWwVcih
-         5aouenxh36cnXsIEEFum2DRiZ7fyRn287tGrUNutJWRRQ9eRLncilq/HkQXZU5sozk
-         8LVH6IgiWeLZgkrL7aYIXc530jWklLqfNIt+Ic1JMHjSrXVsqoZ7oFOFwzvsYZ8Hb4
-         w9nXQds86zFR3FsxlHzM0KN0ABftoBpbKaEfnsnLlY4dXA4e6Zt4junWySb0wHm9nL
-         PPm5Gg7QZWrH9fxX7gsLBKdVJk/MWjV9FiUWvahoFRggZnIrjvjjyj5yJP5IzIB6dZ
-         Ai7kQS9PV+BNA==
-Date:   Tue, 17 Jan 2023 15:03:03 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Remove impossible wakeup rcu GP kthread action
- from rcu_report_qs_rdp()
-Message-ID: <Y8aql+vHNcdth0T1@lothringen>
-References: <20230117074443.1982347-1-qiang1.zhang@intel.com>
+        s=k20201202; t=1673968780;
+        bh=rLGxGIdl3NzqeAdz9fWHriOufesH0VZrGgGDRzB17t0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UQetiuaVBWCGC5zS4dMFhwIjHGkR25Ko1JDJP8sgx3+FVwDar2Oz8OZss2Km03Wtl
+         UDyhOj4z4pGSXRBg1gTe53F/7pgmZIufeA34MmwTdOiOu06hlXzpveeCHcNBpbjIb/
+         QXLc2kRm/++cP8Bs744BqsBzLKg/buGDwDHTyVurLFa/Oo/szLqaEIzWNY1SECDVZX
+         DuSVMX2iVFXa3not3x3W5dfisY+iNgKh/JJVeBG23w7j5S3hguH6DpnESgUKnfu8CN
+         EEJHxOinuy4dCRXKAQTQHDepEpiTUozsDxt4pGrEaSKsAJsKF1qNMnwhYcVbR8MI6a
+         JxX2eMinn6ubQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 11E615C0543; Tue, 17 Jan 2023 07:19:40 -0800 (PST)
+Date:   Tue, 17 Jan 2023 07:19:40 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangwen@coolpad.com, Yue Hu <huyue2@coolpad.com>
+Subject: Re: [PATCH] rcu/rcutorture: Eliminate variable
+ n_rcu_torture_boost_rterror
+Message-ID: <20230117151940.GJ2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230117055310.3408-1-zbestahu@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230117074443.1982347-1-qiang1.zhang@intel.com>
+In-Reply-To: <20230117055310.3408-1-zbestahu@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 03:44:43PM +0800, Zqiang wrote:
-> When inovke rcu_report_qs_rdp(), if current CPU's rcu_data structure's ->
-> grpmask has not been cleared from the corresponding rcu_node structure's
-> ->qsmask, after that will clear and report quiescent state, but in this
-> time, this also means that current grace period is not end, the current
-> grace period is ongoing, because the rcu_gp_in_progress() currently return
-> true, so for non-offloaded rdp, invoke rcu_accelerate_cbs() is impossible
-> to return true.
+On Tue, Jan 17, 2023 at 01:53:10PM +0800, Yue Hu wrote:
+> From: Yue Hu <huyue2@coolpad.com>
 > 
-> This commit therefore remove impossible rcu_gp_kthread_wake() calling.
+> After commit 8b700983de82 ("sched: Remove sched_set_*() return value"),
+> this variable is not used anymore. So eliminate it entirely.
 > 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Signed-off-by: Yue Hu <huyue2@coolpad.com>
+
+Good eyes!  Applied, thank you!
+
+							Thanx, Paul
+
 > ---
->  kernel/rcu/tree.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  kernel/rcu/rcutorture.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index b2c204529478..c78d48482583 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1956,7 +1956,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
->  {
->  	unsigned long flags;
->  	unsigned long mask;
-> -	bool needwake = false;
->  	bool needacc = false;
->  	struct rcu_node *rnp;
->  
-> @@ -1988,7 +1987,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
->  		 * NOCB kthreads have their own way to deal with that...
->  		 */
->  		if (!rcu_rdp_is_offloaded(rdp)) {
-> -			needwake = rcu_accelerate_cbs(rnp, rdp);
-> +			WARN_ON_ONCE(rcu_accelerate_cbs(rnp, rdp));
-
-Please also add a comment explaining why we don't expect to have
-to wake up the GP kthread.
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-
-Thanks!
-
-
->  		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
->  			/*
->  			 * ...but NOCB kthreads may miss or delay callbacks acceleration
-> @@ -2000,8 +1999,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
->  		rcu_disable_urgency_upon_qs(rdp);
->  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
->  		/* ^^^ Released rnp->lock */
-> -		if (needwake)
-> -			rcu_gp_kthread_wake();
->  
->  		if (needacc) {
->  			rcu_nocb_lock_irqsave(rdp, flags);
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 634df26a2c27..327c8fbb7e00 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -179,7 +179,6 @@ static atomic_t n_rcu_torture_mbchk_tries;
+>  static atomic_t n_rcu_torture_error;
+>  static long n_rcu_torture_barrier_error;
+>  static long n_rcu_torture_boost_ktrerror;
+> -static long n_rcu_torture_boost_rterror;
+>  static long n_rcu_torture_boost_failure;
+>  static long n_rcu_torture_boosts;
+>  static atomic_long_t n_rcu_torture_timers;
+> @@ -2194,12 +2193,11 @@ rcu_torture_stats_print(void)
+>  		atomic_read(&n_rcu_torture_alloc),
+>  		atomic_read(&n_rcu_torture_alloc_fail),
+>  		atomic_read(&n_rcu_torture_free));
+> -	pr_cont("rtmbe: %d rtmbkf: %d/%d rtbe: %ld rtbke: %ld rtbre: %ld ",
+> +	pr_cont("rtmbe: %d rtmbkf: %d/%d rtbe: %ld rtbke: %ld ",
+>  		atomic_read(&n_rcu_torture_mberror),
+>  		atomic_read(&n_rcu_torture_mbchk_fail), atomic_read(&n_rcu_torture_mbchk_tries),
+>  		n_rcu_torture_barrier_error,
+> -		n_rcu_torture_boost_ktrerror,
+> -		n_rcu_torture_boost_rterror);
+> +		n_rcu_torture_boost_ktrerror);
+>  	pr_cont("rtbf: %ld rtb: %ld nt: %ld ",
+>  		n_rcu_torture_boost_failure,
+>  		n_rcu_torture_boosts,
+> @@ -2217,15 +2215,13 @@ rcu_torture_stats_print(void)
+>  	if (atomic_read(&n_rcu_torture_mberror) ||
+>  	    atomic_read(&n_rcu_torture_mbchk_fail) ||
+>  	    n_rcu_torture_barrier_error || n_rcu_torture_boost_ktrerror ||
+> -	    n_rcu_torture_boost_rterror || n_rcu_torture_boost_failure ||
+> -	    i > 1) {
+> +	    n_rcu_torture_boost_failure || i > 1) {
+>  		pr_cont("%s", "!!! ");
+>  		atomic_inc(&n_rcu_torture_error);
+>  		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mberror));
+>  		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mbchk_fail));
+>  		WARN_ON_ONCE(n_rcu_torture_barrier_error);  // rcu_barrier()
+>  		WARN_ON_ONCE(n_rcu_torture_boost_ktrerror); // no boost kthread
+> -		WARN_ON_ONCE(n_rcu_torture_boost_rterror); // can't set RT prio
+>  		WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost failed (TIMER_SOFTIRQ RT prio?)
+>  		WARN_ON_ONCE(i > 1); // Too-short grace period
+>  	}
+> @@ -3540,7 +3536,6 @@ rcu_torture_init(void)
+>  	atomic_set(&n_rcu_torture_error, 0);
+>  	n_rcu_torture_barrier_error = 0;
+>  	n_rcu_torture_boost_ktrerror = 0;
+> -	n_rcu_torture_boost_rterror = 0;
+>  	n_rcu_torture_boost_failure = 0;
+>  	n_rcu_torture_boosts = 0;
+>  	for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++)
 > -- 
-> 2.25.1
+> 2.17.1
 > 
