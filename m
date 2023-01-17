@@ -2,141 +2,256 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAD24C54EBE
-	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 00:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4105AC54EBE
+	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 01:37:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbjAQAha (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 19:37:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S235045AbjAQBha (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Jan 2023 20:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232684AbjAQAh3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 19:37:29 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AE52A178
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 16:37:28 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id z9-20020a17090a468900b00226b6e7aeeaso32574195pjf.1
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 16:37:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WC1Ldt+LH+xzOQXE7y0o7+Kw/GsMOUnmHVyiZCxO2zg=;
-        b=LyOqemCSBIN6lX5oshczPEJKwto0WiIlVI0fCJvqAf+Ny+rpqCpbVE4Q6R9dDPYMpw
-         q+JeSvi/UT1Ssrb4Gl6FlelrLD2mhLnHXnTXCLHyRmzLeZWIKV7QBeqaLbGwzykwZBkp
-         ngFyh3Wpd96U/EJDRLB6PxRtq7X7HRTbnC2/IkLrO68uCgQuvmiu55y4mvLnfFWiaKA1
-         n72Nnn0nuslktm/q9k83LQoa3MGHvlhwf/vRrc4hL5jcGt2BO4aVAqWEXhNuxvpMr8ec
-         ofHjvRvoDlCnmPj5cozg7HARoWBJbuElZ8BbsMO1Bx9l2MGqAlyG9IuViYcO70BMxgVC
-         luWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WC1Ldt+LH+xzOQXE7y0o7+Kw/GsMOUnmHVyiZCxO2zg=;
-        b=tKcWxKppJMlXQjrVx/Bcsl75p87OJUbG0M6HZF58DdiFZpu6Ut8Bz1MmFThV0xRNUZ
-         5SK2KRORPUQNx3XPNpUScVphl2s52J2Gw5AfBkjIlzLYqraYY0gjwprVHRHAuTYk1s8x
-         mPxBWEezbAqGPK++llGAJCMDkIXUcM8DLFi6pb0Ny3/qfG+PgpO1GfmSvO+yPb3vsXtI
-         JHaubuWflWbvJg/VA6msg5BCEC5Biu4RQiZw4A6yJaUDfhZkrUy4AMEISs+IcELq4mAI
-         6yjn8VzSz7YH/ZgZgHuodYB7vSotwu0dAqIlIl8izJS98eXgH5xA4wcjJxRSx/6Lildo
-         v5Cg==
-X-Gm-Message-State: AFqh2koJCmf8aTUMRE+/MaGk4rHvbQiK6585hZPuzTxC2OkjI8P9YgzI
-        UH9C3Hi/SUiyncJTqu8PtadnYd3uXFeHDdl82i9SWLGVcrFtRw==
-X-Google-Smtp-Source: AMrXdXsqUhAEJzArmLRX32swjr3w56ggl7r60Mu+NeK4u3JFPKzllh/IfRX6qtAAVphrD+vFQKa3UTfw2RNvgPgO7Qo=
-X-Received: by 2002:a17:903:2284:b0:193:39c4:cf54 with SMTP id
- b4-20020a170903228400b0019339c4cf54mr94724plh.48.1673915847638; Mon, 16 Jan
- 2023 16:37:27 -0800 (PST)
+        with ESMTP id S234911AbjAQBh1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Jan 2023 20:37:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C734241ED
+        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 17:36:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673919399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OaLWp1o2d67rAK4VOTZ3mI0wZ9vtLhQhgbJPLb7b6EE=;
+        b=SpqjEp1MGUEwl6rme3+lPu54wrqeB7i2nsVr61i0elq4o+5Qt3O+CtPCfltzK6z9mRiDxJ
+        Sv0LkdQnr+IURMTlzUl1qL4wlqPG84/3KoDMt4cIP/Pb0K1vXf1jEOLwRjImG3FQftCHk/
+        cTeG7A46aDyzxsHgGG+XS0fl0WMiNMQ=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-635-CRqzrvs_P5CSQm69KHxHAA-1; Mon, 16 Jan 2023 20:36:35 -0500
+X-MC-Unique: CRqzrvs_P5CSQm69KHxHAA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 311FD3C0DDD1;
+        Tue, 17 Jan 2023 01:36:34 +0000 (UTC)
+Received: from [10.22.18.0] (unknown [10.22.18.0])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 520A653AA;
+        Tue, 17 Jan 2023 01:36:33 +0000 (UTC)
+Message-ID: <5375c559-8c67-3cef-11a9-abeecb75a09f@redhat.com>
+Date:   Mon, 16 Jan 2023 20:36:33 -0500
 MIME-Version: 1.0
-References: <CAEXW_YQB1Wm3YhgUP8S9a4drgvDasu3s+zyt3j9Wwpt83W=W=Q@mail.gmail.com>
- <CAABZP2xnCCfCf5DLQuiTXBVbpEgsoedqxA8JsWBLs4SyLOLuFw@mail.gmail.com>
- <CAEXW_YQsUN_80FiXcts+5KgWo999KXWZDbkuPjmFCb8LiiLBzw@mail.gmail.com> <Y8Xoi3UvMs+Oy78O@google.com>
-In-Reply-To: <Y8Xoi3UvMs+Oy78O@google.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 17 Jan 2023 08:37:16 +0800
-Message-ID: <CAABZP2z50Fbs2rh4j2ToH-0hGfDamzQF3SoxxniC5LrXZ=Ja+A@mail.gmail.com>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        rcu <rcu@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH 4/3] locking/lockdep: Improve the deadlock scenario print
+ for sync and read lock
+Content-Language: en-US
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Luczaj <mhal@rbox.co>
+References: <20230113065955.815667-1-boqun.feng@gmail.com>
+ <20230113235722.1226525-1-boqun.feng@gmail.com>
+ <221e35b8-88f5-5fc5-6961-6a8ce060a97b@redhat.com>
+ <Y8XRNdrW3t1jvpMF@boqun-archlinux>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <Y8XRNdrW3t1jvpMF@boqun-archlinux>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 8:15 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+On 1/16/23 17:35, Boqun Feng wrote:
+> On Mon, Jan 16, 2023 at 05:21:09PM -0500, Waiman Long wrote:
+>> On 1/13/23 18:57, Boqun Feng wrote:
+>>> Lock scenario print is always a weak spot of lockdep splats. Improvement
+>>> can be made if we rework the dependency search and the error printing.
+>>>
+>>> However without touching the graph search, we can improve a little for
+>>> the circular deadlock case, since we have the to-be-added lock
+>>> dependency, and know whether these two locks are read/write/sync.
+>>>
+>>> In order to know whether a held_lock is sync or not, a bit was
+>>> "stolen" from ->references, which reduce our limit for the same lock
+>>> class nesting from 2^12 to 2^11, and it should still be good enough.
+>>>
+>>> Besides, since we now have bit in held_lock for sync, we don't need the
+>>> "hardirqoffs being 1" trick, and also we can avoid the __lock_release()
+>>> if we jump out of __lock_acquire() before the held_lock stored.
+>>>
+>>> With these changes, a deadlock case evolved with read lock and sync gets
+>>> a better print-out from:
+>>>
+>>> 	[...]  Possible unsafe locking scenario:
+>>> 	[...]
+>>> 	[...]        CPU0                    CPU1
+>>> 	[...]        ----                    ----
+>>> 	[...]   lock(srcuA);
+>>> 	[...]                                lock(srcuB);
+>>> 	[...]                                lock(srcuA);
+>>> 	[...]   lock(srcuB);
+>>>
+>>> to
+>>>
+>>> 	[...]  Possible unsafe locking scenario:
+>>> 	[...]
+>>> 	[...]        CPU0                    CPU1
+>>> 	[...]        ----                    ----
+>>> 	[...]   rlock(srcuA);
+>>> 	[...]                                lock(srcuB);
+>>> 	[...]                                lock(srcuA);
+>>> 	[...]   sync(srcuB);
+>>>
+>>> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+>>> ---
+>>>    include/linux/lockdep.h  |  3 ++-
+>>>    kernel/locking/lockdep.c | 48 ++++++++++++++++++++++++++--------------
+>>>    2 files changed, 34 insertions(+), 17 deletions(-)
+>>>
+>>> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+>>> index ba09df6a0872..febd7ecc225c 100644
+>>> --- a/include/linux/lockdep.h
+>>> +++ b/include/linux/lockdep.h
+>>> @@ -134,7 +134,8 @@ struct held_lock {
+>>>    	unsigned int read:2;        /* see lock_acquire() comment */
+>>>    	unsigned int check:1;       /* see lock_acquire() comment */
+>>>    	unsigned int hardirqs_off:1;
+>>> -	unsigned int references:12;					/* 32 bits */
+>>> +	unsigned int sync:1;
+>>> +	unsigned int references:11;					/* 32 bits */
+>>>    	unsigned int pin_count;
+>>>    };
+>>> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+>>> index cffa026a765f..4031d87f6829 100644
+>>> --- a/kernel/locking/lockdep.c
+>>> +++ b/kernel/locking/lockdep.c
+>>> @@ -1880,6 +1880,8 @@ print_circular_lock_scenario(struct held_lock *src,
+>>>    	struct lock_class *source = hlock_class(src);
+>>>    	struct lock_class *target = hlock_class(tgt);
+>>>    	struct lock_class *parent = prt->class;
+>>> +	int src_read = src->read;
+>>> +	int tgt_read = tgt->read;
+>>>    	/*
+>>>    	 * A direct locking problem where unsafe_class lock is taken
+>>> @@ -1907,7 +1909,10 @@ print_circular_lock_scenario(struct held_lock *src,
+>>>    	printk(" Possible unsafe locking scenario:\n\n");
+>>>    	printk("       CPU0                    CPU1\n");
+>>>    	printk("       ----                    ----\n");
+>>> -	printk("  lock(");
+>>> +	if (tgt_read != 0)
+>>> +		printk("  rlock(");
+>>> +	else
+>>> +		printk("  lock(");
+>>>    	__print_lock_name(target);
+>>>    	printk(KERN_CONT ");\n");
+>>>    	printk("                               lock(");
+>>> @@ -1916,7 +1921,12 @@ print_circular_lock_scenario(struct held_lock *src,
+>>>    	printk("                               lock(");
+>>>    	__print_lock_name(target);
+>>>    	printk(KERN_CONT ");\n");
+>>> -	printk("  lock(");
+>>> +	if (src_read != 0)
+>>> +		printk("  rlock(");
+>>> +	else if (src->sync)
+>>> +		printk("  sync(");
+>>> +	else
+>>> +		printk("  lock(");
+>>>    	__print_lock_name(source);
+>>>    	printk(KERN_CONT ");\n");
+>>>    	printk("\n *** DEADLOCK ***\n\n");
+>> src can be sync() but not the target. Is there a reason why that is the
+>> case?
+>>
+> The functions annotated by sync() don't create real critical sections,
+> so no lock dependency can be created from a sync(), for example:
 >
-> On Mon, Jan 16, 2023 at 05:38:00PM -0500, Joel Fernandes wrote:
-> > Hi Zhouyi,
-> >
-> > On Mon, Jan 16, 2023 at 1:33 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> > >
-> > [..]
-> > > On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >
-> > > > Hello,
-> > > > I am seeing -EBUSY returned a lot during torture_onoff() when running
-> > > > rcutorture on arm64. This causes hotplug failure 30% of the time. I am
-> > > > also seeing this in 6.1-rc kernels. I believe see this only for CPU0.
-> > > >
-> > > > This causes warnings in torture tests:
-> > > > [  217.582290] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> > > > [  221.866362] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> > > >
-> > > > Full kernel log here:
-> > > > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/console.log
-> > > >
-> > > > Any ideas on why this is happening and only for CPU 0 (presumably the
-> > > > boot CPU)? I'd personally need these warnings to go away for my tests
-> > > > as this causes rcutorture's tests to not cleanly pass for me. It
-> > > > appears remove_cpu() -> device_offline() is what returns the error.
-> > > >
-> > > I guess this probably because CPU 0 is the tick_do_timer_cpu in
-> > > nohz_full mode, which prevent that cpu from
-> > > going offline [1]. We have discussed this topic, but there is no
-> > > agreement on how to solve it yet.
-> >
-> > But I am seeing the issue in TRACE02 config which is:
-> > CONFIG_NO_HZ_IDLE=y
-> > # CONFIG_NO_HZ_FULL is not set
-> >
-> > So that is not NO_HZ_FULL:
-> > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TRACE02/console.log.diags/
-> > However, I can't seem to find the full kernel logs for that.
-> >
-> > Also, other than the TRACE02 fail, I only see the issue with configs
-> > with CONFIG_NO_HZ_FULL=y
-> >
-> > Can you try TRACE02 specifically, and see if you can reproduce the
-> > same issue on your setup? Meanwhile, I'll try to trace what is
-> > returning the -EBUSY.
-I am trying TRACE02 on my X86_64 machine using cross compile and
-qemu-system-aarch64 now, my equipment is limited, but hope I can be of
-beneficial to the community ;-)
+> 	synchronize_srcu(A);
+> 	mutex_lock(B);
 >
-> How about something simple like the following? (untested)
->
-> ---8<-----------------------
->
-> diff --git a/kernel/torture.c b/kernel/torture.c
-> index bc8fb361efc0..cd64110694c0 100644
-> --- a/kernel/torture.c
-> +++ b/kernel/torture.c
-> @@ -220,6 +220,9 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
->                         // PCI probe frequently disables hotplug during boot.
->                         (*n_offl_attempts)--;
->                         s = " (-EBUSY forgiven during boot)";
-> +               } else if (tick_nohz_full_running && ret == -EBUSY) {
-> +                       (*n_offl_attempts)--;
-> +                       s = " (-EBUSY forgiven if nohz_full is running)";
- Fantastic fix!! thus we can fix the time keeper cpu torture problem
-without touch the time keeper code.
+> no dependency from A to B. In the scenario case, if we see a dependency
+> target -> source, the target cannot be a lock_sync(). I will add better
+> documentation later.
+Right, the dependency won't happen since you reduce lock_sync() to 
+mostly do validate_chain() without actually storing it in the lock chain 
+which I did miss in my initial review. Without that, a dependency may 
+happen if an NMI happens between lock_acquire() and lock_release() in 
+lock_sync().
+>>> @@ -4530,7 +4540,13 @@ mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
+>>>    					return 0;
+>>>    		}
+>>>    	}
+>>> -	if (!hlock->hardirqs_off) {
+>>> +
+>>> +	/*
+>>> +	 * For lock_sync(), don't mark the ENABLED usage, since lock_sync()
+>>> +	 * creates no critical section and no extra dependency can be introduced
+>>> +	 * by interrupts
+>>> +	 */
+>>> +	if (!hlock->hardirqs_off && !hlock->sync) {
+>>>    		if (hlock->read) {
+>>>    			if (!mark_lock(curr, hlock,
+>>>    					LOCK_ENABLED_HARDIRQ_READ))
+>>> @@ -4909,7 +4925,7 @@ static int __lock_is_held(const struct lockdep_map *lock, int read);
+>>>    static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>>>    			  int trylock, int read, int check, int hardirqs_off,
+>>>    			  struct lockdep_map *nest_lock, unsigned long ip,
+>>> -			  int references, int pin_count)
+>>> +			  int references, int pin_count, int sync)
+>>>    {
+>>>    	struct task_struct *curr = current;
+>>>    	struct lock_class *class = NULL;
+>>> @@ -4960,7 +4976,8 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>>>    	class_idx = class - lock_classes;
+>>> -	if (depth) { /* we're holding locks */
+>>> +	if (depth && !sync) {
+>>> +		/* we're holding locks and the new held lock is not a sync */
+>>>    		hlock = curr->held_locks + depth - 1;
+>>>    		if (hlock->class_idx == class_idx && nest_lock) {
+>>>    			if (!references)
+>>> @@ -4994,6 +5011,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>>>    	hlock->trylock = trylock;
+>>>    	hlock->read = read;
+>>>    	hlock->check = check;
+>>> +	hlock->sync = !!sync;
+>>>    	hlock->hardirqs_off = !!hardirqs_off;
+>>>    	hlock->references = references;
+>>>    #ifdef CONFIG_LOCK_STAT
+>>> @@ -5055,6 +5073,10 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+>>>    	if (!validate_chain(curr, hlock, chain_head, chain_key))
+>>>    		return 0;
+>>> +	/* For lock_sync(), we are done here since no actual critical section */
+>>> +	if (hlock->sync)
+>>> +		return 1;
+>>> +
+>>>    	curr->curr_chain_key = chain_key;
+>>>    	curr->lockdep_depth++;
+>>>    	check_chain_key(curr);
+>> Even with sync, there is still a corresponding lock_acquire() and
+>> lock_release(), you can't exit here without increasing lockdep_depth. That
+>> can cause underflow.
+>>
+> I actually remove the __lock_release() in lock_sync() in this patch, so
+> I think it's OK. But I must admit the whole submission is to give David
+> something to see whether the output is an improvement, so I probably
+> should separate the output changes and the lock_sync() internall into
+> two patches (and the later can also be folded into the introduction
+> patch).
 
-Thanks
-Zhouyi
->                 }
->                 if (verbose)
->                         pr_alert("%s" TORTURE_FLAG
+I saw that now. You may not need to separate it into 2 patches since 
+there is some dependency between the two. You do have to document the 2 
+different changes in your patch description.
+
+Cheers,
+Longman
+
