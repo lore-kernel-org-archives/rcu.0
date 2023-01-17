@@ -2,142 +2,125 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF10FC3DA78
-	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 04:55:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61D7DC3DA78
+	for <rcu@archiver.kernel.org>; Tue, 17 Jan 2023 05:54:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbjAQEzH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 16 Jan 2023 23:55:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
+        id S235440AbjAQFyK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 17 Jan 2023 00:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbjAQEzA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 16 Jan 2023 23:55:00 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFB42366B
-        for <rcu@vger.kernel.org>; Mon, 16 Jan 2023 20:54:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5E19DB80E74
-        for <rcu@vger.kernel.org>; Tue, 17 Jan 2023 04:54:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 035A1C433EF;
-        Tue, 17 Jan 2023 04:54:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1673931297;
-        bh=enfU9sZZ+7k0cv8ZPVz3eKPam5EcG2LBCczzEay1Ieo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XkgCrjPs+HPGhj1SUIrNrBFHMWDKda4NferDoUQ8vrpE478h438rOQiAlR7ZKk2oz
-         pZtchAU2aQdCNlcrIbMwHim2knYIPIIsMaEqDmti4r4oa5CV+gIvGhPw7/l09Bl4v+
-         yTRr38sTmjd8mjIc0YNwj6y+vZOZs2q7/+20IfqkczLkIs5eyQ1hwCgjF0sM4zuvvd
-         q9vlKBtGlVXyoH28RGD4kzAzk/fYMxwSAocoTPPee6m3B8z25kRsIy1ODyC8KTrxJc
-         YddvSF0saMmMuu3J8/I9rHUUFhV3h32U/hcDO3sBn4iRycsTzbthKEKgV+J3i3ujSm
-         OHy/OfYs2yzVw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9833A5C0AD9; Mon, 16 Jan 2023 20:54:56 -0800 (PST)
-Date:   Mon, 16 Jan 2023 20:54:56 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-Message-ID: <20230117045456.GG2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230117043011.GD2948950@paulmck-ThinkPad-P17-Gen-1>
- <24953EEA-5B3E-4046-B106-7A7FBE8B8995@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <24953EEA-5B3E-4046-B106-7A7FBE8B8995@joelfernandes.org>
+        with ESMTP id S235403AbjAQFyH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 17 Jan 2023 00:54:07 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0186B222D3;
+        Mon, 16 Jan 2023 21:54:05 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id x4so18465245pfj.1;
+        Mon, 16 Jan 2023 21:54:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ErCs8xKixr0TtfZpav6tzyRAe7m6gIT7Rr5YvISmiQ=;
+        b=VEaMuBhHAfXgeFxeZ0fquPaXPJQIuvZ6Fffs/VyL4NX0GISZAxX6T3le3NmAePugcH
+         KYHR63ZbcWLoAcSR7ejDrBWiaNaM2UhA2j+bV2gahTAzF3JxuoMVVpITCIyxjz4Q86yM
+         sVNabr23ZIQceefmF9XbZR1iTRDQ0KWyBN2rrdOmZWijW9MkHtNRevJVcl8TZKWc8WFD
+         17S0HXkiInMhpXNPs1aIc5o3ZtELWpSNzRX4DbODEzY5Xb1uhhRpyVV8oWT61+PN3eM/
+         PzNst+tsQ5s8lfxa2336tDxMScod9aKY3ESyjvv73L/15uKLBNwQvZ6/NhH0oUXJ6knl
+         xISw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ErCs8xKixr0TtfZpav6tzyRAe7m6gIT7Rr5YvISmiQ=;
+        b=p7D7v2fpySF6w6zaydA6FEUdmcPg8iuyD/I3KGjTRjtkfB2vm3Dx5MaQnJ9/FMiQaH
+         vUvlFcVznyXJGyVHqbxgSb9bDu7v6m4EF6EI1q4cQOqLPHerX3uliqbpNtac1J09M0Oa
+         ziQojkxUVM0VRK24ep5CFHeOLuIttYU5KlQaSJX3l+9I9kHUWM0/2nQXTTxa5JXLpyA0
+         aMB1nAekGH9C6EVuVoh7H7LUeuJPogSwMA9UAJTCysHz/M0weHDuomftzs2/RTsS2001
+         QAYHcjxbfkiQ4K8T25rue7fqe3vItcmn71dqlOgfGeRe8UHc2WEHTzqOplcakpGBlgnl
+         z3mw==
+X-Gm-Message-State: AFqh2kqppKAdXZpiK7heOA75vtWJfKdc28sW9xXKmHEs3GqIoGAAlU+K
+        4NAbERSgB2+utcsH0pFmCHkzPAR3BE8=
+X-Google-Smtp-Source: AMrXdXt9HMOjQBNQ3vyngzhjY1ZE9mekFrHdsIcJLgZ3tGHBxf9QelqkGgv6amQNNZwPfwijDREe6g==
+X-Received: by 2002:a62:1ac9:0:b0:57a:7b74:4ec5 with SMTP id a192-20020a621ac9000000b0057a7b744ec5mr2337657pfa.13.1673934845346;
+        Mon, 16 Jan 2023 21:54:05 -0800 (PST)
+Received: from localhost.localdomain ([156.236.96.165])
+        by smtp.gmail.com with ESMTPSA id z13-20020aa79e4d000000b0058bc1a13ffcsm5763856pfq.25.2023.01.16.21.54.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Jan 2023 21:54:04 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     rcu@vger.kernel.org, paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, zhangwen@coolpad.com,
+        Yue Hu <huyue2@coolpad.com>
+Subject: [PATCH] rcu/rcutorture: Eliminate variable n_rcu_torture_boost_rterror
+Date:   Tue, 17 Jan 2023 13:53:10 +0800
+Message-Id: <20230117055310.3408-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 16, 2023 at 11:36:57PM -0500, Joel Fernandes wrote:
-> > On Jan 16, 2023, at 11:30 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > ﻿On Tue, Jan 17, 2023 at 12:15:07AM +0000, Joel Fernandes wrote:
-> >>> On Mon, Jan 16, 2023 at 05:38:00PM -0500, Joel Fernandes wrote:
-> >>> Hi Zhouyi,
-> >>> 
-> >>> On Mon, Jan 16, 2023 at 1:33 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> >>>> 
-> >>> [..]
-> >>>> On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >>>>> 
-> >>>>> Hello,
-> >>>>> I am seeing -EBUSY returned a lot during torture_onoff() when running
-> >>>>> rcutorture on arm64. This causes hotplug failure 30% of the time. I am
-> >>>>> also seeing this in 6.1-rc kernels. I believe see this only for CPU0.
-> >>>>> 
-> >>>>> This causes warnings in torture tests:
-> >>>>> [  217.582290] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> >>>>> [  221.866362] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> >>>>> 
-> >>>>> Full kernel log here:
-> >>>>> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/console.log
-> >>>>> 
-> >>>>> Any ideas on why this is happening and only for CPU 0 (presumably the
-> >>>>> boot CPU)? I'd personally need these warnings to go away for my tests
-> >>>>> as this causes rcutorture's tests to not cleanly pass for me. It
-> >>>>> appears remove_cpu() -> device_offline() is what returns the error.
-> >>>>> 
-> >>>> I guess this probably because CPU 0 is the tick_do_timer_cpu in
-> >>>> nohz_full mode, which prevent that cpu from
-> >>>> going offline [1]. We have discussed this topic, but there is no
-> >>>> agreement on how to solve it yet.
-> >>> 
-> >>> But I am seeing the issue in TRACE02 config which is:
-> >>> CONFIG_NO_HZ_IDLE=y
-> >>> # CONFIG_NO_HZ_FULL is not set
-> >>> 
-> >>> So that is not NO_HZ_FULL:
-> >>> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TRACE02/console.log.diags/
-> >>> However, I can't seem to find the full kernel logs for that.
-> >>> 
-> >>> Also, other than the TRACE02 fail, I only see the issue with configs
-> >>> with CONFIG_NO_HZ_FULL=y
-> >>> 
-> >>> Can you try TRACE02 specifically, and see if you can reproduce the
-> >>> same issue on your setup? Meanwhile, I'll try to trace what is
-> >>> returning the -EBUSY.
-> >> 
-> >> How about something simple like the following? (untested)
-> >> 
-> >> ---8<-----------------------
-> >> 
-> >> diff --git a/kernel/torture.c b/kernel/torture.c
-> >> index bc8fb361efc0..cd64110694c0 100644
-> >> --- a/kernel/torture.c
-> >> +++ b/kernel/torture.c
-> >> @@ -220,6 +220,9 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
-> >>            // PCI probe frequently disables hotplug during boot.
-> >>            (*n_offl_attempts)--;
-> >>            s = " (-EBUSY forgiven during boot)";
-> >> +        } else if (tick_nohz_full_running && ret == -EBUSY) {
-> >> +            (*n_offl_attempts)--;
-> >> +            s = " (-EBUSY forgiven if nohz_full is running)";
-> > 
-> > But this should be forgiven for the timekeeping CPU, not everyone,
-> > correct?
-> > 
-> > Yes, I know that CPU-hotplug operations can fail, but in my testing
-> > they almost never do.  This means that a new failure might well be a
-> > real bug somewhere that needs attention.
-> 
-> Sure. We may need to expose some API to reveal that. 
-> 
-> It appeared though that Thomas in the other thread related to patch
-> from Zhouyi, was suggesting that rcutorture tolerate hotplug failure
-> though, because they are not abnormal, right?
+From: Yue Hu <huyue2@coolpad.com>
 
-Based on my rcutorture testing experience on x86, they are not at all
-normal.  The only time I have seen rcutorture CPU-hotplug failures has
-been due to some bug that needed fixing.
+After commit 8b700983de82 ("sched: Remove sched_set_*() return value"),
+this variable is not used anymore. So eliminate it entirely.
 
-Is there a plan to make CPU hotplug failures more frequent?
+Signed-off-by: Yue Hu <huyue2@coolpad.com>
+---
+ kernel/rcu/rcutorture.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-							Thanx, Paul
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 634df26a2c27..327c8fbb7e00 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -179,7 +179,6 @@ static atomic_t n_rcu_torture_mbchk_tries;
+ static atomic_t n_rcu_torture_error;
+ static long n_rcu_torture_barrier_error;
+ static long n_rcu_torture_boost_ktrerror;
+-static long n_rcu_torture_boost_rterror;
+ static long n_rcu_torture_boost_failure;
+ static long n_rcu_torture_boosts;
+ static atomic_long_t n_rcu_torture_timers;
+@@ -2194,12 +2193,11 @@ rcu_torture_stats_print(void)
+ 		atomic_read(&n_rcu_torture_alloc),
+ 		atomic_read(&n_rcu_torture_alloc_fail),
+ 		atomic_read(&n_rcu_torture_free));
+-	pr_cont("rtmbe: %d rtmbkf: %d/%d rtbe: %ld rtbke: %ld rtbre: %ld ",
++	pr_cont("rtmbe: %d rtmbkf: %d/%d rtbe: %ld rtbke: %ld ",
+ 		atomic_read(&n_rcu_torture_mberror),
+ 		atomic_read(&n_rcu_torture_mbchk_fail), atomic_read(&n_rcu_torture_mbchk_tries),
+ 		n_rcu_torture_barrier_error,
+-		n_rcu_torture_boost_ktrerror,
+-		n_rcu_torture_boost_rterror);
++		n_rcu_torture_boost_ktrerror);
+ 	pr_cont("rtbf: %ld rtb: %ld nt: %ld ",
+ 		n_rcu_torture_boost_failure,
+ 		n_rcu_torture_boosts,
+@@ -2217,15 +2215,13 @@ rcu_torture_stats_print(void)
+ 	if (atomic_read(&n_rcu_torture_mberror) ||
+ 	    atomic_read(&n_rcu_torture_mbchk_fail) ||
+ 	    n_rcu_torture_barrier_error || n_rcu_torture_boost_ktrerror ||
+-	    n_rcu_torture_boost_rterror || n_rcu_torture_boost_failure ||
+-	    i > 1) {
++	    n_rcu_torture_boost_failure || i > 1) {
+ 		pr_cont("%s", "!!! ");
+ 		atomic_inc(&n_rcu_torture_error);
+ 		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mberror));
+ 		WARN_ON_ONCE(atomic_read(&n_rcu_torture_mbchk_fail));
+ 		WARN_ON_ONCE(n_rcu_torture_barrier_error);  // rcu_barrier()
+ 		WARN_ON_ONCE(n_rcu_torture_boost_ktrerror); // no boost kthread
+-		WARN_ON_ONCE(n_rcu_torture_boost_rterror); // can't set RT prio
+ 		WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost failed (TIMER_SOFTIRQ RT prio?)
+ 		WARN_ON_ONCE(i > 1); // Too-short grace period
+ 	}
+@@ -3540,7 +3536,6 @@ rcu_torture_init(void)
+ 	atomic_set(&n_rcu_torture_error, 0);
+ 	n_rcu_torture_barrier_error = 0;
+ 	n_rcu_torture_boost_ktrerror = 0;
+-	n_rcu_torture_boost_rterror = 0;
+ 	n_rcu_torture_boost_failure = 0;
+ 	n_rcu_torture_boosts = 0;
+ 	for (i = 0; i < RCU_TORTURE_PIPE_LEN + 1; i++)
+-- 
+2.17.1
+
