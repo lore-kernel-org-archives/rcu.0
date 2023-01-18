@@ -2,284 +2,108 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE44C32793
-	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 11:08:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A2B2C38147
+	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 11:11:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjARLIz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Jan 2023 06:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        id S229796AbjARLLl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Jan 2023 06:11:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbjARLIk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 Jan 2023 06:08:40 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6B495192
-        for <rcu@vger.kernel.org>; Wed, 18 Jan 2023 02:15:40 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id z13so8607287plg.6
-        for <rcu@vger.kernel.org>; Wed, 18 Jan 2023 02:15:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZpNxMwsui+ia/0qg6KB2o1j/tXjfKCnNtA+eZeLASuM=;
-        b=Cksha8pdazwvnc03OO+A6aY2SSeGZMGSIHbT4NTKX+gTWN/UI9Do5vblxjnvOH7r0J
-         SeOJp2nQViYcabWfz7kvn3/PQwLWgHaNj/zTGkHIyi9647/xIbjpFls/Xw3bMKa+mz+H
-         7DihHqAIa2a3UDP4Dh1uuUWHq2JWiSKE0fz1YtjLd4zhVdKrUCRjG5iOGuvNMF0xQeOI
-         8tguwwCN2is0z961YP8prhR7uSFO+r9b/XKnnw0iRPyewJAdyioK6d8xW3mb5pxv82h+
-         4oQE/hQeUfpHREi1a/wLk9y9Ua/BvCMoLKJuKBNG9Vll1Xc87VMRP+63BILvnLkQpc8E
-         oxXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZpNxMwsui+ia/0qg6KB2o1j/tXjfKCnNtA+eZeLASuM=;
-        b=k18BwxcPnwBlbnENbJuQtkyKrQmM33x6puKntF1JIpTnAsgfk08F1Kd+e547IZ5v3p
-         wEefVfyrygKmY+l2ZBH9vNIu3QFZav8YQUiN7YVD0mfMNDY5LMgSLVwZsukWiKVnydgN
-         v3nn0N7EnVAK6MztKxkb32y3HwseyyP2OK+9wk8xDXaR4/RFhyuVzHJacAr7A8oS+Icu
-         89NF/AtRfloWBjT7vi5yVLs1fFpbUb0upzkoUaB886Qy5jx9aamW3JN809U5djmEFH9w
-         muNOzgN/6xV/n610MFjeVwyUcm9jyF2Uk9dBfNJ5+aS+J/k4fY8Vppkpt17LHdH43Aka
-         zHWw==
-X-Gm-Message-State: AFqh2kqrZmgIS11IjfyYdSYtpRYYlTy0z3u14yHkD6vJNs4KkVYdxrvB
-        AOcmiE5FLioezxi+d9LXrA65cff5j7qJu5wW0Dk40RKQFAPMzQ==
-X-Google-Smtp-Source: AMrXdXu4+wDbh0a0tX2JdoGcFBwyG/IJ4CUzdh485ysoMQj9rY/6eXz4UE9pBwc6GsEqwbKmzNw7JDaleTjq+OTV9Ww=
-X-Received: by 2002:a17:90b:f0a:b0:229:55bb:e575 with SMTP id
- br10-20020a17090b0f0a00b0022955bbe575mr563152pjb.144.1674036939693; Wed, 18
- Jan 2023 02:15:39 -0800 (PST)
+        with ESMTP id S229761AbjARLLJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Jan 2023 06:11:09 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12CD9084C;
+        Wed, 18 Jan 2023 02:18:50 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6AC8361744;
+        Wed, 18 Jan 2023 10:18:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62965C433F0;
+        Wed, 18 Jan 2023 10:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674037129;
+        bh=xJ/Cw2FUAmOw6EcpQrNQixoTROjtQ1A2Dd9PkmuNyrY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HKNgm6TZG0JRPNEKyK4b5p9suz8FUEJnJj4NnjXJd0OjpN8c6fAp707Uil5d10KFU
+         oNy0V/GyZnBjeEw8GicYZEHO+qQLqc4JX8Tq+S7DDCVvB5u/9b1MRsGJqYaUZ/4cWl
+         W5Aa8CAQ03rQQ1JrYEziaZhS4hFTQ/wjOEiMhg38BfKoSDAm+OK5v0mjBEYsSEvWue
+         8HDwY4g31JlwimOwfBYkRAqy9sIGIuVZ3L56ozzhn+KvM9QOSoXhX8mLvicS3quRzW
+         WfSb7hxYHiatpRmy4GkpXVNi12m1wsuBQ7b31b42ylZ8Vh5rNaG0BaravQZiLVl1OO
+         G7GfJ2MAA38BA==
+Date:   Wed, 18 Jan 2023 11:18:47 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     paulmck@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] rcu: Remove impossible wakeup rcu GP kthread action
+ from rcu_report_qs_rdp()
+Message-ID: <Y8fHh3jvi/N2kfDB@lothringen>
+References: <20230118073014.2020743-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
-References: <CAABZP2zHs+Zatp+SUWNsPzGn81StKF9WL_+XB3pVTJNakxh5Dw@mail.gmail.com>
- <6191067A-8033-4670-BBD0-873C5F9E8878@joelfernandes.org> <CAABZP2xbvz_SS3eZZ6SJFN6kA++DowsirDOsJANGTEX3b0DGBQ@mail.gmail.com>
-In-Reply-To: <CAABZP2xbvz_SS3eZZ6SJFN6kA++DowsirDOsJANGTEX3b0DGBQ@mail.gmail.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Wed, 18 Jan 2023 18:15:28 +0800
-Message-ID: <CAABZP2yUtgHbTkk87QvQw-4ptWxeP_RituEDh3BdsqDkBSmteQ@mail.gmail.com>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        rcu <rcu@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230118073014.2020743-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jan 17, 2023 at 7:42 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
->
-> On Tue, Jan 17, 2023 at 12:34 PM Joel Fernandes <joel@joelfernandes.org> =
-wrote:
-> >
-> >
-> >
-> > > On Jan 16, 2023, at 10:15 PM, Zhouyi Zhou <zhouzhouyi@gmail.com> wrot=
-e:
-> > >
-> > > =EF=BB=BFOn Tue, Jan 17, 2023 at 9:45 AM Joel Fernandes <joel@joelfer=
-nandes.org> wrote:
-> > >>
-> > >>> On Tue, Jan 17, 2023 at 08:37:16AM +0800, Zhouyi Zhou wrote:
-> > >>> On Tue, Jan 17, 2023 at 8:15 AM Joel Fernandes <joel@joelfernandes.=
-org> wrote:
-> > >>>>
-> > >>>> On Mon, Jan 16, 2023 at 05:38:00PM -0500, Joel Fernandes wrote:
-> > >>>>> Hi Zhouyi,
-> > >>>>>
-> > >>>>> On Mon, Jan 16, 2023 at 1:33 PM Zhouyi Zhou <zhouzhouyi@gmail.com=
-> wrote:
-> > >>>>>>
-> > >>>>> [..]
-> > >>>>>> On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernand=
-es.org> wrote:
-> > >>>>>>>
-> > >>>>>>> Hello,
-> > >>>>>>> I am seeing -EBUSY returned a lot during torture_onoff() when r=
-unning
-> > >>>>>>> rcutorture on arm64. This causes hotplug failure 30% of the tim=
-e. I am
-> > >>>>>>> also seeing this in 6.1-rc kernels. I believe see this only for=
- CPU0.
-> > >>>>>>>
-> > >>>>>>> This causes warnings in torture tests:
-> > >>>>>>> [  217.582290] rcu-torture:torture_onoff task: offline 0 failed=
-: errno -16
-> > >>>>>>> [  221.866362] rcu-torture:torture_onoff task: offline 0 failed=
-: errno -16
-> > >>>>>>>
-> > >>>>>>> Full kernel log here:
-> > >>>>>>> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job=
-/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-=
-14.51.11/TREE04/console.log
-> > >>>>>>>
-> > >>>>>>> Any ideas on why this is happening and only for CPU 0 (presumab=
-ly the
-> > >>>>>>> boot CPU)? I'd personally need these warnings to go away for my=
- tests
-> > >>>>>>> as this causes rcutorture's tests to not cleanly pass for me. I=
-t
-> > >>>>>>> appears remove_cpu() -> device_offline() is what returns the er=
-ror.
-> > >>>>>>>
-> > >>>>>> I guess this probably because CPU 0 is the tick_do_timer_cpu in
-> > >>>>>> nohz_full mode, which prevent that cpu from
-> > >>>>>> going offline [1]. We have discussed this topic, but there is no
-> > >>>>>> agreement on how to solve it yet.
-> > >>>>>
-> > >>>>> But I am seeing the issue in TRACE02 config which is:
-> > >>>>> CONFIG_NO_HZ_IDLE=3Dy
-> > >>>>> # CONFIG_NO_HZ_FULL is not set
-> > >>>>>
-> > >>>>> So that is not NO_HZ_FULL:
-> > >>>>> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/l=
-inux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14=
-.51.11/TRACE02/console.log.diags/
-> > >>>>> However, I can't seem to find the full kernel logs for that.
-> > >>>>>
-> > >>>>> Also, other than the TRACE02 fail, I only see the issue with conf=
-igs
-> > >>>>> with CONFIG_NO_HZ_FULL=3Dy
-> > >>>>>
-> > >>>>> Can you try TRACE02 specifically, and see if you can reproduce th=
-e
-> > >>>>> same issue on your setup? Meanwhile, I'll try to trace what is
-> > >>>>> returning the -EBUSY.
-> > >>> I am trying TRACE02 on my X86_64 machine using cross compile and
-> > >>> qemu-system-aarch64 now, my equipment is limited, but hope I can be=
- of
-> > >>> beneficial to the community ;-)
-> > >>
-> > >> Cool, I am assuming you are trying the patch you shared which you wr=
-ote in
-> > >> November. I bet you will still see the issue.
-> > > yes, I still see the issue with no hz full.
-> > >>
-> > >>>>
-> > >>>> How about something simple like the following? (untested)
-> > >>>>
-> > >>>> ---8<-----------------------
-> > >>>>
-> > >>>> diff --git a/kernel/torture.c b/kernel/torture.c
-> > >>>> index bc8fb361efc0..cd64110694c0 100644
-> > >>>> --- a/kernel/torture.c
-> > >>>> +++ b/kernel/torture.c
-> > >>>> @@ -220,6 +220,9 @@ bool torture_offline(int cpu, long *n_offl_att=
-empts, long *n_offl_successes,
-> > >>>>                        // PCI probe frequently disables hotplug du=
-ring boot.
-> > >>>>                        (*n_offl_attempts)--;
-> > >>>>                        s =3D " (-EBUSY forgiven during boot)";
-> > >>>> +               } else if (tick_nohz_full_running && ret =3D=3D -E=
-BUSY) {
-> > >>>> +                       (*n_offl_attempts)--;
-> > >>>> +                       s =3D " (-EBUSY forgiven if nohz_full is r=
-unning)";
-> > >>> Fantastic fix!! thus we can fix the time keeper cpu torture problem
-> > >>> without touch the time keeper code.
-> > >>
-> > >> Thanks. Unfortunately this does not fix the issue for TRACE02 and th=
-e patch
-> > >> you shared does not fix it either -- because TRACE02 is not a no-hz-=
-full
-> > >> test. :-(
-> > >>
-> > >> We will need to do a bit of tracing to figure out where the -EBUSY i=
-s coming
-> > >> from for TRACE02.
-> > > agree TRACE02 is another issue, unfortunately I can't reproduce the
-> > > bug neither with your original Image [1]
-> > > nor with my cross compiled kernel using [2].
-> > >
-> > > I guess there may be two reasons:
-> > > 1) my testbed is X86_64 based.
-> > > 2) the command that I invoke qemu is not right:
-> > > 2-1) the newly compiled linux-5.15.89-rc1
-> > > qemu-system-aarch64 -machine virt -cpu cortex-a57 -nographic -smp 4
-> >
-> > Does 8 CPUs make any difference? That is my setup.
-> 8 CPUs make no difference ;-(
-> >
-> > Not sure what else is different. It could be a CPU model specific issue=
-, or something. But why donot you just use the same setup you used in Novem=
-ber and check TRACE02? That is actually what I was requesting you to rest, =
-since you saw the same issue on that setup.
-> I guess it may be a CPU model specific issue, while I can't invoke
-> qemu-system-aarch64  with  "-machine virt,gic-version=3Dhost -cpu host"
-> because I didn't have an aarch64 bare metal host.
->
-> OK, I am doing the same setup on linux-5.15.y as I did last November
-> in the PPC VM of Open Source Lab of Oregon State University, this will
-> take about 20 hours, and report what I found after the test finishes.
-There are some problems in launching linux-5.15.y in the PPC VM of
-Open Source Lab of Oregon State University, I am digging out why, so I
-can't report the test result today, I'm sorry ;-(. I will report to
-you once I have any progress as soon as possible.
+On Wed, Jan 18, 2023 at 03:30:14PM +0800, Zqiang wrote:
+> When inovke rcu_report_qs_rdp(), if current CPU's rcu_data structure's ->
+> grpmask has not been cleared from the corresponding rcu_node structure's
+> ->qsmask, after that will clear and report quiescent state, but in this
+> time, this also means that current grace period is not end, the current
+> grace period is ongoing, because the rcu_gp_in_progress() currently return
+> true, so for non-offloaded rdp, invoke rcu_accelerate_cbs() is impossible
+> to return true.
+> 
+> This commit therefore remove impossible rcu_gp_kthread_wake() calling.
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Best Regards
-Thank you all for your guidance, I learned a lot in this process.
-Zhouyi
->
-> Thanks
-> Zhouyi
-> >
-> > Thanks,
-> >
-> > Joel
-> >
-> >
-> >
-> > > -serial file:/tmp/consoleJan1702.log  -kernel arch/arm64/boot/Image
-> > > -append "console=3DttyAMA0 oops=3Dpanic panic_on_warn=3D1 panic=3D-1
-> > > ftrace_dump_on_oops=3Dorig_cpu debug earlyprintk=3Dserial slub_debug=
-=3DUZ
-> > > rcutorture.torture_type=3Dtasks-tracing rcutorture.onoff_interval=3D1=
-000
-> > > rcutorture.onoff_holdoff=3D1000 rcutorture.n_barrier_cbs=3D4
-> > > rcutorture.stat_interval=3D15 rcutorture.shutdown_secs=3D1200
-> > > test_no_idle_hz=3D1 verbose=3D1" -m 2048 -net user,hostfwd=3Dtcp::100=
-24-:22
-> > > -net nic
-> > > 2-2) original Image [1]
-> > > qemu-system-aarch64 -machine virt   -cpu cortex-a57   -nographic -smp
-> > > 4  -serial file:/tmp/consoleJan1701.log   -kernel /home/zzy/Image
-> > > -append "console=3DttyAMA0  oops=3Dpanic panic_on_warn=3D1 panic=3D-1
-> > > ftrace_dump_on_oops=3Dorig_cpu debug earlyprintk=3Dserial slub_debug=
-=3DUZ
-> > > rcutorture.torture_type=3Dtasks-tracing rcutorture.onoff_interval=3D1=
-000
-> > > rcutorture.onoff_holdoff=3D30 n_barrier_cbs=3D4
-> > > rcutorture.stat_interval=3D15 rcutorture.shutdown_secs=3D1200
-> > > test_no_idle_hz=3D1 verbose=3D1"   -m 2048   -net
-> > > user,hostfwd=3Dtcp::10023-:22 -net nic
-> > >
-> > > As Mark can reproduce the issue using [1], there must be something
-> > > wrong with my x86_64 based environment.
-> > >
-> > > Sorry not to be of help this time.
-> > >
-> > > I am very happy and interested to perform further tests whenever ther=
-e
-> > > are further instructions ;-)
-> > >
-> > > [1] http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/l=
-inux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14=
-.51.11/TRACE02/Image
-> > > [2] http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/l=
-inux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14=
-.51.11/TRACE02/.config
-> > >>
-> > >> I wonder if we should ignore -EBUSY altogether, since as Thomas ment=
-ioned,
-> > >> hotplug failure is "normal". Thoughts?
-> > > This decision is too important for a beginner like me, however may
-> > > thanks for your trust in me ;-) What does Paul think about it ;-)
-> > >
-> > > Thanks
-> > > Zhouyi
-> > >>
-> > >> thanks,
-> > >>
-> > >> - Joel
-> > >>
+Thanks!
+
+> ---
+>  kernel/rcu/tree.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index b2c204529478..0962c2202d45 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1956,7 +1956,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  {
+>  	unsigned long flags;
+>  	unsigned long mask;
+> -	bool needwake = false;
+>  	bool needacc = false;
+>  	struct rcu_node *rnp;
+>  
+> @@ -1988,7 +1987,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  		 * NOCB kthreads have their own way to deal with that...
+>  		 */
+>  		if (!rcu_rdp_is_offloaded(rdp)) {
+> -			needwake = rcu_accelerate_cbs(rnp, rdp);
+> +			/*
+> +			 * Current GP does not end, invoke rcu_gp_in_progress()
+> +			 * will return true and so doesn't wake up GP kthread to
+> +			 * start a new GP.
+> +			 */
+> +			WARN_ON_ONCE(rcu_accelerate_cbs(rnp, rdp));
+>  		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
+>  			/*
+>  			 * ...but NOCB kthreads may miss or delay callbacks acceleration
+> @@ -2000,8 +2004,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  		rcu_disable_urgency_upon_qs(rdp);
+>  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+>  		/* ^^^ Released rnp->lock */
+> -		if (needwake)
+> -			rcu_gp_kthread_wake();
+>  
+>  		if (needacc) {
+>  			rcu_nocb_lock_irqsave(rdp, flags);
+> -- 
+> 2.25.1
+> 
