@@ -2,131 +2,126 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A1D2C38147
-	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 18:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89546C38147
+	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 22:01:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjARSIR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Jan 2023 13:08:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        id S229492AbjARWBr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Jan 2023 17:01:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbjARSHm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 Jan 2023 13:07:42 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E92956EEC;
-        Wed, 18 Jan 2023 10:07:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 207A4B81C66;
-        Wed, 18 Jan 2023 18:07:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1BB8C433D2;
-        Wed, 18 Jan 2023 18:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674065234;
-        bh=ASgMJN11LRkZcvhH2vNd49vPSeWr47r6GOPKrQfkOMg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mE687v8Zu+Uw01zoSDV+x0Nf0erR6F+JaF83WrhBGZu6qHHb0O2IDsV0yDUNoDkXg
-         Q5Zo0/SMOdGD4O6XTpUodtnWMAWTiIdsdssPghBC4UOKhdRpjFXlxYjg1wsPiFoIIL
-         453JlqpAV5Rh5PZEMQGj8JtWiS+aExwaGff9N3UBCDlcv7G001nawxo+g8IyUQo9TJ
-         JpAgzlRl8sHyExpXBaEnNx8RdlZ0KzRu0BpTCVqMf/rjHQsBDIlnyP0WZKuCCjS8oH
-         fyR4x3HkSJyUdi29EhFhf5oiYTFFooGymHpVYqk6neT9lVIYxWUTC7kE9fuNGeclhj
-         AKsY1ibf+wxzQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 587BD5C0920; Wed, 18 Jan 2023 10:07:14 -0800 (PST)
-Date:   Wed, 18 Jan 2023 10:07:14 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] rcu: Remove impossible wakeup rcu GP kthread action
- from rcu_report_qs_rdp()
-Message-ID: <20230118180714.GD2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230118073014.2020743-1-qiang1.zhang@intel.com>
+        with ESMTP id S229695AbjARWBV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Jan 2023 17:01:21 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E395EFB4
+        for <rcu@vger.kernel.org>; Wed, 18 Jan 2023 14:01:20 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id f34so393650lfv.10
+        for <rcu@vger.kernel.org>; Wed, 18 Jan 2023 14:01:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/f6GHQGzQEaiHB47dGSqaEpuNR0EbdyrEaRizrbLVA0=;
+        b=FaErN5Pqdlxy0qi2w4z3TbV5KPeBng1AWRf3/T+joQdDeiOfMgGb02AXSP7BFOgzNu
+         HzgGe1lvK3N2vm0qVTn042WPAM7bvYLKphXNY4nhphVuDis/L6EyueD58oa5uX5xVquQ
+         ITTXocDdKTSBySCN89sVK6OY+iNu2jlnLfdY8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/f6GHQGzQEaiHB47dGSqaEpuNR0EbdyrEaRizrbLVA0=;
+        b=o4eVf0fLWWm4M/w3H587aeY6mOcsrKsKf9kTtgOha4I9zkVsPNsEwjuXjlvahHV1Nu
+         ScgqHfOp0KU9mrewAsjz0+CBWsl+g5/xX98TfhOOF0QjHyEZWZ/2P2KtDuReMf6wIv8R
+         yIQ1ah1K6PwvG+AOxA1hD+ChnvMCle/S0E2grmfNd1RNi0qFjYuN+OrahddzjFfU0WcO
+         gpEH9DschwBUDtpqC4boytA3Na0fTjzY9863WUx2sQ8em0VzURz2fRIvttgl2MPdmV67
+         m9toyM0rUsXkNxgr5bFjsIy/SUnWS0d2jFReGRYnCKeGYED5pjTJHCESFwDAu/ZRIM4o
+         JvFg==
+X-Gm-Message-State: AFqh2kqv1ZzUApsHOwaQFeOH1SvWsbvvwmECrxkosCHdasCi8k6gn58I
+        V9OQN48VltHzFhWHXEPg4U/HiRgfmlVG+jTzy/8435RPhsawD0c1
+X-Google-Smtp-Source: AMrXdXtwkq16tyvOsTsOQ6/42AkK5wWYSgeBjL0sFolXiSCLs8+h8rkJR73J8McjhBLZiWOJAXRZyddLyyHX6OpK2vE=
+X-Received: by 2002:ac2:5ec4:0:b0:4cb:3b:846e with SMTP id d4-20020ac25ec4000000b004cb003b846emr391003lfq.128.1674079278964;
+ Wed, 18 Jan 2023 14:01:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230118073014.2020743-1-qiang1.zhang@intel.com>
+References: <20230117043011.GD2948950@paulmck-ThinkPad-P17-Gen-1>
+ <24953EEA-5B3E-4046-B106-7A7FBE8B8995@joelfernandes.org> <20230117045456.GG2948950@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YTeR7y5TjYPFiZ_RbzOBCk0p-2J-Gga2uHuMr020jL0vQ@mail.gmail.com>
+ <20230117204231.GP2948950@paulmck-ThinkPad-P17-Gen-1> <CAEXW_YTtY5WNLJ4p9ggso7L38rtiCFEq2aLCwYUkQ2ckBnEsSA@mail.gmail.com>
+ <20230118040058.GV2948950@paulmck-ThinkPad-P17-Gen-1> <20230118165121.GB19026@willie-the-truck>
+In-Reply-To: <20230118165121.GB19026@willie-the-truck>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 18 Jan 2023 22:01:07 +0000
+Message-ID: <CAEXW_YQ=v0u+NFCwUcvMcYfsMXknb8YJrfGgKSW=dCA56Q+a0A@mail.gmail.com>
+Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
+To:     Will Deacon <will@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 03:30:14PM +0800, Zqiang wrote:
-> When inovke rcu_report_qs_rdp(), if current CPU's rcu_data structure's ->
-> grpmask has not been cleared from the corresponding rcu_node structure's
-> ->qsmask, after that will clear and report quiescent state, but in this
-> time, this also means that current grace period is not end, the current
-> grace period is ongoing, because the rcu_gp_in_progress() currently return
-> true, so for non-offloaded rdp, invoke rcu_accelerate_cbs() is impossible
-> to return true.
-> 
-> This commit therefore remove impossible rcu_gp_kthread_wake() calling.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Hey Will,
 
-Queued (wordsmithed as shown below, as always, please check) for further
-testing and review, thank you both!
+On Wed, Jan 18, 2023 at 4:51 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Tue, Jan 17, 2023 at 08:00:58PM -0800, Paul E. McKenney wrote:
+> > On Wed, Jan 18, 2023 at 02:17:06AM +0000, Joel Fernandes wrote:
+> >
+> > I would be happier to forgive failure to offline housekeeping CPUs than
+> > blanket forgiveness of CPU 0.  Especially given that I recently got
+> > burned by a non-zero boot cpu.  ;-)
+> >
+> > But wouldn't it be even better for cpu_is_hotpluggable() to know the
+> > NO_HZ_FULL rules of the road?
+> >
+> > > Adding Frederic to CC as well as we are talking about
+> > > housekeeping/isolation stuff.
+> >
+> > But as you say, perhaps Frederic has a better idea.
+> >
+> > > > And topology_init() sets this based on platform_can_hotplug_cpu(cpu).
+> > > > And this function sets CPU 0 as !cpu_is_hotpluggable() unless the
+> > > > architecture specifies a .cpu_can_disable() function.
+> > >
+> > > Ah, that is 32-bit ARM code only. This issue is on 64-bit ARM (arch/arm64/).
+> >
+> > Apologies!  I will look more carefully at the pathnames next time!
+> >
+> > But maybe arm64 needs something similar?
+>
+> Just chiming quickly from the arm64 side here, but there's nothing in the
+> architecture that precludes offlining CPU 0 and it certainly works on some
+> platforms, so I'd be hesitant to rule it out entirely for testing.
+>
+> One reason why hotplug can fail in practice is if a trusted OS (i.e. code
+> running on the secure side of the fence outside of Linux's view of the
+> world) is resident on a core and rejects firmware requests to power it
+> off. The PSCI code (drivers/firmware/psci/) should detect this and return
+> -EPERM, although earlier in this thread there was mention of -EBUSY so it
+> sounds like something else...
 
-							Thanx, Paul
+Thank you for the heads up on that. To give you context, I am
+currently testing rcutorture on stable kernels 5.10, 5.15, 6.1 on my
+ARM64 QC7180 board. I certainly don't want to hit the -EPERM in the
+future on this or other ARM64 hardware. It would be great if
+cpu_psci_cpu_can_disable() in arm64 can return false if hotplugging
+causes -EPERM indefinitely. Then we do not need to make any changes.
+This is similar to the idea Paul mentioned in an earlier thread where
+the ARCH can disable the hotplug and make it clear the CPU removal is
+off limits.
 
-------------------------------------------------------------------------
+Meanwhile, I am also looking into whether we can make the housekeeping
+CPU (returning -EBUSY) offlining be encoded somehow in the
+cpu_is_hotpluggable() logic (also an idea from Paul). That appears to
+not be arch code related though.
 
-commit fbe3e300ec8b3edd2b8f84dab4dc98947cf71eb8
-Author: Zqiang <qiang1.zhang@intel.com>
-Date:   Wed Jan 18 15:30:14 2023 +0800
+Thanks,
 
-    rcu: Remove never-set needwake assignment from rcu_report_qs_rdp()
-    
-    The rcu_accelerate_cbs() function is invoked by rcu_report_qs_rdp()
-    only if there is a grace period in progress that is still blocked
-    by at least one CPU on this rcu_node structure.  This means that
-    rcu_accelerate_cbs() should never return the value true, and thus that
-    this function should never set the needwake variable and in turn never
-    invoke rcu_gp_kthread_wake().
-    
-    This commit therefore removes the needwake variable and the invocation
-    of rcu_gp_kthread_wake() in favor of a WARN_ON_ONCE() on the call to
-    rcu_accelerate_cbs().  The purpose of this new WARN_ON_ONCE() is to
-    detect situations where the system's opinion differs from ours.
-    
-    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b2c2045294780..7a3085ad0a7df 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1956,7 +1956,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- {
- 	unsigned long flags;
- 	unsigned long mask;
--	bool needwake = false;
- 	bool needacc = false;
- 	struct rcu_node *rnp;
- 
-@@ -1988,7 +1987,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		 * NOCB kthreads have their own way to deal with that...
- 		 */
- 		if (!rcu_rdp_is_offloaded(rdp)) {
--			needwake = rcu_accelerate_cbs(rnp, rdp);
-+			/*
-+			 * The current GP has not yet ended, so it
-+			 * should not be possible for rcu_accelerate_cbs()
-+			 * to return true.  So complain, but don't awaken.
-+			 */
-+			WARN_ON_ONCE(rcu_accelerate_cbs(rnp, rdp));
- 		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
- 			/*
- 			 * ...but NOCB kthreads may miss or delay callbacks acceleration
-@@ -2000,8 +2004,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		rcu_disable_urgency_upon_qs(rdp);
- 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
- 		/* ^^^ Released rnp->lock */
--		if (needwake)
--			rcu_gp_kthread_wake();
- 
- 		if (needacc) {
- 			rcu_nocb_lock_irqsave(rdp, flags);
+- Joel
