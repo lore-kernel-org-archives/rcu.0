@@ -2,108 +2,131 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE63DC32793
-	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 17:56:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A1D2C38147
+	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 18:08:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjARR4k (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Jan 2023 12:56:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        id S230163AbjARSIR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Jan 2023 13:08:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjARR4j (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 Jan 2023 12:56:39 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2984537F0E
-        for <rcu@vger.kernel.org>; Wed, 18 Jan 2023 09:56:38 -0800 (PST)
+        with ESMTP id S230171AbjARSHm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Jan 2023 13:07:42 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E92956EEC;
+        Wed, 18 Jan 2023 10:07:17 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E7A3FB81E66
-        for <rcu@vger.kernel.org>; Wed, 18 Jan 2023 17:56:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99AD1C433D2;
-        Wed, 18 Jan 2023 17:56:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 207A4B81C66;
+        Wed, 18 Jan 2023 18:07:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1BB8C433D2;
+        Wed, 18 Jan 2023 18:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674064595;
-        bh=cmDhZpFOMrK2I3PDHm2cpre02sim6FNy5tmvNkl/WTk=;
+        s=k20201202; t=1674065234;
+        bh=ASgMJN11LRkZcvhH2vNd49vPSeWr47r6GOPKrQfkOMg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OYr1GVWgvWe3ev4FRHZhkr7AiwxKf1BmuDeRwmueAVvAMjO8NIH4qdD6xl3QHKgQ9
-         1SGR7wi8lJ46DDfl+NLEQTfUmPCI8JUcn16/HS127kNkoC12sSyx3vSSCJHzSyGDvf
-         sTMpX8dDbr2uDAtwWfSQ07nvv+VYA33HU6wAGQdSxORK1ttewUbxdtvUgZeANmC77X
-         4J6xayR+xlkTA7F1KZNjIJ+QNPkyj/Stmucgs8lSj5AXVGQxRtkrlnQ/6Y3LORnGZk
-         cPiW3r6AqeaqlDwB7WbHvmUpm+fDmonT5DWMt7dbF78pp4rLzTwY86cGf6jV3RtSdY
-         L+TL/H0PBSokQ==
+        b=mE687v8Zu+Uw01zoSDV+x0Nf0erR6F+JaF83WrhBGZu6qHHb0O2IDsV0yDUNoDkXg
+         Q5Zo0/SMOdGD4O6XTpUodtnWMAWTiIdsdssPghBC4UOKhdRpjFXlxYjg1wsPiFoIIL
+         453JlqpAV5Rh5PZEMQGj8JtWiS+aExwaGff9N3UBCDlcv7G001nawxo+g8IyUQo9TJ
+         JpAgzlRl8sHyExpXBaEnNx8RdlZ0KzRu0BpTCVqMf/rjHQsBDIlnyP0WZKuCCjS8oH
+         fyR4x3HkSJyUdi29EhFhf5oiYTFFooGymHpVYqk6neT9lVIYxWUTC7kE9fuNGeclhj
+         AKsY1ibf+wxzQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2ECA45C0920; Wed, 18 Jan 2023 09:56:35 -0800 (PST)
-Date:   Wed, 18 Jan 2023 09:56:35 -0800
+        id 587BD5C0920; Wed, 18 Jan 2023 10:07:14 -0800 (PST)
+Date:   Wed, 18 Jan 2023 10:07:14 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-Message-ID: <20230118175635.GC2948950@paulmck-ThinkPad-P17-Gen-1>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] rcu: Remove impossible wakeup rcu GP kthread action
+ from rcu_report_qs_rdp()
+Message-ID: <20230118180714.GD2948950@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20230117043011.GD2948950@paulmck-ThinkPad-P17-Gen-1>
- <24953EEA-5B3E-4046-B106-7A7FBE8B8995@joelfernandes.org>
- <20230117045456.GG2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTeR7y5TjYPFiZ_RbzOBCk0p-2J-Gga2uHuMr020jL0vQ@mail.gmail.com>
- <20230117204231.GP2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTtY5WNLJ4p9ggso7L38rtiCFEq2aLCwYUkQ2ckBnEsSA@mail.gmail.com>
- <20230118040058.GV2948950@paulmck-ThinkPad-P17-Gen-1>
- <20230118165121.GB19026@willie-the-truck>
+References: <20230118073014.2020743-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230118165121.GB19026@willie-the-truck>
+In-Reply-To: <20230118073014.2020743-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 04:51:22PM +0000, Will Deacon wrote:
-> On Tue, Jan 17, 2023 at 08:00:58PM -0800, Paul E. McKenney wrote:
-> > On Wed, Jan 18, 2023 at 02:17:06AM +0000, Joel Fernandes wrote:
-> >
-> > I would be happier to forgive failure to offline housekeeping CPUs than
-> > blanket forgiveness of CPU 0.  Especially given that I recently got
-> > burned by a non-zero boot cpu.  ;-)
-> > 
-> > But wouldn't it be even better for cpu_is_hotpluggable() to know the
-> > NO_HZ_FULL rules of the road?
-> > 
-> > > Adding Frederic to CC as well as we are talking about
-> > > housekeeping/isolation stuff.
-> > 
-> > But as you say, perhaps Frederic has a better idea.
-> > 
-> > > > And topology_init() sets this based on platform_can_hotplug_cpu(cpu).
-> > > > And this function sets CPU 0 as !cpu_is_hotpluggable() unless the
-> > > > architecture specifies a .cpu_can_disable() function.
-> > > 
-> > > Ah, that is 32-bit ARM code only. This issue is on 64-bit ARM (arch/arm64/).
-> > 
-> > Apologies!  I will look more carefully at the pathnames next time!
-> > 
-> > But maybe arm64 needs something similar?
+On Wed, Jan 18, 2023 at 03:30:14PM +0800, Zqiang wrote:
+> When inovke rcu_report_qs_rdp(), if current CPU's rcu_data structure's ->
+> grpmask has not been cleared from the corresponding rcu_node structure's
+> ->qsmask, after that will clear and report quiescent state, but in this
+> time, this also means that current grace period is not end, the current
+> grace period is ongoing, because the rcu_gp_in_progress() currently return
+> true, so for non-offloaded rdp, invoke rcu_accelerate_cbs() is impossible
+> to return true.
 > 
-> Just chiming quickly from the arm64 side here, but there's nothing in the
-> architecture that precludes offlining CPU 0 and it certainly works on some
-> platforms, so I'd be hesitant to rule it out entirely for testing.
+> This commit therefore remove impossible rcu_gp_kthread_wake() calling.
 > 
-> One reason why hotplug can fail in practice is if a trusted OS (i.e. code
-> running on the secure side of the fence outside of Linux's view of the
-> world) is resident on a core and rejects firmware requests to power it
-> off. The PSCI code (drivers/firmware/psci/) should detect this and return
-> -EPERM, although earlier in this thread there was mention of -EBUSY so it
-> sounds like something else...
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-We can certainly special-case -EPERM in rcutorture.  But what should we
-expect?  Would this be a random encounter with a trusted OS, or should we
-expect that a given trusted OS instance would grab a giving CPU long-term?
-My guess is the former, but I do feel the need to ask.  ;-)
+Queued (wordsmithed as shown below, as always, please check) for further
+testing and review, thank you both!
 
 							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit fbe3e300ec8b3edd2b8f84dab4dc98947cf71eb8
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Wed Jan 18 15:30:14 2023 +0800
+
+    rcu: Remove never-set needwake assignment from rcu_report_qs_rdp()
+    
+    The rcu_accelerate_cbs() function is invoked by rcu_report_qs_rdp()
+    only if there is a grace period in progress that is still blocked
+    by at least one CPU on this rcu_node structure.  This means that
+    rcu_accelerate_cbs() should never return the value true, and thus that
+    this function should never set the needwake variable and in turn never
+    invoke rcu_gp_kthread_wake().
+    
+    This commit therefore removes the needwake variable and the invocation
+    of rcu_gp_kthread_wake() in favor of a WARN_ON_ONCE() on the call to
+    rcu_accelerate_cbs().  The purpose of this new WARN_ON_ONCE() is to
+    detect situations where the system's opinion differs from ours.
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b2c2045294780..7a3085ad0a7df 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1956,7 +1956,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+ {
+ 	unsigned long flags;
+ 	unsigned long mask;
+-	bool needwake = false;
+ 	bool needacc = false;
+ 	struct rcu_node *rnp;
+ 
+@@ -1988,7 +1987,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+ 		 * NOCB kthreads have their own way to deal with that...
+ 		 */
+ 		if (!rcu_rdp_is_offloaded(rdp)) {
+-			needwake = rcu_accelerate_cbs(rnp, rdp);
++			/*
++			 * The current GP has not yet ended, so it
++			 * should not be possible for rcu_accelerate_cbs()
++			 * to return true.  So complain, but don't awaken.
++			 */
++			WARN_ON_ONCE(rcu_accelerate_cbs(rnp, rdp));
+ 		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
+ 			/*
+ 			 * ...but NOCB kthreads may miss or delay callbacks acceleration
+@@ -2000,8 +2004,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+ 		rcu_disable_urgency_upon_qs(rdp);
+ 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+ 		/* ^^^ Released rnp->lock */
+-		if (needwake)
+-			rcu_gp_kthread_wake();
+ 
+ 		if (needacc) {
+ 			rcu_nocb_lock_irqsave(rdp, flags);
