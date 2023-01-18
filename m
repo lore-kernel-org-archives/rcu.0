@@ -2,247 +2,209 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A3C1C38147
-	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 04:01:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8320CC32793
+	for <rcu@archiver.kernel.org>; Wed, 18 Jan 2023 07:53:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjAREBG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 17 Jan 2023 23:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39906 "EHLO
+        id S229723AbjARHxf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Jan 2023 02:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjAREBD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 17 Jan 2023 23:01:03 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54DF3EC7E
-        for <rcu@vger.kernel.org>; Tue, 17 Jan 2023 20:01:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8D66EB81B1A
-        for <rcu@vger.kernel.org>; Wed, 18 Jan 2023 04:01:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35039C433EF;
-        Wed, 18 Jan 2023 04:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674014459;
-        bh=veUBnwetV+hSjuqs0BW207dqFMZVpLv0n2F4zspwzEs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XMQXBnpUQh3yV+jtRnYYwwQIJVhcYdTnrkldptdd1st+3YHYQwUF+tj9LxQKgwAjJ
-         h7d7uWhj2b5++uAsju24sUTJisk5X0g1tPeOqPY4k2dU5mmV4ybiGIlqImuqTg6sce
-         h9Xm8SBxKxWPOnIw0iaUh8gCYg6Hflr2wPfwcWRte+RkzjuL10AZKxRKSEeIbX85gJ
-         fF8oEQtYPjTpvG4G96fxcPCriYFYqe7A39sEjpnu4lloWEmuS5+nZONqGksL2LnwOX
-         OVbaQEj/ti1BXzhxdgi0KugEqVQ+ebW3KpseAOEIsUrO2s4eNjZC3Y5J/BTVTrr3yH
-         DldO2CEyPZx4g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C4DAD5C1052; Tue, 17 Jan 2023 20:00:58 -0800 (PST)
-Date:   Tue, 17 Jan 2023 20:00:58 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-Message-ID: <20230118040058.GV2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230117043011.GD2948950@paulmck-ThinkPad-P17-Gen-1>
- <24953EEA-5B3E-4046-B106-7A7FBE8B8995@joelfernandes.org>
- <20230117045456.GG2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTeR7y5TjYPFiZ_RbzOBCk0p-2J-Gga2uHuMr020jL0vQ@mail.gmail.com>
- <20230117204231.GP2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTtY5WNLJ4p9ggso7L38rtiCFEq2aLCwYUkQ2ckBnEsSA@mail.gmail.com>
+        with ESMTP id S229705AbjARHxR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Jan 2023 02:53:17 -0500
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14E066CDE;
+        Tue, 17 Jan 2023 23:20:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674026450; x=1705562450;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=XD0eq6cEblanKkVtZenyEUf/+L5JR1m9vPBZ3ib13UU=;
+  b=UORiU6LviGtbIX717t2hvvgwgEMAHmuws7Rk3d7YwfR1LbnWjaOgJvLm
+   RTcFCAYMFqcAslhXMbmG/9oBTVsoezyYaUwLnv3kRCoIorbqo5u6Iypmf
+   cFXU1HP1g57ZPx7EziEo+rbvzuSf6JxcCxnPZTdaXKthixXJe4Jb8sU6W
+   cIcBUj4I21sXpxcH+PeAqOakRsfjW2+InHK5cxef9yL/fFdf25VJXXtS9
+   rXz4NyvCdltCS+wEAOPjpf5jQfDk1YocrtvJmLjD+flZmO/LT5db14gXA
+   VTWwCc2/bwNDxFbFau4dZRwzMmmhpCSTNGiC23/j+ZILuxudyX6byexUs
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="323607752"
+X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
+   d="scan'208";a="323607752"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jan 2023 23:20:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="728073628"
+X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; 
+   d="scan'208";a="728073628"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Jan 2023 23:20:50 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 17 Jan 2023 23:20:49 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Tue, 17 Jan 2023 23:20:49 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Tue, 17 Jan 2023 23:20:47 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YSCU8tKg9lHEFTL4IZ0c5+Ktg73CVWADF8Ie8PU9xQeLZtyKx3zgvYf1txzKI17f1uRHvyqpnAzJP0Wwq90ugZLvTzronof0XZNNBflIixiX4hoIvfvkUc7E/IzNrc7nm7m3l4xC7WlUmUTpDDVOPRxmjv+QXKr59Ap1Ku9qodSN/IHIhR1cjN4qe608BLC07Ckjxp9fYWV+vxTZkvpG76l78EtdwKrSAIEEzD1U8bsnYumVEOvzlkjJQ+DtJgBIXzxhmTUOs1n0/NtB7A1h/doHwEwyE7MAWaPGLLonqMt/lmYMasuJZFNJplXlK7k5purAdc0/w9PQbHSfLcbtqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Sb7abpdhejOhUL17FfpWmSS4XnKNgkuYFXUufq22bK4=;
+ b=iS5mbm94LLOEIXO9OLlGUYZU0OOnDFnRylu+rtbBrRcgXoP7Ov0NbwLlUezTMs+XNeV37cgYhQCq9cTa1qAXr5bJAYnZuJpiZsWYBjSBDbdwyfLNMs8tpYGA2JfqtE0/8526jv8lz/OdtIxmdOr0HqkF0Pusq6686tHxIHG14C++w8RFqYNwL7ntsWmDOTzi1yFARhlQ1rdcL7SLtbbOmvWaRUXUQCUUdqmKtd8ys66n7NXZogF8mbnIb2zYNdoQqh5YlbUOgShUls/4pdjTL/lbnapfS3sz4MKKIbycTPrmsC6XNP/jR1tYbIW1U7b+pKnRwL6enQKtNoEQ1rElDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
+ by IA1PR11MB7174.namprd11.prod.outlook.com (2603:10b6:208:41a::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.23; Wed, 18 Jan
+ 2023 07:20:46 +0000
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::114c:5805:e63f:6018]) by PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::114c:5805:e63f:6018%4]) with mapi id 15.20.5986.023; Wed, 18 Jan 2023
+ 07:20:46 +0000
+From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] rcu: Remove impossible wakeup rcu GP kthread action
+ from rcu_report_qs_rdp()
+Thread-Topic: [PATCH v2] rcu: Remove impossible wakeup rcu GP kthread action
+ from rcu_report_qs_rdp()
+Thread-Index: AQHZKkbpBc99toz8qk+05nvOIQVTQ66ipEaAgAEhpAA=
+Date:   Wed, 18 Jan 2023 07:20:45 +0000
+Message-ID: <PH0PR11MB5880C1B54DC57E31B6225147DAC79@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20230117074443.1982347-1-qiang1.zhang@intel.com>
+ <Y8aql+vHNcdth0T1@lothringen>
+In-Reply-To: <Y8aql+vHNcdth0T1@lothringen>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|IA1PR11MB7174:EE_
+x-ms-office365-filtering-correlation-id: da6b6547-7824-4641-7111-08daf9248420
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ojaKZrEHEu6bBHicT4oodl2p7tU6Bq5SNi2N0htNoK3cJGL8wF0nM5B5OSR+hKuRJlVHCbmEXpr8fGNQnuxj/aZB3V0WsJqQdarQ5tjLinKdiipDOyBNkrhVKm1H6clsEyq2tQR+bwbq3DWYA4MSHQnxOJKybHQe8VcXcJmudwi3k0DiVCrTzbA12VCy2bdOdPUFKpy/JAMuTNrlIfhPbuB1YTu10tNsMHuWl8E/9H6m7L5RWWrXGaV9415et9SXA96YeZuDVdo8AmhFmoK9QRxIam/ANgbqdB4EnQ99wsBgUe201zXIUGPz/AW7r7ZeltzBxk8NfH6ZM9bJp4g2NPDerW6ZhkJiFRewTvNJ8Ci4Snc13Ujw3h7nLMQfWkmGn3tw91ATuLbfkRomx58LH9Z0TGvGI57wnd6ikt2xUWfQLjSgjdYFzci3v4o5Gr+rIs7jT413Lukdpic4CFsa7dwpMUfMxWtE0m9818gXpVGwzKqvzbwIRc7D0YMtmMdKngUNpmyjtD8uMki5n7xjdOYUI8zM8E+QH3SiC3/TGfdTyd3HuLDtJsLjQilzmGqSC/MSSXjdbb1TbE6acm6E813yzLh5gwYcHmeUUavBh/qJwP+04XpANek9cuwGbnxDScBOsOLa3KVhLEuGGpwHLJEF0Cw/zCYxqabcsnnKtPHuSOheQeVJj3meeX5DQ+A83BvnXXYWIGheJbOVEnUYTg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(396003)(346002)(39860400002)(376002)(136003)(366004)(451199015)(2906002)(82960400001)(122000001)(38100700002)(66899015)(66574015)(33656002)(55016003)(316002)(71200400001)(54906003)(86362001)(38070700005)(7696005)(5660300002)(66556008)(6916009)(8936002)(8676002)(4326008)(64756008)(41300700001)(66476007)(66946007)(66446008)(76116006)(52536014)(83380400001)(186003)(9686003)(6506007)(26005)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gx+TbRJgAOPBrBbJA2AAIt7M6yBLoFhiuqqkxk69R9a/J7lSQOWqAGAnH5pI?=
+ =?us-ascii?Q?ASyr6wjYd2E/QOIvvSUwyLuCqy44RrGreLU5ZNTpcrmn38MLaKcYtgLEHP44?=
+ =?us-ascii?Q?UQ5pm5qoTuFTPO8W80iZcbCre8DtWuJiW3TLhK2FnwF6zYxRWorKYTYXBU56?=
+ =?us-ascii?Q?vaaVo7b5rVnqnIOKRs7EPF4kXg091+PHAkYO9tjkyi3EMQlB0w/5zHjXUnWb?=
+ =?us-ascii?Q?p9gOLv2YBNj6yBZv7mcnnD9CZTtJHZSYXjUal1FJm+CRe2BsPOUDTzhLzwgU?=
+ =?us-ascii?Q?+ARUm+WLE21qd5liFaQnTALZ2YWSlQLuYTo4DzN9h/7tapKQzVLJqIZoln56?=
+ =?us-ascii?Q?+OHyWlCVf/IP1229Xsfns5+IJozpKJ8E6IccR8ix7xnKPCR5zbIdqi/aZxnO?=
+ =?us-ascii?Q?QzIVyUsDxCt1RW1VyEWF3z4llQpqk/P1ik+WAnf7Pco3gFQeme/gM954rZ0c?=
+ =?us-ascii?Q?6iiv5HDLiyOTBwuXHx6nOfhup6gBacMItpEpEu9xodVkDeBm3C9L6oFZ7WTu?=
+ =?us-ascii?Q?nkOsrlI6PcjTI++55ZOhTe96aREhpc/cHsJTwx7DWnjaq7bDIvlHM3ItcSzz?=
+ =?us-ascii?Q?fIrKe9pwdWWqUn8Hcz3Mmg/PRVhbXeI8S/W8gYuj+aA6Wyj3hyNpJ9zGzh3t?=
+ =?us-ascii?Q?Mb428H5CfTWanDU8pozfw/4EQ0GxpI8Mn2sFljA2BIVNKKMMgHbC9QEtuk8K?=
+ =?us-ascii?Q?DbKP3GG8EZSqfROWP58e6jdmacrNbEm8VIAhKY46MJ8akdIKDYfnzDr2Md27?=
+ =?us-ascii?Q?+zN+8ZYpxtrHS7jjqLOPzAOk8P1eAPTrWRYlykJAEl8pEqDdnzW1Kx7UPtpM?=
+ =?us-ascii?Q?YfmiN6gH2i8MRclYIo4DDUjLIo24G0QIvsK9a1Tirf4I6n07PpPnChF6hPf1?=
+ =?us-ascii?Q?h7Pb0EEze69YI9rF39EFu+PX/pRwQj4Gxl8IiFegvj5aCq66AKOeffB1piEK?=
+ =?us-ascii?Q?N3wcgpM1Lj3JAVTB7NyBc/eYPgsm63QW2SoMOkdJtMOLrakQWQV0EHeLXIDa?=
+ =?us-ascii?Q?+cHUJicbqSEVLh+bI8NbbHEJ3Wntwe0A9gqoPLBtFN0srjrUMalyG6W/AY/v?=
+ =?us-ascii?Q?Sb92+KE/iQepwjxPfmR2pIqZzQrtkqqJoRic8bOdB1E/N79TZxgPjzp0lONa?=
+ =?us-ascii?Q?1Obi7raDj0lBJPwALix+8GbBuOEyBoI+6bIwGS0rL8euG3Px+oCijdGlMj/L?=
+ =?us-ascii?Q?Y9nLQJw/67VeaxoswLLmwgQTiQqThAlFVv622cv+s3wuW1NuZ7+YxNn3NBSx?=
+ =?us-ascii?Q?N0bDEw6s4P3pmUVaWX2TVq7oYSj3ULp8FXS5knL2UG/Qa5WYglMnDNFizcn4?=
+ =?us-ascii?Q?XAHmjFac8JDc543FUjZYoC3d6Rwhm0+LZKPhxL1AMuYptqNyp3yBXr1sMCIK?=
+ =?us-ascii?Q?JWHo2gZLcCxOK/O1lNWuY2pCPnDnR3a0JMhBC+sdpW7KI8SCubN/kap4S/Uk?=
+ =?us-ascii?Q?IweaGAahFozqFZGgN3vKlTFsPLmRzOB3qiCSHDE23G6cryLa9jhAcMzq/WS3?=
+ =?us-ascii?Q?9MMZqumBMA5Qg75IJJK5P3Oozqa709Jt39n75eopAHUztwo6aHdBtlqyUIpZ?=
+ =?us-ascii?Q?AXBl/ArxPMZ9jcMkYt7yI8NYHeeEz5It6PuT1AvC?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YTtY5WNLJ4p9ggso7L38rtiCFEq2aLCwYUkQ2ckBnEsSA@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da6b6547-7824-4641-7111-08daf9248420
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jan 2023 07:20:45.6892
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lmvrOZJNksS9kbGPjCQ/cPkx3wT+0R1PemRasa23Vk7vTluaC/Jc7/SwAxixR/q2xDB1FpvlmDrHmUuhQ1eCDA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7174
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 02:17:06AM +0000, Joel Fernandes wrote:
-> Hi Paul,
-> 
-> On Tue, Jan 17, 2023 at 8:42 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Jan 17, 2023 at 08:02:24PM +0000, Joel Fernandes wrote:
-> > > On Tue, Jan 17, 2023 at 4:54 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Mon, Jan 16, 2023 at 11:36:57PM -0500, Joel Fernandes wrote:
-> > > > > > On Jan 16, 2023, at 11:30 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > ﻿On Tue, Jan 17, 2023 at 12:15:07AM +0000, Joel Fernandes wrote:
-> > > > > >>> On Mon, Jan 16, 2023 at 05:38:00PM -0500, Joel Fernandes wrote:
-> > > > > >>> Hi Zhouyi,
-> > > > > >>>
-> > > > > >>> On Mon, Jan 16, 2023 at 1:33 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> > > > > >>>>
-> > > > > >>> [..]
-> > > > > >>>> On Tue, Jan 17, 2023 at 1:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > > >>>>>
-> > > > > >>>>> Hello,
-> > > > > >>>>> I am seeing -EBUSY returned a lot during torture_onoff() when running
-> > > > > >>>>> rcutorture on arm64. This causes hotplug failure 30% of the time. I am
-> > > > > >>>>> also seeing this in 6.1-rc kernels. I believe see this only for CPU0.
-> > > > > >>>>>
-> > > > > >>>>> This causes warnings in torture tests:
-> > > > > >>>>> [  217.582290] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> > > > > >>>>> [  221.866362] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> > > > > >>>>>
-> > > > > >>>>> Full kernel log here:
-> > > > > >>>>> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TREE04/console.log
-> > > > > >>>>>
-> > > > > >>>>> Any ideas on why this is happening and only for CPU 0 (presumably the
-> > > > > >>>>> boot CPU)? I'd personally need these warnings to go away for my tests
-> > > > > >>>>> as this causes rcutorture's tests to not cleanly pass for me. It
-> > > > > >>>>> appears remove_cpu() -> device_offline() is what returns the error.
-> > > > > >>>>>
-> > > > > >>>> I guess this probably because CPU 0 is the tick_do_timer_cpu in
-> > > > > >>>> nohz_full mode, which prevent that cpu from
-> > > > > >>>> going offline [1]. We have discussed this topic, but there is no
-> > > > > >>>> agreement on how to solve it yet.
-> > > > > >>>
-> > > > > >>> But I am seeing the issue in TRACE02 config which is:
-> > > > > >>> CONFIG_NO_HZ_IDLE=y
-> > > > > >>> # CONFIG_NO_HZ_FULL is not set
-> > > > > >>>
-> > > > > >>> So that is not NO_HZ_FULL:
-> > > > > >>> http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TRACE02/console.log.diags/
-> > > > > >>> However, I can't seem to find the full kernel logs for that.
-> > > > > >>>
-> > > > > >>> Also, other than the TRACE02 fail, I only see the issue with configs
-> > > > > >>> with CONFIG_NO_HZ_FULL=y
-> > > > > >>>
-> > > > > >>> Can you try TRACE02 specifically, and see if you can reproduce the
-> > > > > >>> same issue on your setup? Meanwhile, I'll try to trace what is
-> > > > > >>> returning the -EBUSY.
-> > > > > >>
-> > > > > >> How about something simple like the following? (untested)
-> > > > > >>
-> > > > > >> ---8<-----------------------
-> > > > > >>
-> > > > > >> diff --git a/kernel/torture.c b/kernel/torture.c
-> > > > > >> index bc8fb361efc0..cd64110694c0 100644
-> > > > > >> --- a/kernel/torture.c
-> > > > > >> +++ b/kernel/torture.c
-> > > > > >> @@ -220,6 +220,9 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
-> > > > > >>            // PCI probe frequently disables hotplug during boot.
-> > > > > >>            (*n_offl_attempts)--;
-> > > > > >>            s = " (-EBUSY forgiven during boot)";
-> > > > > >> +        } else if (tick_nohz_full_running && ret == -EBUSY) {
-> > > > > >> +            (*n_offl_attempts)--;
-> > > > > >> +            s = " (-EBUSY forgiven if nohz_full is running)";
-> > > > > >
-> > > > > > But this should be forgiven for the timekeeping CPU, not everyone,
-> > > > > > correct?
-> > > > > >
-> > > > > > Yes, I know that CPU-hotplug operations can fail, but in my testing
-> > > > > > they almost never do.  This means that a new failure might well be a
-> > > > > > real bug somewhere that needs attention.
-> > > > >
-> > > > > Sure. We may need to expose some API to reveal that.
-> > > > >
-> > > > > It appeared though that Thomas in the other thread related to patch
-> > > > > from Zhouyi, was suggesting that rcutorture tolerate hotplug failure
-> > > > > though, because they are not abnormal, right?
-> > > >
-> > > > Based on my rcutorture testing experience on x86, they are not at all
-> > > > normal.  The only time I have seen rcutorture CPU-hotplug failures has
-> > > > been due to some bug that needed fixing.
-> > >
-> > > I see, ok. I need to debug what is returning -EBUSY for !NO_HZ_FULL on
-> > > arm64, I will report back once I do.
-> > >
-> > > Meanwhile, Marc I am wondering if you are able to reproduce the issue
-> > > on your side on TRACE02 config, like I am?
-> > >
-> > > Here is the TRACE02 config fragment:
-> > > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TRACE02/ConfigFragment/*view*/
-> > >
-> > > Here are instructions on how to run it (torture test parameters etc)
-> > > if you are loading the module yourself:
-> > > http://box.joelfernandes.org:9080/job/rcutorture_stable_arm/job/linux-5.15.y/7/artifact/tools/testing/selftests/rcutorture/res/2023.01.15-14.51.11/TRACE02/bare-metal/*view*/
-> >
-> > I am assuming that this is directed to someone having easy access
-> > to ARM hardware.
-> >
-> > > > Is there a plan to make CPU hotplug failures more frequent?
-> > >
-> > > I am not aware of such a plan but I was going by "There are quite some
-> > > reasons why a CPU-hotplug or a hot-unplug operation can fail, which is
-> > > not a fatal problem, really." in [1].
-> > >
-> > > What about an rcutorture to skip hotplug for a certain cpu id,
-> > > rcutorture.skip_hotplug_cpus="0". Can be a last resort. But we/I
-> > > should debug this issue more before getting to that.
-> >
-> > Yes, in fact there already are some checks along those lines, for example,
-> > the torture_offline() function's check of cpu_is_hotpluggable().  So for
-> > example, as I understand it, a CONFIG_NO_HZ_FULL=y system should mark
-> > the housekeeping CPU as !cpu_is_hotpluggable().
-> 
-> I don't think CONFIG_NO_HZ_FULL does any such marking (at least I am
-> not seeing it). Even on x86, if you enable
-> CONFIG_BOOTPARAM_HOTPLUG_CPU0=y , and CONFIG_NO_HZ_FULL=y, and run
-> rcutorture with boot args:
-> 
-> nohz_full=0-3 rcutorture.onoff_interval=100 rcutorture.onoff_holdoff=2
-> rcutorture.shutdown_secs=30
-> 
-> You will see this in the kernel logs:
-> [    2.816022] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> [    2.975913] rcu-torture:torture_onoff task: offline 0 failed: errno -16
-> 
-> So RCU torture test clearly thought the CPUs were hot-pluggable, when
-> they was chance for them to return -EBUSY (due to housekeeping and
-> what not). So this issue seems to be architecture independent, in that
-> sense.
-> 
-> So the 2 ways forward I see are:
-> - Make the torture test aware of which CPUs are 'house keeping'
-> - Make it possible to turn off CPU0 hotplugging on ARM64 by default
-> (via CONFIG or boot option).
-> 
-> Another option could be, forgive -EBUSY on CPU0 for
-> CONFIG_NO_HZ_FULL=y.  Is it possible to assign a non-0 CPU id as a
-> housekeeping CPU?
+On Tue, Jan 17, 2023 at 03:44:43PM +0800, Zqiang wrote:
+> When inovke rcu_report_qs_rdp(), if current CPU's rcu_data structure's ->
+> grpmask has not been cleared from the corresponding rcu_node structure's
+> ->qsmask, after that will clear and report quiescent state, but in this
+> time, this also means that current grace period is not end, the current
+> grace period is ongoing, because the rcu_gp_in_progress() currently retur=
+n
+> true, so for non-offloaded rdp, invoke rcu_accelerate_cbs() is impossible
+> to return true.
+>=20
+> This commit therefore remove impossible rcu_gp_kthread_wake() calling.
+>=20
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  kernel/rcu/tree.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>=20
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index b2c204529478..c78d48482583 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1956,7 +1956,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  {
+>  	unsigned long flags;
+>  	unsigned long mask;
+> -	bool needwake =3D false;
+>  	bool needacc =3D false;
+>  	struct rcu_node *rnp;
+> =20
+> @@ -1988,7 +1987,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  		 * NOCB kthreads have their own way to deal with that...
+>  		 */
+>  		if (!rcu_rdp_is_offloaded(rdp)) {
+> -			needwake =3D rcu_accelerate_cbs(rnp, rdp);
+> +			WARN_ON_ONCE(rcu_accelerate_cbs(rnp, rdp));
+>
+>Please also add a comment explaining why we don't expect to have
+>to wake up the GP kthread.
 
-I would be happier to forgive failure to offline housekeeping CPUs than
-blanket forgiveness of CPU 0.  Especially given that I recently got
-burned by a non-zero boot cpu.  ;-)
+Thanks Frederic, I will add comment next version.
 
-But wouldn't it be even better for cpu_is_hotpluggable() to know the
-NO_HZ_FULL rules of the road?
+>
+>Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>
+>Thanks!
+>
 
-> Adding Frederic to CC as well as we are talking about
-> housekeeping/isolation stuff.
-
-But as you say, perhaps Frederic has a better idea.
-
-> > And topology_init() sets this based on platform_can_hotplug_cpu(cpu).
-> > And this function sets CPU 0 as !cpu_is_hotpluggable() unless the
-> > architecture specifies a .cpu_can_disable() function.
-> 
-> Ah, that is 32-bit ARM code only. This issue is on 64-bit ARM (arch/arm64/).
-
-Apologies!  I will look more carefully at the pathnames next time!
-
-But maybe arm64 needs something similar?
-
-							Thanx, Paul
-
-> Thanks,
-> 
->  - Joel
-> 
-> 
-> > So architectures that don't want specific CPUs to be hotpluggable
-> > can and should so specify.
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Thanks,
-> > >
-> > > - Joel
-> > > [1] https://lkml.org/lkml/2022/11/27/182
+>  		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
+>  			/*
+>  			 * ...but NOCB kthreads may miss or delay callbacks acceleration
+> @@ -2000,8 +1999,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  		rcu_disable_urgency_upon_qs(rdp);
+>  		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+>  		/* ^^^ Released rnp->lock */
+> -		if (needwake)
+> -			rcu_gp_kthread_wake();
+> =20
+>  		if (needacc) {
+>  			rcu_nocb_lock_irqsave(rdp, flags);
+> --=20
+> 2.25.1
+>=20
