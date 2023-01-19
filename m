@@ -2,159 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE6B3C004D4
-	for <rcu@archiver.kernel.org>; Thu, 19 Jan 2023 20:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1613BC004D4
+	for <rcu@archiver.kernel.org>; Thu, 19 Jan 2023 20:45:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbjASUZ1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 19 Jan 2023 15:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
+        id S229446AbjASUpk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 19 Jan 2023 15:45:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbjASUZ0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 19 Jan 2023 15:25:26 -0500
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59277E685
-        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 12:25:24 -0800 (PST)
-Received: by mail-vs1-xe31.google.com with SMTP id k4so3477332vsc.4
-        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 12:25:24 -0800 (PST)
+        with ESMTP id S229461AbjASUpb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 19 Jan 2023 15:45:31 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D056840D
+        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 12:45:29 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id e8so2590945qts.1
+        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 12:45:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NNYsCT1OulNJOJ23TkVFfni9pow2SSxPZF4KOP4SuHc=;
-        b=Vh+4tf70mqLqRxgxLcL9G2bXR4AwzNoYgWBS4WtTwgk83nwuC3Sbm58VFOk6qjj+jL
-         deMZS/paX8VGjOhvNrxPKNKXyGVcPl2qjy+ho/sCacVuebffz36FUt1V/vkflciCskzH
-         MxUVsb45C+pJZt5NhS4R741PCearHMlgnWFhQ=
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oClR+TZHqp9DBqgOuOBSYorZn56b98W2/rv9S0VBxMo=;
+        b=kRSLuAf8/gwmklz9wS8G9knC1IWejn+s0khyuaHWOjOcqyQzapOa3DhrBNMcggxRdc
+         8mQjkpQ6ntK6MgvHO6MEw8l6DDxM9Ll4vXQMEtu28oEunJGxUUisc8OYhctQhS9cIrUw
+         yY9mCqNqAcI1WXzWajjdYWaVWc8b2+CaZzDRw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NNYsCT1OulNJOJ23TkVFfni9pow2SSxPZF4KOP4SuHc=;
-        b=ORpULG/EJ3mh3GZkTBA51gTnCkqscPWv69lj5y65cJWY93eCjznaY93ls6PCUvAppF
-         bKLRa4Z4HVe42ZH4bDXMf5wduzFyV1iUvIi+myzfY78tNySaUlUGObveG9UvslX1DE8+
-         O37+HPZSGjnGqMud3e1icEVZVPYpnBl/ZcZjPEauHqoI0QGa7bGOXtWntZiptEdW6V5I
-         FGsmE2TouNrfFOOwKBrLpI5lq1fsenx6EisTLM2GNh56FhYFCwulteYNpqzPhINvDtzZ
-         9cimNmyB7ZjQOCWI1dH0NlaASHo6APMHg9f3LiI5VqQoH9v/oL1P5vE84q+9d8uObErc
-         9onw==
-X-Gm-Message-State: AFqh2koRqAJbnNoSygKfOn+pZlqp0Tl70ej8CMujGXDlkIVIMVRwKNp0
-        R6xPM6qENFp6fX1R4+Vx2RJH6w==
-X-Google-Smtp-Source: AMrXdXtr9N5wNQPQDy+kNHCBAbxYeHE4XPqxGJ5eXHbBqy4Oul6EB1txRGoKJ5f9PUNq5DXGL94VGg==
-X-Received: by 2002:a05:6102:7d1:b0:3d4:540:785a with SMTP id y17-20020a05610207d100b003d40540785amr7845982vsg.19.1674159923661;
-        Thu, 19 Jan 2023 12:25:23 -0800 (PST)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id bj30-20020a05620a191e00b006bb82221013sm24544620qkb.0.2023.01.19.12.25.22
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oClR+TZHqp9DBqgOuOBSYorZn56b98W2/rv9S0VBxMo=;
+        b=l5G1vpFj7Soo39w+i5jw8IJweOT+/aQrpkbi6MYg8nPXhsAWCRL/KFgDvBSV8V3wDe
+         68CPc7CN3kbZjtP34aIXKok8nIt6SYtUmvXuITZUzseg2n9GXchq2H3wlSmqBzojDssh
+         ceGck1pZHtkRLF5RkNtmLHnpckA5KuE58PGKvRF4K/tcU2a5JVA833/0ni0wUTtrlu7P
+         +tmLAfHFeOcmMpSpUr+4ChgaqEfsfiMZujtOYejfSyH3THMt6lijwD8M6bJCHcnh77kf
+         7RynJHG4aYOAtd+YFaas31OsS+VHP5FYBXyWpuld2Go31xpoClZviF48FvG35KViyyXn
+         g9cQ==
+X-Gm-Message-State: AFqh2kohou3Xkuo7UWipXd0ZM925I6IOC+mYfaJtB5YK3J8cVSltbvL1
+        +EOaJqtzgWXUtV/sNC34iXynLQ==
+X-Google-Smtp-Source: AMrXdXsBgNfm4v/YHnYnswcQsiHSVsxDdoQerHQ+1QanqmlBp/4XgP92yMLRoCYURj0eMS8gTEUs0w==
+X-Received: by 2002:ac8:60c9:0:b0:3a8:15d2:6e8f with SMTP id i9-20020ac860c9000000b003a815d26e8fmr16897815qtm.44.1674161129027;
+        Thu, 19 Jan 2023 12:45:29 -0800 (PST)
+Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id fu28-20020a05622a5d9c00b003a7f3c4dcdfsm19488469qtb.47.2023.01.19.12.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Jan 2023 12:25:22 -0800 (PST)
-Date:   Thu, 19 Jan 2023 20:25:22 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Thu, 19 Jan 2023 12:45:28 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: arm64 torture test hotplug failures (offlining causes -EBUSY)
-Message-ID: <Y8mnMiIqA8EBsiCV@google.com>
-References: <20230117043011.GD2948950@paulmck-ThinkPad-P17-Gen-1>
- <24953EEA-5B3E-4046-B106-7A7FBE8B8995@joelfernandes.org>
- <20230117045456.GG2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTeR7y5TjYPFiZ_RbzOBCk0p-2J-Gga2uHuMr020jL0vQ@mail.gmail.com>
- <20230117204231.GP2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTtY5WNLJ4p9ggso7L38rtiCFEq2aLCwYUkQ2ckBnEsSA@mail.gmail.com>
- <20230118040058.GV2948950@paulmck-ThinkPad-P17-Gen-1>
- <Y8h0lDnQ9Z0VtXfV@google.com>
- <Y8lMZ+E+pNKARLAf@lothringen>
+        rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
+Date:   Thu, 19 Jan 2023 20:44:35 +0000
+Message-Id: <20230119204434.4017605-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.39.0.246.g2a6d74b583-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y8lMZ+E+pNKARLAf@lothringen>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 19, 2023 at 02:57:59PM +0100, Frederic Weisbecker wrote:
-> On Wed, Jan 18, 2023 at 10:37:08PM +0000, Joel Fernandes wrote:
-> > 
-> > That's a great idea. I found a way to do that without having to do the
-> > EXPORT_SYMBOL (like in Zhouyi's patch).
-> > 
-> > Would the following be acceptable (only build-tested)?
-> > 
-> > I can run more tests and submit a patch:
-> > 
-> > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> > index 55405ebf23ab..f73bc520b70e 100644
-> > --- a/drivers/base/cpu.c
-> > +++ b/drivers/base/cpu.c
-> > @@ -487,7 +487,8 @@ static const struct attribute_group *cpu_root_attr_groups[] = {
-> >  bool cpu_is_hotpluggable(unsigned int cpu)
-> >  {
-> >  	struct device *dev = get_cpu_device(cpu);
-> > -	return dev && container_of(dev, struct cpu, dev)->hotpluggable;
-> > +	return dev && container_of(dev, struct cpu, dev)->hotpluggable
-> > +		&& !tick_nohz_cpu_hotpluggable(cpu);
-> >  }
-> >  EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
-> >  
-> > diff --git a/include/linux/tick.h b/include/linux/tick.h
-> > index bfd571f18cfd..9459fef5b857 100644
-> > --- a/include/linux/tick.h
-> > +++ b/include/linux/tick.h
-> > @@ -216,6 +216,7 @@ extern void tick_nohz_dep_set_signal(struct task_struct *tsk,
-> >  				     enum tick_dep_bits bit);
-> >  extern void tick_nohz_dep_clear_signal(struct signal_struct *signal,
-> >  				       enum tick_dep_bits bit);
-> > +extern bool tick_nohz_cpu_hotpluggable(unsigned int cpu);
-> >  
-> >  /*
-> >   * The below are tick_nohz_[set,clear]_dep() wrappers that optimize off-cases
-> > @@ -280,6 +281,7 @@ static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask) { }
-> >  
-> >  static inline void tick_nohz_dep_set_cpu(int cpu, enum tick_dep_bits bit) { }
-> >  static inline void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit) { }
-> > +static inline bool tick_nohz_cpu_hotpluggable(unsigned int cpu) { return true; }
-> >  
-> >  static inline void tick_dep_set(enum tick_dep_bits bit) { }
-> >  static inline void tick_dep_clear(enum tick_dep_bits bit) { }
-> > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> > index 9c6f661fb436..d1cc7525240e 100644
-> > --- a/kernel/time/tick-sched.c
-> > +++ b/kernel/time/tick-sched.c
-> > @@ -522,6 +522,11 @@ static int tick_nohz_cpu_down(unsigned int cpu)
-> >  	return 0;
-> >  }
-> >  
-> > +bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
-> > +{
-> > +	return tick_nohz_cpu_down(cpu) == 0;
-> > +}
-> > +
-> 
-> Can you make it the opposite? Have tick_nohz_cpu_down() call
-> tick_nohz_cpu_hotpluggable()? To avoid future accidents.
-> 
-> Thanks.
+For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
+However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
+torture tests that do offlining to end up trying to offline this CPU causing
+test failures. Such failure happens on all architectures.
 
-You mean move the logic of tick_nohz_cpu_down() into
-tick_nohz_cpu_hotpluggable()? That wont work because
-tick_nohz_cpu_hotpluggable() returns a boolean, while tick_nohz_cpu_down(cpu)
-returns an integer.
+Fix it by asking the opinion of the nohz subsystem on whether the CPU can
+be hotplugged.
 
-I could do something like the following and that should prevent the accident
-you mentioned, which I think is that someone accidentally adds some code with
-side-effects to tick_nohz_cpu_down() and ends up changing the behavior of
-tick_nohz_cpu_hotpluggable(). Or was there a different accident you were
-referring to?
+[ Apply Frederic Weisbecker feedback on refactoring tick_nohz_cpu_down(). ]
 
-I will submit a patch like the following, then. Thanks.
-
----8<-----------------------
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: rcu <rcu@vger.kernel.org>
+Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest of the kernel")
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ drivers/base/cpu.c       |  3 ++-
+ include/linux/tick.h     |  2 ++
+ kernel/time/tick-sched.c | 12 +++++++++++-
+ 3 files changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 4c98849577d4..7af8e33735a3 100644
+index 55405ebf23ab..450dca235a2f 100644
 --- a/drivers/base/cpu.c
 +++ b/drivers/base/cpu.c
 @@ -487,7 +487,8 @@ static const struct attribute_group *cpu_root_attr_groups[] = {
@@ -188,10 +127,10 @@ index bfd571f18cfd..9459fef5b857 100644
  static inline void tick_dep_set(enum tick_dep_bits bit) { }
  static inline void tick_dep_clear(enum tick_dep_bits bit) { }
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index ba2ac1469d47..6a2e52d5f0d0 100644
+index 9c6f661fb436..383a060f30c5 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -532,7 +532,7 @@ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
+@@ -510,7 +510,7 @@ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
  	tick_nohz_full_running = true;
  }
  
@@ -200,7 +139,7 @@ index ba2ac1469d47..6a2e52d5f0d0 100644
  {
  	/*
  	 * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
-@@ -544,6 +544,16 @@ static int tick_nohz_cpu_down(unsigned int cpu)
+@@ -522,6 +522,16 @@ static int tick_nohz_cpu_down(unsigned int cpu)
  	return 0;
  }
  
