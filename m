@@ -2,66 +2,69 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AF8EC004D4
-	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 03:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E50AC46467
+	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 04:47:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjATDRd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 19 Jan 2023 22:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        id S229553AbjATErP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 19 Jan 2023 23:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjATDRc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 19 Jan 2023 22:17:32 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B016AEDA3
-        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 19:17:14 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id w11so2473951lfu.11
-        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 19:17:14 -0800 (PST)
+        with ESMTP id S230324AbjATEqy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 19 Jan 2023 23:46:54 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02D1C79F0
+        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 20:41:12 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id by7so3320588ljb.6
+        for <rcu@vger.kernel.org>; Thu, 19 Jan 2023 20:41:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kqRsGV1hLKEL4T2IM0trJmyGv/h6of60RLenPHHF3Ik=;
-        b=NPdVT/5TG8Cg1V/NBoiJyjXFh+GKRcfLnySBsiE33eddp14XzN3Yt28Zx3V1qYGhik
-         S3t6Us2p6fDNvC0cxbZBlIyxhZNVC8de0Vz/MZfoCIZWuG2S8bXtAMn2gjqr82holuzQ
-         w/KSnrfa+LsuaQUZkOlgSL69bxy3p0Z71Q0/M=
+        bh=hEG/FnrwfdwZ3LPudI7/sJe1zUrUfL4egy48UifV8vY=;
+        b=mXjFXgPO8jB/wmPB8hypYSvnxynqkSuIKNXSf76GcHmW97T8O7hQFPmM6V1qpiGfj/
+         LDxX+pczDTsR/1joFzn3vWoywD4vSSiB67qX5VOOlDOQoN60lk/kr7dUofe0hQogwvm6
+         43Vwv0K2Z0wpukdWwR+c/FbAPEH/EMoRQ37ZQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kqRsGV1hLKEL4T2IM0trJmyGv/h6of60RLenPHHF3Ik=;
-        b=Xc7r6etpd8UJYlgwCSh8ibbkOdKkahv+3znDAapDGOaXidqKxMfkV7a1SqBbKGRa0p
-         Y4stE/ArR6bVeNMGEThz25469YJYuPxIyl5SYyGGG3xp69erCkTpKzhUHSADdmower44
-         aY75V3ElSoBWibkXR2BJa8nvTffwj8xvCqQtXbAUNN0F3nrOPLKNVnH8s9UnokL4H0Jp
-         g5Nal9aJxPNYVwT5XODa8M69JEbsTvDXoYd1JMfzyyh0hQ/qhVwbaCpMn/rE45w2uzDK
-         DOfy5tFxjwkiB/2s9Nj8PZadfMcEvw6l9kgzUrpxWLMe7USKNbhd7MQplV504HyALXwk
-         ol5Q==
-X-Gm-Message-State: AFqh2ko3eT57xzoOKeWQFgpnhdohFXOGpz1nvQTP7elJ0Fa3KdVc3bdE
-        7VzCi8qaP9e9WCx+LO+TOjejK2ZVb8ZcGwO6a9LONA==
-X-Google-Smtp-Source: AMrXdXuuACt/lA0GUYLJvhp+7C4AD8/P/VjBxiXTznvTjyVcTLFTOJm5SG/DHJ05n/8izLTdYkACXpXSZLUYqJvDaZk=
-X-Received: by 2002:ac2:5ec4:0:b0:4cb:3b:846e with SMTP id d4-20020ac25ec4000000b004cb003b846emr601857lfq.128.1674184632329;
- Thu, 19 Jan 2023 19:17:12 -0800 (PST)
+        bh=hEG/FnrwfdwZ3LPudI7/sJe1zUrUfL4egy48UifV8vY=;
+        b=gqfzOggWXF+NZfyIWyf519OrKOe9ObRg3dRuzcbQhJkdQRdCX+2WKt7Q0bYqQDfinW
+         rIUiFOTAJbq8bxKPFOYroFJCMEKX3Pa16dMGWKgDmtevlxcPBqD+WK9vmxjcUODPO7zn
+         sdvg/4Tb2uigRHz4EV3TGm20sAeycaraqAhxn0cvPb0Pcgfe67tChLcjk1Y1LC1lNDqp
+         Pz0xaDHjxz3p6Cu5iCTF/69MFiFRgbESqz/ipy1E2zxpW5wmvPLhcZXP/3VLusxYQH1B
+         A6uZu0NhcfrVRTDKB1uf4pTopfUoBHv3oRJk5//37YMtFBQVQ/XvZXIO5L8HQarRRxMN
+         hI8A==
+X-Gm-Message-State: AFqh2kr+ndA+COLzpYZplP9vqnGQPnU0h0RGjglbj1bPWEH0wSfFZRie
+        48EZeBYB3rzTXafnVg0n0hjSUvhjqjIeM1ANIV8Vj3povFLPY1ji
+X-Google-Smtp-Source: AMrXdXuP5AfH2L+1n9DRM8Qc3x1SuUWhgpbkO86atAMntY2fRalGTojFA+Zi/6YIqQjB8ZW8+7YEfHB4VmMuSrxLbDU=
+X-Received: by 2002:a2e:a278:0:b0:276:4462:2d20 with SMTP id
+ k24-20020a2ea278000000b0027644622d20mr712508ljm.19.1674189670741; Thu, 19 Jan
+ 2023 20:41:10 -0800 (PST)
 MIME-Version: 1.0
 References: <20230118073014.2020743-1-qiang1.zhang@intel.com>
  <20230118180714.GD2948950@paulmck-ThinkPad-P17-Gen-1> <Y8oHL0uuSEef5aiI@google.com>
-In-Reply-To: <Y8oHL0uuSEef5aiI@google.com>
+ <PH0PR11MB5880980194CEA45416325716DAC59@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB5880980194CEA45416325716DAC59@PH0PR11MB5880.namprd11.prod.outlook.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 20 Jan 2023 03:17:00 +0000
-Message-ID: <CAEXW_YRiiEh_PTm0c7aa-DXUVdHGO77_ohxws_Lpcu_8fvSi_A@mail.gmail.com>
+Date:   Fri, 20 Jan 2023 04:40:58 +0000
+Message-ID: <CAEXW_YQKhr6y+R+2a_Z8WG8+BuNT4jMP8eAepO0Z-apU2a_ibw@mail.gmail.com>
 Subject: Re: [PATCH v3] rcu: Remove impossible wakeup rcu GP kthread action
  from rcu_report_qs_rdp()
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 20, 2023 at 3:14 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+On Fri, Jan 20, 2023 at 4:09 AM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
 >
-> On Wed, Jan 18, 2023 at 10:07:14AM -0800, Paul E. McKenney wrote:
 > > On Wed, Jan 18, 2023 at 03:30:14PM +0800, Zqiang wrote:
 > > > When inovke rcu_report_qs_rdp(), if current CPU's rcu_data structure's ->
 > > > grpmask has not been cleared from the corresponding rcu_node structure's
@@ -137,25 +140,44 @@ On Fri, Jan 20, 2023 at 3:14 AM Joel Fernandes <joel@joelfernandes.org> wrote:
 > >               /* ^^^ Released rnp->lock */
 > > -             if (needwake)
 > > -                     rcu_gp_kthread_wake();
->
-> AFAICS, there is almost no compiler benefit of doing this, and zero runtime
-> benefit of doing this. The WARN_ON_ONCE() also involves a runtime condition
-> check of the return value of rcu_accelerate_cbs(), so you still have a
-> branch. Yes, maybe slightly smaller code without the wake call, but I'm not
-> sure that is worth it.
->
-> And, if the opinion of system differs, its a bug anyway, so more added risk.
->
->
+> >
+> >AFAICS, there is almost no compiler benefit of doing this, and zero runtime
+> >benefit of doing this. The WARN_ON_ONCE() also involves a runtime condition
+> >check of the return value of rcu_accelerate_cbs(), so you still have a
+> >branch. Yes, maybe slightly smaller code without the wake call, but I'm not
+> >sure that is worth it.
+> >
+> >And, if the opinion of system differs, its a bug anyway, so more added risk.
+> >
+> >
 > >
 > >               if (needacc) {
 > >                       rcu_nocb_lock_irqsave(rdp, flags);
+> >
+> >And when needacc = true, rcu_accelerate_cbs_unlocked() tries to do a wake up
+> >anyway, so it is consistent with nocb vs !nocb.
 >
-> And when needacc = true, rcu_accelerate_cbs_unlocked() tries to do a wake up
-> anyway, so it is consistent with nocb vs !nocb.
+> For !nocb, we invoked rcu_accelerate_cbs() before report qs,  so this GP is impossible to end
+> and we also not set RCU_GP_FLAG_INIT to start new GP in rcu_accelerate_cbs().
+> but for nocb, when needacc = true, we invoke rcu_accelerate_cbs_unlocked() after current CPU
+> has reported qs,  if all CPU have been reported qs,  we will wakeup gp kthread to end this GP in
+> rcu_report_qs_rnp().   after that, the rcu_accelerate_cbs_unlocked() is  possible to try to wake up
+> gp kthread if this GP has ended at this time.   so nocb vs !nocb is likely to be inconsistent.
+>
 
-Sorry, I mean "inconsistent".
+That is a fair point. But after gp ends,  rcu_check_quiescent_state()
+-> note_gp_changes() which will do a accel + GP thread wake up at that
+point anyway, once it notices that a GP has come to an end. That
+should happen for both the nocb and !nocb cases right?
 
-Thanks,
+I am wondering if rcu_report_qs_rdp() needs to be rethought to make
+both cases consistent.
+
+Why does the nocb case need an accel + GP thread wakeup in the
+rcu_report_qs_rdp() function, but the !nocb case does not?
+
+(I am out of office till Monday but will intermittently (maybe) check
+in, RCU is one of those things that daydreaming tends to lend itself
+to...)
 
  - Joel
