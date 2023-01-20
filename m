@@ -2,120 +2,214 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26EE5C05027
-	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 22:25:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 063A6C05027
+	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 22:36:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbjATWZp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Jan 2023 17:25:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
+        id S229523AbjATWgL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Jan 2023 17:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjATWZp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Jan 2023 17:25:45 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC04C61AB;
-        Fri, 20 Jan 2023 14:25:44 -0800 (PST)
+        with ESMTP id S229461AbjATWgK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Jan 2023 17:36:10 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F5761D44;
+        Fri, 20 Jan 2023 14:36:06 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 41272620C9;
-        Fri, 20 Jan 2023 22:25:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19F50C433D2;
-        Fri, 20 Jan 2023 22:25:42 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id D7BB9CE2AB5;
+        Fri, 20 Jan 2023 22:36:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96792C433D2;
+        Fri, 20 Jan 2023 22:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674253543;
-        bh=qZS/7/GOzpHQKm/h9ObL2qWFU4ssJxaos9J2z8A2QPo=;
+        s=k20201202; t=1674254163;
+        bh=6lp+lBMPPF3auTJ836gLGQyHLZuKcsTSGXpsnH90MKc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J2r6q1n3ZFj47g1FU8qoI4wfGM/c2v3nz2PDFSgYdHVyeY+QOYMhI0/xiqdTDU8P3
-         bkWTfDClcn5fgu19DOv5OcEhApTug6u4vSrbyBQ2kxg4C8/XMf0Qa05cQlVoCQcIpB
-         avAiiVod7n/uEiRW3LrEB/kYbMBuBeFgeYUz/hCERQzbAHBrUkDpj7cBGzv9CyooRL
-         huqR6gFPGy3e5G315es7LEJgh0yYtMbGSXnAA1WCpvoRQoDHiSFJd2iWrW22xEP+vd
-         DtTmtXeCGqRptMY6O8niZqt4YOEA4oXEPQNeWHQioZJuCveHW6PMD24aogrNnBs4Pv
-         dyC7S7qql8JAQ==
-Date:   Fri, 20 Jan 2023 23:25:40 +0100
+        b=h7K66NY2J+D8YErTF1LzRD59VEu1CUPQGdwKrAahyNLok3QRj1DdZHQ3/l2yWjFLN
+         jG1KMcHyvo3dlM4tDpLnai07Gkzjg1/aV0Vj5WAWbBjHrBFWDAsmcqGGP0ygT+T0AG
+         Cllf8HLXw7UiEa9ZJO2UCp0TR0bpf+RNdfpPydEebqhz0JSJT7vvwe0VBHefTdafIA
+         bdCW/FDc5SJdL5wAsGPu2bOGr9ieKDDK9G4ubdlgZscPwAejn23gDErsw/xZ7C1LvB
+         ZUW6mQp1bBPpC2PL3tzCEdpFbh9TdRi3ooCvz3zpWFkDnRPXk8nAcJ6VPmbgERAjkc
+         RqLeFrtNQJm7Q==
+Date:   Fri, 20 Jan 2023 23:35:59 +0100
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with
- nohz subsystem
-Message-ID: <Y8sU5ADeKpow5aUY@lothringen>
-References: <20230119204434.4017605-1-joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>, quic_neeraju@quicinc.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] rcu: Remove impossible wakeup rcu GP kthread action
+ from rcu_report_qs_rdp()
+Message-ID: <Y8sXTygGTnxR9tWX@lothringen>
+References: <PH0PR11MB5880A16045A842AB80A25C4BDAC59@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <B3E458A6-9279-4716-B242-873C77EC1E3A@joelfernandes.org>
+ <20230120203300.GV2948950@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230119204434.4017605-1-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230120203300.GV2948950@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 19, 2023 at 08:44:35PM +0000, Joel Fernandes (Google) wrote:
-> -static int tick_nohz_cpu_down(unsigned int cpu)
-> +static int tick_nohz_cpu_hotplug_ret(unsigned int cpu)
->  {
->  	/*
->  	 * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
-> @@ -522,6 +522,16 @@ static int tick_nohz_cpu_down(unsigned int cpu)
->  	return 0;
->  }
->  
-> +static int tick_nohz_cpu_down(unsigned int cpu)
-> +{
-> +	return tick_nohz_cpu_hotplug_ret(cpu);
-> +}
-> +
-> +bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
-> +{
-> +	return tick_nohz_cpu_hotplug_ret(cpu) == 0;
-
-This is still calling the hotplug function for the CPU in order to know if the
-CPU is hotpluggable...
-
-Why not:
-
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index ba2ac1469d47..a46506f7ec6d 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -532,7 +532,7 @@ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
- 	tick_nohz_full_running = true;
- }
- 
--static int tick_nohz_cpu_down(unsigned int cpu)
-+bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
- {
- 	/*
- 	 * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
-@@ -540,8 +540,13 @@ static int tick_nohz_cpu_down(unsigned int cpu)
- 	 * CPUs. It must remain online when nohz full is enabled.
- 	 */
- 	if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
--		return -EBUSY;
--	return 0;
-+		return false;
-+	return true;
-+}
-+
-+static int tick_nohz_cpu_down(unsigned int cpu)
-+{
-+	return tick_nohz_cpu_hotpluggable(cpu) ? 0 : -EBUSY;
- }
- 
- void __init tick_nohz_init(void)
-
-
-
-
->  void __init tick_nohz_init(void)
->  {
->  	int cpu, ret;
-> -- 
-> 2.39.0.246.g2a6d74b583-goog
+On Fri, Jan 20, 2023 at 12:33:00PM -0800, Paul E. McKenney wrote:
+> On Fri, Jan 20, 2023 at 08:27:03AM -0500, Joel Fernandes wrote:
+> > 
+> > 
+> > > On Jan 20, 2023, at 3:19 AM, Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
+> > > 
+> > > ﻿
+> > >> 
+> > >> 
+> > >>>> On Wed, Jan 18, 2023 at 03:30:14PM +0800, Zqiang wrote:
+> > >>>>> When inovke rcu_report_qs_rdp(), if current CPU's rcu_data structure's ->
+> > >>>>> grpmask has not been cleared from the corresponding rcu_node structure's
+> > >>>>> ->qsmask, after that will clear and report quiescent state, but in this
+> > >>>>> time, this also means that current grace period is not end, the current
+> > >>>>> grace period is ongoing, because the rcu_gp_in_progress() currently return
+> > >>>>> true, so for non-offloaded rdp, invoke rcu_accelerate_cbs() is impossible
+> > >>>>> to return true.
+> > >>>>> 
+> > >>>>> This commit therefore remove impossible rcu_gp_kthread_wake() calling.
+> > >>>>> 
+> > >>>>> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > >>>>> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > >>> 
+> > >>> Queued (wordsmithed as shown below, as always, please check) for further
+> > >>> testing and review, thank you both!
+> > >>> 
+> > >>>                                                      Thanx, Paul
+> > >>> 
+> > >>> ------------------------------------------------------------------------
+> > >>> 
+> > >>> commit fbe3e300ec8b3edd2b8f84dab4dc98947cf71eb8
+> > >>> Author: Zqiang <qiang1.zhang@intel.com>
+> > >>> Date:   Wed Jan 18 15:30:14 2023 +0800
+> > >>> 
+> > >>>    rcu: Remove never-set needwake assignment from rcu_report_qs_rdp()
+> > >>> 
+> > >>>    The rcu_accelerate_cbs() function is invoked by rcu_report_qs_rdp()
+> > >>>    only if there is a grace period in progress that is still blocked
+> > >>>    by at least one CPU on this rcu_node structure.  This means that
+> > >>>    rcu_accelerate_cbs() should never return the value true, and thus that
+> > >>>    this function should never set the needwake variable and in turn never
+> > >>>    invoke rcu_gp_kthread_wake().
+> > >>> 
+> > >>>    This commit therefore removes the needwake variable and the invocation
+> > >>>    of rcu_gp_kthread_wake() in favor of a WARN_ON_ONCE() on the call to
+> > >>>    rcu_accelerate_cbs().  The purpose of this new WARN_ON_ONCE() is to
+> > >>>    detect situations where the system's opinion differs from ours.
+> > >>> 
+> > >>>    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > >>>    Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > >>>    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > >>> 
+> > >>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > >>> index b2c2045294780..7a3085ad0a7df 100644
+> > >>> --- a/kernel/rcu/tree.c
+> > >>> +++ b/kernel/rcu/tree.c
+> > >>> @@ -1956,7 +1956,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+> > >>> {
+> > >>>      unsigned long flags;
+> > >>>      unsigned long mask;
+> > >>> -     bool needwake = false;
+> > >>>      bool needacc = false;
+> > >>>      struct rcu_node *rnp;
+> > >>> 
+> > >>> @@ -1988,7 +1987,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+> > >>>               * NOCB kthreads have their own way to deal with that...
+> > >>>               */
+> > >>>              if (!rcu_rdp_is_offloaded(rdp)) {
+> > >>> -                     needwake = rcu_accelerate_cbs(rnp, rdp);
+> > >>> +                     /*
+> > >>> +                      * The current GP has not yet ended, so it
+> > >>> +                      * should not be possible for rcu_accelerate_cbs()
+> > >>> +                      * to return true.  So complain, but don't awaken.
+> > >>> +                      */
+> > >>> +                     WARN_ON_ONCE(rcu_accelerate_cbs(rnp, rdp));
+> > >>>              } else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
+> > >>>                      /*
+> > >>>                       * ...but NOCB kthreads may miss or delay callbacks acceleration
+> > >>> @@ -2000,8 +2004,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+> > >>>              rcu_disable_urgency_upon_qs(rdp);
+> > >>>              rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+> > >>>              /* ^^^ Released rnp->lock */
+> > >>> -             if (needwake)
+> > >>> -                     rcu_gp_kthread_wake();
+> > >>> 
+> > >>> AFAICS, there is almost no compiler benefit of doing this, and zero runtime
+> > >>> benefit of doing this. The WARN_ON_ONCE() also involves a runtime condition
+> > >>> check of the return value of rcu_accelerate_cbs(), so you still have a
+> > >>> branch. Yes, maybe slightly smaller code without the wake call, but I'm not
+> > >>> sure that is worth it.
+> > >>> 
+> > >>> And, if the opinion of system differs, its a bug anyway, so more added risk.
+> > >>> 
+> > >>> 
+> > >>> 
+> > >>>              if (needacc) {
+> > >>>                      rcu_nocb_lock_irqsave(rdp, flags);
+> > >>> 
+> > >>> And when needacc = true, rcu_accelerate_cbs_unlocked() tries to do a wake up
+> > >>> anyway, so it is consistent with nocb vs !nocb.
+> > >> 
+> > >> For !nocb, we invoked rcu_accelerate_cbs() before report qs,  so this GP is impossible to end
+> > >> and we also not set RCU_GP_FLAG_INIT to start new GP in rcu_accelerate_cbs().
+> > >> but for nocb, when needacc = true, we invoke rcu_accelerate_cbs_unlocked() after current CPU
+> > >> has reported qs,  if all CPU have been reported qs,  we will wakeup gp kthread to end this GP in
+> > >> rcu_report_qs_rnp().   after that, the rcu_accelerate_cbs_unlocked() is  possible to try to wake up
+> > >> gp kthread if this GP has ended at this time.   so nocb vs !nocb is likely to be inconsistent.
+> > >> 
+> > >> 
+> > >> That is a fair point. But after gp ends,  rcu_check_quiescent_state()
+> > >> -> note_gp_changes() which will do a accel + GP thread wake up at that
+> > >> point anyway, once it notices that a GP has come to an end. That
+> > >> should happen for both the nocb and !nocb cases right?
+> > > 
+> > > For nocb rdp, we won't invoke rcu_accelerate_cbs() and rcu_advance_cbs() in
+> > > note_gp_changes().  so also not wakeup gp kthread in note_gp_changes(). 
+> > 
+> > Yes correct, ok but…
+> > > 
+> > >> 
+> > >> I am wondering if rcu_report_qs_rdp() needs to be rethought to make
+> > >> both cases consistent.
+> > >> 
+> > >> Why does the nocb case need an accel + GP thread wakeup in the
+> > >> rcu_report_qs_rdp() function, but the !nocb case does not?
+> > > 
+> > > For nocb accel + GP kthread wakeup only happen in the middle of a (de-)offloading process.
+> > > this is an intermediate state.
+> > 
+> > Sure, I know what the code currently does, I am asking why and it feels wrong.
+> > 
+> > I suggest you slightly change your approach to not assuming the code should be bonafide correct and then fixing it (which is ok once in a while), and asking higher level questions to why things are the way they are in the first place (that is just my suggestion and I am not in a place to provide advice, far from it, but I am just telling you my approach — I care more about the code than increasing my patch count :P).
+> > 
+> > If you are in an intermediate state, part way to a !nocb state — you may have missed a nocb-related accel and wake, correct? Why does that matter? Once we transition to a !nocb state, we do not do a post-qs-report accel+wake anyway as we clearly know from the discussion. So why do we need to do it if we missed it for the intermediate stage? So, I am not fully sure yet what that needac is doing and why it is needed.
+> > 
+> > Do not get me wrong, stellar work here. But I suggest challenge the assumptions and the design, not always just the code that was already written :), apologies for any misplaced or noisy advice.
 > 
+> To add to Joel's point, an extra unnecessary check on a slow path can
+> be OK, but missing a necessary check is of course very bad.
+> 
+> Just to make sure that I am following along, here are the options I see:
+> 
+> 1.	Status quo.
+> 
+> 2.	Zqiang's current patch, as in remove the wakeup and
+> 	add the WARN_ON_ONCE().
+> 
+> 3.	Status quo, and only add the WARN_ON_ONCE(), but still
+> 	keep the needless check for the wakeup.
+> 
+> Are there other options that I have missed?
+
+I'm personally in favour of keeping 2.
+Removing an imaginary path and consolidating an expectation from such
+a complicated codebase always makes me able to sleep a few more minutes
+everyday :)
+
+Thanks.
+
+> 
+> 							Thanx, Paul
