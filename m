@@ -2,58 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B04FC05027
-	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 13:32:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2858C25B4E
+	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 13:44:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbjATNcp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Jan 2023 08:32:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
+        id S230050AbjATNox (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Jan 2023 08:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjATNco (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Jan 2023 08:32:44 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C6B39290
-        for <rcu@vger.kernel.org>; Fri, 20 Jan 2023 05:32:43 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-501c3a414acso7686907b3.7
-        for <rcu@vger.kernel.org>; Fri, 20 Jan 2023 05:32:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mtikuj8gXg3ypC8rwxOlgyPtFSBc8FnCeFcbONAIJEg=;
-        b=jc6e/Yw01Ua3nKPTtoE6QdlpYh11OawzC5k2RyRlPs9s5T3StuXm5/LmYIJhLKahv/
-         2pjv5Bceh+02PEqr8zcjaIYGKKODUMHlKdIIGvtfDosXnDoDWKFN/6g13rmyTkbdhE13
-         xPPqGznUq3FWwtM7LeXy7JfhyjA9TBbUky9so=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mtikuj8gXg3ypC8rwxOlgyPtFSBc8FnCeFcbONAIJEg=;
-        b=ldZRxfeVTSeY7gHf4wkbZcqvBasTboZNYaBpzjHLvJyql/YIf7/C0ScG6COo+ewY+Z
-         DXnZOW54aqO9EXZPz1PWndwatSwcdvxhGE9yuLq1NzB8nbPnLWPx8ALAYRdt9I+3CZRH
-         9PsaEZAyf5uhiPtJ1O7E0ZYa2DHQEp23kSuog6js241IvZ6SNdmQFmf6bscleSqQGLAV
-         IAOPEmj4KE/Jc0ZS8wjjLF6LRxbN8yrxdMb7k0+0OplPw3cGKzJ2mB3RR1vtA81LIFCR
-         33lvrsrSmu7Wd38V8cHo4Vy5Sqg72M0jx0pzdGkK9U2/eH7yBQ0ww3D2XOfDJeac3Xoo
-         UZpQ==
-X-Gm-Message-State: AFqh2kq+viLGqP73ueKMlHT2L+13P2akibDhwFn3dily7juOLlcFeBC9
-        8p0kXTE5u07dP/+eC7DrE8uIew==
-X-Google-Smtp-Source: AMrXdXucZSgAtWPVbcvFfMkOhri9I2bEIntD9GOazgMIFbdwQ3WbLLOEvmS76n4yl9IAjf/TsM5thA==
-X-Received: by 2002:a0d:f046:0:b0:364:1ba0:a71a with SMTP id z67-20020a0df046000000b003641ba0a71amr10198880ywe.41.1674221562125;
-        Fri, 20 Jan 2023 05:32:42 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id v1-20020a05620a0f0100b006faf76e7c9asm26472941qkl.115.2023.01.20.05.32.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Jan 2023 05:32:41 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
-Date:   Fri, 20 Jan 2023 08:32:30 -0500
-Message-Id: <37171A49-82E9-4008-9B5B-1CEEDC9B653E@joelfernandes.org>
-References: <Y8o9Mh1ktK0jdQy9@kroah.com>
+        with ESMTP id S229459AbjATNou (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Jan 2023 08:44:50 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924E86CCF2;
+        Fri, 20 Jan 2023 05:44:49 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CFDA61F50;
+        Fri, 20 Jan 2023 13:44:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A2F3C433EF;
+        Fri, 20 Jan 2023 13:44:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1674222288;
+        bh=Vx0Ly4/3FYSIZHj8WshPhEigMtjpQJssbX6/OvRC0Vs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uhcNop+tkx4/VgWHWf2r7USeTlryrpu4HsZOfu1C7MIAzxx8Z0XZvoKeej1TQk+b6
+         yLs5DpWsgsZRryoNWPjnQ+SyTZzDcdUrkCtK1ehSEvS1Avws+S9Qa3ihwX6P21gMCt
+         A2L7qKgmYb5MQZmFAQ32FKHbITcI4wsesDTbPn6A=
+Date:   Fri, 20 Jan 2023 14:44:46 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -64,55 +41,59 @@ Cc:     linux-kernel@vger.kernel.org,
         Ingo Molnar <mingo@kernel.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <Y8o9Mh1ktK0jdQy9@kroah.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Mailer: iPhone Mail (20B101)
+Subject: Re: [PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with
+ nohz subsystem
+Message-ID: <Y8qazpmqk4dmw37F@kroah.com>
+References: <Y8o9Mh1ktK0jdQy9@kroah.com>
+ <37171A49-82E9-4008-9B5B-1CEEDC9B653E@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <37171A49-82E9-4008-9B5B-1CEEDC9B653E@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Jan 20, 2023 at 08:32:30AM -0500, Joel Fernandes wrote:
+> 
+> 
+> > On Jan 20, 2023, at 2:05 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > 
+> > ﻿On Thu, Jan 19, 2023 at 08:44:35PM +0000, Joel Fernandes (Google) wrote:
+> >> For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
+> >> However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
+> >> torture tests that do offlining to end up trying to offline this CPU causing
+> >> test failures. Such failure happens on all architectures.
+> >> 
+> >> Fix it by asking the opinion of the nohz subsystem on whether the CPU can
+> >> be hotplugged.
+> >> 
+> >> [ Apply Frederic Weisbecker feedback on refactoring tick_nohz_cpu_down(). ]
+> >> 
+> >> Cc: Frederic Weisbecker <frederic@kernel.org>
+> >> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> >> Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Cc: Marc Zyngier <maz@kernel.org>
+> >> Cc: rcu <rcu@vger.kernel.org>
+> >> Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest of the kernel")
+> >> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > 
+> > Also want to cc: stable on the patch?
+> 
+> Oh sure, sorry. For some reason I thought Sasha and your AI scripts
+> were looking at the Linux-kernel list as well. Or are they, and a Cc
+> to stable is just to be doubly sure?
 
+As per the rules we have had for the last 15+ years, always add a cc:
+stable to be sure that the patch will be considered for stable releases.
+If not, you are on you own and sometimes we might notice it, others not.
 
-> On Jan 20, 2023, at 2:05 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.or=
-g> wrote:
->=20
-> =EF=BB=BFOn Thu, Jan 19, 2023 at 08:44:35PM +0000, Joel Fernandes (Google)=
- wrote:
->> For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
->> However, cpu_is_hotpluggable() still returns true for those CPUs. This ca=
-uses
->> torture tests that do offlining to end up trying to offline this CPU caus=
-ing
->> test failures. Such failure happens on all architectures.
->>=20
->> Fix it by asking the opinion of the nohz subsystem on whether the CPU can=
+See:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for the details.
 
->> be hotplugged.
->>=20
->> [ Apply Frederic Weisbecker feedback on refactoring tick_nohz_cpu_down().=
- ]
->>=20
->> Cc: Frederic Weisbecker <frederic@kernel.org>
->> Cc: "Paul E. McKenney" <paulmck@kernel.org>
->> Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: rcu <rcu@vger.kernel.org>
->> Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest=
- of the kernel")
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->=20
-> Also want to cc: stable on the patch?
+thanks,
 
-Oh sure, sorry. For some reason I thought Sasha and your AI scripts were loo=
-king at the Linux-kernel list as well. Or are they, and a Cc to stable is ju=
-st to be doubly sure?
-
-> Anyway, for the driver core portion:
-
-Thanks!
-
- - Joel
-
->=20
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+greg k-h
