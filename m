@@ -2,85 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57917C05027
-	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 16:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B451C05027
+	for <rcu@archiver.kernel.org>; Fri, 20 Jan 2023 18:04:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjATQ4I (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Jan 2023 11:56:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S229694AbjATSEA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Jan 2023 13:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjATQ4H (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Jan 2023 11:56:07 -0500
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA437B2EA;
-        Fri, 20 Jan 2023 08:55:33 -0800 (PST)
-Received: by mail-ej1-f53.google.com with SMTP id mg12so15499427ejc.5;
-        Fri, 20 Jan 2023 08:55:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9m2NFPSTNnzbZ6uoQzeQe+dPEOJYdnmvCnlxt5htzBY=;
-        b=7pRzDJIPD7TXT2dXMGXvnL7cGFHaa+7wIksxMWVMlO+9rnPc4d9W2HiDmZU8RcVwFZ
-         lhdO8HhFEo1hGTW5pPVMgZCimvJBUKPU8/TQ/eIOhVCFJNhfahVh2bwE68GG9zSA2lFG
-         AoPtx2YlqcWGz3MfqcuJJLlAQh86ElL8KgLe5f8QQOyn468n2mMI1w4XuDbWv7Mx6j5/
-         GUhn630TGqPV8jTdwjhI7aenryO0MTT5OisTVNNsWop9NVgbphvTUB6upeRfRgr+gDoY
-         Xh1vSc8HB4ZKk+xcaC/bsJ6kkBKiDgOffZkDXMJIq/WH140gZIEtmHzJFEpCfvcrohjp
-         eBzQ==
-X-Gm-Message-State: AFqh2kqgSI2QYnO+BKCA4yqkm8YPNUt0HI5kMCfZTXD5nEfFM5+zxXIt
-        8xq61iV9O/mAm5TpBvPP2e/3oVu6VHXZacvRfn8=
-X-Google-Smtp-Source: AMrXdXvDOE6HlqspQEUNRnN4d/uMbmudFtV/inUv2YbDlb4+YLsxba5iDHoVSZUuc0jyAOgUYFvvuMt74P4miet8h6g=
-X-Received: by 2002:a17:906:940c:b0:86f:d628:e184 with SMTP id
- q12-20020a170906940c00b0086fd628e184mr1926123ejx.96.1674233715519; Fri, 20
- Jan 2023 08:55:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1> <20230113001132.3375334-16-paulmck@kernel.org>
-In-Reply-To: <20230113001132.3375334-16-paulmck@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 20 Jan 2023 17:55:04 +0100
-Message-ID: <CAJZ5v0gNbp4ZgPRDfLV6kmieUo7zcQSEGjdsB=G8Zr4W=HAHoQ@mail.gmail.com>
-Subject: Re: [PATCH rcu v2 16/20] kernel/power: Remove "select SRCU"
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S229764AbjATSD4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Jan 2023 13:03:56 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E014459E46;
+        Fri, 20 Jan 2023 10:03:50 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BF9362047;
+        Fri, 20 Jan 2023 18:03:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D00E3C433EF;
+        Fri, 20 Jan 2023 18:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674237829;
+        bh=ap8FyQeJDDy3jM707/8Gq4iOiU+FGtOYe43VN4brGaA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MYcF5iztC5a6KZKWsW69MJEXn20PjbBeKsah9PQeQuIWY1kcu+XFqlrykl0sYyGTX
+         gNEcjEeklbvnfiMkQyGGzPlZw6hFFlbyRLjvEJducqEJosp8AXsAd09lijOxhQUwI2
+         GnLB+s7vLeWLx6Z5wR/+4cLdme5LrGwEzP4d9+JntA9naUEh1bydTIC9hz5/uEpDak
+         1ABCrmWdIihMLvDQqxhmS4712z0TSwuWSzNN7mUb7R5vjtuIIrG0jL7vAKskp4POAf
+         b6c6wNPlT3rBEzGKRBYdMH4Alsya3x08CWk10Z+KJ5rotivVQcHqS1wgoLpO4ZEGxU
+         kPMyxiVkDizjQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 772BB5C17DC; Fri, 20 Jan 2023 10:03:49 -0800 (PST)
+Date:   Fri, 20 Jan 2023 10:03:49 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-pm@vger.kernel.org, John Ogness <john.ogness@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org, John Ogness <john.ogness@linutronix.de>,
+        sfr@canb.auug.org.au
+Subject: Re: [PATCH rcu v2 03/20] drivers/cpufreq: Remove "select SRCU"
+Message-ID: <20230120180349.GO2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230113001103.GA3374173@paulmck-ThinkPad-P17-Gen-1>
+ <20230113001132.3375334-3-paulmck@kernel.org>
+ <CAJZ5v0ge-bYk+PM7c98+wNi28q9aOwERxfqC9K9ZSfCmUOzFfg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0ge-bYk+PM7c98+wNi28q9aOwERxfqC9K9ZSfCmUOzFfg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jan 13, 2023 at 1:11 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Now that the SRCU Kconfig option is unconditionally selected, there is
-> no longer any point in selecting it.  Therefore, remove the "select SRCU"
-> Kconfig statements.
->
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Len Brown <len.brown@intel.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: <linux-pm@vger.kernel.org>
-> Acked-by: "Rafael J. Wysocki" <rafael@kernel.org>
-> Reviewed-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  kernel/power/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> index 60a1d3051cc79..4b31629c5be4b 100644
-> --- a/kernel/power/Kconfig
-> +++ b/kernel/power/Kconfig
-> @@ -118,7 +118,6 @@ config PM_SLEEP
->         def_bool y
->         depends on SUSPEND || HIBERNATE_CALLBACKS
->         select PM
-> -       select SRCU
->
->  config PM_SLEEP_SMP
->         def_bool y
-> --
+On Fri, Jan 20, 2023 at 05:54:17PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Jan 13, 2023 at 1:11 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Now that the SRCU Kconfig option is unconditionally selected, there is
+> > no longer any point in selecting it.  Therefore, remove the "select SRCU"
+> > Kconfig statements.
+> >
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> > Cc: <linux-pm@vger.kernel.org>
+> > Acked-by: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > Reviewed-by: John Ogness <john.ogness@linutronix.de>
+> > ---
+> >  drivers/cpufreq/Kconfig | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+> > index 2a84fc63371e2..785541df59379 100644
+> > --- a/drivers/cpufreq/Kconfig
+> > +++ b/drivers/cpufreq/Kconfig
+> > @@ -3,7 +3,6 @@ menu "CPU Frequency scaling"
+> >
+> >  config CPU_FREQ
+> >         bool "CPU Frequency scaling"
+> > -       select SRCU
+> >         help
+> >           CPU Frequency scaling allows you to change the clock speed of
+> >           CPUs on the fly. This is a nice method to save power, because
+> > --
+> 
+> Applied as 6.3 material, thanks!
 
-Applied as 6.3 material, thanks!
+Thank you, I will drop it from my tree on my next rebase.
+
+							Thanx, Paul
