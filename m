@@ -2,133 +2,195 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 127ADC05027
-	for <rcu@archiver.kernel.org>; Mon, 23 Jan 2023 16:54:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF510C54EED
+	for <rcu@archiver.kernel.org>; Mon, 23 Jan 2023 17:31:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbjAWQyG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 Jan 2023 11:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
+        id S233701AbjAWRby (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Jan 2023 12:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjAWQyF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Jan 2023 11:54:05 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DB755BA;
-        Mon, 23 Jan 2023 08:54:04 -0800 (PST)
+        with ESMTP id S233238AbjAWRbx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Jan 2023 12:31:53 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44CE2E0F0;
+        Mon, 23 Jan 2023 09:30:33 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D15A60FBE;
-        Mon, 23 Jan 2023 16:54:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77663C433D2;
-        Mon, 23 Jan 2023 16:54:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8B608B80E36;
+        Mon, 23 Jan 2023 17:30:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3992DC4339E;
+        Mon, 23 Jan 2023 17:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674492843;
-        bh=mm9uhrin4lO2yjcZOlvs5Xf0s0cwchEO/ULLYH/UZCM=;
+        s=k20201202; t=1674495030;
+        bh=na43+kxJFeZDWTaymCLPJyagmqUGNcq1m9NBHlw/eKk=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=R+2aY1+YI7WdFVysJ7sheH5Vgica0hSF8s305UMJYCL5UGgI2NLEKCUCXIvn8dRs6
-         9DeBJtcMEsTVRdLMXTFKXT+YIxbX6aSdP3qqzarfdlwbGSLTf20VWps2J8YzLx7vhE
-         9GDcseQ4I5wRr35IosQSqkMruSLhvux/YKNoe4vcSIk/ixHFDKZgVhNbIqXks9P6Gh
-         uVID+P+3+6zScgJa8xrzM7s8qelx/PD5FhI+rGqlaww+8VrUtP7GaHU7/mpsQtOnTU
-         esn2L8qROhlrbmvtLIkkTazH+uh5aP5hTrpI3dI9Ai+qHCI4q/CZ9v2CnJ7WAfsiqF
-         sN8ikwaDl847w==
+        b=koOgW0jYxtuIr+Cj6t4EWeooZ54aGTZHKLDTUP8GXPrOmO1SJQjASSZTuMEVvp9hm
+         OBycYItRndnDCia4fTOwcZc7rHEXSPxx5T5gXAVgBIsli6+0wlBnfDSJUsmH81eFm7
+         rjbWsZgv7hh7MM+4E4V1jNouFsCLtHW81hs9zoSzy7A1soTBkO+IdKE0VHJoDWf1uQ
+         cot+27iDhMs57dtMUF7G6OrcT7/nhMeJoflskf7UDtQHZamJlyisleJFrTCu80Gr8A
+         UlkvHX1cZgqjT/eB82mmzvhOeg1K62P7j1e3s3jFV8dHx1lcKvHq3oiCmAlkBC1sHC
+         m4243kT9MD/IQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 232185C084D; Mon, 23 Jan 2023 08:54:03 -0800 (PST)
-Date:   Mon, 23 Jan 2023 08:54:03 -0800
+        id C17125C084D; Mon, 23 Jan 2023 09:30:29 -0800 (PST)
+Date:   Mon, 23 Jan 2023 09:30:29 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, fweisbec@gmail.com,
-        tglx@linutronix.de, mingo@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH linux-next] mark access to tick_do_timer_cpu with
- READ_ONCE/WRITE_ONCE
-Message-ID: <20230123165403.GQ2948950@paulmck-ThinkPad-P17-Gen-1>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        quic_neeraju@quicinc.com, Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH v3] rcu: Further comment and explain the state space of
+ GP sequences
+Message-ID: <20230123173029.GS2948950@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20221219052128.18190-1-zhouzhouyi@gmail.com>
- <Y7wN0TKU1jDyTZs5@lothringen>
- <20230109152505.GA4070882@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2waOx0K=qLHmUoQZ2_g9q7LJQbCyYLaQRMPMGhiLTrcPQ@mail.gmail.com>
- <CAABZP2w0SGvKjbLXo2Ygm=xiXTcM0BGFfXBjYg6HscUQHGS=LQ@mail.gmail.com>
+References: <Y85868Pei9VutSiW@lothringen>
+ <A6B13595-00FE-4DF4-A5DC-0B54DD0C4E80@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAABZP2w0SGvKjbLXo2Ygm=xiXTcM0BGFfXBjYg6HscUQHGS=LQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <A6B13595-00FE-4DF4-A5DC-0B54DD0C4E80@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 08:44:25AM +0800, Zhouyi Zhou wrote:
-> On Mon, Jan 9, 2023 at 11:59 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> >
-> > On Mon, Jan 9, 2023 at 11:25 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Mon, Jan 09, 2023 at 01:51:29PM +0100, Frederic Weisbecker wrote:
-> > > > On Mon, Dec 19, 2022 at 01:21:28PM +0800, Zhouyi Zhou wrote:
-> > > > > mark access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE to fix concurrency bug
-> > > > > reported by KCSAN.
-> > > > >
-> > > > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > ---
-> > > > > During the rcutorture test on linux-next,
-> > > > > ./tools/testing/selftests/rcutorture/bin/torture.sh --do-kcsan  --kcsan-kmake-arg "CC=clang-12"
-> > > > > following KCSAN BUG is reported:
-> > > > > [   35.397089] BUG: KCSAN: data-race in tick_nohz_idle_stop_tick / tick_nohz_next_event^M
-> > > > > [   35.400593] ^M
-> > > > > [   35.401377] write to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 3:^M
-> > > > > [   35.405325]  tick_nohz_idle_stop_tick+0x14c/0x3e0^M
-> > > > > [   35.407162]  do_idle+0xf3/0x2a0^M
-> > > > > [   35.408016]  cpu_startup_entry+0x15/0x20^M
-> > > > > [   35.409084]  start_secondary+0x8f/0x90^M
-> > > > > [   35.410207]  secondary_startup_64_no_verify+0xe1/0xeb^M
-> > > > > [   35.411607] ^M
-> > > > > [   35.412042] no locks held by swapper/3/0.^M
-> > > > > [   35.413172] irq event stamp: 53048^M
-> > > > > [   35.414175] hardirqs last  enabled at (53047): [<ffffffffb41f8404>] tick_nohz_idle_enter+0x104/0x140^M
-> > > > > [   35.416681] hardirqs last disabled at (53048): [<ffffffffb41229f1>] do_idle+0x91/0x2a0^M
-> > > > > [   35.418988] softirqs last  enabled at (53038): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
-> > > > > [   35.421347] softirqs last disabled at (53029): [<ffffffffb40bf21e>] __irq_exit_rcu+0x6e/0xc0^M
-> > > > > [   35.423685] ^M
-> > > > > [   35.424119] read to 0xffffffffb64b1270 of 4 bytes by task 0 on cpu 0:^M
-> > > > > [   35.425870]  tick_nohz_next_event+0x233/0x2b0^M
-> > > > > [   35.427119]  tick_nohz_idle_stop_tick+0x8f/0x3e0^M
-> > > > > [   35.428386]  do_idle+0xf3/0x2a0^M
-> > > > > [   35.429265]  cpu_startup_entry+0x15/0x20^M
-> > > > > [   35.430429]  rest_init+0x20c/0x210^M
-> > > > > [   35.431382]  arch_call_rest_init+0xe/0x10^M
-> > > > > [   35.432508]  start_kernel+0x544/0x600^M
-> > > > > [   35.433519]  secondary_startup_64_no_verify+0xe1/0xeb^M
-> > > > >
-> > > > > fix above bug by marking access to tick_do_timer_cpu with READ_ONCE/WRITE_ONCE
-> > > >
-> > > > This has been discussed before with passion:
-> > > >
-> > > > http://archive.lwn.net:8080/linux-kernel/1C65422C-FFA4-4651-893B-300FAF9C49DE@lca.pw/T/
-> > > >
-> > > > To me data_race() would be more appropriate but that would need a changelog with
-> > > > proper analysis of the tick_do_timer_cpu state machine.
-> > >
-> > > Please also an analysis of why the compiler cannot do any destructive
-> > > optimizations in this case.  Maybe also comments.
-> > I want to try the analysis above, as a newbie I have taught myself
-> > LLVM for 3 years in my spare time ;-)
+On Mon, Jan 23, 2023 at 09:07:43AM -0500, Joel Fernandes wrote:
 > 
-> I am continuing to study LLVM/Clang's optimization behaviour on
-> tick_do_timer_cpu, it is very interesting and fascinating, but as a
-> newbie, I still need 3-4 week to go, could you wait for me a little
-> while? ;-)
+> 
+> > On Jan 23, 2023, at 7:26 AM, Frederic Weisbecker <frederic@kernel.org> wrote:
+> > 
+> > ﻿On Thu, Jan 19, 2023 at 05:06:27PM +0000, Joel Fernandes wrote:
+> >>> On Thu, Jan 19, 2023 at 2:15 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> >>> 
+> >>> On Thu, Jan 19, 2023 at 03:11:35PM +0100, Frederic Weisbecker wrote:
+> >>>> The state space of the GP sequence number isn't documented and the
+> >>>> definitions of its special values are scattered. Try to gather some
+> >>>> common knowledge near the GP seq headers.
+> >>>> 
+> >>>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> >>>> ---
+> >>>> kernel/rcu/rcu.h | 33 +++++++++++++++++++++++++++++++++
+> >>>> 1 file changed, 33 insertions(+)
+> >>>> 
+> >>>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> >>>> index 115616ac3bfa..fb95de039596 100644
+> >>>> --- a/kernel/rcu/rcu.h
+> >>>> +++ b/kernel/rcu/rcu.h
+> >>>> @@ -14,6 +14,39 @@
+> >>>> 
+> >>>> /*
+> >>>>  * Grace-period counter management.
+> >>>> + *
+> >>>> + * The two lowest significant bits gather the control flags.
+> >>>> + * The higher bits form the RCU sequence counter.
+> >>>> + *
+> >>>> + * About the control flags, a common value of 0 means that no GP is in progress.
+> >>>> + * A value of 1 means that a grace period has started and is in progress. When
+> >>>> + * the grace period completes, the control flags are reset to 0 and the sequence
+> >>>> + * counter is incremented.
+> >>>> + *
+> >>>> + * However some specific RCU usages make use of custom values.
+> >>>> + *
+> >>>> + * SRCU special control values:
+> >>>> + *
+> >>>> + *   SRCU_SNP_INIT_SEQ       :       Invalid/init value set when SRCU node
+> >>>> + *                                                   is initialized.
+> >>>> + *
+> >>>> + *   SRCU_STATE_IDLE         :       No SRCU gp is in progress
+> >>>> + *
+> >>>> + *   SRCU_STATE_SCAN1        :       State set by rcu_seq_start(). Indicates
+> >>>> + *                                                           we are scanning the inactive readers
+> >>>> + *                                                           index.
+> >> 
+> >> The term "inactive reader" is confusing. The readers can very much be
+> >> active during scans. During a scan stage, there might be a reader on
+> >> any of the 2 indexes that can be right in the middle of their critical
+> >> section (and we don't know which index because they could have got
+> >> preempted, right after sampling idx). Maybe "inactive slot" is a
+> >> better term? And define "inactive slot" as the slot which is no longer
+> >> going to be sampled by new readers.
+> > 
+> > That's why I used "inactive readers index".
+> > I guess I should have written "inactive readers' index" to disambiguate
+> > the fact that inactive refers to "index" and not "readers" but I almost
+> > never observe plural genitive written that way these days.
+> > 
+> > As for the gory details of "inactive" being actually "bound to become
+> > inactive", I'm not sure that belongs here but here is what I can do:
+> 
+> Sounds good and the below change looks good to me.
+> 
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Please do take the time to get it right and to get it correctly
-documented.  ;-)
+Thank you both!
+
+I queued the following wordsmithed version, so please let me know if I
+messed anything up.
 
 							Thanx, Paul
 
-> Many Thanks
-> Zhouyi
-> > >
-> > > > One more thing on my TODO list, but feel free to beat me at it :-)
-> > Please take your time ;-)   Please don't look my next possible email
-> > as a reminder ;-)
-> > >
-> > > I know that feeling!  ;-)
-> > >
-> > Thanx, Zhouyi
-> > >                                                         Thanx, Paul
+------------------------------------------------------------------------
+
+commit f31701817185b58a6095b74180d1a5b05369f3c3
+Author: Frederic Weisbecker <frederic@kernel.org>
+Date:   Thu Jan 19 14:29:34 2023 +0100
+
+    rcu: Further comment and explain the state space of GP sequences
+    
+    The state space of the GP sequence number isn't documented and the
+    definitions of its special values are scattered.  This commit therefore
+    gathers some common knowledge near the grace-period sequence-number
+    definitions.
+    
+    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+    Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 115616ac3bfa6..a3adcf9a9919b 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -14,6 +14,43 @@
+ 
+ /*
+  * Grace-period counter management.
++ *
++ * The two least significant bits contain the control flags.
++ * The most significant bits contain the grace-period sequence counter.
++ *
++ * When both control flags are zero, no grace period is in progress.
++ * When either bit is non-zero, a grace period has started and is in
++ * progress. When the grace period completes, the control flags are reset
++ * to 0 and the grace-period sequence counter is incremented.
++ *
++ * However some specific RCU usages make use of custom values.
++ *
++ * SRCU special control values:
++ *
++ *	SRCU_SNP_INIT_SEQ	:	Invalid/init value set when SRCU node
++ *					is initialized.
++ *
++ *	SRCU_STATE_IDLE		:	No SRCU gp is in progress
++ *
++ *	SRCU_STATE_SCAN1	:	State set by rcu_seq_start(). Indicates
++ *					we are scanning the readers on the slot
++ *					defined as inactive (there might well
++ *					be pending readers that will use that
++ *					index, but their number is bounded).
++ *
++ *	SRCU_STATE_SCAN2	:	State set manually via rcu_seq_set_state()
++ *					Indicates we are flipping the readers
++ *					index and then scanning the readers on the
++ *					slot newly designated as inactive (again,
++ *					the number of pending readers that will use
++ *					this inactive index is bounded).
++ *
++ * RCU polled GP special control value:
++ *
++ *	RCU_GET_STATE_COMPLETED :	State value indicating an already-completed
++ *					polled GP has completed.  This value covers
++ *					both the state and the counter of the
++ *					grace-period sequence number.
+  */
+ 
+ #define RCU_SEQ_CTR_SHIFT	2
