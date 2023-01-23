@@ -2,195 +2,137 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF510C54EED
-	for <rcu@archiver.kernel.org>; Mon, 23 Jan 2023 17:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DD77C05027
+	for <rcu@archiver.kernel.org>; Mon, 23 Jan 2023 20:55:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbjAWRby (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 Jan 2023 12:31:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
+        id S232446AbjAWUzM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Jan 2023 15:55:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbjAWRbx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Jan 2023 12:31:53 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44CE2E0F0;
-        Mon, 23 Jan 2023 09:30:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8B608B80E36;
-        Mon, 23 Jan 2023 17:30:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3992DC4339E;
-        Mon, 23 Jan 2023 17:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674495030;
-        bh=na43+kxJFeZDWTaymCLPJyagmqUGNcq1m9NBHlw/eKk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=koOgW0jYxtuIr+Cj6t4EWeooZ54aGTZHKLDTUP8GXPrOmO1SJQjASSZTuMEVvp9hm
-         OBycYItRndnDCia4fTOwcZc7rHEXSPxx5T5gXAVgBIsli6+0wlBnfDSJUsmH81eFm7
-         rjbWsZgv7hh7MM+4E4V1jNouFsCLtHW81hs9zoSzy7A1soTBkO+IdKE0VHJoDWf1uQ
-         cot+27iDhMs57dtMUF7G6OrcT7/nhMeJoflskf7UDtQHZamJlyisleJFrTCu80Gr8A
-         UlkvHX1cZgqjT/eB82mmzvhOeg1K62P7j1e3s3jFV8dHx1lcKvHq3oiCmAlkBC1sHC
-         m4243kT9MD/IQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C17125C084D; Mon, 23 Jan 2023 09:30:29 -0800 (PST)
-Date:   Mon, 23 Jan 2023 09:30:29 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        quic_neeraju@quicinc.com, Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH v3] rcu: Further comment and explain the state space of
- GP sequences
-Message-ID: <20230123173029.GS2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <Y85868Pei9VutSiW@lothringen>
- <A6B13595-00FE-4DF4-A5DC-0B54DD0C4E80@joelfernandes.org>
-MIME-Version: 1.0
+        with ESMTP id S232592AbjAWUys (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Jan 2023 15:54:48 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3970438B69
+        for <rcu@vger.kernel.org>; Mon, 23 Jan 2023 12:54:22 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id n2so10181921qvo.1
+        for <rcu@vger.kernel.org>; Mon, 23 Jan 2023 12:54:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jxFW990Hc2ogEB5SgKM/RiBrX6sbxaco4YvfU6sLwas=;
+        b=kHTF4rra0X9wvs4ewR1ZAZotmFoe7ZdPcwJCEdEsHqOxkNKGwZNmOejgzdSYA4Qivi
+         JS+snJV5pTVj5W6O2crOYaLC+AlbRDNdJ7/KP8jICevpl5M3VRbe+k8mfo6eNKOg02Ek
+         xV4njFSi9CG6Jw+cdazj0MtTgMuCbtxwlc7kE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jxFW990Hc2ogEB5SgKM/RiBrX6sbxaco4YvfU6sLwas=;
+        b=PXzfCMx96t4K3awoSS5kkBAompLNrVUMOI7bERYaGfJYMZOO71JHGWvVh3VJExrgHi
+         nCw0O1yrsccx+FEawZxBx8E13bW4oNA/vlk9xwr/R/KkF4HYRRvRdTcy+ESdWVlBOnWv
+         Uf1WJUyn6rbdVPIQ5VX1on48UL4NvNOYdoYoc7X7wQoxh5wR1ozfLmM08HkU1TF8IYYl
+         R1AqttZgEHCLfudVlJM1SK+y8vlhIV4uoStBCEGRd2Rhbxk0pmqI3Ra+El6mlOTB36Eb
+         FYwFznTyKRDVeml9SUp8tcBTeWAiyeftA1AFOR17V/DiGS3lad4KWuOet5zDgHFzfr+e
+         yWFA==
+X-Gm-Message-State: AFqh2kq7G2vlP0ZJLZX4YcooK6vw5ngoiZvxImDdNGG1NLn1ReLLxuXV
+        bCwye6OSf3/pt+Ermq3aL3A4Bg==
+X-Google-Smtp-Source: AMrXdXv2U7i31SNfUc+tzeUyxRfzaT+4wn43+5OzzVKoLFewQqVYwHrHYuOgHHqby/yT1AmlRu8JOg==
+X-Received: by 2002:a0c:ef04:0:b0:535:2692:ef65 with SMTP id t4-20020a0cef04000000b005352692ef65mr36919461qvr.33.1674507261217;
+        Mon, 23 Jan 2023 12:54:21 -0800 (PST)
+Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id i184-20020a3786c1000000b00705c8cce5dcsm122080qkd.111.2023.01.23.12.54.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Jan 2023 12:54:18 -0800 (PST)
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <A6B13595-00FE-4DF4-A5DC-0B54DD0C4E80@joelfernandes.org>
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v3] rcu: Remove impossible wakeup rcu GP kthread action from rcu_report_qs_rdp()
+Date:   Mon, 23 Jan 2023 15:54:07 -0500
+Message-Id: <375EBA2F-F47A-4BC6-B4D4-2E96D5D15AB6@joelfernandes.org>
+References: <Y861Xuoa+CrZt9PB@lothringen>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, quic_neeraju@quicinc.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <Y861Xuoa+CrZt9PB@lothringen>
+To:     Frederic Weisbecker <frederic@kernel.org>
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 09:07:43AM -0500, Joel Fernandes wrote:
-> 
-> 
-> > On Jan 23, 2023, at 7:26 AM, Frederic Weisbecker <frederic@kernel.org> wrote:
-> > 
-> > ﻿On Thu, Jan 19, 2023 at 05:06:27PM +0000, Joel Fernandes wrote:
-> >>> On Thu, Jan 19, 2023 at 2:15 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> >>> 
-> >>> On Thu, Jan 19, 2023 at 03:11:35PM +0100, Frederic Weisbecker wrote:
-> >>>> The state space of the GP sequence number isn't documented and the
-> >>>> definitions of its special values are scattered. Try to gather some
-> >>>> common knowledge near the GP seq headers.
-> >>>> 
-> >>>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> >>>> ---
-> >>>> kernel/rcu/rcu.h | 33 +++++++++++++++++++++++++++++++++
-> >>>> 1 file changed, 33 insertions(+)
-> >>>> 
-> >>>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> >>>> index 115616ac3bfa..fb95de039596 100644
-> >>>> --- a/kernel/rcu/rcu.h
-> >>>> +++ b/kernel/rcu/rcu.h
-> >>>> @@ -14,6 +14,39 @@
-> >>>> 
-> >>>> /*
-> >>>>  * Grace-period counter management.
-> >>>> + *
-> >>>> + * The two lowest significant bits gather the control flags.
-> >>>> + * The higher bits form the RCU sequence counter.
-> >>>> + *
-> >>>> + * About the control flags, a common value of 0 means that no GP is in progress.
-> >>>> + * A value of 1 means that a grace period has started and is in progress. When
-> >>>> + * the grace period completes, the control flags are reset to 0 and the sequence
-> >>>> + * counter is incremented.
-> >>>> + *
-> >>>> + * However some specific RCU usages make use of custom values.
-> >>>> + *
-> >>>> + * SRCU special control values:
-> >>>> + *
-> >>>> + *   SRCU_SNP_INIT_SEQ       :       Invalid/init value set when SRCU node
-> >>>> + *                                                   is initialized.
-> >>>> + *
-> >>>> + *   SRCU_STATE_IDLE         :       No SRCU gp is in progress
-> >>>> + *
-> >>>> + *   SRCU_STATE_SCAN1        :       State set by rcu_seq_start(). Indicates
-> >>>> + *                                                           we are scanning the inactive readers
-> >>>> + *                                                           index.
-> >> 
-> >> The term "inactive reader" is confusing. The readers can very much be
-> >> active during scans. During a scan stage, there might be a reader on
-> >> any of the 2 indexes that can be right in the middle of their critical
-> >> section (and we don't know which index because they could have got
-> >> preempted, right after sampling idx). Maybe "inactive slot" is a
-> >> better term? And define "inactive slot" as the slot which is no longer
-> >> going to be sampled by new readers.
-> > 
-> > That's why I used "inactive readers index".
-> > I guess I should have written "inactive readers' index" to disambiguate
-> > the fact that inactive refers to "index" and not "readers" but I almost
-> > never observe plural genitive written that way these days.
-> > 
-> > As for the gory details of "inactive" being actually "bound to become
-> > inactive", I'm not sure that belongs here but here is what I can do:
-> 
-> Sounds good and the below change looks good to me.
-> 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Thank you both!
 
-I queued the following wordsmithed version, so please let me know if I
-messed anything up.
+> On Jan 23, 2023, at 11:27 AM, Frederic Weisbecker <frederic@kernel.org> wr=
+ote:
+>=20
+> =EF=BB=BFOn Mon, Jan 23, 2023 at 10:22:19AM -0500, Joel Fernandes wrote:
+>>> What am I missing?
+>>=20
+>> That the acceleration is also done by __note_gp_changes() once the
+>> grace period ends anyway, so if any acceleration was missed as you
+>> say, it will be done anyway.
+>>=20
+>> Also it is done by scheduler tick raising softirq:
+>>=20
+>> rcu_pending() does this:
+>>        /* Has RCU gone idle with this CPU needing another grace period? *=
+/
+>>        if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
+>>            !rcu_rdp_is_offloaded(rdp) &&
+>>            !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+>>                return 1;
+>>=20
+>> and rcu_core():
+>>        /* No grace period and unregistered callbacks? */
+>>        if (!rcu_gp_in_progress() &&
+>>            rcu_segcblist_is_enabled(&rdp->cblist) && do_batch) {
+>>                rcu_nocb_lock_irqsave(rdp, flags);
+>>                if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_=
+TAIL))
+>>                        rcu_accelerate_cbs_unlocked(rnp, rdp);
+>>                rcu_nocb_unlock_irqrestore(rdp, flags);
+>>        }
+>>=20
+>> So, I am not sure if you need needacc at all. Those CBs that have not
+>> been assigned grace period numbers will be taken care off :)
+>=20
+> But that's only when there is no grace period pending, so it can't happen w=
+hile
+> we report a QS.
+>=20
+> OTOH without the needacc, those callbacks waiting to be accelerated would b=
+e
+> eventually processed but only on the next tick following the end of a grac=
+e
+> period...if none has started since then. So if someone else starts a new G=
+P
+> before the current CPU, we must wait another GP, etc...
+>=20
+> That's potentially dangerous.
 
-							Thanx, Paul
+Waiting for just one more GP cannot be dangerous IMO. Anyway there is no gua=
+rantee that callback will run immediately at end of GP, there may be one or m=
+ore GPs before callback can run, if I remember correctly. That is by design.=
+. but please correct me if my understanding is different from yours.
 
-------------------------------------------------------------------------
+>=20
+> And unfortunately we can't do the acceleration from __note_gp_changes() du=
+e
+> to lock ordering restrictions: nocb_lock -> rnp_lock
+>=20
 
-commit f31701817185b58a6095b74180d1a5b05369f3c3
-Author: Frederic Weisbecker <frederic@kernel.org>
-Date:   Thu Jan 19 14:29:34 2023 +0100
+Ah. This part I am not sure. Appreciate if point me to any old archive links=
+ or documentation detailing that, if possible=E2=80=A6=20
 
-    rcu: Further comment and explain the state space of GP sequences
-    
-    The state space of the GP sequence number isn't documented and the
-    definitions of its special values are scattered.  This commit therefore
-    gathers some common knowledge near the grace-period sequence-number
-    definitions.
-    
-    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-    Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Thanks!
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 115616ac3bfa6..a3adcf9a9919b 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -14,6 +14,43 @@
- 
- /*
-  * Grace-period counter management.
-+ *
-+ * The two least significant bits contain the control flags.
-+ * The most significant bits contain the grace-period sequence counter.
-+ *
-+ * When both control flags are zero, no grace period is in progress.
-+ * When either bit is non-zero, a grace period has started and is in
-+ * progress. When the grace period completes, the control flags are reset
-+ * to 0 and the grace-period sequence counter is incremented.
-+ *
-+ * However some specific RCU usages make use of custom values.
-+ *
-+ * SRCU special control values:
-+ *
-+ *	SRCU_SNP_INIT_SEQ	:	Invalid/init value set when SRCU node
-+ *					is initialized.
-+ *
-+ *	SRCU_STATE_IDLE		:	No SRCU gp is in progress
-+ *
-+ *	SRCU_STATE_SCAN1	:	State set by rcu_seq_start(). Indicates
-+ *					we are scanning the readers on the slot
-+ *					defined as inactive (there might well
-+ *					be pending readers that will use that
-+ *					index, but their number is bounded).
-+ *
-+ *	SRCU_STATE_SCAN2	:	State set manually via rcu_seq_set_state()
-+ *					Indicates we are flipping the readers
-+ *					index and then scanning the readers on the
-+ *					slot newly designated as inactive (again,
-+ *					the number of pending readers that will use
-+ *					this inactive index is bounded).
-+ *
-+ * RCU polled GP special control value:
-+ *
-+ *	RCU_GET_STATE_COMPLETED :	State value indicating an already-completed
-+ *					polled GP has completed.  This value covers
-+ *					both the state and the counter of the
-+ *					grace-period sequence number.
-  */
- 
- #define RCU_SEQ_CTR_SHIFT	2
+- Joel
+
+>>=20
+>> Thanks!
+>>=20
+>> -Joel
