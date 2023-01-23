@@ -2,218 +2,125 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACC91C54E94
-	for <rcu@archiver.kernel.org>; Mon, 23 Jan 2023 14:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32617C38142
+	for <rcu@archiver.kernel.org>; Mon, 23 Jan 2023 15:00:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbjAWOI3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 23 Jan 2023 09:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S231953AbjAWPAa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 23 Jan 2023 10:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbjAWOI2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 23 Jan 2023 09:08:28 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD1C9750
-        for <rcu@vger.kernel.org>; Mon, 23 Jan 2023 06:07:57 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-4a2f8ad29d5so172635127b3.8
-        for <rcu@vger.kernel.org>; Mon, 23 Jan 2023 06:07:57 -0800 (PST)
+        with ESMTP id S231910AbjAWPA3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 23 Jan 2023 10:00:29 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9B810A97
+        for <rcu@vger.kernel.org>; Mon, 23 Jan 2023 07:00:28 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id by7so12384552ljb.6
+        for <rcu@vger.kernel.org>; Mon, 23 Jan 2023 07:00:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tXL9LQ5roDJWuied04pX7Ta5au5zJmVXBf71j+Vm8wA=;
-        b=gMlVGcz42hk30NiwmSVoERu1KjycoKNkH0r1j4tOERa0lHQUgf/m3zNy/3cngfokiz
-         coTS0wT4etPnxLXiTKrQP+EaVDI4SB8YsR3MTsQ6LXzO95DxPQwW7VbeEZUZaiUQN4dh
-         qmIgI0H4HdHRW7UznjxfFWCZTkN1oWx5VqKl4=
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=c8OXVqqET23d8P8R69qpaJVVVA99GrD94+chyNKQDIY=;
+        b=wyBkSw2oPqo3G89B6ZpS2kEB1NDROP8LQlyni5F4RpasuOn7ATjRDwOnQ/i0ifmrh8
+         0hyonsnEs+u3CfpCEJDc1IWqnJvfscPHLtZFAMb+dLt4TJl3Mc017hre7Oa/bu7ROPeh
+         qTOaGqp0MLJtXa2qJDQImzc47OCmFxCU1nywE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tXL9LQ5roDJWuied04pX7Ta5au5zJmVXBf71j+Vm8wA=;
-        b=GKOjDmDYEHGGeGjCSrstG+WSlu+ICxEGTAbCtfgK23qegHj/uhDKhkJIr621XIbn28
-         UVwJHBYEgSaYIhGsHxg6iQ3vBfgQcXflQFynQRZNod7l/AtgTe1fg0Hmdd3ivXU8CW4g
-         2lKCPP5VapZFH+0IznIB2xgPQ46spusrZvpN76frCmgZrLRt+5wAsdC8tTKhJjb2rOhG
-         /D9evEBTA/O1ocuAl4G/zPQj6pNvy8P6s/DRvJQwV3XEuhbQaQlbvHceOnA1g057QjGF
-         gaEciAVfDmNO+Sc5tEeW4ptyTi0piA+6/qBr5cbYDB+Y105eoNTf6/7kX7hTH+D1E7Yy
-         bzqw==
-X-Gm-Message-State: AFqh2konMqUzGioJfiLQwuljN/bZMv+7kWrnDB41oDwjDXHc2072fkRx
-        hQvCOUKa+UiE5FUrqzDrE05Seuk3gRABnTNq
-X-Google-Smtp-Source: AMrXdXvWkhbTYBUFSBxN67w1xnSsumiAMC5BbQJK9mN4IsHlogZxj7vr/V5gQs3lcM2fgDTu9tMOtA==
-X-Received: by 2002:a0d:df15:0:b0:461:bc41:3c7a with SMTP id i21-20020a0ddf15000000b00461bc413c7amr17700018ywe.26.1674482875579;
-        Mon, 23 Jan 2023 06:07:55 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id bq35-20020a05620a46a300b0070209239b87sm12098090qkb.41.2023.01.23.06.07.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Jan 2023 06:07:54 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c8OXVqqET23d8P8R69qpaJVVVA99GrD94+chyNKQDIY=;
+        b=gNWp+0bBXidS4p+t1NE7d2+ZHjEZ69v4wyO1+Fr8Tn3GqpuNPs9a2903U05xKxp/nN
+         ISpIj8mYYX7AwGd7WWugpiqqpC4FDrfhpHq4FlMVzg+0ToOVgKqLTThqHONs2b3S+gDp
+         lDKqkPLkhCFlduOXuMQFD3ajbd2xZnfYnjloxUCxw29MlO8Ym9PksHSMOAxmb1+cBCam
+         Umy2jnR6s5wvD5uNCq5YHn0rhIdEB7jVOK+eXdtBRGzaHe2XXXkhHG7atq0Dl2PevTc2
+         wpzWbGVXUOTZtrsrwWmSv1CfCRk+e4/pi3EY4JHeOONteUWXIUPkqg3JoB0UX1vHk56k
+         PAVA==
+X-Gm-Message-State: AFqh2kpLwAJACQ3ZBT45kBtlcL/Gi5eAe0qQV96L2gmgHJ+o4Uvmts0b
+        MTB5mdkEG0HywfdhssOYw8rLp5SY43YLyWOgkio3GA==
+X-Google-Smtp-Source: AMrXdXsi5MJ1MrfqUVaqrdEIvyJFulxZgssUqiHKkQAorIqz+ie5vwCbCXeEE3EJ5JwW2PdapQf9fQPo4xyOg21yUv4=
+X-Received: by 2002:a2e:a485:0:b0:27f:bb8b:7520 with SMTP id
+ h5-20020a2ea485000000b0027fbb8b7520mr2155168lji.371.1674486026590; Mon, 23
+ Jan 2023 07:00:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20230119204434.4017605-1-joel@joelfernandes.org> <Y8sU5ADeKpow5aUY@lothringen>
+In-Reply-To: <Y8sU5ADeKpow5aUY@lothringen>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3] rcu: Further comment and explain the state space of GP sequences
-Date:   Mon, 23 Jan 2023 09:07:43 -0500
-Message-Id: <A6B13595-00FE-4DF4-A5DC-0B54DD0C4E80@joelfernandes.org>
-References: <Y85868Pei9VutSiW@lothringen>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        quic_neeraju@quicinc.com, Uladzislau Rezki <urezki@gmail.com>
-In-Reply-To: <Y85868Pei9VutSiW@lothringen>
+Date:   Mon, 23 Jan 2023 10:00:14 -0500
+Message-ID: <CAEXW_YSN66Ac1i5-4oanbRERc0C3hRD=3dnQNy6CtgCFTzvD0w@mail.gmail.com>
+Subject: Re: [PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with
+ nohz subsystem
 To:     Frederic Weisbecker <frederic@kernel.org>
-X-Mailer: iPhone Mail (20B101)
+Cc:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Jan 20, 2023 at 5:25 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+>
+> On Thu, Jan 19, 2023 at 08:44:35PM +0000, Joel Fernandes (Google) wrote:
+> > -static int tick_nohz_cpu_down(unsigned int cpu)
+> > +static int tick_nohz_cpu_hotplug_ret(unsigned int cpu)
+> >  {
+> >       /*
+> >        * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
+> > @@ -522,6 +522,16 @@ static int tick_nohz_cpu_down(unsigned int cpu)
+> >       return 0;
+> >  }
+> >
+> > +static int tick_nohz_cpu_down(unsigned int cpu)
+> > +{
+> > +     return tick_nohz_cpu_hotplug_ret(cpu);
+> > +}
+> > +
+> > +bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
+> > +{
+> > +     return tick_nohz_cpu_hotplug_ret(cpu) == 0;
+>
+> This is still calling the hotplug function for the CPU in order to know if the
+> CPU is hotpluggable...
+>
+> Why not:
+>
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index ba2ac1469d47..a46506f7ec6d 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -532,7 +532,7 @@ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
+>         tick_nohz_full_running = true;
+>  }
+>
+> -static int tick_nohz_cpu_down(unsigned int cpu)
+> +bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
+>  {
+>         /*
+>          * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
+> @@ -540,8 +540,13 @@ static int tick_nohz_cpu_down(unsigned int cpu)
+>          * CPUs. It must remain online when nohz full is enabled.
+>          */
+>         if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
+> -               return -EBUSY;
+> -       return 0;
+> +               return false;
+> +       return true;
+> +}
+> +
+> +static int tick_nohz_cpu_down(unsigned int cpu)
+> +{
+> +       return tick_nohz_cpu_hotpluggable(cpu) ? 0 : -EBUSY;
+>  }
+>
 
-
-> On Jan 23, 2023, at 7:26 AM, Frederic Weisbecker <frederic@kernel.org> wro=
-te:
->=20
-> =EF=BB=BFOn Thu, Jan 19, 2023 at 05:06:27PM +0000, Joel Fernandes wrote:
->>> On Thu, Jan 19, 2023 at 2:15 PM Frederic Weisbecker <frederic@kernel.org=
-> wrote:
->>>=20
->>> On Thu, Jan 19, 2023 at 03:11:35PM +0100, Frederic Weisbecker wrote:
->>>> The state space of the GP sequence number isn't documented and the
->>>> definitions of its special values are scattered. Try to gather some
->>>> common knowledge near the GP seq headers.
->>>>=20
->>>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
->>>> ---
->>>> kernel/rcu/rcu.h | 33 +++++++++++++++++++++++++++++++++
->>>> 1 file changed, 33 insertions(+)
->>>>=20
->>>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
->>>> index 115616ac3bfa..fb95de039596 100644
->>>> --- a/kernel/rcu/rcu.h
->>>> +++ b/kernel/rcu/rcu.h
->>>> @@ -14,6 +14,39 @@
->>>>=20
->>>> /*
->>>>  * Grace-period counter management.
->>>> + *
->>>> + * The two lowest significant bits gather the control flags.
->>>> + * The higher bits form the RCU sequence counter.
->>>> + *
->>>> + * About the control flags, a common value of 0 means that no GP is in=
- progress.
->>>> + * A value of 1 means that a grace period has started and is in progre=
-ss. When
->>>> + * the grace period completes, the control flags are reset to 0 and th=
-e sequence
->>>> + * counter is incremented.
->>>> + *
->>>> + * However some specific RCU usages make use of custom values.
->>>> + *
->>>> + * SRCU special control values:
->>>> + *
->>>> + *   SRCU_SNP_INIT_SEQ       :       Invalid/init value set when SRCU n=
-ode
->>>> + *                                                   is initialized.
->>>> + *
->>>> + *   SRCU_STATE_IDLE         :       No SRCU gp is in progress
->>>> + *
->>>> + *   SRCU_STATE_SCAN1        :       State set by rcu_seq_start(). Ind=
-icates
->>>> + *                                                           we are sc=
-anning the inactive readers
->>>> + *                                                           index.
->>=20
->> The term "inactive reader" is confusing. The readers can very much be
->> active during scans. During a scan stage, there might be a reader on
->> any of the 2 indexes that can be right in the middle of their critical
->> section (and we don't know which index because they could have got
->> preempted, right after sampling idx). Maybe "inactive slot" is a
->> better term? And define "inactive slot" as the slot which is no longer
->> going to be sampled by new readers.
->=20
-> That's why I used "inactive readers index".
-> I guess I should have written "inactive readers' index" to disambiguate
-> the fact that inactive refers to "index" and not "readers" but I almost
-> never observe plural genitive written that way these days.
->=20
-> As for the gory details of "inactive" being actually "bound to become
-> inactive", I'm not sure that belongs here but here is what I can do:
-
-Sounds good and the below change looks good to me.
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Thanks,
+Yes, this looks better. I will do it this way. Thanks!
 
  - Joel
-
-
-
->=20
-> ---
-> From: Frederic Weisbecker <frederic@kernel.org>
-> Date: Thu, 19 Jan 2023 14:29:34 +0100
-> Subject: [PATCH] rcu: Further comment and explain the state space of GP
-> sequences
->=20
-> The state space of the GP sequence number isn't documented and the
-> definitions of its special values are scattered. Try to gather some
-> common knowledge near the GP seq headers.
->=20
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
-> kernel/rcu/rcu.h | 37 +++++++++++++++++++++++++++++++++++++
-> 1 file changed, 37 insertions(+)
->=20
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index 115616ac3bfa..5be983598b5a 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -14,6 +14,43 @@
->=20
-> /*
->  * Grace-period counter management.
-> + *
-> + * The two lowest significant bits gather the control flags.
-> + * The higher bits form the RCU sequence counter.
-> + *
-> + * About the control flags, a common value of 0 means that no GP is in pr=
-ogress.
-> + * A value of 1 means that a grace period has started and is in progress.=
- When
-> + * the grace period completes, the control flags are reset to 0 and the s=
-equence
-> + * counter is incremented.
-> + *
-> + * However some specific RCU usages make use of custom values.
-> + *
-> + * SRCU special control values:
-> + *
-> + *    SRCU_SNP_INIT_SEQ    :    Invalid/init value set when SRCU node
-> + *                    is initialized.
-> + *
-> + *    SRCU_STATE_IDLE        :    No SRCU gp is in progress
-> + *
-> + *    SRCU_STATE_SCAN1    :    State set by rcu_seq_start(). Indicates
-> + *                    we are scanning the readers on the slot
-> + *                    defined as inactive (though there might
-> + *                    be pending readers there but their number
-> + *                    is bound).
-> + *
-> + *    SRCU_STATE_SCAN2    :    State set manually via rcu_seq_set_state()=
-
-> + *                    Indicates we are flipping the readers
-> + *                    index and then scanning the readers on the
-> + *                    slot newly set as inactive (again there
-> + *                    might remain a bound amount of pending
-> + *                    readers there).
-> + *
-> + * RCU polled GP special control value:
-> + *
-> + *    RCU_GET_STATE_COMPLETED :    State value indicating that a polled G=
-P
-> + *                    has completed. It's an absolute value
-> + *                    covering both the state and the counter of
-> + *                    the GP sequence.
->  */
->=20
-> #define RCU_SEQ_CTR_SHIFT    2
-> --=20
-> 2.34.1
->=20
