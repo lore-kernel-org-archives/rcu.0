@@ -2,49 +2,49 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8A4C25B4E
-	for <rcu@archiver.kernel.org>; Tue, 24 Jan 2023 17:29:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40F05C54EAA
+	for <rcu@archiver.kernel.org>; Tue, 24 Jan 2023 17:31:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbjAXR3Q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 24 Jan 2023 12:29:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
+        id S233927AbjAXRbt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 24 Jan 2023 12:31:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbjAXR3L (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 24 Jan 2023 12:29:11 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1C546172
-        for <rcu@vger.kernel.org>; Tue, 24 Jan 2023 09:29:09 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id n190so17187423vsc.11
-        for <rcu@vger.kernel.org>; Tue, 24 Jan 2023 09:29:09 -0800 (PST)
+        with ESMTP id S234247AbjAXRbo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 24 Jan 2023 12:31:44 -0500
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B178C4E512
+        for <rcu@vger.kernel.org>; Tue, 24 Jan 2023 09:31:35 -0800 (PST)
+Received: by mail-vk1-xa35.google.com with SMTP id a2so689595vkl.7
+        for <rcu@vger.kernel.org>; Tue, 24 Jan 2023 09:31:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TlHbSZMlPdXpLeDouv7a3mV2CdQfaeCUY7pl+TBjXQY=;
-        b=ib93aF9ek7RuB2GLDrxTjN5TBNM67+QOmR05pq7gw1XaIhfBOHudy8M/sCW9C0vh/k
-         QfgN1LO/XpaA54djdNSctqLXRjDPSXCDuqVLluveYdwOr65V0XX8a6OZH7XXX0xjKz/f
-         Hp7vksljpSAY52CxDuy97ZJXJch48FRspfwIY=
+        bh=QxC8g2x7UGo1iIB34KSAj3wYyngwomKHsPwBL9NxZa8=;
+        b=KfrA5Bb0OO3a9PdjN+skVpLoXDxc0nIfU6VmYVEyRX2iUjwYvf6ObVP96UCWp57YgY
+         hYimpfA/fLUMfX1ab8HNx3qqtuXZAJp1mnSCfbvrt63wwLugnSO2Vrc8HuHQqBvZoJPt
+         2OPlwOX0QaDtXErT9GVLWQJXIqnTVA4I/ba6o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TlHbSZMlPdXpLeDouv7a3mV2CdQfaeCUY7pl+TBjXQY=;
-        b=u+q8PNraUe1hAFTWnCgX66byB+PdUhpuI31V4bO/Cs4W8nMneFgdnPo9Mby7ui7PH3
-         zQXWSQAY30CkHO74KcWRhVRgFMEaZ9K/Y82Q/2sjJHpALJ7onwOoR1YvFGag2FnTu10R
-         pS3/wGYpYwoXB9oZ0wNsECYV77dDJ/DfYgOM/c7yOiPnNlwsaAFH1bFho1+b4UdDJEIQ
-         1Fx/iJKbjOn+6MKzEVzXI1I42YB8QgRC2aDXqgdPTfjXsYm17jM4edReqJUsQ/OiP5Js
-         BCa0sefcJd3FN3X0XNKuJtZs6wwIQrUAEZnRVyjgQF/De6UhZUVIAQ95tCyYvlY2ceNH
-         +iFQ==
-X-Gm-Message-State: AFqh2kqw3EZ/8x7z4Zv6bLuLh3Ror+CM+D8eqBkrZcCdWEE45V2A9Xv/
-        m1rgiMWgQTDSD55xhuD5gYiuNg==
-X-Google-Smtp-Source: AMrXdXv4rXfQ73wIG7bS1VfHPEu0lxrDeOySCYttuUSdEtxq0kw2Z2WfC6yBOAcgrOlQOIAe+Bg0cA==
-X-Received: by 2002:a67:66c3:0:b0:3d3:c5ba:1f27 with SMTP id a186-20020a6766c3000000b003d3c5ba1f27mr16598637vsc.4.1674581348419;
-        Tue, 24 Jan 2023 09:29:08 -0800 (PST)
+        bh=QxC8g2x7UGo1iIB34KSAj3wYyngwomKHsPwBL9NxZa8=;
+        b=oXbpwkmdr0f6wtexmQ9wf3ZVut57QFStzVNvEVMfN284xnsYIaQX41SEEzoZrPlx5t
+         xWk7ZUa+n2PO6BwGbz9ngkhJAMlxAlLhMmvb7WMjFf3RvS5ML8qYeGZ/NFTzAcyWbj1h
+         CxS4C0i2kJJGUCa1aMRo7szGIGgBP/13+9ykzdsHQxl/elqrIQgYl0mjYjUrMPrEvy0j
+         EyR0wWzWCFao0yoBXLpjAO86Mozlk2CCD6OXv0HGkLXjbhih1ze3EMyfPdZUAQsrkF7e
+         emc6XP8N1M+S/Dnu5e0biADsBN3rfbOAtk8VoTWRb6FQJEYWerPUogrm4L8FpAP9HKnV
+         VpzA==
+X-Gm-Message-State: AFqh2krsIs8kbhxy2FMGuz8L2CAQIuxBIXxExvhZWU1TgaXj2buxhFjM
+        gnUadtmfd5NSH6IFnum7cqIr4w==
+X-Google-Smtp-Source: AMrXdXv5lMS/CscQi0t3d+FmX/xFLCu8Y+vtGjBQ4HAyjwu4yOvlWL1wtz5Tq1t9XnuxRCl2HKclRw==
+X-Received: by 2002:ac5:cb7a:0:b0:3e1:69c4:65e7 with SMTP id l26-20020ac5cb7a000000b003e169c465e7mr17790577vkn.14.1674581494792;
+        Tue, 24 Jan 2023 09:31:34 -0800 (PST)
 Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id e22-20020a05620a209600b006cbe3be300esm1798450qka.12.2023.01.24.09.29.07
+        by smtp.gmail.com with ESMTPSA id x11-20020a05620a098b00b007055dce4cecsm1741073qkx.97.2023.01.24.09.31.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 09:29:07 -0800 (PST)
+        Tue, 24 Jan 2023 09:31:34 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
@@ -53,14 +53,14 @@ Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Zhouyi Zhou <zhouzhouyi@gmail.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        rcu <rcu@vger.kernel.org>,
+        rcu <rcu@vger.kernel.org>, stable@vger.kernel.org,
         Frederic Weisbecker <fweisbec@gmail.com>,
         Ingo Molnar <mingo@kernel.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v2] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
-Date:   Tue, 24 Jan 2023 17:28:55 +0000
-Message-Id: <20230124172855.3489912-1-joel@joelfernandes.org>
+Subject: [PATCH v2 RESEND] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
+Date:   Tue, 24 Jan 2023 17:31:26 +0000
+Message-Id: <20230124173126.3492345-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.39.1.405.gd4c25cc71f-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -87,10 +87,12 @@ Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Marc Zyngier <maz@kernel.org>
 Cc: rcu <rcu@vger.kernel.org>
+Cc: stable@vger.kernel.org
 Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest of the kernel")
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
 ---
+Sorry, resending with CC to stable.
+
  drivers/base/cpu.c       |  3 ++-
  include/linux/tick.h     |  2 ++
  kernel/time/tick-sched.c | 11 ++++++++---
