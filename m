@@ -2,208 +2,201 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B8FDC54EAA
-	for <rcu@archiver.kernel.org>; Sat, 28 Jan 2023 01:43:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85978C27C76
+	for <rcu@archiver.kernel.org>; Sat, 28 Jan 2023 03:59:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbjA1BnN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 27 Jan 2023 20:43:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S229897AbjA1D7H (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Jan 2023 22:59:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjA1BnM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 27 Jan 2023 20:43:12 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2960742DCA;
-        Fri, 27 Jan 2023 17:43:11 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d3so6656108plr.10;
-        Fri, 27 Jan 2023 17:43:11 -0800 (PST)
+        with ESMTP id S229792AbjA1D7H (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Jan 2023 22:59:07 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0481079F0A
+        for <rcu@vger.kernel.org>; Fri, 27 Jan 2023 19:59:06 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id e8so5790942qts.1
+        for <rcu@vger.kernel.org>; Fri, 27 Jan 2023 19:59:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OEZ66ke5Y/kqeZOY+8Ui5b4LiVO+6SThH0LVslXaxIg=;
-        b=MrWL1opquycf0O6BIr9HDQEEQpzsqamaVq9S3dAtgHR0XvqjYHoaOzrSMqhx2LRyyQ
-         xDK5bHhpQaobTVJJR7iJxXOjcbYpSDNNSlx9YP3KDy7RG57dT4XqVj8R73SOEP15FgF6
-         X3koV3uVrlvab1dWtEyNfsuh/wFYxmr8qMAnG+8vmEhr/AhuMY5/x98iecR//FMEQFUG
-         M5FIFBjswFgQ5VwiDte5CNCF9tgNy1+YcvHMnPpr4++CLuL+otiuWN2OEjhQptzxTLE2
-         hm9ifJbc7E88tem3DS7GtoLIkSbOpdn1wUP1Gjna/EvGpQ66ft6NydobI2SLtKVp1uqW
-         Q5cg==
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NHcWkiK2q6vininDacdGdov5aGnkXeS+Opi5lg+y9ow=;
+        b=jsRRDoAsw4PuBcuPBo5p5M/FPm5JAJJm2QpqRfc18jDxJf75DZAulZuAefJFLkAXeS
+         F2tUA0mJ24KUqgpR6Olom1A3kd0ABLsiajg+d55p4204hya0BM8VXlUrYcMuFlQhUj8E
+         ClPrkiLPq6gZzaCZHxJX6oK2rRK1qFz5JnXm8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OEZ66ke5Y/kqeZOY+8Ui5b4LiVO+6SThH0LVslXaxIg=;
-        b=oq36Ru6Q0OH8NWuqJSNM46XlI1plO+gLxKlEXHkzClUMjXNCis0UXHlQ9R0QxkRefj
-         60VIPkOowSqtF1IsvjTNWzclurdFdqjaQ5D5XMm8Z40FTeaFSgOHA9uRc2RFIVwLb9Tq
-         44AIA7WqIzQeuQm0x33T4qdyyN0J3A5bc9ePgI4zzj22rOFItsnlpaECbtQx7cwtL9kP
-         0dlsZmx6JPyjTmz8NoYOe3HuG7XpjDlDxrc+9Uy2LupVNQVzbXU5JUk0gZHtfO2gVTZK
-         zUwxxxc39ZM10hQ2pqktdtAP7WZSCbkKt+51kzZi5CqSx1l3Kws7Wnamc26eH2Rl6pJ4
-         HJQw==
-X-Gm-Message-State: AFqh2kplBb73aVjn97gQIBwnd920alTEFUY+WM97yN3TBHdG9VOFNBB7
-        IXM+BrDVZYCJur8kBKG37J+YPP8MxvelwqjWY6s=
-X-Google-Smtp-Source: AMrXdXvf1dCf/e9hEYxEwzOfaShFww7RsZzMhz/xlwV/Bzt1lBRHPfMD0WiexQYr7l8XkzJBfQLfa+BIx1Z5u6urE8U=
-X-Received: by 2002:a17:90b:2541:b0:229:3af9:a0ac with SMTP id
- nw1-20020a17090b254100b002293af9a0acmr6526809pjb.47.1674870190705; Fri, 27
- Jan 2023 17:43:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20230124173126.3492345-1-joel@joelfernandes.org>
- <20230124225628.GZ2948950@paulmck-ThinkPad-P17-Gen-1> <CAABZP2wa_ZTHUr9tH_6OSpr+TgNACo4kMu3eawsGV5qkCDoAKg@mail.gmail.com>
- <CAABZP2wk-RiAV4CzG+6cn7=twvgtw-YGt5bLB4qw8gOWU01kkw@mail.gmail.com>
- <CAABZP2xYL_9zXqw6pEutuNv_hzeezbxPEc8WPZLkPGMozP5C4w@mail.gmail.com>
- <CAEXW_YSCP+qpXDUvqd3qgftD_c2p-HRgK49eDypaFFUCD4YJdA@mail.gmail.com> <CAABZP2ztv8NkvGVQt8D+=6tNj4dg=6-Sp41+HGeNFxZ1oXsmNQ@mail.gmail.com>
-In-Reply-To: <CAABZP2ztv8NkvGVQt8D+=6tNj4dg=6-Sp41+HGeNFxZ1oXsmNQ@mail.gmail.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Sat, 28 Jan 2023 09:42:59 +0800
-Message-ID: <CAABZP2zr5oDgOOP0yE+TfwJz4hoAOG+4d5C8MJgs_LuSCS-kpw@mail.gmail.com>
-Subject: Re: [PATCH v2 RESEND] tick/nohz: Fix cpu_is_hotpluggable() by
- checking with nohz subsystem
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        bh=NHcWkiK2q6vininDacdGdov5aGnkXeS+Opi5lg+y9ow=;
+        b=3/4yvhHoXSRs3NE2MNjFoCS1IQFKCa/pWDE8IOr0OIjEyV7FuJg738H534NMt4ZAuB
+         4fs6SX1fVlW3Aw0sT/vqAw3B3x8uBMB559D/YO57/hf7uvirM7HIhM0NKsB6m5Bn+US5
+         6aYokKuYg38//cRM8V5VsdLGdDEwEdZOliZqXcrv1+ODqnPg3HEK3ONyvqu5eqbnAyGX
+         AuRiFWQNwXVb3gkzvTEDwCxQxsdwy6z2T0t4+6jW2leenWDzU7b+ol1ibbZXQ8Tcxibv
+         2AHnXV7qk0vKZKgkIj3LXVkfBuk0G7kw1CxIb4/cRtAMyKDYzrzz5bjyeK+BR0NKEzTx
+         jHdQ==
+X-Gm-Message-State: AO0yUKVOVLqzahOdzt9s59wJGacfJhmfKNn5jGVm9wm7uS6EGIiCn3op
+        PrjkjK2+zjHHIuLWaRWkLgPbyA==
+X-Google-Smtp-Source: AK7set/dqSKf0eKWCc5plFFGCR8+/pBnZav0bw1ieKJwYQ6LdYFoPp2IuWFxQIJTFt8vf54PRg5iNA==
+X-Received: by 2002:a05:622a:1207:b0:3b8:2ea9:a09c with SMTP id y7-20020a05622a120700b003b82ea9a09cmr4373829qtx.1.1674878345080;
+        Fri, 27 Jan 2023 19:59:05 -0800 (PST)
+Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id r21-20020ac84255000000b003b635009149sm3865663qtm.72.2023.01.27.19.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Jan 2023 19:59:04 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        rcu <rcu@vger.kernel.org>, stable@vger.kernel.org,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v4] srcu: Clarify comments on memory barrier "E"
+Date:   Sat, 28 Jan 2023 03:59:01 +0000
+Message-Id: <20230128035902.1758726-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.39.1.456.gfc5497dd1b-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jan 26, 2023 at 11:41 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
->
-> On Thu, Jan 26, 2023 at 11:14 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > On Thu, Jan 26, 2023 at 10:01 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> > >
-> > > On Thu, Jan 26, 2023 at 12:16 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> > > >
-> > > > On Wed, Jan 25, 2023 at 8:13 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Jan 25, 2023 at 6:56 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > On Tue, Jan 24, 2023 at 05:31:26PM +0000, Joel Fernandes (Google) wrote:
-> > > > > > > For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
-> > > > > > > However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
-> > > > > > > torture tests that do offlining to end up trying to offline this CPU causing
-> > > > > > > test failures. Such failure happens on all architectures.
-> > > > > > >
-> > > > > > > Fix it by asking the opinion of the nohz subsystem on whether the CPU can
-> > > > > > > be hotplugged.
-> > > > > > >
-> > > > > > > [ Apply Frederic Weisbecker feedback on refactoring tick_nohz_cpu_down(). ]
-> > > > > > >
-> > > > > > > For drivers/base/ portion:
-> > > > > > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > > >
-> > > > > > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > > > > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > > > > Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > > Cc: Will Deacon <will@kernel.org>
-> > > > > > > Cc: Marc Zyngier <maz@kernel.org>
-> > > > > > > Cc: rcu <rcu@vger.kernel.org>
-> > > > > > > Cc: stable@vger.kernel.org
-> > > > > > > Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest of the kernel")
-> > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > >
-> > > > > > Queued for further review and testing, thank you both!
-> > > > > >
-> > > > > > It might be a few hours until it becomes publicly visible, but it will
-> > > > > > get there.
-> > > > > A new round of rcutorture test on fixed linux-5.15.y[3] has been
-> > > > > performed in the PPC VM of Open Source Lab of Oregon State University
-> > > > > [1], which will last about 29 hours. The test result on original
-> > > > > linux-5.15.y is at [2].
-> > > > From the result of [1], the HOTPLUG failure reports have been
-> > > > eliminated, but a new kernel null point bug related to scsi module has
-> > > > been reported [4] ;-(
-> > > > [    5.178733][    C1] BUG: Kernel NULL pointer dereference on read at
-> > > > 0x00000008
-> > > > ...
-> > > > [    5.231013][    C1] [c00000001ff9fca0] [c0000000009ffbc8]
-> > > > scsi_end_request+0xd8/0x1f0 (unreliable)^M
-> > > > [    5.234961][    C1] [c00000001ff9fcf0] [c000000000a00e68]
-> > > > scsi_io_completion+0x88/0x700^M
-> > > > [    5.237863][    C1] [c00000001ff9fda0] [c0000000009f5028]
-> > > > scsi_finish_command+0xe8/0x150^M
-> > > > [    5.240089][    C1] [c00000001ff9fdf0] [c000000000a00c70]
-> > > > scsi_complete+0x90/0x140^M
-> > > > [    5.242481][    C1] [c00000001ff9fe20] [c0000000007e5170]
-> > > > blk_complete_reqs+0x80/0xa0^M
-> > > > [    5.245187][    C1] [c00000001ff9fe50] [c000000000f0b5d0]
-> > > > __do_softirq+0x1e0/0x4e0^M
-> > > > [    5.248479][    C1] [c00000001ff9ff90] [c0000000000170e8]
-> > > > do_softirq_own_stack+0x48/0x60^M
-> > > > [    5.250919][    C1] [c00000000a5e7c40] [c00000000a5e7c80]
-> > > > 0xc00000000a5e7c80^M
-> > > > [    5.253792][    C1] [c00000000a5e7c70] [c0000000001534c0]
-> > > > do_softirq+0xb0/0xc0^M
-> > > > [    5.256824][    C1] [c00000000a5e7ca0] [c0000000001535ac]
-> > > > __local_bh_enable_ip+0xdc/0x110^M
-> > > > [    5.259414][    C1] [c00000000a5e7cc0] [c0000000001d75e8]
-> > > > irq_forced_thread_fn+0xc8/0xf0^M
-> > > > [    5.261921][    C1] [c00000000a5e7d00] [c0000000001d7ae4]
-> > > > irq_thread+0x1b4/0x2a0^M
-> > > > [    5.265298][    C1] [c00000000a5e7da0] [c00000000017d8c8]
-> > > > kthread+0x1a8/0x1d0^M
-> > > > [    5.269184][    C1] [c00000000a5e7e10] [c00000000000cee4]
-> > > > ret_from_kernel_thread+0x5c/0x64^M
-> > > >
-> > > > But when I invoked [5]  by hand, the bug did not show again [6].
-> > > >
-> > > > [4] http://140.211.169.189/linux-stable-rc/tools/testing/selftests/rcutorture/res/2023.01.25-00.04.30-torture/results-clocksourcewd-2/TREE03/console.log
-> > > > [5] http://140.211.169.189/linux-stable-rc/tools/testing/selftests/rcutorture/res/2023.01.25-00.04.30-torture/results-clocksourcewd-2/TREE03/qemu-cmd
-> > > > [6] http://140.211.169.189/linux-stable-rc/tools/testing/selftests/rcutorture/res/2023.01.25-00.04.30-torture/results-clocksourcewd-2/TREE03/console.zzy.log
-> > > >
-> > > > I think the bug is not caused by Joel's patch, there must be some
-> > > > other reason. I am starting the 29 hours' rcutorture test again. And I
-> > > > can give ssh access to you if you are interested in it.
-> > > >
-> > > > Sorry for the inconvenience that I bring
-> > > >
-> > > > Thanks
-> > > > Zhouyi
-> > > Hi the above kernel null pointer dereference bug has nothing to do
-> > > with Joel's fix because I can reproduce it on original 5.15.y [7]
-> > > using as while loop [8] (after 36 iterations, the bug fires).
-> > > So, Joel's patch is tested good!
-> > > Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> >
-> > Interesting. I have been running rcutorture's TREE03 on 5.15.y quite a
-> > lot and I don't see such an issue.
-> >
-> >  However, your logs showed the crash is SCSI related. These were the
-> > recent SCSI commits in 5.15.y but I am not sure if it causes the
-> > issue:
-> >
-> > 13259b6 scsi: mpi3mr: Refer CONFIG_SCSI_MPI3MR in Makefile
-> > 513fdf0 scsi: ufs: Stop using the clock scaling lock in the error handler
-> > 7c26d21 scsi: ufs: core: WLUN suspend SSU/enter hibern
-> >
-> > Perhaps report it to the scsi and/or stable lists, or do some web
-> > searches for if someone else sees it.
-> Thank Joel for your guidance!
-> I will continue the research following your instructions!
-> I will report to you and the community once I have any process.
-Hi
-I think I have chased down the reason behind the bug reported by SCSI
-subsystem following your guidance, and have reported to SCSI
-mainteners [1]
-This is a fruitful journey, thank you all ;-)
+During a flip, we have a full memory barrier before srcu_idx is incremented.
 
-So once again, Joel's patch is tested good ;-)
-Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+The idea is we intend to order the first phase scan's read of lock
+counters with the flipping of the index.
 
-Thanks for your attention
-Thanks
-Zhouyi
-[1] https://lore.kernel.org/lkml/CAABZP2ywCbu4Po63BDBE7U1WEqx4DF7F2CZjTqFp0dSDw-uziQ@mail.gmail.com/T/#u
->
-> Thank you all!
->
-> Best Regards
-> Zhouyi
-> >
-> > - Joel
+However, such ordering is already enforced because of the
+control-dependency between the 2 scans. We would be flipping the index
+only if lock and unlock counts matched.
+
+But such match will not happen if there was a pending reader before the flip
+in the first place (observation courtesy Mathieu Desnoyers).
+
+The litmus test below shows this:
+(test courtesy Frederic Weisbecker, Changes for ctrldep by Boqun/me):
+
+C srcu
+(*
+ * bad condition: P0's first scan (SCAN1) saw P1's idx=0 LOCK count inc, though P1 saw flip.
+ *
+ * So basically, the ->po ordering on both P0 and P1 is enforced via ->ppo
+ * (control deps) on both sides, and both P0 and P1 are interconnected by ->rf
+ * relations. Combining the ->ppo with ->rf, a cycle is impossible.
+ *)
+
+{}
+
+// updater
+P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+        int lock1;
+        int unlock1;
+        int lock0;
+        int unlock0;
+
+        // SCAN1
+        unlock1 = READ_ONCE(*UNLOCK1);
+        smp_mb(); // A
+        lock1 = READ_ONCE(*LOCK1);
+
+        // FLIP
+        if (lock1 == unlock1) {   // Control dep
+                smp_mb(); // E    // Remove E and still passes.
+                WRITE_ONCE(*IDX, 1);
+                smp_mb(); // D
+
+                // SCAN2
+                unlock0 = READ_ONCE(*UNLOCK0);
+                smp_mb(); // A
+                lock0 = READ_ONCE(*LOCK0);
+        }
+}
+
+// reader
+P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
+{
+        int tmp;
+        int idx1;
+        int idx2;
+
+        // 1st reader
+        idx1 = READ_ONCE(*IDX);
+        if (idx1 == 0) {         // Control dep
+                tmp = READ_ONCE(*LOCK0);
+                WRITE_ONCE(*LOCK0, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp = READ_ONCE(*UNLOCK0);
+                WRITE_ONCE(*UNLOCK0, tmp + 1);
+        } else {
+                tmp = READ_ONCE(*LOCK1);
+                WRITE_ONCE(*LOCK1, tmp + 1);
+                smp_mb(); /* B and C */
+                tmp = READ_ONCE(*UNLOCK1);
+                WRITE_ONCE(*UNLOCK1, tmp + 1);
+        }
+}
+
+exists (0:lock1=1 /\ 1:idx1=1)
+
+More complicated litmus tests with multiple SRCU readers also show that memory
+barrier E is not needed.
+
+This commit therefore clarifies the comment on memory barrier E while keeping
+the memory barrier anyway for extra safety (since it is on a slow path anyway).
+
+Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
+Co-developed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Update changelog, keep old comments.
+v2->v3: Moar changelog updates.
+v3->v4: Keep smp_mb() and just update comments
+
+ cc_list               |  8 ++++++++
+ kernel/rcu/srcutree.c | 20 ++++++++++++++------
+ send.sh               |  5 +++++
+ to_list               |  1 +
+ 4 files changed, 28 insertions(+), 6 deletions(-)
+ create mode 100644 cc_list
+ create mode 100755 send.sh
+ create mode 100644 to_list
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 1c304fec89c0..2872998edbb7 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -983,12 +983,20 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
+ static void srcu_flip(struct srcu_struct *ssp)
+ {
+ 	/*
+-	 * Ensure that if this updater saw a given reader's increment
+-	 * from __srcu_read_lock(), that reader was using an old value
+-	 * of ->srcu_idx.  Also ensure that if a given reader sees the
+-	 * new value of ->srcu_idx, this updater's earlier scans cannot
+-	 * have seen that reader's increments (which is OK, because this
+-	 * grace period need not wait on that reader).
++	 * Control dependency (causality) between the before-flip
++	 * srcu_readers_active_idx_check() and a call to srcu_flip(), ensures
++	 * that we end up here only if lock and unlock counts match.  This fact
++	 * ensures that if this updater saw a given reader's increment from
++	 * __srcu_read_lock(), that reader was using an old value of
++	 * ->srcu_idx. That is why the lock and unlock counts matched in the
++	 * first place. The causality also ensures that if a given reader sees
++	 * the new value of ->srcu_idx, this updater's earlier scans cannot
++	 * have seen that reader's increments (which is OK, because this grace
++	 * period need not wait on that reader), because again, that would
++	 * cause a lock/unlock count mismatch and we not end up here.
++	 *
++	 * So we don't really need the following smp_mb() before incrementing
++	 * srcu_idx, however we have it anyway for additional safety.
+ 	 */
+ 	smp_mb(); /* E */  /* Pairs with B and C. */
+ 
+-- 
+2.39.1.456.gfc5497dd1b-goog
