@@ -2,294 +2,215 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2448AC05027
-	for <rcu@archiver.kernel.org>; Sun, 29 Jan 2023 05:09:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C761DC636D3
+	for <rcu@archiver.kernel.org>; Sun, 29 Jan 2023 23:11:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjA2FJL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 29 Jan 2023 00:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54116 "EHLO
+        id S235303AbjA2XLF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 29 Jan 2023 18:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjA2FJK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 29 Jan 2023 00:09:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848821B55D;
-        Sat, 28 Jan 2023 21:09:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 27C58B80BEC;
-        Sun, 29 Jan 2023 05:09:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BED6DC433EF;
-        Sun, 29 Jan 2023 05:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674968944;
-        bh=QM7+/0IWikT1TrPpqMq9BrH2GxaLsA6deOKIiP7Arhk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TqJxQVphq+hUN7LS24fUosY3MM3ESWLPcOiUFjx6v5zC9s5xe3axZLP7Ue9fHHTtM
-         73UNIIkbI0wxQ9X8zIiXcbrSI3sM3LNdK0OBFz6myr9oK2fP1xIpfvMmZnjIH/CxDt
-         +zcLc/yTDK3j0fPkqIbm/FtBHvy+Vc5gkj8r8CGRgpvPLSw+oMCB/x91RNAAZqu39K
-         zc/VFB5fT1XZVjVlqSyB+NEOuYTWkr9CfF5EvFtv9xzXQx2PsekNQAmSxEmVftg3HB
-         uTSty0q78jPypTC6vtgnZYe+sq/MYpOjaiy4a4OI3cNfpvXIi7jR1fgUnOB0XGl/wb
-         Y5jmrAyvO93pg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 636405C0882; Sat, 28 Jan 2023 21:09:04 -0800 (PST)
-Date:   Sat, 28 Jan 2023 21:09:04 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
+        with ESMTP id S235201AbjA2XLD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 29 Jan 2023 18:11:03 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5451ABED;
+        Sun, 29 Jan 2023 15:11:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+        To:From:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Q12Y5QY2RHdOdj2O/7X6A5JVjbRKxpcv3Q7sikmYOrE=; b=bA4cKVggoDWmlybjfhWX24yU1q
+        a1QaO766kjKLJmJ2/iMIFkHBcMX3mPrmmkBmHkhk3lN33+hnnAEHrtkO2BZdYCktSa0MdQgOj0nQc
+        Go/L0veXY53vU3Hg4j5wOow9mF8cWuGOwopv4ggrvveByQS8BQE/YxRJdWdcQx7SZKpO3zuHa0f15
+        s1WOEq3w4ct2zgBHqK9jRSZ2/Q7At8i5maEg+yNon+kSsA7gKcq2ETlkAWoEx+9KbCi5boujUHwuq
+        C+AWT9wwX1Dq1xVOPiAryN3wR2eRYF1p852Fgoy3UU4o9jIEd/zFyDTxAAqUWBSrqgNrQRW6LN2Kx
+        T9FmvG1g==;
+Received: from [2601:1c2:d00:6a60::9526] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pMGp9-0020M2-Cl; Sun, 29 Jan 2023 23:10:59 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v4] srcu: Clarify comments on memory barrier "E"
-Message-ID: <20230129050904.GD2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230128035902.1758726-1-joel@joelfernandes.org>
- <20230128182440.GA2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTK1ejOcuNyAqJ3ibKKyfR21UYHRNa7jpWS_H71xpnTpg@mail.gmail.com>
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Subject: [PATCH 5/9] Documentation: RCU: correct spelling
+Date:   Sun, 29 Jan 2023 15:10:49 -0800
+Message-Id: <20230129231053.20863-6-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230129231053.20863-1-rdunlap@infradead.org>
+References: <20230129231053.20863-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YTK1ejOcuNyAqJ3ibKKyfR21UYHRNa7jpWS_H71xpnTpg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jan 28, 2023 at 04:16:34PM -0500, Joel Fernandes wrote:
-> On Sat, Jan 28, 2023 at 1:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sat, Jan 28, 2023 at 03:59:01AM +0000, Joel Fernandes (Google) wrote:
-> > > During a flip, we have a full memory barrier before srcu_idx is incremented.
-> > >
-> > > The idea is we intend to order the first phase scan's read of lock
-> > > counters with the flipping of the index.
-> > >
-> > > However, such ordering is already enforced because of the
-> > > control-dependency between the 2 scans. We would be flipping the index
-> > > only if lock and unlock counts matched.
-> > >
-> > > But such match will not happen if there was a pending reader before the flip
-> > > in the first place (observation courtesy Mathieu Desnoyers).
-> > >
-> > > The litmus test below shows this:
-> > > (test courtesy Frederic Weisbecker, Changes for ctrldep by Boqun/me):
-> >
-> > Much better, thank you!
-> >
-> > I of course did the usual wordsmithing, as shown below.  Does this
-> > version capture your intent and understanding?
-> >
-> 
-> It looks good to me.
-> According to [1] , the architecture at least should not be reordering
-> read-write control dependency. Only read-read is problematic. But I am
-> not 100% sure, is that not true?
+Correct spelling problems for Documentation/RCU/ as reported
+by codespell.
 
-Agreed, READ_ONCE() or stronger through condition to WRITE_ONCE()
-or stronger is ordered.  Replace that WRITE_ONCE() with any type of
-unordered read and all bets are off.
+Note: in RTFP.txt, there are other misspellings that are left as is
+since they were used that way in email Subject: lines or in LWN.net
+articles. [preemptable, Preemptable, synchonisation]
 
-And now that the ARM folks chimed in, this is a solid guarantee at
-the hardware level.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: rcu@vger.kernel.org
+---
+ .../Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst |    6 +++---
+ .../Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst        |    2 +-
+ .../RTFP.txt                                                   |   10 +++++-----
+ .../UP.rst                                                     |    4 ++--
+ .../lockdep.rst                                                |    2 +-
+ .../torture.rst                                                |    4 ++--
+ 6 files changed, 14 insertions(+), 14 deletions(-)
 
-Not so much at the compiler level.  Oddly enough, compilers do provide
-ordering for plain C-language stores, but that is helpful only if no
-other CPU or thread is concurrently accessing that variable.
-
-> For the compiler, you are saying that read-write control dependency
-> can be reordered even with *ONCE() accesses? In other words, the
-> flipping of idx can happen in ->po order before the locks and unlock
-> counts match? That sounds sort of like a broken compiler.
-
-One case where a sane compiler can reasonably enable the hardware to
-do the reordering is where you have the same WRITE_ONCE() in both the
-then-clause and else-clause of an "if" statement.  Another is if it can
-somehow prove something about the value returned from that READ_ONCE(),
-for example, if that value is used to index a singleton array, then the
-compiler has to do the READ_ONCE(), but it can then assume that the
-value returned was zero, throwing away the real value returned.
-
-Fun with undefined behavior!
-
-> [1] https://lpc.events/event/7/contributions/821/attachments/598/1075/LPC_2020_--_Dependency_ordering.pdf
-> 
-> More comments below:
-> 
-> > ------------------------------------------------------------------------
-> >
-> > commit 963f34624beb2af1ec08527e637d16ab6a1dacbd
-> > Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Date:   Sat Jan 28 03:59:01 2023 +0000
-> >
-> >     srcu: Clarify comments on memory barrier "E"
-> >
-> >     There is an smp_mb() named "E" in srcu_flip() immediately before the
-> >     increment (flip) of the srcu_struct structure's ->srcu_idx.
-> >
-> >     The purpose of E is to order the preceding scan's read of lock counters
-> >     against the flipping of the ->srcu_idx, in order to prevent new readers
-> >     from continuing to use the old ->srcu_idx value, which might needlessly
-> >     extend the grace period.
-> >
-> >     However, this ordering is already enforced because of the control
-> >     dependency between the preceding scan and the ->srcu_idx flip.
-> >     This control dependency exists because atomic_long_read() is used
-> >     to scan the counts, because WRITE_ONCE() is used to flip ->srcu_idx,
-> >     and because ->srcu_idx is not flipped until the ->srcu_lock_count[] and
-> >     ->srcu_unlock_count[] counts match.  And such a match cannot happen when
-> >     there is an in-flight reader that started before the flip (observation
-> >     courtesy Mathieu Desnoyers).
-> 
-> Agreed.
-> 
-> >     The litmus test below (courtesy of Frederic Weisbecker, with changes
-> >     for ctrldep by Boqun and Joel) shows this:
-> >
-> >     C srcu
-> >     (*
-> >      * bad condition: P0's first scan (SCAN1) saw P1's idx=0 LOCK count inc, though P1 saw flip.
-> >      *
-> >      * So basically, the ->po ordering on both P0 and P1 is enforced via ->ppo
-> >      * (control deps) on both sides, and both P0 and P1 are interconnected by ->rf
-> >      * relations. Combining the ->ppo with ->rf, a cycle is impossible.
-> >      *)
-> >
-> >     {}
-> >
-> >     // updater
-> >     P0(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
-> >     {
-> >             int lock1;
-> >             int unlock1;
-> >             int lock0;
-> >             int unlock0;
-> >
-> >             // SCAN1
-> >             unlock1 = READ_ONCE(*UNLOCK1);
-> >             smp_mb(); // A
-> >             lock1 = READ_ONCE(*LOCK1);
-> >
-> >             // FLIP
-> >             if (lock1 == unlock1) {   // Control dep
-> >                     smp_mb(); // E    // Remove E and still passes.
-> >                     WRITE_ONCE(*IDX, 1);
-> >                     smp_mb(); // D
-> >
-> >                     // SCAN2
-> >                     unlock0 = READ_ONCE(*UNLOCK0);
-> >                     smp_mb(); // A
-> >                     lock0 = READ_ONCE(*LOCK0);
-> >             }
-> >     }
-> >
-> >     // reader
-> >     P1(int *IDX, int *LOCK0, int *UNLOCK0, int *LOCK1, int *UNLOCK1)
-> >     {
-> >             int tmp;
-> >             int idx1;
-> >             int idx2;
-> >
-> >             // 1st reader
-> >             idx1 = READ_ONCE(*IDX);
-> >             if (idx1 == 0) {         // Control dep
-> >                     tmp = READ_ONCE(*LOCK0);
-> >                     WRITE_ONCE(*LOCK0, tmp + 1);
-> >                     smp_mb(); /* B and C */
-> >                     tmp = READ_ONCE(*UNLOCK0);
-> >                     WRITE_ONCE(*UNLOCK0, tmp + 1);
-> >             } else {
-> >                     tmp = READ_ONCE(*LOCK1);
-> >                     WRITE_ONCE(*LOCK1, tmp + 1);
-> >                     smp_mb(); /* B and C */
-> >                     tmp = READ_ONCE(*UNLOCK1);
-> >                     WRITE_ONCE(*UNLOCK1, tmp + 1);
-> >             }
-> >     }
-> >
-> >     exists (0:lock1=1 /\ 1:idx1=1)
-> >
-> >     More complicated litmus tests with multiple SRCU readers also show that
-> >     memory barrier E is not needed.
-> >
-> >     This commit therefore clarifies the comment on memory barrier E.
-> >
-> >     Why not also remove that redundant smp_mb()?
-> >
-> >     Because control dependencies are quite fragile due to their not being
-> >     recognized by most compilers and tools.  Control dependencies therefore
-> >     exact an ongoing maintenance burden, and such a burden cannot be justified
-> >     in this slowpath.  Therefore, that smp_mb() stays until such time as
-> >     its overhead becomes a measurable problem in a real workload running on
-> >     a real production system, or until such time as compilers start paying
-> >     attention to this sort of control dependency.
-> >
-> >     Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
-> >     Co-developed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >     Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
-> >     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index c541b82646b63..cd46fe063e50f 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -1085,16 +1085,36 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
-> >  static void srcu_flip(struct srcu_struct *ssp)
-> >  {
-> >         /*
-> > -        * Ensure that if this updater saw a given reader's increment
-> > -        * from __srcu_read_lock(), that reader was using an old value
-> > -        * of ->srcu_idx.  Also ensure that if a given reader sees the
-> > -        * new value of ->srcu_idx, this updater's earlier scans cannot
-> > -        * have seen that reader's increments (which is OK, because this
-> > -        * grace period need not wait on that reader).
-> > +        * Because the flip of ->srcu_idx is executed only if the
-> > +        * preceding call to srcu_readers_active_idx_check() found that
-> > +        * the ->srcu_unlock_count[] and ->srcu_lock_count[] sums matched
-> > +        * and because that summing uses atomic_long_read(), there is
-> > +        * ordering due to a control dependency between that summing and
-> > +        * the WRITE_ONCE() in this call to srcu_flip().  This ordering
-> > +        * ensures that if this updater saw a given reader's increment from
-> > +        * __srcu_read_lock(), that reader was using a value of ->srcu_idx
-> > +        * from before the previous call to srcu_flip(), which should be
-> > +        * quite rare.  This ordering thus helps forward progress because
-> > +        * the grace period could otherwise be delayed by additional
-> > +        * calls to __srcu_read_lock() using that old (soon to be new)
-> > +        * value of ->srcu_idx.
-> > +        *
-> > +        * This sum-equality check and ordering also ensures that if
-> > +        * a given call to __srcu_read_lock() uses the new value of
-> > +        * ->srcu_idx, this updater's earlier scans cannot have seen
-> > +        * that reader's increments, which is all to the good, because
-> > +        * this grace period need not wait on that reader.  After all,
-> > +        * if those earlier scans had seen that reader, there would have
-> > +        * been a sum mismatch and this code would not be reached.
-> > +        *
-> > +        * This means that the following smp_mb() is redundant, but
-> > +        * it stays until either (1) Compilers learn about this sort of
-> > +        * control dependency or (2) Some production workload running on
-> > +        * a production system is unduly delayed by this slowpath smp_mb().
-> >          */
-> 
-> I agree that a read-write control dependency reordering by the
-> compiler can cause a reader to observe the flipped srcu_idx too soon,
-> thus perhaps delaying the grace period from ending (because the second
-> scan will now end up waiting on that reader..).
-
-Very good!  I will push the commit out on -rcu.
-
-							Thanx, Paul
-
-> Thanks,
-> 
->  - Joel
-> 
-> >         smp_mb(); /* E */  /* Pairs with B and C. */
-> >
-> > -       WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
-> > +       WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1); // Flip the counter.
-> >
-> >         /*
-> >          * Ensure that if the updater misses an __srcu_read_unlock()
+diff -- a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+--- a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
++++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+@@ -277,7 +277,7 @@ the following access functions:
+ 
+ Again, only one request in a given batch need actually carry out a
+ grace-period operation, which means there must be an efficient way to
+-identify which of many concurrent reqeusts will initiate the grace
++identify which of many concurrent requests will initiate the grace
+ period, and that there be an efficient way for the remaining requests to
+ wait for that grace period to complete. However, that is the topic of
+ the next section.
+@@ -405,7 +405,7 @@ Use of Workqueues
+ In earlier implementations, the task requesting the expedited grace
+ period also drove it to completion. This straightforward approach had
+ the disadvantage of needing to account for POSIX signals sent to user
+-tasks, so more recent implemementations use the Linux kernel's
++tasks, so more recent implementations use the Linux kernel's
+ workqueues (see Documentation/core-api/workqueue.rst).
+ 
+ The requesting task still does counter snapshotting and funnel-lock
+@@ -465,7 +465,7 @@ corresponding disadvantage that workqueu
+ initialized, which does not happen until some time after the scheduler
+ spawns the first task. Given that there are parts of the kernel that
+ really do want to execute grace periods during this mid-boot “dead
+-zone”, expedited grace periods must do something else during thie time.
++zone”, expedited grace periods must do something else during this time.
+ 
+ What they do is to fall back to the old practice of requiring that the
+ requesting task drive the expedited grace period, as was the case before
+diff -- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+@@ -168,7 +168,7 @@ an ``atomic_add_return()`` of zero) to d
+ +-----------------------------------------------------------------------+
+ 
+ The approach must be extended to handle one final case, that of waking a
+-task blocked in ``synchronize_rcu()``. This task might be affinitied to
++task blocked in ``synchronize_rcu()``. This task might be affined to
+ a CPU that is not yet aware that the grace period has ended, and thus
+ might not yet be subject to the grace period's memory ordering.
+ Therefore, there is an ``smp_mb()`` after the return from
+diff -- a/Documentation/RCU/lockdep.rst b/Documentation/RCU/lockdep.rst
+--- a/Documentation/RCU/lockdep.rst
++++ b/Documentation/RCU/lockdep.rst
+@@ -65,7 +65,7 @@ checking of rcu_dereference() primitives
+ 	rcu_access_pointer(p):
+ 		Return the value of the pointer and omit all barriers,
+ 		but retain the compiler constraints that prevent duplicating
+-		or coalescsing.  This is useful when testing the
++		or coalescing.  This is useful when testing the
+ 		value of the pointer itself, for example, against NULL.
+ 
+ The rcu_dereference_check() check expression can be any boolean
+diff -- a/Documentation/RCU/RTFP.txt b/Documentation/RCU/RTFP.txt
+--- a/Documentation/RCU/RTFP.txt
++++ b/Documentation/RCU/RTFP.txt
+@@ -201,7 +201,7 @@ work looked at debugging uses of RCU [Se
+ In 2012, Josh Triplett received his Ph.D. with his dissertation
+ covering RCU-protected resizable hash tables and the relationship
+ between memory barriers and read-side traversal order:  If the updater
+-is making changes in the opposite direction from the read-side traveral
++is making changes in the opposite direction from the read-side traversal
+ order, the updater need only execute a memory-barrier instruction,
+ but if in the same direction, the updater needs to wait for a grace
+ period between the individual updates [JoshTriplettPhD].  Also in 2012,
+@@ -1245,7 +1245,7 @@ Oregon Health and Sciences University"
+ [Viewed September 5, 2005]"
+ ,annotation={
+ 	First posting showing how RCU can be safely adapted for
+-	preemptable RCU read side critical sections.
++	preemptible RCU read side critical sections.
+ }
+ }
+ 
+@@ -1888,7 +1888,7 @@ Revised:
+ \url{https://lore.kernel.org/r/20070910183004.GA3299@linux.vnet.ibm.com}
+ [Viewed October 25, 2007]"
+ ,annotation={
+-	Final patch for preemptable RCU to -rt.  (Later patches were
++	Final patch for preemptible RCU to -rt.  (Later patches were
+ 	to mainline, eventually incorporated.)
+ }
+ }
+@@ -2275,7 +2275,7 @@ lot of {Linux} into your technology!!!"
+ \url{https://lore.kernel.org/r/20090724001429.GA17374@linux.vnet.ibm.com}
+ [Viewed August 15, 2009]"
+ ,annotation={
+-	First posting of simple and fast preemptable RCU.
++	First posting of simple and fast preemptible RCU.
+ }
+ }
+ 
+@@ -2639,7 +2639,7 @@ lot of {Linux} into your technology!!!"
+ 	RCU-protected hash tables, barriers vs. read-side traversal order.
+ 	.
+ 	If the updater is making changes in the opposite direction from
+-	the read-side traveral order, the updater need only execute a
++	the read-side traversal order, the updater need only execute a
+ 	memory-barrier instruction, but if in the same direction, the
+ 	updater needs to wait for a grace period between the individual
+ 	updates.
+diff -- a/Documentation/RCU/torture.rst b/Documentation/RCU/torture.rst
+--- a/Documentation/RCU/torture.rst
++++ b/Documentation/RCU/torture.rst
+@@ -216,7 +216,7 @@ Kernel boot arguments can also be suppli
+ rcutorture's module parameters.  For example, to test a change to RCU's
+ CPU stall-warning code, use "--bootargs 'rcutorture.stall_cpu=30'".
+ This will of course result in the scripting reporting a failure, namely
+-the resuling RCU CPU stall warning.  As noted above, reducing memory may
++the resulting RCU CPU stall warning.  As noted above, reducing memory may
+ require disabling rcutorture's callback-flooding tests::
+ 
+ 	kvm.sh --cpus 448 --configs '56*TREE04' --memory 128M \
+@@ -370,5 +370,5 @@ You can also re-run a previous remote ru
+ 		tools/testing/selftests/rcutorture/res/2022.11.03-11.26.28-remote \
+ 		--duration 24h
+ 
+-In this case, most of the kvm-again.sh parmeters may be supplied following
++In this case, most of the kvm-again.sh parameters may be supplied following
+ the pathname of the old run-results directory.
+diff -- a/Documentation/RCU/UP.rst b/Documentation/RCU/UP.rst
+--- a/Documentation/RCU/UP.rst
++++ b/Documentation/RCU/UP.rst
+@@ -107,7 +107,7 @@ UP systems, including PREEMPT SMP builds
+ 
+ Quick Quiz #3:
+ 	Why can't synchronize_rcu() return immediately on UP systems running
+-	preemptable RCU?
++	preemptible RCU?
+ 
+ .. _answer_quick_quiz_up:
+ 
+@@ -143,7 +143,7 @@ Answer to Quick Quiz #2:
+ 
+ Answer to Quick Quiz #3:
+ 	Why can't synchronize_rcu() return immediately on UP systems
+-	running preemptable RCU?
++	running preemptible RCU?
+ 
+ 	Because some other task might have been preempted in the middle
+ 	of an RCU read-side critical section.  If synchronize_rcu()
