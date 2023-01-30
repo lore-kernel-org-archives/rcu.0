@@ -2,95 +2,107 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4C7BC54EAA
-	for <rcu@archiver.kernel.org>; Mon, 30 Jan 2023 07:12:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C77B4C54EED
+	for <rcu@archiver.kernel.org>; Mon, 30 Jan 2023 09:02:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbjA3HMq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Jan 2023 02:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
+        id S235692AbjA3JCy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 Jan 2023 04:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjA3HMp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Jan 2023 02:12:45 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4789824136;
-        Sun, 29 Jan 2023 23:12:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675062765; x=1706598765;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/kRsQekL3gSMu+18072dhX1Nw5f8rt/kMTmhQ4446YE=;
-  b=QD7fF2CzV/2V0wocD7Hkq2P+6lR63CBBut84CQ1lmcjpMnTPOtRjAA0a
-   cRS4yw8ZB51Xq5XgDS3JCR/M2Gt5dk8k9DXJoDa1fihN8CzRAjwqVtwT7
-   +byw4pCrfE3O2sxI/yM8RxWCWNB4Vm1EgUWo2ljZpJlu76xcTQ1jfEN5E
-   Vi5mgRuCdgE/TudoSFuhyTiBZI2KavnB4ztXCRXOVaZtmMnwjyfXkpnTK
-   8r/zf5WEBZelxQBQ+BROiodoAPhoc296XZg8FMXTpjhcrWmywHG1+vpU2
-   ywq33jjzP1xEMtfoIuEXbsgyXWEAxIBrZSQES5uNrFsfWq82ABryi4zBt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="327505407"
-X-IronPort-AV: E=Sophos;i="5.97,257,1669104000"; 
-   d="scan'208";a="327505407"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2023 23:12:31 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="787914039"
-X-IronPort-AV: E=Sophos;i="5.97,257,1669104000"; 
-   d="scan'208";a="787914039"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2023 23:12:28 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Register rcu-lazy shrinker only CONFIG_RCU_LAZY is enabled
-Date:   Mon, 30 Jan 2023 15:17:37 +0800
-Message-Id: <20230130071737.2806534-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S235698AbjA3JCx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 Jan 2023 04:02:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606D32718;
+        Mon, 30 Jan 2023 01:02:52 -0800 (PST)
+Date:   Mon, 30 Jan 2023 10:02:45 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1675069369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fIFcywVaxJrMhVVv8btTwEym2El5BtVTKT/UKLhpU0=;
+        b=BISmPm+DMZuR+8kXO3uyYDHZqeXB8sGpXJ2NlezzBDKiHydN4kOzqtn34It9avBNbehM3C
+        /gWN0LdwoRb0h9NgeM5CMlYNlOZXpLiDS+6JdcJUgKoNUrmCzWLoFkX/scXd5N36g2+lvk
+        1nysNAZ6bPgoM1f9YUNNpXWCy0ZDeoicbqhbnqpmGnKYlIlTTk/EBDDnH9Gd8LtLZnun2q
+        RrvAz2BRK7VorrhUsATZyA6d1ftN4uGPBVpIJzaLRp1ZLXucBDR/CgH27EXbMQxSy4Gw83
+        xaqjhfIGH3m2OvL94WWb3hl67oqFSnCk6GEi/Li68NZ1hdzr9BJd9iNqnXfUJQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1675069369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fIFcywVaxJrMhVVv8btTwEym2El5BtVTKT/UKLhpU0=;
+        b=2NOyfTV5NunsOSBHrLICuz0jmkHrzR/OKkZnoLgO0zq9r4dQj2dyqzAaOfroNtJOn2Wh5b
+        ooNaCchfHOWLq8CQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [rt-devel:linux-6.2.y-rt-rebase] [printk]  5342b8e20b:
+ hwsim.ap_ft_eap_cui.fail
+Message-ID: <Y9eHtTgQ0Pmz2gql@linutronix.de>
+References: <202301242146.213fe56e-oliver.sang@intel.com>
+ <Y8/mviV4zZbxgy1x@linutronix.de>
+ <Y9R+VfUgvU1U6DEj@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Y9R+VfUgvU1U6DEj@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcu-lazy shrinker is registered without CONFIG_RCU_LAZY enabled
-is meaningless, this commit therefore make rcu-lazy shrinker is
-registered only when CONFIG_RCU_LAZY is enabled.
+On 2023-01-28 09:45:57 [+0800], Oliver Sang wrote:
+> hi Sebastian,
+Hi Oliver,
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_nocb.h | 4 ++++
- 1 file changed, 4 insertions(+)
+> we rebuilt the kernel for both this commit and its parent, and make sure =
+the
+> config are same for both (as attached, actually also same to the config w=
+e used
+> in last tests for oiginal report), then rerun the tests more times, but t=
+he
+> issue seems still persistent
+>=20
+> d144a18b3d136079 5342b8e20b15e5fb37e49de2435
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :20         100%          20:20    hwsim.ap_ft_eap_cui.fail
+>            :20         100%          20:20    hwsim.ap_ft_many.fail
+>            :20         100%          20:20    hwsim.ap_ft_pmf_bip_cmac_12=
+8.fail
+>=20
+> attached one dmesg for this commit and another for parent FYI.
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 9e1c8caec5ce..28c1c092817b 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1312,6 +1312,7 @@ int rcu_nocb_cpu_offload(int cpu)
- }
- EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
- 
-+#ifdef CONFIG_RCU_LAZY
- static unsigned long
- lazy_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- {
-@@ -1360,6 +1361,7 @@ static struct shrinker lazy_rcu_shrinker = {
- 	.batch = 0,
- 	.seeks = DEFAULT_SEEKS,
- };
-+#endif
- 
- void __init rcu_init_nohz(void)
- {
-@@ -1391,8 +1393,10 @@ void __init rcu_init_nohz(void)
- 	if (!rcu_state.nocb_is_setup)
- 		return;
- 
-+#ifdef CONFIG_RCU_LAZY
- 	if (register_shrinker(&lazy_rcu_shrinker, "rcu-lazy"))
- 		pr_err("Failed to register lazy_rcu shrinker!\n");
-+#endif
- 
- 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
- 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
--- 
-2.25.1
+|  wlan0: send auth to 02:00:00:00:03:00 (try 1/3)
+| +wlan0: send auth to 02:00:00:00:03:00 (try 2/3)
+| +wlan0: send auth to 02:00:00:00:03:00 (try 3/3)
+|  wlan0: authenticated
+|  wlan0: associate with 02:00:00:00:03:00 (try 1/3)
+| -wlan0: RX ReassocResp from 02:00:00:00:03:00 (capab=3D0x411 status=3D0 a=
+id=3D1)
+=E2=80=A6
+| -wlan0: associated
+=E2=80=A6
+| +wlan0: RX ReassocResp from 02:00:00:00:03:00 (capab=3D0x411 status=3D55 =
+aid=3D1)
+| +wlan0: 02:00:00:00:03:00 denied association (code=3D55)
 
+It is hard to comprehend that the printk change broke wifi/ hwsim. Let
+me add John to see what he thinks.
+
+> BTW, we noticed PREEMPT_RT is mentioned in commit message, but we didn't =
+enable
+> it in our config, not sure if this is relevant?
+
+These printk changes are kind of staged for upstream inclusion. "kind
+of" because John is reworking them. So either I broke something while
+rebasing them or the timing changed and this pops up. The 6.1 series had
+mostly the same printk code. This should work independent of PREEMPT_RT.
+
+Sebastian
