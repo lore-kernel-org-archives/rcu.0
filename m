@@ -2,254 +2,230 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5357EC64EC7
-	for <rcu@archiver.kernel.org>; Sun, 29 Jan 2023 23:11:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0BE1C54EAA
+	for <rcu@archiver.kernel.org>; Mon, 30 Jan 2023 05:25:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235482AbjA2XLM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 29 Jan 2023 18:11:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        id S235623AbjA3FZF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 Jan 2023 00:25:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbjA2XLD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 29 Jan 2023 18:11:03 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1781ADC4;
-        Sun, 29 Jan 2023 15:10:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=NQ7YgokTLfJq7c2D1zhGDjpisfmSP8xp8m3MmzMVL98=; b=tR5ChEh1M0Z7mmYghFZYDZkhYF
-        VwsBdewvyOhjcUGdyWIEJ3H9OnSGJvzGgGGGZK6So26F8lFBlOPLSVyT2MgVqp0F/7kFDvXC0/wJF
-        F8V88o2nnHVDmRqJkD+BL/KiXWv1Qm/VpDm8EvQqOCt6xD7Jf2tOAs/CfeuJLkkpjtQ6A3d9a7aIl
-        HBWFgKjNcLjPBir7kxsZcNI6e0nzt4fhSIlVln5iSKgticGUPEh3W2m/O3n7k+jPNFAodh6KmJuNN
-        sZE8ZbojS58xsI1pVvol23kXer5LTKxefgKbY9W0Us1t9+zMCnqXwf9SmPbfwDh5BVi7DqyzxV771
-        6Mnq71Lw==;
-Received: from [2601:1c2:d00:6a60::9526] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pMGp5-0020M2-Rb; Sun, 29 Jan 2023 23:10:55 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-mm@kvack.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, nvdimm@lists.linux.dev,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, Jiri Pirko <jiri@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S229815AbjA3FZD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 Jan 2023 00:25:03 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63AD1ABD9;
+        Sun, 29 Jan 2023 21:24:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7151760E9B;
+        Mon, 30 Jan 2023 05:24:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8B62C433D2;
+        Mon, 30 Jan 2023 05:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675056298;
+        bh=6uMxXU94yhabkf9onzpToNr+qnadDqgPKnObNlZcFJ4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Ke1MDE64OaAlob3NnNJxsveYs3ePR7L1SfWuVZB3+Bj18fQq2FxgOYM3naBF4xhPw
+         gdMRbN+7H4WniiSa6IFiU/fzuXhRrEZWP/cPDfRtQxPbm63lSfWATuDQWVbA6sCdzP
+         MMEau9VqRr7egyNNZQXGoPxAf5OAFrsfQG5+QQ+iVXlFEqBledHx/JtPIStaIl15O5
+         dnPub/lWIoOFD5jmiXd7GGYEpdCKzDcGvuXnSj3QdkOWhTUrNUVnXHmTkFJZ/FzaYq
+         /ViXlbCM+ro4kQ7ueXvaCmlTyrLk+8I5t5M2qgSDj4zZOy/sQnxqy29JdS2+BRkuHL
+         TAvyxekNyw/yg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6C9055C0326; Sun, 29 Jan 2023 21:24:58 -0800 (PST)
+Date:   Sun, 29 Jan 2023 21:24:58 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [PATCH 0/9] Documentation: correct lots of spelling errors (series 2)
-Date:   Sun, 29 Jan 2023 15:10:44 -0800
-Message-Id: <20230129231053.20863-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.39.1
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 5/9] Documentation: RCU: correct spelling
+Message-ID: <20230130052458.GQ2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230129231053.20863-1-rdunlap@infradead.org>
+ <20230129231053.20863-6-rdunlap@infradead.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230129231053.20863-6-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Maintainers of specific kernel subsystems are only Cc-ed on their
-respective patches, not the entire series. [if all goes well]
+On Sun, Jan 29, 2023 at 03:10:49PM -0800, Randy Dunlap wrote:
+> Correct spelling problems for Documentation/RCU/ as reported
+> by codespell.
+> 
+> Note: in RTFP.txt, there are other misspellings that are left as is
+> since they were used that way in email Subject: lines or in LWN.net
+> articles. [preemptable, Preemptable, synchonisation]
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: rcu@vger.kernel.org
 
-These patches are based on linux-next-20230127.
+Queued despite affinitied being a perfectly cromulent word.  ;-)
 
+Thank you!
 
- [PATCH 1/9] Documentation: admin-guide: correct spelling
- [PATCH 2/9] Documentation: driver-api: correct spelling
- [PATCH 3/9] Documentation: hwmon: correct spelling
- [PATCH 4/9] Documentation: networking: correct spelling
- [PATCH 5/9] Documentation: RCU: correct spelling
- [PATCH 6/9] Documentation: scsi/ChangeLog*: correct spelling
- [PATCH 7/9] Documentation: scsi: correct spelling
- [PATCH 8/9] Documentation: sparc: correct spelling
- [PATCH 9/9] Documentation: userspace-api: correct spelling
+							Thanx, Paul
 
-
- Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst         |    6 -
- Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst                |    2 
- Documentation/RCU/RTFP.txt                                                           |   10 +-
- Documentation/RCU/UP.rst                                                             |    4 
- Documentation/RCU/lockdep.rst                                                        |    2 
- Documentation/RCU/torture.rst                                                        |    4 
- Documentation/admin-guide/bcache.rst                                                 |    2 
- Documentation/admin-guide/cgroup-v1/blkio-controller.rst                             |    2 
- Documentation/admin-guide/cgroup-v2.rst                                              |   10 +-
- Documentation/admin-guide/cifs/usage.rst                                             |    4 
- Documentation/admin-guide/device-mapper/cache-policies.rst                           |    2 
- Documentation/admin-guide/device-mapper/dm-ebs.rst                                   |    2 
- Documentation/admin-guide/device-mapper/dm-zoned.rst                                 |    2 
- Documentation/admin-guide/device-mapper/unstriped.rst                                |   10 +-
- Documentation/admin-guide/dynamic-debug-howto.rst                                    |    2 
- Documentation/admin-guide/gpio/gpio-sim.rst                                          |    2 
- Documentation/admin-guide/hw-vuln/mds.rst                                            |    4 
- Documentation/admin-guide/kernel-parameters.txt                                      |    8 -
- Documentation/admin-guide/laptops/thinkpad-acpi.rst                                  |    2 
- Documentation/admin-guide/md.rst                                                     |    2 
- Documentation/admin-guide/media/bttv.rst                                             |    2 
- Documentation/admin-guide/media/building.rst                                         |    2 
- Documentation/admin-guide/media/si476x.rst                                           |    2 
- Documentation/admin-guide/media/vivid.rst                                            |    2 
- Documentation/admin-guide/mm/hugetlbpage.rst                                         |    2 
- Documentation/admin-guide/mm/numa_memory_policy.rst                                  |    4 
- Documentation/admin-guide/perf/hns3-pmu.rst                                          |    2 
- Documentation/admin-guide/pm/amd-pstate.rst                                          |    2 
- Documentation/admin-guide/spkguide.txt                                               |    4 
- Documentation/admin-guide/sysctl/vm.rst                                              |    4 
- Documentation/admin-guide/sysrq.rst                                                  |    2 
- Documentation/driver-api/dma-buf.rst                                                 |    2 
- Documentation/driver-api/dmaengine/client.rst                                        |    2 
- Documentation/driver-api/dmaengine/dmatest.rst                                       |    2 
- Documentation/driver-api/hsi.rst                                                     |    4 
- Documentation/driver-api/io-mapping.rst                                              |    4 
- Documentation/driver-api/md/md-cluster.rst                                           |    2 
- Documentation/driver-api/md/raid5-cache.rst                                          |    2 
- Documentation/driver-api/media/drivers/vidtv.rst                                     |    2 
- Documentation/driver-api/media/dtv-demux.rst                                         |    2 
- Documentation/driver-api/media/v4l2-subdev.rst                                       |    4 
- Documentation/driver-api/mei/nfc.rst                                                 |    2 
- Documentation/driver-api/nfc/nfc-hci.rst                                             |    2 
- Documentation/driver-api/nvdimm/nvdimm.rst                                           |    2 
- Documentation/driver-api/nvdimm/security.rst                                         |    2 
- Documentation/driver-api/pin-control.rst                                             |    2 
- Documentation/driver-api/pldmfw/index.rst                                            |    2 
- Documentation/driver-api/serial/driver.rst                                           |    2 
- Documentation/driver-api/surface_aggregator/ssh.rst                                  |    2 
- Documentation/driver-api/thermal/intel_powerclamp.rst                                |    2 
- Documentation/driver-api/usb/dwc3.rst                                                |    2 
- Documentation/driver-api/usb/usb3-debug-port.rst                                     |    2 
- Documentation/hwmon/aht10.rst                                                        |    2 
- Documentation/hwmon/aspeed-pwm-tacho.rst                                             |    2 
- Documentation/hwmon/corsair-psu.rst                                                  |    2 
- Documentation/hwmon/gsc-hwmon.rst                                                    |    6 -
- Documentation/hwmon/hwmon-kernel-api.rst                                             |    4 
- Documentation/hwmon/ltc2978.rst                                                      |    2 
- Documentation/hwmon/max6697.rst                                                      |    2 
- Documentation/hwmon/menf21bmc.rst                                                    |    2 
- Documentation/hwmon/pmbus-core.rst                                                   |    2 
- Documentation/hwmon/sht4x.rst                                                        |    2 
- Documentation/hwmon/smm665.rst                                                       |    2 
- Documentation/hwmon/stpddc60.rst                                                     |    2 
- Documentation/hwmon/vexpress.rst                                                     |    2 
- Documentation/hwmon/via686a.rst                                                      |    2 
- Documentation/networking/af_xdp.rst                                                  |    4 
- Documentation/networking/arcnet-hardware.rst                                         |    2 
- Documentation/networking/can.rst                                                     |    2 
- Documentation/networking/can_ucan_protocol.rst                                       |    2 
- Documentation/networking/cdc_mbim.rst                                                |    2 
- Documentation/networking/device_drivers/atm/iphase.rst                               |    2 
- Documentation/networking/device_drivers/can/ctu/ctucanfd-driver.rst                  |    4 
- Documentation/networking/device_drivers/can/ctu/fsm_txt_buffer_user.svg              |    4 
- Documentation/networking/device_drivers/ethernet/3com/vortex.rst                     |    2 
- Documentation/networking/device_drivers/ethernet/aquantia/atlantic.rst               |    6 -
- Documentation/networking/device_drivers/ethernet/freescale/dpaa2/mac-phy-support.rst |    2 
- Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst               |    2 
- Documentation/networking/device_drivers/ethernet/pensando/ionic.rst                  |    2 
- Documentation/networking/device_drivers/ethernet/ti/am65_nuss_cpsw_switchdev.rst     |    2 
- Documentation/networking/device_drivers/ethernet/ti/cpsw_switchdev.rst               |    2 
- Documentation/networking/device_drivers/wwan/iosm.rst                                |    2 
- Documentation/networking/devlink/ice.rst                                             |    4 
- Documentation/networking/devlink/netdevsim.rst                                       |    2 
- Documentation/networking/devlink/prestera.rst                                        |    2 
- Documentation/networking/dsa/configuration.rst                                       |    2 
- Documentation/networking/ethtool-netlink.rst                                         |    6 -
- Documentation/networking/gtp.rst                                                     |    2 
- Documentation/networking/ieee802154.rst                                              |    2 
- Documentation/networking/ip-sysctl.rst                                               |    6 -
- Documentation/networking/ipvlan.rst                                                  |    2 
- Documentation/networking/j1939.rst                                                   |    2 
- Documentation/networking/net_failover.rst                                            |    2 
- Documentation/networking/netconsole.rst                                              |    2 
- Documentation/networking/page_pool.rst                                               |    6 -
- Documentation/networking/phonet.rst                                                  |    2 
- Documentation/networking/phy.rst                                                     |    2 
- Documentation/networking/regulatory.rst                                              |    4 
- Documentation/networking/rxrpc.rst                                                   |    2 
- Documentation/networking/snmp_counter.rst                                            |    4 
- Documentation/networking/sysfs-tagging.rst                                           |    2 
- Documentation/scsi/ChangeLog.lpfc                                                    |   36 ++++----
- Documentation/scsi/ChangeLog.megaraid                                                |    8 -
- Documentation/scsi/ChangeLog.megaraid_sas                                            |    4 
- Documentation/scsi/ChangeLog.ncr53c8xx                                               |   16 +--
- Documentation/scsi/ChangeLog.sym53c8xx                                               |   14 +--
- Documentation/scsi/ChangeLog.sym53c8xx_2                                             |   10 +-
- Documentation/scsi/ncr53c8xx.rst                                                     |    4 
- Documentation/scsi/sym53c8xx_2.rst                                                   |    2 
- Documentation/scsi/tcm_qla2xxx.rst                                                   |    2 
- Documentation/scsi/ufs.rst                                                           |    2 
- Documentation/sparc/adi.rst                                                          |    4 
- Documentation/sparc/oradax/dax-hv-api.txt                                            |   44 +++++-----
- Documentation/userspace-api/iommufd.rst                                              |    2 
- Documentation/userspace-api/media/drivers/st-vgxy61.rst                              |    2 
- Documentation/userspace-api/media/rc/lirc-set-wideband-receiver.rst                  |    2 
- Documentation/userspace-api/media/rc/rc-protos.rst                                   |    2 
- Documentation/userspace-api/media/rc/rc-tables.rst                                   |    2 
- Documentation/userspace-api/media/v4l/dev-sliced-vbi.rst                             |    2 
- Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst                  |    2 
- Documentation/userspace-api/media/v4l/ext-ctrls-jpeg.rst                             |    2 
- Documentation/userspace-api/media/v4l/hist-v4l2.rst                                  |    4 
- Documentation/userspace-api/media/v4l/pixfmt-yuv-luma.rst                            |    2 
- Documentation/userspace-api/media/v4l/vidioc-cropcap.rst                             |    2 
- Documentation/userspace-api/seccomp_filter.rst                                       |    2 
- Documentation/userspace-api/sysfs-platform_profile.rst                               |    2 
- 126 files changed, 232 insertions(+), 232 deletions(-)
-
-
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org
-Cc: Alasdair Kergon <agk@redhat.com>
-Cc: Mike Snitzer <snitzer@kernel.org>
-Cc: dm-devel@redhat.com
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: nvdimm@lists.linux.dev
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: dmaengine@vger.kernel.org
-Cc: Song Liu <song@kernel.org>
-Cc: linux-raid@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-hwmon@vger.kernel.org
-Cc: Jiri Pirko <jiri@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: rcu@vger.kernel.org
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
+> ---
+>  .../Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst |    6 +++---
+>  .../Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst        |    2 +-
+>  .../RTFP.txt                                                   |   10 +++++-----
+>  .../UP.rst                                                     |    4 ++--
+>  .../lockdep.rst                                                |    2 +-
+>  .../torture.rst                                                |    4 ++--
+>  6 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff -- a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+> --- a/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+> +++ b/Documentation/RCU/Design/Expedited-Grace-Periods/Expedited-Grace-Periods.rst
+> @@ -277,7 +277,7 @@ the following access functions:
+>  
+>  Again, only one request in a given batch need actually carry out a
+>  grace-period operation, which means there must be an efficient way to
+> -identify which of many concurrent reqeusts will initiate the grace
+> +identify which of many concurrent requests will initiate the grace
+>  period, and that there be an efficient way for the remaining requests to
+>  wait for that grace period to complete. However, that is the topic of
+>  the next section.
+> @@ -405,7 +405,7 @@ Use of Workqueues
+>  In earlier implementations, the task requesting the expedited grace
+>  period also drove it to completion. This straightforward approach had
+>  the disadvantage of needing to account for POSIX signals sent to user
+> -tasks, so more recent implemementations use the Linux kernel's
+> +tasks, so more recent implementations use the Linux kernel's
+>  workqueues (see Documentation/core-api/workqueue.rst).
+>  
+>  The requesting task still does counter snapshotting and funnel-lock
+> @@ -465,7 +465,7 @@ corresponding disadvantage that workqueu
+>  initialized, which does not happen until some time after the scheduler
+>  spawns the first task. Given that there are parts of the kernel that
+>  really do want to execute grace periods during this mid-boot “dead
+> -zone”, expedited grace periods must do something else during thie time.
+> +zone”, expedited grace periods must do something else during this time.
+>  
+>  What they do is to fall back to the old practice of requiring that the
+>  requesting task drive the expedited grace period, as was the case before
+> diff -- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> @@ -168,7 +168,7 @@ an ``atomic_add_return()`` of zero) to d
+>  +-----------------------------------------------------------------------+
+>  
+>  The approach must be extended to handle one final case, that of waking a
+> -task blocked in ``synchronize_rcu()``. This task might be affinitied to
+> +task blocked in ``synchronize_rcu()``. This task might be affined to
+>  a CPU that is not yet aware that the grace period has ended, and thus
+>  might not yet be subject to the grace period's memory ordering.
+>  Therefore, there is an ``smp_mb()`` after the return from
+> diff -- a/Documentation/RCU/lockdep.rst b/Documentation/RCU/lockdep.rst
+> --- a/Documentation/RCU/lockdep.rst
+> +++ b/Documentation/RCU/lockdep.rst
+> @@ -65,7 +65,7 @@ checking of rcu_dereference() primitives
+>  	rcu_access_pointer(p):
+>  		Return the value of the pointer and omit all barriers,
+>  		but retain the compiler constraints that prevent duplicating
+> -		or coalescsing.  This is useful when testing the
+> +		or coalescing.  This is useful when testing the
+>  		value of the pointer itself, for example, against NULL.
+>  
+>  The rcu_dereference_check() check expression can be any boolean
+> diff -- a/Documentation/RCU/RTFP.txt b/Documentation/RCU/RTFP.txt
+> --- a/Documentation/RCU/RTFP.txt
+> +++ b/Documentation/RCU/RTFP.txt
+> @@ -201,7 +201,7 @@ work looked at debugging uses of RCU [Se
+>  In 2012, Josh Triplett received his Ph.D. with his dissertation
+>  covering RCU-protected resizable hash tables and the relationship
+>  between memory barriers and read-side traversal order:  If the updater
+> -is making changes in the opposite direction from the read-side traveral
+> +is making changes in the opposite direction from the read-side traversal
+>  order, the updater need only execute a memory-barrier instruction,
+>  but if in the same direction, the updater needs to wait for a grace
+>  period between the individual updates [JoshTriplettPhD].  Also in 2012,
+> @@ -1245,7 +1245,7 @@ Oregon Health and Sciences University"
+>  [Viewed September 5, 2005]"
+>  ,annotation={
+>  	First posting showing how RCU can be safely adapted for
+> -	preemptable RCU read side critical sections.
+> +	preemptible RCU read side critical sections.
+>  }
+>  }
+>  
+> @@ -1888,7 +1888,7 @@ Revised:
+>  \url{https://lore.kernel.org/r/20070910183004.GA3299@linux.vnet.ibm.com}
+>  [Viewed October 25, 2007]"
+>  ,annotation={
+> -	Final patch for preemptable RCU to -rt.  (Later patches were
+> +	Final patch for preemptible RCU to -rt.  (Later patches were
+>  	to mainline, eventually incorporated.)
+>  }
+>  }
+> @@ -2275,7 +2275,7 @@ lot of {Linux} into your technology!!!"
+>  \url{https://lore.kernel.org/r/20090724001429.GA17374@linux.vnet.ibm.com}
+>  [Viewed August 15, 2009]"
+>  ,annotation={
+> -	First posting of simple and fast preemptable RCU.
+> +	First posting of simple and fast preemptible RCU.
+>  }
+>  }
+>  
+> @@ -2639,7 +2639,7 @@ lot of {Linux} into your technology!!!"
+>  	RCU-protected hash tables, barriers vs. read-side traversal order.
+>  	.
+>  	If the updater is making changes in the opposite direction from
+> -	the read-side traveral order, the updater need only execute a
+> +	the read-side traversal order, the updater need only execute a
+>  	memory-barrier instruction, but if in the same direction, the
+>  	updater needs to wait for a grace period between the individual
+>  	updates.
+> diff -- a/Documentation/RCU/torture.rst b/Documentation/RCU/torture.rst
+> --- a/Documentation/RCU/torture.rst
+> +++ b/Documentation/RCU/torture.rst
+> @@ -216,7 +216,7 @@ Kernel boot arguments can also be suppli
+>  rcutorture's module parameters.  For example, to test a change to RCU's
+>  CPU stall-warning code, use "--bootargs 'rcutorture.stall_cpu=30'".
+>  This will of course result in the scripting reporting a failure, namely
+> -the resuling RCU CPU stall warning.  As noted above, reducing memory may
+> +the resulting RCU CPU stall warning.  As noted above, reducing memory may
+>  require disabling rcutorture's callback-flooding tests::
+>  
+>  	kvm.sh --cpus 448 --configs '56*TREE04' --memory 128M \
+> @@ -370,5 +370,5 @@ You can also re-run a previous remote ru
+>  		tools/testing/selftests/rcutorture/res/2022.11.03-11.26.28-remote \
+>  		--duration 24h
+>  
+> -In this case, most of the kvm-again.sh parmeters may be supplied following
+> +In this case, most of the kvm-again.sh parameters may be supplied following
+>  the pathname of the old run-results directory.
+> diff -- a/Documentation/RCU/UP.rst b/Documentation/RCU/UP.rst
+> --- a/Documentation/RCU/UP.rst
+> +++ b/Documentation/RCU/UP.rst
+> @@ -107,7 +107,7 @@ UP systems, including PREEMPT SMP builds
+>  
+>  Quick Quiz #3:
+>  	Why can't synchronize_rcu() return immediately on UP systems running
+> -	preemptable RCU?
+> +	preemptible RCU?
+>  
+>  .. _answer_quick_quiz_up:
+>  
+> @@ -143,7 +143,7 @@ Answer to Quick Quiz #2:
+>  
+>  Answer to Quick Quiz #3:
+>  	Why can't synchronize_rcu() return immediately on UP systems
+> -	running preemptable RCU?
+> +	running preemptible RCU?
+>  
+>  	Because some other task might have been preempted in the middle
+>  	of an RCU read-side critical section.  If synchronize_rcu()
