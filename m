@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50BD7C636D7
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 20:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D3CC636D4
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 20:46:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbjBAUqH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 15:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
+        id S231378AbjBAUqK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 15:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbjBAUpe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 15:45:34 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2886D78AEA
-        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 12:44:55 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id h16so18468773wrz.12
-        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 12:44:55 -0800 (PST)
+        with ESMTP id S231438AbjBAUph (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 15:45:37 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FCB7A4B5
+        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 12:44:56 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id t18so18527107wro.1
+        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 12:44:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iTNF1JvfCDajsaqBdlIe78iIn+/3qna+HTWlbtJK4ls=;
-        b=PHsc2s0l5yODha3GL0699EVouPw2t2VyZ/NpijjKErd/Wse0mkuoPmiTOTBFK5druj
-         O+8z9IC64HBK0PtRhvS00L1CHOP2Tt1XQgtckGVJrZCTenGyOpEdLF2JkiQ5W6uThjvg
-         tMwTIAehAFNjejO5Fr1XdrMjLCqVEk0WzwMrrB1yFj9MMznXnzgGoYBfY9Q/uxOzjYYW
-         iEpO5m6XjptcngDjwzD6aUIAmWwlDi3xWVhjEBAqmAIBiPGHAO6Z+AQUXn6HQwvkOdfm
-         I8kjD6IWRNSzffMbkewI0/3WzZrr5qqOUkRNV+5PWo7liabF2u7hWJKLTAXVYKwlCHV0
-         w+/Q==
+        bh=Si9kzr7Ck9J5FJkWCPsjkhUgmegMqi5GAbSuKxlmi/Y=;
+        b=sXMxj/CKJBGFdLzPqQuDQiOPwKF/J04CKNI5iVbGlsHYa+yHZsQXZ/welJivcDAh78
+         03XN/aIk9smRRSJBbVcD8A7xCJQW537kgAuRtyai14FS8t0ukXFaqkwlkudC99dkmvdN
+         rtlhlvW0kPQwaNg8Yz96FxnRXUt/hZZ4kDgRUlcTj6wrqyrl6sv/drdH7ZlZp7N0xpgr
+         7/F+R8t/koV++BDvOKRHqSKkhTRC4E1+ivjSfL+Y8IvbVH6WudoBt9K7CLfIp39iEZO0
+         iRMQLwcQy13UYZ9od7HzZ4VJNpiv6qQnkv1bEA/lGY/7VjTyfJn1TzJcGWgdw61ICEHi
+         8K6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iTNF1JvfCDajsaqBdlIe78iIn+/3qna+HTWlbtJK4ls=;
-        b=1dxxhQGw2oKmkLzx/gONPa5bgGCd+tefu8LGqUFCxfbKfHq2eo/KicMbf5gL9DSWMy
-         +8XEtJDZb9tZmZHavYRZiMonhuxY0dOKeVU8qszT1OdLzosWO0XtbXn6urZX11wg4RzX
-         ZrTw4ggUekX4lge2DexMMxLeiK6gNILv3CbA1CfWMnRYYbBdarXNvpYjtnSLUXrk5CId
-         E3Py7Zv5CBvdgRAbCqfG82DxUvVg0MRZNvOR/kR5X5QE/vxjZUfmd+5e4LeOjwhhlRAA
-         w+/ICy+4hyw24Aed0cb7E3X8U4ZF2pMbYzmfcyR2S396XakyAzSdz6zWzhLA1szXAimx
-         iZFQ==
-X-Gm-Message-State: AO0yUKWfKU2cQ1AIZTSVt3k5Dv9jjO+MhU9ey49iUyzo2XKY2eVyqQRe
-        HmaWDX7z79z46Sk1d6jYryXXMg==
-X-Google-Smtp-Source: AK7set9K2jZQ3dASQTukVtaV7ib8QH+uixLDVCS8g+33bcBHV6hPhsVaFGTs1vQxeonMHtYAgViYGg==
-X-Received: by 2002:a5d:560e:0:b0:2bf:cfb4:817c with SMTP id l14-20020a5d560e000000b002bfcfb4817cmr3484247wrv.35.1675284293632;
-        Wed, 01 Feb 2023 12:44:53 -0800 (PST)
+        bh=Si9kzr7Ck9J5FJkWCPsjkhUgmegMqi5GAbSuKxlmi/Y=;
+        b=ccdB6L+GrE/gX/56uTaYqkmnY/+9l9I7ex0m9sNt1Oc9A+kEyoxUUadQ5m/eNrkOYu
+         0rCZKoZ9MPsozawOM5wCSVCzBNLNjSdBgiAit3EBt9zSZS8A/xWW2ahJlALXfTZXy0Ec
+         QaxuYA4FCme5u372e926CjIX/2mavTLlev3ZKjMINBD6ywoI/VqBTuwPst1Q6B2+GJ4S
+         aGDerw0uRBDMqYAEd5ebmnJIey6fjjXvVq3TatN0j4I3P3hxZ3otkXoQPaFiKaomTUjb
+         aqfpJmAzhWeRKx6I0W3o2dTTWfrCJg9cl5c9FS/qg187SryLKPghGMDez034f77en3qD
+         dBww==
+X-Gm-Message-State: AO0yUKW10And+Tt+S13QiMCczVH2BrPCC+bpN3NpO1WvsatTjoT4FBbh
+        IxIcqcApjChcL8ZdhTrvJSKBLA==
+X-Google-Smtp-Source: AK7set/CwFq4yq21SPwqQ75tLHpsn8i9sDNtMo1urKN3i7lFWEBvGKN2/cx1n6sFd6WcKFjNEuGwpg==
+X-Received: by 2002:adf:fb8f:0:b0:2c1:28dc:1566 with SMTP id a15-20020adffb8f000000b002c128dc1566mr99026wrr.41.1675284294722;
+        Wed, 01 Feb 2023 12:44:54 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:7611:c340:3d8d:d46c])
-        by smtp.gmail.com with ESMTPSA id n15-20020a5d598f000000b002bdff778d87sm19993584wri.34.2023.02.01.12.44.52
+        by smtp.gmail.com with ESMTPSA id n15-20020a5d598f000000b002bdff778d87sm19993584wri.34.2023.02.01.12.44.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 12:44:53 -0800 (PST)
+        Wed, 01 Feb 2023 12:44:54 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de
 Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
@@ -58,16 +58,14 @@ Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
         hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
         pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
         punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH 7/9] x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
-Date:   Wed,  1 Feb 2023 20:43:36 +0000
-Message-Id: <20230201204338.1337562-8-usama.arif@bytedance.com>
+        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
+Subject: [PATCH 8/9] x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
+Date:   Wed,  1 Feb 2023 20:43:37 +0000
+Message-Id: <20230201204338.1337562-9-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230201204338.1337562-1-usama.arif@bytedance.com>
 References: <20230201204338.1337562-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -75,91 +73,40 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-When the APs can find their own APIC ID without assistance, we can do
-the AP bringup in parallel.
+There's no need to repeatedly save the BSP's MTRRs for each AP we bring
+up at boot time. And there's no need to use smp_call_function_single()
+even for the one time we *do* want to do it.
 
-Register a CPUHP_BP_PARALLEL_DYN stage "x86/cpu:kick" which just calls
-do_boot_cpu() to deliver INIT/SIPI/SIPI to each AP in turn before the
-normal native_cpu_up() does the rest of the hand-holding.
-
-The APs will then take turns through the real mode code (which has its
-own bitlock for exclusion) until they make it to their own stack, then
-proceed through the first few lines of start_secondary() and execute
-these parts in parallel:
-
- start_secondary()
-    -> cr4_init()
-    -> (some 32-bit only stuff so not in the parallel cases)
-    -> cpu_init_secondary()
-       -> cpu_init_exception_handling()
-       -> cpu_init()
-          -> wait_for_master_cpu()
-
-At this point they wait for the BSP to set their bit in cpu_callout_mask
-(from do_wait_cpu_initialized()), and release them to continue through
-the rest of cpu_init() and beyond.
-
-This reduces the time taken for bringup on my 28-thread Haswell system
-from about 120ms to 80ms. On a socket 96-thread Skylake it takes the
-bringup time from 500ms to 100ms.
-
-There is more speedup to be had by doing the remaining parts in parallel
-too — especially notify_cpu_starting() in which the AP takes itself
-through all the stages from CPUHP_BRINGUP_CPU to CPUHP_ONLINE. But those
-require careful auditing to ensure they are reentrant, before we can go
-that far.
-
-[Usama Arif: fixed rebase conflict]
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 ---
- arch/x86/kernel/smpboot.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ arch/x86/kernel/cpu/mtrr/mtrr.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 44e9f7ae5afc..060813411f85 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1329,9 +1329,12 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- {
- 	int ret;
- 
--	ret = do_cpu_up(cpu, tidle);
--	if (ret)
--		return ret;
-+	/* If parallel AP bringup isn't enabled, perform the first steps now. */
-+	if (!do_parallel_bringup) {
-+		ret = do_cpu_up(cpu, tidle);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	ret = do_wait_cpu_initialized(cpu);
- 	if (ret)
-@@ -1353,6 +1356,12 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- 	return ret;
- }
- 
-+/* Bringup step one: Send INIT/SIPI to the target AP */
-+static int native_cpu_kick(unsigned int cpu)
-+{
-+	return do_cpu_up(cpu, idle_thread_get(cpu));
-+}
-+
- /**
-  * arch_disable_smp_support() - disables SMP support for x86 at runtime
+diff --git a/arch/x86/kernel/cpu/mtrr/mtrr.c b/arch/x86/kernel/cpu/mtrr/mtrr.c
+index 2746cac9d8a9..2884017586f1 100644
+--- a/arch/x86/kernel/cpu/mtrr/mtrr.c
++++ b/arch/x86/kernel/cpu/mtrr/mtrr.c
+@@ -814,11 +814,20 @@ void mtrr_ap_init(void)
   */
-@@ -1543,6 +1552,10 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 	    boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
- 		do_parallel_bringup = false;
+ void mtrr_save_state(void)
+ {
++	static bool mtrr_saved;
+ 	int first_cpu;
  
-+	if (do_parallel_bringup)
-+		cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:kick",
-+					  native_cpu_kick, NULL);
+ 	if (!mtrr_enabled())
+ 		return;
+ 
++	if (system_state < SYSTEM_RUNNING) {
++		if (!mtrr_saved) {
++			mtrr_save_fixed_ranges(NULL);
++			mtrr_saved = true;
++		}
++		return;
++	}
 +
- 	snp_set_wakeup_secondary_cpu();
+ 	first_cpu = cpumask_first(cpu_online_mask);
+ 	smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
  }
- 
 -- 
 2.25.1
 
