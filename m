@@ -2,87 +2,161 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A3E2C636D4
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 10:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5874EC636D3
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 14:40:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbjBAKZj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 05:25:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S231644AbjBAOkj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 09:40:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjBAKZb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 05:25:31 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7509A4589A
-        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 02:25:27 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id u18so10212456qvv.9
-        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 02:25:27 -0800 (PST)
+        with ESMTP id S231945AbjBAOki (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 09:40:38 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A77C67C
+        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 06:40:12 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id k16so12853358wms.2
+        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 06:40:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lNeTW24ZRW/uaf23mE98U6Vb2AlvUvFrAAGQ/YbFVds=;
-        b=wyLERRlh5lHBfHS6DLBdU73BwiilL3MLW7Ks2sdu5hxUSaE9gJ+euyp9tucK8bXx67
-         +sEFWF82bDI0Ags1eANZjTvZzrhDJYH/+IkDSzTmBzrgGQ+4eSL6+4kxXOrMZiI2GBSH
-         i3m29eBynLsMmKq4bEIpzcTbT4KgmVJolLhe4=
+        bh=ntqD2+JXvdh0eVlKapCiL5KQqPWBOr/MM6KuL8nVXn8=;
+        b=uQLHiaQ7A/DFeUxgi+JDnmQc11d51gg6i8PiotXoZFfqWNXsZWSTp1Nm6gzHhuoaQB
+         SaQ3xOzci4arbzweFCCwzHblApQbSZZoIsFfx1/CbvtYtKAXxUwkkr15KdoYeKHT6+gk
+         q54ZXGalW4J05i/Nj75nQWgwGcDYgjSQy/qJ9cSJ+/huMkYfWgHH3P1w/jyxtovcTZtD
+         NIvr4dp+Gwk98ruC1EZm7VmgUHqleaQtsZHkJV2oBBfZSzq4Ie6/e2Wq++6N3f4o040c
+         TnrTs3fDscpAgM7mj03EJmM1yUX3Op11satjIue8hnY6h9xg7O1oSLT03CRfsRw0vXK8
+         6zLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lNeTW24ZRW/uaf23mE98U6Vb2AlvUvFrAAGQ/YbFVds=;
-        b=Gu6/ruhPvQRH9FagPWDHL1D9XS49ZSctH3z2pmj7fpxlX1Vxc7hsOln9xevaa9BK3H
-         ShguJF8IQ3t6gWSTMqfzIzIem1bENfGFHe8VnqgWg0OBKzrru8CuDNXkynTYcse4WsCh
-         6mt3HyBiMHQzvY/h/oyY5dWPQxDaurQ0njEStEgl6Fl8dNFADvLgt8IJ+xXtU9iwAPAb
-         Gk4A/95HaO30oPIErdLY0X7dqRhnQ293A35uwlm/Wer0wxU3Ryyde7pQl0uDWgcugt9R
-         HUizMrev/dpnPfc1UKFn/LLp66WYYMES8WbocoDYjYSSMjbIqDeEHGSDYw/vC2rwu9/+
-         kdnw==
-X-Gm-Message-State: AO0yUKVZgfUZQNBfQmpj1O60Dfa/zwg7pJhBJ6wzvm0rs0jdigickvCg
-        UGh+6kE4v0YFDKTpAjCgCbwUaQ==
-X-Google-Smtp-Source: AK7set81aZRR1SHl84Eyz6Jaj+5OUd8o8MPIigiPFBG8LROIt3RXyoknCWO62VVtYeuVgffJtk/Few==
-X-Received: by 2002:a0c:cdc3:0:b0:537:7181:c903 with SMTP id a3-20020a0ccdc3000000b005377181c903mr2880285qvn.34.1675247126319;
-        Wed, 01 Feb 2023 02:25:26 -0800 (PST)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id o2-20020a05620a110200b0071bfeaf5688sm7734578qkk.72.2023.02.01.02.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 02:25:25 -0800 (PST)
-Date:   Wed, 1 Feb 2023 10:25:25 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     lsf-pc@lists.linux-foundation.org
-Cc:     Frederic Weisbecker <fweisbec@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-mm <linux-mm@kvack.org>, rcu <rcu@vger.kernel.org>
-Subject: LSFMMBPF proposal [MM]: Lazy RCU memory reclaim
-Message-ID: <Y9o+FWwoLUdp2ees@google.com>
+        bh=ntqD2+JXvdh0eVlKapCiL5KQqPWBOr/MM6KuL8nVXn8=;
+        b=VsEi3S+6EwQFhnbVmmZK96LfNkMeJUepry2+rZgu/pYyGj7aBaO/kvcgKiDfwUdJPu
+         eWnChZ8MGtQ8X78kUVvbPxLl0VtAsEF/8TQjxgoVtX8a2yWnrUyRkXJZUeoWgVjhPaYj
+         07N4H46yuEP4cTjJtg7XZYTE03T+fZ0IbbxEeUhinww/Ny8Spczcn6F/4gzM/BnW8erf
+         jJD7P6LnljGGhem1rcdKTVxsNHJEYNetfv1gE85jaHJfYGDyvDXmVXqU3jGnKplm8Nia
+         6+6GXFRKVTKC+7iDCAGFy8wqvy0DbmhrwQzYA0mXzGsMmcrWpNFuaT724OO1g+2f1uFY
+         Py3Q==
+X-Gm-Message-State: AO0yUKUf3pF9SyUudFOUBx/avGWe1ITK8/GlvMQlyEMaIsv/hZ6oJrIs
+        uUlMeZenNL0wwI1e2tjkEs0n6Q==
+X-Google-Smtp-Source: AK7set8CH2pFHo/EOLHu4jCReTo9hfE+OIR2c8OVbzsL2VHrYohdwGOPlboTAjqO6SFBSnZ8xPZfVg==
+X-Received: by 2002:a05:600c:4f93:b0:3dc:5823:d6c0 with SMTP id n19-20020a05600c4f9300b003dc5823d6c0mr2509942wmq.6.1675262411008;
+        Wed, 01 Feb 2023 06:40:11 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:7611:c340:3d8d:d46c? ([2a02:6b6a:b566:0:7611:c340:3d8d:d46c])
+        by smtp.gmail.com with ESMTPSA id n9-20020a05600c3b8900b003d9aa76dc6asm2205329wms.0.2023.02.01.06.40.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Feb 2023 06:40:10 -0800 (PST)
+Message-ID: <ff876008-b642-4dbc-aa41-1639905e08b6@bytedance.com>
+Date:   Wed, 1 Feb 2023 14:40:09 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v4 0/9] Parallel CPU bringup for x86_64
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Fam Zheng <fam.zheng@bytedance.com>,
+        Punit Agrawal <punit.agrawal@bytedance.com>,
+        simon.evans@bytedance.com, liangma@liangbit.com
+References: <20220201205328.123066-1-dwmw2@infradead.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <20220201205328.123066-1-dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Title: Lazy RCU memory reclaim: Design, mainlining and next steps
-
-Description:
-Lazy RCU is a new technique introducing multi-second delays in RCU memory
-reclaim, done to save power on Android and ChromeOS.
-
-This talk is to describe the internals of how this works, and issues
-encountered. We will also discuss the mainlining of the patches, and future
-work. It is desired to also garner more interest in the -mm community and
-spread awareness of this work, including future work:
-
- * Delaying reclaim for other flavors of RCU (such as SRCU).
-
- * Possible integration of delayed free'ing into the slab (FreeBSD does this
-   for their equivalent of RCU, for instance).
-
- * Development of tooling to monitor RCU activity (BPF or otherwise).
-
- * Any positive or negative effects on usecases we should know about (per-VMA
-   locks, BPF etc).
 
 
-thanks,
+On 01/02/2022 20:53, David Woodhouse wrote:
+> Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
+> them shaves about 80% off the AP bringup time on a 96-thread 2-socket
+> Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
+> 
+> There are more wins to be had with further parallelisation, but this is
+> the simple part.
+> 
 
- - Joel
+Hi,
 
+We are interested in reducing the boot time of servers (with kexec), and 
+smpboot takes up a significant amount of time while booting. When 
+testing the patch series (rebased to v6.1) on a server with 128 CPUs 
+split across 2 NUMA nodes, it brought down the smpboot time from ~700ms 
+to 100ms. Adding another cpuhp state for do_wait_cpu_initialized to make 
+sure cpu_init is reached (as done in v1 of the series + using the 
+cpu_finishup_mask) brought it down further to ~30ms.
+
+I just wanted to check what was needed to progress the patch series 
+further for review? There weren't any comments on v4 of the patch so I 
+couldn't figure out what more is needed. I think its quite useful to 
+have this working so would be really glad help in anything needed to 
+restart the review.
+
+Thanks!
+Usama
+
+
+
+> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+>      in preparation for more parallelisation.
+> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+>      avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+>      24 bits of the physical X2APIC ID to be used. That patch still needs
+>      a Signed-off-by from its original author, who once claimed not to
+>      remember writing it at all. But now we've fixed it, hopefully he'll
+>      admit it now :)
+> 
+> David Woodhouse (8):
+>        x86/apic/x2apic: Fix parallel handling of cluster_mask
+>        cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+>        cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
+>        x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+>        x86/smpboot: Split up native_cpu_up into separate phases and document them
+>        x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+>        x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
+>        x86/smpboot: Serialize topology updates for secondary bringup
+> 
+> Thomas Gleixner (1):
+>        x86/smpboot: Support parallel startup of secondary CPUs
+> 
+> [dwoodhou@i7 linux-2.6]$ git diff --stat  v5.17-rc2..share/parallel-5.17-part1
+>   arch/x86/include/asm/realmode.h       |   3 +
+>   arch/x86/include/asm/smp.h            |  13 +-
+>   arch/x86/include/asm/topology.h       |   2 -
+>   arch/x86/kernel/acpi/sleep.c          |   1 +
+>   arch/x86/kernel/apic/apic.c           |   2 +-
+>   arch/x86/kernel/apic/x2apic_cluster.c | 108 ++++++-----
+>   arch/x86/kernel/cpu/common.c          |   6 +-
+>   arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
+>   arch/x86/kernel/head_64.S             |  73 ++++++++
+>   arch/x86/kernel/smpboot.c             | 325 ++++++++++++++++++++++++----------
+>   arch/x86/realmode/init.c              |   3 +
+>   arch/x86/realmode/rm/trampoline_64.S  |  14 ++
+>   arch/x86/xen/smp_pv.c                 |   4 +-
+>   include/linux/cpuhotplug.h            |   2 +
+>   include/linux/smpboot.h               |   7 +
+>   kernel/cpu.c                          |  27 ++-
+>   kernel/smpboot.c                      |   2 +-
+>   kernel/smpboot.h                      |   2 -
+>   18 files changed, 442 insertions(+), 161 deletions(-)
+> 
+> 
+> 
+> 
