@@ -2,161 +2,159 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5874EC636D3
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 14:40:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AEB2C05027
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:10:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjBAOkj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 09:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
+        id S231743AbjBAPK1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 10:10:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjBAOki (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 09:40:38 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A77C67C
-        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 06:40:12 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id k16so12853358wms.2
-        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 06:40:12 -0800 (PST)
+        with ESMTP id S232860AbjBAPJl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 10:09:41 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A2A66F80;
+        Wed,  1 Feb 2023 07:08:21 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id qw12so36369370ejc.2;
+        Wed, 01 Feb 2023 07:08:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ntqD2+JXvdh0eVlKapCiL5KQqPWBOr/MM6KuL8nVXn8=;
-        b=uQLHiaQ7A/DFeUxgi+JDnmQc11d51gg6i8PiotXoZFfqWNXsZWSTp1Nm6gzHhuoaQB
-         SaQ3xOzci4arbzweFCCwzHblApQbSZZoIsFfx1/CbvtYtKAXxUwkkr15KdoYeKHT6+gk
-         q54ZXGalW4J05i/Nj75nQWgwGcDYgjSQy/qJ9cSJ+/huMkYfWgHH3P1w/jyxtovcTZtD
-         NIvr4dp+Gwk98ruC1EZm7VmgUHqleaQtsZHkJV2oBBfZSzq4Ie6/e2Wq++6N3f4o040c
-         TnrTs3fDscpAgM7mj03EJmM1yUX3Op11satjIue8hnY6h9xg7O1oSLT03CRfsRw0vXK8
-         6zLg==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oWGEYERPvz3Z7XS0c9NWA+7/cG741tA5LjUXI+xdY9A=;
+        b=a5TGg72O4JVsbdjy8Fdwnjt1CZo2FFCFYgUY9zkr98rstihvKl+h2kTYnnQZj3XtIQ
+         VrLdkj6Y8gRLKhKPrEtocVaVOw5Kqx9UYfjDWXRsHFay9d1QtX2Y1PDqy4dQKWewU3TC
+         3UYtypps+hRIw0eo2P1np+vhLCLx7bfF2s8dlvC5L9lZRCzVkvRPlM6ZHeNJLS3glfeb
+         afq1QNf+AfCNLiFhWe9Un0v4bsrFoG25K6Cbdnql4+Cbv+WM0zsZDjoBhbT7TY3FuVQq
+         zf39dosn0iqhtolYkYxX7Mn7zR44cAUFhAxTGsdKOMhfaM3AINRsuKah8qgIMRjt1HXL
+         j9ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ntqD2+JXvdh0eVlKapCiL5KQqPWBOr/MM6KuL8nVXn8=;
-        b=VsEi3S+6EwQFhnbVmmZK96LfNkMeJUepry2+rZgu/pYyGj7aBaO/kvcgKiDfwUdJPu
-         eWnChZ8MGtQ8X78kUVvbPxLl0VtAsEF/8TQjxgoVtX8a2yWnrUyRkXJZUeoWgVjhPaYj
-         07N4H46yuEP4cTjJtg7XZYTE03T+fZ0IbbxEeUhinww/Ny8Spczcn6F/4gzM/BnW8erf
-         jJD7P6LnljGGhem1rcdKTVxsNHJEYNetfv1gE85jaHJfYGDyvDXmVXqU3jGnKplm8Nia
-         6+6GXFRKVTKC+7iDCAGFy8wqvy0DbmhrwQzYA0mXzGsMmcrWpNFuaT724OO1g+2f1uFY
-         Py3Q==
-X-Gm-Message-State: AO0yUKUf3pF9SyUudFOUBx/avGWe1ITK8/GlvMQlyEMaIsv/hZ6oJrIs
-        uUlMeZenNL0wwI1e2tjkEs0n6Q==
-X-Google-Smtp-Source: AK7set8CH2pFHo/EOLHu4jCReTo9hfE+OIR2c8OVbzsL2VHrYohdwGOPlboTAjqO6SFBSnZ8xPZfVg==
-X-Received: by 2002:a05:600c:4f93:b0:3dc:5823:d6c0 with SMTP id n19-20020a05600c4f9300b003dc5823d6c0mr2509942wmq.6.1675262411008;
-        Wed, 01 Feb 2023 06:40:11 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:7611:c340:3d8d:d46c? ([2a02:6b6a:b566:0:7611:c340:3d8d:d46c])
-        by smtp.gmail.com with ESMTPSA id n9-20020a05600c3b8900b003d9aa76dc6asm2205329wms.0.2023.02.01.06.40.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Feb 2023 06:40:10 -0800 (PST)
-Message-ID: <ff876008-b642-4dbc-aa41-1639905e08b6@bytedance.com>
-Date:   Wed, 1 Feb 2023 14:40:09 +0000
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oWGEYERPvz3Z7XS0c9NWA+7/cG741tA5LjUXI+xdY9A=;
+        b=8C1hoTCx3NWojKfwaYeBcKwTWkTESWptWmMn4lZo/Q175/u0kR1hzftoA+l+qvIiWR
+         1apW2wd0+GiyAHJKajqS3Omq0DexMnw9UUSSbxJhkLuyuU3S1J5NdMz1HfgUWmrg+ZWk
+         lZTe5lNkWuRH8evb1BFs1I/VFP7jt5w7AJc413btTPdrjmRR6LT+Lf0RcbhMwDqpgYeJ
+         maHlwF79Cx9IcR28TQDwYhZiHDzG0C3DkvHK2dpBR+o2QxNH+WmIHbyUMUZaI6Ju7z23
+         5TMH6NppCfJ/6KACz4R60GvM4xejZ+O5e7EkkwkcYSmOVL1fV8fKzNuBuk2I7QhNJ2qf
+         TRyQ==
+X-Gm-Message-State: AO0yUKXaWUQPtzoeiCsfmNIwdlHAcw7LvV/wvnP9uJqgobjt/9emXiaK
+        XKoux0CBYXzAZev/tqDWf1JpaRWSXcYyPw==
+X-Google-Smtp-Source: AK7set/G9utt0kjirrLeO0f7RG4vKpbd0iCDXqlCLC97vHF2UZQtZK2/B3FCOQK+DPWEChiWZCsWLw==
+X-Received: by 2002:a17:906:434b:b0:878:72f7:bd87 with SMTP id z11-20020a170906434b00b0087872f7bd87mr2475279ejm.6.1675264099752;
+        Wed, 01 Feb 2023 07:08:19 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id qc26-20020a170906d8ba00b008787e94c5ccsm9585774ejb.184.2023.02.01.07.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Feb 2023 07:08:19 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>
+Subject: [PATCH 02/13] drbd: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
+Date:   Wed,  1 Feb 2023 16:08:08 +0100
+Message-Id: <20230201150815.409582-3-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230201150815.409582-1-urezki@gmail.com>
+References: <20230201150815.409582-1-urezki@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH v4 0/9] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Fam Zheng <fam.zheng@bytedance.com>,
-        Punit Agrawal <punit.agrawal@bytedance.com>,
-        simon.evans@bytedance.com, liangma@liangbit.com
-References: <20220201205328.123066-1-dwmw2@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <20220201205328.123066-1-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+The kvfree_rcu()'s single argument name is deprecated therefore
+rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
+underline that it is for sleepable contexts.
 
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ drivers/block/drbd/drbd_nl.c       | 6 +++---
+ drivers/block/drbd/drbd_receiver.c | 4 ++--
+ drivers/block/drbd/drbd_state.c    | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-On 01/02/2022 20:53, David Woodhouse wrote:
-> Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
-> them shaves about 80% off the AP bringup time on a 96-thread 2-socket
-> Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
-> 
-> There are more wins to be had with further parallelisation, but this is
-> the simple part.
-> 
+diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
+index 60757ac31701..f49f2a5282e1 100644
+--- a/drivers/block/drbd/drbd_nl.c
++++ b/drivers/block/drbd/drbd_nl.c
+@@ -1615,7 +1615,7 @@ int drbd_adm_disk_opts(struct sk_buff *skb, struct genl_info *info)
+ 			drbd_send_sync_param(peer_device);
+ 	}
+ 
+-	kvfree_rcu(old_disk_conf);
++	kvfree_rcu_mightsleep(old_disk_conf);
+ 	kfree(old_plan);
+ 	mod_timer(&device->request_timer, jiffies + HZ);
+ 	goto success;
+@@ -2446,7 +2446,7 @@ int drbd_adm_net_opts(struct sk_buff *skb, struct genl_info *info)
+ 
+ 	mutex_unlock(&connection->resource->conf_update);
+ 	mutex_unlock(&connection->data.mutex);
+-	kvfree_rcu(old_net_conf);
++	kvfree_rcu_mightsleep(old_net_conf);
+ 
+ 	if (connection->cstate >= C_WF_REPORT_PARAMS) {
+ 		struct drbd_peer_device *peer_device;
+@@ -2860,7 +2860,7 @@ int drbd_adm_resize(struct sk_buff *skb, struct genl_info *info)
+ 		new_disk_conf->disk_size = (sector_t)rs.resize_size;
+ 		rcu_assign_pointer(device->ldev->disk_conf, new_disk_conf);
+ 		mutex_unlock(&device->resource->conf_update);
+-		kvfree_rcu(old_disk_conf);
++		kvfree_rcu_mightsleep(old_disk_conf);
+ 		new_disk_conf = NULL;
+ 	}
+ 
+diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
+index 757f4692b5bd..e197b2a465d2 100644
+--- a/drivers/block/drbd/drbd_receiver.c
++++ b/drivers/block/drbd/drbd_receiver.c
+@@ -3759,7 +3759,7 @@ static int receive_protocol(struct drbd_connection *connection, struct packet_in
+ 		drbd_info(connection, "peer data-integrity-alg: %s\n",
+ 			  integrity_alg[0] ? integrity_alg : "(none)");
+ 
+-	kvfree_rcu(old_net_conf);
++	kvfree_rcu_mightsleep(old_net_conf);
+ 	return 0;
+ 
+ disconnect_rcu_unlock:
+@@ -4127,7 +4127,7 @@ static int receive_sizes(struct drbd_connection *connection, struct packet_info
+ 
+ 			rcu_assign_pointer(device->ldev->disk_conf, new_disk_conf);
+ 			mutex_unlock(&connection->resource->conf_update);
+-			kvfree_rcu(old_disk_conf);
++			kvfree_rcu_mightsleep(old_disk_conf);
+ 
+ 			drbd_info(device, "Peer sets u_size to %lu sectors (old: %lu)\n",
+ 				 (unsigned long)p_usize, (unsigned long)my_usize);
+diff --git a/drivers/block/drbd/drbd_state.c b/drivers/block/drbd/drbd_state.c
+index 75d13ea0024f..2aeea295fa28 100644
+--- a/drivers/block/drbd/drbd_state.c
++++ b/drivers/block/drbd/drbd_state.c
+@@ -2071,7 +2071,7 @@ static int w_after_conn_state_ch(struct drbd_work *w, int unused)
+ 		conn_free_crypto(connection);
+ 		mutex_unlock(&connection->resource->conf_update);
+ 
+-		kvfree_rcu(old_conf);
++		kvfree_rcu_mightsleep(old_conf);
+ 	}
+ 
+ 	if (ns_max.susp_fen) {
+-- 
+2.30.2
 
-Hi,
-
-We are interested in reducing the boot time of servers (with kexec), and 
-smpboot takes up a significant amount of time while booting. When 
-testing the patch series (rebased to v6.1) on a server with 128 CPUs 
-split across 2 NUMA nodes, it brought down the smpboot time from ~700ms 
-to 100ms. Adding another cpuhp state for do_wait_cpu_initialized to make 
-sure cpu_init is reached (as done in v1 of the series + using the 
-cpu_finishup_mask) brought it down further to ~30ms.
-
-I just wanted to check what was needed to progress the patch series 
-further for review? There weren't any comments on v4 of the patch so I 
-couldn't figure out what more is needed. I think its quite useful to 
-have this working so would be really glad help in anything needed to 
-restart the review.
-
-Thanks!
-Usama
-
-
-
-> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
-> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
->      in preparation for more parallelisation.
-> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
->      avoid scribbling on initial_gs in common_cpu_up(), and to allow all
->      24 bits of the physical X2APIC ID to be used. That patch still needs
->      a Signed-off-by from its original author, who once claimed not to
->      remember writing it at all. But now we've fixed it, hopefully he'll
->      admit it now :)
-> 
-> David Woodhouse (8):
->        x86/apic/x2apic: Fix parallel handling of cluster_mask
->        cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
->        cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
->        x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
->        x86/smpboot: Split up native_cpu_up into separate phases and document them
->        x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
->        x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
->        x86/smpboot: Serialize topology updates for secondary bringup
-> 
-> Thomas Gleixner (1):
->        x86/smpboot: Support parallel startup of secondary CPUs
-> 
-> [dwoodhou@i7 linux-2.6]$ git diff --stat  v5.17-rc2..share/parallel-5.17-part1
->   arch/x86/include/asm/realmode.h       |   3 +
->   arch/x86/include/asm/smp.h            |  13 +-
->   arch/x86/include/asm/topology.h       |   2 -
->   arch/x86/kernel/acpi/sleep.c          |   1 +
->   arch/x86/kernel/apic/apic.c           |   2 +-
->   arch/x86/kernel/apic/x2apic_cluster.c | 108 ++++++-----
->   arch/x86/kernel/cpu/common.c          |   6 +-
->   arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
->   arch/x86/kernel/head_64.S             |  73 ++++++++
->   arch/x86/kernel/smpboot.c             | 325 ++++++++++++++++++++++++----------
->   arch/x86/realmode/init.c              |   3 +
->   arch/x86/realmode/rm/trampoline_64.S  |  14 ++
->   arch/x86/xen/smp_pv.c                 |   4 +-
->   include/linux/cpuhotplug.h            |   2 +
->   include/linux/smpboot.h               |   7 +
->   kernel/cpu.c                          |  27 ++-
->   kernel/smpboot.c                      |   2 +-
->   kernel/smpboot.h                      |   2 -
->   18 files changed, 442 insertions(+), 161 deletions(-)
-> 
-> 
-> 
-> 
