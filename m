@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B23EC05027
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39EB0C636D3
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:10:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbjBAPKd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 10:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        id S231685AbjBAPKe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 10:10:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbjBAPJo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 10:09:44 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445BE6BBC1;
-        Wed,  1 Feb 2023 07:08:28 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id dr8so30717619ejc.12;
-        Wed, 01 Feb 2023 07:08:27 -0800 (PST)
+        with ESMTP id S232018AbjBAPJl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 10:09:41 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC6966FA3;
+        Wed,  1 Feb 2023 07:08:23 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id hx15so32759982ejc.11;
+        Wed, 01 Feb 2023 07:08:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aCIsnGFwfhB3GdHRBSUurOPmrL4KoA1jNcMHDebxURA=;
-        b=BoPO7gpLDoTuKhel0GzrIKGVr1TL37RGWdatMkKU0QJJY+2/5Q79vJ3ju3SNEP0hUi
-         pS4R4XFaydaMFuGZ1BHFw2bOiaHCZz6cImmmpdB9bnx7OCWudj9X1EkAa8hpCqiDHkvc
-         AXrztKeyxki0DyD7ogtOJXKnVZVw9gTLmZsrB71UvG2iScNVZ1fkXsxG7PoYXaaI38oE
-         v8yTaTAe3z5sHYG7e/DL76rJRpPUCm6D5cH2rmKbyMa/oiQ9H+QJ3tfX+YGKRZRXqv31
-         40m4gkFYfLThinnJF9d22bciAQBsclWsv27RAzxjq5qL8dNOk3NXmRxTNxF1pPv81S2j
-         LGgQ==
+        bh=bT+cSsz2JrZskcNzFL2BkroViG0oFNVaYfW1YmvtVLg=;
+        b=MbTXjK1aKcldZ1ocYRQ8KR3IhAxYTzuOdQl734t9wmuLuz1vNvm2N6voBZm3Rdi4B2
+         modsjehD8rJK6TB3IicMeihhuJckxR9bFA+BOSDy/UeP3Xy2PGtavZFn4pga6QbEAnVI
+         l5/jvA3fOO98TNL/u81nzHFyhZNrcXg8KYKQaxXqbkae2jX5OOoZEWNv4gOWS4VHv1Yd
+         DJgnIHELt9l04IUvxl15YRvHxPqCfn8vLPeIOVe9yAzc/18J+EIP5+HGHYRulTtrstxH
+         PHAwkLCbDtqhgzyUc6F8k0cFPZKgOaSUJQxQ3p2XzNKxEOFP9ZacBMtthZGZYvXOjM+P
+         uJHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aCIsnGFwfhB3GdHRBSUurOPmrL4KoA1jNcMHDebxURA=;
-        b=NH+oMjMNt8Y1lTUwXK3Kfr2jYif8DPhrd5IZv5w70ys9DT26WIeJ5rB01AOjibvSFI
-         +TZlEddBS/hOoEMoz4GSnSiR3u3MuXIgjIdB9zP/EivmpCTPMg4ZzW3Pde9zGOuOpbA5
-         lFXuTpjzC/koN6jta1acP2DeANYgnivZxrj60zGmUtfwxie5FUYo7K9UicBo7y3KC/GU
-         TZt+DNCuUa35PM7vhnCUAAyZM6rZi3hDYDHlZ8S3EPE+OgVhGagw8wcww7Ve/HYL70Iz
-         +GdwcgAIQq33Xa35WmAXQQmVhaIekNe41gzfA38N+K9I4IgGbEyqf/TRCWgzm8yekivF
-         bekQ==
-X-Gm-Message-State: AO0yUKWhbkLqVPv9H21eZAICnqaDYrznvHfU6OSO5eugEnavzb/cqvzW
-        +dYDdboAMeBwN/OThAwwjHSDRsXRA0meYg==
-X-Google-Smtp-Source: AK7set8Y/Z/c78ObALKOzGqUDP4vWGfAwQ4UcwS2igsc0DL0dqu01vIw+yZCyXzDj7ltwNPUfnHrtw==
-X-Received: by 2002:a17:906:1441:b0:870:d15a:c2dc with SMTP id q1-20020a170906144100b00870d15ac2dcmr2800269ejc.74.1675264106371;
-        Wed, 01 Feb 2023 07:08:26 -0800 (PST)
+        bh=bT+cSsz2JrZskcNzFL2BkroViG0oFNVaYfW1YmvtVLg=;
+        b=hW6HRpoQMSd1wtmRerwRLGMmyqKQL3UYLG6AW01bgf9GgJJ/ZW88aqDsvuqWAgZDuN
+         8lSeUW08LvXqY3Ggo4LMxJ1FBI8tfxNkzjRVeSC3tAbgjjwz7kCXJ4fl4JlnWzkW4Dm1
+         KqoKkFcd1Mei5eAq453UtW98nbJy+YsJa2i9SYztEYFopsxftJ+T9EiHRPnXzlDYfFm1
+         t4IL4FaI+ZGNLDwdqbIAk6qC+R/VU8qECUkvsUE3fKE65DdroyaQ88OUg/SrIxBChbli
+         K2DLvXpk6U2ZjHuTiK4Geg4QbmmU+riZRWP6q2mg+pkFHOQWb9n+RHs8EjQORC+wdywe
+         3RDA==
+X-Gm-Message-State: AO0yUKUMvCo+SuV7vvqJWqJKiQOLkPGCgSQFQ3Bg3OrLSoktbHonkSUo
+        LiHCRj5XnFiasX6fp2iwHonei/oXYJW3KA==
+X-Google-Smtp-Source: AK7set9ffcrAEyHawqVjHlsonanOonFJEAXupajZTTKpre/ichXrJUx8ThkcdOWWc/uLkyLkIscf2w==
+X-Received: by 2002:a17:907:c20c:b0:883:3661:97e5 with SMTP id ti12-20020a170907c20c00b00883366197e5mr2107344ejc.50.1675264101634;
+        Wed, 01 Feb 2023 07:08:21 -0800 (PST)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id qc26-20020a170906d8ba00b008787e94c5ccsm9585774ejb.184.2023.02.01.07.08.25
+        by smtp.gmail.com with ESMTPSA id qc26-20020a170906d8ba00b008787e94c5ccsm9585774ejb.184.2023.02.01.07.08.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 07:08:26 -0800 (PST)
+        Wed, 01 Feb 2023 07:08:21 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -61,11 +61,10 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Eric Dumazet <edumazet@google.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
-        Lukas Czerner <lczerner@redhat.com>
-Subject: [PATCH 09/13] ext4/super: Rename kfree_rcu() to kfree_rcu_mightsleep()
-Date:   Wed,  1 Feb 2023 16:08:15 +0100
-Message-Id: <20230201150815.409582-10-urezki@gmail.com>
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Subject: [PATCH 04/13] tracing: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
+Date:   Wed,  1 Feb 2023 16:08:10 +0100
+Message-Id: <20230201150815.409582-5-urezki@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230201150815.409582-1-urezki@gmail.com>
 References: <20230201150815.409582-1-urezki@gmail.com>
@@ -75,30 +74,43 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The kfree_rcu()'s single argument name is deprecated therefore
-rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
+The kvfree_rcu()'s single argument name is deprecated therefore
+rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
 underline that it is for sleepable contexts.
 
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Lukas Czerner <lczerner@redhat.com>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_osnoise.c | 2 +-
+ kernel/trace/trace_probe.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 260c1b3e3ef2..87aa23d047c9 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2500,7 +2500,7 @@ static void ext4_apply_quota_options(struct fs_context *fc,
- 			qname = rcu_replace_pointer(sbi->s_qf_names[i], qname,
- 						lockdep_is_held(&sb->s_umount));
- 			if (qname)
--				kfree_rcu(qname);
-+				kfree_rcu_mightsleep(qname);
- 		}
- 	}
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index 94c1b5eb1dc0..67392d872b67 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -160,7 +160,7 @@ static void osnoise_unregister_instance(struct trace_array *tr)
+ 	if (!found)
+ 		return;
  
+-	kvfree_rcu(inst);
++	kvfree_rcu_mightsleep(inst);
+ }
+ 
+ /*
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 01ebabbbe8c9..32a7741dc731 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -1170,7 +1170,7 @@ int trace_probe_remove_file(struct trace_probe *tp,
+ 		return -ENOENT;
+ 
+ 	list_del_rcu(&link->list);
+-	kvfree_rcu(link);
++	kvfree_rcu_mightsleep(link);
+ 
+ 	if (list_empty(&tp->event->files))
+ 		trace_probe_clear_flag(tp, TP_FLAG_TRACE);
 -- 
 2.30.2
 
