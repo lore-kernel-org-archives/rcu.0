@@ -2,88 +2,133 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3127AC05027
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 19:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2165C05027
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 20:44:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbjBATMO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 14:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
+        id S229852AbjBAUow (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 15:44:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjBATMO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 14:12:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C307BE74;
-        Wed,  1 Feb 2023 11:12:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BFB96192C;
-        Wed,  1 Feb 2023 19:12:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2D3EC433EF;
-        Wed,  1 Feb 2023 19:12:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675278731;
-        bh=kpaUOeRYXyQg2f+dAbUbTgJ7/3PZS7RUaXOPMerihYQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qHUBumJeZVGjWXNdfgmJx4mZDGcsslw0fayEEJPFOVGyqLoiQdtTLTasa4JNiy40N
-         kUwbx8uc0trTRBk26alUzGn2E9gexasqrqPzb5Ai5rM3DYoN2RJv5CRmkxyFsDbA4d
-         Ty4RD8ST+q+bPQHXtpY0AiC3dWjRX7mx1oOZmHGhbZSFiYPqS07eJB7+aJw+MUU0AS
-         l0hS62z6cWG2826cttrYlKaqhu+RU5R+t8OO2ic6h8AqYFNq55r8Z3BCw/dXSTgARa
-         qO94bK1Cx5NZDxZbYRhSdjbEICi/87ydCvXg/8Y12KRMPa4tcQpF8m3uHGpNeN68RI
-         rPrGgir26P+Bw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 451DD5C06D0; Wed,  1 Feb 2023 11:12:11 -0800 (PST)
-Date:   Wed, 1 Feb 2023 11:12:11 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
- k[v]free_rcu_mightsleep()
-Message-ID: <20230201191211.GK2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230201150815.409582-1-urezki@gmail.com>
+        with ESMTP id S229892AbjBAUov (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 15:44:51 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CB77909C
+        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 12:44:48 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id j29-20020a05600c1c1d00b003dc52fed235so2428065wms.1
+        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 12:44:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MBkUStfA+iDGjKKAM+4p8+0mIlG33iS9Y15joN7auaU=;
+        b=p8tndsXy9zB48jq6U4H/0wBOP0dK7C9M6YI8SpeKZhYJkxaHanw6+Ix1tUU231B/5k
+         QSuqVj3WcIbAArBi3dVGZOsJDyxJwzhPUUnIIjBaEJ8rMjetZrs8qfNnBx7OHdB6r3SI
+         FC8ehdA/NTaFV4Jm/4yQb6tH65UEYu5nNm26PTL0b+TL0RT3h1fE0yH6V3XqRXrC9myu
+         +m7w9k8yH36blhlSClNqJZq1G3TG2auYToYac5s3EuQfM5OhNVoc2bjZVshe9VwvoRuX
+         WUvJq8W8Uw84kVvU0dwsJa3q23Zy8nNz5nXE7Go6KIbBHTg7DGYgUKvu0kOqXgS7uIos
+         ziYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MBkUStfA+iDGjKKAM+4p8+0mIlG33iS9Y15joN7auaU=;
+        b=5Ii/w5z/UgCIrc93MGoInj5ZPNjN1d2pnGlFFw6HWwQ3n0jXn1fbcB9ngUxkkA87/2
+         yrv5fFlfC1kLJO2IoJ0joCxJOn/ZKekkMpPawxymk34KdE6KUYE7/tO70F+b8RND1ZgI
+         OLJOQp4S59tzlWEWXPisWP98x1hlkNu9iBuAam+BQuYqtEfT9ryXQpuxMH1jSRes4/BU
+         ml8hEOY3gUbLWyJ74BP8D6WofjHA6f3hDMsUWAThb1NTIUduaRSQ9EHDwl3cssS1FIf+
+         WNhkbOynFAw4yXjIsPYDllUjnrnqUFQNtuwbMtlrK7HQ8IKZnP1pGMITTroHElChA1qs
+         ucuw==
+X-Gm-Message-State: AO0yUKXEjAqPZdzqO2i9SzcJkkMSwOtnnDbiYm3SAhafqvCwL34cNozm
+        Lt35fDiaPp4djcAg3mW2A0OOEA==
+X-Google-Smtp-Source: AK7set/wpf35la+9i2edsJCL7KpWtiHynmdfZv2wHgxuiVprFgfzOXT73CCMouPrU1yUSANu63rOsQ==
+X-Received: by 2002:a05:600c:16c4:b0:3dc:16d2:ae5e with SMTP id l4-20020a05600c16c400b003dc16d2ae5emr3423164wmn.32.1675284286944;
+        Wed, 01 Feb 2023 12:44:46 -0800 (PST)
+Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:7611:c340:3d8d:d46c])
+        by smtp.gmail.com with ESMTPSA id n15-20020a5d598f000000b002bdff778d87sm19993584wri.34.2023.02.01.12.44.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Feb 2023 12:44:46 -0800 (PST)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     dwmw2@infradead.org, tglx@linutronix.de
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com, Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH 0/9] Parallel CPU bringup for x86_64
+Date:   Wed,  1 Feb 2023 20:43:29 +0000
+Message-Id: <20230201204338.1337562-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230201150815.409582-1-urezki@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 01, 2023 at 04:08:06PM +0100, Uladzislau Rezki (Sony) wrote:
-> This small series is based on Paul's "dev" branch. Head is 6002817348a1c610dc1b1c01ff81654cdec12be4
-> it renames a single argument of k[v]free_rcu() to its new k[v]free_rcu_mightsleep() name.
-> 
-> 1.
-> The problem is that, recently we have run into a precedent when
-> a user intended to give a second argument to kfree_rcu() API but
-> forgot to do it in a code so a call became as a single argument
-> of kfree_rcu() API.
-> 
-> 2.
-> Such mistyping can lead to hidden bags where sleeping is forbidden.
-> 
-> 3.
-> _mightsleep() prefix gives much more information for which contexts
-> it can be used for.
+This patchseries is from the work done by David Woodhouse (v4: https://lore.kernel.org/all/20220201205328.123066-1-dwmw2@infradead.org/).
+The parallel CPU bringup is disabled for all AMD CPUs in this version: (see discussions: https://lore.kernel.org/all/bc3f2b1332c4bb77558df8aa36493a55542fe5b9.camel@infradead.org/ and
+https://lore.kernel.org/all/3b6ac86fdc800cac5806433daf14a9095be101e9.camel@infradead.org/).
 
-Thank you!!!
+Doing INIT/SIPI/SIPI in parallel brings down the time for smpboot from ~700ms
+to 100ms (85% improvement) on a server with 128 CPUs split across 2 NUMA
+nodes.
 
-I have queued these (aside from 10/13, which is being replaced by a
-patch from Julian Anastasov) for further testing and review.  And with
-the usual wordsmithing.
+Adding another cpuhp state for do_wait_cpu_initialized to make sure cpu_init
+is reached in parallel as proposed by David in v1 will bring it down further
+to ~30ms. Making this change would be dependent on this patchseries, so they
+could be explored if this gets merged.
 
-If testing goes well, I might try to get 1/13 into the next merge window,
-which would simplify things if maintainers want to take their patches
-separately.
+Changes across versions:
+v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+    in preparation for more parallelisation.
+v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+    24 bits of the physical X2APIC ID to be used. That patch still needs
+    a Signed-off-by from its original author, who once claimed not to
+    remember writing it at all. But now we've fixed it, hopefully he'll
+    admit it now :)
+v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+    for AMD CPUs.
 
-							Thanx, Paul
+David Woodhouse (8):
+  x86/apic/x2apic: Fix parallel handling of cluster_mask
+  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+  cpu/hotplug: Add dynamic parallel bringup states before
+    CPUHP_BRINGUP_CPU
+  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+  x86/smpboot: Split up native_cpu_up into separate phases and document
+    them
+  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+  x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
+  x86/smpboot: Serialize topology updates for secondary bringup
+
+Thomas Gleixner (1):
+  x86/smpboot: Support parallel startup of secondary CPUs
+
+ arch/x86/include/asm/realmode.h       |   3 +
+ arch/x86/include/asm/smp.h            |  13 +-
+ arch/x86/include/asm/topology.h       |   2 -
+ arch/x86/kernel/acpi/sleep.c          |   1 +
+ arch/x86/kernel/apic/apic.c           |   2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c | 108 +++++----
+ arch/x86/kernel/cpu/common.c          |   6 +-
+ arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
+ arch/x86/kernel/head_64.S             |  73 ++++++
+ arch/x86/kernel/smpboot.c             | 324 ++++++++++++++++++--------
+ arch/x86/realmode/init.c              |   3 +
+ arch/x86/realmode/rm/trampoline_64.S  |  14 ++
+ arch/x86/xen/smp_pv.c                 |   4 +-
+ include/linux/cpuhotplug.h            |   2 +
+ include/linux/smpboot.h               |   7 +
+ kernel/cpu.c                          |  27 ++-
+ kernel/smpboot.c                      |   2 +-
+ kernel/smpboot.h                      |   2 -
+ 18 files changed, 443 insertions(+), 159 deletions(-)
+
+-- 
+2.25.1
+
