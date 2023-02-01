@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31CDCC05027
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C023EC636D3
 	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:10:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbjBAPK2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 10:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
+        id S232153AbjBAPK3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 10:10:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232755AbjBAPJr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 10:09:47 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3940069B26;
-        Wed,  1 Feb 2023 07:08:26 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id lu11so14978562ejb.3;
-        Wed, 01 Feb 2023 07:08:26 -0800 (PST)
+        with ESMTP id S232905AbjBAPJo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 10:09:44 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBACC66FA4;
+        Wed,  1 Feb 2023 07:08:24 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id m2so51835654ejb.8;
+        Wed, 01 Feb 2023 07:08:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rp5plCaK+Ee0v6zJJSPg3nVKcz7Ocb0iI+K21w1Y4qU=;
-        b=NRcPeMqBEWHBNfeM1QbytTGZ1tgUxGV947jrBR4ORmkwM2cjGj3VYO0Izn3sEkPeze
-         TDSUaTP5zxyGloM9o75uwKb/ZyZk+fFS41eEBX/ap94gmlod2QhZDMBcdzZ+T6SWJIxm
-         xuFMcqYWNXTFaAXiqxSzjvITMIqrA3UicyA6oKp7NZlv1V6pLdXCS4ya609Bdnz2D9Hi
-         b9YuqWqFWdwJuTWGcraM1KZR1fSnQ3h7rueNOAopZZIlBcNIbA5q/QflEcWfVU8VhwXZ
-         LsM4DihK15XNeSKhFz6YbZWMfSSGuU6F0Wy8Oq6rqwFlvmWH50agLQkQB+J8MR8Y3z3k
-         S12Q==
+        bh=fO35H2/wXICWhJ+cuarq0XINTUHDojZ1200QGctnX2s=;
+        b=SUl+ss9v5UYWv8NVc+1bIneBIoOFhC93EyGiZTsCfA+JgqnMTLsUJhloNmitcDPyah
+         zhSiml1PTBGgW/R81AmM8CTk6Sj107GDnZP+DAs2hC79RVmKywEOAQw+7F97t87n5cb/
+         3SNTvvcC2eb61GOiCXqztxc82x8jzbFrDdEn2F+X6XmhlCMNavxIn5Jx3//Xss8BFX9y
+         8IZv9wIxrUFj4shJIPlq8ONgV0y93Ww0E/IRPe+0kwCfnhC/ue90egwnnvkSpBl36z6T
+         ggsXtcw+ss/53rVrtqvTPDTvvwDTGVjAShKJ752MLUXrcN0ksnOd9hhHEYWgFG4uUZE1
+         1+pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rp5plCaK+Ee0v6zJJSPg3nVKcz7Ocb0iI+K21w1Y4qU=;
-        b=yQceJNKmuBB00xxZzAR1uTlwZUQY1IdE2Jv98ijCpejFbtBFUO6pg5dk85r0PcAf+/
-         4bcfFzPI/tEGGzznpvOSAzUrCx6rxWpQdsm+opSod3HmEmANTmBrD6PuE+3tWdhixLVl
-         qENeAPcP3CB12jr7Mrz4lxVVe+W6YASy3KhUxXLvJbqk0zxk6oE1ml2YLjZsXBTYTFT+
-         hvSDs76UX4Gm4LbVRhOXaBh74v8mD6s4mTZXha9eEBb/5YffS2xD3g6R9PSx4q4ZrOXR
-         NaQR0ZvWOtCV7gEJu4tAfBfkbJfzNusZwDD6v4yAxqKfg0M/pAvLQ6SrsQlg6EWNjeh4
-         6KnQ==
-X-Gm-Message-State: AO0yUKUnvqqw4FPA1lTMPE0zxU09pbIuNUBeO/hwZzQvI5IZ64F+cG6q
-        r7YrfcgGuNlh3LXmZ2wuY6CipJWiFglyrw==
-X-Google-Smtp-Source: AK7set8NF2CoMDa5EkVRC5udmJtZtSKjC3hoECJADkYaqeir3itK2k08NKHNlbPCOhBbCT7H7ScyXA==
-X-Received: by 2002:a17:907:98f9:b0:87b:db62:d659 with SMTP id ke25-20020a17090798f900b0087bdb62d659mr3026308ejc.19.1675264105400;
-        Wed, 01 Feb 2023 07:08:25 -0800 (PST)
+        bh=fO35H2/wXICWhJ+cuarq0XINTUHDojZ1200QGctnX2s=;
+        b=ALDzzQQQ65gEdIM+Irwb5UmVjK/wpoBAIUnZmJIkcb+wT7tVTxCaVvQCG28ztJzsFj
+         1W/KSJRcgaMwbcvEReY9liyzdDVZTnXgQEVRQreGhai8/84rSrDRSGHoBkHghG60lx0h
+         2RluuGjMZl5x9FKN7zD6KLd7/BeqOvTBvdyW8BTG5bMt5s7EhRmJOHZHiDs+aAi/aIY7
+         IzPPQK0X8cc6iJGNSUGQ3tTjdOdg/N70rTvMPeSZjREm/6w+Rl7nbaT57ssaXuft92rM
+         6uPqglyViXId0GOsHZa8+wAqFRYKRfGRB9w4A9rOGB+znkh9LwZx7Mgg+IbOEUtv8BcC
+         MoFw==
+X-Gm-Message-State: AO0yUKUIlHv7De7aM5Td+kfcC7d+wizvaIDcYZUzNRU7RtIqBCaBp9Ff
+        uMiVjyu9LfrHZeLbbGVxAx2rhj4/B5d+KQ==
+X-Google-Smtp-Source: AK7set9aFDpwzIr/zYc4RTSpyE0YXhwfxTDiMJwKhIebZokzv2cysN23I5YVLaBbRST0AMkJPPC5WA==
+X-Received: by 2002:a17:907:e8e:b0:878:7ba6:b69 with SMTP id ho14-20020a1709070e8e00b008787ba60b69mr8224743ejc.51.1675264102547;
+        Wed, 01 Feb 2023 07:08:22 -0800 (PST)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id qc26-20020a170906d8ba00b008787e94c5ccsm9585774ejb.184.2023.02.01.07.08.24
+        by smtp.gmail.com with ESMTPSA id qc26-20020a170906d8ba00b008787e94c5ccsm9585774ejb.184.2023.02.01.07.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 07:08:25 -0800 (PST)
+        Wed, 01 Feb 2023 07:08:22 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -61,12 +61,10 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Eric Dumazet <edumazet@google.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>
-Subject: [PATCH 08/13] net/mlx5: Rename kfree_rcu() to kfree_rcu_mightsleep()
-Date:   Wed,  1 Feb 2023 16:08:14 +0100
-Message-Id: <20230201150815.409582-9-urezki@gmail.com>
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Subject: [PATCH 05/13] lib/test_vmalloc.c: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
+Date:   Wed,  1 Feb 2023 16:08:11 +0100
+Message-Id: <20230201150815.409582-6-urezki@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230201150815.409582-1-urezki@gmail.com>
 References: <20230201150815.409582-1-urezki@gmail.com>
@@ -76,54 +74,28 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The kfree_rcu()'s single argument name is deprecated therefore
-rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
+The kvfree_rcu()'s single argument name is deprecated therefore
+rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
 underline that it is for sleepable contexts.
 
-Cc: Ariel Levkovich <lariel@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Vlad Buslov <vladbu@nvidia.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c  | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ lib/test_vmalloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
-index ca834bbcb44f..8afcec0c5d3c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c
-@@ -242,7 +242,7 @@ mlx5e_int_port_remove(struct mlx5e_tc_int_port_priv *priv,
- 		mlx5_del_flow_rules(int_port->rx_rule);
- 	mapping_remove(ctx, int_port->mapping);
- 	mlx5e_int_port_metadata_free(priv, int_port->match_metadata);
--	kfree_rcu(int_port);
-+	kfree_rcu_mightsleep(int_port);
- 	priv->num_ports--;
- }
+diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+index f90d2c27675b..6d8c5c0afd53 100644
+--- a/lib/test_vmalloc.c
++++ b/lib/test_vmalloc.c
+@@ -328,7 +328,7 @@ kvfree_rcu_1_arg_vmalloc_test(void)
+ 			return -1;
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-index 9369a580743e..5d32a8a5e5a4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-@@ -672,7 +672,7 @@ static int mlx5e_macsec_del_txsa(struct macsec_context *ctx)
+ 		p->array[0] = 'a';
+-		kvfree_rcu(p);
++		kvfree_rcu_mightsleep(p);
+ 	}
  
- 	mlx5e_macsec_cleanup_sa(macsec, tx_sa, true);
- 	mlx5_destroy_encryption_key(macsec->mdev, tx_sa->enc_key_id);
--	kfree_rcu(tx_sa);
-+	kfree_rcu_mightsleep(tx_sa);
- 	macsec_device->tx_sa[assoc_num] = NULL;
- 
- out:
-@@ -851,7 +851,7 @@ static void macsec_del_rxsc_ctx(struct mlx5e_macsec *macsec, struct mlx5e_macsec
- 	xa_erase(&macsec->sc_xarray, rx_sc->sc_xarray_element->fs_id);
- 	metadata_dst_free(rx_sc->md_dst);
- 	kfree(rx_sc->sc_xarray_element);
--	kfree_rcu(rx_sc);
-+	kfree_rcu_mightsleep(rx_sc);
- }
- 
- static int mlx5e_macsec_del_rxsc(struct macsec_context *ctx)
+ 	return 0;
 -- 
 2.30.2
 
