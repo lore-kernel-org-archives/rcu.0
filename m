@@ -2,22 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74219C636CD
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE5CC63797
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 16:12:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbjBAPzA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 10:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
+        id S231864AbjBAQMo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 11:12:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbjBAPyr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 10:54:47 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B91EE15C96;
-        Wed,  1 Feb 2023 07:54:12 -0800 (PST)
-Date:   Wed, 1 Feb 2023 16:53:43 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        with ESMTP id S232995AbjBAQMZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 11:12:25 -0500
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 451E9783D5;
+        Wed,  1 Feb 2023 08:12:13 -0800 (PST)
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id 3DA994D90C;
+        Wed,  1 Feb 2023 18:12:13 +0200 (EET)
+Received: from ink.ssi.bg (unknown [193.238.174.40])
+        by mg.ssi.bg (Proxmox) with ESMTP id C7EF44D8EA;
+        Wed,  1 Feb 2023 18:12:11 +0200 (EET)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id 3491D3C0439;
+        Wed,  1 Feb 2023 18:12:06 +0200 (EET)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.17.1/8.16.1) with ESMTP id 311GC4Cs099524;
+        Wed, 1 Feb 2023 18:12:04 +0200
+Date:   Wed, 1 Feb 2023 18:12:04 +0200 (EET)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Jens Axboe <axboe@kernel.dk>,
@@ -27,44 +40,88 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
-        Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
-Message-ID: <Y9qLB6Zyx5atcFUV@salvia>
-References: <20230201150954.409693-1-urezki@gmail.com>
+        "Theodore Ts'o" <tytso@mit.edu>, Jiri Wiesner <jwiesner@suse.de>
+Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to
+ kfree_rcu_mightsleep()
+In-Reply-To: <Y9qLB6Zyx5atcFUV@salvia>
+Message-ID: <7e87836a-c72-eefd-9c74-fc2637accd2@ssi.bg>
+References: <20230201150954.409693-1-urezki@gmail.com> <Y9qLB6Zyx5atcFUV@salvia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230201150954.409693-1-urezki@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
 
-On Wed, Feb 01, 2023 at 04:09:51PM +0100, Uladzislau Rezki (Sony) wrote:
-> The kfree_rcu()'s single argument name is deprecated therefore
-> rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
-> underline that it is for sleepable contexts.
+	Hello,
+
+On Wed, 1 Feb 2023, Pablo Neira Ayuso wrote:
+
+> Hi,
 > 
-> Cc: Julian Anastasov <ja@ssi.bg>
-> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> Cc: Jiri Wiesner <jwiesner@suse.de>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  net/netfilter/ipvs/ip_vs_est.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Wed, Feb 01, 2023 at 04:09:51PM +0100, Uladzislau Rezki (Sony) wrote:
+> > The kfree_rcu()'s single argument name is deprecated therefore
+> > rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
+> > underline that it is for sleepable contexts.
+> > 
+> > Cc: Julian Anastasov <ja@ssi.bg>
+> > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> > Cc: Jiri Wiesner <jwiesner@suse.de>
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  net/netfilter/ipvs/ip_vs_est.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
+> > index ce2a1549b304..a39baf6d1367 100644
+> > --- a/net/netfilter/ipvs/ip_vs_est.c
+> > +++ b/net/netfilter/ipvs/ip_vs_est.c
+> > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
+> >  	__set_bit(row, kd->avail);
+> >  	if (!kd->tick_len[row]) {
+> >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
+> > -		kfree_rcu(td);
 > 
-> diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-> index ce2a1549b304..a39baf6d1367 100644
-> --- a/net/netfilter/ipvs/ip_vs_est.c
-> +++ b/net/netfilter/ipvs/ip_vs_est.c
-> @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
->  	__set_bit(row, kd->avail);
->  	if (!kd->tick_len[row]) {
->  		RCU_INIT_POINTER(kd->ticks[row], NULL);
-> -		kfree_rcu(td);
+> I also found this kfree_rcu() without rcu_head call a few weeks ago.
+> 
+> @Wiesner, @Julian: Any chance this can be turned into kfree_rcu(td, rcu_head); ?
 
-I also found this kfree_rcu() without rcu_head call a few weeks ago.
+	Yes, as simple as this:
 
-@Wiesner, @Julian: Any chance this can be turned into kfree_rcu(td, rcu_head); ?
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index c6c61100d244..6d71a5ff52df 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -461,6 +461,7 @@ void ip_vs_stats_free(struct ip_vs_stats *stats);
+ 
+ /* Multiple chains processed in same tick */
+ struct ip_vs_est_tick_data {
++	struct rcu_head		rcu_head;
+ 	struct hlist_head	chains[IPVS_EST_TICK_CHAINS];
+ 	DECLARE_BITMAP(present, IPVS_EST_TICK_CHAINS);
+ 	DECLARE_BITMAP(full, IPVS_EST_TICK_CHAINS);
+diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
+index df56073bb282..25c7118d9348 100644
+--- a/net/netfilter/ipvs/ip_vs_est.c
++++ b/net/netfilter/ipvs/ip_vs_est.c
+@@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
+ 	__set_bit(row, kd->avail);
+ 	if (!kd->tick_len[row]) {
+ 		RCU_INIT_POINTER(kd->ticks[row], NULL);
+-		kfree_rcu(td);
++		kfree_rcu(td, rcu_head);
+ 	}
+ 	kd->est_count--;
+ 	if (kd->est_count) {
+
+	I was about to reply to Uladzislau Rezki but his patchset
+looks more like a renaming, so I'm not sure how we are about
+to integrate this change, as separate patch or as part of his
+patchset. I don't have preference, just let me know how to
+handle it.
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+
