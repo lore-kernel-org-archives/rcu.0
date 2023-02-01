@@ -2,57 +2,23 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97F06C636CD
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74219C636CD
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:55:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbjBAPOv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 10:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
+        id S232760AbjBAPzA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 10:55:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232789AbjBAPJl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 10:09:41 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3149F66F8B;
-        Wed,  1 Feb 2023 07:08:22 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id m2so51835346ejb.8;
-        Wed, 01 Feb 2023 07:08:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1f2sZTLCh+6MjnBo1NM4qx8aN8UK3+QyFktme+HJb1M=;
-        b=dKmAu0GxbikreE6kPJmqHkddGR4hdJEwSy/Hyn9dorAla/AcEyCzBi0e0E5WKnnadE
-         ZOoGHTpyuGBvNdYpaYDYcvhdpuYyY32EQuFRAWIhvBFh5vTxfR1pld3Ab6ScfSKARDAM
-         sc2UMjZv2Pc+Fz5wbQlfV16JlBQkDyrYomHAkpzegrg7Jcwi5hSg3voaTAqOK7f84SP6
-         9T7cGzELd1jUt2G622d2YjrOKECc9MFeZ1qCKxQALvy/15evIShrh1+HKkkrn1/eRv+N
-         NzUTzuo0yZ07hHQCVYZf4cxu/9+TaJ7wfNNg5s3LCxsCjX0IvX/o3RSYThcDvihaSgp7
-         N25A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1f2sZTLCh+6MjnBo1NM4qx8aN8UK3+QyFktme+HJb1M=;
-        b=a+6ffcdrTbl+BddaUPsrX9kO2q58MlUEN9D+xb67k8X3PruIeGYrQkhAVR6sKLluQr
-         4WIKDYDaZd37VYv+EBRWIpqSFkH8QMHraFMoghiYRbPsUsqr3AGMu68IbzZGE9rk44T7
-         pxNJJiFHgG73Sr5IiPQmFfHRo8q4k0z2BP5KKjaGNy8G65qHv0o3ydFjekJeR9VbWmsd
-         0Sflf1NcQOmVdzNCTnEU1sci+pkjKFdn0iGCEh27WneqHsoLaOvHOe+d2ye8La6EC2p+
-         FH58yRv20QKF1E0v4n4TzB2AWkmT2EWjfQRE27a/QfRvSFILOUtI/hmKcNYmQNApNcY8
-         UmhQ==
-X-Gm-Message-State: AO0yUKVtgXmCd1vIZhsyGb2HIZgi/RCx/dKRk7EXLoFh8ZYqBLSwkgrG
-        iODeC7q64TE6PsTa8PB+zf52WFJAf6CCLA==
-X-Google-Smtp-Source: AK7set97wGmJcPMtT1Vrg2FbfLmw1oPPmZCQAOt149jYSK9E/tj08/FAxVMeqSvRhMDYKFxZsXw3og==
-X-Received: by 2002:a17:907:2ce7:b0:886:7eae:26c4 with SMTP id hz7-20020a1709072ce700b008867eae26c4mr2498160ejc.5.1675264100689;
-        Wed, 01 Feb 2023 07:08:20 -0800 (PST)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id qc26-20020a170906d8ba00b008787e94c5ccsm9585774ejb.184.2023.02.01.07.08.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 07:08:20 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        with ESMTP id S232954AbjBAPyr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 10:54:47 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B91EE15C96;
+        Wed,  1 Feb 2023 07:54:12 -0800 (PST)
+Date:   Wed, 1 Feb 2023 16:53:43 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Jens Axboe <axboe@kernel.dk>,
         Philipp Reisner <philipp.reisner@linbit.com>,
@@ -62,57 +28,43 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
-        Vishnu Dasa <vdasa@vmware.com>
-Subject: [PATCH 03/13] misc: vmw_vmci: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-Date:   Wed,  1 Feb 2023 16:08:09 +0100
-Message-Id: <20230201150815.409582-4-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230201150815.409582-1-urezki@gmail.com>
-References: <20230201150815.409582-1-urezki@gmail.com>
+        Jiri Wiesner <jwiesner@suse.de>
+Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
+Message-ID: <Y9qLB6Zyx5atcFUV@salvia>
+References: <20230201150954.409693-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230201150954.409693-1-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The kvfree_rcu()'s single argument name is deprecated therefore
-rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
-underline that it is for sleepable contexts.
+Hi,
 
-Cc: Bryan Tan <bryantan@vmware.com>
-Cc: Vishnu Dasa <vdasa@vmware.com>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- drivers/misc/vmw_vmci/vmci_context.c | 2 +-
- drivers/misc/vmw_vmci/vmci_event.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Wed, Feb 01, 2023 at 04:09:51PM +0100, Uladzislau Rezki (Sony) wrote:
+> The kfree_rcu()'s single argument name is deprecated therefore
+> rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
+> underline that it is for sleepable contexts.
+> 
+> Cc: Julian Anastasov <ja@ssi.bg>
+> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> Cc: Jiri Wiesner <jwiesner@suse.de>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  net/netfilter/ipvs/ip_vs_est.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
+> index ce2a1549b304..a39baf6d1367 100644
+> --- a/net/netfilter/ipvs/ip_vs_est.c
+> +++ b/net/netfilter/ipvs/ip_vs_est.c
+> @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
+>  	__set_bit(row, kd->avail);
+>  	if (!kd->tick_len[row]) {
+>  		RCU_INIT_POINTER(kd->ticks[row], NULL);
+> -		kfree_rcu(td);
 
-diff --git a/drivers/misc/vmw_vmci/vmci_context.c b/drivers/misc/vmw_vmci/vmci_context.c
-index 172696abce31..f22b44827e92 100644
---- a/drivers/misc/vmw_vmci/vmci_context.c
-+++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -687,7 +687,7 @@ int vmci_ctx_remove_notification(u32 context_id, u32 remote_cid)
- 	spin_unlock(&context->lock);
- 
- 	if (notifier)
--		kvfree_rcu(notifier);
-+		kvfree_rcu_mightsleep(notifier);
- 
- 	vmci_ctx_put(context);
- 
-diff --git a/drivers/misc/vmw_vmci/vmci_event.c b/drivers/misc/vmw_vmci/vmci_event.c
-index 2100297c94ad..5d7ac07623c2 100644
---- a/drivers/misc/vmw_vmci/vmci_event.c
-+++ b/drivers/misc/vmw_vmci/vmci_event.c
-@@ -209,7 +209,7 @@ int vmci_event_unsubscribe(u32 sub_id)
- 	if (!s)
- 		return VMCI_ERROR_NOT_FOUND;
- 
--	kvfree_rcu(s);
-+	kvfree_rcu_mightsleep(s);
- 
- 	return VMCI_SUCCESS;
- }
--- 
-2.30.2
+I also found this kfree_rcu() without rcu_head call a few weeks ago.
 
+@Wiesner, @Julian: Any chance this can be turned into kfree_rcu(td, rcu_head); ?
