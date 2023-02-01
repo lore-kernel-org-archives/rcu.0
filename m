@@ -2,58 +2,22 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E4A9C05027
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 16:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7735C05027
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 17:10:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbjBAQwO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 11:52:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
+        id S229651AbjBARKY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 12:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjBAQwM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 11:52:12 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D52677A3;
-        Wed,  1 Feb 2023 08:52:07 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id f7so11105345edw.5;
-        Wed, 01 Feb 2023 08:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/WfkJK1m4uMcYazdq9Xzjjoa4w46FK18lwbBMkuuqyk=;
-        b=KO8P3ldzNOgJXkygyVUbD37TO7GjteZYnODMUz+IUTiYRU/hwmNf4VrJ7QGLReogbU
-         zm4WVsfGlHBMt2d3fMkQITMS+slphHX8l80TnBol8fRAhPWMn7Lan7TXf0SvcBEjOKHL
-         o/JXfltNBUmE0w/lODjD/zFQXFgmJPq4lO1FsGhvQ5J0Y0Jyze72birAO4ftVhgovynf
-         cZW0o42q2XLFS51kiR5CqWLh4ZWc0VKd/5EYU6Ec/hvCqjyTTQjTlvzSVa2pXunIQwvh
-         B+SVPhOTqhau97qbY3yd+fXu0kzG283kM9XRiHaQZF7E20Zae+Pp1st1SjJWhH9riEV2
-         1+Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/WfkJK1m4uMcYazdq9Xzjjoa4w46FK18lwbBMkuuqyk=;
-        b=zcww1t2lJ2GbeiVWa2AIbx7ziGGixDKodZw51R+sOCzuDrXNIZvi/m8SOMxq8bI50d
-         PPpC4EZHapUZ1mrBcTK+dBpZewaD2rKi8GfGkH9orMsheHvv3hjef4mEa6tL0qgLFM5N
-         9zt8YU1pvC8FRnJMzs/J7MU026mJM20T6DLayY6X45KRMz65iX+wva1Vs4JbvAsBcbI7
-         8UGWMEKFgiooJmn4l9iNGkK3EnuEh9fmxzM3vxCT3MmJPA5U65sJAefRwSvGi72pu20s
-         KDxJgLtq2iBcInXvb+EIEXWcXz3lTvPVKhaPcd54rR715xVWAwL1kpvGdX8BmzT/s/W/
-         7uQQ==
-X-Gm-Message-State: AO0yUKVcbyHBVqIU/MJQb50vKkK7v5BaZZPl8PiSwgqvgl8E0uSN5s0d
-        OCd4Uw+jBe6UAYnkryrtVFU=
-X-Google-Smtp-Source: AK7set8lps1GUVXwzeD8oYwd5gb5p6Ce2ecb5MWRyPPhaxSb9by6FbnjnxCOiif9l7YrqRNvUF0L4Q==
-X-Received: by 2002:a50:9304:0:b0:4a2:7489:a70a with SMTP id m4-20020a509304000000b004a27489a70amr3113695eda.22.1675270326062;
-        Wed, 01 Feb 2023 08:52:06 -0800 (PST)
-Received: from pc636 (host-78-79-169-126.mobileonline.telia.com. [78.79.169.126])
-        by smtp.gmail.com with ESMTPSA id b17-20020aa7df91000000b0049b5c746df7sm10127186edy.0.2023.02.01.08.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 08:52:05 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 1 Feb 2023 17:52:02 +0100
+        with ESMTP id S229582AbjBARKX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 12:10:23 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFCA2FA;
+        Wed,  1 Feb 2023 09:10:21 -0800 (PST)
+Date:   Wed, 1 Feb 2023 18:10:18 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Julian Anastasov <ja@ssi.bg>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
@@ -66,12 +30,12 @@ Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Ariel Levkovich <lariel@nvidia.com>,
         Theodore Ts'o <tytso@mit.edu>, Jiri Wiesner <jwiesner@suse.de>
 Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
-Message-ID: <Y9qYsi5x7nxtSsx/@pc636>
+Message-ID: <Y9qc+lgR1CgdszKs@salvia>
 References: <20230201150954.409693-1-urezki@gmail.com>
  <Y9qLB6Zyx5atcFUV@salvia>
  <7e87836a-c72-eefd-9c74-fc2637accd2@ssi.bg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <7e87836a-c72-eefd-9c74-fc2637accd2@ssi.bg>
 Precedence: bulk
@@ -146,14 +110,7 @@ On Wed, Feb 01, 2023 at 06:12:04PM +0200, Julian Anastasov wrote:
 > to integrate this change, as separate patch or as part of his
 > patchset. I don't have preference, just let me know how to
 > handle it.
-> 
-If you give on this patch an Ack i will resend it once i collect
-all other ACKs. So it will be integrated via RCU-tree.
 
-So this is just renaming.
-
-If the ip_vs_stop_estimator() can be invoked from an atomic context
-then it is a bug and you need to integrate rcu_head in your structure.
-
---
-Uladzislau Rezki
+@Uladzislau Rezki: Are you fine with dropping this patch from your
+series and Julian will send us a patch for inclusion into net-next to
+use the kfree_rcu(x, rcu_head) variant?
