@@ -2,53 +2,52 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FD1DC636CD
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED0ADC05027
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 15:11:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbjBAPLR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 10:11:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        id S232348AbjBAPLS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 10:11:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbjBAPK2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231941AbjBAPK2 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 1 Feb 2023 10:10:28 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20E56A5D;
-        Wed,  1 Feb 2023 07:10:00 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id ml19so28755693ejb.0;
-        Wed, 01 Feb 2023 07:10:00 -0800 (PST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280404ED8;
+        Wed,  1 Feb 2023 07:09:58 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id ud5so52337941ejc.4;
+        Wed, 01 Feb 2023 07:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vhev8pughE32czPvaqr1hnewEVhkAHaQpP6Xqs+9d/I=;
-        b=I0Yz0URD7aG/WEZFb91AhJOqAM9Svs5gUZnPvEyipLUwAuuxMoV4egTWKgmrqQUlFE
-         NPD9W7xEbBqgw657uIcFOrDyaypDLshT+crSYGoL6atspA5SmDLQSmiT3C/jKFJ2BebT
-         0PStnMFMhVhO1+tFAPEEoCXo2+Mplg2XmKX51qw0Gaw5HzVWWw5odGpbv+ncXV5VHLPp
-         us03GnHlSiwyn8iNPeICxim/iofFxgAMpGkL0B5SJlTJ8RVFeuaVC9z7+gF58qH5kul9
-         JUaRglao/0qg/re9KkFJgoVDlQKOBYzo7J/yQbkYG2KYGTWiV7PCGMvnH4G6kgIBjMUM
-         fr3Q==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tXjIjq2OSXfc4jMxvXeb0r5u9dXZ/7er9tkJEls7xtk=;
+        b=dtAAXAU6c2GAjbfjuGt79DK/CapzQBC0LdPCjOljsN234iuNoqxq+8rLsfL4+e/xEc
+         HHFxJiHO4FLJHKUjjwLXg8itxMnrV1A1tPgmsn6Inmo6jycPqiBchRgNFPEHCKsrNagm
+         bGI720X9uAaxXmY9AxKu+3t37E39DghKxenJf0lnWnFNgwS6aAegPpZtj5yv2pLpb4pQ
+         /dIWhNeT+qZQEaxLyN6n2jiYGoxisBbjwV2yoX7MELz4Fzliy8IylETDwklv8aWRvBig
+         yHqWk1FAvEZRpw6bfDSk7uukFjh8QwAh27xxtPmineQ5fZ80bTCxBK2xq8f9ZyrNEWld
+         JVqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vhev8pughE32czPvaqr1hnewEVhkAHaQpP6Xqs+9d/I=;
-        b=GkBPPpzauyIrZlQJUdKnIoa1FOiMN+JhjX2QJNrLMQGI6Ymth98ANHIN0K8O0v3Zek
-         g00BGBKUjQu6W5izd+9P7CloKUHBUVsceL4Lo5EFT1lJrUNmliSNbrqR5EQgoYfawLV1
-         2v7ZHq5R4AXFlf1f3NsG5rFAPLhj7oJkgUrkGXT/5tKNzhLQe6GjUassUhxmk6FlBUqr
-         fK+Y3lnYrBOIfk4ah58aWlpX/0x6jpvkPxwztmoePW861QcslDGUTh6XeRdwAjGw6W1W
-         8uj4ul++ILcyOiCCF8O+FYOzKtBlfLeRR7a0YSgSFBQjneMgh8Ue9ieY3OsbGGPOS686
-         GLCw==
-X-Gm-Message-State: AO0yUKXflUObqNHnDBC4R+tFBPQsBzsDFq3jnwPnsNd93UfRpSx3CwGi
-        VlQZWNX7FiiX18yx+aPs9h/exDoceb560A==
-X-Google-Smtp-Source: AK7set/kFtylWE7vcTfTSRoSkGtwuJ3gyIQC6o7CLS7udUW6PY1nLq0EZtHONJhqFmq9CFcxcjetoA==
-X-Received: by 2002:a17:906:a1c6:b0:878:816f:8691 with SMTP id bx6-20020a170906a1c600b00878816f8691mr2420872ejb.71.1675264199463;
-        Wed, 01 Feb 2023 07:09:59 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tXjIjq2OSXfc4jMxvXeb0r5u9dXZ/7er9tkJEls7xtk=;
+        b=4vSF9SCjqtNJxIj5peijHXYBDftG+BYomOK4RLvL5uLTEjBOvTADI05hRugXDekm5B
+         ZIuVmi90zpXnN2wezQYB4CULrL+oWf/k5BbZa3p8ZByfOmc4rK3gIo68hrD6klUVO3VC
+         IqkTS5QPVFAIkZQ+FXp8RAXkzUlWpmIIJOmhE2xi+Qh/EFwBrxHgIAAygO4jfNXlnIaJ
+         aDYacbIJdLMn/2VZcLKGu2ZLMhQwQ8xfW7+0YDU5Bd/BAMdPZytKQNSCJrJ1bseRKC9o
+         SEwOkc8JnfoKtTDmcy/zMybJEDxjk9v13Pzow6gYQ6pqiLrtd9nsyUyqX2F6pT7zKAcI
+         TV6w==
+X-Gm-Message-State: AO0yUKUOobXbMvfHrQT5KNK52b4p+fDz7ntdVi+YxR2ISFFi0pEWMi7W
+        AF0MkmxTtvdCCOBL6GCyKQdLi6tHOXHKbw==
+X-Google-Smtp-Source: AK7set9NagWTJRR6IBaJEIwzZB9394Yll23Xgp1gsuKczn/h8X+3M896XTd8cIA3GlK1wC6+VPn7Aw==
+X-Received: by 2002:a17:907:1c27:b0:84c:e9c4:5751 with SMTP id nc39-20020a1709071c2700b0084ce9c45751mr2617987ejc.74.1675264196706;
+        Wed, 01 Feb 2023 07:09:56 -0800 (PST)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id fe15-20020a1709072a4f00b008845c668408sm6627147ejc.169.2023.02.01.07.09.58
+        by smtp.gmail.com with ESMTPSA id fe15-20020a1709072a4f00b008845c668408sm6627147ejc.169.2023.02.01.07.09.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 07:09:59 -0800 (PST)
+        Wed, 01 Feb 2023 07:09:56 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -61,93 +60,44 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Eric Dumazet <edumazet@google.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: [PATCH 13/13] rcu/kvfree: Eliminate k[v]free_rcu() single argument macro
-Date:   Wed,  1 Feb 2023 16:09:54 +0100
-Message-Id: <20230201150954.409693-4-urezki@gmail.com>
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jiri Wiesner <jwiesner@suse.de>
+Subject: [PATCH 10/13] ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
+Date:   Wed,  1 Feb 2023 16:09:51 +0100
+Message-Id: <20230201150954.409693-1-urezki@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230201150954.409693-1-urezki@gmail.com>
-References: <20230201150954.409693-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For a single argument invocations a new kfree_rcu_mightsleep()
-and kvfree_rcu_mightsleep() macroses are used. This is done in
-order to prevent users from calling a single argument from
-atomic contexts as "_mightsleep" prefix signals that it can
-schedule().
+The kfree_rcu()'s single argument name is deprecated therefore
+rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
+underline that it is for sleepable contexts.
 
+Cc: Julian Anastasov <ja@ssi.bg>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jiri Wiesner <jwiesner@suse.de>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- include/linux/rcupdate.h | 29 ++++++++---------------------
- 1 file changed, 8 insertions(+), 21 deletions(-)
+ net/netfilter/ipvs/ip_vs_est.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 094321c17e48..7571dbfecb18 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -957,9 +957,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
- 
- /**
-  * kfree_rcu() - kfree an object after a grace period.
-- * @ptr: pointer to kfree for both single- and double-argument invocations.
-- * @rhf: the name of the struct rcu_head within the type of @ptr,
-- *       but only for double-argument invocations.
-+ * @ptr: pointer to kfree for double-argument invocations.
-+ * @rhf: the name of the struct rcu_head within the type of @ptr.
-  *
-  * Many rcu callbacks functions just call kfree() on the base structure.
-  * These functions are trivial, but their size adds up, and furthermore
-@@ -982,26 +981,18 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  * The BUILD_BUG_ON check must not involve any function calls, hence the
-  * checks are done in macros here.
-  */
--#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
-+#define kfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
-+#define kvfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
- 
- /**
-- * kvfree_rcu() - kvfree an object after a grace period.
-- *
-- * This macro consists of one or two arguments and it is
-- * based on whether an object is head-less or not. If it
-- * has a head then a semantic stays the same as it used
-- * to be before:
-- *
-- *     kvfree_rcu(ptr, rhf);
-- *
-- * where @ptr is a pointer to kvfree(), @rhf is the name
-- * of the rcu_head structure within the type of @ptr.
-+ * kfree_rcu_mightsleep() - kfree an object after a grace period.
-+ * @ptr: pointer to kfree for single-argument invocations.
-  *
-  * When it comes to head-less variant, only one argument
-  * is passed and that is just a pointer which has to be
-  * freed after a grace period. Therefore the semantic is
-  *
-- *     kvfree_rcu(ptr);
-+ *     kfree_rcu_mightsleep(ptr);
-  *
-  * where @ptr is the pointer to be freed by kvfree().
-  *
-@@ -1010,13 +1001,9 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  * annotation. Otherwise, please switch and embed the
-  * rcu_head structure within the type of @ptr.
-  */
--#define kvfree_rcu(...) KVFREE_GET_MACRO(__VA_ARGS__,		\
--	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
--
-+#define kfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
- #define kvfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
--#define kfree_rcu_mightsleep(ptr) kvfree_rcu_mightsleep(ptr)
- 
--#define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
- #define kvfree_rcu_arg_2(ptr, rhf)					\
- do {									\
- 	typeof (ptr) ___p = (ptr);					\
+diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
+index ce2a1549b304..a39baf6d1367 100644
+--- a/net/netfilter/ipvs/ip_vs_est.c
++++ b/net/netfilter/ipvs/ip_vs_est.c
+@@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
+ 	__set_bit(row, kd->avail);
+ 	if (!kd->tick_len[row]) {
+ 		RCU_INIT_POINTER(kd->ticks[row], NULL);
+-		kfree_rcu(td);
++		kfree_rcu_mightsleep(td);
+ 	}
+ 	kd->est_count--;
+ 	if (kd->est_count) {
 -- 
 2.30.2
 
