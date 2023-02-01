@@ -2,126 +2,163 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE5CC63797
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 16:12:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22EBBC05027
+	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 16:38:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbjBAQMo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 11:12:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
+        id S231509AbjBAQi5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Feb 2023 11:38:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232995AbjBAQMZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 11:12:25 -0500
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 451E9783D5;
-        Wed,  1 Feb 2023 08:12:13 -0800 (PST)
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-        by mg.ssi.bg (Proxmox) with ESMTP id 3DA994D90C;
-        Wed,  1 Feb 2023 18:12:13 +0200 (EET)
-Received: from ink.ssi.bg (unknown [193.238.174.40])
-        by mg.ssi.bg (Proxmox) with ESMTP id C7EF44D8EA;
-        Wed,  1 Feb 2023 18:12:11 +0200 (EET)
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id 3491D3C0439;
-        Wed,  1 Feb 2023 18:12:06 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.17.1/8.16.1) with ESMTP id 311GC4Cs099524;
-        Wed, 1 Feb 2023 18:12:04 +0200
-Date:   Wed, 1 Feb 2023 18:12:04 +0200 (EET)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to
- kfree_rcu_mightsleep()
-In-Reply-To: <Y9qLB6Zyx5atcFUV@salvia>
-Message-ID: <7e87836a-c72-eefd-9c74-fc2637accd2@ssi.bg>
-References: <20230201150954.409693-1-urezki@gmail.com> <Y9qLB6Zyx5atcFUV@salvia>
+        with ESMTP id S231793AbjBAQiv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Feb 2023 11:38:51 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAFCCA25
+        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 08:38:16 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id t18so17911713wro.1
+        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 08:38:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mrcqv7iS1cquJvqoLMbtEWKy/UDB0TOdu8u7+euImwo=;
+        b=HEnQif1tx0zTKMoBmkbT/iretYU8xu0ia36crD/trQlO9VlhcVSmUCN7JS+mDuJR0r
+         xhIq3L+JUzUfNlSm5Ys44fRrSdBdwnpqGZzoWWuMxYTw3WC3sTQxbHP8Fz/gsAZY0xt2
+         jIv+diZVnT53pAec9I8up8qiO4aoDW/v/rMGjqtP546MMJeiHeRcqz/I22nD6BI3k8g3
+         +76rPG4dPa/NrF51x5fqtQiJWCi13TmPVOPjqfeaqoNfFmy5ppaAnoBQKkB0cw3Y2ET6
+         a12d/ZY4PnuDz1suVsmH6J1iT/RA8UrW57OdnsYnyP3vw+8e/cLeu52TbTQ68niy52to
+         Eb1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mrcqv7iS1cquJvqoLMbtEWKy/UDB0TOdu8u7+euImwo=;
+        b=W7p9zcqPSNFfKYsfmFo7BjA3fLsrmaHa5TAJcv+n0f/8gXk1a6wFcJmTrC9tLWWTHc
+         labBhhgqwbHISXnj8UVF+h1dyJ+EN/iWePsMLQEPbRw9MMdMPzY3NZLtXcwMAovpD8fW
+         EAdgpTlUQkRNLNiWmfDuiBCqr5eOw1f8r5zWiD/1YlMa4nYde+PMW4tL23l4uIyiwJ3J
+         BkxxlTuhVAAwAN4EsgDnEC+bn0Fevj5rILOk6hhujxXnHkwHqBgy/ezTl1erAPO6fYnS
+         4sRW706Xm8M/Ns8ejsX/Tdd191e9kuyGvvQWbhvPJvoPwGjnXtQCvbcfTRapVGTGoBmZ
+         h/Fg==
+X-Gm-Message-State: AO0yUKWMI6TIuvZ40rZVsC6dtgcajPNDdBuCXFkuUvZkKBXRQoUOc9vw
+        uYminTujoHBKZhuNJsKqfhPs0A==
+X-Google-Smtp-Source: AK7set8OjV9bsPy0E5o71+igl9MbubLZ/y4xjVKKORsyD+9B+4sJKoouxiK/GQ+Z54tO2tWR7YYa9w==
+X-Received: by 2002:adf:c713:0:b0:2bf:e9dc:5536 with SMTP id k19-20020adfc713000000b002bfe9dc5536mr3432655wrg.45.1675269495424;
+        Wed, 01 Feb 2023 08:38:15 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:7611:c340:3d8d:d46c? ([2a02:6b6a:b566:0:7611:c340:3d8d:d46c])
+        by smtp.gmail.com with ESMTPSA id k6-20020a5d6d46000000b002bfeccd872bsm9688027wri.70.2023.02.01.08.38.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Feb 2023 08:38:15 -0800 (PST)
+Message-ID: <7fda05c9-9d4a-6005-0ce5-91bda1bb06c1@bytedance.com>
+Date:   Wed, 1 Feb 2023 16:38:14 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v4 0/9] Parallel CPU bringup for x86_64
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        hushiyuan@huawei.com, luolongjun@huawei.com, hejingxian@huawei.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Fam Zheng <fam.zheng@bytedance.com>,
+        Punit Agrawal <punit.agrawal@bytedance.com>,
+        simon.evans@bytedance.com, liangma@liangbit.com
+References: <20220201205328.123066-1-dwmw2@infradead.org>
+ <ff876008-b642-4dbc-aa41-1639905e08b6@bytedance.com>
+ <1d0ed92ab68409b62a14cd29d0021f92c6e2568a.camel@infradead.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <1d0ed92ab68409b62a14cd29d0021f92c6e2568a.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
-	Hello,
 
-On Wed, 1 Feb 2023, Pablo Neira Ayuso wrote:
-
-> Hi,
+On 01/02/2023 15:08, David Woodhouse wrote:
+> On Wed, 2023-02-01 at 14:40 +0000, Usama Arif wrote:
+>> On 01/02/2022 20:53, David Woodhouse wrote:
+>>> Doing the INIT/SIPI/SIPI in parallel for all APs and *then* waiting for
+>>> them shaves about 80% off the AP bringup time on a 96-thread 2-socket
+>>> Skylake box (EC2 c5.metal) — from about 500ms to 100ms.
+>>>
+>>> There are more wins to be had with further parallelisation, but this is
+>>> the simple part.
+>>>
+>>
+>> Hi,
+>>
+>> We are interested in reducing the boot time of servers (with kexec), and
+>> smpboot takes up a significant amount of time while booting. When
+>> testing the patch series (rebased to v6.1) on a server with 128 CPUs
+>> split across 2 NUMA nodes, it brought down the smpboot time from ~700ms
+>> to 100ms. Adding another cpuhp state for do_wait_cpu_initialized to make
+>> sure cpu_init is reached (as done in v1 of the series + using the
+>> cpu_finishup_mask) brought it down further to ~30ms.
+>>
+>> I just wanted to check what was needed to progress the patch series
+>> further for review? There weren't any comments on v4 of the patch so I
+>> couldn't figure out what more is needed. I think its quite useful to
+>> have this working so would be really glad help in anything needed to
+>> restart the review.
 > 
-> On Wed, Feb 01, 2023 at 04:09:51PM +0100, Uladzislau Rezki (Sony) wrote:
-> > The kfree_rcu()'s single argument name is deprecated therefore
-> > rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
-> > underline that it is for sleepable contexts.
-> > 
-> > Cc: Julian Anastasov <ja@ssi.bg>
-> > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> > Cc: Jiri Wiesner <jwiesner@suse.de>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  net/netfilter/ipvs/ip_vs_est.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-> > index ce2a1549b304..a39baf6d1367 100644
-> > --- a/net/netfilter/ipvs/ip_vs_est.c
-> > +++ b/net/netfilter/ipvs/ip_vs_est.c
-> > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
-> >  	__set_bit(row, kd->avail);
-> >  	if (!kd->tick_len[row]) {
-> >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
-> > -		kfree_rcu(td);
 > 
-> I also found this kfree_rcu() without rcu_head call a few weeks ago.
+> I believe the only thing holding it back was the fact that it broke on
+> some AMD CPUs.
 > 
-> @Wiesner, @Julian: Any chance this can be turned into kfree_rcu(td, rcu_head); ?
+> We don't *think* there are any remaining software issues; we think it's
+> hardware. Either an actual hardware race in CPU or chipset, or perhaps
+> even something as simple as a voltage regulator which can't cope with
+> an increase in power draw from *all* the CPUs at the same time.
+> 
+> We have prodded AMD a few times to investigate, but so far to no avail.
+> 
+> Last time I actually spoke to Thomas in person, I think he agreed that
+> we should just merge it and disable the parallel mode for the affected
+> AMD CPUs.
+>
 
-	Yes, as simple as this:
+ From the comments in v3, it seems to affect multiple generations, would 
+it be worth proceeding with the patches by disabling it on all AMD CPUs 
+to be on the safe side, until the actual issue is found and what causes 
+it, and then follow up later if the issue is found by disabling it only 
+on affected cpus. Maybe simply do something like below?
 
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index c6c61100d244..6d71a5ff52df 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -461,6 +461,7 @@ void ip_vs_stats_free(struct ip_vs_stats *stats);
- 
- /* Multiple chains processed in same tick */
- struct ip_vs_est_tick_data {
-+	struct rcu_head		rcu_head;
- 	struct hlist_head	chains[IPVS_EST_TICK_CHAINS];
- 	DECLARE_BITMAP(present, IPVS_EST_TICK_CHAINS);
- 	DECLARE_BITMAP(full, IPVS_EST_TICK_CHAINS);
-diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-index df56073bb282..25c7118d9348 100644
---- a/net/netfilter/ipvs/ip_vs_est.c
-+++ b/net/netfilter/ipvs/ip_vs_est.c
-@@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
- 	__set_bit(row, kd->avail);
- 	if (!kd->tick_len[row]) {
- 		RCU_INIT_POINTER(kd->ticks[row], NULL);
--		kfree_rcu(td);
-+		kfree_rcu(td, rcu_head);
- 	}
- 	kd->est_count--;
- 	if (kd->est_count) {
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 0f144773a7fc..6b8884592341 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1575,7 +1575,8 @@ void __init native_smp_prepare_cpus(unsigned int 
+max_cpus)
+          * for SEV-ES guests because they can't use CPUID that early.
+          */
+         if (IS_ENABLED(CONFIG_X86_32) || boot_cpu_data.cpuid_level < 
+0x0B ||
+-           cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
++           cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT) ||
++           boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
+                 do_parallel_bringup = false;
 
-	I was about to reply to Uladzislau Rezki but his patchset
-looks more like a renaming, so I'm not sure how we are about
-to integrate this change, as separate patch or as part of his
-patchset. I don't have preference, just let me know how to
-handle it.
+         if (do_parallel_bringup) {
 
-Regards
 
---
-Julian Anastasov <ja@ssi.bg>
 
+
+> If you've already rebased to a newer kernel and tested it, perhaps now
+> is the time to do just that.
+
+If you would like me to repost the rebased patches to restart the 
+reviews (with do_parallel_bringup disabled for AMD), please let me know!
+
+Thanks,
+Usama
