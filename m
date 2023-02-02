@@ -2,111 +2,118 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D3CC636D4
-	for <rcu@archiver.kernel.org>; Wed,  1 Feb 2023 20:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D49D3C61DA4
+	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 06:43:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbjBAUqK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Feb 2023 15:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
+        id S229479AbjBBGnn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Feb 2023 01:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbjBAUph (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Feb 2023 15:45:37 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FCB7A4B5
-        for <rcu@vger.kernel.org>; Wed,  1 Feb 2023 12:44:56 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id t18so18527107wro.1
-        for <rcu@vger.kernel.org>; Wed, 01 Feb 2023 12:44:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Si9kzr7Ck9J5FJkWCPsjkhUgmegMqi5GAbSuKxlmi/Y=;
-        b=sXMxj/CKJBGFdLzPqQuDQiOPwKF/J04CKNI5iVbGlsHYa+yHZsQXZ/welJivcDAh78
-         03XN/aIk9smRRSJBbVcD8A7xCJQW537kgAuRtyai14FS8t0ukXFaqkwlkudC99dkmvdN
-         rtlhlvW0kPQwaNg8Yz96FxnRXUt/hZZ4kDgRUlcTj6wrqyrl6sv/drdH7ZlZp7N0xpgr
-         7/F+R8t/koV++BDvOKRHqSKkhTRC4E1+ivjSfL+Y8IvbVH6WudoBt9K7CLfIp39iEZO0
-         iRMQLwcQy13UYZ9od7HzZ4VJNpiv6qQnkv1bEA/lGY/7VjTyfJn1TzJcGWgdw61ICEHi
-         8K6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Si9kzr7Ck9J5FJkWCPsjkhUgmegMqi5GAbSuKxlmi/Y=;
-        b=ccdB6L+GrE/gX/56uTaYqkmnY/+9l9I7ex0m9sNt1Oc9A+kEyoxUUadQ5m/eNrkOYu
-         0rCZKoZ9MPsozawOM5wCSVCzBNLNjSdBgiAit3EBt9zSZS8A/xWW2ahJlALXfTZXy0Ec
-         QaxuYA4FCme5u372e926CjIX/2mavTLlev3ZKjMINBD6ywoI/VqBTuwPst1Q6B2+GJ4S
-         aGDerw0uRBDMqYAEd5ebmnJIey6fjjXvVq3TatN0j4I3P3hxZ3otkXoQPaFiKaomTUjb
-         aqfpJmAzhWeRKx6I0W3o2dTTWfrCJg9cl5c9FS/qg187SryLKPghGMDez034f77en3qD
-         dBww==
-X-Gm-Message-State: AO0yUKW10And+Tt+S13QiMCczVH2BrPCC+bpN3NpO1WvsatTjoT4FBbh
-        IxIcqcApjChcL8ZdhTrvJSKBLA==
-X-Google-Smtp-Source: AK7set/CwFq4yq21SPwqQ75tLHpsn8i9sDNtMo1urKN3i7lFWEBvGKN2/cx1n6sFd6WcKFjNEuGwpg==
-X-Received: by 2002:adf:fb8f:0:b0:2c1:28dc:1566 with SMTP id a15-20020adffb8f000000b002c128dc1566mr99026wrr.41.1675284294722;
-        Wed, 01 Feb 2023 12:44:54 -0800 (PST)
-Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:7611:c340:3d8d:d46c])
-        by smtp.gmail.com with ESMTPSA id n15-20020a5d598f000000b002bdff778d87sm19993584wri.34.2023.02.01.12.44.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Feb 2023 12:44:54 -0800 (PST)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     dwmw2@infradead.org, tglx@linutronix.de
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH 8/9] x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
-Date:   Wed,  1 Feb 2023 20:43:37 +0000
-Message-Id: <20230201204338.1337562-9-usama.arif@bytedance.com>
+        with ESMTP id S229609AbjBBGnm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Feb 2023 01:43:42 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C1C7922D;
+        Wed,  1 Feb 2023 22:43:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675320221; x=1706856221;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AbJPm8XyOE6u+c+tbjXp1HOVwUKFslPxDYdbNHssaLU=;
+  b=YqunBDI1GabFPa5ymzQP3cXkrv3ms3hIshrI0rsAhtWpICi1kkiq8SEL
+   2DsupdKFXxLeu9ULVcb6Mynz6uyKCp4vhg+yddU/lPISof6C88Ja3QPEg
+   V0OJIl+46D6oYqNl8oHuF+exaer5M1uT9/yBQKv5jAt+BG8fuCOKmWtw4
+   FhRtk3mlroAw2t3vMvuuVHBcLLfaknvF63aZ+NBKnHBegQb8nt+FNOoGO
+   KTyosncJpfjx3+yNW69Iq0amW4IoHDiS+7CBVoRaS7fH+FzH7sAcnMbkr
+   x388wat65IGHBR/HQzSkamFUh0xh+EL6hpRfwRqkSF9nHO6oDaA8ziZRm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="329659521"
+X-IronPort-AV: E=Sophos;i="5.97,266,1669104000"; 
+   d="scan'208";a="329659521"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2023 22:43:40 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="807862214"
+X-IronPort-AV: E=Sophos;i="5.97,266,1669104000"; 
+   d="scan'208";a="807862214"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2023 22:43:38 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcutorture: Create nocb tasks only for CONFIG_RCU_NOCB_CPU=y kernels
+Date:   Thu,  2 Feb 2023 14:48:46 +0800
+Message-Id: <20230202064846.3306975-1-qiang1.zhang@intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230201204338.1337562-1-usama.arif@bytedance.com>
-References: <20230201204338.1337562-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+When setting nocbs_nthreads to start rcutorture test with a non-zero value,
+the nocb tasks will be created and invoke rcu_nocb_cpu_offload/deoffload()
+to toggle CPU's callback-offload state, but for CONFIG_RCU_NOCB_CPU=n
+kernel, the rcu_nocb_cpu_offload/deoffload() is a no-op and this is also
+meaningless for torture_type is non-rcu.
 
-There's no need to repeatedly save the BSP's MTRRs for each AP we bring
-up at boot time. And there's no need to use smp_call_function_single()
-even for the one time we *do* want to do it.
+This commit therefore add member can_nocbs_toggle to rcu_torture_ops
+structure to avoid unnecessary nocb tasks creation.
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
- arch/x86/kernel/cpu/mtrr/mtrr.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ kernel/rcu/rcutorture.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mtrr/mtrr.c b/arch/x86/kernel/cpu/mtrr/mtrr.c
-index 2746cac9d8a9..2884017586f1 100644
---- a/arch/x86/kernel/cpu/mtrr/mtrr.c
-+++ b/arch/x86/kernel/cpu/mtrr/mtrr.c
-@@ -814,11 +814,20 @@ void mtrr_ap_init(void)
-  */
- void mtrr_save_state(void)
- {
-+	static bool mtrr_saved;
- 	int first_cpu;
- 
- 	if (!mtrr_enabled())
- 		return;
- 
-+	if (system_state < SYSTEM_RUNNING) {
-+		if (!mtrr_saved) {
-+			mtrr_save_fixed_ranges(NULL);
-+			mtrr_saved = true;
-+		}
-+		return;
-+	}
-+
- 	first_cpu = cpumask_first(cpu_online_mask);
- 	smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 297da28ce92d..27becacbe3b2 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -383,6 +383,7 @@ struct rcu_torture_ops {
+ 	long cbflood_max;
+ 	int irq_capable;
+ 	int can_boost;
++	int can_nocbs_toggle;
+ 	int extendables;
+ 	int slow_gps;
+ 	int no_pi_lock;
+@@ -569,6 +570,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.stall_dur		= rcu_jiffies_till_stall_check,
+ 	.irq_capable		= 1,
+ 	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
++	.can_nocbs_toggle	= IS_ENABLED(CONFIG_RCU_NOCB_CPU),
+ 	.extendables		= RCUTORTURE_MAX_EXTEND,
+ 	.name			= "rcu"
+ };
+@@ -2356,7 +2358,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 "n_barrier_cbs=%d "
+ 		 "onoff_interval=%d onoff_holdoff=%d "
+ 		 "read_exit_delay=%d read_exit_burst=%d "
+-		 "nocbs_nthreads=%d nocbs_toggle=%d "
++		 "nocbs_nthreads=%d/%d nocbs_toggle=%d "
+ 		 "test_nmis=%d\n",
+ 		 torture_type, tag, nrealreaders, nfakewriters,
+ 		 stat_interval, verbose, test_no_idle_hz, shuffle_interval,
+@@ -2368,7 +2370,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 n_barrier_cbs,
+ 		 onoff_interval, onoff_holdoff,
+ 		 read_exit_delay, read_exit_burst,
+-		 nocbs_nthreads, nocbs_toggle,
++		 nocbs_nthreads, cur_ops->can_nocbs_toggle, nocbs_toggle,
+ 		 test_nmis);
  }
+ 
+@@ -3708,6 +3710,10 @@ rcu_torture_init(void)
+ 		pr_alert("rcu-torture: ->fqs NULL and non-zero fqs_duration, fqs disabled.\n");
+ 		fqs_duration = 0;
+ 	}
++	if (!cur_ops->can_nocbs_toggle && nocbs_nthreads > 0) {
++		pr_alert("rcu-torture: ->can_nocbs_toggle false and non-zero nocbs_nthreads, nocbs_toggle disabled.\n");
++		nocbs_nthreads = 0;
++	}
+ 	if (cur_ops->init)
+ 		cur_ops->init();
+ 
 -- 
 2.25.1
 
