@@ -2,155 +2,195 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7802C05027
-	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 22:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79750C636D3
+	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 22:32:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbjBBWMD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Feb 2023 17:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        id S231575AbjBBWbg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Feb 2023 17:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbjBBWMB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Feb 2023 17:12:01 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D40963853
-        for <rcu@vger.kernel.org>; Thu,  2 Feb 2023 14:11:59 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id a9so1696914ljr.13
-        for <rcu@vger.kernel.org>; Thu, 02 Feb 2023 14:11:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DDBf9AfsyJbDtWjBnORPYU2pBf1EAExr7r+iEnI2UJk=;
-        b=DiQK1RYQzoUkORmBEz1Rkwi9p4a0tXqoRCrUVCeT+LRfAIZWk19mpwacI3+cO5xyfQ
-         X/unw6O6ZAPTICkvk+5xe4gMtll3sTUc2iD9XpTX63fkRrNHxkVjqi5JT0up7TNX9K7I
-         mxvMKxD7qHndz5uwVXyrdy+jbuUmOKccaQBi0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DDBf9AfsyJbDtWjBnORPYU2pBf1EAExr7r+iEnI2UJk=;
-        b=X9M8Blay4uS/qfAHWl0tAVMEjJ/Lc3aCnmkRziY/QndWWB7ObgXqlBb28nQtmy4YIf
-         OMXFKkyFwVoSBCqOZxnZmMwSEa1pust2scYCoSoy6jFx0AOhc7zkIiS1QH+I5HVFmiVd
-         1jOBw46b7RJ7XL0+GQZGP1zvmVgpE+D+UK7bRbE4DcILiDD/m7A+f30Eg6COt5CUnwz4
-         OQsLDAMi2eom+nGbc5IBPJgqJ79ck/xRNt0HE/QEOY8cQ7pFIEllXmSCNljJNN+TGJ1d
-         T/8bYbngba2FulY6wBQuP2RKD4mAlO+OvN7sFmZFrFOksuXI1kDLL8ks+b21+WtTABGy
-         4oLw==
-X-Gm-Message-State: AO0yUKVk9/ZCim1+c804y/JFHvrY/NRV+bVcR2DvDOZQEnszsIRKNhyB
-        ez8qAPyFF/7xdNby1qo7r62nroUIszfaUnE+AIEkCQ==
-X-Google-Smtp-Source: AK7set/RbA0pp+Qg8Rsnud2lgip3FiJpNc3sLz6lAva+5lxLZwIGc8AFOklF/KcPcvFq6MOUVDu6o3TNx1Z/7sHc9AM=
-X-Received: by 2002:a2e:a36c:0:b0:28b:7226:f203 with SMTP id
- i12-20020a2ea36c000000b0028b7226f203mr1266615ljn.207.1675375917469; Thu, 02
- Feb 2023 14:11:57 -0800 (PST)
+        with ESMTP id S232450AbjBBWbS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Feb 2023 17:31:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA48193EA;
+        Thu,  2 Feb 2023 14:31:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jsfVYED/tXF70d26rRyauEeOtWvDFd/QbP9mJvJS6zg=; b=uBZWE81YfPxu6AfqEDank1J/zJ
+        5ZdOQWK9luFYXBageUzSHTsBmt6MT0bINiaDTKIdc7hyOumeCQNWW5pL8w/o8CqMS6wiIxQztO8zM
+        8ZH74lj74rP1mAeoZ8F59LyzTbHOrqJk5Ubk2shPZlFeGn26BVIc+FjetMDbzxhMvo58L37QT+WIT
+        REmqATeJE4mWvSxK/zJZQuX63zKY7jAZQwtfZr3Ae9Jc/mQ4XxN8h/dB4oRfSCNlcav84n8XRAhtQ
+        ETh8kgH/niApgPoqtDvb8pBihal0PKRPS6jpde0z6V7qgRuwS7Lty/mI03GFRfcxKN4r0md9YP3rD
+        VRhcYvdA==;
+Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pNi6C-00DmXh-IT; Thu, 02 Feb 2023 22:30:33 +0000
+Message-ID: <dac090d2a61137b9e2fecd6cb3bfb4d5a9656fb6.camel@infradead.org>
+Subject: Re: [PATCH v6 06/11] x86/smpboot: Support parallel startup of
+ secondary CPUs
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
+        arjan@linux.intel.com
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com
+Date:   Thu, 02 Feb 2023 22:30:30 +0000
+In-Reply-To: <20230202215625.3248306-7-usama.arif@bytedance.com>
+References: <20230202215625.3248306-1-usama.arif@bytedance.com>
+         <20230202215625.3248306-7-usama.arif@bytedance.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-Ud+nR1ZismnfA8ozToH3"
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20230202070245.3311951-1-qiang1.zhang@intel.com>
- <7959A7ED-A47F-4472-9278-8582F1CCC6A9@joelfernandes.org> <PH0PR11MB5880DF541BB1D75E0DFC02FEDAD69@PH0PR11MB5880.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB5880DF541BB1D75E0DFC02FEDAD69@PH0PR11MB5880.namprd11.prod.outlook.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 2 Feb 2023 17:11:45 -0500
-Message-ID: <CAEXW_YRSEu=O7FW=T5fOAWcRbejQUXVN+RoGcTN+xkd7xmJepA@mail.gmail.com>
-Subject: Re: [PATCH v2] rcutorture: Create nocb tasks only for
- CONFIG_RCU_NOCB_CPU=y kernels
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 2, 2023 at 4:25 PM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote=
-:
->
->
-> > On Feb 2, 2023, at 1:57 AM, Zqiang <qiang1.zhang@intel.com> wrote:
-> >
-> > =EF=BB=BFWhen setting nocbs_nthreads to start rcutorture test with a no=
-n-zero value,
-> > the nocb tasks will be created and invoke rcu_nocb_cpu_offload/deoffloa=
-d()
-> > to toggle CPU's callback-offload state, but for CONFIG_RCU_NOCB_CPU=3Dn
-> > kernel, the rcu_nocb_cpu_offload/deoffload() is a no-op and this is als=
-o
-> > meaningless for torture_type is non-rcu.
-> >
-> > This commit therefore add member can_nocbs_toggle to rcu_torture_ops
-> > structure to avoid unnecessary nocb tasks creation.
-> >
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > ---
-> > kernel/rcu/rcutorture.c | 10 ++++++++--
-> > 1 file changed, 8 insertions(+), 2 deletions(-)
-> >
-> >Sorry if I am missing something but what is the point of adding more lin=
-es of code and complexity to handle this? Does it improve the test coverage=
- or reduce overhead?
-> >
-> >This is test code. I see no problem with cost of an extra unused task wi=
-th positive trade off of keeping the code simple=E2=80=A6
->
-> For nocbs_nthreads is non-zero and CONFIG_RCU_NOCB_CPU=3Dn kernels,
-> the rcu_nocb_cpu_offload/deoffload() is a no-op,  we create nocbs_nthread=
-s
-> kthreads and perform nocb toggle tests periodically, which is meaningless=
- and
-> will take extra cpu time.
 
-Ah, ok. I see what you did now, could you add these details to the
-changelog. One comment below:
+--=-Ud+nR1ZismnfA8ozToH3
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-[...]
-> > @@ -569,6 +570,7 @@ static struct rcu_torture_ops rcu_ops =3D {
-> >    .stall_dur        =3D rcu_jiffies_till_stall_check,
-> >    .irq_capable        =3D 1,
-> >    .can_boost        =3D IS_ENABLED(CONFIG_RCU_BOOST),
-> > +    .can_nocbs_toggle    =3D IS_ENABLED(CONFIG_RCU_NOCB_CPU),
-> >    .extendables        =3D RCUTORTURE_MAX_EXTEND,
-> >    .name            =3D "rcu"
-> > };
-> > @@ -2356,7 +2358,7 @@ rcu_torture_print_module_parms(struct rcu_torture=
-_ops *cur_ops, const char *tag)
-> >         "n_barrier_cbs=3D%d "
-> >         "onoff_interval=3D%d onoff_holdoff=3D%d "
-> >         "read_exit_delay=3D%d read_exit_burst=3D%d "
-> > -         "nocbs_nthreads=3D%d nocbs_toggle=3D%d "
-> > +         "nocbs_nthreads=3D%d/%d nocbs_toggle=3D%d "
-> >         "test_nmis=3D%d\n",
-> >         torture_type, tag, nrealreaders, nfakewriters,
-> >         stat_interval, verbose, test_no_idle_hz, shuffle_interval,
-> > @@ -2368,7 +2370,7 @@ rcu_torture_print_module_parms(struct rcu_torture=
-_ops *cur_ops, const char *tag)
-> >         n_barrier_cbs,
-> >         onoff_interval, onoff_holdoff,
-> >         read_exit_delay, read_exit_burst,
-> > -         nocbs_nthreads, nocbs_toggle,
-> > +         nocbs_nthreads, cur_ops->can_nocbs_toggle, nocbs_toggle,
-> >         test_nmis);
-> > }
-> >
-> > @@ -3708,6 +3710,10 @@ rcu_torture_init(void)
-> >        pr_alert("rcu-torture: ->fqs NULL and non-zero fqs_duration, fqs=
- disabled.\n");
-> >        fqs_duration =3D 0;
-> >    }
-> > +    if (!cur_ops->can_nocbs_toggle && nocbs_nthreads !=3D 0) {
-> > +        pr_alert("rcu-torture: ->can_nocbs_toggle false and non-zero n=
-ocbs_nthreads, nocbs_toggle disabled.\n");
-> > +        nocbs_nthreads =3D 0;
-> > +    }
+T24gVGh1LCAyMDIzLTAyLTAyIGF0IDIxOjU2ICswMDAwLCBVc2FtYSBBcmlmIHdyb3RlOgo+IEBA
+IC0xNTE1LDYgKzE1MzAsMTcgQEAgdm9pZCBfX2luaXQgbmF0aXZlX3NtcF9wcmVwYXJlX2NwdXMo
+dW5zaWduZWQgaW50IG1heF9jcHVzKQo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoHNwZWN1bGF0aXZl
+X3N0b3JlX2J5cGFzc19odF9pbml0KCk7Cj4gwqAKPiArwqDCoMKgwqDCoMKgwqAvKgo+ICvCoMKg
+wqDCoMKgwqDCoCAqIFdlIGNhbiBkbyA2NC1iaXQgQVAgYnJpbmd1cCBpbiBwYXJhbGxlbCBpZiB0
+aGUgQ1BVIHJlcG9ydHMgaXRzCj4gK8KgwqDCoMKgwqDCoMKgICogQVBJQyBJRCBpbiBDUFVJRCBs
+ZWFmIDB4MEIuIE90aGVyd2lzZSBpdCdzIHRvbyBoYXJkLiBBbmQgbm90Cj4gK8KgwqDCoMKgwqDC
+oMKgICogZm9yIFNFVi1FUyBndWVzdHMgYmVjYXVzZSB0aGV5IGNhbid0IHVzZSBDUFVJRCB0aGF0
+IGVhcmx5Lgo+ICvCoMKgwqDCoMKgwqDCoCAqIEFsc28sIHNvbWUgQU1EIENQVXMgY3Jhc2ggd2hl
+biBkb2luZyBwYXJhbGxlbCBjcHUgYnJpbmd1cCwgZGlzYWJsZQo+ICvCoMKgwqDCoMKgwqDCoCAq
+IGl0IGZvciBhbGwgQU1EIENQVXMgdG8gYmUgb24gdGhlIHNhZmUgc2lkZS4KPiArwqDCoMKgwqDC
+oMKgwqAgKi8KPiArwqDCoMKgwqDCoMKgwqBpZiAoSVNfRU5BQkxFRChDT05GSUdfWDg2XzMyKSB8
+fCBib290X2NwdV9kYXRhLmNwdWlkX2xldmVsIDwgMHgwQiB8fAo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBjY19wbGF0Zm9ybV9oYXMoQ0NfQVRUUl9HVUVTVF9TVEFURV9FTkNSWVBUKSkKPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZG9fcGFyYWxsZWxfYnJpbmd1cCA9IGZhbHNlOwo+
+ICsKPiDCoMKgwqDCoMKgwqDCoMKgc25wX3NldF93YWtldXBfc2Vjb25kYXJ5X2NwdSgpOwo+IMKg
+fQoKT29wcywgSSB0aG91Z2h0IEknZCByZW1vdmVkIHRob3NlIHR3byBsaW5lcyBhYm91dCBBTUQg
+aW4gdGhlIGNvbW1lbnQKd2hlbiBJIHJlbW92ZWQgdGhlIGFjdHVhbCBjb2RlIHRoYXQgZGlkIHNv
+LiBUdXJucyBvdXQgd2UgcmVtb3ZlIHRob3NlCmxpbmVzIGFnYWluIGluIHRoZSAqbmV4dCogcGF0
+Y2ggaW5zdGVhZC4gCg==
 
-Instead of adding a hook, why not check for CONFIG_RCU_NOCB_CPU here?
 
-so like:
- if (cur_ops !=3D &rcu_ops || !IS_ENABLED(CONFIG_RCU_NOCB_CPU))
-   nocbs_nthreads =3D 0;
+--=-Ud+nR1ZismnfA8ozToH3
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-Or will that not work for some reason? Just 2 line change and no ugly hooks=
- =3D)
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjAyMjIzMDMwWjAvBgkqhkiG9w0BCQQxIgQgKw8LoSvT
+9/zfI4V9oLAS2IhFgtvrvcSitqv8Ge/4+Dkwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB2j5ET28ppmMTUQ6pSi203iNKSl3PEe+7O
+NdhV2AgzDSbEOKhau1L7FZ0j+byk1QMn+u1BJDrueXFL1QcsYaJuioDRwkyvhwFOmeUdktT8y/Pf
+w4B/ykDd89Gvjs1qHQ1hc2lC1G7NBNJ3FoK/X8VQKsvVk7jHvjsFVRHp8ptlAeXDD7tTP5MvuUEj
+IYKxERti0mQYwpCEzkGM4pIRIDlG1pAIF1hoffP1cgem2kcvBuE4sCXUTC0ScdhvYJI2RnHiVCka
+Pl5PNuPFMFRUsdwGOanVZrpbrVw7f4rOFV7STsPANrIik/m1guvfXHEQ6M3gg/JngVmyp5fTBx0B
+5gYDbk2dq8cbealQXOGTB0UwICd5b/YaRgEMxDMnVr2VddzP8RoD3PwPrl/tSJ6Id3XaMKKU/dPN
+XSQj5OZcvlErQ3CTByK3ijq6k3aNcQi7VHSUrZiSIM8JF92UZFTfCepjxU3i8z0fl2F8TP33+D/R
+Q4obC99xLteHN12TZ1bFK2wIBnss81H2xaiypOW/DYflP3EBr/6eOTMDk2vh+5Y+JmbZkvQW0hk/
+38VsbmfqgDgIPoIWOGLIzCqjZye0Tit9189rQhK484SnyRZcZ0MwCN+zDtQU+1/cWORgCR3pgpm6
+3J4Sl5z6NDNyO3S5G+/ZObYaxcC7egiSro/H7IleHAAAAAAAAA==
 
-- Joel
+
+--=-Ud+nR1ZismnfA8ozToH3--
