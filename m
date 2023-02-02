@@ -2,153 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39B3CC61DA4
-	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 15:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C40A3C61DA4
+	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 15:54:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbjBBPNk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Feb 2023 10:13:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S231866AbjBBPyc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Feb 2023 10:54:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232280AbjBBPNe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Feb 2023 10:13:34 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F7234023
-        for <rcu@vger.kernel.org>; Thu,  2 Feb 2023 07:13:32 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id h24so2194486qtr.0
-        for <rcu@vger.kernel.org>; Thu, 02 Feb 2023 07:13:32 -0800 (PST)
+        with ESMTP id S232735AbjBBPy3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Feb 2023 10:54:29 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA23C61D58;
+        Thu,  2 Feb 2023 07:54:20 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id lu11so7256851ejb.3;
+        Thu, 02 Feb 2023 07:54:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/WqJC9VZ4AG3j1X+hs58y4e3ep1HxT3O0baiSoKtjog=;
-        b=D6DG9Ekpgc1jWUsf3Unm4PkdYuZFvSadEnC72eA+9UEEfc6CXzLDFg3uw/PYFEQtA4
-         JURsqe0RbY0kwzhIL7GfmdpcPf9+RObCThJQC40qwj6pKOcfqJ/YOoQGBixPOWdMJAu8
-         rVy04DyjOR9rBOBg/uRRpLBLTZyOS570yjR8A=
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQbiZ+/fOllzP25ja5JcucvaVMNIjlZvALpLv7YmFcg=;
+        b=LzEyVwAqONOq9cLXJv9KJpbvsYxGj5acXXp7/nwOCKbXPyfPVCV6VnCMT2v4TUpUQm
+         c0zx0L8yr6HnDqDoQNDVHB80tfDg+8jX1VqdBoszF3ZU+uQM9A4cTTYavyxtO0dnWPX5
+         +FUskfuFvq36aP8IQGzTZf7Z4G4hOixyRpryoX+/bu1PNDzmcu/LzW0UBPgL/JiDZ+vc
+         d7j57Rgap52gy7wCJhG1JMpMtqn5+QgOjjZmPczT7Q7ANQ9AQ9HMWrLOEOvL9ZegVm/J
+         bEU0HjBNhTDE6JohCDhPFeeF/ETE/kYuJKPusqQWuCYWlYfII3OFgGGceptf8EEBgXu0
+         cthA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/WqJC9VZ4AG3j1X+hs58y4e3ep1HxT3O0baiSoKtjog=;
-        b=L+p4CMIJuVETXmZFIk6Jboh7yirzbNg+UMstf9RDmr52UAZUTNJ7OFG6avw3lM01yn
-         g1c1HPTniljr8bjxn2k/0Xj7tkIbTUtpE2RbWdsLZjGvPNK4CM7JLbtns6iuz3F29kA7
-         JQ/yGCFQwaUdRODfQpfiUf97WvM2JlaW1MYIL8Wn+gH2YEHmmLoYN5gbpgj3TvvMZrSv
-         l0cBdRRYg02rrSa+yid4L1Y0huMn8QD+pyplT+nqR8ph30+0NBCrj9c4qtc+fvax2eVy
-         4UdqxwmuhOoGEJvBdRks4CpS6/OiF8kJADQXFPUgr+m0gju2AhFSpwIzZt6grXKc2Q6Q
-         g1Pw==
-X-Gm-Message-State: AO0yUKXEteq+3KdNgQYesw70omqyyhfuMlNtygpC4Dd1TdddJEN+vUN6
-        CPbUdTl/cm9Q+81O82y7QKmz5w==
-X-Google-Smtp-Source: AK7set9b2cCOhZ/ZYI0qHVadcjf2S+Gnd/QhtxGEg1IHjEv01E8EJTXfsztJVO93zpX1zQ+r4HeUAA==
-X-Received: by 2002:a05:622a:1ce:b0:3b6:334b:2cbc with SMTP id t14-20020a05622a01ce00b003b6334b2cbcmr13450465qtw.65.1675350811166;
-        Thu, 02 Feb 2023 07:13:31 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id bs18-20020ac86f12000000b003b8558eabd0sm9426401qtb.23.2023.02.02.07.13.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Feb 2023 07:13:30 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2] rcutorture: Create nocb tasks only for CONFIG_RCU_NOCB_CPU=y kernels
-Date:   Thu, 2 Feb 2023 10:13:19 -0500
-Message-Id: <7959A7ED-A47F-4472-9278-8582F1CCC6A9@joelfernandes.org>
-References: <20230202070245.3311951-1-qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230202070245.3311951-1-qiang1.zhang@intel.com>
-To:     Zqiang <qiang1.zhang@intel.com>
-X-Mailer: iPhone Mail (20B101)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RQbiZ+/fOllzP25ja5JcucvaVMNIjlZvALpLv7YmFcg=;
+        b=ZwM4vsXLe3mtsUyF5QiBt3CnVJT4kCyFrKbWjzp/zBsA5a3lViRPj2scCNce9E9MAI
+         WVjFWXCEBv2zv8oChodjRFL3hudaVEYKVlKAMbQHy9fNQKYsYtTVYI22COGKeMHaOzQx
+         hXu0YT9s+KmSDq7OWNMxL8kMupxxH2yzRtCZFRcsGugI5yO1jqtCSUMUnlnzR3bouFvV
+         9e/RGLIPf5cpKRKXyrOjp9Vzr+8epximoMq+scTROHxgKqEAtsqftVxK8n1LOv6mehpy
+         y0DzvBHwfzYGw/rWlUt6OXaeIOdzsgAaAEIqrHPjiFxI4JEUcGnQIaornxNlcVA0fbq1
+         0mYA==
+X-Gm-Message-State: AO0yUKVwwCp0MIffqQehPBKWhuF1CVInuTla4G1Hx/o7+jqwISxsVR/A
+        9A6ZrPP4b/CTnsgTEnE/ei8=
+X-Google-Smtp-Source: AK7set8HsgrycrAhBqjEgtBEKOzutls6dnKfkLL7IFEb8bB2y6asXQVt08wRL+Rpc9tHmxNZF7qxVQ==
+X-Received: by 2002:a17:907:8e93:b0:88a:a09d:e650 with SMTP id tx19-20020a1709078e9300b0088aa09de650mr7661552ejc.58.1675353259067;
+        Thu, 02 Feb 2023 07:54:19 -0800 (PST)
+Received: from pc636 (host-78-79-169-126.mobileonline.telia.com. [78.79.169.126])
+        by smtp.gmail.com with ESMTPSA id b18-20020a170906709200b0087bd2ebe474sm10319529ejk.208.2023.02.02.07.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 07:54:18 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 2 Feb 2023 16:54:15 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
+ k[v]free_rcu_mightsleep()
+Message-ID: <Y9vcp2jADVzHl0AE@pc636>
+References: <20230201150815.409582-1-urezki@gmail.com>
+ <20230201191211.GK2948950@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230201191211.GK2948950@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Feb 01, 2023 at 11:12:11AM -0800, Paul E. McKenney wrote:
+> On Wed, Feb 01, 2023 at 04:08:06PM +0100, Uladzislau Rezki (Sony) wrote:
+> > This small series is based on Paul's "dev" branch. Head is 6002817348a1c610dc1b1c01ff81654cdec12be4
+> > it renames a single argument of k[v]free_rcu() to its new k[v]free_rcu_mightsleep() name.
+> > 
+> > 1.
+> > The problem is that, recently we have run into a precedent when
+> > a user intended to give a second argument to kfree_rcu() API but
+> > forgot to do it in a code so a call became as a single argument
+> > of kfree_rcu() API.
+> > 
+> > 2.
+> > Such mistyping can lead to hidden bags where sleeping is forbidden.
+> > 
+> > 3.
+> > _mightsleep() prefix gives much more information for which contexts
+> > it can be used for.
+> 
+> Thank you!!!
+> 
+> I have queued these (aside from 10/13, which is being replaced by a
+> patch from Julian Anastasov) for further testing and review.  And with
+> the usual wordsmithing.
+> 
+Good. 10/13 will go with two arguments. So it is not needed. Just for
+confirmation.
 
+BTW, i see two complains from the robot due to 10/13 patch uses an old API
+name.
 
-> On Feb 2, 2023, at 1:57 AM, Zqiang <qiang1.zhang@intel.com> wrote:
->=20
-> =EF=BB=BFWhen setting nocbs_nthreads to start rcutorture test with a non-z=
-ero value,
-> the nocb tasks will be created and invoke rcu_nocb_cpu_offload/deoffload()=
+>
+> If testing goes well, I might try to get 1/13 into the next merge window,
+> which would simplify things if maintainers want to take their patches
+> separately.
+> 
+Thanks!
 
-> to toggle CPU's callback-offload state, but for CONFIG_RCU_NOCB_CPU=3Dn
-> kernel, the rcu_nocb_cpu_offload/deoffload() is a no-op and this is also
-> meaningless for torture_type is non-rcu.
->=20
-> This commit therefore add member can_nocbs_toggle to rcu_torture_ops
-> structure to avoid unnecessary nocb tasks creation.
->=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
-> kernel/rcu/rcutorture.c | 10 ++++++++--
-> 1 file changed, 8 insertions(+), 2 deletions(-)
-
-Sorry if I am missing something but what is the point of adding more lines o=
-f code and complexity to handle this? Does it improve the test coverage or r=
-educe overhead?
-
-This is test code. I see no problem with cost of an extra unused task with p=
-ositive trade off of keeping the code simple=E2=80=A6
-
-thanks,
-
- - Joel=20
-
-
->=20
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 297da28ce92d..ced0a8e1d765 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -383,6 +383,7 @@ struct rcu_torture_ops {
->    long cbflood_max;
->    int irq_capable;
->    int can_boost;
-> +    int can_nocbs_toggle;
->    int extendables;
->    int slow_gps;
->    int no_pi_lock;
-> @@ -569,6 +570,7 @@ static struct rcu_torture_ops rcu_ops =3D {
->    .stall_dur        =3D rcu_jiffies_till_stall_check,
->    .irq_capable        =3D 1,
->    .can_boost        =3D IS_ENABLED(CONFIG_RCU_BOOST),
-> +    .can_nocbs_toggle    =3D IS_ENABLED(CONFIG_RCU_NOCB_CPU),
->    .extendables        =3D RCUTORTURE_MAX_EXTEND,
->    .name            =3D "rcu"
-> };
-> @@ -2356,7 +2358,7 @@ rcu_torture_print_module_parms(struct rcu_torture_op=
-s *cur_ops, const char *tag)
->         "n_barrier_cbs=3D%d "
->         "onoff_interval=3D%d onoff_holdoff=3D%d "
->         "read_exit_delay=3D%d read_exit_burst=3D%d "
-> -         "nocbs_nthreads=3D%d nocbs_toggle=3D%d "
-> +         "nocbs_nthreads=3D%d/%d nocbs_toggle=3D%d "
->         "test_nmis=3D%d\n",
->         torture_type, tag, nrealreaders, nfakewriters,
->         stat_interval, verbose, test_no_idle_hz, shuffle_interval,
-> @@ -2368,7 +2370,7 @@ rcu_torture_print_module_parms(struct rcu_torture_op=
-s *cur_ops, const char *tag)
->         n_barrier_cbs,
->         onoff_interval, onoff_holdoff,
->         read_exit_delay, read_exit_burst,
-> -         nocbs_nthreads, nocbs_toggle,
-> +         nocbs_nthreads, cur_ops->can_nocbs_toggle, nocbs_toggle,
->         test_nmis);
-> }
->=20
-> @@ -3708,6 +3710,10 @@ rcu_torture_init(void)
->        pr_alert("rcu-torture: ->fqs NULL and non-zero fqs_duration, fqs di=
-sabled.\n");
->        fqs_duration =3D 0;
->    }
-> +    if (!cur_ops->can_nocbs_toggle && nocbs_nthreads !=3D 0) {
-> +        pr_alert("rcu-torture: ->can_nocbs_toggle false and non-zero nocb=
-s_nthreads, nocbs_toggle disabled.\n");
-> +        nocbs_nthreads =3D 0;
-> +    }
->    if (cur_ops->init)
->        cur_ops->init();
->=20
-> --=20
-> 2.25.1
->=20
+--
+Uladzislau Rezki
