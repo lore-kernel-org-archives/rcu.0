@@ -2,131 +2,155 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39F72C05027
-	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 22:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7802C05027
+	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 22:12:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbjBBWAX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Feb 2023 17:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
+        id S232542AbjBBWMD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Feb 2023 17:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbjBBWAW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Feb 2023 17:00:22 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E194885F7
-        for <rcu@vger.kernel.org>; Thu,  2 Feb 2023 13:59:52 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id f47-20020a05600c492f00b003dc584a7b7eso4713979wmp.3
-        for <rcu@vger.kernel.org>; Thu, 02 Feb 2023 13:59:52 -0800 (PST)
+        with ESMTP id S230144AbjBBWMB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Feb 2023 17:12:01 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D40963853
+        for <rcu@vger.kernel.org>; Thu,  2 Feb 2023 14:11:59 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id a9so1696914ljr.13
+        for <rcu@vger.kernel.org>; Thu, 02 Feb 2023 14:11:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GpQqIcYzW24NoE4rYiVknf6KZVN8LYqH5TXYzHdb+3M=;
-        b=mwh5EjD+CrWzvqutd8IljFnMGRQXj2tCaUtzf/ip7Fx/7JXdbc97L+E/EmTW9Oae73
-         9Ylt/v4jzuked0HEBtzU/q3pRrnsFRx+ZB7WxAQGE8qH+gWxbrIkpVhl87nxs73n9loO
-         fKG1uIuwKrHYhfZQ+GxXK4Cyn7XlbcZLSSv3McW7GHfVkWOwcoyIllOSckfARaD6G+cA
-         SLHOb1wgrhTf/xClLk9ydPorX3wtcu9Z8rh43CQLnMwktRcRnfudxaqmRpIG2SRkHYiC
-         o4fmZ7B88lQ0yrepdi8nofN2wQUWuoS+ZOn8VLEx2+i4Mzp60kYLRL2cVJ2vIsUzkfwR
-         LydA==
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DDBf9AfsyJbDtWjBnORPYU2pBf1EAExr7r+iEnI2UJk=;
+        b=DiQK1RYQzoUkORmBEz1Rkwi9p4a0tXqoRCrUVCeT+LRfAIZWk19mpwacI3+cO5xyfQ
+         X/unw6O6ZAPTICkvk+5xe4gMtll3sTUc2iD9XpTX63fkRrNHxkVjqi5JT0up7TNX9K7I
+         mxvMKxD7qHndz5uwVXyrdy+jbuUmOKccaQBi0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GpQqIcYzW24NoE4rYiVknf6KZVN8LYqH5TXYzHdb+3M=;
-        b=SsJ9dCQ6K+yx5OFGf9TJhtQAy7KzBPaoG4zhMBBHpVJaKZ1BUxWJnLCLNuKstsnNR3
-         gMBgU15bUZ/La++osCxywdhLs80Oj0W6GKpIPePKJjPw2vXxL8YS9g3yz8OV8uxYHHrX
-         oaJqAH8yAAZ7d7vBnV+wibZb11EPlZ7/LVLlJs1CTLBL7S8bTWICZ/vcyY4lnhyO4BoW
-         GL48nDV0ZSojkbscl5WLYMEEGEouWqmBRtURxJaV3VKW+0X6k9MPthAfqJv//VitvVe/
-         cE3bczWCRB72222ec+K4+M45a8yhOwIu3N4tuZNVHiKEtB4uhm+3fYxvB1ppinCNV2e5
-         D23w==
-X-Gm-Message-State: AO0yUKVgp7BoZ/5c0JPumff6ZGUqAEMSO9Xf/5hX74HhIVB6ZE0fR5PC
-        tGfkhbmcnM5lp9+Tz0oDQLXdmQ==
-X-Google-Smtp-Source: AK7set8o50YFSBYeEBNtkAiBgAaIbG+rH/XDVtTCYV/fEyqOwguJihiZFYOvbTE8c29A7YdgzKGIMw==
-X-Received: by 2002:a05:600c:1c1f:b0:3dc:5e21:8aa2 with SMTP id j31-20020a05600c1c1f00b003dc5e218aa2mr7362676wms.34.1675375170436;
-        Thu, 02 Feb 2023 13:59:30 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:98fe:e4ee:fc7e:cd71? ([2a02:6b6a:b566:0:98fe:e4ee:fc7e:cd71])
-        by smtp.gmail.com with ESMTPSA id l16-20020a1c7910000000b003dc1d668866sm5710640wme.10.2023.02.02.13.59.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Feb 2023 13:59:29 -0800 (PST)
-Message-ID: <702e3663-ceaa-c2b9-960f-1c909865f3d2@bytedance.com>
-Date:   Thu, 2 Feb 2023 21:59:29 +0000
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DDBf9AfsyJbDtWjBnORPYU2pBf1EAExr7r+iEnI2UJk=;
+        b=X9M8Blay4uS/qfAHWl0tAVMEjJ/Lc3aCnmkRziY/QndWWB7ObgXqlBb28nQtmy4YIf
+         OMXFKkyFwVoSBCqOZxnZmMwSEa1pust2scYCoSoy6jFx0AOhc7zkIiS1QH+I5HVFmiVd
+         1jOBw46b7RJ7XL0+GQZGP1zvmVgpE+D+UK7bRbE4DcILiDD/m7A+f30Eg6COt5CUnwz4
+         OQsLDAMi2eom+nGbc5IBPJgqJ79ck/xRNt0HE/QEOY8cQ7pFIEllXmSCNljJNN+TGJ1d
+         T/8bYbngba2FulY6wBQuP2RKD4mAlO+OvN7sFmZFrFOksuXI1kDLL8ks+b21+WtTABGy
+         4oLw==
+X-Gm-Message-State: AO0yUKVk9/ZCim1+c804y/JFHvrY/NRV+bVcR2DvDOZQEnszsIRKNhyB
+        ez8qAPyFF/7xdNby1qo7r62nroUIszfaUnE+AIEkCQ==
+X-Google-Smtp-Source: AK7set/RbA0pp+Qg8Rsnud2lgip3FiJpNc3sLz6lAva+5lxLZwIGc8AFOklF/KcPcvFq6MOUVDu6o3TNx1Z/7sHc9AM=
+X-Received: by 2002:a2e:a36c:0:b0:28b:7226:f203 with SMTP id
+ i12-20020a2ea36c000000b0028b7226f203mr1266615ljn.207.1675375917469; Thu, 02
+ Feb 2023 14:11:57 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 0/9] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>, tglx@linutronix.de,
-        arjan@linux.intel.com
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com
-References: <20230201204338.1337562-1-usama.arif@bytedance.com>
- <de9c33a14c370d09cefaa331b18525e164436082.camel@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <de9c33a14c370d09cefaa331b18525e164436082.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20230202070245.3311951-1-qiang1.zhang@intel.com>
+ <7959A7ED-A47F-4472-9278-8582F1CCC6A9@joelfernandes.org> <PH0PR11MB5880DF541BB1D75E0DFC02FEDAD69@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB5880DF541BB1D75E0DFC02FEDAD69@PH0PR11MB5880.namprd11.prod.outlook.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 2 Feb 2023 17:11:45 -0500
+Message-ID: <CAEXW_YRSEu=O7FW=T5fOAWcRbejQUXVN+RoGcTN+xkd7xmJepA@mail.gmail.com>
+Subject: Re: [PATCH v2] rcutorture: Create nocb tasks only for
+ CONFIG_RCU_NOCB_CPU=y kernels
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Feb 2, 2023 at 4:25 PM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote=
+:
+>
+>
+> > On Feb 2, 2023, at 1:57 AM, Zqiang <qiang1.zhang@intel.com> wrote:
+> >
+> > =EF=BB=BFWhen setting nocbs_nthreads to start rcutorture test with a no=
+n-zero value,
+> > the nocb tasks will be created and invoke rcu_nocb_cpu_offload/deoffloa=
+d()
+> > to toggle CPU's callback-offload state, but for CONFIG_RCU_NOCB_CPU=3Dn
+> > kernel, the rcu_nocb_cpu_offload/deoffload() is a no-op and this is als=
+o
+> > meaningless for torture_type is non-rcu.
+> >
+> > This commit therefore add member can_nocbs_toggle to rcu_torture_ops
+> > structure to avoid unnecessary nocb tasks creation.
+> >
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > ---
+> > kernel/rcu/rcutorture.c | 10 ++++++++--
+> > 1 file changed, 8 insertions(+), 2 deletions(-)
+> >
+> >Sorry if I am missing something but what is the point of adding more lin=
+es of code and complexity to handle this? Does it improve the test coverage=
+ or reduce overhead?
+> >
+> >This is test code. I see no problem with cost of an extra unused task wi=
+th positive trade off of keeping the code simple=E2=80=A6
+>
+> For nocbs_nthreads is non-zero and CONFIG_RCU_NOCB_CPU=3Dn kernels,
+> the rcu_nocb_cpu_offload/deoffload() is a no-op,  we create nocbs_nthread=
+s
+> kthreads and perform nocb toggle tests periodically, which is meaningless=
+ and
+> will take extra cpu time.
 
+Ah, ok. I see what you did now, could you add these details to the
+changelog. One comment below:
 
-On 02/02/2023 10:02, David Woodhouse wrote:
-> On Wed, 2023-02-01 at 20:43 +0000, Usama Arif wrote:
->> This patchseries is from the work done by David Woodhouse (v4: https://lore.kernel.org/all/20220201205328.123066-1-dwmw2@infradead.org/).
->> The parallel CPU bringup is disabled for all AMD CPUs in this version: (see discussions: https://lore.kernel.org/all/bc3f2b1332c4bb77558df8aa36493a55542fe5b9.camel@infradead.org/ and
->> https://lore.kernel.org/all/3b6ac86fdc800cac5806433daf14a9095be101e9.camel@infradead.org/).
->>
->> Doing INIT/SIPI/SIPI in parallel brings down the time for smpboot from ~700ms
->> to 100ms (85% improvement) on a server with 128 CPUs split across 2 NUMA
->> nodes.
->>
->> Adding another cpuhp state for do_wait_cpu_initialized to make sure cpu_init
->> is reached in parallel as proposed by David in v1 will bring it down further
->> to ~30ms. Making this change would be dependent on this patchseries, so they
->> could be explored if this gets merged.
->>
->> Changes across versions:
->> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
->> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
->>      in preparation for more parallelisation.
->> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
->>      avoid scribbling on initial_gs in common_cpu_up(), and to allow all
->>      24 bits of the physical X2APIC ID to be used. That patch still needs
->>      a Signed-off-by from its original author, who once claimed not to
->>      remember writing it at all. But now we've fixed it, hopefully he'll
->>      admit it now :)
->> v5: rebase to v6.1 and remeasure performance, disable parallel bringup
->>      for AMD CPUs.
-> 
-> Thanks, Usama.
-> 
-> I've updated to v6.2-rc6 since there were a few more tweaks required
-> (and we should double-check that the new handling of cache_ap_init from
-> a dedicated cpuhp step works right if that ends up being done in
-> parallel).
-> 
-> I also fixed up the complaints from the test robot; including
-> <linux/smpboot.h> from smpboot.c and making do_cpu_up() static, and
-> putting #ifdef CONFIG_SMP around the 'are we booting the AP?' check and
-> code segment in head_64.S.
-> 
-> I've made the AMD thing a CPU bug as Peter suggested, and pushed it to
-> https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/parallel-6.2-rc6
-> for you to do the real work of actually testing it :)
+[...]
+> > @@ -569,6 +570,7 @@ static struct rcu_torture_ops rcu_ops =3D {
+> >    .stall_dur        =3D rcu_jiffies_till_stall_check,
+> >    .irq_capable        =3D 1,
+> >    .can_boost        =3D IS_ENABLED(CONFIG_RCU_BOOST),
+> > +    .can_nocbs_toggle    =3D IS_ENABLED(CONFIG_RCU_NOCB_CPU),
+> >    .extendables        =3D RCUTORTURE_MAX_EXTEND,
+> >    .name            =3D "rcu"
+> > };
+> > @@ -2356,7 +2358,7 @@ rcu_torture_print_module_parms(struct rcu_torture=
+_ops *cur_ops, const char *tag)
+> >         "n_barrier_cbs=3D%d "
+> >         "onoff_interval=3D%d onoff_holdoff=3D%d "
+> >         "read_exit_delay=3D%d read_exit_burst=3D%d "
+> > -         "nocbs_nthreads=3D%d nocbs_toggle=3D%d "
+> > +         "nocbs_nthreads=3D%d/%d nocbs_toggle=3D%d "
+> >         "test_nmis=3D%d\n",
+> >         torture_type, tag, nrealreaders, nfakewriters,
+> >         stat_interval, verbose, test_no_idle_hz, shuffle_interval,
+> > @@ -2368,7 +2370,7 @@ rcu_torture_print_module_parms(struct rcu_torture=
+_ops *cur_ops, const char *tag)
+> >         n_barrier_cbs,
+> >         onoff_interval, onoff_holdoff,
+> >         read_exit_delay, read_exit_burst,
+> > -         nocbs_nthreads, nocbs_toggle,
+> > +         nocbs_nthreads, cur_ops->can_nocbs_toggle, nocbs_toggle,
+> >         test_nmis);
+> > }
+> >
+> > @@ -3708,6 +3710,10 @@ rcu_torture_init(void)
+> >        pr_alert("rcu-torture: ->fqs NULL and non-zero fqs_duration, fqs=
+ disabled.\n");
+> >        fqs_duration =3D 0;
+> >    }
+> > +    if (!cur_ops->can_nocbs_toggle && nocbs_nthreads !=3D 0) {
+> > +        pr_alert("rcu-torture: ->can_nocbs_toggle false and non-zero n=
+ocbs_nthreads, nocbs_toggle disabled.\n");
+> > +        nocbs_nthreads =3D 0;
+> > +    }
 
-Thanks David! I have tested and reposted the v6.2-rc6 patches. One thing 
-I was mistaken about since I had rebased the patches together was that 
-the last 100ms to 30ms optimization was coming from parallelization in 
-x86/cpu:wait-init, when it seems to have a negligible affect. The last 
-70ms optimization was coming mainly from reusing timer calibration. Its 
-a simple patch and I have added it at the end of the series. The only 
-thing thats' missing was a sign-off from the author who I have added to 
-the latest series.
+Instead of adding a hook, why not check for CONFIG_RCU_NOCB_CPU here?
+
+so like:
+ if (cur_ops !=3D &rcu_ops || !IS_ENABLED(CONFIG_RCU_NOCB_CPU))
+   nocbs_nthreads =3D 0;
+
+Or will that not work for some reason? Just 2 line change and no ugly hooks=
+ =3D)
+
+- Joel
