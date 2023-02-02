@@ -2,109 +2,105 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFDAAC05027
-	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 16:35:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF17BC64EC5
+	for <rcu@archiver.kernel.org>; Thu,  2 Feb 2023 18:09:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjBBQfY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Feb 2023 11:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
+        id S232374AbjBBSJM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Feb 2023 13:09:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjBBQfW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Feb 2023 11:35:22 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9589B69B08;
-        Thu,  2 Feb 2023 08:35:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S232116AbjBBSJJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Feb 2023 13:09:09 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9EA6DFD7;
+        Thu,  2 Feb 2023 10:09:08 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 23FF861BD5;
-        Thu,  2 Feb 2023 16:35:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76199C433D2;
-        Thu,  2 Feb 2023 16:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675355717;
-        bh=sJB5PjcCiNz59vcpHfygblfpnQpA8CSQNYxGt99O4OY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=O3TWcKUByefRTL6kifI0dHerIa8z1QeBSbXUDbt7f4TvDZL0YcV/TYbDz92/Y7AHE
-         hmzjg0Wfq1JHOyABXYz0IVJTRl1VcjbAaER1aXWkd5w1e+W5w46FiMUBSwFyMyJKo0
-         BNMGA580Cw/Av9hkzkTlA/HMzq7NFJRl5Vfh9xyYOAFxfYpi3nhKBFS2PBLsbolMbW
-         Z7Venn6OyQHvtsKdJE1x2s3Tm/GAmOO6GZ4LcRV5CNzqo1WSzD5JskreVAmH2Dw8wJ
-         x7A21GaOXZSIW59/q5iELEcZwpwr+IFPxXexExNf6vVJJVtSBzz22HD/XRKlSBC0xi
-         qan5eC7i6OiuA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1490B5C0E5B; Thu,  2 Feb 2023 08:35:17 -0800 (PST)
-Date:   Thu, 2 Feb 2023 08:35:17 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        by ms.lwn.net (Postfix) with ESMTPSA id 48D347DE;
+        Thu,  2 Feb 2023 18:09:05 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 48D347DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1675361345; bh=2+a4mZYwqT3vzf0UQzfkcA5CdDxOuo7YvzN9jr8nkig=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=gY7ULbf3et5D4Qc/CNx/w7sCxqXxX6fR0sNacSV7nefpdle702hp6si3iizN6qwiE
+         uEIY7Q78a9h2RN4xfonCmMXE/H1WHGv23zZbRY3a8TD9z3xCs5/ly7iH92i4XVhMfk
+         m1+3SrM+pmOm5qUcXvYL8szbXDpSICOPir4Ff+tNZ80bHoZS0uhfOu3aabBosNVFfP
+         7pgupe9C5u4Sz6v8uZtM64S9OiXXXwx07OTa5szwYHdV6XxaRnf+mq/MpKQwaSbzh0
+         jfCb5rfx6sWATpmne99lGmlwL/b8o+ggGmLTspO1j2VtBWLoL4M3uxU9erIgFeIYC3
+         b3TsgnsFP3UgQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, nvdimm@lists.linux.dev,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, Jiri Pirko <jiri@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
- k[v]free_rcu_mightsleep()
-Message-ID: <20230202163517.GY2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230201150815.409582-1-urezki@gmail.com>
- <20230201191211.GK2948950@paulmck-ThinkPad-P17-Gen-1>
- <Y9vcp2jADVzHl0AE@pc636>
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH 0/9] Documentation: correct lots of spelling errors
+ (series 2)
+In-Reply-To: <20230129231053.20863-1-rdunlap@infradead.org>
+References: <20230129231053.20863-1-rdunlap@infradead.org>
+Date:   Thu, 02 Feb 2023 11:09:04 -0700
+Message-ID: <875yckvt1b.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9vcp2jADVzHl0AE@pc636>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 02, 2023 at 04:54:15PM +0100, Uladzislau Rezki wrote:
-> On Wed, Feb 01, 2023 at 11:12:11AM -0800, Paul E. McKenney wrote:
-> > On Wed, Feb 01, 2023 at 04:08:06PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > This small series is based on Paul's "dev" branch. Head is 6002817348a1c610dc1b1c01ff81654cdec12be4
-> > > it renames a single argument of k[v]free_rcu() to its new k[v]free_rcu_mightsleep() name.
-> > > 
-> > > 1.
-> > > The problem is that, recently we have run into a precedent when
-> > > a user intended to give a second argument to kfree_rcu() API but
-> > > forgot to do it in a code so a call became as a single argument
-> > > of kfree_rcu() API.
-> > > 
-> > > 2.
-> > > Such mistyping can lead to hidden bags where sleeping is forbidden.
-> > > 
-> > > 3.
-> > > _mightsleep() prefix gives much more information for which contexts
-> > > it can be used for.
-> > 
-> > Thank you!!!
-> > 
-> > I have queued these (aside from 10/13, which is being replaced by a
-> > patch from Julian Anastasov) for further testing and review.  And with
-> > the usual wordsmithing.
-> > 
-> Good. 10/13 will go with two arguments. So it is not needed. Just for
-> confirmation.
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-Got it, thank you!
+> Maintainers of specific kernel subsystems are only Cc-ed on their
+> respective patches, not the entire series. [if all goes well]
+>
+> These patches are based on linux-next-20230127.
 
-> BTW, i see two complains from the robot due to 10/13 patch uses an old API
-> name.
+So I've applied a bunch of these
 
-Thank you for the heads up!  I will be careful not to expose the last in
-the series to -next before they get something in.  Unless they take too
-long.  ;-)
+>  [PATCH 1/9] Documentation: admin-guide: correct spelling
+>  [PATCH 2/9] Documentation: driver-api: correct spelling
 
-							Thanx, Paul
+applied
 
-> > If testing goes well, I might try to get 1/13 into the next merge window,
-> > which would simplify things if maintainers want to take their patches
-> > separately.
-> > 
-> Thanks!
-> 
-> --
-> Uladzislau Rezki
+>  [PATCH 3/9] Documentation: hwmon: correct spelling
+>  [PATCH 4/9] Documentation: networking: correct spelling
+>  [PATCH 5/9] Documentation: RCU: correct spelling
+
+These have been taken up elsewhere
+
+>  [PATCH 6/9] Documentation: scsi/ChangeLog*: correct spelling
+>  [PATCH 7/9] Documentation: scsi: correct spelling
+
+I've left these for the SCSI folks for now.  Do we *really* want to be
+fixing spelling in ChangeLog files from almost 20 years ago?
+
+>  [PATCH 8/9] Documentation: sparc: correct spelling
+>  [PATCH 9/9] Documentation: userspace-api: correct spelling
+
+Applied.
+
+Thanks,
+
+jon
