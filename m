@@ -2,80 +2,87 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE58C636D3
-	for <rcu@archiver.kernel.org>; Fri,  3 Feb 2023 01:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9AD0C636D7
+	for <rcu@archiver.kernel.org>; Fri,  3 Feb 2023 06:36:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjBCBnM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Feb 2023 20:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        id S232354AbjBCGgh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 3 Feb 2023 01:36:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbjBCBnK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Feb 2023 20:43:10 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D0922A0E;
-        Thu,  2 Feb 2023 17:43:07 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFCE761D4B;
-        Fri,  3 Feb 2023 01:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FA1BC433EF;
-        Fri,  3 Feb 2023 01:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675388586;
-        bh=8zWI8bpAWD3oVlVykWtql5OSUtDYRERkD7toqAUb7R8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sSzjqSKG0c2v4pEaoyOyx0z3psnCdMrbABrkOsIQ7QR3fJYvsCR9bTr4H4GLesSt2
-         iFE4qI/QNPP83WUAsy6rsNZwOjk3r7pmuVDXSZ32g3gQGxHw/3bE5O0RJaLjpm17a4
-         UapoOYxj85CAZGh3VE5OuQOPT9oA9XvEUxW/AjzRNhRpLQq80yCu7yu4g+qgHI2dUo
-         5Mv7cjr1cMqFvM+/kton+7O9uFxzionWH7MdobojY0Gx97PiWCfwfqrmtwwJHfzHFM
-         Ws2y3TFkDkt9vjP/M9/Du0L4a1lskYOIP/6w9kdurWRuldvah7clBRFP0HASL94ALN
-         15C9AAS1x6uzw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D608B5C0DE7; Thu,  2 Feb 2023 17:43:05 -0800 (PST)
-Date:   Thu, 2 Feb 2023 17:43:05 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 9/8] Add kvfree_rcu_mightsleep() and
- kfree_rcu_mightsleep()
-Message-ID: <20230203014305.GA1075064@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230105002441.GA1768817@paulmck-ThinkPad-P17-Gen-1>
+        with ESMTP id S232100AbjBCGf5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 3 Feb 2023 01:35:57 -0500
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303698C1EE;
+        Thu,  2 Feb 2023 22:35:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675406153; x=1706942153;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MgxvjTKf5mNizCRob2Fn1KxHBq1yI368snScIZruVlE=;
+  b=nCs5BRCEqgo73s1Lpawe+PAovCbk4SMVMb4jOS27OjIib5dBjwVhPBrQ
+   sfbFOIOxgi41A1UjvWEoNohzdKESrN/cC/uEheC65Cbg9fsf5kBa9/N/H
+   X9TVeK4NibV+N2wn2H20kHulHVpQeCISyw6F0RHDsxeKl3JZjMwCCwMCR
+   ADPXNIE9kQFgHY0uAsa/JJxSHePW0gRLTlebu4dpOMvGzSXch8gyCJw3R
+   itpM8IuTYdMh1gGAxXIJ0VIiW2l+RIo+VsConyqBRdZpGGE1FzTkZ3Dww
+   1xGMxAi1TlDGFdTVvW8QWnGVD5OMt/4HntWYDJZ7HrcDElJpTgvEiyCVC
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10609"; a="393262862"
+X-IronPort-AV: E=Sophos;i="5.97,269,1669104000"; 
+   d="scan'208";a="393262862"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2023 22:35:49 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10609"; a="808239720"
+X-IronPort-AV: E=Sophos;i="5.97,269,1669104000"; 
+   d="scan'208";a="808239720"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2023 22:35:47 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] rcutorture: Create nocb tasks only for rcu testing and CONFIG_RCU_NOCB_CPU=y kernel
+Date:   Fri,  3 Feb 2023 14:40:54 +0800
+Message-Id: <20230203064054.3418539-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230105002441.GA1768817@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The kvfree_rcu() and kfree_rcu() APIs are hazardous in that if you forget
-the second argument, it works, but might sleep.  This sleeping can be a
-correctness bug from atomic contexts, and even in non-atomic contexts
-it might introduce unacceptable latencies.  This commit therefore adds
-kvfree_rcu_mightsleep() and kfree_rcu_mightsleep(), which will replace
-the single-argument kvfree_rcu() and kfree_rcu(), respectively.
+When setting nocbs_nthreads to start rcutorture test with a non-zero value,
+the nocb tasks will be created and invoke rcu_nocb_cpu_offload/deoffload()
+to toggle CPU's callback-offload state, but this is meaningless for non-rcu
+testing or CONFIG_RCU_NOCB_CPU=n kernel create nocb tasks to periodically
+toggle CPU's callback-offload state and adds unnecessary testing overhead.
 
-This commit enables a series of commits that switch from single-argument
-kvfree_rcu() and kfree_rcu() to their _mightsleep() counterparts.  Once
-all of these commits land, the single-argument versions will be removed.
+This commit therefore add checks for cur_ops types and CONFIG_RCU_NOCB_CPU
+options when nocbs_nthreads is non-zero to avoid unnecessary nocb task
+creation.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/rcutorture.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index f38d4469d7f30..84433600885a6 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -1004,6 +1004,9 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
- #define kvfree_rcu(...) KVFREE_GET_MACRO(__VA_ARGS__,		\
- 	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 297da28ce92d..d01127e0e8cd 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3708,6 +3708,12 @@ rcu_torture_init(void)
+ 		pr_alert("rcu-torture: ->fqs NULL and non-zero fqs_duration, fqs disabled.\n");
+ 		fqs_duration = 0;
+ 	}
++	if (nocbs_nthreads != 0 && (cur_ops != &rcu_ops ||
++					!IS_ENABLED(CONFIG_RCU_NOCB_CPU))) {
++		pr_alert("rcu-torture types: %s and CONFIG_RCU_NOCB_CPU=%d, nocb toggle disabled.\n",
++				cur_ops->name, IS_ENABLED(CONFIG_RCU_NOCB_CPU));
++		nocbs_nthreads = 0;
++	}
+ 	if (cur_ops->init)
+ 		cur_ops->init();
  
-+#define kvfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
-+#define kfree_rcu_mightsleep(ptr) kvfree_rcu_mightsleep(ptr)
-+
- #define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
- #define kvfree_rcu_arg_2(ptr, rhf)					\
- do {									\
+-- 
+2.25.1
+
