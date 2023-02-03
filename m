@@ -2,112 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1724BC64EC3
-	for <rcu@archiver.kernel.org>; Fri,  3 Feb 2023 17:51:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D17EC61DA4
+	for <rcu@archiver.kernel.org>; Fri,  3 Feb 2023 18:17:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjBCRvh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 3 Feb 2023 12:51:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
+        id S233068AbjBCSRL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 3 Feb 2023 13:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbjBCRve (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 3 Feb 2023 12:51:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C435386B4;
-        Fri,  3 Feb 2023 09:51:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6F662B82B71;
-        Fri,  3 Feb 2023 17:51:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D6CAC433EF;
-        Fri,  3 Feb 2023 17:51:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675446684;
-        bh=UajoyW9n+yiaQw+xQj/VWfYTICp5snUgdh2mt8zSTVI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FYliuYY7TBloFrvBYEvn5cjfa5hASN+DrCzpJ+ZgxZ2yrR0MUvv57Cw5egWMWUgpN
-         4ckb9eFaC371ZQAOXbhzItzRo82CdoPdtoty99AWHMwymSZoJHw5B2khR7HgPZs5oX
-         sMrohWMiU0oYOdY4ReCWUKMNNQ0lKYC6iC3EvbP7/t3MePhH6Gd+4XVNaUcJYQ12/t
-         4R+KnEskeAu2KMpIruZq3Qo5VnKjGB8JKNFjx3n/x3LdmBe0FRGmL6pAD2CswzqnLF
-         T3gH/VoGIkQizGp3Ww2lLmiLqi/COPAKRi8dGh9+3Lobuib1QndspEB6ibQk0EyJiQ
-         cMBY9v08yytmg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B91AC5C06D0; Fri,  3 Feb 2023 09:51:23 -0800 (PST)
-Date:   Fri, 3 Feb 2023 09:51:23 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] rcutorture: Create nocb tasks only for rcu testing
- and CONFIG_RCU_NOCB_CPU=y kernel
-Message-ID: <20230203175123.GK2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230203064054.3418539-1-qiang1.zhang@intel.com>
- <CAEXW_YR3F+hb4hWuaONM4qCqAkH_6MMBWKAaK7b2TAzodKhz8g@mail.gmail.com>
+        with ESMTP id S232299AbjBCSRL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 3 Feb 2023 13:17:11 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDB7410AA
+        for <rcu@vger.kernel.org>; Fri,  3 Feb 2023 10:17:09 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id h9so6052425plf.9
+        for <rcu@vger.kernel.org>; Fri, 03 Feb 2023 10:17:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h2JXp3707ROK/aH3TnNjGXJEpujY2l7c5/rrxx85BRg=;
+        b=sU595YSl2eFiBxpCpCVoQwM2jfLYhOe/R8YXDn/k8xPajB4XsdQFFtyVsyXm2A8bVZ
+         BdLX4xcGbVcyTFw3FNaxThLPD/PrqlXUMKpJ7h32x3mKBAjW9gzV0iIUChz3Pvj+TP3e
+         MeYW97CKVdVWcKeZdzT46HHqnk3wMyNtPr/4+vonT8hJvfmFWbsET/RCIoWW+4QZYaKK
+         Y8Tg6YAuwy4OhYT9bz1zU5cWZTpEWQCaLGzqoFaAqRZLkql+1ExYP2XXHGFBru2tVY1S
+         djFxYj+DklKpK8ijlZCJ4a22FjUWQ5Inv+bSpJPwiKLCKMG32WIZT2BAANJXMox6Luvx
+         l9kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h2JXp3707ROK/aH3TnNjGXJEpujY2l7c5/rrxx85BRg=;
+        b=I5/C5aHAPK1njOBmVjOMuVIWcKfNo3MlyN89fzATfs4qdZ9Qje8xBejOEFK09+yoX5
+         IUh7dbHfEVS0xmCq06dTVlg91eMse1wVjRGdc8t3NqOOsvQSMOrnjNo4ZrwhrUekPRCb
+         BOGG2YImYbhXwN7/v2FFWykL8eXHM8PurimEnIO6Y5JRHTGJXZft81ATs8Calx01srBp
+         pw097XrxuqMvjfcDzA3pBqdQMu3CPE32Ij7EdKYYPMd7n1795lxdTJ96L1hbvboJP2Gk
+         j4BzwhI1ZIVUI39DCk+tzMFaA9scRu/hWeh8u+P1zdfXH5avvS0KCuq26QJ55wpHBZ2l
+         KLKw==
+X-Gm-Message-State: AO0yUKVW4xp8w+EUHVJ6dQ/LyV4bj0zqZSuZJfsIC9SEJoTp7TEVzOEb
+        feQ4a8lr/b5aAifouXHWXCotFQ==
+X-Google-Smtp-Source: AK7set+apdBfly7qo8sySTAPEnbWQcdm8AsxwXbBOWxeOkrgZ36lbpZK1kkPbake9U7Md3iK2CbCDw==
+X-Received: by 2002:a17:903:1392:b0:198:af4f:de05 with SMTP id jx18-20020a170903139200b00198af4fde05mr277679plb.5.1675448228890;
+        Fri, 03 Feb 2023 10:17:08 -0800 (PST)
+Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
+        by smtp.gmail.com with ESMTPSA id k9-20020aa79d09000000b005813f365afcsm2083721pfp.189.2023.02.03.10.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Feb 2023 10:17:08 -0800 (PST)
+Date:   Fri, 3 Feb 2023 18:17:04 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, tglx@linutronix.de, arjan@linux.intel.com,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com
+Subject: Re: [PATCH v6 06/11] x86/smpboot: Support parallel startup of
+ secondary CPUs
+Message-ID: <Y91PoIfc2jdRv0WG@google.com>
+References: <20230202215625.3248306-1-usama.arif@bytedance.com>
+ <20230202215625.3248306-7-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YR3F+hb4hWuaONM4qCqAkH_6MMBWKAaK7b2TAzodKhz8g@mail.gmail.com>
+In-Reply-To: <20230202215625.3248306-7-usama.arif@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 03, 2023 at 12:29:23PM -0500, Joel Fernandes wrote:
-> On Fri, Feb 3, 2023 at 1:35 AM Zqiang <qiang1.zhang@intel.com> wrote:
-> >
-> > When setting nocbs_nthreads to start rcutorture test with a non-zero value,
-> > the nocb tasks will be created and invoke rcu_nocb_cpu_offload/deoffload()
-> > to toggle CPU's callback-offload state, but this is meaningless for non-rcu
-> > testing or CONFIG_RCU_NOCB_CPU=n kernel create nocb tasks to periodically
-> > toggle CPU's callback-offload state and adds unnecessary testing overhead.
-> >
-> > This commit therefore add checks for cur_ops types and CONFIG_RCU_NOCB_CPU
-> > options when nocbs_nthreads is non-zero to avoid unnecessary nocb task
-> > creation.
-> >
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Thu, Feb 02, 2023, Usama Arif wrote:
+> @@ -1515,6 +1530,17 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
+>  
+>  	speculative_store_bypass_ht_init();
+>  
+> +	/*
+> +	 * We can do 64-bit AP bringup in parallel if the CPU reports its
+> +	 * APIC ID in CPUID leaf 0x0B. Otherwise it's too hard. And not
+> +	 * for SEV-ES guests because they can't use CPUID that early.
+> +	 * Also, some AMD CPUs crash when doing parallel cpu bringup, disable
+> +	 * it for all AMD CPUs to be on the safe side.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_X86_32) || boot_cpu_data.cpuid_level < 0x0B ||
+> +	    cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
 
-Queued and pushed, thank you both!
+Obviously not your fault, but CC_ATTR_GUEST_STATE_ENCRYPT is a terrible name.
+TDX guest state is also encrypted, but TDX doesn't return true CC_ATTR_GUEST_STATE_ENCRYPT.
+I.e. this looks wrong, but is correct, because CC_ATTR_GUEST_STATE_ENCRYPT really
+just means "SEV-ES guest".
 
-Note that this loses testing of the offload/de-offload API when there
-is nothing to offload or de-offload, but that is not necessarily the job
-of rcutorture.  Or if it is the job of rcutorture, perhaps it is a single
-pair of calls somewhere.  And that can certainly be a separate patch.
-
-But perhaps Frederic has an opinion on what testing is needed for this
-case, and if so where that testing should live.
-
-							Thanx, Paul
-
-> thanks,
-> 
->  - Joel
-> 
-> 
-> > ---
-> >  kernel/rcu/rcutorture.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index 297da28ce92d..d01127e0e8cd 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -3708,6 +3708,12 @@ rcu_torture_init(void)
-> >                 pr_alert("rcu-torture: ->fqs NULL and non-zero fqs_duration, fqs disabled.\n");
-> >                 fqs_duration = 0;
-> >         }
-> > +       if (nocbs_nthreads != 0 && (cur_ops != &rcu_ops ||
-> > +                                       !IS_ENABLED(CONFIG_RCU_NOCB_CPU))) {
-> > +               pr_alert("rcu-torture types: %s and CONFIG_RCU_NOCB_CPU=%d, nocb toggle disabled.\n",
-> > +                               cur_ops->name, IS_ENABLED(CONFIG_RCU_NOCB_CPU));
-> > +               nocbs_nthreads = 0;
-> > +       }
-> >         if (cur_ops->init)
-> >                 cur_ops->init();
-> >
-> > --
-> > 2.25.1
-> >
+> +		do_parallel_bringup = false;
+> +
+>  	snp_set_wakeup_secondary_cpu();
+>  }
