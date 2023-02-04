@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF603C05027
-	for <rcu@archiver.kernel.org>; Sat,  4 Feb 2023 02:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17EA9C636D4
+	for <rcu@archiver.kernel.org>; Sat,  4 Feb 2023 02:34:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjBDCcw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 3 Feb 2023 21:32:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
+        id S232165AbjBDCeg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 3 Feb 2023 21:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjBDCcv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 3 Feb 2023 21:32:51 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4FE783D1
-        for <rcu@vger.kernel.org>; Fri,  3 Feb 2023 18:32:49 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id o13so6794528pjg.2
-        for <rcu@vger.kernel.org>; Fri, 03 Feb 2023 18:32:49 -0800 (PST)
+        with ESMTP id S230042AbjBDCee (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 3 Feb 2023 21:34:34 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8708A709B5
+        for <rcu@vger.kernel.org>; Fri,  3 Feb 2023 18:34:33 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id nm12-20020a17090b19cc00b0022c2155cc0bso6589390pjb.4
+        for <rcu@vger.kernel.org>; Fri, 03 Feb 2023 18:34:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JJbv4yo9z1tKADvI6a3aboLzFFTaY4TL3y4qXVEelc0=;
-        b=Ctz0TWzwdQWLHfmJLuyKsEqy7JnxDb7MCEbgueEzLymTkHOWkAxgNkO4+qaqH8Yctl
-         2GwGZbsUY7V3SHBpV6JkmrhJ9yYl+7GBWjYmduyXzzzMDGkeNda1WpY8EVErXg9teiuC
-         gf2JLnot74AiLehs21xhCIebWXsmROXY2WctSFuWkPF0y4bSQwCLICGj+VLPjScFuT/7
-         WkOFKv7ni8wWPcQlchUD61WfLBGVqnAkJ0L3Jn/SEXt8GeQfN02oNyf3p+u5hORrOt7P
-         fMFCZxFEZVut1mwY1rFKDXlx8LBOH12khTISsxzLAMnxM/mVQfBbY5CnSjUFu7jLqlBE
-         aUuw==
+        bh=Fywi/Ti0TlNNeuFvNTyWvoWAKwt8+gjFHWHrrYQyMPc=;
+        b=EfLArmYHeuf243oXflKPZ4jK88UPhOXPLNBH3HtDMSiO0595j44T+bKG8AAA3aEg8y
+         BBgyx/KVvkt5nHMbYqmo8ZzluSmjxSmdSI+YAYtOWv3ZvM6pemLbma6eZo4YmjmA2gaJ
+         Xeki3nWxYapRn0bx1KOy9T9CWurz4NPMEgx7uI+f5uIBfQdvuv9AUfgTXy35+z9IxbA9
+         JCpJimLVg5Hf8hJUDCmxRGCwBTcnd1I14honMljRTeZBtOQooptb3l4iKEwOqHrWCRYK
+         UY/hx5yISxnwstyUiMm1iuNtS+59Gw81NRc9c2cgnhJhKi5xVhBfEjd4RSK2gswad4UD
+         dZFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JJbv4yo9z1tKADvI6a3aboLzFFTaY4TL3y4qXVEelc0=;
-        b=TCj6mDMuZQLrfQqgvUZte/6Ex74kVGwoC4MFJd2N2WlJ7lzio64+Mgp+YUHjW3ax9N
-         GD7fGNxcJj0WKf2AZLroA7MeKHs3c7dEo85pzxd1hZsUa9wQR/rmN6K/gXBqxfom1f6p
-         R6EyKbgiFyaMDMY/vGeQE/KUgjqSt2K6PWwgsRXAGyZYXzkWjG5RmYcXHhsBnSlLsIgq
-         Q6GWw58Lg68RoENfqJcogoxd2OYVooAdPLZgF/l2SgjCIqtvW+lVatKFw2tcwaRYFx2C
-         KSIQSVKXbGGJdXiVzgBej9ju++9AMDtpZ34BREDSLoGQDD7pbx69pxbsVFVaSVQ6B1X4
-         04Pw==
-X-Gm-Message-State: AO0yUKW5IvmNGOg9FPUCHYo0bjLocQW+b8NBtsh0h9vTHJX3GfN9SwhZ
-        8mPNRxjAHp2EmA3iFlkZElVGYBcNCCJBvbEJpEY=
-X-Google-Smtp-Source: AK7set9ci3NH6OTBikQiPjHIfm+Xp9bgU+h1YrCilT1EqyMOVWawa6TRCT8/tEWDgc88aYNQxAdd4g==
-X-Received: by 2002:a17:903:22c6:b0:198:af50:e4eb with SMTP id y6-20020a17090322c600b00198af50e4ebmr84078plg.17.1675477968822;
-        Fri, 03 Feb 2023 18:32:48 -0800 (PST)
+        bh=Fywi/Ti0TlNNeuFvNTyWvoWAKwt8+gjFHWHrrYQyMPc=;
+        b=u9DW7Ic1J9CRkkIi8KSq6lNfhWHMFMAULl5+jiWea+SCsBlQCj5HPHmETTJe2c5QQC
+         WbCwKy5bA7tcvNH34pZ0G+SEOoeEUsAXv4/LMQdMB83ZRDuMpBIPCxlXCMZXK2FHhG3b
+         X+tSSi5px/8O6Hw6eb0dyEvYdjFLHxdvtOMJbxeRLAUQgtIGqYZylKFbTCaSGQu7xW5q
+         9BTs2PPrStrEuqrFj0utQ1xK0rU82aCSpZzrjOAun9+Qr2iaHxSZF/JgKrMVMxwlwTcU
+         iKMdIezo9uRlfdpkE8fQQi2p8m79oc7Z8rQYSfTJyL5hRcdl2Ax8Dwp/VkVxZ0d0jpIT
+         +YUg==
+X-Gm-Message-State: AO0yUKUHwumVdH8pyo6aCfJb2oleI674/cMl5ClgXWtT4nBVpPsEd+1b
+        ltV4E8PEEDB3Ro30bsYYobGdPbsTcxghmafvrOk=
+X-Google-Smtp-Source: AK7set8qXcdEKZpCS5/BerMEwbvyo7P6DKG8m8Ux4zwfKnbcrddEh0Jzv/WAwU9+gJcAuhS5MmXY+A==
+X-Received: by 2002:a17:903:2350:b0:198:af50:e4e8 with SMTP id c16-20020a170903235000b00198af50e4e8mr97386plh.14.1675478072856;
+        Fri, 03 Feb 2023 18:34:32 -0800 (PST)
 Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
-        by smtp.gmail.com with ESMTPSA id o16-20020a170902d4d000b0019678eb963fsm2290195plg.145.2023.02.03.18.32.48
+        by smtp.gmail.com with ESMTPSA id g10-20020a639f0a000000b00496317241f9sm2160448pge.51.2023.02.03.18.34.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Feb 2023 18:32:48 -0800 (PST)
-Date:   Sat, 4 Feb 2023 02:32:44 +0000
+        Fri, 03 Feb 2023 18:34:32 -0800 (PST)
+Date:   Sat, 4 Feb 2023 02:34:29 +0000
 From:   Sean Christopherson <seanjc@google.com>
 To:     David Woodhouse <dwmw2@infradead.org>
 Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
@@ -65,51 +65,29 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
         Joel Fernandes <joel@joelfernandes.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Luczaj <mhal@rbox.co>
-Subject: Re: [PATCH 3/3] KVM: selftests: Add EVTCHNOP_send slow path test to
- xen_shinfo_test
-Message-ID: <Y93DzL77oRCWbJOB@google.com>
+Subject: Re: [PATCH 0/3] KVM: Make use of SRCU deadlock detection support
+Message-ID: <Y93ENVvdDWEkrV6S@google.com>
 References: <20230113065955.815667-1-boqun.feng@gmail.com>
  <20230113124606.10221-1-dwmw2@infradead.org>
- <20230113124606.10221-4-dwmw2@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230113124606.10221-4-dwmw2@infradead.org>
+In-Reply-To: <20230113124606.10221-1-dwmw2@infradead.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 On Fri, Jan 13, 2023, David Woodhouse wrote:
-> @@ -57,6 +60,7 @@ enum {
->  	TEST_EVTCHN_SLOWPATH,
->  	TEST_EVTCHN_SEND_IOCTL,
->  	TEST_EVTCHN_HCALL,
-> +	TEST_EVTCHN_HCALL_SLOWPATH,
->  	TEST_EVTCHN_HCALL_EVENTFD,
->  	TEST_TIMER_SETUP,
->  	TEST_TIMER_WAIT,
-> @@ -270,6 +274,20 @@ static void guest_code(void)
->  
->  	guest_wait_for_irq();
->  
-> +	GUEST_SYNC(TEST_EVTCHN_HCALL_SLOWPATH);
-> +
-> +	/* Same again, but this time the host has messed with memslots
-> +	 * so it should take the slow path in kvm_xen_set_evtchn(). */
+> David Woodhouse (3):
+>       KVM: Show lockdep the kvm->mutex vs. kvm->srcu ordering rule
+>       KVM: selftests: Use enum for test numbers in xen_shinfo_test
+>       KVM: selftests: Add EVTCHNOP_send slow path test to xen_shinfo_test
+> 
+>  .../testing/selftests/kvm/x86_64/xen_shinfo_test.c | 165 ++++++++++++++-------
+>  virt/kvm/kvm_main.c                                |  10 ++
+>  2 files changed, 124 insertions(+), 51 deletions(-)
 
-	/*
-	 * https://lore.kernel.org/all/CA+55aFyQYJerovMsSoSKS7PessZBr4vNp-3QUUwhqk4A4_jcbg@mail.gmail.com
-	 */
+As mentioned in patch three, I'm going to repost the selftests changes on top
+of other cleanups, and will plan on applying them next week if all goes well.
 
-> +	__asm__ __volatile__ ("vmcall" :
-> +			      "=a" (rax) :
-> +			      "a" (__HYPERVISOR_event_channel_op),
-> +			      "D" (EVTCHNOP_send),
-> +			      "S" (&s));
-> +
-> +	GUEST_ASSERT(rax == 0);
-
-There's a lot of copy+paste in this file, and we really should do VMMCALL when
-running on AMD.  That's easy to do with some changes that are in the queue for
-6.3.  I'll repost these selftest patches on top of a few patches to add helpers for
-doing hypercalls using the Xen ABI.
+Paolo, do you want to grab the KVM change directly?
