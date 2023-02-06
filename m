@@ -2,207 +2,281 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF8F3C636CC
-	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 03:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84767C61DA4
+	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 08:07:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjBFDJk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 5 Feb 2023 22:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S229693AbjBFIHX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Feb 2023 03:07:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjBFDJj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 5 Feb 2023 22:09:39 -0500
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9C81A4AB;
-        Sun,  5 Feb 2023 19:09:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675652979; x=1707188979;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ZmA5U6x2m+mxfNhJoPKcPDoZhqdM43pTij130FVR+WA=;
-  b=USvM/e2LFQq6HAubO1K3ZL2lxbG8aZ5G5ZHjeBgSxfR1HN9vCAywNzm3
-   rjiArcMN28POitaY230Ph5tJPN3I5w3GkNYuja9ahFb6G7uouF7JmqXWE
-   gUG3/pNOzNLKJhO2oUKFZD+z/xauDSmiAce4+XppZ3FZ4BnGudDQMJQdZ
-   5G3Tfz+66ucF3eZl36+QpUpCtTNI8IDceVxEct3cFCHfTmqt6cRNy94d3
-   paIpp3KFCmQZuHSwicIRZ34EFI8PgvZp/gthl1WHOPNaAwOkumIaVLtIu
-   pNE/U8FY0TY76CavbEAutccCkhIU3InK/dUAPP2V43UKA/pknlxnuGMNr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10612"; a="391518200"
-X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; 
-   d="scan'208";a="391518200"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2023 19:09:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10612"; a="659711397"
-X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; 
-   d="scan'208";a="659711397"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga007.jf.intel.com with ESMTP; 05 Feb 2023 19:09:38 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Sun, 5 Feb 2023 19:09:37 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16 via Frontend Transport; Sun, 5 Feb 2023 19:09:37 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.16; Sun, 5 Feb 2023 19:09:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCayWwKYE9J8A+YOZwI7p8tCN/ShEzkpHKpzb/R5w524p40crjgIrXhWSEhtXCaQBSlqmFNWdPqyOOqeUX6r6f3AYshfmhiz5mw7FmhQ5WCqpUM3yva3r/WZ0ru25oawTBz91JRrnAjq4WZHS6G2iibKRAf1p+aroacL4sj2IdPoBivDfNsXxt++PERLNczUU2Hcw1py2z9qQn98Dk2QVInfSAaR1r53opI1aBNF0UVHk+XygkQM9kl3L6iYbU5lgoPct0jFOEgLn+Eb19f1VGKlU98MhQwc2EfZmWfbKgjDz9izcVmUIndbpTLpJjpd/L2mpnNIYtVO12Ow6qQtKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lzo+RHAbTda48av4PxWRN3VSMz6O67HrsFPrm4XwlIg=;
- b=CDXLVgTcxCIb6dlAOK7oIddzql0/2V0n0Pun1bLNzsYi1iX55rT2hL757If4HR1BXkkrS0iXTKckeGaMSjI/ljdr8YXTf9ocw/TuU649BloqLVBk/AwdvkS2JJGfFqCByu7/3zt43qI4lVQWUOTufX/bQMBPy/cERKaXh3tT8egjZZgxmeBQ2I7YQwC6cmzFHjZqZIYh77p49Ul05hekie3PAc1v4uKwfQbzeEXfpox+F2+RUW0u7IjSqRyawT161UYfJAkTbhzrVT3qZEAyeXFfDDC6rNFC+bNUANnmjZsqYzg8N8ZvU9V0nPpQv52jFYFRe2mjVoku1YuXqKU9Xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by SN7PR11MB7601.namprd11.prod.outlook.com (2603:10b6:806:34a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.36; Mon, 6 Feb
- 2023 03:09:36 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::13e0:365f:80d9:f2be]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::13e0:365f:80d9:f2be%3]) with mapi id 15.20.6064.031; Mon, 6 Feb 2023
- 03:09:36 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: RE: [PATCH] rcu/tree: Improve comments in rcu_report_qs_rdp()
-Thread-Topic: [PATCH] rcu/tree: Improve comments in rcu_report_qs_rdp()
-Thread-Index: AQHZOD9ejAi0bsndXU+9RwTFzHNkO67BPBpQ
-Date:   Mon, 6 Feb 2023 03:09:35 +0000
-Message-ID: <PH0PR11MB58800C6FD1C0DDF8EC67DB5DDADA9@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20230204022051.2737724-1-joel@joelfernandes.org>
-In-Reply-To: <20230204022051.2737724-1-joel@joelfernandes.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|SN7PR11MB7601:EE_
-x-ms-office365-filtering-correlation-id: 2603c9ac-1a8a-4d6d-186a-08db07ef93b0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vBGopyYRmVSywVfNwX6QMuSyigUQ5m/+wcgpPJMM2oBeattpi4DDhNfFTYx3c5pD3tOq7BrkJzqvLfuqTptEK3ptwRR3/bvz9DnIuaBzCau6+AgLQmuiiuRQ8UwwP1qxOtIDErSuSIdtjOxHmMXkZVSTkhaErvKe1spcMGw+8VDvtEn4eHbL8U/zkNWRH8mA+hLQ20H31XLAvFASQIWQ9AtMV5zhj5V7Po3z9B02JFTh53OGD1QyYlgdg5p6djSA59DxuivFoQFSon7ajKqHXVXDPaO57jsM5vWUynz7a5vfcVfnRtoCOtJ14DvK2EI9k4K8VXp+PcDQbijXlZFfh6uOBtco485dPPFsWUx//PbyLOf1qhitdd7BgVMQXrhY132CGRZjjvSwBz4rcbeWB2lh9LM4mR52RGeYnj3IYzQxbWM6Tp1opSOwE7lytQjHi8jXBml9w03a/c9yaZOiLYyHsPD2fxSsaCHBguMF5Tk0MXoY6dqILUV5a/KwGC9IyvustB/OFIKikMQW9qpY2Z4mIX0Kyz9sQmBiUEtrYN8x55fRJnm/7jfqcQmvVdahZ6eoG4d/SuaKdNXxwfTzx2I5XcNIvJFjXUSO3RU5+rmn36COgLPhLLPxiXVGS0vpRq4OfFzfErs9NkoIDrw0Q5neJQt210v/R/T1eM7db6GC2YtYinrh53sdR6EGovCr8/W2vhBzui2wOINUzfyJ7LiHHeZGPrmZtDJ2CaJs5IY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(376002)(396003)(366004)(346002)(136003)(39860400002)(451199018)(41300700001)(64756008)(66899018)(4326008)(66446008)(8676002)(66476007)(52536014)(8936002)(66946007)(316002)(966005)(66556008)(76116006)(110136005)(5660300002)(186003)(54906003)(7416002)(6506007)(55016003)(33656002)(9686003)(83380400001)(38100700002)(66574015)(26005)(478600001)(2906002)(7696005)(38070700005)(71200400001)(86362001)(82960400001)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?nUpSKvbRuBlMUFglXLkjCXTdkbf9Gq9smIJjCRV8kL6PuvHI+sBfCrc4ZiSx?=
- =?us-ascii?Q?KzNkiUOcF7vLp2cYTrepQAFr1JCK4o3VRS1hQ/VPfMuzmglVkWetAWJT6RUf?=
- =?us-ascii?Q?s0M8T+DHIWf/QGS7yabd6VEy1J/QHFs5T5y1HCJCIE7I+5fyusvv3KzB0uFK?=
- =?us-ascii?Q?Y87n40V1QhDi2vV9reXttKD1Z0GBaq/Y+ldJ39aPlvyU7BvNUBCMHbRQl3Yk?=
- =?us-ascii?Q?Qv95LT6gSZ8rIKuduouw7Nety0AxBWt65eaOouEskMTLs1LnoarK5nCpLqPa?=
- =?us-ascii?Q?uG1Pjq4UPVgu+kxa8OtZx9dxqUmJf5lKymvncrBmI/NFDbUm1IiVVtB7CrLH?=
- =?us-ascii?Q?h7DRFFKr0XwsU8DVqhSntf2bI8hYLUEijdxuDWWxr7TyQJ8F00HS3SD/Phf1?=
- =?us-ascii?Q?axz4/EYxRxLqnivUX3CUHaSXLdSIUIOCVgix6+2SVTgoA/Si9JxzBLqYM/DF?=
- =?us-ascii?Q?K7rcw8Y2c1BYmVUXcE/2nhireLho+v3YLJI/UHsOUtI6B+sEL6q0mRXrIfDS?=
- =?us-ascii?Q?L4Lyy2A/1tjYcsWMMg4SlgZ89Q3Gvh7HgbFpHpj/aWqquJzeuetsr119xjTf?=
- =?us-ascii?Q?ibOfXRdhV5UIlP2FCT8mI9+2DmBkexC/K3J7JaUOciyL6R8oUbUZ+MK92SFO?=
- =?us-ascii?Q?F1kJoUsgnuGjHNuzNFFPTwKNC7YkXiNi8AGhV0cqqBAiAMppzQWS+m8wUeBK?=
- =?us-ascii?Q?QwfzM6SYPPJpsX9lGvkr06GMD4Jlrk1e0ExjH0pCROF4sie7b2a7bgFMGokR?=
- =?us-ascii?Q?Ux3v8lu79/mm58GeWg146sP7HZMM2DpUoiyqxoI6gW7rct1sDHzRRFG/2TZ/?=
- =?us-ascii?Q?PudS5Ju853P2N2sXO6qp6HJ+YbBbnvwpS8UnKnj2i9N9aNlBxDfo4VemmK6P?=
- =?us-ascii?Q?1yyU2CAONMW+IlHgnYNd9T7M+QZi/RuvlzRudlZ6dIt1PlKpcswQgB4JQ56O?=
- =?us-ascii?Q?ZX0MLg+qZJtm4pUCo+pSVQBw1FGhg2xfWh8J7E2DC1wY0E4fh+4M7kR4oDBY?=
- =?us-ascii?Q?zI430mrQQjuNAgkGaVFAL9mxbxcrMCScP1mSreNDYo/X4/RQIA2jUMncSOqz?=
- =?us-ascii?Q?vRkD2fTYEimpY81JBhnbG0GvgMmjDMluYXnAoFBdgxd9PWMbMrm+8sdTFTAu?=
- =?us-ascii?Q?TZyGssGJAgTplaCSNb5q5mbm391HZGYSgcqQowHAXUdSbiO/JSG6a6YSvuWZ?=
- =?us-ascii?Q?vND2A+hKIZC2TF5KiT1LfnV+FWZUowlkCU2fMkzDy3ihpKVasGhbEI4BUgbC?=
- =?us-ascii?Q?rGRkxdcJf65b/eppigFO1T/RHmAC6ZAW9mX+DwkJ0OgC6jgY+MPR+lTF3TV4?=
- =?us-ascii?Q?aEgH2FoOUhulxFKq1uereOACq6XsU90EemM1i0/K5sM/sh3OCTTtiVxjeNNc?=
- =?us-ascii?Q?lM6i4iweyNJj7MUfsZSNISpXaWvTCZ5N4iWRCebczYA8ozjyW2wlnXjjZ+dx?=
- =?us-ascii?Q?AWkznZtMCnKJ/cm/sfJX7w8N+5Nupt7ICnuCxfQ+dhQsmJhYUq8yalqvPh3H?=
- =?us-ascii?Q?I8to7Xz6Wy6XJrqtLnh7YsqlHQ30L96UOEP6TrGSZ6mlNKTmYox3DTeeXk/q?=
- =?us-ascii?Q?k+Temo6JAcbfCAe1To7UqQ1m8AS+Mxw1Y991amEb?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229508AbjBFIHW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Feb 2023 03:07:22 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4AB10C3;
+        Mon,  6 Feb 2023 00:07:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YVVleUhHiv8Z3sHNFcIJazz8ubFLrztMldNWNpxs2G0=; b=A4shMXxSgEbDXw0Uxkce/QA5VE
+        PQu7PZMIuhYdcGqBfZ+MFPI928CvVhEv1moJ/MRpzgljMs/CgQgz8FFKg04a3pJcsTwy2TM5gjgrR
+        KSLicAoCCgPVEF9u+fxhVPYwOG6wSyBNT7OvnIWJ46iILL7qgA9e7fEwNCLaQ22rHb3gftiSxKLb1
+        +HfSKzYFTG4nRkcjsX2K2jUA4uvG7eGhRio5XUjUdU9SVl/fMUljwDv0g8UKa9uGOrLBkNK2szOdH
+        towhmKPLd8gs6Xdfk8YT1ZpWQDggJ17Oou6GlPqdv/v6xKA9mnlYEVT0zfS3wySO88Tr9nQIYTECY
+        m2AnkQrw==;
+Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pOwVk-00GaHc-K7; Mon, 06 Feb 2023 08:06:01 +0000
+Message-ID: <411cbdb2c8255e48f3e65c59a98bc02410f5dfc7.camel@infradead.org>
+Subject: Re: [External] Re: [PATCH v6 07/11] x86/smpboot: Disable parallel
+ boot for AMD CPUs
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Usama Arif <usama.arif@bytedance.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>, tglx@linutronix.de,
+        rja@hpe.com
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com, Mario Limonciello <Mario.Limonciello@amd.com>
+Date:   Mon, 06 Feb 2023 08:05:58 +0000
+In-Reply-To: <434b4b74-54ab-68a3-4a81-9cc02ea75e39@bytedance.com>
+References: <20230202215625.3248306-1-usama.arif@bytedance.com>
+         <20230202215625.3248306-8-usama.arif@bytedance.com>
+         <b3d9fbbf-e760-5d1d-9182-44c144abd1bf@amd.com>
+         <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
+         <5ba476f3-e0ac-d630-ce1d-18ab9885496f@linux.intel.com>
+         <E2286684-F8AD-4708-9A3D-74C5EAE183B4@infradead.org>
+         <434b4b74-54ab-68a3-4a81-9cc02ea75e39@bytedance.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-0G8I4vlUP3SHocDQbZAJ"
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2603c9ac-1a8a-4d6d-186a-08db07ef93b0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2023 03:09:35.9060
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lNASBW61MXXbqUvEnL4fkZrm8aq3BUhE6rureCg33G0tsIu5HySmUKE6PUaUoNg2sY80wKMHG2THWvq4SSDbXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7601
-X-OriginatorOrg: intel.com
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
->Recent discussion triggered due to a patch linked below, from Qiang,
->shed light on the need to accelerate from QS reporting paths.
->
->Update the comments to capture this piece of knowledge.
->
->Link: https://lore.kernel.org/all/20230118073014.2020743-1-qiang1.zhang@in=
-tel.com/
->Cc: Qiang Zhang <Qiang1.zhang@intel.com>
->Cc: Frederic Weisbecker <frederic@kernel.org>
->Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->
->---
-> kernel/rcu/tree.c | 13 ++++++++++++-
-> 1 file changed, 12 insertions(+), 1 deletion(-)
->
->diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->index 93eb03f8ed99..713eb6ca6902 100644
->--- a/kernel/rcu/tree.c
->+++ b/kernel/rcu/tree.c
->@@ -1983,7 +1983,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
-> 	} else {
-> 		/*
-> 		 * This GP can't end until cpu checks in, so all of our
->-		 * callbacks can be processed during the next GP.
->+		 * callbacks can be processed during the next GP. Do
->+		 * the acceleration from here otherwise there may be extra
->+		 * grace period delays, as any accelerations from rcu_core()
+--=-0G8I4vlUP3SHocDQbZAJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, 2023-02-05 at 22:13 +0000, Usama Arif wrote:
+>=20
+>=20
+> On 04/02/2023 22:31, David Woodhouse wrote:
+> >=20
+> >=20
+> > On 4 February 2023 18:18:55 GMT, Arjan van de Ven <arjan@linux.intel.co=
+m> wrote:
+> > > >=20
+> > > > However...
+> > > >=20
+> > > > Even though we *can* support non-X2APIC processors, we *might* want=
+ to
+> > > > play it safe and not go back that far; only enabling parallel bring=
+up
+> > > > on machines with X2APIC which roughly correlates with "lots of CPUs=
+"
+> > > > since that's where the benefit is.
+> > >=20
+> > > I think that this is the right approach, at least on the initial patc=
+h series.
+> > > KISS principle; do all the easy-but-important cases first, get it sta=
+ble and working
+> > > and in later series/kernels the range can be expanded.... if it matte=
+rs.
+> >=20
+> > Agreed. I'll split it to do it only with X2APIC for the initial series,=
+ and then hold the CPUID 0x1 part back for the next phase.
+>=20
+> This was an interesting find! I tested the latest branch=20
+> parallel-6.2-rc6 and it works well. The numbers from Russ makes the=20
+> patch series look so much better! :)
+>=20
+> If we do it with x2apic only and not support non-x2apic CPUID 0x1 case,=
+=20
+> maybe we apply the following diff to part 1?
+
+Using x2apic_mode would also disable parallel boot when the CPU *does*
+have X2APIC support but the kernel just isn't using it at the moment. I
+think boot_cpu_has(X86_FEATURE_X2APIC) is the better criterion?
+
+I was thinking I'd tweak the 'no_parallel_bringup' command line
+argument into something that also allows us to *enable* it without
+X2APIC being supported.
+
+But I've also been pondering the fact that this is all only for 64-bit
+anyway. It's not like we're doing it for the zoo of ancient i586 and
+even i486 machines where the APICs were hooked up with blue wire and
+duct tape.
+
+Maybe "64-bit only" is good enough, with a command line opt-out. And
+maybe a printk pointing out the existence of that command line option
+before the bringup, just in case?=C2=A0
+
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index f53a060a899b..f6b89cf40076 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1564,7 +1564,7 @@ void __init native_smp_prepare_cpus(unsigned int=
+=20
+> max_cpus)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * sufficient). Oth=
+erwise it's too hard. And not for SEV-ES
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * guests because t=
+hey can't use CPUID that early.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ENABLED(CONFIG_X86_32) || bo=
+ot_cpu_data.cpuid_level < 1 ||
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ENABLED(CONFIG_X86_32) || !x=
+2apic_mode ||
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+(x2apic_mode && boot_cpu_data.cpuid_level < 0xb) ||
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 do_parallel_bringup =3D false;
+>=20
+>=20
+>=20
+> For reusing timer calibration, calibrate_delay ends up being used in=20
+> start_kernel, smp_callin, debug_calc_bogomips and check_cx686_slop. I
+> think reusing timer calibration would be ok in the first 2 uses?=C2=A0
+>=20
+
+It already explicitly allows the calibration to be reused from another
+CPU in the same *core*, but no further. I think we'd need to be sure
+about the correctness of extending that further, and which of the mess
+of constant/invariant/we-really-mean-it-this-time TSC flags need to be
+set for that to be OK.
+
+> but not really sure about the other 2. cx686 seems to be quite old so not=
+ sure=20
+> if anyone will have it to test or will ever run 6.2 kernel on it :).=C2=
+=A0 I=20
+> guess if unsure, better to leave out initially and try and get part1 merg=
+ed?
+
+I doubt cx686 advertises constant TSC; the early ones didn't even *have* a =
+TSC.
+Does it even support SMP?
+
+--=-0G8I4vlUP3SHocDQbZAJ
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjA2MDgwNTU4WjAvBgkqhkiG9w0BCQQxIgQgDL5CQqe7
+xOU+D+FhpFMLeBxiae1iRanesdktKQ/voeEwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAh9d0dxTVe4E6h7AsYiNlmcrlpi7FFTlhJ
+/58uTtfGYup+Uq7b+HbMofyCJxxOZPERe5/sW9xzcBlMY0xTzpVkD/IxMtSDFR7QzeeBSx/tHqR7
+ZWpPddNQ0uCwqlA+YF0BDgadWzSZvAgfP/3ELtv2GKDheQe7eG7EN3/dSceLGQe8RcVivGDPM+so
+N/+qUAx9KHoKOPSXEScNdp+CO33626VeWXuZEPG3NG6ZkVR13xX4D12iAPVN+xjQGWjHtN3LaFHT
+TWxDNxTGNHrcR72pnwy3OvXVxQbqsbpTm/1Fp7L5RMLMRcu2VFuPRlpZrAXJW0ASrCBuB4+0vlaZ
+mcRF88cn6m7b6ouJ0gr+jUWk0cJdhD8sRK9wYWwJ6cQliY2JwKB8X0ZjMgOzZZ3jnHsSBDrwmSkE
+H80YInmWZ991XXUjAT76WrI1ZsEUcrlvXlK4AHJHgg4g7v5qzpwEupggNv7BRzNxHqxzXqee3rii
+md9z81SQZk/BEJLunHWFXVQgLzwLJ2nGB8Rc9KLn3jw6e52dQ2JtyAJZVQjYgWZKjVLSLsnf97d9
+G0PUYcsn9A5W7jYjPo+69DfjTMAj4DGEpQsaDQcUkOiG8/tE6WPqfYZ93UF6RR+6F4W5cL9ZdGLK
+D/isBQMpyljYjyVPbyYf2JyALHx3XOMaXGkgIRwkAQAAAAAAAA==
 
 
-Does the extra grace period delays means that if not accelerate callback,=20
-the grace period will take more time to end ? or refers to a delay in the
-start time of a new grace period?
-
-Thanks
-Zqiang
-
->+		 * or note_gp_changes() may happen only after the GP after the
->+		 * current one has already started. Further, rcu_core()
->+		 * only accelerates if RCU is idle (no GP in progress).
-> 		 *
-> 		 * NOCB kthreads have their own way to deal with that...
-> 		 */
->@@ -1993,6 +1998,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
-> 			/*
-> 			 * ...but NOCB kthreads may miss or delay callbacks acceleration
-> 			 * if in the middle of a (de-)offloading process.
->+			 *
->+			 * Such missed acceleration may cause the callbacks to
->+			 * be stranded until RCU is fully de-offloaded, as
->+			 * acceleration from rcu_core() and note_gp_changes()
->+			 * cannot happen for fully/partially offloaded mode due
->+			 * to ordering dependency between rnp lock and nocb_lock.
-> 			 */
-> 			needacc =3D true;
-> 		}
->--=20
->2.39.1.519.gcb327c4b5f-goog
->
+--=-0G8I4vlUP3SHocDQbZAJ--
