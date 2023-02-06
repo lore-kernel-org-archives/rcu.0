@@ -2,177 +2,285 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC014C636D3
-	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 18:07:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FCADC61DA4
+	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 23:20:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbjBFSHp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Feb 2023 13:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
+        id S229607AbjBFXUt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Feb 2023 18:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjBFSHn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Feb 2023 13:07:43 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF5123C40
-        for <rcu@vger.kernel.org>; Mon,  6 Feb 2023 10:07:42 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id pj3so12410666pjb.1
-        for <rcu@vger.kernel.org>; Mon, 06 Feb 2023 10:07:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qtgxlCHcEg9/GzAJkVDlK65BAtBBeUjha9tRmSPN4Fk=;
-        b=m0F2ArAPmzZy09CrcjGX7iTzr+uhlPBQ555MwCtERC8mt63i+Xhj7AiosNKzev2DN6
-         c55LVAwhrehy+4ivJEiS0u3Z4e8RtCVNwQ+hUWLBqGM4KLcFfyVkUefMzryCi/WOc6dk
-         mvZ9xkMCr1A19Qu+xTfKPOGtjb4qEmEgE7RuQceNAjCkuY7zZ6Gvm1vxsHW4bFS7fTtR
-         Q2jxmXu3X7kZPVjfEqW6Cn+uJRF9nPh/D0CEse+ZGKymRshTejV6rfl5J//NvCHQWjOY
-         K/T3LABwVp5Knbn/MtITU6ILke3Y54fIkWFBBvXLWkCOMhb56tMI77sCNqON4XcRKEVf
-         HnVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qtgxlCHcEg9/GzAJkVDlK65BAtBBeUjha9tRmSPN4Fk=;
-        b=VXdA7/TMI46COBlRbNGbnHSKHYhO63Gat7lIeP8XqLvzDDsa8J6fs37BU6Tp7zNA4m
-         k6RS2fgF5CPt3yU+XrvAMfZEVvLu0vOzeiryvoKhO+hMB6uwORxPrjh19dntb2AhSXaq
-         t4IA1LD8Ak0duLT/OS5dQ26RSt7m6/tnUVJpnZjOMcaGgeeUxR82P8UmMYn2AWtW82Za
-         aEq8ZKlwKhQ+ShJGXLx/qy22Q6hDPGOzUdUYMyhDCbgpsoZCGW7KxwK1qJzhrK/xEQHH
-         6YNSCIgh8LVOefxPcuObxbDEKHw0a3txlWg//AXv4PTpw62PHxBmIdGJ0gM3IMaU3v3A
-         Y0Bw==
-X-Gm-Message-State: AO0yUKXS/ElyfqZKa7VpTcEz5SrLZbZsFRl6UgKK07k9VgowfO7GEHAM
-        R+ouV2r5tkFGAmIuUAiH+Bs82w==
-X-Google-Smtp-Source: AK7set+FNGN/RCOWlSdzdtzluoZ+K/foAvCsXIhYX06GiwX2da2SFNcUJTaK2kNEudSPg/pNZymBaA==
-X-Received: by 2002:a17:903:40ce:b0:189:6624:58c0 with SMTP id t14-20020a17090340ce00b00189662458c0mr39207pld.3.1675706861570;
-        Mon, 06 Feb 2023 10:07:41 -0800 (PST)
-Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
-        by smtp.gmail.com with ESMTPSA id o6-20020a637306000000b004d346876d37sm6458097pgc.45.2023.02.06.10.07.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Feb 2023 10:07:40 -0800 (PST)
-Date:   Mon, 6 Feb 2023 18:07:37 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>, tglx@linutronix.de,
-        rja@hpe.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        Mario Limonciello <Mario.Limonciello@amd.com>
-Subject: Re: [External] Re: [PATCH v6 07/11] x86/smpboot: Disable parallel
- boot for AMD CPUs
-Message-ID: <Y+FB6f6MEBy2g3Ft@google.com>
+        with ESMTP id S229676AbjBFXUs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Feb 2023 18:20:48 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE5B24116;
+        Mon,  6 Feb 2023 15:20:46 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1675725644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JR1NPUgJTRhPCezfKGz5rwW+Lzgv1Ek8JY3fpAZd8c8=;
+        b=cJoggIuI4s8xRnQAJM2VhHFKZoZg+e3Xs6Aa5WxCZq0Xgo8BCQ71r7cYCmDWVIbQMLeFP6
+        bwFekFTL9DEqp2TissF6oqWPu1Cx5gd6wFnil68LezXdZ28laXVJwns7HEdnFVlwywT3sS
+        IaDjg8UFwJyMiod5hdVb9Xugful7UreamZGlzS0of3HCPWKca6LYk1QFntnpcOlVInuQRl
+        38X+rOfwXp8A9oSRbQnTVpC5dXGol+RFd05rIhLzO9Dybnmohz0InCS2g+BZ+5PI0xgcOI
+        ZFUzE/XJRCAUmAhkpBHqDFebIfp9jKcXzj2Hzsslao09BqHQ7KHwH6MnGSOn+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1675725644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JR1NPUgJTRhPCezfKGz5rwW+Lzgv1Ek8JY3fpAZd8c8=;
+        b=tsWnjlmqkkS0AHc3tsY+lkA18qV7/X/wPvpwR7IGdCTumr2/JMYwhY1n1GZpI42Gla6BJY
+        9mr9B/ji4j6Q6MDw==
+To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
+        arjan@linux.intel.com
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
+Subject: Re: [PATCH v6 01/11] x86/apic/x2apic: Fix parallel handling of
+ cluster_mask
+In-Reply-To: <20230202215625.3248306-2-usama.arif@bytedance.com>
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
- <20230202215625.3248306-8-usama.arif@bytedance.com>
- <b3d9fbbf-e760-5d1d-9182-44c144abd1bf@amd.com>
- <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
- <5ba476f3-e0ac-d630-ce1d-18ab9885496f@linux.intel.com>
- <E2286684-F8AD-4708-9A3D-74C5EAE183B4@infradead.org>
- <434b4b74-54ab-68a3-4a81-9cc02ea75e39@bytedance.com>
- <411cbdb2c8255e48f3e65c59a98bc02410f5dfc7.camel@infradead.org>
- <de7524ce-563c-2ff6-84a5-6a347c36855b@bytedance.com>
+ <20230202215625.3248306-2-usama.arif@bytedance.com>
+Date:   Tue, 07 Feb 2023 00:20:43 +0100
+Message-ID: <87a61qxtx0.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <de7524ce-563c-2ff6-84a5-6a347c36855b@bytedance.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 06, 2023, Usama Arif wrote:
-> 
-> 
-> On 06/02/2023 08:05, David Woodhouse wrote:
-> > On Sun, 2023-02-05 at 22:13 +0000, Usama Arif wrote:
-> > > 
-> > > 
-> > > On 04/02/2023 22:31, David Woodhouse wrote:
-> > > > 
-> > > > 
-> > > > On 4 February 2023 18:18:55 GMT, Arjan van de Ven <arjan@linux.intel.com> wrote:
-> > > > > > 
-> > > > > > However...
-> > > > > > 
-> > > > > > Even though we *can* support non-X2APIC processors, we *might* want to
-> > > > > > play it safe and not go back that far; only enabling parallel bringup
-> > > > > > on machines with X2APIC which roughly correlates with "lots of CPUs"
-> > > > > > since that's where the benefit is.
-> > > > > 
-> > > > > I think that this is the right approach, at least on the initial patch series.
-> > > > > KISS principle; do all the easy-but-important cases first, get it stable and working
-> > > > > and in later series/kernels the range can be expanded.... if it matters.
-> > > > 
-> > > > Agreed. I'll split it to do it only with X2APIC for the initial series,
+Usama!
 
-And sanity check CPUID.0xB output even when x2APIC is supported, e.g. require
-CPUID.0xB.EBX to be non-zero.  Odds are very good that there are VMs in the wild
-that support x2APIC but have an empty CPUID.0xB due to it being a topology leaf,
-i.e. may be suppressed when vCPUs aren't pinned.  QEMU even has a knob to deliberately
-disable CPUID.0xB, e.g. booting a VM with
+On Thu, Feb 02 2023 at 21:56, Usama Arif wrote:
+> For each CPU being brought up, the alloc_clustermask() function
+> allocates a new struct cluster_mask just in case it's needed. Then the
+> target CPU actually runs, and in init_x2apic_ldr() it either uses a
+> cluster_mask from a previous CPU in the same cluster, or consumes the
+> "spare" one and sets the global pointer to NULL.
+>
+> That isn't going to parallelise stunningly well.
+>
+> Ditch the global variable, let alloc_clustermask() install the struct
+> *directly* in the per_cpu data for the CPU being brought up. As an
+> optimisation, actually make it do so for *all* present CPUs in the same
+> cluster, which means only one iteration over for_each_present_cpu()
+> instead of doing so repeatedly, once for each CPU.
+>
+> Now, in fact, there's no point in the 'node' or 'clusterid' members of
+> the struct cluster_mask, so just kill it and use struct cpumask instead.
+>
+> This was a harmless "bug" while CPU bringup wasn't actually happening in
+> parallel. It's about to become less harmless...
 
- cpu host,host-phys-bits,-cpuid-0xb,+x2apic
+Just to be clear. There is no bug in todays code and therefore this:
 
-works just fine.
+> Fixes: 023a611748fd5 ("x86/apic/x2apic: Simplify cluster management")
 
-> > > > and then hold the CPUID 0x1 part back for the next phase.
-> > > This was an interesting find! I tested the latest branch
-> > > parallel-6.2-rc6 and it works well. The numbers from Russ makes the
-> > > patch series look so much better! :)
-> > > 
-> > > If we do it with x2apic only and not support non-x2apic CPUID 0x1 case,
-> > > maybe we apply the following diff to part 1?
-> > 
-> > Using x2apic_mode would also disable parallel boot when the CPU *does*
-> > have X2APIC support but the kernel just isn't using it at the moment. I
-> > think boot_cpu_has(X86_FEATURE_X2APIC) is the better criterion?
-> > 
-> 
-> x2apic_mode is set to 0 only in the case when nox2apic is specified in the
-> kernel cmdline or if x2apic_setup fails. As 0xB leaf gets the "x2apic id"
-> and not the "apic id", I thought it would be better to not use the x2apic id
-> if the user doesnt want to use x2apic (cmdline), or the kernel fails to set
-> it up.
+tag is unjustified. It'll just cause the stable robots to backport it
+for no reason.
 
-I agree with David that checking boot_cpu_has(X86_FEATURE_X2APIC) is preferred,
-x2APIC goes unused on a lot of platforms due to the kernel's interrupt remapping
-requirement.  I would rather have a single explicit "no_parallel_bringup" option
-than try to infer the user's intentions based on tangentially related params.
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-> Another thing I noticed from the Intel Architecture Manual CPUID—CPU
-> Identification section:
-> 
-> "CPUID leaf 1FH is a preferred superset to leaf 0BH. Intel recommends first
-> checking for the existence of Leaf 1FH before using leaf 0BH."
-> 
-> So I think we should switch from 0BH to using the 1FH leaf EDX register.
+How is this SOB chain correct? It's unclear to me how Paul got involved
+here, but let's assume he handed the patch over to you, then this still
+lacks a SOB from you.
 
-I don't think using 0x1F will buy us anything except complexity.  0x1F provides more
-details on the topology, but its x2APIC ID enumeration isn't any more trustworthy
-than 0xB.
+> +/*
+> + * As an optimisation during boot, set the cluster_mask for *all*
+> + * present CPUs at once, to prevent *each* of them having to iterate
+> + * over the others to find the existing cluster_mask.
+> + */
+> +static void prefill_clustermask(struct cpumask *cmsk, u32 cluster)
+> +{
+> +	int cpu;
+> +
+> +	for_each_present_cpu(cpu) {
+> +		u32 apicid = apic->cpu_present_to_apicid(cpu);
 
-> > I was thinking I'd tweak the 'no_parallel_bringup' command line
-> > argument into something that also allows us to *enable* it without
-> > X2APIC being supported.
-> > 
-> > But I've also been pondering the fact that this is all only for 64-bit
-> > anyway. It's not like we're doing it for the zoo of ancient i586 and
-> > even i486 machines where the APICs were hooked up with blue wire and
-> > duct tape.
+Lacks a newline between declaration and code.
 
-The only thing I can see benefiting from parallel bringup without x2APIC is large
-VMs running on pre-x2AVIC hardware.  E.g. IIRC, we (Google) hide x2APIC on AMD-based
-VMs so that VMs would take advantage of AVIC acceleration if AVIC were even to be
-enabled.
+> +		if (apicid != BAD_APICID && apic_cluster(apicid) == cluster) {
+> +			struct cpumask **cpu_cmsk = &per_cpu(cluster_masks, cpu);
+> +
+> +			BUG_ON(*cpu_cmsk && *cpu_cmsk != cmsk);
 
-But that's more of an argument for "try to use CPUID.0x1" than it is an argument
-for trying to use CPUID.0xB without x2APIC.
+While I agree that changing an in use mask pointer would be fatal, I
+really have to ask why this code would be invoked on a partially
+initialized cluster at all and why that would be correct.
 
-> > Maybe "64-bit only" is good enough, with a command line opt-out. And
-> > maybe a printk pointing out the existence of that command line option
-> > before the bringup, just in case?
+                        if (WARN_ON_ONCE(*cpu_cmsk == cmsk))
+                        	return;
+                        BUG_ON(*cpu_mask);
+
+if at all. But of course that falls over with the way how this code is
+invoked below.
+
+> +			*cpu_cmsk = cmsk;
+> +		}
+>  
+> -static int alloc_clustermask(unsigned int cpu, int node)
+> +static int alloc_clustermask(unsigned int cpu, u32 cluster, int node)
+>  {
+> +	struct cpumask *cmsk = NULL;
+> +	unsigned int cpu_i;
+> +	u32 apicid;
+> +
+>  	if (per_cpu(cluster_masks, cpu))
+>  		return 0;
+> -	/*
+> -	 * If a hotplug spare mask exists, check whether it's on the right
+> -	 * node. If not, free it and allocate a new one.
+> -	 */
+> -	if (cluster_hotplug_mask) {
+> -		if (cluster_hotplug_mask->node == node)
+> -			return 0;
+> -		kfree(cluster_hotplug_mask);
+> +
+> +	/* For the hotplug case, don't always allocate a new one */
+
+-ENOPARSE
+
+> +	if (system_state >= SYSTEM_RUNNING) {
+> +		for_each_present_cpu(cpu_i) {
+> +			apicid = apic->cpu_present_to_apicid(cpu_i);
+> +			if (apicid != BAD_APICID && apic_cluster(apicid) == cluster) {
+> +				cmsk = per_cpu(cluster_masks, cpu_i);
+> +				if (cmsk)
+> +					break;
+> +			}
+> +		}
+> +	}
+> +	if (!cmsk) {
+> +		cmsk = kzalloc_node(sizeof(*cmsk), GFP_KERNEL, node);
+> +		if (!cmsk)
+> +			return -ENOMEM;
+>  	}
+
+...
+  
+> +	per_cpu(cluster_masks, cpu) = cmsk;
+> +
+> +	if (system_state < SYSTEM_RUNNING)
+> +		prefill_clustermask(cmsk, cluster);
+
+TBH. The logic of this code is anything but obvious. Something like the
+uncompiled below perhaps?
+
+Thanks,
+
+        tglx
+---
+
+@@ -116,44 +109,90 @@
++
++/*
++ * As an optimisation during boot, set the cluster_mask for all present
++ * CPUs at once, to prevent each of them having to iterate over the others
++ * to find the existing cluster_mask.
++ */
++static void prefill_clustermask(struct cpumask *cmsk, unsigned int cpu, u32 cluster)
++{
++	int cpu_i;
+ 
+-	cluster = apicid >> 16;
+-	for_each_online_cpu(cpu) {
+-		cmsk = per_cpu(cluster_masks, cpu);
+-		/* Matching cluster found. Link and update it. */
+-		if (cmsk && cmsk->clusterid == cluster)
+-			goto update;
++	for_each_present_cpu(cpu_i) {
++		struct cpumask **cpu_cmsk = &per_cpu(cluster_masks, cpu);
++		u32 apicid = apic->cpu_present_to_apicid(cpu_i);
++
++		if (apicid == BAD_APICID || cpu_i == cpu || apic_cluster(apicid) != cluster)
++			continue;
++
++		if (WARN_ON_ONCE(*cpu_mask == cmsk))
++			continue;
++
++		BUG_ON(*cpu_cmsk);
++		*cpu_cmsk = cmsk;
+ 	}
+-	cmsk = cluster_hotplug_mask;
+-	cmsk->clusterid = cluster;
+-	cluster_hotplug_mask = NULL;
+-update:
+-	this_cpu_write(cluster_masks, cmsk);
+-	cpumask_set_cpu(smp_processor_id(), &cmsk->mask);
+ }
+ 
+-static int alloc_clustermask(unsigned int cpu, int node)
++static int alloc_clustermask(unsigned int cpu, u32 cluster, int node)
+ {
++	struct cpumask *cmsk;
++	unsigned int cpu_i;
++
+ 	if (per_cpu(cluster_masks, cpu))
+ 		return 0;
++
+ 	/*
+-	 * If a hotplug spare mask exists, check whether it's on the right
+-	 * node. If not, free it and allocate a new one.
++	 * At boot time CPU present mask is stable. If the cluster is not
++	 * yet initialized, allocate the mask and propagate it to all
++	 * siblings in this cluster.
+ 	 */
+-	if (cluster_hotplug_mask) {
+-		if (cluster_hotplug_mask->node == node)
+-			return 0;
+-		kfree(cluster_hotplug_mask);
+-	}
++	if (system_state < SYSTEM_RUNNING)
++		goto alloc;
++
++	/*
++	 * On post boot hotplug iterate over the present CPUs to handle the
++	 * case of partial clusters as they might be presented by
++	 * virtualization.
++	 */
++	for_each_present_cpu(cpu_i) {
++		u32 apicid = apic->cpu_present_to_apicid(cpu_i);
++
++		if (apicid != BAD_APICID && apic_cluster(apicid) == cluster) {
++			cmsk = per_cpu(cluster_masks, cpu_i);
+ 
+-	cluster_hotplug_mask = kzalloc_node(sizeof(*cluster_hotplug_mask),
+-					    GFP_KERNEL, node);
+-	if (!cluster_hotplug_mask)
++			/*
++			 * If the cluster is already initialized, just
++			 * store the mask and return. No point in trying to
++			 * propagate.
++			 */
++			if (cmsk) {
++				per_cpu(cluster_masks, cpu) = cmsk;
++				return 0;
++			}
++		}
++	}
++	/*
++	 * The cluster is not initialized yet. Fall through to the boot
++	 * time code which might initialize the whole cluster if it is
++	 * in the CPU present mask.
++	 */
++alloc:
++	cmsk = kzalloc_node(sizeof(*cmsk), GFP_KERNEL, node);
++	if (!cmsk)
+ 		return -ENOMEM;
+-	cluster_hotplug_mask->node = node;
++	per_cpu(cluster_masks, cpu) = cmsk;
++	prefill_clustermask(cmsk, cluster);
++
+ 	return 0;
+ }
+
+
