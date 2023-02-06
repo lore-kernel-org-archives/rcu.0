@@ -2,38 +2,40 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 099C6C61DA4
-	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 23:33:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F25C64EC6
+	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 23:43:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbjBFXdI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Feb 2023 18:33:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        id S230010AbjBFXnu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Feb 2023 18:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjBFXdH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Feb 2023 18:33:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B79BBA4;
-        Mon,  6 Feb 2023 15:33:06 -0800 (PST)
+        with ESMTP id S229854AbjBFXnt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Feb 2023 18:43:49 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF83222FB;
+        Mon,  6 Feb 2023 15:43:48 -0800 (PST)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1675726384;
+        s=2020; t=1675727026;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jEFEAA9/CFuhiUmVZK0xjgJMU7aqZIve5gky9EqH2Kk=;
-        b=Z9BfjV6LiKODTzCSutmLhH4KqzfGy45M/Kswe6IaYWFqwphx8pXw0S4OcqyiruEPpxU/8w
-        rC6V17reO5+1aPLNUgNMVyrFciHVvM5C5RL1nb8aluvEms6MhbWgL4OJf5iL3wC5n0k8rm
-        NFqUThJosfAjyuA1aUgv4y/3oeyrybNpRv5IT/fzsVNEQUQJsZhobyfQwIHS88RcxYmKXI
-        rsrETHEasaYnD5ktVBfZC1UubQvblmkJxuzL94Sax5LZLx+ns4Foav2WpfPdTcyNN+6iIq
-        oTFIULx1ttxRaeKQ3kMYXwSv1Xl5fgk/XMXs+2+UbhQmQKVpFNDDj6Sq+D4Xdg==
+        bh=Xvt78yL1c4ccij3JuqZYM3GlDRuaTucptdUJHCTUbCk=;
+        b=A2ZwGtqnmuC3PNF/+3N1b+STkdnoyqWTspIxe3/iQQ2oRKmMx1m7PRNmRSx9nRevk7Hn3p
+        xFLJ0XAXAIU4gHZSQMa0Vht0dqQ/ftfCA+nRiVeRLnxpKRtsEMM4u/DTMhBm1A+tMAGVmT
+        ZM+nRX80kJRid3nN6d/6aBYL4OJjStJd/zDX/v/BTuMOKuWG3sk+oWMI8wpygcJIdCjooK
+        GBStwEwdJQWpowrkTKrascCX54ORm0pXkj+7vXj+rtJwkQKUI7lIj1b4KMDVkOkG7iTcV1
+        ucEIXhDhMn1BzWVv65bfAaEUwI/rxmGIJEgq55RhrL4dbmcz9BQLHlhr2I6gMw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1675726384;
+        s=2020e; t=1675727026;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jEFEAA9/CFuhiUmVZK0xjgJMU7aqZIve5gky9EqH2Kk=;
-        b=A5Ek8e0Yg551Afv+hTl4MyEaBsT4ixMYhs4ahf2gWVMxNMhnycQxap0bX3dnv1Z4X/WLkk
-        HDmdsAgtLr1eSqDA==
+        bh=Xvt78yL1c4ccij3JuqZYM3GlDRuaTucptdUJHCTUbCk=;
+        b=KGcQjkalaVSTz2YrXyjIQFzqTvbnpCSD2zjVO5peZ2YMxwuvVf4iGjw8Dl3ZnpwN3YIBqb
+        6PD1hoI0r0FLclAQ==
 To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
         arjan@linux.intel.com
 Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
@@ -44,30 +46,66 @@ Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
         pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
         punit.agrawal@bytedance.com, simon.evans@bytedance.com,
         liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [PATCH v6 02/11] cpu/hotplug: Move idle_thread_get() to
- <linux/smpboot.h>
-In-Reply-To: <20230202215625.3248306-3-usama.arif@bytedance.com>
+Subject: Re: [PATCH v6 03/11] cpu/hotplug: Add dynamic parallel bringup
+ states before CPUHP_BRINGUP_CPU
+In-Reply-To: <20230202215625.3248306-4-usama.arif@bytedance.com>
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
- <20230202215625.3248306-3-usama.arif@bytedance.com>
-Date:   Tue, 07 Feb 2023 00:33:03 +0100
-Message-ID: <877cwuxtcg.ffs@tglx>
+ <20230202215625.3248306-4-usama.arif@bytedance.com>
+Date:   Tue, 07 Feb 2023 00:43:45 +0100
+Message-ID: <874jryxsum.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 On Thu, Feb 02 2023 at 21:56, Usama Arif wrote:
-> If the architecture code is to register its new pre-bringup states with
-> the cpuhp core, having a special-case wrapper to pass extra arguments is
-> non-trivial and it's easier just to let the arch register its function
-> pointer to be invoked with the standard API.
+> So any combination of prepare/start calls which depend on A-B ordering
+> for each CPU in turn, such as the X2APIC code which used to allocate a
+> cluster mask 'just in case' and store it in a global variable in the
+> prep stage, then potentially consume that preallocated structure from
+> the AP and set the global pointer to NULL to be reallocated in
+> CPUHP_X2APIC_PREPARE for the next CPU... would explode horribly.
 >
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> We believe that X2APIC was the only such case, for x86. But this is why
+> it remains an architecture opt-in. For now.
 
-Same issue vs. the SOB chain.
+We believe is not really a convincing technical argument.
 
-Other than that:
+  On x86 the X2APIC case was established to be the only one which relied
+  on the full CPU hotplug serialization. It's unclear whether this
+  affects any other architecture, so this optimization is opt-in.
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Hmm?
+
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 6c0a92ca6bb5..5a8f1a93b57c 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -1505,6 +1505,24 @@ int bringup_hibernate_cpu(unsigned int sleep_cpu)
+>  void bringup_nonboot_cpus(unsigned int setup_max_cpus)
+>  {
+>  	unsigned int cpu;
+> +	int n =3D setup_max_cpus - num_online_cpus();
+
+https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable=
+-declarations
+
+Aside of that I detest the mixture between unsigned and signed here.
+
+> +
+> +	/* =E2=88=80 parallel pre-bringup state, bring N CPUs to it */
+> +	if (n > 0) {
+> +		enum cpuhp_state st =3D CPUHP_BP_PARALLEL_DYN;
+> +
+> +		while (st <=3D CPUHP_BP_PARALLEL_DYN_END &&
+> +		       cpuhp_hp_states[st].name) {
+
+		while (st <=3D CPUHP_BP_PARALLEL_DYN_END && cpuhp_hp_states[st].name) {
+
+80 character limit has been updated quite some time ago
+
+Thanks,
+
+        tglx
