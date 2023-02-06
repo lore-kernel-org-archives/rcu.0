@@ -2,197 +2,190 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BD7EC61DA4
-	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 08:29:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79DDDC61DA4
+	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 12:11:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjBFI3M (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Feb 2023 03:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S230163AbjBFMLv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Feb 2023 07:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjBFI3L (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Feb 2023 03:29:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE751ABCC;
-        Mon,  6 Feb 2023 00:29:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BjY/exeljP1QS+Hd1Vo/eWGLr04rdU+wZoNBPkK+lDQ=; b=EWYL+cdQfHxQ6v6wcfiTLXaHEr
-        C5mMxNfMOwLLebqQ9tIyVYBssQGcYv9fHzsSoMb4F8HPiqNPnAx9fPHZq8aA/u9S+3jTLMpYgtJ4E
-        rH0/RIeRkIwYs4fKkABONeBI3yPvOpvSNdZ/Y387pnI7lqgBSqEnOKHta3pEBEOVb52AcZGFen63a
-        VVcsdtg9dXNLeDkrBgDQPnN/JUiJOZ+nVy+oXm8Gi3Y4FYN949Q2mCmxupOsqTk1yJ6/m99RTlw8Y
-        ULuxRHgbrcYMUGmE1HyPoV5kwiKb9MqI1Y1VUj+B2j33GzpGCoMpVySHlo7BcX62AV1QJppnNUjob
-        2a7D1ZQA==;
-Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pOwrb-00Gb7T-Gg; Mon, 06 Feb 2023 08:28:36 +0000
-Message-ID: <3b626936ccc4d5123cb9113378bec6f77182def3.camel@infradead.org>
-Subject: Re: [PATCH v6 00/11] Parallel CPU bringup for x86_64
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Russ Anderson <rja@hpe.com>, Usama Arif <usama.arif@bytedance.com>
-Cc:     tglx@linutronix.de, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
-Date:   Mon, 06 Feb 2023 08:28:34 +0000
-In-Reply-To: <20230205191734.GA6027@hpe.com>
-References: <20230202215625.3248306-1-usama.arif@bytedance.com>
-         <20230205191734.GA6027@hpe.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-gv2Bd6J2nA65+QZ05n9Y"
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S230142AbjBFMLe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Feb 2023 07:11:34 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F3F421C
+        for <rcu@vger.kernel.org>; Mon,  6 Feb 2023 04:11:32 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id m14so10118529wrg.13
+        for <rcu@vger.kernel.org>; Mon, 06 Feb 2023 04:11:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jNU2E4rEU6lK6E5UnBCR+OOWZtLTF1apeoMjKMv1xVo=;
+        b=0BJuhb2SP8v0SAx2cFQrOf9KdQKmuD14IU5rp3ELE5hzV++SiFno0c6jIja1iAaH+m
+         KgmbC7JqL38C41B4ROhgq/8gllmhnX1ats4xUrAtUESKykxl4Bhq9bWeoRPNivtxI9Hj
+         nYhDoVCIJPIHrdrEMQD9jB6z9I0tjVPW65Lw5eiG8082b1iH26IIWoMYpIG7ohhhRSDJ
+         d/stbmGlv9lLaLkYKSc/m3vXzRkgZpRnS2l5zo05sO/5/3P16zrp5Plh3DAdTU8VhpER
+         xh44jKllCDz4+tumuIUaqoeH6ccmBeq49305euHcb3bbysnNiJxbA/JqcgkfFtzf6uWD
+         fgkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jNU2E4rEU6lK6E5UnBCR+OOWZtLTF1apeoMjKMv1xVo=;
+        b=SV3lAJu/78CSHcTKrQFIhuwtDUVsJWgIqupALwc/9XRDU2vtxEYb1q3GtuipEqKg9m
+         pAaOG2Mc201EYnKHLpu4yLIZz52PCGhENrA9mwPHE6MUK7oJ98m04h1QE8ftMf3Ky7qH
+         XkKreT7PfPX1tRSg3A8VXsBLC7Og2VbZDGpIDIh4WIS92jrFSjDotOhjQchpHbDZQIrr
+         nf+8Cf7eoGJsIGw8LYZEhURLZVvgQ4R5ZrXhouwmsba7jvQU7lAh8Ye7nLcD7cBXz9g5
+         vJ1rtlENl5rDTemK4Uk/49/xkHf0weUhBDqQOM/UaS/t5NCbAMdoKxLDB4t8eXj16UPB
+         D84A==
+X-Gm-Message-State: AO0yUKWmX6ql4L5GgBRfdi/xds1sJaZq9y0JkAdyPaufySvxVsEze3nk
+        kdYQugQA0YJs3K7TN6HNPtTVEg==
+X-Google-Smtp-Source: AK7set+l6WZMcYdFTPEhuqOx7bXf+8SqBlvLrjlLxHBtr5qFvT42GvR0j4f0uSOjBIGP3rZh6CfJbg==
+X-Received: by 2002:a5d:4b50:0:b0:2c3:eaff:aaf1 with SMTP id w16-20020a5d4b50000000b002c3eaffaaf1mr2381474wrs.18.1675685490947;
+        Mon, 06 Feb 2023 04:11:30 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:39c7:f90d:557:dc30? ([2a02:6b6a:b566:0:39c7:f90d:557:dc30])
+        by smtp.gmail.com with ESMTPSA id y10-20020a05600015ca00b002bfd137ecddsm8918926wry.11.2023.02.06.04.11.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Feb 2023 04:11:30 -0800 (PST)
+Message-ID: <de7524ce-563c-2ff6-84a5-6a347c36855b@bytedance.com>
+Date:   Mon, 6 Feb 2023 12:11:29 +0000
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v6 07/11] x86/smpboot: Disable parallel
+ boot for AMD CPUs
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Kim Phillips <kim.phillips@amd.com>, tglx@linutronix.de,
+        rja@hpe.com
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com, Mario Limonciello <Mario.Limonciello@amd.com>
+References: <20230202215625.3248306-1-usama.arif@bytedance.com>
+ <20230202215625.3248306-8-usama.arif@bytedance.com>
+ <b3d9fbbf-e760-5d1d-9182-44c144abd1bf@amd.com>
+ <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
+ <5ba476f3-e0ac-d630-ce1d-18ab9885496f@linux.intel.com>
+ <E2286684-F8AD-4708-9A3D-74C5EAE183B4@infradead.org>
+ <434b4b74-54ab-68a3-4a81-9cc02ea75e39@bytedance.com>
+ <411cbdb2c8255e48f3e65c59a98bc02410f5dfc7.camel@infradead.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <411cbdb2c8255e48f3e65c59a98bc02410f5dfc7.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-gv2Bd6J2nA65+QZ05n9Y
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2023-02-05 at 13:17 -0600, Russ Anderson wrote:
->=20
-> Gave the v6 patchset a try on a system with 1920 logocal cpus
-> (sixteen 60 core Sapphire Rapids sockets with Hyperthreadding
-> enabled).
->=20
-> Without the patchset it took 71 seconds to start all the cpus.
-> With the v6 patchset it took 14 seconds to start all the cpus,
-> a reduction of 57 seconds.=C2=A0 That is impressive.
->=20
-> Full boot, to root login prompt, without patches takes 223 seconds.
-> This patchset reduces the full boot time by 57 seconds, a 25%
-> reduction.
+On 06/02/2023 08:05, David Woodhouse wrote:
+> On Sun, 2023-02-05 at 22:13 +0000, Usama Arif wrote:
+>>
+>>
+>> On 04/02/2023 22:31, David Woodhouse wrote:
+>>>
+>>>
+>>> On 4 February 2023 18:18:55 GMT, Arjan van de Ven <arjan@linux.intel.com> wrote:
+>>>>>
+>>>>> However...
+>>>>>
+>>>>> Even though we *can* support non-X2APIC processors, we *might* want to
+>>>>> play it safe and not go back that far; only enabling parallel bringup
+>>>>> on machines with X2APIC which roughly correlates with "lots of CPUs"
+>>>>> since that's where the benefit is.
+>>>>
+>>>> I think that this is the right approach, at least on the initial patch series.
+>>>> KISS principle; do all the easy-but-important cases first, get it stable and working
+>>>> and in later series/kernels the range can be expanded.... if it matters.
+>>>
+>>> Agreed. I'll split it to do it only with X2APIC for the initial series, and then hold the CPUID 0x1 part back for the next phase.
+>>
+>> This was an interesting find! I tested the latest branch
+>> parallel-6.2-rc6 and it works well. The numbers from Russ makes the
+>> patch series look so much better! :)
+>>
+>> If we do it with x2apic only and not support non-x2apic CPUID 0x1 case,
+>> maybe we apply the following diff to part 1?
+> 
+> Using x2apic_mode would also disable parallel boot when the CPU *does*
+> have X2APIC support but the kernel just isn't using it at the moment. I
+> think boot_cpu_has(X86_FEATURE_X2APIC) is the better criterion?
+> 
 
-Nice; thanks for testing.
+x2apic_mode is set to 0 only in the case when nox2apic is specified in 
+the kernel cmdline or if x2apic_setup fails. As 0xB leaf gets the 
+"x2apic id" and not the "apic id", I thought it would be better to not 
+use the x2apic id if the user doesnt want to use x2apic (cmdline), or 
+the kernel fails to set it up.
 
-Is that with just the "part1" patch series which has been posted, or
-also with the 'parallel part 2' still taking shape in the tree at
-https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/paralle=
-l-6.2-rc6
+Another thing I noticed from the Intel Architecture Manual CPUID—CPU 
+Identification section:
 
-I believe Usama said the second phase of parallelism didn't really help
-much in terms of overall timing? Confirming that *without* all the
-debug prints would be interesting. And we can look for what still
-*could* be made parallel.
+"CPUID leaf 1FH is a preferred superset to leaf 0BH. Intel recommends 
+first checking for the existence of Leaf 1FH before using leaf 0BH."
 
---=-gv2Bd6J2nA65+QZ05n9Y
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+So I think we should switch from 0BH to using the 1FH leaf EDX register.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjA2MDgyODM0WjAvBgkqhkiG9w0BCQQxIgQgEEmrGjHL
-kpestw0MIwGR56wc/F1Vr1cJGhtPdR3a5vEwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB5x7TRlhFAbSZ9Q8bP64y6pQ4XaF5+7Wls
-5tA7z6vNgEB28LKKGmoBWWGrr6NoeKBrcC9CXl+Kp1kAy9woCijRH8xU6xFtOaW050yWs6DFTrt+
-araeWy5N796dh/OdTCBg49hh+7ksOLkUNhBn7a42X/ygjZ/FCS/xrmSLJ9f8WPq8nq4n9XR4T4Dl
-+WstM/wXLa5Dj3mBHQjSUuGjP4LL7U8JjDSZeqEd2dCn9yTu3RsxJEeSL1QxLZ+ZCvtdIJE1O+qf
-PQDafxhLGgJEKrcvQBcETNRw7ypaOPOOU+AT4u07l588PTmaTLXQINL/mL5XVSJNVPGOolYjr0BA
-5dC8JyFiCn8M3yGn2rxjPzVJxxpjhc+wOsMRx+vml6sfX8oy59FV2g3N+urkXNaEp/lZ1wdFcu5r
-8ggpMRfg6ofZbVjSzUP++8qYrNzsWnALNw3mi+QhasosrwtMT4zIz2SA0o+qhNLBXEZiE/iTHpSI
-Jy2ZU72wXphiDBA9kg3V+evIuPi2jKBXVTVyRmMPSVLEgdJA0h4eAR8d0GVbEmyyQvWSx1B968f5
-+erAIECX8WLc8diK96cZQ5nrFYP1BL27Hp5o8Cgdcsk71ozpxpU4+x1IqePsj76EuudtLVwhrTOy
-3ZYvMLUXnajEXi5lPsbF9Hp41uZ+t0JDZryGGs7i+AAAAAAAAA==
+> I was thinking I'd tweak the 'no_parallel_bringup' command line
+> argument into something that also allows us to *enable* it without
+> X2APIC being supported.
+> 
+> But I've also been pondering the fact that this is all only for 64-bit
+> anyway. It's not like we're doing it for the zoo of ancient i586 and
+> even i486 machines where the APICs were hooked up with blue wire and
+> duct tape.
+> 
+> Maybe "64-bit only" is good enough, with a command line opt-out. And
+> maybe a printk pointing out the existence of that command line option
+> before the bringup, just in case?
+> 
+
+I think that makes sense, the patch only has a significant impact when 
+the core count is high, and x2apic was made to support higher CPU count.
 
 
---=-gv2Bd6J2nA65+QZ05n9Y--
+>> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+>> index f53a060a899b..f6b89cf40076 100644
+>> --- a/arch/x86/kernel/smpboot.c
+>> +++ b/arch/x86/kernel/smpboot.c
+>> @@ -1564,7 +1564,7 @@ void __init native_smp_prepare_cpus(unsigned int
+>> max_cpus)
+>>            * sufficient). Otherwise it's too hard. And not for SEV-ES
+>>            * guests because they can't use CPUID that early.
+>>            */
+>> -       if (IS_ENABLED(CONFIG_X86_32) || boot_cpu_data.cpuid_level < 1 ||
+>> +       if (IS_ENABLED(CONFIG_X86_32) || !x2apic_mode ||
+>>               (x2apic_mode && boot_cpu_data.cpuid_level < 0xb) ||
+>>               cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
+>>                   do_parallel_bringup = false;
+>>
+>>
+>>
+>> For reusing timer calibration, calibrate_delay ends up being used in
+>> start_kernel, smp_callin, debug_calc_bogomips and check_cx686_slop. I
+>> think reusing timer calibration would be ok in the first 2 uses?
+>>
+> 
+> It already explicitly allows the calibration to be reused from another
+> CPU in the same *core*, but no further. I think we'd need to be sure
+> about the correctness of extending that further, and which of the mess
+> of constant/invariant/we-really-mean-it-this-time TSC flags need to be
+> set for that to be OK.
+> 
+>> but not really sure about the other 2. cx686 seems to be quite old so not sure
+>> if anyone will have it to test or will ever run 6.2 kernel on it :).  I
+>> guess if unsure, better to leave out initially and try and get part1 merged?
+> 
+> I doubt cx686 advertises constant TSC; the early ones didn't even *have* a TSC.
+> Does it even support SMP?
+
+Just checked the wiki page, and it says core count is 1 :)
