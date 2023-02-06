@@ -2,83 +2,74 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79DDDC61DA4
-	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 12:11:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ECB5C61DA4
+	for <rcu@archiver.kernel.org>; Mon,  6 Feb 2023 12:18:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjBFMLv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Feb 2023 07:11:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
+        id S230134AbjBFMSg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Feb 2023 07:18:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjBFMLe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Feb 2023 07:11:34 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F3F421C
-        for <rcu@vger.kernel.org>; Mon,  6 Feb 2023 04:11:32 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id m14so10118529wrg.13
-        for <rcu@vger.kernel.org>; Mon, 06 Feb 2023 04:11:32 -0800 (PST)
+        with ESMTP id S230126AbjBFMS1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Feb 2023 07:18:27 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F9712584
+        for <rcu@vger.kernel.org>; Mon,  6 Feb 2023 04:18:03 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id z13so1047096wmp.2
+        for <rcu@vger.kernel.org>; Mon, 06 Feb 2023 04:18:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=jNU2E4rEU6lK6E5UnBCR+OOWZtLTF1apeoMjKMv1xVo=;
-        b=0BJuhb2SP8v0SAx2cFQrOf9KdQKmuD14IU5rp3ELE5hzV++SiFno0c6jIja1iAaH+m
-         KgmbC7JqL38C41B4ROhgq/8gllmhnX1ats4xUrAtUESKykxl4Bhq9bWeoRPNivtxI9Hj
-         nYhDoVCIJPIHrdrEMQD9jB6z9I0tjVPW65Lw5eiG8082b1iH26IIWoMYpIG7ohhhRSDJ
-         d/stbmGlv9lLaLkYKSc/m3vXzRkgZpRnS2l5zo05sO/5/3P16zrp5Plh3DAdTU8VhpER
-         xh44jKllCDz4+tumuIUaqoeH6ccmBeq49305euHcb3bbysnNiJxbA/JqcgkfFtzf6uWD
-         fgkw==
+        bh=lx5Ohc1IE89aa70gryDvD7lr6fDgHnr2p/EPj5EPyOU=;
+        b=3VPWF04cu/QdimD3GlaH0mg4J+X+NuCR7o8pHvDUVTqXQyhcuY0kdyizW+yjhVo6/1
+         GLspURgONjRD6aZUy9+r+9ZGBVmxSSYscZDxI/4Lc0XnYbE8stUX4fNl+W/W0H103tlq
+         1BOX2H9YI/u+TsQLkvB6vp1NNQVNYYdim3x1tzahMjeQhT/+tl7irelkp6A90gtO1pa4
+         KuLoBVMyQTb/rseog0S3aRr12rlkKZoAptxdXbTMQnw1OgkKqaiSxt/t5GJyQfe/4n/3
+         gnYe3oz0LCszQf5DRC00W1lufHyismbDSLmcuEVaL9GT8eehLaTmbxNyD390JYKQ/nAv
+         v1cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jNU2E4rEU6lK6E5UnBCR+OOWZtLTF1apeoMjKMv1xVo=;
-        b=SV3lAJu/78CSHcTKrQFIhuwtDUVsJWgIqupALwc/9XRDU2vtxEYb1q3GtuipEqKg9m
-         pAaOG2Mc201EYnKHLpu4yLIZz52PCGhENrA9mwPHE6MUK7oJ98m04h1QE8ftMf3Ky7qH
-         XkKreT7PfPX1tRSg3A8VXsBLC7Og2VbZDGpIDIh4WIS92jrFSjDotOhjQchpHbDZQIrr
-         nf+8Cf7eoGJsIGw8LYZEhURLZVvgQ4R5ZrXhouwmsba7jvQU7lAh8Ye7nLcD7cBXz9g5
-         vJ1rtlENl5rDTemK4Uk/49/xkHf0weUhBDqQOM/UaS/t5NCbAMdoKxLDB4t8eXj16UPB
-         D84A==
-X-Gm-Message-State: AO0yUKWmX6ql4L5GgBRfdi/xds1sJaZq9y0JkAdyPaufySvxVsEze3nk
-        kdYQugQA0YJs3K7TN6HNPtTVEg==
-X-Google-Smtp-Source: AK7set+l6WZMcYdFTPEhuqOx7bXf+8SqBlvLrjlLxHBtr5qFvT42GvR0j4f0uSOjBIGP3rZh6CfJbg==
-X-Received: by 2002:a5d:4b50:0:b0:2c3:eaff:aaf1 with SMTP id w16-20020a5d4b50000000b002c3eaffaaf1mr2381474wrs.18.1675685490947;
-        Mon, 06 Feb 2023 04:11:30 -0800 (PST)
+        bh=lx5Ohc1IE89aa70gryDvD7lr6fDgHnr2p/EPj5EPyOU=;
+        b=XEApQKZx66QXvi2YZRLJ4cBceXDsQa+Lxs7yxqFPyFVAeovZmYuu8KVIh6SXxmYDm0
+         Qlte4CacaBXg1GOO32fCzHnLet0tbiKRpZPPa4iXxBhF+QGtyuwCB2NprkMFAqu1nW1o
+         fFLbjY7pikqJkuuGnlXbYY51LHGg6WFvQHi2u7BCk2YpPkkY78R4tb5oWF6AFYhFtKN/
+         S1J6HGAUi8Uj22VtZiKTf9+ASg+6hn1bzXCHfQiIdVDbjX/0rmAPtszFziA8naJ7NiY5
+         Mdk3r249O0Imeqpl6TppCqEDHY2NcFLi6D/i3tNiNCTAmqd0Ua3dlAxDRmBgsGJAwlAW
+         lOtQ==
+X-Gm-Message-State: AO0yUKUdLt76td+8SD10Ly5hTPqR8u24SOPz6WjJma2WluGdyV5O+0lB
+        SpBTbz0G/cI9EeA2T11BQQTEAg==
+X-Google-Smtp-Source: AK7set9HlkV3ZGPYkKQclq2QCDQpivZwgTcyVZD1/kScTrheRcsJb+knyABqk4hpGfHT0oD64lOn1w==
+X-Received: by 2002:a05:600c:4fd3:b0:3df:eea8:1fe5 with SMTP id o19-20020a05600c4fd300b003dfeea81fe5mr9648629wmq.14.1675685881710;
+        Mon, 06 Feb 2023 04:18:01 -0800 (PST)
 Received: from ?IPV6:2a02:6b6a:b566:0:39c7:f90d:557:dc30? ([2a02:6b6a:b566:0:39c7:f90d:557:dc30])
-        by smtp.gmail.com with ESMTPSA id y10-20020a05600015ca00b002bfd137ecddsm8918926wry.11.2023.02.06.04.11.30
+        by smtp.gmail.com with ESMTPSA id fc13-20020a05600c524d00b003db01178b62sm17739492wmb.40.2023.02.06.04.18.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Feb 2023 04:11:30 -0800 (PST)
-Message-ID: <de7524ce-563c-2ff6-84a5-6a347c36855b@bytedance.com>
-Date:   Mon, 6 Feb 2023 12:11:29 +0000
+        Mon, 06 Feb 2023 04:18:01 -0800 (PST)
+Message-ID: <ced10a5a-d5d9-ef45-a454-706fff89a672@bytedance.com>
+Date:   Mon, 6 Feb 2023 12:18:00 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.2
-Subject: Re: [External] Re: [PATCH v6 07/11] x86/smpboot: Disable parallel
- boot for AMD CPUs
+Subject: Re: [External] Re: [PATCH v6 00/11] Parallel CPU bringup for x86_64
 Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>, tglx@linutronix.de,
-        rja@hpe.com
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com, Mario Limonciello <Mario.Limonciello@amd.com>
+To:     David Woodhouse <dwmw2@infradead.org>, Russ Anderson <rja@hpe.com>
+Cc:     tglx@linutronix.de, arjan@linux.intel.com, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
- <20230202215625.3248306-8-usama.arif@bytedance.com>
- <b3d9fbbf-e760-5d1d-9182-44c144abd1bf@amd.com>
- <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
- <5ba476f3-e0ac-d630-ce1d-18ab9885496f@linux.intel.com>
- <E2286684-F8AD-4708-9A3D-74C5EAE183B4@infradead.org>
- <434b4b74-54ab-68a3-4a81-9cc02ea75e39@bytedance.com>
- <411cbdb2c8255e48f3e65c59a98bc02410f5dfc7.camel@infradead.org>
+ <20230205191734.GA6027@hpe.com>
+ <3b626936ccc4d5123cb9113378bec6f77182def3.camel@infradead.org>
 From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <411cbdb2c8255e48f3e65c59a98bc02410f5dfc7.camel@infradead.org>
+In-Reply-To: <3b626936ccc4d5123cb9113378bec6f77182def3.camel@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -87,105 +78,46 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 06/02/2023 08:05, David Woodhouse wrote:
-> On Sun, 2023-02-05 at 22:13 +0000, Usama Arif wrote:
+On 06/02/2023 08:28, David Woodhouse wrote:
+> On Sun, 2023-02-05 at 13:17 -0600, Russ Anderson wrote:
 >>
+>> Gave the v6 patchset a try on a system with 1920 logocal cpus
+>> (sixteen 60 core Sapphire Rapids sockets with Hyperthreadding
+>> enabled).
 >>
->> On 04/02/2023 22:31, David Woodhouse wrote:
->>>
->>>
->>> On 4 February 2023 18:18:55 GMT, Arjan van de Ven <arjan@linux.intel.com> wrote:
->>>>>
->>>>> However...
->>>>>
->>>>> Even though we *can* support non-X2APIC processors, we *might* want to
->>>>> play it safe and not go back that far; only enabling parallel bringup
->>>>> on machines with X2APIC which roughly correlates with "lots of CPUs"
->>>>> since that's where the benefit is.
->>>>
->>>> I think that this is the right approach, at least on the initial patch series.
->>>> KISS principle; do all the easy-but-important cases first, get it stable and working
->>>> and in later series/kernels the range can be expanded.... if it matters.
->>>
->>> Agreed. I'll split it to do it only with X2APIC for the initial series, and then hold the CPUID 0x1 part back for the next phase.
+>> Without the patchset it took 71 seconds to start all the cpus.
+>> With the v6 patchset it took 14 seconds to start all the cpus,
+>> a reduction of 57 seconds.  That is impressive.
 >>
->> This was an interesting find! I tested the latest branch
->> parallel-6.2-rc6 and it works well. The numbers from Russ makes the
->> patch series look so much better! :)
->>
->> If we do it with x2apic only and not support non-x2apic CPUID 0x1 case,
->> maybe we apply the following diff to part 1?
+>> Full boot, to root login prompt, without patches takes 223 seconds.
+>> This patchset reduces the full boot time by 57 seconds, a 25%
+>> reduction.
 > 
-> Using x2apic_mode would also disable parallel boot when the CPU *does*
-> have X2APIC support but the kernel just isn't using it at the moment. I
-> think boot_cpu_has(X86_FEATURE_X2APIC) is the better criterion?
+> Nice; thanks for testing.
 > 
-
-x2apic_mode is set to 0 only in the case when nox2apic is specified in 
-the kernel cmdline or if x2apic_setup fails. As 0xB leaf gets the 
-"x2apic id" and not the "apic id", I thought it would be better to not 
-use the x2apic id if the user doesnt want to use x2apic (cmdline), or 
-the kernel fails to set it up.
-
-Another thing I noticed from the Intel Architecture Manual CPUID—CPU 
-Identification section:
-
-"CPUID leaf 1FH is a preferred superset to leaf 0BH. Intel recommends 
-first checking for the existence of Leaf 1FH before using leaf 0BH."
-
-So I think we should switch from 0BH to using the 1FH leaf EDX register.
-
-> I was thinking I'd tweak the 'no_parallel_bringup' command line
-> argument into something that also allows us to *enable* it without
-> X2APIC being supported.
+> Is that with just the "part1" patch series which has been posted, or
+> also with the 'parallel part 2' still taking shape in the tree at
+> https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/parallel-6.2-rc6
 > 
-> But I've also been pondering the fact that this is all only for 64-bit
-> anyway. It's not like we're doing it for the zoo of ancient i586 and
-> even i486 machines where the APICs were hooked up with blue wire and
-> duct tape.
-> 
-> Maybe "64-bit only" is good enough, with a command line opt-out. And
-> maybe a printk pointing out the existence of that command line option
-> before the bringup, just in case?
-> 
+> I believe Usama said the second phase of parallelism didn't really help
+> much in terms of overall timing? Confirming that *without* all the
+> debug prints would be interesting. And we can look for what still
+> *could* be made parallel.
 
-I think that makes sense, the patch only has a significant impact when 
-the core count is high, and x2apic was made to support higher CPU count.
+I think it would be interesting to get the numbers for such a big 
+machine for 3 cases: part1, part1+reuse timer calibration and part1+part2.
+
+Russ mentioned testing v6, so I guess the above numbers are for 
+part1+reuse timer calibration.
+
+For my machine the smpboot times were:
+
+No patches: 700ms
+part 1:100ms
+part1+reuse timer calibration: 30ms
+part1+part2: 30ms
+
+Thanks,
+Usama
 
 
->> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
->> index f53a060a899b..f6b89cf40076 100644
->> --- a/arch/x86/kernel/smpboot.c
->> +++ b/arch/x86/kernel/smpboot.c
->> @@ -1564,7 +1564,7 @@ void __init native_smp_prepare_cpus(unsigned int
->> max_cpus)
->>            * sufficient). Otherwise it's too hard. And not for SEV-ES
->>            * guests because they can't use CPUID that early.
->>            */
->> -       if (IS_ENABLED(CONFIG_X86_32) || boot_cpu_data.cpuid_level < 1 ||
->> +       if (IS_ENABLED(CONFIG_X86_32) || !x2apic_mode ||
->>               (x2apic_mode && boot_cpu_data.cpuid_level < 0xb) ||
->>               cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
->>                   do_parallel_bringup = false;
->>
->>
->>
->> For reusing timer calibration, calibrate_delay ends up being used in
->> start_kernel, smp_callin, debug_calc_bogomips and check_cx686_slop. I
->> think reusing timer calibration would be ok in the first 2 uses?
->>
-> 
-> It already explicitly allows the calibration to be reused from another
-> CPU in the same *core*, but no further. I think we'd need to be sure
-> about the correctness of extending that further, and which of the mess
-> of constant/invariant/we-really-mean-it-this-time TSC flags need to be
-> set for that to be OK.
-> 
->> but not really sure about the other 2. cx686 seems to be quite old so not sure
->> if anyone will have it to test or will ever run 6.2 kernel on it :).  I
->> guess if unsure, better to leave out initially and try and get part1 merged?
-> 
-> I doubt cx686 advertises constant TSC; the early ones didn't even *have* a TSC.
-> Does it even support SMP?
-
-Just checked the wiki page, and it says core count is 1 :)
