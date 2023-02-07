@@ -2,59 +2,70 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7F51C636CC
-	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 14:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE65C636CC
+	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 14:41:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjBGOYr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Feb 2023 09:24:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        id S231997AbjBGOle (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Feb 2023 09:41:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbjBGOYp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Feb 2023 09:24:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E3824CB3;
-        Tue,  7 Feb 2023 06:24:39 -0800 (PST)
+        with ESMTP id S232024AbjBGOlA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Feb 2023 09:41:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB02340BF9;
+        Tue,  7 Feb 2023 06:39:38 -0800 (PST)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1675779878;
+        s=2020; t=1675780756;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=48zTNCiq8jyQl85rZUjjKFb4zKzbUXhtUJ1Hwi8S0CA=;
-        b=HtKMdz8LlTmkbYTe/u01gq+8liQo8V4y0xKSVfKLz8kWn9e+g+8KTUmW5FlgkQXkCAvrEy
-        tsty9t1gAis6jVlJlKzvbA/bldqioOfgr7EFTfHaoZHRInOBFwRWdXsvsBrar8L5KF2jcz
-        i1jEBvew8OBdyxa44yjZk2uzLCGKreegVF1WBwi94YPOEtLzsu5NGWulfrYCmhzhUCZGYv
-        StO6tmeCMnji+F8/FkVhZhl3QoMgg0lM53MkHjE4af6rDFNk9kQpnxJbLL4F77q1RjnMVf
-        2NMmZl/y482tYELfhSpVRQBAsCqiyHoxlEhyt92HCe3+WeZW6U4NyXe8NeOPyg==
+        bh=mC/omiePBfZ5+VVhH6QfIH24BYMC7zeloSnAmwd1DQ8=;
+        b=0ZEsle7ajmkg3PipAlgYILFpfbvnEBb0aBw9COqNT8vVQ3+5tTEDdNOtkANE9BfowobjY7
+        bQ//7r6BLT045ITZwjKxapDNcU4HWNdQIg/pq5x7IFEBq4ZQClURbTYL2qIE8LRNniOL9/
+        eSHe64rHVwrX/oLEDFWjVzbhtMj5mtEbgIhUtN4Gyi/osxHxwBBelBh2mGjgETbjBxfTY7
+        0/ZDMqiYIMF/Oqe2mHZWwlT4wg6D3WDTf5nQHLyso7m4NUMqpASZOgp9Y366fGWtNGQenF
+        4s3jscunNzHslK5ZHDkmyluTdga1Tu6Q2z4MVPsslp5l26v//TJuJP6qzEI42Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1675779878;
+        s=2020e; t=1675780756;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=48zTNCiq8jyQl85rZUjjKFb4zKzbUXhtUJ1Hwi8S0CA=;
-        b=d5xsa3caE7KBVhLFcJhb3fyVD5ad+qU4xOetisuvWAC04OuM0Fpg7Htn7w5YXoHaMhmnhI
-        rLi7LspkXjaPaIAA==
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Usama Arif <usama.arif@bytedance.com>, arjan@linux.intel.com
-Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com
-Subject: Re: [PATCH v6 01/11] x86/apic/x2apic: Fix parallel handling of
- cluster_mask
-In-Reply-To: <921cfe295fcd398168e5454e01193045de312688.camel@infradead.org>
+        bh=mC/omiePBfZ5+VVhH6QfIH24BYMC7zeloSnAmwd1DQ8=;
+        b=MZeMoVOz3WvTBd75mMTgBcJyNKiQwq0MARmYAQdr9uehfsRa4EmVkJJFRBuVBBdbvJuReN
+        EW/jKFiLk0PLJJAQ==
+To:     "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "usama.arif@bytedance.com" <usama.arif@bytedance.com>,
+        "arjan@linux.intel.com" <arjan@linux.intel.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "liangma@liangbit.com" <liangma@liangbit.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
+        "mimoja@mimoja.de" <mimoja@mimoja.de>,
+        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
+        "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v6 04/11] x86/smpboot: Reference count on
+ smpboot_setup_warm_reset_vector()
+In-Reply-To: <57195f701f6d1d70ec440c9a28cbee4cfb81dc41.camel@amazon.co.uk>
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
- <20230202215625.3248306-2-usama.arif@bytedance.com> <87a61qxtx0.ffs@tglx>
- <d37f3af69df09ff542024ed93a37865b28dfa86e.camel@infradead.org>
- <921cfe295fcd398168e5454e01193045de312688.camel@infradead.org>
-Date:   Tue, 07 Feb 2023 15:24:38 +0100
-Message-ID: <87v8kdv9i1.ffs@tglx>
+ <20230202215625.3248306-5-usama.arif@bytedance.com> <871qn2xsmf.ffs@tglx>
+ <57195f701f6d1d70ec440c9a28cbee4cfb81dc41.camel@amazon.co.uk>
+Date:   Tue, 07 Feb 2023 15:39:15 +0100
+Message-ID: <87sffhv8to.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -62,41 +73,66 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 07 2023 at 11:27, David Woodhouse wrote:
-> On Tue, 2023-02-07 at 10:57 +0000, David Woodhouse wrote:
->> =C2=A0=E2=80=A2 This CPU was present but no other CPU in this cluster wa=
-s actually
->> =C2=A0=C2=A0 brought up at boot time so the cluster_mask wasn't allocate=
-d.
+David!
+
+On Tue, Feb 07 2023 at 09:49, David Woodhouse wrote:
+
+Can you please fix your mail client to _NOT_ send multipart/mixed mails?
+Despite the CC list being insanely large, your replies are dropped by
+vger and missing in the archives.
+
+> On Tue, 2023-02-07 at 00:48 +0100, Thomas Gleixner wrote:
+>> On Thu, Feb 02 2023 at 21:56, Usama Arif wrote:
+>> > From: David Woodhouse <dwmw@amazon.co.uk>
+>> >=20
+>> > If we want to do parallel CPU bringup, we're going to need to set this=
+ up
+>> > and leave it until all CPUs are done. Might as well use the RTC spinlo=
+ck
+>> > to protect the refcount, as we need to take it anyway.
 >>=20
->> The code looks right, I don't grok the comment about partial clusters
->> and virtualization, and would have worded it something along the above
->> lines?
+>> https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#chang=
+elog
+>>=20
+>> Aside of the 'We' this does not explain anything at all.
 >
-> As I get my head around that, I think the code needs to change too.
-> What if we *unplug* the only CPU in a cluster (present=E2=86=92possible),=
- then
-> add a new one in the same cluster? The new one would get a new
-> cluster_mask. Which is kind of OK for now but then if we re-add the
-> original CPU it'd continue to use its old cluster_mask.
+> Er, doesn't it?
+>
+> We refcount the warm reset vector because when we do parallel bringup,
+> we'll want to set it up once and then put it back to normal (for cold
+> reset) once all the CPUs are up.
+>
+> I can rework the phrasing; I'm aware that the whole nonsense about
+> pronouns and the imperative mood has grown legs in the last couple of
+> years since I originally wrote it =E2=80=94 but is there anything actually
+> missing?=20
 
-Indeed.
+We can settle the imperative mood debate over a beer at the next
+conference, but stuff which goes through tip is required to follow those
+rules. No exception for you :)
 
-> Now, that's kind of weird if it's physical CPUs because that cluster is
-> within a given chip, isn't it? But with virtualization maybe that's
-> something that could happen, and it doesn't hurt to be completely safe
-> by using for_each_possible_cpu() instead?
+Vs. the content: This changelog lacks context. Changelogs have to be
+self contained and self explanatory. Assuming that they are
+understandable due to the context of the patch series is just wrong. I
+fundamentally hate it when I have to dig out the context when I stare at
+the changelog of a commit.
 
-Yes. Virtualization does aweful things....
+So something like this:
 
-> Now looks like this:
-> 	/*
-> 	 * On post boot hotplug for a CPU which was not present at boot time,
-> 	 * iterate over all possible CPUs (even those which are not present
-> 	 * any more) to find any existing cluster mask.
-> 	 */
-> 	for_each_possible_cpu(cpu_i) {
+   The warm reset vector on X86 is setup through the RTC (CMOS) clock
+   for each CPU bringup operation and cleared after the CPU came online.
 
-Looks good!
+   Parallel bringup of multiple CPUs requires that the warm reset vector
+   is valid until all CPUs came online.
 
-      tglx
+   To prepare for that add refcounting for the reset vector and protect
+   it with the rtc_lock which has to be taken for the setup operation
+   anyway.
+
+gives the full context and is simply factual, no?
+
+Thanks,
+
+       tglx
+
+
