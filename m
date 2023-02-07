@@ -2,142 +2,112 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACE3C636D4
-	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 16:27:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A49F0C636D4
+	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 16:50:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbjBGQ1V (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Feb 2023 11:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
+        id S231750AbjBGQuo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Feb 2023 11:50:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjBGQ1Q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Feb 2023 11:27:16 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2073.outbound.protection.outlook.com [40.107.223.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4841A49D;
-        Tue,  7 Feb 2023 08:27:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iitd6jGvW7y1dOYXZA4rfG2+/Uy60siEiKbvV6jmTFnqvgaMnp4mpMhQxpBxj5IOtzj0Qzy7epdBJpcigA4LwpQgyVaB7ol0kMje/ppqwmohb3Jksvne//zQrG9qj/BL1B5eaQA2lP4LDqAAbpQ8BA96s4iaJWnv9wla4zKjmpAJ9ewB+UWogDHkSDo4oijqB4eP+cRN+/z1HyMurnapwZasQHGaUUXXxvLd+tc/9oAKODfOD+eOL52cPFKNckN4rKLjrQU/NPT3JnNjfa4HcnPc9pr6WKfOBUvB/KiDWAUVlbid6JHRWqthwiSN068j/05Xhiu/weQaP68HeC4aHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GfqklM9+1l5eNGmiYdCRTUB7O79bFc8CiHYJuo5qjEA=;
- b=JdDeS0L1/WSqX9gm2SxeK599ZheLPZyrEZnM/MXX5I703dBkK6wf9/7W+GLISXn6WsZnsgscyYf6lNLcwu4Dg4owPwdR3KplTWwcIGxisbS9CCZAzDjEvNRY+APbI0WI5KT1B2VHPXsBbV+f00mMJP/kTE2SJVC5JImfKM1hZVjjS3L+m/A6XGj2whQ/zvpdPGIeZC/6RGuI6seYT6zUnLk5Lf5PZLbhOrDfupfR3fKMbKN2kXEJWDNi1Fr5YSm4AvSY+q7hNP5fzU2xFuWtv3EQcsZGrrmUVx+jtl/tH0s4WNYi7b6bpZkJyeAAtDmKOlKtgLKT7bZTA+QWegLL1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=infradead.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GfqklM9+1l5eNGmiYdCRTUB7O79bFc8CiHYJuo5qjEA=;
- b=pIsJgnnNlrBzTOvN8wPEmgnjEnF81kGGEshl+JLU8oUFxp9lTAtQsNuV9q4TCWhaKVRhYKj2xtJgns/VyB2ukr8xIZHDUaGkvOgLBoo+Q4Ppujad90/Sj41BuLJFWhOKbE8s29TvzRsdSq+Xb1RMbNas1eGrZfBrw/BhejdxhAQ=
-Received: from MW4PR04CA0296.namprd04.prod.outlook.com (2603:10b6:303:89::31)
- by PH0PR12MB8031.namprd12.prod.outlook.com (2603:10b6:510:28e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.35; Tue, 7 Feb
- 2023 16:27:02 +0000
-Received: from CO1NAM11FT048.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:89:cafe::e7) by MW4PR04CA0296.outlook.office365.com
- (2603:10b6:303:89::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.36 via Frontend
- Transport; Tue, 7 Feb 2023 16:27:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT048.mail.protection.outlook.com (10.13.175.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6064.25 via Frontend Transport; Tue, 7 Feb 2023 16:27:02 +0000
-Received: from [10.236.30.70] (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 7 Feb
- 2023 10:27:00 -0600
-Message-ID: <163a0729-628c-4660-4c54-114dca1e4d9e@amd.com>
-Date:   Tue, 7 Feb 2023 10:27:00 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v6 07/11] x86/smpboot: Disable parallel boot for AMD CPUs
-Content-Language: en-US
-From:   Kim Phillips <kim.phillips@amd.com>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Usama Arif <usama.arif@bytedance.com>, <tglx@linutronix.de>,
-        <arjan@linux.intel.com>
-CC:     <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-        <hpa@zytor.com>, <x86@kernel.org>, <pbonzini@redhat.com>,
-        <paulmck@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <rcu@vger.kernel.org>, <mimoja@mimoja.de>,
-        <hewenliang4@huawei.com>, <thomas.lendacky@amd.com>,
-        <seanjc@google.com>, <pmenzel@molgen.mpg.de>,
-        <fam.zheng@bytedance.com>, <punit.agrawal@bytedance.com>,
-        <simon.evans@bytedance.com>, <liangma@liangbit.com>,
-        Mario Limonciello <Mario.Limonciello@amd.com>
+        with ESMTP id S231225AbjBGQuo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Feb 2023 11:50:44 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C293E3A580
+        for <rcu@vger.kernel.org>; Tue,  7 Feb 2023 08:50:42 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id o13so15624775pjg.2
+        for <rcu@vger.kernel.org>; Tue, 07 Feb 2023 08:50:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+pay9IH1iB2E7hJH5exnfAIMLvFSAkaDymDb1a/8yW0=;
+        b=WRIIQDroPKn7SixIu/lLbIkFMP1FfmXQ3yWKUbJP4CeFAVZhv60k+iuaAoarMXO+B5
+         7la2gdOHzNIV4pA5KDZAv8RH/6taSQT/yQytDUonUvberXfIvXRGh8tV0NkkTneyJYhi
+         zMOsiW4/1zFB8cVTiGqjr/YrhLJ27g+af2XXD1eTBV8Rj212SkQrkiVB3NbfZbkh/n2V
+         bozHHHJPVjRiD2Uc/30Qu56PQI6tM7UT4Uyiz+4tZzBN9siextagi+97fGkYa2BnA9wK
+         n+DZ4gmDWtI+fwkWX5ASHlFsOAdfTU4UZrm1PJs1g3cK0ibZrfgZQ16AYa05fTxFftqJ
+         KtJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+pay9IH1iB2E7hJH5exnfAIMLvFSAkaDymDb1a/8yW0=;
+        b=1qAZygs7ECJsYY5TyBA3TiMrUFTHFPo8CQ8tTCHGWYBG9qk5g7L6I5L4dHfpwypDth
+         LQG/MrUj+MVJ5XhwJIFaTEThk8rIGVbQO66Vnnc/0+SBZa3wOxR4U/d+LsyZWMDAdn2K
+         Ysto7JPjZGd2QHXkC4ovWTey2pV4Avsbw5/5mthSuiibjJ5U+It/lfeOW9vKtjfXZMUW
+         skv+ngm1A8ttLlXDX7jDS5n5yt3N6gNY2tRuup0099pifb7JnrZaN6e+qWE7n82dRWlc
+         khmfRtVhNQoz5saFvvr5oaxGb83Yr5OI5yN0CEe6U90e1PZy/6a3qoV//JWtcDQxe4Ev
+         Sy3g==
+X-Gm-Message-State: AO0yUKU4I4vkixQNkBTZyISR8roTspTbwrZt/ymx39iHQaholFKb5bqu
+        yN0J8BnDaymStfBoH+yqTrNI7A==
+X-Google-Smtp-Source: AK7set8FabyKIXpegGDVahMOOCZr4aBGwz6c/q6sIrS1g5yeRY6uxy6dJ/AXqM46UOJbeznrI/i1gw==
+X-Received: by 2002:a17:903:2448:b0:194:d5ff:3ae3 with SMTP id l8-20020a170903244800b00194d5ff3ae3mr278538pls.2.1675788642124;
+        Tue, 07 Feb 2023 08:50:42 -0800 (PST)
+Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
+        by smtp.gmail.com with ESMTPSA id m6-20020a170902bb8600b00177f25f8ab3sm9143988pls.89.2023.02.07.08.50.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Feb 2023 08:50:41 -0800 (PST)
+Date:   Tue, 7 Feb 2023 16:50:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "usama.arif@bytedance.com" <usama.arif@bytedance.com>,
+        "arjan@linux.intel.com" <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "liangma@liangbit.com" <liangma@liangbit.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
+        "mimoja@mimoja.de" <mimoja@mimoja.de>,
+        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
+        "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v6 04/11] x86/smpboot: Reference count on
+ smpboot_setup_warm_reset_vector()
+Message-ID: <Y+KBXf+IT2pQdF5A@google.com>
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
- <20230202215625.3248306-8-usama.arif@bytedance.com>
- <b3d9fbbf-e760-5d1d-9182-44c144abd1bf@amd.com>
- <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
- <7abdd9d4-4ce0-458d-93f4-bff575f04345@amd.com>
-In-Reply-To: <7abdd9d4-4ce0-458d-93f4-bff575f04345@amd.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+ <20230202215625.3248306-5-usama.arif@bytedance.com>
+ <871qn2xsmf.ffs@tglx>
+ <57195f701f6d1d70ec440c9a28cbee4cfb81dc41.camel@amazon.co.uk>
+ <87sffhv8to.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT048:EE_|PH0PR12MB8031:EE_
-X-MS-Office365-Filtering-Correlation-Id: 932e70ba-3225-46ca-e2f6-08db092824cd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mst/+JKS6X4fwkB2L5F8vvEme9at2OO/DX3YBlaYCe7SU05vYAnATGvjLMl3wBJ9upjvZz24d1xiCVpRNaxkcnsskV0TkWcFFpZGI08nUOq82e0sIQR61m1adFjdveakiVc+V3hU+yTH32VVrVFiXN6jVblr1SgvKQsc8IKF9nAs3Sll/zceEgog6bO502NG3SBFaDrItT3543WFHQka5pNvFPTkLzkFcfFCeZLReksFJ0Q6TYMv4CCiyALvN/2ORzoCTXlRyHgKFpvX5Vmw00UApE0NKmiA0foSDS9griF2zikZBT4XydeCeJbLx3pZUutdkjsex3uW9/5eKA57Ur/RALndJgLLwLnuBw7DLqjO9RZiR5i73pfOPxH9+l1U+Cm87nj5tFyp2A7e8mbDNIzW5sqxoWy75RvwmjZXd7Hhoj0a33/WNahehck0nRT29ZCLNg7cPIyRN+3OirVLPxv54E2kIXE54CUX79e3fSJpbVx+5l8emUXhfISm0mHP74jMLN9NCH64uoHKtv1ju0FO1xLGjyJC/Oad86qg7V88yZIZOdjHplW9/hiXx/FkHcTCKKk4//p3Tr1qw1xEt5j839ueKHsfEaIvjVMU0g5ymTfex+gzh7KmeQ8CrbH7Q4EKtnFk5mV45SHNGgHemv1VOjjvuVQkh+Hs2WsEim1GfvmHwkKD/zIWhfvHI3dr2Efj6AZ7A83N0IgwNfCu6mv+5LINccxOcqtElb5NTdztmuY+O3rOOzGKVZ8mccfGhILy0t01VlvtSSE4cfZt4A==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(136003)(346002)(376002)(396003)(39860400002)(451199018)(40470700004)(36840700001)(46966006)(31686004)(53546011)(36860700001)(82740400003)(70206006)(44832011)(70586007)(54906003)(82310400005)(16576012)(8676002)(110136005)(316002)(41300700001)(8936002)(26005)(4326008)(5660300002)(7416002)(356005)(81166007)(31696002)(86362001)(186003)(16526019)(36756003)(47076005)(2906002)(426003)(40480700001)(478600001)(40460700003)(336012)(2616005)(83380400001)(36900700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2023 16:27:02.2465
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 932e70ba-3225-46ca-e2f6-08db092824cd
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT048.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8031
+In-Reply-To: <87sffhv8to.ffs@tglx>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2/6/23 11:58 AM, Kim Phillips wrote:
-> On 2/4/23 9:40 AM, David Woodhouse wrote:
->> On Fri, 2023-02-03 at 13:48 -0600, Kim Phillips wrote:
->>> If I:
->>>
->>>    - take dwmw2's parallel-6.2-rc6 branch (commit 459d1c46dbd1)
->>>    - remove the set_cpu_bug(c, X86_BUG_NO_PARALLEL_BRINGUP) line from amd.c
->>>
->>> Then:
->>>
->>>    - a Ryzen 3000 (Picasso A1/Zen+) notebook I have access to fails to boot.
->>>    - Zen 2,3,4-based servers boot fine
->>>    - a Zen1-based server doesn't boot.
->>
->> I've changed it to use CPUID 0xb only if we're actually in x2apic mode,
->> which Boris tells me won't be the case on Zen1 because that doesn't
->> support X2APIC.
->>
->> When we're not in x2apic mode, we can use CPUID 0x1 because the 8 bits
->> of APIC ID we find there are perfectly sufficient.
->>
->> New tree in the same place as before, commit ce7e2d1e046a for the
->> parallel-6.2-rc6-part1 tag and 17bbd12ee03 for parallel-6.2-rc6.
+On Tue, Feb 07, 2023, Thomas Gleixner wrote:
+> On Tue, Feb 07 2023 at 09:49, David Woodhouse wrote:
+> > On Tue, 2023-02-07 at 00:48 +0100, Thomas Gleixner wrote:
+> >> Aside of the 'We' this does not explain anything at all.
+> >
+> > Er, doesn't it?
+> >
+> > We refcount the warm reset vector because when we do parallel bringup,
+> > we'll want to set it up once and then put it back to normal (for cold
+> > reset) once all the CPUs are up.
+> >
+> > I can rework the phrasing; I'm aware that the whole nonsense about
+> > pronouns and the imperative mood has grown legs in the last couple of
+> > years since I originally wrote it — but is there anything actually
+> > missing? 
 > 
-> Thanks, Zen 1 through 4 based servers all boot both those two tree
-> commits successfully.
-> 
-> I'll try that Ryzen again later.
+> We can settle the imperative mood debate over a beer at the next
+> conference, but stuff which goes through tip is required to follow those
+> rules. No exception for you :)
 
-The Ryzen 3000 also successfully boots those two branches now.
-
-Thanks,
-
-Kim
+While we're reforming David, same goes for KVM x86.  :-)
