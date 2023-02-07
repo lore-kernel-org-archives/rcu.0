@@ -2,32 +2,32 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0C43C636CC
-	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 10:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35B02C636CD
+	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 11:27:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbjBGK5x (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Feb 2023 05:57:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S231167AbjBGL1y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Feb 2023 06:27:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjBGK5t (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Feb 2023 05:57:49 -0500
+        with ESMTP id S230354AbjBGL1x (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Feb 2023 06:27:53 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC2439BBD;
-        Tue,  7 Feb 2023 02:57:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B251E8A7E;
+        Tue,  7 Feb 2023 03:27:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
         In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zyfmu6UPbMQ7dAOL0TbUtfOvq7o1ioKQtmz/vntrZlk=; b=d2DyKxSysm7zcy5mftfxyKN1l5
-        Sti2hfLe6g9mDI94ogFj+ZlMWV5hgouYVoC5Ez4lITkuaaILRRF2SI+Lz+1WO6QNObN0PzBUgPr8P
-        w3kGcTRXwLdLYIcxDErtyhGxLOh7X5a44PpdDbFAFB98ulNPoQCOboEBdBih7GSW3Cm1rbXiarpG3
-        IBDRywXm9VRvkp+nV+nb2igVKKe076tCOmguSwbzgfmUzgYXwNNvr/vwjeGXfRUJ8/vRJd/a5K0Gy
-        gy5vsLied8HhFnqrADu2FPYqIUyPWRfRN0GklqA7RQpdYHGp0ubTAH9B4LinnPUL9Bo81j9cOhHsw
-        p2/rX+og==;
+        bh=apLf+sbjLK+sSLLDB0nN/3blFMPyvroDzl04yUCr5T8=; b=c3G+X3NtjSvHiPu3Xuh1yWzMMO
+        WC/Cotdo8hBlYr59wsxj0y50m5+y/rqYdfDFDPK5YAaEZfZqjLIVWLMwJWaz+iX5i8cE8lBEDACdl
+        4WHQuxLuchSMAyuLl/DvcK3YYDWoDIJscJLFsyHVlmPhq8GKQcVU/OvYNCcPvCloeg98BsQBaxBO6
+        NcvMiuallTACkQQUKz0E96GPzLrpvBpy3N4wVONqEjyjm4NfhunqwA3ZKbqDOGiQVjk6sVspJUnZC
+        G2WZoUqHN6TqMop4ln2MLtW4ia04GYJHcEZU7Al1zTxILPkRBE/97amfWwAiUcjZv8lIEmSefDlE4
+        Jo+nfn7w==;
 Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pPLeu-0005hb-3J; Tue, 07 Feb 2023 10:57:08 +0000
-Message-ID: <d37f3af69df09ff542024ed93a37865b28dfa86e.camel@infradead.org>
+        id 1pPM89-0006sJ-5C; Tue, 07 Feb 2023 11:27:21 +0000
+Message-ID: <921cfe295fcd398168e5454e01193045de312688.camel@infradead.org>
 Subject: Re: [PATCH v6 01/11] x86/apic/x2apic: Fix parallel handling of
  cluster_mask
 From:   David Woodhouse <dwmw2@infradead.org>
@@ -41,12 +41,13 @@ Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
         pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
         punit.agrawal@bytedance.com, simon.evans@bytedance.com,
         liangma@liangbit.com
-Date:   Tue, 07 Feb 2023 10:57:05 +0000
-In-Reply-To: <87a61qxtx0.ffs@tglx>
+Date:   Tue, 07 Feb 2023 11:27:20 +0000
+In-Reply-To: <d37f3af69df09ff542024ed93a37865b28dfa86e.camel@infradead.org>
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
          <20230202215625.3248306-2-usama.arif@bytedance.com> <87a61qxtx0.ffs@tglx>
+         <d37f3af69df09ff542024ed93a37865b28dfa86e.camel@infradead.org>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-sXYYLHDo3EIodFyasVVr"
+        boundary="=-g5Zc/zoCM36Kyb2oKOzS"
 User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -55,43 +56,65 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-sXYYLHDo3EIodFyasVVr
+--=-g5Zc/zoCM36Kyb2oKOzS
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 
-T24gVHVlLCAyMDIzLTAyLTA3IGF0IDAwOjIwICswMTAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
-Cj4gCj4gCj4gVEJILiBUaGUgbG9naWMgb2YgdGhpcyBjb2RlIGlzIGFueXRoaW5nIGJ1dCBvYnZp
-b3VzLiBTb21ldGhpbmcgbGlrZSB0aGUKPiB1bmNvbXBpbGVkIGJlbG93IHBlcmhhcHM/CgpMb29r
-cyBzYW5lIHRvIG1lLiBJJ2xsIHR3ZWFrIHRoZSBjb21tZW50cyBhIGJpdCBhbmQgZ2l2ZSBpdCBh
-IHNwaW47CnRoYW5rcy4KCi4uLgoKPiArwqDCoMKgwqDCoMKgwqAgKiBBdCBib290IHRpbWUgQ1BV
-IHByZXNlbnQgbWFzayBpcyBzdGFibGUuIElmIHRoZSBjbHVzdGVyIGlzIG5vdAo+ICvCoMKgwqDC
-oMKgwqDCoCAqIHlldCBpbml0aWFsaXplZCwgYWxsb2NhdGUgdGhlIG1hc2sgYW5kIHByb3BhZ2F0
-ZSBpdCB0byBhbGwKPiArwqDCoMKgwqDCoMKgwqAgKiBzaWJsaW5ncyBpbiB0aGlzIGNsdXN0ZXIu
-Cj4gwqDCoMKgwqDCoMKgwqDCoCAqLwo+IC3CoMKgwqDCoMKgwqDCoGlmIChjbHVzdGVyX2hvdHBs
-dWdfbWFzaykgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoY2x1c3Rlcl9o
-b3RwbHVnX21hc2stPm5vZGUgPT0gbm9kZSkKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBrZnJlZShjbHVzdGVyX2hvdHBsdWdfbWFzayk7Cj4gLcKgwqDCoMKgwqDCoMKgfQo+ICvC
-oMKgwqDCoMKgwqDCoGlmIChzeXN0ZW1fc3RhdGUgPCBTWVNURU1fUlVOTklORykKPiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBhbGxvYzsKPiArCj4gK8KgwqDCoMKgwqDCoMKg
-LyoKPiArwqDCoMKgwqDCoMKgwqAgKiBPbiBwb3N0IGJvb3QgaG90cGx1ZyBpdGVyYXRlIG92ZXIg
-dGhlIHByZXNlbnQgQ1BVcyB0byBoYW5kbGUgdGhlCj4gK8KgwqDCoMKgwqDCoMKgICogY2FzZSBv
-ZiBwYXJ0aWFsIGNsdXN0ZXJzIGFzIHRoZXkgbWlnaHQgYmUgcHJlc2VudGVkIGJ5Cj4gK8KgwqDC
-oMKgwqDCoMKgICogdmlydHVhbGl6YXRpb24uCj4gK8KgwqDCoMKgwqDCoMKgICovCj4gK8KgwqDC
-oMKgwqDCoMKgZm9yX2VhY2hfcHJlc2VudF9jcHUoY3B1X2kpIHsKCgpTby4uLiBpZiB0aGlzIENQ
-VSB3YXMgKnByZXNlbnQqIGF0IGJvb3QgdGltZSAoYW5kIGlmIGFueSBvdGhlciBDUFUgaW4KdGhp
-cyBjbHVzdGVyIHdhcyBwcmVzZW50KSwgaXQgd2lsbCBhbHJlYWR5IGhhdmUgYSBjbHVzdGVyX21h
-c2suCgpXaGljaCBtZWFucyB3ZSBnZXQgaGVyZSBpbiB0d28gY2FzZXM6IAoKIOKAoiBUaGlzIENQ
-VSB3YXNuJ3QgYWN0dWFsbHkgcHJlc2VudCAod2FzIGp1c3QgJ3Bvc3NpYmxlJykgYXQgYm9vdCB0
-aW1lLgogICAoSXMgdGhhdCBhY3R1YWxseSBhIHRoaW5nIHRoYXQgaGFwcGVucz8pCgog4oCiIFRo
-aXMgQ1BVIHdhcyBwcmVzZW50IGJ1dCBubyBvdGhlciBDUFUgaW4gdGhpcyBjbHVzdGVyIHdhcyBh
-Y3R1YWxseQogICBicm91Z2h0IHVwIGF0IGJvb3QgdGltZSBzbyB0aGUgY2x1c3Rlcl9tYXNrIHdh
-c24ndCBhbGxvY2F0ZWQuCgpUaGUgY29kZSBsb29rcyByaWdodCwgSSBkb24ndCBncm9rIHRoZSBj
-b21tZW50IGFib3V0IHBhcnRpYWwgY2x1c3RlcnMKYW5kIHZpcnR1YWxpemF0aW9uLCBhbmQgd291
-bGQgaGF2ZSB3b3JkZWQgaXQgc29tZXRoaW5nIGFsb25nIHRoZSBhYm92ZQpsaW5lcz8KCg==
+On Tue, 2023-02-07 at 10:57 +0000, David Woodhouse wrote:
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * On post boot hotplug iter=
+ate over the present CPUs to handle the
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * case of partial clusters =
+as they might be presented by
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * virtualization.
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0for_each_present_cpu(cpu_i) =
+{
+>=20
+>=20
+> So... if this CPU was *present* at boot time (and if any other CPU in
+> this cluster was present), it will already have a cluster_mask.
+>=20
+> Which means we get here in two cases:=20
+>=20
+> =C2=A0=E2=80=A2 This CPU wasn't actually present (was just 'possible') at=
+ boot time.
+> =C2=A0=C2=A0 (Is that actually a thing that happens?)
+>=20
+> =C2=A0=E2=80=A2 This CPU was present but no other CPU in this cluster was=
+ actually
+> =C2=A0=C2=A0 brought up at boot time so the cluster_mask wasn't allocated=
+.
+>=20
+> The code looks right, I don't grok the comment about partial clusters
+> and virtualization, and would have worded it something along the above
+> lines?
+
+As I get my head around that, I think the code needs to change too.
+What if we *unplug* the only CPU in a cluster (present=E2=86=92possible), t=
+hen
+add a new one in the same cluster? The new one would get a new
+cluster_mask. Which is kind of OK for now but then if we re-add the
+original CPU it'd continue to use its old cluster_mask.
+
+Now, that's kind of weird if it's physical CPUs because that cluster is
+within a given chip, isn't it? But with virtualization maybe that's
+something that could happen, and it doesn't hurt to be completely safe
+by using for_each_possible_cpu() instead?
+
+Now looks like this:
 
 
---=-sXYYLHDo3EIodFyasVVr
+	/*
+	 * On post boot hotplug for a CPU which was not present at boot time,
+	 * iterate over all possible CPUs (even those which are not present
+	 * any more) to find any existing cluster mask.
+	 */
+	for_each_possible_cpu(cpu_i) {
+
+
+--=-g5Zc/zoCM36Kyb2oKOzS
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -183,24 +206,24 @@ IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
 dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
 NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
 xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjA3MTA1NzA1WjAvBgkqhkiG9w0BCQQxIgQgq2vIuUN+
-O4NqwL11eDARlAy4AkZGOQ3mooSfmQL7pwgwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjA3MTEyNzIwWjAvBgkqhkiG9w0BCQQxIgQgdx9zv0ue
+payjWkMwL6eyp2QF3Kd+GMdKzFxNGrCa01swgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
 A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
 dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
 DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
 MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
 Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAKO2seRqTpsuRuVwJdBdZ1VKeOJnCXqyxI
-oHzO/aBVhmn6kOvRRqPPHbJO+o6qvfFiFsYEvSi+4UKx/I0ArHlF1sMo9KApW7VU+/Sbw1rXlezl
-OEByzBbjSJc9xSbmNt5e96BzjPDJyLUud9gZ9ufF97JcY6aaB/Si/KiFTK6U15bcUUqepRPb0+Hb
-guCPYhVVJrC8u9OXt1dN9s3zesbt/iO/Il6CfLuttGfX+8WwbbXaOaXkXXc2PK5qgEWUyr7eL6wC
-NoxZiHBU2izhXIj3DhzvjckTJseHQJl+oOn3lA4wZalJpFDydLs5F0EpCjw2Ft3f13TPXeP5ZR0K
-oJHnbaciErq6l2ZiY2HFfRta4/svj4nQORQfkxLelSnH2FlHyqid46cWJp/XhIMwruTMabOiL1uo
-IF2IbAsJMGvQK+YHYl86UZVCVGKhNoerx5f8igesJ7QxH82SP4Ew8xF2tyZN3cz817NROkOi/uxI
-imxKO0orhT21pIBbRMqx6KZokBTMyHxKiytuKRBTPn4GOdU9UoVvvH7y3UjR0E9kRHXM+4nNz8+k
-YC4p8JvMMLckyuVYCkWD/A+9hmAVvyPjezV8nmWY1ONTxqmaLv6RNRln86OXnHU6IalAM7M0V/iB
-ksnolgBS7UaOo+hHUMK91jrsbYnXLP1vsV1dKyYccwAAAAAAAA==
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAsxZdpwhAR5Nc/ji4++J5Uzs2SxFm7AMws
+VklU++PCWQ63l2nk+OfquPiWbY/22uFqu5BhHPLS+Axzn5xeteO3pJwmfDNIOEdirjgTuwoXdoXf
+5I+r007qeEPwahiwTGk4MXQjRxVU5OkeU9Zd7gTtP5gFFh6J4JhiZ3sjKBXTdui3YRbvwYc9BhN9
+2djslRq0LDF3djVTjR8zZWuVG418u25boYQRXCc4AEVobXPqNZ7oEM4bikOVn5MQDKJLFL+Uw77B
+8e3CPjNQsGmoGlFhtxyXvtGAmllfwEBCENbL5FcZeaX9gT3RoTKaKeXleL+S2l3IA8dznxSIX0ld
+OvNIJb/DCbgHusQRV1TrGxaLSLPUsHKNq1C8fDNuD8GtlNSK9vG4EiNUDxGJVoWkxKrctm/dAzce
+5x6KiDSATjBYCf0mQeiU32oBdid2ivT1vXhP0PopzDStc5wUPmcPGiIg3bFXc9KkR1TktbXVt8Sv
+TMmfpukLfIqAYv/QyOv2vSdoJUIFgyszBFpkhMkcvxZQLuJ+mLw4KrlrYaTd3Ix2PPHf83syLtnN
+9qa/Ir383mNO/gNsJZL3dMF9UEgXBtCmA3H0yRhDXktANRiuwjG7aORP14kb0L+36zQJfXJV10Gu
+pbEs0wwTvHhI1apQ5UESPiQWnkCS4LTybcEW3YXETQAAAAAAAA==
 
 
---=-sXYYLHDo3EIodFyasVVr--
+--=-g5Zc/zoCM36Kyb2oKOzS--
