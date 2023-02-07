@@ -2,53 +2,52 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13D49C636CD
-	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 23:04:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFF52C636CD
+	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 23:05:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjBGXEs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Feb 2023 18:04:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        id S229967AbjBGXFD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Feb 2023 18:05:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjBGXEq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Feb 2023 18:04:46 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CBB1D90E
-        for <rcu@vger.kernel.org>; Tue,  7 Feb 2023 15:04:44 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id m16-20020a05600c3b1000b003dc4050c94aso196785wms.4
-        for <rcu@vger.kernel.org>; Tue, 07 Feb 2023 15:04:44 -0800 (PST)
+        with ESMTP id S229875AbjBGXFC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Feb 2023 18:05:02 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9B739CE0
+        for <rcu@vger.kernel.org>; Tue,  7 Feb 2023 15:04:41 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id l21-20020a05600c1d1500b003dfe462b7e4so1743417wms.0
+        for <rcu@vger.kernel.org>; Tue, 07 Feb 2023 15:04:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mY6NeUci0HQtTva2v+94F98gv/kbTw7O8GGA4dBnL3M=;
-        b=Vi2Ppf9keVW26+otagfWa7oYewc9B9pagBPslJ3Kjc68ep9DpstkoM9u12dNmSCOv0
-         YOY4GifEbRhhywq+8KX/SbPc6kZleF1JQo/8ISWnqj2dPvXW0K4GnQPIxRze1daggjZ1
-         yHrIG8cKtcmzLBxOXsyJC/VjbAt6XOtj0pVTCjfjRxuNZ3rcBcOWcLp2gMNMnwDxldGN
-         FKHGITBMIrEMFl3f8TAXkoZTflRdGqaOZ5ZQkxfDNstrgaJ1CWnwcHOCecN9sUGv4RFu
-         xkR6wCpqcY8iOCVCgCXGVGtkZhlxaYdjn4SmA5jmdJybaMwHKPJIPBVVLDchVy3f9wpB
-         /c8Q==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7K90Cconf9IU/JjGhL3usnB4fcgEN7IGa/N6vi83tEU=;
+        b=z706X9RPRqgrkCmt0yKUhE1L13f0JWFGtZsjk6h4QI2Mv+QHJqo22MYv34CjWHftK4
+         oAJGajJuv3Q00OnN6Fn/ZCWTmO8GtjcrerCMBnkvi1zFZXC/wwNColrF9kW6jcNe7EeX
+         V56u1UwIuBxsnjgXrtV+XxAyLT4UUvBrNH98CfU/TG9q7aYZ/bqljHMhWs8knSyIRQuv
+         lxEWGDGdcUFJJemoOyheFPlxzsXqecbyounSaS3Rm8GT5zFuViuYClwhnUkzoCArNv3/
+         P3kLTknuABGBHhZVt0rAx09gEqaNLbWe9aSzeg5rY49tu9ooNv6MbBSF6Pbi67vqP+RJ
+         EoJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mY6NeUci0HQtTva2v+94F98gv/kbTw7O8GGA4dBnL3M=;
-        b=L/SWXnPU1DfmehBt75QXwgz1FjWclrJHzzOB/sNLTMIfPkJX5jGhBGlKcM94wH1TPs
-         jwDJozMsdz7i4/pSTN3D+PHRRYisvkd69WWAb/x5PN5zJx1VsX+5PFXFiSF8Nr4b/5nn
-         qt7KkKsH4ujgh0rh8mxjd1z+gtsbMp9hXKzb5jo/fG30ZIDNqjuHP/jVa58agfy70J5X
-         JtUA6eHaTrDBzAfoDhgEujQqfJ/EmEGZyCWSlwYa6LLF2XyVdZYf7LJZ5JKh6L3IuTfP
-         b6F1C4bi7H91opnkCfVYy6UaBf4lKjPgg2M3jkfgV0VD/URPIiQ84ppAXOEkp3Pl3LE5
-         fNVw==
-X-Gm-Message-State: AO0yUKUlqmB7EZRMHU8rlPaqHnz2qpDK3fINs9Bx1APJUAg1TBMzieRl
-        YFWceGEtVwtyVqXaLMwQasijrg==
-X-Google-Smtp-Source: AK7set9wPArZnF4SVnH4QEUNB0nS0WwTK3Ac0MpBDwlm03kZYykByKxRj9RU0c9YArnn2f6Vh8/neA==
-X-Received: by 2002:a05:600c:1694:b0:3de:27c3:ef13 with SMTP id k20-20020a05600c169400b003de27c3ef13mr4537840wmn.9.1675811083383;
-        Tue, 07 Feb 2023 15:04:43 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7K90Cconf9IU/JjGhL3usnB4fcgEN7IGa/N6vi83tEU=;
+        b=5EofvM2mT/sHyTizoAb08rR1ey8awM8iIaFMv5WlMQHnhVcgy9JMiPC8tzfgIjdvXH
+         PizdQCaQCMEl/AaE6w5KuPBUfaqpF51LoIfft+7S/sU94ODmxlOupdqrMZs8QYLpHMaM
+         52jbiqE8Kwjk1wbgSHh6xvz2P8MV7TWeFRTA0G1BkRMff1eIjvRy/tdJAVofA+e4rhuy
+         zDAYYwng8CwFg6bt6iP9vzz6UioERbDrf2hRnYOWS8X6cAIO+IuaHltsHR5hBtW87d7N
+         ODZTJL4MMURCOX/Qb9dX6FcpZoi5FEZsLl81bP+Z1H37jdLSrQcCiStCPlmWdRLAsllh
+         d6Jg==
+X-Gm-Message-State: AO0yUKVTfJsJgjU3xPsOzBunMc+IG2PsEaEBciLgS8htSc5kM4EbRzZd
+        YgaEd02kNqXVo0GAJsuGHC9Jrg==
+X-Google-Smtp-Source: AK7set8zWLCiZ74mwTGNMT2x2h+OX5COLl6cjWMEbiHAzeo6UxDuzQyfGltINaNHn718jXW1Eb49GQ==
+X-Received: by 2002:a05:600c:3423:b0:3e0:185:e916 with SMTP id y35-20020a05600c342300b003e00185e916mr4591454wmp.13.1675811080307;
+        Tue, 07 Feb 2023 15:04:40 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:c04f:2463:c151:8b87])
-        by smtp.gmail.com with ESMTPSA id j14-20020a05600c190e00b003dcc82ce53fsm146485wmq.38.2023.02.07.15.04.42
+        by smtp.gmail.com with ESMTPSA id j14-20020a05600c190e00b003dcc82ce53fsm146485wmq.38.2023.02.07.15.04.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 15:04:42 -0800 (PST)
+        Tue, 07 Feb 2023 15:04:39 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com
 Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
@@ -59,142 +58,89 @@ Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
-        David Woodhouse <dwmw@amazon.co.uk>,
         Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v7 3/9] cpu/hotplug: Add dynamic parallel bringup states before CPUHP_BRINGUP_CPU
-Date:   Tue,  7 Feb 2023 23:04:30 +0000
-Message-Id: <20230207230436.2690891-4-usama.arif@bytedance.com>
+Subject: [PATCH v7 0/9] Parallel CPU bringup for x86_64
+Date:   Tue,  7 Feb 2023 23:04:27 +0000
+Message-Id: <20230207230436.2690891-1-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230207230436.2690891-1-usama.arif@bytedance.com>
-References: <20230207230436.2690891-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+Tested on v7, doing INIT/SIPI/SIPI in parallel brings down the time for
+smpboot from ~700ms to 100ms (85% improvement) on a server with 128 CPUs
+split across 2 NUMA nodes.
 
-There is often significant latency in the early stages of CPU bringup,
-and time is wasted by waking each CPU (e.g. with SIPI/INIT/INIT on x86)
-and then waiting for it to respond before moving on to the next.
+The major change over v6 is keeping parallel smp support enabled in AMD.
+APIC ID for parallel CPU bringup is now obtained from CPUID leaf 0x0B
+(for x2APIC mode) otherwise CPUID leaf 0x1 (8 bits).
 
-Allow a platform to register a set of pre-bringup CPUHP states to which
-each CPU can be stepped in parallel, thus absorbing some of that latency.
+The patch for reusing timer calibration for secondary CPUs is also removed
+from the series as its not part of parallel smp bringup and needs to be
+further thought about.
 
-There is a subtlety here: even with an empty CPUHP_BP_PARALLEL_DYN step,
-this means that *all* CPUs are brought through the prepare states and to
-CPUHP_BP_PREPARE_DYN before any of them are taken to CPUHP_BRINGUP_CPU
-and then are allowed to run for themselves to CPUHP_ONLINE.
+Thanks,
+Usama
 
-So any combination of prepare/start calls which depend on A-B ordering
-for each CPU in turn, such as the X2APIC code which used to allocate a
-cluster mask 'just in case' and store it in a global variable in the
-prep stage, then potentially consume that preallocated structure from
-the AP and set the global pointer to NULL to be reallocated in
-CPUHP_X2APIC_PREPARE for the next CPU... would explode horribly.
+Changes across versions:
+v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+    in preparation for more parallelisation.
+v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+    24 bits of the physical X2APIC ID to be used. That patch still needs
+    a Signed-off-by from its original author, who once claimed not to
+    remember writing it at all. But now we've fixed it, hopefully he'll
+    admit it now :)
+v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+    for AMD CPUs.
+v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+    reused timer calibration for secondary CPUs.
+v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+    cluster mask in alloc_clustermask. (patch 1/9)
+    Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+    0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+    Included sanity checks for APIC id from 0x0B. (patch 6/9)
+    Removed patch for reusing timer calibration for secondary CPUs.
+    commit message and code improvements.
 
-Any platform enabling the CPUHP_BP_PARALLEL_DYN steps must be reviewed
-and tested to ensure that such issues do not exist, and the existing
-behaviour of bringing CPUs to CPUHP_BP_PREPARE_DYN and then immediately
-to CPUHP_BRINGUP_CPU and CPUHP_ONLINE only one at a time does not change
-unless such a state is registered.
+David Woodhouse (8):
+  x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+  cpu/hotplug: Add dynamic parallel bringup states before
+    CPUHP_BRINGUP_CPU
+  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+  x86/smpboot: Split up native_cpu_up into separate phases and document
+    them
+  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+  x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
+  x86/smpboot: Serialize topology updates for secondary bringup
 
-Note that the new parallel stages do *not* yet bring each AP to the
-CPUHP_BRINGUP_CPU state at the same time, only to the new states which
-exist before it. The final loop in bringup_nonboot_cpus() is untouched,
-bringing each AP in turn from the final PARALLEL_DYN state (or all the
-way from CPUHP_OFFLINE) to CPUHP_BRINGUP_CPU and then waiting for that
-AP to do its own processing and reach CPUHP_ONLINE before releasing the
-next.
+Thomas Gleixner (1):
+  x86/smpboot: Support parallel startup of secondary CPUs
 
-Parallelising that part by bringing them all to CPUHP_BRINGUP_CPU
-and then waiting for them all is an exercise for the future.
+ arch/x86/include/asm/realmode.h       |   3 +
+ arch/x86/include/asm/smp.h            |  14 +-
+ arch/x86/include/asm/topology.h       |   2 -
+ arch/x86/kernel/acpi/sleep.c          |   1 +
+ arch/x86/kernel/apic/apic.c           |   2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c | 130 ++++++----
+ arch/x86/kernel/cpu/common.c          |   6 +-
+ arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
+ arch/x86/kernel/head_64.S             |  84 +++++++
+ arch/x86/kernel/smpboot.c             | 349 +++++++++++++++++++-------
+ arch/x86/realmode/init.c              |   3 +
+ arch/x86/realmode/rm/trampoline_64.S  |  14 ++
+ arch/x86/xen/smp_pv.c                 |   4 +-
+ include/linux/cpuhotplug.h            |   2 +
+ include/linux/smpboot.h               |   7 +
+ kernel/cpu.c                          |  31 ++-
+ kernel/smpboot.c                      |   2 +-
+ kernel/smpboot.h                      |   2 -
+ 18 files changed, 506 insertions(+), 159 deletions(-)
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
----
- include/linux/cpuhotplug.h |  2 ++
- kernel/cpu.c               | 31 +++++++++++++++++++++++++++++--
- 2 files changed, 31 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 6c6859bfc454..e5a73ae6ccc0 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -133,6 +133,8 @@ enum cpuhp_state {
- 	CPUHP_MIPS_SOC_PREPARE,
- 	CPUHP_BP_PREPARE_DYN,
- 	CPUHP_BP_PREPARE_DYN_END		= CPUHP_BP_PREPARE_DYN + 20,
-+	CPUHP_BP_PARALLEL_DYN,
-+	CPUHP_BP_PARALLEL_DYN_END		= CPUHP_BP_PARALLEL_DYN + 4,
- 	CPUHP_BRINGUP_CPU,
- 
- 	/*
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6c0a92ca6bb5..fffb0da61ccc 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1504,8 +1504,30 @@ int bringup_hibernate_cpu(unsigned int sleep_cpu)
- 
- void bringup_nonboot_cpus(unsigned int setup_max_cpus)
- {
-+	unsigned int n = setup_max_cpus - num_online_cpus();
- 	unsigned int cpu;
- 
-+	/*
-+	 * An architecture may have registered parallel pre-bringup states to
-+	 * which each CPU may be brought in parallel. For each such state,
-+	 * bring N CPUs to it in turn before the final round of bringing them
-+	 * online.
-+	 */
-+	if (n > 0) {
-+		enum cpuhp_state st = CPUHP_BP_PARALLEL_DYN;
-+
-+		while (st <= CPUHP_BP_PARALLEL_DYN_END && cpuhp_hp_states[st].name) {
-+			int i = n;
-+
-+			for_each_present_cpu(cpu) {
-+				cpu_up(cpu, st);
-+				if (!--i)
-+					break;
-+			}
-+			st++;
-+		}
-+	}
-+
- 	for_each_present_cpu(cpu) {
- 		if (num_online_cpus() >= setup_max_cpus)
- 			break;
-@@ -1882,6 +1904,10 @@ static int cpuhp_reserve_state(enum cpuhp_state state)
- 		step = cpuhp_hp_states + CPUHP_BP_PREPARE_DYN;
- 		end = CPUHP_BP_PREPARE_DYN_END;
- 		break;
-+	case CPUHP_BP_PARALLEL_DYN:
-+		step = cpuhp_hp_states + CPUHP_BP_PARALLEL_DYN;
-+		end = CPUHP_BP_PARALLEL_DYN_END;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -1906,14 +1932,15 @@ static int cpuhp_store_callbacks(enum cpuhp_state state, const char *name,
- 	/*
- 	 * If name is NULL, then the state gets removed.
- 	 *
--	 * CPUHP_AP_ONLINE_DYN and CPUHP_BP_PREPARE_DYN are handed out on
-+	 * CPUHP_AP_ONLINE_DYN and CPUHP_BP_P*_DYN are handed out on
- 	 * the first allocation from these dynamic ranges, so the removal
- 	 * would trigger a new allocation and clear the wrong (already
- 	 * empty) state, leaving the callbacks of the to be cleared state
- 	 * dangling, which causes wreckage on the next hotplug operation.
- 	 */
- 	if (name && (state == CPUHP_AP_ONLINE_DYN ||
--		     state == CPUHP_BP_PREPARE_DYN)) {
-+		     state == CPUHP_BP_PREPARE_DYN ||
-+		     state == CPUHP_BP_PARALLEL_DYN)) {
- 		ret = cpuhp_reserve_state(state);
- 		if (ret < 0)
- 			return ret;
 -- 
 2.25.1
 
