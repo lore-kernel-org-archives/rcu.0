@@ -2,36 +2,36 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ED06C64EC5
-	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 10:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0C43C636CC
+	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 10:57:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjBGKFl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Feb 2023 05:05:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
+        id S231877AbjBGK5x (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Feb 2023 05:57:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbjBGKFk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Feb 2023 05:05:40 -0500
+        with ESMTP id S231825AbjBGK5t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Feb 2023 05:57:49 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF4830E4;
-        Tue,  7 Feb 2023 02:05:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC2439BBD;
+        Tue,  7 Feb 2023 02:57:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
         In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D0GhmIwMmwFa2BiXd+tqMheggPnYzDfXqRySRLhS7hg=; b=V9TpavJRBH34GZYUV4QBwCIpWz
-        7+pnTy+LJRWFN/g/plrPoxhS+ux0hPYryQYIsRUVNxyhQoj9+6gxUQcORecXY7QT6D0v+urMAhQ0x
-        A2eMl48WQXr3nl1PW+dmoL9aNHjctIURlGSMhkfPS0l5Bqx/4PYz5GOP70ES9f0RFlhkQCR5wjGBw
-        esvV/C25lU+9curr20VXPykfO399shMzyqDRNXmo3U4+rl32y9Xp2zUua+Q4preU2TpX4LRansC3W
-        dVL+IuWfsSD+Ll1PIfZ6mGP9VSETpOE/dSVT+oCfcNk+XI9AW69kPoKnGsN5IpcAsv2VafgsU97AH
-        ynpaPlMw==;
+        bh=Zyfmu6UPbMQ7dAOL0TbUtfOvq7o1ioKQtmz/vntrZlk=; b=d2DyKxSysm7zcy5mftfxyKN1l5
+        Sti2hfLe6g9mDI94ogFj+ZlMWV5hgouYVoC5Ez4lITkuaaILRRF2SI+Lz+1WO6QNObN0PzBUgPr8P
+        w3kGcTRXwLdLYIcxDErtyhGxLOh7X5a44PpdDbFAFB98ulNPoQCOboEBdBih7GSW3Cm1rbXiarpG3
+        IBDRywXm9VRvkp+nV+nb2igVKKe076tCOmguSwbzgfmUzgYXwNNvr/vwjeGXfRUJ8/vRJd/a5K0Gy
+        gy5vsLied8HhFnqrADu2FPYqIUyPWRfRN0GklqA7RQpdYHGp0ubTAH9B4LinnPUL9Bo81j9cOhHsw
+        p2/rX+og==;
 Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pPKqD-00035a-Ja; Tue, 07 Feb 2023 10:04:46 +0000
-Message-ID: <9acc229e3d4931fff9106d60b57e0f46941bfb50.camel@infradead.org>
-Subject: Re: [PATCH v6 07/11] x86/smpboot: Disable parallel boot for AMD CPUs
+        id 1pPLeu-0005hb-3J; Tue, 07 Feb 2023 10:57:08 +0000
+Message-ID: <d37f3af69df09ff542024ed93a37865b28dfa86e.camel@infradead.org>
+Subject: Re: [PATCH v6 01/11] x86/apic/x2apic: Fix parallel handling of
+ cluster_mask
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
-        Kim Phillips <kim.phillips@amd.com>,
         Usama Arif <usama.arif@bytedance.com>, arjan@linux.intel.com
 Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
         hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
@@ -40,16 +40,13 @@ Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
         hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
         pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
         punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com, Mario Limonciello <Mario.Limonciello@amd.com>
-Date:   Tue, 07 Feb 2023 10:04:44 +0000
-In-Reply-To: <87pmamwcff.ffs@tglx>
+        liangma@liangbit.com
+Date:   Tue, 07 Feb 2023 10:57:05 +0000
+In-Reply-To: <87a61qxtx0.ffs@tglx>
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
-         <20230202215625.3248306-8-usama.arif@bytedance.com>
-         <b3d9fbbf-e760-5d1d-9182-44c144abd1bf@amd.com>
-         <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
-         <87pmamwcff.ffs@tglx>
+         <20230202215625.3248306-2-usama.arif@bytedance.com> <87a61qxtx0.ffs@tglx>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-K3Pib1b0QDYm2F7ldqCr"
+        boundary="=-sXYYLHDo3EIodFyasVVr"
 User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -58,80 +55,43 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-K3Pib1b0QDYm2F7ldqCr
+--=-sXYYLHDo3EIodFyasVVr
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 
-On Tue, 2023-02-07 at 01:23 +0100, Thomas Gleixner wrote:
-> On Sat, Feb 04 2023 at 15:40, David Woodhouse wrote:
-> > On Fri, 2023-02-03 at 13:48 -0600, Kim Phillips wrote:
-> > > Then:
-> > >=20
-> > > =C2=A0 - a Ryzen 3000 (Picasso A1/Zen+) notebook I have access to fai=
-ls to boot.
-> > > =C2=A0 - Zen 2,3,4-based servers boot fine
-> > > =C2=A0 - a Zen1-based server doesn't boot.
-> >=20
-> > I've changed it to use CPUID 0xb only if we're actually in x2apic mode,
-> > which Boris tells me won't be the case on Zen1 because that doesn't
-> > support X2APIC.
->=20
-> Correct.
->=20
-> > When we're not in x2apic mode, we can use CPUID 0x1 because the 8 bits
-> > of APIC ID we find there are perfectly sufficient.
->=20
-> Is that worth the trouble?
-
-Well, that's what was being debated. I think the conclusion that was
-bring reached was that it *is* worth the trouble, because there will be
-a number of physical and especially virtual machines which have a high
-CPU count but which don't actually use X2APIC mode. And which might not
-even *support* CPUID 0xb.
-
-So using CPUID 0x1 when there is no APIC ID greater than 254 does seem
-to make sense.
-
-
-> > Even though we *can* support non-X2APIC processors, we *might* want to
-> > play it safe and not go back that far; only enabling parallel bringup
-> > on machines with X2APIC which roughly correlates with "lots of CPUs"
-> > since that's where the benefit is.
->=20
-> The parallel bringup code is complex enough already, so please don't
-> optimize for the non-interesting case in the first place. When this has
-> stabilized then the CPUID 0x1 mechanism can be added if anyone thinks
-> it's interesting. KISS is still the best engineering principle.
-
-Actually it ends up being trivial. It probably makes sense to keep it
-in there even if it can only be exercised by a deliberate opt-in on
-older CPUs. I reworked the register usage from your original anyway,
-which helps a little.
-
-	testl	$STARTUP_APICID_CPUID_0B, %edx
-	jnz	.Luse_cpuid_0b
-	testl	$STARTUP_APICID_CPUID_01, %edx
-	jnz	.Luse_cpuid_01
-	andl	$0x0FFFFFFF, %edx
-	jmp	.Lsetup_AP
-
-.Luse_cpuid_01:
-	mov	$0x01, %eax
-	cpuid
-	mov	%ebx, %edx
-	shr	$24, %edx
-	jmp	.Lsetup_AP
-
-.Luse_cpuid_0b:
-	mov	$0x0B, %eax
-	xorl	%ecx, %ecx
-	cpuid
-
-.Lsetup_AP:
-	/* EDX contains the APICID of the current CPU */
+T24gVHVlLCAyMDIzLTAyLTA3IGF0IDAwOjIwICswMTAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
+Cj4gCj4gCj4gVEJILiBUaGUgbG9naWMgb2YgdGhpcyBjb2RlIGlzIGFueXRoaW5nIGJ1dCBvYnZp
+b3VzLiBTb21ldGhpbmcgbGlrZSB0aGUKPiB1bmNvbXBpbGVkIGJlbG93IHBlcmhhcHM/CgpMb29r
+cyBzYW5lIHRvIG1lLiBJJ2xsIHR3ZWFrIHRoZSBjb21tZW50cyBhIGJpdCBhbmQgZ2l2ZSBpdCBh
+IHNwaW47CnRoYW5rcy4KCi4uLgoKPiArwqDCoMKgwqDCoMKgwqAgKiBBdCBib290IHRpbWUgQ1BV
+IHByZXNlbnQgbWFzayBpcyBzdGFibGUuIElmIHRoZSBjbHVzdGVyIGlzIG5vdAo+ICvCoMKgwqDC
+oMKgwqDCoCAqIHlldCBpbml0aWFsaXplZCwgYWxsb2NhdGUgdGhlIG1hc2sgYW5kIHByb3BhZ2F0
+ZSBpdCB0byBhbGwKPiArwqDCoMKgwqDCoMKgwqAgKiBzaWJsaW5ncyBpbiB0aGlzIGNsdXN0ZXIu
+Cj4gwqDCoMKgwqDCoMKgwqDCoCAqLwo+IC3CoMKgwqDCoMKgwqDCoGlmIChjbHVzdGVyX2hvdHBs
+dWdfbWFzaykgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoY2x1c3Rlcl9o
+b3RwbHVnX21hc2stPm5vZGUgPT0gbm9kZSkKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBrZnJlZShjbHVzdGVyX2hvdHBsdWdfbWFzayk7Cj4gLcKgwqDCoMKgwqDCoMKgfQo+ICvC
+oMKgwqDCoMKgwqDCoGlmIChzeXN0ZW1fc3RhdGUgPCBTWVNURU1fUlVOTklORykKPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBhbGxvYzsKPiArCj4gK8KgwqDCoMKgwqDCoMKg
+LyoKPiArwqDCoMKgwqDCoMKgwqAgKiBPbiBwb3N0IGJvb3QgaG90cGx1ZyBpdGVyYXRlIG92ZXIg
+dGhlIHByZXNlbnQgQ1BVcyB0byBoYW5kbGUgdGhlCj4gK8KgwqDCoMKgwqDCoMKgICogY2FzZSBv
+ZiBwYXJ0aWFsIGNsdXN0ZXJzIGFzIHRoZXkgbWlnaHQgYmUgcHJlc2VudGVkIGJ5Cj4gK8KgwqDC
+oMKgwqDCoMKgICogdmlydHVhbGl6YXRpb24uCj4gK8KgwqDCoMKgwqDCoMKgICovCj4gK8KgwqDC
+oMKgwqDCoMKgZm9yX2VhY2hfcHJlc2VudF9jcHUoY3B1X2kpIHsKCgpTby4uLiBpZiB0aGlzIENQ
+VSB3YXMgKnByZXNlbnQqIGF0IGJvb3QgdGltZSAoYW5kIGlmIGFueSBvdGhlciBDUFUgaW4KdGhp
+cyBjbHVzdGVyIHdhcyBwcmVzZW50KSwgaXQgd2lsbCBhbHJlYWR5IGhhdmUgYSBjbHVzdGVyX21h
+c2suCgpXaGljaCBtZWFucyB3ZSBnZXQgaGVyZSBpbiB0d28gY2FzZXM6IAoKIOKAoiBUaGlzIENQ
+VSB3YXNuJ3QgYWN0dWFsbHkgcHJlc2VudCAod2FzIGp1c3QgJ3Bvc3NpYmxlJykgYXQgYm9vdCB0
+aW1lLgogICAoSXMgdGhhdCBhY3R1YWxseSBhIHRoaW5nIHRoYXQgaGFwcGVucz8pCgog4oCiIFRo
+aXMgQ1BVIHdhcyBwcmVzZW50IGJ1dCBubyBvdGhlciBDUFUgaW4gdGhpcyBjbHVzdGVyIHdhcyBh
+Y3R1YWxseQogICBicm91Z2h0IHVwIGF0IGJvb3QgdGltZSBzbyB0aGUgY2x1c3Rlcl9tYXNrIHdh
+c24ndCBhbGxvY2F0ZWQuCgpUaGUgY29kZSBsb29rcyByaWdodCwgSSBkb24ndCBncm9rIHRoZSBj
+b21tZW50IGFib3V0IHBhcnRpYWwgY2x1c3RlcnMKYW5kIHZpcnR1YWxpemF0aW9uLCBhbmQgd291
+bGQgaGF2ZSB3b3JkZWQgaXQgc29tZXRoaW5nIGFsb25nIHRoZSBhYm92ZQpsaW5lcz8KCg==
 
 
---=-K3Pib1b0QDYm2F7ldqCr
+--=-sXYYLHDo3EIodFyasVVr
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -223,24 +183,24 @@ IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
 dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
 NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
 xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjA3MTAwNDQ0WjAvBgkqhkiG9w0BCQQxIgQgWYRpuP5a
-lb0e0a9pAaHn5C9wHNHZJzzg+VkcQq6ghdowgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjA3MTA1NzA1WjAvBgkqhkiG9w0BCQQxIgQgq2vIuUN+
+O4NqwL11eDARlAy4AkZGOQ3mooSfmQL7pwgwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
 A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
 dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
 DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
 MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
 Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgC0CMPHQ9RQOEZGVmwtEjVz1wuERsCGHtLW
-nM+ZCUTRTuGbfcBgDhwqioY0GQuwTDjfKNKIuMwXgmpk2Xe3VU9Vksui0Byf/VlsB5YK3mg3YD0q
-IbiaU1a6/6TsUSUTRL2WjnoqNbr0fEVxyf1IzkKnLs4CnQSGPrEE9bNrXri1bLfBx9umzMDdHV1W
-1XrF/7O9uSpvDRdJMHBiO7Y7iSV4tvgkLe1bRifNI0yE4mKEJGnWCyZvSXKle3ZbJHp6xsnW3i1W
-xcrnntKs7ghhs16t2iovT1y/eACSxUbYOZZ1Q43ZxvgJ8l87CPWwOnu+XpGq4WgjhznCr7wB6baV
-zruy7H2xC2MPD8nfpiUUVk2lwvw98eZUJmDcXGpATIlGRRQQZRISncqVsGDGCwEbyRWpKQGvDXV/
-2ESh3mwXW29w+CYUCoZvxX24mFP8baN9EaOIisSB1qRzWhCf3kgP0WXf8t2WPU0HMfeaQ+l6ovY+
-HXNegYTgBFOaGhtrt9ozNKwqTN2lKnpKpe6X7KPwzSHJDxyZRltyExegx9YrFSAH1w5W0nT1gPd8
-BG3CyxHjvhaBm6w3rGggD3oIOBvttHVN/+yEg+hK3SBjsQfkvJQPZ4VKh3CcvY3pgTcZNeZWsp9D
-i6Zis+/0uF1aSqlgxA5IM/SRtmy3xvmoa6YQYa2eGQAAAAAAAA==
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAKO2seRqTpsuRuVwJdBdZ1VKeOJnCXqyxI
+oHzO/aBVhmn6kOvRRqPPHbJO+o6qvfFiFsYEvSi+4UKx/I0ArHlF1sMo9KApW7VU+/Sbw1rXlezl
+OEByzBbjSJc9xSbmNt5e96BzjPDJyLUud9gZ9ufF97JcY6aaB/Si/KiFTK6U15bcUUqepRPb0+Hb
+guCPYhVVJrC8u9OXt1dN9s3zesbt/iO/Il6CfLuttGfX+8WwbbXaOaXkXXc2PK5qgEWUyr7eL6wC
+NoxZiHBU2izhXIj3DhzvjckTJseHQJl+oOn3lA4wZalJpFDydLs5F0EpCjw2Ft3f13TPXeP5ZR0K
+oJHnbaciErq6l2ZiY2HFfRta4/svj4nQORQfkxLelSnH2FlHyqid46cWJp/XhIMwruTMabOiL1uo
+IF2IbAsJMGvQK+YHYl86UZVCVGKhNoerx5f8igesJ7QxH82SP4Ew8xF2tyZN3cz817NROkOi/uxI
+imxKO0orhT21pIBbRMqx6KZokBTMyHxKiytuKRBTPn4GOdU9UoVvvH7y3UjR0E9kRHXM+4nNz8+k
+YC4p8JvMMLckyuVYCkWD/A+9hmAVvyPjezV8nmWY1ONTxqmaLv6RNRln86OXnHU6IalAM7M0V/iB
+ksnolgBS7UaOo+hHUMK91jrsbYnXLP1vsV1dKyYccwAAAAAAAA==
 
 
---=-K3Pib1b0QDYm2F7ldqCr--
+--=-sXYYLHDo3EIodFyasVVr--
