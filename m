@@ -2,40 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC227C61DA4
-	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 00:09:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD5E2C05027
+	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 00:23:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbjBGAJN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Feb 2023 19:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
+        id S229548AbjBGAXx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Feb 2023 19:23:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjBGAJN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Feb 2023 19:09:13 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69358729F;
-        Mon,  6 Feb 2023 16:09:12 -0800 (PST)
+        with ESMTP id S229490AbjBGAXw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Feb 2023 19:23:52 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E262630B35;
+        Mon,  6 Feb 2023 16:23:50 -0800 (PST)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1675728550;
+        s=2020; t=1675729429;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8yAyeAYV+VgEfaRthV7g03kEBlmbiN7ZIIKkNPlN0Mk=;
-        b=J7oOL144DDdPg9yab8M6kVXWC1iettyPJraV1KOO7HZHTQ4dFAD2yK8/3amhOI7TZM1BZG
-        VYit8F+2upl60lLia+SCTNs1E9TxmiWtZRbPIAu5M1wj3dymkL2nLd2OsCP1OLf0Ipvmtq
-        5PlXAeOm41z1xkDwRY7OsCbqLZq8LLSrrnAI95nDH8oY7C5EOIIwTeOw9+3pi4YF262nCm
-        1TcTuRqhHrGxNb8R0PS1/3KtTohOUkBGxtEIqb4SnxS5S4ouBa3mxGOkmwLwkcaMF7yAIU
-        5Xn9zIjS6LomPnmrZryJ4yLqGEpgpvOoRbq3kPv0lLffKWj09IFCtvw/xH8kNg==
+        bh=G9ZmF26/BBvXjCM+aGdXeWYOqvithncTyiLz92QXj2w=;
+        b=WllT0Ab36upe7bDg4v4dsbqxVTWSO/X44BU3PgsVOFBJjJbtJZaGL9kg0/DPVMc7y5Cbuy
+        sfevmripk6VVFwzsSGu4avA2I07WCzoPjnFN63GC8mRCi9GMN8Ka/Y3j48jBOz0DMLjH8W
+        Yk5h8lHbLlGcBLh39LH+lu951w8TtNkoQTzOjo7nO8lBDu+Mdu9KJ6hk8pc1vlA++R0VFw
+        RoCYHjz5sBCjB10PebWBeob1gt4ifbmD1BMaX6Y7+25w6cRV/4+TToCFORBhHhR2NkQIop
+        Gek+4KPVkfJ/Axb2Ji6YbBv7FCvPjB8Ve1DOpzrYIEEUZ6fERDKMs4mTIF+nYg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1675728550;
+        s=2020e; t=1675729429;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8yAyeAYV+VgEfaRthV7g03kEBlmbiN7ZIIKkNPlN0Mk=;
-        b=iHNwCbX6owL71cegBFXeidzrxbQIlSkqm+yfC8ZQb84+a6xTpjgWDXWTv6sYyXDZmFpy9u
-        PMe3jKj6UUYwe6Cg==
-To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        arjan@linux.intel.com
+        bh=G9ZmF26/BBvXjCM+aGdXeWYOqvithncTyiLz92QXj2w=;
+        b=SDni8O8mra+aLpXay3hdKHe66t8T5EitEJ1AdLD83KfZRvE4kFrSylwufkth1vArLhlueP
+        H4tDQMbWSl4sCNBg==
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Usama Arif <usama.arif@bytedance.com>, arjan@linux.intel.com
 Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
         hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
         paulmck@kernel.org, linux-kernel@vger.kernel.org,
@@ -43,23 +46,52 @@ Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
         hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
         pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
         punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
+        liangma@liangbit.com, Mario Limonciello <Mario.Limonciello@amd.com>
 Subject: Re: [PATCH v6 07/11] x86/smpboot: Disable parallel boot for AMD CPUs
-In-Reply-To: <20230202215625.3248306-8-usama.arif@bytedance.com>
+In-Reply-To: <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
 References: <20230202215625.3248306-1-usama.arif@bytedance.com>
  <20230202215625.3248306-8-usama.arif@bytedance.com>
-Date:   Tue, 07 Feb 2023 01:09:10 +0100
-Message-ID: <87sffiwd3t.ffs@tglx>
+ <b3d9fbbf-e760-5d1d-9182-44c144abd1bf@amd.com>
+ <d3ec562fd2e03c3aef9534f64915a14a8cb89ae1.camel@infradead.org>
+Date:   Tue, 07 Feb 2023 01:23:48 +0100
+Message-ID: <87pmamwcff.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 02 2023 at 21:56, Usama Arif wrote:
+On Sat, Feb 04 2023 at 15:40, David Woodhouse wrote:
+> On Fri, 2023-02-03 at 13:48 -0600, Kim Phillips wrote:
+>> Then:
+>>=20
+>> =C2=A0 - a Ryzen 3000 (Picasso A1/Zen+) notebook I have access to fails =
+to boot.
+>> =C2=A0 - Zen 2,3,4-based servers boot fine
+>> =C2=A0 - a Zen1-based server doesn't boot.
+>
+> I've changed it to use CPUID 0xb only if we're actually in x2apic mode,
+> which Boris tells me won't be the case on Zen1 because that doesn't
+> support X2APIC.
 
-> From: David Woodhouse <dwmw@amazon.co.uk>
+Correct.
 
--ENOCONTENT
+> When we're not in x2apic mode, we can use CPUID 0x1 because the 8 bits
+> of APIC ID we find there are perfectly sufficient.
 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Is that worth the trouble?
+
+> Even though we *can* support non-X2APIC processors, we *might* want to
+> play it safe and not go back that far; only enabling parallel bringup
+> on machines with X2APIC which roughly correlates with "lots of CPUs"
+> since that's where the benefit is.
+
+The parallel bringup code is complex enough already, so please don't
+optimize for the non-interesting case in the first place. When this has
+stabilized then the CPUID 0x1 mechanism can be added if anyone thinks
+it's interesting. KISS is still the best engineering principle.
+
+Thanks,
+
+        tglx
