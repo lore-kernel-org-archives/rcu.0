@@ -2,95 +2,108 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73309C636CC
-	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 13:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51F34C636CD
+	for <rcu@archiver.kernel.org>; Tue,  7 Feb 2023 14:23:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjBGNYI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Feb 2023 08:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        id S232545AbjBGOXG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Feb 2023 09:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbjBGNYH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Feb 2023 08:24:07 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AE9C643;
-        Tue,  7 Feb 2023 05:24:06 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9105AB818E8;
-        Tue,  7 Feb 2023 13:24:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 938BEC433EF;
-        Tue,  7 Feb 2023 13:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675776244;
-        bh=uCbshn+qe74HjI3bUDjFeLeAizMW+J2giZWltFU2N8Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V5Q0mkmSKbd1/aV8yViRxHmUCEasgQ4reB4ylLa6jCdCyYqE+SopkONicaxvqg/Cz
-         VojA7oLHuXB/rsjpFvoAGa1auvV9DlhdLij7mG8Eaol4SzQlQYkOA/YJ1TKzw2yE5A
-         7o4u9PTYa0JZO7jk4E53DkNhMomtFNcHXzdspJojui2OxEr0pft3RDTe88DE7qunxV
-         tY6k3RCuDaLGBuMnwZ/o0KDYuKCyDImvQuC2lF7HeLsiKYOQLbCNLfsJitTyZRMfN0
-         +F8yU2AaFjpRL0bFHSMj5G4HcCwIoxKYhKcORjyuWz5XBSAhiXBnD0Bt76vIAzRCsv
-         SurMb0/QoKbhQ==
-Date:   Tue, 7 Feb 2023 14:24:00 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Qiang Zhang <Qiang1.zhang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH] rcu/tree: Improve comments in rcu_report_qs_rdp()
-Message-ID: <Y+JQ8GX82Gn+7ZWe@lothringen>
-References: <20230204022051.2737724-1-joel@joelfernandes.org>
+        with ESMTP id S232447AbjBGOW4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Feb 2023 09:22:56 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2B115C86;
+        Tue,  7 Feb 2023 06:22:54 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1675779772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0yPHwM89WlB9ksDyM5+4x220tQNsF9BYJ5JjFvG3NnA=;
+        b=HLJGGT15vgpaLjvpgmwZfhjvsBW+gt8pqgIhwXidTp81MJDht8ARk5zJKTUUKOMV6rKbC5
+        z0tbuZz39cwWl6rU6VAypXS4JDigB2GoMZhNrhhnk6S8sMNRK00oINTc8i9/uiLf7982Kz
+        GXsaH/Ud43qRG+tnCKK8dhTm5EPPN44t8RSPcI2pTjeIzQzyS4sHbxO4/F6KxZQimIXbTA
+        KtPMv6Dw50vBdTlm6M5cTjw+T+qdzATbuTr2zCtTDQYCSekMsRP81RhzNeiyqjaVqXL8Io
+        kmsp0NLV2j+MA/60qxpa05i2M6YDAp0ssqm2dEwcnmaU5C1qY4b3lqXj13stVg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1675779772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0yPHwM89WlB9ksDyM5+4x220tQNsF9BYJ5JjFvG3NnA=;
+        b=BFDJbgRjxv6R2dl5QNUfFx0gfkUyK3n5Cze1Ilxv1quY+MI8JySPzOq8VP70f9D6Z7KhiD
+        lIzToCVXZyTgZGAg==
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Usama Arif <usama.arif@bytedance.com>, arjan@linux.intel.com
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com
+Subject: Re: [PATCH v6 01/11] x86/apic/x2apic: Fix parallel handling of
+ cluster_mask
+In-Reply-To: <d37f3af69df09ff542024ed93a37865b28dfa86e.camel@infradead.org>
+References: <20230202215625.3248306-1-usama.arif@bytedance.com>
+ <20230202215625.3248306-2-usama.arif@bytedance.com> <87a61qxtx0.ffs@tglx>
+ <d37f3af69df09ff542024ed93a37865b28dfa86e.camel@infradead.org>
+Date:   Tue, 07 Feb 2023 15:22:52 +0100
+Message-ID: <87y1p9v9kz.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230204022051.2737724-1-joel@joelfernandes.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Feb 04, 2023 at 02:20:50AM +0000, Joel Fernandes (Google) wrote:
-> Recent discussion triggered due to a patch linked below, from Qiang,
-> shed light on the need to accelerate from QS reporting paths.
-> 
-> Update the comments to capture this piece of knowledge.
-> 
-> Link: https://lore.kernel.org/all/20230118073014.2020743-1-qiang1.zhang@intel.com/
-> Cc: Qiang Zhang <Qiang1.zhang@intel.com>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> ---
->  kernel/rcu/tree.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 93eb03f8ed99..713eb6ca6902 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1983,7 +1983,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
->  	} else {
->  		/*
->  		 * This GP can't end until cpu checks in, so all of our
-> -		 * callbacks can be processed during the next GP.
-> +		 * callbacks can be processed during the next GP. Do
-> +		 * the acceleration from here otherwise there may be extra
-> +		 * grace period delays, as any accelerations from rcu_core()
-> +		 * or note_gp_changes() may happen only after the GP after the
-> +		 * current one has already started. Further, rcu_core()
-> +		 * only accelerates if RCU is idle (no GP in progress).
+David!
 
-Actually note_gp_changes() should take care of that. My gut feeling is that the
-acceleration in rcu_report_qs_rdp() only stands for:
+On Tue, Feb 07 2023 at 10:57, David Woodhouse wrote:
+> On Tue, 2023-02-07 at 00:20 +0100, Thomas Gleixner wrote:
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * On post boot hotplug itera=
+te over the present CPUs to handle the
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * case of partial clusters a=
+s they might be presented by
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * virtualization.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0for_each_present_cpu(cpu_i) {
+>
+>
+> So... if this CPU was *present* at boot time (and if any other CPU in
+> this cluster was present), it will already have a cluster_mask.
+>
+> Which means we get here in two cases:=20
+>
+>  =E2=80=A2 This CPU wasn't actually present (was just 'possible') at boot=
+ time.
+>    (Is that actually a thing that happens?)
 
-* callbacks that may be enqueued from an IRQ firing during the small window
-  between the RNP unlock in note_gp_changes() and the RNP lock in
-  rcu_report_qs_rdp()
+It happens on systems which support physical hotplug and AFAIK also
+virtualization has support for "physical" hotplug.
 
-* __note_gp_changes() got called even before from the GP kthread, and callbacks
-  got enqueued between that and rcu_core().
-  
-Thanks.
+The same is true the other way round on phsyical unplug. Then the CPU
+is removed from present but is still set in possible.
+
+>  =E2=80=A2 This CPU was present but no other CPU in this cluster was actu=
+ally
+>    brought up at boot time so the cluster_mask wasn't allocated.
+
+Correct.
+
+> The code looks right, I don't grok the comment about partial clusters
+> and virtualization, and would have worded it something along the above
+> lines?
+
+My worry was that virtualization might be able to phsyically hotplug
+partial clusters. Whether that's possible I don't know, but in context
+of virtualization I always assume the worst case.
+
+Thanks,
+
+        tglx
