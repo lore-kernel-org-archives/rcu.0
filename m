@@ -2,71 +2,97 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BA10C636CC
-	for <rcu@archiver.kernel.org>; Wed,  8 Feb 2023 03:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E619CC636CC
+	for <rcu@archiver.kernel.org>; Wed,  8 Feb 2023 05:09:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjBHDtB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Feb 2023 22:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        id S230421AbjBHFJp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Feb 2023 00:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjBHDs6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Feb 2023 22:48:58 -0500
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEEC6E83;
-        Tue,  7 Feb 2023 19:48:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1675828122;
-        bh=c4Ns5sTtRUOLfYsSbg4uDoMp4emFarBXyp4YoadLNBE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NbzMzf7JB3H5JzUfsCG/bjURPchuFMT5qSJ8Zxwswuhvv8sUMpal3mi5BvKNzSplM
-         2+N4BL843u4L2IJ5ErEefBK7fp9FIhN9kFZaJiik+N5lysAoK5csj09O2dW+t93Bg4
-         jcjAtJ5ucnFuukxp3EgP6ZkMgVv6XVYK7fE78WbbSu+jtiVOAJir1PO66bD8UsM12J
-         dK2N7CJOQuBgCaqZHPGJUGIeuir1DSj3loWnCyNCkptDubPSl0+mXVBql649Q0Nzcm
-         KjXNwNPj0LnMa0A0JixXhloLTL8ymJqY4AlEEG+1GF0TVG06/jL/9CQGCbal4I7qUV
-         fkS/LM5zYzXMg==
-Received: from [10.1.0.205] (192-222-188-97.qc.cable.ebox.net [192.222.188.97])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4PBQvt52MjzkYH;
-        Tue,  7 Feb 2023 22:48:42 -0500 (EST)
-Message-ID: <51b1d566-2a5a-763e-fb0f-cc3eb387b917@efficios.com>
-Date:   Tue, 7 Feb 2023 22:48:42 -0500
+        with ESMTP id S230420AbjBHFJm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Feb 2023 00:09:42 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0053842DD6;
+        Tue,  7 Feb 2023 21:09:38 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id q13so1248556qtx.2;
+        Tue, 07 Feb 2023 21:09:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wO7tEZofTjlP43exJot2Y++Vw18gZ4gFovpf48PsQGc=;
+        b=n0rBCYJwLAViHC0vKZG1IWX/zXQN//VStmp/Ze5evE6U/wLfbVERCRFw/PGa5oYY0s
+         Dw4ygJUzzhjNZjK+DylXSI9qD94ITbOMtqAaaRLWRGHLtinkU9ZNludb0soYt2gcIO3W
+         54tBCjGe0fTho99uur5+eN3F4VVV/9uaWfWLhuYU/RlsYjIaScexO32P5IoxBUFZmEQS
+         q/4FlyUve+sfy9R8v9x+zEJ+FfeqzbUKW3+ctWxO8fU2L5f7AMPvHOeB4EZKEqrTm1lC
+         +f+nUp3mx9R8WLLlmGTaUZLqqYazrFGgHkxMRf+Nv3F8spjE4zhc0FiLoDcTfSeDJlsY
+         MLew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wO7tEZofTjlP43exJot2Y++Vw18gZ4gFovpf48PsQGc=;
+        b=Gdv1DZacpCA912J8xrUIY95HWk0RkwPpZpyb4caYkcQaVJtLUFa215Qv56293C5mwE
+         Aks8I3rGzoeOVRtYK1WtK3FspQu4RiEVxdmQNs0hfDSqDvYZTQKQXWMXKWmbv4Fz2F8Z
+         eFo+sa1r4pZ9rgvJcxxkR7/kbIMeq9o8+3CcZVr67TiESHeEzmn8ffgAhsvgyeOCtCiD
+         xvFAX3lND6fjAg2+h/H6k0GevYNZ3tJF3QayjVIz48JPgSxM/Nu2sC9LG5wKoEMczvZU
+         l+XKlGWHC6tlzkARm5qSRzPkz/9d1+KEecF6zXZUP52btOzY5ST25M0p3I5IzHZIFNWa
+         eLPQ==
+X-Gm-Message-State: AO0yUKVvifLEyKam+amERFsExnexbUsmtzaItEnxz8mb61aBfM1yHXba
+        TDFv1AhQ1J43GWHB/rbm1wsPgbfWQQoivDHDRQ==
+X-Google-Smtp-Source: AK7set8rGj9BgfiWua/E8g1e53NYzhyhzDDRkJGMBLvVV7nsupdngWNOwx6yKZSnXUq1THVSEZMsowW8/gXcOz7QEp4=
+X-Received: by 2002:ac8:7f4b:0:b0:3ba:2794:e468 with SMTP id
+ g11-20020ac87f4b000000b003ba2794e468mr900989qtk.412.1675832976846; Tue, 07
+ Feb 2023 21:09:36 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v4] srcu: Clarify comments on memory barrier "E"
-Content-Language: en-US
-To:     paulmck@kernel.org, Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>, akiyks@gmail.com
-References: <20230128035902.1758726-1-joel@joelfernandes.org>
- <20230128182440.GA2948950@paulmck-ThinkPad-P17-Gen-1>
- <CAEXW_YTK1ejOcuNyAqJ3ibKKyfR21UYHRNa7jpWS_H71xpnTpg@mail.gmail.com>
- <20230129050904.GD2948950@paulmck-ThinkPad-P17-Gen-1>
- <20230208033831.GA3160511@paulmck-ThinkPad-P17-Gen-1>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20230208033831.GA3160511@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230207230436.2690891-1-usama.arif@bytedance.com> <20230207230436.2690891-7-usama.arif@bytedance.com>
+In-Reply-To: <20230207230436.2690891-7-usama.arif@bytedance.com>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Wed, 8 Feb 2023 00:09:25 -0500
+Message-ID: <CAMzpN2iejCnBeBdC6+92fUL2k8ZdAq_jEgXX+RSoGMhRZ0UBSA@mail.gmail.com>
+Subject: Re: [PATCH v7 6/9] x86/smpboot: Support parallel startup of secondary CPUs
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2023-02-07 22:38, Paul E. McKenney wrote:
-[...]
-> 
-> Except that it was pointed out to me that the Co-developed-by tags also
-> need Signed-off-by tags.  If there are no objections to the update shown
-> below, I will fix this on my next rebase.
+On Tue, Feb 7, 2023 at 6:10 PM Usama Arif <usama.arif@bytedance.com> wrote:
+>
+> From: Thomas Gleixner <tglx@linutronix.de>
+>
+> Rework the real-mode startup code to allow for APs to be brought up in
+> parallel. This is in two parts:
+>
+> 1. Introduce a bit-spinlock to prevent them from all using the real
+>    mode stack at the same time.
+>
+> 2. Avoid the use of global variables for passing per-CPU information to
+>    the APs.
+>
+> To achieve the latter, export the cpuid_to_apicid[] array so that each
+> AP can find its own per_cpu data (and thus initial_gs, initial_stack and
+> early_gdt_descr) by searching therein based on its APIC ID.
+>
+> Introduce a global variable 'smpboot_control' indicating to the AP how
+> it should find its APIC ID. For a serialized bringup, the APIC ID is
+> explicitly passed in the low bits of smpboot_control, while for parallel
+> mode there are flags directing the AP to find its APIC ID in CPUID leaf
+> 0x0b (for X2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
 
-No objection from me, thanks!
+For the serialized bringup case, it would be simpler to just put the
+cpu number in the lower bits instead of the APIC id, skipping the
+lookup.
 
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+--
+Brian Gerst
