@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB077C61DA4
-	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 15:42:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2381DC636D7
+	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 15:42:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjBIPml (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Feb 2023 10:42:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S231565AbjBIPmv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Feb 2023 10:42:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbjBIPmd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Feb 2023 10:42:33 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B94303F2
-        for <rcu@vger.kernel.org>; Thu,  9 Feb 2023 07:42:02 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id u10so1721910wmj.3
-        for <rcu@vger.kernel.org>; Thu, 09 Feb 2023 07:42:02 -0800 (PST)
+        with ESMTP id S231563AbjBIPmk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Feb 2023 10:42:40 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1024A643D9
+        for <rcu@vger.kernel.org>; Thu,  9 Feb 2023 07:42:05 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id f47-20020a05600c492f00b003dc584a7b7eso4166605wmp.3
+        for <rcu@vger.kernel.org>; Thu, 09 Feb 2023 07:42:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XKydoXD7DOLwoETiq1rVpdNfhGCr3/VFLGt4p4rSeXA=;
-        b=2CVH9cp3pr0dhjoEe5Lh7i3BSbemsRr/OqAzKsploHApi7J03BEPBfBch4bLbqTSIA
-         pjBpDpcdmOx7wc551tUDnwQOY6GyXzohRPqZ3VpIcB0CvhrwGpteU67ei1o2yD6q2eoq
-         RxrEFY/smCKBaIyQa/vshAcR3v1M/3Y8CyZuY4LWwEjDq/KAxxSGVypXyMSXwS4Y6TKG
-         M553wANc1uTwq1xbrCGxwwZrb3j381XzlyCd7cOS50+ujMsP4WKzO2/MfDzSIGGDwq6R
-         DOFaT97zoZP3cBxt7kpar0m0CJVluRA+D1wcwNrF/zaNlwcFQ7IAp1MlcUzkkqgTz8gL
-         uCrw==
+        bh=L+woZryxcmbb99mupmnna5okozeg16DDHF5Mj8G3upM=;
+        b=gih0aal19S9nSzdM2EI39YXMR5nl2xJGmtK0jzTE06zlTaPK55Qd3mmQbuA+cqaMfi
+         UKiLU5aZy7tn5ia+NmqWiU2EIpJXjm+fDDGunmntxWjZlIjdBS/kvJd5YQuENxMxYm+c
+         AFCdDwoZNSl8QxCX/2NWvs67wm2cgNRqbNfWyER2oudQkCZDjotapvk0Oq2ROv0FFMgP
+         XmfClELw1Wf9sqYOdjcclv1gsharUtQT3NQ8ATagCEfGaKpyiP0YzWR6Cmxn3OclvS6T
+         5EBXLwFqCjBILNmTwK63SbEhYwRJSJC+ssLE0iWqSWJRAAZbpJuQ+VdlW+sY17OQEiAl
+         oASQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XKydoXD7DOLwoETiq1rVpdNfhGCr3/VFLGt4p4rSeXA=;
-        b=UYy7omNISpe6dTC2NaC89tRPHSx//PwnPMMoXZi9Afoyv24Z9SThTp/M1hiF0xIVAN
-         Rb59dQxIs7SCJqYsoVwuy0y65YyYCVjXhq0Fu12uBg8nEKQwJy+wA84p2p/OESFc1het
-         9MVafASamyCO4TwNh1jYBOdmSRfUVN6zI3WTn5DYG/4YU3doCjVel9cAPbR01vZUFDP9
-         pZmZ96BUGuRBg20sbn5ly2WYAndPfMFywkXtE9g3QB6L2JKzEdaF/bguFeV8QOaRBPQ9
-         kvU+eyiHKgIDWWC3RMu2R4ibVI1XyIuqmEPcfMzwB8VGMFEBBheojqxTCsY99h7uxrEA
-         ZEVQ==
-X-Gm-Message-State: AO0yUKWVHMB+u4vZ2dnCRJKnRYAjAVV38bHXmqmVUxvuId0UlnNYJ8LJ
-        /FdsrOsVZZP6ayuVT3p225nevw==
-X-Google-Smtp-Source: AK7set9HcQn5njNfZ89WKBa5SFul8SUdp0kexugSeUAJLkuJUAocQZDht+khT1NSCYygFgM0B3hlaA==
-X-Received: by 2002:a05:600c:1713:b0:3da:fb3c:c1ab with SMTP id c19-20020a05600c171300b003dafb3cc1abmr10420659wmn.0.1675957321622;
-        Thu, 09 Feb 2023 07:42:01 -0800 (PST)
+        bh=L+woZryxcmbb99mupmnna5okozeg16DDHF5Mj8G3upM=;
+        b=wtmQIE92JSXTZG4cOhfid5sGdFaLNv1tBmbSjJGxc6SQbksNuphrH53gLSWIHzxT1A
+         tmCQGgWADTS6W9m/P/g+hYaMBb7vVMIJ87ep2DDUSxixEW7DIRm79kEP08vcttFVu9TD
+         4i+cyBXRzo02t+QYbukFJyuZ+92NarJstCIIedPYSFr5X/cKeSFT+GsQBaWT4nn0RbT9
+         AYnVR0uZ9O94yAwj96Bbs5Gu1SnK1dPATtDlIrltwkt3x4wElS3UzGk2lMLYJYV9rawo
+         NvR7jXuDrWF5qoJ/9X1Sj2WIQyfA5718gl1/tpbTcrYpAEPLLnp98rfxJMOuyFxyDOAI
+         hevg==
+X-Gm-Message-State: AO0yUKXWlohQ9R+Mw52EV9woMahFqS0i3l0gVOsjfWh2+X9mUbdD3YIR
+        zkzj4B93NeuWUQ4yKngrZHhfAQ==
+X-Google-Smtp-Source: AK7set/sWgTNchnuaYWjizrQWtBx268zZySwi/F8bUcd1EeZGHrZZweHAtzLqOUWHa4cn1YWsuFIWg==
+X-Received: by 2002:a05:600c:3298:b0:3dd:1c45:a36d with SMTP id t24-20020a05600c329800b003dd1c45a36dmr4683343wmp.27.1675957323675;
+        Thu, 09 Feb 2023 07:42:03 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:8009:2525:9580:8db2])
-        by smtp.gmail.com with ESMTPSA id y6-20020a05600c364600b003df7b40f99fsm5099754wmq.11.2023.02.09.07.42.00
+        by smtp.gmail.com with ESMTPSA id y6-20020a05600c364600b003df7b40f99fsm5099754wmq.11.2023.02.09.07.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 07:42:01 -0800 (PST)
+        Thu, 09 Feb 2023 07:42:03 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com
 Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
@@ -61,9 +61,9 @@ Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         simon.evans@bytedance.com, liangma@liangbit.com,
         David Woodhouse <dwmw@amazon.co.uk>,
         Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v8 2/9] cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
-Date:   Thu,  9 Feb 2023 15:41:49 +0000
-Message-Id: <20230209154156.266385-3-usama.arif@bytedance.com>
+Subject: [PATCH v8 4/9] x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+Date:   Thu,  9 Feb 2023 15:41:51 +0000
+Message-Id: <20230209154156.266385-5-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230209154156.266385-1-usama.arif@bytedance.com>
 References: <20230209154156.266385-1-usama.arif@bytedance.com>
@@ -75,60 +75,70 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-Instead of relying purely on the special-case wrapper in bringup_cpu()
-to pass the idle thread to __cpu_up(), expose idle_thread_get() so that
-the architecture code can obtain it directly when necessary.
+When bringing up a secondary CPU from do_boot_cpu(), the warm reset flag
+is set in CMOS and the starting IP for the trampoline written inside the
+BDA at 0x467. Once the CPU is running, the CMOS flag is unset and the
+value in the BDA cleared.
 
-This will be useful when the existing __cpu_up() is split into multiple
-phases, only *one* of which will actually need the idle thread.
+To allow for parallel bringup of CPUs, add a reference count to track the
+number of CPUs currently bring brought up, and clear the state only when
+the count reaches zero.
 
-If the architecture code is to register its new pre-bringup states with
-the cpuhp core, having a special-case wrapper to pass extra arguments is
-non-trivial and it's easier just to let the arch register its function
-pointer to be invoked with the standard API.
+Since the RTC spinlock is required to write to the CMOS, it can be used
+for mutual exclusion on the refcount too.
 
+[Usama Arif: fixed rebase conflict]
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 ---
- include/linux/smpboot.h | 7 +++++++
- kernel/smpboot.h        | 2 --
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ arch/x86/kernel/smpboot.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/smpboot.h b/include/linux/smpboot.h
-index 9d1bc65d226c..3862addcaa34 100644
---- a/include/linux/smpboot.h
-+++ b/include/linux/smpboot.h
-@@ -5,6 +5,13 @@
- #include <linux/types.h>
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 55cad72715d9..3a793772a2aa 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -121,17 +121,20 @@ int arch_update_cpu_topology(void)
+ 	return retval;
+ }
  
- struct task_struct;
 +
-+#ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
-+struct task_struct *idle_thread_get(unsigned int cpu);
-+#else
-+static inline struct task_struct *idle_thread_get(unsigned int cpu) { return NULL; }
-+#endif
++static unsigned int smpboot_warm_reset_vector_count;
 +
- /* Cookie handed to the thread_fn*/
- struct smpboot_thread_data;
+ static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
+ {
+ 	unsigned long flags;
  
-diff --git a/kernel/smpboot.h b/kernel/smpboot.h
-index 34dd3d7ba40b..60c609318ad6 100644
---- a/kernel/smpboot.h
-+++ b/kernel/smpboot.h
-@@ -5,11 +5,9 @@
- struct task_struct;
+ 	spin_lock_irqsave(&rtc_lock, flags);
+-	CMOS_WRITE(0xa, 0xf);
++	if (!smpboot_warm_reset_vector_count++) {
++		CMOS_WRITE(0xa, 0xf);
++		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) = start_eip >> 4;
++		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = start_eip & 0xf;
++	}
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+-	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) =
+-							start_eip >> 4;
+-	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) =
+-							start_eip & 0xf;
+ }
  
- #ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
--struct task_struct *idle_thread_get(unsigned int cpu);
- void idle_thread_set_boot_cpu(void);
- void idle_threads_init(void);
- #else
--static inline struct task_struct *idle_thread_get(unsigned int cpu) { return NULL; }
- static inline void idle_thread_set_boot_cpu(void) { }
- static inline void idle_threads_init(void) { }
- #endif
+ static inline void smpboot_restore_warm_reset_vector(void)
+@@ -143,10 +146,12 @@ static inline void smpboot_restore_warm_reset_vector(void)
+ 	 * to default values.
+ 	 */
+ 	spin_lock_irqsave(&rtc_lock, flags);
+-	CMOS_WRITE(0, 0xf);
++	if (!--smpboot_warm_reset_vector_count) {
++		CMOS_WRITE(0, 0xf);
++		*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
++	}
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ 
+-	*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
+ }
+ 
+ /*
 -- 
 2.25.1
 
