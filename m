@@ -2,426 +2,245 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B43D0C05027
-	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 10:22:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40CFCC61DA4
+	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 10:23:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjBIKWe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Feb 2023 05:22:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S229729AbjBIKXH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Feb 2023 05:23:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjBIKWd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Feb 2023 05:22:33 -0500
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935DF18B1A;
-        Thu,  9 Feb 2023 02:22:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675938151; x=1707474151;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1kt6/qxSHntuB8D77RMGIqs981Q8ssvwj2WUj2znR1A=;
-  b=M5p3BqMcIs3Inyy8pjRaorK9cq43cAt1K0vbrJEGHi4P3mFQ4ewdoDej
-   gBIWgKX1G9mOQnofib22JdTJr5Q1LtmP+xRmMobGG5ZtwyyEsmarsJfgd
-   7fRNI7Rb1XoQwio/p1rpONWQZeUIbcd+NkSLg7Yt3EvhNm59Qpr73QoEv
-   OhLASjnFV1mxz1dJfQG0ffSvMoxMN7xHvtk1ejxcoAX9M15XiFXalbLNV
-   J9ghZI0wvlOiXx0r4gmSmTB77fj1wT1r9yqebISA1nfnXxlR3Lw0BJnvZ
-   RxMmoE/MwS2jwZM9mjRkHWTjPOCjZe+TpMRFyvJ+XQIpmwhXlssAV+BZ9
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="309718548"
-X-IronPort-AV: E=Sophos;i="5.97,283,1669104000"; 
-   d="scan'208";a="309718548"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2023 02:22:31 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="699995766"
-X-IronPort-AV: E=Sophos;i="5.97,283,1669104000"; 
-   d="scan'208";a="699995766"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2023 02:22:27 -0800
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, qiuxu.zhuo@intel.com
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rcu: Keeping rcu-related kthreads running on housekeeping CPUS
-Date:   Thu,  9 Feb 2023 18:27:30 +0800
-Message-Id: <20230209102730.974465-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229721AbjBIKXH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Feb 2023 05:23:07 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065D966EDB;
+        Thu,  9 Feb 2023 02:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fjp7fS59/GBPxpVMB6rN8JjZAqpxn+PQiMulnHgjMf8=; b=oT6pSlsOiRty5NjsN4B3gZjIE5
+        8SYyjzecTZRSAUIjDjTOyixzxZE+BdL6yi1SfDKOz/CezLrjjsgXTlIzRbZpUSzdOIfn9qjYltnp0
+        6DRtznvMNt2H4Z7YjhD5duadpsjjAnpw1pC7GukEE+Aq/amSuF0/xffl0n+ScGMv7ozlXw4weAPzh
+        SxyQxeo7iDpdXGE5vE8fNfqb0E9V/SHeYoTCg//yeAu47EEx5ZcR51B/TzfNo1b56J4qX13qAEdq6
+        NzX8pluxNdjaWbjqDw0rHHSi4RjpBInsSpT4RgutqTQhBSOvN3BC+CXc1heWYsamj4eu+mwgETn4L
+        ERiTR3MQ==;
+Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pQ44V-0026Qa-KP; Thu, 09 Feb 2023 10:22:32 +0000
+Message-ID: <053b048a507610c73a1dceb6ba1ac4b27ca03718.camel@infradead.org>
+Subject: Re: [External] Re: [PATCH v7 0/9] Parallel CPU bringup for x86_64
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Usama Arif <usama.arif@bytedance.com>, paulmck@kernel.org,
+        tglx@linutronix.de
+Cc:     kim.phillips@amd.com, arjan@linux.intel.com, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        x86@kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com
+Date:   Thu, 09 Feb 2023 10:22:30 +0000
+In-Reply-To: <4377e0bc-5954-c0c3-0daa-24a4427c144e@bytedance.com>
+References: <20230207230436.2690891-1-usama.arif@bytedance.com>
+         <20230209035300.GA3216394@paulmck-ThinkPad-P17-Gen-1>
+         <8e2f03e2-9517-aeb4-df60-b36ef3ff3a75@bytedance.com>
+         <79fa4d65a0d906dd42c41324dfe065aa8ad06d6f.camel@infradead.org>
+         <4377e0bc-5954-c0c3-0daa-24a4427c144e@bytedance.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-M746ZnUmolNViPf2veW+"
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For kernels built with CONFIG_NO_HZ_FULL=y and CONFIG_RCU_NOCB_CPU=y,
-when passing cpulist to "isolcpus=", "nohz_full=" and "rcu_nocbs="
-bootparams, after system starting, the rcu-related kthreads(include
-rcu_gp, rcuog*, rcuop* kthreads etc) will running on housekeeping
-CPUs, but for cpulist contains CPU0, the result will deferent, these
-rcu-related kthreads will be restricted to running on CPU0.
 
-Although invoke kthread_create() to spwan rcu-related kthreads and
-when it's starting, invoke set_cpus_allowed_ptr() to allowed cpumaks
-is housekeeping_cpumask(HK_TYPE_KTHREAD), but due to these rcu-related
-kthreads are created before starting other CPUS, that is to say, at
-this time, only CPU0 is online, when these rcu-related kthreads running
-and set allowed cpumaks is housekeeping cpumask, if find that only CPU0
-is online and CPU0 exists in "isolcpus=", "nohz_full=" and "rcu_nocbs="
-bootparams, invoke set_cpus_allowed_ptr() will return error.
+--=-M746ZnUmolNViPf2veW+
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-set_cpus_allowed_ptr()
- ->__set_cpus_allowed_ptr()
-   ->__set_cpus_allowed_ptr_locked
-     {
-                bool kthread = p->flags & PF_KTHREAD;
-                ....
-                if (kthread || is_migration_disabled(p))
-                        cpu_valid_mask = cpu_online_mask;
-                ....
-                dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, ctx->new_mask);
-                if (dest_cpu >= nr_cpu_ids) {
-                        ret = -EINVAL;
-                        goto out;
-                }
-                ....
-     }
+T24gVGh1LCAyMDIzLTAyLTA5IGF0IDEwOjE5ICswMDAwLCBVc2FtYSBBcmlmIHdyb3RlOgo+IAo+
+IAo+IE9uIDA5LzAyLzIwMjMgMTA6MDYsIERhdmlkIFdvb2Rob3VzZSB3cm90ZToKPiA+IE9uIFRo
+dSwgMjAyMy0wMi0wOSBhdCAwOTo0OSArMDAwMCwgVXNhbWEgQXJpZiB3cm90ZToKPiA+ID4gCj4g
+PiA+IC0tLSBhL2FyY2gveDg2L2tlcm5lbC9zbXBib290LmMKPiA+ID4gKysrIGIvYXJjaC94ODYv
+a2VybmVsL3NtcGJvb3QuYwo+ID4gPiBAQCAtMTA4MCw2ICsxMDgwLDcgQEAgd2FrZXVwX2NwdV92
+aWFfaW5pdF9ubWkoaW50IGNwdSwgdW5zaWduZWQgbG9uZwo+ID4gPiBzdGFydF9pcCwgaW50IGFw
+aWNpZCwKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgd2FrZXVwX2NwdTBfbm1p
+LCAwLCAid2FrZV9jcHUwIik7Cj4gPiA+IAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKCFi
+b290X2Vycm9yKSB7Cj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGluaXRpYWxf
+Z3MgPSBwZXJfY3B1X29mZnNldChjcHUpOwo+ID4gCj4gPiBUaGF0J3MgZm9yIDY0LWJpdC4KPiA+
+IAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVuYWJsZV9zdGFydF9j
+cHUwID0gMTsKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqY3B1MF9u
+bWlfcmVnaXN0ZXJlZCA9IDE7Cj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgaWQgPSBhcGljLT5kZXN0X21vZGVfbG9naWNhbCA/IGNwdTBfbG9naWNhbF9hcGljaWQgOgo+
+ID4gPiBhcGljaWQ7Cj4gPiA+IEBAIC0xMTg4LDEwICsxMTg5LDE0IEBAIHN0YXRpYyBpbnQgZG9f
+Ym9vdF9jcHUoaW50IGFwaWNpZCwgaW50IGNwdSwKPiA+ID4gc3RydWN0IHRhc2tfc3RydWN0ICpp
+ZGxlLAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJvb3RfZXJyb3Ig
+PSBhcGljLT53YWtldXBfc2Vjb25kYXJ5X2NwdV82NChhcGljaWQsCj4gPiA+IHN0YXJ0X2lwKTsK
+PiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgIGVsc2UgaWYgKGFwaWMtPndha2V1cF9zZWNvbmRhcnlf
+Y3B1KQo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJvb3RfZXJyb3Ig
+PSBhcGljLT53YWtldXBfc2Vjb25kYXJ5X2NwdShhcGljaWQsIHN0YXJ0X2lwKTsKPiA+ID4gLcKg
+wqDCoMKgwqDCoCBlbHNlCj4gPiA+ICvCoMKgwqDCoMKgwqAgZWxzZSB7Cj4gPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmKCFjcHUpIHsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVhcmx5X2dkdF9kZXNjci5hZGRyZXNzID0gKHVu
+c2lnbmVkIGxvbmcpZ2V0X2NwdV9nZHRfcncoY3B1KTsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGluaXRpYWxfc3RhY2vCoCA9IGlkbGUtPnRocmVh
+ZC5zcDsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQo+ID4gCj4gPiBBbmQg
+dGhhdCdzIDMyLWJpdC4KPiA+IAo+ID4gVGhlc2Ugd2VyZSBwcmV2aW91c2x5IGRvbmUgaW4gY29t
+bW9uX2NwdV91cCgpIG9yIGRvX2Jvb3RfY3B1KCksIHdoaWNoCj4gPiBtZWFucyB0aGV5IHdlcmUg
+ZG9uZSBub3Qgb25seSBmb3IgdGhlIHdha2V1cF9jcHVfdmlhX2luaXRfbm1pKCkgY29kZQo+ID4g
+cGF0aCwgYnV0IGFsc28gd2hlbiB3ZSBjYWxsIGFwaWMtPndha2V1cF9zZWNvbmRhcnlfY3B1KCkg
+KG9yIF82NCgpKSBmb3IKPiA+IHRoZSBlc290ZXJpYyBVVi9OdW1hQ29ubmVjdCBtYWNoaW5lcy4K
+PiA+IAo+ID4gVGhhbmtzIGZvciBkaWFnbm9zaW5nIGl0IHNvIHF1aWNrbHk7IEknbGwgd29yayB1
+cCBhIHN1YnRseSBkaWZmZXJlbnQKPiA+IGZpeC4KPiA+IAo+IAo+IFllYWgsIHdhcyBqdXN0IGEg
+aGFja3kgZml4IHdoaWxlIEkgd2FzIHRyeWluZyB0byBmaWd1cmUgb3V0IHRoZSBpc3N1ZS4KPiAK
+PiBkb19ib290X2NwdSBpcyBvbmx5IGNhbGxlZCBpbiBjcHUwIGluIGhvdHBsdWcgY2FzZSwgc28g
+SSB0aGluayB0aGlzIGEKPiBtdWNoIGJldHRlciBkaWZmOgo+IAo+IGRpZmYgLS1naXQgYS9hcmNo
+L3g4Ni9rZXJuZWwvc21wYm9vdC5jIGIvYXJjaC94ODYva2VybmVsL3NtcGJvb3QuYwo+IGluZGV4
+IDNlYzUxODJkOTY5OC4uZjdhZTgyOTY5ZWU0IDEwMDY0NAo+IC0tLSBhL2FyY2gveDg2L2tlcm5l
+bC9zbXBib290LmMKPiArKysgYi9hcmNoL3g4Ni9rZXJuZWwvc21wYm9vdC5jCj4gQEAgLTExMzYs
+MTMgKzExMzYsMTYgQEAgc3RhdGljIGludCBkb19ib290X2NwdShpbnQgYXBpY2lkLCBpbnQgY3B1
+LCAKPiBzdHJ1Y3QgdGFza19zdHJ1Y3QgKmlkbGUsCj4gwqDCoMKgwqDCoMKgwqDCoCBpZGxlLT50
+aHJlYWQuc3AgPSAodW5zaWduZWQgbG9uZyl0YXNrX3B0X3JlZ3MoaWRsZSk7Cj4gwqDCoMKgwqDC
+oMKgwqDCoCBpbml0aWFsX2NvZGUgPSAodW5zaWduZWQgbG9uZylzdGFydF9zZWNvbmRhcnk7Cj4g
+Cj4gLcKgwqDCoMKgwqDCoCBpZiAoSVNfRU5BQkxFRChDT05GSUdfWDg2XzMyKSkgewo+ICvCoMKg
+wqDCoMKgwqAgaWYgKElTX0VOQUJMRUQoQ09ORklHX1g4Nl8zMikgfHwgIWNwdSkgewo+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVhcmx5X2dkdF9kZXNjci5hZGRyZXNzID0gKHVu
+c2lnbmVkIAo+IGxvbmcpZ2V0X2NwdV9nZHRfcncoY3B1KTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBpbml0aWFsX3N0YWNrwqAgPSBpZGxlLT50aHJlYWQuc3A7Cj4gwqDCoMKg
+wqDCoMKgwqDCoCB9IGVsc2UgaWYgKCFkb19wYXJhbGxlbF9icmluZ3VwKSB7Cj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc21wYm9vdF9jb250cm9sID0gU1RBUlRVUF9TRUNPTkRB
+UlkgfCBhcGljaWQ7Cj4gwqDCoMKgwqDCoMKgwqDCoCB9Cj4gCj4gK8KgwqDCoMKgwqDCoCBpZiAo
+IWNwdSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbml0aWFsX2dzID0gcGVyX2Nw
+dV9vZmZzZXQoY3B1KTsKPiArCj4gwqDCoMKgwqDCoMKgwqDCoCAvKiBFbmFibGUgdGhlIGVzcGZp
+eCBoYWNrIGZvciB0aGlzIENQVSAqLwo+IMKgwqDCoMKgwqDCoMKgwqAgaW5pdF9lc3BmaXhfYXAo
+Y3B1KTsKPiAKPiAKPiAKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBi
+b290X2Vycm9yID0gd2FrZXVwX2NwdV92aWFfaW5pdF9ubWkoY3B1LCBzdGFydF9pcCwgYXBpY2lk
+LAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgY3B1MF9ubWlfcmVnaXN0ZXJlZCk7Cj4gPiA+IC0KPiA+ID4gK8KgwqDCoMKgwqDCoCB9Cj4g
+PiA+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gYm9vdF9lcnJvcjsKPiA+ID4gwqDCoCB9Cj4g
+PiA+IAo+ID4gCgoKSSdtIHRyeWluZyB0byBmaW5kIHRoZSBhY3R1YWwgc3RhcnR1cCBwYXRoIHRo
+YXQgQ1BVMCB0YWtlcyB3aGVuIHdva2VuCmJ5IGFuIE5NSS4KCkNhbid0IHdlIG1ha2UgaXQgdGFr
+ZSB0aGUgc2Vjb25kYXJ5X3N0YXJ0dXBfNjQgcGF0aCB0aGF0IGFjdHVhbGx5CmNoZWNrcyBzbXBi
+b290X2NvbnRyb2wsIHNlZXMgdGhlIFNUQVJUVVBfU0VDT05EQVJZIGZsYWcgc2V0LCBhbmQgdGhl
+bgpnZXRzIGFsbCB0aGVzZSB0aGluZ3MgZnJvbSB0aGUgcGVyLWNwdSBkYXRhIGFzICRERUlUWSAo
+d2VsbCwgVGhvbWFzKQppbnRlbmRlZD8KCg==
 
-At this time, only CPU0 is set in the cpu_online_mask, the ctx->new_mask
-is housekeeping cpumask and not contains CPU0, this will result dest_cpu
-is illegal cpu value, the set_cpus_allowed_ptr() will return -EINVAL and
-failed to set housekeeping cpumask.
 
-This commit therefore add additional cpus_allowed_ptr() call in CPU hotplug
-path. and reset the CPU affinity of rcuboost, rcuog, rcuop kthreads after
-all other CPUs are online.
+--=-M746ZnUmolNViPf2veW+
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjA5MTAyMjMwWjAvBgkqhkiG9w0BCQQxIgQgAFCww9fH
+doSU8smmmE9lz49w+NxZGJpHvXhz8jBd3DUwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB5pHJnTxaidxgdvtWPQrSAG/Or8YVJQdBQ
+GWCbi16R+aOQn0HcERE1gC6LgERGQBmPdfhjVHQWUy88YvLeVyVoiD6GRAx7zWnBlcRjMwwI24km
+m693ON1IGffZu9gw2O3AnBxYFczX3NHpboKl0ac7Pdl7xfK59uv+gvkpXOGhLzXY89H0eNE7iUGj
+cUpW101UEPKq+My6WI9qoGhAzl4q9UEXJsQQGB+9FktQE12gHHo15pgjfSOSp6Y0PHho1aR7hupE
+HuIOjL06Vb2Ra57rA8lW8szugGZ3Keivpm5gBKrDhlgKtLDuX8fHDzg5RL2lql7qWgEI0rwL8WKn
+19+HOFt+LUdM9A77doZDBvhn9DjjTKafFpelzYBlcDeEj2zBNQYWWGPMpM2cULXfdpAin9LkN8wL
+EkJPdYpK0h2dBDDinVq0t+/ohZyH5WZwXIogn86aWIeiRqER1JWkXwUyieqxfOlixQaFBi/p4Rc8
+Q0M1GH0f38wgoE08iDCrhwv1zmyF84e5Dy8yb2hv3Y1+ooN2KEsFjY8deL58pYAu5HTgwFLu9LcO
+EJrmArX+8ZH1T9B8lkeJRL6D2BZoh3FOLMrE2CNose8J0Fe0l5DJf5q9pjs8TmmhtksD4yiwHTrQ
+KaqPVknDvDREgS/PKXj03acu3k//zi42usfaSvwU/QAAAAAAAA==
 
- runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4"
- bootparams="console=ttyS0 isolcpus=0,1 nohz_full=0,1 rcu_nocbs=0,1" -d
 
- root@qemux86-64:~# ps -eo pid,psr,comm | grep rcu
-    3   0 rcu_gp
-    6   0 kworker/0:0-rcu_gp
-   12   0 rcu_tasks_kthread
-   13   0 rcu_tasks_rude_kthread
-   14   0 rcu_tasks_trace_kthread
-   16   0 rcu_preempt
-   17   0 rcuog/0
-   18   0 rcuop/0
-   19   2 rcub/0
-   20   0 rcu_exp_gp_kthread_worker
-   21   0 rcu_exp_par_gp_kthread_worker
-   29   0 rcuop/1
-   35   0 rcuog/2
-   36   0 rcuop/2
-   42   2 rcuop/3
- root@qemux86-64:~#
- root@qemux86-64:~#
- root@qemux86-64:~#
- root@qemux86-64:~# cat /proc/16/status | grep Cpus
- Cpus_allowed:   1
- Cpus_allowed_list:      0
-
- Applay this patch:
- 
- root@qemux86-64:/# ps -eo pid,psr,comm | grep rcu
-    3   0 rcu_gp
-    6   0 kworker/0:0-rcu_gp
-   12   3 rcu_tasks_kthread
-   13   2 rcu_tasks_rude_kthread
-   14   3 rcu_tasks_trace_kthread
-   16   3 rcu_preempt
-   17   3 rcuog/0
-   18   2 rcuop/0
-   19   2 rcub/0
-   20   3 rcu_exp_gp_kthread_worker
-   21   0 rcu_exp_par_gp_kthread_worker
-   29   3 rcuop/1
-   35   0 rcuog/2
-   36   0 rcuop/2
-   42   2 rcuop/3
- root@qemux86-64:/# cat /proc/16/status | grep Cpus
- Cpus_allowed:   c
- Cpus_allowed_list:      2-3
-
- kernel/rcu/rcu.h         |  4 +++
- kernel/rcu/tasks.h       | 26 +++++++++++++----
- kernel/rcu/tree.c        | 61 +++++++++++++++++++++++++++++++++++++---
- kernel/rcu/tree.h        |  1 -
- kernel/rcu/tree_nocb.h   | 18 +++++++++++-
- kernel/rcu/tree_plugin.h |  9 ------
- 6 files changed, 99 insertions(+), 20 deletions(-)
-
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index a3adcf9a9919..1cad82e93304 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -503,8 +503,10 @@ void rcu_async_relax(void);
- void rcupdate_announce_bootup_oddness(void);
- #ifdef CONFIG_TASKS_RCU_GENERIC
- void show_rcu_tasks_gp_kthreads(void);
-+void rcu_tasks_generic_setaffinity(int cpu);
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
- static inline void show_rcu_tasks_gp_kthreads(void) {}
-+void rcu_tasks_generic_setaffinity(int cpu) {}
- #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
- void rcu_request_urgent_qs_task(struct task_struct *t);
- #endif /* #else #ifdef CONFIG_TINY_RCU */
-@@ -597,6 +599,7 @@ static inline int rcu_get_gp_kthreads_prio(void) { return 0; }
- static inline void rcu_fwd_progress_check(unsigned long j) { }
- static inline void rcu_gp_slow_register(atomic_t *rgssp) { }
- static inline void rcu_gp_slow_unregister(atomic_t *rgssp) { }
-+void rcu_kthread_setaffinity(struct task_struct *tsk, int outgoing) { }
- #else /* #ifdef CONFIG_TINY_RCU */
- bool rcu_dynticks_zero_in_eqs(int cpu, int *vp);
- unsigned long rcu_get_gp_seq(void);
-@@ -607,6 +610,7 @@ void show_rcu_gp_kthreads(void);
- int rcu_get_gp_kthreads_prio(void);
- void rcu_fwd_progress_check(unsigned long j);
- void rcu_force_quiescent_state(void);
-+void rcu_kthread_setaffinity(struct task_struct *tsk, int outgoing);
- extern struct workqueue_struct *rcu_gp_wq;
- #ifdef CONFIG_RCU_EXP_KTHREAD
- extern struct kthread_worker *rcu_exp_gp_kworker;
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index baf7ec178155..cebc02198ef7 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -545,10 +545,6 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- {
- 	struct rcu_tasks *rtp = arg;
- 
--	/* Run on housekeeping CPUs by default.  Sysadm can move if desired. */
--	housekeeping_affine(current, HK_TYPE_RCU);
--	WRITE_ONCE(rtp->kthread_ptr, current); // Let GPs start!
--
- 	/*
- 	 * Each pass through the following loop makes one check for
- 	 * newly arrived callbacks, and, if there are some, waits for
-@@ -586,9 +582,11 @@ static void __init rcu_spawn_tasks_kthread_generic(struct rcu_tasks *rtp)
- {
- 	struct task_struct *t;
- 
--	t = kthread_run(rcu_tasks_kthread, rtp, "%s_kthread", rtp->kname);
-+	t = kthread_create(rcu_tasks_kthread, rtp, "%s_kthread", rtp->kname);
- 	if (WARN_ONCE(IS_ERR(t), "%s: Could not start %s grace-period kthread, OOM is now expected behavior\n", __func__, rtp->name))
- 		return;
-+	WRITE_ONCE(rtp->kthread_ptr, t);
-+	wake_up_process(t);
- 	smp_mb(); /* Ensure others see full kthread. */
- }
- 
-@@ -1969,6 +1967,24 @@ void __init rcu_init_tasks_generic(void)
- 	rcu_tasks_initiate_self_tests();
- }
- 
-+void rcu_tasks_generic_setaffinity(int cpu)
-+{
-+#ifdef CONFIG_TASKS_RCU
-+	if (rcu_tasks.kthread_ptr)
-+		rcu_kthread_setaffinity(rcu_tasks.kthread_ptr, cpu);
-+#endif
-+
-+#ifdef CONFIG_TASKS_RUDE_RCU
-+	if (rcu_tasks_rude.kthread_ptr)
-+		rcu_kthread_setaffinity(rcu_tasks_rude.kthread_ptr, cpu);
-+#endif
-+
-+#ifdef CONFIG_TASKS_TRACE_RCU
-+	if (rcu_tasks_trace.kthread_ptr)
-+		rcu_kthread_setaffinity(rcu_tasks_trace.kthread_ptr, cpu);
-+#endif
-+}
-+
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
- static inline void rcu_tasks_bootup_oddness(void) {}
- #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ee27a03d7576..d1575d74346e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -154,6 +154,8 @@ static bool rcu_rdp_cpu_online(struct rcu_data *rdp);
- static bool rcu_init_invoked(void);
- static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf);
- static void rcu_init_new_rnp(struct rcu_node *rnp_leaf);
-+static void rcu_exp_gp_kworkers_setaffinity(int cpu);
-+static void rcu_nocb_kthread_setaffinity(int cpu, int outgoing);
- 
- /*
-  * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
-@@ -1781,7 +1783,6 @@ static noinline void rcu_gp_cleanup(void)
-  */
- static int __noreturn rcu_gp_kthread(void *unused)
- {
--	rcu_bind_gp_kthread();
- 	for (;;) {
- 
- 		/* Handle grace-period start. */
-@@ -4297,6 +4298,30 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoing)
- 	rcu_boost_kthread_setaffinity(rdp->mynode, outgoing);
- }
- 
-+void rcu_kthread_setaffinity(struct task_struct *tsk, int outgoing)
-+{
-+	cpumask_var_t mask;
-+
-+	if (!tsk)
-+		return;
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+		return;
-+	cpumask_copy(mask, housekeeping_cpumask(HK_TYPE_RCU));
-+	if (outgoing >= 0 && cpumask_test_cpu(outgoing, mask))
-+		cpumask_clear_cpu(outgoing, mask);
-+	cpumask_and(mask, cpu_online_mask, mask);
-+	if (cpumask_empty(mask))
-+		cpumask_copy(mask, cpu_possible_mask);
-+	set_cpus_allowed_ptr(tsk, mask);
-+	free_cpumask_var(mask);
-+}
-+
-+static void rcu_gp_kthread_setaffinity(int cpu)
-+{
-+	if (rcu_state.gp_kthread)
-+		rcu_kthread_setaffinity(rcu_state.gp_kthread, cpu);
-+}
-+
- /*
-  * Near the end of the CPU-online process.  Pretty much all services
-  * enabled, and the CPU is now very much alive.
-@@ -4316,7 +4341,10 @@ int rcutree_online_cpu(unsigned int cpu)
- 		return 0; /* Too early in boot for scheduler work. */
- 	sync_sched_exp_online_cleanup(cpu);
- 	rcutree_affinity_setting(cpu, -1);
--
-+	rcu_gp_kthread_setaffinity(-1);
-+	rcu_nocb_kthread_setaffinity(cpu, -1);
-+	rcu_tasks_generic_setaffinity(-1);
-+	rcu_exp_gp_kworkers_setaffinity(-1);
- 	// Stop-machine done, so allow nohz_full to disable tick.
- 	tick_dep_clear(TICK_DEP_BIT_RCU);
- 	return 0;
-@@ -4339,7 +4367,10 @@ int rcutree_offline_cpu(unsigned int cpu)
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 
- 	rcutree_affinity_setting(cpu, cpu);
--
-+	rcu_gp_kthread_setaffinity(cpu);
-+	rcu_nocb_kthread_setaffinity(cpu, cpu);
-+	rcu_tasks_generic_setaffinity(cpu);
-+	rcu_exp_gp_kworkers_setaffinity(cpu);
- 	// nohz_full CPUs need the tick for stop-machine to work quickly
- 	tick_dep_set(TICK_DEP_BIT_RCU);
- 	return 0;
-@@ -4550,6 +4581,14 @@ static void __init rcu_start_exp_gp_kworkers(void)
- 				   &param);
- }
- 
-+static void rcu_exp_gp_kworkers_setaffinity(int cpu)
-+{
-+	if (rcu_exp_gp_kworker)
-+		rcu_kthread_setaffinity(rcu_exp_gp_kworker->task, cpu);
-+	if (rcu_exp_par_gp_kworker)
-+		rcu_kthread_setaffinity(rcu_exp_par_gp_kworker->task, cpu);
-+}
-+
- static inline void rcu_alloc_par_gp_wq(void)
- {
- }
-@@ -4559,7 +4598,9 @@ struct workqueue_struct *rcu_par_gp_wq;
- static void __init rcu_start_exp_gp_kworkers(void)
- {
- }
--
-+static void rcu_exp_gp_kworkers_setaffinity(int cpu)
-+{
-+}
- static inline void rcu_alloc_par_gp_wq(void)
- {
- 	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
-@@ -4609,6 +4650,18 @@ static int __init rcu_spawn_gp_kthread(void)
- }
- early_initcall(rcu_spawn_gp_kthread);
- 
-+static int __init rcu_boost_resetaffinity(void)
-+{
-+	struct rcu_node *rnp;
-+	int cpu;
-+
-+	rcu_for_each_leaf_node(rnp)
-+		rcu_boost_kthread_setaffinity(rnp, -1);
-+	for_each_possible_cpu(cpu)
-+		rcu_nocb_kthread_setaffinity(cpu, -1);
-+	return 0;
-+}
-+core_initcall(rcu_boost_resetaffinity);
- /*
-  * This function is invoked towards the end of the scheduler's
-  * initialization process.  Before this is called, the idle task might
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 192536916f9a..391e3fae4ff5 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -495,7 +495,6 @@ do {								\
- #define rcu_nocb_lock_irqsave(rdp, flags) local_irq_save(flags)
- #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
- 
--static void rcu_bind_gp_kthread(void);
- static bool rcu_nohz_full_cpu(void);
- 
- /* Forward declarations for tree_stall.h */
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index f2280616f9d5..a9cd07ccf959 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1494,6 +1494,20 @@ static void rcu_spawn_cpu_nocb_kthread(int cpu)
- 	mutex_unlock(&rcu_state.barrier_mutex);
- }
- 
-+static void rcu_nocb_kthread_setaffinity(int cpu, int outgoing)
-+{
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+	struct rcu_data *rdp_gp;
-+
-+	if (rdp->nocb_cb_kthread)
-+		rcu_kthread_setaffinity(rdp->nocb_cb_kthread, outgoing);
-+	rdp_gp = rdp->nocb_gp_rdp;
-+	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
-+	if (rdp_gp->nocb_gp_kthread)
-+		rcu_kthread_setaffinity(rdp_gp->nocb_gp_kthread, outgoing);
-+	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
-+}
-+
- /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
- static int rcu_nocb_gp_stride = -1;
- module_param(rcu_nocb_gp_stride, int, 0444);
-@@ -1754,7 +1768,9 @@ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
- static void rcu_spawn_cpu_nocb_kthread(int cpu)
- {
- }
--
-+static void rcu_nocb_kthread_setaffinity(int cpu, int outgoing)
-+{
-+}
- static void show_rcu_nocb_state(struct rcu_data *rdp)
- {
- }
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 7b0fe741a088..fdde71ebb83e 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1294,12 +1294,3 @@ static bool rcu_nohz_full_cpu(void)
- 	return false;
- }
- 
--/*
-- * Bind the RCU grace-period kthreads to the housekeeping CPU.
-- */
--static void rcu_bind_gp_kthread(void)
--{
--	if (!tick_nohz_full_enabled())
--		return;
--	housekeeping_affine(current, HK_TYPE_RCU);
--}
--- 
-2.25.1
-
+--=-M746ZnUmolNViPf2veW+--
