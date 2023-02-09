@@ -2,78 +2,78 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F2AC636D6
-	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 15:49:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5C66C636D4
+	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 18:25:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjBIPtC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Feb 2023 10:49:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
+        id S229640AbjBISZc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Feb 2023 13:25:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbjBIPsj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Feb 2023 10:48:39 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F398C643F3;
-        Thu,  9 Feb 2023 07:48:13 -0800 (PST)
+        with ESMTP id S229616AbjBISZc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Feb 2023 13:25:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF476031C;
+        Thu,  9 Feb 2023 10:25:31 -0800 (PST)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1675957692;
+        s=2020; t=1675967130;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=jZn9RTUF+LwBP9Hkzz4Eth05nQousspojnFQshp9zzI=;
-        b=k4y/Q7Uc+iXzYdT9/nBww9wFacKB7VSdNsXKtkVaseeyC4T3YYeOOibbLApvDUi2jH/DeR
-        X9aJHYqhJH5C3aRANfxA3Hv+KHtuwfIS97J7E4noKn8dbvISLnmniKVq7DMh+OayKQNExQ
-        l3JrmezENL+H8JLd0sRo2K5Qyhd3yb4e6V81gh8NcBomuxhMbQI7YwvnIYAUZapjmBfrsj
-        K7BnxSdOfVUzGtTPsWhBN/4tKUOu+8THUM8DUzDcsOfHiK/sR12LeWM+VFIA1R43gxJTlF
-        ibj1Ee92J1K8MDIh3ZPAqrikSDz4Wg+WduoWSOJyJOqeIvvjjTli01DNdZzROA==
+        bh=0NaX4sqxw6MUujMtWMhi4Kyfzd9HAZvF25tWNFvR+NQ=;
+        b=a4uFotAh4zBkNeR4bTyBuQc9kV5tVaWaMBAc/9il112kLU0MYI7QbLsTUlR38AfEFeKLcE
+        8nizRUUZu6/dgDL7F1kmlQHFfgGeu06VCJLavdapJgx1aDAoAucuj78bEYQ5q/NIE46ZAX
+        NV1PHWGM3DbHFAoZnV4Amrjnb1GxH4K4PnjFzqChh5/YSHLgI++byg79BnA3ntFJ/XRnN5
+        tX9325ZAlOKhggkcMQgjGTDI7FU75ZLQ2kPLJy12HCz6WcOXqpvzVGXF+he0K8JFycrLRn
+        +HPXv7DguxauoLxol0w2dE71DIi+1zvcxpu/LEe5bJRk807sOE/sBxNDplukzA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1675957692;
+        s=2020e; t=1675967130;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=jZn9RTUF+LwBP9Hkzz4Eth05nQousspojnFQshp9zzI=;
-        b=pheqyOp3bPPq0xST9/niNa1p1Sgm/cfr1xQjUuA1wHI2kNI9i1EfdSN77EY4ajkLaWt4Rz
-        4CPis6VSeRs8jfAA==
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Usama Arif <usama.arif@bytedance.com>, paulmck@kernel.org
-Cc:     kim.phillips@amd.com, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com
-Subject: Re: [External] Re: [PATCH v7 0/9] Parallel CPU bringup for x86_64
-In-Reply-To: <eea887fb7d634c24529743fce8295b2f78eb861d.camel@infradead.org>
-References: <20230207230436.2690891-1-usama.arif@bytedance.com>
- <20230209035300.GA3216394@paulmck-ThinkPad-P17-Gen-1>
- <8e2f03e2-9517-aeb4-df60-b36ef3ff3a75@bytedance.com>
- <f07b371ae2eb11f541c665b488b3d4b6bf1a81b3.camel@infradead.org>
- <87357f2gyd.ffs@tglx>
- <eea887fb7d634c24529743fce8295b2f78eb861d.camel@infradead.org>
-Date:   Thu, 09 Feb 2023 16:48:12 +0100
-Message-ID: <87wn4q262r.ffs@tglx>
+        bh=0NaX4sqxw6MUujMtWMhi4Kyfzd9HAZvF25tWNFvR+NQ=;
+        b=pernKmnmJ4vi3c/QkDNqcxvo6wqgdKcDJbALgJnLBljAsmeNZOF8vDMtAxGsN1zuclVquW
+        whO9e3NeXhm2ITAw==
+To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
+        kim.phillips@amd.com
+Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [PATCH v8 6/9] x86/smpboot: Support parallel startup of
+ secondary CPUs
+In-Reply-To: <20230209154156.266385-7-usama.arif@bytedance.com>
+References: <20230209154156.266385-1-usama.arif@bytedance.com>
+ <20230209154156.266385-7-usama.arif@bytedance.com>
+Date:   Thu, 09 Feb 2023 19:25:29 +0100
+Message-ID: <87r0uy1ysm.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 09 2023 at 12:10, David Woodhouse wrote:
-> On Thu, 2023-02-09 at 12:53 +0100, Thomas Gleixner wrote:
->> > I could probably add a Co-developed-by: tglx for that first x2apic
->> > patch in the series too, but then it would *also* need his SoB and I
->> > didn't want to be owed two, so I just pasted his suggested code and
->> > didn't credit him.
->> 
->> That's what Suggested-by: is for. For that I don't owe you anything. :)
->
-> Well, I didn't think that was really for suggestions which come in
-> 'diff -up' form, but OK :)
+On Thu, Feb 09 2023 at 15:41, Usama Arif wrote:
+>  
+> +static bool do_parallel_bringup = true;
 
-I can't even remember, but probably diff -up was way faster than writing
-a novel :)
+Wants to be __ro_after_init
+
+> +static int __init no_parallel_bringup(char *str)
+> +{
+> +	do_parallel_bringup = false;
+> +
+> +	return 0;
+> +}
+> +early_param("no_parallel_bringup", no_parallel_bringup);
+
+Lacks an entry in Documentation/admin/kernel-parameters.txt
 
 Thanks,
 
