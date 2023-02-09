@@ -2,111 +2,179 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58839C61DA4
-	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 03:53:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58E77C61DA4
+	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 09:49:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjBIDxl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Feb 2023 22:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S230003AbjBIJtd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Feb 2023 04:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbjBIDxY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Feb 2023 22:53:24 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685482E825;
-        Wed,  8 Feb 2023 19:53:04 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 01E70B8164F;
-        Thu,  9 Feb 2023 03:53:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991F1C433EF;
-        Thu,  9 Feb 2023 03:53:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675914781;
-        bh=PrK+3mMGT0AsXDJ9S99RyGu52aNIxwsaYCROU5Oo4OM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qhTeIYtRUzal1VgLCF0nLl1VCLXJMoZ1czttTNyEQshUW9ZTpBNqcQZOZrmWZRlBz
-         9m3c0DFkw+VdrXqVeHF9FNpRHcFnyPtSj1X8y9GpOk3Aooe48W20eWPdzR8AMUAWrp
-         hgcLaM63vtuur07kSN0Ow5degZjwvUtYj4Eh8KcloqitPmZPnccfOjQmw+ijbbZ5PO
-         T1xPCqKM4EmePKuAiPB/kAXyPA6BmqZEe4ZEe9LxtCUZ1ul1CxZexRDSG8tQDnKlfE
-         0IPBYOL4351HH3rZgjXK8L3nb+LxlOFKmnRFewxeset+ai1TuXi0whpVZ3MUEKJ57d
-         khvC2jyUkFTig==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 120E15C099C; Wed,  8 Feb 2023 19:53:00 -0800 (PST)
-Date:   Wed, 8 Feb 2023 19:53:00 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        with ESMTP id S229996AbjBIJtc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Feb 2023 04:49:32 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EC334C11
+        for <rcu@vger.kernel.org>; Thu,  9 Feb 2023 01:49:07 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id m14so1126668wrg.13
+        for <rcu@vger.kernel.org>; Thu, 09 Feb 2023 01:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CTEOGPQnS0TIFLEvZd/nSW2p+ZjRxHWqIwAsKqfTz80=;
+        b=V0SzVGtWKLJJvy1I/BjOPA575rNIE4m6Km+ONa3qI2SCaak0FMA6FvxgHXMklDM7wO
+         pF6iG6q/zKW36VjoPOFaKba5yGdnzjSV+pwQBIm37wAnxVkbM+JekJCfSf1iVLstv1dQ
+         Y4lRPVVsF1E4AjIdZi0qAATZCol4XpBW0Rt1SRp1dx/Z0EUjt4d2Th6whIcvM2DIhdj6
+         gmtXzGOYRe0f2tAi+6cHRqwmhfOXcSUd4oiKTIj5FQpGu38Ed7qLLor7iqqBZVcQ9HF2
+         6qW4ssTi8i2ixrcBB9hCZwjd/sOWDsCbK4wkZWLm0/mVrktu6uIatpNKzY56PKJ4jABH
+         1s4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CTEOGPQnS0TIFLEvZd/nSW2p+ZjRxHWqIwAsKqfTz80=;
+        b=zEKmONPdFO4U+F7m0YV5CW/2cXx65HG0e9yf0f/7SGRfrTYT5WHRgJL5nvlgCJt/F7
+         PnGHj5yknC5oTPAqCposGF6B8j3oUMSn+Bun6xtiHpR1VI0VzzdKaOd6llfpT5/aI0tD
+         s+MMtZN8O7nhNNiLen+5GTRw27IFEoQrE3naV2LxxOgWnqUesFmBqwbv5xjibBiNiZ3o
+         7CyxtbRlXQvmm+a2ZGQlLCq0p/iWkelu232nj84xxXPYo2pQVJvFgDlLIia7kdWRy3X0
+         UIkDuqCNWGkm9ITjHHbvvlw4Avkt6SdeZfq9XY1Mas6iK4w6TOb7H32nxXOwnLWbO5iq
+         1zbw==
+X-Gm-Message-State: AO0yUKWVRCOnhvRgfxXlHEjc1lh3KaUmf7hWfom3p6w/P8vzWOC9SFW9
+        RkWKsfygt8ciKw0aW+s95EKTFw==
+X-Google-Smtp-Source: AK7set/zlo+mWdVn4nhTrjKjNcfLDl/mIAyWU45AYYryQiWv4XyrxL+O2BeGHVWc87DSQWF/4zhCVg==
+X-Received: by 2002:a5d:510a:0:b0:2c4:682:5639 with SMTP id s10-20020a5d510a000000b002c406825639mr4191498wrt.1.1675936146028;
+        Thu, 09 Feb 2023 01:49:06 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:8009:2525:9580:8db2? ([2a02:6b6a:b566:0:8009:2525:9580:8db2])
+        by smtp.gmail.com with ESMTPSA id m3-20020adfe0c3000000b002c4084d3472sm809755wri.58.2023.02.09.01.49.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Feb 2023 01:49:05 -0800 (PST)
+Message-ID: <8e2f03e2-9517-aeb4-df60-b36ef3ff3a75@bytedance.com>
+Date:   Thu, 9 Feb 2023 09:49:04 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v7 0/9] Parallel CPU bringup for x86_64
+Content-Language: en-US
+To:     paulmck@kernel.org, dwmw2@infradead.org, tglx@linutronix.de
+Cc:     kim.phillips@amd.com, arjan@linux.intel.com, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        x86@kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
         hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
         pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
         punit.agrawal@bytedance.com, simon.evans@bytedance.com,
         liangma@liangbit.com
-Subject: Re: [PATCH v7 0/9] Parallel CPU bringup for x86_64
-Message-ID: <20230209035300.GA3216394@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
 References: <20230207230436.2690891-1-usama.arif@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+ <20230209035300.GA3216394@paulmck-ThinkPad-P17-Gen-1>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <20230209035300.GA3216394@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230207230436.2690891-1-usama.arif@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 07, 2023 at 11:04:27PM +0000, Usama Arif wrote:
-> Tested on v7, doing INIT/SIPI/SIPI in parallel brings down the time for
-> smpboot from ~700ms to 100ms (85% improvement) on a server with 128 CPUs
-> split across 2 NUMA nodes.
+
+
+On 09/02/2023 03:53, Paul E. McKenney wrote:
+> On Tue, Feb 07, 2023 at 11:04:27PM +0000, Usama Arif wrote:
+>> Tested on v7, doing INIT/SIPI/SIPI in parallel brings down the time for
+>> smpboot from ~700ms to 100ms (85% improvement) on a server with 128 CPUs
+>> split across 2 NUMA nodes.
+>>
+>> The major change over v6 is keeping parallel smp support enabled in AMD.
+>> APIC ID for parallel CPU bringup is now obtained from CPUID leaf 0x0B
+>> (for x2APIC mode) otherwise CPUID leaf 0x1 (8 bits).
+>>
+>> The patch for reusing timer calibration for secondary CPUs is also removed
+>> from the series as its not part of parallel smp bringup and needs to be
+>> further thought about.
 > 
-> The major change over v6 is keeping parallel smp support enabled in AMD.
-> APIC ID for parallel CPU bringup is now obtained from CPUID leaf 0x0B
-> (for x2APIC mode) otherwise CPUID leaf 0x1 (8 bits).
+> Running rcutorture on this got me the following NULL pointer dereference
+> on scenario TREE01:
 > 
-> The patch for reusing timer calibration for secondary CPUs is also removed
-> from the series as its not part of parallel smp bringup and needs to be
-> further thought about.
+> ------------------------------------------------------------------------
+> 
+> [ Â  34.662066] smpboot: CPU 0 is now offline
+> [ Â  34.674075] rcu: NOCB: Cannot CB-offload offline CPU 25
+> [ Â  35.038003] rcu: De-offloading 5
+> [ Â  35.112997] rcu: Offloading 12
+> [ Â  35.716011] smpboot: Booting Node 0 Processor 0 APIC 0x0
+> [ Â  35.762685] BUG: kernel NULL pointer dereference, address: 0000000000000001
+> [ Â  35.764278] #PF: supervisor instruction fetch in kernel mode
+> [ Â  35.765530] #PF: error_code(0x0010) - not-present page
+> [ Â  35.766700] PGD 0 P4D 0
+> [ Â  35.767278] Oops: 0010 [#1] PREEMPT SMP PTI
+> [ Â  35.768223] CPU: 36 PID: 0 Comm: swapper/36 Not tainted 6.2.0-rc1-00206-g18a37610b632-dirty #3563
+> [ Â  35.770201] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> 
+> ------------------------------------------------------------------------
+> 
+> Given an x86 system with KVM and qemu, this can be reproduced by running
+> the following from the top-level directory in the Linux-kernel source
+> tree:
+> 
+> 	tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --configs "TREE01 TINY01" --trust-make
+> 
+> Out of 15 runs, 14 blew up just after the first attempt to bring CPU
+> 0 back online.  The 15th run blew up just after the second attempt to
+> bring CPU 0 online, the first attempt having succeeded.
+> 
+> My guess is that the CONFIG_BOOTPARAM_HOTPLUG_CPU0=y Kconfig option is
+> tickling this bug.  This Kconfig option has been added to the TREE01
+> scenario in the -rcu tree's "dev" branch, which might mean that this test
+> would pass on mainline.  But CONFIG_BOOTPARAM_HOTPLUG_CPU0=y is not new,
+> only rcutorture's testing of it.
+> 
+> Thoughts?
+> 
+> 							Thanx, Paul
 
-Running rcutorture on this got me the following NULL pointer dereference
-on scenario TREE01:
+It looks like its because of the initial_gs, initial_stack and
+early_gdt_descr not being setup properly for CPU0 hotplug, i.e. 
+init_cpu_data isnt called in cpu0 hotplug case.
 
-------------------------------------------------------------------------
+Its easy to test, just by doing
+echo 0 > /sys/devices/system/cpu/cpu0/online;
+echo 1 > /sys/devices/system/cpu/cpu0/online;
 
-[   34.662066] smpboot: CPU 0 is now offline
-[   34.674075] rcu: NOCB: Cannot CB-offload offline CPU 25
-[   35.038003] rcu: De-offloading 5
-[   35.112997] rcu: Offloading 12
-[   35.716011] smpboot: Booting Node 0 Processor 0 APIC 0x0
-[   35.762685] BUG: kernel NULL pointer dereference, address: 0000000000000001
-[   35.764278] #PF: supervisor instruction fetch in kernel mode
-[   35.765530] #PF: error_code(0x0010) - not-present page
-[   35.766700] PGD 0 P4D 0
-[   35.767278] Oops: 0010 [#1] PREEMPT SMP PTI
-[   35.768223] CPU: 36 PID: 0 Comm: swapper/36 Not tainted 6.2.0-rc1-00206-g18a37610b632-dirty #3563
-[   35.770201] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+As a quick check, if we do something like below (probably there is a 
+much better place to set these..), the above hotplug commands will work.
 
-------------------------------------------------------------------------
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 3ec5182d9698..184135c47ee5 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1080,6 +1080,7 @@ wakeup_cpu_via_init_nmi(int cpu, unsigned long 
+start_ip, int apicid,
+                                           wakeup_cpu0_nmi, 0, "wake_cpu0");
 
-Given an x86 system with KVM and qemu, this can be reproduced by running
-the following from the top-level directory in the Linux-kernel source
-tree:
+         if (!boot_error) {
++               initial_gs = per_cpu_offset(cpu);
+                 enable_start_cpu0 = 1;
+                 *cpu0_nmi_registered = 1;
+                 id = apic->dest_mode_logical ? cpu0_logical_apicid : 
+apicid;
+@@ -1188,10 +1189,14 @@ static int do_boot_cpu(int apicid, int cpu, 
+struct task_struct *idle,
+                 boot_error = apic->wakeup_secondary_cpu_64(apicid, 
+start_ip);
+         else if (apic->wakeup_secondary_cpu)
+                 boot_error = apic->wakeup_secondary_cpu(apicid, start_ip);
+-       else
++       else {
++               if(!cpu) {
++                       early_gdt_descr.address = (unsigned 
+long)get_cpu_gdt_rw(cpu);
++                       initial_stack  = idle->thread.sp;
++               }
+                 boot_error = wakeup_cpu_via_init_nmi(cpu, start_ip, apicid,
+                                                      cpu0_nmi_registered);
+-
++       }
+         return boot_error;
+  }
 
-	tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --configs "TREE01 TINY01" --trust-make
 
-Out of 15 runs, 14 blew up just after the first attempt to bring CPU
-0 back online.  The 15th run blew up just after the second attempt to
-bring CPU 0 online, the first attempt having succeeded.
 
-My guess is that the CONFIG_BOOTPARAM_HOTPLUG_CPU0=y Kconfig option is
-tickling this bug.  This Kconfig option has been added to the TREE01
-scenario in the -rcu tree's "dev" branch, which might mean that this test
-would pass on mainline.  But CONFIG_BOOTPARAM_HOTPLUG_CPU0=y is not new,
-only rcutorture's testing of it.
-
-Thoughts?
-
-							Thanx, Paul
