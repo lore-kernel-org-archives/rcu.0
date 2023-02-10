@@ -2,207 +2,135 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7AACC636D4
-	for <rcu@archiver.kernel.org>; Fri, 10 Feb 2023 21:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF849C636D4
+	for <rcu@archiver.kernel.org>; Fri, 10 Feb 2023 23:46:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbjBJVHI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Feb 2023 16:07:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
+        id S229946AbjBJXqq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Feb 2023 18:46:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbjBJVHH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Feb 2023 16:07:07 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5047B171;
-        Fri, 10 Feb 2023 13:07:05 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id qw12so19069950ejc.2;
-        Fri, 10 Feb 2023 13:07:05 -0800 (PST)
+        with ESMTP id S229848AbjBJXqo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Feb 2023 18:46:44 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E607D2943E
+        for <rcu@vger.kernel.org>; Fri, 10 Feb 2023 15:46:34 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id x29so8174217ljq.0
+        for <rcu@vger.kernel.org>; Fri, 10 Feb 2023 15:46:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5c2ACZuFFTh4lLYq1CMAdfAXqUF+vpuoKUlv20dnV8Y=;
-        b=V1/zcRhANAMqVMDBwCttFnH86sIZHQU2VTtOS9zQl1ci/BBDfW/w8lOPvgAetemYtc
-         wnaHiwTjuVOHoFDpbytc536rEPNeSaUGcCzEuDLCtavaudwYe+Kx8jmIHlUhQIsXV5Vo
-         mBaP5NSLIlVQbZEJ6eWWQ/+hdlrkjdOlK/2RW0bXK5xXgUAgIiPEEThCgQopMF1nOLPM
-         QpHdT9P9lwZ/WF1tvzctLVF9LlNZjQXiOXm6dsMz5CF99oCdn0kWsoEEpW0hgF1zTlko
-         EvawMp3UyKX8hOYRcPJC4soapdMXyPKa0ITzRx8mFQRud7gI1hTiKo7pJhWCWxW+ljzA
-         3Www==
+        bh=4q6XW5XbdQX/MPpKXpGqH3BO1A2MTER/s1wXEr/gwrU=;
+        b=O+skqT1FzCFvFvqtXF5FW8Wm6vMHiJaJE58WSPOfKaty1uoyPCBG+joTQ4/URDQgCK
+         V1DFxMBm1IE6qQvB8zpklFEaKZ8VdaQf3diPhkH8eAAQzTBeG36eRHJgQJi8dGqez1ce
+         4B/fCD+PzYQke5aaQ8pvHf0xQjmUx3oYgV/kE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5c2ACZuFFTh4lLYq1CMAdfAXqUF+vpuoKUlv20dnV8Y=;
-        b=kOffC0ZWvpdOQDYloaox2HTGWznRYsLTelW7/R9ejwKnbr0NcXTKvloqTCQfGYy8ST
-         1bk7DvHXlya90wA0lH8OQ1GaOnYzzFdINbk2JfLKuMbUTPrZcuDdHxX63h20KY7P6u/8
-         PxezTsbr1oJ6dpGEaMXUnUdFo5f6hU5Ue2A7Cm4glHhDcMCgKmfxChhyvC7EwtSNheim
-         RZ/iuzh8GFS1USuqjwHvaihjkV2PSKzTSrAPUnt8vjgmvzBZHbn+TNXt68z93BFpZO7D
-         rX2omwVJRGwqHV7T8R9aWBl+a+wcnSW94KTq82HY6V/0cF3zUrtnxOfdOzhxybrtL58o
-         jG+g==
-X-Gm-Message-State: AO0yUKXSWdB3TwcN9JX+KVSLClIg1XbBR0va7mWfx8YIf4cxxNo3VwGU
-        0DmtPSsoEpJYAKxvTiCIu8Ya+lQyRGbWEevCF/0=
-X-Google-Smtp-Source: AK7set902w2IBDigxPYSpnFcScVLX36wjNm3vw0Rz6XjCFJR2FTtGF1eAXym/q5Y2MVJMty7rhpe8TwnHsb6BupwgRk=
-X-Received: by 2002:a17:906:4ccf:b0:883:ba3b:eb94 with SMTP id
- q15-20020a1709064ccf00b00883ba3beb94mr1525913ejt.3.1676063223676; Fri, 10 Feb
- 2023 13:07:03 -0800 (PST)
+        bh=4q6XW5XbdQX/MPpKXpGqH3BO1A2MTER/s1wXEr/gwrU=;
+        b=MDV3WcgxAPSGZ0vzW6zVsI3r0lV0n+qi0vnGhdt+PsC/eeewvUgN6lolSTp4OH1NaK
+         +fuAMs73ygwtPr2ugAPpdLbHsEqDpcpAyLYQ+HJfzPLc7lS61aCGpFZHU2kcRHZx7qkm
+         oD6XD1pH0GD1YpEOGiov3fIdSgBECpWMQqnoJhBeE0269Kajmb+W7iOBnB7+ZFugjw9J
+         vObThcjhpZv/PQ8RPa1m4QoLftuRu4q4hbwVfWgrxZa2LTuOX4aPDLwRrHKh5iGLBOmA
+         FItkUrKDxk/wvHk1SXqMO7Mj/gHETvhmsQo9y/A44p+6LFxQibGCpTGZ864dm2Sx6+N5
+         r+cw==
+X-Gm-Message-State: AO0yUKUjWHHdMiu2Mu0lDArXxtVptpIHFQcizlqJ1VVN/4CE5J7qrQwa
+        1rxfqI5KqRkIp49coZPqDUFMqejMws67Wu1FEBwREg==
+X-Google-Smtp-Source: AK7set/8bE/xi8HD3yYAegHcZ75Mj/TqtrRvLJOEGnRdFGXQXoi2tM6qHFUWQN2FBLJ+/NVfmoe/K6Y8bEJ4Wxqe5Wc=
+X-Received: by 2002:a2e:b4b8:0:b0:290:65bb:6b24 with SMTP id
+ q24-20020a2eb4b8000000b0029065bb6b24mr2679443ljm.87.1676072793176; Fri, 10
+ Feb 2023 15:46:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo>
-In-Reply-To: <20230210163258.phekigglpquitq33@apollo>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 10 Feb 2023 13:06:52 -0800
-Message-ID: <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Yonghong Song <yhs@meta.com>, Hou Tao <houtao@huaweicloud.com>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
+References: <20230204022051.2737724-1-joel@joelfernandes.org> <Y+JQ8GX82Gn+7ZWe@lothringen>
+In-Reply-To: <Y+JQ8GX82Gn+7ZWe@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 10 Feb 2023 18:46:21 -0500
+Message-ID: <CAEXW_YTCZO-8pT2ixnDmbVaLw31J4JRXieEGvFPdo4P=1GJPLA@mail.gmail.com>
+Subject: Re: [PATCH] rcu/tree: Improve comments in rcu_report_qs_rdp()
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Qiang Zhang <Qiang1.zhang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boqun Feng <boqun.feng@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 10, 2023 at 8:33 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Feb 7, 2023 at 8:24 AM Frederic Weisbecker <frederic@kernel.org> wrote:
 >
-> On Wed, Jan 04, 2023 at 07:26:12PM CET, Alexei Starovoitov wrote:
-> > On Tue, Jan 3, 2023 at 11:14 PM Yonghong Song <yhs@meta.com> wrote:
-> > >
-> > >
-> > >
-> > > On 1/3/23 10:30 PM, Hou Tao wrote:
-> > > > Hi,
-> > > >
-> > > > On 1/4/2023 2:10 PM, Yonghong Song wrote:
-> > > >>
-> > > >>
-> > > >> On 1/3/23 5:47 AM, Hou Tao wrote:
-> > > >>> Hi,
-> > > >>>
-> > > >>> On 1/2/2023 2:48 AM, Yonghong Song wrote:
-> > > >>>>
-> > > >>>>
-> > > >>>> On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
-> > > >>>>> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
-> > > >>>>>> From: Hou Tao <houtao1@huawei.com>
-> > > >>>>>>
-> > > >>>>>> Hi,
-> > > >>>>>>
-> > > >>>>>> The patchset tries to fix the problems found when checking how htab map
-> > > >>>>>> handles element reuse in bpf memory allocator. The immediate reuse of
-> > > >>>>>> freed elements may lead to two problems in htab map:
-> > > >>>>>>
-> > > >>>>>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
-> > > >>>>>>        htab map value and it may corrupt lookup procedure with BFP_F_LOCK
-> > > >>>>>>        flag which acquires bpf-spin-lock during value copying. The
-> > > >>>>>>        corruption of bpf-spin-lock may result in hard lock-up.
-> > > >>>>>> (2) lookup procedure may get incorrect map value if the found element is
-> > > >>>>>>        freed and then reused.
-> > > >>>>>>
-> > > >>>>>> Because the type of htab map elements are the same, so problem #1 can be
-> > > >>>>>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
-> > > >>>>>> these special fields in map element only when the map element is newly
-> > > >>>>>> allocated. If it is just a reused element, there will be no
-> > > >>>>>> reinitialization.
-> > > >>>>>
-> > > >>>>> Instead of adding the overhead of ctor callback let's just
-> > > >>>>> add __GFP_ZERO to flags in __alloc().
-> > > >>>>> That will address the issue 1 and will make bpf_mem_alloc behave just
-> > > >>>>> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
-> > > >>>>> will behave the same way.
-> > > >>>>
-> > > >>>> Patch https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/
-> > > >>>> tried to address a similar issue for lru hash table.
-> > > >>>> Maybe we need to do similar things after bpf_mem_cache_alloc() for
-> > > >>>> hash table?
-> > > >>> IMO ctor or __GFP_ZERO will fix the issue. Did I miss something here ?
-> > > >>
-> > > >> The following is my understanding:
-> > > >> in function alloc_htab_elem() (hashtab.c), we have
-> > > >>
-> > > >>                  if (is_map_full(htab))
-> > > >>                          if (!old_elem)
-> > > >>                                  /* when map is full and update() is replacing
-> > > >>                                   * old element, it's ok to allocate, since
-> > > >>                                   * old element will be freed immediately.
-> > > >>                                   * Otherwise return an error
-> > > >>                                   */
-> > > >>                                  return ERR_PTR(-E2BIG);
-> > > >>                  inc_elem_count(htab);
-> > > >>                  l_new = bpf_mem_cache_alloc(&htab->ma);
-> > > >>                  if (!l_new) {
-> > > >>                          l_new = ERR_PTR(-ENOMEM);
-> > > >>                          goto dec_count;
-> > > >>                  }
-> > > >>                  check_and_init_map_value(&htab->map,
-> > > >>                                           l_new->key + round_up(key_size, 8));
-> > > >>
-> > > >> In the above check_and_init_map_value() intends to do initializing
-> > > >> for an element from bpf_mem_cache_alloc (could be reused from the free list).
-> > > >>
-> > > >> The check_and_init_map_value() looks like below (in include/linux/bpf.h)
-> > > >>
-> > > >> static inline void bpf_obj_init(const struct btf_field_offs *foffs, void *obj)
-> > > >> {
-> > > >>          int i;
-> > > >>
-> > > >>          if (!foffs)
-> > > >>                  return;
-> > > >>          for (i = 0; i < foffs->cnt; i++)
-> > > >>                  memset(obj + foffs->field_off[i], 0, foffs->field_sz[i]);
-> > > >> }
-> > > >>
-> > > >> static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
-> > > >> {
-> > > >>          bpf_obj_init(map->field_offs, dst);
-> > > >> }
-> > > >>
-> > > >> IIUC, bpf_obj_init() will bzero those fields like spin_lock, timer,
-> > > >> list_head, list_node, etc.
-> > > >>
-> > > >> This is the problem for above problem #1.
-> > > >> Maybe I missed something?
-> > > > Yes. It is the problem patch #1 tries to fix exactly. Patch #1 tries to fix the
-> > > > problem by only calling check_and_init_map_value() once for the newly-allocated
-> > > > element, so if a freed element is reused, its special fields will not be zeroed
-> > > > again. Is there any other cases which are not covered by the solution or any
-> > > > other similar problems in hash-tab ?
-> > >
-> > > No, I checked all cases of check_and_init_map_value() and didn't find
-> > > any other instances.
+> On Sat, Feb 04, 2023 at 02:20:50AM +0000, Joel Fernandes (Google) wrote:
+> > Recent discussion triggered due to a patch linked below, from Qiang,
+> > shed light on the need to accelerate from QS reporting paths.
 > >
-> > check_and_init_map_value() is called in two other cases:
-> > lookup_and_delete[_batch].
-> > There the zeroing of the fields is necessary because the 'value'
-> > is a temp buffer that is going to be copied to user space.
-> > I think the way forward is to add GFP_ZERO to mem_alloc
-> > (to make it equivalent to prealloc), remove one case
-> > of check_and_init_map_value from hashmap, add short comments
-> > to two other cases and add a big comment to check_and_init_map_value()
-> > that should say that 'dst' must be a temp buffer and should not
-> > point to memory that could be used in parallel by a bpf prog.
-> > It feels like we've dealt with this issue a couple times already
-> > and keep repeating this mistake, so the more comments the better.
+> > Update the comments to capture this piece of knowledge.
+> >
+> > Link: https://lore.kernel.org/all/20230118073014.2020743-1-qiang1.zhang@intel.com/
+> > Cc: Qiang Zhang <Qiang1.zhang@intel.com>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> > ---
+> >  kernel/rcu/tree.c | 13 ++++++++++++-
+> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 93eb03f8ed99..713eb6ca6902 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1983,7 +1983,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+> >       } else {
+> >               /*
+> >                * This GP can't end until cpu checks in, so all of our
+> > -              * callbacks can be processed during the next GP.
+> > +              * callbacks can be processed during the next GP. Do
+> > +              * the acceleration from here otherwise there may be extra
+> > +              * grace period delays, as any accelerations from rcu_core()
+> > +              * or note_gp_changes() may happen only after the GP after the
+> > +              * current one has already started. Further, rcu_core()
+> > +              * only accelerates if RCU is idle (no GP in progress).
 >
-> Hou, are you plannning to resubmit this change? I also hit this while testing my
-> changes on bpf-next.
+> Actually note_gp_changes() should take care of that.
 
-Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
-The former will take a long time to settle.
-The latter is trivial.
-To unblock yourself just add GFP_ZERO in an extra patch?
+You are referring to  rcu_core() -> rcu_check_quiescent_state() ->
+note_gp_changes() doing the acceleration prior to the  rcu_core() ->
+rcu_report_qs_rdp() call, correct?
+
+Ah, but note_gp_changes() has an early return which triggers if either:
+1. The rnp spinlock trylock failed.
+2. The start of a new grace period was already detected before, so
+rdp->gp_seq == rnp->gp_seq.
+
+So I think it is possible that we are in the middle of a GP, and
+rcu_core() is called because QS reporting is required for the CPU, and
+say the current GP started we are in the middle off occurs from the
+same CPU so rdp->gp_seq == rnp->gp_seq.
+
+Now, rcu_core()'s call to note_gp_changes() should return early but
+its later call to report_qs_rdp() will not accelerate the callback
+without the code we are commenting here.
+
+> My gut feeling is that the
+> acceleration in rcu_report_qs_rdp() only stands for:
+>
+> * callbacks that may be enqueued from an IRQ firing during the small window
+>   between the RNP unlock in note_gp_changes() and the RNP lock in
+>   rcu_report_qs_rdp()
+
+Sure, this also seems like a valid reason.
+
+> * __note_gp_changes() got called even before from the GP kthread, and callbacks
+>   got enqueued between that and rcu_core().
+
+Agreed. In this case we will take the early return in
+note_gp_changes() when called from the rcu_core(). So yeah, that was
+kind of my point as well but slightly different reasoning.
+
+Let me know if you disagree with anything I mentioned, though.
+
+ - Joel
