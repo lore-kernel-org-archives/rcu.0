@@ -2,68 +2,134 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD54C61DA4
-	for <rcu@archiver.kernel.org>; Fri, 10 Feb 2023 00:40:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 148D3C05027
+	for <rcu@archiver.kernel.org>; Fri, 10 Feb 2023 04:11:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjBJAkp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Feb 2023 19:40:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
+        id S230133AbjBJELL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Feb 2023 23:11:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjBJAj7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Feb 2023 19:39:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595D723C60;
-        Thu,  9 Feb 2023 16:39:34 -0800 (PST)
+        with ESMTP id S229917AbjBJELK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Feb 2023 23:11:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945D03C24;
+        Thu,  9 Feb 2023 20:11:07 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ED1B461C3C;
-        Fri, 10 Feb 2023 00:39:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07FBAC4339B;
-        Fri, 10 Feb 2023 00:39:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 28004B823B8;
+        Fri, 10 Feb 2023 04:11:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4C72C433EF;
+        Fri, 10 Feb 2023 04:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675989544;
-        bh=jEwmi6wnqlIOydXMYjIjJWBpR66lOa4Z2v2npxC57VE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bEb8v+Y2Mymj2T1mQ4Ou1HB2htonnJrWJmTIpYGb8Z0GZWG239wISKGZh+tkRmKyz
-         IuwDIF8ufjaPBMV3OVD4fod3PMKKne6eT/0dYpOM7Emz9DhgNS1lIhCcym+1ptbxkO
-         sQOobbu/n2sv3tqdBxSEfsqHGtfEO0zknTYULNOf0JCx/zjojpfztVLpYlgnOc3jS4
-         +wghTXfWzzgJb+ibFXxe+26RycL2T1Pv8BVI3l/K1lcKrR4gNuje/3E/X2VOjPswnr
-         8IlvjsgeGp+RbQbFKlFeEEnmFrrsd+9Xfm1ubGoaKmc9M5r1xYHrQngLe8qqB1VA4M
-         Ye+mSqd71Xfdg==
-Date:   Fri, 10 Feb 2023 01:39:01 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        paulmck@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched/isolation: Fix illegal CPU value by
- housekeeping_any_cpu() return
-Message-ID: <Y+WSJRjlB4qDI1ul@lothringen>
-References: <20230210000021.1007853-1-qiang1.zhang@intel.com>
+        s=k20201202; t=1676002264;
+        bh=mw5QlU1yAxoxctzjzn6SCdph/DJlBUZBAIVrLjlGQ0A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EGrgk3+QVI4VAEoGbjsX4msiFiyVw1MpLxiudf+dbJ5a7a0VFyv6qXfWX/QwN5DXQ
+         Zd0y3m4ZT8iFzyDamqNqwkZorj3XGRlXDga+L/zVlursvv6QTwpVvyfC47Ib1dc55Y
+         vA1TURyOQLmdaRBUsoP8vYyQv061+iRl17SM/50UHOEdzTnXGxLP3ozWwzVKgFwMmB
+         v8MRRTb13vrfGFGVl3mkKgqDeWKFew4vp3qRyUSGD4nK9qHhC/8MgE4HZICz4HZ5lm
+         DeRX/3wdtxvaebIv2jrmcNs5AzB4tVb5vJP/h6TV+QESfDGHc+q5pk1OlspsWXepxJ
+         3Fi89k1eYROjA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CBB3A5C1B2A; Thu,  9 Feb 2023 20:11:03 -0800 (PST)
+Date:   Thu, 9 Feb 2023 20:11:03 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com
+Subject: Re: [PATCH v8 0/9] Parallel CPU bringup for x86_64
+Message-ID: <20230210041103.GO2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230209154156.266385-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230210000021.1007853-1-qiang1.zhang@intel.com>
+In-Reply-To: <20230209154156.266385-1-usama.arif@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thanks for checking this!
-
-On Fri, Feb 10, 2023 at 08:00:21AM +0800, Zqiang wrote:
-> For kernels built with CONFIG_NO_HZ_FULL=y, running the following tests:
+On Thu, Feb 09, 2023 at 03:41:47PM +0000, Usama Arif wrote:
+> The major change over v7 is fixing CPU0 hotplug not working as reported by
+> Paul E. McKenney using rcu torture tests. This is fixed by setting up the
+> initial_gs, initial_stack and early_gdt_descr properly for this case.
 > 
-> runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4" bootparams=
-> "console=ttyS0 nohz_full=0,1 rcu_nocbs=0,1 sched_verbose" -d
+> The improvement in boot time is the same as v7.
 
-Has this ever worked? Again I'm tempted to just:
+This one passes moderate rcutorture testing.
 
-    git revert 08ae95f4fd3b38b257f5dc7e6507e071c27ba0d5
+							Thanx, Paul
 
+> Thanks,
+> Usama
 > 
-> root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu2/online
-> root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu3/online
+> Changes across versions:
+> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+>     in preparation for more parallelisation.
+> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+>     avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+>     24 bits of the physical X2APIC ID to be used. That patch still needs
+>     a Signed-off-by from its original author, who once claimed not to
+>     remember writing it at all. But now we've fixed it, hopefully he'll
+>     admit it now :)
+> v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+>     for AMD CPUs.
+> v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+>     reused timer calibration for secondary CPUs.
+> v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+>     cluster mask in alloc_clustermask. (patch 1/9)
+>     Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+>     0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+>     Included sanity checks for APIC id from 0x0B. (patch 6/9)
+>     Removed patch for reusing timer calibration for secondary CPUs.
+>     commit message and code improvements.
+> v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+>     early_gdt_descr.
+>     Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+>     Code comments improved and debug prints added.
 > 
-> [   22.838290] BUG: unable to handle page fault for address: ffffffff84cd48c0
+> David Woodhouse (9):
+>   x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+>   cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+>   cpu/hotplug: Add dynamic parallel bringup states before
+>     CPUHP_BRINGUP_CPU
+>   x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+>   x86/smpboot: Split up native_cpu_up into separate phases and document
+>     them
+>   x86/smpboot: Support parallel startup of secondary CPUs
+>   x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+>   x86/mtrr: Avoid repeated save of MTRRs on boot-time CPU bringup
+>   x86/smpboot: Serialize topology updates for secondary bringup
+> 
+>  arch/x86/include/asm/realmode.h       |   3 +
+>  arch/x86/include/asm/smp.h            |  14 +-
+>  arch/x86/include/asm/topology.h       |   2 -
+>  arch/x86/kernel/acpi/sleep.c          |   1 +
+>  arch/x86/kernel/apic/apic.c           |   2 +-
+>  arch/x86/kernel/apic/x2apic_cluster.c | 130 ++++++----
+>  arch/x86/kernel/cpu/common.c          |   6 +-
+>  arch/x86/kernel/cpu/mtrr/mtrr.c       |   9 +
+>  arch/x86/kernel/head_64.S             |  99 +++++++-
+>  arch/x86/kernel/smpboot.c             | 350 +++++++++++++++++++-------
+>  arch/x86/realmode/init.c              |   3 +
+>  arch/x86/realmode/rm/trampoline_64.S  |  14 ++
+>  arch/x86/xen/smp_pv.c                 |   4 +-
+>  include/linux/cpuhotplug.h            |   2 +
+>  include/linux/smpboot.h               |   7 +
+>  kernel/cpu.c                          |  31 ++-
+>  kernel/smpboot.c                      |   2 +-
+>  kernel/smpboot.h                      |   2 -
+>  18 files changed, 521 insertions(+), 160 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
