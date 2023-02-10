@@ -2,97 +2,154 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB3A8C61DA4
-	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 23:50:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36966C05027
+	for <rcu@archiver.kernel.org>; Thu,  9 Feb 2023 23:55:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbjBIXuf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Feb 2023 18:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S229692AbjBIXz1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Feb 2023 18:55:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjBIXue (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Feb 2023 18:50:34 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C2A392BC;
-        Thu,  9 Feb 2023 15:50:33 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1675986631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iBCnwZU2e1iTxs70nV6XRo1tM0envNxXM7KQ/Gvset0=;
-        b=XaoqqwI3GW4L+hsVpbCFB3MR1ZODDou7ipZTvL3R6Y2F0NyKWQOzLLf6YeHPNQESyPqQeV
-        XL/V9bYUhZKZFNHKlsxnmUSMz1GnK2KPv0v+EABOiqPQ7TB4qx3pNDe+SJrfCxw3TUMn+K
-        Ge5OVMNcA/UlBr8LKvJW67a/gkYVNQAJUHRnSaV92tjnWo1KIbRXM465JwEDklJFIfMtGK
-        g0CvrdKqmOfltAxgFGfLEUFLXf+rINEs+B2sjGSzMOzwzecTzAluqzfHXAxKlorwX4Hm6q
-        76E6dYoLx2aFqIBpaZGXjlNevPly4Gg99SEolwyLuC4vRrszDsB2rVKzkvgLOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1675986631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iBCnwZU2e1iTxs70nV6XRo1tM0envNxXM7KQ/Gvset0=;
-        b=3+Dyi1ecUyoDKNhQJyTnT0e6pk/G++KeF2MLCqJCjkkhCMJTqlkcVhzBD65VxM5cUUeQJc
-        6MyIbVq4Q91CScDw==
-To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        kim.phillips@amd.com
-Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [External] Re: [PATCH v8 8/9] x86/mtrr: Avoid repeated save of
- MTRRs on boot-time CPU bringup
-In-Reply-To: <9b6bca9c-7189-a2d5-8c0a-f55c24f54b62@bytedance.com>
-References: <20230209154156.266385-1-usama.arif@bytedance.com>
- <20230209154156.266385-9-usama.arif@bytedance.com> <87mt5m1yiz.ffs@tglx>
- <9b6bca9c-7189-a2d5-8c0a-f55c24f54b62@bytedance.com>
-Date:   Fri, 10 Feb 2023 00:50:30 +0100
-Message-ID: <878rh61jqx.ffs@tglx>
+        with ESMTP id S229483AbjBIXz0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Feb 2023 18:55:26 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432D65BA69;
+        Thu,  9 Feb 2023 15:55:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675986925; x=1707522925;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xW/w7Z1rLzTj6SPg33pQoDkhmye+B/R371VjL8VHQgk=;
+  b=j/E0nXwXUM4H/ntecAiN2OZCBALhLWyOjaitrDAOV4HvDKkpHEq/CfE7
+   Ns6TvEfXXki11HkIZPEA6jOfwzhnni9Tq7xiqGj5lAsV/1z51h2sYOQIU
+   OM8s647d/nnmsMbL+MAvbmJ0qS4s5B4XKKGJYCyS9psVDY++nmFAt6FnD
+   IhSOEbeFCSEz6b3aUIJvVOGW9dnaDMjov8RRirMXGNfeTMh1HtH+hOT/c
+   Zp2U0bGIJ6NXd/ka+b6cnZS9emWgRuSkXzLx/wpwtlqPQxw1UzJFP1qcp
+   8SEUYGjLN0ODIoYYYYt9AUBZi0W6b04JMtqmvJR2gDl/Kwv66EAamRU75
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10616"; a="310647092"
+X-IronPort-AV: E=Sophos;i="5.97,285,1669104000"; 
+   d="scan'208";a="310647092"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2023 15:55:24 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10616"; a="731522787"
+X-IronPort-AV: E=Sophos;i="5.97,285,1669104000"; 
+   d="scan'208";a="731522787"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2023 15:55:19 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] sched/isolation: Fix illegal CPU value by housekeeping_any_cpu() return
+Date:   Fri, 10 Feb 2023 08:00:21 +0800
+Message-Id: <20230210000021.1007853-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 09 2023 at 20:32, Usama Arif wrote:
-> On 09/02/2023 18:31, Thomas Gleixner wrote:
->>>   	first_cpu = cpumask_first(cpu_online_mask);
->>>   	smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
->> 
->> So why is this relevant after the initial bringup? The BP MTRRs have
->> been saved already above, no?
->> 
->
-> I will let David confirm if this is correct and why he did it, but this 
-> is what I thought while reviewing before posting v4:
->
-> - At initial boot (system_state < SYSTEM_RUNNING), when mtrr_save_state 
-> is called in do_cpu_up at roughly the same time so MTRR is going to be 
-> the same, we can just save it once and then reuse for other secondary 
-> cores as it wouldn't have changed for the rest of the do_cpu_up calls.
->
-> - When the system is running and you offline and then online a CPU, you 
-> want to make sure that hotplugged CPU gets the current MTRR (which might 
-> have changed since boot?), incase the MTRR has changed after the system 
-> has been booted, you save the MTRR of the first online CPU. When the 
-> hotplugged CPU runs its initialisation code, its fixed-range MTRRs will 
-> be updated with the newly saved fixed-range MTRRs.
+For kernels built with CONFIG_NO_HZ_FULL=y, running the following tests:
 
-I knew that already :) But seriously:
+runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4" bootparams=
+"console=ttyS0 nohz_full=0,1 rcu_nocbs=0,1 sched_verbose" -d
 
-If the MTRRs are changed post boot then the cached values want to be
-updated too.
+root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu2/online
+root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu3/online
 
-We are not making these changes just to satisfy some fast boot
-challenge. They have to make sense in general.
+[   22.838290] BUG: unable to handle page fault for address: ffffffff84cd48c0
+[   22.839409] #PF: supervisor read access in kernel mode
+[   22.840215] #PF: error_code(0x0000) - not-present page
+[   22.841028] PGD 3e19067 P4D 3e19067 PUD 3e1a063 PMD 800ffffffb3ff062
+[   22.841889] Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN PTI
+[   22.842175] CPU: 0 PID: 16 Comm: rcu_preempt Not tainted 6.2.0-rc1-yocto-standard+ #658
+[   22.842534] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+               BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.o4
+[   22.843036] RIP: 0010:do_raw_spin_trylock+0x70/0x120
+[   22.843267] Code: 81 c7 00 f1 f1 f1 f1 c7 40 04 04 f3 f3 f3 65
+               48 8b 04 25 28 00 00 00 48 89 45 e0 31 c0 e8 b8 0
+[   22.844187] RSP: 0018:ffff8880072b7b30 EFLAGS: 00010046
+[   22.844429] RAX: 0000000000000000 RBX: ffffffff84cd48c0 RCX: dffffc0000000000
+[   22.844751] RDX: 0000000000000003 RSI: 0000000000000004 RDI: ffffffff84cd48c0
+[   22.845074] RBP: ffff8880072b7ba8 R08: ffffffff811daa20 R09: fffffbfff099a919
+[   22.845400] R10: ffffffff84cd48c3 R11: fffffbfff099a918 R12: 1ffff11000e56f66
+[   22.845719] R13: ffffffff84cd48d8 R14: ffffffff84cd48c0 R15: ffff8880072b7cd8
+[   22.846040] FS:  0000000000000000(0000) GS:ffff888035200000(0000) knlGS:0000000000000000
+[   22.846403] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   22.846667] CR2: ffffffff84cd48c0 CR3: 000000001036c000 CR4: 00000000001506f0
+[   22.846988] Call Trace:
+[   22.847105]  <TASK>
+[   22.847208]  ? __pfx_do_raw_spin_trylock+0x10/0x10
+[   22.847430]  ? rcu_read_unlock+0x26/0x80
+[   22.847612]  ? trace_preempt_off+0x2a/0x130
+[   22.847812]  _raw_spin_lock+0x41/0x80
+[   22.847984]  ? schedule_timeout+0x242/0x580
+[   22.848178]  schedule_timeout+0x242/0x580
+[   22.848366]  ? __pfx_schedule_timeout+0x10/0x10
+[   22.848575]  ? __pfx_do_raw_spin_trylock+0x10/0x10
+[   22.848796]  ? __pfx_process_timeout+0x10/0x10
+[   22.849005]  ? _raw_spin_unlock_irqrestore+0x46/0x80
+[   22.849232]  ? prepare_to_swait_event+0xb8/0x210
+[   22.849450]  rcu_gp_fqs_loop+0x66e/0xe70
+[   22.849633]  ? rcu_gp_init+0x87c/0x1130
+[   22.849813]  ? __pfx_rcu_gp_fqs_loop+0x10/0x10
+[   22.850022]  ? _raw_spin_unlock_irqrestore+0x46/0x80
+[   22.850251]  ? finish_swait+0xce/0x100
+[   22.850429]  rcu_gp_kthread+0x2ea/0x6b0
+[   22.850608]  ? __pfx_do_raw_spin_trylock+0x10/0x10
+[   22.850829]  ? __pfx_rcu_gp_kthread+0x10/0x10
+[   22.851039]  ? __kasan_check_read+0x11/0x20
+[   22.851233]  ? __kthread_parkme+0xe8/0x110
+[   22.851424]  ? __pfx_rcu_gp_kthread+0x10/0x10
+[   22.851627]  kthread+0x172/0x1a0
+[   22.851781]  ? __pfx_kthread+0x10/0x10
+[   22.851956]  ret_from_fork+0x2c/0x50
+[   22.852129]  </TASK>
 
-And this does not amke sense at all.
+schedule_timeout()
+->__mod_timer()
+ ->get_target_base(base, timer->flags)
+   ->get_timer_cpu_base(tflags, get_nohz_timer_target());
+     ->cpu = get_nohz_timer_target()
+             ->housekeeping_any_cpu(HK_TYPE_TIMER)
+                     /*housekeeping.cpumasks[type] is 2-3*/
+		     /*cpu_online_mask is 0-1*/
+               ->cpu = cpumask_any_and(housekeeping.cpumasks[type],
+			cpu_online_mask);
+             /*cpu value is 4*/
+     ->new_base = per_cpu_ptr(&timer_bases[BASE_DEF], cpu);
+   /*new_base is illegal address*/
+ ->if (base != new_base)
+   ->raw_spin_lock(&new_base->lock); ==> trigger Oops
 
-Thanks,
+This commit therefore add checks for cpumask_any_and() return values
+in housekeeping_any_cpu(), if cpumask_any_and() returns an illegal CPU
+value, the housekeeping_any_cpu() will return current CPU number.
 
-        tglx
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/sched/isolation.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 373d42c707bc..534397ab7a36 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -46,7 +46,11 @@ int housekeeping_any_cpu(enum hk_type type)
+ 			if (cpu < nr_cpu_ids)
+ 				return cpu;
+ 
+-			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
++			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
++			if (cpu >= nr_cpu_ids)
++				return smp_processor_id();
++			else
++				return cpu;
+ 		}
+ 	}
+ 	return smp_processor_id();
+-- 
+2.25.1
+
