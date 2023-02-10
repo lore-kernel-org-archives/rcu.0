@@ -2,117 +2,151 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 244FFC61DA4
-	for <rcu@archiver.kernel.org>; Fri, 10 Feb 2023 00:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24F2DC61DA4
+	for <rcu@archiver.kernel.org>; Fri, 10 Feb 2023 00:37:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjBJAe4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Feb 2023 19:34:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        id S229692AbjBJAhd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Feb 2023 19:37:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbjBJAee (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Feb 2023 19:34:34 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9E56F21A;
-        Thu,  9 Feb 2023 16:33:16 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 3FD97CE26DD;
-        Fri, 10 Feb 2023 00:32:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0741BC433D2;
-        Fri, 10 Feb 2023 00:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675989141;
-        bh=jOXSqjDphYYv6As1ICdSHiifRZOXRL5MGDV+D2X4kSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HFTYCkbh4eXYkqXrFwzuOQorD7AZFMCqeVAdHZZCoRxY1qe165VQ+Er3RPN+4rKBk
-         Y1zzf0Kg43nZz2tFSWryihLZHofc6xUD8cCbghNMmmMhbdJjGaiE7Yl1fOvPFo7dXL
-         3IAwfEPCbX8JXGAwiL5l4ZuvrpISQcsdDtWrE2SfRZA4SieOd3AfthO7bF3iOYZeEh
-         rZWuqBC0XV/uM0/ORHPMc95Vyg+Il3qdQnWefTGuQrMz3FQL0kdRWQreLcYNUU9Znf
-         n+NXh5wqB2U7iZwyBAF3AcvWQ6w+Rsq2XoQR6gGLiZlFGa8cXbjzmZOBDBxGFsdFHH
-         BA5gTpyfV5krQ==
-Date:   Fri, 10 Feb 2023 01:32:18 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     paulmck@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, qiuxu.zhuo@intel.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Keeping rcu-related kthreads running on
- housekeeping CPUS
-Message-ID: <Y+WQkmiypKUUUfcj@lothringen>
-References: <20230209102730.974465-1-qiang1.zhang@intel.com>
+        with ESMTP id S231219AbjBJAhM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Feb 2023 19:37:12 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABF47097D;
+        Thu,  9 Feb 2023 16:36:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1675989402; x=1707525402;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=V6yU29gSDEGi5q1SY/wET4K3sAFj4aMnzCN84rmhjZE=;
+  b=m5kT4mrtzFKJUz9GE8SSs0j4aytU5Ak/sHHt8PUln7WJpUeU1BNsD+Vo
+   pbTZKfllwncrjSc8K6nXG9in1IXXVcMIvSt2gbuJlDjFmpmHNhwUgOSJR
+   FNG8ZTfU840iVIV7NQpSo1lu2NcsXs3kCWRPoUrOJvXdd/N8W9YgnZ+4m
+   tqRS7HkyheEXxoSKC2/Y/mS1x4hSr7s3KrLk8jhHEWzT9JX6gUhgn8z+l
+   kOlKqwXhIBrrfFDJT55xq+BiOxRJWlfWPZ5lbry5eTTDI2aQ0WCOiANsu
+   OshkfJqHHTN47I5hpEOWBlWzBguiZawQ5mvEkB2aMqQ/jCf1R8SUcZNRm
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10616"; a="310656471"
+X-IronPort-AV: E=Sophos;i="5.97,285,1669104000"; 
+   d="scan'208";a="310656471"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2023 16:34:38 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10616"; a="756605659"
+X-IronPort-AV: E=Sophos;i="5.97,285,1669104000"; 
+   d="scan'208";a="756605659"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2023 16:34:35 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] sched/isolation: Fix illegal CPU value by housekeeping_any_cpu() return
+Date:   Fri, 10 Feb 2023 08:39:37 +0800
+Message-Id: <20230210003937.1030753-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230209102730.974465-1-qiang1.zhang@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 09, 2023 at 06:27:30PM +0800, Zqiang wrote:
-> For kernels built with CONFIG_NO_HZ_FULL=y and CONFIG_RCU_NOCB_CPU=y,
-> when passing cpulist to "isolcpus=", "nohz_full=" and "rcu_nocbs="
-> bootparams, after system starting, the rcu-related kthreads(include
-> rcu_gp, rcuog*, rcuop* kthreads etc) will running on housekeeping
-> CPUs, but for cpulist contains CPU0, the result will deferent, these
-> rcu-related kthreads will be restricted to running on CPU0.
-> 
-> Although invoke kthread_create() to spwan rcu-related kthreads and
-> when it's starting, invoke set_cpus_allowed_ptr() to allowed cpumaks
-> is housekeeping_cpumask(HK_TYPE_KTHREAD), but due to these rcu-related
-> kthreads are created before starting other CPUS, that is to say, at
-> this time, only CPU0 is online, when these rcu-related kthreads running
-> and set allowed cpumaks is housekeeping cpumask, if find that only CPU0
-> is online and CPU0 exists in "isolcpus=", "nohz_full=" and "rcu_nocbs="
-> bootparams, invoke set_cpus_allowed_ptr() will return error.
-> 
-> set_cpus_allowed_ptr()
->  ->__set_cpus_allowed_ptr()
->    ->__set_cpus_allowed_ptr_locked
->      {
->                 bool kthread = p->flags & PF_KTHREAD;
->                 ....
->                 if (kthread || is_migration_disabled(p))
->                         cpu_valid_mask = cpu_online_mask;
->                 ....
->                 dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, ctx->new_mask);
->                 if (dest_cpu >= nr_cpu_ids) {
->                         ret = -EINVAL;
->                         goto out;
->                 }
->                 ....
->      }
-> 
-> At this time, only CPU0 is set in the cpu_online_mask, the ctx->new_mask
-> is housekeeping cpumask and not contains CPU0, this will result dest_cpu
-> is illegal cpu value, the set_cpus_allowed_ptr() will return -EINVAL and
-> failed to set housekeeping cpumask.
-> 
-> This commit therefore add additional cpus_allowed_ptr() call in CPU hotplug
-> path. and reset the CPU affinity of rcuboost, rcuog, rcuop kthreads after
-> all other CPUs are online.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+For kernels built with CONFIG_NO_HZ_FULL=y, running the following tests:
 
-Good catch! But based on that and your other fix, I suspect that
-nohz_full=0... has never been seriously used.
+runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4" bootparams=
+"console=ttyS0 nohz_full=0,1 rcu_nocbs=0,1 sched_verbose" -d
 
-A few points:
+root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu2/online
+root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu3/online
 
-* This is a problem for kthreads in general. And since HK_TYPE_KTHREAD =
-  HK_TYPE_RCU and both are going to be merged in the future, I think we should
-  stop handling the RCU kthreads housekeeping affinity from RCU but let the
-  kthread code handle that and also fix the issue from the kthread code.
-  RCU boost may be an exception since we try to enforce some node locality
-  within the housekeeping range.  
+[   22.838290] BUG: unable to handle page fault for address: ffffffff84cd48c0
+[   22.839409] #PF: supervisor read access in kernel mode
+[   22.840215] #PF: error_code(0x0000) - not-present page
+[   22.841028] PGD 3e19067 P4D 3e19067 PUD 3e1a063 PMD 800ffffffb3ff062
+[   22.841889] Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN PTI
+[   22.842175] CPU: 0 PID: 16 Comm: rcu_preempt Not tainted 6.2.0-rc1-yocto-standard+ #658
+[   22.842534] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+               BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.o4
+[   22.843036] RIP: 0010:do_raw_spin_trylock+0x70/0x120
+[   22.843267] Code: 81 c7 00 f1 f1 f1 f1 c7 40 04 04 f3 f3 f3 65
+               48 8b 04 25 28 00 00 00 48 89 45 e0 31 c0 e8 b8 0
+[   22.844187] RSP: 0018:ffff8880072b7b30 EFLAGS: 00010046
+[   22.844429] RAX: 0000000000000000 RBX: ffffffff84cd48c0 RCX: dffffc0000000000
+[   22.844751] RDX: 0000000000000003 RSI: 0000000000000004 RDI: ffffffff84cd48c0
+[   22.845074] RBP: ffff8880072b7ba8 R08: ffffffff811daa20 R09: fffffbfff099a919
+[   22.845400] R10: ffffffff84cd48c3 R11: fffffbfff099a918 R12: 1ffff11000e56f66
+[   22.845719] R13: ffffffff84cd48d8 R14: ffffffff84cd48c0 R15: ffff8880072b7cd8
+[   22.846040] FS:  0000000000000000(0000) GS:ffff888035200000(0000) knlGS:0000000000000000
+[   22.846403] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   22.846667] CR2: ffffffff84cd48c0 CR3: 000000001036c000 CR4: 00000000001506f0
+[   22.846988] Call Trace:
+[   22.847105]  <TASK>
+[   22.847208]  ? __pfx_do_raw_spin_trylock+0x10/0x10
+[   22.847430]  ? rcu_read_unlock+0x26/0x80
+[   22.847612]  ? trace_preempt_off+0x2a/0x130
+[   22.847812]  _raw_spin_lock+0x41/0x80
+[   22.847984]  ? schedule_timeout+0x242/0x580
+[   22.848178]  schedule_timeout+0x242/0x580
+[   22.848366]  ? __pfx_schedule_timeout+0x10/0x10
+[   22.848575]  ? __pfx_do_raw_spin_trylock+0x10/0x10
+[   22.848796]  ? __pfx_process_timeout+0x10/0x10
+[   22.849005]  ? _raw_spin_unlock_irqrestore+0x46/0x80
+[   22.849232]  ? prepare_to_swait_event+0xb8/0x210
+[   22.849450]  rcu_gp_fqs_loop+0x66e/0xe70
+[   22.849633]  ? rcu_gp_init+0x87c/0x1130
+[   22.849813]  ? __pfx_rcu_gp_fqs_loop+0x10/0x10
+[   22.850022]  ? _raw_spin_unlock_irqrestore+0x46/0x80
+[   22.850251]  ? finish_swait+0xce/0x100
+[   22.850429]  rcu_gp_kthread+0x2ea/0x6b0
+[   22.850608]  ? __pfx_do_raw_spin_trylock+0x10/0x10
+[   22.850829]  ? __pfx_rcu_gp_kthread+0x10/0x10
+[   22.851039]  ? __kasan_check_read+0x11/0x20
+[   22.851233]  ? __kthread_parkme+0xe8/0x110
+[   22.851424]  ? __pfx_rcu_gp_kthread+0x10/0x10
+[   22.851627]  kthread+0x172/0x1a0
+[   22.851781]  ? __pfx_kthread+0x10/0x10
+[   22.851956]  ret_from_fork+0x2c/0x50
+[   22.852129]  </TASK>
 
-* If CPU 0 is isolated and it is the boot CPU, we should wait for a secondary
-  CPU to boot before activating nohz_full at all. Unfortunately the nohz_full
-  code is not yet ready for runtime housekeeping cpumask change but work is
-  in progress (I'm saying that for 10 years...)
+schedule_timeout()
+->__mod_timer()
+ ->get_target_base(base, timer->flags)
+   ->get_timer_cpu_base(tflags, get_nohz_timer_target());
+     ->cpu = get_nohz_timer_target()
+             ->housekeeping_any_cpu(HK_TYPE_TIMER)
+                     /*housekeeping.cpumasks[type] is 2-3*/
+		     /*cpu_online_mask is 0-1*/
+               ->cpu = cpumask_any_and(housekeeping.cpumasks[type],
+			cpu_online_mask);
+             /*cpu value is 4*/
+     ->new_base = per_cpu_ptr(&timer_bases[BASE_DEF], cpu);
+   /*new_base is illegal address*/
+ ->if (base != new_base)
+   ->raw_spin_lock(&new_base->lock); ==> trigger Oops
 
-* I'm tempted to revert 08ae95f4fd3b (nohz_full: Allow the boot CPU to be
-  nohz_full) since it doesn't work and nobody ever complained?
+This commit therefore add checks for cpumask_any_and() return values
+in housekeeping_any_cpu(), if cpumask_any_and() returns an illegal CPU
+value, the housekeeping_any_cpu() will return current CPU number.
 
-Thanks.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/sched/isolation.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 373d42c707bc..edfba557a2e1 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -46,7 +46,8 @@ int housekeeping_any_cpu(enum hk_type type)
+ 			if (cpu < nr_cpu_ids)
+ 				return cpu;
+ 
+-			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
++			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
++			return (cpu >= nr_cpu_ids) ? smp_processor_id() : cpu;
+ 		}
+ 	}
+ 	return smp_processor_id();
+-- 
+2.25.1
+
