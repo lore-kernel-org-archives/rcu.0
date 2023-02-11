@@ -2,205 +2,258 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67C4EC636D4
-	for <rcu@archiver.kernel.org>; Sat, 11 Feb 2023 01:09:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3CEFC61DA4
+	for <rcu@archiver.kernel.org>; Sat, 11 Feb 2023 08:28:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbjBKBJ6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Feb 2023 20:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
+        id S229455AbjBKI2y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 11 Feb 2023 03:28:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjBKBJ5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Feb 2023 20:09:57 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5574F6FEAD;
-        Fri, 10 Feb 2023 17:09:55 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PDCF95crtz4f3jYp;
-        Sat, 11 Feb 2023 09:09:49 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgAHuq3a6uZjMh+QDQ--.52692S2;
-        Sat, 11 Feb 2023 09:09:50 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
- <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
- <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
- <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo>
- <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
-Date:   Sat, 11 Feb 2023 09:09:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S229447AbjBKI2x (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 11 Feb 2023 03:28:53 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215E6470BE;
+        Sat, 11 Feb 2023 00:28:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676104132; x=1707640132;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=Fq7kTDKOKAkU6VyZqhng2WJaL8wXQ5UgaRwFQq82BZM=;
+  b=bzjwz0/DWNHfUs9FW5ektnEeeZ+Fl9vDAakqKnBWmo2V3FkT23rLE9mK
+   gsL/hLXFFnZ5QCs/mqf8GvFpIiBonMCIu6oFqPqXfeCVDrPqO27kvQdMs
+   orxImb2Sb7mCvl4XiI6jbFzwpUTQreaB4lVwUsOzy9hG0NGK73P4Iam+N
+   /A//zr04x3UvnB6bZVU6P1yT50T2qa3Csn1N1m2Fmhu6K3iFclEMuP8Mf
+   vNjnyqbLTQvmR7lmzquamsT4pe4zTHh98F8Sqg1Ki0wifU9Cs6bNDQXx6
+   9cuScnGoNqJcbUD7qIUXWHlQfp+Z979/Z5r5vYcXNTXfXNr43zHbvp8tN
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10617"; a="314236532"
+X-IronPort-AV: E=Sophos;i="5.97,289,1669104000"; 
+   d="scan'208";a="314236532"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2023 00:28:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10617"; a="698653849"
+X-IronPort-AV: E=Sophos;i="5.97,289,1669104000"; 
+   d="scan'208";a="698653849"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga008.jf.intel.com with ESMTP; 11 Feb 2023 00:28:51 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Sat, 11 Feb 2023 00:28:50 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Sat, 11 Feb 2023 00:28:50 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Sat, 11 Feb 2023 00:28:50 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.102)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Sat, 11 Feb 2023 00:28:50 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b0LaT7akrvlZTzgCQtYzuadDXEsSG3Z6dY3mJL5SPrUJIwdGWnp7iLRQD3K6HPqXWU4EWccqPyRlxONzV04NcVos06SmE8y4gKva7RXZ0QvNU7cQ40KQiV8bhumcOSJFj0oihQd0A14haYOB5sIG41eoNlNBFhP86Q5lpuOkKLZo4r7Z3bVJrMLDC30h9zxq94y6yiXzX2nQSUrHBjJl56rGVxboJS9Ni6uuc5ycKvHGEvqa57tuEej3ZK0HYaUU+OcLbU36pEwfaySJ32nqtqJzYOnw6EE/pgHLy2BNJ0N+fV0T9Zob25BwBp19fq51kUKB1r4BypbN8S2bGFhMDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+IwsGE5do7SshsvbIJ8qCix7Fx4ionwU+6478fe0Esk=;
+ b=a/+k0b7pQ2kFg7gX62o9vV8fj+FuYqwsp/tH9hhYfVcuTyeH2ftWKn0qq+Hy9z/w/QSv+5GAVt8BSh2Ha40du7onYfpnl7qmAfqX71n1HHPScEvKUZl4M8uuye8GvAPCLLMeAAW5Kjjv5tdnWcmGtmJkM10Gs3VNbAKN1193wGFLuciWmK+1+05Kd4LtzwyCgJUrkqMoXWNfaCN28IaZ12EanEzWXm+IW/ckbJr4IwzWxUgzqGCZXRRAK6rAKuLE3IzQtYgkYnOBzaaudX6YwreagIAYGtGGzbzoGWcl2FktZPAN1ssMI/p36aZX9G8rz6z0Er4sOtfuLI7Q2Qm+Sw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA1PR11MB6171.namprd11.prod.outlook.com (2603:10b6:208:3e9::13)
+ by SJ0PR11MB5792.namprd11.prod.outlook.com (2603:10b6:a03:425::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.21; Sat, 11 Feb
+ 2023 08:28:42 +0000
+Received: from IA1PR11MB6171.namprd11.prod.outlook.com
+ ([fe80::52f:ae62:7fbd:600e]) by IA1PR11MB6171.namprd11.prod.outlook.com
+ ([fe80::52f:ae62:7fbd:600e%9]) with mapi id 15.20.6086.021; Sat, 11 Feb 2023
+ 08:28:42 +0000
+From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] sched/isolation: Fix illegal CPU value by
+ housekeeping_any_cpu() return
+Thread-Topic: [PATCH v3] sched/isolation: Fix illegal CPU value by
+ housekeeping_any_cpu() return
+Thread-Index: AQHZPOfpehT8bN9fMkGXN/L3M8ggRK7JaM0A
+Date:   Sat, 11 Feb 2023 08:28:41 +0000
+Message-ID: <IA1PR11MB6171FFF325BABC76DCF2A8B989DF9@IA1PR11MB6171.namprd11.prod.outlook.com>
+References: <20230210003937.1030753-1-qiang1.zhang@intel.com>
+In-Reply-To: <20230210003937.1030753-1-qiang1.zhang@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-CM-TRANSID: gCh0CgAHuq3a6uZjMh+QDQ--.52692S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ar43KrWrur1xGw15Wr1xXwb_yoW7ury3pF
-        WxGF1UGF4UJr1UArsFqwn8tr1UtrW5Jr1UWr1UKr1Uurn0vrn3Gr1rJa1UCFyUAr48KF1U
-        Jr4jq343Z34UA37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU13rcDUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6171:EE_|SJ0PR11MB5792:EE_
+x-ms-office365-filtering-correlation-id: bc9fb998-9e18-42a3-4c1c-08db0c09fb70
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: t9iCpERMgPOh5lDUqqthpEenWjcDrDeUTGAC60FOhVSOfCqaWo77YXFNPBH/ztsAu9/SoArROqg7S2Fus105K5d6Zy50jJHD8u9N489YRHMjlaDLDvnsHZ0940HSWBg550WQNGYddKb9LnOz7dw1dqCiOHcL4Uzg7u+SaKfvDl5kG+mzFFr8PUGbwcRpLrGaBszrvseIN/XI5rsq9TPY4tQ2OR2b7UjM5Mj4w3hIBYZ2J/v0CjAg37diFqwJJuBFAlFR13wO4cpnfLmXBs7GVLKWTK10Ah6If5rK2zivSpWKonptw55SZ5nxYAMYdgQzaHKW/1BBDiOA+w1DwlnfRS8m/drqWp04H9d9ZYsKBrdJEsHNiNgcZsRi7NGbUaJgwF7ycgs7Hz+76gDAZ028m6QDiWrvaOj0q65zRtVnx21Ib6JgZMX3nVdP9FP88/F62QLn61RLUISi3jxjCPjsOFTfihyYLc+f8OiMdJpZhrPJUhfk/IaJLaJCG92xPHvSKeFuUPjEWw4+X5+lOKQ1Aq/azKXEruo+jV/LH7mj1SHqxmWIc05LUMbdAhNJvPwMfy42NvPHNqhSpVtYS02r9d+X1+z/WpjMW49aYt8SgwRF123kb19QXw0cdc2nQMesfDkBmQk4YxIjHsqjlXx30hwMaBeA9dWk6yqHpS7dFS7O+c5im2xkeckV9mtHKU6blt4SmaJp1/JKVkwBgUYViWqfhlKYkkXUhbaNtKBFElI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6171.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(366004)(346002)(376002)(39860400002)(136003)(396003)(451199018)(8936002)(2906002)(316002)(110136005)(66476007)(41300700001)(52536014)(66946007)(66556008)(5660300002)(66446008)(64756008)(8676002)(76116006)(38100700002)(82960400001)(122000001)(921005)(38070700005)(86362001)(6506007)(9686003)(53546011)(186003)(45080400002)(33656002)(55016003)(478600001)(71200400001)(83380400001)(26005)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Vjr5cURjvqgEB+aazttOWJOBwhySHi9ZSX72f8CzX9G+YofYSlUgmsV0G7WR?=
+ =?us-ascii?Q?tLzZ2uJwJhp06UsOxK8RVFkRCugwWrrWWQrKNEGRHoj40e0r0B6rX9ZO1csR?=
+ =?us-ascii?Q?Bn7/1VHNzsrasGMfMr+sSdy2jD65jze0aHBWKmaZVG/hg5Cf3fLMSnf0OtEc?=
+ =?us-ascii?Q?Xh+EOQj2vNi6srgylS2U93ADZsdaboQSa4ViM3/bOr1CM54FAh23w+3sEatB?=
+ =?us-ascii?Q?PNvWAEaUbrxJw2GPMp0Dwk1cKYp2yc1tqC3hNvElDDH0isWf4gl9uXg3pcNq?=
+ =?us-ascii?Q?jlJ7LePtKwjTklJOb6ZACAFFPBo5jwkscn4a4bdic/G+uVCXMy8WM5j1pulj?=
+ =?us-ascii?Q?J9va495oHsVEUHtm9z6+nAJiW2Wp3gl3BtDOmzTCD0ZQr+9LJIPO73kwQBFA?=
+ =?us-ascii?Q?+L1iWpOpAc4PpMPTl5ON2ZUKURqYlXKmLO6nwXk0r7j3VlEhOAyFGuB3FIrZ?=
+ =?us-ascii?Q?jFv9mWO463bYWb8pjp8rmzHUivP4w4UBRkTbfWMNRoUXZ+vHcVPQ6/WkgFQN?=
+ =?us-ascii?Q?wkBRRhDqQtoub/ZerHQNnI3gcrK92QvRmJXyk1LqG7D3DhHOD02dQphVDnWc?=
+ =?us-ascii?Q?454Yad3BgTXFBmLa700Hp3gndmu5qKJ1fSBNAgTSGsVGiKrrc1lXqcug/UpS?=
+ =?us-ascii?Q?HiAlI7evvSEINx+PUiMqVeiUGUohSWcZ0VTZQEOjmQP14DMth2SCIsQqCRqq?=
+ =?us-ascii?Q?909odSeaUr3oHP9dVzXwmxEp1jB+kITdrMqWYZjcOKhAGjV1/rq/7aSi2D3R?=
+ =?us-ascii?Q?rgcue5EKWO65SZJ17qvLBbedL5KycGFb2eLpkhRLOjtLL3t111d1Lh3N8x+B?=
+ =?us-ascii?Q?d4mCj66N2/JKkeW9RUOR7MqQ3o2fNu3aIXf6Gaa0XMNDN63DbxyoOPXUE3P/?=
+ =?us-ascii?Q?wv+OP4Qj0AMlDztUIewtFnsN2lJRAnyJpZCu6FqepYtqe0/iyBQ61WG3EGol?=
+ =?us-ascii?Q?BcAOKlNwOm8RXASmjhLmK7iaOmJ2GRfOoAPZAAo6A2UUt+hT3VKV9GszGcCe?=
+ =?us-ascii?Q?ZNQfYNmQR/NjJwAs+FBH/7wxe2QqtJXdrKf3RGkQDBcmMD17SQNJFGVjxLPe?=
+ =?us-ascii?Q?TQ0NosIIbuwMIz846RSmBOuQh7gNtVUmApQFASlQMmGefb5zXFnVTnM2owJL?=
+ =?us-ascii?Q?Bs4/Uilf+DtEen3mBLM/B0KM1mkwcBH4IMbKbJV2KrMrR7arlh1HWmPCl+hX?=
+ =?us-ascii?Q?HYcF4/LTD0gFz3WXCk5+sNq+al4DJ2fdgykVxKSiZWwOCIbP/x/3vkRtrXE+?=
+ =?us-ascii?Q?OVDIFre8GCjl14NZcb0YxJr8vJdrTtYB8sFIlMeWML+5MaLVyN+NfkQyCwe5?=
+ =?us-ascii?Q?w9Gh5yhJwfj2zlEyz3XGulEj+t+wl7b+VxsT79QBfAq+ENBDzr48xrQUViXG?=
+ =?us-ascii?Q?viUXFOHAWIC8sHC2cg5sLDv4klKYJKqOfprATG4asrwTF/VTz79BhxbOFjQt?=
+ =?us-ascii?Q?Ok1r04bEpEWef+1YOyvP9ji1iqsxqL7py4irWaBdZoMbz10pzGgna7ApOUT1?=
+ =?us-ascii?Q?4yPaLvs773yLRuW5NyIlxdzjW1DeuANy15COFJLOEnyh9RRbtOkM5f5hlt5W?=
+ =?us-ascii?Q?GqI8lyUTs07skbiiUhQRqeVWH5QtgkXjq/HcfLuT?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6171.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc9fb998-9e18-42a3-4c1c-08db0c09fb70
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2023 08:28:41.5424
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 87zH5pCWI5uBXNrHDKkpR3sPHvf7X3PowV6M5VCzCg2AXdjQmp+DyyBpcBrWvb/sa+hzaCFZtXgev8M9B4K/xg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5792
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+> From: Zqiang <qiang1.zhang@intel.com>
+> Sent: Friday, February 10, 2023 8:40 AM
+> To: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
+> paulmck@kernel.org; frederic@kernel.org; joel@joelfernandes.org;
+> rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH v3] sched/isolation: Fix illegal CPU value by
+> housekeeping_any_cpu() return
+>=20
+> For kernels built with CONFIG_NO_HZ_FULL=3Dy, running the following tests=
+:
+>=20
+> runqemu kvm slirp nographic qemuparams=3D"-m 1024 -smp 4" bootparams=3D
+> "console=3DttyS0 nohz_full=3D0,1 rcu_nocbs=3D0,1 sched_verbose" -d
+>=20
+> root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu2/online
+> root@qemux86-64:~# echo 0 > /sys/devices/system/cpu/cpu3/online
 
+Hi Qiang,
 
-On 2/11/2023 5:06 AM, Alexei Starovoitov wrote:
-> On Fri, Feb 10, 2023 at 8:33 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
->> On Wed, Jan 04, 2023 at 07:26:12PM CET, Alexei Starovoitov wrote:
->>> On Tue, Jan 3, 2023 at 11:14 PM Yonghong Song <yhs@meta.com> wrote:
->>>>
->>>>
->>>> On 1/3/23 10:30 PM, Hou Tao wrote:
->>>>> Hi,
->>>>>
->>>>> On 1/4/2023 2:10 PM, Yonghong Song wrote:
->>>>>>
->>>>>> On 1/3/23 5:47 AM, Hou Tao wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> On 1/2/2023 2:48 AM, Yonghong Song wrote:
->>>>>>>>
->>>>>>>> On 12/31/22 5:26 PM, Alexei Starovoitov wrote:
->>>>>>>>> On Fri, Dec 30, 2022 at 12:11:45PM +0800, Hou Tao wrote:
->>>>>>>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>>>>>>
->>>>>>>>>> Hi,
->>>>>>>>>>
->>>>>>>>>> The patchset tries to fix the problems found when checking how htab map
->>>>>>>>>> handles element reuse in bpf memory allocator. The immediate reuse of
->>>>>>>>>> freed elements may lead to two problems in htab map:
->>>>>>>>>>
->>>>>>>>>> (1) reuse will reinitialize special fields (e.g., bpf_spin_lock) in
->>>>>>>>>>        htab map value and it may corrupt lookup procedure with BFP_F_LOCK
->>>>>>>>>>        flag which acquires bpf-spin-lock during value copying. The
->>>>>>>>>>        corruption of bpf-spin-lock may result in hard lock-up.
->>>>>>>>>> (2) lookup procedure may get incorrect map value if the found element is
->>>>>>>>>>        freed and then reused.
->>>>>>>>>>
->>>>>>>>>> Because the type of htab map elements are the same, so problem #1 can be
->>>>>>>>>> fixed by supporting ctor in bpf memory allocator. The ctor initializes
->>>>>>>>>> these special fields in map element only when the map element is newly
->>>>>>>>>> allocated. If it is just a reused element, there will be no
->>>>>>>>>> reinitialization.
->>>>>>>>> Instead of adding the overhead of ctor callback let's just
->>>>>>>>> add __GFP_ZERO to flags in __alloc().
->>>>>>>>> That will address the issue 1 and will make bpf_mem_alloc behave just
->>>>>>>>> like percpu_freelist, so hashmap with BPF_F_NO_PREALLOC and default
->>>>>>>>> will behave the same way.
->>>>>>>> Patch https://lore.kernel.org/all/20220809213033.24147-3-memxor@gmail.com/
->>>>>>>> tried to address a similar issue for lru hash table.
->>>>>>>> Maybe we need to do similar things after bpf_mem_cache_alloc() for
->>>>>>>> hash table?
->>>>>>> IMO ctor or __GFP_ZERO will fix the issue. Did I miss something here ?
->>>>>> The following is my understanding:
->>>>>> in function alloc_htab_elem() (hashtab.c), we have
->>>>>>
->>>>>>                  if (is_map_full(htab))
->>>>>>                          if (!old_elem)
->>>>>>                                  /* when map is full and update() is replacing
->>>>>>                                   * old element, it's ok to allocate, since
->>>>>>                                   * old element will be freed immediately.
->>>>>>                                   * Otherwise return an error
->>>>>>                                   */
->>>>>>                                  return ERR_PTR(-E2BIG);
->>>>>>                  inc_elem_count(htab);
->>>>>>                  l_new = bpf_mem_cache_alloc(&htab->ma);
->>>>>>                  if (!l_new) {
->>>>>>                          l_new = ERR_PTR(-ENOMEM);
->>>>>>                          goto dec_count;
->>>>>>                  }
->>>>>>                  check_and_init_map_value(&htab->map,
->>>>>>                                           l_new->key + round_up(key_size, 8));
->>>>>>
->>>>>> In the above check_and_init_map_value() intends to do initializing
->>>>>> for an element from bpf_mem_cache_alloc (could be reused from the free list).
->>>>>>
->>>>>> The check_and_init_map_value() looks like below (in include/linux/bpf.h)
->>>>>>
->>>>>> static inline void bpf_obj_init(const struct btf_field_offs *foffs, void *obj)
->>>>>> {
->>>>>>          int i;
->>>>>>
->>>>>>          if (!foffs)
->>>>>>                  return;
->>>>>>          for (i = 0; i < foffs->cnt; i++)
->>>>>>                  memset(obj + foffs->field_off[i], 0, foffs->field_sz[i]);
->>>>>> }
->>>>>>
->>>>>> static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
->>>>>> {
->>>>>>          bpf_obj_init(map->field_offs, dst);
->>>>>> }
->>>>>>
->>>>>> IIUC, bpf_obj_init() will bzero those fields like spin_lock, timer,
->>>>>> list_head, list_node, etc.
->>>>>>
->>>>>> This is the problem for above problem #1.
->>>>>> Maybe I missed something?
->>>>> Yes. It is the problem patch #1 tries to fix exactly. Patch #1 tries to fix the
->>>>> problem by only calling check_and_init_map_value() once for the newly-allocated
->>>>> element, so if a freed element is reused, its special fields will not be zeroed
->>>>> again. Is there any other cases which are not covered by the solution or any
->>>>> other similar problems in hash-tab ?
->>>> No, I checked all cases of check_and_init_map_value() and didn't find
->>>> any other instances.
->>> check_and_init_map_value() is called in two other cases:
->>> lookup_and_delete[_batch].
->>> There the zeroing of the fields is necessary because the 'value'
->>> is a temp buffer that is going to be copied to user space.
->>> I think the way forward is to add GFP_ZERO to mem_alloc
->>> (to make it equivalent to prealloc), remove one case
->>> of check_and_init_map_value from hashmap, add short comments
->>> to two other cases and add a big comment to check_and_init_map_value()
->>> that should say that 'dst' must be a temp buffer and should not
->>> point to memory that could be used in parallel by a bpf prog.
->>> It feels like we've dealt with this issue a couple times already
->>> and keep repeating this mistake, so the more comments the better.
->> Hou, are you plannning to resubmit this change? I also hit this while testing my
->> changes on bpf-next.
-> Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
-> The former will take a long time to settle.
-> The latter is trivial.
-> To unblock yourself just add GFP_ZERO in an extra patch?
-Sorry for the long delay. Just find find out time to do some tests to compare
-the performance of bzero and ctor. After it is done, will resubmit on next week.
-> .
+Did some quick testing using the same kernel parameters and the reproducing=
+ steps as yours:
 
+1) If not apply this v3, the kernel was panic like you found.
+
+2) If apply this v3, the kernel did NOT panic and worked well.=20
+     But a WARNING call trace [1] was thrown.=20
+     Not sure whether [1] was another issue.
+
+[1]
+[ 2445.396928] smpboot: CPU 2 is now offline
+[ 2445.399084] CPU2 attaching NULL sched-domain.
+[ 2445.399091] CPU3 attaching NULL sched-domain.
+[ 2445.399202] CPU3 attaching NULL sched-domain.
+[ 2445.399208] root domain span: 3 (max cpu_capacity =3D 1024)
+[ 2449.731424] process 672 (tuned) no longer affine to cpu3
+[ 2449.733332] process 509 (systemd-journal) no longer affine to cpu3
+[ 2449.742278] process 541 (systemd-udevd) no longer affine to cpu3
+[ 2449.745409] process 760 (bash) no longer affine to cpu3
+[ 2449.748550] smpboot: CPU 3 is now offline
+[ 2449.755129] CPU3 attaching NULL sched-domain.
+[ 2449.755194] ------------[ cut here ]------------
+[ 2449.756296] WARNING: CPU: 0 PID: 483 at kernel/sched/topology.c:2257 bui=
+ld_sched_domains+0x104c/0x1430
+[ 2449.758227] Modules linked in: rfkill sunrpc psmouse i2c_piix4 atkbd lib=
+ps2 vivaldi_fmap serio_raw virtio_net net_failover failover sr_mod cdrom i8=
+042 qemu_fw_cfg pata_acpi ipmi_devintf ipmi_msghandler
+[ 2449.760804] CPU: 0 PID: 483 Comm: kworker/3:6 Not tainted 6.2.0-rc7-rcu+=
+ #21
+[ 2449.761820] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
+0.0.0 02/06/2015
+[ 2449.762931] Workqueue: events cpuset_hotplug_workfn
+[ 2449.763676] RIP: 0010:build_sched_domains+0x104c/0x1430
+[ 2449.764465] Code: 45 98 f4 ff ff ff 0f 84 1a f8 ff ff 48 8b 7d 90 31 f6 =
+e8 17 48 ff ff e9 0a f8 ff ff 0f 0b e9 01 fe ff ff 0f 0b e9 b6 fb ff ff <0f=
+> 0b c7 45 98 f4 ff ff ff e9 3f f7 ff ff 48 c7 45 90 00 00 00 00
+[ 2449.766934] RSP: 0000:ffffab51c08f7c00 EFLAGS: 00010246
+[ 2449.767568] process 737 (tuned) no longer affine to cpu3
+[ 2449.768378] RAX: 0000000000000004 RBX: 0000000000000004 RCX: 00000000000=
+00000
+[ 2449.769079] RDX: 0000000000000040 RSI: 0000000000000004 RDI: ffff9486442=
+d7f08
+[ 2449.769785] RBP: ffffab51c08f7ca0 R08: 0000000000000000 R09: 00000000000=
+00000
+[ 2449.770501] R10: 0000000000000190 R11: ffffab51c08f7ab8 R12: 00000000000=
+00001
+[ 2449.771227] R13: 0000000000000000 R14: ffff9486424379c0 R15: 00000000000=
+00001
+[ 2449.771920] FS:  0000000000000000(0000) GS:ffff948777c00000(0000) knlGS:=
+0000000000000000
+[ 2449.772714] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2449.773303] CR2: 000055ed0e0ed158 CR3: 000000010091a002 CR4: 00000000003=
+70ef0
+[ 2449.774011] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000000=
+00000
+[ 2449.774725] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000000000=
+00400
+[ 2449.775437] Call Trace:
+[ 2449.775752]  <TASK>
+[ 2449.776053]  ? cpu_attach_domain+0x3d7/0x810
+[ 2449.776532]  ? wait_for_completion+0xff/0x110
+[ 2449.777015]  partition_sched_domains_locked+0x1e7/0x3a0
+[ 2449.777554]  rebuild_sched_domains_locked+0x545/0x800
+[ 2449.778032]  ? rcu_sync_enter+0x6b/0xc0
+[ 2449.778377]  rebuild_sched_domains+0x1a/0x40
+[ 2449.778728]  cpuset_hotplug_workfn+0x18a/0xe10
+[ 2449.779105]  ? balance_push+0x51/0x110
+[ 2449.779444]  ? finish_task_switch+0x85/0x2c0
+[ 2449.779810]  ? __schedule+0x2f7/0x9f0
+[ 2449.780134]  process_one_work+0x1cd/0x3e0
+[ 2449.780495]  worker_thread+0x32/0x380
+[ 2449.781436]  ? process_one_work+0x3e0/0x3e0
+[ 2449.782006]  kthread+0xe8/0x110
+[ 2449.782478]  ? kthread_complete_and_exit+0x20/0x20
+[ 2449.783067]  ret_from_fork+0x1f/0x30
+[ 2449.783566]  </TASK>
+[ 2449.783953] ---[ end trace 0000000000000000 ]---
+[ 2449.789269] process 741 (tuned) no longer affine to cpu3
+[ 2449.794191] process 759 (sshd) no longer affine to cpu3
+[ 2450.188215] process 732 (in:imjournal) no longer affine to cpu3
+[ 2450.188457] process 733 (rs:main Q:Reg) no longer affine to cpu3
+[ 2453.011183] process 659 (gmain) no longer affine to cpu3
+[ 2465.517178] select_fallback_rq: 1 callbacks suppressed
+[ 2465.517185] process 605 (rpcbind) no longer affine to cpu3
+[ 2479.794154] process 652 (chronyd) no longer affine to cpu2
+...
