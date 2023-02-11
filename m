@@ -2,64 +2,60 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8BE7C636D4
-	for <rcu@archiver.kernel.org>; Fri, 10 Feb 2023 23:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CCB9C05027
+	for <rcu@archiver.kernel.org>; Sat, 11 Feb 2023 00:32:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbjBJXzY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Feb 2023 18:55:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        id S229491AbjBKAc3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Feb 2023 19:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbjBJXzX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Feb 2023 18:55:23 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F727E3D0
-        for <rcu@vger.kernel.org>; Fri, 10 Feb 2023 15:55:18 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id v17so10756243lfd.7
-        for <rcu@vger.kernel.org>; Fri, 10 Feb 2023 15:55:17 -0800 (PST)
+        with ESMTP id S229450AbjBKAc2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Feb 2023 19:32:28 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADF019F04
+        for <rcu@vger.kernel.org>; Fri, 10 Feb 2023 16:32:25 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id x29so8266634ljq.0
+        for <rcu@vger.kernel.org>; Fri, 10 Feb 2023 16:32:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hub9eRpb+vroZn2JIwZrXOy9Vh1ghxk4CimJGPNm0Ac=;
-        b=wWTQ7RF97aVudont8TU+6FhsCigfrMmOIjnS/02DpAK68VqQXI7/Yp4T+culJTNknr
-         b4pOM3v1l5mTQNVk589OcKjhA0wcm7Z+f+g5zOxsHrKaTLg6Ed+5lxt1h5c2mz+EqLuh
-         Fn41MlFyF56lNYD6aLSGbeiR3vcwqU4K3TpYU=
+        bh=DLk3N6Go0BGyrEJaF9vC3EBGKIKqnzWEMDRO70teK4M=;
+        b=cnBtBG0CW3B/2iQ2B5/D9xY8SBHkZx1vfdgXy1z6TvA1ugBr4M4WiTz9R2fksi0PFO
+         MyYpbWlkauMp/ZpJbxXO4FEkuZQahxjrUzKPf2uRrdLf3pfQ7tSSoiyxrsfFrWNKzEf9
+         kMz9+JMaxH+qfC3cg0oGhAcMDK4w+LmUTbhlE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Hub9eRpb+vroZn2JIwZrXOy9Vh1ghxk4CimJGPNm0Ac=;
-        b=gPzxzfG20ZRQ5ASe7/b+5g30f3wnIa68y2QteGqMd1MJlfRIAqFcYiLI69DSydJOI6
-         eDKpq7gC+ITSeSfFYEXufbjadgXSu/TdSN2FMAtlsFJL+oEkq0ib3Oq8q5eE1YQHMZXH
-         jW0s5PiOrKYaE01PtBMhcmOQBhSSg7vdqkBoQHbY4GFas6V8G2mcqSUZkLmtpf0hyOAB
-         CxV2O2z8pS3JAlmdm36jDSny3UcE4BE7ovKqp/Z+U+MvZnTKH0z8a6a84HPJT/dJVLyb
-         8ULvblN7ySvPo4uusXUFF1e34SCE7+I9njbS4JSBfDvekR6Ddd/5hJCYp9u5Uxv1ZEK2
-         avuw==
-X-Gm-Message-State: AO0yUKUM3EBtobZVp+M6ROYSvpAAFe0+Z1JqwQRHtTsvyG5mEFasy3Uc
-        q0ysbMcruy5uDYW1x5L5Vx5cMhfP1Gt2aCbSAB4yVQ==
-X-Google-Smtp-Source: AK7set/QhEfDVyZculK9TptRG98c56WuSq04L/SFwsKvGb+6EFvfVl29B2nHU/ZB9573vyR8m4zBepXjbJXDr1LvgSY=
-X-Received: by 2002:ac2:4a66:0:b0:4db:dd7:dee2 with SMTP id
- q6-20020ac24a66000000b004db0dd7dee2mr2494355lfp.16.1676073316327; Fri, 10 Feb
- 2023 15:55:16 -0800 (PST)
+        bh=DLk3N6Go0BGyrEJaF9vC3EBGKIKqnzWEMDRO70teK4M=;
+        b=2WWWfLclAdfzqXWJw5rvR9LBNagFYapD8xIUMU3Jk3y5v+Fe/pUjZ5UCmdqtB3cJvV
+         BBZeVa6fBIIi1+UjUuWXiev+FxfG+o5WtvWkqpj6j4gJ5p7heEQw8aVSZHsgsDlZUw4o
+         MySfbmlOnkwnO8DmmyXBLOqyx+70Hu49ASD9ei5Oualymiv9qT6h0M35Ew+6jdlc2jMl
+         4GbmaLdNnY0F/av44RzBN0uyK80/cY4hStfIqRwc81TN5kOnUFwd11DZW+XMeXuTBWBw
+         UBX6+EEKWNa+fBrXVurIQWhB1OEtPB9pvm4GM0s6DX0SupXrX8DuNL6pNzr+LZH/dGM7
+         OAtw==
+X-Gm-Message-State: AO0yUKUS6V4/oE7VBbX6PihZ2Q1l0BMOzmpxyyamvUOHUdjO7N22Gp/1
+        G3u+fotmwJipg2DhYYDnvw5f4mdZe45aMboyxuVt7g==
+X-Google-Smtp-Source: AK7set9D/zU4cDYCyWxNtSbviTpbc/NX1394tyVjqRqUcNBQYTAUNU/eh7TnshobTDBv0iuuy9WJ9Z4u82/RZkkdT0c=
+X-Received: by 2002:a2e:2f1e:0:b0:293:25c1:808f with SMTP id
+ v30-20020a2e2f1e000000b0029325c1808fmr2060546ljv.154.1676075544135; Fri, 10
+ Feb 2023 16:32:24 -0800 (PST)
 MIME-Version: 1.0
 References: <20230204022051.2737724-1-joel@joelfernandes.org>
- <PH0PR11MB58800C6FD1C0DDF8EC67DB5DDADA9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <CAEXW_YRwe781s1faLQcRBvL5pBWv9WmRuhcP=PmqHUJcm9Rphg@mail.gmail.com>
- <CAEXW_YSY5nYL4LUoAX1Z8kUXtE-GW3Zor__cDWsdPL3OqEe4bA@mail.gmail.com> <PH0PR11MB5880E2B1C4A0A4DFA46C3B7FDADB9@PH0PR11MB5880.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB5880E2B1C4A0A4DFA46C3B7FDADB9@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <20230204022051.2737724-1-joel@joelfernandes.org>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 10 Feb 2023 18:55:04 -0500
-Message-ID: <CAEXW_YQyqPCPZf8wLHaVqVWO43jND0kmsYbS=t_EFrXrBmzRvw@mail.gmail.com>
+Date:   Fri, 10 Feb 2023 19:32:12 -0500
+Message-ID: <CAEXW_YQN-AxYV=Buxt7jv9VxHWB-hoSUBjJ3VXDoc945qK=5XQ@mail.gmail.com>
 Subject: Re: [PATCH] rcu/tree: Improve comments in rcu_report_qs_rdp()
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+To:     linux-kernel@vger.kernel.org
+Cc:     Qiang Zhang <Qiang1.zhang@intel.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Boqun Feng <boqun.feng@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -67,116 +63,98 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 6, 2023 at 8:15 PM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
+On Fri, Feb 3, 2023 at 9:21 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
 >
-> On Mon, Feb 6, 2023 at 12:19 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > On Sun, Feb 5, 2023 at 10:09 PM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
-> > >
-> > >
-> > > >Recent discussion triggered due to a patch linked below, from Qiang,
-> > > >shed light on the need to accelerate from QS reporting paths.
-> > > >
-> > > >Update the comments to capture this piece of knowledge.
-> > > >
-> > > >Link: https://lore.kernel.org/all/20230118073014.2020743-1-qiang1.zhang@intel.com/
-> > > >Cc: Qiang Zhang <Qiang1.zhang@intel.com>
-> > > >Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > >Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > >
-> > > >---
-> > > > kernel/rcu/tree.c | 13 ++++++++++++-
-> > > > 1 file changed, 12 insertions(+), 1 deletion(-)
-> > > >
-> > > >diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > >index 93eb03f8ed99..713eb6ca6902 100644
-> > > >--- a/kernel/rcu/tree.c
-> > > >+++ b/kernel/rcu/tree.c
-> > > >@@ -1983,7 +1983,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
-> > > >       } else {
-> > > >               /*
-> > > >                * This GP can't end until cpu checks in, so all of our
-> > > >-               * callbacks can be processed during the next GP.
-> > > >+               * callbacks can be processed during the next GP. Do
-> > > >+               * the acceleration from here otherwise there may be extra
-> > > >+               * grace period delays, as any accelerations from rcu_core()
-> > >
-> > >
-> > > Does the extra grace period delays means that if not accelerate callback,
-> > > the grace period will take more time to end ? or refers to a delay in the
-> > > start time of a new grace period?
-> >
-> > Yes, so IMO it is like this if we don't accelerate:
-> > 1. Start GP 1
-> > 2. CPU1 queues callback C1 (not accelerated yet)
-> > 3. CPU1 reports QS for GP1 (not accelerating anything).
-> > 4. GP1 ends
-> > 5. CPU1's note_gp_changes() is called, accelerate happens, now the CB
-> > will execute after GP3 (or alternately, rcu_core() on CPU1 does
-> > accelerate).
-> > 6. GP2 ends.
-> > 7. GP3 starts.
-> > 8. GP3 ends.
-> > 9. CB is invoked
-> >
-> > Instead, what we will get the following thanks to the acceleration here is:
-> > 1. Start GP 1
-> > 2. CPU1 queues callback C1 (not accelerated yet)
-> > 3. CPU1 reports QS for GP1 and acceleration happens as done by the
-> > code this patch adds comments for.
-> > 4. GP1 ends
-> > 5. CPU1's note_gp_changes() is called
-> > 6. GP2 ends.
-> > 7. CB is invoked
-> >
-> >Sorry I missed some steps, here is the update:
-> >1. Start GP 1
-> >2. CPU1 queues callback C1 (not accelerated yet)
-> >3. CPU1 reports QS for GP1 (not accelerating anything).
-> >4. GP1 ends
-> >5. GP2 starts for some other reason from some other CPU.
-> >6. CPU1's note_gp_changes() is called, acceleration happens, now the CB
-> >will execute after GP3.
-> >7. GP2 ends.
-> >8. GP3 starts.
-> >9. GP3 ends.
-> >10. CB is invoked
-> >
-> >Instead, what we will get the following thanks to the acceleration here is:
-> >1. Start GP 1
-> >2. CPU1 queues callback C1 (not accelerated yet)
-> >3. CPU1 reports QS for GP1 and acceleration happens as done by the
-> >code this patch adds comments for.
-> >4. GP1 ends
-> >5. GP2 starts
-> >6. GP2 ends.
-> >7. CB is invoked
-> >
-> >Does that make sense or is there a subtlety I missed?
+> Recent discussion triggered due to a patch linked below, from Qiang,
+> shed light on the need to accelerate from QS reporting paths.
 >
+> Update the comments to capture this piece of knowledge.
 >
+> Link: https://lore.kernel.org/all/20230118073014.2020743-1-qiang1.zhang@intel.com/
+> Cc: Qiang Zhang <Qiang1.zhang@intel.com>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 >
-> Thanks for detailed description, that is to say, the grace period delays means that
-> if there is no acceleration,  the invocation of callback may be delayed by one or
-> more grace periods.
+> ---
+>  kernel/rcu/tree.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 >
-> Can you re-describe the meaning of  "grace period delays "in the comments?
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 93eb03f8ed99..713eb6ca6902 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1983,7 +1983,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>         } else {
+>                 /*
+>                  * This GP can't end until cpu checks in, so all of our
+> -                * callbacks can be processed during the next GP.
+> +                * callbacks can be processed during the next GP. Do
+> +                * the acceleration from here otherwise there may be extra
+> +                * grace period delays, as any accelerations from rcu_core()
+> +                * or note_gp_changes() may happen only after the GP after the
+> +                * current one has already started. Further, rcu_core()
+> +                * only accelerates if RCU is idle (no GP in progress).
+>                  *
 
-Yes, good point. I should change it to "one or more delays". Thank you
-for the suggestion!
+And I couldn't help but pass this through ChatGPT:
 
-Sorry for my late reply as I was OOO this week.
+Before:
+This GP can't end until cpu checks in, so all of our callbacks can be
+processed during the next GP. Do the acceleration from here otherwise
+there may be extra grace period delays, as any accelerations from
+rcu_core() or note_gp_changes() may happen only after the GP after the
+current one has already started. Further, rcu_core() only accelerates
+if RCU is idle (no GP in progress). NOCB kthreads have their own way
+to deal with that...
+
+After:
+In order to ensure all callbacks are processed efficiently, this grace
+period (GP) must not end until the CPU checks in. To avoid unnecessary
+grace period delays, it is important to initiate acceleration from the
+current location. Any acceleration from the functions "rcu_core()" or
+"note_gp_changes()" may only occur after the next GP has already
+started. It is important to note that "rcu_core()" will only initiate
+acceleration if the RCU system is idle (no GP in progress). NOCB
+kthreads, on the other hand, have their own unique method for handling
+this situation.
+
+It sounds well written, but maybe a bit factually incorrect.. trying again:
+
+To ensure all callbacks are processed in the next grace period, this
+GP must not end until the CPU has checked in. To avoid any additional
+grace period delays, it's important to perform the acceleration from
+here. If acceleration is performed from rcu_core() or
+note_gp_changes(), it may only occur after the next GP has already
+started. Additionally, it's important to note that rcu_core() will
+only accelerate if RCU is idle and no GP is in progress. The NOCB
+kthreads have a separate mechanism for dealing with this issue.
+
+Not bad, but the first sentence is still factually incorrect. Yes, I'm
+bored..why do you ask? ;-)
+
+I think except for the first sentence though, it made for a nice
+grammatical re-write (give or take Frederic and Qiang's comments ;-)).
 
  - Joel
 
 
+
+>                  * NOCB kthreads have their own way to deal with that...
+>                  */
+> @@ -1993,6 +1998,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>                         /*
+>                          * ...but NOCB kthreads may miss or delay callbacks acceleration
+>                          * if in the middle of a (de-)offloading process.
+> +                        *
+> +                        * Such missed acceleration may cause the callbacks to
+> +                        * be stranded until RCU is fully de-offloaded, as
+> +                        * acceleration from rcu_core() and note_gp_changes()
+> +                        * cannot happen for fully/partially offloaded mode due
+> +                        * to ordering dependency between rnp lock and nocb_lock.
+>                          */
+>                         needacc = true;
+>                 }
+> --
+> 2.39.1.519.gcb327c4b5f-goog
 >
-> Thanks
-> Zqiang
->
->
->
-> >
-> >Thanks,
-> >
-> > - Joel
