@@ -2,63 +2,40 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5905DC636CC
-	for <rcu@archiver.kernel.org>; Mon, 13 Feb 2023 15:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCAD9C636CC
+	for <rcu@archiver.kernel.org>; Mon, 13 Feb 2023 20:42:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjBMPUK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Feb 2023 10:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
+        id S229558AbjBMUmX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Feb 2023 15:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjBMPUJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Feb 2023 10:20:09 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA6155B9
-        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 07:19:43 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id a2so12616711wrd.6
-        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 07:19:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vBVRW3XJB/dsQe28qObDwY1va8U6ugsCHUwHE1TeoHo=;
-        b=w+/JciSH3sQgbIKPFpDqeYFFqcYSKc9sfMWWGZ+LuNnQjjCBJGWU7AfDpcq2/is5ph
-         10zTwvQ7dV0mTP9/gb0WBLZMy/iH3zkBdFcHCPk9FYD+xH30s9yj/U4S3YV7u+XPL8q5
-         TsN37/HlzpOioBVDQtU0S1onvBp/4+fd874/4ifD13jcz8x1Vf0fn4wC6fCiV5aYgyxD
-         aGBQuaU5inu7DcWLoAdwixV63e1qH6HdheX5iXH2E74/FTCx9OlBRKnfUcmrmjqmikWz
-         Eaq0uTsGLhv+hsInwKj0YQvfEHLExh1XtyJPrDmKivlaKc1Wnz4h0RVTFiMhWV7gp/vm
-         w92w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vBVRW3XJB/dsQe28qObDwY1va8U6ugsCHUwHE1TeoHo=;
-        b=jVepJHwPqmQ4RuXFsDqFsTebqLrMCi5VqSvKz+hhbu/ASUeY5kasTDYh1JX2XPQGXQ
-         xGcLRbDB2agwZ+8SWxuPDErbuBsrI8/1NR39yrb+Cr26rB9NspE5QKZ4LO8i6L/PVaGW
-         OJ0iPhR8XxJjrwynOY3gj79YGIrwhBKh6GdTno/y67Zh1MFCd6jeaRFyeo2KKcCr0zQZ
-         1bdqsNjn7uegxa3lVCT/3vmNRaHjJd/pZY3LVNOslV3t6WS5Ru/lRx0QT0NN9JjsEmzr
-         +K57noo1TdtqhA4pu1PfEVSErasCt1hf+0Kmcy7WEKrZSfYZuJGmq7Dn+G+k+VxKGDkR
-         A3Gw==
-X-Gm-Message-State: AO0yUKXKZdvDsGOSU69kCIL/RNquvJk5FioHexnBkTbnz4EQC7Hs5rSi
-        nFg/ePXtTeoSiIkEWQtH2S5K0Q==
-X-Google-Smtp-Source: AK7set8He8H3zgxnh+9zUlZ4hjUThuw6BcQHtJBmflOPQ7yEaVLCEwj4WUR2/WuiDOiPowXJz2lTSw==
-X-Received: by 2002:adf:eb51:0:b0:2c3:dbe0:58b8 with SMTP id u17-20020adfeb51000000b002c3dbe058b8mr20763507wrn.41.1676301582442;
-        Mon, 13 Feb 2023 07:19:42 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:9e1:512:feb0:fe83? ([2a02:6b6a:b566:0:9e1:512:feb0:fe83])
-        by smtp.gmail.com with ESMTPSA id k1-20020adff5c1000000b002bff574a250sm10904252wrp.2.2023.02.13.07.19.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Feb 2023 07:19:41 -0800 (PST)
-Message-ID: <04d98646-7c2e-9a62-1340-2d8efe69a121@bytedance.com>
-Date:   Mon, 13 Feb 2023 15:19:41 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [PATCH v8 8/9] x86/mtrr: Avoid repeated save of
- MTRRs on boot-time CPU bringup
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, kim.phillips@amd.com
+        with ESMTP id S229520AbjBMUmW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Feb 2023 15:42:22 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318ED15C8D;
+        Mon, 13 Feb 2023 12:42:21 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1676320939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kod532Kzy81F3WX9JaQvMDl3mXZS1ubjRDWA/ArYp8o=;
+        b=Plv8KLQzWy5a52dChtlhVxRyP+ggM9C5YROAhSpnDEF0Hd9DEk5aDnirV5UtAW0H76ywkT
+        B6AaSd0vkCu6C+Gl8rG/IYgPjA0963SfVwsc9mPX42FRBNY7w6AV1awl2xrEvAXZYh4MBP
+        2PYkaWkH+9s6Me4bj9K7Rk41AU+7toGtxCdJ0ZoGSYawenqvN1aPZI3OZr+/t5sCT1JuRA
+        UULDWNBo7FKDEQgqVck6wUd07svfikT6Ejr93uTp5sWQW5MBDp8Dra/xKslZNgFKBBL/vM
+        oTNmzbgTtyZEcjJoDe93hzcpz6waLfNwlMrO7jTFxepEc8vwWYOOOYad++QcDA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1676320939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kod532Kzy81F3WX9JaQvMDl3mXZS1ubjRDWA/ArYp8o=;
+        b=UYJc4sju02dHBn72mHpDWitves66/xVXuG1xVRgb9sMcBiPShYI6v6+bXuAnWL96rPvP88
+        CSN3dve+zS65rDAg==
+To:     Usama Arif <usama.arif@bytedance.com>,
+        David Woodhouse <dwmw2@infradead.org>, kim.phillips@amd.com
 Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
         pbonzini@redhat.com, paulmck@kernel.org,
@@ -67,106 +44,77 @@ Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com
+Subject: Re: [External] Re: [PATCH v8 8/9] x86/mtrr: Avoid repeated save of
+ MTRRs on boot-time CPU bringup
+In-Reply-To: <04d98646-7c2e-9a62-1340-2d8efe69a121@bytedance.com>
 References: <20230209154156.266385-1-usama.arif@bytedance.com>
  <20230209154156.266385-9-usama.arif@bytedance.com> <87mt5m1yiz.ffs@tglx>
  <9b6bca9c-7189-a2d5-8c0a-f55c24f54b62@bytedance.com> <878rh61jqx.ffs@tglx>
  <6fc16f3048719058bccce9d488bcb75252f49031.camel@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <6fc16f3048719058bccce9d488bcb75252f49031.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ <04d98646-7c2e-9a62-1340-2d8efe69a121@bytedance.com>
+Date:   Mon, 13 Feb 2023 21:42:18 +0100
+Message-ID: <87y1p1s3f9.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 10/02/2023 08:55, David Woodhouse wrote:
-> On Fri, 2023-02-10 at 00:50 +0100, Thomas Gleixner wrote:
->> On Thu, Feb 09 2023 at 20:32, Usama Arif wrote:
->>> On 09/02/2023 18:31, Thomas Gleixner wrote:
->>>>>          first_cpu = cpumask_first(cpu_online_mask);
->>>>>          smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
->>>>
->>>> So why is this relevant after the initial bringup? The BP MTRRs have
->>>> been saved already above, no?
->>>>
+On Mon, Feb 13 2023 at 15:19, Usama Arif wrote:
+> On 10/02/2023 08:55, David Woodhouse wrote:
+>> On Fri, 2023-02-10 at 00:50 +0100, Thomas Gleixner wrote:
+>>> I knew that already :) But seriously:
 >>>
->>> I will let David confirm if this is correct and why he did it, but this
->>> is what I thought while reviewing before posting v4:
->>>
->>> - At initial boot (system_state < SYSTEM_RUNNING), when mtrr_save_state
->>> is called in do_cpu_up at roughly the same time so MTRR is going to be
->>> the same, we can just save it once and then reuse for other secondary
->>> cores as it wouldn't have changed for the rest of the do_cpu_up calls.
->>>
->>> - When the system is running and you offline and then online a CPU, you
->>> want to make sure that hotplugged CPU gets the current MTRR (which might
->>> have changed since boot?), incase the MTRR has changed after the system
->>> has been booted, you save the MTRR of the first online CPU. When the
->>> hotplugged CPU runs its initialisation code, its fixed-range MTRRs will
->>> be updated with the newly saved fixed-range MTRRs.
->>
->> I knew that already :) But seriously:
->>
->> If the MTRRs are changed post boot then the cached values want to be
->> updated too.
-> 
+>>> If the MTRRs are changed post boot then the cached values want to be
+>>> updated too.
+>> 
+> I had previously only done smpboot time measurements for the whole 
+> patchset, but I tested the patchset without this commit and it doesn't 
+> make a difference to smpboot time as its negligable work to read those 
+> MTRR MSRs into mtrr_state.fixed_ranges.
+> This commit is also independent of parallel smp bringup, similar to 
+> reusing timer calibration so I think it could be considered as a 
+> separate patchset if needed. I will post the next revision without this 
+> commit, but here is my view on MTRR save/restore (which shouldn't matter 
+> for the next revision...).
 
-I had previously only done smpboot time measurements for the whole 
-patchset, but I tested the patchset without this commit and it doesn't 
-make a difference to smpboot time as its negligable work to read those 
-MTRR MSRs into mtrr_state.fixed_ranges.
-This commit is also independent of parallel smp bringup, similar to 
-reusing timer calibration so I think it could be considered as a 
-separate patchset if needed. I will post the next revision without this 
-commit, but here is my view on MTRR save/restore (which shouldn't matter 
-for the next revision...).
+Correct. It's an orthogonal problem and not a prerequisite for the
+initial parallel bringup.
 
-If the MTRR changes on a running system, there might be a bug during 
-hotplug in the original code that handles MTRR? which is also carried 
-over in this patch.
- From what I can see, MTRR is only saved+restored during initial boot, 
-hotplugging CPU and __save/__restore_processor_state() (used in creating 
-image for hibernation, suspend, kexec...). So if for e.g. in a running 
-system (that has not hibernated, suspended, kexeced), if MTRR for CPU0 
-(first_cpu) changed post-boot and CPU3 is hotplugged, only MTRR for CPU3 
-is updated and CPU0 and CPU3 will hold the same value, while the rest of 
-the CPUs will have the older first-boot value? This behavior will happen 
-with or without this patch. I think this is what Thomas is referring to 
-above when he says that the cached values want to be updated? But the 
-issue is present in the original code as well.
+> If the MTRR changes on a running system, there might be a bug during 
+> hotplug in the original code that handles MTRR? which is also carried 
+> over in this patch.
+>  From what I can see, MTRR is only saved+restored during initial boot, 
+> hotplugging CPU and __save/__restore_processor_state() (used in creating 
+> image for hibernation, suspend, kexec...). So if for e.g. in a running 
+> system (that has not hibernated, suspended, kexeced), if MTRR for CPU0 
+> (first_cpu) changed post-boot and CPU3 is hotplugged, only MTRR for CPU3 
+> is updated and CPU0 and CPU3 will hold the same value, while the rest of 
+> the CPUs will have the older first-boot value? This behavior will happen 
+> with or without this patch. I think this is what Thomas is referring to 
+> above when he says that the cached values want to be updated? But the 
+> issue is present in the original code as well.
 
-Thanks!
-Usama
+No. Changing a MTTR is done via stop_machine() on all online CPUs in
+parallel. So there is no bug.
 
-> They are, aren't they? The only way we come out of mtrr_save_state()
-> without calling mtrr_save_fixed_ranges() — either directly or via
-> smp_call_function_single() — is if they've already been saved once
-> *and* system_state < SYSTEM_RUNNING.
-> 
-> I suppose we could make that clearer by moving the definition of the
-> mtrr_saved flags inside the if (system_state < SYSTEM_RUNNING) block?
-> 
-> @@ -721,11 +721,20 @@ void __init mtrr_bp_init(void)
->    */
->   void mtrr_save_state(void)
->   {
->   	int first_cpu;
->   
->   	if (!mtrr_enabled())
->   		return;
->   
-> +	if (system_state < SYSTEM_RUNNING) {
-> +		static bool mtrr_saved;
-> +		if (!mtrr_saved) {
-> +			mtrr_save_fixed_ranges(NULL);
-> +			mtrr_saved = true;
-> +		}
-> +		return;
-> +	}
-> +
->   	first_cpu = cpumask_first(cpu_online_mask);
->   	smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
->   }
-> 
+But its stupid that an update to a MTRR is not updating the cached
+value, which results in this sillyness of reading back the real values
+into the cache on CPU hotplug in order to set them up correctly on the
+upcoming CPU.
+
+So the real improvement would be to:
+
+  1) Cache the MTRRs on the boot CPU once during early boot
+
+  2) When MTRRs are changed then update the cache too
+
+That ensures that the MTRR cache is always up to date and can be
+utilized on CPU hotplug.
+
+The 'if (state < RUNNING)' thing is just a sloppy hack which tries to
+save a few cycles at boot.
+
+Thanks,
+
+        tglx
