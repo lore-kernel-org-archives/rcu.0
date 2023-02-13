@@ -2,37 +2,64 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2975C636D4
-	for <rcu@archiver.kernel.org>; Mon, 13 Feb 2023 20:54:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 568B9C636CC
+	for <rcu@archiver.kernel.org>; Mon, 13 Feb 2023 22:30:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbjBMUyN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Feb 2023 15:54:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        id S229973AbjBMWas (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Feb 2023 17:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjBMUyM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Feb 2023 15:54:12 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B9920069;
-        Mon, 13 Feb 2023 12:54:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=L9Lp70nKi81urUNH/P20ez0LtfS+viLTxmxtWz3Dtp0=; b=H3t89eeMooGlhIz6hiBQXvjRQQ
-        dM2XLF1imB62BLLyF8ysJ5H2Bvmj3Txr0wpFPF/Kg8ztcRrLp5+eltRMS6YlUMl2fcGctmmYeOBAm
-        e6L5Ll90FgfvtPBTG/g9tGx/uaK3RXQCcb9winjrAKvpF3Jy3sqn0NQQEpD2r0moOXEV0qGLlYnhX
-        pwEMhOBgf6RJPoTIV8Np7OZ08kLySOEFenh9NKCnmX4XN2FB42dSWblW2wmm7Es3U00Ge5KOfM3R5
-        ZBRhQsbg667/r6P/Yc8dxHpj8Blv7VOEBY/UAZZTSbb7F0Bes4alcGflAcxHi/8HPHMWgefRKOrlv
-        xStaFbEg==;
-Received: from [2001:871:43:561d:2d56:2cf3:ed22:ad26] (helo=[IPv6:::1])
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pRfoT-009SDs-00;
-        Mon, 13 Feb 2023 20:52:37 +0000
-Date:   Mon, 13 Feb 2023 21:53:15 +0100
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com
-CC:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        with ESMTP id S230044AbjBMWar (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Feb 2023 17:30:47 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B651CF72
+        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 14:30:23 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id he5so1883135wmb.3
+        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 14:30:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=akb88PvmqOcRfJ+0UlV8yVezkmvUAKQz1XrSjJj+70E=;
+        b=aKwxdJpGpXkNcHV3pb/eAwAi95fBzhrFPwjEPMnvQ909il/kZXDSfzYqYkVfr5xMTc
+         1CVBG9K/P46woCBt2VQ/30V8v6hErm4LnnXWARTDPyrlBwsmhcPD46p90WmV2YzAGXT3
+         f+LGPEnLv6lgwTCHXLTZrN3aHC+HVSNHgP5BuNPM5tXPk4EbBj3UGp+/bYYKaYpwVQfY
+         IhNYCVkL26QXAPHzcW3Q/q/HQeIwV4zXlwGBw2nvQHdszcmUhvePZCRygMTqYq5sFGW/
+         oRjLOZapPQBz/xX/3e3kVgHe8gnqzh3moAY/DUJmxzSxIeSb7U0jbGVQMeV256wfAlws
+         os2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=akb88PvmqOcRfJ+0UlV8yVezkmvUAKQz1XrSjJj+70E=;
+        b=b1x96RTHwsdk0nISRr2cfianLoYeIWvKw6N7ZYVqq+VfZi1tLEPdVo1pitVpCxAxI9
+         OXt0eFqBsxOMH7ilAxbmkcHpS2N34jJLH45CQQrQt480c+MJAwX/4Lxir6GKr85jptHa
+         NHLToxSOURaEXdBlB8Rl7EDh/NpH47LxP8lOInuVj0y16pUn0XC8Ps7NqLXl61VkV/4T
+         1TlaDfbTV+pbpvAI0dqeKL9qvkU21Gn3iCG0mcyKJ4jwYpW0vM/jmNAlNnHFq2iNMNhL
+         kXigNgHouS1TTL7zhaZdkkT+YZPaRjjDGOoAwa2zeFFbKNaptxz55CeuOJbbFsnXESlQ
+         cwgw==
+X-Gm-Message-State: AO0yUKUtABGqgnOXHt/BEhFLANaFqBg+jVZNZJU0ZDsW0CUkMDVtVO3t
+        +sPThnXwfCfhXrEGvljg1l00Ig==
+X-Google-Smtp-Source: AK7set9Lq0eiMXLRNAQPetmx67Qr7YTZfDLhNIgLyYRdSyrawCyOgRoILsxKBtQaUUIVOHGJSnv+nQ==
+X-Received: by 2002:a05:600c:703:b0:3dc:16d2:ae5e with SMTP id i3-20020a05600c070300b003dc16d2ae5emr195622wmn.32.1676327421748;
+        Mon, 13 Feb 2023 14:30:21 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:9e1:512:feb0:fe83? ([2a02:6b6a:b566:0:9e1:512:feb0:fe83])
+        by smtp.gmail.com with ESMTPSA id n22-20020a05600c4f9600b003dcc82ce53fsm16772502wmq.38.2023.02.13.14.30.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Feb 2023 14:30:21 -0800 (PST)
+Message-ID: <5b696beb-52e2-716c-83c6-3bb70e5c9565@bytedance.com>
+Date:   Mon, 13 Feb 2023 22:30:20 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v8 9/9] x86/smpboot: Serialize topology
+ updates for secondary bringup
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, kim.phillips@amd.com
+Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
         pbonzini@redhat.com, paulmck@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
@@ -41,38 +68,53 @@ CC:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
         David Woodhouse <dwmw@amazon.co.uk>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v8_9/9=5D_x86/smpboot=3A_Serializ?= =?US-ASCII?Q?e_topology_updates_for_secondary_bringup?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <87v8k5s3dq.ffs@tglx>
-References: <20230209154156.266385-1-usama.arif@bytedance.com> <20230209154156.266385-10-usama.arif@bytedance.com> <87v8k5s3dq.ffs@tglx>
-Message-ID: <BE9F9210-4DBD-4A9F-BA5A-A7B5BA580FCC@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+References: <20230209154156.266385-1-usama.arif@bytedance.com>
+ <20230209154156.266385-10-usama.arif@bytedance.com> <87v8k5s3dq.ffs@tglx>
+ <BE9F9210-4DBD-4A9F-BA5A-A7B5BA580FCC@infradead.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <BE9F9210-4DBD-4A9F-BA5A-A7B5BA580FCC@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 13 February 2023 21:43:13 CET, Thomas Gleixner <tglx@linutronix=2Ede> w=
-rote:
->On Thu, Feb 09 2023 at 15:41, Usama Arif wrote:
->> From: David Woodhouse <dwmw@amazon=2Eco=2Euk>
+On 13/02/2023 20:53, David Woodhouse wrote:
+> 
+> 
+> On 13 February 2023 21:43:13 CET, Thomas Gleixner <tglx@linutronix.de> wrote:
+>> On Thu, Feb 09 2023 at 15:41, Usama Arif wrote:
+>>> From: David Woodhouse <dwmw@amazon.co.uk>
+>>>
+>>> The toplogy update is performed by the AP via smp_callin() after the BSP
+>>> has called do_wait_cpu_initialized(), setting the AP's bit in
+>>> cpu_callout_mask to allow it to proceed.
+>>>
+>>> In preparation to enable further parallelism of AP bringup, add locking to
+>>> serialize the update even if multiple APs are (in future) permitted to
+>>> proceed through the next stages of bringup in parallel.
 >>
->> The toplogy update is performed by the AP via smp_callin() after the BS=
-P
->> has called do_wait_cpu_initialized(), setting the AP's bit in
->> cpu_callout_mask to allow it to proceed=2E
->>
->> In preparation to enable further parallelism of AP bringup, add locking=
- to
->> serialize the update even if multiple APs are (in future) permitted to
->> proceed through the next stages of bringup in parallel=2E
->
->This one is also only relevant for further parallelisation, right?
+>> This one is also only relevant for further parallelisation, right?
+> 
+> I believe so, yes. But it's low-hanging fruit and might as well go in now.
 
-I believe so, yes=2E But it's low-hanging fruit and might as well go in no=
-w=2E
+Yes, only needed if we parallelize further, i.e. after 
+do_wait_cpu_initialized. As David said, its a simple enough and easy 
+patch, but its not needed for parallelizing INIT/SIPI.
+
+I tested Davids' part2 branch 
+(https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/parallel-6.2-rc7) 
+again just to be sure, and the only commit that makes a significant 
+difference in smpboot time on top of part1 (this series) is reusing 
+timer calibration (100ms to 34ms).
+
+Parallelizing do_wait_cpu_initialized didn't significantly improve 
+smpboot time (only reduced to 31ms on average of 4 runs so maybe within 
+the margin of error?), so I think its better to move this patch into its 
+own series with any further parallelization only if it shows a further 
+improvement in smpboot time?
+
+Thanks,
+Usama
