@@ -2,109 +2,187 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38109C636CC
-	for <rcu@archiver.kernel.org>; Sat, 11 Feb 2023 16:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22B5AC636CC
+	for <rcu@archiver.kernel.org>; Mon, 13 Feb 2023 14:43:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjBKQez (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 11 Feb 2023 11:34:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        id S229588AbjBMOnk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Feb 2023 09:43:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjBKQey (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 11 Feb 2023 11:34:54 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D866426848;
-        Sat, 11 Feb 2023 08:34:53 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id fi26so7866902edb.7;
-        Sat, 11 Feb 2023 08:34:53 -0800 (PST)
+        with ESMTP id S229799AbjBMOnj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Feb 2023 09:43:39 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4181ADF5
+        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 06:43:34 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id 5so13889898qtp.9
+        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 06:43:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GdQ9tak96Dy9uB/Zmg/NLNczt6OnEeM92nMXwoZd93E=;
-        b=j/XocirCN1GQGaNpx7o9M7HdBkAiQZEPUJT8heh9E1WS2ZPPYaPbHYYfXeu6CqaN78
-         jYpjZTMnszG7xIqAayZcmFWDHFBiSafIfAz3vMEN+d2jnc68yseajI7qUqc0OmpsCRW9
-         FeHccKg+ukNHvZJ6e7iskwxsd/U3aoNJpNJh1Dw5gRYZXy5NS8zSvNTSvQZd1apce5K3
-         Ql3SgzUwBZZr++Cf7KMhg7caMFeOCxuZVsKdwI20iSNbQ1GNLvPdTpKCB3PRvWp6zCNv
-         gouUaqLR4LhFZKaxbLfblKAymiajjiCX41NSQouM2qTd6Armpi3DOI5QehRy1zYbvOqK
-         Yw7Q==
+        d=joelfernandes.org; s=google;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=supPlbRV+eXNOD5GvgOhEaREvhsUxhfFsRvEzRM91kg=;
+        b=S3xs/YaUgwS/zqCeJq7rbhRz2wk3lUmqMIM1Q/usfQNjMiQ/rshmRjU0ibdxdhTSer
+         X5k1idvLs+Pajtes+qGQzw+14FNhb4lj/8OoFTgPJRuGDWf2Pel/yVh+pviYxbu0SUQx
+         1qns1ibC8ZBGZh9hJBrgppvKTq9/BKA3PdvEs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GdQ9tak96Dy9uB/Zmg/NLNczt6OnEeM92nMXwoZd93E=;
-        b=q9db780jT+HtzFYNd82qgcgAMMmbcpeHpaq6xMw/QcLWGuNTaEheVzRkBDGQGnrynE
-         vgv0pHJ/+uPNztdTccIym+LUvIFFf0fWHV/43hlEKRShivySLcFWSX06S8vrf0AxnoOL
-         7XWLD02BVnDT19k0PLqbdUgUD99QXVBBK49uF/ha6MB+yUV6YreN3iBLVW2K07C3OFo7
-         zZnOWgbPK9OQC1npWwSdLNnZYvByOwyx8WNMwnZhKNNqwDa/SQUm4vCAQLf8AvvzKUZg
-         pDIMzI5V2srEcl54pvNasScPuAfim5RJ9asfI1vyHXMcInMibqeFd22c6e3+uRbGMcAP
-         5elg==
-X-Gm-Message-State: AO0yUKUkwp7YvXAy7ulDSeqWFVcHzw2GiLwufR3hsG4nDrxESeQfdfvQ
-        /32pTT2aLpkcrAEb9HzY7Wt7DaOF4jYftavu/ms=
-X-Google-Smtp-Source: AK7set/udMjRCmrE595y7OkiYi0r2K55VF2upVtW7pM9hXpaRlhrxkWzwICuC73Ho/bh+qt0NPmFgM2z9ozhamsDIJk=
-X-Received: by 2002:a50:9f65:0:b0:4ac:b38f:51a1 with SMTP id
- b92-20020a509f65000000b004acb38f51a1mr1307807edf.6.1676133292290; Sat, 11 Feb
- 2023 08:34:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo> <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
- <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com> <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
-In-Reply-To: <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 11 Feb 2023 08:34:41 -0800
-Message-ID: <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=supPlbRV+eXNOD5GvgOhEaREvhsUxhfFsRvEzRM91kg=;
+        b=Lt9mx322YhKlVEAG7p1/qzIoqs1RlTq6FBcz0MFd2qVNwmG6crJafBjEjsa5emNA6q
+         LzwPWefOV8CXXCtLH7Bel2ObiZucIRv9tKKG+b5lGVg1jzkjKxvmpONSVnVwXYKpytQj
+         wf4Eycs+p8SEYjCZDnkvM+rS4d8VIGLUWUdUmS42qYetzEEqI94MVyQPeoY3ibmT65Pd
+         KneFekcre0AIXvhAgFjhWEkfcWhYIuHAensfIQ8K14+7XsUe81a0vY7GMhUNAoRy0AI0
+         +7dviYuUTNSgR7RN4kW7dVuUbRzzhGqkM/1NnQmAkdfjgimlUO2lQoR81tS+FMqXt310
+         mYKw==
+X-Gm-Message-State: AO0yUKVS4bkUpNE4CmSl/a7p6yZjIldmiOyaCZVwFB0sNj2d+oF4/Nhh
+        h4B0QrktDeFXkdZXd88JQS0iKA==
+X-Google-Smtp-Source: AK7set8tQPTqBA0b25zIwUlADaTbPTHAEn0hgT04h88qEE/1sdpw3uPRL44ZZjt7skwz/IEpMJVHCA==
+X-Received: by 2002:a05:622a:c2:b0:3b7:fafc:73e3 with SMTP id p2-20020a05622a00c200b003b7fafc73e3mr42607583qtw.41.1676299413429;
+        Mon, 13 Feb 2023 06:43:33 -0800 (PST)
+Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id l25-20020ac84cd9000000b003ba1428e8d8sm5480600qtv.20.2023.02.13.06.43.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Feb 2023 06:43:32 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] rcu/tree: Improve comments in rcu_report_qs_rdp()
+Date:   Mon, 13 Feb 2023 09:43:22 -0500
+Message-Id: <B0B5741B-2A89-4092-935B-39B23EFEDC27@joelfernandes.org>
+References: <PH0PR11MB588015D6429D592BBD599733DADF9@PH0PR11MB5880.namprd11.prod.outlook.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+In-Reply-To: <PH0PR11MB588015D6429D592BBD599733DADF9@PH0PR11MB5880.namprd11.prod.outlook.com>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Feb 11, 2023 at 8:33 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Feb 10, 2023 at 5:10 PM Hou Tao <houtao@huaweicloud.com> wrote:
-> > >> Hou, are you plannning to resubmit this change? I also hit this while testing my
-> > >> changes on bpf-next.
-> > > Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
-> > > The former will take a long time to settle.
-> > > The latter is trivial.
-> > > To unblock yourself just add GFP_ZERO in an extra patch?
-> > Sorry for the long delay. Just find find out time to do some tests to compare
-> > the performance of bzero and ctor. After it is done, will resubmit on next week.
->
-> I still don't like ctor as a concept. In general the callbacks in the critical
-> path are guaranteed to be slow due to retpoline overhead.
-> Please send a patch to add GFP_ZERO.
->
-> Also I realized that we can make the BPF_REUSE_AFTER_RCU_GP flag usable
-> without risking OOM by only waiting for normal rcu GP and not rcu_tasks_trace.
-> This approach will work for inner nodes of qptrie, since bpf progs
-> never see pointers to them. It will work for local storage
-> converted to bpf_mem_alloc too. It wouldn't need to use its own call_rcu.
-> It's also safe without uaf caveat in sleepable progs and sleepable progs
 
-I meant 'safe with uaf caveat'.
-Safe because we wait for rcu_task_trace later before returning to kernel memory.
 
-> can use explicit bpf_rcu_read_lock() when they want to avoid uaf.
-> So please respin the set with rcu gp only and that new flag.
+> On Feb 11, 2023, at 6:18 AM, Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:=
+
+>=20
+> =EF=BB=BF
+>>=20
+>>=20
+>>> On Sat, Feb 04, 2023 at 02:20:50AM +0000, Joel Fernandes (Google) wrote:=
+
+>>> Recent discussion triggered due to a patch linked below, from Qiang,
+>>> shed light on the need to accelerate from QS reporting paths.
+>>>=20
+>>> Update the comments to capture this piece of knowledge.
+>>>=20
+>>> Link: https://lore.kernel.org/all/20230118073014.2020743-1-qiang1.zhang@=
+intel.com/
+>>> Cc: Qiang Zhang <Qiang1.zhang@intel.com>
+>>> Cc: Frederic Weisbecker <frederic@kernel.org>
+>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>>>=20
+>>> ---
+>>> kernel/rcu/tree.c | 13 ++++++++++++-
+>>> 1 file changed, 12 insertions(+), 1 deletion(-)
+>>>=20
+>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>> index 93eb03f8ed99..713eb6ca6902 100644
+>>> --- a/kernel/rcu/tree.c
+>>> +++ b/kernel/rcu/tree.c
+>>> @@ -1983,7 +1983,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>>>      } else {
+>>>              /*
+>>>               * This GP can't end until cpu checks in, so all of our
+>>> -              * callbacks can be processed during the next GP.
+>>> +              * callbacks can be processed during the next GP. Do
+>>> +              * the acceleration from here otherwise there may be extra=
+
+>>> +              * grace period delays, as any accelerations from rcu_core=
+()
+>>> +              * or note_gp_changes() may happen only after the GP after=
+ the
+>>> +              * current one has already started. Further, rcu_core()
+>>> +              * only accelerates if RCU is idle (no GP in progress).
+>>=20
+>> Actually note_gp_changes() should take care of that.
+>>=20
+>> You are referring to  rcu_core() -> rcu_check_quiescent_state() ->
+>> note_gp_changes() doing the acceleration prior to the  rcu_core() ->
+>> rcu_report_qs_rdp() call, correct?
+>>=20
+>> Ah, but note_gp_changes() has an early return which triggers if either:
+>> 1. The rnp spinlock trylock failed.
+>> 2. The start of a new grace period was already detected before, so
+>> rdp->gp_seq =3D=3D rnp->gp_seq.
+>>=20
+>> So I think it is possible that we are in the middle of a GP, and
+>> rcu_core() is called because QS reporting is required for the CPU, and
+>> say the current GP started we are in the middle off occurs from the
+>> same CPU so rdp->gp_seq =3D=3D rnp->gp_seq.
+>>=20
+>> Now, rcu_core()'s call to note_gp_changes() should return early but
+>> its later call to report_qs_rdp() will not accelerate the callback
+>> without the code we are commenting here.
+>>=20
+>> My gut feeling is that the
+>> acceleration in rcu_report_qs_rdp() only stands for:
+>>=20
+>> * callbacks that may be enqueued from an IRQ firing during the small wind=
+ow
+>>  between the RNP unlock in note_gp_changes() and the RNP lock in
+>>  rcu_report_qs_rdp()
+>=20
+> For rdp which is in the middle of a de-offloading process, the bypass list=
+ have been
+> flushed, the nocb kthreads may miss callbacks acceleration.   invoke call_=
+rcu()
+> will also not use bypass list. if at this time a new gp starts, before cal=
+l rcu_report_qs_rdp()
+> to report qs,  even if rcu_core() invoke note_gp_changes() notice gp start=
+, this rdp's callback
+> may still miss acceleration if rdp still in de-offloading process, because=
+ invoke rcu_rdp_is_offloaded()
+> still return true.
+>=20
+> I think this is also a reason.
+
+I tend to agree with you. I am wondering the best way to document all these r=
+easons. Perhaps it suffices to mention a few reasons briefly here, without g=
+oing into too much detail (because details may be subject to change).
+
+I will look through this entire thread again and take a call on how to proce=
+ed, but do let me know what you and Frederic think about the next steps. The=
+ main benefit of commenting is we dont look at this in a few years and run i=
+nto the same question=E2=80=A6
+
+Thanks!
+
+Joel
+
+>=20
+> Thanks
+> Zqiang
+>=20
+>>=20
+>> Sure, this also seems like a valid reason.
+>>=20
+>> * __note_gp_changes() got called even before from the GP kthread, and cal=
+lbacks
+>>  got enqueued between that and rcu_core().
+>>=20
+>> Agreed. In this case we will take the early return in
+>> note_gp_changes() when called from the rcu_core(). So yeah, that was
+>> kind of my point as well but slightly different reasoning.
+>>=20
+>> Let me know if you disagree with anything I mentioned, though.
+>>=20
+>> - Joel
