@@ -2,187 +2,171 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22B5AC636CC
-	for <rcu@archiver.kernel.org>; Mon, 13 Feb 2023 14:43:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5905DC636CC
+	for <rcu@archiver.kernel.org>; Mon, 13 Feb 2023 15:20:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjBMOnk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Feb 2023 09:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S229615AbjBMPUK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Feb 2023 10:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbjBMOnj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Feb 2023 09:43:39 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4181ADF5
-        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 06:43:34 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id 5so13889898qtp.9
-        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 06:43:34 -0800 (PST)
+        with ESMTP id S229520AbjBMPUJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Feb 2023 10:20:09 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA6155B9
+        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 07:19:43 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id a2so12616711wrd.6
+        for <rcu@vger.kernel.org>; Mon, 13 Feb 2023 07:19:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=supPlbRV+eXNOD5GvgOhEaREvhsUxhfFsRvEzRM91kg=;
-        b=S3xs/YaUgwS/zqCeJq7rbhRz2wk3lUmqMIM1Q/usfQNjMiQ/rshmRjU0ibdxdhTSer
-         X5k1idvLs+Pajtes+qGQzw+14FNhb4lj/8OoFTgPJRuGDWf2Pel/yVh+pviYxbu0SUQx
-         1qns1ibC8ZBGZh9hJBrgppvKTq9/BKA3PdvEs=
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vBVRW3XJB/dsQe28qObDwY1va8U6ugsCHUwHE1TeoHo=;
+        b=w+/JciSH3sQgbIKPFpDqeYFFqcYSKc9sfMWWGZ+LuNnQjjCBJGWU7AfDpcq2/is5ph
+         10zTwvQ7dV0mTP9/gb0WBLZMy/iH3zkBdFcHCPk9FYD+xH30s9yj/U4S3YV7u+XPL8q5
+         TsN37/HlzpOioBVDQtU0S1onvBp/4+fd874/4ifD13jcz8x1Vf0fn4wC6fCiV5aYgyxD
+         aGBQuaU5inu7DcWLoAdwixV63e1qH6HdheX5iXH2E74/FTCx9OlBRKnfUcmrmjqmikWz
+         Eaq0uTsGLhv+hsInwKj0YQvfEHLExh1XtyJPrDmKivlaKc1Wnz4h0RVTFiMhWV7gp/vm
+         w92w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=supPlbRV+eXNOD5GvgOhEaREvhsUxhfFsRvEzRM91kg=;
-        b=Lt9mx322YhKlVEAG7p1/qzIoqs1RlTq6FBcz0MFd2qVNwmG6crJafBjEjsa5emNA6q
-         LzwPWefOV8CXXCtLH7Bel2ObiZucIRv9tKKG+b5lGVg1jzkjKxvmpONSVnVwXYKpytQj
-         wf4Eycs+p8SEYjCZDnkvM+rS4d8VIGLUWUdUmS42qYetzEEqI94MVyQPeoY3ibmT65Pd
-         KneFekcre0AIXvhAgFjhWEkfcWhYIuHAensfIQ8K14+7XsUe81a0vY7GMhUNAoRy0AI0
-         +7dviYuUTNSgR7RN4kW7dVuUbRzzhGqkM/1NnQmAkdfjgimlUO2lQoR81tS+FMqXt310
-         mYKw==
-X-Gm-Message-State: AO0yUKVS4bkUpNE4CmSl/a7p6yZjIldmiOyaCZVwFB0sNj2d+oF4/Nhh
-        h4B0QrktDeFXkdZXd88JQS0iKA==
-X-Google-Smtp-Source: AK7set8tQPTqBA0b25zIwUlADaTbPTHAEn0hgT04h88qEE/1sdpw3uPRL44ZZjt7skwz/IEpMJVHCA==
-X-Received: by 2002:a05:622a:c2:b0:3b7:fafc:73e3 with SMTP id p2-20020a05622a00c200b003b7fafc73e3mr42607583qtw.41.1676299413429;
-        Mon, 13 Feb 2023 06:43:33 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id l25-20020ac84cd9000000b003ba1428e8d8sm5480600qtv.20.2023.02.13.06.43.32
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vBVRW3XJB/dsQe28qObDwY1va8U6ugsCHUwHE1TeoHo=;
+        b=jVepJHwPqmQ4RuXFsDqFsTebqLrMCi5VqSvKz+hhbu/ASUeY5kasTDYh1JX2XPQGXQ
+         xGcLRbDB2agwZ+8SWxuPDErbuBsrI8/1NR39yrb+Cr26rB9NspE5QKZ4LO8i6L/PVaGW
+         OJ0iPhR8XxJjrwynOY3gj79YGIrwhBKh6GdTno/y67Zh1MFCd6jeaRFyeo2KKcCr0zQZ
+         1bdqsNjn7uegxa3lVCT/3vmNRaHjJd/pZY3LVNOslV3t6WS5Ru/lRx0QT0NN9JjsEmzr
+         +K57noo1TdtqhA4pu1PfEVSErasCt1hf+0Kmcy7WEKrZSfYZuJGmq7Dn+G+k+VxKGDkR
+         A3Gw==
+X-Gm-Message-State: AO0yUKXKZdvDsGOSU69kCIL/RNquvJk5FioHexnBkTbnz4EQC7Hs5rSi
+        nFg/ePXtTeoSiIkEWQtH2S5K0Q==
+X-Google-Smtp-Source: AK7set8He8H3zgxnh+9zUlZ4hjUThuw6BcQHtJBmflOPQ7yEaVLCEwj4WUR2/WuiDOiPowXJz2lTSw==
+X-Received: by 2002:adf:eb51:0:b0:2c3:dbe0:58b8 with SMTP id u17-20020adfeb51000000b002c3dbe058b8mr20763507wrn.41.1676301582442;
+        Mon, 13 Feb 2023 07:19:42 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:9e1:512:feb0:fe83? ([2a02:6b6a:b566:0:9e1:512:feb0:fe83])
+        by smtp.gmail.com with ESMTPSA id k1-20020adff5c1000000b002bff574a250sm10904252wrp.2.2023.02.13.07.19.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Feb 2023 06:43:32 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] rcu/tree: Improve comments in rcu_report_qs_rdp()
-Date:   Mon, 13 Feb 2023 09:43:22 -0500
-Message-Id: <B0B5741B-2A89-4092-935B-39B23EFEDC27@joelfernandes.org>
-References: <PH0PR11MB588015D6429D592BBD599733DADF9@PH0PR11MB5880.namprd11.prod.outlook.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-In-Reply-To: <PH0PR11MB588015D6429D592BBD599733DADF9@PH0PR11MB5880.namprd11.prod.outlook.com>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-X-Mailer: iPhone Mail (20B101)
+        Mon, 13 Feb 2023 07:19:41 -0800 (PST)
+Message-ID: <04d98646-7c2e-9a62-1340-2d8efe69a121@bytedance.com>
+Date:   Mon, 13 Feb 2023 15:19:41 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v8 8/9] x86/mtrr: Avoid repeated save of
+ MTRRs on boot-time CPU bringup
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, kim.phillips@amd.com
+Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
+References: <20230209154156.266385-1-usama.arif@bytedance.com>
+ <20230209154156.266385-9-usama.arif@bytedance.com> <87mt5m1yiz.ffs@tglx>
+ <9b6bca9c-7189-a2d5-8c0a-f55c24f54b62@bytedance.com> <878rh61jqx.ffs@tglx>
+ <6fc16f3048719058bccce9d488bcb75252f49031.camel@infradead.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <6fc16f3048719058bccce9d488bcb75252f49031.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
 
-> On Feb 11, 2023, at 6:18 AM, Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:=
+On 10/02/2023 08:55, David Woodhouse wrote:
+> On Fri, 2023-02-10 at 00:50 +0100, Thomas Gleixner wrote:
+>> On Thu, Feb 09 2023 at 20:32, Usama Arif wrote:
+>>> On 09/02/2023 18:31, Thomas Gleixner wrote:
+>>>>>          first_cpu = cpumask_first(cpu_online_mask);
+>>>>>          smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
+>>>>
+>>>> So why is this relevant after the initial bringup? The BP MTRRs have
+>>>> been saved already above, no?
+>>>>
+>>>
+>>> I will let David confirm if this is correct and why he did it, but this
+>>> is what I thought while reviewing before posting v4:
+>>>
+>>> - At initial boot (system_state < SYSTEM_RUNNING), when mtrr_save_state
+>>> is called in do_cpu_up at roughly the same time so MTRR is going to be
+>>> the same, we can just save it once and then reuse for other secondary
+>>> cores as it wouldn't have changed for the rest of the do_cpu_up calls.
+>>>
+>>> - When the system is running and you offline and then online a CPU, you
+>>> want to make sure that hotplugged CPU gets the current MTRR (which might
+>>> have changed since boot?), incase the MTRR has changed after the system
+>>> has been booted, you save the MTRR of the first online CPU. When the
+>>> hotplugged CPU runs its initialisation code, its fixed-range MTRRs will
+>>> be updated with the newly saved fixed-range MTRRs.
+>>
+>> I knew that already :) But seriously:
+>>
+>> If the MTRRs are changed post boot then the cached values want to be
+>> updated too.
+> 
 
->=20
-> =EF=BB=BF
->>=20
->>=20
->>> On Sat, Feb 04, 2023 at 02:20:50AM +0000, Joel Fernandes (Google) wrote:=
+I had previously only done smpboot time measurements for the whole 
+patchset, but I tested the patchset without this commit and it doesn't 
+make a difference to smpboot time as its negligable work to read those 
+MTRR MSRs into mtrr_state.fixed_ranges.
+This commit is also independent of parallel smp bringup, similar to 
+reusing timer calibration so I think it could be considered as a 
+separate patchset if needed. I will post the next revision without this 
+commit, but here is my view on MTRR save/restore (which shouldn't matter 
+for the next revision...).
 
->>> Recent discussion triggered due to a patch linked below, from Qiang,
->>> shed light on the need to accelerate from QS reporting paths.
->>>=20
->>> Update the comments to capture this piece of knowledge.
->>>=20
->>> Link: https://lore.kernel.org/all/20230118073014.2020743-1-qiang1.zhang@=
-intel.com/
->>> Cc: Qiang Zhang <Qiang1.zhang@intel.com>
->>> Cc: Frederic Weisbecker <frederic@kernel.org>
->>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->>>=20
->>> ---
->>> kernel/rcu/tree.c | 13 ++++++++++++-
->>> 1 file changed, 12 insertions(+), 1 deletion(-)
->>>=20
->>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>> index 93eb03f8ed99..713eb6ca6902 100644
->>> --- a/kernel/rcu/tree.c
->>> +++ b/kernel/rcu/tree.c
->>> @@ -1983,7 +1983,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
->>>      } else {
->>>              /*
->>>               * This GP can't end until cpu checks in, so all of our
->>> -              * callbacks can be processed during the next GP.
->>> +              * callbacks can be processed during the next GP. Do
->>> +              * the acceleration from here otherwise there may be extra=
-
->>> +              * grace period delays, as any accelerations from rcu_core=
-()
->>> +              * or note_gp_changes() may happen only after the GP after=
- the
->>> +              * current one has already started. Further, rcu_core()
->>> +              * only accelerates if RCU is idle (no GP in progress).
->>=20
->> Actually note_gp_changes() should take care of that.
->>=20
->> You are referring to  rcu_core() -> rcu_check_quiescent_state() ->
->> note_gp_changes() doing the acceleration prior to the  rcu_core() ->
->> rcu_report_qs_rdp() call, correct?
->>=20
->> Ah, but note_gp_changes() has an early return which triggers if either:
->> 1. The rnp spinlock trylock failed.
->> 2. The start of a new grace period was already detected before, so
->> rdp->gp_seq =3D=3D rnp->gp_seq.
->>=20
->> So I think it is possible that we are in the middle of a GP, and
->> rcu_core() is called because QS reporting is required for the CPU, and
->> say the current GP started we are in the middle off occurs from the
->> same CPU so rdp->gp_seq =3D=3D rnp->gp_seq.
->>=20
->> Now, rcu_core()'s call to note_gp_changes() should return early but
->> its later call to report_qs_rdp() will not accelerate the callback
->> without the code we are commenting here.
->>=20
->> My gut feeling is that the
->> acceleration in rcu_report_qs_rdp() only stands for:
->>=20
->> * callbacks that may be enqueued from an IRQ firing during the small wind=
-ow
->>  between the RNP unlock in note_gp_changes() and the RNP lock in
->>  rcu_report_qs_rdp()
->=20
-> For rdp which is in the middle of a de-offloading process, the bypass list=
- have been
-> flushed, the nocb kthreads may miss callbacks acceleration.   invoke call_=
-rcu()
-> will also not use bypass list. if at this time a new gp starts, before cal=
-l rcu_report_qs_rdp()
-> to report qs,  even if rcu_core() invoke note_gp_changes() notice gp start=
-, this rdp's callback
-> may still miss acceleration if rdp still in de-offloading process, because=
- invoke rcu_rdp_is_offloaded()
-> still return true.
->=20
-> I think this is also a reason.
-
-I tend to agree with you. I am wondering the best way to document all these r=
-easons. Perhaps it suffices to mention a few reasons briefly here, without g=
-oing into too much detail (because details may be subject to change).
-
-I will look through this entire thread again and take a call on how to proce=
-ed, but do let me know what you and Frederic think about the next steps. The=
- main benefit of commenting is we dont look at this in a few years and run i=
-nto the same question=E2=80=A6
+If the MTRR changes on a running system, there might be a bug during 
+hotplug in the original code that handles MTRR? which is also carried 
+over in this patch.
+ From what I can see, MTRR is only saved+restored during initial boot, 
+hotplugging CPU and __save/__restore_processor_state() (used in creating 
+image for hibernation, suspend, kexec...). So if for e.g. in a running 
+system (that has not hibernated, suspended, kexeced), if MTRR for CPU0 
+(first_cpu) changed post-boot and CPU3 is hotplugged, only MTRR for CPU3 
+is updated and CPU0 and CPU3 will hold the same value, while the rest of 
+the CPUs will have the older first-boot value? This behavior will happen 
+with or without this patch. I think this is what Thomas is referring to 
+above when he says that the cached values want to be updated? But the 
+issue is present in the original code as well.
 
 Thanks!
+Usama
 
-Joel
-
->=20
-> Thanks
-> Zqiang
->=20
->>=20
->> Sure, this also seems like a valid reason.
->>=20
->> * __note_gp_changes() got called even before from the GP kthread, and cal=
-lbacks
->>  got enqueued between that and rcu_core().
->>=20
->> Agreed. In this case we will take the early return in
->> note_gp_changes() when called from the rcu_core(). So yeah, that was
->> kind of my point as well but slightly different reasoning.
->>=20
->> Let me know if you disagree with anything I mentioned, though.
->>=20
->> - Joel
+> They are, aren't they? The only way we come out of mtrr_save_state()
+> without calling mtrr_save_fixed_ranges() — either directly or via
+> smp_call_function_single() — is if they've already been saved once
+> *and* system_state < SYSTEM_RUNNING.
+> 
+> I suppose we could make that clearer by moving the definition of the
+> mtrr_saved flags inside the if (system_state < SYSTEM_RUNNING) block?
+> 
+> @@ -721,11 +721,20 @@ void __init mtrr_bp_init(void)
+>    */
+>   void mtrr_save_state(void)
+>   {
+>   	int first_cpu;
+>   
+>   	if (!mtrr_enabled())
+>   		return;
+>   
+> +	if (system_state < SYSTEM_RUNNING) {
+> +		static bool mtrr_saved;
+> +		if (!mtrr_saved) {
+> +			mtrr_save_fixed_ranges(NULL);
+> +			mtrr_saved = true;
+> +		}
+> +		return;
+> +	}
+> +
+>   	first_cpu = cpumask_first(cpu_online_mask);
+>   	smp_call_function_single(first_cpu, mtrr_save_fixed_ranges, NULL, 1);
+>   }
+> 
