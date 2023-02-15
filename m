@@ -2,27 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4B92C636D4
-	for <rcu@archiver.kernel.org>; Wed, 15 Feb 2023 04:02:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E736C636D4
+	for <rcu@archiver.kernel.org>; Wed, 15 Feb 2023 07:23:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjBOECa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Feb 2023 23:02:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
+        id S231276AbjBOHXJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Feb 2023 02:23:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjBOEC3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Feb 2023 23:02:29 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59622B629;
-        Tue, 14 Feb 2023 20:02:27 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PGktQ2ZtWz4f3l7T;
-        Wed, 15 Feb 2023 12:02:22 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgBXSOZMWexj68hkDg--.30292S2;
-        Wed, 15 Feb 2023 12:02:24 +0800 (CST)
+        with ESMTP id S229579AbjBOHXJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Feb 2023 02:23:09 -0500
+X-Greylist: delayed 19711 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Feb 2023 23:23:06 PST
+Received: from out-5.mta0.migadu.com (out-5.mta0.migadu.com [91.218.175.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B917528D1A
+        for <rcu@vger.kernel.org>; Tue, 14 Feb 2023 23:23:06 -0800 (PST)
+Message-ID: <2b1ddc4c-9905-899a-a903-e66a6e8b4d58@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676445784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IFiqL85OMFiRUxyY50Wh6JnMy06nSoBtvKZlaWOzJak=;
+        b=pTC20R3V5mXzsnvFhHTGaTwPyiELMUxm6Mfwm3iPy68yN/RrB9lJC0T0YY6r2v9x8ElQWP
+        EufUsXqckHqPffgzaKEk75vD0XQvzBfuZZpIOgreayX00NYDnc6uF/kkX9r6xcJl26CTG+
+        uyr6OB/smMlXzz6oqzKgNM9jRCE6ydU=
+Date:   Tue, 14 Feb 2023 23:22:56 -0800
+MIME-Version: 1.0
 Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Language: en-US
+To:     Hou Tao <houtao@huaweicloud.com>
 Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -36,7 +44,8 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
 References: <20221230041151.1231169-1-houtao@huaweicloud.com>
  <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
  <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
@@ -51,107 +60,69 @@ References: <20221230041151.1231169-1-houtao@huaweicloud.com>
  <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
  <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
  <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
-Date:   Wed, 15 Feb 2023 12:02:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
-Content-Type: text/plain; charset=utf-8
+ <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgBXSOZMWexj68hkDg--.30292S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1UJFWrZw1xGr43JFyxXwb_yoWrGF17pF
-        Waqas8Ar1kJw43K3s2qrs7ZFy5t3s5GrWUtr4rKr1UCr98Zr9agryxKFW5uF98Cr4fW3yj
-        vry5Zas3Jw48AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+On 2/14/23 8:02 PM, Hou Tao wrote:
+>> For local storage, when its owner (sk/task/inode/cgrp) is going away, the
+>> memory can be reused immediately. No rcu gp is needed.
+> Now it seems it will wait for RCU GP and i think it is still necessary, because
+> when the process exits, other processes may still access the local storage
+> through pidfd or task_struct of the exited process.
 
-On 2/15/2023 9:54 AM, Martin KaFai Lau wrote:
-> On 2/11/23 8:34 AM, Alexei Starovoitov wrote:
->> On Sat, Feb 11, 2023 at 8:33 AM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>>
->>> On Fri, Feb 10, 2023 at 5:10 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>>>>> Hou, are you plannning to resubmit this change? I also hit this while
->>>>>> testing my
->>>>>> changes on bpf-next.
->>>>> Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
->>>>> The former will take a long time to settle.
->>>>> The latter is trivial.
->>>>> To unblock yourself just add GFP_ZERO in an extra patch?
->>>> Sorry for the long delay. Just find find out time to do some tests to compare
->>>> the performance of bzero and ctor. After it is done, will resubmit on next
->>>> week.
->>>
->>> I still don't like ctor as a concept. In general the callbacks in the critical
->>> path are guaranteed to be slow due to retpoline overhead.
->>> Please send a patch to add GFP_ZERO.
->>>
->>> Also I realized that we can make the BPF_REUSE_AFTER_RCU_GP flag usable
->>> without risking OOM by only waiting for normal rcu GP and not rcu_tasks_trace.
->>> This approach will work for inner nodes of qptrie, since bpf progs
->>> never see pointers to them. It will work for local storage
->>> converted to bpf_mem_alloc too. It wouldn't need to use its own call_rcu.
->>> It's also safe without uaf caveat in sleepable progs and sleepable progs
+When its owner (sk/task/cgrp...) is going away, its owner has reached refcnt 0 
+and will be kfree immediately next. eg. bpf_sk_storage_free is called just 
+before the sk is about to be kfree. No bpf prog should have a hold on this sk. 
+The same should go for the task.
+
+The current rcu gp waiting during bpf_{sk,task,cgrp...}_storage_free is because 
+the racing with the map destruction bpf_local_storage_map_free().
+
 >>
->> I meant 'safe with uaf caveat'.
->> Safe because we wait for rcu_task_trace later before returning to kernel memory.
-For qp-trie, I had added reuse checking for qp-trie inner node by adding a
-version in both child pointer and child node itself and it seemed works, but
-using BPF_REUSE_AFTER_RCU_GP for inner node will be much simpler for the
-implementation. And it seems for qp-trie leaf node, BPF_REUSE_AFTER_RCU_GP is
-needed as well, else the value returned to caller in bpf program or syscall may
-be reused just like hash-table during its usage. We can change qp-trie to act as
-a set only (e.g., no value), but that will limit its usage scenario. Maybe
-requiring the caller to use bpf_rcu_read_lock() is solution as well. What do you
-think ?
->
-> For local storage, when its owner (sk/task/inode/cgrp) is going away, the
-> memory can be reused immediately. No rcu gp is needed.
-Now it seems it will wait for RCU GP and i think it is still necessary, because
-when the process exits, other processes may still access the local storage
-through pidfd or task_struct of the exited process.
->
-> The local storage delete case (eg. bpf_sk_storage_delete) is the only one that
-> needs to be freed by tasks_trace gp because another bpf prog (reader) may be
-> under the rcu_read_lock_trace(). I think the idea (BPF_REUSE_AFTER_RCU_GP) on
-> allowing reuse after vanilla rcu gp and free (if needed) after tasks_trace gp
-> can be extended to the local storage delete case. I think we can extend the
-> assumption that "sleepable progs (reader) can use explicit bpf_rcu_read_lock()
-> when they want to avoid uaf" to bpf_{sk,task,inode,cgrp}_storage_get() also.
->
-It seems bpf_rcu_read_lock() & bpf_rcu_read_unlock() will be used to protect not
-only bpf_task_storage_get(), but also the dereferences of the returned local
-storage ptr, right ? I think qp-trie may also need this.
-> I also need the GFP_ZERO in bpf_mem_alloc, so will work on the GFP_ZERO and
-> the BPF_REUSE_AFTER_RCU_GP idea.  Probably will get the GFP_ZERO out first.
-I will continue work on this patchset for GFP_ZERO and reuse flag. Do you mean
-that you want to work together to implement BPF_REUSE_AFTER_RCU_GP ? How do we
-cooperate together to accomplish that ?
-
-
->
+>> The local storage delete case (eg. bpf_sk_storage_delete) is the only one that
+>> needs to be freed by tasks_trace gp because another bpf prog (reader) may be
+>> under the rcu_read_lock_trace(). I think the idea (BPF_REUSE_AFTER_RCU_GP) on
+>> allowing reuse after vanilla rcu gp and free (if needed) after tasks_trace gp
+>> can be extended to the local storage delete case. I think we can extend the
+>> assumption that "sleepable progs (reader) can use explicit bpf_rcu_read_lock()
+>> when they want to avoid uaf" to bpf_{sk,task,inode,cgrp}_storage_get() also.
 >>
->>> can use explicit bpf_rcu_read_lock() when they want to avoid uaf.
->>> So please respin the set with rcu gp only and that new flag.
+> It seems bpf_rcu_read_lock() & bpf_rcu_read_unlock() will be used to protect not
+> only bpf_task_storage_get(), but also the dereferences of the returned local
+> storage ptr, right ? I think qp-trie may also need this.
+
+I think bpf_rcu_read_lock() is primarily for bpf prog.
+
+The bpf_{sk,task,...}_storage_get() internal is easier to handle and probably 
+will need to do its own rcu_read_lock() instead of depending on the bpf prog 
+doing the bpf_rcu_read_lock() because the bpf prog may decide uaf is fine.
+
+>> I also need the GFP_ZERO in bpf_mem_alloc, so will work on the GFP_ZERO and
+>> the BPF_REUSE_AFTER_RCU_GP idea.  Probably will get the GFP_ZERO out first.
+> I will continue work on this patchset for GFP_ZERO and reuse flag. Do you mean
+> that you want to work together to implement BPF_REUSE_AFTER_RCU_GP ? How do we
+> cooperate together to accomplish that ?
+Please submit the GFP_ZERO patch first. Kumar and I can use it immediately.
+
+I have been hacking to make bpf's memalloc safe for the 
+bpf_{sk,task,cgrp..}_storage_delete() and this safe-on-reuse piece still need 
+works. The whole thing is getting pretty long, so my current plan is to put the 
+safe-on-reuse piece aside for now, focus back on the immediate goal and make the 
+common case deadlock free first. Meaning the 
+bpf_*_storage_get(BPF_*_STORAGE_GET_F_CREATE) and the bpf_*_storage_free() will 
+use the bpf_mem_cache_{alloc,free}. The bpf_*_storage_delete() will stay as-is 
+to go through the call_rcu_tasks_trace() for now since delete is not the common 
+use case.
+
+In parallel, if you can post the BPF_REUSE_AFTER_RCU_GP, we can discuss based on 
+your work. That should speed up the progress. If I finished the immediate goal 
+for local storage and this piece is still pending, I will ping you first.  Thoughts?
 
