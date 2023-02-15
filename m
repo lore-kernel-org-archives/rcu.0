@@ -2,124 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48EF7C678D4
-	for <rcu@archiver.kernel.org>; Tue, 14 Feb 2023 16:59:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71AE6C61DA4
+	for <rcu@archiver.kernel.org>; Wed, 15 Feb 2023 02:02:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjBNQ7n (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Feb 2023 11:59:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        id S230187AbjBOCCV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Feb 2023 21:02:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbjBNQ7X (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Feb 2023 11:59:23 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C642DE4F;
-        Tue, 14 Feb 2023 08:58:58 -0800 (PST)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31EGY9Pp005532;
-        Tue, 14 Feb 2023 16:57:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2022-7-12;
- bh=30UhpvvVeEJ74x+BZp2PjN//3LlD3wleEKrKnHvlEME=;
- b=2misEQBvI1JJ+56u+Isk0cVjdv3SudPEHPSoait3o7rcSbIUiV8kvbNovJXev5wnzRRT
- yQ2FDobU5eLDlpUHtycmSVgXhklWuWtXQyHRjAHg4K0sauxjALREy/2VhaHtDgCZdLaF
- WxYI96R7LpJAVqIrrE5IGe7UCpDyG8ufLqpiszIpg2aGbVIFZRZ6w2Y7Tf675ols5O2I
- yfYbzI5S2ct/M57g5be3lojAhGOcNXLEw2X/oeo77pxT6TjnWvmZmiG1mlLR5DMbyBcp
- LmGNOjxpVoIfmfqhy6o1eHoDUtrAQ8cCW6RDnWi5XswKte0lYf8KJhvyj0d5ylUCs/EQ lg== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3np1xb5yx8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Feb 2023 16:57:49 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31EGpwLS009585;
-        Tue, 14 Feb 2023 16:57:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3np1f5uukx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Feb 2023 16:57:48 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31EGuHou039739;
-        Tue, 14 Feb 2023 16:57:47 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3np1f5uuff-10;
-        Tue, 14 Feb 2023 16:57:46 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-mm@kvack.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, nvdimm@lists.linux.dev,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, Jiri Pirko <jiri@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/9] Documentation: correct lots of spelling errors (series 2)
-Date:   Tue, 14 Feb 2023 11:57:36 -0500
-Message-Id: <167639371119.486235.3812806947516384921.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230129231053.20863-1-rdunlap@infradead.org>
-References: <20230129231053.20863-1-rdunlap@infradead.org>
+        with ESMTP id S232832AbjBOCCT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Feb 2023 21:02:19 -0500
+X-Greylist: delayed 447 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Feb 2023 18:02:01 PST
+Received: from out-102.mta0.migadu.com (out-102.mta0.migadu.com [IPv6:2001:41d0:1004:224b::66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777C729E2B
+        for <rcu@vger.kernel.org>; Tue, 14 Feb 2023 18:02:01 -0800 (PST)
+Message-ID: <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676426072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mhqbNPN7xfCGCSg3vVz7nFLwHSKzUxezJOcTZ/ywPcs=;
+        b=oazU5CKA6kp0Y87uBdomtQ6CiatwUxSuz6iu7gi80L0osDrOdsjmBG9Qz5PG2NYNBERSHy
+        jpI9BBKK4OaPrV9osJiKlEpbR+OfjqaffTtMfMXFodEZHpW/gXMVabVuAFGmHJGe5Yd8KK
+        +l/0V8Y1VdWpRKg5QkxeYNI2vKxqMRA=
+Date:   Tue, 14 Feb 2023 17:54:26 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
- definitions=2023-02-14_11,2023-02-14_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
- suspectscore=0 mlxscore=0 spamscore=0 mlxlogscore=999 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302140144
-X-Proofpoint-ORIG-GUID: qDgMHyaxiheYWVhdwVSVG77rlBQfOrXl
-X-Proofpoint-GUID: qDgMHyaxiheYWVhdwVSVG77rlBQfOrXl
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hou Tao <houtao@huaweicloud.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
+ <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
+ <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
+ <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo>
+ <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
+ <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, 29 Jan 2023 15:10:44 -0800, Randy Dunlap wrote:
-
-> Maintainers of specific kernel subsystems are only Cc-ed on their
-> respective patches, not the entire series. [if all goes well]
+On 2/11/23 8:34 AM, Alexei Starovoitov wrote:
+> On Sat, Feb 11, 2023 at 8:33 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Fri, Feb 10, 2023 at 5:10 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>>> Hou, are you plannning to resubmit this change? I also hit this while testing my
+>>>>> changes on bpf-next.
+>>>> Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
+>>>> The former will take a long time to settle.
+>>>> The latter is trivial.
+>>>> To unblock yourself just add GFP_ZERO in an extra patch?
+>>> Sorry for the long delay. Just find find out time to do some tests to compare
+>>> the performance of bzero and ctor. After it is done, will resubmit on next week.
+>>
+>> I still don't like ctor as a concept. In general the callbacks in the critical
+>> path are guaranteed to be slow due to retpoline overhead.
+>> Please send a patch to add GFP_ZERO.
+>>
+>> Also I realized that we can make the BPF_REUSE_AFTER_RCU_GP flag usable
+>> without risking OOM by only waiting for normal rcu GP and not rcu_tasks_trace.
+>> This approach will work for inner nodes of qptrie, since bpf progs
+>> never see pointers to them. It will work for local storage
+>> converted to bpf_mem_alloc too. It wouldn't need to use its own call_rcu.
+>> It's also safe without uaf caveat in sleepable progs and sleepable progs
 > 
-> These patches are based on linux-next-20230127.
-> 
-> 
->  [PATCH 1/9] Documentation: admin-guide: correct spelling
->  [PATCH 2/9] Documentation: driver-api: correct spelling
->  [PATCH 3/9] Documentation: hwmon: correct spelling
->  [PATCH 4/9] Documentation: networking: correct spelling
->  [PATCH 5/9] Documentation: RCU: correct spelling
->  [PATCH 6/9] Documentation: scsi/ChangeLog*: correct spelling
->  [PATCH 7/9] Documentation: scsi: correct spelling
->  [PATCH 8/9] Documentation: sparc: correct spelling
->  [PATCH 9/9] Documentation: userspace-api: correct spelling
-> 
-> [...]
+> I meant 'safe with uaf caveat'.
+> Safe because we wait for rcu_task_trace later before returning to kernel memory.
 
-Applied to 6.3/scsi-queue, thanks!
+For local storage, when its owner (sk/task/inode/cgrp) is going away, the memory 
+can be reused immediately. No rcu gp is needed.
 
-[6/9] Documentation: scsi/ChangeLog*: correct spelling
-      https://git.kernel.org/mkp/scsi/c/685d5ef436a9
-[7/9] Documentation: scsi: correct spelling
-      https://git.kernel.org/mkp/scsi/c/cf065a7da517
+The local storage delete case (eg. bpf_sk_storage_delete) is the only one that 
+needs to be freed by tasks_trace gp because another bpf prog (reader) may be 
+under the rcu_read_lock_trace(). I think the idea (BPF_REUSE_AFTER_RCU_GP) on 
+allowing reuse after vanilla rcu gp and free (if needed) after tasks_trace gp 
+can be extended to the local storage delete case. I think we can extend the 
+assumption that "sleepable progs (reader) can use explicit bpf_rcu_read_lock() 
+when they want to avoid uaf" to bpf_{sk,task,inode,cgrp}_storage_get() also.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+I also need the GFP_ZERO in bpf_mem_alloc, so will work on the GFP_ZERO and the 
+BPF_REUSE_AFTER_RCU_GP idea.  Probably will get the GFP_ZERO out first.
+
+> 
+>> can use explicit bpf_rcu_read_lock() when they want to avoid uaf.
+>> So please respin the set with rcu gp only and that new flag.
+
