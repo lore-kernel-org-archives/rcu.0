@@ -2,142 +2,145 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BCF9C636CC
-	for <rcu@archiver.kernel.org>; Wed, 15 Feb 2023 14:51:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF010C636CC
+	for <rcu@archiver.kernel.org>; Wed, 15 Feb 2023 14:54:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjBOOvu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Feb 2023 09:51:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
+        id S229928AbjBOOyc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Feb 2023 09:54:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjBOOvu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Feb 2023 09:51:50 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1443939CC1
-        for <rcu@vger.kernel.org>; Wed, 15 Feb 2023 06:51:48 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id x40so27858371lfu.12
-        for <rcu@vger.kernel.org>; Wed, 15 Feb 2023 06:51:47 -0800 (PST)
+        with ESMTP id S229608AbjBOOyb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Feb 2023 09:54:31 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AE6392BD
+        for <rcu@vger.kernel.org>; Wed, 15 Feb 2023 06:54:30 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id by3so18116039wrb.10
+        for <rcu@vger.kernel.org>; Wed, 15 Feb 2023 06:54:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPNxk2yysrjzlbFSB5JvYKtr5KWLaNTWE26xdU6d35M=;
-        b=jcClCRX4DibG+AxF/B3x7mrMekpJZLC+16y8clhgAtBk+gdWef3KD2yxQilLQvl9sQ
-         hzwQ6A6SqHcZzpCQnsGn7a7WM0uUcI8+2WTG4Tr3QGYBlCATqbS0z5BJdJMm4Jp9OdgR
-         E0pnfPGLb9vJdbAENpFtnNXT2Vpe3UDjXGKkY=
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9w2EKztZ7EuQXoJVAfQNdvdvrxRKqCTapg/SniP1n60=;
+        b=XK4oypLAtLCIO2Q13uJFbxhj/KuyPdeL1OJbQjdHmPmesWFUduwTAPoWC9KEtRXK4Q
+         dYURbYp9cKQknFOjc6I62tThI1AddbZu82N76JgsTb4vKg9ofUn6ZeGwl4EnIRhruYP5
+         S8wboKpGF1SG0RsFjQGE71WEr7KgyfRpI+fADxrP+lqzXAKKbbOaiKm6Q3F4ybM27FYa
+         0J3tNDfqXKOaOfFnBg5ZYdIBckJrGoKhsRlXNRS8M0H/xQL5F5lvhMHCSD9k+89ENqBT
+         0Tn362WYYCX4fKAX5wB2yMhUdtilOa5XpI2BU8jlE5lpQF8StBVgtgTOmYIIqNG7kS/P
+         ZXUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FPNxk2yysrjzlbFSB5JvYKtr5KWLaNTWE26xdU6d35M=;
-        b=hlPYb05pQ/tL59qFV/iNOjttDhI4CoIPU1O21HG79bpnn/y73GI8jglGixYDX2jR4u
-         uZ349hjvcdCq2tkS/VWWxpNXBoP7aYLyNvp+gkSwSJ5FtRySzKYScDn1CBf5ya0oqzsG
-         9qT4AbKbzXwoXcxu9vhwhyCnQK0w4Ketfufv4gtwlJbBS2UWYFWq4MtMu0brt7haV+Dm
-         QiiEaz9hzgMSZkzXuCDKPOUCLvynM1fwr5zGgmPj+ej62qgleZ2LS9XaGbzMuKFpu1cK
-         JFilSYdAfSA2WvyB2S8MVHp5WhZXBQkmbeOWDhbwVrPkOfCphUX5D2K/i4+RizOk1hwn
-         wqew==
-X-Gm-Message-State: AO0yUKXmR9VUX5vbCZtI3EOMCiMhc9vUU9lj1AjChRUCiBOtDpttLefI
-        d6/YYQM1lc1Wy2wifflPdFXtKBQ5K7Gqid6Gwwcm0w==
-X-Google-Smtp-Source: AK7set9x3FvjDHQkCZvDNNbAYkvQDwhCUNHAVu3h9AFkckE2ot4i0GIDOv9xvK/wHwKb/r6AcA8gB418i0V3uN+ec/g=
-X-Received: by 2002:a19:5203:0:b0:4db:3fd1:6ac3 with SMTP id
- m3-20020a195203000000b004db3fd16ac3mr614165lfb.11.1676472706341; Wed, 15 Feb
- 2023 06:51:46 -0800 (PST)
+        bh=9w2EKztZ7EuQXoJVAfQNdvdvrxRKqCTapg/SniP1n60=;
+        b=z4lYkXDeeJ6QoOy87GhCS1kAvPlLTb0E7oPyYYw57csncjFlORqM6dFqzEoZh0pMHg
+         9SgMqgUBuTn/Wr4PE43n+DooI5W+KGFLJ8k7Xw0JLgS5ZbMmuB+x7AHm5I5heqrEIdmr
+         AfmaOSphL+pgsfXevSSx9FdOlr8p2h0RalNMw2fJlBTVbGUW2YhK7kTfSBbOzISOzepP
+         nG0fS8ROLpn1inmOwyxxUApjSGkS7wR55+kIE0vBbmJZQAkaHVP8mjTErkRnUW3814y3
+         uvZbGG/4Aeo5UynfhiZkM4MKNksP/S07pwH16XaZjRINTHNbgp9XoiY+gLnwM5Aylh+a
+         5fGA==
+X-Gm-Message-State: AO0yUKX6X0DrHWDNU7HySP501kzyCYDKDZlXNlJu7yiKJUVP3CwwsWJQ
+        TDDTteF3+HZyS01WllM9mbN89g==
+X-Google-Smtp-Source: AK7set9wBXsPzL5CwlORBM39Lj9g4NAGNwMINN8yS2hwbKsZzd+fXHgSwaAWXsYNuMM3G+iRq3T/Bg==
+X-Received: by 2002:a05:6000:120e:b0:2c5:63df:1171 with SMTP id e14-20020a056000120e00b002c563df1171mr1906107wrx.19.1676472868970;
+        Wed, 15 Feb 2023 06:54:28 -0800 (PST)
+Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:8487:6a9a:3a67:11aa])
+        by smtp.gmail.com with ESMTPSA id t13-20020adfe44d000000b002c557f82e27sm8495508wrm.99.2023.02.15.06.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Feb 2023 06:54:28 -0800 (PST)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com
+Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+Date:   Wed, 15 Feb 2023 14:54:17 +0000
+Message-Id: <20230215145425.420125-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230209102730.974465-1-qiang1.zhang@intel.com>
- <Y+WQkmiypKUUUfcj@lothringen> <PH0PR11MB58803E9D69F2FAC51C5E5589DADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB58803E9D69F2FAC51C5E5589DADE9@PH0PR11MB5880.namprd11.prod.outlook.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 15 Feb 2023 09:51:34 -0500
-Message-ID: <CAEXW_YS_CXbvhdu3EoaDB2zj3YGNUYXQ3C6xGOJ1cyvUJZZYjw@mail.gmail.com>
-Subject: Re: [PATCH v2] rcu: Keeping rcu-related kthreads running on
- housekeeping CPUS
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 10, 2023 at 12:26 AM Zhang, Qiang1 <qiang1.zhang@intel.com> wrote:
->
-> > For kernels built with CONFIG_NO_HZ_FULL=y and CONFIG_RCU_NOCB_CPU=y,
-> > when passing cpulist to "isolcpus=", "nohz_full=" and "rcu_nocbs="
-> > bootparams, after system starting, the rcu-related kthreads(include
-> > rcu_gp, rcuog*, rcuop* kthreads etc) will running on housekeeping
-> > CPUs, but for cpulist contains CPU0, the result will deferent, these
-> > rcu-related kthreads will be restricted to running on CPU0.
-> >
-> > Although invoke kthread_create() to spwan rcu-related kthreads and
-> > when it's starting, invoke set_cpus_allowed_ptr() to allowed cpumaks
-> > is housekeeping_cpumask(HK_TYPE_KTHREAD), but due to these rcu-related
-> > kthreads are created before starting other CPUS, that is to say, at
-> > this time, only CPU0 is online, when these rcu-related kthreads running
-> > and set allowed cpumaks is housekeeping cpumask, if find that only CPU0
-> > is online and CPU0 exists in "isolcpus=", "nohz_full=" and "rcu_nocbs="
-> > bootparams, invoke set_cpus_allowed_ptr() will return error.
-> >
-> > set_cpus_allowed_ptr()
-> >  ->__set_cpus_allowed_ptr()
-> >    ->__set_cpus_allowed_ptr_locked
-> >      {
-> >                 bool kthread = p->flags & PF_KTHREAD;
-> >                 ....
-> >                 if (kthread || is_migration_disabled(p))
-> >                         cpu_valid_mask = cpu_online_mask;
-> >                 ....
-> >                 dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, ctx->new_mask);
-> >                 if (dest_cpu >= nr_cpu_ids) {
-> >                         ret = -EINVAL;
-> >                         goto out;
-> >                 }
-> >                 ....
-> >      }
-> >
-> > At this time, only CPU0 is set in the cpu_online_mask, the ctx->new_mask
-> > is housekeeping cpumask and not contains CPU0, this will result dest_cpu
-> > is illegal cpu value, the set_cpus_allowed_ptr() will return -EINVAL and
-> > failed to set housekeeping cpumask.
-> >
-> > This commit therefore add additional cpus_allowed_ptr() call in CPU hotplug
-> > path. and reset the CPU affinity of rcuboost, rcuog, rcuop kthreads after
-> > all other CPUs are online.
-> >
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> >
-> >Good catch! But based on that and your other fix, I suspect that
-> >nohz_full=0... has never been seriously used.
-> >
-> >A few points:
-> >
-> >* This is a problem for kthreads in general. And since HK_TYPE_KTHREAD =
-> >  HK_TYPE_RCU and both are going to be merged in the future, I think we should
-> >  stop handling the RCU kthreads housekeeping affinity from RCU but let the
-> >  kthread code handle that and also fix the issue from the kthread code.
-> >  RCU boost may be an exception since we try to enforce some node locality
-> >  within the housekeeping range.
->
-> Agree.  indeed, these works that set housekeeping CPU affinity should not be handled by RCU,
-> and not only RCU-related kthreads are affected, other kthreads created earlier also have the
-> same problem.
+The main change over v8 is dropping the patch to avoid repeated saves of MTRR
+at boot time. It didn't make a difference to smpboot time and is independent
+of parallel CPU bringup, so if needed can be explored in a separate patchset.
 
-Agreed as well.
+The patches have also been rebased to v6.2-rc8 and retested and the
+improvement in boot time is the same as v8.
 
-> >* If CPU 0 is isolated and it is the boot CPU, we should wait for a secondary
-> >  CPU to boot before activating nohz_full at all. Unfortunately the nohz_full
-> >  code is not yet ready for runtime housekeeping cpumask change but work is
-> >  in progress (I'm saying that for 10 years...)
-> >
-> >* I'm tempted to revert 08ae95f4fd3b (nohz_full: Allow the boot CPU to be
-> >  nohz_full) since it doesn't work and nobody ever complained?
->
-> Yes if remove 08ae95f4fd3b, this problem will disappear.
+Thanks,
+Usama
 
-Just checking. So what's the next step, revert this?
+Changes across versions:
+v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+    in preparation for more parallelisation.
+v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+    24 bits of the physical X2APIC ID to be used. That patch still needs
+    a Signed-off-by from its original author, who once claimed not to
+    remember writing it at all. But now we've fixed it, hopefully he'll
+    admit it now :)
+v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+    for AMD CPUs.
+v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+    reused timer calibration for secondary CPUs.
+v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+    cluster mask in alloc_clustermask. (patch 1/9)
+    Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+    0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+    Included sanity checks for APIC id from 0x0B. (patch 6/9)
+    Removed patch for reusing timer calibration for secondary CPUs.
+    commit message and code improvements.
+v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+    early_gdt_descr.
+    Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+    Code comments improved and debug prints added.
+v9: Drop patch to avoid repeated saves of MTRR at boot time.
+    rebased and retested at v6.2-rc8.
+    added kernel doc for no_parallel_bringup and made do_parallel_bringup
+    __ro_after_init.
 
-Thanks.
+David Woodhouse (8):
+  x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+  cpu/hotplug: Add dynamic parallel bringup states before
+    CPUHP_BRINGUP_CPU
+  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+  x86/smpboot: Split up native_cpu_up into separate phases and document
+    them
+  x86/smpboot: Support parallel startup of secondary CPUs
+  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+  x86/smpboot: Serialize topology updates for secondary bringup
+
+ .../admin-guide/kernel-parameters.txt         |   3 +
+ arch/x86/include/asm/realmode.h               |   3 +
+ arch/x86/include/asm/smp.h                    |  14 +-
+ arch/x86/include/asm/topology.h               |   2 -
+ arch/x86/kernel/acpi/sleep.c                  |   1 +
+ arch/x86/kernel/apic/apic.c                   |   2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c         | 130 ++++---
+ arch/x86/kernel/cpu/common.c                  |   6 +-
+ arch/x86/kernel/head_64.S                     |  99 ++++-
+ arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
+ arch/x86/realmode/init.c                      |   3 +
+ arch/x86/realmode/rm/trampoline_64.S          |  14 +
+ arch/x86/xen/smp_pv.c                         |   4 +-
+ include/linux/cpuhotplug.h                    |   2 +
+ include/linux/smpboot.h                       |   7 +
+ kernel/cpu.c                                  |  31 +-
+ kernel/smpboot.c                              |   2 +-
+ kernel/smpboot.h                              |   2 -
+ 18 files changed, 515 insertions(+), 160 deletions(-)
+
+-- 
+2.25.1
+
