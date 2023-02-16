@@ -2,138 +2,91 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF31DC636CC
-	for <rcu@archiver.kernel.org>; Thu, 16 Feb 2023 06:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73B56C61DA4
+	for <rcu@archiver.kernel.org>; Thu, 16 Feb 2023 07:56:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjBPGe4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Feb 2023 01:34:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        id S229495AbjBPH4c (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Feb 2023 02:56:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjBPGez (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Feb 2023 01:34:55 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DBA43443;
-        Wed, 15 Feb 2023 22:34:34 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6753B61DEE;
-        Thu, 16 Feb 2023 06:34:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B344C433D2;
-        Thu, 16 Feb 2023 06:34:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676529264;
-        bh=TaJX0rn163ChcOickz0gpBby+9FDsJsRnGlfNP2/n08=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CTRLfWbK9nXPSg32reC9xxHlkN2P2F9h2C4janWP1+afFUG2TXxtEwttiE63dTkrc
-         FDAWQnqysZt4nwUe0N+5L8IXRbKcIVIax6cRorCDA3BAp4o+XPYAWmzM2tMK4PPouF
-         tD++An5l193VmfJY/BPOEKMH+tAg5pwC4qPD0VXu/0tqpAGRbmv0k3MiDhIDfquThb
-         d5bqFNsC4GPlyIeVZLETJxuKr0tOpBTcUCOvHc5GWC7YHwL7d5nlZkKdhsu/uUW2Lc
-         Y0MRfr8uDWMY21D3e0TSltimT3W0+I0QTDVvXXqk4TQ8h7WR1pXvSCcHZ7zXAwkKd5
-         NL2RMXKzosWjg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0BD465C164C; Wed, 15 Feb 2023 22:34:22 -0800 (PST)
-Date:   Wed, 15 Feb 2023 22:34:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com
-Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
-Message-ID: <20230216063422.GQ2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230215145425.420125-1-usama.arif@bytedance.com>
+        with ESMTP id S229721AbjBPH4b (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Feb 2023 02:56:31 -0500
+X-Greylist: delayed 499 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Feb 2023 23:55:41 PST
+Received: from out-238.mta1.migadu.com (out-238.mta1.migadu.com [IPv6:2001:41d0:203:375::ee])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764574742A
+        for <rcu@vger.kernel.org>; Wed, 15 Feb 2023 23:55:41 -0800 (PST)
+Message-ID: <1232a3da-a58f-8cfb-b881-c049abadc203@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1676533638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oxHYczO7SNKQh0DoSP0lv1HbkL73XKakjcKSCpkdv6Y=;
+        b=sOEUenTBaYzvNGIKHFvZm1SYk2ZyUu8rK+DvfV2Q1PDmdu4BZP5lC8NZ/1j9aaqu3VhKWe
+        uhCB3i7Vio05F/qF0VSR8IGRdgjXOksYuSlBXtMw6KrFSgbDfq/SBPdSmYrlfcBliRtJKq
+        09c2MxuznuSH61osWalzsHyZoWmFWp4=
+Date:   Wed, 15 Feb 2023 23:47:03 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230215145425.420125-1-usama.arif@bytedance.com>
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+Content-Language: en-US
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
+ <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
+ <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
+ <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo>
+ <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
+ <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
+ <6d48c284-42eb-9688-4259-79b7f096e294@linux.dev>
+ <7fef4ece-0982-cb43-ed39-e73791436355@huaweicloud.com>
+ <2b1ddc4c-9905-899a-a903-e66a6e8b4d58@linux.dev>
+ <5f22c315-ed38-b677-f36b-496d89847467@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <5f22c315-ed38-b677-f36b-496d89847467@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 15, 2023 at 02:54:17PM +0000, Usama Arif wrote:
-> The main change over v8 is dropping the patch to avoid repeated saves of MTRR
-> at boot time. It didn't make a difference to smpboot time and is independent
-> of parallel CPU bringup, so if needed can be explored in a separate patchset.
-> 
-> The patches have also been rebased to v6.2-rc8 and retested and the
-> improvement in boot time is the same as v8.
-
-This version passes moderate torture testing.
-
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-
-> Thanks,
-> Usama
-> 
-> Changes across versions:
-> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
-> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
->     in preparation for more parallelisation.
-> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
->     avoid scribbling on initial_gs in common_cpu_up(), and to allow all
->     24 bits of the physical X2APIC ID to be used. That patch still needs
->     a Signed-off-by from its original author, who once claimed not to
->     remember writing it at all. But now we've fixed it, hopefully he'll
->     admit it now :)
-> v5: rebase to v6.1 and remeasure performance, disable parallel bringup
->     for AMD CPUs.
-> v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
->     reused timer calibration for secondary CPUs.
-> v7: [David Woodhouse] iterate over all possible CPUs to find any existing
->     cluster mask in alloc_clustermask. (patch 1/9)
->     Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
->     0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
->     Included sanity checks for APIC id from 0x0B. (patch 6/9)
->     Removed patch for reusing timer calibration for secondary CPUs.
->     commit message and code improvements.
-> v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
->     early_gdt_descr.
->     Drop trampoline lock and bail if APIC ID not found in find_cpunr.
->     Code comments improved and debug prints added.
-> v9: Drop patch to avoid repeated saves of MTRR at boot time.
->     rebased and retested at v6.2-rc8.
->     added kernel doc for no_parallel_bringup and made do_parallel_bringup
->     __ro_after_init.
-> 
-> David Woodhouse (8):
->   x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
->   cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
->   cpu/hotplug: Add dynamic parallel bringup states before
->     CPUHP_BRINGUP_CPU
->   x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
->   x86/smpboot: Split up native_cpu_up into separate phases and document
->     them
->   x86/smpboot: Support parallel startup of secondary CPUs
->   x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
->   x86/smpboot: Serialize topology updates for secondary bringup
-> 
->  .../admin-guide/kernel-parameters.txt         |   3 +
->  arch/x86/include/asm/realmode.h               |   3 +
->  arch/x86/include/asm/smp.h                    |  14 +-
->  arch/x86/include/asm/topology.h               |   2 -
->  arch/x86/kernel/acpi/sleep.c                  |   1 +
->  arch/x86/kernel/apic/apic.c                   |   2 +-
->  arch/x86/kernel/apic/x2apic_cluster.c         | 130 ++++---
->  arch/x86/kernel/cpu/common.c                  |   6 +-
->  arch/x86/kernel/head_64.S                     |  99 ++++-
->  arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
->  arch/x86/realmode/init.c                      |   3 +
->  arch/x86/realmode/rm/trampoline_64.S          |  14 +
->  arch/x86/xen/smp_pv.c                         |   4 +-
->  include/linux/cpuhotplug.h                    |   2 +
->  include/linux/smpboot.h                       |   7 +
->  kernel/cpu.c                                  |  31 +-
->  kernel/smpboot.c                              |   2 +-
->  kernel/smpboot.h                              |   2 -
->  18 files changed, 515 insertions(+), 160 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+On 2/15/23 6:11 PM, Hou Tao wrote:
+>>>> For local storage, when its owner (sk/task/inode/cgrp) is going away, the
+>>>> memory can be reused immediately. No rcu gp is needed.
+>>> Now it seems it will wait for RCU GP and i think it is still necessary, because
+>>> when the process exits, other processes may still access the local storage
+>>> through pidfd or task_struct of the exited process.
+>> When its owner (sk/task/cgrp...) is going away, its owner has reached refcnt 0
+>> and will be kfree immediately next. eg. bpf_sk_storage_free is called just
+>> before the sk is about to be kfree. No bpf prog should have a hold on this sk.
+>> The same should go for the task.
+> A bpf syscall may have already found the task local storage through a pidfd,
+> then the target task exits and the local storage is free immediately, then bpf
+> syscall starts to copy the local storage and there will be a UAF, right ? Did I
+> missing something here ?
+bpf syscall like bpf_pid_task_storage_lookup_elem and you meant 
+__put_task_struct() will be called while the syscall's bpf_map_copy_value() is 
+still under rcu_read_lock()?
