@@ -2,28 +2,66 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57123C636D6
-	for <rcu@archiver.kernel.org>; Thu, 16 Feb 2023 13:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5115C636CC
+	for <rcu@archiver.kernel.org>; Thu, 16 Feb 2023 16:35:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbjBPNz0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Feb 2023 08:55:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        id S229758AbjBPQf2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Feb 2023 11:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjBPNzJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Feb 2023 08:55:09 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59143B21B;
-        Thu, 16 Feb 2023 05:55:07 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PHbzp4DLqz4f3jJC;
-        Thu, 16 Feb 2023 21:55:02 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgBXSOa0Ne5jnTm+Dg--.32545S2;
-        Thu, 16 Feb 2023 21:55:04 +0800 (CST)
+        with ESMTP id S229940AbjBPQf0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Feb 2023 11:35:26 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFECF4ECC8;
+        Thu, 16 Feb 2023 08:35:25 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id u21so5052844edv.3;
+        Thu, 16 Feb 2023 08:35:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9ZLZdKvW1QVCmUWsXtgHPZR5cuWnVGfKqKD47mtzUA=;
+        b=KAZ0xYp++drIOklGW2WrpnwBMImSXOIkW8OONTj7yFEzHFzBQwzoH6BF67+jXlMtnY
+         Z/XtC5J/yUWxcOf4ZLghWNaM1pyPiBIg+twhxdBVPNiqXzTHGEJ+h5KJ3mtfW/VzHpr7
+         8WuZsnXskkbuDGN1QSU7gEOD91rbPF4ipLJazXqG5MBMrZmR+VPZpDP61dIi7n+NFT+o
+         J8zyyb0iKwi3xtD5/hnCDgRSTIosoDgITLGU5pmA9rRz392tsC12fLngrU1EG83enydf
+         mHLBZuaV9oBWYH2i7nhzSb4CnhbzF0/flXaZLNqcpEQezJrZjAjecpf6QYpwdOpukjc5
+         VwSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O9ZLZdKvW1QVCmUWsXtgHPZR5cuWnVGfKqKD47mtzUA=;
+        b=IQlUs8R/OxOPUoRq0PRz4Y77gOtsqugGzKQkdWpSprCjlUVm1WxcXV6AjN1xl/emV8
+         f/DiEx5X9RGHCiG5vCmhhnkbVan1G1B8uWxTBdnUIZq4X6rVXiaSoyTnSMGh6BmTNuUI
+         WziXYQs/PJSiMGrbOiDmkKEnnATQ1Yus+KPd+YaW+uFoiZ2mu9XDUnzuC2OcfrhnecF5
+         yXKRMwG3nxpEWNA7j3dSR0iA4n//znfJUkkyF4VlYG5CZcTz+jAZdNsRWPv69g2dfdUs
+         FYZur6z6mkZAXkowEWA17xhPDHURi2WUIvZZJMBPSSK9WUtla+SpS8tZjC4xzKnn4UhQ
+         7exw==
+X-Gm-Message-State: AO0yUKUI7biRJNewMue7ozGgn57/gioMUosSlSKwIGaPKiK5Ish+LKLn
+        VqfnNOeTz8mXqiR8x+NiPOWEhQo/njX0HEXQDB0=
+X-Google-Smtp-Source: AK7set/yQbfJr6jPNdlRCXcB2E8cqwTRu/Dw+/XSgBtyhOS+8ChyUo4BL5tNXIAKl5KqiKSv4Twt3k+pRBTABRW8i48=
+X-Received: by 2002:a17:906:497:b0:883:ba3b:eb94 with SMTP id
+ f23-20020a170906049700b00883ba3beb94mr3055424eja.3.1676565324200; Thu, 16 Feb
+ 2023 08:35:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo> <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com> <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com> <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com>
+In-Reply-To: <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 16 Feb 2023 08:35:12 -0800
+Message-ID: <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
 Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Martin KaFai Lau <martin.lau@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -37,83 +75,23 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         Hou Tao <houtao1@huawei.com>
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
- <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
- <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
- <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo>
- <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
- <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
- <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
- <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com>
-Date:   Thu, 16 Feb 2023 21:55:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgBXSOa0Ne5jnTm+Dg--.32545S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryDZF4xKr17KFy7CrWDtwb_yoW8Aw47pF
-        ySyasYyF48Aw4ak3s2grsrAFyrK3yrGr1UtF4rGr15CF98Xry2gFyxKF4Y9F95Crs3CrWI
-        v34DAas3Za10v3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU13rcDUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
-
-On 2/12/2023 12:34 AM, Alexei Starovoitov wrote:
-> On Sat, Feb 11, 2023 at 8:33 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> On Fri, Feb 10, 2023 at 5:10 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>>>> Hou, are you plannning to resubmit this change? I also hit this while testing my
->>>>> changes on bpf-next.
->>>> Are you talking about the whole patch set or just GFP_ZERO in mem_alloc?
->>>> The former will take a long time to settle.
->>>> The latter is trivial.
->>>> To unblock yourself just add GFP_ZERO in an extra patch?
->>> Sorry for the long delay. Just find find out time to do some tests to compare
->>> the performance of bzero and ctor. After it is done, will resubmit on next week.
->> I still don't like ctor as a concept. In general the callbacks in the critical
->> path are guaranteed to be slow due to retpoline overhead.
->> Please send a patch to add GFP_ZERO.
->>
->> Also I realized that we can make the BPF_REUSE_AFTER_RCU_GP flag usable
->> without risking OOM by only waiting for normal rcu GP and not rcu_tasks_trace.
->> This approach will work for inner nodes of qptrie, since bpf progs
->> never see pointers to them. It will work for local storage
->> converted to bpf_mem_alloc too. It wouldn't need to use its own call_rcu.
->> It's also safe without uaf caveat in sleepable progs and sleepable progs
-> I meant 'safe with uaf caveat'.
-> Safe because we wait for rcu_task_trace later before returning to kernel memory.
+On Thu, Feb 16, 2023 at 5:55 AM Hou Tao <houtao@huaweicloud.com> wrote:
 >
->> can use explicit bpf_rcu_read_lock() when they want to avoid uaf.
->> So please respin the set with rcu gp only and that new flag.
-Beside BPF_REUSE_AFTER_RCU_GP, is BPF_FREE_AFTER_RCU_GP a feasible solution ?
-Its downside is that it will enforce sleep-able program to use
-bpf_rcu_read_{lock,unlock}() to access these returned pointers ?
-> .
+> Beside BPF_REUSE_AFTER_RCU_GP, is BPF_FREE_AFTER_RCU_GP a feasible solution ?
 
+The idea is for bpf_mem_free to wait normal RCU GP before adding
+the elements back to the free list and free the elem to global kernel memory
+only after both rcu and rcu_tasks_trace GPs as it's doing now.
+
+> Its downside is that it will enforce sleep-able program to use
+> bpf_rcu_read_{lock,unlock}() to access these returned pointers ?
+
+sleepable can access elems without kptrs/spin_locks
+even when not using rcu_read_lock, since it's safe, but there is uaf.
+Some progs might be fine with it.
+When sleepable needs to avoid uaf they will use bpf_rcu_read_lock.
