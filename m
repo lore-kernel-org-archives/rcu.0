@@ -2,166 +2,119 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B026C636CC
-	for <rcu@archiver.kernel.org>; Thu, 16 Feb 2023 20:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04C4DC636CC
+	for <rcu@archiver.kernel.org>; Fri, 17 Feb 2023 01:19:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbjBPU6U (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Feb 2023 15:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        id S229872AbjBQBTl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Feb 2023 20:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbjBPU6U (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Feb 2023 15:58:20 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2086.outbound.protection.outlook.com [40.107.243.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54D84D606;
-        Thu, 16 Feb 2023 12:58:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VgJtwBS4iVYHp8o0kwfx0K98Q329sTy85CqdRM1jaiO5MfooKaYuXnPkhWVBN8GztdBTw3ZwfZicuYUXAOGqWYyJfkTVmgWAlcB0uGWw8OJJ3iKTKthwF5n6Wf2xUOt2I8PpIefbKtThYH0gJorUHO8yVPSyCvOBekATlnJus6IhwV+vGUzIhVygynI8vjA7hxxwXF59u9ta2c/CTPXtxqhQnqChFSzex/jiAovLQFZ8CnYvtIAV4FfN5c6Vhe9RteAO8xHUJSYoQsMPsZkxiEqz0I90B/gBekEfHbSzEQq+dG44vi/Py1UoTAO3bfhJU5KhBUj7laGsEuhSMF/OPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r8CD/H7+wiyrJpNZLzSFerY6qwM0hmZC+d1wtPhnF9E=;
- b=F0GM2vi4O0hbGaynLIUjrULc05DUuLIG2L3VfAUDdVf0KWE6NqiCwY0K7h20KwNsL1/MDbKaCQJyLNnn+1uWvZ5Q9PYcP9lVS+Ki6JqtqnnOAtrLGLdlelD7mzXQAk0HpXdAZpow0j78AkixQbzQ+f5XtFsYLXJj8NuO0/NNhMCswUTNmpDhhYvS97yBqwkyLH73u1StKgMD6U5b4MrLxJyn4X5Od1Kcm3NSCc7toUH9VbG9P3rNwbz7Ul57xgvpOe/s5eoYDRoJKA+uIEW0SlaAaQsgNamV2EgXB1uKS5eb/jcZCueIxXG/c5MAjQuUv7XTRfnI22KSYDOwrxgN8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r8CD/H7+wiyrJpNZLzSFerY6qwM0hmZC+d1wtPhnF9E=;
- b=cf0Qr8BChsn84KwxWdvrrWw4rYxkIwg8+ExfELzV24EpBJ6eC+YJdGChg3wz86HD5SVUSo+F+Rq7MZ2OA1L1US81/+VC6XMps1OjnEs9r8ily6sDRkW6+sKawaESlXEog1wg4pUlnKi7Ntwug2hBB3eFtXoGkLM3/X5KcvoVYOI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6263.namprd12.prod.outlook.com (2603:10b6:8:95::17) by
- DS0PR12MB8525.namprd12.prod.outlook.com (2603:10b6:8:159::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6086.26; Thu, 16 Feb 2023 20:58:16 +0000
-Received: from DS7PR12MB6263.namprd12.prod.outlook.com
- ([fe80::2ba2:7ffc:1e24:4bba]) by DS7PR12MB6263.namprd12.prod.outlook.com
- ([fe80::2ba2:7ffc:1e24:4bba%8]) with mapi id 15.20.6086.026; Thu, 16 Feb 2023
- 20:58:16 +0000
-Message-ID: <cc106460-01b5-abfb-8856-6d65ee7bb866@amd.com>
-Date:   Thu, 16 Feb 2023 14:58:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v9 1/8] x86/apic/x2apic: Allow CPU cluster_mask to be
- populated in parallel
-Content-Language: en-US
-To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        tglx@linutronix.de
-Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        David Woodhouse <dwmw@amazon.co.uk>
-References: <20230215145425.420125-1-usama.arif@bytedance.com>
- <20230215145425.420125-2-usama.arif@bytedance.com>
-From:   Kim Phillips <kim.phillips@amd.com>
-Organization: AMD
-In-Reply-To: <20230215145425.420125-2-usama.arif@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0287.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::22) To DS7PR12MB6263.namprd12.prod.outlook.com
- (2603:10b6:8:95::17)
+        with ESMTP id S229738AbjBQBTk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Feb 2023 20:19:40 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042755036A;
+        Thu, 16 Feb 2023 17:19:38 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PHv9c4qQTz4f3wQh;
+        Fri, 17 Feb 2023 09:19:32 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgBnF6si1u5jniEQDw--.23368S2;
+        Fri, 17 Feb 2023 09:19:34 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com>
+ <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com>
+ <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com>
+ <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo>
+ <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com>
+ <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
+ <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com>
+ <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <2a58c4a8-781f-6d84-e72a-f8b7117762b4@huaweicloud.com>
+Date:   Fri, 17 Feb 2023 09:19:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6263:EE_|DS0PR12MB8525:EE_
-X-MS-Office365-Filtering-Correlation-Id: dabdce10-9f46-481d-2a86-08db10608666
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bHR3EQclULYPq2fYgJnlicL9rs+7XwEmvWEMn3FTSj67Le1IdB37BCDKBLqXt4b51k5TRKkkFAq2IpFUQyI+ti4UrXoA5Pf2hcROKMG/otlDhnOzHEdP9Hrokjr25t/6r+OxN3ZLFltkrexJeUSGQyisgclmJ8le+FKWIy++dvu+zpUz7Z6lxbEZyPW/AZZsINaZoFDJeRdP6wkggUTtF/SL/73XtA4qxei6EIkWAHuQNWiBOaqRzLlVEb9v9pCIpYyd1FYCdLh6BNzzckwSoeFwlNO7qzbyQ4Z21n8MBwsEfRk++L63XUYScd7DnDnmXw1v33cTYFnYPanCsWjbGOEByK01150ALmIoXOe89dF+7rShy7bUHnONUdsfu9/kdKlkRabGP7NW+LDKPDXa5hZ6IUS2gCq/DsgPnZQw6uZoPgKB84htBya9GZtKpFKprHZjMjBOokoEZy/SV3hvaIIGYsWUBrldEK6CtaBfUCWCao6bqDsnSJ45Ym/gcls9k5eVn+91wJXgFmdwxn4gtJ4RBRuHDsOVUnT8H9BjxUb5QNr99RqDDiDpY7ioixDaz7qrvue8h3Y2fhOpSMPVbmESkplbkiCjL0H9Yr4x6mMKH1I+VXGXZxUY24Nr2yodg0Lg6KK6Y3Jgyj+MNcqhICDPSemkufvuC5MWiowblN/Z4RWjOR2Ogv1ASRidck29msytMxopiNDpChszzej0rsYsxwrgX9ztNX0dt5KVVIs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6263.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(346002)(366004)(396003)(136003)(376002)(451199018)(8936002)(41300700001)(5660300002)(44832011)(4744005)(7416002)(36756003)(2906002)(478600001)(36916002)(66946007)(4326008)(66556008)(8676002)(316002)(66476007)(6666004)(6486002)(38100700002)(31686004)(186003)(2616005)(53546011)(6506007)(86362001)(31696002)(6512007)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Tm80WFl4N3ZXUkdGQTJQSlR1WXZuMDRhQzk2ZWN4R0haeDcwQW9lczR6bEFE?=
- =?utf-8?B?a1hlRXV3ZVR6MXB2eDh2cUY2NWMzc0ZnS1NwL3JTc3A3L0ZlTVFlR3V1RVAy?=
- =?utf-8?B?OEZTd0lVNS81RlBiblhCcitVODJGRHB5aVo0UFNrcDRrWG5lR08xL2NCQ0Rr?=
- =?utf-8?B?UVpvR1pTeUF1Nk50eGVEQkFDcTZxYnNjU1RJYzdQL2t6N3d5ckNmM2x4Y1c4?=
- =?utf-8?B?bmZrdFd1ZDN4bjRJcXJxb1dCeTZHdU15bCs4eVVhQkhVelplZ3ZWVHZsQWFy?=
- =?utf-8?B?NFVoWGVEYmtEUHVoT3p3R25Wc0ZJb09FNkVNMk9vK0RTMkc0V00zK3ZHTVZW?=
- =?utf-8?B?c0NrbWFWVHVuMEpZR2R2T3BkR00xWUNvTHNINUtpQUdnNUU4UTVBQXl1UjJp?=
- =?utf-8?B?dHFVS25CbjY1OXhkSFBqTEJWek11YnlUbnAzRnRoamxxbEJPTXN5ZUh5M1BV?=
- =?utf-8?B?VEJNcE1GUVByS1NsR3V4Y1g2OFFadW5MM1hHbUhacmxGVHlpZThJZ3p0TjhU?=
- =?utf-8?B?LzJwSjBZUjJCNE1BTzlWNkdsb0gvQ2UvN1ppaGdxR0NPOE05eGJlMnVsNUsr?=
- =?utf-8?B?aHkyam10R3c5Y09Na2tjelZTYko1TGQwNWZtWEtsMEVRN3VLOFpvSzlXTkln?=
- =?utf-8?B?bFp5OXVWRUFUbTFzR1p0Y0s2OG9ZcWVwZDB3OWtVczcrRWpMejZIalI5Q1pZ?=
- =?utf-8?B?YXk3QmNwejFsUzNGWG9Md2ZFOXJtUDFGL29kV1JxZE0rOStMT29YNmVaWnZo?=
- =?utf-8?B?L3dEKzZ0MDlYMHNnUVNNNzdxblNONHBLblErMTZlR0lXREhsVTdiTFd1cEVh?=
- =?utf-8?B?eDZIVjdVcnd5eEVnNllrbHl5WkhOMVlYWGY0STEzdHNsQS9pcEdFZ2JhdzE2?=
- =?utf-8?B?ZUtYRHJmdUE4Vm5xR25GOUlCRTdxQzc0aVd4U0IzbUwzYjVnbVcxT0ZWTVRI?=
- =?utf-8?B?WHF5UVBCdHpTQXJtamxmNHZ2SGZBbDdnZjJVVTQ0WTQydXF5ZWpGSWVRVFkz?=
- =?utf-8?B?a1RkQnI0MnpNNEptVVRDTTdpOU1mQXh5eTVwNGRWWkQ0UC9XNVdtaUdXS2Fo?=
- =?utf-8?B?U29BSmlSclNBdVIvOG4zU25laXFNWWxnZHdPQ2xPR2dNZXFOWkJYcW45U0hm?=
- =?utf-8?B?bEUzdTVRYkZWdkYwaGExRnNncEluSjRLZVZJc0pYMWVBU2JIQzR4K1hFWGho?=
- =?utf-8?B?Q1hqaldWSnRoMHlqa3d1aWkwVmtwTWRueFNsTm9NK0V5Smg3QllYd2N4OHRr?=
- =?utf-8?B?TEVBcmsydElJclF4UXQwKzZ4THRKc2N2a2xEV2xweXpDbUtiVFJsVWRiOFhh?=
- =?utf-8?B?MS9YK3pxUnV5a0dzeG93bE9mdkhJQ2oxV2cyRmtvUmcwS0RBeDhwWlhmYnB1?=
- =?utf-8?B?NGhoZzBmcjhzbEt6SXltZXN4R1A1QUllUWo1bDRJYzRacjNYakovazc3YnEr?=
- =?utf-8?B?dS9NMng5ai9tajM4TlJEY0tSb3k1MitkeFpkcDRKOXVZalV2dDZpU1dlNzlL?=
- =?utf-8?B?S093V285bXEvbEZNZ3pwNlNzdnhyUGFaNkw5NTdkL2tKWks5S2czNzBrK3lI?=
- =?utf-8?B?dGpnR1JLb1NESVNvcGNxNlgwNjJjd1BFV2R4dUFsZHI4OW9PbWZMK1ZZaTRh?=
- =?utf-8?B?RnhjV2QyYnB3RmVxUmdtcWVMUXZ3NUx4L0VEMGltcGkwZzNDenZGMzE4RlE2?=
- =?utf-8?B?OTYwaGM2N3owZ0FRMmNXVWw5OFZmRWtrSWpTdjNnaFU1VE1hbHpUa3g0dkh1?=
- =?utf-8?B?SlYvNWZKdTkyOWNTU2lmdmlOcm5ENHc4VEljRmJpeWQwUmdHWmllMUY0RWF6?=
- =?utf-8?B?V3BqNUhNTE1PaC95Z3QzWGt5cENwR0JJOURXc29TNnpXVmR5TkhwcElGVzVU?=
- =?utf-8?B?aUFyVExpZkxzOTF2a05rRkxFMFdqRFhjbXcrazdHTU5LNEhxd2V6WktxYzll?=
- =?utf-8?B?SUVhOFFPVEZoVXVJaGYvTm55YS9sRnlSMGV5eG5tWThoMjhkMmpQakdHeFFj?=
- =?utf-8?B?VWtLVFNZUW9rTzZxUmg0T1ZQdnJYREVCdC9xa0JZcTVVeHk5eHhaZFQvK2ND?=
- =?utf-8?B?Q1Vxb1phNUM0dmhFL2ZTZ0ZER2NubHlnZUZhR284Yk0wV0VCdTVlMEJSSmlH?=
- =?utf-8?B?cjJldy91YW8xWHZISFhGdDYxSkZDRzRxa1UrblJGU1RIODFVaWs3Q3ZyOW9F?=
- =?utf-8?Q?1gJKd02MEmT74KFC1aSXqxcsoYz8bIS3jDJZ61iOM8hh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dabdce10-9f46-481d-2a86-08db10608666
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6263.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2023 20:58:16.3304
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w0HVcrLYvhY4RlVsNB1C2HLNI2xUm5XplK+QUWcGJWPq8w/Q89xRJZWTgcx/PIASAjfP1T5BdLIRHFhb3dNoUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8525
+In-Reply-To: <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgBnF6si1u5jniEQDw--.23368S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW5XF1kWw48tryUCr4xtFb_yoW8ur1UpF
+        WfZ34UKrykCwnrArykZwn2q3W0vws5Gry2grW8Jr4UCwn5WrZ7Jr1Ivw4avF1rZrs7A3WY
+        vrZ8twnxXa4rZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2/15/23 8:54 AM, Usama Arif wrote:
-> -
-> -	cluster_hotplug_mask = kzalloc_node(sizeof(*cluster_hotplug_mask),
-> -					    GFP_KERNEL, node);
-> -	if (!cluster_hotplug_mask)
-> -		return -ENOMEM;
-> -	cluster_hotplug_mask->node = node;
-> -	return 0;
-> +	/*
-> +	 * No CPU in the cluster has ever been initialized, so fall through to
-> +	 * the boot time code which will also populate the cluster mask for any
-> +	 * other CPU in the cluster which is (now) present.
-> +	 */
-> + alloc:
-> +	cmsk = kzalloc_node(sizeof(*cmsk), GFP_KERNEL, node);
-> +	if (!cmsk)
-> + 		return -ENOMEM;
+Hi,
 
-.git/rebase-apply/patch:167: space before tab in indent.
-  		return -ENOMEM;
+On 2/17/2023 12:35 AM, Alexei Starovoitov wrote:
+> On Thu, Feb 16, 2023 at 5:55 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Beside BPF_REUSE_AFTER_RCU_GP, is BPF_FREE_AFTER_RCU_GP a feasible solution ?
+> The idea is for bpf_mem_free to wait normal RCU GP before adding
+> the elements back to the free list and free the elem to global kernel memory
+> only after both rcu and rcu_tasks_trace GPs as it's doing now.
+>
+>> Its downside is that it will enforce sleep-able program to use
+>> bpf_rcu_read_{lock,unlock}() to access these returned pointers ?
+> sleepable can access elems without kptrs/spin_locks
+> even when not using rcu_read_lock, since it's safe, but there is uaf.
+> Some progs might be fine with it.
+> When sleepable needs to avoid uaf they will use bpf_rcu_read_lock.
+Thanks for the explanation for BPF_REUSE_AFTER_RCU_GP. It seems that
+BPF_REUSE_AFTER_RCU_GP may incur OOM easily, because before the expiration of
+one RCU GP, these freed elements will not available to both bpf ma or slab
+subsystem and after the expiration of RCU GP, these freed elements are only
+available for one bpf ma but the number of these freed elements maybe too many
+for one bpf ma, so part of these freed elements will be freed through
+call_rcu_tasks_trace() and these freed-again elements will not be available for
+slab subsystem untill the expiration of tasks trace RCU. In brief, after one RCU
+GP, part of these freed elements will be reused, but the majority of these
+elements will still be freed through call_rcu_tasks_trace(). Due to the doubt
+above, I proposed BPF_FREE_AFTER_RCU to directly free these elements after one
+RCU GP and enforce sleepable program to use bpf_rcu_read_lock() to access these
+elements, but the enforcement will break the existing sleepable programs, so
+BPF_FREE_AFTER_GP is still not a good idea. I will check whether or not these is
+still OOM risk for BPF_REUSE_AFTER_RCU_GP and try to mitigate if it is possible
+(e.g., share these freed elements between all bpf ma instead of one bpf ma which
+free it).
 
-> +	per_cpu(cluster_masks, cpu) = cmsk;
-> +	prefill_clustermask(cmsk, cpu, cluster);
-> +
-> + 	return 0;
-
-.git/rebase-apply/patch:171: space before tab in indent.
-  	return 0;
-warning: 2 lines add whitespace errors.
-
-Other than that:
-
-Tested-by: Kim Phillips <kim.phillips@amd.com>
-
-Thanks,
-
-Kim
