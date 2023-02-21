@@ -2,53 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 471EBC64EC4
-	for <rcu@archiver.kernel.org>; Tue, 21 Feb 2023 21:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC520C61DA3
+	for <rcu@archiver.kernel.org>; Tue, 21 Feb 2023 21:41:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjBUVEj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Feb 2023 16:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
+        id S229514AbjBUVlg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Feb 2023 16:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjBUVEi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Feb 2023 16:04:38 -0500
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62477211CE;
-        Tue, 21 Feb 2023 13:04:36 -0800 (PST)
-Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 5EF15123EB3E;
-        Tue, 21 Feb 2023 22:04:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1677013470;
+        with ESMTP id S229567AbjBUVlf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Feb 2023 16:41:35 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6E82FCCC;
+        Tue, 21 Feb 2023 13:41:34 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1677015693;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=n28t+E/zsRch9sqsWc1BHYuL8WoSmgCVYrF30WLVYb4=;
-        b=MKFrQZKJL8ZLgiAnersYOYTjnK2mguewyPOdPtKRnvRkZrpJW/xegt7MB6ViyC3+iDNBjn
-        n9kgpxgMm+eIuMdrv1EfQUgNcG7F0pnkSkBCi6sDX/I2d7Khw/XXosDzoNVgrjBYgBKLOi
-        4VVqOjbyFF9VI/oEu0KW6s3hMBmb+xw=
-MIME-Version: 1.0
-Date:   Tue, 21 Feb 2023 22:04:29 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Kim Phillips <kim.phillips@amd.com>, tglx@linutronix.de,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
+        bh=2fzZWgj3EgPur0gBH+Eh3AUzBsWUv3V8wkByGQcQZQo=;
+        b=V64+K99vkA8eopGHFkYFH3YcKvPLeVZGt3S8Mr+dqi7IeSNEBmkueT1xDVjae9oID4l1nZ
+        vMhPwVDwb3XTiYZYqSDfpBWOioB7X0PNMSIN3aEAxIh737LqpKTclVYFOcQW/BnlFHC70I
+        ZyIStxoDDt7aA160jIuH9a0p0iWOU+gZUDWxnJW5bHgsc5dobHQtN2Opo4YleW5edvk0D9
+        O9DRj4icFj8gpyCFTt8zz+hKDuuqecCJxb6O7AdLWr6+dJ1NxnWmXkAkRZO0RLbEZhM+FH
+        5+Jw0zv/4ggMpMpx6FVg3DoE7Ih3ZtMF0ILccmr1UbmyqUFIYx4rXWut8L/7Tg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1677015693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2fzZWgj3EgPur0gBH+Eh3AUzBsWUv3V8wkByGQcQZQo=;
+        b=jqUZGiR+kD1/71tIkOkW4UWt2pRAnJv517JDzotCmipTM/SnWMHds7nTFmaby08zFiYg0X
+        hEsCwswkOubJHAAA==
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Kim Phillips <kim.phillips@amd.com>,
+        Usama Arif <usama.arif@bytedance.com>, arjan@linux.intel.com,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com,
         "Limonciello, Mario" <Mario.Limonciello@amd.com>,
         Piotr Gorski <piotrgorski@cachyos.org>
-Subject: Re: [External] Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
-In-Reply-To: <538080af-b876-6462-c591-be66dceb4b8d@bytedance.com>
+Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+In-Reply-To: <e2e6616f691f1822035be245ec847f7c86a26367.camel@infradead.org>
 References: <20230215145425.420125-1-usama.arif@bytedance.com>
+ <2668869.mvXUDI8C0e@natalenko.name>
+ <2a67f6cf18dd2c1879fad9fd8a28242918d3e5d2.camel@infradead.org>
+ <982e1d6140705414e8fd60b990bd259a@natalenko.name>
  <715CBABF-4017-4784-8F30-5386F1524830@infradead.org>
  <67dbc69f-b712-8971-f1c9-5d07f506a19c@amd.com>
  <42dc683e2846ae8fc1e09715aaf7884660e1a386.camel@infradead.org>
@@ -66,85 +71,88 @@ References: <20230215145425.420125-1-usama.arif@bytedance.com>
  <10CA27BB-ADC6-4421-86D2-A83BD7FA12E0@infradead.org>
  <9153284c37a79d303aa79dbf07c10329@natalenko.name>
  <e2e6616f691f1822035be245ec847f7c86a26367.camel@infradead.org>
- <538080af-b876-6462-c591-be66dceb4b8d@bytedance.com>
-Message-ID: <056c22523573943347906d0235708d2a@natalenko.name>
-X-Sender: oleksandr@natalenko.name
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
+Date:   Tue, 21 Feb 2023 22:41:32 +0100
+Message-ID: <87356yofw3.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 21.02.2023 21:04, Usama Arif wrote:
-> On 21/02/2023 19:10, David Woodhouse wrote:
->> On Tue, 2023-02-21 at 13:14 +0100, Oleksandr Natalenko wrote:
->>> 
->>> With this in place:
->>> 
->>> ```
->>>          early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(0);
->>>          initial_gs = per_cpu_offset(0);
->>>          smpboot_control = 0;
->>> ```
->>> 
->>> the resume does not work.
->> 
->> Yeah, I think it's always running on CPU0 after the other CPUs are
->> taken down anyway.
->> 
->> We definitely *do* need to clear smpboot_control because we absolutely
->> want it using the temp_stack we explicitly put into initial_stack, not
->> finding its own idle thread.
->> 
->> The problem was that it was never being restored to STARTUP_SECONDARY
->> in the parallel modes, because that's a one-time setup in
->> native_smp_prepare_cpus(). So we can just restore it in
->> arch_thaw_secondary_cpus_begin() too, by working this into patch 6 of
->> the series.
->> 
->> (Usama, I think my tree is fairly out of date now so I'll let you do
->> that? Thanks!).
-> 
-> Sounds good! Will send out the next revision with below diff, 
-> checkpatch
-> fixes and rebased to 6.2 (testing it now). The below fix looks good! 
-> Oleksandr, would you mind testing out suspend/resume with the below 
-> diff on your AMD machine just to make sure it fixes the issue before I 
-> send out the next revision with it. Thanks!
+David!
 
-Right, so I applied the whole series + this fix, and the suspend/resume 
-works. Thanks!
+On Tue, Feb 21 2023 at 19:10, David Woodhouse wrote:
+> On Tue, 2023-02-21 at 13:14 +0100, Oleksandr Natalenko wrote:
+> (Usama, I think my tree is fairly out of date now so I'll let you do
+> that? Thanks!).
+>
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index 50621793671d..3db77a257ae2 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1571,6 +1571,17 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
+>  
+>  void arch_thaw_secondary_cpus_begin(void)
+>  {
+> +	/*
+> +	 * On suspend, smpboot_control will have been zeroed to allow the
+> +	 * boot CPU to use explicitly passed values including a temporary
+> +	 * stack. Since native_smp_prepare_cpus() won't be called again,
+> +	 * restore the appropriate value for the parallel startup modes.
+> +	 */
+> +	if (do_parallel_bringup) {
+> +		smpboot_control = STARTUP_SECONDARY |
+> +			(x2apic_mode ? STARTUP_APICID_CPUID_0B : STARTUP_APICID_CPUID_01);
+> +	}
 
-Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+My bad taste sensor reports: "Out of effective range"
 
-There's another open question pending though: why would this series 
-cause booting up one CPU only on an older AMD CPU. But I'd expect 
-Piotr's fellow to chime in occasionally.
+Why on earth can't you fix the wreckage exactly where it happens,
+i.e. in x86_acpi_suspend_lowlevel() ?
 
->> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
->> index 50621793671d..3db77a257ae2 100644
->> --- a/arch/x86/kernel/smpboot.c
->> +++ b/arch/x86/kernel/smpboot.c
->> @@ -1571,6 +1571,17 @@ void __init native_smp_prepare_cpus(unsigned 
->> int max_cpus)
->>     void arch_thaw_secondary_cpus_begin(void)
->>   {
->> +	/*
->> +	 * On suspend, smpboot_control will have been zeroed to allow the
->> +	 * boot CPU to use explicitly passed values including a temporary
->> +	 * stack. Since native_smp_prepare_cpus() won't be called again,
->> +	 * restore the appropriate value for the parallel startup modes.
->> +	 */
->> +	if (do_parallel_bringup) {
->> +		smpboot_control = STARTUP_SECONDARY |
->> +			(x2apic_mode ? STARTUP_APICID_CPUID_0B : STARTUP_APICID_CPUID_01);
->> +	}
->> +
->>   	set_cache_aps_delayed_init(true);
->>   }
->> 
+--- a/arch/x86/kernel/acpi/sleep.c
++++ b/arch/x86/kernel/acpi/sleep.c
+@@ -16,6 +16,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/realmode.h>
+ #include <asm/hypervisor.h>
++#include <asm/smp.h>
+ 
+ #include <linux/ftrace.h>
+ #include "../../realmode/rm/wakeup.h"
+@@ -57,6 +58,7 @@ asmlinkage acpi_status __visible x86_acp
+  */
+ int x86_acpi_suspend_lowlevel(void)
+ {
++	unsigned int __maybe_unused saved_smpboot_ctrl;
+ 	struct wakeup_header *header =
+ 		(struct wakeup_header *) __va(real_mode_header->wakeup_header);
+ 
+@@ -115,7 +117,8 @@ int x86_acpi_suspend_lowlevel(void)
+ 	early_gdt_descr.address =
+ 			(unsigned long)get_cpu_gdt_rw(smp_processor_id());
+ 	initial_gs = per_cpu_offset(smp_processor_id());
+-	smpboot_control = 0;
++	/* Force the startup into boot mode */
++	saved_smpboot_ctrl = xchg(&smpboot_control, 0);
+ #endif
+ 	initial_code = (unsigned long)wakeup_long64;
+        saved_magic = 0x123456789abcdef0L;
+@@ -128,6 +131,9 @@ int x86_acpi_suspend_lowlevel(void)
+ 	pause_graph_tracing();
+ 	do_suspend_lowlevel();
+ 	unpause_graph_tracing();
++
++	if (IS_ENABLED(CONFIG_64BIT) && IS_ENABLED(CONFIG_SMP))
++		smpboot_control = saved_smpboot_ctrl;
+ 	return 0;
+ }
+ 
 
--- 
-   Oleksandr Natalenko (post-factum)
+That's too bloody obvious, too self explaining, not enough duplicated
+code and does not need any fixups when the smpboot_control bits are
+changed later, right?
+
+Thanks,
+
+        tglx
