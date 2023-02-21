@@ -2,50 +2,51 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34BACC6379F
-	for <rcu@archiver.kernel.org>; Tue, 21 Feb 2023 13:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8C12C61DA3
+	for <rcu@archiver.kernel.org>; Tue, 21 Feb 2023 19:11:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbjBUNXG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Feb 2023 08:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S229557AbjBUTL7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Feb 2023 14:11:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjBUNXF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Feb 2023 08:23:05 -0500
+        with ESMTP id S229468AbjBUTL6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Feb 2023 14:11:58 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E96CA2A;
-        Tue, 21 Feb 2023 05:23:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA8B30B1E;
+        Tue, 21 Feb 2023 11:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
         In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r0d/FisaUrlNIIS+aI73izdeL+xA0qT3P/sE1Faf7Sc=; b=BVjHNByJoXn4aENQJjUS0b/Wp7
-        VEgChL79SHsRlm0DBQXSyPQE9SpD9bKhwsQ+0BkCQZlmMtXwBzuGdBWwEIQlEGioZJ6rQ1ubVJ+Z6
-        yuLI8NP8MLcK5nKeuRLQp/m3bU30ZdcbF3pqpmhUG3S/wm75uJSSztyGjdbxQUQq62PnYexWp6g9f
-        Tp38nxgYviNh4eOz5naCs8NQyXqXIVz2hjjhStztTwUTjvks0eW+Vc9uC3ttKDy+W0hI6QRc27/We
-        9MMNPzLhF+N/uz0UXK1SP32/Qh8rWe725EH/8Woc5k/ifgmpJn8JuhhRiEHwbg7BfgHVmYWpz7Guk
-        Ujc7yWRA==;
+        bh=3OEWjiyzMl2pG8LRV3O7lueWlZQKsHY3A1b3qWEktBs=; b=rf5uoIPj6a+8INaHu5M7WX3UIo
+        q5fIEHxQ+YFjSDnlKWbht9nm299bseHcKLqXgb2PSXwkAWZZLc3lwH6wOdIeEUJ+987XspJsKi8N9
+        +MCEq4DHLijCbiLaJpL6A9kJsdnCTz+Kay5RappIMhvR2sRbKcCjiahWUpRpiCpN9BVghLfOs2NTW
+        4+qRORx0VIrIEA7IIX4xFp5Z6CCEZKsN4tTsUJj63JaU5bmjOcbfEa0yicse4K4DbL/yMVERbfCjt
+        UK3vTI8jMlk/hw7ISDPf2PypDhQKdqPtOR3lXPSM7iyMOIF9NuftB+Zop0IB0b8U7UdSx2CwSDfmc
+        PKxiHFow==;
 Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pUSb7-00Cda7-JL; Tue, 21 Feb 2023 13:22:22 +0000
-Message-ID: <d081ffa14a8c1f9f68e393a56520da764721a110.camel@infradead.org>
-Subject: Re: [External] Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+        id 1pUY2R-00CqYh-Pf; Tue, 21 Feb 2023 19:10:56 +0000
+Message-ID: <e2e6616f691f1822035be245ec847f7c86a26367.camel@infradead.org>
+Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
 From:   David Woodhouse <dwmw2@infradead.org>
-To:     Usama Arif <usama.arif@bytedance.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
 Cc:     Kim Phillips <kim.phillips@amd.com>, tglx@linutronix.de,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
+        Usama Arif <usama.arif@bytedance.com>, arjan@linux.intel.com,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
+        paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com,
         "Limonciello, Mario" <Mario.Limonciello@amd.com>,
         Piotr Gorski <piotrgorski@cachyos.org>
-Date:   Tue, 21 Feb 2023 13:22:20 +0000
-In-Reply-To: <049adfae-f4a0-349e-323a-52299969ef99@bytedance.com>
+Date:   Tue, 21 Feb 2023 19:10:54 +0000
+In-Reply-To: <9153284c37a79d303aa79dbf07c10329@natalenko.name>
 References: <20230215145425.420125-1-usama.arif@bytedance.com>
+         <2668869.mvXUDI8C0e@natalenko.name>
          <2a67f6cf18dd2c1879fad9fd8a28242918d3e5d2.camel@infradead.org>
          <982e1d6140705414e8fd60b990bd259a@natalenko.name>
          <715CBABF-4017-4784-8F30-5386F1524830@infradead.org>
@@ -61,11 +62,11 @@ References: <20230215145425.420125-1-usama.arif@bytedance.com>
          <85ceb3f92abf3c013924de2f025517372bed19c0.camel@infradead.org>
          <3e5944de08ef0d23584d19bad7bae66c@natalenko.name>
          <26E5DC9C-0F19-4E4F-9076-04506A197374@infradead.org>
-         <d91f96eb-86a1-c794-761d-a96e39076b13@bytedance.com>
-         <6e7d75d98266ab68b57bf6db644ecc75@natalenko.name>
-         <049adfae-f4a0-349e-323a-52299969ef99@bytedance.com>
+         <f71275dc809cfb32df513023786c3faa@natalenko.name>
+         <10CA27BB-ADC6-4421-86D2-A83BD7FA12E0@infradead.org>
+         <9153284c37a79d303aa79dbf07c10329@natalenko.name>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-HuEDwl/GSzw4IMecK3cP"
+        boundary="=-OeN2sLt7BB7srnVVcy8t"
 User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -74,62 +75,66 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-HuEDwl/GSzw4IMecK3cP
+--=-OeN2sLt7BB7srnVVcy8t
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2023-02-21 at 11:54 +0000, Usama Arif wrote:
+On Tue, 2023-02-21 at 13:14 +0100, Oleksandr Natalenko wrote:
 >=20
+> With this in place:
 >=20
-> On 21/02/2023 11:42, Oleksandr Natalenko wrote:
-> > On 21.02.2023 11:47, Usama Arif wrote:
-> > > On 21/02/2023 10:27, David Woodhouse wrote:
-> > > >=20
-> > > > On 21 February 2023 09:49:51 GMT, Oleksandr Natalenko=20
-> > > > <oleksandr@natalenko.name> wrote:
-> > > > > On 21.02.2023 10:06, David Woodhouse wrote:
-> > > > > > Why does arch/x86/kernel/acpi/sleep.c::x86_acpi_suspend_lowleve=
-l() set
-> > > > > >=20
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0 initial_gs =3D per_cpu_offset(smp_proc=
-essor_id()) ?
-> > > > > >=20
-> > > > > > Would it not be CPU#0 that comes back up, and should it not get
-> > > > > > per_cpu_offset(0) ?
-> > > > >=20
-> > > > > Wanna me try `initial_gs =3D per_cpu_offset(0);` too?
-> > > >=20
-> > >=20
-> > > I think it might be smp_processor_id() and not 0 incase CPU0 was=20
-> > > offline at the point the system was suspended?
-> >=20
-> > Is it even possible for CPU 0 to be offline, at least on x86?
-> >=20
+> ```
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0early_gdt_descr.address =
+=3D (unsigned long)get_cpu_gdt_rw(0);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0initial_gs =3D per_cpu_of=
+fset(0);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0smpboot_control =3D 0;
+> ```
 >=20
-> It is possible on x86 (using BOOTPARAM_HOTPLUG_CPU0), but I just read
-> the Kconfig option and it says:
->=20
-> "resume from hibernate or suspend always starts from CPU0.
-> So hibernate and suspend are prevented if CPU0 is offline."
->=20
-> so I guess switching to 0 should be ok.
+> the resume does not work.
 
-The interesting question is who ends up using whose stack?
+Yeah, I think it's always running on CPU0 after the other CPUs are
+taken down anyway.
 
-Leaving smpboot_control alone (for the parallel case only; we can't
-just leave it with the APIC ID of the last CPU started in the serial
-case) will make each CPU find the same CPU# and stack it used to have,
-from its own APIC ID and the cpuid_to_apicid[] table.
+We definitely *do* need to clear smpboot_control because we absolutely
+want it using the temp_stack we explicitly put into initial_stack, not
+finding its own idle thread.
 
-I don't really grok what's happening in the non-parallel case. We leave
-behind the stack for the CPU that happens to be running the suspend
-function. And then whichever CPU comes back, it'll get *that* stack.
+The problem was that it was never being restored to STARTUP_SECONDARY
+in the parallel modes, because that's a one-time setup in
+native_smp_prepare_cpus(). So we can just restore it in
+arch_thaw_secondary_cpus_begin() too, by working this into patch 6 of
+the series.
 
-I don't understand why the parallel bringup changes this. Does the
-cpuid to apicid mapping *change* on resume, if the suspending and
-resuming CPU are different? Do they swap stacks and CPU# somehow?
+(Usama, I think my tree is fairly out of date now so I'll let you do
+that? Thanks!).
 
---=-HuEDwl/GSzw4IMecK3cP
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 50621793671d..3db77a257ae2 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1571,6 +1571,17 @@ void __init native_smp_prepare_cpus(unsigned int max=
+_cpus)
+=20
+ void arch_thaw_secondary_cpus_begin(void)
+ {
++	/*
++	 * On suspend, smpboot_control will have been zeroed to allow the
++	 * boot CPU to use explicitly passed values including a temporary
++	 * stack. Since native_smp_prepare_cpus() won't be called again,
++	 * restore the appropriate value for the parallel startup modes.
++	 */
++	if (do_parallel_bringup) {
++		smpboot_control =3D STARTUP_SECONDARY |
++			(x2apic_mode ? STARTUP_APICID_CPUID_0B : STARTUP_APICID_CPUID_01);
++	}
++
+ 	set_cache_aps_delayed_init(true);
+ }
+=20
+
+
+--=-OeN2sLt7BB7srnVVcy8t
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -221,24 +226,24 @@ IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
 dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
 NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
 xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjIxMTMyMjIwWjAvBgkqhkiG9w0BCQQxIgQgqY/eWwL9
-yo+BO0w/Q6ef3PkkT1ANIjvif6kFCstExxcwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjIxMTkxMDU0WjAvBgkqhkiG9w0BCQQxIgQgfcX9VF04
+EWPPdxQBM1KkMDFXKjLg1gt6CJsHLWrFppMwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
 A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
 dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
 DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
 MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
 Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgB96r020mlVCXuIm6hdWidTyM6DX/JkumTG
-5Ao1cYYqftobjWkf1gw4pUUKRQ3ijrpCjEnWbCy5veSY02DzUNK7O8neMwm1Y+v7e1nq8ZW/AW5D
-8h44p//XtCKasQZYGHUfn7HDnukkJhL+OBDVvc94CAP9/nD/bLSbJt1EIxk8TxXCjGtXqVuqKoDH
-DdvUNkJJXXQw0+ZV8EiCdRLo5xnEFD063xwMMFtgCOFlFGscJpaHRsep0CklmB7xNIKivdpha6H5
-wPgMnT78+MRQ6Fvk1UAuAghW/NrIWWrGOTk/vl/gamZvhHQFrvLd2gw3eTM9d+vo8o0tRhrsqcnX
-b7NbWWm3L6iwHEaXpVyZuBufRWWDotE5rfNsjBSgmpLWSDSEQ7geQ2aWEoSRj7YC7hNfrWojkiJA
-UtRhIGd0+NL5xvtlF3XO0yRAD/tbpM+EmQoGnF2lKkh0fLeMQfiWgdsc/y4+foxSYenDMCP5QxlJ
-mgP30QlIceNLlluA7EMmirxu4OVYx78w542uU7Y1uh9YynSWIy8+8g38Cvy5As+P6Vg2hlqzmRvO
-AjLc8toO50nm+IaqM1qYd/uFHaWd+X1DtEtLR6KsIy9K37IivavCie+Ka90bGJSfmOAbTRO0Ez9i
-jK9lIjEIrgkyJQyVqMPiMgxD7pxj5h5EYuo8HVs1OwAAAAAAAA==
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAirXPMZKwxkooXHDRHpu2bBa0wi3rFzbSr
+cd74yB587pYS51JBXXi8KCLgrio1xD85QKxZudR4YnRsXOP/z6tiZfr0+8WQncUSeTC/J1p+HpRE
+KHl/Fe7sNCddov24/kPyo4DI64j+P2HgabwISGbwT/PuMShLMz0uttffZoowwYA3pHiVQDMiMe4L
+RBUpJr6H5Ef9K1Vv2hBjKWSMGyLS2qSki7KasrPWP+f/ezYKuNli+BRKDy5DqJ0FuxX49Eg0T9rq
+9qrDFKy4Lq3vdiEGiG86sn75HUr1cAatSpCqAEssTu3B7SadwP4U/Y+jPzmJSmOHxwciO5gtDtXH
+9zN8p1Xh2DyIr2ypFgy23owpeTrEmIdOV/gpqD3gbmQ4NU6L2fMLbo2nVRpoJXU+G6dR8QC5WOub
+jtOTEj3drlIiExdIdLpD7G0iK7BzfbeY+HtOhHh+L/9a8+k7GD88DSfrEHrf87RH5tb1SpWExNxd
+JkjuzfjfJ6Il3nL4fLxRy4HpHt6E+EtgsoEq1R14I0Q3OfDjcrqQzQmCeo2Z0creb0EfiSAKoiK/
+CtqvhyDYds+TBwBY3P4Ly/GvyizjAlQdCPklFp+wokIVepShLLoJoAuE/B5LrAt/1UaW+W0Z4vL8
+uEftw0+d+ws5pke6perJ/opBZLoRwHM4OM5b0jCMxAAAAAAAAA==
 
 
---=-HuEDwl/GSzw4IMecK3cP--
+--=-OeN2sLt7BB7srnVVcy8t--
