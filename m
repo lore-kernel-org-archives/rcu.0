@@ -2,52 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3BE3C636D7
-	for <rcu@archiver.kernel.org>; Tue, 21 Feb 2023 22:35:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82232C61DA3
+	for <rcu@archiver.kernel.org>; Tue, 21 Feb 2023 22:36:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjBUWft (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Feb 2023 17:35:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
+        id S230343AbjBUWgP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Feb 2023 17:36:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjBUWfs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Feb 2023 17:35:48 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21AD31E31
-        for <rcu@vger.kernel.org>; Tue, 21 Feb 2023 14:35:45 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id t13so5927248wrv.13
-        for <rcu@vger.kernel.org>; Tue, 21 Feb 2023 14:35:45 -0800 (PST)
+        with ESMTP id S230324AbjBUWgN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Feb 2023 17:36:13 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C377432E50
+        for <rcu@vger.kernel.org>; Tue, 21 Feb 2023 14:35:48 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r7so5835327wrz.6
+        for <rcu@vger.kernel.org>; Tue, 21 Feb 2023 14:35:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0pnDOENvPZPPRofzLURGJ/LFWArubW2KTtPcq1+8yXM=;
-        b=sDCk9nu65x1h7dJPs44M/BnuWEgFJzsXV00gTIoXx7meSbOXnQtDBY0wrsXO12wg3Y
-         cKEZupe1ZGO3V9BslVKM+Bgl61OUvmQOHLf19eqV12aD+HW50hTUP1buTUteGozI/lMv
-         ObxEO8WDKxjeH6ben9x+ZZ2QoarIIVaSJD4PnkVgCT5+gCjTsft0g5EcnTn6Kt8lIquW
-         Ju24R6XkP2IH0KtBCHbjXRK+XOuMqjbilTM70qGcmZBTIZAwr58lvSTfcidsdtuLbbhb
-         2HnuiQT973jntI+w3S4LKLhaDzEkaKwyF13oWIhdswPveKnmryUrR08oGBzMayQCR8k8
-         pJXg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OivBWw2fC0XPAqVFrKNNGqM4Zo9U9YwXqHaW8wBeEGc=;
+        b=z3Fc7VSK0hAVPFyhWY67Ud9SKIKhW7P69ArBPqHJvMF8jQXPeCUbwgWcJOQoPOvDKm
+         d/btCYbWUb4chK7DYYDm6QDx35AIHdLcD6JmgHHFL6K8NwJcriIWSuPSHfTuptSDucGr
+         9in6tq5eKudItevevBU3ijvkd0QtzObPRbeMMNZ7AsxYOKO7p0bxrEgIg2Fir48N3YIi
+         +9TiiIKFHXMavVJtzXQb9fqMgj7tNUEXQVkoSrZSSydpH4EU+yfjvMAkAu7fp9zJKYFU
+         tnuQowMDiTe1erC5MIPLy78SBXdSW/lWB29TiGYAVtfgHR+PTieJr2Gkd5CSvTRvv/Ex
+         HkWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0pnDOENvPZPPRofzLURGJ/LFWArubW2KTtPcq1+8yXM=;
-        b=i0PvmLBRqlP0GJvzJKgxtfOvPW1ONHAc6vfEASyxI4r472od26wRWPNl2bxfmll3Hl
-         gAzcx0z9vv2pM6+guDHoku6fvGsEmKmQcMDDOd3qiC3kDJOLIAW6o5EKZJMtGlYO7XRd
-         IbBuoZJ1LfwFwuRjj4mBbuiaKnreZz51jfp9HzyERrQSwYEGhr8mYtnKdW6VyeLZ9WUR
-         1PVB3siOF6ybJ2bY3Q8NaDHW6CHJdNrQ4+WnScWnKzDvCxEzOLdJIhOXhO0jDtF+9xgn
-         EsxaUNpXVp0d8w12iAYRSBl41L+N+/KHRuV1cNLoDRq+UfPZ3b2ExRG71EKOYBqyWejs
-         gXYg==
-X-Gm-Message-State: AO0yUKXceNFj5jiFRzAdBrum4vRGLnom5vG41GbBAgrKFUpsbftCfIeC
-        9c7acTmJLQHH/qrS+ybHMM+w6A==
-X-Google-Smtp-Source: AK7set/xZTn72idcDDur5F/34x/QPvwKOGdJkPJ3dk6hC4tPAqrZqqfwvrS9g6p5iadzj5+FfPNsRg==
-X-Received: by 2002:a5d:4f8b:0:b0:2c5:5881:be0f with SMTP id d11-20020a5d4f8b000000b002c55881be0fmr5751134wru.25.1677018944105;
-        Tue, 21 Feb 2023 14:35:44 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OivBWw2fC0XPAqVFrKNNGqM4Zo9U9YwXqHaW8wBeEGc=;
+        b=CeshkTvRQxbgO8c7ui+y6sn/RLPjRFQ1mEuzHMRPuDNPg7VtwEZENAfTACYOn2Nu+V
+         3r/Epzdju0wbCNIcOtvf/xzNQRX22oRaBWRaDHM0LVDHS2xf0ml5EhblURh06WwSl5x6
+         Ou+euq0PVmuTJM/a/PdoKfp+tmMblxkjUl01XK/a1/vxMDRInjvtxMDtyZALHIMPVGkX
+         SMn1lZ9EoXIbCjwt8GQ9pBh/5iatImd5GJhACVvf6Y1p6Wc5252wstHOZhwbRm9fAlKY
+         GKtIcYKVQNghZ6cSEo+bVMWsAqdCgwx+SAuvQuE9fLmLhfArtCOxXvb9xk+bkc/Y6ewA
+         OK2Q==
+X-Gm-Message-State: AO0yUKUoWfhIWonlOPPguIDO0+oFHf0Ycuiu1LN5Ru+rOZX45lPUUGxW
+        rHg283p542j5LaR6il9YKP4c6Q==
+X-Google-Smtp-Source: AK7set8MsscgVAJWMQTGh/j2UuO41+bCVPbk9ziZk8IWlJC9ACXmswl6i/IsbtfHw8xfT94Z6MhdWw==
+X-Received: by 2002:a5d:458a:0:b0:2c5:57d4:2c9a with SMTP id p10-20020a5d458a000000b002c557d42c9amr5803866wrq.25.1677018947305;
+        Tue, 21 Feb 2023 14:35:47 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:1a14:8be6:b3a9:a95e])
-        by smtp.gmail.com with ESMTPSA id u13-20020a5d434d000000b002c55ec7f661sm4501254wrr.5.2023.02.21.14.35.43
+        by smtp.gmail.com with ESMTPSA id u13-20020a5d434d000000b002c55ec7f661sm4501254wrr.5.2023.02.21.14.35.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 14:35:43 -0800 (PST)
+        Tue, 21 Feb 2023 14:35:47 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com
 Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
@@ -59,93 +60,88 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
+        David Woodhouse <dwmw@amazon.co.uk>,
         Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v10 0/8] Parallel CPU bringup for x86_64
-Date:   Tue, 21 Feb 2023 22:33:44 +0000
-Message-Id: <20230221223352.2288528-1-usama.arif@bytedance.com>
+Subject: [PATCH v10 4/8] x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+Date:   Tue, 21 Feb 2023 22:33:48 +0000
+Message-Id: <20230221223352.2288528-5-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230221223352.2288528-1-usama.arif@bytedance.com>
+References: <20230221223352.2288528-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This version fixes suspend/resume not working with parallel smpboot in v9
-(reported by Oleksandr Natalenko) by saving smpboot_control properly in
-x86_acpi_suspend_lowlevel.
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-The patches have also been rebased to v6.2 and retested and the improvement
-in boot time is the same as v9.
+When bringing up a secondary CPU from do_boot_cpu(), the warm reset flag
+is set in CMOS and the starting IP for the trampoline written inside the
+BDA at 0x467. Once the CPU is running, the CMOS flag is unset and the
+value in the BDA cleared.
 
-Thanks,
-Usama
+To allow for parallel bringup of CPUs, add a reference count to track the
+number of CPUs currently bring brought up, and clear the state only when
+the count reaches zero.
 
-Changes across versions:
-v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
-v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
-    in preparation for more parallelisation.
-v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
-    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
-    24 bits of the physical X2APIC ID to be used. That patch still needs
-    a Signed-off-by from its original author, who once claimed not to
-    remember writing it at all. But now we've fixed it, hopefully he'll
-    admit it now :)
-v5: rebase to v6.1 and remeasure performance, disable parallel bringup
-    for AMD CPUs.
-v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
-    reused timer calibration for secondary CPUs.
-v7: [David Woodhouse] iterate over all possible CPUs to find any existing
-    cluster mask in alloc_clustermask. (patch 1/9)
-    Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
-    0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
-    Included sanity checks for APIC id from 0x0B. (patch 6/9)
-    Removed patch for reusing timer calibration for secondary CPUs.
-    commit message and code improvements.
-v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
-    early_gdt_descr.
-    Drop trampoline lock and bail if APIC ID not found in find_cpunr.
-    Code comments improved and debug prints added.
-v9: Drop patch to avoid repeated saves of MTRR at boot time.
-    rebased and retested at v6.2-rc8.
-    added kernel doc for no_parallel_bringup and made do_parallel_bringup
-    __ro_after_init.
-v10: Fixed suspend/resume not working with parallel smpboot.
-     rebased and retested to 6.2.
-     fixed checkpatch errors.
+Since the RTC spinlock is required to write to the CMOS, it can be used
+for mutual exclusion on the refcount too.
 
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+---
+ arch/x86/kernel/smpboot.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-David Woodhouse (8):
-  x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
-  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
-  cpu/hotplug: Add dynamic parallel bringup states before
-    CPUHP_BRINGUP_CPU
-  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
-  x86/smpboot: Split up native_cpu_up into separate phases and document
-    them
-  x86/smpboot: Support parallel startup of secondary CPUs
-  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
-  x86/smpboot: Serialize topology updates for secondary bringup
-
- .../admin-guide/kernel-parameters.txt         |   3 +
- arch/x86/include/asm/realmode.h               |   3 +
- arch/x86/include/asm/smp.h                    |  14 +-
- arch/x86/include/asm/topology.h               |   2 -
- arch/x86/kernel/acpi/sleep.c                  |   7 +
- arch/x86/kernel/apic/apic.c                   |   2 +-
- arch/x86/kernel/apic/x2apic_cluster.c         | 126 ++++---
- arch/x86/kernel/cpu/common.c                  |   6 +-
- arch/x86/kernel/head_64.S                     |  99 ++++-
- arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
- arch/x86/realmode/init.c                      |   3 +
- arch/x86/realmode/rm/trampoline_64.S          |  14 +
- arch/x86/xen/smp_pv.c                         |   4 +-
- include/linux/cpuhotplug.h                    |   2 +
- include/linux/smpboot.h                       |   7 +
- kernel/cpu.c                                  |  31 +-
- kernel/smpboot.c                              |   2 +-
- kernel/smpboot.h                              |   2 -
- 18 files changed, 519 insertions(+), 158 deletions(-)
-
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 55cad72715d9..3a793772a2aa 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -121,17 +121,20 @@ int arch_update_cpu_topology(void)
+ 	return retval;
+ }
+ 
++
++static unsigned int smpboot_warm_reset_vector_count;
++
+ static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
+ {
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&rtc_lock, flags);
+-	CMOS_WRITE(0xa, 0xf);
++	if (!smpboot_warm_reset_vector_count++) {
++		CMOS_WRITE(0xa, 0xf);
++		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) = start_eip >> 4;
++		*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = start_eip & 0xf;
++	}
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+-	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_HIGH)) =
+-							start_eip >> 4;
+-	*((volatile unsigned short *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) =
+-							start_eip & 0xf;
+ }
+ 
+ static inline void smpboot_restore_warm_reset_vector(void)
+@@ -143,10 +146,12 @@ static inline void smpboot_restore_warm_reset_vector(void)
+ 	 * to default values.
+ 	 */
+ 	spin_lock_irqsave(&rtc_lock, flags);
+-	CMOS_WRITE(0, 0xf);
++	if (!--smpboot_warm_reset_vector_count) {
++		CMOS_WRITE(0, 0xf);
++		*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
++	}
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ 
+-	*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
+ }
+ 
+ /*
 -- 
 2.25.1
 
