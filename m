@@ -2,101 +2,130 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8B7FC61DA4
-	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 12:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB362C636D6
+	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 16:42:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjBVMxe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Feb 2023 07:53:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
+        id S231558AbjBVQmT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Feb 2023 11:42:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjBVMxd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Feb 2023 07:53:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F97124106;
-        Wed, 22 Feb 2023 04:53:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=zeBrpwQtqYf+5E8CNJNKBDmjGY+vs2rq0yrBMbhLqr8=; b=ogIVf2NBRjcnGvCykRHA5Y5eOn
-        ueF9zb0H8jzJ3WNnABagtb0QqXL2usWlrUWr5wvYUcC9G+hq64iZXabkE+qGKSID/v1b5eLu93IWy
-        T6rSBmHQSwRYIzdXoUFFlcN/289SugQhQC5BKhMSezaFG0TuyQv2UdLXGZOQytxeZqH9HHUmDeVfo
-        x82sfNGba+0rT74OG6LFA/DYmMh2cGz1CeciyHtBjxlXL5oVMzztm87ocQms+PnaQUxZFsPF7Sips
-        G2aAYQt/DeqsIdF2my46zVCk4SSnlbNQVjFouQQrihEXXYCaJFge1yM9hVetWlmjBrnplt13d62Iq
-        TIS71yFA==;
-Received: from [2a00:23ee:13a0:bf27:2fd:dfaf:4834:544b] (helo=[IPv6:::1])
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pUocI-00DT05-5Q; Wed, 22 Feb 2023 12:53:02 +0000
-Date:   Wed, 22 Feb 2023 12:53:02 +0000
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Brian Gerst <brgerst@gmail.com>
-CC:     Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
-        kim.phillips@amd.com, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
+        with ESMTP id S231334AbjBVQmS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Feb 2023 11:42:18 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647BD2A9A7;
+        Wed, 22 Feb 2023 08:42:17 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1677084135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K7HcjWyWuj/5j6nspFZSk3Xpdt8/emavbnK49+tWbK4=;
+        b=H1gebXPpy/MopGrAL1OMlgPweAjr1Qjz7TqTirYai1HvD7SU8eDoJgJNfRoxLYHxJrrci6
+        sb/fv0iruua+FUX60ZRP/HffjFM+LSffZJdQQPSLGqfmAVdNF2+AmmdvAf112m6dp+KPoD
+        Qpz2zmfSfUrRqK3LQ79oISf3b4RB3eOGMNHQ3xt8xsw0zvx6Zpz0Cv8c7pYiWbxnTFrMpE
+        Nmj8iYIGI+5IUUZn1pEsEv1GlC+I2rm+rgUMZTYeRJ3QPnH4gijNMQPGweq/yR1hpCwNZ0
+        WPxNThxspuX5nu5WKpZqJkCibH9qQbNPGgQnv6TGV2z/gNNyNrpxYyYXI47P8g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1677084135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K7HcjWyWuj/5j6nspFZSk3Xpdt8/emavbnK49+tWbK4=;
+        b=U8xpsIMCJkiVO85tc+OPLbgsQbGm9zdO8p+7WfyMi0S1c8TgcO0n5hmjojQAIwBEekaX6Z
+        9RJ9kYBR8fnf+1Dg==
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com
+Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com
 Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAMzpN2gEeNY87+ywgizusPVG2fLiRx3v__3Bmqjo_eJLv+5k7Q@mail.gmail.com>
-References: <20230215145425.420125-1-usama.arif@bytedance.com> <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org> <CAMzpN2gEeNY87+ywgizusPVG2fLiRx3v__3Bmqjo_eJLv+5k7Q@mail.gmail.com>
-Message-ID: <EAAA15B0-D402-4EFB-BB65-2E6457698C1C@infradead.org>
+In-Reply-To: <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
+References: <20230215145425.420125-1-usama.arif@bytedance.com>
+ <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
+Date:   Wed, 22 Feb 2023 17:42:14 +0100
+Message-ID: <87a615mz2x.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+David!
 
+On Wed, Feb 22 2023 at 10:11, David Woodhouse wrote:
+> On Wed, 2023-02-15 at 14:54 +0000, Usama Arif wrote:
+> So the next thing that might be worth looking at is allowing the APs
+> all to be running their hotplug thread simultaneously, bringing
+> themselves from CPUHP_BRINGUP_CPU to CPUHP_AP_ONLINE. This series eats
+> the initial INIT/SIPI/SIPI latency, but if there's any significant time
+> in the AP hotplug thread, that could be worth parallelising.
 
-On 22 February 2023 12:08:04 GMT, Brian Gerst <brgerst@gmail=2Ecom> wrote:
->On Wed, Feb 22, 2023 at 5:44 AM David Woodhouse <dwmw2@infradead=2Eorg> w=
-rote:
->>
->> On Wed, 2023-02-15 at 14:54 +0000, Usama Arif wrote:
->> > The main change over v8 is dropping the patch to avoid repeated saves=
- of MTRR
->> > at boot time=2E It didn't make a difference to smpboot time and is in=
-dependent
->> > of parallel CPU bringup, so if needed can be explored in a separate p=
-atchset=2E
->> >
->> > The patches have also been rebased to v6=2E2-rc8 and retested and the
->> > improvement in boot time is the same as v8=2E
->>
->> Thanks for picking this up, Usama=2E
->>
->> So the next thing that might be worth looking at is allowing the APs
->> all to be running their hotplug thread simultaneously, bringing
->> themselves from CPUHP_BRINGUP_CPU to CPUHP_AP_ONLINE=2E This series eat=
-s
->> the initial INIT/SIPI/SIPI latency, but if there's any significant time
->> in the AP hotplug thread, that could be worth parallelising=2E
->>
->> There may be further wins in the INIT/SIPI/SIPI too=2E Currently we
->> process each CPU at a time, sending INIT, SIPI, waiting 10=C2=B5s and
->> sending another SIPI=2E
->>
->> What if we sent the first INIT+SIPI to all CPUs, then did another pass
->> sending another SIPI only to those which hadn't already started running
->> and set their bit in cpu_initialized_mask ?
->>
->> Might not be worth it, and there's an added complexity that they all
->> have to wait for each other (on the real mode trampoline lock) before
->> they can take their turn and get as far as setting their bit in
->> cpu_initialized_mask=2E So we'd probably end up sending the second SIPI
->> to most of them *anyway*=2E
->
->Speaking of next steps, I have a followup patchset ready to go that
->removes the global variables initial_stack, initial_gs, and
->early_gdt_descr=2E  Should I send that now or wait until this patchset
->lands in -tip?
+On a 112 CPU machine (64 cores, HT enabled) the bringup takes
 
-Happy either way=2E Want to send it and we can take a look at whether to w=
-ork it in with this?
+Setup and SIPIs sent: 	 49 ms
+Bringup each CPU:	516 ms
+
+That's about 500 ms faster than a non-parallel bringup!
+
+Now looking at the 516 ms, which is ~4.7 ms/CPU. The vast majority of the
+time is spent on the APs in
+
+     cpu_init() -> ucode_cpu_init()
+
+for the primary threads of each core. The secondary threads are quickly
+(1us) out of ucode_cpu_init() because the primary thread already loaded
+it.
+
+A microcode load on that machine takes ~7.5 ms per primary thread on
+average which sums up to 7.5 * 55 = 412.5 ms
+
+The threaded bringup after CPU_AP_ONLINE takes about 100us per CPU.
+
+identify_secondary_cpu() is one of the longer functions which takes
+~125us / CPU summing up to 13ms
+
+The TSC sync check for the first CPU on the second socket consumes
+20ms. That's only once per socket, intra socket is using MSR_TSC_ADJUST,
+which is more or less free.
+
+So the 516 ms are wasted here:
+
+   total                                516 ms
+   ucode_cpu_init()                     412 ms
+   identify_secondary_cpu()              13 ms
+   2ndsocket_tsc_sync			 20 ms
+   threaded bringup                      12 ms
+   rest 		                 59 ms
+
+So the rest is about 530us per CPU, which is just the sum of many small
+functions, lock contentions...
+
+Getting rid of the micro code overhead is possible. There is no reason
+to serialize that between the cores. But it needs serialization vs. HT
+siblings, which requires to move identify_secondary_cpu() and its caller
+smp_store_cpu_info() ahead of the synchronization point and then have
+serialization between the siblings. That's going to be a major surgery
+and inspection effort to ensure that there are no hidden assumptions
+about global hotplug serialization. 
+
+So that would cut the total cost down to ~100ms plus the
+preparatory/SIPI stage of 60ms which sums up to about 160ms and about
+1.5ms per CPU total.
+
+Further optimization starts to be questionable IMO. It's surely possible
+somehow, but then you really have to go and inspect each and every
+function in those code pathes, add local locking, etc. Not to talk about
+the required mess in the core code to support that.
+
+The low hanging fruit which brings most is the identification/topology
+muck and the microcode loading. That needs to be addressed first anyway.
+
+Thanks,
+
+        tglx
