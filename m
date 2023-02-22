@@ -2,59 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB06C61DA4
-	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 12:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8B7FC61DA4
+	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 12:53:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbjBVMIr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Feb 2023 07:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S229907AbjBVMxe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Feb 2023 07:53:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjBVMIq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Feb 2023 07:08:46 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E33138032;
-        Wed, 22 Feb 2023 04:08:19 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id m4so9193722qvq.3;
-        Wed, 22 Feb 2023 04:08:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0kbr9Sef9mc0aYct+IUivTV4CFaWy16hlZwHABrvkcs=;
-        b=OHZ0uQalu5zyESmAfbGLo/zaHucfZrUWPRA4+77Aw/rqg6wKkMUZYCHNupav7gJzsW
-         hIXF3DgWulF/2E7d53xCE3kiKV08rp428LIma48EaShGT5hNje+jXy1fDuspTSJp23rC
-         smguA1C5mJgofyDwswPRqJxb/lpSIsQXEc1PXGzmbCtgwFvjqzzQgs6mqLu5A6PUR940
-         UMsTcP6g51X3m85CZrM9FfMuXIN+1Fn/rbJ9zbeI8VvH3nLXq6GommSuNNBPOALV07p+
-         TNSrJ/Dnj6L9iKCF6g3MgOAHfypoxXJZm7mJCLF26QmRS7TyidLtpUsmaxDI3ZwDjezF
-         fvXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0kbr9Sef9mc0aYct+IUivTV4CFaWy16hlZwHABrvkcs=;
-        b=KcLnFhe2cJOzKV0YsXnccUg9zhsbCg2CWtdND4nso/n1a5BPWt3Za+HtXi0CKVU2yW
-         r6YWzfdl5mxXCFEtVHUft4N4tTMAmzIA9YC2tI9utYKDO2fHfXdtquU8GqA5T58XoqMB
-         h6x+s5JUOBOg+gwN5YpLJulRJKzDESnxsCw060e1eBONisBSrRZaLAVerOonGNAhJBad
-         OmX4TSZ1Yj4SkiZElOHBr4Eautj2i1Q4ssOwuXRhfG6ZYfuhm9HoSlvMkQOG3j3952YO
-         LgKhH6z2tLXx7TC4u7Vr/hfGU6dxXrDG9AjGoFOPTa8lwqkpioq8QgD4+EzL6XKR/k8d
-         lpDg==
-X-Gm-Message-State: AO0yUKU0xd6+GvKOcKAXVR72+bZQyQcDNT6DW7gECvvWsSgsTp1D9tUv
-        OrXcF9Tm48atI1x+TioC++GHkpaHxqZ4pFDCLw==
-X-Google-Smtp-Source: AK7set+6wpWhrBpE7GWtb/JoVUPno1H8zFd1yYPc8EIm0FXKBn0lKEWRTstP3wdckrpvgn+ZbuERsSOuV0q//TNeWb4=
-X-Received: by 2002:ad4:5a0e:0:b0:56e:fbce:6159 with SMTP id
- ei14-20020ad45a0e000000b0056efbce6159mr1094519qvb.0.1677067696490; Wed, 22
- Feb 2023 04:08:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20230215145425.420125-1-usama.arif@bytedance.com> <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
-In-Reply-To: <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Wed, 22 Feb 2023 07:08:04 -0500
-Message-ID: <CAMzpN2gEeNY87+ywgizusPVG2fLiRx3v__3Bmqjo_eJLv+5k7Q@mail.gmail.com>
-Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
+        with ESMTP id S229975AbjBVMxd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Feb 2023 07:53:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F97124106;
+        Wed, 22 Feb 2023 04:53:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=zeBrpwQtqYf+5E8CNJNKBDmjGY+vs2rq0yrBMbhLqr8=; b=ogIVf2NBRjcnGvCykRHA5Y5eOn
+        ueF9zb0H8jzJ3WNnABagtb0QqXL2usWlrUWr5wvYUcC9G+hq64iZXabkE+qGKSID/v1b5eLu93IWy
+        T6rSBmHQSwRYIzdXoUFFlcN/289SugQhQC5BKhMSezaFG0TuyQv2UdLXGZOQytxeZqH9HHUmDeVfo
+        x82sfNGba+0rT74OG6LFA/DYmMh2cGz1CeciyHtBjxlXL5oVMzztm87ocQms+PnaQUxZFsPF7Sips
+        G2aAYQt/DeqsIdF2my46zVCk4SSnlbNQVjFouQQrihEXXYCaJFge1yM9hVetWlmjBrnplt13d62Iq
+        TIS71yFA==;
+Received: from [2a00:23ee:13a0:bf27:2fd:dfaf:4834:544b] (helo=[IPv6:::1])
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pUocI-00DT05-5Q; Wed, 22 Feb 2023 12:53:02 +0000
+Date:   Wed, 22 Feb 2023 12:53:02 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Brian Gerst <brgerst@gmail.com>
+CC:     Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
         kim.phillips@amd.com, arjan@linux.intel.com, mingo@redhat.com,
         bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
         x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
@@ -63,52 +39,64 @@ Cc:     Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAMzpN2gEeNY87+ywgizusPVG2fLiRx3v__3Bmqjo_eJLv+5k7Q@mail.gmail.com>
+References: <20230215145425.420125-1-usama.arif@bytedance.com> <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org> <CAMzpN2gEeNY87+ywgizusPVG2fLiRx3v__3Bmqjo_eJLv+5k7Q@mail.gmail.com>
+Message-ID: <EAAA15B0-D402-4EFB-BB65-2E6457698C1C@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 5:44 AM David Woodhouse <dwmw2@infradead.org> wrote=
-:
->
-> On Wed, 2023-02-15 at 14:54 +0000, Usama Arif wrote:
-> > The main change over v8 is dropping the patch to avoid repeated saves o=
-f MTRR
-> > at boot time. It didn't make a difference to smpboot time and is indepe=
-ndent
-> > of parallel CPU bringup, so if needed can be explored in a separate pat=
-chset.
-> >
-> > The patches have also been rebased to v6.2-rc8 and retested and the
-> > improvement in boot time is the same as v8.
->
-> Thanks for picking this up, Usama.
->
-> So the next thing that might be worth looking at is allowing the APs
-> all to be running their hotplug thread simultaneously, bringing
-> themselves from CPUHP_BRINGUP_CPU to CPUHP_AP_ONLINE. This series eats
-> the initial INIT/SIPI/SIPI latency, but if there's any significant time
-> in the AP hotplug thread, that could be worth parallelising.
->
-> There may be further wins in the INIT/SIPI/SIPI too. Currently we
-> process each CPU at a time, sending INIT, SIPI, waiting 10=C2=B5s and
-> sending another SIPI.
->
-> What if we sent the first INIT+SIPI to all CPUs, then did another pass
-> sending another SIPI only to those which hadn't already started running
-> and set their bit in cpu_initialized_mask ?
->
-> Might not be worth it, and there's an added complexity that they all
-> have to wait for each other (on the real mode trampoline lock) before
-> they can take their turn and get as far as setting their bit in
-> cpu_initialized_mask. So we'd probably end up sending the second SIPI
-> to most of them *anyway*.
 
-Speaking of next steps, I have a followup patchset ready to go that
-removes the global variables initial_stack, initial_gs, and
-early_gdt_descr.  Should I send that now or wait until this patchset
-lands in -tip?
 
---
-Brian Gerst
+On 22 February 2023 12:08:04 GMT, Brian Gerst <brgerst@gmail=2Ecom> wrote:
+>On Wed, Feb 22, 2023 at 5:44 AM David Woodhouse <dwmw2@infradead=2Eorg> w=
+rote:
+>>
+>> On Wed, 2023-02-15 at 14:54 +0000, Usama Arif wrote:
+>> > The main change over v8 is dropping the patch to avoid repeated saves=
+ of MTRR
+>> > at boot time=2E It didn't make a difference to smpboot time and is in=
+dependent
+>> > of parallel CPU bringup, so if needed can be explored in a separate p=
+atchset=2E
+>> >
+>> > The patches have also been rebased to v6=2E2-rc8 and retested and the
+>> > improvement in boot time is the same as v8=2E
+>>
+>> Thanks for picking this up, Usama=2E
+>>
+>> So the next thing that might be worth looking at is allowing the APs
+>> all to be running their hotplug thread simultaneously, bringing
+>> themselves from CPUHP_BRINGUP_CPU to CPUHP_AP_ONLINE=2E This series eat=
+s
+>> the initial INIT/SIPI/SIPI latency, but if there's any significant time
+>> in the AP hotplug thread, that could be worth parallelising=2E
+>>
+>> There may be further wins in the INIT/SIPI/SIPI too=2E Currently we
+>> process each CPU at a time, sending INIT, SIPI, waiting 10=C2=B5s and
+>> sending another SIPI=2E
+>>
+>> What if we sent the first INIT+SIPI to all CPUs, then did another pass
+>> sending another SIPI only to those which hadn't already started running
+>> and set their bit in cpu_initialized_mask ?
+>>
+>> Might not be worth it, and there's an added complexity that they all
+>> have to wait for each other (on the real mode trampoline lock) before
+>> they can take their turn and get as far as setting their bit in
+>> cpu_initialized_mask=2E So we'd probably end up sending the second SIPI
+>> to most of them *anyway*=2E
+>
+>Speaking of next steps, I have a followup patchset ready to go that
+>removes the global variables initial_stack, initial_gs, and
+>early_gdt_descr=2E  Should I send that now or wait until this patchset
+>lands in -tip?
+
+Happy either way=2E Want to send it and we can take a look at whether to w=
+ork it in with this?
