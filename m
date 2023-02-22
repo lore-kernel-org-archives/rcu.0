@@ -2,130 +2,124 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB362C636D6
-	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 16:42:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AADE0C636D6
+	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 19:31:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbjBVQmT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Feb 2023 11:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        id S231820AbjBVTbT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Feb 2023 14:31:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjBVQmS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Feb 2023 11:42:18 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647BD2A9A7;
-        Wed, 22 Feb 2023 08:42:17 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1677084135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K7HcjWyWuj/5j6nspFZSk3Xpdt8/emavbnK49+tWbK4=;
-        b=H1gebXPpy/MopGrAL1OMlgPweAjr1Qjz7TqTirYai1HvD7SU8eDoJgJNfRoxLYHxJrrci6
-        sb/fv0iruua+FUX60ZRP/HffjFM+LSffZJdQQPSLGqfmAVdNF2+AmmdvAf112m6dp+KPoD
-        Qpz2zmfSfUrRqK3LQ79oISf3b4RB3eOGMNHQ3xt8xsw0zvx6Zpz0Cv8c7pYiWbxnTFrMpE
-        Nmj8iYIGI+5IUUZn1pEsEv1GlC+I2rm+rgUMZTYeRJ3QPnH4gijNMQPGweq/yR1hpCwNZ0
-        WPxNThxspuX5nu5WKpZqJkCibH9qQbNPGgQnv6TGV2z/gNNyNrpxYyYXI47P8g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1677084135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K7HcjWyWuj/5j6nspFZSk3Xpdt8/emavbnK49+tWbK4=;
-        b=U8xpsIMCJkiVO85tc+OPLbgsQbGm9zdO8p+7WfyMi0S1c8TgcO0n5hmjojQAIwBEekaX6Z
-        9RJ9kYBR8fnf+1Dg==
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com
-Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
-Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
-In-Reply-To: <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
-References: <20230215145425.420125-1-usama.arif@bytedance.com>
- <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
-Date:   Wed, 22 Feb 2023 17:42:14 +0100
-Message-ID: <87a615mz2x.ffs@tglx>
+        with ESMTP id S232096AbjBVTbQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Feb 2023 14:31:16 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADFC3BD9E;
+        Wed, 22 Feb 2023 11:30:54 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id ck15so36094931edb.0;
+        Wed, 22 Feb 2023 11:30:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/jfa5EiufQKP9OPphX3roUqj0yqYAjmS8TtgTAmBE/U=;
+        b=mkgmKYHarWH9fGnIpuYcuLJ7Yy5cyqcD4316A+SDk6ZgaQe0aKjfUiYux77X23BHHm
+         CXQ+Se+WvW5KIy8brB8Njgm6+inysY38vuUH3h4LVwNj4e/Kq8Wve9nhLsKwySM62RHp
+         DvJw8LseADFCqZEHB7yCoDt7jGY0Rr+6sxM5vv1ZOK2dLLKXMRU5NPgWdK83NuiPY+uQ
+         hu3+ijqzcy/UyT274HqoEyMpsT6BgqwuJ302V9D9W/moqodBbOwUc7vmYdAh3B6CuEqC
+         q+1CrP5I1DHENVI9z2KE/64EpTpEkjlQksZaxdddSosOkOxBr8M3wMzfjhhrF8oQjLc/
+         5dwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/jfa5EiufQKP9OPphX3roUqj0yqYAjmS8TtgTAmBE/U=;
+        b=J4Safe6qzpNuU6bvSEWG0VyvIux2S4Aqa781BnIoO8LbGJKLb3Zf1jWWvEYP4s7A8i
+         4KlfFObREq9faGmoxoPT5Do7omX7SlIQzvHAc6+GdslGO/9Y93CX+KMdgpOMRCEFX9WC
+         XPvbd+B/BmheSAgMpOCSxQou7xS3DtLXD7aZFTtrrOz5LuI0dQndm+UyFBFuys/B3m3c
+         tL+cFzAmXaVZykXOAOhBHBzu64BZjlwI6+V+Ne2O6cEspXtjHXHKns78ISOV95uBjFXM
+         Yeyq3hoVKSyfWzjvQZe48GUPlqCo04zOlZyPgcgWy909foMa91pX20pSp8t67m+dxsXS
+         Q6aQ==
+X-Gm-Message-State: AO0yUKUPqJnY5XhcgsjREihwUqKZ5RaCYPiXPB4VOTPsqh2GtOizBTjb
+        OukN8zWY62SwR3JlJcTouIqui2vGRQPOtzsvtWhwCj/Bihk=
+X-Google-Smtp-Source: AK7set+ji1WSyy02mR/QZRbPzkh/w58QQTnXrJcsrpi6sdNyjCokbtxiz7Da9T+202DSRzSW/2jW19SnSG228L+lg2s=
+X-Received: by 2002:a05:6402:35ca:b0:4af:62ad:60b1 with SMTP id
+ z10-20020a05640235ca00b004af62ad60b1mr2075358edc.3.1677094252642; Wed, 22 Feb
+ 2023 11:30:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20221230041151.1231169-1-houtao@huaweicloud.com>
+ <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
+ <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
+ <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
+ <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
+ <20230210163258.phekigglpquitq33@apollo> <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
+ <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com> <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
+ <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
+ <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com> <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
+ <2a58c4a8-781f-6d84-e72a-f8b7117762b4@huaweicloud.com>
+In-Reply-To: <2a58c4a8-781f-6d84-e72a-f8b7117762b4@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Feb 2023 11:30:41 -0800
+Message-ID: <CAADnVQLg+WHzym=SC0KF0uzWw0J7ADjABBdZ9QDepdAT0z7V-g@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-David!
+On Thu, Feb 16, 2023 at 5:19 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>
+> Hi,
+>
+> On 2/17/2023 12:35 AM, Alexei Starovoitov wrote:
+> > On Thu, Feb 16, 2023 at 5:55 AM Hou Tao <houtao@huaweicloud.com> wrote:
+> >> Beside BPF_REUSE_AFTER_RCU_GP, is BPF_FREE_AFTER_RCU_GP a feasible solution ?
+> > The idea is for bpf_mem_free to wait normal RCU GP before adding
+> > the elements back to the free list and free the elem to global kernel memory
+> > only after both rcu and rcu_tasks_trace GPs as it's doing now.
+> >
+> >> Its downside is that it will enforce sleep-able program to use
+> >> bpf_rcu_read_{lock,unlock}() to access these returned pointers ?
+> > sleepable can access elems without kptrs/spin_locks
+> > even when not using rcu_read_lock, since it's safe, but there is uaf.
+> > Some progs might be fine with it.
+> > When sleepable needs to avoid uaf they will use bpf_rcu_read_lock.
+> Thanks for the explanation for BPF_REUSE_AFTER_RCU_GP. It seems that
+> BPF_REUSE_AFTER_RCU_GP may incur OOM easily, because before the expiration of
+> one RCU GP, these freed elements will not available to both bpf ma or slab
+> subsystem and after the expiration of RCU GP, these freed elements are only
+> available for one bpf ma but the number of these freed elements maybe too many
+> for one bpf ma, so part of these freed elements will be freed through
+> call_rcu_tasks_trace() and these freed-again elements will not be available for
+> slab subsystem untill the expiration of tasks trace RCU. In brief, after one RCU
+> GP, part of these freed elements will be reused, but the majority of these
+> elements will still be freed through call_rcu_tasks_trace(). Due to the doubt
+> above, I proposed BPF_FREE_AFTER_RCU to directly free these elements after one
+> RCU GP and enforce sleepable program to use bpf_rcu_read_lock() to access these
+> elements, but the enforcement will break the existing sleepable programs, so
+> BPF_FREE_AFTER_GP is still not a good idea. I will check whether or not these is
+> still OOM risk for BPF_REUSE_AFTER_RCU_GP and try to mitigate if it is possible
+> (e.g., share these freed elements between all bpf ma instead of one bpf ma which
+> free it).
 
-On Wed, Feb 22 2023 at 10:11, David Woodhouse wrote:
-> On Wed, 2023-02-15 at 14:54 +0000, Usama Arif wrote:
-> So the next thing that might be worth looking at is allowing the APs
-> all to be running their hotplug thread simultaneously, bringing
-> themselves from CPUHP_BRINGUP_CPU to CPUHP_AP_ONLINE. This series eats
-> the initial INIT/SIPI/SIPI latency, but if there's any significant time
-> in the AP hotplug thread, that could be worth parallelising.
-
-On a 112 CPU machine (64 cores, HT enabled) the bringup takes
-
-Setup and SIPIs sent: 	 49 ms
-Bringup each CPU:	516 ms
-
-That's about 500 ms faster than a non-parallel bringup!
-
-Now looking at the 516 ms, which is ~4.7 ms/CPU. The vast majority of the
-time is spent on the APs in
-
-     cpu_init() -> ucode_cpu_init()
-
-for the primary threads of each core. The secondary threads are quickly
-(1us) out of ucode_cpu_init() because the primary thread already loaded
-it.
-
-A microcode load on that machine takes ~7.5 ms per primary thread on
-average which sums up to 7.5 * 55 = 412.5 ms
-
-The threaded bringup after CPU_AP_ONLINE takes about 100us per CPU.
-
-identify_secondary_cpu() is one of the longer functions which takes
-~125us / CPU summing up to 13ms
-
-The TSC sync check for the first CPU on the second socket consumes
-20ms. That's only once per socket, intra socket is using MSR_TSC_ADJUST,
-which is more or less free.
-
-So the 516 ms are wasted here:
-
-   total                                516 ms
-   ucode_cpu_init()                     412 ms
-   identify_secondary_cpu()              13 ms
-   2ndsocket_tsc_sync			 20 ms
-   threaded bringup                      12 ms
-   rest 		                 59 ms
-
-So the rest is about 530us per CPU, which is just the sum of many small
-functions, lock contentions...
-
-Getting rid of the micro code overhead is possible. There is no reason
-to serialize that between the cores. But it needs serialization vs. HT
-siblings, which requires to move identify_secondary_cpu() and its caller
-smp_store_cpu_info() ahead of the synchronization point and then have
-serialization between the siblings. That's going to be a major surgery
-and inspection effort to ensure that there are no hidden assumptions
-about global hotplug serialization. 
-
-So that would cut the total cost down to ~100ms plus the
-preparatory/SIPI stage of 60ms which sums up to about 160ms and about
-1.5ms per CPU total.
-
-Further optimization starts to be questionable IMO. It's surely possible
-somehow, but then you really have to go and inspect each and every
-function in those code pathes, add local locking, etc. Not to talk about
-the required mess in the core code to support that.
-
-The low hanging fruit which brings most is the identification/topology
-muck and the microcode loading. That needs to be addressed first anyway.
-
-Thanks,
-
-        tglx
+Since BPF_REUSE_AFTER_RCU_GP is a new thing that will be used
+by qptrie map and maybe? local storage, there is no sleepable breakage.
+If we start using BPF_REUSE_AFTER_RCU_GP for hashmaps with kptrs
+and enforce bpf_rcu_read_lock() this is also ok, since kptrs are unstable.
+I prefer to avoid complicating bpf ma with sharing free lists across all ma-s.
+Unless this is really trivial code that is easy to review.
