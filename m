@@ -2,227 +2,203 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06CD6C61DA3
-	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 00:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA0B0C61DA4
+	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 05:44:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjBVAAd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Feb 2023 19:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
+        id S229499AbjBVFof (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Feb 2023 00:44:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjBVAAc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Feb 2023 19:00:32 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA36F2DE69
-        for <rcu@vger.kernel.org>; Tue, 21 Feb 2023 16:00:29 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id o38-20020a05600c512600b003e8320d1c11so125056wms.1
-        for <rcu@vger.kernel.org>; Tue, 21 Feb 2023 16:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Oz/Iwbv2fLpbfzV50XMlj3n/kZPfJJpWkVANG6/lRVw=;
-        b=l5Fh0IIbxiviB1BnGe7WB6ad8W1IYz8P5cJ2BfCux+fbsh8ktqfUDE4xvrKrzpUUFB
-         lO8vjGH6GLJW43oj/0OinqCbNGELRrcVzoJGvQlwqqWDoKTZdGz5xDJA5fberrSv/Xkq
-         dqcPArKjXD2Xnul6bUBRcnhFlASV5Vx2SHCmSIxdxvrUfhlkRT8c9uK+wBa1NorTwpzl
-         ACPXeYuahUF2yt9FvZDmCfYNTm7u0q5fNap8H/WwlG0tJVW1oYyIH6nulfDtbd/St009
-         2z776v13awRPe2v02IWZrW9Mt1eRvqU/FABi4rvHoVg/V0nok5WC0BO1fQ3VtrVE1/wG
-         EHsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oz/Iwbv2fLpbfzV50XMlj3n/kZPfJJpWkVANG6/lRVw=;
-        b=dMPcouTW3OYuIyo9BElIYyFowst/iN+BRCiq7xoc2gwKjP9C89qq6DET7VCudeOTTS
-         5g0hGAIiMFyhWyUcZhwVcy4qb0gKS4q6VDsM4IS92Cto5gb/0llWGV7uQSKmhM2z46D+
-         YdR4wQzGcU+gr75fHy7Xto/75ZW+ITDZyD9DgbzvhJmyBVPNU7Lr5uOfBUFhKtd23pVo
-         McB3TmFSlmlSdf8LMe4tDgIONBUwDSQyjuT5MGZ8x7g8nC6jiH7aLS3X9rbkHRdb3ir8
-         oGRP6NLL+ogEQytf8/1iV6dDex/4wddzZ+vbpTAhSorc1ATELubgRYn1BBS22on3fJNq
-         EpLg==
-X-Gm-Message-State: AO0yUKWHvf1QltWaod6c9cFLOKJu4ss+iSQTtGt602B2eFeB0I2WnFv/
-        RqtBgAkpg6g+oYqC4tWqXAEbYw==
-X-Google-Smtp-Source: AK7set8B10aO88abtFcpqZIsTgOqQQHpaYQNgos/njV5kQgUzbgLC7JPB0vnmM8GBQXJal4Jpe/Vzw==
-X-Received: by 2002:a05:600c:13ca:b0:3e2:185d:a726 with SMTP id e10-20020a05600c13ca00b003e2185da726mr4551979wmg.29.1677024028275;
-        Tue, 21 Feb 2023 16:00:28 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:1a14:8be6:b3a9:a95e? ([2a02:6b6a:b566:0:1a14:8be6:b3a9:a95e])
-        by smtp.gmail.com with ESMTPSA id o17-20020a05600c379100b003e70a7c1b73sm4342773wmr.16.2023.02.21.16.00.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Feb 2023 16:00:27 -0800 (PST)
-Message-ID: <11cc090b-82aa-f2f5-0f08-b8e63e662947@bytedance.com>
-Date:   Wed, 22 Feb 2023 00:00:27 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+        with ESMTP id S229493AbjBVFoe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Feb 2023 00:44:34 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA2A2056E;
+        Tue, 21 Feb 2023 21:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677044673; x=1708580673;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=iBM/FVSV10AlIZ5e2IW4MS1ep9CnJ95q5e0PAac4ajY=;
+  b=nete2yt74HEPd9785hZU1164nH1Spnnxw8tXBewT+OyvNFtLbdYKSqrR
+   PS/BnKsstSm8oLHTRBfLlTiCpS0Id9xVRH2EpuM+8EetU/EV0eAYSjqOq
+   nyrXDUvGcO9GLdWvpEscZQpiHg51IBaH8bJj6SyzUCr53kONoHEo/eEGB
+   D0MRwBA10QbuI+FDx1MXOqSK7A5ZPP+0uSEKymaQiUxZY1r6VQG5cVWf7
+   +7QYWaoEnVcjwfAf+O2eoWAbG7de7jwa2z3+ybe4308zRkdOdmn1hmICf
+   k7MGCENOnacSOx7NkLN9zbYdfzNx++57oCIzlJPo80aDr8qfeyC8RSus9
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="313215205"
+X-IronPort-AV: E=Sophos;i="5.97,317,1669104000"; 
+   d="scan'208";a="313215205"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2023 21:44:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="845995339"
+X-IronPort-AV: E=Sophos;i="5.97,317,1669104000"; 
+   d="scan'208";a="845995339"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga005.jf.intel.com with ESMTP; 21 Feb 2023 21:44:32 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 21 Feb 2023 21:44:32 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Tue, 21 Feb 2023 21:44:32 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Tue, 21 Feb 2023 21:44:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fz5y4xGZ2NjRE3FQq/9dT9xqENfApmeiT/ehnuBf8kXvZflKz/Wp4kMqX7HHOjj18MGw132NiIxQnJdiwUzR5YAYGMjIyGjAG3DntHVNVQL5/im9o4uQ3WrP21MtgTeYoviG1KHkmcucqiUoQGTBTtCn/zg0fNJhlPBQiY1KV/X950WN2TycEXx6A3qEMq7vJr1G7vFNLGGqdctS3ISnIvBLibvOlVGzQidymIPluYKdGmusEC4vETMKoa82aupuQ1YVlvsFQVV/zcyOtRFKFtADqhC+jdeox5mpGpxSbNBCCYHXslhtT87waelm7dN92VSP3dTG6908sQT/jVfoSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CNU9CzDKdewxpRKOoLk5epcb7NjgNngZJaKQaXBD99c=;
+ b=IX+mVFlz6Mm5su+xEnMzO9rU2mtXqzvijTo4JwZajzLd0my7IfKcFDEJSbiZ1Um93BsDppHNpn8VG47ltRVh3z5I99B5IH2A1f8GYECddD5ZKG1WS/3EWsAYSASNW2Yl5ZKVBHl4loFOn8srYO6XfGf7PnHfaGI2Vm8DIAXptEcZE8KFE0gTkh8sJ4zAf1BpARXnYyKcoTgk8WVxfIhm+xYaCGOX81LuipDPgexRW8ekHvJCYelRsWjIeMkWP43/z211BmuhkGcV6zLL2tWiDJyRa920VWrQl4ii9vhYcmwy0WJLFHJU91X9ziwshNukHgi0avrI/gQA7P/BeeRGPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA1PR11MB6171.namprd11.prod.outlook.com (2603:10b6:208:3e9::13)
+ by PH0PR11MB4773.namprd11.prod.outlook.com (2603:10b6:510:33::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.19; Wed, 22 Feb
+ 2023 05:44:30 +0000
+Received: from IA1PR11MB6171.namprd11.prod.outlook.com
+ ([fe80::b6d8:543f:3a43:6c56]) by IA1PR11MB6171.namprd11.prod.outlook.com
+ ([fe80::b6d8:543f:3a43:6c56%6]) with mapi id 15.20.6111.021; Wed, 22 Feb 2023
+ 05:44:29 +0000
+From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>
+CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] rcu-tasks: Allow RCU-Task trace stall warning dump late
+ IPI CPU stacks
+Thread-Topic: [PATCH] rcu-tasks: Allow RCU-Task trace stall warning dump late
+ IPI CPU stacks
+Thread-Index: AQHZRazT+oKQOzOvU0e8GfBR7P59h67adK9Q
+Date:   Wed, 22 Feb 2023 05:44:29 +0000
+Message-ID: <IA1PR11MB61710677ACB74D5D0AED929689AA9@IA1PR11MB6171.namprd11.prod.outlook.com>
+References: <20230221043219.2384044-1-qiang1.zhang@intel.com>
+In-Reply-To: <20230221043219.2384044-1-qiang1.zhang@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     Kim Phillips <kim.phillips@amd.com>, arjan@linux.intel.com,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        Piotr Gorski <piotrgorski@cachyos.org>
-References: <20230215145425.420125-1-usama.arif@bytedance.com>
- <42dc683e2846ae8fc1e09715aaf7884660e1a386.camel@infradead.org>
- <37c18c3aeea2e558633b6da6886111d0@natalenko.name>
- <5A3B7074-0C6D-472B-803B-D76541828C1F@infradead.org>
- <3d8ed6e157df10c5175c636de0e21849@natalenko.name>
- <5c557f9b6f55dc2a612ee89142971298e6ae12d8.camel@infradead.org>
- <ee0d0d971a3095d6a1e96ad4f1ba32d2@natalenko.name>
- <5b8f9c89f7015fa80c966c6c7f6fa259db6744f8.camel@infradead.org>
- <ce731b5a4a53680b4840467977b33d9a@natalenko.name>
- <85ceb3f92abf3c013924de2f025517372bed19c0.camel@infradead.org>
- <3e5944de08ef0d23584d19bad7bae66c@natalenko.name>
- <26E5DC9C-0F19-4E4F-9076-04506A197374@infradead.org>
- <f71275dc809cfb32df513023786c3faa@natalenko.name>
- <10CA27BB-ADC6-4421-86D2-A83BD7FA12E0@infradead.org>
- <9153284c37a79d303aa79dbf07c10329@natalenko.name>
- <e2e6616f691f1822035be245ec847f7c86a26367.camel@infradead.org>
- <87356yofw3.ffs@tglx>
- <aac036a17b1bcbabe8ee5a7c69fb2dfbc546d06e.camel@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <aac036a17b1bcbabe8ee5a7c69fb2dfbc546d06e.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6171:EE_|PH0PR11MB4773:EE_
+x-ms-office365-filtering-correlation-id: 8193d63f-b740-44a9-833c-08db1497dd82
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lfYcK5EXFEXGhAtyMM2d8fobX4axVGMbOGca84L9zfFXNAGDifyJkGdcSRDvM3KSjvXqjN4567z3VABTq0XDY50d1jcr4HfJ/m1UWox3taLlxB9QCkjhh+bXRJ+3n8gCMcEHxjJY1IwSkQi26hG13lfnqE40UIJIHqD6J+U6biW2aLKbEvSo4ygLImkVZ9FtonftaV3F+m+eCrNv0QRNv/2LoR3kWGvvHub4uIWzvGOfwb1Pg5FGmoD/5wn1Unsr+5P1krqRiItU0LDipgGUoXtFk6GVVFT3pAyIWd6TQMG9UNZVli7PrwGoNBodITCqhkAMxPOXNRv1q3bQnImtkL7YqM8I9bvfKDoAhlsUlZTC86mJfEzroaMjZPNY3Jvz2BZJk5EnUgqIPY/8idS59G9p6ZIAY6sUL6nXd5fo7Um7oFMUoU4yO4vF29qcnhT1VkBJhMoKcwkk/ERYeM6NCNX+JqTUq5XgppO4oocua2sOcfCWYKvS1P25CcA9UXsIt2aKWeHH/brBHIsJJ+AljXfIEvRUFYFLLHf7t5yB4fgeItok1NRcstEPnAslhtTwF1JoQoIdCNogb20yBq6tAzXWOtktJWqZWSbGNMhLAWhdqkgbnOopdqv5S7woQU4q4cQcLlGMclRKCm0nsMzrsqQyYl2YXsewItKNXmAtlcMzrBd71eWdBBIsNV7Q2iHOuKVyDyA1qYuGg0YAVx7oLQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6171.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(346002)(376002)(396003)(136003)(366004)(39860400002)(451199018)(478600001)(71200400001)(7696005)(82960400001)(122000001)(38100700002)(86362001)(2906002)(33656002)(38070700005)(316002)(110136005)(54906003)(41300700001)(5660300002)(52536014)(8936002)(83380400001)(55016003)(76116006)(66946007)(66556008)(66476007)(66446008)(64756008)(8676002)(4326008)(26005)(186003)(9686003)(53546011)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GaP2Hu6ZV/0yvTMVDZ/AySIAZWzNc4pOe0FNGufGCueNamucTnY/zFYV+ku2?=
+ =?us-ascii?Q?NIkrwnlU7S9ekNc5QxQDWhBphOIXpa2xEZKu7rCAhahHCEuTMIeMQcDIq/xL?=
+ =?us-ascii?Q?u/Rv5qOXsEgwXlYXlFdfZaPiTMe/M4Fj0+U835TBVyCyzqWAGph+85q/B+us?=
+ =?us-ascii?Q?2Ui9WQK/onoaLbYDDjKVNpYAvTwYZQaZakmQwjLkpDYe70qgHu1+Jl5zwxEG?=
+ =?us-ascii?Q?6NvD4F3E0AN4tyhI5F0xst4zku/dDoaJZ0oLg5pABKORDO+d5RStqAuIGsua?=
+ =?us-ascii?Q?b4PG6v4qS2Go7y2KQmA87Uw8kUeqy1QEoesHg2T2zMavpB1dHtLRrkkc7rpC?=
+ =?us-ascii?Q?PKmPanc8Jh2VAG2mTTIchxnDsVjXFM5TLTgcvveNw9zDpF9Ns4Z9hweWVs9S?=
+ =?us-ascii?Q?Xo0NcUXnjt2KBenCowbhXddf/KYQ8OCTpHm1hZcqEwpC8eHL/Eg59ZNSDLWw?=
+ =?us-ascii?Q?HOUevPb6ci9yRmXlKS9aNH8hnTd2JEjQcqbtuWJqdmJzQxb7orhHPbl6u8Dw?=
+ =?us-ascii?Q?gsGb5rftlbZ8DtapJJszyHZ6PLBn2H8DmXO9KjuT1znBumgOhoKJXwN4fRca?=
+ =?us-ascii?Q?hJBATnEex6Vi7IO4tgaoVzDZQT3SmaUcvbkWt0FQmNnZqc5wlZTL78W9Ya/r?=
+ =?us-ascii?Q?KloiMxrt6AtLO0TSYDd3NmNr4tyv1z3AyKgp4rmWgYBPHD/tzOU9lJ/WGGYm?=
+ =?us-ascii?Q?bAUi9XhU458Wtqsh41BeLn244R9jmBDmXzftLnPpjdhg4fm3Uwottl2/dr4e?=
+ =?us-ascii?Q?xEq8YFMbx8H6eySXf+xNGX5k4iGIgkxFG1khshM6WbzoAMCs3jFk8H8NTuyw?=
+ =?us-ascii?Q?hgQ4c/68jvchr0qqtfCilSRnV9nWakS7wo51grHvpVYU25qvi9uTwKiXGNna?=
+ =?us-ascii?Q?5juOQCSCRA9actfsGRLYg/XGt0ubzv+zue6TWUFSBUTox0WW6nprvxlUj7FP?=
+ =?us-ascii?Q?EpqlKNBgqVp3Mef++RczjUkj7zZ+7z7q+ZNTFk9Ffz/zcx8taMynJfeJbLV0?=
+ =?us-ascii?Q?PgCwmT+4kSGIPZzuL3yhCxKjXSm5dM66L/qM6m2Y73/wWbzcGtoSm/zZ96lZ?=
+ =?us-ascii?Q?KyBpCNaofAeXLzvyH62ZhMBA0s8k5pgiVm6cpa1BwjQXS1CFlQqv43KzOWYa?=
+ =?us-ascii?Q?4xgETdHDECBvTvQlpWWAF/PdHySEsN6LNc9u+FX2BALOtauov17PpYV0/+pi?=
+ =?us-ascii?Q?pQp32yB/D7jA1dPbwX+f2H8FmOQLCQfAUmDweXRH2bjKsrjrUoskw509U8vY?=
+ =?us-ascii?Q?gwisjgnaFa+a672D8epNBDYoo32aTOCgwWjdbMB+PxZZTVdcbSpzHpYJLTGH?=
+ =?us-ascii?Q?o/d3gFBQc7qNer3BMIKkKhf9CQgHBYb1pyghB44RE9s8kH9nFHJxb/TSq16k?=
+ =?us-ascii?Q?9bxK/8sZsczRV1NJ1oYDjkt8pFnbdUjOvI0IffRmFKBtvbIOIlcCNgH+DHEv?=
+ =?us-ascii?Q?nTYp9rf7hmi3F9v375CwEm7R1HoRtKab5JSUf4VQ+jUiMCN6fBUWGPLZ1F/b?=
+ =?us-ascii?Q?QRi+XdRkDQbTRG0+qQ/SJfuoDrCYE0Pnpl04jKXE57LCRGUWw9YiB50ZNPQT?=
+ =?us-ascii?Q?n9r2KEvre9c4SIVdQ88WygkMAzpJXZxvoBL/ypcz?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6171.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8193d63f-b740-44a9-833c-08db1497dd82
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2023 05:44:29.1836
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9JVh3Tn3qYh7DsXrWyA2PLYItc7gC7Z/+VGhHZh6D+L3Retdgu/54pvb1p4sr0dExYX4GPxyS4SAeIK0XGVjnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4773
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+> From: Zqiang <qiang1.zhang@intel.com>
+> Sent: Tuesday, February 21, 2023 12:32 PM
+> To: paulmck@kernel.org; frederic@kernel.org; joel@joelfernandes.org
+> Cc: rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH] rcu-tasks: Allow RCU-Task trace stall warning dump late =
+IPI
+> CPU stacks
+>=20
+> The task structure's->trc_ipi_to_cpu and percpu trc_ipi_to_cpu is used to
+> record whether the IPI is completed, if the percpu trc_ipi_to_cpu is true=
+ and
+> task structure's->trc_ipi_to_cpu is non-negative value, indicates that IP=
+I is not
+> completed, if the IPI is unresponsive for along time for some reason, the=
+re
+> will be a possibility of causing RCU-Tasks trace stall. this commit there=
+fore
+> allow dump late IPI CPU stacks to show the path that current CPU is execu=
+ting.
+>=20
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  In the real world, the IPI delay will be very small, so the  probability=
+ of
+> triggering dump_cpu_stack() may be very low,  so if I makes noise, please
+> ignore it.
+>=20
+>  kernel/rcu/tasks.h | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h index
+> baf7ec178155..85237fc1d0f0 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -1658,8 +1658,13 @@ static void show_stalled_ipi_trace(void)
+>  	int cpu;
+>=20
+>  	for_each_possible_cpu(cpu)
+> -		if (per_cpu(trc_ipi_to_cpu, cpu))
+> +		if (per_cpu(trc_ipi_to_cpu, cpu)) {
+>  			pr_alert("\tIPI outstanding to CPU %d\n", cpu);
+> +			if (cpu_is_offline(cpu))
+> +				pr_alert("offline CPU %d blocking gp\n", cpu);
+> +			else
+> +				dump_cpu_task(cpu);
 
+check_all_holdout_tasks_trace() -> show_stalled_task_trace() has already sh=
+owed the states/traces of tasks stalling the current RCU tasks trace GP.
+Perhaps we don't need to dump these tasks again here.
 
-On 21/02/2023 23:18, David Woodhouse wrote:
-> On Tue, 2023-02-21 at 22:41 +0100, Thomas Gleixner wrote:
->>
->> @@ -57,6 +58,7 @@ asmlinkage acpi_status __visible x86_acp
->>    */
->>   int x86_acpi_suspend_lowlevel(void)
->>   {
->> +       unsigned int __maybe_unused saved_smpboot_ctrl;
->>          struct wakeup_header *header =
->>                  (struct wakeup_header *) __va(real_mode_header->wakeup_header);
->>   
->> @@ -115,7 +117,8 @@ int x86_acpi_suspend_lowlevel(void)
->>          early_gdt_descr.address =
->>                          (unsigned long)get_cpu_gdt_rw(smp_processor_id());
->>          initial_gs = per_cpu_offset(smp_processor_id());
->> -       smpboot_control = 0;
->> +       /* Force the startup into boot mode */
->> +       saved_smpboot_ctrl = xchg(&smpboot_control, 0);
->>   #endif
->>          initial_code = (unsigned long)wakeup_long64;
->>          saved_magic = 0x123456789abcdef0L;
->> @@ -128,6 +131,9 @@ int x86_acpi_suspend_lowlevel(void)
->>          pause_graph_tracing();
->>          do_suspend_lowlevel();
->>          unpause_graph_tracing();
->> +
->> +       if (IS_ENABLED(CONFIG_64BIT) && IS_ENABLED(CONFIG_SMP))
->> +               smpboot_control = saved_smpboot_ctrl;
->>          return 0;
->>   }
->>   
-> 
-> But wait, why is this giving it a dedicated temp_stack anyway? Why
-> can't it use that CPU's idle thread stack like we usually do? I already
-> made idle_thread_get() accessible from here. So we could do this...
-> 
-> @@ -111,14 +112,16 @@ int x86_acpi_suspend_lowlevel(void)
->          saved_magic = 0x12345678;
->   #else /* CONFIG_64BIT */
->   #ifdef CONFIG_SMP
-> -       initial_stack = (unsigned long)temp_stack + sizeof(temp_stack);
-> -       early_gdt_descr.address =
-> -                       (unsigned long)get_cpu_gdt_rw(smp_processor_id());
-> -       initial_gs = per_cpu_offset(smp_processor_id());
-> -       smpboot_control = 0;
-> +       if (!(smpboot_control & STARTUP_PARALLEL_MASK)) {
-> +               unsigned int cpu = smp_processor_id();
-> +               initial_stack = (unsigned long)idle_thread_get(cpu)->thread.sp;
-> +               early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
-> +               initial_gs = per_cpu_offset(cpu);
-> +               smpboot_control = 0;
-> +       }
->   #endif
->          initial_code = (unsigned long)wakeup_long64;
-> 
-> 
-> But that's a whole bunch of pointless, because it can be even further
-> simplified to just let the find its own crap like the secondaries do,
-> except in the 'OMG CPUID won't tell me' case where it has to be told:
-> 
-> So how about we just do something more like this. I'd *quite* like to
-> put the actual handling of smpboot_control into a function we call in
-> smpboot.c. and that whole x86_acpi_suspend_lowlevel() function wants
-> all its horrid 64bit/smp ifdefs fixed up (and is there any reason
-> there's a generic part saving CR0 and IA32_MISC_ENABLE right in the
-> middle of some !CONFIG_64BIT parts? I don't see ordering constraints
-> there). But this should work, I think:
-> 
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index 33c0d5fd8af6..72b9375fec7c 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -208,4 +208,6 @@ extern unsigned int smpboot_control;
->   #define STARTUP_APICID_CPUID_0B	0x40000000
->   #define STARTUP_APICID_CPUID_01	0x20000000
->   
-> +#define STARTUP_PARALLEL_MASK	0x60000000
-> +
+> +		}
+>  }
+>=20
+>  /* Do one scan of the holdout list. */
+> --
+> 2.25.1
 
-Probably could define STARTUP_PARALLEL_MASK as STARTUP_APICID_CPUID_0B | 
-STARTUP_APICID_CPUID_01 instead? otherwise if its a separate bit, it 
-needs to be set in native_smp_prepare_cpus as well for this to work?
-
->   #endif /* _ASM_X86_SMP_H */
-> diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-> index 06adf340a0f1..a1343a900caf 100644
-> --- a/arch/x86/kernel/acpi/sleep.c
-> +++ b/arch/x86/kernel/acpi/sleep.c
-> @@ -16,17 +16,14 @@
->   #include <asm/cacheflush.h>
->   #include <asm/realmode.h>
->   #include <asm/hypervisor.h>
-> -
-> +#include <asm/smp.h>
-> +#include <linux/smpboot.h>
->   #include <linux/ftrace.h>
->   #include "../../realmode/rm/wakeup.h"
->   #include "sleep.h"
->   
->   unsigned long acpi_realmode_flags;
->   
-> -#if defined(CONFIG_SMP) && defined(CONFIG_64BIT)
-> -static char temp_stack[4096];
-> -#endif
-> -
->   /**
->    * acpi_get_wakeup_address - provide physical address for S3 wakeup
->    *
-> @@ -111,14 +108,11 @@ int x86_acpi_suspend_lowlevel(void)
->   	saved_magic = 0x12345678;
->   #else /* CONFIG_64BIT */
->   #ifdef CONFIG_SMP
-> -	initial_stack = (unsigned long)temp_stack + sizeof(temp_stack);
-> -	early_gdt_descr.address =
-> -			(unsigned long)get_cpu_gdt_rw(smp_processor_id());
-> -	initial_gs = per_cpu_offset(smp_processor_id());
-> -	smpboot_control = 0;
-> +	if (!(smpboot_control & STARTUP_PARALLEL_MASK))
-> +		smpboot_control = STARTUP_SECONDARY | cpu_physical_id(smp_processor_id());
->   #endif
->   	initial_code = (unsigned long)wakeup_long64;
-> -       saved_magic = 0x123456789abcdef0L;
-> +	saved_magic = 0x123456789abcdef0L;
->   #endif /* CONFIG_64BIT */
->   
->   	/*
-> 
-> 
