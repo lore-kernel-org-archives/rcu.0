@@ -2,40 +2,62 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83D83C64ED8
-	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 19:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40745C61DA4
+	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 19:57:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbjBWTrN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Feb 2023 14:47:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        id S229639AbjBWT5K (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Feb 2023 14:57:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbjBWTrM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Feb 2023 14:47:12 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A6659436;
-        Thu, 23 Feb 2023 11:47:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 97A11616DE;
-        Thu, 23 Feb 2023 19:47:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDBFCC433EF;
-        Thu, 23 Feb 2023 19:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677181628;
-        bh=Em2QDyAZ0KH0bHZu71kQxLJbevaqhicO73kmNvOzY7o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NJVJBNO0CbECmpzZ7CYF1nC3DQOotZgcFtXiGSwr3htPlfAoSRdqaDNigBjOGVoWQ
-         FA6GR5eW97zAQ+7jdCndC/Zp71J8QwA35+s/vRT4eMX+rFY7fgA+OGIr98gfmBVarH
-         drqnUS8FKHCIxJQzGPVlMgIZ+V2VsKg/oZuKLaZni2vjFX5kmxwk7AYv1aAlnX3LjR
-         HOPiTaHHM5dM20MyMmk+pypwbZ62OyJHZxh1Y/R7LyqSLGW4PyfL1GlEzKahme9ENY
-         JlRE6XXlgAyJmUS4ABT2T7dGug2NRiwxrm03vJwDE24TZHIahVIxUaa1UvAp7w4uMe
-         HesVXxDnsdyXg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 706C35C0DBB; Thu, 23 Feb 2023 11:47:08 -0800 (PST)
-Date:   Thu, 23 Feb 2023 11:47:08 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
+        with ESMTP id S229609AbjBWT5J (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Feb 2023 14:57:09 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BD959410
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:57:08 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id cp7-20020a17090afb8700b0023756229427so471735pjb.1
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:57:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YSzUOJfdtN9HqYc/iUHo6JBED4EqtZPD2VYPVWa2ehk=;
+        b=CqObwow7N9ynxd+bV1Rl60ADS9LJwNa+GAXvOy3aLHz8vN/Hn53Bk9Y+FIrZWunnX4
+         gUmzPG1mo011y0mLLOqQFB0MRKxk3wsadmy3Y84WunvMV2QVgviVUml6OZlTjCXnpIuk
+         AD3OYzXepLMhH/lxtqkQyqzcoA6y8I4Ahf54nx9OSl7vaBmrv372UeVDR883nuMDbRHx
+         3On44dy6n3wV5sje1m1Z0PSvS9x6r4tQHB+bnICcbrdoXAKTA9tiJ5RD45xR9yrDT/uV
+         2/eBv85oREvpJDOSLpq7/wu37KaBbk+GwSRGj9Z6FJsSt57ymj1OvJRsoO5I/jVk0rsi
+         qXgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YSzUOJfdtN9HqYc/iUHo6JBED4EqtZPD2VYPVWa2ehk=;
+        b=ik17RUHbhWa0KJ4DkSyJfq7E0PINSrNnzMTfbryWfQ1KCQQZw3mGJz+51+hrRLivcn
+         5prOr4AAs5xtkmwqxni/xihC8wHCMavJZgWOQSSkNU5D6XAIQIPZWfszf0HfncWR+7zZ
+         n/P8eqNQOe3lfdbHOLi0xXvol9ibPPxoU/oL+WZ0EWEjMgwDT1khwqJ3kF3g0Zxlitje
+         Pw0183wty41dV99E9jFKH/Y3bKEGGn2Ucw9VKv5BcIWfG0kscT4AhdyYDUTnfXBZp578
+         3fTHm7FxBcrgRILSdVfiVhXFrbWyu24QwVNoitXo2rwgp6gK7VOSWCGSfyN1+wbDzQde
+         PUwA==
+X-Gm-Message-State: AO0yUKVcHwXVGafcqRPxRilQv0cuFcanIHK+wbi2ogJYGQLdYupkKRbJ
+        eViUcF9Ond1Yc5/AVUt3c4MMVA==
+X-Google-Smtp-Source: AK7set9d41ckYjUJSo//hzWtdXQZ7k7/qNPHIfBDpE4KC2bPtdUuTjzf3Jz4Tid9YndBYm+VHLXKvg==
+X-Received: by 2002:a17:90a:f0cd:b0:237:40a5:77cb with SMTP id fa13-20020a17090af0cd00b0023740a577cbmr5897552pjb.1.1677182228038;
+        Thu, 23 Feb 2023 11:57:08 -0800 (PST)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id e4-20020a17090a6f8400b00232cf6186fdsm86404pjk.30.2023.02.23.11.57.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Feb 2023 11:57:07 -0800 (PST)
+Message-ID: <a25bcbff-b759-7814-1454-9edfe1df7314@kernel.dk>
+Date:   Thu, 23 Feb 2023 12:57:05 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
+ k[v]free_rcu_mightsleep()
+Content-Language: en-US
+To:     paulmck@kernel.org
 Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
@@ -46,62 +68,29 @@ Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
- k[v]free_rcu_mightsleep()
-Message-ID: <20230223194708.GI2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
 References: <20230201150815.409582-1-urezki@gmail.com>
  <84fd00b0-aa87-e4b7-e0a4-d57b720216c0@kernel.dk>
  <20230223183124.GF2948950@paulmck-ThinkPad-P17-Gen-1>
  <ae3a6434-1b3a-b848-c8f9-bf6b3d0521e6@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ae3a6434-1b3a-b848-c8f9-bf6b3d0521e6@kernel.dk>
+ <20230223194708.GI2948950@paulmck-ThinkPad-P17-Gen-1>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230223194708.GI2948950@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 23, 2023 at 12:36:57PM -0700, Jens Axboe wrote:
-> On 2/23/23 11:31 AM, Paul E. McKenney wrote:
-> > On Thu, Feb 23, 2023 at 07:57:13AM -0700, Jens Axboe wrote:
-> >> On 2/1/23 8:08 AM, Uladzislau Rezki (Sony) wrote:
-> >>> This small series is based on Paul's "dev" branch. Head is 6002817348a1c610dc1b1c01ff81654cdec12be4
-> >>> it renames a single argument of k[v]free_rcu() to its new k[v]free_rcu_mightsleep() name.
-> >>>
-> >>> 1.
-> >>> The problem is that, recently we have run into a precedent when
-> >>> a user intended to give a second argument to kfree_rcu() API but
-> >>> forgot to do it in a code so a call became as a single argument
-> >>> of kfree_rcu() API.
-> >>>
-> >>> 2.
-> >>> Such mistyping can lead to hidden bags where sleeping is forbidden.
-> >>>
-> >>> 3.
-> >>> _mightsleep() prefix gives much more information for which contexts
-> >>> it can be used for.
-> >>
-> >> This patchset seems weird to me. We have a LOT of calls that might
-> >> sleep, yet we don't suffix them all with _mightsleep(). Why is this
-> >> any different? Why isn't this just a might_sleep() call in the
-> >> actual helper, which will suffice for checkers and catch it at
-> >> runtime as well.
-> > 
-> > Fair enough, and the situation that this patchset is addressing is also a
-> > bit unusual.  This change was requested by Eric Dumazet due to a situation
-> > where someone forgot the optional second argument to kfree_rcu().  Now,
-> > you are right that this would be caught if invoked from a non-sleepable
-> > context, but there are also cases where sleeping is legal, but where the
-> > occasional wait for an RCU grace period would be a problem.  The checkers
-> > cannot easily catch this sort of thing, and hence the change in name.
-> > 
-> > Hey, the combined one/two-argument form seemed like a good idea at
-> > the time!  ;-)
+On 2/23/23 12:47?PM, Paul E. McKenney wrote:
+>>> Hey, the combined one/two-argument form seemed like a good idea at
+>>> the time!  ;-)
+>>
+>> Hah, not sure what you were smoking back then!
 > 
-> Hah, not sure what you were smoking back then!
+> If I remember, would you like me to send you some?  ;-)
 
-If I remember, would you like me to send you some?  ;-)
+Definitely, might improve my reviews :-)
 
-							Thanx, Paul
+-- 
+Jens Axboe
+
