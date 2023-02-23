@@ -2,186 +2,122 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B412C61DA4
-	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 19:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C612FC61DA4
+	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 19:37:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjBWTYd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Feb 2023 14:24:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
+        id S229552AbjBWThD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Feb 2023 14:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjBWTYc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Feb 2023 14:24:32 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFE6301A7
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:24:29 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id t15so11702084wrz.7
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:24:29 -0800 (PST)
+        with ESMTP id S230002AbjBWThC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Feb 2023 14:37:02 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6007359E41
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:37:00 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id z2so14438703plf.12
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:37:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2WUW7m+MbriTC2U91BdHy5e/gS4PISvFC5pTDLmthLM=;
-        b=ilbHouOcMp+Ekq6J6OxGkNWAHX+j0tnci9ZYJcNsD94BPqkA9VNn8wfF97nhtcNeQF
-         Rd2z3EXCI0Sn7HT2F67rBc9ihauFrLPUUqsHyi9WvdDAlDGyQyhGwjYmvtHhY8gtCLbM
-         Li0/DDwKlwYmlmD4opJ6zUJxEfc4I7ua8ZnD/hvSldueDmBpsmMHa86MWBnTtlC16u6g
-         X4QwVXUOVq2nDuuTpcV2nua5qO8LYNbQT87/hjsRzekX24ggd5wHIVssJlS0cvZNWOYU
-         s9xoaObEUEJ6Av3uydZz4xBCPm1svPwNbiSu/DgeNnfhuaxdVytpXwmZa8XfBTmdSXum
-         0N4Q==
+        bh=rQq/mm4mVMTZxYtA4ktk06ZMrV8tkbfv6EC6oErMWRs=;
+        b=yk/31gPQIW8T+JwtNs9NMWW5pAjbGRjZGw4JzJfVBGGg9YdO/8usKXYUnWm9BkUrrk
+         7Ul+EqakaIJH31edVRc8mKMcD5WdJZrZLE2JdC62vgdhiOWElxJae/Qtw32Yw/VlT1yd
+         QMbxK28NiowSYMQuIGLpYaa0sYwNdyXGZXAp2QXkr+Td9ZVhg2KAF9S2zMYGZzQ8zAtR
+         wvLP+jLEYHkk4SIC6RGfvZOZOibsO4TwTOy4CeWxAL9DAFUxV/ClCxVzxoZGxJYHxJ6i
+         KWIF+aZD9Hti8gMd57T2Zufn9NPd1b7rsOARyN2UyV81xnkvwPOHQ+O2Cch/WKKP03hB
+         7pKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2WUW7m+MbriTC2U91BdHy5e/gS4PISvFC5pTDLmthLM=;
-        b=c8mmDhtrQuUHBM5/ZmUsNjmH5JSy6kRfA7Au7KowTuJlUJktstnkytHKYxyKcUJRWa
-         qCTPw2HJkwEY0cMzhEnvSt/Zmr1btW/FSYNvkC6a/dlqvcKr6gSmSXTxyePV9eWXBUp4
-         VCyfj9z6H8lw7rgqkj0BEcSlK4Bz53ueXU/DnSh/I72vPP5mdUmdWdTD2ZDLywuBQn2n
-         yK1iaD4p97odm+8qelFPmWaE2wSnZhDN1hYN421dO6gJ2yquJc29Rg0RfenXl+dw7WjS
-         KDbOGTr3lM0M2GzwJQw+X0qZfDT0oe8q7MxgmX6etRD1WWfcd1um0aa2M6hgJr/QDUrj
-         JX9w==
-X-Gm-Message-State: AO0yUKUht98TtpgPCkXDgdt6jhGZE2ixiwZwJGF58OC0sJIACQ+739qC
-        8GIotyBswSHpCLTXMTY2KkbzUw==
-X-Google-Smtp-Source: AK7set9p6BDFOcjNFXYyjjdbXmPAVFfJL/xQjIIlsS//FUfrvOZd8nYyaGDj0Mt2ghpDvo6g0B6b/w==
-X-Received: by 2002:a5d:6645:0:b0:2c5:509b:dc54 with SMTP id f5-20020a5d6645000000b002c5509bdc54mr11486541wrw.0.1677180267855;
-        Thu, 23 Feb 2023 11:24:27 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:5ee0:5af0:64bd:6198? ([2a02:6b6a:b566:0:5ee0:5af0:64bd:6198])
-        by smtp.gmail.com with ESMTPSA id j21-20020a5d6e55000000b002c3f81c51b6sm12375109wrz.90.2023.02.23.11.24.26
+        bh=rQq/mm4mVMTZxYtA4ktk06ZMrV8tkbfv6EC6oErMWRs=;
+        b=ydOKVCYnysxFYuFacuBZmdn8Z9V+UlGmLpAdhyjoznUCo39pvBJi8yua5/gBxEHizY
+         9TGP66DzrYIc9sfK9bShfPOeuo15y6pWOVthQa86mKgVd/mqPks7zPKPAmzlesN0aJwn
+         ucpIbfqWcF77YNzlOU3CPqto7C8ydLZ+JLw5Clc3cYLW7JYG56Ddt45VdbQt7lEpI+B0
+         kK6kAL7Pezm/S/92ZC5IzDMuktDP4hw+T+Mu/rEalzVAGMa/cMWBMXfUTAYAGXHlfFSB
+         ry7XAzCrmWggPrIV/qJKBZKO/xrY9z0sdF3GOfJQiklGM7Gc5pnerOPGgs+AAECnFRum
+         qh5Q==
+X-Gm-Message-State: AO0yUKXQ4lqj5v02tGPTfsvmOVrd04e04L1rWPHmv8F7X9kSGfTEdJAU
+        7vSyO1D4WOa4eYXJWtyxviOqGg==
+X-Google-Smtp-Source: AK7set9NH5+hrOF1a5TsdpFpUrS3bE2ZL0vGh7moKt24R5JglynJw+bnqDgX30BvoT3U7PSauYjLXg==
+X-Received: by 2002:a17:902:e80d:b0:19a:a815:2877 with SMTP id u13-20020a170902e80d00b0019aa8152877mr13564702plg.6.1677181019801;
+        Thu, 23 Feb 2023 11:36:59 -0800 (PST)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id d2-20020a170902654200b00196519d8647sm5041338pln.4.2023.02.23.11.36.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Feb 2023 11:24:27 -0800 (PST)
-Message-ID: <97e1f2aa-d823-1aea-a41f-8024ba5075aa@bytedance.com>
-Date:   Thu, 23 Feb 2023 19:24:26 +0000
+        Thu, 23 Feb 2023 11:36:59 -0800 (PST)
+Message-ID: <ae3a6434-1b3a-b848-c8f9-bf6b3d0521e6@kernel.dk>
+Date:   Thu, 23 Feb 2023 12:36:57 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
+ k[v]free_rcu_mightsleep()
+To:     paulmck@kernel.org
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+References: <20230201150815.409582-1-urezki@gmail.com>
+ <84fd00b0-aa87-e4b7-e0a4-d57b720216c0@kernel.dk>
+ <20230223183124.GF2948950@paulmck-ThinkPad-P17-Gen-1>
 Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, kim.phillips@amd.com
-Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
-References: <20230215145425.420125-1-usama.arif@bytedance.com>
- <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
- <87a615mz2x.ffs@tglx>
- <701ce2da00e559d517d4e48bd5d88ccae1198e44.camel@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <701ce2da00e559d517d4e48bd5d88ccae1198e44.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230223183124.GF2948950@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On 2/23/23 11:31 AM, Paul E. McKenney wrote:
+> On Thu, Feb 23, 2023 at 07:57:13AM -0700, Jens Axboe wrote:
+>> On 2/1/23 8:08 AM, Uladzislau Rezki (Sony) wrote:
+>>> This small series is based on Paul's "dev" branch. Head is 6002817348a1c610dc1b1c01ff81654cdec12be4
+>>> it renames a single argument of k[v]free_rcu() to its new k[v]free_rcu_mightsleep() name.
+>>>
+>>> 1.
+>>> The problem is that, recently we have run into a precedent when
+>>> a user intended to give a second argument to kfree_rcu() API but
+>>> forgot to do it in a code so a call became as a single argument
+>>> of kfree_rcu() API.
+>>>
+>>> 2.
+>>> Such mistyping can lead to hidden bags where sleeping is forbidden.
+>>>
+>>> 3.
+>>> _mightsleep() prefix gives much more information for which contexts
+>>> it can be used for.
+>>
+>> This patchset seems weird to me. We have a LOT of calls that might
+>> sleep, yet we don't suffix them all with _mightsleep(). Why is this
+>> any different? Why isn't this just a might_sleep() call in the
+>> actual helper, which will suffice for checkers and catch it at
+>> runtime as well.
+> 
+> Fair enough, and the situation that this patchset is addressing is also a
+> bit unusual.  This change was requested by Eric Dumazet due to a situation
+> where someone forgot the optional second argument to kfree_rcu().  Now,
+> you are right that this would be caught if invoked from a non-sleepable
+> context, but there are also cases where sleeping is legal, but where the
+> occasional wait for an RCU grace period would be a problem.  The checkers
+> cannot easily catch this sort of thing, and hence the change in name.
+> 
+> Hey, the combined one/two-argument form seemed like a good idea at
+> the time!  ;-)
+
+Hah, not sure what you were smoking back then!
+
+-- 
+Jens Axboe
 
 
-On 23/02/2023 11:07, David Woodhouse wrote:
-> On Wed, 2023-02-22 at 17:42 +0100, Thomas Gleixner wrote:
->> David!
->>
->> On Wed, Feb 22 2023 at 10:11, David Woodhouse wrote:
->>> On Wed, 2023-02-15 at 14:54 +0000, Usama Arif wrote:
->>> So the next thing that might be worth looking at is allowing the APs
->>> all to be running their hotplug thread simultaneously, bringing
->>> themselves from CPUHP_BRINGUP_CPU to CPUHP_AP_ONLINE. This series eats
->>> the initial INIT/SIPI/SIPI latency, but if there's any significant time
->>> in the AP hotplug thread, that could be worth parallelising.
->>
->> On a 112 CPU machine (64 cores, HT enabled) the bringup takes
->>
->> Setup and SIPIs sent:    49 ms
->> Bringup each CPU:       516 ms
->>
->> That's about 500 ms faster than a non-parallel bringup!
->>
->> Now looking at the 516 ms, which is ~4.7 ms/CPU. The vast majority of the
->> time is spent on the APs in
->>
->>       cpu_init() -> ucode_cpu_init()
->>
->> for the primary threads of each core. The secondary threads are quickly
->> (1us) out of ucode_cpu_init() because the primary thread already loaded
->> it.
->>
->> A microcode load on that machine takes ~7.5 ms per primary thread on
->> average which sums up to 7.5 * 55 = 412.5 ms
->>
->> The threaded bringup after CPU_AP_ONLINE takes about 100us per CPU.
-> 
-> Nice analysis; thanks!
-> 
->> identify_secondary_cpu() is one of the longer functions which takes
->> ~125us / CPU summing up to 13ms
-> 
-> Hm, shouldn't that one already be parallelised by my 'part 2' patch?
-> 
-> It's called from smp_store_cpu_info(), from smp_callin(), which is
-> called from somewhere in the middle of start_secondary().
-> 
-> And if the comments I helpfully added to that function for the benefit
-> of our future selves are telling the truth, the AP is free to get that
-> far once the BSP has set its bit in cpu_callout_mask, which happens in
-> do_wait_cpu_initialized().
-> 
-> So
-> https://git.infradead.org/users/dwmw2/linux.git/commitdiff/4b5731e05b0#patch3
-> ought to parallelise that. But Usama emirically reported that 'part 2'
-> didn't add any noticeable benefit, not even those 13ms? On a *larger*
-> machine.
-> 
-
-So I am using a similar machine to Thomas 128 CPU machine (64 cores, HT 
-enabled). I have microcode config disabled, so I guess I get similar 
-numbers to Thomas, i.e. 100ms (516 - 412) ms. I do see a difference of 
-~3ms with part2 which I thought is maybe within the margin of error for 
-measuring, but I guess it isn't. After seeing the ~70ms that is cut with 
-reusing timer calibration, I didnt really then focus much on part 2 
-then. I guess that ~70ms is the "rest" from Thomas' table below?
-
-Thanks,
-Usama
-
-> 
->> The TSC sync check for the first CPU on the second socket consumes
->> 20ms. That's only once per socket, intra socket is using MSR_TSC_ADJUST,
->> which is more or less free.
->>
->> So the 516 ms are wasted here:
->>
->>     total                                516 ms
->>     ucode_cpu_init()                     412 ms
->>     identify_secondary_cpu()              13 ms
->>     2ndsocket_tsc_sync                    20 ms
->>     threaded bringup                      12 ms
->>     rest                                  59 ms
->>
->> So the rest is about 530us per CPU, which is just the sum of many small
->> functions, lock contentions...
->>
->> Getting rid of the micro code overhead is possible. There is no reason
->> to serialize that between the cores. But it needs serialization vs. HT
->> siblings, which requires to move identify_secondary_cpu() and its caller
->> smp_store_cpu_info() ahead of the synchronization point and then have
->> serialization between the siblings. That's going to be a major surgery
->> and inspection effort to ensure that there are no hidden assumptions
->> about global hotplug serialization.
->>
->> So that would cut the total cost down to ~100ms plus the
->> preparatory/SIPI stage of 60ms which sums up to about 160ms and about
->> 1.5ms per CPU total.
->>
->> Further optimization starts to be questionable IMO. It's surely possible
->> somehow, but then you really have to go and inspect each and every
->> function in those code pathes, add local locking, etc. Not to talk about
->> the required mess in the core code to support that.
->>
->> The low hanging fruit which brings most is the identification/topology
->> muck and the microcode loading. That needs to be addressed first anyway.
-> 
-> Agreed, thanks.
-> 
