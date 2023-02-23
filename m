@@ -2,105 +2,252 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDA34C61DA4
-	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 14:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 053FBC636D6
+	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 15:12:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbjBWO5S (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Feb 2023 09:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
+        id S233712AbjBWPMo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Feb 2023 10:12:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbjBWO5R (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Feb 2023 09:57:17 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989CD1FC4
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 06:57:16 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id y2so8990280pjg.3
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 06:57:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hOrs/sECY5IdqQ6ALIEC6kcZ7Nm3MI4GfsmPNZdf/uQ=;
-        b=p086KusUNB7wVWdTpHZBz3Z2mJ4dEa6VXJbxBJ9u+f1V8GDzUDpAF3RKghNujM0XsJ
-         gNp8k/HjZcpyyY/vvHaeRLKLIFiInvk+73XucztNg9kSb7FzjAv6H8TPVovPjIkvB9nc
-         xNJwNGckXC88lEHEC0DpeQCauqXr/bfTcJKowKMip2ZXjzuB3VWXyGFhfMk7KIiOp+ih
-         BAEOTcpQiXjez1J9wo0egYapTnSBCol6o3mIbZx/wqljxD7Ig8Xj+sYP97HuPH7E4XWh
-         J79sA9x1Gj0CuQX+YcFV4ls01LguabOucKJRZqYOsOmU8akAl8DYpe/OpGsqSf+H9vp7
-         1CYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hOrs/sECY5IdqQ6ALIEC6kcZ7Nm3MI4GfsmPNZdf/uQ=;
-        b=wSLvmupl6xrEOSZX7Q4raWsaaLeZ4mXmxS9B+19mxeHL+1t6SJjLUU8a3h45HYkocv
-         U9wgqGSOmssykDnW9GUyYB1meaSZvSfoy+GHGQt62FL2dDXjINNv+QWHFXfAJk+PsfuY
-         bIwY65+Q5kWGgcPf5HJgUCrJ2Q4XuQw6a6Ee6dUp+b/X1QNjwDQeYUfzD6LPVhJqLCir
-         zCqs2KbQGleJ60IBUt5+mm0jdxTzl+a+vImCWXGurW7v+dJY6Fch4rbCz+OoiI+JriOk
-         XRwCLvyeCNzOMEoHVfUpFxzryLowwcyHsz+JFU1dYQFy+8rzO4sEfYKDivLp808jKTBo
-         q9HA==
-X-Gm-Message-State: AO0yUKW/fksJOQ0SIqaTc4OezjxLJpjovGXabXCwoDTElopUkxuIRDVA
-        9lp/uXbPg3KZITsyBOVoj7Jakw==
-X-Google-Smtp-Source: AK7set/b4XOqO4wdgHANlDTSss/k5KwrHGatZe6vonxTfRaL/w5QGX2cVhw30nLEQ/y7/7WZNNrEXg==
-X-Received: by 2002:a17:902:e84b:b0:19a:723a:8405 with SMTP id t11-20020a170902e84b00b0019a723a8405mr11540573plg.6.1677164235825;
-        Thu, 23 Feb 2023 06:57:15 -0800 (PST)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001888cadf8f6sm3330012plh.49.2023.02.23.06.57.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Feb 2023 06:57:15 -0800 (PST)
-Message-ID: <84fd00b0-aa87-e4b7-e0a4-d57b720216c0@kernel.dk>
-Date:   Thu, 23 Feb 2023 07:57:13 -0700
+        with ESMTP id S234221AbjBWPMn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Feb 2023 10:12:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA69655C29;
+        Thu, 23 Feb 2023 07:12:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aq6msu5wWTPXr2hq9ENV1K+nznEgR4h/xhY2EvVzKv8=; b=Gb/QIDNUTYAwi4+0ZZDURfC1aJ
+        mS0WNmJr66xEGUcFS09tPyS3au/B/FlpFASVNopiO2OBSWhE0ObgbYETqt1MlPhbnZQy/n0iBZfzO
+        FpBAx9P/su4db8Y0CccAwCm1HZ471S48kJNmCwyD8Asl7z7RBWzZ2V101XoZ5Xv6PsZj1GDw2O8jM
+        /YYzfJoELYQOAOyov/A4JICE4MAfCWNE5BeovsB4PwQQFUWcfb8CosFwDhju9uS8LAwpGXByW0bOC
+        g6ytGIitII2CzpD6EojlSICOD6y3/+w63IoMfsG5p8nCvmSb6tTxzoG51Y5IZn5ucothJNwDf8eWv
+        8AlC05eA==;
+Received: from [2001:8b0:10b:5::bb3] (helo=u3832b3a9db3152.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pVDGL-00ESZd-0C; Thu, 23 Feb 2023 15:12:01 +0000
+Message-ID: <eb6717dfc4ceb99803c0396f950db7c3231c75ef.camel@infradead.org>
+Subject: Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com
+Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        Ashok Raj <ashok.raj@intel.com>
+Date:   Thu, 23 Feb 2023 15:12:00 +0000
+In-Reply-To: <87zg94la7l.ffs@tglx>
+References: <20230215145425.420125-1-usama.arif@bytedance.com>
+         <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
+         <87a615mz2x.ffs@tglx>
+         <701ce2da00e559d517d4e48bd5d88ccae1198e44.camel@infradead.org>
+         <87zg94la7l.ffs@tglx>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-hkj4SafacA4WXW2cEqev"
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
- k[v]free_rcu_mightsleep()
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-References: <20230201150815.409582-1-urezki@gmail.com>
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230201150815.409582-1-urezki@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2/1/23 8:08 AM, Uladzislau Rezki (Sony) wrote:
-> This small series is based on Paul's "dev" branch. Head is 6002817348a1c610dc1b1c01ff81654cdec12be4
-> it renames a single argument of k[v]free_rcu() to its new k[v]free_rcu_mightsleep() name.
-> 
-> 1.
-> The problem is that, recently we have run into a precedent when
-> a user intended to give a second argument to kfree_rcu() API but
-> forgot to do it in a code so a call became as a single argument
-> of kfree_rcu() API.
-> 
-> 2.
-> Such mistyping can lead to hidden bags where sleeping is forbidden.
-> 
-> 3.
-> _mightsleep() prefix gives much more information for which contexts
-> it can be used for.
 
-This patchset seems weird to me. We have a LOT of calls that might
-sleep, yet we don't suffix them all with _mightsleep(). Why is this
-any different? Why isn't this just a might_sleep() call in the
-actual helper, which will suffice for checkers and catch it at
-runtime as well.
+--=-hkj4SafacA4WXW2cEqev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Jens Axboe
+On Thu, 2023-02-23 at 15:37 +0100, Thomas Gleixner wrote:
+> David!
+>=20
+> On Thu, Feb 23 2023 at 11:07, David Woodhouse wrote:
+> > On Wed, 2023-02-22 at 17:42 +0100, Thomas Gleixner wrote:
+> > > The low hanging fruit which brings most is the identification/topolog=
+y
+> > > muck and the microcode loading. That needs to be addressed first anyw=
+ay.
+> >=20
+> > Agreed, thanks.
+>=20
+> So the problem with microcode loading is that we must ensure that a HT
+> sibling is not executing anything else than a trivial loop waiting for
+> the update to complete. So something like this should work:
+>=20
+> =C2=A0=C2=A0 1) Kick all CPUs into life and let them run up to cpu_init()=
+ and
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retrieve only the topology information.
+>
+> =C2=A0=C2=A0 2) Wait for all CPUs to reach this point
+>
+> =C2=A0=C2=A0 3) Release all primary HT threads so they can load microcode=
+ in
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 parallel. The secondary HT threads stay in=
+ the wait loop and are
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 released once the primary thread has finis=
+hed the microcode
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 update.
+>=20
+> =C2=A0=C2=A0 4) Let the CPUs do the full CPUID readout and let them synch=
+ronize
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 with the control CPU again.
+>=20
+> =C2=A0=C2=A0 5) Complete bringup one by one
 
 
+Can we move the microcode loading to happen earlier, during the x86-
+specific CPUHP_BP_PARALLEL_DYN stage(s) while they're running in
+parallel.
+
+In the existing set of patches, we send INIT/SIPI/SIPI to each CPU in
+parallel and they run to the first part of start_secondary(), up to the
+point where it calls cpu_init_secondary() and sets their bit in
+cpu_initialized_mask, then spinning and waiting for cpu_callout_mask.
+
+
+My "part 2" test patch does another round in parallel, setting each
+CPU's bit in 'cpu_callout_mask' and letting them run a bit further
+through start_secondary() until they get to the end of smp_callin(),
+where they set their bit in smp_callin_mask and (in my patch) wait for
+their bit in a new cpu_finishup_mask to be set =E2=80=94 which is what rele=
+ases
+them to proceed to completion in the final native_cpu_up() bringup.
+
+So perhaps the BSP doesn't need to coordinate anything here, if we can
+let the siblings work it out between themselves in the (now-)parallel
+stage at the end of smp_callin()? And only set their bit in
+smp_callin_mask when the microcode update is done?
+
+Hm, maybe it's as simple as the first=C2=B9 thread on a core waiting for al=
+l
+its siblings' bits in cpu_callin_mask to be set, and *then* doing the
+update before setting its own bit?
+
+=C2=B9 As long as we define "first" as the one with the lowest CPU#, which
+means that the BSP won't release any of the siblings before it releases
+the "first".
+
+Then the siblings are just spinning on cpu_callin_mask anyway; they
+don't need to do anything *more*.
+
+Probably worth knocking it up and seeing how badly it explodes?
+
+
+
+--=-hkj4SafacA4WXW2cEqev
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjIzMTUxMjAwWjAvBgkqhkiG9w0BCQQxIgQgQPUMOEuR
+8FcXAnFq4QV2QRtdWe0pr3tPhFfzCr3K8Yswgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgATxxZheDxfPue6ybreT+n3FMX8k5VcnTB/
+/YP2H5D1aS8Q57lP8VORuNQOsqKAnFlD1txW0vZEQsrkbOXnUR7nSy/7mMyomdVsceAZ8dFXBRca
+SMWpON/2C+ok8PERdUE+L7ofH2/FvpDcQPobWUVba3FwQg+hiGGNG/CwenK/qWNIPmic5xwZQdoP
+pcsJKAh3XpJ4tiIYAolR2CJP0BxQqRCjSFIICE4p0OwWoawO0zQ6Z+lsejCHfdwhKZGOomuAVB6/
+OEGli8oJQKKhV3NlGGdhzYuU2bEg604G0lF1U6mZNyrkyuyygNtJQvxxaHeb/uMSkJF31uafIvMu
+RGJJFFwmCJgk9OdKiCSvXsd/+nR3xL56zyQkjEtjlQBWFwX8dn15R9DAHms4Q6OeMXDTxxp5Ftj5
+prMc6dtKiFahEVBPL2u7xQaqS/0sFny9wLZWmJjEJmR+Vt+0dtKmkYHO9YyG7iBuxQXP7HIPXnI7
+JG3ViYKvH1OLhfEz3PeJLAkvEP6+j9gAYkspEjZ0qvhVbCsE7qnmnR1O12HmUZWOnLlk6JWZeNH6
+f5TTgNxINNFS987kPug8lj47j35xAs+ZEF2RQHNat6D0p/Q4qr39GdVTubv2DRTZCRhwdrwBC8QS
+Q+59AXGLbWKfHa3RWDPkuRc5USr7iKh5h5DMDq4zXwAAAAAAAA==
+
+
+--=-hkj4SafacA4WXW2cEqev--
