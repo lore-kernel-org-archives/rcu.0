@@ -2,142 +2,184 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CA43C636D6
-	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 15:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C88D5C61DA4
+	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 16:10:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbjBWPyV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Feb 2023 10:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        id S234084AbjBWQKP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Feb 2023 11:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjBWPyU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Feb 2023 10:54:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231D1521E1;
-        Thu, 23 Feb 2023 07:54:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D3F5EB81A2C;
-        Thu, 23 Feb 2023 15:54:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C060C433D2;
-        Thu, 23 Feb 2023 15:54:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677167655;
-        bh=0igkCLN8UIKJ+cS/Hik80+ovdbMq4awNwBfAghEIzLI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JTvI/mjqp8sxYZzFfOT/Nc5dCpnMV236H2yjhmUpss6FTlodJnd85LQ78JK3v0pJE
-         NHMCynh6Oop8yVtNRjkPeR0KAiqZn5+gkCv/g8kn4iQKJhfJVt/69IFep9Ol1ZkYYQ
-         pUZYriqjosqxuDAKvcWGBU5TcUvkTRPKyKkZpeCF189h2aQs4PLBctNhsggp3yr2uJ
-         ayarw6aUDIX2CucLCi7t5NCulWn47tIsd2yzU+GaHeAPoKQcy87fIYAZMShRXdf+03
-         J0z+VuL0ojAVlgEBhZILHE1xxY93JrvBsBbws+jCmS46mx/RdbmYy11PLfYX8dv3Sn
-         msG1ZX3LyIksA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1EF7C5C0DBB; Thu, 23 Feb 2023 07:54:15 -0800 (PST)
-Date:   Thu, 23 Feb 2023 07:54:15 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
-        pablo@netfilter.org
-Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
- k[v]free_rcu_mightsleep()
-Message-ID: <20230223155415.GA2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230201150815.409582-1-urezki@gmail.com>
- <Y/df4xtTQ14w/2m4@lothringen>
- <IA1PR11MB6171CE257AC58265B8B7CC9889AB9@IA1PR11MB6171.namprd11.prod.outlook.com>
+        with ESMTP id S233702AbjBWQKO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Feb 2023 11:10:14 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C800251F83
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 08:10:12 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id y3so11424124qvn.4
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 08:10:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LVJs00yGU4ljOjIPJVv3EsPslnnyUQHNKLpkZ62KQ+0=;
+        b=YBxz5jipV4vFE+rG/tPjOqjyOafrIjFHYOg5ChHQNeEXKJufWqmvdBpYUtqa71G6dy
+         MTQX14mhAIlQYLnNeXs2maaqDShUc67SYokd0r/niPbfkGOHYiFqQW9SjLRjriR6EnZ9
+         9T/aSgKGyVOA6abpD4q7gzcsLQibFYJKNpA+0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LVJs00yGU4ljOjIPJVv3EsPslnnyUQHNKLpkZ62KQ+0=;
+        b=y402BngQ1IeE9PFXYN0OewZamwfGjH/R/w6pumUxvnRfNAIwUznnUxhj9Zco17dfFh
+         Hg4ExAspeTqKdgQfKtVnrzDVzEL+66PltfQgLBpztJanGg+tAEAywasANORDa+u+2L/S
+         KuBcqNcZPsN1GRh9jT2cn5eln4NEZpPQkXudJQRW1LaU1f/cuwnN1FsUoUeJJEvHMwFG
+         wXlotOJTpetwXn1HP6pvV86s1tLgJbvsgx62wqJ8UvZ1v5AOybBlN9new1Zd6xBCdA12
+         P8yIuy5GmRvNLUhTkHVap9N5/+mlxVKPzUPOSDvbRBoI60tIHP8g1zx3qG2mchvPoCEK
+         uxTQ==
+X-Gm-Message-State: AO0yUKWfpiI7chk0F65j9JJLCV+qTES2ZTF/Nnt3367Lshwr9vzvyed+
+        r0pO31MK+yhz67de1ZvNaVf3cA==
+X-Google-Smtp-Source: AK7set/65ey9xnhompEPPWX9/BtMgz3T4V/JD+ZA5vb1PnJ690MKr0+dSU2iOm6M/OeqUGYnwB40ww==
+X-Received: by 2002:a05:6214:f2d:b0:56b:4e51:acd5 with SMTP id iw13-20020a0562140f2d00b0056b4e51acd5mr27696659qvb.12.1677168611830;
+        Thu, 23 Feb 2023 08:10:11 -0800 (PST)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id 11-20020a37060b000000b00741921f3f60sm5470491qkg.42.2023.02.23.08.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Feb 2023 08:10:10 -0800 (PST)
+Date:   Thu, 23 Feb 2023 16:10:10 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rcu-tasks: Directly invoke rcuwait_wake_up() in
+ call_rcu_tasks_generic()
+Message-ID: <Y/eP4h/chB8J0rAj@google.com>
+References: <20230223063022.2592212-1-qiang1.zhang@intel.com>
+ <IA1PR11MB6171F5F6B525B6C599024C9D89AB9@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <PH0PR11MB588084641FFB675A102BA503DAAB9@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <IA1PR11MB6171CE257AC58265B8B7CC9889AB9@IA1PR11MB6171.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB588084641FFB675A102BA503DAAB9@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 23, 2023 at 02:29:42PM +0000, Zhuo, Qiuxu wrote:
-> > From: Frederic Weisbecker <frederic@kernel.org>
-> > Sent: Thursday, February 23, 2023 8:45 PM
-> > To: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > Cc: LKML <linux-kernel@vger.kernel.org>; RCU <rcu@vger.kernel.org>; Paul
-> > E . McKenney <paulmck@kernel.org>; Oleksiy Avramchenko
-> > <oleksiy.avramchenko@sony.com>; Jens Axboe <axboe@kernel.dk>; Philipp
-> > Reisner <philipp.reisner@linbit.com>; Bryan Tan <bryantan@vmware.com>;
-> > Steven Rostedt <rostedt@goodmis.org>; Eric Dumazet
-> > <edumazet@google.com>; Bob Pearson <rpearsonhpe@gmail.com>; Ariel
-> > Levkovich <lariel@nvidia.com>; Theodore Ts'o <tytso@mit.edu>; Julian
-> > Anastasov <ja@ssi.bg>
-> > Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
-> > k[v]free_rcu_mightsleep()
+On Thu, Feb 23, 2023 at 08:43:05AM +0000, Zhang, Qiang1 wrote:
+> > From: Zqiang <qiang1.zhang@intel.com>
+> > Sent: Thursday, February 23, 2023 2:30 PM
+> > To: paulmck@kernel.org; frederic@kernel.org; quic_neeraju@quicinc.com;
+> > joel@joelfernandes.org
+> > Cc: rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: [PATCH] rcu-tasks: Directly invoke rcuwait_wake_up() in
+> > call_rcu_tasks_generic()
 > > 
-> > On Wed, Feb 01, 2023 at 04:08:06PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > This small series is based on Paul's "dev" branch. Head is
-> > > 6002817348a1c610dc1b1c01ff81654cdec12be4
-> > > it renames a single argument of k[v]free_rcu() to its new
-> > k[v]free_rcu_mightsleep() name.
-> > >
-> > > 1.
-> > > The problem is that, recently we have run into a precedent when a user
-> > > intended to give a second argument to kfree_rcu() API but forgot to do
-> > > it in a code so a call became as a single argument of kfree_rcu() API.
-> > >
-> > > 2.
-> > > Such mistyping can lead to hidden bags where sleeping is forbidden.
-> > >
-> > > 3.
-> > > _mightsleep() prefix gives much more information for which contexts it
-> > > can be used for.
-> > >
-> > > Uladzislau Rezki (Sony) (13):
-> > >   rcu/kvfree: Add kvfree_rcu_mightsleep() and kfree_rcu_mightsleep()
-> > >   drbd: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-> > >   misc: vmw_vmci: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-> > >   tracing: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-> > >   lib/test_vmalloc.c: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-> > >   net/sysctl: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-> > >   RDMA/rxe: Rename kfree_rcu() to kfree_rcu_mightsleep()
-> > >   net/mlx5: Rename kfree_rcu() to kfree_rcu_mightsleep()
-> > >   ext4/super: Rename kfree_rcu() to kfree_rcu_mightsleep()
-> > >   ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
-> > >   rcuscale: Rename kfree_rcu() to kfree_rcu_mightsleep()
-> > >   doc: Update whatisRCU.rst
-> > >   rcu/kvfree: Eliminate k[v]free_rcu() single argument macro
-> > 
-> > Hi,
-> > 
-> > Not sure if you guys noticed but on latest rcu/dev:
-> > 
-> > net/netfilter/ipvs/ip_vs_est.c: In function ‘ip_vs_stop_estimator’:
-> > net/netfilter/ipvs/ip_vs_est.c:552:15: error: macro "kfree_rcu" requires 2
-> > arguments, but only 1 given
-> >    kfree_rcu(td);
-> >                ^
-> > net/netfilter/ipvs/ip_vs_est.c:552:3: error: ‘kfree_rcu’ undeclared (first use in
-> > this function); did you mean ‘kfree_skb’?
-> >    kfree_rcu(td);
-> >    ^~~~~~~~~
-> >    kfree_skb
-> > net/netfilter/ipvs/ip_vs_est.c:552:3: note: each undeclared identifier is
-> > reported only once for each function it appears in
+> > According to commit '3063b33a347c ("Avoid raw-spinlocked wakeups from
+> > call_rcu_tasks_generic()")', the grace-period kthread is delayed to wakeup
+> > using irq_work_queue() is because if the caller of
+> > call_rcu_tasks_generic() holds a raw spinlock, when the kernel is built with
+> > CONFIG_PROVE_RAW_LOCK_NESTING=y, due to a spinlock will be hold in
+> > wake_up(), so the lockdep splats will happen. but now using
+> > rcuwait_wake_up() to wakeup grace-period kthread instead of wake_up(), in
+> > rcuwait_wake_up() no spinlock will be acquired, so this commit remove using
+> >
+> >There are still spinlock-acquisition and spinlock-release invocations within the call path from rcuwait_wake_up().
+> >
+> >rcuwait_wake_up() -> wake_up_process() -> try_to_wake_up(), then:
+> >
+> >    raw_spin_lock_irqsave()
+> >    ...
+> >    raw_spin_unlock_irqrestore
 > 
-> Hi Frederic Weisbecker,
+> Yes, but this is raw_spinlock acquisition and release(note: spinlock will convert to
+> sleepable lock in Preempt-RT kernel, but raw spinlock is not change).
 > 
-> I encountered the same build error as yours. 
-> Per the discussion link below, the fix for this build error by Uladzislau Rezki will be picked up by some other maintainer's branch?
-> @Paul E . McKenney, please correct me if my understanding is wrong. 😊
-> 
->     https://lore.kernel.org/rcu/Y9qc+lgR1CgdszKs@salvia/
+> acquire raw_spinlock -> acquire spinlock  will trigger lockdep warning.
 
-Pablo and Julian, how are things coming with that patch?
+Is this really safe in the long run though? I seem to remember there are
+weird locking dependencies if RCU is used from within the scheduler [1].
 
-							Thanx, Paul
+I prefer to keep it as irq_work_queue() unless you are seeing some benefit.
+Generally, there has to be a 'win' or other justification for adding more
+risk.
+
+thanks,
+
+ - Joel
+[1] http://www.joelfernandes.org/rcu/scheduler/locking/2019/09/02/rcu-schedlocks.html
+
+> > irq_work_queue(), invoke rcuwait_wake_up() directly in
+> > call_rcu_tasks_generic().
+> > 
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > ---
+> >  kernel/rcu/tasks.h | 16 +---------------
+> >  1 file changed, 1 insertion(+), 15 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h index
+> > baf7ec178155..757b8c6da1ad 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -39,7 +39,6 @@ struct rcu_tasks_percpu {
+> >  	unsigned long rtp_jiffies;
+> >  	unsigned long rtp_n_lock_retries;
+> >  	struct work_struct rtp_work;
+> > -	struct irq_work rtp_irq_work;
+> >  	struct rcu_head barrier_q_head;
+> >  	struct list_head rtp_blkd_tasks;
+> >  	int cpu;
+> > @@ -112,12 +111,9 @@ struct rcu_tasks {
+> >  	char *kname;
+> >  };
+> > 
+> > -static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp);
+> > -
+> >  #define DEFINE_RCU_TASKS(rt_name, gp, call, n)
+> > 			\
+> >  static DEFINE_PER_CPU(struct rcu_tasks_percpu, rt_name ## __percpu) = {
+> > 			\
+> >  	.lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name ##
+> > __percpu.cbs_pcpu_lock),		\
+> > -	.rtp_irq_work = IRQ_WORK_INIT_HARD(call_rcu_tasks_iw_wakeup),
+> > 			\
+> >  };
+> > 		\
+> >  static struct rcu_tasks rt_name =
+> > 		\
+> >  {
+> > 		\
+> > @@ -273,16 +269,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+> >  	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__,
+> > data_race(rtp->percpu_enqueue_shift), data_race(rtp-
+> > >percpu_enqueue_lim));
+> >  }
+> > 
+> > -// IRQ-work handler that does deferred wakeup for call_rcu_tasks_generic().
+> > -static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp) -{
+> > -	struct rcu_tasks *rtp;
+> > -	struct rcu_tasks_percpu *rtpcp = container_of(iwp, struct
+> > rcu_tasks_percpu, rtp_irq_work);
+> > -
+> > -	rtp = rtpcp->rtpp;
+> > -	rcuwait_wake_up(&rtp->cbs_wait);
+> > -}
+> > -
+> >  // Enqueue a callback for the specified flavor of Tasks RCU.
+> >  static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+> >  				   struct rcu_tasks *rtp)
+> > @@ -334,7 +320,7 @@ static void call_rcu_tasks_generic(struct rcu_head
+> > *rhp, rcu_callback_t func,
+> >  	rcu_read_unlock();
+> >  	/* We can't create the thread unless interrupts are enabled. */
+> >  	if (needwake && READ_ONCE(rtp->kthread_ptr))
+> > -		irq_work_queue(&rtpcp->rtp_irq_work);
+> > +		rcuwait_wake_up(&rtp->cbs_wait);
+> >  }
+> > 
+> >  // RCU callback function for rcu_barrier_tasks_generic().
+> > --
+> > 2.25.1
+> 
