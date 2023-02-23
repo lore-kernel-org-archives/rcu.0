@@ -2,124 +2,122 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AADE0C636D6
-	for <rcu@archiver.kernel.org>; Wed, 22 Feb 2023 19:31:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8700C61DA4
+	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 06:25:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjBVTbT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Feb 2023 14:31:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
+        id S233311AbjBWGZe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Feb 2023 01:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbjBVTbQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Feb 2023 14:31:16 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADFC3BD9E;
-        Wed, 22 Feb 2023 11:30:54 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id ck15so36094931edb.0;
-        Wed, 22 Feb 2023 11:30:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/jfa5EiufQKP9OPphX3roUqj0yqYAjmS8TtgTAmBE/U=;
-        b=mkgmKYHarWH9fGnIpuYcuLJ7Yy5cyqcD4316A+SDk6ZgaQe0aKjfUiYux77X23BHHm
-         CXQ+Se+WvW5KIy8brB8Njgm6+inysY38vuUH3h4LVwNj4e/Kq8Wve9nhLsKwySM62RHp
-         DvJw8LseADFCqZEHB7yCoDt7jGY0Rr+6sxM5vv1ZOK2dLLKXMRU5NPgWdK83NuiPY+uQ
-         hu3+ijqzcy/UyT274HqoEyMpsT6BgqwuJ302V9D9W/moqodBbOwUc7vmYdAh3B6CuEqC
-         q+1CrP5I1DHENVI9z2KE/64EpTpEkjlQksZaxdddSosOkOxBr8M3wMzfjhhrF8oQjLc/
-         5dwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/jfa5EiufQKP9OPphX3roUqj0yqYAjmS8TtgTAmBE/U=;
-        b=J4Safe6qzpNuU6bvSEWG0VyvIux2S4Aqa781BnIoO8LbGJKLb3Zf1jWWvEYP4s7A8i
-         4KlfFObREq9faGmoxoPT5Do7omX7SlIQzvHAc6+GdslGO/9Y93CX+KMdgpOMRCEFX9WC
-         XPvbd+B/BmheSAgMpOCSxQou7xS3DtLXD7aZFTtrrOz5LuI0dQndm+UyFBFuys/B3m3c
-         tL+cFzAmXaVZykXOAOhBHBzu64BZjlwI6+V+Ne2O6cEspXtjHXHKns78ISOV95uBjFXM
-         Yeyq3hoVKSyfWzjvQZe48GUPlqCo04zOlZyPgcgWy909foMa91pX20pSp8t67m+dxsXS
-         Q6aQ==
-X-Gm-Message-State: AO0yUKUPqJnY5XhcgsjREihwUqKZ5RaCYPiXPB4VOTPsqh2GtOizBTjb
-        OukN8zWY62SwR3JlJcTouIqui2vGRQPOtzsvtWhwCj/Bihk=
-X-Google-Smtp-Source: AK7set+ji1WSyy02mR/QZRbPzkh/w58QQTnXrJcsrpi6sdNyjCokbtxiz7Da9T+202DSRzSW/2jW19SnSG228L+lg2s=
-X-Received: by 2002:a05:6402:35ca:b0:4af:62ad:60b1 with SMTP id
- z10-20020a05640235ca00b004af62ad60b1mr2075358edc.3.1677094252642; Wed, 22 Feb
- 2023 11:30:52 -0800 (PST)
+        with ESMTP id S232238AbjBWGZe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Feb 2023 01:25:34 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2703803F;
+        Wed, 22 Feb 2023 22:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677133533; x=1708669533;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TgLi49IW34LbRGQNmGM2xD5vJvj6jAn4cnTtBB1bWqc=;
+  b=H07Fn3K9MmxNGHH7M/vAf5OwnxKIhST66ntVEM41Co1sOUgiCHB1r4cc
+   HNldFR26hGJwbH1vXo6ZWvXeNNnqM+/uSP/hd/+/wmmyDw6qKpKP+qJCv
+   N7rokFfwA4Pq9VFJ+7UkoS6+Eglh5j8t77YSdW0eXRwriFeeExhfGK8QU
+   TyNa2SIxg4ZqVdUfpffG5utgMrO2QwKAAWKXh9exUbg58JKizMq3rTn2R
+   SlS/zUeJNFE3P8n19eHyio3CpcGA7hsjlBokWzq66EL3RYwuFR2SVbb4a
+   d1K5xxxuGwMZSBG0EcoYjq/d9LLhDMgc7kc5LfozyhbcF+oO+kC0FDjlM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10629"; a="335331921"
+X-IronPort-AV: E=Sophos;i="5.97,320,1669104000"; 
+   d="scan'208";a="335331921"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 22:25:31 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10629"; a="741144252"
+X-IronPort-AV: E=Sophos;i="5.97,320,1669104000"; 
+   d="scan'208";a="741144252"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2023 22:25:29 -0800
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu-tasks: Directly invoke rcuwait_wake_up() in call_rcu_tasks_generic()
+Date:   Thu, 23 Feb 2023 14:30:22 +0800
+Message-Id: <20230223063022.2592212-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20221230041151.1231169-1-houtao@huaweicloud.com>
- <20230101012629.nmpofewtlgdutqpe@macbook-pro-6.dhcp.thefacebook.com>
- <e5f502b5-ea71-8b96-3874-75e0e5a4932f@meta.com> <e96bc8c0-50fb-d6be-a86d-581c8a86232c@huaweicloud.com>
- <b9467cf4-38a7-9af6-0c1c-383f423b26eb@meta.com> <1d97a5c0-d1fb-a625-8e8d-25ef799ee9e2@huaweicloud.com>
- <e205d4a3-a885-93c7-5d02-2e9fd87348e8@meta.com> <CAADnVQLCWdN-Rw7BBxqErUdxBGOMNq39NkM3XJ=O=saG08yVgw@mail.gmail.com>
- <20230210163258.phekigglpquitq33@apollo> <CAADnVQLVi7CcW9ci62Dps4mxCEqHOYvYJ-Fant-0kSy0vPZ3AA@mail.gmail.com>
- <bf936f22-f8b7-c4a3-41a1-c3f2f115e67a@huaweicloud.com> <CAADnVQKecUqGF-gLFS5Wiz7_E-cHOkp7NPCUK0woHUmJG6hEuA@mail.gmail.com>
- <CAADnVQJzS9MQKS2EqrdxO7rVLyjUYD6OG-Yefak62-JRNcheZg@mail.gmail.com>
- <e16811cc-2d44-73a0-6430-d247605bc836@huaweicloud.com> <CAADnVQ+w9h4T6k+F5cLGVVx1jkHvKCF7=ki_Fb1oCp1SF1ZDNA@mail.gmail.com>
- <2a58c4a8-781f-6d84-e72a-f8b7117762b4@huaweicloud.com>
-In-Reply-To: <2a58c4a8-781f-6d84-e72a-f8b7117762b4@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Feb 2023 11:30:41 -0800
-Message-ID: <CAADnVQLg+WHzym=SC0KF0uzWw0J7ADjABBdZ9QDepdAT0z7V-g@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf: Handle reuse in bpf memory alloc
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 5:19 PM Hou Tao <houtao@huaweicloud.com> wrote:
->
-> Hi,
->
-> On 2/17/2023 12:35 AM, Alexei Starovoitov wrote:
-> > On Thu, Feb 16, 2023 at 5:55 AM Hou Tao <houtao@huaweicloud.com> wrote:
-> >> Beside BPF_REUSE_AFTER_RCU_GP, is BPF_FREE_AFTER_RCU_GP a feasible solution ?
-> > The idea is for bpf_mem_free to wait normal RCU GP before adding
-> > the elements back to the free list and free the elem to global kernel memory
-> > only after both rcu and rcu_tasks_trace GPs as it's doing now.
-> >
-> >> Its downside is that it will enforce sleep-able program to use
-> >> bpf_rcu_read_{lock,unlock}() to access these returned pointers ?
-> > sleepable can access elems without kptrs/spin_locks
-> > even when not using rcu_read_lock, since it's safe, but there is uaf.
-> > Some progs might be fine with it.
-> > When sleepable needs to avoid uaf they will use bpf_rcu_read_lock.
-> Thanks for the explanation for BPF_REUSE_AFTER_RCU_GP. It seems that
-> BPF_REUSE_AFTER_RCU_GP may incur OOM easily, because before the expiration of
-> one RCU GP, these freed elements will not available to both bpf ma or slab
-> subsystem and after the expiration of RCU GP, these freed elements are only
-> available for one bpf ma but the number of these freed elements maybe too many
-> for one bpf ma, so part of these freed elements will be freed through
-> call_rcu_tasks_trace() and these freed-again elements will not be available for
-> slab subsystem untill the expiration of tasks trace RCU. In brief, after one RCU
-> GP, part of these freed elements will be reused, but the majority of these
-> elements will still be freed through call_rcu_tasks_trace(). Due to the doubt
-> above, I proposed BPF_FREE_AFTER_RCU to directly free these elements after one
-> RCU GP and enforce sleepable program to use bpf_rcu_read_lock() to access these
-> elements, but the enforcement will break the existing sleepable programs, so
-> BPF_FREE_AFTER_GP is still not a good idea. I will check whether or not these is
-> still OOM risk for BPF_REUSE_AFTER_RCU_GP and try to mitigate if it is possible
-> (e.g., share these freed elements between all bpf ma instead of one bpf ma which
-> free it).
+According to commit '3063b33a347c ("Avoid raw-spinlocked wakeups
+from call_rcu_tasks_generic()")', the grace-period kthread is delayed
+to wakeup using irq_work_queue() is because if the caller of
+call_rcu_tasks_generic() holds a raw spinlock, when the kernel is
+built with CONFIG_PROVE_RAW_LOCK_NESTING=y, due to a spinlock will
+be hold in wake_up(), so the lockdep splats will happen. but now
+using rcuwait_wake_up() to wakeup grace-period kthread instead of
+wake_up(), in rcuwait_wake_up() no spinlock will be acquired, so
+this commit remove using irq_work_queue(), invoke rcuwait_wake_up()
+directly in call_rcu_tasks_generic().
 
-Since BPF_REUSE_AFTER_RCU_GP is a new thing that will be used
-by qptrie map and maybe? local storage, there is no sleepable breakage.
-If we start using BPF_REUSE_AFTER_RCU_GP for hashmaps with kptrs
-and enforce bpf_rcu_read_lock() this is also ok, since kptrs are unstable.
-I prefer to avoid complicating bpf ma with sharing free lists across all ma-s.
-Unless this is really trivial code that is easy to review.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tasks.h | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index baf7ec178155..757b8c6da1ad 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -39,7 +39,6 @@ struct rcu_tasks_percpu {
+ 	unsigned long rtp_jiffies;
+ 	unsigned long rtp_n_lock_retries;
+ 	struct work_struct rtp_work;
+-	struct irq_work rtp_irq_work;
+ 	struct rcu_head barrier_q_head;
+ 	struct list_head rtp_blkd_tasks;
+ 	int cpu;
+@@ -112,12 +111,9 @@ struct rcu_tasks {
+ 	char *kname;
+ };
+ 
+-static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp);
+-
+ #define DEFINE_RCU_TASKS(rt_name, gp, call, n)						\
+ static DEFINE_PER_CPU(struct rcu_tasks_percpu, rt_name ## __percpu) = {			\
+ 	.lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name ## __percpu.cbs_pcpu_lock),		\
+-	.rtp_irq_work = IRQ_WORK_INIT_HARD(call_rcu_tasks_iw_wakeup),			\
+ };											\
+ static struct rcu_tasks rt_name =							\
+ {											\
+@@ -273,16 +269,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+ 	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
+ }
+ 
+-// IRQ-work handler that does deferred wakeup for call_rcu_tasks_generic().
+-static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
+-{
+-	struct rcu_tasks *rtp;
+-	struct rcu_tasks_percpu *rtpcp = container_of(iwp, struct rcu_tasks_percpu, rtp_irq_work);
+-
+-	rtp = rtpcp->rtpp;
+-	rcuwait_wake_up(&rtp->cbs_wait);
+-}
+-
+ // Enqueue a callback for the specified flavor of Tasks RCU.
+ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 				   struct rcu_tasks *rtp)
+@@ -334,7 +320,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 	rcu_read_unlock();
+ 	/* We can't create the thread unless interrupts are enabled. */
+ 	if (needwake && READ_ONCE(rtp->kthread_ptr))
+-		irq_work_queue(&rtpcp->rtp_irq_work);
++		rcuwait_wake_up(&rtp->cbs_wait);
+ }
+ 
+ // RCU callback function for rcu_barrier_tasks_generic().
+-- 
+2.25.1
+
