@@ -2,209 +2,186 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34C90C636D6
-	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 19:14:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B412C61DA4
+	for <rcu@archiver.kernel.org>; Thu, 23 Feb 2023 19:24:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbjBWTOI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Feb 2023 14:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
+        id S231901AbjBWTYd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Feb 2023 14:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232408AbjBWTNS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Feb 2023 14:13:18 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B7051FBD
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:12:32 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id bo30so10998719wrb.0
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:12:32 -0800 (PST)
+        with ESMTP id S229793AbjBWTYc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Feb 2023 14:24:32 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFE6301A7
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:24:29 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id t15so11702084wrz.7
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 11:24:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EwjBftfc3L0BBR8aaJYAfM/W208AZmDnuvLkbcbpYBc=;
-        b=D6yXbUB9sco4X1VpFV6XERHwY2Jrdg2C/gnoW/DRwjyLLVrrxI1ywrohxmZRrJm091
-         pyvN1Hju8nZVLvJpgR9MegSvJlbBhzhD4yTgTKONC35c++3h/vbAyqsGVIcCxYjtPJb/
-         tggWnyVAoBa94JfCwJ6wYvG1/pp2c2t+m2b+McHBtAG54vrfvV8PsUW/GRtA+Wlg1RBV
-         GBLI60u93gjpV6vPweKG3CwxbRegUHgsMZ2+2kfjBBN4dujoujM87ABiPwktktjExmO7
-         B/4Xuz+/aG30TSdTs0orGRkS9Bv/ooYZTvwdgfM4oBWX7zEfFUxgbwLY3cQKWTXxUFA3
-         Sjig==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2WUW7m+MbriTC2U91BdHy5e/gS4PISvFC5pTDLmthLM=;
+        b=ilbHouOcMp+Ekq6J6OxGkNWAHX+j0tnci9ZYJcNsD94BPqkA9VNn8wfF97nhtcNeQF
+         Rd2z3EXCI0Sn7HT2F67rBc9ihauFrLPUUqsHyi9WvdDAlDGyQyhGwjYmvtHhY8gtCLbM
+         Li0/DDwKlwYmlmD4opJ6zUJxEfc4I7ua8ZnD/hvSldueDmBpsmMHa86MWBnTtlC16u6g
+         X4QwVXUOVq2nDuuTpcV2nua5qO8LYNbQT87/hjsRzekX24ggd5wHIVssJlS0cvZNWOYU
+         s9xoaObEUEJ6Av3uydZz4xBCPm1svPwNbiSu/DgeNnfhuaxdVytpXwmZa8XfBTmdSXum
+         0N4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EwjBftfc3L0BBR8aaJYAfM/W208AZmDnuvLkbcbpYBc=;
-        b=OIz1KV7Ro6pgtDg5Ikm04tbBgcW5LGEi2I3DySGCAE/1BZGSA28UM9mn1cFQ5YhaUh
-         72SG6th8rB9xyF5u3F/SltyXgN/044q/UMvKyRPaQmced4PeWnCr9hNXOajivXNQsjRZ
-         JMFmETu25BbcpAmUFznmseygMXTfVQ5yX2HVKBVIg7oNVci4XyKsx7/ACIMlv0Y8BF7q
-         prahw4XckPJpQZi8aPAi4mEuH9k0S+30EOSYou79qhqvc4UNbeednii2wZBL5pl08LUT
-         k1FgYpf7208eVqb1aBg8TOt747v5jNSrHhUIKOav1PG2CaQ/6ggzSihgG3dfWRfGdIm+
-         hSkg==
-X-Gm-Message-State: AO0yUKUuCkfWLDVMAmMnEN6vzh1tQw7+C5d/2TaVrH1vqwZ37wQPVXnq
-        pdJy58Q045tiALcvMirhdZGAAw==
-X-Google-Smtp-Source: AK7set/xfHojBdkCYIcXYqx9p8jYtcp9WgACEXYQEfIv8c7VVeVZ//shfgMfiUhm9UPrfDfWqNl2hw==
-X-Received: by 2002:a5d:6743:0:b0:2c7:a3b:4e76 with SMTP id l3-20020a5d6743000000b002c70a3b4e76mr5897330wrw.6.1677179513936;
-        Thu, 23 Feb 2023 11:11:53 -0800 (PST)
-Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:5ee0:5af0:64bd:6198])
-        by smtp.gmail.com with ESMTPSA id b15-20020a5d4b8f000000b002c561805a4csm12957286wrt.45.2023.02.23.11.11.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 11:11:53 -0800 (PST)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2WUW7m+MbriTC2U91BdHy5e/gS4PISvFC5pTDLmthLM=;
+        b=c8mmDhtrQuUHBM5/ZmUsNjmH5JSy6kRfA7Au7KowTuJlUJktstnkytHKYxyKcUJRWa
+         qCTPw2HJkwEY0cMzhEnvSt/Zmr1btW/FSYNvkC6a/dlqvcKr6gSmSXTxyePV9eWXBUp4
+         VCyfj9z6H8lw7rgqkj0BEcSlK4Bz53ueXU/DnSh/I72vPP5mdUmdWdTD2ZDLywuBQn2n
+         yK1iaD4p97odm+8qelFPmWaE2wSnZhDN1hYN421dO6gJ2yquJc29Rg0RfenXl+dw7WjS
+         KDbOGTr3lM0M2GzwJQw+X0qZfDT0oe8q7MxgmX6etRD1WWfcd1um0aa2M6hgJr/QDUrj
+         JX9w==
+X-Gm-Message-State: AO0yUKUht98TtpgPCkXDgdt6jhGZE2ixiwZwJGF58OC0sJIACQ+739qC
+        8GIotyBswSHpCLTXMTY2KkbzUw==
+X-Google-Smtp-Source: AK7set9p6BDFOcjNFXYyjjdbXmPAVFfJL/xQjIIlsS//FUfrvOZd8nYyaGDj0Mt2ghpDvo6g0B6b/w==
+X-Received: by 2002:a5d:6645:0:b0:2c5:509b:dc54 with SMTP id f5-20020a5d6645000000b002c5509bdc54mr11486541wrw.0.1677180267855;
+        Thu, 23 Feb 2023 11:24:27 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:5ee0:5af0:64bd:6198? ([2a02:6b6a:b566:0:5ee0:5af0:64bd:6198])
+        by smtp.gmail.com with ESMTPSA id j21-20020a5d6e55000000b002c3f81c51b6sm12375109wrz.90.2023.02.23.11.24.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Feb 2023 11:24:27 -0800 (PST)
+Message-ID: <97e1f2aa-d823-1aea-a41f-8024ba5075aa@bytedance.com>
+Date:   Thu, 23 Feb 2023 19:24:26 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v9 0/8] Parallel CPU bringup for x86_64
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, kim.phillips@amd.com
+Cc:     arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
         pbonzini@redhat.com, paulmck@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v11 12/12] x86/smpboot: Simplify boot CPU setup
-Date:   Thu, 23 Feb 2023 19:11:40 +0000
-Message-Id: <20230223191140.4155012-13-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230223191140.4155012-1-usama.arif@bytedance.com>
-References: <20230223191140.4155012-1-usama.arif@bytedance.com>
-MIME-Version: 1.0
+        simon.evans@bytedance.com, liangma@liangbit.com
+References: <20230215145425.420125-1-usama.arif@bytedance.com>
+ <62ee53770b4010f065346b7f2a1200013836be97.camel@infradead.org>
+ <87a615mz2x.ffs@tglx>
+ <701ce2da00e559d517d4e48bd5d88ccae1198e44.camel@infradead.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <701ce2da00e559d517d4e48bd5d88ccae1198e44.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Brian Gerst <brgerst@gmail.com>
 
-Now that the per-cpu GSBASE, stack, and GDT descriptor can be derived
-dynamically by CPU number, the boot CPU can use a fixed CPU number and
-take the same path as secondary CPUs.
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Tested-by: Usama Arif <usama.arif@bytedance.com>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
----
- arch/x86/include/asm/smp.h |  5 ++---
- arch/x86/kernel/head_64.S  | 25 +++++++------------------
- arch/x86/kernel/smpboot.c  |  6 +++---
- 3 files changed, 12 insertions(+), 24 deletions(-)
+On 23/02/2023 11:07, David Woodhouse wrote:
+> On Wed, 2023-02-22 at 17:42 +0100, Thomas Gleixner wrote:
+>> David!
+>>
+>> On Wed, Feb 22 2023 at 10:11, David Woodhouse wrote:
+>>> On Wed, 2023-02-15 at 14:54 +0000, Usama Arif wrote:
+>>> So the next thing that might be worth looking at is allowing the APs
+>>> all to be running their hotplug thread simultaneously, bringing
+>>> themselves from CPUHP_BRINGUP_CPU to CPUHP_AP_ONLINE. This series eats
+>>> the initial INIT/SIPI/SIPI latency, but if there's any significant time
+>>> in the AP hotplug thread, that could be worth parallelising.
+>>
+>> On a 112 CPU machine (64 cores, HT enabled) the bringup takes
+>>
+>> Setup and SIPIs sent:    49 ms
+>> Bringup each CPU:       516 ms
+>>
+>> That's about 500 ms faster than a non-parallel bringup!
+>>
+>> Now looking at the 516 ms, which is ~4.7 ms/CPU. The vast majority of the
+>> time is spent on the APs in
+>>
+>>       cpu_init() -> ucode_cpu_init()
+>>
+>> for the primary threads of each core. The secondary threads are quickly
+>> (1us) out of ucode_cpu_init() because the primary thread already loaded
+>> it.
+>>
+>> A microcode load on that machine takes ~7.5 ms per primary thread on
+>> average which sums up to 7.5 * 55 = 412.5 ms
+>>
+>> The threaded bringup after CPU_AP_ONLINE takes about 100us per CPU.
+> 
+> Nice analysis; thanks!
+> 
+>> identify_secondary_cpu() is one of the longer functions which takes
+>> ~125us / CPU summing up to 13ms
+> 
+> Hm, shouldn't that one already be parallelised by my 'part 2' patch?
+> 
+> It's called from smp_store_cpu_info(), from smp_callin(), which is
+> called from somewhere in the middle of start_secondary().
+> 
+> And if the comments I helpfully added to that function for the benefit
+> of our future selves are telling the truth, the AP is free to get that
+> far once the BSP has set its bit in cpu_callout_mask, which happens in
+> do_wait_cpu_initialized().
+> 
+> So
+> https://git.infradead.org/users/dwmw2/linux.git/commitdiff/4b5731e05b0#patch3
+> ought to parallelise that. But Usama emirically reported that 'part 2'
+> didn't add any noticeable benefit, not even those 13ms? On a *larger*
+> machine.
+> 
 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index b4b29e052b6e..97a36d029b0e 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -202,8 +202,7 @@ extern unsigned int smpboot_control;
- #endif /* !__ASSEMBLY__ */
- 
- /* Control bits for startup_64 */
--#define STARTUP_SECONDARY	0x80000000
--#define STARTUP_APICID_CPUID_0B	0x40000000
--#define STARTUP_APICID_CPUID_01	0x20000000
-+#define STARTUP_APICID_CPUID_0B	0x80000000
-+#define STARTUP_APICID_CPUID_01	0x40000000
- 
- #endif /* _ASM_X86_SMP_H */
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 9ed87ba0609f..949c13b26811 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -235,28 +235,22 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	ANNOTATE_NOENDBR // above
- 
- #ifdef CONFIG_SMP
--	/* Is this the boot CPU coming up? */
--	movl	smpboot_control(%rip), %edx
--	testl	$STARTUP_SECONDARY, %edx
--	jz	.Linit_cpu0_data
--
- 	/*
- 	 * For parallel boot, the APIC ID is retrieved from CPUID, and then
- 	 * used to look up the CPU number.  For booting a single CPU, the
- 	 * CPU number is encoded in smpboot_control.
- 	 *
--	 * Bit 31	STARTUP_SECONDARY flag (checked above)
- 	 * Bit 30	STARTUP_APICID_CPUID_0B flag (use CPUID 0x0b)
- 	 * Bit 29	STARTUP_APICID_CPUID_01 flag (use CPUID 0x01)
- 	 * Bit 0-24	CPU# if STARTUP_APICID_CPUID_xx flags are not set
- 	 */
--	testl	$STARTUP_APICID_CPUID_0B, %edx
-+	movl	smpboot_control(%rip), %ecx
-+	testl	$STARTUP_APICID_CPUID_0B, %ecx
- 	jnz	.Luse_cpuid_0b
--	testl	$STARTUP_APICID_CPUID_01, %edx
-+	testl	$STARTUP_APICID_CPUID_01, %ecx
- 	jnz	.Luse_cpuid_01
--	andl	$0x0FFFFFFF, %edx
--	movl	%edx, %ecx
--	jmp	.Linit_cpu_data
-+	andl	$0x0FFFFFFF, %ecx
-+	jmp	.Lsetup_cpu
- 
- .Luse_cpuid_01:
- 	mov	$0x01, %eax
-@@ -277,7 +271,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 
- .Lfind_cpunr:
- 	cmpl	(%rbx,%rcx,4), %edx
--	jz	.Linit_cpu_data
-+	jz	.Lsetup_cpu
- 	inc	%ecx
- 	cmpl	nr_cpu_ids(%rip), %ecx
- 	jb	.Lfind_cpunr
-@@ -291,18 +285,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	hlt
- 	jmp	1b
- 
--.Linit_cpu0_data:
--	movq	__per_cpu_offset(%rip), %rdx
--	jmp	.Lsetup_cpu
--
--.Linit_cpu_data:
-+.Lsetup_cpu:
- 	/* Get the per cpu offset for the given CPU# which is in ECX */
- 	movq	__per_cpu_offset(,%rcx,8), %rdx
- #else
- 	xorl	%edx, %edx
- #endif /* CONFIG_SMP */
- 
--.Lsetup_cpu:
- 	/*
- 	 * Setup a boot time stack - Any secondary CPU will have lost its stack
- 	 * by now because the cr3-switch above unmaps the real-mode stack
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 69ef0860feea..9d956571ecc1 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1140,7 +1140,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 		early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
- 		initial_stack  = idle->thread.sp;
- 	} else if (!do_parallel_bringup) {
--		smpboot_control = STARTUP_SECONDARY | cpu;
-+		smpboot_control = cpu;
- 	}
- 
- 	/* Enable the espfix hack for this CPU */
-@@ -1580,7 +1580,7 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 		 */
- 		if (eax) {
- 			pr_debug("Using CPUID 0xb for parallel CPU startup\n");
--			smpboot_control = STARTUP_SECONDARY | STARTUP_APICID_CPUID_0B;
-+			smpboot_control = STARTUP_APICID_CPUID_0B;
- 		} else {
- 			pr_info("Disabling parallel bringup because CPUID 0xb looks untrustworthy\n");
- 			do_parallel_bringup = false;
-@@ -1588,7 +1588,7 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 	} else if (do_parallel_bringup) {
- 		/* Without X2APIC, what's in CPUID 0x01 should suffice. */
- 		pr_debug("Using CPUID 0x1 for parallel CPU startup\n");
--		smpboot_control = STARTUP_SECONDARY | STARTUP_APICID_CPUID_01;
-+		smpboot_control = STARTUP_APICID_CPUID_01;
- 	}
- 
- 	if (do_parallel_bringup) {
--- 
-2.25.1
+So I am using a similar machine to Thomas 128 CPU machine (64 cores, HT 
+enabled). I have microcode config disabled, so I guess I get similar 
+numbers to Thomas, i.e. 100ms (516 - 412) ms. I do see a difference of 
+~3ms with part2 which I thought is maybe within the margin of error for 
+measuring, but I guess it isn't. After seeing the ~70ms that is cut with 
+reusing timer calibration, I didnt really then focus much on part 2 
+then. I guess that ~70ms is the "rest" from Thomas' table below?
 
+Thanks,
+Usama
+
+> 
+>> The TSC sync check for the first CPU on the second socket consumes
+>> 20ms. That's only once per socket, intra socket is using MSR_TSC_ADJUST,
+>> which is more or less free.
+>>
+>> So the 516 ms are wasted here:
+>>
+>>     total                                516 ms
+>>     ucode_cpu_init()                     412 ms
+>>     identify_secondary_cpu()              13 ms
+>>     2ndsocket_tsc_sync                    20 ms
+>>     threaded bringup                      12 ms
+>>     rest                                  59 ms
+>>
+>> So the rest is about 530us per CPU, which is just the sum of many small
+>> functions, lock contentions...
+>>
+>> Getting rid of the micro code overhead is possible. There is no reason
+>> to serialize that between the cores. But it needs serialization vs. HT
+>> siblings, which requires to move identify_secondary_cpu() and its caller
+>> smp_store_cpu_info() ahead of the synchronization point and then have
+>> serialization between the siblings. That's going to be a major surgery
+>> and inspection effort to ensure that there are no hidden assumptions
+>> about global hotplug serialization.
+>>
+>> So that would cut the total cost down to ~100ms plus the
+>> preparatory/SIPI stage of 60ms which sums up to about 160ms and about
+>> 1.5ms per CPU total.
+>>
+>> Further optimization starts to be questionable IMO. It's surely possible
+>> somehow, but then you really have to go and inspect each and every
+>> function in those code pathes, add local locking, etc. Not to talk about
+>> the required mess in the core code to support that.
+>>
+>> The low hanging fruit which brings most is the identification/topology
+>> muck and the microcode loading. That needs to be addressed first anyway.
+> 
+> Agreed, thanks.
+> 
