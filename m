@@ -2,51 +2,57 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7332C64ED6
-	for <rcu@archiver.kernel.org>; Fri, 24 Feb 2023 02:25:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A83B3C61DA4
+	for <rcu@archiver.kernel.org>; Fri, 24 Feb 2023 02:35:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjBXCZS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Feb 2023 21:25:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
+        id S229558AbjBXCf3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Feb 2023 21:35:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjBXCZR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Feb 2023 21:25:17 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920AB4E5E5
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 18:25:15 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id nv15so12793588qvb.7
-        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 18:25:15 -0800 (PST)
+        with ESMTP id S229535AbjBXCf2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Feb 2023 21:35:28 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A401B564
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 18:35:26 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id r27so14098851lfe.10
+        for <rcu@vger.kernel.org>; Thu, 23 Feb 2023 18:35:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6PDBgr54Vfa3PfNd3VzchAN71msIlCdFUIX7w+B3VJc=;
-        b=V1QPpUJiO7RqrJbebYe1aBJX7toyPR/IzxvftZ7lJWdEpjUCmvFWCMNycL8q2G9Ilu
-         v+S0aMEBFYbMB2Sp/Ads5Vq86NxXbsZaxzhB0M8zjifbjYx+aXm2tFEJA0u0FSyhuYF5
-         dCcTuWsAoQJmVozUKRP0Hjj5cxsLVBFkKP0S4=
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QzfaTI7ZGPLbBQPeqlJFR4oQuUNmUeoWM5zoArnrQ2Q=;
+        b=T6gUULrWxhw1OaHykD7Kae5fApaYDplIov36NZSQ90XSO7FoYlh0ht2C2IdxZ13/7m
+         zBvmJEIvO897++d+owunLHwD6ZndArXxjGYBNSw5gaLI44ey3NFnBNlYu4M1tC8N4wG2
+         AoawkfpqzUowc0Uq56Xx0Bh1ExKtJSZqr4WnU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6PDBgr54Vfa3PfNd3VzchAN71msIlCdFUIX7w+B3VJc=;
-        b=xOEPeG4r+Oyje0x4b1R0KIQfkMaKEg8sqaZVowe9kYTb/slKdtvU1crUzHDQV3lDJv
-         bBVp46mpip7JrP/s6OzENE9ykjOMcXjludrM8FV3tr2QpQmikLDVgAXdEw91Fph5G6U7
-         QVLfv9xMF+hn2990kUNf9mzNMQI03bkA/CSAqm39cS428ahElyPPU4UeLDO+kGH+Zty9
-         2VjPTE+5w9uVLPRaS3tEbnZwV4uV59rveyVR2pnl/WYkZ1ASeHbFxhRTSeQt2HN4jHw4
-         WdWL/DSqB/grc7WdNZ96LMIrQAK3oABCvMoos0JorGE0CHTzc4cCDPE6VVGWa+gd8gsP
-         ZfAA==
-X-Gm-Message-State: AO0yUKW3mU7Xi7cuVxIYkP67kmAvw8WTk2uYHvr2OzhyPswzPu4efLBH
-        1kYtFKBgdzk74NYnjn1zVStPRw==
-X-Google-Smtp-Source: AK7set9+9fNEM/gDyn3rd4nAf0oji67wNWdiWAZZTs8JnczTMZYqPnkX2+BXycd+N5APjM5OSByv6g==
-X-Received: by 2002:a05:6214:e8a:b0:56e:ff37:6b6e with SMTP id hf10-20020a0562140e8a00b0056eff376b6emr28650649qvb.10.1677205514622;
-        Thu, 23 Feb 2023 18:25:14 -0800 (PST)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id 9-20020a370409000000b00741a984943fsm6221829qke.40.2023.02.23.18.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Feb 2023 18:25:13 -0800 (PST)
-Date:   Fri, 24 Feb 2023 02:25:13 +0000
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QzfaTI7ZGPLbBQPeqlJFR4oQuUNmUeoWM5zoArnrQ2Q=;
+        b=tiV9maFoScIYbqB832gbTgo+OCaXSOzNmEW4j+8n6nPy+rS2l6Fb4vV+IWc9dLYxKb
+         MPPR34K3Dpnu+jt7SM/0M7PzqiJPHFQE1Kh55x+u64qsk8E7p0u7UAbSQcL1JLkFy/0F
+         cVoyP/gwC9FFHvyyKgb8o0G6AfrN1YDeFXIaN3dB4Q8N3Y2NMbEpnpdveC5ZtGdcPJgP
+         czyNeO0vgN+V0FLrHdoKl0EKzt4omf2MIuy3066yRU8rtrP2t1rBksTP0s+Bn7hXSbEj
+         ddEYI53jVBdofzjuDEiL/XSgpidu9JrhebaCoeIYDTF/UaI441I3hLKTT9nYCPcLXaz8
+         LobA==
+X-Gm-Message-State: AO0yUKUC5IiiXrMS/ZTkGpdduydcvTqhBBPy6RlHkQjXjiYzZd3Tf172
+        jTRDSfts3IafK4a9RqCZjLFRpzcuPcdzehmft4otDg==
+X-Google-Smtp-Source: AK7set+kej7NQlVBfBwsnxFjkeCOWoGqZf1G6Y+tQohZVUI1C9VPJpNX5I9agVZ3XTd9/RCG1lMGqdJyBgYI9yIzwX8=
+X-Received: by 2002:ac2:548c:0:b0:4db:345d:4f8a with SMTP id
+ t12-20020ac2548c000000b004db345d4f8amr4364324lfk.11.1677206125049; Thu, 23
+ Feb 2023 18:35:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20230223063022.2592212-1-qiang1.zhang@intel.com>
+ <IA1PR11MB6171F5F6B525B6C599024C9D89AB9@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <PH0PR11MB588084641FFB675A102BA503DAAB9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <Y/eP4h/chB8J0rAj@google.com> <PH0PR11MB58801B94B0374865394E9F8FDAA89@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <Y/ggCdoMEhMO8vs+@google.com>
+In-Reply-To: <Y/ggCdoMEhMO8vs+@google.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 23 Feb 2023 21:35:13 -0500
+Message-ID: <CAEXW_YRTOYu5ZR6aX7AaTGyCQJwjB2aEmuPMYExYD4A2csRP1w@mail.gmail.com>
+Subject: Re: [PATCH] rcu-tasks: Directly invoke rcuwait_wake_up() in call_rcu_tasks_generic()
 To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
         "paulmck@kernel.org" <paulmck@kernel.org>,
@@ -54,190 +60,96 @@ Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
         "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] rcu-tasks: Directly invoke rcuwait_wake_up() in
- call_rcu_tasks_generic()
-Message-ID: <Y/ggCdoMEhMO8vs+@google.com>
-References: <20230223063022.2592212-1-qiang1.zhang@intel.com>
- <IA1PR11MB6171F5F6B525B6C599024C9D89AB9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <PH0PR11MB588084641FFB675A102BA503DAAB9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <Y/eP4h/chB8J0rAj@google.com>
- <PH0PR11MB58801B94B0374865394E9F8FDAA89@PH0PR11MB5880.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB58801B94B0374865394E9F8FDAA89@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 24, 2023 at 12:36:05AM +0000, Zhang, Qiang1 wrote:
-> On Thu, Feb 23, 2023 at 08:43:05AM +0000, Zhang, Qiang1 wrote:
-> > > From: Zqiang <qiang1.zhang@intel.com>
-> > > Sent: Thursday, February 23, 2023 2:30 PM
-> > > To: paulmck@kernel.org; frederic@kernel.org; quic_neeraju@quicinc.com;
-> > > joel@joelfernandes.org
-> > > Cc: rcu@vger.kernel.org; linux-kernel@vger.kernel.org
-> > > Subject: [PATCH] rcu-tasks: Directly invoke rcuwait_wake_up() in
-> > > call_rcu_tasks_generic()
-> > > 
-> > > According to commit '3063b33a347c ("Avoid raw-spinlocked wakeups from
-> > > call_rcu_tasks_generic()")', the grace-period kthread is delayed to wakeup
-> > > using irq_work_queue() is because if the caller of
-> > > call_rcu_tasks_generic() holds a raw spinlock, when the kernel is built with
-> > > CONFIG_PROVE_RAW_LOCK_NESTING=y, due to a spinlock will be hold in
-> > > wake_up(), so the lockdep splats will happen. but now using
-> > > rcuwait_wake_up() to wakeup grace-period kthread instead of wake_up(), in
-> > > rcuwait_wake_up() no spinlock will be acquired, so this commit remove using
+On Thu, Feb 23, 2023 at 9:25 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> On Fri, Feb 24, 2023 at 12:36:05AM +0000, Zhang, Qiang1 wrote:
+> > On Thu, Feb 23, 2023 at 08:43:05AM +0000, Zhang, Qiang1 wrote:
+> > > > From: Zqiang <qiang1.zhang@intel.com>
+> > > > Sent: Thursday, February 23, 2023 2:30 PM
+> > > > To: paulmck@kernel.org; frederic@kernel.org; quic_neeraju@quicinc.com;
+> > > > joel@joelfernandes.org
+> > > > Cc: rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > > Subject: [PATCH] rcu-tasks: Directly invoke rcuwait_wake_up() in
+> > > > call_rcu_tasks_generic()
+> > > >
+> > > > According to commit '3063b33a347c ("Avoid raw-spinlocked wakeups from
+> > > > call_rcu_tasks_generic()")', the grace-period kthread is delayed to wakeup
+> > > > using irq_work_queue() is because if the caller of
+> > > > call_rcu_tasks_generic() holds a raw spinlock, when the kernel is built with
+> > > > CONFIG_PROVE_RAW_LOCK_NESTING=y, due to a spinlock will be hold in
+> > > > wake_up(), so the lockdep splats will happen. but now using
+> > > > rcuwait_wake_up() to wakeup grace-period kthread instead of wake_up(), in
+> > > > rcuwait_wake_up() no spinlock will be acquired, so this commit remove using
+> > > >
+> > > >There are still spinlock-acquisition and spinlock-release invocations within the call path from rcuwait_wake_up().
+> > > >
+> > > >rcuwait_wake_up() -> wake_up_process() -> try_to_wake_up(), then:
+> > > >
+> > > >    raw_spin_lock_irqsave()
+> > > >    ...
+> > > >    raw_spin_unlock_irqrestore
 > > >
-> > >There are still spinlock-acquisition and spinlock-release invocations within the call path from rcuwait_wake_up().
+> > > Yes, but this is raw_spinlock acquisition and release(note: spinlock will convert to
+> > > sleepable lock in Preempt-RT kernel, but raw spinlock is not change).
 > > >
-> > >rcuwait_wake_up() -> wake_up_process() -> try_to_wake_up(), then:
+> > > acquire raw_spinlock -> acquire spinlock  will trigger lockdep warning.
 > > >
-> > >    raw_spin_lock_irqsave()
-> > >    ...
-> > >    raw_spin_unlock_irqrestore
-> > 
-> > Yes, but this is raw_spinlock acquisition and release(note: spinlock will convert to
-> > sleepable lock in Preempt-RT kernel, but raw spinlock is not change).
-> > 
-> > acquire raw_spinlock -> acquire spinlock  will trigger lockdep warning.
+> > >Is this really safe in the long run though? I seem to remember there are
+> > >weird locking dependencies if RCU is used from within the scheduler [1].
+> > >
 > >
-> >Is this really safe in the long run though? I seem to remember there are
-> >weird locking dependencies if RCU is used from within the scheduler [1].
 > >
-> 
-> 
-> I have  been running rcutorture with rcutorture.type = tasks-tracing,
-> so far no problems have been found.
-> 
-> 
-> >I prefer to keep it as irq_work_queue() unless you are seeing some benefit.
-> >Generally, there has to be a 'win' or other justification for adding more
-> >risk.
+> > I have  been running rcutorture with rcutorture.type = tasks-tracing,
+> > so far no problems have been found.
 > >
-> >thanks,
 > >
-> >- Joel
-> >[1] http://www.joelfernandes.org/rcu/scheduler/locking/2019/09/02/rcu-schedlocks.html
-> 
-> 
-> The problem in this link,  in an earlier RCU version, rcu_read_unlock_special()
-> Invoke wakeup and enter scheduler can lead to deadlock, but my modification is for
-> call_rcu_tasks_generic(), even if there is a lock dependency problem, we should pay
-> more attention to rcu_read_unlock_trace_special()
+> > >I prefer to keep it as irq_work_queue() unless you are seeing some benefit.
+> > >Generally, there has to be a 'win' or other justification for adding more
+> > >risk.
+> > >
+> > >thanks,
+> > >
+> > >- Joel
+> > >[1] http://www.joelfernandes.org/rcu/scheduler/locking/2019/09/02/rcu-schedlocks.html
+> >
+> >
+> > The problem in this link,  in an earlier RCU version, rcu_read_unlock_special()
+> > Invoke wakeup and enter scheduler can lead to deadlock, but my modification is for
+> > call_rcu_tasks_generic(), even if there is a lock dependency problem, we should pay
+> > more attention to rcu_read_unlock_trace_special()
+>
+> Consider ABBA deadlocks as well, not just self-deadlocks (which IIRC is what
+> the straight-RCU rcu_read_unlock() issues were about).
+>
+> What prevents the following scenario?
+>
+> In the scheduler you have code like this:
+>                 rq = task_rq_lock(p, &rf);
+>                 trace_sched_wait_task(p);
+>
+> Someone can hook up a BPF program to that tracepoint that then calls
+> rcu_read_unlock_trace() -> rcu_read_unlock_trace_special(). All of
+> this while holding the rq and pi scheduler locks.
+>
+> That's A (rq lock) -> B (rtpcp lock).
+>
+> In another path, your change adds the following dependency due to doing
+> wakeup under the rtpcp lock.
+>
+> That's call_rcu_tasks_generic() -> B (rtpcp lock) -> A (rq lock).
 
-Consider ABBA deadlocks as well, not just self-deadlocks (which IIRC is what
-the straight-RCU rcu_read_unlock() issues were about).
+I would like to correct this last statement. That cannot happen but
+the concern I guess is, can the following happen due to the change?
 
-What prevents the following scenario?
+call_rcu_tasks_generic() -> B (some BPF lock) -> A (rq lock)
 
-In the scheduler you have code like this:
-                rq = task_rq_lock(p, &rf);
-                trace_sched_wait_task(p);
-
-Someone can hook up a BPF program to that tracepoint that then calls
-rcu_read_unlock_trace() -> rcu_read_unlock_trace_special(). All of
-this while holding the rq and pi scheduler locks.
-
-That's A (rq lock) -> B (rtpcp lock).
-
-In another path, your change adds the following dependency due to doing
-wakeup under the rtpcp lock.
-
-That's call_rcu_tasks_generic() -> B (rtpcp lock) -> A (rq lock).
-
-Maybe there is some other state that prevents this case, but it still makes
-me queasy specially since there is perhaps no benefit more than deleting a
-few lines of code.
-
-Either way, nice observation!
-
-Btw, the way irq_work works is quite interesting, so I guess what it does is
-it does a self-IPI and then runs the callback in hard IRQ context, without
-holding any locks. Another interesting fact is, there is also a "lazy"
-version of the IRQ work API (IRQ_WORK_INIT_LAZY) which seems currently to be
-used by printk. This executes the work from the scheduler tick instead of an
-IPI handler unless the tick is stopped.
-
-thanks,
+So by doing a wakeup in this change, you have added the dependency for
+callers of call_rcu_tasks_trace() . Now, the BPF program is called
+from the trace point above and you have ABBA deadlock possibility.
 
  - Joel
-
-
-> 
-> Thanks
-> Zqiang
-> 
-> >
-> > > irq_work_queue(), invoke rcuwait_wake_up() directly in
-> > > call_rcu_tasks_generic().
-> > > 
-> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > > ---
-> > >  kernel/rcu/tasks.h | 16 +---------------
-> > >  1 file changed, 1 insertion(+), 15 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h index
-> > > baf7ec178155..757b8c6da1ad 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -39,7 +39,6 @@ struct rcu_tasks_percpu {
-> > >  	unsigned long rtp_jiffies;
-> > >  	unsigned long rtp_n_lock_retries;
-> > >  	struct work_struct rtp_work;
-> > > -	struct irq_work rtp_irq_work;
-> > >  	struct rcu_head barrier_q_head;
-> > >  	struct list_head rtp_blkd_tasks;
-> > >  	int cpu;
-> > > @@ -112,12 +111,9 @@ struct rcu_tasks {
-> > >  	char *kname;
-> > >  };
-> > > 
-> > > -static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp);
-> > > -
-> > >  #define DEFINE_RCU_TASKS(rt_name, gp, call, n)
-> > > 			\
-> > >  static DEFINE_PER_CPU(struct rcu_tasks_percpu, rt_name ## __percpu) = {
-> > > 			\
-> > >  	.lock = __RAW_SPIN_LOCK_UNLOCKED(rt_name ##
-> > > __percpu.cbs_pcpu_lock),		\
-> > > -	.rtp_irq_work = IRQ_WORK_INIT_HARD(call_rcu_tasks_iw_wakeup),
-> > > 			\
-> > >  };
-> > > 		\
-> > >  static struct rcu_tasks rt_name =
-> > > 		\
-> > >  {
-> > > 		\
-> > > @@ -273,16 +269,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
-> > >  	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__,
-> > > data_race(rtp->percpu_enqueue_shift), data_race(rtp-
-> > > >percpu_enqueue_lim));
-> > >  }
-> > > 
-> > > -// IRQ-work handler that does deferred wakeup for call_rcu_tasks_generic().
-> > > -static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp) -{
-> > > -	struct rcu_tasks *rtp;
-> > > -	struct rcu_tasks_percpu *rtpcp = container_of(iwp, struct
-> > > rcu_tasks_percpu, rtp_irq_work);
-> > > -
-> > > -	rtp = rtpcp->rtpp;
-> > > -	rcuwait_wake_up(&rtp->cbs_wait);
-> > > -}
-> > > -
-> > >  // Enqueue a callback for the specified flavor of Tasks RCU.
-> > >  static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
-> > >  				   struct rcu_tasks *rtp)
-> > > @@ -334,7 +320,7 @@ static void call_rcu_tasks_generic(struct rcu_head
-> > > *rhp, rcu_callback_t func,
-> > >  	rcu_read_unlock();
-> > >  	/* We can't create the thread unless interrupts are enabled. */
-> > >  	if (needwake && READ_ONCE(rtp->kthread_ptr))
-> > > -		irq_work_queue(&rtpcp->rtp_irq_work);
-> > > +		rcuwait_wake_up(&rtp->cbs_wait);
-> > >  }
-> > > 
-> > >  // RCU callback function for rcu_barrier_tasks_generic().
-> > > --
-> > > 2.25.1
-> > 
