@@ -2,47 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A11DC64ED6
-	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 15:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4461C64ED6
+	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 15:43:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjBZPf0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Feb 2023 10:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        id S229652AbjBZPnu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Feb 2023 10:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjBZPfF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Feb 2023 10:35:05 -0500
+        with ESMTP id S229660AbjBZPnr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Feb 2023 10:43:47 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6435FCDE7;
-        Sun, 26 Feb 2023 07:34:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7862FA26E;
+        Sun, 26 Feb 2023 07:43:38 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E8C3AB80C74;
-        Sun, 26 Feb 2023 14:50:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B7FC4339C;
-        Sun, 26 Feb 2023 14:50:24 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3DF67B80C03;
+        Sun, 26 Feb 2023 14:47:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E42CCC433EF;
+        Sun, 26 Feb 2023 14:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677423025;
-        bh=iJPblFmaPqPiXp2ygJ7rBnu6xF+yvtzVbgzsERRGpf0=;
+        s=k20201202; t=1677422826;
+        bh=0ABzf53W8Hk9DZmA3/LTmSceqbDLcpJz7XXjtQcGIIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AGdCLbxTW4REbSGODM0sh4wvyPgTA/D8ReR2zg8gjXung3bmTOORS4UtPuPb4H6yY
-         OxAwLvdl2a9c87Mk7KyHFWMBKtXAOa5xXnT1uhsoCnoCxCI2CVCcnXe6yUcDSG5KdX
-         iNfAQZ0IFyV9EQ1oM4qUecZUwChRfjHa7D8UdstgQpBnKG+cKjANJ5RExdWSTq2hev
-         4jLkefn9/Dqtv0yM43znS06p62quI7H1pFdo3Az5injP4vP+lxVBhxbI2inSPZd2rm
-         kVJ6UfZi42V1AF4k8sdcyE25vnWCMlWsOhavgogqLJr7uFnYYTnaq6RvTblPNQE2ZF
-         pWjf9itIqjrLQ==
+        b=m/HHHhSdMFU+cOfTfJa4btxgeDTafcFcJJ6HFcnleT35MgXteAifxjjp1KxEVXRgi
+         ZpdsInBwgnjciJXH4upz2xG5JEiRlie/ZayL3Hej5MXODr0UHl5WAORtyHjR2ddmjZ
+         12+wcHpYqsYER2ErlTx1Hewe9xK00mbwnBjGPhe972ne9tOZYfqJDpe7Mu43ZADbM1
+         LPvB2/3TDT3JxBdSbCJtu0LYp2PvpURkhQ9I91R2/Vh3IIplN4ykudOxJiiC5UJDyD
+         Nq9FcpLUABDuji7r8tMEq9v2TArPQ5ApbWz/3ThMA/NhiHCrHBDuyvYMpsvQLRvHiK
+         KL+MPC2Urqh1g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+Cc:     Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
         rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 04/27] rcu: Suppress smp_processor_id() complaint in synchronize_rcu_expedited_wait()
-Date:   Sun, 26 Feb 2023 09:49:51 -0500
-Message-Id: <20230226145014.828855-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 08/49] rcu-tasks: Handle queue-shrink/callback-enqueue race condition
+Date:   Sun, 26 Feb 2023 09:46:08 -0500
+Message-Id: <20230226144650.826470-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226145014.828855-1-sashal@kernel.org>
-References: <20230226145014.828855-1-sashal@kernel.org>
+In-Reply-To: <20230226144650.826470-1-sashal@kernel.org>
+References: <20230226144650.826470-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -51,40 +52,138 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zqiang <qiang1.zhang@intel.com>
 
-[ Upstream commit 2d7f00b2f01301d6e41fd4a28030dab0442265be ]
+[ Upstream commit a4fcfbee8f6274f9b3f9a71dd5b03e6772ce33f3 ]
 
-The normal grace period's RCU CPU stall warnings are invoked from the
-scheduling-clock interrupt handler, and can thus invoke smp_processor_id()
-with impunity, which allows them to directly invoke dump_cpu_task().
-In contrast, the expedited grace period's RCU CPU stall warnings are
-invoked from process context, which causes the dump_cpu_task() function's
-calls to smp_processor_id() to complain bitterly in debug kernels.
+The rcu_tasks_need_gpcb() determines whether or not: (1) There are
+callbacks needing another grace period, (2) There are callbacks ready
+to be invoked, and (3) It would be a good time to shrink back down to a
+single-CPU callback list.  This third case is interesting because some
+other CPU might be adding new callbacks, which might suddenly make this
+a very bad time to be shrinking.
 
-This commit therefore causes synchronize_rcu_expedited_wait() to disable
-preemption around its call to dump_cpu_task().
+This is currently handled by requiring call_rcu_tasks_generic() to
+enqueue callbacks under the protection of rcu_read_lock() and requiring
+rcu_tasks_need_gpcb() to wait for an RCU grace period to elapse before
+finalizing the transition.  This works well in practice.
 
+Unfortunately, the current code assumes that a grace period whose end is
+detected by the poll_state_synchronize_rcu() in the second "if" condition
+actually ended before the earlier code counted the callbacks queued on
+CPUs other than CPU 0 (local variable "ncbsnz").  Given the current code,
+it is possible that a long-delayed call_rcu_tasks_generic() invocation
+will queue a callback on a non-zero CPU after these CPUs have had their
+callbacks counted and zero has been stored to ncbsnz.  Such a callback
+would trigger the WARN_ON_ONCE() in the second "if" statement.
+
+To see this, consider the following sequence of events:
+
+o	CPU 0 invokes rcu_tasks_one_gp(), and counts fewer than
+	rcu_task_collapse_lim callbacks.  It sees at least one
+	callback queued on some other CPU, thus setting ncbsnz
+	to a non-zero value.
+
+o	CPU 1 invokes call_rcu_tasks_generic() and loads 42 from
+	->percpu_enqueue_lim.  It therefore decides to enqueue its
+	callback onto CPU 1's callback list, but is delayed.
+
+o	CPU 0 sees the rcu_task_cb_adjust is non-zero and that the number
+	of callbacks does not exceed rcu_task_collapse_lim.  It therefore
+	checks percpu_enqueue_lim, and sees that its value is greater
+	than the value one.  CPU 0 therefore  starts the shift back
+	to a single callback list.  It sets ->percpu_enqueue_lim to 1,
+	but CPU 1 has already read the old value of 42.  It also gets
+	a grace-period state value from get_state_synchronize_rcu().
+
+o	CPU 0 sees that ncbsnz is non-zero in its second "if" statement,
+	so it declines to finalize the shrink operation.
+
+o	CPU 0 again invokes rcu_tasks_one_gp(), and counts fewer than
+	rcu_task_collapse_lim callbacks.  It also sees that there are
+	no callback queued on any other CPU, and thus sets ncbsnz to zero.
+
+o	CPU 1 resumes execution and enqueues its callback onto its own
+	list.  This invalidates the value of ncbsnz.
+
+o	CPU 0 sees the rcu_task_cb_adjust is non-zero and that the number
+	of callbacks does not exceed rcu_task_collapse_lim.  It therefore
+	checks percpu_enqueue_lim, but sees that its value is already
+	unity.	It therefore does not get a new grace-period state value.
+
+o	CPU 0 sees that rcu_task_cb_adjust is non-zero, ncbsnz is zero,
+	and that poll_state_synchronize_rcu() says that the grace period
+	has completed.  it therefore finalizes the shrink operation,
+	setting ->percpu_dequeue_lim to the value one.
+
+o	CPU 0 does a debug check, scanning the other CPUs' callback lists.
+	It sees that CPU 1's list has a callback, so it (rightly)
+	triggers the WARN_ON_ONCE().  After all, the new value of
+	->percpu_dequeue_lim says to not bother looking at CPU 1's
+	callback list, which means that this callback will never be
+	invoked.  This can result in hangs and maybe even OOMs.
+
+Based on long experience with rcutorture, this is an extremely
+low-probability race condition, but it really can happen, especially in
+preemptible kernels or within guest OSes.
+
+This commit therefore checks for completion of the grace period
+before counting callbacks.  With this change, in the above failure
+scenario CPU 0 would know not to prematurely end the shrink operation
+because the grace period would not have completed before the count
+operation started.
+
+[ paulmck: Adjust grace-period end rather than adding RCU reader. ]
+[ paulmck: Avoid spurious WARN_ON_ONCE() with ->percpu_dequeue_lim check. ]
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree_exp.h | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/rcu/tasks.h | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 0dc16345e668c..ef6570137dcd5 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -564,7 +564,9 @@ static void synchronize_rcu_expedited_wait(void)
- 				mask = leaf_node_cpu_bit(rnp, cpu);
- 				if (!(READ_ONCE(rnp->expmask) & mask))
- 					continue;
-+				preempt_disable(); // For smp_processor_id() in dump_cpu_task().
- 				dump_cpu_task(cpu);
-+				preempt_enable();
- 			}
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 727e09909e403..027f3ec87f5b9 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -384,6 +384,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ {
+ 	int cpu;
+ 	unsigned long flags;
++	bool gpdone = poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq);
+ 	long n;
+ 	long ncbs = 0;
+ 	long ncbsnz = 0;
+@@ -425,21 +426,23 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 			WRITE_ONCE(rtp->percpu_enqueue_shift, order_base_2(nr_cpu_ids));
+ 			smp_store_release(&rtp->percpu_enqueue_lim, 1);
+ 			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
++			gpdone = false;
+ 			pr_info("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
  		}
- 		jiffies_stall = 3 * rcu_jiffies_till_stall_check() + 3;
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
+-	if (rcu_task_cb_adjust && !ncbsnz &&
+-	    poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq)) {
++	if (rcu_task_cb_adjust && !ncbsnz && gpdone) {
+ 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+ 		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
+ 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
+ 			pr_info("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
+ 		}
+-		for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
+-			struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
++		if (rtp->percpu_dequeue_lim == 1) {
++			for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
++				struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
+ 
+-			WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
++				WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
++			}
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
 -- 
 2.39.0
 
