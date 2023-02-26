@@ -2,47 +2,47 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F149C64ED6
-	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 15:19:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A11DC64ED6
+	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 15:35:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjBZPTk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Feb 2023 10:19:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
+        id S229761AbjBZPf0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Feb 2023 10:35:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbjBZPTX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Feb 2023 10:19:23 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3483223DB2;
-        Sun, 26 Feb 2023 07:10:18 -0800 (PST)
+        with ESMTP id S229768AbjBZPfF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Feb 2023 10:35:05 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6435FCDE7;
+        Sun, 26 Feb 2023 07:34:39 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E4E73B80BA8;
-        Sun, 26 Feb 2023 14:53:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0FE5C4339B;
-        Sun, 26 Feb 2023 14:52:59 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E8C3AB80C74;
+        Sun, 26 Feb 2023 14:50:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B7FC4339C;
+        Sun, 26 Feb 2023 14:50:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677423180;
-        bh=E4hLWYvMAINhvkOvBGWNPwOjWBZsc1J290zvV5otJfY=;
+        s=k20201202; t=1677423025;
+        bh=iJPblFmaPqPiXp2ygJ7rBnu6xF+yvtzVbgzsERRGpf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SubhJZ8qn9LsU/XwD+Psj8MW1cLv/AuV2R9C6vqAlKGo7DcGtIuCttUT+yFQgJJb3
-         QbIyK2D+J467u3gn1yG3FyVqKBym22zqCk42rF7a8jqkA5zIuktkUKHh478r+LVO5m
-         CExD/2o8kuvO1Y5L3y0U7BJmwZMwiNo7dkmpIuHUbooYupSNt2hD+uTYKImo/U1ISO
-         MUrPa8YD357pu2oYxWoJ9CeRSaIGusmNduhS4Ixox3ZbPx7iL7EvIs3HhSz3hgvmJc
-         AWhTPMkVOxlBoGS3TWMuHNsCQfby6cCBZp37skOax3Vp0P2/od6VJSZ7W72XqQ7A1m
-         i9Ab226QiyA0w==
+        b=AGdCLbxTW4REbSGODM0sh4wvyPgTA/D8ReR2zg8gjXung3bmTOORS4UtPuPb4H6yY
+         OxAwLvdl2a9c87Mk7KyHFWMBKtXAOa5xXnT1uhsoCnoCxCI2CVCcnXe6yUcDSG5KdX
+         iNfAQZ0IFyV9EQ1oM4qUecZUwChRfjHa7D8UdstgQpBnKG+cKjANJ5RExdWSTq2hev
+         4jLkefn9/Dqtv0yM43znS06p62quI7H1pFdo3Az5injP4vP+lxVBhxbI2inSPZd2rm
+         kVJ6UfZi42V1AF4k8sdcyE25vnWCMlWsOhavgogqLJr7uFnYYTnaq6RvTblPNQE2ZF
+         pWjf9itIqjrLQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
         rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 02/11] rcu: Suppress smp_processor_id() complaint in synchronize_rcu_expedited_wait()
-Date:   Sun, 26 Feb 2023 09:52:44 -0500
-Message-Id: <20230226145255.829660-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 04/27] rcu: Suppress smp_processor_id() complaint in synchronize_rcu_expedited_wait()
+Date:   Sun, 26 Feb 2023 09:49:51 -0500
+Message-Id: <20230226145014.828855-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226145255.829660-1-sashal@kernel.org>
-References: <20230226145255.829660-1-sashal@kernel.org>
+In-Reply-To: <20230226145014.828855-1-sashal@kernel.org>
+References: <20230226145014.828855-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -72,12 +72,12 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index f90d10c1c3c8d..843399e98bb37 100644
+index 0dc16345e668c..ef6570137dcd5 100644
 --- a/kernel/rcu/tree_exp.h
 +++ b/kernel/rcu/tree_exp.h
-@@ -498,7 +498,9 @@ static void synchronize_sched_expedited_wait(struct rcu_state *rsp)
+@@ -564,7 +564,9 @@ static void synchronize_rcu_expedited_wait(void)
  				mask = leaf_node_cpu_bit(rnp, cpu);
- 				if (!(rnp->expmask & mask))
+ 				if (!(READ_ONCE(rnp->expmask) & mask))
  					continue;
 +				preempt_disable(); // For smp_processor_id() in dump_cpu_task().
  				dump_cpu_task(cpu);
