@@ -2,136 +2,162 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB3EEC64EC7
-	for <rcu@archiver.kernel.org>; Sat, 25 Feb 2023 03:59:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C486C64ED6
+	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 11:08:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjBYD7g (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 Feb 2023 22:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
+        id S229569AbjBZLIM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Feb 2023 06:08:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjBYD7g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 24 Feb 2023 22:59:36 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FC52595F
-        for <rcu@vger.kernel.org>; Fri, 24 Feb 2023 19:59:34 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id w42so1604523qtc.2
-        for <rcu@vger.kernel.org>; Fri, 24 Feb 2023 19:59:34 -0800 (PST)
+        with ESMTP id S229379AbjBZLIL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Feb 2023 06:08:11 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C4BD326
+        for <rcu@vger.kernel.org>; Sun, 26 Feb 2023 03:08:06 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id r19-20020a05600c459300b003eb3e2a5e7bso543164wmo.0
+        for <rcu@vger.kernel.org>; Sun, 26 Feb 2023 03:08:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+KGOc5or6Ka+ESMal/wrzgvuxlQ0lWrzt9TN0+d/2L8=;
-        b=m1vFxWmAwknXSn96wT8rK9yQBS6V7K7sFznFq1iMSpOJEYS4QvDz7dNzhS6escHNpT
-         3hUcx2h4Biq35IZZ2OYZzUHfEn+j55dlQgp6fAdSmIDkK8jvFfm7zC7nydqZ/4nU7Jqk
-         eGkJz5JWvYUaflMxABTx4oKNHEYjj4UzZHDyw=
+        d=bytedance.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GawLq6sXWJN/1WHYnp+2zBrOk2xJHj1hXqH/NT0T7I4=;
+        b=kXoRFYCLpYTp8qz4tdCgAhDJxtdtb/mx2vFCSCb6mD15c0dL1yFHj/MgB2OeSjHIuJ
+         3fCaBZyU7UuXGjUCCceMezapSEwXlsjgLe3obXIsrRRZailA/bnj6R1SrpJuDFN/zDJ4
+         PKqSpfmHsilEohAIfWRfe9WZHMC0BD5MgmTJ0QgXAuaq4BFCe7rUwUjE0aNzF5qRLzPs
+         /IdB/GSPN/FYZM/vu1BNqyMY/jNEx5mW526knJYwTP6/hp5SjelN/MpsTzMBypXfnevT
+         +U37KK40YuEuZsRnR0aA/U0gG9zKNuK5/roUOxyeqRttD/KUJdhVOE2funTo3+TogDsp
+         ZIWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+KGOc5or6Ka+ESMal/wrzgvuxlQ0lWrzt9TN0+d/2L8=;
-        b=hyil6VuYrp5WxHshEuN3YOPqp7oylYW3/ePaoQMApT5Mu801Q0r2LuVyTdxUR02dUQ
-         IEpc8KQSObheEESRMlMM5P/C9chTyIPWNaIJcxZXaqcTYL+AXdoBDDOBbsy+LbP61M7C
-         H26LFYw1jZKwF6O3AxvV9DFmiIUCzpdPntEiqC0gDwHMThzg0XGVnKRfZKszMgDwAQr8
-         Lx5N+nrL7HCRZGcClBJhZHb9WIMGvaft6Pz7RsCUUhWDh+AZ7WTI7OW+kkwiYJovj7Yp
-         Xl5hT+bwKU0nQ+YrW6kIy4NsZus1+sYypJPRCAYDKeFuokY+M/3COWFyKrhcCP/yLExF
-         EPFQ==
-X-Gm-Message-State: AO0yUKVBIlqWHmByfRQ8kZK3XM2OzvAe7giIrhV53VdZPAvxVLyhIpXY
-        FAQmEUinZZ7kvN/BLYkpk1R0Rw==
-X-Google-Smtp-Source: AK7set88BR+bJWsRY8dBKrohwtqStv5nAqAG+W/WznqlyO3MNLzS/zFarS7W3ZaDHHwscl+PqzLwpQ==
-X-Received: by 2002:a05:622a:1b9f:b0:3b9:bc8c:c1fe with SMTP id bp31-20020a05622a1b9f00b003b9bc8cc1femr3541331qtb.9.1677297573926;
-        Fri, 24 Feb 2023 19:59:33 -0800 (PST)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id a12-20020ae9e80c000000b007423843d879sm551824qkg.93.2023.02.24.19.59.32
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GawLq6sXWJN/1WHYnp+2zBrOk2xJHj1hXqH/NT0T7I4=;
+        b=kKyz/6lz6xGDMYDPfLSrADBH5ATJGgqO+gUdtXRPMCUT1EPk/lVeN/DeMFblZjL/lF
+         PZdSd8Z74Ppsn4THysN8oRerzMZl/cRSvXRBWR+z5Xoz0RC1uK8oP4V4Qx/LzOvKz0vN
+         sJEHE8oLfZ0YhWKPIhREyPGtgxxNHHCumjYpy3ilvWbogxvzEXW97xR9IaUCYKl0YRxe
+         Jq5d6EXwMJ5//0LMY2ZUd9uo7taE9Zxdi5w7Dw1Jmxp5kGt7oDUynphg7xHKM9pQ1OKn
+         ZxcABHSDZ9XsyYNk11x8q1pWwZVH1IP1jPyNMIZj5GEuODSRAQku8PISwG87gCznQ/yq
+         XXZA==
+X-Gm-Message-State: AO0yUKUDCRbR9OlCU61fGb7+Mdxz1nVVU/UBW+XNcXXdpod1oRG6gSWy
+        aPrs2Fr8sZBNseDnZPiVdKatNQ==
+X-Google-Smtp-Source: AK7set/GmrgwOClHRkXMb1tgaxs+/NnvWqhl4MK75goxCw5ZPdVY/jRyD+aKUZ2KpFIo7jO1SQrLPA==
+X-Received: by 2002:a05:600c:329d:b0:3eb:39c3:8844 with SMTP id t29-20020a05600c329d00b003eb39c38844mr1655392wmp.12.1677409685144;
+        Sun, 26 Feb 2023 03:08:05 -0800 (PST)
+Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:df7b:4668:3e23:d0c9])
+        by smtp.gmail.com with ESMTPSA id v22-20020a1cf716000000b003e1fee8baacsm9157318wmh.25.2023.02.26.03.08.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Feb 2023 19:59:33 -0800 (PST)
-Date:   Sat, 25 Feb 2023 03:59:32 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH RFC] rcu: Add a minimum time for marking boot as completed
-Message-ID: <Y/mHpOrr1C8NkMWm@google.com>
-References: <20230225032716.3320124-1-joel@joelfernandes.org>
- <ea03e810-95f0-abd8-2a83-f83174a99dbf@infradead.org>
+        Sun, 26 Feb 2023 03:08:04 -0800 (PST)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH v12 00/11] Parallel CPU bringup for x86_64
+Date:   Sun, 26 Feb 2023 11:07:51 +0000
+Message-Id: <20230226110802.103134-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ea03e810-95f0-abd8-2a83-f83174a99dbf@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Feb 24, 2023 at 07:32:22PM -0800, Randy Dunlap wrote:
-[..] 
-> > +
-> > +	  Accept the default if unsure.
-> > +
-> >  config RCU_EXP_KTHREAD
-> >  	bool "Perform RCU expedited work in a real-time kthread"
-> >  	depends on RCU_BOOST && RCU_EXPERT
-> > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> > index 19bf6fa3ee6a..5b73341d9b89 100644
-> > --- a/kernel/rcu/update.c
-> > +++ b/kernel/rcu/update.c
-> > @@ -62,6 +62,10 @@ module_param(rcu_normal_after_boot, int, 0444);
-> >  #endif
-> >  #endif /* #ifndef CONFIG_TINY_RCU */
-> >  
-> > +/* Minimum time until RCU considers boot as completed. */
-> > +static int boot_end_delay = CONFIG_RCU_BOOT_END_DELAY;
-> > +module_param(boot_end_delay, int, 0444);
-> > +
-> >  #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> >  /**
-> >   * rcu_read_lock_held_common() - might we be in RCU-sched read-side critical section?
-> > @@ -225,12 +229,29 @@ void rcu_unexpedite_gp(void)
-> >  EXPORT_SYMBOL_GPL(rcu_unexpedite_gp);
-> >  
-> >  static bool rcu_boot_ended __read_mostly;
-> > -
-> >  /*
-> > - * Inform RCU of the end of the in-kernel boot sequence.
-> > + * Inform RCU of the end of the in-kernel boot sequence. The boot sequence will
-> > + * not be marked ended until at least boot_end_delay milliseconds have passed.
-> >   */
-> > +void rcu_end_inkernel_boot(void);
-> > +static void boot_rcu_work_fn(struct work_struct *work)
-> > +{
-> > +	rcu_end_inkernel_boot();
-> > +}
-> > +static DECLARE_DELAYED_WORK(boot_rcu_work, boot_rcu_work_fn);
-> > +
-> >  void rcu_end_inkernel_boot(void)
-> >  {
-> > +	if (boot_end_delay) {
-> > +		u64 boot_ms = ktime_get_boot_fast_ns() / 1000000UL;
-> 
-> Is that division OK on 32-bit?  Might have to use a helper macro. (I dunno.)
+The main code change over v11 is the build error fix by Brian Gerst and
+acquiring tr_lock in trampoline_64.S whenever the stack is setup.
 
-I believe the below should work on 32-bit, but I will test it more. It does
-on 64-bit.
+The git history is also rewritten to move the commits that removed
+initial_stack, early_gdt_descr and initial_gs earlier in the patchset.
 
-Thanks!
+Thanks,
+Usama
 
----8<-----------------------
+Changes across versions:
+v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+    in preparation for more parallelisation.
+v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+    24 bits of the physical X2APIC ID to be used. That patch still needs
+    a Signed-off-by from its original author, who once claimed not to
+    remember writing it at all. But now we've fixed it, hopefully he'll
+    admit it now :)
+v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+    for AMD CPUs.
+v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+    reused timer calibration for secondary CPUs.
+v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+    cluster mask in alloc_clustermask. (patch 1/9)
+    Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+    0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+    Included sanity checks for APIC id from 0x0B. (patch 6/9)
+    Removed patch for reusing timer calibration for secondary CPUs.
+    commit message and code improvements.
+v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+    early_gdt_descr.
+    Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+    Code comments improved and debug prints added.
+v9: Drop patch to avoid repeated saves of MTRR at boot time.
+    rebased and retested at v6.2-rc8.
+    added kernel doc for no_parallel_bringup and made do_parallel_bringup
+    __ro_after_init.
+v10: Fixed suspend/resume not working with parallel smpboot.
+     rebased and retested to 6.2.
+     fixed checkpatch errors.
+v11: Added patches from Brian Gerst to remove the global variables initial_gs,
+     initial_stack, and early_gdt_descr from the 64-bit boot code
+     (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.com/).
+v12: Fixed compilation errors, acquire tr_lock for every stack setup in
+     trampoline_64.S.
+     Rearranged commits for a cleaner git history.
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index cbdad7b46841..2f539c18b310 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -243,7 +243,7 @@ static DECLARE_DELAYED_WORK(boot_rcu_work, boot_rcu_work_fn);
- void rcu_end_inkernel_boot(void)
- {
- 	if (boot_end_delay) {
--		u64 boot_ms = ktime_get_boot_fast_ns() / 1000000UL;
-+		u64 boot_ms = div_u64(ktime_get_boot_fast_ns(), 1000000UL);
- 
- 		if (boot_ms < boot_end_delay) {
- 			schedule_delayed_work(&boot_rcu_work,
+Brian Gerst (3):
+  x86/smpboot: Remove initial_stack on 64-bit
+  x86/smpboot: Remove early_gdt_descr on 64-bit
+  x86/smpboot: Remove initial_gs
+
+David Woodhouse (8):
+  x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+  cpu/hotplug: Add dynamic parallel bringup states before
+    CPUHP_BRINGUP_CPU
+  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+  x86/smpboot: Split up native_cpu_up into separate phases and document
+    them
+  x86/smpboot: Support parallel startup of secondary CPUs
+  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+  x86/smpboot: Serialize topology updates for secondary bringup
+
+ .../admin-guide/kernel-parameters.txt         |   3 +
+ arch/x86/include/asm/processor.h              |   6 +-
+ arch/x86/include/asm/realmode.h               |   4 +-
+ arch/x86/include/asm/smp.h                    |  15 +-
+ arch/x86/include/asm/topology.h               |   2 -
+ arch/x86/kernel/acpi/sleep.c                  |  15 +-
+ arch/x86/kernel/apic/apic.c                   |   2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c         | 126 ++++---
+ arch/x86/kernel/asm-offsets.c                 |   1 +
+ arch/x86/kernel/cpu/common.c                  |   6 +-
+ arch/x86/kernel/head_64.S                     | 129 +++++--
+ arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
+ arch/x86/realmode/init.c                      |   3 +
+ arch/x86/realmode/rm/trampoline_64.S          |  27 +-
+ arch/x86/xen/smp_pv.c                         |   4 +-
+ arch/x86/xen/xen-head.S                       |   2 +-
+ include/linux/cpuhotplug.h                    |   2 +
+ include/linux/smpboot.h                       |   7 +
+ kernel/cpu.c                                  |  31 +-
+ kernel/smpboot.h                              |   2 -
+ 20 files changed, 537 insertions(+), 200 deletions(-)
+
 -- 
-2.39.2.637.g21b0678d19-goog
+2.25.1
 
