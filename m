@@ -2,35 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9568BC7EE2F
-	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 14:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC837C7EE32
+	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 14:56:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbjBZO4B (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Feb 2023 09:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        id S231238AbjBZO4C (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Feb 2023 09:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbjBZOyE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Feb 2023 09:54:04 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715ED1B2FB;
-        Sun, 26 Feb 2023 06:50:17 -0800 (PST)
+        with ESMTP id S230397AbjBZOxx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Feb 2023 09:53:53 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FB91ADF0;
+        Sun, 26 Feb 2023 06:50:14 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A10B60C4C;
-        Sun, 26 Feb 2023 14:47:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B754C433D2;
-        Sun, 26 Feb 2023 14:47:00 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E50ABCE0E89;
+        Sun, 26 Feb 2023 14:48:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0C00C433D2;
+        Sun, 26 Feb 2023 14:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677422821;
-        bh=Uxwk4YxCk3Jxs7egsQ3xoA4041l1BnDxDegvC3A9COk=;
+        s=k20201202; t=1677422936;
+        bh=YB+CXBd6ie4uIgEIRfxaUhKMSsOEBCCkGigUpgM3xFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PWH2RgUOuxnSkD9YHsRaIiP/BXonHDFYj73R1+uIAsvS952BcW1ChJyUviFscHuuI
-         sDp3JLD3nR8xC/+XpajDs0ES5q4PvHzoo3pt6oj7TqKG6ZToumg3ZvkAcQT9QRaMrb
-         2+TM2lhrpFY5d63U+6N6b7X0I7/L+GGOgYxMXB1y2+gyjquwbhxPTbbwonjfB8Ab3J
-         bjVsWiCO6pgWeSGyVcWEAVUDVVA6PEAbLi7kJ2p2LbDCQL8c29JafbC+jBXbNHj9ys
-         kaQIHV8nyV69D8U+WJa1b1TEPQhB7en4Oa1pX38W5TkocJQMSg8hrUXVRns6JJJt2v
-         XMNxXKPHWOy9A==
+        b=JzpMob3kDqKtWZyVFghHtf99J0HjCZg801Bv9xNcBfiOHqd0/4IHZ/md17v/OaRsA
+         IYac2b+RGzTkTI8RrEpMHnEaw7PqJunApglrMk+C9G8+TVJAUiW51eBLz2F0eyiW1G
+         DIpYwwcBXSrb3cd6WrSw/bMaCgZDfCre4Kc2v9rY5uxchwL+H0ItZJ3ur19A1VFiZN
+         c78QlLmnEvIXNjQ39iCsAZr6f+MQTyrbQd14zATH4oGpzxpHCpdcib9a0v3c9XGv3l
+         SsNKxXlvYGCJchVuitUMPl5guJOYX/UnrN/+EMPef6f68KhLRghVlhuYmC3lIh4Mks
+         JAk3+PuOCniYg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
@@ -43,12 +43,12 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
         rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 04/49] rcu: Make RCU_LOCKDEP_WARN() avoid early lockdep checks
-Date:   Sun, 26 Feb 2023 09:46:04 -0500
-Message-Id: <20230226144650.826470-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 03/36] rcu: Make RCU_LOCKDEP_WARN() avoid early lockdep checks
+Date:   Sun, 26 Feb 2023 09:48:11 -0500
+Message-Id: <20230226144845.827893-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226144650.826470-1-sashal@kernel.org>
-References: <20230226144650.826470-1-sashal@kernel.org>
+In-Reply-To: <20230226144845.827893-1-sashal@kernel.org>
+References: <20230226144845.827893-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -84,10 +84,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 08605ce7379d7..f40c78a127954 100644
+index 434d12fe2d4f5..c8703fb3bfe44 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -348,11 +348,18 @@ static inline int rcu_read_lock_any_held(void)
+@@ -311,11 +311,18 @@ static inline int rcu_read_lock_any_held(void)
   * RCU_LOCKDEP_WARN - emit lockdep splat if specified condition is met
   * @c: condition to check
   * @s: informative message
