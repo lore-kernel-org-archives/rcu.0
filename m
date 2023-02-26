@@ -2,156 +2,180 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5E96C7EE33
-	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 15:58:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD4FC6FA8E
+	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 18:31:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjBZP6l (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Feb 2023 10:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
+        id S229512AbjBZSbJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Feb 2023 13:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjBZP6k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Feb 2023 10:58:40 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3393A86BE;
-        Sun, 26 Feb 2023 07:58:38 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229527AbjBZSbJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Feb 2023 13:31:09 -0500
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [104.207.131.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C2412F27;
+        Sun, 26 Feb 2023 10:31:06 -0800 (PST)
+Received: from spock.localnet (unknown [83.148.33.151])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 676B1B80BEC;
-        Sun, 26 Feb 2023 14:49:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1336AC4339B;
-        Sun, 26 Feb 2023 14:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677422939;
-        bh=X3M7PUXFrQ6Z26Iu4BXLC0L/s/3ZL7m3kT+bp3ozSzo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gW9Wfyx3zMnYuoP7WJu56q3YGF3f5N9d8lHQjoUFidNIeBAJD+EDAgWZtuoTqjrMu
-         +2YLXJvt+rjWafhj3O5LKexPFrp0Vv09FeUGoKRUVnIgJ4C2jk2WN6LZ/HdalITBKN
-         p7dqbzHy7/PBhHSmUlIVH7KPe++7ZJZePRdvrfD6XSYdw6oajrxDlnsPrEpL5lEwYD
-         57XAm+3nX1tBRgLCEGLY7ac259LkMUlHggcdyO7Q1dpBhIaHGvqMVUUPp/7GUj89HO
-         hvC++lkr1AzEMsXrScrVlto58lMvKcZ9Gk7i+/dCVFx8z0+zsg3ziJ+N4TGKvXwhwB
-         vci0P32ibIqDQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zqiang <qiang1.zhang@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, josh@joshtriplett.org,
-        rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 05/36] rcu-tasks: Make rude RCU-Tasks work well with CPU hotplug
-Date:   Sun, 26 Feb 2023 09:48:13 -0500
-Message-Id: <20230226144845.827893-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226144845.827893-1-sashal@kernel.org>
-References: <20230226144845.827893-1-sashal@kernel.org>
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 3C72C124587F;
+        Sun, 26 Feb 2023 19:31:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1677436262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4zMKzdv+H1/om27+Ol+jZwDzK7IdqC+zbT4tEg6lz2w=;
+        b=wEEFmnlOyeAjPqTmHAUavneZVihn9R+KhiDoFEwCnvXViMQFMweTHUaZb6X0NwuMjdRMyD
+        7fzym001Q1H+Hvqx86lMJzs3eo3yMUhZwJ6S1EOUZyQET8zQY3dpWyfZGVmsy4ULKVek7y
+        /PflMiO9SJLHhhhri2WLQGoXqC1E0h0=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        brgerst@gmail.com, Usama Arif <usama.arif@bytedance.com>
+Cc:     piotrgorski@cachyos.org, arjan@linux.intel.com, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [PATCH v12 00/11] Parallel CPU bringup for x86_64
+Date:   Sun, 26 Feb 2023 19:31:00 +0100
+Message-ID: <5650744.DvuYhMxLoT@natalenko.name>
+In-Reply-To: <20230226110802.103134-1-usama.arif@bytedance.com>
+References: <20230226110802.103134-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+Hello.
 
-[ Upstream commit ea5c8987fef20a8cca07e428aa28bc64649c5104 ]
+On ned=C4=9Ble 26. =C3=BAnora 2023 12:07:51 CET Usama Arif wrote:
+> The main code change over v11 is the build error fix by Brian Gerst and
+> acquiring tr_lock in trampoline_64.S whenever the stack is setup.
+>=20
+> The git history is also rewritten to move the commits that removed
+> initial_stack, early_gdt_descr and initial_gs earlier in the patchset.
+>=20
+> Thanks,
+> Usama
+>=20
+> Changes across versions:
+> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+>     in preparation for more parallelisation.
+> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+>     avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+>     24 bits of the physical X2APIC ID to be used. That patch still needs
+>     a Signed-off-by from its original author, who once claimed not to
+>     remember writing it at all. But now we've fixed it, hopefully he'll
+>     admit it now :)
+> v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+>     for AMD CPUs.
+> v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+>     reused timer calibration for secondary CPUs.
+> v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+>     cluster mask in alloc_clustermask. (patch 1/9)
+>     Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+>     0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+>     Included sanity checks for APIC id from 0x0B. (patch 6/9)
+>     Removed patch for reusing timer calibration for secondary CPUs.
+>     commit message and code improvements.
+> v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+>     early_gdt_descr.
+>     Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+>     Code comments improved and debug prints added.
+> v9: Drop patch to avoid repeated saves of MTRR at boot time.
+>     rebased and retested at v6.2-rc8.
+>     added kernel doc for no_parallel_bringup and made do_parallel_bringup
+>     __ro_after_init.
+> v10: Fixed suspend/resume not working with parallel smpboot.
+>      rebased and retested to 6.2.
+>      fixed checkpatch errors.
+> v11: Added patches from Brian Gerst to remove the global variables initia=
+l_gs,
+>      initial_stack, and early_gdt_descr from the 64-bit boot code
+>      (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.c=
+om/).
+> v12: Fixed compilation errors, acquire tr_lock for every stack setup in
+>      trampoline_64.S.
+>      Rearranged commits for a cleaner git history.
+>=20
+> Brian Gerst (3):
+>   x86/smpboot: Remove initial_stack on 64-bit
+>   x86/smpboot: Remove early_gdt_descr on 64-bit
+>   x86/smpboot: Remove initial_gs
+>=20
+> David Woodhouse (8):
+>   x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+>   cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+>   cpu/hotplug: Add dynamic parallel bringup states before
+>     CPUHP_BRINGUP_CPU
+>   x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+>   x86/smpboot: Split up native_cpu_up into separate phases and document
+>     them
+>   x86/smpboot: Support parallel startup of secondary CPUs
+>   x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+>   x86/smpboot: Serialize topology updates for secondary bringup
+>=20
+>  .../admin-guide/kernel-parameters.txt         |   3 +
+>  arch/x86/include/asm/processor.h              |   6 +-
+>  arch/x86/include/asm/realmode.h               |   4 +-
+>  arch/x86/include/asm/smp.h                    |  15 +-
+>  arch/x86/include/asm/topology.h               |   2 -
+>  arch/x86/kernel/acpi/sleep.c                  |  15 +-
+>  arch/x86/kernel/apic/apic.c                   |   2 +-
+>  arch/x86/kernel/apic/x2apic_cluster.c         | 126 ++++---
+>  arch/x86/kernel/asm-offsets.c                 |   1 +
+>  arch/x86/kernel/cpu/common.c                  |   6 +-
+>  arch/x86/kernel/head_64.S                     | 129 +++++--
+>  arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
+>  arch/x86/realmode/init.c                      |   3 +
+>  arch/x86/realmode/rm/trampoline_64.S          |  27 +-
+>  arch/x86/xen/smp_pv.c                         |   4 +-
+>  arch/x86/xen/xen-head.S                       |   2 +-
+>  include/linux/cpuhotplug.h                    |   2 +
+>  include/linux/smpboot.h                       |   7 +
+>  kernel/cpu.c                                  |  31 +-
+>  kernel/smpboot.h                              |   2 -
+>  20 files changed, 537 insertions(+), 200 deletions(-)
 
-The synchronize_rcu_tasks_rude() function invokes rcu_tasks_rude_wait_gp()
-to wait one rude RCU-tasks grace period.  The rcu_tasks_rude_wait_gp()
-function in turn checks if there is only a single online CPU.  If so, it
-will immediately return, because a call to synchronize_rcu_tasks_rude()
-is by definition a grace period on a single-CPU system.  (We could
-have blocked!)
+With `CONFIG_FORCE_NR_CPUS=3Dy` this results in:
 
-Unfortunately, this check uses num_online_cpus() without synchronization,
-which can result in too-short grace periods.  To see this, consider the
-following scenario:
+```
+ld: vmlinux.o: in function `secondary_startup_64_no_verify':
+(.head.text+0x10c): undefined reference to `nr_cpu_ids'
+```
 
-        CPU0                                   CPU1 (going offline)
-                                          migration/1 task:
-                                      cpu_stopper_thread
-                                       -> take_cpu_down
-                                          -> _cpu_disable
-                                           (dec __num_online_cpus)
-                                          ->cpuhp_invoke_callback
-                                                preempt_disable
-                                                access old_data0
-           task1
- del old_data0                                  .....
- synchronize_rcu_tasks_rude()
- task1 schedule out
- ....
- task2 schedule in
- rcu_tasks_rude_wait_gp()
-     ->__num_online_cpus == 1
-       ->return
- ....
- task1 schedule in
- ->free old_data0
-                                                preempt_enable
+That's because in `arch/x86/kernel/head_64.S` `secondary_startup_64_no_veri=
+fy()` refers to `nr_cpu_ids` under `#ifdef CONFIG_SMP`, but this symbol is =
+available under the following conditions:
 
-When CPU1 decrements __num_online_cpus, its value becomes 1.  However,
-CPU1 has not finished going offline, and will take one last trip through
-the scheduler and the idle loop before it actually stops executing
-instructions.  Because synchronize_rcu_tasks_rude() is mostly used for
-tracing, and because both the scheduler and the idle loop can be traced,
-this means that CPU0's prematurely ended grace period might disrupt the
-tracing on CPU1.  Given that this disruption might include CPU1 executing
-instructions in memory that was just now freed (and maybe reallocated),
-this is a matter of some concern.
+```
+38 #if (NR_CPUS =3D=3D 1) || defined(CONFIG_FORCE_NR_CPUS)
+39 #define nr_cpu_ids ((unsigned int)NR_CPUS)
+40 #else
+41 extern unsigned int nr_cpu_ids;
+42 #endif
 
-This commit therefore removes that problematic single-CPU check from the
-rcu_tasks_rude_wait_gp() function.  This dispenses with the single-CPU
-optimization, but there is no evidence indicating that this optimization
-is important.  In addition, synchronize_rcu_tasks_generic() contains a
-similar optimization (albeit only for early boot), which also splats.
-(As in exactly why are you invoking synchronize_rcu_tasks_rude() so
-early in boot, anyway???)
+1090 #if (NR_CPUS > 1) && !defined(CONFIG_FORCE_NR_CPUS)
+1091 /* Setup number of possible processor ids */
+1092 unsigned int nr_cpu_ids __read_mostly =3D NR_CPUS;
+1093 EXPORT_SYMBOL(nr_cpu_ids);
+1094 #endif
+```
 
-It is OK for the synchronize_rcu_tasks_rude() function's check to be
-unsynchronized because the only times that this check can evaluate to
-true is when there is only a single CPU running with preemption
-disabled.
+So having `CONFIG_SMP=3Dy` and, for instance, `CONFIG_NR_CPUS=3D320`, it is=
+ possible to compile out `EXPORT_SYMBOL(nr_cpu_ids);` if `CONFIG_FORCE_NR_C=
+PUS=3Dy` is set.
 
-While in the area, this commit also fixes a minor bug in which a
-call to synchronize_rcu_tasks_rude() would instead be attributed to
-synchronize_rcu_tasks().
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
-[ paulmck: Add "synchronize_" prefix and "()" suffix. ]
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/rcu/tasks.h | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 4bd07cc3c0eab..1f6a8ec7704a4 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -171,8 +171,9 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- static void synchronize_rcu_tasks_generic(struct rcu_tasks *rtp)
- {
- 	/* Complain if the scheduler has not started.  */
--	WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
--			 "synchronize_rcu_tasks called too soon");
-+	if (WARN_ONCE(rcu_scheduler_active == RCU_SCHEDULER_INACTIVE,
-+			 "synchronize_%s() called too soon", rtp->name))
-+		return;
- 
- 	/* Wait for the grace period. */
- 	wait_rcu_gp(rtp->call_func);
-@@ -660,9 +661,6 @@ static void rcu_tasks_be_rude(struct work_struct *work)
- // Wait for one rude RCU-tasks grace period.
- static void rcu_tasks_rude_wait_gp(struct rcu_tasks *rtp)
- {
--	if (num_online_cpus() <= 1)
--		return;	// Fastpath for only one CPU.
--
- 	rtp->n_ipis += cpumask_weight(cpu_online_mask);
- 	schedule_on_each_cpu(rcu_tasks_be_rude);
- }
--- 
-2.39.0
 
