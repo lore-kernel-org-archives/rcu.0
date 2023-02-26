@@ -2,47 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A0D6C7EE2F
-	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 14:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AFD3C7EE31
+	for <rcu@archiver.kernel.org>; Sun, 26 Feb 2023 14:45:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjBZOp0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Feb 2023 09:45:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S229798AbjBZOp2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Feb 2023 09:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjBZOpG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Feb 2023 09:45:06 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5C512F10;
-        Sun, 26 Feb 2023 06:45:03 -0800 (PST)
+        with ESMTP id S229741AbjBZOpZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Feb 2023 09:45:25 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB0A12064;
+        Sun, 26 Feb 2023 06:45:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2F0CDB80BAB;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6263F60C39;
+        Sun, 26 Feb 2023 14:45:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D23B2C433D2;
         Sun, 26 Feb 2023 14:45:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D80CEC433EF;
-        Sun, 26 Feb 2023 14:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677422700;
-        bh=WiWvA2kkq+81FCkcwI4pCG/CEUAI2ub7+d4AJgMgfhc=;
+        s=k20201202; t=1677422703;
+        bh=OSIZOtpJa/QeqoEwsNsyhrUDyWFpAxhYqmgQsfrTDU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TrqedDE5bLPxpYB72uDKtjvgEWvgoLZ26NmdSeoBMBXvU4GXhbrerEauQYWrPSsiB
-         MxcPPlbB+ALvg3n4VNltqNuCBm+GgRs9wn+DgI4uAQgMd+bP1UtFqx7tz8fSOU54Mb
-         Qdoc4jJfjx9mFRqo5QKSOvBvkqYuduosTJXoPyHknnm857jDwo5D1eRsb9UXntXz9O
-         sEjLL+EOqjQIq+gLeFAcaNBqkVlUKy4IIq/r2vBOuP76SNkM5v3gDNtXr8niK4E7i7
-         qYtNhbbe0Bwa9DWfQ4yhi7M7FK09eXK86d1ssQwCL13mf8XEi4TshYr5e4cbkJ6FSl
-         pesrz93gzWIhQ==
+        b=PdyiI6OarWRTni1hwgcVn09HzxxQlEU54Dt4cLnu9QeYjtVHsxuk6MA0qw3J6t/Yv
+         HA+DnBtD8KbkjNTKwSql7M+9YaOEUFlvdP+Hm1KjshX/5jlPttUizRLm23/69EX9e9
+         Og7v2sXIQHrPT0unzb4AtEZA1/G6nJIDkINhf7YCzJQ0u4Hh6TFaHItRkrfwMbarKw
+         wpKLjKIbnIiE1chAWCjosBdPcKuRt8NyMcOg0kmfFQPKnVLX7B0M7Vm5Kg6KJVaIvs
+         5T8v/jjzZW8WGNucglCGrKi+Os5r+8cR3nlGz7RNRcwx5lpf7jKt5Yu3mA0PVb1SVR
+         DrovlWrXLOjNQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.2 06/53] srcu: Delegate work to the boot cpu if using SRCU_SIZE_SMALL
-Date:   Sun, 26 Feb 2023 09:43:58 -0500
-Message-Id: <20230226144446.824580-6-sashal@kernel.org>
+Cc:     Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, josh@joshtriplett.org,
+        rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.2 08/53] rcu-tasks: Handle queue-shrink/callback-enqueue race condition
+Date:   Sun, 26 Feb 2023 09:44:00 -0500
+Message-Id: <20230226144446.824580-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230226144446.824580-1-sashal@kernel.org>
 References: <20230226144446.824580-1-sashal@kernel.org>
@@ -54,145 +52,138 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Pingfan Liu <kernelfans@gmail.com>
+From: Zqiang <qiang1.zhang@intel.com>
 
-[ Upstream commit 7f24626d6dd844bfc6d1f492d214d29c86d02550 ]
+[ Upstream commit a4fcfbee8f6274f9b3f9a71dd5b03e6772ce33f3 ]
 
-Commit 994f706872e6 ("srcu: Make Tree SRCU able to operate without
-snp_node array") assumes that cpu 0 is always online.  However, there
-really are situations when some other CPU is the boot CPU, for example,
-when booting a kdump kernel with the maxcpus=1 boot parameter.
+The rcu_tasks_need_gpcb() determines whether or not: (1) There are
+callbacks needing another grace period, (2) There are callbacks ready
+to be invoked, and (3) It would be a good time to shrink back down to a
+single-CPU callback list.  This third case is interesting because some
+other CPU might be adding new callbacks, which might suddenly make this
+a very bad time to be shrinking.
 
-On PowerPC, the kdump kernel can hang as follows:
-...
-[    1.740036] systemd[1]: Hostname set to <xyz.com>
-[  243.686240] INFO: task systemd:1 blocked for more than 122 seconds.
-[  243.686264]       Not tainted 6.1.0-rc1 #1
-[  243.686272] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  243.686281] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
-[  243.686296] Call Trace:
-[  243.686301] [c000000016657640] [c000000016657670] 0xc000000016657670 (unreliable)
-[  243.686317] [c000000016657830] [c00000001001dec0] __switch_to+0x130/0x220
-[  243.686333] [c000000016657890] [c000000010f607b8] __schedule+0x1f8/0x580
-[  243.686347] [c000000016657940] [c000000010f60bb4] schedule+0x74/0x140
-[  243.686361] [c0000000166579b0] [c000000010f699b8] schedule_timeout+0x168/0x1c0
-[  243.686374] [c000000016657a80] [c000000010f61de8] __wait_for_common+0x148/0x360
-[  243.686387] [c000000016657b20] [c000000010176bb0] __flush_work.isra.0+0x1c0/0x3d0
-[  243.686401] [c000000016657bb0] [c0000000105f2768] fsnotify_wait_marks_destroyed+0x28/0x40
-[  243.686415] [c000000016657bd0] [c0000000105f21b8] fsnotify_destroy_group+0x68/0x160
-[  243.686428] [c000000016657c40] [c0000000105f6500] inotify_release+0x30/0xa0
-[  243.686440] [c000000016657cb0] [c0000000105751a8] __fput+0xc8/0x350
-[  243.686452] [c000000016657d00] [c00000001017d524] task_work_run+0xe4/0x170
-[  243.686464] [c000000016657d50] [c000000010020e94] do_notify_resume+0x134/0x140
-[  243.686478] [c000000016657d80] [c00000001002eb18] interrupt_exit_user_prepare_main+0x198/0x270
-[  243.686493] [c000000016657de0] [c00000001002ec60] syscall_exit_prepare+0x70/0x180
-[  243.686505] [c000000016657e10] [c00000001000bf7c] system_call_vectored_common+0xfc/0x280
-[  243.686520] --- interrupt: 3000 at 0x7fffa47d5ba4
-[  243.686528] NIP:  00007fffa47d5ba4 LR: 0000000000000000 CTR: 0000000000000000
-[  243.686538] REGS: c000000016657e80 TRAP: 3000   Not tainted  (6.1.0-rc1)
-[  243.686548] MSR:  800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE>  CR: 42044440  XER: 00000000
-[  243.686572] IRQMASK: 0
-[  243.686572] GPR00: 0000000000000006 00007ffffa606710 00007fffa48e7200 0000000000000000
-[  243.686572] GPR04: 0000000000000002 000000000000000a 0000000000000000 0000000000000001
-[  243.686572] GPR08: 000001000c172dd0 0000000000000000 0000000000000000 0000000000000000
-[  243.686572] GPR12: 0000000000000000 00007fffa4ff4bc0 0000000000000000 0000000000000000
-[  243.686572] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[  243.686572] GPR20: 0000000132dfdc50 000000000000000e 0000000000189375 0000000000000000
-[  243.686572] GPR24: 00007ffffa606ae0 0000000000000005 000001000c185490 000001000c172570
-[  243.686572] GPR28: 000001000c172990 000001000c184850 000001000c172e00 00007fffa4fedd98
-[  243.686683] NIP [00007fffa47d5ba4] 0x7fffa47d5ba4
-[  243.686691] LR [0000000000000000] 0x0
-[  243.686698] --- interrupt: 3000
-[  243.686708] INFO: task kworker/u16:1:24 blocked for more than 122 seconds.
-[  243.686717]       Not tainted 6.1.0-rc1 #1
-[  243.686724] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  243.686733] task:kworker/u16:1   state:D stack:0     pid:24    ppid:2      flags:0x00000800
-[  243.686747] Workqueue: events_unbound fsnotify_mark_destroy_workfn
-[  243.686758] Call Trace:
-[  243.686762] [c0000000166736e0] [c00000004fd91000] 0xc00000004fd91000 (unreliable)
-[  243.686775] [c0000000166738d0] [c00000001001dec0] __switch_to+0x130/0x220
-[  243.686788] [c000000016673930] [c000000010f607b8] __schedule+0x1f8/0x580
-[  243.686801] [c0000000166739e0] [c000000010f60bb4] schedule+0x74/0x140
-[  243.686814] [c000000016673a50] [c000000010f699b8] schedule_timeout+0x168/0x1c0
-[  243.686827] [c000000016673b20] [c000000010f61de8] __wait_for_common+0x148/0x360
-[  243.686840] [c000000016673bc0] [c000000010210840] __synchronize_srcu.part.0+0xa0/0xe0
-[  243.686855] [c000000016673c30] [c0000000105f2c64] fsnotify_mark_destroy_workfn+0xc4/0x1a0
-[  243.686868] [c000000016673ca0] [c000000010174ea8] process_one_work+0x2a8/0x570
-[  243.686882] [c000000016673d40] [c000000010175208] worker_thread+0x98/0x5e0
-[  243.686895] [c000000016673dc0] [c0000000101828d4] kthread+0x124/0x130
-[  243.686908] [c000000016673e10] [c00000001000cd40] ret_from_kernel_thread+0x5c/0x64
-[  366.566274] INFO: task systemd:1 blocked for more than 245 seconds.
-[  366.566298]       Not tainted 6.1.0-rc1 #1
-[  366.566305] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  366.566314] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
-[  366.566329] Call Trace:
-...
+This is currently handled by requiring call_rcu_tasks_generic() to
+enqueue callbacks under the protection of rcu_read_lock() and requiring
+rcu_tasks_need_gpcb() to wait for an RCU grace period to elapse before
+finalizing the transition.  This works well in practice.
 
-The above splat occurs because PowerPC really does use maxcpus=1
-instead of nr_cpus=1 in the kernel command line.  Consequently, the
-(quite possibly non-zero) kdump CPU is the only online CPU in the kdump
-kernel.  SRCU unconditionally queues a sdp->work on cpu 0, for which no
-worker thread has been created, so sdp->work will be never executed and
-__synchronize_srcu() will never be completed.
+Unfortunately, the current code assumes that a grace period whose end is
+detected by the poll_state_synchronize_rcu() in the second "if" condition
+actually ended before the earlier code counted the callbacks queued on
+CPUs other than CPU 0 (local variable "ncbsnz").  Given the current code,
+it is possible that a long-delayed call_rcu_tasks_generic() invocation
+will queue a callback on a non-zero CPU after these CPUs have had their
+callbacks counted and zero has been stored to ncbsnz.  Such a callback
+would trigger the WARN_ON_ONCE() in the second "if" statement.
 
-This commit therefore replaces CPU ID 0 with get_boot_cpu_id() in key
-places in Tree SRCU.  Since the CPU indicated by get_boot_cpu_id()
-is guaranteed to be online, this avoids the above splat.
+To see this, consider the following sequence of events:
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: rcu@vger.kernel.org
+o	CPU 0 invokes rcu_tasks_one_gp(), and counts fewer than
+	rcu_task_collapse_lim callbacks.  It sees at least one
+	callback queued on some other CPU, thus setting ncbsnz
+	to a non-zero value.
+
+o	CPU 1 invokes call_rcu_tasks_generic() and loads 42 from
+	->percpu_enqueue_lim.  It therefore decides to enqueue its
+	callback onto CPU 1's callback list, but is delayed.
+
+o	CPU 0 sees the rcu_task_cb_adjust is non-zero and that the number
+	of callbacks does not exceed rcu_task_collapse_lim.  It therefore
+	checks percpu_enqueue_lim, and sees that its value is greater
+	than the value one.  CPU 0 therefore  starts the shift back
+	to a single callback list.  It sets ->percpu_enqueue_lim to 1,
+	but CPU 1 has already read the old value of 42.  It also gets
+	a grace-period state value from get_state_synchronize_rcu().
+
+o	CPU 0 sees that ncbsnz is non-zero in its second "if" statement,
+	so it declines to finalize the shrink operation.
+
+o	CPU 0 again invokes rcu_tasks_one_gp(), and counts fewer than
+	rcu_task_collapse_lim callbacks.  It also sees that there are
+	no callback queued on any other CPU, and thus sets ncbsnz to zero.
+
+o	CPU 1 resumes execution and enqueues its callback onto its own
+	list.  This invalidates the value of ncbsnz.
+
+o	CPU 0 sees the rcu_task_cb_adjust is non-zero and that the number
+	of callbacks does not exceed rcu_task_collapse_lim.  It therefore
+	checks percpu_enqueue_lim, but sees that its value is already
+	unity.	It therefore does not get a new grace-period state value.
+
+o	CPU 0 sees that rcu_task_cb_adjust is non-zero, ncbsnz is zero,
+	and that poll_state_synchronize_rcu() says that the grace period
+	has completed.  it therefore finalizes the shrink operation,
+	setting ->percpu_dequeue_lim to the value one.
+
+o	CPU 0 does a debug check, scanning the other CPUs' callback lists.
+	It sees that CPU 1's list has a callback, so it (rightly)
+	triggers the WARN_ON_ONCE().  After all, the new value of
+	->percpu_dequeue_lim says to not bother looking at CPU 1's
+	callback list, which means that this callback will never be
+	invoked.  This can result in hangs and maybe even OOMs.
+
+Based on long experience with rcutorture, this is an extremely
+low-probability race condition, but it really can happen, especially in
+preemptible kernels or within guest OSes.
+
+This commit therefore checks for completion of the grace period
+before counting callbacks.  With this change, in the above failure
+scenario CPU 0 would know not to prematurely end the shrink operation
+because the grace period would not have completed before the count
+operation started.
+
+[ paulmck: Adjust grace-period end rather than adding RCU reader. ]
+[ paulmck: Avoid spurious WARN_ON_ONCE() with ->percpu_dequeue_lim check. ]
+
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/srcutree.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/rcu/tasks.h | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index ca4b5dcec675b..16953784a0bdf 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -726,7 +726,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
- 	int state;
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 1aec68dd18aae..83f239926b35e 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -384,6 +384,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ {
+ 	int cpu;
+ 	unsigned long flags;
++	bool gpdone = poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq);
+ 	long n;
+ 	long ncbs = 0;
+ 	long ncbsnz = 0;
+@@ -425,21 +426,23 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 			WRITE_ONCE(rtp->percpu_enqueue_shift, order_base_2(nr_cpu_ids));
+ 			smp_store_release(&rtp->percpu_enqueue_lim, 1);
+ 			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
++			gpdone = false;
+ 			pr_info("Starting switch %s to CPU-0 callback queuing.\n", rtp->name);
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
+-	if (rcu_task_cb_adjust && !ncbsnz &&
+-	    poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq)) {
++	if (rcu_task_cb_adjust && !ncbsnz && gpdone) {
+ 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+ 		if (rtp->percpu_enqueue_lim < rtp->percpu_dequeue_lim) {
+ 			WRITE_ONCE(rtp->percpu_dequeue_lim, 1);
+ 			pr_info("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
+ 		}
+-		for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
+-			struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
++		if (rtp->percpu_dequeue_lim == 1) {
++			for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
++				struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
  
- 	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
--		sdp = per_cpu_ptr(ssp->sda, 0);
-+		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
- 	else
- 		sdp = this_cpu_ptr(ssp->sda);
- 	lockdep_assert_held(&ACCESS_PRIVATE(ssp, lock));
-@@ -837,7 +837,8 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 	/* Initiate callback invocation as needed. */
- 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
- 	if (ss_state < SRCU_SIZE_WAIT_BARRIER) {
--		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, 0), cbdelay);
-+		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, get_boot_cpu_id()),
-+					cbdelay);
- 	} else {
- 		idx = rcu_seq_ctr(gpseq) % ARRAY_SIZE(snp->srcu_have_cbs);
- 		srcu_for_each_node_breadth_first(ssp, snp) {
-@@ -1161,7 +1162,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	idx = __srcu_read_lock_nmisafe(ssp);
- 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
- 	if (ss_state < SRCU_SIZE_WAIT_CALL)
--		sdp = per_cpu_ptr(ssp->sda, 0);
-+		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
- 	else
- 		sdp = raw_cpu_ptr(ssp->sda);
- 	spin_lock_irqsave_sdp_contention(sdp, &flags);
-@@ -1497,7 +1498,7 @@ void srcu_barrier(struct srcu_struct *ssp)
- 
- 	idx = __srcu_read_lock_nmisafe(ssp);
- 	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
--		srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, 0));
-+		srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda,	get_boot_cpu_id()));
- 	else
- 		for_each_possible_cpu(cpu)
- 			srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, cpu));
+-			WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
++				WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
++			}
+ 		}
+ 		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 	}
 -- 
 2.39.0
 
