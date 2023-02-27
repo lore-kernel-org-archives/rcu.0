@@ -2,218 +2,200 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A99B6C64ED8
-	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 06:25:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F9BFC64ED6
+	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 07:53:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjB0GZu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Feb 2023 01:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35734 "EHLO
+        id S229740AbjB0Hxr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Feb 2023 02:53:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjB0GZt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Feb 2023 01:25:49 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6B1E3AD
-        for <rcu@vger.kernel.org>; Sun, 26 Feb 2023 22:25:20 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id j19-20020a05600c191300b003eb3e1eb0caso1664154wmq.1
-        for <rcu@vger.kernel.org>; Sun, 26 Feb 2023 22:25:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pujNXX8uuARxDMs7pbFXDg7/dOOWF+JdqAd/evz5sDw=;
-        b=V/TQUDCB7rv+cw2TdL91bDE+dJA9qCsk1vIRb+G8donI4hviuj4sENzQNlfbda6xuZ
-         bpJpYl5lnDv80kETsiwB2d5gY960gG7kJ5XnZAXufJq9VHtNndT86oBtCKefKus+jkdq
-         yCNwhvbZS/52ahk+GkEuR6wc7P9Gj9whKOD3ogaT/zgabuacRAg7bvTh8xs5ILdiLhhf
-         wJSG3NhYUJ7de+v53m7uuofPwChyMcoaFSVT5mX2cXChjRwzhv58q+8+5NNhaX/Iz+z5
-         KdRmpV9SwXAidC2dvqrRQcMOlUlbhwBNUMpB6E6Ygz6NfOcWp95teXZRZnyX22heMEWZ
-         L4mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pujNXX8uuARxDMs7pbFXDg7/dOOWF+JdqAd/evz5sDw=;
-        b=jW3KM7zDnRl1BaDD4lQkLF2KyQqRx4azN+GXVdwoE+11pRsDyqpWWWwWXgP94jxOlI
-         jqtqLRkKtZx3C87RvWpfWSoqZF2XpGjqyQCqu6kpSwmvlZbqQIgbkXq7gazKn+aNTluy
-         9TLLlEm9N67KqsM+CZ3Rp4Onijt6yCL9LZhsfEOQAytjNPJF0C1R9ZusayRkc70eQTjC
-         yqtpSzvHxwpBOthJRo98MVMsnD61BcrrLHKcN7AMicCHIIFYF+KdFy187y3rMleuV0iM
-         ElTs64sm1DZTmsQ96PULHgG00swlwIA/bglEHw3wJ63avYbV3uKYZJsoVIl3STssbMwk
-         iMdA==
-X-Gm-Message-State: AO0yUKWnaLhEE+ol9iQRzn0UkYH8O8g3KTdK8T/KzI00+F34GGkYcElX
-        KphRuyU8s8OOUntioU/v5Gvo8g==
-X-Google-Smtp-Source: AK7set9YZptaNcpM2tUhWp+/BQsYtKzhcp9G3+jskEjqOHmg8u8jmWKIT60vbUussgRUnDc9Y5ar5w==
-X-Received: by 2002:a05:600c:810:b0:3db:2e06:4091 with SMTP id k16-20020a05600c081000b003db2e064091mr18520089wmp.37.1677479118687;
-        Sun, 26 Feb 2023 22:25:18 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:6caa:9121:bec9:a2a9? ([2a02:6b6a:b566:0:6caa:9121:bec9:a2a9])
-        by smtp.gmail.com with ESMTPSA id t23-20020a05600c2f9700b003e2232d0960sm7877010wmn.23.2023.02.26.22.25.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Feb 2023 22:25:18 -0800 (PST)
-Message-ID: <c795e967-b69d-33fd-b333-b0f8e0636b5b@bytedance.com>
-Date:   Mon, 27 Feb 2023 06:25:17 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [PATCH v12 00/11] Parallel CPU bringup for x86_64
+        with ESMTP id S229471AbjB0Hxq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Feb 2023 02:53:46 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92E3EB7B;
+        Sun, 26 Feb 2023 23:53:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1677484425; x=1709020425;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=PLRpbsG7MDtJjmngjwptM4XSz6vyLeu6x3QKNqgSEiA=;
+  b=TePYBZFddmZ6CuCe3aSQinE3fPC7K9ffG3EOI8QgCuL3hUz6y1OnbFoo
+   rl1K6JfqFR7OxCQSksGq/h6fDlMLNkPY7l7KLtcEReoP2k6k3+SuQfITk
+   tjO+PeupEYbebF0NJlXaBH4zGiOPrVZNlq9nUMfMJerNH1Xtgdlrb/9Kw
+   xMVtj1OhhGdUHw5f4DpDNDLqATG377Jhzve29C76f7qampztGneAThtIT
+   5I7lJRQ1BUrxyxBpbtm+e6ndNa3ZfJmaXOP8e/JGJ2E7cidU6gO3yHKrY
+   yPIsDB7LlJNZo4Y0tk3Wu+9QakUEB3MOM7Ac58N09SGNAHTPuUze45rjW
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10633"; a="317602755"
+X-IronPort-AV: E=Sophos;i="5.97,331,1669104000"; 
+   d="scan'208";a="317602755"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2023 23:53:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10633"; a="666913537"
+X-IronPort-AV: E=Sophos;i="5.97,331,1669104000"; 
+   d="scan'208";a="666913537"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP; 26 Feb 2023 23:53:37 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Sun, 26 Feb 2023 23:53:37 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Sun, 26 Feb 2023 23:53:36 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16 via Frontend Transport; Sun, 26 Feb 2023 23:53:36 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.49) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.16; Sun, 26 Feb 2023 23:53:36 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eN5KBidfjv4tGU6xO0TE9FpYAOdKRPJfzkJ5aH9sXCBWBP9+FumkCUPTuCnSCCoiMUn/Yh07rSy/LUsFZX1KZqOGVkjZO68MCQ2xjg5v4r7rEIEjLmeDavYZX9mv8W8a+2yPlJkDjgrYms5nuUJrZjOlxemoqzZ8HQu8OZg0uJgwrb6fK4usCmWmyZjGPkzGk9XRWDlRPnejsh7BJffYibSfMOGfOpMLhps+Cdyl0QIwmZy779Kd8c3ZMlSWAGMRTjVbI0hNVWpHwdbBUxQcSriwld0zf2IiJC4ETTa3IUP5FJ8geYhb2gKblL54+8trGqsQR6+fHtE92hw2op5C3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+LRRcWTLYEDHIpLvTXGR7V4mo8/X/7Jlb2HcXu7EbGA=;
+ b=OT2Y9k0ZME3NtPULf3HXoUNDzluaaMXFTKHzu505FyVt3FJLsjnAIC0DLf81Wc4oEuySTCkapGcfrc9j9c5LL8+pQjeeFBokgP7DfBwpOjfxvlpw/4f1gVEXbaSyIiyOedn/GhRfjsszXNeoval14MIrC2tcCfFah/noZqBjZoGw9vtVyPaxsmOQlIDcKs3+x9fwSXtwRmUHLSuq7UiGZuelHLO1RZyfWc/QIPE9aQjIFzz20MAqGPRUjTnxuvR3F+TDiXicBCr762raHNTo25x+3rwT4QGOsCqH/Pq+nMrKuke9L+s67IurI4B/oh8IqKZ+waEYsbZ/RnP7hUYf/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA1PR11MB6171.namprd11.prod.outlook.com (2603:10b6:208:3e9::13)
+ by PH7PR11MB7644.namprd11.prod.outlook.com (2603:10b6:510:26a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.24; Mon, 27 Feb
+ 2023 07:53:35 +0000
+Received: from IA1PR11MB6171.namprd11.prod.outlook.com
+ ([fe80::b6d8:543f:3a43:6c56]) by IA1PR11MB6171.namprd11.prod.outlook.com
+ ([fe80::b6d8:543f:3a43:6c56%7]) with mapi id 15.20.6134.027; Mon, 27 Feb 2023
+ 07:53:35 +0000
+From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Frederic Weisbecker <frederic@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: RE: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
+ completed
+Thread-Topic: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
+ completed
+Thread-Index: AQHZSMoUan4Z/tmfYUGikm7Xfdsdaq7iacDQ
+Date:   Mon, 27 Feb 2023 07:53:35 +0000
+Message-ID: <IA1PR11MB617175CA398D425B7489CE4889AF9@IA1PR11MB6171.namprd11.prod.outlook.com>
+References: <20230225033421.3323164-1-joel@joelfernandes.org>
+In-Reply-To: <20230225033421.3323164-1-joel@joelfernandes.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        tglx@linutronix.de, kim.phillips@amd.com, brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
-References: <20230226110802.103134-1-usama.arif@bytedance.com>
- <5650744.DvuYhMxLoT@natalenko.name>
- <819d8fa2-b73e-e32f-5442-452aa2c0d752@bytedance.com>
- <EB27C1C4-7246-4557-A6B3-EBBC9E8FC69F@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <EB27C1C4-7246-4557-A6B3-EBBC9E8FC69F@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6171:EE_|PH7PR11MB7644:EE_
+x-ms-office365-filtering-correlation-id: f1cf1bfe-bcc1-4b0b-56eb-08db1897ba7f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wXSi4gx2n1/0q2DKfClh1gRyt01i4FPGo292kwwbM7lCxIpveJT4CmcLQH/qy65/nB2499ICIF6fPK3TMo43ybFuzQnlRfb9AA+G/27AzAssoo6b5uVdSZue6RseJV2TmeJpLkE//4K8TgeR6YUe85+d1WQi98E4+onKjsn78i/kS0TttXm372uPzQH8xe0OdRNId2xCT4EjMAIeMz8DEDTOyaYIsSRqH/eRUdFgWKzXffO19XibYyPKfQNAfhM7jHr1rFZkspaRnt+/uD+YxTi33EG0r9ewViCjnchdl6XMvJYz9j0dzjsUAxgzXwuOvB6r0BfK7tpBxTheeMWT0p7jLGQvZ8uvP4DHY5jJrm2LCalwL0j2blO/+i/o+8iZO72OKBAY6Eyc0Rlf2CGT+bd8Vk1Ipz6zQEGxZAfBkIPQ2R0HbY9c4/3nsr5Se2wCBj0BUwb9nKIs38b/qvKKCDInjQLEIMTCyalKv4v8A7J6Xh6odFt6FJ1FuRJg+GB7noCg8+qFJtLngenBCCqEnBLVkU7VQMH1t9zE/Byr+LG3pGTqT65ZFGwGBVqEzuW5BjKuhT09rJVQvXkIn8jVCDGVjrR1pLinmKBUrZF4NY/6Q6eUkeq86gvmVkBotcyX3diL95DlmUZb+U7dGLtUheVxx5J/0u8y6ot4Ik2sKeKGzljUgzvXxBXQxWNO9LSE+rQJiePCr8gQe84j1QzZmw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6171.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(346002)(376002)(396003)(366004)(39860400002)(136003)(451199018)(52536014)(9686003)(8936002)(122000001)(54906003)(316002)(82960400001)(38070700005)(186003)(26005)(38100700002)(33656002)(71200400001)(110136005)(7696005)(478600001)(86362001)(6506007)(2906002)(55016003)(53546011)(41300700001)(76116006)(8676002)(5660300002)(83380400001)(64756008)(66899018)(66946007)(66556008)(66446008)(4326008)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6PQcQpfEfi4tzWiiQdMe96v2fR3gf7r4PnwtqaqcusIhfSt3plBS3KnmWoIM?=
+ =?us-ascii?Q?MuppP+BXT6KTuqBWdgeSUMH0ydYPtzdl5E5MScUKcUCEdlNFzrDbpoK255dH?=
+ =?us-ascii?Q?vVTGmYaqgRzOZdFH/V3k+Pg6OS8y9zVd5LXdDG8qI0YhQMuz9qo0I94lQWXG?=
+ =?us-ascii?Q?rv4p8/Fj00zjx8re3uSV/6Ikvsfp2JjAYRPoHv+jXEkVqFDYXL8Awaa26ENJ?=
+ =?us-ascii?Q?GCFJ2eQfVeKQDvvUkj87QJyUDJCFOGEVSe4r5jW0tQCQk8rUjjw34MArBZRv?=
+ =?us-ascii?Q?vptShoImn3zgB71RmpqqUlwHQ5ca76uO0OU73IZUTLvSSTglvjoFrJHrqKcR?=
+ =?us-ascii?Q?Uxco9IoE2iZhQZ0i7xs+f8XM7273k48J7q9hUZulTS4blalHygngC0XgtbG6?=
+ =?us-ascii?Q?wXqgmBV3ZnZWqcTiLjpLepEyLVAi04ddCHyWp8X3LAYDnMwZW/82UH24gexD?=
+ =?us-ascii?Q?EsTa9QnbEqoHeNWOylqy3dFXrCyhXH2U0mCfx1xrkbhGS1sBxrFUYLd1FBi3?=
+ =?us-ascii?Q?ACd7UltSbOYeTPjKHFWlJ52nCXYlJqmZebdDAqlqTSLw913OX9BbH/5yaaER?=
+ =?us-ascii?Q?NO/K+xGIqOBLSWsOAZK0U+Te36rz+rDNwNFaibM76g8T8jhROoscFXX+dmcx?=
+ =?us-ascii?Q?4Q9zuNOmPNortI+UvDXamFUGd7EKMJFoCqaymY/ANNoAv/QV8WRjR2BSfPT0?=
+ =?us-ascii?Q?T0Lf2Cyd7qkNNNawMDZC410Nu/L9/JwUg479hUVqsBTHkjQkJX1r514B6ThT?=
+ =?us-ascii?Q?IyMYEKDxyf5DedANOo1k+mO1vOUZnilBYkBlywZHHFPP8AE39No2S81jAEO8?=
+ =?us-ascii?Q?v29rGPJqSWCEY/NgkcAclRECvBKjimPcPvXtSUTnGRNdZ8gQmZG0cxMfGRIe?=
+ =?us-ascii?Q?K3tzpesSRSQa1+Gm80r2pwhz7E2Kxzdt4HwI0y+MSwW2TTI6SSAoWk0D/LFc?=
+ =?us-ascii?Q?8upV15ZXuPMrY+njLISQpUoiKBSAbArSAkZrjHg03PFhBwgIDTTWPHvv1+ED?=
+ =?us-ascii?Q?buR78odGVi95mMgf/e1xDwRCr3gr1Zu1J9HH1Q61iOBzi7I9reIicDn76kKv?=
+ =?us-ascii?Q?Y2XqpjASoJDBPRc0PNBkkOcxbpsQoQQBIaMBwnLA6KuiORhcG/UYxvVMbQs2?=
+ =?us-ascii?Q?BQHMj858ZRyviwqxj2g6CzQ3Y3hdgpcZApXrmc/QozdJ1eraiqqLppiJOdUT?=
+ =?us-ascii?Q?OCWU3SOL0uWY+f7W/3oDJQwtizQrAZHL9wXRdQe0pki5Y7Ge9z5LaTbqrb+m?=
+ =?us-ascii?Q?DbFuusXt80Xht4TfrGIUhU+K8ExDbevO4TVjXUtypnWx6Hboh3Cf6OUQaSD3?=
+ =?us-ascii?Q?9gT5p92lJLpsCCuJJzagq4Mjr+DyDb1pu1h6R144DHFQ4EBy2m6UDNq6xzOA?=
+ =?us-ascii?Q?HAt+zRBFVW2JpgB+JX8BAWEfRtmDTPER7WApm4yDX2GWFojQItRiqDJpSzFn?=
+ =?us-ascii?Q?wof1ZS4fftOAD4Jyy6yr/woezqmpkOzHPArkMp5FyokHzqpHP1OWoeDh+nrk?=
+ =?us-ascii?Q?EYEKvpRswW2qdTmNbjOpbUYfDw0JynrvtNVmVfJ6hp2TkKu1eZKTYqPBzVvs?=
+ =?us-ascii?Q?PqOeZhdYt/zPg99azl3sU2QGUMvkjblOKzESccAc?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6171.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1cf1bfe-bcc1-4b0b-56eb-08db1897ba7f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2023 07:53:35.0612
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PFjzaEwud+Ej0i2tnoWP906NfXwuiDn5ZQ0LkrREuRwA1nWWzfidfNb8gNhd+nyQlBIuzx5K+HsAbJ2wtLxrEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7644
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+> From: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Sent: Saturday, February 25, 2023 11:34 AM
+> To: linux-kernel@vger.kernel.org
+> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>; Frederic Weisbecker
+> <frederic@kernel.org>; Lai Jiangshan <jiangshanlai@gmail.com>; linux-
+> doc@vger.kernel.org; Paul E. McKenney <paulmck@kernel.org>;
+> rcu@vger.kernel.org
+> Subject: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
+> completed
+>=20
+> On many systems, a great deal of boot happens after the kernel thinks the
+> boot has completed. It is difficult to determine if the system has really
+> booted from the kernel side. Some features like lazy-RCU can risk slowing
+> down boot time if, say, a callback has been added that the boot
+> synchronously depends on.
+>=20
+> Further, it is better to boot systems which pass 'rcu_normal_after_boot' =
+to
+> stay expedited for as long as the system is still booting.
+>=20
+> For these reasons, this commit adds a config option
+> 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter
+> rcupdate.boot_end_delay.
+>=20
+> By default, this value is 20s. A system designer can choose to specify a =
+value
+> here to keep RCU from marking boot completion.  The boot sequence will no=
+t
+> be marked ended until at least boot_end_delay milliseconds have passed.
 
+Hi Joel,
 
-On 27/02/2023 06:13, David Woodhouse wrote:
-> 
-> 
-> On 26 February 2023 20:59:17 GMT, Usama Arif <usama.arif@bytedance.com> wrote:
->>
->>
->> On 26/02/2023 18:31, Oleksandr Natalenko wrote:
->>> Hello.
->>>
->>> On neděle 26. února 2023 12:07:51 CET Usama Arif wrote:
->>>> The main code change over v11 is the build error fix by Brian Gerst and
->>>> acquiring tr_lock in trampoline_64.S whenever the stack is setup.
->>>>
->>>> The git history is also rewritten to move the commits that removed
->>>> initial_stack, early_gdt_descr and initial_gs earlier in the patchset.
->>>>
->>>> Thanks,
->>>> Usama
->>>>
->>>> Changes across versions:
->>>> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
->>>> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
->>>>       in preparation for more parallelisation.
->>>> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
->>>>       avoid scribbling on initial_gs in common_cpu_up(), and to allow all
->>>>       24 bits of the physical X2APIC ID to be used. That patch still needs
->>>>       a Signed-off-by from its original author, who once claimed not to
->>>>       remember writing it at all. But now we've fixed it, hopefully he'll
->>>>       admit it now :)
->>>> v5: rebase to v6.1 and remeasure performance, disable parallel bringup
->>>>       for AMD CPUs.
->>>> v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
->>>>       reused timer calibration for secondary CPUs.
->>>> v7: [David Woodhouse] iterate over all possible CPUs to find any existing
->>>>       cluster mask in alloc_clustermask. (patch 1/9)
->>>>       Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
->>>>       0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
->>>>       Included sanity checks for APIC id from 0x0B. (patch 6/9)
->>>>       Removed patch for reusing timer calibration for secondary CPUs.
->>>>       commit message and code improvements.
->>>> v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
->>>>       early_gdt_descr.
->>>>       Drop trampoline lock and bail if APIC ID not found in find_cpunr.
->>>>       Code comments improved and debug prints added.
->>>> v9: Drop patch to avoid repeated saves of MTRR at boot time.
->>>>       rebased and retested at v6.2-rc8.
->>>>       added kernel doc for no_parallel_bringup and made do_parallel_bringup
->>>>       __ro_after_init.
->>>> v10: Fixed suspend/resume not working with parallel smpboot.
->>>>        rebased and retested to 6.2.
->>>>        fixed checkpatch errors.
->>>> v11: Added patches from Brian Gerst to remove the global variables initial_gs,
->>>>        initial_stack, and early_gdt_descr from the 64-bit boot code
->>>>        (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.com/).
->>>> v12: Fixed compilation errors, acquire tr_lock for every stack setup in
->>>>        trampoline_64.S.
->>>>        Rearranged commits for a cleaner git history.
->>>>
->>>> Brian Gerst (3):
->>>>     x86/smpboot: Remove initial_stack on 64-bit
->>>>     x86/smpboot: Remove early_gdt_descr on 64-bit
->>>>     x86/smpboot: Remove initial_gs
->>>>
->>>> David Woodhouse (8):
->>>>     x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
->>>>     cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
->>>>     cpu/hotplug: Add dynamic parallel bringup states before
->>>>       CPUHP_BRINGUP_CPU
->>>>     x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
->>>>     x86/smpboot: Split up native_cpu_up into separate phases and document
->>>>       them
->>>>     x86/smpboot: Support parallel startup of secondary CPUs
->>>>     x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
->>>>     x86/smpboot: Serialize topology updates for secondary bringup
->>>>
->>>>    .../admin-guide/kernel-parameters.txt         |   3 +
->>>>    arch/x86/include/asm/processor.h              |   6 +-
->>>>    arch/x86/include/asm/realmode.h               |   4 +-
->>>>    arch/x86/include/asm/smp.h                    |  15 +-
->>>>    arch/x86/include/asm/topology.h               |   2 -
->>>>    arch/x86/kernel/acpi/sleep.c                  |  15 +-
->>>>    arch/x86/kernel/apic/apic.c                   |   2 +-
->>>>    arch/x86/kernel/apic/x2apic_cluster.c         | 126 ++++---
->>>>    arch/x86/kernel/asm-offsets.c                 |   1 +
->>>>    arch/x86/kernel/cpu/common.c                  |   6 +-
->>>>    arch/x86/kernel/head_64.S                     | 129 +++++--
->>>>    arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
->>>>    arch/x86/realmode/init.c                      |   3 +
->>>>    arch/x86/realmode/rm/trampoline_64.S          |  27 +-
->>>>    arch/x86/xen/smp_pv.c                         |   4 +-
->>>>    arch/x86/xen/xen-head.S                       |   2 +-
->>>>    include/linux/cpuhotplug.h                    |   2 +
->>>>    include/linux/smpboot.h                       |   7 +
->>>>    kernel/cpu.c                                  |  31 +-
->>>>    kernel/smpboot.h                              |   2 -
->>>>    20 files changed, 537 insertions(+), 200 deletions(-)
->>>
->>> With `CONFIG_FORCE_NR_CPUS=y` this results in:
->>>
->>> ```
->>> ld: vmlinux.o: in function `secondary_startup_64_no_verify':
->>> (.head.text+0x10c): undefined reference to `nr_cpu_ids'
->>> ```
->>>
->>> That's because in `arch/x86/kernel/head_64.S` `secondary_startup_64_no_verify()` refers to `nr_cpu_ids` under `#ifdef CONFIG_SMP`, but this symbol is available under the following conditions:
->>>
->>> ```
->>> 38 #if (NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)
->>> 39 #define nr_cpu_ids ((unsigned int)NR_CPUS)
->>> 40 #else
->>> 41 extern unsigned int nr_cpu_ids;
->>> 42 #endif
->>>
->>> 1090 #if (NR_CPUS > 1) && !defined(CONFIG_FORCE_NR_CPUS)
->>> 1091 /* Setup number of possible processor ids */
->>> 1092 unsigned int nr_cpu_ids __read_mostly = NR_CPUS;
->>> 1093 EXPORT_SYMBOL(nr_cpu_ids);
->>> 1094 #endif
->>> ```
->>>
->>> So having `CONFIG_SMP=y` and, for instance, `CONFIG_NR_CPUS=320`, it is possible to compile out `EXPORT_SYMBOL(nr_cpu_ids);` if `CONFIG_FORCE_NR_CPUS=y` is set.
->>>
->>
->> I think something like below diff should work in all scenarios?
-> 
-> I'd've changed the asm side to use the constant limit.
+Just some thoughts on the default value of 20s, correct me if I'm wrong :-)=
+.
 
-Yup, just needed the morning coffee :) Had sent the proper fix in 
-https://lore.kernel.org/all/5e8ad90a-1dc6-95c2-e020-5e95da6f9eda@bytedance.com/#t
+Does the OS with CONFIG_PREEMPT_RT=3Dy kernel concern more about the=20
+real-time latency than the overall OS boot time?
 
-I guess the diff is still small over v12 (including the cosmetic 
-changes) to send out a new version so soon, probably better to wait a 
-couple of days incase something else comes up as well?
+If so, we might make rcupdate.boot_end_delay =3D 0 as the default value=20
+(NOT the default 20s) for CONFIG_PREEMPT_RT=3Dy kernels?=20
 
-Thanks,
-Usama
+-Qiuxu
+
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> v1->v2:
+> 	Update some comments and description.
+>  ...
+
