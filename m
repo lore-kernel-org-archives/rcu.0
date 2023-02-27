@@ -2,128 +2,184 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA7DDC64ED8
-	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 14:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8901FC64ED8
+	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 14:59:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjB0O4A (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Feb 2023 09:56:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
+        id S229842AbjB0O7L (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Feb 2023 09:59:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjB0Oz7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Feb 2023 09:55:59 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803E72D68;
-        Mon, 27 Feb 2023 06:55:47 -0800 (PST)
+        with ESMTP id S229934AbjB0O7K (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Feb 2023 09:59:10 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DEA1CF4A;
+        Mon, 27 Feb 2023 06:59:04 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 26732B80D54;
-        Mon, 27 Feb 2023 14:55:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA7C9C433D2;
-        Mon, 27 Feb 2023 14:55:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A773C60DFD;
+        Mon, 27 Feb 2023 14:59:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0232FC433EF;
+        Mon, 27 Feb 2023 14:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677509744;
-        bh=2QrzAfKZY4OPPKpyJkn5qM/7xuOVZoXSSIqyOxpALJM=;
+        s=k20201202; t=1677509943;
+        bh=Qd7KuEgfZnLJE7sF6cQgd6N1JrAhH9cKK4jfvtXKGoY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iZpW8caqpGwhUauzk3OVLMZ7ydAG08LNXEX6LKS32VxbMjXskYdpTXWYCwSPFV41W
-         cZwGcB+Pvh87+0huEiTjwZvkG2pMxDhgPrG7qFdbz23vsN1MMFGjJEvVO6i9RYZvPO
-         fc5QkSLTm4iOJz2bfUljiKlq8mpOMImlmVx/swy4xe2+5KgLjlZgzHsUhH2jMTCZw/
-         wu9vpqXEiajUJrnW+IzfU95SeF6pjhiKR2k/mBTQBVaq1SJRI6ZcZWx/1PVcPbrtoY
-         FnOVqCX6bIWHDUSxjqFfa7c/NOH41pzgVmNr626VwjRU0G+25URwiHaiblowUBvdOf
-         RYyFzb2tmkgdA==
+        b=FlaKjmz6cHh4W2oJP6X4w0imrBSj08evyX4PYTdT/TFFV5XENYryt7AzAVnbC8gpC
+         cOJODxjiO8XjFOfSp2qHqw+dCMyUVVZ7wSAXbgrfVt9nE87WUB/c8smvq1ipZURbjO
+         ODPRN3Qeovb3I7oPyH0H2gasfCnwyuCXFrSLfCis/XM9cfqNmCBEHulZl/RKX5H3td
+         fdN3vJxOA5A3ga6+c6ufwTZn62sVCtjVF/1S5E2HS29dtCva68lHSejnWXJO2E2xUr
+         CKgQgTws+LD80cRCwjSA7Z5o8xUXMVUK8OXnuLN+9TML9QIF3jHR0fiaO4PGktjUbc
+         Ro4eUgUHEyi9Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5D26D5C0146; Mon, 27 Feb 2023 06:55:44 -0800 (PST)
-Date:   Mon, 27 Feb 2023 06:55:44 -0800
+        id 7CBD25C0165; Mon, 27 Feb 2023 06:59:02 -0800 (PST)
+Date:   Mon, 27 Feb 2023 06:59:02 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
- completed
-Message-ID: <20230227145544.GC2948950@paulmck-ThinkPad-P17-Gen-1>
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Sanan Hasanov <sanan.hasanov@knights.ucf.edu>,
+        frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller@googlegroups.com, contact@pgazz.com
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in rcu_core
+Message-ID: <20230227145902.GD2948950@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <IA1PR11MB617175CA398D425B7489CE4889AF9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <764CA486-6FB2-4667-B8CB-56E3AC31FD58@joelfernandes.org>
+References: <CAABZP2z+Hk_w7nAhhyhJA9zidQViibMUO_xYianfm3xcG1QQwQ@mail.gmail.com>
+ <D59B7575-FAB1-4446-BBA9-DF5EAA1B5DCA@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <764CA486-6FB2-4667-B8CB-56E3AC31FD58@joelfernandes.org>
+In-Reply-To: <D59B7575-FAB1-4446-BBA9-DF5EAA1B5DCA@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 08:22:06AM -0500, Joel Fernandes wrote:
+On Mon, Feb 27, 2023 at 08:15:26AM -0500, Joel Fernandes wrote:
 > 
 > 
-> > On Feb 27, 2023, at 2:53 AM, Zhuo, Qiuxu <qiuxu.zhuo@intel.com> wrote:
+> > On Feb 27, 2023, at 3:03 AM, Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
 > > 
-> > ﻿
-> >> 
-> >> From: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >> Sent: Saturday, February 25, 2023 11:34 AM
-> >> To: linux-kernel@vger.kernel.org
-> >> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>; Frederic Weisbecker
-> >> <frederic@kernel.org>; Lai Jiangshan <jiangshanlai@gmail.com>; linux-
-> >> doc@vger.kernel.org; Paul E. McKenney <paulmck@kernel.org>;
-> >> rcu@vger.kernel.org
-> >> Subject: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
-> >> completed
-> >> 
-> >> On many systems, a great deal of boot happens after the kernel thinks the
-> >> boot has completed. It is difficult to determine if the system has really
-> >> booted from the kernel side. Some features like lazy-RCU can risk slowing
-> >> down boot time if, say, a callback has been added that the boot
-> >> synchronously depends on.
-> >> 
-> >> Further, it is better to boot systems which pass 'rcu_normal_after_boot' to
-> >> stay expedited for as long as the system is still booting.
-> >> 
-> >> For these reasons, this commit adds a config option
-> >> 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter
-> >> rcupdate.boot_end_delay.
-> >> 
-> >> By default, this value is 20s. A system designer can choose to specify a value
-> >> here to keep RCU from marking boot completion.  The boot sequence will not
-> >> be marked ended until at least boot_end_delay milliseconds have passed.
+> > ﻿Hi
 > > 
-> > Hi Joel,
-> > 
-> > Just some thoughts on the default value of 20s, correct me if I'm wrong :-).
-> > 
-> > Does the OS with CONFIG_PREEMPT_RT=y kernel concern more about the 
-> > real-time latency than the overall OS boot time?
+> >> On Mon, Feb 27, 2023 at 2:30 PM Sanan Hasanov
+> >> <sanan.hasanov@knights.ucf.edu> wrote:
+> >> 
+> >> Good day, dear maintainers,
+> >> 
+> >> We found a bug using a modified kernel configuration file used by syzbot.
+> >> 
+> >> We enhanced the coverage of the configuration file using our tool, klocalizer.
+> >> 
+> >> Kernel Branch: 6.2.0-next-20230221
+> >> Kernel config: https://drive.google.com/file/d/1QKAQV11zjOwISifUc-skRBoTo3EXhutY/view?usp=share_link
+> >> C Reproducer: Unfortunately, there is no reproducer yet.
 > 
-> But every system has to boot, even an RT system.
+> Sanan/Zhoui,
+> Could you also provide the full kernel dmesg? Could you enable CONFIG_DEBUG_INFO_DWARF5 and provide the vmlinux after the crash?
 > 
-> > 
-> > If so, we might make rcupdate.boot_end_delay = 0 as the default value 
-> > (NOT the default 20s) for CONFIG_PREEMPT_RT=y kernels? 
+> More comments below:
 > 
-> Could you measure how much time your RT system takes to boot before the application runs?
+> >> 
+> >> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> >> #PF: supervisor instruction fetch in kernel mode
+> >> #PF: error_code(0x0010) - not-present page
+> >> PGD 53756067 P4D 53756067 PUD 0
+> >> Oops: 0010 [#1] PREEMPT SMP KASAN
+> >> CPU: 7 PID: 0 Comm: swapper/7 Not tainted 6.2.0-next-20230221 #1
+> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> >> RIP: 0010:0x0
+> >> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> >> RSP: 0018:ffffc900003f8e48 EFLAGS: 00010246
+> >> RAX: 0000000000000000 RBX: ffff888100833900 RCX: 00000000b9582f6c
+> >> RDX: 1ffff11020106853 RSI: ffffffff816b2769 RDI: ffff888043f64708
+> >> RBP: 000000000000000c R08: 0000000000000000 R09: ffffffff900b895f
+> >> R10: fffffbfff201712b R11: 000000000008e001 R12: dffffc0000000000
+> >> R13: ffffc900003f8ec8 R14: ffff888043f64708 R15: 000000000000000b
+> >> FS:  0000000000000000(0000) GS:ffff888119f80000(0000) knlGS:0000000000000000
+> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> CR2: ffffffffffffffd6 CR3: 0000000054e64000 CR4: 0000000000350ee0
+> >> Call Trace:
+> >> <IRQ>
+> >> rcu_core+0x85d/0x1960
+> >> __do_softirq+0x2e5/0xae2
+> >> __irq_exit_rcu+0x11d/0x190
+> >> irq_exit_rcu+0x9/0x20
+> >> sysvec_apic_timer_interrupt+0x97/0xc0
+> >> </IRQ>
+> >> <TASK>
+> >> asm_sysvec_apic_timer_interrupt+0x1a/0x20
+> >> RIP: 0010:default_idle+0xf/0x20
+> >> Code: 89 07 49 c7 c0 08 00 00 00 4d 29 c8 4c 01 c7 4c 29 c2 e9 76 ff ff ff cc cc cc cc f3 0f 1e fa eb 07 0f 00 2d e3 8a 34 00 fb f4 <fa> c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 65
+> >> RSP: 0018:ffffc9000017fe00 EFLAGS: 00000202
+> >> RAX: 0000000000dfbea1 RBX: dffffc0000000000 RCX: ffffffff89b1da9c
+> >> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+> >> RBP: 0000000000000007 R08: 0000000000000001 R09: ffff888119fb6c23
+> >> R10: ffffed10233f6d84 R11: dffffc0000000000 R12: 0000000000000003
+> >> R13: ffff888100833900 R14: ffffffff8e112850 R15: 0000000000000000
+> >> default_idle_call+0x67/0xa0
+> >> do_idle+0x361/0x440
+> >> cpu_startup_entry+0x18/0x20
+> >> start_secondary+0x256/0x300
+> >> secondary_startup_64_no_verify+0xce/0xdb
+> >> </TASK>
+> >> Modules linked in:
+> >> CR2: 0000000000000000
+> >> ---[ end trace 0000000000000000 ]---
+> >> RIP: 0010:0x0
+> >> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
 > 
-> I can change it to default 0 essentially NOOPing it, but I would rather have a saner default (10 seconds even), than having someone forget to tune this for their system.
+> I have seen this exact signature when the processor tries to execute a function that has a NULL address. That causes IP to goto 0 and the exception. Sounds like something corrupted rcu_head (Just a guess).
 
-Provide a /sys location that the userspace code writes to when it
-is ready?  Different systems with different hardware and software
-configurations are going to take different amounts of time to boot,
-correct?
+Quite possibly!  If so, then building with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
+might be helpful.
 
-								Thanx, Paul
+Once a reproducer is foud, of course...
 
+							Thanx, Paul
+
+> >> RSP: 0018:ffffc900003f8e48 EFLAGS: 00010246
+> >> 
+> >> RAX: 0000000000000000 RBX: ffff888100833900 RCX: 00000000b9582f6c
+> >> RDX: 1ffff11020106853 RSI: ffffffff816b2769 RDI: ffff888043f64708
+> >> RBP: 000000000000000c R08: 0000000000000000 R09: ffffffff900b895f
+> >> R10: fffffbfff201712b R11: 000000000008e001 R12: dffffc0000000000
+> >> R13: ffffc900003f8ec8 R14: ffff888043f64708 R15: 000000000000000b
+> >> FS:  0000000000000000(0000) GS:ffff888119f80000(0000) knlGS:0000000000000000
+> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> CR2: ffffffffffffffd6 CR3: 0000000054e64000 CR4: 0000000000350ee0
+> >> ----------------
+> >> Code disassembly (best guess):
+> >>   0:   89 07                   mov    %eax,(%rdi)
+> >>   2:   49 c7 c0 08 00 00 00    mov    $0x8,%r8
+> >>   9:   4d 29 c8                sub    %r9,%r8
+> >>   c:   4c 01 c7                add    %r8,%rdi
+> >>   f:   4c 29 c2                sub    %r8,%rdx
+> >>  12:   e9 76 ff ff ff          jmp    0xffffff8d
+> >>  17:   cc                      int3
+> >>  18:   cc                      int3
+> >>  19:   cc                      int3
+> >>  1a:   cc                      int3
+> >>  1b:   f3 0f 1e fa             endbr64
+> >>  1f:   eb 07                   jmp    0x28
+> >>  21:   0f 00 2d e3 8a 34 00    verw   0x348ae3(%rip)        # 0x348b0b
+> >>  28:   fb                      sti
+> >>  29:   f4                      hlt
+> >> * 2a:   fa                      cli <-- trapping instruction
+> 
+> This probably happened before the crash and it is likely unrelated IMO. cli just means interrupts were enabled, the actual problem happened after softirq fired (likely at the tail end of the interrupt).
+> 
 > Thanks,
 > 
->  - Joel
+>  - Joel 
 > 
 > 
-> > 
-> > -Qiuxu
-> > 
-> >> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >> ---
-> >> v1->v2:
-> >>    Update some comments and description.
-> >> ...
-> > 
+> >>  2b:   c3                      ret
+> >>  2c:   66 66 2e 0f 1f 84 00    data16 cs nopw 0x0(%rax,%rax,1)
+> >>  33:   00 00 00 00
+> >>  37:   0f 1f 40 00             nopl   0x0(%rax)
+> >>  3b:   f3 0f 1e fa             endbr64
+> >>  3f:   65                      gs
+> >> 
