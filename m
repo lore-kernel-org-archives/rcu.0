@@ -2,134 +2,156 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83980C64ED6
-	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 16:33:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 589B9C64ED6
+	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 18:06:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjB0QdQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Feb 2023 11:33:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        id S229833AbjB0SGn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Feb 2023 13:06:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjB0QdO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Feb 2023 11:33:14 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC273598
-        for <rcu@vger.kernel.org>; Mon, 27 Feb 2023 08:32:53 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id q16so6889055wrw.2
-        for <rcu@vger.kernel.org>; Mon, 27 Feb 2023 08:32:52 -0800 (PST)
+        with ESMTP id S229685AbjB0SGm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Feb 2023 13:06:42 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486F82385D;
+        Mon, 27 Feb 2023 10:06:13 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id f18so9722324lfa.3;
+        Mon, 27 Feb 2023 10:06:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IoYGatWSvQRgweQA0GC8tXFSXKJ5/Iad9YexwVGxcig=;
-        b=DBzJ4Kh1nAhW9mzymQMn0YEQKZmEthpxpRNWaXWEnyEPpWQ7O57QKdOvn/it4W238T
-         toL+B6i+zEzGIAAZSw0V/3WW+UpN/Se0hUwgMladYn0fx2YZIB4h2FEcja4d+4+PDKv+
-         1Q6Bvd45NkbZ2dLPqN+oOEToHY77kK5zp1UI9HLTo1k3naJD9TufyDHo5ltW5EDJDt+l
-         5U0nDz0nhS6f1Wc0roDcGrMxDZuT4Y4KkKHkXUOYYdf93/+6SXt94d3R6cPZxifIUYgM
-         0zBGgipF7s4SQQz3DMWh861aeSZ6YmWclTLPOL09wlPfUpbztD34Y/mX4XaE11h+PORx
-         amsQ==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OqXiBQXvXH+tElXzgaTKSkwKZs1Zusa9JO9iVkTj7A0=;
+        b=iy+0fhbHz6snA10bci0QtKJt88K/3Lw7c2jTc7+6u1oEW66HHQJR6saRkRG4ngQbeK
+         mMll76DaahOTkOtmvsgo0LTOlLFQvAAXyU2X+naTl0QDADMcCz6yBOjePB7vScArCHCV
+         cIKHQ2CXob2AHDZ1X/a/why/vwAkdaf/CvZ+FnfZPjt8pf06XXfTZUFBdYWVpb3251NU
+         noJwpSz8TZkmgSC0vChAf5xNQWjP10DHdvpJpFkcjOI0GpaL+JUmcm7sYE570O9QktTE
+         AtjDixJ0hxArDsyWeaOHgeh53tX+rH2PmQbHYgceqaOgQbuqpt1Vumss6UrUHvK+0x+W
+         plSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IoYGatWSvQRgweQA0GC8tXFSXKJ5/Iad9YexwVGxcig=;
-        b=TeFyufGTOA9slR3Ya/rWan5hqGup3kotTQxGMdxX1sHiyENVZn9C5TFJoEKtsgtzLs
-         e4IGsG5MoZ2yUcu81uEMups9zELYIshdjxS7OUMafAa0cYVVeuq9E7jXkBxnDL6p3mqG
-         78tFcb7Oz5ICxx0UrWGPVmqD9CNsdD2qDsfznuCdRl+2M7EYTpTEx/ctVnYReXteySyj
-         Ty+yyT1NfnVzMUmajGFm7FZyIHrM/bKH8poocnl7g6LzbJmtf3qArGnlDxh9l52eo0mA
-         xcbI8gdV9PNjr63SN1Y8arLAclPlnzHyF7zWY6DjM4bTuiW7ONrt8cFGGFB+ovMEpwPU
-         1BXg==
-X-Gm-Message-State: AO0yUKXEeC5W1ozCtjs6ek5P1WaVpx7akJe9NZR7yfNy7bgm57zC2Z+D
-        Wb9f5GwAE/wpSNR4NgmGYVYyBw==
-X-Google-Smtp-Source: AK7set+BmZtVxjSiExjRciXj4iu4AswXVOqK7ahGer1JspHdlO4S1Xv8EqAaO8/tgqfzEr/CPfuOjA==
-X-Received: by 2002:adf:eccf:0:b0:2c7:e424:eeb8 with SMTP id s15-20020adfeccf000000b002c7e424eeb8mr8344937wro.57.1677515571554;
-        Mon, 27 Feb 2023 08:32:51 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:6caa:9121:bec9:a2a9? ([2a02:6b6a:b566:0:6caa:9121:bec9:a2a9])
-        by smtp.gmail.com with ESMTPSA id m7-20020adfe947000000b002c70f5627d5sm7389120wrn.63.2023.02.27.08.32.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Feb 2023 08:32:51 -0800 (PST)
-Message-ID: <0f4dc622-6273-8abc-bf9a-d4f737ccb8e9@bytedance.com>
-Date:   Mon, 27 Feb 2023 16:32:50 +0000
+        bh=OqXiBQXvXH+tElXzgaTKSkwKZs1Zusa9JO9iVkTj7A0=;
+        b=OeNLp5oAu0vQrSxV2u1cfgpmDNsKEWQLFf9HpFbuzJiocBuy9a90M9v4+MuUEtkZYj
+         VfQMaX+XXaJHayJDfyvh1/KovC2jfm2s2WPbFBfPqhq95UxklitZ4kkCopWw6lv4weu8
+         nLtTT84i52tDO4onwnqtYAJm8NDemqwTdHIvYGdyiDEUCBwD3jtPiWUd9ZOJwawLiqhl
+         ahgwT76FUAecCuXwfbj02cFCI3Z78BVwMgSNx78cuL4iMj0AH0IBgekJgEQF0nTzqCAl
+         v4LWVHqkTpIJ8VxP33NuvtFWzGkfpB2NJdVPxpWGAU+CPN3ZKebLuBvHAAsT05Uexfk3
+         yTIQ==
+X-Gm-Message-State: AO0yUKWyrIChVQrK8lwBmggWrqQFLVBhYw28FVPq94RmsbhE5e9gbQDn
+        1oOxFy5IRJi8sLht8ylH2fI=
+X-Google-Smtp-Source: AK7set+mfTLrmu9GZtWHsgxdDFJz1H3Z7GZiePM0rFjZ200NmwtXLNwsJqcyvq18l5VAb6NvGLkhHQ==
+X-Received: by 2002:a05:6512:3b9a:b0:4dd:9931:c560 with SMTP id g26-20020a0565123b9a00b004dd9931c560mr3144983lfv.15.1677521169479;
+        Mon, 27 Feb 2023 10:06:09 -0800 (PST)
+Received: from pc636 (host-90-235-25-56.mobileonline.telia.com. [90.235.25.56])
+        by smtp.gmail.com with ESMTPSA id v1-20020a2e7a01000000b00295a318ace7sm810530ljc.77.2023.02.27.10.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Feb 2023 10:06:08 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 27 Feb 2023 19:06:06 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     paulmck@kernel.org, "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
+ completed
+Message-ID: <Y/zxDuxsihJXTdxf@pc636>
+References: <IA1PR11MB617175CA398D425B7489CE4889AF9@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <764CA486-6FB2-4667-B8CB-56E3AC31FD58@joelfernandes.org>
+ <20230227145544.GC2948950@paulmck-ThinkPad-P17-Gen-1>
+ <CAEXW_YSVm7fjJaX=AT-Yg70wXL-_1RxoVPfzN8M8zJAkc0um3g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [PATCH v12 00/11] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        tglx@linutronix.de, kim.phillips@amd.com, brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
-References: <20230226110802.103134-1-usama.arif@bytedance.com>
- <5650744.DvuYhMxLoT@natalenko.name>
- <819d8fa2-b73e-e32f-5442-452aa2c0d752@bytedance.com>
- <5e8ad90a-1dc6-95c2-e020-5e95da6f9eda@bytedance.com>
- <90c7efe278fed0616275ed64215ec1fe249f16f5.camel@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <90c7efe278fed0616275ed64215ec1fe249f16f5.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YSVm7fjJaX=AT-Yg70wXL-_1RxoVPfzN8M8zJAkc0um3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 27/02/2023 15:29, David Woodhouse wrote:
-> On Mon, 2023-02-27 at 06:14 +0000, Usama Arif wrote:
->>
->> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
->> index 17bdd6122dca..5d709aa67df4 100644
->> --- a/arch/x86/kernel/head_64.S
->> +++ b/arch/x86/kernel/head_64.S
->> @@ -273,7 +273,11 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify,
->> SYM_L_GLOBAL)
->>           cmpl    (%rbx,%rcx,4), %edx
->>           jz      .Lsetup_cpu
->>           inc     %ecx
->> +#if (NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)
->> +       cmpl    $NR_CPUS, %ecx
->> +#else
->>           cmpl    nr_cpu_ids(%rip), %ecx
->> +#endif
->>           jb      .Lfind_cpunr
->>
->>           /*  APIC ID not found in the table. Drop the trampoline lock
->> and bail. */
+On Mon, Feb 27, 2023 at 10:16:51AM -0500, Joel Fernandes wrote:
+> On Mon, Feb 27, 2023 at 9:55 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Mon, Feb 27, 2023 at 08:22:06AM -0500, Joel Fernandes wrote:
+> > >
+> > >
+> > > > On Feb 27, 2023, at 2:53 AM, Zhuo, Qiuxu <qiuxu.zhuo@intel.com> wrote:
+> > > >
+> > > > ﻿
+> > > >>
+> > > >> From: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > >> Sent: Saturday, February 25, 2023 11:34 AM
+> > > >> To: linux-kernel@vger.kernel.org
+> > > >> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>; Frederic Weisbecker
+> > > >> <frederic@kernel.org>; Lai Jiangshan <jiangshanlai@gmail.com>; linux-
+> > > >> doc@vger.kernel.org; Paul E. McKenney <paulmck@kernel.org>;
+> > > >> rcu@vger.kernel.org
+> > > >> Subject: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
+> > > >> completed
+> > > >>
+> > > >> On many systems, a great deal of boot happens after the kernel thinks the
+> > > >> boot has completed. It is difficult to determine if the system has really
+> > > >> booted from the kernel side. Some features like lazy-RCU can risk slowing
+> > > >> down boot time if, say, a callback has been added that the boot
+> > > >> synchronously depends on.
+> > > >>
+> > > >> Further, it is better to boot systems which pass 'rcu_normal_after_boot' to
+> > > >> stay expedited for as long as the system is still booting.
+> > > >>
+> > > >> For these reasons, this commit adds a config option
+> > > >> 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter
+> > > >> rcupdate.boot_end_delay.
+> > > >>
+> > > >> By default, this value is 20s. A system designer can choose to specify a value
+> > > >> here to keep RCU from marking boot completion.  The boot sequence will not
+> > > >> be marked ended until at least boot_end_delay milliseconds have passed.
+> > > >
+> > > > Hi Joel,
+> > > >
+> > > > Just some thoughts on the default value of 20s, correct me if I'm wrong :-).
+> > > >
+> > > > Does the OS with CONFIG_PREEMPT_RT=y kernel concern more about the
+> > > > real-time latency than the overall OS boot time?
+> > >
+> > > But every system has to boot, even an RT system.
+> > >
+> > > >
+> > > > If so, we might make rcupdate.boot_end_delay = 0 as the default value
+> > > > (NOT the default 20s) for CONFIG_PREEMPT_RT=y kernels?
+> > >
+> > > Could you measure how much time your RT system takes to boot before the application runs?
+> > >
+> > > I can change it to default 0 essentially NOOPing it, but I would rather have a saner default (10 seconds even), than having someone forget to tune this for their system.
+> >
+> > Provide a /sys location that the userspace code writes to when it
+> > is ready?  Different systems with different hardware and software
+> > configurations are going to take different amounts of time to boot,
+> > correct?
 > 
-> The whitespace looks dodgy there but maybe that's just your mail client?
+> I could add a sysfs node, but I still wanted this patch as well
+> because I am wary of systems where yet more userspace changes are
+> required. I feel the kernel should itself be able to do this. Yes, it
+> is possible the system completes "booting" at a different time than
+> what the kernel thinks. But it does that anyway (even without this
+> patch), so I am not seeing a good reason to not do this in the kernel.
+> It is also only a minimum cap, so if the in-kernel boot takes too
+> long, then the patch will have no effect.
 > 
-> Given this code is already in #ifdef CONFIG_SMP, can NR_CPUS be 1?
+> Thoughts?
+> 
+Why "rcu_boot_ended" is not enough? As i see right after that an "init"
+process or shell or panic is going to be invoked by the kernel. It basically
+indicates that a kernel is fully functional.
 
-Ah yes, we have
+Or an idea to wait even further? Until all kernel modules are loaded by
+user space.
 
-config NR_CPUS_RANGE_BEGIN
-	int
-	default NR_CPUS_RANGE_END if MAXSMP
-	default    1 if !SMP
-	default    2
+Thanks!
 
-in arch/x86/Kconfig which doesn't let us select 1 for NR_CPUS if SMP is 
-enabled, so this should be enough
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 17bdd6122dca..c79ae67492e1 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -273,7 +273,11 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, 
-SYM_L_GLOBAL)
-         cmpl    (%rbx,%rcx,4), %edx
-         jz      .Lsetup_cpu
-         inc     %ecx
-+#if defined(CONFIG_FORCE_NR_CPUS)
-+       cmpl    $NR_CPUS, %ebx
-+#else
-         cmpl    nr_cpu_ids(%rip), %ecx
-+#endif
-         jb      .Lfind_cpunr
+--
+Uladzislau Rezki
