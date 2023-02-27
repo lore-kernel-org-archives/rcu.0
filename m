@@ -2,136 +2,279 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EACAC7EE2D
-	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 00:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED0D7C64ED6
+	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 06:14:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjB0AD2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Feb 2023 19:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
+        id S229771AbjB0GOH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Feb 2023 01:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjB0AD1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Feb 2023 19:03:27 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643039742;
-        Sun, 26 Feb 2023 16:03:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=+nha29/AKnCiNonhjL1b/Xu2lJjtfS87odZR9H1Cc0s=; b=ArdVyRxKOIKlcRkICMv/DL5jxJ
-        celGImU9YTrL6d6N/2lA4YGL2+XddjRfOw9k1xPbrR+swIwvIz4SHMvrcdY2E/Swz7Zs5rZpKoMgj
-        LL5jFE72NpjaUbxqC8+Anc/t+5qUn/8HHaF4XSsjnRkdqYL+g1hWX1PlMDSHU+afIY2KGbM1rGv4L
-        7GtW41DMrtsuk3iY6fVIlEmi4c9aXQYvs8itp1y6JWv1W7oq/UgBbSc8xgjOGg78eTU+yzlszOR3Y
-        EyBr7ajIATLucXJ18843/0nelWMknh6CtQJd/135IexW7ugDIjh21T5SHjeABMIiqS8+sv1L23jXa
-        E+r3BtEQ==;
-Received: from [2601:1c2:980:9ec0::df2f]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pWQzF-0082zE-9M; Mon, 27 Feb 2023 00:03:25 +0000
-Message-ID: <d24bff4c-9426-296a-d43a-f22983ab9086@infradead.org>
-Date:   Sun, 26 Feb 2023 16:03:24 -0800
+        with ESMTP id S229714AbjB0GOG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Feb 2023 01:14:06 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83C7C179
+        for <rcu@vger.kernel.org>; Sun, 26 Feb 2023 22:14:03 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id q16so4977436wrw.2
+        for <rcu@vger.kernel.org>; Sun, 26 Feb 2023 22:14:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IY/oQ5lE78P/FKorvE3L63K92skVPr81uBSaQolmbzw=;
+        b=MCuZ6CbpJNCKtJKynOX+BYizHfWXnAhkeO9aYzEEJOSMiHStWjkPQWApSFx5lg151n
+         +Fp/8rIjTpyUFkK6S29XW4vNqJHzWbCNc84JHELMWq2xmsDjU3vclDhAqNpgiFaMs2qz
+         S9/EJycukz4PQFQ2iAJhhKOXFdi5m5aCw0FbUong+OBYp3lwIC+dIrHlBVNJZG+JKlga
+         d6aQraQbCy44H8v4JTj+9Ne1x7lwYDxUHcMol0AysHa9PqU65nLregvaSyoy5hWYD6dT
+         PP70D/WSCBy9YR+d9dePVgWulbDZ0gVbZ51C4xpi+GLwk82mdrkHkAO3TFye3FlCXJvj
+         m0yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IY/oQ5lE78P/FKorvE3L63K92skVPr81uBSaQolmbzw=;
+        b=WBzEzVCrZNpLSpVUrQEChksujHAL0zSSXZt9wqcsYvUAXz7QrZmhYVuV/2C+jCJ49/
+         PUQwasbiihtvYZps4u36C2SsWgZ926pEyxrvfO7oYYGkx+4KvZBZIzpg34ieTO3r8mo/
+         +Pxs3KfMoRGCsjgqH+bFUjefh5/7adRFGwmQ6nWtSE3K5BqoyIl1z/a7s2kizoVeepCX
+         7OIg//C/l3df418jnuplaL4fRK53biGw5oVZYBFDl0HQTMghNoWwVV2MiGXh2IISVmuS
+         q79Lw5uMA/cfaI9Hw99Tz4sNLxfVoKsfbvX5J1/dZoSyQ+MT3/1kqh4XAz0tV8sCFxDv
+         Igcw==
+X-Gm-Message-State: AO0yUKUzYmWMTzxSGsnIgn3aN5HOEWuzO/2ZhLQd9GSSWuemoEN8tP82
+        AynzMb9ge72yrNQU0JOh5CWBeg==
+X-Google-Smtp-Source: AK7set+9tD8sLsrBbWCEpPEUL2zMSPiu2salwUXK59sl4c/vy2ICVHv5Nts1c3Na4K1zLMazxIAwYA==
+X-Received: by 2002:a5d:40c9:0:b0:2c7:13e4:2094 with SMTP id b9-20020a5d40c9000000b002c713e42094mr11092680wrq.42.1677478442087;
+        Sun, 26 Feb 2023 22:14:02 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:6caa:9121:bec9:a2a9? ([2a02:6b6a:b566:0:6caa:9121:bec9:a2a9])
+        by smtp.gmail.com with ESMTPSA id l21-20020a1c7915000000b003e21ba8684dsm7733255wme.26.2023.02.26.22.14.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Feb 2023 22:14:01 -0800 (PST)
+Message-ID: <5e8ad90a-1dc6-95c2-e020-5e95da6f9eda@bytedance.com>
+Date:   Mon, 27 Feb 2023 06:14:00 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [PATCH RFC] rcu: Add a minimum time for marking boot as completed
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v12 00/11] Parallel CPU bringup for x86_64
 Content-Language: en-US
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org
-References: <20230225032716.3320124-1-joel@joelfernandes.org>
- <ea03e810-95f0-abd8-2a83-f83174a99dbf@infradead.org>
- <Y/mHpOrr1C8NkMWm@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <Y/mHpOrr1C8NkMWm@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, arjan@linux.intel.com, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
+References: <20230226110802.103134-1-usama.arif@bytedance.com>
+ <5650744.DvuYhMxLoT@natalenko.name>
+ <819d8fa2-b73e-e32f-5442-452aa2c0d752@bytedance.com>
+In-Reply-To: <819d8fa2-b73e-e32f-5442-452aa2c0d752@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 2/24/23 19:59, Joel Fernandes wrote:
-> On Fri, Feb 24, 2023 at 07:32:22PM -0800, Randy Dunlap wrote:
-> [..] 
->>> +
->>> +	  Accept the default if unsure.
->>> +
->>>  config RCU_EXP_KTHREAD
->>>  	bool "Perform RCU expedited work in a real-time kthread"
->>>  	depends on RCU_BOOST && RCU_EXPERT
->>> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
->>> index 19bf6fa3ee6a..5b73341d9b89 100644
->>> --- a/kernel/rcu/update.c
->>> +++ b/kernel/rcu/update.c
->>> @@ -62,6 +62,10 @@ module_param(rcu_normal_after_boot, int, 0444);
->>>  #endif
->>>  #endif /* #ifndef CONFIG_TINY_RCU */
->>>  
->>> +/* Minimum time until RCU considers boot as completed. */
->>> +static int boot_end_delay = CONFIG_RCU_BOOT_END_DELAY;
->>> +module_param(boot_end_delay, int, 0444);
->>> +
->>>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->>>  /**
->>>   * rcu_read_lock_held_common() - might we be in RCU-sched read-side critical section?
->>> @@ -225,12 +229,29 @@ void rcu_unexpedite_gp(void)
->>>  EXPORT_SYMBOL_GPL(rcu_unexpedite_gp);
->>>  
->>>  static bool rcu_boot_ended __read_mostly;
->>> -
->>>  /*
->>> - * Inform RCU of the end of the in-kernel boot sequence.
->>> + * Inform RCU of the end of the in-kernel boot sequence. The boot sequence will
->>> + * not be marked ended until at least boot_end_delay milliseconds have passed.
->>>   */
->>> +void rcu_end_inkernel_boot(void);
->>> +static void boot_rcu_work_fn(struct work_struct *work)
->>> +{
->>> +	rcu_end_inkernel_boot();
->>> +}
->>> +static DECLARE_DELAYED_WORK(boot_rcu_work, boot_rcu_work_fn);
->>> +
->>>  void rcu_end_inkernel_boot(void)
->>>  {
->>> +	if (boot_end_delay) {
->>> +		u64 boot_ms = ktime_get_boot_fast_ns() / 1000000UL;
+On 26/02/2023 20:59, Usama Arif wrote:
+> 
+> 
+> On 26/02/2023 18:31, Oleksandr Natalenko wrote:
+>> Hello.
 >>
->> Is that division OK on 32-bit?  Might have to use a helper macro. (I dunno.)
+>> On neděle 26. února 2023 12:07:51 CET Usama Arif wrote:
+>>> The main code change over v11 is the build error fix by Brian Gerst and
+>>> acquiring tr_lock in trampoline_64.S whenever the stack is setup.
+>>>
+>>> The git history is also rewritten to move the commits that removed
+>>> initial_stack, early_gdt_descr and initial_gs earlier in the patchset.
+>>>
+>>> Thanks,
+>>> Usama
+>>>
+>>> Changes across versions:
+>>> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+>>> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+>>>      in preparation for more parallelisation.
+>>> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+>>>      avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+>>>      24 bits of the physical X2APIC ID to be used. That patch still 
+>>> needs
+>>>      a Signed-off-by from its original author, who once claimed not to
+>>>      remember writing it at all. But now we've fixed it, hopefully he'll
+>>>      admit it now :)
+>>> v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+>>>      for AMD CPUs.
+>>> v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+>>>      reused timer calibration for secondary CPUs.
+>>> v7: [David Woodhouse] iterate over all possible CPUs to find any 
+>>> existing
+>>>      cluster mask in alloc_clustermask. (patch 1/9)
+>>>      Keep parallel AMD support enabled in AMD, using APIC ID in CPUID 
+>>> leaf
+>>>      0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are 
+>>> sufficient.
+>>>      Included sanity checks for APIC id from 0x0B. (patch 6/9)
+>>>      Removed patch for reusing timer calibration for secondary CPUs.
+>>>      commit message and code improvements.
+>>> v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+>>>      early_gdt_descr.
+>>>      Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+>>>      Code comments improved and debug prints added.
+>>> v9: Drop patch to avoid repeated saves of MTRR at boot time.
+>>>      rebased and retested at v6.2-rc8.
+>>>      added kernel doc for no_parallel_bringup and made 
+>>> do_parallel_bringup
+>>>      __ro_after_init.
+>>> v10: Fixed suspend/resume not working with parallel smpboot.
+>>>       rebased and retested to 6.2.
+>>>       fixed checkpatch errors.
+>>> v11: Added patches from Brian Gerst to remove the global variables 
+>>> initial_gs,
+>>>       initial_stack, and early_gdt_descr from the 64-bit boot code
+>>>       
+>>> (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.com/).
+>>> v12: Fixed compilation errors, acquire tr_lock for every stack setup in
+>>>       trampoline_64.S.
+>>>       Rearranged commits for a cleaner git history.
+>>>
+>>> Brian Gerst (3):
+>>>    x86/smpboot: Remove initial_stack on 64-bit
+>>>    x86/smpboot: Remove early_gdt_descr on 64-bit
+>>>    x86/smpboot: Remove initial_gs
+>>>
+>>> David Woodhouse (8):
+>>>    x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+>>>    cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+>>>    cpu/hotplug: Add dynamic parallel bringup states before
+>>>      CPUHP_BRINGUP_CPU
+>>>    x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+>>>    x86/smpboot: Split up native_cpu_up into separate phases and document
+>>>      them
+>>>    x86/smpboot: Support parallel startup of secondary CPUs
+>>>    x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+>>>    x86/smpboot: Serialize topology updates for secondary bringup
+>>>
+>>>   .../admin-guide/kernel-parameters.txt         |   3 +
+>>>   arch/x86/include/asm/processor.h              |   6 +-
+>>>   arch/x86/include/asm/realmode.h               |   4 +-
+>>>   arch/x86/include/asm/smp.h                    |  15 +-
+>>>   arch/x86/include/asm/topology.h               |   2 -
+>>>   arch/x86/kernel/acpi/sleep.c                  |  15 +-
+>>>   arch/x86/kernel/apic/apic.c                   |   2 +-
+>>>   arch/x86/kernel/apic/x2apic_cluster.c         | 126 ++++---
+>>>   arch/x86/kernel/asm-offsets.c                 |   1 +
+>>>   arch/x86/kernel/cpu/common.c                  |   6 +-
+>>>   arch/x86/kernel/head_64.S                     | 129 +++++--
+>>>   arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
+>>>   arch/x86/realmode/init.c                      |   3 +
+>>>   arch/x86/realmode/rm/trampoline_64.S          |  27 +-
+>>>   arch/x86/xen/smp_pv.c                         |   4 +-
+>>>   arch/x86/xen/xen-head.S                       |   2 +-
+>>>   include/linux/cpuhotplug.h                    |   2 +
+>>>   include/linux/smpboot.h                       |   7 +
+>>>   kernel/cpu.c                                  |  31 +-
+>>>   kernel/smpboot.h                              |   2 -
+>>>   20 files changed, 537 insertions(+), 200 deletions(-)
+>>
+>> With `CONFIG_FORCE_NR_CPUS=y` this results in:
+>>
+>> ```
+>> ld: vmlinux.o: in function `secondary_startup_64_no_verify':
+>> (.head.text+0x10c): undefined reference to `nr_cpu_ids'
+>> ```
+>>
+>> That's because in `arch/x86/kernel/head_64.S` 
+>> `secondary_startup_64_no_verify()` refers to `nr_cpu_ids` under 
+>> `#ifdef CONFIG_SMP`, but this symbol is available under the following 
+>> conditions:
+>>
+>> ```
+>> 38 #if (NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)
+>> 39 #define nr_cpu_ids ((unsigned int)NR_CPUS)
+>> 40 #else
+>> 41 extern unsigned int nr_cpu_ids;
+>> 42 #endif
+>>
+>> 1090 #if (NR_CPUS > 1) && !defined(CONFIG_FORCE_NR_CPUS)
+>> 1091 /* Setup number of possible processor ids */
+>> 1092 unsigned int nr_cpu_ids __read_mostly = NR_CPUS;
+>> 1093 EXPORT_SYMBOL(nr_cpu_ids);
+>> 1094 #endif
+>> ```
+>>
+>> So having `CONFIG_SMP=y` and, for instance, `CONFIG_NR_CPUS=320`, it 
+>> is possible to compile out `EXPORT_SYMBOL(nr_cpu_ids);` if 
+>> `CONFIG_FORCE_NR_CPUS=y` is set.
+>>
 > 
-> I believe the below should work on 32-bit, but I will test it more. It does
-> on 64-bit.
+> I think something like below diff should work in all scenarios?
 > 
-> Thanks!
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index c2aa0aa26b45..e3727dab9cab 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -35,7 +35,7 @@ typedef struct cpumask { DECLARE_BITMAP(bits, 
+> NR_CPUS); } cpumask_t;
+>    */
+>   #define cpumask_pr_args(maskp)         nr_cpu_ids, cpumask_bits(maskp)
 > 
-> ---8<-----------------------
+> -#if (NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)
+> +#if ((NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)) && 
+> !defined(CONFIG_SMP)
+>   #define nr_cpu_ids ((unsigned int)NR_CPUS)
+>   #else
+>   extern unsigned int nr_cpu_ids;
+> @@ -43,7 +43,7 @@ extern unsigned int nr_cpu_ids;
 > 
-> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> index cbdad7b46841..2f539c18b310 100644
-> --- a/kernel/rcu/update.c
-> +++ b/kernel/rcu/update.c
-> @@ -243,7 +243,7 @@ static DECLARE_DELAYED_WORK(boot_rcu_work, boot_rcu_work_fn);
->  void rcu_end_inkernel_boot(void)
->  {
->  	if (boot_end_delay) {
-> -		u64 boot_ms = ktime_get_boot_fast_ns() / 1000000UL;
-> +		u64 boot_ms = div_u64(ktime_get_boot_fast_ns(), 1000000UL);
->  
->  		if (boot_ms < boot_end_delay) {
->  			schedule_delayed_work(&boot_rcu_work,
+>   static inline void set_nr_cpu_ids(unsigned int nr)
+>   {
+> -#if (NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)
+> +#if ((NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)) && 
+> !defined(CONFIG_SMP)
+>          WARN_ON(nr != nr_cpu_ids);
+>   #else
+>          nr_cpu_ids = nr;
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index 06a413987a14..a051b16d4a24 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -1087,11 +1087,9 @@ static int __init maxcpus(char *str)
+> 
+>   early_param("maxcpus", maxcpus);
+> 
+> -#if (NR_CPUS > 1) && !defined(CONFIG_FORCE_NR_CPUS)
+>   /* Setup number of possible processor ids */
+>   unsigned int nr_cpu_ids __read_mostly = NR_CPUS;
+>   EXPORT_SYMBOL(nr_cpu_ids);
+> -#endif
+> 
+>   /* An arch may set nr_cpu_ids earlier if needed, so this would be 
+> redundant */
+>   void __init setup_nr_cpu_ids(void)
 
-Joel, this now builds cleanly on 32-bit. Before the patch:
+Or better just do below?
 
-ld: kernel/rcu/update.o: in function `boot_rcu_work_fn':
-update.c:(.text+0x4623): undefined reference to `__udivdi3'
-ld: kernel/rcu/update.o: in function `rcu_end_inkernel_boot':
-update.c:(.text+0x46b3): undefined reference to `__udivdi3'
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 17bdd6122dca..5d709aa67df4 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -273,7 +273,11 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, 
+SYM_L_GLOBAL)
+         cmpl    (%rbx,%rcx,4), %edx
+         jz      .Lsetup_cpu
+         inc     %ecx
++#if (NR_CPUS == 1) || defined(CONFIG_FORCE_NR_CPUS)
++       cmpl    $NR_CPUS, %ecx
++#else
+         cmpl    nr_cpu_ids(%rip), %ecx
++#endif
+         jb      .Lfind_cpunr
 
-I don't know what the second one refers to, but it didn't show up
-after the patch above (using div_u64()).
+         /*  APIC ID not found in the table. Drop the trampoline lock 
+and bail. */
 
-Thanks.
--- 
-~Randy
