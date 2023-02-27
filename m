@@ -2,193 +2,83 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD45C64ED6
-	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 15:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD1DFC64ED8
+	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 15:33:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjB0Pa0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Feb 2023 10:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
+        id S229515AbjB0Pdb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Feb 2023 10:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjB0PaZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:30:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51586C167;
-        Mon, 27 Feb 2023 07:30:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gz8hdH9bFd0e4NDFd1eIEb5EimtV3uh+pRybRzbjun8=; b=nla2VbHMvDwHmBDnzrzpuFVCXb
-        ulhJwF2RYoVz0Onkmd0WFmK1tc6LJMKy97bBR2aJrgY2KwITbxpw+X2CU7DGL7eIMCyXy4vgY28kl
-        TAOmxMgqqjk3zbJea3+0Jy9Mk6mFbKaiKxoQhcB2p4jtQhIJqPbCu6ZEhZaCRSaqj9gv6n7W7yhSE
-        CRdF/tHk9UbQLYNu57VMfqTUdkXcTHOuURKyA0F9DXF14/vRfyqiSntHgiOT2lvMpUp0KH4A5v2Se
-        MYIrqbZ9OVasXAQnCnpr3Q0Z5OvQgzY/ZQQyzg0a27ELG4ImnC+WFrhYDLjJiEQlZN6u/THoabX1L
-        XFzZx97g==;
-Received: from [2001:8b0:10b:5:8acb:cc69:1699:a2e9] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pWfRQ-000D5k-W3; Mon, 27 Feb 2023 15:29:29 +0000
-Message-ID: <90c7efe278fed0616275ed64215ec1fe249f16f5.camel@infradead.org>
-Subject: Re: [External] Re: [PATCH v12 00/11] Parallel CPU bringup for x86_64
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Usama Arif <usama.arif@bytedance.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        tglx@linutronix.de, kim.phillips@amd.com, brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
-Date:   Mon, 27 Feb 2023 15:29:27 +0000
-In-Reply-To: <5e8ad90a-1dc6-95c2-e020-5e95da6f9eda@bytedance.com>
-References: <20230226110802.103134-1-usama.arif@bytedance.com>
-         <5650744.DvuYhMxLoT@natalenko.name>
-         <819d8fa2-b73e-e32f-5442-452aa2c0d752@bytedance.com>
-         <5e8ad90a-1dc6-95c2-e020-5e95da6f9eda@bytedance.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-ya5puaBjsDwKiYfb06b3"
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S229629AbjB0PdC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:33:02 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB127D508;
+        Mon, 27 Feb 2023 07:33:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 543BE60EB6;
+        Mon, 27 Feb 2023 15:33:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49A27C433EF;
+        Mon, 27 Feb 2023 15:32:59 +0000 (UTC)
+Date:   Mon, 27 Feb 2023 10:32:57 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Sanan Hasanov <sanan.hasanov@knights.ucf.edu>,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
+        contact@pgazz.com
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
+ rcu_core
+Message-ID: <20230227103257.4b99b6fb@gandalf.local.home>
+In-Reply-To: <D59B7575-FAB1-4446-BBA9-DF5EAA1B5DCA@joelfernandes.org>
+References: <CAABZP2z+Hk_w7nAhhyhJA9zidQViibMUO_xYianfm3xcG1QQwQ@mail.gmail.com>
+        <D59B7575-FAB1-4446-BBA9-DF5EAA1B5DCA@joelfernandes.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Mon, 27 Feb 2023 08:15:26 -0500
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
---=-ya5puaBjsDwKiYfb06b3
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+> >> asm_sysvec_apic_timer_interrupt+0x1a/0x20
+> >> RIP: 0010:default_idle+0xf/0x20
+> >> Code: 89 07 49 c7 c0 08 00 00 00 4d 29 c8 4c 01 c7 4c 29 c2 e9 76 ff ff ff cc cc cc cc f3 0f 1e fa eb 07 0f 00 2d e3 8a 34 00 fb f4 <fa> c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 65
+> >> RSP: 0018:ffffc9000017fe00 EFLAGS: 00000202
+> >> RAX: 0000000000dfbea1 RBX: dffffc0000000000 RCX: ffffffff89b1da9c
+> >> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+> >> RBP: 0000000000000007 R08: 0000000000000001 R09: ffff888119fb6c23
+> >> R10: ffffed10233f6d84 R11: dffffc0000000000 R12: 0000000000000003
+> >> R13: ffff888100833900 R14: ffffffff8e112850 R15: 0000000000000000
+> >> default_idle_call+0x67/0xa0
+> >> do_idle+0x361/0x440
+> >> cpu_startup_entry+0x18/0x20
+> >> start_secondary+0x256/0x300
+> >> secondary_startup_64_no_verify+0xce/0xdb
+> >> </TASK>
+> >> Modules linked in:
+> >> CR2: 0000000000000000
+> >> ---[ end trace 0000000000000000 ]---
+> >> RIP: 0010:0x0
+> >> Code: Unable to access opcode bytes at 0xffffffffffffffd6.  
+> 
+> I have seen this exact signature when the processor tries to execute a function that has a NULL address. That causes IP to goto 0 and the exception. Sounds like something corrupted rcu_head (Just a guess).
 
-T24gTW9uLCAyMDIzLTAyLTI3IGF0IDA2OjE0ICswMDAwLCBVc2FtYSBBcmlmIHdyb3RlOgo+IAo+
-IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rZXJuZWwvaGVhZF82NC5TIGIvYXJjaC94ODYva2VybmVs
-L2hlYWRfNjQuUwo+IGluZGV4IDE3YmRkNjEyMmRjYS4uNWQ3MDlhYTY3ZGY0IDEwMDY0NAo+IC0t
-LSBhL2FyY2gveDg2L2tlcm5lbC9oZWFkXzY0LlMKPiArKysgYi9hcmNoL3g4Ni9rZXJuZWwvaGVh
-ZF82NC5TCj4gQEAgLTI3Myw3ICsyNzMsMTEgQEAgU1lNX0lOTkVSX0xBQkVMKHNlY29uZGFyeV9z
-dGFydHVwXzY0X25vX3ZlcmlmeSwgCj4gU1lNX0xfR0xPQkFMKQo+IMKgwqDCoMKgwqDCoMKgwqAg
-Y21wbMKgwqDCoCAoJXJieCwlcmN4LDQpLCAlZWR4Cj4gwqDCoMKgwqDCoMKgwqDCoCBqesKgwqDC
-oMKgwqAgLkxzZXR1cF9jcHUKPiDCoMKgwqDCoMKgwqDCoMKgIGluY8KgwqDCoMKgICVlY3gKPiAr
-I2lmIChOUl9DUFVTID09IDEpIHx8IGRlZmluZWQoQ09ORklHX0ZPUkNFX05SX0NQVVMpCj4gK8Kg
-wqDCoMKgwqDCoCBjbXBswqDCoMKgICROUl9DUFVTLCAlZWN4Cj4gKyNlbHNlCj4gwqDCoMKgwqDC
-oMKgwqDCoCBjbXBswqDCoMKgIG5yX2NwdV9pZHMoJXJpcCksICVlY3gKPiArI2VuZGlmCj4gwqDC
-oMKgwqDCoMKgwqDCoCBqYsKgwqDCoMKgwqAgLkxmaW5kX2NwdW5yCj4gCj4gwqDCoMKgwqDCoMKg
-wqDCoCAvKsKgIEFQSUMgSUQgbm90IGZvdW5kIGluIHRoZSB0YWJsZS4gRHJvcCB0aGUgdHJhbXBv
-bGluZSBsb2NrCj4gYW5kIGJhaWwuICovCgpUaGUgd2hpdGVzcGFjZSBsb29rcyBkb2RneSB0aGVy
-ZSBidXQgbWF5YmUgdGhhdCdzIGp1c3QgeW91ciBtYWlsIGNsaWVudD8KCkdpdmVuIHRoaXMgY29k
-ZSBpcyBhbHJlYWR5IGluICNpZmRlZiBDT05GSUdfU01QLCBjYW4gTlJfQ1BVUyBiZSAxPwo=
+[ Joel, you need to line wrap your emails ;-) ]
 
+This looks like a call_rcu() was called on something that later got freed
+or reused. That is, the bug is not with RCU but with something using RCU.
 
---=-ya5puaBjsDwKiYfb06b3
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+OR it could be a bug with RCU if the synchronize_rcu() ended before the
+grace periods have finished.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjI3MTUyOTI3WjAvBgkqhkiG9w0BCQQxIgQgpxAYqkDQ
-CKm57x8MbxOFlS82q1ZKUIfW6xnkoRbAnVcwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBYC0iXT9/nYHBvL+W41oKqYFYb5RpWrNpQ
-kSEYNxs3BoGRkbDIty/GeKGeM5UKBDdas3hgWaZjTWscQQ8FpCm0wXPq5XWn/2Z1dHkqxrFQJ2Wl
-bJJqbKvVG8Zme/hkARbpqT6WJyv9d5sNnYud6784Qsi6tjU0oAfODho2mgro2M5vstraIrOspAm1
-4Gj9B4Q0J0FU/N/MeyXw2L8Tj6BXlP3zCIGy3yGOBoQ0oo3iLn8hURHLHIiAfhynNVUysbF0GYHk
-AOqbJi9H4h1g9gn5eDuCvd4WADqDraTkTXXjgy0Ob0SRiA0SqdSdQKWCGaRKk3FZl1cBXR3jpEf9
-/40r/QPgUzu0z1uomlkpQ6sRVDDs6SqF3/dB/FgXNfKKfACMdO4eXFQVtlLm61+y5HjYVe21JN/Z
-EUNaK7BNDUbfT9C3EOjRZ5rTDzqx6i6pxgyvuPy39hldSD7BkF6NM/TKu0A/Wv0WaK4jdbarZBOH
-bbUzRvCnQWNItF+vnUdEo3gauk5K1wyUqzx6T5as4F+ldxkhZivsX25dkym7o4dywxWSfbzc7KDW
-ga4K9VSsDvml/7P7SW5w7RjdgAiEZeeOpkeM5G9a7Yi+H8DLX4rKwmHI4AAgHROfnNywReou3ACI
-D0S9Emxz5jOQ7FsS7WckrvpCWc9A43evnMmMT5Lv+wAAAAAAAA==
+-- Steve
 
 
---=-ya5puaBjsDwKiYfb06b3--
