@@ -2,151 +2,193 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C53D0C64ED8
-	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 15:17:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD45C64ED6
+	for <rcu@archiver.kernel.org>; Mon, 27 Feb 2023 15:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjB0PRL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Feb 2023 10:17:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        id S229632AbjB0Pa0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Feb 2023 10:30:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjB0PRK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Feb 2023 10:17:10 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1D52278D
-        for <rcu@vger.kernel.org>; Mon, 27 Feb 2023 07:17:04 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id t14so6817196ljd.5
-        for <rcu@vger.kernel.org>; Mon, 27 Feb 2023 07:17:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VKXLlaaemAVoYCtT3ySmIHO9PjdJ01/BFhW7YVvSoM8=;
-        b=tWQczuPkY/15I3k6zvkILjtXUbKLHrv3j2r43OOp8wZIaG0eMPeM2wPZWOqsrkT7bT
-         55RvlShsM5dezLGOdIdCZ0NnwBh3doY38KvBG4I6xV4ui3VeOsk94cpFihkWJginUIAh
-         ACqYOVmgYOCbLj4dcmaAaOhVOcGYU4xNR8x84=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VKXLlaaemAVoYCtT3ySmIHO9PjdJ01/BFhW7YVvSoM8=;
-        b=snjBvlUemf+ec11IWjMpbWENv4DfLUdqDYHqKq7iEDBALhh/iZHOjf6xGlkFj+9i9f
-         Z5SO1I5DQ5uLfY4rCI2brt43BeZlGXeC5ce2h83f57gDJ6yYUBwgojUkv6JbpTTlQwwj
-         4gVPiS91ZRpZZerKWc5yCkmv5bZ/QDHkMsDPfKUhs3XQn1rzZB5+NSmjh4vuOvMXD6Nx
-         prOp608yqmkaQ1oLLJWC5EyBKOxxPQb9+gSIgZ8Zaw+7PK4/5k9sKSt6AqCPpEKUJF0P
-         0VHda5984juhtlLEVoiYqGAIowEA4jT0WHnVL7sRlkzAEj8TcP9IRxBokEa2AB1RKVUw
-         nZ6w==
-X-Gm-Message-State: AO0yUKWP0UskdaLJ0wNtMIa2cOBNHhjPya3xewpuEGcL5H11kJwWHswe
-        NO3Ykt15tsN252m6GJekg9pHkDGwHfU814MsSJ69aA==
-X-Google-Smtp-Source: AK7set+RwGX8fRfBMoaZ6SngOAjLmc5OMCM1wZt5sL+MdRDu0LU5qryx/iLx5I6QBV7IlDEjZ1duazsyinIxvm4btz8=
-X-Received: by 2002:a2e:a275:0:b0:294:6de5:e642 with SMTP id
- k21-20020a2ea275000000b002946de5e642mr7481676ljm.3.1677511023217; Mon, 27 Feb
- 2023 07:17:03 -0800 (PST)
+        with ESMTP id S229975AbjB0PaZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Feb 2023 10:30:25 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51586C167;
+        Mon, 27 Feb 2023 07:30:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gz8hdH9bFd0e4NDFd1eIEb5EimtV3uh+pRybRzbjun8=; b=nla2VbHMvDwHmBDnzrzpuFVCXb
+        ulhJwF2RYoVz0Onkmd0WFmK1tc6LJMKy97bBR2aJrgY2KwITbxpw+X2CU7DGL7eIMCyXy4vgY28kl
+        TAOmxMgqqjk3zbJea3+0Jy9Mk6mFbKaiKxoQhcB2p4jtQhIJqPbCu6ZEhZaCRSaqj9gv6n7W7yhSE
+        CRdF/tHk9UbQLYNu57VMfqTUdkXcTHOuURKyA0F9DXF14/vRfyqiSntHgiOT2lvMpUp0KH4A5v2Se
+        MYIrqbZ9OVasXAQnCnpr3Q0Z5OvQgzY/ZQQyzg0a27ELG4ImnC+WFrhYDLjJiEQlZN6u/THoabX1L
+        XFzZx97g==;
+Received: from [2001:8b0:10b:5:8acb:cc69:1699:a2e9] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pWfRQ-000D5k-W3; Mon, 27 Feb 2023 15:29:29 +0000
+Message-ID: <90c7efe278fed0616275ed64215ec1fe249f16f5.camel@infradead.org>
+Subject: Re: [External] Re: [PATCH v12 00/11] Parallel CPU bringup for x86_64
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Usama Arif <usama.arif@bytedance.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        tglx@linutronix.de, kim.phillips@amd.com, brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, arjan@linux.intel.com, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
+Date:   Mon, 27 Feb 2023 15:29:27 +0000
+In-Reply-To: <5e8ad90a-1dc6-95c2-e020-5e95da6f9eda@bytedance.com>
+References: <20230226110802.103134-1-usama.arif@bytedance.com>
+         <5650744.DvuYhMxLoT@natalenko.name>
+         <819d8fa2-b73e-e32f-5442-452aa2c0d752@bytedance.com>
+         <5e8ad90a-1dc6-95c2-e020-5e95da6f9eda@bytedance.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-ya5puaBjsDwKiYfb06b3"
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-References: <IA1PR11MB617175CA398D425B7489CE4889AF9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <764CA486-6FB2-4667-B8CB-56E3AC31FD58@joelfernandes.org> <20230227145544.GC2948950@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20230227145544.GC2948950@paulmck-ThinkPad-P17-Gen-1>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 27 Feb 2023 10:16:51 -0500
-Message-ID: <CAEXW_YSVm7fjJaX=AT-Yg70wXL-_1RxoVPfzN8M8zJAkc0um3g@mail.gmail.com>
-Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as completed
-To:     paulmck@kernel.org
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 9:55 AM Paul E. McKenney <paulmck@kernel.org> wrote=
-:
->
-> On Mon, Feb 27, 2023 at 08:22:06AM -0500, Joel Fernandes wrote:
-> >
-> >
-> > > On Feb 27, 2023, at 2:53 AM, Zhuo, Qiuxu <qiuxu.zhuo@intel.com> wrote=
-:
-> > >
-> > > =EF=BB=BF
-> > >>
-> > >> From: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >> Sent: Saturday, February 25, 2023 11:34 AM
-> > >> To: linux-kernel@vger.kernel.org
-> > >> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>; Frederic Weisb=
-ecker
-> > >> <frederic@kernel.org>; Lai Jiangshan <jiangshanlai@gmail.com>; linux=
--
-> > >> doc@vger.kernel.org; Paul E. McKenney <paulmck@kernel.org>;
-> > >> rcu@vger.kernel.org
-> > >> Subject: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
-> > >> completed
-> > >>
-> > >> On many systems, a great deal of boot happens after the kernel think=
-s the
-> > >> boot has completed. It is difficult to determine if the system has r=
-eally
-> > >> booted from the kernel side. Some features like lazy-RCU can risk sl=
-owing
-> > >> down boot time if, say, a callback has been added that the boot
-> > >> synchronously depends on.
-> > >>
-> > >> Further, it is better to boot systems which pass 'rcu_normal_after_b=
-oot' to
-> > >> stay expedited for as long as the system is still booting.
-> > >>
-> > >> For these reasons, this commit adds a config option
-> > >> 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter
-> > >> rcupdate.boot_end_delay.
-> > >>
-> > >> By default, this value is 20s. A system designer can choose to speci=
-fy a value
-> > >> here to keep RCU from marking boot completion.  The boot sequence wi=
-ll not
-> > >> be marked ended until at least boot_end_delay milliseconds have pass=
-ed.
-> > >
-> > > Hi Joel,
-> > >
-> > > Just some thoughts on the default value of 20s, correct me if I'm wro=
-ng :-).
-> > >
-> > > Does the OS with CONFIG_PREEMPT_RT=3Dy kernel concern more about the
-> > > real-time latency than the overall OS boot time?
-> >
-> > But every system has to boot, even an RT system.
-> >
-> > >
-> > > If so, we might make rcupdate.boot_end_delay =3D 0 as the default val=
-ue
-> > > (NOT the default 20s) for CONFIG_PREEMPT_RT=3Dy kernels?
-> >
-> > Could you measure how much time your RT system takes to boot before the=
- application runs?
-> >
-> > I can change it to default 0 essentially NOOPing it, but I would rather=
- have a saner default (10 seconds even), than having someone forget to tune=
- this for their system.
->
-> Provide a /sys location that the userspace code writes to when it
-> is ready?  Different systems with different hardware and software
-> configurations are going to take different amounts of time to boot,
-> correct?
 
-I could add a sysfs node, but I still wanted this patch as well
-because I am wary of systems where yet more userspace changes are
-required. I feel the kernel should itself be able to do this. Yes, it
-is possible the system completes "booting" at a different time than
-what the kernel thinks. But it does that anyway (even without this
-patch), so I am not seeing a good reason to not do this in the kernel.
-It is also only a minimum cap, so if the in-kernel boot takes too
-long, then the patch will have no effect.
+--=-ya5puaBjsDwKiYfb06b3
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-Thoughts?
+T24gTW9uLCAyMDIzLTAyLTI3IGF0IDA2OjE0ICswMDAwLCBVc2FtYSBBcmlmIHdyb3RlOgo+IAo+
+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rZXJuZWwvaGVhZF82NC5TIGIvYXJjaC94ODYva2VybmVs
+L2hlYWRfNjQuUwo+IGluZGV4IDE3YmRkNjEyMmRjYS4uNWQ3MDlhYTY3ZGY0IDEwMDY0NAo+IC0t
+LSBhL2FyY2gveDg2L2tlcm5lbC9oZWFkXzY0LlMKPiArKysgYi9hcmNoL3g4Ni9rZXJuZWwvaGVh
+ZF82NC5TCj4gQEAgLTI3Myw3ICsyNzMsMTEgQEAgU1lNX0lOTkVSX0xBQkVMKHNlY29uZGFyeV9z
+dGFydHVwXzY0X25vX3ZlcmlmeSwgCj4gU1lNX0xfR0xPQkFMKQo+IMKgwqDCoMKgwqDCoMKgwqAg
+Y21wbMKgwqDCoCAoJXJieCwlcmN4LDQpLCAlZWR4Cj4gwqDCoMKgwqDCoMKgwqDCoCBqesKgwqDC
+oMKgwqAgLkxzZXR1cF9jcHUKPiDCoMKgwqDCoMKgwqDCoMKgIGluY8KgwqDCoMKgICVlY3gKPiAr
+I2lmIChOUl9DUFVTID09IDEpIHx8IGRlZmluZWQoQ09ORklHX0ZPUkNFX05SX0NQVVMpCj4gK8Kg
+wqDCoMKgwqDCoCBjbXBswqDCoMKgICROUl9DUFVTLCAlZWN4Cj4gKyNlbHNlCj4gwqDCoMKgwqDC
+oMKgwqDCoCBjbXBswqDCoMKgIG5yX2NwdV9pZHMoJXJpcCksICVlY3gKPiArI2VuZGlmCj4gwqDC
+oMKgwqDCoMKgwqDCoCBqYsKgwqDCoMKgwqAgLkxmaW5kX2NwdW5yCj4gCj4gwqDCoMKgwqDCoMKg
+wqDCoCAvKsKgIEFQSUMgSUQgbm90IGZvdW5kIGluIHRoZSB0YWJsZS4gRHJvcCB0aGUgdHJhbXBv
+bGluZSBsb2NrCj4gYW5kIGJhaWwuICovCgpUaGUgd2hpdGVzcGFjZSBsb29rcyBkb2RneSB0aGVy
+ZSBidXQgbWF5YmUgdGhhdCdzIGp1c3QgeW91ciBtYWlsIGNsaWVudD8KCkdpdmVuIHRoaXMgY29k
+ZSBpcyBhbHJlYWR5IGluICNpZmRlZiBDT05GSUdfU01QLCBjYW4gTlJfQ1BVUyBiZSAxPwo=
 
-thanks,
 
- - Joel
+--=-ya5puaBjsDwKiYfb06b3
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjI3MTUyOTI3WjAvBgkqhkiG9w0BCQQxIgQgpxAYqkDQ
+CKm57x8MbxOFlS82q1ZKUIfW6xnkoRbAnVcwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBYC0iXT9/nYHBvL+W41oKqYFYb5RpWrNpQ
+kSEYNxs3BoGRkbDIty/GeKGeM5UKBDdas3hgWaZjTWscQQ8FpCm0wXPq5XWn/2Z1dHkqxrFQJ2Wl
+bJJqbKvVG8Zme/hkARbpqT6WJyv9d5sNnYud6784Qsi6tjU0oAfODho2mgro2M5vstraIrOspAm1
+4Gj9B4Q0J0FU/N/MeyXw2L8Tj6BXlP3zCIGy3yGOBoQ0oo3iLn8hURHLHIiAfhynNVUysbF0GYHk
+AOqbJi9H4h1g9gn5eDuCvd4WADqDraTkTXXjgy0Ob0SRiA0SqdSdQKWCGaRKk3FZl1cBXR3jpEf9
+/40r/QPgUzu0z1uomlkpQ6sRVDDs6SqF3/dB/FgXNfKKfACMdO4eXFQVtlLm61+y5HjYVe21JN/Z
+EUNaK7BNDUbfT9C3EOjRZ5rTDzqx6i6pxgyvuPy39hldSD7BkF6NM/TKu0A/Wv0WaK4jdbarZBOH
+bbUzRvCnQWNItF+vnUdEo3gauk5K1wyUqzx6T5as4F+ldxkhZivsX25dkym7o4dywxWSfbzc7KDW
+ga4K9VSsDvml/7P7SW5w7RjdgAiEZeeOpkeM5G9a7Yi+H8DLX4rKwmHI4AAgHROfnNywReou3ACI
+D0S9Emxz5jOQ7FsS7WckrvpCWc9A43evnMmMT5Lv+wAAAAAAAA==
+
+
+--=-ya5puaBjsDwKiYfb06b3--
