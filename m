@@ -2,172 +2,115 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A818C64EC7
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 14:27:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5480FC64EC7
+	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 15:51:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjB1O1X (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 09:27:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
+        id S230056AbjB1Pve (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 10:51:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjB1O1W (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 09:27:22 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BE830B0F
-        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 06:27:15 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id z5so10444600ljc.8
-        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 06:27:14 -0800 (PST)
+        with ESMTP id S229881AbjB1Pvd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 10:51:33 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D4231E35;
+        Tue, 28 Feb 2023 07:51:32 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id i34so41882549eda.7;
+        Tue, 28 Feb 2023 07:51:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HAHdW0R4bB84/Yv1D1KskPGK8seaDNPN4i0lvIc9rYU=;
-        b=DacTmKHtT5gE40GOYuFI7D4a8YIPu8S+Ow599Df9by4CQ5BRdHBvyt0nQUSRIeSb2t
-         6KkwAQUuQFKa73+u7fMjGiBPj3HjVRGt9ZsBJU8SkQ9aAonlpfwGT1RQH51bTDRK9cRM
-         AEX1sJuu42mM+X3ly+4jkuNjrKykcR9+EFUuc=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wUCY23lI6ZJvR/D1w3pZEq+r1szcr1TztpwRWIRWSoQ=;
+        b=Z6mCyrlrP7F8GnsWHKAzm2VDvru9DuR70y50S672b+2tf42utVlWYAMTcdZLt9WXud
+         /375YOW3sy1WhIXDwbFu/oamI5ub0Gwxn0RPFig7qzRm+eu5gFAqInUCc+ZqmxqBS2Dy
+         IBZNVoeXtoZpqSlPuyEYGgx5O9RfwpCFyxMpmx4pYho6KGj9Y4CROqCaYkQKDXfJENq1
+         XeCD+kXP/3izj9acGl61Kai8elcAPWB49yjAVn6D6pPPKYoUAIbEAdXytWOdND4loVdR
+         zpzHQsNgeVWYpXmLloU8xk4laIlZBO/2KpYPBek9axg7BozJVOgTu/FSFu1IjQPhTOl4
+         jDSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HAHdW0R4bB84/Yv1D1KskPGK8seaDNPN4i0lvIc9rYU=;
-        b=wt9RQJSXMwqaGXn0/HtPJo8rsn768FnLKWEP80A8FitITmrRcrpOXVc4Ldzjmpkdav
-         8SM78uhsQSTzYXUqdXkUENNtrvjBzz70UDavTfV3XqsS6iIVbdfVNep3Vsolvo6obUz8
-         XxKLWYkQOJVpagOxFMKi8AqjKYAW7FygSoklRLvy2KhmSypcN98n6R9BmUb4id48KM/X
-         fjSSyDkkr0gv7MqNgOiZ9tIyd0xwKKyb94rWEBdh3sJIhyEafXvHcPWuXa/H4+XGCgFQ
-         Lo9g6XCC7+XLgLkZXld5z+Ry1HxOHVUXL8qJoU5UA1rbwlmzaRtNxofrw8AbfLxnfnXj
-         TN1Q==
-X-Gm-Message-State: AO0yUKWpC51jIpBm/45maCZrHa0qCxg+voSJm0S0LqYRiVyEVzqWdoHd
-        BsIB4YV/w4joMm9nFYvV+lpqInhWsoXj2bnF7IfFjg==
-X-Google-Smtp-Source: AK7set8RWzXot28kcY8LaU3hLMJC0uJ6rGu9Tkc9ovqpMn1izF9y3NUPM6HM9WcSGA1oi7Sam5kJlLxEvYt1S7tqTJI=
-X-Received: by 2002:a2e:508:0:b0:294:6de5:e642 with SMTP id
- 8-20020a2e0508000000b002946de5e642mr870608ljf.3.1677594433251; Tue, 28 Feb
- 2023 06:27:13 -0800 (PST)
-MIME-Version: 1.0
-References: <IA1PR11MB617175CA398D425B7489CE4889AF9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <764CA486-6FB2-4667-B8CB-56E3AC31FD58@joelfernandes.org> <IA1PR11MB617118DAE8D72E2419558D6689AC9@IA1PR11MB6171.namprd11.prod.outlook.com>
-In-Reply-To: <IA1PR11MB617118DAE8D72E2419558D6689AC9@IA1PR11MB6171.namprd11.prod.outlook.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 28 Feb 2023 09:27:01 -0500
-Message-ID: <CAEXW_YQwu4ccqWLTfFSwcJQOH6fbhe4SiHHa4XPUCvefiBZi9g@mail.gmail.com>
-Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as completed
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wUCY23lI6ZJvR/D1w3pZEq+r1szcr1TztpwRWIRWSoQ=;
+        b=rhgmY6yPB3/DqSE+x6Oxi9QllaNwVCthz7iJj57bZiT1er54RWQA3s3zWyirfVJBm4
+         jaecL41r8cRyO6ymayF69B4bnbL9B7R7hE220HD8erV2lXTTA/BwztjzJBiXGdwpCXrK
+         FlSOOJbX6kTay0qCEpvWZm7pa1Ti6vOUSUQH6huuTX8iGpGPgVWLkM3tMRt0OJrLggNI
+         Gtm5/HAe6tXwMKZRmNPMYePdultbQQr+vv4JFc5Az0Sf8pammU1l2czsL5NMDitZxqzO
+         rOjQhq5SNVScDFIQvX8dchIFYJAkGdwdR3mRKpB5jPaTcjU/PTbTN6FIBShdc41rAIIg
+         1doQ==
+X-Gm-Message-State: AO0yUKXwn8UlHdZNTOqfZvKUA4CubwjuY/7fmwk6jSauKqBOEy6ozSwX
+        x5fSMe8mKPtnttVl4YejtoyDLsJ/BhU1PCYQ
+X-Google-Smtp-Source: AK7set8VwCCjeSGdZlGi3/DAducTmZMUHb7uOpZwdANzLOxS/Smu4zf8eI0y3Pvle/mxOWaljDsyqw==
+X-Received: by 2002:a05:6402:1a39:b0:4aa:b310:b695 with SMTP id be25-20020a0564021a3900b004aab310b695mr3573472edb.35.1677599490660;
+        Tue, 28 Feb 2023 07:51:30 -0800 (PST)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id x16-20020a170906441000b008d09b900614sm4577153ejo.80.2023.02.28.07.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Feb 2023 07:51:30 -0800 (PST)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
+Date:   Tue, 28 Feb 2023 16:51:21 +0100
+Message-Id: <20230228155121.3416-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 1:40=E2=80=AFAM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> =
-wrote:
->
-[...]
-> > > If so, we might make rcupdate.boot_end_delay =3D 0 as the default val=
-ue
-> > > (NOT the default 20s) for CONFIG_PREEMPT_RT=3Dy kernels?
-> >
-> > Could you measure how much time your RT system takes to boot before the
-> > application runs?
->
-> I don't have a real-time OS environment to measure the OS boot time.
-> I tried to measure the OS boot time of my "CentOS Stream 8" w/o and
-> w/ Joel=E2=80=99s patch.
->
-> My testing showed the positive result that the OS boot time was
-> reduced by ~4.6% on my side after applying Joel=E2=80=99s patch.
+Use try_cmpxchg instead of cmpxchg (*ptr, old, new) == old in
+check_cpu_stall.  x86 CMPXCHG instruction returns success in ZF flag, so
+this change saves a compare after cmpxchg (and related move instruction in
+front of cmpxchg).
 
-Wow, this is great! I am guessing you have CONFIG_RCU_LAZY disabled,
-when you tested. If so, that is great news that expediting RCU for a
-bit longer improves boot time! Please confirm that your config had
-LAZY disabled.
+No functional change intended.
 
-> For testing details, please see the below:
->
-> 1) Testing environment:
->     OS            : CentOS Stream 8 (non-RT OS)
->     Kernel     : v6.2
->     Machine : Intel Cascade Lake server (2 sockets, each with 44 logical =
-threads)
->     Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=3D2,sockets=3D2,=
- =E2=80=A6
->
-> 2) My OS boot time definition:
->     The time from the start of the kernel boot to the shell command line
->     prompt is shown from the console. [ Different people may have
->     different OS boot time definitions. ]
->
-> 3) My measurement method (very rough method):
->     A timer in the kernel periodically prints the boot time every 100ms.
->     As soon as the shell command line prompt is shown from the console,
->     we record the boot time printed by the timer, then the printed boot
->     time is the OS boot time.
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+ kernel/rcu/tree_stall.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hmm, Can you not just print the boot time from userspace using
-clock_gettime() and CLOCK_BOOTTIME? But yeah either way, good data!
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b10b8349bb2a..d81c88e66b42 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -760,7 +760,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	jn = jiffies + ULONG_MAX / 2;
+ 	if (rcu_gp_in_progress() &&
+ 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+-	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
++	    try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
+ 
+ 		/*
+ 		 * If a virtual machine is stopped by the host it can look to
+@@ -778,7 +778,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 
+ 	} else if (rcu_gp_in_progress() &&
+ 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+-		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
++		   try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
+ 
+ 		/*
+ 		 * If a virtual machine is stopped by the host it can look to
+-- 
+2.39.2
 
->     The console log (mixed userspace and kernel logs) looked like this:
->
->            [  OK  ] Started Permit User Sessions.
->                         Starting Terminate Plymouth Boot Screen...
->                         Starting Hold until boot process finishes up...
->            [  OK  ] Started Command Scheduler.
->            [    6.824466] input: ImExPS/2 Generic Explorer ...
->            [    6.884685] Boot ms 6863
->                 ...
->            [    7.170920] Spectre V2 : WARNING: Unprivileged eBPF ...
->            [    7.173140] Spectre V2 : WARNING: Unprivileged eBPF ...
->            [    7.196741] Boot ms 7175
->                 ...
->            [    8.236757] Boot ms 8215
->
->            CentOS Stream 8
->            Kernel 6.2.0-rcu+ on an x86_64
->
->            login: [    8.340751] Boot ms 8319
->            [    8.444756] Boot ms 8423
->                 ...
->
->      Then the log "login: [    8.340751] Boot ms 8319" roughly showed the=
- OS boot time was ~8.3s.
->
-> 4) Measured OS boot time (in seconds)
->    a) Measured 10 times w/o Joel's patch:
->         8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
->         The average OS boot time was: ~8.7s
->
->    b) Measure 10 times w/ Joel's patch:
->         8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
->         The average OS boot time was: ~8.3s.
->
-> The OS boot time was reduced by : 8.7 =E2=80=93 8.3 =3D 0.4 second
-> The reduction percentage was       : 0.4/8.7 * 100% =3D 4.6%
->
-> If the testing above makes sense to you, please feel free to
-> add
->
->       Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-
-Yes, it makes sense. I will add these. Thanks!
-
- - Joel
-
->
-> Thanks!
-> -Qiuxu
->
-> > I can change it to default 0 essentially NOOPing it, but I would rather=
- have a
-> > saner default (10 seconds even), than having someone forget to tune thi=
-s for
-> > their system.
-> >
-> > Thanks,
-> >
-> >  - Joel
->
