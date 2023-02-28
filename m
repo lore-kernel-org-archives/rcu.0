@@ -2,131 +2,126 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19523C64EC7
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 20:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67693C64EC7
+	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 20:44:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjB1Ujn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 15:39:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        id S229708AbjB1Uoz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 15:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjB1Ujl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 15:39:41 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D380F34C17
-        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 12:39:32 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id y12so7803827qvt.8
-        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 12:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1677616772;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3N2ywhkR/bMPSeXmwyHCwpyMHSCbDCyuk19SKsi7Rfg=;
-        b=agY7M0SISSdJupcls04a1QBQDOpWIBYSAesvX1+dRM5Tf/TKtCupRGPyem+9EZlYnn
-         40/a0mJ1MjcqAxbM0a4CYgn87T4aFjwtfCato8dAjIiQygAc7AVMzUzlMsFUd6+f4edD
-         NhE/DZIV3iiL7BRk9fi2RH5TsT8AmpR09suxE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677616772;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3N2ywhkR/bMPSeXmwyHCwpyMHSCbDCyuk19SKsi7Rfg=;
-        b=XtIJyYtrn3Mo9tQgMF/GdMELXmxh2w5+lo9kg6Z196yHa3aDFbjnMBCA0OwVcjM5EZ
-         /vlXFs+FhTHkWnDkdLC7oqFHRPhWeoWeyEJ6M2e3YTVXxw1nXj2SgtqCG/hCMEYoA9xL
-         r2xmf1WPokYoNdC/yxBjPqC/E4xtTsZPW48Pxb83VTQDfQ9uuB0CZC3YVOqAjRJMMJZA
-         51yki/gpdkSXBW4bV0jGUd6BLBVpFDqbFB7P+tKJMrK13MOLw5UEFaUoHXPgPjfX1zE+
-         bZ+kLgpQYvNqXU4htGMtmIrx0ngxt0k+X3wjp//d4vvNzNmH4QSNgwXzf5Zr7mUEhREl
-         xzhA==
-X-Gm-Message-State: AO0yUKU9aLXpvC8L4nlVCkkrzNRX3H8mMFqH4v64MXphb8FK++/TCvHN
-        YhT9RtM4PLsMa4PnL+wlK1ZJQw==
-X-Google-Smtp-Source: AK7set/zofXKOT7Or3LOrmfABLDV6LwDDjSbBnAaw0bI6AAd+d8bCXukM4oVLnnSBzOzJB9BaffATA==
-X-Received: by 2002:ad4:5aea:0:b0:574:8ef8:89cc with SMTP id c10-20020ad45aea000000b005748ef889ccmr8817048qvh.41.1677616771783;
-        Tue, 28 Feb 2023 12:39:31 -0800 (PST)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id 81-20020a370c54000000b007423ccd892csm7479037qkm.47.2023.02.28.12.39.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Feb 2023 12:39:31 -0800 (PST)
-Date:   Tue, 28 Feb 2023 20:39:30 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
-Message-ID: <Y/5mguXPPqdP3MZF@google.com>
-References: <20230228155121.3416-1-ubizjak@gmail.com>
+        with ESMTP id S229758AbjB1Uox (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 15:44:53 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EE859FB;
+        Tue, 28 Feb 2023 12:44:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=Rtyk/933i49ixLph7CNpZDmvFerPzLAHEB/U4/br/XQ=; b=aU4Rkt00RfXf4/xidYpX0mbQoT
+        w5fWIxbq+awg5/9wDZhDWQ778Cftd3nDQAZNxujgc5/IDM5k2ZaHnl07hj6XrkA4mf51i3JJfAKDl
+        iTZkN7AUASYhuX/wT0w8p8VBnznvf0l9OqfG9in5Dn1n5UCA1DArGHywa+6e9uaI9SBN0dNibXqeQ
+        7GDtc5DBFAZzm28tVfoG0bIc5AvUmb7pzEmxydWhGhdQ5VFnoOuZEdJX1tOtKBaIzfKC/EDSXXRop
+        zJ1RiYfHM3qD7nbzb9QX9YNRSaopZvyPD/kHOjkt1eimOt0mhApSEvwvdxnS9wW8AcO/7q6yJYR9K
+        xziaZCtg==;
+Received: from [2a00:23ee:1191:17a9:ac09:981:11d9:64d9] (helo=[IPv6:::1])
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pX6p8-00EfBz-2x;
+        Tue, 28 Feb 2023 20:43:48 +0000
+Date:   Tue, 28 Feb 2023 20:43:41 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
+        brgerst@gmail.com
+CC:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
+Subject: Re: [PATCH v12 06/11] x86/smpboot: Remove initial_stack on 64-bit
+User-Agent: K-9 Mail for Android
+In-Reply-To: <87edq9mto0.ffs@tglx>
+References: <20230226110802.103134-1-usama.arif@bytedance.com> <20230226110802.103134-7-usama.arif@bytedance.com> <87k001n4xo.ffs@tglx> <c6863590f5fbf139f6aec50d0f3bc8e8b00cfcaf.camel@infradead.org> <87edq9mto0.ffs@tglx>
+Message-ID: <64B60F62-3760-43A0-A0FB-C349DA70C013@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230228155121.3416-1-ubizjak@gmail.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 04:51:21PM +0100, Uros Bizjak wrote:
-> Use try_cmpxchg instead of cmpxchg (*ptr, old, new) == old in
-> check_cpu_stall.  x86 CMPXCHG instruction returns success in ZF flag, so
-> this change saves a compare after cmpxchg (and related move instruction in
-> front of cmpxchg).
-
-In my codegen, I am not seeing mov instruction before the cmp removed, how
-can that be? The rax has to be populated with a mov before cmpxchg right?
-
-So try_cmpxchg gives: mov, cmpxchg, cmp, jne
-Where as cmpxchg gives: mov, cmpxchg, mov, jne
-
-So yeah you got rid of compare, but I am not seeing reduction in moves.
-Either way, I think it is an improvement due to dropping cmp so:
-
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
 
 
-> 
-> No functional change intended.
-> 
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> ---
->  kernel/rcu/tree_stall.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index b10b8349bb2a..d81c88e66b42 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -760,7 +760,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  	jn = jiffies + ULONG_MAX / 2;
->  	if (rcu_gp_in_progress() &&
->  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
-> -	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-> +	    try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
->  
->  		/*
->  		 * If a virtual machine is stopped by the host it can look to
-> @@ -778,7 +778,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  
->  	} else if (rcu_gp_in_progress() &&
->  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
-> -		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-> +		   try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
->  
->  		/*
->  		 * If a virtual machine is stopped by the host it can look to
-> -- 
-> 2.39.2
-> 
+On 28 February 2023 20:17:19 GMT, Thomas Gleixner <tglx@linutronix=2Ede> w=
+rote:
+>On Tue, Feb 28 2023 at 17:09, David Woodhouse wrote:
+>> On Tue, 2023-02-28 at 17:13 +0100, Thomas Gleixner wrote:
+>>> As this patch is now part of the parallel boot series and actually
+>>> introduces smpboot_control, the above is neither accurate nor useful=
+=2E
+>>
+>> Better commit message, add a comment where we abuse current->thread=2Es=
+p
+>> in the sleep path=2E Didn't remove the {} which would be added back in
+>> the very next patch=2E Pushed to my tree for Usama's next round=2E
+>
+>Ok=2E
+>
+>> However, we start by introducing one more: smpboot_control=2E For now t=
+his
+>
+>s/we// :)
+
+Yeah, actually spotted that one as I hit send and it's different in the gi=
+t tree already=2E
+
+
+>> merely holds the CPU# of the CPU which is coming up=2E That CPU can the=
+n
+>> find its own per-cpu data, and everything else it needs can be found fr=
+om
+>> there, allowing the other global variables to be removed=2E
+>>
+>> First to be removed is initial_stack=2E Each CPU can load %rsp from its
+>> current_task->thread=2Esp instead=2E That is already set up with the co=
+rrect
+>> idle thread for APs=2E Set up the =2Esp field in INIT_THREAD on x86 so =
+that
+>> the BSP also finds a suitable stack pointer in the static per-cpu data
+>> when coming up on first boot=2E
+>>
+>> On resume from S3, the CPU needs a temporary stack because its idle tas=
+k
+>> is already active=2E Instead of setting initial_stack, the sleep code c=
+an
+>> simply set its own current->thread=2Esp to point to the temporary stack=
+=2E
+>> The true stack pointer will get restored with the rest of the CPU
+>> context in do_suspend_lowlevel()=2E
+>
+>Thanks for writing this up!
+>
+>> +	/*
+>> +	 * As each CPU starts up, it will find its own stack pointer
+>> +	 * from its current_task->thread=2Esp=2E Typically that will be
+>> +	 * the idle thread for a newly-started AP, or even the boot
+>> +	 * CPU which will find it set to &init_task in the static
+>> +	 * per-cpu data=2E
+>> +	 *
+>> +	 * Make the resuming CPU use the temporary stack at startup
+>> +	 * by setting current->thread=2Esp to point to that=2E The true
+>> +	 * %rsp will be restored with the rest of the CPU context,
+>> +	 * by do_suspend_lowlevel()=2E
+>
+>Right, but what restores current->thread=2Esp? thread=2Esp is used by
+>unwinders=2E=2E=2E
+
+Unwinding a thread that is actually *on* the CPU? By the time it's taken o=
+ff, won't ->thread=2Esp have been written out again? I figured it was just =
+a dead variable while the actual %rsp was in use?
