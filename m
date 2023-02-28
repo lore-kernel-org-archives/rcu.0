@@ -2,113 +2,154 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DAB2C64EC7
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 22:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18A05C64EC7
+	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 23:30:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbjB1Ws4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 17:48:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S229727AbjB1Xa3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 18:30:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjB1Wsz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 17:48:55 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4E934022;
-        Tue, 28 Feb 2023 14:48:54 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id h19so12397029qtk.7;
-        Tue, 28 Feb 2023 14:48:54 -0800 (PST)
+        with ESMTP id S229518AbjB1Xa2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 18:30:28 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988A611E93
+        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 15:30:27 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id f16so12078298ljq.10
+        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 15:30:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677624533;
+        d=joelfernandes.org; s=google; t=1677627026;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GMtqDIiFEWDHqHhFJAnoEDLZ4UDoy4mDDU97fKecDF8=;
-        b=WIsalkXZRgcopURSxgd68sqTAV+TNnE7NCzw2iNl4mEswIm0aa7+zns9MTJ/4LOmnD
-         mX5DxRjJFqOzPVIg70PH7nCJx1xzV9SzmssLTOcm0QBJ+A2WH7w8rLTJ4ADXlSRXKW2L
-         u2j7nqIjaYS3IJyHj3Tm++qezDoXTg72vxAjCzoRR++51Pqg/wFansBEhbEZ4udMtL1k
-         9LIjBD3gEE8R2ePrAHMxWqD9lIiS6zg630xnU6OwZkniIsmkLRbxoUM3PCLwMegvfTty
-         FsTmAX+QDtxlO21V7Wbl2/zCowQTDrnZwB6ws63eAxu4DB8V7k+vxxeHr1QjMPsQ1gT3
-         nb2w==
+        bh=IOSxGvDXAN2XBjTFFoV5qPpPuqcyWu9fKmABaUWkmfs=;
+        b=UluvzYOLn0CmJBu2rIfZPWCNBj1bg60iunkHhbMmYFNVN4tfeHPO3+wxDtyLzyzWE+
+         mMLk8Wi7aJLmXjcPZNnxU6Heq5W4LcyUtu5vntA3gL8+NlDsP15jzMeE5Ht8Chb6rEVZ
+         J6pJRRjGUrYX6zL4Jvhb56p8abe71e4dCRlmA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677624533;
+        d=1e100.net; s=20210112; t=1677627026;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GMtqDIiFEWDHqHhFJAnoEDLZ4UDoy4mDDU97fKecDF8=;
-        b=WeTSfJ1HAStY+mYD+93myiICXc4WBdjj1AiU6Fk2PmqubalVK27DAspyEU93efFpKb
-         kGEj36VwRcftemfQsOg19m4bBlOzPARvrzIXKWxj+d1SmBMp1epRnTxnqtPVfMN6eNvp
-         GqQLmbes2As5oc6WqmzCj1/ELxHYV3G5DYVvKknZqBVloqgYLnzxCqiPbrlDy4dH3uYx
-         jtYKAvzChaUIkG6V6qqtwZzTJJedpnNUKHSG+G2XyCFT3Qg5CrLK6f7GdnGxVPc2A7V9
-         rPWrTqunvSO1vN/YFKahFUuTzH74SuSge5vWDZD/uyvgClJBjiVr+ByxQzW97k9muWFm
-         JcHg==
-X-Gm-Message-State: AO0yUKVP4K+Xf9sml8h3PDbdDWWe7LlemK9mFrl//klC+xeLslT+3NJ8
-        nLRT9B58zl8OpEuz6oBSH9EMU4gqUaz+Szw72w==
-X-Google-Smtp-Source: AK7set+RBzlEbfpSy8+eyRrEcKw3S9nC0Ehapi+Zo4Zw2VvowvF8usAqZdvthYyXq29rxKiE1PP3b4n1tKXga0xATyE=
-X-Received: by 2002:ac8:4299:0:b0:3bf:d9e4:8063 with SMTP id
- o25-20020ac84299000000b003bfd9e48063mr995349qtl.10.1677624533552; Tue, 28 Feb
- 2023 14:48:53 -0800 (PST)
+        bh=IOSxGvDXAN2XBjTFFoV5qPpPuqcyWu9fKmABaUWkmfs=;
+        b=xhPEDUP6ryWwKhSwN+YaeEzCK0YBJc3ykf5QDSnY/uNsHgauzPVznHENufqdCwY8Yh
+         P8PeB6maN8D6uRNDKI96CvdfNSP+C32glkaQZ9hNLuvUEy+tNtxfpP9MF6JKa85ny4g3
+         SugqnksgIuYLtaxD782slRHa2IHTvS3FVT90t/X+Nz07hNkoS6XuC2SInaRBo7af+kv6
+         nPZoIzUxUWKdY7FR6rfXwPGhgazEuoWdRo/3fNv8IGxyFxpr3mVwPP/pIyUJAU+oI6Dx
+         JCdlPlXEkDgtZ+d/T3mMZYRf46jjrRWbiMwkNibB0xWXRT59kJdOWkj/aurgym+dCXK9
+         dMEQ==
+X-Gm-Message-State: AO0yUKXd3QaQv3f2LHZPu/RD26UP0L7yRs+iig3qqUrFNIiCNzDC56UC
+        5Ihme097o/xYLNKC7GUgX48+6E+Mu7ueZEWeRD4oeuTIVcqG2ZWI
+X-Google-Smtp-Source: AK7set9xNRYPzLUDBbe907018mq80QIk4R5DUuPvY8T8qeEoSF0YbOKYjPygamDUCNdwkm9n/guf3XTS7hiQ13Dkfdg=
+X-Received: by 2002:a05:651c:895:b0:293:4ab4:3bb1 with SMTP id
+ d21-20020a05651c089500b002934ab43bb1mr2220633ljq.4.1677627025774; Tue, 28 Feb
+ 2023 15:30:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20230226110802.103134-1-usama.arif@bytedance.com>
- <20230226110802.103134-8-usama.arif@bytedance.com> <878rghmrn2.ffs@tglx>
- <35264451eabdf967eb31069cb814e8a05ee3179b.camel@infradead.org> <cf7a1657159219cea61ffef567280e2e88d1f670.camel@infradead.org>
-In-Reply-To: <cf7a1657159219cea61ffef567280e2e88d1f670.camel@infradead.org>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Tue, 28 Feb 2023 17:48:42 -0500
-Message-ID: <CAMzpN2hQArxf2mAVq55uMx9VhTjUD-VDEVAD406RScfsrjdAjQ@mail.gmail.com>
-Subject: Re: [PATCH v12 07/11] x86/smpboot: Remove early_gdt_descr on 64-bit
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
-        piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
+References: <20230228155121.3416-1-ubizjak@gmail.com> <Y/5mguXPPqdP3MZF@google.com>
+ <20230228160324.2a7c1012@gandalf.local.home> <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
+ <20230228164124.77c126d2@gandalf.local.home>
+In-Reply-To: <20230228164124.77c126d2@gandalf.local.home>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 28 Feb 2023 18:30:14 -0500
+Message-ID: <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
+Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 5:41=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
-g> wrote:
->
-> On Tue, 2023-02-28 at 21:57 +0000, David Woodhouse wrote:
-> >
-> > ----------------
-> > IN:
-> > 0xffffffffa20000b2:  48 31 d2                 xorq     %rdx, %rdx
-> > 0xffffffffa20000b5:  48 8b 82 c0 74 d5 a3     movq     -0x5c2a8b40(%rdx=
-), %rax
-> > 0xffffffffa20000bc:  48 8b a0 58 14 00 00     movq     0x1458(%rax), %r=
-sp
-> > 0xffffffffa20000c3:  48 83 ec 10              subq     $0x10, %rsp
-> > 0xffffffffa20000c7:  66 c7 04 24 7f 00        movw     $0x7f, (%rsp)
-> > 0xffffffffa20000cd:  48 8d 82 00 10 81 a3     leaq     -0x5c7ef000(%rdx=
-), %rax
-> > 0xffffffffa20000d4:  48 89 44 24 02           movq     %rax, 2(%rsp)
-> > 0xffffffffa20000d9:  0f 01 14 24              lgdtq    (%rsp)
-> > 0xffffffffa20000dd:  48 83 c4 10              addq     $0x10, %rsp
-> > 0xffffffffa20000e1:  31 c0                    xorl     %eax, %eax
-> > 0xffffffffa20000e3:  8e d8                    movl     %eax, %ds
-> >
-> > I cannot work out where the value -0x5c7ef000 comes from, but it
-> > doesn't seem to be the 0xb000 you claimed, and my brain is hurting
-> > again...
->
-> Turning off CONFIG_RANDOMIZE_BASE (or just looking at the vmlinux
-> disassembly instead as Brian did) helps to resolve that FWIW.
->
-> I've changed it to zero all of %rdx and pushed it back to the v12bis
-> branch.
+Hey Steve,
 
-xorl %edx, %edx is preferred, as a 32-bit operation zero-extends to
-the full 64-bit register.  Using xorq to clear any of the lower 8
-registers adds an unnecessary REX prefix.  Just one of many quirks of
-the x86 instruction set...
+On Tue, Feb 28, 2023 at 4:41=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Tue, 28 Feb 2023 13:29:11 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>
+> > All well and good, but the stall-warning code is nowhere near a fastpat=
+h.
+> >
+> > Is try_cmpxchg() considered more readable in this context?
+>
+>
+> -           cmpxchg(&rcu_state.jiffies_stall, js, jn) =3D=3D js) {
+> +           try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
+>
+> It's basically the same :-/
+>
+> But looking at this use case, I'd actually NAK it, as it is misleading.
 
---
-Brian Gerst
+I'm trying to parse this. You are saying it is misleading, because it
+updates js when it doesn't need to?
+
+> As try_cmpxchg() is used to get rid of the updating of the old value. As =
+in
+> the ring buffer code we had:
+>
+> void ring_buffer_record_off(struct trace_buffer *buffer)
+> {
+>         unsigned int rd;
+>         unsigned int new_rd;
+>
+>         do {
+>                 rd =3D atomic_read(&buffer->record_disabled);
+>                 new_rd =3D rd | RB_BUFFER_OFF;
+>         } while (!atomic_cmpxchg(&buffer->record_disabled, &rd, new_rd) !=
+=3D rd);
+
+Hear you actually meant "rd" as the second parameter without the & ?
+
+> }
+>
+> and the try_cmpxchg() converted it to:
+>
+> void ring_buffer_record_off(struct trace_buffer *buffer)
+> {
+>         unsigned int rd;
+>         unsigned int new_rd;
+>
+>         rd =3D atomic_read(&buffer->record_disabled);
+>         do {
+>                 new_rd =3D rd | RB_BUFFER_OFF;
+>         } while (!atomic_try_cmpxchg(&buffer->record_disabled, &rd, new_r=
+d));
+> }
+>
+> Which got rid of the need to constantly update the rd variable (cmpxchg
+> will load rax with the value read, so it removes the need for an extra
+> move).
+
+So that's a good thing?
+
+>
+> But in your case, we don't need to update js, in which case the
+> try_cmpxchg() does.
+
+Right, it has lesser value here but I'm curious why you feel it also
+doesn't belong in that ring buffer loop you shared (or did you mean,
+it does belong there but not in other ftrace code modified by Uros?).
+
+> The patch that Uros sent me for the ring buffer code also does some of
+> that, which I feel is wrong.
+
+I am guessing that is code *other than* the ring buffer loop above.
+
+> So with that, I would nack the patch.
+
+Dropping it for RCU is fine with me as well.
+
+(And yes for the other thread, I had it backwards, try_cmpxchg is what
+drops the need for cmp instruction -- sorry.)
+
+thanks,
+
+ -Joel
