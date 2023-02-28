@@ -2,115 +2,131 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5480FC64EC7
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 15:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BB9EC64ED6
+	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 16:14:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbjB1Pve (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 10:51:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
+        id S229633AbjB1QOD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 11:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjB1Pvd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 10:51:33 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D4231E35;
-        Tue, 28 Feb 2023 07:51:32 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id i34so41882549eda.7;
-        Tue, 28 Feb 2023 07:51:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wUCY23lI6ZJvR/D1w3pZEq+r1szcr1TztpwRWIRWSoQ=;
-        b=Z6mCyrlrP7F8GnsWHKAzm2VDvru9DuR70y50S672b+2tf42utVlWYAMTcdZLt9WXud
-         /375YOW3sy1WhIXDwbFu/oamI5ub0Gwxn0RPFig7qzRm+eu5gFAqInUCc+ZqmxqBS2Dy
-         IBZNVoeXtoZpqSlPuyEYGgx5O9RfwpCFyxMpmx4pYho6KGj9Y4CROqCaYkQKDXfJENq1
-         XeCD+kXP/3izj9acGl61Kai8elcAPWB49yjAVn6D6pPPKYoUAIbEAdXytWOdND4loVdR
-         zpzHQsNgeVWYpXmLloU8xk4laIlZBO/2KpYPBek9axg7BozJVOgTu/FSFu1IjQPhTOl4
-         jDSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wUCY23lI6ZJvR/D1w3pZEq+r1szcr1TztpwRWIRWSoQ=;
-        b=rhgmY6yPB3/DqSE+x6Oxi9QllaNwVCthz7iJj57bZiT1er54RWQA3s3zWyirfVJBm4
-         jaecL41r8cRyO6ymayF69B4bnbL9B7R7hE220HD8erV2lXTTA/BwztjzJBiXGdwpCXrK
-         FlSOOJbX6kTay0qCEpvWZm7pa1Ti6vOUSUQH6huuTX8iGpGPgVWLkM3tMRt0OJrLggNI
-         Gtm5/HAe6tXwMKZRmNPMYePdultbQQr+vv4JFc5Az0Sf8pammU1l2czsL5NMDitZxqzO
-         rOjQhq5SNVScDFIQvX8dchIFYJAkGdwdR3mRKpB5jPaTcjU/PTbTN6FIBShdc41rAIIg
-         1doQ==
-X-Gm-Message-State: AO0yUKXwn8UlHdZNTOqfZvKUA4CubwjuY/7fmwk6jSauKqBOEy6ozSwX
-        x5fSMe8mKPtnttVl4YejtoyDLsJ/BhU1PCYQ
-X-Google-Smtp-Source: AK7set8VwCCjeSGdZlGi3/DAducTmZMUHb7uOpZwdANzLOxS/Smu4zf8eI0y3Pvle/mxOWaljDsyqw==
-X-Received: by 2002:a05:6402:1a39:b0:4aa:b310:b695 with SMTP id be25-20020a0564021a3900b004aab310b695mr3573472edb.35.1677599490660;
-        Tue, 28 Feb 2023 07:51:30 -0800 (PST)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id x16-20020a170906441000b008d09b900614sm4577153ejo.80.2023.02.28.07.51.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Feb 2023 07:51:30 -0800 (PST)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
-Date:   Tue, 28 Feb 2023 16:51:21 +0100
-Message-Id: <20230228155121.3416-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S229560AbjB1QOC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 11:14:02 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA1020548;
+        Tue, 28 Feb 2023 08:13:59 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1677600835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yzn4ZC6rxI44VXytBI5Fnc7+a5GIfbz7OrWhI6HHXwo=;
+        b=BGato9Jn5a3ROBz+NS5V3X407E3+wK948iylyHOQz+LAVewkjsmWZaFoyqMAxPdKxG1cxs
+        8Plkbv03K77D5nmyS5mUZCNtJTIDT4vpRLvFyMbYTZYkqNqi80vJInfZMtKwDVZGBxp5NM
+        4D9CAi7RoRSJWUDUtSWWDKpYv1MhVuuEiRVD/LN4QHg+1miSt2II0JhMuU12OHq+UgzZE4
+        aqLa9UHgD8AIV9GH9HttxZDpJOg9krtK/k4uskuCKSEi8awzLF6H/Zh+jF8hwwii624jov
+        5WiEdfjAmfFXWm9H0ABdxLYYMbZOHbzpsw3DWm2ohXCIFcUJtpGGxbVA03DgcQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1677600835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yzn4ZC6rxI44VXytBI5Fnc7+a5GIfbz7OrWhI6HHXwo=;
+        b=uTdd0PBkQ0wwFhY/RHnddcbIfbACiZwiWoUzLdsnStv6mgQUAkR3RjqLHgtZe0BV2KIPS9
+        mJ8m2Snp1P3zQhDw==
+To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
+        kim.phillips@amd.com, brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [PATCH v12 06/11] x86/smpboot: Remove initial_stack on 64-bit
+In-Reply-To: <20230226110802.103134-7-usama.arif@bytedance.com>
+References: <20230226110802.103134-1-usama.arif@bytedance.com>
+ <20230226110802.103134-7-usama.arif@bytedance.com>
+Date:   Tue, 28 Feb 2023 17:13:55 +0100
+Message-ID: <87k001n4xo.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Use try_cmpxchg instead of cmpxchg (*ptr, old, new) == old in
-check_cpu_stall.  x86 CMPXCHG instruction returns success in ZF flag, so
-this change saves a compare after cmpxchg (and related move instruction in
-front of cmpxchg).
+On Sun, Feb 26 2023 at 11:07, Usama Arif wrote:
+> From: Brian Gerst <brgerst@gmail.com>
+>
+> Eliminating global variables from the CPU startup path in order to simplify
+> it and facilitate parallel startup.
 
-No functional change intended.
+As this patch is now part of the parallel boot series and actually
+introduces smpboot_control, the above is neither accurate nor useful.
 
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- kernel/rcu/tree_stall.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Folks, really.
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b10b8349bb2a..d81c88e66b42 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -760,7 +760,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	jn = jiffies + ULONG_MAX / 2;
- 	if (rcu_gp_in_progress() &&
- 	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
--	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-+	    try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
- 
- 		/*
- 		 * If a virtual machine is stopped by the host it can look to
-@@ -778,7 +778,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 
- 	} else if (rcu_gp_in_progress() &&
- 		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
--		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-+		   try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
- 
- 		/*
- 		 * If a virtual machine is stopped by the host it can look to
--- 
-2.39.2
+> Remove initial_stack, and load RSP from current_task->thread.sp instead.
 
+  
+>  #ifdef CONFIG_SMP
+> -	initial_stack = (unsigned long)temp_stack + sizeof(temp_stack);
+> +	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
+
+This lacks a comment about the temporary (ab)use of current->thread.sp
+
+>  	early_gdt_descr.address =
+>  			(unsigned long)get_cpu_gdt_rw(smp_processor_id());
+>  	initial_gs = per_cpu_offset(smp_processor_id());
+> +	smpboot_control = smp_processor_id();
+>  #endif
+
+> @@ -241,6 +241,24 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+>  	UNWIND_HINT_EMPTY
+>  	ANNOTATE_NOENDBR // above
+>  
+> +#ifdef CONFIG_SMP
+> +	movl	smpboot_control(%rip), %ecx
+> +
+> +	/* Get the per cpu offset for the given CPU# which is in ECX */
+> +	movq	__per_cpu_offset(,%rcx,8), %rdx
+> +#else
+> +	xorl	%edx, %edx
+> +#endif /* CONFIG_SMP */
+
+Sigh, we should finally make CONFIG_SMP def_bool y ...
+
+> +	/*
+> +	 * Setup a boot time stack - Any secondary CPU will have lost its stack
+> +	 * by now because the cr3-switch above unmaps the real-mode stack.
+> +	 *
+> +	 * RDX contains the per-cpu offset
+> +	 */
+> +	movq	pcpu_hot + X86_current_task(%rdx), %rax
+> +	movq	TASK_threadsp(%rax), %rsp
+> +
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index b18c1385e181..62e3bf37f0b8 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1112,7 +1112,12 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
+>  	idle->thread.sp = (unsigned long)task_pt_regs(idle);
+>  	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
+>  	initial_code = (unsigned long)start_secondary;
+> -	initial_stack  = idle->thread.sp;
+> +
+> +	if (IS_ENABLED(CONFIG_X86_32)) {
+> +		initial_stack  = idle->thread.sp;
+> +	} else {
+> +		smpboot_control = cpu;
+> +	}
+
+Please remove the pointless brackets.
+  
+Thanks,
+
+        tglx
