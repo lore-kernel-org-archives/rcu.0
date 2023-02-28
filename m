@@ -2,102 +2,172 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 122B3C64EC7
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 12:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A818C64EC7
+	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 14:27:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjB1MFq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 07:05:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
+        id S229661AbjB1O1X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 09:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbjB1MFo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 07:05:44 -0500
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D382DE62;
-        Tue, 28 Feb 2023 04:05:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Tb8v3gSrxOz35jzMapCnQ0G/8W1+t6kLfHHktPU3mD4=; b=VIsdJCJXi1xMa1zI7F3s3Pliy0
-        HXitXrg+XyBOf9eICMwNy3L8y3AtwLggejHxMxrL7XfK80/0MXxMA/DQqUDAbRxVbHiN4Nu3PbxzX
-        w8IGouuc9WMEeTri671NblotNzLe7WcGcTfk3F1w7Ow7Z7aT5bp1ld9hTxH/LC/0hwXOQRBBNFqqk
-        rrsqnin7gJ9ZF74MyYK2HiEMeKQtGgdjh3EWejV5NcV3QrBOy1n+L12tOZ4JoKl3Nv8c7W7j0ndEc
-        dJnG7bSC1a2hIxqWvWXggjafWSPKymCzn+3rR4BBNdlNLv9ML42EY3Zn7CJttGIc03R5sMDLU8Ns/
-        W0s+kYcQ==;
-Received: from [152.254.196.162] (helo=[192.168.1.60])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1pWyiv-000Bgy-K1; Tue, 28 Feb 2023 13:04:49 +0100
-Message-ID: <174e3a17-31bb-d74c-6248-23558fc2b5ee@igalia.com>
-Date:   Tue, 28 Feb 2023 09:04:39 -0300
+        with ESMTP id S229592AbjB1O1W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 09:27:22 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BE830B0F
+        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 06:27:15 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id z5so10444600ljc.8
+        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 06:27:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HAHdW0R4bB84/Yv1D1KskPGK8seaDNPN4i0lvIc9rYU=;
+        b=DacTmKHtT5gE40GOYuFI7D4a8YIPu8S+Ow599Df9by4CQ5BRdHBvyt0nQUSRIeSb2t
+         6KkwAQUuQFKa73+u7fMjGiBPj3HjVRGt9ZsBJU8SkQ9aAonlpfwGT1RQH51bTDRK9cRM
+         AEX1sJuu42mM+X3ly+4jkuNjrKykcR9+EFUuc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HAHdW0R4bB84/Yv1D1KskPGK8seaDNPN4i0lvIc9rYU=;
+        b=wt9RQJSXMwqaGXn0/HtPJo8rsn768FnLKWEP80A8FitITmrRcrpOXVc4Ldzjmpkdav
+         8SM78uhsQSTzYXUqdXkUENNtrvjBzz70UDavTfV3XqsS6iIVbdfVNep3Vsolvo6obUz8
+         XxKLWYkQOJVpagOxFMKi8AqjKYAW7FygSoklRLvy2KhmSypcN98n6R9BmUb4id48KM/X
+         fjSSyDkkr0gv7MqNgOiZ9tIyd0xwKKyb94rWEBdh3sJIhyEafXvHcPWuXa/H4+XGCgFQ
+         Lo9g6XCC7+XLgLkZXld5z+Ry1HxOHVUXL8qJoU5UA1rbwlmzaRtNxofrw8AbfLxnfnXj
+         TN1Q==
+X-Gm-Message-State: AO0yUKWpC51jIpBm/45maCZrHa0qCxg+voSJm0S0LqYRiVyEVzqWdoHd
+        BsIB4YV/w4joMm9nFYvV+lpqInhWsoXj2bnF7IfFjg==
+X-Google-Smtp-Source: AK7set8RWzXot28kcY8LaU3hLMJC0uJ6rGu9Tkc9ovqpMn1izF9y3NUPM6HM9WcSGA1oi7Sam5kJlLxEvYt1S7tqTJI=
+X-Received: by 2002:a2e:508:0:b0:294:6de5:e642 with SMTP id
+ 8-20020a2e0508000000b002946de5e642mr870608ljf.3.1677594433251; Tue, 28 Feb
+ 2023 06:27:13 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v12 00/11] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Usama Arif <usama.arif@bytedance.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>, brgerst@gmail.com,
-        dave.hansen@linux.intel.com, fam.zheng@bytedance.com,
-        hewenliang4@huawei.com, "H. Peter Anvin" <hpa@zytor.com>,
-        kim.phillips@amd.com, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, liangma@liangbit.com,
-        mimoja@mimoja.de, oleksandr@natalenko.name,
+References: <IA1PR11MB617175CA398D425B7489CE4889AF9@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <764CA486-6FB2-4667-B8CB-56E3AC31FD58@joelfernandes.org> <IA1PR11MB617118DAE8D72E2419558D6689AC9@IA1PR11MB6171.namprd11.prod.outlook.com>
+In-Reply-To: <IA1PR11MB617118DAE8D72E2419558D6689AC9@IA1PR11MB6171.namprd11.prod.outlook.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 28 Feb 2023 09:27:01 -0500
+Message-ID: <CAEXW_YQwu4ccqWLTfFSwcJQOH6fbhe4SiHHa4XPUCvefiBZi9g@mail.gmail.com>
+Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as completed
+To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, piotrgorski@cachyos.org,
-        punit.agrawal@bytedance.com, rcu@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        simon.evans@bytedance.com, Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>, x86@kernel.org
-References: <3ca3b60e-47a2-640a-cad3-e3e110d3aaf7@igalia.com>
- <8b0cc6fa-8d40-7401-b8f9-559b5db3e8c9@molgen.mpg.de>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <8b0cc6fa-8d40-7401-b8f9-559b5db3e8c9@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 28/02/2023 07:13, Paul Menzel wrote:
-> Dear Guilherme,
-> 
-> 
-> Am 27.02.23 um 22:39 schrieb Guilherme G. Piccoli:
-> 
->> I've tested it on Steam Deck (with and without the "no_parallel_bringup"
->> parameter), it works fine - also tested S3/deep sleep-resume cycle.
->>
->> Feel free to add (to the series):
->> Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-> 
-> Thank you for testing the series. It’d be great if you could share the 
-> timing differences.
-> 
-> […]
-> 
-> 
-> Kind regards,
-> 
-> Paul
+On Tue, Feb 28, 2023 at 1:40=E2=80=AFAM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> =
+wrote:
+>
+[...]
+> > > If so, we might make rcupdate.boot_end_delay =3D 0 as the default val=
+ue
+> > > (NOT the default 20s) for CONFIG_PREEMPT_RT=3Dy kernels?
+> >
+> > Could you measure how much time your RT system takes to boot before the
+> > application runs?
+>
+> I don't have a real-time OS environment to measure the OS boot time.
+> I tried to measure the OS boot time of my "CentOS Stream 8" w/o and
+> w/ Joel=E2=80=99s patch.
+>
+> My testing showed the positive result that the OS boot time was
+> reduced by ~4.6% on my side after applying Joel=E2=80=99s patch.
 
-Hi Paul!
+Wow, this is great! I am guessing you have CONFIG_RCU_LAZY disabled,
+when you tested. If so, that is great news that expediting RCU for a
+bit longer improves boot time! Please confirm that your config had
+LAZY disabled.
 
-The results...weren't so great, I felt no difference heh
-Which is also not bad, it seems the series favors big SMP systems, Deck
-has only 8 CPUs.
+> For testing details, please see the below:
+>
+> 1) Testing environment:
+>     OS            : CentOS Stream 8 (non-RT OS)
+>     Kernel     : v6.2
+>     Machine : Intel Cascade Lake server (2 sockets, each with 44 logical =
+threads)
+>     Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=3D2,sockets=3D2,=
+ =E2=80=A6
+>
+> 2) My OS boot time definition:
+>     The time from the start of the kernel boot to the shell command line
+>     prompt is shown from the console. [ Different people may have
+>     different OS boot time definitions. ]
+>
+> 3) My measurement method (very rough method):
+>     A timer in the kernel periodically prints the boot time every 100ms.
+>     As soon as the shell command line prompt is shown from the console,
+>     we record the boot time printed by the timer, then the printed boot
+>     time is the OS boot time.
 
-But maybe the way I measured is not ideal? I just compared timestamps on
-dmesg from the first SMP message up to the one that says the boot of
-secondary CPUs is complete. Do you have a better suggestion? I can try
-things here.
+Hmm, Can you not just print the boot time from userspace using
+clock_gettime() and CLOCK_BOOTTIME? But yeah either way, good data!
 
-Cheers,
+>     The console log (mixed userspace and kernel logs) looked like this:
+>
+>            [  OK  ] Started Permit User Sessions.
+>                         Starting Terminate Plymouth Boot Screen...
+>                         Starting Hold until boot process finishes up...
+>            [  OK  ] Started Command Scheduler.
+>            [    6.824466] input: ImExPS/2 Generic Explorer ...
+>            [    6.884685] Boot ms 6863
+>                 ...
+>            [    7.170920] Spectre V2 : WARNING: Unprivileged eBPF ...
+>            [    7.173140] Spectre V2 : WARNING: Unprivileged eBPF ...
+>            [    7.196741] Boot ms 7175
+>                 ...
+>            [    8.236757] Boot ms 8215
+>
+>            CentOS Stream 8
+>            Kernel 6.2.0-rcu+ on an x86_64
+>
+>            login: [    8.340751] Boot ms 8319
+>            [    8.444756] Boot ms 8423
+>                 ...
+>
+>      Then the log "login: [    8.340751] Boot ms 8319" roughly showed the=
+ OS boot time was ~8.3s.
+>
+> 4) Measured OS boot time (in seconds)
+>    a) Measured 10 times w/o Joel's patch:
+>         8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
+>         The average OS boot time was: ~8.7s
+>
+>    b) Measure 10 times w/ Joel's patch:
+>         8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
+>         The average OS boot time was: ~8.3s.
+>
+> The OS boot time was reduced by : 8.7 =E2=80=93 8.3 =3D 0.4 second
+> The reduction percentage was       : 0.4/8.7 * 100% =3D 4.6%
+>
+> If the testing above makes sense to you, please feel free to
+> add
+>
+>       Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
+Yes, it makes sense. I will add these. Thanks!
 
-Guilherme
+ - Joel
+
+>
+> Thanks!
+> -Qiuxu
+>
+> > I can change it to default 0 essentially NOOPing it, but I would rather=
+ have a
+> > saner default (10 seconds even), than having someone forget to tune thi=
+s for
+> > their system.
+> >
+> > Thanks,
+> >
+> >  - Joel
+>
