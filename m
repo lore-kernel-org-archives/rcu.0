@@ -2,28 +2,40 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7383DC64EC7
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 21:44:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9200BC64EC7
+	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 21:56:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjB1VoR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 16:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55832 "EHLO
+        id S229637AbjB1V45 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 16:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbjB1VoA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 16:44:00 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7593757E;
-        Tue, 28 Feb 2023 13:42:39 -0800 (PST)
+        with ESMTP id S229580AbjB1V44 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 16:56:56 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A1F1259F;
+        Tue, 28 Feb 2023 13:56:56 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 67259B80E65;
-        Tue, 28 Feb 2023 21:41:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF876C433D2;
-        Tue, 28 Feb 2023 21:41:25 +0000 (UTC)
-Date:   Tue, 28 Feb 2023 16:41:24 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BE27611EC;
+        Tue, 28 Feb 2023 21:56:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06A12C4339B;
+        Tue, 28 Feb 2023 21:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677621415;
+        bh=ZCslAg5mFuG+VQFYzF+2mINX4NCH81xqNvRV9QNFhFQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WevWBYjL9MKzeWAsPIQLf17NiK5O+jqGcEIQJRbVOVb/r6a9I34m3h4zD8Bxc7+st
+         26lr65BfYkjAbmFcr6pTDwUHopIrR1/0yvCZM2u3sARlyw2W44yJWsk8dKElE9dilw
+         DHWbpgWBK/eqQaO8S7/BNzlAvysREUqn3TzS7ago+FteUo8AZMHSKkK5HHQqAeWRe0
+         moZpdZljTe929XTkRbHTZ6ebLJqvfgbJqvmurtUBl/VYgqeaUxHmAYWyH5H9TQ2uMZ
+         mSPVyy4w9IumiPCSfqIu2Q5n327zsp4YrZXBLVJC0Q38Xt40vkmr5t9yNNBFAPgog2
+         4hVWkDsK/Ij7A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A03775C018D; Tue, 28 Feb 2023 13:56:54 -0800 (PST)
+Date:   Tue, 28 Feb 2023 13:56:54 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Uros Bizjak <ubizjak@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org,
@@ -33,72 +45,78 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>
 Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
-Message-ID: <20230228164124.77c126d2@gandalf.local.home>
-In-Reply-To: <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20230228215654.GY2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 References: <20230228155121.3416-1-ubizjak@gmail.com>
-        <Y/5mguXPPqdP3MZF@google.com>
-        <20230228160324.2a7c1012@gandalf.local.home>
-        <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <Y/5mguXPPqdP3MZF@google.com>
+ <20230228160324.2a7c1012@gandalf.local.home>
+ <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
+ <20230228164124.77c126d2@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230228164124.77c126d2@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 28 Feb 2023 13:29:11 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> All well and good, but the stall-warning code is nowhere near a fastpath.
+On Tue, Feb 28, 2023 at 04:41:24PM -0500, Steven Rostedt wrote:
+> On Tue, 28 Feb 2023 13:29:11 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> Is try_cmpxchg() considered more readable in this context?
+> > All well and good, but the stall-warning code is nowhere near a fastpath.
+> > 
+> > Is try_cmpxchg() considered more readable in this context?
+> 
+> 
+> -	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> +	    try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
+> 
+> It's basically the same :-/
 
+That was my assessment.  ;-)
 
--	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-+	    try_cmpxchg(&rcu_state.jiffies_stall, &js, jn)) {
+> But looking at this use case, I'd actually NAK it, as it is misleading.
+> 
+> As try_cmpxchg() is used to get rid of the updating of the old value. As in
+> the ring buffer code we had:
+> 
+> void ring_buffer_record_off(struct trace_buffer *buffer)
+> {
+> 	unsigned int rd;
+> 	unsigned int new_rd;
+> 
+> 	do {
+> 		rd = atomic_read(&buffer->record_disabled);
+> 		new_rd = rd | RB_BUFFER_OFF;
+> 	} while (!atomic_cmpxchg(&buffer->record_disabled, &rd, new_rd) != rd);
+> }
+> 
+> and the try_cmpxchg() converted it to:
+> 
+> void ring_buffer_record_off(struct trace_buffer *buffer)
+> {
+> 	unsigned int rd;
+> 	unsigned int new_rd;
+> 
+> 	rd = atomic_read(&buffer->record_disabled);
+> 	do {
+> 		new_rd = rd | RB_BUFFER_OFF;
+> 	} while (!atomic_try_cmpxchg(&buffer->record_disabled, &rd, new_rd));
+> }
+> 
+> Which got rid of the need to constantly update the rd variable (cmpxchg
+> will load rax with the value read, so it removes the need for an extra
+> move).
+> 
+> But in your case, we don't need to update js, in which case the
+> try_cmpxchg() does.
+> 
+> The patch that Uros sent me for the ring buffer code also does some of
+> that, which I feel is wrong.
+> 
+> So with that, I would nack the patch.
 
-It's basically the same :-/
+OK, I will leave this one out.
 
-But looking at this use case, I'd actually NAK it, as it is misleading.
-
-As try_cmpxchg() is used to get rid of the updating of the old value. As in
-the ring buffer code we had:
-
-void ring_buffer_record_off(struct trace_buffer *buffer)
-{
-	unsigned int rd;
-	unsigned int new_rd;
-
-	do {
-		rd = atomic_read(&buffer->record_disabled);
-		new_rd = rd | RB_BUFFER_OFF;
-	} while (!atomic_cmpxchg(&buffer->record_disabled, &rd, new_rd) != rd);
-}
-
-and the try_cmpxchg() converted it to:
-
-void ring_buffer_record_off(struct trace_buffer *buffer)
-{
-	unsigned int rd;
-	unsigned int new_rd;
-
-	rd = atomic_read(&buffer->record_disabled);
-	do {
-		new_rd = rd | RB_BUFFER_OFF;
-	} while (!atomic_try_cmpxchg(&buffer->record_disabled, &rd, new_rd));
-}
-
-Which got rid of the need to constantly update the rd variable (cmpxchg
-will load rax with the value read, so it removes the need for an extra
-move).
-
-But in your case, we don't need to update js, in which case the
-try_cmpxchg() does.
-
-The patch that Uros sent me for the ring buffer code also does some of
-that, which I feel is wrong.
-
-So with that, I would nack the patch.
-
--- Steve
+							Thanx, Paul
