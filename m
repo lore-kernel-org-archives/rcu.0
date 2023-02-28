@@ -2,76 +2,121 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2438FC64EC7
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 21:02:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89C56C64EC7
+	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 21:04:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbjB1VCl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 16:02:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
+        id S229481AbjB1VEp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 16:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbjB1VCg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 16:02:36 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731B134F60;
-        Tue, 28 Feb 2023 13:02:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677618155; x=1709154155;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=NfWEprhNDVdb4rY3h5e3xlesFVpU3kv1Uas10C/R2y4=;
-  b=Srb9DVA0phCFra0xog4k97q9HgC3IMm+VOlh8FW64uUuyniCqZbWFfZN
-   FnK4lspTfhr61WERXuTaz4xhCLItbgw1jn0CccxfCwppd11zPTQolBYZw
-   gUxL/3E1fKYWN7zzAMOUP5ENTBHpZxwWckgK9NzHn6kUA7kZZwkuvajcJ
-   n7e8RkM9PIJH4rBXJV9gqgjCqfvpIoVDX1cF+SaFc2/BffTesigUsrOIZ
-   6H63R2gd/GRx5b29ADIAv/XVoFIRqe/I+aGFOo6FVXWseKdix5NLkqqZX
-   9AeriTU/gp+2QAOFD/gWSHCZ5DtyOxh0dCzOXa1oQnrROGFpj15viy4jp
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10635"; a="314673223"
-X-IronPort-AV: E=Sophos;i="5.98,222,1673942400"; 
-   d="scan'208";a="314673223"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2023 13:02:34 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10635"; a="784025412"
-X-IronPort-AV: E=Sophos;i="5.98,222,1673942400"; 
-   d="scan'208";a="784025412"
-Received: from avandeve-mobl1.amr.corp.intel.com (HELO [10.212.193.190]) ([10.212.193.190])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2023 13:02:33 -0800
-Message-ID: <96c0c723-9976-a222-8dc8-a5da6a1a558e@linux.intel.com>
-Date:   Tue, 28 Feb 2023 13:02:33 -0800
+        with ESMTP id S229610AbjB1VEo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 16:04:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EC2274AF;
+        Tue, 28 Feb 2023 13:04:03 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 19824B80E65;
+        Tue, 28 Feb 2023 21:03:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B073AC433D2;
+        Tue, 28 Feb 2023 21:03:25 +0000 (UTC)
+Date:   Tue, 28 Feb 2023 16:03:24 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
+Message-ID: <20230228160324.2a7c1012@gandalf.local.home>
+In-Reply-To: <Y/5mguXPPqdP3MZF@google.com>
+References: <20230228155121.3416-1-ubizjak@gmail.com>
+        <Y/5mguXPPqdP3MZF@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v12 07/11] x86/smpboot: Remove early_gdt_descr on 64-bit
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        kim.phillips@amd.com, brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
-References: <20230226110802.103134-1-usama.arif@bytedance.com>
- <20230226110802.103134-8-usama.arif@bytedance.com> <878rghmrn2.ffs@tglx>
-From:   Arjan van de Ven <arjan@linux.intel.com>
-In-Reply-To: <878rghmrn2.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Tue, 28 Feb 2023 20:39:30 +0000
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
+> On Tue, Feb 28, 2023 at 04:51:21PM +0100, Uros Bizjak wrote:
+> > Use try_cmpxchg instead of cmpxchg (*ptr, old, new) == old in
+> > check_cpu_stall.  x86 CMPXCHG instruction returns success in ZF flag, so
+> > this change saves a compare after cmpxchg (and related move instruction in
+> > front of cmpxchg).  
 > 
-> Maybe we should enforce CONFIG_SMP=y first :)
+> In my codegen, I am not seeing mov instruction before the cmp removed, how
+> can that be? The rax has to be populated with a mov before cmpxchg right?
 > 
-> Thanks,
+> So try_cmpxchg gives: mov, cmpxchg, cmp, jne
+> Where as cmpxchg gives: mov, cmpxchg, mov, jne
+> 
+> So yeah you got rid of compare, but I am not seeing reduction in moves.
+> Either way, I think it is an improvement due to dropping cmp so:
 
-for 64 bit I can see the point of removing the !SMP case entirely from arch/x86 .
-maybe even for 32 bit if it just makes the code simpler I suppose
+Did you get the above backwards?
 
+Anyway, when looking at the conversion of cmpxchg() to try_cmpxchg() that
+Uros sent to me for the ring buffer, the code went from:
+
+0000000000000070 <ring_buffer_record_off>:
+      70:       48 8d 4f 08             lea    0x8(%rdi),%rcx
+      74:       8b 57 08                mov    0x8(%rdi),%edx
+      77:       89 d6                   mov    %edx,%esi
+      79:       89 d0                   mov    %edx,%eax
+      7b:       81 ce 00 00 10 00       or     $0x100000,%esi
+      81:       f0 0f b1 31             lock cmpxchg %esi,(%rcx)
+      85:       39 d0                   cmp    %edx,%eax
+      87:       75 eb                   jne    74 <ring_buffer_record_off+0x4>
+      89:       e9 00 00 00 00          jmp    8e <ring_buffer_record_off+0x1e>
+                        8a: R_X86_64_PLT32      __x86_return_thunk-0x4
+      8e:       66 90                   xchg   %ax,%ax
+
+
+  To
+
+00000000000001a0 <ring_buffer_record_off>:
+     1a0:       8b 47 08                mov    0x8(%rdi),%eax
+     1a3:       48 8d 4f 08             lea    0x8(%rdi),%rcx
+     1a7:       89 c2                   mov    %eax,%edx
+     1a9:       81 ca 00 00 10 00       or     $0x100000,%edx
+     1af:       f0 0f b1 57 08          lock cmpxchg %edx,0x8(%rdi)
+     1b4:       75 05                   jne    1bb <ring_buffer_record_off+0x1b>
+     1b6:       e9 00 00 00 00          jmp    1bb <ring_buffer_record_off+0x1b>
+                        1b7: R_X86_64_PLT32     __x86_return_thunk-0x4
+     1bb:       89 c2                   mov    %eax,%edx
+     1bd:       81 ca 00 00 10 00       or     $0x100000,%edx
+     1c3:       f0 0f b1 11             lock cmpxchg %edx,(%rcx)
+     1c7:       75 f2                   jne    1bb <ring_buffer_record_off+0x1b>
+     1c9:       e9 00 00 00 00          jmp    1ce <ring_buffer_record_off+0x2e>
+                        1ca: R_X86_64_PLT32     __x86_return_thunk-0x4
+     1ce:       66 90                   xchg   %ax,%ax
+
+
+It does add a bit more code, but the fast path seems better (where the
+cmpxchg succeeds). That would be:
+
+00000000000001a0 <ring_buffer_record_off>:
+     1a0:       8b 47 08                mov    0x8(%rdi),%eax
+     1a3:       48 8d 4f 08             lea    0x8(%rdi),%rcx
+     1a7:       89 c2                   mov    %eax,%edx
+     1a9:       81 ca 00 00 10 00       or     $0x100000,%edx
+     1af:       f0 0f b1 57 08          lock cmpxchg %edx,0x8(%rdi)
+     1b4:       75 05                   jne    1bb <ring_buffer_record_off+0x1b>
+     1b6:       e9 00 00 00 00          jmp    1bb <ring_buffer_record_off+0x1b>
+                        1b7: R_X86_64_PLT32     __x86_return_thunk-0x4
+
+
+Where there's only two moves and no cmp, where the former has 3 moves and a
+cmp in the fast path.
+
+-- Steve
