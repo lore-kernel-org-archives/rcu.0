@@ -2,169 +2,143 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32284C64EC4
-	for <rcu@archiver.kernel.org>; Tue, 28 Feb 2023 23:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE946C64EC4
+	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 00:03:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjB1Xvg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 18:51:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+        id S229492AbjCAADg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 19:03:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbjB1Xvf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 18:51:35 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6AC37B44
-        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 15:51:33 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id x6so6514691ljq.1
-        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 15:51:33 -0800 (PST)
+        with ESMTP id S229481AbjCAADf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 19:03:35 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD753C2A;
+        Tue, 28 Feb 2023 16:03:31 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id c19so12502134qtn.13;
+        Tue, 28 Feb 2023 16:03:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1677628292;
+        d=gmail.com; s=20210112; t=1677629011;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0AbmEAX+8plsYFEx9L1wRBcrzwVVgHc7lff59BO3ev4=;
-        b=ZSmFRVFconRQbkoHbIlyHedx72Bbwx6SRdLAQCALJwBbZhSCsDHjCrW9KpvPXvW5Om
-         kW6fI3+pIHOEHjSTSxiNolH3W37rZrzBRkA3TBu86TnbQBcqPQ+/8Kfu6DF3kd6ExdbI
-         QU0YBgP6+wHyVnqx3mtyH3fCKttnKbs54wLeg=
+        bh=y7xlEzbWy6v9JfLWv2ZpFnkkZM75lFiyxm9Fm1VS9Lo=;
+        b=MhDQY0UQ+y5lA4/Grc8SUZ3G1TlC3KIqrvzHzDI/kJi/x+70OIfJjfqdIGxV4g0cwQ
+         kxgAc/ybrHWiRPIduKLPvemwtLiUUHZbj/GFcrqmISn5bV2Z7HkIbYskSbx71X44LYFz
+         RIEHLjoRplEXyz+ZA8Rhxh2uJ5v9TryoybOXKtlTuwlm8z0B6x3Y+egeAAjZGd+0s4qi
+         eB0m95NF1OrZULRACKI3YFhVUh2LJ4F6UqkcYn7NMMI/rrFeBdNtYzqXflC18Y+Kt6Vf
+         mwZ2vDYjpjWwWdf1dW2M/mTx29M9mPFoL9X2eh4qMhLfyaO1o1dMQMq3B/LTlRRF37Wq
+         HdeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677628292;
+        d=1e100.net; s=20210112; t=1677629011;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0AbmEAX+8plsYFEx9L1wRBcrzwVVgHc7lff59BO3ev4=;
-        b=VtM1+Lfj0y5GnDfocIX19At4TDU90OU6W6VFBxML25928RfXfWnGMRfyb1lq9hOhwf
-         Sa+nE2MFJOtF11j+XgU9dP2ZkxcHLqtQrP2rGqWH4yTdz4TiwJsS1ThipjeKfhjMeL0D
-         6jZ7CzM5akRuZJMnzKTaKomOHvtKiRvvwHOGod1OGrOODBKjQjZXhNNzB30CxXAiNPAN
-         OvL6D0aQSrVBgYxHiMlIy8c4B3v0U2RxKM/Oxy7CyHk1m3JZwfuGtXh2oEi0+ftqAmOC
-         4uuFSrsOwJL3q6OCKBET+fzhFt6UUDYxAcdrHZibdTn18Ap5jGO1FNPzrwhykruhKshA
-         sK5Q==
-X-Gm-Message-State: AO0yUKUC1QEnUjYlekr8sJJ0XGYGDddRD4YLGsHg3fPX/GLoVmR1Tx+L
-        78zkMKGW60eiAXw2cedYQI++xe8ssSsTAIKhiyZmQQ==
-X-Google-Smtp-Source: AK7set89IkY9xGC0q/kyhcjnc57DfxeD3LKj1GRWriT0Qo0caQyZFkN0se/rdELScqzWZ7Tk9rfH+B9bkmmt7rf3lvU=
-X-Received: by 2002:a05:651c:10af:b0:295:a8d1:8a28 with SMTP id
- k15-20020a05651c10af00b00295a8d18a28mr1390025ljn.3.1677628291958; Tue, 28 Feb
- 2023 15:51:31 -0800 (PST)
+        bh=y7xlEzbWy6v9JfLWv2ZpFnkkZM75lFiyxm9Fm1VS9Lo=;
+        b=4z5+3RwB32zbjBWRRz3hMqCKg24sU1TouQW15kmOHvEyfza4LY7sHPLkxNY8iWONtM
+         Qc1Hs7QZdQ2/y3a6W1HGFeooX5FYz3lrd88+oZmlYEoHfEu7CeAP3or+8Yj2RFEH/uE9
+         CqvmFXjmMwOHplxd8malnz1Mi7R3kufbd1uIbAh1btCeJKGW0hltHjmscGReQYl2uPZJ
+         I7Wthyt295L9nZCL+9S2Uf0epy0E3r1EL2XXYy1noPU4kR39EeP6krTKRxF8S+Hn0Pdh
+         /GfexbHiFQ/1qvTzPVMOFXNiqenl46YSVRcK2VplQQww4UVN8ic3qiMO3yvJwpZnes1i
+         7L4w==
+X-Gm-Message-State: AO0yUKVgS34JWicKZqgfY58w5Tb5ipQP9to6I/UNY+LMLFMhtRhaT+ew
+        qvfmXH4GjZnu8Kb3DHTOErk5QJN4B4/4Fz0cnqK+3S6zO0i0
+X-Google-Smtp-Source: AK7set+P1K1zJUQOa4fDilf3cLbc+JrET/UoKH5Obbp5N5CViT8tULlyqxFRQ+0WHzNnqBwjP9p/9upM3tM4R346pGU=
+X-Received: by 2002:a05:622a:1ba4:b0:3bd:17aa:49b2 with SMTP id
+ bp36-20020a05622a1ba400b003bd17aa49b2mr1965901qtb.5.1677629010966; Tue, 28
+ Feb 2023 16:03:30 -0800 (PST)
 MIME-Version: 1.0
-References: <CAABZP2z+Hk_w7nAhhyhJA9zidQViibMUO_xYianfm3xcG1QQwQ@mail.gmail.com>
- <D59B7575-FAB1-4446-BBA9-DF5EAA1B5DCA@joelfernandes.org> <IA1PR11MB6171E006D288555B6223FBF789AC9@IA1PR11MB6171.namprd11.prod.outlook.com>
-In-Reply-To: <IA1PR11MB6171E006D288555B6223FBF789AC9@IA1PR11MB6171.namprd11.prod.outlook.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 28 Feb 2023 18:51:19 -0500
-Message-ID: <CAEXW_YSOZ_Nu-7KDzqoMnwY_xU+WoyEF+Ntu-0tih+hiM_jycg@mail.gmail.com>
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in rcu_core
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Sanan Hasanov <sanan.hasanov@knights.ucf.edu>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
-        "contact@pgazz.com" <contact@pgazz.com>
+References: <20230226110802.103134-1-usama.arif@bytedance.com>
+ <20230226110802.103134-8-usama.arif@bytedance.com> <878rghmrn2.ffs@tglx>
+ <35264451eabdf967eb31069cb814e8a05ee3179b.camel@infradead.org>
+ <cf7a1657159219cea61ffef567280e2e88d1f670.camel@infradead.org>
+ <CAMzpN2hQArxf2mAVq55uMx9VhTjUD-VDEVAD406RScfsrjdAjQ@mail.gmail.com> <0E3AFDDA-039B-40F3-92A4-85CD96B1BB64@infradead.org>
+In-Reply-To: <0E3AFDDA-039B-40F3-92A4-85CD96B1BB64@infradead.org>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Tue, 28 Feb 2023 19:03:19 -0500
+Message-ID: <CAMzpN2gEhC5q-FPv2iGmEzuk+LiRHF+Mn7EKWw7KbQ5NQUmG2g@mail.gmail.com>
+Subject: Re: [PATCH v12 07/11] x86/smpboot: Remove early_gdt_descr on 64-bit
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
+        piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 3:55=E2=80=AFAM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> =
-wrote:
+On Tue, Feb 28, 2023 at 6:43=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
+g> wrote:
 >
-> > From: Joel Fernandes <joel@joelfernandes.org>
-> > Sent: Monday, February 27, 2023 9:15 PM
-> > To: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > Cc: Sanan Hasanov <sanan.hasanov@knights.ucf.edu>; paulmck@kernel.org;
-> > frederic@kernel.org; quic_neeraju@quicinc.com; josh@joshtriplett.org;
-> > rostedt@goodmis.org; mathieu.desnoyers@efficios.com;
-> > jiangshanlai@gmail.com; rcu@vger.kernel.org; linux-kernel@vger.kernel.o=
-rg;
-> > syzkaller@googlegroups.com; contact@pgazz.com
-> > Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
-> > rcu_core
+>
+>
+> On 28 February 2023 22:48:42 GMT, Brian Gerst <brgerst@gmail.com> wrote:
+> >On Tue, Feb 28, 2023 at 5:41=E2=80=AFPM David Woodhouse <dwmw2@infradead=
+.org> wrote:
+> >>
+> >> On Tue, 2023-02-28 at 21:57 +0000, David Woodhouse wrote:
+> >> >
+> >> > ----------------
+> >> > IN:
+> >> > 0xffffffffa20000b2:  48 31 d2                 xorq     %rdx, %rdx
+> >> > 0xffffffffa20000b5:  48 8b 82 c0 74 d5 a3     movq     -0x5c2a8b40(%=
+rdx), %rax
+> >> > 0xffffffffa20000bc:  48 8b a0 58 14 00 00     movq     0x1458(%rax),=
+ %rsp
+> >> > 0xffffffffa20000c3:  48 83 ec 10              subq     $0x10, %rsp
+> >> > 0xffffffffa20000c7:  66 c7 04 24 7f 00        movw     $0x7f, (%rsp)
+> >> > 0xffffffffa20000cd:  48 8d 82 00 10 81 a3     leaq     -0x5c7ef000(%=
+rdx), %rax
+> >> > 0xffffffffa20000d4:  48 89 44 24 02           movq     %rax, 2(%rsp)
+> >> > 0xffffffffa20000d9:  0f 01 14 24              lgdtq    (%rsp)
+> >> > 0xffffffffa20000dd:  48 83 c4 10              addq     $0x10, %rsp
+> >> > 0xffffffffa20000e1:  31 c0                    xorl     %eax, %eax
+> >> > 0xffffffffa20000e3:  8e d8                    movl     %eax, %ds
+> >> >
+> >> > I cannot work out where the value -0x5c7ef000 comes from, but it
+> >> > doesn't seem to be the 0xb000 you claimed, and my brain is hurting
+> >> > again...
+> >>
+> >> Turning off CONFIG_RANDOMIZE_BASE (or just looking at the vmlinux
+> >> disassembly instead as Brian did) helps to resolve that FWIW.
+> >>
+> >> I've changed it to zero all of %rdx and pushed it back to the v12bis
+> >> branch.
 > >
-> > ...
-> > >> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> > >> #PF: supervisor instruction fetch in kernel mode
-> > >> #PF: error_code(0x0010) - not-present page PGD 53756067 P4D 53756067
-> > >> PUD 0
-> > >> Oops: 0010 [#1] PREEMPT SMP KASAN
-> > >> CPU: 7 PID: 0 Comm: swapper/7 Not tainted 6.2.0-next-20230221 #1
-> > >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1
-> > >> 04/01/2014
-> > >> RIP: 0010:0x0
-> > >> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-> > >> RSP: 0018:ffffc900003f8e48 EFLAGS: 00010246
-> > >> RAX: 0000000000000000 RBX: ffff888100833900 RCX: 00000000b9582f6c
-> > >> RDX: 1ffff11020106853 RSI: ffffffff816b2769 RDI: ffff888043f64708
-> > >> RBP: 000000000000000c R08: 0000000000000000 R09: ffffffff900b895f
-> > >> R10: fffffbfff201712b R11: 000000000008e001 R12: dffffc0000000000
-> > >> R13: ffffc900003f8ec8 R14: ffff888043f64708 R15: 000000000000000b
-> > >> FS:  0000000000000000(0000) GS:ffff888119f80000(0000)
-> > >> knlGS:0000000000000000
-> > >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >> CR2: ffffffffffffffd6 CR3: 0000000054e64000 CR4: 0000000000350ee0
-> > >> Call Trace:
-> > >> <IRQ>
-> > >> rcu_core+0x85d/0x1960
-> > >> __do_softirq+0x2e5/0xae2
-> > >> __irq_exit_rcu+0x11d/0x190
-> > >> irq_exit_rcu+0x9/0x20
-> > >> sysvec_apic_timer_interrupt+0x97/0xc0
-> > >> </IRQ>
-> > >> <TASK>
-> > >> asm_sysvec_apic_timer_interrupt+0x1a/0x20
-> > >> RIP: 0010:default_idle+0xf/0x20
-> > >> Code: 89 07 49 c7 c0 08 00 00 00 4d 29 c8 4c 01 c7 4c 29 c2 e9 76 ff
-> > >> ff ff cc cc cc cc f3 0f 1e fa eb 07 0f 00 2d e3 8a 34 00 fb f4 <fa>
-> > >> c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 65
-> > >> RSP: 0018:ffffc9000017fe00 EFLAGS: 00000202
-> > >> RAX: 0000000000dfbea1 RBX: dffffc0000000000 RCX: ffffffff89b1da9c
-> > >> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-> > >> RBP: 0000000000000007 R08: 0000000000000001 R09: ffff888119fb6c23
-> > >> R10: ffffed10233f6d84 R11: dffffc0000000000 R12: 0000000000000003
-> > >> R13: ffff888100833900 R14: ffffffff8e112850 R15: 0000000000000000
-> > >> default_idle_call+0x67/0xa0
-> > >> do_idle+0x361/0x440
-> > >> cpu_startup_entry+0x18/0x20
-> > >> start_secondary+0x256/0x300
-> > >> secondary_startup_64_no_verify+0xce/0xdb
-> > >> </TASK>
-> > >> Modules linked in:
-> > >> CR2: 0000000000000000
-> > >> ---[ end trace 0000000000000000 ]---
-> > >> RIP: 0010:0x0
-> > >> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-> >
-> > I have seen this exact signature when the processor tries to execute a
-> > function that has a NULL address. That causes IP to goto 0 and the exce=
-ption.
-> > Sounds like something corrupted rcu_head (Just a guess).
+> >xorl %edx, %edx is preferred, as a 32-bit operation zero-extends to
+> >the full 64-bit register.  Using xorq to clear any of the lower 8
+> >registers adds an unnecessary REX prefix.  Just one of many quirks of
+> >the x86 instruction set...
 >
-> Did a quick test to directly invoke "call_rcu(head, NULL)", then the kern=
-el got panic
-> with almost the same call trace as above and with the same RIP:
+> Ewww. Couldn't the assembler choose to omit the REX prefix then? It does =
+more tricksy things than that already.
 >
->        RIP: 0010:0x0
->        Code: Unable to access opcode bytes at 0xffffffffffffffd6.
->
-> If invoke " call_rcu(head, NULL + 1)", then
->
->        RIP: 0010:0x1
->        Code: Unable to access opcode bytes at 0xffffffffffffffd7.
->
-> If invoke " call_rcu(head, NULL + 2)", then
->
->        RIP: 0010:0x2
->        Code: Unable to access opcode bytes at 0xffffffffffffffd8.
->
-> The log above tends to say your guess (a corrupted rcu_head) is reasonabl=
-e. =F0=9F=98=8A
->
+> I almost prefer having the prefix but (in the morning) if you prefer I ca=
+n put it back as it was with a comment about the zero-extension.
 
-Good that you double checked and kept me honest about my analysis. ;-)
+commit a7bea8308933aaeea76dad7d42a6e51000417626
+Author: Jan Beulich <JBeulich@suse.com>
+Date:   Mon Jul 2 04:31:54 2018 -0600
 
- - Joel
+    x86/asm/64: Use 32-bit XOR to zero registers
+
+    Some Intel CPUs don't recognize 64-bit XORs as zeroing idioms. Zeroing
+    idioms don't require execution bandwidth, as they're being taken care
+    of in the frontend (through register renaming). Use 32-bit XORs instead=
+.
+
+Not that speed is important here, but it's good to be consistent
+across the whole kernel.  Someone will eventually come by and fix it
+up anyways, as there have been a few of these patches already in the
+git history.
+
+--
+Brian Gerst
