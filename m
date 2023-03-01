@@ -2,225 +2,318 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73657C7EE32
-	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 07:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80C47C64ED6
+	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 08:12:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjCAHkf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Mar 2023 02:40:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
+        id S229651AbjCAIMo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Mar 2023 03:12:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjCAHkc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Mar 2023 02:40:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA7214EB2;
-        Tue, 28 Feb 2023 23:40:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ttWWb83lPFGiQeRtqm27++0rUHzdV4C0EDYBhQeFAg4=; b=cOuWl0v2IutvxhuULi5zVZJl+O
-        WK3MAkMmlg+CayTVPVY+21o0MvBNaR4qaJfVH1zxpsPadQGdUulVzQ3oVeG6Ypf5BMquh0NmgzqWh
-        s2W+hrfXk0vyXo7KecoMlKJJ9ob7sNu5pBx1MP417yAgxDDGhhZPvzlzmB1lv2wsji7moh8Ql/Ope
-        qU/ezlsv64BJuyftG9+Zl3oZTdZFmKman9FS/OaJdFKj8AUOfqxVHlBNRzTA7B7VFQGhP9T1km+S4
-        sBMH7mDqtlOwKEJjqhGTbNpT2F4Id1gBKPaNh23Ew2MCHiqRFoEZkwZKBH/Oif5M5KNuy1Xvve1KC
-        k9ezgsmg==;
-Received: from [2001:8b0:10b:5:15b6:2526:f3a7:87e2] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pXH3t-001TAh-0Q; Wed, 01 Mar 2023 07:39:41 +0000
-Message-ID: <de01a4c227870c4cf52370aa00bc7b8ddf136da9.camel@infradead.org>
-Subject: Re: [PATCH v12 07/11] x86/smpboot: Remove early_gdt_descr on 64-bit
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     "H. Peter Anvin" <hpa@zytor.com>, Brian Gerst <brgerst@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
-        piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com
-Date:   Wed, 01 Mar 2023 07:39:39 +0000
-In-Reply-To: <CE9D5D21-63D3-40B8-BC71-11F1A5A93F7E@zytor.com>
-References: <20230226110802.103134-1-usama.arif@bytedance.com>
-         <20230226110802.103134-8-usama.arif@bytedance.com> <878rghmrn2.ffs@tglx>
-         <35264451eabdf967eb31069cb814e8a05ee3179b.camel@infradead.org>
-         <cf7a1657159219cea61ffef567280e2e88d1f670.camel@infradead.org>
-         <CAMzpN2hQArxf2mAVq55uMx9VhTjUD-VDEVAD406RScfsrjdAjQ@mail.gmail.com>
-         <0E3AFDDA-039B-40F3-92A4-85CD96B1BB64@infradead.org>
-         <CE9D5D21-63D3-40B8-BC71-11F1A5A93F7E@zytor.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-73wSHZ8hjl5XquTWwGz+"
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        with ESMTP id S229553AbjCAIMn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Mar 2023 03:12:43 -0500
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B783137B42
+        for <rcu@vger.kernel.org>; Wed,  1 Mar 2023 00:12:38 -0800 (PST)
+Received: by mail-vs1-xe33.google.com with SMTP id f31so18400714vsv.1
+        for <rcu@vger.kernel.org>; Wed, 01 Mar 2023 00:12:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SrXCzWgKViOc+obcAuiHOuChJt/du0RafNof0WvuX5A=;
+        b=S9GzA4o27VwGUdjiSHMcq8rX+NB0Yio+5fQzSNjcwkCkfplU1KXT55lWIhpOTAV3h4
+         RFbdT99sjVVfsih8todlYCocoUvARH+nAH5kAVO3zkf5Nqopq2uQRkycvIfQjPuSDRKB
+         Abi/G25cNU/SNCtPvqOM1W+bPpFyVvTBU+HGDv0WEBPGsOaXhMojffq/ZddlBcHGRCL2
+         GqtuLcG5HE7Y+fu39c2bKZqep4bWAjT8FC7HGY5KeSJIzdqYC+9a9DWKWE+/3pYq7tW2
+         6FA5dJk+bSX/mhIklw59udLWwKu5S6u2meCu5C/8hyLx55jzGnqq6OgegKO3KwKMFj1n
+         02UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SrXCzWgKViOc+obcAuiHOuChJt/du0RafNof0WvuX5A=;
+        b=P9sYFVNOv4HDqJ9O6Z8eeyuOj0vNIwWhibO5fyuofKJp/gBihU5jztZsgVaNqLMEY6
+         dIzO8Grl+O+a6HMHnvHQuW9uHCvclFuw440dqc9ei7bql1oTlvQAjLiSp9jcE/pT6d9C
+         n+uBuIMBeS+f9DO/WEG9yrT4LbTqnfjOzIiwGmm/ho3lAzMkoKAueuENuypCXTMDlUAr
+         V57dWsk5/71HIbmP2MdbbWcI2fQP4IX3q69ReG9CI1/MSImlmPL5g7fUHWHF1a+e2p93
+         EWNL3FpcpS1TLeiwhJBUIXmCAqIT6PP8FGVjNxUBP8OdPuHhZwJzhMniCSJljXwVWLLj
+         sYXw==
+X-Gm-Message-State: AO0yUKVLrCd4SPtU92Bh7lrk3dpOliJ9Y2BeTKMjHEsLrMHt6KhLphLf
+        FrRdclacA8utUI3IJjgdgjfo5adGwJUtm9hA8t10yA==
+X-Google-Smtp-Source: AK7set8aQGZSG4rahaPDZYleNRgRlyZdZIda648JOx8T4OgQOcj6vbQkIfTeSt2iNEGyBfrwpdXUW3l5Qjgjcy4dA0A=
+X-Received: by 2002:a05:6102:3202:b0:412:2f46:4073 with SMTP id
+ r2-20020a056102320200b004122f464073mr3671735vsf.3.1677658357491; Wed, 01 Mar
+ 2023 00:12:37 -0800 (PST)
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 1 Mar 2023 13:42:26 +0530
+Message-ID: <CA+G9fYsbni4_vCObhwux3i+5HrCf119gBL0bm0q9tiS4N==kfg@mail.gmail.com>
+Subject: next: qemu-x86_64: RIP: 0010:sched_clock_cpu+0xe/0x1a0 - Kernel panic
+ - not syncing: Fatal exception in interrupt
+To:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+qemu-x86_64 boot fails intermittently with Linux next kernel.
+We have been noticing for a couple of weeks since it is intermittent
+it is hard to reproduce.
 
---=-73wSHZ8hjl5XquTWwGz+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The probability of occurrence is 3% only.
+Please find the crash log below.
 
-On Tue, 2023-02-28 at 16:02 -0800, H. Peter Anvin wrote:
->=20
-> > Ewww. Couldn't the assembler choose to omit the REX prefix then? It
-> > does more tricksy things than that already.
-> >=20
-> > I almost prefer having the prefix but (in the morning) if you
-> > prefer I can put it back as it was with a comment about the zero-
-> > extension.
-> >=20
->=20
-> Like it or not, that's how the assembler currently works.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Last time someone told me "you can't tell the assembler what you
-actually mean; you have to tell it something different" I threw my toys
-out of the pram a little bit and implemented all of the 16-bit '-m16'
-support in LLVM/clang.
+Booting from ROM...
+early console in setup code
+<5>[    0.000000] Linux version 6.2.0-next-20230301 (tuxmake@tuxmake)
+(x86_64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils
+for Debian) 2.40) #1 SMP PREEMPT_DYNAMIC @1677632214
+<6>[    0.000000] Command line: console=ttyS0,115200 rootwait
+root=/dev/sda debug verbose console_msg_format=syslog earlycon
+<6>[    0.000000] x86/fpu: x87 FPU will use FXSAVE
 
-On Tue, 2023-02-28 at 19:03 -0500, Brian Gerst wrote:
->=20
-> commit a7bea8308933aaeea76dad7d42a6e51000417626
-> Author: Jan Beulich <JBeulich@suse.com>
-> Date:   Mon Jul 2 04:31:54 2018 -0600
->=20
->     x86/asm/64: Use 32-bit XOR to zero registers
->=20
->     Some Intel CPUs don't recognize 64-bit XORs as zeroing idioms. Zeroin=
-g
->     idioms don't require execution bandwidth, as they're being taken care
->     of in the frontend (through register renaming). Use 32-bit XORs inste=
-ad.
->=20
-> Not that speed is important here, but it's good to be consistent
-> across the whole kernel.  Someone will eventually come by and fix it
-> up anyways, as there have been a few of these patches already in the
-> git history.
+...
+<6>[    2.374878] NET: Registered PF_INET6 protocol family
+<6>[    2.384759] Segment Routing with IPv6
+<6>[    2.385399] In-situ OAM (IOAM) with IPv6
+<6>[    2.387587] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+<6>[    2.392290] NET: Registered PF_PACKET protocol family
+<6>[    2.394353] 9pnet: Installing 9P2000 support
+<5>[    2.394871] Key type dns_resolver registered
+<6>[    2.399000] IPI shorthand broadcast: enabled
+<6>[    2.460526] sched_clock: Marking stable (2133060315,
+326814512)->(2478808254, -18933427)
+<4>[    2.464162] int3: 0000 [#1] PREEMPT SMP PTI
+<4>[    2.464607] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
+6.2.0-next-20230301 #1
+<4>[    2.464725] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.14.0-2 04/01/2014
+<4>[    2.464879] RIP: 0010:sched_clock_cpu+0xe/0x1a0
+<4>[    2.465330] Code: 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90
+90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 48 89 e5 41 55
+41 54 53 66 <90> e8 ec 2f 02 01 48 03 05 dd 6e ea 01 48 89 c2 5b 48 89
+d0 41 5c
+<4>[    2.465424] RSP: 0000:ffffa138c0003e30 EFLAGS: 00000002
+<4>[    2.465488] RAX: 0000000000000004 RBX: ffff98c7fbc2b740 RCX:
+0000000000000009
+<4>[    2.465506] RDX: 0000000000000001 RSI: ffffffffa698899c RDI:
+0000000000000000
+<4>[    2.465523] RBP: ffffa138c0003e48 R08: 00000000fffb7477 R09:
+0000000000000000
+<4>[    2.465541] R10: 0000000000000000 R11: ffffa138c0003ff8 R12:
+000000000002b740
+<4>[    2.465559] R13: 0000000000000000 R14: 0000000000000000 R15:
+ffff98c780808000
+<4>[    2.465625] FS:  0000000000000000(0000)
+GS:ffff98c7fbc00000(0000) knlGS:0000000000000000
+<4>[    2.465650] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[    2.465669] CR2: ffff98c7fffff000 CR3: 0000000128644000 CR4:
+00000000000006f0
+<4>[    2.465795] Call Trace:
+<4>[    2.465983]  <IRQ>
+<4>[    2.466323]  update_rq_clock+0x35/0x1a0
+<4>[    2.466407]  scheduler_tick+0x99/0x290
+<4>[    2.466430]  update_process_times+0x8d/0xb0
+<4>[    2.466448]  tick_sched_handle+0x38/0x50
+<4>[    2.466463]  tick_sched_timer+0x6e/0x90
+<4>[    2.466485]  ? __pfx_tick_sched_timer+0x10/0x10
+<4>[    2.466500]  __hrtimer_run_queues+0x88/0x2d0
+<4>[    2.466521]  hrtimer_interrupt+0xfa/0x230
+<4>[    2.466542]  __sysvec_apic_timer_interrupt+0x66/0x140
+<4>[    2.466561]  sysvec_apic_timer_interrupt+0x7b/0xa0
+<4>[    2.466620]  </IRQ>
+<4>[    2.466636]  <TASK>
+<4>[    2.466642]  asm_sysvec_apic_timer_interrupt+0x1f/0x30
+<4>[    2.466765] RIP: 0010:_raw_spin_unlock_irqrestore+0x23/0x50
+<4>[    2.466786] Code: 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00
+00 55 48 89 e5 c6 07 00 f7 c6 00 02 00 00 74 06 e8 93 9a 0a ff fb bf
+01 00 00 00 <e8> a8 23 fa fe 65 8b 05 f9 97 f8 59 85 c0 74 06 5d c3 cc
+cc cc cc
+<4>[    2.466796] RSP: 0000:ffffa138c0013d20 EFLAGS: 00000246
+<4>[    2.466810] RAX: 0000000000000000 RBX: ffff98c782611708 RCX:
+ffff98c7826114f8
+<4>[    2.466818] RDX: 0000000080000001 RSI: ffffffffa527ac60 RDI:
+0000000000000001
+<4>[    2.466825] RBP: ffffa138c0013d20 R08: 0000000000000000 R09:
+ffffa138c0013cc0
+<4>[    2.466832] R10: ffffffffa72ff76a R11: 00000005a99185a8 R12:
+ffff98c78270e6e0
+<4>[    2.466839] R13: ffff98c78270e6e8 R14: ffff98c78054c9c0 R15:
+ffff98c78054cc28
+<4>[    2.466903]  ? __create_object+0x230/0x440
+<4>[    2.466974]  __create_object+0x230/0x440
+<4>[    2.466992]  kmemleak_alloc+0x4e/0x80
+<4>[    2.467010]  kmem_cache_alloc_lru+0x214/0x490
+<4>[    2.467026]  ? __lookup_slow+0x85/0x130
+<4>[    2.467043]  ? alloc_inode+0x60/0xc0
+<4>[    2.467064]  alloc_inode+0x60/0xc0
+<4>[    2.467078]  new_inode+0x1c/0xb0
+<4>[    2.467092]  debugfs_get_inode+0xf/0x60
+<4>[    2.467110]  debugfs_create_dir+0x60/0x1d0
+<4>[    2.467124]  ? __pfx_sched_init_debug+0x10/0x10
+<4>[    2.467146]  sched_init_debug+0x1b/0x1e0
+<4>[    2.467162]  do_one_initcall+0x62/0x250
+<4>[    2.467188]  kernel_init_freeable+0x1c5/0x310
+<4>[    2.467204]  ? __pfx_kernel_init+0x10/0x10
+<4>[    2.467219]  kernel_init+0x1e/0x1c0
+<4>[    2.467232]  ret_from_fork+0x2c/0x50
+<4>[    2.467272]  </TASK>
+<4>[    2.467333] Modules linked in:
+<4>[    2.484825] int3: 0000 [#2] PREEMPT SMP PTI
+<4>[    2.484762] ---[ end trace 0000000000000000 ]---
+<4>[    2.484997] RIP: 0010:sched_clock_cpu+0xe/0x1a0
+<4>[    2.485036] Code: 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90
+90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 48 89 e5 41 55
+41 54 53 66 <90> e8 ec 2f 02 01 48 03 05 dd 6e ea 01 48 89 c2 5b 48 89
+d0 41 5c
+<4>[    2.485052] RSP: 0000:ffffa138c0003e30 EFLAGS: 00000002
+<4>[    2.485074] RAX: 0000000000000004 RBX: ffff98c7fbc2b740 RCX:
+0000000000000009
+<4>[    2.485082] RDX: 0000000000000001 RSI: ffffffffa698899c RDI:
+0000000000000000
+<4>[    2.485073] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D
+      6.2.0-next-20230301 #1
+<4>[    2.485090] RBP: ffffa138c0003e48 R08: 00000000fffb7477 R09:
+0000000000000000
+<4>[    2.485095] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.14.0-2 04/01/2014
+<4>[    2.485098] R10: 0000000000000000 R11: ffffa138c0003ff8 R12:
+000000000002b740
+<4>[    2.485105] R13: 0000000000000000 R14: 0000000000000000 R15:
+ffff98c780808000
+<4>[    2.485116] FS:  0000000000000000(0000)
+GS:ffff98c7fbc00000(0000) knlGS:0000000000000000
+<4>[    2.485107] RIP: 0010:sched_clock_cpu+0xe/0x1a0
+<4>[    2.485127] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[    2.485137] CR2: ffff98c7fffff000 CR3: 0000000128644000 CR4:
+00000000000006f0
+<4>[    2.485141] Code: 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90
+90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 48 89 e5 41 55
+41 54 53 66 <90> e8 ec 2f 02 01 48 03 05 dd 6e ea 01 48 89 c2 5b 48 89
+d0 41 5c
+<4>[    2.485154] RSP: 0000:ffffa138c00c8f88 EFLAGS: 00000006
+<4>[    2.485172] RAX: 000000007f5d6b43 RBX: ffff98c7fbd1f840 RCX:
+0000000000000018
+<4>[    2.485182] RDX: 00000ca5400fe793 RSI: 0000000000001096 RDI:
+0000000000000001
+<4>[    2.485192] RBP: ffffa138c00c8fa0 R08: 0000000000004504 R09:
+0000000000000000
+<4>[    2.485201] R10: 0000000000000000 R11: ffffa138c00c8ff8 R12:
+0000000000000001
+<4>[    2.485210] R13: 0000000000000000 R14: 0000000000000000 R15:
+0000000000000000
+<4>[    2.485219] FS:  0000000000000000(0000)
+GS:ffff98c7fbd00000(0000) knlGS:0000000000000000
+<4>[    2.485232] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[    2.485242] CR2: 0000000000000000 CR3: 0000000128644000 CR4:
+00000000000006e0
+<4>[    2.485253] Call Trace:
+<4>[    2.485272]  <IRQ>
+<0>[    2.485296] Kernel panic - not syncing: Fatal exception in interrupt
+<4>[    2.485299]  sched_clock_idle_sleep_event+0x14/0x20
+<4>[    2.485326]  tick_nohz_irq_exit+0x3f/0x50
+<4>[    2.485346]  __irq_exit_rcu+0x92/0xc0
+<4>[    2.485366]  irq_exit_rcu+0x12/0x20
+<4>[    2.485384]  sysvec_call_function_single+0x80/0xa0
+<4>[    2.485422]  </IRQ>
+<4>[    2.485428]  <TASK>
+<4>[    2.485435]  asm_sysvec_call_function_single+0x1f/0x30
+<4>[    2.486600] RIP: 0010:default_idle+0xf/0x20
+<4>[    2.486629] Code: 4c 01 c7 4c 29 c2 e9 72 ff ff ff 90 90 90 90
+90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa eb 07 0f 00 2d e3 9b
+38 00 fb f4 <fa> c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 90 90
+90 90 90
+<4>[    2.486643] RSP: 0000:ffffa138c0093eb0 EFLAGS: 00000212
+<4>[    2.486661] RAX: ffff98c7fbd28180 RBX: ffff98c780828000 RCX:
+4000000000000000
+<4>[    2.486682] RDX: 0000000000000001 RSI: ffffffffa69d2df3 RDI:
+00000000000044fc
+<4>[    2.486692] RBP: ffffa138c0093eb8 R08: 00000000000044fc R09:
+000000002c23407c
+<4>[    2.486701] R10: 0000000000000001 R11: 0000000000000200 R12:
+0000000000000001
+<4>[    2.486710] R13: 0000000000000000 R14: 0000000000000000 R15:
+0000000000000000
+<4>[    2.486745]  ? arch_cpu_idle+0xd/0x20
+<4>[    2.486764]  default_idle_call+0x3a/0xf0
+<4>[    2.486779]  do_idle+0x1e2/0x230
+<4>[    2.486798]  ? complete+0x6a/0x80
+<4>[    2.486818]  cpu_startup_entry+0x21/0x30
+<4>[    2.486836]  start_secondary+0x113/0x130
+<4>[    2.486857]  secondary_startup_64_no_verify+0xe0/0xeb
+<4>[    2.486891]  </TASK>
+<4>[    2.486898] Modules linked in:
+<4>[    2.487333] ---[ end trace 0000000000000000 ]---
+<4>[    2.487345] RIP: 0010:sched_clock_cpu+0xe/0x1a0
+<4>[    2.487365] Code: 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90
+90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 48 89 e5 41 55
+41 54 53 66 <90> e8 ec 2f 02 01 48 03 05 dd 6e ea 01 48 89 c2 5b 48 89
+d0 41 5c
+<4>[    2.487377] RSP: 0000:ffffa138c0003e30 EFLAGS: 00000002
+<4>[    2.487391] RAX: 0000000000000004 RBX: ffff98c7fbc2b740 RCX:
+0000000000000009
+<4>[    2.487401] RDX: 0000000000000001 RSI: ffffffffa698899c RDI:
+0000000000000000
+<4>[    2.487410] RBP: ffffa138c0003e48 R08: 00000000fffb7477 R09:
+0000000000000000
+<4>[    2.487419] R10: 0000000000000000 R11: ffffa138c0003ff8 R12:
+000000000002b740
+<4>[    2.487429] R13: 0000000000000000 R14: 0000000000000000 R15:
+ffff98c780808000
+<4>[    2.487439] FS:  0000000000000000(0000)
+GS:ffff98c7fbd00000(0000) knlGS:0000000000000000
+<4>[    2.487453] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[    2.487464] CR2: 0000000000000000 CR3: 0000000128644000 CR4:
+00000000000006e0
+<0>[    4.318996] Shutting down cpus with NMI
+<0>[    4.320347] Kernel Offset: 0x23e00000 from 0xffffffff81000000
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
 
-So there literally is a better encoding of this mnemonic which isn't
-just a byte shorter, but is also faster to execute. And one *hopes*
-that the compiler knows about it... yep... so why in $DEITY's name
-can't I type what I mean into an asm file? Isn't asm intricate enough
-already?
 
-Meh, life's too short. Not shaving that particular yak today. I've put
-the git tree back to using %edx, with a comment that it zero-extends.
+complete boot log,
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230301/testrun/15171566/suite/boot/test/gcc-12-lkftconfig-debug-kmemleak/log
 
+Details for build and boot,
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230301/testrun/15171566/suite/boot/test/gcc-12-lkftconfig-debug-kmemleak/details/
+https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2MOIBDPkClbVuC9X04FdCk4t5DJ
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230301/testrun/15171566/suite/boot/tests/
 
---=-73wSHZ8hjl5XquTWwGz+
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+config:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2MOI7CgX5aF1rQFmPoX2ZngGLPN/config
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzAxMDczOTM5WjAvBgkqhkiG9w0BCQQxIgQgFYEDaEsJ
-HhApic8T4Vu6E9kwQ+sagG9uAvpDeUNnLx0wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCG/zw9yNUyFrEYUACLBNlNB+4EC/xkmeQn
-kV3KH43fNT/4EKnnqX4cvFxvy9jk1Zs7eN3bR+u/SEXavaGAN5K2ydYdqzGKmAHcnuuKRqlXyzgr
-xtwX57a9L70umtstZMKSHxiR0ZS/qpfzeOL3xdzoL+ETfpQ+gLR10+4ifsqTALVcIt2njlNxRVZT
-/aPUgeqhWx27yjb5umCdyI87GiFqeeUhARnYi5qdMvLySZ9u2DIdkvRxLOhwziaMWcawRJYhNMlN
-O+ee0HB4nfGfcUaVHeP3QMlrVS/godbXXMeSHBP1M4YQKr2+9mM3AZT9PhEoWGm/VhzoDoyY2dWJ
-4T/KQp5klrpP2q66VL//zmz8mzpwVOH25FBAPjZ7uJ8L8ypkgwgnrWJqFIqTGVivgvUaR8haV7Ve
-hSXPC9eZC1iF+XSMGIfHDxuQFlzTDWFF9QQtlIkiZbP6NrZzoxVSQ0x/CslzEg5Eyg1osQ2E3tda
-DA5NCsZaH/SQgINa7xpTlNJ4Bl/DwTUFFmHazgKP7mu2J9vQEIQzsXcaZtHVrz23+J22M075l/0h
-ba5YvckqJwy81IAExZVyd97PhRfOGLogHamSCQkLz86u93wLZMQ5sFQYoUgLM+LZikHQwNmvBGan
-x8dop7p0thgJ9u8+5SzWxuqM9+5SC5BOyASbmVz4MgAAAAAAAA==
+steps to reproduce: (3% only)
 
 
---=-73wSHZ8hjl5XquTWwGz+--
+# To install tuxrun on your system globally:
+# sudo pip3 install -U tuxrun==0.37.2
+#
+# See https://tuxrun.org/ for complete documentation.
+
+tuxrun --runtime podman --device qemu-x86_64 --kernel
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2MOI7CgX5aF1rQFmPoX2ZngGLPN/bzImage
+--modules https://storage.tuxsuite.com/public/linaro/lkft/builds/2MOI7CgX5aF1rQFmPoX2ZngGLPN/modules.tar.xz
+--rootfs https://storage.tuxsuite.com/public/linaro/lkft/oebuilds/2ME6ZmheiOB5aTdASNelcq3DBhN/images/intel-corei7-64/lkft-tux-image-intel-corei7-64-20230225104837.rootfs.ext4.gz
+--parameters SKIPFILE=skipfile-lkft.yaml --parameters SHARD_NUMBER=6
+--parameters SHARD_INDEX=5 --image
+docker.io/lavasoftware/lava-dispatcher:2023.01.0020.gc1598238f --tests
+ltp-mm --timeouts boot=15 ltp-mm=40
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
