@@ -2,133 +2,69 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B266C64ED6
-	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 15:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D48FC64ED6
+	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 16:38:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjCAP5u (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Mar 2023 10:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
+        id S229546AbjCAQik (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Mar 2023 11:38:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjCAP5t (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Mar 2023 10:57:49 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31932E0D7
-        for <rcu@vger.kernel.org>; Wed,  1 Mar 2023 07:57:47 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id b13so14491091ljf.6
-        for <rcu@vger.kernel.org>; Wed, 01 Mar 2023 07:57:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1677686266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aZY5EmaqD+P3EwReqCVyHwAW/VaGSUP/+XIGUbkZtms=;
-        b=Gvv4zHlv94oBHWoM9u9axqXfB9byfnnU8jGTCTd2rOc519tknR7ersCYRyBHqQybud
-         GTJR/3HkuRAqPaHjlQmJGN8lGBa00xveHOoh/RPtEUgIbPU6xGo3sMh9B0YHJuuRqv1+
-         Wj2iCrUGBhvAPxR4cXNbxbMKeKZLakqSBVl74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677686266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aZY5EmaqD+P3EwReqCVyHwAW/VaGSUP/+XIGUbkZtms=;
-        b=KEbtfNnz4ML8z7BeZm4qB6NCUnRlXn0X5+jKAm8otn2cT6pA6wzNzMWgHuI/m4vEhP
-         Va8EHtpBpb5RU2jaVTOaNBsZzXHSl+rHQV5XrvNBr8uVyxJLBuBQ9ms4T4wAVXhfYCGj
-         YC261wMtPx2e0c1hPQ3S4wh6kwYMNlPNDr0CMw7agjhKKSePZ1dVlPXaEyoK0tueCjnv
-         V22TjnJu71cDNQIHoM40QYQZMdGpBqd111aBHUVpKBCDmhxT2jPrWkEeV3rp+wThBZML
-         lfhqRmRc1+1fo8XqJBtdseQZhf5+Bcq/nAjv8c0AvA+0Rj7h1Si2GYBMYYoTWPR/UtSs
-         zb3A==
-X-Gm-Message-State: AO0yUKWDjxHsSr58lKqW9011PwxXPWM9YAIUrZtRKs4d25Vc4Z4LgJ6w
-        dsOlM2mohR6IlZy1c2mrTGHU8Ef2vTbkpdNY4s7MsA==
-X-Google-Smtp-Source: AK7set+PUT6fMy5JjsAgQSnvd2HKm/XJgvhhtyqHAlJpOdjtzWHJFpgnv1sPo1bRYNmhtPOd794aGqK9c4pLl3INt/Y=
-X-Received: by 2002:a2e:a378:0:b0:295:a82e:ec06 with SMTP id
- i24-20020a2ea378000000b00295a82eec06mr2233608ljn.3.1677686266038; Wed, 01 Mar
- 2023 07:57:46 -0800 (PST)
-MIME-Version: 1.0
-References: <IA1PR11MB617175CA398D425B7489CE4889AF9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <764CA486-6FB2-4667-B8CB-56E3AC31FD58@joelfernandes.org> <IA1PR11MB617118DAE8D72E2419558D6689AC9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <CAEXW_YQwu4ccqWLTfFSwcJQOH6fbhe4SiHHa4XPUCvefiBZi9g@mail.gmail.com> <IA1PR11MB61714E80960104FB04E3167989AD9@IA1PR11MB6171.namprd11.prod.outlook.com>
-In-Reply-To: <IA1PR11MB61714E80960104FB04E3167989AD9@IA1PR11MB6171.namprd11.prod.outlook.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 1 Mar 2023 10:57:34 -0500
-Message-ID: <CAEXW_YRe58jpu_WS3XLsvcEuLTGTRJzc5ErveaO5X093=_13Dg@mail.gmail.com>
-Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as completed
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        with ESMTP id S229690AbjCAQii (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Mar 2023 11:38:38 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546CD233FF;
+        Wed,  1 Mar 2023 08:38:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id ABC61B810C2;
+        Wed,  1 Mar 2023 16:38:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F34C433D2;
+        Wed,  1 Mar 2023 16:38:17 +0000 (UTC)
+Date:   Wed, 1 Mar 2023 11:38:13 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
+Message-ID: <20230301113813.4f16a689@gandalf.local.home>
+In-Reply-To: <CAFULd4aY3Y8tyLN70oebZDagBebvH0erwRxKDaEX8L83Xo8gYw@mail.gmail.com>
+References: <20230228155121.3416-1-ubizjak@gmail.com>
+        <Y/5mguXPPqdP3MZF@google.com>
+        <20230228160324.2a7c1012@gandalf.local.home>
+        <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
+        <20230228164124.77c126d2@gandalf.local.home>
+        <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
+        <20230228190846.79b06089@gandalf.local.home>
+        <CAFULd4aY3Y8tyLN70oebZDagBebvH0erwRxKDaEX8L83Xo8gYw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 8:34=E2=80=AFPM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> =
-wrote:
->
-> > From: Joel Fernandes <joel@joelfernandes.org>
-> > Sent: Tuesday, February 28, 2023 10:27 PM
-> > To: Zhuo, Qiuxu <qiuxu.zhuo@intel.com>
-> > Cc: linux-kernel@vger.kernel.org; Frederic Weisbecker <frederic@kernel.=
-org>;
-> > Lai Jiangshan <jiangshanlai@gmail.com>; linux-doc@vger.kernel.org; Paul=
- E.
-> > McKenney <paulmck@kernel.org>; rcu@vger.kernel.org
-> > Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
-> > completed
-> >
-> > On Tue, Feb 28, 2023 at 1:40=E2=80=AFAM Zhuo, Qiuxu <qiuxu.zhuo@intel.c=
-om> wrote:
-> > >
-> > [...]
-> > > My testing showed the positive result that the OS boot time was
-> > > reduced by ~4.6% on my side after applying Joel=E2=80=99s patch.
-> >
-> > Wow, this is great! I am guessing you have CONFIG_RCU_LAZY disabled,
-> > when you tested. If so, that is great news that expediting RCU for a bi=
-t longer
-> > improves boot time! Please confirm that your config had LAZY disabled.
-> >
->
-> I confirm that CONFIG_RCU_LAZY kernel configuration was disabled in my te=
-sting.
-> All the kernel configurations for RCU used in my testing are as below:
+On Wed, 1 Mar 2023 11:28:47 +0100
+Uros Bizjak <ubizjak@gmail.com> wrote:
 
-Thank you! Good to know there is improvement in *existing code*,
-that's the power of upstream... new features fix/improve old ones
-sometimes.
+> These benefits are the reason the change to try_cmpxchg was accepted
+> also in the linear code elsewhere in the linux kernel, e.g. [2,3] to
+> name a few commits, with a thumbs-up and a claim that the new code is
+> actually *clearer* at the merge commit [4].
 
-Any case, I will include all your data in v3. Thanks!
+I'll say it here too. I really like Joel's suggestion of having a
+cmpxchg_success() that does not have the added side effect of modifying the
+old variable.
 
- - Joel
+I think that would allow for the arch optimizations that you are trying to
+achieve, as well as remove the side effect that might cause issues down the
+road.
 
->
->      #
->      # RCU Subsystem
->      #
->      CONFIG_TREE_RCU=3Dy
->      CONFIG_PREEMPT_RCU=3Dy
->      CONFIG_RCU_EXPERT=3Dy
->      CONFIG_SRCU=3Dy
->      CONFIG_TREE_SRCU=3Dy
->      CONFIG_TASKS_RCU_GENERIC=3Dy
->      # CONFIG_FORCE_TASKS_RCU is not set
->      CONFIG_TASKS_RCU=3Dy
->      # CONFIG_FORCE_TASKS_RUDE_RCU is not set
->      # CONFIG_FORCE_TASKS_TRACE_RCU is not set
->      CONFIG_TASKS_TRACE_RCU=3Dy
->      CONFIG_RCU_STALL_COMMON=3Dy
->      CONFIG_RCU_NEED_SEGCBLIST=3Dy
->      CONFIG_RCU_FANOUT=3D32
->      CONFIG_RCU_FANOUT_LEAF=3D16
->      # CONFIG_RCU_BOOST is not set
->      CONFIG_RCU_BOOT_END_DELAY=3D20000
->      CONFIG_RCU_NOCB_CPU=3Dy
->      # CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
->      # CONFIG_TASKS_TRACE_RCU_READ_MB is not set
->      # CONFIG_RCU_LAZY is not set
->      # end of RCU Subsystem
->
-> -Qiuxu
+-- Steve
