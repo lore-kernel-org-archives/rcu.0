@@ -2,110 +2,118 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4321DC64EC4
-	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 00:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9024C64EC7
+	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 00:08:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjCAAEh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 19:04:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
+        id S229501AbjCAAI6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 19:08:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjCAAEg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 19:04:36 -0500
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AE330B28;
-        Tue, 28 Feb 2023 16:04:07 -0800 (PST)
-Received: from [127.0.0.1] ([73.223.221.228])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 321022WE810372
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 28 Feb 2023 16:02:03 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 321022WE810372
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023020601; t=1677628925;
-        bh=9gydT6nRZVx6IYCzJ3hOzQNR3g6aSBQDwZj4A/UqP40=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=0wZgGOWf9IiVKL9MStuQYQ33JWOs3F5pd2797tODgNG4uKCNpjUrXuCrBE8nGrzgK
-         AKtvYhpI0lHQ2zDjk0qTozl/OhG6Tv9fgR9RlebTYDYLqngfq5j/TW/Q8dQnPcyIl+
-         0QhK+dPDszSDxOt+UeFJRaeoY9GnsVwfI3/+EBmh5bTqiBTJqN+023xMbVtf2jtd/v
-         uzF4NbCaXmUNKJL9P6kNPhOqUjJV92rDUkvtssDVLijbyPdWoJP0dwAJ4qiSRs7sqZ
-         MTJOug/2f2+LRcnIu79MN9OFkofvQ5XBRpBmPZPdH/nQnP3+tjcYL12L4Ois3ccyfm
-         TTHsCXS+oS/9A==
-Date:   Tue, 28 Feb 2023 16:02:00 -0800
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Brian Gerst <brgerst@gmail.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
-        piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, pbonzini@redhat.com,
-        paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com
-Subject: Re: [PATCH v12 07/11] x86/smpboot: Remove early_gdt_descr on 64-bit
-User-Agent: K-9 Mail for Android
-In-Reply-To: <0E3AFDDA-039B-40F3-92A4-85CD96B1BB64@infradead.org>
-References: <20230226110802.103134-1-usama.arif@bytedance.com> <20230226110802.103134-8-usama.arif@bytedance.com> <878rghmrn2.ffs@tglx> <35264451eabdf967eb31069cb814e8a05ee3179b.camel@infradead.org> <cf7a1657159219cea61ffef567280e2e88d1f670.camel@infradead.org> <CAMzpN2hQArxf2mAVq55uMx9VhTjUD-VDEVAD406RScfsrjdAjQ@mail.gmail.com> <0E3AFDDA-039B-40F3-92A4-85CD96B1BB64@infradead.org>
-Message-ID: <CE9D5D21-63D3-40B8-BC71-11F1A5A93F7E@zytor.com>
+        with ESMTP id S229437AbjCAAI6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 19:08:58 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FC49002;
+        Tue, 28 Feb 2023 16:08:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 46322B80ED7;
+        Wed,  1 Mar 2023 00:08:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D634BC433EF;
+        Wed,  1 Mar 2023 00:08:47 +0000 (UTC)
+Date:   Tue, 28 Feb 2023 19:08:46 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
+Message-ID: <20230228190846.79b06089@gandalf.local.home>
+In-Reply-To: <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
+References: <20230228155121.3416-1-ubizjak@gmail.com>
+        <Y/5mguXPPqdP3MZF@google.com>
+        <20230228160324.2a7c1012@gandalf.local.home>
+        <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
+        <20230228164124.77c126d2@gandalf.local.home>
+        <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On February 28, 2023 3:42:55 PM PST, David Woodhouse <dwmw2@infradead=2Eorg=
-> wrote:
->
->
->On 28 February 2023 22:48:42 GMT, Brian Gerst <brgerst@gmail=2Ecom> wrote=
-:
->>On Tue, Feb 28, 2023 at 5:41=E2=80=AFPM David Woodhouse <dwmw2@infradead=
-=2Eorg> wrote:
->>>
->>> On Tue, 2023-02-28 at 21:57 +0000, David Woodhouse wrote:
->>> >
->>> > ----------------
->>> > IN:
->>> > 0xffffffffa20000b2:  48 31 d2                 xorq     %rdx, %rdx
->>> > 0xffffffffa20000b5:  48 8b 82 c0 74 d5 a3     movq     -0x5c2a8b40(%=
-rdx), %rax
->>> > 0xffffffffa20000bc:  48 8b a0 58 14 00 00     movq     0x1458(%rax),=
- %rsp
->>> > 0xffffffffa20000c3:  48 83 ec 10              subq     $0x10, %rsp
->>> > 0xffffffffa20000c7:  66 c7 04 24 7f 00        movw     $0x7f, (%rsp)
->>> > 0xffffffffa20000cd:  48 8d 82 00 10 81 a3     leaq     -0x5c7ef000(%=
-rdx), %rax
->>> > 0xffffffffa20000d4:  48 89 44 24 02           movq     %rax, 2(%rsp)
->>> > 0xffffffffa20000d9:  0f 01 14 24              lgdtq    (%rsp)
->>> > 0xffffffffa20000dd:  48 83 c4 10              addq     $0x10, %rsp
->>> > 0xffffffffa20000e1:  31 c0                    xorl     %eax, %eax
->>> > 0xffffffffa20000e3:  8e d8                    movl     %eax, %ds
->>> >
->>> > I cannot work out where the value -0x5c7ef000 comes from, but it
->>> > doesn't seem to be the 0xb000 you claimed, and my brain is hurting
->>> > again=2E=2E=2E
->>>
->>> Turning off CONFIG_RANDOMIZE_BASE (or just looking at the vmlinux
->>> disassembly instead as Brian did) helps to resolve that FWIW=2E
->>>
->>> I've changed it to zero all of %rdx and pushed it back to the v12bis
->>> branch=2E
->>
->>xorl %edx, %edx is preferred, as a 32-bit operation zero-extends to
->>the full 64-bit register=2E  Using xorq to clear any of the lower 8
->>registers adds an unnecessary REX prefix=2E  Just one of many quirks of
->>the x86 instruction set=2E=2E=2E
->
->Ewww=2E Couldn't the assembler choose to omit the REX prefix then? It doe=
-s more tricksy things than that already=2E
->
->I almost prefer having the prefix but (in the morning) if you prefer I ca=
-n put it back as it was with a comment about the zero-extension=2E
->
+On Tue, 28 Feb 2023 18:30:14 -0500
+Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > But looking at this use case, I'd actually NAK it, as it is misleading.  
+> 
+> I'm trying to parse this. You are saying it is misleading, because it
+> updates js when it doesn't need to?
 
-Like it or not, that's how the assembler currently works=2E
+Correct.
+
+> 
+> > As try_cmpxchg() is used to get rid of the updating of the old value. As in
+> > the ring buffer code we had:
+> >
+> > void ring_buffer_record_off(struct trace_buffer *buffer)
+> > {
+> >         unsigned int rd;
+> >         unsigned int new_rd;
+> >
+> >         do {
+> >                 rd = atomic_read(&buffer->record_disabled);
+> >                 new_rd = rd | RB_BUFFER_OFF;
+> >         } while (!atomic_cmpxchg(&buffer->record_disabled, &rd, new_rd) != rd);  
+> 
+> Hear you actually meant "rd" as the second parameter without the & ?
+
+Yes, I cut and pasted the updated code and incorrectly try to revert it in
+this example :-p
+
+> 
+> > }
+> >
+> > and the try_cmpxchg() converted it to:
+> >
+> > void ring_buffer_record_off(struct trace_buffer *buffer)
+> > {
+> >         unsigned int rd;
+> >         unsigned int new_rd;
+> >
+> >         rd = atomic_read(&buffer->record_disabled);
+> >         do {
+> >                 new_rd = rd | RB_BUFFER_OFF;
+> >         } while (!atomic_try_cmpxchg(&buffer->record_disabled, &rd, new_rd));
+> > }
+> >
+> > Which got rid of the need to constantly update the rd variable (cmpxchg
+> > will load rax with the value read, so it removes the need for an extra
+> > move).  
+> 
+> So that's a good thing?
+
+Yes. For looping, try_cmpxchg() is the proper function to use. But in the
+RCU case (and other cases in the ring-buffer patch) there is no loop, and
+no need to modify the "old" variable.
+
+> 
+> >
+> > But in your case, we don't need to update js, in which case the
+> > try_cmpxchg() does.  
+> 
+> Right, it has lesser value here but I'm curious why you feel it also
+> doesn't belong in that ring buffer loop you shared (or did you mean,
+> it does belong there but not in other ftrace code modified by Uros?).
+
+The ring buffer patch had more than one change, where half the updates were
+fine, and half were not.
+
+-- Steve
