@@ -2,125 +2,136 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CE7BC7EE33
-	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 19:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADD2AC678D4
+	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 20:08:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjCATqm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Mar 2023 14:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
+        id S229577AbjCAUIY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Mar 2023 15:08:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjCATqk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Mar 2023 14:46:40 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393CC4DE0A
-        for <rcu@vger.kernel.org>; Wed,  1 Mar 2023 11:46:38 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id l13so15673785qtv.3
-        for <rcu@vger.kernel.org>; Wed, 01 Mar 2023 11:46:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1677699997;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MnvIt78BkXNn6ES/Xg+N3YBtCXIuWCANKtdz23oKbXI=;
-        b=qWw+wQdwBu2zgUFXAmjBOSFeTHaHbLbY5I9APi+FWEmGvXqUV3Chq8DwyfqBTc0YUE
-         hW11YqBhjv6RSWVKptpV0NzTxNYnpOJ+UPntZQ0+if+FLDvRFpH/JppLEIDBGF+Aydtn
-         XZ9g/qkiOcnqDnVHZMOqtuRKvXePaXgAPl6NY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677699997;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MnvIt78BkXNn6ES/Xg+N3YBtCXIuWCANKtdz23oKbXI=;
-        b=xauIinmCrUp5uPzoTILMnd1a2ZK/ZybRWj2yYgPzociJAqai6ujUcn/A7m+l5gG5v/
-         mSOm2GqMiAoInuiZeEd40PqUtnvEKUDoeL+TdQMwOcHgnrXyJi6UEvp4F/oyaC2bsbY9
-         dynKV5qEw6Be3IROc9v0ognGp0Hr1wSvZ3rM94R/SKs6FF2Z/bcmYExllsrHtEO/RKpt
-         cEjtUJW0hTICHrXp15vBreyRFG9QyXXaDaXaoo6zUihoa/EU7NiIAHZQGffA0Ls5h/Qb
-         1hmC0ACjwMENgmkTNajSD542ZofKtwUNAaWn7kM4BzW2kVwyfp1hFphdmdYe/c7fSDEd
-         S1Og==
-X-Gm-Message-State: AO0yUKVJGGzjUTYxPf1aKIS294hLrKXV0Rk3fpoPWyuDxqMy2T7TX86M
-        iQfBajVSl9iSr6Rc3J0RWcy4mQ==
-X-Google-Smtp-Source: AK7set8530PN2IyZ4cloMMqOhB+OVlKK3v2iELIcLzylgqLAPtxWT4edodd3ImfyrXG/lT+MN+eO2g==
-X-Received: by 2002:a05:622a:1a95:b0:3bf:b614:bcba with SMTP id s21-20020a05622a1a9500b003bfb614bcbamr12853575qtc.42.1677699997183;
-        Wed, 01 Mar 2023 11:46:37 -0800 (PST)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id w9-20020ac87189000000b003b8484fdfccsm8853483qto.42.2023.03.01.11.46.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Mar 2023 11:46:36 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
-Date:   Wed, 1 Mar 2023 14:46:25 -0500
-Message-Id: <00F4E7D7-6E54-4BC0-9735-4038F8DBAE20@joelfernandes.org>
-References: <20230301144355.338c62de@gandalf.local.home>
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        with ESMTP id S229498AbjCAUIX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Mar 2023 15:08:23 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7763976BB;
+        Wed,  1 Mar 2023 12:08:22 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 10EB561492;
+        Wed,  1 Mar 2023 20:08:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64DF1C433EF;
+        Wed,  1 Mar 2023 20:08:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677701301;
+        bh=yCU9LbHC7GjcJmmJI+gM9d9NqJXLtAh1qIs/M611A5o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=g6HbmwkR8KD4IlNrqhORB5U1JpfNsTJNyQfb7ebcT1zrUoAVhGDnHwLsxnSCDiOfX
+         Kd+Q/uSIv7T1Gn1QxOIDPDhngTGPZLxti6OeZywvLaItxXFeW62ALCJfKGHZuKCKzY
+         c89cQgWFc/PG50s03LhVDqWn8ZHjAc4WWlNcAj6gMXr7FhSaZMa4ugC60x4lFWDJWz
+         SjE0XokCQzeAAAtVJKH6YolelMBiuaBORagGNBOLIs4K3EqjdwVonblb+rOKKtvCkm
+         4Kjk6u58cVRlRqrMZwu0QK4BjEtqA9LBupXvpyo78i8b8Wc5A5Qfc50cqPu+TNjxCu
+         wD6SbHVUEsC5g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F30585C03F0; Wed,  1 Mar 2023 12:08:20 -0800 (PST)
+Date:   Wed, 1 Mar 2023 12:08:20 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>
-In-Reply-To: <20230301144355.338c62de@gandalf.local.home>
-To:     Steven Rostedt <rostedt@goodmis.org>
-X-Mailer: iPhone Mail (20B101)
+Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
+Message-ID: <20230301200820.GF2948950@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230228155121.3416-1-ubizjak@gmail.com>
+ <Y/5mguXPPqdP3MZF@google.com>
+ <20230228160324.2a7c1012@gandalf.local.home>
+ <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
+ <20230228164124.77c126d2@gandalf.local.home>
+ <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
+ <20230228190846.79b06089@gandalf.local.home>
+ <CAFULd4aY3Y8tyLN70oebZDagBebvH0erwRxKDaEX8L83Xo8gYw@mail.gmail.com>
+ <20230301113813.4f16a689@gandalf.local.home>
+ <CAFULd4aWZ+fvVZ+MEt6JD1rFaQZeO5DDWAHtPKOrx8R8DETFBw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFULd4aWZ+fvVZ+MEt6JD1rFaQZeO5DDWAHtPKOrx8R8DETFBw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Wed, Mar 01, 2023 at 07:43:34PM +0100, Uros Bizjak wrote:
+> On Wed, Mar 1, 2023 at 5:38 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Wed, 1 Mar 2023 11:28:47 +0100
+> > Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > > These benefits are the reason the change to try_cmpxchg was accepted
+> > > also in the linear code elsewhere in the linux kernel, e.g. [2,3] to
+> > > name a few commits, with a thumbs-up and a claim that the new code is
+> > > actually *clearer* at the merge commit [4].
+> >
+> > I'll say it here too. I really like Joel's suggestion of having a
+> > cmpxchg_success() that does not have the added side effect of modifying the
+> > old variable.
+> >
+> > I think that would allow for the arch optimizations that you are trying to
+> > achieve, as well as remove the side effect that might cause issues down the
+> > road.
+> 
+> Attached patch implements this suggestion.
 
+Please help me out here.
 
-> On Mar 1, 2023, at 2:43 PM, Steven Rostedt <rostedt@goodmis.org> wrote:
->=20
-> =EF=BB=BFOn Wed, 1 Mar 2023 20:18:11 +0100
-> Uros Bizjak <ubizjak@gmail.com> wrote:
->=20
->> If we want to put the definition in generic headers, then we also need
->> to define acquire/release/relaxed and 64bit variants. ATM, we have two
->> sites that require this definition and I think that for now we could
->> live with two instances of the same definition in two separate
->> subsystems. But this would definitely be a good future addition. There
->> is some code in the form of
->>=20
->> if (cmpxchg (ptr, 0, 1) =3D=3D 0)
->>=20
->> that can not be converted to try_cmpxchg, but can use cmpxchg_success.
->=20
-> And even modify code that uses temp variables. For example, where you
-> modified the ring buffer code to use try_cmpxchg(), I could convert your:
->=20
-> static int rb_head_page_replace(struct buffer_page *old,
->                struct buffer_page *new)
-> {
->    unsigned long *ptr =3D (unsigned long *)&old->list.prev->next;
->    unsigned long val;
->=20
->    val =3D *ptr & ~RB_FLAG_MASK;
->    val |=3D RB_PAGE_HEAD;
->=20
->    return try_cmpxchg(ptr, &val, (unsigned long)&new->list);
-> }
->=20
-> Into just:
->=20
-> static int rb_head_page_replace(struct buffer_page *old,
->                struct buffer_page *new)
-> {
->    unsigned long *ptr =3D (unsigned long *)&old->list.prev->next;
->    unsigned long val;
->=20
->    val =3D *ptr & ~RB_FLAG_MASK;
->=20
->    return cmpxchg_success(ptr, val | RB_PAGE_HEAD, (unsigned long)&new->li=
-st);
-> }
+Why on earth are we even discussing making this change to code that
+normally never executes?  Performance is not a consideration here.
 
-Nice! Looks much better.
+What am I missing here?  Is there some sort of forward-progress
+issue that this change addresses?
 
-Thanks,
+							Thanx, Paul
 
- - Joel
+> Uros.
 
->=20
-> -- Steve
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index b10b8349bb2a..229263ebba3b 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -709,6 +709,12 @@ static void print_cpu_stall(unsigned long gps)
+>  	set_preempt_need_resched();
+>  }
+>  
+> +#define cmpxchg_success(ptr, old, new)				\
+> +({								\
+> +	__typeof__(*(ptr)) __tmp = (old);			\
+> +	try_cmpxchg((ptr), &__tmp, (new));			\
+> +})
+> +
+>  static void check_cpu_stall(struct rcu_data *rdp)
+>  {
+>  	bool didstall = false;
+> @@ -760,7 +766,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  	jn = jiffies + ULONG_MAX / 2;
+>  	if (rcu_gp_in_progress() &&
+>  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+> -	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> +	    cmpxchg_success(&rcu_state.jiffies_stall, js, jn)) {
+>  
+>  		/*
+>  		 * If a virtual machine is stopped by the host it can look to
+> @@ -778,7 +784,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  
+>  	} else if (rcu_gp_in_progress() &&
+>  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+> -		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> +		   cmpxchg_success(&rcu_state.jiffies_stall, js, jn)) {
+>  
+>  		/*
+>  		 * If a virtual machine is stopped by the host it can look to
+
