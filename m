@@ -2,28 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9024C64EC7
-	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 00:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F1AC7EE31
+	for <rcu@archiver.kernel.org>; Wed,  1 Mar 2023 00:45:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjCAAI6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Feb 2023 19:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
+        id S229656AbjCAApp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Feb 2023 19:45:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjCAAI6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Feb 2023 19:08:58 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FC49002;
-        Tue, 28 Feb 2023 16:08:51 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 46322B80ED7;
-        Wed,  1 Mar 2023 00:08:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D634BC433EF;
-        Wed,  1 Mar 2023 00:08:47 +0000 (UTC)
-Date:   Tue, 28 Feb 2023 19:08:46 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S229777AbjCAApo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Feb 2023 19:45:44 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA3ECA32
+        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 16:45:43 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id h3so12224745lja.12
+        for <rcu@vger.kernel.org>; Tue, 28 Feb 2023 16:45:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1677631541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y5m78WOJU8Q8f13mfbwHzzeODEphAMSlmLmtQWAwznk=;
+        b=vpxgg+RzU+WKen19EqJk1/2sn3MXymj9IIvV/DR2kisgIdPkoFuP3jcfGI67/Rt3yY
+         5eFWE/bDHwCeOjzjavdS0mY9XG34GY+ykXfnDVE+sxxPFzNXE59BN7LcqrLcG61zkrNu
+         g6fLacramYtPypiSVZjQyPcjEwaWp+NBGS7NY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677631541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y5m78WOJU8Q8f13mfbwHzzeODEphAMSlmLmtQWAwznk=;
+        b=qxv77cSYsBoC2NgykKb0qyCXinLwuNxtMcA1ula+qsjKLmplcYnnHTCWKZToQEBJpX
+         U9EKnYglJuERrgOF6ZgHOmt+pWM4QVnGqLeRbvG+yoByLgvHzGUGr3QFj+7X8B6ORyNH
+         gc2RAfJAwjXfXYtM0GVAPnGbHC4mGwYDjEfOaE9TlKjSkqLugAXO1sd2Rbdp1bz+GAKR
+         vI1n6LmSVy2Oku2C7RUkPr/+m/Pzx89sTAK+fDK5Zek73ySEEDoUxw3vs6Nal/9K4YHR
+         jivZeVyHW7ePJ26wX66RgxoDUK+5eeGYSZINWP/9XGr1Q1aboKVFhvl19zqRJRcUk/BR
+         IArQ==
+X-Gm-Message-State: AO0yUKUvyO4GtleLBWXWIKtSfvu2Q9P966bku2DN/auFkS0sEad89+Vm
+        +S13DEcKA85u8P7RMYogwlfOuu5CwdCEXeBqVPSAnw==
+X-Google-Smtp-Source: AK7set9/hh2o8bm+fHkpcQlrQgSugVTdVkvXiR4SF1VBEJL6/MYChjro+BqRIATBG8FcsZvy4Kopido8eRPwR7bEO+4=
+X-Received: by 2002:a05:651c:b9b:b0:295:8ef2:8744 with SMTP id
+ bg27-20020a05651c0b9b00b002958ef28744mr1400092ljb.3.1677631541365; Tue, 28
+ Feb 2023 16:45:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20230228155121.3416-1-ubizjak@gmail.com> <Y/5mguXPPqdP3MZF@google.com>
+ <20230228160324.2a7c1012@gandalf.local.home> <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
+ <20230228164124.77c126d2@gandalf.local.home> <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
+ <20230228190846.79b06089@gandalf.local.home>
+In-Reply-To: <20230228190846.79b06089@gandalf.local.home>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 28 Feb 2023 19:45:30 -0500
+Message-ID: <CAEXW_YTRG+7oTGgmqSKpC6Wzft6vsjOzEDkN=eLpcEWeAxYwdg@mail.gmail.com>
+Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Uros Bizjak <ubizjak@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org,
@@ -32,88 +62,32 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH] rcu: use try_cmpxchg in check_cpu_stall
-Message-ID: <20230228190846.79b06089@gandalf.local.home>
-In-Reply-To: <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
-References: <20230228155121.3416-1-ubizjak@gmail.com>
-        <Y/5mguXPPqdP3MZF@google.com>
-        <20230228160324.2a7c1012@gandalf.local.home>
-        <20230228212911.GX2948950@paulmck-ThinkPad-P17-Gen-1>
-        <20230228164124.77c126d2@gandalf.local.home>
-        <CAEXW_YQ515_DOLVUm48GvDADuaY2mSrYTaKa7u6jYDNqBncJww@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 28 Feb 2023 18:30:14 -0500
-Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > But looking at this use case, I'd actually NAK it, as it is misleading.  
-> 
-> I'm trying to parse this. You are saying it is misleading, because it
-> updates js when it doesn't need to?
+Hey Steve,
 
-Correct.
-
-> 
-> > As try_cmpxchg() is used to get rid of the updating of the old value. As in
-> > the ring buffer code we had:
+On Tue, Feb 28, 2023 at 7:08=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+[...]
 > >
-> > void ring_buffer_record_off(struct trace_buffer *buffer)
-> > {
-> >         unsigned int rd;
-> >         unsigned int new_rd;
+> > >
+> > > But in your case, we don't need to update js, in which case the
+> > > try_cmpxchg() does.
 > >
-> >         do {
-> >                 rd = atomic_read(&buffer->record_disabled);
-> >                 new_rd = rd | RB_BUFFER_OFF;
-> >         } while (!atomic_cmpxchg(&buffer->record_disabled, &rd, new_rd) != rd);  
-> 
-> Hear you actually meant "rd" as the second parameter without the & ?
+> > Right, it has lesser value here but I'm curious why you feel it also
+> > doesn't belong in that ring buffer loop you shared (or did you mean,
+> > it does belong there but not in other ftrace code modified by Uros?).
+>
+> The ring buffer patch had more than one change, where half the updates we=
+re
+> fine, and half were not.
 
-Yes, I cut and pasted the updated code and incorrectly try to revert it in
-this example :-p
+Thanks for all the clarifications. Good to know such loop design
+patterns can benefit from it!
 
-> 
-> > }
-> >
-> > and the try_cmpxchg() converted it to:
-> >
-> > void ring_buffer_record_off(struct trace_buffer *buffer)
-> > {
-> >         unsigned int rd;
-> >         unsigned int new_rd;
-> >
-> >         rd = atomic_read(&buffer->record_disabled);
-> >         do {
-> >                 new_rd = rd | RB_BUFFER_OFF;
-> >         } while (!atomic_try_cmpxchg(&buffer->record_disabled, &rd, new_rd));
-> > }
-> >
-> > Which got rid of the need to constantly update the rd variable (cmpxchg
-> > will load rax with the value read, so it removes the need for an extra
-> > move).  
-> 
-> So that's a good thing?
 
-Yes. For looping, try_cmpxchg() is the proper function to use. But in the
-RCU case (and other cases in the ring-buffer patch) there is no loop, and
-no need to modify the "old" variable.
-
-> 
-> >
-> > But in your case, we don't need to update js, in which case the
-> > try_cmpxchg() does.  
-> 
-> Right, it has lesser value here but I'm curious why you feel it also
-> doesn't belong in that ring buffer loop you shared (or did you mean,
-> it does belong there but not in other ftrace code modified by Uros?).
-
-The ring buffer patch had more than one change, where half the updates were
-fine, and half were not.
-
--- Steve
+ - Joel
