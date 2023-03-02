@@ -2,182 +2,164 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5D76C678D4
-	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 01:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBCAEC678D4
+	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 11:12:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjCBBha (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Mar 2023 20:37:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S229779AbjCBLMg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Mar 2023 06:12:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjCBBha (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Mar 2023 20:37:30 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8748434332;
-        Wed,  1 Mar 2023 17:37:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id A3F35CE1DF2;
-        Thu,  2 Mar 2023 01:37:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AF23C433EF;
-        Thu,  2 Mar 2023 01:37:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677721045;
-        bh=5TPfW2FAVzvukO9C6PIlJTa5cqjUicEsT/o6u0kTLzo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EVR6tNVfJ2FRRUnVY8lhdnD9R/MkQqbe+bKD4xGjOYgAZ4jR4dz24HvMcSIrISHN4
-         ll3u7AOOIbHdQuM3MdAhhIR1i2PL3hXzmXIRL6v8j5oBR3LoiwZVGTcZUqZMnJFxSm
-         8AxSzdmYorgSkgOAKuN3MIsCZ8XGypUm/fDTVVyDHNsNZNW+Bnt1FroEdlHEPlAz3H
-         0y5O/zgVQxBsY71HGd759CyoPRiuwiMRh8YzLzplsUVn+EFYH29l81do49W9Kk8wdl
-         0ZszCVZHgRChG27O9Pmz71wfZWGXzIYRt7FnCe/ydt536Rs91zLZqpJjVEjfXwGakR
-         HAUt8rJuoiXxw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9F1975C0377; Wed,  1 Mar 2023 17:37:24 -0800 (PST)
-Date:   Wed, 1 Mar 2023 17:37:24 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        kim.phillips@amd.com, brgerst@gmail.com, piotrgorski@cachyos.org,
-        oleksandr@natalenko.name, mingo@redhat.com, bp@alien8.de,
+        with ESMTP id S229566AbjCBLMf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Mar 2023 06:12:35 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724EF3E61F
+        for <rcu@vger.kernel.org>; Thu,  2 Mar 2023 03:12:32 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id r18so16156829wrx.1
+        for <rcu@vger.kernel.org>; Thu, 02 Mar 2023 03:12:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SmbgYBfsiP69zAShGBqEQbH1PuV83xuFSvcJJxGMMf4=;
+        b=DrUlMSLxCfk+wenY5dGy8zdp8YdI8rwkdVkiM9b4xwhFqbBcP8gKQGiVekkShAMDGb
+         siTZabe8yR4OsN5yFqEf8tWw23l9QEZd1B8mQN/xwWdY2GwRCgDaxdwXnDBXjWcOhFep
+         zmavEFKBv6RbLcB3Y4wZJ7XWc2Fw37ZaUdqhU2vo9HMB8jdBrrHp5RvaQSaEkhP0n5dw
+         ozot/+J4p8hyqVnp0u0amlEz5wYTixfb5YB7sMyyJkGiJlNuYRzrFRAk57eMqqeeEF3P
+         UCxjArfwFZ+h97ZOj0DuNvdL4gSBPKxwVkKyrRIUuILFpN+yMY6Wce6+3NqU2ghB2TcL
+         RRJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SmbgYBfsiP69zAShGBqEQbH1PuV83xuFSvcJJxGMMf4=;
+        b=ceONoSzHL8hrVUX5ZZ54RvpunKNDjuPxemC+87qvNWDrYtiqJnxAbHk9g5aqpHt42P
+         /HCuVZ5lhVvpHn6BKTYf5uYvyOCFjOTcTvryIHia2yDaId/H4bo78QEbg3MpthppYIJF
+         Tj8SjE9oDHqnXp9g33BOszVbQRfEAnICECnXSrvFRqZPKQwq1W6r8pt08R6Hd3wG/FKd
+         VXEJ+0EBDgdFnKn5JQH0RPAkxaGaym/ZEV9tUyyvIpgkg1Psult56VlADLDpHK1LXZZZ
+         C4kwPXS/VRKZ20DV1uP7kssjOpCDz0MhEq+ZkndvEIAHGcMRnQZWgjSuLq3pY6V2ZugI
+         vzkw==
+X-Gm-Message-State: AO0yUKV8x7kNsmCwP80roUDn2+heRG3S4M7X7qqvYmi1S8/6yEYQefD8
+        ZyJT3AMHQ5K3HBxsariVIXOv/A==
+X-Google-Smtp-Source: AK7set8stG171ZthA0QcwqafyhjqZwITvDb+KuMxue867lfxfi1qj++EXyGP7MIcPGEUAMVOKk8S1Q==
+X-Received: by 2002:adf:fecd:0:b0:2c7:13e4:2094 with SMTP id q13-20020adffecd000000b002c713e42094mr7740020wrs.42.1677755550902;
+        Thu, 02 Mar 2023 03:12:30 -0800 (PST)
+Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:11aa:3c13:d3e:eb29])
+        by smtp.gmail.com with ESMTPSA id a5-20020a5d4565000000b002c3f81c51b6sm14724830wrc.90.2023.03.02.03.12.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Mar 2023 03:12:30 -0800 (PST)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
-        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [PATCH v12 07/11] x86/smpboot: Remove early_gdt_descr on 64-bit
-Message-ID: <20230302013724.GO2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230226110802.103134-1-usama.arif@bytedance.com>
- <20230226110802.103134-8-usama.arif@bytedance.com>
- <878rghmrn2.ffs@tglx>
- <96c0c723-9976-a222-8dc8-a5da6a1a558e@linux.intel.com>
- <Y/+2Wuunn1sIF8eT@localhost>
- <20230301221632.GI2948950@paulmck-ThinkPad-P17-Gen-1>
- <Y//Q4Mh6/65Keruu@localhost>
- <20230302002851.GK2948950@paulmck-ThinkPad-P17-Gen-1>
- <41baeedf-f3ee-7342-7a5e-097f9a3c4de0@infradead.org>
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH v13 00/11] Parallel CPU bringup for x86_64
+Date:   Thu,  2 Mar 2023 11:12:16 +0000
+Message-Id: <20230302111227.2102545-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <41baeedf-f3ee-7342-7a5e-097f9a3c4de0@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 05:05:39PM -0800, Randy Dunlap wrote:
-> 
-> 
-> On 3/1/23 16:28, Paul E. McKenney wrote:
-> > On Wed, Mar 01, 2023 at 02:25:36PM -0800, Josh Triplett wrote:
-> >> On Wed, Mar 01, 2023 at 02:16:32PM -0800, Paul E. McKenney wrote:
-> >>> On Wed, Mar 01, 2023 at 12:32:26PM -0800, Josh Triplett wrote:
-> >>>> On Tue, Feb 28, 2023 at 01:02:33PM -0800, Arjan van de Ven wrote:
-> >>>>   Thomas Gleixner wrote:
-> >>>>>>
-> >>>>>> Maybe we should enforce CONFIG_SMP=y first :)
-> >>>>>>
-> >>>>>> Thanks,
-> >>>>>
-> >>>>> for 64 bit I can see the point of removing the !SMP case entirely from arch/x86 .
-> >>>>> maybe even for 32 bit if it just makes the code simpler I suppose
-> >>>>
-> >>>> As one of the folks keeping an eye on tinyconfig and kernel size, I
-> >>>> actually think we *should* make this change and rip out !CONFIG_SMP,
-> >>>> albeit carefully.
-> >>>>
-> >>>> In particular, I would propose that we rip out !CONFIG_SMP, *but* we
-> >>>> allow building with CONFIG_NR_CPUS=1. (And we could make sure in that
-> >>>> case that the compiler can recognize that at compile time and optimize
-> >>>> accordingly, so that it might provide some of the UP optimizations for
-> >>>> us.)
-> >>>>
-> >>>> Then, any *optimizations* for the "will only have one CPU, ever" case
-> >>>> can move to CONFIG_NR_CPUS=1 rather than !CONFIG_SMP. I think many of
-> >>>> those optimizations may be worth keeping for small embedded systems, or
-> >>>> for cases like Linux-as-bootloader or similar.
-> >>>>
-> >>>> The difference here would be that code written for !CONFIG_SMP today
-> >>>> needs to account for the UP case for *correctness*, whereas code written
-> >>>> for CONFIG_SMP can *optionally* consider CONFIG_NR_CPUS=1 for
-> >>>> *performance*.
-> >>>
-> >>> It certainly would not make much sense to keep Tiny RCU and Tiny SRCU
-> >>> around if there was no CONFIG_SMP=n.
-> >>
-> >> On the contrary, I think it's entirely appropriate to keep them for
-> >> CONFIG_NR_CPUS=1; that's exactly the kind of simple optimization that
-> >> seems well worth having. (Ideal optimization: "very very simple for UP,
-> >> complex for SMP"; non-ideal optimization: "complex for SMP, differently
-> >> complex for UP".)
-> > 
-> > Fair enough, but how does removing CONFIG_SMP help with that?  Given that
-> > it is not all that hard to work around the lack of CONFIG_SMP for Tiny
-> > RCU and Tiny SRCU, then it cannot be all that hard to work around that
-> > lack for the use cases that you are trying to get rid of, right?
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > index 9071182b1284b..7487bee3d4341 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -7,7 +7,7 @@ menu "RCU Subsystem"
-> >  
-> >  config TREE_RCU
-> >  	bool
-> > -	default y if SMP
-> > +	default y if CONFIG_NR_CPUS = 1
-> >  	# Dynticks-idle tracking
-> >  	select CONTEXT_TRACKING_IDLE
-> >  	help
-> > @@ -31,7 +31,7 @@ config PREEMPT_RCU
-> >  
-> >  config TINY_RCU
-> >  	bool
-> > -	default y if !PREEMPTION && !SMP
-> > +	default y if !PREEMPTION && CONFIG_NR_CPUS != 1
-> >  	help
-> >  	  This option selects the RCU implementation that is
-> >  	  designed for UP systems from which real-time response
-> 
-> but drop the CONFIG_ prefixes...
+The main code change over v12 is to fix the build error when
+CONFIG_FORCE_NR_CPUS is present.
 
-Indeed.  What I don't understand is how the above passed some light
-rcutorture testing.  And the comparisons are backwards as well.
-Perhaps this time two bugs make working code?
+The commit message for removing initial stack has also been improved, typos
+have been fixed and extra comments have been added to make code clearer.
 
-How about the following?
+Thanks,
+Usama
 
-							Thanx, Paul
+Changes across versions:
+v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+    in preparation for more parallelisation.
+v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+    24 bits of the physical X2APIC ID to be used. That patch still needs
+    a Signed-off-by from its original author, who once claimed not to
+    remember writing it at all. But now we've fixed it, hopefully he'll
+    admit it now :)
+v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+    for AMD CPUs.
+v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+    reused timer calibration for secondary CPUs.
+v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+    cluster mask in alloc_clustermask. (patch 1/9)
+    Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+    0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+    Included sanity checks for APIC id from 0x0B. (patch 6/9)
+    Removed patch for reusing timer calibration for secondary CPUs.
+    commit message and code improvements.
+v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+    early_gdt_descr.
+    Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+    Code comments improved and debug prints added.
+v9: Drop patch to avoid repeated saves of MTRR at boot time.
+    rebased and retested at v6.2-rc8.
+    added kernel doc for no_parallel_bringup and made do_parallel_bringup
+    __ro_after_init.
+v10: Fixed suspend/resume not working with parallel smpboot.
+     rebased and retested to 6.2.
+     fixed checkpatch errors.
+v11: Added patches from Brian Gerst to remove the global variables initial_gs,
+     initial_stack, and early_gdt_descr from the 64-bit boot code
+     (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.com/).
+v12: Fixed compilation errors, acquire tr_lock for every stack setup in
+     trampoline_64.S.
+     Rearranged commits for a cleaner git history.
+v13: Fix build error with CONFIG_FORCE_NR_CPUS.
+     Commit message improved, typos fixed and extra comments added.
 
-------------------------------------------------------------------------
+Brian Gerst (3):
+  x86/smpboot: Remove initial_stack on 64-bit
+  x86/smpboot: Remove early_gdt_descr on 64-bit
+  x86/smpboot: Remove initial_gs
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index 9071182b1284b..a2ba97b949498 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -7,7 +7,7 @@ menu "RCU Subsystem"
- 
- config TREE_RCU
- 	bool
--	default y if SMP
-+	default y if NR_CPUS != 1
- 	# Dynticks-idle tracking
- 	select CONTEXT_TRACKING_IDLE
- 	help
-@@ -31,7 +31,7 @@ config PREEMPT_RCU
- 
- config TINY_RCU
- 	bool
--	default y if !PREEMPTION && !SMP
-+	default y if !PREEMPTION && NR_CPUS = 1
- 	help
- 	  This option selects the RCU implementation that is
- 	  designed for UP systems from which real-time response
+David Woodhouse (8):
+  x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+  cpu/hotplug: Add dynamic parallel bringup states before
+    CPUHP_BRINGUP_CPU
+  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+  x86/smpboot: Split up native_cpu_up into separate phases and document
+    them
+  x86/smpboot: Support parallel startup of secondary CPUs
+  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+  x86/smpboot: Serialize topology updates for secondary bringup
+
+ .../admin-guide/kernel-parameters.txt         |   3 +
+ arch/x86/include/asm/processor.h              |   6 +-
+ arch/x86/include/asm/realmode.h               |   4 +-
+ arch/x86/include/asm/smp.h                    |  15 +-
+ arch/x86/include/asm/topology.h               |   2 -
+ arch/x86/kernel/acpi/sleep.c                  |  30 +-
+ arch/x86/kernel/apic/apic.c                   |   2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c         | 126 ++++---
+ arch/x86/kernel/asm-offsets.c                 |   1 +
+ arch/x86/kernel/cpu/common.c                  |   6 +-
+ arch/x86/kernel/head_64.S                     | 132 +++++--
+ arch/x86/kernel/smpboot.c                     | 350 +++++++++++++-----
+ arch/x86/realmode/init.c                      |   3 +
+ arch/x86/realmode/rm/trampoline_64.S          |  27 +-
+ arch/x86/xen/smp_pv.c                         |   4 +-
+ arch/x86/xen/xen-head.S                       |   2 +-
+ include/linux/cpuhotplug.h                    |   2 +
+ include/linux/smpboot.h                       |   7 +
+ kernel/cpu.c                                  |  31 +-
+ kernel/smpboot.h                              |   2 -
+ 20 files changed, 556 insertions(+), 199 deletions(-)
+
+-- 
+2.25.1
+
