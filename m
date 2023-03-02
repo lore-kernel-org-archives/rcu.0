@@ -2,183 +2,212 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 730F6C7EE36
-	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 11:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C186C678D4
+	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 19:58:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbjCBLNm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Mar 2023 06:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        id S229506AbjCBT56 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Mar 2023 14:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjCBLNY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Mar 2023 06:13:24 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D44474D9
-        for <rcu@vger.kernel.org>; Thu,  2 Mar 2023 03:12:39 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id l25so16157246wrb.3
-        for <rcu@vger.kernel.org>; Thu, 02 Mar 2023 03:12:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W52wEjM0mHEImMyCikVowjMrBLWr/NXovNQ5aX5mqUY=;
-        b=UuDoUEMbv5C/Rt71oIZYY+UFys53GNRZFiZCWwLzPSehXmE2ry44f1Ij/tq5BRMOKr
-         63qepzGOdbmXGxkuHwXQ+/84oZTG1qlm2hmcUvyAvparLsspHrJ08inWrNznQ2hy7Alb
-         cT7cQ8CNNutknMb+PJZFKQ+htxvbCQg19R/QKyscVkg1qi5sb6fZvgnHI6V5C1PSwWma
-         0WnSiPt0icHQ0icz9nrppViWa94JYB39504FsPBw0zZMEK19cBYVDq6ruO9P4xm3xEMc
-         XQbN5HDut56dtkXuDj+uqpuCnJEZ4M+unoB1liq9ypwSH7qTpheSfHU5XzoTC3m2eDnU
-         k1mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W52wEjM0mHEImMyCikVowjMrBLWr/NXovNQ5aX5mqUY=;
-        b=763VFeVfB6hIZxj6ZBjFvSxIqSGv1HuMfYtvXV3iJSKdGi4OW1+L170HWPQo/vA6rX
-         nPRyfDDEAnc0sM3iHQfjO4jNwY4DT56DD2UfWeMGOwr8xJhOY7Fb2BdWeBXnlEViCDpz
-         xUfWNGEo78+GI9Eu8/+kISloGK1fC+GoG4VLEGO/trUfwZu0UTfgUSV67m7YHYeq/j18
-         C0zz0vNd3lcHoGb15zE8HqxfP4s1M/CuUKyZoR82K+9Y5K/GpPa61bcMv3y3C1JDaRem
-         uCstSRuUsVk8HNKZ2MKISTdMTp20lJVA6omcVhiyD1U4/NjLMelkhSl3nP0wc72Sm559
-         jagw==
-X-Gm-Message-State: AO0yUKUOKor6bbNfNKwMhfYCtq9BLNjtZsAOyj62z7sXwp6po+Y58nW1
-        2NE0tUooh1YLh4zEZM93pMzR+g==
-X-Google-Smtp-Source: AK7set9zkyJBDHhyR5g5CmVYoTxvTrStQPl+SxB68YPWsjw/pSJ9UScCnssrt/YxdzQjmtTqzPBQyQ==
-X-Received: by 2002:adf:fa0d:0:b0:2c7:be1:467b with SMTP id m13-20020adffa0d000000b002c70be1467bmr6839166wrr.31.1677755558441;
-        Thu, 02 Mar 2023 03:12:38 -0800 (PST)
-Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:11aa:3c13:d3e:eb29])
-        by smtp.gmail.com with ESMTPSA id a5-20020a5d4565000000b002c3f81c51b6sm14724830wrc.90.2023.03.02.03.12.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 03:12:37 -0800 (PST)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH v13 08/11] x86/smpboot: Remove initial_gs
-Date:   Thu,  2 Mar 2023 11:12:24 +0000
-Message-Id: <20230302111227.2102545-9-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230302111227.2102545-1-usama.arif@bytedance.com>
-References: <20230302111227.2102545-1-usama.arif@bytedance.com>
+        with ESMTP id S229896AbjCBT5r (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Mar 2023 14:57:47 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614EE474D0;
+        Thu,  2 Mar 2023 11:57:44 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1677787062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=D2GmDQ33TZwTGvN+c+rgjG9GQD86x22dctGsZ2aRYhU=;
+        b=2ZUpJVw4wQGZxTHOu1XghQeRM+/IIbCHtyQgO4x18XrKpHNMkPyJfbv2fflw4/0RiMSBvG
+        s9onjVj3sNCz0mbDK9+jjI27L4ijjVgtFfmGTPyxVoy190mNBvbiDt6zoS3dLP+nbEKJ27
+        JFem9xXowtmza1CKpR6x3lmwhezGIf0/K43MQn5q1YHcn8zL36DTxyclfkq0FOY/nAZfQK
+        1tkizcJ3rp7aa4zKiha695dqGXqgB2Ir48wUMJlRDLJugqLAoSjGNEcZH3P5TKz5ouXeTf
+        gv/z/LIUDnmSJSMfTVvQaiI02n5W/ePhGWf3Q4bBvievY1aUSYtrYWLnyBC2bA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1677787062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=D2GmDQ33TZwTGvN+c+rgjG9GQD86x22dctGsZ2aRYhU=;
+        b=GOuy1zDQx4DZonejgJJLELiBYZUJ4B7seis0cXTfogH/a/P/CzNWvRiwvsEtz+mo+G69Et
+        wwYd6UFg01USNYBA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Aaron Tomlin <atomlin@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        David Gow <davidgow@google.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        tangmeng <tangmeng@uniontech.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH printk v1 00/18] threaded/atomic console support
+Date:   Thu,  2 Mar 2023 21:02:00 +0106
+Message-Id: <20230302195618.156940-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Brian Gerst <brgerst@gmail.com>
+Hi,
 
-Given its CPU#, each CPU can find its own per-cpu offset, and directly set
-GSBASE accordingly. The global variable can be eliminated.
+This is v1 of a series to bring in a new threaded/atomic console
+infrastructure. The history, motivation, and various explanations and
+examples are available in the cover letter of tglx's RFC series
+[0]. From that series, patches 1-18 have been mainlined as of the 6.3
+merge window. What remains, patches 19-29, is what this series
+represents.
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Tested-by: Usama Arif <usama.arif@bytedance.com>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- arch/x86/include/asm/realmode.h |  1 -
- arch/x86/kernel/acpi/sleep.c    |  1 -
- arch/x86/kernel/head_64.S       | 22 ++++++++--------------
- arch/x86/kernel/smpboot.c       |  2 --
- 4 files changed, 8 insertions(+), 18 deletions(-)
+Since the RFC there has been significant changes involving bug-fixing,
+refactoring, renaming, and feature completion. Despite the many
+changes in the code, the concept and design has been preserved.
 
-diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-index a336feef0af1..f6a1737c77be 100644
---- a/arch/x86/include/asm/realmode.h
-+++ b/arch/x86/include/asm/realmode.h
-@@ -59,7 +59,6 @@ extern struct real_mode_header *real_mode_header;
- extern unsigned char real_mode_blob_end[];
- 
- extern unsigned long initial_code;
--extern unsigned long initial_gs;
- extern unsigned long initial_stack;
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- extern unsigned long initial_vc_handler;
-diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-index de89bb4719d0..1328c221af30 100644
---- a/arch/x86/kernel/acpi/sleep.c
-+++ b/arch/x86/kernel/acpi/sleep.c
-@@ -127,7 +127,6 @@ int x86_acpi_suspend_lowlevel(void)
- 	 * value is in the actual %rsp register.
- 	 */
- 	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
--	initial_gs = per_cpu_offset(smp_processor_id());
- 	smpboot_control = smp_processor_id();
- #endif
- 	initial_code = (unsigned long)wakeup_long64;
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index a5b46c2fba05..6a8238702eab 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -66,18 +66,10 @@ SYM_CODE_START_NOALIGN(startup_64)
- 
- 	leaq	_text(%rip), %rdi
- 
--	/*
--	 * initial_gs points to initial fixed_percpu_data struct with storage for
--	 * the stack protector canary. Global pointer fixups are needed at this
--	 * stage, so apply them as is done in fixup_pointer(), and initialize %gs
--	 * such that the canary can be accessed at %gs:40 for subsequent C calls.
--	 */
-+	/* Setup GSBASE to allow stack canary access for C code */
- 	movl	$MSR_GS_BASE, %ecx
--	movq	initial_gs(%rip), %rax
--	movq	$_text, %rdx
--	subq	%rdx, %rax
--	addq	%rdi, %rax
--	movq	%rax, %rdx
-+	leaq	INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-+	movl	%edx, %eax
- 	shrq	$32,  %rdx
- 	wrmsr
- 
-@@ -294,8 +286,11 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	 * the per cpu areas are set up.
- 	 */
- 	movl	$MSR_GS_BASE,%ecx
--	movl	initial_gs(%rip),%eax
--	movl	initial_gs+4(%rip),%edx
-+#ifndef CONFIG_SMP
-+	leaq	INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-+#endif
-+	movl	%edx, %eax
-+	shrq	$32, %rdx
- 	wrmsr
- 
- 	/* Setup and Load IDT */
-@@ -437,7 +432,6 @@ SYM_CODE_END(vc_boot_ghcb)
- 	__REFDATA
- 	.balign	8
- SYM_DATA(initial_code,	.quad x86_64_start_kernel)
--SYM_DATA(initial_gs,	.quad INIT_PER_CPU_VAR(fixed_percpu_data))
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
- #endif
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index a22460a07cf8..b04520085582 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1084,8 +1084,6 @@ int common_cpu_up(unsigned int cpu, struct task_struct *idle)
- #ifdef CONFIG_X86_32
- 	/* Stack for startup_32 can be just as for start_secondary onwards */
- 	per_cpu(pcpu_hot.top_of_stack, cpu) = task_top_of_stack(idle);
--#else
--	initial_gs = per_cpu_offset(cpu);
- #endif
- 	return 0;
- }
+The key points to the threaded/atomic (aka NOBKL) consoles are:
+
+- Each console has its own kthread and uses a new write_thread()
+  console callback that is always called from sleepable context. The
+  kthreads of different consoles do not contend with each other and do
+  not use the global console lock.
+
+- Each console uses a new write_atomic() console callback that is able
+  to write from any context (including NMI). The threaded/atomic
+  infrastructure provides supporting functions to help atomic console
+  drivers to synchronize with their own threaded and re-entrant atomic
+  counterparts.
+
+- Until the console threads are available, atomic printing is
+  performed. The threaded printing is able to take over shortly before
+  SMP is brought online so machines with many CPUs should be able to
+  boot at full speed without being held back by console printing.
+
+- When console threads are shutdown (on system reboot and shutdown),
+  again the atomic consoles take over. This ensures the final message
+  make it out to the consoles.
+
+- When panic, WARN, and NMI stall detection occurs, the atomic
+  consoles temporarily take over printing until the related messages
+  have been output.  In this case the full set of related messages are
+  stored into the printk ringbuffer before the atomic consoles begin
+  flushing the ringbuffer to the consoles.
+
+- Atomic printing is split into 3 priorities. For example, upon
+  shutdown (when kthreads are not available), the console output will
+  be normal priority atomic printing. This could be interrupted by a
+  WARN on another CPU (emergency priority). And that could be
+  interrupted by a panic on yet another CPU (panic priority). And of
+  course any atomic printing priority can interrupt the kthread
+  printer.
+
+- The transition between kthread and any atomic printing or to any
+  elevated priority atomic printing is synchronized using an atomic_t
+  state variable per console. The state variable acts like a spinlock
+  but with special properties that the spinning can timeout and even a
+  hostile takeover based on the atomic priorities is possible. After
+  outputting each byte, a console printing context checks the state
+  variable to ensure it is still the owner of the console. If it is
+  not (for example, in the case of a hostile takeover) it will
+  immediately abort any continued use of the console and rely on the
+  new owner to flush the messages.
+
+- Using the console state variable, console drivers can mark unsafe
+  regions in their code where ownership transition is not
+  possible. Combined with the timeout feature, a handover protocol,
+  and the possibility for a hostile takeover, this allows drivers to
+  make safe decisions about when and how console ownership is
+  transferred to another context. It also allows the printk
+  infrastructure to make safe decisions in panic situations, such as
+  only outputting to atomic consoles where safe takeovers are
+  possible. And only after handling all other panic responsibilities,
+  attempting unsafe takeovers for the consoles that have not yet
+  transferred ownership.
+
+- In order to support hostile takeovers (where a CPU with a higher
+  priority context can steal ownership from another CPU) without CPUs
+  clobbering each others buffers, each CPU has its own set of string
+  print buffers.
+
+The existing legacy consoles continue to function unmodified as before
+and legacy consoles can work next to NOBKL consoles (i.e. a legacy
+virtual terminal graphics console and network console will work with a
+NOBKL uart8250 console). However, in order to have the full
+benefit/reliability of NOBKL consoles, a system should use _only_
+NOBKL consoles.
+
+We believe that this series covers all printk features and usage to
+allow new threaded/atomic consoles to be able to replace the legacy
+consoles.  However, this will be a gradual transition as individual
+console drivers are updated to support the NOBKL requirements.
+
+This series does not include any changes to console drivers to allow
+them to act as NOBKL consoles. That will be a follow-up series, once a
+finalized infrastructure is in place. However, I will reply to this
+message with an all-in-one uart8250 patch that fully implements NOBKL
+support. The patch will allow you to perform runtime tests with the
+NOBKL consoles on the uart8250.
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/20220910221947.171557773@linutronix.de
+
+John Ogness (7):
+  kdb: do not assume write() callback available
+  printk: Add NMI check to down_trylock_console_sem()
+  printk: Consolidate console deferred printing
+  printk: Add per-console suspended state
+  printk: nobkl: Stop threads on shutdown/reboot
+  rcu: Add atomic write enforcement for rcu stalls
+  printk: Perform atomic flush in console_flush_on_panic()
+
+Thomas Gleixner (11):
+  printk: Add non-BKL console basic infrastructure
+  printk: nobkl: Add acquire/release logic
+  printk: nobkl: Add buffer management
+  printk: nobkl: Add sequence handling
+  printk: nobkl: Add print state functions
+  printk: nobkl: Add emit function and callback functions for atomic
+    printing
+  printk: nobkl: Introduce printer threads
+  printk: nobkl: Add printer thread wakeups
+  printk: nobkl: Add write context storage for atomic writes
+  printk: nobkl: Provide functions for atomic write enforcement
+  kernel/panic: Add atomic write enforcement to warn/panic
+
+ fs/proc/consoles.c           |    1 +
+ include/linux/console.h      |  174 ++++
+ include/linux/printk.h       |    9 +
+ kernel/debug/kdb/kdb_io.c    |    2 +
+ kernel/panic.c               |   17 +
+ kernel/printk/Makefile       |    2 +-
+ kernel/printk/internal.h     |  103 +-
+ kernel/printk/printk.c       |  307 ++++--
+ kernel/printk/printk_nobkl.c | 1820 ++++++++++++++++++++++++++++++++++
+ kernel/printk/printk_safe.c  |    9 +-
+ kernel/rcu/tree_stall.h      |    6 +
+ 11 files changed, 2362 insertions(+), 88 deletions(-)
+ create mode 100644 kernel/printk/printk_nobkl.c
+
+
+base-commit: 10d639febe5629687dac17c4a7500a96537ce11a
 -- 
-2.25.1
+2.30.2
 
