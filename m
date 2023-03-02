@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDB88C7EE30
-	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 11:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8F69C678D4
+	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 11:13:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbjCBLNj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 2 Mar 2023 06:13:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34112 "EHLO
+        id S229750AbjCBLNk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Mar 2023 06:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjCBLNW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 2 Mar 2023 06:13:22 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B4547422
-        for <rcu@vger.kernel.org>; Thu,  2 Mar 2023 03:12:38 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id l25so16157164wrb.3
-        for <rcu@vger.kernel.org>; Thu, 02 Mar 2023 03:12:37 -0800 (PST)
+        with ESMTP id S230249AbjCBLNV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Mar 2023 06:13:21 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E133646174
+        for <rcu@vger.kernel.org>; Thu,  2 Mar 2023 03:12:39 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id j2so16120332wrh.9
+        for <rcu@vger.kernel.org>; Thu, 02 Mar 2023 03:12:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yfXDSzie1v35NwgXFaOKrk7jqXj+xqMDgBTnABjE9B0=;
-        b=H3wRxl2iRMxyxMiPGUj0pGK4ARX2xp5WCyplQh1t2ZrwYy20RmRihzJpsonjtxKSry
-         g5DxEZHZp7JHxd4Sexr9X7U932J21Z8UL41XhD6ke0k1Ig5QFEIrSDnRHRtRqbbdescd
-         DjTRLDHjmokkveXygI28Dov/E/8YaILSIGjVFPCRt9rwr1jRTNA5YdgjyvTWYGoM1DW+
-         9tKOyMLo1VFpPXN8lprr344GSFbD1Vs81R5kYvdZYFfMMBgwgXPx30sHF1Hj8DYDPa4z
-         lIOlSu4NCnfcf13BOQt5R4fipqP7bynh0IQsKJgZ1lQ1IYSy9pb76/J1WFe845WpiwQ0
-         5UUA==
+        bh=wGhOouf271WbzLOg0J667tKnCyPiAMr61gY1FScO0Hg=;
+        b=HWouMTZsGzKn4Y0LcR4SMHVeaOilcVbbooTwymmBgrWZbV6xWYrSa+CtjcYDVsLowf
+         AoYDLa5S0QWsqZgVyFZABN8ovunBwntpnSZ5wbi/lCSsl5Bzjo/YqvD0BKCkeupMRdEk
+         qsnC/Wj8vrXBqu/GXKpQFKiQVNC3bL4yvgAhd8Lmpzl6t5sbmiZHrD6iY+IhscAQ0nzl
+         JEVGONr/GTIOBiVG/0mhdgLr7cgBCKe3zutb8xqVQJg9wPYBJuCs2fIWnFfODFe4xsmh
+         7zDe7UwZTeSlAk6s+L9h1HoT7iFJV0tFkcKVXO/5hmpI9I8p0DLI0gr9GZPqr+Ga93Q5
+         HxVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yfXDSzie1v35NwgXFaOKrk7jqXj+xqMDgBTnABjE9B0=;
-        b=OuteNm6a8CtIswjtToY6XJv8lHVgfkHSvZ7lckT1kRON56zr7GEoayvJiLNJ/wJzgh
-         l8+qSQouuoq8+07M7M8LhB6W/FZnLaThpDP/37T72D4Tb1w9v3nO4bZ1srQXiVaPthTv
-         ISIJF43//u/9+yOY9cBNEvyQZfV1mI5TVBzT2VxGvyk+wkjVT0j6s0RanojbU6LkwFeu
-         M8A5l13ekk8Xvqd/pkjJZ3zP96U4zzTT7fCPyzMu4xf8e9/9S3tCu1tMrOoXUw7r7Vh8
-         95+cNISUXlZxahJA6mVvqBjFJHUlw2nhQXXOUD79TVFEqQuVzeVGyB14xIY1+Q65DdHX
-         e9jQ==
-X-Gm-Message-State: AO0yUKUZFZYXWgjppLIb+FAa7hfg3BgZDr7q85HlBZd26MN88B7Y5Aol
-        BbHi6qIYH8Uxi6wE8hK0jQDjVg==
-X-Google-Smtp-Source: AK7set/AnCDc6M4lS0gWhJCSMArCzy8+0WZpQt/x3n0cam55XfM3Xd+fMSSf9cNFlyg8Zn9dDolsjw==
-X-Received: by 2002:adf:dd04:0:b0:2c7:bfe:4f60 with SMTP id a4-20020adfdd04000000b002c70bfe4f60mr7863857wrm.15.1677755556497;
-        Thu, 02 Mar 2023 03:12:36 -0800 (PST)
+        bh=wGhOouf271WbzLOg0J667tKnCyPiAMr61gY1FScO0Hg=;
+        b=vuCP4H4FeyIV+y6j1fbPlid4pGcJ0YT+AqEbdFEuatqJXNjKSNlW0uw8HkuyiYo07t
+         031sqid71C2LmuJ9ZfMxl4ZdxZenKpcxxRQ5FPVA4h/GKKQvZDhdzH1HqMAuomQFb78k
+         AbrnzcWAryJ4zabdP5yUfvbbIpgfbRqY+ae40lUJbLW/QuZ/2KqxuOKeJPWQoY+MlkQk
+         geQqAuEWNslhIgNyJxuvHd6Khmw53BkifOs5t6z6VI8f1Lj6M0waA6DEiXjoC9lm8zXi
+         Bo790MMhO4/0r7NizCjLAJ9BK2uBXltfWPFw7L1cxQiImurd/5v+BHM9qQzgjLxEvNRt
+         y/0A==
+X-Gm-Message-State: AO0yUKUK1dWZcofMWiS8hkDjG3i+uFggfjPtUSGJzlnUT76cE0Xy+kRq
+        OotphsTWvMUdyMOY4JK23RaiWA==
+X-Google-Smtp-Source: AK7set/UMy0wY8Obxto5Fexyt1AGIMe6HhtVdNpuVfubkMeKkF/MAJUkefTiGOj+t7ok7nqhdwiXmg==
+X-Received: by 2002:a05:6000:12d2:b0:2ca:3d7a:8466 with SMTP id l18-20020a05600012d200b002ca3d7a8466mr6938721wrx.42.1677755559389;
+        Thu, 02 Mar 2023 03:12:39 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:11aa:3c13:d3e:eb29])
-        by smtp.gmail.com with ESMTPSA id a5-20020a5d4565000000b002c3f81c51b6sm14724830wrc.90.2023.03.02.03.12.35
+        by smtp.gmail.com with ESMTPSA id a5-20020a5d4565000000b002c3f81c51b6sm14724830wrc.90.2023.03.02.03.12.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 03:12:36 -0800 (PST)
+        Thu, 02 Mar 2023 03:12:39 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
         brgerst@gmail.com
@@ -64,256 +64,423 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         David Woodhouse <dwmw@amazon.co.uk>,
         Usama Arif <usama.arif@bytedance.com>,
         "Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH v13 06/11] x86/smpboot: Remove initial_stack on 64-bit
-Date:   Thu,  2 Mar 2023 11:12:22 +0000
-Message-Id: <20230302111227.2102545-7-usama.arif@bytedance.com>
+Subject: [PATCH v13 09/11] x86/smpboot: Support parallel startup of secondary CPUs
+Date:   Thu,  2 Mar 2023 11:12:25 +0000
+Message-Id: <20230302111227.2102545-10-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230302111227.2102545-1-usama.arif@bytedance.com>
 References: <20230302111227.2102545-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Brian Gerst <brgerst@gmail.com>
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-In order to facilitate parallel startup, start to eliminate some of the
-global variables passing information to CPUs in the startup path.
+Rework the real-mode startup code to allow for APs to be brought up in
+parallel. This is in two parts:
 
-However, start by introducing one more: smpboot_control. For now this
-merely holds the CPU# of the CPU which is coming up. Each CPU can then
-find its own per-cpu data, and everything else it needs can be found
-from there, allowing the other global variables to be removed.
+1. Introduce a bit-spinlock to prevent them from all using the real
+   mode stack at the same time.
 
-First to be removed is initial_stack. Each CPU can load %rsp from its
-current_task->thread.sp instead. That is already set up with the correct
-idle thread for APs. Set up the .sp field in INIT_THREAD on x86 so that
-the BSP also finds a suitable stack pointer in the static per-cpu data
-when coming up on first boot.
+2. Avoid needing to use the global smpboot_control variable to pass
+   each AP its CPU#.
 
-On resume from S3, the CPU needs a temporary stack because its idle task
-is already active. Instead of setting initial_stack, the sleep code can
-simply set its own current->thread.sp to point to the temporary stack.
-Nobody else cares about ->thread.sp for a thread which is currently on
-a CPU, because the true value is actually in the %rsp register. Which
-is restored with the rest of the CPU context in do_suspend_lowlevel().
+To achieve the latter, export the cpuid_to_apicid[] array so that each
+AP can find its own CPU# by searching therein based on its APIC ID.
 
+Introduce flags in the top bits of smpboot_control which indicate methods
+by which an AP should find its CPU#. For a serialized bringup, the CPU#
+is explicitly passed in the low bits of smpboot_control as before. For
+parallel mode there are flags directing the AP to find its APIC ID in
+CPUID leaf 0x0b (for X2APIC mode) or CPUID leaf 0x01 where 8 bits are
+sufficient, then perform the cpuid_to_apicid[] lookup with that.
+
+Parallel startup may be disabled by a command line option, and also if:
+ • AMD SEV-ES is in use, since the AP may not use CPUID that early.
+ • X2APIC is enabled, but CPUID leaf 0xb is not present and correct.
+ • X2APIC is not enabled but not even CPUID leaf 0x01 exists.
+
+Aside from the fact that APs will now look up their CPU# via the
+newly-exported cpuid_to_apicid[] table, there is no behavioural change
+intended yet, since new parallel CPUHP states have not — yet — been
+added.
+
+[ tglx: Initial proof of concept patch with bitlock and APIC ID lookup ]
+[ dwmw2: Rework and testing, commit message, CPUID 0x1 and CPU0 support ]
+[ seanc: Fix stray override of initial_gs in common_cpu_up() ]
+[ Oleksandr Natalenko: reported suspend/resume issue fixed in
+  x86_acpi_suspend_lowlevel ]
+Co-developed-by: Thomas Gleixner <tglx@linutronix.de>
+Co-developed-by: Brian Gerst <brgerst@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Brian Gerst <brgerst@gmail.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Tested-by: Usama Arif <usama.arif@bytedance.com>
 Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
 Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 ---
- arch/x86/include/asm/processor.h |  6 ++++-
- arch/x86/include/asm/smp.h       |  5 +++-
- arch/x86/kernel/acpi/sleep.c     | 20 +++++++++++++--
- arch/x86/kernel/asm-offsets.c    |  1 +
- arch/x86/kernel/head_64.S        | 43 +++++++++++++++++++++-----------
- arch/x86/kernel/smpboot.c        |  7 +++++-
- arch/x86/xen/xen-head.S          |  2 +-
- 7 files changed, 63 insertions(+), 21 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |  3 +
+ arch/x86/include/asm/realmode.h               |  3 +
+ arch/x86/include/asm/smp.h                    |  6 ++
+ arch/x86/kernel/acpi/sleep.c                  |  9 ++-
+ arch/x86/kernel/apic/apic.c                   |  2 +-
+ arch/x86/kernel/head_64.S                     | 64 +++++++++++++++++++
+ arch/x86/kernel/smpboot.c                     | 53 ++++++++++++++-
+ arch/x86/realmode/init.c                      |  3 +
+ arch/x86/realmode/rm/trampoline_64.S          | 27 ++++++--
+ 9 files changed, 162 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 4e35c66edeb7..bdde7316e75b 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -648,7 +648,11 @@ static inline void spin_lock_prefetch(const void *x)
- #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 6cfa6e3996cf..7bb7020f97e2 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3819,6 +3819,9 @@
  
- #else
--#define INIT_THREAD { }
-+extern unsigned long __end_init_task[];
+ 	nomodule	Disable module load
+ 
++	no_parallel_bringup
++			[X86,SMP] Disable parallel bring-up of secondary cores.
 +
-+#define INIT_THREAD {							    \
-+	.sp	= (unsigned long)&__end_init_task - sizeof(struct pt_regs), \
-+}
+ 	nopat		[X86] Disable PAT (page attribute table extension of
+ 			pagetables) support.
  
- extern unsigned long KSTK_ESP(struct task_struct *task);
+diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
+index f6a1737c77be..87e5482acd0d 100644
+--- a/arch/x86/include/asm/realmode.h
++++ b/arch/x86/include/asm/realmode.h
+@@ -52,6 +52,7 @@ struct trampoline_header {
+ 	u64 efer;
+ 	u32 cr4;
+ 	u32 flags;
++	u32 lock;
+ #endif
+ };
  
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index b4dbb20dab1a..bf2c51df9e0b 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -199,5 +199,8 @@ extern void nmi_selftest(void);
- #define nmi_selftest() do { } while (0)
+@@ -64,6 +65,8 @@ extern unsigned long initial_stack;
+ extern unsigned long initial_vc_handler;
  #endif
  
--#endif /* __ASSEMBLY__ */
-+extern unsigned int smpboot_control;
++extern u32 *trampoline_lock;
 +
-+#endif /* !__ASSEMBLY__ */
+ extern unsigned char real_mode_blob[];
+ extern unsigned char real_mode_relocs[];
+ 
+diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+index bf2c51df9e0b..1cf4f1e57570 100644
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -203,4 +203,10 @@ extern unsigned int smpboot_control;
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
++/* Control bits for startup_64 */
++#define STARTUP_APICID_CPUID_0B	0x80000000
++#define STARTUP_APICID_CPUID_01	0x40000000
++
++#define STARTUP_PARALLEL_MASK (STARTUP_APICID_CPUID_01 | STARTUP_APICID_CPUID_0B)
 +
  #endif /* _ASM_X86_SMP_H */
 diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-index 3b7f4cdbf2e0..1b4c43d0819a 100644
+index 1328c221af30..6dfecb27b846 100644
 --- a/arch/x86/kernel/acpi/sleep.c
 +++ b/arch/x86/kernel/acpi/sleep.c
-@@ -111,13 +111,29 @@ int x86_acpi_suspend_lowlevel(void)
- 	saved_magic = 0x12345678;
- #else /* CONFIG_64BIT */
- #ifdef CONFIG_SMP
--	initial_stack = (unsigned long)temp_stack + sizeof(temp_stack);
+@@ -16,6 +16,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/realmode.h>
+ #include <asm/hypervisor.h>
++#include <asm/smp.h>
+ 
+ #include <linux/ftrace.h>
+ #include "../../realmode/rm/wakeup.h"
+@@ -127,7 +128,13 @@ int x86_acpi_suspend_lowlevel(void)
+ 	 * value is in the actual %rsp register.
+ 	 */
+ 	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
+-	smpboot_control = smp_processor_id();
 +	/*
-+	 * As each CPU starts up, it will find its own stack pointer
-+	 * from its current_task->thread.sp. Typically that will be
-+	 * the idle thread for a newly-started AP, or even the boot
-+	 * CPU which will find it set to &init_task in the static
-+	 * per-cpu data.
-+	 *
-+	 * Make the resuming CPU use the temporary stack at startup
-+	 * by setting current->thread.sp to point to that. The true
-+	 * %rsp will be restored with the rest of the CPU context,
-+	 * by do_suspend_lowlevel(). And unwinders don't care about
-+	 * the abuse of ->thread.sp because it's a dead variable
-+	 * while the thread is running on the CPU anyway; the true
-+	 * value is in the actual %rsp register.
++	 * Ensure the CPU knows which one it is when it comes back, if
++	 * it isn't in parallel mode and expected to work that out for
++	 * itself.
 +	 */
-+	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
- 	early_gdt_descr.address =
- 			(unsigned long)get_cpu_gdt_rw(smp_processor_id());
- 	initial_gs = per_cpu_offset(smp_processor_id());
-+	smpboot_control = smp_processor_id();
++	if (!(smpboot_control & STARTUP_PARALLEL_MASK))
++		smpboot_control = smp_processor_id();
  #endif
  	initial_code = (unsigned long)wakeup_long64;
--       saved_magic = 0x123456789abcdef0L;
-+	saved_magic = 0x123456789abcdef0L;
- #endif /* CONFIG_64BIT */
+ 	saved_magic = 0x123456789abcdef0L;
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 20d9a604da7c..ac1d7e5da1f2 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2377,7 +2377,7 @@ static int nr_logical_cpuids = 1;
+ /*
+  * Used to store mapping between logical CPU IDs and APIC IDs.
+  */
+-static int cpuid_to_apicid[] = {
++int cpuid_to_apicid[] = {
+ 	[0 ... NR_CPUS - 1] = -1,
+ };
  
- 	/*
-diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
-index 82c783da16a8..797ae1a15c91 100644
---- a/arch/x86/kernel/asm-offsets.c
-+++ b/arch/x86/kernel/asm-offsets.c
-@@ -108,6 +108,7 @@ static void __used common(void)
- 	OFFSET(TSS_sp1, tss_struct, x86_tss.sp1);
- 	OFFSET(TSS_sp2, tss_struct, x86_tss.sp2);
- 	OFFSET(X86_top_of_stack, pcpu_hot, top_of_stack);
-+	OFFSET(X86_current_task, pcpu_hot, current_task);
- #ifdef CONFIG_CALL_DEPTH_TRACKING
- 	OFFSET(X86_call_depth, pcpu_hot, call_depth);
- #endif
 diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 222efd4a09bc..cc1b145055ac 100644
+index 6a8238702eab..c35f7c173832 100644
 --- a/arch/x86/kernel/head_64.S
 +++ b/arch/x86/kernel/head_64.S
-@@ -61,8 +61,8 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	 * tables and then reload them.
- 	 */
+@@ -25,6 +25,7 @@
+ #include <asm/export.h>
+ #include <asm/nospec-branch.h>
+ #include <asm/fixmap.h>
++#include <asm/smp.h>
  
--	/* Set up the stack for verify_cpu(), similar to initial_stack below */
--	leaq	(__end_init_task - FRAME_SIZE)(%rip), %rsp
-+	/* Set up the stack for verify_cpu() */
-+	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
- 
- 	leaq	_text(%rip), %rdi
- 
-@@ -241,6 +241,24 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	UNWIND_HINT_EMPTY
+ /*
+  * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
+@@ -234,8 +235,61 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
  	ANNOTATE_NOENDBR // above
  
-+#ifdef CONFIG_SMP
-+	movl	smpboot_control(%rip), %ecx
-+
-+	/* Get the per cpu offset for the given CPU# which is in ECX */
-+	movq	__per_cpu_offset(,%rcx,8), %rdx
-+#else
-+	xorl	%edx, %edx /* zero-extended to clear all of RDX */
-+#endif /* CONFIG_SMP */
-+
+ #ifdef CONFIG_SMP
 +	/*
-+	 * Setup a boot time stack - Any secondary CPU will have lost its stack
-+	 * by now because the cr3-switch above unmaps the real-mode stack.
++	 * For parallel boot, the APIC ID is retrieved from CPUID, and then
++	 * used to look up the CPU number.  For booting a single CPU, the
++	 * CPU number is encoded in smpboot_control.
 +	 *
-+	 * RDX contains the per-cpu offset
++	 * Bit 31	STARTUP_APICID_CPUID_0B flag (use CPUID 0x0b)
++	 * Bit 30	STARTUP_APICID_CPUID_01 flag (use CPUID 0x01)
++	 * Bit 0-24	CPU# if STARTUP_APICID_CPUID_xx flags are not set
 +	 */
-+	movq	pcpu_hot + X86_current_task(%rdx), %rax
-+	movq	TASK_threadsp(%rax), %rsp
+ 	movl	smpboot_control(%rip), %ecx
++	testl	$STARTUP_APICID_CPUID_0B, %ecx
++	jnz	.Luse_cpuid_0b
++	testl	$STARTUP_APICID_CPUID_01, %ecx
++	jnz	.Luse_cpuid_01
++	andl	$0x0FFFFFFF, %ecx
++	jmp	.Lsetup_cpu
 +
- 	/*
- 	 * We must switch to a new descriptor in kernel space for the GDT
- 	 * because soon the kernel won't have access anymore to the userspace
-@@ -275,12 +293,6 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	movl	initial_gs+4(%rip),%edx
++.Luse_cpuid_01:
++	mov	$0x01, %eax
++	cpuid
++	mov	%ebx, %edx
++	shr	$24, %edx
++	jmp	.Lsetup_AP
+ 
++.Luse_cpuid_0b:
++	mov	$0x0B, %eax
++	xorl	%ecx, %ecx
++	cpuid
++
++.Lsetup_AP:
++	/* EDX contains the APIC ID of the current CPU */
++	xorq	%rcx, %rcx
++	leaq	cpuid_to_apicid(%rip), %rbx
++
++.Lfind_cpunr:
++	cmpl	(%rbx,%rcx,4), %edx
++	jz	.Lsetup_cpu
++	inc	%ecx
++#ifdef CONFIG_FORCE_NR_CPUS
++	cmpl	$NR_CPUS, %ecx
++#else
++	cmpl	nr_cpu_ids(%rip), %ecx
++#endif
++	jb	.Lfind_cpunr
++
++	/*  APIC ID not found in the table. Drop the trampoline lock and bail. */
++	movq	trampoline_lock(%rip), %rax
++	lock
++	btrl	$0, (%rax)
++
++1:	cli
++	hlt
++	jmp	1b
++
++.Lsetup_cpu:
+ 	/* Get the per cpu offset for the given CPU# which is in ECX */
+ 	movq	__per_cpu_offset(,%rcx,8), %rdx
+ #else
+@@ -293,6 +347,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	shrq	$32, %rdx
  	wrmsr
  
--	/*
--	 * Setup a boot time stack - Any secondary CPU will have lost its stack
--	 * by now because the cr3-switch above unmaps the real-mode stack
--	 */
--	movq initial_stack(%rip), %rsp
--
++	/* Drop the realmode protection. For the boot CPU the pointer is NULL! */
++	movq	trampoline_lock(%rip), %rax
++	testq	%rax, %rax
++	jz	.Lsetup_idt
++	lock
++	btrl	$0, (%rax)
++
++.Lsetup_idt:
  	/* Setup and Load IDT */
  	pushq	%rsi
  	call	early_setup_idt
-@@ -372,7 +384,11 @@ SYM_CODE_END(secondary_startup_64)
- SYM_CODE_START(start_cpu0)
- 	ANNOTATE_NOENDBR
- 	UNWIND_HINT_EMPTY
--	movq	initial_stack(%rip), %rsp
-+
-+	/* Find the idle task stack */
-+	movq	PER_CPU_VAR(pcpu_hot) + X86_current_task, %rcx
-+	movq	TASK_threadsp(%rcx), %rsp
-+
- 	jmp	.Ljump_to_C_code
- SYM_CODE_END(start_cpu0)
- #endif
-@@ -420,12 +436,6 @@ SYM_DATA(initial_gs,	.quad INIT_PER_CPU_VAR(fixed_percpu_data))
+@@ -435,6 +497,8 @@ SYM_DATA(initial_code,	.quad x86_64_start_kernel)
  #ifdef CONFIG_AMD_MEM_ENCRYPT
  SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
  #endif
--
--/*
-- * The FRAME_SIZE gap is a convention which helps the in-kernel unwinder
-- * reliably detect the end of the stack.
-- */
--SYM_DATA(initial_stack, .quad init_thread_union + THREAD_SIZE - FRAME_SIZE)
++
++SYM_DATA(trampoline_lock, .quad 0);
  	__FINITDATA
  
  	__INIT
-@@ -660,6 +670,9 @@ SYM_DATA_END(level1_fixmap_pgt)
- SYM_DATA(early_gdt_descr,		.word GDT_ENTRIES*8-1)
- SYM_DATA_LOCAL(early_gdt_descr_base,	.quad INIT_PER_CPU_VAR(gdt_page))
- 
-+	.align 16
-+SYM_DATA(smpboot_control,		.long 0)
-+
- 	.align 16
- /* This must match the first entry in level2_kernel_pgt */
- SYM_DATA(phys_base, .quad 0x0)
 diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index b18c1385e181..62e3bf37f0b8 100644
+index b04520085582..19b9b89b7458 100644
 --- a/arch/x86/kernel/smpboot.c
 +++ b/arch/x86/kernel/smpboot.c
-@@ -1112,7 +1112,12 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 	idle->thread.sp = (unsigned long)task_pt_regs(idle);
- 	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
- 	initial_code = (unsigned long)start_secondary;
--	initial_stack  = idle->thread.sp;
+@@ -797,6 +797,16 @@ static int __init cpu_init_udelay(char *str)
+ }
+ early_param("cpu_init_udelay", cpu_init_udelay);
+ 
++static bool do_parallel_bringup __ro_after_init = true;
 +
-+	if (IS_ENABLED(CONFIG_X86_32)) {
-+		initial_stack  = idle->thread.sp;
-+	} else {
-+		smpboot_control = cpu;
++static int __init no_parallel_bringup(char *str)
++{
++	do_parallel_bringup = false;
++
++	return 0;
++}
++early_param("no_parallel_bringup", no_parallel_bringup);
++
+ static void __init smp_quirk_init_udelay(void)
+ {
+ 	/* if cmdline changed it from default, leave it alone */
+@@ -1113,7 +1123,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
+ 	if (IS_ENABLED(CONFIG_X86_32)) {
+ 		early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
+ 		initial_stack  = idle->thread.sp;
+-	} else {
++	} else if (!do_parallel_bringup) {
+ 		smpboot_control = cpu;
+ 	}
+ 
+@@ -1515,6 +1525,47 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
+ 
+ 	speculative_store_bypass_ht_init();
+ 
++	/*
++	 * We can do 64-bit AP bringup in parallel if the CPU reports
++	 * its APIC ID in CPUID (either leaf 0x0B if we need the full
++	 * APIC ID in X2APIC mode, or leaf 0x01 if 8 bits are
++	 * sufficient). Otherwise it's too hard. And not for SEV-ES
++	 * guests because they can't use CPUID that early.
++	 */
++	if (IS_ENABLED(CONFIG_X86_32) || boot_cpu_data.cpuid_level < 1 ||
++	    (x2apic_mode && boot_cpu_data.cpuid_level < 0xb) ||
++	    cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
++		do_parallel_bringup = false;
++
++	if (do_parallel_bringup && x2apic_mode) {
++		unsigned int eax, ebx, ecx, edx;
++
++		/*
++		 * To support parallel bringup in x2apic mode, the AP will need
++		 * to obtain its APIC ID from CPUID 0x0B, since CPUID 0x01 has
++		 * only 8 bits. Check that it is present and seems correct.
++		 */
++		cpuid_count(0xb, 0, &eax, &ebx, &ecx, &edx);
++
++		/*
++		 * AMD says that if executed with an umimplemented level in
++		 * ECX, then it will return all zeroes in EAX. Intel says it
++		 * will return zeroes in both EAX and EBX. Checking only EAX
++		 * should be sufficient.
++		 */
++		if (eax) {
++			pr_debug("Using CPUID 0xb for parallel CPU startup\n");
++			smpboot_control = STARTUP_APICID_CPUID_0B;
++		} else {
++			pr_info("Disabling parallel bringup because CPUID 0xb looks untrustworthy\n");
++			do_parallel_bringup = false;
++		}
++	} else if (do_parallel_bringup) {
++		/* Without X2APIC, what's in CPUID 0x01 should suffice. */
++		pr_debug("Using CPUID 0x1 for parallel CPU startup\n");
++		smpboot_control = STARTUP_APICID_CPUID_01;
 +	}
++
+ 	snp_set_wakeup_secondary_cpu();
+ }
  
- 	/* Enable the espfix hack for this CPU */
- 	init_espfix_ap(cpu);
-diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-index ffaa62167f6e..6bd391476656 100644
---- a/arch/x86/xen/xen-head.S
-+++ b/arch/x86/xen/xen-head.S
-@@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
- 	ANNOTATE_NOENDBR
- 	cld
+diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
+index af565816d2ba..788e5559549f 100644
+--- a/arch/x86/realmode/init.c
++++ b/arch/x86/realmode/init.c
+@@ -154,6 +154,9 @@ static void __init setup_real_mode(void)
  
--	mov initial_stack(%rip), %rsp
-+	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
+ 	trampoline_header->flags = 0;
  
- 	/* Set up %gs.
- 	 *
++	trampoline_lock = &trampoline_header->lock;
++	*trampoline_lock = 0;
++
+ 	trampoline_pgd = (u64 *) __va(real_mode_header->trampoline_pgd);
+ 
+ 	/* Map the real mode stub as virtual == physical */
+diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+index e38d61d6562e..2dfb1c400167 100644
+--- a/arch/x86/realmode/rm/trampoline_64.S
++++ b/arch/x86/realmode/rm/trampoline_64.S
+@@ -37,6 +37,24 @@
+ 	.text
+ 	.code16
+ 
++.macro LOAD_REALMODE_ESP
++	/*
++	 * Make sure only one CPU fiddles with the realmode stack
++	 */
++.Llock_rm\@:
++	btl	$0, tr_lock
++	jnc	2f
++	pause
++	jmp	.Llock_rm\@
++2:
++	lock
++	btsl	$0, tr_lock
++	jc	.Llock_rm\@
++
++	# Setup stack
++	movl	$rm_stack_end, %esp
++.endm
++
+ 	.balign	PAGE_SIZE
+ SYM_CODE_START(trampoline_start)
+ 	cli			# We should be safe anyway
+@@ -49,8 +67,7 @@ SYM_CODE_START(trampoline_start)
+ 	mov	%ax, %es
+ 	mov	%ax, %ss
+ 
+-	# Setup stack
+-	movl	$rm_stack_end, %esp
++	LOAD_REALMODE_ESP
+ 
+ 	call	verify_cpu		# Verify the cpu supports long mode
+ 	testl   %eax, %eax		# Check for return code
+@@ -93,8 +110,7 @@ SYM_CODE_START(sev_es_trampoline_start)
+ 	mov	%ax, %es
+ 	mov	%ax, %ss
+ 
+-	# Setup stack
+-	movl	$rm_stack_end, %esp
++	LOAD_REALMODE_ESP
+ 
+ 	jmp	.Lswitch_to_protected
+ SYM_CODE_END(sev_es_trampoline_start)
+@@ -177,7 +193,7 @@ SYM_CODE_START(pa_trampoline_compat)
+ 	 * In compatibility mode.  Prep ESP and DX for startup_32, then disable
+ 	 * paging and complete the switch to legacy 32-bit mode.
+ 	 */
+-	movl	$rm_stack_end, %esp
++	LOAD_REALMODE_ESP
+ 	movw	$__KERNEL_DS, %dx
+ 
+ 	movl	$(CR0_STATE & ~X86_CR0_PG), %eax
+@@ -241,6 +257,7 @@ SYM_DATA_START(trampoline_header)
+ 	SYM_DATA(tr_efer,		.space 8)
+ 	SYM_DATA(tr_cr4,		.space 4)
+ 	SYM_DATA(tr_flags,		.space 4)
++	SYM_DATA(tr_lock,		.space 4)
+ SYM_DATA_END(trampoline_header)
+ 
+ #include "trampoline_common.S"
 -- 
 2.25.1
 
