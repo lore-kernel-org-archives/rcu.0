@@ -2,114 +2,144 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2ACFC7EE33
-	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 00:49:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 440F7C678D4
+	for <rcu@archiver.kernel.org>; Thu,  2 Mar 2023 01:06:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjCBAtg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Mar 2023 19:49:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        id S229470AbjCBBGa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Mar 2023 20:06:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjCBAtf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Mar 2023 19:49:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFDA4109C;
-        Wed,  1 Mar 2023 16:49:34 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 224E8B81181;
-        Thu,  2 Mar 2023 00:49:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9FC9C4339C;
-        Thu,  2 Mar 2023 00:49:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677718171;
-        bh=ScTaIO2bmnGm7UFxZU1tGtirzKJTkwioWhjsQT4uvDc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uJ/u04YQXkqTeHnTtGT6A8EjiN24jAL36LC0u/tWul9Gi/GHYmLtJAjrFEtigVNlf
-         M9WHjJkcsT2PZALaaHtXY00OD1QV/TAiRUtEXfmQj0PNRDiAxyfb78uwzszPU/KJtK
-         w9UY79Oue/u3knBeQ82u12P/w29xc6kMEyrXZ5MoQBKdUPuZAPa6C+on/tZuFkAtSx
-         /Dp9v1FIHo56Ik9wfZsSKJv9Pz82m1B5oU6QLGCmXBVfTgAroa/XaR+EkkVJ3pZbvc
-         1T1p7PMZhRCQcM/vK4jrU9xHZpy59d4Z9TXhyjxo6MWrSlqNBMh18xmJcByIxoATaW
-         5NzAJOHosJGgA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7374D5C0361; Wed,  1 Mar 2023 16:49:31 -0800 (PST)
-Date:   Wed, 1 Mar 2023 16:49:31 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC v2] rcu: Add a minimum time for marking boot as
- completed
-Message-ID: <20230302004931.GM2948950@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <7EBE4F51-F2BD-4B42-AFC1-CA234E78CC7B@joelfernandes.org>
- <Y/z9Its1RKetIr8V@pc636>
- <CAEXW_YSjT_orp8TbomBFU+ETS7YJ7TrbHTdrsBRTzCKG5_SBdw@mail.gmail.com>
- <20230227230502.GJ2948950@paulmck-ThinkPad-P17-Gen-1>
- <Y/0/dnmIk508sidK@lothringen>
- <Y/1ZMXsNZtwYPJNW@google.com>
- <Y/3fxLXbfvnLFEZq@lothringen>
- <Y/5fXskgrQxzbt0U@google.com>
- <Y/+HPrU/ofFXapHM@lothringen>
- <CAEXW_YTt=VZ8ZMptccFMStsQvfjy5yMbd5Ah3KL=PUB4YVSTCg@mail.gmail.com>
+        with ESMTP id S229445AbjCBBG3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Mar 2023 20:06:29 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EFA567A6;
+        Wed,  1 Mar 2023 17:06:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=CDt+m4AI+Ja7f8iL1HnP9+Emn/qOIFgs9//Kb9pOgJM=; b=dRXXgt8kLdn3jJrUOfCAcJ0y5+
+        ejYMmbzhA/IzNseTjds/k3XpudD5lY/1HO7J9IRVMQ6Eya8XyzM9TvsYznuwtU6kWD3tb83jDRnLL
+        yRn91RVl5auUFdZs3mPwjMXX4E/uKlzwMbRhE1c4u77lJ3YX2ECyuBkx2duQ94VguBcmu1CTyhVhI
+        8ngGoSpUNWt6SjAocAOWhsClwFRlfG1FzLvfGUEKyRUFqOYOT4/2geN+1s/yvnHCIKay0qV1kultp
+        DVEEa2NAtpXGBQmCIfzG1BbN7KHyB8OXktr3aHp7fS3ZYP1sgg60shLw6uUmlgVAQaPaeO2AvH04k
+        GrCregRA==;
+Received: from [2601:1c2:980:9ec0::df2f]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pXXOA-000QGm-VI; Thu, 02 Mar 2023 01:05:43 +0000
+Message-ID: <41baeedf-f3ee-7342-7a5e-097f9a3c4de0@infradead.org>
+Date:   Wed, 1 Mar 2023 17:05:39 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YTt=VZ8ZMptccFMStsQvfjy5yMbd5Ah3KL=PUB4YVSTCg@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v12 07/11] x86/smpboot: Remove early_gdt_descr on 64-bit
+To:     paulmck@kernel.org, Josh Triplett <josh@joshtriplett.org>
+Cc:     Arjan van de Ven <arjan@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
+        kim.phillips@amd.com, brgerst@gmail.com, piotrgorski@cachyos.org,
+        oleksandr@natalenko.name, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, rcu@vger.kernel.org, mimoja@mimoja.de,
+        hewenliang4@huawei.com, thomas.lendacky@amd.com, seanjc@google.com,
+        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
+        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
+        liangma@liangbit.com, David Woodhouse <dwmw@amazon.co.uk>
+References: <20230226110802.103134-1-usama.arif@bytedance.com>
+ <20230226110802.103134-8-usama.arif@bytedance.com> <878rghmrn2.ffs@tglx>
+ <96c0c723-9976-a222-8dc8-a5da6a1a558e@linux.intel.com>
+ <Y/+2Wuunn1sIF8eT@localhost>
+ <20230301221632.GI2948950@paulmck-ThinkPad-P17-Gen-1>
+ <Y//Q4Mh6/65Keruu@localhost>
+ <20230302002851.GK2948950@paulmck-ThinkPad-P17-Gen-1>
+Content-Language: en-US
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230302002851.GK2948950@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 01, 2023 at 04:31:01PM -0500, Joel Fernandes wrote:
-> On Wed, Mar 1, 2023 at 12:11 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> [...]
-> > > Hmmm I see what you mean, so a conservative and configurable "fail-safe"
-> > > timeout followed by sysctl to end the boot earlier than the timeout, should
-> > > do it (something like 30 seconds IMHO sounds reasonable)? In any case,
-> > > whatever way we go, we would not end the kernel boot before
-> > > rcu_end_inkernel_boot() is called at least once (which is the current
-> > > behavior).
-> > >
-> > > So it would be:
-> > >
-> > >   low level boot + initcalls
-> > >        20 sec                         30 second timeout
-> > > |------------------------------|--------------------------
-> > >                                |                         |
-> > >               old rcu_end_inkernel_boot()      new rcu_end_inkernel_boot()
-> > >
-> > > But it could be, if user decides:
-> > >   low level boot + initcalls
-> > >        20 sec                         10 second timeout
-> > > |------------------------------|--------------------------
-> > >                                |                         |
-> > >               old rcu_end_inkernel_boot()      new rcu_end_inkernel_boot()
-> > >                                                via /sys/ entry.
-> >
-> > The problem I have with a random default timeout is that it may break sensitive
-> > workloads. If the default is 30 and say the boot only takes 5 seconds and
-> > immediately launches a latency sensitive task, this may break things in a
-> > subtle way during these 25 seconds when it usually didn't. Because expedited
-> > RCU is a hammer interrupting all non-idle CPUs.
-> >
-> > Until now forcing expedited RCU was only performed before any user code. Now it
-> > crosses the boundary so better be careful. I'd personally advocate for keeping
-> > the current call before init is launched. Then provide an end_boot_sysctl kernel
-> > boot parameter that will ignore the current call before init and let the user
-> > signal that through sysctl.
+
+
+On 3/1/23 16:28, Paul E. McKenney wrote:
+> On Wed, Mar 01, 2023 at 02:25:36PM -0800, Josh Triplett wrote:
+>> On Wed, Mar 01, 2023 at 02:16:32PM -0800, Paul E. McKenney wrote:
+>>> On Wed, Mar 01, 2023 at 12:32:26PM -0800, Josh Triplett wrote:
+>>>> On Tue, Feb 28, 2023 at 01:02:33PM -0800, Arjan van de Ven wrote:
+>>>>   Thomas Gleixner wrote:
+>>>>>>
+>>>>>> Maybe we should enforce CONFIG_SMP=y first :)
+>>>>>>
+>>>>>> Thanks,
+>>>>>
+>>>>> for 64 bit I can see the point of removing the !SMP case entirely from arch/x86 .
+>>>>> maybe even for 32 bit if it just makes the code simpler I suppose
+>>>>
+>>>> As one of the folks keeping an eye on tinyconfig and kernel size, I
+>>>> actually think we *should* make this change and rip out !CONFIG_SMP,
+>>>> albeit carefully.
+>>>>
+>>>> In particular, I would propose that we rip out !CONFIG_SMP, *but* we
+>>>> allow building with CONFIG_NR_CPUS=1. (And we could make sure in that
+>>>> case that the compiler can recognize that at compile time and optimize
+>>>> accordingly, so that it might provide some of the UP optimizations for
+>>>> us.)
+>>>>
+>>>> Then, any *optimizations* for the "will only have one CPU, ever" case
+>>>> can move to CONFIG_NR_CPUS=1 rather than !CONFIG_SMP. I think many of
+>>>> those optimizations may be worth keeping for small embedded systems, or
+>>>> for cases like Linux-as-bootloader or similar.
+>>>>
+>>>> The difference here would be that code written for !CONFIG_SMP today
+>>>> needs to account for the UP case for *correctness*, whereas code written
+>>>> for CONFIG_SMP can *optionally* consider CONFIG_NR_CPUS=1 for
+>>>> *performance*.
+>>>
+>>> It certainly would not make much sense to keep Tiny RCU and Tiny SRCU
+>>> around if there was no CONFIG_SMP=n.
+>>
+>> On the contrary, I think it's entirely appropriate to keep them for
+>> CONFIG_NR_CPUS=1; that's exactly the kind of simple optimization that
+>> seems well worth having. (Ideal optimization: "very very simple for UP,
+>> complex for SMP"; non-ideal optimization: "complex for SMP, differently
+>> complex for UP".)
 > 
-> Considering that the PREEMPT-RT system benefits from it within the 8
-> seconds, I will go ahead make the default 15 seconds or so and make it
-> tunable. Hopefully that will be an acceptable compromise, with
-> sufficient documentation, changelog, and so forth... If you agree I'd
-> appreciate your Ack on the next posting.
+> Fair enough, but how does removing CONFIG_SMP help with that?  Given that
+> it is not all that hard to work around the lack of CONFIG_SMP for Tiny
+> RCU and Tiny SRCU, then it cannot be all that hard to work around that
+> lack for the use cases that you are trying to get rid of, right?
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index 9071182b1284b..7487bee3d4341 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -7,7 +7,7 @@ menu "RCU Subsystem"
+>  
+>  config TREE_RCU
+>  	bool
+> -	default y if SMP
+> +	default y if CONFIG_NR_CPUS = 1
+>  	# Dynticks-idle tracking
+>  	select CONTEXT_TRACKING_IDLE
+>  	help
+> @@ -31,7 +31,7 @@ config PREEMPT_RCU
+>  
+>  config TINY_RCU
+>  	bool
+> -	default y if !PREEMPTION && !SMP
+> +	default y if !PREEMPTION && CONFIG_NR_CPUS != 1
+>  	help
+>  	  This option selects the RCU implementation that is
+>  	  designed for UP systems from which real-time response
 
-Just checking on the sysfs portion of this.  After all, tuning kernel
-boot parameters to specific systems is not all that much fun, especially
-when you have lots of systems.
+but drop the CONFIG_ prefixes...
 
-							Thanx, Paul
+-- 
+~Randy
