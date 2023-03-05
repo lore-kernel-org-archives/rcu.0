@@ -2,188 +2,300 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41ECEC61DA4
-	for <rcu@archiver.kernel.org>; Sun,  5 Mar 2023 10:49:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A202C678DB
+	for <rcu@archiver.kernel.org>; Sun,  5 Mar 2023 11:39:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbjCEKtv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 5 Mar 2023 05:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
+        id S229557AbjCELjI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 5 Mar 2023 06:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjCEKtu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 5 Mar 2023 05:49:50 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11C693F0
-        for <rcu@vger.kernel.org>; Sun,  5 Mar 2023 02:49:48 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id r5so7674139qtp.4
-        for <rcu@vger.kernel.org>; Sun, 05 Mar 2023 02:49:48 -0800 (PST)
+        with ESMTP id S229455AbjCELjH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 5 Mar 2023 06:39:07 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF73CDDB;
+        Sun,  5 Mar 2023 03:39:05 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id x3so27446201edb.10;
+        Sun, 05 Mar 2023 03:39:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678013388;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f4MTJzsZa3uG483i35oT8izfur7qwLIzHaERwAfP6u0=;
-        b=ejdbobOAWTA4FtzSnRUsWF2aiTuK6I10L1fX1Xth2T56/vDyAKd6+pLybnilzZe+Hm
-         vX5/kTcS7lUL8SgjNi49ozGoXwAz5fA7FP3zmB7O00a9XOd4pWFkrSv3ztT61dPlVN0q
-         SBzbuCL0VxZveJ/rpPuS1x5dNvfvkxDmyKxTQ=
+        d=gmail.com; s=20210112; t=1678016344;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Ia6NTRBi8I6vwEXopSdGm/7/hJAaOLIxwJMBDzaRQbk=;
+        b=YuJLNERon9EeN3uC7k5q0JaBBoE0FMoFDZB1bpH92Xo4tl0vE4H+iEnMOV8miIq/Xg
+         uDT/i7xtnt9H8OrWMbUq4Bk8kOQAyKTHXTtLy72XTDSlUnk1RX2cdmHvSW7rppVpdoMJ
+         mCjAQd2XEeY+82curxZZKyi0sJq4/RoWxnJnCYlPuDFnsMw0MZgYrHjbqxAjMUBRZj4w
+         vAJ2miIIo2M2Oh/osYYFX7Npz33OwyjwAbebQgs5pUwnW+Sce09ry7pTPQd2/u8gMn8D
+         80EU87zhbAZ6ozn22urrtc+SwJ5xj0vz7nCe0v8ze696Toc8tki1twOTFmnq7BT0WRSQ
+         tS5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678013388;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f4MTJzsZa3uG483i35oT8izfur7qwLIzHaERwAfP6u0=;
-        b=t8q/2yroFpta6SyTB/o/uTw4E1Wlm0QEkXHeJFPqdr7LJYv0eBx8QaXz6dJnWPIwSB
-         HGcxDb/YZhy1r8typS4yaE1aw5wMjHrzQEBvMWQvHF/S3spCJPfFAxsdCqYJ7iEeRZ8J
-         mWmQp4dpIi0n40dMUUSJSzvl0VVCKIDzq3ZP9GWkcsPtnk2PQZM6ndnjEiXscd3c51Aq
-         cQfBNIyHcqWoy/zenH63+6rwEN/HrC/UtI1MclmfxSNHHd4aixqfXmqeIuhaEWKFZ8zm
-         2N2lDxu+XyWmjqIXEEbLGFQV2lrThTqyZeErTaGLBT4IeboKVbQWXEjgpDtZmiLiMYRq
-         cvDQ==
-X-Gm-Message-State: AO0yUKX86MF3KuGdi/Bud4GT1PYZzMUVa8Kf9gjAdd0id2zeYAG5ZyTF
-        FCKn+XBAnY8l1k+v/1zIy9R+rw==
-X-Google-Smtp-Source: AK7set9+6sThLr05pCpmFdza6ysVq3tV6Y+XlpNijvkiGDcdpuwa4lCs5A7fcFfnp9txXK+eYSeUUg==
-X-Received: by 2002:ac8:5dd0:0:b0:3b6:3a12:2bf9 with SMTP id e16-20020ac85dd0000000b003b63a122bf9mr11992714qtx.2.1678013387789;
-        Sun, 05 Mar 2023 02:49:47 -0800 (PST)
-Received: from smtpclient.apple ([2600:1003:b86e:a2b7:6c59:a244:64b9:60c5])
-        by smtp.gmail.com with ESMTPSA id x13-20020ac8120d000000b003bffe7fdc38sm5402841qti.9.2023.03.05.02.49.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Mar 2023 02:49:47 -0800 (PST)
+        d=1e100.net; s=20210112; t=1678016344;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ia6NTRBi8I6vwEXopSdGm/7/hJAaOLIxwJMBDzaRQbk=;
+        b=HHJDFXr0ZgWLB1OrGFdOsxRDiFO1QDCbYBYtcfCUWGVPDx3ZUXYbz1zMpFgEyASANw
+         EX09RZhQjq5KzvCXLbyscGO1AgCIaGggYjfTzVhhq9GxyeOQ17fnFAa40SWvAyVSBiGP
+         /o1Qtm4GYH/G8K44TYPC+gfCauGroRbsCljc1FEgN0EZRfr0CmVzHrPH0HS2corGGhpU
+         MtOOnHIbPozHr4Rkh1jsU+Hpf4veumLXSYYusC+6NBJTTEBIhp/pH7dDypxaggHCXDzw
+         HsFyjmNbiCPGPsQDUpXjsFu2DT2E0mxLBs0QgN9diUwQ9axch/5+/XCArc6B3PfkoP8c
+         NNsA==
+X-Gm-Message-State: AO0yUKV6hXBI36KOpHTcVvU3/2JmR12JGl4/TJ3od+z+h3xOuktd9dDE
+        v7K2v0vE4J8S9yBT6b3/7aI=
+X-Google-Smtp-Source: AK7set9rxPr/K59/UeOn/u8hJhDgEvAccHBDTYGzh8yJF43UHWdezk/4cWHfvhqYfO+lE+Nts1ZFXg==
+X-Received: by 2002:a17:906:ee82:b0:8b1:7891:19e8 with SMTP id wt2-20020a170906ee8200b008b1789119e8mr9693476ejb.44.1678016343908;
+        Sun, 05 Mar 2023 03:39:03 -0800 (PST)
+Received: from pc636 ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id v8-20020a50c408000000b004c09f0ba24dsm3564542edf.48.2023.03.05.03.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Mar 2023 03:39:03 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sun, 5 Mar 2023 12:39:01 +0100
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, urezki@gmail.com
+Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
+Message-ID: <ZAR/VdMNBwdrWA/5@pc636>
+References: <20230303213851.2090365-1-joel@joelfernandes.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 13/13] rcu/kvfree: Eliminate k[v]free_rcu() single argument macro
-Date:   Sun, 5 Mar 2023 05:49:35 -0500
-Message-Id: <A3933CE1-1C8A-4E9B-9E10-828CB2CE34AA@joelfernandes.org>
-References: <CAEXW_YRhHaVuq+5f+VgCZM=SF+9xO+QXaxe0yE7oA9iCXK-XPg@mail.gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-In-Reply-To: <CAEXW_YRhHaVuq+5f+VgCZM=SF+9xO+QXaxe0yE7oA9iCXK-XPg@mail.gmail.com>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-X-Mailer: iPhone Mail (20B101)
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230303213851.2090365-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Mar 03, 2023 at 09:38:51PM +0000, Joel Fernandes (Google) wrote:
+> On many systems, a great deal of boot (in userspace) happens after the
+> kernel thinks the boot has completed. It is difficult to determine if
+> the system has really booted from the kernel side. Some features like
+> lazy-RCU can risk slowing down boot time if, say, a callback has been
+> added that the boot synchronously depends on. Further expedited callbacks
+> can get unexpedited way earlier than it should be, thus slowing down
+> boot (as shown in the data below).
+> 
+> For these reasons, this commit adds a config option
+> 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter rcupdate.boot_end_delay.
+> Userspace can also make RCU's view of the system as booted, by writing the
+> time in milliseconds to: /sys/module/rcupdate/parameters/rcu_boot_end_delay
+> Or even just writing a value of 0 to this sysfs node.
+> However, under no circumstance will the boot be allowed to end earlier
+> than just before init is launched.
+> 
+> The default value of CONFIG_RCU_BOOT_END_DELAY is chosen as 15s. This
+> suites ChromeOS and also a PREEMPT_RT system below very well, which need
+> no config or parameter changes, and just a simple application of this patch. A
+> system designer can also choose a specific value here to keep RCU from marking
+> boot completion.  As noted earlier, RCU's perspective of the system as booted
+> will not be marker until at least rcu_boot_end_delay milliseconds have passed
+> or an update is made via writing a small value (or 0) in milliseconds to:
+> /sys/module/rcupdate/parameters/rcu_boot_end_delay.
+> 
+> One side-effect of this patch is, there is a risk that a real-time workload
+> launched just after the kernel boots will suffer interruptions due to expedited
+> RCU, which previous ended just before init was launched. However, to mitigate
+> such an issue (however unlikely), the user should either tune
+> CONFIG_RCU_BOOT_END_DELAY to a smaller value than 15 seconds or write a value
+> of 0 to /sys/module/rcupdate/parameters/rcu_boot_end_delay, once userspace
+> boots, and before launching the real-time workload.
+> 
+> Qiuxu also noted impressive boot-time improvements with earlier version
+> of patch. An excerpt from the data he shared:
+> 
+> 1) Testing environment:
+>     OS            : CentOS Stream 8 (non-RT OS)
+>     Kernel     : v6.2
+>     Machine : Intel Cascade Lake server (2 sockets, each with 44 logical threads)
+>     Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=2,sockets=2, …
+> 
+> 2) OS boot time definition:
+>     The time from the start of the kernel boot to the shell command line
+>     prompt is shown from the console. [ Different people may have
+>     different OS boot time definitions. ]
+> 
+> 3) Measurement method (very rough method):
+>     A timer in the kernel periodically prints the boot time every 100ms.
+>     As soon as the shell command line prompt is shown from the console,
+>     we record the boot time printed by the timer, then the printed boot
+>     time is the OS boot time.
+> 
+> 4) Measured OS boot time (in seconds)
+>    a) Measured 10 times w/o this patch:
+>         8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
+>         The average OS boot time was: ~8.7s
+> 
+>    b) Measure 10 times w/ this patch:
+>         8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
+>         The average OS boot time was: ~8.3s.
+> 
+> Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> v1->v2:
+> 	Update some comments and description.
+> v2->v3:
+>         Add sysfs param, and update with Test data.
+> 
+>  .../admin-guide/kernel-parameters.txt         | 12 ++++
+>  cc_list                                       |  8 +++
+>  kernel/rcu/Kconfig                            | 19 ++++++
+>  kernel/rcu/update.c                           | 68 ++++++++++++++++++-
+>  4 files changed, 106 insertions(+), 1 deletion(-)
+>  create mode 100644 cc_list
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 2429b5e3184b..611de90d9c13 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5085,6 +5085,18 @@
+>  	rcutorture.verbose= [KNL]
+>  			Enable additional printk() statements.
+>  
+> +	rcupdate.rcu_boot_end_delay= [KNL]
+> +			Minimum time in milliseconds that must elapse
+> +			before the boot sequence can be marked complete
+> +			from RCU's perspective, after which RCU's behavior
+> +			becomes more relaxed. The default value is also
+> +			configurable via CONFIG_RCU_BOOT_END_DELAY.
+> +			Userspace can also mark the boot as completed
+> +			sooner by writing the time in milliseconds, say once
+> +			userspace considers the system as booted, to:
+> +			/sys/module/rcupdate/parameters/rcu_boot_end_delay
+> +			Or even just writing a value of 0 to this sysfs node.
+> +
+>  	rcupdate.rcu_cpu_stall_ftrace_dump= [KNL]
+>  			Dump ftrace buffer after reporting RCU CPU
+>  			stall warning.
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index 9071182b1284..4b5ffa36cbaf 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -217,6 +217,25 @@ config RCU_BOOST_DELAY
+>  
+>  	  Accept the default if unsure.
+>  
+> +config RCU_BOOT_END_DELAY
+> +	int "Minimum time before RCU may consider in-kernel boot as completed"
+> +	range 0 120000
+> +	default 15000
+> +	help
+> +	  Default value of the minimum time in milliseconds that must elapse
+> +	  before the boot sequence can be marked complete from RCU's perspective,
+> +	  after which RCU's behavior becomes more relaxed.
+> +	  Userspace can also mark the boot as completed sooner than this default
+> +	  by writing the time in milliseconds, say once userspace considers
+> +	  the system as booted, to: /sys/module/rcupdate/parameters/rcu_boot_end_delay.
+> +	  Or even just writing a value of 0 to this sysfs node.
+> +
+> +	  The actual delay for RCU's view of the system to be marked as booted can be
+> +	  higher than this value if the kernel takes a long time to initialize but it
+> +	  will never be smaller than this value.
+> +
+> +	  Accept the default if unsure.
+> +
+>  config RCU_EXP_KTHREAD
+>  	bool "Perform RCU expedited work in a real-time kthread"
+>  	depends on RCU_BOOST && RCU_EXPERT
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 19bf6fa3ee6a..93138c92136e 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -224,18 +224,84 @@ void rcu_unexpedite_gp(void)
+>  }
+>  EXPORT_SYMBOL_GPL(rcu_unexpedite_gp);
+>  
+> +/*
+> + * Minimum time in milliseconds until RCU can consider in-kernel boot as
+> + * completed.  This can also be tuned at runtime to end the boot earlier, by
+> + * userspace init code writing the time in milliseconds (even 0) to:
+> + * /sys/module/rcupdate/parameters/rcu_boot_end_delay
+> + */
+> +static int rcu_boot_end_delay = CONFIG_RCU_BOOT_END_DELAY;
+> +
+>  static bool rcu_boot_ended __read_mostly;
+> +static bool rcu_boot_end_called __read_mostly;
+> +static DEFINE_MUTEX(rcu_boot_end_lock);
+> +
+> +static int param_set_rcu_boot_end(const char *val, const struct kernel_param *kp)
+> +{
+> +	uint end_ms;
+> +	int ret = kstrtouint(val, 0, &end_ms);
+> +
+> +	if (ret)
+> +		return ret;
+> +	WRITE_ONCE(*(uint *)kp->arg, end_ms);
+> +
+> +	/*
+> +	 * rcu_end_inkernel_boot() should be called at least once during init
+> +	 * before we can allow param changes to end the boot.
+> +	 */
+> +	mutex_lock(&rcu_boot_end_lock);
+> +	rcu_boot_end_delay = end_ms;
+> +	if (!rcu_boot_ended && rcu_boot_end_called) {
+> +		mutex_unlock(&rcu_boot_end_lock);
+> +		rcu_end_inkernel_boot();
+> +	}
+> +	mutex_unlock(&rcu_boot_end_lock);
+> +	return ret;
+> +}
+> +
+> +static const struct kernel_param_ops rcu_boot_end_ops = {
+> +	.set = param_set_rcu_boot_end,
+> +	.get = param_get_uint,
+> +};
+> +module_param_cb(rcu_boot_end_delay, &rcu_boot_end_ops, &rcu_boot_end_delay, 0644);
+>  
+>  /*
+> - * Inform RCU of the end of the in-kernel boot sequence.
+> + * Inform RCU of the end of the in-kernel boot sequence. The boot sequence will
+> + * not be marked ended until at least rcu_boot_end_delay milliseconds have passed.
+>   */
+> +void rcu_end_inkernel_boot(void);
+> +static void rcu_boot_end_work_fn(struct work_struct *work)
+> +{
+> +	rcu_end_inkernel_boot();
+> +}
+> +static DECLARE_DELAYED_WORK(rcu_boot_end_work, rcu_boot_end_work_fn);
+> +
+>  void rcu_end_inkernel_boot(void)
+>  {
+> +	mutex_lock(&rcu_boot_end_lock);
+> +	rcu_boot_end_called = true;
+> +
+> +	if (rcu_boot_ended)
+> +		return;
+> +
+> +	if (rcu_boot_end_delay) {
+> +		u64 boot_ms = div_u64(ktime_get_boot_fast_ns(), 1000000UL);
+> +
+> +		if (boot_ms < rcu_boot_end_delay) {
+> +			schedule_delayed_work(&rcu_boot_end_work,
+> +					rcu_boot_end_delay - boot_ms);
+<snip>
+urezki@pc638:~/data/raid0/coding/linux-rcu.git$ git diff
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 93138c92136e..93f426f0f4ec 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -289,7 +289,7 @@ void rcu_end_inkernel_boot(void)
+ 
+                if (boot_ms < rcu_boot_end_delay) {
+                        schedule_delayed_work(&rcu_boot_end_work,
+-                                       rcu_boot_end_delay - boot_ms);
++                               msecs_to_jiffies(rcu_boot_end_delay - boot_ms));
+                        mutex_unlock(&rcu_boot_end_lock);
+                        return;
+                }
+urezki@pc638:~/data/raid0/coding/linux-rcu.git$
+<snip>
 
+I think you need to apply above patch. I am not sure maybe Paul
+has already mentioned about it. But just in case.
 
-> On Mar 5, 2023, at 5:29 AM, Joel Fernandes <joel@joelfernandes.org> wrote:=
-
->=20
-> =EF=BB=BFHi, All,
->=20
->> On Wed, Feb 1, 2023 at 10:11=E2=80=AFAM Uladzislau Rezki (Sony)
->> <urezki@gmail.com> wrote:
->>=20
->> For a single argument invocations a new kfree_rcu_mightsleep()
->> and kvfree_rcu_mightsleep() macroses are used. This is done in
->> order to prevent users from calling a single argument from
->> atomic contexts as "_mightsleep" prefix signals that it can
->> schedule().
->>=20
->=20
-> Since this commit in -dev branch [1] suggests more users still need
-> conversion, let us drop this single patch for 6.4 and move the rest of
-> the series forward? Let me know if you disagree.
-> https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/comm=
-it/?h=3Ddev&id=3D9bf5e3a2626ed474d080f695007541b6ecd6e60b
->=20
-> All -- please supply Ack/Review tags for patches 1-12.
-
-Or put another way, what is the transition plan for these remaining users?
-
-I am getting on a plane right now but I can research which users are remaini=
-ng later.
-
- - Joel
-
-
->=20
-> thanks,
->=20
-> - Joel
->=20
->=20
->> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->> ---
->> include/linux/rcupdate.h | 29 ++++++++---------------------
->> 1 file changed, 8 insertions(+), 21 deletions(-)
->>=20
->> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->> index 094321c17e48..7571dbfecb18 100644
->> --- a/include/linux/rcupdate.h
->> +++ b/include/linux/rcupdate.h
->> @@ -957,9 +957,8 @@ static inline notrace void rcu_read_unlock_sched_notr=
-ace(void)
->>=20
->> /**
->>  * kfree_rcu() - kfree an object after a grace period.
->> - * @ptr: pointer to kfree for both single- and double-argument invocatio=
-ns.
->> - * @rhf: the name of the struct rcu_head within the type of @ptr,
->> - *       but only for double-argument invocations.
->> + * @ptr: pointer to kfree for double-argument invocations.
->> + * @rhf: the name of the struct rcu_head within the type of @ptr.
->>  *
->>  * Many rcu callbacks functions just call kfree() on the base structure.
->>  * These functions are trivial, but their size adds up, and furthermore
->> @@ -982,26 +981,18 @@ static inline notrace void rcu_read_unlock_sched_no=
-trace(void)
->>  * The BUILD_BUG_ON check must not involve any function calls, hence the
->>  * checks are done in macros here.
->>  */
->> -#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
->> +#define kfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
->> +#define kvfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
->>=20
->> /**
->> - * kvfree_rcu() - kvfree an object after a grace period.
->> - *
->> - * This macro consists of one or two arguments and it is
->> - * based on whether an object is head-less or not. If it
->> - * has a head then a semantic stays the same as it used
->> - * to be before:
->> - *
->> - *     kvfree_rcu(ptr, rhf);
->> - *
->> - * where @ptr is a pointer to kvfree(), @rhf is the name
->> - * of the rcu_head structure within the type of @ptr.
->> + * kfree_rcu_mightsleep() - kfree an object after a grace period.
->> + * @ptr: pointer to kfree for single-argument invocations.
->>  *
->>  * When it comes to head-less variant, only one argument
->>  * is passed and that is just a pointer which has to be
->>  * freed after a grace period. Therefore the semantic is
->>  *
->> - *     kvfree_rcu(ptr);
->> + *     kfree_rcu_mightsleep(ptr);
->>  *
->>  * where @ptr is the pointer to be freed by kvfree().
->>  *
->> @@ -1010,13 +1001,9 @@ static inline notrace void rcu_read_unlock_sched_n=
-otrace(void)
->>  * annotation. Otherwise, please switch and embed the
->>  * rcu_head structure within the type of @ptr.
->>  */
->> -#define kvfree_rcu(...) KVFREE_GET_MACRO(__VA_ARGS__,          \
->> -       kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
->> -
->> +#define kfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
->> #define kvfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
->> -#define kfree_rcu_mightsleep(ptr) kvfree_rcu_mightsleep(ptr)
->>=20
->> -#define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
->> #define kvfree_rcu_arg_2(ptr, rhf)                                     \
->> do {                                                                   \
->>        typeof (ptr) ___p =3D (ptr);                                      \=
-
->> --
->> 2.30.2
->>=20
+--
+Uladzislau Rezki
