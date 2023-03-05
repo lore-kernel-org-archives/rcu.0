@@ -2,61 +2,60 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A969C61DA4
-	for <rcu@archiver.kernel.org>; Sun,  5 Mar 2023 11:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8896EC678DB
+	for <rcu@archiver.kernel.org>; Sun,  5 Mar 2023 12:56:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjCELly (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 5 Mar 2023 06:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
+        id S229518AbjCEM4t (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 5 Mar 2023 07:56:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjCELly (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 5 Mar 2023 06:41:54 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8E1F977;
-        Sun,  5 Mar 2023 03:41:52 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id k10so3684253edk.13;
-        Sun, 05 Mar 2023 03:41:52 -0800 (PST)
+        with ESMTP id S229507AbjCEM4s (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 5 Mar 2023 07:56:48 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2445410AB8
+        for <rcu@vger.kernel.org>; Sun,  5 Mar 2023 04:56:47 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id r16so6200836qtx.9
+        for <rcu@vger.kernel.org>; Sun, 05 Mar 2023 04:56:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678016511;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=C+FZcIOnbQr5WIW/EB04MYDw6O1VY/nZHOjssBpOPDs=;
-        b=fQRrahXx3wOyw0cSj7ydWtR9xuIwTUvHGwOEvl8IiSQ1SpilYfnNTZ57lEDbxs4umI
-         B/EmB4XqvMI3Dvi6a/qwNMzSoWeZsSOIlDBJTRr2Fdzp+VIfIq1N+sli1N0IhLPlWS1P
-         m9VatIh5tPWNuHyN3xZEOFLZ+upW7lDWmAEgvMaqZr6/1kb7ZqBxwNyz9MD4zbNnb8RY
-         u9HtcAdSjQBuK9v6LU6F9EdNu49txdV7bzR+QNuQwzjBNc7d5d461ek4a48NPdnyZZ1A
-         9siysn0oEvpP2MJhOlEO7a+6se+MaGG9t9sm18a+/T5dRAAfU/ojtSGhxIQh53Q89ts/
-         pcSQ==
+        d=joelfernandes.org; s=google; t=1678021006;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o2XDFrZbN2R3QrerdWbI2vAM5IjvoYd3LrvKIPWNBMM=;
+        b=DwcsnVM/0wvDSVFvwkJg7MMwygBOl3ma1cPtNzXr1XVib4DICM6ylSyldpxox7oQe3
+         QKajr5oX3v27f7YG4mlZYCSon9P7tfFcgclzhhjbenClPZ3daN7aV68XhGtu1hWazAeA
+         wwSaWoosO4HCblQpg+mfiZ6c21tAiZtOr+jr8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678016511;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C+FZcIOnbQr5WIW/EB04MYDw6O1VY/nZHOjssBpOPDs=;
-        b=vUixL+X4msgOCzk9XFUf2oVIWsGksRzM7V0RuYe5z1nOvoQ1HOfR38iwfvt45alRRO
-         SKXd3QQtDms00kAwhl9TFJnRc9FfdGEm4PAZ9qxxuSVwf/tXtPlHvjQeKvMLYEAyIimD
-         NyOR+WFMYhCDii4S/xn+DcuZfTIuMlo0f1Sgl0CvUTWPM2TygjTrROdKcJJAWUSJUEf2
-         MwqLckZT/RepWjpqFO5bzea3cleKdT6CTXbhm2jE45BN6XLmbe1PbERQLAzvbEckbRcu
-         ILAUb/QKgRb6vncJqlcXqAZ+XXjMoRtjHpw/8Q7ahxHOS2tDHPguyKUgewqNLHPnAKpJ
-         ytkA==
-X-Gm-Message-State: AO0yUKXU3z8rj6+BGsIn0Qd+++sLpwWke2ZrSoKNnBzbtXiBfZaKDKkz
-        S3kMQKb5MyDnJtAJj/k0HCM=
-X-Google-Smtp-Source: AK7set+L74oec0oGRHadWBpcenYVmS0ItPBQjZu0+b7lO7nanEDUzLV6r7WpXtKOUqeQVi5+TKw/2Q==
-X-Received: by 2002:aa7:c2d1:0:b0:4ca:4a5:91bb with SMTP id m17-20020aa7c2d1000000b004ca04a591bbmr7571268edp.13.1678016511224;
-        Sun, 05 Mar 2023 03:41:51 -0800 (PST)
-Received: from pc636 ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id y7-20020a50eb07000000b004bf28bfc9absm3524014edp.11.2023.03.05.03.41.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Mar 2023 03:41:50 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sun, 5 Mar 2023 12:41:48 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        d=1e100.net; s=20210112; t=1678021006;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o2XDFrZbN2R3QrerdWbI2vAM5IjvoYd3LrvKIPWNBMM=;
+        b=IKAcLN8yUYYadRBSiTf8k+/fGfzp+Eawmz63vwyAQWx1Ln2AU9fCi8d+slQgssOBms
+         l5p8VcH24ZELqfr2l2UFXiXH+2gcnNymWZJgrJorUSTa4n72jDPGYVa8sRWLvFFI5/cU
+         soRW1Aylpoz6jBiu702z6Nel6o/6uyfUFUe21aaa+vK4P0+uSCovCL8R7xi0BuFlRJJQ
+         MPRQEvASR5/inBIKMiBLy/PHoMiHuuU7NczdJjLZPD1m1UBIet2pQM990xXEPy9GfGqr
+         Loajsay3X52v4PlOK1c1ay9qcENJJ5Op4m9+pYaSGJxoAv+hPL1ExDaiYWeFkTzNz/jy
+         iLnw==
+X-Gm-Message-State: AO0yUKW2w0QRtkx0tIvgSTD1uOvpAI+K+IM/WkGimJFkRfD5FkbQbC8W
+        tlwahKoSbNDg3tq5lOrEDQxYdw==
+X-Google-Smtp-Source: AK7set96BMq3T6wQESxMr1hZ3PhBGzTnQewXdFI8luRoOSNMaoCJgqBzLjJv6DBKWxzKI70C3m24sw==
+X-Received: by 2002:ac8:7f87:0:b0:3bf:daae:7ee6 with SMTP id z7-20020ac87f87000000b003bfdaae7ee6mr12426886qtj.18.1678021006206;
+        Sun, 05 Mar 2023 04:56:46 -0800 (PST)
+Received: from smtpclient.apple ([2600:1005:b003:394d:acb0:58:f50c:218b])
+        by smtp.gmail.com with ESMTPSA id q25-20020a37f719000000b007343fceee5fsm5486765qkj.8.2023.03.05.04.56.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Mar 2023 04:56:45 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 13/13] rcu/kvfree: Eliminate k[v]free_rcu() single argument macro
+Date:   Sun, 5 Mar 2023 07:56:33 -0500
+Message-Id: <D8B84631-860B-41CF-8311-88E220C7254F@joelfernandes.org>
+References: <ZAR//FKO4syzapk6@pc636>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Jens Axboe <axboe@kernel.dk>,
         Philipp Reisner <philipp.reisner@linbit.com>,
@@ -66,52 +65,70 @@ Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 13/13] rcu/kvfree: Eliminate k[v]free_rcu() single
- argument macro
-Message-ID: <ZAR//FKO4syzapk6@pc636>
-References: <CAEXW_YRhHaVuq+5f+VgCZM=SF+9xO+QXaxe0yE7oA9iCXK-XPg@mail.gmail.com>
- <A3933CE1-1C8A-4E9B-9E10-828CB2CE34AA@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <A3933CE1-1C8A-4E9B-9E10-828CB2CE34AA@joelfernandes.org>
+In-Reply-To: <ZAR//FKO4syzapk6@pc636>
+To:     Uladzislau Rezki <urezki@gmail.com>
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> > On Mar 5, 2023, at 5:29 AM, Joel Fernandes <joel@joelfernandes.org> wrote:
-> > 
-> > ﻿Hi, All,
-> > 
-> >> On Wed, Feb 1, 2023 at 10:11 AM Uladzislau Rezki (Sony)
-> >> <urezki@gmail.com> wrote:
-> >> 
-> >> For a single argument invocations a new kfree_rcu_mightsleep()
-> >> and kvfree_rcu_mightsleep() macroses are used. This is done in
-> >> order to prevent users from calling a single argument from
-> >> atomic contexts as "_mightsleep" prefix signals that it can
-> >> schedule().
-> >> 
-> > 
-> > Since this commit in -dev branch [1] suggests more users still need
-> > conversion, let us drop this single patch for 6.4 and move the rest of
-> > the series forward? Let me know if you disagree.
-> > https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=9bf5e3a2626ed474d080f695007541b6ecd6e60b
-> > 
-> > All -- please supply Ack/Review tags for patches 1-12.
-> 
-> Or put another way, what is the transition plan for these remaining users?
-> 
-> I am getting on a plane right now but I can research which users are remaining later.
-> 
-I am not sure. I think we can cover it on the meeting. My feeling is
-that, we introduced "_mightsleep" macros first and after that try to
-convert users.
 
-@Paul what is your view?
 
-Thanks!
+> On Mar 5, 2023, at 6:41 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
+>=20
+> =EF=BB=BF
+>>=20
+>>>> On Mar 5, 2023, at 5:29 AM, Joel Fernandes <joel@joelfernandes.org> wro=
+te:
+>>>=20
+>>> =EF=BB=BFHi, All,
+>>>=20
+>>>> On Wed, Feb 1, 2023 at 10:11=E2=80=AFAM Uladzislau Rezki (Sony)
+>>>> <urezki@gmail.com> wrote:
+>>>>=20
+>>>> For a single argument invocations a new kfree_rcu_mightsleep()
+>>>> and kvfree_rcu_mightsleep() macroses are used. This is done in
+>>>> order to prevent users from calling a single argument from
+>>>> atomic contexts as "_mightsleep" prefix signals that it can
+>>>> schedule().
+>>>>=20
+>>>=20
+>>> Since this commit in -dev branch [1] suggests more users still need
+>>> conversion, let us drop this single patch for 6.4 and move the rest of
+>>> the series forward? Let me know if you disagree.
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/co=
+mmit/?h=3Ddev&id=3D9bf5e3a2626ed474d080f695007541b6ecd6e60b
+>>>=20
+>>> All -- please supply Ack/Review tags for patches 1-12.
+>>=20
+>> Or put another way, what is the transition plan for these remaining users=
+?
+>>=20
+>> I am getting on a plane right now but I can research which users are rema=
+ining later.
+>>=20
+> I am not sure. I think we can cover it on the meeting.
 
---
-Uladzislau Rezki
+Cool, thanks.
+
+> My feeling is
+> that, we introduced "_mightsleep" macros first and after that try to
+> convert users.
+
+One stopgap could be to add a checkpatch error if anyone tries to use old AP=
+I,
+and then in the meanwhile convert all users.
+Though, that requires people listening to checkpatch complaints.
+
+Thanks,
+
+ - Joel
+
+
+>=20
+> @Paul what is your view?
+>=20
+> Thanks!
+>=20
+> --
+> Uladzislau Rezki
