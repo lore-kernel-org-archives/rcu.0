@@ -2,40 +2,52 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6AE7C678D4
-	for <rcu@archiver.kernel.org>; Mon,  6 Mar 2023 15:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52678C6FA99
+	for <rcu@archiver.kernel.org>; Mon,  6 Mar 2023 15:12:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbjCFPBR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Mar 2023 10:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
+        id S229819AbjCFPMM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Mar 2023 10:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbjCFPBQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Mar 2023 10:01:16 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6692FCCC;
-        Mon,  6 Mar 2023 07:01:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D020260FC6;
-        Mon,  6 Mar 2023 15:01:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31D21C4339B;
-        Mon,  6 Mar 2023 15:01:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678114869;
-        bh=QnaL793fLV7vfvFBBVpMTU+ONTzfUG7XKVZMMdedEBQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BP9XLDsWka8dwZirqHYx9N3GMqiVry9LtAiJVaevzTOf1NX4sD4WZRaTFZuqRF8ti
-         b7irTN5OAy8uxAlMIfJilu8u3qfJyISGrn1NqM/tYVEqyiy5WSaDWVFNScwcRTmXx6
-         a5UGTn2G791Oids8vxVawWAw+lvjO8FNe2MD/bTG0iWr9vYNsyweH50BFLiDS1a1du
-         ywN2TWJJhEySSo/nTpig10jVhWDBCDGdek3+t32kSCce9Uh/SMIPp3AUGF6KNKZVQ4
-         fAd5lNC17l0GTlIXn/UuKxL+15bVK4jHREoreClsKJt7yFlnVpeI4XWdPv+47UtB10
-         gatxxKtMZHiLg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B04145C00F1; Mon,  6 Mar 2023 07:01:08 -0800 (PST)
-Date:   Mon, 6 Mar 2023 07:01:08 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        with ESMTP id S229593AbjCFPML (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Mar 2023 10:12:11 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5E0222DF
+        for <rcu@vger.kernel.org>; Mon,  6 Mar 2023 07:12:05 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id c18so10824621qte.5
+        for <rcu@vger.kernel.org>; Mon, 06 Mar 2023 07:12:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1678115525;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qpjRwMBpeQIyYBuVAs6Veb66byuhymu6yZKVw/mFN2g=;
+        b=fSJNDRDk4A+hkSZsMhrKhJ0kmPEjlw5YnDGm8tlvtk1jagwZBEC1+kjnf5HsgmkarE
+         X4cJFbHzVv5rm97FTIPSV50F11uDFNJorIDPhEBReSxOEiDWeFLJCvBtrVCHoM9qhEsm
+         M/if6GQF1kTG3YwEzWXar3xr/ktiKsNy+ohlY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678115525;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qpjRwMBpeQIyYBuVAs6Veb66byuhymu6yZKVw/mFN2g=;
+        b=Ai+22DyyorPrsu4EnvtfOuzBLQzIzyxN5Ailvdp5xxH/R+OHTMPETUVNsn4GPuJi3Y
+         ZaES/O1oMBYVrj3mkDEp358mU/L5z3/sRXHAjSYc3yXW2B1JBAcQJ5fUwriV88iBnd6Q
+         5dKtemfnKGmXo+IhTeDEewdg6Wiv0FO2cO9Jay3X7/e1Vc06stXrMfceyaRVhJXHWRKO
+         L6i6/gKRHfcwJN2gZPLM3+7f+3ubUvzBGS1ixBntSq463QinhA6KlafD/jHBDpJj9lSA
+         nxqWp5RdhXDNnsTnIaORhwAohGoJmfYSJDRg5ARctVVysMXM7OeqzPLfg8bUL0cvo5fj
+         ZZig==
+X-Gm-Message-State: AO0yUKUGQXsj8jXS2DNBEl3gH18xtUZX3h0Uoqb5Eyxl182czLKh+Spn
+        5WvZxdJzrX+U9VASUhOyoHXCxA==
+X-Google-Smtp-Source: AK7set97E9vII1jsCN7q8RvIvSNf+febcQOfp6CdZM+ka/pDRW6TLdav8X+QbuxQnGEE07P58jWSjg==
+X-Received: by 2002:ac8:5cc5:0:b0:3bf:c849:4971 with SMTP id s5-20020ac85cc5000000b003bfc8494971mr16492535qta.62.1678115524741;
+        Mon, 06 Mar 2023 07:12:04 -0800 (PST)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id i10-20020ac871ca000000b003bfb950f670sm7683092qtp.41.2023.03.06.07.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Mar 2023 07:12:04 -0800 (PST)
+Date:   Mon, 6 Mar 2023 15:12:03 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
@@ -49,141 +61,68 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
 Subject: Re: [PATCH 13/13] rcu/kvfree: Eliminate k[v]free_rcu() single
  argument macro
-Message-ID: <20230306150108.GT1301832@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+Message-ID: <20230306151203.GC3280216@google.com>
 References: <ZAR//FKO4syzapk6@pc636>
  <D8B84631-860B-41CF-8311-88E220C7254F@joelfernandes.org>
  <20230305180524.GL1301832@paulmck-ThinkPad-P17-Gen-1>
  <20230306144948.GA3280216@google.com>
+ <20230306150108.GT1301832@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230306144948.GA3280216@google.com>
+In-Reply-To: <20230306150108.GT1301832@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 06, 2023 at 02:49:48PM +0000, Joel Fernandes wrote:
-> On Sun, Mar 05, 2023 at 10:05:24AM -0800, Paul E. McKenney wrote:
-> > On Sun, Mar 05, 2023 at 07:56:33AM -0500, Joel Fernandes wrote:
+On Mon, Mar 06, 2023 at 07:01:08AM -0800, Paul E. McKenney wrote:
+[..] 
+> > > 7.	We then evaluate whether further cleanups are needed.
 > > > 
+> > > > > My feeling is
+> > > > > that, we introduced "_mightsleep" macros first and after that try to
+> > > > > convert users.
 > > > 
-> > > > On Mar 5, 2023, at 6:41 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
-> > > > 
-> > > > ﻿
-> > > >> 
-> > > >>>> On Mar 5, 2023, at 5:29 AM, Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > >>> 
-> > > >>> ﻿Hi, All,
-> > > >>> 
-> > > >>>> On Wed, Feb 1, 2023 at 10:11 AM Uladzislau Rezki (Sony)
-> > > >>>> <urezki@gmail.com> wrote:
-> > > >>>> 
-> > > >>>> For a single argument invocations a new kfree_rcu_mightsleep()
-> > > >>>> and kvfree_rcu_mightsleep() macroses are used. This is done in
-> > > >>>> order to prevent users from calling a single argument from
-> > > >>>> atomic contexts as "_mightsleep" prefix signals that it can
-> > > >>>> schedule().
-> > > >>>> 
-> > > >>> 
-> > > >>> Since this commit in -dev branch [1] suggests more users still need
-> > > >>> conversion, let us drop this single patch for 6.4 and move the rest of
-> > > >>> the series forward? Let me know if you disagree.
-> > > >>> https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=9bf5e3a2626ed474d080f695007541b6ecd6e60b
-> > > >>> 
-> > > >>> All -- please supply Ack/Review tags for patches 1-12.
-> > > >> 
-> > > >> Or put another way, what is the transition plan for these remaining users?
-> > > >> 
-> > > >> I am getting on a plane right now but I can research which users are remaining later.
-> > > >> 
-> > > > I am not sure. I think we can cover it on the meeting.
+> > > > One stopgap could be to add a checkpatch error if anyone tries to use old API,
+> > > > and then in the meanwhile convert all users.
+> > > > Though, that requires people listening to checkpatch complaints.
 > > > 
-> > > Cool, thanks.
+> > > Every person who listens is that much less hassle.  It doesn't have to
+> > > be perfect.  ;-)
 > > 
-> > My current plan is as follows:
+> > The below checkpatch change can catch at least simple single-arg uses (i.e.
+> > not having compound expressions inside of k[v]free_rcu() args). I will submit
+> > a proper patch to it which we can include in this set.
 > > 
-> > 1.	Addition of kvfree_rcu_mightsleep() went into v6.3.
+> > Thoughts?
+> > ---
+> >  scripts/checkpatch.pl | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
 > > 
-> > 2.	After creating branches, I send out the series, including 12/12.
-> > 	The -rcu tree's "dev" branch continues to have a revert to avoid
-> > 	breaking -next until we achieve clean -next and clean "dev"
-> > 	branch.
-> > 
-> > 3.	Any conversion patches that get maintainer acks go into v6.4.
-> > 	Along with a checkpatch error, as Joel notes below.
-> > 
-> > 4.	There are periodic checks for new code using the single-argument
-> > 	forms of kfree_rcu() and kvfree_rcu().	Patches are produced
-> > 	for them, or responses to the patches introducing them, as
-> > 	appropriate.  A coccinelle script might be helpful, perhaps
-> > 	even as part of kernel test robot or similar.
-> > 
-> > 5.	The -rcu tree's "dev" branch will revert to unclean from time
-> > 	to time as maintainers choose to take conversion patches into
-> > 	their own trees.
-> > 
-> > 6.	Once mainline is clean, we push 12/12 into the next merge
-> > 	window.
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > index 78cc595b98ce..fc73786064b3 100755
+> > --- a/scripts/checkpatch.pl
+> > +++ b/scripts/checkpatch.pl
+> > @@ -6362,6 +6362,15 @@ sub process {
+> >  			}
+> >  		}
+> >  
+> > +# check for soon-to-be-deprecated single-argument k[v]free_rcu() API
+> > +		if ($line =~ /\bk[v]?free_rcu\s*\([^(]+\)/) {
+> > +			if ($line =~ /\bk[v]?free_rcu\s*\([^,]+\)/) {
+> > +				ERROR("DEPRECATED_API",
+> > +				      "Single-argument k[v]free_rcu() API is deprecated, please pass an rcu_head object." . $herecurr);
 > 
-> Since in theory, mainline could also be after 6.4-rc1, I am assuming next merge
-> window could also mean 6.5 right? But yes, agreed.
-
-I would rather not waste Linus's time with a separate pull request for
-this.  It is after all not a regression.  ;-)
-
-> > 7.	We then evaluate whether further cleanups are needed.
-> > 
-> > > > My feeling is
-> > > > that, we introduced "_mightsleep" macros first and after that try to
-> > > > convert users.
-> > 
-> > > One stopgap could be to add a checkpatch error if anyone tries to use old API,
-> > > and then in the meanwhile convert all users.
-> > > Though, that requires people listening to checkpatch complaints.
-> > 
-> > Every person who listens is that much less hassle.  It doesn't have to
-> > be perfect.  ;-)
+> Nice!
 > 
-> The below checkpatch change can catch at least simple single-arg uses (i.e.
-> not having compound expressions inside of k[v]free_rcu() args). I will submit
-> a proper patch to it which we can include in this set.
-> 
-> Thoughts?
-> ---
->  scripts/checkpatch.pl | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 78cc595b98ce..fc73786064b3 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -6362,6 +6362,15 @@ sub process {
->  			}
->  		}
->  
-> +# check for soon-to-be-deprecated single-argument k[v]free_rcu() API
-> +		if ($line =~ /\bk[v]?free_rcu\s*\([^(]+\)/) {
-> +			if ($line =~ /\bk[v]?free_rcu\s*\([^,]+\)/) {
-> +				ERROR("DEPRECATED_API",
-> +				      "Single-argument k[v]free_rcu() API is deprecated, please pass an rcu_head object." . $herecurr);
+> But could you please also tell them what to use instead?  Sure, they
+> could look it up, but if it tells them directly, they are less likely
+> to ignore it.
 
-Nice!
+Sounds good, I will modify the warning to include the API to call and send
+out a patch soon.
 
-But could you please also tell them what to use instead?  Sure, they
-could look it up, but if it tells them directly, they are less likely
-to ignore it.
+thanks,
 
-							Thanx, Paul
+ - Joel
 
-> +			}
-> +		}
-> +
-> +
->  # check for unnecessary "Out of Memory" messages
->  		if ($line =~ /^\+.*\b$logFunctions\s*\(/ &&
->  		    $prevline =~ /^[ \+]\s*if\s*\(\s*(\!\s*|NULL\s*==\s*)?($Lval)(\s*==\s*NULL\s*)?\s*\)/ &&
-> -- 
-> 2.40.0.rc0.216.gc4246ad0f0-goog
-> 
