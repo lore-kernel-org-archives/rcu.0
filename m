@@ -2,210 +2,197 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9919FC678D4
-	for <rcu@archiver.kernel.org>; Tue,  7 Mar 2023 17:37:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A23B0C678D5
+	for <rcu@archiver.kernel.org>; Tue,  7 Mar 2023 17:44:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbjCGRhn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Mar 2023 12:37:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S231975AbjCGRo0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 7 Mar 2023 12:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjCGRhS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Mar 2023 12:37:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EC220044;
-        Tue,  7 Mar 2023 09:33:16 -0800 (PST)
+        with ESMTP id S231964AbjCGRoI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Mar 2023 12:44:08 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545659DE0D;
+        Tue,  7 Mar 2023 09:39:55 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5797AB817AE;
-        Tue,  7 Mar 2023 17:33:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F51EC4339C;
-        Tue,  7 Mar 2023 17:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678210394;
-        bh=dbWa0dh6TW5y30BdIUcuVUIG35+wcQGVwS2WNIVbWMk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uMVUe1mxfahIDhWS/tx8YAJMvwMstDT/nqbJHVPFWRT+AUoVq04VzuzIhPN7WnBNc
-         s7D2xfiNmwc/ErFx4rAxn1DOdMjFA1NVre71Nc0+/HtnA62NmN2RPYh+83QDBWbMeU
-         yZR0il8wfoqwWfkSXaXvP+vCSdd/Tk6AKYXyCCAB1wMMrcknniS4sfTarht1QJM/3R
-         90c3Nt9kiJbYIDDSQQ+csETRn13u1KHOT3mR8TuvzJaNpPE9oR9nZxrS/8BFCZspts
-         rNTx22IQyE9kTkl56t7xOCLe/SEkDufTx7l/c+dyLSRgP1sAkZC6MhmvBjNSRXNMBX
-         bdTirIWj24QXg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A2C085C01E4; Tue,  7 Mar 2023 09:33:13 -0800 (PST)
-Date:   Tue, 7 Mar 2023 09:33:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B340B6151F;
+        Tue,  7 Mar 2023 17:39:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2411C433D2;
+        Tue,  7 Mar 2023 17:39:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1678210746;
+        bh=hWe2l/o1GznVXKeO/+ViAHw8Q05kSTYwyh5HSlu8biI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hFGKSvOFb06R3RyHo2KD2p3HXT+lwLixG95cNWaRsIkCRoemr+fwAMkv5YonS4kan
+         uM9GM9l/Za542jXUzCZZk56j4o4gio7//lpctE67TjmrcvI/oPoRmt1/qk0kBp6REb
+         xrpTnAZBe4j6QwZmp6R0ZQ5VKN8c9vjc0NmZA4vM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org, rcu@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Pingfan Liu <kernelfans@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Message-ID: <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20230303213851.2090365-1-joel@joelfernandes.org>
- <ZAc1wsvd4trjP/xi@lothringen>
- <ZAc+vVZUhXdhpSki@pc636>
- <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.2 0641/1001] srcu: Delegate work to the boot cpu if using SRCU_SIZE_SMALL
+Date:   Tue,  7 Mar 2023 17:56:53 +0100
+Message-Id: <20230307170049.414413899@linuxfoundation.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230307170022.094103862@linuxfoundation.org>
+References: <20230307170022.094103862@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 07, 2023 at 08:48:52AM -0500, Joel Fernandes wrote:
-> On Tue, Mar 7, 2023 at 8:40 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> >
-> > On Tue, Mar 07, 2023 at 02:01:54PM +0100, Frederic Weisbecker wrote:
-> > > On Fri, Mar 03, 2023 at 09:38:51PM +0000, Joel Fernandes (Google) wrote:
-> > > > On many systems, a great deal of boot (in userspace) happens after the
-> > > > kernel thinks the boot has completed. It is difficult to determine if
-> > > > the system has really booted from the kernel side. Some features like
-> > > > lazy-RCU can risk slowing down boot time if, say, a callback has been
-> > > > added that the boot synchronously depends on. Further expedited callbacks
-> > > > can get unexpedited way earlier than it should be, thus slowing down
-> > > > boot (as shown in the data below).
-> > > >
-> > > > For these reasons, this commit adds a config option
-> > > > 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter rcupdate.boot_end_delay.
-> > > > Userspace can also make RCU's view of the system as booted, by writing the
-> > > > time in milliseconds to: /sys/module/rcupdate/parameters/rcu_boot_end_delay
-> > > > Or even just writing a value of 0 to this sysfs node.
-> > > > However, under no circumstance will the boot be allowed to end earlier
-> > > > than just before init is launched.
-> > > >
-> > > > The default value of CONFIG_RCU_BOOT_END_DELAY is chosen as 15s. This
-> > > > suites ChromeOS and also a PREEMPT_RT system below very well, which need
-> > > > no config or parameter changes, and just a simple application of this patch. A
-> > > > system designer can also choose a specific value here to keep RCU from marking
-> > > > boot completion.  As noted earlier, RCU's perspective of the system as booted
-> > > > will not be marker until at least rcu_boot_end_delay milliseconds have passed
-> > > > or an update is made via writing a small value (or 0) in milliseconds to:
-> > > > /sys/module/rcupdate/parameters/rcu_boot_end_delay.
-> > > >
-> > > > One side-effect of this patch is, there is a risk that a real-time workload
-> > > > launched just after the kernel boots will suffer interruptions due to expedited
-> > > > RCU, which previous ended just before init was launched. However, to mitigate
-> > > > such an issue (however unlikely), the user should either tune
-> > > > CONFIG_RCU_BOOT_END_DELAY to a smaller value than 15 seconds or write a value
-> > > > of 0 to /sys/module/rcupdate/parameters/rcu_boot_end_delay, once userspace
-> > > > boots, and before launching the real-time workload.
-> > > >
-> > > > Qiuxu also noted impressive boot-time improvements with earlier version
-> > > > of patch. An excerpt from the data he shared:
-> > > >
-> > > > 1) Testing environment:
-> > > >     OS            : CentOS Stream 8 (non-RT OS)
-> > > >     Kernel     : v6.2
-> > > >     Machine : Intel Cascade Lake server (2 sockets, each with 44 logical threads)
-> > > >     Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=2,sockets=2, …
-> > > >
-> > > > 2) OS boot time definition:
-> > > >     The time from the start of the kernel boot to the shell command line
-> > > >     prompt is shown from the console. [ Different people may have
-> > > >     different OS boot time definitions. ]
-> > > >
-> > > > 3) Measurement method (very rough method):
-> > > >     A timer in the kernel periodically prints the boot time every 100ms.
-> > > >     As soon as the shell command line prompt is shown from the console,
-> > > >     we record the boot time printed by the timer, then the printed boot
-> > > >     time is the OS boot time.
-> > > >
-> > > > 4) Measured OS boot time (in seconds)
-> > > >    a) Measured 10 times w/o this patch:
-> > > >         8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
-> > > >         The average OS boot time was: ~8.7s
-> > > >
-> > > >    b) Measure 10 times w/ this patch:
-> > > >         8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
-> > > >         The average OS boot time was: ~8.3s.
-> > > >
-> > > > Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >
-> > > I still don't really like that:
-> > >
-> > > 1) It feels like we are curing a symptom for which we don't know the cause.
-> > >    Which RCU write side caller is the source of this slow boot? Some tracepoints
-> > >    reporting the wait duration within synchronize_rcu() calls between the end of
-> > >    the kernel boot and the end of userspace boot may be helpful.
-> > >
-> > > 2) The kernel boot was already covered before this patch so this is about
-> > >    userspace code calling into the kernel. Is that piece of code also called
-> > >    after the boot? In that case are we missing a conversion from
-> > >    synchronize_rcu() to synchronize_rcu_expedited() somewhere? Because then
-> > >    the problem is more general than just boot.
-> > >
-> > > This needs to be analyzed first and if it happens that the issue really
-> > > needs to be fixed with telling the kernel that userspace has completed
-> > > booting, eg: because the problem is not in a few callsites that need conversion
-> > > to expedited but instead in the accumulation of lots of calls that should stay
-> > > as is:
-> > >
-> > > 3) This arbitrary timeout looks dangerous to me as latency sensitive code
-> > >    may run right after the boot. Either you choose a value that is too low
-> > >    and you miss the optimization or the value is too high and you may break
-> > >    things.
-> > >
-> > > 4) This should be fixed the way you did:
-> > >    a) a kernel parameter like you did
-> > >    b) The init process (systemd?) tells the kernel when it judges that userspace
-> > >       has completed booting.
-> > >    c) Make these interfaces more generic, maybe that information will be useful
-> > >       outside RCU. For example the kernel parameter should be
-> > >       "user_booted_reported" and the sysfs (should be sysctl?):
-> > >       kernel.user_booted = 1
-> > >    d) But yuck, this means we must know if the init process supports that...
-> > >
-> > > For these reasons, let's make sure we know exactly what is going on first.
-> > >
-> > > Thanks.
-> > Just add some notes and thoughts. There is a rcupdate.rcu_expedited=1
-> > parameter that can be used during the boot. For example on our devices
-> > to speedup a boot we boot the kernel with rcu_expedited:
-> >
-> > XQ-DQ54:/ # cat /proc/cmdline
-> > stack_depot_disable=on kasan.stacktrace=off kvm-arm.mode=protected cgroup_disable=pressure console=ttyMSM0,115200n8 loglevel=6 kpti=0 log_buf_len=256K kernel.panic_on_rcu_stall=1 service_locator.enable=1 msm_rtb.filter=0x237 rcupdate.rcu_expedited=1 rcu_nocbs=0-7 ftrace_dump_on_oops swiotlb=noforce loop.max_part=7 fw_devlink.strict=1 allow_mismatched_32bit_el0 cpufreq.default_governor=performance printk.console_no_auto_verbose=1 kasan=off sysctl.kernel.sched_pelt_multiplier=4 can.stats_timer=0 pcie_ports=compat irqaffinity=0-2 disable_dma32=on no-steal-acc cgroup.memory=nokmem,nosocket video=vfb:640x400,bpp=32,memsize=3072000 page_owner=on stack_depot_disable=off printk.console_no_auto_verbose=0 nosoftlockup bootconfig buildvariant=userdebug  msm_drm.dsi_display0=somc,1_panel: rootwait ro init=/init  qcom_geni_serial.con_enabled=0 oembootloader.startup=0x00000001 oembootloader.warmboot=0x00000000 oembootloader.securityflags=0x00000001
-> > XQ-DQ54:/ #
-> >
-> > then a user space can decides if it is needed or not:
-> >
-> > <snip>
-> > rcu_expedited  rcu_normal
-> > XQ-DQ54:/ # ls -al /sys/kernel/rcu_*
-> > -rw-r--r-- 1 root root 4096 2023-02-16 09:27 /sys/kernel/rcu_expedited
-> > -rw-r--r-- 1 root root 4096 2023-02-16 09:27 /sys/kernel/rcu_normal
-> > XQ-DQ54:/ #
-> > <snip>
-> >
-> > for lazy we can add "rcu_cb_lazy" parameter and boot the kernel with
-> > true or false. So we can follow and be aligned with rcu_expedited and
-> > rcu_normal parameters.
-> 
-> Speaking of aligning, there is also the automated
-> rcu_normal_after_boot boot option correct? I prefer the automated
-> option of doing this. So the approach here is not really unprecedented
-> and is much more robust than relying on userspace too much (I am ok
-> with adding your suggestion *on top* of the automated toggle, but I
-> probably would not have ChromeOS use it if the automated way exists).
-> Or did I miss something?
+From: Pingfan Liu <kernelfans@gmail.com>
 
-See this commit:
+[ Upstream commit 7f24626d6dd844bfc6d1f492d214d29c86d02550 ]
 
-3705b88db0d7cc ("rcu: Add a module parameter to force use of expedited RCU primitives")
+Commit 994f706872e6 ("srcu: Make Tree SRCU able to operate without
+snp_node array") assumes that cpu 0 is always online.  However, there
+really are situations when some other CPU is the boot CPU, for example,
+when booting a kdump kernel with the maxcpus=1 boot parameter.
 
-Antti provided this commit precisely in order to allow Android devices
-to expedite the boot process and to shut off the expediting at a time of
-Android userspace's choosing.  So Android has been making this work for
-about ten years, which strikes me as an adequate proof of concept.  ;-)
+On PowerPC, the kdump kernel can hang as follows:
+...
+[    1.740036] systemd[1]: Hostname set to <xyz.com>
+[  243.686240] INFO: task systemd:1 blocked for more than 122 seconds.
+[  243.686264]       Not tainted 6.1.0-rc1 #1
+[  243.686272] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  243.686281] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
+[  243.686296] Call Trace:
+[  243.686301] [c000000016657640] [c000000016657670] 0xc000000016657670 (unreliable)
+[  243.686317] [c000000016657830] [c00000001001dec0] __switch_to+0x130/0x220
+[  243.686333] [c000000016657890] [c000000010f607b8] __schedule+0x1f8/0x580
+[  243.686347] [c000000016657940] [c000000010f60bb4] schedule+0x74/0x140
+[  243.686361] [c0000000166579b0] [c000000010f699b8] schedule_timeout+0x168/0x1c0
+[  243.686374] [c000000016657a80] [c000000010f61de8] __wait_for_common+0x148/0x360
+[  243.686387] [c000000016657b20] [c000000010176bb0] __flush_work.isra.0+0x1c0/0x3d0
+[  243.686401] [c000000016657bb0] [c0000000105f2768] fsnotify_wait_marks_destroyed+0x28/0x40
+[  243.686415] [c000000016657bd0] [c0000000105f21b8] fsnotify_destroy_group+0x68/0x160
+[  243.686428] [c000000016657c40] [c0000000105f6500] inotify_release+0x30/0xa0
+[  243.686440] [c000000016657cb0] [c0000000105751a8] __fput+0xc8/0x350
+[  243.686452] [c000000016657d00] [c00000001017d524] task_work_run+0xe4/0x170
+[  243.686464] [c000000016657d50] [c000000010020e94] do_notify_resume+0x134/0x140
+[  243.686478] [c000000016657d80] [c00000001002eb18] interrupt_exit_user_prepare_main+0x198/0x270
+[  243.686493] [c000000016657de0] [c00000001002ec60] syscall_exit_prepare+0x70/0x180
+[  243.686505] [c000000016657e10] [c00000001000bf7c] system_call_vectored_common+0xfc/0x280
+[  243.686520] --- interrupt: 3000 at 0x7fffa47d5ba4
+[  243.686528] NIP:  00007fffa47d5ba4 LR: 0000000000000000 CTR: 0000000000000000
+[  243.686538] REGS: c000000016657e80 TRAP: 3000   Not tainted  (6.1.0-rc1)
+[  243.686548] MSR:  800000000000d033 <SF,EE,PR,ME,IR,DR,RI,LE>  CR: 42044440  XER: 00000000
+[  243.686572] IRQMASK: 0
+[  243.686572] GPR00: 0000000000000006 00007ffffa606710 00007fffa48e7200 0000000000000000
+[  243.686572] GPR04: 0000000000000002 000000000000000a 0000000000000000 0000000000000001
+[  243.686572] GPR08: 000001000c172dd0 0000000000000000 0000000000000000 0000000000000000
+[  243.686572] GPR12: 0000000000000000 00007fffa4ff4bc0 0000000000000000 0000000000000000
+[  243.686572] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+[  243.686572] GPR20: 0000000132dfdc50 000000000000000e 0000000000189375 0000000000000000
+[  243.686572] GPR24: 00007ffffa606ae0 0000000000000005 000001000c185490 000001000c172570
+[  243.686572] GPR28: 000001000c172990 000001000c184850 000001000c172e00 00007fffa4fedd98
+[  243.686683] NIP [00007fffa47d5ba4] 0x7fffa47d5ba4
+[  243.686691] LR [0000000000000000] 0x0
+[  243.686698] --- interrupt: 3000
+[  243.686708] INFO: task kworker/u16:1:24 blocked for more than 122 seconds.
+[  243.686717]       Not tainted 6.1.0-rc1 #1
+[  243.686724] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  243.686733] task:kworker/u16:1   state:D stack:0     pid:24    ppid:2      flags:0x00000800
+[  243.686747] Workqueue: events_unbound fsnotify_mark_destroy_workfn
+[  243.686758] Call Trace:
+[  243.686762] [c0000000166736e0] [c00000004fd91000] 0xc00000004fd91000 (unreliable)
+[  243.686775] [c0000000166738d0] [c00000001001dec0] __switch_to+0x130/0x220
+[  243.686788] [c000000016673930] [c000000010f607b8] __schedule+0x1f8/0x580
+[  243.686801] [c0000000166739e0] [c000000010f60bb4] schedule+0x74/0x140
+[  243.686814] [c000000016673a50] [c000000010f699b8] schedule_timeout+0x168/0x1c0
+[  243.686827] [c000000016673b20] [c000000010f61de8] __wait_for_common+0x148/0x360
+[  243.686840] [c000000016673bc0] [c000000010210840] __synchronize_srcu.part.0+0xa0/0xe0
+[  243.686855] [c000000016673c30] [c0000000105f2c64] fsnotify_mark_destroy_workfn+0xc4/0x1a0
+[  243.686868] [c000000016673ca0] [c000000010174ea8] process_one_work+0x2a8/0x570
+[  243.686882] [c000000016673d40] [c000000010175208] worker_thread+0x98/0x5e0
+[  243.686895] [c000000016673dc0] [c0000000101828d4] kthread+0x124/0x130
+[  243.686908] [c000000016673e10] [c00000001000cd40] ret_from_kernel_thread+0x5c/0x64
+[  366.566274] INFO: task systemd:1 blocked for more than 245 seconds.
+[  366.566298]       Not tainted 6.1.0-rc1 #1
+[  366.566305] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  366.566314] task:systemd         state:D stack:0     pid:1     ppid:0      flags:0x00042000
+[  366.566329] Call Trace:
+...
 
-Of course, Android has a rather tightly controlled userspace, as do
-real-time embedded systems (I sure hope, anyway!).  Which is why your
-timeout-based fallback/backup makes a lot of sense.  And why someone might
-want an aggressive indication when that timeout-based backup is needed.
+The above splat occurs because PowerPC really does use maxcpus=1
+instead of nr_cpus=1 in the kernel command line.  Consequently, the
+(quite possibly non-zero) kdump CPU is the only online CPU in the kdump
+kernel.  SRCU unconditionally queues a sdp->work on cpu 0, for which no
+worker thread has been created, so sdp->work will be never executed and
+__synchronize_srcu() will never be completed.
 
-							Thanx, Paul
+This commit therefore replaces CPU ID 0 with get_boot_cpu_id() in key
+places in Tree SRCU.  Since the CPU indicated by get_boot_cpu_id()
+is guaranteed to be online, this avoids the above splat.
+
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: rcu@vger.kernel.org
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/rcu/srcutree.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index ca4b5dcec675b..16953784a0bdf 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -726,7 +726,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+ 	int state;
+ 
+ 	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+-		sdp = per_cpu_ptr(ssp->sda, 0);
++		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
+ 	else
+ 		sdp = this_cpu_ptr(ssp->sda);
+ 	lockdep_assert_held(&ACCESS_PRIVATE(ssp, lock));
+@@ -837,7 +837,8 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+ 	/* Initiate callback invocation as needed. */
+ 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
+ 	if (ss_state < SRCU_SIZE_WAIT_BARRIER) {
+-		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, 0), cbdelay);
++		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, get_boot_cpu_id()),
++					cbdelay);
+ 	} else {
+ 		idx = rcu_seq_ctr(gpseq) % ARRAY_SIZE(snp->srcu_have_cbs);
+ 		srcu_for_each_node_breadth_first(ssp, snp) {
+@@ -1161,7 +1162,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+ 	idx = __srcu_read_lock_nmisafe(ssp);
+ 	ss_state = smp_load_acquire(&ssp->srcu_size_state);
+ 	if (ss_state < SRCU_SIZE_WAIT_CALL)
+-		sdp = per_cpu_ptr(ssp->sda, 0);
++		sdp = per_cpu_ptr(ssp->sda, get_boot_cpu_id());
+ 	else
+ 		sdp = raw_cpu_ptr(ssp->sda);
+ 	spin_lock_irqsave_sdp_contention(sdp, &flags);
+@@ -1497,7 +1498,7 @@ void srcu_barrier(struct srcu_struct *ssp)
+ 
+ 	idx = __srcu_read_lock_nmisafe(ssp);
+ 	if (smp_load_acquire(&ssp->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
+-		srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, 0));
++		srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda,	get_boot_cpu_id()));
+ 	else
+ 		for_each_possible_cpu(cpu)
+ 			srcu_barrier_one_cpu(ssp, per_cpu_ptr(ssp->sda, cpu));
+-- 
+2.39.2
+
+
+
