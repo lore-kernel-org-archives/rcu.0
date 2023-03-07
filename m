@@ -2,59 +2,27 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED64DC678DB
-	for <rcu@archiver.kernel.org>; Tue,  7 Mar 2023 05:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7EE8C678D5
+	for <rcu@archiver.kernel.org>; Tue,  7 Mar 2023 05:22:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjCGFLj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Mar 2023 00:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S229715AbjCGFWo convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Tue, 7 Mar 2023 00:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbjCGFLh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Mar 2023 00:11:37 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2A855531
-        for <rcu@vger.kernel.org>; Mon,  6 Mar 2023 21:11:34 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id bi9so15648432lfb.2
-        for <rcu@vger.kernel.org>; Mon, 06 Mar 2023 21:11:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678165892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ciKmOSJZqDuKZvgr9ceYGQTfxQjjQPGSAx7cECZjTfE=;
-        b=DV80ICr6A37Pmft3psmmxyD9upkJ+xXbbgIqAO6JtifUoTYpYno5aPf4fx4VuYH60i
-         LKIdBfWdgjFKpoYkdBjzeUvw0Sy9929c51Yh/c5+Cv+eBWAiP1WaK+odpj6dlRU/hS02
-         NVi96EG9WbtDg/+CS6DIZnfkqTrGQMagWlLWs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678165892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ciKmOSJZqDuKZvgr9ceYGQTfxQjjQPGSAx7cECZjTfE=;
-        b=Y30V8ssCy0fc5gZ3F9rKqLNtCBdt2OweCNalKY+EI6SMcdh8EF8QRVQLIivC8KLdAY
-         Bw19Mq6epIMFDZUMsJCBq1gi5qvY7AaZOddoidfwD6fprLkJpVflyZDRy0rhH1AymtfQ
-         7deMEGSQDYuvkXagOruUbg4fJwCXNFhc+n4yuQBuU7oo9Azl9hOntprv/xjZMRD4ku5n
-         fFo+ihdMmMG6f+ZvkhI9sGhtgjGhAGz67x1UXwsWAWgpyQktm2j6Lk2xTCmFSSOKKvXv
-         yOvJxgEr1eBeL/ZJBQqV/bbj24DmBigHJgn4AgekyMugcl8lORnb0+qEDCboUVUZ+pZk
-         R3UQ==
-X-Gm-Message-State: AO0yUKV124XdMbRQoEu4Tku/C2XEvrF2dEkcqMPQIEF/ZAXwUiEe8VWQ
-        Xe7Pxc2uYVXmIesYf0lXC5VQy/dbNdFrfCBsjHQBow==
-X-Google-Smtp-Source: AK7set+x4pGBpQtZSzewoBFzZHpTCsSoM+foYjC6/2kfqcZIpxLXt+M1wNgynlswpNvWuaueDTE0Lqu4diZFlp0EL7c=
-X-Received: by 2002:a19:750b:0:b0:4de:6514:2ee4 with SMTP id
- y11-20020a19750b000000b004de65142ee4mr3957772lfe.11.1678165892149; Mon, 06
- Mar 2023 21:11:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20230307030457.3499834-1-joel@joelfernandes.org>
- <753b72f5ecd03f94511495a333eb192c5fc42087.camel@perches.com>
- <CAEXW_YRYnikDRTQXwrTpTsQ1r-32FRPABj_Viu+X6Qr7EWqh4g@mail.gmail.com>
- <802731d7bf187573a9084cb23196c096be81b5e1.camel@perches.com>
- <20230307044104.GA3532764@google.com> <497c07579fb51ed6f0b8a72471017b4dec258e9e.camel@perches.com>
-In-Reply-To: <497c07579fb51ed6f0b8a72471017b4dec258e9e.camel@perches.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 7 Mar 2023 00:11:20 -0500
-Message-ID: <CAEXW_YQt976k6tRJBoYy=S-CpacgB+MpMr-H=TEtZBaP=CPwnQ@mail.gmail.com>
+        with ESMTP id S229667AbjCGFW3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 7 Mar 2023 00:22:29 -0500
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CE5567BF;
+        Mon,  6 Mar 2023 21:22:25 -0800 (PST)
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay01.hostedemail.com (Postfix) with ESMTP id 08FCC1C4A58;
+        Tue,  7 Mar 2023 05:22:23 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 0FFBA8000E;
+        Tue,  7 Mar 2023 05:22:17 +0000 (UTC)
+Message-ID: <912474d3804791ef5757a44bae6ab72701e15bc3.camel@perches.com>
 Subject: Re: [PATCH] checkpatch: Error out if deprecated RCU API used
-To:     Joe Perches <joe@perches.com>
+From:   Joe Perches <joe@perches.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
         Dwaipayan Ray <dwaipayanray1@gmail.com>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>,
@@ -67,142 +35,98 @@ Cc:     linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
         Eric Dumazet <edumazet@google.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
         Uladzislau Rezki <urezki@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 06 Mar 2023 21:22:17 -0800
+In-Reply-To: <CAEXW_YQt976k6tRJBoYy=S-CpacgB+MpMr-H=TEtZBaP=CPwnQ@mail.gmail.com>
+References: <20230307030457.3499834-1-joel@joelfernandes.org>
+         <753b72f5ecd03f94511495a333eb192c5fc42087.camel@perches.com>
+         <CAEXW_YRYnikDRTQXwrTpTsQ1r-32FRPABj_Viu+X6Qr7EWqh4g@mail.gmail.com>
+         <802731d7bf187573a9084cb23196c096be81b5e1.camel@perches.com>
+         <20230307044104.GA3532764@google.com>
+         <497c07579fb51ed6f0b8a72471017b4dec258e9e.camel@perches.com>
+         <CAEXW_YQt976k6tRJBoYy=S-CpacgB+MpMr-H=TEtZBaP=CPwnQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+MIME-Version: 1.0
+X-Rspamd-Queue-Id: 0FFBA8000E
+X-Stat-Signature: j3t64s8w1tou5tg9qaksxwzr8a6kry5o
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18dD60VU4TcNc6X9YoMwW5z72oj27v1Oz0=
+X-HE-Tag: 1678166537-328782
+X-HE-Meta: U2FsdGVkX19SZ/s76yRrDn7PMrAGvf7jxoeLgQRwVGYu61ycYnAdDJmb0sMqW1jyhvKEnGE12joQbhDTkgjdZg==
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 6, 2023 at 11:53=E2=80=AFPM Joe Perches <joe@perches.com> wrote=
-:
->
-> On Tue, 2023-03-07 at 04:41 +0000, Joel Fernandes wrote:
-> > On Mon, Mar 06, 2023 at 07:23:23PM -0800, Joe Perches wrote:
-> > > On Mon, 2023-03-06 at 22:10 -0500, Joel Fernandes wrote:
-> > > > On Mon, Mar 6, 2023 at 10:08=E2=80=AFPM Joe Perches <joe@perches.co=
-m> wrote:
-> > > > >
-> > > > > On Tue, 2023-03-07 at 03:04 +0000, Joel Fernandes (Google) wrote:
-> > > > > > Single-argument kvfree_rcu() usage is being deprecated [1] [2] =
-as it is
-> > > > > > error-prone. However, till all users are converted, we would li=
-ke to introduce
-> > > > > > checkpatch errors for new patches submitted.
-> > > > > >
-> > > > > > This patch adds support for the same. Tested with a trial patch=
-.
-> > > > > >
-> > > > > > For now, we are only considering usages that don't have compoun=
-d
-> > > > > > nesting, for example ignore: kvfree_rcu( (rcu_head_obj), rcu_he=
-ad_name).
-> > > > > > This is sufficient as such usages are unlikely.
-> > > > > >
-> > > > > > Once all users are converted and we remove the old API, we can =
-also revert this
-> > > > > > checkpatch patch then.
-> > > > >
-> > > > > I think this should be added to the deprecated_apis hash instead
-> > > > >
-> > > > > our %deprecated_apis =3D (
-> > > > >         "synchronize_rcu_bh"                    =3D> "synchronize=
-_rcu",
-> > > > >         "synchronize_rcu_bh_expedited"          =3D> "synchronize=
-_rcu_expedited",
-> > > > >         "call_rcu_bh"                           =3D> "call_rcu",
-> > > > >         "rcu_barrier_bh"                        =3D> "rcu_barrier=
-",
-> > > > >         "synchronize_sched"                     =3D> "synchronize=
-_rcu",
-> > > > >         "synchronize_sched_expedited"           =3D> "synchronize=
-_rcu_expedited",
-> > > > >         "call_rcu_sched"                        =3D> "call_rcu",
-> > > > >         "rcu_barrier_sched"                     =3D> "rcu_barrier=
-",
-> > > > >         "get_state_synchronize_sched"           =3D> "get_state_s=
-ynchronize_rcu",
-> > > > >         "cond_synchronize_sched"                =3D> "cond_synchr=
-onize_rcu",
-> > > > >         "kmap"                                  =3D> "kmap_local_=
-page",
-> > > > >         "kunmap"                                =3D> "kunmap_loca=
-l",
-> > > > >         "kmap_atomic"                           =3D> "kmap_local_=
-page",
-> > > > >         "kunmap_atomic"                         =3D> "kunmap_loca=
-l",
-> > > > > );
-> > > >
-> > > > This is not an API name change though, it is a "number of arguments=
-"
-> > > > or argument list change. Is there a different way to do it?
-> > >
-> > > Ah, no, not really.
-> > >
-> > > btw: I don't see a single use of this call without a comma in the tre=
-e.
-> >
-> > Did you look for kvfree_rcu? It is either kvfree_rcu() or kfree_rcu().
->
-> $ git grep -P '\bkv?free_rcu\s*\(' -- '*.[ch]' | grep -v -P 'kv?free_rcu\=
-s*\([^,]+,.*\)'
-> drivers/infiniband/core/device.c:               kfree_rcu(container_of(de=
-v->port_data, struct ib_port_data_rcu,
-> drivers/infiniband/core/rdma_core.c:     * kfree_rcu(). However the objec=
-t may still have been released and
-> drivers/target/target_core_configfs.c:                   * callbacks to c=
-omplete post kfree_rcu(), before allowing
-> include/linux/rcupdate.h: *     kvfree_rcu(ptr);
-> include/linux/rcupdate.h:#define kvfree_rcu(...) KVFREE_GET_MACRO(__VA_AR=
-GS__,          \
-> include/linux/rcutiny.h:        // kvfree_rcu(one_arg) call.
-> include/rdma/ib_verbs.h:        struct rcu_head         rcu;            /=
-* kfree_rcu() overhead */
-> include/scsi/scsi_device.h: * @rcu: For kfree_rcu().
-> kernel/rcu/rcuscale.c:          pr_alert("CONFIG_RCU_LAZY is disabled, fa=
-lling back to kfree_rcu() for delayed RCU kfree'ing\n");
-> kernel/rcu/tree.c: * struct kvfree_rcu_bulk_data - single block to store =
-kvfree_rcu() pointers
-> kernel/rcu/tree.c: * @records: Array of the kvfree_rcu() pointers
-> kernel/rcu/tree.c: * struct kfree_rcu_cpu_work - single batch of kfree_rc=
-u() requests
-> kernel/rcu/tree.c: * @head_free: List of kfree_rcu() objects waiting for =
-a grace period
-> kernel/rcu/tree.c: * @bulk_head_free: Bulk-List of kvfree_rcu() objects w=
-aiting for a grace period
-> kernel/rcu/tree.c: * struct kfree_rcu_cpu - batch up kfree_rcu() requests=
- for RCU grace period
-> kernel/rcu/tree.c: * @head: List of kfree_rcu() objects not yet waiting f=
-or a grace period
-> kernel/rcu/tree.c: * @bulk_head: Bulk-List of kvfree_rcu() objects not ye=
-t waiting for a grace period
-> kernel/rcu/tree.c: * @krw_arr: Array of batches of kfree_rcu() objects wa=
-iting for a grace period
-> kernel/rcu/tree.c:       * double-argument of kvfree_rcu().  This happens=
- when the
-> kernel/rcu/tree.c: * reduce the number of grace periods during heavy kfre=
-e_rcu()/kvfree_rcu() load.
-> kernel/rcu/tree.c:              // Probable double kfree_rcu(), just leak=
-.
-> net/core/pktgen.c:      /* Don't need rcu_barrier() due to use of kfree_r=
-cu() */
->
+On Tue, 2023-03-07 at 00:11 -0500, Joel Fernandes wrote:
 
-Do you mind sharing which tree you are looking at? I checked both
-6.3-rc1 and linux-next.
+> Do you mind sharing which tree you are looking at? I checked both
+> 6.3-rc1 and linux-next.
+> 
+> Your grep returned:
+> 
+> kernel/trace/trace_osnoise.c:   kvfree_rcu(inst);
+> kernel/trace/trace_probe.c:     kvfree_rcu(link);
+> lib/test_vmalloc.c:             kvfree_rcu(p);
+> mm/list_lru.c:   * We need kvfree_rcu() here. And the walking of the list
+> net/core/pktgen.c:      /* Don't need rcu_barrier() due to use of kfree_rcu() */
+> net/core/sysctl_net_core.c:
+> kvfree_rcu(orig_sock_table);
+> net/core/sysctl_net_core.c:                             kfree_rcu(cur);
+> net/mac802154/scan.c:   kfree_rcu(request);
+> net/mac802154/scan.c:   kfree_rcu(request);
 
-Your grep returned:
+rather old.  I'm not subscribed and haven't been following much.
 
-kernel/trace/trace_osnoise.c:   kvfree_rcu(inst);
-kernel/trace/trace_probe.c:     kvfree_rcu(link);
-lib/test_vmalloc.c:             kvfree_rcu(p);
-mm/list_lru.c:   * We need kvfree_rcu() here. And the walking of the list
-net/core/pktgen.c:      /* Don't need rcu_barrier() due to use of kfree_rcu=
-() */
-net/core/sysctl_net_core.c:
-kvfree_rcu(orig_sock_table);
-net/core/sysctl_net_core.c:                             kfree_rcu(cur);
-net/mac802154/scan.c:   kfree_rcu(request);
-net/mac802154/scan.c:   kfree_rcu(request);
+Add linux-next specific files for 20230217
+
+Updating to today's next:
+
+Add linux-next specific files for 20230307
+
+I get several instances:
+
+$ git grep -P '\bkv?free_rcu\s*\(' -- '*.[ch]' | grep -v -P 'kv?free_rcu\s*\([^,]+,.*\)'
+drivers/block/drbd/drbd_nl.c:	kvfree_rcu(old_disk_conf);
+drivers/block/drbd/drbd_nl.c:	kvfree_rcu(old_net_conf);
+drivers/block/drbd/drbd_nl.c:		kvfree_rcu(old_disk_conf);
+drivers/block/drbd/drbd_receiver.c:	kvfree_rcu(old_net_conf);
+drivers/block/drbd/drbd_receiver.c:			kvfree_rcu(old_disk_conf);
+drivers/block/drbd/drbd_state.c:		kvfree_rcu(old_conf);
+drivers/infiniband/core/device.c:		kfree_rcu(container_of(dev->port_data, struct ib_port_data_rcu,
+drivers/infiniband/core/rdma_core.c:	 * kfree_rcu(). However the object may still have been released and
+drivers/infiniband/sw/rxe/rxe_mr.c:	kfree_rcu(mr);
+drivers/misc/vmw_vmci/vmci_context.c:		kvfree_rcu(notifier);
+drivers/misc/vmw_vmci/vmci_event.c:	kvfree_rcu(s);
+drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c:	kfree_rcu(int_port);
+drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c:	kfree_rcu(tx_sa);
+drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c:	kfree_rcu(rx_sc);
+drivers/target/target_core_configfs.c:			 * callbacks to complete post kfree_rcu(), before allowing
+fs/ext4/super.c:				kfree_rcu(qname);
+include/linux/rcupdate.h: *     kvfree_rcu(ptr);
+include/linux/rcupdate.h:#define kvfree_rcu(...) KVFREE_GET_MACRO(__VA_ARGS__,		\
+include/linux/rcutiny.h:	// kvfree_rcu(one_arg) call.
+include/rdma/ib_verbs.h:	struct rcu_head		rcu;		/* kfree_rcu() overhead */
+include/scsi/scsi_device.h: * @rcu: For kfree_rcu().
+kernel/rcu/rcuscale.c:		pr_alert("CONFIG_RCU_LAZY is disabled, falling back to kfree_rcu() for delayed RCU kfree'ing\n");
+kernel/rcu/tree.c: * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
+kernel/rcu/tree.c: * @records: Array of the kvfree_rcu() pointers
+kernel/rcu/tree.c: * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+kernel/rcu/tree.c: * @head_free: List of kfree_rcu() objects waiting for a grace period
+kernel/rcu/tree.c: * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
+kernel/rcu/tree.c: * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
+kernel/rcu/tree.c: * @head: List of kfree_rcu() objects not yet waiting for a grace period
+kernel/rcu/tree.c: * @bulk_head: Bulk-List of kvfree_rcu() objects not yet waiting for a grace period
+kernel/rcu/tree.c: * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
+kernel/rcu/tree.c:	 * double-argument of kvfree_rcu().  This happens when the
+kernel/rcu/tree.c: * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
+kernel/rcu/tree.c:		// Probable double kfree_rcu(), just leak.
+kernel/trace/trace_osnoise.c:	kvfree_rcu(inst);
+kernel/trace/trace_probe.c:	kvfree_rcu(link);
+net/core/pktgen.c:	/* Don't need rcu_barrier() due to use of kfree_rcu() */
+net/core/sysctl_net_core.c:				kvfree_rcu(orig_sock_table);
+net/core/sysctl_net_core.c:				kfree_rcu(cur);
+
