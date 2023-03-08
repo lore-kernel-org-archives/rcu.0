@@ -2,53 +2,52 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF3C7C678D5
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 17:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B203BC64EC4
+	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 17:14:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjCHROH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 12:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
+        id S230132AbjCHROV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 12:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjCHRN4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 12:13:56 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AC85A90D
-        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 09:13:38 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id j19-20020a05600c191300b003eb3e1eb0caso1818597wmq.1
-        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 09:13:38 -0800 (PST)
+        with ESMTP id S229827AbjCHROM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 12:14:12 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBBE38648
+        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 09:13:32 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id bg16-20020a05600c3c9000b003eb34e21bdfso1837620wmb.0
+        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 09:13:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1678295616;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yfXDSzie1v35NwgXFaOKrk7jqXj+xqMDgBTnABjE9B0=;
-        b=EXTB7mziN10nY0Cw/fmEGI1M/vgU/X+yL1ADZMhpPT3CmlmUJv58/grYY+suSHGmCB
-         Z9GXiOC9w9aR7BJIJXKKKnjDPrZQStC3hI7nAlOXxT0DMvEg6gKNE5T+vdYh55r1t3OS
-         9mJJLZbsEIOzo/as8drm/ad8joYJjVCvQ6owGRkOllyiaPcAzI8zJePB0fJfhhf7p0qF
-         4TiRbERx0SEZSls6/7ExKPQne4Ravky7BtZSKTKUyqWGyMlREdVGBf2+SRbgMfGN8MOW
-         thQICwklPZ4Lz9atHMN3qIGVwpLWGFW7yE1fsqD7Yxa74FNETykN2Ui3sirjBWGrdiSV
-         CFjA==
+        d=bytedance.com; s=google; t=1678295611;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Hbd9XxfEHV1OJLQFkD6huyFI87+kHUzsYgNvadq9ro=;
+        b=VbM39aUkBb6MZLrUtznBsn7M6L1Jpk274NlRplE7z13AYroWy2VxSrZPFffDMdI7cQ
+         dmp9r9zVIP8nQiXgRoNCUeNgZd7y0TApSThRSn3CxvArGSk9zviFpJURRrk46yYe6cGe
+         Vdu17uscUhhmxZKdgZ1PD5g3ni2HxvsoGOi2IqEWPoaYmxo8cOlbP20fre1/ucsz4LJq
+         YN2OzURIxGrYLL56rPNP6ghvpSWjN++ESzUVBh08EX9KUQ0Mg0baOHe2xmrBaXwYTR+d
+         UrfHWtGiQdmVj/ignDNSAqXQonpeuTj9mqmEzDQR7ij378Mn24u6daBnhg/i4ncGXFq4
+         JcPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678295616;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yfXDSzie1v35NwgXFaOKrk7jqXj+xqMDgBTnABjE9B0=;
-        b=1oePFiPQP4d7HgTg6c2P18ddlR3fBkUXLrCU2TCLCjflG1ZeFmjfZvj906D8bWgDpP
-         KGus9ObNp5koIig7w4KfQK324cKtJqU3T3G2tuMNIQa8U5Rr9K6fbzNoZ8R3nxRQ9iYA
-         eoD4hUMGDy8ApBBhE2jt8JyCbg75plCopGCnzc/JIeNcFcp3/Ub6x7Lzd51tt+b2B34n
-         nliDYl3ZdktQxHRm3fqrteGk9e00SMx4UX9TGV6uKYSSvye1+EbhoApSD8nb057N6ldD
-         J8KAKQ0S1sQj6Bdx0iWxWXBYazgHrvoTkEKFJEfZPOvdXux/OGCdKTiHpoYxb1WRgL0J
-         z6Yw==
-X-Gm-Message-State: AO0yUKWxzY+dDecNUny/aay4nQtWMSZU4kapMn/MTKZU69lxf+kegYkE
-        TTdC5wHvV3rMI4MVSVjNKGAS1w==
-X-Google-Smtp-Source: AK7set9uF6wYTY6OnVQvQ46ZrqjNmbSxiNIYEe4lFBpV++4SFSBoSI4+PBeT4kJ7VgIV2voWiO03OQ==
-X-Received: by 2002:a05:600c:3594:b0:3eb:395b:19dc with SMTP id p20-20020a05600c359400b003eb395b19dcmr16842025wmq.9.1678295616766;
-        Wed, 08 Mar 2023 09:13:36 -0800 (PST)
+        d=1e100.net; s=20210112; t=1678295611;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Hbd9XxfEHV1OJLQFkD6huyFI87+kHUzsYgNvadq9ro=;
+        b=R5XLAeyrzLGkIlf17xxcsqXO20vFHDVCjKoyR1vMw5w7qXhoVeuVtra5gikrFee64r
+         ND9echQdSpsg7frOviXCggq3E9j8gVDkfXIAWn/XRpZ9KxCgVsj+m2WQ9NpJcM6lJMB7
+         Vaz25b6a8tdcMPnaxvHiKUvsxdcsrumUJtR897pZeFyn204AYWgellZquYtAOxhQbG/p
+         /vO6ujPgT/CsUsY+csydhJpS0FK0oapXwpc0PmEGlTMegl0uYRKfEGeX4yGRZrs4orQ0
+         w/EKKkxEDpCcRhkiCWzcgp/tnrcpf2g/6+bykehbWS8LInGEi6ZB99oDCdHputv6UVvg
+         Z5Hg==
+X-Gm-Message-State: AO0yUKW7v7Hyz0JQJO25XsGsvWpe5PZcmGNm0x00GYXkcVcwKIIjWxBG
+        kXRNbQCBjUHQQDsBT7PJl69FQQ==
+X-Google-Smtp-Source: AK7set/2pclT+0jyD/CpDkqDgtgAsIgDoMOFzt/fZtH/PIq3cke44cz4F9GV5i7sumV/4Q4hpcgohw==
+X-Received: by 2002:a05:600c:4f11:b0:3df:ef18:b0a1 with SMTP id l17-20020a05600c4f1100b003dfef18b0a1mr16958315wmq.12.1678295611256;
+        Wed, 08 Mar 2023 09:13:31 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:fe40:3ba4:afe4:4609])
-        by smtp.gmail.com with ESMTPSA id l15-20020a1c790f000000b003e0238d9101sm11668wme.31.2023.03.08.09.13.35
+        by smtp.gmail.com with ESMTPSA id l15-20020a1c790f000000b003e0238d9101sm11668wme.31.2023.03.08.09.13.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Mar 2023 09:13:36 -0800 (PST)
+        Wed, 08 Mar 2023 09:13:30 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
         brgerst@gmail.com
@@ -61,259 +60,108 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH v14 06/12] x86/smpboot: Remove initial_stack on 64-bit
-Date:   Wed,  8 Mar 2023 17:13:22 +0000
-Message-Id: <20230308171328.1562857-7-usama.arif@bytedance.com>
+        Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH v14 00/12] Parallel CPU bringup for x86_64
+Date:   Wed,  8 Mar 2023 17:13:16 +0000
+Message-Id: <20230308171328.1562857-1-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230308171328.1562857-1-usama.arif@bytedance.com>
-References: <20230308171328.1562857-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Brian Gerst <brgerst@gmail.com>
+The main code change over v13 is to enable parallel bringup for SEV-ES guests.
 
-In order to facilitate parallel startup, start to eliminate some of the
-global variables passing information to CPUs in the startup path.
+Thanks,
+Usama
 
-However, start by introducing one more: smpboot_control. For now this
-merely holds the CPU# of the CPU which is coming up. Each CPU can then
-find its own per-cpu data, and everything else it needs can be found
-from there, allowing the other global variables to be removed.
+Changes across versions:
+v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+    in preparation for more parallelisation.
+v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+    24 bits of the physical X2APIC ID to be used. That patch still needs
+    a Signed-off-by from its original author, who once claimed not to
+    remember writing it at all. But now we've fixed it, hopefully he'll
+    admit it now :)
+v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+    for AMD CPUs.
+v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+    reused timer calibration for secondary CPUs.
+v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+    cluster mask in alloc_clustermask. (patch 1/9)
+    Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+    0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+    Included sanity checks for APIC id from 0x0B. (patch 6/9)
+    Removed patch for reusing timer calibration for secondary CPUs.
+    commit message and code improvements.
+v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+    early_gdt_descr.
+    Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+    Code comments improved and debug prints added.
+v9: Drop patch to avoid repeated saves of MTRR at boot time.
+    rebased and retested at v6.2-rc8.
+    added kernel doc for no_parallel_bringup and made do_parallel_bringup
+    __ro_after_init.
+v10: Fixed suspend/resume not working with parallel smpboot.
+     rebased and retested to 6.2.
+     fixed checkpatch errors.
+v11: Added patches from Brian Gerst to remove the global variables initial_gs,
+     initial_stack, and early_gdt_descr from the 64-bit boot code
+     (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.com/).
+v12: Fixed compilation errors, acquire tr_lock for every stack setup in
+     trampoline_64.S.
+     Rearranged commits for a cleaner git history.
+v13: Fix build error with CONFIG_FORCE_NR_CPUS.
+     Commit message improved, typos fixed and extra comments added.
+v14: Enable parallel bringup for SEV-ES guests
+ 
+Brian Gerst (3):
+  x86/smpboot: Remove initial_stack on 64-bit
+  x86/smpboot: Remove early_gdt_descr on 64-bit
+  x86/smpboot: Remove initial_gs
 
-First to be removed is initial_stack. Each CPU can load %rsp from its
-current_task->thread.sp instead. That is already set up with the correct
-idle thread for APs. Set up the .sp field in INIT_THREAD on x86 so that
-the BSP also finds a suitable stack pointer in the static per-cpu data
-when coming up on first boot.
+David Woodhouse (9):
+  x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+  cpu/hotplug: Add dynamic parallel bringup states before
+    CPUHP_BRINGUP_CPU
+  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+  x86/smpboot: Split up native_cpu_up into separate phases and document
+    them
+  x86/smpboot: Support parallel startup of secondary CPUs
+  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+  x86/smpboot: Serialize topology updates for secondary bringup
+  x86/smpboot: Allow parallel bringup for SEV-ES
 
-On resume from S3, the CPU needs a temporary stack because its idle task
-is already active. Instead of setting initial_stack, the sleep code can
-simply set its own current->thread.sp to point to the temporary stack.
-Nobody else cares about ->thread.sp for a thread which is currently on
-a CPU, because the true value is actually in the %rsp register. Which
-is restored with the rest of the CPU context in do_suspend_lowlevel().
+ .../admin-guide/kernel-parameters.txt         |   3 +
+ arch/x86/include/asm/cpu.h                    |   1 +
+ arch/x86/include/asm/processor.h              |   6 +-
+ arch/x86/include/asm/realmode.h               |   4 +-
+ arch/x86/include/asm/sev-common.h             |   3 +
+ arch/x86/include/asm/sev.h                    |   5 +
+ arch/x86/include/asm/smp.h                    |  18 +-
+ arch/x86/include/asm/topology.h               |   2 -
+ arch/x86/kernel/acpi/sleep.c                  |  30 +-
+ arch/x86/kernel/apic/apic.c                   |   2 +-
+ arch/x86/kernel/apic/x2apic_cluster.c         | 126 +++---
+ arch/x86/kernel/asm-offsets.c                 |   1 +
+ arch/x86/kernel/cpu/common.c                  |   6 +-
+ arch/x86/kernel/cpu/topology.c                |   2 +-
+ arch/x86/kernel/head_64.S                     | 162 ++++++--
+ arch/x86/kernel/smpboot.c                     | 366 +++++++++++++-----
+ arch/x86/realmode/init.c                      |   3 +
+ arch/x86/realmode/rm/trampoline_64.S          |  27 +-
+ arch/x86/xen/smp_pv.c                         |   4 +-
+ arch/x86/xen/xen-head.S                       |   2 +-
+ include/linux/cpuhotplug.h                    |   2 +
+ include/linux/smpboot.h                       |   7 +
+ kernel/cpu.c                                  |  31 +-
+ kernel/smpboot.h                              |   2 -
+ 24 files changed, 614 insertions(+), 201 deletions(-)
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Tested-by: Usama Arif <usama.arif@bytedance.com>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- arch/x86/include/asm/processor.h |  6 ++++-
- arch/x86/include/asm/smp.h       |  5 +++-
- arch/x86/kernel/acpi/sleep.c     | 20 +++++++++++++--
- arch/x86/kernel/asm-offsets.c    |  1 +
- arch/x86/kernel/head_64.S        | 43 +++++++++++++++++++++-----------
- arch/x86/kernel/smpboot.c        |  7 +++++-
- arch/x86/xen/xen-head.S          |  2 +-
- 7 files changed, 63 insertions(+), 21 deletions(-)
-
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 4e35c66edeb7..bdde7316e75b 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -648,7 +648,11 @@ static inline void spin_lock_prefetch(const void *x)
- #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
- 
- #else
--#define INIT_THREAD { }
-+extern unsigned long __end_init_task[];
-+
-+#define INIT_THREAD {							    \
-+	.sp	= (unsigned long)&__end_init_task - sizeof(struct pt_regs), \
-+}
- 
- extern unsigned long KSTK_ESP(struct task_struct *task);
- 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index b4dbb20dab1a..bf2c51df9e0b 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -199,5 +199,8 @@ extern void nmi_selftest(void);
- #define nmi_selftest() do { } while (0)
- #endif
- 
--#endif /* __ASSEMBLY__ */
-+extern unsigned int smpboot_control;
-+
-+#endif /* !__ASSEMBLY__ */
-+
- #endif /* _ASM_X86_SMP_H */
-diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-index 3b7f4cdbf2e0..1b4c43d0819a 100644
---- a/arch/x86/kernel/acpi/sleep.c
-+++ b/arch/x86/kernel/acpi/sleep.c
-@@ -111,13 +111,29 @@ int x86_acpi_suspend_lowlevel(void)
- 	saved_magic = 0x12345678;
- #else /* CONFIG_64BIT */
- #ifdef CONFIG_SMP
--	initial_stack = (unsigned long)temp_stack + sizeof(temp_stack);
-+	/*
-+	 * As each CPU starts up, it will find its own stack pointer
-+	 * from its current_task->thread.sp. Typically that will be
-+	 * the idle thread for a newly-started AP, or even the boot
-+	 * CPU which will find it set to &init_task in the static
-+	 * per-cpu data.
-+	 *
-+	 * Make the resuming CPU use the temporary stack at startup
-+	 * by setting current->thread.sp to point to that. The true
-+	 * %rsp will be restored with the rest of the CPU context,
-+	 * by do_suspend_lowlevel(). And unwinders don't care about
-+	 * the abuse of ->thread.sp because it's a dead variable
-+	 * while the thread is running on the CPU anyway; the true
-+	 * value is in the actual %rsp register.
-+	 */
-+	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
- 	early_gdt_descr.address =
- 			(unsigned long)get_cpu_gdt_rw(smp_processor_id());
- 	initial_gs = per_cpu_offset(smp_processor_id());
-+	smpboot_control = smp_processor_id();
- #endif
- 	initial_code = (unsigned long)wakeup_long64;
--       saved_magic = 0x123456789abcdef0L;
-+	saved_magic = 0x123456789abcdef0L;
- #endif /* CONFIG_64BIT */
- 
- 	/*
-diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
-index 82c783da16a8..797ae1a15c91 100644
---- a/arch/x86/kernel/asm-offsets.c
-+++ b/arch/x86/kernel/asm-offsets.c
-@@ -108,6 +108,7 @@ static void __used common(void)
- 	OFFSET(TSS_sp1, tss_struct, x86_tss.sp1);
- 	OFFSET(TSS_sp2, tss_struct, x86_tss.sp2);
- 	OFFSET(X86_top_of_stack, pcpu_hot, top_of_stack);
-+	OFFSET(X86_current_task, pcpu_hot, current_task);
- #ifdef CONFIG_CALL_DEPTH_TRACKING
- 	OFFSET(X86_call_depth, pcpu_hot, call_depth);
- #endif
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 222efd4a09bc..cc1b145055ac 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -61,8 +61,8 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	 * tables and then reload them.
- 	 */
- 
--	/* Set up the stack for verify_cpu(), similar to initial_stack below */
--	leaq	(__end_init_task - FRAME_SIZE)(%rip), %rsp
-+	/* Set up the stack for verify_cpu() */
-+	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
- 
- 	leaq	_text(%rip), %rdi
- 
-@@ -241,6 +241,24 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	UNWIND_HINT_EMPTY
- 	ANNOTATE_NOENDBR // above
- 
-+#ifdef CONFIG_SMP
-+	movl	smpboot_control(%rip), %ecx
-+
-+	/* Get the per cpu offset for the given CPU# which is in ECX */
-+	movq	__per_cpu_offset(,%rcx,8), %rdx
-+#else
-+	xorl	%edx, %edx /* zero-extended to clear all of RDX */
-+#endif /* CONFIG_SMP */
-+
-+	/*
-+	 * Setup a boot time stack - Any secondary CPU will have lost its stack
-+	 * by now because the cr3-switch above unmaps the real-mode stack.
-+	 *
-+	 * RDX contains the per-cpu offset
-+	 */
-+	movq	pcpu_hot + X86_current_task(%rdx), %rax
-+	movq	TASK_threadsp(%rax), %rsp
-+
- 	/*
- 	 * We must switch to a new descriptor in kernel space for the GDT
- 	 * because soon the kernel won't have access anymore to the userspace
-@@ -275,12 +293,6 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	movl	initial_gs+4(%rip),%edx
- 	wrmsr
- 
--	/*
--	 * Setup a boot time stack - Any secondary CPU will have lost its stack
--	 * by now because the cr3-switch above unmaps the real-mode stack
--	 */
--	movq initial_stack(%rip), %rsp
--
- 	/* Setup and Load IDT */
- 	pushq	%rsi
- 	call	early_setup_idt
-@@ -372,7 +384,11 @@ SYM_CODE_END(secondary_startup_64)
- SYM_CODE_START(start_cpu0)
- 	ANNOTATE_NOENDBR
- 	UNWIND_HINT_EMPTY
--	movq	initial_stack(%rip), %rsp
-+
-+	/* Find the idle task stack */
-+	movq	PER_CPU_VAR(pcpu_hot) + X86_current_task, %rcx
-+	movq	TASK_threadsp(%rcx), %rsp
-+
- 	jmp	.Ljump_to_C_code
- SYM_CODE_END(start_cpu0)
- #endif
-@@ -420,12 +436,6 @@ SYM_DATA(initial_gs,	.quad INIT_PER_CPU_VAR(fixed_percpu_data))
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
- #endif
--
--/*
-- * The FRAME_SIZE gap is a convention which helps the in-kernel unwinder
-- * reliably detect the end of the stack.
-- */
--SYM_DATA(initial_stack, .quad init_thread_union + THREAD_SIZE - FRAME_SIZE)
- 	__FINITDATA
- 
- 	__INIT
-@@ -660,6 +670,9 @@ SYM_DATA_END(level1_fixmap_pgt)
- SYM_DATA(early_gdt_descr,		.word GDT_ENTRIES*8-1)
- SYM_DATA_LOCAL(early_gdt_descr_base,	.quad INIT_PER_CPU_VAR(gdt_page))
- 
-+	.align 16
-+SYM_DATA(smpboot_control,		.long 0)
-+
- 	.align 16
- /* This must match the first entry in level2_kernel_pgt */
- SYM_DATA(phys_base, .quad 0x0)
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index b18c1385e181..62e3bf37f0b8 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1112,7 +1112,12 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 	idle->thread.sp = (unsigned long)task_pt_regs(idle);
- 	early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
- 	initial_code = (unsigned long)start_secondary;
--	initial_stack  = idle->thread.sp;
-+
-+	if (IS_ENABLED(CONFIG_X86_32)) {
-+		initial_stack  = idle->thread.sp;
-+	} else {
-+		smpboot_control = cpu;
-+	}
- 
- 	/* Enable the espfix hack for this CPU */
- 	init_espfix_ap(cpu);
-diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-index ffaa62167f6e..6bd391476656 100644
---- a/arch/x86/xen/xen-head.S
-+++ b/arch/x86/xen/xen-head.S
-@@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
- 	ANNOTATE_NOENDBR
- 	cld
- 
--	mov initial_stack(%rip), %rsp
-+	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
- 
- 	/* Set up %gs.
- 	 *
 -- 
 2.25.1
 
