@@ -2,254 +2,225 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09E73C6FD1E
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 14:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8692BC678D5
+	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 14:47:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbjCHOma (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 09:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
+        id S232127AbjCHOrb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 09:47:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbjCHOmI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 09:42:08 -0500
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2048.outbound.protection.outlook.com [40.107.95.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AED5AB65;
-        Wed,  8 Mar 2023 06:40:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BSgh3es5Z5+vlYFO1zPyMdi5FBourMj6biSuvvTnIi+167hoTcETV6MAAGpJdI49b1oVVPKNMMGg6D18I9eXj6XXYXrV2/sNBbsuZ+3xC/YA08Bm6/5oQ6JhDldOwR7N6DByGvKETqenj0GYkFKdtIzBgj9Ll795AFszlW1x/iX7vQetNNhrXFCU1g2PxvA3T4QEEqCThktWGccRFGjAQ9ZXINzCLdEilw0WqCGDd/tlmERMkDBrtHSlyr9B7B6XQH56C8hYhdykfSkGKj5BsIKpzVWPMGIUoSQ+e64QNOsbas4dThdvCVUdVou36R8V5U/GHJDbZNpJ35hcHOTPqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=atBV9oX8EnFArO3sNPcGS/SUQi/AFpC2Ym91MpqwLrA=;
- b=UD5pTTGH4pTv5WevtF6LLG3HAaCf2Msh1hAWH/1xQ6xqtutcwMtKH6nB9h/Gu3z2F7RGJCMjQyrVrDjee5CgQ7N7vDXlLNRyFZNLF9RIR+pepyk6pb5+mlxLTnWaLcllRgXQ+qMe10LI1AogmcyKziYFnhxSIEsgPFq5ngoOAiZXL7TB9Zi1UG0yZn1C6qFPM/vu68MF6H9CUEAyGwI1LuHuyKVs55oN/oq2SOMoROuoMIPwU8Wh70gQjdC7BuFWvP14I6SNtluQ5DMSUEZrd0njLVw5TlhvsfHiWdza+ziiNVIgjsNdzXF7cEiCffjiSHFr9uHI62sUOxUCPDXA2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=atBV9oX8EnFArO3sNPcGS/SUQi/AFpC2Ym91MpqwLrA=;
- b=stnY6ehT4ECWT3mIjU2Exz9WqPIEeCTnDmShVLMi908UCyvufM0y0wornZ+oBOXWRSPlu7Nhx9wn5O+o2HcPyDRpirponP6DcCTgA3X/6fzvRv8LvrDAiP2cXTlIZn92OuSu7A2nLiKNXjBK1lp0Ip6vkdfpP4uXB0PSGtQ9kA8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by CH0PR12MB8529.namprd12.prod.outlook.com (2603:10b6:610:18d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.27; Wed, 8 Mar
- 2023 14:40:14 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::5b56:bf13:70be:ea60]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::5b56:bf13:70be:ea60%4]) with mapi id 15.20.6178.017; Wed, 8 Mar 2023
- 14:40:14 +0000
-Message-ID: <cd1c741d-101d-ea3f-f5a3-498e2f54af34@amd.com>
-Date:   Wed, 8 Mar 2023 08:40:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v13 00/11] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Usama Arif <usama.arif@bytedance.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
-        "brgerst@gmail.com" <brgerst@gmail.com>,
-        "Rapan, Sabin" <sabrapan@amazon.com>
-Cc:     "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
-        "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
-        "arjan@linux.intel.com" <arjan@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "mimoja@mimoja.de" <mimoja@mimoja.de>,
-        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
-        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
-        "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
-        "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
-        "liangma@liangbit.com" <liangma@liangbit.com>
-References: <20230302111227.2102545-1-usama.arif@bytedance.com>
- <faa0eb3bb8ba0326d501516a057ab46eaf1f3c05.camel@infradead.org>
- <effbb6e2-c5a1-af7f-830d-8d7088f57477@amd.com>
- <269ed38b5eed9c3a259c183d59d4f1eb5128f132.camel@infradead.org>
- <0c56683a-c258-46f6-056e-e85da8a557db@amd.com>
- <3bfbbd92-b2ed-8189-7b57-0533f6c87ae7@amd.com>
- <1975308c952236895f2d8f0e56af9db288eaf330.camel@infradead.org>
- <39f23da7-1e77-4535-21a6-00f77a382ae5@amd.com>
- <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CH0P220CA0011.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:610:ef::13) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        with ESMTP id S229513AbjCHOq7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 09:46:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6D95505B;
+        Wed,  8 Mar 2023 06:45:29 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 352DA6185C;
+        Wed,  8 Mar 2023 14:45:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91458C433EF;
+        Wed,  8 Mar 2023 14:45:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678286728;
+        bh=cpG3drh4kB9pYK/4rse4/GW0nNf8RUQJsGAqB2pn/kU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZVX/AbxMJpcfd0rDXQHqWi5fBIMPjLVdSqWwj0hXpLVQP+N1phaQRL36+6Usz2+lo
+         E3aXMGymIMTM/nSPPGhA6BkDaqIXw8IPZqvJ7++DaWyZ3QKfY5Px3ZycdziOijfuP2
+         +319SB9ayuMKA3p5CiQObX3ySMVzQ7M4gIKXQB8JoFfSxhY8mSVw92P4drn9yOBd6G
+         +Mwe5RuMGIex0EUN7Zl+sjIdaEibdoPZgnFBI0Q5AnY33CB4X3jfedqZvOOpj/snSW
+         6b+PQLliVioDCwLxHRcZuGugDDiQdoBqrImKLg8WSfWRHmXyF/G3fOOgI/Db+QifOX
+         eIDxrhEWnJGwg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 27B7D5C01E4; Wed,  8 Mar 2023 06:45:28 -0800 (PST)
+Date:   Wed, 8 Mar 2023 06:45:28 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
+Message-ID: <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20230303213851.2090365-1-joel@joelfernandes.org>
+ <ZAc1wsvd4trjP/xi@lothringen>
+ <ZAc+vVZUhXdhpSki@pc636>
+ <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
+ <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
+ <20230307185443.GA516865@google.com>
+ <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
+ <ZAhYP9a8u05hzsOn@pc636>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|CH0PR12MB8529:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0350dc34-a8ee-4eb5-2d29-08db1fe30747
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vuLh1bqbpiIoOFo3qtPeGo7l2wzFyQd+QzV2aZ3mVxTspuOuMBFn7EVxFqGPsGKin6s718LgMNFuGW/oTDzG1QY5loO/7EZDSn7nNmdUNv1I505O7kRLKagxbZY0/KLMddKFooWjtSM6d8/ZIZ9LASQjBTSwPkvsWeVWFl/b2pJe9njHW918AXJ/cApHEmpi0NdNO7IcpFiZSQJkCDr28s4ox1znwe10XCQdKDK7iTOKEA3O395YwOduH/XjkMtga2zDpzRfpPCBW5nELd/GnO5ix6Hux9kFati3UgyOzTe4Fz0dMB3eS7j7NUY9DCUvTEj5CGDxzpeXUdabR3uvae2OLo7zAUepK6O6hu1ETPZtdMtE3sFeUaCqbPDW+jE9nz+tpgM+KrmRlXxQwDAR1XeARrAcP3gKJu445oX/8WddOBMuY+sUKSLo9b8RfICrcHFb7Ivfvx0x+rRST615zoa6GwkOrKypIT/nfioKXBzd7z3F870EMLgEcuqjTUYk5n/qo6hgrw3vXfqqEkPFwHop+SHAfb2rtMiawrrN5TK6RtGuiqzyzqFGuaKu27PVE/DDXvDDhxYT/hB7b08cQ8yCfDXO0qhLLjtr90o+iop87SVkmVxlIESb7OZVLOSxAIDUqxL39fJlaivljcbb4IM1pvHkhIfHWK5BsBv8pXiTJ79MF7KzF4j2Po2BuKxFm7ShGjx7ZUu66yAvbhXbXB0xSJkvJ4uHx3DPjEVcWII=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(376002)(396003)(366004)(136003)(346002)(451199018)(38100700002)(966005)(5660300002)(6486002)(31686004)(2906002)(53546011)(6512007)(6506007)(26005)(2616005)(6666004)(186003)(86362001)(7416002)(31696002)(66946007)(66476007)(66556008)(36756003)(478600001)(8676002)(4326008)(54906003)(83380400001)(41300700001)(316002)(8936002)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TEI2QUdac2tjWms4MDExdnEzL1dEWVN6cC8yRXA2T0lGTlhZdmxQTmREN0pL?=
- =?utf-8?B?akZFVm1ZdUpiclMwclMzNjhDcnpoMGIyb3JORUJ3MmhVbU1NYkdLdDR6aTlQ?=
- =?utf-8?B?Yis4MVA5cHMvY29qMm5DU0ZUSklhMG1vRldiRHJ1UE9NWFVrMzVLMHk1SHhi?=
- =?utf-8?B?bFFSaXdDY2xGYU5kZFZMemVkVUFuUis1VGJLQ0tld3ozSXYzVmFaR1YxZXN2?=
- =?utf-8?B?SWp6KzcydEpndzRDU3h4VjdWcU1oR0tRdkkzNEZLa25lSCtvUU41cW01VGJ3?=
- =?utf-8?B?YlR6M1hRb2h2UnJZc09GMVVwNkJDNTE3d0lTQXIzZlBVK1V2YWlNaWJiR2t2?=
- =?utf-8?B?K2FxaGlUazBXbWwyL1dYSXpLbGV6VXkzemNYRE5JNzl1VUhuSHFpNkZWSy95?=
- =?utf-8?B?NmVFSzMvdG5iTUdHb0tzVWx4cDd5NGEwTlhYQmFaeXg2bUY0R2VVcUxwUVcy?=
- =?utf-8?B?NVhLL3FLME4zVlNzT1BHS2ZSZ3B1aGZaUW5FdENNL0RUelBiOFNVNFZTcjRi?=
- =?utf-8?B?NjArc1JOd3p2bWs3UFBXU3AyWFN0TnBpYkwvWlZZeGVKOW1QREJLOTJSV2Y0?=
- =?utf-8?B?dlF1R1NIWTJsR2JaajFjUytPck9GU2RnOTAwZE45WTgxODc4cUFGTmkzNHFa?=
- =?utf-8?B?WldSVDEybmxkREV1OEcrdm1GdVZHT2FEUG0yL3pTZmI1QmlWRTB0MU4zdzh0?=
- =?utf-8?B?V3NGeWdWV3dsTzZST0pBZ1VOMXBsNW9GbHNsRWRXZDg3SzU1STFVM2psL0xx?=
- =?utf-8?B?STBHTkVCRm9XWjl1REFKRkd5QUQwcGluL3ZUL1UwbEhERmR1K281dDJuNmM5?=
- =?utf-8?B?VVYwQjdXakhpY2FleXdCUWtFUU5zSXJ4OGIydSt0UTZQVWlTdS9NZS9XRWhC?=
- =?utf-8?B?dytITW1ESmtWKzkzL1BWWHFRTE1lbEJlNkJPcERKaUxMNWhNcHdJUFE5b3Nv?=
- =?utf-8?B?dW9HQ0Y5ZkFSWENlRWZTVWVjQUtSMUNtS3pQM3VhUnYrQjZqTkhPYlArQzJh?=
- =?utf-8?B?djgweDNFbmdzTVpKSlUzejZqUUROd2ZKTFJic04vYkJRQXYvTFZhNU9XL1Zr?=
- =?utf-8?B?UEVseUVta0JiYmlORllEcWhyaVBiTFovdFJEWHY1K2QrdjQxVnQ0Z0hGOHBL?=
- =?utf-8?B?UzhvWjZzeVliL3l2UzVOQnFvSWRKRU51SzFNM01tQUFDZ0xzTjVIb1pxQUhD?=
- =?utf-8?B?b3JoMzhyUEgrWVNndFI3dERkV3NFMlFXbDFuZEpoZTQ2VzRLdHA1R2c1d2t0?=
- =?utf-8?B?a3hYMXZLTFFudFlpQ2MxalVYMG5LM2pLdmNLcFl3Mjk5N2JrNHF2Y09vWkFJ?=
- =?utf-8?B?WmQ1VTQyalQ3bGF3anR1Sng0eHBralg0NW5hbE43eW1wUGg1SjZjYkxBSmJh?=
- =?utf-8?B?ekNxeU1NVzB3alBHZERWS2VPZmlxNDlnL1NKcnpvWVFydmJlMmdOSTdqcGFD?=
- =?utf-8?B?VllNVGpLYThRN0RaeThxbzRTTGJmai9uRnhCak52MUUxUWNGOTJIU1dZZGNx?=
- =?utf-8?B?TjBQTDlQQlRKVjRnSldMWGRBaEw0RUEybXVCZ05nK0lydkw0eElMZUg3UGtj?=
- =?utf-8?B?U2VHTVZzaXN3SFE5OUl5WnRLL0doMi91Y05IRWVaeTFXeWd1d3EvYTZzM2Vl?=
- =?utf-8?B?S3MrWmdIbmhETXdTZHRhbDBVQkIrY1VneTRoWmh0blVoVXJOTUN6MjVVOWtH?=
- =?utf-8?B?bFFzQklXNDBPaVhBeFdCNE9TM3pmaldRelE2N0YxMUV1Ym4wczEyTURzY3NJ?=
- =?utf-8?B?RWJ2aVgvNmRMWUUwUXNIWHk2QWNnb3ZUS2Z0VzlnS0V0OVB3K1REV1ROY3dW?=
- =?utf-8?B?ZFJKSVd5Nk5DbnN2T1puRkpjTjZydzFoQ0NtMnM3VkhaaHBWYzNmWnhCbjNl?=
- =?utf-8?B?Wmt5R3owY0o2VVhmcm1aL0VlNXV1dmpONXgrOVZaMitGNzFqd0F5SEVBYVAw?=
- =?utf-8?B?RWREcTV6bjNESUVWVSt6SFU5aGlrWW9wbnN4c0Y1RHFxTkVSVm1aZ3RhZzJS?=
- =?utf-8?B?Sk1VSlNhaUxDTWlrcHFLR0FQNzBMWDlQY25xcjZ5SGh4dWk4R09xT3E4SU1H?=
- =?utf-8?B?SDZhUzA5Tk55MnlLUkExOWFHdmJBTVh3Ri9OYVExZ09XMm5XaXVNcUFrTEh6?=
- =?utf-8?Q?O6bry/mXwSbzZdF8UNeIR0J4H?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0350dc34-a8ee-4eb5-2d29-08db1fe30747
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2023 14:40:14.4605
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5EoW9LaMGRC+IfM78IcXKc59x8lvx8UIHQOXjed6Gwjb5OPZC7OnlKcxbFPLB2PpqKFe3HblLenoq0Bu+fOx4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8529
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZAhYP9a8u05hzsOn@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 3/8/23 03:04, David Woodhouse wrote:
-> On Tue, 2023-03-07 at 16:55 -0600, Tom Lendacky wrote:
->> On 3/7/23 16:27, David Woodhouse wrote:
->>> On Tue, 2023-03-07 at 16:22 -0600, Tom Lendacky wrote:
->>>>
->>>> I did some Qemu/KVM testing. One thing I noticed is that on AMD, CPUID 0xB
->>>> EAX will be non-zero only if SMT is enabled. So just booting some guests
->>>> without CPU topology never did parallel booting ("smpboot: Disabling
->>>> parallel bringup because CPUID 0xb looks untrustworthy"). I would imagine
->>>> a bare-metal system that has diabled SMT will not do parallel booting, too
->>>> (but I haven't had time to test that).
->>>
->>> Interesting, thanks. Should I change to checking for *both* EAX and EBX
->>> being zero? That's what I did first, after reading only the Intel SDM.
->>> But I changed to only EAX because the AMD doc only says that EAX will
->>> be zero for unsupported leaves.
->>
->>   From a baremetal perspective, I think that works. Rome was the first
->> generation to support x2apic, and the PPR for Rome states that 0's are
->> returned in all 4 registers for undefined function numbers.
->>
->> For virtualization, at least Qemu/KVM, that also looks to be a safe test.
-> 
-> At Sean's suggestion, I've switched it to use the existing
-> check_extended_topology_leaf() which checks for EBX being non-zero, and
-> CH being 1 (SMT_TYPE).
-> 
-> I also made it work even if the kernel isn't using x2apic mode (is that
-> even possible, or does SEV-ES require the MSR-based access anyway?)
-> 
-> It just looked odd handling SEV-ES in the CPUID 0x0B path but not the
-> CPUID 0x01 case, and I certainly didn't want to implement the asm side
-> for handling CPUID 0x01 via the GHCB protocol. And this way I can pull
-> the check for CC_ATTR_GUEST_STATE_ENCRYPT up above. Which I've kept for
-> now for the reason described in the comment, but I won't die on that
-> hill.
+On Wed, Mar 08, 2023 at 10:41:19AM +0100, Uladzislau Rezki wrote:
+> On Tue, Mar 07, 2023 at 11:27:26AM -0800, Paul E. McKenney wrote:
+> > On Tue, Mar 07, 2023 at 06:54:43PM +0000, Joel Fernandes wrote:
+> > > On Tue, Mar 07, 2023 at 09:33:13AM -0800, Paul E. McKenney wrote:
+> > > > On Tue, Mar 07, 2023 at 08:48:52AM -0500, Joel Fernandes wrote:
+> > > > > On Tue, Mar 7, 2023 at 8:40 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> > > > > >
+> > > > > > On Tue, Mar 07, 2023 at 02:01:54PM +0100, Frederic Weisbecker wrote:
+> > > > > > > On Fri, Mar 03, 2023 at 09:38:51PM +0000, Joel Fernandes (Google) wrote:
+> > > > > > > > On many systems, a great deal of boot (in userspace) happens after the
+> > > > > > > > kernel thinks the boot has completed. It is difficult to determine if
+> > > > > > > > the system has really booted from the kernel side. Some features like
+> > > > > > > > lazy-RCU can risk slowing down boot time if, say, a callback has been
+> > > > > > > > added that the boot synchronously depends on. Further expedited callbacks
+> > > > > > > > can get unexpedited way earlier than it should be, thus slowing down
+> > > > > > > > boot (as shown in the data below).
+> > > > > > > >
+> > > > > > > > For these reasons, this commit adds a config option
+> > > > > > > > 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter rcupdate.boot_end_delay.
+> > > > > > > > Userspace can also make RCU's view of the system as booted, by writing the
+> > > > > > > > time in milliseconds to: /sys/module/rcupdate/parameters/rcu_boot_end_delay
+> > > > > > > > Or even just writing a value of 0 to this sysfs node.
+> > > > > > > > However, under no circumstance will the boot be allowed to end earlier
+> > > > > > > > than just before init is launched.
+> > > > > > > >
+> > > > > > > > The default value of CONFIG_RCU_BOOT_END_DELAY is chosen as 15s. This
+> > > > > > > > suites ChromeOS and also a PREEMPT_RT system below very well, which need
+> > > > > > > > no config or parameter changes, and just a simple application of this patch. A
+> > > > > > > > system designer can also choose a specific value here to keep RCU from marking
+> > > > > > > > boot completion.  As noted earlier, RCU's perspective of the system as booted
+> > > > > > > > will not be marker until at least rcu_boot_end_delay milliseconds have passed
+> > > > > > > > or an update is made via writing a small value (or 0) in milliseconds to:
+> > > > > > > > /sys/module/rcupdate/parameters/rcu_boot_end_delay.
+> > > > > > > >
+> > > > > > > > One side-effect of this patch is, there is a risk that a real-time workload
+> > > > > > > > launched just after the kernel boots will suffer interruptions due to expedited
+> > > > > > > > RCU, which previous ended just before init was launched. However, to mitigate
+> > > > > > > > such an issue (however unlikely), the user should either tune
+> > > > > > > > CONFIG_RCU_BOOT_END_DELAY to a smaller value than 15 seconds or write a value
+> > > > > > > > of 0 to /sys/module/rcupdate/parameters/rcu_boot_end_delay, once userspace
+> > > > > > > > boots, and before launching the real-time workload.
+> > > > > > > >
+> > > > > > > > Qiuxu also noted impressive boot-time improvements with earlier version
+> > > > > > > > of patch. An excerpt from the data he shared:
+> > > > > > > >
+> > > > > > > > 1) Testing environment:
+> > > > > > > >     OS            : CentOS Stream 8 (non-RT OS)
+> > > > > > > >     Kernel     : v6.2
+> > > > > > > >     Machine : Intel Cascade Lake server (2 sockets, each with 44 logical threads)
+> > > > > > > >     Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=2,sockets=2, …
+> > > > > > > >
+> > > > > > > > 2) OS boot time definition:
+> > > > > > > >     The time from the start of the kernel boot to the shell command line
+> > > > > > > >     prompt is shown from the console. [ Different people may have
+> > > > > > > >     different OS boot time definitions. ]
+> > > > > > > >
+> > > > > > > > 3) Measurement method (very rough method):
+> > > > > > > >     A timer in the kernel periodically prints the boot time every 100ms.
+> > > > > > > >     As soon as the shell command line prompt is shown from the console,
+> > > > > > > >     we record the boot time printed by the timer, then the printed boot
+> > > > > > > >     time is the OS boot time.
+> > > > > > > >
+> > > > > > > > 4) Measured OS boot time (in seconds)
+> > > > > > > >    a) Measured 10 times w/o this patch:
+> > > > > > > >         8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
+> > > > > > > >         The average OS boot time was: ~8.7s
+> > > > > > > >
+> > > > > > > >    b) Measure 10 times w/ this patch:
+> > > > > > > >         8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
+> > > > > > > >         The average OS boot time was: ~8.3s.
+> > > > > > > >
+> > > > > > > > Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > > >
+> > > > > > > I still don't really like that:
+> > > > > > >
+> > > > > > > 1) It feels like we are curing a symptom for which we don't know the cause.
+> > > > > > >    Which RCU write side caller is the source of this slow boot? Some tracepoints
+> > > > > > >    reporting the wait duration within synchronize_rcu() calls between the end of
+> > > > > > >    the kernel boot and the end of userspace boot may be helpful.
+> > > > > > >
+> > > > > > > 2) The kernel boot was already covered before this patch so this is about
+> > > > > > >    userspace code calling into the kernel. Is that piece of code also called
+> > > > > > >    after the boot? In that case are we missing a conversion from
+> > > > > > >    synchronize_rcu() to synchronize_rcu_expedited() somewhere? Because then
+> > > > > > >    the problem is more general than just boot.
+> > > > > > >
+> > > > > > > This needs to be analyzed first and if it happens that the issue really
+> > > > > > > needs to be fixed with telling the kernel that userspace has completed
+> > > > > > > booting, eg: because the problem is not in a few callsites that need conversion
+> > > > > > > to expedited but instead in the accumulation of lots of calls that should stay
+> > > > > > > as is:
+> > > > > > >
+> > > > > > > 3) This arbitrary timeout looks dangerous to me as latency sensitive code
+> > > > > > >    may run right after the boot. Either you choose a value that is too low
+> > > > > > >    and you miss the optimization or the value is too high and you may break
+> > > > > > >    things.
+> > > > > > >
+> > > > > > > 4) This should be fixed the way you did:
+> > > > > > >    a) a kernel parameter like you did
+> > > > > > >    b) The init process (systemd?) tells the kernel when it judges that userspace
+> > > > > > >       has completed booting.
+> > > > > > >    c) Make these interfaces more generic, maybe that information will be useful
+> > > > > > >       outside RCU. For example the kernel parameter should be
+> > > > > > >       "user_booted_reported" and the sysfs (should be sysctl?):
+> > > > > > >       kernel.user_booted = 1
+> > > > > > >    d) But yuck, this means we must know if the init process supports that...
+> > > > > > >
+> > > > > > > For these reasons, let's make sure we know exactly what is going on first.
+> > > > > > >
+> > > > > > > Thanks.
+> > > > > > Just add some notes and thoughts. There is a rcupdate.rcu_expedited=1
+> > > > > > parameter that can be used during the boot. For example on our devices
+> > > > > > to speedup a boot we boot the kernel with rcu_expedited:
+> > > > > >
+> > > > > > XQ-DQ54:/ # cat /proc/cmdline
+> > > > > > XQ-DQ54:/ #
+> > > > > >
+> > > > > > then a user space can decides if it is needed or not:
+> > > > > >
+> > > > > > <snip>
+> > > > > > rcu_expedited  rcu_normal
+> > > > > > XQ-DQ54:/ # ls -al /sys/kernel/rcu_*
+> > > > > > -rw-r--r-- 1 root root 4096 2023-02-16 09:27 /sys/kernel/rcu_expedited
+> > > > > > -rw-r--r-- 1 root root 4096 2023-02-16 09:27 /sys/kernel/rcu_normal
+> > > > > > XQ-DQ54:/ #
+> > > > > > <snip>
+> > > > > >
+> > > > > > for lazy we can add "rcu_cb_lazy" parameter and boot the kernel with
+> > > > > > true or false. So we can follow and be aligned with rcu_expedited and
+> > > > > > rcu_normal parameters.
+> > > > > 
+> > > > > Speaking of aligning, there is also the automated
+> > > > > rcu_normal_after_boot boot option correct? I prefer the automated
+> > > > > option of doing this. So the approach here is not really unprecedented
+> > > > > and is much more robust than relying on userspace too much (I am ok
+> > > > > with adding your suggestion *on top* of the automated toggle, but I
+> > > > > probably would not have ChromeOS use it if the automated way exists).
+> > > > > Or did I miss something?
+> > > > 
+> > > > See this commit:
+> > > > 
+> > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use of expedited RCU primitives")
+> > > > 
+> > > > Antti provided this commit precisely in order to allow Android devices
+> > > > to expedite the boot process and to shut off the expediting at a time of
+> > > > Android userspace's choosing.  So Android has been making this work for
+> > > > about ten years, which strikes me as an adequate proof of concept.  ;-)
+> > > 
+> > > Thanks for the pointer. That's true. Looking at Android sources, I find that
+> > > Android Mediatek devices at least are setting rcu_expedited to 1 at late
+> > > stage of their userspace boot (which is weird, it should be set to 1 as early
+> > > as possible), and interestingly I cannot find them resetting it back to 0!.
+> > > Maybe they set rcu_normal to 1? But I cannot find that either. Vlad? :P
+> > 
+> > Interesting.  Though this is consistent with Antti's commit log, where
+> > he talks about expediting grace periods but not unexpediting them.
+> > 
+> Do you think we need to unexpedite it? :))))
 
-You can boot an SEV-ES guest in apic mode, but that would be unusual, so I 
-think this approach is fine.
+Android runs on smallish systems, so quite possibly not!
 
-Thanks,
-Tom
-
-> 
-> https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/parallel-6.2-v14
-> 
-> Looks like this:
-> 
-> /*
->   * We can do 64-bit AP bringup in parallel if the CPU reports its APIC
->   * ID in CPUID (either leaf 0x0B if we need the full APIC ID in X2APIC
->   * mode, or leaf 0x01 if 8 bits are sufficient). Otherwise it's too
->   * hard.
->   */
-> static bool prepare_parallel_bringup(void)
-> {
-> 	bool has_sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT) &&
-> 		static_branch_unlikely(&sev_es_enable_key);
-> 
-> 	if (IS_ENABLED(CONFIG_X86_32))
-> 		return false;
-> 
-> 	/*
-> 	 * Encrypted guests other than SEV-ES (in the future) will need to
-> 	 * implement an early way of finding the APIC ID, since they will
-> 	 * presumably block direct CPUID too. Be kind to our future selves
-> 	 * by warning here instead of just letting them break. Parallel
-> 	 * startup doesn't have to be in the first round of enabling patches
-> 	 * for any such technology.
-> 	 */
-> 	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT) || !has_sev_es) {
-> 		pr_info("Disabling parallel bringup due to guest memory encryption\n");
-> 		return false;
-> 	}
-> 
-> 	if (x2apic_mode || has_sev_es) {
-> 		if (boot_cpu_data.cpuid_level < 0x0b)
-> 			return false;
-> 
-> 		if (check_extended_topology_leaf(0x0b) != 0) {
-> 			pr_info("Disabling parallel bringup because CPUID 0xb looks untrustworthy\n");
-> 			return false;
-> 		}
-> 
-> 		if (has_sev_es) {
-> 			pr_debug("Using SEV-ES CPUID 0xb for parallel CPU startup\n");
-> 			smpboot_control = STARTUP_APICID_SEV_ES;
-> 		} else {
-> 			pr_debug("Using CPUID 0xb for parallel CPU startup\n");
-> 			smpboot_control = STARTUP_APICID_CPUID_0B;
-> 		}
-> 	} else {
-> 		/* Without X2APIC, what's in CPUID 0x01 should suffice. */
-> 		if (boot_cpu_data.cpuid_level < 0x01)
-> 			return false;
-> 
-> 		pr_debug("Using CPUID 0x1 for parallel CPU startup\n");
-> 		smpboot_control = STARTUP_APICID_CPUID_01;
-> 	}
-> 
-> 	cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:kick",
-> 				  native_cpu_kick, NULL);
-> 	return true;
-> }
-> 
+							Thanx, Paul
