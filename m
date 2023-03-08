@@ -2,52 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B203BC64EC4
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 17:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BD51C742A7
+	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 17:14:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjCHROV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 12:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56984 "EHLO
+        id S230182AbjCHROY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 12:14:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjCHROM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 12:14:12 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBBE38648
-        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 09:13:32 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id bg16-20020a05600c3c9000b003eb34e21bdfso1837620wmb.0
-        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 09:13:32 -0800 (PST)
+        with ESMTP id S230016AbjCHROQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 12:14:16 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950BA37B61
+        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 09:13:34 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id az36so10265497wmb.1
+        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 09:13:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1678295611;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Hbd9XxfEHV1OJLQFkD6huyFI87+kHUzsYgNvadq9ro=;
-        b=VbM39aUkBb6MZLrUtznBsn7M6L1Jpk274NlRplE7z13AYroWy2VxSrZPFffDMdI7cQ
-         dmp9r9zVIP8nQiXgRoNCUeNgZd7y0TApSThRSn3CxvArGSk9zviFpJURRrk46yYe6cGe
-         Vdu17uscUhhmxZKdgZ1PD5g3ni2HxvsoGOi2IqEWPoaYmxo8cOlbP20fre1/ucsz4LJq
-         YN2OzURIxGrYLL56rPNP6ghvpSWjN++ESzUVBh08EX9KUQ0Mg0baOHe2xmrBaXwYTR+d
-         UrfHWtGiQdmVj/ignDNSAqXQonpeuTj9mqmEzDQR7ij378Mn24u6daBnhg/i4ncGXFq4
-         JcPw==
+        d=bytedance.com; s=google; t=1678295613;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5ygAcJKnTKCTvVciunh9HcyMwipcH5PYmlVu4YEhebA=;
+        b=B03iUazIeK+fTOeTtoIYFrVlkiCg5MKp6EKIDmdOHo+VcLdDxW1z3dCNzk2ZFiCWGN
+         fjlhvGekCaLakHwlMXb5VP7URHIdAVayJ40T0qzRe4csvjkR9EX6S10aO0BwcDpeYUMU
+         Prhx+quIXkuodhfySavM3z1GsbKf4vpm6WgmkuDXxZBn4aXlCk9xjLa48zu9KUhj7iWq
+         86xKIFzUaUaHr9UMtT8GDLYoZfy3qSg3YVJY/nuUKQxPaYE+ztVrnvYTBV9YYpa6mmZx
+         Ml6ObVsVHkrw5qmluLVzc2W8BFUtfv6DwPZ8quiiZbzBricZZEqOtnP/XOdydwXaFED9
+         2+ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678295611;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Hbd9XxfEHV1OJLQFkD6huyFI87+kHUzsYgNvadq9ro=;
-        b=R5XLAeyrzLGkIlf17xxcsqXO20vFHDVCjKoyR1vMw5w7qXhoVeuVtra5gikrFee64r
-         ND9echQdSpsg7frOviXCggq3E9j8gVDkfXIAWn/XRpZ9KxCgVsj+m2WQ9NpJcM6lJMB7
-         Vaz25b6a8tdcMPnaxvHiKUvsxdcsrumUJtR897pZeFyn204AYWgellZquYtAOxhQbG/p
-         /vO6ujPgT/CsUsY+csydhJpS0FK0oapXwpc0PmEGlTMegl0uYRKfEGeX4yGRZrs4orQ0
-         w/EKKkxEDpCcRhkiCWzcgp/tnrcpf2g/6+bykehbWS8LInGEi6ZB99oDCdHputv6UVvg
-         Z5Hg==
-X-Gm-Message-State: AO0yUKW7v7Hyz0JQJO25XsGsvWpe5PZcmGNm0x00GYXkcVcwKIIjWxBG
-        kXRNbQCBjUHQQDsBT7PJl69FQQ==
-X-Google-Smtp-Source: AK7set/2pclT+0jyD/CpDkqDgtgAsIgDoMOFzt/fZtH/PIq3cke44cz4F9GV5i7sumV/4Q4hpcgohw==
-X-Received: by 2002:a05:600c:4f11:b0:3df:ef18:b0a1 with SMTP id l17-20020a05600c4f1100b003dfef18b0a1mr16958315wmq.12.1678295611256;
-        Wed, 08 Mar 2023 09:13:31 -0800 (PST)
+        d=1e100.net; s=20210112; t=1678295613;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5ygAcJKnTKCTvVciunh9HcyMwipcH5PYmlVu4YEhebA=;
+        b=uB4rqieTuWsFuACdZDcB/V7uVZq2S2Gh9oOQcgaTJgbF4WzZeap/FR1h5IJYYmVXky
+         OPv7LDRh4mtNIexlJNtB8J7bIG0+43XBrX+rSm4fczml0oqt0mIXGW2ccTzcXoC2SbKV
+         PJ65jMjT8OjnjJO0vdzOGbkVxf/0uTRe2wgpIai+3Tf5B2mguAMyi2tscrtJmzU6mS2T
+         ONEcWlWOLij5v5XVIZTdUM9U7kkNsHo854QvU8VWr93uiGKSAvZgClABcb1bfI8osz7g
+         5dLfuCywW52cSzmxdltLdKSLhGYKA+8wIkhsXKZGAXP+nyyF1Yre4dFDgU57YeXAtiTH
+         hbuQ==
+X-Gm-Message-State: AO0yUKWKnN7kpp1UWAy00cksO5xYfyrUGXKi4j4uWoUj1sE7OrhJl2bD
+        sKRsdgNrd7crU5nqohoWg/If1Q==
+X-Google-Smtp-Source: AK7set9E23EQ3CCUsK86/pbHyXxLmsHsJ//uovV0sY/zaz7img3MnVmcwR7TD7FGrbIWyadA/xhM0A==
+X-Received: by 2002:a05:600c:470b:b0:3eb:29fe:fe19 with SMTP id v11-20020a05600c470b00b003eb29fefe19mr16946175wmo.34.1678295613083;
+        Wed, 08 Mar 2023 09:13:33 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:fe40:3ba4:afe4:4609])
-        by smtp.gmail.com with ESMTPSA id l15-20020a1c790f000000b003e0238d9101sm11668wme.31.2023.03.08.09.13.30
+        by smtp.gmail.com with ESMTPSA id l15-20020a1c790f000000b003e0238d9101sm11668wme.31.2023.03.08.09.13.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Mar 2023 09:13:30 -0800 (PST)
+        Wed, 08 Mar 2023 09:13:32 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
         brgerst@gmail.com
@@ -60,108 +61,81 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
-        Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v14 00/12] Parallel CPU bringup for x86_64
-Date:   Wed,  8 Mar 2023 17:13:16 +0000
-Message-Id: <20230308171328.1562857-1-usama.arif@bytedance.com>
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Usama Arif <usama.arif@bytedance.com>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH v14 02/12] cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+Date:   Wed,  8 Mar 2023 17:13:18 +0000
+Message-Id: <20230308171328.1562857-3-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230308171328.1562857-1-usama.arif@bytedance.com>
+References: <20230308171328.1562857-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The main code change over v13 is to enable parallel bringup for SEV-ES guests.
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-Thanks,
-Usama
+Instead of relying purely on the special-case wrapper in bringup_cpu()
+to pass the idle thread to __cpu_up(), expose idle_thread_get() so that
+the architecture code can obtain it directly when necessary.
 
-Changes across versions:
-v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
-v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
-    in preparation for more parallelisation.
-v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
-    avoid scribbling on initial_gs in common_cpu_up(), and to allow all
-    24 bits of the physical X2APIC ID to be used. That patch still needs
-    a Signed-off-by from its original author, who once claimed not to
-    remember writing it at all. But now we've fixed it, hopefully he'll
-    admit it now :)
-v5: rebase to v6.1 and remeasure performance, disable parallel bringup
-    for AMD CPUs.
-v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
-    reused timer calibration for secondary CPUs.
-v7: [David Woodhouse] iterate over all possible CPUs to find any existing
-    cluster mask in alloc_clustermask. (patch 1/9)
-    Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
-    0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
-    Included sanity checks for APIC id from 0x0B. (patch 6/9)
-    Removed patch for reusing timer calibration for secondary CPUs.
-    commit message and code improvements.
-v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
-    early_gdt_descr.
-    Drop trampoline lock and bail if APIC ID not found in find_cpunr.
-    Code comments improved and debug prints added.
-v9: Drop patch to avoid repeated saves of MTRR at boot time.
-    rebased and retested at v6.2-rc8.
-    added kernel doc for no_parallel_bringup and made do_parallel_bringup
-    __ro_after_init.
-v10: Fixed suspend/resume not working with parallel smpboot.
-     rebased and retested to 6.2.
-     fixed checkpatch errors.
-v11: Added patches from Brian Gerst to remove the global variables initial_gs,
-     initial_stack, and early_gdt_descr from the 64-bit boot code
-     (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.com/).
-v12: Fixed compilation errors, acquire tr_lock for every stack setup in
-     trampoline_64.S.
-     Rearranged commits for a cleaner git history.
-v13: Fix build error with CONFIG_FORCE_NR_CPUS.
-     Commit message improved, typos fixed and extra comments added.
-v14: Enable parallel bringup for SEV-ES guests
+This will be useful when the existing __cpu_up() is split into multiple
+phases, only *one* of which will actually need the idle thread.
+
+If the architecture code is to register its new pre-bringup states with
+the cpuhp core, having a special-case wrapper to pass extra arguments is
+non-trivial and it's easier just to let the arch register its function
+pointer to be invoked with the standard API.
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+---
+ include/linux/smpboot.h | 7 +++++++
+ kernel/smpboot.h        | 2 --
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/smpboot.h b/include/linux/smpboot.h
+index 9d1bc65d226c..3862addcaa34 100644
+--- a/include/linux/smpboot.h
++++ b/include/linux/smpboot.h
+@@ -5,6 +5,13 @@
+ #include <linux/types.h>
  
-Brian Gerst (3):
-  x86/smpboot: Remove initial_stack on 64-bit
-  x86/smpboot: Remove early_gdt_descr on 64-bit
-  x86/smpboot: Remove initial_gs
-
-David Woodhouse (9):
-  x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
-  cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
-  cpu/hotplug: Add dynamic parallel bringup states before
-    CPUHP_BRINGUP_CPU
-  x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
-  x86/smpboot: Split up native_cpu_up into separate phases and document
-    them
-  x86/smpboot: Support parallel startup of secondary CPUs
-  x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
-  x86/smpboot: Serialize topology updates for secondary bringup
-  x86/smpboot: Allow parallel bringup for SEV-ES
-
- .../admin-guide/kernel-parameters.txt         |   3 +
- arch/x86/include/asm/cpu.h                    |   1 +
- arch/x86/include/asm/processor.h              |   6 +-
- arch/x86/include/asm/realmode.h               |   4 +-
- arch/x86/include/asm/sev-common.h             |   3 +
- arch/x86/include/asm/sev.h                    |   5 +
- arch/x86/include/asm/smp.h                    |  18 +-
- arch/x86/include/asm/topology.h               |   2 -
- arch/x86/kernel/acpi/sleep.c                  |  30 +-
- arch/x86/kernel/apic/apic.c                   |   2 +-
- arch/x86/kernel/apic/x2apic_cluster.c         | 126 +++---
- arch/x86/kernel/asm-offsets.c                 |   1 +
- arch/x86/kernel/cpu/common.c                  |   6 +-
- arch/x86/kernel/cpu/topology.c                |   2 +-
- arch/x86/kernel/head_64.S                     | 162 ++++++--
- arch/x86/kernel/smpboot.c                     | 366 +++++++++++++-----
- arch/x86/realmode/init.c                      |   3 +
- arch/x86/realmode/rm/trampoline_64.S          |  27 +-
- arch/x86/xen/smp_pv.c                         |   4 +-
- arch/x86/xen/xen-head.S                       |   2 +-
- include/linux/cpuhotplug.h                    |   2 +
- include/linux/smpboot.h                       |   7 +
- kernel/cpu.c                                  |  31 +-
- kernel/smpboot.h                              |   2 -
- 24 files changed, 614 insertions(+), 201 deletions(-)
-
+ struct task_struct;
++
++#ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
++struct task_struct *idle_thread_get(unsigned int cpu);
++#else
++static inline struct task_struct *idle_thread_get(unsigned int cpu) { return NULL; }
++#endif
++
+ /* Cookie handed to the thread_fn*/
+ struct smpboot_thread_data;
+ 
+diff --git a/kernel/smpboot.h b/kernel/smpboot.h
+index 34dd3d7ba40b..60c609318ad6 100644
+--- a/kernel/smpboot.h
++++ b/kernel/smpboot.h
+@@ -5,11 +5,9 @@
+ struct task_struct;
+ 
+ #ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
+-struct task_struct *idle_thread_get(unsigned int cpu);
+ void idle_thread_set_boot_cpu(void);
+ void idle_threads_init(void);
+ #else
+-static inline struct task_struct *idle_thread_get(unsigned int cpu) { return NULL; }
+ static inline void idle_thread_set_boot_cpu(void) { }
+ static inline void idle_threads_init(void) { }
+ #endif
 -- 
 2.25.1
 
