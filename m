@@ -2,313 +2,130 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA698C64EC4
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 13:53:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8446FC64EC4
+	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 14:11:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbjCHNxW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 08:53:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
+        id S231402AbjCHOLZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 09:11:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbjCHNxG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 08:53:06 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DA334301
-        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 05:53:03 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id p6so17767614plf.0
-        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 05:53:03 -0800 (PST)
+        with ESMTP id S232202AbjCHOLF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 09:11:05 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC7B5B5CB
+        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 06:10:10 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id j2so15484472wrh.9
+        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 06:10:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678283583;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7UAQRD5xDMDl5efcAdmHuAflyn+NPkuoZTTYDMUgB8s=;
-        b=ki22F7TgI2MQZgePihLjwE5YSCWxd2rvt+pllNoMevXIca/gQ2b0Xepv4PdyuGQToE
-         lP7cuAYFGTJZHL8wbTZkkSGfRNtBfDuEQnbSMdChDyi4+zqyxnqcrzi7EoPXGJY9Qyfp
-         duxehLJvrLqD7BPRCnRnbh+/YruZKPAM4oS7w=
+        d=bytedance.com; s=google; t=1678284607;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jwuTURK4pgdaZOSjBm4ykIJHPiI6ZMc4y7U8yqvAA8E=;
+        b=NxOQX0losj6KUjW09AqI8TallxXyzA+67KC1SEgp5kdAmzbG3S4/HUaTEGpBt3NUOr
+         RHSUf+M77rNNQ0yqTjZemL7w9dmOTJee81l+pDDJG2MinGPI8ZRofYU2MclMNz/BemM3
+         /n9jvPmXzsIkdGyNpIwkLobcprw/oWVKCKX/VBetSFHw3132J1qu0g0Bwhx2U5HWNGDV
+         XBn5qVa1t1g8WXO5j5MrJfYSbeCLA+XEiSPaDDg0jDD3L3Ms6lHUuWuuu2ef742x6ntt
+         utuPNEU19qiu0+mNpg1DvB73RhRVwZYg5IrhvFacFD2Tzl3rQigC62uF2OcjQHtI4XaV
+         u+Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678283583;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7UAQRD5xDMDl5efcAdmHuAflyn+NPkuoZTTYDMUgB8s=;
-        b=kzjFfh3HrxfhKKfZrmuhaaxQDm8BW/9AIAN31WLd6rB9Hr21GXxjmxt5JbIgcPhZpG
-         5rCNNy6p2R7yNKuz9SOIBtjlNRmXMutVyLkUH1Gnpa4WNOVILEUhpmyu8K52oCEPOHIP
-         ZHKGXOsEcU2n0JbGD3U4DXujA0BsCiM99Kf354IOFEPWt/89FRga3NwB01sSj75MhNoo
-         yFMZ+E4zKbaICBdvYF12gvRIw0zRPit0xYrKPoq7PP1jns5SzCyLGcxItxg8SmbvHp00
-         i1JpejX91av2lWmXCF63VY5nJik0Zvi91ZnzNovGIsOAI/AivzWEHlyC4BubPSukJ2CD
-         LAwQ==
-X-Gm-Message-State: AO0yUKWqyEnkVA/s0v4hgK1c+mPiMFOhCiPantdze827+lNI4Pe4gW84
-        XMRStmxgn8BV5H/i7mh4KRek6w==
-X-Google-Smtp-Source: AK7set/8Ob0YrcwSnOsTfRsXCvNrgOTxxGqEkn3mGRnIQ7Oa1joXwsxdzgFIWxQp3Tb6ROO6WsEk7g==
-X-Received: by 2002:a05:6a20:5481:b0:cc:c3f7:9178 with SMTP id i1-20020a056a20548100b000ccc3f79178mr22690275pzk.31.1678283582967;
-        Wed, 08 Mar 2023 05:53:02 -0800 (PST)
-Received: from smtpclient.apple ([2600:1010:b049:5d6c:a98c:abbd:1cd:6532])
-        by smtp.gmail.com with ESMTPSA id h22-20020aa786d6000000b005e4c3e2022fsm9402979pfo.72.2023.03.08.05.53.01
+        d=1e100.net; s=20210112; t=1678284607;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jwuTURK4pgdaZOSjBm4ykIJHPiI6ZMc4y7U8yqvAA8E=;
+        b=PJ8DdWs8uZHvvpb0GqDCPlh8d+vw2NZtmuh6Rl9LZ8jR5Vdtddrs2bTXz7DVLTgGMH
+         AOqiVgL2zgUt5tcs7wARqTu0HOAT8NVnOkpqa5vfKPaxmgbGsYdJT9r+mI+UEkvI22P+
+         owVsjQc7lH/wLz4pc2DjFQcMaQMX8FU7kRN8Ormb9WN61wLTB8HCh7nhDoA04uLwbb1c
+         c3YyOAqTxRi+DQLmKAKweWdQkPqK6Nk/y8HiunmEc5sca4NSYTpB5jLwFfmFAC2ULeQ8
+         QpUStCb+D5A5Gmc8TlB/9SqLi4n8wDpGCXr7VNHoSR34vlx/ziANIDiDBI3AvFs0kjPW
+         rKFA==
+X-Gm-Message-State: AO0yUKXrNMiIvzsp0H4G1IeRRw4bHt+/AlWNHIxe7o/903sdAa3B0Kh5
+        Ev24VBv/UvGvepHgcOEbpuOqdA==
+X-Google-Smtp-Source: AK7set/OkWWaPqXZ/GgjkOaIwX0t9gxjOEHVNFuu2kgYmqldgwXq2yccYCG6fFviJObZxipEmkpzrg==
+X-Received: by 2002:adf:f5c9:0:b0:2c7:1210:fe42 with SMTP id k9-20020adff5c9000000b002c71210fe42mr11736229wrp.47.1678284607105;
+        Wed, 08 Mar 2023 06:10:07 -0800 (PST)
+Received: from ?IPV6:2a02:6b6a:b566:0:52ca:aea8:eb67:a912? ([2a02:6b6a:b566:0:52ca:aea8:eb67:a912])
+        by smtp.gmail.com with ESMTPSA id m14-20020adffe4e000000b002c54c8e70b1sm15571371wrs.9.2023.03.08.06.10.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Mar 2023 05:53:02 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Date:   Wed, 8 Mar 2023 05:52:50 -0800
-Message-Id: <FF43EB74-026D-4863-8926-8DB40FED5930@joelfernandes.org>
-References: <ZAdyGANbQhduAFTM@lothringen>
-Cc:     linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org, urezki@gmail.com
-In-Reply-To: <ZAdyGANbQhduAFTM@lothringen>
-To:     Frederic Weisbecker <frederic@kernel.org>
-X-Mailer: iPhone Mail (20B101)
+        Wed, 08 Mar 2023 06:10:06 -0800 (PST)
+Message-ID: <a6090023-29d7-a190-d118-56b8e7acffc6@bytedance.com>
+Date:   Wed, 8 Mar 2023 14:10:05 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH v13 00/11] Parallel CPU bringup for x86_64
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Phillips, Kim" <kim.phillips@amd.com>,
+        "brgerst@gmail.com" <brgerst@gmail.com>,
+        "Rapan, Sabin" <sabrapan@amazon.com>
+Cc:     "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
+        "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+        "arjan@linux.intel.com" <arjan@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "mimoja@mimoja.de" <mimoja@mimoja.de>,
+        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
+        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
+        "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
+        "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
+        "liangma@liangbit.com" <liangma@liangbit.com>
+References: <20230302111227.2102545-1-usama.arif@bytedance.com>
+ <faa0eb3bb8ba0326d501516a057ab46eaf1f3c05.camel@infradead.org>
+ <effbb6e2-c5a1-af7f-830d-8d7088f57477@amd.com>
+ <269ed38b5eed9c3a259c183d59d4f1eb5128f132.camel@infradead.org>
+ <0c56683a-c258-46f6-056e-e85da8a557db@amd.com>
+ <3bfbbd92-b2ed-8189-7b57-0533f6c87ae7@amd.com>
+ <1975308c952236895f2d8f0e56af9db288eaf330.camel@infradead.org>
+ <39f23da7-1e77-4535-21a6-00f77a382ae5@amd.com>
+ <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
 
-> On Mar 7, 2023, at 9:19 AM, Frederic Weisbecker <frederic@kernel.org> wrot=
-e:
->=20
-> =EF=BB=BFOn Tue, Mar 07, 2023 at 08:41:17AM -0500, Joel Fernandes wrote:
->>> On Tue, Mar 7, 2023 at 8:01=E2=80=AFAM Frederic Weisbecker <frederic@ker=
-nel.org> wrote:
->>>=20
->>> On Fri, Mar 03, 2023 at 09:38:51PM +0000, Joel Fernandes (Google) wrote:=
+> static bool prepare_parallel_bringup(void)
+> {
+> 	bool has_sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT) &&
+> 		static_branch_unlikely(&sev_es_enable_key);
 
->>>> On many systems, a great deal of boot (in userspace) happens after the
->>>> kernel thinks the boot has completed. It is difficult to determine if
->>>> the system has really booted from the kernel side. Some features like
->>>> lazy-RCU can risk slowing down boot time if, say, a callback has been
->>>> added that the boot synchronously depends on. Further expedited callbac=
-ks
->>>> can get unexpedited way earlier than it should be, thus slowing down
->>>> boot (as shown in the data below).
->>>>=20
->>>> For these reasons, this commit adds a config option
->>>> 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter rcupdate.boot_end_dela=
-y.
->>>> Userspace can also make RCU's view of the system as booted, by writing t=
-he
->>>> time in milliseconds to: /sys/module/rcupdate/parameters/rcu_boot_end_d=
-elay
->>>> Or even just writing a value of 0 to this sysfs node.
->>>> However, under no circumstance will the boot be allowed to end earlier
->>>> than just before init is launched.
->>>>=20
->>>> The default value of CONFIG_RCU_BOOT_END_DELAY is chosen as 15s. This
->>>> suites ChromeOS and also a PREEMPT_RT system below very well, which nee=
-d
->>>> no config or parameter changes, and just a simple application of this p=
-atch. A
->>>> system designer can also choose a specific value here to keep RCU from m=
-arking
->>>> boot completion.  As noted earlier, RCU's perspective of the system as b=
-ooted
->>>> will not be marker until at least rcu_boot_end_delay milliseconds have p=
-assed
->>>> or an update is made via writing a small value (or 0) in milliseconds t=
-o:
->>>> /sys/module/rcupdate/parameters/rcu_boot_end_delay.
->>>>=20
->>>> One side-effect of this patch is, there is a risk that a real-time work=
-load
->>>> launched just after the kernel boots will suffer interruptions due to e=
-xpedited
->>>> RCU, which previous ended just before init was launched. However, to mi=
-tigate
->>>> such an issue (however unlikely), the user should either tune
->>>> CONFIG_RCU_BOOT_END_DELAY to a smaller value than 15 seconds or write a=
- value
->>>> of 0 to /sys/module/rcupdate/parameters/rcu_boot_end_delay, once usersp=
-ace
->>>> boots, and before launching the real-time workload.
->>>>=20
->>>> Qiuxu also noted impressive boot-time improvements with earlier version=
+sev_es_enable_key is only defined when CONFIG_AMD_MEM_ENCRYPT is 
+enabled, so it gives a build error when AMD_MEM_ENCRYPT is disabled. 
+maybe below is better?
 
->>>> of patch. An excerpt from the data he shared:
->>>>=20
->>>> 1) Testing environment:
->>>>    OS            : CentOS Stream 8 (non-RT OS)
->>>>    Kernel     : v6.2
->>>>    Machine : Intel Cascade Lake server (2 sockets, each with 44 logical=
- threads)
->>>>    Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=3D2,sockets=3D2=
-, =E2=80=A6
->>>>=20
->>>> 2) OS boot time definition:
->>>>    The time from the start of the kernel boot to the shell command line=
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 282cca020777..e7df41436cfe 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1519,8 +1519,12 @@ void __init smp_prepare_cpus_common(void)
+   */
+  static bool prepare_parallel_bringup(void)
+  {
+-       bool has_sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT) &&
+-               static_branch_unlikely(&sev_es_enable_key);
++       bool has_sev_es;
++#ifdef CONFIG_AMD_MEM_ENCRYPT
++       has_sev_es = static_branch_unlikely(&sev_es_enable_key);
++#else
++       has_sev_es = 0;
++#endif
 
->>>>    prompt is shown from the console. [ Different people may have
->>>>    different OS boot time definitions. ]
->>>>=20
->>>> 3) Measurement method (very rough method):
->>>>    A timer in the kernel periodically prints the boot time every 100ms.=
-
->>>>    As soon as the shell command line prompt is shown from the console,
->>>>    we record the boot time printed by the timer, then the printed boot
->>>>    time is the OS boot time.
->>>>=20
->>>> 4) Measured OS boot time (in seconds)
->>>>   a) Measured 10 times w/o this patch:
->>>>        8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
->>>>        The average OS boot time was: ~8.7s
->>>>=20
->>>>   b) Measure 10 times w/ this patch:
->>>>        8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
->>>>        The average OS boot time was: ~8.3s.
->>>>=20
->>>> Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->>>=20
->>> I still don't really like that:
->>>=20
->>> 1) It feels like we are curing a symptom for which we don't know the cau=
-se.
->>>   Which RCU write side caller is the source of this slow boot? Some trac=
-epoints
->>>   reporting the wait duration within synchronize_rcu() calls between the=
- end of
->>>   the kernel boot and the end of userspace boot may be helpful.
->>=20
->> Just to clarify (and I feel we discussed this recently) -- there is no
->> callback I am aware of right now causing a slow boot. The reason for
->> doing this is we don't have such issues in the future; so it is a
->> protection. Note the repeated call outs to the scsi callback and also
->> the rcu_barrier() issue previously fixed. Further, we already see
->> slight improvements in boot times with disabling lazy during boot (its
->> not much but its there). Yes, we should fix issues instead of hiding
->> them - but we also would like to improve the user experience -- just
->> like we disable lazy and expedited during suspend.
->>=20
->> So what is the problem that you really have with this patch even with
->> data showing improvements? I actually wanted a mechanism like this
->> from the beginning and was trying to get Intel to write the patch, but
->> I ended up writing it.
->=20
-> Let's put it another way: kernel boot is mostly code that won't execute
-> again. User boot (or rather the kernel part of it) OTOH is code that is
-> subject to be repeated again.
->=20
-> A lot of the kernel boot code is __init code that will execute only once.
-> And there it makes sense to force hurry and expedited because we may easil=
-y
-> miss something and after all this all happens only once, also there is no
-> interference with userspace, etc...
->=20
-> User boot OTOH use common kernel code: syscalls, signal, files, etc... And=
- that
-> code will be called also after the boot.
->=20
-> So if there is something slowing down user boot, there are some good chanc=
-es
-> that this thing slows down userspace in general.
->=20
-> Therefore we need to know exactly what's going on because the problem may b=
-e
-> bigger than what you observe on boot.
-
-Just to add to previous reply:
-
-One thing to consider is that it is more of a performance improvement for bo=
-oting in expedited mode to fallback to normal later, than a bug fix. Repeate=
-d synchronize_rcu() can easily add 100s of milliseconds and to remedy that =E2=
-=80=94 a conversion of the call from normal API to the expedited API will no=
-t help.
-
-What is needed is user mode to notify kernel or do some kind of timed fallba=
-ck line I did here. Both of these approaches have their pros and cons (and s=
-o IMO we should probably give an option to do both).
-
-Thanks,
-
-- Joel
-
->=20
->>=20
->>> 2) The kernel boot was already covered before this patch so this is abou=
-t
->>>   userspace code calling into the kernel. Is that piece of code also cal=
-led
->>>   after the boot? In that case are we missing a conversion from
->>>   synchronize_rcu() to synchronize_rcu_expedited() somewhere? Because th=
-en
->>>   the problem is more general than just boot.
->>>=20
->>> This needs to be analyzed first and if it happens that the issue really
->>> needs to be fixed with telling the kernel that userspace has completed
->>> booting, eg: because the problem is not in a few callsites that need con=
-version
->>> to expedited but instead in the accumulation of lots of calls that shoul=
-d stay
->>> as is:
->>=20
->> There is no such callback I am aware off that needs such a conversion
->> and I don't think that will help give any guarantees because there is
->> no preventing someone from adding a callback that synchronously slows
->> boot. The approach here is to put a protection. However, I will do
->> some more investigations into what else may be slowing things as I do
->> hold a lot of weight for your words! :)
->=20
-> Kernel boot is already handled and userspace boot can not add a new RCU ca=
-llback.
->=20
->>=20
->>>=20
->>> 3) This arbitrary timeout looks dangerous to me as latency sensitive cod=
-e
->>>   may run right after the boot. Either you choose a value that is too lo=
-w
->>>   and you miss the optimization or the value is too high and you may bre=
-ak
->>>   things.
->>=20
->> So someone is presenting a timing sensitive workload within 15 seconds
->> of boot? Please provide some evidence of that.
->=20
-> I have no idea, there are billions of computers running out there, it's a d=
-isaster...
->=20
->> The only evidence right now is on the plus side even for the RT system.
->=20
-> Right it's improving the boot of an RT system, doesn't mean it's not break=
-ing
-> post boot of others.
->=20
->>=20
->>> 4) This should be fixed the way you did:
->>>   a) a kernel parameter like you did
->>>   b) The init process (systemd?) tells the kernel when it judges that us=
-erspace
->>>      has completed booting.
->>>   c) Make these interfaces more generic, maybe that information will be u=
-seful
->>>      outside RCU. For example the kernel parameter should be
->>>      "user_booted_reported" and the sysfs (should be sysctl?):
->>>      kernel.user_booted =3D 1
->>>   d) But yuck, this means we must know if the init process supports that=
-...
->>>=20
->>> For these reasons, let's make sure we know exactly what is going on firs=
-t.
->>=20
->> I can investigate this more and get back to you.
->>=20
->> One of the challenges is getting boot tracing working properly.
->> Systems do weird things like turning off tracing during boot and/or
->> clearing trace buffers.
->=20
-> Just compare the average and total duration of all synchronize_rcu() calls=
-
-> (before and after forcing expedited) between launching initand userspace b=
-oot
-> completion. Sure there will be noise but if a difference can be measured b=
-efore
-> and after your patch, then a difference might be measureable on tracing as=
-
-> well... Well of course tracing can induce subtle things... But let's try a=
-t
-> least, we want to know what we are fixing here.
->=20
-> Thanks.
->=20
+         if (IS_ENABLED(CONFIG_X86_32))
+                 return false;
