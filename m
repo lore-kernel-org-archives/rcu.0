@@ -2,217 +2,313 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92674C64EC4
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 12:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA698C64EC4
+	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 13:53:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbjCHMVK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 07:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
+        id S231826AbjCHNxW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 08:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbjCHMUs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 07:20:48 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FAC9E501;
-        Wed,  8 Mar 2023 04:20:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LMGabDB73FH9aBYxKq0Zsw72vfecliMYzAttkTpGc54=; b=Jszy3OA60mbBkncVHi8WUSU4ds
-        AHDHNI6X+/+HL0lpeprotiwWYAycoCMfkvksxJvYk45HwUOcCUuX2KZ+yuy7pviZObOoc7UneHeT0
-        TphzzBKfcNABlcuV0zUyKpwDfux2NxU9JUQ0vpD0XmyzCmWg9jtJQlwD0r6LiUyU/ONJ3Y5DW+/Jx
-        Ps7VQKYxN1gZmSK/HHMaQ2K/+z7JEigWSAiP0lqSRtk+1qVXIb3HSFmAz6co4c1gRoAQBxxC7WnUW
-        uW+FWS/gkFORoJoAq8LKzTNDay7RtPxb7ADHIuO3nslcU0nUbcXSgWR5axsVDwI9wHKvwVNJ1igoC
-        PioIzgBA==;
-Received: from [2001:8b0:10b:5:3866:d921:bf99:a106] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pZsli-007Ncq-8n; Wed, 08 Mar 2023 12:19:42 +0000
-Message-ID: <cbde7112ba635b6a2d7bab951b7c107f55c1a9ee.camel@infradead.org>
-Subject: Re: [PATCH v13 00/11] Parallel CPU bringup for x86_64
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Usama Arif <usama.arif@bytedance.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
-        "brgerst@gmail.com" <brgerst@gmail.com>,
-        "Rapan, Sabin" <sabrapan@amazon.com>
-Cc:     "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
-        "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
-        "arjan@linux.intel.com" <arjan@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "mimoja@mimoja.de" <mimoja@mimoja.de>,
-        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
-        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
-        "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
-        "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
-        "liangma@liangbit.com" <liangma@liangbit.com>
-Date:   Wed, 08 Mar 2023 12:19:40 +0000
-In-Reply-To: <5aef7e908e1d492386d568ef36b75493@AcuMS.aculab.com>
-References: <20230302111227.2102545-1-usama.arif@bytedance.com>
-         <faa0eb3bb8ba0326d501516a057ab46eaf1f3c05.camel@infradead.org>
-         <effbb6e2-c5a1-af7f-830d-8d7088f57477@amd.com>
-         <269ed38b5eed9c3a259c183d59d4f1eb5128f132.camel@infradead.org>
-         <0c56683a-c258-46f6-056e-e85da8a557db@amd.com>
-         <3bfbbd92-b2ed-8189-7b57-0533f6c87ae7@amd.com>
-         <1975308c952236895f2d8f0e56af9db288eaf330.camel@infradead.org>
-         <39f23da7-1e77-4535-21a6-00f77a382ae5@amd.com>
-         <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
-         <5aef7e908e1d492386d568ef36b75493@AcuMS.aculab.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-ZSc8xH8GYdxg1t1WlIMo"
-User-Agent: Evolution 3.44.4-0ubuntu1 
-MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        with ESMTP id S231511AbjCHNxG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 08:53:06 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DA334301
+        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 05:53:03 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id p6so17767614plf.0
+        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 05:53:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1678283583;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7UAQRD5xDMDl5efcAdmHuAflyn+NPkuoZTTYDMUgB8s=;
+        b=ki22F7TgI2MQZgePihLjwE5YSCWxd2rvt+pllNoMevXIca/gQ2b0Xepv4PdyuGQToE
+         lP7cuAYFGTJZHL8wbTZkkSGfRNtBfDuEQnbSMdChDyi4+zqyxnqcrzi7EoPXGJY9Qyfp
+         duxehLJvrLqD7BPRCnRnbh+/YruZKPAM4oS7w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678283583;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7UAQRD5xDMDl5efcAdmHuAflyn+NPkuoZTTYDMUgB8s=;
+        b=kzjFfh3HrxfhKKfZrmuhaaxQDm8BW/9AIAN31WLd6rB9Hr21GXxjmxt5JbIgcPhZpG
+         5rCNNy6p2R7yNKuz9SOIBtjlNRmXMutVyLkUH1Gnpa4WNOVILEUhpmyu8K52oCEPOHIP
+         ZHKGXOsEcU2n0JbGD3U4DXujA0BsCiM99Kf354IOFEPWt/89FRga3NwB01sSj75MhNoo
+         yFMZ+E4zKbaICBdvYF12gvRIw0zRPit0xYrKPoq7PP1jns5SzCyLGcxItxg8SmbvHp00
+         i1JpejX91av2lWmXCF63VY5nJik0Zvi91ZnzNovGIsOAI/AivzWEHlyC4BubPSukJ2CD
+         LAwQ==
+X-Gm-Message-State: AO0yUKWqyEnkVA/s0v4hgK1c+mPiMFOhCiPantdze827+lNI4Pe4gW84
+        XMRStmxgn8BV5H/i7mh4KRek6w==
+X-Google-Smtp-Source: AK7set/8Ob0YrcwSnOsTfRsXCvNrgOTxxGqEkn3mGRnIQ7Oa1joXwsxdzgFIWxQp3Tb6ROO6WsEk7g==
+X-Received: by 2002:a05:6a20:5481:b0:cc:c3f7:9178 with SMTP id i1-20020a056a20548100b000ccc3f79178mr22690275pzk.31.1678283582967;
+        Wed, 08 Mar 2023 05:53:02 -0800 (PST)
+Received: from smtpclient.apple ([2600:1010:b049:5d6c:a98c:abbd:1cd:6532])
+        by smtp.gmail.com with ESMTPSA id h22-20020aa786d6000000b005e4c3e2022fsm9402979pfo.72.2023.03.08.05.53.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Mar 2023 05:53:02 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
+Date:   Wed, 8 Mar 2023 05:52:50 -0800
+Message-Id: <FF43EB74-026D-4863-8926-8DB40FED5930@joelfernandes.org>
+References: <ZAdyGANbQhduAFTM@lothringen>
+Cc:     linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, urezki@gmail.com
+In-Reply-To: <ZAdyGANbQhduAFTM@lothringen>
+To:     Frederic Weisbecker <frederic@kernel.org>
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-ZSc8xH8GYdxg1t1WlIMo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 
-T24gV2VkLCAyMDIzLTAzLTA4IGF0IDEyOjE1ICswMDAwLCBEYXZpZCBMYWlnaHQgd3JvdGU6Cj4g
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgLyoKPiA+IMKgwqDCoMKgwqDCoMKgwqAgKiBFbmNyeXB0ZWQg
-Z3Vlc3RzIG90aGVyIHRoYW4gU0VWLUVTIChpbiB0aGUgZnV0dXJlKSB3aWxsIG5lZWQgdG8KPiA+
-IMKgwqDCoMKgwqDCoMKgwqAgKiBpbXBsZW1lbnQgYW4gZWFybHkgd2F5IG9mIGZpbmRpbmcgdGhl
-IEFQSUMgSUQsIHNpbmNlIHRoZXkgd2lsbAo+ID4gwqDCoMKgwqDCoMKgwqDCoCAqIHByZXN1bWFi
-bHkgYmxvY2sgZGlyZWN0IENQVUlEIHRvby4gQmUga2luZCB0byBvdXIgZnV0dXJlIHNlbHZlcwo+
-ID4gwqDCoMKgwqDCoMKgwqDCoCAqIGJ5IHdhcm5pbmcgaGVyZSBpbnN0ZWFkIG9mIGp1c3QgbGV0
-dGluZyB0aGVtIGJyZWFrLiBQYXJhbGxlbAo+ID4gwqDCoMKgwqDCoMKgwqDCoCAqIHN0YXJ0dXAg
-ZG9lc24ndCBoYXZlIHRvIGJlIGluIHRoZSBmaXJzdCByb3VuZCBvZiBlbmFibGluZyBwYXRjaGVz
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgICogZm9yIGFueSBzdWNoIHRlY2hub2xvZ3kuCj4gPiDCoMKg
-wqDCoMKgwqDCoMKgICovCj4gPiDCoMKgwqDCoMKgwqDCoMKgaWYgKGNjX3BsYXRmb3JtX2hhcyhD
-Q19BVFRSX0dVRVNUX1NUQVRFX0VOQ1JZUFQpIHx8ICFoYXNfc2V2X2VzKSB7Cj4gPiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHByX2luZm8oIkRpc2FibGluZyBwYXJhbGxlbCBicmlu
-Z3VwIGR1ZSB0byBndWVzdCBtZW1vcnkgZW5jcnlwdGlvblxuIik7Cj4gPiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiBmYWxzZTsKPiA+IMKgwqDCoMKgwqDCoMKgwqB9Cj4g
-Cj4gVGhhdCBsb29rcyB3cm9uZywgd29uJ3QgaGFzX3Nldl9lcyBhbG1vc3QgYWx3YXlzIGJlIGZh
-bHNlCj4gc28gaXQgcHJpbnRzIHRoZSBtZXNzYWdlIGFuZCByZXR1cm5zPwo+IE1heWJlIHMvfHwv
-JiYvID8KCkQnb2ghIEZpeGVkOyB0aGFua3MuCg==
+> On Mar 7, 2023, at 9:19 AM, Frederic Weisbecker <frederic@kernel.org> wrot=
+e:
+>=20
+> =EF=BB=BFOn Tue, Mar 07, 2023 at 08:41:17AM -0500, Joel Fernandes wrote:
+>>> On Tue, Mar 7, 2023 at 8:01=E2=80=AFAM Frederic Weisbecker <frederic@ker=
+nel.org> wrote:
+>>>=20
+>>> On Fri, Mar 03, 2023 at 09:38:51PM +0000, Joel Fernandes (Google) wrote:=
 
+>>>> On many systems, a great deal of boot (in userspace) happens after the
+>>>> kernel thinks the boot has completed. It is difficult to determine if
+>>>> the system has really booted from the kernel side. Some features like
+>>>> lazy-RCU can risk slowing down boot time if, say, a callback has been
+>>>> added that the boot synchronously depends on. Further expedited callbac=
+ks
+>>>> can get unexpedited way earlier than it should be, thus slowing down
+>>>> boot (as shown in the data below).
+>>>>=20
+>>>> For these reasons, this commit adds a config option
+>>>> 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter rcupdate.boot_end_dela=
+y.
+>>>> Userspace can also make RCU's view of the system as booted, by writing t=
+he
+>>>> time in milliseconds to: /sys/module/rcupdate/parameters/rcu_boot_end_d=
+elay
+>>>> Or even just writing a value of 0 to this sysfs node.
+>>>> However, under no circumstance will the boot be allowed to end earlier
+>>>> than just before init is launched.
+>>>>=20
+>>>> The default value of CONFIG_RCU_BOOT_END_DELAY is chosen as 15s. This
+>>>> suites ChromeOS and also a PREEMPT_RT system below very well, which nee=
+d
+>>>> no config or parameter changes, and just a simple application of this p=
+atch. A
+>>>> system designer can also choose a specific value here to keep RCU from m=
+arking
+>>>> boot completion.  As noted earlier, RCU's perspective of the system as b=
+ooted
+>>>> will not be marker until at least rcu_boot_end_delay milliseconds have p=
+assed
+>>>> or an update is made via writing a small value (or 0) in milliseconds t=
+o:
+>>>> /sys/module/rcupdate/parameters/rcu_boot_end_delay.
+>>>>=20
+>>>> One side-effect of this patch is, there is a risk that a real-time work=
+load
+>>>> launched just after the kernel boots will suffer interruptions due to e=
+xpedited
+>>>> RCU, which previous ended just before init was launched. However, to mi=
+tigate
+>>>> such an issue (however unlikely), the user should either tune
+>>>> CONFIG_RCU_BOOT_END_DELAY to a smaller value than 15 seconds or write a=
+ value
+>>>> of 0 to /sys/module/rcupdate/parameters/rcu_boot_end_delay, once usersp=
+ace
+>>>> boots, and before launching the real-time workload.
+>>>>=20
+>>>> Qiuxu also noted impressive boot-time improvements with earlier version=
 
---=-ZSc8xH8GYdxg1t1WlIMo
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+>>>> of patch. An excerpt from the data he shared:
+>>>>=20
+>>>> 1) Testing environment:
+>>>>    OS            : CentOS Stream 8 (non-RT OS)
+>>>>    Kernel     : v6.2
+>>>>    Machine : Intel Cascade Lake server (2 sockets, each with 44 logical=
+ threads)
+>>>>    Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=3D2,sockets=3D2=
+, =E2=80=A6
+>>>>=20
+>>>> 2) OS boot time definition:
+>>>>    The time from the start of the kernel boot to the shell command line=
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzA4MTIxOTQwWjAvBgkqhkiG9w0BCQQxIgQgnudjezqA
-OkhHGG8xs9zrwS3wlgbUlWDSNOTwhi0EUpcwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCP3DkbyyAeWGII++3OlDcIN2ZynO+2014L
-AUs09WfLOFahDoWHoGlbKpIm+U4LQFTuPfaoPl/XiEnet+o5rsXuQAyBK2ShLNIEVnd+kbBGzLoB
-Ihs5/z7U7/mpkY6DK/pQkeNnwSFhOn/ZuzfiNplK02Bz348TbL6EI3Jrr011A/DH+FghXXKi7O0t
-mT7qlSJXE8EoCBDL6nF+621Y+FcIgzR+YI5DifofrAxbAxQ7RRL0DNC3nq0/SwEcth7yYtC0ppGE
-RgEybr/105xXAWmnz7ztMmQvamEfCa8kNSrpSsdLNIfC1i/Dvy70M+s7fcIKBU/IjSRbyoqqrTJY
-IaYQru6BQ0K1kcy1AX+fi1Z4RNfHDm6E6WeLXKD+XKsfPkEDyInAJSSf2LmDU/7VWuY0vhYxmXHT
-4arf5oFQgY+gF23moRXw/SFnzlyNDxWymUj7/aaSLPHxP07XUuZiB6utgHMsfTE3ZFe5NAa816F9
-6VyIhL2odEVWVD+r2ZjBLZLyqv9r9WZzb17cs03HYlbX9O3/IqUp9olS6eHg7ZIH1x80UbPQOnPg
-PFOkdrZ7wMXO49kT6VBWFecJnFkQUC3/W5mb+gT8vBLBr9rLgV/RGBt7JlbIkQ+dy/ysRUQH6C66
-HXW6Hu2+4LSHchSFmhiN5W4q/fb7ACurgKJQ79WFCAAAAAAAAA==
+>>>>    prompt is shown from the console. [ Different people may have
+>>>>    different OS boot time definitions. ]
+>>>>=20
+>>>> 3) Measurement method (very rough method):
+>>>>    A timer in the kernel periodically prints the boot time every 100ms.=
 
+>>>>    As soon as the shell command line prompt is shown from the console,
+>>>>    we record the boot time printed by the timer, then the printed boot
+>>>>    time is the OS boot time.
+>>>>=20
+>>>> 4) Measured OS boot time (in seconds)
+>>>>   a) Measured 10 times w/o this patch:
+>>>>        8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
+>>>>        The average OS boot time was: ~8.7s
+>>>>=20
+>>>>   b) Measure 10 times w/ this patch:
+>>>>        8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
+>>>>        The average OS boot time was: ~8.3s.
+>>>>=20
+>>>> Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>>>=20
+>>> I still don't really like that:
+>>>=20
+>>> 1) It feels like we are curing a symptom for which we don't know the cau=
+se.
+>>>   Which RCU write side caller is the source of this slow boot? Some trac=
+epoints
+>>>   reporting the wait duration within synchronize_rcu() calls between the=
+ end of
+>>>   the kernel boot and the end of userspace boot may be helpful.
+>>=20
+>> Just to clarify (and I feel we discussed this recently) -- there is no
+>> callback I am aware of right now causing a slow boot. The reason for
+>> doing this is we don't have such issues in the future; so it is a
+>> protection. Note the repeated call outs to the scsi callback and also
+>> the rcu_barrier() issue previously fixed. Further, we already see
+>> slight improvements in boot times with disabling lazy during boot (its
+>> not much but its there). Yes, we should fix issues instead of hiding
+>> them - but we also would like to improve the user experience -- just
+>> like we disable lazy and expedited during suspend.
+>>=20
+>> So what is the problem that you really have with this patch even with
+>> data showing improvements? I actually wanted a mechanism like this
+>> from the beginning and was trying to get Intel to write the patch, but
+>> I ended up writing it.
+>=20
+> Let's put it another way: kernel boot is mostly code that won't execute
+> again. User boot (or rather the kernel part of it) OTOH is code that is
+> subject to be repeated again.
+>=20
+> A lot of the kernel boot code is __init code that will execute only once.
+> And there it makes sense to force hurry and expedited because we may easil=
+y
+> miss something and after all this all happens only once, also there is no
+> interference with userspace, etc...
+>=20
+> User boot OTOH use common kernel code: syscalls, signal, files, etc... And=
+ that
+> code will be called also after the boot.
+>=20
+> So if there is something slowing down user boot, there are some good chanc=
+es
+> that this thing slows down userspace in general.
+>=20
+> Therefore we need to know exactly what's going on because the problem may b=
+e
+> bigger than what you observe on boot.
 
---=-ZSc8xH8GYdxg1t1WlIMo--
+Just to add to previous reply:
+
+One thing to consider is that it is more of a performance improvement for bo=
+oting in expedited mode to fallback to normal later, than a bug fix. Repeate=
+d synchronize_rcu() can easily add 100s of milliseconds and to remedy that =E2=
+=80=94 a conversion of the call from normal API to the expedited API will no=
+t help.
+
+What is needed is user mode to notify kernel or do some kind of timed fallba=
+ck line I did here. Both of these approaches have their pros and cons (and s=
+o IMO we should probably give an option to do both).
+
+Thanks,
+
+- Joel
+
+>=20
+>>=20
+>>> 2) The kernel boot was already covered before this patch so this is abou=
+t
+>>>   userspace code calling into the kernel. Is that piece of code also cal=
+led
+>>>   after the boot? In that case are we missing a conversion from
+>>>   synchronize_rcu() to synchronize_rcu_expedited() somewhere? Because th=
+en
+>>>   the problem is more general than just boot.
+>>>=20
+>>> This needs to be analyzed first and if it happens that the issue really
+>>> needs to be fixed with telling the kernel that userspace has completed
+>>> booting, eg: because the problem is not in a few callsites that need con=
+version
+>>> to expedited but instead in the accumulation of lots of calls that shoul=
+d stay
+>>> as is:
+>>=20
+>> There is no such callback I am aware off that needs such a conversion
+>> and I don't think that will help give any guarantees because there is
+>> no preventing someone from adding a callback that synchronously slows
+>> boot. The approach here is to put a protection. However, I will do
+>> some more investigations into what else may be slowing things as I do
+>> hold a lot of weight for your words! :)
+>=20
+> Kernel boot is already handled and userspace boot can not add a new RCU ca=
+llback.
+>=20
+>>=20
+>>>=20
+>>> 3) This arbitrary timeout looks dangerous to me as latency sensitive cod=
+e
+>>>   may run right after the boot. Either you choose a value that is too lo=
+w
+>>>   and you miss the optimization or the value is too high and you may bre=
+ak
+>>>   things.
+>>=20
+>> So someone is presenting a timing sensitive workload within 15 seconds
+>> of boot? Please provide some evidence of that.
+>=20
+> I have no idea, there are billions of computers running out there, it's a d=
+isaster...
+>=20
+>> The only evidence right now is on the plus side even for the RT system.
+>=20
+> Right it's improving the boot of an RT system, doesn't mean it's not break=
+ing
+> post boot of others.
+>=20
+>>=20
+>>> 4) This should be fixed the way you did:
+>>>   a) a kernel parameter like you did
+>>>   b) The init process (systemd?) tells the kernel when it judges that us=
+erspace
+>>>      has completed booting.
+>>>   c) Make these interfaces more generic, maybe that information will be u=
+seful
+>>>      outside RCU. For example the kernel parameter should be
+>>>      "user_booted_reported" and the sysfs (should be sysctl?):
+>>>      kernel.user_booted =3D 1
+>>>   d) But yuck, this means we must know if the init process supports that=
+...
+>>>=20
+>>> For these reasons, let's make sure we know exactly what is going on firs=
+t.
+>>=20
+>> I can investigate this more and get back to you.
+>>=20
+>> One of the challenges is getting boot tracing working properly.
+>> Systems do weird things like turning off tracing during boot and/or
+>> clearing trace buffers.
+>=20
+> Just compare the average and total duration of all synchronize_rcu() calls=
+
+> (before and after forcing expedited) between launching initand userspace b=
+oot
+> completion. Sure there will be noise but if a difference can be measured b=
+efore
+> and after your patch, then a difference might be measureable on tracing as=
+
+> well... Well of course tracing can induce subtle things... But let's try a=
+t
+> least, we want to know what we are fixing here.
+>=20
+> Thanks.
+>=20
