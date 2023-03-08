@@ -2,67 +2,37 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 382DDC678D5
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 11:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E16DEC678D5
+	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 12:16:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbjCHL1v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 06:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
+        id S230459AbjCHMQP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 07:16:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjCHL1g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 06:27:36 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7365590B4C
-        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 03:27:08 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id h11so15011720wrm.5
-        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 03:27:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1678274827;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xGsHd+caIhy+o/7MHpOCMmfE0nVqpXcNQURttklH9DM=;
-        b=RdY5GhIfWj5FnKL5h0MTeHpAe6DHoh9G2ogllkQklvM8m0Ms3Ya94kgKaQCBTZ5ztT
-         Qy8ur845Gc40OhTbruolPCMewKSZJv8gof64zQxvWRCufFcHhWVN5aPDZa3avFFr9UU5
-         ymhfh7/WAa0AmJiDOOK66GfCveI3Ls0vzJexzqC91VLEkYZlZDcRlVFOMhYpZZ3LtHNb
-         XJsHs0+IhZMPlPn8Y01WhDdhKwZ+hrMjQvm0ukh5RJcjMV/Wm37q3y2C0+gA/aEK2qoW
-         Vr/cUMbahEvbDhExHfZcFqMV8W064ehTtqPqF31c11MRMrDOoQXjvXWKYLJGtSpcFZG4
-         NECQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678274827;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xGsHd+caIhy+o/7MHpOCMmfE0nVqpXcNQURttklH9DM=;
-        b=JcN+ZTSjrTX0XU0yaWTEYnWRI7pNTyI03ikgnZiELRhgS1fmI8Kb5drZUaw2O2eeVs
-         PDpvI3UfcKR+ppsV94cp+fir3I6CGCr/hnr6l1m6x9Rj6eQsgivTsOPRcSVrYvM8FLUG
-         hcO+Wv7/s2xF3acDT1Zw9NZf43b6MyrGRM9BM7TOsxg2sF5jrW31SCY4aFBSDzYPLcvJ
-         V87FufWDnjUfR45gHUcGREqm5rP25hqpiFaSOAvJjwwBqA4QLZEgU+sXc8AY9UHdEO3O
-         X6+V42CmEZ9bVdS7qFAepUuDprnq8zgXZxn2x+P0WsnDDVwRJ7E/JCVpHqk+n4aI0bWD
-         kFQA==
-X-Gm-Message-State: AO0yUKWOWBQMlIfRr5VPyZBVzwQmXHuZWL4yUZSgDv3L1B5I0HHxnCYl
-        Vcl3tocWJ6AuXWvQZmQdcoyDpg==
-X-Google-Smtp-Source: AK7set/1oY+bIpBndW8g4VVVbLA8HSuIl6wHrl3WL1xEowqjGfgy/C2pPZzXN+BPAXQCqMjTlx0XLQ==
-X-Received: by 2002:a05:6000:1803:b0:2c5:4aea:d121 with SMTP id m3-20020a056000180300b002c54aead121mr13012246wrh.15.1678274826886;
-        Wed, 08 Mar 2023 03:27:06 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b566:0:52ca:aea8:eb67:a912? ([2a02:6b6a:b566:0:52ca:aea8:eb67:a912])
-        by smtp.gmail.com with ESMTPSA id u8-20020a5d4688000000b002c5544b3a69sm15197758wrq.89.2023.03.08.03.27.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Mar 2023 03:27:06 -0800 (PST)
-Message-ID: <a6eb52fe-6441-62b3-964c-d1e661fe37f0@bytedance.com>
-Date:   Wed, 8 Mar 2023 11:27:05 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [PATCH v13 00/11] Parallel CPU bringup for x86_64
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
+        with ESMTP id S231253AbjCHMQL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 07:16:11 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E385D9BA4B
+        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 04:16:07 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-27-ZwokEwwKO2-vd15XSZuFEA-1; Wed, 08 Mar 2023 12:16:04 +0000
+X-MC-Unique: ZwokEwwKO2-vd15XSZuFEA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.47; Wed, 8 Mar
+ 2023 12:15:56 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.047; Wed, 8 Mar 2023 12:15:56 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Woodhouse' <dwmw2@infradead.org>,
         Tom Lendacky <thomas.lendacky@amd.com>,
+        Usama Arif <usama.arif@bytedance.com>,
         "tglx@linutronix.de" <tglx@linutronix.de>,
         "Phillips, Kim" <kim.phillips@amd.com>,
         "brgerst@gmail.com" <brgerst@gmail.com>,
         "Rapan, Sabin" <sabrapan@amazon.com>
-Cc:     "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
+CC:     "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
         "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
         "arjan@linux.intel.com" <arjan@linux.intel.com>,
         "mingo@redhat.com" <mingo@redhat.com>,
@@ -82,129 +52,60 @@ Cc:     "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
         "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
         "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
         "liangma@liangbit.com" <liangma@liangbit.com>
+Subject: RE: [PATCH v13 00/11] Parallel CPU bringup for x86_64
+Thread-Topic: [PATCH v13 00/11] Parallel CPU bringup for x86_64
+Thread-Index: AQHZUZ1JrrsGLfc9/UqVDEYgWl/q367wy8Sw
+Date:   Wed, 8 Mar 2023 12:15:56 +0000
+Message-ID: <5aef7e908e1d492386d568ef36b75493@AcuMS.aculab.com>
 References: <20230302111227.2102545-1-usama.arif@bytedance.com>
- <faa0eb3bb8ba0326d501516a057ab46eaf1f3c05.camel@infradead.org>
- <effbb6e2-c5a1-af7f-830d-8d7088f57477@amd.com>
- <269ed38b5eed9c3a259c183d59d4f1eb5128f132.camel@infradead.org>
- <0c56683a-c258-46f6-056e-e85da8a557db@amd.com>
- <3bfbbd92-b2ed-8189-7b57-0533f6c87ae7@amd.com>
- <1975308c952236895f2d8f0e56af9db288eaf330.camel@infradead.org>
- <39f23da7-1e77-4535-21a6-00f77a382ae5@amd.com>
+         <faa0eb3bb8ba0326d501516a057ab46eaf1f3c05.camel@infradead.org>
+         <effbb6e2-c5a1-af7f-830d-8d7088f57477@amd.com>
+         <269ed38b5eed9c3a259c183d59d4f1eb5128f132.camel@infradead.org>
+         <0c56683a-c258-46f6-056e-e85da8a557db@amd.com>
+         <3bfbbd92-b2ed-8189-7b57-0533f6c87ae7@amd.com>
+         <1975308c952236895f2d8f0e56af9db288eaf330.camel@infradead.org>
+         <39f23da7-1e77-4535-21a6-00f77a382ae5@amd.com>
  <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
-From:   Usama Arif <usama.arif@bytedance.com>
 In-Reply-To: <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+RnJvbTogRGF2aWQgV29vZGhvdXNlDQo+IFNlbnQ6IDA4IE1hcmNoIDIwMjMgMDk6MDUNCi4uLg0K
+PiBodHRwczovL2dpdC5pbmZyYWRlYWQub3JnL3VzZXJzL2R3bXcyL2xpbnV4LmdpdC9zaG9ydGxv
+Zy9yZWZzL2hlYWRzL3BhcmFsbGVsLTYuMi12MTQNCj4gDQo+IExvb2tzIGxpa2UgdGhpczoNCj4g
+DQo+IC8qDQo+ICAqIFdlIGNhbiBkbyA2NC1iaXQgQVAgYnJpbmd1cCBpbiBwYXJhbGxlbCBpZiB0
+aGUgQ1BVIHJlcG9ydHMgaXRzIEFQSUMNCj4gICogSUQgaW4gQ1BVSUQgKGVpdGhlciBsZWFmIDB4
+MEIgaWYgd2UgbmVlZCB0aGUgZnVsbCBBUElDIElEIGluIFgyQVBJQw0KPiAgKiBtb2RlLCBvciBs
+ZWFmIDB4MDEgaWYgOCBiaXRzIGFyZSBzdWZmaWNpZW50KS4gT3RoZXJ3aXNlIGl0J3MgdG9vDQo+
+ICAqIGhhcmQuDQo+ICAqLw0KPiBzdGF0aWMgYm9vbCBwcmVwYXJlX3BhcmFsbGVsX2JyaW5ndXAo
+dm9pZCkNCj4gew0KPiAJYm9vbCBoYXNfc2V2X2VzID0gSVNfRU5BQkxFRChDT05GSUdfQU1EX01F
+TV9FTkNSWVBUKSAmJg0KPiAJCXN0YXRpY19icmFuY2hfdW5saWtlbHkoJnNldl9lc19lbmFibGVf
+a2V5KTsNCj4gDQo+IAlpZiAoSVNfRU5BQkxFRChDT05GSUdfWDg2XzMyKSkNCj4gCQlyZXR1cm4g
+ZmFsc2U7DQo+IA0KPiAJLyoNCj4gCSAqIEVuY3J5cHRlZCBndWVzdHMgb3RoZXIgdGhhbiBTRVYt
+RVMgKGluIHRoZSBmdXR1cmUpIHdpbGwgbmVlZCB0bw0KPiAJICogaW1wbGVtZW50IGFuIGVhcmx5
+IHdheSBvZiBmaW5kaW5nIHRoZSBBUElDIElELCBzaW5jZSB0aGV5IHdpbGwNCj4gCSAqIHByZXN1
+bWFibHkgYmxvY2sgZGlyZWN0IENQVUlEIHRvby4gQmUga2luZCB0byBvdXIgZnV0dXJlIHNlbHZl
+cw0KPiAJICogYnkgd2FybmluZyBoZXJlIGluc3RlYWQgb2YganVzdCBsZXR0aW5nIHRoZW0gYnJl
+YWsuIFBhcmFsbGVsDQo+IAkgKiBzdGFydHVwIGRvZXNuJ3QgaGF2ZSB0byBiZSBpbiB0aGUgZmly
+c3Qgcm91bmQgb2YgZW5hYmxpbmcgcGF0Y2hlcw0KPiAJICogZm9yIGFueSBzdWNoIHRlY2hub2xv
+Z3kuDQo+IAkgKi8NCj4gCWlmIChjY19wbGF0Zm9ybV9oYXMoQ0NfQVRUUl9HVUVTVF9TVEFURV9F
+TkNSWVBUKSB8fCAhaGFzX3Nldl9lcykgew0KPiAJCXByX2luZm8oIkRpc2FibGluZyBwYXJhbGxl
+bCBicmluZ3VwIGR1ZSB0byBndWVzdCBtZW1vcnkgZW5jcnlwdGlvblxuIik7DQo+IAkJcmV0dXJu
+IGZhbHNlOw0KPiAJfQ0KDQpUaGF0IGxvb2tzIHdyb25nLCB3b24ndCBoYXNfc2V2X2VzIGFsbW9z
+dCBhbHdheXMgYmUgZmFsc2UNCnNvIGl0IHByaW50cyB0aGUgbWVzc2FnZSBhbmQgcmV0dXJucz8N
+Ck1heWJlIHMvfHwvJiYvID8NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
+c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
+Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-
-On 08/03/2023 09:04, David Woodhouse wrote:
-> On Tue, 2023-03-07 at 16:55 -0600, Tom Lendacky wrote:
->> On 3/7/23 16:27, David Woodhouse wrote:
->>> On Tue, 2023-03-07 at 16:22 -0600, Tom Lendacky wrote:
->>>>
->>>> I did some Qemu/KVM testing. One thing I noticed is that on AMD, CPUID 0xB
->>>> EAX will be non-zero only if SMT is enabled. So just booting some guests
->>>> without CPU topology never did parallel booting ("smpboot: Disabling
->>>> parallel bringup because CPUID 0xb looks untrustworthy"). I would imagine
->>>> a bare-metal system that has diabled SMT will not do parallel booting, too
->>>> (but I haven't had time to test that).
->>>
->>> Interesting, thanks. Should I change to checking for *both* EAX and EBX
->>> being zero? That's what I did first, after reading only the Intel SDM.
->>> But I changed to only EAX because the AMD doc only says that EAX will
->>> be zero for unsupported leaves.
->>
->>   From a baremetal perspective, I think that works. Rome was the first
->> generation to support x2apic, and the PPR for Rome states that 0's are
->> returned in all 4 registers for undefined function numbers.
->>
->> For virtualization, at least Qemu/KVM, that also looks to be a safe test.
-> 
-> At Sean's suggestion, I've switched it to use the existing
-> check_extended_topology_leaf() which checks for EBX being non-zero, and
-> CH being 1 (SMT_TYPE).
-> 
-> I also made it work even if the kernel isn't using x2apic mode (is that
-> even possible, or does SEV-ES require the MSR-based access anyway?)
-> 
-> It just looked odd handling SEV-ES in the CPUID 0x0B path but not the
-> CPUID 0x01 case, and I certainly didn't want to implement the asm side
-> for handling CPUID 0x01 via the GHCB protocol. And this way I can pull
-> the check for CC_ATTR_GUEST_STATE_ENCRYPT up above. Which I've kept for
-> now for the reason described in the comment, but I won't die on that
-> hill.
-> 
-> https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/parallel-6.2-v14
-> 
-> Looks like this:
-> 
-> /*
->   * We can do 64-bit AP bringup in parallel if the CPU reports its APIC
->   * ID in CPUID (either leaf 0x0B if we need the full APIC ID in X2APIC
->   * mode, or leaf 0x01 if 8 bits are sufficient). Otherwise it's too
->   * hard.
->   */
-> static bool prepare_parallel_bringup(void)
-> {
-> 	bool has_sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT) &&
-> 		static_branch_unlikely(&sev_es_enable_key);
-> 
-> 	if (IS_ENABLED(CONFIG_X86_32))
-> 		return false;
-> 
-> 	/*
-> 	 * Encrypted guests other than SEV-ES (in the future) will need to
-> 	 * implement an early way of finding the APIC ID, since they will
-> 	 * presumably block direct CPUID too. Be kind to our future selves
-> 	 * by warning here instead of just letting them break. Parallel
-> 	 * startup doesn't have to be in the first round of enabling patches
-> 	 * for any such technology.
-> 	 */
-> 	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT) || !has_sev_es) {
-> 		pr_info("Disabling parallel bringup due to guest memory encryption\n");
-> 		return false;
-
-I believe this is still going to enable parallel bringup for TDX? 
-Looking at include/linux/cc_platform.h, it looks like 
-CC_ATTR_GUEST_STATE_ENCRYPT is only set for SEV-ES and TDX guest with 
-x2apic will go on in this function and enable parallel bringup if leaf 
-0xB is ok. I guess if the apic ID is OK for the TDX guest, then its 
-fine, but just wanted to check if anyone has tested this on TDX guest?
-
-
-> 	}
-> 
-> 	if (x2apic_mode || has_sev_es) {
-> 		if (boot_cpu_data.cpuid_level < 0x0b)
-> 			return false;
-> 
-> 		if (check_extended_topology_leaf(0x0b) != 0) {
-> 			pr_info("Disabling parallel bringup because CPUID 0xb looks untrustworthy\n");
-> 			return false;
-> 		}
-> 
-> 		if (has_sev_es) {
-> 			pr_debug("Using SEV-ES CPUID 0xb for parallel CPU startup\n");
-> 			smpboot_control = STARTUP_APICID_SEV_ES;
-> 		} else {
-> 			pr_debug("Using CPUID 0xb for parallel CPU startup\n");
-> 			smpboot_control = STARTUP_APICID_CPUID_0B;
-> 		}
-> 	} else {
-> 		/* Without X2APIC, what's in CPUID 0x01 should suffice. */
-> 		if (boot_cpu_data.cpuid_level < 0x01)
-> 			return false;
-> 
-> 		pr_debug("Using CPUID 0x1 for parallel CPU startup\n");
-> 		smpboot_control = STARTUP_APICID_CPUID_01;
-> 	}
-> 
-> 	cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:kick",
-> 				  native_cpu_kick, NULL);
-> 	return true;
-> }
-> 
