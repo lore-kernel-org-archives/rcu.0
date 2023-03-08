@@ -2,49 +2,62 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8692BC64EC4
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 07:40:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89D9FC64EC4
+	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 09:06:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjCHHkS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 02:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
+        id S229590AbjCHJGc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 04:06:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbjCHHkB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 02:40:01 -0500
+        with ESMTP id S229827AbjCHJG1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 04:06:27 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36713D923;
-        Tue,  7 Mar 2023 23:39:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DC6A4B1D;
+        Wed,  8 Mar 2023 01:05:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
         In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=t6/JZVG5ttKC+8TZ0iH5rEBs/g+s37SVVO61buyVX7Q=; b=YEo9DCVaj4DwitSYbBcE/L3BDK
-        +axaGZZsNwct4Kktmj+J4zJvMx5w5XoeMKbECs6zf4wn+k6KGfQ6z3uqDUyJmKjh48sFwjmuBnuwx
-        GCrq16XHOzDG883Rdy4fXe+T0gzlPr5pMb6NkuWxOx0y/MicdJafZ7UTIzI3KqlaYpzPhkLU5bKpj
-        RkACcAE+xG+Tx3YMT1nYLh1Nz7uc1qsMCHi5oVqSyy2QU+qcSwJ7WFaoiYJC7yJXFkXB4ov1iDtKT
-        3AowGYdqanSwzJCKSlB+vaYoYT5tY3VxTogg+hcsW3PgIrnUBYbd8GV62gmyMPzsx2rpepvDIM8zN
-        GnBqVHCQ==;
+        bh=wO9up/h4GA2hg9N4xQCFC55IYQ3i3HPt7/zM7JACQyA=; b=DF5bS2w99A6/aXDbPLZw75QKhQ
+        +oGfJgJ4ogGb+9dn6ovGk/3PSAJuKrgcPyydh2HRRoikcG7bVhXlTRvFGINcyScocsDJ1VUirNxfd
+        84x2rizUcgDKcun6mK9cZohDQA+Kr0W87wXKHTE85jUgdrGtEr9YssHqiz9qeh7gwFjttk54C878A
+        sXKsi0OCsu1ea4yIr72s2E0yDLpFBECKHbMF4W8wmMzkWhwdxoeOSnE2d8NCkz17ivVMeHFko0AWn
+        saZ0tR2DAq0PhJQxVkfzpNmVz32/oCCH1rb0HDYjRPf1IkRb8k3Qsv02odt0q7IKmIIMOwCig8XSg
+        Ed7WWy1g==;
 Received: from [2001:8b0:10b:5:3866:d921:bf99:a106] (helo=u3832b3a9db3152.ant.amazon.com)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pZoNd-007BEx-Sr; Wed, 08 Mar 2023 07:38:34 +0000
-Message-ID: <e52f36336d849c46b0ee2196f88c3490ddd34323.camel@infradead.org>
+        id 1pZpjF-007EXk-1e; Wed, 08 Mar 2023 09:04:58 +0000
+Message-ID: <ba8aae2eafdeb09ec1a41d45ab3c2e4cdaf7a28f.camel@infradead.org>
 Subject: Re: [PATCH v13 00/11] Parallel CPU bringup for x86_64
 From:   David Woodhouse <dwmw2@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
-        kim.phillips@amd.com, brgerst@gmail.com,
-        Sabin Rapan <sabrapan@amazon.com>, piotrgorski@cachyos.org,
-        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        pmenzel@molgen.mpg.de, fam.zheng@bytedance.com,
-        punit.agrawal@bytedance.com, simon.evans@bytedance.com,
-        liangma@liangbit.com
-Date:   Wed, 08 Mar 2023 07:38:32 +0000
-In-Reply-To: <ZAfDhT97ctXSYiYe@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Usama Arif <usama.arif@bytedance.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Phillips, Kim" <kim.phillips@amd.com>,
+        "brgerst@gmail.com" <brgerst@gmail.com>,
+        "Rapan, Sabin" <sabrapan@amazon.com>
+Cc:     "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
+        "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+        "arjan@linux.intel.com" <arjan@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "mimoja@mimoja.de" <mimoja@mimoja.de>,
+        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
+        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
+        "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
+        "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
+        "liangma@liangbit.com" <liangma@liangbit.com>
+Date:   Wed, 08 Mar 2023 09:04:55 +0000
+In-Reply-To: <39f23da7-1e77-4535-21a6-00f77a382ae5@amd.com>
 References: <20230302111227.2102545-1-usama.arif@bytedance.com>
          <faa0eb3bb8ba0326d501516a057ab46eaf1f3c05.camel@infradead.org>
          <effbb6e2-c5a1-af7f-830d-8d7088f57477@amd.com>
@@ -52,9 +65,9 @@ References: <20230302111227.2102545-1-usama.arif@bytedance.com>
          <0c56683a-c258-46f6-056e-e85da8a557db@amd.com>
          <3bfbbd92-b2ed-8189-7b57-0533f6c87ae7@amd.com>
          <1975308c952236895f2d8f0e56af9db288eaf330.camel@infradead.org>
-         <ZAfDhT97ctXSYiYe@google.com>
+         <39f23da7-1e77-4535-21a6-00f77a382ae5@amd.com>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-0Fad7v0Kcy1KI+/EEV6C"
+        boundary="=-4OjA3050/75Ii3KzBLl2"
 User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -63,24 +76,23 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-0Fad7v0Kcy1KI+/EEV6C
+--=-4OjA3050/75Ii3KzBLl2
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2023-03-07 at 15:35 -0800, Sean Christopherson wrote:
-> On Tue, Mar 07, 2023, David Woodhouse wrote:
+On Tue, 2023-03-07 at 16:55 -0600, Tom Lendacky wrote:
+> On 3/7/23 16:27, David Woodhouse wrote:
 > > On Tue, 2023-03-07 at 16:22 -0600, Tom Lendacky wrote:
 > > >=20
 > > > I did some Qemu/KVM testing. One thing I noticed is that on AMD, CPUI=
-D 0xB=20
+D 0xB
 > > > EAX will be non-zero only if SMT is enabled. So just booting some gue=
-sts=20
-> > > without CPU topology never did parallel booting ("smpboot: Disabling=
-=20
+sts
+> > > without CPU topology never did parallel booting ("smpboot: Disabling
 > > > parallel bringup because CPUID 0xb looks untrustworthy"). I would ima=
-gine=20
+gine
 > > > a bare-metal system that has diabled SMT will not do parallel booting=
-, too=20
+, too
 > > > (but I haven't had time to test that).
 > >=20
 > > Interesting, thanks. Should I change to checking for *both* EAX and EBX
@@ -88,40 +100,93 @@ gine=20
 > > But I changed to only EAX because the AMD doc only says that EAX will
 > > be zero for unsupported leaves.
 >=20
-> LOL, nice.=C2=A0 '0' is a prefectly valid output for the shift if there's=
- exactly one
-> CPU at the current level, which is why Intel states that both EAX and EBX=
- are
-> cleared.=C2=A0 I assume/hope this is effectively a documentation goof, in=
- that the APM
-> assumes that all "real" CPUs that support CPUID 0xB also support sub-func=
-tion 0.
+> =C2=A0From a baremetal perspective, I think that works. Rome was the firs=
+t
+> generation to support x2apic, and the PPR for Rome states that 0's are=
+=20
+> returned in all 4 registers for undefined function numbers.
 >=20
-> Nit, the AMD says EAX will be zero for unsupported _levels_.=C2=A0 The di=
-stinction
-> matters because if the entire leaf is unsupported, AMD behavior is to zer=
-o out
-> all output registers, even if the input leaf is above the max supported l=
-eaf.
->=20
-> Anyways, the kernel already sanity checks the outputs on all x86 CPUs, ju=
-st
-> piggyback that logic, e.g. expose detect_extended_topology_leaf() or so.=
-=C2=A0 If AMD
-> or a VMM is doing something crazy, the kernel is doomed anyways.
+> For virtualization, at least Qemu/KVM, that also looks to be a safe test.
 
-Well, we have to be somewhat careful with that assumption. Turns out
-that if CPUID 0xb doesn't have valid data, the kernel *wasn't* doomed
-anyway. A bunch of our early "WTF doesn't it work on AMD?" issue with
-this series were due to precisely that.
+At Sean's suggestion, I've switched it to use the existing
+check_extended_topology_leaf() which checks for EBX being non-zero, and
+CH being 1 (SMT_TYPE).
 
-But yeah, check_extended_topology_leaf() does check for EBX being non-
-zero, and also for SMT_TYPE being in CH. I'll look at just calling
-that; it'll make the mess of if/else in the prepare_parallel_bringup()
-function a bit cleaner.
+I also made it work even if the kernel isn't using x2apic mode (is that
+even possible, or does SEV-ES require the MSR-based access anyway?)
+
+It just looked odd handling SEV-ES in the CPUID 0x0B path but not the
+CPUID 0x01 case, and I certainly didn't want to implement the asm side
+for handling CPUID 0x01 via the GHCB protocol. And this way I can pull
+the check for CC_ATTR_GUEST_STATE_ENCRYPT up above. Which I've kept for
+now for the reason described in the comment, but I won't die on that
+hill.
+
+https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/paralle=
+l-6.2-v14
+
+Looks like this:
+
+/*
+ * We can do 64-bit AP bringup in parallel if the CPU reports its APIC
+ * ID in CPUID (either leaf 0x0B if we need the full APIC ID in X2APIC
+ * mode, or leaf 0x01 if 8 bits are sufficient). Otherwise it's too
+ * hard.
+ */
+static bool prepare_parallel_bringup(void)
+{
+	bool has_sev_es =3D IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT) &&
+		static_branch_unlikely(&sev_es_enable_key);
+
+	if (IS_ENABLED(CONFIG_X86_32))
+		return false;
+
+	/*
+	 * Encrypted guests other than SEV-ES (in the future) will need to
+	 * implement an early way of finding the APIC ID, since they will
+	 * presumably block direct CPUID too. Be kind to our future selves
+	 * by warning here instead of just letting them break. Parallel
+	 * startup doesn't have to be in the first round of enabling patches
+	 * for any such technology.
+	 */
+	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT) || !has_sev_es) {
+		pr_info("Disabling parallel bringup due to guest memory encryption\n");
+		return false;
+	}
+
+	if (x2apic_mode || has_sev_es) {
+		if (boot_cpu_data.cpuid_level < 0x0b)
+			return false;
+
+		if (check_extended_topology_leaf(0x0b) !=3D 0) {
+			pr_info("Disabling parallel bringup because CPUID 0xb looks untrustworth=
+y\n");
+			return false;
+		}
+
+		if (has_sev_es) {
+			pr_debug("Using SEV-ES CPUID 0xb for parallel CPU startup\n");
+			smpboot_control =3D STARTUP_APICID_SEV_ES;
+		} else {
+			pr_debug("Using CPUID 0xb for parallel CPU startup\n");
+			smpboot_control =3D STARTUP_APICID_CPUID_0B;
+		}
+	} else {
+		/* Without X2APIC, what's in CPUID 0x01 should suffice. */
+		if (boot_cpu_data.cpuid_level < 0x01)
+			return false;
+
+		pr_debug("Using CPUID 0x1 for parallel CPU startup\n");
+		smpboot_control =3D STARTUP_APICID_CPUID_01;
+	}
+
+	cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:kick",
+				  native_cpu_kick, NULL);
+	return true;
+}
 
 
---=-0Fad7v0Kcy1KI+/EEV6C
+--=-4OjA3050/75Ii3KzBLl2
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -213,24 +278,24 @@ IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
 dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
 NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
 xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzA4MDczODMyWjAvBgkqhkiG9w0BCQQxIgQglc5vS1rD
-+a5C9u1vUw3kCSAMc2b1eMYksKF7Y1kIP/Ywgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzA4MDkwNDU1WjAvBgkqhkiG9w0BCQQxIgQg9jZ5a24F
+UM2IeCtBZHvCqPuIZunUQf2vChrCJT2qXtswgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
 A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
 dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
 DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
 MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
 Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBMMLeVs6zbKabgFJMsPOGmDkdGn4YBnXn8
-3FrrMWPV9yfTtMwHEJAwNH/ak2GPYfrm9IiiXFsNjDha83Pp6IU4qCMqOSY3uNkwMhTPR6o/L0Bw
-6dswbvfD8id8Mn27CpL1mcWcnf5UtXnngRD6vB0FED/hI1ITNWnfeuzlM9RG8R3iGRVXrUq7F8I0
-K1015+e1OC3eHnLSl3ocLyjENEnSWaDiUFm2Czs6XP3fnxtwTNavLDnbgpPYYHW/yWeB+JSGNPJh
-8zWKjTSE9n9U0X97xrNcc/+AXU5fAPhvWs6/m/p/xXzGBTKul3yjMyouM2i3HKRNM2rJD+cUZ/ug
-//yLwq+V0vQ7EykGNysq2qc5BC8ZvtBr06J8R0MDOaj6eoLsqueu90vLNM6cm7+/GA4DjvfnFjw+
-wOE3/lXCLUpuvw6/ZinPE6GK4/AOI0lWQeiN9kT9zi9YdCg9/VLAKpA9nPCRwBF4kkjgdTW0WScU
-x9mNdMnkTQawbemyt2w50eaS4XGjE8AyIu+4QUVY6ptCG0ccc8cHDixhY+vnzXIsp9wUi231VXVT
-CqngWehdlZppR2zSj6CZFKxJac0X1q60Z2gEUBXcuOLtO31tjPONvBHH4dXxNnMSMoCp8tN/v/jA
-pWqODVmhgTh3i0DrIx0pX5rHNyotSekhOBuRdevi3gAAAAAAAA==
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCQROYeiqpPxLJceZbTCSEMJWHTSpjCjZwZ
+794XmS4T4ORcjYWbfKgLKWZ5uXF2lKd2OeaD+WIPXXNRGknYbvbO8N0k3kh8Bt/jg4j+7by5OkUm
+qgJc069UXkGWbJ5I0gvC1HqheP6l37or/lXGWdPT5kiyHKJTkU8W7+NsJByvRmN0clmNY/MP3sUu
+PYf5ex/dSXD+t/104ajzno/9dtS+Wlti9jpt2S6uSy05ZWmRCLcubQndH5ytZcrjKqq4MbQTkDoK
+hv+9Q/u2DXt568LnPFgaqXAwzNsTiyTZxOtMbyjru9W2MYNHKl81VL5JJIRaYTs3E6iNVIUAGzC3
+DYa6i+0U12eTxOnPBJMVdWOulzv1K6N4QT4PZLBlVNbOQK22+N4AiDRKUIr8fP4Sme2ILoW04ci3
+UkZFG5+c5EJphmFIjS0ygpoHiGi5M/6XjpjrYn+zYcNB6c5ebVI11nb94YFW4enFQPXZNiLc0EDH
+E3egwT7Z/IzTG0v0xmIhnck7np8tjqcVl7CfWZmWxV0U//QaY/bsASI8hdmySIISqr+LDFcHrEFk
+vUBbLjzZbhok4bATcM4iFq5g0mWxjJ+fnFjL+N2XKAipfcs7LPzs2FFHhkWWOagI+OTHMVPld3SD
+5ZJY8WcJpL/gg2Ac1nHY4Ur5CIdFAfkm0cEEaKCWbQAAAAAAAA==
 
 
---=-0Fad7v0Kcy1KI+/EEV6C--
+--=-4OjA3050/75Ii3KzBLl2--
