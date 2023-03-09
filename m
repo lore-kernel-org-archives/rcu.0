@@ -2,187 +2,182 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F25B5C742A7
-	for <rcu@archiver.kernel.org>; Wed,  8 Mar 2023 17:15:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6F1C742A7
+	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 00:11:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbjCHRPe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 8 Mar 2023 12:15:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        id S229891AbjCIALZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Mar 2023 19:11:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbjCHROn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 8 Mar 2023 12:14:43 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9715AB4B
-        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 09:13:42 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id d41-20020a05600c4c2900b003e9e066550fso1593604wmp.4
-        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 09:13:41 -0800 (PST)
+        with ESMTP id S230174AbjCIALJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Mar 2023 19:11:09 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7608064B33
+        for <rcu@vger.kernel.org>; Wed,  8 Mar 2023 16:11:04 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id w23so336464qtn.6
+        for <rcu@vger.kernel.org>; Wed, 08 Mar 2023 16:11:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1678295620;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xliC/QW0s7RArlzmkx8GnUp7Z2eARAfl+2c0/J0Jt7A=;
-        b=Z5P4sfwpHtduCG6PqcwOnJuimrxgk7olj+omNsa+6tZycr8OzEmhAKQjOuIo0kzsV3
-         bDnarN/XTPTHVBVumd4drJTOXxX7/5I4+eJO+H0OxVwl4aG0DDw77gdCzWt84cDTLNmf
-         ky9sBNRpSmo+xsm0SZJz7CZFtb0lhxg6Ab8AWvczRS7BIRqNPT2f5ueS2YfNd3DT9sl/
-         8xguoThyWoUOet0CmOHIGJYeLXG1Gzwd/YEP0fE7n5zvHFKsPzqE8LtzabkfRdPrvtIa
-         uMrgeT0bjcFTnJHDrxyBLiDhM4/tpNW5W0KsTXZ992UD7Ba/seJAczKBkn0usf1nM8vE
-         uEog==
+        d=joelfernandes.org; s=google; t=1678320663;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HOmxk433msYqPPBse0G4aA6KHYmyHO935bjszckxJUs=;
+        b=uMTx3o9lHbtEp2eOLVPn8l5GsCkwb2KUF6UKpwDtj3+fej5r0zHzccnQ049t6RiUkW
+         +HeasOBXXc3F1JliXrEicJytWxkwTGYhXFOFfPICNW2vtaML2JL9lk3P9QwzKeHWip7E
+         x+qhTb1Krt3gabx3Ykxyqbr/tGZmSxl8Wv0+s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678295620;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xliC/QW0s7RArlzmkx8GnUp7Z2eARAfl+2c0/J0Jt7A=;
-        b=NdGcBwDpKIP5a7160PRj7Oh1WdpjR4PTimZ4jqHg28jb/jHX5zCBN6KDYMJWFFve1z
-         3mm+GS3KyW/SF1rHvX2pKXYzYRTnlp5IfZR9OYTwSnMG+i9iguCJbSNZtMuemJs89Rey
-         lRTGLOQtShc4W2MSqd4IGcbVyRSx7YKgdnKTV9W1crGoL5WWvM650To3FocQ8G2ADDRu
-         cNgFfoYznWEZLcOz/I0w+iFbStfTi0f43p1leBp+pBLRCQwUL3hPWHoh1xvwZyH+/ppo
-         ZC5+HIvQtJjbB5872xN+W/C4bxBgxj/A1b5sMmZgzNEEas4q9ZqwxRK/xNy+MB0T7NRZ
-         hmYg==
-X-Gm-Message-State: AO0yUKWzNjFx6t2XZd43tQp9pXn9BxqPU1q4cKhJjwJ8xR7j6LlZ3RBl
-        OejgOgGUB2809GdOG5ltw27dWw==
-X-Google-Smtp-Source: AK7set+hgxF1GrRY78zxerTO9L4+5AXzY50JRuLBliOoXtcJh8ib3MfW9KSNJ6hQ6c1zbdtAC2pm8g==
-X-Received: by 2002:a05:600c:5126:b0:3ea:f6c4:3060 with SMTP id o38-20020a05600c512600b003eaf6c43060mr16767761wms.18.1678295620399;
-        Wed, 08 Mar 2023 09:13:40 -0800 (PST)
-Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:fe40:3ba4:afe4:4609])
-        by smtp.gmail.com with ESMTPSA id l15-20020a1c790f000000b003e0238d9101sm11668wme.31.2023.03.08.09.13.39
+        d=1e100.net; s=20210112; t=1678320663;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HOmxk433msYqPPBse0G4aA6KHYmyHO935bjszckxJUs=;
+        b=Wf4RNetaO1x8hvNWZ3gbj+uob31QOsrPpYJuvQRLkVaxEIWWXoDhgDrd+nKAEQPxIn
+         9fsj9qYTdOcvUjbYe8WIUU0vy73fRMOQgu0JTyGrDc+s3coGMHZF6AnpnNoPBSfnoLF5
+         jNr008oRd1awp33/EWuyvBpiPSTS062/U8RM3C5T4dnBcZPeRdrNRej69S5u1d+yxHer
+         mv4pM4+3IHsiOQw3esRMCzXmcrt2Rl/kkOAcqKetQjMcXdw2sQbJjjvkNtSwyJRUbMtA
+         +lvVZQW6tImTUb20DSqcFeY5cYLuUz3UU9kv7TIyE8QxVfZL67qriSGUFJixJ/li01+O
+         idow==
+X-Gm-Message-State: AO0yUKW090tnuqht09G8Fl3LpTRCHIHKjejZgwkliYP8VvQxwmz9VlOy
+        R7LjuKNUbE5bJP8FMHqmv74eZg==
+X-Google-Smtp-Source: AK7set+RoB8nMsYTl+zudplTIeld0VTB6VQ+2dEdxFlVs9tsRKxRY/mNhUuTPT8nIqRex3STgacSwA==
+X-Received: by 2002:a05:622a:104c:b0:3bf:d8e2:ab0e with SMTP id f12-20020a05622a104c00b003bfd8e2ab0emr898723qte.23.1678320663514;
+        Wed, 08 Mar 2023 16:11:03 -0800 (PST)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id f19-20020ac84713000000b003bfbf16ad08sm12414661qtp.74.2023.03.08.16.11.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Mar 2023 09:13:40 -0800 (PST)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH v14 10/12] x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
-Date:   Wed,  8 Mar 2023 17:13:26 +0000
-Message-Id: <20230308171328.1562857-11-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230308171328.1562857-1-usama.arif@bytedance.com>
-References: <20230308171328.1562857-1-usama.arif@bytedance.com>
+        Wed, 08 Mar 2023 16:11:02 -0800 (PST)
+Date:   Thu, 9 Mar 2023 00:11:01 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Jiri Wiesner <jwiesner@suse.de>
+Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
+Message-ID: <20230309001101.GA155598@google.com>
+References: <20230201150954.409693-1-urezki@gmail.com>
+ <Y9qLB6Zyx5atcFUV@salvia>
+ <7e87836a-c72-eefd-9c74-fc2637accd2@ssi.bg>
+ <Y9qc+lgR1CgdszKs@salvia>
+ <Y9qfNV0IX1tBsTxP@pc636>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9qfNV0IX1tBsTxP@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+Hello,
 
-When the APs can find their own APIC ID without assistance, perform the
-AP bringup in parallel.
+On Wed, Feb 01, 2023 at 06:19:49PM +0100, Uladzislau Rezki wrote:
+> On Wed, Feb 01, 2023 at 06:10:18PM +0100, Pablo Neira Ayuso wrote:
+> > On Wed, Feb 01, 2023 at 06:12:04PM +0200, Julian Anastasov wrote:
+> > > 
+> > > 	Hello,
+> > > 
+> > > On Wed, 1 Feb 2023, Pablo Neira Ayuso wrote:
+> > > 
+> > > > Hi,
+> > > > 
+> > > > On Wed, Feb 01, 2023 at 04:09:51PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > > > The kfree_rcu()'s single argument name is deprecated therefore
+> > > > > rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
+> > > > > underline that it is for sleepable contexts.
+> > > > > 
+> > > > > Cc: Julian Anastasov <ja@ssi.bg>
+> > > > > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> > > > > Cc: Jiri Wiesner <jwiesner@suse.de>
+> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > ---
+> > > > >  net/netfilter/ipvs/ip_vs_est.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
+> > > > > index ce2a1549b304..a39baf6d1367 100644
+> > > > > --- a/net/netfilter/ipvs/ip_vs_est.c
+> > > > > +++ b/net/netfilter/ipvs/ip_vs_est.c
+> > > > > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
+> > > > >  	__set_bit(row, kd->avail);
+> > > > >  	if (!kd->tick_len[row]) {
+> > > > >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
+> > > > > -		kfree_rcu(td);
+> > > > 
+> > > > I also found this kfree_rcu() without rcu_head call a few weeks ago.
+> > > > 
+> > > > @Wiesner, @Julian: Any chance this can be turned into kfree_rcu(td, rcu_head); ?
+> > > 
+> > > 	Yes, as simple as this:
+> > > 
+> > > diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+> > > index c6c61100d244..6d71a5ff52df 100644
+> > > --- a/include/net/ip_vs.h
+> > > +++ b/include/net/ip_vs.h
+> > > @@ -461,6 +461,7 @@ void ip_vs_stats_free(struct ip_vs_stats *stats);
+> > >  
+> > >  /* Multiple chains processed in same tick */
+> > >  struct ip_vs_est_tick_data {
+> > > +	struct rcu_head		rcu_head;
+> > >  	struct hlist_head	chains[IPVS_EST_TICK_CHAINS];
+> > >  	DECLARE_BITMAP(present, IPVS_EST_TICK_CHAINS);
+> > >  	DECLARE_BITMAP(full, IPVS_EST_TICK_CHAINS);
+> > > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
+> > > index df56073bb282..25c7118d9348 100644
+> > > --- a/net/netfilter/ipvs/ip_vs_est.c
+> > > +++ b/net/netfilter/ipvs/ip_vs_est.c
+> > > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
+> > >  	__set_bit(row, kd->avail);
+> > >  	if (!kd->tick_len[row]) {
+> > >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
+> > > -		kfree_rcu(td);
+> > > +		kfree_rcu(td, rcu_head);
+> > >  	}
+> > >  	kd->est_count--;
+> > >  	if (kd->est_count) {
+> > > 
+> > > 	I was about to reply to Uladzislau Rezki but his patchset
+> > > looks more like a renaming, so I'm not sure how we are about
+> > > to integrate this change, as separate patch or as part of his
+> > > patchset. I don't have preference, just let me know how to
+> > > handle it.
+> > 
+> > @Uladzislau Rezki: Are you fine with dropping this patch from your
+> > series and Julian will send us a patch for inclusion into net-next to
+> > use the kfree_rcu(x, rcu_head) variant?
+> Absolutely. So i will drop it from my series.
+> 
 
-Register a CPUHP_BP_PARALLEL_DYN stage "x86/cpu:kick" which just calls
-do_boot_cpu() to deliver INIT/SIPI/SIPI to each AP in turn before the
-normal native_cpu_up() does the rest of the hand-holding.
+Since this patch was dropped, it is the only case blocking the proper
+integration of this series into linux-next. We want to drop the old API and
+currently we are not able to, thus this revert [1] has to be unfortunately
+carried in linux-next.
 
-The APs will then take turns through the real mode code (which has its
-own bitlock for exclusion) until they make it to their own stack, then
-proceed through the first few lines of start_secondary() and execute
-these parts in parallel:
+For that reason, there are 2 options:
 
- start_secondary()
-    -> cr4_init()
-    -> (some 32-bit only stuff so not in the parallel cases)
-    -> cpu_init_secondary()
-       -> cpu_init_exception_handling()
-       -> cpu_init()
-          -> wait_for_master_cpu()
+1. Can we get the new rcu_head approach for ipvs posted and reviewed with
+suitable Acks?
 
-At this point they wait for the BSP to set their bit in cpu_callout_mask
-(from do_wait_cpu_initialized()), and release them to continue through
-the rest of cpu_init() and beyond.
+2. Can we carry Vlad's patch to use kfree_rcu_mightsleep() in ipvs and drop
+it later if/when #1 is completed?
 
-This reduces the time taken for bringup on my 28-thread Haswell system
-from about 120ms to 80ms. On a socket 96-thread Skylake it takes the
-bringup time from 500ms to 100ms.
+Option 2 has the unfortunate effect that it will conflict with your new
+approach of using rcu_head so I'd rather you fix it that way and get it
+Acked. And once acked, we can also take it via the RCU tree if the net
+maintainers are Ok with that.
 
-There is more speedup to be had by doing the remaining parts in parallel
-too — especially notify_cpu_starting() in which the AP takes itself
-through all the stages from CPUHP_BRINGUP_CPU to CPUHP_ONLINE. But those
-require careful auditing to ensure they are reentrant, before we can go
-that far.
+Please advise.
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-Tested-by: Kim Phillips <kim.phillips@amd.com>
-Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- arch/x86/kernel/smpboot.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+thanks,
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index fd4e678b6588..a3572b2ebfd3 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -57,6 +57,7 @@
- #include <linux/pgtable.h>
- #include <linux/overflow.h>
- #include <linux/stackprotector.h>
-+#include <linux/smpboot.h>
- 
- #include <asm/acpi.h>
- #include <asm/cacheinfo.h>
-@@ -992,7 +993,8 @@ static void announce_cpu(int cpu, int apicid)
- 		node_width = num_digits(num_possible_nodes()) + 1; /* + '#' */
- 
- 	if (cpu == 1)
--		printk(KERN_INFO "x86: Booting SMP configuration:\n");
-+		printk(KERN_INFO "x86: Booting SMP configuration in %s:\n",
-+		       do_parallel_bringup ? "parallel" : "series");
- 
- 	if (system_state < SYSTEM_RUNNING) {
- 		if (node != current_node) {
-@@ -1325,9 +1327,12 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- {
- 	int ret;
- 
--	ret = do_cpu_up(cpu, tidle);
--	if (ret)
--		return ret;
-+	/* If parallel AP bringup isn't enabled, perform the first steps now. */
-+	if (!do_parallel_bringup) {
-+		ret = do_cpu_up(cpu, tidle);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	ret = do_wait_cpu_initialized(cpu);
- 	if (ret)
-@@ -1349,6 +1354,12 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- 	return ret;
- }
- 
-+/* Bringup step one: Send INIT/SIPI to the target AP */
-+static int native_cpu_kick(unsigned int cpu)
-+{
-+	return do_cpu_up(cpu, idle_thread_get(cpu));
-+}
-+
- /**
-  * arch_disable_smp_support() - disables SMP support for x86 at runtime
-  */
-@@ -1517,6 +1528,8 @@ static bool prepare_parallel_bringup(void)
- 		smpboot_control = STARTUP_APICID_CPUID_01;
- 	}
- 
-+	cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:kick",
-+				  native_cpu_kick, NULL);
- 	return true;
- }
- 
--- 
-2.25.1
+ - Joel
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=dev&id=3898e7642316732e23716ca902f9d122736f9805
 
