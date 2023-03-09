@@ -2,55 +2,39 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF156C61DA4
-	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 10:58:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3D48C6FD1C
+	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 11:20:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjCIK6O (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Mar 2023 05:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37336 "EHLO
+        id S229809AbjCILUL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Mar 2023 06:20:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjCIK5Y (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Mar 2023 05:57:24 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA10EBD86
-        for <rcu@vger.kernel.org>; Thu,  9 Mar 2023 02:55:50 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id x3so5192773edb.10
-        for <rcu@vger.kernel.org>; Thu, 09 Mar 2023 02:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678359343;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d3WJfEb92xt22bfFrUgoL1/wj4gfJmjIX6QMBtki11E=;
-        b=TwTMzP6pzXfLRsTYKHz1AfNCtBnZG1xs35LMAeJpVLdRxg66JtnQoc8BgMlZl4AJ5u
-         5Fqv95xgP4iXrp2U3rLknE0hmRVWN8dxqsl+zAut0Af08QfMzLcikpS6rh6JtUN2ojIP
-         hXuIMCF5dwD3EjuRWEnr98FfedfF77XY7MMO046T4sEZr1+4Rw+TAYyFV4Cybr9Vm6QH
-         3rXD4MiDZMQfE1n339YIwvXzyBMy51+QIgXa+h0FYP3DM3WE47HlK3dWtktft7URXMAj
-         OIywN8sSp+3c1bWjpyyYHCva762GKeQcUTxZUi8+WgkW5cyoxMR4LwQinoLFIQ/iLcL3
-         P0kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678359343;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d3WJfEb92xt22bfFrUgoL1/wj4gfJmjIX6QMBtki11E=;
-        b=l5WTQNHCPnvi5ENAuWRJsUzGbabBolWh87rol3xJag7khD27rK8Ss7ltcf10d3Y+7Q
-         dLvFGb0gFLjq9hO+/prsWZu2jfzDYRMyapEXDlN+hR1SdDd6STaL5ixPjQfqBPz2+KOp
-         OpV5G0Htm35M6HjKax/jI1qV6VH+D6xGTGsRxYeBbGHeYyp0GgjlWJYDIGqiuansL3JI
-         th5rsf1rWYPWxX9l3COuFXx83t4OPF3O9QgbtijTiLAC05FBE1B0DqsiQ2/rZTRTjx4a
-         ZxBCQZfTegsprEt5NpeGqIY83eqUCDAp8FIxSnXxTOeVzNEp2HzVVSY9cmUtFUHTDGAw
-         n98Q==
-X-Gm-Message-State: AO0yUKV/vuBtYb1YcylL61KeFuCtJs8URS75UExQErIN4bpmZVchL+ir
-        0WP9Azolvy2mHurDcbtcoxfZOw==
-X-Google-Smtp-Source: AK7set/eMw/OTCfWM+qcnpe0fvIZLj5VwP+nBvPdyhEHct4AV3vuQ1Gw+aPhqva031kCDvgYXDboyg==
-X-Received: by 2002:a17:906:9c86:b0:914:4277:f3e1 with SMTP id fj6-20020a1709069c8600b009144277f3e1mr11340126ejc.53.1678359342896;
-        Thu, 09 Mar 2023 02:55:42 -0800 (PST)
-Received: from aspen.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id hb15-20020a170906b88f00b008d09b900614sm8614241ejb.80.2023.03.09.02.55.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Mar 2023 02:55:42 -0800 (PST)
-Date:   Thu, 9 Mar 2023 10:55:39 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     John Ogness <john.ogness@linutronix.de>
+        with ESMTP id S231546AbjCILTp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Mar 2023 06:19:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079C2E8CE1;
+        Thu,  9 Mar 2023 03:15:43 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1678360541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2T4EINMRBzFPJZwN9INT1SBZTuErj3LgYj+eGYMBez4=;
+        b=xNpDjRXQV0w7qPgya0qSCdZnSvmsrN5+D9NiSJ8W7hjH5L2FSA+U6IN9eEzcQZC7D8T5lK
+        2jeIPTwQzAHtm0mgcdkiISsF3TMELVZouR90SaoeddVA7rD+nBl1Z0lA+12sWh1A2ucRU1
+        9sxYh/OHiJAJlhMeuJD+eYFjCeJ1sTt9eC4EG20MN2VRK+BUEanoTkJG8xJ20C8lrw4Pr0
+        p7cCxe6KQxTE5s8/VBhqxDM0RqsHWGiTHIp6DEifweeAWTXFMLZJ3fFpnyf5rYYb4WHYgR
+        EJDMharKYDDXgTsngzUBYpmLZPQpA0qy+wRSVyiQAu1zdkjZtw/nBGLFfbAKxg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1678360541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2T4EINMRBzFPJZwN9INT1SBZTuErj3LgYj+eGYMBez4=;
+        b=VShMsCoDjVA3oby2Q1oOFnBZanLOGCI+zDVwjZ9sjp/xVkU1xQZ/INoTHMFZ2j56lye20h
+        QlIUhfmOf6szpdDg==
+To:     Daniel Thompson <daniel.thompson@linaro.org>
 Cc:     Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -77,32 +61,28 @@ Cc:     Petr Mladek <pmladek@suse.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
 Subject: Re: [PATCH printk v1 00/18] threaded/atomic console support
-Message-ID: <20230309105539.GA83145@aspen.lan>
+In-Reply-To: <20230309105539.GA83145@aspen.lan>
 References: <20230302195618.156940-1-john.ogness@linutronix.de>
+ <20230309105539.GA83145@aspen.lan>
+Date:   Thu, 09 Mar 2023 12:20:13 +0106
+Message-ID: <87a60mjhx6.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230302195618.156940-1-john.ogness@linutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 02, 2023 at 09:02:00PM +0106, John Ogness wrote:
-> Hi,
+On 2023-03-09, Daniel Thompson <daniel.thompson@linaro.org> wrote:
+> So I grabbed the whole series and pointed it at the kgdb test suite.
 >
-> This is v1 of a series to bring in a new threaded/atomic console
-> infrastructure. The history, motivation, and various explanations and
-> examples are available in the cover letter of tglx's RFC series
-> [0]. From that series, patches 1-18 have been mainlined as of the 6.3
-> merge window. What remains, patches 19-29, is what this series
-> represents.
+> Don't get too excited about that (the test suite only exercises 8250
+> and PL011... and IIUC little in the set should impact UART polling
+> anyway) but FWIW:
+>
+> Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-So I grabbed the whole series and pointed it at the kgdb test suite.
+One of the claims of this series is that it does not break any existing
+drivers/infrastructure. So any successful test results are certainly of
+value.
 
-Don't get too excited about that (the test suite only exercises 8250
-and PL011... and IIUC little in the set should impact UART polling
-anyway) but FWIW:
-Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-
-Daniel.
+John
