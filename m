@@ -2,56 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60B11C61DA4
-	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 13:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBCCCC742A7
+	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 13:47:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbjCINph (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Mar 2023 08:45:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+        id S229541AbjCINrU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Mar 2023 08:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjCINpb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Mar 2023 08:45:31 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADA65D76D;
-        Thu,  9 Mar 2023 05:45:26 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id n2so2308869lfb.12;
-        Thu, 09 Mar 2023 05:45:26 -0800 (PST)
+        with ESMTP id S230376AbjCINrT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Mar 2023 08:47:19 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567E65D479;
+        Thu,  9 Mar 2023 05:47:18 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id z5so1870190ljc.8;
+        Thu, 09 Mar 2023 05:47:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678369525;
+        d=gmail.com; s=20210112; t=1678369636;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TKgvZLUlZuhxooxItJkocqXL7cPyMVL7JY/lQAfuAiE=;
-        b=qS6HSkeLV80FkWz+Rb63KqQBO15xYBVc05JdKWTv8oVCO/KhEN3P52KUnJuewvmASe
-         dsqz0uswMVv6+nZ5UL7SglBJvdmccv0o8VmjliNvSsdzQcyXpUqh6h6GDq43QoOFGpbq
-         /76j3KeJ7n5Vl7IQjoCqApMrFrl2T11PDart32JvTZrkozb74ML/OIytV7FnPOK2Ij3o
-         d2/98QrYLUddpoRu8vLW4MhuMlv+sSWuA836BxRoFpH72xsOTAtyN+2KiAT+P+6K2Eob
-         Z4TfIlPcdk8EF1X57YYRSHH62o7iC1oCkx+VAcjHwkZHcXV8LvJG7YA5PcCDltmC1VLj
-         NDcQ==
+        bh=zKYdyCghNYdoyBXOgpg5ofmE3QV+ajZ50HuS4IU19N8=;
+        b=gAMtP+LsJ1axe0618LDnbI7QcevWkknD9zrczOZzkHNCijB7J2DiusoIVp/JweHWdU
+         PqYCD58irQHYfvmtgkW07JqUtoyqaq46gqSPkfuOArqaLUNVex05jgEz2dGrIt6GETcz
+         rFNf4rDtY8oNHcd+KnB4S8JSLPwbnlD+82HveQJVXngA/yAK1EatdFe1c/sRarb80FPC
+         oZGDvTk5csgj52Obb+Om3m6Q5ULDFxVZ5iUgX9rkHJ5VvrJqIEp5Es/PyHiP++QmnUqz
+         p4dYr5WOB+6V9dM8h5zc974fC7YAob2z1A6TQEM9TmrgRPzwFnjozHpNWaMHOBGj2Rju
+         ylSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678369525;
+        d=1e100.net; s=20210112; t=1678369636;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TKgvZLUlZuhxooxItJkocqXL7cPyMVL7JY/lQAfuAiE=;
-        b=gMuK78GIB5PnLYiuf2aub9+vlgzw535dpIs+K+HxXCcSifaaPAVA3k26eIrEr5lFuc
-         Pp+87YMSdv4c2lbSggwLh6HtpetKT/VBpVE2q7dPIDGr3ki7hWRiHvb+hNXro+KBdJ45
-         mxRU8sNhH/xUJ6Gu0M42/mj9eAC5dbeaUAMuj5nAgiVNstdP/Y8bOjo6JCAOcHV/AHpd
-         6U4OR6Vf2AJiGzuIpz+ZluB8MKu5Rnih/cwus3ShsEjsAYypK1WBmLws7gepe/0uWtbf
-         HU66tCv/CFRyAaDIfy+aHVdZiSwxzoQaFVpnGRErqPd4Mf5lYcWkA9jhP/mI/7cELC43
-         DVrA==
-X-Gm-Message-State: AO0yUKXqI4hjIh1riH0p/N5BSTTAw7f568AbAtAwyDf3P1aT/vETxvTB
-        ABCWEFdbImfnDYvASp+VdfI=
-X-Google-Smtp-Source: AK7set+oudKKexcg2ZnPUbedjmR/rPbyZ6Hr7ph/xkV7m4xghu7Jam/t0pyFWh3LmZtuLR7Bfn5bEQ==
-X-Received: by 2002:ac2:5385:0:b0:4de:869f:687e with SMTP id g5-20020ac25385000000b004de869f687emr6859547lfh.42.1678369524957;
-        Thu, 09 Mar 2023 05:45:24 -0800 (PST)
+        bh=zKYdyCghNYdoyBXOgpg5ofmE3QV+ajZ50HuS4IU19N8=;
+        b=lxdPn0MSPYgOpRhymtjXDKbD0zA5K4Bgo3Zl/+VL3wptel+bcQPoRJTKFavq623rFu
+         VcZk0rjDQtECtrOZwqH3dG9kRtbt2n+xyj76JOqw5OroFasS/Ke1iSFrsQ5fLYVKb3i/
+         WPilT2qR+J0ECzOZpPmnBS8vRGmgrTBjcaqqkmFlM1Zvdz3NakjIKMVmz2je/P0uG6I9
+         rYk6bFUTNXB+NF6JCTTJNOwVhQjyFVnMtCOycrFt4cxJCGDoXwVNUdW+eVjnPuvaIHtL
+         q2TBCyoSdKmm8AeC2GByywvOYAZPkUXOdWNAwo9wWOa2XwPvML6Wdqdeh+q1EQjAsRTq
+         ZStA==
+X-Gm-Message-State: AO0yUKXEvppeRhElY3G4BxI8LVDay/gRaWoJNXW8x/YdV+bit7oWYzy2
+        b8tDyg/0g4JibD0pUSunBy2vEy7md7T+9Whm
+X-Google-Smtp-Source: AK7set+O+XacSRTP1TuGlJYExW5QCBLCjGsNn+2uIVe8N+6v1PQoRqVTsf/P315mg1+FZQKZcHMoMQ==
+X-Received: by 2002:a05:651c:1047:b0:295:a8fc:6ba4 with SMTP id x7-20020a05651c104700b00295a8fc6ba4mr6515884ljm.38.1678369636650;
+        Thu, 09 Mar 2023 05:47:16 -0800 (PST)
 Received: from pc636 (host-95-193-108-241.mobileonline.telia.com. [95.193.108.241])
-        by smtp.gmail.com with ESMTPSA id x6-20020ac259c6000000b004cb1de3f487sm2660708lfn.104.2023.03.09.05.45.23
+        by smtp.gmail.com with ESMTPSA id f18-20020a2ea0d2000000b00295a21c7954sm2953380ljm.50.2023.03.09.05.47.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Mar 2023 05:45:24 -0800 (PST)
+        Thu, 09 Mar 2023 05:47:16 -0800 (PST)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 9 Mar 2023 14:45:21 +0100
-To:     Steven Rostedt <rostedt@goodmis.org>
+Date:   Thu, 9 Mar 2023 14:47:13 +0100
+To:     Ariel Levkovich <lariel@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
@@ -62,31 +64,40 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
- kvfree_rcu_mightsleep()
-Message-ID: <ZAni8Q1NW9cWrvHJ@pc636>
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>
+Subject: Re: [PATCH 08/13] net/mlx5: Rename kfree_rcu() to
+ kfree_rcu_mightsleep()
+Message-ID: <ZAnjYc0u7rjdmqFt@pc636>
 References: <20230201150815.409582-1-urezki@gmail.com>
- <20230201150815.409582-5-urezki@gmail.com>
+ <20230201150815.409582-9-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230201150815.409582-5-urezki@gmail.com>
+In-Reply-To: <20230201150815.409582-9-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> The kvfree_rcu()'s single argument name is deprecated therefore
-> rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
+On Wed, Feb 01, 2023 at 04:08:14PM +0100, Uladzislau Rezki (Sony) wrote:
+> The kfree_rcu()'s single argument name is deprecated therefore
+> rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
 > underline that it is for sleepable contexts.
 > 
-> Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Cc: Ariel Levkovich <lariel@nvidia.com>
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Vlad Buslov <vladbu@nvidia.com>
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en/tc/int_port.c  | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
 Could you please add you reviwed-by or Acked-by tags so we can bring
 our series with renaming for the next merge window?
 
 Thanks!
 
 --
-Uladzisslau Rezki
+Uladzislau Rezki
