@@ -2,56 +2,56 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A53A7C64EC4
-	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 13:42:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D213FC64EC4
+	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 13:43:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjCINmN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Mar 2023 08:42:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
+        id S231236AbjCINnk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Mar 2023 08:43:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbjCINmC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Mar 2023 08:42:02 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71670F16AD;
-        Thu,  9 Mar 2023 05:41:51 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id i28so2381724lfv.0;
-        Thu, 09 Mar 2023 05:41:51 -0800 (PST)
+        with ESMTP id S230124AbjCINnZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Mar 2023 08:43:25 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3452A26F;
+        Thu,  9 Mar 2023 05:43:23 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id a32so1854024ljr.9;
+        Thu, 09 Mar 2023 05:43:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678369309;
+        d=gmail.com; s=20210112; t=1678369402;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vI6EqZn5OrU2uQAhBy8UoxoxXLM2CrgGfWuraPjDA/8=;
-        b=aTVPGWnSKEHtUvMM9QNshpoPtC2kHuHAV842JT50UMOixZ4SjsgAGW2euh08FCKj4u
-         P4WX/+/mX7Mysmwb9igEuqFvRZbL/a5cOkBMD8cHIyClsQCIets3JvnO4KucC09SPOV7
-         +Rh1FAqIQcg7fzZvu5GfFBDKluZEzs5X4GZ3A48/jAW9yJgANLGp4nEjZVLeZAJt4dao
-         l+MrA36X6bqoHQy7tVm3xK+u19i4+YZh5uiS2m7DGU/ZUDZrve3xuMr8yhrIjP4X0TE1
-         ri+zPuLfKr8D3NEvJAhDGBI+ykiQpti4ql+6t1cK8vZsyzOuWgzgfPtOs6sY+pN0i521
-         MhDQ==
+        bh=gSqyTtkVH//KFU0TvvADWxO4DxoXwsXcefBj8prULwk=;
+        b=Rg9e0ZTSfWUMkYwoF2kMwo5b/FUW49IluCkbpuoL32e4KVBuZzUryUVgNvrZUDbRWn
+         AO1gOp0y+Nc62zl6DFmejSz3RsEC7B8qtmBMUsb8RkuI678m5l8XwCLj0i1o9qWqhXLu
+         WvtcVzbG7ibOtn+9XkgzUP7nOh0TZ7JqgnGw4dLaBU4cxoEn5ZVz67JN0/QujQ8+iC5V
+         piKE+mE7bKxCcq9ceflgFQuOUGrHdQNEvsPXQqkxWkP38eCfhyn4+SCsTSqlRAIhRFrb
+         4njb+eOgG5c0nTOnppUQDm02DbKZ03Di7rBLtPY9e/oqrBTdRGwdCrEpAu34pZShxLZz
+         G0aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678369309;
+        d=1e100.net; s=20210112; t=1678369402;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vI6EqZn5OrU2uQAhBy8UoxoxXLM2CrgGfWuraPjDA/8=;
-        b=F7qPwHQMNFIGbwuBl7yjtYftiooChX2PyKH5wjRK2FSkui7A8sVTaid2epGpnmusdY
-         9SB/rOClifIOn5c0Ck6zbrPJ25nx1wu+5aBx0Xjw95fE3sQ9/a+BLJqOJdgAvMuzz4wL
-         XD6nkRmuYA7WqLWWnERJ16OAQOKqt7Cc/pYK0pWPTy7y38/Vjb38WD/YBIT6oCtIse+D
-         awNbhi3XJiCYvyZa9Ma3P0O6TGs5KLi0DEekvxmo4sJm1+M0xU2BRZotewpTn42laKEf
-         9lU56h8haNtoxytUp+xt9to9JY2VclEK6sEHwBNEu0sxx7h9E5enf11IQSsFwoK8Pe60
-         W3vQ==
-X-Gm-Message-State: AO0yUKWq4keia/2UiWhyr50C38Bg9YVK6YznkkDqfsWmaoAhW9ZorHHd
-        obe/3EzXUH/nsvEOEgsT0s4=
-X-Google-Smtp-Source: AK7set/ORtgYJR5itMKBdfkPWCgfMKPt3m5G75Sv0FX9qCqfgWlzPCyzpUHjG2f+EJ96ShsRYsgc6A==
-X-Received: by 2002:ac2:4439:0:b0:4dc:7e7a:a72f with SMTP id w25-20020ac24439000000b004dc7e7aa72fmr6403317lfl.16.1678369309700;
-        Thu, 09 Mar 2023 05:41:49 -0800 (PST)
+        bh=gSqyTtkVH//KFU0TvvADWxO4DxoXwsXcefBj8prULwk=;
+        b=L04VmJae2zp32zptLVeN7peFhz4b0QeYzbVnkn3UalkbfH7EYB3sJLehqCO7n8x18W
+         3ZJylfhXHIW7uWPtquVwVjpln9DknqdDyWTSGFiAX2ENoTCLscIf6KjPjok+CApWBkYo
+         4MY5Wcn/Q6yUsNea4JYHcrU4LOVyX/yTSbaQ/wY4Y6ztOFGaf8EolhxQkSZfSF5W9bz4
+         nQZuZMz6SXmM7tUZ1ulTJ3PdQMl+GVs6H9Ja1JbOE05gf+hYYKDdLdZQ6cDhPU+M50C3
+         G5EcgN9bVq6SF7fKo8C+sRa1wfBmArtT75U69199HTb/7sPG3AI7ydKsM6PcuJpN/aOq
+         6djw==
+X-Gm-Message-State: AO0yUKWXvDvN/aNQSa4OfnQSdFS9fZKFhZHRv+45Sr9DX2RilN2OTs7g
+        Aer/sORxn307eQ9fo7QxJKI=
+X-Google-Smtp-Source: AK7set9EZi1/9oSWSns4aJm+/MqyF+TF0ys0Zilv4PWZXPArUgyBwZuuJ5cZ3TAaciBXP8vdxniQYg==
+X-Received: by 2002:a05:651c:301:b0:295:9d32:a195 with SMTP id a1-20020a05651c030100b002959d32a195mr5656804ljp.32.1678369401843;
+        Thu, 09 Mar 2023 05:43:21 -0800 (PST)
 Received: from pc636 (host-95-193-108-241.mobileonline.telia.com. [95.193.108.241])
-        by smtp.gmail.com with ESMTPSA id q14-20020a19a40e000000b004cb0dd2367fsm2661872lfc.308.2023.03.09.05.41.48
+        by smtp.gmail.com with ESMTPSA id t8-20020a2e9d08000000b00295a3a64816sm2966518lji.2.2023.03.09.05.43.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Mar 2023 05:41:49 -0800 (PST)
+        Thu, 09 Mar 2023 05:43:21 -0800 (PST)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 9 Mar 2023 14:41:46 +0100
-To:     Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>
+Date:   Thu, 9 Mar 2023 14:43:18 +0100
+To:     Theodore Ts'o <tytso@mit.edu>, Lukas Czerner <lczerner@redhat.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
@@ -63,26 +63,26 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
-        Vishnu Dasa <vdasa@vmware.com>
-Subject: Re: [PATCH 03/13] misc: vmw_vmci: Rename kvfree_rcu() to
- kvfree_rcu_mightsleep()
-Message-ID: <ZAniGoy7wOEkGEBg@pc636>
+        Lukas Czerner <lczerner@redhat.com>
+Subject: Re: [PATCH 09/13] ext4/super: Rename kfree_rcu() to
+ kfree_rcu_mightsleep()
+Message-ID: <ZAnidvBE8tL69qfy@pc636>
 References: <20230201150815.409582-1-urezki@gmail.com>
- <20230201150815.409582-4-urezki@gmail.com>
+ <20230201150815.409582-10-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230201150815.409582-4-urezki@gmail.com>
+In-Reply-To: <20230201150815.409582-10-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> The kvfree_rcu()'s single argument name is deprecated therefore
-> rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
+> The kfree_rcu()'s single argument name is deprecated therefore
+> rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
 > underline that it is for sleepable contexts.
 > 
-> Cc: Bryan Tan <bryantan@vmware.com>
-> Cc: Vishnu Dasa <vdasa@vmware.com>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Lukas Czerner <lczerner@redhat.com>
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 >
 Could you please add you reviwed-by or Acked-by tags so we can bring
