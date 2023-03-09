@@ -2,148 +2,107 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EDA3C64EC4
-	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 09:20:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF156C61DA4
+	for <rcu@archiver.kernel.org>; Thu,  9 Mar 2023 10:58:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjCIJUj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Mar 2023 04:20:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
+        id S231216AbjCIK6O (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Mar 2023 05:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjCIJUT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Mar 2023 04:20:19 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1D2E6E9804;
-        Thu,  9 Mar 2023 01:19:54 -0800 (PST)
-Date:   Thu, 9 Mar 2023 10:19:43 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, Julian Anastasov <ja@ssi.bg>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
+        with ESMTP id S231332AbjCIK5Y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Mar 2023 05:57:24 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA10EBD86
+        for <rcu@vger.kernel.org>; Thu,  9 Mar 2023 02:55:50 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id x3so5192773edb.10
+        for <rcu@vger.kernel.org>; Thu, 09 Mar 2023 02:55:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1678359343;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d3WJfEb92xt22bfFrUgoL1/wj4gfJmjIX6QMBtki11E=;
+        b=TwTMzP6pzXfLRsTYKHz1AfNCtBnZG1xs35LMAeJpVLdRxg66JtnQoc8BgMlZl4AJ5u
+         5Fqv95xgP4iXrp2U3rLknE0hmRVWN8dxqsl+zAut0Af08QfMzLcikpS6rh6JtUN2ojIP
+         hXuIMCF5dwD3EjuRWEnr98FfedfF77XY7MMO046T4sEZr1+4Rw+TAYyFV4Cybr9Vm6QH
+         3rXD4MiDZMQfE1n339YIwvXzyBMy51+QIgXa+h0FYP3DM3WE47HlK3dWtktft7URXMAj
+         OIywN8sSp+3c1bWjpyyYHCva762GKeQcUTxZUi8+WgkW5cyoxMR4LwQinoLFIQ/iLcL3
+         P0kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678359343;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d3WJfEb92xt22bfFrUgoL1/wj4gfJmjIX6QMBtki11E=;
+        b=l5WTQNHCPnvi5ENAuWRJsUzGbabBolWh87rol3xJag7khD27rK8Ss7ltcf10d3Y+7Q
+         dLvFGb0gFLjq9hO+/prsWZu2jfzDYRMyapEXDlN+hR1SdDd6STaL5ixPjQfqBPz2+KOp
+         OpV5G0Htm35M6HjKax/jI1qV6VH+D6xGTGsRxYeBbGHeYyp0GgjlWJYDIGqiuansL3JI
+         th5rsf1rWYPWxX9l3COuFXx83t4OPF3O9QgbtijTiLAC05FBE1B0DqsiQ2/rZTRTjx4a
+         ZxBCQZfTegsprEt5NpeGqIY83eqUCDAp8FIxSnXxTOeVzNEp2HzVVSY9cmUtFUHTDGAw
+         n98Q==
+X-Gm-Message-State: AO0yUKV/vuBtYb1YcylL61KeFuCtJs8URS75UExQErIN4bpmZVchL+ir
+        0WP9Azolvy2mHurDcbtcoxfZOw==
+X-Google-Smtp-Source: AK7set/eMw/OTCfWM+qcnpe0fvIZLj5VwP+nBvPdyhEHct4AV3vuQ1Gw+aPhqva031kCDvgYXDboyg==
+X-Received: by 2002:a17:906:9c86:b0:914:4277:f3e1 with SMTP id fj6-20020a1709069c8600b009144277f3e1mr11340126ejc.53.1678359342896;
+        Thu, 09 Mar 2023 02:55:42 -0800 (PST)
+Received: from aspen.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id hb15-20020a170906b88f00b008d09b900614sm8614241ejb.80.2023.03.09.02.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Mar 2023 02:55:42 -0800 (PST)
+Date:   Thu, 9 Mar 2023 10:55:39 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
-Message-ID: <ZAmkrxguzzsqNFM+@salvia>
-References: <20230201150954.409693-1-urezki@gmail.com>
- <Y9qLB6Zyx5atcFUV@salvia>
- <7e87836a-c72-eefd-9c74-fc2637accd2@ssi.bg>
- <Y9qc+lgR1CgdszKs@salvia>
- <Y9qfNV0IX1tBsTxP@pc636>
- <20230309001101.GA155598@google.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Aaron Tomlin <atomlin@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        David Gow <davidgow@google.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        tangmeng <tangmeng@uniontech.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v1 00/18] threaded/atomic console support
+Message-ID: <20230309105539.GA83145@aspen.lan>
+References: <20230302195618.156940-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230309001101.GA155598@google.com>
+In-Reply-To: <20230302195618.156940-1-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 09, 2023 at 12:11:01AM +0000, Joel Fernandes wrote:
-> Hello,
-> 
-> On Wed, Feb 01, 2023 at 06:19:49PM +0100, Uladzislau Rezki wrote:
-> > On Wed, Feb 01, 2023 at 06:10:18PM +0100, Pablo Neira Ayuso wrote:
-> > > On Wed, Feb 01, 2023 at 06:12:04PM +0200, Julian Anastasov wrote:
-> > > > 
-> > > > 	Hello,
-> > > > 
-> > > > On Wed, 1 Feb 2023, Pablo Neira Ayuso wrote:
-> > > > 
-> > > > > Hi,
-> > > > > 
-> > > > > On Wed, Feb 01, 2023 at 04:09:51PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > > > The kfree_rcu()'s single argument name is deprecated therefore
-> > > > > > rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
-> > > > > > underline that it is for sleepable contexts.
-> > > > > > 
-> > > > > > Cc: Julian Anastasov <ja@ssi.bg>
-> > > > > > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> > > > > > Cc: Jiri Wiesner <jwiesner@suse.de>
-> > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > > ---
-> > > > > >  net/netfilter/ipvs/ip_vs_est.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-> > > > > > index ce2a1549b304..a39baf6d1367 100644
-> > > > > > --- a/net/netfilter/ipvs/ip_vs_est.c
-> > > > > > +++ b/net/netfilter/ipvs/ip_vs_est.c
-> > > > > > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
-> > > > > >  	__set_bit(row, kd->avail);
-> > > > > >  	if (!kd->tick_len[row]) {
-> > > > > >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
-> > > > > > -		kfree_rcu(td);
-> > > > > 
-> > > > > I also found this kfree_rcu() without rcu_head call a few weeks ago.
-> > > > > 
-> > > > > @Wiesner, @Julian: Any chance this can be turned into kfree_rcu(td, rcu_head); ?
-> > > > 
-> > > > 	Yes, as simple as this:
-> > > > 
-> > > > diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-> > > > index c6c61100d244..6d71a5ff52df 100644
-> > > > --- a/include/net/ip_vs.h
-> > > > +++ b/include/net/ip_vs.h
-> > > > @@ -461,6 +461,7 @@ void ip_vs_stats_free(struct ip_vs_stats *stats);
-> > > >  
-> > > >  /* Multiple chains processed in same tick */
-> > > >  struct ip_vs_est_tick_data {
-> > > > +	struct rcu_head		rcu_head;
-> > > >  	struct hlist_head	chains[IPVS_EST_TICK_CHAINS];
-> > > >  	DECLARE_BITMAP(present, IPVS_EST_TICK_CHAINS);
-> > > >  	DECLARE_BITMAP(full, IPVS_EST_TICK_CHAINS);
-> > > > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-> > > > index df56073bb282..25c7118d9348 100644
-> > > > --- a/net/netfilter/ipvs/ip_vs_est.c
-> > > > +++ b/net/netfilter/ipvs/ip_vs_est.c
-> > > > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
-> > > >  	__set_bit(row, kd->avail);
-> > > >  	if (!kd->tick_len[row]) {
-> > > >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
-> > > > -		kfree_rcu(td);
-> > > > +		kfree_rcu(td, rcu_head);
-> > > >  	}
-> > > >  	kd->est_count--;
-> > > >  	if (kd->est_count) {
-> > > > 
-> > > > 	I was about to reply to Uladzislau Rezki but his patchset
-> > > > looks more like a renaming, so I'm not sure how we are about
-> > > > to integrate this change, as separate patch or as part of his
-> > > > patchset. I don't have preference, just let me know how to
-> > > > handle it.
-> > > 
-> > > @Uladzislau Rezki: Are you fine with dropping this patch from your
-> > > series and Julian will send us a patch for inclusion into net-next to
-> > > use the kfree_rcu(x, rcu_head) variant?
-> > Absolutely. So i will drop it from my series.
-> 
-> Since this patch was dropped, it is the only case blocking the proper
-> integration of this series into linux-next. We want to drop the old API and
-> currently we are not able to, thus this revert [1] has to be unfortunately
-> carried in linux-next.
+On Thu, Mar 02, 2023 at 09:02:00PM +0106, John Ogness wrote:
+> Hi,
 >
-> For that reason, there are 2 options:
-> 
-> 1. Can we get the new rcu_head approach for ipvs posted and reviewed with
-> suitable Acks?
-> 
-> 2. Can we carry Vlad's patch to use kfree_rcu_mightsleep() in ipvs and drop
-> it later if/when #1 is completed?
-> 
-> Option 2 has the unfortunate effect that it will conflict with your new
-> approach of using rcu_head so I'd rather you fix it that way and get it
-> Acked. And once acked, we can also take it via the RCU tree if the net
-> maintainers are Ok with that.
-> 
-> Please advise.
+> This is v1 of a series to bring in a new threaded/atomic console
+> infrastructure. The history, motivation, and various explanations and
+> examples are available in the cover letter of tglx's RFC series
+> [0]. From that series, patches 1-18 have been mainlined as of the 6.3
+> merge window. What remains, patches 19-29, is what this series
+> represents.
 
-JFYI, this patch is already in linux.git
+So I grabbed the whole series and pointed it at the kgdb test suite.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e4d0fe71f59dc5137a2793ff7560730d80d1e1f4
+Don't get too excited about that (the test suite only exercises 8250
+and PL011... and IIUC little in the set should impact UART polling
+anyway) but FWIW:
+Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+
+Daniel.
