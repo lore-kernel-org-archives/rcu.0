@@ -2,48 +2,52 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91EC0C74A44
-	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 10:32:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C339EC6FD1C
+	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 10:32:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbjCJKcX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Mar 2023 05:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
+        id S231370AbjCJKcZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Mar 2023 05:32:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjCJKcS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Mar 2023 05:32:18 -0500
+        with ESMTP id S231166AbjCJKcT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Mar 2023 05:32:19 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E00B1111FF;
-        Fri, 10 Mar 2023 02:32:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41169111B05;
+        Fri, 10 Mar 2023 02:32:16 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4FCF020652;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C680520654;
         Fri, 10 Mar 2023 10:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1678444334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=+UxaHT8mKSvWC1QwdfPHOIKK79hhmlWoe1rpbrZg63I=;
-        b=Pi4jmECIhq9mt7ExG5YPIfVLCnWAsu13s1ZcnGG8QMsXvppeWz1uSPuiQAAUb4TWtAnyIK
-        FFaCIxvGmlNxUZwx+6E7paW4fJEQ4r+txzLRaCowoeYJsr2zCk53dGc5tmS0m3rN5Lr0/K
-        Kt/Mg6W6ijqhwCTTXPogOO/aOCVXxr0=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wKAQjtPeEdruvdiu+k5gGLS8R7rVo9ZpEqr34/mOg1w=;
+        b=jM/aSqo5eeEsG1bbB+HEHDUxiDbo5qCgxkS1lMdG/LTijo7v609GwIH6wOGPK5ENW25w5B
+        aLm6T/mGGqOwcuE9DxA+GKqD2ccwar2W9/NBSOeEe5sv4m5mnrq+A1XLnPFkk6V8+rT26N
+        0xdaTOXfF4GxqANU4uwlYiu8VUgjyOs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1678444334;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=+UxaHT8mKSvWC1QwdfPHOIKK79hhmlWoe1rpbrZg63I=;
-        b=qc9mtv8oEd3rdK+9AU0fRFP6mEP8TogXgGtqfBKs7DxeOUmeHcrefoqf50gZ3br6pltm6a
-        mpmzxQWPR95dfxBA==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wKAQjtPeEdruvdiu+k5gGLS8R7rVo9ZpEqr34/mOg1w=;
+        b=ZxQ4ujXvWDQr+knM1ffeWycdMvA+7Hpc5bwayOqfox5fa6vKydvQWhBrjfL8vVJIsvKsYZ
+        ruYlhz5R2udyovCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E502D13592;
-        Fri, 10 Mar 2023 10:32:13 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89A8813592;
+        Fri, 10 Mar 2023 10:32:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id bBceNy0HC2SsXQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 10 Mar 2023 10:32:13 +0000
+        id UIQAIS4HC2SsXQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 10 Mar 2023 10:32:14 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Christoph Lameter <cl@linux.com>,
         David Rientjes <rientjes@google.com>,
@@ -58,75 +62,110 @@ Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 0/7] remove SLOB and allow kfree() with kmem_cache_alloc()
-Date:   Fri, 10 Mar 2023 11:32:02 +0100
-Message-Id: <20230310103210.22372-1-vbabka@suse.cz>
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH 2/7] net: skbuff: remove SLOB-specific ifdefs
+Date:   Fri, 10 Mar 2023 11:32:04 +0100
+Message-Id: <20230310103210.22372-3-vbabka@suse.cz>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230310103210.22372-1-vbabka@suse.cz>
+References: <20230310103210.22372-1-vbabka@suse.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Also in git:
-https://git.kernel.org/vbabka/h/slab-remove-slob-v1r1
+As the comment for HAVE_SKB_SMALL_HEAD_CACHE says:
 
-The SLOB allocator was deprecated in 6.2 so I think we can start
-exposing the complete removal in for-next and aim at 6.4 if there are no
-complaints.
+> skb_small_head_cache and related code is only supported
+> for CONFIG_SLAB and CONFIG_SLUB.
+> As soon as SLOB is removed from the kernel, we can clean up this.
 
-Besides code cleanup, the main immediate benefit will be allowing
-kfree() family of function to work on kmem_cache_alloc() objects (Patch
-7), which was incompatible with SLOB.
+With CONFIG_SLOB removed, remove HAVE_SKB_SMALL_HEAD_CACHE and make all
+code that it guards unconditional.
 
-This includes kfree_rcu() so I've updated the comment there to remove
-the mention of potential future addition of kmem_cache_free_rcu() as
-there should be no need for that now.
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+---
+ net/core/skbuff.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-Otherwise it's straightforward. Patch 2 is a cleanup in net area, that I
-can either handle in slab tree or submit in net after SLOB is removed.
-Another cleanup in tomoyo is already in the tomoyo tree as that didn't
-need to wait until SLOB removal.
-
-Vlastimil Babka (7):
-  mm/slob: remove CONFIG_SLOB
-  net: skbuff: remove SLOB-specific ifdefs
-  mm, page_flags: remove PG_slob_free
-  mm, pagemap: remove SLOB and SLQB from comments and documentation
-  mm/slab: remove CONFIG_SLOB code from slab common code
-  mm/slob: remove slob.c
-  mm/slab: document kfree() as allowed for kmem_cache_alloc() objects
-
- Documentation/admin-guide/mm/pagemap.rst     |   6 +-
- Documentation/core-api/memory-allocation.rst |  15 +-
- fs/proc/page.c                               |   5 +-
- include/linux/page-flags.h                   |   4 -
- include/linux/rcupdate.h                     |   6 +-
- include/linux/slab.h                         |  39 -
- init/Kconfig                                 |   2 +-
- kernel/configs/tiny.config                   |   1 -
- mm/Kconfig                                   |  22 -
- mm/Makefile                                  |   1 -
- mm/slab.h                                    |  61 --
- mm/slab_common.c                             |   7 +-
- mm/slob.c                                    | 757 -------------------
- net/core/skbuff.c                            |  16 -
- tools/mm/page-types.c                        |   6 +-
- 15 files changed, 23 insertions(+), 925 deletions(-)
- delete mode 100644 mm/slob.c
-
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index eb7d33b41e71..8bba4e91d0d5 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -90,15 +90,6 @@ static struct kmem_cache *skbuff_fclone_cache __ro_after_init;
+ static struct kmem_cache *skbuff_ext_cache __ro_after_init;
+ #endif
+ 
+-/* skb_small_head_cache and related code is only supported
+- * for CONFIG_SLAB and CONFIG_SLUB.
+- * As soon as SLOB is removed from the kernel, we can clean up this.
+- */
+-#if !defined(CONFIG_SLOB)
+-# define HAVE_SKB_SMALL_HEAD_CACHE 1
+-#endif
+-
+-#ifdef HAVE_SKB_SMALL_HEAD_CACHE
+ static struct kmem_cache *skb_small_head_cache __ro_after_init;
+ 
+ #define SKB_SMALL_HEAD_SIZE SKB_HEAD_ALIGN(MAX_TCP_HEADER)
+@@ -115,7 +106,6 @@ static struct kmem_cache *skb_small_head_cache __ro_after_init;
+ 
+ #define SKB_SMALL_HEAD_HEADROOM						\
+ 	SKB_WITH_OVERHEAD(SKB_SMALL_HEAD_CACHE_SIZE)
+-#endif /* HAVE_SKB_SMALL_HEAD_CACHE */
+ 
+ int sysctl_max_skb_frags __read_mostly = MAX_SKB_FRAGS;
+ EXPORT_SYMBOL(sysctl_max_skb_frags);
+@@ -514,7 +504,6 @@ static void *kmalloc_reserve(unsigned int *size, gfp_t flags, int node,
+ 	void *obj;
+ 
+ 	obj_size = SKB_HEAD_ALIGN(*size);
+-#ifdef HAVE_SKB_SMALL_HEAD_CACHE
+ 	if (obj_size <= SKB_SMALL_HEAD_CACHE_SIZE &&
+ 	    !(flags & KMALLOC_NOT_NORMAL_BITS)) {
+ 
+@@ -530,7 +519,6 @@ static void *kmalloc_reserve(unsigned int *size, gfp_t flags, int node,
+ 			goto out;
+ 		}
+ 	}
+-#endif
+ 	*size = obj_size = kmalloc_size_roundup(obj_size);
+ 	/*
+ 	 * Try a regular allocation, when that fails and we're not entitled
+@@ -852,11 +840,9 @@ static bool skb_pp_recycle(struct sk_buff *skb, void *data)
+ 
+ static void skb_kfree_head(void *head, unsigned int end_offset)
+ {
+-#ifdef HAVE_SKB_SMALL_HEAD_CACHE
+ 	if (end_offset == SKB_SMALL_HEAD_HEADROOM)
+ 		kmem_cache_free(skb_small_head_cache, head);
+ 	else
+-#endif
+ 		kfree(head);
+ }
+ 
+@@ -4692,7 +4678,6 @@ void __init skb_init(void)
+ 						0,
+ 						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
+ 						NULL);
+-#ifdef HAVE_SKB_SMALL_HEAD_CACHE
+ 	/* usercopy should only access first SKB_SMALL_HEAD_HEADROOM bytes.
+ 	 * struct skb_shared_info is located at the end of skb->head,
+ 	 * and should not be copied to/from user.
+@@ -4704,7 +4689,6 @@ void __init skb_init(void)
+ 						0,
+ 						SKB_SMALL_HEAD_HEADROOM,
+ 						NULL);
+-#endif
+ 	skb_extensions_init();
+ }
+ 
 -- 
 2.39.2
 
