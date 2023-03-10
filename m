@@ -2,186 +2,97 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0800C61DA4
-	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 01:08:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7986CC61DA4
+	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 01:48:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjCJBIe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 9 Mar 2023 20:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        id S229940AbjCJBsD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 9 Mar 2023 20:48:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjCJBIc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 9 Mar 2023 20:08:32 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CEB7D57E
-        for <rcu@vger.kernel.org>; Thu,  9 Mar 2023 17:08:31 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id c19so4152437qtn.13
-        for <rcu@vger.kernel.org>; Thu, 09 Mar 2023 17:08:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678410510;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UokTDAQn7q1obW3NWHDp8O1nKfc0rpJyGGobFx0lY6o=;
-        b=AFuy3V+dW135wdLQvl9/LwGgMzJeucpm5kFAghEhvP68Vp94KirvGilj4Nr6OGYE03
-         ZCUlGhLFeCPV3cThc3ejh4S+0ngKiyGmMcM9CJ1C/yIRCqVDmsLTgGEkQyMplp9vOyfk
-         8zQ/K0Rw2DOabJ5y50H/0HeDBtThSPxTDoiL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678410510;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UokTDAQn7q1obW3NWHDp8O1nKfc0rpJyGGobFx0lY6o=;
-        b=IxnkXo4+m4tUI30eH8HowMpZkNNtjz9GTx4DvdfRJ/7FmepBI8EAGDJ9DpfKBFqYmz
-         1MQUP1prWGF4MKKk5xo9yqm/Olk0qs9nmzi2MTID/ztlUJl7uJt5GI7Kff8Jz3RUb9iW
-         9Rzshq4WAt2OJTFatebKmMvyQc712G7F30XguzmfMis6k/M9QVumbqjU8OP+tQLIDcXy
-         UVgtfxQFIHGgwpHF6BxN5cl2OjB+foToXt6iJCxkKrb19ujHYJ4tx+c+mUE9GR5tjgTx
-         TKebfNHzibUim49FAbdZs7w1YDM8aPX67L5qEzecZjrJMGEU+ZUQ3TbhyRQcRLhWSMIZ
-         qLkw==
-X-Gm-Message-State: AO0yUKUMNj1Zmtvi8GW9LajWPzYhn7rNKiqjbHUMHrxdD8l7EY0SCTi+
-        LjYSeB5HaPoxO06FPRIcrFhuVA==
-X-Google-Smtp-Source: AK7set80WO4khewW3Wd6Q+Vozjr+sXkPlub6kbcMazLjmw+NFebExQZI8lk3QDLhbcQYfCmbN4V9zw==
-X-Received: by 2002:ac8:5b56:0:b0:3bf:dbd3:a014 with SMTP id n22-20020ac85b56000000b003bfdbd3a014mr35729700qtw.45.1678410510171;
-        Thu, 09 Mar 2023 17:08:30 -0800 (PST)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id t134-20020a37468c000000b007422eee8058sm306238qka.125.2023.03.09.17.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Mar 2023 17:08:29 -0800 (PST)
-Date:   Fri, 10 Mar 2023 01:08:28 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, Julian Anastasov <ja@ssi.bg>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [PATCH 10/13] ipvs: Rename kfree_rcu() to kfree_rcu_mightsleep()
-Message-ID: <20230310010828.GA586277@google.com>
-References: <20230201150954.409693-1-urezki@gmail.com>
- <Y9qLB6Zyx5atcFUV@salvia>
- <7e87836a-c72-eefd-9c74-fc2637accd2@ssi.bg>
- <Y9qc+lgR1CgdszKs@salvia>
- <Y9qfNV0IX1tBsTxP@pc636>
- <20230309001101.GA155598@google.com>
- <ZAmkrxguzzsqNFM+@salvia>
+        with ESMTP id S229544AbjCJBsC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 9 Mar 2023 20:48:02 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3695BAC;
+        Thu,  9 Mar 2023 17:47:58 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A62B5B82168;
+        Fri, 10 Mar 2023 01:47:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 475F9C433EF;
+        Fri, 10 Mar 2023 01:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678412875;
+        bh=oitd4xYPDLaZ26iTmZ1QB2D+PfMEhhPrOxGOwJG1DJw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dM+cTHXEuF0zZMQJ5v6TB5ytChtDjF9EQbpi0oajh2EYyIFnchAsoiJ/G4QXs/E1M
+         rsqlCHuU98WB6VM7MwhzWz1I+gnnECscXicM0J/IhX0JJLG2SSB7colqYU6OA+O13Y
+         Bmz3T/szNtVeN7IUv1AQYh8Fq0v72n4MSY7LYcy3B5wVch0GZEjEmeMlM5uy6hQQHX
+         Qe4dot2hfESyVPBaEAdWXKg3DetWRKGsTA9tQ9rqo6XnYeaOmUu1TNX2RPxX8AtplM
+         cHgHQtxCxZNLfPuZz7yOWXtXKb27SAUjzAiTvQfx19Kf0gGeqw8QaDu3b9lR14GxK7
+         42kxZdVQUr86g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C80AC1548D6E; Thu,  9 Mar 2023 17:47:54 -0800 (PST)
+Date:   Thu, 9 Mar 2023 17:47:54 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     qiuxu.zhuo@intel.com, frederic@kernel.org, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org, urezki@gmail.com
+Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
+Message-ID: <a6f9d56a-3f5f-4057-9a35-a697a96df0f2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <1a4b1362-defb-4464-9217-32e6d3d4a8d2@paulmck-laptop>
+ <6e38d7d7-9991-b0a6-2855-0c8838cce142@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZAmkrxguzzsqNFM+@salvia>
+In-Reply-To: <6e38d7d7-9991-b0a6-2855-0c8838cce142@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 09, 2023 at 10:19:43AM +0100, Pablo Neira Ayuso wrote:
-> On Thu, Mar 09, 2023 at 12:11:01AM +0000, Joel Fernandes wrote:
-> > Hello,
-> > 
-> > On Wed, Feb 01, 2023 at 06:19:49PM +0100, Uladzislau Rezki wrote:
-> > > On Wed, Feb 01, 2023 at 06:10:18PM +0100, Pablo Neira Ayuso wrote:
-> > > > On Wed, Feb 01, 2023 at 06:12:04PM +0200, Julian Anastasov wrote:
-> > > > > 
-> > > > > 	Hello,
-> > > > > 
-> > > > > On Wed, 1 Feb 2023, Pablo Neira Ayuso wrote:
-> > > > > 
-> > > > > > Hi,
-> > > > > > 
-> > > > > > On Wed, Feb 01, 2023 at 04:09:51PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > > > > The kfree_rcu()'s single argument name is deprecated therefore
-> > > > > > > rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
-> > > > > > > underline that it is for sleepable contexts.
-> > > > > > > 
-> > > > > > > Cc: Julian Anastasov <ja@ssi.bg>
-> > > > > > > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> > > > > > > Cc: Jiri Wiesner <jwiesner@suse.de>
-> > > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > > > ---
-> > > > > > >  net/netfilter/ipvs/ip_vs_est.c | 2 +-
-> > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > > 
-> > > > > > > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-> > > > > > > index ce2a1549b304..a39baf6d1367 100644
-> > > > > > > --- a/net/netfilter/ipvs/ip_vs_est.c
-> > > > > > > +++ b/net/netfilter/ipvs/ip_vs_est.c
-> > > > > > > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
-> > > > > > >  	__set_bit(row, kd->avail);
-> > > > > > >  	if (!kd->tick_len[row]) {
-> > > > > > >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
-> > > > > > > -		kfree_rcu(td);
-> > > > > > 
-> > > > > > I also found this kfree_rcu() without rcu_head call a few weeks ago.
-> > > > > > 
-> > > > > > @Wiesner, @Julian: Any chance this can be turned into kfree_rcu(td, rcu_head); ?
-> > > > > 
-> > > > > 	Yes, as simple as this:
-> > > > > 
-> > > > > diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-> > > > > index c6c61100d244..6d71a5ff52df 100644
-> > > > > --- a/include/net/ip_vs.h
-> > > > > +++ b/include/net/ip_vs.h
-> > > > > @@ -461,6 +461,7 @@ void ip_vs_stats_free(struct ip_vs_stats *stats);
-> > > > >  
-> > > > >  /* Multiple chains processed in same tick */
-> > > > >  struct ip_vs_est_tick_data {
-> > > > > +	struct rcu_head		rcu_head;
-> > > > >  	struct hlist_head	chains[IPVS_EST_TICK_CHAINS];
-> > > > >  	DECLARE_BITMAP(present, IPVS_EST_TICK_CHAINS);
-> > > > >  	DECLARE_BITMAP(full, IPVS_EST_TICK_CHAINS);
-> > > > > diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-> > > > > index df56073bb282..25c7118d9348 100644
-> > > > > --- a/net/netfilter/ipvs/ip_vs_est.c
-> > > > > +++ b/net/netfilter/ipvs/ip_vs_est.c
-> > > > > @@ -549,7 +549,7 @@ void ip_vs_stop_estimator(struct netns_ipvs *ipvs, struct ip_vs_stats *stats)
-> > > > >  	__set_bit(row, kd->avail);
-> > > > >  	if (!kd->tick_len[row]) {
-> > > > >  		RCU_INIT_POINTER(kd->ticks[row], NULL);
-> > > > > -		kfree_rcu(td);
-> > > > > +		kfree_rcu(td, rcu_head);
-> > > > >  	}
-> > > > >  	kd->est_count--;
-> > > > >  	if (kd->est_count) {
-> > > > > 
-> > > > > 	I was about to reply to Uladzislau Rezki but his patchset
-> > > > > looks more like a renaming, so I'm not sure how we are about
-> > > > > to integrate this change, as separate patch or as part of his
-> > > > > patchset. I don't have preference, just let me know how to
-> > > > > handle it.
-> > > > 
-> > > > @Uladzislau Rezki: Are you fine with dropping this patch from your
-> > > > series and Julian will send us a patch for inclusion into net-next to
-> > > > use the kfree_rcu(x, rcu_head) variant?
-> > > Absolutely. So i will drop it from my series.
-> > 
-> > Since this patch was dropped, it is the only case blocking the proper
-> > integration of this series into linux-next. We want to drop the old API and
-> > currently we are not able to, thus this revert [1] has to be unfortunately
-> > carried in linux-next.
-> >
-> > For that reason, there are 2 options:
-> > 
-> > 1. Can we get the new rcu_head approach for ipvs posted and reviewed with
-> > suitable Acks?
-> > 
-> > 2. Can we carry Vlad's patch to use kfree_rcu_mightsleep() in ipvs and drop
-> > it later if/when #1 is completed?
-> > 
-> > Option 2 has the unfortunate effect that it will conflict with your new
-> > approach of using rcu_head so I'd rather you fix it that way and get it
-> > Acked. And once acked, we can also take it via the RCU tree if the net
-> > maintainers are Ok with that.
-> > 
-> > Please advise.
+On Fri, Mar 10, 2023 at 09:11:54AM +0900, Akira Yokosawa wrote:
+> Hi,
 > 
-> JFYI, this patch is already in linux.git
+> Let me chime in this interesting thread.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e4d0fe71f59dc5137a2793ff7560730d80d1e1f4
+> On Thu, 9 Mar 2023 13:53:39 -0800, Paul E. McKenney wrote:
+> > On Thu, Mar 09, 2023 at 03:17:09PM +0000, Zhuo, Qiuxu wrote:
+> >> > From: Paul E. McKenney <paulmck@kernel.org>
+> >> > [...]
+> >> > >
+> >> > > a's standard deviation is ~0.4.
+> >> > > b's standard deviation is ~0.5.
+> >> > >
+> >> > > a's average 9.0 is at the upbound of the standard deviation of b's [8.0, 9].
+> >> > > So, the measurements should be statistically significant to some degree.
+> >> > 
+> >> > That single standard deviation means that you have 68% confidence that the
+> >> > difference is real.  This is not far above the 50% leval of random noise.
+> >> > 95% is the lowest level that is normally considered to be statistically
+> >> > significant.
+> >> 
+> >> 95% means there is no overlap between two standard deviations of a
+> >> and two standard deviations of b.
+> >> 
+> >> This relies on either much less noise during testing or a big enough 
+> >> difference between a and b. 
+> 
+> Appended is a histogram comparing 2 data sets.
+> 
+> As you see, the one with v2 patch is far from normal distribution.
+> I think there is at least two peaks.
+> The one at the right around 9.7 seems not affected by the patch.
+> In such a case, average and standard deviation of all the data don't
+> tell much.
+> 
+> It is hard to say anything for sure with such small set of samples.
+> And the shape of the plot is likely to be highly dependent on machine
+> setups.
+> 
+> Hope this helps.
 
-Indeed it is in, thank you!
+Thank you, Akira!  Definitely an abnormal distribution!  ;-)
 
- - Joel
-
+							Thanx, Paul
