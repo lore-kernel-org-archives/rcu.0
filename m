@@ -2,139 +2,158 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD71C6FD1E
-	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 10:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5572C6FD19
+	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 19:21:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjCJKcq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Mar 2023 05:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        id S231359AbjCJTVa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Mar 2023 14:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjCJKcV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Mar 2023 05:32:21 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE76C110285;
-        Fri, 10 Mar 2023 02:32:16 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        with ESMTP id S229580AbjCJTVY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Mar 2023 14:21:24 -0500
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D9A132BFA;
+        Fri, 10 Mar 2023 11:21:14 -0800 (PST)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 05EA922A63;
-        Fri, 10 Mar 2023 10:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1678444335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4PYG9w5CGVz9sSg;
+        Fri, 10 Mar 2023 20:21:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1678476068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ynur/BmfAMIVmRdtwJq2oWLnRqKGEqStLCEoP0mvCEk=;
-        b=QZUez2xQfWCqt88eXGyNmcCVFR+o4XrrQNVUvQAQC/gEF+ZnoGWlvqfW173ZktqDIya0KM
-        u7XqzWIx/f89HNDO83sLN6bThJZxwxp1m/86qDIFrPF8PQS+hjBI21MXT96fg2uEKNHTqg
-        3VIb01dFL8+mA7J4ebsbtB44Rhs+7+s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1678444335;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ynur/BmfAMIVmRdtwJq2oWLnRqKGEqStLCEoP0mvCEk=;
-        b=6Z79qYSGrVUYEvCogt8O06nAIvmuaiI9MxaAVBbTvrKtYfNLDNSRW2zjRe6BzTeZchX+gP
-        1d3ni6+77ilnXoCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C9A91139F9;
-        Fri, 10 Mar 2023 10:32:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WEKPMC4HC2SsXQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 10 Mar 2023 10:32:14 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 3/7] mm, page_flags: remove PG_slob_free
-Date:   Fri, 10 Mar 2023 11:32:05 +0100
-Message-Id: <20230310103210.22372-4-vbabka@suse.cz>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230310103210.22372-1-vbabka@suse.cz>
-References: <20230310103210.22372-1-vbabka@suse.cz>
+        bh=LcYGd1/e2TxnVo/Nykvxyvg5HOuPY1jiueiJQW2bu0k=;
+        b=ktub/gRxYcjJP5DYSbaReocn+QKlGpv01U8pCyc0S9Bd9xnT3kl7ZgzZ8I8REYnv791ovZ
+        neKwv9t3wIDgk1L9WLg9Z0frKB2ThewjRKBqd1My+hhrl4CoTmgKJTNhD87hxf6lMbGAPX
+        FmrUporAv2qTdTtHwTozv5978gQD2XfLDB6ffG6XE/vgci84CgY/ZJWC3r4pafa/Zk6oqL
+        to/epgatbTsxOIKZRnRU4/cJvXYBIDaPE0pXtKc/wpD3MmolJxpq+RqPaYE5d3SmxmBxG2
+        GbDqemNvrBmn4MUw2Qs8lWW74yaHsU/K4PnIDdqunY1B3IyVSqCinAJVhZuR9A==
+Message-ID: <16d9f738-18fd-a929-e711-f2a1e757e33f@mailbox.org>
+Date:   Fri, 10 Mar 2023 19:20:56 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v14 00/12] Parallel CPU bringup for x86_64
+To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
+        tglx@linutronix.de, kim.phillips@amd.com, brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com
+References: <20230308171328.1562857-1-usama.arif@bytedance.com>
+Content-Language: en-US
+From:   Tor Vic <torvic9@mailbox.org>
+In-Reply-To: <20230308171328.1562857-1-usama.arif@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MBO-RS-ID: 0b61b0862a564b2e27f
+X-MBO-RS-META: wrc5czsm3dap5qh9hq756znyyj3bc7qi
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-With SLOB removed we no longer need the PG_slob_free alias for
-PG_private. Also update tools/mm/page-types.
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/page-flags.h | 4 ----
- tools/mm/page-types.c      | 6 +-----
- 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index a7e3a3405520..2bdc41cb0594 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -174,9 +174,6 @@ enum pageflags {
- 	/* Remapped by swiotlb-xen. */
- 	PG_xen_remapped = PG_owner_priv_1,
- 
--	/* SLOB */
--	PG_slob_free = PG_private,
--
- #ifdef CONFIG_MEMORY_FAILURE
- 	/*
- 	 * Compound pages. Stored in first tail page's flags.
-@@ -483,7 +480,6 @@ PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
- PAGEFLAG(Workingset, workingset, PF_HEAD)
- 	TESTCLEARFLAG(Workingset, workingset, PF_HEAD)
- __PAGEFLAG(Slab, slab, PF_NO_TAIL)
--__PAGEFLAG(SlobFree, slob_free, PF_NO_TAIL)
- PAGEFLAG(Checked, checked, PF_NO_COMPOUND)	   /* Used by some filesystems */
- 
- /* Xen */
-diff --git a/tools/mm/page-types.c b/tools/mm/page-types.c
-index 381dcc00cb62..8d5595b6c59f 100644
---- a/tools/mm/page-types.c
-+++ b/tools/mm/page-types.c
-@@ -85,7 +85,6 @@
-  */
- #define KPF_ANON_EXCLUSIVE	47
- #define KPF_READAHEAD		48
--#define KPF_SLOB_FREE		49
- #define KPF_SLUB_FROZEN		50
- #define KPF_SLUB_DEBUG		51
- #define KPF_FILE		61
-@@ -141,7 +140,6 @@ static const char * const page_flag_names[] = {
- 
- 	[KPF_ANON_EXCLUSIVE]	= "d:anon_exclusive",
- 	[KPF_READAHEAD]		= "I:readahead",
--	[KPF_SLOB_FREE]		= "P:slob_free",
- 	[KPF_SLUB_FROZEN]	= "A:slub_frozen",
- 	[KPF_SLUB_DEBUG]	= "E:slub_debug",
- 
-@@ -478,10 +476,8 @@ static uint64_t expand_overloaded_flags(uint64_t flags, uint64_t pme)
- 	if ((flags & BIT(ANON)) && (flags & BIT(MAPPEDTODISK)))
- 		flags ^= BIT(MAPPEDTODISK) | BIT(ANON_EXCLUSIVE);
- 
--	/* SLOB/SLUB overload several page flags */
-+	/* SLUB overloads several page flags */
- 	if (flags & BIT(SLAB)) {
--		if (flags & BIT(PRIVATE))
--			flags ^= BIT(PRIVATE) | BIT(SLOB_FREE);
- 		if (flags & BIT(ACTIVE))
- 			flags ^= BIT(ACTIVE) | BIT(SLUB_FROZEN);
- 		if (flags & BIT(ERROR))
--- 
-2.39.2
+On 08.03.23 17:13, Usama Arif wrote:
+> The main code change over v13 is to enable parallel bringup for SEV-ES guests.
+> 
+> Thanks,
+> Usama
+> 
+> Changes across versions:
+> v2: Cut it back to just INIT/SIPI/SIPI in parallel for now, nothing more
+> v3: Clean up x2apic patch, add MTRR optimisation, lock topology update
+>      in preparation for more parallelisation.
+> v4: Fixes to the real mode parallelisation patch spotted by SeanC, to
+>      avoid scribbling on initial_gs in common_cpu_up(), and to allow all
+>      24 bits of the physical X2APIC ID to be used. That patch still needs
+>      a Signed-off-by from its original author, who once claimed not to
+>      remember writing it at all. But now we've fixed it, hopefully he'll
+>      admit it now :)
+> v5: rebase to v6.1 and remeasure performance, disable parallel bringup
+>      for AMD CPUs.
+> v6: rebase to v6.2-rc6, disabled parallel boot on amd as a cpu bug and
+>      reused timer calibration for secondary CPUs.
+> v7: [David Woodhouse] iterate over all possible CPUs to find any existing
+>      cluster mask in alloc_clustermask. (patch 1/9)
+>      Keep parallel AMD support enabled in AMD, using APIC ID in CPUID leaf
+>      0x0B (for x2APIC mode) or CPUID leaf 0x01 where 8 bits are sufficient.
+>      Included sanity checks for APIC id from 0x0B. (patch 6/9)
+>      Removed patch for reusing timer calibration for secondary CPUs.
+>      commit message and code improvements.
+> v8: Fix CPU0 hotplug by setting up the initial_gs, initial_stack and
+>      early_gdt_descr.
+>      Drop trampoline lock and bail if APIC ID not found in find_cpunr.
+>      Code comments improved and debug prints added.
+> v9: Drop patch to avoid repeated saves of MTRR at boot time.
+>      rebased and retested at v6.2-rc8.
+>      added kernel doc for no_parallel_bringup and made do_parallel_bringup
+>      __ro_after_init.
+> v10: Fixed suspend/resume not working with parallel smpboot.
+>       rebased and retested to 6.2.
+>       fixed checkpatch errors.
+> v11: Added patches from Brian Gerst to remove the global variables initial_gs,
+>       initial_stack, and early_gdt_descr from the 64-bit boot code
+>       (https://lore.kernel.org/all/20230222221301.245890-1-brgerst@gmail.com/).
+> v12: Fixed compilation errors, acquire tr_lock for every stack setup in
+>       trampoline_64.S.
+>       Rearranged commits for a cleaner git history.
+> v13: Fix build error with CONFIG_FORCE_NR_CPUS.
+>       Commit message improved, typos fixed and extra comments added.
+> v14: Enable parallel bringup for SEV-ES guests
+>   
+> Brian Gerst (3):
+>    x86/smpboot: Remove initial_stack on 64-bit
+>    x86/smpboot: Remove early_gdt_descr on 64-bit
+>    x86/smpboot: Remove initial_gs
+> 
+> David Woodhouse (9):
+>    x86/apic/x2apic: Allow CPU cluster_mask to be populated in parallel
+>    cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+>    cpu/hotplug: Add dynamic parallel bringup states before
+>      CPUHP_BRINGUP_CPU
+>    x86/smpboot: Reference count on smpboot_setup_warm_reset_vector()
+>    x86/smpboot: Split up native_cpu_up into separate phases and document
+>      them
+>    x86/smpboot: Support parallel startup of secondary CPUs
+>    x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+>    x86/smpboot: Serialize topology updates for secondary bringup
+>    x86/smpboot: Allow parallel bringup for SEV-ES
+> 
+>   .../admin-guide/kernel-parameters.txt         |   3 +
+>   arch/x86/include/asm/cpu.h                    |   1 +
+>   arch/x86/include/asm/processor.h              |   6 +-
+>   arch/x86/include/asm/realmode.h               |   4 +-
+>   arch/x86/include/asm/sev-common.h             |   3 +
+>   arch/x86/include/asm/sev.h                    |   5 +
+>   arch/x86/include/asm/smp.h                    |  18 +-
+>   arch/x86/include/asm/topology.h               |   2 -
+>   arch/x86/kernel/acpi/sleep.c                  |  30 +-
+>   arch/x86/kernel/apic/apic.c                   |   2 +-
+>   arch/x86/kernel/apic/x2apic_cluster.c         | 126 +++---
+>   arch/x86/kernel/asm-offsets.c                 |   1 +
+>   arch/x86/kernel/cpu/common.c                  |   6 +-
+>   arch/x86/kernel/cpu/topology.c                |   2 +-
+>   arch/x86/kernel/head_64.S                     | 162 ++++++--
+>   arch/x86/kernel/smpboot.c                     | 366 +++++++++++++-----
+>   arch/x86/realmode/init.c                      |   3 +
+>   arch/x86/realmode/rm/trampoline_64.S          |  27 +-
+>   arch/x86/xen/smp_pv.c                         |   4 +-
+>   arch/x86/xen/xen-head.S                       |   2 +-
+>   include/linux/cpuhotplug.h                    |   2 +
+>   include/linux/smpboot.h                       |   7 +
+>   kernel/cpu.c                                  |  31 +-
+>   kernel/smpboot.h                              |   2 -
+>   24 files changed, 614 insertions(+), 201 deletions(-)
+> 
 
+On Linux 6.2, Zen2 and Skylake, no issues or boot problems:
+
+Tested-by: Tor Vic <torvic9@mailbox.org>
