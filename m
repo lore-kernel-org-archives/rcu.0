@@ -2,135 +2,131 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6FCDC74A4B
-	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 09:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91EC0C74A44
+	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 10:32:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbjCJJBq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Mar 2023 04:01:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
+        id S231267AbjCJKcX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Mar 2023 05:32:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjCJJA5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Mar 2023 04:00:57 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3234103EC6;
-        Fri, 10 Mar 2023 00:55:06 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id t14so4562120ljd.5;
-        Fri, 10 Mar 2023 00:55:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678438505;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=edHnODkVWzD+JR+bIoyydgYcG1zz8EnEa8mgd61cqd4=;
-        b=nmn+F3bhghEzrDjK+rq8mJoQDiXrzHkgCqz3pHyVPvaFeJq8qRdE8ugHF3IJEigW5V
-         IwiItpBnhJ7WbwRrgw/hSRgAfWk0tHLzpPk/ARjx4zAcm4qfOsU2exfOl0qxXmYkiWxT
-         GuY3a+yrqrQT9Cm4kAqU9JTxOpjEr8drlhImeOH5O77f9YNpnC9MyDwkUsk0Hut+0V6U
-         VJBgwOI75xKOjvLFlreqmNsXM0BPuXwvWA9CzrVpxCFoNkXxYRdkrlwsHVtJZnQIQKzP
-         frfdAjA4Ojtsu7sA+BHGZu2NS49gC7N3fG8VyMwPjglXqCmb/ANq6UTnRWLMwmo86A2K
-         xVNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678438505;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=edHnODkVWzD+JR+bIoyydgYcG1zz8EnEa8mgd61cqd4=;
-        b=0NrD0ZZhJtjwCme+pZgaOWBRTiEGUXtIiM76Wh8WxXtvW3PXX2rZr7FFwcaoWnqhv5
-         Rdv3PEUlUKMnSiGjqqZUkBzRl5SaKAChercigmAOto02Y4QmklyHhwZMza3/Gxe8rTOo
-         grIH9tIMJ9Xg3+OSjdpOxYpgI4/GbgQPitJc6AItfZs2x8KMZ1IusgltOlxSJgmBmOoK
-         /SRzF2ITpi422PfaFUuNKY2p2kgfgipNP8/89/2ts4gTaqP/JNsskpB0W+ITTxWNqrYw
-         B/iw9jHfWccTuSYVf6ELapz+RL5ZOjzH2WoknN9CE6wpsnIIJDh+DB8EXmPp3j3iVz1r
-         RNzg==
-X-Gm-Message-State: AO0yUKWKrFaJ8FRIBP8iRk0H0+6MRab3ygcAvjuwOvyHzyPqTcLaQZuE
-        e+Pm2KslN2jV9It2NNOmJh8=
-X-Google-Smtp-Source: AK7set9EPLvV8/fiDbNrHoqBIWcqqujsy5NVulXNwQtqB/IxLfKm9VS5QRJOmJCt3huq1TdIgzVodQ==
-X-Received: by 2002:a2e:96cb:0:b0:295:c333:2a24 with SMTP id d11-20020a2e96cb000000b00295c3332a24mr9123946ljj.19.1678438504927;
-        Fri, 10 Mar 2023 00:55:04 -0800 (PST)
-Received: from pc636 (host-78-79-233-41.mobileonline.telia.com. [78.79.233.41])
-        by smtp.gmail.com with ESMTPSA id q19-20020a2eb4b3000000b0029868d1820dsm159165ljm.60.2023.03.10.00.55.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Mar 2023 00:55:04 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 10 Mar 2023 09:55:02 +0100
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S231140AbjCJKcS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Mar 2023 05:32:18 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E00B1111FF;
+        Fri, 10 Mar 2023 02:32:15 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4FCF020652;
+        Fri, 10 Mar 2023 10:32:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1678444334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+UxaHT8mKSvWC1QwdfPHOIKK79hhmlWoe1rpbrZg63I=;
+        b=Pi4jmECIhq9mt7ExG5YPIfVLCnWAsu13s1ZcnGG8QMsXvppeWz1uSPuiQAAUb4TWtAnyIK
+        FFaCIxvGmlNxUZwx+6E7paW4fJEQ4r+txzLRaCowoeYJsr2zCk53dGc5tmS0m3rN5Lr0/K
+        Kt/Mg6W6ijqhwCTTXPogOO/aOCVXxr0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1678444334;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+UxaHT8mKSvWC1QwdfPHOIKK79hhmlWoe1rpbrZg63I=;
+        b=qc9mtv8oEd3rdK+9AU0fRFP6mEP8TogXgGtqfBKs7DxeOUmeHcrefoqf50gZ3br6pltm6a
+        mpmzxQWPR95dfxBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E502D13592;
+        Fri, 10 Mar 2023 10:32:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bBceNy0HC2SsXQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 10 Mar 2023 10:32:13 +0000
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
         Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Message-ID: <ZArwZjcEYXAYwmqi@pc636>
-References: <ZAc1wsvd4trjP/xi@lothringen>
- <ZAc+vVZUhXdhpSki@pc636>
- <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
- <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
- <20230307185443.GA516865@google.com>
- <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAhYP9a8u05hzsOn@pc636>
- <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAnXxr9OyFT63xSx@pc636>
- <20230309221056.GB148448@google.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 0/7] remove SLOB and allow kfree() with kmem_cache_alloc()
+Date:   Fri, 10 Mar 2023 11:32:02 +0100
+Message-Id: <20230310103210.22372-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230309221056.GB148448@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
-> On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
-> [..]
-> > > > > > > See this commit:
-> > > > > > > 
-> > > > > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use of
-> > > > > > > expedited RCU primitives")
-> > > > > > > 
-> > > > > > > Antti provided this commit precisely in order to allow Android
-> > > > > > > devices to expedite the boot process and to shut off the
-> > > > > > > expediting at a time of Android userspace's choosing.  So Android
-> > > > > > > has been making this work for about ten years, which strikes me
-> > > > > > > as an adequate proof of concept.  ;-)
-> > > > > > 
-> > > > > > Thanks for the pointer. That's true. Looking at Android sources, I
-> > > > > > find that Android Mediatek devices at least are setting
-> > > > > > rcu_expedited to 1 at late stage of their userspace boot (which is
-> > > > > > weird, it should be set to 1 as early as possible), and
-> > > > > > interestingly I cannot find them resetting it back to 0!.  Maybe
-> > > > > > they set rcu_normal to 1? But I cannot find that either. Vlad? :P
-> > > > > 
-> > > > > Interesting.  Though this is consistent with Antti's commit log,
-> > > > > where he talks about expediting grace periods but not unexpediting
-> > > > > them.
-> > > > > 
-> > > > Do you think we need to unexpedite it? :))))
-> > > 
-> > > Android runs on smallish systems, so quite possibly not!
-> > > 
-> > We keep it enabled and never unexpedite it. The reason is a performance.  I
-> > have done some app-launch time analysis with enabling and disabling of it.
-> > 
-> > An expedited case is much better when it comes to app launch time. It
-> > requires ~25% less time to run an app comparing with unexpedited variant.
-> > So we have a big gain here.
-> 
-> Wow, that's huge. I wonder if you can dig deeper and find out why that is so
-> as the callbacks may need to be synchronize_rcu_expedited() then, as it could
-> be slowing down other usecases! I find it hard to believe, real-time
-> workloads will run better without those callbacks being always-expedited if
-> it actually gives back 25% in performance!
-> 
-I can dig further, but on a high level i think there are some spots
-which show better performance if expedited is set. I mean synchronize_rcu()
-becomes as "less blocking a context" from a time point of view.
+Also in git:
+https://git.kernel.org/vbabka/h/slab-remove-slob-v1r1
 
-The problem of a regular synchronize_rcu() is - it can trigger a big latency
-delays for a caller. For example for nocb case we do not know where in a list
-our callback is located and when it is invoked to unblock a caller.
+The SLOB allocator was deprecated in 6.2 so I think we can start
+exposing the complete removal in for-next and aim at 6.4 if there are no
+complaints.
 
-I have already mentioned somewhere. Probably it makes sense to directly wake-up
-callers from the GP kthread instead and not via nocb-kthread that invokes our callbacks
-one by one.
+Besides code cleanup, the main immediate benefit will be allowing
+kfree() family of function to work on kmem_cache_alloc() objects (Patch
+7), which was incompatible with SLOB.
 
---
-Uladzislau Rezki
+This includes kfree_rcu() so I've updated the comment there to remove
+the mention of potential future addition of kmem_cache_free_rcu() as
+there should be no need for that now.
+
+Otherwise it's straightforward. Patch 2 is a cleanup in net area, that I
+can either handle in slab tree or submit in net after SLOB is removed.
+Another cleanup in tomoyo is already in the tomoyo tree as that didn't
+need to wait until SLOB removal.
+
+Vlastimil Babka (7):
+  mm/slob: remove CONFIG_SLOB
+  net: skbuff: remove SLOB-specific ifdefs
+  mm, page_flags: remove PG_slob_free
+  mm, pagemap: remove SLOB and SLQB from comments and documentation
+  mm/slab: remove CONFIG_SLOB code from slab common code
+  mm/slob: remove slob.c
+  mm/slab: document kfree() as allowed for kmem_cache_alloc() objects
+
+ Documentation/admin-guide/mm/pagemap.rst     |   6 +-
+ Documentation/core-api/memory-allocation.rst |  15 +-
+ fs/proc/page.c                               |   5 +-
+ include/linux/page-flags.h                   |   4 -
+ include/linux/rcupdate.h                     |   6 +-
+ include/linux/slab.h                         |  39 -
+ init/Kconfig                                 |   2 +-
+ kernel/configs/tiny.config                   |   1 -
+ mm/Kconfig                                   |  22 -
+ mm/Makefile                                  |   1 -
+ mm/slab.h                                    |  61 --
+ mm/slab_common.c                             |   7 +-
+ mm/slob.c                                    | 757 -------------------
+ net/core/skbuff.c                            |  16 -
+ tools/mm/page-types.c                        |   6 +-
+ 15 files changed, 23 insertions(+), 925 deletions(-)
+ delete mode 100644 mm/slob.c
+
+-- 
+2.39.2
+
