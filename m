@@ -2,99 +2,76 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DA73C6FA99
-	for <rcu@archiver.kernel.org>; Fri, 10 Mar 2023 20:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89FFDC6FD19
+	for <rcu@archiver.kernel.org>; Sat, 11 Mar 2023 01:00:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjCJUTP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 10 Mar 2023 15:19:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
+        id S229823AbjCKBAr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 10 Mar 2023 20:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbjCJUTN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 10 Mar 2023 15:19:13 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C454ECE;
-        Fri, 10 Mar 2023 12:18:39 -0800 (PST)
-Received: from [10.46.7.190] (i689701D4.versanet.de [104.151.1.212])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        with ESMTP id S229772AbjCKBAq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 10 Mar 2023 20:00:46 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6F1127135;
+        Fri, 10 Mar 2023 17:00:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 649C861CC457B;
-        Fri, 10 Mar 2023 21:18:13 +0100 (CET)
-Message-ID: <18ec6bf2-c19a-5fcf-3d6b-4106e2372af1@molgen.mpg.de>
-Date:   Fri, 10 Mar 2023 21:18:12 +0100
+        by ams.source.kernel.org (Postfix) with ESMTPS id 79AAAB8246F;
+        Sat, 11 Mar 2023 01:00:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DDE8C433EF;
+        Sat, 11 Mar 2023 01:00:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678496442;
+        bh=23FUW9NwvA7PihXPj1s/kb+tMA+fP4vkf5bAWtJBV6o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nl917fFocImUb30MM51jZn0HMuQ0Gsmr+dzoZ+GgH668/FGNAzV7zKqBBudu0Ux1V
+         QOBrckpvstG9/30O0lM0JZj9+dmtT7Y8uai7QnwUp0o3yyaGhsdKEkxw6ilBf1mwT+
+         296wQporPyHwipICRxl66tc3TjPEzKsbyaDeVKVzAGAOCSgDq4nkEEJWAF/e59KTp8
+         hNIfsuQ4j4LKSaGdCYm5m4Y716QOeVTS+1paSpmOi22+oKn1+fDKDNvmusx1tYT8+3
+         ZTHgkUd/N56L7AVjxbktascW+RTtnhnwXE2Cvsu9Ng7MsbOsJbdGF50pQpc1aKCO7v
+         4NKs63Mankj/Q==
+Date:   Fri, 10 Mar 2023 17:00:40 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 0/7] remove SLOB and allow kfree() with
+ kmem_cache_alloc()
+Message-ID: <20230310170040.3ee6bf36@kernel.org>
+In-Reply-To: <20230310103210.22372-1-vbabka@suse.cz>
+References: <20230310103210.22372-1-vbabka@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v14 00/12] Parallel CPU bringup for x86_64
-To:     Tor Vic <torvic9@mailbox.org>
-Cc:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        tglx@linutronix.de, kim.phillips@amd.com, brgerst@gmail.com,
-        piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com
-References: <20230308171328.1562857-1-usama.arif@bytedance.com>
- <16d9f738-18fd-a929-e711-f2a1e757e33f@mailbox.org>
-Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <16d9f738-18fd-a929-e711-f2a1e757e33f@mailbox.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dear Tor,
+On Fri, 10 Mar 2023 11:32:02 +0100 Vlastimil Babka wrote:
+> Otherwise it's straightforward. Patch 2 is a cleanup in net area, that I
+> can either handle in slab tree or submit in net after SLOB is removed.
 
-
-Am 10.03.23 um 20:20 schrieb Tor Vic:
-> On 08.03.23 17:13, Usama Arif wrote:
->> The main code change over v13 is to enable parallel bringup for SEV-ES 
->> guests.
-
-[…]
-
->>   .../admin-guide/kernel-parameters.txt         |   3 +
->>   arch/x86/include/asm/cpu.h                    |   1 +
->>   arch/x86/include/asm/processor.h              |   6 +-
->>   arch/x86/include/asm/realmode.h               |   4 +-
->>   arch/x86/include/asm/sev-common.h             |   3 +
->>   arch/x86/include/asm/sev.h                    |   5 +
->>   arch/x86/include/asm/smp.h                    |  18 +-
->>   arch/x86/include/asm/topology.h               |   2 -
->>   arch/x86/kernel/acpi/sleep.c                  |  30 +-
->>   arch/x86/kernel/apic/apic.c                   |   2 +-
->>   arch/x86/kernel/apic/x2apic_cluster.c         | 126 +++---
->>   arch/x86/kernel/asm-offsets.c                 |   1 +
->>   arch/x86/kernel/cpu/common.c                  |   6 +-
->>   arch/x86/kernel/cpu/topology.c                |   2 +-
->>   arch/x86/kernel/head_64.S                     | 162 ++++++--
->>   arch/x86/kernel/smpboot.c                     | 366 +++++++++++++-----
->>   arch/x86/realmode/init.c                      |   3 +
->>   arch/x86/realmode/rm/trampoline_64.S          |  27 +-
->>   arch/x86/xen/smp_pv.c                         |   4 +-
->>   arch/x86/xen/xen-head.S                       |   2 +-
->>   include/linux/cpuhotplug.h                    |   2 +
->>   include/linux/smpboot.h                       |   7 +
->>   kernel/cpu.c                                  |  31 +-
->>   kernel/smpboot.h                              |   2 -
->>   24 files changed, 614 insertions(+), 201 deletions(-)
->>
-> 
-> On Linux 6.2, Zen2 and Skylake, no issues or boot problems:
-> 
-> Tested-by: Tor Vic <torvic9@mailbox.org>
-
-Thank you for testing this. It’d be great if you shared the exact timing 
-numbers too. (Just to be sure, did you also test ACPI S3 suspend/resume?)
-
-
-Kind regards,
-
-Paul
+Letter would be better, if you don't mind. skbuff.c is relatively hot,
+there's a good chance we'll create a conflict.
