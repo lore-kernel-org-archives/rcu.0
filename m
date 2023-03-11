@@ -2,78 +2,166 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F702C6FD1C
-	for <rcu@archiver.kernel.org>; Sat, 11 Mar 2023 14:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F6A9C74A4B
+	for <rcu@archiver.kernel.org>; Sat, 11 Mar 2023 17:19:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjCKO0f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 11 Mar 2023 09:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52790 "EHLO
+        id S229469AbjCKRT2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 11 Mar 2023 12:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjCKO0e (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 11 Mar 2023 09:26:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9018710A13B;
-        Sat, 11 Mar 2023 06:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=vR10U+fcqxv/e14JRob7bZTSsoQK5EB8PPRGs2G1joI=; b=Hj4kAleXYh0nxJuX9a7dJxk5xe
-        G6gUfuZckKwFDcvSSiBCRpVtQaEW6+IVwVzB9x9CBgzcCtOw+ZHkSJYFvhWMYniOs0UpH01L/7YYI
-        V2yGS4FKSE6cFXI6C5wVZeu2/4jUpt2lc1uXEk96DTAMGlcMpnbiVDkKIsND0Uxbo88Ye66nxZayM
-        1z+J4gYqNSr7QmY1sVcvWvd7uzKNO47nKlyq/LE6TnMSjRa4rJRP1s+mVCT41KgWJi7EKSTACbJNR
-        7iZC0s2bQQLdBhWJfTZd4LqV19+1pmhDXlpt+t8sQ3J3l2/N7kdjlnFBCQ5AJLdsGOiNS6fnZOFg9
-        IgKqNCvQ==;
-Received: from [2a00:23ee:1060:aa8:4d3a:58c2:352c:ef99] (helo=[IPv6:::1])
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pb0AI-00AErW-Ob; Sat, 11 Mar 2023 14:25:43 +0000
-Date:   Sat, 11 Mar 2023 14:25:40 +0000
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
-        brgerst@gmail.com
-CC:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v14_10/12=5D_x86/smpboot=3A_Send_IN?= =?US-ASCII?Q?IT/SIPI/SIPI_to_secondary_CPUs_in_parallel?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <87r0tv9xya.ffs@tglx>
-References: <20230308171328.1562857-1-usama.arif@bytedance.com> <20230308171328.1562857-11-usama.arif@bytedance.com> <87y1o3acrh.ffs@tglx> <5a9d6d4aef78de6fc8a2cfc62922d06617cbe109.camel@infradead.org> <87r0tv9xya.ffs@tglx>
-Message-ID: <0871F5E6-5169-4FB6-A77B-7D8B54D91E51@infradead.org>
+        with ESMTP id S229742AbjCKRTZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 11 Mar 2023 12:19:25 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E27E1F905
+        for <rcu@vger.kernel.org>; Sat, 11 Mar 2023 09:19:23 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id o199so6275603ybc.7
+        for <rcu@vger.kernel.org>; Sat, 11 Mar 2023 09:19:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1678555162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gY4Nnb0Wm17pmRtek+pRIUbI9xNdyf7/b38X9mFqiVY=;
+        b=mqxt3zYBqBmZBz7V2UEZC+hclvmRZ9nR3J7/kt0M6cEeTZLIl25CVQE/XuuCwz+CyD
+         9CZu0HtWmWhyg1pbtvzW1AEYbbboLidD29GBAtPDvWM58/4faniajIXuFH8MiXCV1dfl
+         2nx7Q4Ih3S5IRd4yc+6S/CY4GH11mKwz4HiTA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678555162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gY4Nnb0Wm17pmRtek+pRIUbI9xNdyf7/b38X9mFqiVY=;
+        b=NTaPA3LfCE2JEUoC0D6tplqpmCo48iRMOv8UDps5fr9avX7eXZdO9ZniUjqlBBqF4M
+         C9w0ZMFmWF/YPHZCNYinTY/HaK3WNcuva/vOoDvtiiys/BN2O64PPn+i8WQjNy2wOYf0
+         Gmpm3CDga4JA6myq4PQdltV0Ci2/GxOCYwNRWQyYrsdwGI0YAm0Y+j9pC++TTmb1hir3
+         oR5CnYz8a9bf4HLGyAxTI+bOPgiefwca/2cIFYmtEWPQSdzs0WVz6ixemoWYK9Oxz5aL
+         fcY8G8ob6kUujpw/2OQdusC0qaCte1knNkMegba/GPAEX73xJDQtIhvKnsxD+QV4yjHL
+         0N8A==
+X-Gm-Message-State: AO0yUKUqTMlVMBqYIB/Tm3ocFCAqKpMKW//P17+aPv73zyn9OJbewGHl
+        AeQ03b3dZfNkO26Dsc2xzE3jfZpFZt1StI2if9GG/Q==
+X-Google-Smtp-Source: AK7set9f7UqmAgWrVofu69pWV1FamP8q6UKz3+HaEOpUb8rSZbgjPiXkY5b+zhqhseNF5U4AgkdFZ/U2/MntwljHVdY=
+X-Received: by 2002:a25:e90b:0:b0:9fc:e3d7:d60f with SMTP id
+ n11-20020a25e90b000000b009fce3d7d60fmr14047854ybd.5.1678555162265; Sat, 11
+ Mar 2023 09:19:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <ZAc+vVZUhXdhpSki@pc636> <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
+ <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1> <20230307185443.GA516865@google.com>
+ <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1> <ZAhYP9a8u05hzsOn@pc636>
+ <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1> <ZAnXxr9OyFT63xSx@pc636>
+ <20230309221056.GB148448@google.com> <ZArwZjcEYXAYwmqi@pc636> <8f8a40cd-8b1f-4121-98f7-7a1bdbcaf6a6@paulmck-laptop>
+In-Reply-To: <8f8a40cd-8b1f-4121-98f7-7a1bdbcaf6a6@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 11 Mar 2023 12:19:11 -0500
+Message-ID: <CAEXW_YSyJeMY+LGJLrZWJakdr19HyFA+AJEMzXhrwZDBia9HfA@mail.gmail.com>
+Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
+To:     paulmck@kernel.org
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 11 March 2023 14:14:53 GMT, Thomas Gleixner <tglx@linutronix=2Ede> wrot=
-e:
->On Sat, Mar 11 2023 at 09:55, David Woodhouse wrote:
->> On Sat, 2023-03-11 at 10:54 +0200, Thomas Gleixner wrote:
->> I think I'll do it with a 'bool unpoison' argument to
->> idle_thread_get()=2E Or just make it unconditional; they're idempotent
->> anyway and cheap enough? Kind of weird to be doing it from finish_cpu()
->> though, so I'll probably stick with the argument=2E
+On Sat, Mar 11, 2023 at 1:24=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
 >
->Eew=2E
+> On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
+> > On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
+> > > On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
+> > > [..]
+> > > > > > > > > See this commit:
+> > > > > > > > >
+> > > > > > > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use=
+ of
+> > > > > > > > > expedited RCU primitives")
+> > > > > > > > >
+> > > > > > > > > Antti provided this commit precisely in order to allow An=
+droid
+> > > > > > > > > devices to expedite the boot process and to shut off the
+> > > > > > > > > expediting at a time of Android userspace's choosing.  So=
+ Android
+> > > > > > > > > has been making this work for about ten years, which stri=
+kes me
+> > > > > > > > > as an adequate proof of concept.  ;-)
+> > > > > > > >
+> > > > > > > > Thanks for the pointer. That's true. Looking at Android sou=
+rces, I
+> > > > > > > > find that Android Mediatek devices at least are setting
+> > > > > > > > rcu_expedited to 1 at late stage of their userspace boot (w=
+hich is
+> > > > > > > > weird, it should be set to 1 as early as possible), and
+> > > > > > > > interestingly I cannot find them resetting it back to 0!.  =
+Maybe
+> > > > > > > > they set rcu_normal to 1? But I cannot find that either. Vl=
+ad? :P
+> > > > > > >
+> > > > > > > Interesting.  Though this is consistent with Antti's commit l=
+og,
+> > > > > > > where he talks about expediting grace periods but not unexped=
+iting
+> > > > > > > them.
+> > > > > > >
+> > > > > > Do you think we need to unexpedite it? :))))
+> > > > >
+> > > > > Android runs on smallish systems, so quite possibly not!
+> > > > >
+> > > > We keep it enabled and never unexpedite it. The reason is a perform=
+ance.  I
+> > > > have done some app-launch time analysis with enabling and disabling=
+ of it.
+> > > >
+> > > > An expedited case is much better when it comes to app launch time. =
+It
+> > > > requires ~25% less time to run an app comparing with unexpedited va=
+riant.
+> > > > So we have a big gain here.
+> > >
+> > > Wow, that's huge. I wonder if you can dig deeper and find out why tha=
+t is so
+> > > as the callbacks may need to be synchronize_rcu_expedited() then, as =
+it could
+> > > be slowing down other usecases! I find it hard to believe, real-time
+> > > workloads will run better without those callbacks being always-expedi=
+ted if
+> > > it actually gives back 25% in performance!
+> > >
+> > I can dig further, but on a high level i think there are some spots
+> > which show better performance if expedited is set. I mean synchronize_r=
+cu()
+> > becomes as "less blocking a context" from a time point of view.
+> >
+> > The problem of a regular synchronize_rcu() is - it can trigger a big la=
+tency
+> > delays for a caller. For example for nocb case we do not know where in =
+a list
+> > our callback is located and when it is invoked to unblock a caller.
+>
+> True, expedited RCU grace periods do not have this callback-invocation
+> delay that normal RCU does.
+>
+> > I have already mentioned somewhere. Probably it makes sense to directly=
+ wake-up
+> > callers from the GP kthread instead and not via nocb-kthread that invok=
+es our callbacks
+> > one by one.
+>
+> Makes sense, but it is necessary to be careful.  Wakeups are not fast,
+> so making the RCU grace-period kthread do them all sequentially is not
+> a strategy to win.  For example, note that the next expedited grace
+> period can start before the previous expedited grace period has finished
+> its wakeups.
 
-Hm? I prefer the idea that idle_thread_get() is able to just return a *usa=
-ble* one, and that we don't rely on architectures to have the *same* set of=
- functions to unpoison/prepare it, and keep those duplicates in sync=2E=2E=
-=2E
+The kthreads could be undergoing scheduler contention too especially
+since the workload is launching an app if I understand Vlad's usecase.
+Hence my desire for a rcutop one-stop tool which shows all these
+things (rcu kthread scheduler delays, callback latencies, etc etc).
+;-) The more and more I run into issues, the more that tool becomes
+urgent which I'm working on...
 
-I suppose we could make a separate make_that_idle_thread_you_gave_me_actua=
-lly_useful() function and avoid the duplication of anything but *that* call=
-=2E=2E=2E but meh=2E
+thanks,
+
+ - Joel
