@@ -2,316 +2,103 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A680AC61DA4
-	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 13:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00EA2C74A4B
+	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 15:28:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbjCMN7S (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Mar 2023 09:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        id S230417AbjCMP2l (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Mar 2023 11:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjCMN7F (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Mar 2023 09:59:05 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1391EFE0
-        for <rcu@vger.kernel.org>; Mon, 13 Mar 2023 06:58:45 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id y11so13055006plg.1
-        for <rcu@vger.kernel.org>; Mon, 13 Mar 2023 06:58:45 -0700 (PDT)
+        with ESMTP id S229636AbjCMP2k (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Mar 2023 11:28:40 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DA434C13;
+        Mon, 13 Mar 2023 08:28:38 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id b10so13064577ljr.0;
+        Mon, 13 Mar 2023 08:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678715925;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eneYNU+nUmxOh8t+MF9m5KBckGw7QMn0ZWgboiFr43c=;
-        b=DduqQKirrtiP/8odRJmxLlH6WM1LkBuiNjuvGz9FSUN7fLw5HAUD6uc19foxRVmbLY
-         o3FZGAlklijqnbA28sMX92rD569rN4q4eQGx2Gwpp3ylwQaViVJxU7gs5Dq0nAF5aMuY
-         49mLcRlR8U5YHkI08IbJcgaxh/a727XUpVJAQ=
+        d=gmail.com; s=20210112; t=1678721317;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s/Efv1Q+RhWD0A+py4ZpjEC//VTgOMnS23pAzZYge/8=;
+        b=Zb7CYnLDxSGfdWSErnn5zIokQ5RWCC6jvTCf2NKa/i3fqVS/JyyH7xb9TyB4gQiV3J
+         waQSg6467g9wEmjPb1ZeRKOOXEdHuj68FMfOIdB/iPuxAuXVNtBtlQZMSuUNVEodqmRi
+         Jl0c/U6u5/IPaw+klPNt6hA+3b2UPePeF1ObD0Tj07YmBZODsmFqBEi82LU9Tf53O31k
+         s66ORTg5UJHxzYBsPRDDIS1kKOKbZhySBqwtQBfnyCztLhqqw65FEqK1zlr1koD7iCwi
+         gdLZt8rqZU9wst9I5nanDUijVMNmALWv7xHW9W/kHg/IApyVm1Pa+neBubMsxgPFXPHx
+         vQVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678715925;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eneYNU+nUmxOh8t+MF9m5KBckGw7QMn0ZWgboiFr43c=;
-        b=CbE2DkyKbIVgDM5v5KqHnhk0QvRIU0oi953fKdjDgK3VBEvkDvlml5fEfkV9LzfznB
-         jMh8pff0Si5n9nWzx3haWTPD6o7fo6RtmQpVhPtmTczg5vzk+jGDd28Z6RyzrmpNh7eb
-         xkfwJY8OHBp+50POt+L/awKwjy+heoYdx9IoGP20Eux/cZcqZNWUooUcih/U76OPY+G0
-         T7qMZ0fW5UQVckQuuj5TYJCUDW3vFk1tCAFLtwPU/owi8yjJMPnZKSYR+K1gINKHtMKo
-         bLHHyiMY4M7sgCwkfh2eonPaLJINfldO+7wVQwVhtbSk61w22FLA06IwjQspTIcwLj3i
-         w4TA==
-X-Gm-Message-State: AO0yUKUb+0tRHEcM1MF+JMA0OPEF2E48+icdscT3kunAMgdWZbEIxZWh
-        IjXcCo9mUWLLk35Qro4BCOLRlQ==
-X-Google-Smtp-Source: AK7set8GqexXi9aOzjtjlYy/A2z6Eb7VJELOikOO1SEArvaYtW2BESXlMuKLO1EX78+C4TFAKMv8aw==
-X-Received: by 2002:a17:902:8688:b0:19c:d23e:52a0 with SMTP id g8-20020a170902868800b0019cd23e52a0mr28355194plo.14.1678715925149;
-        Mon, 13 Mar 2023 06:58:45 -0700 (PDT)
-Received: from smtpclient.apple (071-095-008-132.biz.spectrum.com. [71.95.8.132])
-        by smtp.gmail.com with ESMTPSA id g1-20020a1709026b4100b0019a96d3b456sm4864641plt.44.2023.03.13.06.58.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Mar 2023 06:58:44 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Date:   Mon, 13 Mar 2023 06:58:30 -0700
-Message-Id: <01559085-EB77-4962-B5EF-FF767F5A7353@joelfernandes.org>
-References: <ZA7yK6iznHqiBu5i@pc636>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        d=1e100.net; s=20210112; t=1678721317;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s/Efv1Q+RhWD0A+py4ZpjEC//VTgOMnS23pAzZYge/8=;
+        b=UplWiqIppT8jYP03M3W2nOlQ0Wz0KCibJRQu4ZdTM7M/wPA7Lu4pskkDvoGzZ/s3Km
+         ZzzswlyzxoioIRN7pCuhzBDMUXLISNAl6150iMNN47K3jfVH+LfnafbxLesTC5AE7fAh
+         1GU/iRPQC5m6ljjqAd7M9GZafYVr/QMCHOQgSZTWB/BbN96GCy2ktC57L+gDTMkef5+W
+         yOva6E9FiaD3WGEBtfB9peVGGLcRK2T3HdsriaIH4n6Q3KVtzhmBFjZuMlIqzys5bViH
+         2vmSxtAsFsai39PObGsJ7esBzthMcT20RwoFyydEK4oNVlQKCG7rITj0BhE2gy3QZuxW
+         CZCg==
+X-Gm-Message-State: AO0yUKVHTgUsO/p8kuWkqSWHm+XKngsqgVojVvrErgqaHQ/n0F6Zgz6A
+        N1lyQRru9IeBnof9rEQ6WfsJ6iIEAr8=
+X-Google-Smtp-Source: AK7set+UikKdNtAsVnEUzBfRceSmosi0YIVnO0yQn3ygsYHmI4F4JWW7qPA2WN4r37vxLp4CAISDPg==
+X-Received: by 2002:a2e:a586:0:b0:298:39fa:b04d with SMTP id m6-20020a2ea586000000b0029839fab04dmr12593338ljp.33.1678721316787;
+        Mon, 13 Mar 2023 08:28:36 -0700 (PDT)
+Received: from pc636 (host-78-79-233-41.mobileonline.telia.com. [78.79.233.41])
+        by smtp.gmail.com with ESMTPSA id y20-20020a2e9d54000000b002958bf18efcsm25141ljj.104.2023.03.13.08.28.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Mar 2023 08:28:36 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 13 Mar 2023 16:28:34 +0100
+To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-In-Reply-To: <ZA7yK6iznHqiBu5i@pc636>
-To:     Uladzislau Rezki <urezki@gmail.com>
-X-Mailer: iPhone Mail (20B101)
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
+Message-ID: <ZA9BIgEN2MGwAgd3@pc636>
+References: <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
+ <ZAhYP9a8u05hzsOn@pc636>
+ <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1>
+ <ZAnXxr9OyFT63xSx@pc636>
+ <20230309221056.GB148448@google.com>
+ <ZArwZjcEYXAYwmqi@pc636>
+ <8f8a40cd-8b1f-4121-98f7-7a1bdbcaf6a6@paulmck-laptop>
+ <ZA7yK6iznHqiBu5i@pc636>
+ <ZA8WxjUL0eUPtVy8@pc636>
+ <IA1PR11MB61714FA7A6FA92307B7FEF7C89B99@IA1PR11MB6171.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <IA1PR11MB61714FA7A6FA92307B7FEF7C89B99@IA1PR11MB6171.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Mon, Mar 13, 2023 at 01:48:18PM +0000, Zhuo, Qiuxu wrote:
+> > From: Uladzislau Rezki <urezki@gmail.com>
+> > [...]
+> > XQ-DQ54:/ # echo 1 > /sys/kernel/rc
+> > rcu_expedited       rcu_improve_normal  rcu_normal
+> > XQ-DQ54:/ # echo 1 > /sys/kernel/rcu_improve_normal 
+> 
+> Hi Rezki,
+> 
+> I applied your prototype patch, but I did NOT find the sys-node:
+>  "/sys/kernel/rcu_improve_normal" on my system.
+> 
+> What is this node used for? What am I missing? Thanks!
+> 
+> [ There were only "rcu_expedited" & " rcu_normal" sys nodes
+> on my system. ]
+> 
+The prototype i posted does not have such helper, i added it just
+for my local tests.
 
-
-> On Mar 13, 2023, at 2:51 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
->=20
-> =EF=BB=BFOn Fri, Mar 10, 2023 at 10:24:34PM -0800, Paul E. McKenney wrote:=
-
->>> On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
->>> On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
->>>> On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
->>>> [..]
->>>>>>>>>> See this commit:
->>>>>>>>>>=20
->>>>>>>>>> 3705b88db0d7cc ("rcu: Add a module parameter to force use of
->>>>>>>>>> expedited RCU primitives")
->>>>>>>>>>=20
->>>>>>>>>> Antti provided this commit precisely in order to allow Android
->>>>>>>>>> devices to expedite the boot process and to shut off the
->>>>>>>>>> expediting at a time of Android userspace's choosing.  So Android=
-
->>>>>>>>>> has been making this work for about ten years, which strikes me
->>>>>>>>>> as an adequate proof of concept.  ;-)
->>>>>>>>>=20
->>>>>>>>> Thanks for the pointer. That's true. Looking at Android sources, I=
-
->>>>>>>>> find that Android Mediatek devices at least are setting
->>>>>>>>> rcu_expedited to 1 at late stage of their userspace boot (which is=
-
->>>>>>>>> weird, it should be set to 1 as early as possible), and
->>>>>>>>> interestingly I cannot find them resetting it back to 0!.  Maybe
->>>>>>>>> they set rcu_normal to 1? But I cannot find that either. Vlad? :P
->>>>>>>>=20
->>>>>>>> Interesting.  Though this is consistent with Antti's commit log,
->>>>>>>> where he talks about expediting grace periods but not unexpediting
->>>>>>>> them.
->>>>>>>>=20
->>>>>>> Do you think we need to unexpedite it? :))))
->>>>>>=20
->>>>>> Android runs on smallish systems, so quite possibly not!
->>>>>>=20
->>>>> We keep it enabled and never unexpedite it. The reason is a performanc=
-e.  I
->>>>> have done some app-launch time analysis with enabling and disabling of=
- it.
->>>>>=20
->>>>> An expedited case is much better when it comes to app launch time. It
->>>>> requires ~25% less time to run an app comparing with unexpedited varia=
-nt.
->>>>> So we have a big gain here.
->>>>=20
->>>> Wow, that's huge. I wonder if you can dig deeper and find out why that i=
-s so
->>>> as the callbacks may need to be synchronize_rcu_expedited() then, as it=
- could
->>>> be slowing down other usecases! I find it hard to believe, real-time
->>>> workloads will run better without those callbacks being always-expedite=
-d if
->>>> it actually gives back 25% in performance!
->>>>=20
->>> I can dig further, but on a high level i think there are some spots
->>> which show better performance if expedited is set. I mean synchronize_rc=
-u()
->>> becomes as "less blocking a context" from a time point of view.
->>>=20
->>> The problem of a regular synchronize_rcu() is - it can trigger a big lat=
-ency
->>> delays for a caller. For example for nocb case we do not know where in a=
- list
->>> our callback is located and when it is invoked to unblock a caller.
->>=20
->> True, expedited RCU grace periods do not have this callback-invocation
->> delay that normal RCU does.
->>=20
->>> I have already mentioned somewhere. Probably it makes sense to directly w=
-ake-up
->>> callers from the GP kthread instead and not via nocb-kthread that invoke=
-s our callbacks
->>> one by one.
->>=20
->> Makes sense, but it is necessary to be careful.  Wakeups are not fast,
->> so making the RCU grace-period kthread do them all sequentially is not
->> a strategy to win.  For example, note that the next expedited grace
->> period can start before the previous expedited grace period has finished
->> its wakeups.
->>=20
-> I hove done a small and quick prototype:
->=20
-> <snip>
-> diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h=
-
-> index 699b938358bf..e1a4cca9a208 100644
-> --- a/include/linux/rcupdate_wait.h
-> +++ b/include/linux/rcupdate_wait.h
-> @@ -9,6 +9,8 @@
-> #include <linux/rcupdate.h>
-> #include <linux/completion.h>
->=20
-> +extern struct llist_head gp_wait_llist;
-> +
-> /*
->  * Structure allowing asynchronous waiting on RCU.
->  */
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index ee27a03d7576..50b81ca54104 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -113,6 +113,9 @@ int rcu_num_lvls __read_mostly =3D RCU_NUM_LVLS;
-> int num_rcu_lvl[] =3D NUM_RCU_LVL_INIT;
-> int rcu_num_nodes __read_mostly =3D NUM_RCU_NODES; /* Total # rcu_nodes in=
- use. */
->=20
-> +/* Waiters for a GP kthread. */
-> +LLIST_HEAD(gp_wait_llist);
-> +
-> /*
->  * The rcu_scheduler_active variable is initialized to the value
->  * RCU_SCHEDULER_INACTIVE and transitions RCU_SCHEDULER_INIT just before t=
-he
-> @@ -1776,6 +1779,14 @@ static noinline void rcu_gp_cleanup(void)
->                on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-> }
->=20
-> +static void rcu_notify_gp_end(struct llist_node *llist)
-> +{
-> +       struct llist_node *rcu, *next;
-> +
-> +       llist_for_each_safe(rcu, next, llist)
-> +               complete(&((struct rcu_synchronize *) rcu)->completion);
-
-This looks broken to me, so the synchronize will complete even
-if it was called in the middle of an ongoing GP?
-
-Thanks,
-
- - Joel
-
-
-
-> +}
-> +
-> /*
->  * Body of kthread that handles grace periods.
->  */
-> @@ -1811,6 +1822,9 @@ static int __noreturn rcu_gp_kthread(void *unused)
->                WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANUP);
->                rcu_gp_cleanup();
->                WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANED);
-> +
-> +               /* Wake-app all users. */
-> +               rcu_notify_gp_end(llist_del_all(&gp_wait_llist));
->        }
-> }
->=20
-> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> index 19bf6fa3ee6a..1de7c328a3e5 100644
-> --- a/kernel/rcu/update.c
-> +++ b/kernel/rcu/update.c
-> @@ -426,7 +426,10 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_fu=
-nc_t *crcu_array,
->                if (j =3D=3D i) {
->                        init_rcu_head_on_stack(&rs_array[i].head);
->                        init_completion(&rs_array[i].completion);
-> -                       (crcu_array[i])(&rs_array[i].head, wakeme_after_rc=
-u);
-> +
-> +                       /* Kick a grace period if needed. */
-> +                       (void) start_poll_synchronize_rcu();
-> +                       llist_add((struct llist_node *) &rs_array[i].head,=
- &gp_wait_llist);
->                }
->        }
-> <snip>
->=20
-> and did some experiments in terms of performance and comparison. A test ca=
-se is:
->=20
-> thread_X:
->  synchronize_rcu();
->  kfree(ptr);
->=20
-> below are results with running 10 parallel workers running 1000 times of m=
-entioned
-> test scenario:
->=20
-> # default(NOCB)
-> [   29.322944] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 172=
-86604 usec
-> [   29.325759] All test took worker0=3D63964052068 cycles
-> [   29.327255] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 234=
-14575 usec
-> [   29.329974] All test took worker1=3D86638822563 cycles
-> [   29.331460] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 233=
-57988 usec
-> [   29.334205] All test took worker2=3D86429439193 cycles
-> [   29.350808] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
-74001 usec
-> [   29.353553] All test took worker3=3D63547397954 cycles
-> [   29.355039] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
-41904 usec
-> [   29.357770] All test took worker4=3D63428630877 cycles
-> [   29.374831] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 233=
-97952 usec
-> [   29.377577] All test took worker5=3D86577316353 cycles
-> [   29.398809] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
-42038 usec
-> [   29.401549] All test took worker6=3D63429124938 cycles
-> [   29.414828] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
-58248 usec
-> [   29.417574] All test took worker7=3D63489107118 cycles
-> [   29.438811] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 181=
-02109 usec
-> [   29.441550] All test took worker8=3D66981588881 cycles
-> [   29.462826] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 234=
-46042 usec
-> [   29.465561] All test took worker9=3D86755258455 cycles
->=20
-> # patch(NOCB)
-> [   14.720986] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7883 usec
-> [   14.723753] All test took worker0=3D32702015768 cycles
-> [   14.740386] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7750 usec
-> [   14.743076] All test took worker1=3D32701525814 cycles
-> [   14.760350] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7734 usec
-> [   14.763036] All test took worker2=3D32701466281 cycles
-> [   14.780369] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7707 usec
-> [   14.783057] All test took worker3=3D32701364901 cycles
-> [   14.800352] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7730 usec
-> [   14.803041] All test took worker4=3D32701449927 cycles
-> [   14.820355] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7724 usec
-> [   14.823048] All test took worker5=3D32701428134 cycles
-> [   14.840359] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7705 usec
-> [   14.843052] All test took worker6=3D32701356465 cycles
-> [   14.860322] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7742 usec
-> [   14.863005] All test took worker7=3D32701494475 cycles
-> [   14.880363] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7750 usec
-> [   14.883081] All test took worker8=3D32701525074 cycles
-> [   14.900362] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
-7918 usec
-> [   14.903065] All test took worker9=3D32702145379 cycles
->=20
-> --
-> Uladzislau Rezki
+--
+Uladzislau Rezki
