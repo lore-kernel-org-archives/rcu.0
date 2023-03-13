@@ -2,66 +2,65 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A296C6FD19
-	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 09:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D03EC6FD1C
+	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 12:28:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjCMJvr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Mar 2023 05:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        id S229621AbjCMM17 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Mar 2023 08:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjCMJvp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Mar 2023 05:51:45 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076F6A255;
-        Mon, 13 Mar 2023 02:51:44 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j11so14861068lfg.13;
-        Mon, 13 Mar 2023 02:51:43 -0700 (PDT)
+        with ESMTP id S229622AbjCMM15 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Mar 2023 08:27:57 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF79637FE;
+        Mon, 13 Mar 2023 05:27:54 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id f18so15506915lfa.3;
+        Mon, 13 Mar 2023 05:27:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678701102;
+        d=gmail.com; s=20210112; t=1678710473;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VRsmpqBO807GYQQIuzMLfXGfVa+JtFsWHXyi41I4F7o=;
-        b=DduEFgOED/u8XRrxXNF1OT+W2y5FK/8F/hOBFHIPbXjUm/85Ix7YCt9G1lcaIMX2lv
-         AjYbjEXf8QhEKOfjm25IkRBNz3DEt3neZoQi1pZ1LXOtZH0v9XhKYy4nSg4jEOWOV81a
-         G/ZdjLKwSyase+FMRRIp2jyGT5bHFLdAf+ik1BvBuK/5SYhslIqI7YtSCCTcxwiI4sUw
-         6ZxQ5X9jKV09hXylda6zoKldF4E/kD1+R/CPRi35Y69VVsB2i8RM5AJQ4jucH4iyZwMF
-         pqYf4jIOXHVeoBqPh19qjXmpRMXle8xOXpXffKoP61IY2mlG4Fgq+RC5lWb2cpdoVKso
-         Y3Sg==
+        bh=XxtPvQMZV2mCK+5C4lQiOKLhkxSXW7szGvOPTDx1T2Q=;
+        b=jo56tZtzXDcOCxUp/6P4Sb11B5485prAg2yiDY0cK9xYogus5NTSd5CibV/ou8rK1I
+         iI3gIgLwD8QNLHdUNv4fNY9mYdI/a5qV0LHE6HSgT1NbBLptZc0LNfjMj4okQeL61Lhh
+         gb6MjLs8bX+odVcKi53mbj4uiRtKg0jMOQVwWJRxecRDiTA71bG2RKTpxKHdxH9zShq3
+         klyG9XIWT8w8e3XjIXqIMjBimtF3O2QZDfj1+qsDqp0ohB34a/1A3PoACfCOx09yKJHF
+         6pxzYgxjqNB+1yCufisAxZH3zsNWDaLAtYK4hmyKCcH1fss4pTPYgGL1I8qcb90+Iab7
+         gGTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678701102;
+        d=1e100.net; s=20210112; t=1678710473;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VRsmpqBO807GYQQIuzMLfXGfVa+JtFsWHXyi41I4F7o=;
-        b=YUNAD+RylAJ8KJvlsZctEu9gQQY0cbe1Yp5UDbdb+0EqzHSDkRgFdLapqJWkAzEBir
-         yD2UB0OwdUqzlH0R75gevt7UMk5A2XdZf9FUTyn5928PWEkfneXKvjtAgNwquhFOE+6p
-         lvwTBx/wWOZKQCdbcTg9QuZdI51Z6N6DU18pjiZN9fxFRE1IVhZzarqjryJvFZg1HWC/
-         O2XrkFd7HMbeGWk04BBH5rIcZ9M8DyiSVDARucCo0x6lgxo2i3w0/qlQ67Fji/RZ6lLo
-         zkoCsbqXub576VDtQH116/qARIX8d1GWHF8TqSMKqERxFThokb3riFhge3AqdoBAMts2
-         HHMg==
-X-Gm-Message-State: AO0yUKW9GfaNlP9cDFr1IAX/WeQpWIA+jAKwnEkjQsXSIAYU/GZ6vFXL
-        1ZuQRc/LDxy6JhF5bvTqo54=
-X-Google-Smtp-Source: AK7set8dxeH7jyt6xp2uc3pgrfeENHgJWRIXNZ06a11BUma1PCMxcblV0Yr3RQZzNfXSnesdOvThsA==
-X-Received: by 2002:ac2:51a8:0:b0:4cc:7308:8f40 with SMTP id f8-20020ac251a8000000b004cc73088f40mr10840654lfk.40.1678701102002;
-        Mon, 13 Mar 2023 02:51:42 -0700 (PDT)
+        bh=XxtPvQMZV2mCK+5C4lQiOKLhkxSXW7szGvOPTDx1T2Q=;
+        b=jpiQgfQbQiNde5a3iXrZZx0X5U4BpElEKp49ZHPgnTFeR5mvuyq1AewBCBF119gJ2o
+         qhR5IaP9pUpop0tSg8DwXCnr3H0eSldLBRexSmEvIzej8UYt7nRuzr8K/GamrRjPfjfC
+         YUurAuf47Dps+eDWuaVGbgDx5GP58WYoj9j+I5OHvpxzX+fp7nB9zaXxTemyCfXIMzNZ
+         JPlgYAkvE8cst/5xRpet+5BAPnmTMKzF8SxSXQxhwUBMiDpH6VXSdWAYliwSXORIRQOT
+         9L3b5VcMFh+DZ4qy+7nJ4pYAjEVInZv6UVciyO74Ue0ZxeT4WaYgo2rPXTlabFGVCp99
+         Pw9w==
+X-Gm-Message-State: AO0yUKVl/tf/drkko+FWm9cF6qmxCFMBEL/I3NmXD2iuFhtkOl4Qxq4m
+        zR9wjDr1m8GVj837kj5Pb8GhHSs6i1s=
+X-Google-Smtp-Source: AK7set8MA6Rozhn/ejemOTSbdCBjH1qcTzbnWBzsy2OuD7WcuUtlWqKzFpWDxvse9EEw2ovuFD9Kjg==
+X-Received: by 2002:ac2:5624:0:b0:4db:3890:cb4e with SMTP id b4-20020ac25624000000b004db3890cb4emr9153884lff.4.1678710472756;
+        Mon, 13 Mar 2023 05:27:52 -0700 (PDT)
 Received: from pc636 (host-78-79-233-41.mobileonline.telia.com. [78.79.233.41])
-        by smtp.gmail.com with ESMTPSA id l25-20020ac25559000000b004d4ead86cb2sm913744lfk.20.2023.03.13.02.51.40
+        by smtp.gmail.com with ESMTPSA id f5-20020ac25325000000b004dc4cb4f9c4sm957271lfh.35.2023.03.13.05.27.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Mar 2023 02:51:41 -0700 (PDT)
+        Mon, 13 Mar 2023 05:27:52 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 13 Mar 2023 10:51:39 +0100
+Date:   Mon, 13 Mar 2023 13:27:50 +0100
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         linux-doc@vger.kernel.org, rcu@vger.kernel.org
 Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Message-ID: <ZA7yK6iznHqiBu5i@pc636>
-References: <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
- <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <ZA8WxjUL0eUPtVy8@pc636>
+References: <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
  <20230307185443.GA516865@google.com>
  <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
  <ZAhYP9a8u05hzsOn@pc636>
@@ -70,203 +69,242 @@ References: <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
  <20230309221056.GB148448@google.com>
  <ZArwZjcEYXAYwmqi@pc636>
  <8f8a40cd-8b1f-4121-98f7-7a1bdbcaf6a6@paulmck-laptop>
+ <ZA7yK6iznHqiBu5i@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8f8a40cd-8b1f-4121-98f7-7a1bdbcaf6a6@paulmck-laptop>
+In-Reply-To: <ZA7yK6iznHqiBu5i@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 10:24:34PM -0800, Paul E. McKenney wrote:
-> On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
-> > On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
-> > > On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
-> > > [..]
-> > > > > > > > > See this commit:
+On Mon, Mar 13, 2023 at 10:51:39AM +0100, Uladzislau Rezki wrote:
+> On Fri, Mar 10, 2023 at 10:24:34PM -0800, Paul E. McKenney wrote:
+> > On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
+> > > On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
+> > > > On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
+> > > > [..]
+> > > > > > > > > > See this commit:
+> > > > > > > > > > 
+> > > > > > > > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use of
+> > > > > > > > > > expedited RCU primitives")
+> > > > > > > > > > 
+> > > > > > > > > > Antti provided this commit precisely in order to allow Android
+> > > > > > > > > > devices to expedite the boot process and to shut off the
+> > > > > > > > > > expediting at a time of Android userspace's choosing.  So Android
+> > > > > > > > > > has been making this work for about ten years, which strikes me
+> > > > > > > > > > as an adequate proof of concept.  ;-)
 > > > > > > > > > 
-> > > > > > > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use of
-> > > > > > > > > expedited RCU primitives")
-> > > > > > > > > 
-> > > > > > > > > Antti provided this commit precisely in order to allow Android
-> > > > > > > > > devices to expedite the boot process and to shut off the
-> > > > > > > > > expediting at a time of Android userspace's choosing.  So Android
-> > > > > > > > > has been making this work for about ten years, which strikes me
-> > > > > > > > > as an adequate proof of concept.  ;-)
+> > > > > > > > > Thanks for the pointer. That's true. Looking at Android sources, I
+> > > > > > > > > find that Android Mediatek devices at least are setting
+> > > > > > > > > rcu_expedited to 1 at late stage of their userspace boot (which is
+> > > > > > > > > weird, it should be set to 1 as early as possible), and
+> > > > > > > > > interestingly I cannot find them resetting it back to 0!.  Maybe
+> > > > > > > > > they set rcu_normal to 1? But I cannot find that either. Vlad? :P
 > > > > > > > > 
-> > > > > > > > Thanks for the pointer. That's true. Looking at Android sources, I
-> > > > > > > > find that Android Mediatek devices at least are setting
-> > > > > > > > rcu_expedited to 1 at late stage of their userspace boot (which is
-> > > > > > > > weird, it should be set to 1 as early as possible), and
-> > > > > > > > interestingly I cannot find them resetting it back to 0!.  Maybe
-> > > > > > > > they set rcu_normal to 1? But I cannot find that either. Vlad? :P
-> > > > > > > 
-> > > > > > > Interesting.  Though this is consistent with Antti's commit log,
-> > > > > > > where he talks about expediting grace periods but not unexpediting
-> > > > > > > them.
-> > > > > > > 
-> > > > > > Do you think we need to unexpedite it? :))))
+> > > > > > > > Interesting.  Though this is consistent with Antti's commit log,
+> > > > > > > > where he talks about expediting grace periods but not unexpediting
+> > > > > > > > them.
+> > > > > > > > 
+> > > > > > > Do you think we need to unexpedite it? :))))
+> > > > > > 
+> > > > > > Android runs on smallish systems, so quite possibly not!
+> > > > > > 
+> > > > > We keep it enabled and never unexpedite it. The reason is a performance.  I
+> > > > > have done some app-launch time analysis with enabling and disabling of it.
 > > > > > 
-> > > > > Android runs on smallish systems, so quite possibly not!
-> > > > > 
-> > > > We keep it enabled and never unexpedite it. The reason is a performance.  I
-> > > > have done some app-launch time analysis with enabling and disabling of it.
+> > > > > An expedited case is much better when it comes to app launch time. It
+> > > > > requires ~25% less time to run an app comparing with unexpedited variant.
+> > > > > So we have a big gain here.
 > > > > 
-> > > > An expedited case is much better when it comes to app launch time. It
-> > > > requires ~25% less time to run an app comparing with unexpedited variant.
-> > > > So we have a big gain here.
+> > > > Wow, that's huge. I wonder if you can dig deeper and find out why that is so
+> > > > as the callbacks may need to be synchronize_rcu_expedited() then, as it could
+> > > > be slowing down other usecases! I find it hard to believe, real-time
+> > > > workloads will run better without those callbacks being always-expedited if
+> > > > it actually gives back 25% in performance!
+> > > > 
+> > > I can dig further, but on a high level i think there are some spots
+> > > which show better performance if expedited is set. I mean synchronize_rcu()
+> > > becomes as "less blocking a context" from a time point of view.
 > > > 
-> > > Wow, that's huge. I wonder if you can dig deeper and find out why that is so
-> > > as the callbacks may need to be synchronize_rcu_expedited() then, as it could
-> > > be slowing down other usecases! I find it hard to believe, real-time
-> > > workloads will run better without those callbacks being always-expedited if
-> > > it actually gives back 25% in performance!
-> > > 
-> > I can dig further, but on a high level i think there are some spots
-> > which show better performance if expedited is set. I mean synchronize_rcu()
-> > becomes as "less blocking a context" from a time point of view.
+> > > The problem of a regular synchronize_rcu() is - it can trigger a big latency
+> > > delays for a caller. For example for nocb case we do not know where in a list
+> > > our callback is located and when it is invoked to unblock a caller.
 > > 
-> > The problem of a regular synchronize_rcu() is - it can trigger a big latency
-> > delays for a caller. For example for nocb case we do not know where in a list
-> > our callback is located and when it is invoked to unblock a caller.
+> > True, expedited RCU grace periods do not have this callback-invocation
+> > delay that normal RCU does.
+> > 
+> > > I have already mentioned somewhere. Probably it makes sense to directly wake-up
+> > > callers from the GP kthread instead and not via nocb-kthread that invokes our callbacks
+> > > one by one.
+> > 
+> > Makes sense, but it is necessary to be careful.  Wakeups are not fast,
+> > so making the RCU grace-period kthread do them all sequentially is not
+> > a strategy to win.  For example, note that the next expedited grace
+> > period can start before the previous expedited grace period has finished
+> > its wakeups.
+> > 
+> I hove done a small and quick prototype:
 > 
-> True, expedited RCU grace periods do not have this callback-invocation
-> delay that normal RCU does.
+> <snip>
+> diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+> index 699b938358bf..e1a4cca9a208 100644
+> --- a/include/linux/rcupdate_wait.h
+> +++ b/include/linux/rcupdate_wait.h
+> @@ -9,6 +9,8 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/completion.h>
 > 
-> > I have already mentioned somewhere. Probably it makes sense to directly wake-up
-> > callers from the GP kthread instead and not via nocb-kthread that invokes our callbacks
-> > one by one.
+> +extern struct llist_head gp_wait_llist;
+> +
+>  /*
+>   * Structure allowing asynchronous waiting on RCU.
+>   */
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index ee27a03d7576..50b81ca54104 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -113,6 +113,9 @@ int rcu_num_lvls __read_mostly = RCU_NUM_LVLS;
+>  int num_rcu_lvl[] = NUM_RCU_LVL_INIT;
+>  int rcu_num_nodes __read_mostly = NUM_RCU_NODES; /* Total # rcu_nodes in use. */
 > 
-> Makes sense, but it is necessary to be careful.  Wakeups are not fast,
-> so making the RCU grace-period kthread do them all sequentially is not
-> a strategy to win.  For example, note that the next expedited grace
-> period can start before the previous expedited grace period has finished
-> its wakeups.
+> +/* Waiters for a GP kthread. */
+> +LLIST_HEAD(gp_wait_llist);
+> +
+>  /*
+>   * The rcu_scheduler_active variable is initialized to the value
+>   * RCU_SCHEDULER_INACTIVE and transitions RCU_SCHEDULER_INIT just before the
+> @@ -1776,6 +1779,14 @@ static noinline void rcu_gp_cleanup(void)
+>                 on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+>  }
 > 
-I hove done a small and quick prototype:
+> +static void rcu_notify_gp_end(struct llist_node *llist)
+> +{
+> +       struct llist_node *rcu, *next;
+> +
+> +       llist_for_each_safe(rcu, next, llist)
+> +               complete(&((struct rcu_synchronize *) rcu)->completion);
+> +}
+> +
+>  /*
+>   * Body of kthread that handles grace periods.
+>   */
+> @@ -1811,6 +1822,9 @@ static int __noreturn rcu_gp_kthread(void *unused)
+>                 WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANUP);
+>                 rcu_gp_cleanup();
+>                 WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANED);
+> +
+> +               /* Wake-app all users. */
+> +               rcu_notify_gp_end(llist_del_all(&gp_wait_llist));
+>         }
+>  }
+> 
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 19bf6fa3ee6a..1de7c328a3e5 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -426,7 +426,10 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
+>                 if (j == i) {
+>                         init_rcu_head_on_stack(&rs_array[i].head);
+>                         init_completion(&rs_array[i].completion);
+> -                       (crcu_array[i])(&rs_array[i].head, wakeme_after_rcu);
+> +
+> +                       /* Kick a grace period if needed. */
+> +                       (void) start_poll_synchronize_rcu();
+> +                       llist_add((struct llist_node *) &rs_array[i].head, &gp_wait_llist);
+>                 }
+>         }
+> <snip>
+> 
+> and did some experiments in terms of performance and comparison. A test case is:
+> 
+> thread_X:
+>   synchronize_rcu();
+>   kfree(ptr);
+> 
+> below are results with running 10 parallel workers running 1000 times of mentioned
+> test scenario:
+> 
+> # default(NOCB)
+> [   29.322944] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17286604 usec
+> [   29.325759] All test took worker0=63964052068 cycles
+> [   29.327255] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23414575 usec
+> [   29.329974] All test took worker1=86638822563 cycles
+> [   29.331460] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23357988 usec
+> [   29.334205] All test took worker2=86429439193 cycles
+> [   29.350808] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17174001 usec
+> [   29.353553] All test took worker3=63547397954 cycles
+> [   29.355039] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17141904 usec
+> [   29.357770] All test took worker4=63428630877 cycles
+> [   29.374831] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23397952 usec
+> [   29.377577] All test took worker5=86577316353 cycles
+> [   29.398809] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17142038 usec
+> [   29.401549] All test took worker6=63429124938 cycles
+> [   29.414828] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17158248 usec
+> [   29.417574] All test took worker7=63489107118 cycles
+> [   29.438811] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 18102109 usec
+> [   29.441550] All test took worker8=66981588881 cycles
+> [   29.462826] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23446042 usec
+> [   29.465561] All test took worker9=86755258455 cycles
+> 
+> # patch(NOCB)
+> [   14.720986] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837883 usec
+> [   14.723753] All test took worker0=32702015768 cycles
+> [   14.740386] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837750 usec
+> [   14.743076] All test took worker1=32701525814 cycles
+> [   14.760350] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837734 usec
+> [   14.763036] All test took worker2=32701466281 cycles
+> [   14.780369] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837707 usec
+> [   14.783057] All test took worker3=32701364901 cycles
+> [   14.800352] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837730 usec
+> [   14.803041] All test took worker4=32701449927 cycles
+> [   14.820355] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837724 usec
+> [   14.823048] All test took worker5=32701428134 cycles
+> [   14.840359] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837705 usec
+> [   14.843052] All test took worker6=32701356465 cycles
+> [   14.860322] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837742 usec
+> [   14.863005] All test took worker7=32701494475 cycles
+> [   14.880363] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837750 usec
+> [   14.883081] All test took worker8=32701525074 cycles
+> [   14.900362] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837918 usec
+> [   14.903065] All test took worker9=32702145379 cycles
+> 
+> --
+> Uladzislau Rezki
+A quick app launch test. This is a camera app on our device:
 
-<snip>
-diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-index 699b938358bf..e1a4cca9a208 100644
---- a/include/linux/rcupdate_wait.h
-+++ b/include/linux/rcupdate_wait.h
-@@ -9,6 +9,8 @@
- #include <linux/rcupdate.h>
- #include <linux/completion.h>
+urezki@pc636:~/data/yoshino_bin/scripts$ ./test-cam.sh
+629
+572
+652
+622
+642
+650
+613
+654
+607
+urezki@pc636:~/data/yoshino_bin/scripts$ adb shell
+XQ-DQ54:/ $ su
+XQ-DQ54:/ # echo 1 > /sy
+sys/          system/       system_dlkm/  system_ext/
+XQ-DQ54:/ # echo 1 > /sys/kernel/rc
+rcu_expedited       rcu_improve_normal  rcu_normal
+XQ-DQ54:/ # echo 1 > /sys/kernel/rcu_improve_normal
+XQ-DQ54:/ # exit
+XQ-DQ54:/ $ exit
+urezki@pc636:~/data/yoshino_bin/scripts$ ./test-cam.sh
+533
+549
+563
+537
+540
+563
+531
+549
+548
+urezki@pc636:~/data/yoshino_bin/scripts$
 
-+extern struct llist_head gp_wait_llist;
-+
- /*
-  * Structure allowing asynchronous waiting on RCU.
-  */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ee27a03d7576..50b81ca54104 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -113,6 +113,9 @@ int rcu_num_lvls __read_mostly = RCU_NUM_LVLS;
- int num_rcu_lvl[] = NUM_RCU_LVL_INIT;
- int rcu_num_nodes __read_mostly = NUM_RCU_NODES; /* Total # rcu_nodes in use. */
-
-+/* Waiters for a GP kthread. */
-+LLIST_HEAD(gp_wait_llist);
-+
- /*
-  * The rcu_scheduler_active variable is initialized to the value
-  * RCU_SCHEDULER_INACTIVE and transitions RCU_SCHEDULER_INIT just before the
-@@ -1776,6 +1779,14 @@ static noinline void rcu_gp_cleanup(void)
-                on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
- }
-
-+static void rcu_notify_gp_end(struct llist_node *llist)
-+{
-+       struct llist_node *rcu, *next;
-+
-+       llist_for_each_safe(rcu, next, llist)
-+               complete(&((struct rcu_synchronize *) rcu)->completion);
-+}
-+
- /*
-  * Body of kthread that handles grace periods.
-  */
-@@ -1811,6 +1822,9 @@ static int __noreturn rcu_gp_kthread(void *unused)
-                WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANUP);
-                rcu_gp_cleanup();
-                WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANED);
-+
-+               /* Wake-app all users. */
-+               rcu_notify_gp_end(llist_del_all(&gp_wait_llist));
-        }
- }
-
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 19bf6fa3ee6a..1de7c328a3e5 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -426,7 +426,10 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
-                if (j == i) {
-                        init_rcu_head_on_stack(&rs_array[i].head);
-                        init_completion(&rs_array[i].completion);
--                       (crcu_array[i])(&rs_array[i].head, wakeme_after_rcu);
-+
-+                       /* Kick a grace period if needed. */
-+                       (void) start_poll_synchronize_rcu();
-+                       llist_add((struct llist_node *) &rs_array[i].head, &gp_wait_llist);
-                }
-        }
-<snip>
-
-and did some experiments in terms of performance and comparison. A test case is:
-
-thread_X:
-  synchronize_rcu();
-  kfree(ptr);
-
-below are results with running 10 parallel workers running 1000 times of mentioned
-test scenario:
-
-# default(NOCB)
-[   29.322944] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17286604 usec
-[   29.325759] All test took worker0=63964052068 cycles
-[   29.327255] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23414575 usec
-[   29.329974] All test took worker1=86638822563 cycles
-[   29.331460] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23357988 usec
-[   29.334205] All test took worker2=86429439193 cycles
-[   29.350808] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17174001 usec
-[   29.353553] All test took worker3=63547397954 cycles
-[   29.355039] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17141904 usec
-[   29.357770] All test took worker4=63428630877 cycles
-[   29.374831] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23397952 usec
-[   29.377577] All test took worker5=86577316353 cycles
-[   29.398809] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17142038 usec
-[   29.401549] All test took worker6=63429124938 cycles
-[   29.414828] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 17158248 usec
-[   29.417574] All test took worker7=63489107118 cycles
-[   29.438811] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 18102109 usec
-[   29.441550] All test took worker8=66981588881 cycles
-[   29.462826] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 23446042 usec
-[   29.465561] All test took worker9=86755258455 cycles
-
-# patch(NOCB)
-[   14.720986] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837883 usec
-[   14.723753] All test took worker0=32702015768 cycles
-[   14.740386] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837750 usec
-[   14.743076] All test took worker1=32701525814 cycles
-[   14.760350] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837734 usec
-[   14.763036] All test took worker2=32701466281 cycles
-[   14.780369] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837707 usec
-[   14.783057] All test took worker3=32701364901 cycles
-[   14.800352] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837730 usec
-[   14.803041] All test took worker4=32701449927 cycles
-[   14.820355] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837724 usec
-[   14.823048] All test took worker5=32701428134 cycles
-[   14.840359] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837705 usec
-[   14.843052] All test took worker6=32701356465 cycles
-[   14.860322] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837742 usec
-[   14.863005] All test took worker7=32701494475 cycles
-[   14.880363] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837750 usec
-[   14.883081] All test took worker8=32701525074 cycles
-[   14.900362] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 8837918 usec
-[   14.903065] All test took worker9=32702145379 cycles
+the taken time to run an app in milliseconds.
 
 --
 Uladzislau Rezki
