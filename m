@@ -2,190 +2,316 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9541BC6FD19
-	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 13:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A680AC61DA4
+	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 13:59:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjCMNs3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Mar 2023 09:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
+        id S230005AbjCMN7S (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Mar 2023 09:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbjCMNs2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Mar 2023 09:48:28 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF4E1CBCC;
-        Mon, 13 Mar 2023 06:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678715307; x=1710251307;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Jo37JS9AeqpWoXK1jvb6JY5OqNlBLUaFtJ84POEpuYM=;
-  b=UyC/DE8fjB6nFwduNkFdW4xb9YhFgl2eXIiihdNNvD58tlkybBT8nKN3
-   tuOGbBea/Fewt09GQ/jSe3TDSBaOvo8/SRQzJ2wZZK0RpCkt5HCJgHuno
-   ap+8mPSagELZxaGBcv+x703M2wcZspSTtrHZNHmDw2N5LxzKx21Wc/lIE
-   2OTP6hCkne5oOgGnbsu98xIcnuoXTuOf7CbbSq15aSxU/1fLS6YAMh9pG
-   ukvyasVhA7OBjDpj1GBxSVmMnLibKMSKTvHR4X4Q3RBPChnmcguATZ0Ns
-   jPzDBXmDrOPRDnlM+ARWx95MgjDXCxkQt/5G8MA0VTz7wj1aU8m6PdMOB
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="334623614"
-X-IronPort-AV: E=Sophos;i="5.98,257,1673942400"; 
-   d="scan'208";a="334623614"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2023 06:48:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="767697155"
-X-IronPort-AV: E=Sophos;i="5.98,257,1673942400"; 
-   d="scan'208";a="767697155"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Mar 2023 06:48:26 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 13 Mar 2023 06:48:26 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Mon, 13 Mar 2023 06:48:26 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Mon, 13 Mar 2023 06:48:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/KKk6JR5hbj1/sUUKddK0ZIpsfA9cjuVjtVxcUIFJFZ57XD9W7vt88wW16J6DvuzveZdBbKJWGtXf13wRZ/cVx8jzhb2fzLh8byikNEpmrApB0MkzHcjUzB9w42HBkSvq9b3dEJtzeGAtx8rwa1/rlZpv+9WuZOt2wQRzos8XNJsluEEYsZPa50W4m+7bBrJF3gUjJoBqJUxSxoc1lkW4SKSjnxIzaFZOg8yP0VyVz780PCtHmsRCOcz3GCCnmeHKEFkJJj1go1u47EWnDVQkXQjmSjh2b4RI71NqxCtSj91ghgP8O2V3V1bzX1WjRCKcrDBSWXe+0wWJEpsy2YZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1r6hCpYV/7CNlQnPuhZ03W3SQmrH7ZGqNC1p3dRY4lQ=;
- b=m+Lyxb/N/08RzKRspF4VISj2ZgFEOVY0tMSJwXBnj4IuDte14VH2I9CMpGlfKwF+dqCER7t5x71EGcAlniXpBvzDmjVQSOq58iLxsAMrGAUdnuY672R+JcUUhHdn7Jp0t8Imk6VW+s2w0/OJSWKYNkH9Xo7l77uUts97s4REuPbObCdvHdzCnVKJDA8SL1jT4guXbr40iopZj3ziem6m3i+mBK/JBsuB6lSJgmXy/OtQPjvHLsYTGjJtCe7RG7rVQYikJGid/T6JsLeIkIWfZzfKl/1Tt07Iahv3oIHTvm+H0xFB1u/KOXyIZHROankNihESG6XtTDXgBH6umlKEtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from IA1PR11MB6171.namprd11.prod.outlook.com (2603:10b6:208:3e9::13)
- by PH0PR11MB4904.namprd11.prod.outlook.com (2603:10b6:510:40::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.24; Mon, 13 Mar
- 2023 13:48:19 +0000
-Received: from IA1PR11MB6171.namprd11.prod.outlook.com
- ([fe80::2aed:1a72:b351:1601]) by IA1PR11MB6171.namprd11.prod.outlook.com
- ([fe80::2aed:1a72:b351:1601%9]) with mapi id 15.20.6178.024; Mon, 13 Mar 2023
- 13:48:19 +0000
-From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-To:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-CC:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: RE: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Thread-Topic: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Thread-Index: AQHZThiYp3MlrzfqvEWnd0vYLxlOHa7vTckAgAAKtYCAAAJrAIAAPq6AgAAWxoCAAAkkAIAA7pKAgABU+wCAAXQ5AIAAmpIAgACz9gCAAWhKAIADXoaAgAArowCAABOeUA==
-Date:   Mon, 13 Mar 2023 13:48:18 +0000
-Message-ID: <IA1PR11MB61714FA7A6FA92307B7FEF7C89B99@IA1PR11MB6171.namprd11.prod.outlook.com>
-References: <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
- <20230307185443.GA516865@google.com>
- <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAhYP9a8u05hzsOn@pc636>
- <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAnXxr9OyFT63xSx@pc636> <20230309221056.GB148448@google.com>
- <ZArwZjcEYXAYwmqi@pc636>
- <8f8a40cd-8b1f-4121-98f7-7a1bdbcaf6a6@paulmck-laptop>
- <ZA7yK6iznHqiBu5i@pc636> <ZA8WxjUL0eUPtVy8@pc636>
-In-Reply-To: <ZA8WxjUL0eUPtVy8@pc636>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA1PR11MB6171:EE_|PH0PR11MB4904:EE_
-x-ms-office365-filtering-correlation-id: 9d6f1353-7a53-4d6b-dfb1-08db23c99a79
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VmCT5LswW7GX6OLJudiwjVmSD3fovo3YVsJi3ZIhhQDcNcg+xCHL8lSiwVwa2s+z3dBZJ1xW7dwv2zLifsJ+RM0St4R8mHWU1tnQmHl5jVmaEz9sq0nlcrsPwHBAXtYpj0utbXepxtuYrXES71NqGE7Ni2AqneQfN791Wk13epAeaDw975Bf1ShtYIdIweOV5wyYLcOupRnloJteDq3TH8ObmTywJsHv4EE/vvjEfZ5iaSVPnIlFUURnxrQtkLcuXg6pXpLuFnymnkDgHawYQFKMcxP/bBmt3oOag20U+XMHbpJJI9sPWB4YPRRZELLdCQrJxiOcu8oXojApvgUmn60A+GF8BSvY/QhzF7RCMA7Mwu76iJwnw3US8/IoYndclNVI6t2OMKzP2YgKsh6uLUXDwE10bX1RyixwfHqcTC2Pcs22xNfu1mHSLc9NF3zbF/qQfi3vbXMXxpQupBHY/su9zzEPJe+j2QnabHETvaTVcPAc8idpMKLLjq9ph+DDlgYxJxqqTBNOBvRdmHD6X/QVgsS50TFQ8Ws15WZupvp17wD45hXvmks3KlPu9VaCKiEqstjAXlstRZcDFjpxsYzIwdynxOdEuN5iI6aA2lvkHRX9B3j3eN+e7zW1Cx4h18r/qqNtdC9LRcG2RteiZvxASkJxrgFx+O2r7vAu2v5rErHojFLVzXPREzAmMxwBmVphqZeVTGa1Sr60wXkLbw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6171.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(346002)(136003)(366004)(39860400002)(376002)(396003)(451199018)(33656002)(86362001)(186003)(9686003)(41300700001)(4326008)(26005)(6506007)(5660300002)(8936002)(52536014)(316002)(71200400001)(7696005)(55016003)(478600001)(110136005)(54906003)(64756008)(76116006)(8676002)(66556008)(66946007)(66446008)(66476007)(122000001)(38100700002)(82960400001)(38070700005)(2906002)(4744005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?oHHr49i4vR8DGFeaH8z/vIStQrrBKqNyJk1X8ut3ygjB4kyL8TLj5Zl/TVdj?=
- =?us-ascii?Q?DQWULw/wRFtoLKKs8cAfbWDdUXi1iZ6ZHIsH1LnsnHUkDb90YVZ5eJ9m3ixC?=
- =?us-ascii?Q?DJIeUI0pkRda4UbZy5OjLjHPPoenqt23u88KLXQPNFzOqvAplM347KEsKz25?=
- =?us-ascii?Q?jL/NDbY3JKmfkICELigpSEUBn55bYqJItbO04CnxalF3gqu6NAGD661+iitp?=
- =?us-ascii?Q?hKVMNLBXZ4bxzlMhBlF1jD8FsYz16wx9gBw9tMbcIs3oiGIwUcFR7hCb5sxv?=
- =?us-ascii?Q?F4NSRREc2Rc6s7Z1d9A3r+kAXn2jjvTt6QfR3cgXjSWfYayu+MllE4YpY+Cx?=
- =?us-ascii?Q?opMCKGUsZIVp5clE2FWAHuGzmbNzTMIJXy0LX5oveE3amtESYy5jsTRfc3+l?=
- =?us-ascii?Q?UttfFQB0zANVz07fal4mHOeWf9AmleEq6i0tX446R9iG/+cYd5XPCtUcQMfX?=
- =?us-ascii?Q?IHEOHobmnQQ29A0m5buR4rtIuHxiWNxSuq8nLphsoo0guWgL7rb4Xx1KvPOG?=
- =?us-ascii?Q?iLYGpuTg/+XsbnUpRdZmlBd4zt/GJ5i1LLDKKCOGFEb5XRs27bCp4KwiQQ3N?=
- =?us-ascii?Q?06tXKP5zI6N0MESD49xRaaMbSxCBOB4eaVi44MVa8XmHZrP6XAWFKt97HDzp?=
- =?us-ascii?Q?zcPyp6kqVBYeGvp8sqd+PQMz7JKYB0oTvIi5bUK6D96glTp7uQ5ds800/eAd?=
- =?us-ascii?Q?IAfCEZWQ5MGrWthnd4FiK0SwZolOx180N6WMxZotYgihYzd0jvJsdNZWgp/y?=
- =?us-ascii?Q?KQBjvDHm7nwOw0uGW8Q9s4UwfKJpYk0Dx6PYzuAzKXog2CVbbogHY4PZI8UA?=
- =?us-ascii?Q?zKWIMH51Li8MdLDccAHRn7Ngil+eJHxH4KTli7+hMeuW3xI+hFCCPrJvPfvL?=
- =?us-ascii?Q?Du3KDLMid+dGMQiLqITJeM5xu50PJS184CrL3ONA6DzEO11QrSprFkkr1H+D?=
- =?us-ascii?Q?0g5tZUk18Kf3dv6jXgZXEVZ54FCfY1adfo5MBWPsEAxEEzazZEKmeOZAbbZs?=
- =?us-ascii?Q?9mBTew5vT9nbo6t+k2wSmjRlOSIUWoAj/oFAouDPKm9gy2E1HVuj13qslpzf?=
- =?us-ascii?Q?HDlrBGDN4ocoz+aN8b4Pr3wsEXTck6kMYDckVJo/7WNgiWHrbCh8gSvwr3+T?=
- =?us-ascii?Q?wPLJZIoxRGHc0S2pjmGJJk6PHgsATG1WOc4D4kG3eMVNJeyTEbvVyV3545LC?=
- =?us-ascii?Q?jM+gm9hWDS7wwyxlzzIb1Vr7OYtOQHyEPgs2G7BNeDw20Tx/1ay4L6ectKJD?=
- =?us-ascii?Q?OpDYMR2JKIrir8I+fHfQQEF1fp6e9AKHOzPY0tYzVurISD5yEto8IglBv8ix?=
- =?us-ascii?Q?rVk/y8XLI8hr1XtsyNral6A7xA2iSMRZ9d57StBXH0PldtewiLTSe3IAZ2lR?=
- =?us-ascii?Q?KirtxExkb7ufA0BbpFxJ6OrgZJtEJN1XA6pvWzJ4rPez4nhxmXeVUxenx0TB?=
- =?us-ascii?Q?2yMOsQtJCZB4WcftcczOkexCUq9xQoBo3xbC80I+WTfmqJ2A3sTBbz0Ou0dj?=
- =?us-ascii?Q?6n+mewlJnMyuIFLP5Hgl1UholJhB3suzuaUMkpuFiZLivw7A1tn3q4DRDMKR?=
- =?us-ascii?Q?sivJTu0O6gnPeT8HKvDZlHR8+pyNaDik03MLNA5P?=
-Content-Type: text/plain; charset="us-ascii"
+        with ESMTP id S230063AbjCMN7F (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Mar 2023 09:59:05 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1391EFE0
+        for <rcu@vger.kernel.org>; Mon, 13 Mar 2023 06:58:45 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id y11so13055006plg.1
+        for <rcu@vger.kernel.org>; Mon, 13 Mar 2023 06:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1678715925;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eneYNU+nUmxOh8t+MF9m5KBckGw7QMn0ZWgboiFr43c=;
+        b=DduqQKirrtiP/8odRJmxLlH6WM1LkBuiNjuvGz9FSUN7fLw5HAUD6uc19foxRVmbLY
+         o3FZGAlklijqnbA28sMX92rD569rN4q4eQGx2Gwpp3ylwQaViVJxU7gs5Dq0nAF5aMuY
+         49mLcRlR8U5YHkI08IbJcgaxh/a727XUpVJAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678715925;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eneYNU+nUmxOh8t+MF9m5KBckGw7QMn0ZWgboiFr43c=;
+        b=CbE2DkyKbIVgDM5v5KqHnhk0QvRIU0oi953fKdjDgK3VBEvkDvlml5fEfkV9LzfznB
+         jMh8pff0Si5n9nWzx3haWTPD6o7fo6RtmQpVhPtmTczg5vzk+jGDd28Z6RyzrmpNh7eb
+         xkfwJY8OHBp+50POt+L/awKwjy+heoYdx9IoGP20Eux/cZcqZNWUooUcih/U76OPY+G0
+         T7qMZ0fW5UQVckQuuj5TYJCUDW3vFk1tCAFLtwPU/owi8yjJMPnZKSYR+K1gINKHtMKo
+         bLHHyiMY4M7sgCwkfh2eonPaLJINfldO+7wVQwVhtbSk61w22FLA06IwjQspTIcwLj3i
+         w4TA==
+X-Gm-Message-State: AO0yUKUb+0tRHEcM1MF+JMA0OPEF2E48+icdscT3kunAMgdWZbEIxZWh
+        IjXcCo9mUWLLk35Qro4BCOLRlQ==
+X-Google-Smtp-Source: AK7set8GqexXi9aOzjtjlYy/A2z6Eb7VJELOikOO1SEArvaYtW2BESXlMuKLO1EX78+C4TFAKMv8aw==
+X-Received: by 2002:a17:902:8688:b0:19c:d23e:52a0 with SMTP id g8-20020a170902868800b0019cd23e52a0mr28355194plo.14.1678715925149;
+        Mon, 13 Mar 2023 06:58:45 -0700 (PDT)
+Received: from smtpclient.apple (071-095-008-132.biz.spectrum.com. [71.95.8.132])
+        by smtp.gmail.com with ESMTPSA id g1-20020a1709026b4100b0019a96d3b456sm4864641plt.44.2023.03.13.06.58.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Mar 2023 06:58:44 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6171.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d6f1353-7a53-4d6b-dfb1-08db23c99a79
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Mar 2023 13:48:18.9509
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: m1KxpVkvUn4HH9cYJ91IX/l5K2eCQlTicU9Y/DmM2G5RQVUpSqF5gj0yaMLo3F2d+SIY9XXfzDxiG3f/H3SoqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4904
-X-OriginatorOrg: intel.com
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
+Date:   Mon, 13 Mar 2023 06:58:30 -0700
+Message-Id: <01559085-EB77-4962-B5EF-FF767F5A7353@joelfernandes.org>
+References: <ZA7yK6iznHqiBu5i@pc636>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-doc@vger.kernel.org, rcu@vger.kernel.org
+In-Reply-To: <ZA7yK6iznHqiBu5i@pc636>
+To:     Uladzislau Rezki <urezki@gmail.com>
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> From: Uladzislau Rezki <urezki@gmail.com>
-> [...]
-> XQ-DQ54:/ # echo 1 > /sys/kernel/rc
-> rcu_expedited       rcu_improve_normal  rcu_normal
-> XQ-DQ54:/ # echo 1 > /sys/kernel/rcu_improve_normal=20
 
-Hi Rezki,
 
-I applied your prototype patch, but I did NOT find the sys-node:
- "/sys/kernel/rcu_improve_normal" on my system.
-
-What is this node used for? What am I missing? Thanks!
-
-[ There were only "rcu_expedited" & " rcu_normal" sys nodes
-on my system. ]
-
--Qiuxu
-
-> XQ-DQ54:/ # exit=20
-> XQ-DQ54:/ $ exit urezki@pc636:~/data/yoshino_bin/scripts$ ./test-cam.sh
-> 533
-> 549
-> 563
-> 537
-> 540
-> 563
-> 531
-> 549
-> 548
-> urezki@pc636:~/data/yoshino_bin/scripts$
+> On Mar 13, 2023, at 2:51 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
 >=20
-> the taken time to run an app in milliseconds.
+> =EF=BB=BFOn Fri, Mar 10, 2023 at 10:24:34PM -0800, Paul E. McKenney wrote:=
+
+>>> On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
+>>> On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
+>>>> On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
+>>>> [..]
+>>>>>>>>>> See this commit:
+>>>>>>>>>>=20
+>>>>>>>>>> 3705b88db0d7cc ("rcu: Add a module parameter to force use of
+>>>>>>>>>> expedited RCU primitives")
+>>>>>>>>>>=20
+>>>>>>>>>> Antti provided this commit precisely in order to allow Android
+>>>>>>>>>> devices to expedite the boot process and to shut off the
+>>>>>>>>>> expediting at a time of Android userspace's choosing.  So Android=
+
+>>>>>>>>>> has been making this work for about ten years, which strikes me
+>>>>>>>>>> as an adequate proof of concept.  ;-)
+>>>>>>>>>=20
+>>>>>>>>> Thanks for the pointer. That's true. Looking at Android sources, I=
+
+>>>>>>>>> find that Android Mediatek devices at least are setting
+>>>>>>>>> rcu_expedited to 1 at late stage of their userspace boot (which is=
+
+>>>>>>>>> weird, it should be set to 1 as early as possible), and
+>>>>>>>>> interestingly I cannot find them resetting it back to 0!.  Maybe
+>>>>>>>>> they set rcu_normal to 1? But I cannot find that either. Vlad? :P
+>>>>>>>>=20
+>>>>>>>> Interesting.  Though this is consistent with Antti's commit log,
+>>>>>>>> where he talks about expediting grace periods but not unexpediting
+>>>>>>>> them.
+>>>>>>>>=20
+>>>>>>> Do you think we need to unexpedite it? :))))
+>>>>>>=20
+>>>>>> Android runs on smallish systems, so quite possibly not!
+>>>>>>=20
+>>>>> We keep it enabled and never unexpedite it. The reason is a performanc=
+e.  I
+>>>>> have done some app-launch time analysis with enabling and disabling of=
+ it.
+>>>>>=20
+>>>>> An expedited case is much better when it comes to app launch time. It
+>>>>> requires ~25% less time to run an app comparing with unexpedited varia=
+nt.
+>>>>> So we have a big gain here.
+>>>>=20
+>>>> Wow, that's huge. I wonder if you can dig deeper and find out why that i=
+s so
+>>>> as the callbacks may need to be synchronize_rcu_expedited() then, as it=
+ could
+>>>> be slowing down other usecases! I find it hard to believe, real-time
+>>>> workloads will run better without those callbacks being always-expedite=
+d if
+>>>> it actually gives back 25% in performance!
+>>>>=20
+>>> I can dig further, but on a high level i think there are some spots
+>>> which show better performance if expedited is set. I mean synchronize_rc=
+u()
+>>> becomes as "less blocking a context" from a time point of view.
+>>>=20
+>>> The problem of a regular synchronize_rcu() is - it can trigger a big lat=
+ency
+>>> delays for a caller. For example for nocb case we do not know where in a=
+ list
+>>> our callback is located and when it is invoked to unblock a caller.
+>>=20
+>> True, expedited RCU grace periods do not have this callback-invocation
+>> delay that normal RCU does.
+>>=20
+>>> I have already mentioned somewhere. Probably it makes sense to directly w=
+ake-up
+>>> callers from the GP kthread instead and not via nocb-kthread that invoke=
+s our callbacks
+>>> one by one.
+>>=20
+>> Makes sense, but it is necessary to be careful.  Wakeups are not fast,
+>> so making the RCU grace-period kthread do them all sequentially is not
+>> a strategy to win.  For example, note that the next expedited grace
+>> period can start before the previous expedited grace period has finished
+>> its wakeups.
+>>=20
+> I hove done a small and quick prototype:
+>=20
+> <snip>
+> diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h=
+
+> index 699b938358bf..e1a4cca9a208 100644
+> --- a/include/linux/rcupdate_wait.h
+> +++ b/include/linux/rcupdate_wait.h
+> @@ -9,6 +9,8 @@
+> #include <linux/rcupdate.h>
+> #include <linux/completion.h>
+>=20
+> +extern struct llist_head gp_wait_llist;
+> +
+> /*
+>  * Structure allowing asynchronous waiting on RCU.
+>  */
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index ee27a03d7576..50b81ca54104 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -113,6 +113,9 @@ int rcu_num_lvls __read_mostly =3D RCU_NUM_LVLS;
+> int num_rcu_lvl[] =3D NUM_RCU_LVL_INIT;
+> int rcu_num_nodes __read_mostly =3D NUM_RCU_NODES; /* Total # rcu_nodes in=
+ use. */
+>=20
+> +/* Waiters for a GP kthread. */
+> +LLIST_HEAD(gp_wait_llist);
+> +
+> /*
+>  * The rcu_scheduler_active variable is initialized to the value
+>  * RCU_SCHEDULER_INACTIVE and transitions RCU_SCHEDULER_INIT just before t=
+he
+> @@ -1776,6 +1779,14 @@ static noinline void rcu_gp_cleanup(void)
+>                on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+> }
+>=20
+> +static void rcu_notify_gp_end(struct llist_node *llist)
+> +{
+> +       struct llist_node *rcu, *next;
+> +
+> +       llist_for_each_safe(rcu, next, llist)
+> +               complete(&((struct rcu_synchronize *) rcu)->completion);
+
+This looks broken to me, so the synchronize will complete even
+if it was called in the middle of an ongoing GP?
+
+Thanks,
+
+ - Joel
+
+
+
+> +}
+> +
+> /*
+>  * Body of kthread that handles grace periods.
+>  */
+> @@ -1811,6 +1822,9 @@ static int __noreturn rcu_gp_kthread(void *unused)
+>                WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANUP);
+>                rcu_gp_cleanup();
+>                WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANED);
+> +
+> +               /* Wake-app all users. */
+> +               rcu_notify_gp_end(llist_del_all(&gp_wait_llist));
+>        }
+> }
+>=20
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 19bf6fa3ee6a..1de7c328a3e5 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -426,7 +426,10 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_fu=
+nc_t *crcu_array,
+>                if (j =3D=3D i) {
+>                        init_rcu_head_on_stack(&rs_array[i].head);
+>                        init_completion(&rs_array[i].completion);
+> -                       (crcu_array[i])(&rs_array[i].head, wakeme_after_rc=
+u);
+> +
+> +                       /* Kick a grace period if needed. */
+> +                       (void) start_poll_synchronize_rcu();
+> +                       llist_add((struct llist_node *) &rs_array[i].head,=
+ &gp_wait_llist);
+>                }
+>        }
+> <snip>
+>=20
+> and did some experiments in terms of performance and comparison. A test ca=
+se is:
+>=20
+> thread_X:
+>  synchronize_rcu();
+>  kfree(ptr);
+>=20
+> below are results with running 10 parallel workers running 1000 times of m=
+entioned
+> test scenario:
+>=20
+> # default(NOCB)
+> [   29.322944] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 172=
+86604 usec
+> [   29.325759] All test took worker0=3D63964052068 cycles
+> [   29.327255] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 234=
+14575 usec
+> [   29.329974] All test took worker1=3D86638822563 cycles
+> [   29.331460] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 233=
+57988 usec
+> [   29.334205] All test took worker2=3D86429439193 cycles
+> [   29.350808] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
+74001 usec
+> [   29.353553] All test took worker3=3D63547397954 cycles
+> [   29.355039] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
+41904 usec
+> [   29.357770] All test took worker4=3D63428630877 cycles
+> [   29.374831] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 233=
+97952 usec
+> [   29.377577] All test took worker5=3D86577316353 cycles
+> [   29.398809] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
+42038 usec
+> [   29.401549] All test took worker6=3D63429124938 cycles
+> [   29.414828] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 171=
+58248 usec
+> [   29.417574] All test took worker7=3D63489107118 cycles
+> [   29.438811] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 181=
+02109 usec
+> [   29.441550] All test took worker8=3D66981588881 cycles
+> [   29.462826] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 234=
+46042 usec
+> [   29.465561] All test took worker9=3D86755258455 cycles
+>=20
+> # patch(NOCB)
+> [   14.720986] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7883 usec
+> [   14.723753] All test took worker0=3D32702015768 cycles
+> [   14.740386] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7750 usec
+> [   14.743076] All test took worker1=3D32701525814 cycles
+> [   14.760350] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7734 usec
+> [   14.763036] All test took worker2=3D32701466281 cycles
+> [   14.780369] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7707 usec
+> [   14.783057] All test took worker3=3D32701364901 cycles
+> [   14.800352] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7730 usec
+> [   14.803041] All test took worker4=3D32701449927 cycles
+> [   14.820355] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7724 usec
+> [   14.823048] All test took worker5=3D32701428134 cycles
+> [   14.840359] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7705 usec
+> [   14.843052] All test took worker6=3D32701356465 cycles
+> [   14.860322] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7742 usec
+> [   14.863005] All test took worker7=3D32701494475 cycles
+> [   14.880363] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7750 usec
+> [   14.883081] All test took worker8=3D32701525074 cycles
+> [   14.900362] Summary: kvfree_rcu_1_arg_vmalloc_test loops: 1000 avg: 883=
+7918 usec
+> [   14.903065] All test took worker9=3D32702145379 cycles
 >=20
 > --
 > Uladzislau Rezki
