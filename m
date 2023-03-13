@@ -2,162 +2,361 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A6F8C74A4B
-	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 19:43:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26E0FC61DA4
+	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 22:21:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjCMTns (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Mar 2023 15:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
+        id S229847AbjCMWVs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Mar 2023 18:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjCMTnr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Mar 2023 15:43:47 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D344682A84;
-        Mon, 13 Mar 2023 12:43:45 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id p13-20020a9d744d000000b0069438f0db7eso7302379otk.3;
-        Mon, 13 Mar 2023 12:43:45 -0700 (PDT)
+        with ESMTP id S229617AbjCMWVr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Mar 2023 18:21:47 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABC21ABC8;
+        Mon, 13 Mar 2023 15:21:41 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id e21so10591826oie.1;
+        Mon, 13 Mar 2023 15:21:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678736625;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dwEwSuTgSY520olxehs+hWgOHbsYCxg4NdwtSaatwno=;
-        b=TBplKKKYOLZs3rZt79CeiMs0DDwMMNZqgucjt7b/VtVsd2TmNUsE45DWs6f6ORPMKM
-         Y9RMCV8gww7lyO28fW1ogZmm4CWEfM8B4tCyJ3nb166phiDH9PwdJeg+G52UohtFFXS4
-         SXanJLJv8ZRgKIP0yHbrdogDHsmlQGmKB2QiE8H8U1c/r3BHPXrt0ZqkRnnyE4pZp28L
-         GGRmJzHavxpvxwF7PB7XRcbOqmi+y/NL+KHi/o85+en5MHirj4s1yVG49F84vzyGRUXF
-         FjZjsFWOmOnBr6Ok++srHOYIJsXEnc601cr3uHWisBTso6EyJz+reUhgzWoULmMpU95S
-         QLYA==
+        d=gmail.com; s=20210112; t=1678746101;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fgbx+G1VuVvdcoDypfrTksbqvojX7c9u8OaeQTCHp+c=;
+        b=dBMG8unBS9QSzLmDbpSL9dtXEBefXalSxk+of102VftGEkwkc78Bfmb/I2u1Swgxfy
+         DTytpkB8DI7XElDTWjKh+2QIg4pxax1/euhtAnBwJYy4+z1umo3xEzNb1ig2MIY/IiLD
+         57u6Z/J/SPblUVzttzRp7+qdV2t9ANCaoWZil9Jx21lNxv30dHk8XxLC9TujIIYdV5rf
+         Rr46VHqP+a2UkGOqYtKNtfSH05kYdfGB/2xoTtjbqFQamNuRv4uYPa0PzQOWeFEKDH5v
+         AEa8Fds9uz8AcAZBbnVSvEGZYK1AKaVTTE6sEz8ZM6fSIltIlOwuBsfq9S3ho/ta/4ov
+         8Kkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678736625;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dwEwSuTgSY520olxehs+hWgOHbsYCxg4NdwtSaatwno=;
-        b=csoh/dE8Bahz6imiFF2L1zOL+UEHQyUAnT4DRoL4L450cmfNVrXw2j7N9wpyUeBN+W
-         Q87VlwO09M0kCQTHMhvznARGWqKN8lVtK3dRMX2MpJrBNfqBkjNSZ0+CZj3zViw9ky47
-         2rYmrsRNXVguAxIxJMNjOo52fGjzghxJra9OPzD62ZOAOP2WpANuDBqiCvhM8sPvnvnk
-         kDj0ctLh9VlpD+34SYtReo5UTPDIZVPZTWrdoftoqPkKvtoGYS72uQ1Y+CtdlkCcFfYz
-         uo4XM4ZnfQvdDFAKfWrWEdYvz6QMtrNhWOWBRyK9MKwOWR+JiMz5tfBGrs1/M0qZlKGH
-         E5yQ==
-X-Gm-Message-State: AO0yUKWleiqjuznBjsoUZ8hqn8INMoxZno4kMvvWH1fnk1xNVy5ppAD+
-        K5p7Juyys7JqOCD4UqGdBYa30JPGZiY=
-X-Google-Smtp-Source: AK7set8kR4MhR64rwL9+eBJhAOzRfDmidoaOcFzg9u7LIqzIKXcyi2XX4z2TZztS0gOKlHmTyqdpeQ==
-X-Received: by 2002:a9d:2a9:0:b0:693:d9a5:c5d with SMTP id 38-20020a9d02a9000000b00693d9a50c5dmr17026627otl.3.1678736625190;
-        Mon, 13 Mar 2023 12:43:45 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:1600:7c57:ec4f:7588? (2603-8081-140c-1a00-1600-7c57-ec4f-7588.res6.spectrum.com. [2603:8081:140c:1a00:1600:7c57:ec4f:7588])
-        by smtp.gmail.com with ESMTPSA id p129-20020a4a4887000000b00524fe20aee5sm260970ooa.34.2023.03.13.12.43.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Mar 2023 12:43:44 -0700 (PDT)
-Message-ID: <67fbe385-3682-be4e-15fe-f26cc56fd56b@gmail.com>
-Date:   Mon, 13 Mar 2023 14:43:43 -0500
+        d=1e100.net; s=20210112; t=1678746101;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fgbx+G1VuVvdcoDypfrTksbqvojX7c9u8OaeQTCHp+c=;
+        b=0L0qkNNcxkOxBKTEi+qHdk0IrgmjhVv/34Z6tb2Dx0x4FFTmpKmK6okeC6kxTbrvVZ
+         OR5AghiNIVUNIxRz3XaBrVctvofiQLnSRqrPwldOOUBptZS9SjnVFSkyTfZObm9vW361
+         p81Ek7uP2+PFSSRU/hINqa7kZg7SApCCQ7822b8rA8K8V1aZ/KpWh1TwrmeZfx2KJKdf
+         0Fu+tGoZsbLhduqGDTxa41R22AFIIqTDUBe3JnHzVOAyngtYPUtPE6EYgRoHB1lzx1cQ
+         OGxDHGYjVzXH+wgrYPOC49I3nGF67pUHk+XnPGvvpNGfW8MB+D9ZOAgAgmniYXL3AFdi
+         RnDg==
+X-Gm-Message-State: AO0yUKWs24LPDQH1yy5HUfRdQzkNsRKl7n6k58E4mJ2xzK8FKVaiZ/CL
+        U2N//2RzF1ULHw+gc3hTGWVwopy9cH70wgAgMA==
+X-Google-Smtp-Source: AK7set/33w9YJuxg5L8xT3YGzQvuJq59gpvfncDw0aJqIauMDFaBDwmtkQg9+SmV9XMMn9+ddCx95rjo8gMy8ImjGz4=
+X-Received: by 2002:aca:d19:0:b0:384:d02d:5f07 with SMTP id
+ 25-20020aca0d19000000b00384d02d5f07mr8962119oin.10.1678746101065; Mon, 13 Mar
+ 2023 15:21:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 07/13] RDMA/rxe: Rename kfree_rcu() to
- kfree_rcu_mightsleep()
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-References: <20230201150815.409582-1-urezki@gmail.com>
- <20230201150815.409582-8-urezki@gmail.com> <ZAnjnRC1wY3RIFhM@pc636>
- <ZAnpdKV/VvvX0TZz@pc636> <20230310005529.GA339498@google.com>
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20230310005529.GA339498@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230308171328.1562857-1-usama.arif@bytedance.com> <20230308171328.1562857-10-usama.arif@bytedance.com>
+In-Reply-To: <20230308171328.1562857-10-usama.arif@bytedance.com>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Mon, 13 Mar 2023 18:21:29 -0400
+Message-ID: <CAMzpN2iz4UzQh7YGOo6vGB2qmpogiCUCTfYpvdeP=_Dm=66BwA@mail.gmail.com>
+Subject: Re: [PATCH v14 09/12] x86/smpboot: Support parallel startup of
+ secondary CPUs
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 3/9/23 18:55, Joel Fernandes wrote:
-> On Thu, Mar 09, 2023 at 03:13:08PM +0100, Uladzislau Rezki wrote:
->>> On Wed, Feb 01, 2023 at 04:08:13PM +0100, Uladzislau Rezki (Sony) wrote:
->>>> The kfree_rcu()'s single argument name is deprecated therefore
->>>> rename it to kfree_rcu_mightsleep() variant. The goal is explicitly
->>>> underline that it is for sleepable contexts.
->>>>
->>>> Please check the RXE driver in a way that a single argument can
->>>> be used. Briefly looking at it and rcu_head should be embed to
->>>> free an obj over RCU-core. The context might be atomic.
->>>>
->>>> Cc: Bob Pearson <rpearsonhpe@gmail.com>
->>>> Cc: Jason Gunthorpe <jgg@nvidia.com>
->>>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->>>> ---
->>>>  drivers/infiniband/sw/rxe/rxe_pool.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>> Could you please add you reviwed-by or Acked-by tags so we can bring
->>> our series with renaming for the next merge window?
->>>
->>> Thanks!
->>>
->> __rxe_cleanup() can be called in two contexts, sleepable and not.
->> Therefore usage of a single argument of the kvfree_rcu() is not correct
->> here.
->>
->> Could you please fix and check your driver? If my above statement
->> is not correct, please provide Acked-by or Reviwed-by tags to the
->> path that is in question.
->>
->> Otherwise please add an rcu_head in your data to free objects over
->> kvfree_rcu() using double argument API.
->>
->> Could you please support?
-> 
-> Also this one needs renaming? It came in because of the commit in 6.3-rc1:
-> 72a03627443d ("RDMA/rxe: Remove rxe_alloc()")
-> 
-> It could be squashed into this patch itself since it is infiniband related.
-> 
-> Paul noticed that this breaks dropping the old API on -next, so it is
-> blocking the renaming.
-> 
-> ---8<-----------------------
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index b10aa1580a64..ae3a100e18fb 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -731,7 +731,7 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->  		return -EINVAL;
->  
->  	rxe_cleanup(mr);
-> -	kfree_rcu(mr);
-> +	kfree_rcu_mightsleep(mr);
->  	return 0;
->  }
->  
-I just got back from a 1 week vacation and missed all this.
+On Wed, Mar 8, 2023 at 12:13=E2=80=AFPM Usama Arif <usama.arif@bytedance.co=
+m> wrote:
+>
+> From: David Woodhouse <dwmw@amazon.co.uk>
+>
+> Rework the real-mode startup code to allow for APs to be brought up in
+> parallel. This is in two parts:
+>
+> 1. Introduce a bit-spinlock to prevent them from all using the real
+>    mode stack at the same time.
+>
+> 2. Avoid needing to use the global smpboot_control variable to pass
+>    each AP its CPU#.
+>
+> To achieve the latter, export the cpuid_to_apicid[] array so that each
+> AP can find its own CPU# by searching therein based on its APIC ID.
+>
+> Introduce flags in the top bits of smpboot_control which indicate methods
+> by which an AP should find its CPU#. For a serialized bringup, the CPU#
+> is explicitly passed in the low bits of smpboot_control as before. For
+> parallel mode there are flags directing the AP to find its APIC ID in
+> CPUID leaf 0x0b (for X2APIC mode) or CPUID leaf 0x01 where 8 bits are
+> sufficient, then perform the cpuid_to_apicid[] lookup with that.
+>
+> Parallel startup may be disabled by a command line option, and also if:
+>  =E2=80=A2 AMD SEV-ES is in use, since the AP may not use CPUID that earl=
+y.
+>  =E2=80=A2 X2APIC is enabled, but CPUID leaf 0xb is not present and corre=
+ct.
+>  =E2=80=A2 X2APIC is not enabled but not even CPUID leaf 0x01 exists.
+>
+> Aside from the fact that APs will now look up their CPU# via the
+> newly-exported cpuid_to_apicid[] table, there is no behavioural change
+> intended yet, since new parallel CPUHP states have not =E2=80=94 yet =E2=
+=80=94 been
+> added.
+>
+> [ tglx: Initial proof of concept patch with bitlock and APIC ID lookup ]
+> [ dwmw2: Rework and testing, commit message, CPUID 0x1 and CPU0 support ]
+> [ seanc: Fix stray override of initial_gs in common_cpu_up() ]
+> [ Oleksandr Natalenko: reported suspend/resume issue fixed in
+>   x86_acpi_suspend_lowlevel ]
+> Co-developed-by: Thomas Gleixner <tglx@linutronix.de>
+> Co-developed-by: Brian Gerst <brgerst@gmail.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> Tested-by: Kim Phillips <kim.phillips@amd.com>
+> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+> Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  3 +
+>  arch/x86/include/asm/cpu.h                    |  1 +
+>  arch/x86/include/asm/realmode.h               |  3 +
+>  arch/x86/include/asm/smp.h                    |  6 ++
+>  arch/x86/kernel/acpi/sleep.c                  |  9 ++-
+>  arch/x86/kernel/apic/apic.c                   |  2 +-
+>  arch/x86/kernel/cpu/topology.c                |  2 +-
+>  arch/x86/kernel/head_64.S                     | 64 +++++++++++++++++++
+>  arch/x86/kernel/smpboot.c                     | 50 ++++++++++++++-
+>  arch/x86/realmode/init.c                      |  3 +
+>  arch/x86/realmode/rm/trampoline_64.S          | 27 ++++++--
+>  11 files changed, 161 insertions(+), 9 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentat=
+ion/admin-guide/kernel-parameters.txt
+> index 6cfa6e3996cf..7bb7020f97e2 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3819,6 +3819,9 @@
+>
+>         nomodule        Disable module load
+>
+> +       no_parallel_bringup
+> +                       [X86,SMP] Disable parallel bring-up of secondary =
+cores.
+> +
+>         nopat           [X86] Disable PAT (page attribute table extension=
+ of
+>                         pagetables) support.
+>
+> diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+> index 78796b98a544..ef8ba318dca1 100644
+> --- a/arch/x86/include/asm/cpu.h
+> +++ b/arch/x86/include/asm/cpu.h
+> @@ -97,5 +97,6 @@ static inline bool intel_cpu_signatures_match(unsigned =
+int s1, unsigned int p1,
+>  extern u64 x86_read_arch_cap_msr(void);
+>  int intel_find_matching_signature(void *mc, unsigned int csig, int cpf);
+>  int intel_microcode_sanity_check(void *mc, bool print_err, int hdr_type)=
+;
+> +int check_extended_topology_leaf(int leaf);
+>
+>  #endif /* _ASM_X86_CPU_H */
+> diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realm=
+ode.h
+> index f6a1737c77be..87e5482acd0d 100644
+> --- a/arch/x86/include/asm/realmode.h
+> +++ b/arch/x86/include/asm/realmode.h
+> @@ -52,6 +52,7 @@ struct trampoline_header {
+>         u64 efer;
+>         u32 cr4;
+>         u32 flags;
+> +       u32 lock;
+>  #endif
+>  };
+>
+> @@ -64,6 +65,8 @@ extern unsigned long initial_stack;
+>  extern unsigned long initial_vc_handler;
+>  #endif
+>
+> +extern u32 *trampoline_lock;
+> +
+>  extern unsigned char real_mode_blob[];
+>  extern unsigned char real_mode_relocs[];
+>
+> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
+> index bf2c51df9e0b..1cf4f1e57570 100644
+> --- a/arch/x86/include/asm/smp.h
+> +++ b/arch/x86/include/asm/smp.h
+> @@ -203,4 +203,10 @@ extern unsigned int smpboot_control;
+>
+>  #endif /* !__ASSEMBLY__ */
+>
+> +/* Control bits for startup_64 */
+> +#define STARTUP_APICID_CPUID_0B        0x80000000
+> +#define STARTUP_APICID_CPUID_01        0x40000000
+> +
+> +#define STARTUP_PARALLEL_MASK (STARTUP_APICID_CPUID_01 | STARTUP_APICID_=
+CPUID_0B)
+> +
+>  #endif /* _ASM_X86_SMP_H */
+> diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
+> index 1328c221af30..6dfecb27b846 100644
+> --- a/arch/x86/kernel/acpi/sleep.c
+> +++ b/arch/x86/kernel/acpi/sleep.c
+> @@ -16,6 +16,7 @@
+>  #include <asm/cacheflush.h>
+>  #include <asm/realmode.h>
+>  #include <asm/hypervisor.h>
+> +#include <asm/smp.h>
+>
+>  #include <linux/ftrace.h>
+>  #include "../../realmode/rm/wakeup.h"
+> @@ -127,7 +128,13 @@ int x86_acpi_suspend_lowlevel(void)
+>          * value is in the actual %rsp register.
+>          */
+>         current->thread.sp =3D (unsigned long)temp_stack + sizeof(temp_st=
+ack);
+> -       smpboot_control =3D smp_processor_id();
+> +       /*
+> +        * Ensure the CPU knows which one it is when it comes back, if
+> +        * it isn't in parallel mode and expected to work that out for
+> +        * itself.
+> +        */
+> +       if (!(smpboot_control & STARTUP_PARALLEL_MASK))
+> +               smpboot_control =3D smp_processor_id();
+>  #endif
+>         initial_code =3D (unsigned long)wakeup_long64;
+>         saved_magic =3D 0x123456789abcdef0L;
+> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+> index 20d9a604da7c..ac1d7e5da1f2 100644
+> --- a/arch/x86/kernel/apic/apic.c
+> +++ b/arch/x86/kernel/apic/apic.c
+> @@ -2377,7 +2377,7 @@ static int nr_logical_cpuids =3D 1;
+>  /*
+>   * Used to store mapping between logical CPU IDs and APIC IDs.
+>   */
+> -static int cpuid_to_apicid[] =3D {
+> +int cpuid_to_apicid[] =3D {
+>         [0 ... NR_CPUS - 1] =3D -1,
+>  };
+>
+> diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topolog=
+y.c
+> index 5e868b62a7c4..1dc20f4dfa6e 100644
+> --- a/arch/x86/kernel/cpu/topology.c
+> +++ b/arch/x86/kernel/cpu/topology.c
+> @@ -32,7 +32,7 @@ EXPORT_SYMBOL(__max_die_per_package);
+>  /*
+>   * Check if given CPUID extended topology "leaf" is implemented
+>   */
+> -static int check_extended_topology_leaf(int leaf)
+> +int check_extended_topology_leaf(int leaf)
+>  {
+>         unsigned int eax, ebx, ecx, edx;
+>
+> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+> index 6a8238702eab..c35f7c173832 100644
+> --- a/arch/x86/kernel/head_64.S
+> +++ b/arch/x86/kernel/head_64.S
+> @@ -25,6 +25,7 @@
+>  #include <asm/export.h>
+>  #include <asm/nospec-branch.h>
+>  #include <asm/fixmap.h>
+> +#include <asm/smp.h>
+>
+>  /*
+>   * We are not able to switch in one step to the final KERNEL ADDRESS SPA=
+CE
+> @@ -234,8 +235,61 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
+L_GLOBAL)
+>         ANNOTATE_NOENDBR // above
+>
+>  #ifdef CONFIG_SMP
+> +       /*
+> +        * For parallel boot, the APIC ID is retrieved from CPUID, and th=
+en
+> +        * used to look up the CPU number.  For booting a single CPU, the
+> +        * CPU number is encoded in smpboot_control.
+> +        *
+> +        * Bit 31       STARTUP_APICID_CPUID_0B flag (use CPUID 0x0b)
+> +        * Bit 30       STARTUP_APICID_CPUID_01 flag (use CPUID 0x01)
+> +        * Bit 0-24     CPU# if STARTUP_APICID_CPUID_xx flags are not set
+> +        */
+>         movl    smpboot_control(%rip), %ecx
+> +       testl   $STARTUP_APICID_CPUID_0B, %ecx
+> +       jnz     .Luse_cpuid_0b
+> +       testl   $STARTUP_APICID_CPUID_01, %ecx
+> +       jnz     .Luse_cpuid_01
+> +       andl    $0x0FFFFFFF, %ecx
+> +       jmp     .Lsetup_cpu
+> +
+> +.Luse_cpuid_01:
+> +       mov     $0x01, %eax
+> +       cpuid
+> +       mov     %ebx, %edx
+> +       shr     $24, %edx
+> +       jmp     .Lsetup_AP
+>
+> +.Luse_cpuid_0b:
+> +       mov     $0x0B, %eax
+> +       xorl    %ecx, %ecx
+> +       cpuid
+> +
+> +.Lsetup_AP:
+> +       /* EDX contains the APIC ID of the current CPU */
+> +       xorq    %rcx, %rcx
+> +       leaq    cpuid_to_apicid(%rip), %rbx
+> +
+> +.Lfind_cpunr:
+> +       cmpl    (%rbx,%rcx,4), %edx
+> +       jz      .Lsetup_cpu
+> +       inc     %ecx
+> +#ifdef CONFIG_FORCE_NR_CPUS
+> +       cmpl    $NR_CPUS, %ecx
+> +#else
+> +       cmpl    nr_cpu_ids(%rip), %ecx
+> +#endif
+> +       jb      .Lfind_cpunr
+> +
+> +       /*  APIC ID not found in the table. Drop the trampoline lock and =
+bail. */
+> +       movq    trampoline_lock(%rip), %rax
+> +       lock
+> +       btrl    $0, (%rax)
+> +
+> +1:     cli
+> +       hlt
+> +       jmp     1b
+> +
+> +.Lsetup_cpu:
+>         /* Get the per cpu offset for the given CPU# which is in ECX */
+>         movq    __per_cpu_offset(,%rcx,8), %rdx
+>  #else
+> @@ -293,6 +347,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
+L_GLOBAL)
+>         shrq    $32, %rdx
+>         wrmsr
+>
+> +       /* Drop the realmode protection. For the boot CPU the pointer is =
+NULL! */
+> +       movq    trampoline_lock(%rip), %rax
+> +       testq   %rax, %rax
+> +       jz      .Lsetup_idt
+> +       lock
+> +       btrl    $0, (%rax)
+> +
+> +.Lsetup_idt:
 
-The "RDMA/rxe: Remove rxe_alloc()" patch just moved the memory allocation for MR (verbs) objects outside
-of the rxe_pool code since it only applied to MRs and not the other verbs objects (AH, QP, CQ, ...).
-That code has to handle a unique situation for AH objects which can be created or destroyed by connection
-manager code in atomic context while all the other ones including MRs are always created/destroyed in process
-context. All objects other than MR's are created/destroyed in the rdma-core code (drivers/infiniband/core).
+Now that the lock only protects the realmode stack, releasing it can
+happen right after the switch to the idle task stack..
 
-The rxe driver keeps xarray's of pointers to the various objects which are protected by rcu locking and so
-it made sense to use kfree_rcu to delete the object with a delay. In the MR case ..._mightsleep seems harmless
-and should not be an issue.
-
-However on reflection, all the references to the MR objects are ref counted and they have been dropped before
-reaching the kfree and so there really never was a good reason to use kfree_rcu in the first place. So
-a better solution would be to replace kfree_rcu with kfree. There is a timeout in completion_done() that
-triggers a WARN_ON() and this is only seen if the driver is broken for some reason but that is equivalent to
-getting a seg fault so no reason to further delay the kfree.
-
-Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+--
+Brian Gerst
