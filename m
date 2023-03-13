@@ -2,226 +2,122 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 774A3C74A4B
-	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 15:50:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73E4EC6FD19
+	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 16:33:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjCMPuN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 13 Mar 2023 11:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S230453AbjCMQda (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Mar 2023 12:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbjCMPuM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 13 Mar 2023 11:50:12 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC984390E
-        for <rcu@vger.kernel.org>; Mon, 13 Mar 2023 08:50:10 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-54184571389so100626287b3.4
-        for <rcu@vger.kernel.org>; Mon, 13 Mar 2023 08:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678722609;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iW9eWE9NBCqdF7gHlLZZ8u43ku6/ZzsHeKSlLd8JDp0=;
-        b=F3CIhOjDkPVc+XmlQ/czoOX5hVBGuAHEACBeFs+UfSWienWD2LvcNlf5TA4tnI/mOS
-         dffhWQjNYnFnafNUZldAe6zEcGmLrJmov05ZjMqSLlQKl0pv/hfTrDyEhV7E+g0sYIPl
-         nJQvLRwY0lSa54PNb9/uYm3YF2N/hTE3s3T48=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678722609;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iW9eWE9NBCqdF7gHlLZZ8u43ku6/ZzsHeKSlLd8JDp0=;
-        b=taNVWb8yLCmkjrweG82+BYk+DiFQDiwUKTgsMItpXDMSEFNtl8WhAeGQrajDPdrXEZ
-         jabgGnyCcx0uPNhMPOCBAARlxY8kqsmDxc6cmRlrZ8Caf777EK3VKFX+yyeiz2xA53oD
-         iHd8XUDK+N6m6ao3jCAgEK9m9gijmAWDEmvwBrf9KIYkL0wj7YGUcBxM7+6aNjmCfiSg
-         4GFePZrnguBb4H6MAfQ0lLwlFnJji+ysLURz9QC/3aacN7H1GNPCdflp9LkkM+3UArTB
-         JmN3/+TEErlquxIyLFMwkhj/YcsJqyRWhd7hfqcqrRwGPvoFd4sUFLKX85QM9x05wVXO
-         9J6Q==
-X-Gm-Message-State: AO0yUKUzuvZEJWK2bYCslk+bAyibJeUKdVkYgu4mFjyI2KArYz8T3AZj
-        UpM/SOOQCXnkm6VvasWY/AjJ3YPQWBOWvGAUtnlcuA==
-X-Google-Smtp-Source: AK7set93XnH7B7UWweZSF01icSoI1DL2P3OA/DvGdGm2LfcrW3o70OzGqcxrxveIAhkLwMW4FKyl66aAV2hhYM4tN5c=
-X-Received: by 2002:a81:ad66:0:b0:52e:e8b1:d51e with SMTP id
- l38-20020a81ad66000000b0052ee8b1d51emr8123390ywk.1.1678722609593; Mon, 13 Mar
- 2023 08:50:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZA7yK6iznHqiBu5i@pc636> <01559085-EB77-4962-B5EF-FF767F5A7353@joelfernandes.org>
- <ZA9B+sgrlK5yommJ@pc636>
-In-Reply-To: <ZA9B+sgrlK5yommJ@pc636>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 13 Mar 2023 11:49:58 -0400
-Message-ID: <CAEXW_YTgDM+47rfz0XNjeV8MMPnhyfCcXX+o74SqONvwd4wfzA@mail.gmail.com>
-Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S230450AbjCMQdV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Mar 2023 12:33:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67F87B4A8;
+        Mon, 13 Mar 2023 09:32:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 309D961361;
+        Mon, 13 Mar 2023 16:31:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F364C433EF;
+        Mon, 13 Mar 2023 16:31:48 +0000 (UTC)
+Date:   Mon, 13 Mar 2023 12:31:47 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mike Rapoport <mike.rapoport@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
         Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH 0/7] remove SLOB and allow kfree() with
+ kmem_cache_alloc()
+Message-ID: <20230313123147.6d28c47e@gandalf.local.home>
+In-Reply-To: <ZA2gofYkXRcJ8cLA@kernel.org>
+References: <20230310103210.22372-1-vbabka@suse.cz>
+        <ZA2gofYkXRcJ8cLA@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 11:32=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com=
-> wrote:
->
-> On Mon, Mar 13, 2023 at 06:58:30AM -0700, Joel Fernandes wrote:
-> >
-> >
-> > > On Mar 13, 2023, at 2:51 AM, Uladzislau Rezki <urezki@gmail.com> wrot=
-e:
-> > >
-> > > =EF=BB=BFOn Fri, Mar 10, 2023 at 10:24:34PM -0800, Paul E. McKenney w=
-rote:
-> > >>> On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
-> > >>> On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
-> > >>>> On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
-> > >>>> [..]
-> > >>>>>>>>>> See this commit:
-> > >>>>>>>>>>
-> > >>>>>>>>>> 3705b88db0d7cc ("rcu: Add a module parameter to force use of
-> > >>>>>>>>>> expedited RCU primitives")
-> > >>>>>>>>>>
-> > >>>>>>>>>> Antti provided this commit precisely in order to allow Andro=
-id
-> > >>>>>>>>>> devices to expedite the boot process and to shut off the
-> > >>>>>>>>>> expediting at a time of Android userspace's choosing.  So An=
-droid
-> > >>>>>>>>>> has been making this work for about ten years, which strikes=
- me
-> > >>>>>>>>>> as an adequate proof of concept.  ;-)
-> > >>>>>>>>>
-> > >>>>>>>>> Thanks for the pointer. That's true. Looking at Android sourc=
-es, I
-> > >>>>>>>>> find that Android Mediatek devices at least are setting
-> > >>>>>>>>> rcu_expedited to 1 at late stage of their userspace boot (whi=
-ch is
-> > >>>>>>>>> weird, it should be set to 1 as early as possible), and
-> > >>>>>>>>> interestingly I cannot find them resetting it back to 0!.  Ma=
-ybe
-> > >>>>>>>>> they set rcu_normal to 1? But I cannot find that either. Vlad=
-? :P
-> > >>>>>>>>
-> > >>>>>>>> Interesting.  Though this is consistent with Antti's commit lo=
-g,
-> > >>>>>>>> where he talks about expediting grace periods but not unexpedi=
-ting
-> > >>>>>>>> them.
-> > >>>>>>>>
-> > >>>>>>> Do you think we need to unexpedite it? :))))
-> > >>>>>>
-> > >>>>>> Android runs on smallish systems, so quite possibly not!
-> > >>>>>>
-> > >>>>> We keep it enabled and never unexpedite it. The reason is a perfo=
-rmance.  I
-> > >>>>> have done some app-launch time analysis with enabling and disabli=
-ng of it.
-> > >>>>>
-> > >>>>> An expedited case is much better when it comes to app launch time=
-. It
-> > >>>>> requires ~25% less time to run an app comparing with unexpedited =
-variant.
-> > >>>>> So we have a big gain here.
-> > >>>>
-> > >>>> Wow, that's huge. I wonder if you can dig deeper and find out why =
-that is so
-> > >>>> as the callbacks may need to be synchronize_rcu_expedited() then, =
-as it could
-> > >>>> be slowing down other usecases! I find it hard to believe, real-ti=
-me
-> > >>>> workloads will run better without those callbacks being always-exp=
-edited if
-> > >>>> it actually gives back 25% in performance!
-> > >>>>
-> > >>> I can dig further, but on a high level i think there are some spots
-> > >>> which show better performance if expedited is set. I mean synchroni=
-ze_rcu()
-> > >>> becomes as "less blocking a context" from a time point of view.
-> > >>>
-> > >>> The problem of a regular synchronize_rcu() is - it can trigger a bi=
-g latency
-> > >>> delays for a caller. For example for nocb case we do not know where=
- in a list
-> > >>> our callback is located and when it is invoked to unblock a caller.
-> > >>
-> > >> True, expedited RCU grace periods do not have this callback-invocati=
-on
-> > >> delay that normal RCU does.
-> > >>
-> > >>> I have already mentioned somewhere. Probably it makes sense to dire=
-ctly wake-up
-> > >>> callers from the GP kthread instead and not via nocb-kthread that i=
-nvokes our callbacks
-> > >>> one by one.
-> > >>
-> > >> Makes sense, but it is necessary to be careful.  Wakeups are not fas=
-t,
-> > >> so making the RCU grace-period kthread do them all sequentially is n=
-ot
-> > >> a strategy to win.  For example, note that the next expedited grace
-> > >> period can start before the previous expedited grace period has fini=
-shed
-> > >> its wakeups.
-> > >>
-> > > I hove done a small and quick prototype:
-> > >
-> > > <snip>
-> > > diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_w=
-ait.h
-> > > index 699b938358bf..e1a4cca9a208 100644
-> > > --- a/include/linux/rcupdate_wait.h
-> > > +++ b/include/linux/rcupdate_wait.h
-> > > @@ -9,6 +9,8 @@
-> > > #include <linux/rcupdate.h>
-> > > #include <linux/completion.h>
-> > >
-> > > +extern struct llist_head gp_wait_llist;
-> > > +
-> > > /*
-> > >  * Structure allowing asynchronous waiting on RCU.
-> > >  */
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index ee27a03d7576..50b81ca54104 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -113,6 +113,9 @@ int rcu_num_lvls __read_mostly =3D RCU_NUM_LVLS;
-> > > int num_rcu_lvl[] =3D NUM_RCU_LVL_INIT;
-> > > int rcu_num_nodes __read_mostly =3D NUM_RCU_NODES; /* Total # rcu_nod=
-es in use. */
-> > >
-> > > +/* Waiters for a GP kthread. */
-> > > +LLIST_HEAD(gp_wait_llist);
-> > > +
-> > > /*
-> > >  * The rcu_scheduler_active variable is initialized to the value
-> > >  * RCU_SCHEDULER_INACTIVE and transitions RCU_SCHEDULER_INIT just bef=
-ore the
-> > > @@ -1776,6 +1779,14 @@ static noinline void rcu_gp_cleanup(void)
-> > >                on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-> > > }
-> > >
-> > > +static void rcu_notify_gp_end(struct llist_node *llist)
-> > > +{
-> > > +       struct llist_node *rcu, *next;
-> > > +
-> > > +       llist_for_each_safe(rcu, next, llist)
-> > > +               complete(&((struct rcu_synchronize *) rcu)->completio=
-n);
-> >
-> > This looks broken to me, so the synchronize will complete even
-> > if it was called in the middle of an ongoing GP?
-> >
-> Do you mean before replacing the list(and after rcu_gp_cleanup()) a new
-> GP sequence can be initiated?
+On Sun, 12 Mar 2023 11:51:29 +0200
+Mike Rapoport <mike.rapoport@gmail.com> wrote:
 
-I guess I mean rcu_notify_gp_end() is called at the end of the current
-grace period, which might be the grace period which started _before_
-the synchronize_rcu() was called. So the callback needs to be invoked
-after the end of the next grace period, not the current one.
+> git grep -in slob still gives a couple of matches. I've dropped the
+> irrelevant ones it it left me with these:
+> 
+> CREDITS:14:D: SLOB slab allocator
+> kernel/trace/ring_buffer.c:358: * Also stolen from mm/slob.c. Thanks to Mathieu Desnoyers for pointing
+> mm/Kconfig:251:    SLOB allocator and is not recommended for systems with more than
+> mm/Makefile:25:KCOV_INSTRUMENT_slob.o := n
+>  
+> Except the comment in kernel/trace/ring_buffer.c all are trivial.
+> 
+> As for the comment in ring_buffer.c, it looks completely irrelevant at this
+> point.
+> 
+> @Steve?
 
-Did I miss some part of your patch that is handling this?
+You want me to remember something I wrote almost 15 years ago? I think I
+understand that comment as much as you do. Yeah, that was when I was still
+learning to write comments for my older self to understand, and I failed
+miserably!
 
-thanks,
+But git history comes to the rescue. The commit that added that comment was:
 
- - Joel
+ed56829cb3195 ("ring_buffer: reset buffer page when freeing")
+
+This was at a time when it was suggested to me to use the struct page
+directly in the ring buffer and where we could do fun "tricks" for
+"performance". (I was never really for this, but I wasn't going to argue).
+
+And the code in question then had:
+
+/*
+ * Also stolen from mm/slob.c. Thanks to Mathieu Desnoyers for pointing
+ * this issue out.
+ */
+static inline void free_buffer_page(struct buffer_page *bpage)
+{
+        reset_page_mapcount(&bpage->page);
+        bpage->page.mapping = NULL;
+        __free_page(&bpage->page);
+}
+
+
+But looking at commit: e4c2ce82ca27 ("ring_buffer: allocate buffer page
+pointer")
+
+It was finally decided that method was not safe, and we should not be using
+struct page but just allocate an actual page (much safer!).
+
+I never got rid of the comment, which was more about that
+"reset_page_mapcount()", and should have been deleted back then.
+
+Just remove that comment. And you could even add:
+
+Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Fixes: e4c2ce82ca27 ("ring_buffer: allocate buffer page pointer")
+
+-- Steve
