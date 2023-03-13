@@ -2,193 +2,134 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4799C7618A
-	for <rcu@archiver.kernel.org>; Sun, 12 Mar 2023 10:01:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 797D1C6FD1F
+	for <rcu@archiver.kernel.org>; Mon, 13 Mar 2023 08:07:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbjCLKBj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 12 Mar 2023 06:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
+        id S230203AbjCMIHb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 13 Mar 2023 04:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbjCLKA6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 12 Mar 2023 06:00:58 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594E73757D;
-        Sun, 12 Mar 2023 03:00:04 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id l12so485984wrm.10;
-        Sun, 12 Mar 2023 03:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678615160;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F/eUf+U6VJsU72zpkAHAR/G+9W+06JthKevGiP5LF44=;
-        b=mQjD7qOx7ex1pHGWyQeUg0YqTmCHy1WTTDhdvfcblgD/O1BEmOllQOhb+WykNhIjZJ
-         8fABaAKSlHCX8WjL7ecmWEiu0afJm49LiQgrU5P3uvtEvjGEpPvoO7j8dghtH9yB888L
-         HCvBJoyz+jBZK/OH4h0rkBdLpQgxskFHjLxJKzZvU/LYcoYJYRGamZUo6R8rp+kaw/P5
-         9Sr9zUgOhCFMx8UDPSwTM1pnHDgf60/Et0uMd8VCzatob3+VhJvJcfqal/9xtFZQM0C+
-         ptVF/C9NDptX9W5XaKpi5Qjssag5XtJADn60tuPiS9xen4hjcQy9fJnpldX5GgdwflXP
-         3vAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678615160;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F/eUf+U6VJsU72zpkAHAR/G+9W+06JthKevGiP5LF44=;
-        b=VlH8iKieHIF7LUQvK/CGxgCg9ArV6GYNL8PHGyuxkQ1advI5CNuy8BFubSamajuhca
-         Iem7H13gKp+TqeL5CIwsv7KUlf3HLodLO6eFsvleuPkazkWe0WuoruKeS5EppxeNS04i
-         h3WMzRlPt8f9/kw4+c921B1hKtf77nYuNvBINPi1Surino5WqnKIQ5Hp8nDkMpEjYpS7
-         g1XKNQxZ9sCV7bB0OJMoi0s/25OoTyDCgNMeHO9xzpbFSku3B5C5/nE+rmTKUimNnqDH
-         sqBSxHZYs1qvM6JKhfNJNZI6CSZDMVpkoyAuflcrxom1jtkU5RCqJiBTsslx793AGaQt
-         nH5A==
-X-Gm-Message-State: AO0yUKXiUXe47csHxy1Gde/KpVseUZYFB/c8l7aatigt4sXc+ADc69xH
-        /dlJy7jfUObtqNaNYExcccEIdyCIxcVvcQ==
-X-Google-Smtp-Source: AK7set8l8/lXKE5CTcpAn0qTvK8Gp5PAdyHglSBceQJL8ZQLKfrUOQl3w3Kww9Ks9mqp+kEuNQe/1Q==
-X-Received: by 2002:a05:6000:181:b0:2ce:aa2e:b864 with SMTP id p1-20020a056000018100b002ceaa2eb864mr1211615wrx.27.1678615159553;
-        Sun, 12 Mar 2023 01:59:19 -0800 (PST)
-Received: from kernel.org ([46.120.23.99])
-        by smtp.gmail.com with ESMTPSA id z10-20020a5d654a000000b002ceaa0e6aa5sm1753461wrv.73.2023.03.12.01.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Mar 2023 01:59:19 -0800 (PST)
-Date:   Sun, 12 Mar 2023 11:59:15 +0200
-From:   Mike Rapoport <mike.rapoport@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        with ESMTP id S229796AbjCMIHA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 13 Mar 2023 04:07:00 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6932726;
+        Mon, 13 Mar 2023 01:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678694682; x=1710230682;
+  h=from:to:cc:subject:date:message-id;
+  bh=gDIv4qJwZoJtfa0NlmSgzOfssIbCR1lN3aQEVECdGbc=;
+  b=Xdz1IslvmvmSeBFCow1Z1C8RwiNWoLArogskr9YJTzNfuqOLa7YQziEU
+   bfMEN2+1bFe+RQeWc+++1IoHfZ0JoItyJbPfXXRTpS0qWsXUrTQXWIEos
+   8cYiZOmtHeOSMocjC1s1c+r8ETAPR9K01L3iXW32a9KMKJXRNhNeziEqB
+   /Px9ZwkoS4DBGQsOPu1+I7JkiOR6lYVweVFwcp/cwr+fS8y/VlaBBTbY8
+   y/MICqH9qE4IL5zEuOp/mAIZijjbwovwznb6eGO3f38MGN1VS3V/Vd1UV
+   Qv3ESVojcv7xgz+Za0bslJ6zvT7NN7M0XuOpJvffOyaXVrB/eqhZ6JLGd
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="399682281"
+X-IronPort-AV: E=Sophos;i="5.98,256,1673942400"; 
+   d="scan'208";a="399682281"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2023 01:04:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="708784876"
+X-IronPort-AV: E=Sophos;i="5.98,256,1673942400"; 
+   d="scan'208";a="708784876"
+Received: from qiuxu-clx.sh.intel.com ([10.239.53.105])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2023 01:04:34 -0700
+From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 7/7] mm/slab: document kfree() as allowed for
- kmem_cache_alloc() objects
-Message-ID: <ZA2ic9JYXGVzps1+@kernel.org>
-References: <20230310103210.22372-1-vbabka@suse.cz>
- <20230310103210.22372-8-vbabka@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230310103210.22372-8-vbabka@suse.cz>
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s) after unloading rcuscale
+Date:   Mon, 13 Mar 2023 16:04:03 +0800
+Message-Id: <20230313080403.89290-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 11:32:09AM +0100, Vlastimil Babka wrote:
-> This will make it easier to free objects in situations when they can
-> come from either kmalloc() or kmem_cache_alloc(), and also allow
-> kfree_rcu() for freeing objects from kmem_cache_alloc().
-> 
-> For the SLAB and SLUB allocators this was always possible so with SLOB
-> gone, we can document it as supported.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  Documentation/core-api/memory-allocation.rst | 15 +++++++++++----
->  include/linux/rcupdate.h                     |  6 ++++--
->  mm/slab_common.c                             |  5 +----
->  3 files changed, 16 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
-> index 5954ddf6ee13..f9e8d352ed67 100644
-> --- a/Documentation/core-api/memory-allocation.rst
-> +++ b/Documentation/core-api/memory-allocation.rst
-> @@ -170,7 +170,14 @@ should be used if a part of the cache might be copied to the userspace.
->  After the cache is created kmem_cache_alloc() and its convenience
->  wrappers can allocate memory from that cache.
->  
-> -When the allocated memory is no longer needed it must be freed. You can
-> -use kvfree() for the memory allocated with `kmalloc`, `vmalloc` and
-> -`kvmalloc`. The slab caches should be freed with kmem_cache_free(). And
-> -don't forget to destroy the cache with kmem_cache_destroy().
-> +When the allocated memory is no longer needed it must be freed. Objects
+When running the 'kfree_rcu_test' test case with commands [1] the call
+trace [2] was thrown. This was because the kfree_scale_thread thread(s)
+still run after unloading rcuscale and torture modules. Fix the call
+trace by invoking kfree_scale_cleanup() when removing the rcuscale module.
 
-I'd add a line break before Objects                               ^
+[1] modprobe torture
+    modprobe rcuscale kfree_rcu_test=1
+    // After some time
+    rmmod rcuscale
+    rmmod torture
 
-> +allocated by `kmalloc` can be freed by `kfree` or `kvfree`.
-> +Objects allocated by `kmem_cache_alloc` can be freed with `kmem_cache_free`
-> +or also by `kfree` or `kvfree`, which can be more convenient as it does
+[2] BUG: unable to handle page fault for address: ffffffffc0601a87
+    #PF: supervisor instruction fetch in kernel mode
+    #PF: error_code(0x0010) - not-present page
+    PGD 11de4f067 P4D 11de4f067 PUD 11de51067 PMD 112f4d067 PTE 0
+    Oops: 0010 [#1] PREEMPT SMP NOPTI
+    CPU: 1 PID: 1798 Comm: kfree_scale_thr Not tainted 6.3.0-rc1-rcu+ #1
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
+    RIP: 0010:0xffffffffc0601a87
+    Code: Unable to access opcode bytes at 0xffffffffc0601a5d.
+    RSP: 0018:ffffb25bc2e57e18 EFLAGS: 00010297
+    RAX: 0000000000000000 RBX: ffffffffc061f0b6 RCX: 0000000000000000
+    RDX: 0000000000000000 RSI: ffffffff962fd0de RDI: ffffffff962fd0de
+    RBP: ffffb25bc2e57ea8 R08: 0000000000000000 R09: 0000000000000000
+    R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+    R13: 0000000000000000 R14: 000000000000000a R15: 00000000001c1dbe
+    FS:  0000000000000000(0000) GS:ffff921fa2200000(0000) knlGS:0000000000000000
+    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: ffffffffc0601a5d CR3: 000000011de4c006 CR4: 0000000000370ee0
+    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+    Call Trace:
+     <TASK>
+     ? kvfree_call_rcu+0xf0/0x3a0
+     ? kthread+0xf3/0x120
+     ? kthread_complete_and_exit+0x20/0x20
+     ? ret_from_fork+0x1f/0x30
+     </TASK>
+    Modules linked in: rfkill sunrpc ... [last unloaded: torture]
+    CR2: ffffffffc0601a87
+    ---[ end trace 0000000000000000 ]---
 
-Maybe replace 'or also by' with a coma:
+Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+---
+ kernel/rcu/rcuscale.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Objects allocated by `kmem_cache_alloc` can be freed with `kmem_cache_free`,
-`kfree` or `kvfree`, which can be more convenient as it does
-
-
-> +not require the kmem_cache pointed.
-
-                             ^ pointer.
-
-> +The rules for _bulk and _rcu flavors of freeing functions are analogical.
-
-Maybe 
-
-The same rules apply to _bulk and _rcu flavors of freeing functions.
-
-> +
-> +Memory allocated by `vmalloc` can be freed with `vfree` or `kvfree`.
-> +Memory allocated by `kvmalloc` can be freed with `kvfree`.
-> +Caches created by `kmem_cache_create` should be freed with
-> +`kmem_cache_destroy` only after freeing all the allocated objects first.
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 094321c17e48..dcd2cf1e8326 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -976,8 +976,10 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
->   * either fall back to use of call_rcu() or rearrange the structure to
->   * position the rcu_head structure into the first 4096 bytes.
->   *
-> - * Note that the allowable offset might decrease in the future, for example,
-> - * to allow something like kmem_cache_free_rcu().
-> + * The object to be freed can be allocated either by kmalloc() or
-> + * kmem_cache_alloc().
-> + *
-> + * Note that the allowable offset might decrease in the future.
->   *
->   * The BUILD_BUG_ON check must not involve any function calls, hence the
->   * checks are done in macros here.
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 1522693295f5..607249785c07 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -989,12 +989,9 @@ EXPORT_SYMBOL(__kmalloc_node_track_caller);
->  
->  /**
->   * kfree - free previously allocated memory
-> - * @object: pointer returned by kmalloc.
-> + * @object: pointer returned by kmalloc() or kmem_cache_alloc()
->   *
->   * If @object is NULL, no operation is performed.
-> - *
-> - * Don't free memory not originally allocated by kmalloc()
-> - * or you will run into trouble.
->   */
->  void kfree(const void *object)
->  {
-> -- 
-> 2.39.2
-> 
-
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 91fb5905a008..5e580cd08c58 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -522,6 +522,8 @@ rcu_scale_print_module_parms(struct rcu_scale_ops *cur_ops, const char *tag)
+ 		 scale_type, tag, nrealreaders, nrealwriters, verbose, shutdown);
+ }
+ 
++static void kfree_scale_cleanup(void);
++
+ static void
+ rcu_scale_cleanup(void)
+ {
+@@ -542,6 +544,11 @@ rcu_scale_cleanup(void)
+ 	if (gp_exp && gp_async)
+ 		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
+ 
++	if (kfree_rcu_test) {
++		kfree_scale_cleanup();
++		return;
++	}
++
+ 	if (torture_cleanup_begin())
+ 		return;
+ 	if (!cur_ops) {
 -- 
-Sincerely yours,
-Mike.
+2.17.1
+
