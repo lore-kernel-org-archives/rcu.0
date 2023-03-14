@@ -2,42 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2049DC6FD1F
-	for <rcu@archiver.kernel.org>; Tue, 14 Mar 2023 23:03:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC3B5C6FD1D
+	for <rcu@archiver.kernel.org>; Tue, 14 Mar 2023 23:30:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbjCNXDE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Mar 2023 19:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
+        id S229675AbjCNXaJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Mar 2023 19:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjCNXDA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Mar 2023 19:03:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCE3CA04;
-        Tue, 14 Mar 2023 16:02:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 464A9619D0;
-        Tue, 14 Mar 2023 23:02:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A84CFC433D2;
-        Tue, 14 Mar 2023 23:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678834977;
-        bh=SHPRGCx5smTrFzp92YfdtlCVMmQ4EWiYEDg3at7k+jc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AbpMI4YEzwipEJM0wD7Yjo/vIkMcBYFre2IZaNhhEHbPhBxiAG0poifN0tueK3jIt
-         s/sbY/ZBaz5h2/w64tQdj/MucLW+ACIeMWVCIjFYnNB+vHq/rTqm6atvxSL5vhQ9jJ
-         TDUwi5N+/T2Ik9ltk+Qvp9w6FB0GRk6aOy8K5QGAODOLAln2uzCk9W/508sum59tYQ
-         vqTlEkELw6A8wCfjl+plu4CO96QyiC7Yl6eBD6dTdxmH7Y2lyS7NsuwBKdcZU9kBPP
-         X2CaXrRCIUoV992ybLP15RX7jyTb7rbrTXNE2qXtc9hmKBglhv3K4bPCt2K+Qy+qFL
-         /Hya0Hd+rDuoA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3DC731540395; Tue, 14 Mar 2023 16:02:57 -0700 (PDT)
-Date:   Tue, 14 Mar 2023 16:02:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        with ESMTP id S229456AbjCNXaI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Mar 2023 19:30:08 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37C758B66
+        for <rcu@vger.kernel.org>; Tue, 14 Mar 2023 16:30:06 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id u32so10717342ybi.6
+        for <rcu@vger.kernel.org>; Tue, 14 Mar 2023 16:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1678836606;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6CGx+2lSjSQDiTc7ljAgHgFH+XwnN61FRvgMDbdvIpI=;
+        b=LtB/tm8vHXf9k20eragZbnEXeIY60N3ZQdpqGBvDTrLYk0/iWOudxiRvgcvwCao4ea
+         YNVM4dQ44LwoUBJ+QhSd5Er4NF2u7SEFNjv8wQcxDY3mXrLSont2SOa4bFi2pNTzCND9
+         6UbHkT6vkJeDNuFFymBALd5IhuO8eVFY9dJAg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678836606;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6CGx+2lSjSQDiTc7ljAgHgFH+XwnN61FRvgMDbdvIpI=;
+        b=dLcxc+FnWsYTg1KcWaAZC/6+iB9JlwtQmJvcrG3Do5rfdCfbBfk29snsLTc234k2tP
+         ErbCtZuu5qnMksg+K17IIwCckWPv3Y2XUrVmg4be+3vDlFMkP9qjsua0qbRLAiiBPWLN
+         bOG9Z+jFhiCw+k5NmfjSB5Bl2RDHApjvDpRBzNnmbDqKZ190wwfxoUAEHFsNxmRJVx0j
+         BkzSTMknQl9zvCk9Xtel4aZyfH7S3yjOSQ2WSHX83qCXR8lgVmWIUkBVs+lZ4itf+eU+
+         lhMrhfcru52kmWhrdnJZP1DlNZchgDAgbVGpA2D3LhvfQjG5V4ehFZXf3aZep3bUKmXw
+         +iAg==
+X-Gm-Message-State: AO0yUKWJzmQkKNkDsni5Cxsvwl80/64HHzZFap+uwQJ8xhzrZSYw984h
+        bUttimHMKi4P5tUFAlNpWVYNt7JEVb6YBmtEXrNtbQ==
+X-Google-Smtp-Source: AK7set+r2ERtVzzNLDRX38IjrWoYRr4LTlZKcSP0tMlG+fou7BMKSVDkUfAlpdnVq9IQfrsS0L2n2exK7Fax0p2trcE=
+X-Received: by 2002:a25:8f82:0:b0:b39:be7e:30c8 with SMTP id
+ u2-20020a258f82000000b00b39be7e30c8mr5642874ybl.2.1678836606112; Tue, 14 Mar
+ 2023 16:30:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230313080403.89290-1-qiuxu.zhuo@intel.com> <d930f2a8-4b75-4109-a303-e2fc04443693@paulmck-laptop>
+In-Reply-To: <d930f2a8-4b75-4109-a303-e2fc04443693@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 14 Mar 2023 19:29:54 -0400
+Message-ID: <CAEXW_YRxWGCuV_YVLqpFqOnGAMYAf2c+TAV1iAD8=2uVOqkf_Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s) after
+ unloading rcuscale
+To:     paulmck@kernel.org
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Davidlohr Bueso <dave@stgolabs.net>,
@@ -45,110 +61,111 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s)
- after unloading rcuscale
-Message-ID: <d930f2a8-4b75-4109-a303-e2fc04443693@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230313080403.89290-1-qiuxu.zhuo@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230313080403.89290-1-qiuxu.zhuo@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 13, 2023 at 04:04:03PM +0800, Qiuxu Zhuo wrote:
-> When running the 'kfree_rcu_test' test case with commands [1] the call
-> trace [2] was thrown. This was because the kfree_scale_thread thread(s)
-> still run after unloading rcuscale and torture modules. Fix the call
-> trace by invoking kfree_scale_cleanup() when removing the rcuscale module.
+On Tue, Mar 14, 2023 at 7:02=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Mon, Mar 13, 2023 at 04:04:03PM +0800, Qiuxu Zhuo wrote:
+> > When running the 'kfree_rcu_test' test case with commands [1] the call
+> > trace [2] was thrown. This was because the kfree_scale_thread thread(s)
+> > still run after unloading rcuscale and torture modules. Fix the call
+> > trace by invoking kfree_scale_cleanup() when removing the rcuscale modu=
+le.
+>
+> Good catch, thank you!
+>
+> > [1] modprobe torture
+> >     modprobe rcuscale kfree_rcu_test=3D1
+>
+> Given that loading the rcuscale kernel module automatically pulls in
+> the rcuscale kernel module, why the "modprobe torture"?  Is doing the
+> modprobes separately like this necessary to reproduce this bug?
+>
+> If it reproduces without manually loading and unloading the "torture"
+> kernel module, could you please update the commit log to show that
+> smaller reproducer?
+>
+> >     // After some time
+> >     rmmod rcuscale
+> >     rmmod torture
+> >
+> > [2] BUG: unable to handle page fault for address: ffffffffc0601a87
+> >     #PF: supervisor instruction fetch in kernel mode
+> >     #PF: error_code(0x0010) - not-present page
+> >     PGD 11de4f067 P4D 11de4f067 PUD 11de51067 PMD 112f4d067 PTE 0
+> >     Oops: 0010 [#1] PREEMPT SMP NOPTI
+[..]
+> >     Call Trace:
+> >      <TASK>
+> >      ? kvfree_call_rcu+0xf0/0x3a0
+> >      ? kthread+0xf3/0x120
+> >      ? kthread_complete_and_exit+0x20/0x20
+> >      ? ret_from_fork+0x1f/0x30
+> >      </TASK>
+> >     Modules linked in: rfkill sunrpc ... [last unloaded: torture]
+> >     CR2: ffffffffc0601a87
+> >     ---[ end trace 0000000000000000 ]---
+> >
+> > Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
+> > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > ---
+> >  kernel/rcu/rcuscale.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> > index 91fb5905a008..5e580cd08c58 100644
+> > --- a/kernel/rcu/rcuscale.c
+> > +++ b/kernel/rcu/rcuscale.c
+> > @@ -522,6 +522,8 @@ rcu_scale_print_module_parms(struct rcu_scale_ops *=
+cur_ops, const char *tag)
+> >                scale_type, tag, nrealreaders, nrealwriters, verbose, sh=
+utdown);
+> >  }
+> >
+> > +static void kfree_scale_cleanup(void);
+> > +
+>
+> I do applaud minmimizing the size of the patch, but in this case could yo=
+u
+> please pull the kfree_scale_cleanup() function ahead of its first use?
 
-Good catch, thank you!
+The only trouble with moving the function like that is, the file is
+mostly split across kfree and non-kfree functions. So moving a kfree
+function to be among the non-kfree ones would look a bit weird.
+Perhaps a better place for the function declaration could be a new
+"rcuscale.h". But I am really Ok with Paul's suggestion as well.
 
-> [1] modprobe torture
->     modprobe rcuscale kfree_rcu_test=1
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Given that loading the rcuscale kernel module automatically pulls in
-the rcuscale kernel module, why the "modprobe torture"?  Is doing the
-modprobes separately like this necessary to reproduce this bug?
+thanks,
 
-If it reproduces without manually loading and unloading the "torture"
-kernel module, could you please update the commit log to show that
-smaller reproducer?
+ - Joel
 
->     // After some time
->     rmmod rcuscale
->     rmmod torture
-> 
-> [2] BUG: unable to handle page fault for address: ffffffffc0601a87
->     #PF: supervisor instruction fetch in kernel mode
->     #PF: error_code(0x0010) - not-present page
->     PGD 11de4f067 P4D 11de4f067 PUD 11de51067 PMD 112f4d067 PTE 0
->     Oops: 0010 [#1] PREEMPT SMP NOPTI
->     CPU: 1 PID: 1798 Comm: kfree_scale_thr Not tainted 6.3.0-rc1-rcu+ #1
->     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
->     RIP: 0010:0xffffffffc0601a87
->     Code: Unable to access opcode bytes at 0xffffffffc0601a5d.
->     RSP: 0018:ffffb25bc2e57e18 EFLAGS: 00010297
->     RAX: 0000000000000000 RBX: ffffffffc061f0b6 RCX: 0000000000000000
->     RDX: 0000000000000000 RSI: ffffffff962fd0de RDI: ffffffff962fd0de
->     RBP: ffffb25bc2e57ea8 R08: 0000000000000000 R09: 0000000000000000
->     R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
->     R13: 0000000000000000 R14: 000000000000000a R15: 00000000001c1dbe
->     FS:  0000000000000000(0000) GS:ffff921fa2200000(0000) knlGS:0000000000000000
->     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->     CR2: ffffffffc0601a5d CR3: 000000011de4c006 CR4: 0000000000370ee0
->     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->     Call Trace:
->      <TASK>
->      ? kvfree_call_rcu+0xf0/0x3a0
->      ? kthread+0xf3/0x120
->      ? kthread_complete_and_exit+0x20/0x20
->      ? ret_from_fork+0x1f/0x30
->      </TASK>
->     Modules linked in: rfkill sunrpc ... [last unloaded: torture]
->     CR2: ffffffffc0601a87
->     ---[ end trace 0000000000000000 ]---
-> 
-> Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> ---
->  kernel/rcu/rcuscale.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index 91fb5905a008..5e580cd08c58 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -522,6 +522,8 @@ rcu_scale_print_module_parms(struct rcu_scale_ops *cur_ops, const char *tag)
->  		 scale_type, tag, nrealreaders, nrealwriters, verbose, shutdown);
->  }
->  
-> +static void kfree_scale_cleanup(void);
-> +
 
-I do applaud minmimizing the size of the patch, but in this case could you
-please pull the kfree_scale_cleanup() function ahead of its first use?
-
-							Thanx, Paul
-
->  static void
->  rcu_scale_cleanup(void)
->  {
-> @@ -542,6 +544,11 @@ rcu_scale_cleanup(void)
->  	if (gp_exp && gp_async)
->  		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
->  
-> +	if (kfree_rcu_test) {
-> +		kfree_scale_cleanup();
-> +		return;
-> +	}
-> +
->  	if (torture_cleanup_begin())
->  		return;
->  	if (!cur_ops) {
-> -- 
-> 2.17.1
-> 
+>
+>                                                         Thanx, Paul
+>
+> >  static void
+> >  rcu_scale_cleanup(void)
+> >  {
+> > @@ -542,6 +544,11 @@ rcu_scale_cleanup(void)
+> >       if (gp_exp && gp_async)
+> >               SCALEOUT_ERRSTRING("No expedited async GPs, so went with =
+async!");
+> >
+> > +     if (kfree_rcu_test) {
+> > +             kfree_scale_cleanup();
+> > +             return;
+> > +     }
+> > +
+> >       if (torture_cleanup_begin())
+> >               return;
+> >       if (!cur_ops) {
+> > --
+> > 2.17.1
+> >
