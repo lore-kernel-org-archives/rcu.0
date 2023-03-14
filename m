@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69D50C6FD1C
-	for <rcu@archiver.kernel.org>; Tue, 14 Mar 2023 07:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 190F6C74A44
+	for <rcu@archiver.kernel.org>; Tue, 14 Mar 2023 08:20:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjCNH0E (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Mar 2023 03:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
+        id S230291AbjCNIUy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 14 Mar 2023 04:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjCNH0D (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Mar 2023 03:26:03 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06F173029;
-        Tue, 14 Mar 2023 00:26:02 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j3-20020a17090adc8300b0023d09aea4a6so5101076pjv.5;
-        Tue, 14 Mar 2023 00:26:02 -0700 (PDT)
+        with ESMTP id S231234AbjCNIUC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 14 Mar 2023 04:20:02 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAB76EBD;
+        Tue, 14 Mar 2023 01:19:32 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id v21so5618551ple.9;
+        Tue, 14 Mar 2023 01:19:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678778762;
+        d=gmail.com; s=20210112; t=1678781972;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P4btLFxdwo7HqZYxM4e3XDdeo+DTrgbyuCAt7JOXufA=;
-        b=lczv1+oCjA44tNBOXDuZb6ygf8VSugMU6SI4f3m4RkNiRBcKFtF/kAxXclBRAPKP8B
-         M/0j99Xagn3nWRglvofL8CNl2IX2uyNzs3OsDdxT8GkAT/ILtxTcLB+Vjamhuf0yc58z
-         hpd1OAyI2vqMtBI+oVFj2hKq7nkNYFHdmVEnU79S0Gjcorj7a6d34QqlN5bis3OyKhmk
-         kp3XzQXtVR9Ddc6fqEhJjD6nRuiePRIsAX5U8mnaXz/nnpq0CGR/c9RZvb1Ik5DfOOA0
-         S2TV3diroWan8IfHdVDY6rRKIpMvad79Rdt8/Icjq6QYxvmGhsfAtQiXQ3RHVi51gz9D
-         dF+g==
+        bh=8uO2pb0aT1NnyTIVfLkUifV1o9o6G5xDatiTfXnW8OM=;
+        b=QCEaXsu/OjbQKOKTYOcfuHjvGyeHK9nYJiXxfEUWECrdKCyWwPq0L0FNqeK2N9n0Ae
+         EYhweA0WDiVCNFTXO/Wu2yt+0iX/rIGOjay3O9J0T5PfyRcM9Od/wAOnZeMKsTEccNB1
+         kBPODFp6Fy5xfTTUhVz+KrAXlcmQwZdHP+yI41uKkVWzMoTXmLqYZGqI2hHTgzIP5M4q
+         /RAASByDELA1VcinP8SU4Nnn47z78AHy+V6TX7KQ4FM3dvquhkssjsbw6ytwlZpCQ4zG
+         C1OUBzTPW44akruzEoyygVQ3dj7HZ9nnKMlsFkidV34OJTbRtTmlN9/8JVCA/Jd6/d8K
+         AasQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678778762;
+        d=1e100.net; s=20210112; t=1678781972;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P4btLFxdwo7HqZYxM4e3XDdeo+DTrgbyuCAt7JOXufA=;
-        b=YP2JPu3BjbVqYmS/z/I6wGB5apOmZewUse3R4JVDvBG8kr4qLu9dxnJob2Pyu0//cE
-         Ag6zrxVk/6pcjEsFScjSDTddImaapFGhUYmLgru9p+zuWd5ujOpqcUlImQkQuSIoqamw
-         0St1n6d53WWOdlVDd5Zsmd6bQhYC62oA/lTCW7QKiEDMiP/C8RBRIGzYojrLdqCWAuHP
-         xsvKUjEUSh8sJurhTHdMoSkP4qevuQly3ToJKlNzOfXr0TeIqo6JTg+Qyw94nIihHXsq
-         6TrRcRtInw78Wh+6JCIKw02kNppYwHN9kMI4uixvnILNM3Ob7HdQS9asWQeB3HCVfpV9
-         Nf9A==
-X-Gm-Message-State: AO0yUKXgzsBS+UyFxLsixhn7FwV+Le8/JpEfi52EBHWqm5kQCjY4iiJ+
-        5ABCI4Yz8hD9zTNhY8I6sWU=
-X-Google-Smtp-Source: AK7set/kZq/B2QShY0y1HE88ddus1pElLywW15Ta+0oYzLvi6YuddzUADJuwEfCk9yGr65u+O8CuGQ==
-X-Received: by 2002:a05:6a21:6da6:b0:cb:e8c6:26a0 with SMTP id wl38-20020a056a216da600b000cbe8c626a0mr49148859pzb.11.1678778762183;
-        Tue, 14 Mar 2023 00:26:02 -0700 (PDT)
+        bh=8uO2pb0aT1NnyTIVfLkUifV1o9o6G5xDatiTfXnW8OM=;
+        b=ZKXqVLN7cSWL7EY19nw0eWkYpnFC32F9FGF4NLn1RszeCN7NBEN1TpyKPFiuho17fB
+         2MKmc9cz7HEpSYp31iLNZp88IsWBxW5UA4PrmumkoBJxitH6wjX5WfukVCvZEfQwDGTG
+         mcvJSRnUwI3jlrycXEMguks9XEJfuZQpcmtErspSuyMKpKqBUaZeefWPog83cEyERn9C
+         naWiie9tx98GC4C/hY4L9sXaSbeejVv+5hFsFhT5KIeaJ0r6caz6celbc18Sxbc+p6+2
+         n9joBF5BRhNVeDLTRplLM8vShrgZZ+L65N0+13II2ZnpsEM85MiCzfCD+Jq855dcSMX8
+         3SPA==
+X-Gm-Message-State: AO0yUKWK45zEmyNuNszJCSAnmzAAUFD9hHBmnM4RoiglJYkgLXdXsT2E
+        mgFwnHJByhFljaQryVN+R4Y=
+X-Google-Smtp-Source: AK7set/EQKyfrynoi8fEAytH0KIk6OtEN1YHKRHZ+aytWMZMlLInWc+g/9ht3BCMiq8qdv6zEI7rTA==
+X-Received: by 2002:a17:902:c407:b0:19e:7490:c93e with SMTP id k7-20020a170902c40700b0019e7490c93emr49670592plk.63.1678781971870;
+        Tue, 14 Mar 2023 01:19:31 -0700 (PDT)
 Received: from localhost ([2400:8902::f03c:93ff:fe27:642a])
-        by smtp.gmail.com with ESMTPSA id l190-20020a6388c7000000b00502ea97cbc0sm888625pgd.40.2023.03.14.00.25.58
+        by smtp.gmail.com with ESMTPSA id w5-20020a170902d3c500b0019fcece6847sm1113921plb.227.2023.03.14.01.19.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Mar 2023 00:26:01 -0700 (PDT)
-Date:   Tue, 14 Mar 2023 07:25:54 +0000
+        Tue, 14 Mar 2023 01:19:30 -0700 (PDT)
+Date:   Tue, 14 Mar 2023 08:19:18 +0000
 From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
 To:     Vlastimil Babka <vbabka@suse.cz>
 Cc:     Christoph Lameter <cl@linux.com>,
@@ -60,83 +60,78 @@ Cc:     Christoph Lameter <cl@linux.com>,
         rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         netdev@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 3/7] mm, page_flags: remove PG_slob_free
-Message-ID: <ZBAhgpY1KSE3FwAv@localhost>
+Subject: Re: [PATCH 4/7] mm, pagemap: remove SLOB and SLQB from comments and
+ documentation
+Message-ID: <ZBAuBj0hgLK7Iqgy@localhost>
 References: <20230310103210.22372-1-vbabka@suse.cz>
- <20230310103210.22372-4-vbabka@suse.cz>
+ <20230310103210.22372-5-vbabka@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230310103210.22372-4-vbabka@suse.cz>
+In-Reply-To: <20230310103210.22372-5-vbabka@suse.cz>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 11:32:05AM +0100, Vlastimil Babka wrote:
-> With SLOB removed we no longer need the PG_slob_free alias for
-> PG_private. Also update tools/mm/page-types.
+On Fri, Mar 10, 2023 at 11:32:06AM +0100, Vlastimil Babka wrote:
+> SLOB has been removed and SLQB never merged, so remove their mentions
+> from comments and documentation of pagemap.
 > 
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  include/linux/page-flags.h | 4 ----
->  tools/mm/page-types.c      | 6 +-----
->  2 files changed, 1 insertion(+), 9 deletions(-)
+>  Documentation/admin-guide/mm/pagemap.rst | 6 +++---
+>  fs/proc/page.c                           | 5 ++---
+>  2 files changed, 5 insertions(+), 6 deletions(-)
 > 
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index a7e3a3405520..2bdc41cb0594 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -174,9 +174,6 @@ enum pageflags {
->  	/* Remapped by swiotlb-xen. */
->  	PG_xen_remapped = PG_owner_priv_1,
->  
-> -	/* SLOB */
-> -	PG_slob_free = PG_private,
-> -
->  #ifdef CONFIG_MEMORY_FAILURE
+> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+> index b5f970dc91e7..bb4aa897a773 100644
+> --- a/Documentation/admin-guide/mm/pagemap.rst
+> +++ b/Documentation/admin-guide/mm/pagemap.rst
+> @@ -91,9 +91,9 @@ Short descriptions to the page flags
+>     The page is being locked for exclusive access, e.g. by undergoing read/write
+>     IO.
+>  7 - SLAB
+> -   The page is managed by the SLAB/SLOB/SLUB/SLQB kernel memory allocator.
+> -   When compound page is used, SLUB/SLQB will only set this flag on the head
+> -   page; SLOB will not flag it at all.
+> +   The page is managed by the SLAB/SLUB kernel memory allocator.
+> +   When compound page is used, either will only set this flag on the head
+> +   page..
+>  10 - BUDDY
+>      A free memory block managed by the buddy system allocator.
+>      The buddy system organizes free memory in blocks of various orders.
+> diff --git a/fs/proc/page.c b/fs/proc/page.c
+> index 6249c347809a..1356aeffd8dc 100644
+> --- a/fs/proc/page.c
+> +++ b/fs/proc/page.c
+> @@ -125,7 +125,7 @@ u64 stable_page_flags(struct page *page)
 >  	/*
->  	 * Compound pages. Stored in first tail page's flags.
-> @@ -483,7 +480,6 @@ PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
->  PAGEFLAG(Workingset, workingset, PF_HEAD)
->  	TESTCLEARFLAG(Workingset, workingset, PF_HEAD)
->  __PAGEFLAG(Slab, slab, PF_NO_TAIL)
-> -__PAGEFLAG(SlobFree, slob_free, PF_NO_TAIL)
->  PAGEFLAG(Checked, checked, PF_NO_COMPOUND)	   /* Used by some filesystems */
+>  	 * pseudo flags for the well known (anonymous) memory mapped pages
+>  	 *
+> -	 * Note that page->_mapcount is overloaded in SLOB/SLUB/SLQB, so the
+> +	 * Note that page->_mapcount is overloaded in SLAB/SLUB, so the
+
+SLUB does not overload _mapcount.
+
+>  	 * simple test in page_mapped() is not enough.
+>  	 */
+>  	if (!PageSlab(page) && page_mapped(page))
+> @@ -166,8 +166,7 @@ u64 stable_page_flags(struct page *page)
 >  
->  /* Xen */
-> diff --git a/tools/mm/page-types.c b/tools/mm/page-types.c
-> index 381dcc00cb62..8d5595b6c59f 100644
-> --- a/tools/mm/page-types.c
-> +++ b/tools/mm/page-types.c
-> @@ -85,7 +85,6 @@
->   */
->  #define KPF_ANON_EXCLUSIVE	47
->  #define KPF_READAHEAD		48
-> -#define KPF_SLOB_FREE		49
->  #define KPF_SLUB_FROZEN		50
->  #define KPF_SLUB_DEBUG		51
->  #define KPF_FILE		61
-> @@ -141,7 +140,6 @@ static const char * const page_flag_names[] = {
->  
->  	[KPF_ANON_EXCLUSIVE]	= "d:anon_exclusive",
->  	[KPF_READAHEAD]		= "I:readahead",
-> -	[KPF_SLOB_FREE]		= "P:slob_free",
->  	[KPF_SLUB_FROZEN]	= "A:slub_frozen",
->  	[KPF_SLUB_DEBUG]	= "E:slub_debug",
->  
-> @@ -478,10 +476,8 @@ static uint64_t expand_overloaded_flags(uint64_t flags, uint64_t pme)
->  	if ((flags & BIT(ANON)) && (flags & BIT(MAPPEDTODISK)))
->  		flags ^= BIT(MAPPEDTODISK) | BIT(ANON_EXCLUSIVE);
->  
-> -	/* SLOB/SLUB overload several page flags */
-> +	/* SLUB overloads several page flags */
->  	if (flags & BIT(SLAB)) {
-> -		if (flags & BIT(PRIVATE))
-> -			flags ^= BIT(PRIVATE) | BIT(SLOB_FREE);
->  		if (flags & BIT(ACTIVE))
->  			flags ^= BIT(ACTIVE) | BIT(SLUB_FROZEN);
->  		if (flags & BIT(ERROR))
+>  	/*
+>  	 * Caveats on high order pages: page->_refcount will only be set
+> -	 * -1 on the head page; SLUB/SLQB do the same for PG_slab;
+> -	 * SLOB won't set PG_slab at all on compound pages.
+> +	 * -1 on the head page; SLAB/SLUB do the same for PG_slab;
+
+I think this comment could be just saying that PG_buddy is only set on
+head page, not saying
+
+_refcount is set to -1 on head page (is it even correct?)
+
+>  	 */
+>  	if (PageBuddy(page))
+>  		u |= 1 << KPF_BUDDY;
 > -- 
 > 2.39.2
-
-Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> 
