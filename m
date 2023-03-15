@@ -2,50 +2,50 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEABCC7618D
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A8C2C6FD1D
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:45:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbjCOTpK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S232593AbjCOTpK (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 15 Mar 2023 15:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbjCOToq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 15:44:46 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DC02BEDF
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:35 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id r16so17474578qtx.9
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:35 -0700 (PDT)
+        with ESMTP id S232754AbjCOTor (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 15:44:47 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712646C1AD
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:38 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id y10so17531906qtj.2
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678909475;
+        d=joelfernandes.org; s=google; t=1678909478;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3K8lekfNTHeJ4C0iv99fjGghn93IIX905cIt06EpTfQ=;
-        b=cKuWC+aHDyxATa6HN+YqE2E5Okxl3eR7i8zhoQiYjbzAOf2vN+cKz3FWTds5n8vFyZ
-         4FHsCNQavFITJZv8en/rMnQhzx8Bu1Ufn4X/caDxoFZldJHM/1+37+83SF2L6Q6HM4me
-         bh0PyPNf3ZJ5AH49Aq7N5gzNJEuxy5pZTENp0=
+        bh=4B9TRjdncmXbZW5HDxJoPgY1Lgs+0sxOKkTAY/VF78g=;
+        b=dqOfXnxHTLjoCGihltc9NkJBBAVuV0+9aZqiLbjL4hII42e0QglBr/nfEAbRs2bOkJ
+         GJMPOjeYCEpzI+Scjv/06JFOBqgaiyJfIHVZH/2XR0pVlXRzCzTggamJVGUci2HlXgXm
+         tuGi6ULhvXLuP1gdGRXg0ylLcoiFMYJdJDCmk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678909475;
+        d=1e100.net; s=20210112; t=1678909478;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3K8lekfNTHeJ4C0iv99fjGghn93IIX905cIt06EpTfQ=;
-        b=Y0bIvJ/oHSBfykJiVgmqVCjV2H+lddNzViuijyJny6qfk3WMI0v7EecpDXsYY+vKpZ
-         l+BAIjDawm+fxG8bMhDEZ45ViDA4RH6E9t3de4KEro4eRMvOLp1aDdMi/SBhsGQruTa0
-         +WS/qT1rDXLJ9HMn0WkI+ZDe4wxnvwj6Hwb3XEZCUX6rGeLYkIw1R8N/qexBfdoRodKN
-         tvhXoy7XnSI50a0cx9O9TM9GXcw6CXiHXrkM5kLrmgJ0VfLG74jiTpwZqMWOZTyvvOKj
-         XnScZ9Y9Y3Y5gnLpGWIWZh7RXrjXXR0wBUYGDBsd4JPHVgaLBZxAggId4K65fnFvVqiU
-         BeAg==
-X-Gm-Message-State: AO0yUKWlFoFcA03IvYntTEKgEdMWj11bNQhkcGtrdf+6RBYdXlHFQna6
-        1em7VQ58VlEPWnSgc3stQmXtng==
-X-Google-Smtp-Source: AK7set+LT+EegIShwTd4ywC4A9b7O5vXSYEk4EuLY9iyTgGFwjNnq/dG6dMyVv6nragGJ8LRGB3skQ==
-X-Received: by 2002:a05:622a:30d:b0:3bf:c407:10ca with SMTP id q13-20020a05622a030d00b003bfc40710camr1981909qtw.10.1678909474756;
-        Wed, 15 Mar 2023 12:44:34 -0700 (PDT)
+        bh=4B9TRjdncmXbZW5HDxJoPgY1Lgs+0sxOKkTAY/VF78g=;
+        b=CebZFsC2oj0Fk8wH+SCflDmBPz8Wg5R0dgMn4eDWq7YuYZ2I5E3Bt5a4pv15N89nUt
+         WyUXrJ081q2kl2Wd00fzw/AXnBKPKNfAETvic9KKGEqEwQYTe4TpBjKkyW1N2fjmv5/8
+         mqUfy0VLDmCcaIn7nxLVK58lj2v24zl/kMqGMLP/6JpRKKOpJyTbqgpndD558Ydi1lP6
+         aYa7AR/fMvx4mA3yPFFI62f9EIKz4YrRPISSFBTcez85nqJ4kDGDto4gfNNX8P6sNVv0
+         7QmSaJT9sAu5dIcTK1onGINjAuBvt6DCvSvzla0NgAC9jIAtZGVyo0nvhZTOIpZ3oseq
+         8hTg==
+X-Gm-Message-State: AO0yUKVeoi8gTSKNroSfnqHJgr7BnqwIwadHbO5hHKK4CCJcrBg18dYo
+        hc3EpcKO0YDt3CAnWJQHSNNIQg==
+X-Google-Smtp-Source: AK7set/vWDGY32rblTovY6ftZOnuWh8zkM0Wz+Ch7gWDOOg0NQXco/uUREG10n6H7kQ6zngLdzVBHg==
+X-Received: by 2002:a05:622a:44f:b0:3b8:340b:1aab with SMTP id o15-20020a05622a044f00b003b8340b1aabmr1820256qtx.25.1678909477913;
+        Wed, 15 Mar 2023 12:44:37 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id c15-20020ac8660f000000b003b86b088755sm4346666qtp.15.2023.03.15.12.44.34
+        by smtp.gmail.com with ESMTPSA id c15-20020ac8660f000000b003b86b088755sm4346666qtp.15.2023.03.15.12.44.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 12:44:34 -0700 (PDT)
+        Wed, 15 Mar 2023 12:44:37 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -57,9 +57,9 @@ To:     linux-kernel@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>
 Cc:     Zqiang <qiang1.zhang@intel.com>, rcu@vger.kernel.org
-Subject: [PATCH 6/9] rcu: Permit start_poll_synchronize_rcu_expedited() to be invoked early
-Date:   Wed, 15 Mar 2023 19:43:46 +0000
-Message-Id: <20230315194349.10798-6-joel@joelfernandes.org>
+Subject: [PATCH 9/9] rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
+Date:   Wed, 15 Mar 2023 19:43:49 +0000
+Message-Id: <20230315194349.10798-9-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
 In-Reply-To: <20230315194349.10798-1-joel@joelfernandes.org>
 References: <20230315194349.10798-1-joel@joelfernandes.org>
@@ -71,64 +71,60 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Zqiang <qiang1.zhang@intel.com>
 
-According to the commit log of the patch that added it to the kernel,
-start_poll_synchronize_rcu_expedited() can be invoked very early, as
-in long before rcu_init() has been invoked.  But before rcu_init(),
-the rcu_data structure's ->mynode field has not yet been initialized.
-This means that the start_poll_synchronize_rcu_expedited() function's
-attempt to set the CPU's leaf rcu_node structure's ->exp_seq_poll_rq
-field will result in a segmentation fault.
+For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario can
+result in a NULL-pointer dereference:
 
-This commit therefore causes start_poll_synchronize_rcu_expedited() to
-set ->exp_seq_poll_rq only after rcu_init() has initialized all CPUs'
-rcu_data structures' ->mynode fields.  It also removes the check from
-the rcu_init() function so that start_poll_synchronize_rcu_expedited(
-is unconditionally invoked.  Yes, this might result in an unnecessary
-boot-time grace period, but this is down in the noise.
+           CPU1                                           CPU2
+rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
+  if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
+    raw_spin_lock_rcu_node
+    np = rcu_next_node_entry(t, rnp)
+    if (&t->rcu_node_entry == rnp->exp_tasks)
+      WRITE_ONCE(rnp->exp_tasks, np)
+      ....
+      raw_spin_unlock_irqrestore_rcu_node
+                                                    raw_spin_lock_irqsave_rcu_node
+                                                    t = list_entry(rnp->exp_tasks->prev,
+                                                        struct task_struct, rcu_node_entry)
+                                                    (if rnp->exp_tasks is NULL, this
+                                                       will dereference a NULL pointer)
+
+The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
+field without holding the rcu_node structure's ->lock and CPU2 did
+not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
+Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NULL,
+then CPU2 might dereference that NULL pointer.
+
+This commit therefore holds the rcu_node structure's ->lock while
+accessing that structure's->exp_tasks field.
+
+[ paulmck: Apply Frederic Weisbecker feedback. ]
 
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c     | 5 ++---
- kernel/rcu/tree_exp.h | 5 +++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ kernel/rcu/tree_exp.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e80e8f128c57..90d54571126a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4942,9 +4942,8 @@ void __init rcu_init(void)
- 	else
- 		qovld_calc = qovld;
- 
--	// Kick-start any polled grace periods that started early.
--	if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
--		(void)start_poll_synchronize_rcu_expedited();
-+	// Kick-start in case any polled grace periods started early.
-+	(void)start_poll_synchronize_rcu_expedited();
- 
- 	rcu_test_sync_prims();
- }
 diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 7cc4856da081..5343f32e7d67 100644
+index 5343f32e7d67..3b7abb58157d 100644
 --- a/kernel/rcu/tree_exp.h
 +++ b/kernel/rcu/tree_exp.h
-@@ -1066,9 +1066,10 @@ unsigned long start_poll_synchronize_rcu_expedited(void)
- 	if (rcu_init_invoked())
- 		raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
- 	if (!poll_state_synchronize_rcu(s)) {
--		rnp->exp_seq_poll_rq = s;
--		if (rcu_init_invoked())
-+		if (rcu_init_invoked()) {
-+			rnp->exp_seq_poll_rq = s;
- 			queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-+		}
- 	}
- 	if (rcu_init_invoked())
- 		raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
+@@ -803,9 +803,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+ 	int ndetected = 0;
+ 	struct task_struct *t;
+ 
+-	if (!READ_ONCE(rnp->exp_tasks))
+-		return 0;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	if (!rnp->exp_tasks) {
++		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++		return 0;
++	}
+ 	t = list_entry(rnp->exp_tasks->prev,
+ 		       struct task_struct, rcu_node_entry);
+ 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
 -- 
 2.40.0.rc1.284.g88254d51c5-goog
 
