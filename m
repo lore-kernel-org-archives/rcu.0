@@ -2,61 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5271C7618D
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 03:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1E1DC61DA4
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 08:47:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbjCODAi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 14 Mar 2023 23:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
+        id S231437AbjCOIrA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 04:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjCODAg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 14 Mar 2023 23:00:36 -0400
-X-Greylist: delayed 339 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Mar 2023 20:00:35 PDT
-Received: from out-44.mta0.migadu.com (out-44.mta0.migadu.com [91.218.175.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111434AFFB
-        for <rcu@vger.kernel.org>; Tue, 14 Mar 2023 20:00:34 -0700 (PDT)
-Date:   Tue, 14 Mar 2023 19:54:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1678848891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TiPNSFU14T5mNrXyfZ7BWdFbhOsFfike4nxA4eG3ifY=;
-        b=C/s3EFwPTARUrC27Irr8MoQ8X+GriwefE6AtOALzhFTTeyrOiWnWs+s4ZFeBZvYWCYZlji
-        kcWEg7GX6sMIx3Gkf6v8iKqAAeL5miP7Z2+yucnGoq0gfYShJ5o23UbsbT1GMrrr2G60I5
-        XuV3qbY1/m6YQ2m5FMA/Kb+jNUymu/0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 6/7] mm/slob: remove slob.c
-Message-ID: <ZBEzdkADd6vCjw78@P9FQF9L96D>
-References: <20230310103210.22372-1-vbabka@suse.cz>
- <20230310103210.22372-7-vbabka@suse.cz>
+        with ESMTP id S231465AbjCOIq7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 04:46:59 -0400
+Received: from mail.workercentrum.pl (mail.workercentrum.pl [51.89.166.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA15574A5F
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 01:46:57 -0700 (PDT)
+Received: by mail.workercentrum.pl (Postfix, from userid 1002)
+        id 66BACA336A; Wed, 15 Mar 2023 08:45:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=workercentrum.pl;
+        s=mail; t=1678869973;
+        bh=DQrvNxV4sbMtkGDNj/C7a2f11q8dNrBm5UPp1jE5GkY=;
+        h=Date:From:To:Subject:From;
+        b=IiqAtuD2gkFPcMMj4BR5mDC96bCa2+WQiHEzL0AR7s35z2Ye7l2oo7sAk6h3KNIJc
+         nq/ZWgqDXjYVWiSkGlc6jh6p0vYx3ReokR8LpmxebPdWmRlYyAEMdpZmNyWgDYqwcf
+         Isv2y+fqy9tWgg08uVduxvTyhELpeDjzSHAC/jgnwFk9snXl/uEYvh36Xq0Sep4YA7
+         mxgvlMFvO4MhD2ivzrxdG/VTJ95Shnqe+rp9SPUYKpgzibSVsmiOxr217Nc9M0uLdg
+         FbiYcd4IkZ8E6yKAjhr98CVZKaUt7pMzqfaLsVjhYPuZwyvm7JxXAqW2VrG1ElCIKg
+         vlqyoapxbGi/A==
+Received: by mail.workercentrum.pl for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 08:45:29 GMT
+Message-ID: <20230315074500-0.1.81.pupa.0.fltyur5nqe@workercentrum.pl>
+Date:   Wed, 15 Mar 2023 08:45:29 GMT
+From:   "Piotr Werner" <piotr.werner@workercentrum.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Panele fotowaltaiczne
+X-Mailer: mail.workercentrum.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230310103210.22372-7-vbabka@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 11:32:08AM +0100, Vlastimil Babka wrote:
-> Remove the SLOB implementation.
-> 
-> RIP SLOB allocator (2006 - 2023)
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Dzie=C5=84 dobry,
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Jeste=C5=9Bmy firm=C4=85 z wieloletnim do=C5=9Bwiadczeniem, kt=C3=B3ra sp=
+rawnie przygotuje dla Pa=C5=84stwa ofert=C4=99 i wszelkie formalno=C5=9Bc=
+i. Sam monta=C5=BC zaplanujemy na wiosn=C4=99.
 
-Thanks!
+O samych plusach fotowoltaiki czy pompach ciep=C5=82a na pewno ju=C5=BC P=
+a=C5=84stwo s=C5=82yszeli, dlatego teraz prosimy o zostawienie kontaktu, =
+aby nasz specjalista m=C3=B3g=C5=82 przedstawi=C4=87 ofert=C4=99 zgodn=C4=
+=85 z Waszymi potrzebami.
+
+Kiedy mogliby=C5=9Bmy z Pa=C5=84stwem um=C3=B3wi=C4=87 si=C4=99 na rozmow=
+=C4=99 w celu zbadania potrzeb?
+
+
+Pozdrawiam,
+Piotr Werner
