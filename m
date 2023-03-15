@@ -2,155 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A769EC61DA4
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:45:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3BBC61DA4
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:57:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbjCOTpM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 15:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
+        id S232122AbjCOT5Q (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 15:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232702AbjCOTor (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 15:44:47 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25EF4FAB0
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:36 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id cf14so17462352qtb.10
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:36 -0700 (PDT)
+        with ESMTP id S229916AbjCOT5P (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 15:57:15 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C663C1F
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:57:14 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-536af432ee5so390183247b3.0
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678909476;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1678910233;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=208GxfDZm7oSyOpPWnvVrrbR0LSr9U2B1RRikPcTIHU=;
-        b=SwfZcZz22GQ86AfZbWhrkMmC0APeen3E/TYOlJxwfPQj5qa3k998D+cUVTsr+OrgyK
-         WvbfHiF17cuaKhsWGLmCE3S/m6YnKZ9M/k74AU81Siisp2uBs9tI/TxBZD5TyjWVi8wS
-         x5b4+KHAhLFQQO1DjIaf7rO6WNKuOgp35UykA=
+        bh=cWpTabGy6QLogyA9n745re/JJmzh/5d9dyJhDfcEfl4=;
+        b=Lpe59DpwZs9pQF/TmsfrmgkvqZ0K3A/XUYL0fNgV07LpOAxVq7cGpuv6SQ83pKBTEm
+         MhTTjW8D5MQ3YTn18WGmoozAuGkvGMZPW13GulOi2OoZ4WFj8qWAtwgoKNzDYcIVJh+x
+         g+CbMBx+hDRKFCbkDK1KA4mq5olc85IXG0avA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678909476;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1678910233;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=208GxfDZm7oSyOpPWnvVrrbR0LSr9U2B1RRikPcTIHU=;
-        b=OFs/2PDsddXHPDirfK+hOUJoidhQABAosgJoK36DKXVpgwQ0QmtHj+SAfrPHZdv7gc
-         lNyflHgbHp76r51Cj7SMgDnjoBTJDkh6ufFtGNyyUx96PoFMI7X28x0zcOoScDT48wn9
-         K/zQ7roC94I3iMmKFmxZsDyqaC+imsQbYWfjvg2rLT+vMG8ICtaZ/Y6V+xkfYQ2l8cqu
-         N1kDYwgvRl1rdtyegw3D73sLCGz7MptbWYD0cQXusqdvZTlaNH0XcfOMd0qzghoA6Q63
-         tJUMHCbZTZ7QiTOLXaFZizZ/eKLtNmJ4gJo05dhGNfTJ/RVL1hAgvR1xCQ/JacQeqR+X
-         NHsg==
-X-Gm-Message-State: AO0yUKUk2kQVK7v9zM02HqKDlGespCj0N7r2x74Fv5X+wpyBmdeyC5BQ
-        eSwTYRFUFTCbMmFHPb287KYoKg==
-X-Google-Smtp-Source: AK7set+CAI/fwx2l399eAuZ9xV5Jlp4O6BubsvjdMkMS6+QB/t270bnUo23l5y+5gqaF6IPk8+QwXw==
-X-Received: by 2002:ac8:5c13:0:b0:3d4:8ce9:cef7 with SMTP id i19-20020ac85c13000000b003d48ce9cef7mr2038670qti.8.1678909475786;
-        Wed, 15 Mar 2023 12:44:35 -0700 (PDT)
-Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id c15-20020ac8660f000000b003b86b088755sm4346666qtp.15.2023.03.15.12.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 12:44:35 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Mark Brown <broonie@kernel.org>, rcu@vger.kernel.org
-Subject: [PATCH 7/9] rcu-tasks: Report stalls during synchronize_srcu() in rcu_tasks_postscan()
-Date:   Wed, 15 Mar 2023 19:43:47 +0000
-Message-Id: <20230315194349.10798-7-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-In-Reply-To: <20230315194349.10798-1-joel@joelfernandes.org>
-References: <20230315194349.10798-1-joel@joelfernandes.org>
+        bh=cWpTabGy6QLogyA9n745re/JJmzh/5d9dyJhDfcEfl4=;
+        b=iM/JTP2ESfVXSUgSFuCeT6bK8/Wn3+TR/muvsOA5az5P8gXb1qhMhGSAxa8zM5LZDy
+         qMva6pG6X3unqk1gy7ZRFrmUBsW1gbSZJHc0R1gihZCMNGN46W7S+1lTSXEPeICBbRu2
+         TgmeUC5DSbuFfrynPpglVo/8uiApyMZ/rm514TTucsiaWfdSWDTUa63prYIji4xopaqR
+         Kh60RssxJIjNXcnBCJKtz8+970Hv8kFSM7gRqcCpFmByrhuuq/6YMtAl9adv1m7VVFV6
+         WydiXxXqwNt9xp1IAWfFBVVvmUQmxuE2BVTQqUM8yfFBueLiEFbfV1j29TJK9JU2q+sU
+         3f6g==
+X-Gm-Message-State: AO0yUKVu8r46kuSEn5o+t/k/SEnbB1BQdpvuX9N2sXpMcPKMTBbOv/0t
+        XarI44p3dPGBSvttFpIDYMin/OFoGDICGsjS9vT/vw==
+X-Google-Smtp-Source: AK7set+pGKWCyoCQbm2+A59THlc6hWu8pXoM0CYg/D+t+xU3PMcVQu9wwx4y4vZXdfb62v049FzI2x4zlkO63ATF2yA=
+X-Received: by 2002:a81:ae5f:0:b0:532:e887:2c23 with SMTP id
+ g31-20020a81ae5f000000b00532e8872c23mr695840ywk.9.1678910233685; Wed, 15 Mar
+ 2023 12:57:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230201150815.409582-1-urezki@gmail.com> <20230315151415.2534e11c@gandalf.local.home>
+ <e5a1815b-65b5-55ca-9773-ec04378d53c0@kernel.dk> <ZBIbloFMm5xRsjfn@pc636> <20230315153448.6914f85b@gandalf.local.home>
+In-Reply-To: <20230315153448.6914f85b@gandalf.local.home>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 15 Mar 2023 15:57:02 -0400
+Message-ID: <CAEXW_YTLFQ3-LApyCPNNx7Tn2ovFr8YUXL=1WVCm+rE2hRKE8g@mail.gmail.com>
+Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to k[v]free_rcu_mightsleep()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Hey Steve,
 
-The call to synchronize_srcu() from rcu_tasks_postscan() can be stalled
-by a task getting stuck in do_exit() between that function's calls to
-exit_tasks_rcu_start() and exit_tasks_rcu_finish().   To ease diagnosis
-of this situation, print a stall warning message every rcu_task_stall_info
-period when rcu_tasks_postscan() is stalled.
+On Wed, Mar 15, 2023 at 3:35=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Wed, 15 Mar 2023 20:25:10 +0100
+> Uladzislau Rezki <urezki@gmail.com> wrote:
+>
+> > > This was my main complaint too, kvfree_rcu_mightsleep() is an absolut=
+ely
+> > > horrible name for an API... But nobody seemed to care about that!
+> > >
+> > > I like the _synchronize() suggestion, as it matches other RCU naming.
+> > >
+> > This is basically about what it does. If you renamed it to "_synchroniz=
+e()"
+> > in reality it would not mean that it always a synchronous call, most of=
+ the
+> > time it is not whereas the name would point that it is.
+>
+> No, just comment it.
+>
+> I was going to suggest "kvfree_rcu_might_synchronize()" but that's just
+> getting ridiculous.
 
-[ paulmck: Adjust to handle CONFIG_SMP=n. ]
+No, synchronize() is incorrect. The code really can sleep for other
+reasons like memory allocation. It is not that simple of an
+implementation as one may imagine. mightsleep is really the correct
+wording IMHO.
 
-Reported-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/rcu/20230111212736.GA1062057@paulmck-ThinkPad-P17-Gen-1/
-Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tasks.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+> Still, I will replace that code back to a kfree() and rcu_synchonize() th=
+an
+> to let that other name get in.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index bfb5e1549f2b..baf7ec178155 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -139,6 +139,12 @@ static struct rcu_tasks rt_name =							\
- /* Track exiting tasks in order to allow them to be waited for. */
- DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
- 
-+#ifdef CONFIG_TASKS_RCU
-+/* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
-+static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
-+static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
-+#endif
-+
- /* Avoid IPIing CPUs early in the grace period. */
- #define RCU_TASK_IPI_DELAY (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) ? HZ / 2 : 0)
- static int rcu_task_ipi_delay __read_mostly = RCU_TASK_IPI_DELAY;
-@@ -830,6 +836,13 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
- /* Processing between scanning taskslist and draining the holdout list. */
- static void rcu_tasks_postscan(struct list_head *hop)
- {
-+	int rtsi = READ_ONCE(rcu_task_stall_info);
-+
-+	if (!IS_ENABLED(CONFIG_TINY_RCU)) {
-+		tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
-+		add_timer(&tasks_rcu_exit_srcu_stall_timer);
-+	}
-+
- 	/*
- 	 * Exiting tasks may escape the tasklist scan. Those are vulnerable
- 	 * until their final schedule() with TASK_DEAD state. To cope with
-@@ -848,6 +861,9 @@ static void rcu_tasks_postscan(struct list_head *hop)
- 	 * call to synchronize_rcu().
- 	 */
- 	synchronize_srcu(&tasks_rcu_exit_srcu);
-+
-+	if (!IS_ENABLED(CONFIG_TINY_RCU))
-+		del_timer_sync(&tasks_rcu_exit_srcu_stall_timer);
- }
- 
- /* See if tasks are still holding out, complain if so. */
-@@ -923,6 +939,21 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
- void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
- DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
- 
-+static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
-+{
-+#ifndef CONFIG_TINY_RCU
-+	int rtsi;
-+
-+	rtsi = READ_ONCE(rcu_task_stall_info);
-+	pr_info("%s: %s grace period number %lu (since boot) gp_state: %s is %lu jiffies old.\n",
-+		__func__, rcu_tasks.kname, rcu_tasks.tasks_gp_seq,
-+		tasks_gp_state_getname(&rcu_tasks), jiffies - rcu_tasks.gp_jiffies);
-+	pr_info("Please check any exiting tasks stuck between calls to exit_tasks_rcu_start() and exit_tasks_rcu_finish()\n");
-+	tasks_rcu_exit_srcu_stall_timer.expires = jiffies + rtsi;
-+	add_timer(&tasks_rcu_exit_srcu_stall_timer);
-+#endif // #ifndef CONFIG_TINY_RCU
-+}
-+
- /**
-  * call_rcu_tasks() - Queue an RCU for invocation task-based grace period
-  * @rhp: structure to be used for queueing the RCU updates.
--- 
-2.40.0.rc1.284.g88254d51c5-goog
+I think it is too late for that for now, we already have conversions
+going into the other subsystems, that means we'll have to redo all
+that over again (even if it sounded like a good idea, which it is
+not).
 
+I would rather you just did: "#define kvfree_rcu_tracing
+#kvfree_rcu_mightsleep", or something like that, if it is really a
+problem. ;-)
+
+Also you are really the first person I know of who has a problem with that =
+name.
+
+ - Joel
