@@ -2,236 +2,137 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47FA8C76195
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 12:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6147C61DA4
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 12:23:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbjCOMT0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 08:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S232215AbjCOMX1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 08:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbjCOMTO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 08:19:14 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6199194F7E
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 05:18:59 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id nv15so16212293qvb.7
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 05:18:59 -0700 (PDT)
+        with ESMTP id S232260AbjCOMW7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 08:22:59 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5DC94779
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 05:21:53 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id jl13so12301671qvb.10
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 05:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678882738;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8LIsHXIbs7IEr2EbxiOoj5aISsij90Yit1NOuCSgMhs=;
-        b=GGEhsWR7fcKF7g2wyrfJnYPmbTry3tt3aK3TtwPdmnpFx2D1Z1L9s3PWhRp1udNB8S
-         oe/Y5inC6VaMCWlkMQN1d65jsJHefnyyJHFhFXJ03BWUegNDtXhnh8fX6X+ACIoZfrjF
-         kj+jIjNfL0dWzpAsqfg77E58ZR+cr0qM/zreY=
+        d=joelfernandes.org; s=google; t=1678882910;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MsV1dSmZQh2TX7/derbiKkACl9wwmr90MM8z5+HIK6E=;
+        b=GYaA+pdVbdgjEhemVrCwtlfYBAeN1d4VpjRq95GnqMJMZq1x3za5Q75+BTySA80esv
+         Uf9qvbQVez/QLMGD+pDxoTa7EQmVbNbwskT3h88OqtPifLGc8dbI4ajqUlq5WaaTBQF8
+         cTDoTEC1o8cIidPqzac5QPuJurpO5FBMayST8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678882738;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8LIsHXIbs7IEr2EbxiOoj5aISsij90Yit1NOuCSgMhs=;
-        b=MLjqS9YCf/POJqgX4CboPosPDK0vNSrCQ60tEdzfKcjCD0Kq/XpmGON+wQ1Q4QrIxh
-         NzHSOUffH/DUd3JPp8iQFZTOmlRpwNDvPfG6ryxI15D5KS+naa2E0okJCcnhIxn9UNeT
-         4uySBwhz91aZg6OrIPN8LRU9fGedW0+W2pR60FVksYc1ZTkvbLUXikKH/e+X167lZyQ2
-         B5fxziT3T7OECGzSFlNGDcih6wMIpkHwO9ShhUkijel6E75YMLhUpgPI7TH/96FGWCnk
-         UXHG8De8NFFPOcDdFgmIpU3QsSNR2mWEQlvCRNfnUJzV9KkDmbFkUiDXhvTRZzhK9i7R
-         plbA==
-X-Gm-Message-State: AO0yUKX2L4nBSHYyku0/wyneSsdhxOrRorMkj4nM0qjuuAStpk2uICVv
-        IvDhvJvRi4jInJjqq612aDSPZ6qXRuPGPBN2VA8=
-X-Google-Smtp-Source: AK7set+fju6oE192VlJT1HotS/ZMEx7U810D4czKz6j14uju/jm8KvTIbSDdtZzZcQboyVb2rFX6JQ==
-X-Received: by 2002:a05:622a:190a:b0:3d3:fc2d:a778 with SMTP id w10-20020a05622a190a00b003d3fc2da778mr6586565qtc.29.1678882738340;
-        Wed, 15 Mar 2023 05:18:58 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1678882910;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MsV1dSmZQh2TX7/derbiKkACl9wwmr90MM8z5+HIK6E=;
+        b=K0DITsmMu6EihYe3pZjm4A9qzF+C3EUiPTVJenG8w0lHImfz5uGy+iy8IHRrWr5yUz
+         nw9aj4vCjAOHwI8NhsHLZo7ulIHkTDY6YPwlb292B6v1CEkNQSg/njDIjUGkBTN1lQm+
+         cCiPO2nYzDD7uzQoPXUWauyzwI9SXvHvo4NHkLYNUbEw6I/7kO1qCP2PPFSDkgM7QCwP
+         HT+FtlenJ8kh/PnOjsjgtQ6fv6qe8v0YdQ4obgr8ZB+K0pYYoGZ7AFBJto6xoKT+OS1P
+         4xuzmK5hDKA6mjami/pu9QIFNoNE7og/3lZb07nznDzcACnPEP9ko/OnZIHfQ1Ks4z3Q
+         ERjg==
+X-Gm-Message-State: AO0yUKU5HTPK25/Qz0b8uiV8LtgTxSl8sQ/Uop31fMk+T+tFGmIx7hSD
+        MYMMnLfNGZNy5ETKXKOUCQp02w==
+X-Google-Smtp-Source: AK7set+Y3Y7lCVHbdYRmbXrUZPyAmjA3Az7QpROjvnuBgJ5o6K6T6f1lAdt2WLh2u3oCdM/3e6FfxQ==
+X-Received: by 2002:a05:6214:1d2c:b0:577:6271:a035 with SMTP id f12-20020a0562141d2c00b005776271a035mr28473275qvd.1.1678882909589;
+        Wed, 15 Mar 2023 05:21:49 -0700 (PDT)
 Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id o7-20020a374107000000b00745c4d90aacsm3244431qka.115.2023.03.15.05.18.57
+        by smtp.gmail.com with ESMTPSA id t62-20020a374641000000b0073b878e3f30sm3571908qka.59.2023.03.15.05.21.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 05:18:57 -0700 (PDT)
-Date:   Wed, 15 Mar 2023 12:18:57 +0000
+        Wed, 15 Mar 2023 05:21:49 -0700 (PDT)
+Date:   Wed, 15 Mar 2023 12:21:48 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org
+        linux-doc@vger.kernel.org, rcu@vger.kernel.org
 Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Message-ID: <20230315121857.GE3784687@google.com>
-References: <20230303213851.2090365-1-joel@joelfernandes.org>
- <ZAc1wsvd4trjP/xi@lothringen>
- <ZAc+vVZUhXdhpSki@pc636>
+Message-ID: <20230315122148.GF3784687@google.com>
+References: <ZAc+vVZUhXdhpSki@pc636>
  <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
- <ZAhgEK/dMqVf6/hO@pc636>
+ <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
+ <20230307185443.GA516865@google.com>
+ <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
+ <ZAhYP9a8u05hzsOn@pc636>
+ <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1>
+ <ZAnXxr9OyFT63xSx@pc636>
+ <20230309221056.GB148448@google.com>
+ <ZArwZjcEYXAYwmqi@pc636>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZAhgEK/dMqVf6/hO@pc636>
+In-Reply-To: <ZArwZjcEYXAYwmqi@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 08, 2023 at 11:14:40AM +0100, Uladzislau Rezki wrote:
-> On Tue, Mar 07, 2023 at 08:48:52AM -0500, Joel Fernandes wrote:
-> > On Tue, Mar 7, 2023 at 8:40 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > >
-> > > On Tue, Mar 07, 2023 at 02:01:54PM +0100, Frederic Weisbecker wrote:
-> > > > On Fri, Mar 03, 2023 at 09:38:51PM +0000, Joel Fernandes (Google) wrote:
-> > > > > On many systems, a great deal of boot (in userspace) happens after the
-> > > > > kernel thinks the boot has completed. It is difficult to determine if
-> > > > > the system has really booted from the kernel side. Some features like
-> > > > > lazy-RCU can risk slowing down boot time if, say, a callback has been
-> > > > > added that the boot synchronously depends on. Further expedited callbacks
-> > > > > can get unexpedited way earlier than it should be, thus slowing down
-> > > > > boot (as shown in the data below).
-> > > > >
-> > > > > For these reasons, this commit adds a config option
-> > > > > 'CONFIG_RCU_BOOT_END_DELAY' and a boot parameter rcupdate.boot_end_delay.
-> > > > > Userspace can also make RCU's view of the system as booted, by writing the
-> > > > > time in milliseconds to: /sys/module/rcupdate/parameters/rcu_boot_end_delay
-> > > > > Or even just writing a value of 0 to this sysfs node.
-> > > > > However, under no circumstance will the boot be allowed to end earlier
-> > > > > than just before init is launched.
-> > > > >
-> > > > > The default value of CONFIG_RCU_BOOT_END_DELAY is chosen as 15s. This
-> > > > > suites ChromeOS and also a PREEMPT_RT system below very well, which need
-> > > > > no config or parameter changes, and just a simple application of this patch. A
-> > > > > system designer can also choose a specific value here to keep RCU from marking
-> > > > > boot completion.  As noted earlier, RCU's perspective of the system as booted
-> > > > > will not be marker until at least rcu_boot_end_delay milliseconds have passed
-> > > > > or an update is made via writing a small value (or 0) in milliseconds to:
-> > > > > /sys/module/rcupdate/parameters/rcu_boot_end_delay.
-> > > > >
-> > > > > One side-effect of this patch is, there is a risk that a real-time workload
-> > > > > launched just after the kernel boots will suffer interruptions due to expedited
-> > > > > RCU, which previous ended just before init was launched. However, to mitigate
-> > > > > such an issue (however unlikely), the user should either tune
-> > > > > CONFIG_RCU_BOOT_END_DELAY to a smaller value than 15 seconds or write a value
-> > > > > of 0 to /sys/module/rcupdate/parameters/rcu_boot_end_delay, once userspace
-> > > > > boots, and before launching the real-time workload.
-> > > > >
-> > > > > Qiuxu also noted impressive boot-time improvements with earlier version
-> > > > > of patch. An excerpt from the data he shared:
-> > > > >
-> > > > > 1) Testing environment:
-> > > > >     OS            : CentOS Stream 8 (non-RT OS)
-> > > > >     Kernel     : v6.2
-> > > > >     Machine : Intel Cascade Lake server (2 sockets, each with 44 logical threads)
-> > > > >     Qemu  args  : -cpu host -enable-kvm, -smp 88,threads=2,sockets=2, …
-> > > > >
-> > > > > 2) OS boot time definition:
-> > > > >     The time from the start of the kernel boot to the shell command line
-> > > > >     prompt is shown from the console. [ Different people may have
-> > > > >     different OS boot time definitions. ]
-> > > > >
-> > > > > 3) Measurement method (very rough method):
-> > > > >     A timer in the kernel periodically prints the boot time every 100ms.
-> > > > >     As soon as the shell command line prompt is shown from the console,
-> > > > >     we record the boot time printed by the timer, then the printed boot
-> > > > >     time is the OS boot time.
-> > > > >
-> > > > > 4) Measured OS boot time (in seconds)
-> > > > >    a) Measured 10 times w/o this patch:
-> > > > >         8.7s, 8.4s, 8.6s, 8.2s, 9.0s, 8.7s, 8.8s, 9.3s, 8.8s, 8.3s
-> > > > >         The average OS boot time was: ~8.7s
-> > > > >
-> > > > >    b) Measure 10 times w/ this patch:
-> > > > >         8.5s, 8.2s, 7.6s, 8.2s, 8.7s, 8.2s, 7.8s, 8.2s, 9.3s, 8.4s
-> > > > >         The average OS boot time was: ~8.3s.
-> > > > >
-> > > > > Tested-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > >
-> > > > I still don't really like that:
-> > > >
-> > > > 1) It feels like we are curing a symptom for which we don't know the cause.
-> > > >    Which RCU write side caller is the source of this slow boot? Some tracepoints
-> > > >    reporting the wait duration within synchronize_rcu() calls between the end of
-> > > >    the kernel boot and the end of userspace boot may be helpful.
-> > > >
-> > > > 2) The kernel boot was already covered before this patch so this is about
-> > > >    userspace code calling into the kernel. Is that piece of code also called
-> > > >    after the boot? In that case are we missing a conversion from
-> > > >    synchronize_rcu() to synchronize_rcu_expedited() somewhere? Because then
-> > > >    the problem is more general than just boot.
-> > > >
-> > > > This needs to be analyzed first and if it happens that the issue really
-> > > > needs to be fixed with telling the kernel that userspace has completed
-> > > > booting, eg: because the problem is not in a few callsites that need conversion
-> > > > to expedited but instead in the accumulation of lots of calls that should stay
-> > > > as is:
-> > > >
-> > > > 3) This arbitrary timeout looks dangerous to me as latency sensitive code
-> > > >    may run right after the boot. Either you choose a value that is too low
-> > > >    and you miss the optimization or the value is too high and you may break
-> > > >    things.
-> > > >
-> > > > 4) This should be fixed the way you did:
-> > > >    a) a kernel parameter like you did
-> > > >    b) The init process (systemd?) tells the kernel when it judges that userspace
-> > > >       has completed booting.
-> > > >    c) Make these interfaces more generic, maybe that information will be useful
-> > > >       outside RCU. For example the kernel parameter should be
-> > > >       "user_booted_reported" and the sysfs (should be sysctl?):
-> > > >       kernel.user_booted = 1
-> > > >    d) But yuck, this means we must know if the init process supports that...
-> > > >
-> > > > For these reasons, let's make sure we know exactly what is going on first.
-> > > >
-> > > > Thanks.
-> > > Just add some notes and thoughts. There is a rcupdate.rcu_expedited=1
-> > > parameter that can be used during the boot. For example on our devices
-> > > to speedup a boot we boot the kernel with rcu_expedited:
-> > >
-> > > XQ-DQ54:/ # cat /proc/cmdline
-> > > stack_depot_disable=on kasan.stacktrace=off kvm-arm.mode=protected cgroup_disable=pressure console=ttyMSM0,115200n8 loglevel=6 kpti=0 log_buf_len=256K kernel.panic_on_rcu_stall=1 service_locator.enable=1 msm_rtb.filter=0x237 rcupdate.rcu_expedited=1 rcu_nocbs=0-7 ftrace_dump_on_oops swiotlb=noforce loop.max_part=7 fw_devlink.strict=1 allow_mismatched_32bit_el0 cpufreq.default_governor=performance printk.console_no_auto_verbose=1 kasan=off sysctl.kernel.sched_pelt_multiplier=4 can.stats_timer=0 pcie_ports=compat irqaffinity=0-2 disable_dma32=on no-steal-acc cgroup.memory=nokmem,nosocket video=vfb:640x400,bpp=32,memsize=3072000 page_owner=on stack_depot_disable=off printk.console_no_auto_verbose=0 nosoftlockup bootconfig buildvariant=userdebug  msm_drm.dsi_display0=somc,1_panel: rootwait ro init=/init  qcom_geni_serial.con_enabled=0 oembootloader.startup=0x00000001 oembootloader.warmboot=0x00000000 oembootloader.securityflags=0x00000001
-> > > XQ-DQ54:/ #
-> > >
-> > > then a user space can decides if it is needed or not:
-> > >
-> > > <snip>
-> > > rcu_expedited  rcu_normal
-> > > XQ-DQ54:/ # ls -al /sys/kernel/rcu_*
-> > > -rw-r--r-- 1 root root 4096 2023-02-16 09:27 /sys/kernel/rcu_expedited
-> > > -rw-r--r-- 1 root root 4096 2023-02-16 09:27 /sys/kernel/rcu_normal
-> > > XQ-DQ54:/ #
-> > > <snip>
-> > >
-> > > for lazy we can add "rcu_cb_lazy" parameter and boot the kernel with
-> > > true or false. So we can follow and be aligned with rcu_expedited and
-> > > rcu_normal parameters.
+On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
+> On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
+> > On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
+> > [..]
+> > > > > > > > See this commit:
+> > > > > > > > 
+> > > > > > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use of
+> > > > > > > > expedited RCU primitives")
+> > > > > > > > 
+> > > > > > > > Antti provided this commit precisely in order to allow Android
+> > > > > > > > devices to expedite the boot process and to shut off the
+> > > > > > > > expediting at a time of Android userspace's choosing.  So Android
+> > > > > > > > has been making this work for about ten years, which strikes me
+> > > > > > > > as an adequate proof of concept.  ;-)
+> > > > > > > 
+> > > > > > > Thanks for the pointer. That's true. Looking at Android sources, I
+> > > > > > > find that Android Mediatek devices at least are setting
+> > > > > > > rcu_expedited to 1 at late stage of their userspace boot (which is
+> > > > > > > weird, it should be set to 1 as early as possible), and
+> > > > > > > interestingly I cannot find them resetting it back to 0!.  Maybe
+> > > > > > > they set rcu_normal to 1? But I cannot find that either. Vlad? :P
+> > > > > > 
+> > > > > > Interesting.  Though this is consistent with Antti's commit log,
+> > > > > > where he talks about expediting grace periods but not unexpediting
+> > > > > > them.
+> > > > > > 
+> > > > > Do you think we need to unexpedite it? :))))
+> > > > 
+> > > > Android runs on smallish systems, so quite possibly not!
+> > > > 
+> > > We keep it enabled and never unexpedite it. The reason is a performance.  I
+> > > have done some app-launch time analysis with enabling and disabling of it.
+> > > 
+> > > An expedited case is much better when it comes to app launch time. It
+> > > requires ~25% less time to run an app comparing with unexpedited variant.
+> > > So we have a big gain here.
 > > 
-> > Speaking of aligning, there is also the automated
-> > rcu_normal_after_boot boot option correct? I prefer the automated
-> > option of doing this. So the approach here is not really unprecedented
-> > and is much more robust than relying on userspace too much (I am ok
-> > with adding your suggestion *on top* of the automated toggle, but I
-> > probably would not have ChromeOS use it if the automated way exists).
-> > Or did I miss something?
+> > Wow, that's huge. I wonder if you can dig deeper and find out why that is so
+> > as the callbacks may need to be synchronize_rcu_expedited() then, as it could
+> > be slowing down other usecases! I find it hard to believe, real-time
+> > workloads will run better without those callbacks being always-expedited if
+> > it actually gives back 25% in performance!
 > > 
-> According to name of the rcu_end_inkernel_boot() function and a place
-> when it is invoked we can conclude that it marks the end of kernel boot
-> and it happens before running an "init" process.
+> I can dig further, but on a high level i think there are some spots
+> which show better performance if expedited is set. I mean synchronize_rcu()
+> becomes as "less blocking a context" from a time point of view.
 > 
-> With your patch we change a behavior. The initialization occurs not right
-> after a kernel is up and running but rather after 15 seconds timeout what
-> at least does not correspond to a function name. Apart from that an expected
-> behavior might be different. For example some test-suites or smoke tests, etc.
+> The problem of a regular synchronize_rcu() is - it can trigger a big latency
+> delays for a caller. For example for nocb case we do not know where in a list
+> our callback is located and when it is invoked to unblock a caller.
 > 
-> Another thought about "automated boot complete" is we do not know from
-> kernel space when it really completes for user space, because from kernel
-> space we are done and we can detect it. In this cases a user space is a
-> right candidate to say when it is ready.
-> 
-> For example for Android a boot complete happens when a home-screen appears.
-> For Chrome OS i think there is something similar. There must be a boot complete
-> event in its init scripts or something similar.
-> 
-> This is just my thoughts. I do not really mind but i also do not see a high
-> need in having it.
+> I have already mentioned somewhere. Probably it makes sense to directly wake-up
+> callers from the GP kthread instead and not via nocb-kthread that invokes our callbacks
+> one by one.
 
-Thanks for your thoughts, perhaps if I am the only one who wants it, then it
-is a bad idea. Here's some hoping to get some more time this week to dig
-deeper into this... this week has been crazy on the personal front.
+Looking forward to your optimization, I wonder if to overcome the issue Paul
+mentioned about wake up overhead, whether it is possible to find out how many
+tasks there are to wake without much overhead, and for the common case of
+likely one task to wake up which is doing a synchronize_rcu(), wake that up.
+But there could be dragons..
 
 thanks,
 
