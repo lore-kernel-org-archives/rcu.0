@@ -2,59 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B6B9C6FD1D
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA50DC6FD1D
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:35:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjCOTZg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 15:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
+        id S230258AbjCOTfG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 15:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbjCOTZc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 15:25:32 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495B66FFF2;
-        Wed, 15 Mar 2023 12:25:16 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id y20so3041070lfj.2;
-        Wed, 15 Mar 2023 12:25:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678908314;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPtmNOrGkyP7/zRk/vmjgCq9DR7+ICStQ9LpjNus1jk=;
-        b=mnYvE2pJ6hmP8gx3bKoxxlUQCrM8dBph6LoJLvt67LBNDJuoApN44xJoKMPXrDGdZq
-         rWFuAEeSSmgssCjDIirW6P/qSnnyysVJLOCBOo549VGXB9uFMYF2iD7QVwroQMzvHfa9
-         XwqKmJ8VHbUjAvxkxbhBFiO0BNSJ6vSa5dVtJMOVNGVTaTBuPGR9Z4PYDNXjEjqe6NVA
-         0x7dzaP6THiD48nEsSBfl3Z9EJ8B/yS/qx708YZzVZd8f9qWReC0LBZN02uzHYyIKu1f
-         BFSR9UCCYchiOOWINesEgmf76JJ4tWAJM35mjxso6uRNeKZ2VIjbJkZNnwNv2SPgatgp
-         1gOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678908314;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zPtmNOrGkyP7/zRk/vmjgCq9DR7+ICStQ9LpjNus1jk=;
-        b=colcGqycOKXBPqXl40RN9pdUoF4rJnmSOeaFpLHpDJQitdBg7e/f7yFhiCPPWh+MaG
-         aUaHKiLcSwDZUQFVUPuA7Tr5LW+y/8z8mCJd1OlFiVCzuz3256LDApePH+5Ux5ggRbpP
-         r/p/SS7ShTpQAl2+AHFlNu71zPi8C0xv9Is8413YyT+kkhYLQLmf3ebjzYka9aFN8ccD
-         DtMj7pAVnY4fbDONeFzezyP0Qk8pnQb46jayQxkqUc1ekQaOiI+m+wH6Ml5rhCEpCB8r
-         R/Px3FNxU6DsiRkzHHncQRds6hTWdMBiTEAwW/180FTL88a76yU+MbG7IY3C9CrSI2Ci
-         NVpA==
-X-Gm-Message-State: AO0yUKWLrbwy3WclDqtcUzhWvf5z+L7/zwSd782aGOKXgUV/ssaydbDR
-        rkI7ZGIGXBUkjWbWuP9Iswk=
-X-Google-Smtp-Source: AK7set/yTtKBCcW1C59dSM+2LjkaNx8T/QOwFD+fbwy8eShv5/t4ps/AVSwRdVIl85tiq3G+bOY/0w==
-X-Received: by 2002:ac2:51a6:0:b0:4e8:3fc2:32a8 with SMTP id f6-20020ac251a6000000b004e83fc232a8mr2026722lfk.27.1678908313537;
-        Wed, 15 Mar 2023 12:25:13 -0700 (PDT)
-Received: from pc636 (host-90-233-209-246.mobileonline.telia.com. [90.233.209.246])
-        by smtp.gmail.com with ESMTPSA id j20-20020a19f514000000b004e8c6e9a6ccsm56295lfb.148.2023.03.15.12.25.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 12:25:13 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 15 Mar 2023 20:25:10 +0100
-To:     Jens Axboe <axboe@kernel.dk>, Steven Rostedt <rostedt@goodmis.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        with ESMTP id S230106AbjCOTfG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 15:35:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35F982343;
+        Wed, 15 Mar 2023 12:34:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 62B0361120;
+        Wed, 15 Mar 2023 19:34:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66D0AC433EF;
+        Wed, 15 Mar 2023 19:34:50 +0000 (UTC)
+Date:   Wed, 15 Mar 2023 15:34:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>,
+        RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Philipp Reisner <philipp.reisner@linbit.com>,
@@ -65,65 +36,38 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
 Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
  k[v]free_rcu_mightsleep()
-Message-ID: <ZBIbloFMm5xRsjfn@pc636>
+Message-ID: <20230315153448.6914f85b@gandalf.local.home>
+In-Reply-To: <ZBIbloFMm5xRsjfn@pc636>
 References: <20230201150815.409582-1-urezki@gmail.com>
- <20230315151415.2534e11c@gandalf.local.home>
- <e5a1815b-65b5-55ca-9773-ec04378d53c0@kernel.dk>
+        <20230315151415.2534e11c@gandalf.local.home>
+        <e5a1815b-65b5-55ca-9773-ec04378d53c0@kernel.dk>
+        <ZBIbloFMm5xRsjfn@pc636>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5a1815b-65b5-55ca-9773-ec04378d53c0@kernel.dk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 01:16:20PM -0600, Jens Axboe wrote:
-> On 3/15/23 1:14?PM, Steven Rostedt wrote:
-> > On Wed,  1 Feb 2023 16:08:06 +0100
-> > "Uladzislau Rezki (Sony)" <urezki@gmail.com> wrote:
-> > 
-> >> This small series is based on Paul's "dev" branch. Head is 6002817348a1c610dc1b1c01ff81654cdec12be4
-> >> it renames a single argument of k[v]free_rcu() to its new k[v]free_rcu_mightsleep() name.
-> >>
-> >> 1.
-> >> The problem is that, recently we have run into a precedent when
-> >> a user intended to give a second argument to kfree_rcu() API but
-> >> forgot to do it in a code so a call became as a single argument
-> >> of kfree_rcu() API.
-> >>
-> >> 2.
-> >> Such mistyping can lead to hidden bags where sleeping is forbidden.
-> >>
-> >> 3.
-> >> _mightsleep() prefix gives much more information for which contexts
-> >> it can be used for.
-> > 
-> > My honest opinion is that I hate that name "kvfree_rcu_mightsleep()" ;-)
-> > 
-> > As I honestly don't know why it might sleep.
-> > 
-> > I didn't care about the name before, but now that it's touching code I
-> > maintain I do care ;-)
-> > 
-> > Why not call it:
-> > 
-> >  kvfree_rcu_synchronize()
-> > 
-> > ?
-> > 
-> > As that is much more descriptive of what it does. Especially since these
-> > ugly names are popping up in my code because kvfree_rcu() replaced a
-> > rcu_synchronize() in the first place.
-> 
-> This was my main complaint too, kvfree_rcu_mightsleep() is an absolutely
-> horrible name for an API... But nobody seemed to care about that!
-> 
-> I like the _synchronize() suggestion, as it matches other RCU naming.
-> 
-This is basically about what it does. If you renamed it to "_synchronize()"
-in reality it would not mean that it always a synchronous call, most of the
-time it is not whereas the name would point that it is.
+On Wed, 15 Mar 2023 20:25:10 +0100
+Uladzislau Rezki <urezki@gmail.com> wrote:
 
---
-Uladzislau Rezki
+> > This was my main complaint too, kvfree_rcu_mightsleep() is an absolutely
+> > horrible name for an API... But nobody seemed to care about that!
+> > 
+> > I like the _synchronize() suggestion, as it matches other RCU naming.
+> >   
+> This is basically about what it does. If you renamed it to "_synchronize()"
+> in reality it would not mean that it always a synchronous call, most of the
+> time it is not whereas the name would point that it is.
 
+No, just comment it.
+
+I was going to suggest "kvfree_rcu_might_synchronize()" but that's just
+getting ridiculous.
+
+Still, I will replace that code back to a kfree() and rcu_synchonize() than
+to let that other name get in.
+
+-- Steve
