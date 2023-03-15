@@ -2,134 +2,100 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BD97C61DA4
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D12C7618A
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:39:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbjCOTjZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 15:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        id S232921AbjCOTj0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 15:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbjCOTjN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 15:39:13 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1256939CDC
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:39:12 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id o3so17397273qvr.1
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:39:12 -0700 (PDT)
+        with ESMTP id S232285AbjCOTjO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 15:39:14 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC614493
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:39:13 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id y10so17515180qtj.2
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:39:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678909151;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6kodpLrQnSozwTishADT/eFOoqfGUIFhFbZ2Rg+LiOA=;
-        b=WByS267g9t6NJ1kyG9/EnjmxtgTNYbezAKGqyr8CaaBwqZINFEuA/ntWN6H+6kcZlm
-         0y0pivfDEqSC6+oWTYuc4+m0Ve4R+syrQBMCVHz35BK+o7Fx/qDMRs/tpQIZtjbMvVYM
-         Z/STPa8OKdawLzzW22yLDCHQE1elXduZpbeGw=
+        d=joelfernandes.org; s=google; t=1678909152;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gkIW82Jn8PaGpB7B+YMqBxYys/Ya8U+pTY1r1WqXQ8E=;
+        b=WDyMAh8LBvLv8TcPocJTlQ9oUFNWyhm52mv3Oy3aloVLjA3GPz2f/kf8L3QTmisA+e
+         vZgmipdZ/oNQKbH4mBAG642qB5ciV2dFTAwbxCn78S00oXbU2BV2vHJUJJN4nLcJXPcT
+         yt/KduCRJHeohmdt8cRIjsM2rwQYsvJ1QusRs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678909151;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6kodpLrQnSozwTishADT/eFOoqfGUIFhFbZ2Rg+LiOA=;
-        b=Ww2W9vjZMl8Swu+DLfre5ZZbPsmcI2OkXKU4P8eWFLvcuEEgIvtNuCUKGaMBBlNqUk
-         elEXAZKYvZ/hfLQiuGiF0GBue1AFwmVBBkO7F51//+k1dJX2WB6qW7RK0m+xv/hXIs8y
-         5YrBPv0e1lTEdhNlZi6ctDrglh4KNBEUUXp29c7yYiqXncGOUJ6v9Ex8Ec/n3Ws4BnEi
-         qzWP2w0RPGqQ38Pvdw9tRhWvwPMmDnK9b8+/aUJQE+9jK5MG35oa094h7ZbvO6mdWgPt
-         omgAfGKJAAJSWt67mEfOZ4bjTJpRJak8zw8sus9H2gDboO2yL0eEZxyz0f/usSXvASau
-         m7Og==
-X-Gm-Message-State: AO0yUKUvH0MIviyKIDWvjnLJuIALMKtn2E8tsVrRuL+A2RgxQbdv6y3C
-        AcOBw8G7qkxcaEte4OZViTWzyCJYRMRblKLbKdo=
-X-Google-Smtp-Source: AK7set9xcFD5mrNuQbfScTwldN49ZVEM6uEf3ek4PJRMRU82tR8zA3YA+oKG8/u9a34gp1BqcGUv3g==
-X-Received: by 2002:a05:6214:20a7:b0:56e:fb4c:c1c4 with SMTP id 7-20020a05621420a700b0056efb4cc1c4mr32374960qvd.14.1678909151167;
-        Wed, 15 Mar 2023 12:39:11 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1678909152;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gkIW82Jn8PaGpB7B+YMqBxYys/Ya8U+pTY1r1WqXQ8E=;
+        b=aAlm0e8VTSTRogG1YTLfPPDXiDy4T7AtZ+rIJE3VxSn3T1LidIqpQlT5vHhpmJHKi3
+         Bl7XsgfQturFrPJxq2O4O2ykCOuzhgdZQRvQf2nh8TK+/wqmg7p0A+EbaG62TBorf6Y0
+         AGk/XmaP1GDjr8byCKKobfCbh87glBNWQuNxesPC7ocP06DVGuPDd4gjJSxsTq+xtCet
+         ml2gmrprt7TMYEzGGZItbOQ0SbFYY6hwn+EyENliz7sEyvpcG9FDQEYPCib/OhbhSaJd
+         H5sztgQlmSqbTTmjaA3A2yMZeS6MS6y2GG9dSYXiVxVapKJOGmmNnwCHGfqbFE+2XlYe
+         dk4Q==
+X-Gm-Message-State: AO0yUKU80nU9rVKF7u9RBroKH/GufWp0CRcARUR95xKqiZqC8IV+84yO
+        mXTy59+5VmoyxovnxgEvGPIwmg==
+X-Google-Smtp-Source: AK7set/lTZX4a5orBcEG4pZUqPqTc+JtcMojbfiFqsyvENbRhEu8ihMok00SZO1QIyKvQQxg2HMNhQ==
+X-Received: by 2002:a05:622a:284:b0:3bd:140c:91ed with SMTP id z4-20020a05622a028400b003bd140c91edmr1637192qtw.52.1678909152452;
+        Wed, 15 Mar 2023 12:39:12 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id s10-20020a05620a254a00b00745af48838bsm4347227qko.5.2023.03.15.12.39.10
+        by smtp.gmail.com with ESMTPSA id s10-20020a05620a254a00b00745af48838bsm4347227qko.5.2023.03.15.12.39.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 12:39:10 -0700 (PDT)
+        Wed, 15 Mar 2023 12:39:11 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 1/6] srcu: Add comments for srcu_size_state
-Date:   Wed, 15 Mar 2023 19:38:46 +0000
-Message-Id: <20230315193851.8598-1-joel@joelfernandes.org>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH 2/6] Documentation/RCU: s/not/note/ in checklist.rst
+Date:   Wed, 15 Mar 2023 19:38:47 +0000
+Message-Id: <20230315193851.8598-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
+In-Reply-To: <20230315193851.8598-1-joel@joelfernandes.org>
+References: <20230315193851.8598-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Pingfan Liu <kernelfans@gmail.com>
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-The SRCU_SIZE_* names are not self-explanatory, so this commit therefore
-adds comments to the definitions.
+"Please not that you *cannot* rely..." has a typo.
+Fix it.
 
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To: rcu@vger.kernel.org
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/srcutree.h | 33 +++++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ Documentation/RCU/checklist.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 558057b517b7..a6910805f9c5 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -92,16 +92,29 @@ struct srcu_struct {
- 	struct lockdep_map dep_map;
- };
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index cc361fb01ed4..bd3c58c44bef 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -70,7 +70,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	can serve as rcu_read_lock_sched(), but is less readable and
+ 	prevents lockdep from detecting locking issues.
  
--/* Values for size state variable (->srcu_size_state). */
--#define SRCU_SIZE_SMALL		0
--#define SRCU_SIZE_ALLOC		1
--#define SRCU_SIZE_WAIT_BARRIER	2
--#define SRCU_SIZE_WAIT_CALL	3
--#define SRCU_SIZE_WAIT_CBS1	4
--#define SRCU_SIZE_WAIT_CBS2	5
--#define SRCU_SIZE_WAIT_CBS3	6
--#define SRCU_SIZE_WAIT_CBS4	7
--#define SRCU_SIZE_BIG		8
-+// Values for size state variable (->srcu_size_state).  Once the state
-+// has been set to SRCU_SIZE_ALLOC, the grace-period code advances through
-+// this state machine one step per grace period until the SRCU_SIZE_BIG state
-+// is reached.  Otherwise, the state machine remains in the SRCU_SIZE_SMALL
-+// state indefinitely.
-+#define SRCU_SIZE_SMALL		0	// No srcu_node combining tree, ->node == NULL
-+#define SRCU_SIZE_ALLOC		1	// An srcu_node tree is being allocated, initialized,
-+					//  and then referenced by ->node.  It will not be used.
-+#define SRCU_SIZE_WAIT_BARRIER	2	// The srcu_node tree starts being used by everything
-+					//  except call_srcu(), especially by srcu_barrier().
-+					//  By the end of this state, all CPUs and threads
-+					//  are aware of this tree's existence.
-+#define SRCU_SIZE_WAIT_CALL	3	// The srcu_node tree starts being used by call_srcu().
-+					//  By the end of this state, all of the call_srcu()
-+					//  invocations that were running on a non-boot CPU
-+					//  and using the boot CPU's callback queue will have
-+					//  completed.
-+#define SRCU_SIZE_WAIT_CBS1	4	// Don't trust the ->srcu_have_cbs[] grace-period
-+#define SRCU_SIZE_WAIT_CBS2	5	//  sequence elements or the ->srcu_data_have_cbs[]
-+#define SRCU_SIZE_WAIT_CBS3	6	//  CPU-bitmask elements until all four elements of
-+#define SRCU_SIZE_WAIT_CBS4	7	//  each array have been initialized.
-+#define SRCU_SIZE_BIG		8	// The srcu_node combining tree is fully initialized
-+					//  and all aspects of it are being put to use.
+-	Please not that you *cannot* rely on code known to be built
++	Please note that you *cannot* rely on code known to be built
+ 	only in non-preemptible kernels.  Such code can and will break,
+ 	especially in kernels built with CONFIG_PREEMPT_COUNT=y.
  
- /* Values for state variable (bottom bits of ->srcu_gp_seq). */
- #define SRCU_STATE_IDLE		0
 -- 
 2.40.0.rc1.284.g88254d51c5-goog
 
