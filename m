@@ -2,133 +2,335 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7317CC76195
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 16:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53E3AC6FD1D
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 17:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbjCOQNW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 12:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
+        id S231455AbjCORAE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 13:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjCOQNG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 12:13:06 -0400
+        with ESMTP id S232543AbjCORAC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 13:00:02 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF5597FD5;
-        Wed, 15 Mar 2023 09:12:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78FA23A47;
+        Wed, 15 Mar 2023 09:59:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 669D0B81D16;
-        Wed, 15 Mar 2023 16:12:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 048C2C4339B;
-        Wed, 15 Mar 2023 16:12:22 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4CE40B81E8A;
+        Wed, 15 Mar 2023 16:59:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E15B8C433D2;
+        Wed, 15 Mar 2023 16:59:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678896743;
-        bh=aDZKa+zI7S0I9Bzu6dU7bXbfDv/bHZGvLfjWumx6l7g=;
+        s=k20201202; t=1678899596;
+        bh=3o3gjoZHc5rg7rjmQ9L5hwd/d5TZOC5lj0aYZvfZexQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NytlMzqoOtUOUEj/IcMhp/haj2KquvS1685kggqO9ot3Px4G5JwtglzPMkyhFdX36
-         pUawV6prqpfWYsNvcILIqqPGpTNhV1vYK5PGiGs7UjiYkibNsozj5xYGR4S7cDkMyN
-         EcMIyFm/Kqcq++yx9OLBNPhJcRPUuXtW3Pz2oolVlUIF4gHtlZD8/FHQHLOP+yUL+n
-         1MFTJzqOhUwSMEAxVRa+1vl6Ez6pyhp45bek1W8F+M2NBWafHHQ/j9S8WkocAVDH+u
-         MJLcTL0d+5CMdI3FgzfOKMsVhNPb97iXSPu8an7BC0t4QQXByTdTd2BPcC3fXfHHaF
-         hbZ9F9QRIYqpA==
+        b=K+nlAGubizxwp++a99hBHiEUuwD0zv9WFuHDwYE7pynQPysgr7hFL241uESLroUV8
+         5dh4B76eczQ8Iy4cH6edPJkHd777iC42M1hUbnIPl1QL7c0TZXasHkIJtH2ApM+M+L
+         TnoecicqcjpVqaDX0TPOyxjV59moNMnxvmi1Es0oxSf7oIBzrqANYb6Iu43yhqdAwJ
+         hpZHPcPPQmKNQryKaJ4oh6QKJOoGv5LTN+MsaxKpq+oalBp06qC+s1IvZCzHW4fMsj
+         D4wGvG89sQcYf+aWtkwHENyJDOdhuSdFM4f+QPmN2T8gltOxYgF7hO3Rpe0QVOUpvj
+         aWCXJM15E755w==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8A9811540395; Wed, 15 Mar 2023 09:12:22 -0700 (PDT)
-Date:   Wed, 15 Mar 2023 09:12:22 -0700
+        id 727EF1540395; Wed, 15 Mar 2023 09:59:56 -0700 (PDT)
+Date:   Wed, 15 Mar 2023 09:59:56 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
+Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
         Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Message-ID: <879f7988-254b-450b-a082-c29d54efb5bb@paulmck-laptop>
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s)
+ after unloading rcuscale
+Message-ID: <87b5fd9c-b34e-4105-8bbb-7902f17356cf@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
- <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
- <20230307185443.GA516865@google.com>
- <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAhYP9a8u05hzsOn@pc636>
- <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAnXxr9OyFT63xSx@pc636>
- <20230309221056.GB148448@google.com>
- <ZArwZjcEYXAYwmqi@pc636>
- <20230315122148.GF3784687@google.com>
+References: <20230313080403.89290-1-qiuxu.zhuo@intel.com>
+ <d930f2a8-4b75-4109-a303-e2fc04443693@paulmck-laptop>
+ <IA1PR11MB6171EA9F4437346FECB73F3189BF9@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <CAEXW_YRatZhejsW-o1PXK3V8QxOcc-krvRdjwaDudFSfUotAKw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230315122148.GF3784687@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YRatZhejsW-o1PXK3V8QxOcc-krvRdjwaDudFSfUotAKw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 12:21:48PM +0000, Joel Fernandes wrote:
-> On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
-> > On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
-> > > On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
-> > > [..]
-> > > > > > > > > See this commit:
-> > > > > > > > > 
-> > > > > > > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use of
-> > > > > > > > > expedited RCU primitives")
-> > > > > > > > > 
-> > > > > > > > > Antti provided this commit precisely in order to allow Android
-> > > > > > > > > devices to expedite the boot process and to shut off the
-> > > > > > > > > expediting at a time of Android userspace's choosing.  So Android
-> > > > > > > > > has been making this work for about ten years, which strikes me
-> > > > > > > > > as an adequate proof of concept.  ;-)
-> > > > > > > > 
-> > > > > > > > Thanks for the pointer. That's true. Looking at Android sources, I
-> > > > > > > > find that Android Mediatek devices at least are setting
-> > > > > > > > rcu_expedited to 1 at late stage of their userspace boot (which is
-> > > > > > > > weird, it should be set to 1 as early as possible), and
-> > > > > > > > interestingly I cannot find them resetting it back to 0!.  Maybe
-> > > > > > > > they set rcu_normal to 1? But I cannot find that either. Vlad? :P
-> > > > > > > 
-> > > > > > > Interesting.  Though this is consistent with Antti's commit log,
-> > > > > > > where he talks about expediting grace periods but not unexpediting
-> > > > > > > them.
-> > > > > > > 
-> > > > > > Do you think we need to unexpedite it? :))))
-> > > > > 
-> > > > > Android runs on smallish systems, so quite possibly not!
-> > > > > 
-> > > > We keep it enabled and never unexpedite it. The reason is a performance.  I
-> > > > have done some app-launch time analysis with enabling and disabling of it.
-> > > > 
-> > > > An expedited case is much better when it comes to app launch time. It
-> > > > requires ~25% less time to run an app comparing with unexpedited variant.
-> > > > So we have a big gain here.
-> > > 
-> > > Wow, that's huge. I wonder if you can dig deeper and find out why that is so
-> > > as the callbacks may need to be synchronize_rcu_expedited() then, as it could
-> > > be slowing down other usecases! I find it hard to believe, real-time
-> > > workloads will run better without those callbacks being always-expedited if
-> > > it actually gives back 25% in performance!
-> > > 
-> > I can dig further, but on a high level i think there are some spots
-> > which show better performance if expedited is set. I mean synchronize_rcu()
-> > becomes as "less blocking a context" from a time point of view.
-> > 
-> > The problem of a regular synchronize_rcu() is - it can trigger a big latency
-> > delays for a caller. For example for nocb case we do not know where in a list
-> > our callback is located and when it is invoked to unblock a caller.
-> > 
-> > I have already mentioned somewhere. Probably it makes sense to directly wake-up
-> > callers from the GP kthread instead and not via nocb-kthread that invokes our callbacks
-> > one by one.
+On Wed, Mar 15, 2023 at 10:12:05AM -0400, Joel Fernandes wrote:
+> On Wed, Mar 15, 2023 at 10:07 AM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> wrote:
+> [...]
+> > >
+> > > I do applaud minmimizing the size of the patch, but in this case could you
+> > > please pull the kfree_scale_cleanup() function ahead of its first use?
+> > >
+> >
+> > I thought about it, but was also concerned that would make the patch bigger
+> > while the effective changes were just only a few lines ...
+> >
+> > Pulling the kfree_scale_cleanup() function ahead of rcu_scale_cleanup() also needs
+> > to pull another two kfree_* variables ahead used by kfree_scale_cleanup().
+> > This looks like will mess up kfree_* and rcu_scale_* functions/variables in the source file.
+> >
+> > How about to pull the rcu_scale_cleanup() function after kfree_scale_cleanup().
+> > This groups kfree_* functions and groups rcu_scale_* functions.
+> > Then the code would look cleaner.
+> > So, do you think the changes below are better?
 > 
-> Looking forward to your optimization, I wonder if to overcome the issue Paul
-> mentioned about wake up overhead, whether it is possible to find out how many
-> tasks there are to wake without much overhead, and for the common case of
-> likely one task to wake up which is doing a synchronize_rcu(), wake that up.
-> But there could be dragons..
+> IMHO, I don't think doing such a code move is better. Just add a new
+> header file and declare the function there. But see what Paul says
+> first.
 
-A per-rcu_node count of the number of tasks needing wakeups might work.
-But for best results, there would be an array of such numbers indexed
-by the low-order bits of the grace-period number (excluding the bottom
-status bits).  The callback-offloading code uses such arrays, for example,
-though not for counts of sleeping tasks.  (There cannot be that many
-rcuo kthreads per group, so there has been no need to count them.)
+This situation is likely to be an early hint that the kvfree_rcu() testing
+should be split out from kernel/rcu/rcuscale.c.
 
 							Thanx, Paul
+
+> thanks,
+> 
+>  - Joel
+> 
+> 
+> 
+> >
+> > ---
+> >  kernel/rcu/rcuscale.c | 201 ++++++++++++++++++++++--------------------
+> >  1 file changed, 103 insertions(+), 98 deletions(-)
+> >
+> > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> > index 91fb5905a008..5a000d26f03e 100644
+> > --- a/kernel/rcu/rcuscale.c
+> > +++ b/kernel/rcu/rcuscale.c
+> > @@ -522,89 +522,6 @@ rcu_scale_print_module_parms(struct rcu_scale_ops *cur_ops, const char *tag)
+> >                  scale_type, tag, nrealreaders, nrealwriters, verbose, shutdown);
+> >  }
+> >
+> > -static void
+> > -rcu_scale_cleanup(void)
+> > -{
+> > -       int i;
+> > -       int j;
+> > -       int ngps = 0;
+> > -       u64 *wdp;
+> > -       u64 *wdpp;
+> > -
+> > -       /*
+> > -        * Would like warning at start, but everything is expedited
+> > -        * during the mid-boot phase, so have to wait till the end.
+> > -        */
+> > -       if (rcu_gp_is_expedited() && !rcu_gp_is_normal() && !gp_exp)
+> > -               SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
+> > -       if (rcu_gp_is_normal() && gp_exp)
+> > -               SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
+> > -       if (gp_exp && gp_async)
+> > -               SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
+> > -
+> > -       if (torture_cleanup_begin())
+> > -               return;
+> > -       if (!cur_ops) {
+> > -               torture_cleanup_end();
+> > -               return;
+> > -       }
+> > -
+> > -       if (reader_tasks) {
+> > -               for (i = 0; i < nrealreaders; i++)
+> > -                       torture_stop_kthread(rcu_scale_reader,
+> > -                                            reader_tasks[i]);
+> > -               kfree(reader_tasks);
+> > -       }
+> > -
+> > -       if (writer_tasks) {
+> > -               for (i = 0; i < nrealwriters; i++) {
+> > -                       torture_stop_kthread(rcu_scale_writer,
+> > -                                            writer_tasks[i]);
+> > -                       if (!writer_n_durations)
+> > -                               continue;
+> > -                       j = writer_n_durations[i];
+> > -                       pr_alert("%s%s writer %d gps: %d\n",
+> > -                                scale_type, SCALE_FLAG, i, j);
+> > -                       ngps += j;
+> > -               }
+> > -               pr_alert("%s%s start: %llu end: %llu duration: %llu gps: %d batches: %ld\n",
+> > -                        scale_type, SCALE_FLAG,
+> > -                        t_rcu_scale_writer_started, t_rcu_scale_writer_finished,
+> > -                        t_rcu_scale_writer_finished -
+> > -                        t_rcu_scale_writer_started,
+> > -                        ngps,
+> > -                        rcuscale_seq_diff(b_rcu_gp_test_finished,
+> > -                                          b_rcu_gp_test_started));
+> > -               for (i = 0; i < nrealwriters; i++) {
+> > -                       if (!writer_durations)
+> > -                               break;
+> > -                       if (!writer_n_durations)
+> > -                               continue;
+> > -                       wdpp = writer_durations[i];
+> > -                       if (!wdpp)
+> > -                               continue;
+> > -                       for (j = 0; j < writer_n_durations[i]; j++) {
+> > -                               wdp = &wdpp[j];
+> > -                               pr_alert("%s%s %4d writer-duration: %5d %llu\n",
+> > -                                       scale_type, SCALE_FLAG,
+> > -                                       i, j, *wdp);
+> > -                               if (j % 100 == 0)
+> > -                                       schedule_timeout_uninterruptible(1);
+> > -                       }
+> > -                       kfree(writer_durations[i]);
+> > -               }
+> > -               kfree(writer_tasks);
+> > -               kfree(writer_durations);
+> > -               kfree(writer_n_durations);
+> > -       }
+> > -
+> > -       /* Do torture-type-specific cleanup operations.  */
+> > -       if (cur_ops->cleanup != NULL)
+> > -               cur_ops->cleanup();
+> > -
+> > -       torture_cleanup_end();
+> > -}
+> > -
+> >  /*
+> >   * Return the number if non-negative.  If -1, the number of CPUs.
+> >   * If less than -1, that much less than the number of CPUs, but
+> > @@ -624,21 +541,6 @@ static int compute_real(int n)
+> >         return nr;
+> >  }
+> >
+> > -/*
+> > - * RCU scalability shutdown kthread.  Just waits to be awakened, then shuts
+> > - * down system.
+> > - */
+> > -static int
+> > -rcu_scale_shutdown(void *arg)
+> > -{
+> > -       wait_event(shutdown_wq,
+> > -                  atomic_read(&n_rcu_scale_writer_finished) >= nrealwriters);
+> > -       smp_mb(); /* Wake before output. */
+> > -       rcu_scale_cleanup();
+> > -       kernel_power_off();
+> > -       return -EINVAL;
+> > -}
+> > -
+> >  /*
+> >   * kfree_rcu() scalability tests: Start a kfree_rcu() loop on all CPUs for number
+> >   * of iterations and measure total time and number of GP for all iterations to complete.
+> > @@ -875,6 +777,109 @@ kfree_scale_init(void)
+> >         return firsterr;
+> >  }
+> >
+> > +static void
+> > +rcu_scale_cleanup(void)
+> > +{
+> > +       int i;
+> > +       int j;
+> > +       int ngps = 0;
+> > +       u64 *wdp;
+> > +       u64 *wdpp;
+> > +
+> > +       /*
+> > +        * Would like warning at start, but everything is expedited
+> > +        * during the mid-boot phase, so have to wait till the end.
+> > +        */
+> > +       if (rcu_gp_is_expedited() && !rcu_gp_is_normal() && !gp_exp)
+> > +               SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
+> > +       if (rcu_gp_is_normal() && gp_exp)
+> > +               SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
+> > +       if (gp_exp && gp_async)
+> > +               SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
+> > +
+> > +       if (kfree_rcu_test) {
+> > +               kfree_scale_cleanup();
+> > +               return;
+> > +       }
+> > +
+> > +       if (torture_cleanup_begin())
+> > +               return;
+> > +       if (!cur_ops) {
+> > +               torture_cleanup_end();
+> > +               return;
+> > +       }
+> > +
+> > +       if (reader_tasks) {
+> > +               for (i = 0; i < nrealreaders; i++)
+> > +                       torture_stop_kthread(rcu_scale_reader,
+> > +                                            reader_tasks[i]);
+> > +               kfree(reader_tasks);
+> > +       }
+> > +
+> > +       if (writer_tasks) {
+> > +               for (i = 0; i < nrealwriters; i++) {
+> > +                       torture_stop_kthread(rcu_scale_writer,
+> > +                                            writer_tasks[i]);
+> > +                       if (!writer_n_durations)
+> > +                               continue;
+> > +                       j = writer_n_durations[i];
+> > +                       pr_alert("%s%s writer %d gps: %d\n",
+> > +                                scale_type, SCALE_FLAG, i, j);
+> > +                       ngps += j;
+> > +               }
+> > +               pr_alert("%s%s start: %llu end: %llu duration: %llu gps: %d batches: %ld\n",
+> > +                        scale_type, SCALE_FLAG,
+> > +                        t_rcu_scale_writer_started, t_rcu_scale_writer_finished,
+> > +                        t_rcu_scale_writer_finished -
+> > +                        t_rcu_scale_writer_started,
+> > +                        ngps,
+> > +                        rcuscale_seq_diff(b_rcu_gp_test_finished,
+> > +                                          b_rcu_gp_test_started));
+> > +               for (i = 0; i < nrealwriters; i++) {
+> > +                       if (!writer_durations)
+> > +                               break;
+> > +                       if (!writer_n_durations)
+> > +                               continue;
+> > +                       wdpp = writer_durations[i];
+> > +                       if (!wdpp)
+> > +                               continue;
+> > +                       for (j = 0; j < writer_n_durations[i]; j++) {
+> > +                               wdp = &wdpp[j];
+> > +                               pr_alert("%s%s %4d writer-duration: %5d %llu\n",
+> > +                                       scale_type, SCALE_FLAG,
+> > +                                       i, j, *wdp);
+> > +                               if (j % 100 == 0)
+> > +                                       schedule_timeout_uninterruptible(1);
+> > +                       }
+> > +                       kfree(writer_durations[i]);
+> > +               }
+> > +               kfree(writer_tasks);
+> > +               kfree(writer_durations);
+> > +               kfree(writer_n_durations);
+> > +       }
+> > +
+> > +       /* Do torture-type-specific cleanup operations.  */
+> > +       if (cur_ops->cleanup != NULL)
+> > +               cur_ops->cleanup();
+> > +
+> > +       torture_cleanup_end();
+> > +}
+> > +
+> > +/*
+> > + * RCU scalability shutdown kthread.  Just waits to be awakened, then shuts
+> > + * down system.
+> > + */
+> > +static int
+> > +rcu_scale_shutdown(void *arg)
+> > +{
+> > +       wait_event(shutdown_wq,
+> > +                  atomic_read(&n_rcu_scale_writer_finished) >= nrealwriters);
+> > +       smp_mb(); /* Wake before output. */
+> > +       rcu_scale_cleanup();
+> > +       kernel_power_off();
+> > +       return -EINVAL;
+> > +}
+> > +
+> >  static int __init
+> >  rcu_scale_init(void)
+> >  {
+> > --
+> > 2.17.1
+> >
+> > > [...]
+> >
