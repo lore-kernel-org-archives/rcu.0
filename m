@@ -2,139 +2,180 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6147C61DA4
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 12:23:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF2B8C6FD1D
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 13:38:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbjCOMX1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 08:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
+        id S231779AbjCONiy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 09:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbjCOMW7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 08:22:59 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5DC94779
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 05:21:53 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id jl13so12301671qvb.10
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 05:21:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678882910;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MsV1dSmZQh2TX7/derbiKkACl9wwmr90MM8z5+HIK6E=;
-        b=GYaA+pdVbdgjEhemVrCwtlfYBAeN1d4VpjRq95GnqMJMZq1x3za5Q75+BTySA80esv
-         Uf9qvbQVez/QLMGD+pDxoTa7EQmVbNbwskT3h88OqtPifLGc8dbI4ajqUlq5WaaTBQF8
-         cTDoTEC1o8cIidPqzac5QPuJurpO5FBMayST8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678882910;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MsV1dSmZQh2TX7/derbiKkACl9wwmr90MM8z5+HIK6E=;
-        b=K0DITsmMu6EihYe3pZjm4A9qzF+C3EUiPTVJenG8w0lHImfz5uGy+iy8IHRrWr5yUz
-         nw9aj4vCjAOHwI8NhsHLZo7ulIHkTDY6YPwlb292B6v1CEkNQSg/njDIjUGkBTN1lQm+
-         cCiPO2nYzDD7uzQoPXUWauyzwI9SXvHvo4NHkLYNUbEw6I/7kO1qCP2PPFSDkgM7QCwP
-         HT+FtlenJ8kh/PnOjsjgtQ6fv6qe8v0YdQ4obgr8ZB+K0pYYoGZ7AFBJto6xoKT+OS1P
-         4xuzmK5hDKA6mjami/pu9QIFNoNE7og/3lZb07nznDzcACnPEP9ko/OnZIHfQ1Ks4z3Q
-         ERjg==
-X-Gm-Message-State: AO0yUKU5HTPK25/Qz0b8uiV8LtgTxSl8sQ/Uop31fMk+T+tFGmIx7hSD
-        MYMMnLfNGZNy5ETKXKOUCQp02w==
-X-Google-Smtp-Source: AK7set+Y3Y7lCVHbdYRmbXrUZPyAmjA3Az7QpROjvnuBgJ5o6K6T6f1lAdt2WLh2u3oCdM/3e6FfxQ==
-X-Received: by 2002:a05:6214:1d2c:b0:577:6271:a035 with SMTP id f12-20020a0562141d2c00b005776271a035mr28473275qvd.1.1678882909589;
-        Wed, 15 Mar 2023 05:21:49 -0700 (PDT)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id t62-20020a374641000000b0073b878e3f30sm3571908qka.59.2023.03.15.05.21.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 05:21:49 -0700 (PDT)
-Date:   Wed, 15 Mar 2023 12:21:48 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v3] rcu: Add a minimum time for marking boot as completed
-Message-ID: <20230315122148.GF3784687@google.com>
-References: <ZAc+vVZUhXdhpSki@pc636>
- <CAEXW_YRTLQpQpOW-+n+X59pmB=4TkV=gdsMiQfBkdK_4wO9Jug@mail.gmail.com>
- <20230307173313.GJ1301832@paulmck-ThinkPad-P17-Gen-1>
- <20230307185443.GA516865@google.com>
- <20230307192726.GL1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAhYP9a8u05hzsOn@pc636>
- <20230308144528.GR1301832@paulmck-ThinkPad-P17-Gen-1>
- <ZAnXxr9OyFT63xSx@pc636>
- <20230309221056.GB148448@google.com>
- <ZArwZjcEYXAYwmqi@pc636>
+        with ESMTP id S231806AbjCONiw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 09:38:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C80D7EFC;
+        Wed, 15 Mar 2023 06:38:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5D8B31FD76;
+        Wed, 15 Mar 2023 13:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1678887528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQFuKBaF6WvGk6vzttY4i4tA7syyP5hs6IrhdtonffA=;
+        b=cqxP2twoRj+fcrs/+8lehtiDgnL4jr0LNZ6a5rdur0lBr0tEWrBncWCbZJ6/bK8EyWpU4x
+        gZ0F+4c+4+XXRkr56WDNiSySqXnP6VfvK3ui99h+DhlZDvTySsKKDiEo77yQOun5YA6Xyt
+        sgYbKyd2dOq4T+lsVt4cYW7F2JRPFGk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1678887528;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQFuKBaF6WvGk6vzttY4i4tA7syyP5hs6IrhdtonffA=;
+        b=w6coZ/Uw88fhU8aHcGl6eDCI1gHVg0UOGUkVaXsHulRwjbstUIgG9UCupGjq6fQNmDKLo6
+        x/lC0q/mxOCeVZCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0211513A2F;
+        Wed, 15 Mar 2023 13:38:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id e+dPO2fKEWQSLwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 15 Mar 2023 13:38:47 +0000
+Message-ID: <14043bee-af7d-38f3-5a46-f63940e56c1e@suse.cz>
+Date:   Wed, 15 Mar 2023 14:38:47 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZArwZjcEYXAYwmqi@pc636>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 7/7] mm/slab: document kfree() as allowed for
+ kmem_cache_alloc() objects
+Content-Language: en-US
+To:     Mike Rapoport <mike.rapoport@gmail.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        rcu@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+References: <20230310103210.22372-1-vbabka@suse.cz>
+ <20230310103210.22372-8-vbabka@suse.cz> <ZA2ic9JYXGVzps1+@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZA2ic9JYXGVzps1+@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 09:55:02AM +0100, Uladzislau Rezki wrote:
-> On Thu, Mar 09, 2023 at 10:10:56PM +0000, Joel Fernandes wrote:
-> > On Thu, Mar 09, 2023 at 01:57:42PM +0100, Uladzislau Rezki wrote:
-> > [..]
-> > > > > > > > See this commit:
-> > > > > > > > 
-> > > > > > > > 3705b88db0d7cc ("rcu: Add a module parameter to force use of
-> > > > > > > > expedited RCU primitives")
-> > > > > > > > 
-> > > > > > > > Antti provided this commit precisely in order to allow Android
-> > > > > > > > devices to expedite the boot process and to shut off the
-> > > > > > > > expediting at a time of Android userspace's choosing.  So Android
-> > > > > > > > has been making this work for about ten years, which strikes me
-> > > > > > > > as an adequate proof of concept.  ;-)
-> > > > > > > 
-> > > > > > > Thanks for the pointer. That's true. Looking at Android sources, I
-> > > > > > > find that Android Mediatek devices at least are setting
-> > > > > > > rcu_expedited to 1 at late stage of their userspace boot (which is
-> > > > > > > weird, it should be set to 1 as early as possible), and
-> > > > > > > interestingly I cannot find them resetting it back to 0!.  Maybe
-> > > > > > > they set rcu_normal to 1? But I cannot find that either. Vlad? :P
-> > > > > > 
-> > > > > > Interesting.  Though this is consistent with Antti's commit log,
-> > > > > > where he talks about expediting grace periods but not unexpediting
-> > > > > > them.
-> > > > > > 
-> > > > > Do you think we need to unexpedite it? :))))
-> > > > 
-> > > > Android runs on smallish systems, so quite possibly not!
-> > > > 
-> > > We keep it enabled and never unexpedite it. The reason is a performance.  I
-> > > have done some app-launch time analysis with enabling and disabling of it.
-> > > 
-> > > An expedited case is much better when it comes to app launch time. It
-> > > requires ~25% less time to run an app comparing with unexpedited variant.
-> > > So we have a big gain here.
-> > 
-> > Wow, that's huge. I wonder if you can dig deeper and find out why that is so
-> > as the callbacks may need to be synchronize_rcu_expedited() then, as it could
-> > be slowing down other usecases! I find it hard to believe, real-time
-> > workloads will run better without those callbacks being always-expedited if
-> > it actually gives back 25% in performance!
-> > 
-> I can dig further, but on a high level i think there are some spots
-> which show better performance if expedited is set. I mean synchronize_rcu()
-> becomes as "less blocking a context" from a time point of view.
+On 3/12/23 10:59, Mike Rapoport wrote:
+> On Fri, Mar 10, 2023 at 11:32:09AM +0100, Vlastimil Babka wrote:
+>> This will make it easier to free objects in situations when they can
+>> come from either kmalloc() or kmem_cache_alloc(), and also allow
+>> kfree_rcu() for freeing objects from kmem_cache_alloc().
+>> 
+>> For the SLAB and SLUB allocators this was always possible so with SLOB
+>> gone, we can document it as supported.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> Cc: Mike Rapoport <rppt@kernel.org>
+>> Cc: Jonathan Corbet <corbet@lwn.net>
+>> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>> Cc: Frederic Weisbecker <frederic@kernel.org>
+>> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+>> Cc: Josh Triplett <josh@joshtriplett.org>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+>> Cc: Joel Fernandes <joel@joelfernandes.org>
+>> ---
+>>  Documentation/core-api/memory-allocation.rst | 15 +++++++++++----
+>>  include/linux/rcupdate.h                     |  6 ++++--
+>>  mm/slab_common.c                             |  5 +----
+>>  3 files changed, 16 insertions(+), 10 deletions(-)
+>> 
+>> diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
+>> index 5954ddf6ee13..f9e8d352ed67 100644
+>> --- a/Documentation/core-api/memory-allocation.rst
+>> +++ b/Documentation/core-api/memory-allocation.rst
+>> @@ -170,7 +170,14 @@ should be used if a part of the cache might be copied to the userspace.
+>>  After the cache is created kmem_cache_alloc() and its convenience
+>>  wrappers can allocate memory from that cache.
+>>  
+>> -When the allocated memory is no longer needed it must be freed. You can
+>> -use kvfree() for the memory allocated with `kmalloc`, `vmalloc` and
+>> -`kvmalloc`. The slab caches should be freed with kmem_cache_free(). And
+>> -don't forget to destroy the cache with kmem_cache_destroy().
+>> +When the allocated memory is no longer needed it must be freed. Objects
 > 
-> The problem of a regular synchronize_rcu() is - it can trigger a big latency
-> delays for a caller. For example for nocb case we do not know where in a list
-> our callback is located and when it is invoked to unblock a caller.
+> I'd add a line break before Objects                               ^
 > 
-> I have already mentioned somewhere. Probably it makes sense to directly wake-up
-> callers from the GP kthread instead and not via nocb-kthread that invokes our callbacks
-> one by one.
+>> +allocated by `kmalloc` can be freed by `kfree` or `kvfree`.
+>> +Objects allocated by `kmem_cache_alloc` can be freed with `kmem_cache_free`
+>> +or also by `kfree` or `kvfree`, which can be more convenient as it does
+> 
+> Maybe replace 'or also by' with a coma:
+> 
+> Objects allocated by `kmem_cache_alloc` can be freed with `kmem_cache_free`,
+> `kfree` or `kvfree`, which can be more convenient as it does
 
-Looking forward to your optimization, I wonder if to overcome the issue Paul
-mentioned about wake up overhead, whether it is possible to find out how many
-tasks there are to wake without much overhead, and for the common case of
-likely one task to wake up which is doing a synchronize_rcu(), wake that up.
-But there could be dragons..
+But then I need to clarify what the "which" applies to?
 
-thanks,
+> 
+>> +not require the kmem_cache pointed.
+> 
+>                              ^ pointer.
+> 
+>> +The rules for _bulk and _rcu flavors of freeing functions are analogical.
+> 
+> Maybe 
+> 
+> The same rules apply to _bulk and _rcu flavors of freeing functions.
 
- - Joel
+So like this incremental diff?
+
+diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
+index f9e8d352ed67..1c58d883b273 100644
+--- a/Documentation/core-api/memory-allocation.rst
++++ b/Documentation/core-api/memory-allocation.rst
+@@ -170,12 +170,14 @@ should be used if a part of the cache might be copied to the userspace.
+ After the cache is created kmem_cache_alloc() and its convenience
+ wrappers can allocate memory from that cache.
+ 
+-When the allocated memory is no longer needed it must be freed. Objects
+-allocated by `kmalloc` can be freed by `kfree` or `kvfree`.
+-Objects allocated by `kmem_cache_alloc` can be freed with `kmem_cache_free`
+-or also by `kfree` or `kvfree`, which can be more convenient as it does
+-not require the kmem_cache pointed.
+-The rules for _bulk and _rcu flavors of freeing functions are analogical.
++When the allocated memory is no longer needed it must be freed.
++
++Objects allocated by `kmalloc` can be freed by `kfree` or `kvfree`. Objects
++allocated by `kmem_cache_alloc` can be freed with `kmem_cache_free`, `kfree`
++or `kvfree`, where the latter two might be more convenient thanks to not
++needing the kmem_cache pointer.
++
++The same rules apply to _bulk and _rcu flavors of freeing functions.
+ 
+ Memory allocated by `vmalloc` can be freed with `vfree` or `kvfree`.
+ Memory allocated by `kvmalloc` can be freed with `kvfree`.
 
