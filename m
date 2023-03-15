@@ -2,74 +2,147 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15637C61DA4
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 23:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB510C61DA4
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 23:55:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbjCOXT3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 19:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
+        id S233018AbjCOXzU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 19:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232039AbjCOXT0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 19:19:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BE19EF61;
-        Wed, 15 Mar 2023 16:19:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F2BD5B81F69;
-        Wed, 15 Mar 2023 23:19:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F671C433EF;
-        Wed, 15 Mar 2023 23:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678922362;
-        bh=81awSetxC+QrtwX4EfU7acoeVof/2xDbxdsMUMHBWk8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dS//3Mj0ALvxPCR9OCD67H+DMvkA5gVl2t1Y53GuNX4zFtLuqYt9oFeM+wYrbcAyT
-         f9YQDtm/mrdVOiyvXHlXRTeO6C1t7JHZc+Yu4p90Uo3I9RTvCfHAw7sFShCTOTBKXi
-         r3MWu58+CzO75FhrKNCEuc/V63JeGKQzXIwpy3YENLN+bPXUDFbTE1tv5sqEqNoDXu
-         3zasRE/DwjiimdfN6Ievi5eAMFk/dVXnGuCv78+6HOpJZilK00FMvPVZ9Z2M1r4Wtc
-         cvgMt9I0FlBXMuerjrNZIYa2x6f9cAy//EshdpIIv76QDoel5TK1d6yLXikDZ0aoMz
-         8EV5xfmXa4Btw==
-Date:   Thu, 16 Mar 2023 00:19:19 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
+        with ESMTP id S232820AbjCOXzT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 19:55:19 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007215DC83;
+        Wed, 15 Mar 2023 16:55:10 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d7so42776qtr.12;
+        Wed, 15 Mar 2023 16:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678924509;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=rSHayc8txC7fJhfYpILWnHp5swdD7fCpVaDyZx3Qg94=;
+        b=Ud0NGkuFtWs9+/PMrXuSEV9LIvHfkUP+QDzDmUsV3TFJhF6IgDVbFQizll6KCf6nWk
+         I36WbOarzxbk1sOHmaV5dyariMmKgNeK2OqsOeGFNznMKbC8CQHSEmUrOb2WkCX9J2cl
+         GppJ/QiihhVSHMnGcppX+nCONPs6jvzm9XYWdQpTOKgLNK3LlkwsDjTO2MdATLoqlwBM
+         u0ZsN4rEjOWCSdxMt+cNTSdH9OwEwtUrHmU9cPRjUgL7TxBkh18mX1YD9soDGgB+ZPH9
+         FVcUhWdqmLgJD45QUYBt4VW4ba9+hTWYyGkqYJIrglRH8gQgG1XJ2BhrMH1Bf0BIagC7
+         9T3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678924509;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rSHayc8txC7fJhfYpILWnHp5swdD7fCpVaDyZx3Qg94=;
+        b=SGxZIrja1KLoJOXM1jKlNDoutaVw3fzb2juHvpg3DxCxeWa7zs53tS0ro7HKJI2bWA
+         IDwu55J1zdcTO5WWtrBNfhoioZE/HQOYP+tydv2yrCxFBT8TssAuV9YrmTYlVewYL1CG
+         neTuAByu1AMNrsY6E8vK5Rzy/1fi9xOQyEPJ4QwV4pUwVdSrIlabFBnjkW/PcP73lCvq
+         CKen5rMVQAwvmRmV1yDvnMR3l5dU/7dPvZtd6GlVQ5E9YXUDaXGj26jp1seDmIodcCNl
+         VDksqK0TqaknDbmAXhIJkO8ejtQDco8Z65gLBF6TzWxMZTI2OaQIL/8PqduhlZMOGC52
+         k3dg==
+X-Gm-Message-State: AO0yUKXlbPyZhpoDFwdgKp2MFu3B+4Uh952tNZy9t6CyBKkbtK9uZx5v
+        rOtvjgf0SMm9e0U0MAiMMXY=
+X-Google-Smtp-Source: AK7set8Sy6Mv0lo2dHKPCgtM8eHmRLywg2Zo3R59wAS/2/HGSZ9CjVzX8/eiQA/dyTspyb5t0on4cg==
+X-Received: by 2002:a05:622a:8:b0:3ac:fba0:cde with SMTP id x8-20020a05622a000800b003acfba00cdemr2454753qtw.22.1678924509531;
+        Wed, 15 Mar 2023 16:55:09 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id w16-20020a05622a135000b003d65e257f10sm1267858qtk.79.2023.03.15.16.55.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Mar 2023 16:55:08 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 74F5527C0054;
+        Wed, 15 Mar 2023 19:55:08 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 15 Mar 2023 19:55:08 -0400
+X-ME-Sender: <xms:21oSZOBfFGrpbvR1f8ZdOguYTIvCUYUCJRfLOZgsqW5JNRWqtWZGmw>
+    <xme:21oSZIguRmNWpzGQb_51SfdfpZNkmLk6LFuLajfo6asR3CQUGYg53oBNsqHarOmFz
+    0_jfdc6A_6QxhmX1Q>
+X-ME-Received: <xmr:21oSZBlYcB_jGNaM5rOuj_fG4yiEXZ4kFT9vyARY_Iye5jwfDnHadMGexRo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddvledgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpefgteffhfehjeegtdduieffudetfeehgfegudejudfhieefgfeigfevueduledu
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:21oSZMxk63skqQVuoiGG3_pII5xSk0UvXHeTzX3pTp8SyCXptOB8lw>
+    <xmx:21oSZDT3HFDmwUCmQtkJon_FD854CyE_ZVn3BiaqVY44J9OJCKowQQ>
+    <xmx:21oSZHaVRJ_H290ov-sc9L1XL3o3EDA4_3aowg7F-7lnb1YOK63aSg>
+    <xmx:3FoSZBAgl2Njz6LgTseP6CYOE2refiVXBaV67-XLaOTB683WAnjQZA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 15 Mar 2023 19:55:07 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang1.zhang@intel.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH 4/9] rcu: Register rcu-lazy shrinker only for
- CONFIG_RCU_LAZY=y kernels
-Message-ID: <ZBJSd9tJ8RU7er1o@localhost.localdomain>
-References: <20230315194349.10798-1-joel@joelfernandes.org>
- <20230315194349.10798-4-joel@joelfernandes.org>
+        Joel Fernandes <joel@joelfernandes.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH rcu 0/8] RCU torture test and tool updates for v6.4
+Date:   Wed, 15 Mar 2023 16:54:46 -0700
+Message-Id: <20230315235454.2993-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230315194349.10798-4-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Wed, Mar 15, 2023 at 07:43:44PM +0000, Joel Fernandes (Google) a écrit :
-> From: Zqiang <qiang1.zhang@intel.com>
-> 
-> The lazy_rcu_shrink_count() shrinker function is registered even in
-> kernels built with CONFIG_RCU_LAZY=n, in which case this function
-> uselessly consumes cycles learning that no CPU has any lazy callbacks
-> queued.
-> 
-> This commit therefore registers this shrinker function only in the kernels
-> built with CONFIG_RCU_LAZY=y, where it might actually do something useful.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Hi,
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+This series contains changes for rcutorture and rcu-related tool, which
+are targeted for v6.4.
+
+This is my first time helping prepare PRs, so please take a careful look
+and yell at me if there is something wrong. Thanks a lot!
+
+You will also be able to find the series at:
+
+	https://github/fbq/linux rcu/rcutorture.2023.03.11a
+
+top commit is:
+
+	015d88635382
+
+List of changes:
+
+Bhaskar Chowdhury (1):
+  tools: rcu: Add usage function and check for argument
+
+Paul E. McKenney (5):
+  rcutorture: Add test_nmis module parameter
+  rcutorture: Set CONFIG_BOOTPARAM_HOTPLUG_CPU0 to offline CPU 0
+  rcutorture: Make scenario TREE04 enable lazy call_rcu()
+  torture: Permit kvm-again.sh --duration to default to previous run
+  torture: Enable clocksource watchdog with "tsc=watchdog"
+
+Yue Hu (1):
+  rcutorture: Eliminate variable n_rcu_torture_boost_rterror
+
+Zqiang (1):
+  rcutorture: Create nocb kthreads only when testing rcu in
+    CONFIG_RCU_NOCB_CPU=y kernels
+
+ kernel/rcu/rcutorture.c                       | 49 +++++++++++++++----
+ tools/rcu/extract-stall.sh                    | 26 +++++++---
+ .../selftests/rcutorture/bin/kvm-again.sh     |  2 +-
+ .../selftests/rcutorture/bin/torture.sh       |  6 +--
+ .../selftests/rcutorture/configs/rcu/TREE01   |  1 +
+ .../selftests/rcutorture/configs/rcu/TREE04   |  1 +
+ 6 files changed, 65 insertions(+), 20 deletions(-)
+ mode change 100644 => 100755 tools/rcu/extract-stall.sh
+
+-- 
+2.39.2
+
