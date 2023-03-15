@@ -2,58 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CA05C6FD1D
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 21:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26527C61DA4
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 21:14:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbjCOVH6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 17:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
+        id S232569AbjCOVOl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 17:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232564AbjCOVH4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 17:07:56 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F266A1FFD;
-        Wed, 15 Mar 2023 14:07:28 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id x3so80594490edb.10;
-        Wed, 15 Mar 2023 14:07:28 -0700 (PDT)
+        with ESMTP id S232400AbjCOVOh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 17:14:37 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21A65BDA2;
+        Wed, 15 Mar 2023 14:14:06 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id eg48so21506947edb.13;
+        Wed, 15 Mar 2023 14:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678914445;
+        d=gmail.com; s=20210112; t=1678914844;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvqDpJQII0tjuTCE/L1nrUqFi/4o57mJXXPUuuf5pig=;
-        b=irzpxa9zw/+hC0m1wLsOCiPmJr1uESLcY7buc1fxHRe8ikp3hqYV0KFr/+KpCLRJQr
-         A6LBKRz/JullVNHBuZR3bkFtXr9HEWdsKutpHp2D1a+/ZSBY0n4ATGBQ1CDUmLarhxs0
-         LIaccdMT/71JO8NbUTwd8HYv+3db+m+3ZEuItuH8QOyCc1kpa56LnTo6T8bbcpoYPRy4
-         8p81ztd/x10SZ9tO+GLsDBkUykyOayacmK666Bdx/B6IBmSlDoTC8m3e7lo7f/+UPvGf
-         NudHzcMehZ90DosiDTwt6GiDC2qigbBMFNzy6UGBWTGGq4XXR+LqDj/P1RE/lFp+Zt62
-         wJpw==
+        bh=ErOHFFfZLiBU7fvFPTfb/G/jVk1aWQz0RyiO/Y7ixFM=;
+        b=jea2BpSYboa38wLSkbg+RAA+ULoibbS9K8kkQQvQV2gEZB0wU1wo1S9dkhdvM1Vi26
+         WHoUysFF5sJoAkY8Fa3a2RlFxAezlU2mZbzjtCIncRlRObmQOIU2K1K3F/CjoNZQfYwn
+         qZt2FJt90ez6yCooLVlzPtw27UnLYTlagu3TGgSzhrdR8l7vi6rRj1pBa47djPiQtaaN
+         Flp2GyQb1hEDAdD5Udg7YKLrJQ5Z4BqIf78R/ojDetsNns8T0v8Sn/sZYX2RJh/rpro0
+         /YuYFnH5T7ZsGNj4PxqWAH+FugcekWAH59mpNfJdzN4jDs6nVf8y5f/Z9jPBRHST1ctk
+         yWUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678914445;
+        d=1e100.net; s=20210112; t=1678914844;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JvqDpJQII0tjuTCE/L1nrUqFi/4o57mJXXPUuuf5pig=;
-        b=M5iGDvtVl5/oS+Ckty8heVZEkt7zJPo7657E98p8kIqV0JNVl/vej48sEvg6LtVnYH
-         TM7YSVibYdujfJsTUqMCycnApRyqOFxL3rsT1ELht4a973PGgEjPkZx7ncx8JUkBelF4
-         mwVt9ecgFNF75j4cGYd5Xx8wG7vkofLr117JQH2DmulAWL/sg6xvezmar4A+Y5vc5Qhc
-         wVg9gA9x/B48jzOe1/OvS5dwXkUX6W6g9HgfmqFBQCdv4EYzITMuA7jsjEenYS+rALjq
-         S5/8UmAKhXideuzfmhjXRYUVZxh2DLAWOAzYqlHDrOP9OUvYJgG4EfNjDM5cQyvBQO0D
-         M57g==
-X-Gm-Message-State: AO0yUKUDZDCic99JN0twiUkZ0UbhJU5iIpc1q1shJiQ53E7ptM/jFaqN
-        PrLLAeUkw5dlOMmgL6LAhhg=
-X-Google-Smtp-Source: AK7set9dk4uiXjVHbvyjFJS/4XuLINbjhs4sxkdQYeUdhCt+6qRLrJwAYNxyw5pKXq7jAbxb43+fVg==
-X-Received: by 2002:a17:907:2d21:b0:8af:2a97:91d4 with SMTP id gs33-20020a1709072d2100b008af2a9791d4mr10647665ejc.14.1678914445189;
-        Wed, 15 Mar 2023 14:07:25 -0700 (PDT)
+        bh=ErOHFFfZLiBU7fvFPTfb/G/jVk1aWQz0RyiO/Y7ixFM=;
+        b=TXq6gc6Iz3aDOX7Mo2UEa9E7eKl4Z5Kl5/EYBr/u3GIkqcjVLDGmvE69JZsrAlncXI
+         83LJ8Nt/Lpz3qac4bBUGZtcXjgcSvFD6JjlooeSBPT16gcbBZhuzdB12P007qKoZLB4C
+         5AmvF18AREsT5gO4s6R38i3tN7Xr9in0T8v2elnR8ozIVv+wtcVMKisQU1CeAeBc+jQl
+         rgSJiFWQTPD4YYb72EIcQzWc2ieC2aMjkyZkHE3SvO6Fea1BffzmINe5B9ZV+OfWhbBu
+         5Q7av2YlvCFV7FPNBtiNKzwwXZhtlzW5bTTREFi/ODUoT/qHblLD+5p598VjEu9flKrb
+         rXeQ==
+X-Gm-Message-State: AO0yUKWBfwI1dpWf8KwcIbiDgXgqOCnQvAudURMjXORDqHwYXyDrdGSg
+        xHma15osulDBqCbHTbXa6FE=
+X-Google-Smtp-Source: AK7set9OP3+L58MFHm0uUycxLPt9A8ha+Zci0ugvBmE4uCM/6aniJQDwnmVJv+/WJpq6/6m7H+Rcrg==
+X-Received: by 2002:a17:907:c60a:b0:92f:e40d:1489 with SMTP id ud10-20020a170907c60a00b0092fe40d1489mr1409847ejc.61.1678914844452;
+        Wed, 15 Mar 2023 14:14:04 -0700 (PDT)
 Received: from pc636 ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id pw13-20020a17090720ad00b008e40853a712sm2967532ejb.97.2023.03.15.14.07.24
+        by smtp.gmail.com with ESMTPSA id rq4-20020a17090788c400b00927341bf69dsm2975472ejc.88.2023.03.15.14.14.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 14:07:24 -0700 (PDT)
+        Wed, 15 Mar 2023 14:14:04 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 15 Mar 2023 22:07:22 +0100
+Date:   Wed, 15 Mar 2023 22:14:02 +0100
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Jens Axboe <axboe@kernel.dk>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -66,7 +66,7 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
 Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
  k[v]free_rcu_mightsleep()
-Message-ID: <ZBIzihsxOZwuSoYZ@pc636>
+Message-ID: <ZBI1GhEepro6sufK@pc636>
 References: <20230201150815.409582-1-urezki@gmail.com>
  <20230315151415.2534e11c@gandalf.local.home>
  <e5a1815b-65b5-55ca-9773-ec04378d53c0@kernel.dk>
@@ -74,59 +74,65 @@ References: <20230201150815.409582-1-urezki@gmail.com>
  <20230315153448.6914f85b@gandalf.local.home>
  <CAEXW_YTLFQ3-LApyCPNNx7Tn2ovFr8YUXL=1WVCm+rE2hRKE8g@mail.gmail.com>
  <20230315162840.106a5b4f@gandalf.local.home>
+ <ZBIzihsxOZwuSoYZ@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230315162840.106a5b4f@gandalf.local.home>
+In-Reply-To: <ZBIzihsxOZwuSoYZ@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 04:28:40PM -0400, Steven Rostedt wrote:
-> On Wed, 15 Mar 2023 15:57:02 -0400
-> Joel Fernandes <joel@joelfernandes.org> wrote:
-> 
-> > > I was going to suggest "kvfree_rcu_might_synchronize()" but that's just
-> > > getting ridiculous.  
+On Wed, Mar 15, 2023 at 10:07:22PM +0100, Uladzislau Rezki wrote:
+> On Wed, Mar 15, 2023 at 04:28:40PM -0400, Steven Rostedt wrote:
+> > On Wed, 15 Mar 2023 15:57:02 -0400
+> > Joel Fernandes <joel@joelfernandes.org> wrote:
 > > 
-> > No, synchronize() is incorrect. The code really can sleep for other
-> > reasons like memory allocation. It is not that simple of an
-> > implementation as one may imagine. mightsleep is really the correct
-> > wording IMHO.
+> > > > I was going to suggest "kvfree_rcu_might_synchronize()" but that's just
+> > > > getting ridiculous.  
+> > > 
+> > > No, synchronize() is incorrect. The code really can sleep for other
+> > > reasons like memory allocation. It is not that simple of an
+> > > implementation as one may imagine. mightsleep is really the correct
+> > > wording IMHO.
+> > > 
+> > > > Still, I will replace that code back to a kfree() and rcu_synchonize() than
+> > > > to let that other name get in.  
+> > > 
+> > > I think it is too late for that for now, we already have conversions
+> > > going into the other subsystems, that means we'll have to redo all
+> > > that over again (even if it sounded like a good idea, which it is
+> > > not).
+> > > 
+> > > I would rather you just did: "#define kvfree_rcu_tracing
+> > > #kvfree_rcu_mightsleep", or something like that, if it is really a
+> > > problem. ;-)
+> > > 
+> > > Also you are really the first person I know of who has a problem with that name.
 > > 
-> > > Still, I will replace that code back to a kfree() and rcu_synchonize() than
-> > > to let that other name get in.  
+> > I guess you didn't read Jens's reply.
 > > 
-> > I think it is too late for that for now, we already have conversions
-> > going into the other subsystems, that means we'll have to redo all
-> > that over again (even if it sounded like a good idea, which it is
-> > not).
+> > The main issue I have with this, is that "might_sleep" is just an
+> > implementation issue. It has *nothing* to do with what the call is about.
+> > It is only about freeing something with RCU. It has nothing to do with
+> > sleeping. I don't use it because it might sleep. I use it to free something.
 > > 
-> > I would rather you just did: "#define kvfree_rcu_tracing
-> > #kvfree_rcu_mightsleep", or something like that, if it is really a
-> > problem. ;-)
+> > If you don't like kvfree_rcu_synchronization() then call it
+> > kvfree_rcu_headless() and note that currently it can sleep. Because in
+> > the future, if we come up with an implementation where we it doesn't sleep,
+> > then we don't need to go and rename all the users in the future.
 > > 
-> > Also you are really the first person I know of who has a problem with that name.
+> > See where I have the problem with the name "might_sleep"?
+> > 
+> In that sense there is no need in renaming it. The current name of
+> single argument is kvfree_rcu(ptr). It is documented that it can sleep.
 > 
-> I guess you didn't read Jens's reply.
+> According to its name it is clear that it is headless since there
+> is no a second argument.
 > 
-> The main issue I have with this, is that "might_sleep" is just an
-> implementation issue. It has *nothing* to do with what the call is about.
-> It is only about freeing something with RCU. It has nothing to do with
-> sleeping. I don't use it because it might sleep. I use it to free something.
-> 
-> If you don't like kvfree_rcu_synchronization() then call it
-> kvfree_rcu_headless() and note that currently it can sleep. Because in
-> the future, if we come up with an implementation where we it doesn't sleep,
-> then we don't need to go and rename all the users in the future.
-> 
-> See where I have the problem with the name "might_sleep"?
-> 
-In that sense there is no need in renaming it. The current name of
-single argument is kvfree_rcu(ptr). It is documented that it can sleep.
-
-According to its name it is clear that it is headless since there
-is no a second argument.
+Forgot to add. I agree with you that currently it can sleep but it
+does not mean that a future stays the same, thus there might be an
+extra need in renaming again.
 
 --
 Uladzislau Rezki
