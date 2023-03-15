@@ -2,50 +2,50 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A387C7618A
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEABCC7618D
+	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 19:45:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbjCOTpJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 15:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
+        id S232498AbjCOTpK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 15:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjCOTom (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 15:44:42 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839CA6EA7
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:34 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id t9so1349773qtx.8
-        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:34 -0700 (PDT)
+        with ESMTP id S232664AbjCOToq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 15:44:46 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DC02BEDF
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:35 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id r16so17474578qtx.9
+        for <rcu@vger.kernel.org>; Wed, 15 Mar 2023 12:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678909473;
+        d=joelfernandes.org; s=google; t=1678909475;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ThU1XJtO1aLExHCNuOZtJgSY8HbvsH7BE8/boByrYno=;
-        b=ag5X7WW6rfx5+7t1/eBsvLbRkB0y7Vb/fHHyhSxrRthTHHyDI7UjKzwlHHipX9cFtF
-         Kka1hk8oKQDU69luA4VDWIBakHNnDiGrOW8TUl6Tbt1TJYOVUHXpB2E2TdW5uov5uc98
-         nrZnUhAVT3BLC9hxVe2eeMxuyFGzvMETCnPyU=
+        bh=3K8lekfNTHeJ4C0iv99fjGghn93IIX905cIt06EpTfQ=;
+        b=cKuWC+aHDyxATa6HN+YqE2E5Okxl3eR7i8zhoQiYjbzAOf2vN+cKz3FWTds5n8vFyZ
+         4FHsCNQavFITJZv8en/rMnQhzx8Bu1Ufn4X/caDxoFZldJHM/1+37+83SF2L6Q6HM4me
+         bh0PyPNf3ZJ5AH49Aq7N5gzNJEuxy5pZTENp0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678909473;
+        d=1e100.net; s=20210112; t=1678909475;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ThU1XJtO1aLExHCNuOZtJgSY8HbvsH7BE8/boByrYno=;
-        b=RAe37afrysbkmNfVwzBAykJJxcEQ+XWYYGNpCZBD78ktWDayWlJN7ZF3OelkeJqO3A
-         LclM8dthn6ZhWxq2XRsG4xgPa9uYJoWF3C82OJudLIFyIpW0orIO+1YPeL6FN3cevP50
-         gDRAfrgdy0snw+PUUAqTfqpS5LlDPATp1ccAgrgiXDuhODXWql+7PfG8Fu+K8Blvw1PL
-         +A0qtLfffSacyn7qqE92nEM89G2pzWPZMW/JALvFHTXwkIGbvYkfXj8svV5Y/RCyMCVh
-         2bcC8zYCrauo5uL6Sq6okB+ox27643LHyZCsMY39fONBJ+tSAH/j+jKY1oG030fr/Ois
-         qPDg==
-X-Gm-Message-State: AO0yUKUV0CwicexTzy9dirv6uWm6kQb7BvvejsjNpEtKaifiKGlB4o0W
-        gMOPcxCQNBxfYpgHGlO69n1FAw==
-X-Google-Smtp-Source: AK7set9eHeATCHiRK0lgFQHYvnJM3VGTCsQZJTXU87E+PPKBbb5RQF3SZBaL8sWIrBT9HAPSQX7+ug==
-X-Received: by 2002:a05:622a:1902:b0:3b6:93fe:443c with SMTP id w2-20020a05622a190200b003b693fe443cmr1567792qtc.32.1678909473597;
-        Wed, 15 Mar 2023 12:44:33 -0700 (PDT)
+        bh=3K8lekfNTHeJ4C0iv99fjGghn93IIX905cIt06EpTfQ=;
+        b=Y0bIvJ/oHSBfykJiVgmqVCjV2H+lddNzViuijyJny6qfk3WMI0v7EecpDXsYY+vKpZ
+         l+BAIjDawm+fxG8bMhDEZ45ViDA4RH6E9t3de4KEro4eRMvOLp1aDdMi/SBhsGQruTa0
+         +WS/qT1rDXLJ9HMn0WkI+ZDe4wxnvwj6Hwb3XEZCUX6rGeLYkIw1R8N/qexBfdoRodKN
+         tvhXoy7XnSI50a0cx9O9TM9GXcw6CXiHXrkM5kLrmgJ0VfLG74jiTpwZqMWOZTyvvOKj
+         XnScZ9Y9Y3Y5gnLpGWIWZh7RXrjXXR0wBUYGDBsd4JPHVgaLBZxAggId4K65fnFvVqiU
+         BeAg==
+X-Gm-Message-State: AO0yUKWlFoFcA03IvYntTEKgEdMWj11bNQhkcGtrdf+6RBYdXlHFQna6
+        1em7VQ58VlEPWnSgc3stQmXtng==
+X-Google-Smtp-Source: AK7set+LT+EegIShwTd4ywC4A9b7O5vXSYEk4EuLY9iyTgGFwjNnq/dG6dMyVv6nragGJ8LRGB3skQ==
+X-Received: by 2002:a05:622a:30d:b0:3bf:c407:10ca with SMTP id q13-20020a05622a030d00b003bfc40710camr1981909qtw.10.1678909474756;
+        Wed, 15 Mar 2023 12:44:34 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id c15-20020ac8660f000000b003b86b088755sm4346666qtp.15.2023.03.15.12.44.33
+        by smtp.gmail.com with ESMTPSA id c15-20020ac8660f000000b003b86b088755sm4346666qtp.15.2023.03.15.12.44.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 12:44:33 -0700 (PDT)
+        Wed, 15 Mar 2023 12:44:34 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -57,9 +57,9 @@ To:     linux-kernel@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>
 Cc:     Zqiang <qiang1.zhang@intel.com>, rcu@vger.kernel.org
-Subject: [PATCH 5/9] rcu: Remove never-set needwake assignment from rcu_report_qs_rdp()
-Date:   Wed, 15 Mar 2023 19:43:45 +0000
-Message-Id: <20230315194349.10798-5-joel@joelfernandes.org>
+Subject: [PATCH 6/9] rcu: Permit start_poll_synchronize_rcu_expedited() to be invoked early
+Date:   Wed, 15 Mar 2023 19:43:46 +0000
+Message-Id: <20230315194349.10798-6-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
 In-Reply-To: <20230315194349.10798-1-joel@joelfernandes.org>
 References: <20230315194349.10798-1-joel@joelfernandes.org>
@@ -71,61 +71,64 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Zqiang <qiang1.zhang@intel.com>
 
-The rcu_accelerate_cbs() function is invoked by rcu_report_qs_rdp()
-only if there is a grace period in progress that is still blocked
-by at least one CPU on this rcu_node structure.  This means that
-rcu_accelerate_cbs() should never return the value true, and thus that
-this function should never set the needwake variable and in turn never
-invoke rcu_gp_kthread_wake().
+According to the commit log of the patch that added it to the kernel,
+start_poll_synchronize_rcu_expedited() can be invoked very early, as
+in long before rcu_init() has been invoked.  But before rcu_init(),
+the rcu_data structure's ->mynode field has not yet been initialized.
+This means that the start_poll_synchronize_rcu_expedited() function's
+attempt to set the CPU's leaf rcu_node structure's ->exp_seq_poll_rq
+field will result in a segmentation fault.
 
-This commit therefore removes the needwake variable and the invocation
-of rcu_gp_kthread_wake() in favor of a WARN_ON_ONCE() on the call to
-rcu_accelerate_cbs().  The purpose of this new WARN_ON_ONCE() is to
-detect situations where the system's opinion differs from ours.
+This commit therefore causes start_poll_synchronize_rcu_expedited() to
+set ->exp_seq_poll_rq only after rcu_init() has initialized all CPUs'
+rcu_data structures' ->mynode fields.  It also removes the check from
+the rcu_init() function so that start_poll_synchronize_rcu_expedited(
+is unconditionally invoked.  Yes, this might result in an unnecessary
+boot-time grace period, but this is down in the noise.
 
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c     | 5 ++---
+ kernel/rcu/tree_exp.h | 5 +++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8e880c09ab59..e80e8f128c57 100644
+index e80e8f128c57..90d54571126a 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1955,7 +1955,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- {
- 	unsigned long flags;
- 	unsigned long mask;
--	bool needwake = false;
- 	bool needacc = false;
- 	struct rcu_node *rnp;
+@@ -4942,9 +4942,8 @@ void __init rcu_init(void)
+ 	else
+ 		qovld_calc = qovld;
  
-@@ -1987,7 +1986,12 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		 * NOCB kthreads have their own way to deal with that...
- 		 */
- 		if (!rcu_rdp_is_offloaded(rdp)) {
--			needwake = rcu_accelerate_cbs(rnp, rdp);
-+			/*
-+			 * The current GP has not yet ended, so it
-+			 * should not be possible for rcu_accelerate_cbs()
-+			 * to return true.  So complain, but don't awaken.
-+			 */
-+			WARN_ON_ONCE(rcu_accelerate_cbs(rnp, rdp));
- 		} else if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
- 			/*
- 			 * ...but NOCB kthreads may miss or delay callbacks acceleration
-@@ -1999,8 +2003,6 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 		rcu_disable_urgency_upon_qs(rdp);
- 		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
- 		/* ^^^ Released rnp->lock */
--		if (needwake)
--			rcu_gp_kthread_wake();
+-	// Kick-start any polled grace periods that started early.
+-	if (!(per_cpu_ptr(&rcu_data, cpu)->mynode->exp_seq_poll_rq & 0x1))
+-		(void)start_poll_synchronize_rcu_expedited();
++	// Kick-start in case any polled grace periods started early.
++	(void)start_poll_synchronize_rcu_expedited();
  
- 		if (needacc) {
- 			rcu_nocb_lock_irqsave(rdp, flags);
+ 	rcu_test_sync_prims();
+ }
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 7cc4856da081..5343f32e7d67 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -1066,9 +1066,10 @@ unsigned long start_poll_synchronize_rcu_expedited(void)
+ 	if (rcu_init_invoked())
+ 		raw_spin_lock_irqsave(&rnp->exp_poll_lock, flags);
+ 	if (!poll_state_synchronize_rcu(s)) {
+-		rnp->exp_seq_poll_rq = s;
+-		if (rcu_init_invoked())
++		if (rcu_init_invoked()) {
++			rnp->exp_seq_poll_rq = s;
+ 			queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
++		}
+ 	}
+ 	if (rcu_init_invoked())
+ 		raw_spin_unlock_irqrestore(&rnp->exp_poll_lock, flags);
 -- 
 2.40.0.rc1.284.g88254d51c5-goog
 
