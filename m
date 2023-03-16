@@ -2,166 +2,228 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E95CC6FD1F
-	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 18:01:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74E25C74A5B
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 22:21:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjCPSBs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 14:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        id S229489AbjCPWVT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Mar 2023 18:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbjCPSBq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 14:01:46 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A545B82A90
-        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 11:01:42 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id s12so2693296qtq.11
-        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 11:01:42 -0700 (PDT)
+        with ESMTP id S229982AbjCPWVS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Mar 2023 18:21:18 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981A9B0B82
+        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 15:21:15 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id i9so2875423wrp.3
+        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 15:21:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678989702;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mCwCM3jwPSvdECvB/xV5I3zv9L1I+QhlBAmAlgtE4FQ=;
-        b=op2+uxAWauOKpPTojx20BV5gxXCYlB8Lbx6xbjfTUyHuq7D75G1ELi7NtzO0KqDZjz
-         NuknRMcdtn0iNP4XSB26lQ7nz0Ie2KiPGhI+O5vpsadGCejjvwtd+VfdOHa+ryLucJHI
-         3TyHSfzK7C3/5HkwvVlijIo3W2dBppwkwBY54=
+        d=bytedance.com; s=google; t=1679005274;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jZOcJlN4hsoET9GB1lz88zELWFf4YxBH7A+4Yjdmpg0=;
+        b=jHDfLcCchiqdnozdtUvd3AIzSPgmu8CKRQyfMZhtMflGqrA4sIZVBV11LttR2/WRVQ
+         j6CPPcpqg4vZd+OlXmy1/pRWVAisVuiFqwtLTvO3oTeuan72LXYJ+1Q3PFcPJeLFsUqL
+         MER8KlDOQBcISMTImXF1w3+CZsw9iemukQHpHNfzDc3RIdfsWm+EXE9sTiubnYMTyZRr
+         vkbmS4MJljqZGRK2MUKVO8rbpMle2zqdi6M34Fc9tWxSr2HU5waK82B5J9QwG22kAwB/
+         CehZoT7fehMX1KmYU3h8N0EhL9xS5LaSrZiNtTY9aH7km5ZeZJYR6ywGwK8T23gdWHjn
+         VrWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678989702;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1679005274;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mCwCM3jwPSvdECvB/xV5I3zv9L1I+QhlBAmAlgtE4FQ=;
-        b=sWj67eGb50Wn4uoE2sBfBXuBogSZoznMnwtB0agunLK4jBZtKuWxUMsJoXelSUgS4m
-         IwPNTJuPFVvIbMwgNtmwLDVk83IaISCHGDCioro81ZyWC1DsXZirdhFHKdvmTWPvGJK5
-         5tKwO5r/QG295WE81mdqOIK37lyAqgklV7KevFUTGRbv7D2cQ+E3UeRRP+SkNeNI3cs/
-         CAqGC3+FG0UeFkl3gTkT7vBV9e47qlj+4og4Z4TM85f+E+6vpxgvX6z1yvgQPJVxdd50
-         TsslOv7MhhgznbWi86gc32JKyqq8JL8ECRR826WZ1H039sCi/bZFT+0ttnj+s3LQwwmD
-         S8vA==
-X-Gm-Message-State: AO0yUKWf4PYoYK/A6x7HXd50if1+vS730V1M8PkLW8OK7jSMVV2F0Z8a
-        an/M+MMXet9MczsLJtNkcRpSag==
-X-Google-Smtp-Source: AK7set/aw9X62MklOWFG4KKNwzni4qAvByFnMghhs4OBsFtn6S+MCj3xw03rNNZCxBT/Nk102q3R8A==
-X-Received: by 2002:ac8:5c4e:0:b0:3d9:218a:3390 with SMTP id j14-20020ac85c4e000000b003d9218a3390mr2392235qtj.8.1678989701653;
-        Thu, 16 Mar 2023 11:01:41 -0700 (PDT)
-Received: from smtpclient.apple (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id b17-20020ac86bd1000000b003bfd27755d7sm77156qtt.19.2023.03.16.11.01.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Mar 2023 11:01:41 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-Date:   Thu, 16 Mar 2023 14:01:30 -0400
-Message-Id: <70A3066E-3B61-4B81-B36D-69BC27DAD5E9@joelfernandes.org>
-References: <ZBNYogVe9spBmTm2@pc636>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>,
-        Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <ZBNYogVe9spBmTm2@pc636>
-To:     Uladzislau Rezki <urezki@gmail.com>
-X-Mailer: iPhone Mail (20B101)
+        bh=jZOcJlN4hsoET9GB1lz88zELWFf4YxBH7A+4Yjdmpg0=;
+        b=Fa3aOmegtcuPBi/VqhBiPCMjmsFg3Ud5a4SQo3WHTofYfpP4an+n/NbXzxiIWgekdI
+         eI93WLXlKMIPRVOB0zDRBXf5QxKCajUqA1mvTVLYSlWzRUnWoiO2ZNKq2Zu8RYZbm+4m
+         470SV7PxgpyLtR8Ny/lkWVdcjLHLtQf2fWmPDvSvsVEqTlVsqFCZrijVxnsI76aMEnv/
+         o0nZipZNcsJIvHDXhjVcWIZQu8Bs8IHJbrlbBBK7VFS/cKF/cjHOWBsALScKRtCFpGLn
+         A4dUJa20a1BuTwL3JMFntTyygo+AQ96dSwnmSoPRQEDkWiWXDHrZr91jFlc7xywp5b+a
+         MMwQ==
+X-Gm-Message-State: AO0yUKUYIVUgSSwMScQcwyWZjvKMHlnVbvjzkGO0pWR5HXHFGI4/p/Gl
+        DGCvdwH53/pBIlszt2H1oKKoBQ==
+X-Google-Smtp-Source: AK7set8/JMm1BD3p/e7ex+3Zw/5k1J2dt9JTTu01hxcYcndc0IEXCkt8Lgt35mwniZI7VpeZ1a3zlQ==
+X-Received: by 2002:a5d:530d:0:b0:2cf:e2f3:ef46 with SMTP id e13-20020a5d530d000000b002cfe2f3ef46mr5192145wrv.52.1679005273994;
+        Thu, 16 Mar 2023 15:21:13 -0700 (PDT)
+Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:4b87:78c3:3abe:7b0d])
+        by smtp.gmail.com with ESMTPSA id f9-20020adff989000000b002cea392f000sm439256wrr.69.2023.03.16.15.21.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Mar 2023 15:21:13 -0700 (PDT)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH v15 02/12] cpu/hotplug: Move idle_thread_get() to <linux/smpboot.h>
+Date:   Thu, 16 Mar 2023 22:20:59 +0000
+Message-Id: <20230316222109.1940300-3-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230316222109.1940300-1-usama.arif@bytedance.com>
+References: <20230316222109.1940300-1-usama.arif@bytedance.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+From: David Woodhouse <dwmw@amazon.co.uk>
 
+Instead of relying purely on the special-case wrapper in bringup_cpu()
+to pass the idle thread to __cpu_up(), expose idle_thread_get() so that
+the architecture code can obtain it directly when necessary.
 
-> On Mar 16, 2023, at 1:58 PM, Uladzislau Rezki <urezki@gmail.com> wrote:
->=20
-> =EF=BB=BFOn Wed, Mar 15, 2023 at 06:36:48PM -0400, Steven Rostedt wrote:
->> On Thu, 9 Mar 2023 14:45:21 +0100
->> Uladzislau Rezki <urezki@gmail.com> wrote:
->>=20
->>>> The kvfree_rcu()'s single argument name is deprecated therefore
->>>> rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
->>>> underline that it is for sleepable contexts.
->>>>=20
->>>> Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
->>>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->>>>=20
->>> Could you please add you reviwed-by or Acked-by tags so we can bring
->>> our series with renaming for the next merge window?
->>=20
->> I don't know. Perhaps we should just apply this patch and not worry about=
+This will be useful when the existing __cpu_up() is split into multiple
+phases, only *one* of which will actually need the idle thread.
 
->> sleeping and whatnot.
->>=20
->> -- Steve
->>=20
->> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
->> index 04f0fdae19a1..5de945a8f61d 100644
->> --- a/kernel/trace/trace_osnoise.c
->> +++ b/kernel/trace/trace_osnoise.c
->> @@ -76,6 +76,7 @@ static unsigned long osnoise_options    =3D OSN_DEFAULT=
-_OPTIONS;
->> struct osnoise_instance {
->>    struct list_head    list;
->>    struct trace_array    *tr;
->> +    struct rcu_head        rcu;
->> };
->>=20
->> static struct list_head osnoise_instances;
->> @@ -159,7 +160,7 @@ static void osnoise_unregister_instance(struct trace_=
-array *tr)
->>    if (!found)
->>        return;
->>=20
->> -    kvfree_rcu(inst);
->> +    kvfree_rcu(inst, rcu);
->> }
->>=20
->> /*
->> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
->> index 20d0c4a97633..ef5fafb40c76 100644
->> --- a/kernel/trace/trace_probe.c
->> +++ b/kernel/trace/trace_probe.c
->> @@ -1172,7 +1172,7 @@ int trace_probe_remove_file(struct trace_probe *tp,=
+If the architecture code is to register its new pre-bringup states with
+the cpuhp core, having a special-case wrapper to pass extra arguments is
+non-trivial and it's easier just to let the arch register its function
+pointer to be invoked with the standard API.
 
->>        return -ENOENT;
->>=20
->>    list_del_rcu(&link->list);
->> -    kvfree_rcu(link);
->> +    kvfree_rcu(link, rcu);
->>=20
->>    if (list_empty(&tp->event->files))
->>        trace_probe_clear_flag(tp, TP_FLAG_TRACE);
->> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
->> index ef8ed3b65d05..e6037752dcf0 100644
->> --- a/kernel/trace/trace_probe.h
->> +++ b/kernel/trace/trace_probe.h
->> @@ -256,6 +256,7 @@ struct trace_probe {
->> struct event_file_link {
->>    struct trace_event_file        *file;
->>    struct list_head        list;
->> +    struct rcu_head            rcu;
->> };
->>=20
->> static inline bool trace_probe_test_flag(struct trace_probe *tp,
->>=20
-> Anyway i do not see any problems with it
->=20
-> Acked-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+To reduce duplication, move the shadow stack reset and kasan unpoisoning
+into idle_thread_get() too.
 
-Just to clarify, we are dropping the original patch and instead taking Steve=
-s version?
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+---
+ include/linux/smpboot.h | 10 ++++++++++
+ kernel/cpu.c            | 13 +++----------
+ kernel/smpboot.c        | 11 ++++++++++-
+ kernel/smpboot.h        |  2 --
+ 4 files changed, 23 insertions(+), 13 deletions(-)
 
-If so, Steve please send a patch when you are able to and with Vlads Ack,
-we can take it via the RCU tree if that is Ok with you.
+diff --git a/include/linux/smpboot.h b/include/linux/smpboot.h
+index 9d1bc65d226c..df6417703e4c 100644
+--- a/include/linux/smpboot.h
++++ b/include/linux/smpboot.h
+@@ -5,6 +5,16 @@
+ #include <linux/types.h>
+ 
+ struct task_struct;
++
++#ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
++struct task_struct *idle_thread_get(unsigned int cpu, bool unpoison);
++#else
++static inline struct task_struct *idle_thread_get(unsigned int cpu, bool unpoison)
++{
++	return NULL;
++}
++#endif
++
+ /* Cookie handed to the thread_fn*/
+ struct smpboot_thread_data;
+ 
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6c0a92ca6bb5..6b3dccb4a888 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -31,7 +31,6 @@
+ #include <linux/smpboot.h>
+ #include <linux/relay.h>
+ #include <linux/slab.h>
+-#include <linux/scs.h>
+ #include <linux/percpu-rwsem.h>
+ #include <linux/cpuset.h>
+ #include <linux/random.h>
+@@ -588,15 +587,9 @@ static int bringup_wait_for_ap(unsigned int cpu)
+ 
+ static int bringup_cpu(unsigned int cpu)
+ {
+-	struct task_struct *idle = idle_thread_get(cpu);
++	struct task_struct *idle = idle_thread_get(cpu, true);
+ 	int ret;
+ 
+-	/*
+-	 * Reset stale stack state from the last time this CPU was online.
+-	 */
+-	scs_task_reset(idle);
+-	kasan_unpoison_task_stack(idle);
+-
+ 	/*
+ 	 * Some architectures have to walk the irq descriptors to
+ 	 * setup the vector space for the cpu which comes online.
+@@ -614,7 +607,7 @@ static int bringup_cpu(unsigned int cpu)
+ 
+ static int finish_cpu(unsigned int cpu)
+ {
+-	struct task_struct *idle = idle_thread_get(cpu);
++	struct task_struct *idle = idle_thread_get(cpu, false);
+ 	struct mm_struct *mm = idle->active_mm;
+ 
+ 	/*
+@@ -1378,7 +1371,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+ 
+ 	if (st->state == CPUHP_OFFLINE) {
+ 		/* Let it fail before we try to bring the cpu up */
+-		idle = idle_thread_get(cpu);
++		idle = idle_thread_get(cpu, false);
+ 		if (IS_ERR(idle)) {
+ 			ret = PTR_ERR(idle);
+ 			goto out;
+diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+index 2c7396da470c..24e81c725e7b 100644
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -11,6 +11,7 @@
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/sched/task.h>
++#include <linux/scs.h>
+ #include <linux/export.h>
+ #include <linux/percpu.h>
+ #include <linux/kthread.h>
+@@ -27,12 +28,20 @@
+  */
+ static DEFINE_PER_CPU(struct task_struct *, idle_threads);
+ 
+-struct task_struct *idle_thread_get(unsigned int cpu)
++struct task_struct *idle_thread_get(unsigned int cpu, bool unpoison)
+ {
+ 	struct task_struct *tsk = per_cpu(idle_threads, cpu);
+ 
+ 	if (!tsk)
+ 		return ERR_PTR(-ENOMEM);
++
++	if (unpoison) {
++		/*
++		 * Reset stale stack state from last time this CPU was online.
++		 */
++		scs_task_reset(tsk);
++		kasan_unpoison_task_stack(tsk);
++	}
+ 	return tsk;
+ }
+ 
+diff --git a/kernel/smpboot.h b/kernel/smpboot.h
+index 34dd3d7ba40b..60c609318ad6 100644
+--- a/kernel/smpboot.h
++++ b/kernel/smpboot.h
+@@ -5,11 +5,9 @@
+ struct task_struct;
+ 
+ #ifdef CONFIG_GENERIC_SMP_IDLE_THREAD
+-struct task_struct *idle_thread_get(unsigned int cpu);
+ void idle_thread_set_boot_cpu(void);
+ void idle_threads_init(void);
+ #else
+-static inline struct task_struct *idle_thread_get(unsigned int cpu) { return NULL; }
+ static inline void idle_thread_set_boot_cpu(void) { }
+ static inline void idle_threads_init(void) { }
+ #endif
+-- 
+2.25.1
 
-Thanks,
-
- - Joel
-
-
->=20
-> --
-> Uladzislau Rezki
