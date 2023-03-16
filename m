@@ -2,96 +2,144 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B8C8C6FD1F
-	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 15:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D340C6FD19
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 17:51:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbjCPPSX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 11:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
+        id S229840AbjCPRvp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Mar 2023 13:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjCPPSW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 11:18:22 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8B9B9517
-        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 08:18:21 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id i24so2060846qtm.6
-        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 08:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1678979901;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sTZi71W7uS0cwwOVrssYyJhaieKUx7HA3YH7kg22iWg=;
-        b=G5MWWoFjX8wVVDLh02k8xeSq17tMezVMLXrakJuNUb73LG+XWQJlw7nTf8xuACnYNY
-         +XXLqtEhDNFxvqNnpm8EDNPVTLRurg2DNS4ZW/4iu2qxhQhtGLofT0KmG1S5YBiDwT4R
-         qKxa/YL1pmknx55aPGsjeoj/ULlIY5TUxtO7Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678979901;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sTZi71W7uS0cwwOVrssYyJhaieKUx7HA3YH7kg22iWg=;
-        b=MyOAqITbw5xp9enTCWSWtIEa1qNhEtQQPHZhYOZgeaicMP7DZIeP6uBLRflz7s3X8n
-         PThfIvzb6gu5mO4iOig/zG6Z+W8YFHIaCjbcotzYFdN5TgEMGHxe0vmsQNjH1Ck/qTXf
-         8r8xGT54yLPIgrNNjZC1c8jiX5T9PcddP4WGA4Uwkp+oo0MKqRDZ7u+6u79l6474ReF9
-         oosgoRftO7vgx6bPESlkHt3qerzXqkpJYBG08MCT5RbRiaw4b/f76XNwXYPBL/9Vvz8w
-         6AvEV3hc82GoARinXCMQCDYTXXXGqXn74kN3Emec339iETSzOa8yLc/zTzpSqYN8+2W/
-         yCgA==
-X-Gm-Message-State: AO0yUKVf7psunyaJwCJdik05ySehUrOUuALG49aDGWTzdUw2jf6ylVrd
-        Z5VZQj3729SWoOD/iXLoLwd6EQ==
-X-Google-Smtp-Source: AK7set9/nih+ai6mH+Z/lNZ6whQsRqf6IqmBjbgUKssX1LycRWgBcHithG4viTVGXudas9QnRWb5RA==
-X-Received: by 2002:ac8:7c4f:0:b0:3d3:da2a:194e with SMTP id o15-20020ac87c4f000000b003d3da2a194emr7065833qtv.8.1678979900808;
-        Thu, 16 Mar 2023 08:18:20 -0700 (PDT)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id b10-20020ac8678a000000b003b9b48cdbe8sm5860986qtp.58.2023.03.16.08.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Mar 2023 08:18:20 -0700 (PDT)
-Date:   Thu, 16 Mar 2023 15:18:20 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Adrian Huang <adrianhuang0701@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
-        Adrian Huang <ahuang12@lenovo.com>
-Subject: Re: [PATCH 1/1] docs: RCU: typo fix
-Message-ID: <20230316151820.GA373925@google.com>
-References: <20230316070936.733-1-adrianhuang0701@gmail.com>
+        with ESMTP id S230168AbjCPRvn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Mar 2023 13:51:43 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF613FBA7;
+        Thu, 16 Mar 2023 10:51:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 170C2B822F0;
+        Thu, 16 Mar 2023 17:50:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE7BC433D2;
+        Thu, 16 Mar 2023 17:50:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678989053;
+        bh=mQI195bsoZhuwsniwL56dTXtb0cJd+PAZxJeRAV03u0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ePaceNB3H0SMAoWUzF3ZtGKzuBojUWdl7jvCZ8euC/dCzORO2IL8fmZ5+Sv3Z5IE6
+         Cad8y8c/+DVbEEos9US3KWUtBHu+StnWugPhMiw/zFOumj3/EjsQBqKLr7/nkdlFrb
+         jcvrXY2Vco1xmFoT+VdrBPv+2j7WCmdxY5Sxym1muxp+c+ZQE6whJ4kWJlvXcJ0UiA
+         4sl4FEAJLW7Zy50gqGOeC4t1utlZWNiErv8rP4F4MyX21sHDrYS3dJ1uqoCZY/YSM9
+         5Lotfn+k7jr43M0vFcDBm4KHbS+o+LTTdvlvHnYHL66aQ5gMsYUjVQT+LYE5CAL4+j
+         WtsLVKG2nWvsg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 6BFCF1540395; Thu, 16 Mar 2023 10:50:53 -0700 (PDT)
+Date:   Thu, 16 Mar 2023 10:50:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s)
+ after unloading rcuscale
+Message-ID: <2bbaa13a-bfcc-45b7-acce-8da59a2a0c32@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <IA1PR11MB61714FEEAF2C46639891401A89BC9@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <2B9F2C1A-B274-41EF-8ABE-1E660521BCE4@joelfernandes.org>
+ <IA1PR11MB6171C7FEE026F421A3CD6A9689BC9@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <CAEXW_YTh18nWTWjLBCRiB2AAH76oD7XrMMMPWZ+9thFSmcPaVg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230316070936.733-1-adrianhuang0701@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YTh18nWTWjLBCRiB2AAH76oD7XrMMMPWZ+9thFSmcPaVg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 03:09:36PM +0800, Adrian Huang wrote:
-> From: Adrian Huang <ahuang12@lenovo.com>
-> 
-> It should be "Please note that ..." instead of "Please not that ...".
-> 
-> Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+On Thu, Mar 16, 2023 at 10:57:06AM -0400, Joel Fernandes wrote:
+> On Thu, Mar 16, 2023 at 9:53 AM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> wrote:
+> >
+> [...]
+> > > >> From: Paul E. McKenney <paulmck@kernel.org> [...]
+> > > >>>>
+> > > >>>> How about to pull the rcu_scale_cleanup() function after
+> > > >> kfree_scale_cleanup().
+> > > >>>> This groups kfree_* functions and groups rcu_scale_* functions.
+> > > >>>> Then the code would look cleaner.
+> > > >>>> So, do you think the changes below are better?
+> > > >>>
+> > > >>> IMHO, I don't think doing such a code move is better. Just add a new
+> > > >>> header file and declare the function there. But see what Paul says
+> > > >>> first.
+> > > >>
+> > > >> This situation is likely to be an early hint that the kvfree_rcu()
+> > > >> testing should be split out from kernel/rcu/rcuscale.c.
+> > > >
+> > > > Another is that it's a bit expensive to create a new header file just
+> > > > for eliminating a function declaration. ;-)
+> > >
+> > > What is so expensive about new files? It is a natural organization structure.
+> > >
+> > > > So, if no objections, I'd like to send out the v2 patch with the updates below:
+> > > >
+> > > >   - Move rcu_scale_cleanup() after kfree_scale_cleanup() to eliminate the
+> > > >     declaration of kfree_scale_cleanup(). Though this makes the patch bigger,
+> > > >     get the file rcuscale.c much cleaner.
+> > > >
+> > > >   - Remove the unnecessary step "modprobe torture" from the commit
+> > > message.
+> > > >
+> > > >   - Add the description for why move rcu_scale_cleanup() after
+> > > >     kfree_scale_cleanup() to the commit message.
+> > >
+> > > Honestly if you are moving so many lines around, you may as well split it out
+> > > into a new module.
+> > > The kfree stuff being clubbed in the same file has also been a major
+> > > annoyance.
+> >
+> > I'm OK with creating a new kernel module for these kfree stuffs,
+> > but do we really need to do that?
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+It is not a particularly high priority.
 
-thanks,
-
- - Joel
-
-> ---
->  Documentation/RCU/checklist.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> If it were me doing this, I would try to split it just because in the
+> long term I may have to maintain or deal with it.
 > 
-> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-> index cc361fb01ed4..bd3c58c44bef 100644
-> --- a/Documentation/RCU/checklist.rst
-> +++ b/Documentation/RCU/checklist.rst
-> @@ -70,7 +70,7 @@ over a rather long period of time, but improvements are always welcome!
->  	can serve as rcu_read_lock_sched(), but is less readable and
->  	prevents lockdep from detecting locking issues.
->  
-> -	Please not that you *cannot* rely on code known to be built
-> +	Please note that you *cannot* rely on code known to be built
->  	only in non-preemptible kernels.  Such code can and will break,
->  	especially in kernels built with CONFIG_PREEMPT_COUNT=y.
->  
-> -- 
-> 2.34.1
+> I was also thinking a new scale directory _may_ make sense for
+> performance tests.
 > 
+> kernel/rcu/scaletests/kfree.c
+> kernel/rcu/scaletests/core.c
+> kernel/rcu/scaletests/ref.c
+> 
+> Or something like that.
+
+I don't believe we are there yet, but...
+
+> and then maybe putt common code into: kernel/rcu/scaletests/common.c
+
+...splitting out the common code within the current directory/file
+structure makes a lot of sense to me.  Not that I have checked up on
+exactly how much common code there really is.  ;-)
+
+							Thanx, Paul
+
+>  - Joel
+> 
+> >
+> > @paulmck, what's your suggestion for the next step?
+> >
+> > >  - Joel
+> > >
+> > >
+> > > > Thanks!
+> > > > -Qiuxu
+> > > >
+> > > >> [...]
