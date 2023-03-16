@@ -2,141 +2,114 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9DB9C7618B
-	for <rcu@archiver.kernel.org>; Wed, 15 Mar 2023 23:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FFE1C6FD1D
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 00:37:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbjCOXzj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 19:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
+        id S229686AbjCPAhu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 20:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbjCOXzb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 19:55:31 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D595D44F;
-        Wed, 15 Mar 2023 16:55:19 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id op8so178352qvb.11;
-        Wed, 15 Mar 2023 16:55:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678924519;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7kufPj583zvhnR60hiZgolUHas9LXo1nZ8SV480VMsY=;
-        b=cpAJaC25Bp1ha/2OvojWG2C45bYyNV5fmWZntXE0jktagtLR351+5tbxpMQlMSgjrl
-         vNdoR+XIk3odEJc31Ek4XoWIUMG0Mppp3C3gyqiBrbpfv8arYcv6eU2pXpyQytGQE43Z
-         i9lYWizr/DxCEjJRmApstq8UtQxBJAAepSFpNBU7vq6XRR7k9mABzAEqN3h6Za8jOJhs
-         RAJPDhC8mr8CiWFE1y7wmM0/8kEzxok4vsc81m38m2Sm1LWJRErs1TUJCOiJphw1f4E9
-         QcyCo78WhvdgcZk2re6vtbOkq1gppJSKWUn5DBJI0KUSGDTufGH2NMNXDL3DfJ5zmNDQ
-         9gBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678924519;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7kufPj583zvhnR60hiZgolUHas9LXo1nZ8SV480VMsY=;
-        b=uBN4PvUoC2Z35OewU/PNcwh3JbL4MIli47Hyjmw19FSD2hER//9QjTJpvffzyFMbcC
-         L6xXcsaftPcgPu6WS+ZwZToykAGSa0GZ68eZbdYSyWbUCskvGEAeYGUaPBKRtLNyQcF2
-         03lHfO6WTh2rZyJIJ/7YTWXAvSUbKpE9LV/8b85n6VJ3g9Ae+ptF2EwGyk3jooMVTOxl
-         R8ikKCVNJF8Hpo+blZ/fzvi0GhbGtrMXfRpGwEYRMPiX4/uTc0e5BeUhEy3KKya6AE2u
-         KupexRHQ6qzk12FAfFs/DJZIS1jzvsDyvnti765nxbXpPzfNEtpNdsvC/ydZ/Lk5p3vc
-         rW+g==
-X-Gm-Message-State: AO0yUKV3E2WIGdfxVyAEQ8rSN7LfWNY066GqfLn5sfFiha1ft/vrnMsP
-        K5T6YsoWS8i/NL3qfswQnRA=
-X-Google-Smtp-Source: AK7set9mREvmWhZCDaqo8/LGPzWwqupY9sAeDnU/kmW6/AgjUaoYmDc5I8jQkn1Txyg5skoYaD1bTw==
-X-Received: by 2002:a05:6214:2a87:b0:5ac:d489:9917 with SMTP id jr7-20020a0562142a8700b005acd4899917mr12174031qvb.23.1678924519095;
-        Wed, 15 Mar 2023 16:55:19 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id s81-20020a374554000000b007417e60f621sm4740462qka.126.2023.03.15.16.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 16:55:18 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 354FC27C0054;
-        Wed, 15 Mar 2023 19:55:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 15 Mar 2023 19:55:18 -0400
-X-ME-Sender: <xms:5loSZLI_P1aPrupbdHQHF0QpDtvtGlJRDiampAuimMqHFUhzxf6G4g>
-    <xme:5loSZPImNuhME3hKSpEGRIttM8oLVEvXZ83dgTpoHegvkdWPHBefoB-RfB7UcIuC8
-    e4IH_9w0v2Kjo_x9g>
-X-ME-Received: <xmr:5loSZDtZhEB0XgzOsPvWa33DverdqcaS4vnFrVEAvJDzHF4VWP_3TczT1FY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddvledgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeegleejiedthedvheeggfejveefjeejkefgveffieeujefhueeigfegueeh
-    geeggfenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:5loSZEZszBHXFS1vFnIyhyqWUrRPdMCfSVIgDn44kULFg_xrxJ-5VQ>
-    <xmx:5loSZCbCHP5f-Q0cR-XMLwv6OJy7e6981OLocXI6OYaP2YmSOXM1aw>
-    <xmx:5loSZIBqm3hm8Y6zeHgwujcjvYTZKgsrKupTKyWAEbziqOFSZqa-AQ>
-    <xmx:5loSZKpfinNgZ2FMlf_sHbyGXQ4tTlAgWVcdLqJfUIgX_pq8r-UryA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 15 Mar 2023 19:55:17 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH rcu 7/8] torture: Enable clocksource watchdog with "tsc=watchdog"
-Date:   Wed, 15 Mar 2023 16:54:53 -0700
-Message-Id: <20230315235454.2993-8-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230315235454.2993-1-boqun.feng@gmail.com>
-References: <20230315235454.2993-1-boqun.feng@gmail.com>
+        with ESMTP id S229626AbjCPAho (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 20:37:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449FEB3E30;
+        Wed, 15 Mar 2023 17:37:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ABA1661ECD;
+        Thu, 16 Mar 2023 00:37:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 142F9C433D2;
+        Thu, 16 Mar 2023 00:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678927051;
+        bh=u/ft7HTwZ+Z6VuhAoZZItau7bQuBduCh0LEE7+zRQUo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Cp05I6EpWB8tsUhJYtUzoxh1XY60cptZy5ImwIXljSlbkA7cdWNPvuBMKmA7w7k2w
+         1cs1ugze9/9bHS3ukrZaeV+soeg3FfEVUH9KKiC+VzJ5IqBghikduhxzi5xe5tIgiV
+         k2UQJYMv7uBo8W10L52pvo3tx2HQ7Bh/r0P64dsJBI67mhAHU/wOMzcdF+YuYLadSb
+         /lNayIgYjuYhbkZbEtKsYB3hHmK4ERYT6mxJmDPsaSAlkWpfWHfEUiytH8AerkYS6j
+         hSyyO+R+zI88WaEUB4l0WaLAEvD2EV7UmLI5wnXLFLnSTNh3+VKRiOxr7L3Dds0FVv
+         d+x96WqhyylIQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 96C0E1540395; Wed, 15 Mar 2023 17:37:30 -0700 (PDT)
+Date:   Wed, 15 Mar 2023 17:37:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
+ kvfree_rcu_mightsleep()
+Message-ID: <60f55a5d-213f-46b7-9294-c37f10f98252@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230201150815.409582-1-urezki@gmail.com>
+ <20230201150815.409582-5-urezki@gmail.com>
+ <ZAni8Q1NW9cWrvHJ@pc636>
+ <20230315183648.5164af0f@gandalf.local.home>
+ <d404a6b6-4ff9-930a-1cdc-fd730270fbe7@kernel.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d404a6b6-4ff9-930a-1cdc-fd730270fbe7@kernel.dk>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Wed, Mar 15, 2023 at 05:19:18PM -0600, Jens Axboe wrote:
+> On 3/15/23 4:36 PM, Steven Rostedt wrote:
+> > On Thu, 9 Mar 2023 14:45:21 +0100
+> > Uladzislau Rezki <urezki@gmail.com> wrote:
+> > 
+> >>> The kvfree_rcu()'s single argument name is deprecated therefore
+> >>> rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
+> >>> underline that it is for sleepable contexts.
+> >>>
+> >>> Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> >>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> >>>  
+> >> Could you please add you reviwed-by or Acked-by tags so we can bring
+> >> our series with renaming for the next merge window?
+> > 
+> > I don't know. Perhaps we should just apply this patch and not worry about
+> > sleeping and whatnot.
 
-This commit tests the "tsc=watchdog" kernel boot parameter when running
-the clocksourcewd torture tests.
+That does work, and I am guessing that the size increase is not a big
+problem for you there.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- tools/testing/selftests/rcutorture/bin/torture.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> That's a cop out, just removing the one case you care about. Fact is
+> the naming is awful, and the 1/2 argument thing is making it worse.
+> If a big change is warranted, why not do it right and ACTUALLY
+> get it right?
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 130d0de4c3bb..5a2ae2264403 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -497,16 +497,16 @@ fi
- 
- if test "$do_clocksourcewd" = "yes"
- then
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000"
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
- 	torture_set "clocksourcewd-1" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
- 
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 clocksource.max_cswd_read_retries=1"
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 clocksource.max_cswd_read_retries=1 tsc=watchdog"
- 	torture_set "clocksourcewd-2" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y" --trust-make
- 
- 	# In case our work is already done...
- 	if test "$do_rcutorture" != "yes"
- 	then
--		torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000"
-+		torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 tsc=watchdog"
- 		torture_set "clocksourcewd-3" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s --configs TREE03 --trust-make
- 	fi
- fi
--- 
-2.39.2
+You both do realize that the kvfree_rcu_mightsleep() definition is
+already in mainline, right?
 
+Anyway, to sum up, kvfree_rcu_mightsleep()--or whatever the entire
+community eventually decides to name it--can do any of the following:
+
+1.	Put the pointer into an already allocated array of pointers.
+
+2.	Allocate a new array of pointers, have the allocation succeed
+	without sleeping, then put the pointer into an already allocated
+	array of pointers.
+
+3.	Allocate a new array of pointers, have the allocation succeed
+	after sleeping, then put the pointer into an already allocated
+	array of pointers.
+
+4.	Attempt to allocate a new array of pointers, have the allocation
+	fail (presumably after sleeping), then invoke synchronize_rcu()
+	directly.
+
+Too much fun!  ;-)
+
+							Thanx, Paul
