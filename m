@@ -2,59 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26741C6FD19
-	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 15:05:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 224C7C7618D
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 15:13:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjCPPFT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 11:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
+        id S231236AbjCPPM7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Mar 2023 11:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbjCPPFS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 11:05:18 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB65FBAD2C;
-        Thu, 16 Mar 2023 08:05:14 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id r27so2746455lfe.10;
-        Thu, 16 Mar 2023 08:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678979113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uffFfXiabczaI0jKGUZNsFXzehKi34g9pKeACP002zM=;
-        b=a5S8iZVQkoa3W6bl+kiq/uojcYGMWtTIRhNZHBB24sG1nQ8gkqRXwP3eIh+xbzHeeT
-         d4pg6C4576VXWqdxyF2fvr8CSDsjpLhoXbl6UcUiAQW4Q7jB1yl45PxUtD4ulffopXOA
-         bavulUa/dnmsziLIRXe+ap0qnOanGyPDiet4sfqzTjJtBClLmLHsuW8D7KeGneArpluG
-         IWlaaloUWa9NMmFIgvStVu+HqKM5FRUIMtk7frRGqKatTa0U9DzSlnULJ+0FvSMtx2NA
-         Ohpfjcn+MycuI4Ffno7n0VQt8pysTiwMz7jobv89dEIoxR0oe23Mq/40rt6QxcJTkwc8
-         I9gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678979113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uffFfXiabczaI0jKGUZNsFXzehKi34g9pKeACP002zM=;
-        b=eH/GZydoS5Jl5FbsQ8Dsi0t2WHAWxbMIHkOQdsN/+CMthaF7fZH50pM8ax0Yw0hb+G
-         0Aok0B2YM7x91EXCqLqHSdbSYJstgEtjJyOOZ4EyOdDZVjOxWjLk8/4mmI7DHe6vKjsS
-         nMkyCQgIwXJ9mX65AY5A3i5Z3FvZ4PNv8oFRiBIK1tr/Ol8T9FKt0989Z51s/f9NPi38
-         2D0swYMSKO76OZYBu1aZL6EArs5psGMZPX2A0UY+BBuJeSBS7XHSZ2QNEYVhNqKAQa5O
-         d5sx5dLKCDau/VRqpmmCfMWC8lpuILrfl/DPwWSRQELofwmsDMcgZEPVQL6DcefOrAcK
-         JrAg==
-X-Gm-Message-State: AO0yUKWO2wZj8hjeow/8hWs54ZkKP1aa7q/Y1EVvToLmDpQUlGGrAi0F
-        HG1Q0u6BZeT7Xaib5TGEbAQ=
-X-Google-Smtp-Source: AK7set/z7tIo2PKRO9aFULOVZQphkue7B7gQSrm5ui/PFTloTIbNodzQVZjVROGGEcd+j5joE6Akhw==
-X-Received: by 2002:ac2:5981:0:b0:4dc:807a:d144 with SMTP id w1-20020ac25981000000b004dc807ad144mr3138165lfn.39.1678979112737;
-        Thu, 16 Mar 2023 08:05:12 -0700 (PDT)
-Received: from pc636 (host-90-233-209-246.mobileonline.telia.com. [90.233.209.246])
-        by smtp.gmail.com with ESMTPSA id d27-20020ac2545b000000b004dbebb3a6fasm1254314lfn.175.2023.03.16.08.05.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Mar 2023 08:05:12 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 16 Mar 2023 16:05:09 +0100
+        with ESMTP id S230233AbjCPPM6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Mar 2023 11:12:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05491DDF16;
+        Thu, 16 Mar 2023 08:12:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4E9B4B82200;
+        Thu, 16 Mar 2023 15:12:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15489C433EF;
+        Thu, 16 Mar 2023 15:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678979559;
+        bh=BDpxizrIo9k62vIt1iGWB7UOfvUYr9thps1q4sV6nJ4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uwv5CIMAz52X32jI+eUpbj1cmSx9L+s08emqpwtN1LBcQzYmJ7e/zu5TBZp3VT5HC
+         VnmNdW2ZmP/v7p5tffRDyo5N4oFiXl9ZC0JNdX1IzCLzU5lZX+RKnnj+TikX4y5qe/
+         9/CMAIoShYsM6MuPYBvvH+N3RxcYyQNASZRBoA7PsRW9foQmQ5HRnFiAUz39dO3G9i
+         xqYzU5EMjVIT+/hYBEORtFEm+QRYhqnpbXbhBYC/y+DkSdNrTl/RMOaHwB8lbIl9iN
+         8da7zOd4i/F0WNwD2L5+f0EE8hmk6l0jf7dMwZcxDndx7ZkICowiiYZbCGmkVZeBds
+         99m6zhnVeieoA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A97911540395; Thu, 16 Mar 2023 08:12:38 -0700 (PDT)
+Date:   Thu, 16 Mar 2023 08:12:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Jens Axboe <axboe@kernel.dk>,
         Philipp Reisner <philipp.reisner@linbit.com>,
@@ -65,7 +48,8 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
 Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
  kvfree_rcu_mightsleep()
-Message-ID: <ZBMwJYFYpfLsuW5F@pc636>
+Message-ID: <58092759-d563-46ce-980a-329497e1fc8c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20230201150815.409582-1-urezki@gmail.com>
  <20230201150815.409582-5-urezki@gmail.com>
  <ZAni8Q1NW9cWrvHJ@pc636>
@@ -153,16 +137,16 @@ On Thu, Mar 16, 2023 at 09:56:53AM -0400, Steven Rostedt wrote:
 > allocate 100 to be crazy. But each probe event is in reality much larger
 > (1K perhaps) as each one allocates dentry's, inodes, etc. So 8 or 16 bytes
 > extra is still lost in the noise.
-> 
-> > 
+
+Agreed, in this case, there is almost no penalty for adding an rcu_head
+structure to the probe event...
+
 > > single argument will give you 4096 + 512 * 8 = 8192 bytes
 > > int terms of memory consumtion.
 > 
 > If someone allocate 512 instances, that would be closer to a meg in size
 > without this change. 8k is probably less than 1%
 > 
-In percentage. My case. (12228 - 8192) * 100 / 12228 = ~33% difference.
-
 > > 
 > > And double argument will not give you better performance comparing
 > > with a single argument.
@@ -171,9 +155,8 @@ In percentage. My case. (12228 - 8192) * 100 / 12228 = ~33% difference.
 > Note, when it doesn't allocate the system is probably mostly idle and we
 > don't care about performance, but when it needs allocation, that's likely a
 > time when performance is a bit more important.
-> 
-The problem further is about pointer chasing, like comparing arrays and
-lists. It will take longer time to offload all pointers.
 
---
-Uladzislau Rezki
+... and also agreed that there are performance benefits to doing so,
+especially under OOM conditions.
+
+							Thanx, Paul
