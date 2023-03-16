@@ -2,42 +2,59 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CDFDC6FD1F
-	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 17:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 529D7C6FD19
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 17:58:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjCPRzX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 13:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S229793AbjCPR6D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Mar 2023 13:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjCPRzP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 13:55:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D8A7EC8;
-        Thu, 16 Mar 2023 10:54:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C768C620B3;
-        Thu, 16 Mar 2023 17:54:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32EC1C433EF;
-        Thu, 16 Mar 2023 17:54:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678989294;
-        bh=fAyb965+K/lVukS5xMMsFo8dHBwVzWtpB66j36wUhfQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UWWcY/xsxSDztGJ1ZGPxAmoxhqYpFmkLeA3Fh/08eS5A41/B1j30+sB4aLlxsDTHo
-         CXBZo6/IINhxXCKdwFdtMLXs2ZCFqCmkiyokkvRa0CPkkG1wTHUzftEZ1g9CN83oaV
-         gVDvf1+PA2yqTQyITRfSVLzdLbHKLvZBx8znxOgPAYTUWVcee66fQ/1MeTEUcmQGLc
-         DWwtS9liV/Cv6KyMdPnkMXqjQ1rf84tRWHQPGHsHSX7J75P+n6PljEd9dvuZI+EL4k
-         MhVImE8gXWKxus3MQtM7XzOUE+d7eGiRe+YmWus1KkXJZsna76uKz4j7ErB5lYeo17
-         JBOEd0GDk5Naw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D82431540395; Thu, 16 Mar 2023 10:54:53 -0700 (PDT)
-Date:   Thu, 16 Mar 2023 10:54:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S229865AbjCPR6C (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Mar 2023 13:58:02 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06A7211EB;
+        Thu, 16 Mar 2023 10:57:59 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id y15so3406711lfa.7;
+        Thu, 16 Mar 2023 10:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678989478;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O/utl8ZaT/2tlxp2lFNNxmbt5CfG0+r5dqlUPd9a7z8=;
+        b=L0EV36tEsdgdwk+P2FvfGvZlV68YKLUlkauRBO86K7fPIW+UmYtndgzw2fxr5CTw7K
+         Ua2wWzpdqR0Ee2RwmAox1aKRu5DA1u6tvpbP2s74ld7aMpKri8Wp42Riz9VNYNHGpmDp
+         MxSAZtbWKr2yuYFmi8aza00gLBdghCvOIkRHLWjZrsd8hLEBIs86C+W2Ll2Hdvt0PurU
+         xUrhIOMcUMOpzp3gbVRRbhD6/qCsfywd5PxQJ9NvHLU6VyDWiKeiBxD5LqFRBzhWjIWA
+         XLSrwxk/CF/BRwFL72wp3K8TtInQWGwu7Cn2c/A+Qt/wAlaK092ESQEe3c8a2t/dJyUa
+         T0Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678989478;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O/utl8ZaT/2tlxp2lFNNxmbt5CfG0+r5dqlUPd9a7z8=;
+        b=bKEu/0x9e1RVj+4ubgArbtO1D5IwEyAn6jrOcyAT62hEnYmPN1tb+DoTLcetYs6CCa
+         LAK01+vB6sAilbWPwcyUFmO9XqHIf1w2sFAHnGVSTsDCdgoatYMLs7GQHpuPOpkv/XIU
+         66rW3s6iN0ugdUp59toDM1nq/6bHtm6Dbq+OB668X1e+kY5lgyR4i+KR8z7ll4F0xZ5g
+         SXnhYcV7jG1ZzCKpJ1ty4I6L+uvsJN33hvl3YkRihbe+lFyfp5Dp1a4Q4IxbTWKEK+i+
+         opsAns8o4gsxKEiz0q6hJHPAY8lryMtIPID9eQ7tkBVKVFlopJG8CMJrm8o50vZ2pUfM
+         rN1Q==
+X-Gm-Message-State: AO0yUKXvYz3Ssp0nPO8zkBd6aK6L+Xx4bDEGUn06WG9cRbzQ5qdut2a/
+        Sq/amczX2w9ZlX4dKzUEcBc=
+X-Google-Smtp-Source: AK7set8Gv5QfqOqN5Sbd+WYgMKC6t2c+gMx5bUwHV7gT299WzwefTPoKLRuweyBVal4NpAxb+YjYig==
+X-Received: by 2002:ac2:5fb0:0:b0:4ca:98ec:7d9a with SMTP id s16-20020ac25fb0000000b004ca98ec7d9amr2997230lfe.15.1678989477816;
+        Thu, 16 Mar 2023 10:57:57 -0700 (PDT)
+Received: from pc636 (host-90-233-209-246.mobileonline.telia.com. [90.233.209.246])
+        by smtp.gmail.com with ESMTPSA id w20-20020a19c514000000b004b56bebdc4esm10175lfe.14.2023.03.16.10.57.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Mar 2023 10:57:57 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 16 Mar 2023 18:57:54 +0100
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Jens Axboe <axboe@kernel.dk>,
         Philipp Reisner <philipp.reisner@linbit.com>,
@@ -48,8 +65,7 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
 Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
  kvfree_rcu_mightsleep()
-Message-ID: <9c5a24c2-8b8c-4037-9607-76f4438693f5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <ZBNYogVe9spBmTm2@pc636>
 References: <20230201150815.409582-1-urezki@gmail.com>
  <20230201150815.409582-5-urezki@gmail.com>
  <ZAni8Q1NW9cWrvHJ@pc636>
@@ -78,11 +94,7 @@ On Wed, Mar 15, 2023 at 06:36:48PM -0400, Steven Rostedt wrote:
 > 
 > I don't know. Perhaps we should just apply this patch and not worry about
 > sleeping and whatnot.
-
-Just in case it is not clear:
-
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-
+> 
 > -- Steve
 > 
 > diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
@@ -131,3 +143,10 @@ Acked-by: Paul E. McKenney <paulmck@kernel.org>
 >  };
 >  
 >  static inline bool trace_probe_test_flag(struct trace_probe *tp,
+>
+Anyway i do not see any problems with it
+
+Acked-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+
+--
+Uladzislau Rezki
