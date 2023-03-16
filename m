@@ -2,144 +2,132 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D340C6FD19
-	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 17:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CDFDC6FD1F
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 17:55:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbjCPRvp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 13:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        id S230164AbjCPRzX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Mar 2023 13:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbjCPRvn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 13:51:43 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF613FBA7;
-        Thu, 16 Mar 2023 10:51:04 -0700 (PDT)
+        with ESMTP id S230208AbjCPRzP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Mar 2023 13:55:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D8A7EC8;
+        Thu, 16 Mar 2023 10:54:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 170C2B822F0;
-        Thu, 16 Mar 2023 17:50:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE7BC433D2;
-        Thu, 16 Mar 2023 17:50:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C768C620B3;
+        Thu, 16 Mar 2023 17:54:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32EC1C433EF;
+        Thu, 16 Mar 2023 17:54:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678989053;
-        bh=mQI195bsoZhuwsniwL56dTXtb0cJd+PAZxJeRAV03u0=;
+        s=k20201202; t=1678989294;
+        bh=fAyb965+K/lVukS5xMMsFo8dHBwVzWtpB66j36wUhfQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ePaceNB3H0SMAoWUzF3ZtGKzuBojUWdl7jvCZ8euC/dCzORO2IL8fmZ5+Sv3Z5IE6
-         Cad8y8c/+DVbEEos9US3KWUtBHu+StnWugPhMiw/zFOumj3/EjsQBqKLr7/nkdlFrb
-         jcvrXY2Vco1xmFoT+VdrBPv+2j7WCmdxY5Sxym1muxp+c+ZQE6whJ4kWJlvXcJ0UiA
-         4sl4FEAJLW7Zy50gqGOeC4t1utlZWNiErv8rP4F4MyX21sHDrYS3dJ1uqoCZY/YSM9
-         5Lotfn+k7jr43M0vFcDBm4KHbS+o+LTTdvlvHnYHL66aQ5gMsYUjVQT+LYE5CAL4+j
-         WtsLVKG2nWvsg==
+        b=UWWcY/xsxSDztGJ1ZGPxAmoxhqYpFmkLeA3Fh/08eS5A41/B1j30+sB4aLlxsDTHo
+         CXBZo6/IINhxXCKdwFdtMLXs2ZCFqCmkiyokkvRa0CPkkG1wTHUzftEZ1g9CN83oaV
+         gVDvf1+PA2yqTQyITRfSVLzdLbHKLvZBx8znxOgPAYTUWVcee66fQ/1MeTEUcmQGLc
+         DWwtS9liV/Cv6KyMdPnkMXqjQ1rf84tRWHQPGHsHSX7J75P+n6PljEd9dvuZI+EL4k
+         MhVImE8gXWKxus3MQtM7XzOUE+d7eGiRe+YmWus1KkXJZsna76uKz4j7ErB5lYeo17
+         JBOEd0GDk5Naw==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6BFCF1540395; Thu, 16 Mar 2023 10:50:53 -0700 (PDT)
-Date:   Thu, 16 Mar 2023 10:50:53 -0700
+        id D82431540395; Thu, 16 Mar 2023 10:54:53 -0700 (PDT)
+Date:   Thu, 16 Mar 2023 10:54:53 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s)
- after unloading rcuscale
-Message-ID: <2bbaa13a-bfcc-45b7-acce-8da59a2a0c32@paulmck-laptop>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
+ kvfree_rcu_mightsleep()
+Message-ID: <9c5a24c2-8b8c-4037-9607-76f4438693f5@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <IA1PR11MB61714FEEAF2C46639891401A89BC9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <2B9F2C1A-B274-41EF-8ABE-1E660521BCE4@joelfernandes.org>
- <IA1PR11MB6171C7FEE026F421A3CD6A9689BC9@IA1PR11MB6171.namprd11.prod.outlook.com>
- <CAEXW_YTh18nWTWjLBCRiB2AAH76oD7XrMMMPWZ+9thFSmcPaVg@mail.gmail.com>
+References: <20230201150815.409582-1-urezki@gmail.com>
+ <20230201150815.409582-5-urezki@gmail.com>
+ <ZAni8Q1NW9cWrvHJ@pc636>
+ <20230315183648.5164af0f@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YTh18nWTWjLBCRiB2AAH76oD7XrMMMPWZ+9thFSmcPaVg@mail.gmail.com>
+In-Reply-To: <20230315183648.5164af0f@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 10:57:06AM -0400, Joel Fernandes wrote:
-> On Thu, Mar 16, 2023 at 9:53 AM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> wrote:
-> >
-> [...]
-> > > >> From: Paul E. McKenney <paulmck@kernel.org> [...]
-> > > >>>>
-> > > >>>> How about to pull the rcu_scale_cleanup() function after
-> > > >> kfree_scale_cleanup().
-> > > >>>> This groups kfree_* functions and groups rcu_scale_* functions.
-> > > >>>> Then the code would look cleaner.
-> > > >>>> So, do you think the changes below are better?
-> > > >>>
-> > > >>> IMHO, I don't think doing such a code move is better. Just add a new
-> > > >>> header file and declare the function there. But see what Paul says
-> > > >>> first.
-> > > >>
-> > > >> This situation is likely to be an early hint that the kvfree_rcu()
-> > > >> testing should be split out from kernel/rcu/rcuscale.c.
-> > > >
-> > > > Another is that it's a bit expensive to create a new header file just
-> > > > for eliminating a function declaration. ;-)
-> > >
-> > > What is so expensive about new files? It is a natural organization structure.
-> > >
-> > > > So, if no objections, I'd like to send out the v2 patch with the updates below:
-> > > >
-> > > >   - Move rcu_scale_cleanup() after kfree_scale_cleanup() to eliminate the
-> > > >     declaration of kfree_scale_cleanup(). Though this makes the patch bigger,
-> > > >     get the file rcuscale.c much cleaner.
-> > > >
-> > > >   - Remove the unnecessary step "modprobe torture" from the commit
-> > > message.
-> > > >
-> > > >   - Add the description for why move rcu_scale_cleanup() after
-> > > >     kfree_scale_cleanup() to the commit message.
-> > >
-> > > Honestly if you are moving so many lines around, you may as well split it out
-> > > into a new module.
-> > > The kfree stuff being clubbed in the same file has also been a major
-> > > annoyance.
-> >
-> > I'm OK with creating a new kernel module for these kfree stuffs,
-> > but do we really need to do that?
-
-It is not a particularly high priority.
-
-> If it were me doing this, I would try to split it just because in the
-> long term I may have to maintain or deal with it.
+On Wed, Mar 15, 2023 at 06:36:48PM -0400, Steven Rostedt wrote:
+> On Thu, 9 Mar 2023 14:45:21 +0100
+> Uladzislau Rezki <urezki@gmail.com> wrote:
 > 
-> I was also thinking a new scale directory _may_ make sense for
-> performance tests.
+> > > The kvfree_rcu()'s single argument name is deprecated therefore
+> > > rename it to kvfree_rcu_mightsleep() variant. The goal is explicitly
+> > > underline that it is for sleepable contexts.
+> > > 
+> > > Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > >  
+> > Could you please add you reviwed-by or Acked-by tags so we can bring
+> > our series with renaming for the next merge window?
 > 
-> kernel/rcu/scaletests/kfree.c
-> kernel/rcu/scaletests/core.c
-> kernel/rcu/scaletests/ref.c
+> I don't know. Perhaps we should just apply this patch and not worry about
+> sleeping and whatnot.
+
+Just in case it is not clear:
+
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+
+> -- Steve
 > 
-> Or something like that.
-
-I don't believe we are there yet, but...
-
-> and then maybe putt common code into: kernel/rcu/scaletests/common.c
-
-...splitting out the common code within the current directory/file
-structure makes a lot of sense to me.  Not that I have checked up on
-exactly how much common code there really is.  ;-)
-
-							Thanx, Paul
-
->  - Joel
-> 
-> >
-> > @paulmck, what's your suggestion for the next step?
-> >
-> > >  - Joel
-> > >
-> > >
-> > > > Thanks!
-> > > > -Qiuxu
-> > > >
-> > > >> [...]
+> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+> index 04f0fdae19a1..5de945a8f61d 100644
+> --- a/kernel/trace/trace_osnoise.c
+> +++ b/kernel/trace/trace_osnoise.c
+> @@ -76,6 +76,7 @@ static unsigned long osnoise_options	= OSN_DEFAULT_OPTIONS;
+>  struct osnoise_instance {
+>  	struct list_head	list;
+>  	struct trace_array	*tr;
+> +	struct rcu_head		rcu;
+>  };
+>  
+>  static struct list_head osnoise_instances;
+> @@ -159,7 +160,7 @@ static void osnoise_unregister_instance(struct trace_array *tr)
+>  	if (!found)
+>  		return;
+>  
+> -	kvfree_rcu(inst);
+> +	kvfree_rcu(inst, rcu);
+>  }
+>  
+>  /*
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index 20d0c4a97633..ef5fafb40c76 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -1172,7 +1172,7 @@ int trace_probe_remove_file(struct trace_probe *tp,
+>  		return -ENOENT;
+>  
+>  	list_del_rcu(&link->list);
+> -	kvfree_rcu(link);
+> +	kvfree_rcu(link, rcu);
+>  
+>  	if (list_empty(&tp->event->files))
+>  		trace_probe_clear_flag(tp, TP_FLAG_TRACE);
+> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+> index ef8ed3b65d05..e6037752dcf0 100644
+> --- a/kernel/trace/trace_probe.h
+> +++ b/kernel/trace/trace_probe.h
+> @@ -256,6 +256,7 @@ struct trace_probe {
+>  struct event_file_link {
+>  	struct trace_event_file		*file;
+>  	struct list_head		list;
+> +	struct rcu_head			rcu;
+>  };
+>  
+>  static inline bool trace_probe_test_flag(struct trace_probe *tp,
