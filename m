@@ -2,53 +2,47 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31389C6FD1D
-	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 02:15:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10684C61DA4
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 02:23:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbjCPCPg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 15 Mar 2023 22:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S229512AbjCPCXb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 15 Mar 2023 22:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjCPCPf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 15 Mar 2023 22:15:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADBAFF1B;
-        Wed, 15 Mar 2023 19:15:34 -0700 (PDT)
+        with ESMTP id S229552AbjCPCXa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 15 Mar 2023 22:23:30 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E67D1CF46;
+        Wed, 15 Mar 2023 19:23:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 072DFB81FA5;
-        Thu, 16 Mar 2023 02:15:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 589A4C433D2;
-        Thu, 16 Mar 2023 02:15:30 +0000 (UTC)
-Date:   Wed, 15 Mar 2023 22:15:28 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id B90ECB81FA4;
+        Thu, 16 Mar 2023 02:23:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38822C4339C;
+        Thu, 16 Mar 2023 02:23:25 +0000 (UTC)
+Date:   Wed, 15 Mar 2023 22:23:23 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Philipp Reisner <philipp.reisner@linbit.com>,
         Bryan Tan <bryantan@vmware.com>,
         Eric Dumazet <edumazet@google.com>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Ariel Levkovich <lariel@nvidia.com>,
-        Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 00/13] Rename k[v]free_rcu() single argument to
- k[v]free_rcu_mightsleep()
-Message-ID: <20230315221528.22132c3c@gandalf.local.home>
-In-Reply-To: <20230316012516.GK860405@mit.edu>
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
+ kvfree_rcu_mightsleep()
+Message-ID: <20230315222323.7afe82e7@gandalf.local.home>
+In-Reply-To: <60f55a5d-213f-46b7-9294-c37f10f98252@paulmck-laptop>
 References: <20230201150815.409582-1-urezki@gmail.com>
-        <20230315151415.2534e11c@gandalf.local.home>
-        <e5a1815b-65b5-55ca-9773-ec04378d53c0@kernel.dk>
-        <ZBIbloFMm5xRsjfn@pc636>
-        <20230315153448.6914f85b@gandalf.local.home>
-        <CAEXW_YTLFQ3-LApyCPNNx7Tn2ovFr8YUXL=1WVCm+rE2hRKE8g@mail.gmail.com>
-        <20230315162840.106a5b4f@gandalf.local.home>
-        <CAEXW_YTNNJJftsg1QRvhUCRoZpKa3SM6=-0M-cukCGt5=G+row@mail.gmail.com>
-        <20230316012516.GK860405@mit.edu>
+        <20230201150815.409582-5-urezki@gmail.com>
+        <ZAni8Q1NW9cWrvHJ@pc636>
+        <20230315183648.5164af0f@gandalf.local.home>
+        <d404a6b6-4ff9-930a-1cdc-fd730270fbe7@kernel.dk>
+        <60f55a5d-213f-46b7-9294-c37f10f98252@paulmck-laptop>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -57,51 +51,56 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, 15 Mar 2023 21:25:16 -0400
-"Theodore Ts'o" <tytso@mit.edu> wrote:
-
-> On Wed, Mar 15, 2023 at 06:08:19PM -0400, Joel Fernandes wrote:
-> > 
-> > I am doubtful there may be a future where it does not sleep. Why?
-> > Because you need an rcu_head *somewhere*.  
-> 
-> I think the real problem was that this won't sleep:
-> 
->    kfree_rcu(ptr, rhf);
-> 
-> While this *could* sleep:
-> 
->    kfree_rcu(ptr);
-> 
-> So the the original sin was to try to make the same mistake that C++
-> did --- which is to think that it's good to have functions that have
-> the same name but different function signatures, and in some cases,
-> different semantic meanings because they have different implementations.
-> 
-> Personally, this is why I refuse to use C++ for any of my personal
-> projects --- this kind of "magic" looks good, but it's a great way to
-> potentially shoot yourself (or worse, your users) in the foot.
-> 
-> So separating out the two-argument kfree_rcu() from the one-argument
-> kfree_rcu(), by renaming the latter to something else is IMHO, a
-> Really F***** Good Idea.  So while, sure, kfree_rcu_mightsleep() might
-> be a little awkward, the name documents the potential landmind
-> involved with using that function, that's a good thing.  Because do
-> you really think users will always conscientiously check the
-> documentation and/or the implementation before using the interface?  :-)
-
-I agree with everything you said above, and feel that having the same name
-with two different semantics was not a good way to go. Not to mention, I
-avoid C++ for basically the same reasons (plus others).
+On Wed, 15 Mar 2023 17:37:30 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
 > 
-> If you hate that name, one other possibility is to try to use the
-> two-argument form kfree_rcu() and arrange to *have* a rcu_head in the
-> structure.  That's going to be better from a performance perspective,
-> and thus kinder to the end user than using rcu_synchronize().
+> That does work, and I am guessing that the size increase is not a big
+> problem for you there.
 
-Which is the what I last suggested doing.
+Well, I was fine with it as long as it stayed in the headers, where
+ugliness is warmly welcomed. Just ask all the #ifdefs.
 
-  https://lore.kernel.org/all/20230315183648.5164af0f@gandalf.local.home/
+> 
+> > That's a cop out, just removing the one case you care about. Fact is
+> > the naming is awful, and the 1/2 argument thing is making it worse.
+> > If a big change is warranted, why not do it right and ACTUALLY
+> > get it right?  
+> 
+> You both do realize that the kvfree_rcu_mightsleep() definition is
+> already in mainline, right?
+> 
+> Anyway, to sum up, kvfree_rcu_mightsleep()--or whatever the entire
+> community eventually decides to name it--can do any of the following:
+> 
+> 1.	Put the pointer into an already allocated array of pointers.
+> 
+> 2.	Allocate a new array of pointers, have the allocation succeed
+> 	without sleeping, then put the pointer into an already allocated
+> 	array of pointers.
+> 
+> 3.	Allocate a new array of pointers, have the allocation succeed
+> 	after sleeping, then put the pointer into an already allocated
+> 	array of pointers.
+> 
+> 4.	Attempt to allocate a new array of pointers, have the allocation
+> 	fail (presumably after sleeping), then invoke synchronize_rcu()
+> 	directly.
+> 
+> Too much fun!  ;-)
+> 
+
+  kvfree_rcu_kitchen_sink() ?
+
+  kvfree_rcu_goldie_locks()?
+
+I honestly like the name "headless" as that perfectly describes the
+difference between kvfree_rcu(arg1, arg2) and kvfree_rcu(arg1).
+
+Whereas mightsleep() is confusing to me because it doesn't tell me why
+kvfree_rcu() has two args and kvfree_rcu_mightsleep() has only one.
+Usually, code that has two sleep variants is about limiting the
+functionality of the atomic friendly one.
 
 -- Steve
+
