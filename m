@@ -2,161 +2,96 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 224C7C7618D
-	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 15:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B8C8C6FD1F
+	for <rcu@archiver.kernel.org>; Thu, 16 Mar 2023 15:18:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbjCPPM7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 11:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
+        id S230432AbjCPPSX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Mar 2023 11:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjCPPM6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 11:12:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05491DDF16;
-        Thu, 16 Mar 2023 08:12:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4E9B4B82200;
-        Thu, 16 Mar 2023 15:12:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15489C433EF;
-        Thu, 16 Mar 2023 15:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678979559;
-        bh=BDpxizrIo9k62vIt1iGWB7UOfvUYr9thps1q4sV6nJ4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uwv5CIMAz52X32jI+eUpbj1cmSx9L+s08emqpwtN1LBcQzYmJ7e/zu5TBZp3VT5HC
-         VnmNdW2ZmP/v7p5tffRDyo5N4oFiXl9ZC0JNdX1IzCLzU5lZX+RKnnj+TikX4y5qe/
-         9/CMAIoShYsM6MuPYBvvH+N3RxcYyQNASZRBoA7PsRW9foQmQ5HRnFiAUz39dO3G9i
-         xqYzU5EMjVIT+/hYBEORtFEm+QRYhqnpbXbhBYC/y+DkSdNrTl/RMOaHwB8lbIl9iN
-         8da7zOd4i/F0WNwD2L5+f0EE8hmk6l0jf7dMwZcxDndx7ZkICowiiYZbCGmkVZeBds
-         99m6zhnVeieoA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A97911540395; Thu, 16 Mar 2023 08:12:38 -0700 (PDT)
-Date:   Thu, 16 Mar 2023 08:12:38 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
- kvfree_rcu_mightsleep()
-Message-ID: <58092759-d563-46ce-980a-329497e1fc8c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230201150815.409582-1-urezki@gmail.com>
- <20230201150815.409582-5-urezki@gmail.com>
- <ZAni8Q1NW9cWrvHJ@pc636>
- <20230315183648.5164af0f@gandalf.local.home>
- <ZBLQZSm+SuazEODN@pc636>
- <20230316095653.4beccbe0@gandalf.local.home>
+        with ESMTP id S230147AbjCPPSW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Mar 2023 11:18:22 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8B9B9517
+        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 08:18:21 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id i24so2060846qtm.6
+        for <rcu@vger.kernel.org>; Thu, 16 Mar 2023 08:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1678979901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sTZi71W7uS0cwwOVrssYyJhaieKUx7HA3YH7kg22iWg=;
+        b=G5MWWoFjX8wVVDLh02k8xeSq17tMezVMLXrakJuNUb73LG+XWQJlw7nTf8xuACnYNY
+         +XXLqtEhDNFxvqNnpm8EDNPVTLRurg2DNS4ZW/4iu2qxhQhtGLofT0KmG1S5YBiDwT4R
+         qKxa/YL1pmknx55aPGsjeoj/ULlIY5TUxtO7Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678979901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sTZi71W7uS0cwwOVrssYyJhaieKUx7HA3YH7kg22iWg=;
+        b=MyOAqITbw5xp9enTCWSWtIEa1qNhEtQQPHZhYOZgeaicMP7DZIeP6uBLRflz7s3X8n
+         PThfIvzb6gu5mO4iOig/zG6Z+W8YFHIaCjbcotzYFdN5TgEMGHxe0vmsQNjH1Ck/qTXf
+         8r8xGT54yLPIgrNNjZC1c8jiX5T9PcddP4WGA4Uwkp+oo0MKqRDZ7u+6u79l6474ReF9
+         oosgoRftO7vgx6bPESlkHt3qerzXqkpJYBG08MCT5RbRiaw4b/f76XNwXYPBL/9Vvz8w
+         6AvEV3hc82GoARinXCMQCDYTXXXGqXn74kN3Emec339iETSzOa8yLc/zTzpSqYN8+2W/
+         yCgA==
+X-Gm-Message-State: AO0yUKVf7psunyaJwCJdik05ySehUrOUuALG49aDGWTzdUw2jf6ylVrd
+        Z5VZQj3729SWoOD/iXLoLwd6EQ==
+X-Google-Smtp-Source: AK7set9/nih+ai6mH+Z/lNZ6whQsRqf6IqmBjbgUKssX1LycRWgBcHithG4viTVGXudas9QnRWb5RA==
+X-Received: by 2002:ac8:7c4f:0:b0:3d3:da2a:194e with SMTP id o15-20020ac87c4f000000b003d3da2a194emr7065833qtv.8.1678979900808;
+        Thu, 16 Mar 2023 08:18:20 -0700 (PDT)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id b10-20020ac8678a000000b003b9b48cdbe8sm5860986qtp.58.2023.03.16.08.18.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Mar 2023 08:18:20 -0700 (PDT)
+Date:   Thu, 16 Mar 2023 15:18:20 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Adrian Huang <adrianhuang0701@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        Adrian Huang <ahuang12@lenovo.com>
+Subject: Re: [PATCH 1/1] docs: RCU: typo fix
+Message-ID: <20230316151820.GA373925@google.com>
+References: <20230316070936.733-1-adrianhuang0701@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230316095653.4beccbe0@gandalf.local.home>
+In-Reply-To: <20230316070936.733-1-adrianhuang0701@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 09:56:53AM -0400, Steven Rostedt wrote:
-> On Thu, 16 Mar 2023 09:16:37 +0100
-> Uladzislau Rezki <urezki@gmail.com> wrote:
+On Thu, Mar 16, 2023 at 03:09:36PM +0800, Adrian Huang wrote:
+> From: Adrian Huang <ahuang12@lenovo.com>
 > 
-> > > diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-> > > index ef8ed3b65d05..e6037752dcf0 100644
-> > > --- a/kernel/trace/trace_probe.h
-> > > +++ b/kernel/trace/trace_probe.h
-> > > @@ -256,6 +256,7 @@ struct trace_probe {
-> > >  struct event_file_link {
-> > >  	struct trace_event_file		*file;
-> > >  	struct list_head		list;
-> > > +	struct rcu_head			rcu;
-> > >  };
-> > >  
-> > >  static inline bool trace_probe_test_flag(struct trace_probe *tp,
-> > >  
-> > struct foo_a {
-> >   int a;
-> >   int b;
-> > };
+> It should be "Please note that ..." instead of "Please not that ...".
 > 
-> Most machines today are 64 bits, even low end machines.
-> 
->  struct foo_a {
-> 	long long a;
-> 	long long b;
->  };
-> 
-> is more accurate. That's 16 bytes.
-> 
-> Although it is more likely off because list_head is a double pointer. But
-> let's just go with this, as the amount really doesn't matter here.
-> 
-> > 
-> > your obj size is 8 byte
-> > 
-> > struct foo_b {
-> >   struct rcu_head rcu;
-> 
-> Isn't rcu_head defined as;
-> 
-> struct callback_head {
->         struct callback_head *next;
->         void (*func)(struct callback_head *head);
-> } __attribute__((aligned(sizeof(void *))));
-> #define rcu_head callback_head
-> 
-> Which makes it 8 not 16 on 32 bit as well?
-> 
-> >   int a;
-> >   int b;
-> > };
-> 
-> So it should be 8 + 8 = 16, on 32 bit and 16 + 16 = 32 on 64bit.
-> 
-> > 
-> > now it becomes 16 + 8 = 24 bytes. In reallity a foo_b object
-> > will be 32 bytes since there is no slab for 24 bytes:
-> > 
-> > <snip>
-> >   kmalloc-32         19840  19840     32  128    1 : tunables    0    0    0 : slabdata    155    155      0
-> >   kmalloc-16         28857  28928     16  256    1 : tunables    0    0    0 : slabdata    113    113      0
-> >   kmalloc-8          37376  37376      8  512    1 : tunables    0    0    0 : slabdata     73     73      0
-> > <snip>
-> > 
-> > if we allocate 512 objects of foo_a it would be 4096 bytes
-> > in case of foo_b it is 24 * 512 = 12228 bytes.
-> 
-> This is for probe events. We usually allocate 1, maybe 2. Oh, some may even
-> allocate 100 to be crazy. But each probe event is in reality much larger
-> (1K perhaps) as each one allocates dentry's, inodes, etc. So 8 or 16 bytes
-> extra is still lost in the noise.
+> Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
 
-Agreed, in this case, there is almost no penalty for adding an rcu_head
-structure to the probe event...
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-> > single argument will give you 4096 + 512 * 8 = 8192 bytes
-> > int terms of memory consumtion.
-> 
-> If someone allocate 512 instances, that would be closer to a meg in size
-> without this change. 8k is probably less than 1%
-> 
-> > 
-> > And double argument will not give you better performance comparing
-> > with a single argument.
-> 
-> It will, because it will no longer have to allocate anything if need be.
-> Note, when it doesn't allocate the system is probably mostly idle and we
-> don't care about performance, but when it needs allocation, that's likely a
-> time when performance is a bit more important.
+thanks,
 
-... and also agreed that there are performance benefits to doing so,
-especially under OOM conditions.
+ - Joel
 
-							Thanx, Paul
+> ---
+>  Documentation/RCU/checklist.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+> index cc361fb01ed4..bd3c58c44bef 100644
+> --- a/Documentation/RCU/checklist.rst
+> +++ b/Documentation/RCU/checklist.rst
+> @@ -70,7 +70,7 @@ over a rather long period of time, but improvements are always welcome!
+>  	can serve as rcu_read_lock_sched(), but is less readable and
+>  	prevents lockdep from detecting locking issues.
+>  
+> -	Please not that you *cannot* rely on code known to be built
+> +	Please note that you *cannot* rely on code known to be built
+>  	only in non-preemptible kernels.  Such code can and will break,
+>  	especially in kernels built with CONFIG_PREEMPT_COUNT=y.
+>  
+> -- 
+> 2.34.1
+> 
