@@ -2,79 +2,79 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3F9DC6FD1F
-	for <rcu@archiver.kernel.org>; Fri, 17 Mar 2023 03:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93CB8C74A5B
+	for <rcu@archiver.kernel.org>; Fri, 17 Mar 2023 03:15:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbjCQDPY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 23:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        id S229841AbjCQDP0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 16 Mar 2023 23:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjCQDOJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 23:14:09 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA851CAEF;
-        Thu, 16 Mar 2023 20:13:56 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id i24so4358126qtm.6;
-        Thu, 16 Mar 2023 20:13:56 -0700 (PDT)
+        with ESMTP id S229971AbjCQDOI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 16 Mar 2023 23:14:08 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E131C5A5;
+        Thu, 16 Mar 2023 20:13:53 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id qh28so2694872qvb.7;
+        Thu, 16 Mar 2023 20:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679022835;
+        d=gmail.com; s=20210112; t=1679022832;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=0IIu5Yi5LuAls+pJ/ShpvT4cQhYjefLMDzlyAtUzY2M=;
-        b=m+zgzFjXwbdVq8oriwEEmqgtBN1LLiRL+9JjmhytNN0SF3YFVo2Vi8LlvYHglF50VM
-         e2yN/UshjMiKk0Or3cWkHnHYvpWJuHSzPSozs71pP+QjiRkIAX5kxnKEpVhx1aUTcAQg
-         OzOox798eW7VxQdIP313YmzIhXSWFfMrf639rrvvj2AINdeENb899UYdJAoZYtGWV0dg
-         3hKoIouUO6YjafexNiisB6pdUbhjas6qu7NOk59J9+AzhbuNbR03+U+Ylp368aMWBDk5
-         DtALnRnFDEdijM30ef1G3R5QF1O11V4QXQlwLn9JOb9TgJ5Liq20bqD9Gl9uea/j1A9P
-         AKpg==
+        bh=l+cxk4GRXEy3PWXlv26d2F3VWdrTeh7XQDcb/gZHyn4=;
+        b=WV+SSosX+LSP9x5dty+3YbEqmAPAUQDCF83larBgi6og0Aw5VjpVorLzHq30Wq/RY6
+         ZZJOw7VnBBtpMlzBp8mNUlK/bn5X+i4O0nRjl8DkcLucOaApZ9TvMDNzHm+JFJQ8K/Nw
+         kHiJTtQ8QFuJ3w2elqBwXPp5rwdnCZ6buC3Wm3CHxXI9YM6K/GGjXffMZfk70udXzdLL
+         aBDJEN/CvRzhXzbSU6waNKe5NHsz4YWq7TcjCXxKd/fAH92Ki9d9xxEeuilhezTgiEic
+         Cf2+bNs2tpekPqsYP2zbBsQaPHsCLasyqk8+TN2jhtWJ4ZGsI24TfrjRaFC7cG9wYlX0
+         VaLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679022835;
+        d=1e100.net; s=20210112; t=1679022832;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0IIu5Yi5LuAls+pJ/ShpvT4cQhYjefLMDzlyAtUzY2M=;
-        b=zdfB+IgA7eXAGsTJSTAcqIEnIBcm3jBGKMt8LaJVelyx7T5R4XxSRJjim6qQ0TxANP
-         70JtDMIPXqV09YGuEJCKLxuvU6CkUqZBp2z3kggA74YoItkLT63sv8TtW2yJtKMfdBjd
-         5ng0P372z6oD1JX9j5slf2yDBgNiZjd6Hde7Sfef64CMonnztXcb21Cu73A/E0TkCQEB
-         ACqLvVc3AzG2zMFHSnCVACxdrGIwQHyGLy78TXesfbLT5w+tdUkYDExCB+VitSqwk89/
-         dcxAgifgkHWToee3qXMbP1ZDdXqNIchI01+5kiEbsQIaPCLjS6o2GgTy3vzSTO5jjgRd
-         Lekg==
-X-Gm-Message-State: AO0yUKVV6CHARZQSLxxUDowN64NLd5bytAuMzcF7vIDlyyaTqnCJqoMJ
-        cbGueXFxbgEoK47LwxhoZ+U=
-X-Google-Smtp-Source: AK7set/bz+3OIzw1dnNbFrUKZvoDlrzcBSmpVgyEfWc4/E6RcfAUuT7Uvnwt9sz6dLhl52Q8mqt/HQ==
-X-Received: by 2002:ac8:594f:0:b0:3b9:bc8c:c1fa with SMTP id 15-20020ac8594f000000b003b9bc8cc1famr3055942qtz.5.1679022835153;
-        Thu, 16 Mar 2023 20:13:55 -0700 (PDT)
+        bh=l+cxk4GRXEy3PWXlv26d2F3VWdrTeh7XQDcb/gZHyn4=;
+        b=BigdZcoQ7sQC5jrOeJGDtqfueafE7inoDahc1mzVQqOGB0ZODRuqP2iNkzMwsAKN8C
+         d/14cqpTP2P0qFp0bSeY0H44MWxIsB3TcQOkpgcF/VxlnG7li5IFVYQJa2fAaVITmyfD
+         dTdGnlc4no1JG1mVbXQvMoycsS2JwuKlIoWyV8h54I5wsjnVBY1ERFi4BfUTzc0Su6Et
+         jAPf21MAJaj/gpbfVu3XXZjc5B/YFY0qhPUwBDoqFe8qyWw5rMmkLulCR0KfhluSnEpy
+         5uXkR03svxrDK/ONuoDGd+baNHG+IISWe9MVNC2BQKCoXSWcab7mbZWg/lP3zHcNLXbd
+         +SDQ==
+X-Gm-Message-State: AO0yUKUkoX72yxqL9URusBAQEn/hTpsYKQaXqqg6SwM4rptBmYoPEr4z
+        8MliEGyEoFnh73taGGC4oLg=
+X-Google-Smtp-Source: AK7set8RP3+6SAfsQgJ4ywKwsYSMSkHSN8UMChqof//OKVEdbhULyWO1xA3rWns2AUHAI7suuCxJRA==
+X-Received: by 2002:a05:6214:1d01:b0:577:5ffe:e0d8 with SMTP id e1-20020a0562141d0100b005775ffee0d8mr44428281qvd.24.1679022832634;
+        Thu, 16 Mar 2023 20:13:52 -0700 (PDT)
 Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id p11-20020a05620a22ab00b0074357fa9e15sm829282qkh.42.2023.03.16.20.13.54
+        by smtp.gmail.com with ESMTPSA id g2-20020a37b602000000b0071aacb2c76asm781448qkf.132.2023.03.16.20.13.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Mar 2023 20:13:54 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 345CE27C0054;
-        Thu, 16 Mar 2023 23:13:54 -0400 (EDT)
+        Thu, 16 Mar 2023 20:13:52 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 8819027C0054;
+        Thu, 16 Mar 2023 23:13:51 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 16 Mar 2023 23:13:54 -0400
-X-ME-Sender: <xms:8toTZB7jZCXZwj36DNFrvw6gePT6M4GoLUIejUCzWn6CrXdiEF7Uaw>
-    <xme:8toTZO7DnztCuv-a5FiT7cUhOQJTQJk7gmC6KyfX6M1vhqD5DeL6QOOXCougUwbO-
-    mIY4qXtM3hlODb_jQ>
-X-ME-Received: <xmr:8toTZIeY1uemKKbna27jzNQpFDK0cCpgk8mTC8G3rZy_IG_BgciwceOGEoM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdefuddgheejucetufdoteggodetrfdotf
+  by compute4.internal (MEProxy); Thu, 16 Mar 2023 23:13:51 -0400
+X-ME-Sender: <xms:79oTZCGaCtq3AZq4NKLvRr-3rLcQ3T0N9h0s3hP2cDAy2W_T10UaYA>
+    <xme:79oTZDViX1nd8LA_k7XN1uVmra6UHO1MBYmcx0ANKU3fX2n5aYRjijQPk75MWDjVP
+    FY1RZzvQNIS6O-Ffw>
+X-ME-Received: <xmr:79oTZMLGFDZRU6moEEkUEkqekDvOytytX3plUMpMTnH1hT5u9l7xIw7Q8N0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdefuddgheekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
     nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeegleejiedthedvheeggfejveefjeejkefgveffieeujefhueeigfegueeh
-    geeggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:8toTZKKnv3aIxfp68Xdg-5h-wDt12DNYe4nPPd-5l_1ZVNWMwSyRLA>
-    <xmx:8toTZFKw0QGRaghQbYSZisz9OlaB7iYIfBUaowTs6sHlTktTE-d0YA>
-    <xmx:8toTZDxbMFMyHtnriPcdRy7VWXVHNRctcxkfu4vn8RRqVVE094Bx2g>
-    <xmx:8toTZNL76-OaaLhoDSgloZeKJ0vBbByYYODswkcPGqjdNWKnoXI0Sg>
+    htthgvrhhnpefghfffvefhhfdvgfejgfekvdelgfekgeevueehlefhiedvgeffjefgteeu
+    gfehieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:79oTZMFYJm1mrOHEuTb5D002r9YhCIinrYN5M811w3BEANGt_JS_kQ>
+    <xmx:79oTZIX0QFnPvPkZl-dnh2JRjRoH-mYVvlKxDpaiasZoZ_eqpnC37w>
+    <xmx:79oTZPM22p0wfNDQyDSQfkDNqQXKzuxW_P4t2XCeFNjkAoEPqsvJHQ>
+    <xmx:79oTZJeoVMbKBXxhQVr2wtxhBk7gcHDmRmI2tuFdp-oskznImSx3OQ>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 16 Mar 2023 23:13:53 -0400 (EDT)
+ 16 Mar 2023 23:13:51 -0400 (EDT)
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     rcu@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -94,10 +94,11 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         David Woodhouse <dwmw2@infradead.org>,
         Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
         seanjc@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH rcu 5/7] rcutorture: Add SRCU deadlock scenarios
-Date:   Thu, 16 Mar 2023 20:13:37 -0700
-Message-Id: <20230317031339.10277-6-boqun.feng@gmail.com>
+        linux-kselftest@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH rcu 3/7] locking: Reduce the number of locks in ww_mutex stress tests
+Date:   Thu, 16 Mar 2023 20:13:35 -0700
+Message-Id: <20230317031339.10277-4-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230317031339.10277-1-boqun.feng@gmail.com>
 References: <20230317031339.10277-1-boqun.feng@gmail.com>
@@ -107,206 +108,31 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+The stress test in test_ww_mutex_init() uses 4095 locks since
+lockdep::reference has 12 bits, and since we are going to reduce it to
+11 bits to support lock_sync(), and 2047 is still a reasonable number of
+the max nesting level for locks, so adjust the test.
 
-In order to test the new SRCU-lockdep functionality, this commit adds
-an rcutorture.test_srcu_lockdep module parameter that, when non-zero,
-selects an SRCU deadlock scenario to execute.  This parameter is a
-five-digit number formatted as DNNL, where "D" is 1 to force a deadlock
-and 0 to avoid doing so; "NN" is the test number, 0 for SRCU-based, 1
-for SRCU/mutex-based, and 2 for SRCU/rwsem-based; and "L" is the number
-of steps in the deadlock cycle.
-
-Note that rcutorture.test_srcu_lockdep=1 will also force a hard hang.
-
-If a non-zero value of rcutorture.test_srcu_lockdep does not select a
-deadlock scenario, a console message is printed and testing continues.
-
-[ paulmck: Apply kernel test robot feedback, add rwsem support. ]
-[ paulmck: Apply Dan Carpenter feedback. ]
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Link: https://lore.kernel.org/oe-lkp/202302011445.9d99dae2-oliver.sang@intel.com
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/rcutorture.c | 151 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 151 insertions(+)
+ kernel/locking/test-ww_mutex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 8e6c023212cb..80ff9a743d31 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -120,6 +120,7 @@ torture_param(int, test_boost, 1, "Test RCU prio boost: 0=no, 1=maybe, 2=yes.");
- torture_param(int, test_boost_duration, 4, "Duration of each boost test, seconds.");
- torture_param(int, test_boost_interval, 7, "Interval between boost tests, seconds.");
- torture_param(bool, test_no_idle_hz, true, "Test support for tickless idle CPUs");
-+torture_param(int, test_srcu_lockdep, 0, "Test specified SRCU deadlock scenario.");
- torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 29dc253d03af..93cca6e69860 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -659,7 +659,7 @@ static int __init test_ww_mutex_init(void)
+ 	if (ret)
+ 		return ret;
  
- static char *torture_type = "rcu";
-@@ -3463,6 +3464,154 @@ static void rcutorture_sync(void)
- 		cur_ops->sync();
- }
+-	ret = stress(4095, hweight32(STRESS_ALL)*ncpus, STRESS_ALL);
++	ret = stress(2047, hweight32(STRESS_ALL)*ncpus, STRESS_ALL);
+ 	if (ret)
+ 		return ret;
  
-+static DEFINE_MUTEX(mut0);
-+static DEFINE_MUTEX(mut1);
-+static DEFINE_MUTEX(mut2);
-+static DEFINE_MUTEX(mut3);
-+static DEFINE_MUTEX(mut4);
-+static DEFINE_MUTEX(mut5);
-+static DEFINE_MUTEX(mut6);
-+static DEFINE_MUTEX(mut7);
-+static DEFINE_MUTEX(mut8);
-+static DEFINE_MUTEX(mut9);
-+
-+static DECLARE_RWSEM(rwsem0);
-+static DECLARE_RWSEM(rwsem1);
-+static DECLARE_RWSEM(rwsem2);
-+static DECLARE_RWSEM(rwsem3);
-+static DECLARE_RWSEM(rwsem4);
-+static DECLARE_RWSEM(rwsem5);
-+static DECLARE_RWSEM(rwsem6);
-+static DECLARE_RWSEM(rwsem7);
-+static DECLARE_RWSEM(rwsem8);
-+static DECLARE_RWSEM(rwsem9);
-+
-+DEFINE_STATIC_SRCU(srcu0);
-+DEFINE_STATIC_SRCU(srcu1);
-+DEFINE_STATIC_SRCU(srcu2);
-+DEFINE_STATIC_SRCU(srcu3);
-+DEFINE_STATIC_SRCU(srcu4);
-+DEFINE_STATIC_SRCU(srcu5);
-+DEFINE_STATIC_SRCU(srcu6);
-+DEFINE_STATIC_SRCU(srcu7);
-+DEFINE_STATIC_SRCU(srcu8);
-+DEFINE_STATIC_SRCU(srcu9);
-+
-+static int srcu_lockdep_next(const char *f, const char *fl, const char *fs, const char *fu, int i,
-+			     int cyclelen, int deadlock)
-+{
-+	int j = i + 1;
-+
-+	if (j >= cyclelen)
-+		j = deadlock ? 0 : -1;
-+	if (j >= 0)
-+		pr_info("%s: %s(%d), %s(%d), %s(%d)\n", f, fl, i, fs, j, fu, i);
-+	else
-+		pr_info("%s: %s(%d), %s(%d)\n", f, fl, i, fu, i);
-+	return j;
-+}
-+
-+// Test lockdep on SRCU-based deadlock scenarios.
-+static void rcu_torture_init_srcu_lockdep(void)
-+{
-+	int cyclelen;
-+	int deadlock;
-+	bool err = false;
-+	int i;
-+	int j;
-+	int idx;
-+	struct mutex *muts[] = { &mut0, &mut1, &mut2, &mut3, &mut4,
-+				 &mut5, &mut6, &mut7, &mut8, &mut9 };
-+	struct rw_semaphore *rwsems[] = { &rwsem0, &rwsem1, &rwsem2, &rwsem3, &rwsem4,
-+					  &rwsem5, &rwsem6, &rwsem7, &rwsem8, &rwsem9 };
-+	struct srcu_struct *srcus[] = { &srcu0, &srcu1, &srcu2, &srcu3, &srcu4,
-+					&srcu5, &srcu6, &srcu7, &srcu8, &srcu9 };
-+	int testtype;
-+
-+	if (!test_srcu_lockdep)
-+		return;
-+
-+	deadlock = test_srcu_lockdep / 1000;
-+	testtype = (test_srcu_lockdep / 10) % 100;
-+	cyclelen = test_srcu_lockdep % 10;
-+	WARN_ON_ONCE(ARRAY_SIZE(muts) != ARRAY_SIZE(srcus));
-+	if (WARN_ONCE(deadlock != !!deadlock,
-+		      "%s: test_srcu_lockdep=%d and deadlock digit %d must be zero or one.\n",
-+		      __func__, test_srcu_lockdep, deadlock))
-+		err = true;
-+	if (WARN_ONCE(cyclelen <= 0,
-+		      "%s: test_srcu_lockdep=%d and cycle-length digit %d must be greater than zero.\n",
-+		      __func__, test_srcu_lockdep, cyclelen))
-+		err = true;
-+	if (err)
-+		goto err_out;
-+
-+	if (testtype == 0) {
-+		pr_info("%s: test_srcu_lockdep = %05d: SRCU %d-way %sdeadlock.\n",
-+			__func__, test_srcu_lockdep, cyclelen, deadlock ? "" : "non-");
-+		if (deadlock && cyclelen == 1)
-+			pr_info("%s: Expect hang.\n", __func__);
-+		for (i = 0; i < cyclelen; i++) {
-+			j = srcu_lockdep_next(__func__, "srcu_read_lock", "synchronize_srcu",
-+					      "srcu_read_unlock", i, cyclelen, deadlock);
-+			idx = srcu_read_lock(srcus[i]);
-+			if (j >= 0)
-+				synchronize_srcu(srcus[j]);
-+			srcu_read_unlock(srcus[i], idx);
-+		}
-+		return;
-+	}
-+
-+	if (testtype == 1) {
-+		pr_info("%s: test_srcu_lockdep = %05d: SRCU/mutex %d-way %sdeadlock.\n",
-+			__func__, test_srcu_lockdep, cyclelen, deadlock ? "" : "non-");
-+		for (i = 0; i < cyclelen; i++) {
-+			pr_info("%s: srcu_read_lock(%d), mutex_lock(%d), mutex_unlock(%d), srcu_read_unlock(%d)\n",
-+				__func__, i, i, i, i);
-+			idx = srcu_read_lock(srcus[i]);
-+			mutex_lock(muts[i]);
-+			mutex_unlock(muts[i]);
-+			srcu_read_unlock(srcus[i], idx);
-+
-+			j = srcu_lockdep_next(__func__, "mutex_lock", "synchronize_srcu",
-+					      "mutex_unlock", i, cyclelen, deadlock);
-+			mutex_lock(muts[i]);
-+			if (j >= 0)
-+				synchronize_srcu(srcus[j]);
-+			mutex_unlock(muts[i]);
-+		}
-+		return;
-+	}
-+
-+	if (testtype == 2) {
-+		pr_info("%s: test_srcu_lockdep = %05d: SRCU/rwsem %d-way %sdeadlock.\n",
-+			__func__, test_srcu_lockdep, cyclelen, deadlock ? "" : "non-");
-+		for (i = 0; i < cyclelen; i++) {
-+			pr_info("%s: srcu_read_lock(%d), down_read(%d), up_read(%d), srcu_read_unlock(%d)\n",
-+				__func__, i, i, i, i);
-+			idx = srcu_read_lock(srcus[i]);
-+			down_read(rwsems[i]);
-+			up_read(rwsems[i]);
-+			srcu_read_unlock(srcus[i], idx);
-+
-+			j = srcu_lockdep_next(__func__, "down_write", "synchronize_srcu",
-+					      "up_write", i, cyclelen, deadlock);
-+			down_write(rwsems[i]);
-+			if (j >= 0)
-+				synchronize_srcu(srcus[j]);
-+			up_write(rwsems[i]);
-+		}
-+		return;
-+	}
-+
-+err_out:
-+	pr_info("%s: test_srcu_lockdep = %05d does nothing.\n", __func__, test_srcu_lockdep);
-+	pr_info("%s: test_srcu_lockdep = DNNL.\n", __func__);
-+	pr_info("%s: D: Deadlock if nonzero.\n", __func__);
-+	pr_info("%s: NN: Test number, 0=SRCU, 1=SRCU/mutex, 2=SRCU/rwsem.\n", __func__);
-+	pr_info("%s: L: Cycle length.\n", __func__);
-+}
-+
- static int __init
- rcu_torture_init(void)
- {
-@@ -3504,6 +3653,8 @@ rcu_torture_init(void)
- 	if (cur_ops->init)
- 		cur_ops->init();
- 
-+	rcu_torture_init_srcu_lockdep();
-+
- 	if (nreaders >= 0) {
- 		nrealreaders = nreaders;
- 	} else {
 -- 
 2.39.2
 
