@@ -2,354 +2,192 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12209C6FD1D
-	for <rcu@archiver.kernel.org>; Fri, 17 Mar 2023 05:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA3ECC74A5B
+	for <rcu@archiver.kernel.org>; Fri, 17 Mar 2023 07:16:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbjCQFui (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 17 Mar 2023 01:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        id S230089AbjCQHQI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Mar 2023 03:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjCQFug (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 17 Mar 2023 01:50:36 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6504ECE2;
-        Thu, 16 Mar 2023 22:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679032231; x=1710568231;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=4Aw8Ayot/kFsEnnRhRk/qDXyTbErpvlnYa7L/PVw7wQ=;
-  b=RLctgAa++uwhaGK+r0DF41jDjwox0emc92KwXgocGCAZKQ40TNJM4lv4
-   C4ccwAwetNIoGZcG6RRGUMxsKEVkHZRKz0FDpurQae1kZWwPFob+1pPa6
-   yEPx07SxTu/QfvgN3QfktYjhK58zrdJ7bt2Ch/0djGjOGGxBNt7lHiy3J
-   1cSqtgrBeWcyiTwBPMvzZB5K/UTy2NZSCV7hyGy+2zlO9I1O+3SXCM6Gt
-   t/GS3sU5nW5F76GbVD+DhqVmg+jIjDWEkAfzIjVFIeUrDlDPlaoviv5/q
-   K1EPYNlMeVU7lfeL8iDgkQkjzt2XGDHPdqsPhkD8DHqfdFUcpyrNVoqev
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="336882237"
-X-IronPort-AV: E=Sophos;i="5.98,268,1673942400"; 
-   d="scan'208";a="336882237"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2023 22:50:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="803992004"
-X-IronPort-AV: E=Sophos;i="5.98,268,1673942400"; 
-   d="scan'208";a="803992004"
-Received: from qiuxu-clx.sh.intel.com ([10.239.53.105])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2023 22:50:27 -0700
-From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-To:     paulmck@kernel.org
-Cc:     dave@stgolabs.net, frederic@kernel.org, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        qiuxu.zhuo@intel.com, quic_neeraju@quicinc.com,
-        rcu@vger.kernel.org, rostedt@goodmis.org
-Subject: [PATCH v2 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s) after unloading rcuscale
-Date:   Fri, 17 Mar 2023 13:50:06 +0800
-Message-Id: <20230317055006.46365-1-qiuxu.zhuo@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <2bbaa13a-bfcc-45b7-acce-8da59a2a0c32@paulmck-laptop>
-References: <2bbaa13a-bfcc-45b7-acce-8da59a2a0c32@paulmck-laptop>
+        with ESMTP id S230182AbjCQHQH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Mar 2023 03:16:07 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850AF10CD;
+        Fri, 17 Mar 2023 00:16:02 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id z21so16809239edb.4;
+        Fri, 17 Mar 2023 00:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679037361;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KShndDmtpL/wghNsEWsMIclWE+/Ioe4uetwa8XAxyPI=;
+        b=XiSV7Xe+j4vAxn8Wn4s4HU1BPZR7kJx3q/rQBuzCQwnmSdrOu9xRPQuKrmRBH4cLCL
+         KGgGVXCXRSCwoIjqKs3+JX+kLFft3tK1u0CNFBcx0hrgCN2VLx8nutygse61czoRwx60
+         Yr3FOjsEdDu2qv/SrKqGepBb6tdPnXvPpPid4Y4KRZvdfH/yNDjcyGDCvwQl11CK+Hpc
+         QkcJRYb3LPv1A+PAZEN35erFcLIeH5WrWoDIY0GQ5fGOH/MHhz/H9jXlVjPT4DBassN7
+         LYj3b8Cw6apyNBXUXPxv4P2ekzd6pe5n0IQlG6j8mA9Qrt4iBXeMJBvSXW0G7IfcZGLU
+         69Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679037361;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KShndDmtpL/wghNsEWsMIclWE+/Ioe4uetwa8XAxyPI=;
+        b=x3PtkVDHznsiLizYHMXW/U5x0aTCsIfh1QIX1sY9BQ74zfjs2SSZpysO0a0MhtGRk9
+         FpwEMVLgnnO+FzMKwDjzWwwRQ+cGXkwwuxnNTzk7ob9JxQD53eQA167ptS//Vmt8HYuw
+         ONfe2Z3SIE9i6T/oP4bfmwfQcE00zH03+gv+7OdEaK1ipIEOj8Hmjrrq7EcjDKDd3rUO
+         dH+vDyYp4xT7OR3vzTUQfemBKKhLDkyYJt557grvl9hjzAq0ZDnKQgM8/A7cEnLkZ8SD
+         MEfSYxXuu9I84WYgy2jBK/x8QTLMfvh7I8OV+/aIY/NuHQz3KU2MmGYYuOq50fGFXl1A
+         16UQ==
+X-Gm-Message-State: AO0yUKWDN1i3R/fsy00F2w5yvR4ILpU93PJ7Zq/CDrXZG4n8KFccC29V
+        5wFE3l/pJeufIxIK5l7jTns=
+X-Google-Smtp-Source: AK7set+da5nkPqUZwzrH2N9wTQTxnlUyt76NtDfl5j2HdB/nXGh1aTJTyVPIsUDpF3PTPRvTj4A8WQ==
+X-Received: by 2002:a05:6402:44b:b0:4fa:eccd:9849 with SMTP id p11-20020a056402044b00b004faeccd9849mr2011896edw.9.1679037360872;
+        Fri, 17 Mar 2023 00:16:00 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id i23-20020a508717000000b004af6c5f1805sm642321edb.52.2023.03.17.00.16.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Mar 2023 00:16:00 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-ext4@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: [PATCH 1/1] ext4: Replace ext4_kvfree_array_rcu() by kvfree_rcu_mightsleep()
+Date:   Fri, 17 Mar 2023 08:15:58 +0100
+Message-Id: <20230317071558.335645-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When running the 'kfree_rcu_test' test case with commands [1] the call
-trace [2] was thrown. This was because the kfree_scale_thread thread(s)
-still run after unloading rcuscale and torture modules. Fix the call
-trace by invoking kfree_scale_cleanup() from rcu_scale_cleanup() when
-removing the rcuscale module.
+The ext4_kvfree_array_rcu() function was introduced in order to
+release some memory after a grace period during resizing of a
+partition. An object that is freed does not contain any rcu_head
+filed.
 
-Additionally, current rcuscale.c defines kfree_scale_cleanup() after
-rcu_scale_cleanup(), to avoid the declaration of kfree_scale_cleanup()
-when rcu_scale_cleanup() invoking kfree_scale_cleanup(), move
-rcu_scale_cleanup() after kfree_scale_cleanup().
+To do so, it requires to allocate some extra memory for a special
+structure that has an rcu_head filed and pointer one where a freed
+memory is attached. Finally call_rcu() API is invoked.
 
-[1] modprobe rcuscale kfree_rcu_test=1
-    // After some time
-    rmmod rcuscale
-    rmmod torture
+Since we have a single argument of kvfree_rcu() API, we can easily
+replace all that tricky code by one single call that does the same
+but in more efficient way.
 
-[2] BUG: unable to handle page fault for address: ffffffffc0601a87
-    #PF: supervisor instruction fetch in kernel mode
-    #PF: error_code(0x0010) - not-present page
-    PGD 11de4f067 P4D 11de4f067 PUD 11de51067 PMD 112f4d067 PTE 0
-    Oops: 0010 [#1] PREEMPT SMP NOPTI
-    CPU: 1 PID: 1798 Comm: kfree_scale_thr Not tainted 6.3.0-rc1-rcu+ #1
-    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-    RIP: 0010:0xffffffffc0601a87
-    Code: Unable to access opcode bytes at 0xffffffffc0601a5d.
-    RSP: 0018:ffffb25bc2e57e18 EFLAGS: 00010297
-    RAX: 0000000000000000 RBX: ffffffffc061f0b6 RCX: 0000000000000000
-    RDX: 0000000000000000 RSI: ffffffff962fd0de RDI: ffffffff962fd0de
-    RBP: ffffb25bc2e57ea8 R08: 0000000000000000 R09: 0000000000000000
-    R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
-    R13: 0000000000000000 R14: 000000000000000a R15: 00000000001c1dbe
-    FS:  0000000000000000(0000) GS:ffff921fa2200000(0000) knlGS:0000000000000000
-    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    CR2: ffffffffc0601a5d CR3: 000000011de4c006 CR4: 0000000000370ee0
-    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    Call Trace:
-     <TASK>
-     ? kvfree_call_rcu+0xf0/0x3a0
-     ? kthread+0xf3/0x120
-     ? kthread_complete_and_exit+0x20/0x20
-     ? ret_from_fork+0x1f/0x30
-     </TASK>
-    Modules linked in: rfkill sunrpc ... [last unloaded: torture]
-    CR2: ffffffffc0601a87
-    ---[ end trace 0000000000000000 ]---
-
-Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Cc: linux-ext4@vger.kernel.org
+Cc: Lukas Czerner <lczerner@redhat.com>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
-v1 -> v2:
+ fs/ext4/ext4.h    |  1 -
+ fs/ext4/mballoc.c |  2 +-
+ fs/ext4/resize.c  | 31 ++-----------------------------
+ fs/ext4/super.c   |  2 +-
+ 4 files changed, 4 insertions(+), 32 deletions(-)
 
- - Move rcu_scale_cleanup() after kfree_scale_cleanup() to eliminate the
-   declaration of kfree_scale_cleanup().
-
- - Remove the unnecessary step "modprobe torture" from the commit message.
-
- - Add the description for why move rcu_scale_cleanup() after
-   kfree_scale_cleanup() to the commit message.
-
-Thanks Paul's comments on eliminating the extra function declaration and
-removing the unnecessary "modprobe torture" from the commit message. 
-
-Thanks Joel's constructive comments that for long-term maintenance we may
-need to split out the common code within current {ref,rcu}scale.c files.
-
- kernel/rcu/rcuscale.c | 201 ++++++++++++++++++++++--------------------
- 1 file changed, 103 insertions(+), 98 deletions(-)
-
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 91fb5905a008..5a000d26f03e 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -522,89 +522,6 @@ rcu_scale_print_module_parms(struct rcu_scale_ops *cur_ops, const char *tag)
- 		 scale_type, tag, nrealreaders, nrealwriters, verbose, shutdown);
- }
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 140e1eb300d1..e43d1a2d175e 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3057,7 +3057,6 @@ extern int ext4_generic_delete_entry(struct inode *dir,
+ extern bool ext4_empty_dir(struct inode *inode);
  
--static void
--rcu_scale_cleanup(void)
+ /* resize.c */
+-extern void ext4_kvfree_array_rcu(void *to_free);
+ extern int ext4_group_add(struct super_block *sb,
+ 				struct ext4_new_group_data *input);
+ extern int ext4_group_extend(struct super_block *sb,
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 5b2ae37a8b80..96b4e3317640 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3055,7 +3055,7 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
+ 	rcu_assign_pointer(sbi->s_group_info, new_groupinfo);
+ 	sbi->s_group_info_size = size / sizeof(*sbi->s_group_info);
+ 	if (old_groupinfo)
+-		ext4_kvfree_array_rcu(old_groupinfo);
++		kvfree_rcu_mightsleep(old_groupinfo);
+ 	ext4_debug("allocated s_groupinfo array for %d meta_bg's\n",
+ 		   sbi->s_group_info_size);
+ 	return 0;
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index 6b91443d6bf3..330b81f36e10 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -18,33 +18,6 @@
+ 
+ #include "ext4_jbd2.h"
+ 
+-struct ext4_rcu_ptr {
+-	struct rcu_head rcu;
+-	void *ptr;
+-};
+-
+-static void ext4_rcu_ptr_callback(struct rcu_head *head)
 -{
--	int i;
--	int j;
--	int ngps = 0;
--	u64 *wdp;
--	u64 *wdpp;
+-	struct ext4_rcu_ptr *ptr;
 -
--	/*
--	 * Would like warning at start, but everything is expedited
--	 * during the mid-boot phase, so have to wait till the end.
--	 */
--	if (rcu_gp_is_expedited() && !rcu_gp_is_normal() && !gp_exp)
--		SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
--	if (rcu_gp_is_normal() && gp_exp)
--		SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
--	if (gp_exp && gp_async)
--		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
--
--	if (torture_cleanup_begin())
--		return;
--	if (!cur_ops) {
--		torture_cleanup_end();
--		return;
--	}
--
--	if (reader_tasks) {
--		for (i = 0; i < nrealreaders; i++)
--			torture_stop_kthread(rcu_scale_reader,
--					     reader_tasks[i]);
--		kfree(reader_tasks);
--	}
--
--	if (writer_tasks) {
--		for (i = 0; i < nrealwriters; i++) {
--			torture_stop_kthread(rcu_scale_writer,
--					     writer_tasks[i]);
--			if (!writer_n_durations)
--				continue;
--			j = writer_n_durations[i];
--			pr_alert("%s%s writer %d gps: %d\n",
--				 scale_type, SCALE_FLAG, i, j);
--			ngps += j;
--		}
--		pr_alert("%s%s start: %llu end: %llu duration: %llu gps: %d batches: %ld\n",
--			 scale_type, SCALE_FLAG,
--			 t_rcu_scale_writer_started, t_rcu_scale_writer_finished,
--			 t_rcu_scale_writer_finished -
--			 t_rcu_scale_writer_started,
--			 ngps,
--			 rcuscale_seq_diff(b_rcu_gp_test_finished,
--					   b_rcu_gp_test_started));
--		for (i = 0; i < nrealwriters; i++) {
--			if (!writer_durations)
--				break;
--			if (!writer_n_durations)
--				continue;
--			wdpp = writer_durations[i];
--			if (!wdpp)
--				continue;
--			for (j = 0; j < writer_n_durations[i]; j++) {
--				wdp = &wdpp[j];
--				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
--					scale_type, SCALE_FLAG,
--					i, j, *wdp);
--				if (j % 100 == 0)
--					schedule_timeout_uninterruptible(1);
--			}
--			kfree(writer_durations[i]);
--		}
--		kfree(writer_tasks);
--		kfree(writer_durations);
--		kfree(writer_n_durations);
--	}
--
--	/* Do torture-type-specific cleanup operations.  */
--	if (cur_ops->cleanup != NULL)
--		cur_ops->cleanup();
--
--	torture_cleanup_end();
+-	ptr = container_of(head, struct ext4_rcu_ptr, rcu);
+-	kvfree(ptr->ptr);
+-	kfree(ptr);
 -}
 -
- /*
-  * Return the number if non-negative.  If -1, the number of CPUs.
-  * If less than -1, that much less than the number of CPUs, but
-@@ -624,21 +541,6 @@ static int compute_real(int n)
- 	return nr;
- }
- 
--/*
-- * RCU scalability shutdown kthread.  Just waits to be awakened, then shuts
-- * down system.
-- */
--static int
--rcu_scale_shutdown(void *arg)
+-void ext4_kvfree_array_rcu(void *to_free)
 -{
--	wait_event(shutdown_wq,
--		   atomic_read(&n_rcu_scale_writer_finished) >= nrealwriters);
--	smp_mb(); /* Wake before output. */
--	rcu_scale_cleanup();
--	kernel_power_off();
--	return -EINVAL;
+-	struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
+-
+-	if (ptr) {
+-		ptr->ptr = to_free;
+-		call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
+-		return;
+-	}
+-	synchronize_rcu();
+-	kvfree(to_free);
 -}
 -
- /*
-  * kfree_rcu() scalability tests: Start a kfree_rcu() loop on all CPUs for number
-  * of iterations and measure total time and number of GP for all iterations to complete.
-@@ -875,6 +777,109 @@ kfree_scale_init(void)
- 	return firsterr;
- }
- 
-+static void
-+rcu_scale_cleanup(void)
-+{
-+	int i;
-+	int j;
-+	int ngps = 0;
-+	u64 *wdp;
-+	u64 *wdpp;
-+
-+	/*
-+	 * Would like warning at start, but everything is expedited
-+	 * during the mid-boot phase, so have to wait till the end.
-+	 */
-+	if (rcu_gp_is_expedited() && !rcu_gp_is_normal() && !gp_exp)
-+		SCALEOUT_ERRSTRING("All grace periods expedited, no normal ones to measure!");
-+	if (rcu_gp_is_normal() && gp_exp)
-+		SCALEOUT_ERRSTRING("All grace periods normal, no expedited ones to measure!");
-+	if (gp_exp && gp_async)
-+		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
-+
-+	if (kfree_rcu_test) {
-+		kfree_scale_cleanup();
-+		return;
-+	}
-+
-+	if (torture_cleanup_begin())
-+		return;
-+	if (!cur_ops) {
-+		torture_cleanup_end();
-+		return;
-+	}
-+
-+	if (reader_tasks) {
-+		for (i = 0; i < nrealreaders; i++)
-+			torture_stop_kthread(rcu_scale_reader,
-+					     reader_tasks[i]);
-+		kfree(reader_tasks);
-+	}
-+
-+	if (writer_tasks) {
-+		for (i = 0; i < nrealwriters; i++) {
-+			torture_stop_kthread(rcu_scale_writer,
-+					     writer_tasks[i]);
-+			if (!writer_n_durations)
-+				continue;
-+			j = writer_n_durations[i];
-+			pr_alert("%s%s writer %d gps: %d\n",
-+				 scale_type, SCALE_FLAG, i, j);
-+			ngps += j;
-+		}
-+		pr_alert("%s%s start: %llu end: %llu duration: %llu gps: %d batches: %ld\n",
-+			 scale_type, SCALE_FLAG,
-+			 t_rcu_scale_writer_started, t_rcu_scale_writer_finished,
-+			 t_rcu_scale_writer_finished -
-+			 t_rcu_scale_writer_started,
-+			 ngps,
-+			 rcuscale_seq_diff(b_rcu_gp_test_finished,
-+					   b_rcu_gp_test_started));
-+		for (i = 0; i < nrealwriters; i++) {
-+			if (!writer_durations)
-+				break;
-+			if (!writer_n_durations)
-+				continue;
-+			wdpp = writer_durations[i];
-+			if (!wdpp)
-+				continue;
-+			for (j = 0; j < writer_n_durations[i]; j++) {
-+				wdp = &wdpp[j];
-+				pr_alert("%s%s %4d writer-duration: %5d %llu\n",
-+					scale_type, SCALE_FLAG,
-+					i, j, *wdp);
-+				if (j % 100 == 0)
-+					schedule_timeout_uninterruptible(1);
-+			}
-+			kfree(writer_durations[i]);
-+		}
-+		kfree(writer_tasks);
-+		kfree(writer_durations);
-+		kfree(writer_n_durations);
-+	}
-+
-+	/* Do torture-type-specific cleanup operations.  */
-+	if (cur_ops->cleanup != NULL)
-+		cur_ops->cleanup();
-+
-+	torture_cleanup_end();
-+}
-+
-+/*
-+ * RCU scalability shutdown kthread.  Just waits to be awakened, then shuts
-+ * down system.
-+ */
-+static int
-+rcu_scale_shutdown(void *arg)
-+{
-+	wait_event(shutdown_wq,
-+		   atomic_read(&n_rcu_scale_writer_finished) >= nrealwriters);
-+	smp_mb(); /* Wake before output. */
-+	rcu_scale_cleanup();
-+	kernel_power_off();
-+	return -EINVAL;
-+}
-+
- static int __init
- rcu_scale_init(void)
+ int ext4_resize_begin(struct super_block *sb)
  {
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+@@ -931,7 +904,7 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
+ 	n_group_desc[gdb_num] = gdb_bh;
+ 	rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
+ 	EXT4_SB(sb)->s_gdb_count++;
+-	ext4_kvfree_array_rcu(o_group_desc);
++	kvfree_rcu_mightsleep(o_group_desc);
+ 
+ 	lock_buffer(EXT4_SB(sb)->s_sbh);
+ 	le16_add_cpu(&es->s_reserved_gdt_blocks, -1);
+@@ -994,7 +967,7 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
+ 
+ 	rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
+ 	EXT4_SB(sb)->s_gdb_count++;
+-	ext4_kvfree_array_rcu(o_group_desc);
++	kvfree_rcu_mightsleep(o_group_desc);
+ 	return err;
+ }
+ 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 87aa23d047c9..34d802848d6d 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3108,7 +3108,7 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
+ 	rcu_assign_pointer(sbi->s_flex_groups, new_groups);
+ 	sbi->s_flex_groups_allocated = size;
+ 	if (old_groups)
+-		ext4_kvfree_array_rcu(old_groups);
++		kvfree_rcu_mightsleep(old_groups);
+ 	return 0;
+ }
+ 
 -- 
-2.17.1
+2.30.2
 
