@@ -2,119 +2,85 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95E54C6FD1D
-	for <rcu@archiver.kernel.org>; Fri, 17 Mar 2023 03:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 911B9C6FD1D
+	for <rcu@archiver.kernel.org>; Fri, 17 Mar 2023 04:10:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbjCQD3V (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 16 Mar 2023 23:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
+        id S229970AbjCQEK4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 17 Mar 2023 00:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjCQD3P (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 16 Mar 2023 23:29:15 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536696043F;
-        Thu, 16 Mar 2023 20:29:14 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id n2so4418398qtp.0;
-        Thu, 16 Mar 2023 20:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679023753;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6CV8jZsYZ2UdjlBBX4uRe49UAt4qUKHV31McFDU6yLg=;
-        b=aRKdTq+mbJiQCUWWNi+grNsxTP/+77aC8OvU9AHkX9qpfLem0iH7adSvgaMYYsohET
-         vUPNVEDQl2nd47n1Qn34kXGc08FOXiKm9BC99+bJnnZIMMRz2bkBK4lXP30CXo1pPB/Q
-         CGQ4G1x/T35BAc27b1m+0EW7lLzgD0YtwchNo5CuXhTUhrT3pzyBheaCM5CxBuyhRTGp
-         6Rlyw4mt3BRyfyXStumrcaQlANQldE86gvoVtKmst3dE2+F4FNjqarCJhIzoBbhVaV9V
-         vujOBK0gTKgYJYxKDTpUTSuLLyFCPUc8VyqdQNFX8nadnje3R5ohwYI9JB8ey7uSUb3a
-         cLOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679023753;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6CV8jZsYZ2UdjlBBX4uRe49UAt4qUKHV31McFDU6yLg=;
-        b=02liDWFu9yIV5JH/XDV6abXTU2V8mh7nUuBgQytWHH3cM3pACHLIugqOIV5GvsSMsn
-         h9+ceHBfGlhINSKFvnr0GvoSsvKVTkD7e/ER80iEnhsvHUHwyQDv6fjeNeecD5yuaot2
-         3qUuSQ8PBRgzyc1yv27WX+miavGGLjOv9R+IZIOMz91JY80vCE5qAmf3w3MQIoLunDuO
-         ZnjWVv0C+vFMUzwHRx0YfCAaCYbABqQB8lTim0drEGTAs3r0O2LBpoFPc52W51Ehkm2D
-         ammmFi+7oX+H8BRCkcjLeDiMxFycLwwg6S7ZzZ+/2/Cq+ftd271FclmqHN9L4T3lw34T
-         a3DQ==
-X-Gm-Message-State: AO0yUKUP7+2JCaSq4YFlxn3oVSreV9UjgNV2Ubs/2OI/ola2KF0V6Dac
-        PcIIwNH0SlAmm7lfYBEXMaM=
-X-Google-Smtp-Source: AK7set9ayLl6DVP3+gZKMmP4yPrSNIWqBDDEkVNbzDa1pgYCZxX/fmmvQgmc0uxngHYUIqR+HgvxaA==
-X-Received: by 2002:a05:622a:1792:b0:3c0:3d68:540c with SMTP id s18-20020a05622a179200b003c03d68540cmr9074044qtk.65.1679023753528;
-        Thu, 16 Mar 2023 20:29:13 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id f66-20020a37d245000000b00745f3200f54sm818826qkj.112.2023.03.16.20.29.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Mar 2023 20:29:13 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 9F20327C0054;
-        Thu, 16 Mar 2023 23:29:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 16 Mar 2023 23:29:12 -0400
-X-ME-Sender: <xms:h94TZJeP6PQoptmF6R4rQRBbAxGKgzqJl4arpRjyCzJa-TEcam5Mbg>
-    <xme:h94TZHPpMNFJuj0KpfjzhRVYG7yzowzzrxmbxInVbz-ArjMmDMtw3bsxLTWlXN7-G
-    Idd_aG2g873uyRQyw>
-X-ME-Received: <xmr:h94TZCgQ9eoJhV70wwIzgMu3L4OtFkoE_XEQlfK26tE1vZD3CtYhdxJ8NII>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdefuddgieduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpefgteffhfehjeegtdduieffudetfeehgfegudejudfhieefgfeigfevueduledu
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:h94TZC89nxDeNCHeZtbWXW3bb0rs-liPqoS0uwcEGsQnLBC3KlQvWQ>
-    <xmx:h94TZFsLXYrzeBq0xwtdBP1cg2vSbY3FRcHw0rT2xrDM65w0uvEfdQ>
-    <xmx:h94TZBE0nGSOMur527BJCi0-a6KlZnJo3WmQhSfX7dNGS3u_TdzqZA>
-    <xmx:iN4TZLIHSu2YwXSnUZewic4xlp_BjbeeCAWoblxsnjz0joVniM_tnw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 16 Mar 2023 23:29:11 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S230111AbjCQEKo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 17 Mar 2023 00:10:44 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B4A17CF8;
+        Thu, 16 Mar 2023 21:10:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E9C58B823F2;
+        Fri, 17 Mar 2023 04:10:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 960FDC433EF;
+        Fri, 17 Mar 2023 04:10:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679026236;
+        bh=QvZ5gV1saIPSO2uCw4OHBFsnU96E62dijbWa0Ok4l6Y=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LgZahAZJ5A4aKmpxPvxTZtPEVMfQw1S1cVUTEMNmlhSJ0+sjPyT2vfWvxPjRK0/K3
+         K9MMkCW1qlEiMC4eh/K/ZTsOMAW/zjyDPFd0iuvbS+lClrwAsEUOtcCRFfq6a0mxir
+         typt0+JpkhWuTYTCZJvre2NPvM01ymCxkap6AnbCLtpKQUuC0HSk0o8W+9SqUwycuN
+         aHQO9A+md/0udngSl8RkmS+m2QL0OZnCLvzwUQZUMk6U4Eq1VZ1r8WwIRl8CbAzq5b
+         sL4ai4K3JIKMaho9KPKcjTztKqdx6v//XTRrrZlWUA+m5BcwXZSJC5T4XOQxAwA8hN
+         cSxw1GofOz6aA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 307941540395; Thu, 16 Mar 2023 21:10:36 -0700 (PDT)
+Date:   Thu, 16 Mar 2023 21:10:36 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     rcu@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add myself to RCU entry
-Date:   Thu, 16 Mar 2023 20:29:05 -0700
-Message-Id: <20230317032905.10837-1-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.39.2
+Subject: Re: [PATCH] MAINTAINERS: Add myself to RCU entry
+Message-ID: <4ee9e39a-e87a-4c9f-802f-3ce546b4e196@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230317032905.10837-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230317032905.10837-1-boqun.feng@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Just to be clear, the "M:" tag before my name is short of "Minions" ;-)
+On Thu, Mar 16, 2023 at 08:29:05PM -0700, Boqun Feng wrote:
+> Just to be clear, the "M:" tag before my name is short of "Minions" ;-)
+> 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Welcome aboard!  ;-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d5bc223f305..370d2970b193 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17638,6 +17638,7 @@ M:	"Paul E. McKenney" <paulmck@kernel.org>
- M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
- M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
- M:	Josh Triplett <josh@joshtriplett.org>
-+M:	Boqun Feng <boqun.feng@gmail.com>
- R:	Steven Rostedt <rostedt@goodmis.org>
- R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
- R:	Lai Jiangshan <jiangshanlai@gmail.com>
--- 
-2.39.2
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8d5bc223f305..370d2970b193 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17638,6 +17638,7 @@ M:	"Paul E. McKenney" <paulmck@kernel.org>
+>  M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
+>  M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
+>  M:	Josh Triplett <josh@joshtriplett.org>
+> +M:	Boqun Feng <boqun.feng@gmail.com>
+>  R:	Steven Rostedt <rostedt@goodmis.org>
+>  R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>  R:	Lai Jiangshan <jiangshanlai@gmail.com>
+> -- 
+> 2.39.2
+> 
