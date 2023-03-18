@@ -2,94 +2,62 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93542C74A5B
-	for <rcu@archiver.kernel.org>; Sat, 18 Mar 2023 13:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DC6CC74A5B
+	for <rcu@archiver.kernel.org>; Sat, 18 Mar 2023 16:11:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjCRNUC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 18 Mar 2023 09:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        id S229648AbjCRQLh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 18 Mar 2023 12:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjCRNUB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 18 Mar 2023 09:20:01 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B53712BD8;
-        Sat, 18 Mar 2023 06:19:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679145599; x=1710681599;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4yNcKM9zVdmfoXuxxRmQqn/SArvovMwG9AXxCmxyH8E=;
-  b=C+YXQlIE2reC6R2128NNrF+GoE7Z6vni1zb3Uak1+AQOdATrT88n/zmY
-   9XGib+e3nTGkIKZqYRGI//6ygZ/3Bh3OoyjGEemoNJvaJPU2wM7VSgllZ
-   39EiUI3iNCP2IyyNSJGL67NsgCcziwWBdyZQ/WjonBKKwbl6XJq+tnAef
-   rZpHp+UUjCjBVKtzsCCct48Wnh1Vxs8eK0XqQ+TtLs8WwrjSQhmT6UdMa
-   cKy1iY+8d6264QT62PaeQgBJL5tC9YhR8yiBuKehwhjfl1ofj1F2Cp8jf
-   OTAy0jnUa9nyq29QNpUvM372RCJFTrWkikUSYRfBSZjVdNfDt5N7x7idI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10652"; a="424711112"
-X-IronPort-AV: E=Sophos;i="5.98,271,1673942400"; 
-   d="scan'208";a="424711112"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2023 06:19:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10652"; a="744845455"
-X-IronPort-AV: E=Sophos;i="5.98,271,1673942400"; 
-   d="scan'208";a="744845455"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2023 06:19:57 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Fix incorrect trace string in rcu_boost_kthread()
-Date:   Sat, 18 Mar 2023 21:24:35 +0800
-Message-Id: <20230318132435.3671003-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229488AbjCRQLg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 18 Mar 2023 12:11:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6142B25BA9;
+        Sat, 18 Mar 2023 09:11:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4A6860EC3;
+        Sat, 18 Mar 2023 16:11:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0851DC433D2;
+        Sat, 18 Mar 2023 16:11:32 +0000 (UTC)
+Date:   Sat, 18 Mar 2023 12:11:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
+Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
+ kvfree_rcu_mightsleep()
+Message-ID: <20230318121131.3a9cc1ae@rorschach.local.home>
+In-Reply-To: <70A3066E-3B61-4B81-B36D-69BC27DAD5E9@joelfernandes.org>
+References: <ZBNYogVe9spBmTm2@pc636>
+        <70A3066E-3B61-4B81-B36D-69BC27DAD5E9@joelfernandes.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, the trace string information before and after rcu_wait()
-and schedule_timeout_idle() are reversed, this commit therefore
-switches these strings in order to correctly trace.
+On Thu, 16 Mar 2023 14:01:30 -0400
+Joel Fernandes <joel@joelfernandes.org> wrote:
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree_plugin.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> If so, Steve please send a patch when you are able to and with Vlads Ack,
+> we can take it via the RCU tree if that is Ok with you.
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 7b0fe741a088..7b622b5196a8 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1114,10 +1114,10 @@ static int rcu_boost_kthread(void *arg)
- 	trace_rcu_utilization(TPS("Start boost kthread@init"));
- 	for (;;) {
- 		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_WAITING);
--		trace_rcu_utilization(TPS("End boost kthread@rcu_wait"));
-+		trace_rcu_utilization(TPS("Start boost kthread@rcu_wait"));
- 		rcu_wait(READ_ONCE(rnp->boost_tasks) ||
- 			 READ_ONCE(rnp->exp_tasks));
--		trace_rcu_utilization(TPS("Start boost kthread@rcu_wait"));
-+		trace_rcu_utilization(TPS("End boost kthread@rcu_wait"));
- 		WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_RUNNING);
- 		more2boost = rcu_boost(rnp);
- 		if (more2boost)
-@@ -1126,9 +1126,9 @@ static int rcu_boost_kthread(void *arg)
- 			spincnt = 0;
- 		if (spincnt > 10) {
- 			WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_YIELDING);
--			trace_rcu_utilization(TPS("End boost kthread@rcu_yield"));
--			schedule_timeout_idle(2);
- 			trace_rcu_utilization(TPS("Start boost kthread@rcu_yield"));
-+			schedule_timeout_idle(2);
-+			trace_rcu_utilization(TPS("End boost kthread@rcu_yield"));
- 			spincnt = 0;
- 		}
- 	}
--- 
-2.25.1
+Daniel acked it, so you can just take it as he can be responsible for that code.
 
+For the trace_probe.c if you get an ack from Masami, then you can take
+the original patch as is.
+
+-- Steve
