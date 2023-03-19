@@ -2,104 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E054C7618A
-	for <rcu@archiver.kernel.org>; Sun, 19 Mar 2023 10:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E45C7618A
+	for <rcu@archiver.kernel.org>; Sun, 19 Mar 2023 16:35:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjCSKxs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 19 Mar 2023 06:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
+        id S231220AbjCSQf2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 19 Mar 2023 12:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjCSKxr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 19 Mar 2023 06:53:47 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB1C113C1;
-        Sun, 19 Mar 2023 03:53:45 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id h8so36375854ede.8;
-        Sun, 19 Mar 2023 03:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679223224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Axr9HywQ8790Sf7fL41EwtcJKBQNRMV++khYmiO6pMY=;
-        b=FKErBK/J5YZ1SHDs0/gRY2D7JYHymUeNY1lH62w/oXxGRw4ipAZuiDOgfK2YTfcc+7
-         Um86xrWCxHKlUX0hHwuhrWIOYKAtvG9y0hh/1AR685XKjIPK0IJregwDWKFMSd9Rp1Dp
-         fUYsLSNqRCicJsdzbCAFoU4Zrb8Rz24+3uv+9qG3h8GCawq6rg7uT84PdQMtj/6Hxb4f
-         dkBWV6cdZ2pbwMsH80W5m5VM430uVECuy1ejVsGClwgwvKanAr541gfL/WU9fbYwXrVu
-         GcJzOb/X6+NhUVvqOWqTLoufDhh+6C873ydeUj8VnuJdqqNFIKynJ5RpxdcqwJUVaUY8
-         AAGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679223224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Axr9HywQ8790Sf7fL41EwtcJKBQNRMV++khYmiO6pMY=;
-        b=RIr0vkazzMfjWqZOKfbt9vxW1XocPCAwDScS10agzTtbzey6K81BTH+nUgiWcX0ZHU
-         cFcQXAuZxHEKSaQdPkOxsX3kwMpq6Jc1UX0mhiIrcVJ0J1N1fXmYzlIZycBTYwHhWwNK
-         TC2BfnGna1LQh1sVd5sxHFfB14zSaZ0uv5aE7n2Nizs8tsU5sgViuJF95AQPETQXRvNE
-         XqbYTx3ue+CrFEMqoncZNUuYQwQ65iKYr2WYpN2Waa02qxmmJO9hOifliLFdu9tC0AFB
-         nLGzDbFeJR1AwvqqXs85mXllav7vG4I2qiXheO8O6oHxKEx9EKZxJGaz/0A/Zdtk8dir
-         SLiw==
-X-Gm-Message-State: AO0yUKXlypBe7gRSVKvPG+XyX/GG1WHGe73gOVYmARnlEzRoUJYNWKkU
-        UsnGgoJIDmW3itVBNed3yBFVlnD0VjE=
-X-Google-Smtp-Source: AK7set8BDxJTy8SUkvQ0u1q74EE1PzlYcZscYrHYugoj8oObY73BX86JvyTg38WSog3yNhcK3YAYzA==
-X-Received: by 2002:a17:907:20af:b0:924:7f98:7c55 with SMTP id pw15-20020a17090720af00b009247f987c55mr5148820ejb.48.1679223223623;
-        Sun, 19 Mar 2023 03:53:43 -0700 (PDT)
-Received: from pc636 ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id yj8-20020a170907708800b00930170bc292sm3110020ejb.22.2023.03.19.03.53.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Mar 2023 03:53:43 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sun, 19 Mar 2023 11:53:40 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-ext4@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: [PATCH 1/1] ext4: Replace ext4_kvfree_array_rcu() by
- kvfree_rcu_mightsleep()
-Message-ID: <ZBbptCj8j3gWVesY@pc636>
-References: <20230317071558.335645-1-urezki@gmail.com>
- <28e1585c-7062-49c2-b08e-a5d33ca06577@paulmck-laptop>
+        with ESMTP id S229486AbjCSQe4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 19 Mar 2023 12:34:56 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8153D53F;
+        Sun, 19 Mar 2023 09:34:18 -0700 (PDT)
+Received: from zn.tnic (p5de8e687.dip0.t-ipconnect.de [93.232.230.135])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD3F91EC067D;
+        Sun, 19 Mar 2023 17:34:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1679243654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=oQqxL3BHw5WjuWqun2syN57FSJzoyI2jQrk/HbbPWhs=;
+        b=pqEwETfaj31dpAz2SEYSWfvU3WeBzG4lX8oZzUyb/EtHCHrnN4e+cfPaekUjGZ8SBiLJJd
+        d1DJ2QpKdRIeoydJx+SuRzEIaZ2w3eBxtrIhSGGgWTcRelmavWlZ7879Seb5jaxbE6Z+Qm
+        +GMiBj8HPxvSZjAvuffKs7s8PsJaneU=
+Date:   Sun, 19 Mar 2023 17:34:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        brgerst@gmail.com, piotrgorski@cachyos.org,
+        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>
+Subject: Re: [PATCH v15 02/12] cpu/hotplug: Move idle_thread_get() to
+ <linux/smpboot.h>
+Message-ID: <20230319163409.GBZBc5gTU94IdrucNL@fat_crate.local>
+References: <20230316222109.1940300-1-usama.arif@bytedance.com>
+ <20230316222109.1940300-3-usama.arif@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <28e1585c-7062-49c2-b08e-a5d33ca06577@paulmck-laptop>
+In-Reply-To: <20230316222109.1940300-3-usama.arif@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 17, 2023 at 05:31:04PM -0700, Paul E. McKenney wrote:
-> On Fri, Mar 17, 2023 at 08:15:58AM +0100, Uladzislau Rezki (Sony) wrote:
-> > The ext4_kvfree_array_rcu() function was introduced in order to
-> > release some memory after a grace period during resizing of a
-> > partition. An object that is freed does not contain any rcu_head
-> > filed.
-> > 
-> > To do so, it requires to allocate some extra memory for a special
-> > structure that has an rcu_head filed and pointer one where a freed
-> > memory is attached. Finally call_rcu() API is invoked.
-> > 
-> > Since we have a single argument of kvfree_rcu() API, we can easily
-> > replace all that tricky code by one single call that does the same
-> > but in more efficient way.
-> > 
-> > Cc: linux-ext4@vger.kernel.org
-> > Cc: Lukas Czerner <lczerner@redhat.com>
-> > Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Thu, Mar 16, 2023 at 10:20:59PM +0000, Usama Arif wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> From an RCU perspective:
+> Instead of relying purely on the special-case wrapper in bringup_cpu()
+> to pass the idle thread to __cpu_up(), expose idle_thread_get() so that
+> the architecture code can obtain it directly when necessary.
 > 
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> This will be useful when the existing __cpu_up() is split into multiple
+> phases, only *one* of which will actually need the idle thread.
 > 
-Thank you!
+> If the architecture code is to register its new pre-bringup states with
+> the cpuhp core, having a special-case wrapper to pass extra arguments is
+> non-trivial and it's easier just to let the arch register its function
+> pointer to be invoked with the standard API.
+> 
+> To reduce duplication, move the shadow stack reset and kasan unpoisoning
 
---
-Uladzislau Rezki
+I was wondering what "shadow stack" as that set is not upstream yet. You mean
+"shadow call stack" which is apparently something else,
+compiler-generated, purely software thing.
+
+> into idle_thread_get() too.
+
+Frankly, I don't think resetting shadow call stack and kasan state
+belongs in a function which returns the idle thread. Even more so if you
+have to add an @unpoison param which is false sometimes and sometimes
+true, depending on where you call the function.
+
+I think you should have a helper
+
+	tsk_reset_stacks(struct task_struct *tsk);
+
+or so which is called where @unpoison == true instead of having a getter
+function do something unrelated too.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
