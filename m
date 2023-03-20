@@ -2,98 +2,104 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E45C7618A
-	for <rcu@archiver.kernel.org>; Sun, 19 Mar 2023 16:35:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0914BC6FD1F
+	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 00:28:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjCSQf2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 19 Mar 2023 12:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        id S229483AbjCTA2p (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 19 Mar 2023 20:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjCSQe4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 19 Mar 2023 12:34:56 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8153D53F;
-        Sun, 19 Mar 2023 09:34:18 -0700 (PDT)
-Received: from zn.tnic (p5de8e687.dip0.t-ipconnect.de [93.232.230.135])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD3F91EC067D;
-        Sun, 19 Mar 2023 17:34:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1679243654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oQqxL3BHw5WjuWqun2syN57FSJzoyI2jQrk/HbbPWhs=;
-        b=pqEwETfaj31dpAz2SEYSWfvU3WeBzG4lX8oZzUyb/EtHCHrnN4e+cfPaekUjGZ8SBiLJJd
-        d1DJ2QpKdRIeoydJx+SuRzEIaZ2w3eBxtrIhSGGgWTcRelmavWlZ7879Seb5jaxbE6Z+Qm
-        +GMiBj8HPxvSZjAvuffKs7s8PsJaneU=
-Date:   Sun, 19 Mar 2023 17:34:09 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        brgerst@gmail.com, piotrgorski@cachyos.org,
-        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [PATCH v15 02/12] cpu/hotplug: Move idle_thread_get() to
- <linux/smpboot.h>
-Message-ID: <20230319163409.GBZBc5gTU94IdrucNL@fat_crate.local>
-References: <20230316222109.1940300-1-usama.arif@bytedance.com>
- <20230316222109.1940300-3-usama.arif@bytedance.com>
+        with ESMTP id S229446AbjCTA2o (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 19 Mar 2023 20:28:44 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B7E1284A;
+        Sun, 19 Mar 2023 17:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679272122; x=1710808122;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lyXTxJMbbk8wy2ewc/Bwdw41SIVEUEcTA92IvbzzJ8Q=;
+  b=kE8NkJa8+l5I+MNv2RUhvExaxYu2nBuKtMJM4z1BuWhWJcHp518DO9YZ
+   2lqip9rSO6fghmla4JzTJ9UVV6xit/luz3azqSmehoDxkeJv6Sat8IwPd
+   H5JmEAwKP0Q6ZYJfPLSCka63Q8qdIRXGtMWA0EJn5Z/AXg9Dc2SeHxrar
+   GVgiQIb5jv6vt1FhOmkd49FWnGD+XF/WXKqfuivJjtpycFotnD2sXUr/W
+   7FsdDfygd76t2e0UonRAbLnwqdQbhK1LwWECaz2tjYF76njD6s06ZTTyM
+   19yTBxzMcqveTNVAjunRnQGHF+Y7vmiIqIHXMWxH6VWBRxL/aXccqcTiH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10654"; a="424824675"
+X-IronPort-AV: E=Sophos;i="5.98,274,1673942400"; 
+   d="scan'208";a="424824675"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2023 17:28:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10654"; a="674163012"
+X-IronPort-AV: E=Sophos;i="5.98,274,1673942400"; 
+   d="scan'208";a="674163012"
+Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2023 17:28:39 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcutorture: Convert schedule_timeout_uninterruptible() to mdelay() in rcu_torture_stall()
+Date:   Mon, 20 Mar 2023 08:33:16 +0800
+Message-Id: <20230320003316.3897447-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230316222109.1940300-3-usama.arif@bytedance.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 10:20:59PM +0000, Usama Arif wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> Instead of relying purely on the special-case wrapper in bringup_cpu()
-> to pass the idle thread to __cpu_up(), expose idle_thread_get() so that
-> the architecture code can obtain it directly when necessary.
-> 
-> This will be useful when the existing __cpu_up() is split into multiple
-> phases, only *one* of which will actually need the idle thread.
-> 
-> If the architecture code is to register its new pre-bringup states with
-> the cpuhp core, having a special-case wrapper to pass extra arguments is
-> non-trivial and it's easier just to let the arch register its function
-> pointer to be invoked with the standard API.
-> 
-> To reduce duplication, move the shadow stack reset and kasan unpoisoning
+For kernels built with enable PREEMPT_NONE and CONFIG_DEBUG_ATOMIC_SLEEP,
+running the RCU stall tests.
 
-I was wondering what "shadow stack" as that set is not upstream yet. You mean
-"shadow call stack" which is apparently something else,
-compiler-generated, purely software thing.
+runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4"
+bootparams="nokaslr console=ttyS0 rcutorture.stall_cpu=30
+rcutorture.stall_no_softlockup=1 rcutorture.stall_cpu_irqsoff=1
+rcutorture.stall_cpu_block=1" -d
 
-> into idle_thread_get() too.
+[   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
+[   10.841073] rcu_torture_stall start on CPU 3.
+[   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
+....
+[   10.841108] Call Trace:
+[   10.841110]  <TASK>
+[   10.841112]  dump_stack_lvl+0x64/0xb0
+[   10.841118]  dump_stack+0x10/0x20
+[   10.841121]  __schedule_bug+0x8b/0xb0
+[   10.841126]  __schedule+0x2172/0x2940
+[   10.841157]  schedule+0x9b/0x150
+[   10.841160]  schedule_timeout+0x2e8/0x4f0
+[   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
+[   10.841195]  rcu_torture_stall+0x2e8/0x300
+[   10.841199]  kthread+0x175/0x1a0
+[   10.841206]  ret_from_fork+0x2c/0x50
 
-Frankly, I don't think resetting shadow call stack and kasan state
-belongs in a function which returns the idle thread. Even more so if you
-have to add an @unpoison param which is false sometimes and sometimes
-true, depending on where you call the function.
+The above calltrace occurs in the local_irq_disable/enable() critical
+section call schedule_timeout(), and invoke schedule_timeout() also
+implies a quiescent state, of course it also fails to trigger RCU stall,
+this commit therefore use mdelay() instead of schedule_timeout() to
+trigger RCU stall.
 
-I think you should have a helper
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	tsk_reset_stacks(struct task_struct *tsk);
-
-or so which is called where @unpoison == true instead of having a getter
-function do something unrelated too.
-
-Thx.
-
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index d06c2da04c34..fe4f5a4074e3 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2472,7 +2472,7 @@ static int rcu_torture_stall(void *args)
+ #ifdef CONFIG_PREEMPTION
+ 				preempt_schedule();
+ #else
+-				schedule_timeout_uninterruptible(HZ);
++				mdelay(HZ);
+ #endif
+ 			} else if (stall_no_softlockup) {
+ 				touch_softlockup_watchdog();
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
