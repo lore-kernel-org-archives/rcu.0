@@ -2,55 +2,55 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9874EC7618A
-	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 02:53:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 385A6C6FD1F
+	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 02:58:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjCTCx1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 19 Mar 2023 22:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
+        id S229737AbjCTC6X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 19 Mar 2023 22:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjCTCx0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 19 Mar 2023 22:53:26 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39172423D
-        for <rcu@vger.kernel.org>; Sun, 19 Mar 2023 19:53:25 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-544b959a971so166868387b3.3
-        for <rcu@vger.kernel.org>; Sun, 19 Mar 2023 19:53:25 -0700 (PDT)
+        with ESMTP id S229460AbjCTC6V (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 19 Mar 2023 22:58:21 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C41CC21
+        for <rcu@vger.kernel.org>; Sun, 19 Mar 2023 19:58:20 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id e65so11369268ybh.10
+        for <rcu@vger.kernel.org>; Sun, 19 Mar 2023 19:58:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1679280804;
+        d=joelfernandes.org; s=google; t=1679281099;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/+48VIs2KAq1cIQzJT8apezfWT+F0AwjwYYd/H19XmA=;
-        b=iRNMLsscXyCxTabImU86ajmficAN8v/3JNw4ANK74fV2TXtahm2cLWvPpVxF3R3Sbw
-         J5+8BhpGmffKGI0rWQiZ00sMai3NbOxwjZ4DcsExintgdsxJvYDVPY1PBtxBJzoy2i5n
-         2kqEM0lJCldtWkRaYFUi8xw+gcpbKG5U+Yoa0=
+        bh=NWm8u4mUJCOEU0qVnUHDKnm0t685QLVHM4K6EwLLr5A=;
+        b=XZmNPIFrvceXKA1vkh712+y4ViagW1OIN+snTHSEz5oMCeM6IK+4Yd03YJrkribJST
+         k39uGCHBIN0cNXrtadTPpY97xCyvNdcLNNe30+663sfwWuxIEG4Lh9t0vQvpOz2MYbfI
+         ZZJVsv73dANH8mwSrOyo2hY29myOYk7jVIT+g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679280804;
+        d=1e100.net; s=20210112; t=1679281099;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/+48VIs2KAq1cIQzJT8apezfWT+F0AwjwYYd/H19XmA=;
-        b=pBFZq7PC0ijEWCtCkrKZGayUU3R0VxGc9YHhh1CBr0ZI1ILcKcHnxxRgdf/ylxx0Jg
-         XTvROxU/zHF7h+S+bCFUDDWyx1RNmv8P/6GSew1jfjeOnmkannvRCluFH2OQySQeeixY
-         gqV3lWgZ2fXNTKVKs0yUzhScyNDc3XYfiANO5PLRpHm+d8dWv3uYDb3EZLKESxyWaHus
-         sFFi5rg/hgtX4t2D+0ruunbg2mUybCehQt2//eyj2Fljwd6P7T4ZIRp2M/kIqY6pzHAl
-         v3dfSASRmwSwlGmR8tR95Npp3fPc9KUu5OKQm5L+DkfLw2R+hfRZ/aT5pkvil6+yiYLx
-         2nQQ==
-X-Gm-Message-State: AO0yUKXqT09VLO8HzQswDkYPnVwT145IY/OaoGldrEL2CIWAQdewQSgS
-        wC4Sw4UE2lcwXshHfzTc7KHbeaViswj0gO8EAjYmUefKSRyaj/sWrIM=
-X-Google-Smtp-Source: AK7set9OS7kNQQPloCGDUdhflqyyIAuR2dycuPg+TicXiKjl+0tmanu2RGd+7t5QYFXP6U4a0VLZxc0bwmhD8ahVTWk=
-X-Received: by 2002:a81:ac1f:0:b0:541:9895:4ce9 with SMTP id
- k31-20020a81ac1f000000b0054198954ce9mr9129205ywh.9.1679280804177; Sun, 19 Mar
- 2023 19:53:24 -0700 (PDT)
+        bh=NWm8u4mUJCOEU0qVnUHDKnm0t685QLVHM4K6EwLLr5A=;
+        b=YAoWzy8Ykm++if4TxATckwZpQ4rfXqUgKRalJLOH/IU0mJzTUM5VvJl7jrLqUaCPe9
+         7caibpnwX30eAjo6NsHEM51cSy9uZ2GoS4PBvlUghhc9KjHvys5VDDkKdqQj7aSTDuM3
+         uQ8KcXBAlkh6Y2NUcvJPZT845fcL3QV7ooDlWlrNz56HBvyTkgnpmzU4Rqwc74ZJRgtn
+         k6qJMIEIy5LOIk4PaiQQ0PTzXBSiS6pjyAOJvAHVTs0CIUpEKnNbzT+NyeBGdPdEASFN
+         LbOspBkBEH/C4vZlsnn90AC+RunV81eYUrw1wmuOfq/3j3ZnogANYCX7x/O98eaFWF+j
+         OxNg==
+X-Gm-Message-State: AO0yUKWQE/K5u5X7idVmVpaLByBDeMPw1J5BzkbsZulGS03vGk/KCGdj
+        19Lofie3QVAvn+8rql846hIiVcy4d3iRw/2OBAGIXg==
+X-Google-Smtp-Source: AK7set/tnimjTNdynKjPXyI+Xye25QFyuru0oZLWo18qZuT+ttK8zY8ccH9v2emsBSTzJOe93zxXtYuiYjWg2zr+kMs=
+X-Received: by 2002:a05:6902:18d1:b0:b6a:2590:6c7f with SMTP id
+ ck17-20020a05690218d100b00b6a25906c7fmr2105350ybb.2.1679281099392; Sun, 19
+ Mar 2023 19:58:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230320024341.3956543-1-qiang1.zhang@intel.com>
-In-Reply-To: <20230320024341.3956543-1-qiang1.zhang@intel.com>
+References: <20230320003316.3897447-1-qiang1.zhang@intel.com>
+In-Reply-To: <20230320003316.3897447-1-qiang1.zhang@intel.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sun, 19 Mar 2023 22:53:13 -0400
-Message-ID: <CAEXW_YTMVF4qhFya5kW=xi5pLGd_gb_n-ZA+8+41iaG1S4YdMg@mail.gmail.com>
-Subject: Re: [PATCH v2] rcu: Fix some incorrect trace log in rcu_boost and
- rcuc kthreads
+Date:   Sun, 19 Mar 2023 22:58:08 -0400
+Message-ID: <CAEXW_YSCXhgeSgvf=HnoQDrT8T1F7q8m=dobEYHanXjnSUmCHw@mail.gmail.com>
+Subject: Re: [PATCH] rcutorture: Convert schedule_timeout_uninterruptible() to
+ mdelay() in rcu_torture_stall()
 To:     Zqiang <qiang1.zhang@intel.com>
 Cc:     paulmck@kernel.org, frederic@kernel.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -60,107 +60,59 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Mar 19, 2023 at 10:39=E2=80=AFPM Zqiang <qiang1.zhang@intel.com> wr=
-ote:
+On Sun, Mar 19, 2023 at 8:28=E2=80=AFPM Zqiang <qiang1.zhang@intel.com> wro=
+te:
 >
-> In rcu_boost kthreads, before invoke rcu_wait(), the trace string
-> should mark "Start boost kthread@rcu_wait", after rcu_wait() end,
-> mark "End boost kthread@rcu_wait". for boost kthread enter idle
-> state, the trace should also do same.
-> In rcuc kthreads, when the rcu_cpu_has_work is set zero, indicates
-> that there are no works to process, the rcuc kthreads will enter
-> waiting state, so the trace string should mark "Start @rcu_wait".
-
-Nope. Unfortunately, in this hard to read change log, you are making
-the "Start @rcu_wait" up.
-
-The trace clearly says "Start boost kthread @...",
-
-So first of all, don't make things up please based on imagination. Let
-us go by the actual trace message precisely and not skip important
-words in it.
-
-Now, an interpretation of the trace might be , we print a "Start"
-whenever the thread is RUNNING and "End" whenever the thread is
-SLEEPING. That makes much more sense so the existing code for the
-boost kthread is already correct.
-
-However, I did notice this bit of code in tree.c might have been
-causing confusion:
-
-*statusp =3D RCU_KTHREAD_YIELDING;
-trace_rcu_utilization(TPS("Start CPU kthread@rcu_yield"));
-schedule_timeout_idle(2);
-trace_rcu_utilization(TPS("End CPU kthread@rcu_yield"));
-*statusp =3D RCU_KTHREAD_WAITING;
-
-So perhaps a proper fix might be - in this fragment the Start and End
-should be swapped instead.
-
-thanks,
-
- - Joel
-
-
+> For kernels built with enable PREEMPT_NONE and CONFIG_DEBUG_ATOMIC_SLEEP,
+> running the RCU stall tests.
+>
+> runqemu kvm slirp nographic qemuparams=3D"-m 1024 -smp 4"
+> bootparams=3D"nokaslr console=3DttyS0 rcutorture.stall_cpu=3D30
+> rcutorture.stall_no_softlockup=3D1 rcutorture.stall_cpu_irqsoff=3D1
+> rcutorture.stall_cpu_block=3D1" -d
+>
+> [   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
+> [   10.841073] rcu_torture_stall start on CPU 3.
+> [   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
+> ....
+> [   10.841108] Call Trace:
+> [   10.841110]  <TASK>
+> [   10.841112]  dump_stack_lvl+0x64/0xb0
+> [   10.841118]  dump_stack+0x10/0x20
+> [   10.841121]  __schedule_bug+0x8b/0xb0
+> [   10.841126]  __schedule+0x2172/0x2940
+> [   10.841157]  schedule+0x9b/0x150
+> [   10.841160]  schedule_timeout+0x2e8/0x4f0
+> [   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
+> [   10.841195]  rcu_torture_stall+0x2e8/0x300
+> [   10.841199]  kthread+0x175/0x1a0
+> [   10.841206]  ret_from_fork+0x2c/0x50
+>
+> The above calltrace occurs in the local_irq_disable/enable() critical
+> section call schedule_timeout(), and invoke schedule_timeout() also
+> implies a quiescent state, of course it also fails to trigger RCU stall,
+> this commit therefore use mdelay() instead of schedule_timeout() to
+> trigger RCU stall.
 >
 > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 > ---
->  kernel/rcu/tree.c        | 2 +-
->  kernel/rcu/tree_plugin.h | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
+>  kernel/rcu/rcutorture.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 734c252c1e80..c1915408796f 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2465,7 +2465,7 @@ static void rcu_cpu_kthread(unsigned int cpu)
->                         rcu_core();
->                 local_bh_enable();
->                 if (*workp =3D=3D 0) {
-> -                       trace_rcu_utilization(TPS("End CPU kthread@rcu_wa=
-it"));
-> +                       trace_rcu_utilization(TPS("Start CPU kthread@rcu_=
-wait"));
->                         *statusp =3D RCU_KTHREAD_WAITING;
->                         return;
->                 }
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 7b0fe741a088..7b622b5196a8 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1114,10 +1114,10 @@ static int rcu_boost_kthread(void *arg)
->         trace_rcu_utilization(TPS("Start boost kthread@init"));
->         for (;;) {
->                 WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_WAITING=
-);
-> -               trace_rcu_utilization(TPS("End boost kthread@rcu_wait"));
-> +               trace_rcu_utilization(TPS("Start boost kthread@rcu_wait")=
-);
->                 rcu_wait(READ_ONCE(rnp->boost_tasks) ||
->                          READ_ONCE(rnp->exp_tasks));
-> -               trace_rcu_utilization(TPS("Start boost kthread@rcu_wait")=
-);
-> +               trace_rcu_utilization(TPS("End boost kthread@rcu_wait"));
->                 WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD_RUNNING=
-);
->                 more2boost =3D rcu_boost(rnp);
->                 if (more2boost)
-> @@ -1126,9 +1126,9 @@ static int rcu_boost_kthread(void *arg)
->                         spincnt =3D 0;
->                 if (spincnt > 10) {
->                         WRITE_ONCE(rnp->boost_kthread_status, RCU_KTHREAD=
-_YIELDING);
-> -                       trace_rcu_utilization(TPS("End boost kthread@rcu_=
-yield"));
-> -                       schedule_timeout_idle(2);
->                         trace_rcu_utilization(TPS("Start boost kthread@rc=
-u_yield"));
-> +                       schedule_timeout_idle(2);
-> +                       trace_rcu_utilization(TPS("End boost kthread@rcu_=
-yield"));
->                         spincnt =3D 0;
->                 }
->         }
-> --
-> 2.25.1
->
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index d06c2da04c34..fe4f5a4074e3 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -2472,7 +2472,7 @@ static int rcu_torture_stall(void *args)
+>  #ifdef CONFIG_PREEMPTION
+>                                 preempt_schedule();
+>  #else
+> -                               schedule_timeout_uninterruptible(HZ);
+> +                               mdelay(HZ);
+
+mdelay accepts milliseconds but HZ is jiffies correct? So this is
+broken for systems with HZ !=3D 1000.
+
+So you need to call mdelay(jiffies_to_msecs(HZ)) instead.
+
+ - Joel
