@@ -2,124 +2,100 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96FD9C7618A
-	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 14:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4902C6FD1D
+	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 15:27:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjCTOau (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Mar 2023 10:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        id S232913AbjCTP1r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Mar 2023 11:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbjCTOar (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Mar 2023 10:30:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C5313539;
-        Mon, 20 Mar 2023 07:30:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1679322641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MNnJjc+wTjsbE+tTs4G4f7zF5ub8ez2fAjz50M//XHI=;
-        b=P1wYEjvirFWplRoyJ0EDSTwrhMcIlvV5ubepcimBgsiKvL1IMtpSEr+MqRD7Tw2+5KjclI
-        YqLW+V3S4FGAl85tJI/55siU6QySIcknND2sJS8+1QCsRIGqu/VRjKw9NueLEevIlTfnR0
-        7zSO8nzPrApbinuSCGGX/HGELCxyW6L2wpleLYirF+oFAGZYrzgDz+XYP63c2z1mtcbJsl
-        fO6bLRGVtVKlYKTvvAp8bl0BLWcB/O4RZ9snzKjMnzNGFhOoqx3qIqt0oLMFxhSa8vRSGM
-        dzvD81DUwcCuJsR+NkUNS2faSRJtx1U34dUewdjQDH4duMIC9V+IurBVsQpDVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1679322641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MNnJjc+wTjsbE+tTs4G4f7zF5ub8ez2fAjz50M//XHI=;
-        b=k397NgAqoRe94ROeFOGKteN1q3HeCaMfZtxf95A/Y6+wh98xPVvgivEefHHKUih+/JBWzG
-        +b6h/1kvJCIVpsCA==
-To:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        kim.phillips@amd.com, brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>
-Subject: Re: [PATCH v15 03/12] cpu/hotplug: Add dynamic parallel bringup
- states before CPUHP_BRINGUP_CPU
-In-Reply-To: <20230316222109.1940300-4-usama.arif@bytedance.com>
-References: <20230316222109.1940300-1-usama.arif@bytedance.com>
- <20230316222109.1940300-4-usama.arif@bytedance.com>
-Date:   Mon, 20 Mar 2023 15:30:40 +0100
-Message-ID: <87r0tja41b.ffs@tglx>
+        with ESMTP id S232792AbjCTP10 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Mar 2023 11:27:26 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A0937546;
+        Mon, 20 Mar 2023 08:20:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 1221CCE12FA;
+        Mon, 20 Mar 2023 15:20:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F3BCC4339E;
+        Mon, 20 Mar 2023 15:20:19 +0000 (UTC)
+Date:   Mon, 20 Mar 2023 11:20:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Douglas RAILLARD <douglas.raillard@arm.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org (open list:TRACING),
+        linux-trace-kernel@vger.kernel.org (open list:TRACING),
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix rcu_torture_read ftrace event
+Message-ID: <20230320112015.2271da9c@gandalf.local.home>
+In-Reply-To: <20230306122744.236790-1-douglas.raillard@arm.com>
+References: <20230306122744.236790-1-douglas.raillard@arm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 16 2023 at 22:21, Usama Arif wrote:
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 6b3dccb4a888..6ccc64defd47 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -1497,8 +1497,30 @@ int bringup_hibernate_cpu(unsigned int sleep_cpu)
->  
->  void bringup_nonboot_cpus(unsigned int setup_max_cpus)
->  {
-> +	unsigned int n = setup_max_cpus - num_online_cpus();
->  	unsigned int cpu;
->  
-> +	/*
-> +	 * An architecture may have registered parallel pre-bringup states to
-> +	 * which each CPU may be brought in parallel. For each such state,
-> +	 * bring N CPUs to it in turn before the final round of bringing them
-> +	 * online.
-> +	 */
-> +	if (n > 0) {
-> +		enum cpuhp_state st = CPUHP_BP_PARALLEL_DYN;
-> +
-> +		while (st <= CPUHP_BP_PARALLEL_DYN_END && cpuhp_hp_states[st].name) {
-> +			int i = n;
-> +
-> +			for_each_present_cpu(cpu) {
-> +				cpu_up(cpu, st);
-> +				if (!--i)
-> +					break;
-> +			}
-> +			st++;
-> +		}
-> +	}
-> +
->  	for_each_present_cpu(cpu) {
->  		if (num_online_cpus() >= setup_max_cpus)
->  			break;
 
-This causes a subtle issue. The bringup loop above moves all CPUs to
-cpuhp_state == CPUHP_BP_PARALLEL_DYN_END. So the serial bootup will
-start from there and bring them fully up.
+[ Wondering why this didn't get picked up in v6.3-rc3, I see that the
+  maintainers of RCU were not Cc'd :-( ]
 
-Now if a bringup fails, then the rollback will only go back down to
-CPUHP_BP_PARALLEL_DYN_END, which means that the control CPU won't do any
-cleanups below CPUHP_BP_PARALLEL_DYN_END.
+This is a bug that will cause unwanted results. I have a patch that will not
+let the kernel build when code like this is added.
 
-That 'fail' is a common case for SMT soft disable via the 'nosmt'
-command line parameter. Due to the marvelous MCE broadcast 'feature' we
-need to bringup the SMT siblings at least to the CPUHP_AP_ONLINE_IDLE
-state once and then roll them back.
+  https://patchwork.kernel.org/project/linux-trace-kernel/patch/20230309221302.642e82d9@gandalf.local.home/
 
-While this is not necessarily a fatal problem, it's changing behaviour
-and with quite some of the details hidden in the (then not issued)
-teardown callbacks might cause some hard to decode subtle surprises.
+( The kernel robot even failed when applying the above patch, because it
+  caught the code that this patch fixes )
 
-So that second for_each_present_cpu() loop needs to check the return
-value of cpu_up() and issue a full rollback to CPUHP_OFFLINE in case of
-fail.
+On Mon,  6 Mar 2023 12:27:43 +0000
+Douglas RAILLARD <douglas.raillard@arm.com> wrote:
+
+> From: Douglas Raillard <douglas.raillard@arm.com>
+> 
+> Fix the rcutorturename field so that its size is correctly reported in
+> the text format embedded in trace.dat files. As it stands, it is
+> reported as being of size 1:
+
+And that the offsets of the following fields will be incorrect as well.
+
+> 
+>     field:char rcutorturename[8];   offset:8;       size:1; signed:0;
+> 
+
+Please add:
+
+Cc: stable@vger.kernel.org
+Fixes: 04ae87a52074e ("ftrace: Rework event_create_dir()")
 
 Thanks,
 
-        tglx
+-- Steve
 
+> Signed-off-by: Douglas Raillard <douglas.raillard@arm.com>
+> ---
+>  include/trace/events/rcu.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> index 90b2fb0292cb..012fa0d171b2 100644
+> --- a/include/trace/events/rcu.h
+> +++ b/include/trace/events/rcu.h
+> @@ -768,7 +768,7 @@ TRACE_EVENT_RCU(rcu_torture_read,
+>  	TP_ARGS(rcutorturename, rhp, secs, c_old, c),
+>  
+>  	TP_STRUCT__entry(
+> -		__field(char, rcutorturename[RCUTORTURENAME_LEN])
+> +		__array(char, rcutorturename, RCUTORTURENAME_LEN)
+>  		__field(struct rcu_head *, rhp)
+>  		__field(unsigned long, secs)
+>  		__field(unsigned long, c_old)
 
