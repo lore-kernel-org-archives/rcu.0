@@ -2,215 +2,142 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF91C6FD1D
-	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 18:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F9C0C7618A
+	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 18:57:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbjCTS1G (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Mar 2023 14:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
+        id S230273AbjCTS5K (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Mar 2023 14:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbjCTS0p (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Mar 2023 14:26:45 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945782F045;
-        Mon, 20 Mar 2023 11:19:23 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id x1so14186435qtr.7;
-        Mon, 20 Mar 2023 11:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679336362;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u7SGt6ewy4QpyyXpB8gIh5m2EuN+scGEW+i/GxtvTBQ=;
-        b=p2mcp5FgF8qi5F4m0kaETbVJn96x9JFsij//ka36qLR33Q87pGCyvr/L0AWPt1Mft1
-         Y3la7Y3Ak9p8recnj9MuWsNFdxlSj8NThUmhYDU5rZvrxSvZopXpoePBaz561lHTws8Q
-         waXIHZ6M2BkE0FW1mRcYtz5EOXG0FitAKshMfysNFZiVaBWLhAqJY4R0WnSWzVMcOnmX
-         PeG3rIwi+Tk9mJxhRZAnRSeBz/ULuGA1TC/K2YH0QC6txV04v1UI9MxA6Ul8uXvcR0m9
-         TZcF8vyAxJigGIppHrGFoFKftDX4oDtNbmUyJJ14/37IMoM+kiOBo4SjbA7HGyxgGTXl
-         GHnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679336362;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u7SGt6ewy4QpyyXpB8gIh5m2EuN+scGEW+i/GxtvTBQ=;
-        b=CxVg7lcAkppEFm6oqbUHA/CyaIa7ZGlYIcrnGPHrZ0vfb/otsjwBE+2Uqc6WwCUd51
-         fGZ8w0rgOkvv7mTARl6CarDA7vyLkzFEzykUaVVC+XAhQMg1G7BdJ79dsNeORkeKGITD
-         6h6eNtWMdDj1s7NgSww3iGhTn4mO08wBvX6GI2xNfXYqD2jFEzZJDrFIyjuGQW8a+5hy
-         XzCpx+MnVYVxoW6Q5Jyr2gQw/5MA5YYnxRTId8m6+dGnVbHEVCFczNujj3EhAUaJKcLO
-         KNYEv2lklUftzK9gNm83/nJj5zgn23+XYQY1x8FrHV8UhsvQe5zduTSJlbt6KKgrxaLD
-         PyzQ==
-X-Gm-Message-State: AO0yUKX6lTy1dxq5mdWdD7Y2jBHRbsx9rNIviFu1Gh/h/WQTwkfnjyPD
-        VyTj4M31SMZvKnWW1Nw2Qsk=
-X-Google-Smtp-Source: AK7set++ETVq5GzrgGjrmpd/i6tixAfyGPb810touxsUo1OlfAB3y1s5qt4PVmudKLhbTlNc8vr5nw==
-X-Received: by 2002:ac8:5f8b:0:b0:3bd:1a07:2086 with SMTP id j11-20020ac85f8b000000b003bd1a072086mr124163qta.36.1679336362542;
-        Mon, 20 Mar 2023 11:19:22 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id m6-20020a05620a24c600b00745ba217187sm7805279qkn.3.2023.03.20.11.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Mar 2023 11:19:21 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 2456E27C005B;
-        Mon, 20 Mar 2023 14:19:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 20 Mar 2023 14:19:21 -0400
-X-ME-Sender: <xms:qKMYZHl_jHbMPC76phPqQFBBzdH7GTNRhVDgFSd6t7loBWP85kTKhA>
-    <xme:qKMYZK0Y2225S3QaQ8hyBSjJP2eOMkh_lQb__zJNClrbiH7BxQGRMgK8GT1VKuiPV
-    TuB43dkodNib8wWPw>
-X-ME-Received: <xmr:qKMYZNpHUVuJ2kz5MIPftwdbUtuP0z_fxMmtuSoVTjdTFffGx3PtMpE9SJuP6Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdefkedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:qKMYZPnfBHamQzApCPLRRJKPTIGn4NkIyqzijhDo4bfLhgKMmGgucg>
-    <xmx:qKMYZF3XHEW6X6-StQ9QiEgJW07EMh2Mu7li8r6pwKYMgVfRjLnFlg>
-    <xmx:qKMYZOvcZwe9QGD0oR7sAOUYtBqyVVCsCCrCiIWBAF55uYmOYp7xHw>
-    <xmx:qaMYZHV5nMGsjihCrLXSZIhvyG8BdgFUqRJb3Cz-jR5YWXG1BmFyxg>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Mar 2023 14:19:20 -0400 (EDT)
-Date:   Mon, 20 Mar 2023 11:19:05 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     rcu@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        with ESMTP id S230378AbjCTS4k (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Mar 2023 14:56:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E593F34C26;
+        Mon, 20 Mar 2023 11:49:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6DF3D617AB;
+        Mon, 20 Mar 2023 18:49:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C82FBC433D2;
+        Mon, 20 Mar 2023 18:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679338151;
+        bh=devyTB+QoK7CaJDUcCzWWOhMtGdTJWI5jCOOpMU6ijQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uT6z5RPhXU2o0TXjF8VQYBtImQGEeaj2IkFJ5hI/YCoh4j5jKSNRcDXz5HfiE2HlG
+         dCIPrd2blcImsEQf6cXt4hxOJ3ViRSDGsPqToUTfbrIG9hOqZMbtBH8WxO2Qv49kci
+         Jz5dYH+kD7udko8qNfYSVsYthK0E+AooxfQV1N0BQ3yEGdl03KS+FrA+pJSaiR46wf
+         yzM7SyrZuGCIA4l5t3nbUumyLbBPzhdTbs5Mz3/Onh/mWevqJhbQpTz/fygkunDIDc
+         g5jUtj3sAMZ5J4mGI8a1U4hPu+mREsjDA8Mi7PS9DOQ0bSVAkxE67bCU6PW1l35jvV
+         Ext9Ck2P0xHlA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5A3581540395; Mon, 20 Mar 2023 11:49:11 -0700 (PDT)
+Date:   Mon, 20 Mar 2023 11:49:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Douglas RAILLARD <douglas.raillard@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "open list:TRACING" <linux-kernel@vger.kernel.org>,
+        "open list:TRACING" <linux-trace-kernel@vger.kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Shuah Khan <shuah@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        seanjc@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH rcu 7/7] rcutorture: Add srcu_lockdep.sh
-Message-ID: <ZBijmdz2ucql+BSb@boqun-archlinux>
-References: <20230317031339.10277-1-boqun.feng@gmail.com>
- <20230317031339.10277-8-boqun.feng@gmail.com>
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix rcu_torture_read ftrace event
+Message-ID: <f7e2761d-0db8-49a4-82ad-8876578d2ddb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230306122744.236790-1-douglas.raillard@arm.com>
+ <20230320112015.2271da9c@gandalf.local.home>
+ <5a4e5058-2b5c-4c65-9811-66bf68128583@paulmck-laptop>
+ <20230320133650.5388a05e@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230317031339.10277-8-boqun.feng@gmail.com>
+In-Reply-To: <20230320133650.5388a05e@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
-
-On Thu, Mar 16, 2023 at 08:13:39PM -0700, Boqun Feng wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Mon, Mar 20, 2023 at 01:36:50PM -0400, Steven Rostedt wrote:
+> On Mon, 20 Mar 2023 09:58:11 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> This commit adds an srcu_lockdep.sh script that checks whether lockdep
-> correctly classifies SRCU-based, SRCU/mutex-based, and SRCU/rwsem-based
-> deadlocks.
+> > On Mon, Mar 20, 2023 at 11:20:15AM -0400, Steven Rostedt wrote:
+> > > 
+> > > [ Wondering why this didn't get picked up in v6.3-rc3, I see that the
+> > >   maintainers of RCU were not Cc'd :-( ]
+> > > 
+> > > This is a bug that will cause unwanted results. I have a patch that will not
+> > > let the kernel build when code like this is added.
+> > > 
+> > >   https://patchwork.kernel.org/project/linux-trace-kernel/patch/20230309221302.642e82d9@gandalf.local.home/
+> > > 
+> > > ( The kernel robot even failed when applying the above patch, because it
+> > >   caught the code that this patch fixes )
+> > > 
+> > > On Mon,  6 Mar 2023 12:27:43 +0000
+> > > Douglas RAILLARD <douglas.raillard@arm.com> wrote:
+> > >   
+> > > > From: Douglas Raillard <douglas.raillard@arm.com>
+> > > > 
+> > > > Fix the rcutorturename field so that its size is correctly reported in
+> > > > the text format embedded in trace.dat files. As it stands, it is
+> > > > reported as being of size 1:  
+> > > 
+> > > And that the offsets of the following fields will be incorrect as well.
+> > >   
+> > > > 
+> > > >     field:char rcutorturename[8];   offset:8;       size:1; signed:0;
+> > > >   
+> > > 
+> > > Please add:
+> > > 
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: 04ae87a52074e ("ftrace: Rework event_create_dir()")  
+> > 
+> > Thank you, Steve!
+> > 
+> > With those fixes, and with an ack or better from Steve, I will be happy
+> > to pull this in to -rcu.  How urgent is this?  The default destination
+> > would be the v6.5 merge window (not the upcoming one, but the one after
+> > that), so if you need it sooner, please let me know.
 > 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> [ boqun: Fix "RCUTORTURE" with "$RCUTORTURE" ]
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  .../selftests/rcutorture/bin/srcu_lockdep.sh  | 73 +++++++++++++++++++
->  1 file changed, 73 insertions(+)
->  create mode 100755 tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+> I would like my patch to get in this release, so if you can get it into
+> this release too (before the next merge window) that would be great. This is
+> a real bug. User space tooling can not parse this trace event (when it use
+> to, so it is a regression), and my patch that prevents other trace events
+> from making the same mistake will make this code as is fail the build.
 > 
-> diff --git a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
-> new file mode 100755
-> index 000000000000..961932754684
-> --- /dev/null
-> +++ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+> For this patch:
+> 
+>  Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Could you provide the SPDX header and copyright bits for this newly
-added file? For small changes I can do it myself, however this is about
-licenses and copyright, so I need it from you, thanks!
+Fair enough, thank you all!
 
-Regards,
-Boqun
+							Thanx, Paul
 
-> @@ -0,0 +1,73 @@
-> +#!/bin/bash
-> +#
-> +# Run SRCU-lockdep tests and report any that fail to meet expectations.
-> +
-> +usage () {
-> +	echo "Usage: $scriptname optional arguments:"
-> +	echo "       --datestamp string"
-> +	exit 1
-> +}
-> +
-> +ds=`date +%Y.%m.%d-%H.%M.%S`-srcu_lockdep
-> +scriptname="$0"
-> +
-> +T="`mktemp -d ${TMPDIR-/tmp}/srcu_lockdep.sh.XXXXXX`"
-> +trap 'rm -rf $T' 0
-> +
-> +RCUTORTURE="`pwd`/tools/testing/selftests/rcutorture"; export RCUTORTURE
-> +PATH=${RCUTORTURE}/bin:$PATH; export PATH
-> +. functions.sh
-> +
-> +while test $# -gt 0
-> +do
-> +	case "$1" in
-> +	--datestamp)
-> +		checkarg --datestamp "(relative pathname)" "$#" "$2" '^[a-zA-Z0-9._/-]*$' '^--'
-> +		ds=$2
-> +		shift
-> +		;;
-> +	*)
-> +		echo Unknown argument $1
-> +		usage
-> +		;;
-> +	esac
-> +	shift
-> +done
-> +
-> +err=
-> +nerrs=0
-> +for d in 0 1
-> +do
-> +	for t in 0 1 2
-> +	do
-> +		for c in 1 2 3
-> +		do
-> +			err=
-> +			val=$((d*1000+t*10+c))
-> +			tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5s --configs "SRCU-P" --bootargs "rcutorture.test_srcu_lockdep=$val" --trust-make --datestamp "$ds/$val" > "$T/kvm.sh.out" 2>&1
-> +			ret=$?
-> +			mv "$T/kvm.sh.out" "$RCUTORTURE/res/$ds/$val"
-> +			if test "$d" -ne 0 && test "$ret" -eq 0
-> +			then
-> +				err=1
-> +				echo -n Unexpected success for > "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-> +			fi
-> +			if test "$d" -eq 0 && test "$ret" -ne 0
-> +			then
-> +				err=1
-> +				echo -n Unexpected failure for > "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-> +			fi
-> +			if test -n "$err"
-> +			then
-> +				grep "rcu_torture_init_srcu_lockdep: test_srcu_lockdep = " "$RCUTORTURE/res/$ds/$val/SRCU-P/console.log" | sed -e 's/^.*rcu_torture_init_srcu_lockdep://' >> "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-> +				cat "$RCUTORTURE/res/$ds/$val/kvm.sh.err"
-> +				nerrs=$((nerrs+1))
-> +			fi
-> +		done
-> +	done
-> +done
-> +if test "$nerrs" -ne 0
-> +then
-> +	exit 1
-> +fi
-> +exit 0
-> -- 
-> 2.39.2
+> -- Steve
+> 
+> 
+> > >   
+> > > > Signed-off-by: Douglas Raillard <douglas.raillard@arm.com>
+> > > > ---
+> > > >  include/trace/events/rcu.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> > > > index 90b2fb0292cb..012fa0d171b2 100644
+> > > > --- a/include/trace/events/rcu.h
+> > > > +++ b/include/trace/events/rcu.h
+> > > > @@ -768,7 +768,7 @@ TRACE_EVENT_RCU(rcu_torture_read,
+> > > >  	TP_ARGS(rcutorturename, rhp, secs, c_old, c),
+> > > >  
+> > > >  	TP_STRUCT__entry(
+> > > > -		__field(char, rcutorturename[RCUTORTURENAME_LEN])
+> > > > +		__array(char, rcutorturename, RCUTORTURENAME_LEN)
+> > > >  		__field(struct rcu_head *, rhp)
+> > > >  		__field(unsigned long, secs)
+> > > >  		__field(unsigned long, c_old)  
+> > >   
 > 
