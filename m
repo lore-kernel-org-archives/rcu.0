@@ -2,124 +2,137 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D1E2C7619A
-	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 20:18:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1FF6C7619A
+	for <rcu@archiver.kernel.org>; Mon, 20 Mar 2023 20:22:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjCTUSl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Mar 2023 16:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
+        id S230321AbjCTUWe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Mar 2023 16:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbjCTUSj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Mar 2023 16:18:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF991E9D8;
-        Mon, 20 Mar 2023 13:18:36 -0700 (PDT)
+        with ESMTP id S230220AbjCTUWd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Mar 2023 16:22:33 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8878130B2F;
+        Mon, 20 Mar 2023 13:22:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6080614E6;
-        Mon, 20 Mar 2023 20:18:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26EA9C433EF;
-        Mon, 20 Mar 2023 20:18:35 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id CA57ECE13E1;
+        Mon, 20 Mar 2023 20:22:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 105FFC433D2;
+        Mon, 20 Mar 2023 20:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679343515;
-        bh=kCBWJI0OErTst/5QhqoBa5yOjBl4Dx/YTIf9ZhEnLYE=;
+        s=k20201202; t=1679343745;
+        bh=CveMy0+pCgXXZvzKhxyxVeH/jvFaXFhg92cxgaOQxik=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=s/yYmhwLnKzkvUw2LminwOH+fNfM0lolyFwxU/hoHIkE9WqGWXAEjLQYQYeNFU7Zl
-         6USGWKDAkti/Cahw5TYeI1Mho1hO0GQEZ2ge5GwK9uNz5vZwWeBc5q6CggN4U5SBss
-         JqHuH9QJZzZkwEX4M7isVZ7liYV0LV4/Ejt92TobUJ9D+EO62sugRGO0srmycMqnGu
-         nmfFaMa+iLwDdfSK1290hlKo4Ao43yvHDMxDEmFrxZDSqop0XbJIiN+s+rKh9XLWk0
-         I7h300pSSP6ONGtvfMWQO4S4QH5R6l9Jnb5P9M6M0+0b/ovLAE0jBOlnIxSx/j323H
-         qPlx+6NjHHZpw==
+        b=i4uHDRkPBxUmKMAmrfWWhyvXDFj9Ra80BvZIMfgNtJthD5t0qmeXOlPMOZ57+ejMx
+         /tGY1mTM6v2B3pyrXXaLY6vcE1fNMhQ5x1crN9d1Ucuif5RSk0hS8fxCqIhjvnPC17
+         Aps0aMDSqnUnPg5XGWtoQ/9Be850cd/VfjCXCB+7yrlgaxEW5Vof1yHl2rAaiUKLEr
+         Z0vuo0xdfSu+cB+nev+D7Wibq63j8OxSNHuKVh12a/tGhF+qJl2wi2SCnt3s1S1vJM
+         MTviY8yFxiiUavuzvbZ2r2sSh+bL8HmK7HTrvnbs+kvWhbk4fahTJXFOvTd4u1leRv
+         NWXYm7k06nvqw==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A84E01540395; Mon, 20 Mar 2023 13:18:34 -0700 (PDT)
-Date:   Mon, 20 Mar 2023 13:18:34 -0700
+        id A96AF1540395; Mon, 20 Mar 2023 13:22:24 -0700 (PDT)
+Date:   Mon, 20 Mar 2023 13:22:24 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     frederic@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Convert
- schedule_timeout_uninterruptible() to mdelay() in rcu_torture_stall()
-Message-ID: <7a414721-25fa-485c-91a5-13d3149073fe@paulmck-laptop>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     rcu@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Shuah Khan <shuah@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        seanjc@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH rcu 7/7] rcutorture: Add srcu_lockdep.sh
+Message-ID: <15e799a8-0e63-4bd9-9a01-028c9d906904@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230320032422.4010801-1-qiang1.zhang@intel.com>
+References: <20230317031339.10277-1-boqun.feng@gmail.com>
+ <20230317031339.10277-8-boqun.feng@gmail.com>
+ <ZBijmdz2ucql+BSb@boqun-archlinux>
+ <bed30db4-d998-4382-a9a1-716c6f428263@paulmck-laptop>
+ <ZBizxQ9BY/hQk8+Y@boqun-archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230320032422.4010801-1-qiang1.zhang@intel.com>
+In-Reply-To: <ZBizxQ9BY/hQk8+Y@boqun-archlinux>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 20, 2023 at 11:24:22AM +0800, Zqiang wrote:
-> For kernels built with enable PREEMPT_NONE and CONFIG_DEBUG_ATOMIC_SLEEP,
-> running the RCU stall tests.
+On Mon, Mar 20, 2023 at 12:28:05PM -0700, Boqun Feng wrote:
+> On Mon, Mar 20, 2023 at 12:09:00PM -0700, Paul E. McKenney wrote:
+> > On Mon, Mar 20, 2023 at 11:19:05AM -0700, Boqun Feng wrote:
+> > > Hi Paul,
+> > > 
+> > > On Thu, Mar 16, 2023 at 08:13:39PM -0700, Boqun Feng wrote:
+> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > 
+> > > > This commit adds an srcu_lockdep.sh script that checks whether lockdep
+> > > > correctly classifies SRCU-based, SRCU/mutex-based, and SRCU/rwsem-based
+> > > > deadlocks.
+> > > > 
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > [ boqun: Fix "RCUTORTURE" with "$RCUTORTURE" ]
+> > > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > > > ---
+> > > >  .../selftests/rcutorture/bin/srcu_lockdep.sh  | 73 +++++++++++++++++++
+> > > >  1 file changed, 73 insertions(+)
+> > > >  create mode 100755 tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+> > > > 
+> > > > diff --git a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+> > > > new file mode 100755
+> > > > index 000000000000..961932754684
+> > > > --- /dev/null
+> > > > +++ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+> > > 
+> > > Could you provide the SPDX header and copyright bits for this newly
+> > > added file? For small changes I can do it myself, however this is about
+> > > licenses and copyright, so I need it from you, thanks!
+> > 
+> > Good catch, thank you!
+> > 
+> > Would you like a delta patch to merge into your existing one, or would
+> > you prefer a replacement patch?  Either way works for me.
+> > 
 > 
-> runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4"
-> bootparams="nokaslr console=ttyS0 rcutorture.stall_cpu=30
-> rcutorture.stall_no_softlockup=1 rcutorture.stall_cpu_irqsoff=1
-> rcutorture.stall_cpu_block=1" -d
-> 
-> [   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
-> [   10.841073] rcu_torture_stall start on CPU 3.
-> [   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
-> ....
-> [   10.841108] Call Trace:
-> [   10.841110]  <TASK>
-> [   10.841112]  dump_stack_lvl+0x64/0xb0
-> [   10.841118]  dump_stack+0x10/0x20
-> [   10.841121]  __schedule_bug+0x8b/0xb0
-> [   10.841126]  __schedule+0x2172/0x2940
-> [   10.841157]  schedule+0x9b/0x150
-> [   10.841160]  schedule_timeout+0x2e8/0x4f0
-> [   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
-> [   10.841195]  rcu_torture_stall+0x2e8/0x300
-> [   10.841199]  kthread+0x175/0x1a0
-> [   10.841206]  ret_from_fork+0x2c/0x50
-> 
-> The above calltrace occurs in the local_irq_disable/enable() critical
-> section call schedule_timeout(), and invoke schedule_timeout() also
-> implies a quiescent state, of course it also fails to trigger RCU stall,
-> this commit therefore use mdelay() instead of schedule_timeout() to
-> trigger RCU stall.
-> 
-> Suggested-by: Joel Fernandes <joel@joelfernandes.org>
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/rcutorture.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index d06c2da04c34..a08a72bef5f1 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -2472,7 +2472,7 @@ static int rcu_torture_stall(void *args)
+> A delta patch if that's not much trouble. I will fold it into this one.
 
-Right here there is:
+Here you go!
 
-			if (stall_cpu_block) {
+							Thanx, Paul
 
-In other words, the rcutorture.stall_cpu_block module parameter says to
-block, even if it is a bad thing to do.  The point of this is to verify
-the error messages that are supposed to be printed on the console when
-this happens.
+------------------------------------------------------------------------
 
->  #ifdef CONFIG_PREEMPTION
->  				preempt_schedule();
->  #else
-> -				schedule_timeout_uninterruptible(HZ);
-> +				mdelay(jiffies_to_msecs(HZ));
+rcutorture: Add proper comment header to srcu_lockdep.sh
 
-So this really needs to stay schedule_timeout_uninterruptible(HZ).
+This patch adds a proper comment header to srcu_lockdep.sh,
+and is intended to be folded into 9dc68f40c665 ("rcutorture: Add
+srcu_lockdep.sh").
 
-So should there be a change to kernel-parameters.txt to make it
-more clear that this is intended behavior?
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-						Thanx, Paul
-
->  #endif
->  			} else if (stall_no_softlockup) {
->  				touch_softlockup_watchdog();
-> -- 
-> 2.25.1
-> 
+diff --git a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+index 961932754684..2e63ef009d59 100755
+--- a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
++++ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+@@ -1,6 +1,11 @@
+ #!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
+ #
+ # Run SRCU-lockdep tests and report any that fail to meet expectations.
++#
++# Copyright (C) 2021 Meta Platforms, Inc.
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
+ 
+ usage () {
+ 	echo "Usage: $scriptname optional arguments:"
