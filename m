@@ -2,372 +2,248 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E62AC74A5B
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 18:29:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17EF4C6FD1D
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 19:14:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjCUS3T (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Mar 2023 14:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
+        id S229782AbjCUTOS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Mar 2023 15:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjCUS3J (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Mar 2023 14:29:09 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB77F172F;
-        Tue, 21 Mar 2023 11:28:30 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5416698e889so295829237b3.2;
-        Tue, 21 Mar 2023 11:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679423310;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UIdpfSxmJYCkpNMIM562CRwblghzNfrCH8Znt15LNC0=;
-        b=qqnQqmeqFP+DWopEpewSm0PGE30t8YaP+DdN6uySAfx3JED/MyMRl1jkiSiVZOoeYc
-         OcvuLRGAxZHHV2/jVDGCQRLCMhs4G4J/pSPFS6VBS9fqEhSbaVHrsulfNeBZRrQWSDqg
-         bmD5th1hepxfWFVPLgv1LVo4NGeN6z678AuumBI0JnHHm+K6jiNteshJXprLch5gfz2Z
-         tKOILC8tYFAjylEY3OQ0LgDZ4nlPpYbufZUbWLkvP/NumPi0qNKQf0Q1x3kw9dLDxiRq
-         BB3mpaTnbTqnU/SNPNeikQ/oxq78NwzBr4hQzPNAOR6dTT2xWW47VKF2tFjgzWnm0RnJ
-         VnLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679423310;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UIdpfSxmJYCkpNMIM562CRwblghzNfrCH8Znt15LNC0=;
-        b=BE+tKHlNR07OWdZTuvQaaOBl41LOKhzgllG/4qibslVjw1EhYpaTpLC3WirbldETog
-         gCn39S1Cc2VGvlYSdIgTvxxq1uf4Rqsg4ZBuQvLYNEHVlV/deSPHy6dLnQom0wvsNLB+
-         UOIzxZQVlitPMew2clgiC0y75XiDbwGc1oWv1nOaGkZHbuNuttK5nI8TylHAoa3/79Qr
-         pVTtMPqfLMOjx1ZT6kPTUS6STm1c1kCAHFoip31qQfBXwmrxjD7PuYOmreZ+Rc9tQVlS
-         8GNnBHj+E6SMD30/kFcjY7j401m8tbIbxYtPllzd2biLPzLqNEYb6DlsNHSN/hYl4NBN
-         MXnQ==
-X-Gm-Message-State: AAQBX9eD2BdJzWVPwj2b0iQdXuG3eK+iHJB7bBtCgATkN5l/8fIu9pWy
-        tzBLNqsueU3+lUV3olnUIz/YWnXHATspq/34Ow==
-X-Google-Smtp-Source: AKy350ZSbNZkoIOKOLf/00pr7muRyukY8d2LbQOH796fxqgN/2w3D6XqlRwdIvVaeF4X8n1O7iEnz6ZwiCGOsXuqJUE=
-X-Received: by 2002:a81:ad11:0:b0:544:51f7:83c5 with SMTP id
- l17-20020a81ad11000000b0054451f783c5mr1765941ywh.1.1679423310042; Tue, 21 Mar
- 2023 11:28:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230316222109.1940300-1-usama.arif@bytedance.com> <20230316222109.1940300-10-usama.arif@bytedance.com>
-In-Reply-To: <20230316222109.1940300-10-usama.arif@bytedance.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Tue, 21 Mar 2023 14:28:19 -0400
-Message-ID: <CAMzpN2jMyLP9h5o_wwdThHipAns2_dx3Nf8JYhj5pEqaeWXqYg@mail.gmail.com>
+        with ESMTP id S229453AbjCUTOR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Mar 2023 15:14:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF8E20050;
+        Tue, 21 Mar 2023 12:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=E7E/6EPis9xiauc7xGz6qE4IMXgm00StHAAwQb2v/wA=; b=iLNMunuvgE3NoDuCxalyEB5vjz
+        LlXvagN7xxC9TWEgsxEhAYXnrd3w6r19hR28x2htpKwWD7LmtFmsPqe0S8j+TclRIG3HxP/GgG0hx
+        7FbSuCWHXLH2YVjiSztDKauq04zFAfBpWZMFYEjnnfW6JvpltOIq0T72eA+LFPqlbnjwnloaY/OvT
+        9zQxBWx2vZLHp0gwiAvre2Oc4LidkFQM4RBH51afDIq0jnMU8fRy+qh0j0kb3WY47rMDLlHH0TqSj
+        kWnSkZL4GLcRExeCglE2eA/R+D4BWhd3MCjXe/Eblgy3TPBkUpLAQdFVL9GpZUwbfrdjMhUARQis2
+        xMK44akw==;
+Received: from [2001:8b0:10b:5:bb89:6ad7:7c5:e8e] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pehOy-002IxN-Qj; Tue, 21 Mar 2023 19:12:08 +0000
+Message-ID: <30efad7b8a5922cdaa48ab89a2dbaf425daf49a8.camel@infradead.org>
 Subject: Re: [PATCH v15 09/12] x86/smpboot: Support parallel startup of
  secondary CPUs
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Brian Gerst <brgerst@gmail.com>,
+        Usama Arif <usama.arif@bytedance.com>
+Cc:     tglx@linutronix.de, kim.phillips@amd.com, piotrgorski@cachyos.org,
+        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
         thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
-        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        gpiccoli@igalia.com
+Date:   Tue, 21 Mar 2023 19:12:06 +0000
+In-Reply-To: <CAMzpN2jMyLP9h5o_wwdThHipAns2_dx3Nf8JYhj5pEqaeWXqYg@mail.gmail.com>
+References: <20230316222109.1940300-1-usama.arif@bytedance.com>
+         <20230316222109.1940300-10-usama.arif@bytedance.com>
+         <CAMzpN2jMyLP9h5o_wwdThHipAns2_dx3Nf8JYhj5pEqaeWXqYg@mail.gmail.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-GAuMbmdFfEn9Zklwy57I"
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 6:21=E2=80=AFPM Usama Arif <usama.arif@bytedance.co=
-m> wrote:
->
-> From: David Woodhouse <dwmw@amazon.co.uk>
->
-> Rework the real-mode startup code to allow for APs to be brought up in
-> parallel. This is in two parts:
->
-> 1. Introduce a bit-spinlock to prevent them from all using the real
->    mode stack at the same time.
->
-> 2. Avoid needing to use the global smpboot_control variable to pass
->    each AP its CPU#.
->
-> To achieve the latter, export the cpuid_to_apicid[] array so that each
-> AP can find its own CPU# by searching therein based on its APIC ID.
->
-> Introduce flags in the top bits of smpboot_control which indicate methods
-> by which an AP should find its CPU#. For a serialized bringup, the CPU#
-> is explicitly passed in the low bits of smpboot_control as before. For
-> parallel mode there are flags directing the AP to find its APIC ID in
-> CPUID leaf 0x0b (for X2APIC mode) or CPUID leaf 0x01 where 8 bits are
-> sufficient, then perform the cpuid_to_apicid[] lookup with that.
->
-> Parallel startup may be disabled by a command line option, and also if:
->  =E2=80=A2 AMD SEV-ES is in use, since the AP may not use CPUID that earl=
-y.
->  =E2=80=A2 X2APIC is enabled, but CPUID leaf 0xb is not present and corre=
-ct.
->  =E2=80=A2 X2APIC is not enabled but not even CPUID leaf 0x01 exists.
->
-> Aside from the fact that APs will now look up their CPU# via the
-> newly-exported cpuid_to_apicid[] table, there is no behavioural change
-> intended yet, since new parallel CPUHP states have not =E2=80=94 yet =E2=
-=80=94 been
-> added.
->
-> [ tglx: Initial proof of concept patch with bitlock and APIC ID lookup ]
-> [ dwmw2: Rework and testing, commit message, CPUID 0x1 and CPU0 support ]
-> [ seanc: Fix stray override of initial_gs in common_cpu_up() ]
-> [ Oleksandr Natalenko: reported suspend/resume issue fixed in
->   x86_acpi_suspend_lowlevel ]
-> Co-developed-by: Thomas Gleixner <tglx@linutronix.de>
-> Co-developed-by: Brian Gerst <brgerst@gmail.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-> Tested-by: Paul E. McKenney <paulmck@kernel.org>
-> Tested-by: Kim Phillips <kim.phillips@amd.com>
-> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-> Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-> ---
->  .../admin-guide/kernel-parameters.txt         |  3 +
->  arch/x86/include/asm/cpu.h                    |  1 +
->  arch/x86/include/asm/realmode.h               |  3 +
->  arch/x86/include/asm/smp.h                    |  6 ++
->  arch/x86/kernel/acpi/sleep.c                  |  9 ++-
->  arch/x86/kernel/apic/apic.c                   |  2 +-
->  arch/x86/kernel/cpu/topology.c                |  3 +-
->  arch/x86/kernel/head_64.S                     | 65 +++++++++++++++++++
->  arch/x86/kernel/smpboot.c                     | 50 +++++++++++++-
->  arch/x86/realmode/init.c                      |  3 +
->  arch/x86/realmode/rm/trampoline_64.S          | 27 ++++++--
->  11 files changed, 163 insertions(+), 9 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentat=
-ion/admin-guide/kernel-parameters.txt
-> index 6cfa6e3996cf..7bb7020f97e2 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3819,6 +3819,9 @@
->
->         nomodule        Disable module load
->
-> +       no_parallel_bringup
-> +                       [X86,SMP] Disable parallel bring-up of secondary =
-cores.
-> +
->         nopat           [X86] Disable PAT (page attribute table extension=
- of
->                         pagetables) support.
->
-> diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
-> index 78796b98a544..ef8ba318dca1 100644
-> --- a/arch/x86/include/asm/cpu.h
-> +++ b/arch/x86/include/asm/cpu.h
-> @@ -97,5 +97,6 @@ static inline bool intel_cpu_signatures_match(unsigned =
-int s1, unsigned int p1,
->  extern u64 x86_read_arch_cap_msr(void);
->  int intel_find_matching_signature(void *mc, unsigned int csig, int cpf);
->  int intel_microcode_sanity_check(void *mc, bool print_err, int hdr_type)=
-;
-> +int check_extended_topology_leaf(int leaf);
->
->  #endif /* _ASM_X86_CPU_H */
-> diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realm=
-ode.h
-> index f6a1737c77be..87e5482acd0d 100644
-> --- a/arch/x86/include/asm/realmode.h
-> +++ b/arch/x86/include/asm/realmode.h
-> @@ -52,6 +52,7 @@ struct trampoline_header {
->         u64 efer;
->         u32 cr4;
->         u32 flags;
-> +       u32 lock;
->  #endif
->  };
->
-> @@ -64,6 +65,8 @@ extern unsigned long initial_stack;
->  extern unsigned long initial_vc_handler;
->  #endif
->
-> +extern u32 *trampoline_lock;
-> +
->  extern unsigned char real_mode_blob[];
->  extern unsigned char real_mode_relocs[];
->
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index bf2c51df9e0b..1cf4f1e57570 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -203,4 +203,10 @@ extern unsigned int smpboot_control;
->
->  #endif /* !__ASSEMBLY__ */
->
-> +/* Control bits for startup_64 */
-> +#define STARTUP_APICID_CPUID_0B        0x80000000
-> +#define STARTUP_APICID_CPUID_01        0x40000000
-> +
-> +#define STARTUP_PARALLEL_MASK (STARTUP_APICID_CPUID_01 | STARTUP_APICID_=
-CPUID_0B)
-> +
->  #endif /* _ASM_X86_SMP_H */
-> diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-> index 1328c221af30..6dfecb27b846 100644
-> --- a/arch/x86/kernel/acpi/sleep.c
-> +++ b/arch/x86/kernel/acpi/sleep.c
-> @@ -16,6 +16,7 @@
->  #include <asm/cacheflush.h>
->  #include <asm/realmode.h>
->  #include <asm/hypervisor.h>
-> +#include <asm/smp.h>
->
->  #include <linux/ftrace.h>
->  #include "../../realmode/rm/wakeup.h"
-> @@ -127,7 +128,13 @@ int x86_acpi_suspend_lowlevel(void)
->          * value is in the actual %rsp register.
->          */
->         current->thread.sp =3D (unsigned long)temp_stack + sizeof(temp_st=
-ack);
-> -       smpboot_control =3D smp_processor_id();
-> +       /*
-> +        * Ensure the CPU knows which one it is when it comes back, if
-> +        * it isn't in parallel mode and expected to work that out for
-> +        * itself.
-> +        */
-> +       if (!(smpboot_control & STARTUP_PARALLEL_MASK))
-> +               smpboot_control =3D smp_processor_id();
->  #endif
->         initial_code =3D (unsigned long)wakeup_long64;
->         saved_magic =3D 0x123456789abcdef0L;
-> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-> index 20d9a604da7c..ac1d7e5da1f2 100644
-> --- a/arch/x86/kernel/apic/apic.c
-> +++ b/arch/x86/kernel/apic/apic.c
-> @@ -2377,7 +2377,7 @@ static int nr_logical_cpuids =3D 1;
->  /*
->   * Used to store mapping between logical CPU IDs and APIC IDs.
->   */
-> -static int cpuid_to_apicid[] =3D {
-> +int cpuid_to_apicid[] =3D {
->         [0 ... NR_CPUS - 1] =3D -1,
->  };
->
-> diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topolog=
-y.c
-> index 5e868b62a7c4..4373442e500a 100644
-> --- a/arch/x86/kernel/cpu/topology.c
-> +++ b/arch/x86/kernel/cpu/topology.c
-> @@ -9,6 +9,7 @@
->  #include <asm/apic.h>
->  #include <asm/memtype.h>
->  #include <asm/processor.h>
-> +#include <asm/cpu.h>
->
->  #include "cpu.h"
->
-> @@ -32,7 +33,7 @@ EXPORT_SYMBOL(__max_die_per_package);
->  /*
->   * Check if given CPUID extended topology "leaf" is implemented
->   */
-> -static int check_extended_topology_leaf(int leaf)
-> +int check_extended_topology_leaf(int leaf)
->  {
->         unsigned int eax, ebx, ecx, edx;
->
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index 6a8238702eab..65bca47d84a1 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -25,6 +25,7 @@
->  #include <asm/export.h>
->  #include <asm/nospec-branch.h>
->  #include <asm/fixmap.h>
-> +#include <asm/smp.h>
->
->  /*
->   * We are not able to switch in one step to the final KERNEL ADDRESS SPA=
-CE
-> @@ -234,8 +235,61 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
-L_GLOBAL)
->         ANNOTATE_NOENDBR // above
->
->  #ifdef CONFIG_SMP
-> +       /*
-> +        * For parallel boot, the APIC ID is retrieved from CPUID, and th=
-en
-> +        * used to look up the CPU number.  For booting a single CPU, the
-> +        * CPU number is encoded in smpboot_control.
-> +        *
-> +        * Bit 31       STARTUP_APICID_CPUID_0B flag (use CPUID 0x0b)
-> +        * Bit 30       STARTUP_APICID_CPUID_01 flag (use CPUID 0x01)
-> +        * Bit 0-24     CPU# if STARTUP_APICID_CPUID_xx flags are not set
-> +        */
->         movl    smpboot_control(%rip), %ecx
-> +       testl   $STARTUP_APICID_CPUID_0B, %ecx
-> +       jnz     .Luse_cpuid_0b
-> +       testl   $STARTUP_APICID_CPUID_01, %ecx
-> +       jnz     .Luse_cpuid_01
-> +       andl    $0x0FFFFFFF, %ecx
-> +       jmp     .Lsetup_cpu
-> +
-> +.Luse_cpuid_01:
-> +       mov     $0x01, %eax
-> +       cpuid
-> +       mov     %ebx, %edx
-> +       shr     $24, %edx
-> +       jmp     .Lsetup_AP
->
-> +.Luse_cpuid_0b:
-> +       mov     $0x0B, %eax
-> +       xorl    %ecx, %ecx
-> +       cpuid
-> +
-> +.Lsetup_AP:
-> +       /* EDX contains the APIC ID of the current CPU */
-> +       xorq    %rcx, %rcx
-> +       leaq    cpuid_to_apicid(%rip), %rbx
-> +
-> +.Lfind_cpunr:
-> +       cmpl    (%rbx,%rcx,4), %edx
-> +       jz      .Lsetup_cpu
-> +       inc     %ecx
-> +#ifdef CONFIG_FORCE_NR_CPUS
-> +       cmpl    $NR_CPUS, %ecx
-> +#else
-> +       cmpl    nr_cpu_ids(%rip), %ecx
-> +#endif
-> +       jb      .Lfind_cpunr
-> +
-> +       /*  APIC ID not found in the table. Drop the trampoline lock and =
-bail. */
-> +       movq    trampoline_lock(%rip), %rax
-> +       lock
-> +       btrl    $0, (%rax)
-> +
-> +1:     cli
-> +       hlt
-> +       jmp     1b
-> +
-> +.Lsetup_cpu:
->         /* Get the per cpu offset for the given CPU# which is in ECX */
->         movq    __per_cpu_offset(,%rcx,8), %rdx
->  #else
-> @@ -264,6 +318,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
-L_GLOBAL)
->         lgdt    (%rsp)
->         addq    $16, %rsp
->
-> +       /* Drop the realmode protection. For the boot CPU the pointer is =
-NULL! */
-> +       movq    trampoline_lock(%rip), %rax
-> +       testq   %rax, %rax
-> +       jz      .Lsetup_data_segments
-> +       lock
-> +       btrl    $0, (%rax)
-> +
-> +.Lsetup_data_segments:
->         /* set up data segments */
->         xorl %eax,%eax
->         movl %eax,%ds
 
-This can still go earlier, right after "movq TASK_threadsp(%rax),
-%rsp".  The GDT descriptor is placed on the idle thread stack, so it's
-safe to drop the lock before it.
+--=-GAuMbmdFfEn9Zklwy57I
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---
-Brian Gerst
+On Tue, 2023-03-21 at 14:28 -0400, Brian Gerst wrote:
+>=20
+> > @@ -264,6 +318,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SY=
+M_L_GLOBAL)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lgdt=C2=A0=C2=A0=C2=A0=
+ (%rsp)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 addq=C2=A0=C2=A0=C2=A0=
+ $16, %rsp
+> >=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Drop the realmode protection. =
+For the boot CPU the pointer is NULL! */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 movq=C2=A0=C2=A0=C2=A0 trampoline=
+_lock(%rip), %rax
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 testq=C2=A0=C2=A0 %rax, %rax
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 jz=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+.Lsetup_data_segments
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lock
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrl=C2=A0=C2=A0=C2=A0 $0, (%rax)
+> > +
+> > +.Lsetup_data_segments:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* set up data segment=
+s */
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xorl %eax,%eax
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 movl %eax,%ds
+>=20
+> This can still go earlier, right after "movq TASK_threadsp(%rax),
+> %rsp".=C2=A0 The GDT descriptor is placed on the idle thread stack, so it=
+'s
+> safe to drop the lock before it.
+
+
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -335,6 +335,17 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_=
+GLOBAL)
+        movq    pcpu_hot + X86_current_task(%rdx), %rax
+        movq    TASK_threadsp(%rax), %rsp
+=20
++       /*
++        * Now that this CPU is running on its own stack, drop the realmode
++        * protection. For the boot CPU the pointer is NULL!
++        */
++       movq    trampoline_lock(%rip), %rax
++       testq   %rax, %rax
++       jz      .Lsetup_gdt
++       lock
++       btrl    $0, (%rax)
++
++.Lsetup_gdt:
+        /*
+         * We must switch to a new descriptor in kernel space for the GDT
+         * because soon the kernel won't have access anymore to the userspa=
+ce
+@@ -377,14 +388,6 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_=
+GLOBAL)
+        shrq    $32, %rdx
+        wrmsr
+=20
+-       /* Drop the realmode protection. For the boot CPU the pointer is NU=
+LL! */
+-       movq    trampoline_lock(%rip), %rax
+-       testq   %rax, %rax
+-       jz      .Lsetup_idt
+-       lock
+-       btrl    $0, (%rax)
+-
+-.Lsetup_idt:
+        /* Setup and Load IDT */
+        pushq   %rsi
+        call    early_setup_idt
+
+
+--=-GAuMbmdFfEn9Zklwy57I
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzIxMTkxMjA2WjAvBgkqhkiG9w0BCQQxIgQgEqEV6jwW
+5j/sDiahJDRRw2japSJGMwx+XKBxkpnfingwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBUKLG5oy4TPETPGmhnDNlkHuxUvoh0UeMN
+xjV+9LYlEpi420/woK1iexJdT3gXqaHFOr9UdqINXNUNkMPv0OR/FbJKUWlw7Okzd81Q+dYVI5Sk
+hjIvaohvbG3qH2QAHv+2C0123FXXcdU3DKtaCABw3UQ1XPzFaz9CAj5Ixg0n+4REvmZ50SsK9mmW
+HZlFBqmC4HQ/ApJT0z39VlTgUKff/6/o3ZzcnTk3jtKz8h4dH4mpxuZgvlNr68O8UaV04tASu/+1
+fwkrUIqQZZVrJ+5RR6vDEGRqRbuabcaJ2mXmS4qdUT4RutyFaNfl+WbE16rAc6Rfa4pB/s0zcKst
+A2rkxsUP9WRPi+BIn6I6RDH3JwD+Pafoabg1qwK/nMTk7yHeTrg3xF7GqcVzNAJVkzcl1tTBFJEs
+SZFTJ9PdgjhYvpXOgE5D91J8x9PVT8EiSm/ow89F1XS9at06bBYwORr3+bQmLMhFkmPxZCwGAcsH
+m01iivW20GtRF+Ga+Q5mdWiLZFKMQPJnVUmEI47hIgoGPCdi0RT+/N1z+DcWFgD82QnGLni/ic9v
+TdzDhZyyRcOpwN8vJm9+xSnlm4uo1Vl+18CWqlfwdIbyg2ExRj8Bh75TLiUDrJNRLYREzdf7Uqw7
+9X/X8VcURoiEJBOEeMP1iwLfR7vl4RhmwcJGqMibjQAAAAAAAA==
+
+
+--=-GAuMbmdFfEn9Zklwy57I--
