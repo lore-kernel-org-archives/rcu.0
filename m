@@ -2,52 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C3E2C6FD1C
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 01:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44788C6FD1D
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 01:11:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbjCUBLi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Mar 2023 21:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
+        id S230462AbjCUBLj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Mar 2023 21:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbjCUBLQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230454AbjCUBLQ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 20 Mar 2023 21:11:16 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B07E3865B;
-        Mon, 20 Mar 2023 18:10:26 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F48536455;
+        Mon, 20 Mar 2023 18:10:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 9FB25CE16A5;
-        Tue, 21 Mar 2023 01:08:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11770C4339B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CFE06618FA;
+        Tue, 21 Mar 2023 01:08:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34E99C433A0;
         Tue, 21 Mar 2023 01:08:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1679360903;
-        bh=GQT3gDb5XSFR5fOAsmb3ioMfC+QJKP06+f3R9XWhiU0=;
+        bh=3UMDmzecbQnMS3HKOBjegoopX/Bv/UkwzjwMIKGA+oA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VaO4sSXV0wrW+9eNJfLw7JHjKSUv2W8ayl47jAoR9bVdHQGqyZIDC/x11VY2RFWeL
-         On9TikIC3WwSCf49SP2OEusVbQ85pcMjGjxmKr/9GZnZj2z8vyliu8xat3oYX5Dqxa
-         0clvitewlvnFopnR3Xkn2O2LmEB9qh5kME/t4bxj4HBt3Msd73pNqQTYhYF9N4jUei
-         bCwXW6pPTkfS5Q1TX6BBmVKXm8R5pa5NFI0w2DhTjPmMoL2OuhsljAGbKzgMUHwg1/
-         5juATx2ihWtV1q6E2gwdHMTftJcwJBEbtRpnh2OkDpYSZxqykItl3q7SOyIW8+YpLh
-         xF2do8tbX2vWQ==
+        b=pED5iexpHrvAw9Q+86ZMBeDuE8SYy7/aLrqJW0P+Fy7cC46E81znWiiO2nRPktYxg
+         FzDE6D940PD95SzupBwE8kSIyphHBAyUfbN14nTA6IxT8h+O3lr2SPHCLILQLQjg8/
+         0x+dS+zw+gYiqP2JmGyxWEug33j+8CX/tNpKKe3+YqOoIvhYrXbC3ZqXZ7Lgp9kZH5
+         jE6W5P0veqTKQPlK9QFbkyOumw6z54lpuB18SgxkMKwXIoZML4qHW6/eX+1U4REQmr
+         1raCGRacrswtxGCuQazwCJ+S1wpq6cnvbsnr93N/XjXw9QcXnytZpUjG4SA6NyYVWW
+         h3eKNAz/2OgmA==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AEB1F154039A; Mon, 20 Mar 2023 18:08:22 -0700 (PDT)
+        id B9DF2154039D; Mon, 20 Mar 2023 18:08:22 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, John Stultz <jstultz@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        kernel-team@android.com, Connor O'Brien <connoro@google.com>
-Subject: [PATCH locktorture 2/5] locktorture: Add nested locking to mutex torture tests
-Date:   Mon, 20 Mar 2023 18:08:18 -0700
-Message-Id: <20230321010821.51601-2-paulmck@kernel.org>
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [PATCH locktorture 5/5] locktorture: Add raw_spinlock* torture tests for PREEMPT_RT kernels
+Date:   Mon, 20 Mar 2023 18:08:21 -0700
+Message-Id: <20230321010821.51601-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.0.rc2
 In-Reply-To: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
 References: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
@@ -57,120 +51,105 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: John Stultz <jstultz@google.com>
+From: Zqiang <qiang1.zhang@intel.com>
 
-This patch adds randomized nested locking to the mutex torture
-tests, as well as new LOCK08 config files for testing mutexes
-with nested locking
+In PREEMPT_RT kernels, both spin_lock() and spin_lock_irq() are converted
+to sleepable rt_spin_lock().  This means that the interrupt related
+suffixes for spin_lock/unlock(_irq, irqsave/irqrestore) do not affect
+the CPU's interrupt state. This commit therefore adds raw spin-lock
+torture tests.  This in turn permits pure spin locks to be tested in
+PREEMPT_RT kernels.
 
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: kernel-team@android.com
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Suggested-by: Davidlohr Bueso <dave@stgolabs.net>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-Co-developed-by: Connor O'Brien <connoro@google.com>
-Signed-off-by: Connor O'Brien <connoro@google.com>
-Signed-off-by: John Stultz <jstultz@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/locktorture.c                  | 35 +++++++++++++++++++
- .../selftests/rcutorture/configs/lock/CFLIST  |  1 +
- .../selftests/rcutorture/configs/lock/LOCK08  |  6 ++++
- .../rcutorture/configs/lock/LOCK08.boot       |  1 +
- 4 files changed, 43 insertions(+)
- create mode 100644 tools/testing/selftests/rcutorture/configs/lock/LOCK08
- create mode 100644 tools/testing/selftests/rcutorture/configs/lock/LOCK08.boot
+ kernel/locking/locktorture.c | 56 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index a8519af25ece..a4d15a9a9d7f 100644
+index 9425aff08936..153ddc4c47ef 100644
 --- a/kernel/locking/locktorture.c
 +++ b/kernel/locking/locktorture.c
-@@ -370,6 +370,28 @@ static struct lock_torture_ops rw_lock_irq_ops = {
+@@ -55,7 +55,7 @@ torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
+ /* Going much higher trips "BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!" errors */
+ #define MAX_NESTED_LOCKS 8
+ 
+-static char *torture_type = "spin_lock";
++static char *torture_type = IS_ENABLED(CONFIG_PREEMPT_RT) ? "raw_spin_lock" : "spin_lock";
+ module_param(torture_type, charp, 0444);
+ MODULE_PARM_DESC(torture_type,
+ 		 "Type of lock to torture (spin_lock, spin_lock_irq, mutex_lock, ...)");
+@@ -257,6 +257,59 @@ static struct lock_torture_ops spin_lock_irq_ops = {
+ 	.name		= "spin_lock_irq"
  };
  
- static DEFINE_MUTEX(torture_mutex);
-+static struct mutex torture_nested_mutexes[MAX_NESTED_LOCKS];
-+static struct lock_class_key nested_mutex_keys[MAX_NESTED_LOCKS];
++static DEFINE_RAW_SPINLOCK(torture_raw_spinlock);
 +
-+static void torture_mutex_init(void)
++static int torture_raw_spin_lock_write_lock(int tid __maybe_unused)
++__acquires(torture_raw_spinlock)
 +{
-+	int i;
-+
-+	for (i = 0; i < MAX_NESTED_LOCKS; i++)
-+		__mutex_init(&torture_nested_mutexes[i], __func__,
-+			     &nested_mutex_keys[i]);
-+}
-+
-+static int torture_mutex_nested_lock(int tid __maybe_unused,
-+				     u32 lockset)
-+{
-+	int i;
-+
-+	for (i = 0; i < nested_locks; i++)
-+		if (lockset & (1 << i))
-+			mutex_lock(&torture_nested_mutexes[i]);
++	raw_spin_lock(&torture_raw_spinlock);
 +	return 0;
 +}
- 
- static int torture_mutex_lock(int tid __maybe_unused)
- __acquires(torture_mutex)
-@@ -398,11 +420,24 @@ __releases(torture_mutex)
- 	mutex_unlock(&torture_mutex);
- }
- 
-+static void torture_mutex_nested_unlock(int tid __maybe_unused,
-+					u32 lockset)
-+{
-+	int i;
 +
-+	for (i = nested_locks - 1; i >= 0; i--)
-+		if (lockset & (1 << i))
-+			mutex_unlock(&torture_nested_mutexes[i]);
++static void torture_raw_spin_lock_write_unlock(int tid __maybe_unused)
++__releases(torture_raw_spinlock)
++{
++	raw_spin_unlock(&torture_raw_spinlock);
 +}
 +
- static struct lock_torture_ops mutex_lock_ops = {
-+	.init		= torture_mutex_init,
-+	.nested_lock	= torture_mutex_nested_lock,
- 	.writelock	= torture_mutex_lock,
- 	.write_delay	= torture_mutex_delay,
- 	.task_boost     = torture_rt_boost,
- 	.writeunlock	= torture_mutex_unlock,
-+	.nested_unlock	= torture_mutex_nested_unlock,
- 	.readlock       = NULL,
- 	.read_delay     = NULL,
- 	.readunlock     = NULL,
-diff --git a/tools/testing/selftests/rcutorture/configs/lock/CFLIST b/tools/testing/selftests/rcutorture/configs/lock/CFLIST
-index 41bae5824339..a48bba0d35a6 100644
---- a/tools/testing/selftests/rcutorture/configs/lock/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/lock/CFLIST
-@@ -5,3 +5,4 @@ LOCK04
- LOCK05
- LOCK06
- LOCK07
-+LOCK08
-diff --git a/tools/testing/selftests/rcutorture/configs/lock/LOCK08 b/tools/testing/selftests/rcutorture/configs/lock/LOCK08
-new file mode 100644
-index 000000000000..1d1da1477fc3
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/lock/LOCK08
-@@ -0,0 +1,6 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=4
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/lock/LOCK08.boot b/tools/testing/selftests/rcutorture/configs/lock/LOCK08.boot
-new file mode 100644
-index 000000000000..b8b6caebb89e
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/lock/LOCK08.boot
-@@ -0,0 +1 @@
-+locktorture.torture_type=mutex_lock locktorture.nested_locks=8
++static struct lock_torture_ops raw_spin_lock_ops = {
++	.writelock	= torture_raw_spin_lock_write_lock,
++	.write_delay	= torture_spin_lock_write_delay,
++	.task_boost	= torture_rt_boost,
++	.writeunlock	= torture_raw_spin_lock_write_unlock,
++	.readlock	= NULL,
++	.read_delay	= NULL,
++	.readunlock	= NULL,
++	.name		= "raw_spin_lock"
++};
++
++static int torture_raw_spin_lock_write_lock_irq(int tid __maybe_unused)
++__acquires(torture_raw_spinlock)
++{
++	unsigned long flags;
++
++	raw_spin_lock_irqsave(&torture_raw_spinlock, flags);
++	cxt.cur_ops->flags = flags;
++	return 0;
++}
++
++static void torture_raw_spin_lock_write_unlock_irq(int tid __maybe_unused)
++__releases(torture_raw_spinlock)
++{
++	raw_spin_unlock_irqrestore(&torture_raw_spinlock, cxt.cur_ops->flags);
++}
++
++static struct lock_torture_ops raw_spin_lock_irq_ops = {
++	.writelock	= torture_raw_spin_lock_write_lock_irq,
++	.write_delay	= torture_spin_lock_write_delay,
++	.task_boost	= torture_rt_boost,
++	.writeunlock	= torture_raw_spin_lock_write_unlock_irq,
++	.readlock	= NULL,
++	.read_delay	= NULL,
++	.readunlock	= NULL,
++	.name		= "raw_spin_lock_irq"
++};
++
+ static DEFINE_RWLOCK(torture_rwlock);
+ 
+ static int torture_rwlock_write_lock(int tid __maybe_unused)
+@@ -1017,6 +1070,7 @@ static int __init lock_torture_init(void)
+ 	static struct lock_torture_ops *torture_ops[] = {
+ 		&lock_busted_ops,
+ 		&spin_lock_ops, &spin_lock_irq_ops,
++		&raw_spin_lock_ops, &raw_spin_lock_irq_ops,
+ 		&rw_lock_ops, &rw_lock_irq_ops,
+ 		&mutex_lock_ops,
+ 		&ww_mutex_lock_ops,
 -- 
 2.40.0.rc2
 
