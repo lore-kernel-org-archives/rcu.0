@@ -2,175 +2,81 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8190CC6FD1C
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 01:11:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5EE3C6FD1D
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 01:11:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbjCUBLE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Mar 2023 21:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
+        id S230184AbjCUBLO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Mar 2023 21:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjCUBKr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Mar 2023 21:10:47 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3A5303E1;
-        Mon, 20 Mar 2023 18:09:46 -0700 (PDT)
+        with ESMTP id S230431AbjCUBK5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Mar 2023 21:10:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91A740F9;
+        Mon, 20 Mar 2023 18:10:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id EEBADCE172D;
-        Tue, 21 Mar 2023 01:08:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BD9CC4339C;
-        Tue, 21 Mar 2023 01:08:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A86F618CF;
+        Tue, 21 Mar 2023 01:08:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA4F0C433D2;
+        Tue, 21 Mar 2023 01:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679360903;
-        bh=nmmWRyJx/utTFv2HT/REPz5mLM19GLoGlHL5SEhyX9c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uCABiA2Z4i8aENda//BSFshKfiNRR9VgDL4egA8isx1Ty5E4e7jk1XAnsJ1jQgTQ+
-         Ztk7qpUFMfdqZHDhGQtZWtqS3AOgtDmmSzNBKixPFpY425ZjPIuTErDBCKxhm1G9tK
-         V8qO1R8xkmm9Oj+irnPCe5R9dH0Upj0C6kZ7XRJ4sRVYvfjWpQsLZIyFRuJP6ovuJ/
-         fMyci8awWVf/IBO8BjtQiVSRPoRKps8rL84WwPorQdNmtEpg4/NPQEsGzh90/rDphC
-         n+GYxP7v+pyLzfCs0Gr+wueKQ1o9hsJAPMVelWgu3oGJh1ZSK59kqfzZjhhrA0wd3q
-         R32XUrI5DfBlA==
+        s=k20201202; t=1679360895;
+        bh=6yV77rsshCfobUHWUL1LEbSflKIcDxj1x/jHkqzROzk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=a6HlPp3W9Mzm0ztDmDNq6yTdSdmJGbskmpd58/gVgpRf3LDfW8z6z+BJGOWRlAvZl
+         Kb4kFOeyuDSkEH9/LOD8ny5K5Rr5qi6rUmm9CaiwQyrwdGCgltl2l0VyfOqIfIkHKm
+         a5XMI6q0yGfY7TB7qsDb6N/56J5tZvcIIZeWQ2Ou3DxZG8DBqY5SGTDaDcz5bWbydY
+         kNlYsWvsxMc2aJZoVpFWi4awJ1MX1qMBq1dw/9GHecOvW22s6wwo4UkJ4f3JkVuJfJ
+         zffCf/aOq1ZclFdAqtMn8MFpmGt7mtYyq5FzQOrngS6vsnJdPNtMPpAVSqiCD9MYvU
+         I2fUKM1cq7twg==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B2753154039B; Mon, 20 Mar 2023 18:08:22 -0700 (PDT)
+        id 506091540395; Mon, 20 Mar 2023 18:08:15 -0700 (PDT)
+Date:   Mon, 20 Mar 2023 18:08:15 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, John Stultz <jstultz@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        kernel-team@android.com, Connor O'Brien <connoro@google.com>
-Subject: [PATCH locktorture 3/5] locktorture: Add nested locking to rtmutex torture tests
-Date:   Mon, 20 Mar 2023 18:08:19 -0700
-Message-Id: <20230321010821.51601-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.0.rc2
-In-Reply-To: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
-References: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/5] locktorture updates for v6.4
+Message-ID: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: John Stultz <jstultz@google.com>
+Hello!
 
-This patch adds randomized nested locking to the rtmutex torture
-tests. Additionally it adds LOCK09 config files for testing
-rtmutexes with nested locking.
+This series provides updates to the locktorture test suite:
 
-Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: kernel-team@android.com
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-Co-developed-by: Connor O'Brien <connoro@google.com>
-Signed-off-by: Connor O'Brien <connoro@google.com>
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/locking/locktorture.c                  | 35 +++++++++++++++++++
- .../selftests/rcutorture/configs/lock/CFLIST  |  1 +
- .../selftests/rcutorture/configs/lock/LOCK09  |  6 ++++
- .../rcutorture/configs/lock/LOCK09.boot       |  1 +
- 4 files changed, 43 insertions(+)
- create mode 100644 tools/testing/selftests/rcutorture/configs/lock/LOCK09
- create mode 100644 tools/testing/selftests/rcutorture/configs/lock/LOCK09.boot
+1.	Add nested_[un]lock() hooks and nlocks parameter, courtesy of
+	John Stultz.
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index a4d15a9a9d7f..c7f264aed5b7 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -544,6 +544,28 @@ static struct lock_torture_ops ww_mutex_lock_ops = {
- 
- #ifdef CONFIG_RT_MUTEXES
- static DEFINE_RT_MUTEX(torture_rtmutex);
-+static struct rt_mutex torture_nested_rtmutexes[MAX_NESTED_LOCKS];
-+static struct lock_class_key nested_rtmutex_keys[MAX_NESTED_LOCKS];
-+
-+static void torture_rtmutex_init(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAX_NESTED_LOCKS; i++)
-+		__rt_mutex_init(&torture_nested_rtmutexes[i], __func__,
-+				&nested_rtmutex_keys[i]);
-+}
-+
-+static int torture_rtmutex_nested_lock(int tid __maybe_unused,
-+				       u32 lockset)
-+{
-+	int i;
-+
-+	for (i = 0; i < nested_locks; i++)
-+		if (lockset & (1 << i))
-+			rt_mutex_lock(&torture_nested_rtmutexes[i]);
-+	return 0;
-+}
- 
- static int torture_rtmutex_lock(int tid __maybe_unused)
- __acquires(torture_rtmutex)
-@@ -585,11 +607,24 @@ static void torture_rt_boost_rtmutex(struct torture_random_state *trsp)
- 	__torture_rt_boost(trsp);
- }
- 
-+static void torture_rtmutex_nested_unlock(int tid __maybe_unused,
-+					  u32 lockset)
-+{
-+	int i;
-+
-+	for (i = nested_locks - 1; i >= 0; i--)
-+		if (lockset & (1 << i))
-+			rt_mutex_unlock(&torture_nested_rtmutexes[i]);
-+}
-+
- static struct lock_torture_ops rtmutex_lock_ops = {
-+	.init		= torture_rtmutex_init,
-+	.nested_lock	= torture_rtmutex_nested_lock,
- 	.writelock	= torture_rtmutex_lock,
- 	.write_delay	= torture_rtmutex_delay,
- 	.task_boost     = torture_rt_boost_rtmutex,
- 	.writeunlock	= torture_rtmutex_unlock,
-+	.nested_unlock	= torture_rtmutex_nested_unlock,
- 	.readlock       = NULL,
- 	.read_delay     = NULL,
- 	.readunlock     = NULL,
-diff --git a/tools/testing/selftests/rcutorture/configs/lock/CFLIST b/tools/testing/selftests/rcutorture/configs/lock/CFLIST
-index a48bba0d35a6..28e23d05d5a5 100644
---- a/tools/testing/selftests/rcutorture/configs/lock/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/lock/CFLIST
-@@ -6,3 +6,4 @@ LOCK05
- LOCK06
- LOCK07
- LOCK08
-+LOCK09
-diff --git a/tools/testing/selftests/rcutorture/configs/lock/LOCK09 b/tools/testing/selftests/rcutorture/configs/lock/LOCK09
-new file mode 100644
-index 000000000000..1d1da1477fc3
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/lock/LOCK09
-@@ -0,0 +1,6 @@
-+CONFIG_SMP=y
-+CONFIG_NR_CPUS=4
-+CONFIG_HOTPLUG_CPU=y
-+CONFIG_PREEMPT_NONE=n
-+CONFIG_PREEMPT_VOLUNTARY=n
-+CONFIG_PREEMPT=y
-diff --git a/tools/testing/selftests/rcutorture/configs/lock/LOCK09.boot b/tools/testing/selftests/rcutorture/configs/lock/LOCK09.boot
-new file mode 100644
-index 000000000000..fd5eff148a93
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/lock/LOCK09.boot
-@@ -0,0 +1 @@
-+locktorture.torture_type=rtmutex_lock locktorture.nested_locks=8
--- 
-2.40.0.rc2
+2.	Add nested locking to mutex torture tests, courtesy of John
+	Stultz.
 
+3.	Add nested locking to rtmutex torture tests, courtesy of John
+	Stultz.
+
+4.	With nested locks, occasionally skip main lock, courtesy of
+	John Stultz.
+
+5.	Add raw_spinlock* torture tests for PREEMPT_RT kernels, courtesy
+	of Zqiang.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/locking/locktorture.c                                |   23 +
+ b/tools/testing/selftests/rcutorture/configs/lock/CFLIST      |    1 
+ b/tools/testing/selftests/rcutorture/configs/lock/LOCK08      |    6 
+ b/tools/testing/selftests/rcutorture/configs/lock/LOCK08.boot |    1 
+ b/tools/testing/selftests/rcutorture/configs/lock/LOCK09      |    6 
+ b/tools/testing/selftests/rcutorture/configs/lock/LOCK09.boot |    1 
+ kernel/locking/locktorture.c                                  |  163 +++++++++-
+ tools/testing/selftests/rcutorture/configs/lock/CFLIST        |    1 
+ 8 files changed, 187 insertions(+), 15 deletions(-)
