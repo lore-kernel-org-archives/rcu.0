@@ -2,81 +2,144 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5EE3C6FD1D
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 01:11:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79609C6FD1C
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 01:11:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjCUBLO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Mar 2023 21:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
+        id S230395AbjCUBL2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 20 Mar 2023 21:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbjCUBK5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Mar 2023 21:10:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91A740F9;
-        Mon, 20 Mar 2023 18:10:00 -0700 (PDT)
+        with ESMTP id S230393AbjCUBLK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 20 Mar 2023 21:11:10 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C893724729;
+        Mon, 20 Mar 2023 18:10:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A86F618CF;
-        Tue, 21 Mar 2023 01:08:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA4F0C433D2;
-        Tue, 21 Mar 2023 01:08:15 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7FC98B8107D;
+        Tue, 21 Mar 2023 01:08:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 255B8C4339E;
+        Tue, 21 Mar 2023 01:08:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679360895;
-        bh=6yV77rsshCfobUHWUL1LEbSflKIcDxj1x/jHkqzROzk=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=a6HlPp3W9Mzm0ztDmDNq6yTdSdmJGbskmpd58/gVgpRf3LDfW8z6z+BJGOWRlAvZl
-         Kb4kFOeyuDSkEH9/LOD8ny5K5Rr5qi6rUmm9CaiwQyrwdGCgltl2l0VyfOqIfIkHKm
-         a5XMI6q0yGfY7TB7qsDb6N/56J5tZvcIIZeWQ2Ou3DxZG8DBqY5SGTDaDcz5bWbydY
-         kNlYsWvsxMc2aJZoVpFWi4awJ1MX1qMBq1dw/9GHecOvW22s6wwo4UkJ4f3JkVuJfJ
-         zffCf/aOq1ZclFdAqtMn8MFpmGt7mtYyq5FzQOrngS6vsnJdPNtMPpAVSqiCD9MYvU
-         I2fUKM1cq7twg==
+        s=k20201202; t=1679360903;
+        bh=ORYn0hmLI/lHHRs2xTEScWQH353TgooExgMv39w2gTk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KSu7D6iBO0wcHykfFXaUdQ46UmKYkDAxRY9FpkFSvWJpXPPtuN9YxebEtV6Wvz+VG
+         cxJcjHS5v4ghf9ccVSV0LIv1h37FIuGL3WZnqdRXhxV/WxKjRuETrPCyWqkmQ+F01T
+         /iRqTNwJX6hvBZbROOBLAEjFkmEkYKWXw7nsngEh4BmgyGPrR9u0HfQHZzMq5mL6Vk
+         35GoplgqaEFzhMSOov+H4cIrWwnzIOgWj74kyOTrvYtx5ce6ALjrc1DZIpfcuQ4IUA
+         MbomuVXCcVd5qzcTZRFpeLInG1T9SBKVaZvzsv+A3qYKKpComVDsXbTCtYo67tlklT
+         pRp3PrrDo68sQ==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 506091540395; Mon, 20 Mar 2023 18:08:15 -0700 (PDT)
-Date:   Mon, 20 Mar 2023 18:08:15 -0700
+        id B6335154039C; Mon, 20 Mar 2023 18:08:22 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/5] locktorture updates for v6.4
-Message-ID: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, John Stultz <jstultz@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        kernel-team@android.com, Connor O'Brien <connoro@google.com>
+Subject: [PATCH locktorture 4/5] locktorture: With nested locks, occasionally skip main lock
+Date:   Mon, 20 Mar 2023 18:08:20 -0700
+Message-Id: <20230321010821.51601-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.0.rc2
+In-Reply-To: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
+References: <3679d2b2-bdb9-4fa3-8134-240a8d0f449b@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: John Stultz <jstultz@google.com>
 
-This series provides updates to the locktorture test suite:
+If we're using nested locking to stress things, occasionally
+skip taking the main lock, so that we can get some different
+contention patterns between the writers (to hopefully get two
+disjoint blocked trees)
 
-1.	Add nested_[un]lock() hooks and nlocks parameter, courtesy of
-	John Stultz.
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: kernel-team@android.com
+Co-developed-by: Connor O'Brien <connoro@google.com>
+Signed-off-by: Connor O'Brien <connoro@google.com>
+Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/locking/locktorture.c | 37 ++++++++++++++++++++++++++----------
+ 1 file changed, 27 insertions(+), 10 deletions(-)
 
-2.	Add nested locking to mutex torture tests, courtesy of John
-	Stultz.
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index c7f264aed5b7..9425aff08936 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -760,6 +760,7 @@ static int lock_torture_writer(void *arg)
+ 	int tid = lwsp - cxt.lwsa;
+ 	DEFINE_TORTURE_RANDOM(rand);
+ 	u32 lockset_mask;
++	bool skip_main_lock;
+ 
+ 	VERBOSE_TOROUT_STRING("lock_torture_writer task started");
+ 	set_user_nice(current, MAX_NICE);
+@@ -769,21 +770,37 @@ static int lock_torture_writer(void *arg)
+ 			schedule_timeout_uninterruptible(1);
+ 
+ 		lockset_mask = torture_random(&rand);
++		/*
++		 * When using nested_locks, we want to occasionally
++		 * skip the main lock so we can avoid always serializing
++		 * the lock chains on that central lock. By skipping the
++		 * main lock occasionally, we can create different
++		 * contention patterns (allowing for multiple disjoint
++		 * blocked trees)
++		 */
++		skip_main_lock = (nested_locks &&
++				 !(torture_random(&rand) % 100));
++
+ 		cxt.cur_ops->task_boost(&rand);
+ 		if (cxt.cur_ops->nested_lock)
+ 			cxt.cur_ops->nested_lock(tid, lockset_mask);
+-		cxt.cur_ops->writelock(tid);
+-		if (WARN_ON_ONCE(lock_is_write_held))
+-			lwsp->n_lock_fail++;
+-		lock_is_write_held = true;
+-		if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
+-			lwsp->n_lock_fail++; /* rare, but... */
+ 
+-		lwsp->n_lock_acquired++;
++		if (!skip_main_lock) {
++			cxt.cur_ops->writelock(tid);
++			if (WARN_ON_ONCE(lock_is_write_held))
++				lwsp->n_lock_fail++;
++			lock_is_write_held = true;
++			if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
++				lwsp->n_lock_fail++; /* rare, but... */
++
++			lwsp->n_lock_acquired++;
++		}
+ 		cxt.cur_ops->write_delay(&rand);
+-		lock_is_write_held = false;
+-		WRITE_ONCE(last_lock_release, jiffies);
+-		cxt.cur_ops->writeunlock(tid);
++		if (!skip_main_lock) {
++			lock_is_write_held = false;
++			WRITE_ONCE(last_lock_release, jiffies);
++			cxt.cur_ops->writeunlock(tid);
++		}
+ 		if (cxt.cur_ops->nested_unlock)
+ 			cxt.cur_ops->nested_unlock(tid, lockset_mask);
+ 
+-- 
+2.40.0.rc2
 
-3.	Add nested locking to rtmutex torture tests, courtesy of John
-	Stultz.
-
-4.	With nested locks, occasionally skip main lock, courtesy of
-	John Stultz.
-
-5.	Add raw_spinlock* torture tests for PREEMPT_RT kernels, courtesy
-	of Zqiang.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/locking/locktorture.c                                |   23 +
- b/tools/testing/selftests/rcutorture/configs/lock/CFLIST      |    1 
- b/tools/testing/selftests/rcutorture/configs/lock/LOCK08      |    6 
- b/tools/testing/selftests/rcutorture/configs/lock/LOCK08.boot |    1 
- b/tools/testing/selftests/rcutorture/configs/lock/LOCK09      |    6 
- b/tools/testing/selftests/rcutorture/configs/lock/LOCK09.boot |    1 
- kernel/locking/locktorture.c                                  |  163 +++++++++-
- tools/testing/selftests/rcutorture/configs/lock/CFLIST        |    1 
- 8 files changed, 187 insertions(+), 15 deletions(-)
