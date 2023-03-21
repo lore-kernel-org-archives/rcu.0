@@ -2,40 +2,41 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97B5BC6FD20
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 19:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E2EC6FD20
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 19:21:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjCUTPB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Mar 2023 15:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47538 "EHLO
+        id S229835AbjCUTVb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Mar 2023 15:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjCUTPA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Mar 2023 15:15:00 -0400
+        with ESMTP id S230093AbjCUTVa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Mar 2023 15:21:30 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9958302B5;
-        Tue, 21 Mar 2023 12:14:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751FD234EC;
+        Tue, 21 Mar 2023 12:21:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
         In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UOccFegRLXjmGiiR8Lw9P6bnKOC27596g/IWBxzHGpU=; b=SCM2vzdj9HVcu7JgkvGLBHEEng
-        /8INX2VhaY1mOwz9lYtyDyG+L4pcXMKX9qJIdEkYom9BdrekfqxqqaVTsOk6EGmUxicrzZai0xs0/
-        xiP4Wqi0/rRUqaP4X8ZsKdiGEkxT1og/9Nkm+ZI8nfLAs6S1XqnWNvlece2bA8EP0Ak4EvbbXT5kb
-        pR4WVyyKhkW5foF+geU9AABLiHawpjXC6fMalqLqL/UT/1x6mTLLtZf3vaOAq5qnCrBWjvFzcJ4TF
-        TAl13OcHFh75aXmBJVWy06Bluak1oetMUHPpMT0DHjY4biwPmhCaZVFM3tph9/tHU6tvfcb25I13Q
-        5HH6mJ8g==;
+        bh=muc4kHW8RhcNledi07CsjyvD2H2NT5q4fGXRlZzKFQ4=; b=p/PKAsl409tXzRqxPFYO1+BHUo
+        nZchmWhppER2RE+/bHh+cQHbjRiU7htqZfFmvGhq7crv1uEXwRUIiCsOmwMv1Tw9gOQtlmKqPLXYt
+        kqWJ7DW9UdHLjCYZ2xcnc5u/kh69D+CckfnJNBFIfo9V9bAZ86WilpU0hspNrj4z4Zg0TvdWFIuGw
+        IkDYOofFpf8+g6hOWN7fy/zP5AgZ8yPZDbLKyyYiNkOgd1S9ECAgpydDiU4qZWiuGlkBrJIuOECXK
+        z8imaQTkWLMeTBmkylgg16Pv8xvB7PnGHhHMx8pSd+bRsgMkiyC5mittKx17OeGRlklRfOmzEOxRX
+        NcuzEfWg==;
 Received: from [2001:8b0:10b:5:bb89:6ad7:7c5:e8e] (helo=u3832b3a9db3152.ant.amazon.com)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pehQv-002J2v-OX; Tue, 21 Mar 2023 19:14:09 +0000
-Message-ID: <9b0b8ff8c72ef2c08fac68cea99f5cba9a30feab.camel@infradead.org>
-Subject: Re: [PATCH v15 03/12] cpu/hotplug: Add dynamic parallel bringup
- states before CPUHP_BRINGUP_CPU
+        id 1pehXA-002JLh-UR; Tue, 21 Mar 2023 19:20:37 +0000
+Message-ID: <e0f7d85055f4a3b6102d724ed3c09c612ff15c20.camel@infradead.org>
+Subject: Re: [PATCH v15 02/12] cpu/hotplug: Move idle_thread_get() to
+ <linux/smpboot.h>
 From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
-        brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+To:     Borislav Petkov <bp@alien8.de>,
+        Usama Arif <usama.arif@bytedance.com>,
+        "mark.rutland" <mark.rutland@arm.com>
+Cc:     tglx@linutronix.de, kim.phillips@amd.com, brgerst@gmail.com,
+        piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
         pbonzini@redhat.com, paulmck@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
@@ -44,12 +45,14 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
         gpiccoli@igalia.com
-Date:   Tue, 21 Mar 2023 19:14:07 +0000
-In-Reply-To: <87r0tja41b.ffs@tglx>
+Date:   Tue, 21 Mar 2023 19:20:35 +0000
+In-Reply-To: <82674e57bc06a3e05e581bdf4e1b7413202e1ec7.camel@infradead.org>
 References: <20230316222109.1940300-1-usama.arif@bytedance.com>
-         <20230316222109.1940300-4-usama.arif@bytedance.com> <87r0tja41b.ffs@tglx>
+         <20230316222109.1940300-3-usama.arif@bytedance.com>
+         <20230319163409.GBZBc5gTU94IdrucNL@fat_crate.local>
+         <82674e57bc06a3e05e581bdf4e1b7413202e1ec7.camel@infradead.org>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-K0OlIlpysnnJoff42NwA"
+        boundary="=-2XL/seo5OeZYEJbNaI+O"
 User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -58,69 +61,57 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
---=-K0OlIlpysnnJoff42NwA
+--=-2XL/seo5OeZYEJbNaI+O
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2023-03-20 at 15:30 +0100, Thomas Gleixner wrote:
+On Mon, 2023-03-20 at 08:17 +0000, David Woodhouse wrote:
 >=20
-> This causes a subtle issue. The bringup loop above moves all CPUs to
-> cpuhp_state =3D=3D CPUHP_BP_PARALLEL_DYN_END. So the serial bootup will
-> start from there and bring them fully up.
+> In _cpu_up() the call to idle_thread_get() only happens if the CPU in
+> question is starting from CPUHP_OFFLINE but I think that's sufficient?
 >=20
-> Now if a bringup fails, then the rollback will only go back down to
-> CPUHP_BP_PARALLEL_DYN_END, which means that the control CPU won't do any
-> cleanups below CPUHP_BP_PARALLEL_DYN_END.
->=20
-> That 'fail' is a common case for SMT soft disable via the 'nosmt'
-> command line parameter. Due to the marvelous MCE broadcast 'feature' we
-> need to bringup the SMT siblings at least to the CPUHP_AP_ONLINE_IDLE
-> state once and then roll them back.
->=20
-> While this is not necessarily a fatal problem, it's changing behaviour
-> and with quite some of the details hidden in the (then not issued)
-> teardown callbacks might cause some hard to decode subtle surprises.
->=20
-> So that second for_each_present_cpu() loop needs to check the return
-> value of cpu_up() and issue a full rollback to CPUHP_OFFLINE in case of
-> fail.
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 6c0a92ca6bb5..43e0a77f21e8 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -591,12 +591,6 @@ static int bringup_cpu(unsigned int cpu)
+> =C2=A0	struct task_struct *idle =3D idle_thread_get(cpu);
+> =C2=A0	int ret;
+> =C2=A0
+> -	/*
+> -	 * Reset stale stack state from the last time this CPU was online.
+> -	 */
+> -	scs_task_reset(idle);
+> -	kasan_unpoison_task_stack(idle);
+> -
+> =C2=A0	/*
+> =C2=A0	 * Some architectures have to walk the irq descriptors to
+> =C2=A0	 * setup the vector space for the cpu which comes online.
+> @@ -1383,6 +1377,12 @@ static int _cpu_up(unsigned int cpu, int tasks_fro=
+zen, enum cpuhp_state target)
+> =C2=A0			ret =3D PTR_ERR(idle);
+> =C2=A0			goto out;
+> =C2=A0		}
+> +
+> +		/*
+> +		 * Reset stale stack state from the last time this CPU was online.
+> +		 */
+> +		scs_task_reset(idle);
+> +		kasan_unpoison_task_stack(idle);
+> =C2=A0	}
+> =C2=A0
+> =C2=A0	cpuhp_tasks_frozen =3D tasks_frozen;
 
-@@ -1524,8 +1531,22 @@ void bringup_nonboot_cpus(unsigned int setup_max_cpu=
-s)
-        for_each_present_cpu(cpu) {
-                if (num_online_cpus() >=3D setup_max_cpus)
-                        break;
--               if (!cpu_online(cpu))
--                       cpu_up(cpu, CPUHP_ONLINE);
-+               if (!cpu_online(cpu)) {
-+                       int ret =3D cpu_up(cpu, CPUHP_ONLINE);
-+
-+                       /*
-+                        * For the parallel bringup case, roll all the way =
-back
-+                        * to CPUHP_OFFLINE on failure; don't leave them in=
- the
-+                        * parallel stages. This happens in the nosmt case =
-for
-+                        * non-primary threads.
-+                        */
-+                       if (ret && cpuhp_hp_states[CPUHP_BP_PARALLEL_DYN].n=
-ame) {
-+                               struct cpuhp_cpu_state *st =3D per_cpu_ptr(=
-&cpuhp_state, cpu);
-+                               if (can_rollback_cpu(st))
-+                                       WARN_ON(cpuhp_invoke_callback_range=
-(false, cpu, st,
-+                                                                          =
- CPUHP_OFFLINE));
-+                       }
-+               }
-        }
- }
-=20
+I put that into a separate commit, rebased on tip/x86/apic and pushed
+it out with the rest of the changes to
+https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/paralle=
+l-6.2-rc3-v16
 
+I'll let Usama do another round of testing and repost it (please).
 
---=-K0OlIlpysnnJoff42NwA
+Thanks!
+
+--=-2XL/seo5OeZYEJbNaI+O
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -212,24 +203,24 @@ IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
 dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
 NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
 xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzIxMTkxNDA3WjAvBgkqhkiG9w0BCQQxIgQgDsBYl5Wv
-XFwHvP6F3WBj8hbnOGCwgPLP5tysDSrrVAAwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzIxMTkyMDM1WjAvBgkqhkiG9w0BCQQxIgQgMyjUQb0n
+sT0Lp9SSqZ2R3VAmc1BeNM/2tY+9luSG3xcwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
 A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
 dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
 DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
 MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
 Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBEdOr2uGa2FpFluZ/a2z+YtNB8UOWKLCMB
-9obzc3EA0hZICZJ5ZC3Db/N9edTXabuzRARqSyLfqjqmO5aLiPxsbXXPwGAsydurzYZ++jJ4fgtZ
-mIwPh3BmPbkclIvfbHAvGwYLFKXMA1B9NrSNM6ozZHwBwJ092Pt3Lg0IDZx0h10YdyELReO8bgpE
-MLDwIT28A+4bNbM5HgOJGJLyxAvXRwv31h2WRzWG7WbUXerxGCaT5o1Ja6/Ye05Prd+y+rkHzhX9
-T+8pvoB/Cz8NnpaiC2Gm68IOsa7IPnqE5rQEUniaryJbTHheuxdpxAOuQXV3S10Uo5Vwy9o0699O
-HsHNc3SQdkKUFpvdjR+EC9eV0M0KSZqo71P5lwH42TGnJvEZnFY3zgEh2tGyIWR4XoJCgRDhlnPq
-yVXzWtl5K3r1LMAEYEKYMhYr8Vi/QIc8TyGC7tycJuNih4QMuqJT530QDHR+Tr6qPZ5cE9Zpoobo
-yGDJ1WlCBWMcYSeGOhmKwHxqDqg+Uxu3eISI9u570B5V3aKGCADq4OCsIlGh5FStNdVzXQvmyUyG
-O4u7/Gzv1HiCDiAR4hDlBPiixJnrbWPyw+ytPUdGZ0Zhj+pfDq/G5+VhOK/XKR3C3x7tEAe8qnMz
-RlWa5ulYtCyeMwQipW0yW7G4/SHlpBNmYNu4sQHqQAAAAAAAAA==
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgA2DIkovcFytmxJhMMyEQebcU4I+TPhJt33
+OPpQ7mw6BULdoiv8Qis7vhQxTaOmnh5uS5W1CU+nWYj/DPf6fizguXhFuBn+55LMXOzmNw8fCTQm
+yVMNTq3DXs+j0fCBf4EHbjHEnKMd/fTX7d/DaO5aVqNjWw0wpoz2FqsvZmpYIhFkqt+ldhuz2yk7
+3BpsoAHWQ3Yjbud31i73vQyxKQ2bUvnUm0FNo7XpJ5KYsQuHFRz9y0QCBMcGRcnrkWhnRn3Gs80X
+yjt8M7W4586XWfnanbjUQPYsBPZmzffIKzKNEm/qaRWV2HvnxQwj0PK4cGjT9BQUQRWw2zproZyN
+lYp21pKANZuwKIwUwWw8flVoBD4isjNHU06vOmmwQFcaUWCaHeb5hkIWrF8OlMY18GaCNwkT7zPH
+s5iaNZ0VfFPAfyrdNTQlA3zRA89oUwwhh5yF0IVV07H0QHJS2cCb3gYSUUZghD4j1WtiZSyXqZwO
+OVHPOZjZLA2XoqBq1BvmBcupQy2piNvcRq2a4Qqmvt7uUffQEW/vfLPXrr+cLFEaZuSi8fKCvJGN
+KtYenLPHi0SRzY/vKViIJzKqaIeT6+WWC763LJRs3wB5MQk0QM8XH5QCsRoAx7YUqeCCO10XGFMy
+QC1LdHkNPgU/j4qVwxUtKYUtPkanS6GYc8MUWNNzKgAAAAAAAA==
 
 
---=-K0OlIlpysnnJoff42NwA--
+--=-2XL/seo5OeZYEJbNaI+O--
