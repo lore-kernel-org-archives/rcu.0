@@ -2,106 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 952DEC6FD1D
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 02:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D6CEC6FD1D
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 04:26:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjCUCIX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Mar 2023 22:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
+        id S229529AbjCUE0r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Mar 2023 00:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjCUCIW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Mar 2023 22:08:22 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C2F9EC3;
-        Mon, 20 Mar 2023 19:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679364500; x=1710900500;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=SGLovbWZIElFZLDpV9vpB/8mL3+r7tu+YDWIR/1tseo=;
-  b=Wqok2+HLCE41/lX9yAK8+l4zj9+FBNahI4BjmqAHbDkWh1mK968PMCsV
-   tn7EiF3jVI/xN68XrjxcrigXfoGtzsGRYH31tHe1Iq5wBbIJDyr4jVHn2
-   gLLPrjLRg8WAth3N4fHsg9zyT8x5nSidUxbmu2zXokv/FVkIp9WlvX0Rg
-   i190ziZgXTnftNfkenXBuURbNc1r9SPq8040Z8tlpZxOjEVAi1eDdWpj2
-   r5iB/uI7yL9hK6alMpUMhHbFnMdEZLsOx6q4cuAqm4FiDhJH9FqjV8E4e
-   SKVBopkriKH9b7bC/V0xJp7llcDwyR481//YojU7fK3UGdPK9wELRhI5X
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10655"; a="366553525"
-X-IronPort-AV: E=Sophos;i="5.98,277,1673942400"; 
-   d="scan'208";a="366553525"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2023 19:07:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10655"; a="681345970"
-X-IronPort-AV: E=Sophos;i="5.98,277,1673942400"; 
-   d="scan'208";a="681345970"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2023 19:07:58 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] doc/rcutorture: Add description of rcutorture.stall_cpu_block
-Date:   Tue, 21 Mar 2023 10:12:34 +0800
-Message-Id: <20230321021234.51431-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229497AbjCUE0q (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Mar 2023 00:26:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602BD25B89;
+        Mon, 20 Mar 2023 21:26:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA98161956;
+        Tue, 21 Mar 2023 04:26:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD53C433EF;
+        Tue, 21 Mar 2023 04:26:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679372804;
+        bh=gFv2aJXUNwQ6ce5qb8/S45PJIP1goGD7SztFmscEBK4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZCQ3QoI8+QJQc3XlXdyZ5dh78y+QsEnWOJq3FJxxT+AYDI8yAcLPIgHDexL3QYmog
+         jbcz0K6urVz2e5uVwyAE2HcqpJb5zWKxHCAhSpwmHwAr4rl+mfb2VgeBlwBa6YZg3l
+         6qNpgIcCgrwPQ367VOpkVwVDKBeLfzD2wIBVieqIsbbeMVKHOMeddR/MCzCkcdd1nN
+         TmreiErhxzI2QWthem3VKjPOOmaR8rd4l5b5CuxRC0aTlx35coaxPAElChpyf+aYlS
+         iXq+PVl2ejh21v/rKLYAAbDCq8oj7vddR7CZt35lVdvgi/6evNaXZTb+UAjghHuikm
+         tW0n1XMLERNYg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id EB8F91540395; Mon, 20 Mar 2023 21:26:43 -0700 (PDT)
+Date:   Mon, 20 Mar 2023 21:26:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+Cc:     "dave@stgolabs.net" <dave@stgolabs.net>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 1/1] rcu/rcuscale: Stop kfree_scale_thread thread(s)
+ after unloading rcuscale
+Message-ID: <72ba8619-88cb-4bf4-8232-18d8a1b6b5bf@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <2bbaa13a-bfcc-45b7-acce-8da59a2a0c32@paulmck-laptop>
+ <20230317055006.46365-1-qiuxu.zhuo@intel.com>
+ <d93c68a1-5c36-4e48-ab41-c424d903d30d@paulmck-laptop>
+ <IA1PR11MB61710BAF452AE6E687D8F3CE89819@IA1PR11MB6171.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <IA1PR11MB61710BAF452AE6E687D8F3CE89819@IA1PR11MB6171.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-For kernels built with CONFIG_PREEMPTION=n and CONFIG_PREEMPT_COUNT=y,
-run the RCU stall tests.
+On Tue, Mar 21, 2023 at 01:21:21AM +0000, Zhuo, Qiuxu wrote:
+> > From: Paul E. McKenney <paulmck@kernel.org>
+> > Sent: Tuesday, March 21, 2023 4:41 AM
+> > [...]
+> > >
+> > > Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
+> > > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > 
+> > Much better!
+> > 
+> > Except that someone glancing at this patch would be hard pressed to see
+> > what changed.
+> 
+> Indeed.
+> 
+> > So could you please split this into two patches, the first of which does
+> > nothing but move code, and the second of which makes the actual change?
+> 
+> OK. 
+> Will split this patch into two patches in the v3.
+> 
+> > The commit log for the first patch needs to clearly state that the it is code-
+> > motion-only, with no change in behavior.
+> 
+> OK.
+> Thanks so much for your suggestions ;-) 
 
-runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4"
-bootparams="console=ttyS0 rcutorture.stall_cpu=30
-rcutorture.stall_no_softlockup=1 rcutorture.stall_cpu_block=1" -d
+Looking forward to seeing the next version!
 
-[   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
-[   10.841073] rcu_torture_stall start on CPU 3.
-[   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
-....
-[   10.841108] Call Trace:
-[   10.841110]  <TASK>
-[   10.841112]  dump_stack_lvl+0x64/0xb0
-[   10.841118]  dump_stack+0x10/0x20
-[   10.841121]  __schedule_bug+0x8b/0xb0
-[   10.841126]  __schedule+0x2172/0x2940
-[   10.841157]  schedule+0x9b/0x150
-[   10.841160]  schedule_timeout+0x2e8/0x4f0
-[   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
-[   10.841195]  rcu_torture_stall+0x2e8/0x300
-[   10.841199]  kthread+0x175/0x1a0
-[   10.841206]  ret_from_fork+0x2c/0x50
-
-Due to invoke schedule_timeout() forces the CPU to go through a
-quiescent state, cause RCU stall not appear and also cause scheduling
-while atomic complaints. so this commit add description of
-rcutorture.stall_cpu_block, it should not to be set in CONFIG_PREEMPTION=n
-kernels.
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 6734d1255682..56f4eb8c7cf2 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5053,6 +5053,11 @@
- 			Sleep while stalling if set.  This will result
- 			in warnings from preemptible RCU in addition
- 			to any other stall-related activity.
-+			Note that for CONFIG_PREEMPTION=n kernel, if set.
-+			will forces the CPU to go through a quiescent state
-+			and it can also cause scheduling-while-atomic
-+			complaints(CONFIG_PREEMPT_COUNT=y), so should not be set.
-+
- 
- 	rcutorture.stall_cpu_holdoff= [KNL]
- 			Time to wait (s) after boot before inducing stall.
--- 
-2.25.1
-
+							Thanx, Paul
