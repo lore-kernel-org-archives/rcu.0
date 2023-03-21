@@ -2,146 +2,141 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A29EC6FD20
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 21:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8080EC6FD20
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 21:28:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbjCUVCk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Mar 2023 17:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39762 "EHLO
+        id S230181AbjCUV2c (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Mar 2023 17:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbjCUVCk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Mar 2023 17:02:40 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65216574DD;
-        Tue, 21 Mar 2023 14:02:39 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id p203so18812614ybb.13;
-        Tue, 21 Mar 2023 14:02:39 -0700 (PDT)
+        with ESMTP id S229807AbjCUV2b (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Mar 2023 17:28:31 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE3A113C3
+        for <rcu@vger.kernel.org>; Tue, 21 Mar 2023 14:28:28 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-544f7c176easo159339987b3.9
+        for <rcu@vger.kernel.org>; Tue, 21 Mar 2023 14:28:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679432558;
+        d=joelfernandes.org; s=google; t=1679434107;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7KdYKeJhs6BlAbgaUy8umwaslI0fUCE3dBqVeYeDGa4=;
-        b=bjYjHDJStZi1r9+Dbh03/V+dKle/fh0I2f8dANFi6Z7Ffw6/6lEuAmi+EtVvshC8YO
-         0VZIzOm4z4XG1JwEsNe9uLN9RUWclnIsuy2EFe81Wywbjt/W9FQpXpJYu0+Wp9fb42Nc
-         G2m4V3Uuz5U223CYTzEkAuOWJeNEQ32rOv9DJAfonOuVpm7xfw3iI4tITYZyLgNglwaY
-         6buutuajtIpLZPQXUWIo4A6lEMIst8TWmsfkES/IzmzS2195lHLcnRaNV1Ng4Nvo3W89
-         uJKdgYowqcj+I7rmdzbWzxAN2mEYOFNbARgG5Mn1wGMKv1kr24hG62cpdHRXpE3h5+LU
-         AEIg==
+        bh=WAyM6HcLMXUbep+NWnijC7oArwLlYvYZ0Qrd0e/DUWw=;
+        b=GBq2XqeRCcqiSyw+I8ye20BWKI2g76OtubrkdYzkR5a8PanrxkqvJuGfwngdHq0kPb
+         TFCcAblMoWd6c+KmDcJtOjm/D4AoRouYs1hdet31Cj4qXBdgn97CpNDdbwZ7AsZjnlfI
+         vcDHkuOn5EpVR3UUBS6N1ieKBEz/lJ3qSD7Q0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679432558;
+        d=1e100.net; s=20210112; t=1679434107;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7KdYKeJhs6BlAbgaUy8umwaslI0fUCE3dBqVeYeDGa4=;
-        b=Q8pnUb5p8QNob8kUSDJ94Rqe1+DMdX+o2btf+DJzo1fN29iEBDvwgKGWVXzonlxkU/
-         0s8A6Mz8DW7TogwnBj7/a/MrW1bCSMjsxirC1B1RBExfxRASq+9z2AUVD+fLGcXYfOjO
-         Udr51ScQnlIdIcRYoXkHKJZcInwVg28DfE4a++TUe7paGp7HZkgnM+w0zryeYq2OdXF3
-         J6T61RTpnGs5TKPtn0IHKtB+W2xGiF23+IFBiZYrPGmshstqSC+EgWmBzLuqOxdfs6ag
-         oo7DqDY8g+T5hFxaZaSAdulzWr0HXKkEKkDTo3642CfaJSnbC2L0iaTNWZ2/N2SRWOve
-         TnJg==
-X-Gm-Message-State: AAQBX9dMj4p16qP2KGV6EViE1BJrWVT8p15q6RhZcgVG0HSCr95xAr+J
-        pFQfmP+4m3TLKsV/1vTOD6rZW94R2EJgWohlMwYoyn25tw==
-X-Google-Smtp-Source: AKy350btW9WCm9AQmE3K1LLLcrTqOju2+M8P5TE4wmOswUXQ6vy6ttqgKH5L2NNJ1AHtqCpunxcZuuTWV1YXvemYS70=
-X-Received: by 2002:a05:6902:1208:b0:b6f:dcd:6cd2 with SMTP id
- s8-20020a056902120800b00b6f0dcd6cd2mr2154016ybu.10.1679432558494; Tue, 21 Mar
- 2023 14:02:38 -0700 (PDT)
+        bh=WAyM6HcLMXUbep+NWnijC7oArwLlYvYZ0Qrd0e/DUWw=;
+        b=QSSA5b3natpEq8aZLpcMjl2APzgMdsDsxKy/ypUdB8L3G83m45Ytqh+1j/Wl7QhFQ4
+         Iy9l82lW6FUjyACjMJ4Sr4ns0Fe73m+lukKEZsx95VYbc+9hLxR7x24DNmtqUClOjYCA
+         agl8aACsAxZYoQQcKTU1g+LweVX5m5MMbYrwbKEq18IWzs8vR6nq94sFcKCsb3JIZWAD
+         DkwtgXOSyiveSI4d7mReKJ1A3ekjsl70de2BbCsBamn0Jv9ISdkJMMBT+lVzJ+vQdvOA
+         lztfiDIW3ESiIkRWfgqsMwa5CoMcVurcVKm2AZxQCVWy/1oqqjjeyUPdqeJvKONc38/6
+         xXJg==
+X-Gm-Message-State: AAQBX9c9UotiX8u43xaI/6S9tPgHGJxxqkLwrWnllfB7IdVs5pRUaEkV
+        ij0t4Qp7F79n78KdfuxIDf+Mys1W6rbquHNluuxslw==
+X-Google-Smtp-Source: AKy350YGtvswyCj1+mf1xNISdbVIFwQA993JMQd99BzUST4T1TEeelc4DxHheGfXiG5YYsBzt0hWtYUs4LJqPnnRPEM=
+X-Received: by 2002:a81:b3c1:0:b0:541:9895:4ce9 with SMTP id
+ r184-20020a81b3c1000000b0054198954ce9mr1914145ywh.9.1679434107171; Tue, 21
+ Mar 2023 14:28:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230316222109.1940300-1-usama.arif@bytedance.com>
- <20230316222109.1940300-10-usama.arif@bytedance.com> <CAMzpN2jMyLP9h5o_wwdThHipAns2_dx3Nf8JYhj5pEqaeWXqYg@mail.gmail.com>
- <30efad7b8a5922cdaa48ab89a2dbaf425daf49a8.camel@infradead.org>
-In-Reply-To: <30efad7b8a5922cdaa48ab89a2dbaf425daf49a8.camel@infradead.org>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Tue, 21 Mar 2023 17:02:27 -0400
-Message-ID: <CAMzpN2ijBZV0d+FjXpi8iP9rQ2gFgQ-9TtkZMB4xDizox1yW3g@mail.gmail.com>
-Subject: Re: [PATCH v15 09/12] x86/smpboot: Support parallel startup of
- secondary CPUs
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
-        kim.phillips@amd.com, piotrgorski@cachyos.org,
-        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        gpiccoli@igalia.com
+References: <72ba8619-88cb-4bf4-8232-18d8a1b6b5bf@paulmck-laptop>
+ <20230321052337.26553-1-qiuxu.zhuo@intel.com> <20230321052337.26553-2-qiuxu.zhuo@intel.com>
+ <20230321154751.hgeppd5v327juc36@offworld> <a4a3e103-78b3-4be3-80b8-bbae7b1bb2f4@paulmck-laptop>
+In-Reply-To: <a4a3e103-78b3-4be3-80b8-bbae7b1bb2f4@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 21 Mar 2023 17:28:16 -0400
+Message-ID: <CAEXW_YQW=O_85j6FFP5K8BPGOLAntWnt9Zi0CoL2XQWL4q-w4A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] rcu/rcuscale: Stop kfree_scale_thread thread(s)
+ after unloading rcuscale
+To:     paulmck@kernel.org
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>, frederic@kernel.org,
+        jiangshanlai@gmail.com, josh@joshtriplett.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org, rostedt@goodmis.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 3:12=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
+On Tue, Mar 21, 2023 at 3:24=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
 g> wrote:
 >
-> On Tue, 2023-03-21 at 14:28 -0400, Brian Gerst wrote:
+> On Tue, Mar 21, 2023 at 08:47:51AM -0700, Davidlohr Bueso wrote:
+> > On Tue, 21 Mar 2023, Qiuxu Zhuo wrote:
 > >
-> > > @@ -264,6 +318,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, =
-SYM_L_GLOBAL)
-> > >          lgdt    (%rsp)
-> > >          addq    $16, %rsp
+> > > When running the 'kfree_rcu_test' test case with commands [1] the cal=
+l
+> > > trace [2] was thrown. This was because the kfree_scale_thread thread(=
+s)
+> > > still run after unloading rcuscale and torture modules. Fix the call
+> > > trace by invoking kfree_scale_cleanup() from rcu_scale_cleanup() when
+> > > removing the rcuscale module.
 > > >
-> > > +       /* Drop the realmode protection. For the boot CPU the pointer=
- is NULL! */
-> > > +       movq    trampoline_lock(%rip), %rax
-> > > +       testq   %rax, %rax
-> > > +       jz      .Lsetup_data_segments
-> > > +       lock
-> > > +       btrl    $0, (%rax)
-> > > +
-> > > +.Lsetup_data_segments:
-> > >          /* set up data segments */
-> > >          xorl %eax,%eax
-> > >          movl %eax,%ds
+> > > [1] modprobe rcuscale kfree_rcu_test=3D1
+> > >    // After some time
+> > >    rmmod rcuscale
+> > >    rmmod torture
+> > >
+> > > [2] BUG: unable to handle page fault for address: ffffffffc0601a87
+> > >    #PF: supervisor instruction fetch in kernel mode
+> > >    #PF: error_code(0x0010) - not-present page
+> > >    PGD 11de4f067 P4D 11de4f067 PUD 11de51067 PMD 112f4d067 PTE 0
+> > >    Oops: 0010 [#1] PREEMPT SMP NOPTI
+> > >    CPU: 1 PID: 1798 Comm: kfree_scale_thr Not tainted 6.3.0-rc1-rcu+ =
+#1
+> > >    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 =
+02/06/2015
+> > >    RIP: 0010:0xffffffffc0601a87
+> > >    Code: Unable to access opcode bytes at 0xffffffffc0601a5d.
+> > >    RSP: 0018:ffffb25bc2e57e18 EFLAGS: 00010297
+> > >    RAX: 0000000000000000 RBX: ffffffffc061f0b6 RCX: 0000000000000000
+> > >    RDX: 0000000000000000 RSI: ffffffff962fd0de RDI: ffffffff962fd0de
+> > >    RBP: ffffb25bc2e57ea8 R08: 0000000000000000 R09: 0000000000000000
+> > >    R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+> > >    R13: 0000000000000000 R14: 000000000000000a R15: 00000000001c1dbe
+> > >    FS:  0000000000000000(0000) GS:ffff921fa2200000(0000) knlGS:000000=
+0000000000
+> > >    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > >    CR2: ffffffffc0601a5d CR3: 000000011de4c006 CR4: 0000000000370ee0
+> > >    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > >    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > >    Call Trace:
+> > >     <TASK>
+> > >     ? kvfree_call_rcu+0xf0/0x3a0
+> > >     ? kthread+0xf3/0x120
+> > >     ? kthread_complete_and_exit+0x20/0x20
+> > >     ? ret_from_fork+0x1f/0x30
+> > >     </TASK>
+> > >    Modules linked in: rfkill sunrpc ... [last unloaded: torture]
+> > >    CR2: ffffffffc0601a87
+> > >    ---[ end trace 0000000000000000 ]---
+> > >
+> > > Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
+> > > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 > >
-> > This can still go earlier, right after "movq TASK_threadsp(%rax),
-> > %rsp".  The GDT descriptor is placed on the idle thread stack, so it's
-> > safe to drop the lock before it.
+> > Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
 >
+> Much better, thank you both!
 >
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -335,6 +335,17 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
-L_GLOBAL)
->         movq    pcpu_hot + X86_current_task(%rdx), %rax
->         movq    TASK_threadsp(%rax), %rsp
->
-> +       /*
-> +        * Now that this CPU is running on its own stack, drop the realmo=
-de
-> +        * protection. For the boot CPU the pointer is NULL!
-> +        */
-> +       movq    trampoline_lock(%rip), %rax
-> +       testq   %rax, %rax
-> +       jz      .Lsetup_gdt
-> +       lock
-> +       btrl    $0, (%rax)
-> +
-> +.Lsetup_gdt:
->         /*
->          * We must switch to a new descriptor in kernel space for the GDT
->          * because soon the kernel won't have access anymore to the users=
-pace
-> @@ -377,14 +388,6 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
-L_GLOBAL)
->         shrq    $32, %rdx
->         wrmsr
->
-> -       /* Drop the realmode protection. For the boot CPU the pointer is =
-NULL! */
-> -       movq    trampoline_lock(%rip), %rax
-> -       testq   %rax, %rax
-> -       jz      .Lsetup_idt
-> -       lock
-> -       btrl    $0, (%rax)
-> -
-> -.Lsetup_idt:
->         /* Setup and Load IDT */
->         pushq   %rsi
->         call    early_setup_idt
->
+> But unfortunately, these patches do not apply cleanly.  Qiuxu Zhuo,
+> could you please forward port these to the -rcu "dev" branch [1]?
 
-Looks good, thanks.
+After making it cleanly apply:
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+thanks,
+
+ - Joel
+
+>
+>                                                 Thanx, Paul
+>
+> [1] https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/rcuto=
+do.html
