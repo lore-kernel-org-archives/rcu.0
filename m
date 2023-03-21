@@ -2,141 +2,146 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FD1FC6FD1D
-	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 15:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 691A6C6FD1D
+	for <rcu@archiver.kernel.org>; Tue, 21 Mar 2023 16:00:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbjCUPQB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Mar 2023 11:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        id S231322AbjCUQAA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Mar 2023 12:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbjCUPQA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Mar 2023 11:16:00 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9293754C;
-        Tue, 21 Mar 2023 08:15:58 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id h25so7901544lfv.6;
-        Tue, 21 Mar 2023 08:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679411756;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/3HeM3Qr6HuiISn1jIjaXM3iCDubZuOw4IHlnRgsOk=;
-        b=AmbyNu5qDW7wndKY0CU6lVIavZs1fo6nquhzQeV4ABsGsMfcnkFbezm6blvzxC7RUY
-         LkPUBFdAacX948tRYBMnRqItENF6Zza3hHL6Ng8iIx1pmTx3JxlI2am8lpswOclVriu9
-         Q5VWK09cqnJh19vl6GcvRU+srxPPBGc4oVlhlAK9/0FUmYFx0mneBXOj1zSf3UwI1GDF
-         AUKUtznXG19OPqPtg+v7xu51FWSTXWjPWolmfCwwuCgcoJfKFK9E9lNEJFcWYrqH96pS
-         XyD5t/lriUZqIbN8qSuO563zuKJnzP6WMQ026oFxmraNTf/ZN1G2lbaVqxtqZIzoxcdm
-         tQ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679411756;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s/3HeM3Qr6HuiISn1jIjaXM3iCDubZuOw4IHlnRgsOk=;
-        b=nyZJg95zBkyoPjuB9iVXHKOdCZhqD8NgF1q/G3UKPUkj6GWt3u5hkaBUvz18pV39pZ
-         DFgWpaT7M2ziR0uHBPpZZfpezlf4d8wsmsCToxfSnFh+zYciXHTIVuMc27EONtwW7sJ1
-         NXoYAsOnIXajEDoqrKFJoFbhe/RdNlZeW67DrmwY9xLZnixisehtCKkFPwT62jlxNKaq
-         TwxF1XlCBKve7psQmrYYD8aVD8Ba3cfNQm5UYPsHZq4h/cGFEaRvqzmXnCieI2WKpshw
-         a78Azyb7ap/9iQfbmZBrGM0iRWbe52gwuruF8x1XVoEtdJnKDp04eyM9eP/9VW7n1WsX
-         up1w==
-X-Gm-Message-State: AO0yUKWpI2P/h0tPrpik49SDaK+FbkEWMhNUWy+pW5IZbK5zsLwLHHqj
-        W4JF8NF0gPIVTEUIhk6Vk3o=
-X-Google-Smtp-Source: AK7set/jCNr/V24J8H1bn3oN3wmDN17t9qO5xudbABdcM0N7oiAxWTT7OPRiWtyIOlqEO5f8Fz63aA==
-X-Received: by 2002:ac2:4ad9:0:b0:4dd:9a38:fcc with SMTP id m25-20020ac24ad9000000b004dd9a380fccmr853665lfp.63.1679411756223;
-        Tue, 21 Mar 2023 08:15:56 -0700 (PDT)
-Received: from pc636 (host-90-233-209-15.mobileonline.telia.com. [90.233.209.15])
-        by smtp.gmail.com with ESMTPSA id a27-20020ac2521b000000b004e96afb1e9asm2108232lfl.253.2023.03.21.08.15.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Mar 2023 08:15:55 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 21 Mar 2023 16:15:53 +0100
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-Message-ID: <ZBnKKZsSpI8aAk9W@pc636>
-References: <20230321102748.127923-1-urezki@gmail.com>
- <IA1PR11MB617169A10E6DDE3C1168605D89819@IA1PR11MB6171.namprd11.prod.outlook.com>
+        with ESMTP id S230308AbjCUP77 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Mar 2023 11:59:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEA151CAB;
+        Tue, 21 Mar 2023 08:59:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DACD861CED;
+        Tue, 21 Mar 2023 15:59:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46E83C433EF;
+        Tue, 21 Mar 2023 15:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679414380;
+        bh=1qp5+Hwl4K+vvCIr5c7bXsD4XlZRHWFcX9X/Bkg54uo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=e0AzPy08nY7J45caa24DjvVtdDKuByk20jCkVXm/Z6IVwrAeoxfm8cEkA9oPlQXcK
+         YR62tTd5CkVDn6FhPJU6uPQzOChj3kNNH1E9UN4aeLk8fYSj/hf61H8ni5QmHOpNcN
+         TF4/NMf4kZTJ8Aqck4PszKL0mksYhJVtC2UQXxLx+KIzOElSxzFl4MlhxNdqhuS1F4
+         RYlggM2Xo20gRlKr9foPKteJ1bSvTpFMSyYU+9fvVFlTd8jnKmOGslinW0yly/mwhT
+         4uDFBOIlx5Llu0CdX01OFs06pJLTXqQKGm8TTbJteQljtdvcbXiMZ0uQSlmeEoR/cO
+         pzb4dvF61D+4Q==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CF6C1154033A; Tue, 21 Mar 2023 08:59:39 -0700 (PDT)
+Date:   Tue, 21 Mar 2023 08:59:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Shigeru Yoshida <syoshida@redhat.com>
+Cc:     frederic@kernel.org, neeraju@quicinc.com, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu-tasks: Avoid pr_info() with spin lock in
+ cblist_init_generic()
+Message-ID: <223892ae-648e-4931-8c11-063de83d2c40@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20220802162205.817796-1-syoshida@redhat.com>
+ <20220804000252.GL2125313@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <IA1PR11MB617169A10E6DDE3C1168605D89819@IA1PR11MB6171.namprd11.prod.outlook.com>
+In-Reply-To: <20220804000252.GL2125313@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 02:03:19PM +0000, Zhuo, Qiuxu wrote:
-> > From: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > Sent: Tuesday, March 21, 2023 6:28 PM
-> > [...]
-> > Subject: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+On Wed, Aug 03, 2022 at 05:02:52PM -0700, Paul E. McKenney wrote:
+> On Wed, Aug 03, 2022 at 01:22:05AM +0900, Shigeru Yoshida wrote:
+> > pr_info() is called with rtp->cbs_gbl_lock spin lock locked.  Because
+> > pr_info() calls printk() that might sleep, this will result in BUG
+> > like below:
 > > 
-> > A call to a synchronize_rcu() can be expensive from time point of view.
-> > Different workloads can be affected by this especially the ones which use this
-> > API in its time critical sections.
+> > [    0.206455] cblist_init_generic: Setting adjustable number of callback queues.
+> > [    0.206463]
+> > [    0.206464] =============================
+> > [    0.206464] [ BUG: Invalid wait context ]
+> > [    0.206465] 5.19.0-00428-g9de1f9c8ca51 #5 Not tainted
+> > [    0.206466] -----------------------------
+> > [    0.206466] swapper/0/1 is trying to lock:
+> > [    0.206467] ffffffffa0167a58 (&port_lock_key){....}-{3:3}, at: serial8250_console_write+0x327/0x4a0
+> > [    0.206473] other info that might help us debug this:
+> > [    0.206473] context-{5:5}
+> > [    0.206474] 3 locks held by swapper/0/1:
+> > [    0.206474]  #0: ffffffff9eb597e0 (rcu_tasks.cbs_gbl_lock){....}-{2:2}, at: cblist_init_generic.constprop.0+0x14/0x1f0
+> > [    0.206478]  #1: ffffffff9eb579c0 (console_lock){+.+.}-{0:0}, at: _printk+0x63/0x7e
+> > [    0.206482]  #2: ffffffff9ea77780 (console_owner){....}-{0:0}, at: console_emit_next_record.constprop.0+0x111/0x330
+> > [    0.206485] stack backtrace:
+> > [    0.206486] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.19.0-00428-g9de1f9c8ca51 #5
+> > [    0.206488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-1.fc36 04/01/2014
+> > [    0.206489] Call Trace:
+> > [    0.206490]  <TASK>
+> > [    0.206491]  dump_stack_lvl+0x6a/0x9f
+> > [    0.206493]  __lock_acquire.cold+0x2d7/0x2fe
+> > [    0.206496]  ? stack_trace_save+0x46/0x70
+> > [    0.206497]  lock_acquire+0xd1/0x2f0
+> > [    0.206499]  ? serial8250_console_write+0x327/0x4a0
+> > [    0.206500]  ? __lock_acquire+0x5c7/0x2720
+> > [    0.206502]  _raw_spin_lock_irqsave+0x3d/0x90
+> > [    0.206504]  ? serial8250_console_write+0x327/0x4a0
+> > [    0.206506]  serial8250_console_write+0x327/0x4a0
+> > [    0.206508]  console_emit_next_record.constprop.0+0x180/0x330
+> > [    0.206511]  console_unlock+0xf7/0x1f0
+> > [    0.206512]  vprintk_emit+0xf7/0x330
+> > [    0.206514]  _printk+0x63/0x7e
+> > [    0.206516]  cblist_init_generic.constprop.0.cold+0x24/0x32
+> > [    0.206518]  rcu_init_tasks_generic+0x5/0xd9
+> > [    0.206522]  kernel_init_freeable+0x15b/0x2a2
+> > [    0.206523]  ? rest_init+0x160/0x160
+> > [    0.206526]  kernel_init+0x11/0x120
+> > [    0.206527]  ret_from_fork+0x1f/0x30
+> > [    0.206530]  </TASK>
+> > [    0.207018] cblist_init_generic: Setting shift to 1 and lim to 1.
 > > 
-> 
-> This is interesting and meaningful research. ;-)
-> 
-> > For example in case of NOCB scenario the wakeme_after_rcu() callback
-> > invocation depends on where in a nocb-list it is located. Below is an example
-> > when it was the last out of ~3600 callbacks:
+> > This patch moves pr_info() so that it is called without
+> > rtp->cbs_gbl_lock locked.
 > > 
-> > <snip>
-> >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt
-> > CBs=3613 bl=28
-> > ...
-> >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt
-> > rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt
-> > rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt
-> > rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt
-> > rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt
-> > rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt
-> > rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-> >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-
-> > invoked=3612 idle=....
-> > <snip>
-> >
+> > Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
 > 
-> Did the results above tell us that CBs-invoked=3612 during the time 21950.145313 ~ 21950.152625?
-> 
-Yes.
+> This patch looks good, except that wasn't this supposed to be fixed
+> in printk()?  Or am I suffering from wishful thinking?
 
->
-> If possible, may I know the steps, commands, and related parameters to produce the results above?
-> Thank you!
-> 
-Build the kernel with CONFIG_RCU_TRACE configuration. Update your "set_event"
-file with appropriate traces:
+And I was indeed suffering from wishful thinking, so I have queued this
+patch.  A big "thank you!" to all for your patience, and to Shigeru for
+this fix!
 
-<snip>
-XQ-DQ54:/sys/kernel/tracing # echo rcu:rcu_batch_start rcu:rcu_batch_end rcu:rcu_invoke_callback > set_event
+							Thanx, Paul
 
-XQ-DQ54:/sys/kernel/tracing # cat set_event
-rcu:rcu_batch_start
-rcu:rcu_invoke_callback
-rcu:rcu_batch_end
-XQ-DQ54:/sys/kernel/tracing #
-<snip>
-
-Collect traces as much as you want: XQ-DQ54:/sys/kernel/tracing # echo 1 > tracing_on; sleep 10; echo 0 > tracing_on
-Next problem is how to parse it. Of course you will not be able to parse
-megabytes of traces. For that purpose i use a special C trace parser.
-If you need an example please let me know i can show here.
-
---
-Uladzislau Rezki
+> > ---
+> >  kernel/rcu/tasks.h | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index 3925e32159b5..d46dd970bf22 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -227,7 +227,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+> >  	if (rcu_task_enqueue_lim < 0) {
+> >  		rcu_task_enqueue_lim = 1;
+> >  		rcu_task_cb_adjust = true;
+> > -		pr_info("%s: Setting adjustable number of callback queues.\n", __func__);
+> >  	} else if (rcu_task_enqueue_lim == 0) {
+> >  		rcu_task_enqueue_lim = 1;
+> >  	}
+> > @@ -256,6 +255,10 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+> >  		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
+> >  	}
+> >  	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+> > +
+> > +	if (rcu_task_cb_adjust)
+> > +		pr_info("%s: Setting adjustable number of callback queues.\n", __func__);
+> > +
+> >  	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
+> >  }
+> >  
+> > -- 
+> > 2.37.1
+> > 
