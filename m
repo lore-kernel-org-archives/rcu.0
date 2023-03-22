@@ -2,1293 +2,308 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 408AAC6FD1F
-	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 06:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F37E8C6FD1C
+	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 06:53:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbjCVGvR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Mar 2023 02:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
+        id S229733AbjCVGx1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Mar 2023 02:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjCVGu6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Mar 2023 02:50:58 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B929F5679C;
-        Tue, 21 Mar 2023 23:50:31 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id eh3so68709421edb.11;
-        Tue, 21 Mar 2023 23:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679467830;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HpG/rF53T4RKiFgPnbDmFRsP8hRDR+VIeoG2d8gwVh4=;
-        b=p1lOoRzalvz/+FFWVZE9FluXJRkYLROyvUEO9pml31oG5QOr87VGB4iQ4rpFNvsHl8
-         Uhznc/satZubE9QOPCQHudapzFKEK6z+DC+1sHZ9bK5eBJqEoAV/qmgluIZEIt5rM344
-         +07ag1uyRygbGFDRMNs9XyhZE/IqiDpfoWlWMDKHmvLJ1EVMNbAWUeiHVnGvvdAYIuQx
-         NpirrqXEcA6DsFeNDMKriLXBhoH+LOwRqkwF6pZzv/eVTrdvajH2/a7HXyTyuKPjLcdC
-         TTzCkt+YbQf4grvCx+V+HMmgQKCtFHPeni9oHQHDTj0codFpRwoDTthXIuhL/1Pzahpl
-         BrZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679467830;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HpG/rF53T4RKiFgPnbDmFRsP8hRDR+VIeoG2d8gwVh4=;
-        b=ddNQEDA0I9jL7wkGDM4nEp4UXPXW/i8XJ0YpwDKIrhDGlA/Nxi5nXnPGibHthLAaxS
-         3WHvrDG/nvbBuEYJcWF2fbX5tLPQ1VTxiP0rgvp0Jy7pSqLj6yVr6ooA2k/fF0J9PXxN
-         3DDMoorQv4pytxhfs3/q8BiYB0NCKrvswfuBjHU+3EA+jk4GObdmq9s7LrOAkO4hADGN
-         o/TQwnueJwHQFrw7y2OilddKpKWVAzC1oeWh3DG34ZT7UQXXeMedAlBkKr+KGxR1RqPV
-         T5+9KmaQ9JNocm0uYC/OthD/nsYvEJ0rPUlBoRYDo2KxX2uUVVAX6i8hTJv+zvOF6OVv
-         HSyQ==
-X-Gm-Message-State: AO0yUKUF72bulotz1OStyFOPDSH9KJnzVcloorEYzF+6etZ9P1k+ugVc
-        a+gyYUcbwXIRGOEorWwBeyM=
-X-Google-Smtp-Source: AK7set8+r/4/2HzU2tZP371rDWJLHY6wC/W+cbwFVGQPsOBng4qaf2fBAEmRiuVvkVaHleSLdkviZw==
-X-Received: by 2002:aa7:c84a:0:b0:500:58cb:3b05 with SMTP id g10-20020aa7c84a000000b0050058cb3b05mr5867668edt.27.1679467829278;
-        Tue, 21 Mar 2023 23:50:29 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id kj2-20020a170907764200b009324717b9f3sm6169857ejc.71.2023.03.21.23.50.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Mar 2023 23:50:28 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 22 Mar 2023 07:50:27 +0100
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-Message-ID: <ZBqlMxo4/vKYZ08K@pc638.lan>
-References: <20230321102748.127923-1-urezki@gmail.com>
- <IA1PR11MB617169A10E6DDE3C1168605D89819@IA1PR11MB6171.namprd11.prod.outlook.com>
- <ZBnKKZsSpI8aAk9W@pc636>
- <SJ1PR11MB61795652651F41A8F94B1E9D89869@SJ1PR11MB6179.namprd11.prod.outlook.com>
+        with ESMTP id S229750AbjCVGxB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Mar 2023 02:53:01 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B0023D90;
+        Tue, 21 Mar 2023 23:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679467979; x=1711003979;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=vqkmelVqhz3VETy9hm/mrcTOrq0jvCYnzlZToZ74ngg=;
+  b=KSJjUZSnLczdBHjiY4q7NVtfFlOsZzTzzyq8GdAiGnezamGzqI+gS4WP
+   r2maNXSUwEu3grVu6FcZpBbsUixWGVcy004MXBA7WmkahBxSL74oKNGvk
+   XrZvoYif7BiNRE9cLO0iZdpwCEZdFPbFp4w/HKqLVuIGo7NrDt12uhNuC
+   Gsv+GTNLm2vTjxVcGLNanGt6xVyeIhwj8sy77B5zn8FjLx8mGtCWIeJMh
+   etqkvdc9LSYzC6KffNXZcy8t3OKX4owkba0tPwXkkcLqmkYTjWqWEB8v2
+   DbnBnCnxJVj7AzrXiJddlc7UWr3dUJduYAPQlcExjh8YsTMhWvcYmMY67
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="341497928"
+X-IronPort-AV: E=Sophos;i="5.98,281,1673942400"; 
+   d="scan'208";a="341497928"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2023 23:52:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="631881015"
+X-IronPort-AV: E=Sophos;i="5.98,281,1673942400"; 
+   d="scan'208";a="631881015"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga003.jf.intel.com with ESMTP; 21 Mar 2023 23:52:53 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 21 Mar 2023 23:52:52 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 21 Mar 2023 23:52:52 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Tue, 21 Mar 2023 23:52:52 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.21; Tue, 21 Mar 2023 23:52:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CUJNgb0rBvnECwHkMVDs1+oQpvOarlz5AVbLN3s6jPAiKNF4Jhb92HqW2kR1TwIfERVA5HXXwDHCrw3X7JZw0nYzTjkGM2U/3GIM73JmFSZKJgJkFRK9VgUUoGiLgWRiIeYS2P+xhjc5aoWN/hoh1Am3qGoIPKiVfLbqkJ67GVt5MEcR2g9TPgvIPJFEoOn8H4NaHvOUmbk1mrlhgLoH/HF+x8ebUPLAZkHTPPwuN0LFFon+KxY5UBZwuy1Kv/JLQIA61llIYq2wQWwbWtuXOacE89HGDh/qFfdsqT6/IjZk4n5c+bl6Yh/elZNjFV5EJ7wWM1+LLDQ/tiVMctLjNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YBvJ05So06tbKOTXxcRbFKpO9mRf0Ce6VmaT8IqBr/c=;
+ b=BsO3L1rWAKCZksRmSc5T//Nb1cOjXn8s/oyhvFRPFIJ6Ve93rwHegmKcoqxtLV+JJ2m9IIMrKgcy4OadXsEuno+LxS3OCPqI9FTXaqgfGF+C/2UtZ0JrxYnKSGuAZY26qMWBjf97/IeZT9LxtF2Taky2QOxlBzVFeK0W9ZKMkhj+jVBbB+wJKq7GJWx1I2ErXsz8ZfazawGlm5C3SETRZrXrHOnNZcXmSNHKr5uPaUhZ36dBlgVLlGydVrXULMvCrFjd/kIUGzUCuZlbCbv8t719YzV1EjV799pHHGtM0Dalx770Ozqwh4UnNVA0Ad5XdAQVsJSJ1CXBBwvzZTe44g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
+ by DS0PR11MB6469.namprd11.prod.outlook.com (2603:10b6:8:c3::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Wed, 22 Mar
+ 2023 06:52:45 +0000
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::4075:1af2:9fc0:66d0]) by PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::4075:1af2:9fc0:66d0%6]) with mapi id 15.20.6178.037; Wed, 22 Mar 2023
+ 06:52:45 +0000
+From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        Shigeru Yoshida <syoshida@redhat.com>
+CC:     "frederic@kernel.org" <frederic@kernel.org>,
+        "neeraju@quicinc.com" <neeraju@quicinc.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] rcu-tasks: Avoid pr_info() with spin lock in
+ cblist_init_generic()
+Thread-Topic: [PATCH] rcu-tasks: Avoid pr_info() with spin lock in
+ cblist_init_generic()
+Thread-Index: AQHYpowdL4alsdv780yl8/IOMQTYBK2d3fwAgWjxNICAAPiCIA==
+Date:   Wed, 22 Mar 2023 06:52:45 +0000
+Message-ID: <PH0PR11MB58809BAC834FD65419DEB3B4DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <20220802162205.817796-1-syoshida@redhat.com>
+ <20220804000252.GL2125313@paulmck-ThinkPad-P17-Gen-1>
+ <223892ae-648e-4931-8c11-063de83d2c40@paulmck-laptop>
+In-Reply-To: <223892ae-648e-4931-8c11-063de83d2c40@paulmck-laptop>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|DS0PR11MB6469:EE_
+x-ms-office365-filtering-correlation-id: 59f628f5-53c4-4142-072f-08db2aa20ab1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xuKWgg19PR4b0OHqFP+Dqznu6Oqmqqoz8g4I4PuR3W8AYoGK+odQGTxL2+gG47faPzbbMoXgCuthhJFRUFh1JxdOYczla0Mj+2ChHUG+0g1/n9J1FjXZ8b7maIA1+IhUms8k11WrrDgYPg/ukxh9bH9KbCFzz4WA8lUNDLZ313dxWEnVuS/tKnlg3azVp3E50Epuf1pyaCUM8oZ/D1SY7dku4ZOkNFD75d8xE6+8ZBpQfHK4DaZjr7w+7P2Ikhieg0Fj7cx3AkID3wF0MuQ2xkEhd5vCk106Q2VtVJ0SSawfFM6KUjwTfRJ5Pcmn2S9ZIVp1kf81h3P+k0GT5YoTriP0YtZfEL4aZ/xAQsh1n9CORY3f+pkWwxK5DE05WHe2pbNtmvKgMnYqQ2CHL90dW7Q7ocP+kxjoJQ5iOe43o3GRiqPXRSX2K+fJwcOAWRTYwOSvBDDAlFbwkieZ2t0d8Ja9Vc4iAT8zN828hx+lQFsxh10sTZfqBG0DcjFmrLGolWGJF5SVxhc1Ywo3XQJ6zbfMnlpJtgTawxqnkep2Gnu6lqMImdw6t6WOxTA/oeB3Xpl3yxqrxTod9ptmXLABJcCfRS8BFfskPH3k9w65CyIncqJ6ruIFWsvWAFVgCoUBslWUNOXP7Bx5taTRKSJkH7/AcoAqZTlR3xMj+n7NhNMnJvC6Q0T3MMm/Wj+d5DKJmQB1WTNs03piaF+Q/Wft0YJmxpM8mPic2Kj5gKWz4bU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(366004)(396003)(136003)(39860400002)(376002)(346002)(451199018)(71200400001)(83380400001)(316002)(54906003)(9686003)(5660300002)(33656002)(6506007)(7696005)(7416002)(478600001)(122000001)(66946007)(186003)(38100700002)(110136005)(4326008)(86362001)(55016003)(38070700005)(66556008)(2906002)(76116006)(52536014)(8936002)(8676002)(66476007)(64756008)(82960400001)(66446008)(41300700001)(41533002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?C7qsbprIfQb2rfW6IOr/e5fN35vxKDDreFbkBzFa4Giayvf3kKPP7NXIlJfs?=
+ =?us-ascii?Q?0AxmZMl7Uzj8PPyHwuMZvCNtoBQ+Zd4Vj7mUT6GupGgSskr2OvPTn8fGiN1V?=
+ =?us-ascii?Q?CAm/oWgwn9CfYgdd0Dl6IGZe0by6eUpzjibA004HUKfCFa3nodRiyqgY892r?=
+ =?us-ascii?Q?2XVwTnw8hNHsZ51oS3idBAgfzDsnDt6Pk1arbEvxQoHKT5s3JDQj/f+SLICt?=
+ =?us-ascii?Q?qKW/oQONsCScZVaJbraqIPibaQt4KFlXxVkCF9nXuVxhtB+3mpU4+Y21N+Mn?=
+ =?us-ascii?Q?FEMnIMsJNrOzeQN1MdkKyMsckaglinClMt66L9gvmbCVmI7J41bgb6Y2KPOb?=
+ =?us-ascii?Q?7rw4dxT1xlsNMS3xjJ/OtbbbYl4aeOzGg2d2fpcUzalWh76tyHp4p6wV5pZQ?=
+ =?us-ascii?Q?3gcTv4rynxgUL6sPGSi7HpijDODsIdV9SLyrVZU6cPRvQFCNiRGl8MZnXtEc?=
+ =?us-ascii?Q?cKgTXwWe6fix3Tnc331jHLfpL+fX0UPDBUtbTH+zUiw4f1e+BmJN+T8CeUNa?=
+ =?us-ascii?Q?DtQtv1OV3KE0CxTv/nrNVr/9QzzFZEcJ4leRd/J9Pd+HHdtFwA7OtFKgAmAH?=
+ =?us-ascii?Q?uVZNBM2dMLmhNROjN8UjgGMdo/UAZtv3QDIv4Iz0HIFg9hTJNX+RgwjBppsj?=
+ =?us-ascii?Q?8kNuK7YdLvOyiHjxNxvO3wF57b9AbzTl7fgnsyowcrSFkq/2TWjtduX1KjaM?=
+ =?us-ascii?Q?oH8+dgAoGBnPeD1KM0TLdmx9G6F8wpwsRDy6fP61+Oste1VU3fj6njUJQ3QX?=
+ =?us-ascii?Q?WAQlwkQIaaD4XxLJeV4d2bdM86nmOZjsUrHpJnqwH0XrgpQPY5pi0uQWMoqj?=
+ =?us-ascii?Q?Fl2j3EwcDV55CA1GJpUVp/oCEhluBC0ysM+Eepsn8NpZf4Cc9goB+1TUXGMl?=
+ =?us-ascii?Q?/lDg9UYm5KXI3Przauk8D2MG1HD57LXdJGryb2iyjVh93gqg12M5zVK2kUxm?=
+ =?us-ascii?Q?Bkv0mjZa5ptJ//mp7K85kJZoCFB6TEVr5qEeywOY+UqBSk88zp871i8MU9k/?=
+ =?us-ascii?Q?uyEq4R95yf6EdI6afqjPFmWWNdcaM6/MkB7tuT/oBEsT/IA6oT7CI7RwAFsC?=
+ =?us-ascii?Q?D8cko3fQqKoWfllLMwj5ZulPik9CDURUN//Yh4hR8eKaVh3l8YgAGjym5NXK?=
+ =?us-ascii?Q?9Vsq/H686XLl+I4f1pzso8emTPmixTEW/aAAz4tkAm3s4NbMNWQSWCCoRoqc?=
+ =?us-ascii?Q?8Xkvw7g8XHEg9J/fWK0+zodtmOK2u70nGWLLnUulj2C3gcMM3pyJvcm3ddBD?=
+ =?us-ascii?Q?6egT0Xa8EK/fmxGM5FCoSRsQnwn44A/jMCKZ8jNjkdqV7HbKXc8lqv8nG+9v?=
+ =?us-ascii?Q?6UfNUQgPL4MLUtON6DK60iYrp8ejsZp9Gwd6DlEMJKan2rEm8ErNDBDytXES?=
+ =?us-ascii?Q?VLpzoW+10CBo4komGJeM3CUFpQ5UlH4jhK/I2CYc3i6b7GcZoCRYJMLm2pba?=
+ =?us-ascii?Q?m3DKR7uCLPjUVz1EL4UlNIEMPtJy2oyOmdehbyN8C93/WlERgbmwZ3pJN16d?=
+ =?us-ascii?Q?GLknad2wsByaM1iYUsjrqD0vfwVqQV7Sx/g6Yqf9JFsUvOT/ElT90ul0pAMO?=
+ =?us-ascii?Q?HB9bETh4m3VTnluYM/uzeYE3iMg0ZKxaFaqOjN0Yf3NXyApAHlQrrbXKKdDk?=
+ =?us-ascii?Q?v14pwOC7bQG9CNGIZJLp7iqdY81lWGtSGCfcyglshHAf?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB61795652651F41A8F94B1E9D89869@SJ1PR11MB6179.namprd11.prod.outlook.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59f628f5-53c4-4142-072f-08db2aa20ab1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2023 06:52:45.5031
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: l52Oelw7rWfAIYVnYtRuiqhpKosWz5DU2m2r0Nvm3USZDHNlz7qrxkNB9MZZ+nWVebeHMoPf3Dtg1lrLkXVZog==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6469
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 01:49:50AM +0000, Zhuo, Qiuxu wrote:
-> Hi Rezki,
-> 
-> > From: Uladzislau Rezki <urezki@gmail.com>
-> > Sent: Tuesday, March 21, 2023 11:16 PM
-> > [...]
-> > >
-> > >
-> > > If possible, may I know the steps, commands, and related parameters to
-> > produce the results above?
-> > > Thank you!
-> > >
-> > Build the kernel with CONFIG_RCU_TRACE configuration. Update your
-> > "set_event"
-> > file with appropriate traces:
-> > 
-> > <snip>
-> > XQ-DQ54:/sys/kernel/tracing # echo rcu:rcu_batch_start rcu:rcu_batch_end
-> > rcu:rcu_invoke_callback > set_event
-> > 
-> > XQ-DQ54:/sys/kernel/tracing # cat set_event rcu:rcu_batch_start
-> > rcu:rcu_invoke_callback rcu:rcu_batch_end XQ-DQ54:/sys/kernel/tracing #
-> > <snip>
-> > 
-> > Collect traces as much as you want: XQ-DQ54:/sys/kernel/tracing # echo 1 >
-> > tracing_on; sleep 10; echo 0 > tracing_on Next problem is how to parse it. Of
-> 
-> Thanks for the detailed steps to collect the related testing results.
-> 
-> > course you will not be able to parse megabytes of traces. For that purpose i
-> > use a special C trace parser.
-> > If you need an example please let me know i can show here.
-> >
-> 
-> Yes, your example parser should save me from a huge amount of traces. ;-)
-> Thanks so much for your sharing.
-> 
-See below the C program. It is ugly but it does what you need. Please have
-a look at main function:
+> On Wed, Aug 03, 2022 at 01:22:05AM +0900, Shigeru Yoshida wrote:
+> > pr_info() is called with rtp->cbs_gbl_lock spin lock locked.  Because
+> > pr_info() calls printk() that might sleep, this will result in BUG
+> > like below:
+> >=20
+> > [    0.206455] cblist_init_generic: Setting adjustable number of callba=
+ck queues.
+> > [    0.206463]
+> > [    0.206464] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > [    0.206464] [ BUG: Invalid wait context ]
+> > [    0.206465] 5.19.0-00428-g9de1f9c8ca51 #5 Not tainted
+> > [    0.206466] -----------------------------
+> > [    0.206466] swapper/0/1 is trying to lock:
+> > [    0.206467] ffffffffa0167a58 (&port_lock_key){....}-{3:3}, at: seria=
+l8250_console_write+0x327/0x4a0
+> > [    0.206473] other info that might help us debug this:
+> > [    0.206473] context-{5:5}
+> > [    0.206474] 3 locks held by swapper/0/1:
+> > [    0.206474]  #0: ffffffff9eb597e0 (rcu_tasks.cbs_gbl_lock){....}-{2:=
+2}, at: cblist_init_generic.constprop.0+0x14/0x1f0
+> > [    0.206478]  #1: ffffffff9eb579c0 (console_lock){+.+.}-{0:0}, at: _p=
+rintk+0x63/0x7e
+> > [    0.206482]  #2: ffffffff9ea77780 (console_owner){....}-{0:0}, at: c=
+onsole_emit_next_record.constprop.0+0x111/0x330
+> > [    0.206485] stack backtrace:
+> > [    0.206486] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.19.0-00428-g=
+9de1f9c8ca51 #5
+> > [    0.206488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
+IOS 1.16.0-1.fc36 04/01/2014
+> > [    0.206489] Call Trace:
+> > [    0.206490]  <TASK>
+> > [    0.206491]  dump_stack_lvl+0x6a/0x9f
+> > [    0.206493]  __lock_acquire.cold+0x2d7/0x2fe
+> > [    0.206496]  ? stack_trace_save+0x46/0x70
+> > [    0.206497]  lock_acquire+0xd1/0x2f0
+> > [    0.206499]  ? serial8250_console_write+0x327/0x4a0
+> > [    0.206500]  ? __lock_acquire+0x5c7/0x2720
+> > [    0.206502]  _raw_spin_lock_irqsave+0x3d/0x90
+> > [    0.206504]  ? serial8250_console_write+0x327/0x4a0
+> > [    0.206506]  serial8250_console_write+0x327/0x4a0
+> > [    0.206508]  console_emit_next_record.constprop.0+0x180/0x330
+> > [    0.206511]  console_unlock+0xf7/0x1f0
+> > [    0.206512]  vprintk_emit+0xf7/0x330
+> > [    0.206514]  _printk+0x63/0x7e
+> > [    0.206516]  cblist_init_generic.constprop.0.cold+0x24/0x32
+> > [    0.206518]  rcu_init_tasks_generic+0x5/0xd9
+> > [    0.206522]  kernel_init_freeable+0x15b/0x2a2
+> > [    0.206523]  ? rest_init+0x160/0x160
+> > [    0.206526]  kernel_init+0x11/0x120
+> > [    0.206527]  ret_from_fork+0x1f/0x30
+> > [    0.206530]  </TASK>
+> > [    0.207018] cblist_init_generic: Setting shift to 1 and lim to 1.
+> >=20
+> > This patch moves pr_info() so that it is called without
+> > rtp->cbs_gbl_lock locked.
+> >=20
+> > Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+>=20
+> This patch looks good, except that wasn't this supposed to be fixed
+> in printk()?  Or am I suffering from wishful thinking?
+>
+>And I was indeed suffering from wishful thinking, so I have queued this
+>patch.  A big "thank you!" to all for your patience, and to Shigeru for
+>this fix!
+>
+
+Test the patch
+
+[    0.178892] cblist_init_generic: Setting adjustable number of callback q=
+ueues.
+[    0.179366] cblist_init_generic: Setting shift to 2 and lim to 1.
+[    0.179488] cblist_init_generic: Setting adjustable number of callback q=
+ueues.
+[    0.179961] cblist_init_generic: Setting shift to 2 and lim to 1.
+[    0.180470] cblist_init_generic: Setting adjustable number of callback q=
+ueues.
+[    0.180949] cblist_init_generic: Setting shift to 2 and lim to 1.
+
+
+It looks more clearly
+
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -270,10 +270,9 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+        }
+        raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+
+-       if (rcu_task_cb_adjust)
+-               pr_info("%s: Setting adjustable number of callback queues.\=
+n", __func__);
+-
+-       pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_=
+race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
++       pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=
+=3D%d.\n",
++                       rtp->name, data_race(rtp->percpu_enqueue_shift),
++                       data_race(rtp->percpu_enqueue_lim), rcu_task_cb_adj=
+ust);
+ }
+
 
-<snip>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <string.h>
-
-/*
- * Splay-tree implementation to store data: key,value
- * See https://en.wikipedia.org/wiki/Splay_tree
- */
-#define offsetof(TYPE, MEMBER)	((unsigned long)&((TYPE *)0)->MEMBER)
-#define container_of(ptr, type, member)			\
-({												\
-	void *__mptr = (void *)(ptr);					\
-	((type *)(__mptr - offsetof(type, member)));	\
-})
-
-#define SP_INIT_NODE(node)									\
-	((node)->left = (node)->right = (node)->parent = NULL)
-
-struct splay_node {
-	struct splay_node *left;
-	struct splay_node *right;
-	struct splay_node *parent;
-	unsigned long val;
-};
-
-struct splay_root {
-	struct splay_node *sp_root;
-};
-
-static inline void
-set_parent(struct splay_node *n, struct splay_node *p)
-{
-	if (n)
-		n->parent = p;
-}
-
-static inline void
-change_child(struct splay_node *p,
-	struct splay_node *old, struct splay_node *new)
-{
-	if (p) {
-		if (p->left == old)
-			p->left = new;
-		else
-			p->right = new;
-	}
-}
-
-/*
- * left rotation of node (r), (rc) is (r)'s right child
- */
-static inline struct splay_node *
-left_pivot(struct splay_node *r)
-{
-	struct splay_node *rc;
-
-	/*
-	 * set (rc) to be the new root
-	 */
-	rc = r->right;
-
-	/*
-	 * point parent to new left/right child
-	 */
-	rc->parent = r->parent;
-
-	/*
-	 * change child of the p->parent.
-	 */
-	change_child(r->parent, r, rc);
-
-	/*
-	 * set (r)'s right child to be (rc)'s left child
-	 */
-	r->right = rc->left;
-
-	/*
-	 * change parent of rc's left child
-	 */
-	set_parent(rc->left, r);
-
-	/*
-	 * set new parent of rotated node
-	 */
-	r->parent = rc;
-
-	/*
-	 * set (rc)'s left child to be (r)
-	 */
-	rc->left = r;
-
-	/*
-	 * return the new root
-	 */
-	return rc;
-}
-
-/*
- * right rotation of node (r), (lc) is (r)'s left child
- */
-static inline struct splay_node *
-right_pivot(struct splay_node *r)
-{
-	struct splay_node *lc;
-
-	/*
-	 * set (lc) to be the new root
-	 */
-	lc = r->left;
-
-	/*
-	 * point parent to new left/right child
-	 */
-	lc->parent = r->parent;
-
-	/*
-	 * change child of the p->parent.
-	 */
-	change_child(r->parent, r, lc);
-
-	/*
-	 * set (r)'s left child to be (lc)'s right child
-	 */
-	r->left = lc->right;
-
-	/*
-	 * change parent of lc's right child
-	 */
-	set_parent(lc->right, r);
-
-	/*
-	 * set new parent of rotated node
-	 */
-	r->parent = lc;
-
-	/*
-	 * set (lc)'s right child to be (r)
-	 */
-	lc->right = r;
-
-	/*
-	 * return the new root
-	 */
-	return lc;
-}
-
-static struct splay_node *
-top_down_splay(unsigned long vstart,
-	struct splay_node *root, struct splay_root *sp_root)
-{
-	/*
-	 * During the splitting process two temporary trees are formed.
-	 * "l" contains all keys less than the search key/vstart and "r"
-	 * contains all keys greater than the search key/vstart.
-	 */
-	struct splay_node head, *ltree_max, *rtree_max;
-	struct splay_node *ltree_prev, *rtree_prev;
-
-	if (root == NULL)
-		return NULL;
-
-	SP_INIT_NODE(&head);
-	ltree_max = rtree_max = &head;
-	ltree_prev = rtree_prev = NULL;
-
-	while (1) {
-		if (vstart < root->val && root->left) {
-			if (vstart < root->left->val) {
-				root = right_pivot(root);
-
-				if (root->left == NULL)
-					break;
-			}
-
-			/*
-			 * Build right subtree.
-			 */
-			rtree_max->left = root;
-			rtree_max->left->parent = rtree_prev;
-			rtree_max = rtree_max->left;
-			rtree_prev = root;
-			root = root->left;
-		} else if (vstart > root->val && root->right) {
-			if (vstart > root->right->val) {
-				root = left_pivot(root);
-
-				if (root->right == NULL)
-					break;
-			}
-
-			/*
-			 * Build left subtree.
-			 */
-			ltree_max->right = root;
-			ltree_max->right->parent = ltree_prev;
-			ltree_max = ltree_max->right;
-			ltree_prev = root;
-			root = root->right;
-		} else {
-			break;
-		}
-	}
-
-	/*
-	 * Assemble the tree.
-	 */
-	ltree_max->right = root->left;
-	rtree_max->left = root->right;
-	root->left = head.right;
-	root->right = head.left;
-
-	set_parent(ltree_max->right, ltree_max);
-	set_parent(rtree_max->left, rtree_max);
-	set_parent(root->left, root);
-	set_parent(root->right, root);
-	root->parent = NULL;
-
-	/*
-	 * Set new root. Please note it might be the same.
-	 */
-	sp_root->sp_root = root;
-	return sp_root->sp_root;
-}
-
-struct splay_node *
-splay_search(unsigned long key, struct splay_root *root)
-{
-	struct splay_node *n;
-
-	n = top_down_splay(key, root->sp_root, root);
-	if (n && n->val == key)
-		return n;
-
-	return NULL;
-}
-
-static bool
-splay_insert(struct splay_node *n, struct splay_root *sp_root)
-{
-	struct splay_node *r;
-
-	SP_INIT_NODE(n);
-
-	r = top_down_splay(n->val, sp_root->sp_root, sp_root);
-	if (r == NULL) {
-		/* First element in the tree */
-		sp_root->sp_root = n;
-		return false;
-	}
-
-	if (n->val < r->val) {
-		n->left = r->left;
-		n->right = r;
-
-		set_parent(r->left, n);
-		r->parent = n;
-		r->left = NULL;
-	} else if (n->val > r->val) {
-		n->right = r->right;
-		n->left = r;
-
-		set_parent(r->right, n);
-		r->parent = n;
-		r->right = NULL;
-	} else {
-		/*
-		 * Same, indicate as not success insertion.
-		 */
-		return false;
-	}
-
-	sp_root->sp_root = n;
-	return true;
-}
-
-static bool
-splay_delete_init(struct splay_node *n, struct splay_root *sp_root)
-{
-	struct splay_node *subtree[2];
-	unsigned long val = n->val;
-
-	/* 1. Splay the node to the root. */
-	n = top_down_splay(n->val, sp_root->sp_root, sp_root);
-	if (n == NULL || n->val != val)
-		return false;
-
-	/* 2. Save left/right sub-trees. */
-	subtree[0] = n->left;
-	subtree[1] = n->right;
-
-	/* 3. Now remove the node. */
-	SP_INIT_NODE(n);
-
-	if (subtree[0]) {
-		/* 4. Splay the largest node in left sub-tree to the root. */
-		top_down_splay(val, subtree[0], sp_root);
-
-		/* 5. Attach the right sub-tree as the right child of the left sub-tree. */
-		sp_root->sp_root->right = subtree[1];
-
-		/* 6. Update the parent of right sub-tree */
-		set_parent(subtree[1], sp_root->sp_root);
-	} else {
-		/* 7. Left sub-tree is NULL, just point to right one. */
-		sp_root->sp_root = subtree[1];
-	}
-
-	/* 8. Set parent of root node to NULL. */
-	if (sp_root->sp_root)
-		sp_root->sp_root->parent = NULL;
-
-	return true;
-}
-
-static FILE *
-open_perf_script_file(const char *path)
-{
-	FILE *f = NULL;
-
-	if (path == NULL)
-		goto out;
-
-	f = fopen(path, "r");
-	if (!f)
-		goto out;
-
-out:
-	return f;
-}
-
-static int
-get_one_line(FILE *file, char *buf, size_t len)
-{
-	int i = 0;
-
-	memset(buf, '\0', len);
-
-	for (i = 0; i < len - 1; i++) {
-		int c = fgetc(file);
-
-		if (c == EOF)
-			return EOF;
-
-		if (c == '\n')
-			break;
-
-		if (c != '\r')
-			buf[i] = c;
-	}
-
-	return i;
-}
-
-static int
-read_string_till_string(char *buf, char *out, size_t out_len, char *in, size_t in_len)
-{
-	int i, j;
-
-	memset(out, '\0', out_len);
-
-	for (i = 0; i < out_len; i++) {
-		if (buf[i] != in[0]) {
-			out[i] = buf[i];
-			continue;
-		}
-
-		for (j = 0; j < in_len; j++) {
-			if (buf[i + j] != in[j])
-				break;
-		}
-
-		/* Found. */
-		if (j == in_len)
-			return 1;
-	}
-
-	return 0;
-}
-
-/*
- * find pattern is  "something [003] 8640.034785: something"
- */
-static inline void
-get_cpu_sec_usec_in_string(const char *s, int *cpu, int *sec, int *usec)
-{
-	char usec_buf[32] = {'\0'};
-	char sec_buf[32] = {'\0'};
-	char cpu_buf[32] = {'\0'};
-	bool found_sec = false;
-	bool found_usec = false;
-	bool found_cpu = false;
-	int i, j, dot;
-
-	*cpu = *sec = *usec = -1;
-
-	for (i = 0, j = 0; s[i] != '\0'; i++) {
-		if (s[i] == '.') {
-			dot = i++;
-
-			/* take microseconds */
-			for (j = 0; j < sizeof(usec_buf); j++) {
-				if (isdigit(s[i])) {
-					usec_buf[j] = s[i];
-				} else {
-					if (s[i] == ':' && j > 0)
-						found_usec = true;
-					else
-						found_usec = false;
-
-					/* Terminate here. */
-					break;
-				}
-
-				i++;
-			}
-
-			if (found_usec) {
-				/* roll back */
-				while (s[i] != ' ' && i > 0)
-					i--;
-
-				/* take seconds */
-				for (j = 0; j < sizeof(sec_buf); j++) {
-					if (isdigit(s[++i])) {
-						sec_buf[j] = s[i];
-					} else {
-						if (s[i] == '.' && j > 0)
-							found_sec = true;
-						else
-							found_sec = false;
-						
-						/* Terminate here. */
-						break;
-					}
-				}
-			}
-
-			if (found_sec && found_usec) {
-				/* roll back */
-				while (s[i] != '[' && i > 0)
-					i--;
-
-				/* take seconds */
-				for (j = 0; j < sizeof(cpu_buf); j++) {
-					if (isdigit(s[++i])) {
-						cpu_buf[j] = s[i];
-					} else {
-						if (s[i] == ']' && j > 0)
-							found_cpu = true;
-						else
-							found_cpu = false;
-						
-						/* Terminate here. */
-						break;
-					}
-				}
-
-				if (found_cpu && found_sec && found_usec) {
-					*sec = atoi(sec_buf);
-					*usec = atoi(usec_buf);
-					*cpu = atoi(cpu_buf);
-					return;
-				}
-			}
-
-			/*
-			 * Check next dot pattern.
-			 */
-			found_sec = false;
-			found_usec = false;
-			found_cpu = false;
-			i = dot;
-		}
-	}
-}
-
-/*
- * find pattern is  "something comm=foo android thr1 pid=123 something"
- */
-static inline int
-get_comm_pid_in_string(const char *buf, char *comm, ssize_t len, int *pid)
-{
-	char *sc, *sp;
-	int rv, i;
-
-	memset(comm, '\0', len);
-
-	sc = strstr(buf, "comm=");
-	if (sc)
-		sp = strstr(sc, " pid=");
-
-	if (!sc || !sp)
-		return -1;
-
-	for (i = 0, sc += 5; sc != sp; i++) {
-		if (i < len) {
-			if (*sc == ' ')
-				comm[i] = '-';
-			else
-				comm[i] = *sc;
-
-			sc++;
-		}
-	}
-
-	/* Read pid. */
-	rv = sscanf(sp, " pid=%d", pid);
-	if (rv != 1)
-		return -1;
-
-	return 1;
-}
-
-static void
-perf_script_softirq_delay(FILE *file, int delay_usec)
-{
-	char buf[4096] = { '\0' };
-	char buf_1[4096] = { '\0' };
-	long offset;
-	char *s;
-	int rv;
-
-	while (1) {
-		rv = get_one_line(file, buf, sizeof(buf));
-		offset = ftell(file);
-
-		if (rv != EOF) {
-			s = strstr(buf, "irq:softirq_raise:");
-			if (s) {
-				char extra[512] = {'\0'};
-				int sec_0, usec_0;
-				int sec_1, usec_1;
-				int handle_vector;
-				int rise_vector;
-				int cpu_0;
-				int cpu_1;
-
-				/*
-				 * swapper     0    [000]  6010.619854:  irq:softirq_raise: vec=7 [action=SCHED]
-				 * android.bg  3052 [001]  6000.076212:  irq:softirq_entry: vec=9 [action=RCU]
-				 */
-				(void) sscanf(s, "%s vec=%d", extra, &rise_vector);
-				get_cpu_sec_usec_in_string(buf, &cpu_0, &sec_0, &usec_0);
-
-				while (1) {
-					rv = get_one_line(file, buf_1, sizeof(buf_1));
-					if (rv == EOF)
-						break;
-
-					s = strstr(buf_1, "irq:softirq_entry:");
-					if (s) {
-						(void) sscanf(s, "%s vec=%d", extra, &handle_vector);
-						get_cpu_sec_usec_in_string(buf_1, &cpu_1, &sec_1, &usec_1);
-
-						if (cpu_0 == cpu_1 && rise_vector == handle_vector) {
-							int delta_time_usec = (sec_1 - sec_0) * 1000000 + (usec_1 - usec_0);
-
-							if (delta_time_usec > delay_usec)
-								fprintf(stdout, "{\n%s\n%s\n} diff %d usec\n", buf, buf_1, delta_time_usec);
-							break;
-						}
-					}
-				}
-			}
-
-			rv = fseek(file, offset, SEEK_SET);
-			if (rv)
-				fprintf(stdout, "fseek error !!!\n");
-		} else {
-			break;
-		}
-	}
-}
-
-static void
-perf_script_softirq_duration(FILE *file, int duration_usec)
-{
-	char buf[4096] = { '\0' };
-	char buf_1[4096] = { '\0' };
-	long offset;
-	char *s;
-	int rv;
-
-	while (1) {
-		rv = get_one_line(file, buf, sizeof(buf));
-		offset = ftell(file);
-
-		if (rv != EOF) {
-			s = strstr(buf, "irq:softirq_entry:");
-			if (s) {
-				char extra[512] = {'\0'};
-				int sec_0, usec_0;
-				int sec_1, usec_1;
-				int handle_vector;
-				int rise_vector;
-				int cpu_0;
-				int cpu_1;
-
-				/*
-				 * swapper     0    [000]  6010.619854:  irq:softirq_entry: vec=7 [action=SCHED]
-				 * android.bg  3052 [001]  6000.076212:  irq:softirq_exit: vec=9 [action=RCU]
-				 */
-				(void) sscanf(s, "%s vec=%d", extra, &rise_vector);
-				get_cpu_sec_usec_in_string(buf, &cpu_0, &sec_0, &usec_0);
-
-				while (1) {
-					rv = get_one_line(file, buf_1, sizeof(buf_1));
-					if (rv == EOF)
-						break;
-
-					s = strstr(buf_1, "irq:softirq_exit:");
-					if (s) {
-						(void) sscanf(s, "%s vec=%d", extra, &handle_vector);
-						get_cpu_sec_usec_in_string(buf_1, &cpu_1, &sec_1, &usec_1);
-
-						if (cpu_0 == cpu_1 && rise_vector == handle_vector) {
-							int delta_time_usec = (sec_1 - sec_0) * 1000000 + (usec_1 - usec_0);
-
-							if (delta_time_usec > duration_usec)
-								fprintf(stdout, "{\n%s\n%s\n} diff %d usec\n", buf, buf_1, delta_time_usec);
-							break;
-						}
-					}
-				}
-			}
-
-			rv = fseek(file, offset, SEEK_SET);
-			if (rv)
-				fprintf(stdout, "fseek error !!!\n");
-		} else {
-			break;
-		}
-	}
-}
-
-static void
-perf_script_hardirq_duration(FILE *file, int duration_msec)
-{
-	char buf[4096] = { '\0' };
-	char buf_1[4096] = { '\0' };
-	long offset;
-	char *s;
-	int rv;
-
-	while (1) {
-		rv = get_one_line(file, buf, sizeof(buf));
-		offset = ftell(file);
-
-		if (rv != EOF) {
-			s = strstr(buf, "irq:irq_handler_entry:");
-			if (s) {
-				char extra[512] = {'\0'};
-				int sec_0, usec_0;
-				int sec_1, usec_1;
-				int handle_vector;
-				int rise_vector;
-				int cpu_0;
-				int cpu_1;
-
-				/*
-				 * swapper     0 [002]  6205.804133: irq:irq_handler_entry: irq=11 name=arch_timer
-				 * swapper     0 [002]  6205.804228:  irq:irq_handler_exit: irq=11 ret=handled
-				 */
-				(void) sscanf(s, "%s irq=%d", extra, &rise_vector);
-				get_cpu_sec_usec_in_string(buf, &cpu_0, &sec_0, &usec_0);
-
-				while (1) {
-					rv = get_one_line(file, buf_1, sizeof(buf_1));
-					if (rv == EOF)
-						break;
-
-					s = strstr(buf_1, "irq:irq_handler_exit:");
-					if (s) {
-						(void) sscanf(s, "%s irq=%d", extra, &handle_vector);
-						get_cpu_sec_usec_in_string(buf_1, &cpu_1, &sec_1, &usec_1);
-
-						if (cpu_0 == cpu_1 && rise_vector == handle_vector) {
-							int delta_time_usec = (sec_1 - sec_0) * 1000000 + (usec_1 - usec_0);
-
-							if (delta_time_usec > duration_msec)
-								fprintf(stdout, "{\n%s\n%s\n} diff %d usec\n", buf, buf_1, delta_time_usec);
-							break;
-						}
-					}
-				}
-			}
-
-			rv = fseek(file, offset, SEEK_SET);
-			if (rv)
-				fprintf(stdout, "fseek error !!!\n");
-		} else {
-			break;
-		}
-	}
-}
-
-struct irq_stat {
-	int irq;
-	int count;
-	char irq_name[512];
-
-	int min_interval;
-	int max_interval;
-	int avg_interval;
-
-	unsigned int time_stamp_usec;
-	struct splay_node node;
-};
-
-static struct irq_stat *
-new_irq_node_init(int irq, char *irq_name)
-{
-	struct irq_stat *n = calloc(1, sizeof(*n));
-
-	if (n) {
-		n->irq = irq;
-		(void) strncpy(n->irq_name, irq_name, sizeof(n->irq_name));
-		n->node.val = irq;
-	}
-
-	return n;
-}
-
-static void
-perf_script_hardirq_stat(FILE *file)
-{
-	struct splay_root sproot = { NULL };
-	struct irq_stat *node;
-	char buf[4096] = { '\0' };
-	char extra[256] = {'\0'};
-	char irq_name[256] = {'\0'};
-	unsigned int time_stamp_usec;
-	int cpu, sec, usec;
-	int rv, irq;
-	char *s;
-
-	while (1) {
-		rv = get_one_line(file, buf, sizeof(buf));
-		if (rv == EOF)
-			break;
-
-		 s = strstr(buf, "irq:irq_handler_entry:");
-		 if (s == NULL)
-			 continue;
-
-		 /*
-		  * format is as follow one:
-		  * sleep  1418 [003]  8780.957112:             irq:irq_handler_entry: irq=11 name=arch_timer
-		  */
-		 rv = sscanf(s, "%s irq=%d name=%s", extra, &irq, irq_name);
-	 	 if (rv != 3)
-	 		 continue;
-
-		 get_cpu_sec_usec_in_string(buf, &cpu, &sec, &usec);
-		 time_stamp_usec = (sec * 1000000) + usec;
-
-		 if (sproot.sp_root == NULL) {
-			 node = new_irq_node_init(irq, irq_name);
-			 if (node)
-				 splay_insert(&node->node, &sproot);
-		 }
-
-		 top_down_splay(irq, sproot.sp_root, &sproot);
-		 node = container_of(sproot.sp_root, struct irq_stat, node);
-
-		 /* Found the entry in the tree. */
-		 if (node->irq == irq) {
-			 if (node->time_stamp_usec) {
-				 unsigned int delta = time_stamp_usec - node->time_stamp_usec;
-
-				 if (delta < node->min_interval || !node->min_interval)
-					 node->min_interval = delta;
-
-				 if (delta > node->max_interval)
-					 node->max_interval = delta;
-
-				 node->avg_interval += delta;
-			 }
-
-			 /* Save the last time for this IRQ entry. */
-			 node->time_stamp_usec = time_stamp_usec;
-		 } else {
-			 /* Allocate a new record and place it to the tree. */
-			 node = new_irq_node_init(irq, irq_name);
-			 if (node)
-				 splay_insert(&node->node, &sproot);
-
-		 }
-
-		 /* Update the timestamp for this entry. */
-		 node->time_stamp_usec = time_stamp_usec;
-		 node->count++;
-	}
-
-	/* Dump the tree. */
-	while (sproot.sp_root) {
-		node = container_of(sproot.sp_root, struct irq_stat, node);
-
-		fprintf(stdout, "irq: %5d name: %30s count: %7d, min: %10d, max: %10d, avg: %10d\n",
-				node->irq, node->irq_name, node->count,
-				node->min_interval, node->max_interval, node->avg_interval / node->count);
-
-		splay_delete_init(&node->node, &sproot);
-		free(node);
-	}
-
-	fprintf(stdout, "\tRun './a.out ./perf.script | sort -nk 6' to sort by column 6.\n");
-}
-
-struct sched_waking {
-	unsigned int wakeup_nr;
-	char comm[4096];
-	int pid;
-
-	int min;
-	int max;
-	int avg;
-
-	unsigned int time_stamp_usec;
-	struct splay_node node;
-};
-
-static struct sched_waking *
-new_sched_waking_node_init(int pid, char *comm)
-{
-	struct sched_waking *n = calloc(1, sizeof(*n));
-
-	if (n) {
-		n->pid = pid;
-		(void) strncpy(n->comm, comm, sizeof(n->comm));
-		n->node.val = pid;
-	}
-
-	return n;
-}
-
-/*
- * How many times a task is awaken + min/max/avg stat.
- */
-static void
-perf_script_sched_waking_stat(const char *name, FILE *file, const char *script)
-{
-	struct splay_root sroot = { NULL };
-	struct sched_waking *n;
-	char buf[4096] = { '\0' };
-	char comm[256] = {'\0'};
-	unsigned int time_stamp_usec;
-	unsigned int total_waking = 0;
-	int cpu, sec, usec;
-	int rv, pid;
-	char *s;
-	
-	while (1) {
-		rv = get_one_line(file, buf, sizeof(buf));
-		if (rv == EOF)
-			break;
-		/*
-		 * format is as follow one:
-		 * foo[1] 7521 [002] 10.431216: sched_waking: comm=tr pid=2 prio=120 target_cpu=006
-		 */
-		s = strstr(buf, "sched_waking:");
-		if (s == NULL)
-			continue;
-
-		rv = get_comm_pid_in_string(s, comm, sizeof(comm), &pid);
-		if (rv < 0) {
-			printf("ERROR: skip entry...\n");
-			continue;
-		}
-
-		get_cpu_sec_usec_in_string(buf, &cpu, &sec, &usec);
-		time_stamp_usec = (sec * 1000000) + usec;
-
-		if (sroot.sp_root == NULL) {
-			n = new_sched_waking_node_init(pid, comm);
-			if (n)
-				splay_insert(&n->node, &sroot);
-		}
-
-		top_down_splay(pid, sroot.sp_root, &sroot);
-		n = container_of(sroot.sp_root, struct sched_waking, node);
-
-		/* Found the entry in the tree. */
-		if (n->pid == pid) {
-			if (n->time_stamp_usec) {
-				unsigned int delta = time_stamp_usec - n->time_stamp_usec;
-
-				if (delta < n->min || !n->min)
-					n->min = delta;
-
-				if (delta > n->max)
-					n->max = delta;
-
-				n->avg += delta;
-			}
-
-			/* Save the last time for this wake-up entry. */
-			n->time_stamp_usec = time_stamp_usec;
-		} else {
-			/* Allocate a new record and place it to the tree. */
-			n = new_sched_waking_node_init(pid, comm);
-			if (n)
-				splay_insert(&n->node, &sroot);
-		}
-
-		/* Update the timestamp for this entry. */
-		n->time_stamp_usec = time_stamp_usec;
-		n->wakeup_nr++;
-	}
-
-	/* Dump the Splay-tree. */
-	while (sroot.sp_root) {
-		n = container_of(sroot.sp_root, struct sched_waking, node);
-		fprintf(stdout, "name: %30s pid: %10d woken-up %5d\tinterval: min %5d\tmax %5d\tavg %5d\n",
-			n->comm, n->pid, n->wakeup_nr,
-			n->min, n->max, n->avg / n->wakeup_nr);
-
-		total_waking += n->wakeup_nr;
-		splay_delete_init(&n->node, &sroot);
-		free(n);
-	}
-
-	fprintf(stdout, "=== Total: %u ===\n", total_waking);
-	fprintf(stdout, "\tRun './%s %s | sort -nk 6' to sort by column 6.\n", name, script);
-}
-
-/*
- * Latency of try_to_wake_up path + select a CPU + placing a task into run-queue.
- */
-static void
-perf_script_sched_wakeup_latency(const char *name, FILE *file, const char *script)
-{
-	struct splay_root sroot = { NULL };
-	struct splay_node *node;
-	struct sched_waking *n;
-	char buf[4096] = { '\0' };
-	char comm[256] = {'\0'};
-	unsigned int time_stamp_usec;
-	unsigned int wakeup_latency_usec;
-	unsigned int total_waking = 0;
-	int cpu, sec, usec;
-	int rv, pid;
-	char *sched_waking_wakeup;
-	bool sched_waking_event;
-
-	while (1) {
-		rv = get_one_line(file, buf, sizeof(buf));
-		if (rv == EOF)
-			break;
-
-		/*
-		 * format is as follow one:
-		 * foo[1] 7521 [002] 10.431216: sched_waking: comm=tr pid=2 prio=120 target_cpu=006
-		 */
-		sched_waking_wakeup = strstr(buf, "sched_waking:");
-		sched_waking_event = !!sched_waking_wakeup;
-
-		if (!sched_waking_event) {
-			/*
-			 * format is as follow one:
-			 * foo[1] 7521 [002] 10.431216: sched_wakeup: comm=tr pid=2 prio=120 target_cpu=006
-			 */
-			sched_waking_wakeup = strstr(buf, "sched_wakeup:");
-			if (sched_waking_wakeup == NULL)
-				continue;
-		}
-
-		rv = get_comm_pid_in_string(sched_waking_wakeup, comm, sizeof(comm), &pid);
-		if (rv < 0) {
-			printf("ERROR: skip entry...\n");
-			continue;
-		}
-
-		get_cpu_sec_usec_in_string(buf, &cpu, &sec, &usec);
-		time_stamp_usec = (sec * 1000000) + usec;
-
-		/*
-		 * Let's check if it exists, if so update it
-		 * otherwise create a new node and insert.
-		 */
-		if (sched_waking_event) {
-			node = top_down_splay(pid, sroot.sp_root, &sroot);
-			if (node == NULL) {
-				n = new_sched_waking_node_init(pid, comm);
-				splay_insert(&n->node, &sroot);
-			} else {
-				n = container_of(node, struct sched_waking, node);
-				if (n->pid != pid) {
-					n = new_sched_waking_node_init(pid, comm);
-					splay_insert(&n->node, &sroot);
-				}
-			}
-
-			n->time_stamp_usec = time_stamp_usec;
-			continue;
-		}
-
-		node = top_down_splay(pid, sroot.sp_root, &sroot);
-		if (node == NULL) {
-			fprintf(stdout, "error: no sched_waking event for %d pid yet.\n", pid);
-			continue;
-		}
-
-		n = container_of(node, struct sched_waking, node);
-		if (n->pid != pid) {
-			fprintf(stdout, "error: sched_wakeup event does not match with any sched_waking event.\n");
-			continue;
-		}
-
-		wakeup_latency_usec = time_stamp_usec - n->time_stamp_usec;
-
-		if (wakeup_latency_usec < n->min || !n->min)
-			n->min = wakeup_latency_usec;
-
-		if (wakeup_latency_usec > n->max)
-			n->max = wakeup_latency_usec;
-
-		if (n->avg + wakeup_latency_usec < n->avg)
-			fprintf(stdout, "error: counter is overflowed...\n");
-
-		fprintf(stdout, "%s: %d wake-up latency: %u waken on %d CPU\n", comm, pid, wakeup_latency_usec, cpu);
-
-		n->avg += wakeup_latency_usec;
-		n->wakeup_nr++;
-	}
-
-	/* Dump the Splay-tree. */
-	while (sroot.sp_root) {
-		n = container_of(sroot.sp_root, struct sched_waking, node);
-		/* fprintf(stdout, "name: %30s pid: %10d woken-up %5d\twakeup-latency: min %5d\tmax %5d\tavg %5d\n", */
-		/* 	n->comm, n->pid, n->wakeup_nr, */
-		/* 	n->min, n->max, n->avg / n->wakeup_nr); */
-
-		total_waking += n->wakeup_nr;
-		splay_delete_init(&n->node, &sroot);
-		free(n);
-	}
-
-	/* fprintf(stdout, "=== Total: %u ===\n", total_waking); */
-	/* fprintf(stdout, "\tRun '%s %s | sort -nk 6' to sort by column 6.\n", name, script); */
-}
-
-
-/*
- * Requires:
- *   rcu:rcu_batch_start
- *   rcu:rcu_invoke_callback
- *   rcu:rcu_batch_end
- */
-static void
-perf_script_synchronize_rcu_latency(const char *name, FILE *file, const char *script)
-{
-	char buf[4096] = { '\0' };
-	char buf_1[4096] = { '\0' };
-	long offset;
-	char *s;
-	int rv;
-
-	while (1) {
-		rv = get_one_line(file, buf, sizeof(buf));
-		offset = ftell(file);
-
-		if (rv != EOF) {
-			s = strstr(buf, "rcu_batch_start:");
-			if (s) {
-				int delta_time_usec;
-				int sec_0, usec_0;
-				int sec_1, usec_1;
-				int pid_0, pid_1;
-				int extra;
-
-				/*
-				 * rcuop/5-58      [007] d..1.  6111.808748: rcu_batch_start: rcu_preempt CBs=23 bl=10
-				 */
-				(void) sscanf(buf, "%*[^0-9]%d-%d", &pid_0, &pid_0);
-				get_cpu_sec_usec_in_string(buf, &extra, &sec_0, &usec_0);
-
-				while (1) {
-					rv = get_one_line(file, buf_1, sizeof(buf_1));
-					if (rv == EOF)
-						break;
-
-					/* Do not care what a string format is on this step. */
-					(void) sscanf(buf, "%*[^0-9]%d-%d", &pid_1, &pid_1);
-
-					/*
-					 * rcuop/4-51      [007] d..1.  6111.816758: rcu_batch_end: rcu_preempt CBs-invoked=1 idle=....
-					 */
-					s = strstr(buf_1, "rcu_batch_end:");
-					if (s && pid_0 == pid_1)
-						break;
-
-					/*
-					 * rcuop/1-29      [005] .....  6111.808745: rcu_invoke_callback: rcu_preempt rhp=0000000093881c60 func=file_free_rcu.cfi_jt
-					 */
-					s = strstr(buf_1, "rcu_invoke_callback:");
-					if (!s || pid_0 != pid_1)
-						continue;
-
-					s = strstr(buf_1, "wakeme_after_rcu");
-					if (s) {
-						get_cpu_sec_usec_in_string(buf_1, &extra, &sec_1, &usec_1);
-						delta_time_usec = (sec_1 - sec_0) * 1000000 + (usec_1 - usec_0);
-						fprintf(stdout, "{\n%s\n%s\n} latency %d usec\n", buf, buf_1, delta_time_usec);
-						break;
-					}
-				}
-			}
-
-			rv = fseek(file, offset, SEEK_SET);
-			if (rv)
-				fprintf(stdout, "fseek error !!!\n");
-		} else {
-			break;
-		}
-	}
-
-}
-
-int main(int argc, char **argv)
-{
-	FILE *file;
-
-	file = open_perf_script_file(argv[1]);
-	if (file == NULL) {
-		fprintf(stdout, "%s:%d failed: specify a perf script file\n", __func__, __LINE__);
-		exit(-1);
-	}
-
-	/* perf_script_softirq_delay(file, 1000); */
-	/* perf_script_softirq_duration(file, 500); */
-	/* perf_script_hardirq_duration(file, 500); */
-	/* perf_script_hardirq_stat(file); */
-	/* perf_script_sched_waking_stat(argv[0], file, argv[1]); */
-	/* perf_script_sched_wakeup_latency(argv[0], file, argv[1]); */
-	perf_script_synchronize_rcu_latency(argv[0], file, argv[1]);
-
-	return 0;
-}
-<snip>
-
-Running it as "./a.out app_launch_rcu_trace.txt" will produce below results:
-
-<snip>
-...
-{
-    <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-    <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-} latency 7270 usec
-{
-    rcuop/5-58      [005] d..1. 21951.352767: rcu_batch_start: rcu_preempt CBs=3 bl=10
-    rcuop/5-58      [005] ..... 21951.352768: rcu_invoke_callback: rcu_preempt rhp=00000000b995fac1 func=wakeme_after_rcu.cfi_jt
-} latency 1 usec
-{
-    rcuop/6-65      [007] d..1. 21951.804768: rcu_batch_start: rcu_preempt CBs=5 bl=10
-    rcuop/6-65      [007] ..... 21951.804769: rcu_invoke_callback: rcu_preempt rhp=00000000b995fac1 func=wakeme_after_rcu.cfi_jt
-} latency 1 usec
-{
-    rcuop/7-72      [006] d..1. 21951.884774: rcu_batch_start: rcu_preempt CBs=3517 bl=27
-    rcuop/7-72      [006] ..... 21951.885979: rcu_invoke_callback: rcu_preempt rhp=000000005119eccc func=wakeme_after_rcu.cfi_jt
-} latency 1205 usec
-{
-    rcuop/5-58      [007] d..1. 21951.912853: rcu_batch_start: rcu_preempt CBs=193 bl=10
-    rcuop/5-58      [007] ..... 21951.912975: rcu_invoke_callback: rcu_preempt rhp=00000000b995fac1 func=wakeme_after_rcu.cfi_jt
-} latency 122 usec
-...
-<snip>
-
-now you have a pair.
-
---
-Uladzislau Rezki
-
+[    0.178746] RCU Tasks: Setting shift to 2 and lim to 1 rcu_task_cb_adjus=
+t=3D1.
+[    0.179322] RCU Tasks Rude: Setting shift to 2 and lim to 1 rcu_task_cb_=
+adjust=3D1.
+[    0.180076] RCU Tasks Trace: Setting shift to 2 and lim to 1 rcu_task_cb=
+_adjust=3D1.
+
+
+Thanks
+Zqiang
+
+>							Thanx, Paul
+>
+> > ---
+> >  kernel/rcu/tasks.h | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index 3925e32159b5..d46dd970bf22 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -227,7 +227,6 @@ static void cblist_init_generic(struct rcu_tasks *r=
+tp)
+> >  	if (rcu_task_enqueue_lim < 0) {
+> >  		rcu_task_enqueue_lim =3D 1;
+> >  		rcu_task_cb_adjust =3D true;
+> > -		pr_info("%s: Setting adjustable number of callback queues.\n", __fun=
+c__);
+> >  	} else if (rcu_task_enqueue_lim =3D=3D 0) {
+> >  		rcu_task_enqueue_lim =3D 1;
+> >  	}
+> > @@ -256,6 +255,10 @@ static void cblist_init_generic(struct rcu_tasks *=
+rtp)
+> >  		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
+> >  	}
+> >  	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+> > +
+> > +	if (rcu_task_cb_adjust)
+> > +		pr_info("%s: Setting adjustable number of callback queues.\n", __fun=
+c__);
+> > +
+> >  	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_ra=
+ce(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
+> >  }
+> > =20
+> > --=20
+> > 2.37.1
+> >=20
