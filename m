@@ -2,293 +2,265 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94D85C6FD1F
-	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 22:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E0BC6FD1F
+	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 23:10:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjCVWrn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Mar 2023 18:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
+        id S229786AbjCVXKa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Mar 2023 19:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjCVWrm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Mar 2023 18:47:42 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380F06A58;
-        Wed, 22 Mar 2023 15:47:41 -0700 (PDT)
-Received: from zn.tnic (p5de8e687.dip0.t-ipconnect.de [93.232.230.135])
+        with ESMTP id S229713AbjCVXK3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Mar 2023 19:10:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3C9F974;
+        Wed, 22 Mar 2023 16:10:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4539F1EC0464;
-        Wed, 22 Mar 2023 23:47:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1679525259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=SFLpxavk7TvgSCnhO80Ai63c4hOVOTXp7R9A2X0gQkA=;
-        b=bBRL06++3HJVKHIyErCETjgZG3x3ceMmuXMr33HsglgGxN5MSqaqtnVnWPdDh3XCzy1qMH
-        j3y7p9QSsUp9QmEm5OGFtZlBOGp+0w6IfDp//hVjhQlg9jsjI78jNiZUUQ3Huyef2WFmJD
-        Jb5Pg5LDSnexVZ3X96jLN8Wji3VXTyc=
-Date:   Wed, 22 Mar 2023 23:47:35 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        brgerst@gmail.com, piotrgorski@cachyos.org,
-        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
-        Sabin Rapan <sabrapan@amazon.com>
-Subject: Re: [PATCH v16 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
-Message-ID: <20230322224735.GAZBuFh9ld6FuYEyoH@fat_crate.local>
-References: <20230321194008.785922-1-usama.arif@bytedance.com>
- <20230321194008.785922-9-usama.arif@bytedance.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 13206B81E53;
+        Wed, 22 Mar 2023 23:10:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC32C433EF;
+        Wed, 22 Mar 2023 23:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679526624;
+        bh=Wf4AgwlGiL40JvNImMnaz29SvkVmE/NH+GJD3zL+bfg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VTvSBxgE1Xo6IWI8zm3nzP49jNOkVCtsYRMmYKXsyTvrb2ewEXBvEAbOqrOXNnp6Q
+         KMpxVko5TzWsW4eYK168vrEal9l+hhoS05Usf77dctryp6QeM7DInOfLFcKRFrVU6W
+         W88DlNuCC9e+2XTjAyCr9ye7HADrUQMRva1YqFoln0do90U4xEU00GbkUwx39+CUBs
+         lekkF0G7g8uKmgVZDVU+gbjiKBrqXHtsgBXENyniRXXuXSM35eaGXkbSYQhxND7Zml
+         RA6mFsZc3gF0Ioj0R4vMrM+AyyKFuqcoPBQdrkq7ixZNGBXgYfG+7lNTG2NHPXqN58
+         Ty5PlC7oYz5Lg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4F7021540397; Wed, 22 Mar 2023 16:10:24 -0700 (PDT)
+Date:   Wed, 22 Mar 2023 16:10:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH] srcu: Fix flush sup work warning in cleanup_srcu_struct()
+Message-ID: <4a9525f8-30a3-4ca9-87ec-355cde7f6ed6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230321081346.192000-1-qiang1.zhang@intel.com>
+ <e7951c31-4a24-4493-be4b-603fec0730ff@paulmck-laptop>
+ <PH0PR11MB588087645FE02C9F2C113CC8DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <f13e878f-65c3-40cb-aa3f-eb87ae6c9d6b@paulmck-laptop>
+ <PH0PR11MB5880CAE4D4A58BD71AE984CFDA869@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <dc8b5a44-02ca-4e5a-bd4a-644af3e7c11e@paulmck-laptop>
+ <PH0PR11MB58804435C08AEADF23B095D1DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230321194008.785922-9-usama.arif@bytedance.com>
+In-Reply-To: <PH0PR11MB58804435C08AEADF23B095D1DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 07:40:08PM +0000, Usama Arif wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
+On Wed, Mar 22, 2023 at 10:08:54PM +0000, Zhang, Qiang1 wrote:
+> > > > insmod rcutorture.ko
+> > > > rmmod rcutorture.ko
+> > > > 
+> > > > [  209.437327] WARNING: CPU: 0 PID: 508 at kernel/workqueue.c:3167 
+> > > > __flush_work+0x50a/0x540 [  209.437346] Modules linked in: 
+> > > > rcutorture(-) torture [last unloaded: rcutorture] [  209.437382] 
+> > > > CPU: 0 PID: 508 Comm: rmmod Tainted: G  W  6.3.0-rc1-yocto-standard+ 
+> > > > [  209.437406] RIP: 0010:__flush_work+0x50a/0x540 .....
+> > > > [  209.437758]  flush_delayed_work+0x36/0x90 [  209.437776]  
+> > > > cleanup_srcu_struct+0x68/0x2e0 [  209.437817]  
+> > > > srcu_module_notify+0x71/0x140 [  209.437854]  
+> > > > blocking_notifier_call_chain+0x9d/0xd0
+> > > > [  209.437880]  __x64_sys_delete_module+0x223/0x2e0
+> > > > [  209.438046]  do_syscall_64+0x43/0x90 [  209.438062]  
+> > > > entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > > > 
+> > > > For srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(), 
+> > > > when compiling and loading as modules, the srcu_module_coming() is 
+> > > > invoked, allocate memory for srcu structure's->sda and initialize 
+> > > > sda structure, due to not fully initialize srcu structure's->sup, so 
+> > > > at this time the sup structure's->delaywork.func is null, if not 
+> > > > invoke init_srcu_struct_fields() before unloading modules, in 
+> > > > srcu_module_going() the __flush_work() find
+> > > > work->func is empty, will raise the warning above.
+> > > > 
+> > > > This commit add init_srcu_struct_fields() to initialize srcu 
+> > > > structure's->sup, in srcu_module_coming().
+> > > > 
+> > > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > > >
+> > > >Good catch, and thank you for testing the in-module case!
+> > > >
+> > > >One question below...
+> > > >
+> > > >							Thanx, Paul
+> > > >
+> > > > ---
+> > > >  kernel/rcu/srcutree.c | 11 ++++++++---
+> > > >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c index 
+> > > > 1fb078abbdc9..42d8720e016c 100644
+> > > > --- a/kernel/rcu/srcutree.c
+> > > > +++ b/kernel/rcu/srcutree.c
+> > > > @@ -1921,7 +1921,8 @@ static int srcu_module_coming(struct module *mod)
+> > > >  		ssp->sda = alloc_percpu(struct srcu_data);
+> > > >  		if (WARN_ON_ONCE(!ssp->sda))
+> > > >  			return -ENOMEM;
+> > > > -		init_srcu_struct_data(ssp);
+> > > > +		if (WARN_ON_ONCE(init_srcu_struct_fields(ssp, true)))
+> > > > +			return -ENOMEM;
+> > > >
+> > > >Wouldn't it be better to simply delete the init_srcu_struct_data()?
+> > > >
+> > > >Then the first call to check_init_srcu_struct() would take care of 
+> > > >the initialization, just as for the non-module case.  Or am I missing 
+> > > >something subtle?
+> > > 
+> > > Hi Paul
+> > > 
+> > > Maybe the check_init_srcu_struct() is always not invoked, for example,
+> > > In rcutorture.c,   here is such a definition DEFINE_STATIC_SRCU(srcu_ctl),
+> > > but we use torture_type=rcu to test,  there will not be any interface 
+> > > calling
+> > > check_init_srcu_struct() to initialize srcu_ctl and set  
+> > > structure's->delaywork.func is process_srcu().
+> > > when we unload the rcutorture module, invoke cleanup_srcu_struct() to 
+> > > flush sup structure's->delaywork.func, due to the func pointer is not 
+> > > initialize, it's null, will trigger warning.
+> > > 
+> > > About kernel/workqueue.c:3167
+> > > 
+> > > __flush_work
+> > >      if (WARN_ON(!work->func))   <---------trigger waning
+> > > 	return false;
+> > > 
+> > > 
+> > > and  in  init_srcu_struct_fields(ssp, true), wil set 
+> > > srcu_sup->sda_is_static is true and set srcu_sup-> srcu_gp_seq_needed 
+> > > is zero,  after that when we call
+> > >  check_init_srcu_struct() again, it not be initialized again.
+> > >
+> > >
+> > >Good point!  In the non-module statically allocated case there is never a call to cleanup_srcu_struct().
+> > >
+> > >So suppose the code in srcu_module_coming() only did the alloc_percpu(), and then the
+> > >code in srcu_module_going() only did the the matching
+> > >free_percpu() instead of the current cleanup_srcu_struct()?
+> > 
+> > But in modules, for srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(),
+> > when a module is unloaded, we usually don't call cleanup_srcu_struct() in the module
+> > unload function.
+> > If in srcu_module_going() only do free_percpu(), the srcu_sup->node memory maybe
+> > can not free and also lost the opportunity to refresh the running work.
+> >
+> >
+> >But in the module case, isn't the srcu_sup->node also statically
+> >allocated via the "static struct srcu_usage" declaration?
 > 
-> Enable parallel bringup for SEV-ES guests. The APs can't actually
-> execute the CPUID instruction directly during early startup, but they
-> can make the GHCB call directly instead, just as the VC trap handler
-> would do.
+> static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+> {
+> 	sp->srcu_sup->node = kcalloc(rcu_num_nodes, sizeof(*ssp->srcu_sup->node), gfp_flags);
+> 	...
+> }
 > 
-> Thanks to Sabin for talking me through the way this works.
-> 
-> Suggested-by: Sabin Rapan <sabrapan@amazon.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/coco/core.c              |  5 ++++
->  arch/x86/include/asm/coco.h       |  1 +
->  arch/x86/include/asm/sev-common.h |  3 +++
->  arch/x86/include/asm/smp.h        |  5 +++-
->  arch/x86/kernel/head_64.S         | 30 ++++++++++++++++++++++++
->  arch/x86/kernel/smpboot.c         | 39 ++++++++++++++++++++++++++-----
->  6 files changed, 76 insertions(+), 7 deletions(-)
+> Regardless of whether the srcu object is declared in the module or not, sup->node is dynamically allocated.
+> right?
 
-How's the below (totally untested yet but it builds) instead after
-applying those two prerequisites:
+You are absolutely right, thank you!
 
-https://lore.kernel.org/r/20230318115634.9392-1-bp@alien8.de
+There are a couple of ways to resolve this.  One is to simply add
+a check_init_srcu_struct() before the call to cleanup_srcu_struct()
+from srcu_module_going(), as shown below.  This seems a bit silly,
+potentially initializing fields for no good reason.
 
----
-diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-index b63be696b776..0abf8a39cee1 100644
---- a/arch/x86/include/asm/sev-common.h
-+++ b/arch/x86/include/asm/sev-common.h
-@@ -70,6 +70,7 @@
- 	/* GHCBData[63:12] */				\
- 	(((u64)(v) & GENMASK_ULL(63, 12)) >> 12)
- 
-+#ifndef __ASSEMBLY__
- /*
-  * SNP Page State Change Operation
-  *
-@@ -161,6 +162,8 @@ struct snp_psc_desc {
- 
- #define GHCB_RESP_CODE(v)		((v) & GHCB_MSR_INFO_MASK)
- 
-+#endif /* __ASSEMBLY__ */
-+
- /*
-  * Error codes related to GHCB input that can be communicated back to the guest
-  * by setting the lower 32-bits of the GHCB SW_EXITINFO1 field to 2.
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index 1335781e4976..516bcb4f0719 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -200,6 +200,7 @@ void snp_set_wakeup_secondary_cpu(void);
- bool snp_init(struct boot_params *bp);
- void __init __noreturn snp_abort(void);
- int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, unsigned long *fw_err);
-+u32 sev_get_cpuid_0b(void);
- #else
- static inline void sev_es_ist_enter(struct pt_regs *regs) { }
- static inline void sev_es_ist_exit(void) { }
-@@ -224,6 +225,7 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
- {
- 	return -ENOTTY;
- }
-+static inline u32 sev_get_cpuid_0b(void) { return 0; }
- #endif
- 
- #endif
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index defe76ee9e64..1584f04a7007 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -204,7 +204,10 @@ extern unsigned int smpboot_control;
- /* Control bits for startup_64 */
- #define STARTUP_APICID_CPUID_0B	0x80000000
- #define STARTUP_APICID_CPUID_01	0x40000000
-+#define STARTUP_APICID_SEV_ES	0x20000000
- 
--#define STARTUP_PARALLEL_MASK (STARTUP_APICID_CPUID_01 | STARTUP_APICID_CPUID_0B)
-+#define STARTUP_PARALLEL_MASK (STARTUP_APICID_CPUID_01 | \
-+			       STARTUP_APICID_CPUID_0B | \
-+			       STARTUP_APICID_SEV_ES)
- 
- #endif /* _ASM_X86_SMP_H */
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index ff3a5f008d8a..574bd56288bf 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -26,6 +26,7 @@
- #include <asm/nospec-branch.h>
- #include <asm/fixmap.h>
- #include <asm/smp.h>
-+#include <asm/sev-common.h>
- 
- /*
-  * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
-@@ -242,6 +243,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	 *
- 	 * Bit 31	STARTUP_APICID_CPUID_0B flag (use CPUID 0x0b)
- 	 * Bit 30	STARTUP_APICID_CPUID_01 flag (use CPUID 0x01)
-+	 * Bit 29	STARTUP_APICID_SEV_ES flag (CPUID 0x0b via GHCB MSR)
- 	 * Bit 0-24	CPU# if STARTUP_APICID_CPUID_xx flags are not set
- 	 */
- 	movl	smpboot_control(%rip), %ecx
-@@ -249,6 +251,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	jnz	.Luse_cpuid_0b
- 	testl	$STARTUP_APICID_CPUID_01, %ecx
- 	jnz	.Luse_cpuid_01
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	testl	$STARTUP_APICID_SEV_ES, %ecx
-+	jnz	.Luse_sev_cpuid_0b
-+#endif
- 	andl	$0x0FFFFFFF, %ecx
- 	jmp	.Lsetup_cpu
- 
-@@ -259,6 +265,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	shr	$24, %edx
- 	jmp	.Lsetup_AP
- 
-+.Luse_sev_cpuid_0b:
-+	call sev_get_cpuid_0b
-+	test %eax, %eax
-+	jz 1f
-+	movl %eax, %edx
-+	jmp .Lsetup_AP
-+
- .Luse_cpuid_0b:
- 	mov	$0x0B, %eax
- 	xorl	%ecx, %ecx
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index ce371f62167b..96ff63cb5622 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -1142,6 +1142,24 @@ void snp_set_wakeup_secondary_cpu(void)
- 	apic->wakeup_secondary_cpu = wakeup_cpu_via_vmgexit;
- }
- 
-+u32 sev_get_cpuid_0b(void)
-+{
-+	u32 eax, edx;
-+
-+	/* Request CPUID 0xB_EDX through GHCB protocol */
-+	native_wrmsr(MSR_AMD64_SEV_ES_GHCB,
-+		     (GHCB_CPUID_REQ_EDX << 30) | GHCB_MSR_CPUID_REQ,
-+		     0xb);
-+	VMGEXIT();
-+
-+	native_rdmsr(MSR_AMD64_SEV_ES_GHCB, eax, edx);
-+
-+	if ((eax & GHCB_MSR_INFO_MASK) == GHCB_MSR_CPUID_RESP)
-+		return edx;
-+
-+	return 0;
-+}
-+
- int __init sev_es_setup_ap_jump_table(struct real_mode_header *rmh)
- {
- 	u16 startup_cs, startup_ip;
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 0dba5c247be0..6734c26ad848 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -85,6 +85,7 @@
- #include <asm/hw_irq.h>
- #include <asm/stackprotector.h>
- #include <asm/sev.h>
-+#include <asm/coco.h>
- 
- /* representing HT siblings of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
-@@ -1513,15 +1514,36 @@ void __init smp_prepare_cpus_common(void)
-  * We can do 64-bit AP bringup in parallel if the CPU reports its APIC
-  * ID in CPUID (either leaf 0x0B if we need the full APIC ID in X2APIC
-  * mode, or leaf 0x01 if 8 bits are sufficient). Otherwise it's too
-- * hard. And not for SEV-ES guests because they can't use CPUID that
-- * early.
-+ * hard.
-  */
- static bool prepare_parallel_bringup(void)
- {
--	if (IS_ENABLED(CONFIG_X86_32) || cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-+	bool has_sev_es = false;
-+
-+	if (IS_ENABLED(CONFIG_X86_32))
- 		return false;
- 
--	if (x2apic_mode) {
-+	/*
-+	 * Encrypted guests other than SEV-ES (in the future) will need to
-+	 * implement an early way of finding the APIC ID, since they will
-+	 * presumably block direct CPUID too. Be kind to our future selves
-+	 * by warning here instead of just letting them break. Parallel
-+	 * startup doesn't have to be in the first round of enabling patches
-+	 * for any such technology.
-+	 */
-+	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT)) {
-+		switch (cc_vendor) {
-+		case CC_VENDOR_AMD:
-+			has_sev_es = true;
-+			break;
-+
-+		default:
-+			pr_info("Disabling parallel bringup due to guest state encryption\n");
-+			return false;
-+		}
-+	}
-+
-+	if (x2apic_mode || has_sev_es) {
- 		if (boot_cpu_data.cpuid_level < 0x0b)
- 			return false;
- 
-@@ -1530,8 +1552,13 @@ static bool prepare_parallel_bringup(void)
- 			return false;
- 		}
- 
--		pr_debug("Using CPUID 0xb for parallel CPU startup\n");
--		smpboot_control = STARTUP_APICID_CPUID_0B;
-+		if (has_sev_es) {
-+			pr_debug("Using SEV-ES CPUID 0xb for parallel CPU startup\n");
-+			smpboot_control = STARTUP_APICID_SEV_ES;
-+		} else {
-+			pr_debug("Using CPUID 0xb for parallel CPU startup\n");
-+			smpboot_control = STARTUP_APICID_CPUID_0B;
-+		}
- 	} else {
- 		/* Without X2APIC, what's in CPUID 0x01 should suffice. */
- 		if (boot_cpu_data.cpuid_level < 0x01)
+Another way is to make cleanup_srcu_struct() do the same check
+that check_init_srcu_struct() does:
+
+	rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq_needed))
+
+If the value is non-zero, then cleanup_srcu_struct() should skip
+consistency checks that complain about things that cannot happen if
+there never was an RCU grace period.  Maybe something as shown after
+the second line of dashes.
+
+Thoughts?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
 
 
+/* Initialize any global-scope srcu_struct structures used by this module. */
+static int srcu_module_coming(struct module *mod)
+{
+	int i;
+	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+	struct srcu_struct *ssp;
 
--- 
-Regards/Gruss,
-    Boris.
+	for (i = 0; i < mod->num_srcu_structs; i++) {
+		ssp = *(sspp++);
+		ssp->sda = alloc_percpu(struct srcu_data);
+		if (WARN_ON_ONCE(!ssp->sda))
+			return -ENOMEM;
+		init_srcu_struct_data(ssp);
+	}
+	return 0;
+}
 
-https://people.kernel.org/tglx/notes-about-netiquette
+/* Clean up any global-scope srcu_struct structures used by this module. */
+static void srcu_module_going(struct module *mod)
+{
+	int i;
+	struct srcu_struct *ssp;
+	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+
+	for (i = 0; i < mod->num_srcu_structs; i++) {
+		ssp = *(sspp++);
+		check_init_srcu_struct(ssp);
+		cleanup_srcu_struct(ssp);
+	}
+}
+
+------------------------------------------------------------------------
+
+void cleanup_srcu_struct(struct srcu_struct *ssp)
+{
+	int cpu;
+	struct srcu_usage *sup = ssp->srcu_sup;
+	bool wasused = !rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq_needed));
+
+	if (WARN_ON(wasused && !srcu_get_delay(ssp)))
+		return; /* Just leak it! */
+	if (WARN_ON(srcu_readers_active(ssp)))
+		return; /* Just leak it! */
+	flush_delayed_work(&sup->work);
+	if (wasused) {
+		for_each_possible_cpu(cpu) {
+			struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+
+			del_timer_sync(&sdp->delay_work);
+			flush_work(&sdp->work);
+			if (WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)))
+				return; /* Forgot srcu_barrier(), so just leak it! */
+		}
+	}
+	if (WARN_ON(wasused && rcu_seq_state(READ_ONCE(sup->srcu_gp_seq)) != SRCU_STATE_IDLE) ||
+	    WARN_ON(wasused && rcu_seq_current(&sup->srcu_gp_seq) != sup->srcu_gp_seq_needed) ||
+	    WARN_ON(srcu_readers_active(ssp))) {
+		pr_info("%s: Active srcu_struct %p read state: %d gp state: %lu/%lu\n",
+			__func__, ssp, rcu_seq_state(READ_ONCE(sup->srcu_gp_seq)),
+			rcu_seq_current(&sup->srcu_gp_seq), sup->srcu_gp_seq_needed);
+		return; /* Caller forgot to stop doing call_srcu()? */
+	}
+	kfree(sup->node);
+	sup->node = NULL;
+	sup->srcu_size_state = SRCU_SIZE_SMALL;
+	if (!sup->sda_is_static) {
+		free_percpu(ssp->sda);
+		ssp->sda = NULL;
+		kfree(sup);
+		ssp->srcu_sup = NULL;
+	}
+}
