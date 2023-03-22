@@ -2,97 +2,133 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAE03C6FD1C
-	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 23:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52A88C6FD1C
+	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 23:18:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjCVXLR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Mar 2023 19:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
+        id S229706AbjCVXS3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Mar 2023 19:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjCVXLP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Mar 2023 19:11:15 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063CB1025C
-        for <rcu@vger.kernel.org>; Wed, 22 Mar 2023 16:11:00 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id g9so13179979qvt.8
-        for <rcu@vger.kernel.org>; Wed, 22 Mar 2023 16:10:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1679526659;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZL9DTkjJb3n7mVTugZ10aveYNAwV6wrK6ovdb1S8+U=;
-        b=Sp2gAFF8dlEY31YXpKbaZ5LvO1GdLwUEwLbSBAy/GF6nVrO9pbuMGmPsFuR0Bmve/K
-         +xYN2xH96sEAdsGyVf7noFv8C+mAKfBOp91ilP6Xt9ieqmJhcT22SsTQiRAkK54/vmQO
-         Z3tPd89q5efOTSLIQF6Ddi2IV7xClqkmxx4KI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679526659;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lZL9DTkjJb3n7mVTugZ10aveYNAwV6wrK6ovdb1S8+U=;
-        b=2ea5Xx6hpLVKSQndnoZY5cAyUcVGev1v0X+RBqeVNQCAefxbxlLHSkTkKeYyodEAtE
-         S1p2+kIoZK2AjpfmeCUx/0xyhcDicWaiQ9rAvlV/8zFFifomskVr9VapfhhaTTfbloDR
-         4W1aed2a701d3s/+OSuPbHoLBSt32g2DcRwMx1eyWOWbVf1eW8h+XOwSEW75mK9VtRZi
-         kkOW9Et0DI7XwZO+CDcIDMou6Roim3IXvEcuZVjcRDvq/kZCBZ+kjCeko2NPfQf6m08B
-         B+BshKROWRpsjFVuNuEI+0ZIqP9c/pOm3t4rR+eOeCYUS9lt481qtclv857iw7Y9LlpH
-         c4Iw==
-X-Gm-Message-State: AO0yUKXKyfNlgag6mUCqUMbf3nwGrXq2MmM9Tbd3vYm2o94rX8g+lPuQ
-        8hzI1+i9uAyZmKSTqvHsPeC8aA==
-X-Google-Smtp-Source: AK7set85SVCDnzLXoJqV79SCI/o/OWtkO+89+dvJ14a/nmtvtF1SE+n//pr3tLilVxb7494mv34sVw==
-X-Received: by 2002:ad4:5cc8:0:b0:5b2:fb2:4b1d with SMTP id iu8-20020ad45cc8000000b005b20fb24b1dmr10245615qvb.12.1679526659115;
-        Wed, 22 Mar 2023 16:10:59 -0700 (PDT)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id p17-20020a374211000000b007428e743508sm12183990qka.70.2023.03.22.16.10.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Mar 2023 16:10:58 -0700 (PDT)
-Date:   Wed, 22 Mar 2023 23:10:58 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Theodore Ts'o <tytso@mit.edu>, Julian Anastasov <ja@ssi.bg>
-Subject: Re: [PATCH 04/13] tracing: Rename kvfree_rcu() to
- kvfree_rcu_mightsleep()
-Message-ID: <20230322231058.GA70593@google.com>
-References: <ZBNYogVe9spBmTm2@pc636>
- <70A3066E-3B61-4B81-B36D-69BC27DAD5E9@joelfernandes.org>
- <20230318121131.3a9cc1ae@rorschach.local.home>
+        with ESMTP id S229654AbjCVXS2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Mar 2023 19:18:28 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EFB1969A;
+        Wed, 22 Mar 2023 16:18:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 98FBBB81D54;
+        Wed, 22 Mar 2023 23:18:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33CDDC433D2;
+        Wed, 22 Mar 2023 23:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679527105;
+        bh=k6wvhbcJbaBJ1X4EdD057Q9Y+QFDlOgff68w44KovM0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MqMmLCSTtOEBTJSPg3sNAXAmWLR/FFKJKnSYpu39lctsWKnM4c6Q1yvQcUoOtqu5l
+         StMsT4vMByc5sh9LM81+zmTHz8K0h4L8KYVHu3F1FrX9cY3eI9Wv/zwgBpxX3B6EgD
+         Z99P0OxdzVpNU8+g2Y1OiQdzBYmNmHhYcgcRSJ1gb9g/Ago472zIpSZHmAqcyf9D0d
+         KVcVodxWAcABKT+fS0vg+ZkXggYBZZ1hdFvj0uBxaNm+jkv9+SqDHSnIuytqOo7j0u
+         Mm99wCKaBtccCz+awBm1Vo705H5Gw5aOaTfvxrMFUaXM6NJGHg65uk66SH6FosxLm2
+         lXmgosuwQ+wHA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BC93E1540397; Wed, 22 Mar 2023 16:18:24 -0700 (PDT)
+Date:   Wed, 22 Mar 2023 16:18:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 1/4] rcu/nocb: Protect lazy shrinker against concurrent
+ (de-)offloading
+Message-ID: <c614c542-f2b5-4b39-bbc4-ae5f0a125c81@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230322194456.2331527-1-frederic@kernel.org>
+ <20230322194456.2331527-2-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230318121131.3a9cc1ae@rorschach.local.home>
+In-Reply-To: <20230322194456.2331527-2-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Mar 18, 2023 at 12:11:31PM -0400, Steven Rostedt wrote:
-> On Thu, 16 Mar 2023 14:01:30 -0400
-> Joel Fernandes <joel@joelfernandes.org> wrote:
+On Wed, Mar 22, 2023 at 08:44:53PM +0100, Frederic Weisbecker wrote:
+> The shrinker may run concurrently with callbacks (de-)offloading. As
+> such, calling rcu_nocb_lock() is very dangerous because it does a
+> conditional locking. The worst outcome is that rcu_nocb_lock() doesn't
+> lock but rcu_nocb_unlock() eventually unlocks, or the reverse, creating
+> an imbalance.
 > 
-> > If so, Steve please send a patch when you are able to and with Vlads Ack,
-> > we can take it via the RCU tree if that is Ok with you.
+> Fix this with protecting against (de-)offloading using the barrier mutex.
 > 
-> Daniel acked it, so you can just take it as he can be responsible for that code.
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+
+Good catch!!!  A few questions, comments, and speculations below.
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/tree_nocb.h | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
 > 
-> For the trace_probe.c if you get an ack from Masami, then you can take
-> the original patch as is.
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index f2280616f9d5..dd9b655ae533 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -1336,13 +1336,25 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  	unsigned long flags;
+>  	unsigned long count = 0;
+>  
+> +	/*
+> +	 * Protect against concurrent (de-)offloading. Otherwise nocb locking
+> +	 * may be ignored or imbalanced.
+> +	 */
+> +	mutex_lock(&rcu_state.barrier_mutex);
 
+I was worried about this possibly leading to out-of-memory deadlock,
+but if I recall correctly, the (de-)offloading process never allocates
+memory, so this should be OK?
 
-Masami, do you Ack the changes of the original patch to trace_probe.c ?
+The other concern was that the (de-)offloading operation might take a
+long time, but the usual cause for that is huge numbers of callbacks,
+in which case letting them free their memory is not necessarily a bad
+strategy.
 
-Here it is again:
-https://lore.kernel.org/lkml/20230201150815.409582-5-urezki@gmail.com/
+> +
+>  	/* Snapshot count of all CPUs */
+>  	for_each_possible_cpu(cpu) {
+>  		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> -		int _count = READ_ONCE(rdp->lazy_len);
+> +		int _count;
+> +
+> +		if (!rcu_rdp_is_offloaded(rdp))
+> +			continue;
 
+If the CPU is offloaded, isn't ->lazy_len guaranteed to be zero?
 
-thanks,
+Or can it contain garbage after a de-offloading operation?
 
- - Joel
-
+> +		_count = READ_ONCE(rdp->lazy_len);
+>  
+>  		if (_count == 0)
+>  			continue;
+> +
+>  		rcu_nocb_lock_irqsave(rdp, flags);
+>  		WRITE_ONCE(rdp->lazy_len, 0);
+>  		rcu_nocb_unlock_irqrestore(rdp, flags);
+> @@ -1352,6 +1364,9 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  		if (sc->nr_to_scan <= 0)
+>  			break;
+>  	}
+> +
+> +	mutex_unlock(&rcu_state.barrier_mutex);
+> +
+>  	return count ? count : SHRINK_STOP;
+>  }
+>  
+> -- 
+> 2.34.1
+> 
