@@ -2,102 +2,178 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B7DBC6FD20
-	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 02:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE94C6FD1C
+	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 03:54:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbjCVCTK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Mar 2023 22:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
+        id S230106AbjCVDyh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Mar 2023 23:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjCVCTJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Mar 2023 22:19:09 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9638C1557D
-        for <rcu@vger.kernel.org>; Tue, 21 Mar 2023 19:19:08 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5418d54d77bso313493257b3.12
-        for <rcu@vger.kernel.org>; Tue, 21 Mar 2023 19:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1679451548;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LsGzDD7N3xIQioCZ8vaIzqIq9YbJo7VI7CSEkK+5Bjk=;
-        b=iccskpPGlSypcpFSCe6ACliA/LfvS8jKKHNiTJqYMKauomRuO3KAqRJY51xakk1cRn
-         2X8dbM0kBrIM1OqZCP9OeAxe9OdH+2J4fUr5ydrF1SWtl8hzduUuwHEwhKHtYv0PmkjQ
-         eooelkFcDKR8YQ8XUmxpWMdFQVjqQuoYlkGTs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679451548;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LsGzDD7N3xIQioCZ8vaIzqIq9YbJo7VI7CSEkK+5Bjk=;
-        b=OXyoMgSmKLo5aPuj14uh6IMgJuCOG87cB4Itq4Y4cO9L/QtNJFebH+7Qh/GXTJdGWo
-         jBJQvFP9dqZXUM5o9ukrctDIS+ItwcT0RPrTJX/8k9+zHjZXWh+1Pk1yUhULGS/VMBmf
-         QHLjWtMtPfyHhM4H9Qv2BNE9/1ke/Sptz3Oj0yLjwVExPzU+o7BRs+wOVXo/aOxCDRqM
-         dsRcEK/nrPbiBa+gIUheggyiL+KDeKYtNq6L77fvj+CU8jLwEOSm47/CXcC3ll0mkviW
-         GvX3EF26DghAvzofr23TNw2+Wt9P8u4nLGeI9j3pyggajrybbfbeZ/ZU0gYLvLxuQ6f0
-         c8Zg==
-X-Gm-Message-State: AAQBX9evCOW/7rD26liF3v9qaw1OJlKbve2d7lNNm43WBmljQpnDpq42
-        RP61SXSypPAfAHiqoul0zq2pG6rkEGNW7QMLtWVDvg==
-X-Google-Smtp-Source: AKy350Zx/zVrikbH2Sze2FBliqyAFfVtV5zQypq84Ibep+cu7qoQ+4M54ZZiLEbmGH04pC5+f7pl6MKK/5RGMVX034s=
-X-Received: by 2002:a81:b346:0:b0:530:b21f:d604 with SMTP id
- r67-20020a81b346000000b00530b21fd604mr2211123ywh.9.1679451547791; Tue, 21 Mar
- 2023 19:19:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <72ba8619-88cb-4bf4-8232-18d8a1b6b5bf@paulmck-laptop>
- <20230321052337.26553-1-qiuxu.zhuo@intel.com> <20230321052337.26553-2-qiuxu.zhuo@intel.com>
- <20230321154751.hgeppd5v327juc36@offworld> <a4a3e103-78b3-4be3-80b8-bbae7b1bb2f4@paulmck-laptop>
- <SJ1PR11MB61797170867CD7B98CC68BEE89869@SJ1PR11MB6179.namprd11.prod.outlook.com>
-In-Reply-To: <SJ1PR11MB61797170867CD7B98CC68BEE89869@SJ1PR11MB6179.namprd11.prod.outlook.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 21 Mar 2023 22:18:56 -0400
-Message-ID: <CAEXW_YS_=qCkpKBPfc3o9dnTW2RKNwByZFBDun-KKEDhPy1z3Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] rcu/rcuscale: Stop kfree_scale_thread thread(s)
- after unloading rcuscale
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
+        with ESMTP id S229595AbjCVDyg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Mar 2023 23:54:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E062DE48;
+        Tue, 21 Mar 2023 20:54:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D62B661E6A;
+        Wed, 22 Mar 2023 03:54:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38414C433D2;
+        Wed, 22 Mar 2023 03:54:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679457274;
+        bh=xmqAsw1iMMvmyXs7mPPwRWR1QfDflLyfLWQXrMtKjCw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JGysqpgGFCSLDd6AefujpMM/k5VMkxbu9iBP4+o/XV0cUo5XgScuFKu7XvaVCff+o
+         8dzlHZQqoa79ylvPJNiOQniiZK9ZZ/3mdpLieluC5PW5tpkolyzrgXEidaHNl1LG+b
+         U1/m2vNZfftSPfx3TMl0GlnJA5I+6yNGazXUONprrFs3cOrNl0HHmkJvL/tlRuKVOT
+         vX/48SrlXHRhf18mvTUXVXI4ZOj6OvfEFdKKW4i6RXIk1Md8tetC04jJ2Culb12qLj
+         XNhMwpEi6VatuLp84Mr8WkbASb3pzD13LBekrLDpDwV1sU++glOV7DYraENLS36/CJ
+         H5zX/1ec1pg0A==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B2A51154033A; Tue, 21 Mar 2023 20:54:33 -0700 (PDT)
+Date:   Tue, 21 Mar 2023 20:54:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] srcu: Fix flush sup work warning in cleanup_srcu_struct()
+Message-ID: <f13e878f-65c3-40cb-aa3f-eb87ae6c9d6b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230321081346.192000-1-qiang1.zhang@intel.com>
+ <e7951c31-4a24-4493-be4b-603fec0730ff@paulmck-laptop>
+ <PH0PR11MB588087645FE02C9F2C113CC8DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB588087645FE02C9F2C113CC8DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 21, 2023 at 9:26=E2=80=AFPM Zhuo, Qiuxu <qiuxu.zhuo@intel.com> =
-wrote:
->
-> > From: Paul E. McKenney <paulmck@kernel.org>
-> > [...]
-> > > > Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
-> > > > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > >
-> > > Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+On Wed, Mar 22, 2023 at 01:15:02AM +0000, Zhang, Qiang1 wrote:
+> > insmod rcutorture.ko
+> > rmmod rcutorture.ko
+> > 
+> > [  209.437327] WARNING: CPU: 0 PID: 508 at kernel/workqueue.c:3167 __flush_work+0x50a/0x540
+> > [  209.437346] Modules linked in: rcutorture(-) torture [last unloaded: rcutorture]
+> > [  209.437382] CPU: 0 PID: 508 Comm: rmmod Tainted: G  W  6.3.0-rc1-yocto-standard+
+> > [  209.437406] RIP: 0010:__flush_work+0x50a/0x540
+> > .....
+> > [  209.437758]  flush_delayed_work+0x36/0x90
+> > [  209.437776]  cleanup_srcu_struct+0x68/0x2e0
+> > [  209.437817]  srcu_module_notify+0x71/0x140
+> > [  209.437854]  blocking_notifier_call_chain+0x9d/0xd0
+> > [  209.437880]  __x64_sys_delete_module+0x223/0x2e0
+> > [  209.438046]  do_syscall_64+0x43/0x90
+> > [  209.438062]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > 
+> > For srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(),
+> > when compiling and loading as modules, the srcu_module_coming() is invoked,
+> > allocate memory for srcu structure's->sda and initialize sda structure,
+> > due to not fully initialize srcu structure's->sup, so at this time the
+> > sup structure's->delaywork.func is null, if not invoke init_srcu_struct_fields()
+> > before unloading modules, in srcu_module_going() the __flush_work() find
+> > work->func is empty, will raise the warning above.
+> > 
+> > This commit add init_srcu_struct_fields() to initialize srcu structure's->sup,
+> > in srcu_module_coming().
+> > 
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 > >
-> > Much better, thank you both!
+> >Good catch, and thank you for testing the in-module case!
 > >
-> > But unfortunately, these patches do not apply cleanly.  Qiuxu Zhuo, cou=
-ld
-> > you please forward port these to the -rcu "dev" branch [1]?
+> >One question below...
 > >
->
-> Hi Paul,
->
-> OK.
-> I'll be making v4 patches rebased on the top of the -rcu "dev" branch.
-> Thanks for letting me know more about the RCU patch workflow.
->
-> Also thank you Davidlohr Bueso and Joel for reviewing the patches.
+> >							Thanx, Paul
+> >
+> > ---
+> >  kernel/rcu/srcutree.c | 11 ++++++++---
+> >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 1fb078abbdc9..42d8720e016c 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -1921,7 +1921,8 @@ static int srcu_module_coming(struct module *mod)
+> >  		ssp->sda = alloc_percpu(struct srcu_data);
+> >  		if (WARN_ON_ONCE(!ssp->sda))
+> >  			return -ENOMEM;
+> > -		init_srcu_struct_data(ssp);
+> > +		if (WARN_ON_ONCE(init_srcu_struct_fields(ssp, true)))
+> > +			return -ENOMEM;
+> >
+> >Wouldn't it be better to simply delete the init_srcu_struct_data()?
+> >
+> >Then the first call to check_init_srcu_struct() would take care of
+> >the initialization, just as for the non-module case.  Or am I missing
+> >something subtle?
+> 
+> Hi Paul
+> 
+> Maybe the check_init_srcu_struct() is always not invoked, for example,
+> In rcutorture.c,   here is such a definition DEFINE_STATIC_SRCU(srcu_ctl),
+> but we use torture_type=rcu to test,  there will not be any interface calling
+> check_init_srcu_struct() to initialize srcu_ctl and set  structure's->delaywork.func 
+> is process_srcu().
+> when we unload the rcutorture module, invoke cleanup_srcu_struct()
+> to flush sup structure's->delaywork.func, due to the func pointer is not initialize,
+> it's null, will trigger warning.
+> 
+> About kernel/workqueue.c:3167
+> 
+> __flush_work
+>      if (WARN_ON(!work->func))   <---------trigger waning
+> 	return false;
+> 
+> 
+> and  in  init_srcu_struct_fields(ssp, true), wil set srcu_sup->sda_is_static is true
+> and set srcu_sup-> srcu_gp_seq_needed is zero,  after that when we call
+>  check_init_srcu_struct() again, it not be initialized again.
 
-You're welcome and thanks for your interactions on the mailing list
-and RCU interest. :-)
+Good point!  In the non-module statically allocated case there is never
+a call to cleanup_srcu_struct().
 
+So suppose the code in srcu_module_coming() only did the alloc_percpu(),
+and then the code in srcu_module_going() only did the the matching
+free_percpu() instead of the current cleanup_srcu_struct()?
 
- - Joel
+							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> >
+> >It should also be possible to eliminate duplicate code between the
+> >in-module and non-module statically allocated initialization cases,
+> >come to think of it.
+> >
+> >  	}
+> >  	return 0;
+> >  }
+> > @@ -1931,9 +1932,13 @@ static void srcu_module_going(struct module *mod)
+> >  {
+> >  	int i;
+> >  	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+> > +	struct srcu_struct *ssp;
+> >  
+> > -	for (i = 0; i < mod->num_srcu_structs; i++)
+> > -		cleanup_srcu_struct(*(sspp++));
+> > +	for (i = 0; i < mod->num_srcu_structs; i++) {
+> > +		ssp = *(sspp++);
+> > +		cleanup_srcu_struct(ssp);
+> > +		free_percpu(ssp->sda);
+> > +	}
+> >
+> >And good catch on another memory leak with this one, looks proper
+> >to me.
+> >
+> >  }
+> >  
+> >  /* Handle one module, either coming or going. */
+> > -- 
+> > 2.25.1
+> > 
