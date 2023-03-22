@@ -2,88 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FAA9C7619A
-	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 01:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7161C6FD1D
+	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 01:26:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjCVBQO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 21 Mar 2023 21:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S229885AbjCVB0Y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Mar 2023 21:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbjCVBPz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 21 Mar 2023 21:15:55 -0400
+        with ESMTP id S229846AbjCVB0W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Mar 2023 21:26:22 -0400
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F1352936;
-        Tue, 21 Mar 2023 18:15:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ABC305E7;
+        Tue, 21 Mar 2023 18:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679447730; x=1710983730;
+  t=1679448381; x=1710984381;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=/PmvodLe9VQ8ABFMYAq3yY3ScP2gfqbF6V0Gz5v7PGU=;
-  b=U8zUTJoIwnMu7skGz0ysiZnVy4qxKU92WEknMvVarwuXghr++ESUiSHt
-   8Olh5Y55MPiMDryVCxjCsRt81kiodj3OaU83CeamsBceWq11Mz7zmNwG6
-   c5oG/9KnAaFw5BDpSelGyNJN2xBUvWHLRizZZgCkqgPSSuBTXMkeWT61u
-   5gd9jjPTyIWG89yI5kuXJn+MwnXXrETIi0K9b74JIBx8xT8G3QkSLR+Zo
-   IYKMWSfxmo72cgEjQ7O6OBGM+jX8953HuxLgu0d35tDrxYxUfRXO3x3m8
-   XZDRjgkaXF/zPEgAByTYTDfWbQahxeEeaROtW2xIDx58LcclrvdfH9bpv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="341454065"
+  bh=kki0ppJj4N1Srp4JWo2SF4/LDtaMNZkFS2aCzk3x97Q=;
+  b=H7M6/NreciFSiWziSc7bIhKRQsJCK2KcAeSILr6Dc5Alr+RIjqKCSjND
+   Kw6CXA2DAqlvxAvTGuc1K90i0b+6DFOyd/lA/qHNx8KLa7fCLf8xOb5id
+   INQ9zhQmV1+ooyWmd2JBl2VNvsQ1Il3rNFpxbKYSQl+djZiGN52DQBiOV
+   mqwsv8xa0+WcVsSZbcQl2g/5CytWvDGVMLRQ8bNmXkZp8SwaT0Gv2ijNj
+   aFL95KMRqwmS5H3sOcvpn8mnJLVLBL823m66ClYUvozsBSfu/p+e6fr1Q
+   FVfeHvUFY46xytyZ9mCAUDEyzJL1WCeagvScNwIhECxjMyEWx0HD31c7m
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="341456265"
 X-IronPort-AV: E=Sophos;i="5.98,280,1673942400"; 
-   d="scan'208";a="341454065"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2023 18:15:05 -0700
+   d="scan'208";a="341456265"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2023 18:26:20 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="927650083"
+X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="659010338"
 X-IronPort-AV: E=Sophos;i="5.98,280,1673942400"; 
-   d="scan'208";a="927650083"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Mar 2023 18:15:04 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+   d="scan'208";a="659010338"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga006.jf.intel.com with ESMTP; 21 Mar 2023 18:26:20 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 21 Mar 2023 18:15:04 -0700
+ 15.1.2507.21; Tue, 21 Mar 2023 18:26:20 -0700
 Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Tue, 21 Mar 2023 18:15:04 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
+ 15.1.2507.21 via Frontend Transport; Tue, 21 Mar 2023 18:26:20 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
  by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Tue, 21 Mar 2023 18:15:03 -0700
+ 15.1.2507.21; Tue, 21 Mar 2023 18:26:19 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T4k945Qj7AM28G97DJ7JcsWVXTAtwxM6091pMtjjh7gNxi1zzCHI7motEUWAJwKjeJOa/dJ7AqjIS+dmDKEPP9VGsuU30wAgVUAWumVv1c4y1HnOJ1Y/bqopeqnlUYe8aKAbwON6DicLzqKzke6c9Nop5F0w3mlq0sNptlPfLJ1EKFhkZGLbBIuRoDzTGa5bkvx/qW92HDzbxPc4dRsHYdhDyhr6NY0Ts96Wz6bXZUyMOCqcYRjPjhBgwis25z3l5UoOnxoy5I3Gv9xdNBvn1VfG4Jkr6pg8rOpAnA5TdVSFL20cAcZ1sIhqI03lX52s0D3iPtLMC0U4WROHkP8ijQ==
+ b=GzV1Oz7M2/gN+yHcTgfNqrvXP0I4UvFYt0yoFtqi7eusxC89RGqtXKhU/h405/fO60FMj9I9o3vlMaDP8CTEX+4A7lNxvtNW/SgwJ21y1ZH6AmLzuNVUPa9qiL7EFa2lpgtSDQWgrVu0e68QpysBHbsTcDkg7O76Ara5RRaO+g2rBlt/RJ0q4DNAO7hP0vuLxURGB5qNRNiQHYgqFhTmAgiK+DdBvB0Z72t8vjvxnWiOcssBeyZv9IMvfrNNVAhyZ9511e6sLsG6RqRYbgWCZGX/b+7NIuAaPjPByvcl9FXfNa+ioFEmnmJHY2QJ7RW5FXiugP1nbWL+f5nCheGykQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7gWL0KmfNUGgK1vFKNPGpyFjarEOdxFLJTp9bzGRMHc=;
- b=WwfnVzBrMffeNz2vboPiLNDwqZhrQX3YBrtdjxqagaR69VpXfygZA8XgLE6Lahnw/HKZaxjOCnX5qnbg1hlyC3aYHNC3XCToZ7i6dyzaBxsa4HV+lmMZUtFBbdoXCIWMVtQnVj3UhyAKylJfsxZkV5MS4vbP/0vHYGQCQydJtjMRwqXmrLC9N0PNvbUj4HdalfE2WN0LQ4fg76toXijupPf8kMAoczDAbYjvKjgk+atIS2/rnPaa4E8tmaNvkz9gfNW+JxU8QmM4ycuRk+UBh21vlFlB1+mc098SydmvZxnhiUWVQS3w+BXIrYXhpIWf01Bm8NyBJwuWM7r9IhyyhQ==
+ bh=UGM+/n9FWREY5Ik+m90pSVTMJUezNOGFYG5E8ZR1or8=;
+ b=Iow5pQAPqZsig5z6AMhISIdYdtb9ff52hl0QjS27JOzFw8VJjEAeLWJtzvNo9EsY/Hjm+uVdn9WufzZbbJyhB54G9ecg5e777Pcd4Bl3Fp3gF2mXdvKCpCrOO3F9e6djXrqplQeDCDAVM9bdbll7mdT8Tj7yrHQLtWSBZnGIkEshLqV3oVX5xVQ3k4tjXDHL21cbsrVNFzn4n5drDp/3GK1c3iRVVv6dgjZ/iUoKEO5AM3MpIGgeSutyvdgXgsp/UORRIyaQr8Yk18Ar0rst8/mvTtR8xdAWaGPvypwvs13Yp77tNhadjbBqAFI/BiSytnmwAVd8C3CmZPeQR8A+Ig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by SJ0PR11MB4783.namprd11.prod.outlook.com (2603:10b6:a03:2af::8) with
+Received: from SJ1PR11MB6179.namprd11.prod.outlook.com (2603:10b6:a03:45a::17)
+ by CY8PR11MB7732.namprd11.prod.outlook.com (2603:10b6:930:71::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Wed, 22 Mar
- 2023 01:15:02 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::4075:1af2:9fc0:66d0]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::4075:1af2:9fc0:66d0%6]) with mapi id 15.20.6178.037; Wed, 22 Mar 2023
- 01:15:02 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
+ 2023 01:26:18 +0000
+Received: from SJ1PR11MB6179.namprd11.prod.outlook.com
+ ([fe80::850a:d637:5760:4f53]) by SJ1PR11MB6179.namprd11.prod.outlook.com
+ ([fe80::850a:d637:5760:4f53%6]) with mapi id 15.20.6178.037; Wed, 22 Mar 2023
+ 01:26:17 +0000
+From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>
 CC:     "frederic@kernel.org" <frederic@kernel.org>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
         "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] srcu: Fix flush sup work warning in cleanup_srcu_struct()
-Thread-Topic: [PATCH] srcu: Fix flush sup work warning in
- cleanup_srcu_struct()
-Thread-Index: AQHZW8x3wcHPlwuNM0Wizzk5AGbgwq8FVToAgAClkaA=
-Date:   Wed, 22 Mar 2023 01:15:02 +0000
-Message-ID: <PH0PR11MB588087645FE02C9F2C113CC8DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20230321081346.192000-1-qiang1.zhang@intel.com>
- <e7951c31-4a24-4493-be4b-603fec0730ff@paulmck-laptop>
-In-Reply-To: <e7951c31-4a24-4493-be4b-603fec0730ff@paulmck-laptop>
+        "rostedt@goodmis.org" <rostedt@goodmis.org>
+Subject: RE: [PATCH v3 2/2] rcu/rcuscale: Stop kfree_scale_thread thread(s)
+ after unloading rcuscale
+Thread-Topic: [PATCH v3 2/2] rcu/rcuscale: Stop kfree_scale_thread thread(s)
+ after unloading rcuscale
+Thread-Index: AQHZW7Vs1kabwX3YRkO3YgGx1+Sbsq8FYZGAgAA8YgCAAGKaIA==
+Date:   Wed, 22 Mar 2023 01:26:16 +0000
+Message-ID: <SJ1PR11MB61797170867CD7B98CC68BEE89869@SJ1PR11MB6179.namprd11.prod.outlook.com>
+References: <72ba8619-88cb-4bf4-8232-18d8a1b6b5bf@paulmck-laptop>
+ <20230321052337.26553-1-qiuxu.zhuo@intel.com>
+ <20230321052337.26553-2-qiuxu.zhuo@intel.com>
+ <20230321154751.hgeppd5v327juc36@offworld>
+ <a4a3e103-78b3-4be3-80b8-bbae7b1bb2f4@paulmck-laptop>
+In-Reply-To: <a4a3e103-78b3-4be3-80b8-bbae7b1bb2f4@paulmck-laptop>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -91,180 +101,84 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|SJ0PR11MB4783:EE_
-x-ms-office365-filtering-correlation-id: 4efdc9c2-4fb3-4215-a9ae-08db2a72dcda
+x-ms-traffictypediagnostic: SJ1PR11MB6179:EE_|CY8PR11MB7732:EE_
+x-ms-office365-filtering-correlation-id: 4c84faa9-dc86-4868-8012-08db2a746ee8
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6YwxT6a7eXV2YpTZSGJK5Qs0aJDzJ+KjWGYKle0gNTfSYFe4JXnQO5R5w9OxyIekbkor/C2ugUD10TjN8buTJoYO0etnHP70LUSMcbiWwo5sCWP1PpuWmFOqlgFKqhxKSmeEMMCxY32zCYN5PafZvI+XwBi4PzLXmNLEMd3QaIBW/aLOJ6SnEV1HmD/p5HWkOH2BzhJHARKXrOfac59n/rI2vh1p2pE/xuRSEPNavo1wqFWmcuX2nbSEt30vRfaqmc+AAeuakWiW7W+R8Ge05LxMbnazzkn/2wC/JyvLExSfIcK7Ps9EnRMPh7XihJNFKF+vQ6LiNOMNuyKS1M5Goza8JZkGk5pwtziiuy9GYXGu+nw3R7FVBgUQNKSIUvhahQfUhcc0k0WMXKjyY87LR0ZTWqscimZxAdKOwmaqc7Qa6q3biwxHbtK5ZltNSvLrues8RE+IVjCblLLR10wsmcaEtvalZwLHsJiJeKbOfP/UQhJHtNp5WuYmBil8LrIE86q37fc6ol6f3NjknGTTLYGcDueIXOiBsZaivmqoqDtGTW/YOsaKoHv4EUUo9l6U7zssu5oB4/zJtB5DremD/TjYctKZoDbpmyJ8RjQYI3grcB2a1yba5QxnY1yXQ/YUZwSO5MubvWVtNVk7ou+jTJAxKRTw3gJSuCPBp05RVtszNMKS9mCCQxwHDlEFQ9Bnt64ihS/BAMX24F/RdSh4og==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(136003)(366004)(39860400002)(396003)(376002)(346002)(451199018)(9686003)(82960400001)(38070700005)(6506007)(186003)(71200400001)(55016003)(7696005)(38100700002)(83380400001)(52536014)(478600001)(2906002)(45080400002)(86362001)(122000001)(33656002)(316002)(54906003)(8676002)(66476007)(66946007)(64756008)(4326008)(8936002)(6916009)(41300700001)(66446008)(5660300002)(76116006)(66556008);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: xYBLdOE1EhUAo4fMc6uEaVZpIBPOmFno/kBn3c9P7G4dHnlvjCV5lHKomRq0+h6IedpHP9fp6hZzQAgSehvkNbuSN7X23Lu+k34fpPoNdAyLBenuwhBvfX7IuuCzygsCRRbWY5big9qR3Qe7cf5IJR6hnUIEsYwmd2+ttNPMwO9byvK5OPwvwVCcz0o96lzBIf1zDcxzAEO127iE5ZrA1aozQUi/qm86sQdi8XHYAPfYDHBjrTaLBzcPjuFMFXGr7N4JraP3HFl0Lqg92iaawB1pS2itUctl5X3IYMcTFZovVPNRy95T732AbEV6H8J3Q33Jh0ZTg47Lfz83u5rYwD0kDRRYsjREJ65W4JVIGRa9teN7827RnSnfuW0gkJ41mfH58Q3YatMAN1PhViQ1f6FDpZSJlLQJtd+Va8/1sIWUA6PufO+PJHiH5BK3I9FATaSCJe4WmVWtI+hnFJRiFDP1178PlAVhg8c6dL5vC03naESxUwFfY2IW0xtqEk1rLUWfYDKct+sV/6KFcYK1nyttzJsctqH5pX1js84io8c8/ElO5nstaTiSCflmTa+yvj4CAhEIQiPxW5pGWdH0U/VoqmeQkMtbUL8J0AVOj+tzyWsizj6Wr8PyONziLJujVA1QXFLkXX6/ExzgvqBzJT4cvmKLnILSWnCmiI5mMrd4S78CDQgv+Fj9Qc3ZrA8P
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6179.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(39860400002)(376002)(136003)(396003)(346002)(366004)(451199018)(478600001)(54906003)(86362001)(38070700005)(55016003)(38100700002)(66556008)(66476007)(122000001)(66946007)(41300700001)(76116006)(66446008)(8676002)(82960400001)(52536014)(64756008)(4326008)(4744005)(2906002)(5660300002)(110136005)(33656002)(71200400001)(9686003)(7416002)(7696005)(316002)(6506007)(966005)(26005)(186003)(8936002);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gJwvaQA6H3S4DeBOUk6ht4oCLRIsUoP4cHeRpg/BigRJeB+XBzlLMvawgCUE?=
- =?us-ascii?Q?kOTgsylOIGrfIstCJqHdZN3lgxOBQK/TJAjemyAZsvuxuJw/6NhJNxkmxjqg?=
- =?us-ascii?Q?7F1vPpPMvYQys8aKD3Z2w61iZosbu/zFvhTRzPRxHYYlXT24II6sC08dZhBi?=
- =?us-ascii?Q?KmsrhlUoO9nXP60HE61NssohHQ1yB0HtrNSpMstK3Ye4lwQ2RuEEMU1aJ7v9?=
- =?us-ascii?Q?HYbynzBGCwOl4og6oIpvW4ev73GAamsKOzgQj+ru/vcKNjL5Oo5LbKKYS/lW?=
- =?us-ascii?Q?Gq/Tr+L+avd+yWphZ2O2E0XQurscrqvF2NjUEklF8/4EEbBMSe7rAe4nG0O5?=
- =?us-ascii?Q?ZQpKiGysL0GgPKNujxhx+1wDsNp+b2WT6zKKNmryzHdOghcNB29W+4Db/i2y?=
- =?us-ascii?Q?NGqAGg2q3qzUu+SzroNrlgWGGDZThfoloU6WWw+y41LfQ1Bqa4+NefGyCh60?=
- =?us-ascii?Q?pM0Y3tT0M5wGLzAyAQGp5CceHzZ81YgYFp/JV/8cR8+FCicp3B9/P8y7kD46?=
- =?us-ascii?Q?4fWJQ/U3u6ecJdaLtKmdL7l7DIDIsWBB5/U9oaEhA0LjrSlGJ9l4OYFr0US8?=
- =?us-ascii?Q?FV+4BEJeLlMNibzUjaCfpncnSDMaWlsV+icrmOuqvqzKgoOqAh0eZT5EgmFL?=
- =?us-ascii?Q?iT5FgChu6zp0a3Ljt76r+fODLAzNcreM0BstK7CaSgouTKceEePHm/mE3Zj/?=
- =?us-ascii?Q?aVPXZvfuDP4pTE1a8vrp9lIPYo6vkP9XuIXVWUXPeTjc20ZpHitBbuJyIrhK?=
- =?us-ascii?Q?Yze/5e+4m1Gu1QGoEaiIeyzPkQ5lbL52W0Z5pTcEBFUY2c3sWnaPPJdNt0LT?=
- =?us-ascii?Q?lWPpDBnrKHoVbO2ev3BE572NOLlbL/nQWpXLjiEfcOdR9WkRR5WNEKaUuHB/?=
- =?us-ascii?Q?GTuHMzteLaFa8b1JLLXl5hEtuS753jBQOt3OkeSlcFHPkU08DgV+N6oHKu4h?=
- =?us-ascii?Q?21hbeA/Ljwlra7RZBsErHOH48w0dVuzw2wI8bXAHSz+tep3EFn6uThqHtcSz?=
- =?us-ascii?Q?cHI4j0FJQc5Et5ycS3xcSCTeC7xgK492N8rNs6WGojKmbjWplhHm9TZm6lTb?=
- =?us-ascii?Q?Pq6FEOKzhVyrIbnlBGWMRLCPL0NlA7E96eoXTvq7sLie9CdB8N6v47HegIRK?=
- =?us-ascii?Q?V6zILqMgsd+ZybBgOyb81iFOsf4rmcfX1o9lsq/Um+A1+sOODSNBwm/2yuoY?=
- =?us-ascii?Q?938gohdY93hacHxfgWHhTgYJbwDLLuS6c6RTVbsu4apTwcQxDW2uv8jv+ePY?=
- =?us-ascii?Q?1Jwf8a8TWZCfV5Myeh91VWz3Ua+HkgGkcMznklzbNXuHdn7gQa2vzxYajoEp?=
- =?us-ascii?Q?9xkpXPUiACAIFk31pxcmq2/KOMHMn8KAEgZknrp/HhU+/T1R/2b7d+jEpTFQ?=
- =?us-ascii?Q?/cSGBskLqlQGkLIWfXDHOe7/uG1uFbS1ZE2qfLnFuWBBX4i25vsM1tvY3ERB?=
- =?us-ascii?Q?5kIuMISKs5b9D3m44DPbzAjrqTxIEMnavptYMRtUbZlIg5EgxXTZxTDlKpnq?=
- =?us-ascii?Q?ATFhQeZWTgpqoVzfVOptpSmsAnbSTk2zv0k5EDjDDz3xp3Xo5cJCm3xVmBQF?=
- =?us-ascii?Q?h3x6xrTAjumMeGCTmJeXeZhtMvFqUG6QIkoK+nLXsyogt7HaX98WTf7pZ/+n?=
- =?us-ascii?Q?NttFn8tLP9cjlnF7oxlyqPjisg96JXDj5J5pdQSL8FGH?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DA89td8aNTL5SmMFx/du3PQWP827mSrTtyK5QwZwVLldh1iX+GsZv3HgepIQ?=
+ =?us-ascii?Q?BARUYUCvTWe4dBj/VHHWBsYxlYH8ksyZ1qdpbNNiJkZ+HylbLeoLdYIUI/Dj?=
+ =?us-ascii?Q?ruA/2cmQ+fVB8G+raImfTXJDoLZ+VkpIsm67l0CgW6zCL4xN0sRHdRIpjufJ?=
+ =?us-ascii?Q?JkuZGMxb/+zH8e++uRUCbUU7jo50DVVsShtuh8PQvjFMTzz7SQibrKsk75Qo?=
+ =?us-ascii?Q?HTZeq+AssWji7P5y6BtNbGPUHlTENhAL3FRz5mNqMbneYS2LDM/qOyqFyiGM?=
+ =?us-ascii?Q?wSjuydVpxxE1scbRB5XFgAtfDEgUzD7ZkCyucpUbXroNO7jy4JB/ZDufTo07?=
+ =?us-ascii?Q?7E2R+I2Gl7qP6tztbFlTeUb4eqNO7qVyxzp2ilGclMPFOUJSiYD7F3Pqtu/w?=
+ =?us-ascii?Q?Cpsw2Dm0EHoLStXnh16etfvG7Mjndo07ZyYG4qgSwumMcfkVY+Y1k3kBRAgK?=
+ =?us-ascii?Q?i27peZ9SKKVaarhH6603WTs2UyJXh8PxfUAgty7xhs3cNZm08hLcwX7s/3RR?=
+ =?us-ascii?Q?uAPuhacg8IZLy1cMQQ/RfanYvdST2TXfhRf66fRayIhOYwJxLa5PSrmE7dRd?=
+ =?us-ascii?Q?xaSrn+KBFNE1RPjXwGEXmxaKwf5gOJDtImhFSBrKTACsmOoS6rVZ1tWOQ4ue?=
+ =?us-ascii?Q?leH5TgaLlNj7vYCEbs9bN+DeMq3QCD9fxrx7W8Xqtso0LvNG+g7YPHcrg6a7?=
+ =?us-ascii?Q?IXDrxF3eCZhdJXqg2o9yuqcYIZAigfJFhKUek+gAeS0QkbnqdaC7XHJCnL6s?=
+ =?us-ascii?Q?uUrY0HGbLfOvZrvyjI61TJhvhXOkYezJC9Gli1dhB/ozRah1bvAp6YPJ0Sox?=
+ =?us-ascii?Q?+V8yFY1Q5Zm5gTkN8mAJSDzN6dNTilonLIIoboM+hwwWUX5OqGd+hL22RzHM?=
+ =?us-ascii?Q?lGx9Zi3trmg7DBxE4QRM/Fpg1u4/BvggFdjlyYwpHsboWnrszLTrZgUVqk4X?=
+ =?us-ascii?Q?+9ibp1V2Mva/tdbUlDf8H/u0gSMiHhD89siSCFC/Ld/wiPJDAVjBp4RTc4qK?=
+ =?us-ascii?Q?3Od6+ibAyMVVvLOrrGeRgpkGzumQnqLhOM8Tc7lzxddj65Avte7edvzjaDuu?=
+ =?us-ascii?Q?aYFyUv6iKXPhfpb5/FUTSFmalcnKfT12QMFJun3TKQZVuu0txsZQsMcU+7/2?=
+ =?us-ascii?Q?9A6IWfzRlGSJZDG3r+/aRpF5qJAx5oYym1dNvLD/CIG9CWP/a0rNY7/v3ZcO?=
+ =?us-ascii?Q?hrkaTqQGdCr0gPfpgQFh8xDHVtCqRIoVwKiy7z8CSqN2ZZ4CO6MWM2+5cdOe?=
+ =?us-ascii?Q?AXUiPR3sO1Cip8ZhNtudF+cJZCs8baqMBKKPb8p8TpbzbGxT3KEFmOlAFYQ6?=
+ =?us-ascii?Q?z6M3OSqwFIoHQ4h1DBIeQxmXeiBvdelBNU8PZR6jSv8S3SGDxAXSDf2K7StC?=
+ =?us-ascii?Q?9TbUPHc/4tJfR6GXsALpqcVBu2i6w3zcbukeVel1XutF+t50b9+B5gbqK+hw?=
+ =?us-ascii?Q?uM9GorI+ilU+gzh+hyzEWoCU8MWqhwJTEKh8Yb+vdvi/eg3aBFySGAFtVrET?=
+ =?us-ascii?Q?ODuUF+s0OL6x7WpgM7/dJ6QV45bbsuSytq4CVMANU2Yvd8z7qQ12EnSuPWxk?=
+ =?us-ascii?Q?+q/axLnLsmidSlzu5GrgoFxAL7Z2d2kD2TVaeIw8?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4efdc9c2-4fb3-4215-a9ae-08db2a72dcda
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2023 01:15:02.2544
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6179.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c84faa9-dc86-4868-8012-08db2a746ee8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2023 01:26:16.7736
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Jc/dZHkcRH+uX7uSi/fqqTKU2b+T3F8MXGLJ30lhUpMnocaY5Crr5kdx8MM3p8cX/KeioicrqwnVULHU+Z7GHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4783
+X-MS-Exchange-CrossTenant-userprincipalname: sE0arGSjjxyNhWCXKrzEYChQZnUCt61QsgGjpSrl31a/M4DntoNQET6BjFa2sU8NOsVjjhDBt1ctGN0WGYwA/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7732
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> insmod rcutorture.ko
-> rmmod rcutorture.ko
+> From: Paul E. McKenney <paulmck@kernel.org>
+> [...]
+> > > Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
+> > > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> >
+> > Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
 >=20
-> [  209.437327] WARNING: CPU: 0 PID: 508 at kernel/workqueue.c:3167 __flus=
-h_work+0x50a/0x540
-> [  209.437346] Modules linked in: rcutorture(-) torture [last unloaded: r=
-cutorture]
-> [  209.437382] CPU: 0 PID: 508 Comm: rmmod Tainted: G  W  6.3.0-rc1-yocto=
--standard+
-> [  209.437406] RIP: 0010:__flush_work+0x50a/0x540
-> .....
-> [  209.437758]  flush_delayed_work+0x36/0x90
-> [  209.437776]  cleanup_srcu_struct+0x68/0x2e0
-> [  209.437817]  srcu_module_notify+0x71/0x140
-> [  209.437854]  blocking_notifier_call_chain+0x9d/0xd0
-> [  209.437880]  __x64_sys_delete_module+0x223/0x2e0
-> [  209.438046]  do_syscall_64+0x43/0x90
-> [  209.438062]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> Much better, thank you both!
 >=20
-> For srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(),
-> when compiling and loading as modules, the srcu_module_coming() is invoke=
-d,
-> allocate memory for srcu structure's->sda and initialize sda structure,
-> due to not fully initialize srcu structure's->sup, so at this time the
-> sup structure's->delaywork.func is null, if not invoke init_srcu_struct_f=
-ields()
-> before unloading modules, in srcu_module_going() the __flush_work() find
-> work->func is empty, will raise the warning above.
+> But unfortunately, these patches do not apply cleanly.  Qiuxu Zhuo, could
+> you please forward port these to the -rcu "dev" branch [1]?
 >=20
-> This commit add init_srcu_struct_fields() to initialize srcu structure's-=
->sup,
-> in srcu_module_coming().
+
+Hi Paul,
+
+OK.=20
+I'll be making v4 patches rebased on the top of the -rcu "dev" branch.
+Thanks for letting me know more about the RCU patch workflow.
+
+Also thank you Davidlohr Bueso and Joel for reviewing the patches.
+
+- Qiuxu
+
+> 						Thanx, Paul
 >=20
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
->
->Good catch, and thank you for testing the in-module case!
->
->One question below...
->
->							Thanx, Paul
->
-> ---
->  kernel/rcu/srcutree.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->=20
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 1fb078abbdc9..42d8720e016c 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1921,7 +1921,8 @@ static int srcu_module_coming(struct module *mod)
->  		ssp->sda =3D alloc_percpu(struct srcu_data);
->  		if (WARN_ON_ONCE(!ssp->sda))
->  			return -ENOMEM;
-> -		init_srcu_struct_data(ssp);
-> +		if (WARN_ON_ONCE(init_srcu_struct_fields(ssp, true)))
-> +			return -ENOMEM;
->
->Wouldn't it be better to simply delete the init_srcu_struct_data()?
->
->Then the first call to check_init_srcu_struct() would take care of
->the initialization, just as for the non-module case.  Or am I missing
->something subtle?
-
-Hi Paul
-
-Maybe the check_init_srcu_struct() is always not invoked, for example,
-In rcutorture.c,   here is such a definition DEFINE_STATIC_SRCU(srcu_ctl),
-but we use torture_type=3Drcu to test,  there will not be any interface cal=
-ling
-check_init_srcu_struct() to initialize srcu_ctl and set  structure's->delay=
-work.func=20
-is process_srcu().
-when we unload the rcutorture module, invoke cleanup_srcu_struct()
-to flush sup structure's->delaywork.func, due to the func pointer is not in=
-itialize,
-it's null, will trigger warning.
-
-About kernel/workqueue.c:3167
-
-__flush_work
-     if (WARN_ON(!work->func))   <---------trigger waning
-	return false;
-
-
-and  in  init_srcu_struct_fields(ssp, true), wil set srcu_sup->sda_is_stati=
-c is true
-and set srcu_sup-> srcu_gp_seq_needed is zero,  after that when we call
- check_init_srcu_struct() again, it not be initialized again.
-
-Thanks
-Zqiang
-
->
->It should also be possible to eliminate duplicate code between the
->in-module and non-module statically allocated initialization cases,
->come to think of it.
->
->  	}
->  	return 0;
->  }
-> @@ -1931,9 +1932,13 @@ static void srcu_module_going(struct module *mod)
->  {
->  	int i;
->  	struct srcu_struct **sspp =3D mod->srcu_struct_ptrs;
-> +	struct srcu_struct *ssp;
-> =20
-> -	for (i =3D 0; i < mod->num_srcu_structs; i++)
-> -		cleanup_srcu_struct(*(sspp++));
-> +	for (i =3D 0; i < mod->num_srcu_structs; i++) {
-> +		ssp =3D *(sspp++);
-> +		cleanup_srcu_struct(ssp);
-> +		free_percpu(ssp->sda);
-> +	}
->
->And good catch on another memory leak with this one, looks proper
->to me.
->
->  }
-> =20
->  /* Handle one module, either coming or going. */
-> --=20
-> 2.25.1
->=20
+> [1]
+> https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/rcutodo.
+> html
