@@ -2,38 +2,38 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87FEAC6FD1F
-	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 23:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88E6DC6FD1C
+	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 23:21:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbjCVXTu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Mar 2023 19:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
+        id S229870AbjCVXV4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Mar 2023 19:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjCVXTs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Mar 2023 19:19:48 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C01320A12;
-        Wed, 22 Mar 2023 16:19:47 -0700 (PDT)
+        with ESMTP id S229745AbjCVXVz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Mar 2023 19:21:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE7220D23;
+        Wed, 22 Mar 2023 16:21:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EA0E3B81E92;
-        Wed, 22 Mar 2023 23:19:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2C4CC433EF;
-        Wed, 22 Mar 2023 23:19:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC9D362306;
+        Wed, 22 Mar 2023 23:21:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EEADC433D2;
+        Wed, 22 Mar 2023 23:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679527184;
-        bh=CeNA3Xry0fukNgve+HGWGm961c/J0hFU2HFr5a30is4=;
+        s=k20201202; t=1679527309;
+        bh=0RxS9LzwqEuTpc0Cc7hCnYLzybmb7bUKnNrtE5zK+bs=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JHAWGcHAf7EZwxxHPoUqdpWeJl1FvTYi/A/to/4Ud+Gob/l0jU0mW0k9McyV5960e
-         aBE2ib1HW20u7+cCOe5U8agHkIJfMmKHf762PC7Vf0m2S92MgqvOaCtNK3jWP0QDEL
-         FaL17FWfX4khnSwVxGrY89vLxrWhvN89Sm+yfZY/YcpFPjfEWnDmRqolCxIOPAaq8k
-         x1TT++pulKOUiwvTNSMInCsQto7FPDh8wCzz+PCzkJ41Cqox17CjA+MANC8HMqp+4X
-         aAMrawakhfbrch9lAzwewLVGHze3mF0GiBpkHwFl8/cXJQXw9OVMAIjTE1Z3D51dri
-         V49rWhqkFuvew==
+        b=V9ALjO2HecoXi/TgMkx805aggmhFZnwvg0FS4sGwJZaQ1doK7ga/PEjuaK9sFRfdB
+         YlHfGIpACSeI1Agaa5LQoAAHMKykzVcTR9un3sD4vmxnSi22ef/9rivCgBkBgaJxh3
+         CIHK3QScB5U3jfEosKnnomKMWniaQeMSbvx/U3nyDVCvvRTxmfjT/LFwCG4P0vf+ZL
+         h3KCAVmgy7uSt7e53RqVreznOE//gLT53GGDMr+9bGzyX4bmBqAG1ynG2iALlrBl4r
+         YCBaHI6mjaEhfhi9ermaUzIsJUMNEMxRFEGSHjaGp5DW0whXv47vtfL76tzO//4xf4
+         GxDmuZCu7MkaQ==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5C0721540397; Wed, 22 Mar 2023 16:19:44 -0700 (PDT)
-Date:   Wed, 22 Mar 2023 16:19:44 -0700
+        id CB3EA1540397; Wed, 22 Mar 2023 16:21:48 -0700 (PDT)
+Date:   Wed, 22 Mar 2023 16:21:48 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
@@ -41,67 +41,67 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 2/4] rcu/nocb: Fix shrinker race against callback enqueuer
-Message-ID: <39a0664a-cabf-4e3c-a663-af6e33fbe339@paulmck-laptop>
+Subject: Re: [PATCH 3/4] rcu/nocb: Recheck lazy callbacks under the
+ ->nocb_lock from shrinker
+Message-ID: <29087017-d349-4710-a7cb-04948fb104df@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20230322194456.2331527-1-frederic@kernel.org>
- <20230322194456.2331527-3-frederic@kernel.org>
+ <20230322194456.2331527-4-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230322194456.2331527-3-frederic@kernel.org>
+In-Reply-To: <20230322194456.2331527-4-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 08:44:54PM +0100, Frederic Weisbecker wrote:
-> The shrinker resets the lazy callbacks counter in order to trigger the
-> pending lazy queue flush though the rcuog kthread. The counter reset is
-> protected by the ->nocb_lock against concurrent accesses...except
-> for one of them. Here is a list of existing synchronized readers/writer:
-> 
-> 1) The first lazy enqueuer (incrementing ->lazy_len to 1) does so under
->    ->nocb_lock and ->nocb_bypass_lock.
-> 
-> 2) The further lazy enqueuers (incrementing ->lazy_len above 1) do so
->    under ->nocb_bypass_lock _only_.
-> 
-> 3) The lazy flush checks and resets to 0 under ->nocb_lock and
-> 	->nocb_bypass_lock.
-> 
-> The shrinker protects its ->lazy_len reset against cases 1) and 3) but
-> not against 2). As such, setting ->lazy_len to 0 under the ->nocb_lock
-> may be cancelled right away by an overwrite from an enqueuer, leading
-> rcuog to ignore the flush.
-> 
-> To avoid that, use the proper bypass flush API which takes care of all
-> those details.
+On Wed, Mar 22, 2023 at 08:44:55PM +0100, Frederic Weisbecker wrote:
+> The ->lazy_len is only checked locklessly. Recheck again under the
+> ->nocb_lock to avoid spending more time on flushing/waking if not
+> necessary. The ->lazy_len can still increment concurrently (from 1 to
+> infinity) but under the ->nocb_lock we at least know for sure if there
+> are lazy callbacks at all (->lazy_len > 0).
 > 
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Again, good catch, and this one looks good to me.
-
-So what am I missing?  ;-)
+This one looks plausible, and might hold the answer to earlier
+questions.
 
 							Thanx, Paul
 
 > ---
->  kernel/rcu/tree_nocb.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  kernel/rcu/tree_nocb.h | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
 > 
 > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index dd9b655ae533..cb57e8312231 100644
+> index cb57e8312231..a3dc7465b0b2 100644
 > --- a/kernel/rcu/tree_nocb.h
 > +++ b/kernel/rcu/tree_nocb.h
-> @@ -1356,7 +1356,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+> @@ -1350,12 +1350,20 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  		if (!rcu_rdp_is_offloaded(rdp))
 >  			continue;
 >  
->  		rcu_nocb_lock_irqsave(rdp, flags);
-> -		WRITE_ONCE(rdp->lazy_len, 0);
-> +		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
+> +		if (!READ_ONCE(rdp->lazy_len))
+> +			continue;
+> +
+> +		rcu_nocb_lock_irqsave(rdp, flags);
+> +		/*
+> +		 * Recheck under the nocb lock. Since we are not holding the bypass
+> +		 * lock we may still race with increments from the enqueuer but still
+> +		 * we know for sure if there is at least one lazy callback.
+> +		 */
+>  		_count = READ_ONCE(rdp->lazy_len);
+> -
+> -		if (_count == 0)
+> +		if (!_count) {
+> +			rcu_nocb_unlock_irqrestore(rdp, flags);
+>  			continue;
+> -
+> -		rcu_nocb_lock_irqsave(rdp, flags);
+> +		}
+>  		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
 >  		rcu_nocb_unlock_irqrestore(rdp, flags);
 >  		wake_nocb_gp(rdp, false);
->  		sc->nr_to_scan -= _count;
 > -- 
 > 2.34.1
 > 
