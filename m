@@ -2,216 +2,133 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88C74C6FD1F
-	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 14:58:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CE80C76195
+	for <rcu@archiver.kernel.org>; Wed, 22 Mar 2023 18:24:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbjCVO6W (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Mar 2023 10:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
+        id S230028AbjCVSYP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Mar 2023 14:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjCVO6D (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Mar 2023 10:58:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B3E3430F;
-        Wed, 22 Mar 2023 07:57:31 -0700 (PDT)
+        with ESMTP id S229620AbjCVSYO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Mar 2023 14:24:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13891A6;
+        Wed, 22 Mar 2023 11:24:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 93E45B81D11;
-        Wed, 22 Mar 2023 14:57:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E6FC433D2;
-        Wed, 22 Mar 2023 14:57:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8C16A62239;
+        Wed, 22 Mar 2023 18:24:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB04C433EF;
+        Wed, 22 Mar 2023 18:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679497048;
-        bh=Y3HtKtckdIyVycaNg7jC2DNyivhIui6yCz3yQioPQdk=;
+        s=k20201202; t=1679509453;
+        bh=aWxeq5HqKialMXYsRI0N48pceUPI3ircbdDb9rBKN6o=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iKuInfSMVIkMoiqTwiz5b6AWyGjTKHqgKQ8VkmkEMyhp8Znvf5dODRrMldam2G4Mc
-         hkWWVAHCDcObQTQtyFTuagctIXDgHzFC8o8HDNeuV3/EtRFI+mBVFllOxDMBeIa5o6
-         EGDyb31rmWq7d+Qc08kf2H6jYjAQgMAoFOtmX91kPvf08zbJX87A62nz4L1qeP2weJ
-         qUQy/fJfuBKVKrxgBp6XDmUe3Eh8WvlJVDhDRClqZ0VH6AV0VGYfzJTnWpYxa4AxBy
-         rAAtTPsynSr0h//GwMJyIzrn4fif7nK+rgFVNaMRI6pEsEyu7dvAfhysz2I4e14bBw
-         QCByONW/dUTBg==
+        b=EP3QogOAgnu3MpQ9e5iYtVyMW0DX7ZDhR9TE3rGI1LTgnqnULyUFtEQ2cvNJ9xJBZ
+         dpoI/KfM3BOIV+l9P5LXnBqCTnDfcnCyPv5iVfQbOKkhjHd06CEF+oTBEEQ49yTC1j
+         VojDMFy1fp2ae4KouDRckPP7Db91Enf+4fZaBa1aHpEQjWbliff0dEw4mpgc7pDCHk
+         tI0nEbCKgLXL/+CWzwOsQ+IQij+WLJ4yKwVZ58mhYVk07Iuf4fHNwiDApoPFFro9rD
+         IxJmanT58b/nb5GoagwU3A7H5ECR08p/755+Vp7SPs0rviJ1cblPsbz2CX/Uvi1y7K
+         tv/z/rHgXNM4A==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C7577154033A; Wed, 22 Mar 2023 07:57:27 -0700 (PDT)
-Date:   Wed, 22 Mar 2023 07:57:27 -0700
+        id 87978154033A; Wed, 22 Mar 2023 11:24:12 -0700 (PDT)
+Date:   Wed, 22 Mar 2023 11:24:12 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] srcu: Fix flush sup work warning in cleanup_srcu_struct()
-Message-ID: <dc8b5a44-02ca-4e5a-bd4a-644af3e7c11e@paulmck-laptop>
+To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Cc:     dave@stgolabs.net, frederic@kernel.org, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH v4 2/2] rcu/rcuscale: Stop kfree_scale_thread thread(s)
+ after unloading rcuscale
+Message-ID: <d5284e08-837e-4ed2-989f-2c62f2cc0f19@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230321081346.192000-1-qiang1.zhang@intel.com>
- <e7951c31-4a24-4493-be4b-603fec0730ff@paulmck-laptop>
- <PH0PR11MB588087645FE02C9F2C113CC8DA869@PH0PR11MB5880.namprd11.prod.outlook.com>
- <f13e878f-65c3-40cb-aa3f-eb87ae6c9d6b@paulmck-laptop>
- <PH0PR11MB5880CAE4D4A58BD71AE984CFDA869@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <a4a3e103-78b3-4be3-80b8-bbae7b1bb2f4@paulmck-laptop>
+ <20230322114241.88118-1-qiuxu.zhuo@intel.com>
+ <20230322114241.88118-3-qiuxu.zhuo@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR11MB5880CAE4D4A58BD71AE984CFDA869@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <20230322114241.88118-3-qiuxu.zhuo@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 04:38:29AM +0000, Zhang, Qiang1 wrote:
-> > > insmod rcutorture.ko
-> > > rmmod rcutorture.ko
-> > > 
-> > > [  209.437327] WARNING: CPU: 0 PID: 508 at kernel/workqueue.c:3167 
-> > > __flush_work+0x50a/0x540 [  209.437346] Modules linked in: 
-> > > rcutorture(-) torture [last unloaded: rcutorture] [  209.437382] 
-> > > CPU: 0 PID: 508 Comm: rmmod Tainted: G  W  6.3.0-rc1-yocto-standard+ 
-> > > [  209.437406] RIP: 0010:__flush_work+0x50a/0x540 .....
-> > > [  209.437758]  flush_delayed_work+0x36/0x90 [  209.437776]  
-> > > cleanup_srcu_struct+0x68/0x2e0 [  209.437817]  
-> > > srcu_module_notify+0x71/0x140 [  209.437854]  
-> > > blocking_notifier_call_chain+0x9d/0xd0
-> > > [  209.437880]  __x64_sys_delete_module+0x223/0x2e0
-> > > [  209.438046]  do_syscall_64+0x43/0x90 [  209.438062]  
-> > > entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> > > 
-> > > For srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(), 
-> > > when compiling and loading as modules, the srcu_module_coming() is 
-> > > invoked, allocate memory for srcu structure's->sda and initialize 
-> > > sda structure, due to not fully initialize srcu structure's->sup, so 
-> > > at this time the sup structure's->delaywork.func is null, if not 
-> > > invoke init_srcu_struct_fields() before unloading modules, in 
-> > > srcu_module_going() the __flush_work() find
-> > > work->func is empty, will raise the warning above.
-> > > 
-> > > This commit add init_srcu_struct_fields() to initialize srcu 
-> > > structure's->sup, in srcu_module_coming().
-> > > 
-> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > >
-> > >Good catch, and thank you for testing the in-module case!
-> > >
-> > >One question below...
-> > >
-> > >							Thanx, Paul
-> > >
-> > > ---
-> > >  kernel/rcu/srcutree.c | 11 ++++++++---
-> > >  1 file changed, 8 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c index 
-> > > 1fb078abbdc9..42d8720e016c 100644
-> > > --- a/kernel/rcu/srcutree.c
-> > > +++ b/kernel/rcu/srcutree.c
-> > > @@ -1921,7 +1921,8 @@ static int srcu_module_coming(struct module *mod)
-> > >  		ssp->sda = alloc_percpu(struct srcu_data);
-> > >  		if (WARN_ON_ONCE(!ssp->sda))
-> > >  			return -ENOMEM;
-> > > -		init_srcu_struct_data(ssp);
-> > > +		if (WARN_ON_ONCE(init_srcu_struct_fields(ssp, true)))
-> > > +			return -ENOMEM;
-> > >
-> > >Wouldn't it be better to simply delete the init_srcu_struct_data()?
-> > >
-> > >Then the first call to check_init_srcu_struct() would take care of 
-> > >the initialization, just as for the non-module case.  Or am I missing 
-> > >something subtle?
-> > 
-> > Hi Paul
-> > 
-> > Maybe the check_init_srcu_struct() is always not invoked, for example,
-> > In rcutorture.c,   here is such a definition DEFINE_STATIC_SRCU(srcu_ctl),
-> > but we use torture_type=rcu to test,  there will not be any interface 
-> > calling
-> > check_init_srcu_struct() to initialize srcu_ctl and set  
-> > structure's->delaywork.func is process_srcu().
-> > when we unload the rcutorture module, invoke cleanup_srcu_struct() to 
-> > flush sup structure's->delaywork.func, due to the func pointer is not 
-> > initialize, it's null, will trigger warning.
-> > 
-> > About kernel/workqueue.c:3167
-> > 
-> > __flush_work
-> >      if (WARN_ON(!work->func))   <---------trigger waning
-> > 	return false;
-> > 
-> > 
-> > and  in  init_srcu_struct_fields(ssp, true), wil set 
-> > srcu_sup->sda_is_static is true and set srcu_sup-> srcu_gp_seq_needed 
-> > is zero,  after that when we call
-> >  check_init_srcu_struct() again, it not be initialized again.
-> >
-> >
-> >Good point!  In the non-module statically allocated case there is never a call to cleanup_srcu_struct().
-> >
-> >So suppose the code in srcu_module_coming() only did the alloc_percpu(), and then the
-> >code in srcu_module_going() only did the the matching
-> >free_percpu() instead of the current cleanup_srcu_struct()?
+On Wed, Mar 22, 2023 at 07:42:41PM +0800, Qiuxu Zhuo wrote:
+> When running the 'kfree_rcu_test' test case with commands [1] the call
+> trace [2] was thrown. This was because the kfree_scale_thread thread(s)
+> still run after unloading rcuscale and torture modules. Fix the call
+> trace by invoking kfree_scale_cleanup() from rcu_scale_cleanup() when
+> removing the rcuscale module.
 > 
-> But in modules, for srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(),
-> when a module is unloaded, we usually don't call cleanup_srcu_struct() in the module
-> unload function.
-> If in srcu_module_going() only do free_percpu(), the srcu_sup->node memory maybe
-> can not free and also lost the opportunity to refresh the running work.
+> [1] modprobe rcuscale kfree_rcu_test=1
+>     // After some time
+>     rmmod rcuscale
+>     rmmod torture
+> 
+> [2] BUG: unable to handle page fault for address: ffffffffc0601a87
+>     #PF: supervisor instruction fetch in kernel mode
+>     #PF: error_code(0x0010) - not-present page
+>     PGD 11de4f067 P4D 11de4f067 PUD 11de51067 PMD 112f4d067 PTE 0
+>     Oops: 0010 [#1] PREEMPT SMP NOPTI
+>     CPU: 1 PID: 1798 Comm: kfree_scale_thr Not tainted 6.3.0-rc1-rcu+ #1
+>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
+>     RIP: 0010:0xffffffffc0601a87
+>     Code: Unable to access opcode bytes at 0xffffffffc0601a5d.
+>     RSP: 0018:ffffb25bc2e57e18 EFLAGS: 00010297
+>     RAX: 0000000000000000 RBX: ffffffffc061f0b6 RCX: 0000000000000000
+>     RDX: 0000000000000000 RSI: ffffffff962fd0de RDI: ffffffff962fd0de
+>     RBP: ffffb25bc2e57ea8 R08: 0000000000000000 R09: 0000000000000000
+>     R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+>     R13: 0000000000000000 R14: 000000000000000a R15: 00000000001c1dbe
+>     FS:  0000000000000000(0000) GS:ffff921fa2200000(0000) knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: ffffffffc0601a5d CR3: 000000011de4c006 CR4: 0000000000370ee0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     Call Trace:
+>      <TASK>
+>      ? kvfree_call_rcu+0xf0/0x3a0
+>      ? kthread+0xf3/0x120
+>      ? kthread_complete_and_exit+0x20/0x20
+>      ? ret_from_fork+0x1f/0x30
+>      </TASK>
+>     Modules linked in: rfkill sunrpc ... [last unloaded: torture]
+>     CR2: ffffffffc0601a87
+>     ---[ end trace 0000000000000000 ]---
+> 
+> Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
+> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-But in the module case, isn't the srcu_sup->node also statically
-allocated via the "static struct srcu_usage" declaration?
+Much better, thank you!
+
+I queued and pushed both of them.
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-#ifdef MODULE
-# define __DEFINE_SRCU(name, is_static)								\
-	static struct srcu_usage name##_srcu_usage = __SRCU_USAGE_INIT(name##_srcu_usage);	\
-	is_static struct srcu_struct name = __SRCU_STRUCT_INIT_MODULE(name, name##_srcu_usage);	\
-	extern struct srcu_struct * const __srcu_struct_##name;					\
-	struct srcu_struct * const __srcu_struct_##name						\
-		__section("___srcu_struct_ptrs") = &name
-#else
-# define __DEFINE_SRCU(name, is_static)								\
-	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);				\
-	static struct srcu_usage name##_srcu_usage = __SRCU_USAGE_INIT(name##_srcu_usage);	\
-	is_static struct srcu_struct name =							\
-		__SRCU_STRUCT_INIT(name, name##_srcu_usage, name##_srcu_data)
-#endif
-
-> Thanks
-> Zqiang
+> ---
+>  kernel/rcu/rcuscale.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 7e8965b0827a..d1221731c7cf 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -797,6 +797,11 @@ rcu_scale_cleanup(void)
+>  	if (gp_exp && gp_async)
+>  		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
+>  
+> +	if (kfree_rcu_test) {
+> +		kfree_scale_cleanup();
+> +		return;
+> +	}
+> +
+>  	if (torture_cleanup_begin())
+>  		return;
+>  	if (!cur_ops) {
+> -- 
+> 2.17.1
 > 
-> >
-> >							Thanx, Paul
-> >
-> > Thanks
-> > Zqiang
-> > 
-> > >
-> > >It should also be possible to eliminate duplicate code between the 
-> > >in-module and non-module statically allocated initialization cases, 
-> > >come to think of it.
-> > >
-> > >  	}
-> > >  	return 0;
-> > >  }
-> > > @@ -1931,9 +1932,13 @@ static void srcu_module_going(struct module 
-> > > *mod)  {
-> > >  	int i;
-> > >  	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
-> > > +	struct srcu_struct *ssp;
-> > >  
-> > > -	for (i = 0; i < mod->num_srcu_structs; i++)
-> > > -		cleanup_srcu_struct(*(sspp++));
-> > > +	for (i = 0; i < mod->num_srcu_structs; i++) {
-> > > +		ssp = *(sspp++);
-> > > +		cleanup_srcu_struct(ssp);
-> > > +		free_percpu(ssp->sda);
-> > > +	}
-> > >
-> > >And good catch on another memory leak with this one, looks proper to 
-> > >me.
-> > >
-> > >  }
-> > >  
-> > >  /* Handle one module, either coming or going. */
-> > > --
-> > > 2.25.1
-> > > 
