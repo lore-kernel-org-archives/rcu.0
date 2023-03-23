@@ -2,97 +2,86 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53713C74A5B
-	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 19:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7450C74A5B
+	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 22:13:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjCWTPi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Mar 2023 15:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
+        id S229870AbjCWWNj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Mar 2023 18:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjCWTPh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Mar 2023 15:15:37 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE4B8A56
-        for <rcu@vger.kernel.org>; Thu, 23 Mar 2023 12:15:27 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id g9so14861246qvt.8
-        for <rcu@vger.kernel.org>; Thu, 23 Mar 2023 12:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1679598927;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TqRCAEE7Ga0rL8a78rFY8PhrE0MOGxxeV4bDOfZzVMc=;
-        b=S6k0i2TM5bAtIS7AvbpLJbYQzCyiIVaB+BZkzZnP/XTAawaYa4ctKj6S1bSOB/qHey
-         mvmb2sscDcePb9cGO3P4o/5UtMjX8Fm30pkkA4pIXs84VNhDy/XAG+5mO8wuNohS0XHx
-         p9ejcRm4b0cYwOZjpm6bBlgZ+3xUVDUbL4Gd8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679598927;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TqRCAEE7Ga0rL8a78rFY8PhrE0MOGxxeV4bDOfZzVMc=;
-        b=ndLDMiVLkuvDugjvxHCYqfpyl7UTStbT0YJyxgB+5rvVTGQicklQjAuOhcen7u8IlZ
-         YkoKnRZ/dC5vDBN1AaEKifY/oGdM5SKQtM9K6Cicpc9MhZy0F++3tsWYDtqako53ih3L
-         TDsxwew0S70JByGRUoCYLKDh81R3/Ot2heEi1GIgtL1Ko5at/IhZ3rMowff3x0YBYNCF
-         25n2UfzVCc0e4bwJluwdcjmK4Tui/jmj1Piy/yfsCY6NaGlWHp9QXU7taMPW5Ei2uspA
-         uMEiurekJumowSPAFdjSezKzNc+92v0vcoSztJK3FSE2s/khSIwhpMWJgrYVxwIocNdV
-         NJBA==
-X-Gm-Message-State: AO0yUKXQibOswJ3SAmR50QMFBQRwRWdPsECCoU0KbXtZyxAwD7CSzDce
-        xk6R+GWVzXFEFAmnHM1lTg+Y0g==
-X-Google-Smtp-Source: AK7set9Hf1zvg985ro2+Jiybh+qJfGNnuRk4LhnOMOXjoW4PV/wct8oFIcPyAiY02FuUqU0ZoTZLYQ==
-X-Received: by 2002:a05:6214:20a6:b0:5c2:7de9:ec97 with SMTP id 6-20020a05621420a600b005c27de9ec97mr10254822qvd.13.1679598927031;
-        Thu, 23 Mar 2023 12:15:27 -0700 (PDT)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id oj9-20020a056214440900b005dd8b9345bbsm80603qvb.83.2023.03.23.12.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 12:15:26 -0700 (PDT)
-Date:   Thu, 23 Mar 2023 19:15:26 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     paulmck@kernel.org, frederic@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add Zqiang as a RCU reviewer
-Message-ID: <20230323191526.GA628693@google.com>
-References: <20230323040729.145154-1-qiang1.zhang@intel.com>
+        with ESMTP id S230435AbjCWWNi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Mar 2023 18:13:38 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5537D9B;
+        Thu, 23 Mar 2023 15:13:25 -0700 (PDT)
+Received: from [127.0.0.1] (dynamic-046-114-209-225.46.114.pool.telefonica.de [46.114.209.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4DDEE1EC063F;
+        Thu, 23 Mar 2023 23:13:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1679609603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1rG8Vo4uESEgIx6SljIpoKKCeAOrhkkAIKpnzeWXL7Q=;
+        b=iPuzgHJVUpBL5WXk4EVNvM5/Y2kYnz6B/KvW1lguZhVDRAWBHwCJRS1mNsBn5uFmsfy4tI
+        lHrVnIk5xoFbkNCn/uc2rm0k4zGAgUugzFit6aQS0LJakDs5tvWfS/DF8un8OUnuyFwp7Z
+        CJ/hNYhTyXd7JvC7BEQfZecCVBK6Yf4=
+Date:   Thu, 23 Mar 2023 23:13:22 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "usama.arif@bytedance.com" <usama.arif@bytedance.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "brgerst@gmail.com" <brgerst@gmail.com>,
+        "arjan@linux.intel.com" <arjan@linux.intel.com>,
+        "hewenliang4@huawei.com" <hewenliang4@huawei.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "simon.evans@bytedance.com" <simon.evans@bytedance.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+        "kim.phillips@amd.com" <kim.phillips@amd.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "fam.zheng@bytedance.com" <fam.zheng@bytedance.com>,
+        "mimoja@mimoja.de" <mimoja@mimoja.de>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "liangma@liangbit.com" <liangma@liangbit.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "punit.agrawal@bytedance.com" <punit.agrawal@bytedance.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
+        "piotrgorski@cachyos.org" <piotrgorski@cachyos.org>,
+        "gpiccoli@igalia.com" <gpiccoli@igalia.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "Rapan, Sabin" <sabrapan@amazon.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v16 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
+User-Agent: K-9 Mail for Android
+In-Reply-To: <19ec60aa-fa11-c44e-a6d1-9583f2e7707a@amd.com>
+References: <20230321194008.785922-1-usama.arif@bytedance.com> <20230321194008.785922-9-usama.arif@bytedance.com> <20230322224735.GAZBuFh9ld6FuYEyoH@fat_crate.local> <2c3dd773-31ca-d4b1-78a2-b39f3785c7c5@amd.com> <751f572f940220775054dc09324b20b929d7d66d.camel@amazon.co.uk> <19ec60aa-fa11-c44e-a6d1-9583f2e7707a@amd.com>
+Message-ID: <5D59D19F-8085-4638-96A2-4DCE00D2217E@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230323040729.145154-1-qiang1.zhang@intel.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 12:07:29PM +0800, Zqiang wrote:
-> I have spent about two years studying and contributing to RCU,
-> and sharing RCU-related knowledge within my team, if possible,
-> please consider me as R ;-).
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+On March 23, 2023 7:28:38 PM GMT+01:00, Tom Lendacky <thomas=2Elendacky@amd=
+=2Ecom> wrote:
+>
+>I agree=2E But once it's there, someone somewhere in the future may look =
+and go, oh, I can call this=2E So I think it either needs a nice comment ab=
+ove it about how it is currently used/called and what to do if it needs to =
+be called from someplace other than head_64=2ES or the MSR needs to be save=
+d/restored=2E
 
-I am pulling this and the one adding Boqun for 6.4 based on discussion with Paul.
+Or it could be __init and get discarded when the system is up=2E
 
-Congrats. ;-)
-
-thanks,
-
- - Joel
-
-
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8d5bc223f305..b304d3c7b45b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17642,6 +17642,7 @@ R:	Steven Rostedt <rostedt@goodmis.org>
->  R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->  R:	Lai Jiangshan <jiangshanlai@gmail.com>
->  R:	Joel Fernandes <joel@joelfernandes.org>
-> +R:	Zqiang <qiang1.zhang@intel.com>
->  L:	rcu@vger.kernel.org
->  S:	Supported
->  W:	http://www.rdrop.com/users/paulmck/RCU/
-> -- 
-> 2.25.1
-> 
+--=20
+Sent from a small device: formatting sucks and brevity is inevitable=2E 
