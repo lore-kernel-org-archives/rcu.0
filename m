@@ -2,48 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DD18C76196
-	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 03:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43795C6FD1D
+	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 03:56:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjCWDsj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Mar 2023 23:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
+        id S229508AbjCWD4D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 22 Mar 2023 23:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbjCWDsd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Mar 2023 23:48:33 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53CC8A4E;
-        Wed, 22 Mar 2023 20:48:28 -0700 (PDT)
+        with ESMTP id S230072AbjCWD4C (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 22 Mar 2023 23:56:02 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BCA14216;
+        Wed, 22 Mar 2023 20:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679543308; x=1711079308;
+  t=1679543757; x=1711079757;
   h=from:to:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=ucl1BpduzkXe47qrwgSVs43AuH0kYk2zpUQdgR5up+0=;
-  b=Ew2n1o3ck458qapGQk1grYjYYtQw0Vsf7608NQvEBZ1M2PCffvG4yg6x
-   FkMiZRu3qwmCthzEmVjd7M6GSK+6MKy9ybIkWJ/DKtl1GTZzfsDYPe8kk
-   Nf7mVwL4yJsfqHRA9OQwic7G7v1Q4lV3iAYU89IiS9L3QzOsDCX166faJ
-   sJ9S+nkf1ymUlW3SHtOjkbvoFNlci2LkMB8Rc5IHxWNbLZCgK4rwEyK/9
-   sKBK7GQAiYLaTK9H2BYDgK0tRsPS2qtzJdQMe9QZa+0WJZ5xX8IRfdUzK
-   hnh6II3r6W/7ZcRFTal2rLl3Pgk5jQrjWCugS43avuvzeVtYexv4DCSNc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="319778803"
+  bh=3VeGjc5Z3KoM+dy6+axVz1puzG++MgVzUu2uNijmQhQ=;
+  b=cqpE5GRAhxtk+mSvIOsvOYK0s0c/wNfhdEfHJZxjeVl2sXo+BXmZfI3R
+   jPHoEe+LPrBtqKxzEGngycLKz8120eunReMZ3FGmTczJcJhnHcz6pDLh2
+   vYfVwWWyM59MPMy6lltdELC8EPpSybdzX6ZT+C7nHWSVFTUnEj5/DyHqa
+   bZiBDZpnvhTlQGQ8z42UTwtefa4F87D7ybqLqBqlTbJJupu25aBOLTrI3
+   zkKWnVmfGYiibqrUOFKxDi7M28/uccZaPRSZwr7/yPnG7hOaE2hiBEx9A
+   V+bVDlEDMP2YeKb8VFr6ZdcbuLC45xWOecDkoiLdKg1I1S6i6M9Hy7zkf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="341752247"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="319778803"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 20:48:28 -0700
+   d="scan'208";a="341752247"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 20:55:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="856342368"
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="771299185"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="856342368"
+   d="scan'208";a="771299185"
 Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 20:48:26 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 20:55:45 -0700
 From:   Zqiang <qiang1.zhang@intel.com>
 To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org,
         rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu-tasks: Make pr_info() output more clearly in cblist_init_generic()
-Date:   Thu, 23 Mar 2023 12:00:11 +0800
-Message-Id: <20230323040011.143884-1-qiang1.zhang@intel.com>
+Subject: [PATCH] MAINTAINERS: Add Zqiang as a RCU reviewer
+Date:   Thu, 23 Mar 2023 12:07:29 +0800
+Message-Id: <20230323040729.145154-1-qiang1.zhang@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -51,31 +51,27 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit use rtp->name instead of __func__, and output the value
-of rcu_task_cb_adjust in pr_info(), reduced pr_info() calls.
+I have spent about two years studying and contributing to RCU,
+and sharing RCU-related knowledge within my team, if possible,
+please consider me as R ;-).
 
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 ---
- kernel/rcu/tasks.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 397309da3446..0cf958db4e44 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -270,10 +270,8 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
- 	}
- 	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
- 
--	if (rcu_task_cb_adjust)
--		pr_info("%s: Setting adjustable number of callback queues.\n", __func__);
--
--	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
-+	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
-+			data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim), rcu_task_cb_adjust);
- }
- 
- // IRQ-work handler that does deferred wakeup for call_rcu_tasks_generic().
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d5bc223f305..b304d3c7b45b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17642,6 +17642,7 @@ R:	Steven Rostedt <rostedt@goodmis.org>
+ R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+ R:	Lai Jiangshan <jiangshanlai@gmail.com>
+ R:	Joel Fernandes <joel@joelfernandes.org>
++R:	Zqiang <qiang1.zhang@intel.com>
+ L:	rcu@vger.kernel.org
+ S:	Supported
+ W:	http://www.rdrop.com/users/paulmck/RCU/
 -- 
 2.25.1
 
