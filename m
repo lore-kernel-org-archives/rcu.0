@@ -2,76 +2,157 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43795C6FD1D
-	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 03:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCF6AC7619A
+	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 04:26:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjCWD4D (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 22 Mar 2023 23:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
+        id S229825AbjCWE02 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Mar 2023 00:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbjCWD4C (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 22 Mar 2023 23:56:02 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BCA14216;
-        Wed, 22 Mar 2023 20:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679543757; x=1711079757;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3VeGjc5Z3KoM+dy6+axVz1puzG++MgVzUu2uNijmQhQ=;
-  b=cqpE5GRAhxtk+mSvIOsvOYK0s0c/wNfhdEfHJZxjeVl2sXo+BXmZfI3R
-   jPHoEe+LPrBtqKxzEGngycLKz8120eunReMZ3FGmTczJcJhnHcz6pDLh2
-   vYfVwWWyM59MPMy6lltdELC8EPpSybdzX6ZT+C7nHWSVFTUnEj5/DyHqa
-   bZiBDZpnvhTlQGQ8z42UTwtefa4F87D7ybqLqBqlTbJJupu25aBOLTrI3
-   zkKWnVmfGYiibqrUOFKxDi7M28/uccZaPRSZwr7/yPnG7hOaE2hiBEx9A
-   V+bVDlEDMP2YeKb8VFr6ZdcbuLC45xWOecDkoiLdKg1I1S6i6M9Hy7zkf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="341752247"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="341752247"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 20:55:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="771299185"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="771299185"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2023 20:55:45 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add Zqiang as a RCU reviewer
-Date:   Thu, 23 Mar 2023 12:07:29 +0800
-Message-Id: <20230323040729.145154-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229796AbjCWE00 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Mar 2023 00:26:26 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275C7231D9;
+        Wed, 22 Mar 2023 21:26:25 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id g19so179173qts.9;
+        Wed, 22 Mar 2023 21:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679545584;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=m71zsVivzHPhz262MIZjHPWFUGOi4WzXmXh+VaxIc18=;
+        b=EQ7QLeeZLlMbUuGH4tbDcR8oO3gMKAKXndJmeoi/zamjx6Q7lu6TOTPL/NyiWOvKf8
+         9RHo2WaKrNHyEQmd4GU27KCfAZZ2eREglSsYislMDmVBT55AxmtqQkOTwlF2sAQM2KeN
+         Hm0s61Qv6fxqwTD3vqP+PRS6h0Ksmpsqy6ow3pOJP7m6PfL7MxSzXl/L5eSOSuJIGYL6
+         WyvtmW5r3e1QGs9KLnqcIq3z/NjnAfRp5ucZzn1WF0tmaqv5ANiPPRPfxzMSUYUfy+wD
+         OMr7SvtzmtocGHZABYRMWVk34AVMXkQ8gQyXjS8jeT58XT3nU5SE3dms6w8/S0I+o6Zo
+         oZbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679545584;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m71zsVivzHPhz262MIZjHPWFUGOi4WzXmXh+VaxIc18=;
+        b=dVX7Z6VEUZ8yqFPVlF92WlQgKbS8T/XkVDO+CT9wtUQ1rIRcY964mxmAidE7oxJhc2
+         tQ7V0NUcUpfWY8dc6GH4cIpoQR81C5BDLFC/l2i0DyUh5uPyEGgD4wR3eY5sKfdUYPwx
+         zTPtlAxyZUIqCLk11vkKMPvH724vy77KEwx+OPcv66BzTh9DmANPOR0+A6/r8Rd7wFlq
+         vH6bYqQQ3QKPTaIHvy3eAsow4XsP0ncX/36icf4giX5QyNCppsSku7jK2fzBCFfymkaS
+         zj1trJ9wRUL9bVuObGMFipY/buaF2gWqqpz5GyICXGjowBkMip+gxUhOUE7maliZrNxc
+         921g==
+X-Gm-Message-State: AO0yUKVbtsJhbglw9TTscBfQbaSt81FOzBSksY9iFemMU8v01xPrTifB
+        bH4+PYcmCeHNXAtNu6kMyUZIcXXtfEM=
+X-Google-Smtp-Source: AK7set/hFPEBgjbu1OY/J8kGibdPA87T8WbPpJKO967sCI2Gs34meqq8uz8VOjyIRQ0syTkjxas1jA==
+X-Received: by 2002:a05:622a:49:b0:3e3:7ed6:3db with SMTP id y9-20020a05622a004900b003e37ed603dbmr9925908qtw.29.1679545584311;
+        Wed, 22 Mar 2023 21:26:24 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id p11-20020a05620a22ab00b0074357fa9e15sm12596448qkh.42.2023.03.22.21.26.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Mar 2023 21:26:23 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 016C527C0054;
+        Thu, 23 Mar 2023 00:26:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 23 Mar 2023 00:26:23 -0400
+X-ME-Sender: <xms:7tQbZNm4H_vZ8ibV5yORE8QkYKcUhHk8ktwhm99aH0FNznVM-TcsXQ>
+    <xme:7tQbZI3GlkrFAVsHUqVQoY4v_z8XPCu_2158m55yX8dblEaQ8_Ge9ByFrpdFjtwkO
+    Bd62OMBB_rEFRtj7g>
+X-ME-Received: <xmr:7tQbZDqQ8X8_qMHNCFDFlu4IEcmVf6OM2ZLNwIVurvVW2qMNxvN3n_96y1fWf8Lm-lrwq3YzJXq1u5dmqOGRNwpMZFVSGK_S250>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdegfedgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpeeggeeukeeghfevudektdevjeehhfekffevueefudeivdelteeltdekheejgfei
+    veenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
+    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:7tQbZNnwyQf3QxDax3Eojlqyy0zuxO4U-p7tvocODglkP6PI5c6qjQ>
+    <xmx:7tQbZL1GrjF9j_-zPUtyWA2wc2CvzCfBheZ7GkMeG2sJHcpK0VHZ0g>
+    <xmx:7tQbZMuI5Ff-yvR9qIj74c8QigWZQv2597ZaI2x7YPDjYGT9WaKcmA>
+    <xmx:7tQbZNWrQ14jmmG7-rOPz7zxObs0iSFXPBI9hdukbcTFibCYohnxzw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 23 Mar 2023 00:26:22 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Shuah Khan <shuah@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        seanjc@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH rcu v2 0/7] RCU-related lockdep changes for v6.4
+Date:   Wed, 22 Mar 2023 21:26:07 -0700
+Message-Id: <20230323042614.1191120-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-I have spent about two years studying and contributing to RCU,
-and sharing RCU-related knowledge within my team, if possible,
-please consider me as R ;-).
+Hi,
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Another week, another version ;-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d5bc223f305..b304d3c7b45b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17642,6 +17642,7 @@ R:	Steven Rostedt <rostedt@goodmis.org>
- R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
- R:	Lai Jiangshan <jiangshanlai@gmail.com>
- R:	Joel Fernandes <joel@joelfernandes.org>
-+R:	Zqiang <qiang1.zhang@intel.com>
- L:	rcu@vger.kernel.org
- S:	Supported
- W:	http://www.rdrop.com/users/paulmck/RCU/
+Previous versions:
+
+v1: https://lore.kernel.org/rcu/20230317031339.10277-1-boqun.feng@gmail.com/
+
+Changes since v1:
+
+*	Minor typo fixes
+*	Apply Acked-by tags
+*	Add license and copyright headers for srcu_lockdep.sh
+
+Thank you all for helping improve this!
+
+You can also find this series at
+
+	https://github/fbq/linux rcu/lockdep.2023.03.22a
+
+top commit is:
+
+	450ef54e199f
+
+List of changes:
+
+Boqun Feng (4):
+  locking/lockdep: Introduce lock_sync()
+  rcu: Annotate SRCU's update-side lockdep dependencies
+  locking: Reduce the number of locks in ww_mutex stress tests
+  locking/lockdep: Improve the deadlock scenario print for sync and read
+    lock
+
+Paul E. McKenney (3):
+  rcutorture: Add SRCU deadlock scenarios
+  rcutorture: Add RCU Tasks Trace and SRCU deadlock scenarios
+  rcutorture: Add srcu_lockdep.sh
+
+ include/linux/lockdep.h                       |   8 +-
+ include/linux/srcu.h                          |  34 +++-
+ kernel/locking/lockdep.c                      |  64 +++++-
+ kernel/locking/test-ww_mutex.c                |   2 +-
+ kernel/rcu/rcutorture.c                       | 185 ++++++++++++++++++
+ kernel/rcu/srcutiny.c                         |   2 +
+ kernel/rcu/srcutree.c                         |   2 +
+ .../selftests/rcutorture/bin/srcu_lockdep.sh  |  78 ++++++++
+ 8 files changed, 364 insertions(+), 11 deletions(-)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+
 -- 
-2.25.1
+2.38.1
 
