@@ -2,128 +2,101 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9068C6FD1C
-	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 13:34:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E47CC6FD1D
+	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 14:23:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjCWNel (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Mar 2023 09:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        id S230109AbjCWOXR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Mar 2023 10:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231564AbjCWNek (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Mar 2023 09:34:40 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C4723C41;
-        Thu, 23 Mar 2023 06:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679578479; x=1711114479;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=xsZovgnVI6YXdKsMNC55Uvzf/XWrC47HO9Z29rxh3Y4=;
-  b=IDp8fDpnR1JpIls0WHcJEaB692RTcT9jXnIyZhruMJZVIRHlqRH6v5Ty
-   zLVcLq3MMVaHpfwdXqb9nQDA/OeLkk1RPylW5KlkGAfH0tVVBvxGutNGu
-   mnbz1wny9nfwa8paxFdGAe8FqvHwzTdI86lHq9I412uxpRLmuTk0pxWSv
-   B+hh7conUy6SFthuPD8CnAL+2pk7LDi4bcGLDWWhTjsKqs5aLibXENU9X
-   ZLSn+PWqsOLjECeG4l4MtCPY51FHpwpQ/YcuwMy8by2pk8bD0Vgazv90e
-   wFLXk+niZ44ScI1VgsajEUdMZgpVWj3Ywmiqzf4hNTMWO7H5NWrmJvw2E
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="339520915"
-X-IronPort-AV: E=Sophos;i="5.98,285,1673942400"; 
-   d="scan'208";a="339520915"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 06:34:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675701403"
-X-IronPort-AV: E=Sophos;i="5.98,285,1673942400"; 
-   d="scan'208";a="675701403"
-Received: from zq-optiplex-7090.bj.intel.com ([10.238.156.129])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 06:34:37 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] srcu: Fix flush srcu structure's->sup work warning in cleanup_srcu_struct()
-Date:   Thu, 23 Mar 2023 21:46:21 +0800
-Message-Id: <20230323134621.336832-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229563AbjCWOXQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Mar 2023 10:23:16 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51080524F;
+        Thu, 23 Mar 2023 07:23:14 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-54184571389so397938497b3.4;
+        Thu, 23 Mar 2023 07:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679581393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l4v4CTT2r/FIXiskPxjJpRa5eGFyYIof0wcvwjvkOs4=;
+        b=AJ9mUGZB57tkkNP5vPLcFkQaGpGRpxHceoJ5mv/RHO1hdT51GHJENYRouoPUEojYNX
+         AukZLeaiD9OQjVUDOomqaOFVRKUTURXwn2JymqtdG2erXoO6NgwPU8UPXGQst4jhkiYN
+         pFA6KXNANHkbLw4ggmRB10ydXMQGPDorEAegEqONV5Wj4UeZOGF6XD80J1ra4ieHyV+U
+         LPBk8ypQ41TpzUbLlWIFhBk1xJuYS25HE6lNBZpXZyVG/q2wIQNb32dGRNGBZk4I0kpf
+         bm7KBH3lVGbuCjagkjNRkRSlacw15mJcpQZm5GID5Woc4ssUCWNn+L7T07kTKaGlNOjt
+         Ni0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679581393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l4v4CTT2r/FIXiskPxjJpRa5eGFyYIof0wcvwjvkOs4=;
+        b=UY7lsuEuHbFPDfNyb+lLNlNf9uxRSB8LwVYMsFEcP8P9n/5mVbZddE9UWgjwoUeMfl
+         lGFhav3CIpldEGPM805NgpA2RcljsFgSEuto3lmKpyy8RJVZh+x2x50L4lGSTp6dlIsl
+         MFQojMFNXqq4PRkgOlqwcowoeeRcdILZzysSTDQPYK0o3OT3D8e868gjjGp7Mm/GT3Xh
+         UT9cgz7uSMyay9sxCzh9GO5HhTGcYzIYcHeG5YRnDoBuHcW+CSoKIF94LzCYXi0l93CA
+         yj7xkt2CKjgro0zuoTY15WWiKh1kE0uYy1TT7fCsOqv2k4Xb9wGmarv9i6H+vvov9A+D
+         f6QQ==
+X-Gm-Message-State: AAQBX9ereTaHNYePz/PeMEQw4Tim1yb1koeLd0APPinPwck1XLQODUeP
+        KvteEtXzazjSOdYazSr/ChetkK8fT+KZAxtTww==
+X-Google-Smtp-Source: AKy350ZYdN3NgKICo87hsztPejD84SAYDNMPP4jUqK38jUAeKu59vxvoX++VzH4xCHXNMTtkOwzL+l94JdeUdmITAzs=
+X-Received: by 2002:a81:ed14:0:b0:545:62d1:4a86 with SMTP id
+ k20-20020a81ed14000000b0054562d14a86mr1898405ywm.1.1679581393509; Thu, 23 Mar
+ 2023 07:23:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230321194008.785922-1-usama.arif@bytedance.com>
+ <20230321194008.785922-9-usama.arif@bytedance.com> <20230322224735.GAZBuFh9ld6FuYEyoH@fat_crate.local>
+ <70628793e6777d07f27f43152df497e780925d18.camel@infradead.org>
+ <20230323085138.GAZBwTGly7iOlvxrD4@fat_crate.local> <4dbdd277c4b26ae4b971a910209a3279f79f6837.camel@infradead.org>
+In-Reply-To: <4dbdd277c4b26ae4b971a910209a3279f79f6837.camel@infradead.org>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Thu, 23 Mar 2023 10:23:02 -0400
+Message-ID: <CAMzpN2guz4HTQ8uir9Q=xrUpCYyBfuG2zGSJsakaqY7_OvxCPQ@mail.gmail.com>
+Subject: Re: [PATCH v16 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Usama Arif <usama.arif@bytedance.com>, tglx@linutronix.de,
+        kim.phillips@amd.com, piotrgorski@cachyos.org,
+        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        gpiccoli@igalia.com, Sabin Rapan <sabrapan@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When unloading rcutorture kmod will trigger the following callstack:
+On Thu, Mar 23, 2023 at 5:04=E2=80=AFAM David Woodhouse <dwmw2@infradead.or=
+g> wrote:
+>
+> On Thu, 2023-03-23 at 09:51 +0100, Borislav Petkov wrote:
+> > On Thu, Mar 23, 2023 at 08:32:49AM +0000, David Woodhouse wrote:
+> > > and maybe find some other stuff to cargo-cult to make it safe to run
+> > > C code that early...
+> >
+> > I'm trying to have less shit asm, not more if possible. We've been
+> > aiming to convert stuff to C for years.
+>
+> Absolutely, I understand. There are a few hoops we have to jump through
+> to be able to run C code this early, but it's worth it.
+>
+> > WTF are you calling cargo-cult?
+>
+> Off the top of my head, I don't actually *remember* all the hoops we
+> have to jump through to run C code this early.
 
-insmod rcutorture.ko
-rmmod rcutorture.ko
+Making sure that the stack protector is either disabled or properly
+set up, and disabling any instrumentation/profiling/debug crap that
+isn't initialized yet.
 
-[  209.437327] WARNING: CPU: 0 PID: 508 at kernel/workqueue.c:3167 __flush_work+0x50a/0x540
-[  209.437346] Modules linked in: rcutorture(-) torture [last unloaded: rcutorture]
-[  209.437382] CPU: 0 PID: 508 Comm: rmmod Tainted: G  W  6.3.0-rc1-yocto-standard+
-[  209.437406] RIP: 0010:__flush_work+0x50a/0x540
-.....
-[  209.437758]  flush_delayed_work+0x36/0x90
-[  209.437776]  cleanup_srcu_struct+0x68/0x2e0
-[  209.437817]  srcu_module_notify+0x71/0x140
-[  209.437854]  blocking_notifier_call_chain+0x9d/0xd0
-[  209.437880]  __x64_sys_delete_module+0x223/0x2e0
-[  209.438046]  do_syscall_64+0x43/0x90
-[  209.438062]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-
-flush_delayed_work()
-->__flush_work()
-   ->if (WARN_ON(!work->func))
-        return false;
-
-For srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(),
-when compiling and loading as modules, the srcu_module_coming() is
-invoked, allocate memory for srcu structure's->sda and initialize
-sda structure, due to not fully initialize srcu structure's->sup,
-so at this time the sup structure's->work.work.func is null, if not
-invoke init_srcu_struct_fields() before unloading modules, the
-__flush_work() be invoked in srcu_module_going() and find work->func
-is empty, will raise the warning above.
-
-This commit add the check of srcu_sup structure's->srcu_gp_seq_needed
-to determine whether the check_init_srcu_struct() has been invoked to
-initialize srcu objects in srcu_module_going(), if not initialize, there
-are no pending or running works, so there is no need to flush, only invoke
-free_percpu() to release srcu structure's->sda.
-
-Co-developed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/srcutree.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 1fb078abbdc9..edf894e3b96e 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1921,7 +1921,6 @@ static int srcu_module_coming(struct module *mod)
- 		ssp->sda = alloc_percpu(struct srcu_data);
- 		if (WARN_ON_ONCE(!ssp->sda))
- 			return -ENOMEM;
--		init_srcu_struct_data(ssp);
- 	}
- 	return 0;
- }
-@@ -1931,9 +1930,14 @@ static void srcu_module_going(struct module *mod)
- {
- 	int i;
- 	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
-+	struct srcu_struct *ssp;
- 
--	for (i = 0; i < mod->num_srcu_structs; i++)
--		cleanup_srcu_struct(*(sspp++));
-+	for (i = 0; i < mod->num_srcu_structs; i++) {
-+		ssp = (*sspp++);
-+		if (!rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq_needed)))
-+			cleanup_srcu_struct(ssp);
-+		free_percpu(ssp->sda);
-+	}
- }
- 
- /* Handle one module, either coming or going. */
--- 
-2.25.1
-
+--
+Brian Gerst
