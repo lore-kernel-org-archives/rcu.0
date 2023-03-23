@@ -2,36 +2,41 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A77A1C6FD1C
-	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 23:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24175C6FD1C
+	for <rcu@archiver.kernel.org>; Thu, 23 Mar 2023 23:48:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbjCWXNG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Mar 2023 19:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        id S230455AbjCWXss (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Mar 2023 19:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjCWXNG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Mar 2023 19:13:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDC81025D;
-        Thu, 23 Mar 2023 16:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/0J7jFvtU4QW5iapXrj+eQ92EbtgLqnD7gTrHBDqeFc=; b=otsaus3Dq50b8CS7m8/ItOJM/V
-        w+5QEqxZEH7fyeCPzd5pdp4bzF8CwPoklvzLvf1hx11OyIZEsnCXc9D7UA27sY4T4vPS7bZsmaCDy
-        yX++A58xQ1zjAEnBerlZ36V0lEmdaQ/iIKyE5zKanM0EgZ8BokAWwaPJzjAZvJVd77ATThBXC2ddX
-        korORuY50uqwoouFlQ1ucWsRQqs/clwQin8JRT/lXUrO09zTISQDDL1TSyYV81mSSAQ4xxys0dMkG
-        oVpmoIzdXsAka1UxyyFQpFlCx6WRi0W79/Z6Xj5Y0WoyvtQqRuAv9wdsSsbSoam0BI5pZvhnP07y4
-        9kWa9kYA==;
-Received: from [2001:8b0:10b:5:b3d4:e39d:531b:642a] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pfU6a-004Lgv-AM; Thu, 23 Mar 2023 23:12:24 +0000
-Message-ID: <8dff6ae5ffaebfbcc55a01c04420fd478070b830.camel@infradead.org>
-Subject: Re: [PATCH v16 3/8] cpu/hotplug: Add dynamic parallel bringup
- states before CPUHP_BRINGUP_CPU
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
+        with ESMTP id S229791AbjCWXsr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Mar 2023 19:48:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4046E187;
+        Thu, 23 Mar 2023 16:48:41 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1679615318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/pfMy1WN4egsBlE9AThbnvQzL8RklY9yBTWSLXY9mvs=;
+        b=ote8OolLcDXcpy9s28Dh2PsdN458b3hJGFsqGpPSCxLx7p+Kdk1xjwRog1qduHuxIkTtpF
+        ByKy5X5+1FperpsP4ZdhzAAAJMCuV9S8/bOyoVPeaTeION3wB/P5fYUI1HlC5QrgrATvDW
+        r9dxE1Q5RQhQOk/vXZEILbqV0bQ7KodBdFCGSGoXbS+csxCjBS/J/IbOsKR2tsfBNrY31q
+        XCCboYxvA+q1fbYYb79M8ieWS0tK1vddhEDrxbdcsdZbzy9oRJxclB/ytAU2wOHaSWLOu0
+        LWh09hR70huXpA2dPuXY0VtOqAhlZUPAzbTMV020pFE6zdnNjc5B6oI/O7c3OQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1679615318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/pfMy1WN4egsBlE9AThbnvQzL8RklY9yBTWSLXY9mvs=;
+        b=t4idkLr/NdbUlRWGI/+iTM913jHQmhGyPmtTNxDJ3m6rwsejkqLVbbvw8CpymWzBxGu8TU
+        SG4hx0cx08zjgBAg==
+To:     David Woodhouse <dwmw2@infradead.org>,
         Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
         brgerst@gmail.com
 Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
@@ -44,196 +49,78 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
         gpiccoli@igalia.com
-Date:   Thu, 23 Mar 2023 23:12:21 +0000
-In-Reply-To: <871qlf83wj.ffs@tglx>
+Subject: Re: [PATCH v16 3/8] cpu/hotplug: Add dynamic parallel bringup
+ states before CPUHP_BRINGUP_CPU
+In-Reply-To: <47150207bfb76bb98aff678cf7c91f245e9f5dd9.camel@infradead.org>
 References: <20230321194008.785922-1-usama.arif@bytedance.com>
-         <20230321194008.785922-4-usama.arif@bytedance.com> <874jqb8588.ffs@tglx>
-         <871qlf83wj.ffs@tglx>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-jBRsuR+mRLHq8Anu5NHE"
-User-Agent: Evolution 3.44.4-0ubuntu1 
+ <20230321194008.785922-4-usama.arif@bytedance.com> <874jqb8588.ffs@tglx>
+ <47150207bfb76bb98aff678cf7c91f245e9f5dd9.camel@infradead.org>
+Date:   Fri, 24 Mar 2023 00:48:38 +0100
+Message-ID: <87y1nn6nc9.ffs@tglx>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Mar 23 2023 at 22:49, David Woodhouse wrote:
+> On Thu, 2023-03-23 at 23:36 +0100, Thomas Gleixner wrote:
+>> There is no point in special casing this. All architectures can invoke
+>> the CPUHP_BP_* states before CPUHP_BRINGUP_CPU for each to be brought up
+>> CPU first. So this can be made unconditional and common exercised code.
+>>=20
+>
+> There were three paragraphs in the commit message explaining why I
+> didn't want to do that. It didn't work for x86 before I started, and I
+> haven't reviewed *every* other architecture to ensure that it will work
+> there. It was opt-in for a reason. :)
 
---=-jBRsuR+mRLHq8Anu5NHE
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+I noticed myself before reading your reply :)
 
-T24gRnJpLCAyMDIzLTAzLTI0IGF0IDAwOjA1ICswMTAwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6
-Cj4gU3RpbGwgdGhlIHJlc3QgY2FuIGJlIHNpbXBsaWZpZWQgYXMgYmVsb3cuCgouLi4KCj4gLS0t
-IGEva2VybmVsL2NwdS5jCj4gKysrIGIva2VybmVsL2NwdS5jCj4gQEAgLTE1MDQsMTMgKzE1MDQs
-NDUgQEAgaW50IGJyaW5ndXBfaGliZXJuYXRlX2NwdSh1bnNpZ25lZCBpbnQgcwo+IMKgCj4gwqB2
-b2lkIGJyaW5ndXBfbm9uYm9vdF9jcHVzKHVuc2lnbmVkIGludCBzZXR1cF9tYXhfY3B1cykKPiDC
-oHsKPiAtwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBpbnQgY3B1Owo+ICvCoMKgwqDCoMKgwqDCoHVu
-c2lnbmVkIGludCBjcHUsIG4gPSAxOwo+IMKgCj4gK8KgwqDCoMKgwqDCoMKgLyoKPiArwqDCoMKg
-wqDCoMKgwqAgKiBPbiBhcmNoaXRlY3R1cmVzIHdoaWNoIGhhdmUgc2V0dXAgdGhlIENQVUhQX0JQ
-X1BBUkFMTEVMX1NUQVJUVVAKPiArwqDCoMKgwqDCoMKgwqAgKiBzdGF0ZSwgdGhpcyBpbnZva2Vz
-IGFsbCBCUCBwcmVwYXJlIHN0YXRlcyBhbmQgdGhlIHBhcmFsbGVsCj4gK8KgwqDCoMKgwqDCoMKg
-ICogc3RhcnR1cCBzdGF0ZSBzZW5kcyB0aGUgc3RhcnR1cCBJUEkgdG8gZWFjaCBvZiB0aGUgdG8g
-YmUgb25saW5lZAo+ICvCoMKgwqDCoMKgwqDCoCAqIEFQcy4gVGhpcyBhdm9pZHMgd2FpdGluZyBm
-b3IgZWFjaCBBUCB0byByZXNwb25kIHRvIHRoZSBzdGFydHVwCj4gK8KgwqDCoMKgwqDCoMKgICog
-SVBJIGluIENQVUhQX0JSSU5HVVBfQ1BVLiBUaGUgQVBzIHByb2NlZWQgdGhyb3VnaCB0aGUgbG93
-IGxldmVsCj4gK8KgwqDCoMKgwqDCoMKgICogYnJpbmd1cCBjb2RlIGFuZCB0aGVuIHdhaXQgZm9y
-IHRoZSBjb250cm9sIENQVSB0byByZWxlYXNlIHRoZW0KPiArwqDCoMKgwqDCoMKgwqAgKiBvbmUg
-Ynkgb25lIGZvciB0aGUgZmluYWwgb25saW5pbmcgcHJvY2VkdXJlIGluIHRoZSBsb29wIGJlbG93
-Lgo+ICvCoMKgwqDCoMKgwqDCoCAqCj4gK8KgwqDCoMKgwqDCoMKgICogRm9yIGFyY2hpdGVjdHVy
-ZXMgd2hpY2ggZG8gbm90IHN1cHBvcnQgcGFyYWxsZWwgYnJpbmd1cCBhbGwKPiArwqDCoMKgwqDC
-oMKgwqAgKiBzdGF0ZXMgYXJlIGZ1bGx5IHNlcmlhbGl6ZWQgaW4gdGhlIGxvb3AgYmVsb3cuCj4g
-K8KgwqDCoMKgwqDCoMKgICovCj4gK8KgwqDCoMKgwqDCoMKgaWYgKCFjcHVocF9zdGVwX2VtcHR5
-KHRydWUsIENQVUhQX0JQX1BBUkFMTEVMX1NUQVJUVVApIHsKCkknbGwgdGFrZSB1c2luZyBjcHVo
-cF9zdGVwX2VtcHR5KCkuCgo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgZm9yX2VhY2hfcHJlc2VudF9jcHUoY3B1KSB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKG4rKyA+PSBz
-ZXR1cF9tYXhfY3B1cykKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYnJlYWs7Cj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY3B1
-X3VwKGNwdSwgQ1BVSFBfQlBfUEFSQUxMRUxfU1RBUlRVUCk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gK8KgwqDCoMKgwqDCoMKgfQo+ICsKPiAr
-wqDCoMKgwqDCoMKgwqAvKiBEbyB0aGUgcGVyIENQVSBzZXJpYWxpemVkIGJyaW5ndXAgdG8gT05M
-SU5FIHN0YXRlICovCj4gwqDCoMKgwqDCoMKgwqDCoGZvcl9lYWNoX3ByZXNlbnRfY3B1KGNwdSkg
-ewo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKG51bV9vbmxpbmVfY3B1cygp
-ID49IHNldHVwX21heF9jcHVzKQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoGJyZWFrOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAo
-IWNwdV9vbmxpbmUoY3B1KSkKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoGNwdV91cChjcHUsIENQVUhQX09OTElORSk7Cj4gKwo+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqBpZiAoIWNwdV9vbmxpbmUoY3B1KSkgewo+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGNwdWhwX2NwdV9zdGF0ZSAq
-c3QgPSBwZXJfY3B1X3B0cigmY3B1aHBfc3RhdGUsIGNwdSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnQgcmV0ID0gY3B1X3VwKGNwdSwgQ1BVSFBf
-T05MSU5FKTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAvKgo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICogRHVlIHRvIHRoZSBhYm92ZSBwcmVwYXJhdGlvbiBsb29wIGEgZmFpbGVkIG9ubGluZSBhdHRl
-bXB0Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBt
-aWdodCBoYXZlIG9ubHkgcm9sbGVkIGJhY2sgdG8gQ1BVSFBfQlBfUEFSQUxMRUxfU1RBUlRVUC4g
-RG8gdGhlCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-KiByZW1haW5pbmcgY2xlYW51cHMuIE5PT1AgZm9yIHRoZSBub24gcGFyYWxsZWwgY2FzZS4KPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCAmJiBjYW5f
-cm9sbGJhY2tfY3B1KHN0KSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBXQVJOX09OKGNwdWhwX2ludm9rZV9jYWxsYmFja19y
-YW5nZShmYWxzZSwgY3B1LCBzdCwgQ1BVSFBfT0ZGTElORSkpOwo+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqB9CgpBbmQgSSdsbCB0YWtlIGRvaW5nIHRoaXMgYml0IHVuY29uZGl0aW9u
-YWxseSAoaXQncyBiYXNpY2FsbHkgYSBuby1vcCBpZgp0aGV5IGFscmVhZHkgZ290IHJvbGxlZCBh
-bGwgdGhlIHdheSBiYWNrIHRvIENQVUhQX09GRkxJTkUsIHJpZ2h0PykuCgpCdXQgdGhlIGFkZGl0
-aW9uYWwgY29tcGxleGl0eSBvZiBoYXZpbmcgbXVsdGlwbGUgc3RlcHMgaXMgZmFpcmx5Cm1pbmlt
-YWwsIGFuZCBJJ20gYWxyZWFkeSBwbGFubmluZyB0byAqdXNlKiBhbm90aGVyIG9uZSBldmVuIGlu
-IHg4NiwgYXMKZGlzY3Vzc2VkLgoKCgo=
+>> Aside of that this dynamic state range is pretty pointless. There is
+>> really nothing dynamic here and there is no real good reason to have
+>> four dynamic parallel states just because.
+>
+> The original patch set did use more than one state; the plan to do
+> microcode updates in parallel does involve doing at least one more, I
+> believe.
+
+I don't think so. The micro code muck can completely serialize itself
+and does not need control CPU assistance if done right. If we go there
+we have to fix that mess and not just proliferatng it with moar duct tape.
+
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Fully per AP serialized br=
+ingup from here on. If the
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * architecture does no regis=
+ter the CPUHP_BP_PARALLEL_STARTUP
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * state, this step sends the=
+ startup IPI first.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>
+> Not sure I'd conceded that yet; the APs do their *own* bringup from
+> here, and that really ought to be able to run in parallel.
+
+Somewhere in the distance future once we've
+
+  1) sorted the mandatory synchronization points, e.g. TSC sync in the
+     early bootup phase.
+
+  2) audited _all_ AP state callbacks that they are able to cope with
+     parallel bringup.
+
+     That's a long road as there are tons of assumptions about the
+     implicit CPU hotplug serialization in those callbacks.
+
+     Just because it did not explode in your face yet does not mean this
+     is safe.
+
+     I just looked at 10 randomly picked AP online callbacks and found 5
+     of them being not ready :)
+
+Thanks,
+
+        tglx
 
 
---=-jBRsuR+mRLHq8Anu5NHE
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMzIzMjMxMjIxWjAvBgkqhkiG9w0BCQQxIgQg3h1u2k82
-AYT5QQdg1rMAUOI+bIyC293FgMd0JaPiqoowgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAZFB0uyQF0E7Y++Xvs0NXTvoq1V3qRvLb6
-kuavAFIC/fTkFk7Nk6YdNHyXskhoWdbMgmZIs7Un89z/5a7jY6NRaw6FliE/r9HnOYnc4p4+yFfZ
-j4ZJNl7Bxjm5497k9J2pKnevq5NtDJOs4l54fe/5rA+O8eiTSxIaX/TKK9f51GUUBuiwPxbZRUIX
-G0LFVQ8lIbF3p+oOMC3wRXPHjRUG5GpSzfmq5l1sDWaTTdTRuwqXk7lPttS3El+SiUpO+ss5edBZ
-e7LR+aqMuKC3zOg8NLAxAncOF49SIASxMDIqDrouwTOTakb3Y/e/VX5ec9IpHnjfll1nWvmExewd
-Sa2tFV+aFL+caItC7XJlzEQvi/gvo3qNjmO63Ya9+ZjruSOXNgTQK4iVgMZMfxWGwAiStzFyUklO
-iziMOvoFR8MMiudiBipASq6V1ygRByTa7Hq1lEWHhTAjwcBa0tHSrtDs2tRiTR30EXPzBN9IWiTd
-xfFs/J+U39+F9oNcaW3gHM+dOyLD4o15i7Vl1/mZMJDU+pGMq2WpyJtUoeundvVX12IVBtOUEDQZ
-32pbtamSFUmGRTytcMzbVA79cjoM0yDWZeTgCuhijqtbBi7knA9ZUnVPKvfun1Fk+73aFh9Fc4kD
-kHAieZiYU9EsyBhRijTsA7ZN5eqUhqStlTpObrjfpQAAAAAAAA==
-
-
---=-jBRsuR+mRLHq8Anu5NHE--
