@@ -2,175 +2,99 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC1D4C6FD1C
-	for <rcu@archiver.kernel.org>; Fri, 24 Mar 2023 14:04:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D164C6FD1C
+	for <rcu@archiver.kernel.org>; Fri, 24 Mar 2023 14:07:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbjCXOE0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 Mar 2023 10:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
+        id S231236AbjCXOHy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 Mar 2023 10:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232026AbjCXOEI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 24 Mar 2023 10:04:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFC51CAD0;
-        Fri, 24 Mar 2023 07:03:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C32F62AEE;
-        Fri, 24 Mar 2023 14:02:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05F76C433D2;
-        Fri, 24 Mar 2023 14:02:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679666532;
-        bh=vcwRgUkFyVpAK3qRmd6R6ufOpwaggqA/84wHuJ9PMxI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=q6B9moCDNmzGL4ioEYU+8bBeQhcnhLeQAsmL8DiND6BIuy6ZovJywfZTfx3w0lLVy
-         P3/BSOY4CmpGpf1Oep6lFpYfME0xKhuATDoBGuATgO4cb3aPLxUHTTDhEoiWbHv60U
-         +A6nbO8YZsaLlrsFp5pC6Da61SKfg96WFbEyo2MIgQvQTXeIpudxeBekJc7ISKkbXx
-         UUjteQ3Fe3BY8kBJzugkxGz4fkyp6thvlT8HfCWyMnH5JhRVEp9ugEKFWeZwgbDIAh
-         EUKnTrzJ3F4gOx0CUUOYJ8mjxOye2L9gmOC5Z4ffJ1zX/2E/euad//jXmcnTVq3n/Q
-         ge6S6sIpbMqiw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8E0201540379; Fri, 24 Mar 2023 07:02:11 -0700 (PDT)
-Date:   Fri, 24 Mar 2023 07:02:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     "frederic@kernel.org" <frederic@kernel.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2] srcu: Fix flush srcu structure's->sup work warning in
- cleanup_srcu_struct()
-Message-ID: <1bbf4893-6294-4696-ab39-4a6540444f72@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230323134621.336832-1-qiang1.zhang@intel.com>
- <f18cad71-38f0-411d-9dc7-bda52d1d5a3a@paulmck-laptop>
- <PH0PR11MB58803F01B73914E1D7A052F5DA849@PH0PR11MB5880.namprd11.prod.outlook.com>
- <baf071c3-142c-4886-aea5-6b6ef2ff3ade@paulmck-laptop>
- <PH0PR11MB5880B77049F2BEBD40E41DABDA849@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S231895AbjCXOHt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 Mar 2023 10:07:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAF61B578;
+        Fri, 24 Mar 2023 07:07:44 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1679666863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=trN8ws+yoWkPCst62r6wYhEGrbcVOPdAkjJjmaanEKw=;
+        b=ZLXH65Z7U58be+jPXNuYmmP0lbqCTLdvjOlJzYyQ9fzn7gzL9FSRWkPAyiPK6gaP+hGRp2
+        7eiBo1x8a0geJpJeVuZ/c1ELrPQR7C+WVSdgEhoa+L5Z18rP9UHszgqMJE+QZJPVfUPekb
+        6f0izA4k/hh1e/9dI41TTb953EM1qvX+VsawxmkZmPpFK9Ny77uL6KsckJb4EwYlW1rX1A
+        EGOQOZu4PgqpmWyrPzDtOlYxHPuPIeUk5/Tcff54QKz3iuhOyFo9s29TJ6OKnzYcQaDIGV
+        VIJiMTFucn7JVrHY6AcSp9JLmcEkc/Ub1+xDJ8TP57Kd0N8dKyU3J5UVl2GS7w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1679666863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=trN8ws+yoWkPCst62r6wYhEGrbcVOPdAkjJjmaanEKw=;
+        b=1YvIv0U8tNVjazSbCdzpIVSj62NO8eICVmhI8XpO/rp2QXFrZb4lW0h8AQVp0e0IPlu22B
+        WbSNr7y+8rrgPeAA==
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Usama Arif <usama.arif@bytedance.com>, kim.phillips@amd.com,
+        brgerst@gmail.com
+Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        gpiccoli@igalia.com
+Subject: Re: [PATCH v16 3/8] cpu/hotplug: Add dynamic parallel bringup
+ states before CPUHP_BRINGUP_CPU
+In-Reply-To: <115b39e0226915b8f69ea0cce2487588f6010995.camel@infradead.org>
+References: <20230321194008.785922-1-usama.arif@bytedance.com>
+ <20230321194008.785922-4-usama.arif@bytedance.com> <874jqb8588.ffs@tglx>
+ <871qlf83wj.ffs@tglx>
+ <8dff6ae5ffaebfbcc55a01c04420fd478070b830.camel@infradead.org>
+ <87v8ir6j96.ffs@tglx>
+ <115b39e0226915b8f69ea0cce2487588f6010995.camel@infradead.org>
+Date:   Fri, 24 Mar 2023 15:07:42 +0100
+Message-ID: <87lejm6y4x.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB5880B77049F2BEBD40E41DABDA849@PH0PR11MB5880.namprd11.prod.outlook.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 03:53:08AM +0000, Zhang, Qiang1 wrote:
-> > Cc:  my personal email qiang.zhang1211@gmail.com
-> > 
-> > > When unloading rcutorture kmod will trigger the following callstack:
-> > > 
-> > > insmod rcutorture.ko
-> > > rmmod rcutorture.ko
-> > > 
-> > > [  209.437327] WARNING: CPU: 0 PID: 508 at kernel/workqueue.c:3167 __flush_work+0x50a/0x540
-> > > [  209.437346] Modules linked in: rcutorture(-) torture [last unloaded: rcutorture]
-> > > [  209.437382] CPU: 0 PID: 508 Comm: rmmod Tainted: G  W  6.3.0-rc1-yocto-standard+
-> > > [  209.437406] RIP: 0010:__flush_work+0x50a/0x540
-> > > .....
-> > > [  209.437758]  flush_delayed_work+0x36/0x90
-> > > [  209.437776]  cleanup_srcu_struct+0x68/0x2e0
-> > > [  209.437817]  srcu_module_notify+0x71/0x140
-> > > [  209.437854]  blocking_notifier_call_chain+0x9d/0xd0
-> > > [  209.437880]  __x64_sys_delete_module+0x223/0x2e0
-> > > [  209.438046]  do_syscall_64+0x43/0x90
-> > > [  209.438062]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> > > 
-> > > flush_delayed_work()
-> > > ->__flush_work()
-> > >    ->if (WARN_ON(!work->func))
-> > >         return false;
-> > > 
-> > > For srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(),
-> > > when compiling and loading as modules, the srcu_module_coming() is
-> > > invoked, allocate memory for srcu structure's->sda and initialize
-> > > sda structure, due to not fully initialize srcu structure's->sup,
-> > > so at this time the sup structure's->work.work.func is null, if not
-> > > invoke init_srcu_struct_fields() before unloading modules, the
-> > > __flush_work() be invoked in srcu_module_going() and find work->func
-> > > is empty, will raise the warning above.
-> > > 
-> > > This commit add the check of srcu_sup structure's->srcu_gp_seq_needed
-> > > to determine whether the check_init_srcu_struct() has been invoked to
-> > > initialize srcu objects in srcu_module_going(), if not initialize, there
-> > > are no pending or running works, so there is no need to flush, only invoke
-> > > free_percpu() to release srcu structure's->sda.
-> > > 
-> > > Co-developed-by: Paul E. McKenney <paulmck@kernel.org>
-> > >
-> > >Thank you for the testing, bug-finding, and problem-solving!
-> > >
-> > >In theory, you would need a Signed-off-by here from me as well, but
-> > >in practice bisectability means that this must be folded into this:
-> > >
-> > >e7c778489040 ("srcu: Use static init for statically allocated in-module srcu_struct")
-> > >	
-> > >This will of course be with attribution.
-> > >
-> > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > >
-> > >But this is still a bit more complex than needed.  How about something
-> > >like this?
-> > 
-> > Agree,  from a logical point of view, this is more rigorous😊.
-> >
-> >And I finally got around to doing some modprobe/rmmod testing myself,
-> >and it passes eleven cycles.
-> >
-> >May I add your Tested-by to the series?
-> 
-> Of course I am glad to.
+On Fri, Mar 24 2023 at 09:31, David Woodhouse wrote:
+> On Fri, 2023-03-24 at 02:16 +0100, Thomas Gleixner wrote:
+>> But that's non-trivial because if you look at bringup_cpu() then you'll
+>> notice that this state has an implicit protection against interrupt
+>> allocation/free and quite some architectures rely on this for their
+>> early bringup code and possibly their STARTING state callbacks.
+>
+> I literally pointed that out in 2021 (in one of the messages I
+> reference below).
+>
+> For x86 I don't believe that's going to be an issue yet, if at all. I
+> think it matters for the lapic_online() call which happens near the end
+> of start_secondary(); it's almost the last thing it does before going
+> into the generic AP startup thread. It's *also* preceded by a comment
+> that at least *suggests* it ought to be fine anyway, although we should
+> never entirely trust such comments.
+>
+>         /*
+>          * Lock vector_lock, set CPU online and bring the vector
+>          * allocator online. Online must be set with vector_lock held
+>          * to prevent a concurrent irq setup/teardown from seeing a
+>          * half valid vector space.
 
-Thank you, and I will apply this on the next rebase.
+That setup/teardown wording is misleading as that's already covered by
+sparse_irq_lock.
 
-							Thanx, Paul
+This is purely x86 specific. Setting the CPU online and onlining the CPU
+in the matrix allocator has to be atomic vs. concurrent allocations from
+the matrix allocator, which can happen via request/free_irq() and
+affinity changes independent of interrupt setup/teardown (e.g. MSI enable).
 
-> Thanks
-> Zqiang
-> 
-> >
-> >							Thanx, Paul
-> >
-> > Thanks
-> > Zqiang
-> > 
-> > >
-> > >							Thanx, Paul
-> > >
-> > >------------------------------------------------------------------------
-> > >
-> > >/* Initialize any global-scope srcu_struct structures used by this module. */
-> > >static int srcu_module_coming(struct module *mod)
-> > >{
-> > >	int i;
-> > >	struct srcu_struct *ssp;
-> > >	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
-> > >
-> > >	for (i = 0; i < mod->num_srcu_structs; i++) {
-> > >		ssp = *(sspp++);
-> > >		ssp->sda = alloc_percpu(struct srcu_data);
-> > >		if (WARN_ON_ONCE(!ssp->sda))
-> > >			return -ENOMEM;
-> > >	}
-> > >	return 0;
-> > >}
-> > >
-> > >/* Clean up any global-scope srcu_struct structures used by this module. */
-> > >static void srcu_module_going(struct module *mod)
-> > >{
-> > >	int i;
-> > >	struct srcu_struct *ssp;
-> > >	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
-> > >
-> > >	for (i = 0; i < mod->num_srcu_structs; i++) {
-> > >		ssp = *(sspp++);
-> > >		if (!rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq_needed)) &&
-> > >		    !WARN_ON_ONCE(!ssp->srcu_sup->sda_is_static))
-> > >				cleanup_srcu_struct(ssp);
-> > >		free_percpu(ssp->sda);
-> > >	}
-> > >}
+Thanks,
+
+        tglx
