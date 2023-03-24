@@ -2,172 +2,163 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12644C74A5B
-	for <rcu@archiver.kernel.org>; Fri, 24 Mar 2023 02:24:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E164FC6FD1C
+	for <rcu@archiver.kernel.org>; Fri, 24 Mar 2023 03:31:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbjCXCYA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 23 Mar 2023 22:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
+        id S229589AbjCXDb1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 23 Mar 2023 23:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbjCXCX7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 23 Mar 2023 22:23:59 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC23F940;
-        Thu, 23 Mar 2023 19:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679624638; x=1711160638;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=lkznsG5d4JfwYjY5wzIWca513zWBiwNMoZhEPSXgqCg=;
-  b=J6TxYuSXEtdaVEFZFHL7/33YrkRfX7PLzUiEeAEQVv9OCwP4vE+RMoLP
-   0/PaMaWIKD/BRRtEZqeogvp1UXMEIe8aEJtO6THg0jyKW8L5HUgpu/6WT
-   BKsMVYoJYY5H2ZtkvtGDVbQa0ML25gHQHh9AVzwk3LOD//XQ69RAef/nf
-   zkdvcHsZV/elyebMX297iakiSCQrhgx3WgK5WdV2uteNy9St6bkkaH9UF
-   CgvnosZr6sqPDpqbviS+pFOFFjxjhkKwAjYIHHB8kcmrRDasKADRwBCio
-   i60y6sNgmDJbhs//vLcFT1RDuUTjDS9PKPtgD76CpVn+1Ml/PAiB/ZluC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="338401561"
-X-IronPort-AV: E=Sophos;i="5.98,286,1673942400"; 
-   d="scan'208";a="338401561"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 19:23:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="659887262"
-X-IronPort-AV: E=Sophos;i="5.98,286,1673942400"; 
-   d="scan'208";a="659887262"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga006.jf.intel.com with ESMTP; 23 Mar 2023 19:23:58 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 23 Mar 2023 19:23:57 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Thu, 23 Mar 2023 19:23:57 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Thu, 23 Mar 2023 19:23:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g3XTG30yYmAIfu2VF+hWAELkt8+RK3pJkCSlLXCX6ku1oDxcd1N8qCe5OvphdhKDD0asfH5F0X49j3AZz4Dik4GTd1RM55xtTCR/8b/uLquN31aJF4C08pTPRe0pSAxjrJbtvGbAvdm6acMjCfq4q52x9CoY9FcwIRIy4A4fJzOwqbOLiWxKs4PUjCR5jhkTfdpC0iIPRJgy7WoSUkk1oQKuuntslxTRyuRKqvd6hRoqO6Z6lWEsOixHzxVNR0AI+BJIykNKrZkcuW2OmbqHHVoB4X80RmrUcVU/HdvLlIRxI4nfzpRbBRvfdgVJwHSL7r0prc7jMqi2AfVhhYpu0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lkznsG5d4JfwYjY5wzIWca513zWBiwNMoZhEPSXgqCg=;
- b=fHuH+ypBAJoH7lhgDM2hTzMNwL/jt4ByjcoQ4QlhpQB/akIyHLWsmCMlfGmVv8rYcM/vDIDwHB0yczaNUile4oHAsWISAQvRY1eVCnZhnG3z/HF2A0yDoaaijiXUgwpj121blu4RKcsKooPTbk3+Ird+IN8aOPTPcQEbmB6Vm1FvDcsRPg76HB8v5/+mM0Pg9V3Uw3OivDmGBmmMeXO4jlr8KR/TJkLKMET1eM7C0Pn8SLzCNWrx8icLpQka2STHpgGGoYBXmcP4T8IgMuAk2ZN7YKfmumRQ9+QvRjfteqRiupY48j4qNRK/gp0s9qi26j39QhTlz7XcZVFiRqOXYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by CH3PR11MB7761.namprd11.prod.outlook.com (2603:10b6:610:151::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.38; Fri, 24 Mar
- 2023 02:23:56 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::4075:1af2:9fc0:66d0]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::4075:1af2:9fc0:66d0%6]) with mapi id 15.20.6178.038; Fri, 24 Mar 2023
- 02:23:56 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-CC:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
+        with ESMTP id S229484AbjCXDb0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 23 Mar 2023 23:31:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D763218AB9;
+        Thu, 23 Mar 2023 20:31:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6222F6293D;
+        Fri, 24 Mar 2023 03:31:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7E4DC433EF;
+        Fri, 24 Mar 2023 03:31:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679628683;
+        bh=k2odxTgxbb9CVjSqPJg3BbtEgJGXZK8uJr/AreuURZQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lrrDsYEYPxSlXd20s+yAqua7o2BwXZMWKqlTa0x7A+HRO4HQV8gEZEqqZAGjOsa5P
+         o7y3BMQxGIH+Slyq84s8j4DIk6LjVIjVcGHri+eoWWRptGSLyJXm5ihiuFFMi8s/KN
+         sKX/dUHdU5Rh5MPdPedkJl1/jwE5f4CXeMEYHzn8dzZ1BLS8IqhqZ2LHdLAUanqVhM
+         /Qq/y8vAkkPAl2P6XTjTEi8Gq2YKJ85dqIwn9AshqrZ5w9IaVAjr2n8SsPEG/l0dQK
+         bVl1iTbKwCkqNGv6owajsBhki8J43obHkUUqFYqNl5TTZigXpKNsh21iBWbAbNNYVT
+         Z492XlqsJeIWA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 6B7BE1540379; Thu, 23 Mar 2023 20:31:23 -0700 (PDT)
+Date:   Thu, 23 Mar 2023 20:31:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Cc:     "frederic@kernel.org" <frederic@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] MAINTAINERS: Add Zqiang as a RCU reviewer
-Thread-Topic: [PATCH] MAINTAINERS: Add Zqiang as a RCU reviewer
-Thread-Index: AQHZXTtrHSkC6Y8wKkKgXb1k+J8Hra8IvS4AgAB3BUA=
-Date:   Fri, 24 Mar 2023 02:23:56 +0000
-Message-ID: <PH0PR11MB588003A83F9F477339BA6B49DA849@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <20230323040729.145154-1-qiang1.zhang@intel.com>
- <20230323191526.GA628693@google.com>
-In-Reply-To: <20230323191526.GA628693@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|CH3PR11MB7761:EE_
-x-ms-office365-filtering-correlation-id: d22b96cf-d0de-4c77-1704-08db2c0ed1a1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d5JKd49uq5mpeL0x/TuOzAhaFBJ0uW3PJ2RRW2yJTRtgkNGa/irmfodg6nut5ualnDtRsI2GCaoY2+Qn7KDPFRN7p/+DHUqCpq6xzwzaOekMwLUp2uzJSSck/KzIWRc4/+eexfEtdVy11AfXnjrYpxxQTOi76f68lVRW/2MBs7bULkh4YqtUaD5RxfMYiXu2JBNRbZcIFM5GZs/j0i/smBnnK4Gj4PrtSTukP8lVMVvvVd9iFOFIw1zubJPF0gWj81byHtzUwj9hIMcsrb9hoSK/uHLUlkZUZa+9DdyvdXOu637QX6gtitJ8GqxoqCdLXJopdkYnzUiQY+4xMdbDj5OkUwqlUoz6buTgDZ0HM0Ife0t2FutpNo2FI0I6R2r1xlgWhVgR0b9R3jE4ctXKI22TKrTMaiTL12lrD/fJESHSHkwgIYRx1pwCKjfaJSD3qaFIg95HolPBHAQdLHwZv1Zv+PCK/JybkaPnYsMUg5DdzFHLFMV/9eAHsGbARAkipKp574UaMGIkLEv0tLaFf/16gqlj4R/3jw9GEbbjXxV/8+N7aC7Qwe1NWm9iultzKcfCDjU01q8A5qllnJLcEVvJKIgOm/YYbs4TPmE7f2icw3n5wFqRXcA0aX3JUFdLxWhvuisJlPLJy6fe+95ACqszo4X8+in4TSLLR2eKxJP3gHTpIqitb4ZH5Rsg6Gt9
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(396003)(136003)(39860400002)(346002)(376002)(366004)(451199018)(33656002)(41300700001)(66556008)(66476007)(66446008)(64756008)(4326008)(8676002)(76116006)(6916009)(66946007)(52536014)(8936002)(7696005)(966005)(316002)(478600001)(54906003)(4744005)(5660300002)(2906002)(82960400001)(71200400001)(38070700005)(86362001)(55016003)(38100700002)(122000001)(186003)(83380400001)(9686003)(6506007)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VWM4SElLekxNbVRYenVXWmFmMjFkdGlReDU2WmVjQXFkYlJ3R3J5R2hoekZU?=
- =?utf-8?B?a0haSFExQkIraG1NOUE4c0M4RnltcnNMZ3hkeHhwUE9MUEZrQ01HWjgrcXk4?=
- =?utf-8?B?WXdUci81S1ppS0wxM0ZDMGZFNUl3SDRpVjgzcDdFY2NUUXBHSHhiVkVKU3Z3?=
- =?utf-8?B?bVJKRDcvSmNaRHlJQ0dCRjIxaU83VUxxbU9ITERmL3k1Zk4zUGdNK3E0eWMw?=
- =?utf-8?B?MzIrN2FsY1NjTkx6VXJ2Mi94dUFzR0grUjhJNzA3SU5FUzZYRzV4c2xIN0dq?=
- =?utf-8?B?Tmo1SzZTSHlhNjlPM3paWERWb3BuYWU5ay9zblNlVXE5Q0R3TlJOd3NycjZw?=
- =?utf-8?B?TmtRTkVCZUJ1UWtidmQ5VFd2emZoSGhWTkc4WS93aDVwZ2Qvb1dkZEoyWGZp?=
- =?utf-8?B?SUgrcTNrL2JrcCtUZHpyUnA1M1ppTjU4WklDUk1wUVlNOVpkS3J4MmhFbFhQ?=
- =?utf-8?B?YmFXaHhiOElxYXczQnJNVDduUzl3MmZXN3k5dVc0T05QZnFHVlVQSWNmUkw2?=
- =?utf-8?B?VmRHS2tqa05HNnNiUFBUUDY1dkQyWmRwNjdROFlUS3Z6dHBCK2p1WUQ5N1Vy?=
- =?utf-8?B?RjVyMlpteFZxSUhLSlFBWEtrdWYyMk1SYmtXU2RRc2FyQVp3ejdkSG5lTndo?=
- =?utf-8?B?SXliT0ZQY0Q5Y3M3Qk80dk1CN2hRSDdLV3o0ek4zSFpuLzNLQWFaaWUxR0dV?=
- =?utf-8?B?QjdJK3RpY2wyYzNTT2ErWFA5NFpadzM0NDRlWnlGZWR0SWNWRy9Dcmx1Ykhu?=
- =?utf-8?B?eGJuOXRuMHpsdkFxMlhzQndDaWlCdnVtbTd2amJEK2hnMTlsRDFHVFptVkJv?=
- =?utf-8?B?bENlZHlBSFNJRktEam1nUThpYTVVdWx2TTQwWllEa1N0NHpyT3I3R2VMQzBk?=
- =?utf-8?B?alBQWlQxZWowOWpiL0luVGpNQmdmZWNnVllqdUQ0ckNmSEczYjZ4dFlrUW5W?=
- =?utf-8?B?TWlGRFk1R2RIbFJ1SlArQU9sZXEyeThxSW9xWDlpbkQ0a1I3TUl1b2xXeEFC?=
- =?utf-8?B?V1JvbXo2TG93bEJPU3RDSlM5SVhqT09ZU2FreEx4c3ZBb1FIaUx3TmpVSyt4?=
- =?utf-8?B?MnRXbWdTcVdqNjNOeEthbFByMk5lMnU5MG4wRjEvRkk2Mnc0d01uRXNFS2N5?=
- =?utf-8?B?YjRFbkJJL1JTbGtKNDVQamE0K1N0anBtSGI2N0E2M2lIcVFOcHRaTmt2R1di?=
- =?utf-8?B?NUFpN3VBbXpQU1pPUUNtaU1vZEdUQ3MveitlVTBZVEZsVXBRVTJ1VmJZdW03?=
- =?utf-8?B?b0ZVeDdCRWF6YVN0UWJPMXQ4citaSTNGcktTbmNSalF0VDRqcjI1OEFmRFFD?=
- =?utf-8?B?aU9WNnJScFJtaGx0QUJ5WGloVE82N1J1Y1NyUEwzejA5dmx1L21XdmJEYlRF?=
- =?utf-8?B?Y1Ztd0JOTWE5SXgzeTBPbzNIYWlWNFQ4aWxpY0JSb0F2U05OZ1JveFVyQ2da?=
- =?utf-8?B?aVU2QkZxSElOdi9iaU9NalJUMkh6dkpCaEg0WENEU0V6SEtKY1NrbWlVR1Y2?=
- =?utf-8?B?QWUwRDlKb1NFM0tVeWd5LytLZFVpazdzY0VQc25WNmFwdzFkVnhnMjFLVFkz?=
- =?utf-8?B?bzlYZGFZUzVMZXQ3d0hVVi9ldUMxR2tkcnBBdXI4M3VtTmZDWXdTNVZpQzVq?=
- =?utf-8?B?T0gxN2tOUFl1Y3FESkV3Z3NnYnBxRWE5KzJNZ3E3ZzQzQWt2bzV6MHBVNGQw?=
- =?utf-8?B?Nm5QNXNZN29yWVRNWURseEI1ZVAzdjhvQjdaYWMxdzdmcWMrNjR3NTNpQnNt?=
- =?utf-8?B?QzJRWVpHai82c0pMTUFzT0E2Yk8yeWdlRmFWY2VDWkQwa3hDQnE4QjUvVTEv?=
- =?utf-8?B?a2tKYmlrUFlyRDl4RFVSMXVzVThpTEZ5L25hQVlzdldpU0EvOEg2TlpuR29W?=
- =?utf-8?B?dlRYakJjbklkZjJRbUlSeDRHUi9jc1FNcjFXd0FoSEpwQSt1MHA5V093WXNu?=
- =?utf-8?B?WDZIT2RZazJhcEs0TnJHWGVPQzFPUk5Zb2cwK05TR1VsU2l5NTFlUi9mVWIv?=
- =?utf-8?B?UnhCSDBXZmdMalRMN3dlOEVIa0xKUkZjZldNTVR2b056cHNVdHhwak1Wb3Bm?=
- =?utf-8?B?MEloeS8vVzlsQmpic2lvWDczTERCWU5ONjNsQVRiWG9ra3IvUnpIbUdtN1hM?=
- =?utf-8?Q?D4JDNwuyAZBJUwpOZD/GC88+I?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2] srcu: Fix flush srcu structure's->sup work warning in
+ cleanup_srcu_struct()
+Message-ID: <baf071c3-142c-4886-aea5-6b6ef2ff3ade@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230323134621.336832-1-qiang1.zhang@intel.com>
+ <f18cad71-38f0-411d-9dc7-bda52d1d5a3a@paulmck-laptop>
+ <PH0PR11MB58803F01B73914E1D7A052F5DA849@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d22b96cf-d0de-4c77-1704-08db2c0ed1a1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2023 02:23:56.0903
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KNmCZNBG2cpGv59asY7Yr9lY3yccgxpW38r+tbOnr92VEVVV2xetXmsqx2H1o7AvArNb9sLROmZWCD/zraFJhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7761
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <PH0PR11MB58803F01B73914E1D7A052F5DA849@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Pk9uIFRodSwgTWFyIDIzLCAyMDIzIGF0IDEyOjA3OjI5UE0gKzA4MDAsIFpxaWFuZyB3cm90ZToN
-Cj4gSSBoYXZlIHNwZW50IGFib3V0IHR3byB5ZWFycyBzdHVkeWluZyBhbmQgY29udHJpYnV0aW5n
-IHRvIFJDVSwNCj4gYW5kIHNoYXJpbmcgUkNVLXJlbGF0ZWQga25vd2xlZGdlIHdpdGhpbiBteSB0
-ZWFtLCBpZiBwb3NzaWJsZSwNCj4gcGxlYXNlIGNvbnNpZGVyIG1lIGFzIFIgOy0pLg0KPiANCj4g
-U2lnbmVkLW9mZi1ieTogWnFpYW5nIDxxaWFuZzEuemhhbmdAaW50ZWwuY29tPg0KPg0KPkkgYW0g
-cHVsbGluZyB0aGlzIGFuZCB0aGUgb25lIGFkZGluZyBCb3F1biBmb3IgNi40IGJhc2VkIG9uIGRp
-c2N1c3Npb24gd2l0aCBQYXVsLg0KDQpUaGFua3MgSm9lbCwgIGxvb2tpbmcgZm9yd2FyZCB0byBv
-dXIgbW9yZSBkaXNjdXNzaW9uc/CfmIouDQoNCj4NCj5Db25ncmF0cy4gOy0pDQo+DQo+dGhhbmtz
-LA0KPg0KPiAtIEpvZWwNCj4NCj4NCj4gLS0tDQo+ICBNQUlOVEFJTkVSUyB8IDEgKw0KPiAgMSBm
-aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvTUFJTlRBSU5F
-UlMgYi9NQUlOVEFJTkVSUw0KPiBpbmRleCA4ZDViYzIyM2YzMDUuLmIzMDRkM2M3YjQ1YiAxMDA2
-NDQNCj4gLS0tIGEvTUFJTlRBSU5FUlMNCj4gKysrIGIvTUFJTlRBSU5FUlMNCj4gQEAgLTE3NjQy
-LDYgKzE3NjQyLDcgQEAgUjoJU3RldmVuIFJvc3RlZHQgPHJvc3RlZHRAZ29vZG1pcy5vcmc+DQo+
-ICBSOglNYXRoaWV1IERlc25veWVycyA8bWF0aGlldS5kZXNub3llcnNAZWZmaWNpb3MuY29tPg0K
-PiAgUjoJTGFpIEppYW5nc2hhbiA8amlhbmdzaGFubGFpQGdtYWlsLmNvbT4NCj4gIFI6CUpvZWwg
-RmVybmFuZGVzIDxqb2VsQGpvZWxmZXJuYW5kZXMub3JnPg0KPiArUjoJWnFpYW5nIDxxaWFuZzEu
-emhhbmdAaW50ZWwuY29tPg0KPiAgTDoJcmN1QHZnZXIua2VybmVsLm9yZw0KPiAgUzoJU3VwcG9y
-dGVkDQo+ICBXOglodHRwOi8vd3d3LnJkcm9wLmNvbS91c2Vycy9wYXVsbWNrL1JDVS8NCj4gLS0g
-DQo+IDIuMjUuMQ0KPiANCg==
+On Fri, Mar 24, 2023 at 02:20:18AM +0000, Zhang, Qiang1 wrote:
+> Cc:  my personal email qiang.zhang1211@gmail.com
+> 
+> > When unloading rcutorture kmod will trigger the following callstack:
+> > 
+> > insmod rcutorture.ko
+> > rmmod rcutorture.ko
+> > 
+> > [  209.437327] WARNING: CPU: 0 PID: 508 at kernel/workqueue.c:3167 __flush_work+0x50a/0x540
+> > [  209.437346] Modules linked in: rcutorture(-) torture [last unloaded: rcutorture]
+> > [  209.437382] CPU: 0 PID: 508 Comm: rmmod Tainted: G  W  6.3.0-rc1-yocto-standard+
+> > [  209.437406] RIP: 0010:__flush_work+0x50a/0x540
+> > .....
+> > [  209.437758]  flush_delayed_work+0x36/0x90
+> > [  209.437776]  cleanup_srcu_struct+0x68/0x2e0
+> > [  209.437817]  srcu_module_notify+0x71/0x140
+> > [  209.437854]  blocking_notifier_call_chain+0x9d/0xd0
+> > [  209.437880]  __x64_sys_delete_module+0x223/0x2e0
+> > [  209.438046]  do_syscall_64+0x43/0x90
+> > [  209.438062]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > 
+> > flush_delayed_work()
+> > ->__flush_work()
+> >    ->if (WARN_ON(!work->func))
+> >         return false;
+> > 
+> > For srcu objects defined with DEFINE_SRCU() or DEFINE_STATIC_SRCU(),
+> > when compiling and loading as modules, the srcu_module_coming() is
+> > invoked, allocate memory for srcu structure's->sda and initialize
+> > sda structure, due to not fully initialize srcu structure's->sup,
+> > so at this time the sup structure's->work.work.func is null, if not
+> > invoke init_srcu_struct_fields() before unloading modules, the
+> > __flush_work() be invoked in srcu_module_going() and find work->func
+> > is empty, will raise the warning above.
+> > 
+> > This commit add the check of srcu_sup structure's->srcu_gp_seq_needed
+> > to determine whether the check_init_srcu_struct() has been invoked to
+> > initialize srcu objects in srcu_module_going(), if not initialize, there
+> > are no pending or running works, so there is no need to flush, only invoke
+> > free_percpu() to release srcu structure's->sda.
+> > 
+> > Co-developed-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> >Thank you for the testing, bug-finding, and problem-solving!
+> >
+> >In theory, you would need a Signed-off-by here from me as well, but
+> >in practice bisectability means that this must be folded into this:
+> >
+> >e7c778489040 ("srcu: Use static init for statically allocated in-module srcu_struct")
+> >	
+> >This will of course be with attribution.
+> >
+> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> >
+> >But this is still a bit more complex than needed.  How about something
+> >like this?
+> 
+> Agree,  from a logical point of view, this is more rigorous😊.
+
+And I finally got around to doing some modprobe/rmmod testing myself,
+and it passes eleven cycles.
+
+May I add your Tested-by to the series?
+
+							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> >
+> >							Thanx, Paul
+> >
+> >------------------------------------------------------------------------
+> >
+> >/* Initialize any global-scope srcu_struct structures used by this module. */
+> >static int srcu_module_coming(struct module *mod)
+> >{
+> >	int i;
+> >	struct srcu_struct *ssp;
+> >	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+> >
+> >	for (i = 0; i < mod->num_srcu_structs; i++) {
+> >		ssp = *(sspp++);
+> >		ssp->sda = alloc_percpu(struct srcu_data);
+> >		if (WARN_ON_ONCE(!ssp->sda))
+> >			return -ENOMEM;
+> >	}
+> >	return 0;
+> >}
+> >
+> >/* Clean up any global-scope srcu_struct structures used by this module. */
+> >static void srcu_module_going(struct module *mod)
+> >{
+> >	int i;
+> >	struct srcu_struct *ssp;
+> >	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+> >
+> >	for (i = 0; i < mod->num_srcu_structs; i++) {
+> >		ssp = *(sspp++);
+> >		if (!rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq_needed)) &&
+> >		    !WARN_ON_ONCE(!ssp->srcu_sup->sda_is_static))
+> >				cleanup_srcu_struct(ssp);
+> >		free_percpu(ssp->sda);
+> >	}
+> >}
