@@ -2,63 +2,72 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50A36C76195
-	for <rcu@archiver.kernel.org>; Fri, 24 Mar 2023 22:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C8A1C6FD1C
+	for <rcu@archiver.kernel.org>; Fri, 24 Mar 2023 22:37:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbjCXWYk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 24 Mar 2023 18:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        id S232229AbjCXWhs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 24 Mar 2023 18:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbjCXWYh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 24 Mar 2023 18:24:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4116B768D;
-        Fri, 24 Mar 2023 15:24:28 -0700 (PDT)
+        with ESMTP id S232119AbjCXWhs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 24 Mar 2023 18:37:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F594AF3F;
+        Fri, 24 Mar 2023 15:37:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D7720B82612;
-        Fri, 24 Mar 2023 22:24:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E372AC433D2;
-        Fri, 24 Mar 2023 22:24:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 28BBC62C64;
+        Fri, 24 Mar 2023 22:37:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB71C433D2;
+        Fri, 24 Mar 2023 22:37:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679696665;
-        bh=178pfsB66t/h8ExkXB5D4TkF5hm2FX5yIg6OFgWiyhM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GaL0BkC1oH35B0+YSTB9ercVMLa7GQBKwBZ1xTq2+5hi5U4r5FgDcXIabtkwCnfkI
-         CZavmCBnI/XL6TnxOjltwNDH8pwYVrN7xUp8Zcsh4zSa63/mGa2ph2CLPtHt6Krlxp
-         LHsB4vCLFYt7q5EvypE/b0fIwXpzYl89lzOmZv+dpGUrktmLy/qHfeSLazJvbRUnvS
-         4Q45nBiAo5666E4US8MfhGENbNqtnkMYNkYceIsCBIBSbfMJmKtgk0Qyt6sDGRkds9
-         tSBEYNGj/4R+uT7d4OioTyyHIysVB34HqLK1HjUNAwhFkFyg7rDHr1pR6nbZf6qk4+
-         Be+r/YbYZ9Y4A==
-Date:   Fri, 24 Mar 2023 23:24:21 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paul McKenney <paulmck@kernel.org>,
+        s=k20201202; t=1679697466;
+        bh=zCjOBve0OE8SFI1d70jAlWQJ6T367yhvshzkiyAdcWU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=h/fFIhIaI9bhLtgJO59ab5f6KXu163T5kopfrEVULEcb5LBk8TGfvFypoSEEEP14s
+         BywakFz5DHtgRcitJFywWVvkpvpwNQqXDIyYdhnGI/qpvtGMT0Nwr4s/7/xf1LyI/b
+         JSNqcwhVL27AtjTpj7d3Tc2MfjR3QupxVXccCt0E1wuBiPzB+YDhV84wtw/TkF00e/
+         fZh29Zgh+BrHrt+HclYEW7ZlCXgBY4n+Q9lUq7oXdZNOicxNw67SwmKmLrb3ttje3J
+         TWi8omvP7/1vPuq7Z/XLpRaFQcdEMU8nFVFK0WaeH5QoVYm+HqYqd7WN2VTdKX2iiM
+         NhMbAsQ6ztmCA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 09F581540432; Fri, 24 Mar 2023 15:37:46 -0700 (PDT)
+Date:   Fri, 24 Mar 2023 15:37:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         linux-kernel@vger.kernel.org, quic_neeraju@quicinc.com,
         josh@joshtriplett.org, rostedt@goodmis.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         joel@joelfernandes.org, rcu@vger.kernel.org
 Subject: Re: [PATCH] rcu: Remove RCU_NONIDLE()
-Message-ID: <ZB4jFXpMPxXke1K7@localhost.localdomain>
+Message-ID: <a42dbb35-e737-4aec-86f3-a26ef638fe67@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20230320173751.GU2194297@hirez.programming.kicks-ass.net>
+ <ZB4jFXpMPxXke1K7@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230320173751.GU2194297@hirez.programming.kicks-ass.net>
+In-Reply-To: <ZB4jFXpMPxXke1K7@localhost.localdomain>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Mon, Mar 20, 2023 at 06:37:51PM +0100, Peter Zijlstra a écrit :
+On Fri, Mar 24, 2023 at 11:24:21PM +0100, Frederic Weisbecker wrote:
+> Le Mon, Mar 20, 2023 at 06:37:51PM +0100, Peter Zijlstra a écrit :
+> > 
+> > Since there are now exactly _zero_ users of RCU_NONIDLE(), make it go
+> > away before someone else decides to (ab)use it.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > 
-> Since there are now exactly _zero_ users of RCU_NONIDLE(), make it go
-> away before someone else decides to (ab)use it.
+> Thanks for all the hard work leading to that!
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 	Acked-by: Frederic Weisbecker <frederic@kernel.org>
 
-Thanks for all the hard work leading to that!
+What Frederic said!  I will apply this ack on my next rebase.
 
-	Acked-by: Frederic Weisbecker <frederic@kernel.org>
+							Thanx, Paul
