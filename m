@@ -2,50 +2,50 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9A12C761AF
-	for <rcu@archiver.kernel.org>; Sat, 25 Mar 2023 17:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10278C76196
+	for <rcu@archiver.kernel.org>; Sat, 25 Mar 2023 17:34:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjCYReH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 25 Mar 2023 13:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S230094AbjCYReM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 25 Mar 2023 13:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbjCYReG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 25 Mar 2023 13:34:06 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6503A9763
-        for <rcu@vger.kernel.org>; Sat, 25 Mar 2023 10:33:59 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id r5so4507060qtp.4
-        for <rcu@vger.kernel.org>; Sat, 25 Mar 2023 10:33:59 -0700 (PDT)
+        with ESMTP id S231520AbjCYReH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 25 Mar 2023 13:34:07 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDC79EEF
+        for <rcu@vger.kernel.org>; Sat, 25 Mar 2023 10:34:01 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id bz27so4514902qtb.1
+        for <rcu@vger.kernel.org>; Sat, 25 Mar 2023 10:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1679765638;
+        d=joelfernandes.org; s=google; t=1679765641;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E6Aj0mbJD/qZB0r2J2tLnHasIPmuosonkIp69GrjB7E=;
-        b=Y0ARwJXZKYTnxN/qpI5CVYzmurO4mC3453dcb5GLWg6JjriSKj0CM3lb+Msiqq3XWO
-         8HbIL+kk+3wbPn+tXBcGbmQKysL7d06+QRHdQYwQ3p0g0UcR6SNyLI7wxwREnGr+UCHq
-         aSKCZrC2vRIuhioqVrVNyibAqvhLuYcxJlqJo=
+        bh=QyrXPYue4+kcgnuVhPQbl4hTj4jaTNBfGwV5VXHSeY8=;
+        b=wY7sjFYpq8YfHJuBRa5ndpAjxilKOxdXrz02f1B0SQldgeClltUK0+9Vtv54p+zDPm
+         dRF+8T5ZRft8VqUNlEvzSiiq2rG7I7wFmObEc8Dm9u9xHEzCF0D2P+oJfF8dJ3lmlyql
+         fjeWspj+q+fR+IxsTM6N1CXB47IUmZZ28GsLs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679765638;
+        d=1e100.net; s=20210112; t=1679765641;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E6Aj0mbJD/qZB0r2J2tLnHasIPmuosonkIp69GrjB7E=;
-        b=391qVWqwOu/rb0KCNd/moSkZRY7IOgJC1DmKDJVYSlkrRZg3kQlmGg9IZnIWI4T/G7
-         D22qEnkuhywg0d8MFlrvCl9dTjkzQbvwTLEE0keft2Da/uDsDJQb+rMjDO9G5j+xPyct
-         NH8qs3aZrKsU1s3M9l6JeBdrnOWXErgcrxaYZQWfV4QAiyWZgWjGpLrWnkW1fvwYO1tY
-         gIuhwo3qLov6VIctnxhTR70oLgzWl+KSUOpEw4eFGG9n7m5pXOdNmDTH26zJek8xPcq0
-         wHR7g7+hznb50pNvYB90VWN1dh9obQtue1X3Jgx2z2gVy59FLkoEhoVdGkfBE940G01N
-         WOSg==
-X-Gm-Message-State: AO0yUKXZ2BUQBMMtIhJDvCPq8nBjV9wTHxngu9rKKvGTz0VY9n2BNYtt
-        HgVw7yRlIkQxfD1e4AI1x+iuoA==
-X-Google-Smtp-Source: AK7set/CmKjhmjvVfu3VgHk3NFiY73TLBKFZ9sR9voGoRKmwo6xyEu0cGZniNtSZAxfO2TZZVtCdJQ==
-X-Received: by 2002:ac8:5b96:0:b0:3bf:c9d1:4276 with SMTP id a22-20020ac85b96000000b003bfc9d14276mr11467681qta.5.1679765638478;
-        Sat, 25 Mar 2023 10:33:58 -0700 (PDT)
+        bh=QyrXPYue4+kcgnuVhPQbl4hTj4jaTNBfGwV5VXHSeY8=;
+        b=J9o4vE/UqLZOzoiqxeYnXbsjqv+N4nvOxNQaWpY6fla38g8vlcdYxZxdXhl0Wio7t1
+         yJsCk6kPpYEOaeoyf63e1FIkVe8pXJf+8Y95Prph/Uh78i2VpIEiEpL1EyCC6VepNcXj
+         CYxOLeXJhxhy/J0KsWUWQtFQK7KrenHOfSAT6gqDXIuUDY1sU5rmwMpErT/slXqKUvML
+         MGFGIMXLCaqGBqfntMet8YARLM2JGmuaKovgfnyRGPZ4bkdpg3kJmrXhEbFhPTXhvn7c
+         Z5LhmBDPDA0rtMuOucGbX3QJ4HYEs2YAlUNDc88WgZUVwWVWCo4ISAIxEp1kqw0nVGUb
+         MtjA==
+X-Gm-Message-State: AO0yUKUuSJs6b1ClOapv5tHnuNuZNMMYl3UkK8/W0f8W7F/qwvud6LYS
+        WOyNufmiNBVE01izDmHFdx5tVg==
+X-Google-Smtp-Source: AK7set9Jlw5IeClQNc9dTI42kGK/qMIDrAXw7kkLsJ9JP3829DzmHHgq2Y4Qu45ppUcd1z+iFWox1w==
+X-Received: by 2002:a05:622a:1749:b0:3e3:a298:7928 with SMTP id l9-20020a05622a174900b003e3a2987928mr12730734qtk.9.1679765640939;
+        Sat, 25 Mar 2023 10:34:00 -0700 (PDT)
 Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id m4-20020ac84444000000b003e37ee54b5dsm6762764qtn.90.2023.03.25.10.33.57
+        by smtp.gmail.com with ESMTPSA id m4-20020ac84444000000b003e37ee54b5dsm6762764qtn.90.2023.03.25.10.34.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Mar 2023 10:33:58 -0700 (PDT)
+        Sat, 25 Mar 2023 10:34:00 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -59,9 +59,9 @@ To:     linux-kernel@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang1.zhang@intel.com>
 Cc:     rcu@vger.kernel.org
-Subject: [PATCH v2 06/13] rcu: Fix set/clear TICK_DEP_BIT_RCU_EXP bitmask race
-Date:   Sat, 25 Mar 2023 17:33:09 +0000
-Message-Id: <20230325173316.3118674-7-joel@joelfernandes.org>
+Subject: [PATCH v2 08/13] rcu: Register rcu-lazy shrinker only for CONFIG_RCU_LAZY=y kernels
+Date:   Sat, 25 Mar 2023 17:33:11 +0000
+Message-Id: <20230325173316.3118674-9-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
 In-Reply-To: <20230325173316.3118674-1-joel@joelfernandes.org>
 References: <20230325173316.3118674-1-joel@joelfernandes.org>
@@ -73,80 +73,54 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Zqiang <qiang1.zhang@intel.com>
 
-For kernels built with CONFIG_NO_HZ_FULL=y, the following scenario can result
-in the scheduling-clock interrupt remaining enabled on a holdout CPU after
-its quiescent state has been reported:
+The lazy_rcu_shrink_count() shrinker function is registered even in
+kernels built with CONFIG_RCU_LAZY=n, in which case this function
+uselessly consumes cycles learning that no CPU has any lazy callbacks
+queued.
 
-	CPU1                                                 CPU2
-rcu_report_exp_cpu_mult                          synchronize_rcu_expedited_wait
-   acquires rnp->lock                               mask = rnp->expmask;
-                                                    for_each_leaf_node_cpu_mask(rnp, cpu, mask)
-   rnp->expmask = rnp->expmask & ~mask;                rdp = per_cpu_ptr(&rcu_data, cpu1);
-   for_each_leaf_node_cpu_mask(rnp, cpu, mask)
-      rdp = per_cpu_ptr(&rcu_data, cpu1);
-      if (!rdp->rcu_forced_tick_exp)
-             continue;                                 rdp->rcu_forced_tick_exp = true;
-                                                       tick_dep_set_cpu(cpu1, TICK_DEP_BIT_RCU_EXP);
-
-The problem is that CPU2's sampling of rnp->expmask is obsolete by the
-time it invokes tick_dep_set_cpu(), and CPU1 is not guaranteed to see
-CPU2's store to ->rcu_forced_tick_exp in time to clear it.  And even if
-CPU1 does see that store, it might invoke tick_dep_clear_cpu() before
-CPU2 got around to executing its tick_dep_set_cpu(), which would still
-leave the victim CPU with its scheduler-clock tick running.
-
-Either way, an nohz_full real-time application running on the victim
-CPU would have its latency needlessly degraded.
-
-Note that expedited RCU grace periods look at context-tracking
-information, and so if the CPU is executing in nohz_full usermode
-throughout, that CPU cannot be victimized in this manner.
-
-This commit therefore causes synchronize_rcu_expedited_wait to hold
-the rcu_node structure's ->lock when checking for holdout CPUs, setting
-TICK_DEP_BIT_RCU_EXP, and invoking tick_dep_set_cpu(), thus preventing
-this race.
+This commit therefore registers this shrinker function only in the kernels
+built with CONFIG_RCU_LAZY=y, where it might actually do something useful.
 
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree_exp.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/rcu/tree_nocb.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 249c2967d9e6..7cc4856da081 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -594,6 +594,7 @@ static void synchronize_rcu_expedited_wait(void)
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
- 	struct rcu_node *rnp_root = rcu_get_root();
-+	unsigned long flags;
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 9e1c8caec5ce..f2280616f9d5 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1312,6 +1312,7 @@ int rcu_nocb_cpu_offload(int cpu)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
  
- 	trace_rcu_exp_grace_period(rcu_state.name, rcu_exp_gp_seq_endval(), TPS("startwait"));
- 	jiffies_stall = rcu_exp_jiffies_till_stall_check();
-@@ -602,17 +603,17 @@ static void synchronize_rcu_expedited_wait(void)
- 		if (synchronize_rcu_expedited_wait_once(1))
- 			return;
- 		rcu_for_each_leaf_node(rnp) {
-+			raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 			mask = READ_ONCE(rnp->expmask);
- 			for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
- 				rdp = per_cpu_ptr(&rcu_data, cpu);
- 				if (rdp->rcu_forced_tick_exp)
- 					continue;
- 				rdp->rcu_forced_tick_exp = true;
--				preempt_disable();
- 				if (cpu_online(cpu))
- 					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
--				preempt_enable();
- 			}
-+			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		}
- 		j = READ_ONCE(jiffies_till_first_fqs);
- 		if (synchronize_rcu_expedited_wait_once(j + HZ))
++#ifdef CONFIG_RCU_LAZY
+ static unsigned long
+ lazy_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ {
+@@ -1360,6 +1361,7 @@ static struct shrinker lazy_rcu_shrinker = {
+ 	.batch = 0,
+ 	.seeks = DEFAULT_SEEKS,
+ };
++#endif // #ifdef CONFIG_RCU_LAZY
+ 
+ void __init rcu_init_nohz(void)
+ {
+@@ -1391,8 +1393,10 @@ void __init rcu_init_nohz(void)
+ 	if (!rcu_state.nocb_is_setup)
+ 		return;
+ 
++#ifdef CONFIG_RCU_LAZY
+ 	if (register_shrinker(&lazy_rcu_shrinker, "rcu-lazy"))
+ 		pr_err("Failed to register lazy_rcu shrinker!\n");
++#endif // #ifdef CONFIG_RCU_LAZY
+ 
+ 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ 		pr_info("\tNote: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.\n");
 -- 
 2.40.0.348.gf938b09366-goog
 
