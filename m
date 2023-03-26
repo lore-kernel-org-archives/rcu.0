@@ -2,145 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 999C8C74A5B
-	for <rcu@archiver.kernel.org>; Sun, 26 Mar 2023 21:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B63F8C7619A
+	for <rcu@archiver.kernel.org>; Sun, 26 Mar 2023 23:19:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbjCZVpY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Mar 2023 17:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57704 "EHLO
+        id S229475AbjCZXTE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Mar 2023 19:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjCZVpX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Mar 2023 17:45:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37714EE8;
-        Sun, 26 Mar 2023 14:45:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5FFDBB80D4C;
-        Sun, 26 Mar 2023 21:45:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03B5CC433D2;
-        Sun, 26 Mar 2023 21:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679867119;
-        bh=sf9ZPEdBBuTt1ltFCWTCcuLC8nULn++8M8olOM9kojc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EeFmk93+P4E/KpIpeBs9eUoNHSlOY1AIGZ5H0F2qWAAbivD06pZGonxAYEuwP1Ajz
-         3ULaNTnQnzjaErygGGx5TMNgerM4yBPQe7YL9Ey9EJLTi7zNBxLLEDQrFJ9YDcH1c3
-         88+cj1Ucq82ToX9m7xxeGRGLSRDejgHhIFsk/bav9GbdC+m17GNbL160RjaZZ/HH7i
-         AXm+DUZ1r/reWRkVZuL3jA3E4I6r9UpuyctrNNHqHVjrSJsINxpuQvb5nSAdFJgc/1
-         aRRErCxdghFHfNM6scJF+GswMK/a+Hh4tfDE/Gy4ggruWB4XwqoZ8bkUG2kroNd26Z
-         OV3FNpeouDHSA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8750A1540474; Sun, 26 Mar 2023 14:45:18 -0700 (PDT)
-Date:   Sun, 26 Mar 2023 14:45:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 1/4] rcu/nocb: Protect lazy shrinker against concurrent
- (de-)offloading
-Message-ID: <dd853e13-ffcd-4579-adad-80b014e906ef@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230322194456.2331527-1-frederic@kernel.org>
- <20230322194456.2331527-2-frederic@kernel.org>
- <c614c542-f2b5-4b39-bbc4-ae5f0a125c81@paulmck-laptop>
- <ZB4fhA1BafN7h2N3@localhost.localdomain>
- <ae1cb391-aeed-4587-8d9d-50909c918fb1@paulmck-laptop>
- <ZCCknqnceazfyzvr@localhost.localdomain>
+        with ESMTP id S229456AbjCZXTD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Mar 2023 19:19:03 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AE7114;
+        Sun, 26 Mar 2023 16:19:02 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C974068B05; Mon, 27 Mar 2023 01:18:58 +0200 (CEST)
+Date:   Mon, 27 Mar 2023 01:18:58 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, hch@lst.de,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Subject: Re: [PATCH RFC rcu 03/19] srcu: Begin offloading srcu_struct
+ fields to srcu_update
+Message-ID: <20230326231858.GA19606@lst.de>
+References: <3db82572-f156-4a5d-b711-841aa28bd996@paulmck-laptop> <20230324001938.3443499-3-paulmck@kernel.org> <80166ee7-4ee3-bb2d-c715-a8180dddee31@intel.com> <a0a2f6a7-b623-454c-ac65-69043a9f9f4d@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZCCknqnceazfyzvr@localhost.localdomain>
+In-Reply-To: <a0a2f6a7-b623-454c-ac65-69043a9f9f4d@paulmck-laptop>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Mar 26, 2023 at 10:01:34PM +0200, Frederic Weisbecker wrote:
-> Le Fri, Mar 24, 2023 at 03:51:54PM -0700, Paul E. McKenney a écrit :
-> > On Fri, Mar 24, 2023 at 11:09:08PM +0100, Frederic Weisbecker wrote:
-> > > Le Wed, Mar 22, 2023 at 04:18:24PM -0700, Paul E. McKenney a écrit :
-> > > > > @@ -1336,13 +1336,25 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> > > > >  	unsigned long flags;
-> > > > >  	unsigned long count = 0;
-> > > > >  
-> > > > > +	/*
-> > > > > +	 * Protect against concurrent (de-)offloading. Otherwise nocb locking
-> > > > > +	 * may be ignored or imbalanced.
-> > > > > +	 */
-> > > > > +	mutex_lock(&rcu_state.barrier_mutex);
-> > > > 
-> > > > I was worried about this possibly leading to out-of-memory deadlock,
-> > > > but if I recall correctly, the (de-)offloading process never allocates
-> > > > memory, so this should be OK?
-> > > 
-> > > Good point. It _should_ be fine but like you, Joel and Hillf pointed out
-> > > it's asking for trouble.
-> > > 
-> > > We could try Joel's idea to use mutex_trylock() as a best effort, which
-> > > should be fine as it's mostly uncontended.
-> > > 
-> > > The alternative is to force nocb locking and check the offloading state
-> > > right after. So instead of:
-> > > 
-> > > 	rcu_nocb_lock_irqsave(rdp, flags);
-> > > 	//flush stuff
-> > > 	rcu_nocb_unlock_irqrestore(rdp, flags);
-> > > 
-> > > Have:
-> > > 
-> > > 	raw_spin_lock_irqsave(rdp->nocb_lock, flags);
-> > > 	if (!rcu_rdp_is_offloaded(rdp))
-> > > 		raw_spin_unlock_irqrestore(rdp->nocb_lock, flags);
-> > > 		continue;
-> > > 	}
-> > > 	//flush stuff
-> > > 	rcu_nocb_unlock_irqrestore(rdp, flags);
-> > > 
-> > > But it's not pretty and also disqualifies the last two patches as
-> > > rcu_nocb_mask can't be iterated safely anymore.
-> > > 
-> > > What do you think?
-> > 
-> > The mutex_trylock() approach does have the advantage of simplicity,
-> > and as you say should do well given low contention.
-> > 
-> > Which reminds me, what sort of test strategy did you have in mind?
-> > Memory exhaustion can have surprising effects.
+On Fri, Mar 24, 2023 at 01:11:47PM -0700, Paul E. McKenney wrote:
+> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> The best I can do is to trigger the count and scan callbacks through
-> the shrinker debugfs and see if it crashes or not :-)
-
-Sounds like a good start.  Maybe also a good finish?  ;-)
-
-> > > > >  	/* Snapshot count of all CPUs */
-> > > > >  	for_each_possible_cpu(cpu) {
-> > > > >  		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> > > > > -		int _count = READ_ONCE(rdp->lazy_len);
-> > > > > +		int _count;
-> > > > > +
-> > > > > +		if (!rcu_rdp_is_offloaded(rdp))
-> > > > > +			continue;
-> > > > 
-> > > > If the CPU is offloaded, isn't ->lazy_len guaranteed to be zero?
-> > > > 
-> > > > Or can it contain garbage after a de-offloading operation?
-> > > 
-> > > If it's deoffloaded, ->lazy_len is indeed (supposed to be) guaranteed to be zero.
-> > > Bypass is flushed and disabled atomically early on de-offloading and the
-> > > flush resets ->lazy_len.
-> > 
-> > Whew!  At the moment, I don't feel strongly about whether or not
-> > the following code should (1) read the value, (2) warn on non-zero,
-> > (3) assume zero without reading, or (4) some other option that is not
-> > occurring to me.  Your choice!
+> Thank you!  I will add this on my next rebase.
 > 
-> (2) looks like a good idea!
+> It is possible that this will be v6.5 rather than v6.4 material.
 
-Sounds good to me!
-
-							Thanx, Paul
+I was hoping the RCU bits could land in 6.4, so that the block
+layer work to take advantage of it can go into 6.5 without cross-tree
+dependencies.
