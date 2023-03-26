@@ -2,131 +2,99 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FF2AC6FD1C
-	for <rcu@archiver.kernel.org>; Sat, 25 Mar 2023 17:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67BD1C76196
+	for <rcu@archiver.kernel.org>; Sun, 26 Mar 2023 00:24:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbjCYReb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 25 Mar 2023 13:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S229659AbjCZAYu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 25 Mar 2023 20:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231840AbjCYReU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 25 Mar 2023 13:34:20 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06F5F75B
-        for <rcu@vger.kernel.org>; Sat, 25 Mar 2023 10:34:07 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id g19so4488997qts.9
-        for <rcu@vger.kernel.org>; Sat, 25 Mar 2023 10:34:07 -0700 (PDT)
+        with ESMTP id S229446AbjCZAYt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 25 Mar 2023 20:24:49 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54340AF26;
+        Sat, 25 Mar 2023 17:24:48 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id h31so3193411pgl.6;
+        Sat, 25 Mar 2023 17:24:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1679765647;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20210112; t=1679790288;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ONoHk+Rj1ufMcYHSOwfNTPmuuZ3mXzko5D4ACMs/eOA=;
-        b=ikQ37MdCcvJ+qjCxLa0DlYnQ1qgqtu0+7/KD0Bb/Tc4mBBI7pxErsaA3YnRKCfkpmX
-         3p0P+l2DU6LzWXS3KmQPuTqncSpWI/pcmz1ufIhInc5srxC3za/4WZhFXfWgLnnaNFNZ
-         Nk9m6/9CnTBL+94W3Acb2UnO12oHOjCG9k8vg=
+        bh=+4Q2NTyLoojITNxzc3JyEzySGYWN7cs2pVbyR9zoqIw=;
+        b=qzyWdRSdhiQM/cam+FXnSoSF0DrRFqJjX9PthUX0ZBm2rGntAGgD+P6pOqSRrFp1Jl
+         EgLokpTROoamXQVww48fghUUuL7SMZvVrVzwtejcJMftaSCqvu27g0MrBlUNYcRpabE4
+         mW7nh8aqt2L1PxU2VcrCUuUfpz2XF8vLsT6DrV1abL72ECakbdzg3fJYakRGEt6fuAdl
+         1jt/CjxanXFLh+ZufrZ6VMB2wYi4NOIEu8jnKHik2X/MSiky0WWqczTz+ChrP85Q802Q
+         la5UzdeFLuFnRQo2byucmsLgOy0COK0n+uqsRX20DUGSjHhleB374JOmBADtC+jbGHVm
+         Wlag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679765647;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1679790288;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ONoHk+Rj1ufMcYHSOwfNTPmuuZ3mXzko5D4ACMs/eOA=;
-        b=HRBDPp8HmAnCHfAd/JdwOwagVA7Tm1UP39wgB1rZBQjQVTNiQcllpH127MeeVbAiro
-         K025551FGUMhJpZyM0CHihYR0q+4+mpQ1o4sLwVj09YXx9fxwCvo3hlCKAVOuNki+Lxd
-         nLW1N/ubV9FvovHtf7rytq9vtCIlgQ4hCMx7EPQK9E8dUwgqZIo+Rm2lAhx3ytJfjdH7
-         JMlkgaEtexOsnJpC8OP/1mxJQMUja2XMSxorOqcV+inCKu5V8LAxgnIYjhzRyn2WCDxd
-         6KMGfBg7Mhtm1IRY+Sjx69q4Bo/fZtX+EmKoFZmUSvhz8zy5o4CAMmtWaLt1z5YWh7dZ
-         wdCA==
-X-Gm-Message-State: AAQBX9ekBequUcObbBUFZ9+RtroNv+1XDqnaONbS6hI+q1d6skbqwO2U
-        rfKMUuB0pCYmD6VTlPKMmBx5yg==
-X-Google-Smtp-Source: AKy350YEgc1Eq00eYoCtjBB7hMJjZEs/02/OUcwF5Nmwzwr8rFs2fkTW9CVn5OaLI4MsCVSYmWRBKw==
-X-Received: by 2002:a05:622a:1a0b:b0:3e4:dbaa:8a05 with SMTP id f11-20020a05622a1a0b00b003e4dbaa8a05mr4599709qtb.0.1679765647265;
-        Sat, 25 Mar 2023 10:34:07 -0700 (PDT)
-Received: from joelboxx.c.googlers.com.com (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id m4-20020ac84444000000b003e37ee54b5dsm6762764qtn.90.2023.03.25.10.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Mar 2023 10:34:06 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang1.zhang@intel.com>
-Cc:     rcu@vger.kernel.org
-Subject: [PATCH v2 13/13] rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
-Date:   Sat, 25 Mar 2023 17:33:16 +0000
-Message-Id: <20230325173316.3118674-14-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-In-Reply-To: <20230325173316.3118674-1-joel@joelfernandes.org>
-References: <20230325173316.3118674-1-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        bh=+4Q2NTyLoojITNxzc3JyEzySGYWN7cs2pVbyR9zoqIw=;
+        b=ImiJkBZ3Kpo1EUKi2gg6DAniQECAXHOhOlp5JGDRqTSOZHFCqfL973pCYMlSemh/AN
+         EyQ0qTIGWZvldvi6SQIdjAgJrl/2eJjMq+qTzCgB2eKSQDUM24ikewH+qXzuiKFob2V5
+         loM+tIRIDy8EQKWK2H1ipFl1cEr84wEC5HdZxebmr4rjGN3vp9TR4hdX+bDag3YHtaCV
+         6lFNd2B4l3kaJxrsd+ryex4xa38r1RZ9V1Y4azBbrNq8eEhPQ9cwHEIF2I10gCt1aBtl
+         olcCdPZBF3Iy6HBWyORM6A15rLPybKygBWuui2IHZhijM3RIjQL0nsLTsX/u8CV5bFB4
+         9GFQ==
+X-Gm-Message-State: AAQBX9f4zlULvvmyQcf3REgr4cOruhPLiu7+e8ImLUSVStBuzIgjRDci
+        Rs9DmoLiRHwIKbOWwNs4Fl4=
+X-Google-Smtp-Source: AKy350blDB7yT8bEf7Yw6Lf59U5uoiiHGxIsRG5zhG3POgNjQkWpfksTqVOV0fNKYwsagKz8I2bHlQ==
+X-Received: by 2002:aa7:8bc2:0:b0:623:2bba:dd9 with SMTP id s2-20020aa78bc2000000b006232bba0dd9mr7090071pfd.14.1679790282959;
+        Sat, 25 Mar 2023 17:24:42 -0700 (PDT)
+Received: from localhost.localdomain ([154.220.3.115])
+        by smtp.gmail.com with ESMTPSA id j13-20020aa78dcd000000b0062809b2cb05sm10673889pfr.155.2023.03.25.17.24.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 25 Mar 2023 17:24:42 -0700 (PDT)
+From:   zhouzhouyi@gmail.com
+To:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        lance@osuosl.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] rcu: torture: ppc: Remove duplicated argument --enable-kvm
+Date:   Sun, 26 Mar 2023 08:24:34 +0800
+Message-Id: <1679790274-1309-1-git-send-email-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario can
-result in a NULL-pointer dereference:
-
-           CPU1                                           CPU2
-rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
-  if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
-    raw_spin_lock_rcu_node
-    np = rcu_next_node_entry(t, rnp)
-    if (&t->rcu_node_entry == rnp->exp_tasks)
-      WRITE_ONCE(rnp->exp_tasks, np)
-      ....
-      raw_spin_unlock_irqrestore_rcu_node
-                                                    raw_spin_lock_irqsave_rcu_node
-                                                    t = list_entry(rnp->exp_tasks->prev,
-                                                        struct task_struct, rcu_node_entry)
-                                                    (if rnp->exp_tasks is NULL, this
-                                                       will dereference a NULL pointer)
-
-The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
-field without holding the rcu_node structure's ->lock and CPU2 did
-not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
-Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NULL,
-then CPU2 might dereference that NULL pointer.
-
-This commit therefore holds the rcu_node structure's ->lock while
-accessing that structure's->exp_tasks field.
-
-[ paulmck: Apply Frederic Weisbecker feedback. ]
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+The argument --enable-kvm is duplicated because qemu_args
+in kvm-test-1-run.sh has already give this.
+          
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 ---
- kernel/rcu/tree_exp.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Dear RCU and PPC developers
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 5343f32e7d67..3b7abb58157d 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -803,9 +803,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
- 	int ndetected = 0;
- 	struct task_struct *t;
- 
--	if (!READ_ONCE(rnp->exp_tasks))
--		return 0;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	if (!rnp->exp_tasks) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		return 0;
-+	}
- 	t = list_entry(rnp->exp_tasks->prev,
- 		       struct task_struct, rcu_node_entry);
- 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
+I discover this possible minor flaw when I am performing RCU torture
+test in PPC VM of of Open Source Lab of Oregon State University.
+
+But I can't test my patch because I am in a VM.
+
+Thanks for your time
+
+Cheers ;-)
+Zhouyi                                           
+--    
+ tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+index b52d5069563c..48b9147e8c91 100644
+--- a/tools/testing/selftests/rcutorture/bin/functions.sh
++++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+@@ -250,7 +250,7 @@ identify_qemu_args () {
+ 		echo -machine virt,gic-version=host -cpu host
+ 		;;
+ 	qemu-system-ppc64)
+-		echo -enable-kvm -M pseries -nodefaults
++		echo -M pseries -nodefaults
+ 		echo -device spapr-vscsi
+ 		if test -n "$TORTURE_QEMU_INTERACTIVE" -a -n "$TORTURE_QEMU_MAC"
+ 		then
 -- 
-2.40.0.348.gf938b09366-goog
+2.34.1
 
