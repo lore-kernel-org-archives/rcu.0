@@ -2,72 +2,78 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02A45C74A5B
-	for <rcu@archiver.kernel.org>; Sun, 26 Mar 2023 19:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CF6EC7619A
+	for <rcu@archiver.kernel.org>; Sun, 26 Mar 2023 19:53:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbjCZTeo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 26 Mar 2023 15:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
+        id S229471AbjCZTx1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 26 Mar 2023 15:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjCZTen (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 26 Mar 2023 15:34:43 -0400
+        with ESMTP id S229458AbjCZTx1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 26 Mar 2023 15:53:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A306449E6;
-        Sun, 26 Mar 2023 12:34:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BC455B6;
+        Sun, 26 Mar 2023 12:53:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2AC0760ECB;
-        Sun, 26 Mar 2023 19:34:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA8E5C433D2;
-        Sun, 26 Mar 2023 19:34:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A87660EE6;
+        Sun, 26 Mar 2023 19:53:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E891C433EF;
+        Sun, 26 Mar 2023 19:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679859279;
-        bh=GidJKYIOLmvfz4aB/GwhhYhvXHg30d4L87WaccShj0g=;
+        s=k20201202; t=1679860405;
+        bh=a3idF1OnzK0ta+M1kQ6BZWvXz40Iu3iKa784Cxx/8Vw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UhEGBET99VkJodmP+8qQRBHYJ0gnbGFiAzKvHIWfXt4zsogzzY+CFizrzU44Ih6+n
-         rT5fuQwYM+89Ms9v5uCcL0di/veqyw7LbSM4WRvWVC1mjcqSR/ntmexyIdQVI7MFSN
-         WQIziWdI5nva5bPTQcS96T5K0RlvSEQbYmJ2ioVXupEtubh9zREDYcFlCHzznU3dwX
-         39pKh1V+3UPt5dNvbP20tGgcRQokJ+AIJCnjFwnD4dvqyDd7fd3u4nPEykfvpINsnd
-         6lBAK/0GDLy/dGMw2arzCt6KW4nyiDfgjmx8z5BDeHZZzJN44Akd1Rj8bB1cLPJ2mb
-         uHUXh68B6VnaQ==
-Date:   Sun, 26 Mar 2023 21:34:35 +0200
+        b=iGvz7UBSRqd/qIsq5mmxZn4YtZPz/tuq0A9ZxKUPP0P0p0nJujXJN7KIVKypgPlcv
+         7WaWBwM5SeD+ITD31Cvkn9zukQ7uYJ+hFJMu9TsgQNq1Fq4Sdl3u/u0elt6OGYKSMQ
+         zFnReDgOEWMl1+HffjaydAmSGJ+lSh04I9tKK51EhpiTtC9LPkZBp7oiuBiFQBYgfH
+         02sCbX8kbUe1Sg5dCOEgrFsHYs9a6AdrDJrY1k3Mxl82Rp+jEEASaPNC4xuxSsF5EI
+         s6Amus2zpXJwjNZGshyY5vy2jzOHeTLLIa4NFrmdXgIRP1urU/ztcoRzC/+o2VvbhR
+         yJuaJTjPuyTfw==
+Date:   Sun, 26 Mar 2023 21:53:22 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
 Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        rcu <rcu@vger.kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 04/13] tick/nohz: Fix cpu_is_hotpluggable() by
- checking with nohz subsystem
-Message-ID: <ZCCeS/VeGthUNgIY@localhost.localdomain>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang1.zhang@intel.com>, Mark Brown <broonie@kernel.org>,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2 11/13] rcu-tasks: Report stalls during
+ synchronize_srcu() in rcu_tasks_postscan()
+Message-ID: <ZCCish6dAkiOOZ1Q@localhost.localdomain>
 References: <20230325173316.3118674-1-joel@joelfernandes.org>
- <20230325173316.3118674-5-joel@joelfernandes.org>
+ <20230325173316.3118674-12-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230325173316.3118674-5-joel@joelfernandes.org>
+In-Reply-To: <20230325173316.3118674-12-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Sat, Mar 25, 2023 at 05:33:07PM +0000, Joel Fernandes (Google) a écrit :
-> For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
-> However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
-> torture tests that do offlining to end up trying to offline this CPU causing
-> test failures. Such failure happens on all architectures.
-
-It might be worth noting that hotplug failure is fine on hotplug testing.
-The issue here is the repetitive error message in the logs.
-
-Other than that:
+Le Sat, Mar 25, 2023 at 05:33:14PM +0000, Joel Fernandes (Google) a écrit :
+> From: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> 
+> The call to synchronize_srcu() from rcu_tasks_postscan() can be stalled
+> by a task getting stuck in do_exit() between that function's calls to
+> exit_tasks_rcu_start() and exit_tasks_rcu_finish().   To ease diagnosis
+> of this situation, print a stall warning message every rcu_task_stall_info
+> period when rcu_tasks_postscan() is stalled.
+> 
+> [ paulmck: Adjust to handle CONFIG_SMP=n. ]
+> 
+> Reported-by: Mark Brown <broonie@kernel.org>
+> Link: https://lore.kernel.org/rcu/20230111212736.GA1062057@paulmck-ThinkPad-P17-Gen-1/
+> Signed-off-by: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
 Acked-by: Frederic Weisbecker <frederic@kernel.org>
+
