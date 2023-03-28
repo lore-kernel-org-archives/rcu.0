@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E863C76196
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 877C5C77B60
 	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 19:58:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjC1T6p (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 15:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
+        id S229789AbjC1T6r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Mar 2023 15:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjC1T6n (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S229685AbjC1T6n (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 28 Mar 2023 15:58:43 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4413AB6
-        for <rcu@vger.kernel.org>; Tue, 28 Mar 2023 12:58:09 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id j18-20020a05600c1c1200b003ee5157346cso10154599wms.1
-        for <rcu@vger.kernel.org>; Tue, 28 Mar 2023 12:58:09 -0700 (PDT)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F4E40C6
+        for <rcu@vger.kernel.org>; Tue, 28 Mar 2023 12:58:07 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id i9so13419591wrp.3
+        for <rcu@vger.kernel.org>; Tue, 28 Mar 2023 12:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1680033488;
+        d=bytedance.com; s=google; t=1680033486;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A416pUmXSfyjfvZmC8DpRUw6ME53SsgLznqZ8bBGXvQ=;
-        b=PXfJSuhwiQ7FZQisc1aUqZ35MafZWj18AsDcwFxDGSrbdIUHFDHHNw12nM0YVnjvof
-         LfZDfX230Z3IT1Q5f4YmiYznazFru6ktoDwH4rb5NMm5pduXceFyLIQd0mSKkh1xcoAo
-         tvpZE2sj8yTeE127cTr528j+An/QwXGRVEHUGNfl/ueyLmKvYCB8WfofLLfTTcmwunmQ
-         ESqUpFpKpcQGJJJvwMZjKydItfibCTzFdC2yUNqiqnpBZHtcG2CyBbC48lAsC5VczmBy
-         4bvhmfT5lFTPXcoszDXs9TIvI/4d1m1H/K+aCxf/di3O0O8wAa71uDKhM0jMXC8F2zT8
-         ovmQ==
+        bh=bAkcK9PzxRDXKfC6w4H8Cy8JdU/8fLLXDQn0J84D/Q4=;
+        b=brv1zXiAmPh91aE9DjrwGIwaZCqLhuvVSUYlRm0V3wR7uEEO1zHVL025Y1YIIYZiat
+         pUB8v5LNzBgwFFuuF3/fAKGDzC+mIbKI6KjByKrIwOimDShFX33xBmwE5/8LUVsNBNoX
+         AZ7eDARNreOKVYr0zxRJIZgTARIchcvEoVso2Q5dAEWC7mp/nM8yObn0/3t0xPpFubhc
+         OSHWuRVlzVQB9Ix8KSIr0ej4xjcbc6IsctflpnmbFM2HAyxH5SG3R0KkvUKj8AtCzBUt
+         64OGHO/C/OkRi7qKR0lWy3qMQZgKqIqijf4J+6VfGUZ88OZZPWC3VspC+F5K7RUr5RwA
+         jd8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680033488;
+        d=1e100.net; s=20210112; t=1680033486;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A416pUmXSfyjfvZmC8DpRUw6ME53SsgLznqZ8bBGXvQ=;
-        b=ueFpiqAmQYqg8XCBKX65h7/Ev/HQmp320Bttnxu8L5d9QFhiN3LOG7ZHOEp8tt2e65
-         XON1KGg6NTK9E8trVSu3P7m0V+MEC99fxMGjF/O+EDltti1ENOybQaNWrsh3OFicdfr4
-         hRhfHdtbmZjTV5eaRUmRdL9fg8v0yLj5n8+8QhgHTj5QChn7CumRJuPbxq4nzdA5p95A
-         k38OciGNPnZsUeheOX3qV1JANlyUSOHtcefhfrOatSAsd8q7BQC+xs0AZ3NqBy1U3ltY
-         a+AnT/1CPcVa3V47ySpmZkFR9OiYT4667ccDz3iK/Rp+SjZNgEJuTSirL1XLHONYByPQ
-         3YlQ==
-X-Gm-Message-State: AAQBX9dWyxZwLSrwf0tJd0E0I7zSxoqt4hE8zAFs3SefnwyCPsmT+Uuw
-        u/3v5E1VszwKWmN/wg6W08tfTw==
-X-Google-Smtp-Source: AKy350ZAOz8VV6bkSjlOCGrsiNr2MEoP0GQ/uNLnytCPdeZNDdgNF6XCyh0Xv5cqxCV5+2QxiSKiXw==
-X-Received: by 2002:a7b:cdef:0:b0:3ef:7616:d179 with SMTP id p15-20020a7bcdef000000b003ef7616d179mr2667200wmj.20.1680033488375;
-        Tue, 28 Mar 2023 12:58:08 -0700 (PDT)
+        bh=bAkcK9PzxRDXKfC6w4H8Cy8JdU/8fLLXDQn0J84D/Q4=;
+        b=Uk9a9imqI181f8dahE1hmHTk6ykyCDeekhRgjOu5g4oM+4bGo9A6SAtY7pseloXvcU
+         rwzCeKN69wSHTq4Z6CKt/63mvdbYAEEyHT2/PYiZxYN+ow9ZmnfLHYB8mQtS9rpJgdyC
+         go3PaN9i/JC0a4eVRxPVwaAYnycEdvGgXT1JOfK4KFvYAvltdLf/T4nzRd/67atrMZTq
+         stC3oUKH0c1ewzQc1Ius4NQ813CyrWbKEFlwm4eahncPcE9sDF9f0x/OX5zcrn+AWnrv
+         b/fGosLMfCpwsEi1HQYQs68X5zb+0+u/iDimt7XnlzF6hXUndW6nXc1sK7IxFx4wgbnu
+         fYSA==
+X-Gm-Message-State: AAQBX9dxqfNx6zGusoFj8yd7dfOs2Jm3CfVNDJiXDpSQkLmqz8o1T3bS
+        UTP9H05MPvBHr9JjrplaVQuQ8A==
+X-Google-Smtp-Source: AKy350b0sqZML6UggFbY6k1sToHWoQVpdKzomiPn9RGxAnCWYkTkvqqG8QpnuZfgKmjwoe0QILN/hA==
+X-Received: by 2002:adf:e405:0:b0:2cc:1935:1ae8 with SMTP id g5-20020adfe405000000b002cc19351ae8mr12975394wrm.47.1680033486292;
+        Tue, 28 Mar 2023 12:58:06 -0700 (PDT)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:8445:3123:91d7:959d])
-        by smtp.gmail.com with ESMTPSA id z6-20020a056000110600b002c557f82e27sm28248386wrw.99.2023.03.28.12.58.07
+        by smtp.gmail.com with ESMTPSA id z6-20020a056000110600b002c557f82e27sm28248386wrw.99.2023.03.28.12.58.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Mar 2023 12:58:07 -0700 (PDT)
+        Tue, 28 Mar 2023 12:58:05 -0700 (PDT)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
         brgerst@gmail.com
@@ -62,11 +62,10 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
         gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
-        Sabin Rapan <sabrapan@amazon.com>,
         Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v17 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
-Date:   Tue, 28 Mar 2023 20:57:58 +0100
-Message-Id: <20230328195758.1049469-9-usama.arif@bytedance.com>
+Subject: [PATCH v17 6/8] x86/smpboot: Send INIT/SIPI/SIPI to secondary CPUs in parallel
+Date:   Tue, 28 Mar 2023 20:57:56 +0100
+Message-Id: <20230328195758.1049469-7-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230328195758.1049469-1-usama.arif@bytedance.com>
 References: <20230328195758.1049469-1-usama.arif@bytedance.com>
@@ -78,222 +77,104 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-Enable parallel bringup for SEV-ES guests. The APs can't actually
-execute the CPUID instruction directly during early startup, but they
-can make the GHCB call directly instead, just as the VC trap handler
-would do.
+When the APs can find their own APIC ID without assistance, perform the
+AP bringup in parallel.
 
-Thanks to Sabin for talking me through the way this works.
+Register a CPUHP_BP_PARALLEL_STARTUP stage "x86/cpu:kick" which just
+calls do_boot_cpu() to deliver INIT/SIPI/SIPI to each AP in turn before
+the normal native_cpu_up() does the rest of the hand-holding.
 
-Suggested-by: Sabin Rapan <sabrapan@amazon.com>
+The APs will then take turns through the real mode code (which has its
+own bitlock for exclusion) until they make it to their own stack, then
+proceed through the first few lines of start_secondary() and execute
+these parts in parallel:
+
+ start_secondary()
+    -> cr4_init()
+    -> (some 32-bit only stuff so not in the parallel cases)
+    -> cpu_init_secondary()
+       -> cpu_init_exception_handling()
+       -> cpu_init()
+          -> wait_for_master_cpu()
+
+At this point they wait for the BSP to set their bit in cpu_callout_mask
+(from do_wait_cpu_initialized()), and release them to continue through
+the rest of cpu_init() and beyond.
+
+This reduces the time taken for bringup on my 28-thread Haswell system
+from about 120ms to 80ms. On a socket 96-thread Skylake it takes the
+bringup time from 500ms to 100ms.
+
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
 ---
- arch/x86/coco/core.c              |  5 ++++
- arch/x86/include/asm/coco.h       |  1 +
- arch/x86/include/asm/sev-common.h |  3 +++
- arch/x86/include/asm/smp.h        |  5 +++-
- arch/x86/kernel/head_64.S         | 30 ++++++++++++++++++++++++
- arch/x86/kernel/smpboot.c         | 39 ++++++++++++++++++++++++++-----
- 6 files changed, 76 insertions(+), 7 deletions(-)
+ arch/x86/kernel/smpboot.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-index 49b44f881484..0bab38efb15a 100644
---- a/arch/x86/coco/core.c
-+++ b/arch/x86/coco/core.c
-@@ -129,6 +129,11 @@ u64 cc_mkdec(u64 val)
- }
- EXPORT_SYMBOL_GPL(cc_mkdec);
- 
-+enum cc_vendor cc_get_vendor(void)
-+{
-+	return vendor;
-+}
-+
- __init void cc_set_vendor(enum cc_vendor v)
- {
- 	vendor = v;
-diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-index 3d98c3a60d34..0428d9712c96 100644
---- a/arch/x86/include/asm/coco.h
-+++ b/arch/x86/include/asm/coco.h
-@@ -12,6 +12,7 @@ enum cc_vendor {
- };
- 
- void cc_set_vendor(enum cc_vendor v);
-+enum cc_vendor cc_get_vendor(void);
- void cc_set_mask(u64 mask);
- 
- #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
-diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-index b63be696b776..0abf8a39cee1 100644
---- a/arch/x86/include/asm/sev-common.h
-+++ b/arch/x86/include/asm/sev-common.h
-@@ -70,6 +70,7 @@
- 	/* GHCBData[63:12] */				\
- 	(((u64)(v) & GENMASK_ULL(63, 12)) >> 12)
- 
-+#ifndef __ASSEMBLY__
- /*
-  * SNP Page State Change Operation
-  *
-@@ -161,6 +162,8 @@ struct snp_psc_desc {
- 
- #define GHCB_RESP_CODE(v)		((v) & GHCB_MSR_INFO_MASK)
- 
-+#endif /* __ASSEMBLY__ */
-+
- /*
-  * Error codes related to GHCB input that can be communicated back to the guest
-  * by setting the lower 32-bits of the GHCB SW_EXITINFO1 field to 2.
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index defe76ee9e64..1584f04a7007 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -204,7 +204,10 @@ extern unsigned int smpboot_control;
- /* Control bits for startup_64 */
- #define STARTUP_APICID_CPUID_0B	0x80000000
- #define STARTUP_APICID_CPUID_01	0x40000000
-+#define STARTUP_APICID_SEV_ES	0x20000000
- 
--#define STARTUP_PARALLEL_MASK (STARTUP_APICID_CPUID_01 | STARTUP_APICID_CPUID_0B)
-+#define STARTUP_PARALLEL_MASK (STARTUP_APICID_CPUID_01 | \
-+			       STARTUP_APICID_CPUID_0B | \
-+			       STARTUP_APICID_SEV_ES)
- 
- #endif /* _ASM_X86_SMP_H */
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index ff3a5f008d8a..9c38849fcac8 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -26,6 +26,7 @@
- #include <asm/nospec-branch.h>
- #include <asm/fixmap.h>
- #include <asm/smp.h>
-+#include <asm/sev-common.h>
- 
- /*
-  * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
-@@ -242,6 +243,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	 *
- 	 * Bit 31	STARTUP_APICID_CPUID_0B flag (use CPUID 0x0b)
- 	 * Bit 30	STARTUP_APICID_CPUID_01 flag (use CPUID 0x01)
-+	 * Bit 29	STARTUP_APICID_SEV_ES flag (CPUID 0x0b via GHCB MSR)
- 	 * Bit 0-24	CPU# if STARTUP_APICID_CPUID_xx flags are not set
- 	 */
- 	movl	smpboot_control(%rip), %ecx
-@@ -249,6 +251,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	jnz	.Luse_cpuid_0b
- 	testl	$STARTUP_APICID_CPUID_01, %ecx
- 	jnz	.Luse_cpuid_01
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	testl	$STARTUP_APICID_SEV_ES, %ecx
-+	jnz	.Luse_sev_cpuid_0b
-+#endif
- 	andl	$0x0FFFFFFF, %ecx
- 	jmp	.Lsetup_cpu
- 
-@@ -259,6 +265,30 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	shr	$24, %edx
- 	jmp	.Lsetup_AP
- 
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+.Luse_sev_cpuid_0b:
-+	/* Set the GHCB MSR to request CPUID 0xB_EDX */
-+	movl	$MSR_AMD64_SEV_ES_GHCB, %ecx
-+	movl	$(GHCB_CPUID_REQ_EDX << 30) | GHCB_MSR_CPUID_REQ, %eax
-+	movl	$0x0B, %edx
-+	wrmsr
-+
-+	/* Perform GHCB MSR protocol */
-+	rep; vmmcall		/* vmgexit */
-+
-+	/*
-+	 * Get the result. After the RDMSR:
-+	 *   EAX should be 0xc0000005
-+	 *   EDX should have the CPUID register value and since EDX
-+	 *   is the target register, no need to move the result.
-+	 */
-+	rdmsr
-+	andl	$GHCB_MSR_INFO_MASK, %eax
-+	cmpl	$GHCB_MSR_CPUID_RESP, %eax
-+	jne	1f
-+	jmp	.Lsetup_AP
-+#endif
-+
- .Luse_cpuid_0b:
- 	mov	$0x0B, %eax
- 	xorl	%ecx, %ecx
 diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 05d202b7dcaa..6ef040fd28a0 100644
+index 45f3d08321fe..0003f5e1740c 100644
 --- a/arch/x86/kernel/smpboot.c
 +++ b/arch/x86/kernel/smpboot.c
-@@ -85,6 +85,7 @@
- #include <asm/hw_irq.h>
- #include <asm/stackprotector.h>
- #include <asm/sev.h>
-+#include <asm/coco.h>
+@@ -57,6 +57,7 @@
+ #include <linux/pgtable.h>
+ #include <linux/overflow.h>
+ #include <linux/stackprotector.h>
++#include <linux/smpboot.h>
  
- /* representing HT siblings of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
-@@ -1514,15 +1515,36 @@ void __init smp_prepare_cpus_common(void)
-  * We can do 64-bit AP bringup in parallel if the CPU reports its APIC
-  * ID in CPUID (either leaf 0x0B if we need the full APIC ID in X2APIC
-  * mode, or leaf 0x01 if 8 bits are sufficient). Otherwise it's too
-- * hard. And not for SEV-ES guests because they can't use CPUID that
-- * early.
-+ * hard.
-  */
- static bool prepare_parallel_bringup(void)
+ #include <asm/acpi.h>
+ #include <asm/cacheinfo.h>
+@@ -993,7 +994,8 @@ static void announce_cpu(int cpu, int apicid)
+ 		node_width = num_digits(num_possible_nodes()) + 1; /* + '#' */
+ 
+ 	if (cpu == 1)
+-		printk(KERN_INFO "x86: Booting SMP configuration:\n");
++		printk(KERN_INFO "x86: Booting SMP configuration in %s:\n",
++		       do_parallel_bringup ? "parallel" : "series");
+ 
+ 	if (system_state < SYSTEM_RUNNING) {
+ 		if (node != current_node) {
+@@ -1326,9 +1328,12 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
  {
--	if (IS_ENABLED(CONFIG_X86_32) || cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-+	bool has_sev_es = false;
-+
-+	if (IS_ENABLED(CONFIG_X86_32))
- 		return false;
+ 	int ret;
  
--	if (x2apic_mode) {
-+	/*
-+	 * Encrypted guests other than SEV-ES (in the future) will need to
-+	 * implement an early way of finding the APIC ID, since they will
-+	 * presumably block direct CPUID too. Be kind to our future selves
-+	 * by warning here instead of just letting them break. Parallel
-+	 * startup doesn't have to be in the first round of enabling patches
-+	 * for any such technology.
-+	 */
-+	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT)) {
-+		switch (cc_get_vendor()) {
-+		case CC_VENDOR_AMD:
-+			has_sev_es = true;
-+			break;
-+
-+		default:
-+			pr_info("Disabling parallel bringup due to guest state encryption\n");
-+			return false;
-+		}
+-	ret = do_cpu_up(cpu, tidle);
+-	if (ret)
+-		goto out;
++	/* If parallel AP bringup isn't enabled, perform the first steps now. */
++	if (!do_parallel_bringup) {
++		ret = do_cpu_up(cpu, tidle);
++		if (ret)
++			goto out;
 +	}
+ 
+ 	ret = do_wait_cpu_initialized(cpu);
+ 	if (ret)
+@@ -1348,6 +1353,12 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
+ 	return ret;
+ }
+ 
++/* Bringup step one: Send INIT/SIPI to the target AP */
++static int native_cpu_kick(unsigned int cpu)
++{
++	return do_cpu_up(cpu, idle_thread_get(cpu));
++}
 +
-+	if (x2apic_mode || has_sev_es) {
- 		if (boot_cpu_data.cpuid_level < 0x0b)
- 			return false;
+ /**
+  * arch_disable_smp_support() - disables SMP support for x86 at runtime
+  */
+@@ -1516,6 +1527,8 @@ static bool prepare_parallel_bringup(void)
+ 		smpboot_control = STARTUP_APICID_CPUID_01;
+ 	}
  
-@@ -1531,8 +1553,13 @@ static bool prepare_parallel_bringup(void)
- 			return false;
- 		}
++	cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_STARTUP, "x86/cpu:kick",
++				  native_cpu_kick, NULL);
+ 	return true;
+ }
  
--		pr_debug("Using CPUID 0xb for parallel CPU startup\n");
--		smpboot_control = STARTUP_APICID_CPUID_0B;
-+		if (has_sev_es) {
-+			pr_debug("Using SEV-ES CPUID 0xb for parallel CPU startup\n");
-+			smpboot_control = STARTUP_APICID_SEV_ES;
-+		} else {
-+			pr_debug("Using CPUID 0xb for parallel CPU startup\n");
-+			smpboot_control = STARTUP_APICID_CPUID_0B;
-+		}
- 	} else {
- 		/* Without X2APIC, what's in CPUID 0x01 should suffice. */
- 		if (boot_cpu_data.cpuid_level < 0x01)
 -- 
 2.25.1
 
