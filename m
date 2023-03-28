@@ -2,58 +2,38 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B38EC77B6E
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 19:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 428C4C6FD18
+	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 20:07:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbjC1T6v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 15:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        id S229487AbjC1UHx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Mar 2023 16:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjC1T6j (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Mar 2023 15:58:39 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88CA3C29
-        for <rcu@vger.kernel.org>; Tue, 28 Mar 2023 12:58:05 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id m2so13406919wrh.6
-        for <rcu@vger.kernel.org>; Tue, 28 Mar 2023 12:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1680033484;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1AzPNwfywCbIt4CUpuWDJjRzyHAg+5ks2zj7PdwiNGU=;
-        b=aC8LNYi5Htzwy/xtQZ1HHouWyyqH0vDnWDR+OhG3B27XRdqCEpIgZfHgFz1w02SqMn
-         PEos3YiRwoPGxBA0vrkXR4S3KdIVsv6Ff0foW3Rh6VYSJkht1q8CAD6NOOXA4KBlFDJK
-         KgMOEqUOwm9S5QwT3Id1ccZ3oOL+s7HhHHzE9imQEAPzI7OkGu/BZcXBqYGChkLcy2Rf
-         Wxu/H2ZJZpAUOAfo60gYHHn7ldwnEOjsy7vHXo2h6FM6EYe7Y9uJsROQE1ya+YYeJFHu
-         9DPyQdajSKvD9DZSHvzUXhuvB6IhfaSoovu82dW1GJdqrj8leQQ2tCjIM0xNu4UZGFsK
-         gZOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680033484;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1AzPNwfywCbIt4CUpuWDJjRzyHAg+5ks2zj7PdwiNGU=;
-        b=WLYxHAPzwddcpuzu0WjOZ2to9555M8VkDQMJ/In1+cG6lE0FLTUgKKLkv+ZZlpnBOI
-         xbZI0X692yarTpOykylXdPcetdfBU0O9B+dAeqpNV5tln+i5DI8VsfllP/cejsCqaLTj
-         HOAQjfiy+JQUhZnFIbBKtk6dN7g/FGF/DiiJm6YNqhbwpesuuDFsYOAWKr1YfNbYe9MM
-         WFNlLY/NT/43L+O0vV5D4Nj3+BkI/6i6cTt8LBJKEmmE2UK9z+SNUuwRxSUQ81+nW3Nn
-         j2vHnUjjupxmfUtZJswdqKfE+b37RW9w5bv5j9uaFyGVC7SU/WT/vYMToSyn4b7IuecA
-         h0ag==
-X-Gm-Message-State: AAQBX9dnNpAvlcBp7q6bBEsfpA1tmuFLlyeYtNi+sQUXBMpYD2nQr1MJ
-        90ek2qkFFLnqAltRKxqiGe5ezA==
-X-Google-Smtp-Source: AKy350ZuT7y1w7O0ZI531OzB/G4qmb9exWLRUQONGwwMDuLPP3knyouk6H2zbd9YVvjO6ab+em8HCA==
-X-Received: by 2002:adf:fd04:0:b0:2de:e7c3:166f with SMTP id e4-20020adffd04000000b002dee7c3166fmr9335963wrr.62.1680033484221;
-        Tue, 28 Mar 2023 12:58:04 -0700 (PDT)
-Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6a:b566:0:8445:3123:91d7:959d])
-        by smtp.gmail.com with ESMTPSA id z6-20020a056000110600b002c557f82e27sm28248386wrw.99.2023.03.28.12.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Mar 2023 12:58:03 -0700 (PDT)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        brgerst@gmail.com
-Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
-        arjan@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        with ESMTP id S229737AbjC1UHw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Mar 2023 16:07:52 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738DB3A80;
+        Tue, 28 Mar 2023 13:07:30 -0700 (PDT)
+Received: from zn.tnic (p5de8e687.dip0.t-ipconnect.de [93.232.230.135])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EA9441EC0338;
+        Tue, 28 Mar 2023 22:07:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1680034049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=oKdrTofyNMhqgonYPtcUFPursqcJed5p9iWqgPvlUv8=;
+        b=Uhho4MMUmurp416gdQL7sryvkLqZDiWjF3Kfs8kHJ2TBPN7gNR+Ck5Z3Tv2WzkziVYGxfV
+        CsZZVDBePQq9Zbq6hN/woB6FV22qLMBj5e2ik+8Wy2BHm/iAj1774PdVFdqYPAN5EqASs6
+        t7XJRN87/P/+Ly8Fk15CYFqRBIqO688=
+Date:   Tue, 28 Mar 2023 22:07:25 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
+        brgerst@gmail.com, piotrgorski@cachyos.org,
+        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
         pbonzini@redhat.com, paulmck@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
@@ -62,309 +42,77 @@ Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
         gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v17 4/8] x86/smpboot: Split up native_cpu_up into separate phases and document them
-Date:   Tue, 28 Mar 2023 20:57:54 +0100
-Message-Id: <20230328195758.1049469-5-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230328195758.1049469-1-usama.arif@bytedance.com>
+        Sabin Rapan <sabrapan@amazon.com>
+Subject: Re: [PATCH v17 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
+Message-ID: <20230328200725.GHZCNI/dHoUMwhsfiC@fat_crate.local>
 References: <20230328195758.1049469-1-usama.arif@bytedance.com>
+ <20230328195758.1049469-9-usama.arif@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230328195758.1049469-9-usama.arif@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+On Tue, Mar 28, 2023 at 08:57:58PM +0100, Usama Arif wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> 
+> Enable parallel bringup for SEV-ES guests. The APs can't actually
+> execute the CPUID instruction directly during early startup, but they
+> can make the GHCB call directly instead, just as the VC trap handler
+> would do.
+> 
+> Thanks to Sabin for talking me through the way this works.
+> 
+> Suggested-by: Sabin Rapan <sabrapan@amazon.com>
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/x86/coco/core.c              |  5 ++++
+>  arch/x86/include/asm/coco.h       |  1 +
+>  arch/x86/include/asm/sev-common.h |  3 +++
+>  arch/x86/include/asm/smp.h        |  5 +++-
+>  arch/x86/kernel/head_64.S         | 30 ++++++++++++++++++++++++
+>  arch/x86/kernel/smpboot.c         | 39 ++++++++++++++++++++++++++-----
+>  6 files changed, 76 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+> index 49b44f881484..0bab38efb15a 100644
+> --- a/arch/x86/coco/core.c
+> +++ b/arch/x86/coco/core.c
+> @@ -129,6 +129,11 @@ u64 cc_mkdec(u64 val)
+>  }
+>  EXPORT_SYMBOL_GPL(cc_mkdec);
+>  
+> +enum cc_vendor cc_get_vendor(void)
+> +{
+> +	return vendor;
+> +}
+> +
+>  __init void cc_set_vendor(enum cc_vendor v)
+>  {
+>  	vendor = v;
+> diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+> index 3d98c3a60d34..0428d9712c96 100644
+> --- a/arch/x86/include/asm/coco.h
+> +++ b/arch/x86/include/asm/coco.h
+> @@ -12,6 +12,7 @@ enum cc_vendor {
+>  };
+>  
+>  void cc_set_vendor(enum cc_vendor v);
+> +enum cc_vendor cc_get_vendor(void);
+>  void cc_set_mask(u64 mask);
+>  
+>  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
 
-There are four logical parts to what native_cpu_up() does on the BSP (or
-on the controlling CPU for a later hotplug):
+You don't need those hunks adding cc_set_vendor() anymore:
 
- 1) Wake the AP by sending the INIT/SIPI/SIPI sequence.
+https://git.kernel.org/tip/5ae57743f578725a5dadb6f31d7798ee55e6e967
 
- 2) Wait for the AP to make it as far as wait_for_master_cpu() which
-    sets that CPU's bit in cpu_initialized_mask, then sets the bit in
-    cpu_callout_mask to let the AP proceed through cpu_init(). From
-    this point on, the AP is in control of its own CPUHP state, as it
-    will call notify_cpu_starting() from smp_callin() without waiting
-    in step 3 below.
-
- 3) Wait for the AP to reach CPUHP_AP_ONLINE state and get to the end
-    of the smp_callin() function, which sets that CPU's bit in
-    cpu_callin_mask.
-
- 4) Perform the TSC synchronization and wait for the AP to actually
-    mark itself online in cpu_online_mask.
-
-In preparation to allow these phases to operate in parallel on multiple
-APs, split them out into separate functions and document the interactions
-a little more clearly in both the BSP and AP code paths.
-
-No functional change intended.
-
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-Tested-by: Kim Phillips <kim.phillips@amd.com>
-Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-Tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
- arch/x86/kernel/smpboot.c | 180 ++++++++++++++++++++++++++------------
- 1 file changed, 126 insertions(+), 54 deletions(-)
-
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 851477f7d728..177ac98f5721 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -204,6 +204,10 @@ static void smp_callin(void)
- 
- 	wmb();
- 
-+	/*
-+	 * This runs the AP through all the cpuhp states to its target
-+	 * state (CPUHP_ONLINE in the case of serial bringup).
-+	 */
- 	notify_cpu_starting(cpuid);
- 
- 	/*
-@@ -231,17 +235,33 @@ static void notrace start_secondary(void *unused)
- 	load_cr3(swapper_pg_dir);
- 	__flush_tlb_all();
- #endif
-+	/*
-+	 * Sync point with do_wait_cpu_initialized(). Before proceeding through
-+	 * cpu_init(), the AP will call wait_for_master_cpu() which sets its
-+	 * own bit in cpu_initialized_mask and then waits for the BSP to set
-+	 * its bit in cpu_callout_mask to release it.
-+	 */
- 	cpu_init_secondary();
- 	rcu_cpu_starting(raw_smp_processor_id());
- 	x86_cpuinit.early_percpu_clock_init();
-+
-+	/*
-+	 * Sync point with do_wait_cpu_callin(). The AP doesn't wait here
-+	 * but just sets the bit to let the controlling CPU (BSP) know that
-+	 * it's got this far. The notify_cpu_starting() function is called
-+	 * from smp_callin(), which advances the AP state to CPUHP_AP_ONLINE.
-+	 */
- 	smp_callin();
- 
- 	enable_start_cpu0 = 0;
- 
- 	/* otherwise gcc will move up smp_processor_id before the cpu_init */
- 	barrier();
-+
- 	/*
--	 * Check TSC synchronization with the boot CPU:
-+	 * Check TSC synchronization with the boot CPU (or whichever CPU
-+	 * is controlling the bringup). It will do its part of this from
-+	 * do_wait_cpu_online(), making it an implicit sync point.
- 	 */
- 	check_tsc_sync_target();
- 
-@@ -254,6 +274,7 @@ static void notrace start_secondary(void *unused)
- 	 * half valid vector space.
- 	 */
- 	lock_vector_lock();
-+	/* Sync point with do_wait_cpu_online() */
- 	set_cpu_online(smp_processor_id(), true);
- 	lapic_online();
- 	unlock_vector_lock();
-@@ -1081,7 +1102,6 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 	unsigned long start_ip = real_mode_header->trampoline_start;
- 
- 	unsigned long boot_error = 0;
--	unsigned long timeout;
- 
- #ifdef CONFIG_X86_64
- 	/* If 64-bit wakeup method exists, use the 64-bit mode trampoline IP */
-@@ -1147,55 +1167,94 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 		boot_error = wakeup_cpu_via_init_nmi(cpu, start_ip, apicid,
- 						     cpu0_nmi_registered);
- 
--	if (!boot_error) {
--		/*
--		 * Wait 10s total for first sign of life from AP
--		 */
--		boot_error = -1;
--		timeout = jiffies + 10*HZ;
--		while (time_before(jiffies, timeout)) {
--			if (cpumask_test_cpu(cpu, cpu_initialized_mask)) {
--				/*
--				 * Tell AP to proceed with initialization
--				 */
--				cpumask_set_cpu(cpu, cpu_callout_mask);
--				boot_error = 0;
--				break;
--			}
--			schedule();
--		}
--	}
-+	return boot_error;
-+}
- 
--	if (!boot_error) {
--		/*
--		 * Wait till AP completes initial initialization
--		 */
--		while (!cpumask_test_cpu(cpu, cpu_callin_mask)) {
--			/*
--			 * Allow other tasks to run while we wait for the
--			 * AP to come online. This also gives a chance
--			 * for the MTRR work(triggered by the AP coming online)
--			 * to be completed in the stop machine context.
--			 */
--			schedule();
--		}
-+static int do_wait_cpu_cpumask(unsigned int cpu, const struct cpumask *mask)
-+{
-+	unsigned long timeout;
-+
-+	/*
-+	 * Wait up to 10s for the CPU to report in.
-+	 */
-+	timeout = jiffies + 10*HZ;
-+	while (time_before(jiffies, timeout)) {
-+		if (cpumask_test_cpu(cpu, mask))
-+			return 0;
-+
-+		schedule();
- 	}
-+	return -1;
-+}
- 
--	if (x86_platform.legacy.warm_reset) {
--		/*
--		 * Cleanup possible dangling ends...
--		 */
--		smpboot_restore_warm_reset_vector();
-+/*
-+ * Bringup step two: Wait for the target AP to reach cpu_init_secondary()
-+ * and thus wait_for_master_cpu(), then set cpu_callout_mask to allow it
-+ * to proceed.  The AP will then proceed past setting its 'callin' bit
-+ * and end up waiting in check_tsc_sync_target() until we reach
-+ * do_wait_cpu_online() to tend to it.
-+ */
-+static int do_wait_cpu_initialized(unsigned int cpu)
-+{
-+	/*
-+	 * Wait for first sign of life from AP.
-+	 */
-+	if (do_wait_cpu_cpumask(cpu, cpu_initialized_mask))
-+		return -1;
-+
-+	cpumask_set_cpu(cpu, cpu_callout_mask);
-+	return 0;
-+}
-+
-+/*
-+ * Bringup step three: Wait for the target AP to reach smp_callin().
-+ * The AP is not waiting for us here so we don't need to parallelise
-+ * this step. Not entirely clear why we care about this, since we just
-+ * proceed directly to TSC synchronization which is the next sync
-+ * point with the AP anyway.
-+ */
-+static int do_wait_cpu_callin(unsigned int cpu)
-+{
-+	/*
-+	 * Wait till AP completes initial initialization.
-+	 */
-+	return do_wait_cpu_cpumask(cpu, cpu_callin_mask);
-+}
-+
-+/*
-+ * Bringup step four: Synchronize the TSC and wait for the target AP
-+ * to reach set_cpu_online() in start_secondary().
-+ */
-+static int do_wait_cpu_online(unsigned int cpu)
-+{
-+	unsigned long flags;
-+
-+	/*
-+	 * Check TSC synchronization with the AP (keep irqs disabled
-+	 * while doing so):
-+	 */
-+	local_irq_save(flags);
-+	check_tsc_sync_source(cpu);
-+	local_irq_restore(flags);
-+
-+	/*
-+	 * Wait for the AP to mark itself online. Not entirely
-+	 * clear why we care, since the generic cpuhp code will
-+	 * wait for it to each CPUHP_AP_ONLINE_IDLE before going
-+	 * ahead with the rest of the bringup anyway.
-+	 */
-+	while (!cpu_online(cpu)) {
-+		cpu_relax();
-+		touch_nmi_watchdog();
- 	}
- 
--	return boot_error;
-+	return 0;
- }
- 
--int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
-+static int do_cpu_up(unsigned int cpu, struct task_struct *tidle)
- {
- 	int apicid = apic->cpu_present_to_apicid(cpu);
- 	int cpu0_nmi_registered = 0;
--	unsigned long flags;
- 	int err, ret = 0;
- 
- 	lockdep_assert_irqs_enabled();
-@@ -1242,19 +1301,6 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- 		goto unreg_nmi;
- 	}
- 
--	/*
--	 * Check TSC synchronization with the AP (keep irqs disabled
--	 * while doing so):
--	 */
--	local_irq_save(flags);
--	check_tsc_sync_source(cpu);
--	local_irq_restore(flags);
--
--	while (!cpu_online(cpu)) {
--		cpu_relax();
--		touch_nmi_watchdog();
--	}
--
- unreg_nmi:
- 	/*
- 	 * Clean up the nmi handler. Do this after the callin and callout sync
-@@ -1266,6 +1312,32 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- 	return ret;
- }
- 
-+int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
-+{
-+	int ret;
-+
-+	ret = do_cpu_up(cpu, tidle);
-+	if (ret)
-+		goto out;
-+
-+	ret = do_wait_cpu_initialized(cpu);
-+	if (ret)
-+		goto out;
-+
-+	ret = do_wait_cpu_callin(cpu);
-+	if (ret)
-+		goto out;
-+
-+	ret = do_wait_cpu_online(cpu);
-+
-+ out:
-+	/* Cleanup possible dangling ends... */
-+	if (x86_platform.legacy.warm_reset)
-+		smpboot_restore_warm_reset_vector();
-+
-+	return ret;
-+}
-+
- /**
-  * arch_disable_smp_support() - disables SMP support for x86 at runtime
-  */
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
