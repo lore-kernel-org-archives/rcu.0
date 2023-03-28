@@ -2,182 +2,201 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32B7AC6FD1D
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 01:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7F5BC76195
+	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 01:28:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjC1BGY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 27 Mar 2023 21:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
+        id S229970AbjC1B2H (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 27 Mar 2023 21:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjC1BGX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 27 Mar 2023 21:06:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0821733;
-        Mon, 27 Mar 2023 18:06:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 661F461566;
-        Tue, 28 Mar 2023 01:06:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF156C433EF;
-        Tue, 28 Mar 2023 01:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679965581;
-        bh=GMDjFYzfoOpqjpPC5xr9N+gid/BIF4M7vG0OrqXiJD4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=inTA9YoOE6AGXdnKOx02p/lfio51jTO+DNwWcjgwYOL80tfRKobyclqCnEgDq13sV
-         N7tbaaYSgKf0xqzh93JpuFin3nf+ioF+4H7z22qzl95D9cqwK4PT8xApWT0gtObJoX
-         lsMHndYdWSezzwOLKTYsnhRfIV6PbLlXVULRI97KJnDZEmP9hBAGtDlh+yYIChFzq+
-         5yaA8YB9g1gG8fVIploRkGyCbh/mdPAy6Jwmo7KYLSJglyXSsHgy5nZ7VSt0XOJDhM
-         tno/PoGRkYqlclL/lpXF3W97MYsrbh6bwJ4PzB5N+JpCfg80JAP2wkW7pGwx2XFUc/
-         iAL+IVx4Mx49A==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 58E89154039B; Mon, 27 Mar 2023 18:06:21 -0700 (PDT)
-Date:   Mon, 27 Mar 2023 18:06:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, RCU <rcu@vger.kernel.org>,
+        with ESMTP id S229611AbjC1B2G (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 27 Mar 2023 21:28:06 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654F01997;
+        Mon, 27 Mar 2023 18:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679966885; x=1711502885;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=79nSoohHIK2XRM3gwgIAPJ9WTTJHRUWr0/i3w0IfkpU=;
+  b=NPeKwfxO8PhYUyYInAUJQEErgBqPUiqqOWcJ9v8YN5cMlKq5O2Vfzfku
+   ByHXJFryffaVHRZ7sOn/7gn6ZC00cTSSfEThgzRmkUS7F1+92MhbcLUAF
+   W4ZLT0l7seCoPUxSKaqC3NgAR9+hlGfefjFdpttjHEMo5wcG8Pgw6WZZE
+   JiY9alu4UK+0V/fyQiMpmoTm22/6QJY4kwTZbe7H0NBmlwvCo764joRED
+   zaf64m2sQru71C2zIyXm6Nqbh7AIvBK5vEWXqU6ttGboN/AxGSGk5HZW3
+   ggmXdvp2EMlQh5hT3RnN1xzIKigor7vW2/at2g2qNZg1gwlXOCFRDLodh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="426702511"
+X-IronPort-AV: E=Sophos;i="5.98,295,1673942400"; 
+   d="scan'208";a="426702511"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2023 18:28:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="827261846"
+X-IronPort-AV: E=Sophos;i="5.98,295,1673942400"; 
+   d="scan'208";a="827261846"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga001.fm.intel.com with ESMTP; 27 Mar 2023 18:28:04 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 27 Mar 2023 18:28:03 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 27 Mar 2023 18:28:03 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Mon, 27 Mar 2023 18:28:03 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.45) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.21; Mon, 27 Mar 2023 18:28:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jZal5uYYVjkpwFXHPFv1lYXF/y7b/uw+fvzEwru23p+JhsqbdF+o82CpEndocPmuazDFwAnZ+0OQwfB+3ww06xeFuqqnNx/8DVExfcspgmQZYh2aDZEM7/+J4YAdzjL/auWcR5Mdvif+pFOaoNVUt8aMDRsNXcylqtUTVEdTDVrg/X6HGNC/of/BeT86uCfj40Jclpk95ssA/SMI5yihoHz9N7SuS8Icz/bfw6eBVruxq3YzVPScLiyg2cmh199V4DZgxnCddGSzPyOIB6qHo9DyO59+1zG5eLHgwqp2JGBR4x2XDjECo8xSXeAytHjB3okxnRAqWDy4yuzLAaMLsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2NQK6UWCahLQc4L/1/1nvyEJwpeRGVVle/kSeqjIJpY=;
+ b=GnEPFQLfUOHK6VA/5/9QmoDTgkH6eKadBitD8ky9PcPlLEk/kSM7jl1/y1DQTCRFw67Gp1WQ9RZpMSIesnu6VxyCsXQPCZbV14XMLz0QdaEqnFXB7dBrv943Zca21WdBPqyVVvrcxtQxMEdOZNkvy3MxkHrin99mhOxuwe41UM+ghGOvdPg2It+JuAeZz8Z42loIKyojlapctzpaWhZafCM+MrQyebAR7JdCO8RYlx4MtDLrAO+tq4s5k/Mn1lZxLU55BO4i/twI8o5js2jJjPe5yQse5KIDbo3uIHZJqOGdqsAf/hUtRcjppQPt5JGkGUPn6o1kRKM/mQsSVw1l3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6179.namprd11.prod.outlook.com (2603:10b6:a03:45a::17)
+ by PH7PR11MB6858.namprd11.prod.outlook.com (2603:10b6:510:1ee::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.41; Tue, 28 Mar
+ 2023 01:28:01 +0000
+Received: from SJ1PR11MB6179.namprd11.prod.outlook.com
+ ([fe80::850a:d637:5760:4f53]) by SJ1PR11MB6179.namprd11.prod.outlook.com
+ ([fe80::850a:d637:5760:4f53%6]) with mapi id 15.20.6178.041; Tue, 28 Mar 2023
+ 01:28:01 +0000
+From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>
+CC:     "Paul E . McKenney" <paulmck@kernel.org>,
+        RCU <rcu@vger.kernel.org>,
         "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-Message-ID: <ca153af5-bd66-4d48-afa5-ace3a13aec3c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Subject: RE: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+Thread-Topic: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+Thread-Index: AQHZW9/cgEn1/2PZAki4vZrvu1Ahi68FQZQwgAAWuoCACdu/AIAAAKGAgAA3iiA=
+Date:   Tue, 28 Mar 2023 01:28:01 +0000
+Message-ID: <SJ1PR11MB61792EA18F7F2BFD1E70916489889@SJ1PR11MB6179.namprd11.prod.outlook.com>
 References: <20230321102748.127923-1-urezki@gmail.com>
- <IA1PR11MB617169A10E6DDE3C1168605D89819@IA1PR11MB6171.namprd11.prod.outlook.com>
- <ZBnKKZsSpI8aAk9W@pc636>
- <PH0PR11MB58805561777B77DC69E87711DA8B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+        <IA1PR11MB617169A10E6DDE3C1168605D89819@IA1PR11MB6171.namprd11.prod.outlook.com>
+        <ZBnKKZsSpI8aAk9W@pc636>        <20230327174844.15305988@gandalf.local.home>
+ <20230327175059.1e8584cc@gandalf.local.home>
+In-Reply-To: <20230327175059.1e8584cc@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6179:EE_|PH7PR11MB6858:EE_
+x-ms-office365-filtering-correlation-id: 121a0576-d4bc-4987-b1cf-08db2f2babc1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qZm8OyTb+5LPFgnYQ3FrXZS5+DqSaLnTSytRrt64dhqXAMRy3NyJfKf16NnGhaLaTzzaj9+dlQdeQHAr2+3SGUC9jiPSd4nXxloxHORuvuwC9DtIfZv4P8qD7ol15JmvLq3KpKf4D2hjk22eump9636dGfTNzs8YKDPi7kGk+AeWHsF6FLA7r6kzVxxQqnlpYD1/VQm3V9hVqO0bsytFoAZj0vw2qzF2frxn5QNSrXxbkeYlKlWJ/96kGU0j46PPi/NOszlK2sxEKT5s4my4LJZ46PcWbRDStVR/fdNl0O+Ef26B4VqWFIXTBLkyFFkHEr73/OssN7qU/BGhjsrWyM5SMCQKoGBcZQ8KvBhVgxJN5Iz8miUBvBzImDXMSpbYOVASfDlVmsbVpMMsPVK3M9tJ4ltLPxi/I176kuvNTf/9JFaYQFBa2KULQFnn8aPkF1Z9o4ZtWoGZMQ7sIZEgvpTrMV2bHHvfoyRlFM+YA6KJvN0WPUrJA/xsjWTQUENV2QzXHUG+/P03Ruh6fDZj7r08GmM73RzIU/k6NNftuFJZsp/dI9gu2Iurztue6pnHUErJ12vV2b+eLCAcRANR7GD+TAXGXUEI/deGoI6VgIk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6179.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(366004)(39860400002)(376002)(346002)(451199021)(54906003)(4326008)(8676002)(9686003)(186003)(316002)(41300700001)(110136005)(478600001)(2906002)(8936002)(122000001)(7416002)(5660300002)(82960400001)(52536014)(38100700002)(55016003)(71200400001)(53546011)(7696005)(38070700005)(33656002)(83380400001)(6506007)(26005)(64756008)(66946007)(66446008)(66476007)(76116006)(66556008)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DmRYOgXmCf5nv9DhcrviyZkwRzseIKeIVb7pUSr04eUEH8pnVZvV+HPkLQ25?=
+ =?us-ascii?Q?sUcl+fu4jUi9YfJRRhuTi1GYktbOzNablRqewdyWQVbX3WEc20hGV7K+7gdm?=
+ =?us-ascii?Q?sMAT8zC6QPqrER0q4F7YJe74SvBTDN65WufWKl5flC620FK20U6QlRVUv79D?=
+ =?us-ascii?Q?NWP9Aa78TRhOD8h9u7UZlAE8CCvryMzLUB73KUifWreGigcDKmpt0+Myi1PD?=
+ =?us-ascii?Q?TOaECZ6g5NtpuFXsS15CAPr67+AF9yiFM6Q87F+lyo8QdaeyfJBlmKywskm7?=
+ =?us-ascii?Q?RChxl6eLZI6PDEhMnqYSTxyPW4qczJrN/uJycQtwV1+ZxUPbCswk4esJRyPK?=
+ =?us-ascii?Q?cOqWdx0wqo4iiWTT3G1Vs4vOivS93S+VHOz4+fsrJHkjo6XiBVhPWH8Fuzal?=
+ =?us-ascii?Q?ma4GXnja94A2keQinMgnRKd+gwkzRdCc9h+7LKypOdec9JCgEmF5hqqeE2Yn?=
+ =?us-ascii?Q?yMnfv/4NU6EgXPmjk0DdtkVB0He61/jEJhVi6hKztZlxCOgjG/Xd7as1SXJa?=
+ =?us-ascii?Q?1kP0sNdssfpOhKsj1giaOeDZXqCLq/mFvy7GorhffY8yANiqx6kJDE4zk9/+?=
+ =?us-ascii?Q?rSALVY3JeVQqV0hpPLditsbnAmCxLAQQ/XGZ1CPBnoowdDr0edGRLR16x7fs?=
+ =?us-ascii?Q?d6NXYk4aYYaX8p3F5V6sFFGD8uIMh5XUSjOc5LpQUsduyUgpqn0iz4rKBVdh?=
+ =?us-ascii?Q?G4ovsKh4ddey+xyZmlPm4FGTd21xXtURl6sCpRhA1P3MYWNKYwaW0woQ9QHE?=
+ =?us-ascii?Q?Gp1cIt053TUs97q545/IDrs+74monymLiwYrzQQ4qnWuD2nYTbR1bk2XVd2y?=
+ =?us-ascii?Q?A3iN55gzrLhftDfiVaRhItEsVkfx5pBzf1NurIoco0sjzMMoJ7ixEL4U6R88?=
+ =?us-ascii?Q?LK20ZkeWpytNtIA0+Fa0gLNx8Jxu8bKQeHcEKNz6VaXmkf0OkmhnEJkgeBFR?=
+ =?us-ascii?Q?ZbHmBzafXbGXGH8cQU72tWhZ4W44JePLSNMMEuYS2H+V8emBVx4ThWipr4Pw?=
+ =?us-ascii?Q?Av75JxDlTd9Ypgmbn900vrpWFe5AXC2U78zA0xfYFRpxVJKq67EvZ4fMJ4WE?=
+ =?us-ascii?Q?lOeJRdc6qiHr+WAbi/r39QrNxqyjpvCnp/n/4IMyLOHuZq9Lhu1JSr1f1heG?=
+ =?us-ascii?Q?zGAleyiWKFtJWPRxgeRv/tMGjt1PFHZJvIGe8uJRZ/Nq88fxAucDsDaIXJ/9?=
+ =?us-ascii?Q?nf6IhcHqWTXC3J3Bvx/lVg/bBxS59L9R9sw+H80UiDti/ERRJ28XUvzRK2oT?=
+ =?us-ascii?Q?DrZIn+Ii0/2KlSdWy5VG//HLAK24UXWII4K8WKrr8MQ8E4iXQjh+lBorOjU3?=
+ =?us-ascii?Q?o0yjmp/3wWj2QhAYbrxRdR6JQ+D5f+tmiTzwbgJF3WUxu8EA//B8AKJKPExB?=
+ =?us-ascii?Q?bK4og2Qt/qdM70kmpppcY4v4uxXNZkcNVsp4EsD3efeV8lnqbqJKIMpkiDYK?=
+ =?us-ascii?Q?eQQDQHwbKaNRp/PgMRvsPLZ8R2MMA+kuvIXxbc2AbveoPGX8nSBHn3geFqcr?=
+ =?us-ascii?Q?y3EuY1nwy7Bed7NavFw15rRwcumZ1LPturVtYu+0WeQmdN+cEzksP8XxTC97?=
+ =?us-ascii?Q?huaRnVxJAhC3dv9oeE3JzRkL0cugoOMKSg5ZFv/C?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB58805561777B77DC69E87711DA8B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6179.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 121a0576-d4bc-4987-b1cf-08db2f2babc1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2023 01:28:01.4129
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UczV5Nj45ld8tviRJwhifYUs9vAGzd/ZeYmOX+KT4I0zI2nqkDutOlS9FAwVi2vYMTDlO7EW+Zhr66dDI6gXRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6858
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 11:21:23AM +0000, Zhang, Qiang1 wrote:
-> > > From: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > Sent: Tuesday, March 21, 2023 6:28 PM
-> > > [...]
-> > > Subject: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-> > > 
-> > > A call to a synchronize_rcu() can be expensive from time point of view.
-> > > Different workloads can be affected by this especially the ones which use this
-> > > API in its time critical sections.
-> > > 
-> > 
-> > This is interesting and meaningful research. ;-)
-> > 
-> > > For example in case of NOCB scenario the wakeme_after_rcu() callback
-> > > invocation depends on where in a nocb-list it is located. Below is an example
-> > > when it was the last out of ~3600 callbacks:
+> From: Steven Rostedt <rostedt@goodmis.org>
+> Sent: Tuesday, March 28, 2023 5:51 AM
+> [...]
+> Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+>=20
+> On Mon, 27 Mar 2023 17:48:44 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>=20
+> > struct my_info {
+> > 	/* store state info here */
+> > };
 > >
-> 
-> 
-> 
-> Can it be implemented separately as follows?  it seems that the code is simpler
-> (only personal opinion)  😊.
-> 
-> But I didn't test whether this reduce synchronize_rcu() waiting time
-> 
-> +static void rcu_poll_wait_gp(struct rcu_tasks *rtp)
-> +{
-> +       unsigned long gp_snap;
-> +
-> +       gp_snap = start_poll_synchronize_rcu();
-> +       while (!poll_state_synchronize_rcu(gp_snap))
-> +               schedule_timeout_idle(1);
+> > int main(...) {
+> > 	struct tracecmd_input *handle;
+> > 	struct my_info info;
+> > 	char *file =3D argv[1];
+> >
+> > 	handle =3D tracecmd_open(file);
+> >
+> > 	tracecmd_follow_event(handle, "rcu", "rcu_batch_start",
+> > 			batch_start, &info);
+> >
+> > 	tracecmd_follow_event(handle, "rcu", "rcu_batch_end",
+> > 			batch_end, &info);
+> >
+> > 	tracecmd_follow_event(handle, "rcu", "rcu_invoke_callback",
+> > 			invoke_callback, &info);
+> >
+> > 	tracecmd_iterate_events(handle, NULL, 0, NULL, NULL);
+> >
+> > 	tracecmd_close(handle);
+> > }
+>=20
+> BTW, none of this code was actually tested, so I may have some syntax
+> errors. I just did this straight from memory, as it's so easy ;-)
 
-I could be wrong, but my guess is that the guys working with
-battery-powered devices are not going to be very happy with this loop.
+Thank you Steven for sharing the libtracecmd-based and libtraceevent-based=
+=20
+methods for trace parsing. Good to know this. This should simplify the code=
+=20
+to parse trace logs. Pretty useful for me/us ;-)
 
-All those wakeups by all tasks waiting for a grace period end up
-consuming a surprisingly large amount of energy.
+- Qiuxu
 
-							Thanx, Paul
-
-> +}
-> +
-> +void call_rcu_poll(struct rcu_head *rhp, rcu_callback_t func);
-> +DEFINE_RCU_TASKS(rcu_poll, rcu_poll_wait_gp, call_rcu_poll,
-> +                 "RCU Poll");
-> +void call_rcu_poll(struct rcu_head *rhp, rcu_callback_t func)
-> +{
-> +       call_rcu_tasks_generic(rhp, func, &rcu_poll);
-> +}
-> +EXPORT_SYMBOL_GPL(call_rcu_poll);
-> +
-> +void synchronize_rcu_poll(void)
-> +{
-> +       synchronize_rcu_tasks_generic(&rcu_poll);
-> +}
-> +EXPORT_SYMBOL_GPL(synchronize_rcu_poll);
-> +
-> +static int __init rcu_spawn_poll_kthread(void)
-> +{
-> +       cblist_init_generic(&rcu_poll);
-> +       rcu_poll.gp_sleep = HZ / 10;
-> +       rcu_spawn_tasks_kthread_generic(&rcu_poll);
-> +       return 0;
-> +}
-> 
-> Thanks
-> Zqiang
-> 
-> 
-> > > 
-> > > <snip>
-> > >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt
-> > > CBs=3613 bl=28
-> > > ...
-> > >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt
-> > > rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt
-> > > rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt
-> > > rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt
-> > > rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt
-> > > rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt
-> > > rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-> > >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-
-> > > invoked=3612 idle=....
-> > > <snip>
-> > >
-> > 
-> > Did the results above tell us that CBs-invoked=3612 during the time 21950.145313 ~ 21950.152625?
-> > 
-> >Yes.
-> >
-> >
-> > If possible, may I know the steps, commands, and related parameters to produce the results above?
-> > Thank you!
-> > 
-> >Build the kernel with CONFIG_RCU_TRACE configuration. Update your "set_event"
-> >file with appropriate traces:
-> >
-> ><snip>
-> >XQ-DQ54:/sys/kernel/tracing # echo rcu:rcu_batch_start rcu:rcu_batch_end rcu:rcu_invoke_callback > set_event
-> >
-> >XQ-DQ54:/sys/kernel/tracing # cat set_event
-> >rcu:rcu_batch_start
-> >rcu:rcu_invoke_callback
-> >rcu:rcu_batch_end
-> >XQ-DQ54:/sys/kernel/tracing #
-> ><snip>
-> >
-> >Collect traces as much as you want: XQ-DQ54:/sys/kernel/tracing # echo 1 > tracing_on; sleep 10; echo 0 > tracing_on
-> >Next problem is how to parse it. Of course you will not be able to parse
-> >megabytes of traces. For that purpose i use a special C trace parser.
-> >If you need an example please let me know i can show here.
-> >
-> >--
-> >Uladzislau Rezki
+>=20
+> -- Steve
