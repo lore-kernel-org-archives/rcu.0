@@ -2,69 +2,142 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF3F6C761A6
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 20:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF42C76196
+	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 21:49:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjC1Ude (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 16:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        id S229928AbjC1VtB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Mar 2023 17:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbjC1Udc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Mar 2023 16:33:32 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6671D1FC3;
-        Tue, 28 Mar 2023 13:33:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 11A3AB81E66;
-        Tue, 28 Mar 2023 20:33:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AACA9C433D2;
-        Tue, 28 Mar 2023 20:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680035606;
-        bh=yGzQt3bTBLlinCBi2YE0p92SNdMCAG34Oidgft38CVg=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=SGLdxbKA1dKWD+8njtsnnG1e0Ty2NTi0Re+X2hnILGOJ0J3KJAdV23Ndbcee6w4RP
-         mpZWT5WPRLBgqUF4z21vpPrxQSga8YFJT6F8+6PxV4h9FX9x3n+/lfrvNK5vx5j6T7
-         Ff7VJnuFM8gjx3EeCpBJyY82oSwlgCVC2+RFy425fR01IEOXUsnlBGcx779YM03pAM
-         M5lGWLzAz1gGkppo9lRdis7gic30MIajTp2t3gDdn2cMseyYQrPx6e/ZeBqa/7/t9r
-         pyye7ipi+doc/s5GLXFEyxWg6AD8SDAWi+4wvpElDthzAUv9C7s1O82v9TtjeYCJK/
-         j0UTIVBihtjXA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 92F08E4D022;
-        Tue, 28 Mar 2023 20:33:26 +0000 (UTC)
-Subject: Re: [GIT PULL] Fix rcu_torture_read ftrace event
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
-References: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.03.28a
-X-PR-Tracked-Commit-Id: d18a04157fc171fd48075e3dc96471bd3b87f0dd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fcd476ea6a888ef6e6627f4c21a2ea8cca3e9312
-Message-Id: <168003560659.432.16055539152135523350.pr-tracker-bot@kernel.org>
-Date:   Tue, 28 Mar 2023 20:33:26 +0000
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, douglas.raillard@arm.com,
-        tglx@linutronix.de, rcu@vger.kernel.org, kernel-team@fb.com,
-        rostedt@goodmis.org
+        with ESMTP id S229886AbjC1VtB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Mar 2023 17:49:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40DA1B8;
+        Tue, 28 Mar 2023 14:48:59 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1680040137;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x82kiQTdgOmZzPuRLld3tUQlZDNUyZj9dPSJErAcQnY=;
+        b=Gxt8IPQX5DvhqpfTMWR6evLosGpzTLD8Aocv8NcJKFX/u4L9B2hzd6YcJuBCHr+QjbT4xg
+        GX/0rz8525+SYZfgXmzm/Xzs02lvGvSJ85FzFeniPf6KusZVT8r2T9kbNOaFEMdZDnTTGH
+        pytZ3/OWIQOwfSIRVaqNZvh7BQXm4hZPqFzcNtEJJoyyeShYh2nE8Vw3AETRPJFbtKdg5Q
+        j+jfbc+vp+bjP4KYRqtzpaP1hcYDPdIInJn4sh1KMxOh1CwbAzSonrYp9Pp2zKs17WEXSW
+        sNJyHtdPGV2YgNvcugWzxBMBnzX1H3EGdS5oStfL1MCdTgAgte52XjW5edywKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1680040137;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x82kiQTdgOmZzPuRLld3tUQlZDNUyZj9dPSJErAcQnY=;
+        b=9lZBip3wqG2//KEJ8BNUvFFe4hNUifeJzz8jtjLtaJPLUWTVjcc5ASPGsvxtvB6iBP8Vjc
+        D5hsgEXZJLswIVDQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Aaron Tomlin <atomlin@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        David Gow <davidgow@google.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        tangmeng <tangmeng@uniontech.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: locking API: was: [PATCH printk v1 00/18] serial: 8250:
+ implement non-BKL console
+In-Reply-To: <ZCMDVKy1Ir0rvi5g@alley>
+References: <20230302195618.156940-1-john.ogness@linutronix.de>
+ <87wn3zsz5x.fsf@jogness.linutronix.de> <ZCLsuln0nHr7S9a5@alley>
+ <87a5zxger3.fsf@jogness.linutronix.de> <ZCMDVKy1Ir0rvi5g@alley>
+Date:   Tue, 28 Mar 2023 23:53:16 +0206
+Message-ID: <87ilekmtuj.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The pull request you sent on Tue, 28 Mar 2023 10:48:14 -0700:
+On 2023-03-28, Petr Mladek <pmladek@suse.com> wrote:
+>> If an atomic context loses ownership while doing certain activities,
+>> it may need to re-acquire ownership in order to finish or cleanup
+>> what it started.
+>
+> This sounds suspicious. If a console/writer context has lost the lock
+> then all shared/locked resources might already be used by the new
+> owner.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.03.28a
+Correct.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fcd476ea6a888ef6e6627f4c21a2ea8cca3e9312
+> I would expect that the context could touch only non-shared resources
+> after loosing the lock.
 
-Thank you!
+Correct.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> If it re-acquires the lock then the shared resource might be in
+> another state. So, doing any further changes might be dangerous.
+
+That is the responsibility of the driver to implement it safely if it is
+needed.
+
+> I could imagine that incrementing/decrementing some counter might
+> make sense but setting some value sounds strange.
+
+The 8250 driver must disable interrupts before writing to the TX
+FIFO. After writing it re-enables the interrupts. However, it might be
+the case that the interrupts were already disabled, in which case after
+writing they are left disabled.
+
+IOW, whatever context disabled the interrupts is the context that is
+expected to re-enable them. This simple rule makes it really easy to
+handle nested printing because a context is only concerned with
+restoring the IER state that it originally saw.
+
+Using counters or passing around interrupt re-enabling responsibility
+would be considerably trickier.
+
+>>> And why we need to reacquire it?
+>> 
+>> In this particular case the context has disabled interrupts. No other
+>> context will re-enable interrupts because the driver is implemented
+>> such that the one who disables is the one who enables. So this
+>> context must re-acquire ownership in order to re-enable interrupts.
+>
+> My understanding is that the driver might lose the lock only
+> during hostile takeover. Is it safe to re-enable interrupts
+> in this case?
+
+Your understanding is incorrect. If a more important outputting context
+should arrive, the non-important outputting context will happily and
+kindly handover to the higher priority. From the perspective of the
+atomic console driver, it lost ownership.
+
+Simple example: The kthread printer is printing and some WARN_ON() is
+triggered on another CPU. The warning will be output at a higher
+priority and print from the context/CPU of the WARN_ON(). The kthread
+printer will lose its ownership by handing over to the warning CPU.
+
+Note that we are _not_ talking about when the unsafe bit is set. We are
+talking about a printer that owns the console, is in a safe section, and
+loses ownership. If that context was the one that disabled interrupts,
+it needs to re-acquire the console in order to safely re-enable the
+interrupts. The context that tookover ownership saw that interrupts are
+disabled and does _not_ re-enable them when it is finished printing.
+
+John
