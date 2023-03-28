@@ -2,37 +2,39 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F565C6FD18
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 13:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B69BC76196
+	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 13:59:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbjC1Neg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 09:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        id S232936AbjC1N7k (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Mar 2023 09:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbjC1Nef (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Mar 2023 09:34:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40967C677;
-        Tue, 28 Mar 2023 06:33:58 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EF8E71FD68;
-        Tue, 28 Mar 2023 13:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1680010430; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S232957AbjC1N7b (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Mar 2023 09:59:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E7C651;
+        Tue, 28 Mar 2023 06:59:18 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1680011957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3BoN+48VeBrXOxliIGKwWmQ5Q5D6Gju28AqzttPr2pQ=;
-        b=NDBPOWONkO/XyopTbjq7QQi+LbxwWvkVhmZUlpn1UEodXmVBKItnP5UxQj+Ez4GFFrckhx
-        HxqxIgvG9W+FK23aN5uy1xUt/vFy5zg/u2OsZdE2oW3ygPdQhq72roeGMSeIYiIjy6D5IZ
-        022BVxN4ShNQMFBkS/jUDs8jxMcmUoM=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E706B2C141;
-        Tue, 28 Mar 2023 13:33:46 +0000 (UTC)
-Date:   Tue, 28 Mar 2023 15:33:46 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
+        bh=AVBcqEYEGKTnf7WGbkGOAukA8G1Pz6BlAEfJJGZegkE=;
+        b=Qr5nmE8Hzfwst5KZgNjYoFM8HsLQhJkEdDi1f8YG7E2l6RW3I42AYUnd3Hj1dvU5eX6ucE
+        GVg+jehpW7GdmqKghuc5lozEBjGFsuvQffCAWB3VU0HXTrToz1MAwJdoVuMf2ANcPXbKco
+        lhCcdky/Da1Db5huCooHTwdeTfILjgiUjH/GDxsXgH1xX15uImZ9mM3zJv67wmrm+jjGUG
+        Q5lPW37rXRdSYabbj2GV/aaDAsbu2UylovBlnI13TApvcR01HhbVh7P9BjmMcZGUuzmuND
+        cShYSAlNbZ04zECY/+957ip3qCIjIt1ZT6CJ0lscZ3Se7Zdb0ZYpmMJkoFl8Jg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1680011957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AVBcqEYEGKTnf7WGbkGOAukA8G1Pz6BlAEfJJGZegkE=;
+        b=XlMGHhzSeLwTANt8K1piDZMwaiCTaHp3KPSQN9MATRV1Z9q5RIO3cVA0Gj8zfnAzt+Fsrk
+        FK/+1PyuIPZ0BcBw==
+To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -58,158 +60,64 @@ Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: locking API: was: [PATCH printk v1 00/18] serial: 8250: implement
- non-BKL console
-Message-ID: <ZCLsuln0nHr7S9a5@alley>
+Subject: Re: locking API: was: [PATCH printk v1 00/18] serial: 8250:
+ implement non-BKL console
+In-Reply-To: <ZCLsuln0nHr7S9a5@alley>
 References: <20230302195618.156940-1-john.ogness@linutronix.de>
- <87wn3zsz5x.fsf@jogness.linutronix.de>
+ <87wn3zsz5x.fsf@jogness.linutronix.de> <ZCLsuln0nHr7S9a5@alley>
+Date:   Tue, 28 Mar 2023 16:03:36 +0206
+Message-ID: <87a5zxger3.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wn3zsz5x.fsf@jogness.linutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu 2023-03-02 21:04:50, John Ogness wrote:
-> Implement the necessary callbacks to allow the 8250 console driver
-> to perform as a non-BKL console. Remove the implementation for the
-> legacy console callback (write) and add implementations for the
-> non-BKL consoles (write_atomic, write_thread, port_lock) and add
-> CON_NO_BKL to the initial flags.
-> 
-> This is an all-in-one commit meant only for testing the new printk
-> non-BKL infrastructure. It is not meant to be included mainline in
-> this form. In particular, it includes mainline driver fixes that
-> need to be submitted individually.
-> 
-> Although non-BKL consoles can coexist with legacy consoles, you
-> will only receive all the benefits of the non-BKL consoles, if
-> this console driver is the only console. That means no netconsole,
-> no tty1, no earlyprintk, no earlycon. Just the uart8250.
-> 
-> For example: console=ttyS0,115200
-> 
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> +static void atomic_console_reacquire(struct cons_write_context *wctxt,
-> +				     struct cons_write_context *wctxt_init)
-> +{
-> +	memcpy(wctxt, wctxt_init, sizeof(*wctxt));
-> +	while (!console_try_acquire(wctxt)) {
-> +		cpu_relax();
-> +		memcpy(wctxt, wctxt_init, sizeof(*wctxt));
-> +	}
-> +}
-> +
->  /*
-> - * Print a string to the serial port using the device FIFO
-> - *
-> - * It sends fifosize bytes and then waits for the fifo
-> - * to get empty.
-> + * It should be possible to support a hostile takeover in an unsafe
-> + * section if it is write_atomic() that is being taken over. But where
-> + * to put this policy?
->   */
-> -static void serial8250_console_fifo_write(struct uart_8250_port *up,
-> -					  const char *s, unsigned int count)
-> +bool serial8250_console_write_atomic(struct uart_8250_port *up,
-> +				     struct cons_write_context *wctxt)
->  {
-> -	int i;
-> -	const char *end = s + count;
-> -	unsigned int fifosize = up->tx_loadsz;
-> -	bool cr_sent = false;
-> -
-> -	while (s != end) {
-> -		wait_for_lsr(up, UART_LSR_THRE);
-> -
-> -		for (i = 0; i < fifosize && s != end; ++i) {
-> -			if (*s == '\n' && !cr_sent) {
-> -				serial_out(up, UART_TX, '\r');
-> -				cr_sent = true;
-> -			} else {
-> -				serial_out(up, UART_TX, *s++);
-> -				cr_sent = false;
-> -			}
-> +	struct cons_write_context wctxt_init = {};
-> +	struct cons_context *ctxt_init = &ACCESS_PRIVATE(&wctxt_init, ctxt);
-> +	struct cons_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
-> +	bool can_print = true;
-> +	unsigned int ier;
-> +
-> +	/* With write_atomic, another context may hold the port->lock. */
-> +
-> +	ctxt_init->console = ctxt->console;
-> +	ctxt_init->prio = ctxt->prio;
-> +	ctxt_init->thread = ctxt->thread;
-> +
-> +	touch_nmi_watchdog();
-> +
-> +	/*
-> +	 * Enter unsafe in order to disable interrupts. If the console is
-> +	 * lost before the interrupts are disabled, bail out because another
-> +	 * context took over the printing. If the console is lost after the
-> +	 * interrutps are disabled, the console must be reacquired in order
-> +	 * to re-enable the interrupts. However in that case no printing is
-> +	 * allowed because another context took over the printing.
-> +	 */
-> +
-> +	if (!console_enter_unsafe(wctxt))
-> +		return false;
-> +
-> +	if (!__serial8250_clear_IER(up, wctxt, &ier))
-> +		return false;
-> +
-> +	if (console_exit_unsafe(wctxt)) {
-> +		can_print = atomic_print_line(up, wctxt);
-> +		if (!can_print)
-> +			atomic_console_reacquire(wctxt, &wctxt_init);
+On 2023-03-28, Petr Mladek <pmladek@suse.com> wrote:
+>> +	if (!__serial8250_clear_IER(up, wctxt, &ier))
+>> +		return false;
+>> +
+>> +	if (console_exit_unsafe(wctxt)) {
+>> +		can_print = atomic_print_line(up, wctxt);
+>> +		if (!can_print)
+>> +			atomic_console_reacquire(wctxt, &wctxt_init);
+>
+> I am trying to review the 9th patch adding console_can_proceed(),
+> console_enter_unsafe(), console_exit_unsafe() API. And I wanted
+> to see how the struct cons_write_context was actually used.
 
-I am trying to review the 9th patch adding console_can_proceed(),
-console_enter_unsafe(), console_exit_unsafe() API. And I wanted
-to see how the struct cons_write_context was actually used.
+First off, I need to post the latest version of the 8250-POC patch. It
+is not officially part of this series and is still going through changes
+for the PREEMPT_RT tree. I will post the latest version directly after
+answering this email.
 
-I am confused now. I do not understand the motivation for the extra
-@wctxt_init copy and atomic_console_reacquire().
+> I am confused now. I do not understand the motivation for the extra
+> @wctxt_init copy and atomic_console_reacquire().
 
-Why do we need a copy? And why we need to reacquire it?
+If an atomic context loses ownership while doing certain activities, it
+may need to re-acquire ownership in order to finish or cleanup what it
+started.
 
-My feeling is that it is needed only to call
-console_exit_unsafe(wctxt) later. Or do I miss anything?
+> Why do we need a copy?
 
-> +
-> +		if (can_print) {
-> +			can_print = console_can_proceed(wctxt);
-> +			if (can_print)
-> +				wait_for_xmitr(up, UART_LSR_BOTH_EMPTY);
-> +			else
-> +				atomic_console_reacquire(wctxt, &wctxt_init);
-> +		}
-> +	} else {
-> +		atomic_console_reacquire(wctxt, &wctxt_init);
-> +	}
-> +
-> +	/*
-> +	 * Enter unsafe in order to enable interrupts. If the console is
-> +	 * lost before the interrupts are enabled, the console must be
-> +	 * reacquired in order to re-enable the interrupts.
-> +	 */
-> +
-> +	for (;;) {
-> +		if (console_enter_unsafe(wctxt) &&
-> +		    __serial8250_set_IER(up, wctxt, ier)) {
-> +			break;
->  		}
-> +
-> +		/* HW-IRQs still disabled. Reacquire to enable them. */
-> +		atomic_console_reacquire(wctxt, &wctxt_init);
->  	}
-> +
-> +	console_exit_unsafe(wctxt);
-> +
-> +	return can_print;
->  }
+When ownership is lost, the context is cleared. In order to re-acquire,
+an original copy of the context is needed. There is no technical reason
+to clear the context, so maybe the context should not be cleared after a
+takeover. Otherwise, many drivers will need to implement the "backup
+copy" solution.
 
-Best Regards,
-Petr
+> And why we need to reacquire it?
+
+In this particular case the context has disabled interrupts. No other
+context will re-enable interrupts because the driver is implemented such
+that the one who disables is the one who enables. So this context must
+re-acquire ownership in order to re-enable interrupts.
+
+> My feeling is that it is needed only to call
+> console_exit_unsafe(wctxt) later. Or do I miss anything?
+
+No. It is only about re-enabling interrupts. The concept of unsafe is
+not really relevant if a hostile takeover during unsafe occurs. In that
+case it becomes a "hope and pray" effort at the end of panic().
+
+John
