@@ -2,117 +2,69 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 428C4C6FD18
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 20:07:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF3F6C761A6
+	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 20:33:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjC1UHx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 16:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        id S229675AbjC1Ude (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Mar 2023 16:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjC1UHw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Mar 2023 16:07:52 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738DB3A80;
-        Tue, 28 Mar 2023 13:07:30 -0700 (PDT)
-Received: from zn.tnic (p5de8e687.dip0.t-ipconnect.de [93.232.230.135])
+        with ESMTP id S229842AbjC1Udc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Mar 2023 16:33:32 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6671D1FC3;
+        Tue, 28 Mar 2023 13:33:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EA9441EC0338;
-        Tue, 28 Mar 2023 22:07:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1680034049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oKdrTofyNMhqgonYPtcUFPursqcJed5p9iWqgPvlUv8=;
-        b=Uhho4MMUmurp416gdQL7sryvkLqZDiWjF3Kfs8kHJ2TBPN7gNR+Ck5Z3Tv2WzkziVYGxfV
-        CsZZVDBePQq9Zbq6hN/woB6FV22qLMBj5e2ik+8Wy2BHm/iAj1774PdVFdqYPAN5EqASs6
-        t7XJRN87/P/+Ly8Fk15CYFqRBIqO688=
-Date:   Tue, 28 Mar 2023 22:07:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     dwmw2@infradead.org, tglx@linutronix.de, kim.phillips@amd.com,
-        brgerst@gmail.com, piotrgorski@cachyos.org,
-        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
-        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
-        pbonzini@redhat.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
-        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
-        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
-        simon.evans@bytedance.com, liangma@liangbit.com,
-        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
-        Sabin Rapan <sabrapan@amazon.com>
-Subject: Re: [PATCH v17 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
-Message-ID: <20230328200725.GHZCNI/dHoUMwhsfiC@fat_crate.local>
-References: <20230328195758.1049469-1-usama.arif@bytedance.com>
- <20230328195758.1049469-9-usama.arif@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230328195758.1049469-9-usama.arif@bytedance.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 11A3AB81E66;
+        Tue, 28 Mar 2023 20:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AACA9C433D2;
+        Tue, 28 Mar 2023 20:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680035606;
+        bh=yGzQt3bTBLlinCBi2YE0p92SNdMCAG34Oidgft38CVg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=SGLdxbKA1dKWD+8njtsnnG1e0Ty2NTi0Re+X2hnILGOJ0J3KJAdV23Ndbcee6w4RP
+         mpZWT5WPRLBgqUF4z21vpPrxQSga8YFJT6F8+6PxV4h9FX9x3n+/lfrvNK5vx5j6T7
+         Ff7VJnuFM8gjx3EeCpBJyY82oSwlgCVC2+RFy425fR01IEOXUsnlBGcx779YM03pAM
+         M5lGWLzAz1gGkppo9lRdis7gic30MIajTp2t3gDdn2cMseyYQrPx6e/ZeBqa/7/t9r
+         pyye7ipi+doc/s5GLXFEyxWg6AD8SDAWi+4wvpElDthzAUv9C7s1O82v9TtjeYCJK/
+         j0UTIVBihtjXA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 92F08E4D022;
+        Tue, 28 Mar 2023 20:33:26 +0000 (UTC)
+Subject: Re: [GIT PULL] Fix rcu_torture_read ftrace event
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
+References: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.03.28a
+X-PR-Tracked-Commit-Id: d18a04157fc171fd48075e3dc96471bd3b87f0dd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fcd476ea6a888ef6e6627f4c21a2ea8cca3e9312
+Message-Id: <168003560659.432.16055539152135523350.pr-tracker-bot@kernel.org>
+Date:   Tue, 28 Mar 2023 20:33:26 +0000
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, douglas.raillard@arm.com,
+        tglx@linutronix.de, rcu@vger.kernel.org, kernel-team@fb.com,
+        rostedt@goodmis.org
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Mar 28, 2023 at 08:57:58PM +0100, Usama Arif wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> Enable parallel bringup for SEV-ES guests. The APs can't actually
-> execute the CPUID instruction directly during early startup, but they
-> can make the GHCB call directly instead, just as the VC trap handler
-> would do.
-> 
-> Thanks to Sabin for talking me through the way this works.
-> 
-> Suggested-by: Sabin Rapan <sabrapan@amazon.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/coco/core.c              |  5 ++++
->  arch/x86/include/asm/coco.h       |  1 +
->  arch/x86/include/asm/sev-common.h |  3 +++
->  arch/x86/include/asm/smp.h        |  5 +++-
->  arch/x86/kernel/head_64.S         | 30 ++++++++++++++++++++++++
->  arch/x86/kernel/smpboot.c         | 39 ++++++++++++++++++++++++++-----
->  6 files changed, 76 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-> index 49b44f881484..0bab38efb15a 100644
-> --- a/arch/x86/coco/core.c
-> +++ b/arch/x86/coco/core.c
-> @@ -129,6 +129,11 @@ u64 cc_mkdec(u64 val)
->  }
->  EXPORT_SYMBOL_GPL(cc_mkdec);
->  
-> +enum cc_vendor cc_get_vendor(void)
-> +{
-> +	return vendor;
-> +}
-> +
->  __init void cc_set_vendor(enum cc_vendor v)
->  {
->  	vendor = v;
-> diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
-> index 3d98c3a60d34..0428d9712c96 100644
-> --- a/arch/x86/include/asm/coco.h
-> +++ b/arch/x86/include/asm/coco.h
-> @@ -12,6 +12,7 @@ enum cc_vendor {
->  };
->  
->  void cc_set_vendor(enum cc_vendor v);
-> +enum cc_vendor cc_get_vendor(void);
->  void cc_set_mask(u64 mask);
->  
->  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+The pull request you sent on Tue, 28 Mar 2023 10:48:14 -0700:
 
-You don't need those hunks adding cc_set_vendor() anymore:
+> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.03.28a
 
-https://git.kernel.org/tip/5ae57743f578725a5dadb6f31d7798ee55e6e967
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fcd476ea6a888ef6e6627f4c21a2ea8cca3e9312
+
+Thank you!
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
