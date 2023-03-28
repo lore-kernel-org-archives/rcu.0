@@ -2,142 +2,246 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF42C76196
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 21:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C9A3C6FD18
+	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 22:14:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbjC1VtB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 17:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S229930AbjC1WOh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Mar 2023 18:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjC1VtB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Mar 2023 17:49:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40DA1B8;
-        Tue, 28 Mar 2023 14:48:59 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1680040137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x82kiQTdgOmZzPuRLld3tUQlZDNUyZj9dPSJErAcQnY=;
-        b=Gxt8IPQX5DvhqpfTMWR6evLosGpzTLD8Aocv8NcJKFX/u4L9B2hzd6YcJuBCHr+QjbT4xg
-        GX/0rz8525+SYZfgXmzm/Xzs02lvGvSJ85FzFeniPf6KusZVT8r2T9kbNOaFEMdZDnTTGH
-        pytZ3/OWIQOwfSIRVaqNZvh7BQXm4hZPqFzcNtEJJoyyeShYh2nE8Vw3AETRPJFbtKdg5Q
-        j+jfbc+vp+bjP4KYRqtzpaP1hcYDPdIInJn4sh1KMxOh1CwbAzSonrYp9Pp2zKs17WEXSW
-        sNJyHtdPGV2YgNvcugWzxBMBnzX1H3EGdS5oStfL1MCdTgAgte52XjW5edywKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1680040137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x82kiQTdgOmZzPuRLld3tUQlZDNUyZj9dPSJErAcQnY=;
-        b=9lZBip3wqG2//KEJ8BNUvFFe4hNUifeJzz8jtjLtaJPLUWTVjcc5ASPGsvxtvB6iBP8Vjc
-        D5hsgEXZJLswIVDQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        with ESMTP id S230078AbjC1WOg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Mar 2023 18:14:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0BD2D57;
+        Tue, 28 Mar 2023 15:14:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 129A7618DE;
+        Tue, 28 Mar 2023 22:14:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73866C43443;
+        Tue, 28 Mar 2023 22:14:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680041672;
+        bh=llxi4oMSj9q1ZEUg6xVt3u8fo1Xkh+805u5JZ1MDlY0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KDu2UgbStNlUyDxid/6BEpqS17EGScl2jWbaoDqyI1sa30XJMfOgxrjxOiE1TMUiM
+         czQtIlVRrQ+bJu5fe0IEMulbYsbRBKN07Wwkj6oIItgUl+Ewr4S2busGEyGQiTxa3w
+         1Adc/I8Nhvdl1BwLJtf81FS4rH/DnltkFdqEqI/byI/pDA6YrMrsYFTRPxwRYXI+WB
+         LCncJi0xtnLjYlpB0HfxKrA7CozWKi0LRu/2ulM5wFIQaHavyRt0BJjRRUjnexmMPu
+         xZlXT9UW5P1nt4tyVD/1etPavadmyYxS1LuVBdha2zNfouQd6i4zRFNwdhMnHIYPvO
+         2o+K1Sq5+p2Yg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 10840154047E; Tue, 28 Mar 2023 15:14:32 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 15:14:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, RCU <rcu@vger.kernel.org>,
+        quic_neeraju@quicinc.com, Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Aaron Tomlin <atomlin@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        David Gow <davidgow@google.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        tangmeng <tangmeng@uniontech.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: locking API: was: [PATCH printk v1 00/18] serial: 8250:
- implement non-BKL console
-In-Reply-To: <ZCMDVKy1Ir0rvi5g@alley>
-References: <20230302195618.156940-1-john.ogness@linutronix.de>
- <87wn3zsz5x.fsf@jogness.linutronix.de> <ZCLsuln0nHr7S9a5@alley>
- <87a5zxger3.fsf@jogness.linutronix.de> <ZCMDVKy1Ir0rvi5g@alley>
-Date:   Tue, 28 Mar 2023 23:53:16 +0206
-Message-ID: <87ilekmtuj.fsf@jogness.linutronix.de>
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+Message-ID: <b4977530-d989-47df-ab7a-d326cdd8dd14@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ca153af5-bd66-4d48-afa5-ace3a13aec3c@paulmck-laptop>
+ <FC49F388-0480-4687-8DD3-94049FCBC92B@joelfernandes.org>
+ <2cd8f407-2b77-48b1-9f17-9aa8e4ce9c64@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2cd8f407-2b77-48b1-9f17-9aa8e4ce9c64@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2023-03-28, Petr Mladek <pmladek@suse.com> wrote:
->> If an atomic context loses ownership while doing certain activities,
->> it may need to re-acquire ownership in order to finish or cleanup
->> what it started.
->
-> This sounds suspicious. If a console/writer context has lost the lock
-> then all shared/locked resources might already be used by the new
-> owner.
+On Tue, Mar 28, 2023 at 08:26:13AM -0700, Paul E. McKenney wrote:
+> On Mon, Mar 27, 2023 at 10:29:31PM -0400, Joel Fernandes wrote:
+> > Hello,
+> > 
+> > > On Mar 27, 2023, at 9:06 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > 
+> > > ﻿On Mon, Mar 27, 2023 at 11:21:23AM +0000, Zhang, Qiang1 wrote:
+> > >>>> From: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > >>>> Sent: Tuesday, March 21, 2023 6:28 PM
+> > >>>> [...]
+> > >>>> Subject: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+> > >>>> 
+> > >>>> A call to a synchronize_rcu() can be expensive from time point of view.
+> > >>>> Different workloads can be affected by this especially the ones which use this
+> > >>>> API in its time critical sections.
+> > >>>> 
+> > >>> 
+> > >>> This is interesting and meaningful research. ;-)
+> > >>> 
+> > >>>> For example in case of NOCB scenario the wakeme_after_rcu() callback
+> > >>>> invocation depends on where in a nocb-list it is located. Below is an example
+> > >>>> when it was the last out of ~3600 callbacks:
+> > >>> 
+> > >> 
+> > >> 
+> > >> 
+> > >> Can it be implemented separately as follows?  it seems that the code is simpler
+> > >> (only personal opinion)  😊.
+> > >> 
+> > >> But I didn't test whether this reduce synchronize_rcu() waiting time
+> > >> 
+> > >> +static void rcu_poll_wait_gp(struct rcu_tasks *rtp)
+> > >> +{
+> > >> +       unsigned long gp_snap;
+> > >> +
+> > >> +       gp_snap = start_poll_synchronize_rcu();
+> > >> +       while (!poll_state_synchronize_rcu(gp_snap))
+> > >> +               schedule_timeout_idle(1);
+> > > 
+> > > I could be wrong, but my guess is that the guys working with
+> > > battery-powered devices are not going to be very happy with this loop.
+> > > 
+> > > All those wakeups by all tasks waiting for a grace period end up
+> > > consuming a surprisingly large amount of energy.
+> > 
+> > Is that really the common case? On the general topic of wake-ups:
+> > Most of the time there should be only one
+> > task waiting synchronously on a GP to end. If that is
+> > true, then it feels like waking
+> > up nocb Kthreads which indirectly wake other threads is doing more work than usual?
+> 
+> A good question, and the number of outstanding synchronize_rcu()
+> calls will of course be limited by the number of tasks in the system.
+> But I myself have raised the ire of battery-powered embedded folks with
+> a rather small number of wakeups, so...
+> 
+> And on larger systems there can be a tradeoff between contention on
+> the one hand and number of wakeups on the other.
+> 
+> The original nocb implementation in fact had the grace-period kthead
+> waking up all of what are now called rcuoc kthreads.  The indirect scheme
+> reduced the total number of wakeups by up to 50% and also reduced the
+> CPU consumption of the grace-period kthread, which otherwise would have
+> become a bottleneck on large systems.
+> 
+> And also, a scheme that directly wakes tasks waiting in synchronize_rcu()
+> might well use the same ->nocb_gp_wq[] waitqueues that are used by the
+> rcuog kthreads, if that is what you were getting at.
 
-Correct.
+And on small systems, you might of course have the rcuog kthread directly
+invoke callbacks if there are not very many of them.  This would of
+course need to be done quite carefully to avoid any number of races
+with the rcuoc kthreads.  You could do the same thing on a large system,
+but on a per-rcuog basis.
 
-> I would expect that the context could touch only non-shared resources
-> after loosing the lock.
+I vaguely recall discussing this in one of our sessions, but who knows?
 
-Correct.
+Would this really be of benefit?  Or did you have something else in mind?
 
-> If it re-acquires the lock then the shared resource might be in
-> another state. So, doing any further changes might be dangerous.
+							Thanx, Paul
 
-That is the responsibility of the driver to implement it safely if it is
-needed.
-
-> I could imagine that incrementing/decrementing some counter might
-> make sense but setting some value sounds strange.
-
-The 8250 driver must disable interrupts before writing to the TX
-FIFO. After writing it re-enables the interrupts. However, it might be
-the case that the interrupts were already disabled, in which case after
-writing they are left disabled.
-
-IOW, whatever context disabled the interrupts is the context that is
-expected to re-enable them. This simple rule makes it really easy to
-handle nested printing because a context is only concerned with
-restoring the IER state that it originally saw.
-
-Using counters or passing around interrupt re-enabling responsibility
-would be considerably trickier.
-
->>> And why we need to reacquire it?
->> 
->> In this particular case the context has disabled interrupts. No other
->> context will re-enable interrupts because the driver is implemented
->> such that the one who disables is the one who enables. So this
->> context must re-acquire ownership in order to re-enable interrupts.
->
-> My understanding is that the driver might lose the lock only
-> during hostile takeover. Is it safe to re-enable interrupts
-> in this case?
-
-Your understanding is incorrect. If a more important outputting context
-should arrive, the non-important outputting context will happily and
-kindly handover to the higher priority. From the perspective of the
-atomic console driver, it lost ownership.
-
-Simple example: The kthread printer is printing and some WARN_ON() is
-triggered on another CPU. The warning will be output at a higher
-priority and print from the context/CPU of the WARN_ON(). The kthread
-printer will lose its ownership by handing over to the warning CPU.
-
-Note that we are _not_ talking about when the unsafe bit is set. We are
-talking about a printer that owns the console, is in a safe section, and
-loses ownership. If that context was the one that disabled interrupts,
-it needs to re-acquire the console in order to safely re-enable the
-interrupts. The context that tookover ownership saw that interrupts are
-disabled and does _not_ re-enable them when it is finished printing.
-
-John
+> > I am curious to measure how much does Vlad patch reduce wakeups in the common case.
+> 
+> Sounds like a good thing to measure!
+> 
+> > I was also wondering how Vlad patch effects RCU-barrier ordering. I guess
+> > we want the wake up to happen in the order of
+> > other callbacks also waiting.
+> 
+> OK, I will bite.  Why would rcu_barrier() need to care about the
+> synchronize_rcu() invocations if they no longer used call_rcu()?
+> 
+> > One last note, most battery powered systems are perhaps already using expedited RCU ;-)
+> 
+> Good point.  And that does raise the question of exactly what workloads
+> and systems want faster wakeups from synchronize_rcu() and cannot get
+> this effect from expedited grace periods.
+> 
+> 							Thanx, Paul
+> 
+> > Thoughts?
+> > 
+> >  - Joel 
+> > 
+> > > 
+> > >                            Thanx, Paul
+> > > 
+> > >> +}
+> > >> +
+> > >> +void call_rcu_poll(struct rcu_head *rhp, rcu_callback_t func);
+> > >> +DEFINE_RCU_TASKS(rcu_poll, rcu_poll_wait_gp, call_rcu_poll,
+> > >> +                 "RCU Poll");
+> > >> +void call_rcu_poll(struct rcu_head *rhp, rcu_callback_t func)
+> > >> +{
+> > >> +       call_rcu_tasks_generic(rhp, func, &rcu_poll);
+> > >> +}
+> > >> +EXPORT_SYMBOL_GPL(call_rcu_poll);
+> > >> +
+> > >> +void synchronize_rcu_poll(void)
+> > >> +{
+> > >> +       synchronize_rcu_tasks_generic(&rcu_poll);
+> > >> +}
+> > >> +EXPORT_SYMBOL_GPL(synchronize_rcu_poll);
+> > >> +
+> > >> +static int __init rcu_spawn_poll_kthread(void)
+> > >> +{
+> > >> +       cblist_init_generic(&rcu_poll);
+> > >> +       rcu_poll.gp_sleep = HZ / 10;
+> > >> +       rcu_spawn_tasks_kthread_generic(&rcu_poll);
+> > >> +       return 0;
+> > >> +}
+> > >> 
+> > >> Thanks
+> > >> Zqiang
+> > >> 
+> > >> 
+> > >>>> 
+> > >>>> <snip>
+> > >>>>  <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt
+> > >>>> CBs=3613 bl=28
+> > >>>> ...
+> > >>>>  <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
+> > >>>>  <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-
+> > >>>> invoked=3612 idle=....
+> > >>>> <snip>
+> > >>>> 
+> > >>> 
+> > >>> Did the results above tell us that CBs-invoked=3612 during the time 21950.145313 ~ 21950.152625?
+> > >>> 
+> > >>> Yes.
+> > >>> 
+> > >>> 
+> > >>> If possible, may I know the steps, commands, and related parameters to produce the results above?
+> > >>> Thank you!
+> > >>> 
+> > >>> Build the kernel with CONFIG_RCU_TRACE configuration. Update your "set_event"
+> > >>> file with appropriate traces:
+> > >>> 
+> > >>> <snip>
+> > >>> XQ-DQ54:/sys/kernel/tracing # echo rcu:rcu_batch_start rcu:rcu_batch_end rcu:rcu_invoke_callback > set_event
+> > >>> 
+> > >>> XQ-DQ54:/sys/kernel/tracing # cat set_event
+> > >>> rcu:rcu_batch_start
+> > >>> rcu:rcu_invoke_callback
+> > >>> rcu:rcu_batch_end
+> > >>> XQ-DQ54:/sys/kernel/tracing #
+> > >>> <snip>
+> > >>> 
+> > >>> Collect traces as much as you want: XQ-DQ54:/sys/kernel/tracing # echo 1 > tracing_on; sleep 10; echo 0 > tracing_on
+> > >>> Next problem is how to parse it. Of course you will not be able to parse
+> > >>> megabytes of traces. For that purpose i use a special C trace parser.
+> > >>> If you need an example please let me know i can show here.
+> > >>> 
+> > >>> --
+> > >>> Uladzislau Rezki
