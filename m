@@ -2,90 +2,138 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE1A2C6FD18
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 17:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B78FBC76196
+	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 18:16:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbjC1RsR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 13:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
+        id S229589AbjC1SQk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 28 Mar 2023 14:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjC1RsQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Mar 2023 13:48:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16727CDF6;
-        Tue, 28 Mar 2023 10:48:16 -0700 (PDT)
+        with ESMTP id S229688AbjC1SQg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 28 Mar 2023 14:16:36 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F989F;
+        Tue, 28 Mar 2023 11:16:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A1B3C618DF;
-        Tue, 28 Mar 2023 17:48:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13FBAC433D2;
-        Tue, 28 Mar 2023 17:48:15 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F17E2B81E36;
+        Tue, 28 Mar 2023 18:16:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A67F7C433D2;
+        Tue, 28 Mar 2023 18:16:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680025695;
-        bh=32/NC1qj5pzM4VmWjHIt+6Z5bu6FnwdwjV4jQTvBriQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=DtyziAyrMXV80hjYX1tJikjNn8VSeb88kiLbovAz36YoLsdfOk3rbhwrgF9pu+kFB
-         q9nmm7L6hU3+64Zm7ihDMZYWj7b3yKomtFPeLVUjZF9dnM9n1Xr1dBRkbRNQFUOMAN
-         rxtI6G/iJ/xa5cQsN4TOFzqd7vQ32cOIwprP3dbaQkOb7qpj2ba+V4T4NqYV/XEFg9
-         9A5gSOxRADGwKAN6ZlPP3XHVCOWI6pVmHQ19GIWHfvKTj0nSyFZgDz1xApWFQVUn6Y
-         bnX2W0mp3lQKmmHshywsoNx903DthlZW30zaiO9HkovjzhKZk//8Ihn/05iB2mOi0F
-         fgBBUkPfswuag==
+        s=k20201202; t=1680027392;
+        bh=mX5FRbksEdfPlA5RUWG2p76bf5c21aezUdzZqBwXRc4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=RF5Oo+8B15Rvbo4Iy/ABMMd3rpjtWQ0KLqJf4DuK8e69IgLmRwg1BH/0ck2+iyfJg
+         Usy5YSlziFGN7jauK5Zgtqva2leRhdF85jgXTDEbqfJnuHtQ3CdjwR06duuDRjbgDG
+         dC5TGL+vhzmFTbTfvk4T49lxKtTuNSW3ZVgKjHAxPoe3bL5Iu1jVg4rBs7ixulJHSG
+         UGjjxaCXKkIkh0Nef1eDQxCB1JoJZ7IGEbh3JBIOzS+O/I7QCCPGa18XCvZY47dSFd
+         jqNbz3MyHsApeDTpjRhHwWjpFEdYZr2KuJjBB5iXN4CVMj4fDtmYLlTNCgVuNopFeU
+         HngDaNdAKISaA==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9AB661540479; Tue, 28 Mar 2023 10:48:14 -0700 (PDT)
-Date:   Tue, 28 Mar 2023 10:48:14 -0700
+        id 3A16F1540479; Tue, 28 Mar 2023 11:16:32 -0700 (PDT)
+Date:   Tue, 28 Mar 2023 11:16:32 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
-        douglas.raillard@arm.com, tglx@linutronix.de, rcu@vger.kernel.org,
-        kernel-team@fb.com, rostedt@goodmis.org
-Subject: [GIT PULL] Fix rcu_torture_read ftrace event
-Message-ID: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Jes Sorensen <Jes.Sorensen@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>, x86@kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [tip: smp/core] kernel/smp: Make csdlock_debug= resettable
+Message-ID: <c6169b0d-94e5-43c3-bb9b-997b478a0e6f@paulmck-laptop>
 Reply-To: paulmck@kernel.org
+References: <20230321005516.50558-4-paulmck@kernel.org>
+ <167999248681.5837.4240401894848544789.tip-bot2@tip-bot2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <167999248681.5837.4240401894848544789.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+On Tue, Mar 28, 2023 at 08:34:46AM -0000, tip-bot2 for Paul E. McKenney wrote:
+> The following commit has been merged into the smp/core branch of tip:
+> 
+> Commit-ID:     203e435844734cfa503cd1755f35db2514db5cca
+> Gitweb:        https://git.kernel.org/tip/203e435844734cfa503cd1755f35db2514db5cca
+> Author:        Paul E. McKenney <paulmck@kernel.org>
+> AuthorDate:    Mon, 20 Mar 2023 17:55:16 -07:00
+> Committer:     Peter Zijlstra <peterz@infradead.org>
+> CommitterDate: Fri, 24 Mar 2023 11:01:26 +01:00
+> 
+> kernel/smp: Make csdlock_debug= resettable
 
-This post-merge-window urgent pull request brings the rcu_torture_read
-event trace into line with the new trace tools.  Without this commit,
-users of those tools perceive a regression.
+Very good, thank you!  I have removed these from the -rcu tree's "dev"
+branch, and if testing goes well will be sending the new version to -next.
 
-Just in case there is confusion, the plan is still for Joel Fernandes
-and Boqun Feng to send the RCU pull request into the v6.4 merge window.
-I will be doing my other pull requests for v6.4, and I will also be
-handling the RCU pull request for the v6.5 merge window.
+							Thanx, Paul
 
-The following changes since commit fe15c26ee26efa11741a7b632e9f23b01aca4cc6:
-
-  Linux 6.3-rc1 (2023-03-05 14:52:03 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.03.28a
-
-for you to fetch changes up to d18a04157fc171fd48075e3dc96471bd3b87f0dd:
-
-  rcu: Fix rcu_torture_read ftrace event (2023-03-22 14:05:24 -0700)
-
-----------------------------------------------------------------
-Urgent RCU pull request for v6.3
-
-This commit brings the rcu_torture_read event trace into line with
-the new trace tools by replacing this event trace's __field() with the
-corresponding __array().  Without this commit, the new trace tools will
-fail when presented wtih an rcu_torture_read event trace, which is a
-regression from the viewpoint of trace tools users.
-
-https://lore.kernel.org/all/20230320133650.5388a05e@gandalf.local.home/
-
-----------------------------------------------------------------
-Douglas Raillard (1):
-      rcu: Fix rcu_torture_read ftrace event
-
- include/trace/events/rcu.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> It is currently possible to set the csdlock_debug_enabled static
+> branch, but not to reset it.  This is an issue when several different
+> entities supply kernel boot parameters and also for kernels built with
+> CONFIG_CSD_LOCK_WAIT_DEBUG_DEFAULT=y.
+> 
+> Therefore, make the csdlock_debug=0 kernel boot parameter turn off
+> debugging.  Last one wins!
+> 
+> Reported-by: Jes Sorensen <Jes.Sorensen@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Acked-by: Juergen Gross <jgross@suse.com>
+> Link: https://lore.kernel.org/r/20230321005516.50558-4-paulmck@kernel.org
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 13 +++++++------
+>  kernel/smp.c                                    | 11 ++++++++---
+>  2 files changed, 15 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index b15198a..5f2ec4b 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -889,12 +889,13 @@
+>  	cs89x0_media=	[HW,NET]
+>  			Format: { rj45 | aui | bnc }
+>  
+> -	csdlock_debug=	[KNL] Enable debug add-ons of cross-CPU function call
+> -			handling. When switched on, additional debug data is
+> -			printed to the console in case a hanging CPU is
+> -			detected, and that CPU is pinged again in order to try
+> -			to resolve the hang situation.  The default value of
+> -			this option depends on the CSD_LOCK_WAIT_DEBUG_DEFAULT
+> +	csdlock_debug=	[KNL] Enable or disable debug add-ons of cross-CPU
+> +			function call handling. When switched on,
+> +			additional debug data is printed to the console
+> +			in case a hanging CPU is detected, and that
+> +			CPU is pinged again in order to try to resolve
+> +			the hang situation.  The default value of this
+> +			option depends on the CSD_LOCK_WAIT_DEBUG_DEFAULT
+>  			Kconfig option.
+>  
+>  	dasd=		[HW,NET]
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index 7a85bcd..298ba75 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -116,11 +116,16 @@ static DEFINE_STATIC_KEY_MAYBE(CONFIG_CSD_LOCK_WAIT_DEBUG_DEFAULT, csdlock_debug
+>   */
+>  static int __init csdlock_debug(char *str)
+>  {
+> +	int ret;
+>  	unsigned int val = 0;
+>  
+> -	get_option(&str, &val);
+> -	if (val)
+> -		static_branch_enable(&csdlock_debug_enabled);
+> +	ret = get_option(&str, &val);
+> +	if (ret) {
+> +		if (val)
+> +			static_branch_enable(&csdlock_debug_enabled);
+> +		else
+> +			static_branch_disable(&csdlock_debug_enabled);
+> +	}
+>  
+>  	return 1;
+>  }
