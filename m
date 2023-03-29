@@ -2,63 +2,104 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B568C6FD18
-	for <rcu@archiver.kernel.org>; Tue, 28 Mar 2023 22:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B9F9C74A5B
+	for <rcu@archiver.kernel.org>; Wed, 29 Mar 2023 08:03:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjC1W0J (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 28 Mar 2023 18:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        id S229798AbjC2IDp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Mar 2023 04:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjC1W0I (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 28 Mar 2023 18:26:08 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A46CE6;
-        Tue, 28 Mar 2023 15:26:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S229615AbjC2IDl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Mar 2023 04:03:41 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C605A3AB8;
+        Wed, 29 Mar 2023 01:03:39 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7F852219E7;
+        Wed, 29 Mar 2023 08:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1680077018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ICn2IUeBEefhWUnrVwwgjW98U4BhJgsWujMRsb5uiew=;
+        b=FJS+18HMODTwNmHvvxxOJaelViHM+6afdk9Pgzu6vt4DkahdE6qeAZmAS2mImejCjWuCod
+        pTjIstQ62m9cov9oi8oweZjZvdtEDYtmSxnvHBCOYsAua1FNyY8AJlOgQhvCm5e1mw8hV9
+        oNbWsqoqiejrQuKT5r84TeQdZ9c2enk=
+Received: from suse.cz (unknown [10.100.208.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0E8C2B81EB2;
-        Tue, 28 Mar 2023 22:26:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D562BC433EF;
-        Tue, 28 Mar 2023 22:26:01 +0000 (UTC)
-Date:   Tue, 28 Mar 2023 18:26:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, douglas.raillard@arm.com,
-        tglx@linutronix.de, rcu@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [GIT PULL] Fix rcu_torture_read ftrace event
-Message-ID: <20230328182600.32e672ed@gandalf.local.home>
-In-Reply-To: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
-References: <9f32a8e2-7fc3-427b-b1e2-238fe81ce97e@paulmck-laptop>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by relay2.suse.de (Postfix) with ESMTPS id E98FB2C141;
+        Wed, 29 Mar 2023 08:03:36 +0000 (UTC)
+Date:   Wed, 29 Mar 2023 10:03:34 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Aaron Tomlin <atomlin@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        David Gow <davidgow@google.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        tangmeng <tangmeng@uniontech.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: locking API: was: [PATCH printk v1 00/18] serial: 8250:
+ implement non-BKL console
+Message-ID: <ZCPw1pEakE7SGsKg@alley>
+References: <20230302195618.156940-1-john.ogness@linutronix.de>
+ <87wn3zsz5x.fsf@jogness.linutronix.de>
+ <ZCLsuln0nHr7S9a5@alley>
+ <87a5zxger3.fsf@jogness.linutronix.de>
+ <ZCMDVKy1Ir0rvi5g@alley>
+ <87ilekmtuj.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ilekmtuj.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 28 Mar 2023 10:48:14 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> ----------------------------------------------------------------
-> Urgent RCU pull request for v6.3
+On Tue 2023-03-28 23:53:16, John Ogness wrote:
+> On 2023-03-28, Petr Mladek <pmladek@suse.com> wrote:
+> >> If an atomic context loses ownership while doing certain activities,
+> >> it may need to re-acquire ownership in order to finish or cleanup
+> >> what it started.
+> >
+> > This sounds suspicious. If a console/writer context has lost the lock
+> > then all shared/locked resources might already be used by the new
+> > owner.
 > 
-> This commit brings the rcu_torture_read event trace into line with
-> the new trace tools by replacing this event trace's __field() with the
-> corresponding __array().  Without this commit, the new trace tools will
-> fail when presented wtih an rcu_torture_read event trace, which is a
-> regression from the viewpoint of trace tools users.
+> Correct.
 > 
-> https://lore.kernel.org/all/20230320133650.5388a05e@gandalf.local.home/
+> > I would expect that the context could touch only non-shared resources
+> > after loosing the lock.
+> 
+> Correct.
+> 
+> The 8250 driver must disable interrupts before writing to the TX
+> FIFO. After writing it re-enables the interrupts. However, it might be
+> the case that the interrupts were already disabled, in which case after
+> writing they are left disabled.
 
-Thanks! I'll base my change on top of v6.3-rc5 as that will include this
-pull request.
+I see. The reacquire() makes sense now.
 
- https://patchwork.kernel.org/project/linux-trace-kernel/patch/20230309221302.642e82d9@gandalf.local.home/
+Thanks a lot for explanation.
 
-Which the kernel robot flagged as causing a build error due to this RCU
-issue ;-)
-
--- Steve
+Best Regards,
+Petr
