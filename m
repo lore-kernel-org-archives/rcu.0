@@ -2,35 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD004C77B62
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 868C2C74A5B
 	for <rcu@archiver.kernel.org>; Wed, 29 Mar 2023 16:05:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjC2QE4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Mar 2023 12:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
+        id S231199AbjC2QEz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Mar 2023 12:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbjC2QEf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Mar 2023 12:04:35 -0400
+        with ESMTP id S231582AbjC2QEU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Mar 2023 12:04:20 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157F47DBA;
-        Wed, 29 Mar 2023 09:03:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF252558E;
+        Wed, 29 Mar 2023 09:03:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA5CA61DA0;
-        Wed, 29 Mar 2023 16:02:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76468C433EF;
-        Wed, 29 Mar 2023 16:02:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F88461DAA;
+        Wed, 29 Mar 2023 16:02:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC75C4339C;
+        Wed, 29 Mar 2023 16:02:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680105731;
-        bh=Fp/ndTMmWDQvJYRUYSiB/n1pWGiQmprjbLIvXN1t7Yo=;
+        s=k20201202; t=1680105735;
+        bh=+h4XK6+UI6FKKHszmm1wj9jmGuHr+bG0mxcM6PK0eo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXJMVZfZjTUnt6ouzt7l7m2vLdEpVbUYF3zXJObcVdJJ25rx/QAGDa+UpVUX5FE0p
-         yr9Nrt6tM4pt81wfx84r5lPmsnUfyLbv3QrLoXbP+LziiVJ06zK3GQsjq+RFuVFwiq
-         v/5qNkDMeWEGa054oW0J6Lk4jzXytIB0ApwtctH1DbKmdcqmNH0qiX5j553slYPOp5
-         aaTi7iyeF5s8UlNX+OkcbFgJMznNcCAKMSsCCYFsqremZD8TJRiiv6HxfgLeXT3yDy
-         7Z//tvu6PB1lD4HVnV8kem77vQWp8PlIRW8pyBKiBT1n6SzZs5RnfTlJ2C+xWJMZaU
-         7Qo2OdpvBGN6g==
+        b=We6SppzsOzlK2//1daxu59Df7ANxDJyMznwP+OkNrFmQmFcLdYSH8atr1ezJd2MQj
+         WGhWJt5bkH3VrhROVfbJh02EKGkS4HvFe7yGH7qz1L3O1hPSNGdLY0xegZuyYPbhO4
+         HFJ39S8in9KjgKsomrNfCm6kkGsr3ndqR6XGOtnZzBDu5NF8SysXHICJOoLTeTUZlf
+         t8uQZIL7RyPCnaGpbfjU1TLNYO2Hj0+jgz4c93W2sJu3rtVZTMLioZzU+iPZjGmRfC
+         D6tzE56MJESRUNbCdPEERhTIsa0krSKTMJRV4SDPnbDJ+cY+nwa+73GhrVeGcZadG2
+         6mVRYA++CYdug==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 1/4] rcu/nocb: Protect lazy shrinker against concurrent (de-)offloading
-Date:   Wed, 29 Mar 2023 18:02:00 +0200
-Message-Id: <20230329160203.191380-2-frederic@kernel.org>
+Subject: [PATCH 3/4] rcu/nocb: Recheck lazy callbacks under the ->nocb_lock from shrinker
+Date:   Wed, 29 Mar 2023 18:02:02 +0200
+Message-Id: <20230329160203.191380-4-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230329160203.191380-1-frederic@kernel.org>
 References: <20230329160203.191380-1-frederic@kernel.org>
@@ -51,71 +51,46 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The shrinker may run concurrently with callbacks (de-)offloading. As
-such, calling rcu_nocb_lock() is very dangerous because it does a
-conditional locking. The worst outcome is that rcu_nocb_lock() doesn't
-lock but rcu_nocb_unlock() eventually unlocks, or the reverse, creating
-an imbalance.
-
-Fix this with protecting against (de-)offloading using the barrier mutex.
-Although if the barrier mutex is contended, which should be rare, then
-step aside so as not to trigger a mutex VS allocation
-dependency chain.
+The ->lazy_len is only checked locklessly. Recheck again under the
+->nocb_lock to avoid spending more time on flushing/waking if not
+necessary. The ->lazy_len can still increment concurrently (from 1 to
+infinity) but under the ->nocb_lock we at least know for sure if there
+are lazy callbacks at all (->lazy_len > 0).
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_nocb.h | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index f2280616f9d5..1a86883902ce 100644
+index c321fce2af8e..dfa9c10d6727 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1336,13 +1336,33 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 	unsigned long flags;
- 	unsigned long count = 0;
+@@ -1358,12 +1358,20 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		if (!rcu_rdp_is_offloaded(rdp))
+ 			continue;
  
-+	/*
-+	 * Protect against concurrent (de-)offloading. Otherwise nocb locking
-+	 * may be ignored or imbalanced.
-+	 */
-+	if (!mutex_trylock(&rcu_state.barrier_mutex)) {
-+		/*
-+		 * But really don't insist if barrier_mutex is contended since we
-+		 * can't guarantee that it will never engage in a dependency
-+		 * chain involving memory allocation. The lock is seldom contended
-+		 * anyway.
-+		 */
-+		return 0;
-+	}
-+
- 	/* Snapshot count of all CPUs */
- 	for_each_possible_cpu(cpu) {
- 		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--		int _count = READ_ONCE(rdp->lazy_len);
-+		int _count;
-+
-+		if (!rcu_rdp_is_offloaded(rdp))
++		if (!READ_ONCE(rdp->lazy_len))
 +			continue;
 +
-+		_count = READ_ONCE(rdp->lazy_len);
- 
- 		if (_count == 0)
++		rcu_nocb_lock_irqsave(rdp, flags);
++		/*
++		 * Recheck under the nocb lock. Since we are not holding the bypass
++		 * lock we may still race with increments from the enqueuer but still
++		 * we know for sure if there is at least one lazy callback.
++		 */
+ 		_count = READ_ONCE(rdp->lazy_len);
+-
+-		if (_count == 0)
++		if (!_count) {
++			rcu_nocb_unlock_irqrestore(rdp, flags);
  			continue;
-+
- 		rcu_nocb_lock_irqsave(rdp, flags);
- 		WRITE_ONCE(rdp->lazy_len, 0);
+-
+-		rcu_nocb_lock_irqsave(rdp, flags);
++		}
+ 		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
  		rcu_nocb_unlock_irqrestore(rdp, flags);
-@@ -1352,6 +1372,9 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		if (sc->nr_to_scan <= 0)
- 			break;
- 	}
-+
-+	mutex_unlock(&rcu_state.barrier_mutex);
-+
- 	return count ? count : SHRINK_STOP;
- }
- 
+ 		wake_nocb_gp(rdp, false);
 -- 
 2.34.1
 
