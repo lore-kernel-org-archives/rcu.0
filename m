@@ -2,36 +2,36 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD207C74A5B
-	for <rcu@archiver.kernel.org>; Wed, 29 Mar 2023 21:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED858C74A5B
+	for <rcu@archiver.kernel.org>; Wed, 29 Mar 2023 21:24:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjC2VSc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Mar 2023 17:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S230062AbjC2VYL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Mar 2023 17:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjC2VSb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Mar 2023 17:18:31 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F4B1711;
-        Wed, 29 Mar 2023 14:18:30 -0700 (PDT)
+        with ESMTP id S229462AbjC2VYC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Mar 2023 17:24:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B84E768A;
+        Wed, 29 Mar 2023 14:23:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4BAA8B82339;
-        Wed, 29 Mar 2023 21:18:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6489DC433D2;
-        Wed, 29 Mar 2023 21:18:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C7A5661E4C;
+        Wed, 29 Mar 2023 21:22:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA47FC433EF;
+        Wed, 29 Mar 2023 21:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680124707;
-        bh=mZC9znfKcV/zjBlAcDLwCyE6p7sQboVe5/zrVpDHKNc=;
+        s=k20201202; t=1680124968;
+        bh=BQEBTl7sXemlMssTlUV/AZAbpGbpWsqCBRUJdakEeN8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NTLtPNzhXQP5tcgZ7Si/hZy+VQR5xkhbOoCmmzaLJOKfOmr1ae2M3hYFPGjIPN0mI
-         vyaaM6NJL6efZk7KTRYS97zQCvWvELKjZGNwGaYt9haWqK82CGhCqkKOyBox71fU2t
-         rFgv1aW+iptuB2DD8Cr7cjZOFTvEdQruwn/lqbAMF+ac39rO1PIS4SZ/6PPZXC2e3v
-         4bon38GiG4ZgjoxTAdVBaxDjWYzC4bd0lrZJZFbwoD3Lo4izM+MhKDEIQy68xDvJ5y
-         4F9D4OhYeQYBRlbbHl/k9XaiKorumiBc5zpX+7UG+OrW3pli+dkvsX9qvoWzWMx6yK
-         bvE0XDdpgb3Ww==
-Date:   Wed, 29 Mar 2023 23:18:24 +0200
+        b=FAb5FXtoTcApyMuwm4dPst2MLgRDCinX4ahQVoFRA3pUPBjHgw3XnquAuICIoc+OP
+         +6tG6uvJ+f6CwIsn8HRjnO/G9f9aiob2twzKgCBe7fTiDNJOoDOeD0vSErFdsAgD8I
+         yZ7wamVfA19W9XtbM6s8U5X0tkOUp8y4BRER/iMDQYSLt98ZOh4hA1fn+DEZHWl2CV
+         0achyBigD3KdyOZ8h5e66M902Jc1gr2OhuDepLXELHoyN2AbAW0ZT6jt/vRNsys0tm
+         4SaFHjE4VL9+9+lZQydpmgpc8tAJWqNWDgUGmUAhp+xalQDpQNpgXh7UiyNzpT01lS
+         4fE8qfdnroPGQ==
+Date:   Wed, 29 Mar 2023 23:22:45 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
@@ -39,48 +39,54 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 1/4] rcu/nocb: Protect lazy shrinker against concurrent
- (de-)offloading
-Message-ID: <ZCSrIFtTsv8SkGAF@lothringen>
+Subject: Re: [PATCH 3/4] rcu/nocb: Recheck lazy callbacks under the
+ ->nocb_lock from shrinker
+Message-ID: <ZCSsJW67BnGWzNrI@lothringen>
 References: <20230329160203.191380-1-frederic@kernel.org>
- <20230329160203.191380-2-frederic@kernel.org>
- <1c1313c5-5d57-4692-8295-da199da31cb9@paulmck-laptop>
+ <20230329160203.191380-4-frederic@kernel.org>
+ <8df51703-1ee4-4b7b-9e05-90b3650e8ee7@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c1313c5-5d57-4692-8295-da199da31cb9@paulmck-laptop>
+In-Reply-To: <8df51703-1ee4-4b7b-9e05-90b3650e8ee7@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 01:44:53PM -0700, Paul E. McKenney wrote:
-> On Wed, Mar 29, 2023 at 06:02:00PM +0200, Frederic Weisbecker wrote:
-> > +		/*
-> > +		 * But really don't insist if barrier_mutex is contended since we
-> > +		 * can't guarantee that it will never engage in a dependency
-> > +		 * chain involving memory allocation. The lock is seldom contended
-> > +		 * anyway.
-> > +		 */
-> > +		return 0;
-> > +	}
-> > +
-> >  	/* Snapshot count of all CPUs */
-> >  	for_each_possible_cpu(cpu) {
-> >  		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> > -		int _count = READ_ONCE(rdp->lazy_len);
-> > +		int _count;
-> > +
-> > +		if (!rcu_rdp_is_offloaded(rdp))
-> > +			continue;
-> > +
-> > +		_count = READ_ONCE(rdp->lazy_len);
-> >  
-> >  		if (_count == 0)
+On Wed, Mar 29, 2023 at 01:54:20PM -0700, Paul E. McKenney wrote:
+> On Wed, Mar 29, 2023 at 06:02:02PM +0200, Frederic Weisbecker wrote:
+> > The ->lazy_len is only checked locklessly. Recheck again under the
+> > ->nocb_lock to avoid spending more time on flushing/waking if not
+> > necessary. The ->lazy_len can still increment concurrently (from 1 to
+> > infinity) but under the ->nocb_lock we at least know for sure if there
+> > are lazy callbacks at all (->lazy_len > 0).
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  kernel/rcu/tree_nocb.h | 16 ++++++++++++----
+> >  1 file changed, 12 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index c321fce2af8e..dfa9c10d6727 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1358,12 +1358,20 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+> >  		if (!rcu_rdp_is_offloaded(rdp))
 > >  			continue;
-> > +
+> >  
+> > +		if (!READ_ONCE(rdp->lazy_len))
+> > +			continue;
 > 
-> And I just might have unconfused myself here.  We get here only if this
-> CPU is offloaded, in which case it might also have non-zero ->lazy_len,
-> so this is in fact *not* dead code.
+> Do you depend on the ordering of the above read of ->lazy_len against
+> anything in the following, aside from the re-read of ->lazy_len?  (Same
+> variable, both READ_ONCE() or stronger, so you do get that ordering.)
+> 
+> If you do need that ordering, the above READ_ONCE() needs to instead
+> be smp_load_acquire() or similar.  If you don't need that ordering,
+> what you have is good.
 
-Right. Now whether it's really alive remains to be proven ;)
+No ordering dependency intended here. The early ->lazy_len read is really just
+an optimization here to avoid locking if it *seems* there is nothing to do with
+this rdp. But what follows doesn't depend on that read.
+
+Thanks.
