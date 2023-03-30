@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8540CC761AF
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FBE6C77B6E
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbjC3WsC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 18:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
+        id S230464AbjC3WsE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 18:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbjC3Wrw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 18:47:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEA812054;
-        Thu, 30 Mar 2023 15:47:31 -0700 (PDT)
+        with ESMTP id S231199AbjC3Wry (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 18:47:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731F21205E;
+        Thu, 30 Mar 2023 15:47:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8405B621D7;
+        by ams.source.kernel.org (Postfix) with ESMTPS id A2C8EB82A5C;
         Thu, 30 Mar 2023 22:47:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEDA7C433A0;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AFEFC433EF;
         Thu, 30 Mar 2023 22:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1680216448;
-        bh=cul4jXhNAUP7VLyJNUzboJAx7iCgCVh7yP8irDHosoE=;
+        bh=K70gMvYhGvFQm2RTfPHGhx5QhVRNYr3RZRGehe7G6d8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S8YyvD9Lhp4043m6tOQEkTkh9yt2ForFJhH8L1PmqPljd8VvZznlk4So7iB1JAm0M
-         rGt1XdiGj4t0+UScvwHWifSzmgNzUR2WPAhZ1ghGQOU+5GYO4z1HcoHKncdvfKeavX
-         onzMAAI9Jv6gOr7T8msVuWqfZy9dxgqYw/WCaNoB/x/sycWv2QJr9MOrmj1CP2FjXY
-         RdQTXTIG2i4MYHDNknIDlcOMaRB+K9Q+j5gReRykbi7uSEcCq3kQ+57olWtHn8w8X/
-         ktpMUW3rY7JFfnV7aPqp/THrXv0oIvixK8DcVrGa6PQUjEzBqfc/6mmwGb6Za2Tdo6
-         exxyU/uqvNlOQ==
+        b=gzb039to+vuZqj9zxtsNtJiv/Jsjbh/tlLhFhdaz59TRzIlvnTMqtwQGi/cv4d3j7
+         0SQqRgI/QC5DGAS8eL9CqG1G/0ZkA0Z/5DyaT4BEeZ6Omc2c1c0f6dvhtc3hexdSYX
+         Shh4vZ4G8t4XAfhkml9ADN8A0FfnmfHYhEud1kVYTnxxU67OkHHkb50KtcydTpOhY+
+         fieZ49gHssFXVWCaHV0gPIr1ZjxUckCAto0HF0kYlUDcgcWi9y0p8ygakBLs7ME4qM
+         1cOS+jQ4nAUJcSuBCN19LJH9rz/b8ZL8FnIticHqKXgBbmOMi4C50YUbfz1nO4qJpz
+         UCGsj7+uYdgwQ==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 14C701540483; Thu, 30 Mar 2023 15:47:28 -0700 (PDT)
+        id F1057154047E; Thu, 30 Mar 2023 15:47:27 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Sachin Sant <sachinp@linux.ibm.com>,
         "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Subject: [PATCH rcu 07/20] srcu: Move ->srcu_cb_mutex from srcu_struct to srcu_usage
-Date:   Thu, 30 Mar 2023 15:47:13 -0700
-Message-Id: <20230330224726.662344-7-paulmck@kernel.org>
+Subject: [PATCH rcu 02/20] srcu: Add whitespace to __SRCU_STRUCT_INIT() & __DEFINE_SRCU()
+Date:   Thu, 30 Mar 2023 15:47:08 -0700
+Message-Id: <20230330224726.662344-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.0.rc2
 In-Reply-To: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
 References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
@@ -52,69 +52,68 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit moves the ->srcu_cb_mutex field from the srcu_struct structure
-to the srcu_usage structure to reduce the size of the former in order
-to improve cache locality.
+This is a whitespace-only commit with no change in functionality.
+Its purpose is to prepare for later commits that: (1) Cause statically
+allocated srcu_struct structures to rely on compile-time initialization
+and (2) Move fields from the srcu_struct structure to a new srcu_usage
+structure.
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
+Cc: Christoph Hellwig <hch@lst.de>
 Tested-by: Sachin Sant <sachinp@linux.ibm.com>
 Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/srcutree.h | 2 +-
- kernel/rcu/srcutree.c    | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ include/linux/srcutree.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 443d27a214ef..231de66ceb15 100644
+index 558057b517b7..488d0e5d1ba3 100644
 --- a/include/linux/srcutree.h
 +++ b/include/linux/srcutree.h
-@@ -65,13 +65,13 @@ struct srcu_usage {
- 	struct srcu_node *level[RCU_NUM_LVLS + 1];
- 						/* First node at each level. */
- 	int srcu_size_state;			/* Small-to-big transition state. */
-+	struct mutex srcu_cb_mutex;		/* Serialize CB preparation. */
- };
+@@ -108,13 +108,13 @@ struct srcu_struct {
+ #define SRCU_STATE_SCAN1	1
+ #define SRCU_STATE_SCAN2	2
+ 
+-#define __SRCU_STRUCT_INIT(name, pcpu_name)				\
+-{									\
+-	.sda = &pcpu_name,						\
+-	.lock = __SPIN_LOCK_UNLOCKED(name.lock),			\
+-	.srcu_gp_seq_needed = -1UL,					\
+-	.work = __DELAYED_WORK_INITIALIZER(name.work, NULL, 0),		\
+-	__SRCU_DEP_MAP_INIT(name)					\
++#define __SRCU_STRUCT_INIT(name, pcpu_name)							\
++{												\
++	.sda = &pcpu_name,									\
++	.lock = __SPIN_LOCK_UNLOCKED(name.lock),						\
++	.srcu_gp_seq_needed = -1UL,								\
++	.work = __DELAYED_WORK_INITIALIZER(name.work, NULL, 0),					\
++	__SRCU_DEP_MAP_INIT(name)								\
+ }
  
  /*
-  * Per-SRCU-domain structure, similar in function to rcu_state.
+@@ -137,15 +137,15 @@ struct srcu_struct {
+  * See include/linux/percpu-defs.h for the rules on per-CPU variables.
   */
- struct srcu_struct {
--	struct mutex srcu_cb_mutex;		/* Serialize CB preparation. */
- 	spinlock_t __private lock;		/* Protect counters and size state. */
- 	struct mutex srcu_gp_mutex;		/* Serialize GP work. */
- 	unsigned int srcu_idx;			/* Current rdr array element. */
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 8428a184d506..1814f3bfc219 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -242,7 +242,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 		return -ENOMEM;
- 	ssp->srcu_sup->srcu_size_state = SRCU_SIZE_SMALL;
- 	ssp->srcu_sup->node = NULL;
--	mutex_init(&ssp->srcu_cb_mutex);
-+	mutex_init(&ssp->srcu_sup->srcu_cb_mutex);
- 	mutex_init(&ssp->srcu_gp_mutex);
- 	ssp->srcu_idx = 0;
- 	ssp->srcu_gp_seq = 0;
-@@ -861,7 +861,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 	int ss_state;
- 
- 	/* Prevent more than one additional grace period. */
--	mutex_lock(&ssp->srcu_cb_mutex);
-+	mutex_lock(&ssp->srcu_sup->srcu_cb_mutex);
- 
- 	/* End the current grace period. */
- 	spin_lock_irq_rcu_node(ssp);
-@@ -921,7 +921,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 		}
- 
- 	/* Callback initiation done, allow grace periods after next. */
--	mutex_unlock(&ssp->srcu_cb_mutex);
-+	mutex_unlock(&ssp->srcu_sup->srcu_cb_mutex);
- 
- 	/* Start a new grace period if needed. */
- 	spin_lock_irq_rcu_node(ssp);
+ #ifdef MODULE
+-# define __DEFINE_SRCU(name, is_static)					\
+-	is_static struct srcu_struct name;				\
+-	extern struct srcu_struct * const __srcu_struct_##name;		\
+-	struct srcu_struct * const __srcu_struct_##name			\
++# define __DEFINE_SRCU(name, is_static)								\
++	is_static struct srcu_struct name;							\
++	extern struct srcu_struct * const __srcu_struct_##name;					\
++	struct srcu_struct * const __srcu_struct_##name						\
+ 		__section("___srcu_struct_ptrs") = &name
+ #else
+-# define __DEFINE_SRCU(name, is_static)					\
+-	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
+-	is_static struct srcu_struct name =				\
++# define __DEFINE_SRCU(name, is_static)								\
++	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);				\
++	is_static struct srcu_struct name =							\
+ 		__SRCU_STRUCT_INIT(name, name##_srcu_data)
+ #endif
+ #define DEFINE_SRCU(name)		__DEFINE_SRCU(name, /* not static */)
 -- 
 2.40.0.rc2
 
