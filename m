@@ -2,46 +2,47 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9F1CC7619A
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A60EC6FD1D
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjC3WsB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S231241AbjC3WsB (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 30 Mar 2023 18:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjC3Wru (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 18:47:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABEF1114B;
+        with ESMTP id S231178AbjC3Wrv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 18:47:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC041204E;
         Thu, 30 Mar 2023 15:47:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E2918621BB;
-        Thu, 30 Mar 2023 22:47:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52401C433D2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B8DF621D5;
+        Thu, 30 Mar 2023 22:47:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67DF5C4339B;
         Thu, 30 Mar 2023 22:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1680216448;
-        bh=E9GTy32jkGXjdmoTYxiGB6g5bP4dr0pfdets2Um+Or8=;
+        bh=GXD9GdY8v3RIh7U3GnYda6kTJ4k3Fbay0wPf8sbul44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u+uDNVTC3lJmsZ4zrN0/meReh7P86RPhejFgW8UZcT8mLI8U9KWrnSLNGCwdTcDAO
-         Jr4q4p6UXtOQjklFwhWVZVW+AmxW8rK/+l3Cpqxpr2j0gZWsXu2GhFH+FHd/LUR0pn
-         nZkYmpfbiN37yMvPvJm+1/1OBsSIQ6Evh7AWyTPu0+9LB+j/TIgD4CE9o/gLVzqrjz
-         bT7iytN6w8QjGpDaHda8rYf8oAKbjjECZlHmwZRSkNo1z3oamujrB4vi8Wr2v2y2f1
-         ctdA3zdUXvEemNfUu3pX5YpKew8TZd4XlmEVhr387auhS7tIWaYMwgPVd+rskpW6YD
-         efUAYG28klMKQ==
+        b=BYu6zzK4uYWEr++FJTeAbZu8VihfPXtIwVPZT5hBLXmEM9za5DTsHAHQhiNbBmMj9
+         L3fbdQ9jOu0yHiKVv+41VBbUKiLvsQludNOsrA//E98fsUrVXp2RIMbiQ6FLRI+ZaH
+         EztDJm+zyYozrYWwqA/rP2YHK9JlofEbIwLrAKxOF+mL45+UZCT4qoZv6ba3FeI1QO
+         JEfnI65bUm5/dxd+JVgnp5MlVJUB3gMC/eUo8L2F1RJ+oCZDOE0QQlu/tQ4bJGGv1d
+         4qR8SFwFXUeSZx+47sZQilv0AOfKWMTCZZQwD9xU/Fi0LhBwlJn64JAolAFiOOXUDr
+         fjMGKWq3BTvAA==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EC2791540476; Thu, 30 Mar 2023 15:47:27 -0700 (PDT)
+        id 0455D154047F; Thu, 30 Mar 2023 15:47:28 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, hch@lst.de,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH rcu 01/20] rcu-tasks: Fix warning for unused tasks_rcu_exit_srcu
-Date:   Thu, 30 Mar 2023 15:47:07 -0700
-Message-Id: <20230330224726.662344-1-paulmck@kernel.org>
+        Sachin Sant <sachinp@linux.ibm.com>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Subject: [PATCH rcu 03/20] srcu: Use static init for statically allocated in-module srcu_struct
+Date:   Thu, 30 Mar 2023 15:47:09 -0700
+Message-Id: <20230330224726.662344-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.0.rc2
 In-Reply-To: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
 References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
@@ -51,36 +52,112 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The tasks_rcu_exit_srcu variable is used only by kernels built
-with CONFIG_TASKS_RCU=y, but is defined for all kernesl with
-CONFIG_TASKS_RCU_GENERIC=y.  Therefore, in kernels built with
-CONFIG_TASKS_RCU_GENERIC=y but CONFIG_TASKS_RCU=n, this gives
-a "defined but not used" warning.
+Further shrinking the srcu_struct structure is eased by requiring
+that in-module srcu_struct structures rely more heavily on static
+initialization.  In particular, this preserves the property that
+a module-load-time srcu_struct initialization can fail only due
+to memory-allocation failure of the per-CPU srcu_data structures.
+It might also slightly improve robustness by keeping the number of memory
+allocations that must succeed down percpu_alloc() call.
 
-This commit therefore moves this variable under CONFIG_TASKS_RCU.
+This is in preparation for splitting an srcu_usage structure out
+of the srcu_struct structure.
 
-Link: https://lore.kernel.org/oe-kbuild-all/202303191536.XzMSyzTl-lkp@intel.com/
-Reported-by: kernel test robot <lkp@intel.com>
+[ paulmck: Fold in qiang1.zhang@intel.com feedback. ]
+
+Cc: Christoph Hellwig <hch@lst.de>
+Tested-by: Sachin Sant <sachinp@linux.ibm.com>
+Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/srcutree.h | 19 ++++++++++++++-----
+ kernel/rcu/srcutree.c    | 19 +++++++++++++------
+ 2 files changed, 27 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index bfb5e1549f2b..185358c2f08d 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -136,8 +136,10 @@ static struct rcu_tasks rt_name =							\
- 	.kname = #rt_name,								\
+diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+index 488d0e5d1ba3..3ce6deee1dbe 100644
+--- a/include/linux/srcutree.h
++++ b/include/linux/srcutree.h
+@@ -108,15 +108,24 @@ struct srcu_struct {
+ #define SRCU_STATE_SCAN1	1
+ #define SRCU_STATE_SCAN2	2
+ 
+-#define __SRCU_STRUCT_INIT(name, pcpu_name)							\
+-{												\
+-	.sda = &pcpu_name,									\
++#define __SRCU_STRUCT_INIT_COMMON(name)								\
+ 	.lock = __SPIN_LOCK_UNLOCKED(name.lock),						\
+ 	.srcu_gp_seq_needed = -1UL,								\
+ 	.work = __DELAYED_WORK_INITIALIZER(name.work, NULL, 0),					\
+-	__SRCU_DEP_MAP_INIT(name)								\
++	__SRCU_DEP_MAP_INIT(name)
++
++#define __SRCU_STRUCT_INIT_MODULE(name)								\
++{												\
++	__SRCU_STRUCT_INIT_COMMON(name)								\
  }
  
-+#ifdef CONFIG_TASKS_RCU
- /* Track exiting tasks in order to allow them to be waited for. */
- DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
-+#endif
++#define __SRCU_STRUCT_INIT(name, pcpu_name)							\
++{												\
++	.sda = &pcpu_name,									\
++	__SRCU_STRUCT_INIT_COMMON(name)								\
++}
++
++
+ /*
+  * Define and initialize a srcu struct at build time.
+  * Do -not- call init_srcu_struct() nor cleanup_srcu_struct() on it.
+@@ -138,7 +147,7 @@ struct srcu_struct {
+  */
+ #ifdef MODULE
+ # define __DEFINE_SRCU(name, is_static)								\
+-	is_static struct srcu_struct name;							\
++	is_static struct srcu_struct name = __SRCU_STRUCT_INIT_MODULE(name);			\
+ 	extern struct srcu_struct * const __srcu_struct_##name;					\
+ 	struct srcu_struct * const __srcu_struct_##name						\
+ 		__section("___srcu_struct_ptrs") = &name
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index ab4ee58af84b..7e6e7dfb1a87 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1873,13 +1873,14 @@ void __init srcu_init(void)
+ static int srcu_module_coming(struct module *mod)
+ {
+ 	int i;
++	struct srcu_struct *ssp;
+ 	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+-	int ret;
  
- /* Avoid IPIing CPUs early in the grace period. */
- #define RCU_TASK_IPI_DELAY (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) ? HZ / 2 : 0)
+ 	for (i = 0; i < mod->num_srcu_structs; i++) {
+-		ret = init_srcu_struct(*(sspp++));
+-		if (WARN_ON_ONCE(ret))
+-			return ret;
++		ssp = *(sspp++);
++		ssp->sda = alloc_percpu(struct srcu_data);
++		if (WARN_ON_ONCE(!ssp->sda))
++			return -ENOMEM;
+ 	}
+ 	return 0;
+ }
+@@ -1888,10 +1889,16 @@ static int srcu_module_coming(struct module *mod)
+ static void srcu_module_going(struct module *mod)
+ {
+ 	int i;
++	struct srcu_struct *ssp;
+ 	struct srcu_struct **sspp = mod->srcu_struct_ptrs;
+ 
+-	for (i = 0; i < mod->num_srcu_structs; i++)
+-		cleanup_srcu_struct(*(sspp++));
++	for (i = 0; i < mod->num_srcu_structs; i++) {
++		ssp = *(sspp++);
++		if (!rcu_seq_state(smp_load_acquire(&ssp->srcu_gp_seq_needed)) &&
++		    !WARN_ON_ONCE(!ssp->sda_is_static))
++			cleanup_srcu_struct(ssp);
++		free_percpu(ssp->sda);
++	}
+ }
+ 
+ /* Handle one module, either coming or going. */
 -- 
 2.40.0.rc2
 
