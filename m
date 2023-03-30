@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93BF3C761A6
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 09:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E54F2C761A6
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 09:27:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjC3JVl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 05:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
+        id S229543AbjC3J1r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 05:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjC3JVk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 05:21:40 -0400
+        with ESMTP id S229488AbjC3J1q (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 05:27:46 -0400
 Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9525AC
-        for <rcu@vger.kernel.org>; Thu, 30 Mar 2023 02:21:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7746AC
+        for <rcu@vger.kernel.org>; Thu, 30 Mar 2023 02:27:44 -0700 (PDT)
 Received: from SHSend.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-        by SHSQR01.spreadtrum.com with ESMTP id 32U9LCQY074550;
-        Thu, 30 Mar 2023 17:21:12 +0800 (+08)
+        by SHSQR01.spreadtrum.com with ESMTP id 32U9RSYw099410;
+        Thu, 30 Mar 2023 17:27:28 +0800 (+08)
         (envelope-from Ziwei.Dai@unisoc.com)
 Received: from ziwei-lenovo.spreadtrum.com (10.0.74.54) by
  BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Thu, 30 Mar 2023 17:21:10 +0800
+ 15.0.1497.23; Thu, 30 Mar 2023 17:27:26 +0800
 From:   Ziwei Dai <ziwei.dai@unisoc.com>
 To:     <paulmck@kernel.org>, <frederic@kernel.org>,
         <quic_neeraju@quicinc.com>, <josh@joshtriplett.org>,
         <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
         <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
         <rcu@vger.kernel.org>
-CC:     <shuang.wang@unisoc.com>, <yifan.xin@unisoc.com>,
-        <ke.wang@unisoc.com>, <xuewen.yan@unisoc.com>,
-        <zhiguo.niu@unisoc.com>, <ziwei.dai@unisoc.com>,
-        <zhaoyang.huang@unisoc.com>
+CC:     <linux-kernel@vger.kernel.org>, <shuang.wang@unisoc.com>,
+        <yifan.xin@unisoc.com>, <ke.wang@unisoc.com>,
+        <xuewen.yan@unisoc.com>, <zhiguo.niu@unisoc.com>,
+        <ziwei.dai@unisoc.com>, <zhaoyang.huang@unisoc.com>
 Subject: [PATCH] rcu: Make sure new krcp free business is handled after the wanted rcu grace period.
-Date:   Thu, 30 Mar 2023 17:21:04 +0800
-Message-ID: <1680168064-20424-1-git-send-email-ziwei.dai@unisoc.com>
+Date:   Thu, 30 Mar 2023 17:27:20 +0800
+Message-ID: <1680168440-20511-1-git-send-email-ziwei.dai@unisoc.com>
 X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.0.74.54]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
  BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL: SHSQR01.spreadtrum.com 32U9LCQY074550
+X-MAIL: SHSQR01.spreadtrum.com 32U9RSYw099410
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
