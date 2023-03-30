@@ -2,38 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31673C6FD1D
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 07:52:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AF1AC761AF
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 08:16:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjC3HwA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 03:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+        id S230253AbjC3IQO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 04:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjC3Hv6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 03:51:58 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B3E4C13;
-        Thu, 30 Mar 2023 00:51:56 -0700 (PDT)
-Received: from zn.tnic (p5de8e687.dip0.t-ipconnect.de [93.232.230.135])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 769401EC0646;
-        Thu, 30 Mar 2023 09:51:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1680162715;
+        with ESMTP id S230257AbjC3IQK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 04:16:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F7355B5;
+        Thu, 30 Mar 2023 01:16:00 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1680164158;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=85y0fV0TPNY7oY0asM/HkP7UM08aGmliioJjCdgcMFA=;
-        b=Zkf2IKP8lpt2RwzZntPRe51hye1kQZOonrkvqfZjL6WblHi73ujVwzbscJMYX3VgbXIXxJ
-        JiCubJdJX9fNCUarmzmhtlixYKhTbTpoe+FbmmMNCruHVHkmZNjrKnTcTl2/IFlN4XSgBC
-        NXG2Woohmgriuq1C7ZjtkMvRKOxTWes=
-Date:   Thu, 30 Mar 2023 09:51:50 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
-        kim.phillips@amd.com, brgerst@gmail.com, piotrgorski@cachyos.org,
-        oleksandr@natalenko.name, arjan@linux.intel.com, mingo@redhat.com,
+         in-reply-to:in-reply-to:references:references;
+        bh=b6TYGlcN916YLwgEhLrVT2gbEofIUMte1lkYxUuiC30=;
+        b=3p0YHLN96un+4ZlUQ8MVI3d0IpJggs9GC8qWiD/Z5gq4c9woIrm0vvXh6U0G4nzJ+GGCgz
+        qQ3V2qddJoUD3I6qFX5gq/7O18SQgi6r3TSdpxhnmXtKJtdIkziDGKsR3DbExch2q+IFWj
+        W5D7xz99FpcCQxBZDsGiIlL7jQAnLqAxqdipyfXrhDwd32nxXXFsaMMSCHrciJy1DnFqG5
+        QwP9Gwl9F0VeKgDH18Nx78NmxVFKOYCmBPPOf723u6K7o/vCxzZt50CQQKhbZKW1d2CbJQ
+        +0/VgYIflyvjMlrnMCQO1Az6wg1LidQpvGdSWKw+R2V1bJ7yxB6TnId/8nTPkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1680164158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b6TYGlcN916YLwgEhLrVT2gbEofIUMte1lkYxUuiC30=;
+        b=imWChKu+qXkjV3GEJ3BMKSrgNCQUsZDFhEMAj8Mc2MrUuU3jckkUjyVvuhjFZ7YuyCl0gF
+        XIiHGZla57pC91Bg==
+To:     Borislav Petkov <bp@alien8.de>,
+        Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, kim.phillips@amd.com, brgerst@gmail.com,
+        piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
         pbonzini@redhat.com, paulmck@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
@@ -44,33 +49,36 @@ Cc:     Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
         gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
         Sabin Rapan <sabrapan@amazon.com>
 Subject: Re: [PATCH v17 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
-Message-ID: <20230330075150.GAZCU/loaUn406SXi5@fat_crate.local>
-References: <20230328200725.GHZCNI/dHoUMwhsfiC@fat_crate.local>
- <871ql7t7xr.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 In-Reply-To: <871ql7t7xr.ffs@tglx>
+References: <871ql7t7xr.ffs@tglx>
+Date:   Thu, 30 Mar 2023 10:15:57 +0200
+Message-ID: <87y1neslhe.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 02:10:56AM +0200, Thomas Gleixner wrote:
+On Thu, Mar 30 2023 at 02:10, Thomas Gleixner wrote:
+> On Tue, Mar 28 2023 at 22:07, Borislav Petkov wrote:
+>>>  void cc_set_vendor(enum cc_vendor v);
+>>> +enum cc_vendor cc_get_vendor(void);
+>>>  void cc_set_mask(u64 mask);
+>>>  
+>>>  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+>>
+>> You don't need those hunks adding cc_set_vendor() anymore:
+>>
+>> https://git.kernel.org/tip/5ae57743f578725a5dadb6f31d7798ee55e6e967
+>
 > That's not really true. The series is based on the x86/apic branch as
 > the prerequites are in that brnach and that commit is in x86/sev.
-> 
+>
 > That's an x86 maintainer issue to sort out, really.
 
-Why do you think I left this note?
+Aside of that, this needs a wrapper when CONFIG_ARCH_HAS_CC_PLATFORM is
+not set to be usable outside of CC specific code...
 
-So that when you decide to pick up the rest of the parallel bringup
-stuff, you can see it, find me on IRC and we figure out how to do the
-tip patch tetris.
+Thanks,
 
-:-P
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+        tglx
