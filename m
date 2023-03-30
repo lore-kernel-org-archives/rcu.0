@@ -2,39 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEFB2C6FD1D
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 17:06:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4FFC761A6
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 18:17:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbjC3RGE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 13:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
+        id S230224AbjC3SRN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 14:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbjC3RGD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 13:06:03 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A6199E;
-        Thu, 30 Mar 2023 10:06:02 -0700 (PDT)
-Received: from [127.0.0.1] (dynamic-046-114-214-160.46.114.pool.telefonica.de [46.114.214.160])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 618CA1EC064E;
-        Thu, 30 Mar 2023 19:06:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1680195960;
+        with ESMTP id S230114AbjC3SRM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 14:17:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB69F751;
+        Thu, 30 Mar 2023 11:17:07 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1680200225;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VbQdC26BGuDMQMbR3dI9UycMZAF+8EQZAjhm6UnhyUw=;
-        b=eBDlTQYZWuoeljjhDYtHzcoP6FHO8j1241PdRRF88loxMQJmg+DgaYwcjYQ6AhDY8hxVaf
-        +yNnxWkyQIqU4bfsYzZG7uTuOh9UAANcMzkDrNT1Ws8PIgBSnDYPI9Nh0a9UB1Qq+ejtNr
-        jagjP91bArHMPPnDajqfi5ffxSVEGlU=
-Date:   Thu, 30 Mar 2023 19:05:58 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
+        bh=FEar+cnNvLMrO9daEBtqnzruxGox6aVxDs6PfvPU/EU=;
+        b=XOP/lf70k5ZzwPwnaAT/knMDB6J2hJzNyqH9m1jyfnvto9XY5ar1Y27ouiOfMYW6XmBVyS
+        9tnwy2qrNmNsI1bRl9JnIFU0rPCPkynQEPkgejka8u1PHpwy3frN6rHNRHzbAvYyajlzvW
+        jT20Uf+l5ZBdVY8myinxbkfBbT45sQOycyd+qdpn/AZttCQsM5kfYhQrDhPGtqXUS5mN+I
+        JSgxlhC+gzQdl2HaamRoK2ZXjgPtnRshwieJgZ7jbIAduD8mz1J/4/vIQNrHGpPYkuva9S
+        hrWocqg7cMW3gscymFkD2pBs4drHJri44FY4V02uHmdmNOcU0ku55xSHHFi06w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1680200225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FEar+cnNvLMrO9daEBtqnzruxGox6aVxDs6PfvPU/EU=;
+        b=2AQe4HprrpxFMzkT0TW0NQ+GeEDlT5PY5wCF/iCAnj8M3DIMaeMFhqSFbqG7ZbD2204tQP
+        LjL5zADSrao9nQDA==
+To:     Borislav Petkov <bp@alien8.de>,
         Usama Arif <usama.arif@bytedance.com>, dwmw2@infradead.org,
         kim.phillips@amd.com, brgerst@gmail.com
-CC:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
+Cc:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         arjan@linux.intel.com, mingo@redhat.com,
         dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
         pbonzini@redhat.com, paulmck@kernel.org,
@@ -44,29 +47,36 @@ CC:     piotrgorski@cachyos.org, oleksandr@natalenko.name,
         fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
         simon.evans@bytedance.com, liangma@liangbit.com,
         gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v17_6/8=5D_x86/smpboot=3A_Send_INI?= =?US-ASCII?Q?T/SIPI/SIPI_to_secondary_CPUs_in_parallel?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <87v8iirxun.ffs@tglx>
-References: <20230328195758.1049469-1-usama.arif@bytedance.com> <20230328195758.1049469-7-usama.arif@bytedance.com> <87v8iirxun.ffs@tglx>
-Message-ID: <CAFC43E6-97E9-4E89-AABB-78E31037048A@alien8.de>
+Subject: Re: [PATCH v17 6/8] x86/smpboot: Send INIT/SIPI/SIPI to secondary
+ CPUs in parallel
+In-Reply-To: <CAFC43E6-97E9-4E89-AABB-78E31037048A@alien8.de>
+References: <20230328195758.1049469-1-usama.arif@bytedance.com>
+ <20230328195758.1049469-7-usama.arif@bytedance.com> <87v8iirxun.ffs@tglx>
+ <CAFC43E6-97E9-4E89-AABB-78E31037048A@alien8.de>
+Date:   Thu, 30 Mar 2023 20:17:04 +0200
+Message-ID: <87sfdmrtnj.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On March 30, 2023 6:46:24 PM GMT+02:00, Thomas Gleixner <tglx@linutronix=2E=
-de> wrote:
->So that violates the rules of microcode loading that the sibling must be
->in a state where it does not execute anything which might be affected by
->the microcode update=2E The fragile startup code does not really qualify
->as such a state :)
+On Thu, Mar 30 2023 at 19:05, Borislav Petkov wrote:
 
-Yeah I don't think we ever enforced this for early loading=2E The thread s=
-ync thing came with the late loading dance=2E=2E=2E=2E
+> On March 30, 2023 6:46:24 PM GMT+02:00, Thomas Gleixner <tglx@linutronix.de> wrote:
+>>So that violates the rules of microcode loading that the sibling must be
+>>in a state where it does not execute anything which might be affected by
+>>the microcode update. The fragile startup code does not really qualify
+>>as such a state :)
+>
+> Yeah I don't think we ever enforced this for early loading.
 
+We don't have to so far. CPU bringup is fully serialized so when the
+first sibling comes up the other one is still in wait for SIPI lala
+land. When the second comes up it will see that the microcode is already
+up to date.
 
---=20
-Sent from a small device: formatting sucks and brevity is inevitable=2E 
+Thanks,
+
+        tglx
+
