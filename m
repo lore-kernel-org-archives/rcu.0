@@ -2,150 +2,194 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2A7BC6FD1D
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 15:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E17AC77B62
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 15:50:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbjC3Pog (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 11:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55998 "EHLO
+        id S233346AbjC3PuD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 11:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbjC3Pof (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 11:44:35 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC579CA3D;
-        Thu, 30 Mar 2023 08:43:45 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id k37so25132347lfv.0;
-        Thu, 30 Mar 2023 08:43:45 -0700 (PDT)
+        with ESMTP id S233410AbjC3PuA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 11:50:00 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4734FA25A
+        for <rcu@vger.kernel.org>; Thu, 30 Mar 2023 08:49:33 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id t19so18854573qta.12
+        for <rcu@vger.kernel.org>; Thu, 30 Mar 2023 08:49:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680190998;
+        d=joelfernandes.org; s=google; t=1680191368;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=K+snN28zGpqdGdh0F8mLob3cT7QxGO9Mm/LKoyV1UaQ=;
-        b=gagKM4RTkR+kg03jLaMHmV8lXtW8Fy4u6OS1fiDqgdrX4jV/HJqnlFRQZ86miITzAP
-         TizipNShN1NIZPKhOHdDvII94p0PFcZMcxVRH8+IxXZJD91N0VCFV4qNpMYDRMnXdmJV
-         L+30Kz4hIap3S36Jk7WwNgI717IjtSqc9Cj7IK6aBBP1V2XhnTvuzdSylkWKGMnyGl1L
-         fRrQrLKuQ69EegT5nEgWraOcTVBJMeD3rxBgMlyEbmy4JkCv02N/HNcVanc8e12kG11w
-         c9OduTlTMmdeYoslWRTgUv63iRVcwaDBKtozFqqvQMBrbbqt9k9DWn1oMWItHLK7kqx5
-         Xw7A==
+        bh=Vil2eKpiNnTMX9jA+HvlVZIvmGd1fQxhTcUQOW8Puig=;
+        b=e8Mih22wrNYCfAXGBK0vuNlm8UKe2HkzjWtxH7CV/4rx1Q4AibeFr4Xjfur15O4YmW
+         IMBHepmG+q913Bx4QnLZoUBIeClqEdkjLwYwbuWYb4HoJob09uNFDDyUbGW1PXzSgnaF
+         copoSVW03mRQqk12K5e6fSYri+EF723APIZRs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680190998;
+        d=1e100.net; s=20210112; t=1680191368;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K+snN28zGpqdGdh0F8mLob3cT7QxGO9Mm/LKoyV1UaQ=;
-        b=yJlZqCwb5g6Wn7Q1xEEJRIv4G+m5yHB283qf7ZdsH+w5keBun4OhK3fXZHJp26f2Nt
-         zAqQFNLl70CGF2f4AyWzmh1vFtYGO7dnAKqGFQG6HpIdvK8JvZzK2dCy+pzLSUPbamCZ
-         09OvQRovuUogEjvYz9C1eH/RAvGMjwHXYR6y4cMD0420/1zP5myP0G3Zfndl9rH4ZfUP
-         JrDTrDwaAMIc76Ohz6j9Bfch7UmqE6iTL1uJXcSVu9WsesfXwX3vefM7+PuCCiCQEJWv
-         XbmNby7uHvwIub/kcXEqPi358yuctnF8o6Pc7i5mLnY5HcvEPd91sE2DEOZSBsNy2zdE
-         vNAw==
-X-Gm-Message-State: AAQBX9eB+ONvSD8GQnPTbp8kicRZMjEkhFv1j31Y9VNUcszSD6BcwYLx
-        5cy6TSeukZ8u40O3ciAr7t0=
-X-Google-Smtp-Source: AKy350YWo9ixOeCQIogabUOy4+LcErTfIgi6CAX9/qN9OKu0g/kQngikDEc8YgB6bBXuVsDRuI1fHA==
-X-Received: by 2002:ac2:5e88:0:b0:4eb:c4e:bd87 with SMTP id b8-20020ac25e88000000b004eb0c4ebd87mr5439021lfq.58.1680190998199;
-        Thu, 30 Mar 2023 08:43:18 -0700 (PDT)
-Received: from pc636 (host-90-233-209-50.mobileonline.telia.com. [90.233.209.50])
-        by smtp.gmail.com with ESMTPSA id w6-20020a2e9986000000b00290679ebac1sm5962840lji.9.2023.03.30.08.43.16
+        bh=Vil2eKpiNnTMX9jA+HvlVZIvmGd1fQxhTcUQOW8Puig=;
+        b=57NeWBTGkJBF5LfvBLJ1OyahS3wWB7NnCf90ofHqadvt6ZAm89NInXvOERtKmFdz9T
+         t8fYxDjE8I8WMGUWUPI0RKH54GkBBZ3I1AEVMDx954+0mh6xXfR3D/L1cEqWDpvr1FrV
+         Pm3Xeupv/EKP4UjQcB3hDHlc+eqzMZKPirxLH7c1VNih7IF/f18U7Cwck5jUlHKdWpQf
+         V/x/a+rYASjBSneSGr9/6TuP2iqwHF9ollPchoaE5XGkrkvjkaepHaZL14P0vdW2KXOo
+         VS86pCHaUWSubWNhz01gKAme5M24tYvmcyk+q+aQJ2ZEoAPJOHSnchx26bM2L0GHRotu
+         3hbQ==
+X-Gm-Message-State: AO0yUKVUgqsVOIj1VWbbLyZO39CNwBmx+vdQD5gujvNtzsFGyM80MuI0
+        9WzqRyBQ80gsB2hyrrdC3mzZeQ==
+X-Google-Smtp-Source: AK7set9bulSBIubZM96NEfSd6rzIkSdshjJcrQkRFjuAatfnDeaSj2RhFiEPOJRm8OkE4MvfvHDfcA==
+X-Received: by 2002:ac8:5b96:0:b0:3bf:c9d1:4276 with SMTP id a22-20020ac85b96000000b003bfc9d14276mr38021954qta.5.1680191368416;
+        Thu, 30 Mar 2023 08:49:28 -0700 (PDT)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id s80-20020a37a953000000b00741a984943fsm11736875qke.40.2023.03.30.08.49.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Mar 2023 08:43:17 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 30 Mar 2023 17:43:15 +0200
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, RCU <rcu@vger.kernel.org>,
-        quic_neeraju@quicinc.com, Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-Message-ID: <ZCWuE+b+QDApqgWG@pc636>
-References: <ca153af5-bd66-4d48-afa5-ace3a13aec3c@paulmck-laptop>
- <FC49F388-0480-4687-8DD3-94049FCBC92B@joelfernandes.org>
- <2cd8f407-2b77-48b1-9f17-9aa8e4ce9c64@paulmck-laptop>
- <20230330150933.GB2114899@google.com>
+        Thu, 30 Mar 2023 08:49:27 -0700 (PDT)
+Date:   Thu, 30 Mar 2023 15:49:27 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        rcu <rcu@vger.kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 04/13] tick/nohz: Fix cpu_is_hotpluggable() by
+ checking with nohz subsystem
+Message-ID: <20230330154927.GJ2114899@google.com>
+References: <20230325173316.3118674-1-joel@joelfernandes.org>
+ <20230325173316.3118674-5-joel@joelfernandes.org>
+ <ZCCeS/VeGthUNgIY@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230330150933.GB2114899@google.com>
+In-Reply-To: <ZCCeS/VeGthUNgIY@localhost.localdomain>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 03:09:33PM +0000, Joel Fernandes wrote:
-> On Tue, Mar 28, 2023 at 08:26:13AM -0700, Paul E. McKenney wrote:
-> > On Mon, Mar 27, 2023 at 10:29:31PM -0400, Joel Fernandes wrote:
-> > > Hello,
-> > > 
-> > > > On Mar 27, 2023, at 9:06 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > 
-> > > > ﻿On Mon, Mar 27, 2023 at 11:21:23AM +0000, Zhang, Qiang1 wrote:
-> > > >>>> From: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > >>>> Sent: Tuesday, March 21, 2023 6:28 PM
-> > > >>>> [...]
-> > > >>>> Subject: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-> > > >>>> 
-> > > >>>> A call to a synchronize_rcu() can be expensive from time point of view.
-> > > >>>> Different workloads can be affected by this especially the ones which use this
-> > > >>>> API in its time critical sections.
-> > > >>>> 
-> > > >>> 
-> > > >>> This is interesting and meaningful research. ;-)
-> > > >>> 
-> > > >>>> For example in case of NOCB scenario the wakeme_after_rcu() callback
-> > > >>>> invocation depends on where in a nocb-list it is located. Below is an example
-> > > >>>> when it was the last out of ~3600 callbacks:
-> > > >>> 
-> > > >> 
-> > > >> 
-> > > >> 
-> > > >> Can it be implemented separately as follows?  it seems that the code is simpler
-> > > >> (only personal opinion)  😊.
-> > > >> 
-> > > >> But I didn't test whether this reduce synchronize_rcu() waiting time
-> > > >> 
-> > > >> +static void rcu_poll_wait_gp(struct rcu_tasks *rtp)
-> > > >> +{
-> > > >> +       unsigned long gp_snap;
-> > > >> +
-> > > >> +       gp_snap = start_poll_synchronize_rcu();
-> > > >> +       while (!poll_state_synchronize_rcu(gp_snap))
-> > > >> +               schedule_timeout_idle(1);
-> > > > 
-> > > > I could be wrong, but my guess is that the guys working with
-> > > > battery-powered devices are not going to be very happy with this loop.
-> > > > 
-> > > > All those wakeups by all tasks waiting for a grace period end up
-> > > > consuming a surprisingly large amount of energy.
-> > > 
-> > > Is that really the common case? On the general topic of wake-ups:
-> > > Most of the time there should be only one
-> > > task waiting synchronously on a GP to end. If that is
-> > > true, then it feels like waking
-> > > up nocb Kthreads which indirectly wake other threads is doing more work than usual?
-> > 
-> > A good question, and the number of outstanding synchronize_rcu()
-> > calls will of course be limited by the number of tasks in the system.
-> > But I myself have raised the ire of battery-powered embedded folks with
-> > a rather small number of wakeups, so...
+On Sun, Mar 26, 2023 at 09:34:35PM +0200, Frederic Weisbecker wrote:
+> Le Sat, Mar 25, 2023 at 05:33:07PM +0000, Joel Fernandes (Google) a �crit :
+> > For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
+> > However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
+> > torture tests that do offlining to end up trying to offline this CPU causing
+> > test failures. Such failure happens on all architectures.
 > 
-> But unless I am missing something, even if there is single synchronize_rcu(),
-> you have a flurry of potential wakeups right now, instead of the bare minimum
-> I think. I have not measured how many wake ups, but I'd love to when I get
-> time. Maybe Vlad has some numbers.
+> It might be worth noting that hotplug failure is fine on hotplug testing.
+> The issue here is the repetitive error message in the logs.
 > 
-I will measure and have a look at wake-ups. But, what we have for now is
-if there are two callers of synchronize_rcu() on different CPUs, i guess
-two nocb-kthreads have to handle it, thus two nocb-kthreads have to be
-awaken to do the work. This patch needs only one wake-up to serve all
-users.
+> Other than that:
+> 
+> Acked-by: Frederic Weisbecker <frederic@kernel.org>
 
-Anyway, i will provide some data and analysis of it.
+Thank you, below is the reworded update. Let me know if any other comment.
 
---
-Uladzislau Rezki
+-------8<-------
+
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz
+ subsystem
+
+For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
+However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
+torture tests that do offlining to end up trying to offline this CPU causing
+test failures. Such failure happens on all architectures.
+
+Fix the repeated error messages thrown as a result (even if the hotplug
+errors are harmless), by asking the opinion of the nohz subsystem on whether
+the CPU can be hotplugged.
+
+[ Apply Frederic Weisbecker feedback on refactoring tick_nohz_cpu_down(). ]
+
+For drivers/base/ portion:
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: rcu <rcu@vger.kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest of the kernel")
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ drivers/base/cpu.c       |  3 ++-
+ include/linux/tick.h     |  2 ++
+ kernel/time/tick-sched.c | 11 ++++++++---
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index 182c6122f815..c1815b9dae68 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -487,7 +487,8 @@ static const struct attribute_group *cpu_root_attr_groups[] = {
+ bool cpu_is_hotpluggable(unsigned int cpu)
+ {
+ 	struct device *dev = get_cpu_device(cpu);
+-	return dev && container_of(dev, struct cpu, dev)->hotpluggable;
++	return dev && container_of(dev, struct cpu, dev)->hotpluggable
++		&& tick_nohz_cpu_hotpluggable(cpu);
+ }
+ EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
+ 
+diff --git a/include/linux/tick.h b/include/linux/tick.h
+index bfd571f18cfd..9459fef5b857 100644
+--- a/include/linux/tick.h
++++ b/include/linux/tick.h
+@@ -216,6 +216,7 @@ extern void tick_nohz_dep_set_signal(struct task_struct *tsk,
+ 				     enum tick_dep_bits bit);
+ extern void tick_nohz_dep_clear_signal(struct signal_struct *signal,
+ 				       enum tick_dep_bits bit);
++extern bool tick_nohz_cpu_hotpluggable(unsigned int cpu);
+ 
+ /*
+  * The below are tick_nohz_[set,clear]_dep() wrappers that optimize off-cases
+@@ -280,6 +281,7 @@ static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask) { }
+ 
+ static inline void tick_nohz_dep_set_cpu(int cpu, enum tick_dep_bits bit) { }
+ static inline void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit) { }
++static inline bool tick_nohz_cpu_hotpluggable(unsigned int cpu) { return true; }
+ 
+ static inline void tick_dep_set(enum tick_dep_bits bit) { }
+ static inline void tick_dep_clear(enum tick_dep_bits bit) { }
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index ba2ac1469d47..a46506f7ec6d 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -532,7 +532,7 @@ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
+ 	tick_nohz_full_running = true;
+ }
+ 
+-static int tick_nohz_cpu_down(unsigned int cpu)
++bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
+ {
+ 	/*
+ 	 * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
+@@ -540,8 +540,13 @@ static int tick_nohz_cpu_down(unsigned int cpu)
+ 	 * CPUs. It must remain online when nohz full is enabled.
+ 	 */
+ 	if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
+-		return -EBUSY;
+-	return 0;
++		return false;
++	return true;
++}
++
++static int tick_nohz_cpu_down(unsigned int cpu)
++{
++	return tick_nohz_cpu_hotpluggable(cpu) ? 0 : -EBUSY;
+ }
+ 
+ void __init tick_nohz_init(void)
+-- 
+2.40.0.rc1.284.g88254d51c5-goog
+
