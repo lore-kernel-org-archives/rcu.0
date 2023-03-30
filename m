@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F8D4C761AF
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FA87C77B61
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbjC3WsH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 18:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
+        id S231197AbjC3WsI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 18:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjC3Wry (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230509AbjC3Wry (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 30 Mar 2023 18:47:54 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE4D113D5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC28B12844;
         Thu, 30 Mar 2023 15:47:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DB456B82A62;
+        by ams.source.kernel.org (Postfix) with ESMTPS id E7F66B82A68;
+        Thu, 30 Mar 2023 22:47:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02FC0C433AE;
         Thu, 30 Mar 2023 22:47:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B33C4339C;
-        Thu, 30 Mar 2023 22:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680216448;
-        bh=73P8AiOczQu3Mui8U57N5Li9dx6JSHAOoEru++2gFoQ=;
+        s=k20201202; t=1680216449;
+        bh=RWTsWggyNWMF3mrQsYn6FXy7a1TnamrnSi7nELkO3xw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LzS8lfvagKkq7ws8iWNcjYvCuVl4wyVlvG9bSUyyvcJd3vJe9bEF5ErGDn+32Jxrb
-         t7u/DuxE+wS9YQyoUNYR6+ql6iE7LveojNtH+pvImJo8BfhEq43FrXThE8mV4vmr6X
-         5VThIbiNALn4GRiminbhQzzXvtGy8ICguipy/mz/nKbwsamgWsl7Nz+nuoaDTc1gcq
-         xtE4QSrL4+C+muHcBZtQBWHCuI20jGEkpcnt+3yGWn4W25KiUW8Uu14xI3Jhe7NMq1
-         iTAF03cuAkHaJQ3XEn9YF4PSA/dwillcKnGFjeh2lYF0neSuKHI6oRXEmn36cRIEXQ
-         FZ/ZMD8LgdoLA==
+        b=liqSHJog9QoVs7xd3BFMUdHHVHx8BYWVROWhnqYnaYzrJhoQYEYQe/w8XUc0xbdqz
+         nskHVEeOKyVKsG4Yx7gHjUv6vnzqDkWF9RfpAuzQdo7gD1ItSnqcr3LqGeRZTjbNG9
+         b9bhyIGe6ZxGbSZWHNjkpX6vBGCyYmTaQ7fP8a8ja6N8kCPHwEGohfMZ9oOpFw63JA
+         WRsK1Q4mxV+ThmVG354IAj+0WmLHgc+3FpHkQlW/kuVuUgWWLfVaCokreZ8niwxj3R
+         x2gRgVhiEef2SVVrOyCCX9tHRGEbKppXQSnCZvkXYqYIwOx51ouf/dSe96yedzPNq3
+         Y9BgQyAxnWexg==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0DF5D1540481; Thu, 30 Mar 2023 15:47:28 -0700 (PDT)
+        id 261AD1540488; Thu, 30 Mar 2023 15:47:28 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Sachin Sant <sachinp@linux.ibm.com>,
         "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Subject: [PATCH rcu 05/20] srcu: Move ->level from srcu_struct to srcu_usage
-Date:   Thu, 30 Mar 2023 15:47:11 -0700
-Message-Id: <20230330224726.662344-5-paulmck@kernel.org>
+Subject: [PATCH rcu 12/20] srcu: Move heuristics fields from srcu_struct to srcu_usage
+Date:   Thu, 30 Mar 2023 15:47:18 -0700
+Message-Id: <20230330224726.662344-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.0.rc2
 In-Reply-To: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
 References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
@@ -52,88 +52,102 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit moves the ->level[] array from the srcu_struct structure to
-the srcu_usage structure to reduce the size of the former in order to
-improve cache locality.
+This commit moves the ->srcu_size_jiffies, ->srcu_n_lock_retries,
+and ->srcu_n_exp_nodelay fields from the srcu_struct structure to the
+srcu_usage structure to reduce the size of the former in order to improve
+cache locality.
 
 Suggested-by: Christoph Hellwig <hch@lst.de>
 Tested-by: Sachin Sant <sachinp@linux.ibm.com>
 Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/srcutree.h |  4 ++--
- kernel/rcu/srcutree.c    | 14 +++++++-------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ include/linux/srcutree.h |  6 +++---
+ kernel/rcu/srcutree.c    | 18 +++++++++---------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 276f325f1296..c7373fe5c14b 100644
+index 372e35b0e8b6..3023492d8d89 100644
 --- a/include/linux/srcutree.h
 +++ b/include/linux/srcutree.h
-@@ -62,14 +62,14 @@ struct srcu_node {
-  */
- struct srcu_usage {
- 	struct srcu_node *node;			/* Combining tree. */
-+	struct srcu_node *level[RCU_NUM_LVLS + 1];
-+						/* First node at each level. */
+@@ -73,6 +73,9 @@ struct srcu_usage {
+ 	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
+ 	unsigned long srcu_gp_start;		/* Last GP start timestamp (jiffies) */
+ 	unsigned long srcu_last_gp_end;		/* Last GP end timestamp (ns) */
++	unsigned long srcu_size_jiffies;	/* Current contention-measurement interval. */
++	unsigned long srcu_n_lock_retries;	/* Contention events in current interval. */
++	unsigned long srcu_n_exp_nodelay;	/* # expedited no-delays in current GP phase. */
  };
  
  /*
-  * Per-SRCU-domain structure, similar in function to rcu_state.
+@@ -80,9 +83,6 @@ struct srcu_usage {
   */
  struct srcu_struct {
--	struct srcu_node *level[RCU_NUM_LVLS + 1];
--						/* First node at each level. */
- 	int srcu_size_state;			/* Small-to-big transition state. */
- 	struct mutex srcu_cb_mutex;		/* Serialize CB preparation. */
- 	spinlock_t __private lock;		/* Protect counters and size state. */
+ 	unsigned int srcu_idx;			/* Current rdr array element. */
+-	unsigned long srcu_size_jiffies;	/* Current contention-measurement interval. */
+-	unsigned long srcu_n_lock_retries;	/* Contention events in current interval. */
+-	unsigned long srcu_n_exp_nodelay;	/* # expedited no-delays in current GP phase. */
+ 	struct srcu_data __percpu *sda;		/* Per-CPU srcu_data array. */
+ 	bool sda_is_static;			/* May ->sda be passed to free_percpu()? */
+ 	unsigned long srcu_barrier_seq;		/* srcu_barrier seq #. */
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 049e20dbec76..acb0862faafa 100644
+index 340eb685cf64..291fb520bce0 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -178,9 +178,9 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
- 		return false;
- 
- 	/* Work out the overall tree geometry. */
--	ssp->level[0] = &ssp->srcu_sup->node[0];
-+	ssp->srcu_sup->level[0] = &ssp->srcu_sup->node[0];
- 	for (i = 1; i < rcu_num_lvls; i++)
--		ssp->level[i] = ssp->level[i - 1] + num_rcu_lvl[i - 1];
-+		ssp->srcu_sup->level[i] = ssp->srcu_sup->level[i - 1] + num_rcu_lvl[i - 1];
- 	rcu_init_levelspread(levelspread, num_rcu_lvl);
- 
- 	/* Each pass through this loop initializes one srcu_node structure. */
-@@ -202,10 +202,10 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+@@ -348,11 +348,11 @@ static void spin_lock_irqsave_check_contention(struct srcu_struct *ssp)
+ 	if (!SRCU_SIZING_IS_CONTEND() || ssp->srcu_sup->srcu_size_state)
+ 		return;
+ 	j = jiffies;
+-	if (ssp->srcu_size_jiffies != j) {
+-		ssp->srcu_size_jiffies = j;
+-		ssp->srcu_n_lock_retries = 0;
++	if (ssp->srcu_sup->srcu_size_jiffies != j) {
++		ssp->srcu_sup->srcu_size_jiffies = j;
++		ssp->srcu_sup->srcu_n_lock_retries = 0;
+ 	}
+-	if (++ssp->srcu_n_lock_retries <= small_contention_lim)
++	if (++ssp->srcu_sup->srcu_n_lock_retries <= small_contention_lim)
+ 		return;
+ 	__srcu_transition_to_big(ssp);
+ }
+@@ -624,8 +624,8 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+ 		if (time_after(j, gpstart))
+ 			jbase += j - gpstart;
+ 		if (!jbase) {
+-			WRITE_ONCE(ssp->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_n_exp_nodelay) + 1);
+-			if (READ_ONCE(ssp->srcu_n_exp_nodelay) > srcu_max_nodelay_phase)
++			WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, READ_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay) + 1);
++			if (READ_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay) > srcu_max_nodelay_phase)
+ 				jbase = 1;
  		}
- 
- 		/* Non-root node. */
--		if (snp == ssp->level[level + 1])
-+		if (snp == ssp->srcu_sup->level[level + 1])
- 			level++;
--		snp->srcu_parent = ssp->level[level - 1] +
--				   (snp - ssp->level[level]) /
-+		snp->srcu_parent = ssp->srcu_sup->level[level - 1] +
-+				   (snp - ssp->srcu_sup->level[level]) /
- 				   levelspread[level - 1];
+ 	}
+@@ -783,7 +783,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+ 				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+ 	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
+ 	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
+-	WRITE_ONCE(ssp->srcu_n_exp_nodelay, 0);
++	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
+ 	smp_mb(); /* Order prior store to ->srcu_gp_seq_needed vs. GP start. */
+ 	rcu_seq_start(&ssp->srcu_sup->srcu_gp_seq);
+ 	state = rcu_seq_state(ssp->srcu_sup->srcu_gp_seq);
+@@ -1625,7 +1625,7 @@ static void srcu_advance_state(struct srcu_struct *ssp)
+ 		srcu_flip(ssp);
+ 		spin_lock_irq_rcu_node(ssp->srcu_sup);
+ 		rcu_seq_set_state(&ssp->srcu_sup->srcu_gp_seq, SRCU_STATE_SCAN2);
+-		ssp->srcu_n_exp_nodelay = 0;
++		ssp->srcu_sup->srcu_n_exp_nodelay = 0;
+ 		spin_unlock_irq_rcu_node(ssp->srcu_sup);
  	}
  
-@@ -214,7 +214,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
- 	 * leaves of the srcu_node tree.
- 	 */
- 	level = rcu_num_lvls - 1;
--	snp_first = ssp->level[level];
-+	snp_first = ssp->srcu_sup->level[level];
- 	for_each_possible_cpu(cpu) {
- 		sdp = per_cpu_ptr(ssp->sda, cpu);
- 		sdp->mynode = &snp_first[cpu / levelspread[level]];
-@@ -889,7 +889,7 @@ static void srcu_gp_end(struct srcu_struct *ssp)
- 		srcu_for_each_node_breadth_first(ssp, snp) {
- 			spin_lock_irq_rcu_node(snp);
- 			cbs = false;
--			last_lvl = snp >= ssp->level[rcu_num_lvls - 1];
-+			last_lvl = snp >= ssp->srcu_sup->level[rcu_num_lvls - 1];
- 			if (last_lvl)
- 				cbs = ss_state < SRCU_SIZE_BIG || snp->srcu_have_cbs[idx] == gpseq;
- 			snp->srcu_have_cbs[idx] = gpseq;
+@@ -1640,7 +1640,7 @@ static void srcu_advance_state(struct srcu_struct *ssp)
+ 			mutex_unlock(&ssp->srcu_sup->srcu_gp_mutex);
+ 			return; /* readers present, retry later. */
+ 		}
+-		ssp->srcu_n_exp_nodelay = 0;
++		ssp->srcu_sup->srcu_n_exp_nodelay = 0;
+ 		srcu_gp_end(ssp);  /* Releases ->srcu_gp_mutex. */
+ 	}
+ }
 -- 
 2.40.0.rc2
 
