@@ -2,306 +2,273 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F5C9C6FD1D
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 15:06:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 392EBC6FD1D
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 15:11:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbjC3PGy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 11:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
+        id S232792AbjC3PLA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 11:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232635AbjC3PGw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 11:06:52 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D089AC177;
-        Thu, 30 Mar 2023 08:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680188791; x=1711724791;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=rfKeQjvyn8N2YTCFOkndJE6Sd7mjB//UW9R1B4NqpO0=;
-  b=X3ouvyC97dsiMYIid3y7oZoLisYuM80Fr3x1potMXTCPGtNetSLx8rcc
-   i/NkTNs79YWlC5b6OkcQIsFYqblFpKjP29xCqtskYlqcOLJmSSb8cTerq
-   GpJlyHqfuUb9yNJERBlLk1iXCdGCs2S9QOn8XNoE7mWGKAgIyfcSGQN2B
-   iXPq5NNMf4b/77fNOL+70kONtzPlijsnDsb+xre8Hu4Wyz6KTabZnyMTZ
-   B0H7Blr8OerH2xnskn/frexHght4meyut55BijApNXLGYsa/9Olun2fYA
-   FKAtBhTYj4DlKk4w5CWJa/XCoJZdtIfdNFWhcz9SNoo3gRDW945BYPz9z
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="341207647"
-X-IronPort-AV: E=Sophos;i="5.98,303,1673942400"; 
-   d="scan'208";a="341207647"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2023 08:03:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="774027109"
-X-IronPort-AV: E=Sophos;i="5.98,303,1673942400"; 
-   d="scan'208";a="774027109"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by FMSMGA003.fm.intel.com with ESMTP; 30 Mar 2023 08:03:53 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 30 Mar 2023 08:03:53 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 30 Mar 2023 08:03:52 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Thu, 30 Mar 2023 08:03:52 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.45) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.21; Thu, 30 Mar 2023 08:03:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZFNQmHwNBnurNvtajiFCWK8Ar96lfrZ2vET+SKMnl3h4j8V0YUFPOlSuof6gQGwGHWZd/zNxtm4RN+ecAGvMnKWhju7h7yPVpLcp0iuOAFyYzuPvM62OgybxvirnaQfW5HJ5//RuJv5OJw+DFqKXIhdy7rktoE1yt0CXQwkNNWDD90LTgnGof5TxgTaS+MHQ/LEpQs9fc68rf3vlQrQsgjqrNAMa2n7nzr3ONok3HnP0Hq330bNitVj7xMcui8apUjkFVT9p7dFtZ6+14aeVzDzSReAEk8ORAaepAOrQjj/tsMUBuatEteXZVgkSpQBKvhTulO2oH0SkEgou5gyCvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6b2qN9zYaGGq2G3EtlEheFti5U6XR9FjaSiy/sdVMUg=;
- b=LSwdNP67XOpL1k6aAZKpTBSJO8m2dQMR+PL3z4NcCHCD3T+45aYTWZhqugz6YXVEvCE7WdfBOogKDyWRzabIn3SWFdujTVJhY8dH9g5I0sbeM9bXtxeJM0PXhiI3aUkclls711DSpYHg0H8xFpHJGTuhdhdrDK7elsBD18COyayNKe8Ufn3TckKVYk6MS1D7IFgd8+AtxslfjFfq4gtechIYFys9nUfmcfjrBEcwMMArM6EBBk5rXzLUA15DvB/PcTVbNoT95KWF/rMxpOWoYcWZZFTNEPaWlqsIZbAPwI13if9AfbF4qt9Q3BfCJlaM/QsZvrrLxhM+qkiSe40H1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
- by SN7PR11MB7511.namprd11.prod.outlook.com (2603:10b6:806:347::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.22; Thu, 30 Mar
- 2023 15:03:51 +0000
-Received: from PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::4075:1af2:9fc0:66d0]) by PH0PR11MB5880.namprd11.prod.outlook.com
- ([fe80::4075:1af2:9fc0:66d0%5]) with mapi id 15.20.6222.033; Thu, 30 Mar 2023
- 15:03:50 +0000
-From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-team@meta.com" <kernel-team@meta.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "hch@lst.de" <hch@lst.de>,
-        "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>
-Subject: RE: [PATCH RFC rcu 02/19] srcu: Use static init for statically
- allocated in-module srcu_struct
-Thread-Topic: [PATCH RFC rcu 02/19] srcu: Use static init for statically
- allocated in-module srcu_struct
-Thread-Index: AQHZXeZkMjCksJUJIEigTtRmvPjKta8SunIggAC5AYCAAAGhAA==
-Date:   Thu, 30 Mar 2023 15:03:50 +0000
-Message-ID: <PH0PR11MB58807EB1C375AE03F8586C92DA8E9@PH0PR11MB5880.namprd11.prod.outlook.com>
-References: <3db82572-f156-4a5d-b711-841aa28bd996@paulmck-laptop>
- <20230324001938.3443499-2-paulmck@kernel.org>
- <PH0PR11MB5880CA682074874FF64B3412DA8E9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <b66d52cb-ed73-4c7f-bab0-201dc13d164a@paulmck-laptop>
-In-Reply-To: <b66d52cb-ed73-4c7f-bab0-201dc13d164a@paulmck-laptop>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|SN7PR11MB7511:EE_
-x-ms-office365-filtering-correlation-id: b73d077e-cc19-4fea-5c12-08db312ff8b1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bUkOLUWauUlCZ5jrm6DFugmkZgWSJqjszQn5RHN1KCtnw3xUYbzVYDRG2JUB8F55BG6alo6SATwaNkb7suOnIlVSB/9oGAKSXmzB2+s+uRpjPYtT/FBA+L6akwKq0aj4gjMZ1GO2eDYllkUDuZ7y6WQ5ZZEo7lvlf6a9fzxalqfn+6d2kA7oXjixSSzVwbXSElUPOTobg3Xh5Yn/FIIJwpUZtKKyiD5RrqNceym6ej+820pLaUbFiisLH5JiKLriNLDl2MTQQGBz5ZD6GZ6NsIPT+pTY+uJYsZZ1CmVGPr+RFU8m/VhTAyaATnKd11Hy+MTWpHdbrvsW4+pGwYZKUkB5oWQ98hAzOob82xWFs73s8N2qLtZiLwOt6g7K863zVWrqBwnQCxlkcUSmiBYUiZqi8yrCGJnBbauSCZPg0aYnXqYwC4CNc42kfIqRmwTnBkvG6chCBfA8Mw1jfKL410JFz28VKqnHnjsgNBbg3iDLNg4eHLbL4+SgJmgbJTaOeaeAtWxx4+/cqudaoYV11CikKf8ReV8I+f/2jZgG/tnbCzSHuoUHT8zBmq6K39blUc5Itzr/oSTILSk7LoXS8rJBJn0qBOUgo8UUCu968JcPu28U42I9Xsu16LN5k/G3
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(366004)(39860400002)(376002)(346002)(136003)(451199021)(52536014)(83380400001)(26005)(122000001)(186003)(86362001)(6506007)(9686003)(82960400001)(5660300002)(38100700002)(38070700005)(41300700001)(8936002)(8676002)(66476007)(7696005)(33656002)(71200400001)(478600001)(55016003)(76116006)(64756008)(66556008)(66446008)(6916009)(316002)(4326008)(54906003)(66946007)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ZLr/aEwhmIorCb3TVqZQQk+Rate/dtxoTXfcyvrq2/XpqyltA9PWr/OTIdAb?=
- =?us-ascii?Q?du43O4WUf2sTJQUaD/6aEbup3iT8w8GkP5xnld3ha3rdROFiePXpotajZ/Q1?=
- =?us-ascii?Q?S6CLPnrXyFPqWRx+ClCJian0CV7p29VRq+Uh8h4H13fMbCrExZsizjMIe+oa?=
- =?us-ascii?Q?vPu3XOxZS2sNgvMCBta7i8P+YXSzbs4FdcfO8kjSUfphSn6KjI9XBiLKKB3x?=
- =?us-ascii?Q?Awu5/A4R0sHLW6OEJwka6jdzRaipSJNFKIGt3f5Vx/a5xIXc0wD8RsKBhLe/?=
- =?us-ascii?Q?YDbCclyMps5h9knBNZUqnmGoX7dqgK6mbRp2EPK0xHB51Uj7+bBFbwGZikfv?=
- =?us-ascii?Q?Knd8ZRqZcC2tjje+3p1RjtKySo/6hTsuokz1UdyDeZV9l5lPjddZQwtQuieT?=
- =?us-ascii?Q?1Q2NREoj1iC8dsJeKenqG0EmRychECJBjwtvTcUPwbQOG4If7pymj8Yi/pap?=
- =?us-ascii?Q?TNq9xHzMnx7u0zijYVuFIKE96UeN0CvREhQVFGh4ToJIKwYuuu80ex86yZyP?=
- =?us-ascii?Q?bvqF8f6IW0fWw5o4c3JZEVOBG91YEiSCBZsfyBs1AYhdektM+sZmeBZTwhH6?=
- =?us-ascii?Q?bmxWP+ddREvCoISJNb76qJghHZuFFXmO5iZYoAoF1OwIlaHeVfVFKvFVepfu?=
- =?us-ascii?Q?LGw+fJmZtzLslyGzAm1G+NnN0mTA7AQxE88u21H2CJUIM53kTVPREpDaT3gl?=
- =?us-ascii?Q?STZdCXEZ8xNEqyQcf7Xkpr9+mxYh0OzYRA50kmUmM/r53qxfIGBVgLM5Re0W?=
- =?us-ascii?Q?R4Q8z1F6k1xRdwfaI/df9L2wd7t6jNr2FJMr5pG6ss8iwmcDnDJodU/nJ0R+?=
- =?us-ascii?Q?XdwGIlmCKunM23bGtibD/+vH1MhH/BL/TcXayoH/SlVyeKO9s1tMEuJXfXD+?=
- =?us-ascii?Q?dnVOTDe7p1lStRsYWw5SML4+mdlTQ4mXN1w8HI51AgZva9Q4Cj4NXjoJLQaB?=
- =?us-ascii?Q?h5FDpuqJ6/xI+pyulN9YEeMVl2OkWK67+9UkAjEL0jmhqPdcEdZGsBMyJsfN?=
- =?us-ascii?Q?KL7gF9tPrBnJMtC6BDQkXmtFayyUW84199qeR6zjAan/9SlUEIrfmMyrhjMg?=
- =?us-ascii?Q?Qp7zbluyfq5OkYofNC3swFarL6cdzHvUoPmfs4FxFi6I0+wdAVJ83Et0RUZf?=
- =?us-ascii?Q?IpKzAINrGkxpq5ILYSidxoxtxUXiz3OKztP1+X4V2z0zVX/vF0+stilqQCZb?=
- =?us-ascii?Q?DuzLWsEgG2Uwf6fXJvNaQXfbaDH/Bk4I5m4T9P0xNG7D1eMq17h4tc02KSze?=
- =?us-ascii?Q?mT3etvfybo7RVKfZmenc6TvTzZ+vSY6L1TfSMtJ/VSVsKPRePjF/BIAzKNFt?=
- =?us-ascii?Q?d9ENxZiImt6Jng/xh/6Rc4Znd+Vh+pOntZZrH+GR48EoXdm84X5L0/Ddtwqg?=
- =?us-ascii?Q?7adgJWIddj0t623gQ5W3pEN26+ZqLc0px+fYT+Dz8d/EDHyVttPyovVUyiPY?=
- =?us-ascii?Q?R5L3F5HEa0gLjsMB64EpMYnR2JYKeMprsGN/1t6czcOcVcE1PEVSXNi/l8ia?=
- =?us-ascii?Q?GpNctdfdqFKPUHvlg4+rrGSPxqFRe/mFnEDHCQupQ1O7xM8HKU9LTCAcagGZ?=
- =?us-ascii?Q?hkzkFXrxBrjLA8Wuolgih66OxHn1bwto7Kl8GZtV?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S232710AbjC3PK6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 11:10:58 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D65BDC8
+        for <rcu@vger.kernel.org>; Thu, 30 Mar 2023 08:09:36 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id bz27so18743843qtb.1
+        for <rcu@vger.kernel.org>; Thu, 30 Mar 2023 08:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1680188974;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=d9SSEYK9+rLxf8rsg8ZhJkHKzQe51MzIdNwTny7GCDE=;
+        b=m6UVd1hdrKFSzgvADYkcehDr1RbP+WDP6ki0+MRYiZePeMzYfH5bnL8iaZpk1yobQ9
+         Ij9sX5WPve0A+sxBY7mx8QBV6b9MwsVb7Ppm9uYSBSUpSAmJQ5/9d+Eftrlv2kmvdugk
+         hYP6HwviiUDgkgvncrcG1qSBEZVp5Gp72jLwg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680188974;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9SSEYK9+rLxf8rsg8ZhJkHKzQe51MzIdNwTny7GCDE=;
+        b=7uGhdrOgnr4jOBe9gQLwg2jUQKvEco1cmIltjpqoNsQxAtdoM4j3PrZnjJVtOwmjUt
+         HSQMF+LNIrI3qLBnTiViPQIUITn9sfsovhKCUlC8UMK01wThcFF81t7mPPeqvlj5qjcT
+         SdvzVPy8mR+/Pe+wE/i117nvKxxtFl4I4/MxlI7JCngfhV7y6mC3EkWxF5zXrsAeVcWx
+         ArvBUd/rdiJfGmyX2GOCAUF9UyLioKZrPhZYIjZUxXjv6djJ5nOfS+TB5vUFeDxC51sw
+         fJ60tP6ETe6EUhFWolrfC/DEAHqDwlkt27NNajMC/1iuK+8NhdBYGHFPhJntYG5zrbcc
+         rdPw==
+X-Gm-Message-State: AAQBX9dmsKMhjQV2gBvn4BgiP9rn9UKhgsa/rIKP5wX11l4N/5M07SUm
+        9lkAWM8raDH3YpQKc4+LJlvUshGCWjxf/bbYDuk=
+X-Google-Smtp-Source: AKy350bLyYVwa9hLM4jIL0bMyImUrBVP5LGI21RzzgdZezsUwraYXUHEaBqU1OwBv14FXe6M6ncxSg==
+X-Received: by 2002:a05:622a:190f:b0:3bf:b5fe:372d with SMTP id w15-20020a05622a190f00b003bfb5fe372dmr37528110qtc.61.1680188974011;
+        Thu, 30 Mar 2023 08:09:34 -0700 (PDT)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id d3-20020ac847c3000000b003e4f1b3ce43sm2124925qtr.50.2023.03.30.08.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Mar 2023 08:09:33 -0700 (PDT)
+Date:   Thu, 30 Mar 2023 15:09:33 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, RCU <rcu@vger.kernel.org>,
+        quic_neeraju@quicinc.com, Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+Message-ID: <20230330150933.GB2114899@google.com>
+References: <ca153af5-bd66-4d48-afa5-ace3a13aec3c@paulmck-laptop>
+ <FC49F388-0480-4687-8DD3-94049FCBC92B@joelfernandes.org>
+ <2cd8f407-2b77-48b1-9f17-9aa8e4ce9c64@paulmck-laptop>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b73d077e-cc19-4fea-5c12-08db312ff8b1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Mar 2023 15:03:50.8269
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tlza55QJg9y72RifoUtqi4q2hpN8WiNis6s3ry80NaQDng8nJEK2xbtAd2Ro1WEVZmWQWYlUS5/HvFPnG0aZzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7511
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2cd8f407-2b77-48b1-9f17-9aa8e4ce9c64@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> >Further shrinking the srcu_struct structure is eased by requiring
-> >that in-module srcu_struct structures rely more heavily on static
-> >initialization.  In particular, this preserves the property that
-> >a module-load-time srcu_struct initialization can fail only due
-> >to memory-allocation failure of the per-CPU srcu_data structures.
-> >It might also slightly improve robustness by keeping the number of memor=
-y
-> >allocations that must succeed down percpu_alloc() call.
-> >
-> >This is in preparation for splitting an srcu_usage structure out
-> >of the srcu_struct structure.
-> >
-> >[ paulmck: Fold in qiang1.zhang@intel.com feedback. ]
-> >
-> >Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >Cc: Christoph Hellwig <hch@lst.de>
-> >---
-> > include/linux/srcutree.h | 19 ++++++++++++++-----
-> > kernel/rcu/srcutree.c    | 19 +++++++++++++------
-> > 2 files changed, 27 insertions(+), 11 deletions(-)
-> >
-> >diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> >index ac8af12f93b3..428480152375 100644
-> >--- a/include/linux/srcutree.h
-> >+++ b/include/linux/srcutree.h
-> >@@ -121,15 +121,24 @@ struct srcu_struct {
-> > #define SRCU_STATE_SCAN1	1
-> > #define SRCU_STATE_SCAN2	2
-> >=20
-> >-#define __SRCU_STRUCT_INIT(name, pcpu_name)							\
-> >-{												\
-> >-	.sda =3D &pcpu_name,									\
-> >+#define __SRCU_STRUCT_INIT_COMMON(name)								\
-> > 	.lock =3D __SPIN_LOCK_UNLOCKED(name.lock),						\
-> > 	.srcu_gp_seq_needed =3D -1UL,								\
-> > 	.work =3D __DELAYED_WORK_INITIALIZER(name.work, NULL, 0),					\
-> >-	__SRCU_DEP_MAP_INIT(name)								\
-> >+	__SRCU_DEP_MAP_INIT(name)
-> >+
-> >+#define __SRCU_STRUCT_INIT_MODULE(name)								\
-> >+{												\
-> >+	__SRCU_STRUCT_INIT_COMMON(name)								\
-> > }
-> >=20
-> >+#define __SRCU_STRUCT_INIT(name, pcpu_name)							\
-> >+{												\
-> >+	.sda =3D &pcpu_name,									\
-> >+	__SRCU_STRUCT_INIT_COMMON(name)								\
-> >+}
-> >+
-> >+
-> > /*
-> >  * Define and initialize a srcu struct at build time.
-> >  * Do -not- call init_srcu_struct() nor cleanup_srcu_struct() on it.
-> >@@ -151,7 +160,7 @@ struct srcu_struct {
-> >  */
-> > #ifdef MODULE
-> > # define __DEFINE_SRCU(name, is_static)								\
-> >-	is_static struct srcu_struct name;							\
-> >+	is_static struct srcu_struct name =3D __SRCU_STRUCT_INIT_MODULE(name);=
-			\
-> > 	extern struct srcu_struct * const __srcu_struct_##name;					\
-> > 	struct srcu_struct * const __srcu_struct_##name						\
-> > 		__section("___srcu_struct_ptrs") =3D &name
-> >diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> >index cd46fe063e50..7a6d9452a5d0 100644
-> >--- a/kernel/rcu/srcutree.c
-> >+++ b/kernel/rcu/srcutree.c
-> >@@ -1895,13 +1895,14 @@ void __init srcu_init(void)
-> > static int srcu_module_coming(struct module *mod)
-> > {
-> > 	int i;
-> >+	struct srcu_struct *ssp;
-> > 	struct srcu_struct **sspp =3D mod->srcu_struct_ptrs;
-> >-	int ret;
-> >=20
-> > 	for (i =3D 0; i < mod->num_srcu_structs; i++) {
-> >-		ret =3D init_srcu_struct(*(sspp++));
-> >-		if (WARN_ON_ONCE(ret))
-> >-			return ret;
-> >+		ssp =3D *(sspp++);
-> >+		ssp->sda =3D alloc_percpu(struct srcu_data);
-> >+		if (WARN_ON_ONCE(!ssp->sda))
-> >+			return -ENOMEM;
-> > 	}
-> > 	return 0;
-> > }
-> >@@ -1910,10 +1911,16 @@ static int srcu_module_coming(struct module *mod=
-)
-> > static void srcu_module_going(struct module *mod)
-> > {
-> > 	int i;
-> >+	struct srcu_struct *ssp;
-> > 	struct srcu_struct **sspp =3D mod->srcu_struct_ptrs;
-> >=20
-> >-	for (i =3D 0; i < mod->num_srcu_structs; i++)
-> >-		cleanup_srcu_struct(*(sspp++));
-> >+	for (i =3D 0; i < mod->num_srcu_structs; i++) {
-> >+		ssp =3D *(sspp++);
-> >+		if (!rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_gp_seq_neede=
-d)) &&
-> >+		    !WARN_ON_ONCE(!ssp->srcu_sup->sda_is_static))
-> >+				cleanup_srcu_struct(ssp);
-> >+		free_percpu(ssp->sda);
->=20
->=20
-> Hi Paul
->=20
-> About 037b80b8865fb ("srcu: Check for readers at module-exit time ")
->=20
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1911,7 +1911,8 @@ static void srcu_module_going(struct module *mod)
->                 if (!rcu_seq_state(smp_load_acquire(&ssp->srcu_sup->srcu_=
-gp_seq_needed)) &&
->                     !WARN_ON_ONCE(!ssp->srcu_sup->sda_is_static))
->                         cleanup_srcu_struct(ssp);
+On Tue, Mar 28, 2023 at 08:26:13AM -0700, Paul E. McKenney wrote:
+> On Mon, Mar 27, 2023 at 10:29:31PM -0400, Joel Fernandes wrote:
+> > Hello,
+> > 
+> > > On Mar 27, 2023, at 9:06 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > 
+> > > ﻿On Mon, Mar 27, 2023 at 11:21:23AM +0000, Zhang, Qiang1 wrote:
+> > >>>> From: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > >>>> Sent: Tuesday, March 21, 2023 6:28 PM
+> > >>>> [...]
+> > >>>> Subject: [PATCH 1/1] Reduce synchronize_rcu() waiting time
+> > >>>> 
+> > >>>> A call to a synchronize_rcu() can be expensive from time point of view.
+> > >>>> Different workloads can be affected by this especially the ones which use this
+> > >>>> API in its time critical sections.
+> > >>>> 
+> > >>> 
+> > >>> This is interesting and meaningful research. ;-)
+> > >>> 
+> > >>>> For example in case of NOCB scenario the wakeme_after_rcu() callback
+> > >>>> invocation depends on where in a nocb-list it is located. Below is an example
+> > >>>> when it was the last out of ~3600 callbacks:
+> > >>> 
+> > >> 
+> > >> 
+> > >> 
+> > >> Can it be implemented separately as follows?  it seems that the code is simpler
+> > >> (only personal opinion)  😊.
+> > >> 
+> > >> But I didn't test whether this reduce synchronize_rcu() waiting time
+> > >> 
+> > >> +static void rcu_poll_wait_gp(struct rcu_tasks *rtp)
+> > >> +{
+> > >> +       unsigned long gp_snap;
+> > >> +
+> > >> +       gp_snap = start_poll_synchronize_rcu();
+> > >> +       while (!poll_state_synchronize_rcu(gp_snap))
+> > >> +               schedule_timeout_idle(1);
+> > > 
+> > > I could be wrong, but my guess is that the guys working with
+> > > battery-powered devices are not going to be very happy with this loop.
+> > > 
+> > > All those wakeups by all tasks waiting for a grace period end up
+> > > consuming a surprisingly large amount of energy.
+> > 
+> > Is that really the common case? On the general topic of wake-ups:
+> > Most of the time there should be only one
+> > task waiting synchronously on a GP to end. If that is
+> > true, then it feels like waking
+> > up nocb Kthreads which indirectly wake other threads is doing more work than usual?
+> 
+> A good question, and the number of outstanding synchronize_rcu()
+> calls will of course be limited by the number of tasks in the system.
+> But I myself have raised the ire of battery-powered embedded folks with
+> a rather small number of wakeups, so...
+
+But unless I am missing something, even if there is single synchronize_rcu(),
+you have a flurry of potential wakeups right now, instead of the bare minimum
+I think. I have not measured how many wake ups, but I'd love to when I get
+time. Maybe Vlad has some numbers.
+
+> And on larger systems there can be a tradeoff between contention on
+> the one hand and number of wakeups on the other.
+> 
+> The original nocb implementation in fact had the grace-period kthead
+> waking up all of what are now called rcuoc kthreads.  The indirect scheme
+> reduced the total number of wakeups by up to 50% and also reduced the
+> CPU consumption of the grace-period kthread, which otherwise would have
+> become a bottleneck on large systems.
+
+Thanks for the background.
+
+> And also, a scheme that directly wakes tasks waiting in synchronize_rcu()
+> might well use the same ->nocb_gp_wq[] waitqueues that are used by the
+> rcuog kthreads, if that is what you were getting at.
+
+Yes that's what I was getting at. I thought Vlad was going for doing direct
+wake ups from the main RCU GP thread that orchestates RCU grace period
+cycles.
+
+> > I am curious to measure how much does Vlad patch reduce wakeups in the common case.
+> 
+> Sounds like a good thing to measure!
+
+Ok. At the moment I am preparing 2 talks I am giving at OSPM for real-time and
+timers. Plus preparing the PR, so I'm fully booked. :(  [and the LWN article..].
+> 
+> > I was also wondering how Vlad patch effects RCU-barrier ordering. I guess
+> > we want the wake up to happen in the order of
+> > other callbacks also waiting.
+> 
+> OK, I will bite.  Why would rcu_barrier() need to care about the
+> synchronize_rcu() invocations if they no longer used call_rcu()?
+
+Hm, I was just going for the fact that it is a behavioral change. Not
+illuding that it would certainly cause an issue. As we know, Linux kernel
+developers have interesting ways of using RCU APIs. :-)
+
+But yes, it may not be an issue considering expedited synchronize_rcu() also
+has such behavior anyway, if I'm not mistaken.
+
+> > One last note, most battery powered systems are perhaps already using expedited RCU ;-)
+> 
+> Good point.  And that does raise the question of exactly what workloads
+> and systems want faster wakeups from synchronize_rcu() and cannot get
+> this effect from expedited grace periods.
+
+Maybe the kind of workloads that don't need GP completion very quickly, but
+just want to reduce wakeups. The wakeups do have a cost, the scheduler can
+wake up several idle CPUs to "spread the awakened load" and cause wastage
+power. And also contend on locks during the wake up.
+
+thanks,
+
+ - Joel
 
 
-The srcu_sup->sda_is_static is true, in cleanup_srcu_struct(), the ssp->sda=
- can not be freed.
-
-
-> -               free_percpu(ssp->sda);
-> +               else if (!WARN_ON(srcu_readers_active(ssp)))
-> +                       free_percpu(ssp->sda);
->=20
-> Should the else statement be removed?  like this:
->=20
-> if (!WARN_ON(srcu_readers_active(ssp)))
-> 	free_percpu(ssp->sda);
->
->Mightn't that cause us to double-free ssp->sda?  Once in free_percpu(),
->and before that in cleanup_srcu_struct()?
-
-Thanks
-Zqiang
-
->
->							Thanx, Paul
->
-> Thanks
-> Zqiang
->=20
->=20
-> >+	}
-> > }
-> >=20
-> > /* Handle one module, either coming or going. */
-> >--=20
-> >2.40.0.rc2
-> >
+> >  - Joel 
+> > 
+> > > 
+> > >                            Thanx, Paul
+> > > 
+> > >> +}
+> > >> +
+> > >> +void call_rcu_poll(struct rcu_head *rhp, rcu_callback_t func);
+> > >> +DEFINE_RCU_TASKS(rcu_poll, rcu_poll_wait_gp, call_rcu_poll,
+> > >> +                 "RCU Poll");
+> > >> +void call_rcu_poll(struct rcu_head *rhp, rcu_callback_t func)
+> > >> +{
+> > >> +       call_rcu_tasks_generic(rhp, func, &rcu_poll);
+> > >> +}
+> > >> +EXPORT_SYMBOL_GPL(call_rcu_poll);
+> > >> +
+> > >> +void synchronize_rcu_poll(void)
+> > >> +{
+> > >> +       synchronize_rcu_tasks_generic(&rcu_poll);
+> > >> +}
+> > >> +EXPORT_SYMBOL_GPL(synchronize_rcu_poll);
+> > >> +
+> > >> +static int __init rcu_spawn_poll_kthread(void)
+> > >> +{
+> > >> +       cblist_init_generic(&rcu_poll);
+> > >> +       rcu_poll.gp_sleep = HZ / 10;
+> > >> +       rcu_spawn_tasks_kthread_generic(&rcu_poll);
+> > >> +       return 0;
+> > >> +}
+> > >> 
+> > >> Thanks
+> > >> Zqiang
+> > >> 
+> > >> 
+> > >>>> 
+> > >>>> <snip>
+> > >>>>  <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt
+> > >>>> CBs=3613 bl=28
+> > >>>> ...
+> > >>>>  <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
+> > >>>>  <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt
+> > >>>> rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
+> > >>>>  <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-
+> > >>>> invoked=3612 idle=....
+> > >>>> <snip>
+> > >>>> 
+> > >>> 
+> > >>> Did the results above tell us that CBs-invoked=3612 during the time 21950.145313 ~ 21950.152625?
+> > >>> 
+> > >>> Yes.
+> > >>> 
+> > >>> 
+> > >>> If possible, may I know the steps, commands, and related parameters to produce the results above?
+> > >>> Thank you!
+> > >>> 
+> > >>> Build the kernel with CONFIG_RCU_TRACE configuration. Update your "set_event"
+> > >>> file with appropriate traces:
+> > >>> 
+> > >>> <snip>
+> > >>> XQ-DQ54:/sys/kernel/tracing # echo rcu:rcu_batch_start rcu:rcu_batch_end rcu:rcu_invoke_callback > set_event
+> > >>> 
+> > >>> XQ-DQ54:/sys/kernel/tracing # cat set_event
+> > >>> rcu:rcu_batch_start
+> > >>> rcu:rcu_invoke_callback
+> > >>> rcu:rcu_batch_end
+> > >>> XQ-DQ54:/sys/kernel/tracing #
+> > >>> <snip>
+> > >>> 
+> > >>> Collect traces as much as you want: XQ-DQ54:/sys/kernel/tracing # echo 1 > tracing_on; sleep 10; echo 0 > tracing_on
+> > >>> Next problem is how to parse it. Of course you will not be able to parse
+> > >>> megabytes of traces. For that purpose i use a special C trace parser.
+> > >>> If you need an example please let me know i can show here.
+> > >>> 
+> > >>> --
+> > >>> Uladzislau Rezki
