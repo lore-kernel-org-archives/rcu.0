@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC2CC761AF
-	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5FE8C7619A
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 22:48:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbjC3Wsw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 30 Mar 2023 18:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
+        id S231271AbjC3Wsy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 30 Mar 2023 18:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjC3WsB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 30 Mar 2023 18:48:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B9611144;
-        Thu, 30 Mar 2023 15:47:51 -0700 (PDT)
+        with ESMTP id S231272AbjC3WsF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 30 Mar 2023 18:48:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEF61166F;
+        Thu, 30 Mar 2023 15:47:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDA0E621DE;
-        Thu, 30 Mar 2023 22:47:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B3ABC433B0;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D637621E6;
+        Thu, 30 Mar 2023 22:47:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29920C433B3;
         Thu, 30 Mar 2023 22:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1680216449;
-        bh=qPJUbLDwJoxuPvlXSd44/Cow3IQ05DhaplSKVjgn+ys=;
+        bh=QlHpKUFyFkPqa4/d+oFphqn7vcoF2BLXPAHJYhfOlxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FxJ1PThBMsE0pdh3ZjhAIlFPzhLY5Pf40/q8k9/9SEIov6bwNqZNeqGiIFUqgEMal
-         bUXheB5FTeuj9fiuuBYRxTN90nxayRrzQxwjvuHDg0qc9di0arbH212UV9GFyoHcj6
-         1yQmY5ILQ3BZp4motYghbSuNMpn/uB1h/gbVTnB/jUQsg3O7qTee+dh/ukaWp7QaEL
-         Fcc05qIgAtkt2tw/ughERM5dmtMyMgJhud/Y137n5UWtyOuQyRNVBAfEvxYcd3S6i/
-         48FhHtMcBAr/UliTEwtOxjgvR2iRrMF7ac1GI9y61hi/i6i8UZvPx9KMCVAUguwd1A
-         GsyE18DGzBbeQ==
+        b=tsEjXci/7rR60/j145O3c8SvRw/52MFO1g+tk2nNqZ2BxdAczWh/QnCaXq29eZNUt
+         8zJcE2qP080KGnnwLWebT4OXzQhUKeWucIjhHqZjcDGXOnVVqI4yfysOt6bQwIvgcJ
+         MHDE+XqP2nsClTKCXdS0rf1slDpdknEVsyVL912teyBPJAN2mBCY/1ofMCVi1M1uQN
+         rOP7r77SgZRFS2bml2I0bVCnmUaV89XgsxdMG+S5I7Cjg1dK3XiIZsXKIcBD0NFTNO
+         lq9uJx6HWTz3uQSdSWkWRqCRBK5gAgXGYR5h+NIQ2AwrDHskbTmUKszqXCwMmgWAsO
+         gsGIYywzdsBgQ==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2CDBD154048A; Thu, 30 Mar 2023 15:47:28 -0700 (PDT)
+        id 3AA19154048E; Thu, 30 Mar 2023 15:47:28 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Sachin Sant <sachinp@linux.ibm.com>,
         "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Subject: [PATCH rcu 14/20] srcu: Move srcu_barrier() fields from srcu_struct to srcu_usage
-Date:   Thu, 30 Mar 2023 15:47:20 -0700
-Message-Id: <20230330224726.662344-14-paulmck@kernel.org>
+Subject: [PATCH rcu 18/20] srcu: Fix long lines in cleanup_srcu_struct()
+Date:   Thu, 30 Mar 2023 15:47:24 -0700
+Message-Id: <20230330224726.662344-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.0.rc2
 In-Reply-To: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
 References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
@@ -52,142 +52,67 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit moves the ->srcu_barrier_seq, ->srcu_barrier_mutex,
-->srcu_barrier_completion, and ->srcu_barrier_cpu_cnt fields from the
-srcu_struct structure to the srcu_usage structure to reduce the size of
-the former in order to improve cache locality.
+This commit creates an srcu_usage pointer named "sup" as a shorter
+synonym for the "ssp->srcu_sup" that was bloating several lines of code.
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
+Cc: Christoph Hellwig <hch@lst.de>
 Tested-by: Sachin Sant <sachinp@linux.ibm.com>
 Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/srcutree.h | 14 +++++++-------
- kernel/rcu/srcutree.c    | 38 +++++++++++++++++++-------------------
- 2 files changed, 26 insertions(+), 26 deletions(-)
+ kernel/rcu/srcutree.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index d3534ecb806e..d544ec1c0c8e 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -77,6 +77,13 @@ struct srcu_usage {
- 	unsigned long srcu_n_lock_retries;	/* Contention events in current interval. */
- 	unsigned long srcu_n_exp_nodelay;	/* # expedited no-delays in current GP phase. */
- 	bool sda_is_static;			/* May ->sda be passed to free_percpu()? */
-+	unsigned long srcu_barrier_seq;		/* srcu_barrier seq #. */
-+	struct mutex srcu_barrier_mutex;	/* Serialize barrier ops. */
-+	struct completion srcu_barrier_completion;
-+						/* Awaken barrier rq at end. */
-+	atomic_t srcu_barrier_cpu_cnt;		/* # CPUs not yet posting a */
-+						/*  callback for the barrier */
-+						/*  operation. */
- };
- 
- /*
-@@ -85,13 +92,6 @@ struct srcu_usage {
- struct srcu_struct {
- 	unsigned int srcu_idx;			/* Current rdr array element. */
- 	struct srcu_data __percpu *sda;		/* Per-CPU srcu_data array. */
--	unsigned long srcu_barrier_seq;		/* srcu_barrier seq #. */
--	struct mutex srcu_barrier_mutex;	/* Serialize barrier ops. */
--	struct completion srcu_barrier_completion;
--						/* Awaken barrier rq at end. */
--	atomic_t srcu_barrier_cpu_cnt;		/* # CPUs not yet posting a */
--						/*  callback for the barrier */
--						/*  operation. */
- 	unsigned long reschedule_jiffies;
- 	unsigned long reschedule_count;
- 	struct delayed_work work;
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 20f2373f7e25..97d1fe9a160c 100644
+index 9699bcab7215..11a08201ca0a 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -248,9 +248,9 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	mutex_init(&ssp->srcu_sup->srcu_gp_mutex);
- 	ssp->srcu_idx = 0;
- 	ssp->srcu_sup->srcu_gp_seq = 0;
--	ssp->srcu_barrier_seq = 0;
--	mutex_init(&ssp->srcu_barrier_mutex);
--	atomic_set(&ssp->srcu_barrier_cpu_cnt, 0);
-+	ssp->srcu_sup->srcu_barrier_seq = 0;
-+	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
-+	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
- 	INIT_DELAYED_WORK(&ssp->work, process_srcu);
- 	ssp->srcu_sup->sda_is_static = is_static;
- 	if (!is_static)
-@@ -1496,8 +1496,8 @@ static void srcu_barrier_cb(struct rcu_head *rhp)
- 
- 	sdp = container_of(rhp, struct srcu_data, srcu_barrier_head);
- 	ssp = sdp->ssp;
--	if (atomic_dec_and_test(&ssp->srcu_barrier_cpu_cnt))
--		complete(&ssp->srcu_barrier_completion);
-+	if (atomic_dec_and_test(&ssp->srcu_sup->srcu_barrier_cpu_cnt))
-+		complete(&ssp->srcu_sup->srcu_barrier_completion);
- }
- 
- /*
-@@ -1511,13 +1511,13 @@ static void srcu_barrier_cb(struct rcu_head *rhp)
- static void srcu_barrier_one_cpu(struct srcu_struct *ssp, struct srcu_data *sdp)
- {
- 	spin_lock_irq_rcu_node(sdp);
--	atomic_inc(&ssp->srcu_barrier_cpu_cnt);
-+	atomic_inc(&ssp->srcu_sup->srcu_barrier_cpu_cnt);
- 	sdp->srcu_barrier_head.func = srcu_barrier_cb;
- 	debug_rcu_head_queue(&sdp->srcu_barrier_head);
- 	if (!rcu_segcblist_entrain(&sdp->srcu_cblist,
- 				   &sdp->srcu_barrier_head)) {
- 		debug_rcu_head_unqueue(&sdp->srcu_barrier_head);
--		atomic_dec(&ssp->srcu_barrier_cpu_cnt);
-+		atomic_dec(&ssp->srcu_sup->srcu_barrier_cpu_cnt);
- 	}
- 	spin_unlock_irq_rcu_node(sdp);
- }
-@@ -1530,20 +1530,20 @@ void srcu_barrier(struct srcu_struct *ssp)
+@@ -644,12 +644,13 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+ void cleanup_srcu_struct(struct srcu_struct *ssp)
  {
  	int cpu;
- 	int idx;
--	unsigned long s = rcu_seq_snap(&ssp->srcu_barrier_seq);
-+	unsigned long s = rcu_seq_snap(&ssp->srcu_sup->srcu_barrier_seq);
++	struct srcu_usage *sup = ssp->srcu_sup;
  
- 	check_init_srcu_struct(ssp);
--	mutex_lock(&ssp->srcu_barrier_mutex);
--	if (rcu_seq_done(&ssp->srcu_barrier_seq, s)) {
-+	mutex_lock(&ssp->srcu_sup->srcu_barrier_mutex);
-+	if (rcu_seq_done(&ssp->srcu_sup->srcu_barrier_seq, s)) {
- 		smp_mb(); /* Force ordering following return. */
--		mutex_unlock(&ssp->srcu_barrier_mutex);
-+		mutex_unlock(&ssp->srcu_sup->srcu_barrier_mutex);
- 		return; /* Someone else did our work for us. */
+ 	if (WARN_ON(!srcu_get_delay(ssp)))
+ 		return; /* Just leak it! */
+ 	if (WARN_ON(srcu_readers_active(ssp)))
+ 		return; /* Just leak it! */
+-	flush_delayed_work(&ssp->srcu_sup->work);
++	flush_delayed_work(&sup->work);
+ 	for_each_possible_cpu(cpu) {
+ 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+ 
+@@ -658,21 +659,21 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ 		if (WARN_ON(rcu_segcblist_n_cbs(&sdp->srcu_cblist)))
+ 			return; /* Forgot srcu_barrier(), so just leak it! */
  	}
--	rcu_seq_start(&ssp->srcu_barrier_seq);
--	init_completion(&ssp->srcu_barrier_completion);
-+	rcu_seq_start(&ssp->srcu_sup->srcu_barrier_seq);
-+	init_completion(&ssp->srcu_sup->srcu_barrier_completion);
- 
- 	/* Initial count prevents reaching zero until all CBs are posted. */
--	atomic_set(&ssp->srcu_barrier_cpu_cnt, 1);
-+	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 1);
- 
- 	idx = __srcu_read_lock_nmisafe(ssp);
- 	if (smp_load_acquire(&ssp->srcu_sup->srcu_size_state) < SRCU_SIZE_WAIT_BARRIER)
-@@ -1554,12 +1554,12 @@ void srcu_barrier(struct srcu_struct *ssp)
- 	__srcu_read_unlock_nmisafe(ssp, idx);
- 
- 	/* Remove the initial count, at which point reaching zero can happen. */
--	if (atomic_dec_and_test(&ssp->srcu_barrier_cpu_cnt))
--		complete(&ssp->srcu_barrier_completion);
--	wait_for_completion(&ssp->srcu_barrier_completion);
-+	if (atomic_dec_and_test(&ssp->srcu_sup->srcu_barrier_cpu_cnt))
-+		complete(&ssp->srcu_sup->srcu_barrier_completion);
-+	wait_for_completion(&ssp->srcu_sup->srcu_barrier_completion);
- 
--	rcu_seq_end(&ssp->srcu_barrier_seq);
--	mutex_unlock(&ssp->srcu_barrier_mutex);
-+	rcu_seq_end(&ssp->srcu_sup->srcu_barrier_seq);
-+	mutex_unlock(&ssp->srcu_sup->srcu_barrier_mutex);
+-	if (WARN_ON(rcu_seq_state(READ_ONCE(ssp->srcu_sup->srcu_gp_seq)) != SRCU_STATE_IDLE) ||
+-	    WARN_ON(rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq) != ssp->srcu_sup->srcu_gp_seq_needed) ||
++	if (WARN_ON(rcu_seq_state(READ_ONCE(sup->srcu_gp_seq)) != SRCU_STATE_IDLE) ||
++	    WARN_ON(rcu_seq_current(&sup->srcu_gp_seq) != sup->srcu_gp_seq_needed) ||
+ 	    WARN_ON(srcu_readers_active(ssp))) {
+ 		pr_info("%s: Active srcu_struct %p read state: %d gp state: %lu/%lu\n",
+-			__func__, ssp, rcu_seq_state(READ_ONCE(ssp->srcu_sup->srcu_gp_seq)),
+-			rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq), ssp->srcu_sup->srcu_gp_seq_needed);
++			__func__, ssp, rcu_seq_state(READ_ONCE(sup->srcu_gp_seq)),
++			rcu_seq_current(&sup->srcu_gp_seq), sup->srcu_gp_seq_needed);
+ 		return; /* Caller forgot to stop doing call_srcu()? */
+ 	}
+-	kfree(ssp->srcu_sup->node);
+-	ssp->srcu_sup->node = NULL;
+-	ssp->srcu_sup->srcu_size_state = SRCU_SIZE_SMALL;
+-	if (!ssp->srcu_sup->sda_is_static) {
++	kfree(sup->node);
++	sup->node = NULL;
++	sup->srcu_size_state = SRCU_SIZE_SMALL;
++	if (!sup->sda_is_static) {
+ 		free_percpu(ssp->sda);
+ 		ssp->sda = NULL;
+-		kfree(ssp->srcu_sup);
++		kfree(sup);
+ 		ssp->srcu_sup = NULL;
+ 	}
  }
- EXPORT_SYMBOL_GPL(srcu_barrier);
- 
 -- 
 2.40.0.rc2
 
