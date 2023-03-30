@@ -2,92 +2,76 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B29EC6FD18
-	for <rcu@archiver.kernel.org>; Wed, 29 Mar 2023 23:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B777C6FD18
+	for <rcu@archiver.kernel.org>; Thu, 30 Mar 2023 00:11:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjC2XNF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 29 Mar 2023 19:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
+        id S229500AbjC3ALa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 29 Mar 2023 20:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjC2XNB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 29 Mar 2023 19:13:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD8C5272;
-        Wed, 29 Mar 2023 16:12:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 826D161E83;
-        Wed, 29 Mar 2023 23:12:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC724C433D2;
-        Wed, 29 Mar 2023 23:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680131550;
-        bh=32FitxRKOssuC97chejLqod317YrSMh58RaYfXFLdv0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kYR4CQQ45Mnpf2V9SZpFQTMq//6AVkFTtaWDBjZwnGUK2PjlcyQ/uoJN01UdOwLsg
-         X1q3JXP6eZmEsOSFrcOZZNKseOZL7Y3luMl3WRyz40fTyNqQZovd/GjwFFJedn/MKy
-         Wavj+BPt7DP7u+/d03Oy8J3yjAApP1/UElFqGj50aoUbsWUuQ1ZRzTz4sSipZM/cAn
-         qB2OUlFr4XthIJWwoG1RB3uNsjH0S8bd3paQhWzNz28rL+N9gDNRyq0ocQR09sqBXF
-         HKcvvVMAxdbNXTuYLfKlvsoEOSnl+TP2h0oaaRojJMSXn3JyqrqLuuHXU3BoTXxZhx
-         BHc3tP1ERflFA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6105D154047D; Wed, 29 Mar 2023 16:12:30 -0700 (PDT)
-Date:   Wed, 29 Mar 2023 16:12:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 4/4] rcu/nocb: Make shrinker to iterate only NOCB CPUs
-Message-ID: <84fd8b61-b6db-4b8e-ac02-89e00b267e77@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230329160203.191380-1-frederic@kernel.org>
- <20230329160203.191380-5-frederic@kernel.org>
- <519aadf0-6acd-43c0-89cf-caab9e229a46@paulmck-laptop>
- <ZCSvKOJqhejuW09u@lothringen>
+        with ESMTP id S229694AbjC3AL2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 29 Mar 2023 20:11:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E396199;
+        Wed, 29 Mar 2023 17:11:00 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1680135057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=2uZm0m4ATE7oe+dpoxdgdmEUwhVm/L5sQVQOSDCKIJo=;
+        b=g4Tpi/ZrAmHrcA5ajf4WDofLgdb95sLtiYjqjxvAIYuvaKbY+sBhgl87kElpd03ipBWSmt
+        XKxg8hzzUvMlHCdB2sMNfRh7bmbeVZoYCbo3BBss3ZAUOA1uWJomxRYzmtuuW4o+dfC6V+
+        0COBes66oDvRlU2+JfhoO5IeFEWfunWn8QxTi+metDqEIrYmBRYG3DuvQmSdaQqBwQCf1r
+        tgFTULMKUiC2kertC3h5rKsQNLYE6xhP1Gi/bcSRULZy6dGa1jzZC4l24oHW9MsBSG7Bj9
+        j4e4MTU2VvyxLpJLaQyC6yG0i4T1VTCD6ITpSjeR87UjMZARAc+uMDLQDqMZbA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1680135057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=2uZm0m4ATE7oe+dpoxdgdmEUwhVm/L5sQVQOSDCKIJo=;
+        b=oo0ukT8mTCUGnajU2H+wPAxYb/9JOQhSs4vfLIb8MZcrr1khsxuBlxL/TFDxpPL618LFjI
+        WNcipSWMvlgXo/Aw==
+To:     Borislav Petkov <bp@alien8.de>,
+        Usama Arif <usama.arif@bytedance.com>
+Cc:     dwmw2@infradead.org, kim.phillips@amd.com, brgerst@gmail.com,
+        piotrgorski@cachyos.org, oleksandr@natalenko.name,
+        arjan@linux.intel.com, mingo@redhat.com,
+        dave.hansen@linux.intel.com, hpa@zytor.com, x86@kernel.org,
+        pbonzini@redhat.com, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        rcu@vger.kernel.org, mimoja@mimoja.de, hewenliang4@huawei.com,
+        thomas.lendacky@amd.com, seanjc@google.com, pmenzel@molgen.mpg.de,
+        fam.zheng@bytedance.com, punit.agrawal@bytedance.com,
+        simon.evans@bytedance.com, liangma@liangbit.com,
+        gpiccoli@igalia.com, David Woodhouse <dwmw@amazon.co.uk>,
+        Sabin Rapan <sabrapan@amazon.com>
+Subject: Re: [PATCH v17 8/8] x86/smpboot: Allow parallel bringup for SEV-ES
+In-Reply-To: <20230328200725.GHZCNI/dHoUMwhsfiC@fat_crate.local>
+Date:   Thu, 30 Mar 2023 02:10:56 +0200
+Message-ID: <871ql7t7xr.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZCSvKOJqhejuW09u@lothringen>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 11:35:36PM +0200, Frederic Weisbecker wrote:
-> On Wed, Mar 29, 2023 at 01:58:06PM -0700, Paul E. McKenney wrote:
-> > On Wed, Mar 29, 2023 at 06:02:03PM +0200, Frederic Weisbecker wrote:
-> > > Callbacks can only be queued as lazy on NOCB CPUs, therefore iterating
-> > > over the NOCB mask is enough for both counting and scanning. Just lock
-> > > the mostly uncontended barrier mutex on counting as well in order to
-> > > keep rcu_nocb_mask stable.
-> > > 
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > Looks plausible.  ;-)
-> > 
-> > What are you doing to test this?  For that matter, what should rcutorture
-> > be doing to test this?  My guess is that the current callback flooding in
-> > rcu_torture_fwd_prog_cr() should do the trick, but figured I should ask.
-> 
-> All I did was to trigger these shrinker callbacks through debugfs
-> (https://docs.kernel.org/admin-guide/mm/shrinker_debugfs.html)
-> 
-> But rcutorture isn't testing it because:
-> 
-> - No torture config has CONFIG_RCU_LAZY
-> - rcutorture doesn't do any lazy call_rcu() (always calls hurry for the
->   main RCU flavour).
-> 
-> And I suspect rcutorture isn't ready for accepting the lazy delay, that would
-> require some special treatment.
+On Tue, Mar 28 2023 at 22:07, Borislav Petkov wrote:
+>>  void cc_set_vendor(enum cc_vendor v);
+>> +enum cc_vendor cc_get_vendor(void);
+>>  void cc_set_mask(u64 mask);
+>>  
+>>  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+>
+> You don't need those hunks adding cc_set_vendor() anymore:
+>
+> https://git.kernel.org/tip/5ae57743f578725a5dadb6f31d7798ee55e6e967
 
-All fair points!
+That's not really true. The series is based on the x86/apic branch as
+the prerequites are in that brnach and that commit is in x86/sev.
 
-And yes, any non-lazy callback would delazify everything, so as it
-is currently constituted, it would not be testing very much of the
-lazy-callback state space.
+That's an x86 maintainer issue to sort out, really.
 
-							Thanx, Paul
+Thanks,
+
+        tglx
