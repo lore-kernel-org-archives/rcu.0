@@ -2,193 +2,108 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77AC2C76196
-	for <rcu@archiver.kernel.org>; Fri, 31 Mar 2023 15:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4446FC76196
+	for <rcu@archiver.kernel.org>; Fri, 31 Mar 2023 18:35:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjCaPCE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 31 Mar 2023 11:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        id S229561AbjCaSfk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 31 Mar 2023 14:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232489AbjCaPB6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 31 Mar 2023 11:01:58 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9F07687;
-        Fri, 31 Mar 2023 08:01:56 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id r11so90781953edd.5;
-        Fri, 31 Mar 2023 08:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680274915;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fiyDYoXm1nKLroTm/ush+45oj0adft7fwuaN8p1GJx4=;
-        b=eWB0/YNQT0RRiu1Gk2XvsBGAKbQO17UdKs71pDdyAFV8kQ2qX5lwPerzqALZe+Aaw0
-         dpLgUTj72M+Jdg7lRZgliHGnTjH+JQme1L1eHQBoae7iT6omb14J6mCw+I+Da9FwPHiy
-         JnSt7lLdLqrXXjqkbb322yR7yHEtpZVVs4/aloG5zBrV8XcbDu2R1rCO5bjlvoaDQ2Me
-         bCJNfpr8uIQI1gPNO9be/DDsfq41wf99d3sewUJbvyo0v8P2LTKwpup8zIoT2PiiWAUn
-         JE6PvvGh3YV3oNGwhvm0rN3gkO7/aTgR1VeQKgIVmtoTTC4YzBd+ySNfjlQpGK5t005M
-         9/ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680274915;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fiyDYoXm1nKLroTm/ush+45oj0adft7fwuaN8p1GJx4=;
-        b=48pvc7dSBSx3lNvN/nAX02uohCE17iAR34usaLBmImXhn3X2Zj1x9X+8o8Pz0EEz+P
-         fumvrnN6J+nK+khSrpgZ6n+t54rdiXAZw9muG8gQEoRvJ1wldHp3KzwukvIv4GjVJ+A1
-         PY+90UGQ5//LPv2Xd3BLJSH503lfmzjnqoK+ChJc/moRFmuSmanBcfyARXY1HTdYHYIw
-         RjeiqwG1yIfxL39lJ9dDj6nL+la/gA8MjuoD7r3ztMKhTSa/C3RWhJ9NzpC6mw62MoH2
-         Pmcnu2EI6x/VztP9aaUdzV4FDW2hZvIv/EHS6cJvU7yIq5tunDY7aistlTfmajmXKzYO
-         jYnA==
-X-Gm-Message-State: AAQBX9cPM9dgrqA/s+tXPThNY9pzuFM4Y0G3HiivxfZUaJsUwKmyrGIX
-        6ZJ2QkX5rp4/Gj0cjE+GpmvQheTuvG5d1Q==
-X-Google-Smtp-Source: AKy350bSD+E9a7/iTBOl5LY53jNV3FCXyArehSOs29woM9lkSSKLLhrmStucXPt6ejyhx2wk0t+FZQ==
-X-Received: by 2002:a17:906:ae82:b0:931:a164:8efa with SMTP id md2-20020a170906ae8200b00931a1648efamr27640353ejb.70.1680274914916;
-        Fri, 31 Mar 2023 08:01:54 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id xc2-20020a170907074200b00947a6d84fefsm851162ejb.75.2023.03.31.08.01.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 08:01:54 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 31 Mar 2023 17:01:52 +0200
-To:     Ziwei Dai <ziwei.dai@unisoc.com>
-Cc:     urezki@gmail.com, paulmck@kernel.org, frederic@kernel.org,
-        quic_neeraju@quicinc.com, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shuang.wang@unisoc.com, yifan.xin@unisoc.com, ke.wang@unisoc.com,
-        xuewen.yan@unisoc.com, zhiguo.niu@unisoc.com,
-        zhaoyang.huang@unisoc.com
-Subject: Re: [PATCH V2] rcu: Make sure new krcp free business is handled
- after the wanted rcu grace period.
-Message-ID: <ZCb14DWFDKyuuhyi@pc638.lan>
-References: <1680266529-28429-1-git-send-email-ziwei.dai@unisoc.com>
+        with ESMTP id S229529AbjCaSfj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 31 Mar 2023 14:35:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA931C1FD;
+        Fri, 31 Mar 2023 11:35:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CDA6262AED;
+        Fri, 31 Mar 2023 18:35:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D77DC433D2;
+        Fri, 31 Mar 2023 18:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680287738;
+        bh=79aOJ1giHYcfqq27B0ApvLldLxW67XdeeGemRyFtgUg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=fBJAAtHbweslyvxiUdUqMPJUntejV1ohdCqfFsfBtxy1XAVb70FD0hzsvLRz6/vCY
+         1UAdzEF/fIdR6vQBEeAOA8YQCZ0qjJrpqe2EV0ZHHuUlM9hkt8UJr4cnTHKsHGlML9
+         IDdFqN1yEE6upAouCP8d8tqzWPqgnYzWfmmXnpf+HB3arUxeAXiPfQSc2wmPJ31TpH
+         a3tYftweC+aGQeXJ5JEwa2PU6JtxNajYtDgzPcW8wCYGhRAPxLjyxYWyvVgFi1xKs8
+         kXcI/Uz/mksN43MOAH0kHeBvG9hxGcWXCeoHDVSAanMzqBhIVd4CTIDBMGoia6rYER
+         mhVq7Msdvdxwg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CA1121540476; Fri, 31 Mar 2023 11:35:37 -0700 (PDT)
+Date:   Fri, 31 Mar 2023 11:35:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, hch@lst.de,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH rcu 01/20] rcu-tasks: Fix warning for unused
+ tasks_rcu_exit_srcu
+Message-ID: <5e63ebc8-0292-457a-b0ce-c9a8ba4ef699@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
+ <20230330224726.662344-1-paulmck@kernel.org>
+ <ZCbK7hcVWFEFcPwN@lothringen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1680266529-28429-1-git-send-email-ziwei.dai@unisoc.com>
+In-Reply-To: <ZCbK7hcVWFEFcPwN@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 08:42:09PM +0800, Ziwei Dai wrote:
-> In kfree_rcu_monitor(), new free business at krcp is attached to any free
-> channel at krwp. kfree_rcu_monitor() is responsible to make sure new free
-> business is handled after the rcu grace period. But if there is any none-free
-> channel at krwp already, that means there is an on-going rcu work,
-> which will cause the kvfree_call_rcu()-triggered free business is done
-> before the wanted rcu grace period ends.
+On Fri, Mar 31, 2023 at 01:58:38PM +0200, Frederic Weisbecker wrote:
+> On Thu, Mar 30, 2023 at 03:47:07PM -0700, Paul E. McKenney wrote:
+> > The tasks_rcu_exit_srcu variable is used only by kernels built
+> > with CONFIG_TASKS_RCU=y, but is defined for all kernesl with
+> > CONFIG_TASKS_RCU_GENERIC=y.  Therefore, in kernels built with
+> > CONFIG_TASKS_RCU_GENERIC=y but CONFIG_TASKS_RCU=n, this gives
+> > a "defined but not used" warning.
+> > 
+> > This commit therefore moves this variable under CONFIG_TASKS_RCU.
+> > 
+> > Link: https://lore.kernel.org/oe-kbuild-all/202303191536.XzMSyzTl-lkp@intel.com/
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/tasks.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index bfb5e1549f2b..185358c2f08d 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -136,8 +136,10 @@ static struct rcu_tasks rt_name =							\
+> >  	.kname = #rt_name,								\
+> >  }
+> >  
+> > +#ifdef CONFIG_TASKS_RCU
+> >  /* Track exiting tasks in order to allow them to be waited for. */
+> >  DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
+> > +#endif
 > 
-> This commit ignore krwp which has non-free channel at kfree_rcu_monitor(),
-> to fix the issue that kvfree_call_rcu() loses effectiveness.
-> 
-> Below is the css_set obj "from_cset" use-after-free case caused by
-> kvfree_call_rcu() losing effectiveness.
-> CPU 0 calls rcu_read_lock(), then use "from_cset", then hard irq comes,
-> the task is schedule out.
-> CPU 1 calls kfree_rcu(cset, rcu_head), willing to free "from_cset" after new gp.
-> But "from_cset" is freed right after current gp end. "from_cset" is reallocated.
-> CPU 0 's task arrives back, references "from_cset"'s member, which causes crash.
-> 
-> CPU 0					CPU 1
-> count_memcg_event_mm()
-> |rcu_read_lock()  <---
-> |mem_cgroup_from_task()
->  |// css_set_ptr is the "from_cset" mentioned on CPU 1
->  |css_set_ptr = rcu_dereference((task)->cgroups)
->  |// Hard irq comes, current task is scheduled out.
-> 
-> 					cgroup_attach_task()
-> 					|cgroup_migrate()
-> 					|cgroup_migrate_execute()
-> 					|css_set_move_task(task, from_cset, to_cset, true)
-> 					|cgroup_move_task(task, to_cset)
-> 					|rcu_assign_pointer(.., to_cset)
-> 					|...
-> 					|cgroup_migrate_finish()
-> 					|put_css_set_locked(from_cset)
-> 					|from_cset->refcount return 0
-> 					|kfree_rcu(cset, rcu_head) // means to free from_cset after new gp
-> 					|add_ptr_to_bulk_krc_lock()
-> 					|schedule_delayed_work(&krcp->monitor_work, ..)
-> 
-> 					kfree_rcu_monitor()
-> 					|krcp->bulk_head[0]'s work attached to krwp->bulk_head_free[]
-> 					|queue_rcu_work(system_wq, &krwp->rcu_work)
-> 					|if rwork->rcu.work is not in WORK_STRUCT_PENDING_BIT state,
-> 					|call_rcu(&rwork->rcu, rcu_work_rcufn) <--- request a new gp
-> 
-> 					// There is a perious call_rcu(.., rcu_work_rcufn)
-> 					// gp end, rcu_work_rcufn() is called.
-> 					rcu_work_rcufn()
-> 					|__queue_work(.., rwork->wq, &rwork->work);
-> 
-> 					|kfree_rcu_work()
-> 					|krwp->bulk_head_free[0] bulk is freed before new gp end!!!
-> 					|The "from_cset" is freed before new gp end.
-> 
-> // the task is scheduled in after many ms.
->  |css_set_ptr->subsys[(subsys_id) <--- Caused kernel crash, because css_set_ptr is freed.
-> 
-> v2: Use helper function instead of inserted code block at kfree_rcu_monitor().
-> 
-> Fixes: c014efeef76a ("rcu: Add multiple in-flight batches of kfree_rcu() work")
-> Signed-off-by: Ziwei Dai <ziwei.dai@unisoc.com>
-> ---
->  kernel/rcu/tree.c | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 8e880c0..7b95ee9 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3024,6 +3024,18 @@ static void kfree_rcu_work(struct work_struct *work)
->  	return !!READ_ONCE(krcp->head);
->  }
->  
-> +static bool
-> +need_wait_for_krwp_work(struct kfree_rcu_cpu_work *krwp)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < FREE_N_CHANNELS; i++)
-> +		if (!list_empty(&krwp->bulk_head_free[i]))
-> +			return true;
-> +
-> +	return !!krwp->head_free;
-> +}
-> +
->  static int krc_count(struct kfree_rcu_cpu *krcp)
->  {
->  	int sum = atomic_read(&krcp->head_count);
-> @@ -3107,15 +3119,14 @@ static void kfree_rcu_monitor(struct work_struct *work)
->  	for (i = 0; i < KFREE_N_BATCHES; i++) {
->  		struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
->  
-> -		// Try to detach bulk_head or head and attach it over any
-> -		// available corresponding free channel. It can be that
-> -		// a previous RCU batch is in progress, it means that
-> -		// immediately to queue another one is not possible so
-> -		// in that case the monitor work is rearmed.
-> -		if ((!list_empty(&krcp->bulk_head[0]) && list_empty(&krwp->bulk_head_free[0])) ||
-> -			(!list_empty(&krcp->bulk_head[1]) && list_empty(&krwp->bulk_head_free[1])) ||
-> -				(READ_ONCE(krcp->head) && !krwp->head_free)) {
-> +		// Try to detach bulk_head or head and attach it, only when
-> +		// all channels are free.  Any channel is not free means at krwp
-> +		// there is on-going rcu work to handle krwp's free business.
-> +		if (need_wait_for_krwp_work(krwp))
-> +			continue;
->  
-> +		// kvfree_rcu_drain_ready() might handle this krcp, if so give up.
-> +		if (need_offload_krc(krcp)) {
->  			// Channel 1 corresponds to the SLAB-pointer bulk path.
->  			// Channel 2 corresponds to vmalloc-pointer bulk path.
->  			for (j = 0; j < FREE_N_CHANNELS; j++) {
-> -- 
-> 1.9.1
-> 
-It looks correct to me. I will test it over weekend.
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
---
-Uladzislau Rezki
+Thank you!  I will apply this on my next rebase.
+
+> BTW should  exit_tasks_rcu_start/stop() be defined as static inline stubs
+> whenever !CONFIG_TASKS_RCU ? Currently:
+> 
+> * if CONFIG_TASKS_RCU_GENERIC=n, the stubs are as usual (static inline)
+> 
+> * if CONFIG_TASKS_RCU_GENERIC=y && CONFIG_TASKS_RCU=n, then the stubs are
+>   defined as empty linked function (is the compiler smart enough to remove
+>   the empty call?)
+
+Good point!  They are currently defined as static inline only if there
+are no RCU Tasks flavors built into the kernel, so if there was (say)
+RCU Tasks Trace but no RCU Tasks, these functions would needlessly be
+actual calls to empty functions.
+
+I am not sure that there are any kernels built like this, and this is not
+on a fastpath, but I would welcome a patch that made this more precise.
+Testing will require a few kernel builds, though.  ;-)
+
+							Thanx, Paul
