@@ -2,186 +2,197 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC179C761A6
-	for <rcu@archiver.kernel.org>; Fri, 31 Mar 2023 18:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B15AC76196
+	for <rcu@archiver.kernel.org>; Mon,  3 Apr 2023 07:28:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbjCaSjZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 31 Mar 2023 14:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
+        id S229945AbjDCH2V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Apr 2023 03:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbjCaSjS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 31 Mar 2023 14:39:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D7B20C12;
-        Fri, 31 Mar 2023 11:39:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 50EE962B10;
-        Fri, 31 Mar 2023 18:39:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B02A2C4339E;
-        Fri, 31 Mar 2023 18:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680287956;
-        bh=acVPnBMJt0hUCMkiZhSY7H0emae9RIGRERfPiV5sZ+0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FMXD1DHWft8HrouqOCBFSlxsCMSfkcTY6f2OslWcu6rkAP3bTxvnq9gLLI61+Q0YY
-         ex7XZiEnNRDEOPcHgJm11EdihBJKAlLIGwDDzxhJflK7eHZR9oFFvd8qoWvfQ8EONa
-         qHj+sYf5LZnZa/O7OsmHwfp6hT+IJlpZSKbyDiSGG9HtCqOALAccdatVp2tIV9hlK1
-         rQJS4N04mWRUPTWmrjVNYbzHJ0q/FJjOjmEv4QL/hHxM3MhZR/5+S2qNAmYrcPbGey
-         yXepH0C8C2PuKdUtjPvIczSpgZZd/dlvqdCKozDH8ALLgEtfLjbPYfrvWjRgXRzBqy
-         KBr4jR8v+FquA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 47ED41540476; Fri, 31 Mar 2023 11:39:16 -0700 (PDT)
-Date:   Fri, 31 Mar 2023 11:39:16 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, RCU <rcu@vger.kernel.org>,
-        quic_neeraju@quicinc.com, Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-Message-ID: <fcbeabc5-4951-4339-b056-91e9c3921074@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ca153af5-bd66-4d48-afa5-ace3a13aec3c@paulmck-laptop>
- <FC49F388-0480-4687-8DD3-94049FCBC92B@joelfernandes.org>
- <2cd8f407-2b77-48b1-9f17-9aa8e4ce9c64@paulmck-laptop>
- <20230330150933.GB2114899@google.com>
- <ZCWuE+b+QDApqgWG@pc636>
- <f529af35-557a-4a19-b14d-295e88aace9c@paulmck-laptop>
- <ZCXglNnT9EpeBf4t@pc636>
- <d4d42909-bf1b-45a8-8ef1-e4a1fc8cb742@paulmck-laptop>
- <ZCa8KB7Os9yJWz3P@pc636>
+        with ESMTP id S229498AbjDCH2T (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Apr 2023 03:28:19 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD50F7DB2;
+        Mon,  3 Apr 2023 00:28:17 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id x20so29264585ljq.9;
+        Mon, 03 Apr 2023 00:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680506896;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Z7+97WKxhaBZWqT2fRaCXRxBwes2Zi13jHx+iYSxGs=;
+        b=idYrn8EUCkqHNnmXyNPNxdyUlS3fmHWveQzAXhbvux8GTR433oKNEPexFQgDgpk2Yr
+         zm42j/zSJpxJGm3ZPNUrjfECw0nDjeZsFmrebhgMPPqp+yiVsjNn+30VeFZ9nUTJ1Wgt
+         AjoN7JO7PYn6SfFRZqV21tjjn7ILPM/65GZJc4kAaJn+QFOMFYEetq4AYNwSbdayxYfm
+         PooBUeKKy7Dqpf5F8wVBwooL7NjI85sU/UOUuxCsKn7azQA4iqd5lBu18tVxuCwelm9v
+         VE3/S6LTEZ6zlcQcUor5/Gh2v78ZgUinxSHjuYyzexnc+p8qHia3PoPWprFPzR0VFnjb
+         qRjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680506896;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3Z7+97WKxhaBZWqT2fRaCXRxBwes2Zi13jHx+iYSxGs=;
+        b=mIeZq2wOstleh0Ha6jsFXjtyKLudFGLXdp9k6fOKOGCxcYhmk5cpAY43TL32afWEQF
+         glq2Hu/XPc22OzMAOAI6yHRTVgM2Of5/9ucRi9MWfzdukA+JUX8vyY0heie9sP1Ag7cX
+         40ptA12BL9S5UhdIOAJET18NuVsunQygMl/3+SW4n4dlXi/l42uz/AkmikaLWraQTKvD
+         9QALOzo08d+TlnTxqxv8wfikpxBInT6Y4ExRBLa5c3LOy1BzMW9oPx1/7gHquwG/vuYr
+         sqcYIznLp5LWQpOyN8AG9DSxV/4C8rhfnTTwC1BC41BBUSjvFxdiWD6uySHf9FasI7Nt
+         +vpw==
+X-Gm-Message-State: AAQBX9dscQY63F8b9c+QQZlG8PCnF0SIfKFVl5ZC9NP84ZyFAHPQyXYl
+        xgWInAsmz6Tu5LWFcfqpnTM=
+X-Google-Smtp-Source: AKy350b3znMPqswTiznmCSs/gy7Ca3Q8RySjF6Zr0LPobzITHf3HUrk2A0RpVbG4tbi2jZzY/oZ59g==
+X-Received: by 2002:a2e:320a:0:b0:298:b03d:5715 with SMTP id y10-20020a2e320a000000b00298b03d5715mr10788120ljy.25.1680506895887;
+        Mon, 03 Apr 2023 00:28:15 -0700 (PDT)
+Received: from pc636 (host-90-233-209-177.mobileonline.telia.com. [90.233.209.177])
+        by smtp.gmail.com with ESMTPSA id y16-20020a2e7d10000000b00299fe6c262csm1610749ljc.77.2023.04.03.00.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Apr 2023 00:28:15 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 3 Apr 2023 09:28:12 +0200
+To:     Ziwei Dai <ziwei.dai@unisoc.com>
+Cc:     Ziwei Dai <ziwei.dai@unisoc.com>, paulmck@kernel.org,
+        frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shuang.wang@unisoc.com,
+        yifan.xin@unisoc.com, ke.wang@unisoc.com, xuewen.yan@unisoc.com,
+        zhiguo.niu@unisoc.com, zhaoyang.huang@unisoc.com
+Subject: Re: [PATCH V2] rcu: Make sure new krcp free business is handled
+ after the wanted rcu grace period.
+Message-ID: <ZCqADKQnMlJgGwM1@pc636>
+References: <1680266529-28429-1-git-send-email-ziwei.dai@unisoc.com>
+ <ZCb14DWFDKyuuhyi@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZCa8KB7Os9yJWz3P@pc636>
+In-Reply-To: <ZCb14DWFDKyuuhyi@pc638.lan>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 12:55:36PM +0200, Uladzislau Rezki wrote:
-> On Thu, Mar 30, 2023 at 02:16:36PM -0700, Paul E. McKenney wrote:
-> > On Thu, Mar 30, 2023 at 09:18:44PM +0200, Uladzislau Rezki wrote:
-> > > On Thu, Mar 30, 2023 at 11:58:41AM -0700, Paul E. McKenney wrote:
-> > > > On Thu, Mar 30, 2023 at 05:43:15PM +0200, Uladzislau Rezki wrote:
-> > > > > On Thu, Mar 30, 2023 at 03:09:33PM +0000, Joel Fernandes wrote:
-> > > > > > On Tue, Mar 28, 2023 at 08:26:13AM -0700, Paul E. McKenney wrote:
-> > > > > > > On Mon, Mar 27, 2023 at 10:29:31PM -0400, Joel Fernandes wrote:
-> > > > > > > > Hello,
-> > > > > > > > 
-> > > > > > > > > On Mar 27, 2023, at 9:06 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > > > > 
-> > > > > > > > > ﻿On Mon, Mar 27, 2023 at 11:21:23AM +0000, Zhang, Qiang1 wrote:
-> > > > > > > > >>>> From: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > > > > >>>> Sent: Tuesday, March 21, 2023 6:28 PM
-> > > > > > > > >>>> [...]
-> > > > > > > > >>>> Subject: [PATCH 1/1] Reduce synchronize_rcu() waiting time
-> > > > > > > > >>>> 
-> > > > > > > > >>>> A call to a synchronize_rcu() can be expensive from time point of view.
-> > > > > > > > >>>> Different workloads can be affected by this especially the ones which use this
-> > > > > > > > >>>> API in its time critical sections.
-> > > > > > > > >>>> 
-> > > > > > > > >>> 
-> > > > > > > > >>> This is interesting and meaningful research. ;-)
-> > > > > > > > >>> 
-> > > > > > > > >>>> For example in case of NOCB scenario the wakeme_after_rcu() callback
-> > > > > > > > >>>> invocation depends on where in a nocb-list it is located. Below is an example
-> > > > > > > > >>>> when it was the last out of ~3600 callbacks:
-> > > > > > > > >>> 
-> > > > > > > > >> 
-> > > > > > > > >> 
-> > > > > > > > >> 
-> > > > > > > > >> Can it be implemented separately as follows?  it seems that the code is simpler
-> > > > > > > > >> (only personal opinion)  😊.
-> > > > > > > > >> 
-> > > > > > > > >> But I didn't test whether this reduce synchronize_rcu() waiting time
-> > > > > > > > >> 
-> > > > > > > > >> +static void rcu_poll_wait_gp(struct rcu_tasks *rtp)
-> > > > > > > > >> +{
-> > > > > > > > >> +       unsigned long gp_snap;
-> > > > > > > > >> +
-> > > > > > > > >> +       gp_snap = start_poll_synchronize_rcu();
-> > > > > > > > >> +       while (!poll_state_synchronize_rcu(gp_snap))
-> > > > > > > > >> +               schedule_timeout_idle(1);
-> > > > > > > > > 
-> > > > > > > > > I could be wrong, but my guess is that the guys working with
-> > > > > > > > > battery-powered devices are not going to be very happy with this loop.
-> > > > > > > > > 
-> > > > > > > > > All those wakeups by all tasks waiting for a grace period end up
-> > > > > > > > > consuming a surprisingly large amount of energy.
-> > > > > > > > 
-> > > > > > > > Is that really the common case? On the general topic of wake-ups:
-> > > > > > > > Most of the time there should be only one
-> > > > > > > > task waiting synchronously on a GP to end. If that is
-> > > > > > > > true, then it feels like waking
-> > > > > > > > up nocb Kthreads which indirectly wake other threads is doing more work than usual?
-> > > > > > > 
-> > > > > > > A good question, and the number of outstanding synchronize_rcu()
-> > > > > > > calls will of course be limited by the number of tasks in the system.
-> > > > > > > But I myself have raised the ire of battery-powered embedded folks with
-> > > > > > > a rather small number of wakeups, so...
-> > > > > > 
-> > > > > > But unless I am missing something, even if there is single synchronize_rcu(),
-> > > > > > you have a flurry of potential wakeups right now, instead of the bare minimum
-> > > > > > I think. I have not measured how many wake ups, but I'd love to when I get
-> > > > > > time. Maybe Vlad has some numbers.
-> > > > > > 
-> > > > > I will measure and have a look at wake-ups. But, what we have for now is
-> > > > > if there are two callers of synchronize_rcu() on different CPUs, i guess
-> > > > > two nocb-kthreads have to handle it, thus two nocb-kthreads have to be
-> > > > > awaken to do the work. This patch needs only one wake-up to serve all
-> > > > > users.
-> > > > 
-> > > > One wakeup per synchronize_rcu(), right?
-> > > > 
-> > > The gp-kthread wake-ups only one work, in its turn a worker wake-ups all
-> > > registered users of synchronize_rcu() for which a gp was passed. How many
-> > > users of synchonize_rcu() awaken by one worker depends on how many were
-> > > registered before initiating a new GP by the gp-kthread.
-> > > 
-> > > > > Anyway, i will provide some data and analysis of it.
-> > > > 
-> > > > Looking forward to seeing it!
-> > > > 
-> > > Good. I will switch fully on it soon. I need to sort out some perf.
-> > > issues at work.
+On Fri, Mar 31, 2023 at 05:01:52PM +0200, Uladzislau Rezki wrote:
+> On Fri, Mar 31, 2023 at 08:42:09PM +0800, Ziwei Dai wrote:
+> > In kfree_rcu_monitor(), new free business at krcp is attached to any free
+> > channel at krwp. kfree_rcu_monitor() is responsible to make sure new free
+> > business is handled after the rcu grace period. But if there is any none-free
+> > channel at krwp already, that means there is an on-going rcu work,
+> > which will cause the kvfree_call_rcu()-triggered free business is done
+> > before the wanted rcu grace period ends.
 > > 
-> > And if you are looking for reduced wakeups instead of lower latency for
-> > synchronize_rcu(), I could see where the extra workqueue wakeup might
-> > be a problem for you.
+> > This commit ignore krwp which has non-free channel at kfree_rcu_monitor(),
+> > to fix the issue that kvfree_call_rcu() loses effectiveness.
 > > 
-> > Assuming that this is all default-off, you could keep a count of the
-> > number of required wakeups for each grace period (indexed as usual by
-> > the bottom few bits of the grace-period counter without the low-order
-> > state bits), and do the wakeups directly from the grace-period kthread
-> > if there are not all that many of them.
+> > Below is the css_set obj "from_cset" use-after-free case caused by
+> > kvfree_call_rcu() losing effectiveness.
+> > CPU 0 calls rcu_read_lock(), then use "from_cset", then hard irq comes,
+> > the task is schedule out.
+> > CPU 1 calls kfree_rcu(cset, rcu_head), willing to free "from_cset" after new gp.
+> > But "from_cset" is freed right after current gp end. "from_cset" is reallocated.
+> > CPU 0 's task arrives back, references "from_cset"'s member, which causes crash.
 > > 
-> At least if there is only one user of synchronize_rcu(), we can wake
-> it directly, i mean to invoke comlete() from the gp-kthread. I think
-> we should split such parts into different patches.
-
-Agreed, especially given that some experimentation will be required
-to work out which techniques actually help.
-
-> > Except that, given that workqueues try hard to make the handler be on the
-> > same CPU as the one that did the corresponding schedule_work() invocation,
-> > it is not clear that this particular wakeup is really costing you enough
-> > to notice.  (That CPU is not idle, after all.)  But there is nothing
-> > quite like measuring the actual energy consumption on real hardware!
+> > CPU 0					CPU 1
+> > count_memcg_event_mm()
+> > |rcu_read_lock()  <---
+> > |mem_cgroup_from_task()
+> >  |// css_set_ptr is the "from_cset" mentioned on CPU 1
+> >  |css_set_ptr = rcu_dereference((task)->cgroups)
+> >  |// Hard irq comes, current task is scheduled out.
 > > 
-> AFAICR the schedule_work() wants to use current CPU, indeed. For few
-> users it might be OK to comlete() them directly. Energy wise, +1 wake-up
-> of our worker to kick all users, if not "direct" option. I do not think
-> energy is a problem here.
+> > 					cgroup_attach_task()
+> > 					|cgroup_migrate()
+> > 					|cgroup_migrate_execute()
+> > 					|css_set_move_task(task, from_cset, to_cset, true)
+> > 					|cgroup_move_task(task, to_cset)
+> > 					|rcu_assign_pointer(.., to_cset)
+> > 					|...
+> > 					|cgroup_migrate_finish()
+> > 					|put_css_set_locked(from_cset)
+> > 					|from_cset->refcount return 0
+> > 					|kfree_rcu(cset, rcu_head) // means to free from_cset after new gp
+> > 					|add_ptr_to_bulk_krc_lock()
+> > 					|schedule_delayed_work(&krcp->monitor_work, ..)
+> > 
+> > 					kfree_rcu_monitor()
+> > 					|krcp->bulk_head[0]'s work attached to krwp->bulk_head_free[]
+> > 					|queue_rcu_work(system_wq, &krwp->rcu_work)
+> > 					|if rwork->rcu.work is not in WORK_STRUCT_PENDING_BIT state,
+> > 					|call_rcu(&rwork->rcu, rcu_work_rcufn) <--- request a new gp
+> > 
+> > 					// There is a perious call_rcu(.., rcu_work_rcufn)
+> > 					// gp end, rcu_work_rcufn() is called.
+> > 					rcu_work_rcufn()
+> > 					|__queue_work(.., rwork->wq, &rwork->work);
+> > 
+> > 					|kfree_rcu_work()
+> > 					|krwp->bulk_head_free[0] bulk is freed before new gp end!!!
+> > 					|The "from_cset" is freed before new gp end.
+> > 
+> > // the task is scheduled in after many ms.
+> >  |css_set_ptr->subsys[(subsys_id) <--- Caused kernel crash, because css_set_ptr is freed.
+> > 
+> > v2: Use helper function instead of inserted code block at kfree_rcu_monitor().
+> > 
+> > Fixes: c014efeef76a ("rcu: Add multiple in-flight batches of kfree_rcu() work")
+> > Signed-off-by: Ziwei Dai <ziwei.dai@unisoc.com>
+> > ---
+> >  kernel/rcu/tree.c | 27 +++++++++++++++++++--------
+> >  1 file changed, 19 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 8e880c0..7b95ee9 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3024,6 +3024,18 @@ static void kfree_rcu_work(struct work_struct *work)
+> >  	return !!READ_ONCE(krcp->head);
+> >  }
+> >  
+> > +static bool
+> > +need_wait_for_krwp_work(struct kfree_rcu_cpu_work *krwp)
+> > +{
+> > +	int i;
+> > +
+> > +	for (i = 0; i < FREE_N_CHANNELS; i++)
+> > +		if (!list_empty(&krwp->bulk_head_free[i]))
+> > +			return true;
+> > +
+> > +	return !!krwp->head_free;
+> > +}
+> > +
+> >  static int krc_count(struct kfree_rcu_cpu *krcp)
+> >  {
+> >  	int sum = atomic_read(&krcp->head_count);
+> > @@ -3107,15 +3119,14 @@ static void kfree_rcu_monitor(struct work_struct *work)
+> >  	for (i = 0; i < KFREE_N_BATCHES; i++) {
+> >  		struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
+> >  
+> > -		// Try to detach bulk_head or head and attach it over any
+> > -		// available corresponding free channel. It can be that
+> > -		// a previous RCU batch is in progress, it means that
+> > -		// immediately to queue another one is not possible so
+> > -		// in that case the monitor work is rearmed.
+> > -		if ((!list_empty(&krcp->bulk_head[0]) && list_empty(&krwp->bulk_head_free[0])) ||
+> > -			(!list_empty(&krcp->bulk_head[1]) && list_empty(&krwp->bulk_head_free[1])) ||
+> > -				(READ_ONCE(krcp->head) && !krwp->head_free)) {
+> > +		// Try to detach bulk_head or head and attach it, only when
+> > +		// all channels are free.  Any channel is not free means at krwp
+> > +		// there is on-going rcu work to handle krwp's free business.
+> > +		if (need_wait_for_krwp_work(krwp))
+> > +			continue;
+> >  
+> > +		// kvfree_rcu_drain_ready() might handle this krcp, if so give up.
+> > +		if (need_offload_krc(krcp)) {
+> >  			// Channel 1 corresponds to the SLAB-pointer bulk path.
+> >  			// Channel 2 corresponds to vmalloc-pointer bulk path.
+> >  			for (j = 0; j < FREE_N_CHANNELS; j++) {
+> > -- 
+> > 1.9.1
+> > 
+> It looks correct to me. I will test it over weekend.
+> 
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Agreed, estimating/modeling energy consumption is as far as I know still
-is more of an art than a science.  I did something like eight or nine
-rewrites of the old NO_HZ_FULL code learning that one.  ;-)
-
-							Thanx, Paul
+--
+Uladzislau Rezki
