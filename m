@@ -2,343 +2,212 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBC0AC76196
-	for <rcu@archiver.kernel.org>; Mon,  3 Apr 2023 22:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98EB7C76188
+	for <rcu@archiver.kernel.org>; Tue,  4 Apr 2023 00:35:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjDCW6b (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Apr 2023 18:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
+        id S229532AbjDDAfM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Apr 2023 20:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232916AbjDCW63 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Apr 2023 18:58:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14351FD2;
-        Mon,  3 Apr 2023 15:58:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F0C2628ED;
-        Mon,  3 Apr 2023 22:58:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7612AC433EF;
-        Mon,  3 Apr 2023 22:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680562705;
-        bh=B7ALZPzF4cEdXfCHfmx+utsMzdCDAqdR/dyO0wz/JtQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EXIfXwM65JjczsikX7DC1+QaY9VA1dW3sAPYb4XDC01hPQ5PltBdFkAGzYYkiPxDn
-         N4Gs28G3jd9yT7xxrrB/AP86JhPh+DDCCtPC4Ko6NSqKVn1sGKsjwWs4rMlQUkolMQ
-         EGzZo/Ak57np7SEKrIk6xwDHjY06oztLeDQFsWFNrlzxifmZfI08YWsm736XeEpVFB
-         Kla5RYKdfd/rqybOn8532IErqt/ZjrFmCB7Y+/15flUeC9SC+kUyOHpMdWbsdoorLG
-         tmTpABzJo/ODyPhm5aW/ngfu25lyR80luBp12i64JDqjM0ie2a7uZ5g9Zyhe23cZw2
-         aio+59oB9L/lw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E1B5415404B4; Mon,  3 Apr 2023 15:58:24 -0700 (PDT)
-Date:   Mon, 3 Apr 2023 15:58:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ziwei Dai <ziwei.dai@unisoc.com>
-Cc:     urezki@gmail.com, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shuang.wang@unisoc.com,
-        yifan.xin@unisoc.com, ke.wang@unisoc.com, xuewen.yan@unisoc.com,
-        zhiguo.niu@unisoc.com, zhaoyang.huang@unisoc.com
-Subject: Re: [PATCH V2] rcu: Make sure new krcp free business is handled
- after the wanted rcu grace period.
-Message-ID: <105d5e6e-d0b7-46c6-8f8e-574091e45eb1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <1680266529-28429-1-git-send-email-ziwei.dai@unisoc.com>
+        with ESMTP id S229861AbjDDAfL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Apr 2023 20:35:11 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5122A211B
+        for <rcu@vger.kernel.org>; Mon,  3 Apr 2023 17:35:10 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id on15so9201427qvb.7
+        for <rcu@vger.kernel.org>; Mon, 03 Apr 2023 17:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1680568509;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=89t77E0GCaocHYERVbpqEfvdDRudJVKzocTuC0O/3pU=;
+        b=RFZIAK3uyFOvXUL9RIthq6yhKCqdkBwTauoZDr6OKTcqmD6U0Js6mfP9tUb8tQDuIw
+         FaaQb0FLXbRDoarbYv6RiFZgjZ9irxQtxiJ8xLhhfLAomQk86+TiDJVoww85P10et/6O
+         KiA99eylkKLfcnkR8qgSVUp76lmqtxvyzRh4M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680568509;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=89t77E0GCaocHYERVbpqEfvdDRudJVKzocTuC0O/3pU=;
+        b=WSTTJCQ7ePQ0MQRrYmanxW/NAh27kzFk5/6FrUDJ/aPZDx/eYVCoCkLTzTxYtbYusY
+         t2SoKXwpjAd0/yb5N+v/KhqyM8wbyZQ2ahI0RSrQGFQn/vYhJR+G0TyDi2h/0p5Q5HKP
+         w3birmCQ9z/D7x6AOqL2Dy6UEnVN8tOu34pFGJGmhuq2LyUDHBaq5sEU6iGeGAxQW5Mx
+         LTcxp73vjmWi94mp85JBASEbWlh4CFDD9se2hEOisFbcLtVaO0ofhzgXi5kXlyRrIYMM
+         m9PZIKms9Yy0+p2b1POo3CWDWEeCOHlvHlmZ9CZnc5zIWyNv2H3s4uk5qqJs0rjtA8s2
+         pdGg==
+X-Gm-Message-State: AAQBX9eaGeWCpjBoSwjbiZ5OaOHfBMPQsu/wkOIiwd0sBF5mgFE+reO8
+        ZGiO97ByeP4FYsK52rs5nOM0432v6rUJBSwxt/Y=
+X-Google-Smtp-Source: AKy350YjxFimkOwi8SJYjrxfRPlO7r4I1CrglSM8TtHnUGdVa70gMbM/rGVdLWaT0dtfgRF4qYj7qg==
+X-Received: by 2002:a05:6214:d85:b0:5d5:fd1d:6ef5 with SMTP id e5-20020a0562140d8500b005d5fd1d6ef5mr945540qve.12.1680568509360;
+        Mon, 03 Apr 2023 17:35:09 -0700 (PDT)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id jh14-20020a0562141fce00b005dd8b9345b0sm3003150qvb.72.2023.04.03.17.35.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Apr 2023 17:35:08 -0700 (PDT)
+Date:   Tue, 4 Apr 2023 00:35:08 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, hch@lst.de,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Subject: Re: [PATCH rcu 04/20] srcu: Begin offloading srcu_struct fields to
+ srcu_update
+Message-ID: <20230404003508.GA254019@google.com>
+References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
+ <20230330224726.662344-4-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1680266529-28429-1-git-send-email-ziwei.dai@unisoc.com>
+In-Reply-To: <20230330224726.662344-4-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Mar 31, 2023 at 08:42:09PM +0800, Ziwei Dai wrote:
-> In kfree_rcu_monitor(), new free business at krcp is attached to any free
-> channel at krwp. kfree_rcu_monitor() is responsible to make sure new free
-> business is handled after the rcu grace period. But if there is any none-free
-> channel at krwp already, that means there is an on-going rcu work,
-> which will cause the kvfree_call_rcu()-triggered free business is done
-> before the wanted rcu grace period ends.
+On Thu, Mar 30, 2023 at 03:47:10PM -0700, Paul E. McKenney wrote:
+> The current srcu_struct structure is on the order of 200 bytes in size
+> (depending on architecture and .config), which is much better than the
+> old-style 26K bytes, but still all too inconvenient when one is trying
+> to achieve good cache locality on a fastpath involving SRCU readers.
 > 
-> This commit ignore krwp which has non-free channel at kfree_rcu_monitor(),
-> to fix the issue that kvfree_call_rcu() loses effectiveness.
+> However, only a few fields in srcu_struct are used by SRCU readers.
+> The remaining fields could be offloaded to a new srcu_update
+> structure, thus shrinking the srcu_struct structure down to a few
+> tens of bytes.  This commit begins this noble quest, a quest that is
+> complicated by open-coded initialization of the srcu_struct within the
+> srcu_notifier_head structure.  This complication is addressed by updating
+> the srcu_notifier_head structure's open coding, given that there does
+> not appear to be a straightforward way of abstracting that initialization.
 > 
-> Below is the css_set obj "from_cset" use-after-free case caused by
-> kvfree_call_rcu() losing effectiveness.
-> CPU 0 calls rcu_read_lock(), then use "from_cset", then hard irq comes,
-> the task is schedule out.
-> CPU 1 calls kfree_rcu(cset, rcu_head), willing to free "from_cset" after new gp.
-> But "from_cset" is freed right after current gp end. "from_cset" is reallocated.
-> CPU 0 's task arrives back, references "from_cset"'s member, which causes crash.
+> This commit moves only the ->node pointer to srcu_update.  Later commits
+> will move additional fields.
 > 
-> CPU 0					CPU 1
-> count_memcg_event_mm()
-> |rcu_read_lock()  <---
-> |mem_cgroup_from_task()
->  |// css_set_ptr is the "from_cset" mentioned on CPU 1
->  |css_set_ptr = rcu_dereference((task)->cgroups)
->  |// Hard irq comes, current task is scheduled out.
+> [ paulmck: Fold in qiang1.zhang@intel.com's memory-leak fix. ]
 > 
-> 					cgroup_attach_task()
-> 					|cgroup_migrate()
-> 					|cgroup_migrate_execute()
-> 					|css_set_move_task(task, from_cset, to_cset, true)
-> 					|cgroup_move_task(task, to_cset)
-> 					|rcu_assign_pointer(.., to_cset)
-> 					|...
-> 					|cgroup_migrate_finish()
-> 					|put_css_set_locked(from_cset)
-> 					|from_cset->refcount return 0
-> 					|kfree_rcu(cset, rcu_head) // means to free from_cset after new gp
-> 					|add_ptr_to_bulk_krc_lock()
-> 					|schedule_delayed_work(&krcp->monitor_work, ..)
-> 
-> 					kfree_rcu_monitor()
-> 					|krcp->bulk_head[0]'s work attached to krwp->bulk_head_free[]
-> 					|queue_rcu_work(system_wq, &krwp->rcu_work)
-> 					|if rwork->rcu.work is not in WORK_STRUCT_PENDING_BIT state,
-> 					|call_rcu(&rwork->rcu, rcu_work_rcufn) <--- request a new gp
-> 
-> 					// There is a perious call_rcu(.., rcu_work_rcufn)
-> 					// gp end, rcu_work_rcufn() is called.
-> 					rcu_work_rcufn()
-> 					|__queue_work(.., rwork->wq, &rwork->work);
-> 
-> 					|kfree_rcu_work()
-> 					|krwp->bulk_head_free[0] bulk is freed before new gp end!!!
-> 					|The "from_cset" is freed before new gp end.
-> 
-> // the task is scheduled in after many ms.
->  |css_set_ptr->subsys[(subsys_id) <--- Caused kernel crash, because css_set_ptr is freed.
-> 
-> v2: Use helper function instead of inserted code block at kfree_rcu_monitor().
-> 
-> Fixes: c014efeef76a ("rcu: Add multiple in-flight batches of kfree_rcu() work")
-> Signed-off-by: Ziwei Dai <ziwei.dai@unisoc.com>
+> Link: https://lore.kernel.org/all/20230320055751.4120251-1-qiang1.zhang@intel.com/
+> Suggested-by: Christoph Hellwig <hch@lst.de>
 
-Good catch, thank you!!!
-
-How difficult was this to trigger?  If it can be triggered easily,
-this of course needs to go into mainline sooner rather than later.
-
-Longer term, would it make sense to run the three channels through RCU
-separately, in order to avoid one channel refraining from starting a grace
-period just because some other channel has callbacks waiting for a grace
-period to complete?  One argument against might be energy efficiency, but
-perhaps the ->gp_snap field could be used to get the best of both worlds.
-
-Either way, this fixes only one bug of two.  The second bug is in the
-kfree_rcu() tests, which should have caught this bug.  Thoughts on a
-good fix for those tests?
-
-I have applied Uladzislau's and Mukesh's tags, and done the usual
-wordsmithing as shown at the end of this message.  Please let me know
-if I messed anything up.
-
-> ---
->  kernel/rcu/tree.c | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 8e880c0..7b95ee9 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3024,6 +3024,18 @@ static void kfree_rcu_work(struct work_struct *work)
->  	return !!READ_ONCE(krcp->head);
->  }
->  
-> +static bool
-> +need_wait_for_krwp_work(struct kfree_rcu_cpu_work *krwp)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < FREE_N_CHANNELS; i++)
-> +		if (!list_empty(&krwp->bulk_head_free[i]))
-> +			return true;
-> +
-> +	return !!krwp->head_free;
-
-This is fixed from v1, good!
-
-> +}
-> +
->  static int krc_count(struct kfree_rcu_cpu *krcp)
+[..]
+> @@ -236,8 +236,12 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+>   */
+>  static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
 >  {
->  	int sum = atomic_read(&krcp->head_count);
-> @@ -3107,15 +3119,14 @@ static void kfree_rcu_monitor(struct work_struct *work)
->  	for (i = 0; i < KFREE_N_BATCHES; i++) {
->  		struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
->  
-> -		// Try to detach bulk_head or head and attach it over any
-> -		// available corresponding free channel. It can be that
-> -		// a previous RCU batch is in progress, it means that
-> -		// immediately to queue another one is not possible so
-> -		// in that case the monitor work is rearmed.
-> -		if ((!list_empty(&krcp->bulk_head[0]) && list_empty(&krwp->bulk_head_free[0])) ||
-> -			(!list_empty(&krcp->bulk_head[1]) && list_empty(&krwp->bulk_head_free[1])) ||
-> -				(READ_ONCE(krcp->head) && !krwp->head_free)) {
-> +		// Try to detach bulk_head or head and attach it, only when
-> +		// all channels are free.  Any channel is not free means at krwp
-> +		// there is on-going rcu work to handle krwp's free business.
-> +		if (need_wait_for_krwp_work(krwp))
-> +			continue;
->  
-> +		// kvfree_rcu_drain_ready() might handle this krcp, if so give up.
-> +		if (need_offload_krc(krcp)) {
->  			// Channel 1 corresponds to the SLAB-pointer bulk path.
->  			// Channel 2 corresponds to vmalloc-pointer bulk path.
->  			for (j = 0; j < FREE_N_CHANNELS; j++) {
-> -- 
-> 1.9.1
+> +	if (!is_static)
+> +		ssp->srcu_sup = kzalloc(sizeof(*ssp->srcu_sup), GFP_KERNEL);
+> +	if (!ssp->srcu_sup)
+> +		return -ENOMEM;
+>  	ssp->srcu_size_state = SRCU_SIZE_SMALL;
+> -	ssp->node = NULL;
+> +	ssp->srcu_sup->node = NULL;
+>  	mutex_init(&ssp->srcu_cb_mutex);
+>  	mutex_init(&ssp->srcu_gp_mutex);
+>  	ssp->srcu_idx = 0;
+> @@ -249,8 +253,11 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  	ssp->sda_is_static = is_static;
+>  	if (!is_static)
+>  		ssp->sda = alloc_percpu(struct srcu_data);
+> -	if (!ssp->sda)
+> +	if (!ssp->sda) {
+> +		if (!is_static)
+> +			kfree(ssp->srcu_sup);
+>  		return -ENOMEM;
+> +	}
+>  	init_srcu_struct_data(ssp);
+>  	ssp->srcu_gp_seq_needed_exp = 0;
+>  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+> @@ -259,6 +266,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
 
-------------------------------------------------------------------------
+[1] Here there is an if (!init_srcu_struct_nodes(...)) that the diff does not show.
 
-commit e222f9a512539c3f4093a55d16624d9da614800b
-Author: Ziwei Dai <ziwei.dai@unisoc.com>
-Date:   Fri Mar 31 20:42:09 2023 +0800
+>  			if (!ssp->sda_is_static) {
+>  				free_percpu(ssp->sda);
+>  				ssp->sda = NULL;
+> +				kfree(ssp->srcu_sup);
+>  				return -ENOMEM;
+>  			}
+>  		} else {
 
-    rcu: Avoid freeing new kfree_rcu() memory after old grace period
-    
-    Memory passed to kvfree_rcu() that is to be freed is tracked by a
-    per-CPU kfree_rcu_cpu structure, which in turn contains pointers
-    to kvfree_rcu_bulk_data structures that contain pointers to memory
-    that has not yet been handed to RCU, along with an kfree_rcu_cpu_work
-    structure that tracks the memory that has already been handed to RCU.
-    These structures track three categories of memory: (1) Memory for
-    kfree(), (2) Memory for kvfree(), and (3) Memory for both that arrived
-    during an OOM episode.  The first two categories are tracked in a
-    cache-friendly manner involving a dynamically allocated page of pointers
-    (the aforementioned kvfree_rcu_bulk_data structures), while the third
-    uses a simple (but decidedly cache-unfriendly) linked list through the
-    rcu_head structures in each block of memory.
-    
-    On a given CPU, these three categories are handled as a unit, with that
-    CPU's kfree_rcu_cpu_work structure having one pointer for each of the
-    three categories.  Clearly, new memory for a given category cannot be
-    placed in the corresponding kfree_rcu_cpu_work structure until any old
-    memory has had its grace period elapse and thus has been removed.  And
-    the kfree_rcu_monitor() function does in fact check for this.
-    
-    Except that the kfree_rcu_monitor() function checks these pointers one
-    at a time.  This means that if the previous kfree_rcu() memory passed
-    to RCU had only category 1 and the current one has only category 2, the
-    kfree_rcu_monitor() function will send that current category-2 memory
-    along immediately.  This can result in memory being freed too soon,
-    that is, out from under unsuspecting RCU readers.
-    
-    To see this, consider the following sequence of events, in which:
-    
-    o       Task A on CPU 0 calls rcu_read_lock(), then uses "from_cset",
-            then is preempted.
-    
-    o       CPU 1 calls kfree_rcu(cset, rcu_head) in order to free "from_cset"
-            after a later grace period.  Except that "from_cset" is freed
-            right after the previous grace period ended, so that "from_cset"
-            is immediately freed.  Task A resumes and references "from_cset"'s
-            member, after which nothing good happens.
-    
-    In full detail:
-    
-    CPU 0                                   CPU 1
-    ----------------------                  ----------------------
-    count_memcg_event_mm()
-    |rcu_read_lock()  <---
-    |mem_cgroup_from_task()
-     |// css_set_ptr is the "from_cset" mentioned on CPU 1
-     |css_set_ptr = rcu_dereference((task)->cgroups)
-     |// Hard irq comes, current task is scheduled out.
-    
-                                            cgroup_attach_task()
-                                            |cgroup_migrate()
-                                            |cgroup_migrate_execute()
-                                            |css_set_move_task(task, from_cset, to_cset, true)
-                                            |cgroup_move_task(task, to_cset)
-                                            |rcu_assign_pointer(.., to_cset)
-                                            |...
-                                            |cgroup_migrate_finish()
-                                            |put_css_set_locked(from_cset)
-                                            |from_cset->refcount return 0
-                                            |kfree_rcu(cset, rcu_head) // free from_cset after new gp
-                                            |add_ptr_to_bulk_krc_lock()
-                                            |schedule_delayed_work(&krcp->monitor_work, ..)
-    
-                                            kfree_rcu_monitor()
-                                            |krcp->bulk_head[0]'s work attached to krwp->bulk_head_free[]
-                                            |queue_rcu_work(system_wq, &krwp->rcu_work)
-                                            |if rwork->rcu.work is not in WORK_STRUCT_PENDING_BIT state,
-                                            |call_rcu(&rwork->rcu, rcu_work_rcufn) <--- request new gp
-    
-                                            // There is a perious call_rcu(.., rcu_work_rcufn)
-                                            // gp end, rcu_work_rcufn() is called.
-                                            rcu_work_rcufn()
-                                            |__queue_work(.., rwork->wq, &rwork->work);
-    
-                                            |kfree_rcu_work()
-                                            |krwp->bulk_head_free[0] bulk is freed before new gp end!!!
-                                            |The "from_cset" is freed before new gp end.
-    
-    // the task resumes some time later.
-     |css_set_ptr->subsys[(subsys_id) <--- Caused kernel crash, because css_set_ptr is freed.
-    
-    This commit therefore causes kfree_rcu_monitor() to refrain from moving
-    kfree_rcu() memory to the kfree_rcu_cpu_work structure until the RCU
-    grace period has completed for all three categories.
-    
-    v2: Use helper function instead of inserted code block at kfree_rcu_monitor().
-    
-    Fixes: c014efeef76a ("rcu: Add multiple in-flight batches of kfree_rcu() work")
-    Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
-    Signed-off-by: Ziwei Dai <ziwei.dai@unisoc.com>
-    Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 859ee02f6614..e2dbea6cee4b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3051,6 +3051,18 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
- 	return !!READ_ONCE(krcp->head);
+Just a comment about the original code with reference to [1].
+
+Here if allocations in init_srcu_struct_nodes() fail, it will return false
+and execute the "if (!ssp->sda_is_is_static)" bit.
+
+So if the allocation in [1] fails, then if sda_is_static is true, we return
+-ENOMEM, however  if sda_is_static is false, we do the following:
+
+        ssp->srcu_sup->srcu_ssp = ssp;
+        smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
+        return 0;
+
+Is that really correct?
+
+In other words, if init_srcu_struct_nodes() returns false, then passing along
+the return value of init_srcu_struct_nodes() back to the caller of
+init_srcu_struct_fields() depends on whether is_static = true or false. That
+seems a bit wrong to me, init_srcu_struct_fields() should always return
+-ENOMEM  when init_srcu_struct_nodes() fails to allocate memory IMHO, whether
+is_static is true or not.
+
+Sorry if I missed something subtle, and if the code is correct to begin with.
+Also I feel the return paths could be made better to also fix the above issue
+I mentioned. How about the following diff on top of the series, would it
+work?
+
+Thanks!
+
+---8<-----------------------
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index a887cfc89894..1975d06986fa 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -255,29 +255,30 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 	ssp->srcu_sup->sda_is_static = is_static;
+ 	if (!is_static)
+ 		ssp->sda = alloc_percpu(struct srcu_data);
+-	if (!ssp->sda) {
+-		if (!is_static)
+-			kfree(ssp->srcu_sup);
+-		return -ENOMEM;
+-	}
++	if (!ssp->sda)
++		goto err_free_sup;
+ 	init_srcu_struct_data(ssp);
+ 	ssp->srcu_sup->srcu_gp_seq_needed_exp = 0;
+ 	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
+ 	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
+-		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC)) {
+-			if (!ssp->srcu_sup->sda_is_static) {
+-				free_percpu(ssp->sda);
+-				ssp->sda = NULL;
+-				kfree(ssp->srcu_sup);
+-				return -ENOMEM;
+-			}
+-		} else {
++		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
++			goto err_free_sda;
++		else
+ 			WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
+-		}
+ 	}
+ 	ssp->srcu_sup->srcu_ssp = ssp;
+ 	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
+ 	return 0;
++
++err_free_sda:
++	if (!is_static) {
++		free_percpu(ssp->sda);
++		ssp->sda = NULL;
++	}
++err_free_sup:
++	if (!is_static)
++		kfree(ssp->srcu_sup);
++	return -ENOMEM;
  }
  
-+static bool
-+need_wait_for_krwp_work(struct kfree_rcu_cpu_work *krwp)
-+{
-+	int i;
-+
-+	for (i = 0; i < FREE_N_CHANNELS; i++)
-+		if (!list_empty(&krwp->bulk_head_free[i]))
-+			return true;
-+
-+	return !!krwp->head_free;
-+}
-+
- static int krc_count(struct kfree_rcu_cpu *krcp)
- {
- 	int sum = atomic_read(&krcp->head_count);
-@@ -3134,15 +3146,14 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 	for (i = 0; i < KFREE_N_BATCHES; i++) {
- 		struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
- 
--		// Try to detach bulk_head or head and attach it over any
--		// available corresponding free channel. It can be that
--		// a previous RCU batch is in progress, it means that
--		// immediately to queue another one is not possible so
--		// in that case the monitor work is rearmed.
--		if ((!list_empty(&krcp->bulk_head[0]) && list_empty(&krwp->bulk_head_free[0])) ||
--			(!list_empty(&krcp->bulk_head[1]) && list_empty(&krwp->bulk_head_free[1])) ||
--				(READ_ONCE(krcp->head) && !krwp->head_free)) {
-+		// Try to detach bulk_head or head and attach it, only when
-+		// all channels are free.  Any channel is not free means at krwp
-+		// there is on-going rcu work to handle krwp's free business.
-+		if (need_wait_for_krwp_work(krwp))
-+			continue;
- 
-+		// kvfree_rcu_drain_ready() might handle this krcp, if so give up.
-+		if (need_offload_krc(krcp)) {
- 			// Channel 1 corresponds to the SLAB-pointer bulk path.
- 			// Channel 2 corresponds to vmalloc-pointer bulk path.
- 			for (j = 0; j < FREE_N_CHANNELS; j++) {
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
