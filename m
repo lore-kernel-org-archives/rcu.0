@@ -2,131 +2,76 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF586C6FD1D
-	for <rcu@archiver.kernel.org>; Tue,  4 Apr 2023 14:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55424C761A6
+	for <rcu@archiver.kernel.org>; Tue,  4 Apr 2023 17:02:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbjDDONk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Apr 2023 10:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
+        id S235393AbjDDRCI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Apr 2023 13:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235288AbjDDONe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Apr 2023 10:13:34 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5F959DD;
-        Tue,  4 Apr 2023 07:13:07 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id ek18so131233760edb.6;
-        Tue, 04 Apr 2023 07:13:07 -0700 (PDT)
+        with ESMTP id S233075AbjDDRCG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Apr 2023 13:02:06 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06889DF
+        for <rcu@vger.kernel.org>; Tue,  4 Apr 2023 10:02:02 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id n125so39465388ybg.7
+        for <rcu@vger.kernel.org>; Tue, 04 Apr 2023 10:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680617582;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VTf+eU3IRV+Sphtq82p4YOMBPIDqspmHlL+a/rS01rw=;
-        b=FUyIIu1ehoMVwlmnUlZfefaB0NBjwxUqAhqcpAUmL9k72pAMdvyK4R1ibdsXWyEuKK
-         emUcl/wUKJgQueLU1rUliinyFoegFy1HeG+3Wm6i9mMaXevjkA4s86HBjFjXA1XUa41k
-         CJFZ5+uOh7DSj6K+mtYmqUrBq8z7+sFYay1XPXbJPJ7aZWusZ470+O6M8wjLy+z2Tva4
-         Qz9k92Gg3btJ+rnJx/jfOMKldR2q02ciXv+DbTliGEx2eCOhHaOjQGsy2JIbnAGbVY6K
-         EYV2XeNULwnyOHGgzrwaluafD5zAlnR68hXrHbscHO4f7uMXe6LLCk0ypuTQ83M7kUyj
-         d5KA==
+        d=joelfernandes.org; s=google; t=1680627721;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EZxuHLFtNW6DOyg0Up2V+fzvewo/xPE26/VxJVS43KM=;
+        b=pgXOVRk9JdN65LKkNabkbTgzcBobSkNY05vjQSWL2ErDYSW2u6yUUWyhVR4+r2GJYt
+         Rf4AXFDHOXCQSthx35gkOeGIBo1tbYTlBSlk4MAF6EFssBpLhT+65wJ3UG2dgAv8tT2l
+         Uc6L3Z3flUUKu6E2pXFBh/K2Xsr7UnuH1oXJc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680617582;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20210112; t=1680627721;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VTf+eU3IRV+Sphtq82p4YOMBPIDqspmHlL+a/rS01rw=;
-        b=Gat9C9IgfCR+0TGbe+dIIY2nIjNokQrUbXyO4CIdwlO7NAX8sftfm78/vg61OgU0KF
-         2l5j8ZV8AYKem/WrqXZuG91O+NCzo41SOHzAaD+MHnReBYmmf8vtgSeT5zdtobGv6wne
-         MmVFaT1PFN+wbNoxnvhmRfsOeKKVwDWCgWcM0NNYJ01Uc9A1FVripZWKwZpLXnTsA9Uj
-         cZST+CG0gXymoe2t1p4wV9nkEhSZMB5OsvnbMptCjiKGH3uviYp82tPnxz3ESQk9xuww
-         McT7ZVDdwIbfHUoH/2v1+6StnGriy3fdnulVB799/YQdtgnZTJ6QDbAKZg6++OjJIcoN
-         j9vw==
-X-Gm-Message-State: AAQBX9diM1455oAojtLyZ4cVppGOjtXlLTm/1X7ldQx0dfCN/fEhNmtN
-        na+joojmnaLLy+vrzQ/EkSU=
-X-Google-Smtp-Source: AKy350YSifQSYTSIMHqFtvM00FEIN9VOV4WlNCC18l29StGoVjUcCw4hF/CD/QanT8LmzeSO4BzWKA==
-X-Received: by 2002:a17:906:1451:b0:931:8e8c:2db5 with SMTP id q17-20020a170906145100b009318e8c2db5mr2324856ejc.69.1680617582424;
-        Tue, 04 Apr 2023 07:13:02 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id um4-20020a170906cf8400b00928e0ea53e5sm5997607ejb.84.2023.04.04.07.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Apr 2023 07:13:02 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     RCU <rcu@vger.kernel.org>, quic_neeraju@quicinc.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 1/1] rcu/kvfree: Add debug check of GP ready for ptrs in a list
-Date:   Tue,  4 Apr 2023 16:13:00 +0200
-Message-Id: <20230404141300.908202-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        bh=EZxuHLFtNW6DOyg0Up2V+fzvewo/xPE26/VxJVS43KM=;
+        b=eq0gWaY5fLUlHmM0rz4dDdZBFwqxEdQmVfhDEH9fsL/VrrVxK+e81lmxojSY1wR+gr
+         9gLNax68oDxTmz1N5cJzborwiB1Hkao0mzL8ui5/2bfImOQSoienLtNqNfDLOmEwlzgl
+         xs3bEEcF6oIalG3TiPK7m0+irJw6u6AxyqlGeQo8Ba2OUZCNc2foXsgNcXNRKJ9Gk0mf
+         bRA9ct9wKggtf3hDKTku32rxY9vn6F7w5+r1TobOYVQwtJB/rFHaCAZawxiv82m4WXts
+         Ta4/x0Y8M3fgecx8VctOKVwwTW5x2LFbefR/gTfLUArK/syX3Pu88/ay1E0KLthzh56R
+         hTJQ==
+X-Gm-Message-State: AAQBX9c1y6mAV2JMRlgh+kFbPSeBaSiwxcJEH9gDOUcsKVGxAqzrlwQJ
+        u7RYsuJ4mmwPva4bh4+QwlvC3Pqzb18SWHupl9KIA8o0xbQ3vhf0FS0=
+X-Google-Smtp-Source: AKy350Z7TmeWoGKs4uFwycO48nTq5+V4hfheLwSgeAH2M5abZ8O02ny5Sy+MxzKC+4uu8XORDbRs7SbiinLtq9cYgD0=
+X-Received: by 2002:a25:d984:0:b0:b69:fab9:de39 with SMTP id
+ q126-20020a25d984000000b00b69fab9de39mr2006909ybg.2.1680627721079; Tue, 04
+ Apr 2023 10:02:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
+ <20230404135741.GB471948@google.com> <f2ae6531-1443-47e0-8897-0a47ca61ffec@paulmck-laptop>
+In-Reply-To: <f2ae6531-1443-47e0-8897-0a47ca61ffec@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 4 Apr 2023 13:01:50 -0400
+Message-ID: <CAEXW_YSSSFrRpb8bM0=ebBkJHQdFGuEWRAUqGesdonk9bNohTg@mail.gmail.com>
+Subject: Re: [PATCH rcu 0/20] Further shrink srcu_struct to promote cache locality
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, hch@lst.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Triiger a warning if a grace period is not passed yet for
-objects queued on a linked list via rcu_head structures.
+[..]
+> > The "improperly set" thingies are perhaps Kconfig on ARM64 setting some KVM
+> > options slightly differently. I have seen that before as well on this board.
+>
+> Agreed, and one of the things on the long list is to allow arch-specific
+> settings for those options.
+>
+> The CONFIG_SMP warnings are interesting, though.  Does arm64 disallow
+> !SMP builds?  ;-)
 
-Once detached, take a full snapsot of GP sequnces to check
-later that a grace period is passed and it is safe to free
-all pointers.
+Yes, it looks like it. As per arch/arm64/Kconfig, CONFIG_SMP is always
+'y' and cannot be set.
 
-Based on latest 'dev' branch.
+config SMP
+        def_bool y
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4838a55da34f..35be35f8236b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2802,6 +2802,7 @@ struct kvfree_rcu_bulk_data {
- struct kfree_rcu_cpu_work {
- 	struct rcu_work rcu_work;
- 	struct rcu_head *head_free;
-+	struct rcu_gp_oldstate head_free_gp_snap;
- 	struct list_head bulk_head_free[FREE_N_CHANNELS];
- 	struct kfree_rcu_cpu *krcp;
- };
-@@ -3007,6 +3008,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	struct rcu_head *head;
- 	struct kfree_rcu_cpu *krcp;
- 	struct kfree_rcu_cpu_work *krwp;
-+	struct rcu_gp_oldstate head_gp_snap;
- 	int i;
- 
- 	krwp = container_of(to_rcu_work(work),
-@@ -3021,6 +3023,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	// Channel 3.
- 	head = krwp->head_free;
- 	krwp->head_free = NULL;
-+	head_gp_snap = krwp->head_free_gp_snap;
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 	// Handle the first two channels.
-@@ -3037,7 +3040,8 @@ static void kfree_rcu_work(struct work_struct *work)
- 	 * queued on a linked list through their rcu_head structures.
- 	 * This list is named "Channel 3".
- 	 */
--	kvfree_rcu_list(head);
-+	if (head && !WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&head_gp_snap)))
-+		kvfree_rcu_list(head);
- }
- 
- static bool
-@@ -3169,6 +3173,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 			// objects queued on the linked list.
- 			if (!krwp->head_free) {
- 				krwp->head_free = krcp->head;
-+				get_state_synchronize_rcu_full(&krwp->head_free_gp_snap);
- 				atomic_set(&krcp->head_count, 0);
- 				WRITE_ONCE(krcp->head, NULL);
- 			}
--- 
-2.30.2
-
+Thanks.
