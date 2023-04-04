@@ -2,76 +2,76 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55424C761A6
-	for <rcu@archiver.kernel.org>; Tue,  4 Apr 2023 17:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D8EC6FD1D
+	for <rcu@archiver.kernel.org>; Tue,  4 Apr 2023 17:18:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235393AbjDDRCI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Apr 2023 13:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
+        id S235910AbjDDRSI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Apr 2023 13:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233075AbjDDRCG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Apr 2023 13:02:06 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06889DF
-        for <rcu@vger.kernel.org>; Tue,  4 Apr 2023 10:02:02 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id n125so39465388ybg.7
-        for <rcu@vger.kernel.org>; Tue, 04 Apr 2023 10:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1680627721;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EZxuHLFtNW6DOyg0Up2V+fzvewo/xPE26/VxJVS43KM=;
-        b=pgXOVRk9JdN65LKkNabkbTgzcBobSkNY05vjQSWL2ErDYSW2u6yUUWyhVR4+r2GJYt
-         Rf4AXFDHOXCQSthx35gkOeGIBo1tbYTlBSlk4MAF6EFssBpLhT+65wJ3UG2dgAv8tT2l
-         Uc6L3Z3flUUKu6E2pXFBh/K2Xsr7UnuH1oXJc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680627721;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EZxuHLFtNW6DOyg0Up2V+fzvewo/xPE26/VxJVS43KM=;
-        b=eq0gWaY5fLUlHmM0rz4dDdZBFwqxEdQmVfhDEH9fsL/VrrVxK+e81lmxojSY1wR+gr
-         9gLNax68oDxTmz1N5cJzborwiB1Hkao0mzL8ui5/2bfImOQSoienLtNqNfDLOmEwlzgl
-         xs3bEEcF6oIalG3TiPK7m0+irJw6u6AxyqlGeQo8Ba2OUZCNc2foXsgNcXNRKJ9Gk0mf
-         bRA9ct9wKggtf3hDKTku32rxY9vn6F7w5+r1TobOYVQwtJB/rFHaCAZawxiv82m4WXts
-         Ta4/x0Y8M3fgecx8VctOKVwwTW5x2LFbefR/gTfLUArK/syX3Pu88/ay1E0KLthzh56R
-         hTJQ==
-X-Gm-Message-State: AAQBX9c1y6mAV2JMRlgh+kFbPSeBaSiwxcJEH9gDOUcsKVGxAqzrlwQJ
-        u7RYsuJ4mmwPva4bh4+QwlvC3Pqzb18SWHupl9KIA8o0xbQ3vhf0FS0=
-X-Google-Smtp-Source: AKy350Z7TmeWoGKs4uFwycO48nTq5+V4hfheLwSgeAH2M5abZ8O02ny5Sy+MxzKC+4uu8XORDbRs7SbiinLtq9cYgD0=
-X-Received: by 2002:a25:d984:0:b0:b69:fab9:de39 with SMTP id
- q126-20020a25d984000000b00b69fab9de39mr2006909ybg.2.1680627721079; Tue, 04
- Apr 2023 10:02:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
- <20230404135741.GB471948@google.com> <f2ae6531-1443-47e0-8897-0a47ca61ffec@paulmck-laptop>
-In-Reply-To: <f2ae6531-1443-47e0-8897-0a47ca61ffec@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 4 Apr 2023 13:01:50 -0400
-Message-ID: <CAEXW_YSSSFrRpb8bM0=ebBkJHQdFGuEWRAUqGesdonk9bNohTg@mail.gmail.com>
-Subject: Re: [PATCH rcu 0/20] Further shrink srcu_struct to promote cache locality
-To:     paulmck@kernel.org
+        with ESMTP id S235938AbjDDRSG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Apr 2023 13:18:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CEF55B4;
+        Tue,  4 Apr 2023 10:17:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D5A562F91;
+        Tue,  4 Apr 2023 17:17:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 719E9C433EF;
+        Tue,  4 Apr 2023 17:17:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680628665;
+        bh=eqt/zmYCbn2kFXik0OsgUhoKuAHicxdBlyJ5ELcn8vo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Slz0tHmziz69qlyOEtwy3H/V3QGvdxA3PmC4xGyip4A0InXQuXoqDHV32qM7oyCpl
+         DhIo3oZ4OoA8HlbqYmgngJGAoKRoa/SOk3SBgGHx+GBLb3ZqzLuFjmO/jNeciY+ajI
+         UoJH5I0jbyfZSLY4/FQzIX22sXVcbUqNrxHpTBIvwBfAgDwRl0gzUXxaFL8X9Q+2VH
+         wEes0e3jUcMIPaPR0xIMP6OJec6mfD0fpMypu4qETilukDDLNhYOaWxZrnJE31YY6R
+         s67u1CfzwwHxmu3laaBPMJ7OEzYP4PZ/sFtFNQGol2YPGL+ALCeonZ7BMUmS9YbClH
+         KAaLQn5ygpYjA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0FF5415404B4; Tue,  4 Apr 2023 10:17:45 -0700 (PDT)
+Date:   Tue, 4 Apr 2023 10:17:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org, hch@lst.de
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH rcu 0/20] Further shrink srcu_struct to promote cache
+ locality
+Message-ID: <8cf50db4-1c0a-45d1-a6dc-0d197f8c7e12@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
+ <20230404135741.GB471948@google.com>
+ <f2ae6531-1443-47e0-8897-0a47ca61ffec@paulmck-laptop>
+ <CAEXW_YSSSFrRpb8bM0=ebBkJHQdFGuEWRAUqGesdonk9bNohTg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSSSFrRpb8bM0=ebBkJHQdFGuEWRAUqGesdonk9bNohTg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-[..]
-> > The "improperly set" thingies are perhaps Kconfig on ARM64 setting some KVM
-> > options slightly differently. I have seen that before as well on this board.
->
-> Agreed, and one of the things on the long list is to allow arch-specific
-> settings for those options.
->
-> The CONFIG_SMP warnings are interesting, though.  Does arm64 disallow
-> !SMP builds?  ;-)
+On Tue, Apr 04, 2023 at 01:01:50PM -0400, Joel Fernandes wrote:
+> [..]
+> > > The "improperly set" thingies are perhaps Kconfig on ARM64 setting some KVM
+> > > options slightly differently. I have seen that before as well on this board.
+> >
+> > Agreed, and one of the things on the long list is to allow arch-specific
+> > settings for those options.
+> >
+> > The CONFIG_SMP warnings are interesting, though.  Does arm64 disallow
+> > !SMP builds?  ;-)
+> 
+> Yes, it looks like it. As per arch/arm64/Kconfig, CONFIG_SMP is always
+> 'y' and cannot be set.
+> 
+> config SMP
+>         def_bool y
 
-Yes, it looks like it. As per arch/arm64/Kconfig, CONFIG_SMP is always
-'y' and cannot be set.
+That would do it!  And of course this also explains the CONFIG_TINY_SRCU
+complaints.
 
-config SMP
-        def_bool y
-
-Thanks.
+							Thanx, Paul
