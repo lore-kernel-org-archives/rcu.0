@@ -2,31 +2,41 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E464C7618D
-	for <rcu@archiver.kernel.org>; Tue,  4 Apr 2023 02:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B6C8C7618D
+	for <rcu@archiver.kernel.org>; Tue,  4 Apr 2023 03:23:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbjDDCtl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Apr 2023 22:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
+        id S233197AbjDDDX0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Apr 2023 23:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjDDCtk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Apr 2023 22:49:40 -0400
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2AF1FD0
-        for <rcu@vger.kernel.org>; Mon,  3 Apr 2023 19:49:36 -0700 (PDT)
-Received: from SHSend.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-        by SHSQR01.spreadtrum.com with ESMTP id 3342nIEx080156;
-        Tue, 4 Apr 2023 10:49:18 +0800 (+08)
-        (envelope-from Ziwei.Dai@unisoc.com)
-Received: from BJMBX01.spreadtrum.com (10.0.64.7) by BJMBX02.spreadtrum.com
- (10.0.64.8) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 4 Apr 2023
- 10:49:16 +0800
-Received: from BJMBX01.spreadtrum.com ([fe80::54e:9a:129d:fac7]) by
- BJMBX01.spreadtrum.com ([fe80::54e:9a:129d:fac7%16]) with mapi id
- 15.00.1497.023; Tue, 4 Apr 2023 10:49:16 +0800
-From:   =?utf-8?B?5Luj5a2Q5Li6IChaaXdlaSBEYWkp?= <Ziwei.Dai@unisoc.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "urezki@gmail.com" <urezki@gmail.com>,
+        with ESMTP id S233181AbjDDDXW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Apr 2023 23:23:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF411FE3;
+        Mon,  3 Apr 2023 20:23:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A97AD62A9F;
+        Tue,  4 Apr 2023 03:23:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18997C4339B;
+        Tue,  4 Apr 2023 03:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680578597;
+        bh=JE9c64nKJtiykelt3tg1vCQkNZtHlr4hO/oLF144Eos=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QNpMFDCPovbDd4f/YGdV+5wb+loJzDNkWGhziq91jaI/cAl6au6kONrWhkiO0Mks0
+         WztCp33tvxv7SByUa7f4JQl9Hp0LWoOISUZFK1iqVZK6c6tgs9EWTYqzRo8stGey96
+         uptaZ5SSawwnwfHC+BjDSoU8z86YjkhSx4qauQVLWg/ICOda6MAzScbJep0QJ/u4pw
+         HDRoXRE12Ll7T1db4fMCIzj5w0GW1WNkWef6vmh3PiVb17K+bKbG3RObuwonWzmmZ/
+         wLGUEdqij0FSCvF4p9eI0t/b53UEC5Nx9IjKlVxMeHapuU3/NiRApjNeuabI9G3Xuz
+         s7QsRyyx/tEHw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A8F3815404B4; Mon,  3 Apr 2023 20:23:16 -0700 (PDT)
+Date:   Mon, 3 Apr 2023 20:23:16 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     =?utf-8?B?5Luj5a2Q5Li6IChaaXdlaSBEYWkp?= <Ziwei.Dai@unisoc.com>
+Cc:     "urezki@gmail.com" <urezki@gmail.com>,
         "frederic@kernel.org" <frederic@kernel.org>,
         "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>,
         "josh@joshtriplett.org" <josh@joshtriplett.org>,
@@ -45,333 +55,437 @@ CC:     "urezki@gmail.com" <urezki@gmail.com>,
         <Zhiguo.Niu@unisoc.com>,
         =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= 
         <zhaoyang.huang@unisoc.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggVjJdIHJjdTogTWFrZSBzdXJlIG5ldyBrcmNwIGZy?=
- =?utf-8?B?ZWUgYnVzaW5lc3MgaXMgaGFuZGxlZCBhZnRlciB0aGUgd2FudGVkIHJjdSBn?=
- =?utf-8?Q?race_period.?=
-Thread-Topic: [PATCH V2] rcu: Make sure new krcp free business is handled
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQ0ggVjJdIHJj?=
+ =?utf-8?Q?u=3A_Make_sure_new_krc?= =?utf-8?Q?p?= free business is handled
  after the wanted rcu grace period.
-Thread-Index: AQHZY847pmipC6SE2kaEv39cR2hMwK8Zsd0AgAC5BWA=
-Date:   Tue, 4 Apr 2023 02:49:15 +0000
-Message-ID: <5300e9452fc24f7eb3f7921fac4ae2db@BJMBX01.spreadtrum.com>
+Message-ID: <05e5ee11-d51c-4f96-832e-6208f0133706@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <1680266529-28429-1-git-send-email-ziwei.dai@unisoc.com>
  <105d5e6e-d0b7-46c6-8f8e-574091e45eb1@paulmck-laptop>
-In-Reply-To: <105d5e6e-d0b7-46c6-8f8e-574091e45eb1@paulmck-laptop>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.93.65]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <5300e9452fc24f7eb3f7921fac4ae2db@BJMBX01.spreadtrum.com>
 MIME-Version: 1.0
-X-MAIL: SHSQR01.spreadtrum.com 3342nIEx080156
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5300e9452fc24f7eb3f7921fac4ae2db@BJMBX01.spreadtrum.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-SGVsbG8gUGF1bCENCg0KPiAtLS0tLemCruS7tuWOn+S7ti0tLS0tDQo+IOWPkeS7tuS6ujogUGF1
-bCBFLiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPg0KPiDlj5HpgIHml7bpl7Q6IDIwMjPl
-ubQ05pyINOaXpSA2OjU4DQo+IOaUtuS7tuS6ujog5Luj5a2Q5Li6IChaaXdlaSBEYWkpIDxaaXdl
-aS5EYWlAdW5pc29jLmNvbT4NCj4g5oqE6YCBOiB1cmV6a2lAZ21haWwuY29tOyBmcmVkZXJpY0Br
-ZXJuZWwub3JnOyBxdWljX25lZXJhanVAcXVpY2luYy5jb207DQo+IGpvc2hAam9zaHRyaXBsZXR0
-Lm9yZzsgcm9zdGVkdEBnb29kbWlzLm9yZzsNCj4gbWF0aGlldS5kZXNub3llcnNAZWZmaWNpb3Mu
-Y29tOyBqaWFuZ3NoYW5sYWlAZ21haWwuY29tOw0KPiBqb2VsQGpvZWxmZXJuYW5kZXMub3JnOyBy
-Y3VAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiDnjovl
-j4wgKFNodWFuZyBXYW5nKSA8c2h1YW5nLndhbmdAdW5pc29jLmNvbT47IOi+m+S+neWHoSAoWWlm
-YW4gWGluKQ0KPiA8WWlmYW4uWGluQHVuaXNvYy5jb20+OyDnjovnp5EgKEtlIFdhbmcpIDxLZS5X
-YW5nQHVuaXNvYy5jb20+OyDpl6vlrabmlocNCj4gKFh1ZXdlbiBZYW4pIDxYdWV3ZW4uWWFuQHVu
-aXNvYy5jb20+OyDniZvlv5flm70gKFpoaWd1byBOaXUpDQo+IDxaaGlndW8uTml1QHVuaXNvYy5j
-b20+OyDpu4TmnJ3pmLMgKFpoYW95YW5nIEh1YW5nKQ0KPiA8emhhb3lhbmcuaHVhbmdAdW5pc29j
-LmNvbT4NCj4g5Li76aKYOiBSZTogW1BBVENIIFYyXSByY3U6IE1ha2Ugc3VyZSBuZXcga3JjcCBm
-cmVlIGJ1c2luZXNzIGlzIGhhbmRsZWQgYWZ0ZXINCj4gdGhlIHdhbnRlZCByY3UgZ3JhY2UgcGVy
-aW9kLg0KPiANCj4gDQo+IOazqOaEjzog6L+Z5bCB6YKu5Lu25p2l6Ieq5LqO5aSW6YOo44CC6Zmk
-6Z2e5L2g56Gu5a6a6YKu5Lu25YaF5a655a6J5YWo77yM5ZCm5YiZ5LiN6KaB54K55Ye75Lu7DQo+
-IOS9lemTvuaOpeWSjOmZhOS7tuOAgg0KPiBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQg
-ZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5vdCBjbGljaw0KPiBsaW5rcyBv
-ciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgcmVjb2duaXplIHRoZSBzZW5kZXIgYW5kIGtu
-b3cgdGhlDQo+IGNvbnRlbnQgaXMgc2FmZS4NCj4gDQo+IA0KPiANCj4gT24gRnJpLCBNYXIgMzEs
-IDIwMjMgYXQgMDg6NDI6MDlQTSArMDgwMCwgWml3ZWkgRGFpIHdyb3RlOg0KPiA+IEluIGtmcmVl
-X3JjdV9tb25pdG9yKCksIG5ldyBmcmVlIGJ1c2luZXNzIGF0IGtyY3AgaXMgYXR0YWNoZWQgdG8g
-YW55DQo+ID4gZnJlZSBjaGFubmVsIGF0IGtyd3AuIGtmcmVlX3JjdV9tb25pdG9yKCkgaXMgcmVz
-cG9uc2libGUgdG8gbWFrZSBzdXJlDQo+ID4gbmV3IGZyZWUgYnVzaW5lc3MgaXMgaGFuZGxlZCBh
-ZnRlciB0aGUgcmN1IGdyYWNlIHBlcmlvZC4gQnV0IGlmIHRoZXJlDQo+ID4gaXMgYW55IG5vbmUt
-ZnJlZSBjaGFubmVsIGF0IGtyd3AgYWxyZWFkeSwgdGhhdCBtZWFucyB0aGVyZSBpcyBhbg0KPiA+
-IG9uLWdvaW5nIHJjdSB3b3JrLCB3aGljaCB3aWxsIGNhdXNlIHRoZSBrdmZyZWVfY2FsbF9yY3Uo
-KS10cmlnZ2VyZWQNCj4gPiBmcmVlIGJ1c2luZXNzIGlzIGRvbmUgYmVmb3JlIHRoZSB3YW50ZWQg
-cmN1IGdyYWNlIHBlcmlvZCBlbmRzLg0KPiA+DQo+ID4gVGhpcyBjb21taXQgaWdub3JlIGtyd3Ag
-d2hpY2ggaGFzIG5vbi1mcmVlIGNoYW5uZWwgYXQNCj4gPiBrZnJlZV9yY3VfbW9uaXRvcigpLCB0
-byBmaXggdGhlIGlzc3VlIHRoYXQga3ZmcmVlX2NhbGxfcmN1KCkgbG9zZXMNCj4gZWZmZWN0aXZl
-bmVzcy4NCj4gPg0KPiA+IEJlbG93IGlzIHRoZSBjc3Nfc2V0IG9iaiAiZnJvbV9jc2V0IiB1c2Ut
-YWZ0ZXItZnJlZSBjYXNlIGNhdXNlZCBieQ0KPiA+IGt2ZnJlZV9jYWxsX3JjdSgpIGxvc2luZyBl
-ZmZlY3RpdmVuZXNzLg0KPiA+IENQVSAwIGNhbGxzIHJjdV9yZWFkX2xvY2soKSwgdGhlbiB1c2Ug
-ImZyb21fY3NldCIsIHRoZW4gaGFyZCBpcnENCj4gPiBjb21lcywgdGhlIHRhc2sgaXMgc2NoZWR1
-bGUgb3V0Lg0KPiA+IENQVSAxIGNhbGxzIGtmcmVlX3JjdShjc2V0LCByY3VfaGVhZCksIHdpbGxp
-bmcgdG8gZnJlZSAiZnJvbV9jc2V0IiBhZnRlciBuZXcNCj4gZ3AuDQo+ID4gQnV0ICJmcm9tX2Nz
-ZXQiIGlzIGZyZWVkIHJpZ2h0IGFmdGVyIGN1cnJlbnQgZ3AgZW5kLiAiZnJvbV9jc2V0IiBpcw0K
-PiByZWFsbG9jYXRlZC4NCj4gPiBDUFUgMCAncyB0YXNrIGFycml2ZXMgYmFjaywgcmVmZXJlbmNl
-cyAiZnJvbV9jc2V0IidzIG1lbWJlciwgd2hpY2ggY2F1c2VzDQo+IGNyYXNoLg0KPiA+DQo+ID4g
-Q1BVIDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDUFUgMQ0KPiA+IGNvdW50X21l
-bWNnX2V2ZW50X21tKCkNCj4gPiB8cmN1X3JlYWRfbG9jaygpICA8LS0tDQo+ID4gfG1lbV9jZ3Jv
-dXBfZnJvbV90YXNrKCkNCj4gPiAgfC8vIGNzc19zZXRfcHRyIGlzIHRoZSAiZnJvbV9jc2V0IiBt
-ZW50aW9uZWQgb24gQ1BVIDEgIHxjc3Nfc2V0X3B0ciA9DQo+ID4gcmN1X2RlcmVmZXJlbmNlKCh0
-YXNrKS0+Y2dyb3VwcykgIHwvLyBIYXJkIGlycSBjb21lcywgY3VycmVudCB0YXNrIGlzDQo+ID4g
-c2NoZWR1bGVkIG91dC4NCj4gPg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgY2dyb3VwX2F0dGFjaF90YXNrKCkNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHxjZ3JvdXBfbWlncmF0ZSgpDQo+ID4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8Y2dyb3VwX21pZ3JhdGVfZXhlY3V0ZSgpDQo+ID4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8Y3NzX3NldF9tb3ZlX3Rhc2sodGFzaywNCj4g
-ZnJvbV9jc2V0LCB0b19jc2V0LCB0cnVlKQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfGNncm91cF9tb3ZlX3Rhc2sodGFzaywNCj4gdG9fY3NldCkNCj4gPiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxyY3VfYXNzaWduX3BvaW50ZXIoLi4s
-IHRvX2NzZXQpDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8Li4u
-DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8Y2dyb3VwX21pZ3Jh
-dGVfZmluaXNoKCkNCj4gPg0KPiB8cHV0X2Nzc19zZXRfbG9ja2VkKGZyb21fY3NldCkNCj4gPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxmcm9tX2NzZXQtPnJlZmNvdW50
-IHJldHVybiAwDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8a2Zy
-ZWVfcmN1KGNzZXQsIHJjdV9oZWFkKSAvLw0KPiBtZWFucyB0byBmcmVlIGZyb21fY3NldCBhZnRl
-ciBuZXcgZ3ANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxhZGRf
-cHRyX3RvX2J1bGtfa3JjX2xvY2soKQ0KPiA+DQo+ID4gfHNjaGVkdWxlX2RlbGF5ZWRfd29yaygm
-a3JjcC0+bW9uaXRvcl93b3JrLCAuLikNCj4gPg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAga2ZyZWVfcmN1X21vbml0b3IoKQ0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfGtyY3AtPmJ1bGtfaGVhZFswXSdzIHdvcmsNCj4gYXR0YWNo
-ZWQgdG8ga3J3cC0+YnVsa19oZWFkX2ZyZWVbXQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfHF1ZXVlX3JjdV93b3JrKHN5c3RlbV93cSwNCj4gJmtyd3AtPnJjdV93
-b3JrKQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfGlmIHJ3b3Jr
-LT5yY3Uud29yayBpcyBub3QgaW4NCj4gV09SS19TVFJVQ1RfUEVORElOR19CSVQgc3RhdGUsDQo+
-ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8Y2FsbF9yY3UoJnJ3b3Jr
-LT5yY3UsDQo+ID4gcmN1X3dvcmtfcmN1Zm4pIDwtLS0gcmVxdWVzdCBhIG5ldyBncA0KPiA+DQo+
-ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBUaGVyZSBpcyBhIHBl
-cmlvdXMgY2FsbF9yY3UoLi4sDQo+IHJjdV93b3JrX3JjdWZuKQ0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgLy8gZ3AgZW5kLCByY3Vfd29ya19yY3VmbigpIGlzDQo+
-IGNhbGxlZC4NCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJjdV93
-b3JrX3JjdWZuKCkNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxf
-X3F1ZXVlX3dvcmsoLi4sIHJ3b3JrLT53cSwNCj4gPiAmcndvcmstPndvcmspOw0KPiA+DQo+ID4g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8a2ZyZWVfcmN1X3dvcmsoKQ0K
-PiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfGtyd3AtPmJ1bGtfaGVh
-ZF9mcmVlWzBdIGJ1bGsNCj4gaXMgZnJlZWQgYmVmb3JlIG5ldyBncCBlbmQhISENCj4gPiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxUaGUgImZyb21fY3NldCIgaXMgZnJl
-ZWQNCj4gYmVmb3JlIG5ldyBncCBlbmQuDQo+ID4NCj4gPiAvLyB0aGUgdGFzayBpcyBzY2hlZHVs
-ZWQgaW4gYWZ0ZXIgbWFueSBtcy4NCj4gPiAgfGNzc19zZXRfcHRyLT5zdWJzeXNbKHN1YnN5c19p
-ZCkgPC0tLSBDYXVzZWQga2VybmVsIGNyYXNoLCBiZWNhdXNlDQo+IGNzc19zZXRfcHRyIGlzIGZy
-ZWVkLg0KPiA+DQo+ID4gdjI6IFVzZSBoZWxwZXIgZnVuY3Rpb24gaW5zdGVhZCBvZiBpbnNlcnRl
-ZCBjb2RlIGJsb2NrIGF0DQo+IGtmcmVlX3JjdV9tb25pdG9yKCkuDQo+ID4NCj4gPiBGaXhlczog
-YzAxNGVmZWVmNzZhICgicmN1OiBBZGQgbXVsdGlwbGUgaW4tZmxpZ2h0IGJhdGNoZXMgb2YNCj4g
-PiBrZnJlZV9yY3UoKSB3b3JrIikNCj4gPiBTaWduZWQtb2ZmLWJ5OiBaaXdlaSBEYWkgPHppd2Vp
-LmRhaUB1bmlzb2MuY29tPg0KPiANCj4gR29vZCBjYXRjaCwgdGhhbmsgeW91ISEhDQo+IA0KPiBI
-b3cgZGlmZmljdWx0IHdhcyB0aGlzIHRvIHRyaWdnZXI/ICBJZiBpdCBjYW4gYmUgdHJpZ2dlcmVk
-IGVhc2lseSwgdGhpcyBvZiBjb3Vyc2UNCj4gbmVlZHMgdG8gZ28gaW50byBtYWlubGluZSBzb29u
-ZXIgcmF0aGVyIHRoYW4gbGF0ZXIuDQoNClJvdWdobHkgd2UgY2FuIHJlcHJvZHVjZSB0aGlzIGlz
-c3VlIHdpdGhpbiB0d28gcm91bmRzIG9mIDQ4aCBzdHJlc3MgdGVzdCwgDQp3aXRoIDIwIGs1LjE1
-IGRldmljZXMuIElmIEtBU0FOIGlzIGVuYWJsZWQsIHRoZSByZXByb2R1Y2UgcmF0ZSBpcyBoaWdo
-ZXIuDQpTbyBJIHRoaW5rIHNvb25lciBpcyBiZXR0ZXIuDQoNCj4gDQo+IExvbmdlciB0ZXJtLCB3
-b3VsZCBpdCBtYWtlIHNlbnNlIHRvIHJ1biB0aGUgdGhyZWUgY2hhbm5lbHMgdGhyb3VnaCBSQ1UN
-Cj4gc2VwYXJhdGVseSwgaW4gb3JkZXIgdG8gYXZvaWQgb25lIGNoYW5uZWwgcmVmcmFpbmluZyBm
-cm9tIHN0YXJ0aW5nIGEgZ3JhY2UNCj4gcGVyaW9kIGp1c3QgYmVjYXVzZSBzb21lIG90aGVyIGNo
-YW5uZWwgaGFzIGNhbGxiYWNrcyB3YWl0aW5nIGZvciBhIGdyYWNlDQo+IHBlcmlvZCB0byBjb21w
-bGV0ZT8gIE9uZSBhcmd1bWVudCBhZ2FpbnN0IG1pZ2h0IGJlIGVuZXJneSBlZmZpY2llbmN5LCBi
-dXQNCj4gcGVyaGFwcyB0aGUgLT5ncF9zbmFwIGZpZWxkIGNvdWxkIGJlIHVzZWQgdG8gZ2V0IHRo
-ZSBiZXN0IG9mIGJvdGggd29ybGRzLg0KDQpJIHNlZSBrdmZyZWVfcmN1X2RyYWluX3JlYWR5KGty
-Y3ApIGlzIGFscmVhZHkgY2FsbGVkIGF0IHRoZSBiZWdpbm5pbmcgb2YNCmtmcmVlX3JjdV9tb25p
-dG9yKCksIHdoaWNoIHBvbGxzIHRoZSAtPmdwX3NuYXAgZmllbGQsIHRvIGRlY2lkZQ0Kd2hldGhl
-ciB0byBmcmVlIGNoYW5uZWwgb2JqZWN0cyBpbW1lZGlhdGVseSBvciBhZnRlciBncC4NCkJvdGgg
-ZW5lcmd5IGVmZmljaWVuY3kgYW5kIHRpbWluZyBzZWVtcyBiZSBjb25zaWRlcmVkPw0KDQo+IEVp
-dGhlciB3YXksIHRoaXMgZml4ZXMgb25seSBvbmUgYnVnIG9mIHR3by4gIFRoZSBzZWNvbmQgYnVn
-IGlzIGluIHRoZQ0KPiBrZnJlZV9yY3UoKSB0ZXN0cywgd2hpY2ggc2hvdWxkIGhhdmUgY2F1Z2h0
-IHRoaXMgYnVnLiAgVGhvdWdodHMgb24gYSBnb29kIGZpeA0KPiBmb3IgdGhvc2UgdGVzdHM/DQoN
-CkkgaW5zZXJ0ZWQgYSBtc2xlZXAoKSBiZXR3ZWVuICJyY3VfcmVhZF9sb2NrKCksIGdldCBwb2lu
-dGVyIHZpYSByY3VfZGVyZWZlcmVuY2UoKSINCmFuZCAicmVmZXJlbmNlIHBvaW50ZXIsIHVzaW5n
-IHRoZSBtZW1iZXIiLCBhdCB0aGUgcmN1IHNjZW5hcmlvLCB0aGVuIHdlIGNhbg0KcmVwcm9kdWNl
-IHRoaXMgaXNzdWUgdmVyeSBzb29uIGluIHN0cmVzcyB0ZXN0LiBDYW4ga2ZyZWVfcmN1KCkgdGVz
-dHMgaW5zZXJ0IG1zbGVlcCgpPw0KDQo+IEkgaGF2ZSBhcHBsaWVkIFVsYWR6aXNsYXUncyBhbmQg
-TXVrZXNoJ3MgdGFncywgYW5kIGRvbmUgdGhlIHVzdWFsDQo+IHdvcmRzbWl0aGluZyBhcyBzaG93
-biBhdCB0aGUgZW5kIG9mIHRoaXMgbWVzc2FnZS4gIFBsZWFzZSBsZXQgbWUga25vdyBpZiBJDQo+
-IG1lc3NlZCBhbnl0aGluZyB1cC4NCg0KVGhhbmsgeW91IGZvciB0aGUgaW1wcm92ZW1lbnQgb24g
-dGhlIHBhdGNoISBJdCBzZWVtcyBiZXR0ZXIgbm93Lg0KDQo+ID4gLS0tDQo+ID4gIGtlcm5lbC9y
-Y3UvdHJlZS5jIHwgMjcgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tDQo+ID4gIDEgZmlsZSBj
-aGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAt
-LWdpdCBhL2tlcm5lbC9yY3UvdHJlZS5jIGIva2VybmVsL3JjdS90cmVlLmMgaW5kZXgNCj4gPiA4
-ZTg4MGMwLi43Yjk1ZWU5IDEwMDY0NA0KPiA+IC0tLSBhL2tlcm5lbC9yY3UvdHJlZS5jDQo+ID4g
-KysrIGIva2VybmVsL3JjdS90cmVlLmMNCj4gPiBAQCAtMzAyNCw2ICszMDI0LDE4IEBAIHN0YXRp
-YyB2b2lkIGtmcmVlX3JjdV93b3JrKHN0cnVjdCB3b3JrX3N0cnVjdA0KPiAqd29yaykNCj4gPiAg
-ICAgICByZXR1cm4gISFSRUFEX09OQ0Uoa3JjcC0+aGVhZCk7DQo+ID4gIH0NCj4gPg0KPiA+ICtz
-dGF0aWMgYm9vbA0KPiA+ICtuZWVkX3dhaXRfZm9yX2tyd3Bfd29yayhzdHJ1Y3Qga2ZyZWVfcmN1
-X2NwdV93b3JrICprcndwKSB7DQo+ID4gKyAgICAgaW50IGk7DQo+ID4gKw0KPiA+ICsgICAgIGZv
-ciAoaSA9IDA7IGkgPCBGUkVFX05fQ0hBTk5FTFM7IGkrKykNCj4gPiArICAgICAgICAgICAgIGlm
-ICghbGlzdF9lbXB0eSgma3J3cC0+YnVsa19oZWFkX2ZyZWVbaV0pKQ0KPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICByZXR1cm4gdHJ1ZTsNCj4gPiArDQo+ID4gKyAgICAgcmV0dXJuICEha3J3cC0+
-aGVhZF9mcmVlOw0KPiANCj4gVGhpcyBpcyBmaXhlZCBmcm9tIHYxLCBnb29kIQ0KPiANCj4gPiAr
-fQ0KPiA+ICsNCj4gPiAgc3RhdGljIGludCBrcmNfY291bnQoc3RydWN0IGtmcmVlX3JjdV9jcHUg
-KmtyY3ApICB7DQo+ID4gICAgICAgaW50IHN1bSA9IGF0b21pY19yZWFkKCZrcmNwLT5oZWFkX2Nv
-dW50KTsgQEAgLTMxMDcsMTUNCj4gKzMxMTksMTQNCj4gPiBAQCBzdGF0aWMgdm9pZCBrZnJlZV9y
-Y3VfbW9uaXRvcihzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspDQo+ID4gICAgICAgZm9yIChpID0g
-MDsgaSA8IEtGUkVFX05fQkFUQ0hFUzsgaSsrKSB7DQo+ID4gICAgICAgICAgICAgICBzdHJ1Y3Qg
-a2ZyZWVfcmN1X2NwdV93b3JrICprcndwID0gJihrcmNwLT5rcndfYXJyW2ldKTsNCj4gPg0KPiA+
-IC0gICAgICAgICAgICAgLy8gVHJ5IHRvIGRldGFjaCBidWxrX2hlYWQgb3IgaGVhZCBhbmQgYXR0
-YWNoIGl0IG92ZXIgYW55DQo+ID4gLSAgICAgICAgICAgICAvLyBhdmFpbGFibGUgY29ycmVzcG9u
-ZGluZyBmcmVlIGNoYW5uZWwuIEl0IGNhbiBiZSB0aGF0DQo+ID4gLSAgICAgICAgICAgICAvLyBh
-IHByZXZpb3VzIFJDVSBiYXRjaCBpcyBpbiBwcm9ncmVzcywgaXQgbWVhbnMgdGhhdA0KPiA+IC0g
-ICAgICAgICAgICAgLy8gaW1tZWRpYXRlbHkgdG8gcXVldWUgYW5vdGhlciBvbmUgaXMgbm90IHBv
-c3NpYmxlIHNvDQo+ID4gLSAgICAgICAgICAgICAvLyBpbiB0aGF0IGNhc2UgdGhlIG1vbml0b3Ig
-d29yayBpcyByZWFybWVkLg0KPiA+IC0gICAgICAgICAgICAgaWYgKCghbGlzdF9lbXB0eSgma3Jj
-cC0+YnVsa19oZWFkWzBdKSAmJg0KPiBsaXN0X2VtcHR5KCZrcndwLT5idWxrX2hlYWRfZnJlZVsw
-XSkpIHx8DQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICghbGlzdF9lbXB0eSgma3JjcC0+YnVs
-a19oZWFkWzFdKSAmJg0KPiBsaXN0X2VtcHR5KCZrcndwLT5idWxrX2hlYWRfZnJlZVsxXSkpIHx8
-DQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKFJFQURfT05DRShrcmNwLT5oZWFk
-KQ0KPiAmJiAha3J3cC0+aGVhZF9mcmVlKSkgew0KPiA+ICsgICAgICAgICAgICAgLy8gVHJ5IHRv
-IGRldGFjaCBidWxrX2hlYWQgb3IgaGVhZCBhbmQgYXR0YWNoIGl0LCBvbmx5IHdoZW4NCj4gPiAr
-ICAgICAgICAgICAgIC8vIGFsbCBjaGFubmVscyBhcmUgZnJlZS4gIEFueSBjaGFubmVsIGlzIG5v
-dCBmcmVlIG1lYW5zIGF0DQo+IGtyd3ANCj4gPiArICAgICAgICAgICAgIC8vIHRoZXJlIGlzIG9u
-LWdvaW5nIHJjdSB3b3JrIHRvIGhhbmRsZSBrcndwJ3MgZnJlZQ0KPiBidXNpbmVzcy4NCj4gPiAr
-ICAgICAgICAgICAgIGlmIChuZWVkX3dhaXRfZm9yX2tyd3Bfd29yayhrcndwKSkNCj4gPiArICAg
-ICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ID4NCj4gPiArICAgICAgICAgICAgIC8vIGt2
-ZnJlZV9yY3VfZHJhaW5fcmVhZHkoKSBtaWdodCBoYW5kbGUgdGhpcyBrcmNwLCBpZiBzbw0KPiBn
-aXZlIHVwLg0KPiA+ICsgICAgICAgICAgICAgaWYgKG5lZWRfb2ZmbG9hZF9rcmMoa3JjcCkpIHsN
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgLy8gQ2hhbm5lbCAxIGNvcnJlc3BvbmRzIHRvIHRo
-ZSBTTEFCLXBvaW50ZXINCj4gYnVsayBwYXRoLg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAv
-LyBDaGFubmVsIDIgY29ycmVzcG9uZHMgdG8gdm1hbGxvYy1wb2ludGVyIGJ1bGsNCj4gcGF0aC4N
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgZm9yIChqID0gMDsgaiA8IEZSRUVfTl9DSEFOTkVM
-UzsgaisrKSB7DQo+ID4gLS0NCj4gPiAxLjkuMQ0KPiANCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IA0K
-PiBjb21taXQgZTIyMmY5YTUxMjUzOWMzZjQwOTNhNTVkMTY2MjRkOWRhNjE0ODAwYg0KPiBBdXRo
-b3I6IFppd2VpIERhaSA8eml3ZWkuZGFpQHVuaXNvYy5jb20+DQo+IERhdGU6ICAgRnJpIE1hciAz
-MSAyMDo0MjowOSAyMDIzICswODAwDQo+IA0KPiAgICAgcmN1OiBBdm9pZCBmcmVlaW5nIG5ldyBr
-ZnJlZV9yY3UoKSBtZW1vcnkgYWZ0ZXIgb2xkIGdyYWNlIHBlcmlvZA0KPiANCj4gICAgIE1lbW9y
-eSBwYXNzZWQgdG8ga3ZmcmVlX3JjdSgpIHRoYXQgaXMgdG8gYmUgZnJlZWQgaXMgdHJhY2tlZCBi
-eSBhDQo+ICAgICBwZXItQ1BVIGtmcmVlX3JjdV9jcHUgc3RydWN0dXJlLCB3aGljaCBpbiB0dXJu
-IGNvbnRhaW5zIHBvaW50ZXJzDQo+ICAgICB0byBrdmZyZWVfcmN1X2J1bGtfZGF0YSBzdHJ1Y3R1
-cmVzIHRoYXQgY29udGFpbiBwb2ludGVycyB0byBtZW1vcnkNCj4gICAgIHRoYXQgaGFzIG5vdCB5
-ZXQgYmVlbiBoYW5kZWQgdG8gUkNVLCBhbG9uZyB3aXRoIGFuIGtmcmVlX3JjdV9jcHVfd29yaw0K
-PiAgICAgc3RydWN0dXJlIHRoYXQgdHJhY2tzIHRoZSBtZW1vcnkgdGhhdCBoYXMgYWxyZWFkeSBi
-ZWVuIGhhbmRlZCB0byBSQ1UuDQo+ICAgICBUaGVzZSBzdHJ1Y3R1cmVzIHRyYWNrIHRocmVlIGNh
-dGVnb3JpZXMgb2YgbWVtb3J5OiAoMSkgTWVtb3J5IGZvcg0KPiAgICAga2ZyZWUoKSwgKDIpIE1l
-bW9yeSBmb3Iga3ZmcmVlKCksIGFuZCAoMykgTWVtb3J5IGZvciBib3RoIHRoYXQgYXJyaXZlZA0K
-PiAgICAgZHVyaW5nIGFuIE9PTSBlcGlzb2RlLiAgVGhlIGZpcnN0IHR3byBjYXRlZ29yaWVzIGFy
-ZSB0cmFja2VkIGluIGENCj4gICAgIGNhY2hlLWZyaWVuZGx5IG1hbm5lciBpbnZvbHZpbmcgYSBk
-eW5hbWljYWxseSBhbGxvY2F0ZWQgcGFnZSBvZiBwb2ludGVycw0KPiAgICAgKHRoZSBhZm9yZW1l
-bnRpb25lZCBrdmZyZWVfcmN1X2J1bGtfZGF0YSBzdHJ1Y3R1cmVzKSwgd2hpbGUgdGhlIHRoaXJk
-DQo+ICAgICB1c2VzIGEgc2ltcGxlIChidXQgZGVjaWRlZGx5IGNhY2hlLXVuZnJpZW5kbHkpIGxp
-bmtlZCBsaXN0IHRocm91Z2ggdGhlDQo+ICAgICByY3VfaGVhZCBzdHJ1Y3R1cmVzIGluIGVhY2gg
-YmxvY2sgb2YgbWVtb3J5Lg0KPiANCj4gICAgIE9uIGEgZ2l2ZW4gQ1BVLCB0aGVzZSB0aHJlZSBj
-YXRlZ29yaWVzIGFyZSBoYW5kbGVkIGFzIGEgdW5pdCwgd2l0aCB0aGF0DQo+ICAgICBDUFUncyBr
-ZnJlZV9yY3VfY3B1X3dvcmsgc3RydWN0dXJlIGhhdmluZyBvbmUgcG9pbnRlciBmb3IgZWFjaCBv
-ZiB0aGUNCj4gICAgIHRocmVlIGNhdGVnb3JpZXMuICBDbGVhcmx5LCBuZXcgbWVtb3J5IGZvciBh
-IGdpdmVuIGNhdGVnb3J5IGNhbm5vdCBiZQ0KPiAgICAgcGxhY2VkIGluIHRoZSBjb3JyZXNwb25k
-aW5nIGtmcmVlX3JjdV9jcHVfd29yayBzdHJ1Y3R1cmUgdW50aWwgYW55IG9sZA0KPiAgICAgbWVt
-b3J5IGhhcyBoYWQgaXRzIGdyYWNlIHBlcmlvZCBlbGFwc2UgYW5kIHRodXMgaGFzIGJlZW4gcmVt
-b3ZlZC4NCj4gQW5kDQo+ICAgICB0aGUga2ZyZWVfcmN1X21vbml0b3IoKSBmdW5jdGlvbiBkb2Vz
-IGluIGZhY3QgY2hlY2sgZm9yIHRoaXMuDQo+IA0KPiAgICAgRXhjZXB0IHRoYXQgdGhlIGtmcmVl
-X3JjdV9tb25pdG9yKCkgZnVuY3Rpb24gY2hlY2tzIHRoZXNlIHBvaW50ZXJzIG9uZQ0KPiAgICAg
-YXQgYSB0aW1lLiAgVGhpcyBtZWFucyB0aGF0IGlmIHRoZSBwcmV2aW91cyBrZnJlZV9yY3UoKSBt
-ZW1vcnkgcGFzc2VkDQo+ICAgICB0byBSQ1UgaGFkIG9ubHkgY2F0ZWdvcnkgMSBhbmQgdGhlIGN1
-cnJlbnQgb25lIGhhcyBvbmx5IGNhdGVnb3J5IDIsIHRoZQ0KPiAgICAga2ZyZWVfcmN1X21vbml0
-b3IoKSBmdW5jdGlvbiB3aWxsIHNlbmQgdGhhdCBjdXJyZW50IGNhdGVnb3J5LTIgbWVtb3J5DQo+
-ICAgICBhbG9uZyBpbW1lZGlhdGVseS4gIFRoaXMgY2FuIHJlc3VsdCBpbiBtZW1vcnkgYmVpbmcg
-ZnJlZWQgdG9vIHNvb24sDQo+ICAgICB0aGF0IGlzLCBvdXQgZnJvbSB1bmRlciB1bnN1c3BlY3Rp
-bmcgUkNVIHJlYWRlcnMuDQo+IA0KPiAgICAgVG8gc2VlIHRoaXMsIGNvbnNpZGVyIHRoZSBmb2xs
-b3dpbmcgc2VxdWVuY2Ugb2YgZXZlbnRzLCBpbiB3aGljaDoNCj4gDQo+ICAgICBvICAgICAgIFRh
-c2sgQSBvbiBDUFUgMCBjYWxscyByY3VfcmVhZF9sb2NrKCksIHRoZW4gdXNlcyAiZnJvbV9jc2V0
-IiwNCj4gICAgICAgICAgICAgdGhlbiBpcyBwcmVlbXB0ZWQuDQo+IA0KPiAgICAgbyAgICAgICBD
-UFUgMSBjYWxscyBrZnJlZV9yY3UoY3NldCwgcmN1X2hlYWQpIGluIG9yZGVyIHRvIGZyZWUNCj4g
-ImZyb21fY3NldCINCj4gICAgICAgICAgICAgYWZ0ZXIgYSBsYXRlciBncmFjZSBwZXJpb2QuICBF
-eGNlcHQgdGhhdCAiZnJvbV9jc2V0IiBpcyBmcmVlZA0KPiAgICAgICAgICAgICByaWdodCBhZnRl
-ciB0aGUgcHJldmlvdXMgZ3JhY2UgcGVyaW9kIGVuZGVkLCBzbyB0aGF0DQo+ICJmcm9tX2NzZXQi
-DQo+ICAgICAgICAgICAgIGlzIGltbWVkaWF0ZWx5IGZyZWVkLiAgVGFzayBBIHJlc3VtZXMgYW5k
-IHJlZmVyZW5jZXMNCj4gImZyb21fY3NldCIncw0KPiAgICAgICAgICAgICBtZW1iZXIsIGFmdGVy
-IHdoaWNoIG5vdGhpbmcgZ29vZCBoYXBwZW5zLg0KPiANCj4gICAgIEluIGZ1bGwgZGV0YWlsOg0K
-PiANCj4gICAgIENQVSAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDUFUgMQ0K
-PiAgICAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAgICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0NCj4gICAgIGNvdW50X21lbWNnX2V2ZW50X21tKCkNCj4gICAgIHxyY3VfcmVh
-ZF9sb2NrKCkgIDwtLS0NCj4gICAgIHxtZW1fY2dyb3VwX2Zyb21fdGFzaygpDQo+ICAgICAgfC8v
-IGNzc19zZXRfcHRyIGlzIHRoZSAiZnJvbV9jc2V0IiBtZW50aW9uZWQgb24gQ1BVIDENCj4gICAg
-ICB8Y3NzX3NldF9wdHIgPSByY3VfZGVyZWZlcmVuY2UoKHRhc2spLT5jZ3JvdXBzKQ0KPiAgICAg
-IHwvLyBIYXJkIGlycSBjb21lcywgY3VycmVudCB0YXNrIGlzIHNjaGVkdWxlZCBvdXQuDQo+IA0K
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNncm91cF9hdHRh
-Y2hfdGFzaygpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fGNncm91cF9taWdyYXRlKCkNCj4gDQo+IHxjZ3JvdXBfbWlncmF0ZV9leGVjdXRlKCkNCj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8Y3NzX3NldF9tb3ZlX3Rh
-c2sodGFzaywNCj4gZnJvbV9jc2V0LCB0b19jc2V0LCB0cnVlKQ0KPiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxjZ3JvdXBfbW92ZV90YXNrKHRhc2ssDQo+IHRv
-X2NzZXQpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfHJj
-dV9hc3NpZ25fcG9pbnRlciguLiwNCj4gdG9fY3NldCkNCj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8Li4uDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgfGNncm91cF9taWdyYXRlX2ZpbmlzaCgpDQo+IA0KPiB8cHV0X2Nz
-c19zZXRfbG9ja2VkKGZyb21fY3NldCkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ZnJvbV9jc2V0LT5yZWZjb3VudA0KPiByZXR1cm4gMA0KPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHxrZnJlZV9yY3UoY3NldCwgcmN1
-X2hlYWQpDQo+IC8vIGZyZWUgZnJvbV9jc2V0IGFmdGVyIG5ldyBncA0KPiANCj4gfGFkZF9wdHJf
-dG9fYnVsa19rcmNfbG9jaygpDQo+IA0KPiB8c2NoZWR1bGVfZGVsYXllZF93b3JrKCZrcmNwLT5t
-b25pdG9yX3dvcmssIC4uKQ0KPiANCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBrZnJlZV9yY3VfbW9uaXRvcigpDQo+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfGtyY3AtPmJ1bGtfaGVhZFswXSdzDQo+IHdvcmsgYXR0YWNo
-ZWQgdG8ga3J3cC0+YnVsa19oZWFkX2ZyZWVbXQ0KPiANCj4gfHF1ZXVlX3JjdV93b3JrKHN5c3Rl
-bV93cSwgJmtyd3AtPnJjdV93b3JrKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHxpZiByd29yay0+cmN1LndvcmsgaXMgbm90DQo+IGluIFdPUktfU1RSVUNU
-X1BFTkRJTkdfQklUIHN0YXRlLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHxjYWxsX3JjdSgmcndvcmstPnJjdSwNCj4gcmN1X3dvcmtfcmN1Zm4pIDwtLS0g
-cmVxdWVzdCBuZXcgZ3ANCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgLy8gVGhlcmUgaXMgYSBwZXJpb3VzDQo+IGNhbGxfcmN1KC4uLCByY3Vfd29ya19y
-Y3VmbikNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBn
-cCBlbmQsDQo+IHJjdV93b3JrX3JjdWZuKCkgaXMgY2FsbGVkLg0KPiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJjdV93b3JrX3JjdWZuKCkNCj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8X19xdWV1ZV93b3JrKC4uLA0KPiBy
-d29yay0+d3EsICZyd29yay0+d29yayk7DQo+IA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHxrZnJlZV9yY3Vfd29yaygpDQo+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfGtyd3AtPmJ1bGtfaGVhZF9mcmVlWzBdDQo+IGJ1
-bGsgaXMgZnJlZWQgYmVmb3JlIG5ldyBncCBlbmQhISENCj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8VGhlICJmcm9tX2NzZXQiIGlzIGZyZWVkDQo+IGJlZm9y
-ZSBuZXcgZ3AgZW5kLg0KPiANCj4gICAgIC8vIHRoZSB0YXNrIHJlc3VtZXMgc29tZSB0aW1lIGxh
-dGVyLg0KPiAgICAgIHxjc3Nfc2V0X3B0ci0+c3Vic3lzWyhzdWJzeXNfaWQpIDwtLS0gQ2F1c2Vk
-IGtlcm5lbCBjcmFzaCwgYmVjYXVzZQ0KPiBjc3Nfc2V0X3B0ciBpcyBmcmVlZC4NCj4gDQo+ICAg
-ICBUaGlzIGNvbW1pdCB0aGVyZWZvcmUgY2F1c2VzIGtmcmVlX3JjdV9tb25pdG9yKCkgdG8gcmVm
-cmFpbiBmcm9tDQo+IG1vdmluZw0KPiAgICAga2ZyZWVfcmN1KCkgbWVtb3J5IHRvIHRoZSBrZnJl
-ZV9yY3VfY3B1X3dvcmsgc3RydWN0dXJlIHVudGlsIHRoZSBSQ1UNCj4gICAgIGdyYWNlIHBlcmlv
-ZCBoYXMgY29tcGxldGVkIGZvciBhbGwgdGhyZWUgY2F0ZWdvcmllcy4NCj4gDQo+ICAgICB2Mjog
-VXNlIGhlbHBlciBmdW5jdGlvbiBpbnN0ZWFkIG9mIGluc2VydGVkIGNvZGUgYmxvY2sgYXQNCj4g
-a2ZyZWVfcmN1X21vbml0b3IoKS4NCj4gDQo+ICAgICBGaXhlczogYzAxNGVmZWVmNzZhICgicmN1
-OiBBZGQgbXVsdGlwbGUgaW4tZmxpZ2h0IGJhdGNoZXMgb2Yga2ZyZWVfcmN1KCkNCj4gd29yayIp
-DQo+ICAgICBSZXBvcnRlZC1ieTogTXVrZXNoIE9qaGEgPHF1aWNfbW9qaGFAcXVpY2luYy5jb20+
-DQo+ICAgICBTaWduZWQtb2ZmLWJ5OiBaaXdlaSBEYWkgPHppd2VpLmRhaUB1bmlzb2MuY29tPg0K
-PiAgICAgUmV2aWV3ZWQtYnk6IFVsYWR6aXNsYXUgUmV6a2kgKFNvbnkpIDx1cmV6a2lAZ21haWwu
-Y29tPg0KPiAgICAgU2lnbmVkLW9mZi1ieTogUGF1bCBFLiBNY0tlbm5leSA8cGF1bG1ja0BrZXJu
-ZWwub3JnPg0KPiANCj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9yY3UvdHJlZS5jIGIva2VybmVsL3Jj
-dS90cmVlLmMgaW5kZXgNCj4gODU5ZWUwMmY2NjE0Li5lMmRiZWE2Y2VlNGIgMTAwNjQ0DQo+IC0t
-LSBhL2tlcm5lbC9yY3UvdHJlZS5jDQo+ICsrKyBiL2tlcm5lbC9yY3UvdHJlZS5jDQo+IEBAIC0z
-MDUxLDYgKzMwNTEsMTggQEAgbmVlZF9vZmZsb2FkX2tyYyhzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAq
-a3JjcCkNCj4gICAgICAgICByZXR1cm4gISFSRUFEX09OQ0Uoa3JjcC0+aGVhZCk7DQo+ICB9DQo+
-IA0KPiArc3RhdGljIGJvb2wNCj4gK25lZWRfd2FpdF9mb3Jfa3J3cF93b3JrKHN0cnVjdCBrZnJl
-ZV9yY3VfY3B1X3dvcmsgKmtyd3ApIHsNCj4gKyAgICAgICBpbnQgaTsNCj4gKw0KPiArICAgICAg
-IGZvciAoaSA9IDA7IGkgPCBGUkVFX05fQ0hBTk5FTFM7IGkrKykNCj4gKyAgICAgICAgICAgICAg
-IGlmICghbGlzdF9lbXB0eSgma3J3cC0+YnVsa19oZWFkX2ZyZWVbaV0pKQ0KPiArICAgICAgICAg
-ICAgICAgICAgICAgICByZXR1cm4gdHJ1ZTsNCj4gKw0KPiArICAgICAgIHJldHVybiAhIWtyd3At
-PmhlYWRfZnJlZTsNCj4gK30NCj4gKw0KPiAgc3RhdGljIGludCBrcmNfY291bnQoc3RydWN0IGtm
-cmVlX3JjdV9jcHUgKmtyY3ApICB7DQo+ICAgICAgICAgaW50IHN1bSA9IGF0b21pY19yZWFkKCZr
-cmNwLT5oZWFkX2NvdW50KTsgQEAgLTMxMzQsMTUNCj4gKzMxNDYsMTQgQEAgc3RhdGljIHZvaWQg
-a2ZyZWVfcmN1X21vbml0b3Ioc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPiAgICAgICAgIGZv
-ciAoaSA9IDA7IGkgPCBLRlJFRV9OX0JBVENIRVM7IGkrKykgew0KPiAgICAgICAgICAgICAgICAg
-c3RydWN0IGtmcmVlX3JjdV9jcHVfd29yayAqa3J3cCA9ICYoa3JjcC0+a3J3X2FycltpXSk7DQo+
-IA0KPiAtICAgICAgICAgICAgICAgLy8gVHJ5IHRvIGRldGFjaCBidWxrX2hlYWQgb3IgaGVhZCBh
-bmQgYXR0YWNoIGl0IG92ZXIgYW55DQo+IC0gICAgICAgICAgICAgICAvLyBhdmFpbGFibGUgY29y
-cmVzcG9uZGluZyBmcmVlIGNoYW5uZWwuIEl0IGNhbiBiZSB0aGF0DQo+IC0gICAgICAgICAgICAg
-ICAvLyBhIHByZXZpb3VzIFJDVSBiYXRjaCBpcyBpbiBwcm9ncmVzcywgaXQgbWVhbnMgdGhhdA0K
-PiAtICAgICAgICAgICAgICAgLy8gaW1tZWRpYXRlbHkgdG8gcXVldWUgYW5vdGhlciBvbmUgaXMg
-bm90IHBvc3NpYmxlIHNvDQo+IC0gICAgICAgICAgICAgICAvLyBpbiB0aGF0IGNhc2UgdGhlIG1v
-bml0b3Igd29yayBpcyByZWFybWVkLg0KPiAtICAgICAgICAgICAgICAgaWYgKCghbGlzdF9lbXB0
-eSgma3JjcC0+YnVsa19oZWFkWzBdKSAmJg0KPiBsaXN0X2VtcHR5KCZrcndwLT5idWxrX2hlYWRf
-ZnJlZVswXSkpIHx8DQo+IC0gICAgICAgICAgICAgICAgICAgICAgICghbGlzdF9lbXB0eSgma3Jj
-cC0+YnVsa19oZWFkWzFdKSAmJg0KPiBsaXN0X2VtcHR5KCZrcndwLT5idWxrX2hlYWRfZnJlZVsx
-XSkpIHx8DQo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKFJFQURfT05DRShrcmNw
-LT5oZWFkKQ0KPiAmJiAha3J3cC0+aGVhZF9mcmVlKSkgew0KPiArICAgICAgICAgICAgICAgLy8g
-VHJ5IHRvIGRldGFjaCBidWxrX2hlYWQgb3IgaGVhZCBhbmQgYXR0YWNoIGl0LCBvbmx5DQo+IHdo
-ZW4NCj4gKyAgICAgICAgICAgICAgIC8vIGFsbCBjaGFubmVscyBhcmUgZnJlZS4gIEFueSBjaGFu
-bmVsIGlzIG5vdCBmcmVlIG1lYW5zIGF0DQo+IGtyd3ANCj4gKyAgICAgICAgICAgICAgIC8vIHRo
-ZXJlIGlzIG9uLWdvaW5nIHJjdSB3b3JrIHRvIGhhbmRsZSBrcndwJ3MgZnJlZQ0KPiBidXNpbmVz
-cy4NCj4gKyAgICAgICAgICAgICAgIGlmIChuZWVkX3dhaXRfZm9yX2tyd3Bfd29yayhrcndwKSkN
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+IA0KPiArICAgICAgICAgICAg
-ICAgLy8ga3ZmcmVlX3JjdV9kcmFpbl9yZWFkeSgpIG1pZ2h0IGhhbmRsZSB0aGlzIGtyY3AsIGlm
-IHNvDQo+IGdpdmUgdXAuDQo+ICsgICAgICAgICAgICAgICBpZiAobmVlZF9vZmZsb2FkX2tyYyhr
-cmNwKSkgew0KPiAgICAgICAgICAgICAgICAgICAgICAgICAvLyBDaGFubmVsIDEgY29ycmVzcG9u
-ZHMgdG8gdGhlIFNMQUItcG9pbnRlcg0KPiBidWxrIHBhdGguDQo+ICAgICAgICAgICAgICAgICAg
-ICAgICAgIC8vIENoYW5uZWwgMiBjb3JyZXNwb25kcyB0byB2bWFsbG9jLXBvaW50ZXIgYnVsaw0K
-PiBwYXRoLg0KPiAgICAgICAgICAgICAgICAgICAgICAgICBmb3IgKGogPSAwOyBqIDwgRlJFRV9O
-X0NIQU5ORUxTOyBqKyspIHsNCg==
+On Tue, Apr 04, 2023 at 02:49:15AM +0000, 代子为 (Ziwei Dai) wrote:
+> Hello Paul!
+> 
+> > -----邮件原件-----
+> > 发件人: Paul E. McKenney <paulmck@kernel.org>
+> > 发送时间: 2023年4月4日 6:58
+> > 收件人: 代子为 (Ziwei Dai) <Ziwei.Dai@unisoc.com>
+> > 抄送: urezki@gmail.com; frederic@kernel.org; quic_neeraju@quicinc.com;
+> > josh@joshtriplett.org; rostedt@goodmis.org;
+> > mathieu.desnoyers@efficios.com; jiangshanlai@gmail.com;
+> > joel@joelfernandes.org; rcu@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > 王双 (Shuang Wang) <shuang.wang@unisoc.com>; 辛依凡 (Yifan Xin)
+> > <Yifan.Xin@unisoc.com>; 王科 (Ke Wang) <Ke.Wang@unisoc.com>; 闫学文
+> > (Xuewen Yan) <Xuewen.Yan@unisoc.com>; 牛志国 (Zhiguo Niu)
+> > <Zhiguo.Niu@unisoc.com>; 黄朝阳 (Zhaoyang Huang)
+> > <zhaoyang.huang@unisoc.com>
+> > 主题: Re: [PATCH V2] rcu: Make sure new krcp free business is handled after
+> > the wanted rcu grace period.
+> > 
+> > 
+> > 注意: 这封邮件来自于外部。除非你确定邮件内容安全，否则不要点击任
+> > 何链接和附件。
+> > CAUTION: This email originated from outside of the organization. Do not click
+> > links or open attachments unless you recognize the sender and know the
+> > content is safe.
+> > 
+> > 
+> > 
+> > On Fri, Mar 31, 2023 at 08:42:09PM +0800, Ziwei Dai wrote:
+> > > In kfree_rcu_monitor(), new free business at krcp is attached to any
+> > > free channel at krwp. kfree_rcu_monitor() is responsible to make sure
+> > > new free business is handled after the rcu grace period. But if there
+> > > is any none-free channel at krwp already, that means there is an
+> > > on-going rcu work, which will cause the kvfree_call_rcu()-triggered
+> > > free business is done before the wanted rcu grace period ends.
+> > >
+> > > This commit ignore krwp which has non-free channel at
+> > > kfree_rcu_monitor(), to fix the issue that kvfree_call_rcu() loses
+> > effectiveness.
+> > >
+> > > Below is the css_set obj "from_cset" use-after-free case caused by
+> > > kvfree_call_rcu() losing effectiveness.
+> > > CPU 0 calls rcu_read_lock(), then use "from_cset", then hard irq
+> > > comes, the task is schedule out.
+> > > CPU 1 calls kfree_rcu(cset, rcu_head), willing to free "from_cset" after new
+> > gp.
+> > > But "from_cset" is freed right after current gp end. "from_cset" is
+> > reallocated.
+> > > CPU 0 's task arrives back, references "from_cset"'s member, which causes
+> > crash.
+> > >
+> > > CPU 0                                 CPU 1
+> > > count_memcg_event_mm()
+> > > |rcu_read_lock()  <---
+> > > |mem_cgroup_from_task()
+> > >  |// css_set_ptr is the "from_cset" mentioned on CPU 1  |css_set_ptr =
+> > > rcu_dereference((task)->cgroups)  |// Hard irq comes, current task is
+> > > scheduled out.
+> > >
+> > >                                       cgroup_attach_task()
+> > >                                       |cgroup_migrate()
+> > >                                       |cgroup_migrate_execute()
+> > >                                       |css_set_move_task(task,
+> > from_cset, to_cset, true)
+> > >                                       |cgroup_move_task(task,
+> > to_cset)
+> > >                                       |rcu_assign_pointer(.., to_cset)
+> > >                                       |...
+> > >                                       |cgroup_migrate_finish()
+> > >
+> > |put_css_set_locked(from_cset)
+> > >                                       |from_cset->refcount return 0
+> > >                                       |kfree_rcu(cset, rcu_head) //
+> > means to free from_cset after new gp
+> > >                                       |add_ptr_to_bulk_krc_lock()
+> > >
+> > > |schedule_delayed_work(&krcp->monitor_work, ..)
+> > >
+> > >                                       kfree_rcu_monitor()
+> > >                                       |krcp->bulk_head[0]'s work
+> > attached to krwp->bulk_head_free[]
+> > >                                       |queue_rcu_work(system_wq,
+> > &krwp->rcu_work)
+> > >                                       |if rwork->rcu.work is not in
+> > WORK_STRUCT_PENDING_BIT state,
+> > >                                       |call_rcu(&rwork->rcu,
+> > > rcu_work_rcufn) <--- request a new gp
+> > >
+> > >                                       // There is a perious call_rcu(..,
+> > rcu_work_rcufn)
+> > >                                       // gp end, rcu_work_rcufn() is
+> > called.
+> > >                                       rcu_work_rcufn()
+> > >                                       |__queue_work(.., rwork->wq,
+> > > &rwork->work);
+> > >
+> > >                                       |kfree_rcu_work()
+> > >                                       |krwp->bulk_head_free[0] bulk
+> > is freed before new gp end!!!
+> > >                                       |The "from_cset" is freed
+> > before new gp end.
+> > >
+> > > // the task is scheduled in after many ms.
+> > >  |css_set_ptr->subsys[(subsys_id) <--- Caused kernel crash, because
+> > css_set_ptr is freed.
+> > >
+> > > v2: Use helper function instead of inserted code block at
+> > kfree_rcu_monitor().
+> > >
+> > > Fixes: c014efeef76a ("rcu: Add multiple in-flight batches of
+> > > kfree_rcu() work")
+> > > Signed-off-by: Ziwei Dai <ziwei.dai@unisoc.com>
+> > 
+> > Good catch, thank you!!!
+> > 
+> > How difficult was this to trigger?  If it can be triggered easily, this of course
+> > needs to go into mainline sooner rather than later.
+> 
+> Roughly we can reproduce this issue within two rounds of 48h stress test, 
+> with 20 k5.15 devices. If KASAN is enabled, the reproduce rate is higher.
+> So I think sooner is better.
+
+Thank you for the info!  This is in theory an old bug, but if you can
+easily find out, does it trigger for you on v6.2 or earlier?
+
+> > Longer term, would it make sense to run the three channels through RCU
+> > separately, in order to avoid one channel refraining from starting a grace
+> > period just because some other channel has callbacks waiting for a grace
+> > period to complete?  One argument against might be energy efficiency, but
+> > perhaps the ->gp_snap field could be used to get the best of both worlds.
+> 
+> I see kvfree_rcu_drain_ready(krcp) is already called at the beginning of
+> kfree_rcu_monitor(), which polls the ->gp_snap field, to decide
+> whether to free channel objects immediately or after gp.
+> Both energy efficiency and timing seems be considered?
+
+My concern is that running the channels separately might mean more grace
+periods (and thus more energy draw) on nearly idle devices, such devices
+usually being the ones for which energy efficiency matters most.
+
+But perhaps Vlad, Neeraj, or Joel has some insight on this, given
+that they are the ones working on battery-powered devices.
+
+> > Either way, this fixes only one bug of two.  The second bug is in the
+> > kfree_rcu() tests, which should have caught this bug.  Thoughts on a good fix
+> > for those tests?
+> 
+> I inserted a msleep() between "rcu_read_lock(), get pointer via rcu_dereference()"
+> and "reference pointer, using the member", at the rcu scenario, then we can
+> reproduce this issue very soon in stress test. Can kfree_rcu() tests insert msleep()?
+
+Another approach is to separate concerns, so that readers interact with
+grace periods in the rcutorture.c tests, and to add the interaction
+of to-be-freed memory with grace periods in the rcuscale kvfree tests.
+I took a step in this direction with this commit on the -rcu tree's
+"dev" branch:
+
+efbe7927f479 ("rcu/kvfree: Add debug to check grace periods")
+
+Given this, might it be possible to make rcuscale.c's kfree_rcu()
+testing create patterns of usage of the three channels so as to
+catch this bug that way?
+
+> > I have applied Uladzislau's and Mukesh's tags, and done the usual
+> > wordsmithing as shown at the end of this message.  Please let me know if I
+> > messed anything up.
+> 
+> Thank you for the improvement on the patch! It seems better now.
+
+No problem and thank you again for the debugging and the fix!
+
+							Thanx, Paul
+
+> > > ---
+> > >  kernel/rcu/tree.c | 27 +++++++++++++++++++--------
+> > >  1 file changed, 19 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index
+> > > 8e880c0..7b95ee9 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3024,6 +3024,18 @@ static void kfree_rcu_work(struct work_struct
+> > *work)
+> > >       return !!READ_ONCE(krcp->head);
+> > >  }
+> > >
+> > > +static bool
+> > > +need_wait_for_krwp_work(struct kfree_rcu_cpu_work *krwp) {
+> > > +     int i;
+> > > +
+> > > +     for (i = 0; i < FREE_N_CHANNELS; i++)
+> > > +             if (!list_empty(&krwp->bulk_head_free[i]))
+> > > +                     return true;
+> > > +
+> > > +     return !!krwp->head_free;
+> > 
+> > This is fixed from v1, good!
+> > 
+> > > +}
+> > > +
+> > >  static int krc_count(struct kfree_rcu_cpu *krcp)  {
+> > >       int sum = atomic_read(&krcp->head_count); @@ -3107,15
+> > +3119,14
+> > > @@ static void kfree_rcu_monitor(struct work_struct *work)
+> > >       for (i = 0; i < KFREE_N_BATCHES; i++) {
+> > >               struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
+> > >
+> > > -             // Try to detach bulk_head or head and attach it over any
+> > > -             // available corresponding free channel. It can be that
+> > > -             // a previous RCU batch is in progress, it means that
+> > > -             // immediately to queue another one is not possible so
+> > > -             // in that case the monitor work is rearmed.
+> > > -             if ((!list_empty(&krcp->bulk_head[0]) &&
+> > list_empty(&krwp->bulk_head_free[0])) ||
+> > > -                     (!list_empty(&krcp->bulk_head[1]) &&
+> > list_empty(&krwp->bulk_head_free[1])) ||
+> > > -                             (READ_ONCE(krcp->head)
+> > && !krwp->head_free)) {
+> > > +             // Try to detach bulk_head or head and attach it, only when
+> > > +             // all channels are free.  Any channel is not free means at
+> > krwp
+> > > +             // there is on-going rcu work to handle krwp's free
+> > business.
+> > > +             if (need_wait_for_krwp_work(krwp))
+> > > +                     continue;
+> > >
+> > > +             // kvfree_rcu_drain_ready() might handle this krcp, if so
+> > give up.
+> > > +             if (need_offload_krc(krcp)) {
+> > >                       // Channel 1 corresponds to the SLAB-pointer
+> > bulk path.
+> > >                       // Channel 2 corresponds to vmalloc-pointer bulk
+> > path.
+> > >                       for (j = 0; j < FREE_N_CHANNELS; j++) {
+> > > --
+> > > 1.9.1
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit e222f9a512539c3f4093a55d16624d9da614800b
+> > Author: Ziwei Dai <ziwei.dai@unisoc.com>
+> > Date:   Fri Mar 31 20:42:09 2023 +0800
+> > 
+> >     rcu: Avoid freeing new kfree_rcu() memory after old grace period
+> > 
+> >     Memory passed to kvfree_rcu() that is to be freed is tracked by a
+> >     per-CPU kfree_rcu_cpu structure, which in turn contains pointers
+> >     to kvfree_rcu_bulk_data structures that contain pointers to memory
+> >     that has not yet been handed to RCU, along with an kfree_rcu_cpu_work
+> >     structure that tracks the memory that has already been handed to RCU.
+> >     These structures track three categories of memory: (1) Memory for
+> >     kfree(), (2) Memory for kvfree(), and (3) Memory for both that arrived
+> >     during an OOM episode.  The first two categories are tracked in a
+> >     cache-friendly manner involving a dynamically allocated page of pointers
+> >     (the aforementioned kvfree_rcu_bulk_data structures), while the third
+> >     uses a simple (but decidedly cache-unfriendly) linked list through the
+> >     rcu_head structures in each block of memory.
+> > 
+> >     On a given CPU, these three categories are handled as a unit, with that
+> >     CPU's kfree_rcu_cpu_work structure having one pointer for each of the
+> >     three categories.  Clearly, new memory for a given category cannot be
+> >     placed in the corresponding kfree_rcu_cpu_work structure until any old
+> >     memory has had its grace period elapse and thus has been removed.
+> > And
+> >     the kfree_rcu_monitor() function does in fact check for this.
+> > 
+> >     Except that the kfree_rcu_monitor() function checks these pointers one
+> >     at a time.  This means that if the previous kfree_rcu() memory passed
+> >     to RCU had only category 1 and the current one has only category 2, the
+> >     kfree_rcu_monitor() function will send that current category-2 memory
+> >     along immediately.  This can result in memory being freed too soon,
+> >     that is, out from under unsuspecting RCU readers.
+> > 
+> >     To see this, consider the following sequence of events, in which:
+> > 
+> >     o       Task A on CPU 0 calls rcu_read_lock(), then uses "from_cset",
+> >             then is preempted.
+> > 
+> >     o       CPU 1 calls kfree_rcu(cset, rcu_head) in order to free
+> > "from_cset"
+> >             after a later grace period.  Except that "from_cset" is freed
+> >             right after the previous grace period ended, so that
+> > "from_cset"
+> >             is immediately freed.  Task A resumes and references
+> > "from_cset"'s
+> >             member, after which nothing good happens.
+> > 
+> >     In full detail:
+> > 
+> >     CPU 0                                   CPU 1
+> >     ----------------------                  ----------------------
+> >     count_memcg_event_mm()
+> >     |rcu_read_lock()  <---
+> >     |mem_cgroup_from_task()
+> >      |// css_set_ptr is the "from_cset" mentioned on CPU 1
+> >      |css_set_ptr = rcu_dereference((task)->cgroups)
+> >      |// Hard irq comes, current task is scheduled out.
+> > 
+> >                                             cgroup_attach_task()
+> >                                             |cgroup_migrate()
+> > 
+> > |cgroup_migrate_execute()
+> >                                             |css_set_move_task(task,
+> > from_cset, to_cset, true)
+> >                                             |cgroup_move_task(task,
+> > to_cset)
+> >                                             |rcu_assign_pointer(..,
+> > to_cset)
+> >                                             |...
+> >                                             |cgroup_migrate_finish()
+> > 
+> > |put_css_set_locked(from_cset)
+> >                                             |from_cset->refcount
+> > return 0
+> >                                             |kfree_rcu(cset, rcu_head)
+> > // free from_cset after new gp
+> > 
+> > |add_ptr_to_bulk_krc_lock()
+> > 
+> > |schedule_delayed_work(&krcp->monitor_work, ..)
+> > 
+> >                                             kfree_rcu_monitor()
+> >                                             |krcp->bulk_head[0]'s
+> > work attached to krwp->bulk_head_free[]
+> > 
+> > |queue_rcu_work(system_wq, &krwp->rcu_work)
+> >                                             |if rwork->rcu.work is not
+> > in WORK_STRUCT_PENDING_BIT state,
+> >                                             |call_rcu(&rwork->rcu,
+> > rcu_work_rcufn) <--- request new gp
+> > 
+> >                                             // There is a perious
+> > call_rcu(.., rcu_work_rcufn)
+> >                                             // gp end,
+> > rcu_work_rcufn() is called.
+> >                                             rcu_work_rcufn()
+> >                                             |__queue_work(..,
+> > rwork->wq, &rwork->work);
+> > 
+> >                                             |kfree_rcu_work()
+> >                                             |krwp->bulk_head_free[0]
+> > bulk is freed before new gp end!!!
+> >                                             |The "from_cset" is freed
+> > before new gp end.
+> > 
+> >     // the task resumes some time later.
+> >      |css_set_ptr->subsys[(subsys_id) <--- Caused kernel crash, because
+> > css_set_ptr is freed.
+> > 
+> >     This commit therefore causes kfree_rcu_monitor() to refrain from
+> > moving
+> >     kfree_rcu() memory to the kfree_rcu_cpu_work structure until the RCU
+> >     grace period has completed for all three categories.
+> > 
+> >     v2: Use helper function instead of inserted code block at
+> > kfree_rcu_monitor().
+> > 
+> >     Fixes: c014efeef76a ("rcu: Add multiple in-flight batches of kfree_rcu()
+> > work")
+> >     Reported-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> >     Signed-off-by: Ziwei Dai <ziwei.dai@unisoc.com>
+> >     Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index
+> > 859ee02f6614..e2dbea6cee4b 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3051,6 +3051,18 @@ need_offload_krc(struct kfree_rcu_cpu *krcp)
+> >         return !!READ_ONCE(krcp->head);
+> >  }
+> > 
+> > +static bool
+> > +need_wait_for_krwp_work(struct kfree_rcu_cpu_work *krwp) {
+> > +       int i;
+> > +
+> > +       for (i = 0; i < FREE_N_CHANNELS; i++)
+> > +               if (!list_empty(&krwp->bulk_head_free[i]))
+> > +                       return true;
+> > +
+> > +       return !!krwp->head_free;
+> > +}
+> > +
+> >  static int krc_count(struct kfree_rcu_cpu *krcp)  {
+> >         int sum = atomic_read(&krcp->head_count); @@ -3134,15
+> > +3146,14 @@ static void kfree_rcu_monitor(struct work_struct *work)
+> >         for (i = 0; i < KFREE_N_BATCHES; i++) {
+> >                 struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
+> > 
+> > -               // Try to detach bulk_head or head and attach it over any
+> > -               // available corresponding free channel. It can be that
+> > -               // a previous RCU batch is in progress, it means that
+> > -               // immediately to queue another one is not possible so
+> > -               // in that case the monitor work is rearmed.
+> > -               if ((!list_empty(&krcp->bulk_head[0]) &&
+> > list_empty(&krwp->bulk_head_free[0])) ||
+> > -                       (!list_empty(&krcp->bulk_head[1]) &&
+> > list_empty(&krwp->bulk_head_free[1])) ||
+> > -                               (READ_ONCE(krcp->head)
+> > && !krwp->head_free)) {
+> > +               // Try to detach bulk_head or head and attach it, only
+> > when
+> > +               // all channels are free.  Any channel is not free means at
+> > krwp
+> > +               // there is on-going rcu work to handle krwp's free
+> > business.
+> > +               if (need_wait_for_krwp_work(krwp))
+> > +                       continue;
+> > 
+> > +               // kvfree_rcu_drain_ready() might handle this krcp, if so
+> > give up.
+> > +               if (need_offload_krc(krcp)) {
+> >                         // Channel 1 corresponds to the SLAB-pointer
+> > bulk path.
+> >                         // Channel 2 corresponds to vmalloc-pointer bulk
+> > path.
+> >                         for (j = 0; j < FREE_N_CHANNELS; j++) {
