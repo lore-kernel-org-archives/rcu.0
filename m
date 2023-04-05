@@ -2,103 +2,104 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4C37C76188
-	for <rcu@archiver.kernel.org>; Wed,  5 Apr 2023 09:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0A9CC761A6
+	for <rcu@archiver.kernel.org>; Wed,  5 Apr 2023 14:42:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237170AbjDEJKt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 5 Apr 2023 05:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
+        id S238334AbjDEOmB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 5 Apr 2023 10:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237269AbjDEJKs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 5 Apr 2023 05:10:48 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C4B30F8;
-        Wed,  5 Apr 2023 02:10:44 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id q16so45705811lfe.10;
-        Wed, 05 Apr 2023 02:10:44 -0700 (PDT)
+        with ESMTP id S238363AbjDEOl7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 5 Apr 2023 10:41:59 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E774D5FDC;
+        Wed,  5 Apr 2023 07:41:46 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id q14so37535264ljm.11;
+        Wed, 05 Apr 2023 07:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680685843;
+        d=gmail.com; s=20210112; t=1680705705;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m5eGS81xIRzLVimyFVJHz1me2KIfa7Aw0JDi4lE6yBw=;
-        b=TbCR88LIwsj+xunQFMt8mYgULUxfDkMgKE704G9q8TE7up5QaiL3uV0TuVe7A1EAme
-         l1C4HfppATuridvxmMYvFEcdU6dlgjOFjL+VtQEFN3b+m+tTpIAe7/25wPFSzhlFvIyQ
-         Sjeu9j2PjeDpsYI97wiDXx9nEtCNeUDBJclyEfPei+so20voQiqeOTlYC4ZvJmakq9dM
-         PYY2LVGSZNw0fL/F4xgf9RINzkRqwkGFHhIMkM9SOWMXHm1gPVY3O+90P+sM2hOS6vBd
-         8c7xZATz8lSKLxJwFuxFiwfFbfA6Sj/7nX4xQ3+VEBK5DyeDsfEOWNCbz1dyEPvvgQm5
-         eDnQ==
+        bh=OrPnHM6kR07tQpQhjwYQFPsQYzV9Yi9Okr9ge4OtXWY=;
+        b=Y6XW9Eor55qHHGh9dkFtt3Xvy98hvF32Ayr5ibjrJd8L8A9B3ddu/ykIvGxNp6x3XB
+         xAAnssCqt7nFmQhONLg1R4bRmUBjFdmIUk4A+o0UTfkAlaFJ7acZGykT+rdbSkG5I2qw
+         JDOTDueTu7YyhJB3X37Edaqz+M8Q17WLUOGk9kBQNpnLxPvkGXX+4cYbJxqnURT0+hTA
+         wnbqXw9GeBbsHv3POnHu+Z+cq1OPENhvRr+rKOEPS0feVeTxIk/Hhy4Dl0KnTFKzecoc
+         Ni36qGbhyetiGBde6UNs/cm6y7n4GSCyym4vSxrYIgRNZQAYax3hGhgdHqzA9XoQMzPN
+         /Y5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680685843;
+        d=1e100.net; s=20210112; t=1680705705;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m5eGS81xIRzLVimyFVJHz1me2KIfa7Aw0JDi4lE6yBw=;
-        b=6boarZeUNvA+2Mv5i9WZszZ3In1QoOeYwIl5NRNOphIyy+BkIWfHACohiOVB1193oo
-         VZI4HW3nxloA2KarrKwrA0fb1lFBWVmrBam1wReWDB/51oC0oZbRzOypPG68//Ymh4v2
-         0JhVDK2DvSfAiRQ3waoBU83h7RJr6HOOulcl3Q/4RJsyYP/1bNYoMdagqgSVesN9re+J
-         tJQmbHvlKImkzGpTvugOeKEAIvbnmQeAy6mvjmG9z6pjwMaDu7e17igRuGFFG7jlckWG
-         J17NBzuYeogDBU1t8+48ym73SMhSd9M8rascQdvZa/zNdc5BOjjr9jh2UOok3lPE2YGw
-         Doow==
-X-Gm-Message-State: AAQBX9ecy4mVzsXhtikZuThWI6RMixavdz7w5b/AcYFPlX7aemVU0Hzg
-        kihGeowOynr0VOVrwZt4T1E=
-X-Google-Smtp-Source: AKy350b4K3jar6nPjP8Wefj/hXUqqcReTrTgL118VOV452uc4quiQbvnwrzxkzB+7r26cGDjjB2FyA==
-X-Received: by 2002:ac2:4294:0:b0:4e8:44a5:6018 with SMTP id m20-20020ac24294000000b004e844a56018mr1371310lfh.44.1680685842747;
-        Wed, 05 Apr 2023 02:10:42 -0700 (PDT)
+        bh=OrPnHM6kR07tQpQhjwYQFPsQYzV9Yi9Okr9ge4OtXWY=;
+        b=KFIw/a4zZUr4nsML8mmXQES4GbYPVHwf7kSPAZkELmbultyUoDMuiHUPEdBLLpzi2R
+         MLjhkEMm8/43uoOHlC2GB6NqU+xldQVPLwsiSWA+apBIN03tSyU93/9MpXXySEdbeNol
+         qbXVuhHksxOnHCXRcf+pEKgZkm2E9ioUP45ExZ2NmbTyj+wUShVfn93E0Ks2gBtpNR3C
+         ErokFRf3YySnbkxNDZFk5avieBnPcxHoM6tx9Zn2WDt7quEYohSNgCKmZua/tGN5dbPd
+         /3RnCHxNdeSMsuv47VOxKcuXcUNIPAmYZEAn0BGbjb6+xLDANvB8Nh9uquQa3yQNN0yT
+         yDVA==
+X-Gm-Message-State: AAQBX9fn9y+k8F19RUvU0vrRsdYTQBtFme+omf4EkEf7pkFBoA4VdPaZ
+        +3zKm20/ryZyEx+W4QiI6IY=
+X-Google-Smtp-Source: AKy350bWnufP/jBagnfX16UQ9PaTzblcl0/JCus6iY6SfZ5mY8xLEDazVjN73F8XIGJ0jRybIvPMjg==
+X-Received: by 2002:a2e:b992:0:b0:295:b10f:7c9a with SMTP id p18-20020a2eb992000000b00295b10f7c9amr826333ljp.4.1680705704844;
+        Wed, 05 Apr 2023 07:41:44 -0700 (PDT)
 Received: from pc636 (host-90-233-209-177.mobileonline.telia.com. [90.233.209.177])
-        by smtp.gmail.com with ESMTPSA id l14-20020ac2554e000000b004e811e3554dsm2756772lfk.185.2023.04.05.02.10.41
+        by smtp.gmail.com with ESMTPSA id c11-20020a05651c014b00b0029e5448e752sm2866434ljd.131.2023.04.05.07.41.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 02:10:42 -0700 (PDT)
+        Wed, 05 Apr 2023 07:41:44 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 5 Apr 2023 11:10:39 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        RCU <rcu@vger.kernel.org>, quic_neeraju@quicinc.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/1] rcu/kvfree: Add debug check of GP ready for ptrs in
- a list
-Message-ID: <ZC07DxeqllxP2Zpv@pc636>
-References: <20230404141300.908202-1-urezki@gmail.com>
- <f92cb016-b978-40ab-b025-bf2410b0537d@paulmck-laptop>
+Date:   Wed, 5 Apr 2023 16:41:42 +0200
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     urezki@gmail.com, paulmck@kernel.org, frederic@kernel.org,
+        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/kvfree: Delay the execution of drain_page_cache()
+Message-ID: <ZC2IpnVzW6pjjqbk@pc636>
+References: <20230405021342.606264-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f92cb016-b978-40ab-b025-bf2410b0537d@paulmck-laptop>
+In-Reply-To: <20230405021342.606264-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 05:00:13PM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 04, 2023 at 04:13:00PM +0200, Uladzislau Rezki (Sony) wrote:
-> > Triiger a warning if a grace period is not passed yet for
-> > objects queued on a linked list via rcu_head structures.
-> > 
-> > Once detached, take a full snapsot of GP sequnces to check
-> > later that a grace period is passed and it is safe to free
-> > all pointers.
-> > 
-> > Based on latest 'dev' branch.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, Apr 05, 2023 at 10:13:42AM +0800, Zqiang wrote:
+> Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
+> executed before kfree_rcu_monitor() to drain page cache, if the
+> bnode structure's->gp_snap has done, the kvfree_rcu_bulk() will
+> fill the page cache again in kfree_rcu_monitor(), this commit
+> therefore move drain_page_cache() after kfree_rcu_monitor() to
+> drain page cache.
 > 
-> Very good, thank you!
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I queued the patch wordsmithed as shown below for review and further
-> testing.  Please check for any errors.
-> 
-> How should we go about testing this code?  The way that it would get
-> exercised in production would be during an out-of-memory event, correct?
-> 
-Either by flooding kfree_rcu() calls by many threads or simulate a
-low memory condition. I applied i high pressure using 1 000 000 frees
-by 64 kthreads on 64 CPUs system.
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 35be35f8236b..3461fc2640b9 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3424,8 +3424,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+>  		count = krc_count(krcp);
+> -		count += drain_page_cache(krcp);
+>  		kfree_rcu_monitor(&krcp->monitor_work.work);
+> +		count += drain_page_cache(krcp);
+>  
+>  		sc->nr_to_scan -= count;
+>  		freed += count;
+> -- 
+> 2.32.0
+One question. Maybe we can update the put_cached_bnode() with
+checking if backoff_page_cache_fill was set to prevent cache
+growing?
 
-IMHO, we have two GP checks, one for bulk and another one for list
-and it looks like enough at least from my point of view.
+Thanks!
 
 --
 Uladzislau Rezki
