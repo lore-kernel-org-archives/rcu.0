@@ -2,148 +2,83 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE091C76188
-	for <rcu@archiver.kernel.org>; Wed,  5 Apr 2023 00:00:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D76A8C76188
+	for <rcu@archiver.kernel.org>; Wed,  5 Apr 2023 02:13:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235365AbjDEAAR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 4 Apr 2023 20:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
+        id S235802AbjDECNG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 4 Apr 2023 22:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbjDEAAQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 4 Apr 2023 20:00:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B00421E;
-        Tue,  4 Apr 2023 17:00:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F02776220D;
-        Wed,  5 Apr 2023 00:00:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AF55C4339B;
-        Wed,  5 Apr 2023 00:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680652814;
-        bh=yx7REri00Y2sl3gyrssI0xdF1WIY6vCQEt4sdApMSpo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DE3YTRK+0cmnp72T0eaFhLdh55G6dFBhDTGfX+MLsagdkaL0ZLZwmVlMKRXcFt/KW
-         V1EF5fo/MJ15LWVZb2zEGCdCOTb9eX0bxEIAuWIifvn3Y6hLijdOC1Tj25BKjPDzNC
-         5FMD6SrDVyo+9YuYYUCxEWQIGaU8fFBJguUNCKC7jchlEf/LpHiEzLkHS+Jsx0VXoH
-         m4y4eBq3ouTzsjRnkhxqyMNkRssEiCPGWPIN7+2LDR5ZMPv72wxxQTfvMo8RLwM/H/
-         mPrEnKv0Owx0hhVCQPygmpTMjlazC7wxxYPP8rF6i1BZXetP6hAd++TAypkuEyUB6o
-         qKrSLDMaXWE0Q==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E70FC15404B4; Tue,  4 Apr 2023 17:00:13 -0700 (PDT)
-Date:   Tue, 4 Apr 2023 17:00:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     RCU <rcu@vger.kernel.org>, quic_neeraju@quicinc.com,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/1] rcu/kvfree: Add debug check of GP ready for ptrs in
- a list
-Message-ID: <f92cb016-b978-40ab-b025-bf2410b0537d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230404141300.908202-1-urezki@gmail.com>
+        with ESMTP id S232695AbjDECNF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 4 Apr 2023 22:13:05 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B086119BD;
+        Tue,  4 Apr 2023 19:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680660784; x=1712196784;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=w+JnPxtm7tNsQ6086I9DiyvCHKa0VadIfgzIchRU8KQ=;
+  b=jU2CxC9CCUJlzQmSdvA6/Ucg43+0WlDms21Y1WcH7o5KxGH/3yZ6irLX
+   u4Y7bYk2FI3LmB2dYUJWgb0N3CObHaHq/5FqXrClYKNr+OcPxRaVgTTDc
+   erOVs8wWAWFCZyxKEeOjZH8CpQYmQ1q/tnPJjdcVvqVLZYlj6qHDPS880
+   rdI2lsiJW2o4o749VOrs3dEqHCyU4noKAYjeg8MNfsi9DVm9fOV/xVDyr
+   hpti8Ye4a8Ahrv2+MH5vS95Luqgn692tZKUi9K3dyCGRn+FSlOlSBh0lz
+   yMzB79MqYHyXlX7u38dHjZKghVRI3u3l/pTojHMSisTiCRYUETXjT8iLU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10670"; a="428637808"
+X-IronPort-AV: E=Sophos;i="5.98,319,1673942400"; 
+   d="scan'208";a="428637808"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2023 19:13:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10670"; a="830198271"
+X-IronPort-AV: E=Sophos;i="5.98,319,1673942400"; 
+   d="scan'208";a="830198271"
+Received: from ubuntu.bj.intel.com ([10.238.155.108])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Apr 2023 19:13:02 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     urezki@gmail.com, paulmck@kernel.org, frederic@kernel.org,
+        joel@joelfernandes.org, qiang1.zhang@intel.com
+Cc:     qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu/kvfree: Delay the execution of drain_page_cache()
+Date:   Wed,  5 Apr 2023 10:13:42 +0800
+Message-Id: <20230405021342.606264-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230404141300.908202-1-urezki@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 04:13:00PM +0200, Uladzislau Rezki (Sony) wrote:
-> Triiger a warning if a grace period is not passed yet for
-> objects queued on a linked list via rcu_head structures.
-> 
-> Once detached, take a full snapsot of GP sequnces to check
-> later that a grace period is passed and it is safe to free
-> all pointers.
-> 
-> Based on latest 'dev' branch.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
+executed before kfree_rcu_monitor() to drain page cache, if the
+bnode structure's->gp_snap has done, the kvfree_rcu_bulk() will
+fill the page cache again in kfree_rcu_monitor(), this commit
+therefore move drain_page_cache() after kfree_rcu_monitor() to
+drain page cache.
 
-Very good, thank you!
-
-I queued the patch wordsmithed as shown below for review and further
-testing.  Please check for any errors.
-
-How should we go about testing this code?  The way that it would get
-exercised in production would be during an out-of-memory event, correct?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 900093e6ea97d9ff5be2dee062f93a72437ca3a5
-Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Date:   Tue Apr 4 16:13:00 2023 +0200
-
-    rcu/kvfree: Add debug check for GP complete for kfree_rcu_cpu list
-    
-    Under low-memory conditions, kvfree_rcu() will use each object's
-    rcu_head structure to queue objects in a singly linked list headed by
-    the kfree_rcu_cpu structure's ->head field.  This list is passed to
-    call_rcu() as a unit, but there is no indication of which grace period
-    this list needs to wait for.  This in turn prevents adding debug checks
-    in the kfree_rcu_work() as was done for the two page-of-pointers channels
-    in the kfree_rcu_cpu structure.
-    
-    This commit therefore adds a ->head_free_gp_snap field to the
-    kfree_rcu_cpu_work structure to record this grace-period number.  It also
-    adds a WARN_ON_ONCE() to kfree_rcu_monitor() that checks to make sure
-    that the required grace period has in fact elapsed.
-    
-    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4838a55da34f..35be35f8236b 100644
+index 35be35f8236b..3461fc2640b9 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2802,6 +2802,7 @@ struct kvfree_rcu_bulk_data {
- struct kfree_rcu_cpu_work {
- 	struct rcu_work rcu_work;
- 	struct rcu_head *head_free;
-+	struct rcu_gp_oldstate head_free_gp_snap;
- 	struct list_head bulk_head_free[FREE_N_CHANNELS];
- 	struct kfree_rcu_cpu *krcp;
- };
-@@ -3007,6 +3008,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	struct rcu_head *head;
- 	struct kfree_rcu_cpu *krcp;
- 	struct kfree_rcu_cpu_work *krwp;
-+	struct rcu_gp_oldstate head_gp_snap;
- 	int i;
+@@ -3424,8 +3424,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
  
- 	krwp = container_of(to_rcu_work(work),
-@@ -3021,6 +3023,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	// Channel 3.
- 	head = krwp->head_free;
- 	krwp->head_free = NULL;
-+	head_gp_snap = krwp->head_free_gp_snap;
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 		count = krc_count(krcp);
+-		count += drain_page_cache(krcp);
+ 		kfree_rcu_monitor(&krcp->monitor_work.work);
++		count += drain_page_cache(krcp);
  
- 	// Handle the first two channels.
-@@ -3037,7 +3040,8 @@ static void kfree_rcu_work(struct work_struct *work)
- 	 * queued on a linked list through their rcu_head structures.
- 	 * This list is named "Channel 3".
- 	 */
--	kvfree_rcu_list(head);
-+	if (head && !WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&head_gp_snap)))
-+		kvfree_rcu_list(head);
- }
- 
- static bool
-@@ -3169,6 +3173,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 			// objects queued on the linked list.
- 			if (!krwp->head_free) {
- 				krwp->head_free = krcp->head;
-+				get_state_synchronize_rcu_full(&krwp->head_free_gp_snap);
- 				atomic_set(&krcp->head_count, 0);
- 				WRITE_ONCE(krcp->head, NULL);
- 			}
+ 		sc->nr_to_scan -= count;
+ 		freed += count;
+-- 
+2.32.0
+
