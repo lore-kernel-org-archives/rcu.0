@@ -2,105 +2,79 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4821C76196
-	for <rcu@archiver.kernel.org>; Thu,  6 Apr 2023 17:50:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1229C7618D
+	for <rcu@archiver.kernel.org>; Thu,  6 Apr 2023 18:14:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbjDFRu3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 6 Apr 2023 13:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S238947AbjDFSOf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 6 Apr 2023 14:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjDFRu2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 6 Apr 2023 13:50:28 -0400
+        with ESMTP id S239655AbjDFSOe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 6 Apr 2023 14:14:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F3E49CA;
-        Thu,  6 Apr 2023 10:50:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4120DA24B
+        for <rcu@vger.kernel.org>; Thu,  6 Apr 2023 11:14:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC35960DF4;
-        Thu,  6 Apr 2023 17:50:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FC6DC433EF;
-        Thu,  6 Apr 2023 17:50:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D3349617E2
+        for <rcu@vger.kernel.org>; Thu,  6 Apr 2023 18:14:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46501C433D2;
+        Thu,  6 Apr 2023 18:14:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680803426;
-        bh=N8h/IJ7vQs3LY2UE87u4CYmDFTFt5FQw7xX/wFLkIgg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CYWUCe4Y7g2BVX5eqHYLV40TSIcXpmdH4Sk4G/5UQah7nSIuPX0mIk9qHOFcwainr
-         JJIaDmhCiTXfkm/Bko05DoxFDDLGIhiRkbkG6IZBvKz8rdugAicvqQX19/ku3bcuTF
-         btcGrs8M1Y+OUp0LRNtjJc/qLztclhUI+xUzAHujP7WAf2XINA67RuCAcZ1o+5Olig
-         MgE+6hoxHQKrhJ8b9dSkcNeGIySzlhcNF+f9XuWlKLgKN7uc5q9aA3ZMAj68nChFkF
-         MxAszt2WtBaFhmCb8c/7/4z4K2IeYhqR387qxGVuJRhuN4gq0znSIyRaWH8JGRcxLJ
-         5+F2ZZsT6zMvg==
+        s=k20201202; t=1680804871;
+        bh=r3AV+ts3nvtZUQ6hazbhn5oSaDxT2hS1je6YZxXnF8k=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=pvqBHkQjuIY+wxeuZU1y4EgH1pNgQNReTY3zTpzvvyUQam+yvGLM/7KMkyX/MOgNx
+         62kfxMP9R3j2wVoNqFByzN16yCehMu7kym5bKeapljcwhJKPqzL1Cd2sj6FQaYAUSF
+         KDv0lO1+/LrZGqZFXtYXMKbY0V9IVQlNJVEXYjnEuYsOIB3mXEDpAIt0ho1Ny8OB9k
+         wIIOZpOcZ3Qak2Jm9VLVkIis5oH1EvtT1yXXFvAbsLToZDYmBEZW8vrPVU/YgRGngt
+         Cq8nplVb2cRRN91s78UD/F/RqzMBAIOem7iBj4bnZXd0ABKcDOwvoCFFOAffgeiaYW
+         lovPuzCcYapFw==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id CCC4C15404B4; Thu,  6 Apr 2023 10:50:25 -0700 (PDT)
-Date:   Thu, 6 Apr 2023 10:50:25 -0700
+        id C9AB215404B4; Thu,  6 Apr 2023 11:14:30 -0700 (PDT)
+Date:   Thu, 6 Apr 2023 11:14:30 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
-        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/kvfree: Prevents cache growing when the
- backoff_page_cache_fill is set
-Message-ID: <8da4b48a-820c-461f-9dc0-a5afaf335177@paulmck-laptop>
+To:     urezki@gmail.com
+Cc:     rcu@vger.kernel.org
+Subject: Kerneldoc fix to fold in
+Message-ID: <906701b3-cedb-4e26-944e-f91ebf06a334@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230406001238.647536-1-qiang1.zhang@intel.com>
- <ZC5MoREk30MIt79u@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZC5MoREk30MIt79u@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 06, 2023 at 06:37:53AM +0200, Uladzislau Rezki wrote:
-> On Thu, Apr 06, 2023 at 08:12:38AM +0800, Zqiang wrote:
-> > Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
-> > executed before kfree_rcu_monitor() to drain page cache, if the bnode
-> > structure's->gp_snap has done, the kvfree_rcu_bulk() will fill the
-> > page cache again in kfree_rcu_monitor(), this commit add a check
-> > for krcp structure's->backoff_page_cache_fill in put_cached_bnode(),
-> > if the krcp structure's->backoff_page_cache_fill is set, prevent page
-> > cache growing.
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > ---
-> >  kernel/rcu/tree.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 9cc0a7766fd2..f25430ae1936 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2907,6 +2907,8 @@ static inline bool
-> >  put_cached_bnode(struct kfree_rcu_cpu *krcp,
-> >  	struct kvfree_rcu_bulk_data *bnode)
-> >  {
-> > +	if (atomic_read(&krcp->backoff_page_cache_fill))
-> > +		return false;
-> >  	// Check the limit.
-> >  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
-> >  		return false;
-> > -- 
-> > 2.32.0
-> >
-> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Hello, Uladzislau,
 
-Thank you both!
-
-One question, though.  Might it be better to instead modify the "for"
-loop in fill_page_cache_func() to start at krcp->nr_bkv_objs instead
-of starting at zero?  That way, we still provide a single page under
-low-memory conditions, but provide rcu_min_cached_objs of them if memory
-is plentiful.
-
-Alternatively, if we really don't want to allow any pages at all under
-low-memory conditions, shouldn't the fill_page_cache_func() set nr_pages
-to zero (instead of the current 1) when the krcp->backoff_page_cache_fill
-flag is set?  This would likely mean also breaking out of that loop if
-krcp->backoff_page_cache_fill was set in the meantime (which happens
-implicitly with Zqiang's patch).
-
-Or am I missing something subtle here?
+Would the patch below (to be folded into your original) be a good fix
+for the kerneldoc issue Stephen Rothwell pointed out?
 
 							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 7873a901c00f5c6d0f5b5b979584b4c7f1294563
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Thu Apr 6 11:06:26 2023 -0700
+
+    squash! rcu/kvfree: Add debug check for GP complete for kfree_rcu_cpu list
+    
+    [ paulmck: Fix kerneldoc issue raised by Stephen Rothwell. ]
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 9cc0a7766fd2..1be23a64f027 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2795,6 +2795,7 @@ struct kvfree_rcu_bulk_data {
+  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
+  * @head_free: List of kfree_rcu() objects waiting for a grace period
++ * @head_free_gp_snap: Grace-period snapshot to check for attempted premature frees.
+  * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
+  * @krcp: Pointer to @kfree_rcu_cpu structure
+  */
