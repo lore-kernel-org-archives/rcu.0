@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28384C77B6C
-	for <rcu@archiver.kernel.org>; Sat,  8 Apr 2023 13:47:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1918C77B6F
+	for <rcu@archiver.kernel.org>; Sat,  8 Apr 2023 13:47:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjDHNry (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 8 Apr 2023 09:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
+        id S229881AbjDHNrz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 8 Apr 2023 09:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjDHNrx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 8 Apr 2023 09:47:53 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32DACA03;
-        Sat,  8 Apr 2023 06:47:51 -0700 (PDT)
+        with ESMTP id S229572AbjDHNry (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 8 Apr 2023 09:47:54 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA586D315;
+        Sat,  8 Apr 2023 06:47:52 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4PtxPt40n5z4f3xbq;
-        Sat,  8 Apr 2023 21:47:46 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4PtxPv1YfBz4f3tjB;
+        Sat,  8 Apr 2023 21:47:47 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgCH77J_cDFk6gboGw--.47910S4;
-        Sat, 08 Apr 2023 21:47:45 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgCH77J_cDFk6gboGw--.47910S6;
+        Sat, 08 Apr 2023 21:47:48 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         Alexei Starovoitov <ast@kernel.org>
@@ -32,28 +32,31 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: [RFC bpf-next v2 0/4] Introduce BPF_MA_REUSE_AFTER_RCU_GP
-Date:   Sat,  8 Apr 2023 22:18:42 +0800
-Message-Id: <20230408141846.1878768-1-houtao@huaweicloud.com>
+Subject: [RFC bpf-next v2 2/4] bpf: Factor out a common helper free_all()
+Date:   Sat,  8 Apr 2023 22:18:44 +0800
+Message-Id: <20230408141846.1878768-3-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20230408141846.1878768-1-houtao@huaweicloud.com>
+References: <20230408141846.1878768-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCH77J_cDFk6gboGw--.47910S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF4DXrWktFW8Ww1rArykGrg_yoW5ZrWkpF
-        WfGw45Jr1kXrnFkwn7Aw17Ga4rJws5W345GF4Svr1Duw4fXry29r1IyF4YvFy3CrW8JFyY
-        qrykKwn3Wa4kZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-TRANSID: gCh0CgCH77J_cDFk6gboGw--.47910S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFW3CrW5ZrW5Aw1DuF1fCrg_yoW5Ww1UpF
+        y3Gry8JF4kZFsrua1xtrn7uwn8Xr1Fqa43K3yUu34Fkr13Zw1DtFZ2kr1IgFy5urW8tw43
+        ArnYgF1xCr48JFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -62,68 +65,82 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
+Factor out a common helper free_all() to free all normal elements or
+per-cpu elements on a lock-less list.
 
-As discussed in v1, currently the freed objects in bpf memory allocator
-may be reused immediately by the new allocation, it introduces
-use-after-bpf-ma-free problem for non-preallocated hash map and makes
-lookup procedure return incorrect result. The immediate reuse also makes
-introducing new use case more difficult (e.g. qp-trie).
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ kernel/bpf/memalloc.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-The patch series tries to introduce BPF_MA_REUSE_AFTER_RCU_GP to solve
-these problems. For BPF_MA_REUSE_AFTER_GP, the freed objects are reused
-only after one RCU grace period and may be freed by bpf memory allocator
-after another RCU-tasks-trace grace period. So for bpf programs which
-care about reuse problem, these programs can use
-bpf_rcu_read_{lock,unlock}() to access these freed objects safely and
-for those which doesn't care, there will be safely use-after-bpf-ma-free
-because these objects have not been freed by bpf memory allocator.
-
-The current implementation is far from perfect, but I think it is ready
-for get some feedbacks before putting in more effort. The implementation
-mainly focus on how to speed up the transition from freed elements to
-reusable elements and try to reduce the risk of OOM.
-
-To accelerate the transition, it dynamically allocates rcu_head and call
-call_rcu() in a kworker to do the transition. The frequency of call_rcu()
-invocation could be improved by calling call_rcu() in irq work, but after
-did that, I found the RCU grace period increased a lot and I still could
-not figure out why. To reduce the risk of OOM, these reusable elements need
-to be free as well, but we can not dynamically allocate rcu_head to do
-that, because compared with RCU grace period RCU-tasks-trace grace
-period is slower, so the freeing of reusable elements is just like the
-freeing in normal bpf memory allocator, but these is one difference: for
-BPF_MA_REUSE_AFTER_GP bpf ma these freeing elements are still available
-for reuse in unit_alloc(). Please see individual patches for more details.
-
-Comments and suggestions are always welcome.
-
-Change Log:
-v2:
- * add a benchmark for bpf memory allocator to compare between different
-   flavor of bpf memory allocator.
- * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
-v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
-
-Hou Tao (4):
-  selftests/bpf: Add benchmark for bpf memory allocator
-  bpf: Factor out a common helper free_all()
-  bpf: Pass bitwise flags to bpf_mem_alloc_init()
-  bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
-
- include/linux/bpf_mem_alloc.h                 |   9 +-
- kernel/bpf/core.c                             |   2 +-
- kernel/bpf/cpumask.c                          |   2 +-
- kernel/bpf/hashtab.c                          |   5 +-
- kernel/bpf/memalloc.c                         | 390 ++++++++++++++++--
- tools/testing/selftests/bpf/Makefile          |   3 +
- tools/testing/selftests/bpf/bench.c           |   4 +
- .../selftests/bpf/benchs/bench_htab_mem.c     | 273 ++++++++++++
- .../selftests/bpf/progs/htab_mem_bench.c      | 145 +++++++
- 9 files changed, 785 insertions(+), 48 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
- create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
-
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 410637c225fb..0668bcd7c926 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -211,9 +211,9 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+ 	mem_cgroup_put(memcg);
+ }
+ 
+-static void free_one(struct bpf_mem_cache *c, void *obj)
++static void free_one(void *obj, bool percpu)
+ {
+-	if (c->percpu_size) {
++	if (percpu) {
+ 		free_percpu(((void **)obj)[1]);
+ 		kfree(obj);
+ 		return;
+@@ -222,14 +222,19 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
+ 	kfree(obj);
+ }
+ 
+-static void __free_rcu(struct rcu_head *head)
++static void free_all(struct llist_node *llnode, bool percpu)
+ {
+-	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+-	struct llist_node *llnode = llist_del_all(&c->waiting_for_gp);
+ 	struct llist_node *pos, *t;
+ 
+ 	llist_for_each_safe(pos, t, llnode)
+-		free_one(c, pos);
++		free_one(pos, percpu);
++}
++
++static void __free_rcu(struct rcu_head *head)
++{
++	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
++
++	free_all(llist_del_all(&c->waiting_for_gp), !!c->percpu_size);
+ 	atomic_set(&c->call_rcu_in_progress, 0);
+ }
+ 
+@@ -432,7 +437,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 
+ static void drain_mem_cache(struct bpf_mem_cache *c)
+ {
+-	struct llist_node *llnode, *t;
++	bool percpu = !!c->percpu_size;
+ 
+ 	/* No progs are using this bpf_mem_cache, but htab_map_free() called
+ 	 * bpf_mem_cache_free() for all remaining elements and they can be in
+@@ -441,14 +446,10 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
+ 	 * Except for waiting_for_gp list, there are no concurrent operations
+ 	 * on these lists, so it is safe to use __llist_del_all().
+ 	 */
+-	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
+-		free_one(c, llnode);
+-	llist_for_each_safe(llnode, t, llist_del_all(&c->waiting_for_gp))
+-		free_one(c, llnode);
+-	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist))
+-		free_one(c, llnode);
+-	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_llist_extra))
+-		free_one(c, llnode);
++	free_all(__llist_del_all(&c->free_by_rcu), percpu);
++	free_all(llist_del_all(&c->waiting_for_gp), percpu);
++	free_all(__llist_del_all(&c->free_llist), percpu);
++	free_all(__llist_del_all(&c->free_llist_extra), percpu);
+ }
+ 
+ static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
 -- 
 2.29.2
 
