@@ -2,68 +2,113 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9877C77B61
-	for <rcu@archiver.kernel.org>; Mon, 10 Apr 2023 21:21:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29836C77B61
+	for <rcu@archiver.kernel.org>; Mon, 10 Apr 2023 23:35:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbjDJVVS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Apr 2023 17:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
+        id S229749AbjDJXfC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Apr 2023 19:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjDJVVR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Apr 2023 17:21:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A1B1BFB;
-        Mon, 10 Apr 2023 14:21:16 -0700 (PDT)
+        with ESMTP id S229591AbjDJXfB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Apr 2023 19:35:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DC6185;
+        Mon, 10 Apr 2023 16:35:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 308D861F70;
-        Mon, 10 Apr 2023 21:21:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8B136C433A0;
-        Mon, 10 Apr 2023 21:21:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7220761982;
+        Mon, 10 Apr 2023 23:35:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAD12C433EF;
+        Mon, 10 Apr 2023 23:34:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681161675;
-        bh=8k4fQsPLGEfrKVnW8yX0hDrkmwCL37BwrGNFQWMfzmc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Wd3iGulpCJnA4OJCXNFg8jD6hdeaXJJACBsFdSn6ppBk2jZxCsOK5zDCgKQBNrtI8
-         7r3MjUdufBh3FD7oB3UIgiPOIAsyP4SA1Rn/fczLJS++ItZNdsL8unNE+kcpvs6l97
-         bDxX4sw2Fw+hcHeude9VNqmsKsYnlABh8bBSJyhdvS8sEzKosvVwkP94hadIXUcj2M
-         4vRuntMle+Un9bCRTCwYzpB3Vy0cb4YmcywbzMLiaWDO6Qd1PvQVFr4ahUSqNUlF3p
-         LwplZPeDQk+9VumOvLuAyFLyBKS0uvP4RrdgmzdxLbX+s6DCikqdjsVo4pWNKwHIMA
-         PXBgKuyqE41bw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 78401E21EEE;
-        Mon, 10 Apr 2023 21:21:15 +0000 (UTC)
-Subject: Re: [GIT PULL] Fix too-short kfree_rcu() grace period for v6.3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <5c2748db-4811-4d3d-bdd3-0f005ffa275c@paulmck-laptop>
-References: <5c2748db-4811-4d3d-bdd3-0f005ffa275c@paulmck-laptop>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <5c2748db-4811-4d3d-bdd3-0f005ffa275c@paulmck-laptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.04.07a
-X-PR-Tracked-Commit-Id: 5da7cb193db32da783a3f3e77d8b639989321d48
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0d3eb744aed40ffce820cded61d7eac515199165
-Message-Id: <168116167548.31176.12514039777589092543.pr-tracker-bot@kernel.org>
-Date:   Mon, 10 Apr 2023 21:21:15 +0000
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     torvalds@linux-foundation.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rcu@vger.kernel.org, kernel-team@fb.com, rostedt@goodmis.org
+        s=k20201202; t=1681169699;
+        bh=FCDVQiK/WUm1WPDlCxcSnDSPyEfQ3zafLdbSMLvTnGM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=gl6yNMDArz7FY/iRC8A/Yq56qpvmFGFGv8QAAldCrSnlezdgBt7Q4y31FGgMEuo77
+         aUgxjxVLgU7wTRntn5ockwsYf0zrGowym6qBvZR59Pq5vRSGntecRuhqlBGMrO7UE2
+         pEIEoHIZqIMHfX8XjIztjHR1btuDNK5GukDlNkiGFHfAFrBTFuOuA00DSAAGJwc9my
+         4kjnb/4ZLkDpOcUGXcOqqLliM54hjNYuG7YOFJpJfs/LdzyvKE/kQAc8CTzoeQILyY
+         CE1VSejtXrkVgg2zSG91CpM4W6ljKGYFcwYIW4LWSu4MTnM9gFUczeGAmXC9zKZGm3
+         4lYLMm06si4DA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5E9871540478; Mon, 10 Apr 2023 16:34:59 -0700 (PDT)
+Date:   Mon, 10 Apr 2023 16:34:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     urezki@gmail.com, frederic@kernel.org, joel@joelfernandes.org,
+        qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] rcu/kvfree: Prevents cache growing when the
+ backoff_page_cache_fill is set
+Message-ID: <b96953b0-0ac5-477a-a2f0-c211dc17d5dc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230408142517.800549-1-qiang1.zhang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230408142517.800549-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The pull request you sent on Mon, 10 Apr 2023 09:30:33 -0700:
+On Sat, Apr 08, 2023 at 10:25:17PM +0800, Zqiang wrote:
+> Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
+> executed before kfree_rcu_monitor() to drain page cache, if the bnode
+> structure's->gp_snap has done, the kvfree_rcu_bulk() will fill the
+> page cache again in kfree_rcu_monitor(), this commit add a check
+> for krcp structure's->backoff_page_cache_fill in put_cached_bnode(),
+> if the krcp structure's->backoff_page_cache_fill is set, prevent page
+> cache growing and disable allocated page in fill_page_cache_func().
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.04.07a
+Much improved!  But still some questions below...
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0d3eb744aed40ffce820cded61d7eac515199165
+							Thanx, Paul
 
-Thank you!
+> ---
+>  kernel/rcu/tree.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index cc34d13be181..9d9d3772cc45 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2908,6 +2908,8 @@ static inline bool
+>  put_cached_bnode(struct kfree_rcu_cpu *krcp,
+>  	struct kvfree_rcu_bulk_data *bnode)
+>  {
+> +	if (atomic_read(&krcp->backoff_page_cache_fill))
+> +		return false;
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+This will mean that under low-memory conditions, we will keep zero
+pages in ->bkvcache.  All attempts to put something there will fail.
+
+This is probably not an issue for structures containing an rcu_head
+that are passed to kfree_rcu(p, field), but doesn't this mean that
+kfree_rcu_mightsleep() unconditionally invokes synchronize_rcu()?
+This could seriously slow up freeing under low-memory conditions,
+which might exacerbate the low-memory conditions.
+
+Is this really what we want?  Zero cached rather than just fewer cached?
+
+>  	// Check the limit.
+>  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+>  		return false;
+> @@ -3221,7 +3223,7 @@ static void fill_page_cache_func(struct work_struct *work)
+>  	int i;
+>  
+>  	nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
+> -		1 : rcu_min_cached_objs;
+> +		0 : rcu_min_cached_objs;
+>  
+>  	for (i = 0; i < nr_pages; i++) {
+
+I am still confused as to why we start "i" at zero rather than at
+->nr_bkv_objs.  What am I missing here?
+
+>  		bnode = (struct kvfree_rcu_bulk_data *)
+> -- 
+> 2.32.0
+> 
