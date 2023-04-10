@@ -2,89 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3C3DC7619A
-	for <rcu@archiver.kernel.org>; Sat,  8 Apr 2023 14:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E1CEC77B61
+	for <rcu@archiver.kernel.org>; Mon, 10 Apr 2023 16:30:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjDHOYy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 8 Apr 2023 10:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
+        id S229910AbjDJQah (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Apr 2023 12:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbjDHOYx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 8 Apr 2023 10:24:53 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A4BC640;
-        Sat,  8 Apr 2023 07:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680963891; x=1712499891;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ReZriI51GMtfmI0Pc8bW8jknlkpzYTRVOz7nIwwjg4M=;
-  b=a/rpi5K+JiWEX7VSZd8sleEXNVdgd2Kp9OuXmc0yzi/DwiCYviYA5MtF
-   P90BYhQWX1KdAPojBpaOY8bsEt7/LQIieFEZKof5c80dQk4B6H70wNBYO
-   kz8hbr5sZciSf5imkatH5sHzTMOVNwNpsKH7nbAZdlzb8D2Q+ORKrYZrr
-   xhLpod+6bMftfzNOJMu/WxWfiyIiQfPmq/PCxKJBs255qKWnEqg/NDuv4
-   Z+cRTCJqhDCWmho6yK5IhPS66g+yimYPlEwvr9dtqSTQg1L18gIyBxaj+
-   RlIcbS1PvRIEIR6z3HEAEPtPBd2e7HlS30tb3tNaTlvABXMHDVln1Pa+Q
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10674"; a="343147993"
-X-IronPort-AV: E=Sophos;i="5.98,329,1673942400"; 
-   d="scan'208";a="343147993"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2023 07:24:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10674"; a="831461615"
-X-IronPort-AV: E=Sophos;i="5.98,329,1673942400"; 
-   d="scan'208";a="831461615"
-Received: from ubuntu.bj.intel.com ([10.238.155.108])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Apr 2023 07:24:48 -0700
-From:   Zqiang <qiang1.zhang@intel.com>
-To:     urezki@gmail.com, paulmck@kernel.org, frederic@kernel.org,
-        joel@joelfernandes.org, qiang1.zhang@intel.com
-Cc:     qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu/kvfree: Make page cache growing happen on the correct krcp
-Date:   Sat,  8 Apr 2023 22:25:30 +0800
-Message-Id: <20230408142530.800612-1-qiang1.zhang@intel.com>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S229798AbjDJQaf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Apr 2023 12:30:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D53E54;
+        Mon, 10 Apr 2023 09:30:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2AE6660C7A;
+        Mon, 10 Apr 2023 16:30:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93C01C433EF;
+        Mon, 10 Apr 2023 16:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681144233;
+        bh=sR6n/qvfkC94IMl9pOR6cp2mpmZqT/XtG23wRekNYd0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=tKexRDq2ys+ZWaofhBuFP7xMe0L72F2Y8H1rgFHCDuIJv571NwDZB3lVsQvGO8FUk
+         IF+/lG8vWNKe/V8SBsgocZD18hFuKBVQhIvYZKScATD1zYneSjhBfwibetdAV1uI3Q
+         tG69nwO+B80IyZ07tCamX5MRFtrUYddGBIhz3HbAVAibRA1/kyyhVm96UUPC/in5I1
+         KWksETgQIp4oJz+molYMmqSk0HHsAY/lEePKcPOLi/cXX0hwsxvomA4MSfG/1NCFnE
+         V9JbVrn3Dgc3MUmqUhpZ6SOYMlnkGpV6wqKJHt40F2YdCwui1cUJfRubaQ/oV0qJEw
+         cdOK0SGIYLY3A==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1F7D31540478; Mon, 10 Apr 2023 09:30:33 -0700 (PDT)
+Date:   Mon, 10 Apr 2023 09:30:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rcu@vger.kernel.org, kernel-team@fb.com, rostedt@goodmis.org
+Subject: [GIT PULL] Fix too-short kfree_rcu() grace period for v6.3
+Message-ID: <5c2748db-4811-4d3d-bdd3-0f005ffa275c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-When invoke add_ptr_to_bulk_krc_lock() to queue ptr, will invoke
-krc_this_cpu_lock() return current CPU's krcp structure and get a
-bnode object from the krcp structure's ->bulk_head, if return is
-empty or the returned bnode object's nr_records is KVFREE_BULK_MAX_ENTR,
-when the can_alloc is set, will unlock current CPU's krcp->lock and
-allocate bnode, after that, will invoke krc_this_cpu_lock() again to
-return current CPU's krcp structure, if the CPU migration occurs,
-the krcp obtained at this time will not be consistent with the previous
-one, this causes the bnode will be added to the wrong krcp structure's
-->bulk_head or trigger fill page work on wrong krcp.
+Hello, Linus,
 
-This commit therefore re-hold krcp->lock after allocated page instead
-of re-call krc_this_cpu_lock() to ensure the consistency of krcp.
+This fixes an old bug rather than a v6.3 regression, but it is starting
+to appear in the wild and has nasty memory-corruption consequences.
+Please consider pulling this for v6.3.
 
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
----
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The following changes since commit d18a04157fc171fd48075e3dc96471bd3b87f0dd:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 9d9d3772cc45..c9076fa0a954 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3303,7 +3303,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 			// scenarios.
- 			bnode = (struct kvfree_rcu_bulk_data *)
- 				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
--			*krcp = krc_this_cpu_lock(flags);
-+			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
- 		}
- 
- 		if (!bnode)
--- 
-2.32.0
+  rcu: Fix rcu_torture_read ftrace event (2023-03-22 14:05:24 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.04.07a
+
+for you to fetch changes up to 5da7cb193db32da783a3f3e77d8b639989321d48:
+
+  rcu/kvfree: Avoid freeing new kfree_rcu() memory after old grace period (2023-04-06 10:04:23 -0700)
+
+----------------------------------------------------------------
+Urgent RCU pull request for v6.3
+
+This commit fixes a pair of bugs in which an improbable but very real
+sequence of events can cause kfree_rcu() to be a bit too quick about
+freeing the memory passed to it.  It turns out that this pair of bugs
+is about two years old, and so this is not a v6.3 regression.  However:
+(1) It just started showing up in the wild and (2) Its consequences are
+dire, so its fix needs to go in sooner rather than later.
+
+Testing is of course being upgraded, and the upgraded tests detect this
+situation very quickly.  But to the best of my knowledge right now, the
+tests are not particularly urgent and will thus most likely show up in
+the v6.5 merge window (the one after this coming one).
+
+Kudos to Ziwei Dai and his group for tracking this one down the hard way!
+
+----------------------------------------------------------------
+Ziwei Dai (1):
+      rcu/kvfree: Avoid freeing new kfree_rcu() memory after old grace period
+
+ kernel/rcu/tree.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
