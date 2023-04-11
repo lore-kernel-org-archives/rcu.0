@@ -2,59 +2,41 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38CA0C76196
-	for <rcu@archiver.kernel.org>; Tue, 11 Apr 2023 15:16:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B8A4C76196
+	for <rcu@archiver.kernel.org>; Tue, 11 Apr 2023 16:42:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbjDKPQh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Apr 2023 11:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
+        id S229520AbjDKQmm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Apr 2023 12:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjDKPQX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Apr 2023 11:16:23 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AA65254;
-        Tue, 11 Apr 2023 08:15:22 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id d7so21948423lfj.3;
-        Tue, 11 Apr 2023 08:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681226069; x=1683818069;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OpryC7/F2PjMoZI6KtQP1LduXXGDL/tjNVIOT59ELzY=;
-        b=fg7fN9bUpaTOx3rUkPHwEGKsRSZvQRoTreMjBx/DVnEcj7O+xYbGDXMvCMnLoe1Hn+
-         6hgeu5w4SJP3Kb6xTjYE1TKe+AidE4yzfQM1XJmN4EhJVGrZaXY78KhTmZSCJo/+EmD6
-         mSZEHbc4r37fdGbl+fF+keMYiRZLpyZR+7nXGMNFr41P/cVppRdRTm2sT1g38OLNdzu3
-         IA0RmWqSUA4947b0uiS9qSiNTSimCfYx/9sgUAaTwJdfWPjgCgmb8Ry1lRubatcibY4C
-         szLI4c43Xe36Lng+VTnx9GpjorIBhW0NEcj3t7AG1cybhxudrUB1wfPDd4CjFuW3vk0g
-         dmOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681226069; x=1683818069;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OpryC7/F2PjMoZI6KtQP1LduXXGDL/tjNVIOT59ELzY=;
-        b=G3pc6i53TzMIb0imWIFFEuEe5hi/SsBUPKbzv33tZ+aemnh0xrbCShNAOu+s8MTP52
-         ha90BFzGVngqJ3mmwN71L/Mt/Or17At35az/EiJ7+74QxX/NNXa692YKcD88o5W+p4Wa
-         E2cvzRqS4lfKvwPQ4ganTqV79tr1G3n6NNhKEdz/3KM38YGmlc8ndMfOyEgO4jgP1xs+
-         IvH56SjAkLlKLQ7prD5eVgRWcAD7Cyr3+kr0z/bawE5qWFo9kzX4iSTZVINtqn/58jkS
-         EBJxdOkB+W4mOK9/824OPL3Et+eg6fT6sg2z2gFufRicZ/7l8B9DCNHxRdDJlFUbvFdb
-         9zHA==
-X-Gm-Message-State: AAQBX9e1CTbrWoU6I40+AAbb3ga1Ea/5LG5yn5UcZ/sCno7U7j4SXgC2
-        sU+bmwky4ZhXaVmWr8NCyP4=
-X-Google-Smtp-Source: AKy350bPh6l2cGlM2eXwLHBShK977Du4rIBLDqED5nlAzBeLTAjy/7zHaPyyKbnbRNE4TipAMJeTMg==
-X-Received: by 2002:ac2:592f:0:b0:4ea:f632:17 with SMTP id v15-20020ac2592f000000b004eaf6320017mr3171041lfi.51.1681226069340;
-        Tue, 11 Apr 2023 08:14:29 -0700 (PDT)
-Received: from pc636 (host-90-235-5-238.mobileonline.telia.com. [90.235.5.238])
-        by smtp.gmail.com with ESMTPSA id z2-20020a2e8e82000000b002a7729eea3dsm1414880ljk.88.2023.04.11.08.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Apr 2023 08:14:29 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 11 Apr 2023 17:14:26 +0200
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
+        with ESMTP id S229516AbjDKQmk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Apr 2023 12:42:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2C610E9;
+        Tue, 11 Apr 2023 09:42:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0949560E71;
+        Tue, 11 Apr 2023 16:42:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65907C433EF;
+        Tue, 11 Apr 2023 16:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681231358;
+        bh=yflufE8ZksbV5SDv5btYZ8nUlqv9M275okMCEBw67wM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bY3ZIwOrtfCePa52ubRazsn/kQB1xYs3TT+xcbUgS6JEptNMDlKkE4YMox3xjNnm4
+         3ENTTCms8b+n+HV0TglJYp5kDaSbxZxkE39r6e9w9NkdGXykdfmH+gXyp/XZDor7YX
+         V0CuYb/lg3NAAuPhegMMsPcs5O9SwW3G93PNPlXVP3SAz2iIMP8x6gQxP/sjZkVVTD
+         e3EVW7R1rBww1tAWuKvE+FhxjrGbeEnwbvcxFZl3MmE9W7rLnAsCb8GwZej0hsp00g
+         rJlK+WwY+rqHstM51mRYcNmV+FIgeXYBjY3DC6YJAeRGTU3KN6e7KMlBSh9aEsj83U
+         EdrKUTRNHZRiw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 050C11540478; Tue, 11 Apr 2023 09:42:38 -0700 (PDT)
+Date:   Tue, 11 Apr 2023 09:42:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
         "frederic@kernel.org" <frederic@kernel.org>,
         "joel@joelfernandes.org" <joel@joelfernandes.org>,
         "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>,
@@ -62,24 +44,23 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v3] rcu/kvfree: Prevents cache growing when the
  backoff_page_cache_fill is set
-Message-ID: <ZDV5UjnUqr67CeKl@pc636>
-References: <20230408142517.800549-1-qiang1.zhang@intel.com>
- <b96953b0-0ac5-477a-a2f0-c211dc17d5dc@paulmck-laptop>
- <PH0PR11MB588072A12543FD617C833AF9DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
+Message-ID: <2159c88e-ec99-4ad6-a166-baf4199d138f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <PH0PR11MB588072A12543FD617C833AF9DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
  <ZDVt5eUAlp4VmbFy@pc636>
  <PH0PR11MB5880C4B181B6237402B1FBA7DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
  <ZDV1jhENgED4ctxO@pc636>
- <PH0PR11MB58809695F11E7B4EEBE72F95DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB58809695F11E7B4EEBE72F95DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <ZDV1jhENgED4ctxO@pc636>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 03:09:13PM +0000, Zhang, Qiang1 wrote:
+On Tue, Apr 11, 2023 at 04:58:22PM +0200, Uladzislau Rezki wrote:
+> On Tue, Apr 11, 2023 at 02:42:27PM +0000, Zhang, Qiang1 wrote:
 > > > > Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
 > > > > executed before kfree_rcu_monitor() to drain page cache, if the bnode
 > > > > structure's->gp_snap has done, the kvfree_rcu_bulk() will fill the
@@ -170,25 +151,16 @@ On Tue, Apr 11, 2023 at 03:09:13PM +0000, Zhang, Qiang1 wrote:
 > > +               if (atomic_read(&krcp->backoff_page_cache_fill))
 > > +                       break;
 > >         }
-> >It does not fix an "issue" you are reporting. kvfree_rcu_bulk() function
-> >can still fill it back. IMHO, the solution here is to disable cache if
-> >a low memory condition and enable back later on.
-> >
-> >
-> >The cache size is controlled by the rcu_min_cached_objs variable. We can
-> >set it to 1 and restore it back to original value to make the cache operating
-> >as before.
+> It does not fix an "issue" you are reporting. kvfree_rcu_bulk() function
+> can still fill it back. IMHO, the solution here is to disable cache if
+> a low memory condition and enable back later on.
 > 
-> A good suggestion.  a question, when need to restore  rcu_min_cached_objs?
-> after the execution of kfree_rcu_shrink_scan() ends?
-> 
-We do not know when a low memory condition ends :) Therefore we defer a
-refill work for a certain time. In the fill_page_cache_func() we allow the
-cache operate as normal again:
+> The cache size is controlled by the rcu_min_cached_objs variable. We can
+> set it to 1 and restore it back to original value to make the cache operating
+> as before.
 
-...
-	atomic_set(&krcp->backoff_page_cache_fill, 0);
-...
+It would be best to use a second variable for this.  Users might get
+annoyed if their changes to rcu_min_cached_objs got overwritten once
+things got set back to normal operation.
 
---
-Uladzislau Rezki
+							Thanx, Paul
