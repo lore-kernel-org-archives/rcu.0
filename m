@@ -2,113 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29836C77B61
-	for <rcu@archiver.kernel.org>; Mon, 10 Apr 2023 23:35:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61F24C77B61
+	for <rcu@archiver.kernel.org>; Tue, 11 Apr 2023 00:06:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjDJXfC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Apr 2023 19:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
+        id S229790AbjDKAGT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Apr 2023 20:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjDJXfB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Apr 2023 19:35:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DC6185;
-        Mon, 10 Apr 2023 16:35:00 -0700 (PDT)
+        with ESMTP id S229591AbjDKAGS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Apr 2023 20:06:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC85526AB;
+        Mon, 10 Apr 2023 17:06:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7220761982;
-        Mon, 10 Apr 2023 23:35:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAD12C433EF;
-        Mon, 10 Apr 2023 23:34:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A68661D4D;
+        Tue, 11 Apr 2023 00:06:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B143DC4339B;
+        Tue, 11 Apr 2023 00:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681169699;
-        bh=FCDVQiK/WUm1WPDlCxcSnDSPyEfQ3zafLdbSMLvTnGM=;
+        s=k20201202; t=1681171576;
+        bh=bWRz8OyAWyQZif69js29490nzzm0uqWpXjQqYdYUP7E=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gl6yNMDArz7FY/iRC8A/Yq56qpvmFGFGv8QAAldCrSnlezdgBt7Q4y31FGgMEuo77
-         aUgxjxVLgU7wTRntn5ockwsYf0zrGowym6qBvZR59Pq5vRSGntecRuhqlBGMrO7UE2
-         pEIEoHIZqIMHfX8XjIztjHR1btuDNK5GukDlNkiGFHfAFrBTFuOuA00DSAAGJwc9my
-         4kjnb/4ZLkDpOcUGXcOqqLliM54hjNYuG7YOFJpJfs/LdzyvKE/kQAc8CTzoeQILyY
-         CE1VSejtXrkVgg2zSG91CpM4W6ljKGYFcwYIW4LWSu4MTnM9gFUczeGAmXC9zKZGm3
-         4lYLMm06si4DA==
+        b=Pb46S1J+ffLTBdLF7BBE5derRzv62t49YqZpGPwjvS3iKDkgKfAe1aoUsUPckTRgt
+         sp3opna6qsXx6VOjMlX8Yzk6rhCEiDy4q+Orz7umpEuzFpeQvUpvOxIVocUluGm2S0
+         rQKSMGSsC8Wp1rOZiqRmEiUJfNuRADiI6J7J6RIQ0kBdXuWePUJQOy9q+6QSvxO+Oo
+         DVWiEc2L9oZ1rxoy+LyxEf1Zp7OGIedslcrP5dMzM3xYo8p9baVYFGJ9gFGY7AY13s
+         wjX+VsiNVg7e8AZDBZIAtvUyUoA0sR/Ps6d3tsAqVnMuN/v2jtubbf/DSpvGCsyFXB
+         6PSSue3BdLzfQ==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5E9871540478; Mon, 10 Apr 2023 16:34:59 -0700 (PDT)
-Date:   Mon, 10 Apr 2023 16:34:59 -0700
+        id 4FC7B1540478; Mon, 10 Apr 2023 17:06:16 -0700 (PDT)
+Date:   Mon, 10 Apr 2023 17:06:16 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zqiang <qiang1.zhang@intel.com>
 Cc:     urezki@gmail.com, frederic@kernel.org, joel@joelfernandes.org,
         qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] rcu/kvfree: Prevents cache growing when the
- backoff_page_cache_fill is set
-Message-ID: <b96953b0-0ac5-477a-a2f0-c211dc17d5dc@paulmck-laptop>
+Subject: Re: [PATCH] rcu/kvfree: Make page cache growing happen on the
+ correct krcp
+Message-ID: <628ee057-d957-431b-be4a-0bf893bf56ef@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230408142517.800549-1-qiang1.zhang@intel.com>
+References: <20230408142530.800612-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230408142517.800549-1-qiang1.zhang@intel.com>
+In-Reply-To: <20230408142530.800612-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Apr 08, 2023 at 10:25:17PM +0800, Zqiang wrote:
-> Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
-> executed before kfree_rcu_monitor() to drain page cache, if the bnode
-> structure's->gp_snap has done, the kvfree_rcu_bulk() will fill the
-> page cache again in kfree_rcu_monitor(), this commit add a check
-> for krcp structure's->backoff_page_cache_fill in put_cached_bnode(),
-> if the krcp structure's->backoff_page_cache_fill is set, prevent page
-> cache growing and disable allocated page in fill_page_cache_func().
+On Sat, Apr 08, 2023 at 10:25:30PM +0800, Zqiang wrote:
+> When invoke add_ptr_to_bulk_krc_lock() to queue ptr, will invoke
+> krc_this_cpu_lock() return current CPU's krcp structure and get a
+> bnode object from the krcp structure's ->bulk_head, if return is
+> empty or the returned bnode object's nr_records is KVFREE_BULK_MAX_ENTR,
+> when the can_alloc is set, will unlock current CPU's krcp->lock and
+> allocate bnode, after that, will invoke krc_this_cpu_lock() again to
+> return current CPU's krcp structure, if the CPU migration occurs,
+> the krcp obtained at this time will not be consistent with the previous
+> one, this causes the bnode will be added to the wrong krcp structure's
+> ->bulk_head or trigger fill page work on wrong krcp.
+> 
+> This commit therefore re-hold krcp->lock after allocated page instead
+> of re-call krc_this_cpu_lock() to ensure the consistency of krcp.
 > 
 > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Much improved!  But still some questions below...
+Very good, thank you!  Queued for testing and further review, but
+please check my wordsmithing.
 
 							Thanx, Paul
 
-> ---
->  kernel/rcu/tree.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cc34d13be181..9d9d3772cc45 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2908,6 +2908,8 @@ static inline bool
->  put_cached_bnode(struct kfree_rcu_cpu *krcp,
->  	struct kvfree_rcu_bulk_data *bnode)
->  {
-> +	if (atomic_read(&krcp->backoff_page_cache_fill))
-> +		return false;
+------------------------------------------------------------------------
 
-This will mean that under low-memory conditions, we will keep zero
-pages in ->bkvcache.  All attempts to put something there will fail.
+commit a0bbb5785539ed846f4769368f24a296d54bc801
+Author: Zqiang <qiang1.zhang@intel.com>
+Date:   Sat Apr 8 22:25:30 2023 +0800
 
-This is probably not an issue for structures containing an rcu_head
-that are passed to kfree_rcu(p, field), but doesn't this mean that
-kfree_rcu_mightsleep() unconditionally invokes synchronize_rcu()?
-This could seriously slow up freeing under low-memory conditions,
-which might exacerbate the low-memory conditions.
+    rcu/kvfree: Use consistent krcp when growing kfree_rcu() page cache
+    
+    The add_ptr_to_bulk_krc_lock() function is invoked to allocate a new
+    kfree_rcu() page, also known as a kvfree_rcu_bulk_data structure.
+    The kfree_rcu_cpu structure's lock is used to protect this operation,
+    except that this lock must be momentarily dropped when allocating memory.
+    It is clearly important that the lock that is reacquired be the same
+    lock that was acquired initially via krc_this_cpu_lock().
+    
+    Unfortunately, this same krc_this_cpu_lock() function is used to
+    re-acquire this lock, and if the task migrated to some other CPU during
+    the memory allocation, this will result in the kvfree_rcu_bulk_data
+    structure being added to the wrong CPU's kfree_rcu_cpu structure.
+    
+    This commit therefore replaces that second call to krc_this_cpu_lock()
+    with raw_spin_lock_irqsave() in order to explicitly acquire the lock on
+    the correct kfree_rcu_cpu structure, thus keeping things straight even
+    when the task migrates.
+    
+    Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Is this really what we want?  Zero cached rather than just fewer cached?
-
->  	// Check the limit.
->  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
->  		return false;
-> @@ -3221,7 +3223,7 @@ static void fill_page_cache_func(struct work_struct *work)
->  	int i;
->  
->  	nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
-> -		1 : rcu_min_cached_objs;
-> +		0 : rcu_min_cached_objs;
->  
->  	for (i = 0; i < nr_pages; i++) {
-
-I am still confused as to why we start "i" at zero rather than at
-->nr_bkv_objs.  What am I missing here?
-
->  		bnode = (struct kvfree_rcu_bulk_data *)
-> -- 
-> 2.32.0
-> 
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2699b7acf0e3..41daae3239b5 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3301,7 +3301,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 			// scenarios.
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+ 				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+-			*krcp = krc_this_cpu_lock(flags);
++			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
+ 		}
+ 
+ 		if (!bnode)
