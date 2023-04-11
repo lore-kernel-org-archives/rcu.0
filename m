@@ -2,91 +2,179 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32124C77B70
-	for <rcu@archiver.kernel.org>; Tue, 11 Apr 2023 14:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D166EC76196
+	for <rcu@archiver.kernel.org>; Tue, 11 Apr 2023 14:19:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjDKOOo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Apr 2023 10:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
+        id S229792AbjDKOTt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Apr 2023 10:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjDKOOn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Apr 2023 10:14:43 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF231B1;
-        Tue, 11 Apr 2023 07:14:42 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id c10-20020a17090abf0a00b0023d1bbd9f9eso11108895pjs.0;
-        Tue, 11 Apr 2023 07:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681222482; x=1683814482;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nUqBPGgh8CrNxczOidhg/CSqsuSy4JlqYBSAJ+z/y9s=;
-        b=Gu7+eyUOLclC1bTu8BcvYj14sC6QoGrw3NMzAIq+OpKET0Clg1rXkZkOAYAVNWpKgS
-         4sPHsUqgwrQi95ufUaMLK38qQrwVMIKkK0tfRxmt2QOkPnTA6NT7kNrMHEL2eBUuRrK+
-         GwIcQBD5HNK4f1EwsJ+NQnqIMhPCddh38R2fymNcDL7/GlirPWTIiRrZN70V2WNOEjBY
-         99bcfItjprKWxL3gH4SGTZwChBgUOGhqakf6niF3igEqtL5k0RB8uzLpl0QQYsgq3xja
-         Gb3wSqNGEfEYWkNfTuxBPQ1QceWaIzdHq8rt0OLhTeucqPd28FOd0pIFkhehHju4+CSs
-         7gHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681222482; x=1683814482;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nUqBPGgh8CrNxczOidhg/CSqsuSy4JlqYBSAJ+z/y9s=;
-        b=kTxW6iOJuusZAl0t4e99paoHBmvJJnOOJ6uyMfNBnudwLLbDSMZLuWHo42np1s++KW
-         VWze7YOVhkw8CSJVLfv4W5DuDCLIQNI8+JnJUNKLRIC3PSWn8J2gbN9E6ziIkc2JioO2
-         oV3kgoYBK1yCey4um03oIfJs8u03B1xJtt9DHqHYtmWya+4G+oN5JhOe082VfPDMp19Q
-         ri75BJdkRUIAWYPQmQk4aIdyUoPmQsy4k3na7KoD1hgLZmtaiq13jB81T/jmR0vt+Xdp
-         GlytKeUEKQrnVBqUsRxaQFRYN+oeZNwJ6z+TPuSqZLR+N2M6go+KzYkICb+v7wdBD/6L
-         w2lg==
-X-Gm-Message-State: AAQBX9fwB8pqY9rYR83gaaVkKWJAyOG7cA09MZ0/wMZkeWL4cdnwrANA
-        WAuL6FEz4oGFBvnzy+Qwo3k=
-X-Google-Smtp-Source: AKy350Yu36TtUThSJ9RIwGKPPMbCyhpU0MLUm4TlwkNqMALQCkJHYxd8RXFtTUPFEa2XbFYYLlKrOA==
-X-Received: by 2002:a17:902:cec6:b0:1a1:e112:4607 with SMTP id d6-20020a170902cec600b001a1e1124607mr3431694plg.50.1681222482287;
-        Tue, 11 Apr 2023 07:14:42 -0700 (PDT)
-Received: from localhost.localdomain (36-229-229-178.dynamic-ip.hinet.net. [36.229.229.178])
-        by smtp.gmail.com with ESMTPSA id s11-20020a170902988b00b001991f3d85acsm9691979plp.299.2023.04.11.07.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Apr 2023 07:14:42 -0700 (PDT)
-From:   Lin Yu Chen <starpt.official@gmail.com>
-To:     corbet@lwn.net
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lin Yu Chen <starpt.official@gmail.com>
-Subject: [PATCH] docs: Fix typo in Documentation/RCU/checklist.rst
-Date:   Tue, 11 Apr 2023 07:13:41 -0700
-Message-Id: <20230411141341.74133-1-starpt.official@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229776AbjDKOTh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Apr 2023 10:19:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F4D4680;
+        Tue, 11 Apr 2023 07:19:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 08067219D4;
+        Tue, 11 Apr 2023 14:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1681222775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BV/iOuY3tZ30InHD5r4cvxoa3TS4xAh5ueSwnmy0PUI=;
+        b=crdDxRaBGzyB3zB0DL1Kg4gQ1WCo2jvVvFNkRIhz3KimP4omI5TwRwL/nAXz3tG3c2ElZc
+        jhDHt5N1fZaPOP7+25uTcrsykzfJbq6Q0jzZjsIvggDb9sl/oNRkveFD80krveiwNWe03g
+        DzyIz/IoTwiWe6y7KuYLg02GCRdkgh4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1681222775;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BV/iOuY3tZ30InHD5r4cvxoa3TS4xAh5ueSwnmy0PUI=;
+        b=ByqMOCwojdA9dsMWcuK6BbwAOTKrFQ4DgFdf1zXapgeMlAX555Mddlr73GFZo2pSdG3ZaV
+        9ksEujjGUUXvAqCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C0BF13638;
+        Tue, 11 Apr 2023 14:19:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CmiHJXZsNWSQVAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 11 Apr 2023 14:19:34 +0000
+Message-ID: <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
+Date:   Tue, 11 Apr 2023 16:19:34 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
+ raw_spinlock
+Content-Language: en-US
+To:     Qi Zheng <zhengqi.arch@bytedance.com>, 42.hyeyoo@gmail.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhao Gongyi <zhaogongyi@bytedance.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
+ <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
+ <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit corrects the spelling of "not" to "note" to accurately
-convey the intended meaning.
+On 4/11/23 16:08, Qi Zheng wrote:
+> 
+> 
+> On 2023/4/11 21:40, Vlastimil Babka wrote:
+>> On 4/11/23 15:08, Qi Zheng wrote:
+>>> The list_lock can be held in the critical section of
+>>> raw_spinlock, and then lockdep will complain about it
+>>> like below:
+>>>
+>>>   =============================
+>>>   [ BUG: Invalid wait context ]
+>>>   6.3.0-rc6-next-20230411 #7 Not tainted
+>>>   -----------------------------
+>>>   swapper/0/1 is trying to lock:
+>>>   ffff888100055418 (&n->list_lock){....}-{3:3}, at: ___slab_alloc+0x73d/0x1330
+>>>   other info that might help us debug this:
+>>>   context-{5:5}
+>>>   2 locks held by swapper/0/1:
+>>>    #0: ffffffff824e8160 (rcu_tasks.cbs_gbl_lock){....}-{2:2}, at: cblist_init_generic+0x22/0x2d0
+>>>    #1: ffff888136bede50 (&ACCESS_PRIVATE(rtpcp, lock)){....}-{2:2}, at: cblist_init_generic+0x232/0x2d0
+>>>   stack backtrace:
+>>>   CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.3.0-rc6-next-20230411 #7
+>>>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+>>>   Call Trace:
+>>>    <TASK>
+>>>    dump_stack_lvl+0x77/0xc0
+>>>    __lock_acquire+0xa65/0x2950
+>>>    ? arch_stack_walk+0x65/0xf0
+>>>    ? arch_stack_walk+0x65/0xf0
+>>>    ? unwind_next_frame+0x602/0x8d0
+>>>    lock_acquire+0xe0/0x300
+>>>    ? ___slab_alloc+0x73d/0x1330
+>>>    ? find_usage_forwards+0x39/0x50
+>>>    ? check_irq_usage+0x162/0xa70
+>>>    ? __bfs+0x10c/0x2c0
+>>>    _raw_spin_lock_irqsave+0x4f/0x90
+>>>    ? ___slab_alloc+0x73d/0x1330
+>>>    ___slab_alloc+0x73d/0x1330
+>>>    ? fill_pool+0x16b/0x2a0
+>>>    ? look_up_lock_class+0x5d/0x160
+>>>    ? register_lock_class+0x48/0x500
+>>>    ? __lock_acquire+0xabc/0x2950
+>>>    ? fill_pool+0x16b/0x2a0
+>>>    kmem_cache_alloc+0x358/0x3b0
+>>>    ? __lock_acquire+0xabc/0x2950
+>>>    fill_pool+0x16b/0x2a0
+>>>    ? __debug_object_init+0x292/0x560
+>>>    ? lock_acquire+0xe0/0x300
+>>>    ? cblist_init_generic+0x232/0x2d0
+>>>    __debug_object_init+0x2c/0x560
+>>>    cblist_init_generic+0x147/0x2d0
+>>>    rcu_init_tasks_generic+0x15/0x190
+>>>    kernel_init_freeable+0x6e/0x3e0
+>>>    ? rest_init+0x1e0/0x1e0
+>>>    kernel_init+0x1b/0x1d0
+>>>    ? rest_init+0x1e0/0x1e0
+>>>    ret_from_fork+0x1f/0x30
+>>>    </TASK>
+>>>
+>>> The fill_pool() can only be called in the !PREEMPT_RT kernel
+>>> or in the preemptible context of the PREEMPT_RT kernel, so
+>>> the above warning is not a real issue, but it's better to
+>>> annotate kmem_cache_node->list_lock as raw_spinlock to get
+>>> rid of such issue.
+>> 
+>> + CC some RT and RCU people
+> 
+> Thanks.
+> 
+>> 
+>> AFAIK raw_spinlock is not just an annotation, but on RT it changes the
+>> implementation from preemptible mutex to actual spin lock, so it would be
+> 
+> Yeah.
+> 
+>> rather unfortunate to do that for a spurious warning. Can it be somehow
+>> fixed in a better way?
+> 
+> It's indeed unfortunate for the warning in the commit message. But
+> functions like kmem_cache_alloc(GFP_ATOMIC) may indeed be called
+> in the critical section of raw_spinlock or in the hardirq context, which
 
-Signed-off-by: Lin Yu Chen <starpt.official@gmail.com>
----
- Documentation/RCU/checklist.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hmm, I thought they may not, actually.
 
-diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-index cc361fb01ed4..bd3c58c44bef 100644
---- a/Documentation/RCU/checklist.rst
-+++ b/Documentation/RCU/checklist.rst
-@@ -70,7 +70,7 @@ over a rather long period of time, but improvements are always welcome!
- 	can serve as rcu_read_lock_sched(), but is less readable and
- 	prevents lockdep from detecting locking issues.
- 
--	Please not that you *cannot* rely on code known to be built
-+	Please note that you *cannot* rely on code known to be built
- 	only in non-preemptible kernels.  Such code can and will break,
- 	especially in kernels built with CONFIG_PREEMPT_COUNT=y.
- 
--- 
-2.25.1
+> will cause problem in the PREEMPT_RT kernel. So I still think it is
+> reasonable to convert kmem_cache_node->list_lock to raw_spinlock type.
+
+It wouldn't be the complete solution anyway. Once we allow even a GFP_ATOMIC
+slab allocation for such context, it means also page allocation can happen
+to refill the slabs, so lockdep will eventually complain about zone->lock,
+and who knows what else.
+
+> In addition, there are many fix patches for this kind of warning in the
+> git log, so I also think there should be a general and better solution. :)
+
+Maybe, but given above, I doubt it's this one.
+
+> 
+>> 
+> 
 
