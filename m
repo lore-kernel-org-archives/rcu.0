@@ -2,56 +2,55 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9134EC77B6E
-	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 12:32:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30F1DC77B6E
+	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 12:37:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbjDLMcg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 08:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        id S231624AbjDLMhK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Apr 2023 08:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjDLMcg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 08:32:36 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EE94C1F;
-        Wed, 12 Apr 2023 05:32:34 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id t14so14356634lft.7;
-        Wed, 12 Apr 2023 05:32:34 -0700 (PDT)
+        with ESMTP id S231555AbjDLMhB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Apr 2023 08:37:01 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7BA7EC8;
+        Wed, 12 Apr 2023 05:36:35 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id m4so14319263lfj.13;
+        Wed, 12 Apr 2023 05:36:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681302753; x=1683894753;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QYOiVGqE/0Wejv7bwdICXlN6AMo/RW9EAzcz7EIT7TU=;
-        b=ZgPJctoM/017w1rVmRk5PL9SGgEsJGOe6y2KICzm5tSiZcxkWGMJ/Cmv6lhgmKR/Ex
-         msndC04ICS9dH3gxGATnrGJdY9/ZOjoh0WD1u5s0QC7RUeG1ZPU3L20cf5gYo3OI0AZB
-         Lo6hRtWMU+Ojba0MvWIg97M4olEr03dI0y6tS9aGwks0kXt3INxTzIqPcdanOxMmgI/p
-         uSvXzs4QYS60a8CtJt3toFoVZy7XZ2W0GssuXIAhCVtDXdHbZqvUmgFXpLOVvMGwoDpw
-         idnBsVmEG4e1IMKxCFX2X9Zt5HzQs7jXPp0vf+IsTC/VTWvPXUpW7Fqqc/bYi1ElEtDj
-         kNMw==
+        d=gmail.com; s=20221208; t=1681302993; x=1683894993;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eLB83siIxXH69Mn8uH9oS0pLbxWqyF34biAfaFTutaM=;
+        b=dMdQsAddccBvFy+DyAuswJTyIJgqGN1i+EuUOUizj6JkP/Jdg5XvUR7LxRc4Xzfjv9
+         f4CusFVXlbHp/z1y7cfkug6+GGWdFRewCpUhtKhTMDVxC1V1MdpnV4PG1JGJDUsCRa2s
+         8HOqZZorV/ANKNTUuvWmGdBCUpOLdw5MBPmXeePvWM70bftNRHpJukhQlH5lcKuDsfzB
+         e14QbklqAjYZ30Dewk69o6+tP9BmJPf2jE2p0zW4/JvnS33fk6f2rmda8dCfspB8gxdQ
+         Pf/22/dCv64v8Qoeq7v3DUGcRlTYci96xslpPURvDLpj3DRuC5gApKVmR3mIV+wAzOO5
+         o5ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681302753; x=1683894753;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QYOiVGqE/0Wejv7bwdICXlN6AMo/RW9EAzcz7EIT7TU=;
-        b=tPeDi9AvgrgQJMfF2jf1AmKbwF5WrSg64tAw6XsRhYkgqdbeSvGR0f9GnLOzSC5AbA
-         y9HjJt83jtdrKABK3A/9e98Qg5x0ksErorFqLWUJl3i9KCs8VEs8SnvRBD+fqi/5vP7E
-         eMWcwYiHESc50NR03DNEMz6AY8PCXparnslXGcarbCZb8pNxzs36c9EY1yx+aTammafX
-         fkbTeLcyvzzHBrFsMz4m11ErbCCqS+9JUzAqKoPcX7eLwI2psMG5P0G3KUcenfM0Xkn2
-         KpvW/bWa5hW7xteTjQR7O2AXLNm4f3h0RtEvGjOKz1404lJc4wBSwrbgYSTEmeLE/Xhv
-         4j8Q==
-X-Gm-Message-State: AAQBX9dSFRZpBgQvck+s2eMXFSnGzQEfO94hMcSSPG5/VapU+ZeydAh0
-        izGRhVCsncaxZiSC07YBoxY=
-X-Google-Smtp-Source: AKy350b2sFb54xXOZARlqhbnV8XKgGakB/guHJv/4PVRwUAnHCtoIDjwg4Gtff5mUa3apJu45isIGg==
-X-Received: by 2002:a19:7610:0:b0:4ec:a115:6e4c with SMTP id c16-20020a197610000000b004eca1156e4cmr481316lff.68.1681302753037;
-        Wed, 12 Apr 2023 05:32:33 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1681302993; x=1683894993;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eLB83siIxXH69Mn8uH9oS0pLbxWqyF34biAfaFTutaM=;
+        b=eKG3cSU6ycn3CsM8TYLiVMpGDWUcHi/JgS0pzcgbo6OkQdytRJO+H7uqRZQrC/jMcE
+         qQu5eVkrkxA+MGb2ileTdy5WgLpzgAMirHH3B70Pi1m0q6GgGxEOdngQFLqG1WW0Rv0C
+         pqnGeGuExhxDw+QTlNzAqv65cqUsaVu9/ud71J2rCPrkzmCwM2b2FOBKolfjVrPO14on
+         5VrQH5Cyu1obCMFvaMUf+rAqHGveqa/0U5mX1+N6ITCmbs6RweNtuIcs6e27ztIO1uxT
+         U7ARgg8fUBMowclSZxhg0OWkqZEhthedGqC71q+g8QEH4Vxf6Owq5B2kBLbdQh5fia2y
+         JfDw==
+X-Gm-Message-State: AAQBX9cenD72p7wfUyiy7MT5VzSdMwdbWepimrdfcYveH98zZBU3nYct
+        L5bMs6+LvWPHBllLmskDWWs=
+X-Google-Smtp-Source: AKy350ZEC5Bhc8xvVHuPxelIDOH9EsAl9fWD0GJb5xoMYgUMGlLUQD34Ma713685hkMIaWrzgt0xJA==
+X-Received: by 2002:a05:6512:146:b0:4ec:82d8:ade1 with SMTP id m6-20020a056512014600b004ec82d8ade1mr1372123lfo.53.1681302993169;
+        Wed, 12 Apr 2023 05:36:33 -0700 (PDT)
 Received: from pc636 (host-90-235-5-238.mobileonline.telia.com. [90.235.5.238])
-        by smtp.gmail.com with ESMTPSA id 2-20020ac24842000000b004eaf41933a4sm665135lfy.59.2023.04.12.05.32.32
+        by smtp.gmail.com with ESMTPSA id p12-20020a19f00c000000b004eaf8613bc3sm2984786lfc.284.2023.04.12.05.36.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 05:32:32 -0700 (PDT)
+        Wed, 12 Apr 2023 05:36:32 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 12 Apr 2023 14:32:30 +0200
+Date:   Wed, 12 Apr 2023 14:36:30 +0200
 To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Cc:     Uladzislau Rezki <urezki@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -60,160 +59,134 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] rcu/kvfree: Prevents cache growing when the
+Subject: Re: [PATCH v2] rcu/kvfree: Prevents cache growing when the
  backoff_page_cache_fill is set
-Message-ID: <ZDak3oyPlHvMB+CR@pc636>
-References: <PH0PR11MB588072A12543FD617C833AF9DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <ZDVt5eUAlp4VmbFy@pc636>
- <PH0PR11MB5880C4B181B6237402B1FBA7DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <ZDV1jhENgED4ctxO@pc636>
- <2159c88e-ec99-4ad6-a166-baf4199d138f@paulmck-laptop>
- <ZDWUgygOqJjs07pp@pc636>
- <PH0PR11MB588060C9B6BE6F08540E74DCDA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+Message-ID: <ZDalzl1CTQ9VEPDw@pc636>
+References: <20230406001238.647536-1-qiang1.zhang@intel.com>
+ <ZC5MoREk30MIt79u@pc636>
+ <8da4b48a-820c-461f-9dc0-a5afaf335177@paulmck-laptop>
+ <PH0PR11MB58809B44F396B7C074BDC704DA919@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <9427c261-0395-4e03-8f93-2e0588fadd1f@paulmck-laptop>
+ <ZDEfFcEhirm443xE@pc636>
+ <PH0PR11MB58805AC5772BECAF65AD4365DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR11MB588060C9B6BE6F08540E74DCDA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB58805AC5772BECAF65AD4365DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 09:14:15AM +0000, Zhang, Qiang1 wrote:
-> 
-> > On Tue, Apr 11, 2023 at 04:58:22PM +0200, Uladzislau Rezki wrote:
-> > > On Tue, Apr 11, 2023 at 02:42:27PM +0000, Zhang, Qiang1 wrote:
-> > > > > > Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() 
-> > > > > > is executed before kfree_rcu_monitor() to drain page cache, if 
-> > > > > > the bnode structure's->gp_snap has done, the kvfree_rcu_bulk() 
-> > > > > > will fill the page cache again in kfree_rcu_monitor(), this 
-> > > > > > commit add a check for krcp 
-> > > > > > structure's->backoff_page_cache_fill in put_cached_bnode(), if 
-> > > > > > the krcp structure's->backoff_page_cache_fill is set, prevent page cache growing and disable allocated page in fill_page_cache_func().
-> > > > > > 
-> > > > > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > > > > >
-> > > > > >Much improved!  But still some questions below...
-> > > > > >
-> > > > > >							Thanx, Paul
-> > > > > >
-> > > > > > ---
-> > > > > >  kernel/rcu/tree.c | 4 +++-
-> > > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index 
-> > > > > > cc34d13be181..9d9d3772cc45 100644
-> > > > > > --- a/kernel/rcu/tree.c
-> > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > @@ -2908,6 +2908,8 @@ static inline bool  
-> > > > > > put_cached_bnode(struct kfree_rcu_cpu *krcp,
-> > > > > >  	struct kvfree_rcu_bulk_data *bnode)  {
-> > > > > > +	if (atomic_read(&krcp->backoff_page_cache_fill))
-> > > > > > +		return false;
-> > > > > >
-> > > > > >This will mean that under low-memory conditions, we will keep 
-> > > > > >zero pages in ->bkvcache.  All attempts to put something there will fail.
-> > > > > >
-> > > > > >This is probably not an issue for structures containing an 
-> > > > > >rcu_head that are passed to kfree_rcu(p, field), but doesn't 
-> > > > > >this mean that
-> > > > > >kfree_rcu_mightsleep() unconditionally invokes synchronize_rcu()?
-> > > > > >This could seriously slow up freeing under low-memory 
-> > > > > >conditions, which might exacerbate the low-memory conditions.
+On Wed, Apr 12, 2023 at 04:18:20AM +0000, Zhang, Qiang1 wrote:
+> > On Thu, Apr 06, 2023 at 11:11:37PM +0000, Zhang, Qiang1 wrote:
+> > > >>On Thu, Apr 06, 2023 at 06:37:53AM +0200, Uladzislau Rezki wrote:
+> > > > On Thu, Apr 06, 2023 at 08:12:38AM +0800, Zqiang wrote:
+> > > > > Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
+> > > > > executed before kfree_rcu_monitor() to drain page cache, if the bnode
+> > > > > structure's->gp_snap has done, the kvfree_rcu_bulk() will fill the
+> > > > > page cache again in kfree_rcu_monitor(), this commit add a check
+> > > > > for krcp structure's->backoff_page_cache_fill in put_cached_bnode(),
+> > > > > if the krcp structure's->backoff_page_cache_fill is set, prevent page
+> > > > > cache growing.
 > > > > > 
-> > > > > Thanks for mentioning this, I didn't think of this before😊.
+> > > > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> > > > > ---
+> > > > >  kernel/rcu/tree.c | 2 ++
+> > > > >  1 file changed, 2 insertions(+)
 > > > > > 
-> > > > > >
-> > > > > >Is this really what we want?  Zero cached rather than just fewer cached?
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > >  	// Check the limit.
-> > > > > >  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
-> > > > > >  		return false;
-> > > > > > @@ -3221,7 +3223,7 @@ static void fill_page_cache_func(struct work_struct *work)
-> > > > > >  	int i;
-> > > > > >  
-> > > > > >  	nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
-> > > > > > -		1 : rcu_min_cached_objs;
-> > > > > > +		0 : rcu_min_cached_objs;
-> > > > > >  
-> > > > > >  	for (i = 0; i < nr_pages; i++) {
-> > > > > >
-> > > > > >I am still confused as to why we start "i" at zero rather than 
-> > > > > >at
-> > > > > >->nr_bkv_objs.  What am I missing here?
-> > > > > 
-> > > > > 
-> > > > > No, you are right, I missed this place. 
-> > > > > 
+> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > index 9cc0a7766fd2..f25430ae1936 100644
 > > > > > --- a/kernel/rcu/tree.c
 > > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -2908,6 +2908,8 @@ static inline bool  
-> > > > > put_cached_bnode(struct kfree_rcu_cpu *krcp,
-> > > > >         struct kvfree_rcu_bulk_data *bnode)  {
-> > > > > +       if (atomic_read(&krcp->backoff_page_cache_fill))
-> > > > > +               return false;
+> > > > > @@ -2907,6 +2907,8 @@ static inline bool
+> > > > >  put_cached_bnode(struct kfree_rcu_cpu *krcp,
+> > > > >  	struct kvfree_rcu_bulk_data *bnode)
+> > > > >  {
+> > > > > +	if (atomic_read(&krcp->backoff_page_cache_fill))
+> > > > > +		return false;
+> > > > >  	// Check the limit.
+> > > > >  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+> > > > >  		return false;
+> > > > > -- 
+> > > > > 2.32.0
 > > > > >
-> > > > >This is broken, unfortunately. If a low memory condition we fill 
-> > > > >fill a cache with at least one page anyway because of we do not 
-> > > > >want to hit a slow path.
-> > > > 
-> > > > Thanks remind, please ignore my v4 patch,   how about the following?
-> > > > 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c index 
-> > > > 41daae3239b5..e2e8412e687f 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -3238,6 +3238,9 @@ static void fill_page_cache_func(struct work_struct *work)
-> > > >                         free_page((unsigned long) bnode);
-> > > >                         break;
-> > > >                 }
-> > > > +
-> > > > +               if (atomic_read(&krcp->backoff_page_cache_fill))
-> > > > +                       break;
-> > > >         }
-> > > It does not fix an "issue" you are reporting. kvfree_rcu_bulk() 
-> > > function can still fill it back. IMHO, the solution here is to 
-> > > disable cache if a low memory condition and enable back later on.
+> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > >
+> > > >Thank you both!
+> > > >
+> > > >One question, though.  Might it be better to instead modify the "for"
+> > > >loop in fill_page_cache_func() to start at krcp->nr_bkv_objs instead
+> > > >of starting at zero?  That way, we still provide a single page under
+> > > >low-memory conditions, but provide rcu_min_cached_objs of them if memory
+> > > >is plentiful.
+> > > >
+> > > >Alternatively, if we really don't want to allow any pages at all under
+> > > >low-memory conditions, shouldn't the fill_page_cache_func() set nr_pages
+> > > >to zero (instead of the current 1) when the krcp->backoff_page_cache_fill
+> > > >flag is set?  
 > > > 
-> > > The cache size is controlled by the rcu_min_cached_objs variable. We 
-> > > can set it to 1 and restore it back to original value to make the 
-> > > cache operating as before.
+> > > Hi, Paul
+> > > 
+> > > If the krcp->backoff_page_cache_fill is true, the put_cached_bnode () return false,
+> > > the allocated single page will also be freed in fill_page_cache_func().
+> > > 
+> > > or it would be better not to allocate under memory pressure.
 > > 
-> > It would be best to use a second variable for this.  Users might get 
-> > annoyed if their changes to rcu_min_cached_objs got overwritten once 
-> > things got set back to normal operation.
+> > That was my thought.  ;-)
 > > 
-> >Agree. So we do not make it visible over sysfs interface for user that we manipulate it.
+> > > How about like this?
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 9cc0a7766fd2..94aedbc3da36 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -2907,6 +2907,8 @@ static inline bool
+> > >  put_cached_bnode(struct kfree_rcu_cpu *krcp,
+> > >         struct kvfree_rcu_bulk_data *bnode)
+> > >  {
+> > > +       if (atomic_read(&krcp->backoff_page_cache_fill))
+> > > +               return false;
+> > >         // Check the limit.
+> > >         if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+> > >                 return false;
+> > > @@ -3220,7 +3222,7 @@ static void fill_page_cache_func(struct work_struct *work)
+> > >         int i;
+> > > 
+> > >         nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
+> > > -               1 : rcu_min_cached_objs;
+> > > +               0 : rcu_min_cached_objs;
+> > > 
+> > >         for (i = 0; i < nr_pages; i++) {
+> > 
+> > The other question is why this loop does not allow for any pages
+> > that might already be allocated, thus perhaps looking like this:
+> > 
+> > 		for (i = krcp->nr_bkv_objs; i < nr_pages; i++) {
+> > 
+> > Or do we somehow know that krcp->nr_bkv_objs is equal to zero?  (I am not
+> > seeing this, but I do feel the need to ask.)
+> > 
+> >Usually we start from zero, this is when a ptr. was not added into
+> >a bulk array, due to no memory reason for a single argument and no
+> >cache pages anymore for double argument.
 > >
+> >In the fill page function, the limit is checked by the put_cached_bnode() itself
+> >so it stops prefetch once nr_bkv_objs contains desired value.
 > >
 > 
+> If the krcp->nr_bkv_objs is updated in kfree_rcu_work() and happens before invoke fill_page_cache_func(),
+> when invoke fill_page_cache_func(), we start from zero,  will allocate page and hold krcp->lock,
+> fill krcp->bkvcache,  but if krcp->nr_bkv_objs already equal to rcu_min_cached_objs,  this page will
+> be freed and exit loop,  this allocate page seems like a meaningless operation. 
 > 
-> The rcu_min_cached_objs is read-only, Users cannot be set rcu_min_cached_objs dynamically. 
+> I also want to ask if starting from krcp->nr_bkv_objs is necessary?
 > 
-> -r--r--r-- 1 root root 4.0K Apr 12 01:08 rcu_min_cached_objs
-> 
-You can set it as a boot parameter: rcutree.rcu_min_cached_objs=XXX
+At least it does not break anything. The example like you described can
+occur. So starting from the krcp->nr_bkv_objs is worth to do.
 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 41daae3239b5..0e9f83562823 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2909,7 +2909,8 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
->         struct kvfree_rcu_bulk_data *bnode)
->  {
->         // Check the limit.
-> -       if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
-> +       if ((atomic_read(&krcp->backoff_page_cache_fill) && krcp->nr_bkv_objs) ||
-> +                               krcp->nr_bkv_objs >= rcu_min_cached_objs)
->                 return false;
-> 
-We can eliminate the backoff_page_cache_fill per-cpu atomic variable and
-just change a new one, say, min_cached_objs, if a low memory condition.
-Restore it to a default what is the rcu_min_cached_objs.
+So, if it happens it would be good of you could simulate it and update
+the commit message accordingly.
 
-I can post here an example if it helps to make it more clear.
 
 --
 Uladzislau Rezki
