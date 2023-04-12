@@ -2,46 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE5DFC7619A
-	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 12:49:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F789C77B6E
+	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 12:50:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjDLMts (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 08:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        id S229936AbjDLMus (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Apr 2023 08:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjDLMte (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 08:49:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047349000;
-        Wed, 12 Apr 2023 05:49:05 -0700 (PDT)
+        with ESMTP id S230345AbjDLMtv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Apr 2023 08:49:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F99F7AA3;
+        Wed, 12 Apr 2023 05:49:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gHtUC9ZbjIgk4RPtGtrL1TvESI1pfT3DgBqtzWNBp54=; b=pqfu+JncaaA7vblGM3GJBfOy9A
-        N7fAck3Zn11IGydLgB79oD3a8b51X6bqgbojBDx2Ln7Hebk/OwuSo8T8TLukC8vMTtXBONbZZG7yO
-        NbXdsw2c5u2OGB8x2SqJyee0epR/RmH4vG77Z3rkFR1dZF5UY0eMIIBViyEzGzeTiyUEWxErx8pPw
-        l5bL5s1xm27Nx8g9qK5O4U5cUwztL3GbLLJNU10MziHfWZqPWSq7MQkUXVFSwZah+DCKP0ondB4YV
-        4AtYm1cB3u8Ion6I4g4QqPTFXevX/joGg6bpF4cW34NQl2SMVDz0AX8YW3a7nHUti9zQgN3s566Uw
-        4EVDdCPA==;
+        bh=Nwnw2uTfPO5n4Gp8ZTbsCl6BKgatqoYliynKz2+TMOM=; b=WFnv1NjOaGkkXkkj+IrnKd7VMG
+        yQnXQFDdQyp/GOGVYk6aypVrAhYvyisIgw2Uo4hCN3Im1JZ7a5ATB9eHTDhr3HnoVI3M/Vayn6QhF
+        Sy8EqNZ313UZZkfaKCKT7K1VWQaqm0Z/t8tZHqV9k9wyonlE8+eKAd+0HBKVc5OyKolPFGAec85JG
+        zU/03alRPxg/VHUqgbbs74x/cgYOANmiUdSHeTIUcY9C3aJ+9ghiyXHRrhC7jXVn2zu+X13X/gV1F
+        5Hze/xTOeJg444vNqcxku6Bplu3ZPCiU8FxDs5uQH6H4JnC432lX260nwmoKXWZyenGZ+GJ1N9C8v
+        6D5AB3SA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pmZsx-00DvZw-2N;
-        Wed, 12 Apr 2023 12:47:40 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pmZtu-006s9e-0x; Wed, 12 Apr 2023 12:48:38 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 82744300274;
-        Wed, 12 Apr 2023 14:47:36 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BCC45300274;
+        Wed, 12 Apr 2023 14:48:36 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 14174235CC4A0; Wed, 12 Apr 2023 14:47:36 +0200 (CEST)
-Date:   Wed, 12 Apr 2023 14:47:35 +0200
+        id ADFD2235CC4A0; Wed, 12 Apr 2023 14:48:36 +0200 (CEST)
+Date:   Wed, 12 Apr 2023 14:48:36 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
         "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
         "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
@@ -58,7 +57,7 @@ Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
 Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
  raw_spinlock
-Message-ID: <20230412124735.GE628377@hirez.programming.kicks-ass.net>
+Message-ID: <20230412124836.GF628377@hirez.programming.kicks-ass.net>
 References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
  <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
  <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
@@ -67,112 +66,32 @@ References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
  <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
  <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
  <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
+ <29efad1c-5ad4-5d26-b1b9-eeee6119e711@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
+In-Reply-To: <29efad1c-5ad4-5d26-b1b9-eeee6119e711@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 08:50:29AM +0200, Vlastimil Babka wrote:
-
-> > --- a/lib/debugobjects.c
-> > +++ b/lib/debugobjects.c
-> > @@ -562,10 +562,10 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
-> >         unsigned long flags;
-> > 
-> >         /*
-> > -        * On RT enabled kernels the pool refill must happen in preemptible
-> > +        * The pool refill must happen in preemptible
-> >          * context:
-> >          */
-> > -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
-> > +       if (preemptible())
-> >                 fill_pool();
+On Wed, Apr 12, 2023 at 03:30:20PM +0800, Qi Zheng wrote:
+> Maybe we should make CONFIG_PROVE_RAW_LOCK_NESTING depend on
+> CONFIG_PREEMPT_RT:
 > 
-> +CC Peterz
-> 
-> Aha so this is in fact another case where the code is written with
-> actual differences between PREEMPT_RT and !PREEMPT_RT in mind, but
-> CONFIG_PROVE_RAW_LOCK_NESTING always assumes PREEMPT_RT?
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index f0d5b82e478d..257b170aacb6 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1262,6 +1262,7 @@ config PROVE_LOCKING
+>  config PROVE_RAW_LOCK_NESTING
+>         bool "Enable raw_spinlock - spinlock nesting checks"
+>         depends on PROVE_LOCKING
+> +       depends on PREEMPT_RT
+>         default n
+>         help
+>          Enable the raw_spinlock vs. spinlock nesting checks which ensure
 
-Ooh, tricky, yes. PROVE_RAW_LOCK_NESTING always follows the PREEMP_RT
-rules and does not expect trickery like the above.
-
-Something like the completely untested below might be of help..
-
----
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index d22430840b53..f3120d6a7d9e 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -33,6 +33,7 @@ enum lockdep_wait_type {
- enum lockdep_lock_type {
- 	LD_LOCK_NORMAL = 0,	/* normal, catch all */
- 	LD_LOCK_PERCPU,		/* percpu */
-+	LD_LOCK_WAIT,		/* annotation */
- 	LD_LOCK_MAX,
- };
- 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 50d4863974e7..a4077f5bb75b 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2279,8 +2279,9 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
- 	 * As a result, we will skip local_lock(), when we search for irq
- 	 * inversion bugs.
- 	 */
--	if (entry->class->lock_type == LD_LOCK_PERCPU) {
--		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
-+	if (entry->class->lock_type != LD_LOCK_NORMAL) {
-+		if (entry->class->lock_type == LD_LOCK_PERCPU &&
-+		    DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
- 			return false;
- 
- 		return true;
-@@ -4752,7 +4753,8 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
- 
- 	for (; depth < curr->lockdep_depth; depth++) {
- 		struct held_lock *prev = curr->held_locks + depth;
--		u8 prev_inner = hlock_class(prev)->wait_type_inner;
-+		struct lock_class *class = hlock_class(prev);
-+		u8 prev_inner = class->wait_type_inner;
- 
- 		if (prev_inner) {
- 			/*
-@@ -4762,6 +4764,12 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
- 			 * Also due to trylocks.
- 			 */
- 			curr_inner = min(curr_inner, prev_inner);
-+
-+			/*
-+			 * Allow override for annotations.
-+			 */
-+			if (unlikely(class->lock_type == LD_LOCK_WAIT))
-+				curr_inner = prev_inner;
- 		}
- 	}
- 
-diff --git a/lib/debugobjects.c b/lib/debugobjects.c
-index df86e649d8be..fae71ef72a16 100644
---- a/lib/debugobjects.c
-+++ b/lib/debugobjects.c
-@@ -565,8 +565,16 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
- 	 * On RT enabled kernels the pool refill must happen in preemptible
- 	 * context:
- 	 */
--	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible()) {
-+		static lockdep_map dep_map = {
-+			.name = "wait-type-override",
-+			.wait_type_inner = LD_WAIT_SLEEP,
-+			.lock_type = LD_LOCK_WAIT,
-+		};
-+		lock_map_acquire(&dep_map);
- 		fill_pool();
-+		lock_map_release(&dep_map);
-+	}
- 
- 	db = get_bucket((unsigned long) addr);
- 
+No, very much not. The idea is that we want to work towards having this
+always enabled (when PROVE_LOCKING) to ensure code gets and stays
+PREEMPT_RT clean.
