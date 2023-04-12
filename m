@@ -2,443 +2,263 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26C6EC77B71
-	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 08:45:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CBC2C77B6E
+	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 09:14:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjDLIpk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 04:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S229635AbjDLJOX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Apr 2023 05:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbjDLIpj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 04:45:39 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0832483CC
-        for <rcu@vger.kernel.org>; Wed, 12 Apr 2023 01:45:15 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-74a81556091so41464785a.0
-        for <rcu@vger.kernel.org>; Wed, 12 Apr 2023 01:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1681289067;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HUjigYVffbbURKl5RPLkwpnEmgUmPBqHMcpL1iCa1Oc=;
-        b=HFaVEMTzwQ2HZo3TE4dAe3L6JPS0x/s2RaCMA79k+saJChpm/IXEC2icmbvURc0Bb2
-         HYu53mpHVasFlA1KiE2eav+nts4RAhlJy3DCgme3Bud3Bi70eXyYVbBGN9IKZD4JV3ZZ
-         ALHaU7ewvcb217y10KNE/BoOvu8287JPudWVbyw/Tt1Yb5vVtEINRDWI/oyU2KyqGHqn
-         qBBJrhFdDuDAvxnAB6f9YREcs2MVuK/zX+xRhN8/hOVzDBTh99jxeD0EFH0QMmPgIgRj
-         +9IkrMHSwtY0mWVAj6X3rTeCMkJLgg2GMloSRqUGmKmeFlRW4H9DZRLWlon2MJJlEpyx
-         iQ5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681289067;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HUjigYVffbbURKl5RPLkwpnEmgUmPBqHMcpL1iCa1Oc=;
-        b=vinUK26xZ4ZGV2HgR1No1AmsFP/7qsuqM9F56QwofuNPsRHUda/px1n8B9oP3oTCEH
-         2ZaORmCdNfM3KoymBvkQHmzkVDVQEQ0GzCbRvathpoX2kVg8S2I+WnZ4j1ORwRqsO6az
-         kWALO3YElmZx+DdQAvQMoH34QpNu+rwnUrNm8sys02oxEvWgDcfjNMQ9H6fwBvhoUYjb
-         VwJVmH5T1h2u3FrLcbEoF/+r0dJWeydAIcHudqDCRwRxVgeXmUx151s8WD5wsbX1Dbu4
-         HIUYa3q9Gq53eVzIkJbYZFnh5xnc2V9ZfaocKNOkg508ZFAfArV6ttXmuJpsjpYW1fI2
-         Cdzw==
-X-Gm-Message-State: AAQBX9eUXhsDpfMP6fsVuiYgTG6pe0oe/VKatRArAMux42xa7jC84cDK
-        anJ9NshBu1o0yriiwn1kNIDIFNhQ3HI0EcM6cUY=
-X-Google-Smtp-Source: AKy350Y3Hiqp8yUCqdbWSIkbPCQCzwWxUextb0DV+nXIRC9Hszepb3ofQ7TtqjpwvBW/EsHu6CXZ9Q==
-X-Received: by 2002:a17:902:ec8b:b0:1a0:53ba:ff1f with SMTP id x11-20020a170902ec8b00b001a053baff1fmr1761001plg.0.1681288340701;
-        Wed, 12 Apr 2023 01:32:20 -0700 (PDT)
-Received: from [10.200.10.123] ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id ay2-20020a1709028b8200b0019a7c890c5asm11027513plb.263.2023.04.12.01.32.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Apr 2023 01:32:20 -0700 (PDT)
-Message-ID: <7f928c82-0aaf-5fac-6a54-a3d95a87b296@bytedance.com>
-Date:   Wed, 12 Apr 2023 16:32:09 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.1
-Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
- raw_spinlock
+        with ESMTP id S229735AbjDLJOV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Apr 2023 05:14:21 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1121726;
+        Wed, 12 Apr 2023 02:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681290860; x=1712826860;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ZCBfmX7VH4OWEyLOXzDSLuNt5/rJ6JN/8xJdJW2Ie1c=;
+  b=Pu3JdxMxJ6AzdjAV7ytQ2YAxc5sGuSKIy+WfL27sRUfIhZmdpfy9qU2a
+   m4NB3gSOL0je+WRYUVSdih48vLdWJWljI6CT/8b2d7n9uTiHvfoRDfqg7
+   qTHQDmIoSfVt08RuA3TL3AX7jAcNcr/Ps1ACUKzgrdX4emANu9ks+yi0H
+   wNbytBEFCNNYyTJXaSAlnFia2f5Am/ujxwtWxNrwNzQ8qj5hM1p+l+iea
+   YbZX62S2wscAfNmp8Mb6smUFcQ8kPQo9oGlUctQyFV1fshwaetdo6/oYM
+   IFwMKHJVpd447w5d6MuOltlK+L98o20SnZ0V/YqJTiylQgzTUHPMO/qkb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="341334022"
+X-IronPort-AV: E=Sophos;i="5.98,338,1673942400"; 
+   d="scan'208";a="341334022"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2023 02:14:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="719287056"
+X-IronPort-AV: E=Sophos;i="5.98,338,1673942400"; 
+   d="scan'208";a="719287056"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP; 12 Apr 2023 02:14:19 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 12 Apr 2023 02:14:18 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 12 Apr 2023 02:14:18 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Wed, 12 Apr 2023 02:14:18 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Wed, 12 Apr 2023 02:14:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MSSCIsF8nj6W+hZ6cd0vPAoFkc0NXWNmiuIuq1Uc1UkQKZW4wyIygb9+qjLu44t89qA/Gx+F+b5dZODQK2wYZT8bN5Zy+D5ugXFKbIp6J+g2t6EyO28hNpDYgC5bxja4z70FQd6mB6QAfaIydqQEdY2SMcHj3wyh2IWuy4ttkfkrhsaFoop/3xm0n983RaDJWMW/rwBh9R1/cPG107Ue90RcpeHbT0QEfCz7XUZz32cHKZJguYjhq/fH+iToO9OVvgSv62Pjc69sNv/mRbGM2NjfMCmfHp33KEbxEInWEhuVIT55ot/0kjKPNA+fRrBzXXcCDH2kTDZ8zpWdeWoO4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZCBfmX7VH4OWEyLOXzDSLuNt5/rJ6JN/8xJdJW2Ie1c=;
+ b=DLq0ejtKI2iIRQqwW0mMvfEEWSNStVADY4Pf+OCoIekDOOfJfVaepaZJh3QOdVRYan4S9Vztz3NAmMddEIMI952x3O9UmrJJjyTBYHrhWuNm+QAzAUqFlm26lpzoBtLZ9KZpzx56RpvTay7SHc5nwfUALV9t+O+h1524ct0ug5IsNWcwe5vxE5vbq8BzvMdue1tOeHkO9AvQEQJJeStBkq63lgMwSYnr8Ya8lxSlZo73MVcVshHX7HOYUb3gNGlM+xVLtdcQ5N9Mkwsn7js+FzLhioaiSMdqQa/Ms/DFnc+dfOSqqWAG2LshTU+NJvSnovpITuP7OVofyN+h0ysghQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com (2603:10b6:510:143::14)
+ by PH8PR11MB6681.namprd11.prod.outlook.com (2603:10b6:510:1c4::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.28; Wed, 12 Apr
+ 2023 09:14:16 +0000
+Received: from PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::3265:f579:62a6:8a0]) by PH0PR11MB5880.namprd11.prod.outlook.com
+ ([fe80::3265:f579:62a6:8a0%5]) with mapi id 15.20.6277.035; Wed, 12 Apr 2023
+ 09:14:16 +0000
+From:   "Zhang, Qiang1" <qiang1.zhang@intel.com>
+To:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+CC:     "frederic@kernel.org" <frederic@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] rcu/kvfree: Prevents cache growing when the
+ backoff_page_cache_fill is set
+Thread-Topic: [PATCH v3] rcu/kvfree: Prevents cache growing when the
+ backoff_page_cache_fill is set
+Thread-Index: AQHZaiXby4kI/lAQlUSTC1cR7UMpS68lNdWAgABJBmCAAK/VgIAAAf6ggAAHJACAAB0hgIAAB8aAgADFFUA=
+Date:   Wed, 12 Apr 2023 09:14:15 +0000
+Message-ID: <PH0PR11MB588060C9B6BE6F08540E74DCDA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+References: <PH0PR11MB588072A12543FD617C833AF9DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <ZDVt5eUAlp4VmbFy@pc636>
+ <PH0PR11MB5880C4B181B6237402B1FBA7DA9A9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <ZDV1jhENgED4ctxO@pc636>
+ <2159c88e-ec99-4ad6-a166-baf4199d138f@paulmck-laptop>
+ <ZDWUgygOqJjs07pp@pc636>
+In-Reply-To: <ZDWUgygOqJjs07pp@pc636>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        Boqun Feng <boqun.feng@gmail.com>, longman@redhat.com
-Cc:     "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "cl@linux.com" <cl@linux.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zhao Gongyi <zhaogongyi@bytedance.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
- <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
- <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
- <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
- <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
- <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
- <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
- <29efad1c-5ad4-5d26-b1b9-eeee6119e711@bytedance.com>
-In-Reply-To: <29efad1c-5ad4-5d26-b1b9-eeee6119e711@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5880:EE_|PH8PR11MB6681:EE_
+x-ms-office365-filtering-correlation-id: 795bf110-3ce7-41eb-48e9-08db3b3649fe
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: R67tgjyp4hJ0SqFf6KyDAPU4ubAfQPxxXkSAEHz6kMEdsN1vCwO2KGqJ5jH/2D2LFiWTvRN/jdKGNcT4qvi13y7bnvHqimYuZ3eeIxKK0fBp5UzhNqknDgdht/AGIKR35WKPKb3c4ZeASCq9tHXt+Ru/zlJma8ahI1GyZ2X3u+E3PQKBO1FEJmzAEKz1AG83OQjCfwdm1/r/pT8RSAGqo2594VxTutI82CJrrWZvPYDii/tnvQb1YgNYTjxrDOpmKWiv036FoVmqMoxxNWHUKdS4eMGzm6/O0c8xsNdvPj8ryBkjBJrH7sCZFJYjBlkfIDsLFKlDd+kpFzkSqfHEzBCJEkw0wZGOZx0TPCmehC+LoBsD8jvNtw2Cj4JqRqwEfnSPYQDp6Qo38EdF/L2fdHTgOeetjPI5rSlIM58AC8axjB9Z1cbYgq98iNwfooHqboaCXbb5BITu/nn01PFxHLk0ivI/FPBNkFSFiNoKseg5nKcTvPJpXZ8HsmHmiG9KTLblDfNZCbxraXLnWDGK/Em5uJ1RTsUT4EJOwolaBUFcx7nnPwRGR0FdCLDWwrmvk2TozCWJhmBSnzbys5QLyDKAsM4fGMqIyI04PnYE79IxTHTZNf8ClvfuTwvnLoYQ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5880.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(39860400002)(136003)(366004)(376002)(451199021)(76116006)(83380400001)(71200400001)(7696005)(54906003)(110136005)(6506007)(26005)(186003)(9686003)(82960400001)(33656002)(2906002)(52536014)(38100700002)(5660300002)(122000001)(4326008)(66446008)(66946007)(41300700001)(66476007)(64756008)(8936002)(38070700005)(316002)(8676002)(66556008)(86362001)(55016003)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L01nL2dPUFFwL1E5eWQ2S1RGS09rN2tCUHlYRTFDWjJlWnN0MnEwZitHaXgr?=
+ =?utf-8?B?ODg5alB5bGd0K1ZCM1ZLRDVUQTVQWXpUV3JMenQrdEh6T2VvclVVRTR2cW5J?=
+ =?utf-8?B?bXZrbFZoSDFIdkN1MTBOWGJJMzJpVmRIMURGZTkvQlNZc0p6UlRnWFZ1bEda?=
+ =?utf-8?B?RkhjdDdGckxidEtLUVNNakZKVGxGUGxsWVF5ZTlHcnROcU1MU0h0Z2UwZVhP?=
+ =?utf-8?B?RHpUbnFmaFNNTk9tQSswT3o3bnFoQXlnYnBycEFIUldTdzhEejllVTcvaExG?=
+ =?utf-8?B?Y2gzTEdBcFRPMWY1dVJhV3Zib2hLSk1ia0tWdjBneEdnSEx4VDRod2N6S2Mr?=
+ =?utf-8?B?M1lLbXNZV0FsY0x6YzZQN0tkUXgvUmpudjY5WThVQjhFVm1NNURDcFhwQzdM?=
+ =?utf-8?B?Q0x0L3dOKy9aeHk3a0pEZmo5eUFmNFZxZ29HUW44UUhrV3pKSFBIbnZxelQ4?=
+ =?utf-8?B?eklSRUdIdW5EcEdLZC9HeHRUQmh6WGRuSTFWWlJwUDhZOERhWlNBSFNGNExm?=
+ =?utf-8?B?dGk0cTdsbDdOcDRMWHUveUh1TVVldDcxVmNPcXo0cHNobFRzMmpuaGlWd1RE?=
+ =?utf-8?B?UlVhbEJTOFdRa0Mvd3E1bTIydVp1NUcrcjMwNE1NU3QydVIvR3d1am4xTXJw?=
+ =?utf-8?B?SHFSRGYzTW5BNUdheGkxbStiQ3k4V1J2MlBHdUhIcWlSaEJacFdPdXZKRElV?=
+ =?utf-8?B?WWxBaGdpcTNsR1NCeEphUmJLZ25nMlA3SWRHSDlOUmN2ZmJTLzBHRnhNWG1J?=
+ =?utf-8?B?NW1uY0FOWS9wVzVmOHBYL2NxaVArblM1TW1CTUMrb2E5ZEx0dE1Gc3ZUSnJN?=
+ =?utf-8?B?UmNxT1BUZ1pKYjY5cEpjWVFTSERtQjBIMi9nZ0hkK0N4bDJ1ajI0bEZWejJT?=
+ =?utf-8?B?TDBKcCtKcmI4ZUtlbnhram9hWElxTDAwWWovbUVXQUdiQzN3ZHNycEV5dGY2?=
+ =?utf-8?B?MGtVdSs2S1F5OG9GQmJhRnJ5OTdBV0l2YTVERTNkSHBjNzcrNjBYZDB6dGZh?=
+ =?utf-8?B?L0pxR0tseE51QnI0TWxsSGZ5aEM1MERtOTJFRUVhNlpkRTVuOHcyN0JCMjhI?=
+ =?utf-8?B?UkVwRVFVUDZ4bFkzSkEvclhoazJKTzg2dzZYc3AreGZZWDBGcU5UTFB3Q3c1?=
+ =?utf-8?B?bWp3ek1tbU9CZjlzKzI3eDFNMFQxL0QvQ1pXZGdyNjJKZG55NGVTaWFmMlM1?=
+ =?utf-8?B?dFZQZmdhaktUNlZKdFRCNjcxZHBzdXNwekRFTFNremRybk5CM0pCSDk4SUIr?=
+ =?utf-8?B?QlFHSUpkcFdFYXBUR0pBMTNMeFJoRnNDczMzL1NabGc5SFM1SEcrdFprNG9K?=
+ =?utf-8?B?NW9vZC9PRXpiY1NTcFFxM1pOejNZeEx0aUlrRlZHalJueWtmNXpFNjV4enZE?=
+ =?utf-8?B?TDB2Nm9SK05nZGtVMnRqR0VwTmg0cFRxTlcwK3RhazdPVjVuWGtBZkhDT3Jk?=
+ =?utf-8?B?VzVSRWVoc1Nlc3YybG1yMU5xdHNRelEwYzJBVE40TXg4ZlVETVJPTDNRaXRR?=
+ =?utf-8?B?WmtpOGZMcUp3R21nd3UrTDlNaHQrc3hnMTBROVlNMkVaVkRvZXM4bnk2Y1dm?=
+ =?utf-8?B?bXpVVlVBYVFqVXkrR0o4UWN1R3JvTVlGN3RaVjdlMUoyTnc4UzlzTUJtTW1i?=
+ =?utf-8?B?NVJwcnFpV3MwYk1oNW51L2xGaVdSRlptbmdrYUR6VHB1NTFic1A2N3I1U1ZS?=
+ =?utf-8?B?M3hrSi8yMjg4bW9MMGF4QTNoWGVicE8rOGZ2K3JPV1VPYUF0MFNlVjNWSUxU?=
+ =?utf-8?B?TnBDOUkwUEhIWWtqV3FOWXV4RkNDbmk3S2NYM0t0d0VPN2VnaE8zcUxWRHFE?=
+ =?utf-8?B?SDFVLytsMzIyeU1tbVdqTHdXVW1OTjNvSTZxMnViTkNJQ2taUjErZjlPM0Zi?=
+ =?utf-8?B?RTY3cUtZbTBXVUsxNWhGZ2VrMm91WDM3K1B0bXhSQ2pvTkJtckg0MVUzaDVK?=
+ =?utf-8?B?NjUrMnNLNWoyYXRhZ0NSYTkweWVwSG1vZ2VOcUpJOURLclNtODNBV3lJREhQ?=
+ =?utf-8?B?NElHZUNZMFdSLytDTDFRaHpHWTJPWk5EZTM3VFJHSUdWNlZuOW02eEQxVnRY?=
+ =?utf-8?B?L0VVc1FSMURqT0JQbjdGYmluSTNjM3ljL0dQR0RaVXlTRDZ2MzV5N3lBdCtp?=
+ =?utf-8?Q?W0ODIEs4f0L5YUx6kjYYTVWlN?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5880.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 795bf110-3ce7-41eb-48e9-08db3b3649fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2023 09:14:15.8397
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /vCq3mYFTI9DoLkdRTIL0RoIvx1p9Vols77bhJkpqP9yeqSyNa+MSymbYVvviBlvkibbzfe6YuoRK6d9N3TVxg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6681
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2023/4/12 15:30, Qi Zheng wrote:
-> 
-> 
-> On 2023/4/12 14:50, Vlastimil Babka wrote:
->>
->>
->> On 4/12/23 08:44, Zhang, Qiang1 wrote:
->>>>
->>>>
->>>> On 2023/4/11 22:19, Vlastimil Babka wrote:
->>>>> On 4/11/23 16:08, Qi Zheng wrote:
->>>>>>
->>>>>>
->>>>>> On 2023/4/11 21:40, Vlastimil Babka wrote:
->>>>>>> On 4/11/23 15:08, Qi Zheng wrote:
->>>>>>>> The list_lock can be held in the critical section of
->>>>>>>> raw_spinlock, and then lockdep will complain about it
->>>>>>>> like below:
->>>>>>>>
->>>>>>>>     =============================
->>>>>>>>     [ BUG: Invalid wait context ]
->>>>>>>>     6.3.0-rc6-next-20230411 #7 Not tainted
->>>>>>>>     -----------------------------
->>>>>>>>     swapper/0/1 is trying to lock:
->>>>>>>>     ffff888100055418 (&n->list_lock){....}-{3:3}, at: 
->>>>>>>> ___slab_alloc+0x73d/0x1330
->>>>>>>>     other info that might help us debug this:
->>>>>>>>     context-{5:5}
->>>>>>>>     2 locks held by swapper/0/1:
->>>>>>>>      #0: ffffffff824e8160 (rcu_tasks.cbs_gbl_lock){....}-{2:2}, 
->>>>>>>> at: cblist_init_generic+0x22/0x2d0
->>>>>>>>      #1: ffff888136bede50 (&ACCESS_PRIVATE(rtpcp, 
->>>>>>>> lock)){....}-{2:2}, at: cblist_init_generic+0x232/0x2d0
->>>>>>>>     stack backtrace:
->>>>>>>>     CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
->>>>>>>> 6.3.0-rc6-next-20230411 #7
->>>>>>>>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 
->>>>>>>> 1.14.0-2 04/01/2014
->>>>>>>>     Call Trace:
->>>>>>>>      <TASK>
->>>>>>>>      dump_stack_lvl+0x77/0xc0
->>>>>>>>      __lock_acquire+0xa65/0x2950
->>>>>>>>      ? arch_stack_walk+0x65/0xf0
->>>>>>>>      ? arch_stack_walk+0x65/0xf0
->>>>>>>>      ? unwind_next_frame+0x602/0x8d0
->>>>>>>>      lock_acquire+0xe0/0x300
->>>>>>>>      ? ___slab_alloc+0x73d/0x1330
->>>>>>>>      ? find_usage_forwards+0x39/0x50
->>>>>>>>      ? check_irq_usage+0x162/0xa70
->>>>>>>>      ? __bfs+0x10c/0x2c0
->>>>>>>>      _raw_spin_lock_irqsave+0x4f/0x90
->>>>>>>>      ? ___slab_alloc+0x73d/0x1330
->>>>>>>>      ___slab_alloc+0x73d/0x1330
->>>>>>>>      ? fill_pool+0x16b/0x2a0
->>>>>>>>      ? look_up_lock_class+0x5d/0x160
->>>>>>>>      ? register_lock_class+0x48/0x500
->>>>>>>>      ? __lock_acquire+0xabc/0x2950
->>>>>>>>      ? fill_pool+0x16b/0x2a0
->>>>>>>>      kmem_cache_alloc+0x358/0x3b0
->>>>>>>>      ? __lock_acquire+0xabc/0x2950
->>>>>>>>      fill_pool+0x16b/0x2a0
->>>>>>>>      ? __debug_object_init+0x292/0x560
->>>>>>>>      ? lock_acquire+0xe0/0x300
->>>>>>>>      ? cblist_init_generic+0x232/0x2d0
->>>>>>>>      __debug_object_init+0x2c/0x560
->>>>
->>>> This "__debug_object_init" is because INIT_WORK() is called in
->>>> cblist_init_generic(), so..
->>>>
->>>>>>>>      cblist_init_generic+0x147/0x2d0
->>>>>>>>      rcu_init_tasks_generic+0x15/0x190
->>>>>>>>      kernel_init_freeable+0x6e/0x3e0
->>>>>>>>      ? rest_init+0x1e0/0x1e0
->>>>>>>>      kernel_init+0x1b/0x1d0
->>>>>>>>      ? rest_init+0x1e0/0x1e0
->>>>>>>>      ret_from_fork+0x1f/0x30
->>>>>>>>      </TASK>
->>>>>>>>
->>>>>>>> The fill_pool() can only be called in the !PREEMPT_RT kernel
->>>>>>>> or in the preemptible context of the PREEMPT_RT kernel, so
->>>>>>>> the above warning is not a real issue, but it's better to
->>>>>>>> annotate kmem_cache_node->list_lock as raw_spinlock to get
->>>>>>>> rid of such issue.
->>>>>>>
->>>>>>> + CC some RT and RCU people
->>>>>>
->>>>>> Thanks.
->>>>>>
->>>>>>>
->>>>>>> AFAIK raw_spinlock is not just an annotation, but on RT it 
->>>>>>> changes the
->>>>>>> implementation from preemptible mutex to actual spin lock, so it 
->>>>>>> would be
->>>>>>
->>>>>> Yeah.
->>>>>>
->>>>>>> rather unfortunate to do that for a spurious warning. Can it be 
->>>>>>> somehow
->>>>>>> fixed in a better way?
->>>>
->>>> ... probably a better fix is to drop locks and call INIT_WORK(), or 
->>>> make
->>>> the cblist_init_generic() lockless (or part lockless), given it's just
->>>> initializing the cblist, it's probably doable. But I haven't taken a
->>>> careful look yet.
->>>>
->>>
->>>
->>> This is just one of the paths that triggers an invalid wait,  the 
->>> following paths can also trigger:
->>>
->>> [  129.914547] [ BUG: Invalid wait context ]
->>> [  129.914775] 6.3.0-rc1-yocto-standard+ #2 Not tainted
->>> [  129.915044] -----------------------------
->>> [  129.915272] kworker/2:0/28 is trying to lock:
->>> [  129.915516] ffff88815660f570 (&c->lock){-.-.}-{3:3}, at: 
->>> ___slab_alloc+0x68/0x12e0
->>> [  129.915967] other info that might help us debug this:
->>> [  129.916241] context-{5:5}
->>> [  129.916392] 3 locks held by kworker/2:0/28:
->>> [  129.916642]  #0: ffff888100084d48 
->>> ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x515/0xba0
->>> [  129.917145]  #1: ffff888100c17dd0 
->>> ((work_completion)(&(&krcp->monitor_work)->work)){+.+.}-{0:0}, at: 
->>> process_on0
->>> [  129.917758]  #2: ffff8881565f8508 (krc.lock){....}-{2:2}, at: 
->>> kfree_rcu_monitor+0x29f/0x810
->>> [  129.918207] stack backtrace:
->>> [  129.918374] CPU: 2 PID: 28 Comm: kworker/2:0 Not tainted 
->>> 6.3.0-rc1-yocto-standard+ #2
->>> [  129.918784] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), 
->>> BIOS rel-1.16.1-0-g3208b098f51a-prebuilt.qemu.o4
->>> [  129.919397] Workqueue: events kfree_rcu_monitor
->>> [  129.919662] Call Trace:
->>> [  129.919812]  <TASK>
->>> [  129.919941]  dump_stack_lvl+0x64/0xb0
->>> [  129.920171]  dump_stack+0x10/0x20
->>> [  129.920372]  __lock_acquire+0xeb8/0x3a80
->>> [  129.920603]  ? ret_from_fork+0x2c/0x50
->>> [  129.920824]  ? __pfx___lock_acquire+0x10/0x10
->>> [  129.921068]  ? unwind_next_frame.part.0+0x1ba/0x3c0
->>> [  129.921343]  ? ret_from_fork+0x2c/0x50
->>> [  129.921573]  ? __this_cpu_preempt_check+0x13/0x20
->>> [  129.921847]  lock_acquire+0x194/0x480
->>> [  129.922060]  ? ___slab_alloc+0x68/0x12e0
->>> [  129.922293]  ? __pfx_lock_acquire+0x10/0x10
->>> [  129.922529]  ? __pfx_mark_lock.part.0+0x10/0x10
->>> [  129.922778]  ? __kasan_check_read+0x11/0x20
->>> [  129.922998]  ___slab_alloc+0x9a/0x12e0
->>> [  129.923222]  ? ___slab_alloc+0x68/0x12e0
->>> [  129.923452]  ? __pfx_mark_lock.part.0+0x10/0x10
->>> [  129.923706]  ? __kasan_check_read+0x11/0x20
->>> [  129.923937]  ? fill_pool+0x22a/0x370
->>> [  129.924161]  ? __lock_acquire+0xf5b/0x3a80
->>> [  129.924387]  ? fill_pool+0x22a/0x370
->>> [  129.924590]  __slab_alloc.constprop.0+0x5b/0x90
->>> [  129.924832]  kmem_cache_alloc+0x296/0x3d0
->>> [  129.925073]  ? fill_pool+0x22a/0x370
->>> [  129.925291]  fill_pool+0x22a/0x370
->>> [  129.925495]  ? __pfx_fill_pool+0x10/0x10
->>> [  129.925718]  ? __pfx___lock_acquire+0x10/0x10
->>> [  129.926034]  ? __kasan_check_read+0x11/0x20
->>> [  129.926269]  ? check_chain_key+0x200/0x2b0
->>> [  129.926503]  __debug_object_init+0x82/0x8c0
->>> [  129.926734]  ? __pfx_lock_release+0x10/0x10
->>> [  129.926984]  ? __pfx___debug_object_init+0x10/0x10
->>> [  129.927249]  ? __kasan_check_read+0x11/0x20
->>> [  129.927498]  ? do_raw_spin_unlock+0x9c/0x100
->>> [  129.927758]  debug_object_activate+0x2d1/0x2f0
->>> [  129.928022]  ? __pfx_debug_object_activate+0x10/0x10
->>> [  129.928300]  ? __this_cpu_preempt_check+0x13/0x20
->>> [  129.928583]  __call_rcu_common.constprop.0+0x94/0xeb0
->>> [  129.928897]  ? __this_cpu_preempt_check+0x13/0x20
->>> [  129.929186]  ? __pfx_rcu_work_rcufn+0x10/0x10
->>> [  129.929459]  ? __pfx___call_rcu_common.constprop.0+0x10/0x10
->>> [  129.929803]  ? __pfx_lock_acquired+0x10/0x10
->>> [  129.930067]  ? __pfx_do_raw_spin_trylock+0x10/0x10
->>> [  129.930363]  ? kfree_rcu_monitor+0x29f/0x810
->>> [  129.930627]  call_rcu+0xe/0x20
->>> [  129.930821]  queue_rcu_work+0x4f/0x60
->>> [  129.931050]  kfree_rcu_monitor+0x5d3/0x810
->>> [  129.931302]  ? __pfx_kfree_rcu_monitor+0x10/0x10
->>> [  129.931587]  ? __this_cpu_preempt_check+0x13/0x20
->>> [  129.931878]  process_one_work+0x607/0xba0
->>> [  129.932129]  ? __pfx_process_one_work+0x10/0x10
->>> [  129.932408]  ? worker_thread+0xd6/0x710
->>> [  129.932653]  worker_thread+0x2d4/0x710
->>> [  129.932888]  ? __pfx_worker_thread+0x10/0x10
->>> [  129.933154]  kthread+0x18b/0x1c0
->>> [  129.933363]  ? __pfx_kthread+0x10/0x10
->>> [  129.933598]  ret_from_fork+0x2c/0x50
->>> [  129.933825]  </TASK>
->>>
->>> Maybe no need to convert ->list_lock to raw_spinlock.
->>>
->>> --- a/lib/debugobjects.c
->>> +++ b/lib/debugobjects.c
->>> @@ -562,10 +562,10 @@ __debug_object_init(void *addr, const struct 
->>> debug_obj_descr *descr, int onstack
->>>          unsigned long flags;
->>>
->>>          /*
->>> -        * On RT enabled kernels the pool refill must happen in 
->>> preemptible
->>> +        * The pool refill must happen in preemptible
->>>           * context:
->>>           */
->>> -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
->>> +       if (preemptible())
->>>                  fill_pool();
->>
->> +CC Peterz
->>
->> Aha so this is in fact another case where the code is written with
->> actual differences between PREEMPT_RT and !PREEMPT_RT in mind, but
->> CONFIG_PROVE_RAW_LOCK_NESTING always assumes PREEMPT_RT?
-> 
-> Maybe we should make CONFIG_PROVE_RAW_LOCK_NESTING depend on
-> CONFIG_PREEMPT_RT:
-
-I found a discussion [1] of why CONFIG_PROVE_RAW_LOCK_NESTING didn't
-depend on CONFIG_PREEMPT_RT before in the commit history:
-
-```
- >>> We now always get a "Invalid wait context" warning with
- >>> CONFIG_PROVE_RAW_LOCK_NESTING=y, see the full warning below:
- >>>
- >>>        [    0.705900] =============================
- >>>        [    0.706002] [ BUG: Invalid wait context ]
- >>>        [    0.706180] 5.13.0+ #4 Not tainted
- >>>        [    0.706349] -----------------------------
- >> I believe the purpose of CONFIG_PROVE_RAW_LOCK_NESTING is experimental
- >> and it is turned off by default. Turning it on can cause problem as
- >> shown in your lockdep splat. Limiting it to just PREEMPT_RT will defeat
- >> its purpose to find potential spinlock nesting problem in non-PREEMPT_RT
- >> kernel.
- > As far as I know, a spinlock can nest another spinlock. In
- > non-PREEMPT_RT kernel
- > spin_lock and raw_spin_lock are same , so here acquiring a spin_lock 
-in hardirq
- > context is acceptable, the warning is not needed. My knowledge on this
- > is not enough,
- > Will dig into this.
- >
- >> The point is to fix the issue found,
- > Agree. I thought there was a spinlock usage issue, but by checking
- > deactivate_slab context,
- > looks like the spinlock usage is well. Maybe I'm missing something?
-
-Yes, spinlock and raw spinlock are the same in non-RT kernel. They are
-only different in RT kernel. However, non-RT kernel is also more heavily
-tested than the RT kernel counterpart. The purpose of this config option
-is to expose spinlock nesting problem in more areas of the code. If you
-look at the config help text of PROVE_RAW_LOCK_NESTING:
-
-          help
-           Enable the raw_spinlock vs. spinlock nesting checks which ensure
-           that the lock nesting rules for PREEMPT_RT enabled kernels are
-           not violated.
-
-           NOTE: There are known nesting problems. So if you enable this
-           option expect lockdep splats until these problems have been fully
-           addressed which is work in progress. This config switch allows to
-           identify and analyze these problems. It will be removed and the
-           check permanentely enabled once the main issues have been fixed.
-
-           If unsure, select N.
-
-So lockdep splat is expected. It will take time to address all the
-issues found.
-```
-
-Also +Waiman Long.
-
-
-[1]. 
-https://lore.kernel.org/lkml/1c4c058b-3745-5586-4961-79d83fb5b049@redhat.com/
-
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index f0d5b82e478d..257b170aacb6 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1262,6 +1262,7 @@ config PROVE_LOCKING
->   config PROVE_RAW_LOCK_NESTING
->          bool "Enable raw_spinlock - spinlock nesting checks"
->          depends on PROVE_LOCKING
-> +       depends on PREEMPT_RT
->          default n
->          help
->           Enable the raw_spinlock vs. spinlock nesting checks which ensure
-> 
->>
->>>          db = get_bucket((unsigned long) addr);
->>>
->>>
->>>
->>> Thanks
->>> Zqiang
->>>
->>>>
->>>>
->>>> Regards,
->>>> Boqun
->>>>
->>>>>>
->>>>>> It's indeed unfortunate for the warning in the commit message. But
->>>>>> functions like kmem_cache_alloc(GFP_ATOMIC) may indeed be called
->>>>>> in the critical section of raw_spinlock or in the hardirq context, 
->>>>>> which
->>>>>
->>>>> Hmm, I thought they may not, actually.
->>>>>
->>>>>> will cause problem in the PREEMPT_RT kernel. So I still think it is
->>>>>> reasonable to convert kmem_cache_node->list_lock to raw_spinlock 
->>>>>> type.
->>>>>
->>>>> It wouldn't be the complete solution anyway. Once we allow even a 
->>>>> GFP_ATOMIC
->>>>> slab allocation for such context, it means also page allocation can 
->>>>> happen
->>>>> to refill the slabs, so lockdep will eventually complain about 
->>>>> zone->lock,
->>>>> and who knows what else.
->>>>
->>>> Oh, indeed. :(
->>>>
->>>>>
->>>>>> In addition, there are many fix patches for this kind of warning 
->>>>>> in the
->>>>>> git log, so I also think there should be a general and better 
->>>>>> solution. :)
->>>>>
->>>>> Maybe, but given above, I doubt it's this one.
->>>>>
->>>>>>
->>>>>>>
->>>>>>
->>>>>
->>>>
->>>> -- 
->>>> Thanks,
->>>> Qi
-> 
-
--- 
-Thanks,
-Qi
+DQo+IE9uIFR1ZSwgQXByIDExLCAyMDIzIGF0IDA0OjU4OjIyUE0gKzAyMDAsIFVsYWR6aXNsYXUg
+UmV6a2kgd3JvdGU6DQo+ID4gT24gVHVlLCBBcHIgMTEsIDIwMjMgYXQgMDI6NDI6MjdQTSArMDAw
+MCwgWmhhbmcsIFFpYW5nMSB3cm90ZToNCj4gPiA+ID4gPiBDdXJyZW50bHksIGluIGtmcmVlX3Jj
+dV9zaHJpbmtfc2NhbigpLCB0aGUgZHJhaW5fcGFnZV9jYWNoZSgpIA0KPiA+ID4gPiA+IGlzIGV4
+ZWN1dGVkIGJlZm9yZSBrZnJlZV9yY3VfbW9uaXRvcigpIHRvIGRyYWluIHBhZ2UgY2FjaGUsIGlm
+IA0KPiA+ID4gPiA+IHRoZSBibm9kZSBzdHJ1Y3R1cmUncy0+Z3Bfc25hcCBoYXMgZG9uZSwgdGhl
+IGt2ZnJlZV9yY3VfYnVsaygpIA0KPiA+ID4gPiA+IHdpbGwgZmlsbCB0aGUgcGFnZSBjYWNoZSBh
+Z2FpbiBpbiBrZnJlZV9yY3VfbW9uaXRvcigpLCB0aGlzIA0KPiA+ID4gPiA+IGNvbW1pdCBhZGQg
+YSBjaGVjayBmb3Iga3JjcCANCj4gPiA+ID4gPiBzdHJ1Y3R1cmUncy0+YmFja29mZl9wYWdlX2Nh
+Y2hlX2ZpbGwgaW4gcHV0X2NhY2hlZF9ibm9kZSgpLCBpZiANCj4gPiA+ID4gPiB0aGUga3JjcCBz
+dHJ1Y3R1cmUncy0+YmFja29mZl9wYWdlX2NhY2hlX2ZpbGwgaXMgc2V0LCBwcmV2ZW50IHBhZ2Ug
+Y2FjaGUgZ3Jvd2luZyBhbmQgZGlzYWJsZSBhbGxvY2F0ZWQgcGFnZSBpbiBmaWxsX3BhZ2VfY2Fj
+aGVfZnVuYygpLg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFpxaWFuZyA8
+cWlhbmcxLnpoYW5nQGludGVsLmNvbT4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+TXVjaCBpbXByb3Zl
+ZCEgIEJ1dCBzdGlsbCBzb21lIHF1ZXN0aW9ucyBiZWxvdy4uLg0KPiA+ID4gPiA+DQo+ID4gPiA+
+ID4JCQkJCQkJVGhhbngsIFBhdWwNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+
+ICBrZXJuZWwvcmN1L3RyZWUuYyB8IDQgKysrLQ0KPiA+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwg
+MyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gZGlm
+ZiAtLWdpdCBhL2tlcm5lbC9yY3UvdHJlZS5jIGIva2VybmVsL3JjdS90cmVlLmMgaW5kZXggDQo+
+ID4gPiA+ID4gY2MzNGQxM2JlMTgxLi45ZDlkMzc3MmNjNDUgMTAwNjQ0DQo+ID4gPiA+ID4gLS0t
+IGEva2VybmVsL3JjdS90cmVlLmMNCj4gPiA+ID4gPiArKysgYi9rZXJuZWwvcmN1L3RyZWUuYw0K
+PiA+ID4gPiA+IEBAIC0yOTA4LDYgKzI5MDgsOCBAQCBzdGF0aWMgaW5saW5lIGJvb2wgIA0KPiA+
+ID4gPiA+IHB1dF9jYWNoZWRfYm5vZGUoc3RydWN0IGtmcmVlX3JjdV9jcHUgKmtyY3AsDQo+ID4g
+PiA+ID4gIAlzdHJ1Y3Qga3ZmcmVlX3JjdV9idWxrX2RhdGEgKmJub2RlKSAgew0KPiA+ID4gPiA+
+ICsJaWYgKGF0b21pY19yZWFkKCZrcmNwLT5iYWNrb2ZmX3BhZ2VfY2FjaGVfZmlsbCkpDQo+ID4g
+PiA+ID4gKwkJcmV0dXJuIGZhbHNlOw0KPiA+ID4gPiA+DQo+ID4gPiA+ID5UaGlzIHdpbGwgbWVh
+biB0aGF0IHVuZGVyIGxvdy1tZW1vcnkgY29uZGl0aW9ucywgd2Ugd2lsbCBrZWVwIA0KPiA+ID4g
+PiA+emVybyBwYWdlcyBpbiAtPmJrdmNhY2hlLiAgQWxsIGF0dGVtcHRzIHRvIHB1dCBzb21ldGhp
+bmcgdGhlcmUgd2lsbCBmYWlsLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID5UaGlzIGlzIHByb2JhYmx5
+IG5vdCBhbiBpc3N1ZSBmb3Igc3RydWN0dXJlcyBjb250YWluaW5nIGFuIA0KPiA+ID4gPiA+cmN1
+X2hlYWQgdGhhdCBhcmUgcGFzc2VkIHRvIGtmcmVlX3JjdShwLCBmaWVsZCksIGJ1dCBkb2Vzbid0
+IA0KPiA+ID4gPiA+dGhpcyBtZWFuIHRoYXQNCj4gPiA+ID4gPmtmcmVlX3JjdV9taWdodHNsZWVw
+KCkgdW5jb25kaXRpb25hbGx5IGludm9rZXMgc3luY2hyb25pemVfcmN1KCk/DQo+ID4gPiA+ID5U
+aGlzIGNvdWxkIHNlcmlvdXNseSBzbG93IHVwIGZyZWVpbmcgdW5kZXIgbG93LW1lbW9yeSANCj4g
+PiA+ID4gPmNvbmRpdGlvbnMsIHdoaWNoIG1pZ2h0IGV4YWNlcmJhdGUgdGhlIGxvdy1tZW1vcnkg
+Y29uZGl0aW9ucy4NCj4gPiA+ID4gDQo+ID4gPiA+IFRoYW5rcyBmb3IgbWVudGlvbmluZyB0aGlz
+LCBJIGRpZG4ndCB0aGluayBvZiB0aGlzIGJlZm9yZfCfmIouDQo+ID4gPiA+IA0KPiA+ID4gPiA+
+DQo+ID4gPiA+ID5JcyB0aGlzIHJlYWxseSB3aGF0IHdlIHdhbnQ/ICBaZXJvIGNhY2hlZCByYXRo
+ZXIgdGhhbiBqdXN0IGZld2VyIGNhY2hlZD8NCj4gPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+
+ID4NCj4gPiA+ID4gPiAgCS8vIENoZWNrIHRoZSBsaW1pdC4NCj4gPiA+ID4gPiAgCWlmIChrcmNw
+LT5ucl9ia3Zfb2JqcyA+PSByY3VfbWluX2NhY2hlZF9vYmpzKQ0KPiA+ID4gPiA+ICAJCXJldHVy
+biBmYWxzZTsNCj4gPiA+ID4gPiBAQCAtMzIyMSw3ICszMjIzLDcgQEAgc3RhdGljIHZvaWQgZmls
+bF9wYWdlX2NhY2hlX2Z1bmMoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPiA+ID4gPiA+ICAJ
+aW50IGk7DQo+ID4gPiA+ID4gIA0KPiA+ID4gPiA+ICAJbnJfcGFnZXMgPSBhdG9taWNfcmVhZCgm
+a3JjcC0+YmFja29mZl9wYWdlX2NhY2hlX2ZpbGwpID8NCj4gPiA+ID4gPiAtCQkxIDogcmN1X21p
+bl9jYWNoZWRfb2JqczsNCj4gPiA+ID4gPiArCQkwIDogcmN1X21pbl9jYWNoZWRfb2JqczsNCj4g
+PiA+ID4gPiAgDQo+ID4gPiA+ID4gIAlmb3IgKGkgPSAwOyBpIDwgbnJfcGFnZXM7IGkrKykgew0K
+PiA+ID4gPiA+DQo+ID4gPiA+ID5JIGFtIHN0aWxsIGNvbmZ1c2VkIGFzIHRvIHdoeSB3ZSBzdGFy
+dCAiaSIgYXQgemVybyByYXRoZXIgdGhhbiANCj4gPiA+ID4gPmF0DQo+ID4gPiA+ID4tPm5yX2Jr
+dl9vYmpzLiAgV2hhdCBhbSBJIG1pc3NpbmcgaGVyZT8NCj4gPiA+ID4gDQo+ID4gPiA+IA0KPiA+
+ID4gPiBObywgeW91IGFyZSByaWdodCwgSSBtaXNzZWQgdGhpcyBwbGFjZS4gDQo+ID4gPiA+IA0K
+PiA+ID4gPiAtLS0gYS9rZXJuZWwvcmN1L3RyZWUuYw0KPiA+ID4gPiArKysgYi9rZXJuZWwvcmN1
+L3RyZWUuYw0KPiA+ID4gPiBAQCAtMjkwOCw2ICsyOTA4LDggQEAgc3RhdGljIGlubGluZSBib29s
+ICANCj4gPiA+ID4gcHV0X2NhY2hlZF9ibm9kZShzdHJ1Y3Qga2ZyZWVfcmN1X2NwdSAqa3JjcCwN
+Cj4gPiA+ID4gICAgICAgICBzdHJ1Y3Qga3ZmcmVlX3JjdV9idWxrX2RhdGEgKmJub2RlKSAgew0K
+PiA+ID4gPiArICAgICAgIGlmIChhdG9taWNfcmVhZCgma3JjcC0+YmFja29mZl9wYWdlX2NhY2hl
+X2ZpbGwpKQ0KPiA+ID4gPiArICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNlOw0KPiA+ID4gPg0K
+PiA+ID4gPlRoaXMgaXMgYnJva2VuLCB1bmZvcnR1bmF0ZWx5LiBJZiBhIGxvdyBtZW1vcnkgY29u
+ZGl0aW9uIHdlIGZpbGwgDQo+ID4gPiA+ZmlsbCBhIGNhY2hlIHdpdGggYXQgbGVhc3Qgb25lIHBh
+Z2UgYW55d2F5IGJlY2F1c2Ugb2Ygd2UgZG8gbm90IA0KPiA+ID4gPndhbnQgdG8gaGl0IGEgc2xv
+dyBwYXRoLg0KPiA+ID4gDQo+ID4gPiBUaGFua3MgcmVtaW5kLCBwbGVhc2UgaWdub3JlIG15IHY0
+IHBhdGNoLCAgIGhvdyBhYm91dCB0aGUgZm9sbG93aW5nPw0KPiA+ID4gDQo+ID4gPiBkaWZmIC0t
+Z2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9rZXJuZWwvcmN1L3RyZWUuYyBpbmRleCANCj4gPiA+
+IDQxZGFhZTMyMzliNS4uZTJlODQxMmU2ODdmIDEwMDY0NA0KPiA+ID4gLS0tIGEva2VybmVsL3Jj
+dS90cmVlLmMNCj4gPiA+ICsrKyBiL2tlcm5lbC9yY3UvdHJlZS5jDQo+ID4gPiBAQCAtMzIzOCw2
+ICszMjM4LDkgQEAgc3RhdGljIHZvaWQgZmlsbF9wYWdlX2NhY2hlX2Z1bmMoc3RydWN0IHdvcmtf
+c3RydWN0ICp3b3JrKQ0KPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgZnJlZV9wYWdlKCh1
+bnNpZ25lZCBsb25nKSBibm9kZSk7DQo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICBicmVh
+azsNCj4gPiA+ICAgICAgICAgICAgICAgICB9DQo+ID4gPiArDQo+ID4gPiArICAgICAgICAgICAg
+ICAgaWYgKGF0b21pY19yZWFkKCZrcmNwLT5iYWNrb2ZmX3BhZ2VfY2FjaGVfZmlsbCkpDQo+ID4g
+PiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiA+ICAgICAgICAgfQ0KPiA+IEl0
+IGRvZXMgbm90IGZpeCBhbiAiaXNzdWUiIHlvdSBhcmUgcmVwb3J0aW5nLiBrdmZyZWVfcmN1X2J1
+bGsoKSANCj4gPiBmdW5jdGlvbiBjYW4gc3RpbGwgZmlsbCBpdCBiYWNrLiBJTUhPLCB0aGUgc29s
+dXRpb24gaGVyZSBpcyB0byANCj4gPiBkaXNhYmxlIGNhY2hlIGlmIGEgbG93IG1lbW9yeSBjb25k
+aXRpb24gYW5kIGVuYWJsZSBiYWNrIGxhdGVyIG9uLg0KPiA+IA0KPiA+IFRoZSBjYWNoZSBzaXpl
+IGlzIGNvbnRyb2xsZWQgYnkgdGhlIHJjdV9taW5fY2FjaGVkX29ianMgdmFyaWFibGUuIFdlIA0K
+PiA+IGNhbiBzZXQgaXQgdG8gMSBhbmQgcmVzdG9yZSBpdCBiYWNrIHRvIG9yaWdpbmFsIHZhbHVl
+IHRvIG1ha2UgdGhlIA0KPiA+IGNhY2hlIG9wZXJhdGluZyBhcyBiZWZvcmUuDQo+IA0KPiBJdCB3
+b3VsZCBiZSBiZXN0IHRvIHVzZSBhIHNlY29uZCB2YXJpYWJsZSBmb3IgdGhpcy4gIFVzZXJzIG1p
+Z2h0IGdldCANCj4gYW5ub3llZCBpZiB0aGVpciBjaGFuZ2VzIHRvIHJjdV9taW5fY2FjaGVkX29i
+anMgZ290IG92ZXJ3cml0dGVuIG9uY2UgDQo+IHRoaW5ncyBnb3Qgc2V0IGJhY2sgdG8gbm9ybWFs
+IG9wZXJhdGlvbi4NCj4gDQo+QWdyZWUuIFNvIHdlIGRvIG5vdCBtYWtlIGl0IHZpc2libGUgb3Zl
+ciBzeXNmcyBpbnRlcmZhY2UgZm9yIHVzZXIgdGhhdCB3ZSBtYW5pcHVsYXRlIGl0Lg0KPg0KPg0K
+DQoNClRoZSByY3VfbWluX2NhY2hlZF9vYmpzIGlzIHJlYWQtb25seSwgVXNlcnMgY2Fubm90IGJl
+IHNldCByY3VfbWluX2NhY2hlZF9vYmpzIGR5bmFtaWNhbGx5LiANCg0KLXItLXItLXItLSAxIHJv
+b3Qgcm9vdCA0LjBLIEFwciAxMiAwMTowOCByY3VfbWluX2NhY2hlZF9vYmpzDQoNCmRpZmYgLS1n
+aXQgYS9rZXJuZWwvcmN1L3RyZWUuYyBiL2tlcm5lbC9yY3UvdHJlZS5jDQppbmRleCA0MWRhYWUz
+MjM5YjUuLjBlOWY4MzU2MjgyMyAxMDA2NDQNCi0tLSBhL2tlcm5lbC9yY3UvdHJlZS5jDQorKysg
+Yi9rZXJuZWwvcmN1L3RyZWUuYw0KQEAgLTI5MDksNyArMjkwOSw4IEBAIHB1dF9jYWNoZWRfYm5v
+ZGUoc3RydWN0IGtmcmVlX3JjdV9jcHUgKmtyY3AsDQogICAgICAgIHN0cnVjdCBrdmZyZWVfcmN1
+X2J1bGtfZGF0YSAqYm5vZGUpDQogew0KICAgICAgICAvLyBDaGVjayB0aGUgbGltaXQuDQotICAg
+ICAgIGlmIChrcmNwLT5ucl9ia3Zfb2JqcyA+PSByY3VfbWluX2NhY2hlZF9vYmpzKQ0KKyAgICAg
+ICBpZiAoKGF0b21pY19yZWFkKCZrcmNwLT5iYWNrb2ZmX3BhZ2VfY2FjaGVfZmlsbCkgJiYga3Jj
+cC0+bnJfYmt2X29ianMpIHx8DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtyY3At
+Pm5yX2Jrdl9vYmpzID49IHJjdV9taW5fY2FjaGVkX29ianMpDQogICAgICAgICAgICAgICAgcmV0
+dXJuIGZhbHNlOw0KDQogICAgICAgIGxsaXN0X2FkZCgoc3RydWN0IGxsaXN0X25vZGUgKikgYm5v
+ZGUsICZrcmNwLT5ia3ZjYWNoZSk7DQoNCg0KdGhvdWdodHM/DQoNClRoYW5rcw0KWnFpYW5nDQoN
+Cg0KPg0KPi0tDQo+VWxhZHppc2xhdSBSZXpraQ0K
