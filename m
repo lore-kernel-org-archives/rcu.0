@@ -2,63 +2,65 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3227CC7619A
-	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 06:50:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D9B5C77B6E
+	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 06:57:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjDLGu2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 02:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        id S229481AbjDLG5X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Apr 2023 02:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjDLGu1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 02:50:27 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1111F199;
-        Tue, 11 Apr 2023 23:50:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4EC551F890;
-        Wed, 12 Apr 2023 06:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1681282223; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kbnY5XnNaUW0Ny8yBC4v7L90w3TEz1kLcsqxtO+QJMA=;
-        b=YWl0COSMqI5629WrlfY6bDMhvnbVyj1HtzjM8p2rYWC3/MFbrgoQzsj/NS/Ga7YHn5/kd7
-        N7wNh6jVNaI+xXzSrO+GAvttYvBEtjQnVjgu/sd8NVVMl22jTXgeHSMgfuh2lTCq7RWJ/C
-        Rsg+2i/aABf5SszjQaWIahQFkbMdR0A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1681282223;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kbnY5XnNaUW0Ny8yBC4v7L90w3TEz1kLcsqxtO+QJMA=;
-        b=yGe4w2je2WADhzMV1MMN4XfCXX/1Yp4T48a2M4iXFwT7Ofm3j6ws+KorT7QN0PTenARjvm
-        QLY04oB2VRjK8iCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECA9713498;
-        Wed, 12 Apr 2023 06:50:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Bq+sOK5UNmTGJQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 12 Apr 2023 06:50:22 +0000
-Message-ID: <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
-Date:   Wed, 12 Apr 2023 08:50:29 +0200
+        with ESMTP id S229794AbjDLG5W (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Apr 2023 02:57:22 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EC95B82
+        for <rcu@vger.kernel.org>; Tue, 11 Apr 2023 23:57:19 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-517bfff40d8so70105a12.1
+        for <rcu@vger.kernel.org>; Tue, 11 Apr 2023 23:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1681282639; x=1683874639;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=M1KvkqVqE9RSX1BE5qaFQ46ZVYwTRtilJJ+78XYx4oo=;
+        b=DZhSk5J1cbM7i/+w+YC/aqHDPwvyiEJq62kD/JOQmAwpAB6g0fenZBHaiW+oeCNe+u
+         YKAWkyR0Vvu/KtjKFSaw5MHkI5nk9SF+1D5NPaYKaRLY/jgHgIgnqjfrPQ+xG5AhQNDX
+         Pt7l/7i6oysDSMDghMz9rqA+shtj8qpd3TSyGoqpFJxV8VAsxU5gCXpQ/JqwciiEUvzp
+         6zHQZ000V0ge3+bxJ1iMcRMFxykfdeJLlyyAUxUDL117oLJEjif78W1n/RJErSPSg0z1
+         bJG3K7hm9u+L8cZc2vJRDa/ttmyRls+IrVg0WSxqVeMab7YdT3RcLD5b7Dnbe8V7YWsT
+         B/tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681282639; x=1683874639;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M1KvkqVqE9RSX1BE5qaFQ46ZVYwTRtilJJ+78XYx4oo=;
+        b=OmV1ueS+AZlJnUrdxziP5tUlpUqJ/wePvX31Xf65RuiocZbULstN1PCnxfU9WJkCHj
+         v0j8CiMxReJ9SHQVmFkl59LwEYwK2l7oONsoXHMEaG0X/Z/lpF58LdEDJQ65+gXEkpqU
+         U8ShKMtDyG5YwmMVQa8vrHZ/Civ9T3zrGUrFuNVgrsR+N2khtep9HQJUCEfyuPpSBP5+
+         +c6HGtlOyzy9rXdOxH7kvV4aa5O9N0NlHMYuWw74u/gFNBi3Tw1plPkEHVflQ0mBW2YL
+         tonnZH/MilloPoOUEqFJyvjB5ap31xkujsnCooFYYI0TsyF1ry+S3F3rfL8XRPTjL3lK
+         l9dw==
+X-Gm-Message-State: AAQBX9eZm1/BQnnhVMRj0VQ+3FYayb9fqa1TsE0vVeJSomACgacxgXfx
+        7ftgTIWW8VT9u30z+Sqsjy0YJg==
+X-Google-Smtp-Source: AKy350a1y7nsLjoAlmg4q+l2MZdThXfGAq3Nn11DHbwl0HwQ3cCMrUgp3FyOyhrkKRBmeGWwF76ZoQ==
+X-Received: by 2002:a17:902:da88:b0:19d:2a3:f019 with SMTP id j8-20020a170902da8800b0019d02a3f019mr1495375plx.1.1681282638623;
+        Tue, 11 Apr 2023 23:57:18 -0700 (PDT)
+Received: from [10.200.10.123] ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id v11-20020a170902b7cb00b0019a7d58e595sm10808255plz.143.2023.04.11.23.57.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Apr 2023 23:57:18 -0700 (PDT)
+Message-ID: <eef7fefe-3a0c-31de-0fe3-c8ca8294a0df@bytedance.com>
+Date:   Wed, 12 Apr 2023 14:57:06 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.1
 Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
  raw_spinlock
+Content-Language: en-US
 To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
         "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
         "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
@@ -71,8 +73,7 @@ Cc:     "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
+        "Paul E . McKenney" <paulmck@kernel.org>
 References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
  <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
  <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
@@ -80,10 +81,9 @@ References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
  <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
  <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
  <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
 In-Reply-To: <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -91,7 +91,7 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 4/12/23 08:44, Zhang, Qiang1 wrote:
+On 2023/4/12 14:44, Zhang, Qiang1 wrote:
 >>
 >>
 >> On 2023/4/11 22:19, Vlastimil Babka wrote:
@@ -104,59 +104,59 @@ On 4/12/23 08:44, Zhang, Qiang1 wrote:
 >>>>>> raw_spinlock, and then lockdep will complain about it
 >>>>>> like below:
 >>>>>>
->>>>>>    =============================
->>>>>>    [ BUG: Invalid wait context ]
->>>>>>    6.3.0-rc6-next-20230411 #7 Not tainted
->>>>>>    -----------------------------
->>>>>>    swapper/0/1 is trying to lock:
->>>>>>    ffff888100055418 (&n->list_lock){....}-{3:3}, at: ___slab_alloc+0x73d/0x1330
->>>>>>    other info that might help us debug this:
->>>>>>    context-{5:5}
->>>>>>    2 locks held by swapper/0/1:
->>>>>>     #0: ffffffff824e8160 (rcu_tasks.cbs_gbl_lock){....}-{2:2}, at: cblist_init_generic+0x22/0x2d0
->>>>>>     #1: ffff888136bede50 (&ACCESS_PRIVATE(rtpcp, lock)){....}-{2:2}, at: cblist_init_generic+0x232/0x2d0
->>>>>>    stack backtrace:
->>>>>>    CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.3.0-rc6-next-20230411 #7
->>>>>>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
->>>>>>    Call Trace:
->>>>>>     <TASK>
->>>>>>     dump_stack_lvl+0x77/0xc0
->>>>>>     __lock_acquire+0xa65/0x2950
->>>>>>     ? arch_stack_walk+0x65/0xf0
->>>>>>     ? arch_stack_walk+0x65/0xf0
->>>>>>     ? unwind_next_frame+0x602/0x8d0
->>>>>>     lock_acquire+0xe0/0x300
->>>>>>     ? ___slab_alloc+0x73d/0x1330
->>>>>>     ? find_usage_forwards+0x39/0x50
->>>>>>     ? check_irq_usage+0x162/0xa70
->>>>>>     ? __bfs+0x10c/0x2c0
->>>>>>     _raw_spin_lock_irqsave+0x4f/0x90
->>>>>>     ? ___slab_alloc+0x73d/0x1330
->>>>>>     ___slab_alloc+0x73d/0x1330
->>>>>>     ? fill_pool+0x16b/0x2a0
->>>>>>     ? look_up_lock_class+0x5d/0x160
->>>>>>     ? register_lock_class+0x48/0x500
->>>>>>     ? __lock_acquire+0xabc/0x2950
->>>>>>     ? fill_pool+0x16b/0x2a0
->>>>>>     kmem_cache_alloc+0x358/0x3b0
->>>>>>     ? __lock_acquire+0xabc/0x2950
->>>>>>     fill_pool+0x16b/0x2a0
->>>>>>     ? __debug_object_init+0x292/0x560
->>>>>>     ? lock_acquire+0xe0/0x300
->>>>>>     ? cblist_init_generic+0x232/0x2d0
->>>>>>     __debug_object_init+0x2c/0x560
+>>>>>>     =============================
+>>>>>>     [ BUG: Invalid wait context ]
+>>>>>>     6.3.0-rc6-next-20230411 #7 Not tainted
+>>>>>>     -----------------------------
+>>>>>>     swapper/0/1 is trying to lock:
+>>>>>>     ffff888100055418 (&n->list_lock){....}-{3:3}, at: ___slab_alloc+0x73d/0x1330
+>>>>>>     other info that might help us debug this:
+>>>>>>     context-{5:5}
+>>>>>>     2 locks held by swapper/0/1:
+>>>>>>      #0: ffffffff824e8160 (rcu_tasks.cbs_gbl_lock){....}-{2:2}, at: cblist_init_generic+0x22/0x2d0
+>>>>>>      #1: ffff888136bede50 (&ACCESS_PRIVATE(rtpcp, lock)){....}-{2:2}, at: cblist_init_generic+0x232/0x2d0
+>>>>>>     stack backtrace:
+>>>>>>     CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.3.0-rc6-next-20230411 #7
+>>>>>>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+>>>>>>     Call Trace:
+>>>>>>      <TASK>
+>>>>>>      dump_stack_lvl+0x77/0xc0
+>>>>>>      __lock_acquire+0xa65/0x2950
+>>>>>>      ? arch_stack_walk+0x65/0xf0
+>>>>>>      ? arch_stack_walk+0x65/0xf0
+>>>>>>      ? unwind_next_frame+0x602/0x8d0
+>>>>>>      lock_acquire+0xe0/0x300
+>>>>>>      ? ___slab_alloc+0x73d/0x1330
+>>>>>>      ? find_usage_forwards+0x39/0x50
+>>>>>>      ? check_irq_usage+0x162/0xa70
+>>>>>>      ? __bfs+0x10c/0x2c0
+>>>>>>      _raw_spin_lock_irqsave+0x4f/0x90
+>>>>>>      ? ___slab_alloc+0x73d/0x1330
+>>>>>>      ___slab_alloc+0x73d/0x1330
+>>>>>>      ? fill_pool+0x16b/0x2a0
+>>>>>>      ? look_up_lock_class+0x5d/0x160
+>>>>>>      ? register_lock_class+0x48/0x500
+>>>>>>      ? __lock_acquire+0xabc/0x2950
+>>>>>>      ? fill_pool+0x16b/0x2a0
+>>>>>>      kmem_cache_alloc+0x358/0x3b0
+>>>>>>      ? __lock_acquire+0xabc/0x2950
+>>>>>>      fill_pool+0x16b/0x2a0
+>>>>>>      ? __debug_object_init+0x292/0x560
+>>>>>>      ? lock_acquire+0xe0/0x300
+>>>>>>      ? cblist_init_generic+0x232/0x2d0
+>>>>>>      __debug_object_init+0x2c/0x560
 >>
 >> This "__debug_object_init" is because INIT_WORK() is called in
 >> cblist_init_generic(), so..
 >>
->>>>>>     cblist_init_generic+0x147/0x2d0
->>>>>>     rcu_init_tasks_generic+0x15/0x190
->>>>>>     kernel_init_freeable+0x6e/0x3e0
->>>>>>     ? rest_init+0x1e0/0x1e0
->>>>>>     kernel_init+0x1b/0x1d0
->>>>>>     ? rest_init+0x1e0/0x1e0
->>>>>>     ret_from_fork+0x1f/0x30
->>>>>>     </TASK>
+>>>>>>      cblist_init_generic+0x147/0x2d0
+>>>>>>      rcu_init_tasks_generic+0x15/0x190
+>>>>>>      kernel_init_freeable+0x6e/0x3e0
+>>>>>>      ? rest_init+0x1e0/0x1e0
+>>>>>>      kernel_init+0x1b/0x1d0
+>>>>>>      ? rest_init+0x1e0/0x1e0
+>>>>>>      ret_from_fork+0x1f/0x30
+>>>>>>      </TASK>
 >>>>>>
 >>>>>> The fill_pool() can only be called in the !PREEMPT_RT kernel
 >>>>>> or in the preemptible context of the PREEMPT_RT kernel, so
@@ -266,24 +266,21 @@ On 4/12/23 08:44, Zhang, Qiang1 wrote:
 > --- a/lib/debugobjects.c
 > +++ b/lib/debugobjects.c
 > @@ -562,10 +562,10 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
->         unsigned long flags;
+>          unsigned long flags;
 > 
->         /*
+>          /*
 > -        * On RT enabled kernels the pool refill must happen in preemptible
 > +        * The pool refill must happen in preemptible
->          * context:
->          */
+>           * context:
+>           */
 > -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
 > +       if (preemptible())
->                 fill_pool();
+>                  fill_pool();
+> 
+>          db = get_bucket((unsigned long) addr);
 
-+CC Peterz
+Ah, this does fix the warning I was encountered!
 
-Aha so this is in fact another case where the code is written with
-actual differences between PREEMPT_RT and !PREEMPT_RT in mind, but
-CONFIG_PROVE_RAW_LOCK_NESTING always assumes PREEMPT_RT?
-
->         db = get_bucket((unsigned long) addr);
 > 
 > 
 > 
@@ -326,3 +323,7 @@ CONFIG_PROVE_RAW_LOCK_NESTING always assumes PREEMPT_RT?
 >> -- 
 >> Thanks,
 >> Qi
+
+-- 
+Thanks,
+Qi
