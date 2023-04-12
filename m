@@ -2,191 +2,177 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30F1DC77B6E
-	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 12:37:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE5DFC7619A
+	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 12:49:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjDLMhK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 08:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
+        id S229621AbjDLMts (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Apr 2023 08:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbjDLMhB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 08:37:01 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7BA7EC8;
-        Wed, 12 Apr 2023 05:36:35 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id m4so14319263lfj.13;
-        Wed, 12 Apr 2023 05:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681302993; x=1683894993;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eLB83siIxXH69Mn8uH9oS0pLbxWqyF34biAfaFTutaM=;
-        b=dMdQsAddccBvFy+DyAuswJTyIJgqGN1i+EuUOUizj6JkP/Jdg5XvUR7LxRc4Xzfjv9
-         f4CusFVXlbHp/z1y7cfkug6+GGWdFRewCpUhtKhTMDVxC1V1MdpnV4PG1JGJDUsCRa2s
-         8HOqZZorV/ANKNTUuvWmGdBCUpOLdw5MBPmXeePvWM70bftNRHpJukhQlH5lcKuDsfzB
-         e14QbklqAjYZ30Dewk69o6+tP9BmJPf2jE2p0zW4/JvnS33fk6f2rmda8dCfspB8gxdQ
-         Pf/22/dCv64v8Qoeq7v3DUGcRlTYci96xslpPURvDLpj3DRuC5gApKVmR3mIV+wAzOO5
-         o5ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681302993; x=1683894993;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eLB83siIxXH69Mn8uH9oS0pLbxWqyF34biAfaFTutaM=;
-        b=eKG3cSU6ycn3CsM8TYLiVMpGDWUcHi/JgS0pzcgbo6OkQdytRJO+H7uqRZQrC/jMcE
-         qQu5eVkrkxA+MGb2ileTdy5WgLpzgAMirHH3B70Pi1m0q6GgGxEOdngQFLqG1WW0Rv0C
-         pqnGeGuExhxDw+QTlNzAqv65cqUsaVu9/ud71J2rCPrkzmCwM2b2FOBKolfjVrPO14on
-         5VrQH5Cyu1obCMFvaMUf+rAqHGveqa/0U5mX1+N6ITCmbs6RweNtuIcs6e27ztIO1uxT
-         U7ARgg8fUBMowclSZxhg0OWkqZEhthedGqC71q+g8QEH4Vxf6Owq5B2kBLbdQh5fia2y
-         JfDw==
-X-Gm-Message-State: AAQBX9cenD72p7wfUyiy7MT5VzSdMwdbWepimrdfcYveH98zZBU3nYct
-        L5bMs6+LvWPHBllLmskDWWs=
-X-Google-Smtp-Source: AKy350ZEC5Bhc8xvVHuPxelIDOH9EsAl9fWD0GJb5xoMYgUMGlLUQD34Ma713685hkMIaWrzgt0xJA==
-X-Received: by 2002:a05:6512:146:b0:4ec:82d8:ade1 with SMTP id m6-20020a056512014600b004ec82d8ade1mr1372123lfo.53.1681302993169;
-        Wed, 12 Apr 2023 05:36:33 -0700 (PDT)
-Received: from pc636 (host-90-235-5-238.mobileonline.telia.com. [90.235.5.238])
-        by smtp.gmail.com with ESMTPSA id p12-20020a19f00c000000b004eaf8613bc3sm2984786lfc.284.2023.04.12.05.36.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 05:36:32 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 12 Apr 2023 14:36:30 +0200
-To:     "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] rcu/kvfree: Prevents cache growing when the
- backoff_page_cache_fill is set
-Message-ID: <ZDalzl1CTQ9VEPDw@pc636>
-References: <20230406001238.647536-1-qiang1.zhang@intel.com>
- <ZC5MoREk30MIt79u@pc636>
- <8da4b48a-820c-461f-9dc0-a5afaf335177@paulmck-laptop>
- <PH0PR11MB58809B44F396B7C074BDC704DA919@PH0PR11MB5880.namprd11.prod.outlook.com>
- <9427c261-0395-4e03-8f93-2e0588fadd1f@paulmck-laptop>
- <ZDEfFcEhirm443xE@pc636>
- <PH0PR11MB58805AC5772BECAF65AD4365DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+        with ESMTP id S229578AbjDLMte (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Apr 2023 08:49:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047349000;
+        Wed, 12 Apr 2023 05:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gHtUC9ZbjIgk4RPtGtrL1TvESI1pfT3DgBqtzWNBp54=; b=pqfu+JncaaA7vblGM3GJBfOy9A
+        N7fAck3Zn11IGydLgB79oD3a8b51X6bqgbojBDx2Ln7Hebk/OwuSo8T8TLukC8vMTtXBONbZZG7yO
+        NbXdsw2c5u2OGB8x2SqJyee0epR/RmH4vG77Z3rkFR1dZF5UY0eMIIBViyEzGzeTiyUEWxErx8pPw
+        l5bL5s1xm27Nx8g9qK5O4U5cUwztL3GbLLJNU10MziHfWZqPWSq7MQkUXVFSwZah+DCKP0ondB4YV
+        4AtYm1cB3u8Ion6I4g4QqPTFXevX/joGg6bpF4cW34NQl2SMVDz0AX8YW3a7nHUti9zQgN3s566Uw
+        4EVDdCPA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pmZsx-00DvZw-2N;
+        Wed, 12 Apr 2023 12:47:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 82744300274;
+        Wed, 12 Apr 2023 14:47:36 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 14174235CC4A0; Wed, 12 Apr 2023 14:47:36 +0200 (CEST)
+Date:   Wed, 12 Apr 2023 14:47:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "cl@linux.com" <cl@linux.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zhao Gongyi <zhaogongyi@bytedance.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
+ raw_spinlock
+Message-ID: <20230412124735.GE628377@hirez.programming.kicks-ass.net>
+References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
+ <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
+ <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
+ <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
+ <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
+ <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
+ <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH0PR11MB58805AC5772BECAF65AD4365DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+In-Reply-To: <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 04:18:20AM +0000, Zhang, Qiang1 wrote:
-> > On Thu, Apr 06, 2023 at 11:11:37PM +0000, Zhang, Qiang1 wrote:
-> > > >>On Thu, Apr 06, 2023 at 06:37:53AM +0200, Uladzislau Rezki wrote:
-> > > > On Thu, Apr 06, 2023 at 08:12:38AM +0800, Zqiang wrote:
-> > > > > Currently, in kfree_rcu_shrink_scan(), the drain_page_cache() is
-> > > > > executed before kfree_rcu_monitor() to drain page cache, if the bnode
-> > > > > structure's->gp_snap has done, the kvfree_rcu_bulk() will fill the
-> > > > > page cache again in kfree_rcu_monitor(), this commit add a check
-> > > > > for krcp structure's->backoff_page_cache_fill in put_cached_bnode(),
-> > > > > if the krcp structure's->backoff_page_cache_fill is set, prevent page
-> > > > > cache growing.
-> > > > > 
-> > > > > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > > > > ---
-> > > > >  kernel/rcu/tree.c | 2 ++
-> > > > >  1 file changed, 2 insertions(+)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 9cc0a7766fd2..f25430ae1936 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -2907,6 +2907,8 @@ static inline bool
-> > > > >  put_cached_bnode(struct kfree_rcu_cpu *krcp,
-> > > > >  	struct kvfree_rcu_bulk_data *bnode)
-> > > > >  {
-> > > > > +	if (atomic_read(&krcp->backoff_page_cache_fill))
-> > > > > +		return false;
-> > > > >  	// Check the limit.
-> > > > >  	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
-> > > > >  		return false;
-> > > > > -- 
-> > > > > 2.32.0
-> > > > >
-> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > >
-> > > >Thank you both!
-> > > >
-> > > >One question, though.  Might it be better to instead modify the "for"
-> > > >loop in fill_page_cache_func() to start at krcp->nr_bkv_objs instead
-> > > >of starting at zero?  That way, we still provide a single page under
-> > > >low-memory conditions, but provide rcu_min_cached_objs of them if memory
-> > > >is plentiful.
-> > > >
-> > > >Alternatively, if we really don't want to allow any pages at all under
-> > > >low-memory conditions, shouldn't the fill_page_cache_func() set nr_pages
-> > > >to zero (instead of the current 1) when the krcp->backoff_page_cache_fill
-> > > >flag is set?  
-> > > 
-> > > Hi, Paul
-> > > 
-> > > If the krcp->backoff_page_cache_fill is true, the put_cached_bnode () return false,
-> > > the allocated single page will also be freed in fill_page_cache_func().
-> > > 
-> > > or it would be better not to allocate under memory pressure.
-> > 
-> > That was my thought.  ;-)
-> > 
-> > > How about like this?
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 9cc0a7766fd2..94aedbc3da36 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2907,6 +2907,8 @@ static inline bool
-> > >  put_cached_bnode(struct kfree_rcu_cpu *krcp,
-> > >         struct kvfree_rcu_bulk_data *bnode)
-> > >  {
-> > > +       if (atomic_read(&krcp->backoff_page_cache_fill))
-> > > +               return false;
-> > >         // Check the limit.
-> > >         if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
-> > >                 return false;
-> > > @@ -3220,7 +3222,7 @@ static void fill_page_cache_func(struct work_struct *work)
-> > >         int i;
-> > > 
-> > >         nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
-> > > -               1 : rcu_min_cached_objs;
-> > > +               0 : rcu_min_cached_objs;
-> > > 
-> > >         for (i = 0; i < nr_pages; i++) {
-> > 
-> > The other question is why this loop does not allow for any pages
-> > that might already be allocated, thus perhaps looking like this:
-> > 
-> > 		for (i = krcp->nr_bkv_objs; i < nr_pages; i++) {
-> > 
-> > Or do we somehow know that krcp->nr_bkv_objs is equal to zero?  (I am not
-> > seeing this, but I do feel the need to ask.)
-> > 
-> >Usually we start from zero, this is when a ptr. was not added into
-> >a bulk array, due to no memory reason for a single argument and no
-> >cache pages anymore for double argument.
-> >
-> >In the fill page function, the limit is checked by the put_cached_bnode() itself
-> >so it stops prefetch once nr_bkv_objs contains desired value.
-> >
-> 
-> If the krcp->nr_bkv_objs is updated in kfree_rcu_work() and happens before invoke fill_page_cache_func(),
-> when invoke fill_page_cache_func(), we start from zero,  will allocate page and hold krcp->lock,
-> fill krcp->bkvcache,  but if krcp->nr_bkv_objs already equal to rcu_min_cached_objs,  this page will
-> be freed and exit loop,  this allocate page seems like a meaningless operation. 
-> 
-> I also want to ask if starting from krcp->nr_bkv_objs is necessary?
-> 
-At least it does not break anything. The example like you described can
-occur. So starting from the krcp->nr_bkv_objs is worth to do.
+On Wed, Apr 12, 2023 at 08:50:29AM +0200, Vlastimil Babka wrote:
 
-So, if it happens it would be good of you could simulate it and update
-the commit message accordingly.
+> > --- a/lib/debugobjects.c
+> > +++ b/lib/debugobjects.c
+> > @@ -562,10 +562,10 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
+> >         unsigned long flags;
+> > 
+> >         /*
+> > -        * On RT enabled kernels the pool refill must happen in preemptible
+> > +        * The pool refill must happen in preemptible
+> >          * context:
+> >          */
+> > -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
+> > +       if (preemptible())
+> >                 fill_pool();
+> 
+> +CC Peterz
+> 
+> Aha so this is in fact another case where the code is written with
+> actual differences between PREEMPT_RT and !PREEMPT_RT in mind, but
+> CONFIG_PROVE_RAW_LOCK_NESTING always assumes PREEMPT_RT?
 
+Ooh, tricky, yes. PROVE_RAW_LOCK_NESTING always follows the PREEMP_RT
+rules and does not expect trickery like the above.
 
---
-Uladzislau Rezki
+Something like the completely untested below might be of help..
+
+---
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index d22430840b53..f3120d6a7d9e 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -33,6 +33,7 @@ enum lockdep_wait_type {
+ enum lockdep_lock_type {
+ 	LD_LOCK_NORMAL = 0,	/* normal, catch all */
+ 	LD_LOCK_PERCPU,		/* percpu */
++	LD_LOCK_WAIT,		/* annotation */
+ 	LD_LOCK_MAX,
+ };
+ 
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 50d4863974e7..a4077f5bb75b 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2279,8 +2279,9 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
+ 	 * As a result, we will skip local_lock(), when we search for irq
+ 	 * inversion bugs.
+ 	 */
+-	if (entry->class->lock_type == LD_LOCK_PERCPU) {
+-		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
++	if (entry->class->lock_type != LD_LOCK_NORMAL) {
++		if (entry->class->lock_type == LD_LOCK_PERCPU &&
++		    DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
+ 			return false;
+ 
+ 		return true;
+@@ -4752,7 +4753,8 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 
+ 	for (; depth < curr->lockdep_depth; depth++) {
+ 		struct held_lock *prev = curr->held_locks + depth;
+-		u8 prev_inner = hlock_class(prev)->wait_type_inner;
++		struct lock_class *class = hlock_class(prev);
++		u8 prev_inner = class->wait_type_inner;
+ 
+ 		if (prev_inner) {
+ 			/*
+@@ -4762,6 +4764,12 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 			 * Also due to trylocks.
+ 			 */
+ 			curr_inner = min(curr_inner, prev_inner);
++
++			/*
++			 * Allow override for annotations.
++			 */
++			if (unlikely(class->lock_type == LD_LOCK_WAIT))
++				curr_inner = prev_inner;
+ 		}
+ 	}
+ 
+diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+index df86e649d8be..fae71ef72a16 100644
+--- a/lib/debugobjects.c
++++ b/lib/debugobjects.c
+@@ -565,8 +565,16 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
+ 	 * On RT enabled kernels the pool refill must happen in preemptible
+ 	 * context:
+ 	 */
+-	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible()) {
++		static lockdep_map dep_map = {
++			.name = "wait-type-override",
++			.wait_type_inner = LD_WAIT_SLEEP,
++			.lock_type = LD_LOCK_WAIT,
++		};
++		lock_map_acquire(&dep_map);
+ 		fill_pool();
++		lock_map_release(&dep_map);
++	}
+ 
+ 	db = get_bucket((unsigned long) addr);
+ 
