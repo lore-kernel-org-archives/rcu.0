@@ -2,283 +2,250 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DF54C77B6E
-	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 14:35:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 515DAC77B72
+	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 16:46:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbjDLOfm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 10:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        id S229916AbjDLQqT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Apr 2023 12:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbjDLOfl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 10:35:41 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7019776
-        for <rcu@vger.kernel.org>; Wed, 12 Apr 2023 07:35:15 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id o7so8710638qvs.0
-        for <rcu@vger.kernel.org>; Wed, 12 Apr 2023 07:35:15 -0700 (PDT)
+        with ESMTP id S229815AbjDLQqA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Apr 2023 12:46:00 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052C89741
+        for <rcu@vger.kernel.org>; Wed, 12 Apr 2023 09:45:02 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1a5266d204dso3776045ad.1
+        for <rcu@vger.kernel.org>; Wed, 12 Apr 2023 09:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1681310113;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=bytedance.com; s=google; t=1681317892; x=1683909892;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pha/CGTxASjKhJeF/WUk5bsRIts9NaxH9VPPQI0EN78=;
-        b=B8sJHKWhFw5o1rDFmXc4bIV2JKw2Snc8nYR9FnFGTdE0RY0jCBWBOguQZ0742bY06I
-         3/Ip9ADLx1t40u+RBH2tjeGJCyOii3ffWZ8y7LVeG6oRG1ryj73P26zlIlVOSrNfTz0v
-         +0ggR+i8qd6VgxK+jNkpARyl85k7hDNs5qJak=
+        bh=mblYIOQp15DPpNJLZonRj1Q4Mutz9sHweMpSOIOysuo=;
+        b=erPiXlRdUqCIakRu1oMia3Dog0aIQXlkglwS6vTrMxlss7fwcC+h+CTYbqa1cPR5H/
+         dKdLJa+uCjEG41vNTzeplvpf8rTd8HxLjoxXX/G3XvC3g9HeHbRcUYbJvnf2h0tpBRZN
+         4wrAirJiciiw/Jc6xh89K4G6K4i4bAUANPAFlj7Q4YDNWcTnZpR0t2t/U4/ZSZ/GcH1C
+         pMGIuEsx+S5VTpO0f0GnX4bFUKdrDUBS7243d7a3TVGZ269Rj34Ojq1Xbfb37bBOA6th
+         dUHli54N2TWld3+dGHW1ieY9Bkh4I9wkeirVd5Y23BH8rlRKJmvAp8jZajpJ1mUFgX19
+         WmBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681310113;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1681317892; x=1683909892;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pha/CGTxASjKhJeF/WUk5bsRIts9NaxH9VPPQI0EN78=;
-        b=zYln3rZ8+d0UcYBLAcvJbBoVGyKXwww4l+UYYRfg87SqRb7/AhMdajCe7TdX/bve4T
-         EVIYUW/eUrEfUVCAsDHTghHPgjqcx7kELXnm/3KI2lnWGqUqeuotp6BlgAaLhjq5Qpc/
-         pQ1bC8uuB4op5RnmJL9ub6wuT8ImuVSfjib/GrEDz7xa7K7vBe0P/FLFGhm3Sbzfhs4J
-         tElrhTB8oFqsf1NJGYgivhSnU4OtyZhWaIcN/XB7XPmoF+f1VU3LSh+h2GZd5wXFOF0W
-         lHVBABeIXeMIHe2LZ7vS+pE6d2x820oJWv4C93zc4O6j0yYIcEo9LhdGk56c0emvdZcZ
-         z4VA==
-X-Gm-Message-State: AAQBX9dZyWhRXSt7M8lyl9nTAO0e6roQ1+mXbxDSxoEw+xtTi/u4zNST
-        Rs0Zghu/vi95Vr8XueFD4+CVQQ==
-X-Google-Smtp-Source: AKy350YQuhhN5PcByvEcGXji47gE3gsHjXIAun+Dh0NM9xmaPd+Wc5FopRp4tovqx+g0I5pXzD6osg==
-X-Received: by 2002:ad4:574b:0:b0:5ef:519:b06 with SMTP id q11-20020ad4574b000000b005ef05190b06mr6902414qvx.29.1681310113313;
-        Wed, 12 Apr 2023 07:35:13 -0700 (PDT)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id x4-20020a0cfe04000000b005dd8b9345bcsm2923346qvr.84.2023.04.12.07.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 07:35:12 -0700 (PDT)
-Date:   Wed, 12 Apr 2023 14:35:12 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
-        joel@joelfernandes.org, boqun.feng@gmail.com, frederic@kernel.org,
-        quic_neeraju@quicinc.com, urezki@gmail.com, qiang1.zhang@intel.com,
-        rostedt@goodmis.org
-Subject: [GIT PULL] RCU changes for v6.4
-Message-ID: <20230412143512.GA1697547@google.com>
+        bh=mblYIOQp15DPpNJLZonRj1Q4Mutz9sHweMpSOIOysuo=;
+        b=hM533Ew+Q88gQTd8Z0AekmmKrXJLpXmxXcb81iin4uSYNnxd1VH/pd2nLQrHXkMW62
+         vcfEn3f7LOP1eqhsZGPKY1isC9N+XtN30QvNnhtoMAZjSCWV5+PIT1c376XT4iNvYtjh
+         ZFQvl3I6pAsuWGkkf/tXyeSGJm9n+BaL2XWiCNQfEDGM4eeS/s4qIiGE9vykN2BZeWk5
+         gQXIb8hG2+jy+2kjBgpooDghD6uhQ8DfGupGLEo+qhvP1aIE2cw2uZY+cshIvR7M7JB/
+         zBqO9wPipvOjwFzRxLwWBHNlvVt0U8ovYVQEUlGRjdKwR+i73k5qkH7JdTqc1W1d3WOc
+         bLKg==
+X-Gm-Message-State: AAQBX9dFpdMfwFoGoQaeGtxCfLo46yqSUR3WzPFYPkBTdI7Jg8RWCuSR
+        8dz7wQXFKEYAdWJaw70fCzxlIw==
+X-Google-Smtp-Source: AKy350bJt65jHqdmpGK2wF697D8XC8+bpLyMk+/sJfcfIg118HnQ/s1c7ViNh3qzSLz6Ou7D2topVA==
+X-Received: by 2002:a17:902:8f82:b0:19d:1e21:7f59 with SMTP id z2-20020a1709028f8200b0019d1e217f59mr19185705plo.0.1681317892609;
+        Wed, 12 Apr 2023 09:44:52 -0700 (PDT)
+Received: from [10.200.10.123] ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id iz14-20020a170902ef8e00b001a2104d706fsm1873858plb.225.2023.04.12.09.44.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Apr 2023 09:44:52 -0700 (PDT)
+Message-ID: <76e15f10-d3f1-2cab-63cb-25aa3b4f2cd4@bytedance.com>
+Date:   Thu, 13 Apr 2023 00:44:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.1
+Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
+ raw_spinlock
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "cl@linux.com" <cl@linux.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zhao Gongyi <zhaogongyi@bytedance.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
+ <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
+ <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
+ <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
+ <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
+ <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
+ <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
+ <20230412124735.GE628377@hirez.programming.kicks-ass.net>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230412124735.GE628377@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
 
-The following changes since commit fe15c26ee26efa11741a7b632e9f23b01aca4cc6:
 
-  Linux 6.3-rc1 (2023-03-05 14:52:03 -0800)
+On 2023/4/12 20:47, Peter Zijlstra wrote:
+> On Wed, Apr 12, 2023 at 08:50:29AM +0200, Vlastimil Babka wrote:
+> 
+>>> --- a/lib/debugobjects.c
+>>> +++ b/lib/debugobjects.c
+>>> @@ -562,10 +562,10 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
+>>>          unsigned long flags;
+>>>
+>>>          /*
+>>> -        * On RT enabled kernels the pool refill must happen in preemptible
+>>> +        * The pool refill must happen in preemptible
+>>>           * context:
+>>>           */
+>>> -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
+>>> +       if (preemptible())
+>>>                  fill_pool();
+>>
+>> +CC Peterz
+>>
+>> Aha so this is in fact another case where the code is written with
+>> actual differences between PREEMPT_RT and !PREEMPT_RT in mind, but
+>> CONFIG_PROVE_RAW_LOCK_NESTING always assumes PREEMPT_RT?
+> 
+> Ooh, tricky, yes. PROVE_RAW_LOCK_NESTING always follows the PREEMP_RT
+> rules and does not expect trickery like the above.
+> 
+> Something like the completely untested below might be of help..
+> 
+> ---
+> diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+> index d22430840b53..f3120d6a7d9e 100644
+> --- a/include/linux/lockdep_types.h
+> +++ b/include/linux/lockdep_types.h
+> @@ -33,6 +33,7 @@ enum lockdep_wait_type {
+>   enum lockdep_lock_type {
+>   	LD_LOCK_NORMAL = 0,	/* normal, catch all */
+>   	LD_LOCK_PERCPU,		/* percpu */
+> +	LD_LOCK_WAIT,		/* annotation */
+>   	LD_LOCK_MAX,
+>   };
+>   
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index 50d4863974e7..a4077f5bb75b 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -2279,8 +2279,9 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
+>   	 * As a result, we will skip local_lock(), when we search for irq
+>   	 * inversion bugs.
+>   	 */
+> -	if (entry->class->lock_type == LD_LOCK_PERCPU) {
+> -		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
+> +	if (entry->class->lock_type != LD_LOCK_NORMAL) {
+> +		if (entry->class->lock_type == LD_LOCK_PERCPU &&
+> +		    DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
+>   			return false;
+>   
+>   		return true;
+> @@ -4752,7 +4753,8 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+>   
+>   	for (; depth < curr->lockdep_depth; depth++) {
+>   		struct held_lock *prev = curr->held_locks + depth;
+> -		u8 prev_inner = hlock_class(prev)->wait_type_inner;
+> +		struct lock_class *class = hlock_class(prev);
+> +		u8 prev_inner = class->wait_type_inner;
+>   
+>   		if (prev_inner) {
+>   			/*
+> @@ -4762,6 +4764,12 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+>   			 * Also due to trylocks.
+>   			 */
+>   			curr_inner = min(curr_inner, prev_inner);
+> +
+> +			/*
+> +			 * Allow override for annotations.
+> +			 */
+> +			if (unlikely(class->lock_type == LD_LOCK_WAIT))
+> +				curr_inner = prev_inner;
+>   		}
+>   	}
+>   
+> diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+> index df86e649d8be..fae71ef72a16 100644
+> --- a/lib/debugobjects.c
+> +++ b/lib/debugobjects.c
+> @@ -565,8 +565,16 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
+>   	 * On RT enabled kernels the pool refill must happen in preemptible
+>   	 * context:
+>   	 */
+> -	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible()) {
+> +		static lockdep_map dep_map = {
 
-are available in the Git repository at:
+                 static struct lockdep_map dep_map = {
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git tags/rcu.6.4.april5.2023.3
+> +			.name = "wait-type-override",
+> +			.wait_type_inner = LD_WAIT_SLEEP,
+> +			.lock_type = LD_LOCK_WAIT,
+> +		};
+> +		lock_map_acquire(&dep_map);
+>   		fill_pool();
+> +		lock_map_release(&dep_map);
+> +	}
+>   
+>   	db = get_bucket((unsigned long) addr);
+>   
 
-for you to fetch changes up to 8ae99857748bece993962dd8d04e096f9e76731f:
+I just tested the above code, and then got the following
+warning:
 
-  Merge branches 'rcu/staging-core', 'rcu/staging-docs' and 'rcu/staging-kfree', remote-tracking branches 'paul/srcu-cf.2023.04.04a', 'fbq/rcu/lockdep.2023.03.27a' and 'fbq/rcu/rcutorture.2023.03.20a' into rcu/staging (2023-04-05 13:50:37 +0000)
+[    0.001000][    T0] =============================
+[    0.001000][    T0] [ BUG: Invalid wait context ]
+[    0.001000][    T0] 6.3.0-rc6-next-20230412+ #21 Not tainted
+[    0.001000][    T0] -----------------------------
+[    0.001000][    T0] swapper/0/0 is trying to lock:
+[    0.001000][    T0] ffffffff825bcb80 
+(wait-type-override){....}-{4:4}, at: __debug_object_init+0x0/0x590
+[    0.001000][    T0] other info that might help us debug this:
+[    0.001000][    T0] context-{5:5}
+[    0.001000][    T0] 2 locks held by swapper/0/0:
+[    0.001000][    T0]  #0: ffffffff824f5178 
+(timekeeper_lock){....}-{2:2}, at: timekeeping_init+0xf1/0x270
+[    0.001000][    T0]  #1: ffffffff824f5008 
+(tk_core.seq.seqcount){....}-{0:0}, at: start_kernel+0x31a/0x800
+[    0.001000][    T0] stack backtrace:
+[    0.001000][    T0] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 
+6.3.0-rc6-next-20230412+ #21
+[    0.001000][    T0] Hardware name: QEMU Standard PC (i440FX + PIIX, 
+1996), BIOS 1.14.0-2 04/01/2014
+[    0.001000][    T0] Call Trace:
+[    0.001000][    T0]  <TASK>
+[    0.001000][    T0]  dump_stack_lvl+0x77/0xc0
+[    0.001000][    T0]  __lock_acquire+0xa74/0x2960
+[    0.001000][    T0]  ? save_trace+0x3f/0x320
+[    0.001000][    T0]  ? add_lock_to_list+0x97/0x130
+[    0.001000][    T0]  lock_acquire+0xe0/0x300
+[    0.001000][    T0]  ? debug_object_active_state+0x180/0x180
+[    0.001000][    T0]  __debug_object_init+0x47/0x590
+[    0.001000][    T0]  ? debug_object_active_state+0x180/0x180
+[    0.001000][    T0]  ? lock_acquire+0x100/0x300
+[    0.001000][    T0]  hrtimer_init+0x23/0xc0
+[    0.001000][    T0]  ntp_init+0x70/0x80
+[    0.001000][    T0]  timekeeping_init+0x12c/0x270
+[    0.001000][    T0]  ? start_kernel+0x31a/0x800
+[    0.001000][    T0]  ? _printk+0x5c/0x80
+[    0.001000][    T0]  start_kernel+0x31a/0x800
+[    0.001000][    T0]  secondary_startup_64_no_verify+0xf4/0xfb
+[    0.001000][    T0]  </TASK>
 
-Highlights of RCU changes for 6.4 include:
+It seems that the LD_WAIT_SLEEP we set is already greater than the
+LD_WAIT_SPIN of the current context.
 
-1. Updates and additions to MAINTAINERS files, with Boqun being added to the
-   RCU entry and Zqiang being added as an RCU reviewer. I have also
-   transitioned from reviewer to maintainer; however, Paul will be taking
-   over sending RCU pull-requests for the next merge window.
-
-2. Resolution of hotplug warning in nohz code, achieved by fixing
-   cpu_is_hotpluggable() through interaction with the nohz subsystem.
-   Tick dependency modifications by Zqiang, focusing on fixing usage of the
-   TICK_DEP_BIT_RCU_EXP bitmask.
-
-3. Avoid needless calls to the rcu-lazy shrinker for CONFIG_RCU_LAZY=n kernels,
-   fixed by Zqiang.
-
-4. Improvements to rcu-tasks stall reporting by Neeraj.
-
-5. Initial renaming of k[v]free_rcu() to k[v]free_rcu_mightsleep() for
-   increased robustness, affecting several components like mac802154, drbd,
-   vmw_vmci, tracing, and more. A report [1] by Eric Dumazet showed that the
-   API could be unknowingly used in an atomic context, so we'd rather make
-   sure they know what they're asking for by being explicit:
-   [1] https://lore.kernel.org/all/20221202052847.2623997-1-edumazet@google.com/
-
-6. Documentation updates, including corrections to spelling, clarifications
-   in comments, and improvements to the srcu_size_state comments.
-
-7. Better srcu_struct cache locality for readers, by adjusting the size of
-   srcu_struct in support of SRCU usage by Christoph Hellwig.
-
-8. Teach lockdep to detect deadlocks between srcu_read_lock() vs
-   synchronize_srcu() contributed by Boqun. Previously lockdep could not
-   detect such deadlocks, now it can.
-
-9. Integration of rcutorture and rcu-related tools, targeted for v6.4 from
-   Boqun's tree, featuring new SRCU deadlock scenarios, test_nmis module
-   parameter, and more.
-
-10. Miscellaneous changes, various code cleanups and comment improvements.
-
-Thank you for considering these RCU updates for the 6.4 release.
-
-----------------------------------------------------------------
-Bhaskar Chowdhury (1):
-      tools: rcu: Add usage function and check for argument
-
-Boqun Feng (5):
-      locking/lockdep: Introduce lock_sync()
-      rcu: Annotate SRCU's update-side lockdep dependencies
-      locking: Reduce the number of locks in ww_mutex stress tests
-      locking/lockdep: Improve the deadlock scenario print for sync and read lock
-      MAINTAINERS: Add Boqun to RCU entry
-
-Frederic Weisbecker (1):
-      rcu: Further comment and explain the state space of GP sequences
-
-Joel Fernandes (Google) (7):
-      srcu: Clarify comments on memory barrier "E"
-      MAINTAINERS: Change Joel Fernandes from R: to M:
-      MAINTAINERS: Add Zqiang as a RCU reviewer
-      tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
-      mac802154: Rename kfree_rcu() to kvfree_rcu_mightsleep()
-      checkpatch: Error out if deprecated RCU API used
-      Merge branches 'rcu/staging-core', 'rcu/staging-docs' and 'rcu/staging-kfree', remote-tracking branches 'paul/srcu-cf.2023.04.04a', 'fbq/rcu/lockdep.2023.03.27a' and 'fbq/rcu/rcutorture.2023.03.20a' into rcu/staging
-
-Neeraj Upadhyay (1):
-      rcu-tasks: Report stalls during synchronize_srcu() in rcu_tasks_postscan()
-
-Paul E. McKenney (35):
-      rcutorture: Add test_nmis module parameter
-      rcutorture: Set CONFIG_BOOTPARAM_HOTPLUG_CPU0 to offline CPU 0
-      rcutorture: Make scenario TREE04 enable lazy call_rcu()
-      torture: Permit kvm-again.sh --duration to default to previous run
-      torture: Enable clocksource watchdog with "tsc=watchdog"
-      rcuscale: Move shutdown from wait_event() to wait_event_idle()
-      refscale: Move shutdown from wait_event() to wait_event_idle()
-      rcutorture: Add SRCU deadlock scenarios
-      rcutorture: Add RCU Tasks Trace and SRCU deadlock scenarios
-      rcutorture: Add srcu_lockdep.sh
-      rcu-tasks: Fix warning for unused tasks_rcu_exit_srcu
-      srcu: Add whitespace to __SRCU_STRUCT_INIT() & __DEFINE_SRCU()
-      srcu: Use static init for statically allocated in-module srcu_struct
-      srcu: Begin offloading srcu_struct fields to srcu_update
-      srcu: Move ->level from srcu_struct to srcu_usage
-      srcu: Move ->srcu_size_state from srcu_struct to srcu_usage
-      srcu: Move ->srcu_cb_mutex from srcu_struct to srcu_usage
-      srcu: Move ->lock initialization after srcu_usage allocation
-      srcu: Move ->lock from srcu_struct to srcu_usage
-      srcu: Move ->srcu_gp_mutex from srcu_struct to srcu_usage
-      srcu: Move grace-period fields from srcu_struct to srcu_usage
-      srcu: Move heuristics fields from srcu_struct to srcu_usage
-      srcu: Move ->sda_is_static from srcu_struct to srcu_usage
-      srcu: Move srcu_barrier() fields from srcu_struct to srcu_usage
-      srcu: Move work-scheduling fields from srcu_struct to srcu_usage
-      srcu: Check for readers at module-exit time
-      srcu: Fix long lines in srcu_get_delay()
-      srcu: Fix long lines in cleanup_srcu_struct()
-      srcu: Fix long lines in srcu_gp_end()
-      srcu: Fix long lines in srcu_funnel_gp_start()
-      rcu: Add comment to rcu_do_batch() identifying rcuoc code path
-      rcu: Remove CONFIG_SRCU
-      mm: Remove "select SRCU"
-      kvm: Remove "select SRCU"
-      arch/x86: Remove "select SRCU"
-
-Pingfan Liu (1):
-      srcu: Add comments for srcu_size_state
-
-Qiuxu Zhuo (1):
-      Documentation/RCU: s/not/note/ in checklist.rst
-
-Randy Dunlap (1):
-      Documentation: RCU: Correct spelling
-
-Uladzislau Rezki (Sony) (9):
-      doc: Update whatisRCU.rst
-      drbd: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-      misc: vmw_vmci: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-      tracing: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-      lib/test_vmalloc.c: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-      net/sysctl: Rename kvfree_rcu() to kvfree_rcu_mightsleep()
-      net/mlx5: Rename kfree_rcu() to kfree_rcu_mightsleep()
-      ext4/super: Rename kfree_rcu() to kfree_rcu_mightsleep()
-      rcuscale: Rename kfree_rcu() to kfree_rcu_mightsleep()
-
-Xu Panda (1):
-      rcu/trace: use strscpy() to instead of strncpy()
-
-Yue Hu (1):
-      rcutorture: Eliminate variable n_rcu_torture_boost_rterror
-
-Zheng Yejian (1):
-      rcu: Avoid stack overflow due to __rcu_irq_enter_check_tick() being kprobe-ed
-
-Zqiang (7):
-      rcutorture: Create nocb kthreads only when testing rcu in CONFIG_RCU_NOCB_CPU=y kernels
-      rcu: Fix set/clear TICK_DEP_BIT_RCU_EXP bitmask race
-      rcu: Fix missing TICK_DEP_MASK_RCU_EXP dependency check
-      rcu: Register rcu-lazy shrinker only for CONFIG_RCU_LAZY=y kernels
-      rcu: Remove never-set needwake assignment from rcu_report_qs_rdp()
-      rcu: Permit start_poll_synchronize_rcu_expedited() to be invoked early
-      rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
-
- .../Expedited-Grace-Periods.rst                    |   6 +-
- .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |   2 +-
- Documentation/RCU/RTFP.txt                         |  10 +-
- Documentation/RCU/UP.rst                           |   4 +-
- Documentation/RCU/checklist.rst                    |   2 +-
- Documentation/RCU/lockdep.rst                      |   2 +-
- Documentation/RCU/torture.rst                      |   4 +-
- Documentation/RCU/whatisRCU.rst                    |   6 +-
- MAINTAINERS                                        |   4 +-
- arch/arm64/kvm/Kconfig                             |   1 -
- arch/mips/kvm/Kconfig                              |   1 -
- arch/powerpc/kvm/Kconfig                           |   1 -
- arch/riscv/kvm/Kconfig                             |   1 -
- arch/s390/kvm/Kconfig                              |   1 -
- arch/x86/Kconfig                                   |   2 -
- arch/x86/kvm/Kconfig                               |   1 -
- drivers/base/cpu.c                                 |   3 +-
- drivers/block/drbd/drbd_nl.c                       |   6 +-
- drivers/block/drbd/drbd_receiver.c                 |   4 +-
- drivers/block/drbd/drbd_state.c                    |   2 +-
- drivers/misc/vmw_vmci/vmci_context.c               |   2 +-
- drivers/misc/vmw_vmci/vmci_event.c                 |   2 +-
- .../ethernet/mellanox/mlx5/core/en/tc/int_port.c   |   2 +-
- .../ethernet/mellanox/mlx5/core/en_accel/macsec.c  |   4 +-
- fs/ext4/super.c                                    |   2 +-
- include/linux/lockdep.h                            |   8 +-
- include/linux/notifier.h                           |   5 +-
- include/linux/srcu.h                               |  34 +-
- include/linux/srcutiny.h                           |   6 +-
- include/linux/srcutree.h                           |  94 +++--
- include/linux/tick.h                               |   2 +
- include/trace/events/rcu.h                         |   4 +-
- include/trace/events/timer.h                       |   3 +-
- kernel/locking/lockdep.c                           |  64 ++-
- kernel/locking/test-ww_mutex.c                     |   2 +-
- kernel/rcu/Kconfig                                 |   3 -
- kernel/rcu/rcu.h                                   |  43 +-
- kernel/rcu/rcuscale.c                              |   9 +-
- kernel/rcu/rcutorture.c                            | 234 ++++++++++-
- kernel/rcu/refscale.c                              |   2 +-
- kernel/rcu/srcutiny.c                              |   2 +
- kernel/rcu/srcutree.c                              | 438 ++++++++++++---------
- kernel/rcu/tasks.h                                 |  33 ++
- kernel/rcu/tree.c                                  |  18 +-
- kernel/rcu/tree_exp.h                              |  16 +-
- kernel/rcu/tree_nocb.h                             |   4 +
- kernel/time/tick-sched.c                           |  16 +-
- kernel/trace/trace_osnoise.c                       |   2 +-
- kernel/trace/trace_probe.c                         |   2 +-
- lib/test_vmalloc.c                                 |   2 +-
- mm/Kconfig                                         |   1 -
- net/core/sysctl_net_core.c                         |   4 +-
- net/mac802154/scan.c                               |   4 +-
- scripts/checkpatch.pl                              |   9 +
- tools/rcu/extract-stall.sh                         |  26 +-
- .../testing/selftests/rcutorture/bin/kvm-again.sh  |   2 +-
- .../selftests/rcutorture/bin/srcu_lockdep.sh       |  78 ++++
- tools/testing/selftests/rcutorture/bin/torture.sh  |   6 +-
- .../selftests/rcutorture/configs/rcu/TREE01        |   1 +
- .../selftests/rcutorture/configs/rcu/TREE04        |   1 +
- .../selftests/rcutorture/doc/TREE_RCU-kconfig.txt  |   4 -
- 61 files changed, 915 insertions(+), 342 deletions(-)
- mode change 100644 => 100755 tools/rcu/extract-stall.sh
- create mode 100755 tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+-- 
+Thanks,
+Qi
