@@ -2,89 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F742C77B73
-	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 04:52:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3BCBC7619A
+	for <rcu@archiver.kernel.org>; Wed, 12 Apr 2023 04:54:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbjDLEwz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 00:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33134 "EHLO
+        id S229493AbjDLEyi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Apr 2023 00:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjDLEwr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 00:52:47 -0400
+        with ESMTP id S229452AbjDLEyh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Apr 2023 00:54:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E914EE1;
-        Tue, 11 Apr 2023 21:52:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6788ADA;
+        Tue, 11 Apr 2023 21:54:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E319762DF7;
-        Wed, 12 Apr 2023 04:52:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A8F1C433EF;
-        Wed, 12 Apr 2023 04:52:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E6C1A62DF0;
+        Wed, 12 Apr 2023 04:54:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9EDC433EF;
+        Wed, 12 Apr 2023 04:54:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681275140;
-        bh=8lvgbqxpZS7LWiUXWiKwTmk6A1A2wNVnb94GRGPYfIQ=;
+        s=k20201202; t=1681275275;
+        bh=5dzqspqBqW9N0X1M96v/Nc4a0ynkDyFPXVvD+yHp/tg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pwbvIysT5erxtyf9nuIA6gEOFFtyjEiSOwg+cYZaU//WxUfjwfjNQnP3HoMUvpyV5
-         paJx2jkV9xZkLGx41TjfcL3azU1X+TKcZb92kwBWXB8gp3YpXTNAVbhyxwA5hskGa1
-         MBhO8hFG0xTYUmPeV/6NiI2otIp3/QPf5t8xiGYrc7ogfOJ/G71aT+T0y0oFeMaOkA
-         mx0OaYwz11jC4VZE/zK+3LToj6A7VCE58MSBeP5xl/tb8J/BzRXgiPvqgqqucMM68a
-         Qm56UMqTXRltDaGUdfgz5s0uQCGqTDn7BEAoxpxTGtvJJon/yNl+Zq9UGdsvrzg8cW
-         BP9FdrwIOsoDw==
+        b=QpS13f7eTWFWAZQybWf2+gKbEU3zT90WUQbawMyM8C0DZAYea9GZmP10G4udzXs2C
+         vYFtMRdQpxWNXbxXomW0KVP5ZDLJ7AA5l96ybkCM9xK+pw4jIyD18CRqCV1Qe56ddj
+         /zQo04M4zCi0HYRetLOKLi1gMl+gbmVKnxA2GA3N1CIZ05/0ycFsIaTGfGHpmwGC7k
+         QZ0/E7ZwK+KrtN/HQftmGvI5L1EDUXSf1CJry+Oiqq2pP6pecl6JGGCBZ0exmHhxrn
+         4iwg2KNSgFSC53kr6el2V3q4VgJRenvhMe0iNhOSQNPPyyGlEB6z708qc73sVRB7c+
+         w2F/luw/BCd4Q==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E12B91540478; Tue, 11 Apr 2023 21:52:19 -0700 (PDT)
-Date:   Tue, 11 Apr 2023 21:52:19 -0700
+        id C730D1540478; Tue, 11 Apr 2023 21:54:34 -0700 (PDT)
+Date:   Tue, 11 Apr 2023 21:54:34 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Lin Yu Chen <starpt.official@gmail.com>
-Cc:     corbet@lwn.net, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: Fix typo in Documentation/RCU/checklist.rst
-Message-ID: <ddef7eae-6fd4-4a79-881f-e99fbed48d67@paulmck-laptop>
+To:     zhouzhouyi@gmail.com
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, lance@osuosl.org
+Subject: Re: [PATCH] rcu/torture replace wait_event with
+ wait_event_interruptible
+Message-ID: <0e334497-fbc1-49f7-87ef-8dbf6d25d6a7@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230411141341.74133-1-starpt.official@gmail.com>
+References: <1681264483-5208-1-git-send-email-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230411141341.74133-1-starpt.official@gmail.com>
+In-Reply-To: <1681264483-5208-1-git-send-email-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 07:13:41AM -0700, Lin Yu Chen wrote:
-> This commit corrects the spelling of "not" to "note" to accurately
-> convey the intended meaning.
+On Wed, Apr 12, 2023 at 09:54:43AM +0800, zhouzhouyi@gmail.com wrote:
+> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 > 
-> Signed-off-by: Lin Yu Chen <starpt.official@gmail.com>
+> In kfree_rcu_test, kfree_scale_shutdown will be detected as hung task
+> if kfree_loops is too big. Replace wait_event with wait_event_interruptible
+> to avoid false positive.
+> 
+> Tested in the PPC VM of Open Source Lab of Oregon State University.
+> 
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>                
+> ---
+>  kernel/rcu/rcuscale.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 91fb5905a008..b37eec94957c 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -771,7 +771,7 @@ kfree_scale_cleanup(void)
+>  static int
+>  kfree_scale_shutdown(void *arg)
+>  {
+> -	wait_event(shutdown_wq,
+> +	wait_event_interruptible(shutdown_wq,
 
-Good eyes, thank you!
+Good catch!!!
 
-However, Qiuxu Zhuo beat you to this one, please see this commit
-in the -rcu tree:
-
-e5ad8b68f8d4 ("Documentation/RCU: s/not/note/ in checklist.rst")
+Would wait_event_idle() work in this case?  The _interruptible()
+variant indicates that wakeups due to things like POSIX signals is
+permitted.
 
 							Thanx, Paul
 
-> ---
->  Documentation/RCU/checklist.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-> index cc361fb01ed4..bd3c58c44bef 100644
-> --- a/Documentation/RCU/checklist.rst
-> +++ b/Documentation/RCU/checklist.rst
-> @@ -70,7 +70,7 @@ over a rather long period of time, but improvements are always welcome!
->  	can serve as rcu_read_lock_sched(), but is less readable and
->  	prevents lockdep from detecting locking issues.
+>  		   atomic_read(&n_kfree_scale_thread_ended) >= kfree_nrealthreads);
 >  
-> -	Please not that you *cannot* rely on code known to be built
-> +	Please note that you *cannot* rely on code known to be built
->  	only in non-preemptible kernels.  Such code can and will break,
->  	especially in kernels built with CONFIG_PREEMPT_COUNT=y.
->  
+>  	smp_mb(); /* Wake before output. */
 > -- 
-> 2.25.1
+> 2.34.1
 > 
