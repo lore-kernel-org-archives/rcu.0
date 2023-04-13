@@ -2,32 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCAF0C77B6C
-	for <rcu@archiver.kernel.org>; Thu, 13 Apr 2023 01:56:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80146C77B61
+	for <rcu@archiver.kernel.org>; Thu, 13 Apr 2023 07:41:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjDMB4F (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Apr 2023 21:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        id S229580AbjDMHlW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 13 Apr 2023 03:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjDMB4E (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Apr 2023 21:56:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38031618F;
-        Wed, 12 Apr 2023 18:56:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C30FE63380;
-        Thu, 13 Apr 2023 01:56:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33D14C433EF;
-        Thu, 13 Apr 2023 01:55:59 +0000 (UTC)
-Date:   Wed, 12 Apr 2023 21:55:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
+        with ESMTP id S229492AbjDMHlV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 13 Apr 2023 03:41:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45E072B5;
+        Thu, 13 Apr 2023 00:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wgu8SC6bQOX86fAFA8WPb+pb3Lh3VAdvUHY7nuqb8uI=; b=iTTZpWHukh1hynD3dVUy7qrd2n
+        RiK+81ZR0IxagRpGjzoDpV+yIvoT6kvdz2PPrAIOTK/OsT7eKkBrdczG6Bsv+xH3fjaeF50Lg/Pnt
+        V0NA1zxP06HCglfk89PU2H9IVMlK7iOeVqI6DO9zJqqAytNfM1jIezxVMXC7RoUH0QmefDcTd3EhH
+        c4hztxKdfjCTLtaBexda4kgP0SOGTr/zowETPgerkdjU8qzQSlqaNDcVjE03Fuw1j+VrNgmZWt10F
+        o0FYu5cW+9q0/SN0LPW+CqPWk8LIKRFfKhIylXFLe2oBmdXxpPUu+Vsn3KxxxcgR6+INDMPBXl/fu
+        uuOaXzgg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1pmrZ3-00EfG0-2q;
+        Thu, 13 Apr 2023 07:40:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D8CB3001E4;
+        Thu, 13 Apr 2023 09:40:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C20AF20D0CF59; Thu, 13 Apr 2023 09:40:13 +0200 (CEST)
+Date:   Thu, 13 Apr 2023 09:40:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
         "Zhang, Qiang1" <qiang1.zhang@intel.com>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
         "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
         "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
@@ -44,36 +58,34 @@ Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
 Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
  raw_spinlock
-Message-ID: <20230412215557.05df918e@gandalf.local.home>
-In-Reply-To: <CAEXW_YQhLsf7NsbGZa5u9kcr2hesAuK_5RKZh+qtSfn_Ha2ugg@mail.gmail.com>
+Message-ID: <20230413074013.GD4253@hirez.programming.kicks-ass.net>
 References: <20230411130854.46795-1-zhengqi.arch@bytedance.com>
-        <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
-        <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
-        <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
-        <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
-        <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
-        <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
-        <eef7fefe-3a0c-31de-0fe3-c8ca8294a0df@bytedance.com>
-        <CAEXW_YQhLsf7NsbGZa5u9kcr2hesAuK_5RKZh+qtSfn_Ha2ugg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
+ <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
+ <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
+ <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
+ <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
+ <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
+ <20230412124735.GE628377@hirez.programming.kicks-ass.net>
+ <76e15f10-d3f1-2cab-63cb-25aa3b4f2cd4@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <76e15f10-d3f1-2cab-63cb-25aa3b4f2cd4@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, 12 Apr 2023 20:24:19 -0400
-Joel Fernandes <joel@joelfernandes.org> wrote:
+On Thu, Apr 13, 2023 at 12:44:42AM +0800, Qi Zheng wrote:
+> > Something like the completely untested below might be of help..
 
-> I think it would be better to fix PROVE_LOCKING / CONFIG_PREEMPT_RT
-> instead of degrading !CONFIG_PREEMPT_RT just to satisfy a
-> false-positive report.
+> I just tested the above code, and then got the following
+> warning:
+> 
 
-I think getting Peter's patch working:
+> It seems that the LD_WAIT_SLEEP we set is already greater than the
+> LD_WAIT_SPIN of the current context.
 
-  https://lore.kernel.org/all/20230412124735.GE628377@hirez.programming.kicks-ass.net/
-
-is the real solution.
-
--- Steve
+Yeah, I'm an idiot and got it wrong.. I'll try again later if I manage
+to wake up today :-)
