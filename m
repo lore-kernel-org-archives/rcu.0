@@ -2,100 +2,108 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04429C77B61
-	for <rcu@archiver.kernel.org>; Mon, 17 Apr 2023 05:28:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4420C77B70
+	for <rcu@archiver.kernel.org>; Mon, 17 Apr 2023 10:13:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbjDQF2s (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Apr 2023 01:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
+        id S229556AbjDQKNJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Apr 2023 06:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjDQF2r (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Apr 2023 01:28:47 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265B626B2
-        for <rcu@vger.kernel.org>; Sun, 16 Apr 2023 22:28:46 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33H2F8mg008075;
-        Mon, 17 Apr 2023 05:28:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0oBbVn2Z7A387vS5pc2VEKnKN3ZgSZI7xMQVfeCoZJs=;
- b=RLfc5egCKSZqdAIrXrX9MdyZNd9AiwfjmURfSdrl6SAsIIONxSfjpGj9guzKlLJ62ctY
- ixcL4xsKnEfLXXiL41xar8c+fZTcxHP7m6W0CuktSfaHuyrKO1/P4vVyTKBd294gX3oq
- ef5E001zOLdsQKJoodQc7xD4XfCte1xLFjOdxSIl61ksUTqOIB4yFmKtNkQ3gxFln8m4
- n7eP4KD6OMcAPlQugJ3Z1BuTajaKQ5laiyj/i46zzkX6IvgGGm7dQKnqr1Y26+w65c65
- DSrJby4BIDG4GtNqjTLzmLB/kDg2ylX5/iAeZ8tF+RxnV9REh92BsSj8R6viARPkdvDA RQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3pymp4anex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Apr 2023 05:28:44 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 33H5ShYH009840
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Apr 2023 05:28:43 GMT
-Received: from [10.50.16.239] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Sun, 16 Apr
- 2023 22:28:42 -0700
-Message-ID: <fd1c65f0-e4a1-4377-2767-c541395b1a8b@quicinc.com>
-Date:   Mon, 17 Apr 2023 10:58:31 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
+        with ESMTP id S229567AbjDQKNH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Apr 2023 06:13:07 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33683A91
+        for <rcu@vger.kernel.org>; Mon, 17 Apr 2023 03:12:26 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2472a5dbbdcso254463a91.0
+        for <rcu@vger.kernel.org>; Mon, 17 Apr 2023 03:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681726259; x=1684318259;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LYOvn84VbpTxh6+JBi9iFxbj2KCHYEgXyKUjU/PX2jU=;
+        b=pw2wFKi/EIeROqKvad7PBPG1Xu0a/9Wf9XOVkBP9cGdMNBr6CtLnQUO8RNXdqyz11B
+         2RARoHKr1yAdJfrHDagEkNEURlbdrGAsEyFMCVM6IffCReSGQFI7mcGYOuJZAEMYyBGM
+         y9yS+k9sy4mratTr98f5QVTrsE5SPjxL6/MKFjXXquT0JYe6bk0sw5WInmHFpyKS3kxH
+         d2x9xP042lmpxn1d59ou54EoE63LZvAwvlF15S6+bRPduZfhuoL/gQ1w8z7ZGwZJhJqu
+         mkTNNVNQhv8txn/RgjI1H1t9PpWnL+UzWQRgVLh7mOzVNuJpIQXz/1J3ZRno+vBNRggk
+         6XlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681726259; x=1684318259;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LYOvn84VbpTxh6+JBi9iFxbj2KCHYEgXyKUjU/PX2jU=;
+        b=lnoXBIVMOleviYs8LhhfB1jrWkX1JJEg43UJ6qQYweQOCpDCOrbJiApDvXWrPX2+K5
+         8u7teT8hKhyb6cnAsHsKT9XWuLPXyI4AbnuwEmqA6LXwyZPT3q4yQ1+J07jx0N0Urlqp
+         bIjFe1pQ1uK9h1rQ5Kw3HDIg0Rtp7UT5jz/G3cp6aaV3RXpEllxaVryEVu6BK+tUGVzE
+         SlmDapt7yQlxq7G/k0mPxyCIsISgHOQ2sPgO4ZKtoh7u76VUG53u8bHw+qxb4SOxYweQ
+         srSWR23Gcocqp+3nuvwaDbBogQSNoTh/gWJuLfPLeYpWEO/2POnxgY79kxff5OjEYgLB
+         oKiw==
+X-Gm-Message-State: AAQBX9eIEpoM5AkU20XuaKtRg7Aeif3qrMS5PY+qgSDye+0Dnw1Ppvex
+        eKJP4uonSJqCu2GjUQfXb3pc1BJWzOetGXk0
+X-Google-Smtp-Source: AKy350bAJhEuQXXDiITokplzm8xcwvrnSKeTz344dklR8CbKK28yKMMeSFBUTInZYc8QsXjPCjrXBw==
+X-Received: by 2002:a05:6a00:138d:b0:63d:260d:f9dd with SMTP id t13-20020a056a00138d00b0063d260df9ddmr2309467pfg.33.1681726259351;
+        Mon, 17 Apr 2023 03:10:59 -0700 (PDT)
+Received: from [127.0.0.1] ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id y10-20020aa7804a000000b00639fc7124c2sm7509440pfm.148.2023.04.17.03.10.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 Apr 2023 03:10:58 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
 Subject: Re: Question: Why the definition of ULONG_CMP_LE is different with
  time_before?
-To:     Alan Huang <mmpgouride@gmail.com>, <rcu@vger.kernel.org>
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <fd1c65f0-e4a1-4377-2767-c541395b1a8b@quicinc.com>
+Date:   Mon, 17 Apr 2023 18:10:31 +0800
+Cc:     rcu@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <23CBBB68-EEC0-430C-92E5-B57B491EAF01@gmail.com>
 References: <59BEC41C-E025-47EE-AA47-9B9795234415@gmail.com>
-Content-Language: en-US
-From:   Neeraj Upadhyay <quic_neeraju@quicinc.com>
-In-Reply-To: <59BEC41C-E025-47EE-AA47-9B9795234415@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4IU_0COoj0Pr9zmuuYIL70fPj4PTNxMH
-X-Proofpoint-ORIG-GUID: 4IU_0COoj0Pr9zmuuYIL70fPj4PTNxMH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-17_02,2023-04-14_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- impostorscore=0 spamscore=0 mlxlogscore=339 lowpriorityscore=0
- phishscore=0 priorityscore=1501 bulkscore=0 adultscore=0 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304170049
+ <fd1c65f0-e4a1-4377-2767-c541395b1a8b@quicinc.com>
+To:     Neeraj Upadhyay <quic_neeraju@quicinc.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Alan,
+Hi Neeraj,
 
-The reason for a different implementation looks to be due to the fact 
+Thank you for your explanation!
+
+The lwn article is very helpful to me!
+
+Thanks,
+Alan
+
+
+
+> 2023=E5=B9=B44=E6=9C=8817=E6=97=A5 =E4=B8=8B=E5=8D=881:28=EF=BC=8CNeeraj=
+ Upadhyay <quic_neeraju@quicinc.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> Hi Alan,
+>=20
+> The reason for a different implementation looks to be due to the fact =
 that the C standard does not specify the result of an operation that
-overflows a signed integer. This is described in lwn article: 
-https://lwn.net/Articles/511259/ . On 32-bit systems, overflow would be 
-common for counters used by RCU. So, RCU subsystem uses unsigned 
-integers checks - ULONG_CMP_GE , ULONG_CMP_LT , to avoid any compiler 
-optimization, which would cause results of these checks to have a 
+> overflows a signed integer. This is described in lwn article: =
+https://lwn.net/Articles/511259/ . On 32-bit systems, overflow would be =
+common for counters used by RCU. So, RCU subsystem uses unsigned =
+integers checks - ULONG_CMP_GE , ULONG_CMP_LT , to avoid any compiler =
+optimization, which would cause results of these checks to have a =
 different result, in the event of counter overflows.
+>=20
+>=20
+> Thanks
+> Neeraj
+>=20
+>=20
+> On 4/16/2023 2:19 PM, Alan Huang wrote:
+>> Hi,
+>> I noticed that the definition of ULONG_CMP_LE in rcupdate.h is =
+different with time_before.
+>> I can=E2=80=99t figure it out that why their definition is different. =
+Does the two definition are the same thing?
+>> Thanks,
+>> Alan
 
-
-Thanks
-Neeraj
-
-
-On 4/16/2023 2:19 PM, Alan Huang wrote:
-> Hi,
-> 
-> I noticed that the definition of ULONG_CMP_LE in rcupdate.h is different with time_before.
-> 
-> I can’t figure it out that why their definition is different. Does the two definition are the same thing?
-> 
-> Thanks,
-> Alan
-> 
-> 
-> 
