@@ -2,65 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4BE7C77B71
-	for <rcu@archiver.kernel.org>; Tue, 18 Apr 2023 10:42:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91BF0C77B75
+	for <rcu@archiver.kernel.org>; Tue, 18 Apr 2023 12:08:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbjDRKmf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Apr 2023 06:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
+        id S231451AbjDRMIq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Apr 2023 08:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbjDRKme (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Apr 2023 06:42:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7942626B9;
-        Tue, 18 Apr 2023 03:42:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BCD46285B;
-        Tue, 18 Apr 2023 10:42:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DDE9C433EF;
-        Tue, 18 Apr 2023 10:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1681814534;
-        bh=l/yiMks2uKIEi13QsAkG6JBlKO/hBWqQ7fDjDgvKw/c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uMsrTpQIl7pfeQv5uHLn4gLnYjjZd4Ai+2Quahk9iAGq4w+A5EnzPuVeUrlGUJ8Pu
-         yXte0nWAbxFPhd3QI29GZqlS/kObEtAb1pJhu+qWCg0gPk39tchW8CLdZvToRzqZeZ
-         NAjUWKpJU+HFi4LZmIcjsbfQ+MejdyC/YCZl+rPw=
-Date:   Tue, 18 Apr 2023 12:42:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     stable@vger.kernel.org, RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>,
-        Mukesh Ojha <quic_mojha@quicinc.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 1/1] linux-6.1/rcu/kvfree: Avoid freeing new kfree_rcu()
- memory after old grace period
-Message-ID: <2023041844-chasing-skincare-4cfe@gregkh>
-References: <20230418102518.5911-1-urezki@gmail.com>
- <20230418102518.5911-3-urezki@gmail.com>
+        with ESMTP id S230070AbjDRMId (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Apr 2023 08:08:33 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7439B47B;
+        Tue, 18 Apr 2023 05:05:15 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id b9so1546781ljf.13;
+        Tue, 18 Apr 2023 05:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681819514; x=1684411514;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=46J6GzW9SMxNFr8fYJhfNVMAkEm/oWl1Dzn7CkJE/p4=;
+        b=WPBDlfGOW6XlWFMWV5mqklvKP9LPXG3BW1vAhqkuHGDWo6sGPz9hUSHduvSSygVbTp
+         l8NCkMm5UDOPogD8MzwlYIHueOvoILh0H+bOPvBHb4uDj576vlxS7VqLt9crV6TcNU/F
+         7Ldi28OFAQ3WaHw8nRXYxhrTPHxikbUHKgDkTsmgXRcbl29CUEjJi35AUJlAtC9Dre2U
+         3horpkcYuyEzk3tdlT3bd/4lDsSy0Hl4xieZQHax4RCpMcaC5nRQGHVGBzAoDkij+S2u
+         kFle/FFxR2vlYYIotcOlOWnJxUj7NRwtgokIn3qvpSYsgEy0fr+5MslDr46bFaIsnDrw
+         Mivw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681819514; x=1684411514;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=46J6GzW9SMxNFr8fYJhfNVMAkEm/oWl1Dzn7CkJE/p4=;
+        b=iqqGQEtbyVyfDuDoREbm97A8zMWd+f65RFJEDjfxfRVIzdplDdqXMFmKTLzHBOtzyN
+         HgID0SV+ATHxbNtpLxvTUxvdZw29YsMC3b3cTeCeQySoq8OEmpA7q5nBOQEHWnLvHxyK
+         U316/05JhpzV5nPcpTeiDW4FJmc5k3POp94uEIK1NNBt2IceW+pg9ccSzl+63KOhEujP
+         iD1vJ7uLWzxocXq0fmsicpKMRXD4cF7XNKGzouDrG33d29dusbFHFpQ3Obzvz0pIemor
+         WoMP/i44GkE1viJYSqk/wt0BAAlawAu33TV8Kn/aTgFDKOmAGXPdBlU6A5RsVaZWUOe3
+         mW5w==
+X-Gm-Message-State: AAQBX9f7CQKwdVITAfwTCxm4uw2LNHidBKQo79GfhaqPv/QmqrJh/jQK
+        HXKLNMR9VwSZQJPGnXKbXAM=
+X-Google-Smtp-Source: AKy350avhTv+2hMQBXbqPTe3NHvXhZA5uEx+8kQfQXSzFvjJHY1HxupkwepTsTFBOEKKtV2stNW9rg==
+X-Received: by 2002:a2e:9a99:0:b0:2a8:a5fc:d0cd with SMTP id p25-20020a2e9a99000000b002a8a5fcd0cdmr644708lji.47.1681819513790;
+        Tue, 18 Apr 2023 05:05:13 -0700 (PDT)
+Received: from pc636 (host-90-233-216-43.mobileonline.telia.com. [90.233.216.43])
+        by smtp.gmail.com with ESMTPSA id z22-20020a2e9b96000000b002a8c1462ecbsm1069879lji.137.2023.04.18.05.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Apr 2023 05:05:13 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 18 Apr 2023 14:05:10 +0200
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     urezki@gmail.com, paulmck@kernel.org, frederic@kernel.org,
+        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/kvfree: Make drain_page_cache() call return directly
+ if cache is disabled
+Message-ID: <ZD6HdrXAueycm/bX@pc636>
+References: <20230418070259.1353785-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230418102518.5911-3-urezki@gmail.com>
+In-Reply-To: <20230418070259.1353785-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 12:25:18PM +0200, Uladzislau Rezki (Sony) wrote:
-> From: Ziwei Dai <ziwei.dai@unisoc.com>
+On Tue, Apr 18, 2023 at 03:02:59PM +0800, Zqiang wrote:
+> If the rcu_min_cached_objs is set to zero at boot params, the
+> krcp->page_cache_work will not be triggered to fill page cache,
+> and the put_cached_bnode() also does not fill page cache, this
+> also means the krcp->bkvcache is always empty, so not need to
+> acquire unnecessary krcp->lock to get page from krcp->bkvcache,
+> this commit therefore make drain_page_cache() return directly if
+> the rcu_min_cached_objs is zero.
 > 
-> commit 5da7cb193db32da783a3f3e77d8b639989321d48 upstream.
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+> ---
+>  kernel/rcu/tree.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c8ba2be026fa..ce995fc1c644 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2924,6 +2924,9 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
+>  	struct llist_node *page_list, *pos, *n;
+>  	int freed = 0;
+>  
+> +	if (rcu_min_cached_objs)
+> +		return 0;
+> +
+>
+Should we check for zero?
 
-What about 6.2.y?  You do not want anyone upgrading and having a
-regression, right?
-
-Please submit a backport for that tree too if you want any of these to
-be applied.
-
-thanks,
-
-greg k-h
+--
+Uladzislau Rezki
