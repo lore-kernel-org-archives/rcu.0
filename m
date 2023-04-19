@@ -2,60 +2,61 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43148C77B73
-	for <rcu@archiver.kernel.org>; Wed, 19 Apr 2023 13:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A7B4C77B73
+	for <rcu@archiver.kernel.org>; Wed, 19 Apr 2023 20:02:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbjDSNAp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Apr 2023 09:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
+        id S229873AbjDSUCQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Apr 2023 16:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbjDSNAo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Apr 2023 09:00:44 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF54776AB
-        for <rcu@vger.kernel.org>; Wed, 19 Apr 2023 06:00:42 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id vc20so26499461ejc.10
-        for <rcu@vger.kernel.org>; Wed, 19 Apr 2023 06:00:42 -0700 (PDT)
+        with ESMTP id S229785AbjDSUCQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Apr 2023 16:02:16 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72C646AE
+        for <rcu@vger.kernel.org>; Wed, 19 Apr 2023 13:02:14 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1a6e5be6224so231935ad.1
+        for <rcu@vger.kernel.org>; Wed, 19 Apr 2023 13:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681909241; x=1684501241;
+        d=google.com; s=20221208; t=1681934534; x=1684526534;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xwi6q3cu45MnE4kyT4HYhg8YlJb8XVnKZHENVBx9cJw=;
-        b=q9bUXYfNIZcsLe55ILrvb+lgpf2Vt3HQWODdgf0HwXP7ruIx5aJKLDRpZMAoNyq2xl
-         U2eVXI9moVOcl6M5H7JRZet9WaKzH0hO+Tj42DpFmXmgFhmtz8YBCBdDfJCe54JokDgG
-         wyRSar3MYwUSuh6tViOBxFXCKKVqWNv3dyppoCxVS3jIOPiIV+9yKFUV9ck60YZ3uJcq
-         3Wu106SGWBD+iAAIAXjJSyPPr8U+xJPEnfvVq78SP8j1CzZg8aRiVfDMtK7rHbhlvJBY
-         lxdowrUZ8QV5WqOIvj+2RG4BlGpm4KrXoIe6Yu06Kc71nPndkK7dteYEDLPeQhAPhS3S
-         KmJw==
+        bh=56W2W/X8fkj8VZX3/1DTAaK9+j9FvXQXuYPz0XAniuc=;
+        b=Tm+PqrTiBoRJA04/Kl60G2CqwjByx5la8XcHF9okQZRzsClYBxiJTHt0YG5c7Ih8mT
+         LqiugknROCpyehmf+fFE2yLXzkxa7RRDDerSCmGNO6gj8wHE1MUCc2qXLU1NwoxWHQTN
+         PB/mAP8j6XUow6402YryLB5jYviHopAJ4iYiURfF9qoPqv16Riw+InNihTXtwAWmPte2
+         WzvgnJ1CLUIbSsA3WkAuSE2s+YmMzyBgHqf77zkPrj56JYAOdVHMo01j2j2szEV7YTIA
+         39nPjEODCVxQsypbfnaq1e0jji5goKJ9EUboMoqyesJEob+LeW9h6gbLFLLBA+vTiinI
+         dJgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681909241; x=1684501241;
+        d=1e100.net; s=20221208; t=1681934534; x=1684526534;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xwi6q3cu45MnE4kyT4HYhg8YlJb8XVnKZHENVBx9cJw=;
-        b=J5ffHryYLqBNapSyVxeWbVoNgX3ydqgMbqIIPECUYYns2dexQlGYRiQ4lrHKCITBG/
-         3tRGwTKZh5YQkpyqxFZ9Y5yIzCuWT9jtW4S8EpnFBgxtC2ZZO1hlC4Vs7Ka60m42ybur
-         nSW+cIkHComqDodx79Lt2XZ9h9zS0kHCfxV31iK1c2KkqqfKQGu5Lpn0CJ+ZVhPDZpLE
-         aWnfYtKco4PZCNDajVnCQRaavGli7mO+MJQwzEB1EX11AdHTU2RZOVlDKR/KbH/W6e95
-         8nLqIW65Ox2x4/ELDzU77tkWVl1dAFjzh9rG19GYVZvPSHE1rw9FmxOhV/deHo5HZJ/5
-         7ukQ==
-X-Gm-Message-State: AAQBX9cOiij2VC6KLN2fkYEPvaujN5i2SD/wwz0F2am8QtUpl2K/NoLT
-        5OzKWMwmeJepNiTI3Lk41Rf/R30AoMapSRJVcbt7ldCoZFnRKAEa6SBJUA==
-X-Google-Smtp-Source: AKy350YU7NS8auXb9psE2UrHtL99IMokCu0HrsOfTYc1jzaflfxqtjw+b8TWe/R+fYzLaCBTEQnr/BHby6rHDFe5Pfg=
-X-Received: by 2002:a17:907:8a21:b0:94f:3521:396 with SMTP id
- sc33-20020a1709078a2100b0094f35210396mr13023290ejc.23.1681909241003; Wed, 19
- Apr 2023 06:00:41 -0700 (PDT)
+        bh=56W2W/X8fkj8VZX3/1DTAaK9+j9FvXQXuYPz0XAniuc=;
+        b=DBsrxwgkOWa38vAo0ubxugTtz2J1wUJNUQb4QxObmNFuk7Jvgk3ffzg9xSMiw59Aqb
+         TzlpyvMysy5ltFoZUwTrzyKQZVfgmG96WkX2haOL434hSMxP7QrjzdtL6x/87zwfOcas
+         GyKap3iAJV0gj7VVruwI8zk4S4m5qiUVyGIVY/rwuAHmM39aNsdT7ec1qD6aUQm2MwmG
+         6WAEmbvlRdxmTaAeVNUo3oAODoxwF7X+C0nZXtXUlRtjIgmyvQHp42r7QrbYhkHNXgbv
+         pMiSs/Sk9elAyES4kknYaYEunfJqJ9DsVHD0c3+l0Cm835gHQbieuv04sJA6U0cxGD1J
+         CeNA==
+X-Gm-Message-State: AAQBX9eSzvAGeiwWlhhC6FP2oUQTJfEYPXQAlgibMLU/x7uNd1aDJSpi
+        TFJpC07MtMlxNtak4hhZaQmRmZPbrGKWSUseQ9S5Bw==
+X-Google-Smtp-Source: AKy350bP2Be/0rsmuq+XyQQsawPtRMQK0eA/jETVaSN8vBy4wBas0Titboop37b7IKAN7OP4R+HvW5JzRwQ8J+LMRZI=
+X-Received: by 2002:a17:903:228c:b0:198:af4f:de12 with SMTP id
+ b12-20020a170903228c00b00198af4fde12mr49157plh.18.1681934534077; Wed, 19 Apr
+ 2023 13:02:14 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230414005309.GA2198310@google.com> <CAKwvOd=yQS+0oDC46Hc5D_V0JET8=xbQmAJrpBdg7c4i2EyqHg@mail.gmail.com>
- <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
-In-Reply-To: <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
-From:   Florent Revest <revest@google.com>
-Date:   Wed, 19 Apr 2023 15:00:30 +0200
-Message-ID: <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com>
+ <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com> <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com>
+In-Reply-To: <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com>
+From:   Fangrui Song <maskray@google.com>
+Date:   Wed, 19 Apr 2023 13:02:02 -0700
+Message-ID: <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
 Subject: Re: clangd cannot handle tree_nocb.h
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+To:     Florent Revest <revest@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         nathan@kernel.org, trix@redhat.com, llvm@lists.linux.dev,
         linux-kernel@vger.kernel.org, paulmck@kernel.org,
         "revest@chromium.org" <revest@chromium.org>
@@ -65,54 +66,114 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 6:28=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Wed, Apr 19, 2023 at 6:00=E2=80=AFAM Florent Revest <revest@google.com> =
+wrote:
 >
-> + Florent
-
-Hi there!
-
-> Joel, Florent is doing some cool stuff with clangd and kernels (check
-> out the demo at go/linux-kernel-vscode).  I'm pushing Florent to
-
-Apologies for folks outside Google, this is an internal link to a
-kernel dev setup I originally created for myself, then for my team and
-apparently more and more people are starting to use it internally. :)
-If there's enough appetite for it externally too, I'll try to
-open-source it someday. Anyway, in the context of this conversation,
-it's just something that uses clangd. :)
-
-> publish some of the cool stuff he's been working on externally because
-> it is awesome. ;)
+> On Tue, Apr 18, 2023 at 6:28=E2=80=AFPM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > + Florent
 >
-> Florent, have you seen any such issues such as what Joel reported below?
+> Hi there!
+>
+> > Joel, Florent is doing some cool stuff with clangd and kernels (check
+> > out the demo at go/linux-kernel-vscode).  I'm pushing Florent to
+>
+> Apologies for folks outside Google, this is an internal link to a
+> kernel dev setup I originally created for myself, then for my team and
+> apparently more and more people are starting to use it internally. :)
+> If there's enough appetite for it externally too, I'll try to
+> open-source it someday. Anyway, in the context of this conversation,
+> it's just something that uses clangd. :)
+>
+> > publish some of the cool stuff he's been working on externally because
+> > it is awesome. ;)
+> >
+> > Florent, have you seen any such issues such as what Joel reported below=
+?
+>
+> Yes, I've seen this problem a bunch of times. Afaiu, Clangd operates
+> under the assumption that every source file is a valid compilation
+> unit. My understanding is that it's generally a good practice to keep
+> things that way and I wouldn't be surprised if the userspace Chrome
+> code-base Joel saw enforces this (iirc, it's a rule for
+> Google-internal C++ too, all headers must be interpretable
+> independently).
+>
+> However, from the perspective of the C spec, anything can be included
+> anywhere and a C file can only make sense if it's included
+> after/before certain other things are defined/included. Spontaneously,
+> I would call these ".inc" rather than ".h" or ".c" because I would
+> expect a source file to be always valid and this suffix makes it
+> clearer they depend on their context, but as a matter of fact source
+> files that don't compile when interpreted individually are quite
+> common in the kernel tree. Other examples that have been reported to
+> me include a lot of kernel/sched/*, since many of these files
+> (including .c files) are included from kernel/sched/build_policy.c in
+> a specific order to form one big compilation unit.
+>
+> Unfortunately, I don't know of any solution. :( This feels like a
+> limit of C or compile_commands.json to me. "compile commands" can not
+> be enough to interpret any file, clangd would need a way to express
+> "interpret this file as if it were included in that spot of that
+> compilation unit" and maybe even need a bunch of heuristics to choose
+> one such include spot.
+>
+> I don't know if clangd has any plan to address this and so far I've
+> just lived with these error squiggles.
+>
 
-Yes, I've seen this problem a bunch of times. Afaiu, Clangd operates
-under the assumption that every source file is a valid compilation
-unit. My understanding is that it's generally a good practice to keep
-things that way and I wouldn't be surprised if the userspace Chrome
-code-base Joel saw enforces this (iirc, it's a rule for
-Google-internal C++ too, all headers must be interpretable
-independently).
+Some information about Clang based language servers
 
-However, from the perspective of the C spec, anything can be included
-anywhere and a C file can only make sense if it's included
-after/before certain other things are defined/included. Spontaneously,
-I would call these ".inc" rather than ".h" or ".c" because I would
-expect a source file to be always valid and this suffix makes it
-clearer they depend on their context, but as a matter of fact source
-files that don't compile when interpreted individually are quite
-common in the kernel tree. Other examples that have been reported to
-me include a lot of kernel/sched/*, since many of these files
-(including .c files) are included from kernel/sched/build_policy.c in
-a specific order to form one big compilation unit.
+It's good practice to ensure that a header file is self-contained. If
+not, for example, if a.c includes a.h, which is not self-contained,
+a.h is generally compiled on its own (as if using clang [options] a.h)
+to confine diagnostics/completion results to a.h and not to other
+headers included by a.c.
 
-Unfortunately, I don't know of any solution. :( This feels like a
-limit of C or compile_commands.json to me. "compile commands" can not
-be enough to interpret any file, clangd would need a way to express
-"interpret this file as if it were included in that spot of that
-compilation unit" and maybe even need a bunch of heuristics to choose
-one such include spot.
+However, this design choice may cause language servers to emit
+diagnostics that you don't see when building the project.
 
-I don't know if clangd has any plan to address this and so far I've
-just lived with these error squiggles.
+For my tool ccls, the index file for an included file (e.g. a.h) is
+computed when compiling the main source file (a.c). Therefore, if the
+project builds successfully, the index is always accurate.
+
+Language servers usually have the limitation that only one
+configuration of a main source file is recorded, e.g., you only get
+index data for either clang -DA=3D1 a.c or clang -DA=3D2 a.c, not both.
+This limitation exists due to technical challenges and practicality.
+If a main source file has 10 configurations, when you edit the file,
+do you compile it 10 times to get all indexes?
+
+---
+
+My setup is like this. I have been doing it since about 2019, though I
+rarely read Linux kernel code :(
+
+Ensure you have the following Clang and LLVM tools. If you build them
+by yourself, create a llvm-project build directory, say, /tmp/Rel
+```
+ninja -C /tmp/Rel clang lld
+llvm-{ar,nm,objcopy,objdump,ranlib,readelf,strings,strip}
+```
+
+In a Linux kernel source directory,
+(https://github.com/MaskRay/ccls/wiki/Example-Projects)
+```
+PATH=3D/tmp/Rel/bin:$PATH make O=3D/tmp/out/x86_64 ARCH=3Dx86_64 LLVM=3D1 d=
+efconfig
+PATH=3D/tmp/Rel/bin:$PATH make O=3D/tmp/out/x86_64 ARCH=3Dx86_64 LLVM=3D1 -=
+k
+bzImage modules  # generate .<target>.cmd files
+
+scripts/clang-tools/gen_compile_commands.py -d /tmp/out/x86_64
+```
+
+emacs -nw fs/binfmt_elf.c   # check out lsp-mode and eglot
+
+For neovim, use https://github.com/neoclide/coc.nvim or the built-in
+client. I prefer coc.nvim.
+
+
+--=20
+=E5=AE=8B=E6=96=B9=E7=9D=BF
