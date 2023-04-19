@@ -2,196 +2,117 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1458AC6FD18
-	for <rcu@archiver.kernel.org>; Tue, 18 Apr 2023 21:46:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43148C77B73
+	for <rcu@archiver.kernel.org>; Wed, 19 Apr 2023 13:00:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbjDRVqZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Apr 2023 17:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
+        id S233274AbjDSNAp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Apr 2023 09:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbjDRVqT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Apr 2023 17:46:19 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED953BBB5
-        for <rcu@vger.kernel.org>; Tue, 18 Apr 2023 14:45:50 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a5so20272660ejb.6
-        for <rcu@vger.kernel.org>; Tue, 18 Apr 2023 14:45:50 -0700 (PDT)
+        with ESMTP id S233204AbjDSNAo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Apr 2023 09:00:44 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF54776AB
+        for <rcu@vger.kernel.org>; Wed, 19 Apr 2023 06:00:42 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id vc20so26499461ejc.10
+        for <rcu@vger.kernel.org>; Wed, 19 Apr 2023 06:00:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1681854349; x=1684446349;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+7fzjxjpSJQbGFahxPhwqauiqYw82JYBD81Vlaf8aNg=;
-        b=n8JnoZPj6nSoiMjCWqD+A8FQGaFm947tubfOwN8d6KbUhPu8/lp5EjJBguCkCuMVKK
-         6ApNVzzAcgaLkuwqGRDQdM3KbXBZymURm+HdMHGVhVVhJl910gYm+lnnHchTCIHPsPt3
-         z1q4QR0zF/wcKHG2FL4TEsFtMCCpYZTAKIcks=
+        d=google.com; s=20221208; t=1681909241; x=1684501241;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xwi6q3cu45MnE4kyT4HYhg8YlJb8XVnKZHENVBx9cJw=;
+        b=q9bUXYfNIZcsLe55ILrvb+lgpf2Vt3HQWODdgf0HwXP7ruIx5aJKLDRpZMAoNyq2xl
+         U2eVXI9moVOcl6M5H7JRZet9WaKzH0hO+Tj42DpFmXmgFhmtz8YBCBdDfJCe54JokDgG
+         wyRSar3MYwUSuh6tViOBxFXCKKVqWNv3dyppoCxVS3jIOPiIV+9yKFUV9ck60YZ3uJcq
+         3Wu106SGWBD+iAAIAXjJSyPPr8U+xJPEnfvVq78SP8j1CzZg8aRiVfDMtK7rHbhlvJBY
+         lxdowrUZ8QV5WqOIvj+2RG4BlGpm4KrXoIe6Yu06Kc71nPndkK7dteYEDLPeQhAPhS3S
+         KmJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681854349; x=1684446349;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1681909241; x=1684501241;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+7fzjxjpSJQbGFahxPhwqauiqYw82JYBD81Vlaf8aNg=;
-        b=bM/lPqCdBbloo5j/TEt6vc1HyuE0ainIkEnP06jm1efr6vCQDhV+tVAGOP07V9vUf0
-         VsO9M8VQZAI1tXuLz4lg+1fCSNyMDkFtnBPV4GnzRbeWOEtqjVe4in1Ekh4A9wY5e49/
-         eJybD7ScN4KQuhIgyVWU3WheXolm30Ee812FOuvfisx4pSQJMl1QUigyVMK5uwUsH+LM
-         G/IopiFC0nf9YrdFqnM4TsUVsx+F2Ix4nsOQ6FvKEdzmWg1lA62w1t2ftE7F/FqMiBaI
-         SLiOCWL1+/dp1OhWJT70otq2hqVXlohQNwzAofgQCGprHHFsMoE4UldVlxOO2JD3I6GB
-         +d0g==
-X-Gm-Message-State: AAQBX9f8CvDeu8OLpgveOngA/BHIrplTgeOKQWn1E4of2xufGX7Q4wi9
-        fb/dLZFJ/lNAG1Tp20r0IxUuPQ==
-X-Google-Smtp-Source: AKy350ZNFPKryyLDsksUkZk8sVrSowPL//l4P852yJIGScZucnixJVGJkKBnDd29l9yMxe0VpNomlg==
-X-Received: by 2002:a17:906:564e:b0:94e:ec0f:455 with SMTP id v14-20020a170906564e00b0094eec0f0455mr11836365ejr.54.1681854349299;
-        Tue, 18 Apr 2023 14:45:49 -0700 (PDT)
-Received: from smtpclient.apple ([206.0.75.9])
-        by smtp.gmail.com with ESMTPSA id se12-20020a170906ce4c00b0094ecd76eda9sm7499896ejb.182.2023.04.18.14.45.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Apr 2023 14:45:48 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
+        bh=xwi6q3cu45MnE4kyT4HYhg8YlJb8XVnKZHENVBx9cJw=;
+        b=J5ffHryYLqBNapSyVxeWbVoNgX3ydqgMbqIIPECUYYns2dexQlGYRiQ4lrHKCITBG/
+         3tRGwTKZh5YQkpyqxFZ9Y5yIzCuWT9jtW4S8EpnFBgxtC2ZZO1hlC4Vs7Ka60m42ybur
+         nSW+cIkHComqDodx79Lt2XZ9h9zS0kHCfxV31iK1c2KkqqfKQGu5Lpn0CJ+ZVhPDZpLE
+         aWnfYtKco4PZCNDajVnCQRaavGli7mO+MJQwzEB1EX11AdHTU2RZOVlDKR/KbH/W6e95
+         8nLqIW65Ox2x4/ELDzU77tkWVl1dAFjzh9rG19GYVZvPSHE1rw9FmxOhV/deHo5HZJ/5
+         7ukQ==
+X-Gm-Message-State: AAQBX9cOiij2VC6KLN2fkYEPvaujN5i2SD/wwz0F2am8QtUpl2K/NoLT
+        5OzKWMwmeJepNiTI3Lk41Rf/R30AoMapSRJVcbt7ldCoZFnRKAEa6SBJUA==
+X-Google-Smtp-Source: AKy350YU7NS8auXb9psE2UrHtL99IMokCu0HrsOfTYc1jzaflfxqtjw+b8TWe/R+fYzLaCBTEQnr/BHby6rHDFe5Pfg=
+X-Received: by 2002:a17:907:8a21:b0:94f:3521:396 with SMTP id
+ sc33-20020a1709078a2100b0094f35210396mr13023290ejc.23.1681909241003; Wed, 19
+ Apr 2023 06:00:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230414005309.GA2198310@google.com> <CAKwvOd=yQS+0oDC46Hc5D_V0JET8=xbQmAJrpBdg7c4i2EyqHg@mail.gmail.com>
+ <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
+In-Reply-To: <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
+From:   Florent Revest <revest@google.com>
+Date:   Wed, 19 Apr 2023 15:00:30 +0200
+Message-ID: <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com>
 Subject: Re: clangd cannot handle tree_nocb.h
-Date:   Tue, 18 Apr 2023 23:45:37 +0200
-Message-Id: <F76FA81E-C173-418E-B44D-359850A0723A@joelfernandes.org>
-References: <20230418210321.GA3648938@google.com>
-Cc:     rcu@vger.kernel.org, nathan@kernel.org, trix@redhat.com,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        paulmck@kernel.org
-In-Reply-To: <20230418210321.GA3648938@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>, revest@google.com
-X-Mailer: iPhone Mail (20B101)
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        nathan@kernel.org, trix@redhat.com, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, paulmck@kernel.org,
+        "revest@chromium.org" <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Adding Florent as well since Nick added him to the other thread.
+On Tue, Apr 18, 2023 at 6:28=E2=80=AFPM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> + Florent
 
-Thanks.
+Hi there!
 
-> On Apr 18, 2023, at 11:03 PM, Joel Fernandes <joel@joelfernandes.org> wrot=
-e:
->=20
-> =EF=BB=BFHi Nick,
->=20
->> On Tue, Apr 18, 2023 at 01:46:40PM -0700, Nick Desaulniers wrote:
->>> On Tue, Apr 18, 2023 at 1:36=E2=80=AFPM Joel Fernandes <joel@joelfernand=
-es.org> wrote:
->>>=20
->>> On Fri, Apr 14, 2023 at 03:47:51PM -0700, Nick Desaulniers wrote:
->>>> On Thu, Apr 13, 2023 at 5:53=E2=80=AFPM Joel Fernandes <joel@joelfernan=
-des.org> wrote:
->>>>>=20
->>>>> Hello!
->>>>>=20
->>>>> I have been trying to get clangd working properly with tree_nocb.h. cl=
-angd
->>>>> trips quite badly when trying to build tree_nocb.h to generate ASTs.
->>>>=20
->>>> Hi Joel,
->>>> Thanks for the report.  What are you using clangd for? I'll bet
->>>> something interesting.
->>>=20
->>> Thanks for the response and sorry for the late reply. I am at the OSPM
->>> conference. I use vim and vscode with clangd. In vim, YCM uses it to
->>> highlight compiler errors live while editing, I am pretty happy with it s=
-o
->>> far and has been a huge time saver. Enough that now I want to use it for=
+> Joel, Florent is doing some cool stuff with clangd and kernels (check
+> out the demo at go/linux-kernel-vscode).  I'm pushing Florent to
 
->>> everything...
->>=20
->> Cool! I use vim, can you share more info about your set up for this?
->> I'll have to try it.
->=20
-> This is how I installed YCM:
->=20
-> # Install YouCompleteMe for vim
-> # cd ~/.vim/bundle
-> # git clone https://github.com/Valloric/YouCompleteMe.git
-> # cd YouCompleteMe/
-> # git submodule update --init --recursive
-> # python3 install.py --clang-completer
->=20
-> Then install and run bear in the kernel sources to generate
-> compile_compands.json:
-> bear -- make -j99 CC=3Dclang
->=20
-> However, there's also the script:
-> scripts/clang-tools/gen_compile_commands.py
->=20
-> This generates the .json from an existing build. Thank God because we can
-> probably make this generate better .json files which may make clangd bette=
-r.
->=20
-> You don't need YCM to reproduce the issue though if you just use vscode wi=
-th
-> the clangd plugin.
->=20
->>> I first came across clangd when developing Chrome userspace code which i=
-s C++
->>> :). In Chrome, ninja builds can be made to output compile_commands.json.=
+Apologies for folks outside Google, this is an internal link to a
+kernel dev setup I originally created for myself, then for my team and
+apparently more and more people are starting to use it internally. :)
+If there's enough appetite for it externally too, I'll try to
+open-source it someday. Anyway, in the context of this conversation,
+it's just something that uses clangd. :)
 
->>> However, now I noticed the support in the kernel and was like, wow I nee=
-d to
->>> try it. Further, YCM seems to work much better with it than without :)
->>>=20
->>>> I've never used it myself, so I don't know where to even begin with
->>>> how to reproduce the issue.
->>>=20
->>> Ah ok. :). When I ran get_maintainer on the script, your name popped up a=
-nd
->>> someone also suggested that you're the goto person for clang on the kern=
-el
->>> (which I kind of already knew ;)
->>=20
->> You've cc'ed the right set of folks.  We might not have the expertise
->> related to clangd specifically, but we can point you in the right
->> direction.
->=20
-> Sure, thanks! And thanks for CC'ing the right folks.
->=20
->>>> It might be worth filing a bug upstream at
->>>> https://github.com/llvm/llvm-project/issues
->>>> or internally under the component
->>>> Language Platforms > C++ > Clang > Tools > Clangd
->>>> with detailed steps to reproduce (and what the observed error actually
->>>> is). Feel free to cc me, though I don't know the first thing about
->>>> clangd.
->>>=20
->>> Ok I will consider doing this if needed. One thing I do observe is lack o=
-f
->>> good support for header files and it is a known clangd issue [1].
->>>=20
->>> However, the fixes I was proposing can purely be done in the kernel itse=
-lf
->>> since all it'd require is generating compile_compands.json with the -D<m=
-acro>
->>> and editing files to keep clangd happy. I guess one question is, how wel=
-come
->>> would such changes to header files be since they're for tooling and isn'=
-t
->>> code that will be compiled outside of clangd.
->>=20
->> Specifically your patch sites some log print that doesn't look
->> indicative of a failure:
->> https://github.com/llvm/llvm-project/blob/53430bfd5c9d0074dd6de06dccea366=
-e1d40bce4/clang-tools-extra/clangd/TUScheduler.cpp#L903-L906
->> so something else is going on here. Just trying to make sure we root caus=
-e this.
->>=20
->=20
-> Right, so clangd's log does not show failure, the failure is when it displ=
-ays
-> in the code editor that your code has compiler errors when in fact it does=
+> publish some of the cool stuff he's been working on externally because
+> it is awesome. ;)
+>
+> Florent, have you seen any such issues such as what Joel reported below?
 
-> not.
->=20
-> So if you open up tree_nocb.h in vscode, for example, you'll see squiggles=
+Yes, I've seen this problem a bunch of times. Afaiu, Clangd operates
+under the assumption that every source file is a valid compilation
+unit. My understanding is that it's generally a good practice to keep
+things that way and I wouldn't be surprised if the userspace Chrome
+code-base Joel saw enforces this (iirc, it's a rule for
+Google-internal C++ too, all headers must be interpretable
+independently).
 
-> saying 'undefined reference to rcu_data', etc. That makes clangd stop work=
-ing
-> at the error. Sorry to not make the failure mode clear earlier.
->=20
-> thanks,
->=20
-> - Joel
->=20
+However, from the perspective of the C spec, anything can be included
+anywhere and a C file can only make sense if it's included
+after/before certain other things are defined/included. Spontaneously,
+I would call these ".inc" rather than ".h" or ".c" because I would
+expect a source file to be always valid and this suffix makes it
+clearer they depend on their context, but as a matter of fact source
+files that don't compile when interpreted individually are quite
+common in the kernel tree. Other examples that have been reported to
+me include a lot of kernel/sched/*, since many of these files
+(including .c files) are included from kernel/sched/build_policy.c in
+a specific order to form one big compilation unit.
+
+Unfortunately, I don't know of any solution. :( This feels like a
+limit of C or compile_commands.json to me. "compile commands" can not
+be enough to interpret any file, clangd would need a way to express
+"interpret this file as if it were included in that spot of that
+compilation unit" and maybe even need a bunch of heuristics to choose
+one such include spot.
+
+I don't know if clangd has any plan to address this and so far I've
+just lived with these error squiggles.
