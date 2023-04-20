@@ -2,103 +2,82 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFB80C77B7F
-	for <rcu@archiver.kernel.org>; Thu, 20 Apr 2023 11:21:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E79C77B72
+	for <rcu@archiver.kernel.org>; Thu, 20 Apr 2023 11:51:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbjDTLVx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Apr 2023 07:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
+        id S234475AbjDTLvM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Apr 2023 07:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234673AbjDTLVH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Apr 2023 07:21:07 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68407A243;
-        Thu, 20 Apr 2023 04:19:16 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id u3so5391192ejj.12;
-        Thu, 20 Apr 2023 04:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681989479; x=1684581479;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2CPEgy8x9A+irZgd8pLdz+IKCAJoepVV09T/iGyXx1s=;
-        b=iLfkeyXsuwn7KZOZtB5Fyxj+ZwrK/o96mpGib+1Ymb/4ss/rSnsYwcXf06UEjTJnc4
-         XxV6wTLI3sGwnfuWwaq+LaghHuAq8Dok7BalHP7UCEsEP6POIQH3zYSgiVtyHcHXk4Tm
-         ayDK/PelXCHslM2HqNnpY9BZ6xEIQJo9Lv7GZPwxKavgvYYjX92TC22FQACnTEedI71m
-         rCfxcD4EGT0TZrweeM7RRh2cHs00uwnkRv9FTYXbfm54lRB7J5mT3l2IJya0yWo/TW5G
-         j9kGZBkwUg0l02JOo4I0ijhuAZy3e/0SaaQ5rNPytDEoiTLFT3ud0KpmalH6AxspWtmw
-         9HGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681989479; x=1684581479;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2CPEgy8x9A+irZgd8pLdz+IKCAJoepVV09T/iGyXx1s=;
-        b=hgbHY+9Pg/Pb/IZbtrFj9MkK4BmrGagY2zjRr5cGCYw5Zn1TMCthxiSTQfMIhl9v6h
-         UDjHAdbPzjkB3MqHos9iHs6l7qfwbetOvIXb5ZKqSNIebigy6u3nvmZOtJ7KPrF5sIDZ
-         ozHGx2Ejpa7st0r8gXSjfKdpi3V2PCH9i6NuTOqe/vJEySeQ9DjjWtO8abgZ6ZLSvU91
-         epFRJEkMxzPyE3Hg7T9ObaY3a/ReGH7JEmMVjeBfK6ONmyx4N/h6ITkdm77hFlZCzhxx
-         jjkKG2WYhGfgy+1DatgedHHBzMyp9zfwdtP7jt6WgQK7l0K6Ftt2lrOfGKlgpT7rbeBo
-         svfA==
-X-Gm-Message-State: AAQBX9eh5fUKl4BymC6PIYs4lRaMzVb73Yq+pv+/5VJOVh0oEGkImiTd
-        yQaC00ZAB/ABDJtF3jg+ftUCu2VMTUc=
-X-Google-Smtp-Source: AKy350Yd/dVYSlk0nlDW/oE1kE5XYF6RMEM8XBQDPxa6Q5epikx8HVSR8VEFvczr+pyrYegGtGjJ7g==
-X-Received: by 2002:ac2:430e:0:b0:4dd:af71:a5c3 with SMTP id l14-20020ac2430e000000b004ddaf71a5c3mr319790lfh.58.1681988790510;
-        Thu, 20 Apr 2023 04:06:30 -0700 (PDT)
-Received: from pc636 (host-90-233-216-43.mobileonline.telia.com. [90.233.216.43])
-        by smtp.gmail.com with ESMTPSA id u17-20020ac248b1000000b004eafa060a6fsm179906lfg.145.2023.04.20.04.06.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 04:06:30 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Thu, 20 Apr 2023 13:06:27 +0200
-To:     Zqiang <qiang1.zhang@intel.com>
-Cc:     urezki@gmail.com, paulmck@kernel.org, frederic@kernel.org,
-        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/kvfree: Make drain_page_cache() call return
- directly if cache is disabled
-Message-ID: <ZEEcsyn27ssrdfh6@pc636>
-References: <20230418122702.1378299-1-qiang1.zhang@intel.com>
+        with ESMTP id S234002AbjDTLvE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Apr 2023 07:51:04 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F3E423F
+        for <rcu@vger.kernel.org>; Thu, 20 Apr 2023 04:51:00 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mtapsc-3-VYKQSiZZMzCrXX5nBd03kw-1; Thu, 20 Apr 2023 12:50:58 +0100
+X-MC-Unique: VYKQSiZZMzCrXX5nBd03kw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 20 Apr
+ 2023 12:50:57 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 20 Apr 2023 12:50:57 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Fangrui Song' <maskray@google.com>,
+        Florent Revest <revest@google.com>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "revest@chromium.org" <revest@chromium.org>
+Subject: RE: clangd cannot handle tree_nocb.h
+Thread-Topic: clangd cannot handle tree_nocb.h
+Thread-Index: AQHZcvnZ+BIUvq3YZUeAuVWwOlp7wa80FdDw
+Date:   Thu, 20 Apr 2023 11:50:57 +0000
+Message-ID: <e6c8e08dfc8a4895aca44571d26fa445@AcuMS.aculab.com>
+References: <20230414005309.GA2198310@google.com>
+ <CAKwvOd=yQS+0oDC46Hc5D_V0JET8=xbQmAJrpBdg7c4i2EyqHg@mail.gmail.com>
+ <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
+ <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com>
+ <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
+In-Reply-To: <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230418122702.1378299-1-qiang1.zhang@intel.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 08:27:02PM +0800, Zqiang wrote:
-> If the rcu_min_cached_objs is set to zero at boot params, the
-> krcp->page_cache_work will not be triggered to fill page cache,
-> and the put_cached_bnode() also does not fill page cache, this
-> also means the krcp->bkvcache is always empty, so not need to
-> acquire unnecessary krcp->lock to get page from krcp->bkvcache,
-> this commit therefore make drain_page_cache() return directly if
-> the rcu_min_cached_objs is zero.
-> 
-> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> ---
->  kernel/rcu/tree.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 93faf9f5c58f..00620a2117de 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2924,6 +2924,9 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
->  	struct llist_node *page_list, *pos, *n;
->  	int freed = 0;
->  
-> +	if (!rcu_min_cached_objs)
-> +		return 0;
-> +
->  	raw_spin_lock_irqsave(&krcp->lock, flags);
->  	page_list = llist_del_all(&krcp->bkvcache);
->  	WRITE_ONCE(krcp->nr_bkv_objs, 0);
-> -- 
-> 2.32.0
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+RnJvbTogRmFuZ3J1aSBTb25nDQo+IFNlbnQ6IDE5IEFwcmlsIDIwMjMgMjE6MDINCi4uLi4NCj4g
+U29tZSBpbmZvcm1hdGlvbiBhYm91dCBDbGFuZyBiYXNlZCBsYW5ndWFnZSBzZXJ2ZXJzDQo+IA0K
+PiBJdCdzIGdvb2QgcHJhY3RpY2UgdG8gZW5zdXJlIHRoYXQgYSBoZWFkZXIgZmlsZSBpcyBzZWxm
+LWNvbnRhaW5lZC4gSWYNCj4gbm90LCBmb3IgZXhhbXBsZSwgaWYgYS5jIGluY2x1ZGVzIGEuaCwg
+d2hpY2ggaXMgbm90IHNlbGYtY29udGFpbmVkLA0KPiBhLmggaXMgZ2VuZXJhbGx5IGNvbXBpbGVk
+IG9uIGl0cyBvd24gKGFzIGlmIHVzaW5nIGNsYW5nIFtvcHRpb25zXSBhLmgpDQo+IHRvIGNvbmZp
+bmUgZGlhZ25vc3RpY3MvY29tcGxldGlvbiByZXN1bHRzIHRvIGEuaCBhbmQgbm90IHRvIG90aGVy
+DQo+IGhlYWRlcnMgaW5jbHVkZWQgYnkgYS5jLg0KPiANCj4gSG93ZXZlciwgdGhpcyBkZXNpZ24g
+Y2hvaWNlIG1heSBjYXVzZSBsYW5ndWFnZSBzZXJ2ZXJzIHRvIGVtaXQNCj4gZGlhZ25vc3RpY3Mg
+dGhhdCB5b3UgZG9uJ3Qgc2VlIHdoZW4gYnVpbGRpbmcgdGhlIHByb2plY3QuDQoNClRoYXQgcmVh
+bGx5IGRvZXNuJ3Qgd29yayBmb3IgLmggZmlsZXMgdGhhdCBjb250YWluIHByb2dyYW0NCmdlbmVy
+YXRlZCBkYXRhIHVzZWQgdG8gaW5pdGlhbGlzZSBhcnJheXMuDQoNClRoZXkgbWF5IG5vdCBldmVu
+IGNvbnRhaW4gbnVtYmVycywganVzdCByZWZlcmVuY2VzIHRvDQojZGVmaW5lcyB0aGF0IHRoYXQg
+aW5jbHVkaW5nIGZpbGUgaXMgZXhwZWN0ZWQgdG8gZGVmaW5lLg0KDQpTbyB0aGVyZSB3aWxsIGFs
+d2F5cyBiZSAuaCBmaWxlcyB0aGF0IGFyZSBub3QgY29tcGlsYWJsZS4NCg0KCURhdmlkDQoNCi0N
+ClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBN
+aWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxl
+cykNCg==
 
---
-Uladzislau Rezki
