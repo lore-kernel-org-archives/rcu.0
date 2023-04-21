@@ -2,82 +2,121 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48E79C77B72
-	for <rcu@archiver.kernel.org>; Thu, 20 Apr 2023 11:51:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F304C77B75
+	for <rcu@archiver.kernel.org>; Fri, 21 Apr 2023 06:23:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234475AbjDTLvM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Apr 2023 07:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
+        id S229469AbjDUGXw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Apr 2023 02:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbjDTLvE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Apr 2023 07:51:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F3E423F
-        for <rcu@vger.kernel.org>; Thu, 20 Apr 2023 04:51:00 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mtapsc-3-VYKQSiZZMzCrXX5nBd03kw-1; Thu, 20 Apr 2023 12:50:58 +0100
-X-MC-Unique: VYKQSiZZMzCrXX5nBd03kw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 20 Apr
- 2023 12:50:57 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 20 Apr 2023 12:50:57 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Fangrui Song' <maskray@google.com>,
-        Florent Revest <revest@google.com>
-CC:     Nick Desaulniers <ndesaulniers@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>
-Subject: RE: clangd cannot handle tree_nocb.h
-Thread-Topic: clangd cannot handle tree_nocb.h
-Thread-Index: AQHZcvnZ+BIUvq3YZUeAuVWwOlp7wa80FdDw
-Date:   Thu, 20 Apr 2023 11:50:57 +0000
-Message-ID: <e6c8e08dfc8a4895aca44571d26fa445@AcuMS.aculab.com>
-References: <20230414005309.GA2198310@google.com>
- <CAKwvOd=yQS+0oDC46Hc5D_V0JET8=xbQmAJrpBdg7c4i2EyqHg@mail.gmail.com>
- <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
- <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com>
- <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
-In-Reply-To: <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S229750AbjDUGXv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Apr 2023 02:23:51 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD81E6181;
+        Thu, 20 Apr 2023 23:23:46 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Q2kwW01rQz8xDM;
+        Fri, 21 Apr 2023 14:22:51 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 21 Apr 2023 14:23:43 +0800
+Subject: Re: [RFC bpf-next v2 0/4] Introduce BPF_MA_REUSE_AFTER_RCU_GP
+To:     Hou Tao <houtao@huaweicloud.com>, <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>
+CC:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, <rcu@vger.kernel.org>
+References: <20230408141846.1878768-1-houtao@huaweicloud.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <dcea99d1-db34-da24-55bb-f9f9200b1d12@huawei.com>
+Date:   Fri, 21 Apr 2023 14:23:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20230408141846.1878768-1-houtao@huaweicloud.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RnJvbTogRmFuZ3J1aSBTb25nDQo+IFNlbnQ6IDE5IEFwcmlsIDIwMjMgMjE6MDINCi4uLi4NCj4g
-U29tZSBpbmZvcm1hdGlvbiBhYm91dCBDbGFuZyBiYXNlZCBsYW5ndWFnZSBzZXJ2ZXJzDQo+IA0K
-PiBJdCdzIGdvb2QgcHJhY3RpY2UgdG8gZW5zdXJlIHRoYXQgYSBoZWFkZXIgZmlsZSBpcyBzZWxm
-LWNvbnRhaW5lZC4gSWYNCj4gbm90LCBmb3IgZXhhbXBsZSwgaWYgYS5jIGluY2x1ZGVzIGEuaCwg
-d2hpY2ggaXMgbm90IHNlbGYtY29udGFpbmVkLA0KPiBhLmggaXMgZ2VuZXJhbGx5IGNvbXBpbGVk
-IG9uIGl0cyBvd24gKGFzIGlmIHVzaW5nIGNsYW5nIFtvcHRpb25zXSBhLmgpDQo+IHRvIGNvbmZp
-bmUgZGlhZ25vc3RpY3MvY29tcGxldGlvbiByZXN1bHRzIHRvIGEuaCBhbmQgbm90IHRvIG90aGVy
-DQo+IGhlYWRlcnMgaW5jbHVkZWQgYnkgYS5jLg0KPiANCj4gSG93ZXZlciwgdGhpcyBkZXNpZ24g
-Y2hvaWNlIG1heSBjYXVzZSBsYW5ndWFnZSBzZXJ2ZXJzIHRvIGVtaXQNCj4gZGlhZ25vc3RpY3Mg
-dGhhdCB5b3UgZG9uJ3Qgc2VlIHdoZW4gYnVpbGRpbmcgdGhlIHByb2plY3QuDQoNClRoYXQgcmVh
-bGx5IGRvZXNuJ3Qgd29yayBmb3IgLmggZmlsZXMgdGhhdCBjb250YWluIHByb2dyYW0NCmdlbmVy
-YXRlZCBkYXRhIHVzZWQgdG8gaW5pdGlhbGlzZSBhcnJheXMuDQoNClRoZXkgbWF5IG5vdCBldmVu
-IGNvbnRhaW4gbnVtYmVycywganVzdCByZWZlcmVuY2VzIHRvDQojZGVmaW5lcyB0aGF0IHRoYXQg
-aW5jbHVkaW5nIGZpbGUgaXMgZXhwZWN0ZWQgdG8gZGVmaW5lLg0KDQpTbyB0aGVyZSB3aWxsIGFs
-d2F5cyBiZSAuaCBmaWxlcyB0aGF0IGFyZSBub3QgY29tcGlsYWJsZS4NCg0KCURhdmlkDQoNCi0N
-ClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBN
-aWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxl
-cykNCg==
+ping ?
+
+On 4/8/2023 10:18 PM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+>
+> Hi,
+>
+> As discussed in v1, currently the freed objects in bpf memory allocator
+> may be reused immediately by the new allocation, it introduces
+> use-after-bpf-ma-free problem for non-preallocated hash map and makes
+> lookup procedure return incorrect result. The immediate reuse also makes
+> introducing new use case more difficult (e.g. qp-trie).
+>
+> The patch series tries to introduce BPF_MA_REUSE_AFTER_RCU_GP to solve
+> these problems. For BPF_MA_REUSE_AFTER_GP, the freed objects are reused
+> only after one RCU grace period and may be freed by bpf memory allocator
+> after another RCU-tasks-trace grace period. So for bpf programs which
+> care about reuse problem, these programs can use
+> bpf_rcu_read_{lock,unlock}() to access these freed objects safely and
+> for those which doesn't care, there will be safely use-after-bpf-ma-free
+> because these objects have not been freed by bpf memory allocator.
+>
+> The current implementation is far from perfect, but I think it is ready
+> for get some feedbacks before putting in more effort. The implementation
+> mainly focus on how to speed up the transition from freed elements to
+> reusable elements and try to reduce the risk of OOM.
+>
+> To accelerate the transition, it dynamically allocates rcu_head and call
+> call_rcu() in a kworker to do the transition. The frequency of call_rcu()
+> invocation could be improved by calling call_rcu() in irq work, but after
+> did that, I found the RCU grace period increased a lot and I still could
+> not figure out why. To reduce the risk of OOM, these reusable elements need
+> to be free as well, but we can not dynamically allocate rcu_head to do
+> that, because compared with RCU grace period RCU-tasks-trace grace
+> period is slower, so the freeing of reusable elements is just like the
+> freeing in normal bpf memory allocator, but these is one difference: for
+> BPF_MA_REUSE_AFTER_GP bpf ma these freeing elements are still available
+> for reuse in unit_alloc(). Please see individual patches for more details.
+>
+> Comments and suggestions are always welcome.
+>
+> Change Log:
+> v2:
+>  * add a benchmark for bpf memory allocator to compare between different
+>    flavor of bpf memory allocator.
+>  * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
+> v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
+>
+> Hou Tao (4):
+>   selftests/bpf: Add benchmark for bpf memory allocator
+>   bpf: Factor out a common helper free_all()
+>   bpf: Pass bitwise flags to bpf_mem_alloc_init()
+>   bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+>
+>  include/linux/bpf_mem_alloc.h                 |   9 +-
+>  kernel/bpf/core.c                             |   2 +-
+>  kernel/bpf/cpumask.c                          |   2 +-
+>  kernel/bpf/hashtab.c                          |   5 +-
+>  kernel/bpf/memalloc.c                         | 390 ++++++++++++++++--
+>  tools/testing/selftests/bpf/Makefile          |   3 +
+>  tools/testing/selftests/bpf/bench.c           |   4 +
+>  .../selftests/bpf/benchs/bench_htab_mem.c     | 273 ++++++++++++
+>  .../selftests/bpf/progs/htab_mem_bench.c      | 145 +++++++
+>  9 files changed, 785 insertions(+), 48 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
+>
 
