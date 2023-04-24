@@ -2,74 +2,83 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B35BC77B61
-	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 17:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AFC4C7618E
+	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 17:35:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbjDXRf1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Apr 2023 13:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
+        id S231941AbjDXRf2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Apr 2023 13:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbjDXRf0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Apr 2023 13:35:26 -0400
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA74A729A;
-        Mon, 24 Apr 2023 10:35:21 -0700 (PDT)
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 33OHT2fU012355;
-        Mon, 24 Apr 2023 12:29:03 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 33OHT1xM012351;
-        Mon, 24 Apr 2023 12:29:01 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 24 Apr 2023 12:29:00 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
-Message-ID: <20230424172900.GR19790@gate.crashing.org>
-References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com> <CAEXW_YSSGYgqTpxqbYikCFS9t=2f+L-0phbU+gAAngB5z-FbyA@mail.gmail.com> <ZEXOMC2casTlobE1@boqun-archlinux> <87fs8pzalj.fsf@mail.concordia> <20230424151351.GP19790@gate.crashing.org> <ZEagN1jJwg+rUzX4@boqun-archlinux>
-Mime-Version: 1.0
+        with ESMTP id S232059AbjDXRf1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Apr 2023 13:35:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCDC72B3;
+        Mon, 24 Apr 2023 10:35:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD43262751;
+        Mon, 24 Apr 2023 17:35:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41724C433EF;
+        Mon, 24 Apr 2023 17:35:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682357721;
+        bh=nXQw2FTN4L9FcEBusW5At9AwsWIZ0aI4hKgyyBuVBbM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=RubTyWpPSBAEuQnvW6S4VWaSxBXouhmnfRtYg38Pc64g+tzHKCAqlKdcJHmmvJw+9
+         7UAREttRfTy80T04G1TyNdpXLCqTWq3jMB2jW8LVwwFpmhHMMUm4BXpcu96sFJvZ9R
+         dIlcuN6EmC9nLKwG1xoZO1yelXi/DEkvHNAozr3l7OLKLDkWsWUJuKhmFn4bYWeI6e
+         GzsC+3vbPMQFmG3LHqcrMF4Qm7w+jRjjCUsVErpgend15cMRg3U6JqMXYqxf1cvG13
+         I+sJEmSWtFW3tQFchTzV4FT1QyEBPgkThp5KtKvqruotkqDvOWfFhxbzuWW4lDcOIS
+         lgYY5sVZkUjCg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D245415404E7; Mon, 24 Apr 2023 10:35:20 -0700 (PDT)
+Date:   Mon, 24 Apr 2023 10:35:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 0/4 v2] rcu/nocb: Shrinker related boring fixes
+Message-ID: <20d8070f-5113-4b3b-871f-ca543e049065@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230329160203.191380-1-frederic@kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZEagN1jJwg+rUzX4@boqun-archlinux>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20230329160203.191380-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 08:28:55AM -0700, Boqun Feng wrote:
-> On Mon, Apr 24, 2023 at 10:13:51AM -0500, Segher Boessenkool wrote:
-> > At what points can r13 change?  Only when some particular functions are
-> > called?
+On Wed, Mar 29, 2023 at 06:01:59PM +0200, Frederic Weisbecker wrote:
+> Changes since v1 (https://lore.kernel.org/lkml/20230322194456.2331527-1-frederic@kernel.org/):
 > 
-> r13 is the local paca:
+> * Use mutex_trylock() to avoid inverted dependency chain against
+>   allocations.
 > 
-> 	register struct paca_struct *local_paca asm("r13");
+> * WARN if an rdp is part of nocb mask but is not offloaded
 > 
-> , which is a pointer to percpu data.
+> Tested through shrinker debugfs interface.
 
-Yes, it is a global register variable.
+I pulled this one in, thank you!
 
-> So if a task schedule from one CPU to anotehr CPU, the value gets
-> changed.
+As discussed, we do need some way to test lazy callbacks, but that should
+not block this series.  And it might well be a separate test.
 
-But the compiler does not see that something else changes local_paca (or
-r13 some other way, via assembler code perhaps)?  Or is there a compiler
-bug?
+							Thanx, Paul
 
-If the latter is true:
-
-Can you make a reproducer and open a GCC PR?  <https://gcc.gnu.org/bugs/>
-for how to get started doing that.  We need *exact* code that shows the
-problem, together with a compiler command line.  So that we can
-reproduce the problem.  That is step 0 in figuring out what is going on,
-and then maybe fixing the problem :-)
-
-
-Segher
+> Frederic Weisbecker (4):
+>   rcu/nocb: Protect lazy shrinker against concurrent (de-)offloading
+>   rcu/nocb: Fix shrinker race against callback enqueuer
+>   rcu/nocb: Recheck lazy callbacks under the ->nocb_lock from shrinker
+>   rcu/nocb: Make shrinker to iterate only NOCB CPUs
+> 
+>  kernel/rcu/tree_nocb.h | 52 ++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 47 insertions(+), 5 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
