@@ -2,91 +2,84 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BA64C7618E
-	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 17:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 660AAC77B61
+	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 18:04:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbjDXRgK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Apr 2023 13:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        id S231411AbjDXSEn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Apr 2023 14:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbjDXRgK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Apr 2023 13:36:10 -0400
+        with ESMTP id S230343AbjDXSEn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Apr 2023 14:04:43 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE2D900E;
-        Mon, 24 Apr 2023 10:35:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7095C5258;
+        Mon, 24 Apr 2023 11:04:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A56A562770;
-        Mon, 24 Apr 2023 17:35:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14DA6C433D2;
-        Mon, 24 Apr 2023 17:35:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BC216263A;
+        Mon, 24 Apr 2023 18:04:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64CB6C433D2;
+        Mon, 24 Apr 2023 18:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682357754;
-        bh=aLtMvp4ULEMd8pl1Q8wn1UwIesflr0PbMKXka8Q/Qb0=;
+        s=k20201202; t=1682359481;
+        bh=V0ffEm/i184djrWxkIFcYKtwLFV+mTuutr/4KggWZ5I=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=flz29u61LJHfAaR/NpMlAxxSBgcG5GROzPKresGaqDLCRMs+SS6vVJnbQS+rD4DBz
-         BdsrjZNTXOIk97UXe6c6uMpok/gxUhU9kghbm/9HXINqh5HlcZi6Zz7LbtgB6WAJkW
-         na84K40jnXAnAwB4UWAony876EhDMjLj0aamWYkluoZl9aZH6DDA/5o+yVtfVjYErV
-         a04kpt6U9tj60ldPyCJSUVqoiizRn8fX17oUHuJLLgqvjMt7S6GXgE0p58igl3qziy
-         PjsiKDPSBvDzlXT7Pqs4hf+sGwllEPX1gV4z22vOKBPrpL/4tCXuuGIRF3caH0zBre
-         CyiNWjsj0C7vw==
+        b=mIP5nZ10N2d57+W/Ha1zyN5Wll2UX3rU/PotCYzDPnA1Gqp1PVtdv7PEmcHukZqgW
+         uUu8MxUGngPhFbygD5piqK0RUfcxKJVfeQn10VkDFbKW0ZLMeUTeZSeNE0YxryB04w
+         jbupJBzG310HXeb+h9zQErqSOB1a+WljcmboCNoEwwIVwlMCBUmJKcPai5jbPzjCb6
+         HrHkbKBdrN8O6Axf7iEhdD6wfcGA7SJlrffy5C8ZKfCzoq/F8T2bJyzrifRWsmUqWr
+         opPk9qmyRa0wInHo6j3bIqKCrky8Anm45pE7fTncgb5PEjdbXZxExz5JXVu3ef92iw
+         YZDhY3MUWu0FA==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AE7F115404E7; Mon, 24 Apr 2023 10:35:53 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 10:35:53 -0700
+        id E006915404E7; Mon, 24 Apr 2023 11:04:40 -0700 (PDT)
+Date:   Mon, 24 Apr 2023 11:04:40 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Zqiang <qiang1.zhang@intel.com>, frederic@kernel.org,
-        joel@joelfernandes.org, qiang.zhang1211@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu/kvfree: Make drain_page_cache() call return
- directly if cache is disabled
-Message-ID: <4281adc2-ebb9-4595-9b21-e773bda35f7b@paulmck-laptop>
+To:     Zqiang <qiang1.zhang@intel.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, boqun.feng@gmail.com,
+        qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Update qiang1.zhang@intel.com to
+ qiang.zhang1211@gmail.com
+Message-ID: <5092e921-d31b-405d-be30-5bbf9c28fb7d@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230418122702.1378299-1-qiang1.zhang@intel.com>
- <ZEEcsyn27ssrdfh6@pc636>
+References: <20230424115107.1627076-1-qiang1.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZEEcsyn27ssrdfh6@pc636>
+In-Reply-To: <20230424115107.1627076-1-qiang1.zhang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 01:06:27PM +0200, Uladzislau Rezki wrote:
-> On Tue, Apr 18, 2023 at 08:27:02PM +0800, Zqiang wrote:
-> > If the rcu_min_cached_objs is set to zero at boot params, the
-> > krcp->page_cache_work will not be triggered to fill page cache,
-> > and the put_cached_bnode() also does not fill page cache, this
-> > also means the krcp->bkvcache is always empty, so not need to
-> > acquire unnecessary krcp->lock to get page from krcp->bkvcache,
-> > this commit therefore make drain_page_cache() return directly if
-> > the rcu_min_cached_objs is zero.
-> > 
-> > Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-> > ---
-> >  kernel/rcu/tree.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 93faf9f5c58f..00620a2117de 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2924,6 +2924,9 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
-> >  	struct llist_node *page_list, *pos, *n;
-> >  	int freed = 0;
-> >  
-> > +	if (!rcu_min_cached_objs)
-> > +		return 0;
-> > +
-> >  	raw_spin_lock_irqsave(&krcp->lock, flags);
-> >  	page_list = llist_del_all(&krcp->bkvcache);
-> >  	WRITE_ONCE(krcp->nr_bkv_objs, 0);
-> > -- 
-> > 2.32.0
-> > 
-> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Mon, Apr 24, 2023 at 07:51:07PM +0800, Zqiang wrote:
+> The qiang1.zhang@intel.com will no longer be used, update to
+> qiang.zhang1211@gmail.com.
+> 
+> Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 
-Queued for further testing and review, thank you both!
+Queued and pushed, thank you!
 
-						Thanx, Paul
+							Thanx, Paul
+
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e03067b857a2..72c8efa5bbd5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17643,7 +17643,7 @@ M:	Boqun Feng <boqun.feng@gmail.com>
+>  R:	Steven Rostedt <rostedt@goodmis.org>
+>  R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>  R:	Lai Jiangshan <jiangshanlai@gmail.com>
+> -R:	Zqiang <qiang1.zhang@intel.com>
+> +R:	Zqiang <qiang.zhang1211@gmail.com>
+>  L:	rcu@vger.kernel.org
+>  S:	Supported
+>  W:	http://www.rdrop.com/users/paulmck/RCU/
+> -- 
+> 2.32.0
+> 
