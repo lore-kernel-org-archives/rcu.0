@@ -2,74 +2,72 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5736C7618E
-	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 21:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03701C77B61
+	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 22:09:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjDXVGb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Apr 2023 17:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
+        id S233204AbjDXWJA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Apr 2023 18:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjDXVGa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Apr 2023 17:06:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6E66185;
-        Mon, 24 Apr 2023 14:06:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232946AbjDXWI7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Apr 2023 18:08:59 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D763783CF;
+        Mon, 24 Apr 2023 15:08:14 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 940C661D8E;
-        Mon, 24 Apr 2023 21:06:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB47BC433EF;
-        Mon, 24 Apr 2023 21:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682370389;
-        bh=WoCEGXNV2msVa9t2ExRsULaVU0lvwGkdcTTlJ1EJc+o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZsfO8VEDPyh30WzOgNXwWpODZhVoaac11z6XqTLhffV3WyC8sgLWn8bIKuwc8QDXG
-         cbvNGcZnffUL0Uf7z0o7iTRTgwLL/WQXrmwBzHrmNS7UwjAFYA397s+Nan/9b4+lBw
-         219/aUmyf+sDQCITOUC5Kd9Yq/DOtv/+X2IaTsD8QYMYVDfNPw2KVF547JM1ukjIBd
-         mxknX0xk8RQI7Gf3OiqmfloMnN/BlLr1CFZPnNw1EmflPrkT1EJPhtAnylj+BNEL6s
-         ynJsE/dVN2l6Yx8JyRQsl3f5TNtSyK+b17i+w1ukve08vqN3yEdNKYaKEuRLsfNEHx
-         MedFG1a5CriMQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7D09615405A7; Mon, 24 Apr 2023 14:06:28 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 14:06:28 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Subject: Re: [PATCH RFC rcu 03/19] srcu: Begin offloading srcu_struct fields
- to srcu_update
-Message-ID: <c68ad76d-49d3-421c-9928-f65bf4c126e1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <3db82572-f156-4a5d-b711-841aa28bd996@paulmck-laptop>
- <20230324001938.3443499-3-paulmck@kernel.org>
- <80166ee7-4ee3-bb2d-c715-a8180dddee31@intel.com>
- <a0a2f6a7-b623-454c-ac65-69043a9f9f4d@paulmck-laptop>
- <20230326231858.GA19606@lst.de>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Q4zkn6JTQz4wgv;
+        Tue, 25 Apr 2023 08:07:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1682374034;
+        bh=GddNnol6YaHH8rm7F5s2DGk04beKSm23ST/yGyZyL6U=;
+        h=From:To:Subject:In-Reply-To:References:Date:From;
+        b=TqvT2wbacCDaYEYDw8Cw/06md42z0Ft42g8d2loJiP6oKtJKR9B+BO1tQxknL7O0+
+         xHMtwZupuQ1w7gUsv6IisIF//qd4Y4hZI3kxUd9KfgQF6w/5OjIsXwq8drwcUuMjRe
+         66BZuzYAZ4SM6llfYKshjKJIh5rj20HbevDL5xX/TMB2Y/p8E55gHi+8asUYMixzmc
+         prF8+buWbfVI03axdZdlUUXRvcLURz0GNFS+gWqMFkU98HoirT44IbzLB1J8mKuAv2
+         sdSfKjqJBV24hDiOmhzC7R7Rdo6k+zl1XFqJqEgVRK6uzp4kMSHTKyoAFNG2ukHahK
+         c0ermrBykUYsA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
+In-Reply-To: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com>
+References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com>
+Date:   Tue, 25 Apr 2023 08:07:10 +1000
+Message-ID: <87cz3tylwx.fsf@mail.concordia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230326231858.GA19606@lst.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 01:18:58AM +0200, Christoph Hellwig wrote:
-> On Fri, Mar 24, 2023 at 01:11:47PM -0700, Paul E. McKenney wrote:
-> > > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > 
-> > Thank you!  I will add this on my next rebase.
-> > 
-> > It is possible that this will be v6.5 rather than v6.4 material.
-> 
-> I was hoping the RCU bits could land in 6.4, so that the block
-> layer work to take advantage of it can go into 6.5 without cross-tree
-> dependencies.
+Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+> Dear PowerPC and RCU developers:
+> During the RCU torture test on mainline (on the VM of Opensource Lab
+> of Oregon State University), SRCU-P failed with __stack_chk_fail:
+...
+> by debugging, I see the r10 is assigned with r13 on c000000000226eb4,
+> but if there is a context-switch before c000000000226edc, a false
+> positive will be reported.
+>
+> [1] http://154.220.3.115/logs/0422/configformainline.txt
 
-And this is now in mainline.  Please let me know how it goes!
+Says:
 
-							Thanx, Paul
+CONFIG_CC_VERSION_TEXT="powerpc64le-linux-gnu-gcc-10 (Ubuntu 10.4.0-4ubuntu1~22.04) 10.4.0"
+
+Do you see the same issue with a newer GCC?
+
+There's 12.2.0 here:
+  https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/12.2.0/
+  https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc64le/12.2.0/
+
+Or if you can build in a Fedora 38 system or container, it has GCC 13.
+
+cheers
