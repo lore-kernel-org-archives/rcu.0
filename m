@@ -2,55 +2,78 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89163C77B61
-	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 07:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20351C77B61
+	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 11:50:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjDXH6s (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Apr 2023 03:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
+        id S231576AbjDXLuk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Apr 2023 07:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjDXH6q (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Apr 2023 03:58:46 -0400
-Received: from mail.penmade.pl (mail.penmade.pl [94.177.230.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCD811B
-        for <rcu@vger.kernel.org>; Mon, 24 Apr 2023 00:58:44 -0700 (PDT)
-Received: by mail.penmade.pl (Postfix, from userid 1001)
-        id B269F83D4C; Mon, 24 Apr 2023 08:57:59 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=penmade.pl; s=mail;
-        t=1682323099; bh=CSKXLMgcdpWkXuTgJn5+jsCVobtU9JEF4vCnS5z6McM=;
-        h=Date:From:To:Subject:From;
-        b=L1JK+iXluJU/Qt6hv9bM0/j+7+vefgMhvB4Qp9us/MW5US2BNKYXzebfXMaTAVBb2
-         rbFtJkPI2YleN5cdqp4r+H7bNx6sogF8xCxFe1qU/+nWNYn1gQGqKkuZir3Ll2rkf0
-         PNTv0Sz+D1gYU7gzrn8LDfSd++ziNpiM7OHuf5/e9SaBuf4/MlTnekFoF5QHDMJxgA
-         9E3S/uPypmSp2CG9n+XR0/a0ynUkzIZ2jccL93v/0JGLjZwplKzL1qPnUBDqZFK4Dy
-         CQeU81khKJNpkNMsWOZ0XGteyHEln9NYUDZEgffucUoeidw9kYF4qRTg/t5J7NpjB/
-         Tv1yM5BDpoahA==
-Received: by mail.penmade.pl for <rcu@vger.kernel.org>; Mon, 24 Apr 2023 07:57:31 GMT
-Message-ID: <20230424084229-0.1.3r.h7h0.0.amrc6oasig@penmade.pl>
-Date:   Mon, 24 Apr 2023 07:57:31 GMT
-From:   "Wiktor Nurek" <wiktor.nurek@penmade.pl>
-To:     <rcu@vger.kernel.org>
-Subject: =?UTF-8?Q?Nap=C5=82yw_Klient=C3=B3w_ze_strony?=
-X-Mailer: mail.penmade.pl
+        with ESMTP id S231299AbjDXLui (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Apr 2023 07:50:38 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93EB3A9A;
+        Mon, 24 Apr 2023 04:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682337037; x=1713873037;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=japwrMOfXn2KoHprkjEiVHPePnkOiErVHAt4BQCD0/A=;
+  b=cKk55et0Hy++psSpIJEjNvmc4FkTXbvkCUKI/EjQLCa7jMG922+QLP1d
+   VxLVr08WwtzV7w3+8lsA47fW+lJRrymTA2PCnSfJPwlBuAcUu8srU7LCi
+   GF5uBmyXGZHKxCC8VQui02Byh5y9KKNaN4OoLXasMpLXzMwdlJF64DGf9
+   gkMakiX1ZCTMiNsjGvbgDcKlbeSSJlz+nkJq9QnIrS+gm62AXAHFc+DcK
+   UFE+2yEXnM5TGkZ/kEjjjjLZjIWO7ldmGdiqjMkTz2xF1hnTspKeOkdZE
+   8cqIfAwD4R3kKMcPL0c+s1VPbqK4G5bx7gWWwvSK4JwsM39oS1DgF87FE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="348340730"
+X-IronPort-AV: E=Sophos;i="5.99,222,1677571200"; 
+   d="scan'208";a="348340730"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2023 04:50:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="725660801"
+X-IronPort-AV: E=Sophos;i="5.99,222,1677571200"; 
+   d="scan'208";a="725660801"
+Received: from ubuntu.bj.intel.com ([10.238.155.108])
+  by orsmga001.jf.intel.com with ESMTP; 24 Apr 2023 04:50:34 -0700
+From:   Zqiang <qiang1.zhang@intel.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, boqun.feng@gmail.com,
+        qiang.zhang1211@gmail.com, qiang1.zhang@intel.com
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Update qiang1.zhang@intel.com to qiang.zhang1211@gmail.com
+Date:   Mon, 24 Apr 2023 19:51:07 +0800
+Message-Id: <20230424115107.1627076-1-qiang1.zhang@intel.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+The qiang1.zhang@intel.com will no longer be used, update to
+qiang.zhang1211@gmail.com.
 
-chcia=C5=82bym poinformowa=C4=87 Pa=C5=84stwa o mo=C5=BCliwo=C5=9Bci pozy=
-skania nowych zlece=C5=84 ze strony www.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Widzimy zainteresowanie potencjalnych Klient=C3=B3w Pa=C5=84stwa firm=C4=85=
-, dlatego ch=C4=99tnie pomo=C5=BCemy Pa=C5=84stwu dotrze=C4=87 z ofert=C4=
-=85 do wi=C4=99kszego grona odbiorc=C3=B3w poprzez efektywne metody pozyc=
-jonowania strony w Google.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e03067b857a2..72c8efa5bbd5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17643,7 +17643,7 @@ M:	Boqun Feng <boqun.feng@gmail.com>
+ R:	Steven Rostedt <rostedt@goodmis.org>
+ R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+ R:	Lai Jiangshan <jiangshanlai@gmail.com>
+-R:	Zqiang <qiang1.zhang@intel.com>
++R:	Zqiang <qiang.zhang1211@gmail.com>
+ L:	rcu@vger.kernel.org
+ S:	Supported
+ W:	http://www.rdrop.com/users/paulmck/RCU/
+-- 
+2.32.0
 
-Czy m=C3=B3g=C5=82bym liczy=C4=87 na kontakt zwrotny?
-
-
-Pozdrawiam serdecznie,
-Wiktor Nurek
