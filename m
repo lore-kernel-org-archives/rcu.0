@@ -2,30 +2,29 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23F03C77B61
-	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 15:40:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B35BC77B61
+	for <rcu@archiver.kernel.org>; Mon, 24 Apr 2023 17:35:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbjDXPkq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Apr 2023 11:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        id S232060AbjDXRf1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Apr 2023 13:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjDXPkp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Apr 2023 11:40:45 -0400
-X-Greylist: delayed 1044 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Apr 2023 08:40:43 PDT
+        with ESMTP id S231499AbjDXRf0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Apr 2023 13:35:26 -0400
 Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 816CB114;
-        Mon, 24 Apr 2023 08:40:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA74A729A;
+        Mon, 24 Apr 2023 10:35:21 -0700 (PDT)
 Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 33OFDqb6006351;
-        Mon, 24 Apr 2023 10:13:52 -0500
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 33OHT2fU012355;
+        Mon, 24 Apr 2023 12:29:03 -0500
 Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 33OFDpYA006350;
-        Mon, 24 Apr 2023 10:13:51 -0500
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 33OHT1xM012351;
+        Mon, 24 Apr 2023 12:29:01 -0500
 X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 24 Apr 2023 10:13:51 -0500
+Date:   Mon, 24 Apr 2023 12:29:00 -0500
 From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
         Joel Fernandes <joel@joelfernandes.org>,
         Zhouyi Zhou <zhouzhouyi@gmail.com>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
@@ -33,94 +32,44 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>,
         linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
         "Paul E. McKenney" <paulmck@kernel.org>
 Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
-Message-ID: <20230424151351.GP19790@gate.crashing.org>
-References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com> <CAEXW_YSSGYgqTpxqbYikCFS9t=2f+L-0phbU+gAAngB5z-FbyA@mail.gmail.com> <ZEXOMC2casTlobE1@boqun-archlinux> <87fs8pzalj.fsf@mail.concordia>
+Message-ID: <20230424172900.GR19790@gate.crashing.org>
+References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com> <CAEXW_YSSGYgqTpxqbYikCFS9t=2f+L-0phbU+gAAngB5z-FbyA@mail.gmail.com> <ZEXOMC2casTlobE1@boqun-archlinux> <87fs8pzalj.fsf@mail.concordia> <20230424151351.GP19790@gate.crashing.org> <ZEagN1jJwg+rUzX4@boqun-archlinux>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87fs8pzalj.fsf@mail.concordia>
+In-Reply-To: <ZEagN1jJwg+rUzX4@boqun-archlinux>
 User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi!
-
-On Mon, Apr 24, 2023 at 11:14:00PM +1000, Michael Ellerman wrote:
-> Boqun Feng <boqun.feng@gmail.com> writes:
-> > On Sat, Apr 22, 2023 at 09:28:39PM +0200, Joel Fernandes wrote:
-> >> On Sat, Apr 22, 2023 at 2:47 PM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> >> > by debugging, I see the r10 is assigned with r13 on c000000000226eb4,
-> >> > but if there is a context-switch before c000000000226edc, a false
-> >> > positive will be reported.
-
-> I've never understood why the compiler wants to make a copy of a
-> register variable into another register!? >:#
-
-It is usually because a) you told it to (maybe via an earlyclobber), or
-b) it looked cheaper.  I don't see either here :-(
-
-> > here I think that the compiler is using r10 as an alias to r13, since
-> > for userspace program, it's safe to assume the TLS pointer doesn't
-> > change. However this is not true for kernel percpu pointer.
-
-r13 is a "fixed" register, but that means it has a fixed purpose (so not
-available for allocation), it does not mean "unchanging".
-
-> > The real intention here is to compare 40(r1) vs 3192(r13) for stack
-> > guard checking, however since r13 is the percpu pointer in kernel, so
-> > the value of r13 can be changed if the thread gets scheduled to a
-> > different CPU after reading r13 for r10.
+On Mon, Apr 24, 2023 at 08:28:55AM -0700, Boqun Feng wrote:
+> On Mon, Apr 24, 2023 at 10:13:51AM -0500, Segher Boessenkool wrote:
+> > At what points can r13 change?  Only when some particular functions are
+> > called?
 > 
-> Yeah that's not good.
-
-The GCC pattern here makes the four machine insns all stay together.
-That is to make sure to not leak any secret value, which is impossible
-to guarantee otherwise.
-
-What tells GCC r13 can randomly change behind its back?  And, what then
-makes GCC ignore that fact?
-
-> > 	+       asm volatile("" : : : "r13", "memory");
-
-Any asm without output is always volatile.
-
-> > Needless to say, the correct fix is to make ppc stack protector aware of
-> > r13 is volatile.
+> r13 is the local paca:
 > 
-> I suspect the compiler developers will tell us to go jump :)
-
-Why would r13 change over the course of *this* function / this macro,
-why can this not happen anywhere else?
-
-> The problem of the compiler caching r13 has come up in the past, but I
-> only remember it being "a worry" rather than causing an actual bug.
-
-In most cases the compiler is smart enough to use r13 directly, instead
-of copying it to another reg and then using that one.  But not here for
-some strange reason.  That of course is a very minor generated machine
-code quality bug and nothing more :-(
-
-> We've had the DEBUG_PREEMPT checks in get_paca(), which have given us at
-> least some comfort that if the compiler is caching r13, it shouldn't be
-> doing it in preemptable regions.
+> 	register struct paca_struct *local_paca asm("r13");
 > 
-> But obviously that doesn't help at all with the stack protector check.
-> 
-> I don't see an easy fix.
-> 
-> Adding "volatile" to the definition of local_paca seems to reduce but
-> not elimate the caching of r13, and the GCC docs explicitly say *not* to
-> use volatile. It also triggers lots of warnings about volatile being
-> discarded.
+> , which is a pointer to percpu data.
 
-The point here is to say some code clobbers r13, not the asm volatile?
+Yes, it is a global register variable.
 
-> Or something simple I haven't thought of? :)
+> So if a task schedule from one CPU to anotehr CPU, the value gets
+> changed.
 
-At what points can r13 change?  Only when some particular functions are
-called?
+But the compiler does not see that something else changes local_paca (or
+r13 some other way, via assembler code perhaps)?  Or is there a compiler
+bug?
+
+If the latter is true:
+
+Can you make a reproducer and open a GCC PR?  <https://gcc.gnu.org/bugs/>
+for how to get started doing that.  We need *exact* code that shows the
+problem, together with a compiler command line.  So that we can
+reproduce the problem.  That is step 0 in figuring out what is going on,
+and then maybe fixing the problem :-)
 
 
 Segher
