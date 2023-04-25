@@ -2,196 +2,200 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44408C6FD18
-	for <rcu@archiver.kernel.org>; Tue, 25 Apr 2023 13:50:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF3FDC77B61
+	for <rcu@archiver.kernel.org>; Tue, 25 Apr 2023 15:04:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjDYNuG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Apr 2023 09:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        id S234032AbjDYPEE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Apr 2023 11:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233976AbjDYNuD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Apr 2023 09:50:03 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1EE1708;
-        Tue, 25 Apr 2023 06:50:02 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-518d325b8a2so5844385a12.0;
-        Tue, 25 Apr 2023 06:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682430601; x=1685022601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2lAuwknu3oppNAiUSZpnFi04sAphUW8dNNMCjOkBABs=;
-        b=jamzRusOo2NjkX7molZM2aCKuhRTgTL0DhlzMquEyNRxa2MjYgzuDwRNGa0LIxc34N
-         e7mJmtfFgZIs1brtVwmW0LO16YcSGlUfOW0x1kkRsrDlhFOFWXLM8tkC3Lr+Qzi0+gJ5
-         xPnzh3BkhQsDNdVyh3OTN4FijvnyjBZUN7LLcBKSblbnQ3jiyL4Sg283i7vxiR3b1UZE
-         5RsspSs88YBOkut/edo7rBsRVJid5/o1rjaYnm8iPdbIv2VXkLV7iEGB4tRqfLHJSuhP
-         QXkmfm23JUgcXyzpXo6uQNN8HbRcXvJUVlJRHu5MRWeLNyg6tq8TmZvurN6sTuKwdmwa
-         cSZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682430601; x=1685022601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2lAuwknu3oppNAiUSZpnFi04sAphUW8dNNMCjOkBABs=;
-        b=FfHH9/w9dtOvPin1lTChwG9nOoy4oyuf96xyL8uh4vKAntzfhEiIbfUNcWnue52Bew
-         /jQfpOLYOHDglbZzFxS4lFKqxeaMo6zuIcGU2/Qh8YQjzDRUuJVYKKheDy5s3VDWYDBx
-         mCJaXcggDO7Y3r9JcAlUI7lLDIQ4n58t/qUYBDmBoKSD538cpq+CTl0VcpJk7+yutTyV
-         VHV7TZSbAvOCuzt60edcL7sDWEQm+zb2JVLo/GizAoB0R5dZZMoKy+oqVqMVpmDhlLnc
-         9P226lzzSFfYCGnCTsbbkVcc8E8VL33L3a+5DE4RtKUU+8a3cZatcfeI9Vw1xjUtCM0J
-         W70A==
-X-Gm-Message-State: AAQBX9eXjR71fCz1sWXQu+3pIsrl+jaRKIcOL0FTKALgjbKMGNCmmAhT
-        7md5j7udqftsy9eEpyaY+aNsY3soPzygbvojW8c=
-X-Google-Smtp-Source: AKy350bSykcNq3VWBNHcmLinwWgOiXbhiBxgTZcPMEi8qD3oJP0OeW7EYXjKHPDrXkcHdS29jHT1he9ARB1EyQCCd1c=
-X-Received: by 2002:a17:90a:6447:b0:23f:a4da:1208 with SMTP id
- y7-20020a17090a644700b0023fa4da1208mr16749390pjm.39.1682430601304; Tue, 25
- Apr 2023 06:50:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com>
- <CAEXW_YSSGYgqTpxqbYikCFS9t=2f+L-0phbU+gAAngB5z-FbyA@mail.gmail.com>
- <ZEXOMC2casTlobE1@boqun-archlinux> <87fs8pzalj.fsf@mail.concordia>
- <20230424151351.GP19790@gate.crashing.org> <ZEagN1jJwg+rUzX4@boqun-archlinux>
- <CAEXW_YRfetnhgCw5OgnwhgZF_U+UkHN=uy=L8ovGLqn1UCtfTg@mail.gmail.com>
- <20230425101324.GD1331236@hirez.programming.kicks-ass.net>
- <CAABZP2ypJ98T3XAqPnLrxxzrYckSQ6sn3woEmpigQ+cRRaw=Zw@mail.gmail.com>
- <CAEXW_YQEarLt7YGQZdwmcSyZcGRCGKf89ovxjQdXBO-TgXAk-w@mail.gmail.com> <528b2adc-9955-5545-9e9d-affd1f935838@csgroup.eu>
-In-Reply-To: <528b2adc-9955-5545-9e9d-affd1f935838@csgroup.eu>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 25 Apr 2023 21:49:50 +0800
-Message-ID: <CAABZP2zW7aTPChjvZMA1bECdOdFUdTd-q+vEJXJnH2zPU+uR8A@mail.gmail.com>
-Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S233991AbjDYPED (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Apr 2023 11:04:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196B549CD;
+        Tue, 25 Apr 2023 08:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1+6DaEPXYHMcMl7eR6WzgMsRqfkoo2bM0HNxeyk154Y=; b=j+PumkSXIuBZmMCfBPGIHq3ydO
+        /LANrH3KDvsJUHdx4Jbb8y9XwEoqXfUDXZU2RYIoBpyk0yf+mX3+n5HP2hEvL0rD40kLaNuWj4hxc
+        qx2M1oozCWl+/tO3losXPI4v8Hvejv99QQyj2a8iL2ZfVKSwQT+a3DNO9Ont025pyiM61mozHqiKA
+        /XoDZarlce1egdpyBUipmX4hpnLVUZRduZ9WhBaj74ADClKgCflA7efScPb6ewXuClq//fexMzNj7
+        h9Pns1HDIQsO4d52wk9q7orGSj8CusfSLjfy/BW2dzW4XuSjGpb1hxEkqYDHdz2nk4WZmZ78KR51n
+        kGszkf/g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1prKCK-009fx4-2P;
+        Tue, 25 Apr 2023 15:03:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B368F3000D5;
+        Tue, 25 Apr 2023 17:03:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7A3BC31C76403; Tue, 25 Apr 2023 17:03:13 +0200 (CEST)
+Date:   Tue, 25 Apr 2023 17:03:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "lance@osuosl.org" <lance@osuosl.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "cl@linux.com" <cl@linux.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zhao Gongyi <zhaogongyi@bytedance.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
+ raw_spinlock
+Message-ID: <20230425150313.GA1340063@hirez.programming.kicks-ass.net>
+References: <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
+ <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
+ <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
+ <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
+ <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
+ <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
+ <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
+ <20230412124735.GE628377@hirez.programming.kicks-ass.net>
+ <76e15f10-d3f1-2cab-63cb-25aa3b4f2cd4@bytedance.com>
+ <20230413074013.GD4253@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230413074013.GD4253@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi
+On Thu, Apr 13, 2023 at 09:40:13AM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 13, 2023 at 12:44:42AM +0800, Qi Zheng wrote:
+> > > Something like the completely untested below might be of help..
+> 
+> > I just tested the above code, and then got the following
+> > warning:
+> > 
+> 
+> > It seems that the LD_WAIT_SLEEP we set is already greater than the
+> > LD_WAIT_SPIN of the current context.
+> 
+> Yeah, I'm an idiot and got it wrong.. I'll try again later if I manage
+> to wake up today :-)
 
-On Tue, Apr 25, 2023 at 9:40=E2=80=AFPM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 25/04/2023 =C3=A0 13:06, Joel Fernandes a =C3=A9crit :
-> > On Tue, Apr 25, 2023 at 6:58=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gmail.c=
-om> wrote:
-> >>
-> >> hi
-> >>
-> >> On Tue, Apr 25, 2023 at 6:13=E2=80=AFPM Peter Zijlstra <peterz@infrade=
-ad.org> wrote:
-> >>>
-> >>> On Mon, Apr 24, 2023 at 02:55:11PM -0400, Joel Fernandes wrote:
-> >>>> This is amazing debugging Boqun, like a boss! One comment below:
-> >>>>
-> >>>>>>> Or something simple I haven't thought of? :)
-> >>>>>>
-> >>>>>> At what points can r13 change?  Only when some particular function=
-s are
-> >>>>>> called?
-> >>>>>>
-> >>>>>
-> >>>>> r13 is the local paca:
-> >>>>>
-> >>>>>          register struct paca_struct *local_paca asm("r13");
-> >>>>>
-> >>>>> , which is a pointer to percpu data.
-> >>>>>
-> >>>>> So if a task schedule from one CPU to anotehr CPU, the value gets
-> >>>>> changed.
-> >>>>
-> >>>> It appears the whole issue, per your analysis, is that the stack
-> >>>> checking code in gcc should not cache or alias r13, and must read it=
-s
-> >>>> most up-to-date value during stack checking, as its value may have
-> >>>> changed during a migration to a new CPU.
-> >>>>
-> >>>> Did I get that right?
-> >>>>
-> >>>> IMO, even without a reproducer, gcc on PPC should just not do that,
-> >>>> that feels terribly broken for the kernel. I wonder what clang does,
-> >>>> I'll go poke around with compilerexplorer after lunch.
-> >>>>
-> >>>> Adding +Peter Zijlstra as well to join the party as I have a feeling
-> >>>> he'll be interested. ;-)
-> >>>
-> >>> I'm a little confused; the way I understand the whole stack protector
-> >>> thing to work is that we push a canary on the stack at call and on
-> >>> return check it is still valid. Since in general tasks randomly migra=
-te,
-> >>> the per-cpu validation canary should be the same on all CPUs.
-> >>>
-> >>> Additionally, the 'new' __srcu_read_{,un}lock_nmisafe() functions use
-> >>> raw_cpu_ptr() to get 'a' percpu sdp, preferably that of the local cpu=
-,
-> >>> but no guarantees.
-> >>>
-> >>> Both cases use r13 (paca) in a racy manner, and in both cases it shou=
-ld
-> >>> be safe.
-> >> New test results today: both gcc build from git (git clone
-> >> git://gcc.gnu.org/git/gcc.git) and Ubuntu 22.04 gcc-12.1.0
-> >> are immune from the above issue. We can see the assembly code on
-> >> http://140.211.169.189/0425/srcu_gp_start_if_needed-gcc-12.txt
-> >>
-> >> while
-> >> Both native gcc on PPC vm (gcc version 9.4.0), and gcc cross compiler
-> >> on my x86 laptop (gcc version 10.4.0) will reproduce the bug.
-> >
-> > Do you know what fixes the issue? I would not declare victory yet. My
-> > feeling is something changes in timing, or compiler codegen which
-> > hides the issue. So the issue is still there but it is just a matter
-> > of time before someone else reports it.
-> >
-> > Out of curiosity for PPC folks, why cannot 64-bit PPC use per-task
-> > canary? Michael, is this an optimization? Adding Christophe as well
-> > since it came in a few years ago via the following commit:
->
-> It uses per-task canary. But unlike PPC32, PPC64 doesn't have a fixed
-> register pointing to 'current' at all time so the canary is copied into
-> a per-cpu struct during _switch().
->
-> If GCC keeps an old value of the per-cpu struct pointer, it then gets
-> the canary from the wrong CPU struct so from a different task.
-This is a fruitful learning process for me!
-Christophe:
-Do you think there is still a need to bisect GCC ? If so, I am very
-glad to continue
+And then I forgot ofcourse :/ Can you give the below (still mostly
+untested) a spin? The crucial difference is the new
+lock_map_acquire_try(). By making the annotation a 'trylock' it will
+skip the acquire of the annotation itself (since trylocks don't block).
 
-Cheers
-Zhouyi
->
-> Christophe
->
-> >
-> > commit 06ec27aea9fc84d9c6d879eb64b5bcf28a8a1eb7
-> > Author: Christophe Leroy <christophe.leroy@c-s.fr>
-> > Date:   Thu Sep 27 07:05:55 2018 +0000
-> >
-> >      powerpc/64: add stack protector support
-> >
-> >      On PPC64, as register r13 points to the paca_struct at all time,
-> >      this patch adds a copy of the canary there, which is copied at
-> >      task_switch.
-> >      That new canary is then used by using the following GCC options:
-> >      -mstack-protector-guard=3Dtls
-> >      -mstack-protector-guard-reg=3Dr13
-> >      -mstack-protector-guard-offset=3Doffsetof(struct paca_struct, cana=
-ry))
-> >
-> >      Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> >      Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> >
-> >   - Joel
+---
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 1023f349af71..435a3b0f8ea6 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -551,6 +551,7 @@ do {									\
+ #define rwsem_release(l, i)			lock_release(l, i)
+ 
+ #define lock_map_acquire(l)			lock_acquire_exclusive(l, 0, 0, NULL, _THIS_IP_)
++#define lock_map_acquire_try(l)			lock_acquire_exclusive(l, 0, 1, NULL, _THIS_IP_)
+ #define lock_map_acquire_read(l)		lock_acquire_shared_recursive(l, 0, 0, NULL, _THIS_IP_)
+ #define lock_map_acquire_tryread(l)		lock_acquire_shared_recursive(l, 0, 1, NULL, _THIS_IP_)
+ #define lock_map_release(l)			lock_release(l, _THIS_IP_)
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index d22430840b53..f3120d6a7d9e 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -33,6 +33,7 @@ enum lockdep_wait_type {
+ enum lockdep_lock_type {
+ 	LD_LOCK_NORMAL = 0,	/* normal, catch all */
+ 	LD_LOCK_PERCPU,		/* percpu */
++	LD_LOCK_WAIT,		/* annotation */
+ 	LD_LOCK_MAX,
+ };
+ 
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 50d4863974e7..d254f9e53c0e 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2253,6 +2253,9 @@ static inline bool usage_match(struct lock_list *entry, void *mask)
+ 
+ static inline bool usage_skip(struct lock_list *entry, void *mask)
+ {
++	if (entry->class->lock_type == LD_LOCK_NORMAL)
++		return false;
++
+ 	/*
+ 	 * Skip local_lock() for irq inversion detection.
+ 	 *
+@@ -2279,14 +2282,11 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
+ 	 * As a result, we will skip local_lock(), when we search for irq
+ 	 * inversion bugs.
+ 	 */
+-	if (entry->class->lock_type == LD_LOCK_PERCPU) {
+-		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
+-			return false;
+-
+-		return true;
+-	}
++	if (entry->class->lock_type == LD_LOCK_PERCPU &&
++	    DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
++		return false;
+ 
+-	return false;
++	return true;
+ }
+ 
+ /*
+@@ -4752,7 +4752,8 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 
+ 	for (; depth < curr->lockdep_depth; depth++) {
+ 		struct held_lock *prev = curr->held_locks + depth;
+-		u8 prev_inner = hlock_class(prev)->wait_type_inner;
++		struct lock_class *class = hlock_class(prev);
++		u8 prev_inner = class->wait_type_inner;
+ 
+ 		if (prev_inner) {
+ 			/*
+@@ -4762,6 +4763,12 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 			 * Also due to trylocks.
+ 			 */
+ 			curr_inner = min(curr_inner, prev_inner);
++
++			/*
++			 * Allow override for annotations.
++			 */
++			if (unlikely(class->lock_type == LD_LOCK_WAIT))
++				curr_inner = prev_inner;
+ 		}
+ 	}
+ 
+diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+index df86e649d8be..0e089882146b 100644
+--- a/lib/debugobjects.c
++++ b/lib/debugobjects.c
+@@ -565,8 +565,16 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
+ 	 * On RT enabled kernels the pool refill must happen in preemptible
+ 	 * context:
+ 	 */
+-	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible()) {
++		static struct lockdep_map dep_map = {
++			.name = "wait-type-override",
++			.wait_type_inner = LD_WAIT_SLEEP,
++			.lock_type = LD_LOCK_WAIT,
++		};
++		lock_map_acquire_try(&dep_map);
+ 		fill_pool();
++		lock_map_release(&dep_map);
++	}
+ 
+ 	db = get_bucket((unsigned long) addr);
+ 
