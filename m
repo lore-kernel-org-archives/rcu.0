@@ -2,231 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E538C77B61
-	for <rcu@archiver.kernel.org>; Tue, 25 Apr 2023 15:51:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C891C6FD18
+	for <rcu@archiver.kernel.org>; Tue, 25 Apr 2023 16:33:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjDYPvk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Apr 2023 11:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        id S234760AbjDYQdH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Apr 2023 12:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234220AbjDYPvj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Apr 2023 11:51:39 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7895618B
-        for <rcu@vger.kernel.org>; Tue, 25 Apr 2023 08:51:13 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-63b8b927f62so1346140b3a.0
-        for <rcu@vger.kernel.org>; Tue, 25 Apr 2023 08:51:13 -0700 (PDT)
+        with ESMTP id S234377AbjDYQdH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Apr 2023 12:33:07 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B74FCC08
+        for <rcu@vger.kernel.org>; Tue, 25 Apr 2023 09:33:05 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2a8c30ac7e3so55060321fa.1
+        for <rcu@vger.kernel.org>; Tue, 25 Apr 2023 09:33:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1682437873; x=1685029873;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SZl+g5Ej3CkAUwqlFRxFOmCl6XeGbuQoLBx1Ft1/RCU=;
-        b=cJ5gxBPGIKAw3sdvDbTj+bK3aJIfweq4uAB6lOccOHM9LdZcHNzoR8dPgbBspjunjs
-         pjHLL0dr5HfBzQdl654qH5q9X0tVUONRsAhBmrPfFMlgc95p5MClyxPJQbBQnvIVlhEB
-         ZMkd6VPr3RvDsHwjyg103tk1p+ftXKelGp2YMRhztSX9ecV4LP06cWMpWtUkSNbQMfPk
-         TNtTlC0LbK6xcLfVaaoXYwckSlCcm9ZWfU4jU7xs6Nv2Arg5iCY34BxsRW4PBdgGkrpb
-         O7e9emnVnhyM9AYZNtwXthZQrOhzL+AmHQQVZKny9ZxZJmYDgrIHCds+CF/n3/g+o1tz
-         mtVA==
+        d=crave-io.20221208.gappssmtp.com; s=20221208; t=1682440383; x=1685032383;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s2Rac/m/Y+ztLD9bbJxV7ApwvMbYAdfnb0KmgsQRfHY=;
+        b=Vj6pm4p5yAPxnoo4rbsnOecNKBt3DdGr3U1Ei8Qq8daj4Y4p43+GL7JopOJVBodxTs
+         jiQfapA7l2y/ovF5+zmzilBAb7f36JU8HNNQvgzlz4mfM9P341M9F1qa6bjdP70vOlz4
+         Di6uYPUYRE2erbwM6afXYyU8CbdLyMTwE8APpIU38UjORGtSiID5GZQrzYe9V7guEdir
+         B6TRDt6kf0e/ygGg9pQsnQA8QEZEYoufiScjlqmw//jBwRrX4CWifoV9TzlmgyNQyveI
+         PCC1ztvHl5jgAd+ATjqth4wIT96XJOl8BUqIe7Pq93f0frGOyxAnJVE6rCRGJ2gv9iyS
+         XpDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682437873; x=1685029873;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SZl+g5Ej3CkAUwqlFRxFOmCl6XeGbuQoLBx1Ft1/RCU=;
-        b=bAqPaxq9fJ5inSi4+tQEkkIdU1yfdLnZazyH7hrB4wX/K2LNNyy5U6gASvLDyOv4y8
-         20O4Xo/tOdLTrcMzf2+Hct91dhEv/8AieXiSkH5qYT+MdnOy8P3RZYXPCqOVQ/ICGyYY
-         +/hbUwAH8GE4im+cp8lFy4+9e1INlSNI7xFuhk8W2Y7mlZuSjUJp9Hi1g3wU09AvaspZ
-         D8QsJEP7rBrskgByRcpLUp44i5UX9Z7MGzYjkH7kBYib7HuphIbt1n2mEjn3/RUq4AGh
-         DehvIfJ37fFpUgHWiGPquO1QpTeIoIFZcKwGgYVPwu1CDDvRQ/msdoj/LEu5/PyWG/ay
-         yyPQ==
-X-Gm-Message-State: AAQBX9fkfheQE0pHxycV+5Ng4lqqWq1KtoKdv8ZNI85jly2YaPQxbSGP
-        RwKk7SEJ81PnV8lQ4HSwPSAuNA==
-X-Google-Smtp-Source: AKy350bQt2OWtuD2cw1VJuvsFt7QmKRbQ5gmHLaeqXNNtDF04owZbFxlEXRnL10oml1zPoRvhvWCyQ==
-X-Received: by 2002:a05:6a20:728a:b0:f1:c0a1:8035 with SMTP id o10-20020a056a20728a00b000f1c0a18035mr23888317pzk.0.1682437873258;
-        Tue, 25 Apr 2023 08:51:13 -0700 (PDT)
-Received: from [10.200.11.243] ([139.177.225.234])
-        by smtp.gmail.com with ESMTPSA id w68-20020a636247000000b00520f4ecd71esm8193260pgb.93.2023.04.25.08.51.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Apr 2023 08:51:12 -0700 (PDT)
-Message-ID: <6582d31f-e4d5-a982-4797-c22b2dd8b150@bytedance.com>
-Date:   Tue, 25 Apr 2023 23:51:05 +0800
+        d=1e100.net; s=20221208; t=1682440383; x=1685032383;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s2Rac/m/Y+ztLD9bbJxV7ApwvMbYAdfnb0KmgsQRfHY=;
+        b=YhB4M1Y61WV0bpdPNUlYnOSn0vtgImt1FksEJKlY78t82mpum4I68uzO61X+F4hGYb
+         WwtVCcqUlNvyrJMTTznh10Pw8jkVzr5xS+TSvipYtVVjO9PlHQmxw+64absQzwS6k1dS
+         A0pdsnp7JO9qpUNlx9UwN6DJS2LLWTeGJr3K9CE7VTRD11U3ykbQmSnDJ2zy2tvl08Tk
+         hlNC+l1S7oo36fKl2nsmmjRrDgR7aoTey1OeS2y0mspcMi1AWgiHKyZiRcBINvcXpyas
+         iaIlorwetRClJVYDwPsFDLojXWanQSDjfAez+PGGtz2dGR/4RCBqjvZ/Q1TlLTagJT/G
+         nNKg==
+X-Gm-Message-State: AAQBX9caejzRpfQPnS3YPXS98bN8uizOUv0IRhI5c0EGSLq0adm9jujn
+        BdGXJfRS6ooKifvROOCIAW8jm99bUva2svDeUgSst6qeSGs+Ui6yQV0=
+X-Google-Smtp-Source: AKy350anYh3/vReXRKwC+LLBBE3Cc3lVfwcvsyucq0nk3+QlE7ExNOyaCaFGXSZOe2nCQTGu2EikNdmy6LanIOGD/FE=
+X-Received: by 2002:ac2:4576:0:b0:4eb:1e87:b1fe with SMTP id
+ k22-20020ac24576000000b004eb1e87b1femr4891326lfm.58.1682440383096; Tue, 25
+ Apr 2023 09:33:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [PATCH] mm: slub: annotate kmem_cache_node->list_lock as
- raw_spinlock
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "cl@linux.com" <cl@linux.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zhao Gongyi <zhaogongyi@bytedance.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-References: <c6ea3b17-a89c-6f66-5c86-967f1da601b4@suse.cz>
- <ccaf5e8e-3457-a2cf-b6eb-794cbf1b46f5@bytedance.com>
- <f54cfeb9-f1c3-e656-d344-4cbf97a7c28a@suse.cz>
- <932bf921-a076-e166-4f95-1adb24d544cf@bytedance.com>
- <ZDZG6wlWIE4dzd4W@Boquns-Mac-mini.local>
- <PH0PR11MB58805856C1C47D49D1BA8092DA9B9@PH0PR11MB5880.namprd11.prod.outlook.com>
- <e6a21ac6-939c-c686-387b-20f81ba5be53@suse.cz>
- <20230412124735.GE628377@hirez.programming.kicks-ass.net>
- <76e15f10-d3f1-2cab-63cb-25aa3b4f2cd4@bytedance.com>
- <20230413074013.GD4253@hirez.programming.kicks-ass.net>
- <20230425150313.GA1340063@hirez.programming.kicks-ass.net>
-Content-Language: en-US
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20230425150313.GA1340063@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAHOZ0eADVgEPVEv-rBrF=E11v-4S4xnY1rej=MytLtSFperMFw@mail.gmail.com>
+ <ZEclEg+1qeL4HkBm@boqun-archlinux>
+In-Reply-To: <ZEclEg+1qeL4HkBm@boqun-archlinux>
+From:   Yuvraaj Kelkar <uv@crave.io>
+Date:   Tue, 25 Apr 2023 09:32:51 -0700
+Message-ID: <CAHOZ0eCRZunDbX3YOy++31xrq60y3_ge=JJz5mbHAy+k6LfchQ@mail.gmail.com>
+Subject: Re: RCU Torture test failed at git commit 61d325dcbc05d8fef88110d35
+To:     rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+I've been trying to attach logs to this email since yesterday, but the
+mailing list keeps rejecting my attempts.
+I've uploaded all the logs to my Google Drive:
+https://drive.google.com/drive/folders/1giTWAVnu-rmfEsb-vLQJSxtg6wmHnzeG?us=
+p=3Dsharing
 
-
-On 2023/4/25 23:03, Peter Zijlstra wrote:
-> On Thu, Apr 13, 2023 at 09:40:13AM +0200, Peter Zijlstra wrote:
->> On Thu, Apr 13, 2023 at 12:44:42AM +0800, Qi Zheng wrote:
->>>> Something like the completely untested below might be of help..
->>
->>> I just tested the above code, and then got the following
->>> warning:
->>>
->>
->>> It seems that the LD_WAIT_SLEEP we set is already greater than the
->>> LD_WAIT_SPIN of the current context.
->>
->> Yeah, I'm an idiot and got it wrong.. I'll try again later if I manage
->> to wake up today :-)
-> 
-> And then I forgot ofcourse :/ Can you give the below (still mostly
-> untested) a spin? The crucial difference is the new
-> lock_map_acquire_try(). By making the annotation a 'trylock' it will
-> skip the acquire of the annotation itself (since trylocks don't block).
-
-Oh, 'trylock' is a good idea. I just tested the following code and
-it can resolve the warning I encountered. :)
+I hope at least this link will be allowed by the system.
 
 Thanks,
-Qi
+-Uv
 
-> 
-> ---
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 1023f349af71..435a3b0f8ea6 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -551,6 +551,7 @@ do {									\
->   #define rwsem_release(l, i)			lock_release(l, i)
->   
->   #define lock_map_acquire(l)			lock_acquire_exclusive(l, 0, 0, NULL, _THIS_IP_)
-> +#define lock_map_acquire_try(l)			lock_acquire_exclusive(l, 0, 1, NULL, _THIS_IP_)
->   #define lock_map_acquire_read(l)		lock_acquire_shared_recursive(l, 0, 0, NULL, _THIS_IP_)
->   #define lock_map_acquire_tryread(l)		lock_acquire_shared_recursive(l, 0, 1, NULL, _THIS_IP_)
->   #define lock_map_release(l)			lock_release(l, _THIS_IP_)
-> diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-> index d22430840b53..f3120d6a7d9e 100644
-> --- a/include/linux/lockdep_types.h
-> +++ b/include/linux/lockdep_types.h
-> @@ -33,6 +33,7 @@ enum lockdep_wait_type {
->   enum lockdep_lock_type {
->   	LD_LOCK_NORMAL = 0,	/* normal, catch all */
->   	LD_LOCK_PERCPU,		/* percpu */
-> +	LD_LOCK_WAIT,		/* annotation */
->   	LD_LOCK_MAX,
->   };
->   
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 50d4863974e7..d254f9e53c0e 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -2253,6 +2253,9 @@ static inline bool usage_match(struct lock_list *entry, void *mask)
->   
->   static inline bool usage_skip(struct lock_list *entry, void *mask)
->   {
-> +	if (entry->class->lock_type == LD_LOCK_NORMAL)
-> +		return false;
-> +
->   	/*
->   	 * Skip local_lock() for irq inversion detection.
->   	 *
-> @@ -2279,14 +2282,11 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
->   	 * As a result, we will skip local_lock(), when we search for irq
->   	 * inversion bugs.
->   	 */
-> -	if (entry->class->lock_type == LD_LOCK_PERCPU) {
-> -		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
-> -			return false;
-> -
-> -		return true;
-> -	}
-> +	if (entry->class->lock_type == LD_LOCK_PERCPU &&
-> +	    DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
-> +		return false;
->   
-> -	return false;
-> +	return true;
->   }
->   
->   /*
-> @@ -4752,7 +4752,8 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
->   
->   	for (; depth < curr->lockdep_depth; depth++) {
->   		struct held_lock *prev = curr->held_locks + depth;
-> -		u8 prev_inner = hlock_class(prev)->wait_type_inner;
-> +		struct lock_class *class = hlock_class(prev);
-> +		u8 prev_inner = class->wait_type_inner;
->   
->   		if (prev_inner) {
->   			/*
-> @@ -4762,6 +4763,12 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
->   			 * Also due to trylocks.
->   			 */
->   			curr_inner = min(curr_inner, prev_inner);
-> +
-> +			/*
-> +			 * Allow override for annotations.
-> +			 */
-> +			if (unlikely(class->lock_type == LD_LOCK_WAIT))
-> +				curr_inner = prev_inner;
->   		}
->   	}
->   
-> diff --git a/lib/debugobjects.c b/lib/debugobjects.c
-> index df86e649d8be..0e089882146b 100644
-> --- a/lib/debugobjects.c
-> +++ b/lib/debugobjects.c
-> @@ -565,8 +565,16 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
->   	 * On RT enabled kernels the pool refill must happen in preemptible
->   	 * context:
->   	 */
-> -	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible())
-> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT) || preemptible()) {
-> +		static struct lockdep_map dep_map = {
-> +			.name = "wait-type-override",
-> +			.wait_type_inner = LD_WAIT_SLEEP,
-> +			.lock_type = LD_LOCK_WAIT,
-> +		};
-> +		lock_map_acquire_try(&dep_map);
->   		fill_pool();
-> +		lock_map_release(&dep_map);
-> +	}
->   
->   	db = get_bucket((unsigned long) addr);
->   
-
--- 
-Thanks,
-Qi
+On Mon, Apr 24, 2023 at 5:56=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> On Mon, Apr 24, 2023 at 05:00:25PM -0700, Yuvraaj Kelkar wrote:
+> > Hi RCU folks,
+> >
+> > We have a RCU torture test set up that has just reported a failure at
+> > commit ID 61d325dcbc05d8fef88110d35 on the Linux kernel.
+> > The command was: ./kvm.sh --cpus 102
+> > Logs are attached.
+>
+> Could you also share the TREE03 log:
+>
+>         /tmp/src/linux/tools/testing/selftests/rcutorture/res/2023.04.24-=
+22.17.41/TREE03/console.log
+>
+> the build log basically said there is something wrong in that log.
+>
+> Regards,
+> Boqun
