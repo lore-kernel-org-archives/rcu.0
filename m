@@ -2,110 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB333C77B78
-	for <rcu@archiver.kernel.org>; Wed, 26 Apr 2023 17:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CC37C77B7E
+	for <rcu@archiver.kernel.org>; Wed, 26 Apr 2023 19:56:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238401AbjDZR0u (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Apr 2023 13:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
+        id S232184AbjDZT4A (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Apr 2023 15:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238422AbjDZR0s (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Apr 2023 13:26:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB1276A1;
-        Wed, 26 Apr 2023 10:26:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 19DD16226F;
-        Wed, 26 Apr 2023 17:26:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC87C433EF;
-        Wed, 26 Apr 2023 17:26:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682529999;
-        bh=88Hn/ndAK6iw0+8eulnL56wwhAQcUkbzhuH1m70WQFQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=e42+SB0EgnBOemKPFjqSDjSEBvFdrdbJg8NGNX7dq20/rPI/kuZZsBqvg5Y4BcVpG
-         pFftXFjxmUlvzYyHfwbcA9SAky8XQW9ycO/p1UjiDul82DLKJo2dnqL9YAdUpWcbXt
-         1lPzu+AljFXzZifiR7h4HJiWAMgs4AowK9yeoD+nz3ncON9B4hRkfJheaEP8PQEeTf
-         C79wpxkFl5+ROonIPM55gtmVQcs9EAyshNgRRxwseH9Ll8YAnBZX6g9e1pezEeWjcP
-         w0cWCQlovtnlrkGVdepz6Yx/jPaBekzJZCyOUckw8AFebnyPS70BHnPLEBIG+/ml7h
-         QHgCrEsJVO7rg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 049A515405A6; Wed, 26 Apr 2023 10:26:38 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 10:26:38 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, tj@kernel.org, riel@surriel.com
-Subject: [PATCH RFC rcu] Stop rcu_tasks_invoke_cbs() from using never-online
- CPUs
-Message-ID: <83d037d1-ef12-4b31-a7b9-7b1ed6c3ae42@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        with ESMTP id S233550AbjDZTz7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Apr 2023 15:55:59 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFD71BCB;
+        Wed, 26 Apr 2023 12:55:59 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1a69f686345so59582035ad.2;
+        Wed, 26 Apr 2023 12:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682538958; x=1685130958;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gXVsxpmf8NT6a27PDFT8eqyBfJWxliivvXRcwaeV6Sc=;
+        b=fb+7+q9J88OsywngTW4TRQfcybLuVB+o/UUns8oo71cyjoIFC85MSuqMxpHmhklHgf
+         kcGktHFP1PnwOcTleRxpoV6QLrahiFVNXuJ9UHjb3il0r7G/Wi3ayc9JbWJJSsUMAUQx
+         uM5EHftptCJ2BuY7dJn95UGDu0demIjeNBeWG6u4kbKlwugOWiUSjuQEX7EBpi5SCUcv
+         cUAnUKg5XGLFPO3btYa0YE4rlEwsANtVKmEviQq7e9EG+udiaYIentLtkqQP5PA9yn2u
+         BgxYRJkokYwS4c+LxMNgx6i+DUFFcnHe3LkVl5/rKl6xHkn50SpUKXRDnktIn8eg5OBM
+         ZJfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682538958; x=1685130958;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gXVsxpmf8NT6a27PDFT8eqyBfJWxliivvXRcwaeV6Sc=;
+        b=kyhVwATMEmiMZjjL7dTr7TFR6aqv/thuBML7ExXzCTBIjbTeR14dv0LIzGey9xXB0V
+         DA7bHrAaPoKYdfAjYl0zK2oxysMrl+Nd2dtwnYXrih6+D3sUtMoJJl/cyLNlmRyq9IIg
+         u20MUrO1VPcxeUQekjZnS8q9MChBqO2CW4udSF4zXtHTdHbOu/KnTso1TcH0xKfXGbbu
+         mCqjngCd0a/Vp+icUxjm+lhwxavFYlxIplzs21GsFdsa+eW/4hpp6jjEUDOBIDQxlsFR
+         pSebFCQq2HZe2MYkZ+KjJgnXdQI8kVM8crI8BvecXpzpWmT29zo1umPaSjVFqsmUDkvU
+         dBkA==
+X-Gm-Message-State: AAQBX9eXqoVD9reMcWERvqYphONhryuYfrS4uPdhdzF5NQQ/7ev7b3I5
+        XWOW79yZTfNPiCm8UR1EOlXxios02uk=
+X-Google-Smtp-Source: AKy350ZlCiwbjf2XZNOP6TGrchJIdwoHgw3Zh4kSa2vyY9NtAhrVM8doq5uo9BFUgYsD80IBl+bjrg==
+X-Received: by 2002:a17:902:e741:b0:1a6:b23c:3bf2 with SMTP id p1-20020a170902e74100b001a6b23c3bf2mr27425254plf.10.1682538958150;
+        Wed, 26 Apr 2023 12:55:58 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:1976])
+        by smtp.gmail.com with ESMTPSA id b13-20020a170902b60d00b001a94a497b50sm8547641pls.20.2023.04.26.12.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Apr 2023 12:55:57 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 26 Apr 2023 09:55:55 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, riel@surriel.com
+Subject: Re: [PATCH RFC rcu] Stop rcu_tasks_invoke_cbs() from using
+ never-online CPUs
+Message-ID: <ZEmBy0H5T5vQJDUW@slm.duckdns.org>
+References: <83d037d1-ef12-4b31-a7b9-7b1ed6c3ae42@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <83d037d1-ef12-4b31-a7b9-7b1ed6c3ae42@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The rcu_tasks_invoke_cbs() relies on queue_work_on() to silently fall
-back to WORK_CPU_UNBOUND when the specified CPU is offline.  However,
-the queue_work_on() function's silent fallback mechanism relies on that
-CPU having been online at some time in the past.  When queue_work_on()
-is passed a CPU that has never been online, workqueue lockups ensue,
-which can be bad for your kernel's general health and well-being.
+Hello, Paul.
 
-This commit therefore checks whether a given CPU is currently online,
-and, if not substitutes WORK_CPU_UNBOUND in the subsequent call to
-queue_work_on().  Why not simply omit the queue_work_on() call entirely?
-Because this function is flooding callback-invocation notifications
-to all CPUs, and must deal with possibilities that include a sparse
-cpu_possible_mask.
+On Wed, Apr 26, 2023 at 10:26:38AM -0700, Paul E. McKenney wrote:
+> The rcu_tasks_invoke_cbs() relies on queue_work_on() to silently fall
+> back to WORK_CPU_UNBOUND when the specified CPU is offline.  However,
+> the queue_work_on() function's silent fallback mechanism relies on that
+> CPU having been online at some time in the past.  When queue_work_on()
+> is passed a CPU that has never been online, workqueue lockups ensue,
+> which can be bad for your kernel's general health and well-being.
+> 
+> This commit therefore checks whether a given CPU is currently online,
+> and, if not substitutes WORK_CPU_UNBOUND in the subsequent call to
+> queue_work_on().  Why not simply omit the queue_work_on() call entirely?
+> Because this function is flooding callback-invocation notifications
+> to all CPUs, and must deal with possibilities that include a sparse
+> cpu_possible_mask.
+> 
+> Fixes: d363f833c6d88 rcu-tasks: Use workqueues for multiple rcu_tasks_invoke_cbs() invocations
+> Reported-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Fixes: d363f833c6d88 rcu-tasks: Use workqueues for multiple rcu_tasks_invoke_cbs() invocations
-Reported-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+I don't understand the code at all but wonder whether it can do sth similar
+to cpumask_any_distribute() which RR's through the specified cpumask. Would
+it make sense to change rcu_tasks_invoke_cbs() to do something similar
+against cpu_online_mask?
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index cf7b00af9474..055a5f152127 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -464,6 +464,8 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
- {
- 	int cpu;
- 	int cpunext;
-+	int cpuwq1;
-+	int cpuwq2;
- 	unsigned long flags;
- 	int len;
- 	struct rcu_head *rhp;
-@@ -474,11 +476,26 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
- 	cpunext = cpu * 2 + 1;
- 	if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
- 		rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
--		queue_work_on(cpunext, system_wq, &rtpcp_next->rtp_work);
-+
-+		// If a CPU has never been online, queue_work_on()
-+		// objects to queueing work on that CPU.  Approximate a
-+		// check for this by checking if the CPU is currently online.
-+
-+		cpus_read_lock();
-+		cpuwq1 = cpu_online(cpunext) ? cpunext : WORK_CPU_UNBOUND;
-+		cpuwq2 = cpu_online(cpunext + 1) ? cpunext + 1 : WORK_CPU_UNBOUND;
-+		cpus_read_unlock();
-+
-+		// Yes, either CPU could go offline here.  But that is
-+		// OK because queue_work_on() will (in effect) silently
-+		// fall back to WORK_CPU_UNBOUND for any CPU that has ever
-+		// been online.
-+
-+		queue_work_on(cpuwq1, system_wq, &rtpcp_next->rtp_work);
- 		cpunext++;
- 		if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
- 			rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
--			queue_work_on(cpunext, system_wq, &rtpcp_next->rtp_work);
-+			queue_work_on(cpuwq2, system_wq, &rtpcp_next->rtp_work);
- 		}
- 	}
- 
+Thanks.
+
+-- 
+tejun
