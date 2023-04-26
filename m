@@ -2,126 +2,96 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CF83C77B60
-	for <rcu@archiver.kernel.org>; Wed, 26 Apr 2023 21:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B826C7618E
+	for <rcu@archiver.kernel.org>; Wed, 26 Apr 2023 22:09:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbjDZVzI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Apr 2023 17:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        id S239955AbjDZWJL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Apr 2023 18:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbjDZVzG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Apr 2023 17:55:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909C4E46;
-        Wed, 26 Apr 2023 14:55:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CDB762F19;
-        Wed, 26 Apr 2023 21:55:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88DEAC433D2;
-        Wed, 26 Apr 2023 21:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682546104;
-        bh=37Te5xo3oIbkt+a0H+oiua5kcHap23gDcu7sKCg12/U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FWhk3GgrnuZFsr8/ua6SsXbf3a+q7oTjblfk3dVq/p/9fUOYYtTmf0gkwGmTaJE6X
-         /6mK2kFTdFH597AZpi9lMttGQSyPGA1U+8cufdAjltS0V2VYaktthpVIfh1IMgfzAF
-         QwjD467ESV6+0frbnglBNA53kyGbqFBM2RUh58z27rqrLhziOubbunn2dEDrjX7Cu8
-         VI3AlXJhiwUJVSFxxtHsjnw34ffUqKoVmipjwxJ5Gyghp1x+w/jsK7lgG9vgNTDAAG
-         eVxZsxTi7KjDFSx+gqo3glBFV2n+lnzlXNbiKgdtyabuCzzTqGzZGnf28GF3oC92Qw
-         seH+ctJUHBg2w==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 21CC315404B7; Wed, 26 Apr 2023 14:55:04 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 14:55:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
+        with ESMTP id S239972AbjDZWJK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Apr 2023 18:09:10 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA962D56;
+        Wed, 26 Apr 2023 15:09:10 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-63b4e5fdb1eso9035132b3a.1;
+        Wed, 26 Apr 2023 15:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682546949; x=1685138949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NxpYnE1u1Q2bjTfyL3mlyd6uQYcX9SBjAJDlWJodPlE=;
+        b=ecBuUF2WKdDeRURQIP2jve85Tdg403UVVTg28R8vqv1Z+iszu5qmMk+RirueEwDrFN
+         4++zFgmKaLm2nUA6Uhodv1/eLdrlDRzkgqnox1hs5J9itu0epPwp0GJRI6H68YMjLPf9
+         LvF0Gdf7zj7XeXbl5FIW+qwP/3SEdPy7W8gPX/XEHmTdiTKwyaeZiVS+ZFVy8hpE1Euo
+         nHNWMlHgiLQ/gYrsgqIHgmwrm8zfzBM02upCm/ZSBgZfD8YwrQ3CwLX1h+wyQbcoosph
+         6tOMuWt4YZCxPhVs5RlFpYFQqhZCwwBuVXoV3w9N8aFmHif2ofr5DZrY9vSM5vs7foCe
+         DbEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682546949; x=1685138949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NxpYnE1u1Q2bjTfyL3mlyd6uQYcX9SBjAJDlWJodPlE=;
+        b=B2bWX9amsBtLPGI/Kb80+PPJJ6hcsmEG1guTsi6p/06QHOQkcL2Ylj6aE2ktXM4AnY
+         7ggbOIem8Nd82rGUAIKujzKSqZmf9InA1tHuea4kfz0o/gi6pR3ly+MAQiJYarXlQJwd
+         FskXrSD1rXZaeN0RX9YToS0s+JyViqfgkqkzHuaGO+E4poq6ojh7Wm/+4mhnEHHE6x9T
+         wYWcsXQuXGsXKOywf4X4+b5Lx57PTMJsLTyed7TAjOMiQ+quYsI3YDmn0Tm6rIg5oRV5
+         fzYqWfH8ERgQfi2nrmgzxDGxQzwFdiUNP+jUliT6yNrqaZt00fSX6Crsuo/QU5ElkNw0
+         4UNA==
+X-Gm-Message-State: AAQBX9cKMve9PGEQ4tjnQt67h9MKFZ3OhGMw202zDryyAkYdSBbDQPCM
+        Nx4/oBO/CHsH/QvGnbm5aZSpyp9R/bs=
+X-Google-Smtp-Source: AKy350ao+O9KfxqiWpxItYiM7+VJzjgeiu3hovDCVESstDcqw4QKVA0p2GgoCsmh0O9uOBMaM7H/qQ==
+X-Received: by 2002:a05:6a21:8dc5:b0:f0:e3ed:469a with SMTP id ti5-20020a056a218dc500b000f0e3ed469amr19873769pzb.55.1682546949331;
+        Wed, 26 Apr 2023 15:09:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:1976])
+        by smtp.gmail.com with ESMTPSA id b6-20020a63d806000000b005143d3fa0e0sm10245458pgh.2.2023.04.26.15.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Apr 2023 15:09:08 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 26 Apr 2023 12:09:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org, riel@surriel.com
 Subject: Re: [PATCH RFC rcu] Stop rcu_tasks_invoke_cbs() from using
  never-online CPUs
-Message-ID: <c4d39cb7-dbb7-44ad-b90e-71655bdbefd1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <ZEmhAzUMnQ1rP2YU@slm.duckdns.org>
 References: <83d037d1-ef12-4b31-a7b9-7b1ed6c3ae42@paulmck-laptop>
  <ZEmBy0H5T5vQJDUW@slm.duckdns.org>
  <1713f8f6-88d6-41f1-bbc6-045b2e017289@paulmck-laptop>
  <ZEmYFLKspo-rhyp4@slm.duckdns.org>
+ <c4d39cb7-dbb7-44ad-b90e-71655bdbefd1@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZEmYFLKspo-rhyp4@slm.duckdns.org>
+In-Reply-To: <c4d39cb7-dbb7-44ad-b90e-71655bdbefd1@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 11:31:00AM -1000, Tejun Heo wrote:
-> Hello,
+Hello, Paul.
+
+On Wed, Apr 26, 2023 at 02:55:04PM -0700, Paul E. McKenney wrote:
+> But if the call_rcu_tasks_*() code detects too much lock contention on
+> CPU 0's queue, which indicates that very large numbers of callbacks are
+> being queued, it switches to per-CPU mode.  In which case, we are likely
+> to have lots of callbacks on lots of queues, and in that case we really
+> want to invoke them concurrently.
 > 
-> On Wed, Apr 26, 2023 at 02:17:03PM -0700, Paul E. McKenney wrote:
-> > But the idea here is to spread the load of queueing the work as well as
-> > spreading the load of invoking the callbacks.
-> > 
-> > I suppose that I could allocate an array of ints, gather the online CPUs
-> > into that array, and do a power-of-two distribution across that array.
-> > But RCU Tasks allows CPUs to go offline with queued callbacks, so this
-> > array would also need to include those CPUs as well as the ones that
-> > are online.
-> 
-> Ah, I see, so it needs to make the distinction between cpus which have never
-> been online and are currently offline but used to be online.
+> Then if a later grace period finds that there are no more callbacks, it
+> switches back to CPU-0 mode.  So this extra workqueue overhead should
+> happen only on systems with sparse cpu_online_masks that are under heavy
+> call_rcu_tasks_*() load.
 
-But only for as long as the used-to-be-online CPUs have callbacks for
-the corresponding flavor of Tasks RCU.  :-/
+I still wonder whether it can be solved by simply switching to unbound
+workqueues instead of implementing custom load-spreading mechanism. We'd be
+basically asking the scheduler to what it thinks is best instead of trying
+to make manual CPU placement decisions. That said, as a fix, the original
+patch looks fine to me. Gonna go ack that.
 
-> > Given that the common-case system has a dense cpus_online_mask, I opted
-> > to keep it simple, which is optimal in the common case.
-> > 
-> > Or am I missing a trick here?
-> 
-> The worry is that on systems with actual CPU hotplugging, cpu_online_mask
-> can be pretty sparse - e.g. 1/4 filled wouldn't be too out there. In such
-> cases, the current code would end scheduling the work items on the issuing
-> CPU (which is what WORK_CPU_UNBOUND does) 3/4 of the time which probably
-> isn't the desired behavior.
-> 
-> So, I can initialize all per-cpu workqueues for all possible cpus on boot so
-> that rcu doesn't have to worry about it but that would still have a similar
-> problem of the callbacks not really being spread as intended.
+Thanks.
 
-Unless you get a few more users that care about this, it is probably
-best to just let RCU deal with it.
-
-For whatever it is worth, I am working a smaller patch that doesn't need
-to do cpus_read_lock(), but anyone with short-term needs should stick
-with the existing patch.
-
-> I think it depends on how important it is to spread the callback workload
-> evenly. If that matters quite a bit, it probably would make sense to
-> maintain a cpumask for has-ever-been-online CPUs. Otherwise, do you think it
-> can just use an unbound workqueue and forget about manually distributing the
-> workload?
-
-If there are not very many callbacks, then you are right that spreading
-the load makes no sense.  And the 18-months-ago version of this code in
-fact didn't bother spreading.  But new workloads came up that cared about
-update-side performance and scalability, which led to the current code.
-
-This code initially just invokes all the callbacks directly, just like
-it did unconditionally 18 months ago, due to ->percpu_dequeue_lim being
-initialized to 1.  This causes all the RCU Tasks callbacks to be queued
-on CPU 0 and to be invoked directly by the grace-period kthread.
-
-But if the call_rcu_tasks_*() code detects too much lock contention on
-CPU 0's queue, which indicates that very large numbers of callbacks are
-being queued, it switches to per-CPU mode.  In which case, we are likely
-to have lots of callbacks on lots of queues, and in that case we really
-want to invoke them concurrently.
-
-Then if a later grace period finds that there are no more callbacks, it
-switches back to CPU-0 mode.  So this extra workqueue overhead should
-happen only on systems with sparse cpu_online_masks that are under heavy
-call_rcu_tasks_*() load.
-
-That is the theory, anyway!  ;-)
-
-							Thanx, Paul
+-- 
+tejun
