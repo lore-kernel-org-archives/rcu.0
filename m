@@ -2,97 +2,110 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A999C77B60
-	for <rcu@archiver.kernel.org>; Wed, 26 Apr 2023 21:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 674F9C7618E
+	for <rcu@archiver.kernel.org>; Wed, 26 Apr 2023 21:31:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjDZVRH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Apr 2023 17:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
+        id S233381AbjDZVbp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Apr 2023 17:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbjDZVRF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Apr 2023 17:17:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297BF26A6;
-        Wed, 26 Apr 2023 14:17:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B65E263441;
-        Wed, 26 Apr 2023 21:17:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7D5C433D2;
-        Wed, 26 Apr 2023 21:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682543824;
-        bh=pyR8etJ8lQqzGGZ35EU50KdUAefCugLRG9HniYy5mT8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cr96P0qg5DUaul3Dh3Pl/GhoQZ8LxBQ+Zhj66onz5Snbhz1JWnw/aVmUp6i147ASZ
-         sT0ErMJhtibZumxamsaPbg2KaUu60uhPUyry+BYp2vwiLRbu8WjnjNyPGl7slc8j6H
-         6hHM9IZ8LPLP8cTXJcQulsmHSmWIcTtj/pVYENvbOJnMlRPBVA7An+rumhDt68KOhc
-         ycoJ/nn2MrmF8u/2xzlCrQrezm5r0LRQJhqkgGSaSobsJhqkOG2NX1Uei28WMcXmIt
-         D0iJLYqkdb3r5VVWXKbj5N6MYhrs4uyfXcuXRmHCpZ7cBW72Uz2qQ1YVhBj8auzwgp
-         RQVqtcxrarJUQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A3B1A15404B7; Wed, 26 Apr 2023 14:17:03 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 14:17:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
+        with ESMTP id S233641AbjDZVbZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Apr 2023 17:31:25 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4255E40F8;
+        Wed, 26 Apr 2023 14:31:06 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-63b4a64c72bso6039605b3a.0;
+        Wed, 26 Apr 2023 14:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682544664; x=1685136664;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hyAQfyFwzjMa4fofwS6O6zoQbKADFEMPLkANCNd7SDY=;
+        b=kNYE18oyzz/4Iu23lWj3r7k9A2SG2IGsbPaxPxW1iel0+ewNBRxYByhR21n4I78bnc
+         Ui0oWecoTiQnXa/2hHdbMmJPwpdjWt+1lM0QbabDEbc1gxG5nfA/w5FDen9D7NpUzgcW
+         pXuG4L2YO0oKpT99avgG8226IqviThdKgE5xEjQt/HrbabLpv6nlcWZKLUSjZjOypEqD
+         MM6Zu/L15H54GC3PfM8MftvShFk19m6i5aS/t3bfipKOysCLdcrQMounT55UCZEl4YEj
+         NepjeJzX0a/PATueFAhVKBd3thhBf6VR5BVEiibGb69jHwfAb6uZ2uxiGzb64pqKlVJO
+         1EmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682544664; x=1685136664;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hyAQfyFwzjMa4fofwS6O6zoQbKADFEMPLkANCNd7SDY=;
+        b=Axal/5sHWLZZyHTGspo7sLskxn32lfsQxaxX9Fvd3KONjWVBDWqP7PUBtc6fkEFW0J
+         jjDgyYZznGLl/w+f4zk6jSunN6xj2Dl+QTmSS0iRzhoycA4ZxFEwwXpGOaLNYltUOimb
+         iafQX143D7f7jU9YeqhVckYG4arwCO1TTEiTmFHo8hqf5GX3r2o7btyBJn93alh3NK9X
+         yiqwqAYxc6/o0HYnIbvT8cNuUN7MisVD9PwP+rQzRFyMgmFrunVD78xtHHlXObIxAK4z
+         O56AmDoOeHzXyEM9MsNdNsbLMNNxgQu4JcEvueQ+wS4e7TrEl/7A8sNHcOOxIDJfGGd2
+         Z65A==
+X-Gm-Message-State: AAQBX9fgSlSQwjhQtiD/kWuYdgm5NM4aqHdE43cby918s8I9wz4/JIjF
+        5FwHuEehyPMGt8p6eDrliQA=
+X-Google-Smtp-Source: AKy350bOJ7cGT13b9cTaIJbspEun6EnH9BHZnGaCgQDJfMzaGaWEmwY+YLKlnS8p3AJwb1gGn99qDQ==
+X-Received: by 2002:a05:6a00:1147:b0:63b:6933:a328 with SMTP id b7-20020a056a00114700b0063b6933a328mr27547348pfm.28.1682544662168;
+        Wed, 26 Apr 2023 14:31:02 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:1976])
+        by smtp.gmail.com with ESMTPSA id 2-20020a621802000000b0063d24d5f9b6sm11763176pfy.210.2023.04.26.14.31.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Apr 2023 14:31:01 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 26 Apr 2023 11:31:00 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org, riel@surriel.com
 Subject: Re: [PATCH RFC rcu] Stop rcu_tasks_invoke_cbs() from using
  never-online CPUs
-Message-ID: <1713f8f6-88d6-41f1-bbc6-045b2e017289@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <ZEmYFLKspo-rhyp4@slm.duckdns.org>
 References: <83d037d1-ef12-4b31-a7b9-7b1ed6c3ae42@paulmck-laptop>
  <ZEmBy0H5T5vQJDUW@slm.duckdns.org>
+ <1713f8f6-88d6-41f1-bbc6-045b2e017289@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZEmBy0H5T5vQJDUW@slm.duckdns.org>
+In-Reply-To: <1713f8f6-88d6-41f1-bbc6-045b2e017289@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 09:55:55AM -1000, Tejun Heo wrote:
-> Hello, Paul.
+Hello,
+
+On Wed, Apr 26, 2023 at 02:17:03PM -0700, Paul E. McKenney wrote:
+> But the idea here is to spread the load of queueing the work as well as
+> spreading the load of invoking the callbacks.
 > 
-> On Wed, Apr 26, 2023 at 10:26:38AM -0700, Paul E. McKenney wrote:
-> > The rcu_tasks_invoke_cbs() relies on queue_work_on() to silently fall
-> > back to WORK_CPU_UNBOUND when the specified CPU is offline.  However,
-> > the queue_work_on() function's silent fallback mechanism relies on that
-> > CPU having been online at some time in the past.  When queue_work_on()
-> > is passed a CPU that has never been online, workqueue lockups ensue,
-> > which can be bad for your kernel's general health and well-being.
-> > 
-> > This commit therefore checks whether a given CPU is currently online,
-> > and, if not substitutes WORK_CPU_UNBOUND in the subsequent call to
-> > queue_work_on().  Why not simply omit the queue_work_on() call entirely?
-> > Because this function is flooding callback-invocation notifications
-> > to all CPUs, and must deal with possibilities that include a sparse
-> > cpu_possible_mask.
-> > 
-> > Fixes: d363f833c6d88 rcu-tasks: Use workqueues for multiple rcu_tasks_invoke_cbs() invocations
-> > Reported-by: Tejun Heo <tj@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> I suppose that I could allocate an array of ints, gather the online CPUs
+> into that array, and do a power-of-two distribution across that array.
+> But RCU Tasks allows CPUs to go offline with queued callbacks, so this
+> array would also need to include those CPUs as well as the ones that
+> are online.
+
+Ah, I see, so it needs to make the distinction between cpus which have never
+been online and are currently offline but used to be online.
+
+> Given that the common-case system has a dense cpus_online_mask, I opted
+> to keep it simple, which is optimal in the common case.
 > 
-> I don't understand the code at all but wonder whether it can do sth similar
-> to cpumask_any_distribute() which RR's through the specified cpumask. Would
-> it make sense to change rcu_tasks_invoke_cbs() to do something similar
-> against cpu_online_mask?
+> Or am I missing a trick here?
 
-It might.
+The worry is that on systems with actual CPU hotplugging, cpu_online_mask
+can be pretty sparse - e.g. 1/4 filled wouldn't be too out there. In such
+cases, the current code would end scheduling the work items on the issuing
+CPU (which is what WORK_CPU_UNBOUND does) 3/4 of the time which probably
+isn't the desired behavior.
 
-But the idea here is to spread the load of queueing the work as well as
-spreading the load of invoking the callbacks.
+So, I can initialize all per-cpu workqueues for all possible cpus on boot so
+that rcu doesn't have to worry about it but that would still have a similar
+problem of the callbacks not really being spread as intended.
 
-I suppose that I could allocate an array of ints, gather the online CPUs
-into that array, and do a power-of-two distribution across that array.
-But RCU Tasks allows CPUs to go offline with queued callbacks, so this
-array would also need to include those CPUs as well as the ones that
-are online.
+I think it depends on how important it is to spread the callback workload
+evenly. If that matters quite a bit, it probably would make sense to
+maintain a cpumask for has-ever-been-online CPUs. Otherwise, do you think it
+can just use an unbound workqueue and forget about manually distributing the
+workload?
 
-Given that the common-case system has a dense cpus_online_mask, I opted
-to keep it simple, which is optimal in the common case.
+Thanks.
 
-Or am I missing a trick here?
-
-							Thanx, Paul
+-- 
+tejun
