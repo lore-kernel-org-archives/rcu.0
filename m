@@ -2,120 +2,78 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93A6EC7618E
-	for <rcu@archiver.kernel.org>; Wed, 26 Apr 2023 22:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6C58C77B60
+	for <rcu@archiver.kernel.org>; Thu, 27 Apr 2023 03:09:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240037AbjDZW3Y (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Apr 2023 18:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
+        id S242755AbjD0DJV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Apr 2023 23:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbjDZW3V (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Apr 2023 18:29:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B7635A1;
-        Wed, 26 Apr 2023 15:29:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S242895AbjD0DJP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Apr 2023 23:09:15 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4BE35AF;
+        Wed, 26 Apr 2023 20:09:12 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FAC06391F;
-        Wed, 26 Apr 2023 22:29:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8641CC433EF;
-        Wed, 26 Apr 2023 22:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682548159;
-        bh=vO6L6ZXoVNUoUHs9/f4aULtIHpXjyWPjryGe2I6ClK4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TpZuOlNBuXXoX9v6VIhPUmkmEuSCYkh+aDkV7Tb0oUoyfRicElb7FQy/GPNavM5e1
-         5G79nR1dlmbEl7T8V2C+yb6SJAFH9FeilBR0+7ZXsdaL0LZFjgkcuhsEwgbBe/8a0c
-         hx/2O5N72lZPbMsn5HsFxwLwAhhHWZgRdTQjyYfBM7kTt8PMo3tBlAJSLTMOo+s/SH
-         HS1MBQpXeObNI3XVfo3r05yH2AX9eSRQ8gZU9TuPvJeofMlUcB7WKG85+2Yx8ixJPO
-         yu9BX+sSvsJoxxFEblAMi6nSfgQ++aVwIeI2U+wyyrGQiA1QrjFOAIt2O2/jYrVesp
-         2rBca9EHtFJ0Q==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1880E15404B7; Wed, 26 Apr 2023 15:29:19 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 15:29:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org, riel@surriel.com
-Subject: Re: [PATCH RFC rcu] Stop rcu_tasks_invoke_cbs() from using
- never-online CPUs
-Message-ID: <a047c7dd-7ac9-4b03-807b-1f77473321bc@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <83d037d1-ef12-4b31-a7b9-7b1ed6c3ae42@paulmck-laptop>
- <ZEmhtdxpelt5jxAu@slm.duckdns.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Q6LLC06rnz4x5Q;
+        Thu, 27 Apr 2023 13:09:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1682564947;
+        bh=S9vkNzq/sWnQ+hKq02kIHxm1YcRt+uc5ZstHfvPkWpA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=e1nt/ZiO8mHb9GEdS2Yydj8tDRxfv4ZT82IOTGN3flhKqTGusk1IG4Ic57tPh3QuE
+         cMUCSzCTgN/qlohDGakAXqdCcyD89/Uxfl4Uzdyi03xL9Ynpiz1D7oRWYyTd/riNNT
+         +VUqIxK4Dlr2CaJe+z4kcboYKQoD7tR99d5r3fBrv5/m7CksW6Is8Je421WZn/2gNe
+         tzHhXFBchgbCRpA4nlADdN7G7P1h69RKXK6JULfpXQXpTv1E19Jfa/OUg/3KN2Pwxu
+         6TeCw2N2QG6q+/zWtsTaCV0h+Xq4vbtN3neRftU1AM9dynCu0U2N59kj1ngUI0ZrSK
+         JBaDokcmE8gfQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
+In-Reply-To: <CAABZP2xVCQhizytn4H9Co7OU3UCSb_qNJaOszOawUFpeo=qpWQ@mail.gmail.com>
+References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com>
+ <87cz3tylwx.fsf@mail.concordia>
+ <CAABZP2zr=jypD7w_o18o95QEj1nkFugLcNH5sbuSAY-caBQoeQ@mail.gmail.com>
+ <CAABZP2xVCQhizytn4H9Co7OU3UCSb_qNJaOszOawUFpeo=qpWQ@mail.gmail.com>
+Date:   Thu, 27 Apr 2023 13:09:06 +1000
+Message-ID: <87v8hixbql.fsf@mail.concordia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEmhtdxpelt5jxAu@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 12:12:05PM -1000, Tejun Heo wrote:
-> On Wed, Apr 26, 2023 at 10:26:38AM -0700, Paul E. McKenney wrote:
-> > The rcu_tasks_invoke_cbs() relies on queue_work_on() to silently fall
-> > back to WORK_CPU_UNBOUND when the specified CPU is offline.  However,
-> > the queue_work_on() function's silent fallback mechanism relies on that
-> > CPU having been online at some time in the past.  When queue_work_on()
-> > is passed a CPU that has never been online, workqueue lockups ensue,
-> > which can be bad for your kernel's general health and well-being.
-> > 
-> > This commit therefore checks whether a given CPU is currently online,
-> > and, if not substitutes WORK_CPU_UNBOUND in the subsequent call to
-> > queue_work_on().  Why not simply omit the queue_work_on() call entirely?
-> > Because this function is flooding callback-invocation notifications
-> > to all CPUs, and must deal with possibilities that include a sparse
-> > cpu_possible_mask.
-> > 
-> > Fixes: d363f833c6d88 rcu-tasks: Use workqueues for multiple rcu_tasks_invoke_cbs() invocations
-> > Reported-by: Tejun Heo <tj@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ...
-> > +		// If a CPU has never been online, queue_work_on()
-> > +		// objects to queueing work on that CPU.  Approximate a
-> > +		// check for this by checking if the CPU is currently online.
-> > +
-> > +		cpus_read_lock();
-> > +		cpuwq1 = cpu_online(cpunext) ? cpunext : WORK_CPU_UNBOUND;
-> > +		cpuwq2 = cpu_online(cpunext + 1) ? cpunext + 1 : WORK_CPU_UNBOUND;
-> > +		cpus_read_unlock();
-> > +
-> > +		// Yes, either CPU could go offline here.  But that is
-> > +		// OK because queue_work_on() will (in effect) silently
-> > +		// fall back to WORK_CPU_UNBOUND for any CPU that has ever
-> > +		// been online.
-> 
-> Looks like cpus_read_lock() isn't protecting anything really.
+Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+> On Tue, Apr 25, 2023 at 2:01=E2=80=AFPM Zhouyi Zhou <zhouzhouyi@gmail.com=
+> wrote:
+>> On Tue, Apr 25, 2023 at 6:07=E2=80=AFAM Michael Ellerman <mpe@ellerman.i=
+d.au> wrote:
+...
+>> >
+>> > There's 12.2.0 here:
+>> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64=
+/12.2.0/
+>> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc64l=
+e/12.2.0/
 
-It certainly isn't protecting much.  ;-)
+> powerpc64le-linux-gnu-gcc-12 cross compiler on my Ubuntu 22.04 does
+> not seem to have that issue as gcc-10 does
 
-The purpose is to avoid a situation where this CPU thinks that some other
-CPU is online, but the corresponding workqueue has not yet been created.
-And I freely admit that, given the huge amount of synchronization and
-delay on the CPU-hotplug path, it is really hard to imagine this getting
-messed up.  Except that this is the quick fix, where it would be bad to
-rely on anything requiring much thought.
+OK. So so far it's only that GCC 10 that shows the problem.
 
-I am working a more dainty fix for mainline that doesn't need
-cpus_read_lock(), even in nightmarish theorizing.
+If you have time, you could use some of the other versions to narrow
+down which versions show the bug:
 
-> > +		queue_work_on(cpuwq1, system_wq, &rtpcp_next->rtp_work);
-> >  		cpunext++;
-> >  		if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> >  			rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
-> > -			queue_work_on(cpunext, system_wq, &rtpcp_next->rtp_work);
-> > +			queue_work_on(cpuwq2, system_wq, &rtpcp_next->rtp_work);
-> 
-> As discussed in the thread, I kinda wonder whether just using an unbound
-> workqueue would be sufficient but as a fix this looks good to me.
+  https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc64le/
 
-I would agree except for the callback-flood corner case, in which
-callback invocation needs all the help it can get if it is to keep up
-with a tightish loop doing call_rcu_tasks_*().
+There's an 11.0, 11.1 and 11.3 there, as well as 9.5 and so on.
 
-> Acked-by: Tejun Heo <tj@kernel.org>
-
-I will apply this on my next rebase, thank you!
-
-							Thanx, Paul
+There's=20
