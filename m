@@ -2,103 +2,150 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8816C77B73
-	for <rcu@archiver.kernel.org>; Thu, 27 Apr 2023 03:33:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E883AC77B7E
+	for <rcu@archiver.kernel.org>; Thu, 27 Apr 2023 04:20:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242718AbjD0DdB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Apr 2023 23:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
+        id S240955AbjD0EU4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Apr 2023 00:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241612AbjD0DdA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Apr 2023 23:33:00 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368A43AAA;
-        Wed, 26 Apr 2023 20:32:59 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-64115eef620so1948941b3a.1;
-        Wed, 26 Apr 2023 20:32:59 -0700 (PDT)
+        with ESMTP id S240740AbjD0EUz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Apr 2023 00:20:55 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6D62D69;
+        Wed, 26 Apr 2023 21:20:54 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-63b5c4c769aso10059457b3a.3;
+        Wed, 26 Apr 2023 21:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682566378; x=1685158378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r0CJhWXjc9Fv4hAAFKH+ld0zLVP5ytWUnCfEaPqRDTc=;
-        b=lvtBaUxMiigxyaMzmTBJnxw0odGQPTQH5URJbY0FrLC72eK8drm5Muv+pCT0WFogBW
-         s0QUclaPKXSYDBOC4HxsIUdnBFHeAp2byxf4VX9E697YgpJYlvcKmLITZtjxOUG/jVAT
-         im/W57TjVRduCYWPHtm7A/zPBYDy9kliec4595d6+mBQJyGYpYX9tqqsisVacokrErJJ
-         6NbbUM+L9zho8DvQzamVn8TOzZ2UxmNBrncw3aUymrdWNoLQV8KgI9urRuNZy1Gqt4u7
-         eAyLRoK5X9WLCEp+UBnJvVaITMpd2q3Hel58md2Nh7eWAq5qdRHQxbo0pjmEgNCekLSj
-         7O4Q==
+        d=gmail.com; s=20221208; t=1682569253; x=1685161253;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BONeYIFLJq0vXAPyZahD6Bfdi9YUeA9030sfVciDEJM=;
+        b=nbkBhp9Jt0UWEwqavOqHkh/FDxkxXG6Lf1kbYAEDs3W/x81BT8DRLxoko/3I0TbwgD
+         tO9EYgc4cBan3r3tNA1iF0sIxS/wZUiobM+voK5lZEJT0FVHXQay2DKlQqcP78ZbqUCF
+         5o+3AzH2LEOMu0nZNEB2og1KHjKKn56DpNpiJJ7mKgwUYE2Q8F6TNaqTUslZGJszzqqW
+         EC0YUi8Yz4slacvG6SgfZhBtYeWbpQJ5boBzCfeZXG9rBBldHoZLknktSh9bDi+00DmH
+         znX4gCezeqgL3xy1kS0yb3E48hbV6JmD0LSje1dpVuVVu3d0RG7kq9N+iaCf15MQH154
+         Lq3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682566378; x=1685158378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r0CJhWXjc9Fv4hAAFKH+ld0zLVP5ytWUnCfEaPqRDTc=;
-        b=DmP3AeLC6tNxcxsGbhuKB6Y+9PjcUJRUJ9TWe4TH47hQ9hGsTlDhB9xd39iqndWKkp
-         W6KCz12mLiloGn0SJETGmWs6/XYNEEDTbfJeYKe8jUCBZx/7tzEXi98i+qQDGxEN8JDS
-         3x48DQXB9qiS600/4Nb57NlyFhaecGfNuUXAjxMf1ooeA/q41n19vaZ/K2WMLVw56GyB
-         BXxJAdy2mqcY+Ek4WV1BSXk9dn/IIkBY4zY6sJRAAgGOqvA8Vre0UsvvPLnF8932alfA
-         NG0JGPO4Kfk/KAGaQs8CYa/I7JRByaliORKjtaJFVu6ouo6KDhsQF38XIBxH0N1tjmgA
-         8XyA==
-X-Gm-Message-State: AC+VfDzf3yJJ7U7jgecC3hg6QbhnFUYMS3gXQxxYX5vMKA3WLTT14vNC
-        Ri3GkeEvKVky2Jgw8E7QHFLFHyjxgtzqRGxkBHqaeeyx4A/Zxw==
-X-Google-Smtp-Source: ACHHUZ6Nc+jBcba8+mTDSK/3QCstZKna56TJ/d+4XLaIPQLWhXpOo0RnjOFs3Av2doMu8xXjjIbRuPnyW/KudXQIFQs=
-X-Received: by 2002:a17:902:f688:b0:1a6:4c2b:9e7f with SMTP id
- l8-20020a170902f68800b001a64c2b9e7fmr5530219plg.1.1682566378493; Wed, 26 Apr
- 2023 20:32:58 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682569253; x=1685161253;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BONeYIFLJq0vXAPyZahD6Bfdi9YUeA9030sfVciDEJM=;
+        b=eEu39uS+3x5asZ1O4f7uEs/PHF/oUErGRGRVhxJNMu4VNm5i4ySZGFRrVcD0StQ8rz
+         S5+d0nGfmGvc6aA2FDObcYnAcepqLG0DKoJFB4y9EEs1nI10RGMBpnKL3W6GUvFVshFp
+         WXa7diuWDnqjFvBxm6s276NxrcGGGGSwKf6HOaQplulc+kGzhE7cqSfsVO4AiCC6ISXa
+         UvXyMWD7hmmOIfSPoV0Ek48AB6anDibDoH9YqFlwx3w99T4WTzsWdyo7m7aC7+snopIl
+         Bn+CPydvzyRoGKmt0wCLXsaYlrVYfkCpKzZP1OnX5N8Qb8+yjrOGciozIt5nILRAeYzl
+         1d1A==
+X-Gm-Message-State: AC+VfDzYRsMjCaQ5SMCu6VMrETGKf+gsWywA2FKFMStwZTV+vFooxWEj
+        Ezsu1WJAjLlNrqL672MLrxw=
+X-Google-Smtp-Source: ACHHUZ4F1Jvcg6bkEeOt/S2r7Iw5+gHGNXI5xLQce54ceYTBbsYQLvvVcH0jdXgvFJXAUtKEda4PdA==
+X-Received: by 2002:a05:6a20:8f08:b0:f0:ec64:f3de with SMTP id b8-20020a056a208f0800b000f0ec64f3demr277089pzk.25.1682569253378;
+        Wed, 26 Apr 2023 21:20:53 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:3ca5])
+        by smtp.gmail.com with ESMTPSA id t10-20020a17090a448a00b00246cf1a8d3dsm10448041pjg.17.2023.04.26.21.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Apr 2023 21:20:52 -0700 (PDT)
+Date:   Wed, 26 Apr 2023 21:20:49 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [RFC bpf-next v2 1/4] selftests/bpf: Add benchmark for bpf
+ memory allocator
+Message-ID: <20230427042049.a6knzkteidm2dfm3@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230408141846.1878768-1-houtao@huaweicloud.com>
+ <20230408141846.1878768-2-houtao@huaweicloud.com>
+ <20230422025930.fwoodzn6jlqe2jt5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <6887e058-45e5-bbec-088a-ebc43bb066c9@huaweicloud.com>
 MIME-Version: 1.0
-References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com>
- <87cz3tylwx.fsf@mail.concordia> <CAABZP2zr=jypD7w_o18o95QEj1nkFugLcNH5sbuSAY-caBQoeQ@mail.gmail.com>
- <CAABZP2xVCQhizytn4H9Co7OU3UCSb_qNJaOszOawUFpeo=qpWQ@mail.gmail.com> <87v8hixbql.fsf@mail.concordia>
-In-Reply-To: <87v8hixbql.fsf@mail.concordia>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Thu, 27 Apr 2023 11:32:47 +0800
-Message-ID: <CAABZP2x4SiDHOCweNcanxj6v-KYmVct9E8PVUr1pxFvR4gPGqQ@mail.gmail.com>
-Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6887e058-45e5-bbec-088a-ebc43bb066c9@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 11:09=E2=80=AFAM Michael Ellerman <mpe@ellerman.id.=
-au> wrote:
->
-> Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
-> > On Tue, Apr 25, 2023 at 2:01=E2=80=AFPM Zhouyi Zhou <zhouzhouyi@gmail.c=
-om> wrote:
-> >> On Tue, Apr 25, 2023 at 6:07=E2=80=AFAM Michael Ellerman <mpe@ellerman=
-.id.au> wrote:
-> ...
-> >> >
-> >> > There's 12.2.0 here:
-> >> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_=
-64/12.2.0/
-> >> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc6=
-4le/12.2.0/
->
-> > powerpc64le-linux-gnu-gcc-12 cross compiler on my Ubuntu 22.04 does
-> > not seem to have that issue as gcc-10 does
->
-> OK. So so far it's only that GCC 10 that shows the problem.
-The default gcc version 9.4.0 in ubuntu 20.04 (in VM of Oregon State
-University) also shows the problem.
->
-> If you have time, you could use some of the other versions to narrow
-> down which versions show the bug:
->
->   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc64le/
->
-> There's an 11.0, 11.1 and 11.3 there, as well as 9.5 and so on.
-I have time ;-), and am very glad to try the above versions to narrow
-down which version shows the bug ;-)
+On Sun, Apr 23, 2023 at 09:55:24AM +0800, Hou Tao wrote:
+> >
+> >> ./bench htab-mem --use-case $name --max-entries 16384 \
+> >> 	--full 50 -d 7 -w 3 --producers=8 --prod-affinity=0-7
+> >>
+> >> | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
+> >> | --                  | --         | --                   | --                |
+> >> | no_op               | 1129       | 1.15                 | 1.15              |
+> >> | overwrite           | 24.37      | 2.07                 | 2.97              |
+> >> | batch_add_batch_del | 10.58      | 2.91                 | 3.36              |
+> >> | add_del_on_diff_cpu | 13.14      | 380.66               | 633.99            |
+> > large mem for diff_cpu case needs to be investigated.
+> The main reason is that tasks-trace RCU GP is slow and there is only one
+> inflight free callback, so the CPUs which only do element addition will allocate
+> new memory from slab continuously and the CPUs which only do element deletion
+> will free these elements continuously through call_tasks_trace_rcu(), but due to
+> the slowness of tasks-trace RCU GP, these freed elements could not be freed back
+> to slab subsystem timely.
 
-Cheers
-Zhouyi
->
-> There's
+I see. Now it makes sense. It's slow call_tasks_trace_rcu and not at all "memory can never be reused."
+Please explain things clearly in commit log.
+
+> >> +{
+> >> +	__u64 *value;
+> >> +
+> >> +	if (ctx->from >= ctx->max)
+> >> +		return 1;
+> >> +
+> >> +	value = bpf_map_lookup_elem(&array, &ctx->from);
+> >> +	if (value)
+> >> +		bpf_map_update_elem(&htab, &ctx->from, value, flags);
+> > What is a point of doing lookup from giant array of en element with zero value
+> > to copy it into htab?
+> > Why not to use single zero inited elem for all htab ops?
+> I want to check how does the different size of value effect the benchmark
+> result, so I choose a variable-size value.
+
+Not following. All elements of the array have the same size.
+Are you saying you were not able to figure out how to supply a single 'value'
+of variable size? Try array of max_entries=1.
+Do not do unnecessary and confusing bpf_map_lookup_elem(&array, &ctx->from);.
+
+> >
+> > Each loop will run 16k times and every time you step += 4.
+> > So 3/4 of these 16k runs it will be hitting if (ctx->from >= ctx->max) condition.
+> > What are you measuring?
+> As explained in the commit message, I am trying to let different deletion and
+> deletion CPU pairs operate on the different subsets of hash-table elements.
+> Assuming there are 16 elements in the htab and there are 8 CPUs and 8 threads,
+> the following is the operation subset for each CPU:
+> 
+> CPU 0:  0 4 8 12 (do deletion)
+> CPU 1:  0 4 8 12 (do addition)
+> 
+> CPU 2:  1 5 9 13
+> CPU 3:  1 5 9 13
+> 
+> CPU 4:  2 6 10 14
+> CPU 5:  2 6 10 14
+> 
+> CPU 6:  3 7 11 15
+> CPU 7:  3 7 11 15
+
+That part is clear, but
+
+> >> +	__sync_fetch_and_add(&loop_cnt, 1);
+
+this doesn't match the rest. loop_cnt is inremented 4 times faster.
+So it's not comparable to other tests.
