@@ -2,100 +2,102 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CB19C77B73
-	for <rcu@archiver.kernel.org>; Thu, 27 Apr 2023 13:46:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FBD3C77B61
+	for <rcu@archiver.kernel.org>; Thu, 27 Apr 2023 14:13:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243389AbjD0Nqa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Apr 2023 09:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        id S243871AbjD0ONX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Apr 2023 10:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243361AbjD0Nq3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Apr 2023 09:46:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0950B19AC;
-        Thu, 27 Apr 2023 06:46:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S243885AbjD0ONU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Apr 2023 10:13:20 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C68D30D3;
+        Thu, 27 Apr 2023 07:13:18 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 98447617C2;
-        Thu, 27 Apr 2023 13:46:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03324C433D2;
-        Thu, 27 Apr 2023 13:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682603188;
-        bh=DF9MTs/t39R9KsV5ErUBwEc5MNvvWKq0CgPXOj1nD/U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AzIPUDKWEzbyloo+VVOJSqQDo7NLv1dilYjNy+RHJ/W78Ug1Hfm1uYQOR/21EjOqT
-         jd2LMwqhDeH79RzVjNedr4ik88rDg2VGofUL/yh2Gx8KafoIl97oSGnj6vNvhYNcGw
-         Ct36ssoZv6Gk6DoqfqJ2ZPENX/P551iRbU5QU6+j/PNJ3cMlQRptqigL152cjT/rTW
-         I/tjTaz3ZGA2bpdtpQ5P8vBqfN16TW5dhJN9fpSD2lUMrG9oLpKQ+ywfbxxs/Ohu9Q
-         9aGUAIhSBgwS5dmPTuUlI+EWtZ4eguFhne2XcWMdXEwAwupi9wH9P8wF+gInKiz1fO
-         6u0q0T/zDUZwA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 99AF215404B7; Thu, 27 Apr 2023 06:46:27 -0700 (PDT)
-Date:   Thu, 27 Apr 2023 06:46:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: Re: [RFC bpf-next v2 1/4] selftests/bpf: Add benchmark for bpf
- memory allocator
-Message-ID: <4ef33ab5-0bb6-4877-bd75-7d34e71213fc@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230408141846.1878768-1-houtao@huaweicloud.com>
- <20230408141846.1878768-2-houtao@huaweicloud.com>
- <20230422025930.fwoodzn6jlqe2jt5@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <6887e058-45e5-bbec-088a-ebc43bb066c9@huaweicloud.com>
- <20230427042049.a6knzkteidm2dfm3@dhcp-172-26-102-232.dhcp.thefacebook.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Q6d4S2KKRz4x5Q;
+        Fri, 28 Apr 2023 00:13:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1682604792;
+        bh=q8JlyF1aNHES3h7STLRujrhXXNku8XOt2DBhyeyLDsM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=rxAoUotiaSZ0B2MNtNhK5O54ewKr2Y2p8GBh/uVfcRd9tG/U0VHYrTnPf3mNaz4dd
+         Mp/8hZCTKlweQnYjAb5Sj4Ov9JxcltPWKZE+x6DL3LxxrqN8TkChjPV1uF7qKM9SRT
+         hpgr0tQrXlRUty6wErrsWaImciH/uMlV/GDOrgokOcwaRK4cZyJlLQ3pWZFtJBgmtz
+         hT+B4HcnXs2kv+o+mBSWBYMTuBNVPyJKRqdfJl8AKMV//sefay3ZAt3ejWCkbtPb5c
+         zzEaWFUCwGojRWKmFYMstmPzw9jIxB5TLmOh/WySVKQFx+X0sl3RU/5fnAxo0tBayW
+         s6r1DNjDfs4iQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
+In-Reply-To: <CAABZP2z=xu+07-y5fqFLidZz1VpSgrSwXa1mFHPb=b3Ezr3OtA@mail.gmail.com>
+References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com>
+ <87cz3tylwx.fsf@mail.concordia>
+ <CAABZP2zr=jypD7w_o18o95QEj1nkFugLcNH5sbuSAY-caBQoeQ@mail.gmail.com>
+ <CAABZP2xVCQhizytn4H9Co7OU3UCSb_qNJaOszOawUFpeo=qpWQ@mail.gmail.com>
+ <87v8hixbql.fsf@mail.concordia>
+ <CAABZP2z=xu+07-y5fqFLidZz1VpSgrSwXa1mFHPb=b3Ezr3OtA@mail.gmail.com>
+Date:   Fri, 28 Apr 2023 00:13:11 +1000
+Message-ID: <87wn1xquq0.fsf@mail.concordia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230427042049.a6knzkteidm2dfm3@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 09:20:49PM -0700, Alexei Starovoitov wrote:
-> On Sun, Apr 23, 2023 at 09:55:24AM +0800, Hou Tao wrote:
-> > >
-> > >> ./bench htab-mem --use-case $name --max-entries 16384 \
-> > >> 	--full 50 -d 7 -w 3 --producers=8 --prod-affinity=0-7
-> > >>
-> > >> | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
-> > >> | --                  | --         | --                   | --                |
-> > >> | no_op               | 1129       | 1.15                 | 1.15              |
-> > >> | overwrite           | 24.37      | 2.07                 | 2.97              |
-> > >> | batch_add_batch_del | 10.58      | 2.91                 | 3.36              |
-> > >> | add_del_on_diff_cpu | 13.14      | 380.66               | 633.99            |
-> > > large mem for diff_cpu case needs to be investigated.
-> > The main reason is that tasks-trace RCU GP is slow and there is only one
-> > inflight free callback, so the CPUs which only do element addition will allocate
-> > new memory from slab continuously and the CPUs which only do element deletion
-> > will free these elements continuously through call_tasks_trace_rcu(), but due to
-> > the slowness of tasks-trace RCU GP, these freed elements could not be freed back
-> > to slab subsystem timely.
-> 
-> I see. Now it makes sense. It's slow call_tasks_trace_rcu and not at all "memory can never be reused."
-> Please explain things clearly in commit log.
+Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+> On Thu, Apr 27, 2023 at 11:09=E2=80=AFAM Michael Ellerman <mpe@ellerman.i=
+d.au> wrote:
+>>
+>> Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
+>> > On Tue, Apr 25, 2023 at 2:01=E2=80=AFPM Zhouyi Zhou <zhouzhouyi@gmail.=
+com> wrote:
+>> >> On Tue, Apr 25, 2023 at 6:07=E2=80=AFAM Michael Ellerman <mpe@ellerma=
+n.id.au> wrote:
+>> ...
+>> >> >
+>> >> > There's 12.2.0 here:
+>> >> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86=
+_64/12.2.0/
+>> >> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc=
+64le/12.2.0/
+>>
+>> > powerpc64le-linux-gnu-gcc-12 cross compiler on my Ubuntu 22.04 does
+>> > not seem to have that issue as gcc-10 does
+>>
+>> OK. So so far it's only that GCC 10 that shows the problem.
+>>
+>> If you have time, you could use some of the other versions to narrow
+>> down which versions show the bug:
+>>
+>>   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc64le/
+>>
+>> There's an 11.0, 11.1 and 11.3 there, as well as 9.5 and so on.
+> GCC test results (Tested on PPC VM of Open Source Lab of Oregon State
+> University)
+> gcc 9.4 (ubuntu native):          positive, show bug
+> gcc 9.5 (download form [1]):   positive, show bug
+> gcc 10.1 (download from [1]): positive, show bug
+> gcc 10.3 (download from [1]): positive, show bug
+> gcc 10.4 (download from [1]): positive, show bug
+>
+> gcc 11.0 (download from [1]): negative, no bug
+> gcc 11.1 (download from [1]): negative, no bug
+> gcc 11.3 (download from [1]): negative, no bug
+> gcc 12.1 (download from [1]): negative, no bug
+> gcc 12.2 (download from [1]): negative, no bug
 
-Is this a benchmarking issue, or is this happening in real workloads?
+Awesome work.
 
-If the former, one trick I use in rcutorture's callback-flooding code is
-to pass the ready-to-be-freed memory directly back to the allocating CPU.
-Which might be what you were getting at with your "maybe stealing from
-free_list of other CPUs".
+How are you testing for presence/absence of the bug? By running your
+test and seeing if it crashes, or by looking at the generated code?
 
-If this is happening in real workloads, then I would like to better
-understand that workload.
-
-							Thanx, Paul
+cheers
