@@ -2,131 +2,151 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97222C77B61
-	for <rcu@archiver.kernel.org>; Thu, 27 Apr 2023 14:30:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D74C7C77B73
+	for <rcu@archiver.kernel.org>; Fri, 28 Apr 2023 02:16:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244101AbjD0OaW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Apr 2023 10:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
+        id S1344599AbjD1CQX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Apr 2023 22:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243893AbjD0OaT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Apr 2023 10:30:19 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5503C29;
-        Thu, 27 Apr 2023 07:29:44 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-24b29812c42so6169605a91.0;
-        Thu, 27 Apr 2023 07:29:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682605784; x=1685197784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xrjVe+GZ/aYuuygp5YMWvVf8Vcfas6AR9IpieFbpkS0=;
-        b=cXRvpI9LxCPwg+kylqNX0WHyH+4TIOKTAwHF9DnkYXVQDJ+8rprEmQMiul2qCbscAf
-         Af80Tm+ly+BXlUbPXkTb5WYgYcNee2xf2YA9hlvx2sVbOQ5Bi4PCoiNkayUKmRCMMxAG
-         c3VISC2KkbS2OsOFIwc3gKPTlfuXT2bzNxBX0ikUxwOVeiFlYzk9QfiQ3bvWgQOWFiCn
-         rOVSzP8H/ulCf9x+r3O+awGtcqihKr2UsvANh9XkfZf5pW1lS1ptgwNpiXTOomHl7xcM
-         sOYGT3vz+MyFbCTcwu1O/1PnqNM+GaF+a8Ab/p7OgKcSGjm2njHVeRIyN7Qy2tWc1TAJ
-         dzSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682605784; x=1685197784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xrjVe+GZ/aYuuygp5YMWvVf8Vcfas6AR9IpieFbpkS0=;
-        b=bBb8yJLW7JDAYgTzie6JFp302jn6CnCbWAXpUe9sIHL/v5pcgeEZNWTxx37up/AbSn
-         ihm2oV3/U6SP1E2McxqCICRfjZf2/6cNZu9FmhrQoke+rGd2EInttsDnzjCd3HanTn0D
-         /hmQh/EpTw0JS0aDfUu5gIFVY5cTFAeL9zYotqphyUIZaX29j3nYzylgv0zIxtW8dGQ9
-         YWOdXGEF8RklnQ9qnKn6QKS5+uHpw415uqkyf5rg/TDeofIGRM0Sy0ebB0v5FTfvHVCf
-         +UB7nYxtXd2TLGksj/7eXNHp9KEFNXG1dVoWlZW2Lz+R8FIFw7OsCDcY+idcoFECQoPt
-         oUiw==
-X-Gm-Message-State: AC+VfDzQQBCZ3rsiVbQCyUe/84rIgAshr5YWdgaePQJHRtOL+G+3JSSX
-        ZeNX+cvqUbjFkEgBoKMKI673O7M4V1+ICe/gliz0qV+GKI4awA==
-X-Google-Smtp-Source: ACHHUZ6hdTNgQQwv2t44avCCrWR8mbrKKdu0cTf/4gXM14sjtPsKe8xWmsE4xn4ram6UUVNxmfMLcyEIXG1GWQzLnlA=
-X-Received: by 2002:a17:90a:d513:b0:247:6edf:e934 with SMTP id
- t19-20020a17090ad51300b002476edfe934mr1886414pju.42.1682605783915; Thu, 27
- Apr 2023 07:29:43 -0700 (PDT)
+        with ESMTP id S229698AbjD1CQW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Apr 2023 22:16:22 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACE726B1;
+        Thu, 27 Apr 2023 19:16:21 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q6x6l5gY5z4f3pBh;
+        Fri, 28 Apr 2023 10:16:15 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgC3Iy5tLEtknJQ1Hw--.51049S2;
+        Fri, 28 Apr 2023 10:16:17 +0800 (CST)
+Subject: Re: [RFC bpf-next v2 1/4] selftests/bpf: Add benchmark for bpf memory
+ allocator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20230408141846.1878768-1-houtao@huaweicloud.com>
+ <20230408141846.1878768-2-houtao@huaweicloud.com>
+ <20230422025930.fwoodzn6jlqe2jt5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <6887e058-45e5-bbec-088a-ebc43bb066c9@huaweicloud.com>
+ <20230427042049.a6knzkteidm2dfm3@dhcp-172-26-102-232.dhcp.thefacebook.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <a1880e4b-8659-7480-6260-61f30dd393cd@huaweicloud.com>
+Date:   Fri, 28 Apr 2023 10:16:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <CAABZP2xJRGhPmfB-PrfesQKzP7fsuZsj+3TewAiLLW8u=YK4dg@mail.gmail.com>
- <87cz3tylwx.fsf@mail.concordia> <CAABZP2zr=jypD7w_o18o95QEj1nkFugLcNH5sbuSAY-caBQoeQ@mail.gmail.com>
- <CAABZP2xVCQhizytn4H9Co7OU3UCSb_qNJaOszOawUFpeo=qpWQ@mail.gmail.com>
- <87v8hixbql.fsf@mail.concordia> <CAABZP2z=xu+07-y5fqFLidZz1VpSgrSwXa1mFHPb=b3Ezr3OtA@mail.gmail.com>
- <87wn1xquq0.fsf@mail.concordia>
-In-Reply-To: <87wn1xquq0.fsf@mail.concordia>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Thu, 27 Apr 2023 22:29:32 +0800
-Message-ID: <CAABZP2yS5=ZUwEZQ7iHkV0wDm_HgO8K-TeAhyJrZhavzKDa44Q@mail.gmail.com>
-Subject: Re: BUG : PowerPC RCU: torture test failed with __stack_chk_fail
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lance@osuosl.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230427042049.a6knzkteidm2dfm3@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgC3Iy5tLEtknJQ1Hw--.51049S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxur43AFyrKF45Kr4fKry3Arb_yoW5ur1Upa
+        yrKayUKr1kGFsFyr1vvws7tF12yan5J3sxKr1Dt34UCr98WFn3ZFyIqFW3uF18CryrCa4U
+        XF4jqry3u3Z5uaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9qb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2
+        xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+        WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
+        Jr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 10:13=E2=80=AFPM Michael Ellerman <mpe@ellerman.id.=
-au> wrote:
->
-> Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
-> > On Thu, Apr 27, 2023 at 11:09=E2=80=AFAM Michael Ellerman <mpe@ellerman=
-.id.au> wrote:
-> >>
-> >> Zhouyi Zhou <zhouzhouyi@gmail.com> writes:
-> >> > On Tue, Apr 25, 2023 at 2:01=E2=80=AFPM Zhouyi Zhou <zhouzhouyi@gmai=
-l.com> wrote:
-> >> >> On Tue, Apr 25, 2023 at 6:07=E2=80=AFAM Michael Ellerman <mpe@eller=
-man.id.au> wrote:
-> >> ...
-> >> >> >
-> >> >> > There's 12.2.0 here:
-> >> >> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x=
-86_64/12.2.0/
-> >> >> >   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/p=
-pc64le/12.2.0/
-> >>
-> >> > powerpc64le-linux-gnu-gcc-12 cross compiler on my Ubuntu 22.04 does
-> >> > not seem to have that issue as gcc-10 does
-> >>
-> >> OK. So so far it's only that GCC 10 that shows the problem.
-> >>
-> >> If you have time, you could use some of the other versions to narrow
-> >> down which versions show the bug:
-> >>
-> >>   https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ppc64l=
-e/
-> >>
-> >> There's an 11.0, 11.1 and 11.3 there, as well as 9.5 and so on.
-> > GCC test results (Tested on PPC VM of Open Source Lab of Oregon State
-> > University)
-> > gcc 9.4 (ubuntu native):          positive, show bug
-> > gcc 9.5 (download form [1]):   positive, show bug
-> > gcc 10.1 (download from [1]): positive, show bug
-> > gcc 10.3 (download from [1]): positive, show bug
-> > gcc 10.4 (download from [1]): positive, show bug
-> >
-> > gcc 11.0 (download from [1]): negative, no bug
-> > gcc 11.1 (download from [1]): negative, no bug
-> > gcc 11.3 (download from [1]): negative, no bug
-> > gcc 12.1 (download from [1]): negative, no bug
-> > gcc 12.2 (download from [1]): negative, no bug
->
-> Awesome work.
-Thank you for your encouragement ;-) ;-)
->
-> How are you testing for presence/absence of the bug? By running your
-> test and seeing if it crashes, or by looking at the generated code?
-Both
-I use gdb ./vmlinux; gdb)disassemble srcu_gp_start_if_needed to look
-up the generated assembly code
-and
-I use [1] to see if it crashes, if there is a bug, it always crashes
-very quickly (within 3 minutes)
-[1] http://140.211.169.189/0425/whilebash.sh
+Hi,
 
-Cheers
+On 4/27/2023 12:20 PM, Alexei Starovoitov wrote:
+> On Sun, Apr 23, 2023 at 09:55:24AM +0800, Hou Tao wrote:
+>>>> ./bench htab-mem --use-case $name --max-entries 16384 \
+>>>> 	--full 50 -d 7 -w 3 --producers=8 --prod-affinity=0-7
+>>>>
+>>>> | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
+>>>> | --                  | --         | --                   | --                |
+>>>> | no_op               | 1129       | 1.15                 | 1.15              |
+>>>> | overwrite           | 24.37      | 2.07                 | 2.97              |
+>>>> | batch_add_batch_del | 10.58      | 2.91                 | 3.36              |
+>>>> | add_del_on_diff_cpu | 13.14      | 380.66               | 633.99            |
+>>> large mem for diff_cpu case needs to be investigated.
+>> The main reason is that tasks-trace RCU GP is slow and there is only one
+>> inflight free callback, so the CPUs which only do element addition will allocate
+>> new memory from slab continuously and the CPUs which only do element deletion
+>> will free these elements continuously through call_tasks_trace_rcu(), but due to
+>> the slowness of tasks-trace RCU GP, these freed elements could not be freed back
+>> to slab subsystem timely.
+> I see. Now it makes sense. It's slow call_tasks_trace_rcu and not at all "memory can never be reused."
+> Please explain things clearly in commit log.
+Will fix the commit message.
 >
-> cheers
+>>>> +{
+>>>> +	__u64 *value;
+>>>> +
+>>>> +	if (ctx->from >= ctx->max)
+>>>> +		return 1;
+>>>> +
+>>>> +	value = bpf_map_lookup_elem(&array, &ctx->from);
+>>>> +	if (value)
+>>>> +		bpf_map_update_elem(&htab, &ctx->from, value, flags);
+>>> What is a point of doing lookup from giant array of en element with zero value
+>>> to copy it into htab?
+>>> Why not to use single zero inited elem for all htab ops?
+>> I want to check how does the different size of value effect the benchmark
+>> result, so I choose a variable-size value.
+> Not following. All elements of the array have the same size.
+> Are you saying you were not able to figure out how to supply a single 'value'
+> of variable size? Try array of max_entries=1.
+> Do not do unnecessary and confusing bpf_map_lookup_elem(&array, &ctx->from);.
+My bad. I misunderstood your meaning. Yes, even though the value size is
+variable, but using an array with only one element is enough for this
+benchmark.
+>
+>>> Each loop will run 16k times and every time you step += 4.
+>>> So 3/4 of these 16k runs it will be hitting if (ctx->from >= ctx->max) condition.
+>>> What are you measuring?
+>> As explained in the commit message, I am trying to let different deletion and
+>> deletion CPU pairs operate on the different subsets of hash-table elements.
+>> Assuming there are 16 elements in the htab and there are 8 CPUs and 8 threads,
+>> the following is the operation subset for each CPU:
+>>
+>> CPU 0:  0 4 8 12 (do deletion)
+>> CPU 1:  0 4 8 12 (do addition)
+>>
+>> CPU 2:  1 5 9 13
+>> CPU 3:  1 5 9 13
+>>
+>> CPU 4:  2 6 10 14
+>> CPU 5:  2 6 10 14
+>>
+>> CPU 6:  3 7 11 15
+>> CPU 7:  3 7 11 15
+> That part is clear, but
+>
+>>>> +	__sync_fetch_and_add(&loop_cnt, 1);
+> this doesn't match the rest. loop_cnt is inremented 4 times faster.
+> So it's not comparable to other tests.
+In the previous two cases, loop_cnt is increased when nr_entries /
+nr_thread elements are deleted and then added (or opposite). For
+add_del_on_diff_cpu case, loop_cnt will be increased twice when
+nr_entries / nr_thread * 2 are added and then deleted. So I think the
+result is roughly comparable to other tests.
+
+
