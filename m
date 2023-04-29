@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D404C77B7E
-	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 09:41:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F62C7EE24
+	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 09:41:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjD2Jlb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 29 Apr 2023 05:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
+        id S230450AbjD2Jlc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Apr 2023 05:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjD2Jla (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 29 Apr 2023 05:41:30 -0400
+        with ESMTP id S230329AbjD2Jlb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Apr 2023 05:41:31 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD12173D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77741981;
         Sat, 29 Apr 2023 02:41:28 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q7kxw5Grgz4f3tPf;
-        Sat, 29 Apr 2023 17:41:24 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q7kxv2mY8z4f3kpN;
+        Sat, 29 Apr 2023 17:41:23 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgD3rLBA5kxkK36NIQ--.13426S6;
-        Sat, 29 Apr 2023 17:41:25 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLBA5kxkK36NIQ--.13426S4;
+        Sat, 29 Apr 2023 17:41:22 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
@@ -32,31 +32,28 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: [RFC bpf-next v3 2/6] bpf: Pass bitwise flags to bpf_mem_alloc_init()
-Date:   Sat, 29 Apr 2023 18:12:11 +0800
-Message-Id: <20230429101215.111262-3-houtao@huaweicloud.com>
+Subject: [RFC bpf-next v3 0/6] Handle immediate reuse in bpf memory allocator
+Date:   Sat, 29 Apr 2023 18:12:09 +0800
+Message-Id: <20230429101215.111262-1-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20230429101215.111262-1-houtao@huaweicloud.com>
-References: <20230429101215.111262-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3rLBA5kxkK36NIQ--.13426S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr43Gw43ZFykuF13Wry7Awb_yoWrKF1UpF
-        WxGF40yr4qqFs7Ca17Grs7Aa45J340gw1IkayUWryrZry5Wr1DWr4kXry3XFZ09r4qka1f
-        ArnYgrW0934UXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
+X-CM-TRANSID: gCh0CgD3rLBA5kxkK36NIQ--.13426S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4DXrWktF1ktFW8AF1fJFb_yoW5tFyxpa
+        1fGw13Jr1qqrnrJwn7Arnrt3WrJw4kWry5KF4avr1Uu3yfXryxZrn2kF4FvF9xWFWxtFn8
+        Xr1v9wnxWa4rZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -65,143 +62,74 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Extend a boolean argument to a bitwise flags argument for
-bpf_mem_alloc_init(), so more new flags can be added later.
+Hi,
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- include/linux/bpf_mem_alloc.h | 8 +++++++-
- kernel/bpf/core.c             | 2 +-
- kernel/bpf/cpumask.c          | 2 +-
- kernel/bpf/hashtab.c          | 5 +++--
- kernel/bpf/memalloc.c         | 8 +++++++-
- 5 files changed, 19 insertions(+), 6 deletions(-)
+As discussed in v1, currently the freed objects in bpf memory allocator
+may be reused immediately by the new allocation, it introduces
+use-after-bpf-ma-free problem for non-preallocated hash map and makes
+lookup procedure return incorrect result. The immediate reuse also makes
+introducing new use case more difficult (e.g. qp-trie).
 
-diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
-index 3929be5743f4..148347950e16 100644
---- a/include/linux/bpf_mem_alloc.h
-+++ b/include/linux/bpf_mem_alloc.h
-@@ -12,6 +12,12 @@ struct bpf_mem_alloc {
- 	struct bpf_mem_caches __percpu *caches;
- 	struct bpf_mem_cache __percpu *cache;
- 	struct work_struct work;
-+	unsigned int flags;
-+};
-+
-+/* flags for bpf_mem_alloc_init() */
-+enum {
-+	BPF_MA_PERCPU = 1U << 0,
- };
- 
- /* 'size != 0' is for bpf_mem_alloc which manages fixed-size objects.
-@@ -21,7 +27,7 @@ struct bpf_mem_alloc {
-  * Alloc and free are done with bpf_mem_{alloc,free}() and the size of
-  * the returned object is given by the size argument of bpf_mem_alloc().
-  */
--int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
-+int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags);
- void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
- 
- /* kmalloc/kfree equivalent: */
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 7421487422d4..5c9622e8ca34 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2773,7 +2773,7 @@ static int __init bpf_global_ma_init(void)
- {
- 	int ret;
- 
--	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
-+	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, 0);
- 	bpf_global_ma_set = !ret;
- 	return ret;
- }
-diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-index 7efdf5d770ca..f40636796f75 100644
---- a/kernel/bpf/cpumask.c
-+++ b/kernel/bpf/cpumask.c
-@@ -445,7 +445,7 @@ static int __init cpumask_kfunc_init(void)
- 		},
- 	};
- 
--	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), false);
-+	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), 0);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &cpumask_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &cpumask_kfunc_set);
- 	return  ret ?: register_btf_id_dtor_kfuncs(cpumask_dtors,
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 00c253b84bf5..93009b94ac9b 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -576,12 +576,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 				goto free_prealloc;
- 		}
- 	} else {
--		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false);
-+		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, 0);
- 		if (err)
- 			goto free_map_locked;
- 		if (percpu) {
- 			err = bpf_mem_alloc_init(&htab->pcpu_ma,
--						 round_up(htab->map.value_size, 8), true);
-+						 round_up(htab->map.value_size, 8),
-+						 BPF_MA_PERCPU);
- 			if (err)
- 				goto free_map_locked;
- 		}
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 0668bcd7c926..072102476019 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -98,6 +98,7 @@ struct bpf_mem_cache {
- 	int free_cnt;
- 	int low_watermark, high_watermark, batch;
- 	int percpu_size;
-+	unsigned int flags;
- 
- 	struct rcu_head rcu;
- 	struct llist_head free_by_rcu;
-@@ -377,13 +378,14 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
-  * kmalloc/kfree. Max allocation size is 4096 in this case.
-  * This is bpf_dynptr and bpf_kptr use case.
-  */
--int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
-+int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
- {
- 	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
- 	struct bpf_mem_caches *cc, __percpu *pcc;
- 	struct bpf_mem_cache *c, __percpu *pc;
- 	struct obj_cgroup *objcg = NULL;
- 	int cpu, i, unit_size, percpu_size = 0;
-+	bool percpu = (flags & BPF_MA_PERCPU);
- 
- 	if (size) {
- 		pc = __alloc_percpu_gfp(sizeof(*pc), 8, GFP_KERNEL);
-@@ -406,9 +408,11 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
- 			c->unit_size = unit_size;
- 			c->objcg = objcg;
- 			c->percpu_size = percpu_size;
-+			c->flags = flags;
- 			prefill_mem_cache(c, cpu);
- 		}
- 		ma->cache = pc;
-+		ma->flags = flags;
- 		return 0;
- 	}
- 
-@@ -428,10 +432,12 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
- 			c = &cc->cache[i];
- 			c->unit_size = sizes[i];
- 			c->objcg = objcg;
-+			c->flags = flags;
- 			prefill_mem_cache(c, cpu);
- 		}
- 	}
- 	ma->caches = pcc;
-+	ma->flags = flags;
- 	return 0;
- }
- 
+The patch series tries to solve these problems by introducing
+BPF_MA_{REUSE|FREE}_AFTER_RCU_GP in bpf memory allocator. For
+REUSE_AFTER_GP, the freed objects are reused only after one RCU grace
+period and may be freed by bpf memory allocator after another
+RCU-tasks-trace grace period. So for bpf programs which care about reuse
+problem, these programs can use bpf_rcu_read_{lock,unlock}() to access
+these objects safely and for those which doesn't care, there will be
+safely use-after-bpf-ma-free because these objects have not been freed
+by bpf memory allocator. FREE_AFTER_GP behavior differently. Instead of
+making the freed elements being reusable after one RCU GP, it directly
+freed these elements back to slab after one RCU GP, so sleepable bpf
+program must use bpf_rcu_read_{lock,unlock}() to access elements
+allocated from FREE_AFTER_GP bpf memory allocator.
+
+Personally I prefer FREE_AFTER_RCU_GP because its implementation is much
+simpler compared with REUSE_AFTER_RCU and its memory usage is also better
+than REUSE_AFTER_GP. But its shortcoming is also obvious, so I want to get
+some feedback before putting in more effort. As usual, comments and
+suggestions are always welcome.
+
+Change Log:
+v3:
+ * add BPF_MA_FREE_AFTER_RCU_GP bpf memory allocator
+ * Update htab memory benchmark
+   * move the benchmark patch to the last patch
+   * remove array and useless bpf_map_lookup_elem(&array, ...) in bpf
+     programs
+   * add synchronization between addition CPU and deletion CPU for
+     add_del_on_diff_cpu case to prevent unnecessary loop
+   * add the benchmark result for "extra call_rcu + bpf ma"
+
+v2: https://lore.kernel.org/bpf/20230408141846.1878768-1-houtao@huaweicloud.com/
+ * add a benchmark for bpf memory allocator to compare between different
+   flavor of bpf memory allocator.
+ * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
+v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
+
+Hou Tao (6):
+  bpf: Factor out a common helper free_all()
+  bpf: Pass bitwise flags to bpf_mem_alloc_init()
+  bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+  bpf: Introduce BPF_MA_FREE_AFTER_RCU_GP
+  bpf: Add two module parameters in htab for memory benchmark
+  selftests/bpf: Add benchmark for bpf memory allocator
+
+ include/linux/bpf_mem_alloc.h                 |  10 +-
+ kernel/bpf/core.c                             |   2 +-
+ kernel/bpf/cpumask.c                          |   2 +-
+ kernel/bpf/hashtab.c                          |  43 +-
+ kernel/bpf/memalloc.c                         | 529 ++++++++++++++++--
+ tools/testing/selftests/bpf/Makefile          |   3 +
+ tools/testing/selftests/bpf/bench.c           |   4 +
+ .../selftests/bpf/benchs/bench_htab_mem.c     | 352 ++++++++++++
+ .../bpf/benchs/run_bench_htab_mem.sh          |  64 +++
+ .../selftests/bpf/progs/htab_mem_bench.c      | 135 +++++
+ 10 files changed, 1090 insertions(+), 54 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
+
 -- 
 2.29.2
 
