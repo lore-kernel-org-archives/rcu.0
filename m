@@ -2,117 +2,186 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68E70C77B61
-	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 02:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A24AFC77B60
+	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 06:18:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347423AbjD2B77 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Apr 2023 21:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
+        id S230298AbjD2GSq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Apr 2023 02:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347436AbjD2B7r (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Apr 2023 21:59:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995623AB9;
-        Fri, 28 Apr 2023 18:59:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B12E6462A;
-        Sat, 29 Apr 2023 01:59:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00301C4339E;
-        Sat, 29 Apr 2023 01:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682733561;
-        bh=Ae48q991+6sN+WpLvwffuwzxp3CKf3ahp86kBK08iQc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gyaxaVxarGTd0mpak5x9yx3B8v/eXuT00rBCtLeRdm80UwYfqeAWZyiRGt2PuHeBI
-         u3hmERV4/9OLZx0jVnMSSngyDp5uYGpQpEeOqLUbMrBmS6OmpHf2/smn0h88tvLHAg
-         51+tFaCTsnq5ry5FspKcK+nckQYVFaaTSa+KP1/lI7S5XrNfmjrbA+PM7Z8RYOVEYq
-         IISVfBBvf1Lf52zfMamoT8WTqdJYfxVZPF8xZQ90N9FivIrySn3hWYChxafjaqTelT
-         YhfREDksJC6pnyt0igFQHRxSX1G53NTrwLFvQza4pRpKxBZhhv24ULVFwcx5ExvQjl
-         BCg5MzfAwmbcw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zqiang <qiang1.zhang@intel.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, josh@joshtriplett.org,
-        rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/2] rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
-Date:   Fri, 28 Apr 2023 21:59:16 -0400
-Message-Id: <20230429015916.3027420-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230429015916.3027420-1-sashal@kernel.org>
-References: <20230429015916.3027420-1-sashal@kernel.org>
+        with ESMTP id S229978AbjD2GSp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Apr 2023 02:18:45 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4426F210B
+        for <rcu@vger.kernel.org>; Fri, 28 Apr 2023 23:18:44 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-559ded5e170so5049987b3.3
+        for <rcu@vger.kernel.org>; Fri, 28 Apr 2023 23:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1682749123; x=1685341123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IIfYcthJ+TPfJNRTmAdJqt9c2uvFhKicl3bxPihBf6I=;
+        b=U9jCNyGFy05B877UsZG+7hPr4wnRYw9yuxowqjyjfIXXMmg9nvuDcf03eaCYc0Yk87
+         hWKUlBxIdgRGeJlyht7hX3szJopjtFZXHZpT1IGnfdKM5Ngmhk+KkIqghTAJenUA/E5o
+         o3vao44b9fvEvvrgCoa2ob5U8MM97hc0/Vhck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682749123; x=1685341123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IIfYcthJ+TPfJNRTmAdJqt9c2uvFhKicl3bxPihBf6I=;
+        b=ULTD3hOc6/ewGReU6X3i++7cAtEVciFu7oWiMscTK0fO/eBgmHcDRM/yKGdKq6ztyF
+         Odj/H4His1MzpyRRBCfcH58hqx96upfDyCYW54DuKH43X7IE0VYbwdYdNPKzFQOSoczj
+         nZbAsLV72IQOZffAFuAMhiJUeerT236oLqHBZOXm1Zfjw+ovftoRiRY8+TAuUHIThx25
+         gjFE18IW6lYXgB/l7NFGS7E6z4uL3fhs/mII46uINmkHBY9RZciO/bHM2OZZNK0ntTRS
+         toLX0aBABTZKegrdRucf4TrLVOUkvnzLTc9lxOqXxXfWpIEN56YgpxtEfSKNoce1Pq/J
+         NZgQ==
+X-Gm-Message-State: AC+VfDxYx4/nIQyDDG6wVujVT4ubNWsG6owJSPxeOVtWPPUPCA0xoay5
+        D3kKYGDBEGtYm+I2O3iW8CZ1hxIT0ZX0mcVM/H+YGQ==
+X-Google-Smtp-Source: ACHHUZ5F+CbvRlgHnAOkwEAdJALwlrkCRZc0Z6GpZLDRmi4jzMJNVIo/lZCAdYw5NzYx3E6JKjm2rAN/BHqcPmmCzos=
+X-Received: by 2002:a81:4854:0:b0:54f:9e38:81c7 with SMTP id
+ v81-20020a814854000000b0054f9e3881c7mr6531424ywa.50.1682749123236; Fri, 28
+ Apr 2023 23:18:43 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20230414005309.GA2198310@google.com> <CAKwvOd=yQS+0oDC46Hc5D_V0JET8=xbQmAJrpBdg7c4i2EyqHg@mail.gmail.com>
+ <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
+ <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com> <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
+In-Reply-To: <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 29 Apr 2023 02:18:32 -0400
+Message-ID: <CAEXW_YRkkgx30Lo7NN=zyBCEAWaH8VSo+r=0ySA-D1iehUnoyA@mail.gmail.com>
+Subject: Re: clangd cannot handle tree_nocb.h
+To:     Fangrui Song <maskray@google.com>
+Cc:     Florent Revest <revest@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        rcu@vger.kernel.org, nathan@kernel.org, trix@redhat.com,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        paulmck@kernel.org, "revest@chromium.org" <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+Fangrui/Florent/David/All:
 
-[ Upstream commit 3c1566bca3f8349f12b75d0a2d5e4a20ad6262ec ]
+Sorry for the late reply, I got distracted.
 
-For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario can
-result in a NULL-pointer dereference:
+On Wed, Apr 19, 2023 at 4:02=E2=80=AFPM Fangrui Song <maskray@google.com> w=
+rote:
+>
+> On Wed, Apr 19, 2023 at 6:00=E2=80=AFAM Florent Revest <revest@google.com=
+> wrote:
+> >
+> > On Tue, Apr 18, 2023 at 6:28=E2=80=AFPM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > + Florent
+> >
+> > Hi there!
+> >
+> > > Joel, Florent is doing some cool stuff with clangd and kernels (check
+> > > out the demo at go/linux-kernel-vscode).  I'm pushing Florent to
+> >
+> > Apologies for folks outside Google, this is an internal link to a
+> > kernel dev setup I originally created for myself, then for my team and
+> > apparently more and more people are starting to use it internally. :)
+> > If there's enough appetite for it externally too, I'll try to
+> > open-source it someday. Anyway, in the context of this conversation,
+> > it's just something that uses clangd. :)
+> >
+> > > publish some of the cool stuff he's been working on externally becaus=
+e
+> > > it is awesome. ;)
+> > >
+> > > Florent, have you seen any such issues such as what Joel reported bel=
+ow?
+> >
+> > Yes, I've seen this problem a bunch of times. Afaiu, Clangd operates
+> > under the assumption that every source file is a valid compilation
+> > unit. My understanding is that it's generally a good practice to keep
+> > things that way and I wouldn't be surprised if the userspace Chrome
+> > code-base Joel saw enforces this (iirc, it's a rule for
+> > Google-internal C++ too, all headers must be interpretable
+> > independently).
+> >
+> > However, from the perspective of the C spec, anything can be included
+> > anywhere and a C file can only make sense if it's included
+> > after/before certain other things are defined/included. Spontaneously,
+> > I would call these ".inc" rather than ".h" or ".c" because I would
+> > expect a source file to be always valid and this suffix makes it
+> > clearer they depend on their context, but as a matter of fact source
+> > files that don't compile when interpreted individually are quite
+> > common in the kernel tree. Other examples that have been reported to
+> > me include a lot of kernel/sched/*, since many of these files
+> > (including .c files) are included from kernel/sched/build_policy.c in
+> > a specific order to form one big compilation unit.
+> >
+> > Unfortunately, I don't know of any solution. :( This feels like a
+> > limit of C or compile_commands.json to me. "compile commands" can not
+> > be enough to interpret any file, clangd would need a way to express
+> > "interpret this file as if it were included in that spot of that
+> > compilation unit" and maybe even need a bunch of heuristics to choose
+> > one such include spot.
+> >
+> > I don't know if clangd has any plan to address this and so far I've
+> > just lived with these error squiggles.
+> >
+>
+> Some information about Clang based language servers
+>
+> It's good practice to ensure that a header file is self-contained. If
+> not, for example, if a.c includes a.h, which is not self-contained,
+> a.h is generally compiled on its own (as if using clang [options] a.h)
+> to confine diagnostics/completion results to a.h and not to other
+> headers included by a.c.
+>
+> However, this design choice may cause language servers to emit
+> diagnostics that you don't see when building the project.
+>
+> For my tool ccls, the index file for an included file (e.g. a.h) is
+> computed when compiling the main source file (a.c). Therefore, if the
+> project builds successfully, the index is always accurate.
+>
+> Language servers usually have the limitation that only one
+> configuration of a main source file is recorded, e.g., you only get
+> index data for either clang -DA=3D1 a.c or clang -DA=3D2 a.c, not both.
+> This limitation exists due to technical challenges and practicality.
+> If a main source file has 10 configurations, when you edit the file,
+> do you compile it 10 times to get all indexes?
 
-           CPU1                                           CPU2
-rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
-  if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
-    raw_spin_lock_rcu_node
-    np = rcu_next_node_entry(t, rnp)
-    if (&t->rcu_node_entry == rnp->exp_tasks)
-      WRITE_ONCE(rnp->exp_tasks, np)
-      ....
-      raw_spin_unlock_irqrestore_rcu_node
-                                                    raw_spin_lock_irqsave_rcu_node
-                                                    t = list_entry(rnp->exp_tasks->prev,
-                                                        struct task_struct, rcu_node_entry)
-                                                    (if rnp->exp_tasks is NULL, this
-                                                       will dereference a NULL pointer)
+Indeed regarding the 10 configs points you brought up. The .h not
+being 1:1 with compilation units makes it a similar problem.
 
-The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
-field without holding the rcu_node structure's ->lock and CPU2 did
-not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
-Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NULL,
-then CPU2 might dereference that NULL pointer.
+For example, if I edit a.h and a.h is included in both b.c and c.c.
+Then, in order to know if edits I am making to a.h really will not
+lead to build errors, clangd has to compile both b.c and c.c
+separately. Why?
 
-This commit therefore holds the rcu_node structure's ->lock while
-accessing that structure's->exp_tasks field.
+Because a.h's inclusion in b.c may build successfully, but in c.c may
+not! This generalizes to any number of source files.
 
-[ paulmck: Apply Frederic Weisbecker feedback. ]
+However, I was thinking of a scheme such as the following:
 
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/rcu/tree_exp.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Have a file class Clangd.yaml in the source directory of a .h. In this
+file, clearly state how to build the .h. For the above example, for
+changes to a.h -- the YAML will say include a.h and then b.c , and
+then build the combined thing.  Then a script like the one building
+compile_commands.json can use the YAML to generate something useful
+for the .h  That may not work for every usecase such as the one David
+pointed out, but at least it will be somewhat useful for most use
+cases -- versus what we currently do for the issue (nothing).
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index ef6570137dcd5..401c1f331cafa 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -707,9 +707,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
- 	int ndetected = 0;
- 	struct task_struct *t;
- 
--	if (!READ_ONCE(rnp->exp_tasks))
--		return 0;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	if (!rnp->exp_tasks) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		return 0;
-+	}
- 	t = list_entry(rnp->exp_tasks->prev,
- 		       struct task_struct, rcu_node_entry);
- 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
--- 
-2.39.2
+But even if you edit the .h, the compiler errors typically end up
+showing up in the .c files. So even clangd says, there is a build
+error in the combined result -- can it really pinpoint where in the .h
+is the issue? My observation is clangd will point errors within the
+thing that is being compiled (i.e. the .c file) and not the include
+file.
 
+Other Thoughts?  On the process side of things, is there a place I can
+file a bug report where some of this may be interesting to a team
+working on this?
+
+ - Joel
