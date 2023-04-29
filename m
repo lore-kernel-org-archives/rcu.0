@@ -2,186 +2,206 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A24AFC77B60
-	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 06:18:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D404C77B7E
+	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 09:41:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbjD2GSq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 29 Apr 2023 02:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
+        id S230419AbjD2Jlb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Apr 2023 05:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjD2GSp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 29 Apr 2023 02:18:45 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4426F210B
-        for <rcu@vger.kernel.org>; Fri, 28 Apr 2023 23:18:44 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-559ded5e170so5049987b3.3
-        for <rcu@vger.kernel.org>; Fri, 28 Apr 2023 23:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1682749123; x=1685341123;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IIfYcthJ+TPfJNRTmAdJqt9c2uvFhKicl3bxPihBf6I=;
-        b=U9jCNyGFy05B877UsZG+7hPr4wnRYw9yuxowqjyjfIXXMmg9nvuDcf03eaCYc0Yk87
-         hWKUlBxIdgRGeJlyht7hX3szJopjtFZXHZpT1IGnfdKM5Ngmhk+KkIqghTAJenUA/E5o
-         o3vao44b9fvEvvrgCoa2ob5U8MM97hc0/Vhck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682749123; x=1685341123;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IIfYcthJ+TPfJNRTmAdJqt9c2uvFhKicl3bxPihBf6I=;
-        b=ULTD3hOc6/ewGReU6X3i++7cAtEVciFu7oWiMscTK0fO/eBgmHcDRM/yKGdKq6ztyF
-         Odj/H4His1MzpyRRBCfcH58hqx96upfDyCYW54DuKH43X7IE0VYbwdYdNPKzFQOSoczj
-         nZbAsLV72IQOZffAFuAMhiJUeerT236oLqHBZOXm1Zfjw+ovftoRiRY8+TAuUHIThx25
-         gjFE18IW6lYXgB/l7NFGS7E6z4uL3fhs/mII46uINmkHBY9RZciO/bHM2OZZNK0ntTRS
-         toLX0aBABTZKegrdRucf4TrLVOUkvnzLTc9lxOqXxXfWpIEN56YgpxtEfSKNoce1Pq/J
-         NZgQ==
-X-Gm-Message-State: AC+VfDxYx4/nIQyDDG6wVujVT4ubNWsG6owJSPxeOVtWPPUPCA0xoay5
-        D3kKYGDBEGtYm+I2O3iW8CZ1hxIT0ZX0mcVM/H+YGQ==
-X-Google-Smtp-Source: ACHHUZ5F+CbvRlgHnAOkwEAdJALwlrkCRZc0Z6GpZLDRmi4jzMJNVIo/lZCAdYw5NzYx3E6JKjm2rAN/BHqcPmmCzos=
-X-Received: by 2002:a81:4854:0:b0:54f:9e38:81c7 with SMTP id
- v81-20020a814854000000b0054f9e3881c7mr6531424ywa.50.1682749123236; Fri, 28
- Apr 2023 23:18:43 -0700 (PDT)
+        with ESMTP id S230321AbjD2Jla (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Apr 2023 05:41:30 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD12173D;
+        Sat, 29 Apr 2023 02:41:28 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q7kxw5Grgz4f3tPf;
+        Sat, 29 Apr 2023 17:41:24 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLBA5kxkK36NIQ--.13426S6;
+        Sat, 29 Apr 2023 17:41:25 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: [RFC bpf-next v3 2/6] bpf: Pass bitwise flags to bpf_mem_alloc_init()
+Date:   Sat, 29 Apr 2023 18:12:11 +0800
+Message-Id: <20230429101215.111262-3-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20230429101215.111262-1-houtao@huaweicloud.com>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
-References: <20230414005309.GA2198310@google.com> <CAKwvOd=yQS+0oDC46Hc5D_V0JET8=xbQmAJrpBdg7c4i2EyqHg@mail.gmail.com>
- <CAKwvOdk+D6HuWwAH3EJtwDyPqoiP+2z62ek2hnmbhDV2CJwnbw@mail.gmail.com>
- <CALGbS4V+x1JkiPL2o59LgtbSQhzg_RKM5TYE7i7qZx0qz23y-g@mail.gmail.com> <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
-In-Reply-To: <CAFP8O3KQRbmgyvuyuxNOa6TZ7MawN7YoGHvpFQ=oibEo3aUfDQ@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sat, 29 Apr 2023 02:18:32 -0400
-Message-ID: <CAEXW_YRkkgx30Lo7NN=zyBCEAWaH8VSo+r=0ySA-D1iehUnoyA@mail.gmail.com>
-Subject: Re: clangd cannot handle tree_nocb.h
-To:     Fangrui Song <maskray@google.com>
-Cc:     Florent Revest <revest@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        rcu@vger.kernel.org, nathan@kernel.org, trix@redhat.com,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        paulmck@kernel.org, "revest@chromium.org" <revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3rLBA5kxkK36NIQ--.13426S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr43Gw43ZFykuF13Wry7Awb_yoWrKF1UpF
+        WxGF40yr4qqFs7Ca17Grs7Aa45J340gw1IkayUWryrZry5Wr1DWr4kXry3XFZ09r4qka1f
+        ArnYgrW0934UXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Fangrui/Florent/David/All:
+From: Hou Tao <houtao1@huawei.com>
 
-Sorry for the late reply, I got distracted.
+Extend a boolean argument to a bitwise flags argument for
+bpf_mem_alloc_init(), so more new flags can be added later.
 
-On Wed, Apr 19, 2023 at 4:02=E2=80=AFPM Fangrui Song <maskray@google.com> w=
-rote:
->
-> On Wed, Apr 19, 2023 at 6:00=E2=80=AFAM Florent Revest <revest@google.com=
-> wrote:
-> >
-> > On Tue, Apr 18, 2023 at 6:28=E2=80=AFPM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > + Florent
-> >
-> > Hi there!
-> >
-> > > Joel, Florent is doing some cool stuff with clangd and kernels (check
-> > > out the demo at go/linux-kernel-vscode).  I'm pushing Florent to
-> >
-> > Apologies for folks outside Google, this is an internal link to a
-> > kernel dev setup I originally created for myself, then for my team and
-> > apparently more and more people are starting to use it internally. :)
-> > If there's enough appetite for it externally too, I'll try to
-> > open-source it someday. Anyway, in the context of this conversation,
-> > it's just something that uses clangd. :)
-> >
-> > > publish some of the cool stuff he's been working on externally becaus=
-e
-> > > it is awesome. ;)
-> > >
-> > > Florent, have you seen any such issues such as what Joel reported bel=
-ow?
-> >
-> > Yes, I've seen this problem a bunch of times. Afaiu, Clangd operates
-> > under the assumption that every source file is a valid compilation
-> > unit. My understanding is that it's generally a good practice to keep
-> > things that way and I wouldn't be surprised if the userspace Chrome
-> > code-base Joel saw enforces this (iirc, it's a rule for
-> > Google-internal C++ too, all headers must be interpretable
-> > independently).
-> >
-> > However, from the perspective of the C spec, anything can be included
-> > anywhere and a C file can only make sense if it's included
-> > after/before certain other things are defined/included. Spontaneously,
-> > I would call these ".inc" rather than ".h" or ".c" because I would
-> > expect a source file to be always valid and this suffix makes it
-> > clearer they depend on their context, but as a matter of fact source
-> > files that don't compile when interpreted individually are quite
-> > common in the kernel tree. Other examples that have been reported to
-> > me include a lot of kernel/sched/*, since many of these files
-> > (including .c files) are included from kernel/sched/build_policy.c in
-> > a specific order to form one big compilation unit.
-> >
-> > Unfortunately, I don't know of any solution. :( This feels like a
-> > limit of C or compile_commands.json to me. "compile commands" can not
-> > be enough to interpret any file, clangd would need a way to express
-> > "interpret this file as if it were included in that spot of that
-> > compilation unit" and maybe even need a bunch of heuristics to choose
-> > one such include spot.
-> >
-> > I don't know if clangd has any plan to address this and so far I've
-> > just lived with these error squiggles.
-> >
->
-> Some information about Clang based language servers
->
-> It's good practice to ensure that a header file is self-contained. If
-> not, for example, if a.c includes a.h, which is not self-contained,
-> a.h is generally compiled on its own (as if using clang [options] a.h)
-> to confine diagnostics/completion results to a.h and not to other
-> headers included by a.c.
->
-> However, this design choice may cause language servers to emit
-> diagnostics that you don't see when building the project.
->
-> For my tool ccls, the index file for an included file (e.g. a.h) is
-> computed when compiling the main source file (a.c). Therefore, if the
-> project builds successfully, the index is always accurate.
->
-> Language servers usually have the limitation that only one
-> configuration of a main source file is recorded, e.g., you only get
-> index data for either clang -DA=3D1 a.c or clang -DA=3D2 a.c, not both.
-> This limitation exists due to technical challenges and practicality.
-> If a main source file has 10 configurations, when you edit the file,
-> do you compile it 10 times to get all indexes?
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ include/linux/bpf_mem_alloc.h | 8 +++++++-
+ kernel/bpf/core.c             | 2 +-
+ kernel/bpf/cpumask.c          | 2 +-
+ kernel/bpf/hashtab.c          | 5 +++--
+ kernel/bpf/memalloc.c         | 8 +++++++-
+ 5 files changed, 19 insertions(+), 6 deletions(-)
 
-Indeed regarding the 10 configs points you brought up. The .h not
-being 1:1 with compilation units makes it a similar problem.
+diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
+index 3929be5743f4..148347950e16 100644
+--- a/include/linux/bpf_mem_alloc.h
++++ b/include/linux/bpf_mem_alloc.h
+@@ -12,6 +12,12 @@ struct bpf_mem_alloc {
+ 	struct bpf_mem_caches __percpu *caches;
+ 	struct bpf_mem_cache __percpu *cache;
+ 	struct work_struct work;
++	unsigned int flags;
++};
++
++/* flags for bpf_mem_alloc_init() */
++enum {
++	BPF_MA_PERCPU = 1U << 0,
+ };
+ 
+ /* 'size != 0' is for bpf_mem_alloc which manages fixed-size objects.
+@@ -21,7 +27,7 @@ struct bpf_mem_alloc {
+  * Alloc and free are done with bpf_mem_{alloc,free}() and the size of
+  * the returned object is given by the size argument of bpf_mem_alloc().
+  */
+-int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
++int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags);
+ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
+ 
+ /* kmalloc/kfree equivalent: */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 7421487422d4..5c9622e8ca34 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2773,7 +2773,7 @@ static int __init bpf_global_ma_init(void)
+ {
+ 	int ret;
+ 
+-	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
++	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, 0);
+ 	bpf_global_ma_set = !ret;
+ 	return ret;
+ }
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index 7efdf5d770ca..f40636796f75 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -445,7 +445,7 @@ static int __init cpumask_kfunc_init(void)
+ 		},
+ 	};
+ 
+-	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), false);
++	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), 0);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &cpumask_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &cpumask_kfunc_set);
+ 	return  ret ?: register_btf_id_dtor_kfuncs(cpumask_dtors,
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 00c253b84bf5..93009b94ac9b 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -576,12 +576,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 				goto free_prealloc;
+ 		}
+ 	} else {
+-		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false);
++		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, 0);
+ 		if (err)
+ 			goto free_map_locked;
+ 		if (percpu) {
+ 			err = bpf_mem_alloc_init(&htab->pcpu_ma,
+-						 round_up(htab->map.value_size, 8), true);
++						 round_up(htab->map.value_size, 8),
++						 BPF_MA_PERCPU);
+ 			if (err)
+ 				goto free_map_locked;
+ 		}
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 0668bcd7c926..072102476019 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -98,6 +98,7 @@ struct bpf_mem_cache {
+ 	int free_cnt;
+ 	int low_watermark, high_watermark, batch;
+ 	int percpu_size;
++	unsigned int flags;
+ 
+ 	struct rcu_head rcu;
+ 	struct llist_head free_by_rcu;
+@@ -377,13 +378,14 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
+  * kmalloc/kfree. Max allocation size is 4096 in this case.
+  * This is bpf_dynptr and bpf_kptr use case.
+  */
+-int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
++int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
+ {
+ 	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+ 	struct bpf_mem_caches *cc, __percpu *pcc;
+ 	struct bpf_mem_cache *c, __percpu *pc;
+ 	struct obj_cgroup *objcg = NULL;
+ 	int cpu, i, unit_size, percpu_size = 0;
++	bool percpu = (flags & BPF_MA_PERCPU);
+ 
+ 	if (size) {
+ 		pc = __alloc_percpu_gfp(sizeof(*pc), 8, GFP_KERNEL);
+@@ -406,9 +408,11 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 			c->unit_size = unit_size;
+ 			c->objcg = objcg;
+ 			c->percpu_size = percpu_size;
++			c->flags = flags;
+ 			prefill_mem_cache(c, cpu);
+ 		}
+ 		ma->cache = pc;
++		ma->flags = flags;
+ 		return 0;
+ 	}
+ 
+@@ -428,10 +432,12 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 			c = &cc->cache[i];
+ 			c->unit_size = sizes[i];
+ 			c->objcg = objcg;
++			c->flags = flags;
+ 			prefill_mem_cache(c, cpu);
+ 		}
+ 	}
+ 	ma->caches = pcc;
++	ma->flags = flags;
+ 	return 0;
+ }
+ 
+-- 
+2.29.2
 
-For example, if I edit a.h and a.h is included in both b.c and c.c.
-Then, in order to know if edits I am making to a.h really will not
-lead to build errors, clangd has to compile both b.c and c.c
-separately. Why?
-
-Because a.h's inclusion in b.c may build successfully, but in c.c may
-not! This generalizes to any number of source files.
-
-However, I was thinking of a scheme such as the following:
-
-Have a file class Clangd.yaml in the source directory of a .h. In this
-file, clearly state how to build the .h. For the above example, for
-changes to a.h -- the YAML will say include a.h and then b.c , and
-then build the combined thing.  Then a script like the one building
-compile_commands.json can use the YAML to generate something useful
-for the .h  That may not work for every usecase such as the one David
-pointed out, but at least it will be somewhat useful for most use
-cases -- versus what we currently do for the issue (nothing).
-
-But even if you edit the .h, the compiler errors typically end up
-showing up in the .c files. So even clangd says, there is a build
-error in the combined result -- can it really pinpoint where in the .h
-is the issue? My observation is clangd will point errors within the
-thing that is being compiled (i.e. the .c file) and not the include
-file.
-
-Other Thoughts?  On the process side of things, is there a place I can
-file a bug report where some of this may be interesting to a team
-working on this?
-
- - Joel
