@@ -2,46 +2,49 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75F8DC77B61
-	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 01:58:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D13DC7EE23
+	for <rcu@archiver.kernel.org>; Sat, 29 Apr 2023 01:59:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347206AbjD2B65 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Apr 2023 21:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
+        id S1347328AbjD2B7B (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 28 Apr 2023 21:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347158AbjD2B6z (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Apr 2023 21:58:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EE11738;
-        Fri, 28 Apr 2023 18:58:54 -0700 (PDT)
+        with ESMTP id S1347123AbjD2B67 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 28 Apr 2023 21:58:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA3F1738;
+        Fri, 28 Apr 2023 18:58:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F7FE6413C;
-        Sat, 29 Apr 2023 01:58:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FD7C433EF;
-        Sat, 29 Apr 2023 01:58:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA3876413C;
+        Sat, 29 Apr 2023 01:58:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ECCDC433EF;
+        Sat, 29 Apr 2023 01:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682733533;
-        bh=g8i1cvnrJTprc6jL7uG9qN1A5swdSdlan7Q+tB1GZx0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AHgk7+ogGSEwhK12mMTIkn9Z/hVe3tsmcSwUiZb/oPzO1ZdNGwmdvEMQC5XhFuoyB
-         vj3sFfOhV2qZCykpdHFtv6iorv9yhVIW5H/gNMnTqBXG3nbM/3Dm6ucJYpF267PbqV
-         ismdIRyi7Q3v68lhyOr6wxzFXwWlecZTiSgoDfalDocn+UN5LAnxp5/ZTSevAE+fTp
-         m6YPa65lHf54jfVTuPXfFLw3yAeVkNvmmdp/7lv5uZL+mEFyX0plTprboHWC/bmj//
-         m6VqpkCbe1W82kAfqUyuiAv3vB/Z6R44/KPm8S38L5Kd+XPQszGgPxA9KZmfyK9214
-         t4nBBTrjIycjw==
+        s=k20201202; t=1682733537;
+        bh=HUBJV5lPHIy7af22dGrFmD9r6RfTTEyiamzo5QSE9y0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FWU2CU9rJxcWLAk6tf6rcUcpu2lbHpIDTPHWvBOFltuoHdUH7LakBrhtbatIBl/de
+         3MYBVDr44nlisVRMkMI5f8dDMrcIxrg3FCLq2SRlE+ceDiO0j8xTpmZvyWf5MYfSSD
+         CU8rayUNDe7+jaB34HmDJZAUeyaZrBAN8hRCJqY6QpUinrCy8rvzFz0slXiUxYDLfr
+         UTzSrtdZB1Vi9lsKhkHeEKUD2H/9szSID8e3fo5W3lOzwIH27rQOw19AAmMk5S4gGJ
+         xUbQtJxLPo7r2daYEy546yjOYdVDSCbjXd7WpQQVF59Ka1hxIZ3Be1YjMuGbEdDfrS
+         yrcSXd6/nafDw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, dave@stgolabs.net,
-        josh@joshtriplett.org, frederic@kernel.org,
-        quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.3 1/3] refscale: Move shutdown from wait_event() to wait_event_idle()
-Date:   Fri, 28 Apr 2023 21:58:48 -0400
-Message-Id: <20230429015850.3027243-1-sashal@kernel.org>
+Cc:     Zqiang <qiang1.zhang@intel.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, josh@joshtriplett.org,
+        rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.3 3/3] rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
+Date:   Fri, 28 Apr 2023 21:58:50 -0400
+Message-Id: <20230429015850.3027243-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230429015850.3027243-1-sashal@kernel.org>
+References: <20230429015850.3027243-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -50,40 +53,66 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zqiang <qiang1.zhang@intel.com>
 
-[ Upstream commit 6bc6e6b27524304aadb9c04611ddb1c84dd7617a ]
+[ Upstream commit 3c1566bca3f8349f12b75d0a2d5e4a20ad6262ec ]
 
-The ref_scale_shutdown() kthread/function uses wait_event() to wait for
-the refscale test to complete.  However, although the read-side tests
-are normally extremely fast, there is no law against specifying a very
-large value for the refscale.loops module parameter or against having
-a slow read-side primitive.  Either way, this might well trigger the
-hung-task timeout.
+For kernels built with CONFIG_PREEMPT_RCU=y, the following scenario can
+result in a NULL-pointer dereference:
 
-This commit therefore replaces those wait_event() calls with calls to
-wait_event_idle(), which do not trigger the hung-task timeout.
+           CPU1                                           CPU2
+rcu_preempt_deferred_qs_irqrestore                rcu_print_task_exp_stall
+  if (special.b.blocked)                            READ_ONCE(rnp->exp_tasks) != NULL
+    raw_spin_lock_rcu_node
+    np = rcu_next_node_entry(t, rnp)
+    if (&t->rcu_node_entry == rnp->exp_tasks)
+      WRITE_ONCE(rnp->exp_tasks, np)
+      ....
+      raw_spin_unlock_irqrestore_rcu_node
+                                                    raw_spin_lock_irqsave_rcu_node
+                                                    t = list_entry(rnp->exp_tasks->prev,
+                                                        struct task_struct, rcu_node_entry)
+                                                    (if rnp->exp_tasks is NULL, this
+                                                       will dereference a NULL pointer)
 
+The problem is that CPU2 accesses the rcu_node structure's->exp_tasks
+field without holding the rcu_node structure's ->lock and CPU2 did
+not observe CPU1's change to rcu_node structure's ->exp_tasks in time.
+Therefore, if CPU1 sets rcu_node structure's->exp_tasks pointer to NULL,
+then CPU2 might dereference that NULL pointer.
+
+This commit therefore holds the rcu_node structure's ->lock while
+accessing that structure's->exp_tasks field.
+
+[ paulmck: Apply Frederic Weisbecker feedback. ]
+
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/refscale.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree_exp.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index afa3e1a2f6902..1970ce5f22d40 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -1031,7 +1031,7 @@ ref_scale_cleanup(void)
- static int
- ref_scale_shutdown(void *arg)
- {
--	wait_event(shutdown_wq, shutdown_start);
-+	wait_event_idle(shutdown_wq, shutdown_start);
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 249c2967d9e6c..54e8fb258c98d 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -802,9 +802,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+ 	int ndetected = 0;
+ 	struct task_struct *t;
  
- 	smp_mb(); // Wake before output.
- 	ref_scale_cleanup();
+-	if (!READ_ONCE(rnp->exp_tasks))
+-		return 0;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	if (!rnp->exp_tasks) {
++		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++		return 0;
++	}
+ 	t = list_entry(rnp->exp_tasks->prev,
+ 		       struct task_struct, rcu_node_entry);
+ 	list_for_each_entry_continue(t, &rnp->blkd_tasks, rcu_node_entry) {
 -- 
 2.39.2
 
