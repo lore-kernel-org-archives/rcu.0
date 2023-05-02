@@ -2,201 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13858C77B7C
-	for <rcu@archiver.kernel.org>; Tue,  2 May 2023 00:06:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67260C77B73
+	for <rcu@archiver.kernel.org>; Tue,  2 May 2023 13:42:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjEBAGg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 1 May 2023 20:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
+        id S234469AbjEBNmP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 2 May 2023 09:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjEBAGf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 1 May 2023 20:06:35 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 01 May 2023 17:06:34 PDT
-Received: from out-60.mta0.migadu.com (out-60.mta0.migadu.com [91.218.175.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8683335AE
-        for <rcu@vger.kernel.org>; Mon,  1 May 2023 17:06:34 -0700 (PDT)
-Message-ID: <8e801bce-6ee2-fc9e-0c4a-9d0e2f851562@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682985564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wIbB9X6GlBEHv6K2Bt2Cy6Fgauc010RYguB63Du79U0=;
-        b=NeP+84tBz7QVOt3C184JHYLD7wmWRTTl8R0ZhLTkHPG6WWlFGjGV3b62Vi9RojaRn556Ag
-        wW33M2Whnz04/k2G5OWhltY0vvQDozyMxygi1P0PyfYELzAKUAbvD+I8iN7DPjv1JJcKYO
-        1IdlrfrcfsAtgB17VlDb+ELQu8QTYBg=
-Date:   Mon, 1 May 2023 16:59:18 -0700
+        with ESMTP id S234519AbjEBNl6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 2 May 2023 09:41:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D250A6E94;
+        Tue,  2 May 2023 06:41:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3211624B0;
+        Tue,  2 May 2023 13:40:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24A7AC433D2;
+        Tue,  2 May 2023 13:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683034819;
+        bh=kkOAvtB147zyYeIk9DHSpxKkoZSq/1ixzv0pWWTPA0A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JgZBjw47jwJCQ3q1712ittRHOs1GJnaJKnNUYnrxe9KkqhHw7avOmZ18wctzrZ3nY
+         /AWbfuptRm+xJb30elet85pEX9EGaWBZvutGMWgVDnp2YfSRupOiQcQBAanmBekO3M
+         el+2plAKDxP4+wXTJ78t1wEd5fr1bQ1DNMAIVDTCbUFgrCK2K+44nkpv8G1qbenVvz
+         Xx1iaShLQ/sfCj7QJtZdbEGxdFLQQaoEjcsHd5hNviUUTzHjBy5ThXatBCPDqAnzky
+         rC7jrfqf6Uth4UIEpexuqvbToxoQqM1bHNd+XjpDQYkBk5R3j+q5ku7Qoa6WsfLWA3
+         B1tSLGkWw3+8g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B3F3B15405AD; Tue,  2 May 2023 06:40:18 -0700 (PDT)
+Date:   Tue, 2 May 2023 06:40:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     zhouzhouyi@gmail.com
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, lance@osuosl.org
+Subject: Re: [PATCH V2] rcu/torture replace wait_event with wait_event_idle
+Message-ID: <783a1e86-d625-4d8b-9b7c-0531b11b9290@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <1682985701-19914-1-git-send-email-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
-Content-Language: en-US
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com, bpf@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <20230429101215.111262-1-houtao@huaweicloud.com>
- <20230429101215.111262-4-houtao@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230429101215.111262-4-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1682985701-19914-1-git-send-email-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 4/29/23 3:12 AM, Hou Tao wrote:
-> +static void bpf_ma_prepare_reuse_work(struct work_struct *work)
-> +{
-> +	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, reuse_work);
-> +	struct llist_node *head, *tail, *llnode, *tmp;
-> +	struct bpf_reuse_batch *batch;
-> +	unsigned long flags;
-> +	bool do_free;
-> +
-> +	local_irq_save(flags);
-> +	/* When CPU is offline, the running CPU may be different with
-> +	 * the CPU which submitted the work. When these two CPUs are the same,
-> +	 * kworker may be interrupted by NMI, so increase active to protect
-> +	 * again such concurrency.
-> +	 */
-> +	if (c->cpu == smp_processor_id())
-> +		WARN_ON_ONCE(local_inc_return(&c->active) != 1);
-> +	raw_spin_lock(&c->reuse_lock);
-> +	head = __llist_del_all(&c->prepare_reuse_head);
-> +	tail = c->prepare_reuse_tail;
-> +	c->prepare_reuse_tail = NULL;
-> +	c->prepare_reuse_cnt = 0;
-> +	if (c->cpu == smp_processor_id())
-> +		local_dec(&c->active);
-> +
-> +	/* Try to free elements in reusable list. Before these elements are
-> +	 * freed in RCU cb, these element will still be available for reuse.
-> +	 */
-> +	do_free = bpf_ma_try_free_reuse_objs(c);
-> +	raw_spin_unlock(&c->reuse_lock);
-> +	local_irq_restore(flags);
-> +
-> +	if (do_free)
-> +		call_rcu_tasks_trace(&c->rcu, bpf_ma_free_reusable_cb);
-> +
-> +	llist_for_each_safe(llnode, tmp, llist_del_all(&c->free_llist_extra)) {
-> +		if (!head)
-> +			tail = llnode;
-> +		llnode->next = head;
-> +		head = llnode->next;
-> +	}
-> +	/* Draining is in progress ? */
-> +	if (!head) {
-> +		/* kworker completes and no RCU callback */
-> +		atomic_dec(&c->reuse_cb_in_progress);
-> +		return;
-> +	}
-> +
-> +	batch = kmalloc(sizeof(*batch), GFP_KERNEL);
-> +	if (!batch) {
-> +		synchronize_rcu_expedited();
-> +		bpf_ma_add_to_reuse_ready_or_free(c, head, tail);
-> +		/* kworker completes and no RCU callback */
-> +		atomic_dec(&c->reuse_cb_in_progress);
-> +		return;
-> +	}
-> +
-> +	batch->c = c;
-> +	batch->head = head;
-> +	batch->tail = tail;
-> +	call_rcu(&batch->rcu, bpf_ma_reuse_cb);
-> +}
-> +
-> +static void notrace wait_gp_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
-> +{
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
-> +	/* In case a NMI-context bpf program is also freeing object. */
-> +	if (local_inc_return(&c->active) == 1) {
-> +		bool try_queue_work = false;
-> +
-> +		/* kworker may remove elements from prepare_reuse_head */
-> +		raw_spin_lock(&c->reuse_lock);
-> +		if (llist_empty(&c->prepare_reuse_head))
-> +			c->prepare_reuse_tail = llnode;
-> +		__llist_add(llnode, &c->prepare_reuse_head);
-> +		if (++c->prepare_reuse_cnt > c->high_watermark) {
-> +			/* Zero out prepare_reuse_cnt early to prevent
-> +			 * unnecessary queue_work().
-> +			 */
-> +			c->prepare_reuse_cnt = 0;
-> +			try_queue_work = true;
-> +		}
-> +		raw_spin_unlock(&c->reuse_lock);
-> +
-> +		if (try_queue_work && !work_pending(&c->reuse_work)) {
-> +			/* Use reuse_cb_in_progress to indicate there is
-> +			 * inflight reuse kworker or reuse RCU callback.
-> +			 */
-> +			atomic_inc(&c->reuse_cb_in_progress);
-> +			/* Already queued */
-> +			if (!queue_work(bpf_ma_wq, &c->reuse_work))
+On Tue, May 02, 2023 at 08:01:41AM +0800, zhouzhouyi@gmail.com wrote:
+> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> 
+> In kfree_rcu_test, kfree_scale_shutdown will be detected as hung task
+> if kfree_loops is too big. Replace wait_event with wait_event_idle
+> to avoid false positive.
+> 
+> Tested in the PPC VM of Open Source Lab of Oregon State University.
+> 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>    
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>                    
 
-queue_work will be called from a bpf program (e.g. bpf_mem_cache_free -> 
-unit_free -> queue_work). Is it safe from recursion and deadlock?
-eg. what if a tracing bpf prog is attached to some functions in workqueue.c 
-after acquiring a workqueue related spin lock and that tracing bpf prog is doing 
-unit_free?
-Not a workqueue expert. Asking because it is not obvious to me considering there 
-is a lot of ground to cover in workqueue.c.
+Good catch, thank you!
 
-I wonder what happen to the current bpf memalloc approach to postpone work to 
-irq work. v2 mentioned it does not work well. Did you figure out why?
+However, this commit beat you to it:
 
-> +				atomic_dec(&c->reuse_cb_in_progress);
-> +		}
-> +	} else {
-> +		llist_add(llnode, &c->free_llist_extra);
-> +	}
-> +	local_dec(&c->active);
-> +	local_irq_restore(flags);
-> +}
-> +
->   /* Though 'ptr' object could have been allocated on a different cpu
->    * add it to the free_llist of the current cpu.
->    * Let kfree() logic deal with it when it's later called from irq_work.
->    */
-> -static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
-> +static void notrace immediate_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
->   {
-> -	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
->   	unsigned long flags;
->   	int cnt = 0;
->   
-> -	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
-> -
->   	local_irq_save(flags);
->   	if (local_inc_return(&c->active) == 1) {
->   		__llist_add(llnode, &c->free_llist);
-> @@ -633,6 +910,18 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
->   		irq_work_raise(c);
->   }
->   
-> +static inline void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
-> +{
-> +	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
-> +
-> +	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
-> +
-> +	if (c->flags & BPF_MA_REUSE_AFTER_RCU_GP)
-> +		wait_gp_reuse_free(c, llnode);
-> +	else
-> +		immediate_reuse_free(c, llnode);
-> +}
-> +
+ef1ef3d47677 ("rcuscale: Move shutdown from wait_event() to wait_event_idle()")
 
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcuscale.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 91fb5905a008..d99c586939d1 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -771,7 +771,7 @@ kfree_scale_cleanup(void)
+>  static int
+>  kfree_scale_shutdown(void *arg)
+>  {
+> -	wait_event(shutdown_wq,
+> +	wait_event_idle(shutdown_wq,
+>  		   atomic_read(&n_kfree_scale_thread_ended) >= kfree_nrealthreads);
+>  
+>  	smp_mb(); /* Wake before output. */
+> -- 
+> 2.34.1
+> 
