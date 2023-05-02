@@ -2,97 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87EE8C77B73
-	for <rcu@archiver.kernel.org>; Sun, 30 Apr 2023 22:50:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01CAFC77B73
+	for <rcu@archiver.kernel.org>; Tue,  2 May 2023 00:01:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbjD3Wuq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 30 Apr 2023 18:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
+        id S229582AbjEBABz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 1 May 2023 20:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjD3Wuq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 30 Apr 2023 18:50:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589071BF
-        for <rcu@vger.kernel.org>; Sun, 30 Apr 2023 15:50:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E954B60C89
-        for <rcu@vger.kernel.org>; Sun, 30 Apr 2023 22:50:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53170C433D2;
-        Sun, 30 Apr 2023 22:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682895044;
-        bh=3g0CIz7HdF6c+jvvx4avkPu/+/MlcK3zaq0Hjsd7AyU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ez7q//DU6a90ptViE7sTes0fcKWCq2lmtuHRFkiKU5iTwCjIIPj5HggLrBExEhyna
-         y2IOgM0cTZt5G6Gu3zbY2Ig7cvCM8OcvBNYBVoz0PSGnvUPj5BaA2JKpMeITN/cHRr
-         8sD4NI/+/aVdXalucsTgitGjVAgrfynVuXABqcF+Wj6oOCXWQuBbQz8ZBbcr8+X3an
-         Yv3Eoqn7ZBQGmMHjO6/seCo2QXgVXPzfOJ1PS80AXT9KfO6mtzue9oAdzFhwigw28r
-         a21iCNwL5VMrPfgnrBXZexOQxVLWg86yPEk8jSxcAWuhbVkWp7pAM65zaWH2JTJ3wu
-         llMVZhXumrpFw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DF45015405A6; Sun, 30 Apr 2023 15:50:43 -0700 (PDT)
-Date:   Sun, 30 Apr 2023 15:50:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu <rcu@vger.kernel.org>
-Subject: Re: Exp GPs and rcu_read_unlock()
-Message-ID: <ff9a2946-84e7-422b-a055-86b2dd1d1523@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAEXW_YSFm0XNMkfodBXVx-AsgJvcvGF+kmE+ZqU0Y=ehFJx+JQ@mail.gmail.com>
- <a8ffd9f6-5696-4e49-a91d-bd9954abeb21@paulmck-laptop>
- <CAEXW_YTecqGQu+h_u+esT4a7O=QUwg88q2K3h-oEiLq1x-qWWQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YTecqGQu+h_u+esT4a7O=QUwg88q2K3h-oEiLq1x-qWWQ@mail.gmail.com>
+        with ESMTP id S229379AbjEBABy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 1 May 2023 20:01:54 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662343AA5;
+        Mon,  1 May 2023 17:01:52 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-63b4a64c72bso2240719b3a.0;
+        Mon, 01 May 2023 17:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682985711; x=1685577711;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QgRjL0UqIuB56pKOxHZ86ANrDObQS3AcyO9BsAqX6Gs=;
+        b=ggzlmwVcHmxIyTRt8GPfp+r6Tp3lOGjn84JT6AWWsKm4Fmw3oHfXD0NzZKUlHbR6y+
+         ZpTs/+E/neG0qLrjatysk7acCVHfZ027FehRwiYxgggmWeGOy53YZdiF9GlSKEdPhS3r
+         6NJSQLF42uO6wn8oUUmPmdq5wFTjnj2onXbLuqzGnTwggUX/JMiSQnslo7Nbfr/WM7m5
+         Ltt666L1IKK88OKlBsLemv6w734uJXKR5QoK0tRNsCcmm/Otzq6YxY3bFWsv7zrRmA3a
+         8MLOWzEDX+bw590R7Wjbhj3YChXOmOzwFoGHyHTcgZj88OzVfYqXXdrsiAsp1EcsdYPQ
+         1M5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682985711; x=1685577711;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QgRjL0UqIuB56pKOxHZ86ANrDObQS3AcyO9BsAqX6Gs=;
+        b=HDy/H2MMzGx4mvAJce7HW8v4bHrQx80pHmCDDKtvPEOgs6MXxmZwtkBD2rk7QB+tNc
+         WnWydY9DTz3Rew8qmb2vVOMu+1SYbZIYNP8zaV1gxwqtqx2fdeKLOpDbYkFOlByt/nlE
+         etW5lbKNqgLtkiPxshRKsENBvn6hj2464oTwjVn9OU01ORGO4kVWV6khdoQR+TjfZAm7
+         I1wcfZQeKdjlMwlG0fkxN7UoHQj/VjtqxTgwZ8J+Vie4SHeIFrI5W45UP9mXXBYLkTUl
+         wXjbaSyBQJVTRsY4ArAR8a5GDUgy0DW+fRcfT1QuVhexEiPyBxHxCEsDeqpnbz4Wibbb
+         bLbg==
+X-Gm-Message-State: AC+VfDwbU0fzWfzznOyID2HZAKxEfyKLkwMSAcpu6aCbn8QYZwDew44L
+        HfQqdZtVxmpJ/EbaxRF2+jw=
+X-Google-Smtp-Source: ACHHUZ5I1cYQLgHCUYdaa02DXr79EgoIqXvmW94Aiud/N7kkZSWxVHq6BPemQdL2bB/+mlkg6fMeBA==
+X-Received: by 2002:a05:6a00:10c4:b0:63d:2680:94dd with SMTP id d4-20020a056a0010c400b0063d268094ddmr20072920pfu.6.1682985711444;
+        Mon, 01 May 2023 17:01:51 -0700 (PDT)
+Received: from localhost.localdomain ([154.220.3.115])
+        by smtp.gmail.com with ESMTPSA id t7-20020a656087000000b0050fa6546a45sm17511847pgu.6.2023.05.01.17.01.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 May 2023 17:01:50 -0700 (PDT)
+From:   zhouzhouyi@gmail.com
+To:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lance@osuosl.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH V2] rcu/torture replace wait_event with wait_event_idle
+Date:   Tue,  2 May 2023 08:01:41 +0800
+Message-Id: <1682985701-19914-1-git-send-email-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Apr 30, 2023 at 05:12:44PM -0400, Joel Fernandes wrote:
-> On Sun, Apr 30, 2023 at 4:50 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sun, Apr 30, 2023 at 03:56:11PM -0400, Joel Fernandes wrote:
-> > > Hello,
-> > > Quick question (for educational purpose) for anyone - why does
-> > > PREEMPT=n kernel not want to get help from __rcu_read_unlock() for
-> > > expedited grace periods?
-> > >
-> > > Basically, with PREEMPT=y kernels,  rcu_read_unlock_special.b.exp_hint
-> > > is set to true, but for PREEMPT=n, no such thing is done. Furthermore,
-> > > the __rcu_read_unlock() for PREEMPT=n does not help expedited GPs come
-> > > to an end either.
-> > >
-> > > I am guessing the answer is, "no one cares about that", or "no one
-> > > reported needing this", but if there is another reason why a PREEMPT=n
-> > > kernel should not need it, do let me know :)
-> >
-> > Because PREEMPT=n kernels value fast rcu_read_unlock() more than they
-> > value fast expedited grace periods.
-> 
-> Ok, makes sense.
-> 
-> > > To make it more interesting, it appears that CONFIG_PREEMPT=y where
-> > > preemption is dynamically disabled, it _should_ have the  effect of
-> > > helping expedited GPs as far as I can see. Which further seems a
-> > > difference between booting PREEMPT=n versus PREEMPT=y + booting with
-> > > preemption turned off via boot option.
-> >
-> > Yes, very much so!
-> >
-> > So if you care deeply about fast expedited grace periods and less
-> > so about smallish rcu_read_unlock() slowdowns, but otherwise want
-> > non-preemptibility, CONFIG_PREEMPT_DYNAMIC=y and dynamically selecting
-> > non-preemptible operation might be your best choice.
-> 
-> Makes sense, thanks!
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-Of course, if this is to be advertised at all widely, it would be good
-to actually measure it.
+In kfree_rcu_test, kfree_scale_shutdown will be detected as hung task
+if kfree_loops is too big. Replace wait_event with wait_event_idle
+to avoid false positive.
 
-But what else is new?  ;-)
+Tested in the PPC VM of Open Source Lab of Oregon State University.
 
-							Thanx, Paul
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>    
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>                    
+---
+ kernel/rcu/rcuscale.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 91fb5905a008..d99c586939d1 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -771,7 +771,7 @@ kfree_scale_cleanup(void)
+ static int
+ kfree_scale_shutdown(void *arg)
+ {
+-	wait_event(shutdown_wq,
++	wait_event_idle(shutdown_wq,
+ 		   atomic_read(&n_kfree_scale_thread_ended) >= kfree_nrealthreads);
+ 
+ 	smp_mb(); /* Wake before output. */
+-- 
+2.34.1
+
