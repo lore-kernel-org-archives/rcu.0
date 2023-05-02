@@ -2,112 +2,132 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67725C77B7E
-	for <rcu@archiver.kernel.org>; Tue,  2 May 2023 13:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9BFBC77B7E
+	for <rcu@archiver.kernel.org>; Tue,  2 May 2023 15:06:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbjEBNuP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 2 May 2023 09:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        id S233982AbjEBPGc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 2 May 2023 11:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbjEBNuO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 2 May 2023 09:50:14 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01D8DF;
-        Tue,  2 May 2023 06:50:13 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-64115e652eeso34761113b3a.0;
-        Tue, 02 May 2023 06:50:13 -0700 (PDT)
+        with ESMTP id S233986AbjEBPGb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 2 May 2023 11:06:31 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED5430F1;
+        Tue,  2 May 2023 08:06:17 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-63b5c4c76aaso2858288b3a.2;
+        Tue, 02 May 2023 08:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683035413; x=1685627413;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1683039977; x=1685631977;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nPyjmDm6ABxZQj0/bNA7SyUBs1ObBoUDPkgVpR4Dtwg=;
-        b=bP9mQdziu1KmRL6gbE1k062yIabt3b6iFkMu7UsXvhsAt7jKL7k961TJGJvMB3bwZC
-         URCZO83wjm/pHDIejULmxP8GJQdz5qvGGXD6Lgf2C9szKDYtz1GxitTwK15qIOyuXmtV
-         27TYWJ7EwqNfE85e0sNVRBauxP9zI+6QL7SW3iQEZbhqU/mmZl4NT7gx94eDDqGavura
-         5ScvtdfFh4Q3kWQf/I/246vTylQJQooU/wnF+foGjpPj4uGfMdR6Zd9IGwOTq3u2MGvx
-         0NZ+pA7P8MDjUJ9m4pwKEOcTY2K7ogBXwZLJ9tZjKvz483AZgQT6T0+giXZGfUsABbCG
-         rhKQ==
+        bh=cfBsAGpRXFX3Iqed0oeLIM1q8SnmBVNgKImTrWph7ys=;
+        b=L+LxLoS7h/tl6nAWBs0gTbJ1H4N0ce4HbF3BC1NXmG8821bTevRIf2S5vMWct1CrAH
+         D7wJnuy9OeFP80iArWd4fQsmQwxC6kJX53RzRgWUNRFn+R/kElQ3Nwxf3B+Y8Uz6F+r9
+         3Tu0LRZlY7vaXyA6+BGFgOiaaZxgz6fsc2s1up3U8xSUIQSmr1YBQhLHGzvLAtTPOLnb
+         HK/hI3oKA1TaZ7MfPfjmDS7KgZzTjAr04RL7c+sfOk7DeJau13z91lWyFNfAEUNHNRvN
+         ntZnRgqFPchzp81KoLSlde9XkPd94bkF/JWHbc2KTPyUBFIxsmn5SSVxg3XVLOnFclxD
+         9ldQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683035413; x=1685627413;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1683039977; x=1685631977;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nPyjmDm6ABxZQj0/bNA7SyUBs1ObBoUDPkgVpR4Dtwg=;
-        b=ZoVB7wtIhoXFACXgUZuAz5yDrEakKTPAZgnAmEfTmKoUgnAPcUgwnG+HFCSZjhvvj1
-         6FBkcSBaEd6GQ2EfxOw3O9lb0ltAahg7zNgmxPiLgaSmd6a0BOoA910qjOeg70QTRDoZ
-         4rpn8yw4yAozYkyg91eFb2+Q2Z4NWJyGj7EFTiWY1YN/ZOehGK5YiqKddo38wxG1lnsZ
-         iOPdV37vYQRGyuey970M6PKJxokaujZ2Shr1z5n1B6QPNM7KqdS52kd0fu018B2BGjUp
-         K1fajFILshKANpeOXRLSUK13ig+OLoxeP3w952j1eH7l65RCh/3vrMY09z8RQsJeizFS
-         hCUw==
-X-Gm-Message-State: AC+VfDyq0LN8ajfwr6G7PFrlE3CRm4XXEEuLcEhGi7hLtyBrEwfE8ZHl
-        6wEb8sTNGkVYrVBQp4f2/vhTnYQrVlqeBzvsqiY=
-X-Google-Smtp-Source: ACHHUZ7tCWSola71AgMeRXKObL6rnAqXFGmM0ERKXNVdhY98YtrLH5wchsLwozljne3rhmzLDt58sDLnY/jaNrT6tFs=
-X-Received: by 2002:a17:90a:9bc6:b0:24d:f1b1:4bea with SMTP id
- b6-20020a17090a9bc600b0024df1b14beamr9549926pjw.0.1683035412891; Tue, 02 May
- 2023 06:50:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <1682985701-19914-1-git-send-email-zhouzhouyi@gmail.com> <783a1e86-d625-4d8b-9b7c-0531b11b9290@paulmck-laptop>
-In-Reply-To: <783a1e86-d625-4d8b-9b7c-0531b11b9290@paulmck-laptop>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 2 May 2023 21:50:01 +0800
-Message-ID: <CAABZP2wTpG1dCU8GNTuiyj+2zkHxWgOF3j3Mqjk5BUgS6KADZA@mail.gmail.com>
-Subject: Re: [PATCH V2] rcu/torture replace wait_event with wait_event_idle
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org, lance@osuosl.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        bh=cfBsAGpRXFX3Iqed0oeLIM1q8SnmBVNgKImTrWph7ys=;
+        b=l3GuZ758ueVg0oMMdXw9cfc6xqLxP1vuJUet53Z7N0S7sYNH+wPv/+ZF1GXIA5OTHF
+         BkSqCJayoqy/WTq+Ezk9WeA2ddvdpaGCP9atxtzqyXvCTWxhaqplqmR/kmjr8f/i5o22
+         KnIet80pJPEaCQx2Ap6gDgLtn5TPOU6j1Ljpy2f5UKtVjk4Iutx2CP3B5GqsWX5oq4fY
+         TpgAbCNaTS6z20kzAEEzQ8opcfOprJk5iIIAZnc+Y53ohHxhjJrKnTTgsTi96WPOjqEM
+         0hAuof45gtoCNzRgWjw4gJYaltoDYVOaU848xP4IhFQRs30g5f4C82FC4u2gxAXSovgm
+         pOxg==
+X-Gm-Message-State: AC+VfDwNZZ42c1x8VHw1S9ZOj3qRCPM7KHT46W90L+Xf0HVhUaafQpeZ
+        gMOGklEsCPd11OtBtKKHT2Q=
+X-Google-Smtp-Source: ACHHUZ7islxlN/yKDPiKhGdceK+u8FJFTxYQ9Vxxh0/Z6Z830DQzWdjVccEHSpP8IBYIBpiaHqTOlg==
+X-Received: by 2002:a05:6a21:3a91:b0:f0:6517:2fd with SMTP id zv17-20020a056a213a9100b000f0651702fdmr18369559pzb.2.1683039976916;
+        Tue, 02 May 2023 08:06:16 -0700 (PDT)
+Received: from localhost.localdomain ([154.220.3.115])
+        by smtp.gmail.com with ESMTPSA id f20-20020a056a00229400b0063799398eb9sm21983103pfe.58.2023.05.02.08.06.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 May 2023 08:06:16 -0700 (PDT)
+From:   zhouzhouyi@gmail.com
+To:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        lance@osuosl.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH RFC] rcu: torture: shorten the time between forward-progress tests
+Date:   Tue,  2 May 2023 23:06:02 +0800
+Message-Id: <1683039962-15751-1-git-send-email-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, May 2, 2023 at 9:40=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> On Tue, May 02, 2023 at 08:01:41AM +0800, zhouzhouyi@gmail.com wrote:
-> > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> >
-> > In kfree_rcu_test, kfree_scale_shutdown will be detected as hung task
-> > if kfree_loops is too big. Replace wait_event with wait_event_idle
-> > to avoid false positive.
-> >
-> > Tested in the PPC VM of Open Source Lab of Oregon State University.
-> >
-> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
->
-> Good catch, thank you!
->
-> However, this commit beat you to it:
->
-> ef1ef3d47677 ("rcuscale: Move shutdown from wait_event() to wait_event_id=
-le()")
-You are very welcome ;-) Still, this is a very fruitful learning
-process for me ;-)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-Cheers
-Zhouyi
->
->                                                         Thanx, Paul
->
-> > ---
-> >  kernel/rcu/rcuscale.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> > index 91fb5905a008..d99c586939d1 100644
-> > --- a/kernel/rcu/rcuscale.c
-> > +++ b/kernel/rcu/rcuscale.c
-> > @@ -771,7 +771,7 @@ kfree_scale_cleanup(void)
-> >  static int
-> >  kfree_scale_shutdown(void *arg)
-> >  {
-> > -     wait_event(shutdown_wq,
-> > +     wait_event_idle(shutdown_wq,
-> >                  atomic_read(&n_kfree_scale_thread_ended) >=3D kfree_nr=
-ealthreads);
-> >
-> >       smp_mb(); /* Wake before output. */
-> > --
-> > 2.34.1
-> >
+Currently, default time between rcu torture forward-progress tests is 60HZ,
+Under this configuration, false positive caused by __stack_chk_fail [1] is
+difficult to reproduce (needs average 5*420 seconds for SRCU-P),
+which means one has to invoke [2] 5 times in average to make [1] appear.
+
+With time between rcu torture forward-progress tests be 1 HZ, above
+phenomenon will be reproduced within 3 minutes, which means we can
+reproduce [1] everytime we invoke [2].
+
+Although [1] is a false positive, this change will make possible future
+true bugs easier to be discovered.            
+                   
+[1] Link: https://lore.kernel.org/lkml/CAABZP2yS5=ZUwEZQ7iHkV0wDm_HgO8K-TeAhyJrZhavzKDa44Q@mail.gmail.com/T/
+[2] tools/testing/selftests/rcutorture/bin/torture.sh
+
+Tested in PPC VM of Opensource Lab of Oregon State Univerisity.
+        
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>        
+---
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot  | 1 +
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot  | 1 +
+ tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot | 1 +
+ tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot  | 1 +
+ tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot  | 1 +
+ 5 files changed, 5 insertions(+)
+
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+index ce0694fd9b92..982582bff041 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+@@ -1,2 +1,3 @@
+ rcutorture.torture_type=srcu
+ rcutorture.fwd_progress=3
++rcutorture.fwd_progress_holdoff=1
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+index 2db39f298d18..18f5d7361d8a 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+@@ -1,4 +1,5 @@
+ rcutorture.torture_type=srcud
+ rcupdate.rcu_self_test=1
+ rcutorture.fwd_progress=3
++rcutorture.fwd_progress_holdoff=1
+ srcutree.big_cpu_lim=5
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+index c70b5db6c2ae..b86bc7df7603 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+@@ -1,2 +1,3 @@
+ rcutorture.torture_type=tasks-tracing
+ rcutorture.fwd_progress=2
++rcutorture.fwd_progress_holdoff=1
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+index dd914fa8f690..933302f885df 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+@@ -1 +1,2 @@
+ rcutorture.fwd_progress=2
++rcutorture.fwd_progress_holdoff=1
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+index dd914fa8f690..933302f885df 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+@@ -1 +1,2 @@
+ rcutorture.fwd_progress=2
++rcutorture.fwd_progress_holdoff=1
+-- 
+2.34.1
+
