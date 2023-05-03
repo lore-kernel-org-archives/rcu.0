@@ -2,142 +2,145 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E707C77B78
-	for <rcu@archiver.kernel.org>; Tue,  2 May 2023 20:02:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE9C6C7EE21
+	for <rcu@archiver.kernel.org>; Wed,  3 May 2023 18:49:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjEBUCC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 2 May 2023 16:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        id S229900AbjECStG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 3 May 2023 14:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjEBUCB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 2 May 2023 16:02:01 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DE41BDF
-        for <rcu@vger.kernel.org>; Tue,  2 May 2023 13:01:53 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-b9dcd91a389so5290283276.2
-        for <rcu@vger.kernel.org>; Tue, 02 May 2023 13:01:53 -0700 (PDT)
+        with ESMTP id S229714AbjECStA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 3 May 2023 14:49:00 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F0A6A75;
+        Wed,  3 May 2023 11:48:46 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1aaff9c93a5so25882955ad.2;
+        Wed, 03 May 2023 11:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1683057713; x=1685649713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x+NUeHiffgh2k2U66BC4by3evri+rtKHf4GS4ur6Xa8=;
-        b=gvF+HN4mFgyi/s0nHpyeSzXRjZdVOZ/YAnB2yKEiZCPNc79ZhOZ0P6UbcPMBSUz5ST
-         CJmp2K+nSErJLBLfiRTiKoeCRO2L5u4UxwnFc0pe2m9zAdXJN0ijv31QRExRyGJzpxWy
-         CuAqqZJhsgP8DR0xUA8QZj3d7QoN+fH4h0BX4=
+        d=gmail.com; s=20221208; t=1683139725; x=1685731725;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHGrLK6Ja7GJoRBWTFAfctBGCxtJTjuvz3zG1yvxji8=;
+        b=qsCSq2eb6r9Ux5c3TJ9Tzn/SvJv6cyiMXqW4o+hZDWP2QsiGOvf9Gn0CYAKs2Zq95A
+         Kawo4z+t3xw8qMkyMjJrI1ewUHE1LHI9TxKL+1OkIHc2Arr9lER2POdmSs2RcNH50wAQ
+         t6Aw4i3Bmwme+POeAH0/VUs8+6cktrCrsXPwPZk9AAdMn4V/Jh5NnsHTnmPukxxhchiq
+         foTY321oZnnBxbTuLEvXaesI6vUyl6P/4/WliefHDYy4UKmx+MwLfZvl/8xehNn1ibQc
+         t/F2kGAO43gbR0Enm6N7QsSpbyQTkRjhC6YIf8nGh+UFNbJJrbOs5v1OF74wkzyvOpgQ
+         Og+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683057713; x=1685649713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x+NUeHiffgh2k2U66BC4by3evri+rtKHf4GS4ur6Xa8=;
-        b=EyRfJzrNg9sqSMWK6bpBD+/3qqNaQLGS6QCi3Qyx8szRoF/I0YG23Hyul8w0W6HryX
-         LViCtyXUni+5X5yTH9jful6bZtmgo+H1ss7SqKywaOhs9fx3KzFVEJUVHPmDTX3w/Jhx
-         Eoux1smfJyO+u9s6SKAvgqDsFvEZ7ZnlmtnI6EiqwLf67XiPjjMkpbQkZyNuPOpb0yQf
-         d7PGRqkD95aPrNzSRjnXa52bk0QNjujp4M8EVMQ0fWho6nGwaZjT7+5X/QCOzT+3lNdI
-         ft1Ih9WksFJ3mvNX+81GCgk3d/1GRHYL9NPgTk3vk3m+Lmqrzvgu3QKKtugw9Zdjqr2R
-         dVjw==
-X-Gm-Message-State: AC+VfDyqP1aEcRYLSd29Kxpd+ltmqwpaMtqTlI3FZrWDzVXtDgM/FxcV
-        1I8IvZVzzvCb1WrQrwUOAtdGC3MzBUrBElXBv2u3ZCYXQL11PbqZ
-X-Google-Smtp-Source: ACHHUZ7OwR1749ORbplQf4a/AjJCHrIyWkPBWonZzLSTug4EbDimnBt5tEugLGxDEnfhldyP2f4R4nEtGL9aa5UUtS4=
-X-Received: by 2002:a05:6902:1081:b0:b9d:d5dc:596d with SMTP id
- v1-20020a056902108100b00b9dd5dc596dmr11618732ybu.3.1683057712839; Tue, 02 May
- 2023 13:01:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683139725; x=1685731725;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RHGrLK6Ja7GJoRBWTFAfctBGCxtJTjuvz3zG1yvxji8=;
+        b=O+YDZu9iUUN1xVBQjFKC7FT+FgUQPuQVP2fvdFA4PN3jQOq5kMJq+DOu3HXYxZUK17
+         ZyPo/tKFzj+uE59lkwoMjEqXRSdXTRKHktPZ3Mnx5LNtWQvjA1biylUaoB+Aaiju8cdc
+         0Ytl9hTpOPJb2UKVF23te/tkBueK4Hn1DUw8skLFxiobehUupgHEYJei5cI+f0THmYNp
+         +ttiaDhNo5Zaf6dxgXwZxlgSpXDZKz/1YIDsU3VUDIeY9Je35lBtOy6fihqTZcy+doV9
+         3yyy2rMCjJsjJclX2TJdR1tutMGcTk6Aov4LSi8M38f7eqHHjzqYGRCJ2uurN273sWNh
+         Nqkg==
+X-Gm-Message-State: AC+VfDww3Hp2T5L3nfJqBzZT/r9Q6X+J1HyS4K9LDQ7+WTAUzzpq6kZ/
+        gfvY3p8VRia9bjsxrCyW+i4=
+X-Google-Smtp-Source: ACHHUZ7gkpK5QkAqbpxb1s6Xu7FcjLy4k2Y3b6K6injGlNKCp8lAxDNBikmYO2ajzPQiZM1jA3NODA==
+X-Received: by 2002:a17:903:22c6:b0:1aa:e650:bac3 with SMTP id y6-20020a17090322c600b001aae650bac3mr1299566plg.0.1683139725068;
+        Wed, 03 May 2023 11:48:45 -0700 (PDT)
+Received: from MacBook-Pro-6.local ([2620:10d:c090:500::6:f64b])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902d2c500b001aaecc0b6ffsm6780097plc.160.2023.05.03.11.48.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 May 2023 11:48:44 -0700 (PDT)
+Date:   Wed, 3 May 2023 11:48:41 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+Message-ID: <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com>
 MIME-Version: 1.0
-References: <CAABZP2wTpG1dCU8GNTuiyj+2zkHxWgOF3j3Mqjk5BUgS6KADZA@mail.gmail.com>
- <439F943C-32E7-4FAA-8E35-15CA1CEC0A78@joelfernandes.org> <CAABZP2yjEzC3xrpQfrzRDigO0k_dz5auaRaEWUriUy=iZVzhbg@mail.gmail.com>
-In-Reply-To: <CAABZP2yjEzC3xrpQfrzRDigO0k_dz5auaRaEWUriUy=iZVzhbg@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 2 May 2023 16:01:41 -0400
-Message-ID: <CAEXW_YQ5v0TKBA8VcnKd2xodF_-YEELDEE1GX-tM5Vj-gOOyAg@mail.gmail.com>
-Subject: Re: [PATCH V2] rcu/torture replace wait_event with wait_event_idle
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230429101215.111262-4-houtao@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, May 2, 2023 at 12:30=E2=80=AFPM Zhouyi Zhou <zhouzhouyi@gmail.com> =
-wrote:
->
-> Sorry for the bad format of my previous email, there is always
-> something wrong when I press Ctrl+C and Ctrl+V in my browser.
-> Sorry for the inconvenience that I bring.
->
-> On Tue, May 2, 2023 at 11:53=E2=80=AFPM Joel Fernandes <joel@joelfernande=
-s.org> wrote:
-> >
-> >
-> >
-> > > On May 2, 2023, at 9:50 AM, Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
-> > >
-> > > =EF=BB=BFOn Tue, May 2, 2023 at 9:40=E2=80=AFPM Paul E. McKenney <pau=
-lmck@kernel.org> wrote:
-> > >>
-> > >>> On Tue, May 02, 2023 at 08:01:41AM +0800, zhouzhouyi@gmail.com wrot=
-e:
-> > >>> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > >>>
-> > >>> In kfree_rcu_test, kfree_scale_shutdown will be detected as hung ta=
-sk
-> > >>> if kfree_loops is too big. Replace wait_event with wait_event_idle
-> > >>> to avoid false positive.
-> > >>>
-> > >>> Tested in the PPC VM of Open Source Lab of Oregon State University.
-> > >>>
-> > >>> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > >>> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > >>
-> > >> Good catch, thank you!
-> > >>
-> > >> However, this commit beat you to it:
-> > >>
-> > >> ef1ef3d47677 ("rcuscale: Move shutdown from wait_event() to wait_eve=
-nt_idle()")
-> > > You are very welcome ;-) Still, this is a very fruitful learning
-> > > process for me ;-)
-> >
-> > Speaking of learning, can you explain why it fixes the issue? ;-)
-> >
-> > Your change log lacked the real reason but that is Ok since change logs=
- can only tell you so much. I admit I myself did not know the reason till I=
- read some code.
-> >
-> > Quiz: why exactly does this all work out in the end even though the hun=
-g task detector saw it hung?
-> When I found "blocked for more than" report in console.log, I did a
-> grep in kernel source tree, and found check_hung_task will only be
-> invoked
-> from check_hung_uninterruptible_tas
-> ks when (state & TASK_UNINTERRUPTIBLE) and !(state & TASK_WAKEKILL)
-> and !(state &
-> TASK_NOLOAD),  so I send my first patch [1], and Paul tell me
-> wait_event_idle is the right answer, then I do a grep for recursively
-> expansion of macro wait_event_idle, which finally set current->state
-> to TASK_IDLE ((TASK_UNINTERRUPTIBLE | TASK_NOLOAD)), then I conclude
-> that check_hung_task will not be called. Yes,  _interruptible()
-> variant indicates that wakeups due to things like POSIX signals are
-> permitted, which are not our case.
+On Sat, Apr 29, 2023 at 06:12:12PM +0800, Hou Tao wrote:
+> +
+> +static void notrace wait_gp_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
+> +{
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	/* In case a NMI-context bpf program is also freeing object. */
+> +	if (local_inc_return(&c->active) == 1) {
+> +		bool try_queue_work = false;
+> +
+> +		/* kworker may remove elements from prepare_reuse_head */
+> +		raw_spin_lock(&c->reuse_lock);
+> +		if (llist_empty(&c->prepare_reuse_head))
+> +			c->prepare_reuse_tail = llnode;
+> +		__llist_add(llnode, &c->prepare_reuse_head);
+> +		if (++c->prepare_reuse_cnt > c->high_watermark) {
+> +			/* Zero out prepare_reuse_cnt early to prevent
+> +			 * unnecessary queue_work().
+> +			 */
+> +			c->prepare_reuse_cnt = 0;
+> +			try_queue_work = true;
+> +		}
+> +		raw_spin_unlock(&c->reuse_lock);
+> +
+> +		if (try_queue_work && !work_pending(&c->reuse_work)) {
+> +			/* Use reuse_cb_in_progress to indicate there is
+> +			 * inflight reuse kworker or reuse RCU callback.
+> +			 */
+> +			atomic_inc(&c->reuse_cb_in_progress);
+> +			/* Already queued */
+> +			if (!queue_work(bpf_ma_wq, &c->reuse_work))
 
-That sounds right!
+As Martin pointed out queue_work() is not safe here.
+The raw_spin_lock(&c->reuse_lock); earlier is not safe either.
+For the next version please drop workers and spin_lock from unit_free/alloc paths.
+If lock has to be taken it should be done from irq_work.
+Under no circumstances we can use alloc_workqueue(). No new kthreads.
 
-> I should investigate more on what wait_event_idle really means,
-> instead of merely grep and debug what wait_event_idle does.
-> I should write my change log more clearly and explain why wait_event_idle=
- works.
+We can avoid adding new flag to bpf_mem_alloc to reduce the complexity
+and do roughly equivalent of REUSE_AFTER_RCU_GP unconditionally in the following way:
 
-Sounds good, the header comments around those APIs should also help.
+- alloc_bulk() won't be trying to steal from c->free_by_rcu.
 
->
-> I discovered [2] during the testing of the patch, this is also a very
-> fruitful learning process.
->
-> I will write my change log more indicative next time, and do better
-> work to our RCU community (and thanks for remove linux-kernel from CC
-> list ;-))
+- do_call_rcu() does call_rcu(&c->rcu, __free_rcu) instead of task-trace version.
 
-Sounds good, have fun! :)
+- rcu_trace_implies_rcu_gp() is never used.
 
- - Joel
+- after RCU_GP __free_rcu() moves all waiting_for_gp elements into 
+  a size specific link list per bpf_mem_alloc (not per bpf_mem_cache which is per-cpu)
+  and does call_rcu_tasks_trace
+
+- Let's call this list ma->free_by_rcu_tasks_trace
+  (only one list for bpf_mem_alloc with known size or NUM_CACHES such lists when size == 0 at init)
+
+- any cpu alloc_bulk() can steal from size specific ma->free_by_rcu_tasks_trace list that
+  is protected by ma->spin_lock (1 or NUM_CACHES such locks)
+
+- ma->waiting_for_gp_tasks_trace will be freeing elements into slab
+
+What it means that sleepable progs using hashmap will be able to avoid uaf with bpf_rcu_read_lock().
+Without explicit bpf_rcu_read_lock() it's still safe and equivalent to existing behavior of bpf_mem_alloc.
+(while your proposed BPF_MA_FREE_AFTER_RCU_GP flavor is not safe to use in hashtab with sleepable progs)
+
+After that we can unconditionally remove rcu_head/call_rcu from bpf_cpumask and improve usability of bpf_obj_drop.
+Probably usage of bpf_mem_alloc in local storage can be simplified as well.
+Martin wdyt?
+
+I think this approach adds minimal complexity to bpf_mem_alloc while solving all existing pain points
+including needs of qp-trie.
