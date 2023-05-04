@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18A4FC77B7C
-	for <rcu@archiver.kernel.org>; Thu,  4 May 2023 20:32:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AD69C7EE22
+	for <rcu@archiver.kernel.org>; Thu,  4 May 2023 20:32:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbjEDUce (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S231337AbjEDUce (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 4 May 2023 16:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbjEDUcU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231137AbjEDUcU (ORCPT <rfc822;rcu@vger.kernel.org>);
         Thu, 4 May 2023 16:32:20 -0400
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9267E19434;
-        Thu,  4 May 2023 13:22:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5EB19435;
+        Thu,  4 May 2023 13:21:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1683230733;
-        bh=ZEKk2l+avXLFbsd5WjSG9znQ65K2KXiDXgyV8vZ7EJA=;
+        s=smtpout1; t=1683230732;
+        bh=W9zAZi8VwGgVLnwB1Kz05im9spQ0PM5+IFpjRSSrhRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IfKCIjYQSXozgD4Wb+wSwBd+stdAcMsdT2i7VdXVhDqafbIW98tLuRfWIBLQZ+upQ
-         5cHlYfTa3Xacv7BcJRQjH/KgIlprqL2os0yCC4v5U1jBnVjjzAOo8SbzbhlzvKzMbr
-         xsgD+dGSe18n+gif1kzPhm7D/VrQEw+jlmdRLLTOHI+fz8FHAT+PohpHF2J7q1HDPH
-         x2iH82MRkVPYP9LF5JDu/DNky5u5fcl2ZbUWmIH8cL3c6qvJNMbGCOILIGskgK9xjy
-         OpOb1k8U26ecYsStldMJQXyZQUN/oCdD/EusL/yddPWCrmAcHo8IK1GDvFgkHgoSZ6
-         9raHAvS4UD5rg==
+        b=pP/WOQu25fetQ3sRoYaQurZejTtqepJNV9c4Kuqjs22wa8BGt5gMJ25ZiFCE0l0BI
+         GNuj7gkGiKFbAbQ341x8qDNPFhW2niVnAQxIkb16dhbJPSn1pDjCi0Uu+A3ECdpZlb
+         2do0i0ahDdGKtSRaoXczdV/8LKiritrQ1vxfWre/+AtgKIv+8KtkI8oPKxXd7LAJl/
+         8bqzLbzBQzeaaAjSJUXVWwB8pa0bNThwR3NUSqXqNaiJapkWuYtpYLrWgxlXsvFGEV
+         i6DkCbILWnO5e3PBAepEhC3ZeeC2QTi+RJDi/azdj5WAmFqeh4M/ZUm63LzJkdS4me
+         CSMnHx8BkUX1g==
 Received: from localhost.localdomain (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4QC4Ym5dLWzxRJ;
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4QC4Ym0sqPzxRH;
         Thu,  4 May 2023 16:05:32 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang1.zhang@intel.com>, rcu@vger.kernel.org
-Subject: [RFC PATCH 04/13] rculist_bl.h: Fix parentheses around macro pointer parameter use
-Date:   Thu,  4 May 2023 16:05:18 -0400
-Message-Id: <20230504200527.1935944-5-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH 02/13] rculist.h: Fix parentheses around macro pointer parameter use
+Date:   Thu,  4 May 2023 16:05:16 -0400
+Message-Id: <20230504200527.1935944-3-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230504200527.1935944-1-mathieu.desnoyers@efficios.com>
 References: <20230504200527.1935944-1-mathieu.desnoyers@efficios.com>
@@ -52,20 +52,42 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Add missing parentheses around use of macro argument "tpos" in those
+Add missing parentheses around use of macro argument "pos" in those
 patterns to ensure operator precedence behaves as expected:
 
-- typeof(*tpos)
-- pos->next
-- x && y is changed for (x) && (y).
+- typeof(*pos)
+- pos->member
 
-The typeof(*tpos) lack of parentheses around "tpos" is not an issue per se
-in the specific macros modified here because "tpos" is used as an lvalue,
+This corrects the following usage pattern where operator precedence is
+unexpected:
+
+  LIST_HEAD(testlist);
+
+  struct test {
+          struct list_head node;
+          int a;
+  };
+
+  // pos->member issue
+  void f(void)
+  {
+          struct test *t1;
+          struct test **t2 = &t1;
+
+          list_for_each_entry_rcu((*t2), &testlist, node) {       /* works */
+                  //...
+          }
+          list_for_each_entry_rcu(*t2, &testlist, node) { /* broken */
+                  //...
+          }
+  }
+
+The typeof(*pos) lack of parentheses around "pos" is not an issue per se
+in the specific macros modified here because "pos" is used as an lvalue,
 which should prevent use of any operator causing issue. Still add the
 extra parentheses for consistency.
 
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>
@@ -77,26 +99,78 @@ Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Zqiang <qiang1.zhang@intel.com>
 Cc: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 ---
- include/linux/rculist_bl.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/rculist.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/rculist_bl.h b/include/linux/rculist_bl.h
-index 0b952d06eb0b..798c0a03bf5c 100644
---- a/include/linux/rculist_bl.h
-+++ b/include/linux/rculist_bl.h
-@@ -94,8 +94,8 @@ static inline void hlist_bl_add_head_rcu(struct hlist_bl_node *n,
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index d29740be4833..d27aeff5447d 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -388,9 +388,9 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
   */
- #define hlist_bl_for_each_entry_rcu(tpos, pos, head, member)		\
- 	for (pos = hlist_bl_first_rcu(head);				\
--		pos &&							\
--		({ tpos = hlist_bl_entry(pos, typeof(*tpos), member); 1; }); \
--		pos = rcu_dereference_raw(pos->next))
-+		(pos) &&						\
-+		({ tpos = hlist_bl_entry(pos, typeof(*(tpos)), member); 1; }); \
-+		pos = rcu_dereference_raw((pos)->next))
+ #define list_for_each_entry_rcu(pos, head, member, cond...)		\
+ 	for (__list_check_rcu(dummy, ## cond, 0),			\
+-	     pos = list_entry_rcu((head)->next, typeof(*pos), member);	\
+-		&pos->member != (head);					\
+-		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
++	     pos = list_entry_rcu((head)->next, typeof(*(pos)), member);\
++		&(pos)->member != (head);				\
++		pos = list_entry_rcu((pos)->member.next, typeof(*(pos)), member))
  
- #endif
+ /**
+  * list_for_each_entry_srcu	-	iterate over rcu list of given type
+@@ -407,9 +407,9 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+  */
+ #define list_for_each_entry_srcu(pos, head, member, cond)		\
+ 	for (__list_check_srcu(cond),					\
+-	     pos = list_entry_rcu((head)->next, typeof(*pos), member);	\
+-		&pos->member != (head);					\
+-		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
++	     pos = list_entry_rcu((head)->next, typeof(*(pos)), member);\
++		&(pos)->member != (head);				\
++		pos = list_entry_rcu((pos)->member.next, typeof(*(pos)), member))
+ 
+ /**
+  * list_entry_lockless - get the struct for this entry
+@@ -441,9 +441,9 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+  * but never deleted.
+  */
+ #define list_for_each_entry_lockless(pos, head, member) \
+-	for (pos = list_entry_lockless((head)->next, typeof(*pos), member); \
+-	     &pos->member != (head); \
+-	     pos = list_entry_lockless(pos->member.next, typeof(*pos), member))
++	for (pos = list_entry_lockless((head)->next, typeof(*(pos)), member); \
++	     &(pos)->member != (head); \
++	     pos = list_entry_lockless((pos)->member.next, typeof(*(pos)), member))
+ 
+ /**
+  * list_for_each_entry_continue_rcu - continue iteration over list of given type
+@@ -464,9 +464,9 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+  * position.
+  */
+ #define list_for_each_entry_continue_rcu(pos, head, member) 		\
+-	for (pos = list_entry_rcu(pos->member.next, typeof(*pos), member); \
+-	     &pos->member != (head);	\
+-	     pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
++	for (pos = list_entry_rcu((pos)->member.next, typeof(*(pos)), member); \
++	     &(pos)->member != (head);	\
++	     pos = list_entry_rcu((pos)->member.next, typeof(*(pos)), member))
+ 
+ /**
+  * list_for_each_entry_from_rcu - iterate over a list from current point
+@@ -486,8 +486,8 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+  * after the given position.
+  */
+ #define list_for_each_entry_from_rcu(pos, head, member)			\
+-	for (; &(pos)->member != (head);					\
+-		pos = list_entry_rcu(pos->member.next, typeof(*(pos)), member))
++	for (; &(pos)->member != (head);				\
++		pos = list_entry_rcu((pos)->member.next, typeof(*(pos)), member))
+ 
+ /**
+  * hlist_del_rcu - deletes entry from hash list without re-initialization
 -- 
 2.25.1
 
