@@ -2,175 +2,245 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E87C77B75
-	for <rcu@archiver.kernel.org>; Thu,  4 May 2023 02:30:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 404BEC77B7C
+	for <rcu@archiver.kernel.org>; Thu,  4 May 2023 16:19:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjEDCal (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 3 May 2023 22:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        id S229728AbjEDQTx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 4 May 2023 12:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjEDCak (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 3 May 2023 22:30:40 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAF0E49;
-        Wed,  3 May 2023 19:30:38 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QBd8V423Xz4f3vfV;
-        Thu,  4 May 2023 10:30:34 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgDnUCvHGFNkYTHIIA--.62942S2;
-        Thu, 04 May 2023 10:30:35 +0800 (CST)
-Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-References: <20230429101215.111262-1-houtao@huaweicloud.com>
- <20230429101215.111262-4-houtao@huaweicloud.com>
- <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
- <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com>
- <20230504020051.xga5y5dj3rxobmea@dhcp-172-26-102-232.dhcp.thefacebook.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <d3169329-1453-e87a-fbb0-e1435f0741dc@huaweicloud.com>
-Date:   Thu, 4 May 2023 10:30:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229643AbjEDQTv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 4 May 2023 12:19:51 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5033AA7
+        for <rcu@vger.kernel.org>; Thu,  4 May 2023 09:19:50 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-55a8e9e2c53so6299417b3.1
+        for <rcu@vger.kernel.org>; Thu, 04 May 2023 09:19:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1683217190; x=1685809190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ISgqM4Z3Oi0FOwES04jIULNzOCOdZrHkvVQ6clhiCe4=;
+        b=ynlJAFUVp16VnGFAJScNIgHM+CiYCqNDozchRl+hPTp9o4xLTK0eeMwFDFEWlqNBSW
+         Zzekrq1mTZdQcZ4ik/Jc+HIgaIigtU9uBov2d+ivniTh2ZC55DULrczXWGPfRS6oNN+I
+         GsY4CqQrSO9AsjbxTpvA10VGrkJf42ukc4U68=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683217190; x=1685809190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ISgqM4Z3Oi0FOwES04jIULNzOCOdZrHkvVQ6clhiCe4=;
+        b=NTTfqE0WCCZ44LITnt/2jzIlgRSb1zoyhWJpGJ5etU2Its6wlMkNzMoCTpKvcQ1zBS
+         J2VEVzstkAnRK5gNJTwVQjBHaZOLiBLt696p8PkA3NTp/qHYnNSUIjuy5GlZn5SxhhGz
+         O5fHuLup/1HKyTRpJHwcjMIidrjRhMVEAh6Q5/LlzPauN2yRK0Coc6m7DOenmfrEjgZe
+         +Xqsif5swXM9jL+O7dgLALsz82D6zzi4b/m1uKI2Z7V2CXLdtJiApATL9dEQYZxRGhg/
+         hjQQEEU7SqdpSR+f8iJ4Wo8Qp9dssgzDuVQxOQfoAbZbUF1oSuge0kDjQexAe4udQA2L
+         /n+w==
+X-Gm-Message-State: AC+VfDxmJhXrQfkj/KamSUIdpSQfF+4cpVnizrxR9FOxLBM+T1hkjqPd
+        JOQ1XwXMZORUPgYjijqg5JpMfSD0uzPFuDUefLUvcg==
+X-Google-Smtp-Source: ACHHUZ7Yp3+WQfq/QuEa5h/xCOquElst7AsS4IE2H03WFhR+n21PmV7Y1oY51U8ng8zmrYIyT+xj0V6XvA0P9ZapDIU=
+X-Received: by 2002:a25:a4c5:0:b0:ba1:90ed:f7e7 with SMTP id
+ g63-20020a25a4c5000000b00ba190edf7e7mr520110ybi.23.1683217189683; Thu, 04 May
+ 2023 09:19:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230504020051.xga5y5dj3rxobmea@dhcp-172-26-102-232.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgDnUCvHGFNkYTHIIA--.62942S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuw1xXF13uFWDArWUJw45trb_yoW7AFy8pF
-        Wfta4Ykrs8Jr4Yv3s2qw1xu34Sy398Kr15XFyFq34DCr98Wr9IqFZ7tFy5uF93ur48Ca1a
-        yryDta43ArZ8ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+References: <20230504012914.1797355-1-mathieu.desnoyers@efficios.com> <20230504012914.1797355-3-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20230504012914.1797355-3-mathieu.desnoyers@efficios.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 4 May 2023 12:19:38 -0400
+Message-ID: <CAEXW_YRoqwX1Z3OcRJKxDZ+jAN6Woby+avC9FTdP_8+xyuYqCQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] rculist.h: Fix parentheses around macro pointer
+ parameter use
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang1.zhang@intel.com>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+Hello Mathieu,
 
-On 5/4/2023 10:00 AM, Alexei Starovoitov wrote:
-> On Thu, May 04, 2023 at 09:35:17AM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 5/4/2023 2:48 AM, Alexei Starovoitov wrote:
->>> On Sat, Apr 29, 2023 at 06:12:12PM +0800, Hou Tao wrote:
-SNIP
->>> +			/* Already queued */
->>> +			if (!queue_work(bpf_ma_wq, &c->reuse_work))
->>> As Martin pointed out queue_work() is not safe here.
->>> The raw_spin_lock(&c->reuse_lock); earlier is not safe either.
->> I see. Didn't recognize these problems.
->>> For the next version please drop workers and spin_lock from unit_free/alloc paths.
->>> If lock has to be taken it should be done from irq_work.
->>> Under no circumstances we can use alloc_workqueue(). No new kthreads.
->> Is there any reason to prohibit the use of new kthread in irq_work ?
-> Because:
-> 1. there is a workable solution without kthreads.
-> 2. if there was no solution we would have to come up with one.
-> kthread is not an answer. It's hard to reason about a setup when kthreads
-> are in critical path due to scheduler. Assume the system is 100% cpu loaded.
-> kthreads delays and behavior is unpredictable. We cannot subject memory alloc/free to it.
-I see. Thanks for the explanation.
+On Wed, May 3, 2023 at 9:29=E2=80=AFPM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
->>> We can avoid adding new flag to bpf_mem_alloc to reduce the complexity
->>> and do roughly equivalent of REUSE_AFTER_RCU_GP unconditionally in the following way:
->>>
->>> - alloc_bulk() won't be trying to steal from c->free_by_rcu.
->>>
->>> - do_call_rcu() does call_rcu(&c->rcu, __free_rcu) instead of task-trace version.
->> No sure whether or not one inflight RCU callback is enough. Will check.
->> If one is not enough, I may use kmalloc(__GFP_NOWAIT) in irq work to
->> allocate multiple RCU callbacks.
-> Pls dont. Just assume it will work, implement the proposal (if you agree),
-> come back with the numbers and then we will discuss again.
-> We cannot keep arguing about merits of complicated patch set that was done on partial data.
-OK. Will do.
-> Just like the whole thing with kthreads.
-> I requested early on: "pls no kthreads" and weeks later we're still arguing.
-Sorry about missing that part.
+> Add missing parentheses around use of macro argument "pos" in those
+> patterns to ensure operator precedence behaves as expected:
 >
->>> - rcu_trace_implies_rcu_gp() is never used.
->>>
->>> - after RCU_GP __free_rcu() moves all waiting_for_gp elements into 
->>>   a size specific link list per bpf_mem_alloc (not per bpf_mem_cache which is per-cpu)
->>>   and does call_rcu_tasks_trace
->>>
->>> - Let's call this list ma->free_by_rcu_tasks_trace
->>>   (only one list for bpf_mem_alloc with known size or NUM_CACHES such lists when size == 0 at init)
->>>
->>> - any cpu alloc_bulk() can steal from size specific ma->free_by_rcu_tasks_trace list that
->>>   is protected by ma->spin_lock (1 or NUM_CACHES such locks)
->> To reduce the lock contention, alloc_bulk() can steal from the global
->> list in batch. 
-> Pls no special batches. The simplest implementation possible.
-> alloc_bulk() has 'int cnt' argument. It will try to steal 'cnt' from ma->free_by_rcu_tasks_trace.
-I see. Will do.
+> - typeof(*pos)
+> - pos->member
 >
->> Had tried the global list before but I didn't do the
->> concurrent freeing, I think it could reduce the risk of OOM for
->> add_del_on_diff_cpu.
-> Maybe you've tried, but we didn't see the patches and we cannot take for granted
-> anyone saying: "I've tried *foo*. It didn't work. That's why I'm doing *bar* here".
-> Everything mm is tricky. Little details matter a lot.
-OK. I think it will work. The reason I didn't post it is that I was
-obsessed with lock-less bpf ma at that moment.
-> It's also questionable whether we should make any design decisions based on this benchmark
-> and in particular based on add_del_on_diff_cpu part of it.
-> I'm not saying we shouldn't consider it, but all numbers have a "decision weight"
-> associated with them.
-I see. The reason for add_del_on_diff_cpu is just to complement the
-possible use cases of bpf memory allocator.
-> For example: there is existing samples/bpf/map_perf_test benchmark.
-> So far we haven't seen the numbers from it.
-> Is it more important than your new bench? Yes and no. All numbers matter.
-Will post the benchmark result for map_perf_test in v4. Had planned to
-migrate map_perf_test to selftests/bpf/benchs, but couldn't find enough
-time to do that.
+> This corrects the following usage pattern where operator precedence is
+> unexpected:
 >
->>> - ma->waiting_for_gp_tasks_trace will be freeing elements into slab
->>>
->>> What it means that sleepable progs using hashmap will be able to avoid uaf with bpf_rcu_read_lock().
->>> Without explicit bpf_rcu_read_lock() it's still safe and equivalent to existing behavior of bpf_mem_alloc.
->>> (while your proposed BPF_MA_FREE_AFTER_RCU_GP flavor is not safe to use in hashtab with sleepable progs)
->>>
->>> After that we can unconditionally remove rcu_head/call_rcu from bpf_cpumask and improve usability of bpf_obj_drop.
->>> Probably usage of bpf_mem_alloc in local storage can be simplified as well.
->>> Martin wdyt?
->>>
->>> I think this approach adds minimal complexity to bpf_mem_alloc while solving all existing pain points
->>> including needs of qp-trie.
->> Thanks for these great suggestions. Will try to do it in v4.
-> Thanks.
-> Also for benchmark, pls don't hack htab and benchmark as 'non-landable patches' (as in this series).
-> Construct the patch series as:
-> - prep patches
-> - benchmark
-> - unconditional convert of bpf_ma to REUSE_AFTER_rcu_GP_and_free_after_rcu_tasks_trace
->   with numbers from bench(s) before and after this patch.
-Thanks again for the suggestion. Will do in v4.
+>   LIST_HEAD(testlist);
+>
+>   struct test {
+>           struct list_head node;
+>           int a;
+>   };
+>
+>   // pos->member issue
+>   void f(void)
+>   {
+>           struct test *t1;
+>           struct test **t2 =3D &t1;
+>
+>           list_for_each_entry_rcu((*t2), &testlist, node) {       /* work=
+s */
+>                   //...
+>           }
+>           list_for_each_entry_rcu(*t2, &testlist, node) { /* broken */
+>                   //...
+>           }
 
+Yeah it is not clear why anyone would ever want to use it like this.
+Why don't they just pass t1 to list_for_each_entry_rcu() ? I would
+rather it break them and they re-think their code ;).
+
+>   }
+>
+> The typeof(*pos) lack of parentheses around "pos" is not an issue per se
+> in the specific macros modified here because "pos" is used as an lvalue,
+> which should prevent use of any operator causing issue. Still add the
+> extra parentheses for consistency.
+
+The consistency argument is valid though.  I will stay neutral on this
+patch. ;-)
+
+thanks!
+
+ - Joel
+
+
+
+>
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Zqiang <qiang1.zhang@intel.com>
+> Cc: rcu@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  include/linux/rculist.h | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+>
+> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+> index d29740be4833..d27aeff5447d 100644
+> --- a/include/linux/rculist.h
+> +++ b/include/linux/rculist.h
+> @@ -388,9 +388,9 @@ static inline void list_splice_tail_init_rcu(struct l=
+ist_head *list,
+>   */
+>  #define list_for_each_entry_rcu(pos, head, member, cond...)            \
+>         for (__list_check_rcu(dummy, ## cond, 0),                       \
+> -            pos =3D list_entry_rcu((head)->next, typeof(*pos), member); =
+ \
+> -               &pos->member !=3D (head);                                =
+ \
+> -               pos =3D list_entry_rcu(pos->member.next, typeof(*pos), me=
+mber))
+> +            pos =3D list_entry_rcu((head)->next, typeof(*(pos)), member)=
+;\
+> +               &(pos)->member !=3D (head);                              =
+ \
+> +               pos =3D list_entry_rcu((pos)->member.next, typeof(*(pos))=
+, member))
+>
+>  /**
+>   * list_for_each_entry_srcu    -       iterate over rcu list of given ty=
+pe
+> @@ -407,9 +407,9 @@ static inline void list_splice_tail_init_rcu(struct l=
+ist_head *list,
+>   */
+>  #define list_for_each_entry_srcu(pos, head, member, cond)              \
+>         for (__list_check_srcu(cond),                                   \
+> -            pos =3D list_entry_rcu((head)->next, typeof(*pos), member); =
+ \
+> -               &pos->member !=3D (head);                                =
+ \
+> -               pos =3D list_entry_rcu(pos->member.next, typeof(*pos), me=
+mber))
+> +            pos =3D list_entry_rcu((head)->next, typeof(*(pos)), member)=
+;\
+> +               &(pos)->member !=3D (head);                              =
+ \
+> +               pos =3D list_entry_rcu((pos)->member.next, typeof(*(pos))=
+, member))
+>
+>  /**
+>   * list_entry_lockless - get the struct for this entry
+> @@ -441,9 +441,9 @@ static inline void list_splice_tail_init_rcu(struct l=
+ist_head *list,
+>   * but never deleted.
+>   */
+>  #define list_for_each_entry_lockless(pos, head, member) \
+> -       for (pos =3D list_entry_lockless((head)->next, typeof(*pos), memb=
+er); \
+> -            &pos->member !=3D (head); \
+> -            pos =3D list_entry_lockless(pos->member.next, typeof(*pos), =
+member))
+> +       for (pos =3D list_entry_lockless((head)->next, typeof(*(pos)), me=
+mber); \
+> +            &(pos)->member !=3D (head); \
+> +            pos =3D list_entry_lockless((pos)->member.next, typeof(*(pos=
+)), member))
+>
+>  /**
+>   * list_for_each_entry_continue_rcu - continue iteration over list of gi=
+ven type
+> @@ -464,9 +464,9 @@ static inline void list_splice_tail_init_rcu(struct l=
+ist_head *list,
+>   * position.
+>   */
+>  #define list_for_each_entry_continue_rcu(pos, head, member)            \
+> -       for (pos =3D list_entry_rcu(pos->member.next, typeof(*pos), membe=
+r); \
+> -            &pos->member !=3D (head);    \
+> -            pos =3D list_entry_rcu(pos->member.next, typeof(*pos), membe=
+r))
+> +       for (pos =3D list_entry_rcu((pos)->member.next, typeof(*(pos)), m=
+ember); \
+> +            &(pos)->member !=3D (head);  \
+> +            pos =3D list_entry_rcu((pos)->member.next, typeof(*(pos)), m=
+ember))
+>
+>  /**
+>   * list_for_each_entry_from_rcu - iterate over a list from current point
+> @@ -486,8 +486,8 @@ static inline void list_splice_tail_init_rcu(struct l=
+ist_head *list,
+>   * after the given position.
+>   */
+>  #define list_for_each_entry_from_rcu(pos, head, member)                 =
+       \
+> -       for (; &(pos)->member !=3D (head);                               =
+         \
+> -               pos =3D list_entry_rcu(pos->member.next, typeof(*(pos)), =
+member))
+> +       for (; &(pos)->member !=3D (head);                               =
+ \
+> +               pos =3D list_entry_rcu((pos)->member.next, typeof(*(pos))=
+, member))
+>
+>  /**
+>   * hlist_del_rcu - deletes entry from hash list without re-initializatio=
+n
+> --
+> 2.25.1
+>
