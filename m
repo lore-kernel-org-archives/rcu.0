@@ -2,25 +2,25 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97F11C7EE2C
-	for <rcu@archiver.kernel.org>; Fri,  5 May 2023 11:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93F7CC7EE2D
+	for <rcu@archiver.kernel.org>; Fri,  5 May 2023 11:24:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbjEELYb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 5 May 2023 07:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        id S231769AbjEELYc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 5 May 2023 07:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231749AbjEELYa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 5 May 2023 07:24:30 -0400
+        with ESMTP id S231785AbjEELYb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 5 May 2023 07:24:31 -0400
 Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E281A124;
-        Fri,  5 May 2023 04:24:29 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4QCSwk4v4PzpW4T;
-        Fri,  5 May 2023 19:23:18 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068501A12A;
+        Fri,  5 May 2023 04:24:30 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4QCSwl5bkSzpW4q;
+        Fri,  5 May 2023 19:23:19 +0800 (CST)
 Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 5 May
- 2023 19:24:25 +0800
+ 2023 19:24:26 +0800
 From:   Liu Jian <liujian56@huawei.com>
 To:     <corbet@lwn.net>, <paulmck@kernel.org>, <frederic@kernel.org>,
         <quic_neeraju@quicinc.com>, <joel@joelfernandes.org>,
@@ -34,9 +34,9 @@ To:     <corbet@lwn.net>, <paulmck@kernel.org>, <frederic@kernel.org>,
 CC:     <liujian56@huawei.com>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
         <netdev@vger.kernel.org>
-Subject: [PATCH 2/9] softirq: Use sched_clock() based timeout
-Date:   Fri, 5 May 2023 19:33:08 +0800
-Message-ID: <20230505113315.3307723-3-liujian56@huawei.com>
+Subject: [PATCH 3/9] softirq: Factor loop termination condition
+Date:   Fri, 5 May 2023 19:33:09 +0800
+Message-ID: <20230505113315.3307723-4-liujian56@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230505113315.3307723-1-liujian56@huawei.com>
 References: <20230505113315.3307723-1-liujian56@huawei.com>
@@ -53,55 +53,84 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-Replace the jiffies based timeout with a sched_clock() based one.
-
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Liu Jian <liujian56@huawei.com>
 ---
- kernel/softirq.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/softirq.c | 44 +++++++++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
 diff --git a/kernel/softirq.c b/kernel/softirq.c
-index bff5debf6ce6..59f16a9af5d1 100644
+index 59f16a9af5d1..48a81d8ae49a 100644
 --- a/kernel/softirq.c
 +++ b/kernel/softirq.c
-@@ -27,6 +27,7 @@
- #include <linux/tick.h>
- #include <linux/irq.h>
- #include <linux/wait_bit.h>
-+#include <linux/sched/clock.h>
+@@ -477,22 +477,6 @@ asmlinkage __visible void do_softirq(void)
  
- #include <asm/softirq_stack.h>
+ #endif /* !CONFIG_PREEMPT_RT */
  
-@@ -489,7 +490,7 @@ asmlinkage __visible void do_softirq(void)
-  * we want to handle softirqs as soon as possible, but they
-  * should not be able to lock up the box.
-  */
--#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
-+#define MAX_SOFTIRQ_TIME	(2 * NSEC_PER_MSEC)
- #define MAX_SOFTIRQ_RESTART 10
- 
+-/*
+- * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
+- * but break the loop if need_resched() is set or after 2 ms.
+- * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but in
+- * certain cases, such as stop_machine(), jiffies may cease to
+- * increment and so we need the MAX_SOFTIRQ_RESTART limit as
+- * well to make sure we eventually return from this method.
+- *
+- * These limits have been established via experimentation.
+- * The two things to balance is latency against fairness -
+- * we want to handle softirqs as soon as possible, but they
+- * should not be able to lock up the box.
+- */
+-#define MAX_SOFTIRQ_TIME	(2 * NSEC_PER_MSEC)
+-#define MAX_SOFTIRQ_RESTART 10
+-
  #ifdef CONFIG_TRACE_IRQFLAGS
-@@ -527,9 +528,9 @@ static inline void lockdep_softirq_end(bool in_hardirq) { }
+ /*
+  * When we run softirqs from irq_exit() and thus on the hardirq stack we need
+@@ -526,10 +510,33 @@ static inline bool lockdep_softirq_start(void) { return false; }
+ static inline void lockdep_softirq_end(bool in_hardirq) { }
+ #endif
  
++/*
++ * We restart softirq processing but break the loop if need_resched() is set or
++ * after 2 ms. The MAX_SOFTIRQ_RESTART guarantees a loop termination if
++ * sched_clock() were ever to stall.
++ *
++ * These limits have been established via experimentation.  The two things to
++ * balance is latency against fairness - we want to handle softirqs as soon as
++ * possible, but they should not be able to lock up the box.
++ */
++#define MAX_SOFTIRQ_TIME	(2 * NSEC_PER_MSEC)
++#define MAX_SOFTIRQ_RESTART	10
++
++static inline bool __softirq_needs_break(u64 start)
++{
++	if (need_resched())
++		return true;
++
++	if (sched_clock() - start >= MAX_SOFTIRQ_TIME)
++		return true;
++
++	return false;
++}
++
  asmlinkage __visible void __softirq_entry __do_softirq(void)
  {
--	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
++	unsigned int max_restart = MAX_SOFTIRQ_RESTART;
  	unsigned long old_flags = current->flags;
- 	int max_restart = MAX_SOFTIRQ_RESTART;
-+	u64 start = sched_clock();
+-	int max_restart = MAX_SOFTIRQ_RESTART;
+ 	u64 start = sched_clock();
  	struct softirq_action *h;
  	unsigned long pending;
- 	unsigned int vec_nr;
-@@ -584,7 +585,7 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+@@ -585,8 +592,7 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
  
  	pending = local_softirq_pending();
  	if (pending) {
--		if (time_before(jiffies, end) && !need_resched() &&
-+		if (sched_clock() - start < MAX_SOFTIRQ_TIME && !need_resched() &&
- 		    --max_restart)
+-		if (sched_clock() - start < MAX_SOFTIRQ_TIME && !need_resched() &&
+-		    --max_restart)
++		if (!__softirq_needs_break(start) && --max_restart)
  			goto restart;
  
+ 		wakeup_softirqd();
 -- 
 2.34.1
 
