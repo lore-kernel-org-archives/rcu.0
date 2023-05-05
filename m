@@ -2,25 +2,25 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EAA7C7EE22
-	for <rcu@archiver.kernel.org>; Fri,  5 May 2023 11:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF9C9C77B7F
+	for <rcu@archiver.kernel.org>; Fri,  5 May 2023 11:24:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbjEELYm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 5 May 2023 07:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        id S231964AbjEELYr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 5 May 2023 07:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjEELYf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 5 May 2023 07:24:35 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01EE11A1C9;
-        Fri,  5 May 2023 04:24:33 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QCSw369jXzsR6d;
-        Fri,  5 May 2023 19:22:43 +0800 (CST)
+        with ESMTP id S231186AbjEELYk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 5 May 2023 07:24:40 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A1C1A4AF;
+        Fri,  5 May 2023 04:24:35 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4QCSsT1Qglz18KCs;
+        Fri,  5 May 2023 19:20:29 +0800 (CST)
 Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 5 May
- 2023 19:24:30 +0800
+ 2023 19:24:32 +0800
 From:   Liu Jian <liujian56@huawei.com>
 To:     <corbet@lwn.net>, <paulmck@kernel.org>, <frederic@kernel.org>,
         <quic_neeraju@quicinc.com>, <joel@joelfernandes.org>,
@@ -34,9 +34,9 @@ To:     <corbet@lwn.net>, <paulmck@kernel.org>, <frederic@kernel.org>,
 CC:     <liujian56@huawei.com>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
         <netdev@vger.kernel.org>
-Subject: [PATCH 6/9] softirq: Provide a softirq_needs_break() API
-Date:   Fri, 5 May 2023 19:33:12 +0800
-Message-ID: <20230505113315.3307723-7-liujian56@huawei.com>
+Subject: [PATCH 8/9] softirq,rcu: Use softirq_needs_break()
+Date:   Fri, 5 May 2023 19:33:14 +0800
+Message-ID: <20230505113315.3307723-9-liujian56@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230505113315.3307723-1-liujian56@huawei.com>
 References: <20230505113315.3307723-1-liujian56@huawei.com>
@@ -53,68 +53,125 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-So that all open_softirq() users can employ the same break conditions
-and work off the same time-base in case of multiple pending vectors.
+SoftIRQs provide their own timeout/break code now, use that.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Liu Jian <liujian56@huawei.com>
 ---
- include/linux/interrupt.h |  5 +++++
- kernel/softirq.c          | 16 ++++++++++++++++
- 2 files changed, 21 insertions(+)
+ kernel/rcu/tree.c      | 29 +++++++----------------------
+ kernel/rcu/tree_nocb.h |  2 +-
+ 2 files changed, 8 insertions(+), 23 deletions(-)
 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index a92bce40b04b..94d1047fe0c3 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -584,8 +584,13 @@ extern const char * const softirq_to_name[NR_SOFTIRQS];
- struct softirq_action
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index f52ff7241041..1942e3db4145 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -397,10 +397,6 @@ static bool rcu_kick_kthreads;
+ static int rcu_divisor = 7;
+ module_param(rcu_divisor, int, 0644);
+ 
+-/* Force an exit from rcu_do_batch() after 3 milliseconds. */
+-static long rcu_resched_ns = 3 * NSEC_PER_MSEC;
+-module_param(rcu_resched_ns, long, 0644);
+-
+ /*
+  * How long the grace period must be before we start recruiting
+  * quiescent-state help from rcu_note_context_switch().
+@@ -2050,7 +2046,7 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
+  * Invoke any RCU callbacks that have made it to the end of their grace
+  * period.  Throttle as specified by rdp->blimit.
+  */
+-static void rcu_do_batch(struct rcu_data *rdp)
++static void rcu_do_batch(struct softirq_action *h, struct rcu_data *rdp)
  {
- 	void	(*action)(struct softirq_action *);
-+	u64	start;
-+	u64	timo;
- };
+ 	int div;
+ 	bool __maybe_unused empty;
+@@ -2058,7 +2054,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	struct rcu_head *rhp;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+ 	long bl, count = 0;
+-	long pending, tlimit = 0;
++	long pending;
  
-+extern struct softirq_action softirq_action_now(void);
-+extern bool softirq_needs_break(struct softirq_action *action);
-+
- asmlinkage void do_softirq(void);
- asmlinkage void __do_softirq(void);
- 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index baa08ae1604f..dc4299e40dad 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -533,6 +533,20 @@ static inline bool __softirq_needs_break(u64 start, u64 timo)
- 	return false;
+ 	/* If no callbacks are ready, just return. */
+ 	if (!rcu_segcblist_ready_cbs(&rdp->cblist)) {
+@@ -2082,12 +2078,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	div = READ_ONCE(rcu_divisor);
+ 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
+ 	bl = max(rdp->blimit, pending >> div);
+-	if (in_serving_softirq() && unlikely(bl > 100)) {
+-		long rrn = READ_ONCE(rcu_resched_ns);
+-
+-		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
+-		tlimit = local_clock() + rrn;
+-	}
+ 	trace_rcu_batch_start(rcu_state.name,
+ 			      rcu_segcblist_n_cbs(&rdp->cblist), bl);
+ 	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+@@ -2126,13 +2116,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 			 * Make sure we don't spend too much time here and deprive other
+ 			 * softirq vectors of CPU cycles.
+ 			 */
+-			if (unlikely(tlimit)) {
+-				/* only call local_clock() every 32 callbacks */
+-				if (likely((count & 31) || local_clock() < tlimit))
+-					continue;
+-				/* Exceeded the time limit, so leave. */
++			if (unlikely(!(count & 31)) && softirq_needs_break(h))
+ 				break;
+-			}
+ 		} else {
+ 			// In rcuoc context, so no worries about depriving
+ 			// other softirq vectors of CPU cycles.
+@@ -2320,7 +2305,7 @@ static void strict_work_handler(struct work_struct *work)
  }
  
-+bool softirq_needs_break(struct softirq_action *h)
-+{
-+	return __softirq_needs_break(h->start, h->timo);
-+}
-+
-+struct softirq_action softirq_action_now(void)
-+{
-+	struct softirq_action h = {
-+		.start = sched_clock(),
-+		.timo = MAX_SOFTIRQ_TIME,
-+	};
-+	return h;
-+}
-+
- asmlinkage __visible void __softirq_entry __do_softirq(void)
+ /* Perform RCU core processing work for the current CPU.  */
+-static __latent_entropy void rcu_core(void)
++static __latent_entropy void rcu_core(struct softirq_action *h)
  {
- 	unsigned int max_restart = MAX_SOFTIRQ_RESTART;
-@@ -572,6 +586,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 		__clear_bit(vec_nr, &pending);
+ 	unsigned long flags;
+ 	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
+@@ -2374,7 +2359,7 @@ static __latent_entropy void rcu_core(void)
+ 	/* If there are callbacks ready, invoke them. */
+ 	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
+ 	    likely(READ_ONCE(rcu_scheduler_fully_active))) {
+-		rcu_do_batch(rdp);
++		rcu_do_batch(h, rdp);
+ 		/* Re-invoke RCU core processing if there are callbacks remaining. */
+ 		if (rcu_segcblist_ready_cbs(&rdp->cblist))
+ 			invoke_rcu_core();
+@@ -2391,7 +2376,7 @@ static __latent_entropy void rcu_core(void)
  
- 		h = softirq_vec + vec_nr;
-+		h->start = start;
-+		h->timo = timo;
+ static void rcu_core_si(struct softirq_action *h)
+ {
+-	rcu_core();
++	rcu_core(h);
+ }
  
- 		prev_count = preempt_count();
- 
+ static void rcu_wake_cond(struct task_struct *t, int status)
+@@ -2462,7 +2447,7 @@ static void rcu_cpu_kthread(unsigned int cpu)
+ 		*workp = 0;
+ 		local_irq_enable();
+ 		if (work)
+-			rcu_core();
++			rcu_core(NULL);
+ 		local_bh_enable();
+ 		if (*workp == 0) {
+ 			trace_rcu_utilization(TPS("End CPU kthread@rcu_wait"));
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index f2280616f9d5..44fc907fdb5e 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -951,7 +951,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+ 	 * instances of this callback would execute concurrently.
+ 	 */
+ 	local_bh_disable();
+-	rcu_do_batch(rdp);
++	rcu_do_batch(NULL, rdp);
+ 	local_bh_enable();
+ 	lockdep_assert_irqs_enabled();
+ 	rcu_nocb_lock_irqsave(rdp, flags);
 -- 
 2.34.1
 
