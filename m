@@ -2,25 +2,25 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A63C77B7F
-	for <rcu@archiver.kernel.org>; Fri,  5 May 2023 11:25:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB5D9C7EE26
+	for <rcu@archiver.kernel.org>; Fri,  5 May 2023 11:25:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbjEELYr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 5 May 2023 07:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        id S231937AbjEELYt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 5 May 2023 07:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbjEELYl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231931AbjEELYl (ORCPT <rfc822;rcu@vger.kernel.org>);
         Fri, 5 May 2023 07:24:41 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4CB1A12A;
-        Fri,  5 May 2023 04:24:35 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4QCSwr195CzpW6K;
-        Fri,  5 May 2023 19:23:24 +0800 (CST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916191A62E;
+        Fri,  5 May 2023 04:24:36 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QCSty42qczLpCd;
+        Fri,  5 May 2023 19:21:46 +0800 (CST)
 Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 5 May
- 2023 19:24:31 +0800
+ 2023 19:24:33 +0800
 From:   Liu Jian <liujian56@huawei.com>
 To:     <corbet@lwn.net>, <paulmck@kernel.org>, <frederic@kernel.org>,
         <quic_neeraju@quicinc.com>, <joel@joelfernandes.org>,
@@ -34,9 +34,9 @@ To:     <corbet@lwn.net>, <paulmck@kernel.org>, <frederic@kernel.org>,
 CC:     <liujian56@huawei.com>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
         <netdev@vger.kernel.org>
-Subject: [PATCH 7/9] softirq,net: Use softirq_needs_break()
-Date:   Fri, 5 May 2023 19:33:13 +0800
-Message-ID: <20230505113315.3307723-8-liujian56@huawei.com>
+Subject: [PATCH 9/9] softirq, timer: Use softirq_needs_break()
+Date:   Fri, 5 May 2023 19:33:15 +0800
+Message-ID: <20230505113315.3307723-10-liujian56@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230505113315.3307723-1-liujian56@huawei.com>
 References: <20230505113315.3307723-1-liujian56@huawei.com>
@@ -51,103 +51,58 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+In the while loop of __run_timers(), because there are too many timers or
+improper timer handler functions, if the processing time of the expired
+timers is always greater than the time wheel's next_expiry, the function
+will loop infinitely.
 
-SoftIRQs provide their own timeout/break code now, use that.
+To prevent this, use the timeout/break logic provided by SoftIRQs. If the
+running time exceeds the limit, break the loop and an additional
+TIMER_SOFTIRQ is triggered.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Liu Jian <liujian56@huawei.com>
 ---
- Documentation/admin-guide/sysctl/net.rst | 11 +----------
- net/core/dev.c                           |  6 +-----
- net/core/dev.h                           |  1 -
- net/core/sysctl_net_core.c               |  8 --------
- 4 files changed, 2 insertions(+), 24 deletions(-)
+ kernel/time/timer.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
-index 466c560b0c30..095c60788c61 100644
---- a/Documentation/admin-guide/sysctl/net.rst
-+++ b/Documentation/admin-guide/sysctl/net.rst
-@@ -267,16 +267,7 @@ netdev_budget
- 
- Maximum number of packets taken from all interfaces in one polling cycle (NAPI
- poll). In one polling cycle interfaces which are registered to polling are
--probed in a round-robin manner. Also, a polling cycle may not exceed
--netdev_budget_usecs microseconds, even if netdev_budget has not been
--exhausted.
--
--netdev_budget_usecs
-----------------------
--
--Maximum number of microseconds in one NAPI polling cycle. Polling
--will exit when either netdev_budget_usecs have elapsed during the
--poll cycle or the number of packets processed reaches netdev_budget.
-+probed in a round-robin manner.
- 
- netdev_max_backlog
- ------------------
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 735096d42c1d..70b6726beee6 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4321,7 +4321,6 @@ int netdev_tstamp_prequeue __read_mostly = 1;
- unsigned int sysctl_skb_defer_max __read_mostly = 64;
- int netdev_budget __read_mostly = 300;
- /* Must be at least 2 jiffes to guarantee 1 jiffy timeout */
--unsigned int __read_mostly netdev_budget_usecs = 2 * USEC_PER_SEC / HZ;
- int weight_p __read_mostly = 64;           /* old backlog weight */
- int dev_weight_rx_bias __read_mostly = 1;  /* bias for backlog weight */
- int dev_weight_tx_bias __read_mostly = 1;  /* bias for output_queue quota */
-@@ -6659,8 +6658,6 @@ static int napi_threaded_poll(void *data)
- static __latent_entropy void net_rx_action(struct softirq_action *h)
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 63a8ce7177dd..70744a469a39 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1992,7 +1992,7 @@ void timer_clear_idle(void)
+  * __run_timers - run all expired timers (if any) on this CPU.
+  * @base: the timer vector to be processed.
+  */
+-static inline void __run_timers(struct timer_base *base)
++static inline void __run_timers(struct timer_base *base, struct softirq_action *h)
  {
- 	struct softnet_data *sd = this_cpu_ptr(&softnet_data);
--	unsigned long time_limit = jiffies +
--		usecs_to_jiffies(READ_ONCE(netdev_budget_usecs));
- 	int budget = READ_ONCE(netdev_budget);
- 	LIST_HEAD(list);
- 	LIST_HEAD(repoll);
-@@ -6699,8 +6696,7 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
- 		 * Allow this to run for 2 jiffies since which will allow
- 		 * an average latency of 1.5/HZ.
- 		 */
--		if (unlikely(budget <= 0 ||
--			     time_after_eq(jiffies, time_limit))) {
-+		if (unlikely(budget <= 0 || softirq_needs_break(h))) {
- 			sd->time_squeeze++;
- 			break;
- 		}
-diff --git a/net/core/dev.h b/net/core/dev.h
-index e075e198092c..e64a60c767ab 100644
---- a/net/core/dev.h
-+++ b/net/core/dev.h
-@@ -39,7 +39,6 @@ void dev_addr_check(struct net_device *dev);
+ 	struct hlist_head heads[LVL_DEPTH];
+ 	int levels;
+@@ -2020,6 +2020,12 @@ static inline void __run_timers(struct timer_base *base)
  
- /* sysctls not referred to from outside net/core/ */
- extern int		netdev_budget;
--extern unsigned int	netdev_budget_usecs;
- extern unsigned int	sysctl_skb_defer_max;
- extern int		netdev_tstamp_prequeue;
- extern int		netdev_unregister_timeout_secs;
-diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-index 782273bb93c2..59765c805f5b 100644
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -595,14 +595,6 @@ static struct ctl_table net_core_table[] = {
- 		.extra1		= SYSCTL_ONE,
- 		.extra2		= &max_skb_frags,
- 	},
--	{
--		.procname	= "netdev_budget_usecs",
--		.data		= &netdev_budget_usecs,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
--	},
- 	{
- 		.procname	= "fb_tunnels_only_for_init_net",
- 		.data		= &sysctl_fb_tunnels_only_for_init_net,
+ 		while (levels--)
+ 			expire_timers(base, heads + levels);
++
++		if (softirq_needs_break(h)) {
++			if (time_after_eq(jiffies, base->next_expiry))
++				__raise_softirq_irqoff(TIMER_SOFTIRQ);
++			break;
++		}
+ 	}
+ 	raw_spin_unlock_irq(&base->lock);
+ 	timer_base_unlock_expiry(base);
+@@ -2032,9 +2038,9 @@ static __latent_entropy void run_timer_softirq(struct softirq_action *h)
+ {
+ 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
+ 
+-	__run_timers(base);
++	__run_timers(base, h);
+ 	if (IS_ENABLED(CONFIG_NO_HZ_COMMON))
+-		__run_timers(this_cpu_ptr(&timer_bases[BASE_DEF]));
++		__run_timers(this_cpu_ptr(&timer_bases[BASE_DEF]), h);
+ }
+ 
+ /*
 -- 
 2.34.1
 
