@@ -2,164 +2,76 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3302C7EE24
-	for <rcu@archiver.kernel.org>; Sat,  6 May 2023 05:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 698E4C77B7F
+	for <rcu@archiver.kernel.org>; Sat,  6 May 2023 23:07:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbjEFF6D (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 6 May 2023 01:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        id S229670AbjEFXHH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 6 May 2023 19:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjEFF6C (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 6 May 2023 01:58:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F0683E5;
-        Fri,  5 May 2023 22:58:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 25CE661650;
-        Sat,  6 May 2023 05:58:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9141BC433D2;
-        Sat,  6 May 2023 05:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1683352679;
-        bh=9L2vwP0nPqva5A/E8Ka5N8Uqn+3wz8eX6x4yzEq8xJU=;
-        h=Subject:To:Cc:From:Date:From;
-        b=eJ1zRMQJ1CkDycVY227JLGORQ1ck497zuffsGY0YL1ee7NkVH3M+ahEWfLij5KMuB
-         6RS2luq7/BhD5b7gocoasyofVg8pS3jAboHoUioLy4d09q22riCCA70HKiv89j3IY+
-         lBwz7CbXmD/SMHpBhuUkzpXrcCs7LnbcbPaFLMFk=
-Subject: FAILED: patch "[PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz" failed to apply to 4.14-stable tree
-To:     joel@joelfernandes.org, frederic@kernel.org,
-        gregkh@linuxfoundation.org, maz@kernel.org, paulmck@kernel.org,
-        rcu@vger.kernel.org, will@kernel.org, zhouzhouyi@gmail.com
-Cc:     <stable@vger.kernel.org>
-From:   <gregkh@linuxfoundation.org>
-Date:   Sat, 06 May 2023 11:13:06 +0900
-Message-ID: <2023050606-jawed-amnesty-4b1c@gregkh>
+        with ESMTP id S229454AbjEFXHG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 6 May 2023 19:07:06 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0611310C4
+        for <rcu@vger.kernel.org>; Sat,  6 May 2023 16:07:04 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-ba1cde4ee59so1871578276.1
+        for <rcu@vger.kernel.org>; Sat, 06 May 2023 16:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1683414423; x=1686006423;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/mvvFUComJxka0KtnpvFncoqWMniMbIOg2Q0amFnn+M=;
+        b=uy99KHW3WLKbYfnoEQHObyv1l0Fko4TanlbD3IDG+5AAX1qjNaLCQy9P6VroKg8ozZ
+         kbdCyK3oBXnYfi8mnFYIEg8uVdd9SJC0S38PKI8NVuofJxDX9u45RpqMPbWZOUJf20TJ
+         ymK+AqWCo9Ke21DulIvr4UcMo1y9a2pvzlVyQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683414423; x=1686006423;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/mvvFUComJxka0KtnpvFncoqWMniMbIOg2Q0amFnn+M=;
+        b=OMykKRqVIhHQDEo4N6dcOh1uQS2ZBrRdLwmwdbW4NsS96SYUUdstMSrRpNRIkeplnW
+         zUCaQDmFIDiiyLkXgm9xXAotJvxe78d/MuXhWJAU4OQL7t/y9E5ZsFgw9QKGNCsg4uDp
+         3oW5LGJaScdw3U+i21J3SzMm/e45/4Bmp4ihuqCBfyFr7+X4AKhD0fkjrnuuuQQKruRq
+         FN3sUXdNnACnIQlC3BPX+yOBJRDdvL/igQ/O8Csf54Yj7eEjW/OO78iWADusq8cJXEu/
+         kCgO2ThNW5YczxzU4kH4a3pVEzzvoICV/tX2AY7l7vrRkIkYocSu/iwpiAY2JBFEuKLs
+         MxUQ==
+X-Gm-Message-State: AC+VfDwiJfWN0SUQWrpHT2WLtT4/MzvvqeLIR77e7JP4xMoBqf3JDfGC
+        cx5Avehoz+DWDuEty4Tmgsxe8Ea8wYkXO6YNuOpwEA==
+X-Google-Smtp-Source: ACHHUZ6GjAcz9OH9dK8wdzxsabqhnEslMz1RzRXeUyyOdvHgZavmwUi6U9sMIFosHS0JmW7nuUrxWKnQ2jLtirW9pso=
+X-Received: by 2002:a25:a4a5:0:b0:ba2:ffa:9c0d with SMTP id
+ g34-20020a25a4a5000000b00ba20ffa9c0dmr3854195ybi.47.1683414423123; Sat, 06
+ May 2023 16:07:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
+References: <Y9o+FWwoLUdp2ees@google.com>
+In-Reply-To: <Y9o+FWwoLUdp2ees@google.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 6 May 2023 18:06:49 -0500
+Message-ID: <CAEXW_YQ+xqwgOqeq7vXrhtXzg_AuJLnekvkG6emwihJpGMF6ww@mail.gmail.com>
+Subject: Re: LSFMMBPF proposal [MM]: Lazy RCU memory reclaim
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     Frederic Weisbecker <fweisbec@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-mm <linux-mm@kvack.org>, rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Hello,
 
-The patch below does not apply to the 4.14-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+> Title: Lazy RCU memory reclaim
 
-To reproduce the conflict and resubmit, you may use the following commands:
+I uploaded my slides to Google doc and opened it up for comment-level
+access to everyone. Feel free to take a look or comment prior to my
+talk: http://bit.ly/lsfmm23_rcu
 
-git fetch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/ linux-4.14.y
-git checkout FETCH_HEAD
-git cherry-pick -x 58d7668242647e661a20efe065519abd6454287e
-# <resolve conflicts, build, test, etc.>
-git commit -s
-git send-email --to '<stable@vger.kernel.org>' --in-reply-to '2023050606-jawed-amnesty-4b1c@gregkh' --subject-prefix 'PATCH 4.14.y' HEAD^..
-
-Possible dependencies:
-
-
+It would be great to add the link to the schedule so that conference
+attendees can view the slides in advance if they want to. I could not
+find a way to do that, optionally - could the mm track or conference
+organizers add the slides link under my talk to the schedule document?
 
 thanks,
 
-greg k-h
-
------------------- original commit in Linus's tree ------------------
-
-From 58d7668242647e661a20efe065519abd6454287e Mon Sep 17 00:00:00 2001
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Date: Tue, 24 Jan 2023 17:31:26 +0000
-Subject: [PATCH] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz
- subsystem
-
-For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
-However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
-torture tests that do offlining to end up trying to offline this CPU causing
-test failures. Such failure happens on all architectures.
-
-Fix the repeated error messages thrown by this (even if the hotplug errors are
-harmless) by asking the opinion of the nohz subsystem on whether the CPU can be
-hotplugged.
-
-[ Apply Frederic Weisbecker feedback on refactoring tick_nohz_cpu_down(). ]
-
-For drivers/base/ portion:
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: rcu <rcu@vger.kernel.org>
-Cc: stable@vger.kernel.org
-Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest of the kernel")
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 182c6122f815..c1815b9dae68 100644
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -487,7 +487,8 @@ static const struct attribute_group *cpu_root_attr_groups[] = {
- bool cpu_is_hotpluggable(unsigned int cpu)
- {
- 	struct device *dev = get_cpu_device(cpu);
--	return dev && container_of(dev, struct cpu, dev)->hotpluggable;
-+	return dev && container_of(dev, struct cpu, dev)->hotpluggable
-+		&& tick_nohz_cpu_hotpluggable(cpu);
- }
- EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
- 
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index bfd571f18cfd..9459fef5b857 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -216,6 +216,7 @@ extern void tick_nohz_dep_set_signal(struct task_struct *tsk,
- 				     enum tick_dep_bits bit);
- extern void tick_nohz_dep_clear_signal(struct signal_struct *signal,
- 				       enum tick_dep_bits bit);
-+extern bool tick_nohz_cpu_hotpluggable(unsigned int cpu);
- 
- /*
-  * The below are tick_nohz_[set,clear]_dep() wrappers that optimize off-cases
-@@ -280,6 +281,7 @@ static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask) { }
- 
- static inline void tick_nohz_dep_set_cpu(int cpu, enum tick_dep_bits bit) { }
- static inline void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit) { }
-+static inline bool tick_nohz_cpu_hotpluggable(unsigned int cpu) { return true; }
- 
- static inline void tick_dep_set(enum tick_dep_bits bit) { }
- static inline void tick_dep_clear(enum tick_dep_bits bit) { }
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index b0e3c9205946..68d81a4283c8 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -527,7 +527,7 @@ void __init tick_nohz_full_setup(cpumask_var_t cpumask)
- 	tick_nohz_full_running = true;
- }
- 
--static int tick_nohz_cpu_down(unsigned int cpu)
-+bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
- {
- 	/*
- 	 * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
-@@ -535,8 +535,13 @@ static int tick_nohz_cpu_down(unsigned int cpu)
- 	 * CPUs. It must remain online when nohz full is enabled.
- 	 */
- 	if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
--		return -EBUSY;
--	return 0;
-+		return false;
-+	return true;
-+}
-+
-+static int tick_nohz_cpu_down(unsigned int cpu)
-+{
-+	return tick_nohz_cpu_hotpluggable(cpu) ? 0 : -EBUSY;
- }
- 
- void __init tick_nohz_init(void)
-
+ - Joel
