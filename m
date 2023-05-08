@@ -2,122 +2,139 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB393C77B7C
-	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 03:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EB63C77B75
+	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 04:08:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbjEHDh0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 7 May 2023 23:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
+        id S230348AbjEHEIp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 May 2023 00:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjEHDh0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 7 May 2023 23:37:26 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4024483;
-        Sun,  7 May 2023 20:37:22 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4QF6QK2JbgzpW6Q;
-        Mon,  8 May 2023 11:36:09 +0800 (CST)
-Received: from [10.174.176.93] (10.174.176.93) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 8 May 2023 11:37:19 +0800
-Message-ID: <a1bd617b-c3ae-f2df-b643-aaa7b6eaf531@huawei.com>
-Date:   Mon, 8 May 2023 11:37:19 +0800
+        with ESMTP id S229540AbjEHEIo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 May 2023 00:08:44 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E501F6EB5;
+        Sun,  7 May 2023 21:08:42 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50be0d835aaso7406430a12.3;
+        Sun, 07 May 2023 21:08:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683518921; x=1686110921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=418lmDvsSwaR5hPOcnBAQZAbghEwqMzFRELtnuxfpVc=;
+        b=WM48MUrgQ8nDrO/xcJbziZYeEJIYKJ+lsqBG5g5X/M3QfyNsy8Zp0JnPxtCfngt9o4
+         mUXFB3keoT+bry4xcLN3YHZFV1qbfuK7R1SvymDYF6QNCR+ojbXKkQ1jq08YPmVpOkk9
+         7Nx5DtP3rWm1T0hpcw/e6M2A3squvqmwdDE51oDaXeXJWSZJCEMoFNIKU8Fkhw7uIUBk
+         3a+2cnpSTeuTw7HNLm3OEoYauDKYWea3CxCQecN9No7QPJgUnT51B2yO0RunQEAfnKlx
+         PDMAhI1h1pBIUYRStRuC99P7bfCzoeCspk6mZ0UZXl2/XPWadRpEThfj6GQs/83QMpIa
+         F4Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683518921; x=1686110921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=418lmDvsSwaR5hPOcnBAQZAbghEwqMzFRELtnuxfpVc=;
+        b=Svw9l9fN9G25HkTmy70H45i5COdSuMG/pUTPfIUlUWE+zlxqKoJ/H20R33PvFCr2Ue
+         oQnfRKGrvQYJK8KnSzgJkkg9rJpBu7ueqYJi01ZvX8SulT2kDKVeYwQy1vOobYR0PajN
+         +XbILV4CbGCEnJkOhzHBRuMbUgOGNXkyVtM6MNXQ8aeQ0aebU1FF2af74ex+I8cNPp4x
+         dC2a0XkgvRvu5e1OZl0LEHVLpRXCUHAR4CYBiQUvuBIv7ZDZxdWQoY8Q7SoGqrBLBuHD
+         RYXtDGcKfZDqJfogUe15PfkAlxr3lEf1XVTA6BzRylkJ2axJ5UAUvMHGNbdc8yYqcF7P
+         1ivQ==
+X-Gm-Message-State: AC+VfDwKRTPtkCIAYGJ2eVoCku3YSrYSNJg9qHyXmPIv6+HUvNoe8qT8
+        MUrWVMCkt71CdhTkck4NQhv6tICaRSfKM7AblAE=
+X-Google-Smtp-Source: ACHHUZ4IPERXtNJef1vvKhMOH/D3B+M3LH79PgUudG1dBoi9d1doeo709yH83md5swCmQ/LygaVdGk3TZgPTcg9HZhk=
+X-Received: by 2002:aa7:ca57:0:b0:50c:1e2:4a42 with SMTP id
+ j23-20020aa7ca57000000b0050c01e24a42mr7368607edt.15.1683518921019; Sun, 07
+ May 2023 21:08:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 4/9] softirq: Allow early break
-To:     Eric Dumazet <edumazet@google.com>
-CC:     <corbet@lwn.net>, <paulmck@kernel.org>, <frederic@kernel.org>,
-        <quic_neeraju@quicinc.com>, <joel@joelfernandes.org>,
-        <josh@joshtriplett.org>, <boqun.feng@gmail.com>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <qiang1.zhang@intel.com>,
-        <jstultz@google.com>, <tglx@linutronix.de>, <sboyd@kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <peterz@infradead.org>, <frankwoo@google.com>,
-        <Rhinewuwu@google.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-References: <20230505113315.3307723-1-liujian56@huawei.com>
- <20230505113315.3307723-5-liujian56@huawei.com>
- <CANn89iJL3ywLwig8U6JKG6itL7Fr=ab_dv7Pz1YDiDvCiR-Fog@mail.gmail.com>
-From:   "liujian (CE)" <liujian56@huawei.com>
-In-Reply-To: <CANn89iJL3ywLwig8U6JKG6itL7Fr=ab_dv7Pz1YDiDvCiR-Fog@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.93]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
+References: <20230505113315.3307723-1-liujian56@huawei.com> <20230505113315.3307723-3-liujian56@huawei.com>
+In-Reply-To: <20230505113315.3307723-3-liujian56@huawei.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Mon, 8 May 2023 12:08:04 +0800
+Message-ID: <CAL+tcoDY11sSO8_h1DKCWgAXOjQwM1JR5cx7cpmotWVj28m_fg@mail.gmail.com>
+Subject: Re: [PATCH 2/9] softirq: Use sched_clock() based timeout
+To:     Liu Jian <liujian56@huawei.com>
+Cc:     corbet@lwn.net, paulmck@kernel.org, frederic@kernel.org,
+        quic_neeraju@quicinc.com, joel@joelfernandes.org,
+        josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        qiang1.zhang@intel.com, jstultz@google.com, tglx@linutronix.de,
+        sboyd@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, peterz@infradead.org,
+        frankwoo@google.com, Rhinewuwu@google.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, May 5, 2023 at 7:25=E2=80=AFPM Liu Jian <liujian56@huawei.com> wrot=
+e:
+>
+> From: Peter Zijlstra <peterz@infradead.org>
+>
+> Replace the jiffies based timeout with a sched_clock() based one.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Liu Jian <liujian56@huawei.com>
+> ---
+>  kernel/softirq.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index bff5debf6ce6..59f16a9af5d1 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/tick.h>
+>  #include <linux/irq.h>
+>  #include <linux/wait_bit.h>
+> +#include <linux/sched/clock.h>
+>
+>  #include <asm/softirq_stack.h>
+>
+> @@ -489,7 +490,7 @@ asmlinkage __visible void do_softirq(void)
+>   * we want to handle softirqs as soon as possible, but they
+>   * should not be able to lock up the box.
+>   */
+> -#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
+> +#define MAX_SOFTIRQ_TIME       (2 * NSEC_PER_MSEC)
 
+I wonder if it affects those servers that set HZ to some different
+values rather than 1000 as default.
 
-On 2023/5/5 20:10, Eric Dumazet wrote:
-> On Fri, May 5, 2023 at 1:24 PM Liu Jian <liujian56@huawei.com> wrote:
->>
->> From: Peter Zijlstra <peterz@infradead.org>
->>
->> Allow terminating the softirq processing loop without finishing the
->> vectors.
->>
->> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Signed-off-by: Liu Jian <liujian56@huawei.com>
->> ---
->>   kernel/softirq.c | 16 ++++++++++------
->>   1 file changed, 10 insertions(+), 6 deletions(-)
->>
->> diff --git a/kernel/softirq.c b/kernel/softirq.c
->> index 48a81d8ae49a..e2cad5d108c8 100644
->> --- a/kernel/softirq.c
->> +++ b/kernel/softirq.c
->> @@ -582,6 +582,9 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
->>                                 prev_count, preempt_count());
->>                          preempt_count_set(prev_count);
->>                  }
->> +
->> +               if (pending && __softirq_needs_break(start))
->> +                       break;
-> 
-> This means that some softirq may starve, because
-> 
-> for_each_set_bit(vec_nr, &pending, NR_SOFTIRQS)
-> 
-> Always iterate using the same order (of bits)
-> 
-> 
-Yes, we need to record the softirq that is not executed and continue 
-next time. I will fix it in next version.
-Thanks.
-> 
-> 
->>          }
->>
->>          if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
->> @@ -590,13 +593,14 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
->>
->>          local_irq_disable();
->>
->> -       pending = local_softirq_pending();
->> -       if (pending) {
->> -               if (!__softirq_needs_break(start) && --max_restart)
->> -                       goto restart;
->> +       if (pending)
->> +               or_softirq_pending(pending);
->> +       else if ((pending = local_softirq_pending()) &&
->> +                !__softirq_needs_break(start) &&
->> +                --max_restart)
->> +               goto restart;
->>
->> -               wakeup_softirqd();
->> -       }
->> +       wakeup_softirqd();
->>
->>          account_softirq_exit(current);
->>          lockdep_softirq_end(in_hardirq);
->> --
->> 2.34.1
->>
+Thanks,
+Jason
+
+>  #define MAX_SOFTIRQ_RESTART 10
+>
+>  #ifdef CONFIG_TRACE_IRQFLAGS
+> @@ -527,9 +528,9 @@ static inline void lockdep_softirq_end(bool in_hardir=
+q) { }
+>
+>  asmlinkage __visible void __softirq_entry __do_softirq(void)
+>  {
+> -       unsigned long end =3D jiffies + MAX_SOFTIRQ_TIME;
+>         unsigned long old_flags =3D current->flags;
+>         int max_restart =3D MAX_SOFTIRQ_RESTART;
+> +       u64 start =3D sched_clock();
+>         struct softirq_action *h;
+>         unsigned long pending;
+>         unsigned int vec_nr;
+> @@ -584,7 +585,7 @@ asmlinkage __visible void __softirq_entry __do_softir=
+q(void)
+>
+>         pending =3D local_softirq_pending();
+>         if (pending) {
+> -               if (time_before(jiffies, end) && !need_resched() &&
+> +               if (sched_clock() - start < MAX_SOFTIRQ_TIME && !need_res=
+ched() &&
+>                     --max_restart)
+>                         goto restart;
+>
+> --
+> 2.34.1
+>
+>
