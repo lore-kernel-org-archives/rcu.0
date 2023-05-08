@@ -2,57 +2,57 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EB63C77B75
-	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 04:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29F09C77B7F
+	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 06:22:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjEHEIp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 May 2023 00:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
+        id S231926AbjEHGWc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 May 2023 02:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjEHEIo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 May 2023 00:08:44 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E501F6EB5;
-        Sun,  7 May 2023 21:08:42 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50be0d835aaso7406430a12.3;
-        Sun, 07 May 2023 21:08:42 -0700 (PDT)
+        with ESMTP id S229475AbjEHGWb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 May 2023 02:22:31 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DB511B71;
+        Sun,  7 May 2023 23:22:30 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-965a68abfd4so777001566b.2;
+        Sun, 07 May 2023 23:22:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683518921; x=1686110921;
+        d=gmail.com; s=20221208; t=1683526949; x=1686118949;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=418lmDvsSwaR5hPOcnBAQZAbghEwqMzFRELtnuxfpVc=;
-        b=WM48MUrgQ8nDrO/xcJbziZYeEJIYKJ+lsqBG5g5X/M3QfyNsy8Zp0JnPxtCfngt9o4
-         mUXFB3keoT+bry4xcLN3YHZFV1qbfuK7R1SvymDYF6QNCR+ojbXKkQ1jq08YPmVpOkk9
-         7Nx5DtP3rWm1T0hpcw/e6M2A3squvqmwdDE51oDaXeXJWSZJCEMoFNIKU8Fkhw7uIUBk
-         3a+2cnpSTeuTw7HNLm3OEoYauDKYWea3CxCQecN9No7QPJgUnT51B2yO0RunQEAfnKlx
-         PDMAhI1h1pBIUYRStRuC99P7bfCzoeCspk6mZ0UZXl2/XPWadRpEThfj6GQs/83QMpIa
-         F4Xw==
+        bh=vw8CSw8/kqkr/nW0ZHKrE8vFpeahAapoWHjswcPuL9E=;
+        b=koEemG7vRAfynkdz9DNrQOAF6Jwa+C7C3q15nv2adIoHYNGLxSoPfHQq7C2pbgZzSg
+         yzEv0NjsvAihk42RnJupvuFhKYcgs7+Lh7CM0D0ND2QE5D3lGuwq0GylR/H5GjBjRKKP
+         RDh/ebS6b24gcGS8Ni5z8Yxgt2/vEYVVEkiiN0Y6S/7s8etmhFVyMvZ0Qea9L63SirDZ
+         v91QCTGQANoXukJZSuzkT74qnAoLR3PcKbdFz5nXXsRT8cCbdK4hfoJzhoAB5K741I5t
+         sdF7sVetn88njXsnaSnlVrEHKCP85oJXdN+lMRu3DXa7Z0WflRiAS0jpFZPCocby8cA4
+         EM7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683518921; x=1686110921;
+        d=1e100.net; s=20221208; t=1683526949; x=1686118949;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=418lmDvsSwaR5hPOcnBAQZAbghEwqMzFRELtnuxfpVc=;
-        b=Svw9l9fN9G25HkTmy70H45i5COdSuMG/pUTPfIUlUWE+zlxqKoJ/H20R33PvFCr2Ue
-         oQnfRKGrvQYJK8KnSzgJkkg9rJpBu7ueqYJi01ZvX8SulT2kDKVeYwQy1vOobYR0PajN
-         +XbILV4CbGCEnJkOhzHBRuMbUgOGNXkyVtM6MNXQ8aeQ0aebU1FF2af74ex+I8cNPp4x
-         dC2a0XkgvRvu5e1OZl0LEHVLpRXCUHAR4CYBiQUvuBIv7ZDZxdWQoY8Q7SoGqrBLBuHD
-         RYXtDGcKfZDqJfogUe15PfkAlxr3lEf1XVTA6BzRylkJ2axJ5UAUvMHGNbdc8yYqcF7P
-         1ivQ==
-X-Gm-Message-State: AC+VfDwKRTPtkCIAYGJ2eVoCku3YSrYSNJg9qHyXmPIv6+HUvNoe8qT8
-        MUrWVMCkt71CdhTkck4NQhv6tICaRSfKM7AblAE=
-X-Google-Smtp-Source: ACHHUZ4IPERXtNJef1vvKhMOH/D3B+M3LH79PgUudG1dBoi9d1doeo709yH83md5swCmQ/LygaVdGk3TZgPTcg9HZhk=
-X-Received: by 2002:aa7:ca57:0:b0:50c:1e2:4a42 with SMTP id
- j23-20020aa7ca57000000b0050c01e24a42mr7368607edt.15.1683518921019; Sun, 07
- May 2023 21:08:41 -0700 (PDT)
+        bh=vw8CSw8/kqkr/nW0ZHKrE8vFpeahAapoWHjswcPuL9E=;
+        b=OPN7pOuBY60dIZQu5N3jvBbanLsLEHZ2a98xaifcl2kiDZfy6gS6559ALGUwfATLDa
+         dOvwBQfyVtob3+5cKt5ZVHhWp/i4KI/qeeo43+EuQd+osHmHJ23cVR/ewBqVp9nwDRuT
+         0KA62dhPO+mlQrxY+f8SCinO9vj11xpuB6YuYsIzjgD1f2D9SGm6lKPeXcZ/KToG7vQ7
+         NIppSE6MTimL45ofOtV4RYGVyaclhAgBTkJpo8eF38ygafGSuLRi255tQ6FXKvPkR23L
+         ce92Ve8kzZX2Zh/m2f420cdHiet5nqQ/f0VyJEe8RHhKt0PY5H2m3NE2nXIu3iPFj5cC
+         PMRw==
+X-Gm-Message-State: AC+VfDz1h47rZAe6mgteGYP1Ahp7B4AKTluEUM6UiaNqIHzUWObR8cP2
+        rorYu4rjzqLwDSNUU59XE13nshci1oUZmWLwY5A=
+X-Google-Smtp-Source: ACHHUZ5328pDEz0a5JABi/wRllwutYN11eMceJJKBtx2CcdIcWeEs7l0hVe0ErW7kOxexcCvXxfuf+f0bwj4UE25KCc=
+X-Received: by 2002:a17:907:26c6:b0:91f:b13f:a028 with SMTP id
+ bp6-20020a17090726c600b0091fb13fa028mr6728320ejc.34.1683526948612; Sun, 07
+ May 2023 23:22:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230505113315.3307723-1-liujian56@huawei.com> <20230505113315.3307723-3-liujian56@huawei.com>
-In-Reply-To: <20230505113315.3307723-3-liujian56@huawei.com>
+References: <20230505113315.3307723-1-liujian56@huawei.com> <20230505113315.3307723-8-liujian56@huawei.com>
+In-Reply-To: <20230505113315.3307723-8-liujian56@huawei.com>
 From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Mon, 8 May 2023 12:08:04 +0800
-Message-ID: <CAL+tcoDY11sSO8_h1DKCWgAXOjQwM1JR5cx7cpmotWVj28m_fg@mail.gmail.com>
-Subject: Re: [PATCH 2/9] softirq: Use sched_clock() based timeout
+Date:   Mon, 8 May 2023 14:21:52 +0800
+Message-ID: <CAL+tcoCKBcM8PnZ3_u-TFs8EyAGtuu7be7_akXBCX-gq0R2-+A@mail.gmail.com>
+Subject: Re: [PATCH 7/9] softirq,net: Use softirq_needs_break()
 To:     Liu Jian <liujian56@huawei.com>
 Cc:     corbet@lwn.net, paulmck@kernel.org, frederic@kernel.org,
         quic_neeraju@quicinc.com, joel@joelfernandes.org,
@@ -70,70 +70,122 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 5, 2023 at 7:25=E2=80=AFPM Liu Jian <liujian56@huawei.com> wrot=
+On Fri, May 5, 2023 at 7:27=E2=80=AFPM Liu Jian <liujian56@huawei.com> wrot=
 e:
 >
 > From: Peter Zijlstra <peterz@infradead.org>
 >
-> Replace the jiffies based timeout with a sched_clock() based one.
+> SoftIRQs provide their own timeout/break code now, use that.
 >
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > Signed-off-by: Liu Jian <liujian56@huawei.com>
 > ---
->  kernel/softirq.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  Documentation/admin-guide/sysctl/net.rst | 11 +----------
+>  net/core/dev.c                           |  6 +-----
+>  net/core/dev.h                           |  1 -
+>  net/core/sysctl_net_core.c               |  8 --------
+>  4 files changed, 2 insertions(+), 24 deletions(-)
 >
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index bff5debf6ce6..59f16a9af5d1 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -27,6 +27,7 @@
->  #include <linux/tick.h>
->  #include <linux/irq.h>
->  #include <linux/wait_bit.h>
-> +#include <linux/sched/clock.h>
+> diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/adm=
+in-guide/sysctl/net.rst
+> index 466c560b0c30..095c60788c61 100644
+> --- a/Documentation/admin-guide/sysctl/net.rst
+> +++ b/Documentation/admin-guide/sysctl/net.rst
+> @@ -267,16 +267,7 @@ netdev_budget
 >
->  #include <asm/softirq_stack.h>
+>  Maximum number of packets taken from all interfaces in one polling cycle=
+ (NAPI
+>  poll). In one polling cycle interfaces which are registered to polling a=
+re
+> -probed in a round-robin manner. Also, a polling cycle may not exceed
+> -netdev_budget_usecs microseconds, even if netdev_budget has not been
+> -exhausted.
+> -
+> -netdev_budget_usecs
+> ----------------------
+> -
+> -Maximum number of microseconds in one NAPI polling cycle. Polling
+> -will exit when either netdev_budget_usecs have elapsed during the
+> -poll cycle or the number of packets processed reaches netdev_budget.
+> +probed in a round-robin manner.
 >
-> @@ -489,7 +490,7 @@ asmlinkage __visible void do_softirq(void)
->   * we want to handle softirqs as soon as possible, but they
->   * should not be able to lock up the box.
->   */
-> -#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
-> +#define MAX_SOFTIRQ_TIME       (2 * NSEC_PER_MSEC)
+>  netdev_max_backlog
+>  ------------------
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 735096d42c1d..70b6726beee6 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4321,7 +4321,6 @@ int netdev_tstamp_prequeue __read_mostly =3D 1;
+>  unsigned int sysctl_skb_defer_max __read_mostly =3D 64;
+>  int netdev_budget __read_mostly =3D 300;
+>  /* Must be at least 2 jiffes to guarantee 1 jiffy timeout */
+> -unsigned int __read_mostly netdev_budget_usecs =3D 2 * USEC_PER_SEC / HZ=
+;
+>  int weight_p __read_mostly =3D 64;           /* old backlog weight */
+>  int dev_weight_rx_bias __read_mostly =3D 1;  /* bias for backlog weight =
+*/
+>  int dev_weight_tx_bias __read_mostly =3D 1;  /* bias for output_queue qu=
+ota */
+> @@ -6659,8 +6658,6 @@ static int napi_threaded_poll(void *data)
+>  static __latent_entropy void net_rx_action(struct softirq_action *h)
+>  {
+>         struct softnet_data *sd =3D this_cpu_ptr(&softnet_data);
+> -       unsigned long time_limit =3D jiffies +
+> -               usecs_to_jiffies(READ_ONCE(netdev_budget_usecs));
+>         int budget =3D READ_ONCE(netdev_budget);
+>         LIST_HEAD(list);
+>         LIST_HEAD(repoll);
+> @@ -6699,8 +6696,7 @@ static __latent_entropy void net_rx_action(struct s=
+oftirq_action *h)
+>                  * Allow this to run for 2 jiffies since which will allow
+>                  * an average latency of 1.5/HZ.
+>                  */
+> -               if (unlikely(budget <=3D 0 ||
+> -                            time_after_eq(jiffies, time_limit))) {
+> +               if (unlikely(budget <=3D 0 || softirq_needs_break(h))) {
+>                         sd->time_squeeze++;
+>                         break;
+>                 }
+> diff --git a/net/core/dev.h b/net/core/dev.h
+> index e075e198092c..e64a60c767ab 100644
+> --- a/net/core/dev.h
+> +++ b/net/core/dev.h
+> @@ -39,7 +39,6 @@ void dev_addr_check(struct net_device *dev);
+>
+>  /* sysctls not referred to from outside net/core/ */
+>  extern int             netdev_budget;
+> -extern unsigned int    netdev_budget_usecs;
+>  extern unsigned int    sysctl_skb_defer_max;
+>  extern int             netdev_tstamp_prequeue;
+>  extern int             netdev_unregister_timeout_secs;
+> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+> index 782273bb93c2..59765c805f5b 100644
+> --- a/net/core/sysctl_net_core.c
+> +++ b/net/core/sysctl_net_core.c
+> @@ -595,14 +595,6 @@ static struct ctl_table net_core_table[] =3D {
+>                 .extra1         =3D SYSCTL_ONE,
+>                 .extra2         =3D &max_skb_frags,
+>         },
+> -       {
+> -               .procname       =3D "netdev_budget_usecs",
+> -               .data           =3D &netdev_budget_usecs,
+> -               .maxlen         =3D sizeof(unsigned int),
+> -               .mode           =3D 0644,
+> -               .proc_handler   =3D proc_dointvec_minmax,
+> -               .extra1         =3D SYSCTL_ZERO,
+> -       },
 
-I wonder if it affects those servers that set HZ to some different
-values rather than 1000 as default.
+I cannot help asking whether we really need to remove the sysctl knob
+because it can let some users tune this. It's useful for some cases, I
+believe. Do you have any evidence/number to prove we can get rid of
+this?
 
 Thanks,
 Jason
 
->  #define MAX_SOFTIRQ_RESTART 10
->
->  #ifdef CONFIG_TRACE_IRQFLAGS
-> @@ -527,9 +528,9 @@ static inline void lockdep_softirq_end(bool in_hardir=
-q) { }
->
->  asmlinkage __visible void __softirq_entry __do_softirq(void)
->  {
-> -       unsigned long end =3D jiffies + MAX_SOFTIRQ_TIME;
->         unsigned long old_flags =3D current->flags;
->         int max_restart =3D MAX_SOFTIRQ_RESTART;
-> +       u64 start =3D sched_clock();
->         struct softirq_action *h;
->         unsigned long pending;
->         unsigned int vec_nr;
-> @@ -584,7 +585,7 @@ asmlinkage __visible void __softirq_entry __do_softir=
-q(void)
->
->         pending =3D local_softirq_pending();
->         if (pending) {
-> -               if (time_before(jiffies, end) && !need_resched() &&
-> +               if (sched_clock() - start < MAX_SOFTIRQ_TIME && !need_res=
-ched() &&
->                     --max_restart)
->                         goto restart;
->
+>         {
+>                 .procname       =3D "fb_tunnels_only_for_init_net",
+>                 .data           =3D &sysctl_fb_tunnels_only_for_init_net,
 > --
 > 2.34.1
 >
