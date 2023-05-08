@@ -2,32 +2,32 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A803C7EE26
-	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 09:52:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C5BAC77B73
+	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 10:22:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbjEHJwV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 May 2023 05:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
+        id S234528AbjEHKWK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 May 2023 06:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbjEHJwT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 May 2023 05:52:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA0F23A27;
-        Mon,  8 May 2023 02:52:18 -0700 (PDT)
+        with ESMTP id S234455AbjEHKVc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 May 2023 06:21:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100543A284;
+        Mon,  8 May 2023 03:20:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 443E4621ED;
-        Mon,  8 May 2023 09:52:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57E1CC433EF;
-        Mon,  8 May 2023 09:52:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 91BE162558;
+        Mon,  8 May 2023 10:20:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AA6EC433D2;
+        Mon,  8 May 2023 10:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1683539537;
+        s=korg; t=1683541249;
         bh=1VLtWorznBeU1tpSMfDyMu736GfaHITHQgU5okOsPW0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cmIktlEJEBz1SB31GAJWrRCb+S25cngqsl9rgW8EJ5PJRIJDMAQwDmLXAo2l7qoxd
-         ehUQme/LlwnXLc0D7MC4I1fo03md1SpEQMJhyOyKVG5lzmfjEedkO9WfzULLdIkQgJ
-         CcztbhHtXIp+7PTyKOISS/DAHkvJr0LadwQJVkUU=
+        b=DYKT2MT2olLUH2XizJH0OHmnrGZk1vgls4TZCP4+B2oWqf969ioDjpGK/f8vEby7Q
+         4c1FHOmq/lhE3JZa6jdWYxKHT08B0oQdHItNg066eCMSTWGJLWoWN/QLpVtzwmZnko
+         h/jE45JvdIg7loySV5PRVjDUOJST/lUmM85f/rZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,12 +37,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         rcu <rcu@vger.kernel.org>,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 6.1 054/611] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
-Date:   Mon,  8 May 2023 11:38:16 +0200
-Message-Id: <20230508094423.675181869@linuxfoundation.org>
+Subject: [PATCH 6.2 053/663] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
+Date:   Mon,  8 May 2023 11:37:59 +0200
+Message-Id: <20230508094430.215840069@linuxfoundation.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230508094421.513073170@linuxfoundation.org>
-References: <20230508094421.513073170@linuxfoundation.org>
+In-Reply-To: <20230508094428.384831245@linuxfoundation.org>
+References: <20230508094428.384831245@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
