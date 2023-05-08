@@ -2,32 +2,32 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CA44C77B75
-	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 10:56:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB3A6C77B7F
+	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 11:30:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbjEHK4I (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 May 2023 06:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S235704AbjEHLa1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 May 2023 07:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235366AbjEHKy7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 May 2023 06:54:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0A530AE8;
-        Mon,  8 May 2023 03:54:15 -0700 (PDT)
+        with ESMTP id S235892AbjEHLaJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 May 2023 07:30:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50997D8E;
+        Mon,  8 May 2023 04:30:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E5EBF62982;
-        Mon,  8 May 2023 10:54:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA0E8C433EF;
-        Mon,  8 May 2023 10:54:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C84862F17;
+        Mon,  8 May 2023 11:30:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66052C433D2;
+        Mon,  8 May 2023 11:30:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1683543254;
-        bh=1VLtWorznBeU1tpSMfDyMu736GfaHITHQgU5okOsPW0=;
+        s=korg; t=1683545403;
+        bh=3qmFmD2M8/KbSPqVMejjyoxWA9V0uDStusiJLFPaRkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EmtR1s+A8TWFwmO5MYhsmRQwTP0sgXweah+FaIp8KYz5lfGbBtu42Dcd2wlfjWv/Q
-         Z50Yw4rbDAsnh1rpHPYH279wta2AnjDpNSfauZxYRugoay2wnubjFexGPcD48Esoe7
-         X2FiiRN8nugGRCmNrO1aKjEtVxwEJtMnwvTdcSIc=
+        b=uBo1wgy4GEbLt9MDLEUF2DE95fZNJ8m41x7/qUU1degvZH2DH8z2vyGj0r3pHrelj
+         qABFOJYXGqc8WLYd1flrUZYpcf3Am0CnRqYrA7F2gE5XCSDQnW2acmvhterTD0P3HR
+         cyKxpJocyKLYP6mrjaBIUs4L/Pi2tvxcaXh7FC00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,12 +37,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         rcu <rcu@vger.kernel.org>,
         "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 6.3 032/694] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
-Date:   Mon,  8 May 2023 11:37:47 +0200
-Message-Id: <20230508094433.685261512@linuxfoundation.org>
+Subject: [PATCH 5.15 028/371] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
+Date:   Mon,  8 May 2023 11:43:49 +0200
+Message-Id: <20230508094813.229511793@linuxfoundation.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230508094432.603705160@linuxfoundation.org>
-References: <20230508094432.603705160@linuxfoundation.org>
+In-Reply-To: <20230508094811.912279944@linuxfoundation.org>
+References: <20230508094811.912279944@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -118,7 +118,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  static inline void tick_dep_clear(enum tick_dep_bits bit) { }
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -527,7 +527,7 @@ void __init tick_nohz_full_setup(cpumask
+@@ -510,7 +510,7 @@ void __init tick_nohz_full_setup(cpumask
  	tick_nohz_full_running = true;
  }
  
@@ -127,7 +127,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  {
  	/*
  	 * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
-@@ -535,8 +535,13 @@ static int tick_nohz_cpu_down(unsigned i
+@@ -518,8 +518,13 @@ static int tick_nohz_cpu_down(unsigned i
  	 * CPUs. It must remain online when nohz full is enabled.
  	 */
  	if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
