@@ -2,146 +2,108 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB3A6C77B7F
-	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 11:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D735C77B7F
+	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 17:51:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235704AbjEHLa1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 May 2023 07:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        id S234060AbjEHRvq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 8 May 2023 13:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235892AbjEHLaJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 May 2023 07:30:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50997D8E;
-        Mon,  8 May 2023 04:30:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C84862F17;
-        Mon,  8 May 2023 11:30:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66052C433D2;
-        Mon,  8 May 2023 11:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1683545403;
-        bh=3qmFmD2M8/KbSPqVMejjyoxWA9V0uDStusiJLFPaRkM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uBo1wgy4GEbLt9MDLEUF2DE95fZNJ8m41x7/qUU1degvZH2DH8z2vyGj0r3pHrelj
-         qABFOJYXGqc8WLYd1flrUZYpcf3Am0CnRqYrA7F2gE5XCSDQnW2acmvhterTD0P3HR
-         cyKxpJocyKLYP6mrjaBIUs4L/Pi2tvxcaXh7FC00=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        rcu <rcu@vger.kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 5.15 028/371] tick/nohz: Fix cpu_is_hotpluggable() by checking with nohz subsystem
-Date:   Mon,  8 May 2023 11:43:49 +0200
-Message-Id: <20230508094813.229511793@linuxfoundation.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230508094811.912279944@linuxfoundation.org>
-References: <20230508094811.912279944@linuxfoundation.org>
-User-Agent: quilt/0.67
+        with ESMTP id S229475AbjEHRvp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 8 May 2023 13:51:45 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42ED744A0;
+        Mon,  8 May 2023 10:51:44 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1683568301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xBM5m6wDNW8LeDu3c/o/2yvJ8k64BJF0JoE591jbLbA=;
+        b=sMXXfFh+31ZYLnj/Q/317zJ8ZSNPWFhoFiud2U76+34ZcjDHzfH94OqL5J7Cq08AktHEob
+        jScu3BBU+qL6S/lcL3VxvFTcbres7JXXNwc90R7lK1wlwr2ZmAigc0dIvG5AV6JAzorBaq
+        DIpcER3iASDOuzirPArCyeojNdahXrhqv4d/Uweihy+eMCslrpiZjVjkedRt1mJY4raFyK
+        YgUIvPPYtt7wKOkz2+m2PZtlqlM8wnC8SGGOKlzyhUWXe5PLhj9G2a/vKTQIm9Ki6XKPrl
+        ry4fY2g0q5I7fMBhPRATR4Kgl2/343VnWymkfbnsQx7N+fW0pldcN8wNrV6oMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1683568301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xBM5m6wDNW8LeDu3c/o/2yvJ8k64BJF0JoE591jbLbA=;
+        b=FKKYbkze0DTjbg51KVCUWSLfNiUsicv5XAC0hJm2+JvwoRzcsJXs/xUt9yUiE5d6ajXhX2
+        oLbHvKULh49aPoDw==
+To:     Jason Xing <kerneljasonxing@gmail.com>,
+        Liu Jian <liujian56@huawei.com>
+Cc:     corbet@lwn.net, paulmck@kernel.org, frederic@kernel.org,
+        quic_neeraju@quicinc.com, joel@joelfernandes.org,
+        josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        qiang1.zhang@intel.com, jstultz@google.com, sboyd@kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, peterz@infradead.org, frankwoo@google.com,
+        Rhinewuwu@google.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 2/9] softirq: Use sched_clock() based timeout
+In-Reply-To: <CAL+tcoDY11sSO8_h1DKCWgAXOjQwM1JR5cx7cpmotWVj28m_fg@mail.gmail.com>
+References: <20230505113315.3307723-1-liujian56@huawei.com>
+ <20230505113315.3307723-3-liujian56@huawei.com>
+ <CAL+tcoDY11sSO8_h1DKCWgAXOjQwM1JR5cx7cpmotWVj28m_fg@mail.gmail.com>
+Date:   Mon, 08 May 2023 19:51:41 +0200
+Message-ID: <87cz3a3e4y.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Mon, May 08 2023 at 12:08, Jason Xing wrote:
+> On Fri, May 5, 2023 at 7:25=E2=80=AFPM Liu Jian <liujian56@huawei.com> wr=
+ote:
+>> @@ -489,7 +490,7 @@ asmlinkage __visible void do_softirq(void)
+>>   * we want to handle softirqs as soon as possible, but they
+>>   * should not be able to lock up the box.
+>>   */
+>> -#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
+>> +#define MAX_SOFTIRQ_TIME       (2 * NSEC_PER_MSEC)
+>
+> I wonder if it affects those servers that set HZ to some different
+> values rather than 1000 as default.
 
-commit 58d7668242647e661a20efe065519abd6454287e upstream.
+The result of msecs_to_jiffies(2) for different HZ values:
 
-For CONFIG_NO_HZ_FULL systems, the tick_do_timer_cpu cannot be offlined.
-However, cpu_is_hotpluggable() still returns true for those CPUs. This causes
-torture tests that do offlining to end up trying to offline this CPU causing
-test failures. Such failure happens on all architectures.
+HZ=3D100     1
+HZ=3D250     1
+HZ=3D1000    2
 
-Fix the repeated error messages thrown by this (even if the hotplug errors are
-harmless) by asking the opinion of the nohz subsystem on whether the CPU can be
-hotplugged.
+So depending on when the softirq processing starts, this gives the
+following ranges in which the timeout ends:
 
-[ Apply Frederic Weisbecker feedback on refactoring tick_nohz_cpu_down(). ]
+HZ=3D100    0 - 10ms
+HZ=3D250    0 -  4ms
+HZ=3D1000   1 -  2ms
 
-For drivers/base/ portion:
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: rcu <rcu@vger.kernel.org>
-Cc: stable@vger.kernel.org
-Fixes: 2987557f52b9 ("driver-core/cpu: Expose hotpluggability to the rest of the kernel")
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/base/cpu.c       |    3 ++-
- include/linux/tick.h     |    2 ++
- kernel/time/tick-sched.c |   11 ++++++++---
- 3 files changed, 12 insertions(+), 4 deletions(-)
+But as the various softirq handlers have their own notion of timeouts,
+loop limits etc. and the timeout is only checked after _all_ pending
+bits of each iteration have been processed, the outcome of this is all
+lottery.
 
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -487,7 +487,8 @@ static const struct attribute_group *cpu
- bool cpu_is_hotpluggable(unsigned int cpu)
- {
- 	struct device *dev = get_cpu_device(cpu);
--	return dev && container_of(dev, struct cpu, dev)->hotpluggable;
-+	return dev && container_of(dev, struct cpu, dev)->hotpluggable
-+		&& tick_nohz_cpu_hotpluggable(cpu);
- }
- EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
- 
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -216,6 +216,7 @@ extern void tick_nohz_dep_set_signal(str
- 				     enum tick_dep_bits bit);
- extern void tick_nohz_dep_clear_signal(struct signal_struct *signal,
- 				       enum tick_dep_bits bit);
-+extern bool tick_nohz_cpu_hotpluggable(unsigned int cpu);
- 
- /*
-  * The below are tick_nohz_[set,clear]_dep() wrappers that optimize off-cases
-@@ -280,6 +281,7 @@ static inline void tick_nohz_full_add_cp
- 
- static inline void tick_nohz_dep_set_cpu(int cpu, enum tick_dep_bits bit) { }
- static inline void tick_nohz_dep_clear_cpu(int cpu, enum tick_dep_bits bit) { }
-+static inline bool tick_nohz_cpu_hotpluggable(unsigned int cpu) { return true; }
- 
- static inline void tick_dep_set(enum tick_dep_bits bit) { }
- static inline void tick_dep_clear(enum tick_dep_bits bit) { }
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -510,7 +510,7 @@ void __init tick_nohz_full_setup(cpumask
- 	tick_nohz_full_running = true;
- }
- 
--static int tick_nohz_cpu_down(unsigned int cpu)
-+bool tick_nohz_cpu_hotpluggable(unsigned int cpu)
- {
- 	/*
- 	 * The tick_do_timer_cpu CPU handles housekeeping duty (unbound
-@@ -518,8 +518,13 @@ static int tick_nohz_cpu_down(unsigned i
- 	 * CPUs. It must remain online when nohz full is enabled.
- 	 */
- 	if (tick_nohz_full_running && tick_do_timer_cpu == cpu)
--		return -EBUSY;
--	return 0;
-+		return false;
-+	return true;
-+}
-+
-+static int tick_nohz_cpu_down(unsigned int cpu)
-+{
-+	return tick_nohz_cpu_hotpluggable(cpu) ? 0 : -EBUSY;
- }
- 
- void __init tick_nohz_init(void)
+Due to that the sched_clock() change per se won't have too much impact,
+but if the overall changes to consolidate the break conditions are in
+place, I think it will have observable effects.
 
+Making this consistent is definitely a good thing, but it won't solve
+the underlying problem of soft interrupt processing at all.
 
+We definitely need to spend more thoughts on pulling things out of soft
+interrupt context so that these functionalities get under proper
+resource control by the scheduler.
+
+Thanks,
+
+        tglx
