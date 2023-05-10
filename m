@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FE1BC7EE24
-	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 16:58:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAEEFC77B7D
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 16:58:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236082AbjEJQ6j (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 12:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
+        id S236092AbjEJQ6k (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 12:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236049AbjEJQ6g (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 May 2023 12:58:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D4519BA;
-        Wed, 10 May 2023 09:58:35 -0700 (PDT)
+        with ESMTP id S236057AbjEJQ6h (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 12:58:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D20035A9;
+        Wed, 10 May 2023 09:58:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A9CD963F43;
-        Wed, 10 May 2023 16:58:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B00DC4339C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F3F363F51;
+        Wed, 10 May 2023 16:58:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AF5FC433A4;
         Wed, 10 May 2023 16:58:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1683737914;
-        bh=cpG57oSoRSWjavlSva8U9oIMQoMhIp2jDOdopl67PsU=;
+        bh=uNamI0jeV30aO15+YqMLedWVb3YyLF5CZ+DX3DeiM/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aOByI0GYtGVbtiPinrjCJ4tmQ1TKhAgSY4hoTekZ4hTBOsW35VcSF8+31FJpaXVnj
-         kImZ4LqpeYPCqnq/PAVFdxCL6yejhG7ooWhMNToJJJ+J5urMT4lo32GCGxxd+rlFmv
-         stCglK78OegDBJmt8JUN4AtOxSPAmib3SOP0edoMI6fejv5lh5B+ef84g6X1WMtUKu
-         NJD+GhCDfPV6IhGUF19XD4ayOUUnhHoMHz5k3B6mk4TufPicFarG+ovemXnvQ8lsVM
-         IR3RorwH48ToCKMCn6Zdm93MTkG6xmC1KRXTlYjx7gZl/i6CcFoJvlmzJjrKHqvQM7
-         D5G0/kSg11S2g==
+        b=TCfVPN/uCdKj5sO95xFJZhTLccdk99nLvQzoYglN/gBpmK/C7h12YjMim6mufWv04
+         wNBGbuPMWIIQaxKzz3SmVD2PUf1xZMEwJy+n+HVZTITmy+f+iSpDJfiC+dKQk5a8Jo
+         vJNTqPyxNZKFq3VULjT9pymdIyltTp77pUEffB2Vgw+GPNw6FLwz3Qyb/B/tdwipMq
+         7p3KqswaQAuk5QNkaNATaXPsr6xP4uE1za5xKCgM3FjEOZY9x1y8gI/Qna2Ohl5pwl
+         Ft0fpcJRB+iEsNGjWcjOm7dz8VN0FMPsCjfpk99ny8VsShhHIoR9KaxAefelnY+JSR
+         ZM2JNBf/TcEIA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 91EEDCE12D5; Wed, 10 May 2023 09:58:33 -0700 (PDT)
+        id 967FCCE1349; Wed, 10 May 2023 09:58:33 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/8] rcu: Mark additional concurrent load from ->cpu_no_qs.b.exp
-Date:   Wed, 10 May 2023 09:58:29 -0700
-Message-Id: <20230510165832.2187453-5-paulmck@kernel.org>
+Subject: [PATCH rcu 7/8] rcu: Make rcu_cpu_starting() rely on interrupts being disabled
+Date:   Wed, 10 May 2023 09:58:31 -0700
+Message-Id: <20230510165832.2187453-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cb50897b-1153-4958-8132-f0366667b3a4@paulmck-laptop>
 References: <cb50897b-1153-4958-8132-f0366667b3a4@paulmck-laptop>
@@ -49,67 +49,75 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The per-CPU rcu_data structure's ->cpu_no_qs.b.exp field is updated
-only on the instance corresponding to the current CPU, but can be read
-more widely.  Unmarked accesses are OK from the corresponding CPU, but
-only if interrupts are disabled, given that interrupt handlers can and
-do modify this field.
+Currently, rcu_cpu_starting() is written so that it might be invoked
+with interrupts enabled.  However, it is always called when interrupts
+are disabled, either by rcu_init(), notify_cpu_starting(), or from a
+call point prior to the call to notify_cpu_starting().
 
-Unfortunately, although the load from rcu_preempt_deferred_qs() is always
-carried out from the corresponding CPU, interrupts are not necessarily
-disabled.  This commit therefore upgrades this load to READ_ONCE.
+But why bother requiring that interrupts be disabled?  The purpose is
+to allow the rcu_data structure's ->beenonline flag to be set after all
+early processing has completed for the incoming CPU, thus allowing this
+flag to be used to determine when workqueues have been set up for the
+incoming CPU, while still allowing this flag to be used as a diagnostic
+within rcu_core().
 
-Similarly, the diagnostic access from synchronize_rcu_expedited_wait()
-might run with interrupts disabled and from some other CPU.  This commit
-therefore marks this load with data_race().
-
-Finally, the C-language access in rcu_preempt_ctxt_queue() is OK as
-is because interrupts are disabled and this load is always from the
-corresponding CPU.  This commit adds a comment giving the rationale for
-this access being safe.
-
-This data race was reported by KCSAN.  Not appropriate for backporting
-due to failure being unlikely.
+This commit therefore makes rcu_cpu_starting() rely on interrupts being
+disabled.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_exp.h    | 2 +-
- kernel/rcu/tree_plugin.h | 4 +++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 3b7abb58157d..8239b39d945b 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -643,7 +643,7 @@ static void synchronize_rcu_expedited_wait(void)
- 					"O."[!!cpu_online(cpu)],
- 					"o."[!!(rdp->grpmask & rnp->expmaskinit)],
- 					"N."[!!(rdp->grpmask & rnp->expmaskinitnext)],
--					"D."[!!(rdp->cpu_no_qs.b.exp)]);
-+					"D."[!!data_race(rdp->cpu_no_qs.b.exp)]);
- 			}
- 		}
- 		pr_cont(" } %lu jiffies s: %lu root: %#lx/%c\n",
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 7b0fe741a088..41021080ad25 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -257,6 +257,8 @@ static void rcu_preempt_ctxt_queue(struct rcu_node *rnp, struct rcu_data *rdp)
- 	 * GP should not be able to end until we report, so there should be
- 	 * no need to check for a subsequent expedited GP.  (Though we are
- 	 * still in a quiescent state in any case.)
-+	 *
-+	 * Interrupts are disabled, so ->cpu_no_qs.b.exp cannot change.
- 	 */
- 	if (blkd_state & RCU_EXP_BLKD && rdp->cpu_no_qs.b.exp)
- 		rcu_report_exp_rdp(rdp);
-@@ -941,7 +943,7 @@ notrace void rcu_preempt_deferred_qs(struct task_struct *t)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index faa1c01d2917..23685407dcf6 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4390,15 +4390,16 @@ int rcutree_offline_cpu(unsigned int cpu)
+  * Note that this function is special in that it is invoked directly
+  * from the incoming CPU rather than from the cpuhp_step mechanism.
+  * This is because this function must be invoked at a precise location.
++ * This incoming CPU must not have enabled interrupts yet.
+  */
+ void rcu_cpu_starting(unsigned int cpu)
  {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+-	unsigned long flags;
+ 	unsigned long mask;
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp;
+ 	bool newcpu;
  
--	if (rdp->cpu_no_qs.b.exp)
-+	if (READ_ONCE(rdp->cpu_no_qs.b.exp))
- 		rcu_report_exp_rdp(rdp);
++	lockdep_assert_irqs_disabled();
+ 	rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	if (rdp->cpu_started)
+ 		return;
+@@ -4406,7 +4407,6 @@ void rcu_cpu_starting(unsigned int cpu)
+ 
+ 	rnp = rdp->mynode;
+ 	mask = rdp->grpmask;
+-	local_irq_save(flags);
+ 	arch_spin_lock(&rcu_state.ofl_lock);
+ 	rcu_dynticks_eqs_online();
+ 	raw_spin_lock(&rcu_state.barrier_lock);
+@@ -4425,17 +4425,16 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	/* An incoming CPU should never be blocking a grace period. */
+ 	if (WARN_ON_ONCE(rnp->qsmask & mask)) { /* RCU waiting on incoming CPU? */
+ 		/* rcu_report_qs_rnp() *really* wants some flags to restore */
+-		unsigned long flags2;
++		unsigned long flags;
+ 
+-		local_irq_save(flags2);
++		local_irq_save(flags);
+ 		rcu_disable_urgency_upon_qs(rdp);
+ 		/* Report QS -after- changing ->qsmaskinitnext! */
+-		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags2);
++		rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+ 	} else {
+ 		raw_spin_unlock_rcu_node(rnp);
+ 	}
+ 	arch_spin_unlock(&rcu_state.ofl_lock);
+-	local_irq_restore(flags);
+ 	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
  }
  
 -- 
