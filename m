@@ -2,45 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26BE6C7EE2A
-	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:03:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7291C7EE25
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:03:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236114AbjEJRDM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 13:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
+        id S236192AbjEJRDL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 13:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236183AbjEJRDK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 May 2023 13:03:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8177423F;
+        with ESMTP id S236142AbjEJRDJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 13:03:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E32340DC;
         Wed, 10 May 2023 10:02:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4438464A1A;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 328FA63F42;
         Wed, 10 May 2023 17:02:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A34D7C433D2;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B8CC433EF;
         Wed, 10 May 2023 17:02:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1683738163;
-        bh=Q3rFOVXyjmWxSBKHzG6f0W6zOzsmEdlFl8cDsocGYto=;
+        bh=VXlyCdDwVi1FMedvB2vqwj5QtYQEukG0P+JwjZR1bkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Otb3WAq01eE3XPJpstZX+UNmbUyTaUU7GdBn5geALYF75KMTiGTHU3d1JqxwjATut
-         X9975dywU8fXmcRlzrb49Zqp0pt8Oc8Vq1OnDRWgR+ZZdnqa1KT3MEzh+/zLOWuy0r
-         wcQGV0wyeGkYCxOaOXlVlq+Odw5tHMIPpScT0sCC/jn5TadMW8q4c3E+plXg+SwhcK
-         Mk0ts5mNWTr8/GTrKEkToIlm2a8g7ago/6jAjRSvLusFwZ4W5jRu+64KkwUTQ7/37J
-         sjZmyw7Kck/H+dKxB9lZnbL2y6eKXUf/MaDPv8DaWFcEFxQeHXl+hggMIivcwH4bHG
-         vTGUb0wXYwlNw==
+        b=Yr24vjNQzy6y8a/ZgmUM5NN3QAqR/LXTihrlNgOixMFI6pRC8zy4Ek2uH7mOqBefT
+         8isdsQBXjpBZKQqsCIpG0ZTAXSLWhqJrqtQc9lZCerlA1kwklNQdqEmc7sE9AZ/ADy
+         goPpxzLUwrVs/O/lDrKh2hb3XAgJvJGUcuHGHQoF8c+buS99nR++ztzVGEn7rDFbsa
+         icxbWRTxlcCrgCca7jMC+zJ2c6SD7oh4t0IM+gLeASifW4MXkQomuBNN4qNGwk0cOk
+         exusTeFR3M+Hzd627FgujhUZm+HtlE0I/bGytX+7QynTNZVakgEpGw7NK8M4vOQVkO
+         FuzP2oPzcTV4Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4EDBECE120B; Wed, 10 May 2023 10:02:43 -0700 (PDT)
+        id 4C16ECE126E; Wed, 10 May 2023 10:02:43 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Ziwei Dai <ziwei.dai@unisoc.com>
-Subject: [PATCH rcu 2/8] rcu/kvfree: Add debug to check grace periods
-Date:   Wed, 10 May 2023 10:02:36 -0700
-Message-Id: <20230510170242.2187714-2-paulmck@kernel.org>
+        rostedt@goodmis.org, "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH rcu 1/8] rcu/kvfree: Eliminate k[v]free_rcu() single argument macro
+Date:   Wed, 10 May 2023 10:02:35 -0700
+Message-Id: <20230510170242.2187714-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <1c01c38f-3783-44d7-8c11-7416cd5b849c@paulmck-laptop>
 References: <1c01c38f-3783-44d7-8c11-7416cd5b849c@paulmck-laptop>
@@ -50,91 +51,88 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds debugging checks to verify that the required RCU
-grace period has elapsed for each kvfree_rcu_bulk_data structure that
-arrives at the kvfree_rcu_bulk() function.  These checks make use
-of that structure's ->gp_snap field, which has been upgraded from an
-unsigned long to an rcu_gp_oldstate structure.  This upgrade reduces
-the chances of false positives to nearly zero, even on 32-bit systems,
-for which this structure carries 64 bits of state.
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-Cc: Ziwei Dai <ziwei.dai@unisoc.com>
+The kvfree_rcu() and kfree_rcu() APIs are hazardous in that if you forget
+the second argument, it works, but might sleep.  This sleeping can be a
+correctness bug from atomic contexts, and even in non-atomic contexts it
+might introduce unacceptable latencies.  This commit therefore removes the
+single-argument kvfree_rcu() and kfree_rcu() macros.  Code that would have
+previously used these single-argument kvfree_rcu() and kfree_rcu() macros
+should instead use kvfree_rcu_mightsleep() or kfree_rcu_mightsleep().
+
+[ paulmck: Apply Joel Fernandes feedback. ]
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 37 +++++++++++++++++++------------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+ include/linux/rcupdate.h | 29 ++++++++---------------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f52ff7241041..91d75fd6c579 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2756,7 +2756,7 @@ EXPORT_SYMBOL_GPL(call_rcu);
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index dcd2cf1e8326..744869ef930a 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -957,9 +957,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+ 
+ /**
+  * kfree_rcu() - kfree an object after a grace period.
+- * @ptr: pointer to kfree for both single- and double-argument invocations.
+- * @rhf: the name of the struct rcu_head within the type of @ptr,
+- *       but only for double-argument invocations.
++ * @ptr: pointer to kfree for double-argument invocations.
++ * @rhf: the name of the struct rcu_head within the type of @ptr.
+  *
+  * Many rcu callbacks functions just call kfree() on the base structure.
+  * These functions are trivial, but their size adds up, and furthermore
+@@ -984,26 +983,18 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * The BUILD_BUG_ON check must not involve any function calls, hence the
+  * checks are done in macros here.
   */
- struct kvfree_rcu_bulk_data {
- 	struct list_head list;
--	unsigned long gp_snap;
-+	struct rcu_gp_oldstate gp_snap;
- 	unsigned long nr_records;
- 	void *records[];
- };
-@@ -2921,23 +2921,24 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
- 	int i;
+-#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
++#define kfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
++#define kvfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
  
- 	debug_rcu_bhead_unqueue(bnode);
+ /**
+- * kvfree_rcu() - kvfree an object after a grace period.
+- *
+- * This macro consists of one or two arguments and it is
+- * based on whether an object is head-less or not. If it
+- * has a head then a semantic stays the same as it used
+- * to be before:
+- *
+- *     kvfree_rcu(ptr, rhf);
+- *
+- * where @ptr is a pointer to kvfree(), @rhf is the name
+- * of the rcu_head structure within the type of @ptr.
++ * kfree_rcu_mightsleep() - kfree an object after a grace period.
++ * @ptr: pointer to kfree for single-argument invocations.
+  *
+  * When it comes to head-less variant, only one argument
+  * is passed and that is just a pointer which has to be
+  * freed after a grace period. Therefore the semantic is
+  *
+- *     kvfree_rcu(ptr);
++ *     kfree_rcu_mightsleep(ptr);
+  *
+  * where @ptr is the pointer to be freed by kvfree().
+  *
+@@ -1012,13 +1003,9 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * annotation. Otherwise, please switch and embed the
+  * rcu_head structure within the type of @ptr.
+  */
+-#define kvfree_rcu(...) KVFREE_GET_MACRO(__VA_ARGS__,		\
+-	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
 -
--	rcu_lock_acquire(&rcu_callback_map);
--	if (idx == 0) { // kmalloc() / kfree().
--		trace_rcu_invoke_kfree_bulk_callback(
--			rcu_state.name, bnode->nr_records,
--			bnode->records);
--
--		kfree_bulk(bnode->nr_records, bnode->records);
--	} else { // vmalloc() / vfree().
--		for (i = 0; i < bnode->nr_records; i++) {
--			trace_rcu_invoke_kvfree_callback(
--				rcu_state.name, bnode->records[i], 0);
--
--			vfree(bnode->records[i]);
-+	if (!WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&bnode->gp_snap))) {
-+		rcu_lock_acquire(&rcu_callback_map);
-+		if (idx == 0) { // kmalloc() / kfree().
-+			trace_rcu_invoke_kfree_bulk_callback(
-+				rcu_state.name, bnode->nr_records,
-+				bnode->records);
-+
-+			kfree_bulk(bnode->nr_records, bnode->records);
-+		} else { // vmalloc() / vfree().
-+			for (i = 0; i < bnode->nr_records; i++) {
-+				trace_rcu_invoke_kvfree_callback(
-+					rcu_state.name, bnode->records[i], 0);
-+
-+				vfree(bnode->records[i]);
-+			}
- 		}
-+		rcu_lock_release(&rcu_callback_map);
- 	}
--	rcu_lock_release(&rcu_callback_map);
++#define kfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
+ #define kvfree_rcu_mightsleep(ptr) kvfree_rcu_arg_1(ptr)
+-#define kfree_rcu_mightsleep(ptr) kvfree_rcu_mightsleep(ptr)
  
- 	raw_spin_lock_irqsave(&krcp->lock, flags);
- 	if (put_cached_bnode(krcp, bnode))
-@@ -3081,7 +3082,7 @@ kvfree_rcu_drain_ready(struct kfree_rcu_cpu *krcp)
- 		INIT_LIST_HEAD(&bulk_ready[i]);
- 
- 		list_for_each_entry_safe_reverse(bnode, n, &krcp->bulk_head[i], list) {
--			if (!poll_state_synchronize_rcu(bnode->gp_snap))
-+			if (!poll_state_synchronize_rcu_full(&bnode->gp_snap))
- 				break;
- 
- 			atomic_sub(bnode->nr_records, &krcp->bulk_count[i]);
-@@ -3285,7 +3286,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 
- 	// Finally insert and update the GP for this page.
- 	bnode->records[bnode->nr_records++] = ptr;
--	bnode->gp_snap = get_state_synchronize_rcu();
-+	get_state_synchronize_rcu_full(&bnode->gp_snap);
- 	atomic_inc(&(*krcp)->bulk_count[idx]);
- 
- 	return true;
+-#define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
+ #define kvfree_rcu_arg_2(ptr, rhf)					\
+ do {									\
+ 	typeof (ptr) ___p = (ptr);					\
 -- 
 2.40.1
 
