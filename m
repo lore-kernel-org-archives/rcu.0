@@ -2,71 +2,82 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D371C77B7C
-	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E07C7EE22
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:10:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235862AbjEJRKG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 13:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
+        id S236462AbjEJRKX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 13:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbjEJRKF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 May 2023 13:10:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5068C2;
-        Wed, 10 May 2023 10:10:04 -0700 (PDT)
+        with ESMTP id S236398AbjEJRKU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 13:10:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC9461A4;
+        Wed, 10 May 2023 10:10:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F998632B0;
-        Wed, 10 May 2023 17:10:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A029C433EF;
-        Wed, 10 May 2023 17:10:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4547863F5C;
+        Wed, 10 May 2023 17:10:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0FD4C4339C;
+        Wed, 10 May 2023 17:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683738603;
-        bh=TvewwtgwqQo7uolmGLzXAL9JLsLG6h/mAf5zcFj0wSA=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=Nhgx/AEuCveBz0CqVGsL1XXKGgu8/owHWbFuP2Zq7ymh4aeejIpLxplf6lijVHgP/
-         yYk1c31uVBmJ6CT30u/dcFIqrr4onBkgdJgyRxVENcznZ/COga5DsFUj0x5rmLT6A7
-         hnbK7lUWO2oGshgnmX6OdcTfgsPdXO3JkmzL2e3Y1tTpTIZaDlTBBlwv4i2YPKOvwR
-         b4zUaNbtLfR/1+ep0w6XPnx7yl38xz7sNZR0SVL4Yem8t8btX23ZNS8qoHAEeJ8pyo
-         mqQeQEqlv81q1blcfvnLLETraan3X0iPw8Q3Xa4jduczIpCuFB9u6Z6Ig+WYz4bJ7T
-         0eXo6ZRtdXsGg==
+        s=k20201202; t=1683738610;
+        bh=2vHnCxDdEjl1hV7GlAl3zhTie+jGwjNjCH+DRd3wZeM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lXj8D5hA+XUKPUVg6o1HB50vuz2mgx9FQ02KKsPsK0pnIegyoXYwGc4mfFKawi6bH
+         CCck9Bg1t5ksc2WX5qFrS5x2myCRvj/shZTvO50ZBlvz9AfZvUkdmPmln9K3OYd6BJ
+         5uUK7m2Ov70w8BGydtboVM4THwcVzeslLXLxd1IttUNK1CQKeEqQruATKVtAFarYjr
+         TLiiWgaaMMO+vlamLkEVCyqHl1nH7BEwO4vaG3NTGIa9Lp2ZcsGcPyu//Moli6+FIe
+         mmOvzEm/Yl9PAnj7QWEzfQQdpH0NlYafkmDrJOvEqCfnsh2vM1phqptRDVrjEEUumr
+         5aJeHxJNxz/gw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1C410CE126E; Wed, 10 May 2023 10:10:03 -0700 (PDT)
-Date:   Wed, 10 May 2023 10:10:03 -0700
+        id 4A7AFCE1279; Wed, 10 May 2023 10:10:10 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/2] Tasks RCU updates for v6.5
-Message-ID: <edff5c4b-e894-4146-8a1d-ae291d01c4fb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/2] rcu-tasks: Clarify the cblist_init_generic() function's pr_info() output
+Date:   Wed, 10 May 2023 10:10:09 -0700
+Message-Id: <20230510171009.2189185-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <edff5c4b-e894-4146-8a1d-ae291d01c4fb@paulmck-laptop>
+References: <edff5c4b-e894-4146-8a1d-ae291d01c4fb@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+From: Zqiang <qiang1.zhang@intel.com>
 
-This series contains Tasks RCU updates.
+This commit uses rtp->name instead of __func__ and outputs the value
+of rcu_task_cb_adjust, thus reducing console-log output.
 
-1.	rcu-tasks: Avoid pr_info() with spin lock in
-	cblist_init_generic(), courtesy of Shigeru Yoshida.
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tasks.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-2.	rcu-tasks: Clarify the cblist_init_generic() function's pr_info()
-	output, courtesy of Zqiang.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 65df1aaf0ce9..cf7b00af9474 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -272,10 +272,8 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+ 	}
+ 	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 
+-	if (rcu_task_cb_adjust)
+-		pr_info("%s: Setting adjustable number of callback queues.\n", __func__);
+-
+-	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
++	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
++			data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim), rcu_task_cb_adjust);
+ }
+ 
+ // IRQ-work handler that does deferred wakeup for call_rcu_tasks_generic().
+-- 
+2.40.1
 
-An additional Tasks RCU update may instead be found here due to
-conflict-inducing dependencies:
-
-https://lore.kernel.org/all/20230510165832.2187453-8-paulmck@kernel.org/
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/rcu/tasks.h |    5 ++++-
- kernel/rcu/tasks.h   |    6 ++----
- 2 files changed, 6 insertions(+), 5 deletions(-)
