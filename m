@@ -2,45 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0D25C7EE2D
-	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 665EDC7EE24
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:12:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjEJRMv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 13:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        id S236450AbjEJRMu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 13:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236499AbjEJRMr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S236398AbjEJRMr (ORCPT <rfc822;rcu@vger.kernel.org>);
         Wed, 10 May 2023 13:12:47 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620B61BFE;
-        Wed, 10 May 2023 10:12:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD9C59D7;
+        Wed, 10 May 2023 10:12:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A3F164A31;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 560E364A28;
         Wed, 10 May 2023 17:12:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8BB4C43443;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1F09C4339C;
         Wed, 10 May 2023 17:12:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1683738760;
-        bh=Mf57p9lptadAfKL3dhRFXC+h5FKe4rU53uP5IBmR1S8=;
+        bh=S/zDN4Mx0EE9P7/xnN22nAFFHks40rkut7M2UMqQfgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hLmtVJbWAWlZzBF+yKt1RteGr77Rvk+5w0UB5Gf8f6T6n+GRid+C80Kdcn3+JlLlV
-         Qz3YcVsnXDXuoVz1q+ZQyBKEdl0lMma7LV3XVtCNqX2uVvt0AkXLO4NsertlFVrC8v
-         L9qXqrpuh70ftBlagA0tkVnxzqA3D9i7jwb5pIAsLeHk1Xk78rRfUKdAwy2ixgNuEm
-         alDDxEdObxdNYFRemZPO2e8Vu+OX+VGuWEn63Gh5RL4VFgwbAERGZJKOjf2Zavdwiv
-         WUEF/VMNknNwjPEi5dRw5Ok5kQdLMEvP8DOxlRxEK9WKtkTq3ygJhlug0eeUt56qU7
-         g0CbXzjSG2rnw==
+        b=Lyg4S89AMGm7ly3eW4SPJwSXoHdVV1PIZ6UL1LpVuwKRIfLgkj2wbVwl97LhEc5r9
+         ze6Hoi2wwkmZqurThbCyzFO+2wTJ8N3XiHklB19rINNU0C+WReYxm9YBPMq8VlfIWl
+         mXTAzLL+M+PGbYQR/qQniDktK9xNrHxq1F+lq8hwHOMjT74+7z9QqjNLDP7arv10Qn
+         YxD/d8fxDPrE7g6wXE1KYFk3W6btU7Y+Ft4WpvsGJMgIg5ZP92cydyRQBVbtDuqrwh
+         1kppXW2ebLyuVf2lBBdV00CiBNpLeC4QouX+EPa2eLF2pA68oOfEMoCLpMVgvuUHDy
+         9ZV53i1hFv6Xw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 60574CE127F; Wed, 10 May 2023 10:12:40 -0700 (PDT)
+        id 583A2CE1279; Wed, 10 May 2023 10:12:40 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/6] doc/rcutorture: Add description of rcutorture.stall_cpu_block
-Date:   Wed, 10 May 2023 10:12:37 -0700
-Message-Id: <20230510171238.2189921-5-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/6] rcutorture: Correct name of use_softirq module parameter
+Date:   Wed, 10 May 2023 10:12:34 -0700
+Message-Id: <20230510171238.2189921-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
 References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
@@ -50,73 +49,37 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang1.zhang@intel.com>
+The BUSTED-BOOST and TREE03 scenarios specify a mythical tree.use_softirq
+module parameter, which means a failure to get full test coverage.  This
+commit therefore corrects the name to rcutree.use_softirq.
 
-If you build a kernel with CONFIG_PREEMPTION=n and CONFIG_PREEMPT_COUNT=y,
-then run the rcutorture tests specifying stalls as follows:
-
-runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4" \
-	bootparams="console=ttyS0 rcutorture.stall_cpu=30 \
-	rcutorture.stall_no_softlockup=1 rcutorture.stall_cpu_block=1" -d
-
-The tests will produce the following splat:
-
-[   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
-[   10.841073] rcu_torture_stall start on CPU 3.
-[   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
-....
-[   10.841108] Call Trace:
-[   10.841110]  <TASK>
-[   10.841112]  dump_stack_lvl+0x64/0xb0
-[   10.841118]  dump_stack+0x10/0x20
-[   10.841121]  __schedule_bug+0x8b/0xb0
-[   10.841126]  __schedule+0x2172/0x2940
-[   10.841157]  schedule+0x9b/0x150
-[   10.841160]  schedule_timeout+0x2e8/0x4f0
-[   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
-[   10.841195]  rcu_torture_stall+0x2e8/0x300
-[   10.841199]  kthread+0x175/0x1a0
-[   10.841206]  ret_from_fork+0x2c/0x50
-
-This is because the rcutorture.stall_cpu_block=1 module parameter causes
-rcu_torture_stall() to invoke schedule_timeout_uninterruptible() within
-an RCU read-side critical section.  This in turn results in a quiescent
-state (which prevents the stall) and a sleep in an atomic context (which
-produces the above splat).
-
-Although this code is operating as designed, the design has proven to
-be counterintuitive to many.  This commit therefore updates the description
-in kernel-parameters.txt accordingly.
-
-Signed-off-by: Zqiang <qiang1.zhang@intel.com>
+Fixes: e2b949d54392 ("rcutorture: Make TREE03 use real-time tree.use_softirq setting")
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ .../testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot  | 2 +-
+ tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9e5bab29685f..eaffe0f8771d 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5087,8 +5087,16 @@
- 
- 	rcutorture.stall_cpu_block= [KNL]
- 			Sleep while stalling if set.  This will result
--			in warnings from preemptible RCU in addition
--			to any other stall-related activity.
-+			in warnings from preemptible RCU in addition to
-+			any other stall-related activity.  Note that
-+			in kernels built with CONFIG_PREEMPTION=n and
-+			CONFIG_PREEMPT_COUNT=y, this parameter will
-+			cause the CPU to pass through a quiescent state.
-+			Any such quiescent states will suppress RCU CPU
-+			stall warnings, but the time-based sleep will
-+			also result in scheduling-while-atomic splats.
-+			Which might or might not be what you want.
-+
- 
- 	rcutorture.stall_cpu_holdoff= [KNL]
- 			Time to wait (s) after boot before inducing stall.
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
+index f57720c52c0f..84f6bb98ce99 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
+@@ -5,4 +5,4 @@ rcutree.gp_init_delay=3
+ rcutree.gp_cleanup_delay=3
+ rcutree.kthread_prio=2
+ threadirqs
+-tree.use_softirq=0
++rcutree.use_softirq=0
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
+index 64f864f1f361..8e50bfd4b710 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot
+@@ -4,4 +4,4 @@ rcutree.gp_init_delay=3
+ rcutree.gp_cleanup_delay=3
+ rcutree.kthread_prio=2
+ threadirqs
+-tree.use_softirq=0
++rcutree.use_softirq=0
 -- 
 2.40.1
 
