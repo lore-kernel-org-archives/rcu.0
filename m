@@ -2,44 +2,47 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D30B4C7EE25
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EFBCC7EE24
 	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 16:58:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236055AbjEJQ6h (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 12:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236036AbjEJQ6g (ORCPT <rfc822;rcu@vger.kernel.org>);
+        id S236021AbjEJQ6g (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Wed, 10 May 2023 12:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236017AbjEJQ6f (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 12:58:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A0EA0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EEB9C;
         Wed, 10 May 2023 09:58:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9186863F40;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E92F63F2F;
         Wed, 10 May 2023 16:58:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1742C433D2;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDFD6C433EF;
         Wed, 10 May 2023 16:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683737914;
-        bh=lQMcRttOrnsmeuCGpfDl3MfHTsoNHuhuIBx3bHzbYGs=;
+        s=k20201202; t=1683737913;
+        bh=w0ne2UEEwb1HXO/hog3r2ij7PcPs9e+mZYY78+weSf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=arJy9OLkowmfnbg7ezlR1oAzrgv3Gvd39Xj86Spc7DcLNl2FnMkaD+uPlspX0KAne
-         laMlsxdoHplNCpx+nhiBjQk/hXj/1mHa674d04JdOismzbcGwK1E6zQj3hNLfZwKMr
-         aMtFQfO59H5+C6S66KeE3CwSpzR088PCSSQZeEFFLh6zm/28HJ7WRM0kKjzCmIsT1r
-         h6aPmIi/9LWY55genLWYgtynRSQLkgaGDrc3my86jYSLGGQvwbzg+y0uKzcIi5f5r/
-         1BLqoWek4dw4j1nsp0NPfptlMpTaSgW5k4PD6Da7FZ2SPZed5JSoOqx0ylp/9oxKBq
-         3plhQ4BeJAtrg==
+        b=K4I+TNIM/LFj0At87OTvDGe8F5jYXUYn3932b/WhEKaSwLLJdqJclULahRC58qInM
+         G8Qns7WhbE1BHPRwTj/PI+S86sIp/Q1bS+us7JGUMvep2l0JLsg3ls0C4pcDphzv5N
+         4OVCT+Tf974fkEOcl+fU8awmV0wtt/X6c7p0N9/PVF85nvGLRh7VT5T0CUYqQmI64p
+         7X8Sd5+Xl5ijfAXbNWvul8RiB0rfQgaAe/RiOhgsV7RUnQBTDx/xR/9mXxB+jK61c5
+         gbZmFZhon1pUyNPZNNXp4chw8+dZuc+Fpwz9uEBhqm9otPb3STjn6fr1wvkkuZRxjE
+         dOsnidVPjUMOA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8D68ECE1279; Wed, 10 May 2023 09:58:33 -0700 (PDT)
+        id 8856CCE126E; Wed, 10 May 2023 09:58:33 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/8] rcu: Check callback-invocation time limit for rcuc kthreads
-Date:   Wed, 10 May 2023 09:58:27 -0700
-Message-Id: <20230510165832.2187453-3-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>
+Subject: [PATCH rcu 1/8] srcu: Remove extraneous parentheses from srcu_read_lock() etc.
+Date:   Wed, 10 May 2023 09:58:25 -0700
+Message-Id: <20230510165832.2187453-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cb50897b-1153-4958-8132-f0366667b3a4@paulmck-laptop>
 References: <cb50897b-1153-4958-8132-f0366667b3a4@paulmck-laptop>
@@ -49,82 +52,57 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, a callback-invocation time limit is enforced only for
-callbacks invoked from the softirq environment, the rationale being
-that when callbacks are instead invoked from rcuc and rcuoc kthreads,
-these callbacks cannot be holding up other softirq vectors.
+This commit removes extraneous parentheses from srcu_read_lock(),
+srcu_read_lock_nmisafe(), srcu_read_unlock(), and
+srcu_read_unlock_nmisafe().  Looks like someone was once a macro.
 
-Which is in fact true.  However, if an rcuc kthread spends too much time
-invoking callbacks, it can delay quiescent-state reports from its CPU,
-which can also be a problem.
-
-This commit therefore applies the callback-invocation time limit to
-callback invocation from the rcuc kthreads as well as from softirq.
-
+Cc: Christoph Hellwig <hch@lst.de>
+Tested-by: Sachin Sant <sachinp@linux.ibm.com>
+Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ include/linux/srcu.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f52ff7241041..9a5c160186d1 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2046,6 +2046,13 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
- 	rcu_report_qs_rdp(rdp);
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 41c4b26fb1c1..eb92a50a4599 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -212,7 +212,7 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+ 
+ 	srcu_check_nmi_safety(ssp, false);
+ 	retval = __srcu_read_lock(ssp);
+-	srcu_lock_acquire(&(ssp)->dep_map);
++	srcu_lock_acquire(&ssp->dep_map);
+ 	return retval;
  }
  
-+/* Return true if callback-invocation time limit exceeded. */
-+static bool rcu_do_batch_check_time(long count, long tlimit)
-+{
-+	// Invoke local_clock() only once per 32 consecutive callbacks.
-+	return unlikely(tlimit) && !likely(count & 31) && local_clock() >= tlimit;
-+}
-+
- /*
-  * Invoke any RCU callbacks that have made it to the end of their grace
-  * period.  Throttle as specified by rdp->blimit.
-@@ -2082,7 +2089,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	div = READ_ONCE(rcu_divisor);
- 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
- 	bl = max(rdp->blimit, pending >> div);
--	if (in_serving_softirq() && unlikely(bl > 100)) {
-+	if ((in_serving_softirq() || rdp->rcu_cpu_kthread_status == RCU_KTHREAD_RUNNING) &&
-+	    unlikely(bl > 100)) {
- 		long rrn = READ_ONCE(rcu_resched_ns);
+@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
  
- 		rrn = rrn < NSEC_PER_MSEC ? NSEC_PER_MSEC : rrn > NSEC_PER_SEC ? NSEC_PER_SEC : rrn;
-@@ -2126,21 +2134,23 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 			 * Make sure we don't spend too much time here and deprive other
- 			 * softirq vectors of CPU cycles.
- 			 */
--			if (unlikely(tlimit)) {
--				/* only call local_clock() every 32 callbacks */
--				if (likely((count & 31) || local_clock() < tlimit))
--					continue;
--				/* Exceeded the time limit, so leave. */
-+			if (rcu_do_batch_check_time(count, tlimit))
- 				break;
--			}
- 		} else {
--			// In rcuoc context, so no worries about depriving
--			// other softirq vectors of CPU cycles.
-+			// In rcuc/rcuoc context, so no worries about
-+			// depriving other softirq vectors of CPU cycles.
- 			local_bh_enable();
- 			lockdep_assert_irqs_enabled();
- 			cond_resched_tasks_rcu_qs();
- 			lockdep_assert_irqs_enabled();
- 			local_bh_disable();
-+			// But rcuc kthreads can delay quiescent-state
-+			// reporting, so check time limits for them.
-+			if (rdp->rcu_cpu_kthread_status == RCU_KTHREAD_RUNNING &&
-+			    rcu_do_batch_check_time(count, tlimit)) {
-+				rdp->rcu_cpu_has_work = 1;
-+				break;
-+			}
- 		}
- 	}
+ 	srcu_check_nmi_safety(ssp, true);
+ 	retval = __srcu_read_lock_nmisafe(ssp);
+-	rcu_lock_acquire(&(ssp)->dep_map);
++	rcu_lock_acquire(&ssp->dep_map);
+ 	return retval;
+ }
+ 
+@@ -284,7 +284,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ {
+ 	WARN_ON_ONCE(idx & ~0x1);
+ 	srcu_check_nmi_safety(ssp, false);
+-	srcu_lock_release(&(ssp)->dep_map);
++	srcu_lock_release(&ssp->dep_map);
+ 	__srcu_read_unlock(ssp, idx);
+ }
+ 
+@@ -300,7 +300,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+ {
+ 	WARN_ON_ONCE(idx & ~0x1);
+ 	srcu_check_nmi_safety(ssp, true);
+-	rcu_lock_release(&(ssp)->dep_map);
++	rcu_lock_release(&ssp->dep_map);
+ 	__srcu_read_unlock_nmisafe(ssp, idx);
+ }
  
 -- 
 2.40.1
