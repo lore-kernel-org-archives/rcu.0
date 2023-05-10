@@ -2,108 +2,68 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D735C77B7F
-	for <rcu@archiver.kernel.org>; Mon,  8 May 2023 17:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33612C7EE22
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 16:51:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbjEHRvq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 8 May 2023 13:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
+        id S231313AbjEJQvN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 12:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjEHRvp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 8 May 2023 13:51:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42ED744A0;
-        Mon,  8 May 2023 10:51:44 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683568301;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xBM5m6wDNW8LeDu3c/o/2yvJ8k64BJF0JoE591jbLbA=;
-        b=sMXXfFh+31ZYLnj/Q/317zJ8ZSNPWFhoFiud2U76+34ZcjDHzfH94OqL5J7Cq08AktHEob
-        jScu3BBU+qL6S/lcL3VxvFTcbres7JXXNwc90R7lK1wlwr2ZmAigc0dIvG5AV6JAzorBaq
-        DIpcER3iASDOuzirPArCyeojNdahXrhqv4d/Uweihy+eMCslrpiZjVjkedRt1mJY4raFyK
-        YgUIvPPYtt7wKOkz2+m2PZtlqlM8wnC8SGGOKlzyhUWXe5PLhj9G2a/vKTQIm9Ki6XKPrl
-        ry4fY2g0q5I7fMBhPRATR4Kgl2/343VnWymkfbnsQx7N+fW0pldcN8wNrV6oMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683568301;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xBM5m6wDNW8LeDu3c/o/2yvJ8k64BJF0JoE591jbLbA=;
-        b=FKKYbkze0DTjbg51KVCUWSLfNiUsicv5XAC0hJm2+JvwoRzcsJXs/xUt9yUiE5d6ajXhX2
-        oLbHvKULh49aPoDw==
-To:     Jason Xing <kerneljasonxing@gmail.com>,
-        Liu Jian <liujian56@huawei.com>
-Cc:     corbet@lwn.net, paulmck@kernel.org, frederic@kernel.org,
-        quic_neeraju@quicinc.com, joel@joelfernandes.org,
-        josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        qiang1.zhang@intel.com, jstultz@google.com, sboyd@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, peterz@infradead.org, frankwoo@google.com,
-        Rhinewuwu@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 2/9] softirq: Use sched_clock() based timeout
-In-Reply-To: <CAL+tcoDY11sSO8_h1DKCWgAXOjQwM1JR5cx7cpmotWVj28m_fg@mail.gmail.com>
-References: <20230505113315.3307723-1-liujian56@huawei.com>
- <20230505113315.3307723-3-liujian56@huawei.com>
- <CAL+tcoDY11sSO8_h1DKCWgAXOjQwM1JR5cx7cpmotWVj28m_fg@mail.gmail.com>
-Date:   Mon, 08 May 2023 19:51:41 +0200
-Message-ID: <87cz3a3e4y.ffs@tglx>
+        with ESMTP id S231402AbjEJQvK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 12:51:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5B130FA;
+        Wed, 10 May 2023 09:51:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BBA04635CD;
+        Wed, 10 May 2023 16:51:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A675C4339B;
+        Wed, 10 May 2023 16:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683737468;
+        bh=JH7fggTPiuFvy0uFcmacl/dhal2azMqjhYx5FJ/7MLQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=dfXm6vXtvl8/0hRQJ4RLlkKw2E2ujlyRCGEnpsXBXH+vPCWEI+w5DjnOY7thO0m4d
+         mMAgaBHTd22FDNtqcFQoUMwCj9b2kENu7+uRMW2CBQUxlUazmGUtl88+W3x0qYyGxw
+         l+7TClCGTp5LnFANyyOFdQ4nWUZfiuWnRXLnWjy/T8lRwyHpAaWTI8PzMQdP+kIu4Y
+         TpQFFhhuz9gVqwX07eN+3xMXt6OJWgoo+e8217dNUx7ge7Dmdnl5v16SKc/o02XwAK
+         y8TkenZ1QkjVay+hJyd+ERCZBXC+jJ8a/69/tywcJmsNYjAyWlig70X45SFSfoih1s
+         jm3QU1N8kbZiQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B6A39CE126E; Wed, 10 May 2023 09:51:07 -0700 (PDT)
+Date:   Wed, 10 May 2023 09:51:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/3] Documentation updates for v6.5
+Message-ID: <16136ef4-9437-442b-b7c8-3fb6b2120873@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 08 2023 at 12:08, Jason Xing wrote:
-> On Fri, May 5, 2023 at 7:25=E2=80=AFPM Liu Jian <liujian56@huawei.com> wr=
-ote:
->> @@ -489,7 +490,7 @@ asmlinkage __visible void do_softirq(void)
->>   * we want to handle softirqs as soon as possible, but they
->>   * should not be able to lock up the box.
->>   */
->> -#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
->> +#define MAX_SOFTIRQ_TIME       (2 * NSEC_PER_MSEC)
->
-> I wonder if it affects those servers that set HZ to some different
-> values rather than 1000 as default.
+Hello!
 
-The result of msecs_to_jiffies(2) for different HZ values:
+This series contains documentation updates:
 
-HZ=3D100     1
-HZ=3D250     1
-HZ=3D1000    2
+1.	Get rcutree module parameters back into alpha order.
 
-So depending on when the softirq processing starts, this gives the
-following ranges in which the timeout ends:
+2.	Document the rcutree.rcu_resched_ns module parameter.
 
-HZ=3D100    0 - 10ms
-HZ=3D250    0 -  4ms
-HZ=3D1000   1 -  2ms
+3.	MAINTAINERS: Update qiang1.zhang@intel.com to
+	qiang.zhang1211@gmail.com, courtesy of Zqiang.
 
-But as the various softirq handlers have their own notion of timeouts,
-loop limits etc. and the timeout is only checked after _all_ pending
-bits of each iteration have been processed, the outcome of this is all
-lottery.
+						Thanx, Paul
 
-Due to that the sched_clock() change per se won't have too much impact,
-but if the overall changes to consolidate the break conditions are in
-place, I think it will have observable effects.
+------------------------------------------------------------------------
 
-Making this consistent is definitely a good thing, but it won't solve
-the underlying problem of soft interrupt processing at all.
-
-We definitely need to spend more thoughts on pulling things out of soft
-interrupt context so that these functionalities get under proper
-resource control by the scheduler.
-
-Thanks,
-
-        tglx
+ Documentation/admin-guide/kernel-parameters.txt   |    7 +
+ b/Documentation/admin-guide/kernel-parameters.txt |  120 +++++++++++-----------
+ b/MAINTAINERS                                     |    2 
+ 3 files changed, 68 insertions(+), 61 deletions(-)
