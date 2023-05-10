@@ -2,135 +2,82 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CE95C7EE24
-	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:10:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D4AC77B7C
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:12:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236012AbjEJRKX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 13:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
+        id S236476AbjEJRMi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 13:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236358AbjEJRKU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 May 2023 13:10:20 -0400
+        with ESMTP id S236404AbjEJRMf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 13:12:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7F05FF1;
-        Wed, 10 May 2023 10:10:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E093A93;
+        Wed, 10 May 2023 10:12:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A6E16369D;
-        Wed, 10 May 2023 17:10:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E9F4C4339B;
-        Wed, 10 May 2023 17:10:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24B936369D;
+        Wed, 10 May 2023 17:12:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8842FC4339B;
+        Wed, 10 May 2023 17:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683738610;
-        bh=7p2mY/IgBAYG/lhspk8D9Tlw0mIitBCNPQEVOj3LwJ8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=soeKWkoSrUK4tmubxmEbv/SHDijXlvJijrxUwq/GyBodCk8HHSqmgxhOwyg+K4Qvc
-         KU2lrxKO6coA0wsuz+c9OZbzgHV/bt75FoeXohmtdgVYdLhv4agQYeIsNFX/rkyZqe
-         rSqAMopmsnOIBYmz40uupK7AxDkVdIALA8MMLmBbUMV2krqO9sctICIpjSvXPQ5MwV
-         qztEeUOBoOPAwoIE5bqFk4Dg3Sm6TMooFTGz1QR58diyiMDUU8YLvrf8s1uYcBcppC
-         DnB92sPqhhCK0q/z/COazEvuStCL1ez8hi2NhcwVI34oKHPo0yl+PuZ2lfTSorVKX+
-         JsYN6QixKclyw==
+        s=k20201202; t=1683738751;
+        bh=gr85dVwKcpocSLV0KAz9yZW75g5pZOlyjCjWTPb6YUI=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=nVlYyaQ72QNzzjIguzJTVbRaeiPapJzfHqnASqyVsHPnaJfFigpbiAA9kVqAmKjjB
+         IlKPDh7uhFclonTbt5pBc9mJtP5JH387PRyJ+tv+7Gc90E+LvE+39EF7c4aUS3h8tA
+         WriZ4FSIOPYoL83ZDDDEo8oslyV35FUO8Vhwj4C+cfa9UpNT0nEFqATVK5BVNH+Lqq
+         d/6IMkfsoJRwO1mxs1ApiSYp9s/kK/EtFIB0LrNaJnCDeNQLK82IZG3i4D9cz3PLsi
+         Qi9aFdeF0TlkzWx27w8fV7RYMkCiCOsNZMzEaSBrhGMabNcw518YtfxXRkqSOJcgoW
+         XekqSVK6AZaWQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 474C3CE126E; Wed, 10 May 2023 10:10:10 -0700 (PDT)
+        id 32219CE126E; Wed, 10 May 2023 10:12:31 -0700 (PDT)
+Date:   Wed, 10 May 2023 10:12:31 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Shigeru Yoshida <syoshida@redhat.com>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/2] rcu-tasks: Avoid pr_info() with spin lock in cblist_init_generic()
-Date:   Wed, 10 May 2023 10:10:08 -0700
-Message-Id: <20230510171009.2189185-1-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <edff5c4b-e894-4146-8a1d-ae291d01c4fb@paulmck-laptop>
-References: <edff5c4b-e894-4146-8a1d-ae291d01c4fb@paulmck-laptop>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/6] Torture-test updates for v6.5
+Message-ID: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Shigeru Yoshida <syoshida@redhat.com>
+Hello!
 
-pr_info() is called with rtp->cbs_gbl_lock spin lock locked.  Because
-pr_info() calls printk() that might sleep, this will result in BUG
-like below:
+This series contains torture-test and torture-test-scripting updates
+for v6.5:
 
-[    0.206455] cblist_init_generic: Setting adjustable number of callback queues.
-[    0.206463]
-[    0.206464] =============================
-[    0.206464] [ BUG: Invalid wait context ]
-[    0.206465] 5.19.0-00428-g9de1f9c8ca51 #5 Not tainted
-[    0.206466] -----------------------------
-[    0.206466] swapper/0/1 is trying to lock:
-[    0.206467] ffffffffa0167a58 (&port_lock_key){....}-{3:3}, at: serial8250_console_write+0x327/0x4a0
-[    0.206473] other info that might help us debug this:
-[    0.206473] context-{5:5}
-[    0.206474] 3 locks held by swapper/0/1:
-[    0.206474]  #0: ffffffff9eb597e0 (rcu_tasks.cbs_gbl_lock){....}-{2:2}, at: cblist_init_generic.constprop.0+0x14/0x1f0
-[    0.206478]  #1: ffffffff9eb579c0 (console_lock){+.+.}-{0:0}, at: _printk+0x63/0x7e
-[    0.206482]  #2: ffffffff9ea77780 (console_owner){....}-{0:0}, at: console_emit_next_record.constprop.0+0x111/0x330
-[    0.206485] stack backtrace:
-[    0.206486] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.19.0-00428-g9de1f9c8ca51 #5
-[    0.206488] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-1.fc36 04/01/2014
-[    0.206489] Call Trace:
-[    0.206490]  <TASK>
-[    0.206491]  dump_stack_lvl+0x6a/0x9f
-[    0.206493]  __lock_acquire.cold+0x2d7/0x2fe
-[    0.206496]  ? stack_trace_save+0x46/0x70
-[    0.206497]  lock_acquire+0xd1/0x2f0
-[    0.206499]  ? serial8250_console_write+0x327/0x4a0
-[    0.206500]  ? __lock_acquire+0x5c7/0x2720
-[    0.206502]  _raw_spin_lock_irqsave+0x3d/0x90
-[    0.206504]  ? serial8250_console_write+0x327/0x4a0
-[    0.206506]  serial8250_console_write+0x327/0x4a0
-[    0.206508]  console_emit_next_record.constprop.0+0x180/0x330
-[    0.206511]  console_unlock+0xf7/0x1f0
-[    0.206512]  vprintk_emit+0xf7/0x330
-[    0.206514]  _printk+0x63/0x7e
-[    0.206516]  cblist_init_generic.constprop.0.cold+0x24/0x32
-[    0.206518]  rcu_init_tasks_generic+0x5/0xd9
-[    0.206522]  kernel_init_freeable+0x15b/0x2a2
-[    0.206523]  ? rest_init+0x160/0x160
-[    0.206526]  kernel_init+0x11/0x120
-[    0.206527]  ret_from_fork+0x1f/0x30
-[    0.206530]  </TASK>
-[    0.207018] cblist_init_generic: Setting shift to 1 and lim to 1.
+1.	Add long_hold to adjust lock-hold delays.
 
-This patch moves pr_info() so that it is called without
-rtp->cbs_gbl_lock locked.
+2.	Correct name of use_softirq module parameter.
 
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tasks.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+3.	rcu/rcuscale: Move rcu_scale_*() after kfree_scale_cleanup(),
+	courtesy of Qiuxu Zhuo.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 5f4fc8184dd0..65df1aaf0ce9 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -241,7 +241,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
- 	if (rcu_task_enqueue_lim < 0) {
- 		rcu_task_enqueue_lim = 1;
- 		rcu_task_cb_adjust = true;
--		pr_info("%s: Setting adjustable number of callback queues.\n", __func__);
- 	} else if (rcu_task_enqueue_lim == 0) {
- 		rcu_task_enqueue_lim = 1;
- 	}
-@@ -272,6 +271,10 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
- 		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
- 	}
- 	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-+
-+	if (rcu_task_cb_adjust)
-+		pr_info("%s: Setting adjustable number of callback queues.\n", __func__);
-+
- 	pr_info("%s: Setting shift to %d and lim to %d.\n", __func__, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim));
- }
- 
--- 
-2.40.1
+4.	rcu/rcuscale: Stop kfree_scale_thread thread(s) after unloading
+	rcuscale, courtesy of Qiuxu Zhuo.
 
+5.	doc/rcutorture: Add description of rcutorture.stall_cpu_block,
+	courtesy of Zqiang.
+
+6.	Remove duplicated argument -enable-kvm for ppc64, courtesy of
+	Zhouyi Zhou.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt                  |   12 
+ b/kernel/locking/locktorture.c                                     |   51 +-
+ b/kernel/rcu/rcuscale.c                                            |  194 +++++-----
+ b/tools/testing/selftests/rcutorture/bin/functions.sh              |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot       |    2 
+ kernel/rcu/rcuscale.c                                              |    5 
+ 7 files changed, 137 insertions(+), 131 deletions(-)
