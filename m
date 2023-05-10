@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CA20C7EE22
-	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:03:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C70B7C77B7D
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:03:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236142AbjEJRDO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 13:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S236193AbjEJRDN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 13:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236138AbjEJRDM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 May 2023 13:03:12 -0400
+        with ESMTP id S236208AbjEJRDL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 13:03:11 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4786F1BCF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489441BE1;
         Wed, 10 May 2023 10:02:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DD6664A21;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A89E64A23;
         Wed, 10 May 2023 17:02:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9708C4339B;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9363C433A0;
         Wed, 10 May 2023 17:02:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1683738163;
-        bh=GUdtbnxrMYKHSRw0zedHwvfAbvZ5RfDc9Uh+UMVsuF4=;
+        bh=6K2M1cneLOAe74u4tZCwr+yARE8eIXwk93Jk4FtsLn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FV7lPW9STo0XsQIh0/hNxKrBRQS4wndoPPoVFC8NGisk0B37o0XnAjykCcf/9aRT0
-         9svfmNbCmWkW9uDWraFp2QaZ/YyCLu3K1atSLIFI+a+w3QS9LL+ahVcDrr6RpLF6Cs
-         lQVswOpzk9rdUesfWxWIrjPEcn2V2bwAZW9K8E1qTJ7jwxZwuaZuwhLi65aqKwPhya
-         zGhRsxLHy0LfooHSY5LDYlJ0abX8htv3W7Y7sV6F9skS+ZZQ0HwLLat0DCLAiB2wzy
-         cnmdpX8aDhhqhYSMV+k2WU5EHJOrJjByGNJtbtlrMCrbv6bVNqBzGV3DoVjqRzN3Yn
-         QlE01/WKBuD6g==
+        b=c4R3E6uIcqhWGD8EYNG9KFHdbkY/l9v+pVqVqsInWzWRUn36+n0VVh6N5BQxai288
+         qq+gR80SGvdKfiyN1tBxMPWF32Kkf+ona9PTtFoZV7UmDp8bzfcURR/QbBog3yF4tY
+         7YAxqFOdOUyEZWIsc2LPNg5vGkYWRSHUW1EWnvzYkZGbQmBUiu8I/BdxCDK01K2nAL
+         hvPrrPcxbyJ8svS3HxDd9qVN3oJaU71YJvh1V7D8E4LyPhPR8mH2GWA5zKR0lwIGox
+         EiPp0oBQb2gLUCxUS2c9DxaUzrtTvur9BuZ+wvDod4n2kvMXhMmD6rBoUL/KkIXxhz
+         BNUiDewW6oHvQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5136DCE127A; Wed, 10 May 2023 10:02:43 -0700 (PDT)
+        id 55F22CE127F; Wed, 10 May 2023 10:02:43 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        rostedt@goodmis.org, Zqiang <qiang1.zhang@intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/8] rcu/kvfree: Add debug check for GP complete for kfree_rcu_cpu list
-Date:   Wed, 10 May 2023 10:02:37 -0700
-Message-Id: <20230510170242.2187714-3-paulmck@kernel.org>
+Subject: [PATCH rcu 5/8] rcu/kvfree: Use consistent krcp when growing kfree_rcu() page cache
+Date:   Wed, 10 May 2023 10:02:39 -0700
+Message-Id: <20230510170242.2187714-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <1c01c38f-3783-44d7-8c11-7416cd5b849c@paulmck-laptop>
 References: <1c01c38f-3783-44d7-8c11-7416cd5b849c@paulmck-laptop>
@@ -50,83 +50,44 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+From: Zqiang <qiang1.zhang@intel.com>
 
-Under low-memory conditions, kvfree_rcu() will use each object's
-rcu_head structure to queue objects in a singly linked list headed by
-the kfree_rcu_cpu structure's ->head field.  This list is passed to
-call_rcu() as a unit, but there is no indication of which grace period
-this list needs to wait for.  This in turn prevents adding debug checks
-in the kfree_rcu_work() as was done for the two page-of-pointers channels
-in the kfree_rcu_cpu structure.
+The add_ptr_to_bulk_krc_lock() function is invoked to allocate a new
+kfree_rcu() page, also known as a kvfree_rcu_bulk_data structure.
+The kfree_rcu_cpu structure's lock is used to protect this operation,
+except that this lock must be momentarily dropped when allocating memory.
+It is clearly important that the lock that is reacquired be the same
+lock that was acquired initially via krc_this_cpu_lock().
 
-This commit therefore adds a ->head_free_gp_snap field to the
-kfree_rcu_cpu_work structure to record this grace-period number.  It also
-adds a WARN_ON_ONCE() to kfree_rcu_monitor() that checks to make sure
-that the required grace period has in fact elapsed.
+Unfortunately, this same krc_this_cpu_lock() function is used to
+re-acquire this lock, and if the task migrated to some other CPU during
+the memory allocation, this will result in the kvfree_rcu_bulk_data
+structure being added to the wrong CPU's kfree_rcu_cpu structure.
 
-[ paulmck: Fix kerneldoc issue raised by Stephen Rothwell. ]
+This commit therefore replaces that second call to krc_this_cpu_lock()
+with raw_spin_lock_irqsave() in order to explicitly acquire the lock on
+the correct kfree_rcu_cpu structure, thus keeping things straight even
+when the task migrates.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 91d75fd6c579..7452ba97ba34 100644
+index 426f1f3bb5f2..51d84eabf645 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2773,6 +2773,7 @@ struct kvfree_rcu_bulk_data {
-  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
-  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
-  * @head_free: List of kfree_rcu() objects waiting for a grace period
-+ * @head_free_gp_snap: Grace-period snapshot to check for attempted premature frees.
-  * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
-  * @krcp: Pointer to @kfree_rcu_cpu structure
-  */
-@@ -2780,6 +2781,7 @@ struct kvfree_rcu_bulk_data {
- struct kfree_rcu_cpu_work {
- 	struct rcu_work rcu_work;
- 	struct rcu_head *head_free;
-+	struct rcu_gp_oldstate head_free_gp_snap;
- 	struct list_head bulk_head_free[FREE_N_CHANNELS];
- 	struct kfree_rcu_cpu *krcp;
- };
-@@ -2985,6 +2987,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	struct rcu_head *head;
- 	struct kfree_rcu_cpu *krcp;
- 	struct kfree_rcu_cpu_work *krwp;
-+	struct rcu_gp_oldstate head_gp_snap;
- 	int i;
+@@ -3279,7 +3279,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 			// scenarios.
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+ 				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+-			*krcp = krc_this_cpu_lock(flags);
++			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
+ 		}
  
- 	krwp = container_of(to_rcu_work(work),
-@@ -2999,6 +3002,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	// Channel 3.
- 	head = krwp->head_free;
- 	krwp->head_free = NULL;
-+	head_gp_snap = krwp->head_free_gp_snap;
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
- 	// Handle the first two channels.
-@@ -3015,7 +3019,8 @@ static void kfree_rcu_work(struct work_struct *work)
- 	 * queued on a linked list through their rcu_head structures.
- 	 * This list is named "Channel 3".
- 	 */
--	kvfree_rcu_list(head);
-+	if (head && !WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&head_gp_snap)))
-+		kvfree_rcu_list(head);
- }
- 
- static bool
-@@ -3147,6 +3152,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 			// objects queued on the linked list.
- 			if (!krwp->head_free) {
- 				krwp->head_free = krcp->head;
-+				get_state_synchronize_rcu_full(&krwp->head_free_gp_snap);
- 				atomic_set(&krcp->head_count, 0);
- 				WRITE_ONCE(krcp->head, NULL);
- 			}
+ 		if (!bnode)
 -- 
 2.40.1
 
