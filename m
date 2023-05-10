@@ -2,44 +2,47 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 888E2C7EE22
-	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:12:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 299A6C77B7C
+	for <rcu@archiver.kernel.org>; Wed, 10 May 2023 17:12:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236396AbjEJRMt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 10 May 2023 13:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
+        id S236395AbjEJRMu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 10 May 2023 13:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236443AbjEJRMp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 10 May 2023 13:12:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6AA210C;
+        with ESMTP id S230440AbjEJRMr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 10 May 2023 13:12:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB5E55AD;
         Wed, 10 May 2023 10:12:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 33E69633E3;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BA9664A32;
         Wed, 10 May 2023 17:12:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 997ABC433EF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7D3EC433A0;
         Wed, 10 May 2023 17:12:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1683738760;
-        bh=EJI43WlF+/lFEI5jOxAQoTqVyh0G3qhOIj0R1r1mM+s=;
+        bh=KDLz2XZ/U61uBOSzISq5Lmmyrsw5rPfsdBYT/yaU1gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uA5OM24tJnpFS9Jhogj/3ud6BbjLH9YhNF9h4Y+CLA9AkXbQZ8m3FuwwZExmaRDeq
-         PuTV4SNxp3Prj8hkRSHCxJsIc24iPiJTYgJGrFrHPgfr2rr6jNPgEzH06P1iPT084U
-         nEfxLiAXYWX2qnIA0DJE20i2KDVZKHPB6norRAAcsdhl1PXw1gQWmUhUuMwzJDThtJ
-         Lzj6iMkij6zrsFviQPU1/1gzdGeWRBjmRyTIb/4m5RaLw1/y2FE8qS53a4c3/AIfVC
-         Pxhd7L/FNin7azLYySzsYxDaweHVA+dv9IOuAEtSAdT3wBQbewJPUpgEXvAnS/o2HB
-         yq4B919higa8w==
+        b=kH2H8Nwzm84ddIvkA4D8C9Uo9xeEuzeudQxT16AV+LHp7D+4rWV9ORCvdVjzzlIxD
+         4EAU3MzApfhHoow7hEvlePyhVbv0OeLcrO1TjT6C1DltuNBxUd0WVjNJTw6ZY9j97F
+         hVTOfKJlqD99jV+gmzDgvUJN7LS8MdBpRnBBKPBrUp2GuaO53Eb6x91TnzdSVsPGck
+         4DbVhhmHJoHnPr4yO562ldfMcPuFT2xGTmdEk35s3HnbeKo94MUcfsrZ6jbkxbqAxE
+         Rbui9GV7ISb8wviqseT/2pMpBAzF8VYZnx2ebknwWjz3Wj4x3GUueqzhnFY1Kv6j5r
+         yBjaPgNySlVUw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 51D39CE126E; Wed, 10 May 2023 10:12:40 -0700 (PDT)
+        id 5D937CE127D; Wed, 10 May 2023 10:12:40 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/6] locktorture: Add long_hold to adjust lock-hold delays
-Date:   Wed, 10 May 2023 10:12:33 -0700
-Message-Id: <20230510171238.2189921-1-paulmck@kernel.org>
+        rostedt@goodmis.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 4/6] rcu/rcuscale: Stop kfree_scale_thread thread(s) after unloading rcuscale
+Date:   Wed, 10 May 2023 10:12:36 -0700
+Message-Id: <20230510171238.2189921-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
 References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
@@ -49,154 +52,75 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a long_hold module parameter to allow testing diagnostics
-for excessive lock-hold times.  Also adjust torture_param() invocations
-for longer line length while in the area.
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
+Running the 'kfree_rcu_test' test case [1] results in a splat [2].
+The root cause is the kfree_scale_thread thread(s) continue running
+after unloading the rcuscale module.  This commit fixes that isue by
+invoking kfree_scale_cleanup() from rcu_scale_cleanup() when removing
+the rcuscale module.
+
+[1] modprobe rcuscale kfree_rcu_test=1
+    // After some time
+    rmmod rcuscale
+    rmmod torture
+
+[2] BUG: unable to handle page fault for address: ffffffffc0601a87
+    #PF: supervisor instruction fetch in kernel mode
+    #PF: error_code(0x0010) - not-present page
+    PGD 11de4f067 P4D 11de4f067 PUD 11de51067 PMD 112f4d067 PTE 0
+    Oops: 0010 [#1] PREEMPT SMP NOPTI
+    CPU: 1 PID: 1798 Comm: kfree_scale_thr Not tainted 6.3.0-rc1-rcu+ #1
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
+    RIP: 0010:0xffffffffc0601a87
+    Code: Unable to access opcode bytes at 0xffffffffc0601a5d.
+    RSP: 0018:ffffb25bc2e57e18 EFLAGS: 00010297
+    RAX: 0000000000000000 RBX: ffffffffc061f0b6 RCX: 0000000000000000
+    RDX: 0000000000000000 RSI: ffffffff962fd0de RDI: ffffffff962fd0de
+    RBP: ffffb25bc2e57ea8 R08: 0000000000000000 R09: 0000000000000000
+    R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+    R13: 0000000000000000 R14: 000000000000000a R15: 00000000001c1dbe
+    FS:  0000000000000000(0000) GS:ffff921fa2200000(0000) knlGS:0000000000000000
+    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: ffffffffc0601a5d CR3: 000000011de4c006 CR4: 0000000000370ee0
+    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+    Call Trace:
+     <TASK>
+     ? kvfree_call_rcu+0xf0/0x3a0
+     ? kthread+0xf3/0x120
+     ? kthread_complete_and_exit+0x20/0x20
+     ? ret_from_fork+0x1f/0x30
+     </TASK>
+    Modules linked in: rfkill sunrpc ... [last unloaded: torture]
+    CR2: ffffffffc0601a87
+    ---[ end trace 0000000000000000 ]---
+
+Fixes: e6e78b004fa7 ("rcuperf: Add kfree_rcu() performance Tests")
+Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/locktorture.c | 51 ++++++++++++++++--------------------
- 1 file changed, 22 insertions(+), 29 deletions(-)
+ kernel/rcu/rcuscale.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 153ddc4c47ef..949d3deae506 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -33,24 +33,19 @@
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 7e8965b0827a..d1221731c7cf 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -797,6 +797,11 @@ rcu_scale_cleanup(void)
+ 	if (gp_exp && gp_async)
+ 		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
  
--torture_param(int, nwriters_stress, -1,
--	     "Number of write-locking stress-test threads");
--torture_param(int, nreaders_stress, -1,
--	     "Number of read-locking stress-test threads");
-+torture_param(int, nwriters_stress, -1, "Number of write-locking stress-test threads");
-+torture_param(int, nreaders_stress, -1, "Number of read-locking stress-test threads");
-+torture_param(int, long_hold, 100, "Do occasional long hold of lock (ms), 0=disable");
- torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
--torture_param(int, onoff_interval, 0,
--	     "Time between CPU hotplugs (s), 0=disable");
--torture_param(int, shuffle_interval, 3,
--	     "Number of jiffies between shuffles, 0=disable");
-+torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (s), 0=disable");
-+torture_param(int, shuffle_interval, 3, "Number of jiffies between shuffles, 0=disable");
- torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
--torture_param(int, stat_interval, 60,
--	     "Number of seconds between stats printk()s");
-+torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
- torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
- torture_param(int, rt_boost, 2,
--		"Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
-+		   "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
- torture_param(int, rt_boost_factor, 50, "A factor determining how often rt-boost happens.");
--torture_param(int, verbose, 1,
--	     "Enable verbose debugging printk()s");
-+torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
- torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
- /* Going much higher trips "BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!" errors */
- #define MAX_NESTED_LOCKS 8
-@@ -120,7 +115,7 @@ static int torture_lock_busted_write_lock(int tid __maybe_unused)
- 
- static void torture_lock_busted_write_delay(struct torture_random_state *trsp)
- {
--	const unsigned long longdelay_ms = 100;
-+	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
- 
- 	/* We want a long delay occasionally to force massive contention.  */
- 	if (!(torture_random(trsp) %
-@@ -198,16 +193,18 @@ __acquires(torture_spinlock)
- static void torture_spin_lock_write_delay(struct torture_random_state *trsp)
- {
- 	const unsigned long shortdelay_us = 2;
--	const unsigned long longdelay_ms = 100;
-+	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
-+	unsigned long j;
- 
- 	/* We want a short delay mostly to emulate likely code, and
- 	 * we want a long delay occasionally to force massive contention.
- 	 */
--	if (!(torture_random(trsp) %
--	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-+	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * longdelay_ms))) {
-+		j = jiffies;
- 		mdelay(longdelay_ms);
--	if (!(torture_random(trsp) %
--	      (cxt.nrealwriters_stress * 2 * shortdelay_us)))
-+		pr_alert("%s: delay = %lu jiffies.\n", __func__, jiffies - j);
++	if (kfree_rcu_test) {
++		kfree_scale_cleanup();
++		return;
 +	}
-+	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 200 * shortdelay_us)))
- 		udelay(shortdelay_us);
- 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
- 		torture_preempt_schedule();  /* Allow test to be preempted. */
-@@ -322,7 +319,7 @@ __acquires(torture_rwlock)
- static void torture_rwlock_write_delay(struct torture_random_state *trsp)
- {
- 	const unsigned long shortdelay_us = 2;
--	const unsigned long longdelay_ms = 100;
-+	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
- 
- 	/* We want a short delay mostly to emulate likely code, and
- 	 * we want a long delay occasionally to force massive contention.
-@@ -455,14 +452,12 @@ __acquires(torture_mutex)
- 
- static void torture_mutex_delay(struct torture_random_state *trsp)
- {
--	const unsigned long longdelay_ms = 100;
-+	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
- 
- 	/* We want a long delay occasionally to force massive contention.  */
- 	if (!(torture_random(trsp) %
- 	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
- 		mdelay(longdelay_ms * 5);
--	else
--		mdelay(longdelay_ms / 5);
- 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
- 		torture_preempt_schedule();  /* Allow test to be preempted. */
- }
-@@ -630,7 +625,7 @@ __acquires(torture_rtmutex)
- static void torture_rtmutex_delay(struct torture_random_state *trsp)
- {
- 	const unsigned long shortdelay_us = 2;
--	const unsigned long longdelay_ms = 100;
-+	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
- 
- 	/*
- 	 * We want a short delay mostly to emulate likely code, and
-@@ -640,7 +635,7 @@ static void torture_rtmutex_delay(struct torture_random_state *trsp)
- 	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
- 		mdelay(longdelay_ms);
- 	if (!(torture_random(trsp) %
--	      (cxt.nrealwriters_stress * 2 * shortdelay_us)))
-+	      (cxt.nrealwriters_stress * 200 * shortdelay_us)))
- 		udelay(shortdelay_us);
- 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
- 		torture_preempt_schedule();  /* Allow test to be preempted. */
-@@ -695,14 +690,12 @@ __acquires(torture_rwsem)
- 
- static void torture_rwsem_write_delay(struct torture_random_state *trsp)
- {
--	const unsigned long longdelay_ms = 100;
-+	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
- 
- 	/* We want a long delay occasionally to force massive contention.  */
- 	if (!(torture_random(trsp) %
- 	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
- 		mdelay(longdelay_ms * 10);
--	else
--		mdelay(longdelay_ms / 10);
- 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
- 		torture_preempt_schedule();  /* Allow test to be preempted. */
- }
-@@ -848,8 +841,8 @@ static int lock_torture_writer(void *arg)
- 
- 			lwsp->n_lock_acquired++;
- 		}
--		cxt.cur_ops->write_delay(&rand);
- 		if (!skip_main_lock) {
-+			cxt.cur_ops->write_delay(&rand);
- 			lock_is_write_held = false;
- 			WRITE_ONCE(last_lock_release, jiffies);
- 			cxt.cur_ops->writeunlock(tid);
++
+ 	if (torture_cleanup_begin())
+ 		return;
+ 	if (!cur_ops) {
 -- 
 2.40.1
 
