@@ -2,100 +2,129 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26E23C77B7C
-	for <rcu@archiver.kernel.org>; Thu, 11 May 2023 05:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FCC1C77B7C
+	for <rcu@archiver.kernel.org>; Thu, 11 May 2023 05:47:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbjEKF0j (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 May 2023 01:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
+        id S229536AbjEKFrx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 May 2023 01:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjEKF0i (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 11 May 2023 01:26:38 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FD84498
-        for <rcu@vger.kernel.org>; Wed, 10 May 2023 22:26:36 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-ba1911d60f5so12022810276.2
-        for <rcu@vger.kernel.org>; Wed, 10 May 2023 22:26:36 -0700 (PDT)
+        with ESMTP id S229535AbjEKFrt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 May 2023 01:47:49 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B110919BA
+        for <rcu@vger.kernel.org>; Wed, 10 May 2023 22:47:48 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-b9e2f227640so10315938276.3
+        for <rcu@vger.kernel.org>; Wed, 10 May 2023 22:47:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1683782796; x=1686374796;
+        d=joelfernandes.org; s=google; t=1683784068; x=1686376068;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/7yTENVyOqFjUfzaGJwWt+oOgBMebhIk0NqAg6/+aCg=;
-        b=E3fqH+C1TZNntj8XWs7Ld78+jxI7qMTtnccB5OVdHIipQZe02qJRykfjXf3ciqoyQd
-         iwuNgbfoH9bDnGMTiXO+5Xulm42HNjAjIftdKiHXRqH1kWCBGImuAb45Kx0wlV+gC5ea
-         jGHjsEU/2l00dJ600ly9uY08OnOCrTdWTIFxc=
+        bh=SQlEekySQF52YhMHEw8D5nR4uh5gqpXzONo/bL8otQk=;
+        b=pOwlZcdAxRKV4NPMj2MYMEiA7b+8IuYtKRiioIOQhYnNjfvtqf2X/6x/p9UUqUXpQ+
+         I1Zzs+jqmpXVaoyAcioTHsfEfUllCBRXSZTNz2RHbs9hBCXREIhtQ/VSFPNOxMy1nnvI
+         3ZAbpMUt7ALzI4OmJRAnWcF6YDL76R2LQkgR4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683782796; x=1686374796;
+        d=1e100.net; s=20221208; t=1683784068; x=1686376068;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/7yTENVyOqFjUfzaGJwWt+oOgBMebhIk0NqAg6/+aCg=;
-        b=bSmJ6OZ5kG9J9QCY7LwZcHA+BR+qhOT16+RjCuEknuk9GHx+e4lee/sy3Vp6EPi/mQ
-         qi8i77HX20Ic4XsSa1xiGBkBKDHSyPgCuilaAFXNJ6Fy+nzYv2Ks77CrkTQhktlKYRsg
-         0XbanFg94KMfOjmnnuCdDkrYUGxuL3Y7sw3M/Zc6MMWDlbPkYdk+RrE34T6JujXEnoc/
-         1B71fA4CMre2mQk6Uk/fcaqPLSjdTzkKj0b8ew1oqRfFLlE0WQ/KDp61pQPp3B3r08/l
-         neITsZjidjlFrGppJgZsnN5ElPcjZSWIzT5eSWO10cS0MWoCQ4ky8ea80kLRqj86FimZ
-         Q8Gg==
-X-Gm-Message-State: AC+VfDy1PtfKAaKWYIsUpdwoHWvz6N0dvy5ER5XBNTeO9g7AXFHR5XBh
-        F2hirsdIoIklf4+iCq7bgTRtEiiCObGTuLGJGDqMm4zfB8uVsnV0mxs=
-X-Google-Smtp-Source: ACHHUZ4ntDzdE8uBKO3utIIAtwq/ZLfBZlZzrpxFAD3yE0ohaVJvDEWtv7oPkHqvfIZt+Fa2i56UMm+7j+o9FilwBs8=
-X-Received: by 2002:a25:d187:0:b0:b9e:917c:c8ba with SMTP id
- i129-20020a25d187000000b00b9e917cc8bamr20142971ybg.10.1683782795792; Wed, 10
- May 2023 22:26:35 -0700 (PDT)
+        bh=SQlEekySQF52YhMHEw8D5nR4uh5gqpXzONo/bL8otQk=;
+        b=jJoBLcIA62OtMwqrMPOYcz4bMDfnzPwyg73uIapILxC6eVYufWdXWWfiKt5whom5Bw
+         wMByR9pxRtbEOlBA48diMaC9xG8oVmCo0U3jocaWGppH536P04MyPnRT0NGXBNoc0GXe
+         1kCpTYzRqgkT1AbiFtSbXa6+Y1I7AqnfUAZpEDtbE/azwu8GS15lttEO8f6qyDuBNy9z
+         FPt7+0BIgL/ySRRSFBG7c+sXAKYtWaN67VBvuvdBjj6xqxTlwlPwR0HKYjfcFkprj7yo
+         6ClCMtnYLDFca47EYSConF4g81fXGLK2bK2n9PljJxAnujcwZf5EnHCKF3ojwVBchKkd
+         MF/g==
+X-Gm-Message-State: AC+VfDzMSULClHH89FHPl8B+l5NcQGzHeCcCRgY4HrSxgpYMGRahPcJk
+        L32PkaLSfx8uax9UjnMkDAEt31JNKjZ3mcbKaCGsFA==
+X-Google-Smtp-Source: ACHHUZ6wAWXHrv0njSSijEPO06hDqDVAN1MRuN/Wpg52wSUEiT5gS3hrjznfhj1BXxXu0vgJSGG5XX7lztgwZfy00HQ=
+X-Received: by 2002:a25:f81d:0:b0:b9a:7845:ebdd with SMTP id
+ u29-20020a25f81d000000b00b9a7845ebddmr19604793ybd.17.1683784067743; Wed, 10
+ May 2023 22:47:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop> <20230510171238.2189921-6-paulmck@kernel.org>
-In-Reply-To: <20230510171238.2189921-6-paulmck@kernel.org>
+References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop> <20230510171238.2189921-5-paulmck@kernel.org>
+In-Reply-To: <20230510171238.2189921-5-paulmck@kernel.org>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 10 May 2023 22:26:24 -0700
-Message-ID: <CAEXW_YRRMfbfXJwCA89hD_VCpbxR8AoEvv9xzrX=W_4Ffi-g2A@mail.gmail.com>
-Subject: Re: [PATCH rcu 6/6] torture: Remove duplicated argument -enable-kvm
- for ppc64
+Date:   Wed, 10 May 2023 22:47:36 -0700
+Message-ID: <CAEXW_YQNRQuPP8GzHMZXWPoLmbpK3rB_+eVXmiRu6RrsihrEpQ@mail.gmail.com>
+Subject: Re: [PATCH rcu 5/6] doc/rcutorture: Add description of rcutorture.stall_cpu_block
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>
+        Zqiang <qiang1.zhang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 10, 2023 at 10:13=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+On Wed, May 10, 2023 at 10:12=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
 rg> wrote:
 >
-> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> From: Zqiang <qiang1.zhang@intel.com>
 >
-> The qemu argument -enable-kvm is duplicated because the qemu_args bash
-> variable in kvm-test-1-run.sh has already provides it.  This commit
+> If you build a kernel with CONFIG_PREEMPTION=3Dn and CONFIG_PREEMPT_COUNT=
+=3Dy,
+> then run the rcutorture tests specifying stalls as follows:
+>
+> runqemu kvm slirp nographic qemuparams=3D"-m 1024 -smp 4" \
+>         bootparams=3D"console=3DttyS0 rcutorture.stall_cpu=3D30 \
+>         rcutorture.stall_no_softlockup=3D1 rcutorture.stall_cpu_block=3D1=
+" -d
+>
+> The tests will produce the following splat:
+>
+> [   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
+> [   10.841073] rcu_torture_stall start on CPU 3.
+> [   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
+> ....
+> [   10.841108] Call Trace:
+> [   10.841110]  <TASK>
+> [   10.841112]  dump_stack_lvl+0x64/0xb0
+> [   10.841118]  dump_stack+0x10/0x20
+> [   10.841121]  __schedule_bug+0x8b/0xb0
+> [   10.841126]  __schedule+0x2172/0x2940
+> [   10.841157]  schedule+0x9b/0x150
+> [   10.841160]  schedule_timeout+0x2e8/0x4f0
+> [   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
+> [   10.841195]  rcu_torture_stall+0x2e8/0x300
+> [   10.841199]  kthread+0x175/0x1a0
+> [   10.841206]  ret_from_fork+0x2c/0x50
 
-drop the has.
+Another way to get rid of the warning would be to replace the
+cur_ops->readlock() with rcu_read_lock(). Though perhaps that will not
+test whether the particular RCU flavor under testing is capable of
+causing a stall :-).
+
+>         rcutorture.stall_cpu_block=3D [KNL]
+>                         Sleep while stalling if set.  This will result
+> -                       in warnings from preemptible RCU in addition
+> -                       to any other stall-related activity.
+> +                       in warnings from preemptible RCU in addition to
+> +                       any other stall-related activity.  Note that
+> +                       in kernels built with CONFIG_PREEMPTION=3Dn and
+> +                       CONFIG_PREEMPT_COUNT=3Dy, this parameter will
+> +                       cause the CPU to pass through a quiescent state.
+> +                       Any such quiescent states will suppress RCU CPU
+> +                       stall warnings, but the time-based sleep will
+> +                       also result in scheduling-while-atomic splats.
+
+Could change last part to "but may also result in
+scheduling-while-atomic splats as preemption might be disabled for
+certain RCU flavors in order to cause the stall".
+
+> +                       Which might or might not be what you want.
+> +
+
+Suggest drop this line ;-).
 
  - Joel
 
-> therefore removes the ppc64-specific copy in functions.sh.
->
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/=
-testing/selftests/rcutorture/bin/functions.sh
-> index b52d5069563c..48b9147e8c91 100644
-> --- a/tools/testing/selftests/rcutorture/bin/functions.sh
-> +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-> @@ -250,7 +250,7 @@ identify_qemu_args () {
->                 echo -machine virt,gic-version=3Dhost -cpu host
->                 ;;
->         qemu-system-ppc64)
-> -               echo -enable-kvm -M pseries -nodefaults
-> +               echo -M pseries -nodefaults
->                 echo -device spapr-vscsi
->                 if test -n "$TORTURE_QEMU_INTERACTIVE" -a -n "$TORTURE_QE=
-MU_MAC"
->                 then
+>         rcutorture.stall_cpu_holdoff=3D [KNL]
+>                         Time to wait (s) after boot before inducing stall=
+.
 > --
 > 2.40.1
 >
