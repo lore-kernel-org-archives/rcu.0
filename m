@@ -2,108 +2,132 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB18FC77B7F
-	for <rcu@archiver.kernel.org>; Thu, 11 May 2023 17:50:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1D65C7EE22
+	for <rcu@archiver.kernel.org>; Thu, 11 May 2023 18:11:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238450AbjEKRuF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 May 2023 13:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
+        id S238620AbjEKSL6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 May 2023 14:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238613AbjEKRuD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 11 May 2023 13:50:03 -0400
+        with ESMTP id S239142AbjEKSL4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 May 2023 14:11:56 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AB06A76;
-        Thu, 11 May 2023 10:49:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B73E5FCA;
+        Thu, 11 May 2023 11:11:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BCC7561525;
-        Thu, 11 May 2023 17:49:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22AB1C433D2;
-        Thu, 11 May 2023 17:49:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B60D6507C;
+        Thu, 11 May 2023 18:11:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89484C433D2;
+        Thu, 11 May 2023 18:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683827383;
-        bh=tDn7RONyY0VoFaYA3Xkv2rz9SOdI4zHAs1KUbSVjiPQ=;
+        s=k20201202; t=1683828691;
+        bh=gwG7e73Xzne2+itUdzAAaXUhIwWHZJlkWTQj+8xXLME=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PnYO+TeGKUAr2kTnTsjAANir+22QWfyDNVWxlFyW1kFayz2b3ZtNfx8paecaeeX7Y
-         PBJyPgvxb/b4tAh99DQsrx7sQDpbAJK5ePYYNwsSMP7CkWogIWEe5R6G5T9biihreg
-         jMihRt+svufhdPIMdu3VeLCbf6uPkSpjIb45i+mEk67PntX5wLEfDgrqkzV+7ujziD
-         0S3WBIh3C3KXHn7t6Sizz8tcGjKl99flJ6iUth//dIq3KJBSA2eWwjSCMATOR9Basn
-         SO9NhFBrgtIyHpFY8GN0vi2/vGuIRUHxU+QESgXrhxJ3cJG2F8P5ZY6IeCJ73mvxrE
-         N/wHA1AxXiLTg==
+        b=b3FEn2YcCVBwycKvYpAB9Wr1domTbJQQfuZUZx8+riLEeFfNI1Zt54G1uZcfYy149
+         SnVpYLiUf73dqb6untAtmL9nsUiLt9DZJUEsEfBdXC7GikC0KkDYwiFLwXA/cppVvl
+         T8yUb9xFhAuLuEPbi2bknVgd9By3wz/r/stW2CHFO1FXFAQ6q3QFy7XqJneiz6TdO7
+         dgN/ERkE/mFivnBoY0diRVqvVISZkQHb5r3B9mRnPofXtpXUQAwEaKflR6H55awxs+
+         38c/FBUQAfWu88XItFtmhc+dWcDrSg6z+iQ2Wa3kG2ctU/o2eHGoDlGgn3YTYzcuiX
+         uamrgPq7nNODg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B5EDCCE0FED; Thu, 11 May 2023 10:49:42 -0700 (PDT)
-Date:   Thu, 11 May 2023 10:49:42 -0700
+        id 11763CE0FED; Thu, 11 May 2023 11:11:31 -0700 (PDT)
+Date:   Thu, 11 May 2023 11:11:31 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: Re: [PATCH rcu 6/6] torture: Remove duplicated argument -enable-kvm
- for ppc64
-Message-ID: <cfad7e8f-ca9f-446c-9c54-e9a11989d220@paulmck-laptop>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Zqiang <qiang1.zhang@intel.com>
+Subject: Re: [PATCH rcu 5/6] doc/rcutorture: Add description of
+ rcutorture.stall_cpu_block
+Message-ID: <0146f6ad-9a2c-4a28-8992-e054afade42c@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
- <20230510171238.2189921-6-paulmck@kernel.org>
- <CAEXW_YRRMfbfXJwCA89hD_VCpbxR8AoEvv9xzrX=W_4Ffi-g2A@mail.gmail.com>
- <CAABZP2wGXaMUwu372HG-654z2RCvUayiR8tBpDg+SDgcyg+OtA@mail.gmail.com>
+ <20230510171238.2189921-5-paulmck@kernel.org>
+ <CAEXW_YQNRQuPP8GzHMZXWPoLmbpK3rB_+eVXmiRu6RrsihrEpQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAABZP2wGXaMUwu372HG-654z2RCvUayiR8tBpDg+SDgcyg+OtA@mail.gmail.com>
+In-Reply-To: <CAEXW_YQNRQuPP8GzHMZXWPoLmbpK3rB_+eVXmiRu6RrsihrEpQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 11, 2023 at 02:18:57PM +0800, Zhouyi Zhou wrote:
-> On Thu, May 11, 2023 at 1:26 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+On Wed, May 10, 2023 at 10:47:36PM -0700, Joel Fernandes wrote:
+> On Wed, May 10, 2023 at 10:12 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > On Wed, May 10, 2023 at 10:13 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > >
-> > > The qemu argument -enable-kvm is duplicated because the qemu_args bash
-> > > variable in kvm-test-1-run.sh has already provides it.  This commit
+> > From: Zqiang <qiang1.zhang@intel.com>
 > >
-> > drop the has.
-
-Good eyes, and thank you!
-
-> Thank Joel for the fix ;-)
-> Should I resend the patch, or would Paul do me the favor instead ;-)
+> > If you build a kernel with CONFIG_PREEMPTION=n and CONFIG_PREEMPT_COUNT=y,
+> > then run the rcutorture tests specifying stalls as follows:
+> >
+> > runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4" \
+> >         bootparams="console=ttyS0 rcutorture.stall_cpu=30 \
+> >         rcutorture.stall_no_softlockup=1 rcutorture.stall_cpu_block=1" -d
+> >
+> > The tests will produce the following splat:
+> >
+> > [   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
+> > [   10.841073] rcu_torture_stall start on CPU 3.
+> > [   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
+> > ....
+> > [   10.841108] Call Trace:
+> > [   10.841110]  <TASK>
+> > [   10.841112]  dump_stack_lvl+0x64/0xb0
+> > [   10.841118]  dump_stack+0x10/0x20
+> > [   10.841121]  __schedule_bug+0x8b/0xb0
+> > [   10.841126]  __schedule+0x2172/0x2940
+> > [   10.841157]  schedule+0x9b/0x150
+> > [   10.841160]  schedule_timeout+0x2e8/0x4f0
+> > [   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
+> > [   10.841195]  rcu_torture_stall+0x2e8/0x300
+> > [   10.841199]  kthread+0x175/0x1a0
+> > [   10.841206]  ret_from_fork+0x2c/0x50
 > 
-> Thank you all
+> Another way to get rid of the warning would be to replace the
+> cur_ops->readlock() with rcu_read_lock(). Though perhaps that will not
+> test whether the particular RCU flavor under testing is capable of
+> causing a stall :-).
 
-I will do it on my next rebase.  ;-)
+Exactly!
+
+> >         rcutorture.stall_cpu_block= [KNL]
+> >                         Sleep while stalling if set.  This will result
+> > -                       in warnings from preemptible RCU in addition
+> > -                       to any other stall-related activity.
+> > +                       in warnings from preemptible RCU in addition to
+> > +                       any other stall-related activity.  Note that
+> > +                       in kernels built with CONFIG_PREEMPTION=n and
+> > +                       CONFIG_PREEMPT_COUNT=y, this parameter will
+> > +                       cause the CPU to pass through a quiescent state.
+> > +                       Any such quiescent states will suppress RCU CPU
+> > +                       stall warnings, but the time-based sleep will
+> > +                       also result in scheduling-while-atomic splats.
+> 
+> Could change last part to "but may also result in
+> scheduling-while-atomic splats as preemption might be disabled for
+> certain RCU flavors in order to cause the stall".
+
+Is that needed given the earlier "in kernels built with
+CONFIG_PREEMPTION=n and CONFIG_PREEMPT_COUNT=y"?
+
+> > +                       Which might or might not be what you want.
+> > +
+> 
+> Suggest drop this line ;-).
+
+OK, I will bite.  ;-)
+
+What is your concern with this line?
 
 							Thanx, Paul
 
-> Zhouyi
+>  - Joel
+> 
+> >         rcutorture.stall_cpu_holdoff= [KNL]
+> >                         Time to wait (s) after boot before inducing stall.
+> > --
+> > 2.40.1
 > >
-> >  - Joel
-> >
-> > > therefore removes the ppc64-specific copy in functions.sh.
-> > >
-> > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-> > > index b52d5069563c..48b9147e8c91 100644
-> > > --- a/tools/testing/selftests/rcutorture/bin/functions.sh
-> > > +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-> > > @@ -250,7 +250,7 @@ identify_qemu_args () {
-> > >                 echo -machine virt,gic-version=host -cpu host
-> > >                 ;;
-> > >         qemu-system-ppc64)
-> > > -               echo -enable-kvm -M pseries -nodefaults
-> > > +               echo -M pseries -nodefaults
-> > >                 echo -device spapr-vscsi
-> > >                 if test -n "$TORTURE_QEMU_INTERACTIVE" -a -n "$TORTURE_QEMU_MAC"
-> > >                 then
-> > > --
-> > > 2.40.1
-> > >
