@@ -2,127 +2,108 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63C48C77B7C
-	for <rcu@archiver.kernel.org>; Thu, 11 May 2023 13:56:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB18FC77B7F
+	for <rcu@archiver.kernel.org>; Thu, 11 May 2023 17:50:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238114AbjEKN46 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 11 May 2023 09:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        id S238450AbjEKRuF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 11 May 2023 13:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238043AbjEKN45 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 11 May 2023 09:56:57 -0400
+        with ESMTP id S238613AbjEKRuD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 11 May 2023 13:50:03 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7275249;
-        Thu, 11 May 2023 06:56:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AB06A76;
+        Thu, 11 May 2023 10:49:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A678964DB2;
-        Thu, 11 May 2023 13:56:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00E7DC433D2;
-        Thu, 11 May 2023 13:56:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BCC7561525;
+        Thu, 11 May 2023 17:49:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22AB1C433D2;
+        Thu, 11 May 2023 17:49:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683813415;
-        bh=AFYNgBRlkZAIM+XPW/DgpQZP3bXSSbaVQ2TNqPf27Jg=;
+        s=k20201202; t=1683827383;
+        bh=tDn7RONyY0VoFaYA3Xkv2rz9SOdI4zHAs1KUbSVjiPQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dlWmPM4ySc1VWnSiCNCDl+iQH1JfRVLKkGL+EsLU8osKL/BmYaWWZNJut3wvKrW8f
-         PwC9CVOJJujizIOrK4k9KFs5+CQWl09x6rdC3O5PQgn+OvQScst25QTZBWC5pJWsMM
-         t0Z8w7rm//o0oFD4pih3jiPdtXB4bCE3LIKnLDXPW7bD36Hjxk9fXRgd5WZVINlRNb
-         cjuo4mwyNEMnJNhfNh34boCMC1G0xtFXITcis56Z+sRYXRaVVlt34VsXH/x3dIfxQL
-         6+C8Wmj0ZN2TyQIbiF7xQQ/Eb4DqspZNnSQAWnKDAo1l8hUJ11jDuC7YITDPy4SC8s
-         zZIYEPOVZVLhA==
+        b=PnYO+TeGKUAr2kTnTsjAANir+22QWfyDNVWxlFyW1kFayz2b3ZtNfx8paecaeeX7Y
+         PBJyPgvxb/b4tAh99DQsrx7sQDpbAJK5ePYYNwsSMP7CkWogIWEe5R6G5T9biihreg
+         jMihRt+svufhdPIMdu3VeLCbf6uPkSpjIb45i+mEk67PntX5wLEfDgrqkzV+7ujziD
+         0S3WBIh3C3KXHn7t6Sizz8tcGjKl99flJ6iUth//dIq3KJBSA2eWwjSCMATOR9Basn
+         SO9NhFBrgtIyHpFY8GN0vi2/vGuIRUHxU+QESgXrhxJ3cJG2F8P5ZY6IeCJ73mvxrE
+         N/wHA1AxXiLTg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 95BE3CE0DB0; Thu, 11 May 2023 06:56:54 -0700 (PDT)
-Date:   Thu, 11 May 2023 06:56:54 -0700
+        id B5EDCCE0FED; Thu, 11 May 2023 10:49:42 -0700 (PDT)
+Date:   Thu, 11 May 2023 10:49:42 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-team@meta.com" <kernel-team@meta.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>
-Subject: Re: [PATCH rcu 3/6] rcu/rcuscale: Move rcu_scale_*() after
- kfree_scale_cleanup()
-Message-ID: <7a91a10d-3518-4452-b9ca-51240f00d29f@paulmck-laptop>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: Re: [PATCH rcu 6/6] torture: Remove duplicated argument -enable-kvm
+ for ppc64
+Message-ID: <cfad7e8f-ca9f-446c-9c54-e9a11989d220@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
- <20230510171238.2189921-3-paulmck@kernel.org>
- <CAEXW_YTHNbzdSn3RpJwnwKZOJX=rGdMabfsCw0ZuMZhsXZMjQA@mail.gmail.com>
- <IA1PR11MB6171FA965F8FF915621482E789749@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <20230510171238.2189921-6-paulmck@kernel.org>
+ <CAEXW_YRRMfbfXJwCA89hD_VCpbxR8AoEvv9xzrX=W_4Ffi-g2A@mail.gmail.com>
+ <CAABZP2wGXaMUwu372HG-654z2RCvUayiR8tBpDg+SDgcyg+OtA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <IA1PR11MB6171FA965F8FF915621482E789749@IA1PR11MB6171.namprd11.prod.outlook.com>
+In-Reply-To: <CAABZP2wGXaMUwu372HG-654z2RCvUayiR8tBpDg+SDgcyg+OtA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 11, 2023 at 07:01:59AM +0000, Zhuo, Qiuxu wrote:
-> > From: Joel Fernandes <joel@joelfernandes.org>
-> > Sent: Thursday, May 11, 2023 1:23 PM
-> > To: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: rcu@vger.kernel.org; linux-kernel@vger.kernel.org; kernel-
-> > team@meta.com; rostedt@goodmis.org; Zhuo, Qiuxu
-> > <qiuxu.zhuo@intel.com>
-> > Subject: Re: [PATCH rcu 3/6] rcu/rcuscale: Move rcu_scale_*() after
-> > kfree_scale_cleanup()
-> > 
-> > On Wed, May 10, 2023 at 10:12 AM Paul E. McKenney <paulmck@kernel.org>
-> > wrote:
+On Thu, May 11, 2023 at 02:18:57PM +0800, Zhouyi Zhou wrote:
+> On Thu, May 11, 2023 at 1:26 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > On Wed, May 10, 2023 at 10:13 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 > > >
-> > > From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > > From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 > > >
-> > > This code-movement-only commit moves the rcu_scale_cleanup() and
-> > > rcu_scale_shutdown() functions to follow kfree_scale_cleanup().
-> > > This is code movement is in preparation for a bug-fix patch that
-> > > invokes
-> > > kfree_scale_cleanup() from rcu_scale_cleanup().
-> > >
-> > > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  kernel/rcu/rcuscale.c | 194
-> > > +++++++++++++++++++++---------------------
-> > >  1 file changed, 97 insertions(+), 97 deletions(-)
-> > 
-> > I wish diff was better at showing what really changed. The meld tool can help
-> > but its gui...
-> > 
-> > Should I run meld later (I'm out at a conference so no access to meld-capable
-> > machines) or are we sufficiently confident that the lines were moved as-is ? :)
-> > 
+> > > The qemu argument -enable-kvm is duplicated because the qemu_args bash
+> > > variable in kvm-test-1-run.sh has already provides it.  This commit
+> >
+> > drop the has.
+
+Good eyes, and thank you!
+
+> Thank Joel for the fix ;-)
+> Should I resend the patch, or would Paul do me the favor instead ;-)
 > 
-> Thank you, Joel for this concern. Good to know the meld diff GUI tool. 
-> I just run the command below and confirmed that the lines were moved 
-> as-is: rcu_scale_{cleanup,shutdown}() follows kfree_scale_cleanup().
-> You may double check it ;-).
-> 
->       meld --diff ./rcuscale.c.before ./rcuscale.c.after
+> Thank you all
 
-Nice, thank you both!
-
-Another option is to check out the commit corresponding to this patch,
-then do "git blame -M kernel/rcu/rcuscale.c".  Given a move-only commit,
-there should be no line tagged with this commit's SHA-1.
-
-They say that another option is to use "git diff --color-moved", which
-colors the changes.  That it does, but I am hard-pressed to work out
-exactly what distinguishes a moved hunk from an added or removed hunk.
-Fall colors vs. winter colors?  Exterior vs. interior?  Any particular
-decade in the endless rush of changes to fashion?  Perhaps someone with
-normal color vision (to say nothing of better fashion sense) could try it.
-
-On the other hand: "default: Is a synonym for zebra. This may change to
-a more sensible mode in the future."  So maybe it is not just me.  ;-)
-
-You can also apparently choose colors using "color.diff.newMoved" and
-"color.diff.oldMoved" when using "--color-moved=plain".
-
-But "git diff --color-moved=dimmed-zebra" might be more to the point for
-someone like me.  I would need to experiment with it more in order to
-confirm my hypotheses about what it is doing.  To say nothing of building
-trust in it.  Plus I have to open a color terminal to use it effectively.
-So maybe "git blame -M" continues to be the tool for me?
+I will do it on my next rebase.  ;-)
 
 							Thanx, Paul
+
+> Zhouyi
+> >
+> >  - Joel
+> >
+> > > therefore removes the ppc64-specific copy in functions.sh.
+> > >
+> > > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >  tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+> > > index b52d5069563c..48b9147e8c91 100644
+> > > --- a/tools/testing/selftests/rcutorture/bin/functions.sh
+> > > +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+> > > @@ -250,7 +250,7 @@ identify_qemu_args () {
+> > >                 echo -machine virt,gic-version=host -cpu host
+> > >                 ;;
+> > >         qemu-system-ppc64)
+> > > -               echo -enable-kvm -M pseries -nodefaults
+> > > +               echo -M pseries -nodefaults
+> > >                 echo -device spapr-vscsi
+> > >                 if test -n "$TORTURE_QEMU_INTERACTIVE" -a -n "$TORTURE_QEMU_MAC"
+> > >                 then
+> > > --
+> > > 2.40.1
+> > >
