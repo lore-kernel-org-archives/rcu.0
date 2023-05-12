@@ -2,161 +2,109 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C931C77B75
-	for <rcu@archiver.kernel.org>; Fri, 12 May 2023 05:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1482BC77B75
+	for <rcu@archiver.kernel.org>; Fri, 12 May 2023 16:40:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjELFAc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 12 May 2023 01:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
+        id S232182AbjELQkL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 12 May 2023 12:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjELFAc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 12 May 2023 01:00:32 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520DF3C2F
-        for <rcu@vger.kernel.org>; Thu, 11 May 2023 22:00:30 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-559ded5e170so139420277b3.3
-        for <rcu@vger.kernel.org>; Thu, 11 May 2023 22:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1683867629; x=1686459629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+G0YQVid8BAUmDK4avXBWV3q8tHjdbwoFwpJ8dCo55c=;
-        b=LSyQ73u1cO9ubO87ZHj25fnF1p8pwVA2g0Mk76uJfyrdc6DdZ4B37SuS4VIiOLfJk/
-         37yMNZeOxw4a1QG4l2aBLnZys4v0vkMzue+WqsIF/beFFtXhqA5TFCJU18R/YmaV22Se
-         sTj1DU3lNZqtAHBTxwm9vbEGJlJHZirIQEVYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683867629; x=1686459629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+G0YQVid8BAUmDK4avXBWV3q8tHjdbwoFwpJ8dCo55c=;
-        b=bgQ+MAJZjeJxglUZWmXZDJDKRnOpSl3m7iQVnEGMHSSOtPsVDHJChdE0xKkQq3GZzQ
-         JdV6XaXHTaNy7qACOMlBsuusUguLTVyLGlQhCaSbYR1Z32X73uGnpmJL3rhg9KbOGv8l
-         UIgh8lf0JQRPkQadhsZOHAN+g1C3KqWWy/uzqgdSSWH5Ej6n4pTagC+Jf+zLPxtQwPTP
-         DPrCCA3Ez/MqayU6zMeeL2p2YSI1YZoUD8lmknkBfSDivEo3Z7mNFCdFpzP4wJZIa5PA
-         tUSU3PZrubzLVuXmebouIrURgeMJJvIQt2nS3OpEYF7V1hPZU3G3rlfShA9oO5+L7mcO
-         GUTw==
-X-Gm-Message-State: AC+VfDw27VlCHUazrT3/EvLQJ3lvtRScjlrYEbhnHek1YrIm2fYK0kOd
-        HYPv79mtineY6ZWxxT0kwNE3f8PzNwRctiY/nftz+Q==
-X-Google-Smtp-Source: ACHHUZ6MLhbi5iBf/nXMLBN3mawFSRCoMhV1RHc31ogXUDbs6hd3pzeO2VCHa5DliqCbriCdIqWu32xLtao+ibFfYDo=
-X-Received: by 2002:a81:4e4e:0:b0:55a:a90c:ecb8 with SMTP id
- c75-20020a814e4e000000b0055aa90cecb8mr24912252ywb.15.1683867629436; Thu, 11
- May 2023 22:00:29 -0700 (PDT)
+        with ESMTP id S231196AbjELQkK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 12 May 2023 12:40:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFAA10F3;
+        Fri, 12 May 2023 09:40:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D45563A6D;
+        Fri, 12 May 2023 16:40:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BE27C433D2;
+        Fri, 12 May 2023 16:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683909605;
+        bh=mFss654Av6NPd92VYAU9bWcL0SPn6hYIYfGafkyQKig=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WKGPZmGNT5X7m7XurXJcDmqWlBSe4qJ3Xm9oD3u4XpDGK2OVP2o04h/tJQ/Xj/Ohq
+         jLPfoMuXsv/u96UZFhruCaneaqJ/Uu+yYLDQhNKBE/hZ18Sn0MrhLW9CuKAJwvUyJ3
+         gR8yzngfAuObAuPExF6lQX8RHOusBD+/Lnx14pirtjn3RFaDaGlQRLg0cFtlhm6POB
+         3ejebmE0BKMuc64TffNkIAtN8vuIgWkVlUEFtUO2C8QuvExvgJLchlMVO+qlDmztRK
+         EyxkjZtQDf7kuTAJr75tl9mqhJXqmE0ue6CAx7yYbc0ZBGfhv8+Iw+vWvp1zV+3sMz
+         HuQcvdmAvkBWg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0FE5ACE0CCF; Fri, 12 May 2023 09:40:05 -0700 (PDT)
+Date:   Fri, 12 May 2023 09:40:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: Re: [PATCH rcu 3/6] rcu/rcuscale: Move rcu_scale_*() after
+ kfree_scale_cleanup()
+Message-ID: <4d508096-300c-4d16-9c39-18598d00b500@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <IA1PR11MB6171B1AD7716B95B0B2C683889759@IA1PR11MB6171.namprd11.prod.outlook.com>
+ <30F06C03-6950-4E2B-B3CE-3939B3CDD295@joelfernandes.org>
 MIME-Version: 1.0
-References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
- <20230510171238.2189921-5-paulmck@kernel.org> <CAEXW_YQNRQuPP8GzHMZXWPoLmbpK3rB_+eVXmiRu6RrsihrEpQ@mail.gmail.com>
- <0146f6ad-9a2c-4a28-8992-e054afade42c@paulmck-laptop>
-In-Reply-To: <0146f6ad-9a2c-4a28-8992-e054afade42c@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 11 May 2023 22:00:18 -0700
-Message-ID: <CAEXW_YQ0o8f-J3QqQKur7GkY+kxOvtANpFH4uajMGe6ioFErvw@mail.gmail.com>
-Subject: Re: [PATCH rcu 5/6] doc/rcutorture: Add description of rcutorture.stall_cpu_block
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Zqiang <qiang1.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <30F06C03-6950-4E2B-B3CE-3939B3CDD295@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 11, 2023 at 11:11=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
-rg> wrote:
->
-> On Wed, May 10, 2023 at 10:47:36PM -0700, Joel Fernandes wrote:
-> > On Wed, May 10, 2023 at 10:12=E2=80=AFAM Paul E. McKenney <paulmck@kern=
-el.org> wrote:
-> > >
-> > > From: Zqiang <qiang1.zhang@intel.com>
-> > >
-> > > If you build a kernel with CONFIG_PREEMPTION=3Dn and CONFIG_PREEMPT_C=
-OUNT=3Dy,
-> > > then run the rcutorture tests specifying stalls as follows:
-> > >
-> > > runqemu kvm slirp nographic qemuparams=3D"-m 1024 -smp 4" \
-> > >         bootparams=3D"console=3DttyS0 rcutorture.stall_cpu=3D30 \
-> > >         rcutorture.stall_no_softlockup=3D1 rcutorture.stall_cpu_block=
-=3D1" -d
-> > >
-> > > The tests will produce the following splat:
-> > >
-> > > [   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
-> > > [   10.841073] rcu_torture_stall start on CPU 3.
-> > > [   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x000=
-0000
-> > > ....
-> > > [   10.841108] Call Trace:
-> > > [   10.841110]  <TASK>
-> > > [   10.841112]  dump_stack_lvl+0x64/0xb0
-> > > [   10.841118]  dump_stack+0x10/0x20
-> > > [   10.841121]  __schedule_bug+0x8b/0xb0
-> > > [   10.841126]  __schedule+0x2172/0x2940
-> > > [   10.841157]  schedule+0x9b/0x150
-> > > [   10.841160]  schedule_timeout+0x2e8/0x4f0
-> > > [   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
-> > > [   10.841195]  rcu_torture_stall+0x2e8/0x300
-> > > [   10.841199]  kthread+0x175/0x1a0
-> > > [   10.841206]  ret_from_fork+0x2c/0x50
-> >
-> > Another way to get rid of the warning would be to replace the
-> > cur_ops->readlock() with rcu_read_lock(). Though perhaps that will not
-> > test whether the particular RCU flavor under testing is capable of
-> > causing a stall :-).
->
-> Exactly!
->
-> > >         rcutorture.stall_cpu_block=3D [KNL]
-> > >                         Sleep while stalling if set.  This will resul=
-t
-> > > -                       in warnings from preemptible RCU in addition
-> > > -                       to any other stall-related activity.
-> > > +                       in warnings from preemptible RCU in addition =
-to
-> > > +                       any other stall-related activity.  Note that
-> > > +                       in kernels built with CONFIG_PREEMPTION=3Dn a=
-nd
-> > > +                       CONFIG_PREEMPT_COUNT=3Dy, this parameter will
-> > > +                       cause the CPU to pass through a quiescent sta=
-te.
-> > > +                       Any such quiescent states will suppress RCU C=
-PU
-> > > +                       stall warnings, but the time-based sleep will
-> > > +                       also result in scheduling-while-atomic splats=
-.
-> >
-> > Could change last part to "but may also result in
-> > scheduling-while-atomic splats as preemption might be disabled for
-> > certain RCU flavors in order to cause the stall".
->
-> Is that needed given the earlier "in kernels built with
-> CONFIG_PREEMPTION=3Dn and CONFIG_PREEMPT_COUNT=3Dy"?
+On Thu, May 11, 2023 at 09:15:17PM -0700, Joel Fernandes wrote:
+> 
+> 
+> > On May 11, 2023, at 8:20 PM, Zhuo, Qiuxu <qiuxu.zhuo@intel.com> wrote:
+> > 
+> > ﻿
+> >> 
+> >> From: Paul E. McKenney <paulmck@kernel.org>
+> >> ...
+> >>>> I wish diff was better at showing what really changed. The meld tool
+> >>>> can help but its gui...
+> >>>> 
+> >>>> Should I run meld later (I'm out at a conference so no access to
+> >>>> meld-capable
+> >>>> machines) or are we sufficiently confident that the lines were moved
+> >>>> as-is ? :)
+> >>>> 
+> >>> 
+> >>> Thank you, Joel for this concern. Good to know the meld diff GUI tool.
+> >>> I just run the command below and confirmed that the lines were moved
+> >>> as-is: rcu_scale_{cleanup,shutdown}() follows kfree_scale_cleanup().
+> >>> You may double check it ;-).
+> >>> 
+> >>>      meld --diff ./rcuscale.c.before ./rcuscale.c.after
+> >> 
+> >> Nice, thank you both!
+> >> 
+> >> Another option is to check out the commit corresponding to this patch, then
+> >> do "git blame -M kernel/rcu/rcuscale.c".  Given a move-only commit, there
+> >> should be no line tagged with this commit's SHA-1.
+> > 
+> > Just had a good experiment with the "git blame -M" option: 
+> > - Used this option to prove a move-only commit quickly (no line tagged with that commit) (the fastest method to me). 
+> > - Then just only needed to quickly check the positions of the moved code chunk by myself (easy).  
+> > 
+> > Thank you, Paul for sharing this. It's very useful to me. 
+> 
+> Looks good to me as well and thank you both for sharing the tips.
 
-Hmm, I guess is not clear to the reader without code reading about why
-preempt got disabled. So I would add that last part I mentioned, but I
-am Ok either way, it is just a suggestion.
+Here is one way to script this, where "SHA" identifies the commit to
+be checked and PATHS the affected pathnames:
 
->
-> > > +                       Which might or might not be what you want.
-> > > +
-> >
-> > Suggest drop this line ;-).
->
-> OK, I will bite.  ;-)
->
-> What is your concern with this line?
+	git checkout SHA^
+	git show SHA | git apply -
+	git blame -M PATHS | grep '^0* '
 
-It is not needed IMO.
+If there is no output, there were no non-move changes.  
 
-thanks,
+Or just do the "git blame -M PATHS | grep '^0* '" before doing the
+checking.
 
- - Joel
+And yes, you can derive PATHS using "git status" if you want.  ;-)
 
-
-> > >         rcutorture.stall_cpu_holdoff=3D [KNL]
-> > >                         Time to wait (s) after boot before inducing s=
-tall.
-> > > --
-> > > 2.40.1
-> > >
+							Thanx, Paul
