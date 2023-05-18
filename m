@@ -2,152 +2,62 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81634C7EE24
-	for <rcu@archiver.kernel.org>; Mon, 15 May 2023 18:07:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC363C77B73
+	for <rcu@archiver.kernel.org>; Thu, 18 May 2023 22:40:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244998AbjEOSH4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 15 May 2023 14:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
+        id S230313AbjERWkU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 18 May 2023 18:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244997AbjEOSHB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 15 May 2023 14:07:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A2821071;
-        Mon, 15 May 2023 11:04:33 -0700 (PDT)
+        with ESMTP id S230286AbjERWkT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 18 May 2023 18:40:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4F8E66;
+        Thu, 18 May 2023 15:40:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 805CA630B1;
-        Mon, 15 May 2023 18:04:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4020C433D2;
-        Mon, 15 May 2023 18:04:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BE1ED652B3;
+        Thu, 18 May 2023 22:40:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B47BEC433D2;
+        Thu, 18 May 2023 22:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684173872;
-        bh=w/tD1VgUWIZXjc4ZO9uAIcHfFZfFG43mlWXV784BVlQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tJ1w317a8iaHz1VGX6pm1812CQT1CvbM4o1OUpBtLFPrhBfqSm1D7A8t3RzBum81C
-         tc0CXxzxdPjt+oPiu/ofkSx6oI+QOk/s2nPrImBoHKrqMmtlVwGPjSKakwadtDllsZ
-         cVyRiYxlZxsgFQIGh1HaX9l/ltuoxq48wsV4Ky7Vx/cVVXyYkOGRi/JYUbPe/p4L0P
-         EYVLyyaIpNL1RPJsKEzLwJRUTXo28flTcu0yN4VW1ARuxJhzY3Zo9YKIJm/a2Ta/Rj
-         p6l8rn4JdZoM4cC9Afk+pJUZ4FGdY0nQqpEwqCW4iaWWlBwXBPF3IoaDZ8YsRlNVbV
-         0/G+LFrSm9dMw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 7E6D1CE0C8D; Mon, 15 May 2023 11:04:32 -0700 (PDT)
-Date:   Mon, 15 May 2023 11:04:32 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Zqiang <qiang1.zhang@intel.com>
-Subject: Re: [PATCH rcu 5/6] doc/rcutorture: Add description of
- rcutorture.stall_cpu_block
-Message-ID: <a6bcadd6-ec74-4be4-bddf-71439324510a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <7ffd4a5d-61e9-4b4c-a312-a85bcde08c39@paulmck-laptop>
- <20230510171238.2189921-5-paulmck@kernel.org>
- <CAEXW_YQNRQuPP8GzHMZXWPoLmbpK3rB_+eVXmiRu6RrsihrEpQ@mail.gmail.com>
- <0146f6ad-9a2c-4a28-8992-e054afade42c@paulmck-laptop>
- <CAEXW_YQ0o8f-J3QqQKur7GkY+kxOvtANpFH4uajMGe6ioFErvw@mail.gmail.com>
+        s=k20201202; t=1684449618;
+        bh=/rU/K82aVhns/camL0+0a5v6k6bmJGI8LsunNV9htII=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PJr0qQwseqFAFobh/+Hvw+Ywz8VJYG0H1HgKOSWQGUCKfxFhAzwlKnOZfM1J47odA
+         f3KGE1WAb8sfsTH0GSEaREXfHvfyY8kOT0Jf/wlgBl3Lbq6ZT3uWrFYaYvfeG14QTa
+         9Zyerqz1W1BfZ7bXEennAKrvhJrk2K/sDlcxeMIIZOZh0Iimv4rziwixyMpzA2sLlJ
+         MAB1/Kn+tDMKOqoTQBW+kyqBpAj3MGbgdCUIUpYGOh7bz8k+BUwbLdPm4CwJsGJyyO
+         STIDzz7rFoHzocvxqIJ5CTKqlfueyLZkub6S/IrzyliDG70gHqs7kcC9Lb3mWYkGyj
+         +FlbfClYlvuvQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     paulmck@kernel.org
+Cc:     SeongJae Park <sj@kernel.org>, joel@joelfernandes.org,
+        corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Docs/RCU/rculist_nulls: Minor fixups
+Date:   Thu, 18 May 2023 22:40:04 +0000
+Message-Id: <20230518224008.2468-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQ0o8f-J3QqQKur7GkY+kxOvtANpFH4uajMGe6ioFErvw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, May 11, 2023 at 10:00:18PM -0700, Joel Fernandes wrote:
-> On Thu, May 11, 2023 at 11:11 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, May 10, 2023 at 10:47:36PM -0700, Joel Fernandes wrote:
-> > > On Wed, May 10, 2023 at 10:12 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > From: Zqiang <qiang1.zhang@intel.com>
-> > > >
-> > > > If you build a kernel with CONFIG_PREEMPTION=n and CONFIG_PREEMPT_COUNT=y,
-> > > > then run the rcutorture tests specifying stalls as follows:
-> > > >
-> > > > runqemu kvm slirp nographic qemuparams="-m 1024 -smp 4" \
-> > > >         bootparams="console=ttyS0 rcutorture.stall_cpu=30 \
-> > > >         rcutorture.stall_no_softlockup=1 rcutorture.stall_cpu_block=1" -d
-> > > >
-> > > > The tests will produce the following splat:
-> > > >
-> > > > [   10.841071] rcu-torture: rcu_torture_stall begin CPU stall
-> > > > [   10.841073] rcu_torture_stall start on CPU 3.
-> > > > [   10.841077] BUG: scheduling while atomic: rcu_torture_sta/66/0x0000000
-> > > > ....
-> > > > [   10.841108] Call Trace:
-> > > > [   10.841110]  <TASK>
-> > > > [   10.841112]  dump_stack_lvl+0x64/0xb0
-> > > > [   10.841118]  dump_stack+0x10/0x20
-> > > > [   10.841121]  __schedule_bug+0x8b/0xb0
-> > > > [   10.841126]  __schedule+0x2172/0x2940
-> > > > [   10.841157]  schedule+0x9b/0x150
-> > > > [   10.841160]  schedule_timeout+0x2e8/0x4f0
-> > > > [   10.841192]  schedule_timeout_uninterruptible+0x47/0x50
-> > > > [   10.841195]  rcu_torture_stall+0x2e8/0x300
-> > > > [   10.841199]  kthread+0x175/0x1a0
-> > > > [   10.841206]  ret_from_fork+0x2c/0x50
-> > >
-> > > Another way to get rid of the warning would be to replace the
-> > > cur_ops->readlock() with rcu_read_lock(). Though perhaps that will not
-> > > test whether the particular RCU flavor under testing is capable of
-> > > causing a stall :-).
-> >
-> > Exactly!
-> >
-> > > >         rcutorture.stall_cpu_block= [KNL]
-> > > >                         Sleep while stalling if set.  This will result
-> > > > -                       in warnings from preemptible RCU in addition
-> > > > -                       to any other stall-related activity.
-> > > > +                       in warnings from preemptible RCU in addition to
-> > > > +                       any other stall-related activity.  Note that
-> > > > +                       in kernels built with CONFIG_PREEMPTION=n and
-> > > > +                       CONFIG_PREEMPT_COUNT=y, this parameter will
-> > > > +                       cause the CPU to pass through a quiescent state.
-> > > > +                       Any such quiescent states will suppress RCU CPU
-> > > > +                       stall warnings, but the time-based sleep will
-> > > > +                       also result in scheduling-while-atomic splats.
-> > >
-> > > Could change last part to "but may also result in
-> > > scheduling-while-atomic splats as preemption might be disabled for
-> > > certain RCU flavors in order to cause the stall".
-> >
-> > Is that needed given the earlier "in kernels built with
-> > CONFIG_PREEMPTION=n and CONFIG_PREEMPT_COUNT=y"?
-> 
-> Hmm, I guess is not clear to the reader without code reading about why
-> preempt got disabled. So I would add that last part I mentioned, but I
-> am Ok either way, it is just a suggestion.
+This patchset fixes minor problems in example code snippets of
+rculist_nulls.rst file.
 
-I will figure something out to more tightly tie this to the previous
-CONFIG_PREEMPTION=n.
+SeongJae Park (4):
+  Docs/RCU/rculist_nulls: Fix trivial coding style
+  Docs/RCU/rculist_nulls: Assign 'obj' before use from the examples
+  Docs/RCU/rculist_nulls: Fix hlist_head field name of 'obj'
+  Docs/RCU/rculist_nulls: Drop unnecessary '_release' in insert function
 
-> > > > +                       Which might or might not be what you want.
-> > > > +
-> > >
-> > > Suggest drop this line ;-).
-> >
-> > OK, I will bite.  ;-)
-> >
-> > What is your concern with this line?
-> 
-> It is not needed IMO.
+ Documentation/RCU/rculist_nulls.rst | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-It actually is, otherwise the various testing services complain about
-getting splats.  I will upgrade it to something more explicit.
+-- 
+2.25.1
 
-							Thanx, Paul
-
-> thanks,
-> 
->  - Joel
-> 
-> 
-> > > >         rcutorture.stall_cpu_holdoff= [KNL]
-> > > >                         Time to wait (s) after boot before inducing stall.
-> > > > --
-> > > > 2.40.1
-> > > >
