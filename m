@@ -2,74 +2,60 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 966CBC7EE43
-	for <rcu@archiver.kernel.org>; Thu, 18 May 2023 22:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3125C77B7A
+	for <rcu@archiver.kernel.org>; Fri, 19 May 2023 07:58:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjERWkY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 18 May 2023 18:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
+        id S229514AbjESH6t (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 19 May 2023 03:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjERWkW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 18 May 2023 18:40:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6249AE64;
-        Thu, 18 May 2023 15:40:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E48BB638BE;
-        Thu, 18 May 2023 22:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8F0CC4339B;
-        Thu, 18 May 2023 22:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1684449620;
-        bh=fecc2OUGYvaY7HhyWoq5AoCd5a8aYFQhBEm7VND8WRg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P18tjltVWhrWdAx/t73MdYzudw5rAwtcgHmB/MnIe2y6gVDckQF6FTRGLFg5731sU
-         JE8gbMwtGGjpyk1PixlH1id+rzzkUnMY7HfZjyVRsUV1HP8FnjtWswBasnQXpAHtsp
-         6ir0BbvnOUsku7PcQI00Gs+RbQmLmmpQ14v5cqILduXW0oWTIcegiWs1T0oDdXfgZi
-         R27bwO9Bwj80Phs8CAWxV7dquax9Pk2BNtHDLSFke/1Fc6SO/V6pXockfnzEc//t3D
-         Kew9iJOBJow0x/qHQ/A+sccnynoNIEtq3gnQjfqjzmQxlnKsu4mtFw4A96Ynsalyfq
-         U++W4rKV2PkHQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     paulmck@kernel.org
-Cc:     SeongJae Park <sj@kernel.org>, joel@joelfernandes.org,
-        corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] Docs/RCU/rculist_nulls: Fix hlist_head field name of 'obj'
-Date:   Thu, 18 May 2023 22:40:07 +0000
-Message-Id: <20230518224008.2468-4-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230518224008.2468-1-sj@kernel.org>
-References: <20230518224008.2468-1-sj@kernel.org>
+        with ESMTP id S229452AbjESH6s (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 19 May 2023 03:58:48 -0400
+Received: from mail.socialglobal.pl (mail.socialglobal.pl [51.195.90.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABF0DC
+        for <rcu@vger.kernel.org>; Fri, 19 May 2023 00:58:46 -0700 (PDT)
+Received: by mail.socialglobal.pl (Postfix, from userid 1002)
+        id 1D42325C43; Fri, 19 May 2023 07:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=socialglobal.pl;
+        s=mail; t=1684483034;
+        bh=XwhyqI/moZPDJ7KCfcA6Gip8fA7ZKcg5SWsKuF/26zk=;
+        h=Date:From:To:Subject:From;
+        b=NxWiyiA0o2PpIYo/uxDRmBQ3DhnAmaTHcrNIkEO5QBsiu+F04sR7x6g2qUFVba4Sn
+         3dRSHzNorpdgoW0yoT8p8ojzgpyAvXhk3+90PLJr0mBLPt7sGfLotPXOzMnbfdu3uJ
+         bk2Rfjk1adPbqMHWonaVIDEhu+r6U50JTJf/imeTu18QC+6djSooW5O63ugJEOmLVB
+         8XpjmTmc5oQkYUC3sqWbROoyXIEf4700RIXdDCmYRU14YQdBC2R077/Sd2GFl/zu4t
+         oTAn2n0ga0dA78BE8HCAHpxCBNCawRzVQ7gM3irw6y39Hdj/ldnQe5H2bINwCidvii
+         vSpDYDDxbF2sQ==
+Received: by mail.socialglobal.pl for <rcu@vger.kernel.org>; Fri, 19 May 2023 07:55:58 GMT
+Message-ID: <20230519064500-0.1.63.1ssrp.0.bvqfmt893r@socialglobal.pl>
+Date:   Fri, 19 May 2023 07:55:58 GMT
+From:   "Dominik Perkowski" <dominik.perkowski@socialglobal.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Pozycjonowanie- informacja
+X-Mailer: mail.socialglobal.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The example code snippets on rculist_nulls.rst are assuming 'obj' to
-have the 'hlist_head' field named 'obj_node', but a sentence is wrongly
-mentioning 'obj->obj_node.next' as 'obj->obj_next'.  Fix it.
+Dzie=C5=84 dobry,=20
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/RCU/rculist_nulls.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
+j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
+e Google.=20
 
-diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-index 94a8bfe9f560..5cd6f3f8810f 100644
---- a/Documentation/RCU/rculist_nulls.rst
-+++ b/Documentation/RCU/rculist_nulls.rst
-@@ -86,7 +86,7 @@ Quoting Corey Minyard::
- 2) Insertion algorithm
- ----------------------
- 
--We need to make sure a reader cannot read the new 'obj->obj_next' value
-+We need to make sure a reader cannot read the new 'obj->obj_node.next' value
- and previous value of 'obj->key'. Otherwise, an item could be deleted
- from a chain, and inserted into another chain. If new chain was empty
- before the move, 'next' pointer is NULL, and lockless reader can not
--- 
-2.25.1
+Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
+=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
+w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
+owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
+dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
 
+Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
+edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
+edstawi=C4=87 ofert=C4=99?=20
+
+
+Pozdrawiam serdecznie,
+Dominik Perkowski
