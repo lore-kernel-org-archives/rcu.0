@@ -2,237 +2,185 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D4ABC77B73
-	for <rcu@archiver.kernel.org>; Wed, 24 May 2023 09:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D991C7EE2C
+	for <rcu@archiver.kernel.org>; Wed, 24 May 2023 11:23:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240528AbjEXJCk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 May 2023 05:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
+        id S229509AbjEXLXL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 May 2023 07:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240523AbjEXJCi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 May 2023 05:02:38 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491D9FC
-        for <rcu@vger.kernel.org>; Wed, 24 May 2023 02:02:36 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-456f19307f6so260292e0c.2
-        for <rcu@vger.kernel.org>; Wed, 24 May 2023 02:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684918955; x=1687510955;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IoXIHN+JHAtPREdCxVNh60cv2ytT0eTrapPfp0USbr4=;
-        b=qcqxbpozRm0YrX1b1eJxarTedM3Dnq8vzbpy9RbNvbtQoCihzSbk7g4ajlUP4ksIT0
-         5wZShQwz1/Xdrny7gLi99EuiEpVTZUneIzU2plEbLvDXfOXzL5X9vZ55Sx+CfFV8IdkH
-         GN+zkxD5pewpDbg+LzosdPgK/014XBxCyFNuOylE2M6nfFnHJ7StqOZF3v0kD+GY6FYG
-         e8uc/y5TFxca5myghprMVJ66VdrHU7JfiJjHTxFEAyvft9BAen+WRfv3UtzUaN6L3BvF
-         a29fikMCxqxbNluJEcAA0ere/Z1SmvrZ/0O7f2N8E7mV/IewbFeO7qMDGak2o5QL1UTN
-         0EVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684918955; x=1687510955;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IoXIHN+JHAtPREdCxVNh60cv2ytT0eTrapPfp0USbr4=;
-        b=O39lfFhRNVqyZOakZNXnCH61s+qLmxP82ccvi5r1/aWFCGsTiLUUjOHyP902lOLpuY
-         z/RkeuqsJuPrIJFwLeW+k2yTsZlanFs3OTmyklAf6+RxOWG1xdbPQCMcg58qKkeKhryB
-         csF1/ZavdN5ud1X0Ugvq7Tj087hoNTDCU60q9V/aAXOJc/r2ibUafMESc1HopwCm/gMM
-         Ukj0EyYMHQgvNh91CPgUibLR2JD1+dAbfHwJMOz2Qf1jKSsmfDiG6y1JHE+AcBXi5/ZY
-         3LGZbIgJDKI0N8b3uUFSCJqIl6xFYnABWIWayCyX/7SlqDJhnhfEio472yRE2kEZITAN
-         wWFA==
-X-Gm-Message-State: AC+VfDzHzx9j8qMOltfPaEfk9JwYFL1kjIofbxW44Gmll5mysxW7XukT
-        RDpxQTgbmIOlNnkyq9ryNImriyQWwxFn4qNc3KFKcA==
-X-Google-Smtp-Source: ACHHUZ4YxR4bNRCCAqY1snog2P8OIW025ESXTMcHLjDMXPhMhC8DfhdsNNOn+oX9uoHpz33lpTieLfl0whUtHXIb8fM=
-X-Received: by 2002:a1f:eb42:0:b0:453:8a02:8e7 with SMTP id
- j63-20020a1feb42000000b004538a0208e7mr5231862vkh.6.1684918954432; Wed, 24 May
- 2023 02:02:34 -0700 (PDT)
+        with ESMTP id S232953AbjEXLXK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 May 2023 07:23:10 -0400
+X-Greylist: delayed 885 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 24 May 2023 04:23:08 PDT
+Received: from out-16.mta0.migadu.com (out-16.mta0.migadu.com [IPv6:2001:41d0:1004:224b::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36914135
+        for <rcu@vger.kernel.org>; Wed, 24 May 2023 04:23:07 -0700 (PDT)
+Message-ID: <2c5df9e0-9b1f-89eb-4d64-c5091ead9cf0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1684927386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r7uIYMMBsG2+gFwRyUinbXHkYOIikxEdGr36MvRUJ8c=;
+        b=UDiOa/81mudJk0eXr2RQY2l6PUDl6gutYQUUOBdWfw4+15hm55V38MmdVeo8ZBbuswPAFY
+        1iSSHBTD3py36UxZcDvDq/qD2DEAJoyPeXpgy5NsEneGuN2zjBbbI9o1IVf8kR2YwibCRo
+        20qMn8Ci3rj0h3HJsM6Kqt1Dhq1pZaM=
+Date:   Wed, 24 May 2023 19:22:55 +0800
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 24 May 2023 14:32:23 +0530
-Message-ID: <CA+G9fYtCCTxT78c0T+5JFw+sN01ZnX_kvBBgDLoVLfPARc9ZuA@mail.gmail.com>
-Subject: Perf: RIP: 0010:__schedule on qemu-x86_64
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, rcu <rcu@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+Subject: Re: [linus:master] [mm] f95bdb700b: stress-ng.ramfs.ops_per_sec
+ -88.8% regression
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Qi Zheng <qi.zheng@linux.dev>
+To:     RCU <rcu@vger.kernel.org>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Kirill Tkhai <tkhai@ya.ru>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Hildenbrand <david@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com,
+        Yujie Liu <yujie.liu@intel.com>
+References: <202305230837.db2c233f-yujie.liu@intel.com>
+ <eba38fce-2454-d7a4-10ef-240b4686f23d@linux.dev>
+ <ZG29ULGNJdErnatI@yujie-X299>
+ <896bbb09-d400-ec73-ba3a-b64c6e9bbe46@linux.dev>
+ <e5fb8b34-c1ad-92e0-e7e5-f7ed1605dbc6@linux.dev>
+In-Reply-To: <e5fb8b34-c1ad-92e0-e7e5-f7ed1605dbc6@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Following kernel crash noticed while running perf testing on qemu-x86_64
-with stable-rc 6.3.4-rc2 + kselftest merge configs.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-logs:
-=====
-INFO: Performing perf record test...
-
-Parse sched tracepoints fields: Ok
- 16: syscalls:sys_enter_openat event fields     :
---- start ---
-test child forked, pid 255
-<4>[  152.221288] int3: 0000 [#1] PREEMPT SMP PTI
-<4>[  152.221564] CPU: 0 PID: 255 Comm: perf Not tainted 6.3.4-rc2 #1
-<4>[  152.221607] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.14.0-2 04/01/2014
-<4>[  152.221733] RIP: 0010:__schedule+0x29e/0xaa0
-<4>[  152.222066] Code: 00 48 29 c1 49 01 8e 48 04 00 00 48 85 db 74
-0f 48 01 8b 90 0c 00 00 48 83 83 88 0c 00 00 01 0f 1f 44 00 00 0f 1f
-44 00 00 e9 <7a> 01 00 00 49 0f ba ac 24 18 0a 00 00 00 49 83 bc 24 08
-0a 00 00
-<4>[  152.222122] RSP: 0018:ffff94aec0677bc0 EFLAGS: 00000046
-<4>[  152.222170] RAX: ffffffffa2e10900 RBX: ffff8b517bc2b700 RCX:
-0000000000000004
-<4>[  152.222184] RDX: 00000023711138c0 RSI: 0000000000000000 RDI:
-ffff8b517bc2b700
-<4>[  152.222197] RBP: ffff94aec0677c28 R08: ffff8b5102aa6a00 R09:
-000000000000004e
-<4>[  152.222211] R10: 0000000000000001 R11: 0000000000000001 R12:
-ffff8b51009e3c00
-<4>[  152.222223] R13: ffffffffa2cf3f48 R14: ffffffffa2e10900 R15:
-ffff8b51009e4248
-<4>[  152.222275] FS:  00007f6b8ea81800(0000)
-GS:ffff8b517bc00000(0000) knlGS:0000000000000000
-<4>[  152.222294] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[  152.222308] CR2: 00007f6b8dd204e0 CR3: 0000000105a1c000 CR4:
-00000000000006f0
-<4>[  152.222409] Call Trace:
-<4>[  152.222500]  <TASK>
-<4>[  152.222605]  schedule+0x6a/0xf0
-<4>[  152.222664]  schedule_timeout+0x14f/0x160
-<4>[  152.222680]  wait_for_completion+0x8c/0x140
-<4>[  152.222696]  __wait_rcu_gp+0x13e/0x140
-<4>[  152.222712]  synchronize_rcu+0x12f/0x140
-<4>[  152.222731]  ? __pfx_call_rcu_hurry+0x10/0x10
-<4>[  152.222748]  ? __pfx_wakeme_after_rcu+0x10/0x10
-<4>[  152.222766]  perf_event_alloc+0xd53/0xdc0
-<4>[  152.222783]  ? preempt_count_sub+0x50/0x80
-<4>[  152.222795]  ? _raw_spin_unlock+0x1a/0x40
-<4>[  152.222810]  __do_sys_perf_event_open+0x1df/0xd10
-<4>[  152.222838]  __x64_sys_perf_event_open+0x26/0x30
-<4>[  152.222849]  do_syscall_64+0x3e/0x90
-<4>[  152.222863]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-<4>[  152.222920] RIP: 0033:0x7f6b8dd204f9
-<4>[  152.223150] Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00
-00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c
-24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d7 08 0d 00 f7 d8 64
-89 01 48
-<4>[  152.223158] RSP: 002b:00007ffd51880f68 EFLAGS: 00000202
-ORIG_RAX: 000000000000012a
-<4>[  152.223175] RAX: ffffffffffffffda RBX: 00000000ffffffff RCX:
-00007f6b8dd204f9
-<4>[  152.223181] RDX: 0000000000000000 RSI: 00000000000000ff RDI:
-000055e658912b50
-<4>[  152.223187] RBP: 00007ffd51881030 R08: 0000000000000008 R09:
-00007ffd51881090
-<4>[  152.223192] R10: 00000000ffffffff R11: 0000000000000202 R12:
-0000000000000008
-<4>[  152.223198] R13: 0000000000000000 R14: 0000000000000000 R15:
-000055e658912b40
-<4>[  152.223246]  </TASK>
-<4>[  152.223308] Modules linked in:
-<4>[  152.247884] ---[ end trace 0000000000000000 ]---
-<4>[  152.248004] RIP: 0010:__schedule+0x29e/0xaa0
-<4>[  152.248051] Code: 00 48 29 c1 49 01 8e 48 04 00 00 48 85 db 74
-0f 48 01 8b 90 0c 00 00 48 83 83 88 0c 00 00 01 0f 1f 44 00 00 0f 1f
-44 00 00 e9 <7a> 01 00 00 49 0f ba ac 24 18 0a 00 00 00 49 83 bc 24 08
-0a 00 00
-<4>[  152.248066] RSP: 0018:ffff94aec0677bc0 EFLAGS: 00000046
-<4>[  152.248089] RAX: ffffffffa2e10900 RBX: ffff8b517bc2b700 RCX:
-0000000000000004
-<4>[  152.248099] RDX: 00000023711138c0 RSI: 0000000000000000 RDI:
-ffff8b517bc2b700
-<4>[  152.248269] RBP: ffff94aec0677c28 R08: ffff8b5102aa6a00 R09:
-000000000000004e
-<4>[  152.248282] R10: 0000000000000001 R11: 0000000000000001 R12:
-ffff8b51009e3c00
-<4>[  152.248294] R13: ffffffffa2cf3f48 R14: ffffffffa2e10900 R15:
-ffff8b51009e4248
-<4>[  152.248304] FS:  00007f6b8ea81800(0000)
-GS:ffff8b517bc00000(0000) knlGS:0000000000000000
-<4>[  152.248316] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[  152.248479] CR2: 00007f6b8dd204e0 CR3: 0000000105a1c000 CR4:
-00000000000006f0
-<0>[  152.248663] Kernel panic - not syncing: Fatal exception in interrupt
-<4>[  152.248980] int3: 0000 [#2] PREEMPT SMP PTI
-<4>[  152.249101] CPU: 1 PID: 32 Comm: kworker/u4:3 Tainted: G      D
-          6.3.4-rc2 #1
-<4>[  152.249124] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.14.0-2 04/01/2014
-<4>[  152.249292] Workqueue:  0x0 (events_unbound)
-<4>[  152.249420] RIP: 0010:__schedule+0x29e/0xaa0
-<4>[  152.249471] Code: 00 48 29 c1 49 01 8e 48 04 00 00 48 85 db 74
-0f 48 01 8b 90 0c 00 00 48 83 83 88 0c 00 00 01 0f 1f 44 00 00 0f 1f
-44 00 00 e9 <7a> 01 00 00 49 0f ba ac 24 18 0a 00 00 00 49 83 bc 24 08
-0a 00 00
-<4>[  152.249486] RSP: 0018:ffff94aec0117e38 EFLAGS: 00000046
-<4>[  152.249502] RAX: ffff8b51002d8000 RBX: ffff8b517bd2b700 RCX:
-0000000000000004
-<4>[  152.249512] RDX: 0000002372bd853f RSI: ffffffffffa7caff RDI:
-ffff8b517bd2b700
-<4>[  152.249522] RBP: ffff94aec0117ea0 R08: 0000000000000400 R09:
-0000000000000361
-<4>[  152.249532] R10: 0000000000000001 R11: 0000000000000000 R12:
-ffff8b51008a0f00
-<4>[  152.249542] R13: ffffffffa2cf3f48 R14: ffff8b51002d8000 R15:
-ffff8b51008a1548
-<4>[  152.249552] FS:  0000000000000000(0000)
-GS:ffff8b517bd00000(0000) knlGS:0000000000000000
-<4>[  152.249565] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[  152.249576] CR2: 00007ffd518816b8 CR3: 000000010591e000 CR4:
-00000000000006e0
-<4>[  152.249588] Call Trace:
-<4>[  152.249603]  <TASK>
-<4>[  152.249636]  schedule+0x6a/0xf0
-<4>[  152.249658]  worker_thread+0xc0/0x3e0
-<4>[  152.249684]  ? __pfx_worker_thread+0x10/0x10
-<4>[  152.249704]  kthread+0xfc/0x120
-<4>[  152.249721]  ? __pfx_kthread+0x10/0x10
-<4>[  152.249739]  ret_from_fork+0x2c/0x50
-<4>[  152.249797]  </TASK>
-<4>[  152.249805] Modules linked in:
-<4>[  152.250386] ---[ end trace 0000000000000000 ]---
-<4>[  152.250399] RIP: 0010:__schedule+0x29e/0xaa0
-<4>[  152.250421] Code: 00 48 29 c1 49 01 8e 48 04 00 00 48 85 db 74
-0f 48 01 8b 90 0c 00 00 48 83 83 88 0c 00 00 01 0f 1f 44 00 00 0f 1f
-44 00 00 e9 <7a> 01 00 00 49 0f ba ac 24 18 0a 00 00 00 49 83 bc 24 08
-0a 00 00
-<4>[  152.250434] RSP: 0018:ffff94aec0677bc0 EFLAGS: 00000046
-<4>[  152.250448] RAX: ffffffffa2e10900 RBX: ffff8b517bc2b700 RCX:
-0000000000000004
-<4>[  152.250458] RDX: 00000023711138c0 RSI: 0000000000000000 RDI:
-ffff8b517bc2b700
-<4>[  152.250467] RBP: ffff94aec0677c28 R08: ffff8b5102aa6a00 R09:
-000000000000004e
-<4>[  152.250477] R10: 0000000000000001 R11: 0000000000000001 R12:
-ffff8b51009e3c00
-<4>[  152.250486] R13: ffffffffa2cf3f48 R14: ffffffffa2e10900 R15:
-ffff8b51009e4248
-<4>[  152.250496] FS:  0000000000000000(0000)
-GS:ffff8b517bd00000(0000) knlGS:0000000000000000
-<4>[  152.250508] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[  152.250519] CR2: 00007ffd518816b8 CR3: 000000010591e000 CR4:
-00000000000006e0
-<0>[  154.015533] Shutting down cpus with NMI
-<0>[  154.016784] Kernel Offset: 0x20000000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-
-log links,
-=====
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.3.y/build/v6.3.3-364-ga37c304c022d/testrun/17169996/suite/log-parser-test/test/check-kernel-panic/log
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.3.y/build/v6.3.3-364-ga37c304c022d/testrun/17169996/suite/log-parser-test/tests/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2QCeuajqUTZlyC4kEyQGxT6YwYv/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2QCeuajqUTZlyC4kEyQGxT6YwYv/config
 
 
---
-Linaro LKFT
-https://lkft.linaro.org
+On 2023/5/24 19:08, Qi Zheng wrote:
+> 
+
+[...]
+
+> 
+> Well, I just ran the following command and reproduced the result:
+> 
+> stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
+> 
+> 1) with commit 42c9db3970483:
+> 
+> stress-ng: info:  [11023] setting to a 60 second run per stressor
+> stress-ng: info:  [11023] dispatching hogs: 9 ramfs
+> stress-ng: info:  [11023] stressor       bogo ops real time  usr time 
+> sys time   bogo ops/s     bogo ops/s
+> stress-ng: info:  [11023]                           (secs)    (secs) 
+> (secs)   (real time) (usr+sys time)
+> stress-ng: info:  [11023] ramfs            774966     60.00     10.18 
+> 169.45     12915.89        4314.26
+> stress-ng: info:  [11023] for a 60.00s run time:
+> stress-ng: info:  [11023]    1920.11s available CPU time
+> stress-ng: info:  [11023]      10.18s user time   (  0.53%)
+> stress-ng: info:  [11023]     169.44s system time (  8.82%)
+> stress-ng: info:  [11023]     179.62s total time  (  9.35%)
+> stress-ng: info:  [11023] load average: 8.99 2.69 0.93
+> stress-ng: info:  [11023] successful run completed in 60.00s (1 min, 
+> 0.00 secs)
+> 
+> 2) with commit f95bdb700bc6b:
+> 
+> stress-ng: info:  [37676] dispatching hogs: 9 ramfs
+> stress-ng: info:  [37676] stressor       bogo ops real time  usr time 
+> sys time   bogo ops/s     bogo ops/s
+> stress-ng: info:  [37676]                           (secs)    (secs) 
+> (secs)   (real time) (usr+sys time)
+> stress-ng: info:  [37676] ramfs            168673     60.00      1.61 
+>   39.66      2811.08        4087.47
+> stress-ng: info:  [37676] for a 60.10s run time:
+> stress-ng: info:  [37676]    1923.36s available CPU time
+> stress-ng: info:  [37676]       1.60s user time   (  0.08%)
+> stress-ng: info:  [37676]      39.66s system time (  2.06%)
+> stress-ng: info:  [37676]      41.26s total time  (  2.15%)
+> stress-ng: info:  [37676] load average: 7.69 3.63 2.36
+> stress-ng: info:  [37676] successful run completed in 60.10s (1 min, 
+> 0.10 secs)
+> 
+> The bogo ops/s (real time) did drop significantly.
+> 
+> And the memory reclaimation was not triggered in the whole process. so
+> theoretically no one is in the read critical section of shrinker_srcu.
+> 
+> Then I found that some stress-ng-ramfs processes were in
+> TASK_UNINTERRUPTIBLE state for a long time:
+> 
+> root       42313  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42314  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42315  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42316  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42317  7.8  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42318  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42319  7.8  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42320  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42321  7.8  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42322  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42323  7.8  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42324  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42325  7.8  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42326  0.0  0.0  69592  2068 pts/0    S    19:00   0:00 
+> stress-ng-ramfs [run]
+> root       42327  7.9  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42328  7.9  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42329  7.9  0.0  69592  1812 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> root       42330  7.9  0.0  69592  1556 pts/0    D    19:00   0:02 
+> stress-ng-ramfs [run]
+> 
+> Their call stack is as follows:
+> 
+> cat /proc/42330/stack
+> 
+> [<0>] __synchronize_srcu.part.21+0x83/0xb0
+> [<0>] unregister_shrinker+0x85/0xb0
+> [<0>] deactivate_locked_super+0x27/0x70
+> [<0>] cleanup_mnt+0xb8/0x140
+> [<0>] task_work_run+0x65/0x90
+> [<0>] exit_to_user_mode_prepare+0x1ba/0x1c0
+> [<0>] syscall_exit_to_user_mode+0x1b/0x40
+> [<0>] do_syscall_64+0x44/0x80
+> [<0>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> + RCU folks, Is this result as expected? I would have thought that
+> synchronize_srcu() should return quickly if no one is in the read
+> critical section. :(
+> 
+
+I received the message:
+	BOUNCE rcu@vger.kernel.org: Message too long (>100000 chars)
+
+So add RCU folks again.
+
+-- 
+Thanks,
+Qi
