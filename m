@@ -2,31 +2,31 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D991C7EE2C
-	for <rcu@archiver.kernel.org>; Wed, 24 May 2023 11:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37883C77B73
+	for <rcu@archiver.kernel.org>; Wed, 24 May 2023 12:02:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjEXLXL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 24 May 2023 07:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46478 "EHLO
+        id S230008AbjEXMCQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 24 May 2023 08:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbjEXLXK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 24 May 2023 07:23:10 -0400
-X-Greylist: delayed 885 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 24 May 2023 04:23:08 PDT
-Received: from out-16.mta0.migadu.com (out-16.mta0.migadu.com [IPv6:2001:41d0:1004:224b::10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36914135
-        for <rcu@vger.kernel.org>; Wed, 24 May 2023 04:23:07 -0700 (PDT)
-Message-ID: <2c5df9e0-9b1f-89eb-4d64-c5091ead9cf0@linux.dev>
+        with ESMTP id S229531AbjEXMCP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 24 May 2023 08:02:15 -0400
+X-Greylist: delayed 333 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 24 May 2023 05:02:14 PDT
+Received: from out-3.mta1.migadu.com (out-3.mta1.migadu.com [IPv6:2001:41d0:203:375::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3FA97
+        for <rcu@vger.kernel.org>; Wed, 24 May 2023 05:02:14 -0700 (PDT)
+Message-ID: <bfb36563-fac9-4c84-96db-87dd28892088@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1684927386;
+        t=1684929400;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=r7uIYMMBsG2+gFwRyUinbXHkYOIikxEdGr36MvRUJ8c=;
-        b=UDiOa/81mudJk0eXr2RQY2l6PUDl6gutYQUUOBdWfw4+15hm55V38MmdVeo8ZBbuswPAFY
-        1iSSHBTD3py36UxZcDvDq/qD2DEAJoyPeXpgy5NsEneGuN2zjBbbI9o1IVf8kR2YwibCRo
-        20qMn8Ci3rj0h3HJsM6Kqt1Dhq1pZaM=
-Date:   Wed, 24 May 2023 19:22:55 +0800
+        bh=uMsexn7FypO2MxTw7kOkZKMP6/q4BmJjDQCpRviZwTk=;
+        b=WiHpg5RNA4GTwK2SDkHLvlaHzfo3/HpO34N4XoPdsW0f4IrTrk2Utap9fkZOHfoZnzWEUM
+        0CNPosbjasx5hfvCkRzmQcfaYfYXeLk2MywMuAOKAjaRsOv+4Vn4L3rjgUgWuewCVawufe
+        gIoLMAnY89tKHEm9SxQWeeC/G6kpSrM=
+Date:   Wed, 24 May 2023 19:56:30 +0800
 MIME-Version: 1.0
 Subject: Re: [linus:master] [mm] f95bdb700b: stress-ng.ramfs.ops_per_sec
  -88.8% regression
@@ -66,7 +66,6 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 On 2023/5/24 19:08, Qi Zheng wrote:
-> 
 
 [...]
 
@@ -176,10 +175,41 @@ On 2023/5/24 19:08, Qi Zheng wrote:
 > critical section. :(
 > 
 
-I received the message:
-	BOUNCE rcu@vger.kernel.org: Message too long (>100000 chars)
+With the following changes, ops/s can return to previous levels:
 
-So add RCU folks again.
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index db2ed6e08f67..90f541b07cd1 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -763,7 +763,7 @@ void unregister_shrinker(struct shrinker *shrinker)
+         debugfs_entry = shrinker_debugfs_remove(shrinker);
+         up_write(&shrinker_rwsem);
+
+-       synchronize_srcu(&shrinker_srcu);
++       synchronize_srcu_expedited(&shrinker_srcu);
+
+         debugfs_remove_recursive(debugfs_entry);
+
+stress-ng: info:  [13159] dispatching hogs: 9 ramfs
+stress-ng: info:  [13159] stressor       bogo ops real time  usr time 
+sys time   bogo ops/s     bogo ops/s
+stress-ng: info:  [13159]                           (secs)    (secs) 
+(secs)   (real time) (usr+sys time)
+stress-ng: info:  [13159] ramfs            710062     60.00      9.63 
+157.26     11834.18        4254.75
+stress-ng: info:  [13159] for a 60.00s run time:
+stress-ng: info:  [13159]    1920.14s available CPU time
+stress-ng: info:  [13159]       9.62s user time   (  0.50%)
+stress-ng: info:  [13159]     157.26s system time (  8.19%)
+stress-ng: info:  [13159]     166.88s total time  (  8.69%)
+stress-ng: info:  [13159] load average: 9.49 4.02 1.65
+stress-ng: info:  [13159] successful run completed in 60.00s (1 min, 
+0.00 secs)
+
+Can we make synchronize_srcu() call synchronize_srcu_expedited() when no
+one is in the read critical section?
+
+> 
 
 -- 
 Thanks,
