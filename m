@@ -2,89 +2,88 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49365C77B7A
-	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 19:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B90E3C77B7A
+	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 19:10:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243791AbjEZTFj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 May 2023 15:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
+        id S229502AbjEZTKk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 May 2023 15:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243780AbjEZTFi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 May 2023 15:05:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A677A13A
-        for <rcu@vger.kernel.org>; Fri, 26 May 2023 12:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1685127895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JhVelvQV+hPiU9wttpuIOnyHREBDtGBxkmx6tjkjhTE=;
-        b=NdKwmXziBvb7XDQo3nXw2pqixluhKK6Ml3CWg1NTqcUSos30MBV/O3s3QNloADiNycT9Y1
-        ieG+rstQNiFx9xKTGOBlSLW9VVG49AIfY/DpSoCe4+6JzAxmmjy6Q6MVwZz6SvjeFxUroO
-        FK6BeMgAZkn8SQRNyTNvorcVK/ArE58=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-290-Hg5fBAoaPk-Bnyz3addx4A-1; Fri, 26 May 2023 15:04:53 -0400
-X-MC-Unique: Hg5fBAoaPk-Bnyz3addx4A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6A3198032E4;
-        Fri, 26 May 2023 19:04:51 +0000 (UTC)
-Received: from [10.22.32.123] (unknown [10.22.32.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AE4B41121314;
-        Fri, 26 May 2023 19:04:49 +0000 (UTC)
-Message-ID: <2e44db55-61f1-ad3d-e9e1-a9409ffad31b@redhat.com>
-Date:   Fri, 26 May 2023 15:04:49 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC][PATCH 1/2] locking: Introduce __cleanup__ based guards
-Content-Language: en-US
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        torvalds@linux-foundation.org, keescook@chromium.org,
-        gregkh@linuxfoundation.org, pbonzini@redhat.com
-Cc:     linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        ndesaulniers@google.com, mingo@redhat.com, will@kernel.org,
-        boqun.feng@gmail.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, paulmck@kernel.org,
-        frederic@kernel.org, quic_neeraju@quicinc.com,
+        with ESMTP id S230159AbjEZTKk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 May 2023 15:10:40 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED64F187;
+        Fri, 26 May 2023 12:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uJAXYYqrpUX+Aacn25secLYK8MSl6B11yqPPBJ47bxg=; b=NYeuZL482p1auY8S6tRFUj5Le5
+        JLvdE9UqUvSim3C3+S86kSzmmDE8xno+NystN6atL8RRyXMu2WV6TnZs3mjeYMnN0ej9OaMB0D6tQ
+        7X4tnALIr3CulWTwnY3GePY0uI/Nc1xy1dCyntM3+Ao8RxA6ZmztyHgOykC8eS3rAtz4se17NVcJj
+        xargWMYoLlLdVfw0PRe2lS3b0IT8JGroYMoC9dfkNuaWi38CfbzofM3gHgbFBa9Wsp+CQvpTrzdIC
+        04R33iANdkGcO+5szbbssY/kqWiLLue1Zjyb5dXFPZ7xKN+MyYp5oWOuARSGTgahaziF9rFRL+f9E
+        hK6xP6/g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q2cpM-007gOp-0n;
+        Fri, 26 May 2023 19:10:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4692A3006B1;
+        Fri, 26 May 2023 21:10:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2488222163BC1; Fri, 26 May 2023 21:10:14 +0200 (CEST)
+Date:   Fri, 26 May 2023 21:10:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org, josh@joshtriplett.org,
-        jiangshanlai@gmail.com, qiang1.zhang@intel.com,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de
+Subject: Re: [RFC][PATCH 1/2] locking: Introduce __cleanup__ based guards
+Message-ID: <20230526191014.GA4057254@hirez.programming.kicks-ass.net>
 References: <20230526150549.250372621@infradead.org>
  <20230526151946.960406324@infradead.org>
- <cf20bbbc-c435-326d-f31a-86b1f4ce927a@redhat.com>
- <e63ca3f4-283a-05fb-d637-c7428d87c8f2@efficios.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <e63ca3f4-283a-05fb-d637-c7428d87c8f2@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+ <CAHk-=wgYL6JaL79EmOBV=vge7jWGkph73JnJgU9U3jeXa6b2=Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgYL6JaL79EmOBV=vge7jWGkph73JnJgU9U3jeXa6b2=Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 5/26/23 14:58, Mathieu Desnoyers wrote:
-> On 5/26/23 14:49, Waiman Long wrote:
-> [...]
->>
->> BTW, do we have a use case for double_lock_guard/double_lock_scope? I 
->> can envision a nested lock_scope inside a lock_scope, but taking 2 
->> auto locks of the same type at init time and then unlock them at exit 
->> just doesn't make sense to me.
->
-> AFAIU taking both runqueue locks for source and destination runqueues 
-> on migration is one use-case for double_lock_guard/scope.
->
-I see. Thanks for the clarification. I forgot about that special case.
+On Fri, May 26, 2023 at 11:22:36AM -0700, Linus Torvalds wrote:
 
-Cheers,
-Longman
+> But you can actually do the 'bool done' using the exact same type you
+> have for the guard - just make it a pointer instead, and use NULL for
+> "not done" and non-NULL for "done". It ends up acting exactly like a
+> boolean.
 
+Damn; I've actually seen that and should've thought of it.
+
+> IOW, something like this:
+> 
+>   #define variable_scope(type, enter, exit) \
+>         for (type *_done = NULL, _scope __cleanup(exit) = enter;
+> !_done; _done = (void *)8)
+> 
+>   #define scoped(type, init...) \
+>         variable_scope(scope_##type##_t, scope_##type##_init(init),
+> scope_##type##_cleanup)
+> 
+
+> I dunno. I didn't *test* the above. Maybe you already tried something
+> like the above, and there's a reason why it doesn't work.
+
+I have not; let me go try that. That does look *much* nicer.
