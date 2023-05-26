@@ -2,126 +2,131 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E77BC7EE2C
-	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 05:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84014C77B7A
+	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 07:36:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjEZFjz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 May 2023 01:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S242547AbjEZHgq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 May 2023 03:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbjEZFjz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 May 2023 01:39:55 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C85018D
-        for <rcu@vger.kernel.org>; Thu, 25 May 2023 22:39:52 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-457201c47f6so87703e0c.1
-        for <rcu@vger.kernel.org>; Thu, 25 May 2023 22:39:52 -0700 (PDT)
+        with ESMTP id S242546AbjEZHgX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 May 2023 03:36:23 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8520810CA
+        for <rcu@vger.kernel.org>; Fri, 26 May 2023 00:35:53 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1ae52ce3205so3059235ad.3
+        for <rcu@vger.kernel.org>; Fri, 26 May 2023 00:35:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685079591; x=1687671591;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8S20EpxC0jYqjEdVLeuZpI5et5CF0gwUWywR2BM1QKQ=;
-        b=HjPkzZFhNcN47pTjWy00/2W8LzsulrTckq+2FiyTCWDCn+W3Avug/sChlVelvbSk4T
-         BHSRMp8f/J9Ys1AaoTG6mP3+SmC6LnpNSSXJbuHC1NXygNq069wlYoBoz2Ge8bgOufUK
-         VeW/0En/8moVGwCxvLgTsuqutGHV6g8UH1UrTNYkN4klcEeGTKekFYnDjz+K+TYgHFeN
-         WAvzgsiI+NvuHqcIdLKCoqc5c9ZoMaUqYhJ/grjDY5K+93HOxXUQL2UWVWqi67aBjmCU
-         yCxDHnzCYjhPWqxST9qQ2X9zj+IIhwaUIeXcW47OYw4Mh872iyb0sV8pfFyc3KOHxhlC
-         SNCw==
+        d=chromium.org; s=google; t=1685086548; x=1687678548;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bKWBdp4Kjo2s7gwqdnwE3qAnKBZlQrDQ7Bhod2F0iec=;
+        b=gq7rzjt3t/xc/7eKsys5HW5xi/ugBh+XpYqENlPCR35jv7yZFm4s7ACeAfsR8ZgZ75
+         cREmmzeZlILrUfAxYs5br/wSOosq5qXbbv3FnLu+3Gl8HlgaO7BYPhDaYuiXQvxosJuq
+         w2UHiHQlSkVqtn9VBIu8kKzw3hhA0oituZDRY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685079591; x=1687671591;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8S20EpxC0jYqjEdVLeuZpI5et5CF0gwUWywR2BM1QKQ=;
-        b=KJrukJZuCbshb8iTS4H497pJB6mJ8jyxMRkhGsO60zZ0KtQHDlLHh2gXeTTJ3vqPUP
-         H+5xqRhmd2b2kXLT9FQwTfabm3cuM2kn52ixvgFjdYYqws8v/d3TU/GwZYSOELLDooY9
-         TGP7wq3MhjQlPAI6JUkBCxzKda/2p8ti/D82j2eEHW96gr5MOT6KY2Snm7wq3Yg6NXtz
-         GUK+cEjUAou+AQ4mnsTMHJcuvW6NRhoyQxNmXli2O0zmBkcPjk3Go/+OFwt3ijHdWMvx
-         2ZIfSyt5aZLK771OzyKCek/ouXQeVTEGMtH32J4LmsO6eF/qus6W7/t3oL+8ybQmfncH
-         kVpg==
-X-Gm-Message-State: AC+VfDwR6hB+rIb/OBQ/4Mm3qGz1TT+2AvtHahw7YAgAnz9M7IntX68o
-        P70F+GmeeheksxaKi/3wnY483BhSXczy+djtRBo3fw==
-X-Google-Smtp-Source: ACHHUZ6SISstX0iLvYrXJgi52QO9jWx5aTs73MrvJ3WfJIQHyb4MaDC7DJJGXlH18HF/RbDIl8P1FzmNV2RUA/yR7rM=
-X-Received: by 2002:a1f:5e02:0:b0:457:400a:f3fc with SMTP id
- s2-20020a1f5e02000000b00457400af3fcmr170510vkb.2.1685079591105; Thu, 25 May
- 2023 22:39:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYtCCTxT78c0T+5JFw+sN01ZnX_kvBBgDLoVLfPARc9ZuA@mail.gmail.com>
- <CAEXW_YQwBy9xNRV9Xrdti46cC8vNE8nOocoL9pRrhjNMGdEWeg@mail.gmail.com>
-In-Reply-To: <CAEXW_YQwBy9xNRV9Xrdti46cC8vNE8nOocoL9pRrhjNMGdEWeg@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 26 May 2023 11:09:39 +0530
-Message-ID: <CA+G9fYs3LT9OaKVZw9C3v3YxGPBk6ZWCdqur=hL-XoLM5rgtww@mail.gmail.com>
-Subject: Re: Perf: RIP: 0010:__schedule on qemu-x86_64
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, rcu <rcu@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
+        d=1e100.net; s=20221208; t=1685086548; x=1687678548;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bKWBdp4Kjo2s7gwqdnwE3qAnKBZlQrDQ7Bhod2F0iec=;
+        b=eFUNZWvicECb5LOwJoz9WLL4MnYvZugjtXx1e0RP3enCG/ca20EpgdJdOXI7Ws4wTl
+         GzZUWXJU19pdOJdVVhRKSyUCV3MdLWokafEWL8JOreVhR8LFiVU/E49ZgFZcC/jusFKa
+         XskQm7tSWtUgUysa72pXfLQedRimWWne7FSFY978J6A2xLunwgYNkw7vPEIIK4ygLAd7
+         XPuPuI/gY1eeiLww+bLKh3GUgpDp9Ru7lfg2v+LyQICFSUEE6MVPzMoGyBURjVBpz8MX
+         bT2HG+w2xVywP1R8GkQJyNFmahrYv3jc7hswO4HR4RSXl8Tlu1oiIGuzYVlB5vJpNeo8
+         P/tQ==
+X-Gm-Message-State: AC+VfDye+wC/IByGxYOwt3fWkIPx1G7P94KC3EEbAr+iPgWJkzpgDavb
+        6rveMBAYLuLIYKnhTdc6onN7mg==
+X-Google-Smtp-Source: ACHHUZ6XkkD79ZkO3r3SorwEcsePA+9D5knmrdE/cFs1f7idnHafQ1XWj/0tGGrGQ1suvVau5lting==
+X-Received: by 2002:a17:903:228a:b0:1a2:3108:5cc9 with SMTP id b10-20020a170903228a00b001a231085cc9mr1674737plh.40.1685086548637;
+        Fri, 26 May 2023 00:35:48 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:17b9:e0b5:a956:4510])
+        by smtp.gmail.com with ESMTPSA id l9-20020a170902eb0900b001ac78ac2cafsm2573408plb.239.2023.05.26.00.35.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 May 2023 00:35:48 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH] notifier: Initialize new struct srcu_usage field
+Date:   Fri, 26 May 2023 15:35:37 +0800
+Message-ID: <20230526073539.339203-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-HI Joel,
+In commit 95433f726301 ("srcu: Begin offloading srcu_struct fields to
+srcu_update"), a new struct srcu_usage field was added, but was not
+properly initialized. This led to a "spinlock bad magic" BUG when
+the SRCU notifier was ever used. This was observed in the MediaTek
+CCI devfreq driver on next-20230525. Trimmed stack trace as follows:
 
-On Thu, 25 May 2023 at 20:51, Joel Fernandes <joel@joelfernandes.org> wrote=
-:
->
-> Hello Naresh,
->
-> On Wed, May 24, 2023 at 5:02=E2=80=AFAM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > Following kernel crash noticed while running perf testing on qemu-x86_6=
-4
-> > with stable-rc 6.3.4-rc2 + kselftest merge configs.
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> >
-> > logs:
-> > =3D=3D=3D=3D=3D
-> > INFO: Performing perf record test...
-> >
-> > Parse sched tracepoints fields: Ok
-> >  16: syscalls:sys_enter_openat event fields     :
-> > --- start ---
-> > test child forked, pid 255
-> > <4>[  152.221288] int3: 0000 [#1] PREEMPT SMP PTI
-> > <4>[  152.221564] CPU: 0 PID: 255 Comm: perf Not tainted 6.3.4-rc2 #1
-> > <4>[  152.221607] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-> > BIOS 1.14.0-2 04/01/2014
-> > <4>[  152.221733] RIP: 0010:__schedule+0x29e/0xaa0
+    BUG: spinlock bad magic on CPU#4, swapper/0/1
+     lock: 0xffffff80ff529ac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+    Call trace:
+     spin_bug+0xa4/0xe8
+     do_raw_spin_lock+0xec/0x120
+     _raw_spin_lock_irqsave+0x78/0xb8
+     synchronize_srcu+0x3c/0x168
+     srcu_notifier_chain_unregister+0x5c/0xa0
+     cpufreq_unregister_notifier+0x94/0xe0
+     devfreq_passive_event_handler+0x7c/0x3e0
+     devfreq_remove_device+0x48/0xe8
 
-<trim>
+Add __SRCU_USAGE_INIT() to SRCU_NOTIFIER_INIT() so that srcu_usage gets
+initialized properly.
 
-> I wonder if this is a deadlock related to runqueue lock since another
-> CPU call stack are similarly in schedule.
->
-> I tried to run gdb on your vmlinux but it does not have symbols, would
-> it be possible for you to provide a copy of vmlinux with symbols?
+Fixes: 95433f726301 ("srcu: Begin offloading srcu_struct fields to srcu_update")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+---
 
-DEBUG_INFO not enabled on this build.
+Also, the original patch subject said "srcu_update", however the data
+structure ended up as "srcu_usage". Maybe that could be updated?
 
->
-> Were you able to narrow down the commit/release using git bisect to
-> see when it started happening?
+ include/linux/notifier.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-I will bisect this problem and get back to you.
+diff --git a/include/linux/notifier.h b/include/linux/notifier.h
+index 2aba75145144..86544707236a 100644
+--- a/include/linux/notifier.h
++++ b/include/linux/notifier.h
+@@ -106,12 +106,22 @@ extern void srcu_init_notifier_head(struct srcu_notifier_head *nh);
+ #define RAW_NOTIFIER_INIT(name)	{				\
+ 		.head = NULL }
+ 
++#ifdef CONFIG_TREE_SRCU
+ #define SRCU_NOTIFIER_INIT(name, pcpu)				\
+ 	{							\
+ 		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
+ 		.head = NULL,					\
++		.srcuu = __SRCU_USAGE_INIT(name.srcuu),		\
+ 		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
+ 	}
++#else
++#define SRCU_NOTIFIER_INIT(name, pcpu)				\
++	{							\
++		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
++		.head = NULL,					\
++		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
++	}
++#endif
+ 
+ #define ATOMIC_NOTIFIER_HEAD(name)				\
+ 	struct atomic_notifier_head name =			\
+-- 
+2.41.0.rc0.172.g3f132b7071-goog
 
->
-> Thank you,
->
->  - Joel
-
-- Naresh
