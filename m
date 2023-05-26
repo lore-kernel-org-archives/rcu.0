@@ -2,46 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B90E3C77B7A
-	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 19:10:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1526C77B7A
+	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 21:01:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbjEZTKk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 May 2023 15:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        id S237834AbjEZVBN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 May 2023 17:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbjEZTKk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 May 2023 15:10:40 -0400
+        with ESMTP id S230467AbjEZVBM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 May 2023 17:01:12 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED64F187;
-        Fri, 26 May 2023 12:10:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5907719C;
+        Fri, 26 May 2023 14:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uJAXYYqrpUX+Aacn25secLYK8MSl6B11yqPPBJ47bxg=; b=NYeuZL482p1auY8S6tRFUj5Le5
-        JLvdE9UqUvSim3C3+S86kSzmmDE8xno+NystN6atL8RRyXMu2WV6TnZs3mjeYMnN0ej9OaMB0D6tQ
-        7X4tnALIr3CulWTwnY3GePY0uI/Nc1xy1dCyntM3+Ao8RxA6ZmztyHgOykC8eS3rAtz4se17NVcJj
-        xargWMYoLlLdVfw0PRe2lS3b0IT8JGroYMoC9dfkNuaWi38CfbzofM3gHgbFBa9Wsp+CQvpTrzdIC
-        04R33iANdkGcO+5szbbssY/kqWiLLue1Zjyb5dXFPZ7xKN+MyYp5oWOuARSGTgahaziF9rFRL+f9E
-        hK6xP6/g==;
+        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=urvfHsJBOS8zyeLyl+UdJT8Nl0X+FyS97M0e5Nc2t34=; b=nMUfxulQfyDRFhMgPquBzy1JMU
+        7OITUm6XBSHDal5ty4OzC+zkpOof2p0Exb/t6YKVC/OylO9uWEcykEdgS5R4KjvddxsOLJSSk3/sI
+        20YmYkOhdP3+uKSAjKK509Nxl+SAUjL8AB/HtnWV6yD4o4/9dXoINaa15zo9O4IQZHdKXdX/s8hga
+        kTH/FrvlpQrK1ePCQNDgRykI/bsR+q0NLWc/PYlUtf1TG97P4phZb0r6O8trCLHehDEr5KTgvd2kO
+        y7q5ldrzn68zsAGwag8ee8jftSV19rdL5hj596WQuecBK6ZJoMojx0WM3fDtWz5YmYr3I6Kmbk08A
+        L495JIMw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q2cpM-007gOp-0n;
-        Fri, 26 May 2023 19:10:16 +0000
+        id 1q2eYG-007hpR-2z;
+        Fri, 26 May 2023 21:00:45 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4692A3006B1;
-        Fri, 26 May 2023 21:10:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2488222163BC1; Fri, 26 May 2023 21:10:14 +0200 (CEST)
-Date:   Fri, 26 May 2023 21:10:14 +0200
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 06CB23002F0;
+        Fri, 26 May 2023 23:00:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id AF53F205BBDB2; Fri, 26 May 2023 23:00:41 +0200 (CEST)
+Message-ID: <20230526205204.861311518@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 26 May 2023 22:52:04 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+To:     torvalds@linux-foundation.org, keescook@chromium.org,
+        gregkh@linuxfoundation.org, pbonzini@redhat.com
+Cc:     linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        ndesaulniers@google.com, peterz@infradead.org, mingo@redhat.com,
         will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
         juri.lelli@redhat.com, vincent.guittot@linaro.org,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
@@ -50,40 +52,26 @@ Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
         joel@joelfernandes.org, josh@joshtriplett.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de
-Subject: Re: [RFC][PATCH 1/2] locking: Introduce __cleanup__ based guards
-Message-ID: <20230526191014.GA4057254@hirez.programming.kicks-ass.net>
-References: <20230526150549.250372621@infradead.org>
- <20230526151946.960406324@infradead.org>
- <CAHk-=wgYL6JaL79EmOBV=vge7jWGkph73JnJgU9U3jeXa6b2=Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgYL6JaL79EmOBV=vge7jWGkph73JnJgU9U3jeXa6b2=Q@mail.gmail.com>
+Subject: [PATCH v2 0/2] Lock and Pointer guards
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 26, 2023 at 11:22:36AM -0700, Linus Torvalds wrote:
+By popular demand, a new and improved version :-)
 
-> But you can actually do the 'bool done' using the exact same type you
-> have for the guard - just make it a pointer instead, and use NULL for
-> "not done" and non-NULL for "done". It ends up acting exactly like a
-> boolean.
+New since -v1 ( https://lkml.kernel.org/r/20230526150549.250372621@infradead.org )
 
-Damn; I've actually seen that and should've thought of it.
+ - much improved interface for lock guards: guard() and scoped () { }
+   as suggested by Linus.
+ - moved the ';' for the 'last' additional guard members into the definition
+   as suggested by Kees.
+ - put __cleanup in the right place with the suggested comment
+   as suggested by Kees and Miguel
+ - renamed the definition macros DEFINE_LOCK_GUARD_[012] to indicate
+   the number of arguments the lock function takes
+ - added comments to guards.h
+ - renamed pretty much all guard types
 
-> IOW, something like this:
-> 
->   #define variable_scope(type, enter, exit) \
->         for (type *_done = NULL, _scope __cleanup(exit) = enter;
-> !_done; _done = (void *)8)
-> 
->   #define scoped(type, init...) \
->         variable_scope(scope_##type##_t, scope_##type##_init(init),
-> scope_##type##_cleanup)
-> 
+Again compile and boot tested x86_64-defconfig
 
-> I dunno. I didn't *test* the above. Maybe you already tried something
-> like the above, and there's a reason why it doesn't work.
 
-I have not; let me go try that. That does look *much* nicer.
