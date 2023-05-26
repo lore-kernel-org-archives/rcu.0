@@ -2,88 +2,125 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E077C77B7C
-	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 08:45:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCF76C7EE23
+	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 09:49:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbjEZIps (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 May 2023 04:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S243244AbjEZJtw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 May 2023 05:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242397AbjEZIpj (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 May 2023 04:45:39 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E097219A;
-        Fri, 26 May 2023 01:45:36 -0700 (PDT)
-Received: from [IPV6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab] (unknown [IPv6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        with ESMTP id S243225AbjEZJtv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 May 2023 05:49:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F4CD9;
+        Fri, 26 May 2023 02:49:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D0B496606E83;
-        Fri, 26 May 2023 09:45:34 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1685090735;
-        bh=jIYCjGbXEyWJJEvEqZFXDnEttlE1pdHBfo4pRBrBZ44=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ddK5/GN9kRklJI2XLwlNE6peqrD4tc8nVY5l2UQ41DrEC44HDa+qWEkoxqNMbJLgF
-         FxYJM7znsKalwM09C/EjgdvjYdnhB1Lu9mCrvmvIGYAFPv8ePMm7llLDEdaoCXLydp
-         RjLGCxvZsLX1d0k71oNsBQTyxypn+8p34mTrNs0vYFyKym+1MNGLwMze01bxEUJCBe
-         DAJhb3Z/vPGM06ZQ+3/Zbh13CswcOPkgdbgv8u+pz1jHAm7/jLzZkBGyku+DKAbXUg
-         iCnTdzx5QI/RURMXHwOoUJtVsKPA+eVlXBz2RxePNN6DYdYcBENtP49hZXOHAeH+nd
-         0fwUTB3RJT0sQ==
-Message-ID: <23366389-1be5-92ef-7728-ce639d46a0b0@collabora.com>
-Date:   Fri, 26 May 2023 10:45:32 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A975B61248;
+        Fri, 26 May 2023 09:49:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABFCCC4339B;
+        Fri, 26 May 2023 09:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1685094588;
+        bh=4rlsbDU/W6bbh6jxRAewvlT8eB/L1MX7PjShMljsAF8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IEoxOTmEcdpGmMTIpJ641rXpC63sF/0VHHlvSgJKQTdkA6ILfSFxdjOkQ5DA5OPMv
+         BFRf8HXxwRu10vPVfCZnIsgq5wGCQPLOyT08DbHqyPa+vR8dXM7ZuxtLM8inODLHB1
+         vVBi6HHEC3sLLR60QAkJBrw3VEpGYJk7tUNrwdeeEtNwoMCfKwIuz0lD+/dLLsAgyD
+         Lv5iX4x+DBbgeSflYMYahIj48bn8TV45j4DZhOeKOEM/9mdABwxMLz/AOcroGKLWbU
+         U9lu58Fz3ADOo0XzAFuherq5N7e3IZ/139h5tGFRtHUpwC+lFsXCNQZoTRLjjbk0sj
+         YcRUcBAuarjFg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 37B9ACE0CCF; Fri, 26 May 2023 02:49:44 -0700 (PDT)
+Date:   Fri, 26 May 2023 02:49:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Yujie Liu <yujie.liu@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [paulmck-rcu:dev.2023.05.20a] [rcuscale] 812195e4f7:
+ BUG:kernel_NULL_pointer_dereference,address
+Message-ID: <59850ca7-aad7-4756-888e-12f62373198b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202305241757.57c30887-yujie.liu@intel.com>
+ <e4328f8b-6ec5-46eb-bc43-1217feba7ca2@paulmck-laptop>
+ <ZHBm9IfDk1QGj8SY@yujie-X299>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH] notifier: Initialize new struct srcu_usage field
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
-        <nfraprado@collabora.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <20230526073539.339203-1-wenst@chromium.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230526073539.339203-1-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZHBm9IfDk1QGj8SY@yujie-X299>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Il 26/05/23 09:35, Chen-Yu Tsai ha scritto:
-> In commit 95433f726301 ("srcu: Begin offloading srcu_struct fields to
-> srcu_update"), a new struct srcu_usage field was added, but was not
-> properly initialized. This led to a "spinlock bad magic" BUG when
-> the SRCU notifier was ever used. This was observed in the MediaTek
-> CCI devfreq driver on next-20230525. Trimmed stack trace as follows:
+On Fri, May 26, 2023 at 03:59:48PM +0800, Yujie Liu wrote:
+> Hi Paul,
 > 
->      BUG: spinlock bad magic on CPU#4, swapper/0/1
->       lock: 0xffffff80ff529ac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
->      Call trace:
->       spin_bug+0xa4/0xe8
->       do_raw_spin_lock+0xec/0x120
->       _raw_spin_lock_irqsave+0x78/0xb8
->       synchronize_srcu+0x3c/0x168
->       srcu_notifier_chain_unregister+0x5c/0xa0
->       cpufreq_unregister_notifier+0x94/0xe0
->       devfreq_passive_event_handler+0x7c/0x3e0
->       devfreq_remove_device+0x48/0xe8
+> On Thu, May 25, 2023 at 09:45:11AM -0700, Paul E. McKenney wrote:
+> > On Thu, May 25, 2023 at 01:37:13AM +0800, kernel test robot wrote:
+> > > Hello,
+> > > 
+> > > kernel test robot noticed "BUG:kernel_NULL_pointer_dereference,address" on:
+> > > 
+> > > commit: 812195e4f70ef0e9fc68127355c553c537749546 ("rcuscale: Measure grace-period kthread CPU time")
+> > > https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2023.05.20a
+> > > 
+> > > in testcase: boot
+> > > 
+> > > compiler: clang-14
+> > > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> > > 
+> > > (please refer to attached dmesg/kmsg for entire log/backtrace)
+> > > 
+> > > 
+> > > +---------------------------------------------+------------+------------+
+> > > |                                             | 2393139b67 | 812195e4f7 |
+> > > +---------------------------------------------+------------+------------+
+> > > | boot_successes                              | 8          | 0          |
+> > > | boot_failures                               | 0          | 8          |
+> > > | BUG:kernel_NULL_pointer_dereference,address | 0          | 8          |
+> > > | Oops:#[##]                                  | 0          | 8          |
+> > > | Kernel_panic-not_syncing:Fatal_exception    | 0          | 8          |
+> > > +---------------------------------------------+------------+------------+
+> > > 
+> > > 
+> > > If you fix the issue, kindly add following tag
+> > > | Reported-by: kernel test robot <yujie.liu@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-lkp/202305241757.57c30887-yujie.liu@intel.com
+> > 
+> > This commmit has since been replaced by this one, which should fix this
+> > problem:
+> > 
+> > 60901dadfadc ("rcuscale: Measure grace-period kthread CPU time")
+> > 
+> > Please let me know if the problem still exists with that commit.
 > 
-> Add __SRCU_USAGE_INIT() to SRCU_NOTIFIER_INIT() so that srcu_usage gets
-> initialized properly.
+> The problem is gone on commit 60901dadfadc. Thanks.
 > 
-> Fixes: 95433f726301 ("srcu: Begin offloading srcu_struct fields to srcu_update")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> Tested-by: Yujie Liu <yujie.liu@intel.com>
 
-Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+And thank you again for your testing efforts!
 
+							Thanx, Paul
+
+> =========================================================================================
+> compiler/kconfig/rootfs/sleep/tbox_group/testcase:
+>   clang-14/x86_64-randconfig-a015-20230522/debian-11.1-i386-20220923.cgz/300/vm-snb/boot
+> 
+> commit:
+>   812195e4f70e ("rcuscale: Measure grace-period kthread CPU time")  <-- old commit from dev.2023.05.20a branch
+>   60901dadfadc ("rcuscale: Measure grace-period kthread CPU time")  <-- new commit from rcu/next branch
+> 
+> 812195e4f70ef0e9 60901dadfadcc152ae5cad7ebae
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>           6:6         -100%            :7     dmesg.BUG:kernel_NULL_pointer_dereference,address
+>           6:6         -100%            :7     dmesg.Kernel_panic-not_syncing:Fatal_exception
+>           6:6         -100%            :7     dmesg.Oops:#[##]
+>           6:6         -100%            :7     dmesg.boot_failures
+> 
+> --
+> Best Regards,
+> Yujie
+> 
