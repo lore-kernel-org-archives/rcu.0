@@ -2,125 +2,79 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCF76C7EE23
-	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 09:49:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48D5BC77B73
+	for <rcu@archiver.kernel.org>; Fri, 26 May 2023 15:23:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243244AbjEZJtw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 26 May 2023 05:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        id S244080AbjEZPXa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 26 May 2023 11:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243225AbjEZJtv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 26 May 2023 05:49:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F4CD9;
-        Fri, 26 May 2023 02:49:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A975B61248;
-        Fri, 26 May 2023 09:49:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABFCCC4339B;
-        Fri, 26 May 2023 09:49:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685094588;
-        bh=4rlsbDU/W6bbh6jxRAewvlT8eB/L1MX7PjShMljsAF8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IEoxOTmEcdpGmMTIpJ641rXpC63sF/0VHHlvSgJKQTdkA6ILfSFxdjOkQ5DA5OPMv
-         BFRf8HXxwRu10vPVfCZnIsgq5wGCQPLOyT08DbHqyPa+vR8dXM7ZuxtLM8inODLHB1
-         vVBi6HHEC3sLLR60QAkJBrw3VEpGYJk7tUNrwdeeEtNwoMCfKwIuz0lD+/dLLsAgyD
-         Lv5iX4x+DBbgeSflYMYahIj48bn8TV45j4DZhOeKOEM/9mdABwxMLz/AOcroGKLWbU
-         U9lu58Fz3ADOo0XzAFuherq5N7e3IZ/139h5tGFRtHUpwC+lFsXCNQZoTRLjjbk0sj
-         YcRUcBAuarjFg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 37B9ACE0CCF; Fri, 26 May 2023 02:49:44 -0700 (PDT)
-Date:   Fri, 26 May 2023 02:49:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yujie Liu <yujie.liu@intel.com>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [paulmck-rcu:dev.2023.05.20a] [rcuscale] 812195e4f7:
- BUG:kernel_NULL_pointer_dereference,address
-Message-ID: <59850ca7-aad7-4756-888e-12f62373198b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202305241757.57c30887-yujie.liu@intel.com>
- <e4328f8b-6ec5-46eb-bc43-1217feba7ca2@paulmck-laptop>
- <ZHBm9IfDk1QGj8SY@yujie-X299>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZHBm9IfDk1QGj8SY@yujie-X299>
+        with ESMTP id S244098AbjEZPXW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 26 May 2023 11:23:22 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53121BF;
+        Fri, 26 May 2023 08:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=FzjfinT/ioSfMfRQf9Wi9HSHANyBVVOUL7KRBB5Z9sE=; b=lneXXqHzx5OFRE2gEMPCZH+aOM
+        gqZa67jePQ1cJkeZFqkqAtbDR80Z1z+CwfnV7aTKBMo1GwlG4JF2+IPLvGFEVxiMUD0EHu6oIwKmW
+        ETvQh5kdFuU0PfDwXhcmTOOFUTo8KHkv0lTjJWecBDRlK5TYC9YYXQVz7onLmZiw/hrtWm/sMOKp+
+        dm1PPGm0+mlFmY33VGIb5QJjtiETxYabkWoTtRYMpkq3oxMfv1D0e5zTJd2pZ2DFDd+VUE2ibYZsD
+        +stFryyLEY4S32LhZdlnX3y5qAqkVz3dxBCeemHu6O8WMCBYzZ0euzoyogsE7bKVg9c6k3FuIna1H
+        N+STOeuw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q2ZHE-007cib-2Q;
+        Fri, 26 May 2023 15:22:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 898113006B1;
+        Fri, 26 May 2023 17:22:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 35F4E22163BC0; Fri, 26 May 2023 17:22:44 +0200 (CEST)
+Message-ID: <20230526150549.250372621@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 26 May 2023 17:05:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     torvalds@linux-foundation.org, keescook@chromium.org,
+        gregkh@linuxfoundation.org, pbonzini@redhat.com
+Cc:     linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        ndesaulniers@google.com, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        qiang1.zhang@intel.com, rcu@vger.kernel.org, tj@kernel.org,
+        tglx@linutronix.de
+Subject: [RFC][PATCH 0/2] Lock and Pointer guards
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 26, 2023 at 03:59:48PM +0800, Yujie Liu wrote:
-> Hi Paul,
-> 
-> On Thu, May 25, 2023 at 09:45:11AM -0700, Paul E. McKenney wrote:
-> > On Thu, May 25, 2023 at 01:37:13AM +0800, kernel test robot wrote:
-> > > Hello,
-> > > 
-> > > kernel test robot noticed "BUG:kernel_NULL_pointer_dereference,address" on:
-> > > 
-> > > commit: 812195e4f70ef0e9fc68127355c553c537749546 ("rcuscale: Measure grace-period kthread CPU time")
-> > > https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2023.05.20a
-> > > 
-> > > in testcase: boot
-> > > 
-> > > compiler: clang-14
-> > > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> > > 
-> > > (please refer to attached dmesg/kmsg for entire log/backtrace)
-> > > 
-> > > 
-> > > +---------------------------------------------+------------+------------+
-> > > |                                             | 2393139b67 | 812195e4f7 |
-> > > +---------------------------------------------+------------+------------+
-> > > | boot_successes                              | 8          | 0          |
-> > > | boot_failures                               | 0          | 8          |
-> > > | BUG:kernel_NULL_pointer_dereference,address | 0          | 8          |
-> > > | Oops:#[##]                                  | 0          | 8          |
-> > > | Kernel_panic-not_syncing:Fatal_exception    | 0          | 8          |
-> > > +---------------------------------------------+------------+------------+
-> > > 
-> > > 
-> > > If you fix the issue, kindly add following tag
-> > > | Reported-by: kernel test robot <yujie.liu@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-lkp/202305241757.57c30887-yujie.liu@intel.com
-> > 
-> > This commmit has since been replaced by this one, which should fix this
-> > problem:
-> > 
-> > 60901dadfadc ("rcuscale: Measure grace-period kthread CPU time")
-> > 
-> > Please let me know if the problem still exists with that commit.
-> 
-> The problem is gone on commit 60901dadfadc. Thanks.
-> 
-> Tested-by: Yujie Liu <yujie.liu@intel.com>
+Hi!
 
-And thank you again for your testing efforts!
+Yesterday I was annoyed for the lack of RAII lock guards for entirely spurious
+reason, but since you sometimes gotta do silly things I spend today creating some.
 
-							Thanx, Paul
+My initial (failed) attempts tried to combine __cleanup, _Generic and
+__auto_type, but the compilers refused. I've also Googled around and found
+(among many others) the QEMU and Glib guards. However I don't like them because
+they end up relying on function pointers/indirect calls.
 
-> =========================================================================================
-> compiler/kconfig/rootfs/sleep/tbox_group/testcase:
->   clang-14/x86_64-randconfig-a015-20230522/debian-11.1-i386-20220923.cgz/300/vm-snb/boot
-> 
-> commit:
->   812195e4f70e ("rcuscale: Measure grace-period kthread CPU time")  <-- old commit from dev.2023.05.20a branch
->   60901dadfadc ("rcuscale: Measure grace-period kthread CPU time")  <-- new commit from rcu/next branch
-> 
-> 812195e4f70ef0e9 60901dadfadcc152ae5cad7ebae
-> ---------------- ---------------------------
->        fail:runs  %reproduction    fail:runs
->            |             |             |
->           6:6         -100%            :7     dmesg.BUG:kernel_NULL_pointer_dereference,address
->           6:6         -100%            :7     dmesg.Kernel_panic-not_syncing:Fatal_exception
->           6:6         -100%            :7     dmesg.Oops:#[##]
->           6:6         -100%            :7     dmesg.boot_failures
-> 
-> --
-> Best Regards,
-> Yujie
-> 
+Hence the current pile of CPP hackery.. no indirect calls in sight.
+
+I really like how they end up simplifying the code, but perhaps y'all hate them
+with a passion?
+
+I'm thinking we'll at least have a good brawl over naming, esp. the void_guard
+needs a better name.
+
+Compile and boot tested with x86_64-defconfig.
+
