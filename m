@@ -2,206 +2,128 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69352C77B7E
-	for <rcu@archiver.kernel.org>; Sat, 27 May 2023 08:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39E45C77B7C
+	for <rcu@archiver.kernel.org>; Sat, 27 May 2023 10:27:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbjE0I6V (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 27 May 2023 04:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        id S231251AbjE0K15 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 27 May 2023 06:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231842AbjE0I6T (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 27 May 2023 04:58:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C38F124;
-        Sat, 27 May 2023 01:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n+GV4mqY5PO+y28Ga5UeEH8byUiW40IwwmGZjwfXm+M=; b=nb/z7hsbJk8kAEklUDOiq/iL0V
-        RPG36Y70bR/6WrqZkjDW7edEuJUwpqjPs+gD0lWnZmq5iZ6QSPAJRSqklWI95lI2vkyqrDGI2zZV1
-        pQBlrVvCzG2QQNlA5/t+5MKju2OlAb/JaPulDZttSfBkO4Xkema7KUHEuGEZrqXUOCG7MqGK6QVFi
-        TZJA5AX+DT/D94t9Zw5yRbYfViFU+bZatM5cMPLAYYO3k7zhWR65Rgu1kZdHy+gpUnF5GQxR6R1fW
-        DSWHWSlpSqKy5WCeW9ZEfUw6HPvlkgsosphEVATePAqJ7PIdV0BPyYRb1ZpdrxhAKH8d6EfuwufXK
-        x8AgAkyA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q2pkF-003i7k-HP; Sat, 27 May 2023 08:57:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 76B21300155;
-        Sat, 27 May 2023 10:57:49 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2BD47212FC843; Sat, 27 May 2023 10:57:49 +0200 (CEST)
-Date:   Sat, 27 May 2023 10:57:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 1/2] locking: Introduce __cleanup__ based guards
-Message-ID: <20230527085749.GA35187@hirez.programming.kicks-ass.net>
-References: <20230526205204.861311518@infradead.org>
- <20230526205855.587341916@infradead.org>
- <20230526212454.GB4057254@hirez.programming.kicks-ass.net>
- <CAHk-=wgt=cq_fU33DCv0=xD30sH8eOGHsEQRJQi=2vtrWt7oPQ@mail.gmail.com>
+        with ESMTP id S231218AbjE0K14 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 27 May 2023 06:27:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FC7F7;
+        Sat, 27 May 2023 03:27:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C9C660AED;
+        Sat, 27 May 2023 10:27:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A52F2C433EF;
+        Sat, 27 May 2023 10:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1685183273;
+        bh=C+WzGt1q9d0lH05NNK05+tR4vVIYrPDgEpHVAqLkZAc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UABfiHUpb+nRYDT82tFdgWn3aMX4jyrsJFbjdNZp++nQO53C2VDYOfdSmmzOFGX10
+         Gh/BhqAouZ92Z/rYXq27XJu7/rgJNF2MkSFSqTbSJat111F0GD+XJxQoq0IHyJKxqR
+         FCaamDN9nZlJJrnYyTG00nvRB6FT9LCP97PJpVER8LAj50EuN9UpO0+DcbN7ZI1pVy
+         DC3PF50Olhqx0pZY7UB5Qe6yRAbRLScp51QFKGEtCFt0II6XroAms62KcyQCRCmyXW
+         VzyRHC05Tn/N5JAAV9EgqTAnRlfP930lTzMP129hjSUI3mIrs1mBFl4wfdc/qsKFqL
+         Ae6nCyHaGb7vg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D5FB7CE0DB0; Sat, 27 May 2023 03:27:50 -0700 (PDT)
+Date:   Sat, 27 May 2023 03:27:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado 
+        <nfraprado@collabora.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] notifier: Initialize new struct srcu_usage field
+Message-ID: <b219e888-762a-454f-9a34-d0891f9cfe3a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230526073539.339203-1-wenst@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgt=cq_fU33DCv0=xD30sH8eOGHsEQRJQi=2vtrWt7oPQ@mail.gmail.com>
+In-Reply-To: <20230526073539.339203-1-wenst@chromium.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 26, 2023 at 02:54:40PM -0700, Linus Torvalds wrote:
-> What's wrong with just writing it out:
+On Fri, May 26, 2023 at 03:35:37PM +0800, Chen-Yu Tsai wrote:
+> In commit 95433f726301 ("srcu: Begin offloading srcu_struct fields to
+> srcu_update"), a new struct srcu_usage field was added, but was not
+> properly initialized. This led to a "spinlock bad magic" BUG when
+> the SRCU notifier was ever used. This was observed in the MediaTek
+> CCI devfreq driver on next-20230525. Trimmed stack trace as follows:
 > 
->     typedef struct fd guard_fdget_type_t;
->     static inline struct fd guard_fdget_init(int fd)
->     { return fdget(fd); }
->     static inline void guard_fdget_exit(struct fd fd)
->     { fdput(fd); }
+>     BUG: spinlock bad magic on CPU#4, swapper/0/1
+>      lock: 0xffffff80ff529ac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+>     Call trace:
+>      spin_bug+0xa4/0xe8
+>      do_raw_spin_lock+0xec/0x120
+>      _raw_spin_lock_irqsave+0x78/0xb8
+>      synchronize_srcu+0x3c/0x168
+>      srcu_notifier_chain_unregister+0x5c/0xa0
+>      cpufreq_unregister_notifier+0x94/0xe0
+>      devfreq_passive_event_handler+0x7c/0x3e0
+>      devfreq_remove_device+0x48/0xe8
 > 
+> Add __SRCU_USAGE_INIT() to SRCU_NOTIFIER_INIT() so that srcu_usage gets
+> initialized properly.
+> 
+> Fixes: 95433f726301 ("srcu: Begin offloading srcu_struct fields to srcu_update")
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-(wrong guard type, ptr_guard vs lock_guard) but yeah, I had this same
-realization during breakfast. Clearly the brain had already left last
-night.
+Good catch, thank you!
 
-Specifically, I think we want ptr_guard() here (and possibly fdnull for
-__to_fd(0)) for things like do_sendfile() where a struct fd is
-initialized late.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-The below seems to compile...
-
---- a/include/linux/file.h
-+++ b/include/linux/file.h
-@@ -10,6 +10,7 @@
- #include <linux/types.h>
- #include <linux/posix_types.h>
- #include <linux/errno.h>
-+#include <linux/guards.h>
- 
- struct file;
- 
-@@ -45,6 +46,13 @@ static inline void fdput(struct fd fd)
- 		fput(fd.file);
- }
- 
-+typedef struct fd ptr_guard_fdput_t;
-+
-+static inline void ptr_guard_fdput_cleanup(struct fd *fdp)
-+{
-+	fdput(*fdp);
-+}
-+
- extern struct file *fget(unsigned int fd);
- extern struct file *fget_raw(unsigned int fd);
- extern struct file *fget_task(struct task_struct *task, unsigned int fd);
-@@ -58,6 +66,8 @@ static inline struct fd __to_fd(unsigned
- 	return (struct fd){(struct file *)(v & ~3),v & 3};
- }
- 
-+#define fdnull	__to_fd(0)
-+
- static inline struct fd fdget(unsigned int fd)
- {
- 	return __to_fd(__fdget(fd));
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1180,7 +1180,8 @@ COMPAT_SYSCALL_DEFINE6(pwritev2, compat_ulong_t, fd,
- static ssize_t do_sendfile(int out_fd, int in_fd, loff_t *ppos,
- 		  	   size_t count, loff_t max)
- {
--	struct fd in, out;
-+	ptr_guard(fdput, in) = fdnull;
-+	ptr_guard(fdput, out) = fdnull;
- 	struct inode *in_inode, *out_inode;
- 	struct pipe_inode_info *opipe;
- 	loff_t pos;
-@@ -1191,35 +1192,35 @@ static ssize_t do_sendfile(int out_fd, int in_fd, loff_t *ppos,
- 	/*
- 	 * Get input file, and verify that it is ok..
- 	 */
--	retval = -EBADF;
- 	in = fdget(in_fd);
- 	if (!in.file)
--		goto out;
-+		return -EBADF;
- 	if (!(in.file->f_mode & FMODE_READ))
--		goto fput_in;
--	retval = -ESPIPE;
-+		return -EBADF;
-+
- 	if (!ppos) {
- 		pos = in.file->f_pos;
- 	} else {
- 		pos = *ppos;
- 		if (!(in.file->f_mode & FMODE_PREAD))
--			goto fput_in;
-+			return -ESPIPE;
- 	}
-+
- 	retval = rw_verify_area(READ, in.file, &pos, count);
- 	if (retval < 0)
--		goto fput_in;
-+		return retval;
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
- 
- 	/*
- 	 * Get output file, and verify that it is ok..
- 	 */
--	retval = -EBADF;
- 	out = fdget(out_fd);
- 	if (!out.file)
--		goto fput_in;
-+		return -EBADF;
- 	if (!(out.file->f_mode & FMODE_WRITE))
--		goto fput_out;
-+		return -EBADF;
-+
- 	in_inode = file_inode(in.file);
- 	out_inode = file_inode(out.file);
- 	out_pos = out.file->f_pos;
-@@ -1228,9 +1229,8 @@ static ssize_t do_sendfile(int out_fd, int in_fd, loff_t *ppos,
- 		max = min(in_inode->i_sb->s_maxbytes, out_inode->i_sb->s_maxbytes);
- 
- 	if (unlikely(pos + count > max)) {
--		retval = -EOVERFLOW;
- 		if (pos >= max)
--			goto fput_out;
-+			return -EOVERFLOW;
- 		count = max - pos;
- 	}
- 
-@@ -1249,7 +1249,7 @@ static ssize_t do_sendfile(int out_fd, int in_fd, loff_t *ppos,
- 	if (!opipe) {
- 		retval = rw_verify_area(WRITE, out.file, &out_pos, count);
- 		if (retval < 0)
--			goto fput_out;
-+			return retval;
- 		file_start_write(out.file);
- 		retval = do_splice_direct(in.file, &pos, out.file, &out_pos,
- 					  count, fl);
-@@ -1278,11 +1278,6 @@ static ssize_t do_sendfile(int out_fd, int in_fd, loff_t *ppos,
- 	if (pos > max)
- 		retval = -EOVERFLOW;
- 
--fput_out:
--	fdput(out);
--fput_in:
--	fdput(in);
--out:
- 	return retval;
- }
- 
+> ---
+> 
+> Also, the original patch subject said "srcu_update", however the data
+> structure ended up as "srcu_usage". Maybe that could be updated?
+> 
+>  include/linux/notifier.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/notifier.h b/include/linux/notifier.h
+> index 2aba75145144..86544707236a 100644
+> --- a/include/linux/notifier.h
+> +++ b/include/linux/notifier.h
+> @@ -106,12 +106,22 @@ extern void srcu_init_notifier_head(struct srcu_notifier_head *nh);
+>  #define RAW_NOTIFIER_INIT(name)	{				\
+>  		.head = NULL }
+>  
+> +#ifdef CONFIG_TREE_SRCU
+>  #define SRCU_NOTIFIER_INIT(name, pcpu)				\
+>  	{							\
+>  		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
+>  		.head = NULL,					\
+> +		.srcuu = __SRCU_USAGE_INIT(name.srcuu),		\
+>  		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
+>  	}
+> +#else
+> +#define SRCU_NOTIFIER_INIT(name, pcpu)				\
+> +	{							\
+> +		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
+> +		.head = NULL,					\
+> +		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
+> +	}
+> +#endif
+>  
+>  #define ATOMIC_NOTIFIER_HEAD(name)				\
+>  	struct atomic_notifier_head name =			\
+> -- 
+> 2.41.0.rc0.172.g3f132b7071-goog
+> 
