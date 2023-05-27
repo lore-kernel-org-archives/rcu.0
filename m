@@ -2,128 +2,255 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39E45C77B7C
-	for <rcu@archiver.kernel.org>; Sat, 27 May 2023 10:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA44C77B7E
+	for <rcu@archiver.kernel.org>; Sat, 27 May 2023 11:14:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbjE0K15 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 27 May 2023 06:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
+        id S231748AbjE0LOM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 27 May 2023 07:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjE0K14 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 27 May 2023 06:27:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FC7F7;
-        Sat, 27 May 2023 03:27:54 -0700 (PDT)
+        with ESMTP id S229730AbjE0LOL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 27 May 2023 07:14:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F3CEB;
+        Sat, 27 May 2023 04:14:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C9C660AED;
-        Sat, 27 May 2023 10:27:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A52F2C433EF;
-        Sat, 27 May 2023 10:27:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24FEE60A67;
+        Sat, 27 May 2023 11:14:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51F8EC433D2;
+        Sat, 27 May 2023 11:14:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685183273;
-        bh=C+WzGt1q9d0lH05NNK05+tR4vVIYrPDgEpHVAqLkZAc=;
+        s=k20201202; t=1685186048;
+        bh=8lS5P5G7+ed2XAfQO36H5TkRWeFxg24U8d5lDJYnpGI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UABfiHUpb+nRYDT82tFdgWn3aMX4jyrsJFbjdNZp++nQO53C2VDYOfdSmmzOFGX10
-         Gh/BhqAouZ92Z/rYXq27XJu7/rgJNF2MkSFSqTbSJat111F0GD+XJxQoq0IHyJKxqR
-         FCaamDN9nZlJJrnYyTG00nvRB6FT9LCP97PJpVER8LAj50EuN9UpO0+DcbN7ZI1pVy
-         DC3PF50Olhqx0pZY7UB5Qe6yRAbRLScp51QFKGEtCFt0II6XroAms62KcyQCRCmyXW
-         VzyRHC05Tn/N5JAAV9EgqTAnRlfP930lTzMP129hjSUI3mIrs1mBFl4wfdc/qsKFqL
-         Ae6nCyHaGb7vg==
+        b=N8ErpLvHVJqQJvzLJtuyll5Ie+vMSL9FPGkAI1/qRl+EzwSAbFNp27jHBY466zTqI
+         5NajK88xMih+9QaBiAkC5sBYLTyz1et2yEJN2C/8Z2eguzphH3iWZZO3dYxURUiswe
+         S4VLelwd9N8QttJDqB/nSc4FexEggGnoxMS8ByE37ALCKSQ9Gb7A250AgeUOZppHzL
+         fuHK0CgvkFl89TcFTW/pJLPR+4wgRENAgbujihED3vIRDv98j9PSUPg8KK9pkheA57
+         irnO6iImrRpKO5qOIl974oaVx3gsj5+UDwrJfntat8OXIyVAJwjw0SU/LbYjy9tQtJ
+         12uB8DYw9vU+w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D5FB7CE0DB0; Sat, 27 May 2023 03:27:50 -0700 (PDT)
-Date:   Sat, 27 May 2023 03:27:50 -0700
+        id 01298CE0DB0; Sat, 27 May 2023 04:14:05 -0700 (PDT)
+Date:   Sat, 27 May 2023 04:14:05 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado 
-        <nfraprado@collabora.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] notifier: Initialize new struct srcu_usage field
-Message-ID: <b219e888-762a-454f-9a34-d0891f9cfe3a@paulmck-laptop>
+To:     Qi Zheng <qi.zheng@linux.dev>
+Cc:     RCU <rcu@vger.kernel.org>, Yujie Liu <yujie.liu@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Kirill Tkhai <tkhai@ya.ru>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Hildenbrand <david@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
+Subject: Re: [linus:master] [mm] f95bdb700b: stress-ng.ramfs.ops_per_sec
+ -88.8% regression
+Message-ID: <44407892-b7bc-4d6c-8e4a-6452f0ee88b9@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230526073539.339203-1-wenst@chromium.org>
+References: <202305230837.db2c233f-yujie.liu@intel.com>
+ <eba38fce-2454-d7a4-10ef-240b4686f23d@linux.dev>
+ <ZG29ULGNJdErnatI@yujie-X299>
+ <896bbb09-d400-ec73-ba3a-b64c6e9bbe46@linux.dev>
+ <e5fb8b34-c1ad-92e0-e7e5-f7ed1605dbc6@linux.dev>
+ <bfb36563-fac9-4c84-96db-87dd28892088@linux.dev>
+ <be04dc3e-a671-ec70-6cf6-70dc702f4184@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230526073539.339203-1-wenst@chromium.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <be04dc3e-a671-ec70-6cf6-70dc702f4184@linux.dev>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, May 26, 2023 at 03:35:37PM +0800, Chen-Yu Tsai wrote:
-> In commit 95433f726301 ("srcu: Begin offloading srcu_struct fields to
-> srcu_update"), a new struct srcu_usage field was added, but was not
-> properly initialized. This led to a "spinlock bad magic" BUG when
-> the SRCU notifier was ever used. This was observed in the MediaTek
-> CCI devfreq driver on next-20230525. Trimmed stack trace as follows:
-> 
->     BUG: spinlock bad magic on CPU#4, swapper/0/1
->      lock: 0xffffff80ff529ac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
->     Call trace:
->      spin_bug+0xa4/0xe8
->      do_raw_spin_lock+0xec/0x120
->      _raw_spin_lock_irqsave+0x78/0xb8
->      synchronize_srcu+0x3c/0x168
->      srcu_notifier_chain_unregister+0x5c/0xa0
->      cpufreq_unregister_notifier+0x94/0xe0
->      devfreq_passive_event_handler+0x7c/0x3e0
->      devfreq_remove_device+0x48/0xe8
-> 
-> Add __SRCU_USAGE_INIT() to SRCU_NOTIFIER_INIT() so that srcu_usage gets
-> initialized properly.
-> 
-> Fixes: 95433f726301 ("srcu: Begin offloading srcu_struct fields to srcu_update")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+On Thu, May 25, 2023 at 12:03:16PM +0800, Qi Zheng wrote:
+> On 2023/5/24 19:56, Qi Zheng wrote:
+> > On 2023/5/24 19:08, Qi Zheng wrote:
+> > 
+> > [...]
+> > 
+> > > 
+> > > Well, I just ran the following command and reproduced the result:
+> > > 
+> > > stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
+> > > 
+> > > 1) with commit 42c9db3970483:
+> > > 
+> > > stress-ng: info:  [11023] setting to a 60 second run per stressor
+> > > stress-ng: info:  [11023] dispatching hogs: 9 ramfs
+> > > stress-ng: info:  [11023] stressor       bogo ops real time  usr
+> > > time sys time   bogo ops/s     bogo ops/s
+> > > stress-ng: info:  [11023]                           (secs)    (secs)
+> > > (secs)   (real time) (usr+sys time)
+> > > stress-ng: info:  [11023] ramfs            774966     60.00    
+> > > 10.18 169.45     12915.89        4314.26
+> > > stress-ng: info:  [11023] for a 60.00s run time:
+> > > stress-ng: info:  [11023]    1920.11s available CPU time
+> > > stress-ng: info:  [11023]      10.18s user time   (  0.53%)
+> > > stress-ng: info:  [11023]     169.44s system time (  8.82%)
+> > > stress-ng: info:  [11023]     179.62s total time  (  9.35%)
+> > > stress-ng: info:  [11023] load average: 8.99 2.69 0.93
+> > > stress-ng: info:  [11023] successful run completed in 60.00s (1 min,
+> > > 0.00 secs)
+> > > 
+> > > 2) with commit f95bdb700bc6b:
+> > > 
+> > > stress-ng: info:  [37676] dispatching hogs: 9 ramfs
+> > > stress-ng: info:  [37676] stressor       bogo ops real time  usr
+> > > time sys time   bogo ops/s     bogo ops/s
+> > > stress-ng: info:  [37676]                           (secs)    (secs)
+> > > (secs)   (real time) (usr+sys time)
+> > > stress-ng: info:  [37676] ramfs            168673     60.00     
+> > > 1.61   39.66      2811.08        4087.47
+> > > stress-ng: info:  [37676] for a 60.10s run time:
+> > > stress-ng: info:  [37676]    1923.36s available CPU time
+> > > stress-ng: info:  [37676]       1.60s user time   (  0.08%)
+> > > stress-ng: info:  [37676]      39.66s system time (  2.06%)
+> > > stress-ng: info:  [37676]      41.26s total time  (  2.15%)
+> > > stress-ng: info:  [37676] load average: 7.69 3.63 2.36
+> > > stress-ng: info:  [37676] successful run completed in 60.10s (1 min,
+> > > 0.10 secs)
+> > > 
+> > > The bogo ops/s (real time) did drop significantly.
+> > > 
+> > > And the memory reclaimation was not triggered in the whole process. so
+> > > theoretically no one is in the read critical section of shrinker_srcu.
+> > > 
+> > > Then I found that some stress-ng-ramfs processes were in
+> > > TASK_UNINTERRUPTIBLE state for a long time:
+> > > 
+> > > root       42313  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42314  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42315  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42316  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42317  7.8  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42318  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42319  7.8  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42320  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42321  7.8  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42322  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42323  7.8  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42324  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42325  7.8  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42326  0.0  0.0  69592  2068 pts/0    S    19:00   0:00
+> > > stress-ng-ramfs [run]
+> > > root       42327  7.9  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42328  7.9  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42329  7.9  0.0  69592  1812 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > root       42330  7.9  0.0  69592  1556 pts/0    D    19:00   0:02
+> > > stress-ng-ramfs [run]
+> > > 
+> > > Their call stack is as follows:
+> > > 
+> > > cat /proc/42330/stack
+> > > 
+> > > [<0>] __synchronize_srcu.part.21+0x83/0xb0
+> > > [<0>] unregister_shrinker+0x85/0xb0
+> > > [<0>] deactivate_locked_super+0x27/0x70
+> > > [<0>] cleanup_mnt+0xb8/0x140
+> > > [<0>] task_work_run+0x65/0x90
+> > > [<0>] exit_to_user_mode_prepare+0x1ba/0x1c0
+> > > [<0>] syscall_exit_to_user_mode+0x1b/0x40
+> > > [<0>] do_syscall_64+0x44/0x80
+> > > [<0>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > 
+> > > + RCU folks, Is this result as expected? I would have thought that
+> > > synchronize_srcu() should return quickly if no one is in the read
+> > > critical section. :(
 
-Good catch, thank you!
+In theory, it would indeed be nice if synchronize_srcu() would do that.
+In practice, the act of checking to see if there is anyone in an SRCU
+read-side critical section is a heavy-weight operation, involving at
+least one cache miss per CPU along with a number of full memory barriers.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+So SRCU has to be careful to not check too frequently.
 
-> ---
+However, if SRCU has been idle for some time, normal synchronize_srcu()
+will do an immediate check.  And this will of course mark SRCU as
+non-idle.
+
+> > With the following changes, ops/s can return to previous levels:
 > 
-> Also, the original patch subject said "srcu_update", however the data
-> structure ended up as "srcu_usage". Maybe that could be updated?
-> 
->  include/linux/notifier.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-> index 2aba75145144..86544707236a 100644
-> --- a/include/linux/notifier.h
-> +++ b/include/linux/notifier.h
-> @@ -106,12 +106,22 @@ extern void srcu_init_notifier_head(struct srcu_notifier_head *nh);
->  #define RAW_NOTIFIER_INIT(name)	{				\
->  		.head = NULL }
->  
-> +#ifdef CONFIG_TREE_SRCU
->  #define SRCU_NOTIFIER_INIT(name, pcpu)				\
->  	{							\
->  		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
->  		.head = NULL,					\
-> +		.srcuu = __SRCU_USAGE_INIT(name.srcuu),		\
->  		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
->  	}
-> +#else
-> +#define SRCU_NOTIFIER_INIT(name, pcpu)				\
-> +	{							\
-> +		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
-> +		.head = NULL,					\
-> +		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
-> +	}
-> +#endif
->  
->  #define ATOMIC_NOTIFIER_HEAD(name)				\
->  	struct atomic_notifier_head name =			\
-> -- 
-> 2.41.0.rc0.172.g3f132b7071-goog
-> 
+> Or just set rcu_expedited to 1:
+> 	echo 1 > /sys/kernel/rcu_expedited
+
+This does cause SRCU to be much more aggressive.  This can be a good
+choice for small systems, but please keep in mind that this affects normal
+RCU as well as SRCU.  It will cause RCU to also be much more aggressive,
+sending IPIs to CPUs that are (or might be) in RCU read-side critical
+sections.  Depending on your workload, this might or might not be what
+you want RCU to be doing.  For example, if you are running aggressive
+real-time workloads, it most definitely is not what you want.
+
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index db2ed6e08f67..90f541b07cd1 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -763,7 +763,7 @@ void unregister_shrinker(struct shrinker *shrinker)
+> >          debugfs_entry = shrinker_debugfs_remove(shrinker);
+> >          up_write(&shrinker_rwsem);
+> > 
+> > -       synchronize_srcu(&shrinker_srcu);
+> > +       synchronize_srcu_expedited(&shrinker_srcu);
+
+If shrinkers are unregistered only occasionally, this is an entirely
+reasonable change.
+
+> >          debugfs_remove_recursive(debugfs_entry);
+> > 
+> > stress-ng: info:  [13159] dispatching hogs: 9 ramfs
+> > stress-ng: info:  [13159] stressor       bogo ops real time  usr time
+> > sys time   bogo ops/s     bogo ops/s
+> > stress-ng: info:  [13159]                           (secs)    (secs)
+> > (secs)   (real time) (usr+sys time)
+> > stress-ng: info:  [13159] ramfs            710062     60.00      9.63
+> > 157.26     11834.18        4254.75
+> > stress-ng: info:  [13159] for a 60.00s run time:
+> > stress-ng: info:  [13159]    1920.14s available CPU time
+> > stress-ng: info:  [13159]       9.62s user time   (  0.50%)
+> > stress-ng: info:  [13159]     157.26s system time (  8.19%)
+> > stress-ng: info:  [13159]     166.88s total time  (  8.69%)
+> > stress-ng: info:  [13159] load average: 9.49 4.02 1.65
+> > stress-ng: info:  [13159] successful run completed in 60.00s (1 min,
+> > 0.00 secs)
+> > 
+> > Can we make synchronize_srcu() call synchronize_srcu_expedited() when no
+> > one is in the read critical section?
+
+Yes, in theory we could, but this would be a bad thing in practice.
+After all, the point of having synchronize_srcu() be separate from
+synchronize_srcu_expedited() is to allow uses that are OK with longer
+latency avoid consuming too much CPU.  In addition, that longer
+SRCU grace-period latency allows the next grace period to handle more
+synchronize_srcu() and call_srcu() requests.  This amortizes the
+overhead of that next grace period over a larger number of updates.
+
+However, your use of synchronize_srcu_expedited() does have that effect,
+but only for this call point.  Which has the advantage of avoiding
+burning excessive quantities of CPU for the other 50+ call points.
+
+							Thanx, Paul
