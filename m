@@ -2,99 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F567C77B7A
-	for <rcu@archiver.kernel.org>; Tue, 30 May 2023 00:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4851C77B7E
+	for <rcu@archiver.kernel.org>; Tue, 30 May 2023 03:07:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229494AbjE3AHQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 29 May 2023 20:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        id S229997AbjE3DHs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 29 May 2023 23:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjE3AHO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 29 May 2023 20:07:14 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201CAA8
-        for <rcu@vger.kernel.org>; Mon, 29 May 2023 17:07:13 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5147f4bbfdaso4764092a12.0
-        for <rcu@vger.kernel.org>; Mon, 29 May 2023 17:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1685405231; x=1687997231;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=suYdpofyVku3nNo6ZHkNcqAvkTrrn87SaHmt4Im5vn8=;
-        b=EVperXrVXFv94W+/cE+sVturt9OT9c2EfYJMOoHKR0IcXu3khzKyEQD4AHA5KGU2g5
-         Im4yILNs7UUYJHNsIcpt3lljYYzH1WBZSqphxOapmWNXg/x9x3vJqO5WwYsrPNfZEotr
-         WARegmxn9OcrJFinb7TCRPj7MuewimUvInGsY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685405231; x=1687997231;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=suYdpofyVku3nNo6ZHkNcqAvkTrrn87SaHmt4Im5vn8=;
-        b=AOEUzKdVGWwdTvUztooheLw6rQndbWbKG7mjVPPG6FEHl+BuTS9Kl6Vol9o4wjWjy2
-         h7bwG1iepay/87ok9mX0mdY0K0217178UYQJVb84IzlZWQGti8YEfPljKbc1lay7tzIP
-         7vxLg9a0ynu2n0zr1461Dd9n/WFjJQJ826hLbc1vR0V3k/50AaH5LKX5+0r1zsuHWqUi
-         8LbzXEg2HSxe0Iu/kha5Yy6d1cPMAis1RnN5+52GmCgvqABL9ufC8xz5SLWxJLELg871
-         w6467+E2RxUET/VtOVpr8AGVUGghoZsCtrQlL+ZhtZbAH+o3A7jHFOJRR3CBIq3NGLj+
-         Ddkw==
-X-Gm-Message-State: AC+VfDxevWg/K5ZGAT7jYVtFB5Spf9DuPiYRH9swk+ZvDjVW63J2g2Td
-        +8Lglyr7iRAzYdpRAcJ+LzrTfuHIVOCleHMZfNNF25ZQ
-X-Google-Smtp-Source: ACHHUZ6rtK3YIYtdihqTeO5zaeiOgapyAhnd8LpP8SamD2qbnLHx3AGxS0KyCUziWXetjWKfeOP0XA==
-X-Received: by 2002:a17:907:3f0c:b0:973:a3f4:c87b with SMTP id hq12-20020a1709073f0c00b00973a3f4c87bmr720694ejc.50.1685405231417;
-        Mon, 29 May 2023 17:07:11 -0700 (PDT)
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
-        by smtp.gmail.com with ESMTPSA id bg9-20020a170906a04900b0094f124a37c4sm6608230ejb.18.2023.05.29.17.07.10
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 May 2023 17:07:11 -0700 (PDT)
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-30ae7cc0e86so1811210f8f.1
-        for <rcu@vger.kernel.org>; Mon, 29 May 2023 17:07:10 -0700 (PDT)
-X-Received: by 2002:a17:907:7f16:b0:96f:65db:d6d2 with SMTP id
- qf22-20020a1709077f1600b0096f65dbd6d2mr646581ejc.14.1685405209906; Mon, 29
- May 2023 17:06:49 -0700 (PDT)
+        with ESMTP id S229672AbjE3DHr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 29 May 2023 23:07:47 -0400
+Received: from out-27.mta1.migadu.com (out-27.mta1.migadu.com [IPv6:2001:41d0:203:375::1b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD58DB0
+        for <rcu@vger.kernel.org>; Mon, 29 May 2023 20:07:45 -0700 (PDT)
+Message-ID: <26da75a6-115f-a17a-73bb-381a6b4a3a75@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1685416060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hhVCqVUhvZRjlBrxLBQaFs82AfnvT+az3ouF0P0dHAo=;
+        b=mlTKSDp327yaErwS5wPyUOFLhylZtOXgmCsi5D/Ahv65c8fdvz5AEvKl8wwzngX+XQyxB7
+        3xb9bQMv30BmVUREfvhaXsc5w+Js7ZPspdMxeFle/O48tfkrlr7T8waiZphxSHAtfQN4C0
+        /8vG5h5z2wHuFeuJA+FakXDh+Wquthg=
+Date:   Tue, 30 May 2023 11:07:29 +0800
 MIME-Version: 1.0
-References: <20230526205204.861311518@infradead.org> <CAHk-=wg2RHZKTN29Gr7MhgYfaNtzz58wry9jCNP75LAmQ9t8-A@mail.gmail.com>
- <CABgObfbhvOnqKQs9r2+3apg0UK3ub03Nf2SfGpe1=NcL9ewSSg@mail.gmail.com>
- <CAHk-=wjF4n=bEk-MDCWmOzyrm_zGsjP4RVkK72S3m4Oppg7F3Q@mail.gmail.com> <CAKOQZ8w_X8GyqE6xg2oY31hYkDWCPnVjLpdOK5Xo4E+ZMdJ9nA@mail.gmail.com>
-In-Reply-To: <CAKOQZ8w_X8GyqE6xg2oY31hYkDWCPnVjLpdOK5Xo4E+ZMdJ9nA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 29 May 2023 20:06:33 -0400
-X-Gmail-Original-Message-ID: <CAHk-=whEsr6fuVSdsoNPokLR2fZiGuo_hCLyrS-LCw7hT_N7cQ@mail.gmail.com>
-Message-ID: <CAHk-=whEsr6fuVSdsoNPokLR2fZiGuo_hCLyrS-LCw7hT_N7cQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
-To:     Ian Lance Taylor <iant@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [linus:master] [mm] f95bdb700b: stress-ng.ramfs.ops_per_sec
+ -88.8% regression
+Content-Language: en-US
+To:     paulmck@kernel.org, Kirill Tkhai <tkhai@ya.ru>
+Cc:     RCU <rcu@vger.kernel.org>, Yujie Liu <yujie.liu@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Hildenbrand <david@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
+References: <202305230837.db2c233f-yujie.liu@intel.com>
+ <eba38fce-2454-d7a4-10ef-240b4686f23d@linux.dev>
+ <ZG29ULGNJdErnatI@yujie-X299>
+ <896bbb09-d400-ec73-ba3a-b64c6e9bbe46@linux.dev>
+ <e5fb8b34-c1ad-92e0-e7e5-f7ed1605dbc6@linux.dev>
+ <bfb36563-fac9-4c84-96db-87dd28892088@linux.dev>
+ <be04dc3e-a671-ec70-6cf6-70dc702f4184@linux.dev>
+ <44407892-b7bc-4d6c-8e4a-6452f0ee88b9@paulmck-laptop>
+ <d4b1599d-14c1-071c-6205-09fe60f2ed8b@linux.dev>
+ <095806f1-f7f0-4914-b04b-c874fb25bb83@paulmck-laptop>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <095806f1-f7f0-4914-b04b-c874fb25bb83@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, May 29, 2023 at 5:27=E2=80=AFPM Ian Lance Taylor <iant@google.com> =
-wrote:
->
-> It was a while ago, but I expect that I was just thinking of the
-> implementation.  I agree that the documentation could be clearer.  I
-> filed https://gcc.gnu.org/PR110029.
+Hi,
 
-Thanks. I think we can proceed with the assumption that it's all
-clearly ordered. Even when the scopes are explicit (ie actual separate
-block scopes for the variables and no shared scope), doing a 'return'
-(or break out of a loop) will obviously exit multiple scopes at once,
-so it would be good to have it documented that the cleanup is always
-in that reverse order by scope and declaration order within a scope.
+On 2023/5/29 20:51, Paul E. McKenney wrote:
+> On Mon, May 29, 2023 at 10:39:21AM +0800, Qi Zheng wrote:
 
-I guess I should check with the clang people too.
+[...]
 
-              Linus
+>>
+>> Thanks for such a detailed explanation.
+>>
+>> Now I think we can continue to try to complete the idea[1] from
+>> Kirill Tkhai. The patch moves heavy synchronize_srcu() to delayed
+>> work, so it doesn't affect on user-visible unregistration speed.
+>>
+>> [1]. https://lore.kernel.org/lkml/153365636747.19074.12610817307548583381.stgit@localhost.localdomain/
+> 
+> A blast from the past!  ;-)
+> 
+> But yes, moving the long-latency synchronize_srcu() off the user-visible
+> critical code path can be even better.
+
+Yeah, I applied these patches  ([PATCH RFC 04/10]~[PATCH RFC 10/10],
+with few conflicts), the ops/s does get back to the previous levels.
+
+I'll continue updating this patchset after doing more testing.
+
+Thanks,
+Qi
+
+> 
+> 							Thanx, Paul
