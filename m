@@ -2,105 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6F82C7EE2A
-	for <rcu@archiver.kernel.org>; Thu,  1 Jun 2023 17:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4DA0C77B7A
+	for <rcu@archiver.kernel.org>; Thu,  1 Jun 2023 17:36:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbjFARQj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Jun 2023 13:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S231970AbjFARg6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Jun 2023 13:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbjFARQi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Jun 2023 13:16:38 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB5EE2;
-        Thu,  1 Jun 2023 10:16:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685639797; x=1717175797;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zJ/eQ8hVnS5028QEn4DwKlid6LJ4fXWWbli9hnrbanc=;
-  b=KbeS7LEjdxZ4YYFhmhei77T6ZMyljK8zfzI5AYBrSRo9VqiNZKY1nEC9
-   6qywow4o6gWS+2tkekGTe4ogF4WeAM/ACrjRkuLLX/LP9lb7EnR/3b4Uh
-   +gjpGDLjh6iaTv8E52161pcHmt+Yy1uSLrlsXEC0t5KufUHr5nl6+H04Y
-   mQs/FZieUfhwBlbRa/cuZBSKNOYycf+cSHkznHNbd90UXfSjVAAdJdJtv
-   reuOsoM8LM5TKhN+wzc9ODEjoeAiFJpeYwBRsCKGNd2VoTSJHih1gps4e
-   Pgdwuys/N7fwO7F2cV1wXxHfKkGj+xg4St3crW/GBQWFTbnADSOwXsgq4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="358922501"
-X-IronPort-AV: E=Sophos;i="6.00,210,1681196400"; 
-   d="scan'208";a="358922501"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2023 10:16:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="657874712"
-X-IronPort-AV: E=Sophos;i="6.00,210,1681196400"; 
-   d="scan'208";a="657874712"
-Received: from lkp-server01.sh.intel.com (HELO fb1ced2c09fb) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 01 Jun 2023 10:16:33 -0700
-Received: from kbuild by fb1ced2c09fb with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q4lua-0002WK-2j;
-        Thu, 01 Jun 2023 17:16:32 +0000
-Date:   Fri, 2 Jun 2023 01:15:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        rcu <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: Re: [PATCH 3/9] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
-Message-ID: <202306020110.p6f7zsig-lkp@intel.com>
-References: <20230531101736.12981-4-frederic@kernel.org>
+        with ESMTP id S229459AbjFARg5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Jun 2023 13:36:57 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7B2189;
+        Thu,  1 Jun 2023 10:36:56 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2af2ef0d0daso16080271fa.2;
+        Thu, 01 Jun 2023 10:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685641014; x=1688233014;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8pO4FII0u/eHrLOQ5BkkwHhkIfbGLfpdwLWunl0iT+U=;
+        b=Qdn7iBNNAPRZ7leN6ZIxkznUayUVVTWN1OPCmLtATOnYD//3SmKUOFKJ0UOUYfReU8
+         0vlKMCL9RX9GcFEXexp0N9UAaxAyHWT0Y5V693HLp9Kq4kdDM+yctXptXtscPfd29RxM
+         BV8enV4MFjScfo1CI2ggWvEkD0/ML73ca9GsIx1//ggueTgd0dPbpH2cXWaZtLYcf0mQ
+         y6NXIeR92PSmEPZNB0FU6CXnFLImbDMUgjEwfvEkJDkX0qStDrU6RSHEO5HG7IDpqcd1
+         wiupz8H8XqY2XhqWWK8bsOAIEiicjNyKXgGXuufAu8hVu2wB54WvbWk4COrlIzvRI95u
+         QzpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685641014; x=1688233014;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8pO4FII0u/eHrLOQ5BkkwHhkIfbGLfpdwLWunl0iT+U=;
+        b=bQo6B3Olu7hgIIlFzwZWaLX2cQa7YLxZVXGjfgADNjjxeuoyo34RuL9G8ewFUxYU1v
+         KAgs2cD1YsbGm2tFXCI1TUcSIuKDBhAGrgdgYNohKgrbqF3Dg3kYm1ehZMkxCSYAzlVo
+         Lq9QFOR9kISHeRsi9JUjWPyNJ7pGrq++8Q2GqRS+4nI2qJfLtRG3S7kQmMsQqx3AhqlK
+         B3Zj0z5rTwbJ51xdhfXgvBI/MkUOA8i1ZttWuprTZrwmMasJzUG5A68TJllh+TPvj23n
+         28RSX1t37EXvSi/EjXncYeLcdA7tYI6Zz6lXHVVFWUOeH/3sBYl3/Lh5AD9IsQ/sv+0X
+         tLLA==
+X-Gm-Message-State: AC+VfDyYIDGRQKtpddVMP1dFi5k3lkpksPsu8dL9uj/4JOWqKjaTZuVq
+        cwcq7V+ibzEndxKYMTdeNrYr0eUgp2H1ktI+agQ=
+X-Google-Smtp-Source: ACHHUZ40392VulkDYlINoWA/zAVgog1PROQ2CS8CZgWJopARs7kOjar4mfnmSR6zvulerCdXwmQVniUtve/Mixlt0rs=
+X-Received: by 2002:a2e:8892:0:b0:2a7:6d19:b569 with SMTP id
+ k18-20020a2e8892000000b002a76d19b569mr66121lji.53.1685641014220; Thu, 01 Jun
+ 2023 10:36:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230531101736.12981-4-frederic@kernel.org>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com> <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+ <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com> <20230504020051.xga5y5dj3rxobmea@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <d3169329-1453-e87a-fbb0-e1435f0741dc@huaweicloud.com>
+In-Reply-To: <d3169329-1453-e87a-fbb0-e1435f0741dc@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 1 Jun 2023 10:36:43 -0700
+Message-ID: <CAADnVQ+yK700YFHBQx5-UpxkqhgK-SyL=b=vCXJb448WvSHkEQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Frederic,
+On Wed, May 3, 2023 at 7:30=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
+>
+> > Construct the patch series as:
+> > - prep patches
+> > - benchmark
+> > - unconditional convert of bpf_ma to REUSE_AFTER_rcu_GP_and_free_after_=
+rcu_tasks_trace
+> >   with numbers from bench(s) before and after this patch.
+> Thanks again for the suggestion. Will do in v4.
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on paulmck-rcu/dev]
-[also build test ERROR on linus/master v6.4-rc4 next-20230601]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+It's been a month. Any update?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frederic-Weisbecker/rcu-Assume-IRQS-disabled-from-rcu_report_dead/20230531-182004
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
-patch link:    https://lore.kernel.org/r/20230531101736.12981-4-frederic%40kernel.org
-patch subject: [PATCH 3/9] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
-config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20230602/202306020110.p6f7zsig-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 12.3.0
-reproduce (this is a W=1 build):
-        mkdir -p ~/bin
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/c07a1bea9df8b80429d4e24052d83de94f5ee160
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Frederic-Weisbecker/rcu-Assume-IRQS-disabled-from-rcu_report_dead/20230531-182004
-        git checkout c07a1bea9df8b80429d4e24052d83de94f5ee160
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=mips olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306020110.p6f7zsig-lkp@intel.com/
-
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "rcu_get_jiffies_lazy_flush" [kernel/rcu/rcuscale.ko] undefined!
->> ERROR: modpost: "rcu_set_jiffies_lazy_flush" [kernel/rcu/rcuscale.ko] undefined!
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Should we take over this work if you're busy?
