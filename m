@@ -2,94 +2,107 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB346C77B7A
-	for <rcu@archiver.kernel.org>; Thu,  1 Jun 2023 19:21:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6885C7EE23
+	for <rcu@archiver.kernel.org>; Thu,  1 Jun 2023 22:40:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjFATVq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Jun 2023 15:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S229648AbjFAWku (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Jun 2023 18:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbjFATVo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Jun 2023 15:21:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284F013E;
-        Thu,  1 Jun 2023 12:21:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A857C64924;
-        Thu,  1 Jun 2023 19:21:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16C2BC433EF;
-        Thu,  1 Jun 2023 19:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685647302;
-        bh=R8ZXq4/9sL/Vcs0YG2bdwjiu82BUxaSwNos4HHu++pU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=V0nupLbxwoYLeb6REcRZ2P8ENisI1muZ2wVYPTgNPdmg6pDHnJoxHuuy0+7JkD2Z9
-         PNPCUoZ4SwvJIrGRad+tgaj2WsJ7Q9tz9PYHa+7XVdD3O9aIP61U2byQWfZ7bWK/KR
-         p/SK1dukZM1pzCXlKTZK823WVQAGxFL7u33uRdaH3Xutomp7/vKFlKanfZvOmFJJer
-         OlE4c8rsjQAW7rzaNod4IPu5cuJei0JIIoRZQ6LP1Tbkmi+0/qFs1EyjMAhymD7H8r
-         b+UL09VMz02+fxtz7pNnzc3JjlNBFualmYtl4Oz/rDMvQ8p8l/8/u5XmOkCq9kPWx9
-         fWtr6SPCoQk5Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A3F99CE04B0; Thu,  1 Jun 2023 12:21:41 -0700 (PDT)
-Date:   Thu, 1 Jun 2023 12:21:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Z qiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, hch@lst.de,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Subject: Re: [PATCH rcu 11/20] srcu: Move grace-period fields from
- srcu_struct to srcu_usage
-Message-ID: <bb71b53a-6913-480d-a519-04e2b6b3e0b6@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
- <20230330224726.662344-11-paulmck@kernel.org>
- <6549da46-dddc-67ac-73c4-966965addad7@nvidia.com>
- <CALm+0cVXGdLNQpfJxnAnq2j2Ybs_rVAEqNzxgLSq7bDJp1KnfA@mail.gmail.com>
- <0a35ce9d-8eec-4e10-a607-a2e84c8fc5a0@paulmck-laptop>
- <3e2b38f7-95a3-3d7a-9ac5-3d7712d181ab@nvidia.com>
+        with ESMTP id S231558AbjFAWkt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Jun 2023 18:40:49 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7004C12C;
+        Thu,  1 Jun 2023 15:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685659248; x=1717195248;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4PQmr3XNF2i2NFoC4sEFPaxJmOQAdvW8/knUm2N/aCI=;
+  b=XPNRLTWPHSjWzMkW5kJCoRs2aSwuBq2momkDkOABnx2ksqHEAn+3UhIq
+   vd593OCXbbTbIlJQQexlLMc/D5t8iFXtz0UydgB2atfzNMVD5wVrz7B0f
+   rz7GpUx5oe/CPVZEiRq1+PY1ksdcTiYN4L0+AXF0vyJ8LyckLKVZblGCW
+   rHi4VSUg1VUHTy7AB6ylapv8TBO0XzGxS0ow5byE5vuJRUZPSNNzKabY5
+   BZq7aME+2Z4JeCtuxUjWViwDYXEAR9QdrObRpvlfEs0siHzA9U/VWlxXk
+   KysyCKZDUq2CNuI788AnSfBXUlcsE2PmUJ0g9/zq0fx+AWCPp5PJq9gCU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="354560666"
+X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
+   d="scan'208";a="354560666"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2023 15:40:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="831735444"
+X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
+   d="scan'208";a="831735444"
+Received: from lkp-server01.sh.intel.com (HELO fb1ced2c09fb) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 01 Jun 2023 15:40:45 -0700
+Received: from kbuild by fb1ced2c09fb with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1q4qyK-0002jr-2m;
+        Thu, 01 Jun 2023 22:40:44 +0000
+Date:   Fri, 2 Jun 2023 06:40:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        rcu <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: Re: [PATCH 3/9] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+Message-ID: <202306020646.Ud0VLSIi-lkp@intel.com>
+References: <20230531101736.12981-4-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e2b38f7-95a3-3d7a-9ac5-3d7712d181ab@nvidia.com>
+In-Reply-To: <20230531101736.12981-4-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 01, 2023 at 06:14:21PM +0100, Jon Hunter wrote:
-> Hi Paul, Zqiang,
-> 
-> On 01/06/2023 14:46, Paul E. McKenney wrote:
-> 
-> ...
-> 
-> > Thank you both!
-> > 
-> > Huh.  It looks like Chen-Yu Tsai sent a patch to this effect and
-> > AngeloGioacchino Del Regno tested it.  No one has picked it up yet.
-> > 
-> > https://lore.kernel.org/all/20230526073539.339203-1-wenst@chromium.org/
-> > 
-> > This is clearly a regression, and I don't see it in -next.  I will pick
-> > it up and send it along in a few days if Matthias or Rafael don't beat
-> > me to it.
-> > 
-> > In the meantime, I would be happy to add Jon's Reported-by and Tested-by,
-> > along with Qiang's Acked-by or Reviewed-by.
-> 
-> 
-> Thanks for the rapid response. Yes that does fix the problem for me so ...
-> 
-> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Hi Frederic,
 
-Added, and again, thank you!
+kernel test robot noticed the following build errors:
 
-							Thanx, Paul
+[auto build test ERROR on paulmck-rcu/dev]
+[also build test ERROR on linus/master v6.4-rc4 next-20230601]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Frederic-Weisbecker/rcu-Assume-IRQS-disabled-from-rcu_report_dead/20230531-182004
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+patch link:    https://lore.kernel.org/r/20230531101736.12981-4-frederic%40kernel.org
+patch subject: [PATCH 3/9] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+config: arm-allyesconfig (https://download.01.org/0day-ci/archive/20230602/202306020646.Ud0VLSIi-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce (this is a W=1 build):
+        mkdir -p ~/bin
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/c07a1bea9df8b80429d4e24052d83de94f5ee160
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Frederic-Weisbecker/rcu-Assume-IRQS-disabled-from-rcu_report_dead/20230531-182004
+        git checkout c07a1bea9df8b80429d4e24052d83de94f5ee160
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=arm olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306020646.Ud0VLSIi-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arm-linux-gnueabi-ld: kernel/rcu/rcuscale.o: in function `kfree_scale_init':
+   rcuscale.c:(.init.text+0xec): undefined reference to `rcu_get_jiffies_lazy_flush'
+>> arm-linux-gnueabi-ld: rcuscale.c:(.init.text+0x104): undefined reference to `rcu_set_jiffies_lazy_flush'
+   arm-linux-gnueabi-ld: rcuscale.c:(.init.text+0x170): undefined reference to `rcu_set_jiffies_lazy_flush'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
