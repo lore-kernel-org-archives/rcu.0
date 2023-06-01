@@ -2,321 +2,162 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC360C7EE2E
-	for <rcu@archiver.kernel.org>; Thu,  1 Jun 2023 13:47:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A707C7EE23
+	for <rcu@archiver.kernel.org>; Thu,  1 Jun 2023 17:14:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbjFANrE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Jun 2023 09:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        id S231970AbjFAROh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Jun 2023 13:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232673AbjFANrD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Jun 2023 09:47:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DFF18C;
-        Thu,  1 Jun 2023 06:47:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA17863A2F;
-        Thu,  1 Jun 2023 13:46:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D87C433EF;
-        Thu,  1 Jun 2023 13:46:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685627219;
-        bh=mOEn6NeS2G4CGLrOLxKezUd2ckRxiszYxmNid9U2Xbc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=n3iM+CUR+Kj+zzMKxvrpZpz92Quwc35l+7G6G23qOxZfbFyaGXoXB18AgSA84ju6p
-         0vHyOOphHCdbQ62M7oL7p844c0uzqzeV6MwgU4cKPyfV3N5VFaN1wFkm7RyUDm4Kju
-         WpncHB4drQ8seKf39s+Jnjlx+haK20kCxiZfnpfUPR6gERuK0WSGedjs1HbAgnNyR+
-         jbeyklAAxlB7F5hHur3ZqYPuBVp24IQum7oYE2TNZ1evOGU0eDtzg4Ss0foDtxKjz3
-         EUQaYk6nqjZsfmjuKKqAhPx+LGQtB9Im4R5qiWDiCNcIEnZ38CngGG7N2AH6jx5FHx
-         Xqv4mengO66eQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B526ACE03BD; Thu,  1 Jun 2023 06:46:58 -0700 (PDT)
-Date:   Thu, 1 Jun 2023 06:46:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     Jon Hunter <jonathanh@nvidia.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, hch@lst.de,
+        with ESMTP id S232576AbjFAROg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Jun 2023 13:14:36 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2065.outbound.protection.outlook.com [40.107.100.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D29194;
+        Thu,  1 Jun 2023 10:14:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B2w/ktNlyQskzSQPM7OxdB/69KuRyfvuCD4oRr65tEgL/CejS6HYpAInKePGfPDDcYr4LfzdByJO4bYKAtgbA8cZcEgDEkLYSDvIehdklMCXt3MccXUT8+dLBQ4BW4TJkw2suD6TnENOVpGKSg9FfrEq73hJBrE9SFzUd759OJbR1oehMjNTajlPoGBKN+bbi9TR45n1GMHJXOaqLofkPM45J2QyVoFsAbie/eUVVhKgw7pYo3TOthvfA1PwHbK+9HmPiKlGf9xMTpw1wHFAYgOhIJ/CS341QOkcl71dl3wKT4EvTdaOBF2hWrtXl2Utd0vx55TIGOFdbf2ukUxkuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3MDh1J/AW/Cuj/CbEQImo5iP0KddAXWrwpFdM0xdpgI=;
+ b=XKPjCSEPL0Nh2bPPlcjrM8FfaehuegJ//+w6dM2VOvYtEOQSYigA6r9V+IhNWr1+a0syHqFnOYdKsmPc3v6/fsIc5hjddrcAJeISH0gJVa6r1OyzmlNk25OmTJ3SCLZxj5pTPJnptlOmTfhqj04AxhoGFGz8l1auLHW88uNMrb9NweJl12iqAz8LTXA+hiAgvC6H+ujYwsWnvCBCOspRa1fSEocXeJd5rl+U5ioA2AAo0hzT0URjEVrJbugPnva+ukjg1QMZPT407jziZLOFNfnno7idNenl+hFwMHy7wWlKlQgeVvK8doghoIag+/Bztbzk6Yh1Njc1EyXI4KeptA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3MDh1J/AW/Cuj/CbEQImo5iP0KddAXWrwpFdM0xdpgI=;
+ b=nAroHT646BEL81nadV9pfNWCD7ATAXfTtR2oJ36edHJ4m5HqDy8mm2mpHyuXi61wex9JB7AYGtA9+WLW8Bf9upzDimR9V/ZhxCoIdFOCkrhAJIhECOL+0m/2GKp6iwKtRhGbe1sZtVTxS2XzGuJziQXFfE6znxPPURDRdMMydeS+6lxyqb2zIFSNQp1KIWQCG6WlUxJC1AnaBjDE6v/j9NxBFCDhWH1ZkcThmjCTt7eSaOAl4VbohACCz79WFrNc3bXr2oyAXp5B/KTR/m/73okz+Y/TrcWbvLtkQzGz116etrsCnsAfNUlhDlByN7bN/IkQjZ4q693Dn3AbnJa/7A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH0PR12MB5452.namprd12.prod.outlook.com (2603:10b6:510:d7::16)
+ by PH8PR12MB6890.namprd12.prod.outlook.com (2603:10b6:510:1ca::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.23; Thu, 1 Jun
+ 2023 17:14:29 +0000
+Received: from PH0PR12MB5452.namprd12.prod.outlook.com
+ ([fe80::eec5:2994:7e58:1d70]) by PH0PR12MB5452.namprd12.prod.outlook.com
+ ([fe80::eec5:2994:7e58:1d70%6]) with mapi id 15.20.6455.020; Thu, 1 Jun 2023
+ 17:14:28 +0000
+Message-ID: <3e2b38f7-95a3-3d7a-9ac5-3d7712d181ab@nvidia.com>
+Date:   Thu, 1 Jun 2023 18:14:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH rcu 11/20] srcu: Move grace-period fields from srcu_struct
+ to srcu_usage
+Content-Language: en-US
+To:     paulmck@kernel.org, Z qiang <qiang.zhang1211@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, hch@lst.de,
         Sachin Sant <sachinp@linux.ibm.com>,
         "Zhang, Qiang1" <qiang1.zhang@intel.com>,
         "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
         Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Subject: Re: [PATCH rcu 11/20] srcu: Move grace-period fields from
- srcu_struct to srcu_usage
-Message-ID: <0a35ce9d-8eec-4e10-a607-a2e84c8fc5a0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
 References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
  <20230330224726.662344-11-paulmck@kernel.org>
  <6549da46-dddc-67ac-73c4-966965addad7@nvidia.com>
  <CALm+0cVXGdLNQpfJxnAnq2j2Ybs_rVAEqNzxgLSq7bDJp1KnfA@mail.gmail.com>
+ <0a35ce9d-8eec-4e10-a607-a2e84c8fc5a0@paulmck-laptop>
+From:   Jon Hunter <jonathanh@nvidia.com>
+In-Reply-To: <0a35ce9d-8eec-4e10-a607-a2e84c8fc5a0@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P265CA0422.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a0::26) To PH0PR12MB5452.namprd12.prod.outlook.com
+ (2603:10b6:510:d7::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALm+0cVXGdLNQpfJxnAnq2j2Ybs_rVAEqNzxgLSq7bDJp1KnfA@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR12MB5452:EE_|PH8PR12MB6890:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b1d19ec-b501-45a6-e6b8-08db62c3a85a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kkQGEw68CZ/E6/4iUBD1C/w3kZp8UFWjIPxezWrZ5uvPX4EqM0nXX9WCwJL3XSuxCJC97rDmDKI/O3b17bTzSRJU+/Mm5poHiqhovfmbKKSQxGxj+X+xrFw2FAIrVWLTS0s3Kj+M4yTNe/jq6SWB8j/o6DCfhttFlPPP+AtmMDv9j+f5GeWvmlmgPSdzKEiZtQ6S57dwhDY5lD04tge8MYy2XlG3Sj//NuoWh731GFYdCIUsgK2cGwkgI/wYZME+X6Koo7BS+zy/CO9HNmJIknfpQ2e8l0I0Ka/TilvK5/tB0YuToDoB6K3DBAC2tinkRa90ojtaLZgKblAAYzZ9u52Y/fgwUFTOtnsemD5o3S2m2vROWBUwXj3eZsWJ/u6WdlJOzPx58E9yN/eI0MpsVmZdGS2D1uZxxf+/SiyFHklSp4Z77aG1iuLH8eA65LEjbDGm2rTprnuKpsWQsC6kTrCoY1c/ERvBkOuN5kbcaoym/Lyd96uxdrJpP0yUjzcu15PFVXACELFL/NyL0yipFdXRJa4WQ4L5c6v/UN62vxPEtOzNjSRaX65XvIEzykZBj0uWeKyz+8jS29rwz4Vqtwu78V0FzzHEc6xub102S0qu9i7KPZhtRbSCRBvPu4Mghmmh2S0FbA0FvQ26/yMdjmT87FTJNmeA/wZpYa3wICfrKAkPE3c2exwj6ViRqI8Q
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5452.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(396003)(346002)(39860400002)(366004)(451199021)(8676002)(2616005)(186003)(2906002)(4744005)(4326008)(6916009)(66946007)(66476007)(6486002)(6666004)(316002)(66556008)(54906003)(478600001)(7416002)(6512007)(55236004)(53546011)(6506007)(26005)(5660300002)(966005)(8936002)(41300700001)(38100700002)(36756003)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RmM5ck54RXY3UFhMcG1NeGN4WHArYjh0KzI3SVlhaERwaEQzb0xnbm85K05s?=
+ =?utf-8?B?c0Zid0g3L2FBa3B3aEVKNFpPQ2NSRWcxTFI2aDdldXJsYVM5SitOUFlOWG5Q?=
+ =?utf-8?B?M04zZEMxLzFLV3hhbCtzMVZsZVhDQ3JtY25EZ1RnUUJXNC9LSUFnWmxjRVBa?=
+ =?utf-8?B?bHRGTmxzcVlnR0lGbmxLb2FHWW80ODlSd1NYU2cwcENzSkg5TXczaHloWlRW?=
+ =?utf-8?B?OWMrcC9hWE0xRDRnNzhvYk9ZOTJOUlBWNW1Kak5sM2t2RnRaZENnb1dpTzM5?=
+ =?utf-8?B?SExiM3RiWmJQbzJPT3hSMkNzOWJMMnpyUUtySnBKc0xtS2lOVW9IMlljR0Q5?=
+ =?utf-8?B?Sy9uYmZObHRhMlpoa21YNkpId3c2U2NqUEt2cEFpZHlSazlmdDljL2l2SmRP?=
+ =?utf-8?B?cEpVbklMTm1MYVVveitoWlpKNFNQVG52cjlYdzk1THlKeWxYTmZpTXZGMFJN?=
+ =?utf-8?B?QVNvZmlCZkxESTRZa2Z4eXR3Z2FpVDdIWGtrMldaSkQ5WFpCaHlta1N1K3NE?=
+ =?utf-8?B?QXBWb3lqeGt0SzFXck5neENGZW1tRnBwKzZQS0tJdDlGaDhZcGZOdDZJWWdn?=
+ =?utf-8?B?U2tOaUNKN1grNnN6eUJYektwZFF6TVFHTTBINXVRbFdtdi9IbUx5ak5yRkx1?=
+ =?utf-8?B?VElMNnc2SlRxZnc2SFpOdEdGTjdFL1pTa3FRVjNSaVJ4WnJ2d1lTQURpSVhm?=
+ =?utf-8?B?T1BJZmF2WDA3TFdSMTBiVTcxRFdNZ1Z4cG5JUHhseXE0cmppWFpmRjg4R2tu?=
+ =?utf-8?B?R05nbDdLN1BKcUhxMk0rR2dNRjhLZGkvTS85U1JxcUZKMkUvNzRaaDZ3cVVS?=
+ =?utf-8?B?NmlQOWFiSFJpUU40eVpWSFZldnJOTWFpYjNlUHI4WGdRUDV1aXpyeERjUnNp?=
+ =?utf-8?B?Z2g0NXZxZ3FmWVMrYWxGRzdxei8wNnlXYlJDV1ZvRW5DaVdmdFM2OC9sdi9F?=
+ =?utf-8?B?MlRpNlZTVnB2L050VVpJellHSFVZd21MTkQzazlyU0Q4emp5TWtLejNBOVdw?=
+ =?utf-8?B?aE1wZDZqU2VHRFhCQ01kSlF3VkpGRkhyaXBqeHFIZjgyRHJHT1lEUkp1dVU0?=
+ =?utf-8?B?eHFabTNVOFlBdEdTUGZ4eDdSbEREUEdEZm9qR0dWWGw5cEtSeXlpamdKVlEr?=
+ =?utf-8?B?Sk1mVGg0Q3ZWSDJHY2hVeC9hbU1kZUdvaGViQ2V6bGpHNU90eEk4NWRNNjFF?=
+ =?utf-8?B?NjNwZ3NhaGRZdzhoWEhJZlRJM0tlWVhZMHlwSExzZTZ4K0FMK0FqTzFzU0NI?=
+ =?utf-8?B?Wjh6RHFpT3ozQStzb3d6NzdzU015K2pXQi9pK1UzRG95TXhiOTJmYy9iWUpV?=
+ =?utf-8?B?OVhXS3Y3SEtFaEhWMGg4MmRvWDMzckdIcjBjMStvK0RrWVhGTlpuWGZlVERH?=
+ =?utf-8?B?VE4wbVNYSGtTWDROL0FLNldmaUhnOUt4YlN1NHZjRWxwUFpYOFhlQnNURzY2?=
+ =?utf-8?B?R1FWaUFrK2EydEZCdnE2NWpqeTNsQnBYYlYvM1JhT3h6V3dpb1pQb0diVzEw?=
+ =?utf-8?B?VGszS3lTOFRKTS95SXN4cks2UFBORGRZZndwSTJLQWZ3WWFBWHZOaTJkTWFP?=
+ =?utf-8?B?Nnd4d1B1VzNxRU9MZzFzOWRMd3FtY0hBNnpSME0yY1RhYWRLNzh2TUY1OFd1?=
+ =?utf-8?B?NFduMHZBcnQ2ZTUyVSs0U2FsVmlrZmdyOHRUYlYrdTFxcndKZE9hY0paVTFC?=
+ =?utf-8?B?RWc5VmpzWU9IaisxVFBOU2IwQkZnMVpyWm01UjMrUndxSm9IM0JzNzR3bVp5?=
+ =?utf-8?B?RlBPRHhlUnhMcjdpRFNBNHpZeEJGQURnaEp6VnFKbjZNamNVb2wxOEUyNmQ2?=
+ =?utf-8?B?djQ4U3lOZVVadGQ4YzR1dldwSmRtWitydXZ0M3dhYmQxdzVvbjdsM2tZcThJ?=
+ =?utf-8?B?aWRBN0RtTlBYcEtKK3VRb2dQdXlWM3pMQTRVMDlVMkxiRi9sSU1sb1Y3c3ow?=
+ =?utf-8?B?RlhUU3g3QTFJcURxdWtQZlh4UHNxeU9kWGZ5YTIrdDJrU0Z3S0FQZmdNdHlY?=
+ =?utf-8?B?dVlaUEwzbUdtbktWMlRjakhxVDRVemNHN1JMbEk3REhxS0Z3UythelplTTh3?=
+ =?utf-8?B?SDdZM2ZkS0k0NUtEVjFUQVBnWi9uZkMvWGRyYnJ6MHU1eWJaMTVYZWx0Unha?=
+ =?utf-8?B?T3JSQjRLOGk5cFNWWUo0U3lGYlZwSlZkTGhXT3A0cHJBNWJadFJuMGVOdkQz?=
+ =?utf-8?B?NlE9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b1d19ec-b501-45a6-e6b8-08db62c3a85a
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5452.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2023 17:14:28.9071
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MHtXsjSbZbT8YPqPW+3b9DiOIDbTj5xkplP1O6a+aZNYvuyU8j/eeO3slVVaMkaHNF9dDP+CPdMDxPyLwg8uqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6890
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 01, 2023 at 08:33:10PM +0800, Z qiang wrote:
-> >
-> > Hi Paul,
-> >
-> > On 30/03/2023 23:47, Paul E. McKenney wrote:
-> > > This commit moves the ->srcu_gp_seq, ->srcu_gp_seq_needed,
-> > > ->srcu_gp_seq_needed_exp, ->srcu_gp_start, and ->srcu_last_gp_end fields
-> > > from the srcu_struct structure to the srcu_usage structure to reduce
-> > > the size of the former in order to improve cache locality.
-> > >
-> > > Suggested-by: Christoph Hellwig <hch@lst.de>
-> > > Tested-by: Sachin Sant <sachinp@linux.ibm.com>
-> > > Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> >
-> > I have noticed a suspend regression on some of our Tegra boards recently
-> with v6.4-rc and interestingly bisect is pointing to this commit. I was
-> unable revert this on top of the latest mainline but if I checkout this
-> commit suspend fails and if I checkout the previous commit is passes.
-> >
-> > Enabling more debug I was able to capture the following crash log I see
-> on one of the boards ...
-> >
-> > [   57.327645] PM: suspend entry (deep)
-> > [   57.331660] Filesystems sync: 0.000 seconds
-> > [   57.340147] Freezing user space processes
-> > [   57.347470] Freezing user space processes completed (elapsed 0.007
-> seconds)
-> > [   57.347501] OOM killer disabled.
-> > [   57.347508] Freezing remaining freezable tasks
-> > [   57.348834] Freezing remaining freezable tasks completed (elapsed
-> 0.001 seconds)
-> > [   57.349932] 8<--- cut here ---
-> > [   57.349943] Unable to handle kernel NULL pointer dereference at
-> virtual address 00000000 when write
-> > [   57.349960] [00000000] *pgd=00000000
-> > [   57.349986] Internal error: Oops: 805 [#1] PREEMPT SMP ARM
-> > [   57.350007] Modules linked in: tegra30_tsensor
-> > [   57.350033] CPU: 0 PID: 589 Comm: rtcwake Not tainted
-> 6.3.0-rc1-00011-g03200b5ca3b4-dirty #3
-> > [   57.350057] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
-> > [   57.350067] PC is at rcu_segcblist_enqueue+0x2c/0x38
-> > [   57.350120] LR is at srcu_gp_start_if_needed+0xe4/0x544
-> > [   57.350169] pc : [<c01a5120>]    lr : [<c0198b5c>]    psr: a0070093
-> > [   57.350183] sp : f0b2dd20  ip : 3b5870ef  fp : 00000000
-> > [   57.350194] r10: ef787d84  r9 : 00000000  r8 : ef787d80
-> > [   57.350205] r7 : 80070013  r6 : c131ec30  r5 : ef787d40  r4 : f0b2dd64
-> > [   57.350217] r3 : 00000000  r2 : 00000000  r1 : f0b2dd64  r0 : ef787d84
-> > [   57.350230] Flags: NzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM
->  Segment none
-> > [   57.350251] Control: 10c5387d  Table: 81d8004a  DAC: 00000051
-> > [   57.350261] Register r0 information: non-slab/vmalloc memory
-> > [   57.350283] Register r1 information: 2-page vmalloc region starting at
-> 0xf0b2c000 allocated at kernel_clone+0xb4/0x3e4
-> > [   57.350322] Register r2 information: NULL pointer
-> > [   57.350337] Register r3 information: NULL pointer
-> > [   57.350350] Register r4 information: 2-page vmalloc region starting at
-> 0xf0b2c000 allocated at kernel_clone+0xb4/0x3e4
-> > [   57.350379] Register r5 information: non-slab/vmalloc memory
-> > [   57.350394] Register r6 information: non-slab/vmalloc memory
-> > [   57.350408] Register r7 information: non-paged memory
-> > [   57.350422] Register r8 information: non-slab/vmalloc memory
-> > [   57.350436] Register r9 information: NULL pointer
-> > [   57.350449] Register r10 information: non-slab/vmalloc memory
-> > [   57.350463] Register r11 information: NULL pointer
-> > [   57.350477] Register r12 information: non-paged memory
-> > [   57.350491] Process rtcwake (pid: 589, stack limit = 0x410bb531)
-> > [   57.350510] Stack: (0xf0b2dd20 to 0xf0b2e000)
-> > [   57.350534] dd20: 00000000 c1ee4a40 f0b2dd7c c0184f24 ef781495
-> 3b5870ef c1ee4a40 c1ee4a40
-> > [   57.350555] dd40: c131ec30 00000000 00000002 c0f3d1fc c3542ac0
-> c2abbb10 c1ee4a40 c0199044
-> > [   57.350574] dd60: 60070013 00000000 c0195924 00000000 00000000
-> f0b2dd74 f0b2dd74 3b5870ef
-> > [   57.350592] dd80: 00000000 c131ebc0 c120ab28 c0146d9c c2785b94
-> c2785b40 c0fee9f4 c0872590
-> > [   57.350611] dda0: c2785b40 c08c39cc c2785b40 c08c3a3c c2788c00
-> c08c40b0 c0f3d1fc c066f028
-> > [   57.350630] ddc0: f0b2de14 c2788c00 c1325ef4 c08c1d40 c2788c00
-> c1325ef4 c0fee9f4 c08c31cc
-> > [   57.350648] dde0: c13708a0 0000000d 00000000 c0681c10 c16afe84
-> 00000002 56508788 0000000d
-> > [   57.350665] de00: 00000002 c13708a0 10624dd3 56409580 0000000d
-> 00000000 00000002 c0f3d1fc
-> > [   57.350685] de20: c3542ac0 c2abbb10 c1ee4a40 c06824e4 00000000
-> ffffa900 00000000 c1386510
-> > [   57.350703] de40: 00000003 00000003 c1204f75 c017e8a8 c3542ac0
-> c2abbb10 00428228 c0171574
-> > [   57.350721] de60: 00000000 00000000 00000003 3b5870ef c1204f75
-> 00000000 00000003 c137aeb4
-> > [   57.350739] de80: c1204f75 c0f3d1fc c3542ac0 c2abbb10 00428228
-> c017f380 00000003 c0f38a54
-> > [   57.350757] dea0: 00000003 c1386524 00000004 c017d708 00000004
-> c2abbb00 00000000 00000000
-> > [   57.350775] dec0: c3542ac0 f0b2df28 c2abbb10 c03305b4 00000000
-> 00000000 c2953c00 c1ee4a40
-> > [   57.350794] dee0: 00429438 00000004 c0d18488 00004004 00000000
-> c02b1094 00000a55 c1d80010
-> > [   57.350812] df00: c1d80010 00000000 00000000 f0b2df78 01010006
-> 00000004 00000000 00429438
-> > [   57.350830] df20: 00000000 00000000 c2953c00 00000000 00000000
-> 00000000 00000000 00000000
-> > [   57.350848] df40: 00000000 00004004 00000000 00000000 0000006c
-> 3b5870ef c2953c00 c2953c00
-> > [   57.350866] df60: 00000000 00000000 c1ee4a40 00429438 00000004
-> c02b12c8 00000000 00000000
-> > [   57.350885] df80: 00001008 3b5870ef 0000006c 00429438 00428228
-> 00000004 c0100324 c1ee4a40
-> > [   57.350902] dfa0: 00000004 c01000c0 0000006c 00429438 00000004
-> 00429438 00000004 00000000
-> > [   57.350920] dfc0: 0000006c 00429438 00428228 00000004 00000004
-> 00000004 0041578c 00428228
-> > [   57.350938] dfe0: 00000004 becda9a8 b6e9bc0b b6e26206 600f0030
-> 00000004 00000000 00000000
-> > [   57.350960]  rcu_segcblist_enqueue from
-> srcu_gp_start_if_needed+0xe4/0x544
-> > [   57.351023]  srcu_gp_start_if_needed from
-> __synchronize_srcu.part.6+0x70/0x98
-> > [   57.351084]  __synchronize_srcu.part.6 from
-> srcu_notifier_chain_unregister+0x6c/0xdc
-> > [   57.351155]  srcu_notifier_chain_unregister from
-> cpufreq_unregister_notifier+0x60/0xbc
-> > [   57.351215]  cpufreq_unregister_notifier from
-> tegra_actmon_pause.part.0+0x1c/0x54
-> > [   57.351277]  tegra_actmon_pause.part.0 from tegra_actmon_stop+0x38/0x3c
-> > [   57.351324]  tegra_actmon_stop from
-> tegra_governor_event_handler+0x100/0x11c
-> > [   57.351373]  tegra_governor_event_handler from
-> devfreq_suspend_device+0x64/0xac
-> > [   57.351423]  devfreq_suspend_device from devfreq_suspend+0x30/0x64
-> > [   57.351467]  devfreq_suspend from dpm_suspend+0x34/0x33c
-> > [   57.351506]  dpm_suspend from dpm_suspend_start+0x90/0x98
-> > [   57.351528]  dpm_suspend_start from
-> suspend_devices_and_enter+0xe4/0x93c
-> > [   57.351573]  suspend_devices_and_enter from pm_suspend+0x280/0x3ac
-> > [   57.351614]  pm_suspend from state_store+0x6c/0xc8
-> > [   57.351654]  state_store from kernfs_fop_write_iter+0x118/0x1b4
-> > [   57.351696]  kernfs_fop_write_iter from vfs_write+0x314/0x3d4
-> > [   57.351733]  vfs_write from ksys_write+0xa0/0xd0
-> > [   57.351760]  ksys_write from ret_fast_syscall+0x0/0x54
-> > [   57.351788] Exception stack(0xf0b2dfa8 to 0xf0b2dff0)
-> > [   57.351809] dfa0:                   0000006c 00429438 00000004
-> 00429438 00000004 00000000
-> > [   57.351828] dfc0: 0000006c 00429438 00428228 00000004 00000004
-> 00000004 0041578c 00428228
-> > [   57.351843] dfe0: 00000004 becda9a8 b6e9bc0b b6e26206
-> > [   57.351863] Code: e2833001 e5803034 e5812000 e5903010 (e5831000)
-> > [   57.351875] ---[ end trace 0000000000000000 ]---
-> >
-> >
-> > I have not dug into this yet and so wanted to see if you have any
-> thoughts on this?
-> >
+Hi Paul, Zqiang,
+
+On 01/06/2023 14:46, Paul E. McKenney wrote:
+
+...
+
+> Thank you both!
 > 
-> Hi, Jon
+> Huh.  It looks like Chen-Yu Tsai sent a patch to this effect and
+> AngeloGioacchino Del Regno tested it.  No one has picked it up yet.
 > 
-> Please try it:
+> https://lore.kernel.org/all/20230526073539.339203-1-wenst@chromium.org/
 > 
-> diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-> index 2aba75145144..3ce6b59e02e5 100644
-> --- a/include/linux/notifier.h
-> +++ b/include/linux/notifier.h
-> @@ -110,6 +110,7 @@ extern void srcu_init_notifier_head(struct
-> srcu_notifier_head *nh);
->         {                                                       \
->                 .mutex = __MUTEX_INITIALIZER(name.mutex),       \
->                 .head = NULL,                                   \
-> +               .srcuu = __SRCU_USAGE_INIT(name.srcuu),         \
->                 .srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
->         }
+> This is clearly a regression, and I don't see it in -next.  I will pick
+> it up and send it along in a few days if Matthias or Rafael don't beat
+> me to it.
+> 
+> In the meantime, I would be happy to add Jon's Reported-by and Tested-by,
+> along with Qiang's Acked-by or Reviewed-by.
 
-Thank you both!
 
-Huh.  It looks like Chen-Yu Tsai sent a patch to this effect and
-AngeloGioacchino Del Regno tested it.  No one has picked it up yet.
+Thanks for the rapid response. Yes that does fix the problem for me so ...
 
-https://lore.kernel.org/all/20230526073539.339203-1-wenst@chromium.org/
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-This is clearly a regression, and I don't see it in -next.  I will pick
-it up and send it along in a few days if Matthias or Rafael don't beat
-me to it.
+Cheers!
+Jon
 
-In the meantime, I would be happy to add Jon's Reported-by and Tested-by,
-along with Qiang's Acked-by or Reviewed-by.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit bf7da55fcdd1478839b21697cf0534be1f149a49
-Author: Chen-Yu Tsai <wenst@chromium.org>
-Date:   Fri May 26 15:35:37 2023 +0800
-
-    notifier: Initialize new struct srcu_usage field
-    
-    In commit 95433f726301 ("srcu: Begin offloading srcu_struct fields to
-    srcu_update"), a new struct srcu_usage field was added, but was not
-    properly initialized. This led to a "spinlock bad magic" BUG when the
-    SRCU notifier was ever used. This was observed in the MediaTek CCI
-    devfreq driver on next-20230525. The trimmed stack trace is as follows:
-    
-        BUG: spinlock bad magic on CPU#4, swapper/0/1
-         lock: 0xffffff80ff529ac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-        Call trace:
-         spin_bug+0xa4/0xe8
-         do_raw_spin_lock+0xec/0x120
-         _raw_spin_lock_irqsave+0x78/0xb8
-         synchronize_srcu+0x3c/0x168
-         srcu_notifier_chain_unregister+0x5c/0xa0
-         cpufreq_unregister_notifier+0x94/0xe0
-         devfreq_passive_event_handler+0x7c/0x3e0
-         devfreq_remove_device+0x48/0xe8
-    
-    Add __SRCU_USAGE_INIT() to SRCU_NOTIFIER_INIT() so that srcu_usage gets
-    initialized properly.
-    
-    Fixes: 95433f726301 ("srcu: Begin offloading srcu_struct fields to srcu_update")
-    Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-    Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-    Cc: Matthias Brugger <matthias.bgg@gmail.com>
-    Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-    Cc: "Michał Mirosław" <mirq-linux@rere.qmqm.pl>
-    Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-    Cc: Sachin Sant <sachinp@linux.ibm.com>
-    Cc: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-    Cc: Joel Fernandes (Google) <joel@joelfernandes.org
-    Cc: Jon Hunter <jonathanh@nvidia.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-index 2aba75145144..86544707236a 100644
---- a/include/linux/notifier.h
-+++ b/include/linux/notifier.h
-@@ -106,12 +106,22 @@ extern void srcu_init_notifier_head(struct srcu_notifier_head *nh);
- #define RAW_NOTIFIER_INIT(name)	{				\
- 		.head = NULL }
- 
-+#ifdef CONFIG_TREE_SRCU
- #define SRCU_NOTIFIER_INIT(name, pcpu)				\
- 	{							\
- 		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
- 		.head = NULL,					\
-+		.srcuu = __SRCU_USAGE_INIT(name.srcuu),		\
- 		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
- 	}
-+#else
-+#define SRCU_NOTIFIER_INIT(name, pcpu)				\
-+	{							\
-+		.mutex = __MUTEX_INITIALIZER(name.mutex),	\
-+		.head = NULL,					\
-+		.srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
-+	}
-+#endif
- 
- #define ATOMIC_NOTIFIER_HEAD(name)				\
- 	struct atomic_notifier_head name =			\
+-- 
+nvpublic
