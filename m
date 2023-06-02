@@ -2,107 +2,169 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6885C7EE23
-	for <rcu@archiver.kernel.org>; Thu,  1 Jun 2023 22:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2975FC7EE2A
+	for <rcu@archiver.kernel.org>; Fri,  2 Jun 2023 02:40:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbjFAWku (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Jun 2023 18:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S231628AbjFBCkA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 1 Jun 2023 22:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231558AbjFAWkt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Jun 2023 18:40:49 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7004C12C;
-        Thu,  1 Jun 2023 15:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685659248; x=1717195248;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4PQmr3XNF2i2NFoC4sEFPaxJmOQAdvW8/knUm2N/aCI=;
-  b=XPNRLTWPHSjWzMkW5kJCoRs2aSwuBq2momkDkOABnx2ksqHEAn+3UhIq
-   vd593OCXbbTbIlJQQexlLMc/D5t8iFXtz0UydgB2atfzNMVD5wVrz7B0f
-   rz7GpUx5oe/CPVZEiRq1+PY1ksdcTiYN4L0+AXF0vyJ8LyckLKVZblGCW
-   rHi4VSUg1VUHTy7AB6ylapv8TBO0XzGxS0ow5byE5vuJRUZPSNNzKabY5
-   BZq7aME+2Z4JeCtuxUjWViwDYXEAR9QdrObRpvlfEs0siHzA9U/VWlxXk
-   KysyCKZDUq2CNuI788AnSfBXUlcsE2PmUJ0g9/zq0fx+AWCPp5PJq9gCU
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="354560666"
-X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
-   d="scan'208";a="354560666"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2023 15:40:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="831735444"
-X-IronPort-AV: E=Sophos;i="6.00,211,1681196400"; 
-   d="scan'208";a="831735444"
-Received: from lkp-server01.sh.intel.com (HELO fb1ced2c09fb) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 01 Jun 2023 15:40:45 -0700
-Received: from kbuild by fb1ced2c09fb with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q4qyK-0002jr-2m;
-        Thu, 01 Jun 2023 22:40:44 +0000
-Date:   Fri, 2 Jun 2023 06:40:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        rcu <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: Re: [PATCH 3/9] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
-Message-ID: <202306020646.Ud0VLSIi-lkp@intel.com>
-References: <20230531101736.12981-4-frederic@kernel.org>
+        with ESMTP id S229598AbjFBCj7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 1 Jun 2023 22:39:59 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D217C192;
+        Thu,  1 Jun 2023 19:39:56 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QXRzr0mfrz4f3tDr;
+        Fri,  2 Jun 2023 10:39:52 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgDnUCt2VnlkSnKEKA--.16099S2;
+        Fri, 02 Jun 2023 10:39:53 +0800 (CST)
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com>
+ <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+ <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com>
+ <20230504020051.xga5y5dj3rxobmea@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <d3169329-1453-e87a-fbb0-e1435f0741dc@huaweicloud.com>
+ <CAADnVQ+yK700YFHBQx5-UpxkqhgK-SyL=b=vCXJb448WvSHkEQ@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com>
+Date:   Fri, 2 Jun 2023 10:39:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230531101736.12981-4-frederic@kernel.org>
+In-Reply-To: <CAADnVQ+yK700YFHBQx5-UpxkqhgK-SyL=b=vCXJb448WvSHkEQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgDnUCt2VnlkSnKEKA--.16099S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3GrW5tF4fury8Kr1DGF47twb_yoW7Ww1rpr
+        18Jr1UJryUJr18Jr18Jr1UJryUJF1UJw1DJr1UJF18Jr1UJr1jqr1UXr1jgr15Jr48Jr1U
+        JryUJr1UZr1UJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Frederic,
+Hi,
 
-kernel test robot noticed the following build errors:
+On 6/2/2023 1:36 AM, Alexei Starovoitov wrote:
+> On Wed, May 3, 2023 at 7:30 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>> Construct the patch series as:
+>>> - prep patches
+>>> - benchmark
+>>> - unconditional convert of bpf_ma to REUSE_AFTER_rcu_GP_and_free_after_rcu_tasks_trace
+>>>   with numbers from bench(s) before and after this patch.
+>> Thanks again for the suggestion. Will do in v4.
+>
+> It's been a month. Any update?
+>
+> Should we take over this work if you're busy?
+Sorry for the delay. I should post some progress information about the
+patch set early. The patch set is simpler compared with v3, I had
+implemented v4 about two weeks ago. The problem is v4 don't work as
+expected: its memory usage is huge compared with v3. The following is
+the output from htab-mem benchmark:
 
-[auto build test ERROR on paulmck-rcu/dev]
-[also build test ERROR on linus/master v6.4-rc4 next-20230601]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+overwrite:
+Summary: loop   11.07 ±    1.25k/s, memory usage  995.08 ±  680.87MiB,
+peak memory usage 2183.38MiB
+batch_add_batch_del:
+Summary: loop   11.48 ±    1.24k/s, memory usage 1393.36 ±  780.41MiB,
+peak memory usage 2836.68MiB
+add_del_on_diff_cpu:
+Summary: loop    6.07 ±    0.69k/s, memory usage   14.44 ±    2.34MiB,
+peak memory usage   20.30MiB
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frederic-Weisbecker/rcu-Assume-IRQS-disabled-from-rcu_report_dead/20230531-182004
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
-patch link:    https://lore.kernel.org/r/20230531101736.12981-4-frederic%40kernel.org
-patch subject: [PATCH 3/9] rcu: Rename jiffies_till_flush to jiffies_lazy_flush
-config: arm-allyesconfig (https://download.01.org/0day-ci/archive/20230602/202306020646.Ud0VLSIi-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce (this is a W=1 build):
-        mkdir -p ~/bin
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/c07a1bea9df8b80429d4e24052d83de94f5ee160
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Frederic-Weisbecker/rcu-Assume-IRQS-disabled-from-rcu_report_dead/20230531-182004
-        git checkout c07a1bea9df8b80429d4e24052d83de94f5ee160
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=arm olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
+The direct reason for the huge memory usage is slower RCU grace period.
+The RCU grace period used for reuse is much longer compared with v3 and
+it is about 100ms or more (e.g, 2.6s). I am still trying to find out the
+root cause of the slow RCU grace period. The first guest is the running
+time of bpf program attached to getpgid() is longer, so the context
+switch in bench is slowed down. The hist-diagram of getpgid() latency in
+v4 indeed manifests a lot of abnormal tail latencies compared with v3 as
+shown below.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306020646.Ud0VLSIi-lkp@intel.com/
+v3 getpid() latency during overwrite benchmark:
+@hist_ms:
+[0]               193451
+|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[1]                  767
+|                                                    |
+[2, 4)                75
+|                                                    |
+[4, 8)                 1
+|                                                    |
 
-All errors (new ones prefixed by >>):
+v4 getpid() latency during overwrite benchmark:
+@hist_ms:
+[0]                86270
+|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[1]                31252
+|@@@@@@@@@@@@@@@@@@                                  |
+[2, 4)                 1
+|                                                    |
+[4, 8)                 0
+|                                                    |
+[8, 16)                0
+|                                                    |
+[16, 32)               0
+|                                                    |
+[32, 64)               0
+|                                                    |
+[64, 128)              0
+|                                                    |
+[128, 256)             3
+|                                                    |
+[256, 512)             2
+|                                                    |
+[512, 1K)              1
+|                                                    |
+[1K, 2K)               2
+|                                                    |
+[2K, 4K)               1
+|                                                    |
 
-   arm-linux-gnueabi-ld: kernel/rcu/rcuscale.o: in function `kfree_scale_init':
-   rcuscale.c:(.init.text+0xec): undefined reference to `rcu_get_jiffies_lazy_flush'
->> arm-linux-gnueabi-ld: rcuscale.c:(.init.text+0x104): undefined reference to `rcu_set_jiffies_lazy_flush'
-   arm-linux-gnueabi-ld: rcuscale.c:(.init.text+0x170): undefined reference to `rcu_set_jiffies_lazy_flush'
+I think the newly-added global spin-lock in memory allocator and
+irq-work running under the context of free procedure may lead to
+abnormal tail latency and I am trying to demonstrate that by using
+fine-grain locks and kworker (just temporarily). But on the other side,
+considering the number of abnormal tail latency is much smaller compared
+with the total number of getpgid() syscall, so I think maybe there is
+still other causes for the slow RCU GP.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Because the progress of v4 is delayed, so how about I post v4 as soon as
+possible for discussion (maybe I did it wrong) and at the same time I
+continue to investigate the slow RCU grace period problem (I will try to
+get some help from RCU community) ?
+
+Regards,
+Tao
+
