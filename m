@@ -2,258 +2,177 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DC86C7EE23
-	for <rcu@archiver.kernel.org>; Fri,  2 Jun 2023 03:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EB7FC7EE2A
+	for <rcu@archiver.kernel.org>; Fri,  2 Jun 2023 16:25:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbjFBDJg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 1 Jun 2023 23:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        id S236293AbjFBQZy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Jun 2023 12:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjFBDJf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 1 Jun 2023 23:09:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D30B99;
-        Thu,  1 Jun 2023 20:09:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D63CB64B52;
-        Fri,  2 Jun 2023 03:09:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39FAEC433D2;
-        Fri,  2 Jun 2023 03:09:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685675372;
-        bh=lT3DRaDnzCtY5HZ/+mcnS9Hy1L0iKIHZDgxm9uup6PQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZhJbvLE3uxBfyE/4KtYUZu8sXF4+uzBIu2Nn4OsHxCWdhc9br7+E1gTS/uaRYvDkJ
-         cM/icYpbzZg6RzPMmupGyR/zvOtJXXXk+Q8x7Fi2WZVNSwYkIRo/kTi5TeaCR7brjd
-         0KYFMTlIJffz8IWzQHODkS1j3v61EiovGJarp0vGH85gZ2XC8DDSfMwhH0kHyjR0MO
-         65o9urJsNR75MITp50mmI2+dmzQvqKMcuhNHLUmIiUaxgd6Ga3HS5K7zu9UKqlZspt
-         CPfFU9yQrLOLZ6OG8ABW5VvewgVn61HpnTGwegzILcpINcheZO3qnI0uXYLyT704Lk
-         W3T3N46wRe72Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BDFEACE3B3D; Thu,  1 Jun 2023 20:09:31 -0700 (PDT)
-Date:   Thu, 1 Jun 2023 20:09:31 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     Jon Hunter <jonathanh@nvidia.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, hch@lst.de,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Subject: Re: [PATCH rcu 11/20] srcu: Move grace-period fields from
- srcu_struct to srcu_usage
-Message-ID: <f0ce2b72-21d2-4a74-ad67-5bf0e63abd98@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
- <20230330224726.662344-11-paulmck@kernel.org>
- <6549da46-dddc-67ac-73c4-966965addad7@nvidia.com>
- <CALm+0cVXGdLNQpfJxnAnq2j2Ybs_rVAEqNzxgLSq7bDJp1KnfA@mail.gmail.com>
- <0a35ce9d-8eec-4e10-a607-a2e84c8fc5a0@paulmck-laptop>
- <CALm+0cWkVsMBQo+rHHWFSwsAkRTOmHxXJDSuVE9Dhh=1fHTmEg@mail.gmail.com>
+        with ESMTP id S236074AbjFBQZt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Jun 2023 12:25:49 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D41BC;
+        Fri,  2 Jun 2023 09:25:48 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b1b30445cfso8488621fa.1;
+        Fri, 02 Jun 2023 09:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685723146; x=1688315146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=COBcCF+iqFLg2ELZjta/++J+eLYWdmq7Z9BVQrIYE4o=;
+        b=D7Lt4N312/TcGxi+DsfkgPg2xTpBlvD/Cr7ORXYKo9MsA3eNR+4wTwWXhcjxvP0amD
+         I4c9/I6U7BrpHxJvKkiHvN8L1awEAHXqV5wZ86PP4Z+FM+o11vVeNUvJ9GhvTThudWfv
+         pBAtoeoMnBY0Txwwol9bPd5iLchVN5y1JK0r44WqENbJfiV1nyfEMeo686JRKPabbXjs
+         5PrqYAeTEy/o5s3A+3QmfcqsHCQK+HxsCIOuD9cU0mKswxdB2TMvRrWL8i+A12sc8ubk
+         hqCtcAIv6lYgiozN5oq6AhqJXoTFBfbd0fZXuDQfJYIYZ6Z5Zg781PCJKPFs4ZkZjClq
+         5ThA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685723146; x=1688315146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=COBcCF+iqFLg2ELZjta/++J+eLYWdmq7Z9BVQrIYE4o=;
+        b=et0Z2Pgop8r3NCr79vcGho/tL8m79lX+7qwKUoP+m/srXUwbcmR2qKccud2uWHQEes
+         nMnr6l1Zoy1i+QOV2gUuaekUCoLEY/cwiX9MAQXt/Xn8o7W13kPqOK33Rows3NgkBIzl
+         0RugPp0euVaUnoeEQOcoEFsfQI3BK41YBGUh8NVVxCIZ65NF9Pq5NV/oC8NTvOz2CGx/
+         Voadx9FhHwhRzqUcradWKQHFidGhdtYu513KxnGsp5i9r5QNXAYqKySggy1GHFV55qAk
+         OWFHNKYPfHrX7NuIoYz/+7ivWvQFKtSEZqXficIvvoIrz7gMk9qepyOo7uV2iMDTyBsU
+         SxlA==
+X-Gm-Message-State: AC+VfDwIrR+79IyeFwPefrFoLqQkOCVPOUcWoGH0YF0fXwzACv7mroCA
+        DANzNPSa/BcTfQP6VBAf4oYt9su5eNTrzPDGM/auXQ90
+X-Google-Smtp-Source: ACHHUZ5r/bT7KN+XOUb8Wor8y3IRxoWnVJd1hO5DC29K7adR9PhcU6suO2pETn4esvEsBoLpxSzcHbnwD/+o35d6jds=
+X-Received: by 2002:a2e:7407:0:b0:2af:2441:f709 with SMTP id
+ p7-20020a2e7407000000b002af2441f709mr318465ljc.29.1685723146010; Fri, 02 Jun
+ 2023 09:25:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cWkVsMBQo+rHHWFSwsAkRTOmHxXJDSuVE9Dhh=1fHTmEg@mail.gmail.com>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com> <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+ <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com> <20230504020051.xga5y5dj3rxobmea@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <d3169329-1453-e87a-fbb0-e1435f0741dc@huaweicloud.com> <CAADnVQ+yK700YFHBQx5-UpxkqhgK-SyL=b=vCXJb448WvSHkEQ@mail.gmail.com>
+ <1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com>
+In-Reply-To: <1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 2 Jun 2023 09:25:34 -0700
+Message-ID: <CAADnVQJ8N=LScYNDqKCYbFdq4R_YSVkrrvUG1nqGhaqYy+mdMg@mail.gmail.com>
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jun 02, 2023 at 10:52:44AM +0800, Z qiang wrote:
+On Thu, Jun 1, 2023 at 7:40=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
+>
+> Hi,
+>
+> On 6/2/2023 1:36 AM, Alexei Starovoitov wrote:
+> > On Wed, May 3, 2023 at 7:30=E2=80=AFPM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >>> Construct the patch series as:
+> >>> - prep patches
+> >>> - benchmark
+> >>> - unconditional convert of bpf_ma to REUSE_AFTER_rcu_GP_and_free_afte=
+r_rcu_tasks_trace
+> >>>   with numbers from bench(s) before and after this patch.
+> >> Thanks again for the suggestion. Will do in v4.
 > >
-> > On Thu, Jun 01, 2023 at 08:33:10PM +0800, Z qiang wrote:
-> > > >
-> > > > Hi Paul,
-> > > >
-> > > > On 30/03/2023 23:47, Paul E. McKenney wrote:
-> > > > > This commit moves the ->srcu_gp_seq, ->srcu_gp_seq_needed,
-> > > > > ->srcu_gp_seq_needed_exp, ->srcu_gp_start, and ->srcu_last_gp_end fields
-> > > > > from the srcu_struct structure to the srcu_usage structure to reduce
-> > > > > the size of the former in order to improve cache locality.
-> > > > >
-> > > > > Suggested-by: Christoph Hellwig <hch@lst.de>
-> > > > > Tested-by: Sachin Sant <sachinp@linux.ibm.com>
-> > > > > Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
-> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >
-> > > >
-> > > > I have noticed a suspend regression on some of our Tegra boards recently
-> > > with v6.4-rc and interestingly bisect is pointing to this commit. I was
-> > > unable revert this on top of the latest mainline but if I checkout this
-> > > commit suspend fails and if I checkout the previous commit is passes.
-> > > >
-> > > > Enabling more debug I was able to capture the following crash log I see
-> > > on one of the boards ...
-> > > >
-> > > > [   57.327645] PM: suspend entry (deep)
-> > > > [   57.331660] Filesystems sync: 0.000 seconds
-> > > > [   57.340147] Freezing user space processes
-> > > > [   57.347470] Freezing user space processes completed (elapsed 0.007
-> > > seconds)
-> > > > [   57.347501] OOM killer disabled.
-> > > > [   57.347508] Freezing remaining freezable tasks
-> > > > [   57.348834] Freezing remaining freezable tasks completed (elapsed
-> > > 0.001 seconds)
-> > > > [   57.349932] 8<--- cut here ---
-> > > > [   57.349943] Unable to handle kernel NULL pointer dereference at
-> > > virtual address 00000000 when write
-> > > > [   57.349960] [00000000] *pgd=00000000
-> > > > [   57.349986] Internal error: Oops: 805 [#1] PREEMPT SMP ARM
-> > > > [   57.350007] Modules linked in: tegra30_tsensor
-> > > > [   57.350033] CPU: 0 PID: 589 Comm: rtcwake Not tainted
-> > > 6.3.0-rc1-00011-g03200b5ca3b4-dirty #3
-> > > > [   57.350057] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
-> > > > [   57.350067] PC is at rcu_segcblist_enqueue+0x2c/0x38
-> > > > [   57.350120] LR is at srcu_gp_start_if_needed+0xe4/0x544
-> > > > [   57.350169] pc : [<c01a5120>]    lr : [<c0198b5c>]    psr: a0070093
-> > > > [   57.350183] sp : f0b2dd20  ip : 3b5870ef  fp : 00000000
-> > > > [   57.350194] r10: ef787d84  r9 : 00000000  r8 : ef787d80
-> > > > [   57.350205] r7 : 80070013  r6 : c131ec30  r5 : ef787d40  r4 : f0b2dd64
-> > > > [   57.350217] r3 : 00000000  r2 : 00000000  r1 : f0b2dd64  r0 : ef787d84
-> > > > [   57.350230] Flags: NzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM
-> > >  Segment none
-> > > > [   57.350251] Control: 10c5387d  Table: 81d8004a  DAC: 00000051
-> > > > [   57.350261] Register r0 information: non-slab/vmalloc memory
-> > > > [   57.350283] Register r1 information: 2-page vmalloc region starting at
-> > > 0xf0b2c000 allocated at kernel_clone+0xb4/0x3e4
-> > > > [   57.350322] Register r2 information: NULL pointer
-> > > > [   57.350337] Register r3 information: NULL pointer
-> > > > [   57.350350] Register r4 information: 2-page vmalloc region starting at
-> > > 0xf0b2c000 allocated at kernel_clone+0xb4/0x3e4
-> > > > [   57.350379] Register r5 information: non-slab/vmalloc memory
-> > > > [   57.350394] Register r6 information: non-slab/vmalloc memory
-> > > > [   57.350408] Register r7 information: non-paged memory
-> > > > [   57.350422] Register r8 information: non-slab/vmalloc memory
-> > > > [   57.350436] Register r9 information: NULL pointer
-> > > > [   57.350449] Register r10 information: non-slab/vmalloc memory
-> > > > [   57.350463] Register r11 information: NULL pointer
-> > > > [   57.350477] Register r12 information: non-paged memory
-> > > > [   57.350491] Process rtcwake (pid: 589, stack limit = 0x410bb531)
-> > > > [   57.350510] Stack: (0xf0b2dd20 to 0xf0b2e000)
-> > > > [   57.350534] dd20: 00000000 c1ee4a40 f0b2dd7c c0184f24 ef781495
-> > > 3b5870ef c1ee4a40 c1ee4a40
-> > > > [   57.350555] dd40: c131ec30 00000000 00000002 c0f3d1fc c3542ac0
-> > > c2abbb10 c1ee4a40 c0199044
-> > > > [   57.350574] dd60: 60070013 00000000 c0195924 00000000 00000000
-> > > f0b2dd74 f0b2dd74 3b5870ef
-> > > > [   57.350592] dd80: 00000000 c131ebc0 c120ab28 c0146d9c c2785b94
-> > > c2785b40 c0fee9f4 c0872590
-> > > > [   57.350611] dda0: c2785b40 c08c39cc c2785b40 c08c3a3c c2788c00
-> > > c08c40b0 c0f3d1fc c066f028
-> > > > [   57.350630] ddc0: f0b2de14 c2788c00 c1325ef4 c08c1d40 c2788c00
-> > > c1325ef4 c0fee9f4 c08c31cc
-> > > > [   57.350648] dde0: c13708a0 0000000d 00000000 c0681c10 c16afe84
-> > > 00000002 56508788 0000000d
-> > > > [   57.350665] de00: 00000002 c13708a0 10624dd3 56409580 0000000d
-> > > 00000000 00000002 c0f3d1fc
-> > > > [   57.350685] de20: c3542ac0 c2abbb10 c1ee4a40 c06824e4 00000000
-> > > ffffa900 00000000 c1386510
-> > > > [   57.350703] de40: 00000003 00000003 c1204f75 c017e8a8 c3542ac0
-> > > c2abbb10 00428228 c0171574
-> > > > [   57.350721] de60: 00000000 00000000 00000003 3b5870ef c1204f75
-> > > 00000000 00000003 c137aeb4
-> > > > [   57.350739] de80: c1204f75 c0f3d1fc c3542ac0 c2abbb10 00428228
-> > > c017f380 00000003 c0f38a54
-> > > > [   57.350757] dea0: 00000003 c1386524 00000004 c017d708 00000004
-> > > c2abbb00 00000000 00000000
-> > > > [   57.350775] dec0: c3542ac0 f0b2df28 c2abbb10 c03305b4 00000000
-> > > 00000000 c2953c00 c1ee4a40
-> > > > [   57.350794] dee0: 00429438 00000004 c0d18488 00004004 00000000
-> > > c02b1094 00000a55 c1d80010
-> > > > [   57.350812] df00: c1d80010 00000000 00000000 f0b2df78 01010006
-> > > 00000004 00000000 00429438
-> > > > [   57.350830] df20: 00000000 00000000 c2953c00 00000000 00000000
-> > > 00000000 00000000 00000000
-> > > > [   57.350848] df40: 00000000 00004004 00000000 00000000 0000006c
-> > > 3b5870ef c2953c00 c2953c00
-> > > > [   57.350866] df60: 00000000 00000000 c1ee4a40 00429438 00000004
-> > > c02b12c8 00000000 00000000
-> > > > [   57.350885] df80: 00001008 3b5870ef 0000006c 00429438 00428228
-> > > 00000004 c0100324 c1ee4a40
-> > > > [   57.350902] dfa0: 00000004 c01000c0 0000006c 00429438 00000004
-> > > 00429438 00000004 00000000
-> > > > [   57.350920] dfc0: 0000006c 00429438 00428228 00000004 00000004
-> > > 00000004 0041578c 00428228
-> > > > [   57.350938] dfe0: 00000004 becda9a8 b6e9bc0b b6e26206 600f0030
-> > > 00000004 00000000 00000000
-> > > > [   57.350960]  rcu_segcblist_enqueue from
-> > > srcu_gp_start_if_needed+0xe4/0x544
-> > > > [   57.351023]  srcu_gp_start_if_needed from
-> > > __synchronize_srcu.part.6+0x70/0x98
-> > > > [   57.351084]  __synchronize_srcu.part.6 from
-> > > srcu_notifier_chain_unregister+0x6c/0xdc
-> > > > [   57.351155]  srcu_notifier_chain_unregister from
-> > > cpufreq_unregister_notifier+0x60/0xbc
-> > > > [   57.351215]  cpufreq_unregister_notifier from
-> > > tegra_actmon_pause.part.0+0x1c/0x54
-> > > > [   57.351277]  tegra_actmon_pause.part.0 from tegra_actmon_stop+0x38/0x3c
-> > > > [   57.351324]  tegra_actmon_stop from
-> > > tegra_governor_event_handler+0x100/0x11c
-> > > > [   57.351373]  tegra_governor_event_handler from
-> > > devfreq_suspend_device+0x64/0xac
-> > > > [   57.351423]  devfreq_suspend_device from devfreq_suspend+0x30/0x64
-> > > > [   57.351467]  devfreq_suspend from dpm_suspend+0x34/0x33c
-> > > > [   57.351506]  dpm_suspend from dpm_suspend_start+0x90/0x98
-> > > > [   57.351528]  dpm_suspend_start from
-> > > suspend_devices_and_enter+0xe4/0x93c
-> > > > [   57.351573]  suspend_devices_and_enter from pm_suspend+0x280/0x3ac
-> > > > [   57.351614]  pm_suspend from state_store+0x6c/0xc8
-> > > > [   57.351654]  state_store from kernfs_fop_write_iter+0x118/0x1b4
-> > > > [   57.351696]  kernfs_fop_write_iter from vfs_write+0x314/0x3d4
-> > > > [   57.351733]  vfs_write from ksys_write+0xa0/0xd0
-> > > > [   57.351760]  ksys_write from ret_fast_syscall+0x0/0x54
-> > > > [   57.351788] Exception stack(0xf0b2dfa8 to 0xf0b2dff0)
-> > > > [   57.351809] dfa0:                   0000006c 00429438 00000004
-> > > 00429438 00000004 00000000
-> > > > [   57.351828] dfc0: 0000006c 00429438 00428228 00000004 00000004
-> > > 00000004 0041578c 00428228
-> > > > [   57.351843] dfe0: 00000004 becda9a8 b6e9bc0b b6e26206
-> > > > [   57.351863] Code: e2833001 e5803034 e5812000 e5903010 (e5831000)
-> > > > [   57.351875] ---[ end trace 0000000000000000 ]---
-> > > >
-> > > >
-> > > > I have not dug into this yet and so wanted to see if you have any
-> > > thoughts on this?
-> > > >
-> > >
-> > > Hi, Jon
-> > >
-> > > Please try it:
-> > >
-> > > diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-> > > index 2aba75145144..3ce6b59e02e5 100644
-> > > --- a/include/linux/notifier.h
-> > > +++ b/include/linux/notifier.h
-> > > @@ -110,6 +110,7 @@ extern void srcu_init_notifier_head(struct
-> > > srcu_notifier_head *nh);
-> > >         {                                                       \
-> > >                 .mutex = __MUTEX_INITIALIZER(name.mutex),       \
-> > >                 .head = NULL,                                   \
-> > > +               .srcuu = __SRCU_USAGE_INIT(name.srcuu),         \
-> > >                 .srcu = __SRCU_STRUCT_INIT(name.srcu, name.srcuu, pcpu), \
-> > >         }
+> > It's been a month. Any update?
 > >
-> > Thank you both!
-> >
-> > Huh.  It looks like Chen-Yu Tsai sent a patch to this effect and
-> > AngeloGioacchino Del Regno tested it.  No one has picked it up yet.
-> >
-> > https://lore.kernel.org/all/20230526073539.339203-1-wenst@chromium.org/
-> >
-> > This is clearly a regression, and I don't see it in -next.  I will pick
-> > it up and send it along in a few days if Matthias or Rafael don't beat
-> > me to it.
-> >
-> > In the meantime, I would be happy to add Jon's Reported-by and Tested-by,
-> > along with Qiang's Acked-by or Reviewed-by.
-> 
-> Acked-by: Zqiang <qiang.zhang1211@gmail.com>
+> > Should we take over this work if you're busy?
+> Sorry for the delay. I should post some progress information about the
+> patch set early. The patch set is simpler compared with v3, I had
+> implemented v4 about two weeks ago. The problem is v4 don't work as
+> expected: its memory usage is huge compared with v3. The following is
+> the output from htab-mem benchmark:
+>
+> overwrite:
+> Summary: loop   11.07 =C2=B1    1.25k/s, memory usage  995.08 =C2=B1  680=
+.87MiB,
+> peak memory usage 2183.38MiB
+> batch_add_batch_del:
+> Summary: loop   11.48 =C2=B1    1.24k/s, memory usage 1393.36 =C2=B1  780=
+.41MiB,
+> peak memory usage 2836.68MiB
+> add_del_on_diff_cpu:
+> Summary: loop    6.07 =C2=B1    0.69k/s, memory usage   14.44 =C2=B1    2=
+.34MiB,
+> peak memory usage   20.30MiB
+>
+> The direct reason for the huge memory usage is slower RCU grace period.
+> The RCU grace period used for reuse is much longer compared with v3 and
+> it is about 100ms or more (e.g, 2.6s). I am still trying to find out the
+> root cause of the slow RCU grace period. The first guest is the running
+> time of bpf program attached to getpgid() is longer, so the context
+> switch in bench is slowed down. The hist-diagram of getpgid() latency in
+> v4 indeed manifests a lot of abnormal tail latencies compared with v3 as
+> shown below.
+>
+> v3 getpid() latency during overwrite benchmark:
+> @hist_ms:
+> [0]               193451
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> [1]                  767
+> |                                                    |
+> [2, 4)                75
+> |                                                    |
+> [4, 8)                 1
+> |                                                    |
+>
+> v4 getpid() latency during overwrite benchmark:
+> @hist_ms:
+> [0]                86270
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> [1]                31252
+> |@@@@@@@@@@@@@@@@@@                                  |
+> [2, 4)                 1
+> |                                                    |
+> [4, 8)                 0
+> |                                                    |
+> [8, 16)                0
+> |                                                    |
+> [16, 32)               0
+> |                                                    |
+> [32, 64)               0
+> |                                                    |
+> [64, 128)              0
+> |                                                    |
+> [128, 256)             3
+> |                                                    |
+> [256, 512)             2
+> |                                                    |
+> [512, 1K)              1
+> |                                                    |
+> [1K, 2K)               2
+> |                                                    |
+> [2K, 4K)               1
+> |                                                    |
+>
+> I think the newly-added global spin-lock in memory allocator and
+> irq-work running under the context of free procedure may lead to
+> abnormal tail latency and I am trying to demonstrate that by using
+> fine-grain locks and kworker (just temporarily). But on the other side,
+> considering the number of abnormal tail latency is much smaller compared
+> with the total number of getpgid() syscall, so I think maybe there is
+> still other causes for the slow RCU GP.
+>
+> Because the progress of v4 is delayed, so how about I post v4 as soon as
+> possible for discussion (maybe I did it wrong) and at the same time I
+> continue to investigate the slow RCU grace period problem (I will try to
+> get some help from RCU community) ?
 
-Thank you!  I will apply this on my next rebase.
-
-							Thanx, Paul
+Yes. Please send v4. Let's investigate huge memory consumption together.
