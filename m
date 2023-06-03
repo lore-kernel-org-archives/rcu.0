@@ -2,117 +2,159 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F74EC7EE29
-	for <rcu@archiver.kernel.org>; Fri,  2 Jun 2023 23:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8BA2C77B7A
+	for <rcu@archiver.kernel.org>; Sat,  3 Jun 2023 01:23:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236618AbjFBXAO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Jun 2023 19:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43046 "EHLO
+        id S236639AbjFCBXm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 2 Jun 2023 21:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234960AbjFBXAN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Jun 2023 19:00:13 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9521C1B9
-        for <rcu@vger.kernel.org>; Fri,  2 Jun 2023 16:00:12 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-565eaf83853so27590087b3.3
-        for <rcu@vger.kernel.org>; Fri, 02 Jun 2023 16:00:12 -0700 (PDT)
+        with ESMTP id S236459AbjFCBXl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 2 Jun 2023 21:23:41 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358ED19B
+        for <rcu@vger.kernel.org>; Fri,  2 Jun 2023 18:23:40 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6259c242c96so24106136d6.3
+        for <rcu@vger.kernel.org>; Fri, 02 Jun 2023 18:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1685746812; x=1688338812;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gu/jJLV8GpS/4k+cydSglYZByXG+Mppg0bGRw+veAQc=;
-        b=n+CVYF4Tuyyz/8u1854NGgzFqK5+hUef0fmwxGv2HJN3YW2ncq7KUfOZtLVyt2Efjg
-         ZqIH+8nJOy02Yx0oIhY2rAU163b5YoDfMVgkNLj1GxSlBRwAIFKUTm2rDlxmaOJVIVbn
-         WVfEVco94qRLBkhImari5ahpts/h9FR2UvMhY=
+        d=joelfernandes.org; s=google; t=1685755419; x=1688347419;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j1BLmFCKytW9ZYVm+ndzJiXX+MhplDDGBVFny/CzIpE=;
+        b=JV3AUE7PyR3YjCdaAxSZDCOjQYUynkpk49ctuBKzEdwUn1nj0WgVLEwevCaL86pe1d
+         2u+Amlra+y+EJ0XNvJbHGPXZukJH7aDS4eApEwEh5or0W+nZmZJKb2agXsI8RP3wRiCT
+         gtuIfd4hlpASfCKlg6gEaEjVdofApXe3cLG2A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685746812; x=1688338812;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gu/jJLV8GpS/4k+cydSglYZByXG+Mppg0bGRw+veAQc=;
-        b=PGVt6CtLT2+VH93N/FhO9wCK63ss5cBv8l4+9nBZKEQ2Eobs9vyWPduU7mZisoI2Xf
-         FYuDdOwty5GxBc7yBIRI9J13lfSm9u/xjY83eHkpHYVnvGXEUZ7ngnB51aj99FaAcp95
-         +M1zXrLuRWQ0nIYVptCDVWwgluWPuLY7RrG4vM1iNo4PbPzmUq1rh+hrQ/NUlSpza/N5
-         SnWTozUwukl5z+Y1hWA3Ly49oFKpJRraKHxNrBR2qKmL1jmVbVmC+zngWXLGIA+ERXo9
-         lQkh8Ch4flVtCMqfDILty/dtDhhVpjK4O77M7oo5UEKgXlytWiP8UiGYKx08jL6Gt8Oc
-         2IWA==
-X-Gm-Message-State: AC+VfDzubF1lAa/F2/WwDg40KSzN7O77zdNUMmI40vm3xIPWAsVvFPZI
-        TFFys/vuvdK5FQgCmCFfmHhpW8x84AzarSps21WmRw==
-X-Google-Smtp-Source: ACHHUZ7k1w3VVHVPdfiggFFlDnugb+v5ibHwqQOyIcWLvl8GAKysKHCP5O4HvLB/GxwUgYVFDhQSBF3IISry1VPotqc=
-X-Received: by 2002:a0d:f405:0:b0:559:fad8:322f with SMTP id
- d5-20020a0df405000000b00559fad8322fmr1677466ywf.24.1685746811742; Fri, 02 Jun
- 2023 16:00:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230531101736.12981-1-frederic@kernel.org> <20230531101736.12981-3-frederic@kernel.org>
-In-Reply-To: <20230531101736.12981-3-frederic@kernel.org>
+        d=1e100.net; s=20221208; t=1685755419; x=1688347419;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j1BLmFCKytW9ZYVm+ndzJiXX+MhplDDGBVFny/CzIpE=;
+        b=RjeWeNE/ONvCFNnZcLyzW0bxRllN0ajZzpFPjrhrSli3H2SDCnyVgl871RjS6n3K8Q
+         hOKn01JaUim9GyPCT7z5iBQz0bplHKV+tg7gRt6JPfKpYdX36/FE0m/9+2hRs2bvlq+u
+         t2XSDJlEuC7QiR+N80hG3++zgDr4/RKbPhu2gBZvqqkaWRHsh/ghCqevUfsXLcv3Aci1
+         8IuztlIJJN+dRcDtY7VAmmTbUrd9TegynLA1hbnp87Zpr/sCqLCAlGlQr7eRcCIhS1Lx
+         TxUH4Qeu2GDTfMTlKAfB/Tg3Eqo3BIsRhWirdSUIHf2uqkbP0su9YqZwQHCTKcPCVSNu
+         823w==
+X-Gm-Message-State: AC+VfDyk+YyDlCT9xU0TyVnCT5Wq1ocPmKNc/WOU3uI9h3GBvww3MuAV
+        7UB4zpCXfW0a8pCs2R08Eqas+A==
+X-Google-Smtp-Source: ACHHUZ6UnhYU5u1nrUcucEeqhz6VZj3zOUwepg05ZdXmSS8lXFTQ5rbCB8l6SQKzaSNo+JgB64fBAw==
+X-Received: by 2002:a05:6214:124b:b0:628:49c5:d755 with SMTP id r11-20020a056214124b00b0062849c5d755mr198419qvv.50.1685755419286;
+        Fri, 02 Jun 2023 18:23:39 -0700 (PDT)
+Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
+        by smtp.gmail.com with ESMTPSA id he31-20020a05622a601f00b003e394714c07sm1487081qtb.10.2023.06.02.18.23.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jun 2023 18:23:38 -0700 (PDT)
+Date:   Sat, 3 Jun 2023 01:23:38 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 2 Jun 2023 19:00:00 -0400
-Message-ID: <CAEXW_YQhufHtuNc5stZQpBY8JSd99NVWEzqv=-QbeMFOA-vDnQ@mail.gmail.com>
-Subject: Re: [PATCH 2/9] rcu: Use rcu_segcblist_segempty() instead of open
- coding it
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Giovanni Gherdovich <ggherdovich@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 4/9] rcu: Introduce lazy queue's own qhimark
+Message-ID: <20230603012338.GA2795276@google.com>
+References: <20230531101736.12981-1-frederic@kernel.org>
+ <20230531101736.12981-5-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230531101736.12981-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 31, 2023 at 6:17=E2=80=AFAM Frederic Weisbecker <frederic@kerne=
-l.org> wrote:
->
-> This makes the code more readable.
->
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  kernel/rcu/rcu_segcblist.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index f71fac422c8f..1693ea22ef1b 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -368,7 +368,7 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rscl=
-p,
->         smp_mb(); /* Ensure counts are updated before callback is entrain=
-ed. */
->         rhp->next =3D NULL;
->         for (i =3D RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
-> -               if (rsclp->tails[i] !=3D rsclp->tails[i - 1])
-> +               if (!rcu_segcblist_segempty(rsclp, i))
+On Wed, May 31, 2023 at 12:17:31PM +0200, Frederic Weisbecker wrote:
+> The lazy and the regular bypass queues share the same thresholds in
+> terms of number of callbacks after which a flush to the main list is
+> performed: 10 000 callbacks.
+> 
+> However lazy and regular bypass don't have the same purposes and neither
+> should their respective thresholds:
+> 
+> * The bypass queue stands for relieving the main queue in case of a
+>   callback storm. It makes sense to allow a high number of callbacks to
+>   pile up before flushing to the main queue, especially as the life
+>   cycle for this queue is very short (1 jiffy).
 
-Hopefully the compiler optimizer will be smart enough to remove this
-from the inlined code ;-):
-if (seg =3D=3D RCU_DONE_TAIL)
-   return &rsclp->head =3D=3D rsclp->tails[RCU_DONE_TAIL];
+Sure.
 
-Otherwise it appears to be no functional change for this and the below
-change, and straightforward so for this patch:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> * The lazy queue aims to spare wake ups and reduce the number of grace
+>   periods. There it doesn't make sense to allow a huge number of
+>   callbacks before flushing so as not to introduce memory pressure,
+>   especially as the life cycle for this queue is very long (10
+>   seconds).
+
+It does make sense as we have a shrinker, and it is better to avoid RCU
+disturbing the system unwantedly when there's lots of memory lying around.
+
+> 
+> For those reasons, set the default threshold for the lazy queue to
+> 100.
+
+I am OK with splitting the qhimark, but this lazy default is too low. In
+typical workloads on ChromeOS, we see 1000s of callback even when CPU
+utilization is low. So considering that, we would be flushing all the time.
+
+Eventually I want the mm subsystem to tell us when flushing is needed so we
+could flush sooner at that time if really needed, but for now we have a
+shrinker so it should be OK. Is there a reason the shrinker does not work for
+you?
 
 thanks,
 
  - Joel
 
 
->                         break;
->         rcu_segcblist_inc_seglen(rsclp, i);
->         WRITE_ONCE(*rsclp->tails[i], rhp);
-> @@ -551,7 +551,7 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *r=
-sclp, unsigned long seq)
->          * as their ->gp_seq[] grace-period completion sequence number.
->          */
->         for (i =3D RCU_NEXT_READY_TAIL; i > RCU_DONE_TAIL; i--)
-> -               if (rsclp->tails[i] !=3D rsclp->tails[i - 1] &&
-> +               if (!rcu_segcblist_segempty(rsclp, i) &&
->                     ULONG_CMP_LT(rsclp->gp_seq[i], seq))
->                         break;
->
-> --
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree.c      | 2 ++
+>  kernel/rcu/tree_nocb.h | 9 ++++-----
+>  2 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index bc4e7c9b51cb..9b98d87fa22e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -379,6 +379,8 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+>  static long blimit = DEFAULT_RCU_BLIMIT;
+>  #define DEFAULT_RCU_QHIMARK 10000 // If this many pending, ignore blimit.
+>  static long qhimark = DEFAULT_RCU_QHIMARK;
+> +#define DEFAULT_RCU_QHIMARK_LAZY 100 // If this many pending, flush.
+> +static long qhimark_lazy = DEFAULT_RCU_QHIMARK_LAZY;
+>  #define DEFAULT_RCU_QLOMARK 100   // Once only this many pending, use blimit.
+>  static long qlowmark = DEFAULT_RCU_QLOMARK;
+>  #define DEFAULT_RCU_QOVLD_MULT 2
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 8320eb77b58b..c08447db5a2e 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -480,10 +480,9 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>  
+>  	// If ->nocb_bypass has been used too long or is too full,
+>  	// flush ->nocb_bypass to ->cblist.
+> -	if ((ncbs && !bypass_is_lazy && j != READ_ONCE(rdp->nocb_bypass_first)) ||
+> -	    (ncbs &&  bypass_is_lazy &&
+> -	     (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_lazy_flush))) ||
+> -	    ncbs >= qhimark) {
+> +	if (ncbs &&
+> +	    ((!bypass_is_lazy && ((j != READ_ONCE(rdp->nocb_bypass_first)) || ncbs >= qhimark)) ||
+> +	     (bypass_is_lazy && (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_lazy_flush) || ncbs >= qhimark_lazy)))) {
+>  		rcu_nocb_lock(rdp);
+>  		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
+>  
+> @@ -724,7 +723,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  
+>  		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
+>  		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_lazy_flush) ||
+> -		     bypass_ncbs > 2 * qhimark)) {
+> +		     bypass_ncbs > 2 * qhimark_lazy)) {
+>  			flush_bypass = true;
+>  		} else if (bypass_ncbs && (lazy_ncbs != bypass_ncbs) &&
+>  		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
+> -- 
 > 2.40.1
->
+> 
