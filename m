@@ -2,159 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8BA2C77B7A
-	for <rcu@archiver.kernel.org>; Sat,  3 Jun 2023 01:23:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C0C6C77B73
+	for <rcu@archiver.kernel.org>; Sun,  4 Jun 2023 09:53:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbjFCBXm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 2 Jun 2023 21:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
+        id S230390AbjFDJxj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 4 Jun 2023 05:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236459AbjFCBXl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 2 Jun 2023 21:23:41 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358ED19B
-        for <rcu@vger.kernel.org>; Fri,  2 Jun 2023 18:23:40 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6259c242c96so24106136d6.3
-        for <rcu@vger.kernel.org>; Fri, 02 Jun 2023 18:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1685755419; x=1688347419;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j1BLmFCKytW9ZYVm+ndzJiXX+MhplDDGBVFny/CzIpE=;
-        b=JV3AUE7PyR3YjCdaAxSZDCOjQYUynkpk49ctuBKzEdwUn1nj0WgVLEwevCaL86pe1d
-         2u+Amlra+y+EJ0XNvJbHGPXZukJH7aDS4eApEwEh5or0W+nZmZJKb2agXsI8RP3wRiCT
-         gtuIfd4hlpASfCKlg6gEaEjVdofApXe3cLG2A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685755419; x=1688347419;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j1BLmFCKytW9ZYVm+ndzJiXX+MhplDDGBVFny/CzIpE=;
-        b=RjeWeNE/ONvCFNnZcLyzW0bxRllN0ajZzpFPjrhrSli3H2SDCnyVgl871RjS6n3K8Q
-         hOKn01JaUim9GyPCT7z5iBQz0bplHKV+tg7gRt6JPfKpYdX36/FE0m/9+2hRs2bvlq+u
-         t2XSDJlEuC7QiR+N80hG3++zgDr4/RKbPhu2gBZvqqkaWRHsh/ghCqevUfsXLcv3Aci1
-         8IuztlIJJN+dRcDtY7VAmmTbUrd9TegynLA1hbnp87Zpr/sCqLCAlGlQr7eRcCIhS1Lx
-         TxUH4Qeu2GDTfMTlKAfB/Tg3Eqo3BIsRhWirdSUIHf2uqkbP0su9YqZwQHCTKcPCVSNu
-         823w==
-X-Gm-Message-State: AC+VfDyk+YyDlCT9xU0TyVnCT5Wq1ocPmKNc/WOU3uI9h3GBvww3MuAV
-        7UB4zpCXfW0a8pCs2R08Eqas+A==
-X-Google-Smtp-Source: ACHHUZ6UnhYU5u1nrUcucEeqhz6VZj3zOUwepg05ZdXmSS8lXFTQ5rbCB8l6SQKzaSNo+JgB64fBAw==
-X-Received: by 2002:a05:6214:124b:b0:628:49c5:d755 with SMTP id r11-20020a056214124b00b0062849c5d755mr198419qvv.50.1685755419286;
-        Fri, 02 Jun 2023 18:23:39 -0700 (PDT)
-Received: from localhost (129.239.188.35.bc.googleusercontent.com. [35.188.239.129])
-        by smtp.gmail.com with ESMTPSA id he31-20020a05622a601f00b003e394714c07sm1487081qtb.10.2023.06.02.18.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 18:23:38 -0700 (PDT)
-Date:   Sat, 3 Jun 2023 01:23:38 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: Re: [PATCH 4/9] rcu: Introduce lazy queue's own qhimark
-Message-ID: <20230603012338.GA2795276@google.com>
-References: <20230531101736.12981-1-frederic@kernel.org>
- <20230531101736.12981-5-frederic@kernel.org>
+        with ESMTP id S230413AbjFDJxg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 4 Jun 2023 05:53:36 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2911ADF;
+        Sun,  4 Jun 2023 02:53:32 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1q5kQR-000400-Pp; Sun, 04 Jun 2023 11:53:27 +0200
+Message-ID: <abf51606-b34b-0144-90a3-6d06cf4171b2@leemhuis.info>
+Date:   Sun, 4 Jun 2023 11:53:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230531101736.12981-5-frederic@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH rcu 11/20] srcu: Move grace-period fields from srcu_struct
+ to srcu_usage
+Content-Language: en-US, de-DE
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, hch@lst.de,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        "Zhang, Qiang1" <qiang1.zhang@intel.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <f1b6cd5f-f0b7-4748-abd5-0dcfef0ce126@paulmck-laptop>
+ <20230330224726.662344-11-paulmck@kernel.org>
+ <6549da46-dddc-67ac-73c4-966965addad7@nvidia.com>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <6549da46-dddc-67ac-73c4-966965addad7@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1685872413;bbed989d;
+X-HE-SMSGID: 1q5kQR-000400-Pp
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, May 31, 2023 at 12:17:31PM +0200, Frederic Weisbecker wrote:
-> The lazy and the regular bypass queues share the same thresholds in
-> terms of number of callbacks after which a flush to the main list is
-> performed: 10 000 callbacks.
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
+
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
+
+On 01.06.23 13:14, Jon Hunter wrote:
 > 
-> However lazy and regular bypass don't have the same purposes and neither
-> should their respective thresholds:
+> On 30/03/2023 23:47, Paul E. McKenney wrote:
+>> This commit moves the ->srcu_gp_seq, ->srcu_gp_seq_needed,
+>> ->srcu_gp_seq_needed_exp, ->srcu_gp_start, and ->srcu_last_gp_end fields
+>> from the srcu_struct structure to the srcu_usage structure to reduce
+>> the size of the former in order to improve cache locality.
+>>
+>> Suggested-by: Christoph Hellwig <hch@lst.de>
+>> Tested-by: Sachin Sant <sachinp@linux.ibm.com>
+>> Tested-by: "Zhang, Qiang1" <qiang1.zhang@intel.com>
+>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> * The bypass queue stands for relieving the main queue in case of a
->   callback storm. It makes sense to allow a high number of callbacks to
->   pile up before flushing to the main queue, especially as the life
->   cycle for this queue is very short (1 jiffy).
-
-Sure.
-
 > 
-> * The lazy queue aims to spare wake ups and reduce the number of grace
->   periods. There it doesn't make sense to allow a huge number of
->   callbacks before flushing so as not to introduce memory pressure,
->   especially as the life cycle for this queue is very long (10
->   seconds).
+> I have noticed a suspend regression on some of our Tegra boards recently
+> with v6.4-rc and interestingly bisect is pointing to this commit. I was
+> unable revert this on top of the latest mainline but if I checkout this
+> commit suspend fails and if I checkout the previous commit is passes.
 
-It does make sense as we have a shrinker, and it is better to avoid RCU
-disturbing the system unwantedly when there's lots of memory lying around.
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-> 
-> For those reasons, set the default threshold for the lazy queue to
-> 100.
+#regzbot ^introduced 95433f726301
+#regzbot title rcu: "spinlock bad magic" BUG when the SRCU notifier was
+ever used
+#regzbot monitor:
+https://lore.kernel.org/all/20230526073539.339203-1-wenst@chromium.org/
+#regzbot fix: notifier: Initialize new struct srcu_usage field
+#regzbot ignore-activity
 
-I am OK with splitting the qhimark, but this lazy default is too low. In
-typical workloads on ChromeOS, we see 1000s of callback even when CPU
-utilization is low. So considering that, we would be flushing all the time.
-
-Eventually I want the mm subsystem to tell us when flushing is needed so we
-could flush sooner at that time if really needed, but for now we have a
-shrinker so it should be OK. Is there a reason the shrinker does not work for
-you?
-
-thanks,
-
- - Joel
-
-
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  kernel/rcu/tree.c      | 2 ++
->  kernel/rcu/tree_nocb.h | 9 ++++-----
->  2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index bc4e7c9b51cb..9b98d87fa22e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -379,6 +379,8 @@ static int rcu_is_cpu_rrupt_from_idle(void)
->  static long blimit = DEFAULT_RCU_BLIMIT;
->  #define DEFAULT_RCU_QHIMARK 10000 // If this many pending, ignore blimit.
->  static long qhimark = DEFAULT_RCU_QHIMARK;
-> +#define DEFAULT_RCU_QHIMARK_LAZY 100 // If this many pending, flush.
-> +static long qhimark_lazy = DEFAULT_RCU_QHIMARK_LAZY;
->  #define DEFAULT_RCU_QLOMARK 100   // Once only this many pending, use blimit.
->  static long qlowmark = DEFAULT_RCU_QLOMARK;
->  #define DEFAULT_RCU_QOVLD_MULT 2
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 8320eb77b58b..c08447db5a2e 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -480,10 +480,9 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  
->  	// If ->nocb_bypass has been used too long or is too full,
->  	// flush ->nocb_bypass to ->cblist.
-> -	if ((ncbs && !bypass_is_lazy && j != READ_ONCE(rdp->nocb_bypass_first)) ||
-> -	    (ncbs &&  bypass_is_lazy &&
-> -	     (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_lazy_flush))) ||
-> -	    ncbs >= qhimark) {
-> +	if (ncbs &&
-> +	    ((!bypass_is_lazy && ((j != READ_ONCE(rdp->nocb_bypass_first)) || ncbs >= qhimark)) ||
-> +	     (bypass_is_lazy && (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_lazy_flush) || ncbs >= qhimark_lazy)))) {
->  		rcu_nocb_lock(rdp);
->  		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
->  
-> @@ -724,7 +723,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  
->  		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
->  		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_lazy_flush) ||
-> -		     bypass_ncbs > 2 * qhimark)) {
-> +		     bypass_ncbs > 2 * qhimark_lazy)) {
->  			flush_bypass = true;
->  		} else if (bypass_ncbs && (lazy_ncbs != bypass_ncbs) &&
->  		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
-> -- 
-> 2.40.1
-> 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
