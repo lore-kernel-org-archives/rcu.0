@@ -2,213 +2,110 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2096EC7EE24
-	for <rcu@archiver.kernel.org>; Tue,  6 Jun 2023 12:31:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45888C7EE24
+	for <rcu@archiver.kernel.org>; Tue,  6 Jun 2023 13:18:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbjFFMbO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Jun 2023 08:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S237700AbjFFNSR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Jun 2023 09:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbjFFMbO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Jun 2023 08:31:14 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6188110C6;
-        Tue,  6 Jun 2023 05:31:11 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qb8w9262tz4f41SX;
-        Tue,  6 Jun 2023 20:31:05 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgDXMBsCJ39kBDPNKQ--.34580S2;
-        Tue, 06 Jun 2023 20:31:04 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
- allocator
-To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20230606035310.4026145-1-houtao@huaweicloud.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
-Date:   Tue, 6 Jun 2023 20:30:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S238130AbjFFNSP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Jun 2023 09:18:15 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFB410C0
+        for <rcu@vger.kernel.org>; Tue,  6 Jun 2023 06:18:14 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4f62722d661so3118059e87.2
+        for <rcu@vger.kernel.org>; Tue, 06 Jun 2023 06:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1686057492; x=1688649492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+4m4td7TsrrilSTR7j+gHheVoaRExoQsmOFwSbyWIUo=;
+        b=VB2Zq3cPIwdIOyalWR2mBUYfnSE7PfHZ3pRbZ89FlcWgWw6u7pcY5CTEaBk5WJwpqY
+         i/MT2s6Ip/WQWYHOmA41j9F9LJPVNLtVTNty2z36kSWdQ9kTjHcnNzo2b3HA4HLFoXYI
+         oU3YcoN0oCrF+J7c0706JqAPV7OMXqEAny15s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686057492; x=1688649492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+4m4td7TsrrilSTR7j+gHheVoaRExoQsmOFwSbyWIUo=;
+        b=g0EcDsvW3Cb9bEj4vx6uiaHXpYZ/RlNlPRVx/1f4dT3VIu7XKLINZEgctmJbFSkSlk
+         VZzQmHiQAWlKoxKMCWvcXghnZLHndrZE919ZhYS3ZzUbMrpQmbNcihBLXvsDWu72E231
+         Uv5B2RGN4B1NyeHa022UB6UOWVesMK3SY/p2SsUAcKRZwdytE8gQtipDcSA9Hx+fP6LN
+         IGGVkr8FnBIw5W6uU/+daXHGb3ff8IKq6gIu5bidJhgvyQv9696djeLRXV6S78GI02bU
+         IrNV9BJQ5M8XYCfr1UBqHecSSV64lucItgq5cT6G3ckHjXFPX4cytf9GT7MnOBq5m/VA
+         6teQ==
+X-Gm-Message-State: AC+VfDw272/pLD82mcRM2+tyoQiKauNQLAh2iqqbFsexTe/e0RAF/hPl
+        ThPDuheGhN7Nq3dY2ZGAegORJpZcwAwLTaePaUQ0nWjZ
+X-Google-Smtp-Source: ACHHUZ4kOGMw47Dfit5L+8eG2wNM0vw65QQ+Y2HLQI9VJUXBNJ+kahHZJMbAravbNiViwh2wtFO2WA==
+X-Received: by 2002:ac2:5ec7:0:b0:4f4:c289:596b with SMTP id d7-20020ac25ec7000000b004f4c289596bmr832431lfq.67.1686057492203;
+        Tue, 06 Jun 2023 06:18:12 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id j9-20020ac253a9000000b004f602a5a40asm1449984lfh.4.2023.06.06.06.18.11
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jun 2023 06:18:11 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-4f62722d661so3118029e87.2
+        for <rcu@vger.kernel.org>; Tue, 06 Jun 2023 06:18:11 -0700 (PDT)
+X-Received: by 2002:aa7:d605:0:b0:514:92d7:7d69 with SMTP id
+ c5-20020aa7d605000000b0051492d77d69mr1793652edr.27.1686057471469; Tue, 06 Jun
+ 2023 06:17:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230606035310.4026145-1-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgDXMBsCJ39kBDPNKQ--.34580S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFyfWw4UGw43Zry7AFWrZrb_yoWxWw13pr
-        WSgw43JrnrXrnF9ws7Aw1xAa4UAws3Xr43KF1S9ryDuw15Xryxurs29F4FvFy5WrWDC3s0
-        qF4vy3y3Z3Z5C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+References: <20230526205204.861311518@infradead.org> <CAHk-=wg2RHZKTN29Gr7MhgYfaNtzz58wry9jCNP75LAmQ9t8-A@mail.gmail.com>
+ <20230530092342.GA149947@hirez.programming.kicks-ass.net> <20230606094251.GA907347@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230606094251.GA907347@hirez.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 6 Jun 2023 06:17:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+Message-ID: <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+On Tue, Jun 6, 2023 at 2:43=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> ( GCC refuses to accept _Pragma() inside an expression.
 
-On 6/6/2023 11:53 AM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
->
-> Hi,
->
-> The implementation of v4 is mainly based on suggestions from Alexi [0].
-> There are still pending problems for the current implementation as shown
-> in the benchmark result in patch #3, but there was a long time from the
-> posting of v3, so posting v4 here for further disscussions and more
-> suggestions.
->
-> The first problem is the huge memory usage compared with bpf memory
-> allocator which does immediate reuse:
->
-> htab-mem-benchmark (reuse-after-RCU-GP):
-> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-> | --                 | --        | --                  | --               |
-> | no_op              | 1159.18   | 0.99                | 0.99             |
-> | overwrite          | 11.00     | 2288                | 4109             |
-> | batch_add_batch_del| 8.86      | 1558                | 2763             |
-> | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
->
-> htab-mem-benchmark (immediate-reuse):
-> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-> | --                 | --        | --                  | --               |
-> | no_op              | 1160.66   | 0.99                | 1.00             |
-> | overwrite          | 28.52     | 2.46                | 2.73             |
-> | batch_add_batch_del| 11.50     | 2.69                | 2.95             |
-> | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24            |
->
-> It seems the direct reason is the slow RCU grace period. During
-> benchmark, the elapsed time when reuse_rcu() callback is called is about
-> 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
-> spin-lock and the irq-work running in the contex of freeing process will
-> increase the running overhead of bpf program, the running time of
-> getpgid() is increased, the contex switch is slowed down and the RCU
-> grace period increases [1], but I am still diggin into it.
-For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
-(namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
-did) instead, the memory usage of htab-mem-benchmark will decrease a lot:
+If we really want this all, I think we'd just stop using
+-Wdeclaration-after-statement entirely.
 
-htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
-| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-| --                 | --        | --                  | --               |
-| no_op              | 1165.38   | 0.97                | 1.00             |
-| overwrite          | 17.25     | 626.41              | 781.82           |
-| batch_add_batch_del| 11.51     | 398.56              | 500.29           |
-| add_del_on_diff_cpu| 4.21      | 31.06               | 48.84            |
+There are other uses for it, and people have asked for mixing
+declarations and code before.
 
-But the memory usage is still large compared with v3 and the elapsed
-time of reuse_rcu() callback is about 90~200ms. Compared with v3, there
-are still two differences:
-1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
-accelerate the reuse of freed objects.
-2) v3 uses kworker instead of irq_work for free procedure.
+I think that particular straightjacket has been a good thing, but I
+also think that it's ok to just let it go as a hard rule, and just try
+to make it a coding style issue for the common case, but allow mixed
+declarations and code when it makes sense.
 
-For 1), after using kmalloc() in irq_work to allocate multiple inflight
-RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
-but is not enough:
+For the whole "automatic release case it definitely makes sense, but
+it's not like it isn't possible useful elsewhere. I just don't want
+for it to become some global pattern for everything.
 
-htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
-| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-| --                 | --        | --                  | --               |
-| no_op              | 1247.00   | 0.97                | 1.00             |
-| overwrite          | 16.56     | 490.18              | 557.17           |
-| batch_add_batch_del| 11.31     | 276.32              | 360.89           |
-| add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
+That said, I still don't understand why you lke the name "guard" for
+this.  I understand not liking "auto", but "guard" doesn't seem any
+better. In fact, much worse. Guarded expressions means something
+completely different both in real life and in computer science.
 
-So it seems the large memory usage is due to irq_work (reuse_bulk) used
-for free procedure. However after increasing the threshold for invoking
-irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is no
-big difference in the memory usage and the delayed time for RCU
-callbacks. Perhaps the reason is that although the number of  reuse_bulk
-irq_work calls is reduced but the time of alloc_bulk() irq_work calls is
-increased because there are no reusable objects.
+I'm assuming there's some history there, but it makes no sense to me
+as a name here.
 
->
-> Another problem is the performance degradation compared with immediate
-> reuse and the output from perf report shown the per-bpf-ma spin-lock is a
-> top-one hotspot:
->
-> map_perf_test (reuse-after-RCU-GP)
-> 0:hash_map_perf kmalloc 194677 events per sec
->
-> map_perf_test (immediate reuse)
-> 2:hash_map_perf kmalloc 384527 events per sec
->
-> Considering the purpose of introducing per-bpf-ma reusable list is to
-> handle the case in which the allocation and free are done on different
-> CPUs (e.g., add_del_on_diff_cpu) and a per-cpu reuse list will be enough
-> for overwrite & batch_add_batch_del cases. So maybe we could implement a
-> hybrid of global reusable list and per-cpu reusable list and switch
-> between these two kinds of list according to the history of allocation
-> and free frequency.
->
-> As ususal, suggestions and comments are always welcome.
->
-> [0]: https://lore.kernel.org/bpf/20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local
-> [1]: https://lore.kernel.org/bpf/1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com
->
-> Change Log:
-> v4:
->  * no kworker (Alexei)
->  * Use a global reusable list in bpf memory allocator (Alexei)
->  * Remove BPF_MA_FREE_AFTER_RCU_GP flag and do reuse-after-rcu-gp
->    defaultly in bpf memory allocator (Alexei)
->  * add benchmark results from map_perf_test (Alexei)
->
-> v3: https://lore.kernel.org/bpf/20230429101215.111262-1-houtao@huaweicloud.com/
->  * add BPF_MA_FREE_AFTER_RCU_GP bpf memory allocator
->  * Update htab memory benchmark
->    * move the benchmark patch to the last patch
->    * remove array and useless bpf_map_lookup_elem(&array, ...) in bpf
->      programs
->    * add synchronization between addition CPU and deletion CPU for
->      add_del_on_diff_cpu case to prevent unnecessary loop
->    * add the benchmark result for "extra call_rcu + bpf ma"
->
-> v2: https://lore.kernel.org/bpf/20230408141846.1878768-1-houtao@huaweicloud.com/
->  * add a benchmark for bpf memory allocator to compare between different
->    flavor of bpf memory allocator.
->  * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
->
-> v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
->
-> Hou Tao (3):
->   bpf: Factor out a common helper free_all()
->   selftests/bpf: Add benchmark for bpf memory allocator
->   bpf: Only reuse after one RCU GP in bpf memory allocator
->
->  include/linux/bpf_mem_alloc.h                 |   4 +
->  kernel/bpf/memalloc.c                         | 385 ++++++++++++------
->  tools/testing/selftests/bpf/Makefile          |   3 +
->  tools/testing/selftests/bpf/bench.c           |   4 +
->  .../selftests/bpf/benchs/bench_htab_mem.c     | 352 ++++++++++++++++
->  .../bpf/benchs/run_bench_htab_mem.sh          |  42 ++
->  .../selftests/bpf/progs/htab_mem_bench.c      | 135 ++++++
->  7 files changed, 809 insertions(+), 116 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
->  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
->  create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
->
-
+              Linus
