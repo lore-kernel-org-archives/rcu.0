@@ -2,54 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83075C77B73
-	for <rcu@archiver.kernel.org>; Tue,  6 Jun 2023 16:08:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1CF3C77B73
+	for <rcu@archiver.kernel.org>; Tue,  6 Jun 2023 18:08:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236940AbjFFQIw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 6 Jun 2023 12:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        id S237519AbjFFSIw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 6 Jun 2023 14:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238342AbjFFQIf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 6 Jun 2023 12:08:35 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C159D10DE
-        for <rcu@vger.kernel.org>; Tue,  6 Jun 2023 09:08:33 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b011cffe7fso29672385ad.1
-        for <rcu@vger.kernel.org>; Tue, 06 Jun 2023 09:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1686067713; x=1688659713;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9TAxW9PyckEEU9Xcb/hGgs9B7vd7TQ7JPGY/iBjRiKo=;
-        b=TgBq/5xnXtfr+asRrDtyu7i0oaaiI5RWgeKsztlNzykyemtgZJ23X3QVttOiHAr3DQ
-         80dqKIFC9fx6L0W2ZrVtjUOnq35x50co6lumM/0mPxfeEEYnW65cutEqVabxukWM7Mmr
-         GwOW1zT68pkV/63F1Mli0sTmjt4mbh50I6Vsw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686067713; x=1688659713;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9TAxW9PyckEEU9Xcb/hGgs9B7vd7TQ7JPGY/iBjRiKo=;
-        b=dJnhJ6ZhL3xguA5uozLVmg0So+HizJWV093vRyJXLRDT4ADq5Lin5MCYnWTLJGtVbi
-         RfEshqXXqEqZUQ1B9q4dchdOez2Nq6jmY5acmvdkQlhFbBQDxJVKnzSBy/YSsKd+MTEl
-         ShqAuo1PPCJu4cWWyDeiFnV1WLNNefrLDOeo148SrCY1cR3jmCujXfHzNF+BAxXd3YPv
-         HGb6wMxZDT2z4mJ0xkxPRmZn8zs2Sb3HyICEyLDCCo4tG40KJ/9Mww4bFL6NPkRcA7Tk
-         vK1cKBIWR0YCxHMmwiv5BzPp3u+cH109dU4zE9IV0LUSzGwL5lI7G5IWgYLODWGO82uO
-         Tbqw==
-X-Gm-Message-State: AC+VfDyy9G8o2/PSCVmydkNPOMnvihrLfjkBuEdfPriBgiT5xsSdiZhu
-        b70srPLHIRVZ1JIsvCLYjL/AtA==
-X-Google-Smtp-Source: ACHHUZ7I5CPds/r3cxVjHK9JMv4COB2xkgUgvxVf/oNN2V7W9uvxDtd7C7KljdKnlalv+WtlpdSSLg==
-X-Received: by 2002:a17:902:a407:b0:1b0:26f0:4c8e with SMTP id p7-20020a170902a40700b001b026f04c8emr851115plq.69.1686067713134;
-        Tue, 06 Jun 2023 09:08:33 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m2-20020a170902f20200b001affb590696sm8758287plc.216.2023.06.06.09.08.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 09:08:32 -0700 (PDT)
-Date:   Tue, 6 Jun 2023 09:08:32 -0700
-From:   Kees Cook <keescook@chromium.org>
+        with ESMTP id S238257AbjFFSIr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 6 Jun 2023 14:08:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E3B10F8;
+        Tue,  6 Jun 2023 11:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OrkYgbRcR8dMZ/9FqFYNlN0/B5YWJQDyiL7vTaDE328=; b=vUmMuu9PmqNqTlLjlSfOr+MRnv
+        YOVOro3cFUJRZZ6vxULcsPAhAG2+rD86+ar3HpA/xEz9Ldz9rA6INwGm3tWYMgXJMmVyq+iYl9mVj
+        heGQCpsAk4DI2qyWcuzaw1923giSGT1p0rlwfZrPQfkWwAheXNbLsRnsnwuFHM8mt+pT8AmHBuUWL
+        aWlTFxHpHoWEnbONi3+FlKC1ECUE4wkDfbGzPXRyygu2kQpbijMN2NiJAGA1aXtTxzMHUgXlaqNKc
+        Bg+jAeNPHFEFZSZhnrv8eldrtJGXR33HQSBUGOc6vhTHqU2DIJkUl8JgNXPJ1Jxt6SrMapDXJbQSR
+        /KLx4xAQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1q6b6I-00DOYP-2y; Tue, 06 Jun 2023 18:08:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6B0B9300129;
+        Tue,  6 Jun 2023 20:08:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4A5AB2019EC9F; Tue,  6 Jun 2023 20:08:06 +0200 (CEST)
+Date:   Tue, 6 Jun 2023 20:08:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, gregkh@linuxfoundation.org,
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
         pbonzini@redhat.com, linux-kernel@vger.kernel.org,
         ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
         will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
@@ -62,43 +51,103 @@ Cc:     Peter Zijlstra <peterz@infradead.org>, gregkh@linuxfoundation.org,
         rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
         linux-toolchains@vger.kernel.org
 Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
-Message-ID: <202306060907.D335A9F@keescook>
+Message-ID: <20230606180806.GA942082@hirez.programming.kicks-ass.net>
 References: <20230526205204.861311518@infradead.org>
  <CAHk-=wg2RHZKTN29Gr7MhgYfaNtzz58wry9jCNP75LAmQ9t8-A@mail.gmail.com>
  <20230530092342.GA149947@hirez.programming.kicks-ass.net>
  <20230606094251.GA907347@hirez.programming.kicks-ass.net>
- <202306060829.C2FD998CF@keescook>
- <CAHk-=wh=vs298o0gewFH725pQAYQ57CAQzj05FOx_VZubZ3jiA@mail.gmail.com>
+ <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+ <20230606134005.GE905437@hirez.programming.kicks-ass.net>
+ <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wh=vs298o0gewFH725pQAYQ57CAQzj05FOx_VZubZ3jiA@mail.gmail.com>
+In-Reply-To: <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 06, 2023 at 08:45:49AM -0700, Linus Torvalds wrote:
-> On Tue, Jun 6, 2023 at 8:31 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > nit: Linus's example was "(void *)8" (instead of 1) because we've had
-> > issues in the past with alignment warnings on archs that are sensitive
-> > to it. (e.g. see the __is_constexpr() macro which is doing NULL/!NULL
-> > comparisons.)
-> 
-> Note that I don't think we ever saw such a warning, it was just a
-> theoretical observation that depending on type, the compiler might
-> warn about known mis-aligned pointer bits.
-> 
-> So I'm not sure the 1-vs-8 actually matters. We do other things that
-> assume that low bits in a pointer are retained and valid, even if in
-> theory the C type system might have issues with it.
-> 
-> But maybe I mis-remember - if you did get an actual warning, maybe we
-> should document that warning just to keep the memory alive.
+On Tue, Jun 06, 2023 at 07:50:47AM -0700, Linus Torvalds wrote:
+> I feel like you seem entirely too fixated on locking.
 
-I've never seen a warning, but since this came up in the dissection of
-the __is_constexpr() behavior, it's been burned into my mind. ;)
+It's what I started out with... but it's certainly not everything.
 
--- 
-Kees Cook
+The thing I have removes pretty much all the error gotos from
+sched/core.c and events/core.c and while locking is ofcourse a fair
+amount of that there's significant non-locking usage.
+
+>  (c) think that generally are not "nested" (you release the resources
+> you've allocated, but you don't "nest" the allocations - they are just
+> serial.
+> 
+>  (d) think that the syntax could be pretty nasty, because the cleanup
+> is not just a trivial fixed "unlock" function
+
+So I'm not sure you've seen the actual convertions I've done, but yes,
+there's lots of those.
+
+I've just used the guard naming because locks is what I started out
+with.
+
++	ptr_guard(kfree, alloc) = kzalloc(event->read_size, GFP_KERNEL);
++	if (!alloc)
+ 		return -ENOMEM;
+
+
+ 	event = perf_event_alloc(&attr, cpu, task, group_leader, NULL,
+ 				 NULL, NULL, cgroup_fd);
++	if (IS_ERR(event))
++		return PTR_ERR(event);
++
++	ptr_guard(free_event, event_guard) = event;
+
+
++	ptr_guard(put_task, p) = find_get_task(pid);
++	if (!p)
++		return -ESRCH;
+
+
+So it does all that... you just hate the naming -- surely we can fix
+that.
+
+
+Would it all be less offensive if I did: s/guard/cleanup/ on the whole
+thing? Then we'd have things like:
+
+
+DEFINE_PTR_CLEANUP(put_task, struct task_struct *,
+		   if (_C) put_task_struct(_C))
+
+	ptr_cleanup(put_task, p) = find_get_task(pid);
+	if (!p)
+		return -ESRCH;
+
+
+DEFINE_PTR_CLEANUP(free_event, struct perf_event *,
+		   if (!IS_ERR_OR_NULL(_C)) free_event(_C))
+
+	ptr_cleanup(free_event, event) = perf_event_alloc(...);
+	if (IS_ERR(event))
+		return PTR_ERR(event);
+
+
+DEFINE_PTR_CLEANUP(kfree, void *, kfree(_C))
+
+	ptr_cleanup(kfree, foo) = kzalloc(...);
+	if (!foo)
+		return -ENOMEM;
+
+
+But do we then continue with:
+
+DEFINE_CLEANUP(mutex, struct mutex *, mutex_lock(_C), mutex_unlock(_C))
+
+	cleanup(mutex, &my_mutex);
+
+
+	scoped_cleanup (mutex, &my_mutex) {
+		...
+	}
+
+etc..? or do we keep guard() there, but based internally on
+ptr_cleanup() with the cleanup_## naming.
