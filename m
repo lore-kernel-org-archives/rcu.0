@@ -2,219 +2,142 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8436C7EE25
-	for <rcu@archiver.kernel.org>; Wed,  7 Jun 2023 17:52:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BED7BC7EE23
+	for <rcu@archiver.kernel.org>; Wed,  7 Jun 2023 19:24:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbjFGRwb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Jun 2023 13:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S231561AbjFGTYQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Jun 2023 15:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjFGRwa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Jun 2023 13:52:30 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8728319BB;
-        Wed,  7 Jun 2023 10:52:28 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b2439e9004so8128165ad.3;
-        Wed, 07 Jun 2023 10:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686160348; x=1688752348;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/7wVi2PQeb70vtjxUPsGGvKTtWbtq1CFy2L95Et03FM=;
-        b=lo/6968jtYZvvFV4f2s0rafTXPDJVzRApYBRh0wPyFkPicUakIryIwSBe5QL1vfwlw
-         bxHP85c30HSoiSgchEwENK2hPXnM0nWI85CVnTgS+1o/MGLyZSJkH9qpw/WILqnXPDjS
-         ocri8qx+iV4negQAjTgmQF5vUOFYqCWk5IZJUBrERkalqN0GeCm+kLEWEn8aFamLsZlA
-         lA0mgHEJfrjwQemfQQtqA/LM4EYqQoshq+BhyT+dNYvCrJEIC/PVQK1XxNzspc/rxA/P
-         uq4oDN3EVbLo3WpR+szXr2lxNqMvUcKO9F7MAX46vjLrhOHUH5mZluScCGjIdr8niyy6
-         HR4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686160348; x=1688752348;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/7wVi2PQeb70vtjxUPsGGvKTtWbtq1CFy2L95Et03FM=;
-        b=gSp8R9KV8zOW9oY942SnqnzVj+hezlKxxcS5yy1y/dGZDcaSI4HifzaRC/E+OMxHTX
-         bEEYbKlaecSUogxFdooCfm+2xa/fI4Hsh9lMOEXa1O5VQU2EflWn/m5sJSBxfpswzPbQ
-         SjnKcPe5a3DHDjHlmsF1fz5Ijs9fO2PCyuDlCatFu/Y8xJvjEx7dk/uBGISlLBuxkXV+
-         9G9yMI9t9ipVtFlEKvSfesNmchpNs93CBwTuCSBxX5L3tjp5wOcwOOmvM0mYScAFhoY/
-         dqTjIdqvtxJCFnvmCwNu1IPyXeNwYaZViD0rVuvjvMXDouBEQPSBriBLEsscl4NJN456
-         YHuw==
-X-Gm-Message-State: AC+VfDxC96J08Tfy8ShLJ9Hzm53RBvyS3TMFa9aYN5/fJCfsQCKuvVV6
-        d5TzVbOZSC6VmHr7r06SdJI=
-X-Google-Smtp-Source: ACHHUZ4mxC/zXoB6RQXHQWVTuJMCKrlaiJLr3pRGbH4Yfo2bZxe/mnoWfdx2twWuKzhcRwEakwTVPA==
-X-Received: by 2002:a17:902:ea0e:b0:1b0:3576:c2a9 with SMTP id s14-20020a170902ea0e00b001b03576c2a9mr2849066plg.33.1686160347714;
-        Wed, 07 Jun 2023 10:52:27 -0700 (PDT)
-Received: from MacBook-Pro-8.local ([2620:10d:c090:500::6:1c96])
-        by smtp.gmail.com with ESMTPSA id ix3-20020a170902f80300b001ab01598f40sm2186085plb.173.2023.06.07.10.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 10:52:27 -0700 (PDT)
-Date:   Wed, 7 Jun 2023 10:52:24 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        "houtao1@huawei.com" <houtao1@huawei.com>
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
- allocator
-Message-ID: <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
-References: <20230606035310.4026145-1-houtao@huaweicloud.com>
- <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
- <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
- <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
+        with ESMTP id S229977AbjFGTYP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Jun 2023 15:24:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8921FDA;
+        Wed,  7 Jun 2023 12:24:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DD15763C4E;
+        Wed,  7 Jun 2023 19:24:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DBF9C433D2;
+        Wed,  7 Jun 2023 19:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686165853;
+        bh=TEjozzWwHE+wg1B7u7MgRLMA+nls5RrK8Yf8ia9fueU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IIAZ+ErYABx5Ryg4r3dpBcWEGF2aGYh2aHQvbqx0s30X4PANX2GMFstg6gAwAb0TU
+         7gjETM9EEBuiVOCqud49fpiViiEb2ImCrCp2bgpqxTwWEs4g5boT5NPKuXeDM2H1A5
+         +4xUA5tJHvhqt1OX5pwVufoKQSrjBO45EmOoYcOAx9Uhd4MET05rxJ/oYaAjy2zVzv
+         0hX8d20mOi/DoYt3Dj7EfRL1JHrTiIm8gP9w9y02jwnn1YXTHSMcgpTftZKz72WAiA
+         4hY010rbk7gUJrYV+wFudW2qaKxIVE2aceBgY7Tiqk5aKnsXruQlptbBBCw/vnaOTW
+         D9RDqkTG4PUbw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C451ECE0018; Wed,  7 Jun 2023 12:24:12 -0700 (PDT)
+Date:   Wed, 7 Jun 2023 12:24:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Jain, Ayush" <ayush.jain3@amd.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        sfr@canb.auug.org.au, rcu@vger.kernel.org,
+        Wyes Karny <wyes.karny@amd.com>, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, void@manifault.com
+Subject: Re: Null pointer dereference during rcutorture test on linux-next
+ from next-20230602
+Message-ID: <ff0dd6b8-884e-4bcb-b7d9-72a5a8940f0d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <b8311fdc-2e71-f74f-159e-db7a86f27b9a@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
+In-Reply-To: <b8311fdc-2e71-f74f-159e-db7a86f27b9a@amd.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
-> As said in the commit message, the command line for test is
-> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
-> using default max_entries and the number of CPUs is greater than 15,
-> use_percpu_counter will be false.
-
-Right. percpu or not depends on number of cpus.
-
+On Wed, Jun 07, 2023 at 04:48:19PM +0530, Jain, Ayush wrote:
+> Hello All,
 > 
-> I have double checked my local VM setup (8 CPUs + 16GB) and rerun the
-> test.  For both "./map_perf_test 4 8" and "./map_perf_test 4 8 16384"
-> there are obvious performance degradation.
-...
-> [root@hello bpf]# ./map_perf_test 4 8 16384
-> 2:hash_map_perf kmalloc 359201 events per sec
-..
-> [root@hello bpf]# ./map_perf_test 4 8 16384
-> 4:hash_map_perf kmalloc 203983 events per sec
+> Observed null pointer dereference during rcutorture test on linux-next tree
+> from next-20230602.
+> 
+> Commit ID: commit bc708bbd8260ee4eb3428b0109f5f3be661fae46 (HEAD, tag: next-20230602)
+> 
+> Here I am attaching log trace
+> 
+> [12133.344278] rcu-torture: rcu_torture_read_exit: Start of test
+> [12133.344282] rcu-torture: rcu_torture_read_exit: Start of episode
+> [12138.350637] rcu-torture: rcu_torture_read_exit: End of episode
+> [12143.419412] smpboot: CPU 1 is now offline
+> [12143.427996] BUG: kernel NULL pointer dereference, address: 0000000000000128
+> [12143.435777] #PF: supervisor read access in kernel mode
+> [12143.441517] #PF: error_code(0x0000) - not-present page
+> [12143.447256] PGD 0 P4D 0
+> [12143.450087] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [12143.454955] CPU: 68 PID: 978653 Comm: rcu_torture_rea Kdump: loaded Not tainted 6.4.0-rc5-next-20230606-1686061107994 #1
+> [12143.467095] Hardware name: AMD Corporation Speedway/Speedway, BIOS RSW1009C 07/27/2018
+> [12143.475934] RIP: 0010:__bitmap_and+0x18/0x70
+> [12143.480713] Code: 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 41 89 cb 49 89 f9 41 c1 eb 06 74 51 45 89 da 31 c0 45 31 c0 <48> 8b 3c c6 48 23 3c c2 49 89 3c c1 48 83 c0 01 49 09 f8 49 39 c2
+> [12143.501675] RSP: 0018:ffffa3a90db70d90 EFLAGS: 00010046
+> [12143.507510] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000080
+> [12143.515468] RDX: ffff8a1ec17a1d68 RSI: 0000000000000128 RDI: ffff8a1e800429c0
+> [12143.523425] RBP: ffff8a1ec17a1980 R08: 0000000000000000 R09: ffff8a1e800429c0
+> [12143.531385] R10: 0000000000000002 R11: 0000000000000002 R12: ffff8a1e800429c0
+> [12143.539352] R13: 0000000000000000 R14: 0000000000032580 R15: 0000000000000000
+> [12143.547320] FS:  0000000000000000(0000) GS:ffff8a2dbf100000(0000) knlGS:0000000000000000
+> [12143.556354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [12143.562770] CR2: 0000000000000128 CR3: 0000003089e50000 CR4: 00000000003506e0
+> [12143.570729] Call Trace:
+> [12143.573463]  <IRQ>
+> [12143.575714]  ? __die+0x24/0x70
+> [12143.579130]  ? page_fault_oops+0x82/0x150
+> [12143.583615]  ? exc_page_fault+0x69/0x150
+> [12143.588001]  ? asm_exc_page_fault+0x26/0x30
+> [12143.592678]  ? __bitmap_and+0x18/0x70
+> [12143.596768]  select_idle_cpu+0x84/0x3d0
+> [12143.601059]  select_idle_sibling+0x1b7/0x500
+> [12143.605831]  select_task_rq_fair+0x1b2/0x2e0
+> [12143.610603]  select_task_rq+0x7a/0xc0
+> [12143.614696]  try_to_wake_up+0xe8/0x550
+> [12143.618885]  ? update_process_times+0x83/0x90
+> [12143.623747]  ? __pfx_hrtimer_wakeup+0x10/0x10
+> [12143.628615]  hrtimer_wakeup+0x22/0x30
+> [12143.632706]  __hrtimer_run_queues+0x112/0x2b0
+> [12143.637574]  hrtimer_interrupt+0x100/0x240
+> [12143.642152]  __sysvec_apic_timer_interrupt+0x63/0x130
+> [12143.647796]  sysvec_apic_timer_interrupt+0x71/0x90
+> [12143.653149]  </IRQ>
+> [12143.655493]  <TASK>
+> [12143.657834]  asm_sysvec_apic_timer_interrupt+0x1a/0x20
+> [12143.663573] RIP: 0010:rcu_torture_read_lock+0x4/0x20 [rcutorture]
+> [12143.670389] Code: 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 e9 12 5a f6 d7 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa <0f> 1f 44 00 00 e8 b2 12 f6 d7 31 c0 e9 7b 9c a0 d8 66 66 2e 0f 1f
+> [12143.691351] RSP: 0018:ffffa3a90e3ebc40 EFLAGS: 00000202
+> [12143.697187] RAX: ffffffffc1dff0b0 RBX: 00000000ffffffff RCX: 0000000000000008
+> [12143.705155] RDX: 0000000000000060 RSI: 0000000000000060 RDI: ffffa3a90e3ebccc
+> [12143.713124] RBP: 0000000000000060 R08: 0000000000000060 R09: 0000000000000000
+> [12143.721091] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000060
+> [12143.729057] R13: 0000000000000008 R14: 0000000000000000 R15: ffffa3a90e3ebe20
+> [12143.737027]  ? __pfx_rcu_torture_read_lock+0x10/0x10 [rcutorture]
+> [12143.743845]  rcutorture_one_extend+0xc2/0x3a0 [rcutorture]
+> [12143.749980]  rcu_torture_one_read+0x192/0x550 [rcutorture]
+> [12143.756115]  ? update_load_avg+0x7e/0x740
+> [12143.760593]  ? raw_spin_rq_lock_nested+0x15/0x30
+> [12143.765749]  ? newidle_balance+0x26e/0x400
+> [12143.770330]  ? __pfx_rcu_torture_reader+0x10/0x10 [rcutorture]
+> [12143.776854]  rcu_torture_reader+0xcd/0x280 [rcutorture]
+> [12143.782698]  ? __pfx_rcu_torture_timer+0x10/0x10 [rcutorture]
+> [12143.789124]  kthread+0xe6/0x120
+> [12143.792636]  ? __pfx_kthread+0x10/0x10
+> [12143.796823]  ret_from_fork+0x2c/0x50
+> [12143.800824]  </TASK>
+> 
+> Please let me know if any extra information is required.
 
-this is indeed a degration in a VM.
+Could you please let us know which rcutorture scenario this is and/or
+what module parameters were supplied to modprobe (depending on how you
+initiated the test)?  One way to do this is to post the full console
+log somewhere, along with the .config.
 
-> I also run map_perf_test on a physical x86-64 host with 72 CPUs. The
-> performances for "./map_perf_test 4 8" are similar, but there is obvious
-> performance degradation for "./map_perf_test 4 8 16384"
+At first glance, the wakeup path got a NULL cpumask pointer somehow.
 
-but... a degradation?
+Is bisection a possibility?  It would be very helpful.
 
-> Before reuse-after-rcu-gp:
->
-> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
-> 1:hash_map_perf kmalloc 388088 events per sec
-...
-> After reuse-after-rcu-gp:
-> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
-> 5:hash_map_perf kmalloc 655628 events per sec
-
-This is a big improvement :) Not a degration.
-You always have to double check the numbers with perf report.
-
-> So could you please double check your setup and rerun map_perf_test ? If
-> there is no performance degradation, could you please share your setup
-> and your kernel configure file ?
-
-I'm testing on normal no-debug kernel. No kasan. No lockdep. HZ=1000
-Playing with it a bit more I found something interesting:
-map_perf_test 4 8 16348
-before/after has too much noise to be conclusive.
-
-So I did
-map_perf_test 4 8 16348 1000000
-
-and now I see significant degration from patch 3.
-It drops from 800k to 200k.
-And perf report confirms that heavy contention on sc->reuse_lock is the culprit.
-The following hack addresses most of the perf degradtion:
-
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index fea1cb0c78bb..eeadc9359097 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -188,7 +188,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
-        alloc = 0;
-        head = NULL;
-        tail = NULL;
--       raw_spin_lock_irqsave(&sc->reuse_lock, flags);
-+       if (raw_spin_trylock_irqsave(&sc->reuse_lock, flags)) {
-        while (alloc < cnt) {
-                obj = __llist_del_first(&sc->reuse_ready_head);
-                if (obj) {
-@@ -206,6 +206,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
-                alloc++;
-        }
-        raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
-+       }
-
-        if (alloc) {
-                if (IS_ENABLED(CONFIG_PREEMPT_RT))
-@@ -334,9 +335,11 @@ static void bpf_ma_add_to_reuse_ready_or_free(struct bpf_mem_cache *c)
-                sc->reuse_ready_tail = NULL;
-                WARN_ON_ONCE(!llist_empty(&sc->wait_for_free));
-                __llist_add_batch(head, tail, &sc->wait_for_free);
-+               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
-                call_rcu_tasks_trace(&sc->rcu, free_rcu);
-+       } else {
-+               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
-        }
--       raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
- }
-
-It now drops from 800k to 450k.
-And perf report shows that both reuse is happening and slab is working hard to satisfy kmalloc/kfree.
-So we may consider per-cpu waiting_for_rcu_gp and per-bpf-ma waiting_for_rcu_task_trace_gp lists.
-For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
-
-Answering your other email:
-
-> I see your point. I will continue to debug the memory usage difference
-> between v3 and v4.
-
-imo it's a waste of time to continue analyzing performance based on bench in patch 2.
-
-> I don't think so. Let's considering the per-cpu list first. Assume the
-> normal RCU grace period is about 30ms and we are tracing the IO latency
-> of a normal SSD. The iops is about 176K per seconds, so before one RCU
-> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
-> For the per-ma list, when the number of CPUs increased, it is easy to
-> make the list contain thousands of elements.
-
-That would be true only if there were no scheduling events in all of 176K ops.
-Which is not the case.
-I'm not sure why you're saying that RCU GP is 30ms.
-In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
-Every sched event is sort-of implicit rcu_read_lock/unlock.
-Network and block IO doesn't process 176K packets without resched.
-Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
-
-For small size buckets low_watermark=32 and high=96.
-We typically move 32 elements at a time from one list to another.
-A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
-is not instant, but once __free_rcu_tasks_trace is called we need to take
-elements from waiting_for_gp one at a time and kfree it one at a time.
-So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
-
-> Before I post v5, I want to know the reason why per-bpf-ma list is
->introduced. Previously, I though it was used to handle the case in which
-> allocation and freeing are done on different CPUs. 
-
-Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
-
-> And as we can see
-> from the benchmark result above and in v3, the performance and the
-> memory usage of v4 for add_del_on_diff_cpu is better than v3. 
-
-bench from patch 2 is invalid. Hence no conclusion can be made.
-
-So far the only bench we can trust and analyze is map_perf_test.
-Please make bench in patch 2 yield the cpu after few updates.
-Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
-64 updates is realistic too. A thousand is not.
+							Thanx, Paul
