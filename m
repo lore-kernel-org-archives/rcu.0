@@ -2,102 +2,219 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB4E0C7EE25
-	for <rcu@archiver.kernel.org>; Wed,  7 Jun 2023 14:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8436C7EE25
+	for <rcu@archiver.kernel.org>; Wed,  7 Jun 2023 17:52:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240524AbjFGOPp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Jun 2023 10:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S232351AbjFGRwb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Jun 2023 13:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240039AbjFGOPo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Jun 2023 10:15:44 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7888E;
-        Wed,  7 Jun 2023 07:15:41 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id F272E5C01FA;
-        Wed,  7 Jun 2023 10:15:40 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 07 Jun 2023 10:15:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1686147340; x=1686233740; bh=kV54xPBWSO
-        6jMRDaa0Nz4NRiwXl2hA/6yyw97A8fySA=; b=rClrL9xg4oWeWdx/QDG/GMl+D5
-        s3uH/2yHFup5Hylu3zYmRHQZ/U/cvBlMdWHKXV8dlV1CW1RhGLxP84FokE+Y0Pte
-        sE15lwqmlAAYLFyoasuLnrt2fc9scdIL1Uk/kHoR+Au4V6OnyHTEFDd2ciOv4oH/
-        ivQ+++TAQhFFXzF8CEu6ryudeCCTg4cQONoo6egJ0+1Vg6neEVb5cY/9N25N1WI6
-        ItjHcqufcgbe3L3Y2D3rhgr1cKAnMuOXS02MXESLlSxZC326oHHGxaxJpKjtsmyi
-        ljxLXOK57IoaUq0mERgzQF4rFXkViqyCyR1JR6o1nnhBTLaEVGbXfaXX2jgQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1686147340; x=1686233740; bh=kV54xPBWSO6jM
-        RDaa0Nz4NRiwXl2hA/6yyw97A8fySA=; b=mQ7UPclt+8YsRjJ8OMuoVy7mZbEV1
-        t6VKMJi46vysfr7Q0T6qc3h1e/5npznxqQoIwi3sKhqPSB4EvPJQ8p/qMD1bmhxn
-        MvGjkVeaZvY37venlZH1IuzRnx9nkCDYuFemnq3Q1NU4uFvFnlH36I4+MfCnq+pz
-        /sZuvZslYssOTHjPCfCB+WG9t3l24nX4W6D/WZdn9fTeUOwoB+ZGnJyi7UN8MdK1
-        KEZsRjiZyiaXHnMkF65mrayWrNi0j3cAKYRD3yFc6xX2bZi/AalhsmDLoAwB0JFR
-        sDhdbBQ/M0dZgB2u6d9sdC5LrkXEx396Ckf6xLoBsaSvLEOHFB8YYLewA==
-X-ME-Sender: <xms:DJGAZE-DQAzuL8l8JyKcPTzZZR0lTkuyXsJzXwvMZLIpKHLjJU85rA>
-    <xme:DJGAZMv-OgThk8SzwGoovDsg4OWsxNqno3ImlTlb_QwO61b0IBwqrcfO1IQ_lzo5k
-    57j1vyrQOekovPT8gw>
-X-ME-Received: <xmr:DJGAZKA2jbKIC4B7tE7LoKaXMYLUviVsnjPuXgve9ewbvryAuT2_lz6rkVVhNsZcwYKnU_mn>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgedtgedgjeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepvfihtghhohcu
-    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
-    htvghrnhepheeffeehleeftdfgjeegheelieefvdfghfeuudeuheehuefhhffhtefhiedv
-    geegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepth
-    ihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:DJGAZEdul0Wf-CGFYbs6muLf3RGIh39JpPTBeUjuay8fSb2LRm2eEg>
-    <xmx:DJGAZJOCRSZt7jHq19Wq8SqqcLEguZUAZ3siM9A5nev-RBBKWQZI9w>
-    <xmx:DJGAZOlGUxm-9rlydG_ORy9-hIU_rlhhv_Fk1jp3Q8Z9LUTrma5zCQ>
-    <xmx:DJGAZM08tfyy-gdiPMhj99OLtffOd2qlu0z0KT0fek4ENShuVwPNqA>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Jun 2023 10:15:39 -0400 (EDT)
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tycho Andersen <tycho@tycho.pizza>,
-        Tycho Andersen <tandersen@netflix.com>
-Subject: [PATCH] documentation/rcu: fix typo
-Date:   Wed,  7 Jun 2023 08:15:21 -0600
-Message-Id: <20230607141521.539828-1-tycho@tycho.pizza>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S232345AbjFGRwa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Jun 2023 13:52:30 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8728319BB;
+        Wed,  7 Jun 2023 10:52:28 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b2439e9004so8128165ad.3;
+        Wed, 07 Jun 2023 10:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686160348; x=1688752348;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/7wVi2PQeb70vtjxUPsGGvKTtWbtq1CFy2L95Et03FM=;
+        b=lo/6968jtYZvvFV4f2s0rafTXPDJVzRApYBRh0wPyFkPicUakIryIwSBe5QL1vfwlw
+         bxHP85c30HSoiSgchEwENK2hPXnM0nWI85CVnTgS+1o/MGLyZSJkH9qpw/WILqnXPDjS
+         ocri8qx+iV4negQAjTgmQF5vUOFYqCWk5IZJUBrERkalqN0GeCm+kLEWEn8aFamLsZlA
+         lA0mgHEJfrjwQemfQQtqA/LM4EYqQoshq+BhyT+dNYvCrJEIC/PVQK1XxNzspc/rxA/P
+         uq4oDN3EVbLo3WpR+szXr2lxNqMvUcKO9F7MAX46vjLrhOHUH5mZluScCGjIdr8niyy6
+         HR4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686160348; x=1688752348;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/7wVi2PQeb70vtjxUPsGGvKTtWbtq1CFy2L95Et03FM=;
+        b=gSp8R9KV8zOW9oY942SnqnzVj+hezlKxxcS5yy1y/dGZDcaSI4HifzaRC/E+OMxHTX
+         bEEYbKlaecSUogxFdooCfm+2xa/fI4Hsh9lMOEXa1O5VQU2EflWn/m5sJSBxfpswzPbQ
+         SjnKcPe5a3DHDjHlmsF1fz5Ijs9fO2PCyuDlCatFu/Y8xJvjEx7dk/uBGISlLBuxkXV+
+         9G9yMI9t9ipVtFlEKvSfesNmchpNs93CBwTuCSBxX5L3tjp5wOcwOOmvM0mYScAFhoY/
+         dqTjIdqvtxJCFnvmCwNu1IPyXeNwYaZViD0rVuvjvMXDouBEQPSBriBLEsscl4NJN456
+         YHuw==
+X-Gm-Message-State: AC+VfDxC96J08Tfy8ShLJ9Hzm53RBvyS3TMFa9aYN5/fJCfsQCKuvVV6
+        d5TzVbOZSC6VmHr7r06SdJI=
+X-Google-Smtp-Source: ACHHUZ4mxC/zXoB6RQXHQWVTuJMCKrlaiJLr3pRGbH4Yfo2bZxe/mnoWfdx2twWuKzhcRwEakwTVPA==
+X-Received: by 2002:a17:902:ea0e:b0:1b0:3576:c2a9 with SMTP id s14-20020a170902ea0e00b001b03576c2a9mr2849066plg.33.1686160347714;
+        Wed, 07 Jun 2023 10:52:27 -0700 (PDT)
+Received: from MacBook-Pro-8.local ([2620:10d:c090:500::6:1c96])
+        by smtp.gmail.com with ESMTPSA id ix3-20020a170902f80300b001ab01598f40sm2186085plb.173.2023.06.07.10.52.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jun 2023 10:52:27 -0700 (PDT)
+Date:   Wed, 7 Jun 2023 10:52:24 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        "houtao1@huawei.com" <houtao1@huawei.com>
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+Message-ID: <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+ <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+ <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Tycho Andersen <tandersen@netflix.com>
+On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
+> As said in the commit message, the command line for test is
+> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
+> using default max_entries and the number of CPUs is greater than 15,
+> use_percpu_counter will be false.
 
-Signed-off-by: Tycho Andersen <tandersen@netflix.com>
----
- Documentation/RCU/lockdep-splat.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Right. percpu or not depends on number of cpus.
 
-diff --git a/Documentation/RCU/lockdep-splat.rst b/Documentation/RCU/lockdep-splat.rst
-index 2a5c79db57dc..bcbc4b3c88d7 100644
---- a/Documentation/RCU/lockdep-splat.rst
-+++ b/Documentation/RCU/lockdep-splat.rst
-@@ -10,7 +10,7 @@ misuses of the RCU API, most notably using one of the rcu_dereference()
- family to access an RCU-protected pointer without the proper protection.
- When such misuse is detected, an lockdep-RCU splat is emitted.
- 
--The usual cause of a lockdep-RCU slat is someone accessing an
-+The usual cause of a lockdep-RCU splat is someone accessing an
- RCU-protected data structure without either (1) being in the right kind of
- RCU read-side critical section or (2) holding the right update-side lock.
- This problem can therefore be serious: it might result in random memory
+> 
+> I have double checked my local VM setup (8 CPUs + 16GB) and rerun the
+> test.  For both "./map_perf_test 4 8" and "./map_perf_test 4 8 16384"
+> there are obvious performance degradation.
+...
+> [root@hello bpf]# ./map_perf_test 4 8 16384
+> 2:hash_map_perf kmalloc 359201 events per sec
+..
+> [root@hello bpf]# ./map_perf_test 4 8 16384
+> 4:hash_map_perf kmalloc 203983 events per sec
 
-base-commit: a4d7d701121981e3c3fe69ade376fe9f26324161
--- 
-2.34.1
+this is indeed a degration in a VM.
 
+> I also run map_perf_test on a physical x86-64 host with 72 CPUs. The
+> performances for "./map_perf_test 4 8" are similar, but there is obvious
+> performance degradation for "./map_perf_test 4 8 16384"
+
+but... a degradation?
+
+> Before reuse-after-rcu-gp:
+>
+> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+> 1:hash_map_perf kmalloc 388088 events per sec
+...
+> After reuse-after-rcu-gp:
+> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+> 5:hash_map_perf kmalloc 655628 events per sec
+
+This is a big improvement :) Not a degration.
+You always have to double check the numbers with perf report.
+
+> So could you please double check your setup and rerun map_perf_test ? If
+> there is no performance degradation, could you please share your setup
+> and your kernel configure file ?
+
+I'm testing on normal no-debug kernel. No kasan. No lockdep. HZ=1000
+Playing with it a bit more I found something interesting:
+map_perf_test 4 8 16348
+before/after has too much noise to be conclusive.
+
+So I did
+map_perf_test 4 8 16348 1000000
+
+and now I see significant degration from patch 3.
+It drops from 800k to 200k.
+And perf report confirms that heavy contention on sc->reuse_lock is the culprit.
+The following hack addresses most of the perf degradtion:
+
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index fea1cb0c78bb..eeadc9359097 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -188,7 +188,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
+        alloc = 0;
+        head = NULL;
+        tail = NULL;
+-       raw_spin_lock_irqsave(&sc->reuse_lock, flags);
++       if (raw_spin_trylock_irqsave(&sc->reuse_lock, flags)) {
+        while (alloc < cnt) {
+                obj = __llist_del_first(&sc->reuse_ready_head);
+                if (obj) {
+@@ -206,6 +206,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
+                alloc++;
+        }
+        raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
++       }
+
+        if (alloc) {
+                if (IS_ENABLED(CONFIG_PREEMPT_RT))
+@@ -334,9 +335,11 @@ static void bpf_ma_add_to_reuse_ready_or_free(struct bpf_mem_cache *c)
+                sc->reuse_ready_tail = NULL;
+                WARN_ON_ONCE(!llist_empty(&sc->wait_for_free));
+                __llist_add_batch(head, tail, &sc->wait_for_free);
++               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+                call_rcu_tasks_trace(&sc->rcu, free_rcu);
++       } else {
++               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+        }
+-       raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+ }
+
+It now drops from 800k to 450k.
+And perf report shows that both reuse is happening and slab is working hard to satisfy kmalloc/kfree.
+So we may consider per-cpu waiting_for_rcu_gp and per-bpf-ma waiting_for_rcu_task_trace_gp lists.
+For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
+
+Answering your other email:
+
+> I see your point. I will continue to debug the memory usage difference
+> between v3 and v4.
+
+imo it's a waste of time to continue analyzing performance based on bench in patch 2.
+
+> I don't think so. Let's considering the per-cpu list first. Assume the
+> normal RCU grace period is about 30ms and we are tracing the IO latency
+> of a normal SSD. The iops is about 176K per seconds, so before one RCU
+> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
+> For the per-ma list, when the number of CPUs increased, it is easy to
+> make the list contain thousands of elements.
+
+That would be true only if there were no scheduling events in all of 176K ops.
+Which is not the case.
+I'm not sure why you're saying that RCU GP is 30ms.
+In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
+Every sched event is sort-of implicit rcu_read_lock/unlock.
+Network and block IO doesn't process 176K packets without resched.
+Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
+
+For small size buckets low_watermark=32 and high=96.
+We typically move 32 elements at a time from one list to another.
+A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
+is not instant, but once __free_rcu_tasks_trace is called we need to take
+elements from waiting_for_gp one at a time and kfree it one at a time.
+So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
+
+> Before I post v5, I want to know the reason why per-bpf-ma list is
+>introduced. Previously, I though it was used to handle the case in which
+> allocation and freeing are done on different CPUs. 
+
+Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
+
+> And as we can see
+> from the benchmark result above and in v3, the performance and the
+> memory usage of v4 for add_del_on_diff_cpu is better than v3. 
+
+bench from patch 2 is invalid. Hence no conclusion can be made.
+
+So far the only bench we can trust and analyze is map_perf_test.
+Please make bench in patch 2 yield the cpu after few updates.
+Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
+64 updates is realistic too. A thousand is not.
