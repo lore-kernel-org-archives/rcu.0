@@ -2,234 +2,280 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC37FC77B7A
-	for <rcu@archiver.kernel.org>; Wed,  7 Jun 2023 08:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEE2AC7EE2F
+	for <rcu@archiver.kernel.org>; Wed,  7 Jun 2023 09:41:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239457AbjFGImu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Jun 2023 04:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
+        id S239461AbjFGJli (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Jun 2023 05:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239488AbjFGImf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Jun 2023 04:42:35 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C121BFF;
-        Wed,  7 Jun 2023 01:42:18 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qbgnf6cpQz4f3jJ0;
-        Wed,  7 Jun 2023 16:42:14 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgA3RebjQoBkUjkxLA--.14340S2;
-        Wed, 07 Jun 2023 16:42:15 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
- allocator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20230606035310.4026145-1-houtao@huaweicloud.com>
- <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
- <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
-Date:   Wed, 7 Jun 2023 16:42:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S237728AbjFGJlh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Jun 2023 05:41:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414131725;
+        Wed,  7 Jun 2023 02:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=zL2cDZtI/GqCIw+TppsnvFE7my1T9WpbwcRWd1ZjFG4=; b=tDmSegs/ZdI1YJ+9AHZSG4DMma
+        REKA9sIdfScGoMIzAWKPBcB5lQHIFZqvI1a3rcgPkftEnwn1+X97jZUpFtD4Vv4TXcrRtaM/sG/60
+        MUvlRRYWuMJp9/AIMdzkr0vmi0IBjw7k5agxe+dlzedv6WgT8SdWtTJiGIfQw/KnONPhkiibxUxaO
+        zqAzhwocYkSzgSffwskn3jVgcnt8v7Ups2/O4xGxNOvX/YHNvKjlo8WPV/dgMNX4LdGoxRwPyonS0
+        spNca+ZlblDD288I1LZ7YCtMl5vP8X2McDLNUWXSXj4ji8p8fTXbaWs/WfO+U6NL3M0p6dZDZKxyD
+        WBsvtOLg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1q6pf6-00E7oT-Mz; Wed, 07 Jun 2023 09:41:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 87E28300274;
+        Wed,  7 Jun 2023 11:41:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 68735243C2A68; Wed,  7 Jun 2023 11:41:01 +0200 (CEST)
+Date:   Wed, 7 Jun 2023 11:41:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
+Message-ID: <20230607094101.GA964354@hirez.programming.kicks-ass.net>
+References: <20230526205204.861311518@infradead.org>
+ <CAHk-=wg2RHZKTN29Gr7MhgYfaNtzz58wry9jCNP75LAmQ9t8-A@mail.gmail.com>
+ <20230530092342.GA149947@hirez.programming.kicks-ass.net>
+ <20230606094251.GA907347@hirez.programming.kicks-ass.net>
+ <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+ <20230606134005.GE905437@hirez.programming.kicks-ass.net>
+ <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
+ <20230606180806.GA942082@hirez.programming.kicks-ass.net>
+ <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgA3RebjQoBkUjkxLA--.14340S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtF47XryDArWDWFyDuw1xKrg_yoWxZr47pa
-        1fAFW5Kr1Dt398ZwsIyw15WF9Fq34Sgr4DXw1Fqw45uryDZF1aqFs7WF40krn8Cr4rGF10
-        k3Zayr1fK347Xa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+On Tue, Jun 06, 2023 at 04:22:26PM -0700, Linus Torvalds wrote:
+> On Tue, Jun 6, 2023 at 11:08 AM Peter Zijlstra <peterz@infradead.org> wrote:>
+> > Would it all be less offensive if I did: s/guard/cleanup/ on the whole
+> > thing?
+> 
+> It's more than "guard" for me.
+> 
+> What is "ptr"? Why? We already know of at least one case where it's
+> not a pointer at all, ie 'struct fd'.
 
-On 6/7/2023 5:04 AM, Alexei Starovoitov wrote:
-> On Tue, Jun 06, 2023 at 08:30:58PM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 6/6/2023 11:53 AM, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> Hi,
->>>
->>> The implementation of v4 is mainly based on suggestions from Alexi [0].
->>> There are still pending problems for the current implementation as shown
->>> in the benchmark result in patch #3, but there was a long time from the
->>> posting of v3, so posting v4 here for further disscussions and more
->>> suggestions.
->>>
->>> The first problem is the huge memory usage compared with bpf memory
->>> allocator which does immediate reuse:
-SNIP
-> The large memory usage is because the benchmark in patch 2 is abusing it.
-> It's doing one bpf_loop() over 16k elements (in case of 1 producer)
-> and 16k/8 loops for --producers=8.
-> That's 2k memory allocations that have to wait for RCU GP.
-> Of course that's a ton of memory.
->
-> As far as implementation in patch 3 please respin it asap and remove *_tail optimization.
-> It makes the code hard to read and doesn't buy us anything.
-> Other than that the algorithm looks fine.
->
->>> Another problem is the performance degradation compared with immediate
->>> reuse and the output from perf report shown the per-bpf-ma spin-lock is a
->>> top-one hotspot:
-> That's not what I see.
-> Hot spin_lock is in generic htab code. Not it ma.
-> I still believe per-bpf-ma spin-lock is fine.
-> The bench in patch 2 is measuring something that no real bpf prog cares about.
->
-> See how map_perf_test is doing:
->         for (i = 0; i < 10; i++) {
->                 bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
->
-> Even 10 map updates for the same map in a single bpf prog invocation is not realistic.
-> 16k/8 is beyond any normal scenario.
-> There is no reason to optimize bpf_ma for the case of htab abuse.
->
->>> map_perf_test (reuse-after-RCU-GP)
->>> 0:hash_map_perf kmalloc 194677 events per sec
->>>
->>> map_perf_test (immediate reuse)
->>> 2:hash_map_perf kmalloc 384527 events per sec
-> For some reason I cannot reproduce the slow down with map_perf_test 4 8.
-> I see the same perf with/without patch 3.
-As said in the commit message, the command line for test is
-"./map_perf_test 4 8 16384", because the default max_entries is 1000. If
-using default max_entries and the number of CPUs is greater than 15,
-use_percpu_counter will be false.
+(so in my view struct fd is nothing more than a fat pointer)
 
-I have double checked my local VM setup (8 CPUs + 16GB) and rerun the
-test.  For both "./map_perf_test 4 8" and "./map_perf_test 4 8 16384"
-there are obvious performance degradation.
+> So I *really* hate the naming. Absolutely none of it makes sense to
+> me. One part is a nonsensical name apparently based on a special-case
+> operation, and the other part is a nonsensical type from just one
+> random - if common - implementation issue.
+> 
+> What you want to do is to have a way to define and name a
+> "constructor/desctructor" pair for an arbitrary type - *not*
+> necessarily a pointer - and then optionally a way to say "Oh, don't do
+> the destructor, because I'm actually going to use it long-term".
 
-Before reuse-after-rcu-gp:
-[root@hello bpf]# ./map_perf_test 4 8
-5:hash_map_perf kmalloc 358498 events per sec
-4:hash_map_perf kmalloc 306351 events per sec
-1:hash_map_perf kmalloc 299175 events per sec
-3:hash_map_perf kmalloc 297689 events per sec
-6:hash_map_perf kmalloc 299839 events per sec
-2:hash_map_perf kmalloc 292286 events per sec
-7:hash_map_perf kmalloc 278138 events per sec
-0:hash_map_perf kmalloc 265031 events per sec
+Yes, so when it's a 'pointer', that part becomes assigning it NULL (or
+fdnull in the struct fd case). For example:
 
-[root@hello bpf]# ./map_perf_test 4 8 16384
-2:hash_map_perf kmalloc 359201 events per sec
-6:hash_map_perf kmalloc 302475 events per sec
-3:hash_map_perf kmalloc 298583 events per sec
-7:hash_map_perf kmalloc 301594 events per sec
-0:hash_map_perf kmalloc 295210 events per sec
-4:hash_map_perf kmalloc 230496 events per sec
-5:hash_map_perf kmalloc 163530 events per sec
-1:hash_map_perf kmalloc 153520 events per sec
+DEFINE_PTR_CLEANUP(kfree, void *, kfree(_C))
 
-After reuse-after-rcu-gp:
-[root@hello bpf]# ./map_perf_test 4 8
-1:hash_map_perf kmalloc 203252 events per sec
-2:hash_map_perf kmalloc 181777 events per sec
-6:hash_map_perf kmalloc 183467 events per sec
-4:hash_map_perf kmalloc 182590 events per sec
-0:hash_map_perf kmalloc 180840 events per sec
-3:hash_map_perf kmalloc 179875 events per sec
-5:hash_map_perf kmalloc 152250 events per sec
-7:hash_map_perf kmalloc 137500 events per sec
+	ptr_cleanup(kfree, mem) = kzalloc(....);
+	if (!mem)
+		return -ENOMEM;
 
-[root@hello bpf]# ./map_perf_test 4 8 16384
-4:hash_map_perf kmalloc 203983 events per sec
-5:hash_map_perf kmalloc 197902 events per sec
-2:hash_map_perf kmalloc 184693 events per sec
-3:hash_map_perf kmalloc 185341 events per sec
-1:hash_map_perf kmalloc 183064 events per sec
-7:hash_map_perf kmalloc 181148 events per sec
-0:hash_map_perf kmalloc 178520 events per sec
-6:hash_map_perf kmalloc 179340 events per sec
+	object = mem;
 
-I also run map_perf_test on a physical x86-64 host with 72 CPUs. The
-performances for "./map_perf_test 4 8" are similar, but there is obvious
-performance degradation for "./map_perf_test 4 8 16384"
+	// build object with more failure cases
 
-Before reuse-after-rcu-gp:
+	mem = NULL;          // object is a success, we keep it.
+	return object;
 
-[houtao@fedora bpf]$ sudo ./map_perf_test 4 8
-1:hash_map_perf kmalloc 41711 events per sec
-3:hash_map_perf kmalloc 41352 events per sec
-4:hash_map_perf kmalloc 41352 events per sec
-0:hash_map_perf kmalloc 41008 events per sec
-7:hash_map_perf kmalloc 41086 events per sec
-5:hash_map_perf kmalloc 41038 events per sec
-2:hash_map_perf kmalloc 40971 events per sec
-6:hash_map_perf kmalloc 41008 events per sec
+> I said "cleanup", but that's not right either, since we always have to
+> have that initializer too.
 
-[houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
-1:hash_map_perf kmalloc 388088 events per sec
-7:hash_map_perf kmalloc 391843 events per sec
-6:hash_map_perf kmalloc 387901 events per sec
-3:hash_map_perf kmalloc 356096 events per sec
-4:hash_map_perf kmalloc 356836 events per sec
-2:hash_map_perf kmalloc 349728 events per sec
-0:hash_map_perf kmalloc 345792 events per sec
-5:hash_map_perf kmalloc 346742 events per sec
+I've found that for most things the initializer part isn't actually that
+important. Consider that struct fd thing again; perf has a helper:
 
-After reuse-after-rcu-gp:
+static inline struct fd perf_fget_light(int fd)
+{
+	struct fd f = fdget(fd);
+	if (!f.file)
+		return fdnull;
 
-[houtao@fedora bpf]$ sudo ./map_perf_test 4 8
-4:hash_map_perf kmalloc 42667 events per sec
-1:hash_map_perf kmalloc 42206 events per sec
-5:hash_map_perf kmalloc 42264 events per sec
-6:hash_map_perf kmalloc 42196 events per sec
-7:hash_map_perf kmalloc 42142 events per sec
-2:hash_map_perf kmalloc 42028 events per sec
-0:hash_map_perf kmalloc 41933 events per sec
-3:hash_map_perf kmalloc 41986 events per sec
+	if (f.file->f_op != &perf_fops) {
+		fdput(f);
+		return fdnull;
+	}
+	return f;
+}
 
-[houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
-5:hash_map_perf kmalloc 655628 events per sec
-7:hash_map_perf kmalloc 650691 events per sec
-2:hash_map_perf kmalloc 624384 events per sec
-1:hash_map_perf kmalloc 615011 events per sec
-3:hash_map_perf kmalloc 618335 events per sec
-4:hash_map_perf kmalloc 624072 events per sec
-6:hash_map_perf kmalloc 628559 events per sec
-0:hash_map_perf kmalloc 585384 events per sec
+So now we have both fdget() and perf_fget_light() to obtain a struct fd,
+both need fdput().
 
-So could you please double check your setup and rerun map_perf_test ? If
-there is no performance degradation, could you please share your setup
-and your kernel configure file ?
->
-> I've applied patch 1.
-> Please respin with patch 2 doing no more than 10 map_updates under rcu lock
-> and remove *_tail optimization from patch 3.
-> Just do llist_for_each_safe() when you move elements from one list to another.
-> And let's brainstorm further.
-> Please do not delay.
+The pointer with destructor semantics works for both:
 
+DEFINE_PTR_CLEANUP(fdput, struct fd, fdput(_C))
+
+	ptr_cleanup(fdput, f) = perf_fget_light(fd);
+
+or, somewhere else:
+
+	ptr_cleanup(fdput, f) = fdget(fd);
+
+
+The same is true for kfree(), we have a giant pile of allocation
+functions that all are freed with kfree(): kmalloc(), kzalloc(),
+kmalloc_node(), kzalloc_node(), krealloc(), kmalloc_array(),
+krealloc_array(), kcalloc(), etc..
+
+> Maybe just bite the bullet, and call the damn thing a "class", and
+> have some syntax like
+> 
+>      DEFINE_CLASS(name, type, exit, init, initarg...);
+> 
+> to create the infrastructure for some named 'class'. So you'd have
+> 
+>     DEFINE_CLASS(mutex, struct mutex *,
+>         mutex_unlock(*_P),
+>         ({mutex_lock(mutex); mutex;}), struct mutex *mutex)
+> 
+> to define the mutex "class", and do
+> 
+>     DEFINE_CLASS(fd, struct fd,
+>         fdput(*_P),
+>         fdget(f), int f)
+> 
+> for the 'struct fd' thing.
+
+Right; that is very close to what I have. And certainly useful --
+although as per the above, perhaps not so for the struct fd case.
+
+> Then to _instantiate_ one of those, you'd do
+> 
+>     INSTANTIATE_CLASS(name, var)
+> 
+> which would expand to
+> 
+>     class_name_type var
+>         __attribute__((__cleanup__(class_name_destructor))) =
+> class_name_constructor
+> 
+> and the magic of that syntax is that you'd actually use that
+> "INSTANTIATE_CLASS()" with the argument to the init function
+> afterwards, so you'd actually do
+> 
+>     INSTANTIATE_CLASS(mutex, n)(&sched_domains_mutex);
+> 
+> to create a variable 'n' of class 'mutex', where the
+> class_mutex_constructor gets the pointer to 'sched_domain_mutex' as
+> the argument.
+
+Yes, I had actually considered this syntax, and I really like it. The
+only reason I hadn't done that is because the for-loop thing, there I
+couldn't make it work.
+
+> I'm sure there's something horribly wrong in the above, but my point
+> is that I'd really like this to make naming and conceptual sense.
+
+Right, I hear ya. So the asymmetric case (iow destructor only) could be
+seen as using the copy-constructor.
+
+#define DEFINE_CLASS(name, type, exit, init, init_args...)		\
+typedef type class_##name##_t;						\
+static inline void class_##name##_destructor(type *this)		\
+{ type THIS = *this; exit; }						\
+static inline type class_##name##_constructor(init_args)		\
+{ type THIS = init; return THIS; }
+
+#define __INSTANTIATE_VAR(name, var)					\
+	class_##name##_t var __cleanup(class_##name##_destructor)
+
+#define INSTANTIATE_CLASS(name, var)					\
+	__INSTANTIATE_VAR(name, var) = class_##name##_constructor
+
+
+DEFINE_CLASS(fd, struct fd, fdput(THIS), f, struct fd f)
+
+	INSTANTIATE_CLASS(fd, f)(perf_fget_light(fd));
+
+
+Alternatively, you be OK with exposing INSTANTIATE_VAR() to easily
+circumvent the default constructor?
+
+And/or how about EXTEND_CLASS(), something like so?
+
+#define EXTEND_CLASS(name, ext, init, init_args...)			\
+typedef class_##name##_t class_##name##ext##_t;				\
+static inline void class_##name##ext##_destructor(class_##name##_t *this) \
+{ class_##name##_destructor(this); }					\
+static inline type class_##name##ext##_constructor(init_args)		\
+{ type THIS = init; return THIS; }
+
+
+DEFINE_CLASS(fd, struct fd, fdput(THIS), fdget(fd), int fd)
+EXTEND_CLASS(fd, _perf, perf_fget_light(fd), int fd)
+
+	INSTANTIATE_CLASS(fd_perf, f)(fd);
+
+
+> And at THAT point, you can do this:
+> 
+>     #define mutex_guard(m) \
+>         INSTANTIATE_CLASS(mutex, __UNIQUE_ID(mutex))(m)
+> 
+> and now you can do
+> 
+>        mutex_guard(&sched_domains_mutex);
+
+So the 'problem' is the amount of different guards I ended up having and
+you can't have macro's define more macros :/
+
+Which is how I ended up with the:
+
+	guard(mutex, &sched_domains_mutex);
+
+syntax.
+
+This can ofcourse be achieved using the above CLASS thing like:
+
+DEFINE_CLASS(mutex, struct mutex *, mutex_unlock(THIS),
+	     ({ mutex_lock(m); m; }), struct mutex *m)
+
+#define named_guard(name, var, args...)					\
+	INSTANTIATE_CLASS(name, var)(args)
+
+#define guard(name, args...)						\
+	named_guard(name, __UNIQUE_ID(guard), args)
+
+#define scoped_guard(name, args...)					\
+	for (named_guard(name, scope, args),				\
+	     *done = NULL; !done; done = (void *)1)
+
+
+With the understanding they're only to be used for locks.
+
+Also, I'm already tired of writing INSTANTIATE.. would:
+
+	CLASS(fd, f)(fd);
+
+	VAR(kfree, mem) = kzalloc_node(...);
+
+be acceptable shorthand?
