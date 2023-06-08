@@ -2,125 +2,157 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FE90C7EE2E
-	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 16:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D5A4C7EE23
+	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 16:47:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbjFHQ0H (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 8 Jun 2023 12:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
+        id S236372AbjFHQr0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Jun 2023 12:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234532AbjFHQ0A (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 8 Jun 2023 12:26:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6325730C5;
-        Thu,  8 Jun 2023 09:25:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EC13C63CFA;
-        Thu,  8 Jun 2023 16:25:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B404C433D2;
-        Thu,  8 Jun 2023 16:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686241553;
-        bh=gOEUia+23UYhhwa16A6eyS6VdNPXXMmQSVwhbEsD84s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lzCmry9QiuxPqrwsGZrqdthRip7Go0OKBMwtFANwXeKva8k5G62VLixAMI6cTF2yn
-         9jNx1oOLgySAVEs0wn+PI4fIO9tPzSKS2vMfkhL5h/q8Fy7w1vAyI/mUkslU8KJQZY
-         DWHs1YB/P3Y21C3pgEIrKcA5qQo+moZzoStMtlIdSrp7NJZwj/dB5+ErA99/ePz5Gj
-         2Z4VADBOLB7ApYPIqgHK17ciFlitaTAy2eytG+M1bDdDGlhTDh3EcOfHAqCfOVE0rE
-         UOMybwBiJqrTDotk/tPJBL7+NVHz2OBS00v8sZzxaVDOrT//OiVfRQ7T/a431I3ctP
-         UdS/E5ieRTKZw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 06D40CE14DD; Thu,  8 Jun 2023 09:25:53 -0700 (PDT)
-Date:   Thu, 8 Jun 2023 09:25:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Jain, Ayush" <ayush.jain3@amd.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        sfr@canb.auug.org.au, rcu@vger.kernel.org,
-        Wyes Karny <wyes.karny@amd.com>, linux-kernel@vger.kernel.org,
-        void@manifault.com
-Subject: Re: Null pointer dereference during rcutorture test on linux-next
- from next-20230602
-Message-ID: <05a8bdd2-6b0f-40d4-9706-4d65b74affe9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <b8311fdc-2e71-f74f-159e-db7a86f27b9a@amd.com>
- <ff0dd6b8-884e-4bcb-b7d9-72a5a8940f0d@paulmck-laptop>
- <20230608083318.GG998233@hirez.programming.kicks-ass.net>
+        with ESMTP id S234897AbjFHQrZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Jun 2023 12:47:25 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A52E125
+        for <rcu@vger.kernel.org>; Thu,  8 Jun 2023 09:47:06 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-53fe2275249so457882a12.2
+        for <rcu@vger.kernel.org>; Thu, 08 Jun 2023 09:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1686242826; x=1688834826;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJsvMRKIa90U27B2LLPA2h9ptE2WW+eeuczb6BgewxM=;
+        b=iOBR7D2sFjrEbRKFG0OeEOxkKBZNlx2Fy/pk1NDlvDETBke0MQzcf5kdf5qF8iIeB/
+         wr5gEpzbAW6MvX+SDonFRvL1NPRerCQu1vl4f33O1SDkfk54vUKVsGh/uljGluyleX60
+         pwTHU8mLxld02HVUhM5lj0AqiPKYjfE/pyxwk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686242826; x=1688834826;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OJsvMRKIa90U27B2LLPA2h9ptE2WW+eeuczb6BgewxM=;
+        b=lFgsvMyVCRyuc8Nh37668rszI6hRDEtGtTtmnjjXDIyyBExHOeOmu3HYKjNJQVa7a5
+         VKf2jusLijoKlfgrsvqzWv2AKkPXq8Tf7Y3hPzKcEXUrlWxgzYAMgLXKshDhem3x3nux
+         6P83LFRadbZ6AIx0PkbdkuttzC38bOlNdUL8AfwV4QoFSIMHlSAgrwCj/68ELHkerwSb
+         kYsxXXb7tQrI0fO5miYSJEl6RtR2Rx5E3+NYfM+mkkb9MmA5tng4WZW2YKYhKSYiRwTZ
+         e+dz+QowxfGerc9jnKWYbv5PuhTQBCu/rzaG+F8OSNj2pLWogAaq3vodtkupvhkoSQUA
+         woPg==
+X-Gm-Message-State: AC+VfDz8s2sQdEnZGdsJA9EwcFhJAu/JDE5vEas/rl/YSrAmXgG9Eyqq
+        chE0UcgCoOA7vgQ/z75ZSnpCmw==
+X-Google-Smtp-Source: ACHHUZ4UbTHVcubFGu4XHpAJIwx+d0InrJnKvc2R0TYuslnc/skpcNPkNC/UBQ03/nHJFZ42/RP/4g==
+X-Received: by 2002:a17:902:9a94:b0:1ac:859a:5b5a with SMTP id w20-20020a1709029a9400b001ac859a5b5amr4346093plp.0.1686242825778;
+        Thu, 08 Jun 2023 09:47:05 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id w16-20020a170902a71000b001b061dcdb6bsm1670872plq.28.2023.06.08.09.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jun 2023 09:47:05 -0700 (PDT)
+Date:   Thu, 8 Jun 2023 09:47:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, gregkh@linuxfoundation.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
+Message-ID: <202306080917.C0B16C8@keescook>
+References: <20230530092342.GA149947@hirez.programming.kicks-ass.net>
+ <20230606094251.GA907347@hirez.programming.kicks-ass.net>
+ <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+ <20230606134005.GE905437@hirez.programming.kicks-ass.net>
+ <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
+ <20230606180806.GA942082@hirez.programming.kicks-ass.net>
+ <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com>
+ <20230607094101.GA964354@hirez.programming.kicks-ass.net>
+ <20230608085248.GA1002251@hirez.programming.kicks-ass.net>
+ <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230608083318.GG998233@hirez.programming.kicks-ass.net>
+In-Reply-To: <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 08, 2023 at 10:33:18AM +0200, Peter Zijlstra wrote:
-> On Wed, Jun 07, 2023 at 12:24:12PM -0700, Paul E. McKenney wrote:
-> > On Wed, Jun 07, 2023 at 04:48:19PM +0530, Jain, Ayush wrote:
-> > > Hello All,
-> > > 
-> > > Observed null pointer dereference during rcutorture test on linux-next tree
-> > > from next-20230602.
-> > > 
-> > > Commit ID: commit bc708bbd8260ee4eb3428b0109f5f3be661fae46 (HEAD, tag: next-20230602)
-> > > 
-> > > Here I am attaching log trace
-> > > 
-> > > [12133.344278] rcu-torture: rcu_torture_read_exit: Start of test
-> > > [12133.344282] rcu-torture: rcu_torture_read_exit: Start of episode
-> > > [12138.350637] rcu-torture: rcu_torture_read_exit: End of episode
-> > > [12143.419412] smpboot: CPU 1 is now offline
-> > > [12143.427996] BUG: kernel NULL pointer dereference, address: 0000000000000128
-> > > [12143.435777] #PF: supervisor read access in kernel mode
-> > > [12143.441517] #PF: error_code(0x0000) - not-present page
-> > > [12143.447256] PGD 0 P4D 0
-> > > [12143.450087] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > > [12143.454955] CPU: 68 PID: 978653 Comm: rcu_torture_rea Kdump: loaded Not tainted 6.4.0-rc5-next-20230606-1686061107994 #1
-> > > [12143.467095] Hardware name: AMD Corporation Speedway/Speedway, BIOS RSW1009C 07/27/2018
-> > > [12143.475934] RIP: 0010:__bitmap_and+0x18/0x70
-> > > [12143.480713] Code: 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 41 89 cb 49 89 f9 41 c1 eb 06 74 51 45 89 da 31 c0 45 31 c0 <48> 8b 3c c6 48 23 3c c2 49 89 3c c1 48 83 c0 01 49 09 f8 49 39 c2
-> > > [12143.501675] RSP: 0018:ffffa3a90db70d90 EFLAGS: 00010046
-> > > [12143.507510] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000080
-> > > [12143.515468] RDX: ffff8a1ec17a1d68 RSI: 0000000000000128 RDI: ffff8a1e800429c0
-> > > [12143.523425] RBP: ffff8a1ec17a1980 R08: 0000000000000000 R09: ffff8a1e800429c0
-> > > [12143.531385] R10: 0000000000000002 R11: 0000000000000002 R12: ffff8a1e800429c0
-> > > [12143.539352] R13: 0000000000000000 R14: 0000000000032580 R15: 0000000000000000
-> > > [12143.547320] FS:  0000000000000000(0000) GS:ffff8a2dbf100000(0000) knlGS:0000000000000000
-> > > [12143.556354] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [12143.562770] CR2: 0000000000000128 CR3: 0000003089e50000 CR4: 00000000003506e0
-> > > [12143.570729] Call Trace:
-> > > [12143.573463]  <IRQ>
-> > > [12143.575714]  ? __die+0x24/0x70
-> > > [12143.579130]  ? page_fault_oops+0x82/0x150
-> > > [12143.583615]  ? exc_page_fault+0x69/0x150
-> > > [12143.588001]  ? asm_exc_page_fault+0x26/0x30
-> > > [12143.592678]  ? __bitmap_and+0x18/0x70
-> > > [12143.596768]  select_idle_cpu+0x84/0x3d0
-> > > [12143.601059]  select_idle_sibling+0x1b7/0x500
-> > > [12143.605831]  select_task_rq_fair+0x1b2/0x2e0
-> > > [12143.610603]  select_task_rq+0x7a/0xc0
-> > > [12143.614696]  try_to_wake_up+0xe8/0x550
-> > > [12143.618885]  ? update_process_times+0x83/0x90
-> > > [12143.623747]  ? __pfx_hrtimer_wakeup+0x10/0x10
-> > > [12143.628615]  hrtimer_wakeup+0x22/0x30
-> > > [12143.632706]  __hrtimer_run_queues+0x112/0x2b0
-> > > [12143.637574]  hrtimer_interrupt+0x100/0x240
-> > > [12143.642152]  __sysvec_apic_timer_interrupt+0x63/0x130
-> > > [12143.647796]  sysvec_apic_timer_interrupt+0x71/0x90
-> > > [12143.653149]  </IRQ>
-> > > [12143.655493]  <TASK>
-> > > [12143.657834]  asm_sysvec_apic_timer_interrupt+0x1a/0x20
+On Thu, Jun 08, 2023 at 08:45:53AM -0700, Linus Torvalds wrote:
+> So for convenient automatic pointer freeing, you want an interface
+> much more akin to
 > 
-> I'm thikning this is because of ("sched/fair: Multi-LLC
-> select_idle_sibling()") which I've already dropped from tip/sched/core
-> (and should hopefully also dissapear from -next if it hasn't already).
+>         struct whatever *ptr __automatic_kfree = kmalloc(...);
 > 
-> Also see:
+> which is much more legible, doesn't have any type mis-use issues, and
+> is also just trivially dealt with by a
 > 
->   https://lkml.kernel.org/r/20230605175636.GA4253@hirez.programming.kicks-ass.net
+>   static inline void automatic_kfree_wrapper(void *pp)
+>   { void *p = *(void **)pp; if (p) kfree(p); }
+>   #define __automatic_kfree \
+>         __attribute__((__cleanup__(automatic_kfree_wrapper)))
+>   #define no_free_ptr(p) \
+>         ({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
+> 
+> which I just tested generates the sane code even for the "set the ptr
+> to NULL and return success" case.
+> 
+> The above allows you to trivially do things like
+> 
+>         struct whatever *p __automatic_kfree = kmalloc(..);
+> 
+>         if (!do_something(p))
+>                 return -ENOENT;
+> 
+>         return no_free_ptr(p);
 
-That sounds a lot easier than bisecting, thank you!
+I am a little worried about how (any version so far of) this API could go
+wrong, e.g. if someone uses this and does "return p" instead of "return
+no_free_ptr(p)", it'll return a freed pointer. I was hoping we could do
+something like this to the end of automatic_kfree_wrapper():
 
-							Thanx, Paul
+	*(void **)pp = NULL;
+
+i.e. if no_free_ptr() goes missing, "return p" will return NULL, which
+is much easier to track down that dealing with later use-after-free bugs,
+etc. Unfortunately, the __cleanup ordering is _after_ the compiler stores
+the return value...
+
+static inline void cleanup_info(struct info **p)
+{
+	free(*p);
+	*p = NULL; /* this is effectively ignored */
+}
+
+struct info *do_something(int f)
+{
+	struct info *var __attribute__((__cleanup__(cleanup_info))) =
+		malloc(1024);
+
+	process(var);
+
+	return var; /* oops, forgot to disable cleanup */
+}
+
+compile down to:
+
+do_something:
+        pushq   %rbx
+        movl    $1024, %edi
+        call    malloc
+        movq    %rax, %rbx
+        movq    %rax, %rdi
+        call    process
+        movq    %rbx, %rdi
+        call    free
+        movq    %rbx, %rax	; uses saved copy of malloc return
+        popq    %rbx
+        ret
+
+The point being, if we can proactively make this hard to shoot ourselves in
+the foot, that would be nice. :)
+
+-- 
+Kees Cook
