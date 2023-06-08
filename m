@@ -2,43 +2,29 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7305CC7EE23
-	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 02:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFFF7C7EE25
+	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 03:36:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjFHCzO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 7 Jun 2023 22:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S234103AbjFHDgl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 7 Jun 2023 23:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbjFHCzH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 7 Jun 2023 22:55:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB03E2103
-        for <rcu@vger.kernel.org>; Wed,  7 Jun 2023 19:55:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62CFD619C5
-        for <rcu@vger.kernel.org>; Thu,  8 Jun 2023 02:55:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB12DC433D2;
-        Thu,  8 Jun 2023 02:55:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686192900;
-        bh=kYKpg/dIghj3Epm3BB7q4NH0f0w8UUC6Oqc7xkEq4nM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AzUYBeUL3xBz++ZvshdqvZk6Hf37XtMyPBCHr0SLn7M6Qqw/iUauZrIciCG05AyJv
-         WyrUx7pqZ2HpedQJUGeTaBGc5PP3NfCaUvkVQm3M/9wd0qJNPI3hGWlqk41LdcWP44
-         fcIvSOittM2qajSGRwhjaVucaEGHS6o//keXOO5gGP59Bw3Qvs2dHL/8j2m5rljY8E
-         QZXSeV3vabUqQKbipvod3UoPWn+k1cuw9dv29Nrejqtjrfnl+wbAsMrL06u+EAYfuf
-         1UBhJ/r1lZxvjI2C7XxuDwWGlFvYjwIkMl8HAB03dMimtWtZeh7Y+L+w0nJbSwxizz
-         FnxyTvL7aFXQA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4EF4BCE3A6C; Wed,  7 Jun 2023 19:55:00 -0700 (PDT)
-Date:   Wed, 7 Jun 2023 19:55:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        with ESMTP id S233780AbjFHDgS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 7 Jun 2023 23:36:18 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047DF26A2;
+        Wed,  7 Jun 2023 20:36:05 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qc8xs4kZnz4f3jqB;
+        Thu,  8 Jun 2023 11:36:01 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgD3xayeTIFk3xfKLA--.52396S2;
+        Thu, 08 Jun 2023 11:36:02 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
         Andrii Nakryiko <andrii@kernel.org>,
         Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
         Yonghong Song <yhs@fb.com>,
@@ -48,203 +34,262 @@ Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
         "houtao1@huawei.com" <houtao1@huawei.com>
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
- allocator
-Message-ID: <1154ba5a-49b2-45c4-8b88-60f1abed6cbf@paulmck-laptop>
-Reply-To: paulmck@kernel.org
 References: <20230606035310.4026145-1-houtao@huaweicloud.com>
  <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
  <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
  <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
  <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
  <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
- <1441a69a-a015-8e3c-4c14-a6af767849e3@huaweicloud.com>
+ <CAADnVQJ1njnHb96HfO4k48XDY9L3YXqQW1iUW=ti5iBNKKcE9A@mail.gmail.com>
+ <55f5e64d-9d9e-4c65-8d1b-8fd4684ee9a3@paulmck-laptop>
+ <CAADnVQLps=4CjVbZN6wfFWS9VnPE=1b4Gqmw-uPeH5=hGn_xwQ@mail.gmail.com>
+ <3bddb902-de45-47d9-b9a2-495508133522@paulmck-laptop>
+ <CAADnVQLhuBggNQxipbRM+E9fQ4wScYmg7-NWjfqAZyA5asw3JQ@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <a12008e9-f3f7-5050-e461-344d9d86e48f@huaweicloud.com>
+Date:   Thu, 8 Jun 2023 11:35:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQLhuBggNQxipbRM+E9fQ4wScYmg7-NWjfqAZyA5asw3JQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1441a69a-a015-8e3c-4c14-a6af767849e3@huaweicloud.com>
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgD3xayeTIFk3xfKLA--.52396S2
+X-Coremail-Antispam: 1UD129KBjvJXoWfGw45CryDWFyxuw4fZw4rAFb_yoWDtry7pr
+        WfKF1UJryDJrWIkr12vr1UXry5tws5t34UJr1rXFyUCr15Gr1Yvr17Wr4j9F15Gr4kJw4j
+        qr4UJ34UZr15J37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 08, 2023 at 09:51:27AM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 6/8/2023 4:50 AM, Alexei Starovoitov wrote:
-> > On Wed, Jun 7, 2023 at 10:52 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >> On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
-> >>> As said in the commit message, the command line for test is
-> >>> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
-> >>> using default max_entries and the number of CPUs is greater than 15,
-> >>> use_percpu_counter will be false.
-> >> Right. percpu or not depends on number of cpus.
-> >>
-> >>> I have double checked my local VM setup (8 CPUs + 16GB) and rerun the
-> >>> test.  For both "./map_perf_test 4 8" and "./map_perf_test 4 8 16384"
-> >>> there are obvious performance degradation.
-> >> ...
-> >>> [root@hello bpf]# ./map_perf_test 4 8 16384
-> >>> 2:hash_map_perf kmalloc 359201 events per sec
-> >> ..
-> >>> [root@hello bpf]# ./map_perf_test 4 8 16384
-> >>> 4:hash_map_perf kmalloc 203983 events per sec
-> >> this is indeed a degration in a VM.
-> >>
-> >>> I also run map_perf_test on a physical x86-64 host with 72 CPUs. The
-> >>> performances for "./map_perf_test 4 8" are similar, but there is obvious
-> >>> performance degradation for "./map_perf_test 4 8 16384"
-> >> but... a degradation?
-> Er, My bad. I miss-labeled "Before" and "After". v4 indeed introduces
-> big performance degradation in physical host.
-> >>
-> >>> Before reuse-after-rcu-gp:
-> >>>
-> >>> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
-> >>> 1:hash_map_perf kmalloc 388088 events per sec
-> >> ...
-> >>> After reuse-after-rcu-gp:
-> >>> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
-> >>> 5:hash_map_perf kmalloc 655628 events per sec
-> >> This is a big improvement :) Not a degration.
-> >> You always have to double check the numbers with perf report.
-> >>
-> >>> So could you please double check your setup and rerun map_perf_test ? If
-> >>> there is no performance degradation, could you please share your setup
-> >>> and your kernel configure file ?
-> >> I'm testing on normal no-debug kernel. No kasan. No lockdep. HZ=1000
-> >> Playing with it a bit more I found something interesting:
-> >> map_perf_test 4 8 16348
-> >> before/after has too much noise to be conclusive.
-> >>
-> >> So I did
-> >> map_perf_test 4 8 16348 1000000
-> >>
-> >> and now I see significant degration from patch 3.
-> >> It drops from 800k to 200k.
-> >> And perf report confirms that heavy contention on sc->reuse_lock is the culprit.
-> >> The following hack addresses most of the perf degradtion:
-> >>
-> >> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> >> index fea1cb0c78bb..eeadc9359097 100644
-> >> --- a/kernel/bpf/memalloc.c
-> >> +++ b/kernel/bpf/memalloc.c
-> >> @@ -188,7 +188,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
-> >>         alloc = 0;
-> >>         head = NULL;
-> >>         tail = NULL;
-> >> -       raw_spin_lock_irqsave(&sc->reuse_lock, flags);
-> >> +       if (raw_spin_trylock_irqsave(&sc->reuse_lock, flags)) {
-> >>         while (alloc < cnt) {
-> >>                 obj = __llist_del_first(&sc->reuse_ready_head);
-> >>                 if (obj) {
-> >> @@ -206,6 +206,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
-> >>                 alloc++;
-> >>         }
-> >>         raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
-> >> +       }
-> >>
-> >>         if (alloc) {
-> >>                 if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> >> @@ -334,9 +335,11 @@ static void bpf_ma_add_to_reuse_ready_or_free(struct bpf_mem_cache *c)
-> >>                 sc->reuse_ready_tail = NULL;
-> >>                 WARN_ON_ONCE(!llist_empty(&sc->wait_for_free));
-> >>                 __llist_add_batch(head, tail, &sc->wait_for_free);
-> >> +               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
-> >>                 call_rcu_tasks_trace(&sc->rcu, free_rcu);
-> >> +       } else {
-> >> +               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
-> >>         }
-> >> -       raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
-> >>  }
-> >>
-> >> It now drops from 800k to 450k.
-> >> And perf report shows that both reuse is happening and slab is working hard to satisfy kmalloc/kfree.
-> >> So we may consider per-cpu waiting_for_rcu_gp and per-bpf-ma waiting_for_rcu_task_trace_gp lists.
-> > Sorry. per-cpu waiting_for_rcu_gp is what patch 3 does already.
-> > I meant per-cpu reuse_ready and per-bpf-ma waiting_for_rcu_task_trace_gp.
-> Yes, I known, because I had just proposed it in the email yesterday.
-> >
-> > Also noticed that the overhead of shared reuse_ready list
-> > comes both from the contended lock and from cache misses
-> > when one cpu pushes to the list after RCU GP and another
-> > cpu removes.
-> >
-> > Also low/batch/high watermark are all wrong in patch 3.
-> > low=32 and high=96 makes no sense when it's not a single list.
-> > I'm experimenting with 32 for all three heuristics.
-> >
-> > Another thing I noticed that per-cpu prepare_reuse and free_by_rcu
-> > are redundant.
-> > unit_free() can push into free_by_rcu directly
-> > then reuse_bulk() can fill it up with free_llist_extra and
-> > move them into waiting_for_gp.
-> Yes. Indeed missing that.
-> >
-> > All these _tail optimizations are obscuring the code and make it hard
-> > to notice these issues.
-> >
-> >> For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
-> >>
-> >> Answering your other email:
-> >>
-> >>> I see your point. I will continue to debug the memory usage difference
-> >>> between v3 and v4.
-> >> imo it's a waste of time to continue analyzing performance based on bench in patch 2.
-> Don't agree with that. I still think the potential memory usage of v4 is
-> a problem and the difference memory usage between v3 and v4 reveals that
-> there is some peculiarity in RCU subsystem, because the difference comes
-> from the duration of RCU grace period. We need to find out why and fix
-> or workaround that.
+Hi,
 
-A tight loop in the kernel can extend RCU grace periods, especially
-for kernels built with CONFIG_PREEPTION=n.  Placing things like
-cond_resched() in such loops can help.  Of course, if you are in an
-RCU read-side critical section (or holding a spinlock), you will need
-to exit, cond_resched(), then re-enter.  Taking care to ensure that the
-state upon re-entry is valid.  After all, having exited either type of
-critical section, anything might happen.
+On 6/8/2023 8:34 AM, Alexei Starovoitov wrote:
+> On Wed, Jun 7, 2023 at 5:13 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>> On Wed, Jun 07, 2023 at 04:50:35PM -0700, Alexei Starovoitov wrote:
+>>> On Wed, Jun 7, 2023 at 4:30 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+SNIP
+>>>> An update..
+>>>>
+>>>> I tweaked patch 3 to do per-cpu reuse_ready and it addressed
+>>>> the lock contention, but cache miss on
+>>>> __llist_del_first(&c->reuse_ready_head);
+>>>> was still very high and performance was still at 450k as
+>>>> with a simple hack above.
+>>>>
+>>>> Then I removed some of the _tail optimizations and added counters
+>>>> to these llists.
+>>>> To my surprise
+>>>> map_perf_test 4 1 16348 1000000
+>>>> was showing ~200k on average in waiting_for_gp when reuse_rcu() is called
+>>>> and ~400k sitting in reuse_ready_head.
+>>>>
+>>>> Then noticed that we should be doing:
+>>>> call_rcu_hurry(&c->rcu, reuse_rcu);
+>>>> instead of call_rcu(),
+>>>> but my config didn't have RCU_LAZY, so that didn't help.
+>>>> Obviously we cannot allow such a huge number of elements to sit
+>>>> in these link lists.
+>>>> The whole "reuse-after-rcu-gp" idea for bpf_mem_alloc may not work.
+>>>> To unblock qp-trie work I suggest to add rcu_head to each inner node
+>>>> and do call_rcu() on them before free-ing them to bpf_mem_alloc.
+>>>> Explicit call_rcu would disqualify qp-tree from tracing programs though :(
+>>>> I am sure that you guys have already considered and discarded this one,
+>>>> but I cannot help but suggest SLAB_TYPESAFE_BY_RCU.
+Thanks for the suggestion. SLAB_TYPESAFE_BY_RCU needs to modify the
+logic of reader to check whether or not the found element is still
+valid. If the reader finds the found element is invalid, it needs to retry.
+And for different cache, the way to check the validity is also
+different. In bpf we don't want to let the reader to take care of the
+reuse and do the retry logic, and we want to do it atomatically in the
+bpf memory allocator.
+>>> SLAB_TYPESAFE_BY_RCU is what bpf_mem_alloc is doing right now.
+>>> We want to add an option to make it not do it and instead observe RCU GP
+>>> for every element freed via bpf_mem_free().
+>>> In other words, make bpf_mem_free() behave like kfree_rcu.
+>>> I just tried to use rcu_expedite_gp() before bpf prog runs
+>>> and it helps a bit.
+>> OK, got it, so you guys have considered, implemented, and are now trying
+>> to discard SLAB_TYPESAFE_BY_RCU.  ;-)
+>>
+>> Given that you are using call_rcu() / call_rcu_hurry(), I am a bit
+>> surprised that rcu_expedite_gp() makes any difference.
+>>
+>> We do some expediting if there are huge numbers of callbacks or if one
+>> of RCU's shrinker notifiers is invoked.  If the concern is only memory
+>> footprint, it is possible to make the shrinkers more aggressive.  I am
+>> not sure whether making them unconditionally more aggressive is a good
+>> idea, however if memory footprint is the only concern and if shrink-time
+>> expediting would suffice, it is certainly worth some investigation.
+> Right. I don't think it's a good idea to tweak RCU for this use case.
+> RCU parameters have to be optimized for all. Instead the bpf side needs
+> to understand how RCU heuristics/watermarks work and play that game.
+> For example, Hou's patch 3 has one pending call_rcu per-cpu.
+> As soon as one call_rcu_hurry is done all future freed elements gets
+> queued into llist and for the next call_rcu_hurry() that list will
+> contain 100k elements.
+> I believe from RCU pov one pending call_rcu cb is not a reason to
+> act right away. It's trying to batch multiple cb-s.
+> Right now I'm experimenting with multiple call_rcu calls from the bpf side,
+> so that RCU sees multiple pending cb-s and has to act.
+> It seems to work much better. Memory footprint is now reasonable.
+Could you please share the memory usage of the original v4 and the
+version with reasonable memory by using htab-mem-benchmark ?
 
-							Thanx, Paul
+v3 already uses multiple RCU cbs for reuse to accelerate the reuse of
+freed objects. I also did the experiment for v4 as I replied the day
+before yesterday, so I just quota it:
 
-> >>> I don't think so. Let's considering the per-cpu list first. Assume the
-> >>> normal RCU grace period is about 30ms and we are tracing the IO latency
-> >>> of a normal SSD. The iops is about 176K per seconds, so before one RCU
-> >>> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
-> >>> For the per-ma list, when the number of CPUs increased, it is easy to
-> >>> make the list contain thousands of elements.
-> >> That would be true only if there were no scheduling events in all of 176K ops.
-> >> Which is not the case.
-> >> I'm not sure why you're saying that RCU GP is 30ms.
-> Because these freed elements will be freed after one RCU GP and in v4
-> there is only one RCU callback per-cpu, so before one RCU GP is expired,
-> these freed elements will be accumulated on the list.
-> >> In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
-> >> Every sched event is sort-of implicit rcu_read_lock/unlock.
-> >> Network and block IO doesn't process 176K packets without resched.
-> >> Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
-> >>
-> >> For small size buckets low_watermark=32 and high=96.
-> >> We typically move 32 elements at a time from one list to another.
-> >> A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
-> >> is not instant, but once __free_rcu_tasks_trace is called we need to take
-> >> elements from waiting_for_gp one at a time and kfree it one at a time.
-> >> So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
-> >>
-> >>> Before I post v5, I want to know the reason why per-bpf-ma list is
-> >>> introduced. Previously, I though it was used to handle the case in which
-> >>> allocation and freeing are done on different CPUs.
-> >> Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
-> >>
-> >>> And as we can see
-> >>> from the benchmark result above and in v3, the performance and the
-> >>> memory usage of v4 for add_del_on_diff_cpu is better than v3.
-> >> bench from patch 2 is invalid. Hence no conclusion can be made.
-> >>
-> >> So far the only bench we can trust and analyze is map_perf_test.
-> >> Please make bench in patch 2 yield the cpu after few updates.
-> >> Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
-> >> 64 updates is realistic too. A thousand is not.
-> Will do that.
-> 
+htab-mem-benchmark (reuse-after-RCU-GP):
+| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+| --                 | --        | --                  | --               |
+| no_op              | 1159.18   | 0.99                | 0.99             |
+| overwrite          | 11.00     | 2288                | 4109             |
+| batch_add_batch_del| 8.86      | 1558                | 2763             |
+| add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
+
+For 1), after using kmalloc() in irq_work to allocate multiple inflight
+RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
+but is not enough:
+
+htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
+| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+| --                 | --        | --                  | --               |
+| no_op              | 1247.00   | 0.97                | 1.00             |
+| overwrite          | 16.56     | 490.18              | 557.17           |
+| batch_add_batch_del| 11.31     | 276.32              | 360.89           |
+| add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
+
+
+By comparing the implementation of v3 and v4, I just find one hack which
+could reduce the memory usage of v4 (with per-cpu reusabe list)
+significantly and memory usage will be similar between v3 and v4. If we
+queue a empty work before calling irq_work_raise() as shown below, the
+calling latency of reuse_rcu (a normal RCU callback) will decreased from
+~150ms to ~10 ms. I think the reason is that the duration of normal RCU
+grace period is decreased a lot, but I don't know why did it happen.
+Hope to get some help from Paul. Because Paul doesn't have enough
+context, so I will try to explain the context of the weird problem
+below. And Alexei, could you please also try the hack below for your
+multiple-rcu-cbs version ?
+
+Hi Paul,
+
+I just found out the time between the calling of call_rcu(..,
+reuse_rcub) and the calling of RCU callback (namely resue_cb()) will
+decrease a lot (from ~150ms to ~10ms) if I queued a empty kworker
+periodically as shown in the diff below. Before the diff below applied,
+the benchmark process will do the following things on a VM with 8 CPUs:
+
+1) create a pthread htab_mem_producer on each CPU and pinned the thread
+on the specific CPU
+2) htab_mem_producer will call syscall(__NR_getpgid) repeatedly in a
+dead-loop
+3) the calling of getpgid() will trigger the invocation of a bpf program
+attached on getpgid() syscall
+4) the bpf program will overwrite 2048 elements in a bpf hash map
+5) during the overwrite, it will free the existed element firstly
+6) the free will call unit_free(), unit_free() will trigger a irq-work
+batchly after 96-element were freed
+7) in the irq_work, it will allocate a new struct to save the freed
+elements and the rcu_head and do call_rcu(..., reuse_rcu)
+8) in reuse_rcu() it just moves these freed elements into a per-cpu
+reuse list
+9) After the free completes, the overwrite will allocate a new element
+10) the allocation may also trigger a irq-work batchly after the
+preallocated elements were exhausted
+11) in the irq-work, it will try to fetch elements from per-cpu reuse
+list and if it is empty, it will do kmalloc()
+
+For the procedure describe above, the calling latency between the call
+of call_rcu() and the call of reuse_rcu is about ~150ms or larger. I
+have also checked the calling latency of syscall(__NR_getpgid) and all
+latency is less than 1ms. But after do queueing a empty kwork in step
+6), the calling latency will decreased from ~150ms to ~10ms and I
+suspect that is because the RCU grace period is decreased a lot, but I
+don't know how to debug that (e.g., to debug why the RCU grace period is
+so long), so I hope to get some help.
+
+htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks + queue_empty_work):
+| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+| --                 | --        | --                  | --               |
+| overwrite          | 13.85     | 17.89               | 21.49            |
+| batch_add_batch_del| 10.22     | 16.65               | 19.07            |
+| add_del_on_diff_cpu| 3.82      | 21.36               | 33.05            |
+
+
++static void bpf_ma_prepare_reuse_work(struct work_struct *work)
++{
++       udelay(100);
++}
++
+ /* When size != 0 bpf_mem_cache for each cpu.
+  * This is typical bpf hash map use case when all elements have equal size.
+  *
+@@ -547,6 +559,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int
+size, bool percpu)
+                        c->cpu = cpu;
+                        c->objcg = objcg;
+                        c->percpu_size = percpu_size;
++                       INIT_WORK(&c->reuse_work,
+bpf_ma_prepare_reuse_work);
+                        raw_spin_lock_init(&c->lock);
+                        c->reuse.percpu = percpu;
+                        c->reuse.cpu = cpu;
+@@ -574,6 +587,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int
+size, bool percpu)
+                        c->unit_size = sizes[i];
+                        c->cpu = cpu
+                        c->objcg = objcg;
++                       INIT_WORK(&c->reuse_work,
+bpf_ma_prepare_reuse_work);
+                        raw_spin_lock_init(&c->lock);
+                        c->reuse.percpu = percpu;
+                        c->reuse.lock = &c->lock;
+@@ -793,6 +807,8 @@ static void notrace unit_free(struct bpf_mem_cache
+*c, void *ptr)
+                        c->prepare_reuse_tail = llnode;
+                __llist_add(llnode, &c->prepare_reuse_head);
+                cnt = ++c->prepare_reuse_cnt;
++               if (cnt > c->high_watermark &&
+!work_pending(&c->reuse_work))
++                       queue_work(bpf_ma_wq, &c->reuse_work);
+        } else {
+                /* unit_free() cannot fail. Therefore add an object to
+atomic
+                 * llist. reuse_bulk() will drain it. Though
+free_llist_extra is
+@@ -901,3 +917,11 @@ void notrace *bpf_mem_cache_alloc_flags(struct
+bpf_mem_alloc *ma, gfp_t flags)
+
+        return !ret ? NULL : ret + LLIST_NODE_SZ;
+ }
++
++static int __init bpf_ma_init(void)
++{
++       bpf_ma_wq = alloc_workqueue("bpf_ma", WQ_MEM_RECLAIM, 0);
++       BUG_ON(!bpf_ma_wq);
++       return 0;
++}
++late_initcall(bpf_ma_init);
+
+
+
+> Could you point me to a code in RCU where it's doing callback batching?
+
