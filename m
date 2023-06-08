@@ -2,161 +2,212 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F3CAC7EE45
-	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 16:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44279C7EE25
+	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 16:18:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236703AbjFHQAn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 8 Jun 2023 12:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48674 "EHLO
+        id S231519AbjFHQSQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Jun 2023 12:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237612AbjFHQAX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 8 Jun 2023 12:00:23 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3691230FD
-        for <rcu@vger.kernel.org>; Thu,  8 Jun 2023 08:59:47 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5169f614977so1406521a12.3
-        for <rcu@vger.kernel.org>; Thu, 08 Jun 2023 08:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1686239985; x=1688831985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ikLyVGzKcEMuSqUp/nI13OAR5DV5p124KJuoTG/oIAE=;
-        b=BPVMCsunrScq9Wk3aOyLuqkN1vl7dG1WywseSfFbz9lZ2WbART6/i44iujcZvrw6+G
-         44Fgtp6P2btu3Ox4QXtvhk7nZmFwsjHZKDuJ0JY1AtBl/RELYFkRTUZvxDf6camOYPAQ
-         +D0/4xJFC1B2/iIcYA1InzX95iopTBkFbaK20=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686239985; x=1688831985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ikLyVGzKcEMuSqUp/nI13OAR5DV5p124KJuoTG/oIAE=;
-        b=Y719+rwuZOllBrHShtWXFnQaFzY+KMIT4aFRiCEV81f2rzPSaRGuoJ+DVeH0/Ygn7i
-         iPaW8m68c7H3jTB9oPn8/HAHj36ne7j2Nc0SgBDQwDU+wnRMQR4wUowUJ4/b9LHlS/is
-         oU2tv5xwu9vC3p3EUJqUapw9DjvX6a4PHDVWyt9qilzcF8mMF1vF42R0+zlTU6IiiFpp
-         4h3hMJv8E8CN7+xxaE/1JQ/jOqdh8FZqe1yhTc42o9QQau5jFxaVAlxDk4pXy8Hcodzs
-         kDKUobiegZ4rN8rMtqqPa/Jqz5WC4qsOV6Az+svRz35wM0zx2nGtbX3AL5zb2e8Mfbcn
-         tM4Q==
-X-Gm-Message-State: AC+VfDxl/ARwqMLl4gunn+Q2QwSbCmKkVvI/ydPCvztM+MfnJRhqznCd
-        LPSSjxyUX5FMAJiuvt4q8VP5m2m+mIrIF6TfN0orLxjm
-X-Google-Smtp-Source: ACHHUZ7Do9Aw+ihw4P1Ey8+4HemN333bHmn2PgK/oAfdtPNY/wGsXW0JuniaCqqDQlnKwwJMJZj04Q==
-X-Received: by 2002:a2e:b603:0:b0:2b1:ad15:fe39 with SMTP id r3-20020a2eb603000000b002b1ad15fe39mr3617840ljn.10.1686239191371;
-        Thu, 08 Jun 2023 08:46:31 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id c19-20020a2e9d93000000b002b20058ecf9sm297452ljj.32.2023.06.08.08.46.30
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jun 2023 08:46:31 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-4f61d79b0f2so948745e87.3
-        for <rcu@vger.kernel.org>; Thu, 08 Jun 2023 08:46:30 -0700 (PDT)
-X-Received: by 2002:a17:907:8a15:b0:961:2956:2ed9 with SMTP id
- sc21-20020a1709078a1500b0096129562ed9mr197548ejc.25.1686239169847; Thu, 08
- Jun 2023 08:46:09 -0700 (PDT)
+        with ESMTP id S231465AbjFHQSP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Jun 2023 12:18:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6863E11A
+        for <rcu@vger.kernel.org>; Thu,  8 Jun 2023 09:18:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05C3464B2E
+        for <rcu@vger.kernel.org>; Thu,  8 Jun 2023 16:18:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E5DBC433EF;
+        Thu,  8 Jun 2023 16:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686241093;
+        bh=wmn/uf1eypGl3f00SXifgpgrsDt/jmo8F0BNQ/mNT7c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=iVY36iFhYSnIu6Bw8v7rQLdYnAFN0vOvzCcGFWiM5AyPjDMV6d5wRfsqKsqJZvriI
+         Khe2aP1AEVQ9uYEfPnJ5lnLl3tpagFcDh3KuqUlEZ4JqIRl2k2W+JOAI9ncLX/jCsg
+         hszQqT17Zg7ObT9EM7jevC5REiAM68CQ5+/pF8PWDHGrWD+gorjBJiinL1gTXtK0yo
+         FyDryXFoIkr04rJj8Tm/1zbn9rsGrGGYPc7NfmT7IJvblCYPqY5/hpIC9ICls3/kBL
+         pyubl6WHLSc4c6D17ICQxGOGkNbNXY+zauhsoxGApe+oT5z6+GZy57dti+uvaW0xJ9
+         ra6Krx9UPgBNA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D219ECE14DD; Thu,  8 Jun 2023 09:18:12 -0700 (PDT)
+Date:   Thu, 8 Jun 2023 09:18:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
+        "houtao1@huawei.com" <houtao1@huawei.com>
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+Message-ID: <d5c9bedb-29ea-456d-b66a-d556f781e656@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+ <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+ <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
+ <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
+ <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
+ <1441a69a-a015-8e3c-4c14-a6af767849e3@huaweicloud.com>
+ <1154ba5a-49b2-45c4-8b88-60f1abed6cbf@paulmck-laptop>
+ <f4418d9d-857b-eb96-cbec-ab1652291556@huaweicloud.com>
 MIME-Version: 1.0
-References: <20230526205204.861311518@infradead.org> <CAHk-=wg2RHZKTN29Gr7MhgYfaNtzz58wry9jCNP75LAmQ9t8-A@mail.gmail.com>
- <20230530092342.GA149947@hirez.programming.kicks-ass.net> <20230606094251.GA907347@hirez.programming.kicks-ass.net>
- <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
- <20230606134005.GE905437@hirez.programming.kicks-ass.net> <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
- <20230606180806.GA942082@hirez.programming.kicks-ass.net> <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com>
- <20230607094101.GA964354@hirez.programming.kicks-ass.net> <20230608085248.GA1002251@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230608085248.GA1002251@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 8 Jun 2023 08:45:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
-Message-ID: <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f4418d9d-857b-eb96-cbec-ab1652291556@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 8, 2023 at 1:53=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> Or perhaps use the smart-pointer concept applied to our classes like:
->
-> #define smart_ptr(name, var) \
->         __INSTANTIATE_VAR(name, var)
+On Thu, Jun 08, 2023 at 11:43:54AM +0800, Hou Tao wrote:
+> Hi Paul,
+> 
+> On 6/8/2023 10:55 AM, Paul E. McKenney wrote:
+> > On Thu, Jun 08, 2023 at 09:51:27AM +0800, Hou Tao wrote:
+> >> Hi,
+> >>
+> >> On 6/8/2023 4:50 AM, Alexei Starovoitov wrote:
+> >>> On Wed, Jun 7, 2023 at 10:52 AM Alexei Starovoitov
+> >>> <alexei.starovoitov@gmail.com> wrote:
+> >>>> On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
+> >>>>> As said in the commit message, the command line for test is
+> >>>>> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
+> >>>>> using default max_entries and the number of CPUs is greater than 15,
+> >>>>> use_percpu_counter will be false.
+> >>>> Right. percpu or not depends on number of cpus.
+> SNIP
+> >>>>  known, because I had just proposed it in the email yesterday.
+> >>> Also noticed that the overhead of shared reuse_ready list
+> >>> comes both from the contended lock and from cache misses
+> >>> when one cpu pushes to the list after RCU GP and another
+> >>> cpu removes.
+> >>>
+> >>> Also low/batch/high watermark are all wrong in patch 3.
+> >>> low=32 and high=96 makes no sense when it's not a single list.
+> >>> I'm experimenting with 32 for all three heuristics.
+> >>>
+> >>> Another thing I noticed that per-cpu prepare_reuse and free_by_rcu
+> >>> are redundant.
+> >>> unit_free() can push into free_by_rcu directly
+> >>> then reuse_bulk() can fill it up with free_llist_extra and
+> >>> move them into waiting_for_gp.
+> >> Yes. Indeed missing that.
+> >>> All these _tail optimizations are obscuring the code and make it hard
+> >>> to notice these issues.
+> >>>
+> >>>> For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
+> >>>>
+> >>>> Answering your other email:
+> >>>>
+> >>>>> I see your point. I will continue to debug the memory usage difference
+> >>>>> between v3 and v4.
+> >>>> imo it's a waste of time to continue analyzing performance based on bench in patch 2.
+> >> Don't agree with that. I still think the potential memory usage of v4 is
+> >> a problem and the difference memory usage between v3 and v4 reveals that
+> >> there is some peculiarity in RCU subsystem, because the difference comes
+> >> from the duration of RCU grace period. We need to find out why and fix
+> >> or workaround that.
+> > A tight loop in the kernel can extend RCU grace periods, especially
+> > for kernels built with CONFIG_PREEPTION=n.  Placing things like
+> > cond_resched() in such loops can help.  Of course, if you are in an
+> > RCU read-side critical section (or holding a spinlock), you will need
+> > to exit, cond_resched(), then re-enter.  Taking care to ensure that the
+> > state upon re-entry is valid.  After all, having exited either type of
+> > critical section, anything might happen.
+> 
+> As said in the help-wanted email just send out, it was weird that the
+> RCU grace period was extended a lot, up to ~150ms or more. But queue a
+> dummy kworker periodically which does nothing will help to reduce the
+> grace period to ~10ms. I have explained the context of the problem in
+> that email. And hope that we could get some help from you and the RCU
+> experts in the community.
 
-So this is the only situation where I think "ptr" makes sense (your
-"fat pointer" argument is nonsensical - sure, you can treat anything
-as a pointer if you're brave enough, but that just means that
-"pointer" becomes a meaningless word).
+OK, I will bite...  Why do you think this is weird?
 
-However, I think that for "smart pointers", we don't need any of this
-complexity at all, and we don't need that ugly syntax.
+RCU depends on context switches, among other things.  If you have a
+long-running in-kernel task, that will naturally extend the grace period.
+Scheduling the empty worker provided the context switch that RCU needed
+to make forward progress.
 
-> Then we can write:
->
-> DEFINE_CLASS(kfree, void *, kfree(THIS), p, void *p)
->
->         smart_ptr(kfree, mem) =3D kzalloc_node(...);
->         if (!mem)
->                 return -ENOMEM;
+So 150 milliseconds is an OK RCU grace period.  A bit long, but not
+excessively so.  In contrast, by default in mainline, RCU starts seriously
+complaining if its grace period is extended beyond 21 *seconds*.  This is
+when the RCU CPU stall warning will appear.  (Yes, some Android configs
+are tuning this down to 20 milliseconds, but that is a special hardware
+and software configuration.)
 
-No, the above is broken, and would result in us using "void *" in
-situations where we really *really* don't want that.
+But if you want shorter RCU grace periods, what can you do?
 
-For automatic freeing, you want something that can handle different
-types properly, and without having to constantly declare the types
-somewhere else before use.
+1.	Follow Alexei's good advice on one of your early patches.
 
-And no, you do *not* want that "kfree(THIS)" kind of interface,
-because you want the compiler to inline the freeing function wrapper,
-and notice _statically_ when somebody zeroed the variable and not even
-call "kfree()", because otherwise you'd have a pointless call to
-kfree(NULL) in the success path too.
+2.	As an alternative to scheduling an empty kworker, invoke something
+	like rcu_momentary_dyntick_idle() periodically.  Note well that
+	it is illegal to invoke this in an RCU read-side critical section,
+	with preemption disabled, from idle, ...
 
-So for convenient automatic pointer freeing, you want an interface
-much more akin to
+3.	In non-preemptible kernels, cond_resched() is a much lighter
+	weight alternative to rcu_momentary_dyntick_idle().  (Preemptible
+	kernels get the same effect by preempting.  In your case, this
+	is also true, but it takes 150 milliseconds.)
 
-        struct whatever *ptr __automatic_kfree =3D kmalloc(...);
+That should do for a start.  ;-)
 
-which is much more legible, doesn't have any type mis-use issues, and
-is also just trivially dealt with by a
+							Thanx, Paul
 
-  static inline void automatic_kfree_wrapper(void *pp)
-  { void *p =3D *(void **)pp; if (p) kfree(p); }
-  #define __automatic_kfree \
-        __attribute__((__cleanup__(automatic_kfree_wrapper)))
-  #define no_free_ptr(p) \
-        ({ __auto_type __ptr =3D (p); (p) =3D NULL; __ptr; })
-
-which I just tested generates the sane code even for the "set the ptr
-to NULL and return success" case.
-
-The above allows you to trivially do things like
-
-        struct whatever *p __automatic_kfree =3D kmalloc(..);
-
-        if (!do_something(p))
-                return -ENOENT;
-
-        return no_free_ptr(p);
-
-and it JustWorks(tm).
-
-And yes, it needs a couple of different versions of that
-"__automatic_kfree()" wrapper for the different freeing cases (kvfree,
-rcu_free, whatever), but those are all trivial one-liners.
-
-And no, I didn't think too much about those names. "__automatic_kfree"
-is too damn long to type, but you hated "auto". And "no_free_ptr()" is
-not wonderful name either. But I tried to make the naming at least be
-obvious, if not wonderful.
-
-               Linus
+> Regards,
+> Tao
+> >
+> > 							Thanx, Paul
+> >
+> >>>>> I don't think so. Let's considering the per-cpu list first. Assume the
+> >>>>> normal RCU grace period is about 30ms and we are tracing the IO latency
+> >>>>> of a normal SSD. The iops is about 176K per seconds, so before one RCU
+> >>>>> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
+> >>>>> For the per-ma list, when the number of CPUs increased, it is easy to
+> >>>>> make the list contain thousands of elements.
+> >>>> That would be true only if there were no scheduling events in all of 176K ops.
+> >>>> Which is not the case.
+> >>>> I'm not sure why you're saying that RCU GP is 30ms.
+> >> Because these freed elements will be freed after one RCU GP and in v4
+> >> there is only one RCU callback per-cpu, so before one RCU GP is expired,
+> >> these freed elements will be accumulated on the list.
+> >>>> In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
+> >>>> Every sched event is sort-of implicit rcu_read_lock/unlock.
+> >>>> Network and block IO doesn't process 176K packets without resched.
+> >>>> Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
+> >>>>
+> >>>> For small size buckets low_watermark=32 and high=96.
+> >>>> We typically move 32 elements at a time from one list to another.
+> >>>> A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
+> >>>> is not instant, but once __free_rcu_tasks_trace is called we need to take
+> >>>> elements from waiting_for_gp one at a time and kfree it one at a time.
+> >>>> So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
+> >>>>
+> >>>>> Before I post v5, I want to know the reason why per-bpf-ma list is
+> >>>>> introduced. Previously, I though it was used to handle the case in which
+> >>>>> allocation and freeing are done on different CPUs.
+> >>>> Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
+> >>>>
+> >>>>> And as we can see
+> >>>>> from the benchmark result above and in v3, the performance and the
+> >>>>> memory usage of v4 for add_del_on_diff_cpu is better than v3.
+> >>>> bench from patch 2 is invalid. Hence no conclusion can be made.
+> >>>>
+> >>>> So far the only bench we can trust and analyze is map_perf_test.
+> >>>> Please make bench in patch 2 yield the cpu after few updates.
+> >>>> Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
+> >>>> 64 updates is realistic too. A thousand is not.
+> >> Will do that.
+> >>
+> 
