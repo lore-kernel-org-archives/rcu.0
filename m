@@ -2,45 +2,68 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD1CAC7EE29
-	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 20:06:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53109C7EE23
+	for <rcu@archiver.kernel.org>; Thu,  8 Jun 2023 20:14:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235985AbjFHUG5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 8 Jun 2023 16:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        id S235396AbjFHUOY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 8 Jun 2023 16:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236211AbjFHUGy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 8 Jun 2023 16:06:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043752733;
-        Thu,  8 Jun 2023 13:06:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aBWb6+eQE9WxD6vRX+GhZGTfIUuI+dRuiyxZYMV/GPQ=; b=h7PislLIipTcXw8+pW6DDmylyF
-        kc2wuHtQDmcx1H5nVi+vDHDKy1hhMb5lXFVmdCurjG+Buu2562Z4LFsGy2WuvGpTyyCXjOLZUJpiN
-        5MISDg9Jwu9E+MB8M3nwERQhlj5MY/KlTUv2eAV4eIu1pgsM2YMBj7Xg4kvQNzlJ8FRasIHTe5Jo1
-        wbBhtXnTQBkaOA3zGHF6gHz20VkgF8X8msfu+S0/8dA7KafLcKCcmvr2Vm5F5r+TsNYaNPvGxSCgi
-        Pn/x/Q6nv2k3jK5jaume4nu79eGBBxBiSAinVZk1YcbwnNGhx0lbSZnqus9fi7bzvoI4CV6p61ELM
-        /EGI3GnA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q7Ltl-00Fo55-TI; Thu, 08 Jun 2023 20:06:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2A3830026A;
-        Thu,  8 Jun 2023 22:06:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CFC28245A9E28; Thu,  8 Jun 2023 22:06:18 +0200 (CEST)
-Date:   Thu, 8 Jun 2023 22:06:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+        with ESMTP id S230096AbjFHUOX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 8 Jun 2023 16:14:23 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758C2273A
+        for <rcu@vger.kernel.org>; Thu,  8 Jun 2023 13:14:22 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-6237faa8677so7153326d6.1
+        for <rcu@vger.kernel.org>; Thu, 08 Jun 2023 13:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1686255261; x=1688847261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8eRVCfDeAAMucNxeePix1yxCVE2NkWOFxs0IcqPVmf8=;
+        b=x4iYbqUgHoJfnhLtBe3ZvyjbxVnyNnZVjNyHX8HOfkAnTIr1p9sewsfeubUdDHZL/J
+         msV7VC/YGGsepIskxXWNCllufGswuXedGcG4O0QQyvnxW1Y5TMjdDZQ+y6KryVGjTiId
+         QA0Q8gLk6/mIq4Fp51R2ol2NxkbfRup6yzId+gt/X+xXIrjTH68pbK3DZai2eM0rFMxB
+         DV+Nt8R0g5B/DQS6HOqfvUrObDamGO2gIAqmzNwx4pGP5axMBJwvSEQeLdWIQCmSMfQh
+         x6J9vyF1FhaMGaHC6+e2H5S2M5OM0wqHSTgrptWDTCKMAnKl9I640tRNFI7uggZVbQas
+         yh5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686255261; x=1688847261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8eRVCfDeAAMucNxeePix1yxCVE2NkWOFxs0IcqPVmf8=;
+        b=EHE5Wdc4fS2zsnyDmgJ3PAlQy6ap60ShJykgpcx7h/hokTEbUk1z5GdlWrl/hpZsNq
+         6UK7qxEMPy9bSoWEqUfdMZ5OsV55VIHO+kzFDmC8N4/MQS8W6awyNBaC+GEvb2ZIo0Vs
+         1cSIhGHzfaqUoVqiTQ/74BeB2MTK+ZMah9JLpzTYlLaTjTr3QHBIZB7taVzXK7g63Zi5
+         OuJIaAdd2br1B0u7+jzyENNqZz9uieYQ1prK+C7XbqhkF5WjhCJIusOWTKPMRMLpbbLA
+         mJDYOdgsbjzQcsGCgs4DOjjQh8+Q6WhIOkmQCPrxChm4f64Io/lnq0L0iQ0LoHyhuPEK
+         9/BQ==
+X-Gm-Message-State: AC+VfDzLW2aOK1OJJtZPdrCoe/n3vLKDZW+YmSsyI84phvgICTnsAI//
+        xy7Jv3k5oPZWPjPeB7CAKve2d7rrv4AR2FS9DILxfg==
+X-Google-Smtp-Source: ACHHUZ6r2wb1dJI5UymrIOL2HDKfArs9bbIeB/khx8uqZadNOvrgOAYTxFeyYXRYdaS6/plvrdMGAdRSSVg72BIReaM=
+X-Received: by 2002:a05:6214:242c:b0:626:24c4:7d78 with SMTP id
+ gy12-20020a056214242c00b0062624c47d78mr2916475qvb.56.1686255261266; Thu, 08
+ Jun 2023 13:14:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+ <20230606134005.GE905437@hirez.programming.kicks-ass.net> <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
+ <20230606180806.GA942082@hirez.programming.kicks-ass.net> <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com>
+ <20230607094101.GA964354@hirez.programming.kicks-ass.net> <20230608085248.GA1002251@hirez.programming.kicks-ass.net>
+ <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
+ <202306080917.C0B16C8@keescook> <CAKwvOdmY_NEK4cnrqwU8acpU=SK3Z2uV_3PYCnhA5zQt2_TJJg@mail.gmail.com>
+ <20230608185142.GA1019250@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230608185142.GA1019250@hirez.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 8 Jun 2023 13:14:10 -0700
+Message-ID: <CAKwvOd=MurF6DQHzRTai15h67FEpd_4R-gz_iFejzLsL=dw3dA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        gregkh@linuxfoundation.org, pbonzini@redhat.com,
+        linux-kernel@vger.kernel.org, ojeda@kernel.org, mingo@redhat.com,
         will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
         juri.lelli@redhat.com, vincent.guittot@linaro.org,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
@@ -50,123 +73,54 @@ Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
         linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
-Message-ID: <20230608200618.GA1020752@hirez.programming.kicks-ass.net>
-References: <20230530092342.GA149947@hirez.programming.kicks-ass.net>
- <20230606094251.GA907347@hirez.programming.kicks-ass.net>
- <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
- <20230606134005.GE905437@hirez.programming.kicks-ass.net>
- <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
- <20230606180806.GA942082@hirez.programming.kicks-ass.net>
- <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com>
- <20230607094101.GA964354@hirez.programming.kicks-ass.net>
- <20230608085248.GA1002251@hirez.programming.kicks-ass.net>
- <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 08, 2023 at 08:45:53AM -0700, Linus Torvalds wrote:
+On Thu, Jun 8, 2023 at 11:51=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Thu, Jun 08, 2023 at 10:20:19AM -0700, Nick Desaulniers wrote:
+> > Presumably, one could simply just not use RAII when working with a valu=
+e that conditionally
+> > "escapes" the local scope.
+>
+> But then you're back to the error goto :/
 
-> > DEFINE_CLASS(kfree, void *, kfree(THIS), p, void *p)
-> >
-> >         smart_ptr(kfree, mem) = kzalloc_node(...);
-> >         if (!mem)
-> >                 return -ENOMEM;
-> 
-> No, the above is broken, and would result in us using "void *" in
-> situations where we really *really* don't want that.
-> 
-> For automatic freeing, you want something that can handle different
-> types properly, and without having to constantly declare the types
-> somewhere else before use.
+Thinking more about the expected ergonomics here over lunch...no
+meaningful insights, just thoughts...
 
-Ah, I see what you did with the no_free_ptr(), that avoids having to
-have two pointers around, nice!
+For something like a mutex/lock; I'd expect those to be acquired then
+released within the same function, yeah? In which case
+__attribute__((cleanup())) has fewer hazards since the resource
+doesn't escape.
 
-> So for convenient automatic pointer freeing, you want an interface
-> much more akin to
-> 
->         struct whatever *ptr __automatic_kfree = kmalloc(...);
-> 
-> which is much more legible, doesn't have any type mis-use issues, and
-> is also just trivially dealt with by a
-> 
->   static inline void automatic_kfree_wrapper(void *pp)
->   { void *p = *(void **)pp; if (p) kfree(p); }
->   #define __automatic_kfree \
->         __attribute__((__cleanup__(automatic_kfree_wrapper)))
->   #define no_free_ptr(p) \
->         ({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
-> 
-> which I just tested generates the sane code even for the "set the ptr
-> to NULL and return success" case.
-> 
-> The above allows you to trivially do things like
-> 
->         struct whatever *p __automatic_kfree = kmalloc(..);
-> 
->         if (!do_something(p))
->                 return -ENOENT;
-> 
->         return no_free_ptr(p);
-> 
-> and it JustWorks(tm).
+For a pointer to a dynamically allocated region that may get returned
+to the caller...
 
-OK, something like so then?
+I mean, people do this in C++. It is safe and canonical to return a
+std::unique_ptr.  When created locally the destructor does the
+expected thing regardless of control flow.  IIUC, std::unique_ptr's
+move constructor basically does what Kees suggested earlier (trigger
+warning: C++): https://github.com/llvm/llvm-project/blob/7a52f79126a5971701=
+2d8039ef875f68e3c637fd/libcxx/include/__memory/unique_ptr.h#L429-L430.
+example: https://godbolt.org/z/51s49G9f1
 
+A recent commit to clang https://reviews.llvm.org/rG301eb6b68f30
+raised an interesting point (deficiency is perhaps too strong a word)
+about GNU-style attributes; they generally have no meaning on an ABI.
 
-#define DEFINE_FREE(name, type, free) \
-	static inline __free_##name(type *p) { type _P = *p; free; }
+Consider a function that returns a locally constructed
+std::unique_ptr.  If the function returns a type where the caller
+knows what destructor functions to run.  This is part of the ABI.
 
-#define __free(name)	__cleanup(__free_##name)
-
-#define no_free_ptr(p) \
-	({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
-
-
-DEFINE_FREE(kfree, void *, if (_P) kfree(_P));
-
-	struct obj *p __free(kfree) = kmalloc(...);
-
-	if (!do_something(p))
-		return -ENOENT;
-
-	return no_free_ptr(p);
-
-
-
-
-DEFINE_CLASS(find_get_context, struct perf_event_context *,
-	     if (!IS_ERR_OR_NULL(_C)) put_ctx(_C),
-	     find_get_context(task, event), struct task_struct *task, struct perf_event *event)
-
-DEFINE_FREE(free_event, struct perf_event *,
-	    if (!IS_ERR_OR_NULL(_P)) free_event(_P));
-
-
-	struct perf_event *event __free(free_event) = perf_event_alloc(...)
-	if (IS_ERR(event))
-		return event;
-
-	class(find_get_context, ctx)(task, event);
-	if (IS_ERR(ctx))
-		return (void*)ctx;
-
-	if (!task && !container_of(ctx, struct perf_cpu_context, ctx)->online)
-		return -ENODEV;
-
-	...
-
-	event->ctx = get_ctx(ctx);
-
-	return no_free_ptr(event);
-
-
-
-works for me, I'll go make it happen.
-
+Here, we're talking about using __attribute__((cleanup())) to DTR
+locally, but then we return a "raw" pointer to a caller. What cleanup
+function should the caller run, implicitly, if at all?  If we use
+__attribute__((cleanup())) that saves us a few gotos locally, but the
+caller perhaps now needs the same treatment.
+--=20
+Thanks,
+~Nick Desaulniers
