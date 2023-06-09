@@ -2,59 +2,106 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 635CFC7EE25
-	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 07:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA29C7EE2E
+	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 08:15:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238969AbjFIHkL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Jun 2023 03:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        id S239946AbjFIIPD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Jun 2023 04:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239175AbjFIHjn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Jun 2023 03:39:43 -0400
-X-Greylist: delayed 538 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 09 Jun 2023 00:39:42 PDT
-Received: from mail.sayblast.pl (mail.sayblast.pl [51.68.191.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B5B193
-        for <rcu@vger.kernel.org>; Fri,  9 Jun 2023 00:39:41 -0700 (PDT)
-Received: by mail.sayblast.pl (Postfix, from userid 1002)
-        id 98504A29AD; Fri,  9 Jun 2023 07:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sayblast.pl; s=mail;
-        t=1686295841; bh=q8IxNbavXIq8RjJbsN7cVOB0yFuMbjX2Tq8i/XIxWAs=;
-        h=Date:From:To:Subject:From;
-        b=a5+NJvzQA0KnnP0Xk8/IhFNqEZHslzqqS++qAPRrzMqKE6w4q/78alnsBx6envA4d
-         8ISjZS7/1BaoVscOz2TtQG1McDZu+KiYIa0kZfjLH2G5VQt63k+Dg1QxmGHqv2lYwB
-         KQztrdRGpejN9tpsUasW0zeteCpqNhR/82BRPETTMA+dV4UUQhFvrVsdVpv/0zDkOf
-         9p/FTmUoLo/Rxx6igV4HMlQ0NmGGTikjTM1sdLrbIKEgpHKuA/8ND6LTBiNbAvzXpU
-         3IFBRp8CyINHTdlG7iTtJec2id67ybgXz7qyjSbq1mxPB/uRaZJ8tiN3m+38IZjP5P
-         PtCsDhQPzwE+w==
-Received: by mail.sayblast.pl for <rcu@vger.kernel.org>; Fri,  9 Jun 2023 07:30:34 GMT
-Message-ID: <20230609064500-0.1.ao.2bwp3.0.ahyd3fhwrp@sayblast.pl>
-Date:   Fri,  9 Jun 2023 07:30:34 GMT
-From:   =?UTF-8?Q? "Karol_G=C3=B3rka" ?= <karol.gorka@sayblast.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Kredytowanie na podstawie obrotu z terminala
-X-Mailer: mail.sayblast.pl
+        with ESMTP id S240172AbjFIIPB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Jun 2023 04:15:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8C51FEC;
+        Fri,  9 Jun 2023 01:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=+cwenPjityAug3WNzlNqZYfDn0z0LVC2siDeul5t8mY=; b=FHSTN20504TR15rO6GosZftBSu
+        zs4/8pgg8bMheZAJHp/mN5JI7Xxu29i2YRxizdaaKCDLOGZOePbg8ZJ61mQLQdItOg+wL8yZb1178
+        QwNxoUU6gwGdMsLQnsUyfq4Fj+Yb8ngNWSsEhg6Pa4vY3WiTZuo+tlHSiZvEgvndGshzcyVXPpWs1
+        sTSFVahZEj1EIfwzVMg5Gop2HYGug8u/I2tXN3ml07pOq9ZK+MJKO04wJ4SBblFVRf1o7r1p5W8PB
+        41rheKlPkUk3Oo4I1JbZUfVauVggwIqZ0DigHG2KIw02y7hdsX9fKsB9rIeHWUYKS3X9pFmiii13w
+        XC77uYPw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1q7XGV-00GLUF-Re; Fri, 09 Jun 2023 08:14:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F30D4300155;
+        Fri,  9 Jun 2023 10:14:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CDDA7241717B3; Fri,  9 Jun 2023 10:14:32 +0200 (CEST)
+Date:   Fri, 9 Jun 2023 10:14:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
+Message-ID: <20230609081432.GB1039598@hirez.programming.kicks-ass.net>
+References: <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+ <20230606134005.GE905437@hirez.programming.kicks-ass.net>
+ <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
+ <20230606180806.GA942082@hirez.programming.kicks-ass.net>
+ <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com>
+ <20230607094101.GA964354@hirez.programming.kicks-ass.net>
+ <20230608085248.GA1002251@hirez.programming.kicks-ass.net>
+ <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
+ <20230608200618.GA1020752@hirez.programming.kicks-ass.net>
+ <CAHk-=wjcXuZ91WkKv0fuBcm+w7y=y=fNzW9EXfnYYSCFvuyhdA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wjcXuZ91WkKv0fuBcm+w7y=y=fNzW9EXfnYYSCFvuyhdA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Thu, Jun 08, 2023 at 07:25:27PM -0700, Linus Torvalds wrote:
+> On Thu, Jun 8, 2023 at 1:06 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> >         struct obj *p __free(kfree) = kmalloc(...);
+> 
+> Yeah, the above actually looks really good to me - I like the naming
+> here, and the use looks very logical to me.
+> 
+> Of course, maybe once I see the patches that use this I go "uhh", but
+> at least for now I think you've hit on a rather legible syntax.
+> 
+> I'm still a bit unsure of the "no_free_ptr(p)" naming, but at least
+> it's pretty clear about what it does.
+> 
+> So my only worry is that it's not pretty and to the point like your
+> "__free(kfree)" syntax.
+> 
+> But it feels workable and not misleading, so unless somebody can come
+> up with a better name, I think it's ok.
 
-interesuje Pa=C5=84stwa uzyskanie finansowania bez zb=C4=99dnej papierolo=
-gii, za=C5=9Bwiadcze=C5=84 i zabezpieczenia, z bezobs=C5=82ugow=C4=85 sp=C5=
-=82at=C4=85 i brakiem odsetek?
-
-Zapewniamy rozwi=C4=85zanie na uproszczonych zasadach, kt=C3=B3re oparte =
-jest o =C5=9Bredni utarg na terminalu p=C5=82atniczym z 12 miesi=C4=99cy,=
- a rata zale=C5=BCy od wysoko=C5=9Bci obrot=C3=B3w - gdy s=C4=85 mniejsze=
- rata maleje, gdy obr=C3=B3t wzrasta, finansowanie sp=C5=82aca si=C4=99 s=
-zybciej.=20
-
-=C5=9Arodki wyp=C5=82acamy nawet do 72h od z=C5=82o=C5=BCenia wniosku onl=
-ine. S=C4=85 Pa=C5=84stwo zainteresowani takim rozwi=C4=85zaniem?
+#define return_ptr(p) \
+	return no_free_ptr(p)
 
 
-Pozdrawiam
-Karol G=C3=B3rka
+	struct obj *p __free(kfree) = kmalloc(...);
+	if (!p)
+		return ERR_PTR(-ENOMEM);
+
+	...
+
+	return_ptr(p);
+
+?
+
