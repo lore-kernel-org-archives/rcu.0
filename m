@@ -2,89 +2,177 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1455C7EE25
-	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 21:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2FFCC7EE25
+	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 22:51:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjFIVSb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Jun 2023 17:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
+        id S231771AbjFIWvE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Jun 2023 18:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbjFIVSY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Jun 2023 17:18:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D960C3A89;
-        Fri,  9 Jun 2023 14:18:15 -0700 (PDT)
+        with ESMTP id S229631AbjFIWvD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Jun 2023 18:51:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4035A1993;
+        Fri,  9 Jun 2023 15:51:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 77B4865C48;
-        Fri,  9 Jun 2023 21:18:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9CEBC433D2;
-        Fri,  9 Jun 2023 21:18:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6B1365C3F;
+        Fri,  9 Jun 2023 22:51:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27B2DC433D2;
+        Fri,  9 Jun 2023 22:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686345494;
-        bh=A7ZSNdpgt4TEUjGBBbEBvk5Z6M9RP45arMggWse/pRA=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=Z8MkxbLUfCweTaqIx586AdDWCT3qLUVR2gR0OiEnGM6fMovsTxdOphf2Zu7zOS0mk
-         e0kIXKno996Kq3kZ5e7FznrbzRAL9deyMks1zFJ6GYeMykMpERzyRb+yEwH1W6wQ2e
-         /nQvvP93UCklBJ7Bk7PphF0YEUQ0r/Int3/XLAiaPY431dvKvk50N5GuAIvImM0e3+
-         2RZqNe1y9Mzf9f8b4wtC3pzg4idFOwvU6D9TG6OfO2IR3oeldCq12o/60ZhtkizKrB
-         foyuU3TytX5R4tU63QlceDWYGKHI52jJL5f9v+gI9Hsl11Q+X8LZaxlfS4UPD0Ws6R
-         YAARXD8HurcUQ==
-Date:   Fri, 09 Jun 2023 14:18:13 -0700
-From:   Kees Cook <kees@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAHk-=wjcXuZ91WkKv0fuBcm+w7y=y=fNzW9EXfnYYSCFvuyhdA@mail.gmail.com>
-References: <20230530092342.GA149947@hirez.programming.kicks-ass.net> <20230606094251.GA907347@hirez.programming.kicks-ass.net> <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com> <20230606134005.GE905437@hirez.programming.kicks-ass.net> <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com> <20230606180806.GA942082@hirez.programming.kicks-ass.net> <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com> <20230607094101.GA964354@hirez.programming.kicks-ass.net> <20230608085248.GA1002251@hirez.programming.kicks-ass.net> <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com> <20230608200618.GA1020752@hirez.programming.kicks-ass.net> <CAHk-=wjcXuZ91WkKv0fuBcm+w7y=y=fNzW9EXfnYYSCFvuyhdA@mail.gmail.com>
-Message-ID: <008C18B3-519A-40AF-B35C-1AA8BF1EF4FF@kernel.org>
+        s=k20201202; t=1686351061;
+        bh=Jw59zXju5nvbtb3cr0/pjx50ewF/t3dQL3btfcR20Mc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jkfAIXq1sEzqI3PMiQXgL1+dBE+QE44YoDMdd7rLKJCgux2m+zC2LqLwO5YNheRLp
+         F+OQRpbqZQGXFiQh7HHOZ3pVcWd+9aEibuMGnVOHsfBsTc35cJXf9jzSO+feMdQzYk
+         CafVKU6BTceeio5qOeWMidFmnIi7MqkvvVGWYoEDhrHQ1H5YtcNdMw0KcEJ7ieO6bI
+         w2OhuwJoXXm4699ayNSSuoA8Wt4T1N7S1CixAjf7oeVmpE03OEga8+0VZ3J8pphjSf
+         eC8zUBzSFEmKfOAhikHr9iVwFwuMXedGw1TgOdsYO+rfvPSfrj2DQZlpLqSM+q/+Si
+         1KroqkMyQUyFw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B7368CE1449; Fri,  9 Jun 2023 15:51:00 -0700 (PDT)
+Date:   Fri, 9 Jun 2023 15:51:00 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcuscale: fix building with RCU_TINY
+Message-ID: <9fd81723-4ba2-4a0b-a7da-f9fb121021de@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230609120522.3921015-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230609120522.3921015-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On June 8, 2023 7:25:27 PM PDT, Linus Torvalds <torvalds@linux-foundation=
-=2Eorg> wrote:
->On Thu, Jun 8, 2023 at 1:06=E2=80=AFPM Peter Zijlstra <peterz@infradead=
-=2Eorg> wrote:
->>
->>         struct obj *p __free(kfree) =3D kmalloc(=2E=2E=2E);
->
->Yeah, the above actually looks really good to me - I like the naming
->here, and the use looks very logical to me=2E
->
->Of course, maybe once I see the patches that use this I go "uhh", but
->at least for now I think you've hit on a rather legible syntax=2E
->
->I'm still a bit unsure of the "no_free_ptr(p)" naming, but at least
->it's pretty clear about what it does=2E
->
->So my only worry is that it's not pretty and to the point like your
->"__free(kfree)" syntax=2E
->
->But it feels workable and not misleading, so unless somebody can come
->up with a better name, I think it's ok=2E
+On Fri, Jun 09, 2023 at 02:05:14PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Both the CONFIG_TASKS_RCU and CONFIG_TASKS_RUDE_RCU options
+> are broken when RCU_TINY is enabled as well, as some functions
+> are missing a declaration.
+> 
+> In file included from kernel/rcu/update.c:649:
+> kernel/rcu/tasks.h:1271:21: error: no previous prototype for 'get_rcu_tasks_rude_gp_kthread' [-Werror=missing-prototypes]
+>  1271 | struct task_struct *get_rcu_tasks_rude_gp_kthread(void)
+>       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> kernel/rcu/rcuscale.c:330:27: error: 'get_rcu_tasks_rude_gp_kthread' undeclared here (not in a function); did you mean 'get_rcu_tasks_trace_gp_kthread'?
+>   330 |         .rso_gp_kthread = get_rcu_tasks_rude_gp_kthread,
+>       |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |                           get_rcu_tasks_trace_gp_kthread
+> 
+> In file included from /home/arnd/arm-soc/kernel/rcu/update.c:649:
+> kernel/rcu/tasks.h:1113:21: error: no previous prototype for 'get_rcu_tasks_gp_kthread' [-Werror=missing-prototypes]
+>  1113 | struct task_struct *get_rcu_tasks_gp_kthread(void)
+>       |                     ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Also, building with CONFIG_TASKS_RUDE_RCU but not CONFIG_TASKS_RCU is
+> broken because of some missing stub functions:
+> 
+> kernel/rcu/rcuscale.c:322:27: error: 'tasks_scale_read_lock' undeclared here (not in a function); did you mean 'srcu_scale_read_lock'?
+>   322 |         .readlock       = tasks_scale_read_lock,
+>       |                           ^~~~~~~~~~~~~~~~~~~~~
+>       |                           srcu_scale_read_lock
+> kernel/rcu/rcuscale.c:323:27: error: 'tasks_scale_read_unlock' undeclared here (not in a function); did you mean 'srcu_scale_read_unlock'?
+>   323 |         .readunlock     = tasks_scale_read_unlock,
+>       |                           ^~~~~~~~~~~~~~~~~~~~~~~
+>       |                           srcu_scale_read_unlock
+> 
+> Move the declarations outside of the RCU_TINY #ifdef and duplicate the
+> shared stub functions to address all of the above.
+> 
+> Fixes: 88d7ff818f0ce ("rcuscale: Add RCU Tasks Rude testing")
+> Fixes: 755f1c5eb416b ("rcuscale: Measure RCU Tasks Trace grace-period kthread CPU time")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I like the proposed "take" naming, and before reading that reply I was goi=
-ng to suggest "keep"=2E *shrug*
+Queued and pushed, thank you!
 
+I clearly need to improve my Kconfig coverage here...
 
---=20
-Kees Cook
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcu.h      | 14 ++++++++------
+>  kernel/rcu/rcuscale.c | 13 +++++++++++--
+>  2 files changed, 19 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 9829d8161b213..5befd8780dcd3 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -505,18 +505,20 @@ void rcu_async_relax(void);
+>  void rcupdate_announce_bootup_oddness(void);
+>  #ifdef CONFIG_TASKS_RCU_GENERIC
+>  void show_rcu_tasks_gp_kthreads(void);
+> -# ifdef CONFIG_TASKS_RCU
+> -struct task_struct *get_rcu_tasks_gp_kthread(void);
+> -# endif // # ifdef CONFIG_TASKS_RCU
+> -# ifdef CONFIG_TASKS_RUDE_RCU
+> -struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
+> -# endif // # ifdef CONFIG_TASKS_RUDE_RCU
+>  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+>  static inline void show_rcu_tasks_gp_kthreads(void) {}
+>  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+>  void rcu_request_urgent_qs_task(struct task_struct *t);
+>  #endif /* #else #ifdef CONFIG_TINY_RCU */
+>  
+> +#ifdef CONFIG_TASKS_RCU
+> +struct task_struct *get_rcu_tasks_gp_kthread(void);
+> +#endif // # ifdef CONFIG_TASKS_RCU
+> +
+> +#ifdef CONFIG_TASKS_RUDE_RCU
+> +struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
+> +#endif // # ifdef CONFIG_TASKS_RUDE_RCU
+> +
+>  #define RCU_SCHEDULER_INACTIVE	0
+>  #define RCU_SCHEDULER_INIT	1
+>  #define RCU_SCHEDULER_RUNNING	2
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 5ce3b4e7ce711..a0eae19007088 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -316,11 +316,20 @@ static struct rcu_scale_ops tasks_ops = {
+>   * Definitions for RCU-tasks-rude scalability testing.
+>   */
+>  
+> +static int tasks_rude_scale_read_lock(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +static void tasks_rude_scale_read_unlock(int idx)
+> +{
+> +}
+> +
+>  static struct rcu_scale_ops tasks_rude_ops = {
+>  	.ptype		= RCU_TASKS_RUDE_FLAVOR,
+>  	.init		= rcu_sync_scale_init,
+> -	.readlock	= tasks_scale_read_lock,
+> -	.readunlock	= tasks_scale_read_unlock,
+> +	.readlock	= tasks_rude_scale_read_lock,
+> +	.readunlock	= tasks_rude_scale_read_unlock,
+>  	.get_gp_seq	= rcu_no_completed,
+>  	.gp_diff	= rcu_seq_diff,
+>  	.async		= call_rcu_tasks_rude,
+> -- 
+> 2.39.2
+> 
