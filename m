@@ -2,57 +2,56 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27FB5C7EE2E
-	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 16:12:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF2AC7EE29
+	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 18:24:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242093AbjFIQMx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Jun 2023 12:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
+        id S230320AbjFISYO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Jun 2023 14:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242068AbjFIQMq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Jun 2023 12:12:46 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3590D35AA;
-        Fri,  9 Jun 2023 09:12:45 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b1c30a1653so21817901fa.2;
-        Fri, 09 Jun 2023 09:12:45 -0700 (PDT)
+        with ESMTP id S230071AbjFISYN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Jun 2023 14:24:13 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8BB35A9;
+        Fri,  9 Jun 2023 11:24:11 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b1b92845e1so23245951fa.0;
+        Fri, 09 Jun 2023 11:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686327163; x=1688919163;
+        d=gmail.com; s=20221208; t=1686335049; x=1688927049;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KJJun3ofhrf29b915bUyEBHrQ/RmgnCQK6ElUKyKGe8=;
-        b=rax7FrpbvJgbxzoAvdXckmRWbD9VyBmS1BmXDJqMiSfdxGbI/2Afeorjd/J7SpZH3Q
-         i2zuVP19GL/CSQR/T2F4LHrvXtdOudfffA8wEsdQINK30i221tu4Bi2IG0m2BY+Pu045
-         xLSXLCW2Px9LU97vIz33bIIXYcx2gUZ4ucQx9jR71C8FphbxWhc8wtyEQk8UyH+sntRc
-         6J8uGU9SuFhpp4N95w67K4LTOV6QRty8F7oe8AP5XdAwaEiaNfibT8Vnl/XbwaT++XW+
-         82DU8QiaGdWtSJp5H2VmcwLrUYKyvdsl5TJAepsV71ldm3tx1n35/eVSftGuYCnk4Tf9
-         IkQg==
+        bh=nkSKOW89nDC35DM2bAzieBlsMkC98kKqdM5YlWE1s7c=;
+        b=hs/+fegU1wKqc41c76IevyAnX9P3e6+xN+1It0mModNznQVvUJCXOAm8VAqIh4s4b1
+         voAP5nd1G2LTvdLykGVoYeHppl2n8gFBDYp2ErdqaBm8AqhMW9zpgETtp8dgLoxz6VRX
+         znaY0CuuSqJSmh3EI4x43yXjR5EtW3rNXenYRI9i0v4xeDUAVSTtPXDLSDs2qaPqPz+A
+         j7u39+knB/m7vhHlzRE7dTNiO+De+4sC4edTQ4k5VZNt9FzSq+BefuEzozO1W5zQLqcx
+         NHMtbnRtmM8yjzZapHVqxeWzjjp3v47hnXZmFejRdWH59hkQsucNoFjOY0l4sb39kxlB
+         mtDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686327163; x=1688919163;
+        d=1e100.net; s=20221208; t=1686335049; x=1688927049;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KJJun3ofhrf29b915bUyEBHrQ/RmgnCQK6ElUKyKGe8=;
-        b=NXlDwWuE1+lm3HQWyr2UBYm7/RFZdJLFsuxQxDtM0/a4VsXdCKe9dDSDag8xXHliCV
-         hflw4XvooB8Y//Fof+/1Xik9pB6WxxU7PS86eRjgg2mUSGdGz4nWlOWVCptjhRgETUaJ
-         uR88AQSW5NK7IPzscxtGgXiRacTzvJYh3WzpRjrSm6EdbEa2/00qzGt18sd2OMBYK5D1
-         Hq9hj+cSYUy2D0sOVYooD/dMOLng1ogxRmFE59mxvXMaZ5NVac1ykMEakppDNB3Pw2fT
-         GkBeuX9jB/CBsHiDy7I5VDHLGF+8jzkpK3Vt1svdHpSg53OimxahD9ZsgzV2UJiuG7O7
-         gSCg==
-X-Gm-Message-State: AC+VfDxMTmdm4zEu8wDDUGjJwPVWjQFWIeHWyEwtjBfyX7TSWUuN4SpQ
-        q2Hq/Fm3+qDVeYdg2R068+l5Q70XCzkZ7R1LJtw=
-X-Google-Smtp-Source: ACHHUZ7Cr5gO2FVVAmfwHzV8FGPuEFuYgeotTBRiZielencUCayoO5BTRLWFavCvW/aZd5CLGWebG3vSse94ED/Jqjg=
-X-Received: by 2002:a2e:9c08:0:b0:2a8:e44e:c75a with SMTP id
- s8-20020a2e9c08000000b002a8e44ec75amr1446225lji.32.1686327162897; Fri, 09 Jun
- 2023 09:12:42 -0700 (PDT)
+        bh=nkSKOW89nDC35DM2bAzieBlsMkC98kKqdM5YlWE1s7c=;
+        b=amvpdqap8MrY4XNjYoQtssBKclvr7PnqviG8Uoj7QP3zSmsPlQR6JUp/3YyH9sVvYX
+         N/7Uy2Z3bO5drrRiLbnQDKkdrJMYZ2X8+uMHvS6YeDbvG9BCurM4Zzc82RRBA3Wg+Fe0
+         yatU6xXtIyUNHUYbSKfqItZ7DFISI/nORZURTQYOJ3LhphXgfTnJBNHigXs8hgHhyK5v
+         hHSsYqFsjhYmxOATXmph2o2bYnXwqX5l5lPKcQwH1Fpvj7vaCoMV6MSYZChXcJknE0/y
+         yshHeO0INvDOlSCeAMjN+isZL5yLcwRcXUc3ThB9IOqKz/T7kHEA9SMYKjsZOAcKlaLY
+         TAyg==
+X-Gm-Message-State: AC+VfDzGx86b4XtQUctWkoMh8j01Bg1IA6FyAoTXn0uqmjzwX8vhu5za
+        i/FqJO/swsXujN5GD6uh8LVSktXyYeS5TdMsfhc=
+X-Google-Smtp-Source: ACHHUZ7JNSLJNHdeg+//CAl/KiV9vxPhNpA5zDueRCOtcIxs7o9QagBhOAvyE8COveHl8YAPKLWZ0cnY+bwXRDLTS94=
+X-Received: by 2002:a2e:964b:0:b0:2ad:d949:dd39 with SMTP id
+ z11-20020a2e964b000000b002add949dd39mr1454871ljh.29.1686335048887; Fri, 09
+ Jun 2023 11:24:08 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230609024030.2585058-1-houtao@huaweicloud.com>
- <20230609031907.5yt7pnnynrawjzht@MacBook-Pro-8.local> <7e1ed3f0-f6b1-a022-d7c5-055a80deb606@huaweicloud.com>
-In-Reply-To: <7e1ed3f0-f6b1-a022-d7c5-055a80deb606@huaweicloud.com>
+In-Reply-To: <20230609024030.2585058-1-houtao@huaweicloud.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 9 Jun 2023 09:12:31 -0700
-Message-ID: <CAADnVQK-e9Y0gNyDUu6kZ4K9P0UXLdkwhvWT_iEhxJeB5JSAyg@mail.gmail.com>
+Date:   Fri, 9 Jun 2023 11:23:57 -0700
+Message-ID: <CAADnVQJ5m_gT2h41m2_tuf=GDGSWzVSA6ixOwQECzGv8VimZwA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v5] selftests/bpf: Add benchmark for bpf memory allocator
 To:     Hou Tao <houtao@huaweicloud.com>
 Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
@@ -72,22 +71,60 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 8, 2023 at 11:32=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
+On Thu, Jun 8, 2023 at 7:08=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
 >
-> >
-> >> +                    --producers=3D8 --prod-affinity=3D0-7 "$@")"
-> > -a -p 8 should just work.
-> > No need to pick specific cpus.
-> No. For VM with only 8 CPUs, the affinity of the first producer will be
-> CPU 1 and the affinity of the last producer will be CPU 8, so the
-> benchmark will fail to run. But I think I can fix it, so the affinity of
-> the last producer will be 0 instead.
+>
+> (1) non-preallocated + no bpf memory allocator (v6.0.19)
+> use kmalloc() + call_rcu
+>
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB=
+)|
+> | --                 | --        | --                  | --              =
+ |
+> | no_op              | 681.40    | 0.87                | 1.00            =
+ |
+> | overwrite          | 8.56      | 38.86               | 88.42           =
+ |
+> | batch_add_batch_del| 6.74      | 41.28               | 69.70           =
+ |
+> | add_del_on_diff_cpu| 4.68      | 3.43                | 5.70            =
+ |
+>
+> (2) preallocated
+> OPTS=3D--preallocated
+>
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB=
+)|
+> | --                 | --        | --                  | --              =
+ |
+> | no_op              | 673.95    | 1.98                | 1.98            =
+ |
+> | overwrite          | 114.63    | 1.99                | 1.99            =
+ |
+> | batch_add_batch_del| 78.34     | 2.04                | 2.06            =
+ |
+> | add_del_on_diff_cpu| 6.41      | 2.23                | 2.54            =
+ |
+>
+> (3) normal bpf memory allocator
+>
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB=
+)|
+> | --                 | --        | --                  | --              =
+ |
+> | no_op              | 656.20    | 0.99                | 0.99            =
+ |
+> | overwrite          | 81.21     | 1.10                | 2.49            =
+ |
+> | batch_add_batch_del| 18.40     | 2.13                | 2.62            =
+ |
+> | add_del_on_diff_cpu| 5.38      | 10.40               | 18.05           =
+ |
 
-Right. Noticed that too.
-That should probably be a separate patch to fix this cpu assignment
-issue in bench for all benchs.
-
-Andrii,
-when you wrote it did you really mean to start assigning cpus from 1
-or that was just an oversight?
+I have a feeling that you didn't remeasure things and just copy pasted
+above from v4.
+I see vastly different numbers in v5.
+and peak memory usage is broken.
+It always shows:
+peak memory usage    0.00MiB
