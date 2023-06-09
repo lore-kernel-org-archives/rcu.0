@@ -2,98 +2,89 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B41EC7EE25
-	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 19:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1455C7EE25
+	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 21:18:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjFITML (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Jun 2023 15:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36476 "EHLO
+        id S232147AbjFIVSb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Jun 2023 17:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjFITMK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Jun 2023 15:12:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F751A4;
-        Fri,  9 Jun 2023 12:12:09 -0700 (PDT)
+        with ESMTP id S230247AbjFIVSY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Jun 2023 17:18:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D960C3A89;
+        Fri,  9 Jun 2023 14:18:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8997E611B0;
-        Fri,  9 Jun 2023 19:12:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 628F2C433D2;
-        Fri,  9 Jun 2023 19:12:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 77B4865C48;
+        Fri,  9 Jun 2023 21:18:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9CEBC433D2;
+        Fri,  9 Jun 2023 21:18:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686337929;
-        bh=KFNOV3o4cqtQYNywig/OkDKy4bUHopCwMFlABCAl2zQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nXyUBVzvCMSSoCB+HWwPC+EduJ1s0zzgtsCoFlQp/k4a/Yg37cO5twLzXZYmhhNfY
-         ywrwWgFT0+H7daHKQfEdQn2yfabwnOqdu41l2ruM993kQ8WmX+EuekP+WtfxyLk/vj
-         waVl4IAMZW0Y2i5lESWeJsBZHkCQhtU6jgv+j9tsxHn5zWpT+M7aqcmobKNEshZ5D+
-         he9Zq5MwPM7wD67cvQ2RAwCSp3yA1ptrKhY5UjXueJJNfp6r59XLKtKSubGNKNK8Rb
-         3AdJKu7vWZ/ykO1d/KfIuWysfwQnzEMQRd52WOXjmCmfRbXKke8BBE3yhZovpqZASD
-         KmIO1cZ0ZXvKA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     SeongJae Park <sj@kernel.org>, paulmck@kernel.org, corbet@lwn.net,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] Docs/RCU/rculist_nulls: Drop unnecessary '_release' in insert function
-Date:   Fri,  9 Jun 2023 19:12:06 +0000
-Message-Id: <20230609191206.30465-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAEXW_YQFqW2QcAuHZEhc_GaUaB-=QOS0WgUOizd=FYwtFQ8vag@mail.gmail.com>
-References: 
+        s=k20201202; t=1686345494;
+        bh=A7ZSNdpgt4TEUjGBBbEBvk5Z6M9RP45arMggWse/pRA=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=Z8MkxbLUfCweTaqIx586AdDWCT3qLUVR2gR0OiEnGM6fMovsTxdOphf2Zu7zOS0mk
+         e0kIXKno996Kq3kZ5e7FznrbzRAL9deyMks1zFJ6GYeMykMpERzyRb+yEwH1W6wQ2e
+         /nQvvP93UCklBJ7Bk7PphF0YEUQ0r/Int3/XLAiaPY431dvKvk50N5GuAIvImM0e3+
+         2RZqNe1y9Mzf9f8b4wtC3pzg4idFOwvU6D9TG6OfO2IR3oeldCq12o/60ZhtkizKrB
+         foyuU3TytX5R4tU63QlceDWYGKHI52jJL5f9v+gI9Hsl11Q+X8LZaxlfS4UPD0Ws6R
+         YAARXD8HurcUQ==
+Date:   Fri, 09 Jun 2023 14:18:13 -0700
+From:   Kees Cook <kees@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAHk-=wjcXuZ91WkKv0fuBcm+w7y=y=fNzW9EXfnYYSCFvuyhdA@mail.gmail.com>
+References: <20230530092342.GA149947@hirez.programming.kicks-ass.net> <20230606094251.GA907347@hirez.programming.kicks-ass.net> <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com> <20230606134005.GE905437@hirez.programming.kicks-ass.net> <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com> <20230606180806.GA942082@hirez.programming.kicks-ass.net> <CAHk-=wgXN1YxGMUFeuC135aeUvqduF8zJJiZZingzS1Pao5h0A@mail.gmail.com> <20230607094101.GA964354@hirez.programming.kicks-ass.net> <20230608085248.GA1002251@hirez.programming.kicks-ass.net> <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com> <20230608200618.GA1020752@hirez.programming.kicks-ass.net> <CAHk-=wjcXuZ91WkKv0fuBcm+w7y=y=fNzW9EXfnYYSCFvuyhdA@mail.gmail.com>
+Message-ID: <008C18B3-519A-40AF-B35C-1AA8BF1EF4FF@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, 19 May 2023 14:52:50 -0400 Joel Fernandes <joel@joelfernandes.org> wrote:
+On June 8, 2023 7:25:27 PM PDT, Linus Torvalds <torvalds@linux-foundation=
+=2Eorg> wrote:
+>On Thu, Jun 8, 2023 at 1:06=E2=80=AFPM Peter Zijlstra <peterz@infradead=
+=2Eorg> wrote:
+>>
+>>         struct obj *p __free(kfree) =3D kmalloc(=2E=2E=2E);
+>
+>Yeah, the above actually looks really good to me - I like the naming
+>here, and the use looks very logical to me=2E
+>
+>Of course, maybe once I see the patches that use this I go "uhh", but
+>at least for now I think you've hit on a rather legible syntax=2E
+>
+>I'm still a bit unsure of the "no_free_ptr(p)" naming, but at least
+>it's pretty clear about what it does=2E
+>
+>So my only worry is that it's not pretty and to the point like your
+>"__free(kfree)" syntax=2E
+>
+>But it feels workable and not misleading, so unless somebody can come
+>up with a better name, I think it's ok=2E
 
-> On Thu, May 18, 2023 at 6:40 PM SeongJae Park <sj@kernel.org> wrote:
-> >
-> > The document says we can avoid extra smp_rmb() in lockless_lookup() and
-> > extra _release() in insert function when hlist_nulls is used.  However,
-> > the example code snippet for the insert function is still using the
-> > extra _release().  Drop it.
-> >
-> > Signed-off-by: SeongJae Park <sj@kernel.org>
-> > ---
-> >  Documentation/RCU/rculist_nulls.rst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-> > index 5cd6f3f8810f..463270273d89 100644
-> > --- a/Documentation/RCU/rculist_nulls.rst
-> > +++ b/Documentation/RCU/rculist_nulls.rst
-> > @@ -191,7 +191,7 @@ scan the list again without harm.
-> >    obj = kmem_cache_alloc(cachep);
-> >    lock_chain(); // typically a spin_lock()
-> >    obj->key = key;
-> > -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
-> > +  atomic_set(&obj->refcnt, 1);
-> >    /*
-> >     * insert obj in RCU way (readers might be traversing chain)
-> >     */
-> 
-> If write to ->refcnt of 1 is reordered with setting of ->key, what
-> prevents the 'lookup algorithm' from doing a key match (obj->key ==
-> key) before the refcount has been initialized?
-> 
-> Are we sure the reordering mentioned in the document is the same as
-> the reordering prevented by the atomic_set_release()?
-
-Paul, may I ask your opinion?
+I like the proposed "take" naming, and before reading that reply I was goi=
+ng to suggest "keep"=2E *shrug*
 
 
-Thanks,
-SJ
-
-> 
-> For the other 3 patches, feel free to add:
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> thanks,
-> 
->  - Joel
+--=20
+Kees Cook
