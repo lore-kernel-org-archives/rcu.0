@@ -2,129 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF2AC7EE29
-	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 18:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B41EC7EE25
+	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 19:12:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjFISYO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Jun 2023 14:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
+        id S229603AbjFITML (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Jun 2023 15:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbjFISYN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Jun 2023 14:24:13 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8BB35A9;
-        Fri,  9 Jun 2023 11:24:11 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b1b92845e1so23245951fa.0;
-        Fri, 09 Jun 2023 11:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686335049; x=1688927049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nkSKOW89nDC35DM2bAzieBlsMkC98kKqdM5YlWE1s7c=;
-        b=hs/+fegU1wKqc41c76IevyAnX9P3e6+xN+1It0mModNznQVvUJCXOAm8VAqIh4s4b1
-         voAP5nd1G2LTvdLykGVoYeHppl2n8gFBDYp2ErdqaBm8AqhMW9zpgETtp8dgLoxz6VRX
-         znaY0CuuSqJSmh3EI4x43yXjR5EtW3rNXenYRI9i0v4xeDUAVSTtPXDLSDs2qaPqPz+A
-         j7u39+knB/m7vhHlzRE7dTNiO+De+4sC4edTQ4k5VZNt9FzSq+BefuEzozO1W5zQLqcx
-         NHMtbnRtmM8yjzZapHVqxeWzjjp3v47hnXZmFejRdWH59hkQsucNoFjOY0l4sb39kxlB
-         mtDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686335049; x=1688927049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nkSKOW89nDC35DM2bAzieBlsMkC98kKqdM5YlWE1s7c=;
-        b=amvpdqap8MrY4XNjYoQtssBKclvr7PnqviG8Uoj7QP3zSmsPlQR6JUp/3YyH9sVvYX
-         N/7Uy2Z3bO5drrRiLbnQDKkdrJMYZ2X8+uMHvS6YeDbvG9BCurM4Zzc82RRBA3Wg+Fe0
-         yatU6xXtIyUNHUYbSKfqItZ7DFISI/nORZURTQYOJ3LhphXgfTnJBNHigXs8hgHhyK5v
-         hHSsYqFsjhYmxOATXmph2o2bYnXwqX5l5lPKcQwH1Fpvj7vaCoMV6MSYZChXcJknE0/y
-         yshHeO0INvDOlSCeAMjN+isZL5yLcwRcXUc3ThB9IOqKz/T7kHEA9SMYKjsZOAcKlaLY
-         TAyg==
-X-Gm-Message-State: AC+VfDzGx86b4XtQUctWkoMh8j01Bg1IA6FyAoTXn0uqmjzwX8vhu5za
-        i/FqJO/swsXujN5GD6uh8LVSktXyYeS5TdMsfhc=
-X-Google-Smtp-Source: ACHHUZ7JNSLJNHdeg+//CAl/KiV9vxPhNpA5zDueRCOtcIxs7o9QagBhOAvyE8COveHl8YAPKLWZ0cnY+bwXRDLTS94=
-X-Received: by 2002:a2e:964b:0:b0:2ad:d949:dd39 with SMTP id
- z11-20020a2e964b000000b002add949dd39mr1454871ljh.29.1686335048887; Fri, 09
- Jun 2023 11:24:08 -0700 (PDT)
+        with ESMTP id S229644AbjFITMK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Jun 2023 15:12:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F751A4;
+        Fri,  9 Jun 2023 12:12:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8997E611B0;
+        Fri,  9 Jun 2023 19:12:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 628F2C433D2;
+        Fri,  9 Jun 2023 19:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686337929;
+        bh=KFNOV3o4cqtQYNywig/OkDKy4bUHopCwMFlABCAl2zQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nXyUBVzvCMSSoCB+HWwPC+EduJ1s0zzgtsCoFlQp/k4a/Yg37cO5twLzXZYmhhNfY
+         ywrwWgFT0+H7daHKQfEdQn2yfabwnOqdu41l2ruM993kQ8WmX+EuekP+WtfxyLk/vj
+         waVl4IAMZW0Y2i5lESWeJsBZHkCQhtU6jgv+j9tsxHn5zWpT+M7aqcmobKNEshZ5D+
+         he9Zq5MwPM7wD67cvQ2RAwCSp3yA1ptrKhY5UjXueJJNfp6r59XLKtKSubGNKNK8Rb
+         3AdJKu7vWZ/ykO1d/KfIuWysfwQnzEMQRd52WOXjmCmfRbXKke8BBE3yhZovpqZASD
+         KmIO1cZ0ZXvKA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     SeongJae Park <sj@kernel.org>, paulmck@kernel.org, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] Docs/RCU/rculist_nulls: Drop unnecessary '_release' in insert function
+Date:   Fri,  9 Jun 2023 19:12:06 +0000
+Message-Id: <20230609191206.30465-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAEXW_YQFqW2QcAuHZEhc_GaUaB-=QOS0WgUOizd=FYwtFQ8vag@mail.gmail.com>
+References: 
 MIME-Version: 1.0
-References: <20230609024030.2585058-1-houtao@huaweicloud.com>
-In-Reply-To: <20230609024030.2585058-1-houtao@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 9 Jun 2023 11:23:57 -0700
-Message-ID: <CAADnVQJ5m_gT2h41m2_tuf=GDGSWzVSA6ixOwQECzGv8VimZwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: Add benchmark for bpf memory allocator
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 8, 2023 at 7:08=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
->
-> (1) non-preallocated + no bpf memory allocator (v6.0.19)
-> use kmalloc() + call_rcu
->
-> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB=
-)|
-> | --                 | --        | --                  | --              =
- |
-> | no_op              | 681.40    | 0.87                | 1.00            =
- |
-> | overwrite          | 8.56      | 38.86               | 88.42           =
- |
-> | batch_add_batch_del| 6.74      | 41.28               | 69.70           =
- |
-> | add_del_on_diff_cpu| 4.68      | 3.43                | 5.70            =
- |
->
-> (2) preallocated
-> OPTS=3D--preallocated
->
-> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB=
-)|
-> | --                 | --        | --                  | --              =
- |
-> | no_op              | 673.95    | 1.98                | 1.98            =
- |
-> | overwrite          | 114.63    | 1.99                | 1.99            =
- |
-> | batch_add_batch_del| 78.34     | 2.04                | 2.06            =
- |
-> | add_del_on_diff_cpu| 6.41      | 2.23                | 2.54            =
- |
->
-> (3) normal bpf memory allocator
->
-> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB=
-)|
-> | --                 | --        | --                  | --              =
- |
-> | no_op              | 656.20    | 0.99                | 0.99            =
- |
-> | overwrite          | 81.21     | 1.10                | 2.49            =
- |
-> | batch_add_batch_del| 18.40     | 2.13                | 2.62            =
- |
-> | add_del_on_diff_cpu| 5.38      | 10.40               | 18.05           =
- |
+On Fri, 19 May 2023 14:52:50 -0400 Joel Fernandes <joel@joelfernandes.org> wrote:
 
-I have a feeling that you didn't remeasure things and just copy pasted
-above from v4.
-I see vastly different numbers in v5.
-and peak memory usage is broken.
-It always shows:
-peak memory usage    0.00MiB
+> On Thu, May 18, 2023 at 6:40 PM SeongJae Park <sj@kernel.org> wrote:
+> >
+> > The document says we can avoid extra smp_rmb() in lockless_lookup() and
+> > extra _release() in insert function when hlist_nulls is used.  However,
+> > the example code snippet for the insert function is still using the
+> > extra _release().  Drop it.
+> >
+> > Signed-off-by: SeongJae Park <sj@kernel.org>
+> > ---
+> >  Documentation/RCU/rculist_nulls.rst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
+> > index 5cd6f3f8810f..463270273d89 100644
+> > --- a/Documentation/RCU/rculist_nulls.rst
+> > +++ b/Documentation/RCU/rculist_nulls.rst
+> > @@ -191,7 +191,7 @@ scan the list again without harm.
+> >    obj = kmem_cache_alloc(cachep);
+> >    lock_chain(); // typically a spin_lock()
+> >    obj->key = key;
+> > -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
+> > +  atomic_set(&obj->refcnt, 1);
+> >    /*
+> >     * insert obj in RCU way (readers might be traversing chain)
+> >     */
+> 
+> If write to ->refcnt of 1 is reordered with setting of ->key, what
+> prevents the 'lookup algorithm' from doing a key match (obj->key ==
+> key) before the refcount has been initialized?
+> 
+> Are we sure the reordering mentioned in the document is the same as
+> the reordering prevented by the atomic_set_release()?
+
+Paul, may I ask your opinion?
+
+
+Thanks,
+SJ
+
+> 
+> For the other 3 patches, feel free to add:
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> thanks,
+> 
+>  - Joel
