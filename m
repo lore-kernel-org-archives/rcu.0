@@ -2,69 +2,81 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B82CBC7EE2E
-	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 08:29:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 754ECC7EE25
+	for <rcu@archiver.kernel.org>; Fri,  9 Jun 2023 10:31:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238658AbjFII3R (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 9 Jun 2023 04:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
+        id S239196AbjFIKbB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 9 Jun 2023 06:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240866AbjFII2v (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 9 Jun 2023 04:28:51 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2132.outbound.protection.outlook.com [40.107.7.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8332F3C3F;
-        Fri,  9 Jun 2023 01:28:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f+d4nZb54imSSko1sqAlpcjjma7xuQi+2ix4wy2bU9QaYb39yIfRFCAONRuWbBrhre4Yw+I5HX/p9qqDs2Zrk2JI3dLGQgG4ZVyFe6g66FtGvu0eKurhYIkF0d0/Z5CtFr4xiaP6U+Rb6Zdp9nbRA9nYoVCUX4J5fvpH2K2TBxwt4eMawpLKDKq/42Yxq2+9I1hmIZ79Mv9l6nNAOQ8wLxxFCmwy+T8pfhshgGwa49sHNH2HjP9QUj25ZwWrWDMn6vRHkTIzT6UdVvQpRc5yj+mDxTAm9jKFdi+9SNLFCZF4uSU/YrvhznRixrOQPvjMmTF60tKKj/orl2ZY8eJURg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jnk6V6l4VZzWX/CCOXDPPDhm6vbEW09oQTB6rEB48YU=;
- b=VcCN5na0kASXckFriImxYJCbG87MqQfEn2olO3H1t78GKWv2JVjQAwEYF2moOqmv2N79bcLqgIA+RGKWqGuPESEMZ96iQ+2RaaAma9y1J8JuACY77BWm1Mh5zm+fYmvyeWrc2WTHrRI2WC+PNAIfkNPo1bbgZCaxWteAjEqK5gyN0PvCmBtotk5LLNj9VqjC00CnHw0PDSM6bcLoj8z6dQa/1ilSEEroy5PaqXnx/aqB8wHBQonRCCgX0/CSkhZ4H9sYBRPPtGwhM9YQjNPlZOkNgWygKNam3wtVK0kMGJniUSErwDNnduP1TfL1Kw77MKxH06+ZxdUPqcJxxXgXyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jnk6V6l4VZzWX/CCOXDPPDhm6vbEW09oQTB6rEB48YU=;
- b=Pooi72U++gp5RxUnDwxp9CxQzYNBXxobn1W6+6gHPxKd2smNRTD0/6QBwvF7w5L9uxH06yO4x+ZdY4bKTshTSmeqPHuD+ydH7gPKM2Amv73c4bYpypTimqo/4mt7czzlPDeim94uJE9kgVVICKkoAD6Swc3ClqFqK8XcEc0TOOY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=prevas.dk;
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:45a::14)
- by AS2PR10MB7709.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:64f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.36; Fri, 9 Jun
- 2023 08:27:58 +0000
-Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::d66c:ec:aa54:f318]) by DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::d66c:ec:aa54:f318%5]) with mapi id 15.20.6455.030; Fri, 9 Jun 2023
- 08:27:58 +0000
-Message-ID: <113b1654-9fc1-50c1-fdd0-cac9574420d9@prevas.dk>
-Date:   Fri, 9 Jun 2023 10:27:54 +0200
+        with ESMTP id S240217AbjFIKak (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 9 Jun 2023 06:30:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2592D41
+        for <rcu@vger.kernel.org>; Fri,  9 Jun 2023 03:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1686306061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BQiGjNiItnmLkeqgf+FiJ4SBs5FhBkkGC4T+rqTu/+s=;
+        b=eLt7PwPfZOd4BUAaL9zrKbB2uklRhHkx8lx3e/i7Yp2zMOqYl/PBbmaScxv0mpT3Ma9sCt
+        Aq1DDzzDq94UPZZNmZQmXefpBlqlDzk4rh6d56McNGD2zesZ4qSzmOMXXQ74Qs3GZZqrUm
+        fJrVwI2EuhF5McDUElgYX3Y/+OBMXxI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-570-NSWUlSVqPGObw-a9EtZQLw-1; Fri, 09 Jun 2023 06:20:57 -0400
+X-MC-Unique: NSWUlSVqPGObw-a9EtZQLw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-978876e43a7so202466166b.3
+        for <rcu@vger.kernel.org>; Fri, 09 Jun 2023 03:20:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686306056; x=1688898056;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BQiGjNiItnmLkeqgf+FiJ4SBs5FhBkkGC4T+rqTu/+s=;
+        b=Yo3TR0aSVdV8PFo+cWwkYQCLsn1vQQT12C1xGwRlRZXHYDiFhCsMtzqYhS3ba+QEYZ
+         JuhuGk6FEkk7Jn1F8OicpAGxPQniFtRt5bkrXFjgnI8a7BFC7khqO/3LO7Xl6zBue1hF
+         L0g9GNFUkIv2wZ6d6bz/HN18sboUM9KRwTQZT/Y/DG/WP9jM1icHItWg0VdQ4i3xr1m3
+         ZfsNxdKKCM4wXPrMcXnwCXV4v9sIKjgkvLBgV9tRtwthfRSguZrCqcp/2acbFwBhJw9v
+         udq29zkwWt8bUCLCt2dPvfbm1oHsPmKbWFoVNc3PP0HPGQXS+ve9wWvHrjY4kQg6eU0B
+         s20w==
+X-Gm-Message-State: AC+VfDxIzsN1LQnaT5CD/YpwIhEvagOg0j48oVW9TDdXgRCj3PXNl3Xe
+        jvAmlObcOdEsxYsI9rxQvQhi4sOzBHeWtKx6M0xb9nOIWdlSlOVPAPJufa6s2hCFZNm4RunZ7e1
+        nwBqyswYwj89N
+X-Received: by 2002:a17:907:368d:b0:961:78c2:1d27 with SMTP id bi13-20020a170907368d00b0096178c21d27mr1631081ejc.19.1686306056602;
+        Fri, 09 Jun 2023 03:20:56 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6iKtG7y80UtPpN+4/2JHdJO340nWszUvGlvULhmXBlodeeYW/klqijJzqsUOBY4fzUPfHSeQ==
+X-Received: by 2002:a17:907:368d:b0:961:78c2:1d27 with SMTP id bi13-20020a170907368d00b0096178c21d27mr1631060ejc.19.1686306056270;
+        Fri, 09 Jun 2023 03:20:56 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id y21-20020a1709064b1500b009682b2b3d66sm1086253eju.197.2023.06.09.03.20.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jun 2023 03:20:55 -0700 (PDT)
+Message-ID: <e7095f56-44c4-7cf1-69f5-4ff66d20952c@redhat.com>
+Date:   Fri, 9 Jun 2023 12:20:53 +0200
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
-Content-Language: en-US, da
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
+ Thunderbird/102.10.0
+Content-Language: en-US
+To:     Nick Desaulniers <ndesaulniers@google.com>,
         Peter Zijlstra <peterz@infradead.org>
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, ndesaulniers@google.com, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ojeda@kernel.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, paulmck@kernel.org,
+        frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org, josh@joshtriplett.org,
         mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
         rcu@vger.kernel.org, tj@kernel.org, tglx@linutronix.de,
         linux-toolchains@vger.kernel.org
-References: <20230526205204.861311518@infradead.org>
- <CAHk-=wg2RHZKTN29Gr7MhgYfaNtzz58wry9jCNP75LAmQ9t8-A@mail.gmail.com>
- <20230530092342.GA149947@hirez.programming.kicks-ass.net>
- <20230606094251.GA907347@hirez.programming.kicks-ass.net>
- <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
+References: <CAHk-=wi-RyoUhbChiVaJZoZXheAwnJ7OO=Gxe85BkPAd93TwDA@mail.gmail.com>
  <20230606134005.GE905437@hirez.programming.kicks-ass.net>
  <CAHk-=wgQ5m+SnWTYGHu0JgYXTk2dkGF+msX=ARfYoo3t1_fX9g@mail.gmail.com>
  <20230606180806.GA942082@hirez.programming.kicks-ass.net>
@@ -72,115 +84,39 @@ References: <20230526205204.861311518@infradead.org>
  <20230607094101.GA964354@hirez.programming.kicks-ass.net>
  <20230608085248.GA1002251@hirez.programming.kicks-ass.net>
  <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-In-Reply-To: <CAHk-=wj-BGgTF0YgY+L7_G8Jb0UO38Cd8dwrfMqFMEh93B3D7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ <202306080917.C0B16C8@keescook>
+ <CAKwvOdmY_NEK4cnrqwU8acpU=SK3Z2uV_3PYCnhA5zQt2_TJJg@mail.gmail.com>
+ <20230608185142.GA1019250@hirez.programming.kicks-ass.net>
+ <CAKwvOd=MurF6DQHzRTai15h67FEpd_4R-gz_iFejzLsL=dw3dA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 0/2] Lock and Pointer guards
+In-Reply-To: <CAKwvOd=MurF6DQHzRTai15h67FEpd_4R-gz_iFejzLsL=dw3dA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0103.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:9::17) To DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:45a::14)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR10MB7100:EE_|AS2PR10MB7709:EE_
-X-MS-Office365-Filtering-Correlation-Id: f915f0b8-f5df-427d-123d-08db68c36e2c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zZ8iU5+AnijlM882B3x+6qnvpF8MX4l0XEEQ1v+6KOVihAx2V7bNUr1bl0TPzleo/0tc8UDuGJmjheCxSFr6FCpGwuePmT37w6YzSEoZ+XiYfCf37p0Dp92jKjjsW8ATkDr689Hoj3z15IqQrOYKUPkNwXHEbfTFk+MMLqQn2LZEbKHrAcTwqMcvfF7+ft35cQio+D2Xn3GZzLoIX7VG/g+6pYOUYfyT8eOrvZQy9NqFceKG23zsGRjVygfR8g+Q562Z69IzgJ6qoQIRuRsoAwJWGyPbYsZsm6exUipRV6Fw5xb91zjL2BcYJCJwrkF2zdznDFNJ+bdAncS4TRgli6KrawBhYRHG3bmk+4u6ajkw/VthatUtgPtEcuCELSY5pKVqK5aVoZchJ4KMVLZ+uWxllgwu+xEBxgGq59xnvh/eyMMnCBsjUZCX7NMS2O+/uVM98gxy/9jn1kCDdMs+8BMekmVGW5x7cPrY3Y1btGSTHKeifi6QgSti+ofxJkzhBUOI3yiu1IhcLTPbm5QbyLueLBMt2gawVcPfzIypkv+LRjXBsTN6JxmbLGhfxgvdX/THV2vjL9vX4fzRrenI9TzonuKsOEareImCBgnpOEuwHBqlNPuRgJnxcbsEqF8L9TvqTiQ6NyuTWtNC5mNZvh1BsY1GrwaWSuH8WIgT1Y0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(396003)(376002)(39850400004)(346002)(136003)(451199021)(36756003)(2906002)(44832011)(86362001)(31696002)(7406005)(7416002)(5660300002)(31686004)(966005)(83380400001)(52116002)(6486002)(6666004)(186003)(26005)(6512007)(6506007)(478600001)(110136005)(66946007)(316002)(4326008)(66476007)(38350700002)(38100700002)(2616005)(66556008)(41300700001)(8976002)(8676002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c0ROek5jU2ZCSVllYjUydzA2R3pyQ3hDTnpERWRkSE9GTVc5S1BPQmVtekxs?=
- =?utf-8?B?ZWluUUZKYkZsSCtWY05CSk5TaFNxamc1RnIrTnBqQ2NnSjdJeUpSb2hyRFJv?=
- =?utf-8?B?SERNTzRqdXJPd1NiT2laWlI4MmJQbWl5WWlBSWJsV05PclpGSXhhU01Xd1px?=
- =?utf-8?B?S3EyM3RDYy9GZlVTL1h2ZkdBV3FMMVYyRjAyNDhSTHg4RGpUclJMcytHbXNy?=
- =?utf-8?B?TFJQNTJoNlNRdDU3eGF4Z1plQldybmlkTFJaa3ZRVDRwUjBwdFZvZE1oR1Bu?=
- =?utf-8?B?T2FhOG9HR28yK0RvMWJEeTR2dUk0emlxNkt3cndKdEdpbmVkN0FBMTNQdmxz?=
- =?utf-8?B?U016V0V1RGtFUXVxMGtZMnJBZmlpTG8wbm5DcE5wK2wrM3VLaVhERzd5MlhL?=
- =?utf-8?B?WmRtUkpNejhoRTVZa1JyS3NKWFFUUXlaU0JjSzBjdjQxNy9PVlEyS1ZqSGlu?=
- =?utf-8?B?TjhWcm1Kd0JkVUdpMmtudGlsUkVwd1NMNGlhY3hEdWNTa2JNWW1tZ2thNElo?=
- =?utf-8?B?K1FXeWlxblp1Q29jb2t5dWtXQktjUWhQYSs5SS9UamYwQXFHZ3ZNV291c0VW?=
- =?utf-8?B?UVBkNnhFdkdtMGJ4UjdDVDdNa3ViZzQ3dHNpRUpLWVVnNjJsYzVFRzl1b0Qv?=
- =?utf-8?B?a0tna0p3b01NNEk5ZHVDK2c5b1ZqRy90M0M0R09CRnVvNmJRMmx6d3E3eW9O?=
- =?utf-8?B?SjBZbERKY0JHZHlTWTR6SWhrMnA4eGZKVTd0TUtOQkRJSnJxd2pTdGgvakEy?=
- =?utf-8?B?K1UvVHNjYmh4RmpQYzRPRFR1SHhFVWRLRStsN3pWQndwaTM4OHAxaTBJMnBx?=
- =?utf-8?B?a3Vwc0s1YVNyMmtnSXZiYlcvYlBSOXRNc2xoeGtMSXh3TmcydWtNWG51WWVl?=
- =?utf-8?B?ZXZhbHd5TEZBK1ZwV0Q3VjdyQy83V3FIZFgxeVBwQWxpSzhjcGRWYi9HeDl6?=
- =?utf-8?B?UXU5UDU1Zit0MUVZOFRua3NoZDlCdmg3RDlBK3Rmb1Q2aGtvbGsyeXRNSjdK?=
- =?utf-8?B?em5jbzV3eW5nQjZRT00yK2xHWHdDcFF1RW14ZEJIZTc2ZEN4cUlzU1FoL050?=
- =?utf-8?B?YmN2STZPVXRrK1RnbFdRWUwrUWV6cnRNZGpaRnpYVzNIU2ZrVHNqclVweTll?=
- =?utf-8?B?WW45Q3NQOUplZ0Q2Nm1ZMHExMnA0T1VHYjJZNXZFOEt1WDdZSGFTdW5ORlQv?=
- =?utf-8?B?ajJFME10bmZSVndzYm5KajErVmhvNDVJSm1ub2ZjblBYb01CWldodi8xUXJt?=
- =?utf-8?B?bkhUYklCMFk1cnVycjIweDRQTnRZOUROaTBUUk14UmpWa0xhZTFtWG0raE9k?=
- =?utf-8?B?SUU1Z01JalRacmtoQW9BQ2JsanZvTnNIcTgva05IcjlZNDE0TU10SVJ3ZHJI?=
- =?utf-8?B?ZVo1Yno1cHYxLys0Z1BWQUhrNnMxaEJMZXVrL1ltT0RwdnFkVmZoZ21Fa0VE?=
- =?utf-8?B?Q0pNQWZ5M3lkMWluMlRiR2JDamVFalRWZDlYV3Z4dXlSell6QVpPZVA5RnJW?=
- =?utf-8?B?bXc3b1pHbVVuT3Z5SytDTnErR3pEUHVDTjhOK0lBZVYzM0Zuck1aQmVaZlhO?=
- =?utf-8?B?TE9oWHZjWGx1SnhUY3VKMGlrWUd4d1dOMlYzM1FPL0F5S2pRN1lwcGVxVnpk?=
- =?utf-8?B?eDVHcnMyZ2pQeUtHR2NQKzhLanR3VHVhMDc0Y2l2UHhPUUJDdnFEM2NqYTNE?=
- =?utf-8?B?S0NOazJ1dU1WdVRUTG1HK1A2Q3k2SU4rb1E1cUprekVGNDMvZnZkRlZpWTdm?=
- =?utf-8?B?eFlPaGZia09YTGhZdU4zL3hMSXN4ZjlKRTdTOXVVYUlVbHFRQnlDSW16Q0ox?=
- =?utf-8?B?K04wSXdYUGNVRGl3aS92cjJjeWhWR3ArS0pVNDRIQVplcmpwRm5ESUUrZXBa?=
- =?utf-8?B?SjBtcUl5dHNnNnVNUEJLNzFkNG54aGVpbGtZMk9RaDZWUmNrTnJUbmlaeExX?=
- =?utf-8?B?RUdyc0dCeGFIVEpMemlUTmI0WWsvcU9lL3Q4eUVHdTJQRmVnd0xqeW9rb21m?=
- =?utf-8?B?Wlhheld0eXhkdlVGOXpyR2ZtR2FkVVgyb0xXSFBIQyt5QTErMk96Ymh6U3Ns?=
- =?utf-8?B?ZXpObVVqV3kxTlRmR25KV24yL0MvWHg1YWZ2bG1CYVpyNDlwemlJTGZFWmNX?=
- =?utf-8?B?N3hSZ0FZcEkvNTVDSGpvc3pOcDRmbkF3My9wMG8wcHNXMWNBZDViWEtVS1hG?=
- =?utf-8?B?Zmc9PQ==?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: f915f0b8-f5df-427d-123d-08db68c36e2c
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2023 08:27:58.0453
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 99duQ7i33+7MKXxemJbgGFvLj5jX8/2F8prK9LnQRTYofiHVxfGUx7rxAmrDT5FMceRvjDV449DpPtC1wZE9N6fOBdmSLJ0asj0PYaItesA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7709
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 08/06/2023 17.45, Linus Torvalds wrote:
+On 6/8/23 22:14, Nick Desaulniers wrote:
+> Here, we're talking about using __attribute__((cleanup())) to DTR
+> locally, but then we return a "raw" pointer to a caller. What cleanup
+> function should the caller run, implicitly, if at all?  If we use
+> __attribute__((cleanup())) that saves us a few gotos locally, but the
+> caller perhaps now needs the same treatment.
 
-> And no, I didn't think too much about those names. "__automatic_kfree"
-> is too damn long to type, but you hated "auto". And "no_free_ptr()" is
-> not wonderful name either. But I tried to make the naming at least be
-> obvious, if not wonderful.
+But this is only a problem when you return a void*; and in general in C 
+you will return a struct more often than a raw pointer (and in C++ you 
+also have the issue of delete vs. delete[], that does not exist in C).
 
-No opinion either way, just throwing a data point out there:
+Returning a struct doesn't protect against use-after-free bugs in the 
+way std::unique_ptr<> or Rust lifetimes do, but it at least tries to 
+protect against calling the wrong cleanup function if you provide a 
+typed "destructor" function that does the right thing---for example by 
+handling reference counting or by freeing sub-structs before calling 
+kfree/vfree.
 
-So the systemd codebase makes quite heavy use of this automatic cleanup
-stuff. Their name for no_free_ptr is TAKE_PTR(), and the verb "take"
-apparently comes from Rust:
+Of course it's not a silver bullet, but then that's why people are 
+looking into Rust for Linux.
 
-//// src/fundamental/macro-fundamental.h
-
-/* Takes inspiration from Rust's Option::take() method: reads and
-returns a pointer, but at the same time
- * resets it to NULL. See:
-https://doc.rust-lang.org/std/option/enum.Option.html#method.take */
-#define TAKE_GENERIC(var, type, nullvalue)                       \
-        ({                                                       \
-                type *_pvar_ = &(var);                           \
-                type _var_ = *_pvar_;                            \
-                type _nullvalue_ = nullvalue;                    \
-                *_pvar_ = _nullvalue_;                           \
-                _var_;                                           \
-        })
-#define TAKE_PTR_TYPE(ptr, type) TAKE_GENERIC(ptr, type, NULL)
-#define TAKE_PTR(ptr) TAKE_PTR_TYPE(ptr, typeof(ptr))
-#define TAKE_STRUCT_TYPE(s, type) TAKE_GENERIC(s, type, {})
-#define TAKE_STRUCT(s) TAKE_STRUCT_TYPE(s, typeof(s))
-
-
-and then they also have a
-
-/* Like TAKE_PTR() but for file descriptors, resetting them to -EBADF */
-#define TAKE_FD(fd) TAKE_GENERIC(fd, int, -EBADF)
-
-with their "auto-close fd" helper of course knowing to ignore any
-negative value.
-
-Rasmus
+Paolo
 
