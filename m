@@ -2,82 +2,86 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B7EC7EE29
-	for <rcu@archiver.kernel.org>; Sat, 10 Jun 2023 05:52:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56FC6C7EE29
+	for <rcu@archiver.kernel.org>; Sat, 10 Jun 2023 11:05:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjFJFwp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 10 Jun 2023 01:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        id S229739AbjFJLFF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 10 Jun 2023 07:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjFJFwo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 10 Jun 2023 01:52:44 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301923AA7;
-        Fri,  9 Jun 2023 22:52:43 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-654f8b56807so2619157b3a.1;
-        Fri, 09 Jun 2023 22:52:43 -0700 (PDT)
+        with ESMTP id S229639AbjFJLFE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 10 Jun 2023 07:05:04 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115622D55;
+        Sat, 10 Jun 2023 04:05:02 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-543a09ee32eso1240438a12.1;
+        Sat, 10 Jun 2023 04:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686376362; x=1688968362;
+        d=gmail.com; s=20221208; t=1686395101; x=1688987101;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iRgmV2IZs4TvDybCRGo+p0nMuzbLZLONErtuLHAt0W8=;
-        b=rUM+Nt1BI5exs0ACt/g7CJfrsg/UgrAs+xQ4PXOP16lbSa2oihB9w4uvPvfPK0yE63
-         xVEhaai4CL/MxvSTWKW98CgsFHxef1ondIutOhhOOgqnV0Jq5Z97q6tt7E+g5AYwmKvY
-         cHL3Lo62jscZRIw1I8CY7QnmrCt2r0i8N0h3xy4eDwO3/i+Sa1pG8m+ltk7s1XEdUwwG
-         AIRKMHvjPLV6hE2p1N+q78TVGFyijYGVeEFhKCgy5sEIRYj4dvGv6MnCVTGiuhKa05c0
-         /zmibrM723E7IHfJB/OjgSx9yibHXjkkX2miIplq86XqbSRGpjPbFiuW27DY1BGN3h+3
-         Gl8w==
+        bh=7dBfYYGBslBF4bmtNYVdnpM97g0oABxKKJJ2EhyCgIc=;
+        b=ClUo/umlDklAa2WkPhtQIVfQxie4UhuP+yU29/3nBXyslSFT/NMqkALeN2E5vb4Hpd
+         z1yAUWR7RQvceJvv9Ls/PRdG3c/fJl5caZwSmflS0INPA6YZzGZHY8D6bGy5UcObbDLZ
+         yRzASSDIgb76LkI5qykDIGzTIdoumee441eHZGDdpg/wfHvRHZ7bdGce/RrD1wS+N/Le
+         UPSJotv3xnhrRa9ukMWO46Zcgxm/cIpVSxps8UqVB64Hsqw9lgD10jHiNsjsvNdKx+y1
+         nwTqJ6Ok7wC+EpV65y+f6ussVrnfCFn0i7MyFjqeQQdXD9YB0UBcTVY6rlN2xJhe8CDT
+         RHlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686376362; x=1688968362;
+        d=1e100.net; s=20221208; t=1686395101; x=1688987101;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iRgmV2IZs4TvDybCRGo+p0nMuzbLZLONErtuLHAt0W8=;
-        b=bbmkeM4YAtgvCVmgi2iMDBYD/ew0u3AIuz0SKQvQoUzVN8uBfUjVx3xTBhXU+eo8OL
-         i4af5zGzjCW7JpK/pmE7HyrM+LLpXExV7hEGXDOpGo/v9ruPwmA4vKa8QngdIRgNuO8J
-         3/aToS1EKbkna8QACfMIH/fMzwCuaZ8TMyU5r6hQC+mJju8oRD+zR0wWFG5POa6tLgYk
-         N5wn7xtFCJCC6dUbWNp5weryzBnMj9NMJ5R/x83hhlmdRLBKjdjNq9K5RO9r0LaiVaP8
-         4wbXctnxf3PnYNSxqu+M2jVhANQO15I5A6zERM8UP6DxnNcPoNZtU6kslrp8unkUMagy
-         8UWA==
-X-Gm-Message-State: AC+VfDyy9jB0t5XCUazvNTpoTskPrymkZp49CWhQeiNYsEC6CrEszzup
-        qXhTLvUUhwNkapcQLgDz9Z6rTP5uwCDIcg==
-X-Google-Smtp-Source: ACHHUZ7HcWWTWhlrzQ4ylzDwnMAxFrtlY4iUTKSgzNVHU9n/p/J8fugYbK2v/NOnzEx3npagdeZahw==
-X-Received: by 2002:a05:6a00:180e:b0:656:e7a2:5322 with SMTP id y14-20020a056a00180e00b00656e7a25322mr4460309pfa.26.1686376362472;
-        Fri, 09 Jun 2023 22:52:42 -0700 (PDT)
+        bh=7dBfYYGBslBF4bmtNYVdnpM97g0oABxKKJJ2EhyCgIc=;
+        b=e86yu/ZhCnizLg0VKByA7LD94OTQHlyzVGKT4E/Sn3WqVv9gUZy1OBCyNVoWXy9KWC
+         u8fq0gCpx0LufZatWNYAHFja+IVg/DTszdHDsx310rutMHFfphxfTuJws5fK+ekCrVPn
+         HCU/Df3uBm7DwuLuGj8AE3FHxXaPsHxNMgbSOtz+/o5BYl4Te9PZ9M/G4sRUuL3YiSDQ
+         ujTRC8LlHEp3T02vNEiB/Fx6g53smKkznK4lpYMvOfkROoKY2KNS3fUedtCEnny1CVb0
+         yP/KxbMFxhyrF5aLA8i/PJG6QGQdalhfVq7ZlZfJP2hgw9DEW9oEVvEdaBIIG3UPKruj
+         rBww==
+X-Gm-Message-State: AC+VfDyiJcDmveJHvj3mG6bMib1JDBAL/9k8qgP2Ho1nFjLlXfAlXTVU
+        v5yASVl5FwbbgiLUu0oC068=
+X-Google-Smtp-Source: ACHHUZ5SW6wDpsvTFfe6r3H/woWn1BXuXnXIr8wM3HUf02TTfApB95iqRZNOKPYHQ/ILteIP1oXnOQ==
+X-Received: by 2002:a17:90b:3658:b0:256:28ab:de61 with SMTP id nh24-20020a17090b365800b0025628abde61mr8716106pjb.11.1686395101118;
+        Sat, 10 Jun 2023 04:05:01 -0700 (PDT)
 Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id a10-20020aa780ca000000b00642ea56f06dsm3487739pfn.26.2023.06.09.22.52.38
+        by smtp.gmail.com with ESMTPSA id y4-20020a17090a154400b00256395cb599sm6420477pja.38.2023.06.10.04.04.57
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jun 2023 22:52:42 -0700 (PDT)
+        Sat, 10 Jun 2023 04:05:00 -0700 (PDT)
 Content-Type: text/plain;
         charset=utf-8
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
 Subject: Re: [PATCH 4/4] Docs/RCU/rculist_nulls: Drop unnecessary '_release'
  in insert function
 From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <20230610002024.80653-1-sj@kernel.org>
-Date:   Sat, 10 Jun 2023 13:52:25 +0800
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+In-Reply-To: <4071FE01-BEB5-4BEE-A424-F50F0E0E3410@gmail.com>
+Date:   Sat, 10 Jun 2023 19:04:44 +0800
+Cc:     SeongJae Park <sj@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>, corbet@lwn.net,
         rcu@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <6C469091-6C20-4BBD-B503-F024021C8AE7@gmail.com>
-References: <20230610002024.80653-1-sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
+Message-Id: <F61F0ED7-D82B-412F-971F-691856539B6C@gmail.com>
+References: <CAEXW_YQFqW2QcAuHZEhc_GaUaB-=QOS0WgUOizd=FYwtFQ8vag@mail.gmail.com>
+ <20230609191206.30465-1-sj@kernel.org>
+ <46440869-644a-4982-b790-b71b43976c66@paulmck-laptop>
+ <4071FE01-BEB5-4BEE-A424-F50F0E0E3410@gmail.com>
+To:     paulmck@kernel.org
 X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi SJ,
 
-> 2023=E5=B9=B46=E6=9C=8810=E6=97=A5 08:20=EF=BC=8CSeongJae Park =
-<sj@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+> 2023=E5=B9=B46=E6=9C=8810=E6=97=A5 13:37=EF=BC=8CAlan Huang =
+<mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
 >=20
-> On Fri, 9 Jun 2023 16:42:59 -0700 "Paul E. McKenney" =
-<paulmck@kernel.org> wrote:
+> Hi Paul,
 >=20
+>> 2023=E5=B9=B46=E6=9C=8810=E6=97=A5 07:42=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>=20
 >> On Fri, Jun 09, 2023 at 07:12:06PM +0000, SeongJae Park wrote:
 >>> On Fri, 19 May 2023 14:52:50 -0400 Joel Fernandes =
 <joel@joelfernandes.org> wrote:
@@ -104,14 +108,14 @@ b/Documentation/RCU/rculist_nulls.rst
 >>>>> --- a/Documentation/RCU/rculist_nulls.rst
 >>>>> +++ b/Documentation/RCU/rculist_nulls.rst
 >>>>> @@ -191,7 +191,7 @@ scan the list again without harm.
->>>>>   obj =3D kmem_cache_alloc(cachep);
->>>>>   lock_chain(); // typically a spin_lock()
->>>>>   obj->key =3D key;
+>>>>>  obj =3D kmem_cache_alloc(cachep);
+>>>>>  lock_chain(); // typically a spin_lock()
+>>>>>  obj->key =3D key;
 >>>>> -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
 >>>>> +  atomic_set(&obj->refcnt, 1);
->>>>>   /*
->>>>>    * insert obj in RCU way (readers might be traversing chain)
->>>>>    */
+>>>>>  /*
+>>>>>   * insert obj in RCU way (readers might be traversing chain)
+>>>>>   */
 >>>>=20
 >>>> If write to ->refcnt of 1 is reordered with setting of ->key, what
 >>>> prevents the 'lookup algorithm' from doing a key match (obj->key =3D=3D=
@@ -154,86 +158,31 @@ an
 >> So I don't see how it is safe to weaken that atomic_set_release() to
 >> atomic_set(), even on x86.
 >=20
-> Thank you for the nice explanation, and I agree.
+> I totally agree, but only in the case of using hlist_nulls.
+>=20
+> That means, atomic_set_release() is not enough in the case without =
+using hlist_nulls,
+> we must ensure that storing to obj->next (in hlist_add_head_rcu) is =
+ordered before storing
+
+Typo: not before, but after.
+
+> to obj->key. Otherwise, we can get the new =E2=80=98next' and the old =
+=E2=80=98key' in which case we can=E2=80=99t detect
+> an object movement(from one chain to another).
+>=20
+> So, I=E2=80=99m afraid that the atomic_set_release() in insertion =
+algorithm without using hlist_nulls should=20
+> change back to:
+>=20
+> smp_wmb();
+> atomic_set(&obj->refcnt, 1);
+>=20
+> Thanks,
+> Alan
 >=20
 >>=20
 >> Or am I missing something subtle here?
->=20
-> I found the text is saying extra _release() in insert function is not
-> needed[1], and I thought it means the atomic_set_release().  Am I =
-misreading
-> it?  If not, would it be better to fix the text, for example, like =
-below?
-
-The original text is:
-
-	=E2=80=9CWith hlist_nulls we can avoid extra smp_rmb() in =
-lockless_lookup()
-	 and extra smp_wmb() in insert function.=E2=80=9D
-
-We can avoid the extra smp_wmb(), but the _release is required,
-
-As Paul said,
-
->> Except that this memory is being allocated from a slab cache that was
->> created with SLAB_TYPESAFE_BY_RCU.  This means that there can be =
-readers
->> who gained a reference before this object was freed, and who still =
-hold
->> their references.
-
-Without the _release, we can get the old =E2=80=98key=E2=80=99 after the =
-invocation of
-try_get_ref (although try_get_ref noticed the effect of atomic_set).
-
-Thanks,
-Alan
-
->=20
-> ```
-> --- a/Documentation/RCU/rculist_nulls.rst
-> +++ b/Documentation/RCU/rculist_nulls.rst
-> @@ -129,8 +129,7 @@ very very fast (before the end of RCU grace =
-period)
-> Avoiding extra smp_rmb()
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-
->=20
-> -With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup()
-> -and extra _release() in insert function.
-> +With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup().
->=20
-> For example, if we choose to store the slot number as the 'nulls'
-> end-of-list marker for each slot of the hash table, we can detect
-> @@ -182,6 +181,9 @@ scan the list again without harm.
-> 2) Insert algorithm
-> -------------------
->=20
-> +Same to the above one, but uses hlist_nulls_add_head_rcu() instead of
-> +hlist_add_head_rcu().
-> +
-> ::
->=20
->   /*
-> @@ -191,7 +193,7 @@ scan the list again without harm.
->   obj =3D kmem_cache_alloc(cachep);
->   lock_chain(); // typically a spin_lock()
->   obj->key =3D key;
-> -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
-> +  atomic_set(&obj->refcnt, 1);
->   /*
->    * insert obj in RCU way (readers might be traversing chain)
->    */
-> ```
->=20
-> [1] =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/RCU/rculist_nulls.rst#n133
->=20
->=20
-> Thanks,
-> SJ
->=20
 >>=20
 >> Thanx, Paul
 >>=20
