@@ -2,42 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7733C83005
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97F0FC83005
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbjFLJ6T (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32904 "EHLO
+        id S236093AbjFLJ6W (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233879AbjFLJyt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:49 -0400
+        with ESMTP id S233523AbjFLJyp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:45 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7813C6194;
-        Mon, 12 Jun 2023 02:39:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34D0618F;
+        Mon, 12 Jun 2023 02:39:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=RhYZOzjhfuM83rgB0LmGBa7KCuiBOYTp/1b5fR4CJwQ=; b=pSR3Z8fO6gr0uz5UWx2Wyw0kGx
-        c1o1XlzkEwbDa5cj/bws9XTOvobvWPaOGxfhF5QetTedfpp/QOmEWHq0NTU6ex0rTYovD347ZGewn
-        fH4Tw61mxcPaHR+PDhLO/3iaGemM4DeeOBHNSzaohc6qdEuO0r92dZ/ENI/jQYdUQ0UrlMQsOPZmv
-        WIJJ61PjIIyC4LP20xi9YYGkJNkPfRYnFsCYTW+EIw29iW6OJMrGRT6MX3Vn6PkUFIPpQNLGGzPdJ
-        gt47YzrV/4mHp6S7t5DoD0bmp1j9D59G3YN/7mt7PrQ1SjRQhxKa4QFmFcncoQdj3C2n3dN3xqTMW
-        znFwO2KA==;
+        bh=VxLoQWqPLfFOizpz6LclwAvcc6NhnspZtOnksJEP8nY=; b=p6PhqIfSxM8DiwUuU4pSepp9+t
+        sQDAs+RLgzLsKfJ0Kcen7QCEGUEiIeSA/rwAsAR7b6MfNGO9pcntCkHSiswQZFuF2xM2R+zf8J3ow
+        wX35cUTV1JxcFVTwq7nPW7+2yeRbGO9zPkqabUzEI167PNV6S41nRrSC4/lAzjfi/vOJ3w15MxDOX
+        ZX/q+B8JUmaFcJIBrT88ZNo/cz0VSFtkEr9L9mebjyXbMWd2ohnjBecsQJ/J3K5VJxidYIQPFKy+9
+        4HVU7cOA9JH1oDaOoJo11k/QJT8iAkLcVqjNx5HmWfEws0lEKwGfEU1AD+SSkaq9GPZUqJdegwQDg
+        EEzgg1Jw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8e0x-002NLY-Ri; Mon, 12 Jun 2023 09:39:07 +0000
+        id 1q8e0u-002NIB-Nl; Mon, 12 Jun 2023 09:39:04 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 761CF30614E;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6627730612F;
         Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 322B430A79087; Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
-Message-ID: <20230612093541.454144142@infradead.org>
+        id 1B34930A79083; Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
+Message-ID: <20230612093541.097332151@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:08:07 +0200
+Date:   Mon, 12 Jun 2023 11:08:02 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -65,7 +65,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 54/57] perf: Misc cleanups
+Subject: [PATCH v3 49/57] perf: Simplify perf_event_alloc()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -76,166 +76,127 @@ X-Mailing-List: rcu@vger.kernel.org
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/events/core.c |   64 +++++++++++++++++++--------------------------------
- 1 file changed, 25 insertions(+), 39 deletions(-)
+ kernel/events/core.c |   47 ++++++++++++++++++-----------------------------
+ 1 file changed, 18 insertions(+), 29 deletions(-)
 
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -1274,13 +1274,11 @@ perf_event_ctx_lock_nested(struct perf_e
- 	struct perf_event_context *ctx;
- 
- again:
--	rcu_read_lock();
--	ctx = READ_ONCE(event->ctx);
--	if (!refcount_inc_not_zero(&ctx->refcount)) {
--		rcu_read_unlock();
--		goto again;
-+	scoped_guard (rcu) {
-+		ctx = READ_ONCE(event->ctx);
-+		if (!refcount_inc_not_zero(&ctx->refcount))
-+			goto again;
- 	}
--	rcu_read_unlock();
- 
- 	mutex_lock_nested(&ctx->mutex, nesting);
- 	if (event->ctx != ctx) {
-@@ -2254,7 +2252,7 @@ event_sched_out(struct perf_event *event
- 	 */
- 	list_del_init(&event->active_list);
- 
--	perf_pmu_disable(event->pmu);
-+	guard(perf_pmu_disable)(event->pmu);
- 
- 	event->pmu->del(event, 0);
- 	event->oncpu = -1;
-@@ -2288,8 +2286,6 @@ event_sched_out(struct perf_event *event
- 		ctx->nr_freq--;
- 	if (event->attr.exclusive || !cpc->active_oncpu)
- 		cpc->exclusive = 0;
--
--	perf_pmu_enable(event->pmu);
+@@ -5148,6 +5148,8 @@ static void __free_event(struct perf_eve
+ 	call_rcu(&event->rcu_head, free_event_rcu);
  }
  
- static void
-@@ -3219,7 +3215,8 @@ static void __pmu_ctx_sched_out(struct p
- 	if (!event_type)
- 		return;
- 
--	perf_pmu_disable(pmu);
-+	guard(perf_pmu_disable)(pmu);
++DEFINE_FREE(__free_event, struct perf_event *, if (_T) __free_event(_T))
 +
- 	if (event_type & EVENT_PINNED) {
- 		list_for_each_entry_safe(event, tmp,
- 					 &pmu_ctx->pinned_active,
-@@ -3239,7 +3236,6 @@ static void __pmu_ctx_sched_out(struct p
- 		 */
- 		pmu_ctx->rotate_necessary = 0;
+ /* vs perf_event_alloc() success */
+ static void _free_event(struct perf_event *event)
+ {
+@@ -11694,7 +11696,6 @@ perf_event_alloc(struct perf_event_attr
+ 		 void *context, int cgroup_fd)
+ {
+ 	struct pmu *pmu;
+-	struct perf_event *event;
+ 	struct hw_perf_event *hwc;
+ 	long err = -EINVAL;
+ 	int node;
+@@ -11709,8 +11710,8 @@ perf_event_alloc(struct perf_event_attr
  	}
--	perf_pmu_enable(pmu);
- }
  
- static void
-@@ -3586,13 +3582,10 @@ static void __perf_pmu_sched_task(struct
- 	if (WARN_ON_ONCE(!pmu->sched_task))
- 		return;
+ 	node = (cpu >= 0) ? cpu_to_node(cpu) : -1;
+-	event = kmem_cache_alloc_node(perf_event_cache, GFP_KERNEL | __GFP_ZERO,
+-				      node);
++	struct perf_event *event __free(__free_event) =
++		kmem_cache_alloc_node(perf_event_cache, GFP_KERNEL | __GFP_ZERO, node);
+ 	if (!event)
+ 		return ERR_PTR(-ENOMEM);
  
--	perf_ctx_lock(cpuctx, cpuctx->task_ctx);
--	perf_pmu_disable(pmu);
-+	guard(perf_ctx_lock)(cpuctx, cpuctx->task_ctx);
-+	guard(perf_pmu_disable)(pmu);
- 
- 	pmu->sched_task(cpc->task_epc, sched_in);
--
--	perf_pmu_enable(pmu);
--	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
- }
- 
- static void perf_pmu_sched_task(struct task_struct *prev,
-@@ -12655,8 +12648,6 @@ static void __perf_pmu_install_event(str
- 				     struct perf_event_context *ctx,
- 				     int cpu, struct perf_event *event)
- {
--	struct perf_event_pmu_context *epc;
--
- 	/*
- 	 * Now that the events are unused, put their old ctx and grab a
- 	 * reference on the new context.
-@@ -12665,8 +12656,7 @@ static void __perf_pmu_install_event(str
- 	get_ctx(ctx);
- 
- 	event->cpu = cpu;
--	epc = find_get_pmu_context(pmu, ctx, event);
--	event->pmu_ctx = epc;
-+	event->pmu_ctx = find_get_pmu_context(pmu, ctx, event);
- 
- 	if (event->state >= PERF_EVENT_STATE_OFF)
- 		event->state = PERF_EVENT_STATE_INACTIVE;
-@@ -12815,12 +12805,12 @@ perf_event_exit_event(struct perf_event
- 
- static void perf_event_exit_task_context(struct task_struct *child)
- {
--	struct perf_event_context *child_ctx, *clone_ctx = NULL;
-+	struct perf_event_context *clone_ctx = NULL;
- 	struct perf_event *child_event, *next;
- 
- 	WARN_ON_ONCE(child != current);
- 
--	child_ctx = perf_pin_task_context(child);
-+	CLASS(pin_task_ctx, child_ctx)(child);
- 	if (!child_ctx)
- 		return;
- 
-@@ -12834,27 +12824,27 @@ static void perf_event_exit_task_context
- 	 * without ctx::mutex (it cannot because of the move_group double mutex
- 	 * lock thing). See the comments in perf_install_in_context().
+@@ -11815,51 +11816,43 @@ perf_event_alloc(struct perf_event_attr
+ 	 * See perf_output_read().
  	 */
--	mutex_lock(&child_ctx->mutex);
-+	guard(mutex)(&child_ctx->mutex);
+ 	if (attr->inherit && (attr->sample_type & PERF_SAMPLE_READ))
+-		goto err;
++		return ERR_PTR(-EINVAL);
+ 
+ 	if (!has_branch_stack(event))
+ 		event->attr.branch_sample_type = 0;
+ 
+ 	pmu = perf_init_event(event);
+-	if (IS_ERR(pmu)) {
+-		err = PTR_ERR(pmu);
+-		goto err;
+-	}
++	if (IS_ERR(pmu))
++		return (void*)pmu;
  
  	/*
- 	 * In a single ctx::lock section, de-schedule the events and detach the
- 	 * context from the task such that we cannot ever get it scheduled back
- 	 * in.
+ 	 * Disallow uncore-task events. Similarly, disallow uncore-cgroup
+ 	 * events (they don't make sense as the cgroup will be different
+ 	 * on other CPUs in the uncore mask).
  	 */
--	raw_spin_lock_irq(&child_ctx->lock);
--	task_ctx_sched_out(child_ctx, EVENT_ALL);
-+	scoped_guard (raw_spinlock_irq, &child_ctx->lock) {
-+		task_ctx_sched_out(child_ctx, EVENT_ALL);
+-	if (pmu->task_ctx_nr == perf_invalid_context && (task || cgroup_fd != -1)) {
+-		err = -EINVAL;
+-		goto err;
+-	}
++	if (pmu->task_ctx_nr == perf_invalid_context && (task || cgroup_fd != -1))
++		return ERR_PTR(-EINVAL);
  
--	/*
--	 * Now that the context is inactive, destroy the task <-> ctx relation
--	 * and mark the context dead.
--	 */
--	RCU_INIT_POINTER(child->perf_event_ctxp, NULL);
--	put_ctx(child_ctx); /* cannot be last */
--	WRITE_ONCE(child_ctx->task, TASK_TOMBSTONE);
--	put_task_struct(current); /* cannot be last */
-+		/*
-+		 * Now that the context is inactive, destroy the task <-> ctx
-+		 * relation and mark the context dead.
-+		 */
-+		RCU_INIT_POINTER(child->perf_event_ctxp, NULL);
-+		put_ctx(child_ctx); /* cannot be last */
-+		WRITE_ONCE(child_ctx->task, TASK_TOMBSTONE);
-+		put_task_struct(current); /* cannot be last */
+ 	if (event->attr.aux_output &&
+-	    !(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT)) {
+-		err = -EOPNOTSUPP;
+-		goto err;
+-	}
++	    !(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT))
++		return ERR_PTR(-EOPNOTSUPP);
  
--	clone_ctx = unclone_ctx(child_ctx);
--	raw_spin_unlock_irq(&child_ctx->lock);
-+		clone_ctx = unclone_ctx(child_ctx);
-+	}
+ 	if (cgroup_fd != -1) {
+ 		err = perf_cgroup_connect(cgroup_fd, event, attr, group_leader);
+ 		if (err)
+-			goto err;
++			return ERR_PTR(err);
+ 	}
  
- 	if (clone_ctx)
- 		put_ctx(clone_ctx);
-@@ -12868,10 +12858,6 @@ static void perf_event_exit_task_context
+ 	err = exclusive_event_init(event);
+ 	if (err)
+-		goto err;
++		return ERR_PTR(err);
  
- 	list_for_each_entry_safe(child_event, next, &child_ctx->event_list, event_entry)
- 		perf_event_exit_event(child_event, child_ctx);
+ 	if (has_addr_filter(event)) {
+ 		event->addr_filter_ranges = kcalloc(pmu->nr_addr_filters,
+ 						    sizeof(struct perf_addr_filter_range),
+ 						    GFP_KERNEL);
+-		if (!event->addr_filter_ranges) {
+-			err = -ENOMEM;
+-			goto err;
+-		}
++		if (!event->addr_filter_ranges)
++			return ERR_PTR(-ENOMEM);
+ 
+ 		/*
+ 		 * Clone the parent's vma offsets: they are valid until exec()
+@@ -11883,22 +11876,18 @@ perf_event_alloc(struct perf_event_attr
+ 		if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) {
+ 			err = get_callchain_buffers(attr->sample_max_stack);
+ 			if (err)
+-				goto err;
++				return ERR_PTR(err);
+ 		}
+ 	}
+ 
+ 	err = security_perf_event_alloc(event);
+ 	if (err)
+-		goto err;
++		return ERR_PTR(err);
+ 
+ 	/* symmetric to unaccount_event() in _free_event() */
+ 	account_event(event);
+ 
+-	return event;
 -
--	mutex_unlock(&child_ctx->mutex);
--
--	put_ctx(child_ctx);
+-err:
+-	__free_event(event);
+-	return ERR_PTR(err);
++	return_ptr(event);
  }
  
- /*
+ static int perf_copy_attr(struct perf_event_attr __user *uattr,
 
 
