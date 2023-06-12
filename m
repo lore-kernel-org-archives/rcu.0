@@ -2,43 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9950BC7EE43
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:57:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE7CC7EE2E
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235711AbjFLJ5z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S235459AbjFLJ57 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjFLJyT (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:19 -0400
+        with ESMTP id S233352AbjFLJyo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:44 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7C24C00;
-        Mon, 12 Jun 2023 02:38:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA0D4C1F;
+        Mon, 12 Jun 2023 02:39:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=q92jsVFPZSP8G7FOeDp8TiMSNcZFRY9w1smIqAIutpc=; b=ZjjVcZol4/9Mg/CL1z/yvfA0AG
-        OAFbqGJmR4WaLGPuac3DsxuC/cSLfbEfZYKTwqp9zVOHAsflVFZRmumwh6cw0dmuh8tYBucZ3u0Bv
-        rYCwv7X1JMsEe/Bto2w5Ft+VMSeXNZoL9d7mW5B4ILoyaUUzjXUpOLsiTzmFWQE55vsKoxPa9Ol60
-        eK29omO/sJmvbBhucM9rXlm3uLaAGBN0Ne0S14xbL5cU904oFMiq6FXiZdX6eIaV+eBG+pu5krCbP
-        WhCEIB+k7OA7yII2HdbfhSoriI3sHSADL+6mMPmTzKFHg7w0eK75g37vf6kFTHN40d5lPG/ZFftsp
-        MVAqneTQ==;
+        bh=oJyDWnF7S8lcaog4Xmhyr6vhDojPiq7m8dz3r+ZsZG4=; b=rdH9P5/MC3KcY+M1BubJnq2SDA
+        VDGeL/wvRJ516ylJciShUfk/lLKhhrHMf84ST4NUiKTy2ExpNVzaIsxOt0cQrm7+eX/8udNe5etuq
+        a8fdjA1aakVHh17wbvSw2yH8JlQoRaJkmSyuc03oqmoc7UOXpLHURSRxkh0dVmI/veHKlufAu0gpY
+        Ns3St7yJnjxp7C9LWCYQAjUcurSze2tx9FwQXkuQqZEP3Medv20JQgxJrWc9w8JIbLUqKZH2b4jfd
+        jiWzkPTbr4fSMmiKp/dav0iBFlH+nbdDr15ksYyL2JPyPxZmPbWGcP2XPV4+cHOFrrcX0V4f4DCw+
+        S6QpV56A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q8e0g-008kOz-11;
-        Mon, 12 Jun 2023 09:38:51 +0000
+        id 1q8e0l-008kQN-0e;
+        Mon, 12 Jun 2023 09:38:55 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C5F08303164;
-        Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E854302EA7;
+        Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 3619930A70ADD; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093538.225353309@infradead.org>
+        id 67EF730A77B58; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093538.942686455@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:24 +0200
+Date:   Mon, 12 Jun 2023 11:07:33 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -66,7 +66,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 11/57] sched: Simplify sched_tick_remote()
+Subject: [PATCH v3 20/57] sched: Simplify tg_set_cfs_bandwidth()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -78,69 +78,95 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |   43 ++++++++++++++++++-------------------------
- 1 file changed, 18 insertions(+), 25 deletions(-)
+ include/linux/cpu.h |    2 ++
+ kernel/sched/core.c |   42 +++++++++++++++++++++---------------------
+ 2 files changed, 23 insertions(+), 21 deletions(-)
 
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -148,6 +148,8 @@ static inline int remove_cpu(unsigned in
+ static inline void smp_shutdown_nonboot_cpus(unsigned int primary_cpu) { }
+ #endif	/* !CONFIG_HOTPLUG_CPU */
+ 
++DEFINE_LOCK_GUARD_0(cpus_read_lock, cpus_read_lock(), cpus_read_unlock())
++
+ #ifdef CONFIG_PM_SLEEP_SMP
+ extern int freeze_secondary_cpus(int primary);
+ extern void thaw_secondary_cpus(void);
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5651,9 +5651,6 @@ static void sched_tick_remote(struct wor
- 	struct tick_work *twork = container_of(dwork, struct tick_work, work);
- 	int cpu = twork->cpu;
- 	struct rq *rq = cpu_rq(cpu);
--	struct task_struct *curr;
--	struct rq_flags rf;
--	u64 delta;
- 	int os;
- 
- 	/*
-@@ -5663,30 +5660,26 @@ static void sched_tick_remote(struct wor
- 	 * statistics and checks timeslices in a time-independent way, regardless
- 	 * of when exactly it is running.
+@@ -10726,11 +10726,12 @@ static int tg_set_cfs_bandwidth(struct t
+ 	 * Prevent race between setting of cfs_rq->runtime_enabled and
+ 	 * unthrottle_offline_cfs_rqs().
  	 */
--	if (!tick_nohz_tick_stopped_cpu(cpu))
--		goto out_requeue;
-+	if (tick_nohz_tick_stopped_cpu(cpu)) {
-+		guard(rq_lock_irq)(rq);
-+		struct task_struct *curr = rq->curr;
+-	cpus_read_lock();
+-	mutex_lock(&cfs_constraints_mutex);
++	guard(cpus_read_lock)();
++	guard(mutex)(&cfs_constraints_mutex);
 +
-+		if (cpu_online(cpu)) {
-+			update_rq_clock(rq);
-+
-+			if (!is_idle_task(curr)) {
-+				/*
-+				 * Make sure the next tick runs within a
-+				 * reasonable amount of time.
-+				 */
-+				u64 delta = rq_clock_task(rq) - curr->se.exec_start;
-+				WARN_ON_ONCE(delta > (u64)NSEC_PER_SEC * 3);
-+			}
-+			curr->sched_class->task_tick(rq, curr, 0);
- 
--	rq_lock_irq(rq, &rf);
--	curr = rq->curr;
--	if (cpu_is_offline(cpu))
+ 	ret = __cfs_schedulable(tg, period, quota);
+ 	if (ret)
 -		goto out_unlock;
--
--	update_rq_clock(rq);
--
--	if (!is_idle_task(curr)) {
--		/*
--		 * Make sure the next tick runs within a reasonable
--		 * amount of time.
--		 */
--		delta = rq_clock_task(rq) - curr->se.exec_start;
--		WARN_ON_ONCE(delta > (u64)NSEC_PER_SEC * 3);
-+			calc_load_nohz_remote(rq);
-+		}
- 	}
--	curr->sched_class->task_tick(rq, curr, 0);
--
--	calc_load_nohz_remote(rq);
--out_unlock:
--	rq_unlock_irq(rq, &rf);
--out_requeue:
++		return ret;
  
- 	/*
- 	 * Run the remote tick once per second (1Hz). This arbitrary
+ 	runtime_enabled = quota != RUNTIME_INF;
+ 	runtime_was_enabled = cfs_b->quota != RUNTIME_INF;
+@@ -10740,39 +10741,38 @@ static int tg_set_cfs_bandwidth(struct t
+ 	 */
+ 	if (runtime_enabled && !runtime_was_enabled)
+ 		cfs_bandwidth_usage_inc();
+-	raw_spin_lock_irq(&cfs_b->lock);
+-	cfs_b->period = ns_to_ktime(period);
+-	cfs_b->quota = quota;
+-	cfs_b->burst = burst;
+-
+-	__refill_cfs_bandwidth_runtime(cfs_b);
+-
+-	/* Restart the period timer (if active) to handle new period expiry: */
+-	if (runtime_enabled)
+-		start_cfs_bandwidth(cfs_b);
+ 
+-	raw_spin_unlock_irq(&cfs_b->lock);
++	scoped_guard (raw_spinlock_irq, &cfs_b->lock) {
++		cfs_b->period = ns_to_ktime(period);
++		cfs_b->quota = quota;
++		cfs_b->burst = burst;
++
++		__refill_cfs_bandwidth_runtime(cfs_b);
++
++		/*
++		 * Restart the period timer (if active) to handle new
++		 * period expiry:
++		 */
++		if (runtime_enabled)
++			start_cfs_bandwidth(cfs_b);
++	}
+ 
+ 	for_each_online_cpu(i) {
+ 		struct cfs_rq *cfs_rq = tg->cfs_rq[i];
+ 		struct rq *rq = cfs_rq->rq;
+-		struct rq_flags rf;
+ 
+-		rq_lock_irq(rq, &rf);
++		guard(rq_lock_irq)(rq);
+ 		cfs_rq->runtime_enabled = runtime_enabled;
+ 		cfs_rq->runtime_remaining = 0;
+ 
+ 		if (cfs_rq->throttled)
+ 			unthrottle_cfs_rq(cfs_rq);
+-		rq_unlock_irq(rq, &rf);
+ 	}
++
+ 	if (runtime_was_enabled && !runtime_enabled)
+ 		cfs_bandwidth_usage_dec();
+-out_unlock:
+-	mutex_unlock(&cfs_constraints_mutex);
+-	cpus_read_unlock();
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
 
 
