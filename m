@@ -2,42 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10B7BC7EE43
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB703C8300C
 	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:56:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235872AbjFLJ4q (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
+        id S234565AbjFLJ4v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbjFLJyW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F34E4C15;
-        Mon, 12 Jun 2023 02:38:57 -0700 (PDT)
+        with ESMTP id S232365AbjFLJyV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B634D4C05;
+        Mon, 12 Jun 2023 02:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=2Fw/6pc13hFz4431UNCf/XS3M9fAIWcYfqPnXE09Ku4=; b=b6HhHqyRgVNIvJxJg3qz34xg3z
-        MclAequn3uyYDgQ5Z5i8iDgOLuz/qXGgm1oMBVoGifA2g41/aPpi+zdp37cuqoJp+mxC5cFvegIAx
-        PrGLhpLp6tRFNJ+xGJdm2Vl8NMuY2mfkHRUQqumE0N6uhf8Hwi+0jsjngOlSw1NjDNooe7ANlbed6
-        InipGNmagWluFfr2AZow7mI1sOKeySpJUvHBQ/S5Qm+hiYjBJavBgxNx9Q3pT2HaDMGuK1RCXjfIv
-        izn1MU80zDpXeVWyzMuTE3zNEGhTt+PqqObFqGdyck+4419X8FjSEtsb3NkqK5BrIhAd8Futl2USY
-        ItEsQUOQ==;
+        bh=8IwM37e642EshGkaM591nsICKeU24b96IU4dYucK72I=; b=dXBEmpz80b7hoderM45846w/8O
+        pNO8hpipMKRJ27niZQqDP/oZ7/BF1rbJvgcP4PNZOjA0/uy51im9efmFnxUQeqkaz8ERUeIMTVgbA
+        4VU+/qmkIVh9mruK1Kemd08wt+2YvNqj7iMBDIb55yjZBxdNbyYHd4vmkglhIRzn3VhbsO1g6kMNX
+        DPownbe5F7lKMEY9oMSiQbAsQ6Sq/LDRo6BH7dsjs/eLhKCTZkfWMRYDFaavzf9aNxmS0+JA4YiOd
+        d6r7PI/eGL4W69GpFhaxW3FPhqLQIpOokWmypJbsZsB0KhQzPHHjPZBSmrvaJDXXl2NqdZOvB1M89
+        9hb3DItQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8e0g-002N91-0z; Mon, 12 Jun 2023 09:38:50 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q8e0g-008kPD-1r;
+        Mon, 12 Jun 2023 09:38:51 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 86856302EA7;
-        Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 226E43031CC;
+        Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0FD3C30A6FEEC; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093537.762718530@infradead.org>
+        id 5D3FD30A77B5B; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093538.792690687@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:18 +0200
+Date:   Mon, 12 Jun 2023 11:07:31 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -65,7 +66,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 05/57] sched: Simplify get_nohz_timer_target()
+Subject: [PATCH v3 18/57] sched: Simplify sched_rr_get_interval()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,42 +78,65 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |   15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ kernel/sched/core.c |   40 ++++++++++++++++------------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1097,25 +1097,22 @@ int get_nohz_timer_target(void)
+@@ -8941,38 +8941,30 @@ SYSCALL_DEFINE1(sched_get_priority_min,
  
- 	hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
+ static int sched_rr_get_interval(pid_t pid, struct timespec64 *t)
+ {
+-	struct task_struct *p;
+-	unsigned int time_slice;
+-	struct rq_flags rf;
+-	struct rq *rq;
++	unsigned int time_slice = 0;
+ 	int retval;
  
+ 	if (pid < 0)
+ 		return -EINVAL;
+ 
+-	retval = -ESRCH;
 -	rcu_read_lock();
-+	guard(rcu)();
+-	p = find_process_by_pid(pid);
+-	if (!p)
+-		goto out_unlock;
+-
+-	retval = security_task_getscheduler(p);
+-	if (retval)
+-		goto out_unlock;
+-
+-	rq = task_rq_lock(p, &rf);
+-	time_slice = 0;
+-	if (p->sched_class->get_rr_interval)
+-		time_slice = p->sched_class->get_rr_interval(rq, p);
+-	task_rq_unlock(rq, p, &rf);
++	scoped_guard (rcu) {
++		struct task_struct *p = find_process_by_pid(pid);
++		if (!p)
++			return -ESRCH;
 +
- 	for_each_domain(cpu, sd) {
- 		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
- 			if (cpu == i)
- 				continue;
++		retval = security_task_getscheduler(p);
++		if (retval)
++			return retval;
++
++		scoped_guard (task_rq_lock, p) {
++			struct rq *rq = scope.rq;
++			if (p->sched_class->get_rr_interval)
++				time_slice = p->sched_class->get_rr_interval(rq, p);
++		}
++	}
  
--			if (!idle_cpu(i)) {
--				cpu = i;
--				goto unlock;
--			}
-+			if (!idle_cpu(i))
-+				return i;
- 		}
- 	}
- 
- 	if (default_cpu == -1)
- 		default_cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
--	cpu = default_cpu;
--unlock:
 -	rcu_read_unlock();
--	return cpu;
-+
-+	return default_cpu;
+ 	jiffies_to_timespec64(time_slice, t);
+ 	return 0;
+-
+-out_unlock:
+-	rcu_read_unlock();
+-	return retval;
  }
  
- /*
+ /**
 
 
