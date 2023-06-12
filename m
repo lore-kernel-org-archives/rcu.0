@@ -2,43 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE07C7EE45
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C24C7EE43
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236137AbjFLJ6f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
+        id S232365AbjFLJ6i (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbjFLJyZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:25 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25155FF3;
-        Mon, 12 Jun 2023 02:38:59 -0700 (PDT)
+        with ESMTP id S231655AbjFLJy2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E505FF9;
+        Mon, 12 Jun 2023 02:39:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=9sqy4wj1SuZG+E1ZOkNDiw8zR5F8T4bHRpYkByM8S6o=; b=HNjtc1kou6jUKrPa93YlSTKipB
-        VhOpXUPSBCgjriMwtuZYiFbSO92NjXbfCsFmRFtzO7yfFSXIVuY/yN+Yj7pGBcnBI5S0hv8fNdtcN
-        //wmbKzY575t4i5oKfCiWpecYl0rAG6BFfdMSjKIXuCRhpuWcyhO2gVcrMTipwAY6sjO79StTEAIQ
-        VC8/ybwDlXuWf1vL/cHd1fVTSgl2eqKrBrD54rFBuftQGd/gu653fosXknQhYF8Op6cNrlThojVpp
-        8VS39gvDd4GbsgBVynRhv46UkSxPgULiSAQIabpdcmA7w8/j+yhjfaJwXT+KXZjarghiosRq198gW
-        o3zyz1kQ==;
+        bh=TyEqnNyUrGcTyQQqxTQ7FjrgTS2UCJUv6R0g2vbKlfY=; b=rHHDliBQ2Qfw4zPxTfBy8QXX52
+        G14E6gPiy22JcNYH/Q5ary0q0YX91rEsCLNUeF2er4snB00oi8Lc4f2MMJZUwwWFKvHVk7GQuK7Zl
+        3ahxPQrajWWxBclXKLGynYx8r2sGJlK3yDh9HWCO7kIqSmTRqHGJsywLA/mKXJqegwQvkdaMSNva2
+        uJVrXhoSZLISp+eyXn3YfK2inTs+lOPkrCnxRe7XnCJ3h8JknStPhu9xVH8GzIG76/K6R5JUG74zu
+        XsZmZNsMpz5Ycxrzfr+Z6QJ1Wis1vJw2il0uWR+vhha6EcQ+HD/j4wtxTmR7enXrzcACCcjOxcx3G
+        mOVdO+3w==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q8e0g-008kPB-1k;
-        Mon, 12 Jun 2023 09:38:51 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1q8e0m-002NBu-ET; Mon, 12 Jun 2023 09:38:56 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0BFFE3031BE;
-        Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3B8233032D0;
+        Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5832930A77B57; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093538.712217968@infradead.org>
+        id C402E30A77B6D; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093540.108251860@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:30 +0200
+Date:   Mon, 12 Jun 2023 11:07:49 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -66,7 +65,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 17/57] sched: Simplify yield_to()
+Subject: [PATCH v3 36/57] perf: Simplify find_get_pmu_context()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,102 +73,68 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |   73 ++++++++++++++++++++++------------------------------
- 1 file changed, 32 insertions(+), 41 deletions(-)
+ kernel/events/core.c |   19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8799,55 +8799,46 @@ int __sched yield_to(struct task_struct
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4757,11 +4757,14 @@ find_get_context(struct task_struct *tas
+ 	return ERR_PTR(err);
+ }
+ 
++/*
++ * Returns a matching perf_event_pmu_context with elevated refcount or NULL.
++ */
+ static struct perf_event_pmu_context *
+ find_get_pmu_context(struct pmu *pmu, struct perf_event_context *ctx,
+ 		     struct perf_event *event)
  {
- 	struct task_struct *curr = current;
- 	struct rq *rq, *p_rq;
--	unsigned long flags;
- 	int yielded = 0;
+-	struct perf_event_pmu_context *new = NULL, *epc;
++	struct perf_event_pmu_context *epc;
+ 	void *task_ctx_data = NULL;
  
--	local_irq_save(flags);
--	rq = this_rq();
-+	scoped_guard (irqsave) {
-+		rq = this_rq();
+ 	if (!ctx->task) {
+@@ -4788,16 +4791,14 @@ find_get_pmu_context(struct pmu *pmu, st
+ 		return epc;
+ 	}
  
- again:
--	p_rq = task_rq(p);
--	/*
--	 * If we're the only runnable task on the rq and target rq also
--	 * has only one task, there's absolutely no point in yielding.
--	 */
--	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
--		yielded = -ESRCH;
--		goto out_irq;
--	}
--
--	double_rq_lock(rq, p_rq);
--	if (task_rq(p) != p_rq) {
--		double_rq_unlock(rq, p_rq);
--		goto again;
--	}
--
--	if (!curr->sched_class->yield_to_task)
--		goto out_unlock;
--
--	if (curr->sched_class != p->sched_class)
--		goto out_unlock;
--
--	if (task_on_cpu(p_rq, p) || !task_is_running(p))
--		goto out_unlock;
--
--	yielded = curr->sched_class->yield_to_task(rq, p);
--	if (yielded) {
--		schedstat_inc(rq->yld_count);
-+		p_rq = task_rq(p);
- 		/*
--		 * Make p's CPU reschedule; pick_next_entity takes care of
--		 * fairness.
-+		 * If we're the only runnable task on the rq and target rq also
-+		 * has only one task, there's absolutely no point in yielding.
- 		 */
--		if (preempt && rq != p_rq)
--			resched_curr(p_rq);
--	}
-+		if (rq->nr_running == 1 && p_rq->nr_running == 1)
-+			return -ESRCH;
+-	new = kzalloc(sizeof(*epc), GFP_KERNEL);
++	void *new __free(kfree) = kzalloc(sizeof(*epc), GFP_KERNEL);
+ 	if (!new)
+-		return ERR_PTR(-ENOMEM);
++		return NULL;
  
--out_unlock:
--	double_rq_unlock(rq, p_rq);
--out_irq:
--	local_irq_restore(flags);
-+		guard(double_rq_lock)(rq, p_rq);
-+		if (task_rq(p) != p_rq)
-+			goto again;
-+
-+		if (!curr->sched_class->yield_to_task)
-+			return 0;
-+
-+		if (curr->sched_class != p->sched_class)
-+			return 0;
-+
-+		if (task_on_cpu(p_rq, p) || !task_is_running(p))
-+			return 0;
-+
-+		yielded = curr->sched_class->yield_to_task(rq, p);
-+		if (yielded) {
-+			schedstat_inc(rq->yld_count);
-+			/*
-+			 * Make p's CPU reschedule; pick_next_entity
-+			 * takes care of fairness.
-+			 */
-+			if (preempt && rq != p_rq)
-+				resched_curr(p_rq);
-+		}
-+	}
+ 	if (event->attach_state & PERF_ATTACH_TASK_DATA) {
+ 		task_ctx_data = alloc_task_ctx_data(pmu);
+-		if (!task_ctx_data) {
+-			kfree(new);
+-			return ERR_PTR(-ENOMEM);
+-		}
++		if (!task_ctx_data)
++			return NULL;
+ 	}
  
--	if (yielded > 0)
-+	if (yielded)
- 		schedule();
+ 	__perf_init_event_pmu_context(new, pmu);
+@@ -4820,8 +4821,7 @@ find_get_pmu_context(struct pmu *pmu, st
+ 		}
+ 	}
  
- 	return yielded;
+-	epc = new;
+-	new = NULL;
++	epc = no_free_ptr(new);
+ 
+ 	list_add(&epc->pmu_ctx_entry, &ctx->pmu_ctx_list);
+ 	epc->ctx = ctx;
+@@ -4835,7 +4835,6 @@ find_get_pmu_context(struct pmu *pmu, st
+ 	raw_spin_unlock_irq(&ctx->lock);
+ 
+ 	free_task_ctx_data(pmu, task_ctx_data);
+-	kfree(new);
+ 
+ 	return epc;
+ }
 
 
