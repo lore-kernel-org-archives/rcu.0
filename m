@@ -2,42 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE814C87FE1
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B8AC7EE43
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjFLJ6P (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
+        id S236060AbjFLJ6S (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjFLJyV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A47B4C0E;
-        Mon, 12 Jun 2023 02:38:57 -0700 (PDT)
+        with ESMTP id S234600AbjFLJy5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:57 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E20E619A;
+        Mon, 12 Jun 2023 02:39:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=MG7QpnmCwLygWJ81Mn2iabAPA0zngwNBxpS2UJOPCco=; b=PgmXbkmwG9TYpDGdocx+LtR6tM
-        l370b2N9nNxi1RmPWxCNObTJ4Voj6TnwUaEMamYzTJY6EkmNWG1KMSqPUKs7IW+4Maipk3vvMjEFR
-        ZaMxjhNAcQQyGWTARi2LdpPcjAIDpMadcwYBjkd27vA7PC1Va2aKU7sfH8xVuq7SvVINulgGTJ51x
-        XjR8xr7yUJ3LF2wwQJd4xe6tOSQnyO6M7lQz1xek40kDnSUJiKz9biq82Fj0QVkT0KEsORIAJNpYr
-        dGHAHUGeUs4DbodpgoR1h3ajXFzvYjku3P4L5rQcre7lw9MZ79S1OiErMltwKmghwzvlIgQByVkHx
-        pDKs2gjQ==;
+        bh=TIflEc6HK/22xB9+LAc8fdYfMJHSxjY/dB735CDFq7w=; b=OzxWN5L/KzC4VUo/iTYaWameCX
+        hrbwrk3ixeRH23F57jlIRFGWnlTcHuMcV7kLy7osS01tgjphDYs7mWn2JZfDkZ1+rR6EcEvrBxrNq
+        zuW6xChuJcvp8qwBU8di5iOmYh8pWWaTGqRRp0lXV86E7IzjUkmvM0B0kyib/7YaiFdsFaLUU6kzN
+        jRUGUTzf6TM4YMKKaPBC+AkGNgv4QE6GBnrVTUB+3uvTZYeky0QKBbK68+lbLkHSUur0WJ5xngoPZ
+        gJIK2g+KtjpXKF0kOxEZS0dUHbQ0CQVAE0El1MhQ7ke9TlaJD5eefsKkFJQO3sIV0cBEXmZEPvZrb
+        0kCDB3Ig==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8e0g-002N99-Aw; Mon, 12 Jun 2023 09:38:50 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q8e0l-008kQb-39;
+        Mon, 12 Jun 2023 09:39:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E71BC303196;
-        Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2813A30325F;
+        Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 46BE630A77B54; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093538.465891562@infradead.org>
+        id 9735A30A77B62; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093539.537454913@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:27 +0200
+Date:   Mon, 12 Jun 2023 11:07:41 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -65,7 +66,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 14/57] sched: Simplify set_user_nice()
+Subject: [PATCH v3 28/57] perf; Simplify event_sched_in()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,68 +78,57 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c  |   13 ++++++-------
- kernel/sched/sched.h |    5 +++++
- 2 files changed, 11 insertions(+), 7 deletions(-)
+ kernel/events/core.c |   13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7119,9 +7119,8 @@ static inline int rt_effective_prio(stru
- void set_user_nice(struct task_struct *p, long nice)
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1153,6 +1153,8 @@ void perf_pmu_enable(struct pmu *pmu)
+ 		pmu->pmu_enable(pmu);
+ }
+ 
++DEFINE_GUARD(perf_pmu_disable, struct pmu *, perf_pmu_disable(_T), perf_pmu_enable(_T))
++
+ static void perf_assert_pmu_disabled(struct pmu *pmu)
  {
- 	bool queued, running;
--	int old_prio;
--	struct rq_flags rf;
- 	struct rq *rq;
-+	int old_prio;
+ 	WARN_ON_ONCE(*this_cpu_ptr(pmu->pmu_disable_count) == 0);
+@@ -2489,7 +2491,6 @@ event_sched_in(struct perf_event *event,
+ {
+ 	struct perf_event_pmu_context *epc = event->pmu_ctx;
+ 	struct perf_cpu_pmu_context *cpc = this_cpu_ptr(epc->pmu->cpu_pmu_context);
+-	int ret = 0;
  
- 	if (task_nice(p) == nice || nice < MIN_NICE || nice > MAX_NICE)
- 		return;
-@@ -7129,7 +7128,9 @@ void set_user_nice(struct task_struct *p
- 	 * We have to be careful, if called from sys_setpriority(),
- 	 * the task might be in the middle of scheduling on another CPU.
- 	 */
--	rq = task_rq_lock(p, &rf);
-+	CLASS(task_rq_lock, rq_guard)(p);
-+	rq = rq_guard.rq;
-+
- 	update_rq_clock(rq);
+ 	WARN_ON_ONCE(event->ctx != ctx);
  
- 	/*
-@@ -7140,8 +7141,9 @@ void set_user_nice(struct task_struct *p
- 	 */
- 	if (task_has_dl_policy(p) || task_has_rt_policy(p)) {
- 		p->static_prio = NICE_TO_PRIO(nice);
--		goto out_unlock;
-+		return;
+@@ -2517,15 +2518,14 @@ event_sched_in(struct perf_event *event,
+ 		event->hw.interrupts = 0;
  	}
-+
- 	queued = task_on_rq_queued(p);
- 	running = task_current(rq, p);
- 	if (queued)
-@@ -7164,9 +7166,6 @@ void set_user_nice(struct task_struct *p
- 	 * lowered its priority, then reschedule its CPU:
- 	 */
- 	p->sched_class->prio_changed(rq, p, old_prio);
+ 
+-	perf_pmu_disable(event->pmu);
++	guard(perf_pmu_disable)(event->pmu);
+ 
+ 	perf_log_itrace_start(event);
+ 
+ 	if (event->pmu->add(event, PERF_EF_START)) {
+ 		perf_event_set_state(event, PERF_EVENT_STATE_INACTIVE);
+ 		event->oncpu = -1;
+-		ret = -EAGAIN;
+-		goto out;
++		return -EAGAIN;
+ 	}
+ 
+ 	if (!is_software_event(event))
+@@ -2536,10 +2536,7 @@ event_sched_in(struct perf_event *event,
+ 	if (event->attr.exclusive)
+ 		cpc->exclusive = 1;
+ 
+-out:
+-	perf_pmu_enable(event->pmu);
 -
--out_unlock:
--	task_rq_unlock(rq, p, &rf);
- }
- EXPORT_SYMBOL(set_user_nice);
- 
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1630,6 +1630,11 @@ task_rq_unlock(struct rq *rq, struct tas
- 	raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+-	return ret;
++	return 0;
  }
  
-+DEFINE_LOCK_GUARD_1(task_rq_lock, struct task_struct,
-+		    _T->rq = task_rq_lock(_T->lock, &_T->rf),
-+		    task_rq_unlock(_T->rq, _T->lock, &_T->rf),
-+		    struct rq *rq; struct rq_flags rf)
-+
- static inline void
- rq_lock_irqsave(struct rq *rq, struct rq_flags *rf)
- 	__acquires(rq->lock)
+ static int
 
 
