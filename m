@@ -2,42 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 113CFC87FDC
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51377C7EE25
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:57:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbjFLJ5B (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        id S233861AbjFLJ5C (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233927AbjFLJyt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:49 -0400
+        with ESMTP id S229729AbjFLJyZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:25 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76FD6196;
-        Mon, 12 Jun 2023 02:39:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A495FF4;
+        Mon, 12 Jun 2023 02:38:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=+ABEd9mMVv/0QFeK6grpTerCWBoJWrrnVkIx9/E66Rs=; b=UTo4GrteI/bFbo9KHpO0OPwMGI
-        3uaOsWbK8QQKJpqqXdvWKe/1DuroVfEQe6X20N2c/d4VACYYWQBssFwlcwWzekErpAM0jQu1tZ9/e
-        +YjTJLibkb7RS+vl5QNs6CnVHMIIsZx26ITReWfpe+4LcyRYAR3GYYJnxqTgCp03WtkHryIoBvyNs
-        TXVQ6nIN0Wo13A75EEBRaNQgHJG89a01PYjHojcWPFAz9Lso8WCkbgk970fpgIc60tblrKHCu8q3T
-        ZNjg78iPZJ+jSlMlf+tB1JB3hzy3afqZWV9UZL/bFcehkWkvUp1ecRWM7hjJ4i7++5u7/hW81IfNT
-        RM5pjjLw==;
+        bh=A6Nf2exxWEURXKIPC4PisBIYNsQ8WOBsy7I8/r8MB2I=; b=nlawFV4XolW6/iduWLySiShjYw
+        cln2JRO/L02dwlVuY9LVrR5dx3MlqGFfL3bXKejT47tvNXSnylMRfCYpkyOmvJTJzxX3Dkuu3+U9V
+        GON9orGticGtLHDO7XjCtQWBLjBGPxQx9TE4ZfwC71+0DHPT+U64tMKz4/QcVn7XKWdGmg/vEjHlw
+        a6B5ZSoGuDL/jumilYTnXf3s+pZg++UlLBOa2U4Jw+Tlp8Uwlu4DsCd/18pgblJOjSG6PcbHyR8eK
+        n4RIv+2T9+h3z8iLYj3qab8IwhKRiOAXKJ0t/9uLH9RGFqp6GhdoTGkppi9FY/jUA+IXOCEJtextC
+        T/wQMAMA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8e0u-002NHJ-0b; Mon, 12 Jun 2023 09:39:04 +0000
+        id 1q8e0l-002NB5-60; Mon, 12 Jun 2023 09:38:55 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5EDDB306129;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E881302F75;
         Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 12B3030A79081; Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
-Message-ID: <20230612093541.025480679@infradead.org>
+        id 725F830A77B5F; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093539.085862001@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:08:01 +0200
+Date:   Mon, 12 Jun 2023 11:07:35 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -65,7 +65,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 48/57] perf: Simplify perf_init_event()
+Subject: [PATCH v3 22/57] perf: Fix cpuctx refcounting
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,85 +74,81 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
+
+Fixes: bd2756811766 ("perf: Rewrite core context handling")
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/events/core.c |   31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
+ include/linux/perf_event.h |   13 ++++++++-----
+ kernel/events/core.c       |   16 ++++++++++++++++
+ 2 files changed, 24 insertions(+), 5 deletions(-)
 
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -841,11 +841,11 @@ struct perf_event {
+ };
+ 
+ /*
+- *           ,-----------------------[1:n]----------------------.
+- *           V                                                  V
+- * perf_event_context <-[1:n]-> perf_event_pmu_context <--- perf_event
+- *           ^                      ^     |                     |
+- *           `--------[1:n]---------'     `-[n:1]-> pmu <-[1:n]-'
++ *           ,-----------------------[1:n]------------------------.
++ *           V                                                    V
++ * perf_event_context <-[1:n]-> perf_event_pmu_context <-[1:n]- perf_event
++ *                                        |                       |
++ *                                        `--[n:1]-> pmu <-[1:n]--'
+  *
+  *
+  * struct perf_event_pmu_context  lifetime is refcount based and RCU freed
+@@ -863,6 +863,9 @@ struct perf_event {
+  * ctx->mutex pinning the configuration. Since we hold a reference on
+  * group_leader (through the filedesc) it can't go away, therefore it's
+  * associated pmu_ctx must exist and cannot change due to ctx->mutex.
++ *
++ * perf_event holds a refcount on perf_event_context
++ * perf_event holds a refcount on perf_event_pmu_context
+  */
+ struct perf_event_pmu_context {
+ 	struct pmu			*pmu;
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -11504,10 +11504,10 @@ static int perf_try_init_event(struct pm
- static struct pmu *perf_init_event(struct perf_event *event)
+@@ -4809,6 +4809,11 @@ find_get_pmu_context(struct pmu *pmu, st
+ 	void *task_ctx_data = NULL;
+ 
+ 	if (!ctx->task) {
++		/*
++		 * perf_pmu_migrate_context() / __perf_pmu_install_event()
++		 * relies on the fact that find_get_pmu_context() cannot fail
++		 * for CPU contexts.
++		 */
+ 		struct perf_cpu_pmu_context *cpc;
+ 
+ 		cpc = per_cpu_ptr(pmu->cpu_pmu_context, event->cpu);
+@@ -12832,6 +12837,13 @@ static void __perf_pmu_install_event(str
  {
- 	bool extended_type = false;
--	int idx, type, ret;
- 	struct pmu *pmu;
-+	int type, ret;
+ 	struct perf_event_pmu_context *epc;
  
--	idx = srcu_read_lock(&pmus_srcu);
-+	guard(srcu)(&pmus_srcu);
++	/*
++	 * Now that the events are unused, put their old ctx and grab a
++	 * reference on the new context.
++	 */
++	put_ctx(event->ctx);
++	get_ctx(ctx);
++
+ 	event->cpu = cpu;
+ 	epc = find_get_pmu_context(pmu, ctx, event);
+ 	event->pmu_ctx = epc;
+@@ -12877,6 +12889,10 @@ void perf_pmu_migrate_context(struct pmu
+ 	struct perf_event_context *src_ctx, *dst_ctx;
+ 	LIST_HEAD(events);
  
- 	/*
- 	 * Save original type before calling pmu->event_init() since certain
-@@ -11520,7 +11520,7 @@ static struct pmu *perf_init_event(struc
- 		pmu = event->parent->pmu;
- 		ret = perf_try_init_event(pmu, event);
- 		if (!ret)
--			goto unlock;
-+			return pmu;
- 	}
++	/*
++	 * Since per-cpu context is persistent, no need to grab an extra
++	 * reference.
++	 */
+ 	src_ctx = &per_cpu_ptr(&perf_cpu_context, src_cpu)->ctx;
+ 	dst_ctx = &per_cpu_ptr(&perf_cpu_context, dst_cpu)->ctx;
  
- 	/*
-@@ -11539,13 +11539,12 @@ static struct pmu *perf_init_event(struc
- 	}
- 
- again:
--	rcu_read_lock();
--	pmu = idr_find(&pmu_idr, type);
--	rcu_read_unlock();
-+	scoped_guard (rcu)
-+		pmu = idr_find(&pmu_idr, type);
- 	if (pmu) {
- 		if (event->attr.type != type && type != PERF_TYPE_RAW &&
- 		    !(pmu->capabilities & PERF_PMU_CAP_EXTENDED_HW_TYPE))
--			goto fail;
-+			return ERR_PTR(-ENOENT);
- 
- 		ret = perf_try_init_event(pmu, event);
- 		if (ret == -ENOENT && event->attr.type != type && !extended_type) {
-@@ -11554,27 +11553,21 @@ static struct pmu *perf_init_event(struc
- 		}
- 
- 		if (ret)
--			pmu = ERR_PTR(ret);
-+			return ERR_PTR(ret);
- 
--		goto unlock;
-+		return pmu;
- 	}
- 
- 	list_for_each_entry_rcu(pmu, &pmus, entry, lockdep_is_held(&pmus_srcu)) {
- 		ret = perf_try_init_event(pmu, event);
- 		if (!ret)
--			goto unlock;
-+			return pmu;
- 
--		if (ret != -ENOENT) {
--			pmu = ERR_PTR(ret);
--			goto unlock;
--		}
-+		if (ret != -ENOENT)
-+			return ERR_PTR(ret);
- 	}
--fail:
--	pmu = ERR_PTR(-ENOENT);
--unlock:
--	srcu_read_unlock(&pmus_srcu, idx);
- 
--	return pmu;
-+	return ERR_PTR(-ENOENT);
- }
- 
- static void attach_sb_event(struct perf_event *event)
 
 
