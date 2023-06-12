@@ -2,43 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 452B1C87FDC
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E45C7EE2E
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbjFLJ6j (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        id S234667AbjFLJ6k (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjFLJyc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:32 -0400
+        with ESMTP id S231797AbjFLJy3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:29 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC9C6189;
-        Mon, 12 Jun 2023 02:39:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F435FFB;
+        Mon, 12 Jun 2023 02:39:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=0Nln3H/TQf9zjJAhRuDD5Vdsf6AHs8EETAgdoNVjkyE=; b=aLyzlCpjSY84iDgpsEBBBGJX3P
-        lK9yNsqeaoP3u7ZT5H3JL27+RTLru0GApQ5l1v5uV8i/wJIkHH27c0wmrJ/GCkYQ/G7TqE972r+Z4
-        olS6TpdyK9sVlqg98ePCC+diSOfoU1XnPSfTCvcxnVGIIzofX5B72ITAND3PEzyTDUpjkk1zcu8Ub
-        PdMjf6R10+giGpo+mqNbqKy4UQa4reNeKvcpiwdZPnE+1yKAYR8IhUcKfW8HYKgRVSbmBWw9pmlCJ
-        zqWAeUSmHhgSXgznUhoQ3Aaf3QwuEHOuaRjzBPrKSygfGuGbdsxJRVlJjK0e4SLbm0NNjGwLzFteH
-        qxfDrnkg==;
+        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=B0zTaY9KKPrZ1tK1qkRJnGUNtZfdXptR/HzHjs1+iS4=; b=XQZ4FGxflXtqrO54lLAdhO230P
+        0eX2jASHQqZyaZNrOmMoEAP3MzmJ1PuCQQZsDzJJBywGmqEPEQHqvhlhW6xpMkYIB7cscPsZnMTPl
+        wda/YRaaOhoccHxY9GPvcZrmpGt4nCDyqnVSaswXky246eD7cW64gEprJmzd0jxHJVUT0l9r//0Pk
+        si1QkPjlyyiXYTzocQuwfczKtYj0dLOHYdp/NLE/KEPazV26d+77/ruWNTca7LUqUMS4HC8k/lh1H
+        dX6E3O3gMC+cI3mUHbifWMBmIlu4IhoS0cvWd9D1DJFJDkJUmucMJXsZhbMU02ynkCiQnt/FdIvcn
+        A8w/NYnw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q8e0m-008kQi-0Q;
-        Mon, 12 Jun 2023 09:39:00 +0000
+        id 1q8e0f-008kOl-0u;
+        Mon, 12 Jun 2023 09:38:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2EF723032BD;
-        Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 22C4F30058D;
+        Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B8BAA30A77B6C; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093539.966607037@infradead.org>
+        id E7CDA30A20814; Mon, 12 Jun 2023 11:38:47 +0200 (CEST)
+Message-ID: <20230612090713.652690195@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:47 +0200
+Date:   Mon, 12 Jun 2023 11:07:13 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -66,136 +66,64 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 34/57] perf: Simplify perf_event_*_on_exec()
-References: <20230612090713.652690195@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH v3 00/57] Scope-based Resource Management
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Hi,
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+After a wee bit of bike-shedding on the syntax/API of the thing I think we're
+in a reasonable shape.
+
+There's still the no_free_ptr() vs take_ptr() thing, but that can be easily
+sorted with a little script over the patches if we reach consensus.
+
+I've taken to converting kernel/sched/core.c and kernel/events/core.c to see
+how well this stuff actually works. Unlike last time, I've split them up into a
+gazillion little patches. Both for my sanity -- bisect is genius when you're
+trying to debug stuff in the middle of the night as well as reviewer sanity.
+
+These are by no means 'complete' convertions, I've mostly focussed on functions
+that had 'goto' in them. Since that's a large part of why I started on all this.
+
+x86_x64-defconfig boots and passes perf test. I'll go figure out how to point
+syzcaller at it.
+
+The patches have gone through a few cycles of 0day over the weekend, and mostly
+builds fine now.
+
+Dan Carpenter poked me about how sparse doesn't yet understand the __cleanup__
+attribute and seems to suffer from decl-after-stmt issues, so that might be
+something that needs attention.
+
+Anyway, does this look like something we can live with?
+
 ---
- kernel/events/core.c |   88 +++++++++++++++++++++++----------------------------
- 1 file changed, 40 insertions(+), 48 deletions(-)
-
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4318,39 +4318,36 @@ static void perf_event_enable_on_exec(st
- 	enum event_type_t event_type = 0;
- 	struct perf_cpu_context *cpuctx;
- 	struct perf_event *event;
--	unsigned long flags;
- 	int enabled = 0;
- 
--	local_irq_save(flags);
--	if (WARN_ON_ONCE(current->perf_event_ctxp != ctx))
--		goto out;
--
--	if (!ctx->nr_events)
--		goto out;
--
--	cpuctx = this_cpu_ptr(&perf_cpu_context);
--	perf_ctx_lock(cpuctx, ctx);
--	ctx_sched_out(ctx, EVENT_TIME);
--
--	list_for_each_entry(event, &ctx->event_list, event_entry) {
--		enabled |= event_enable_on_exec(event, ctx);
--		event_type |= get_event_type(event);
-+	scoped_guard (irqsave) {
-+		if (WARN_ON_ONCE(current->perf_event_ctxp != ctx))
-+			return;
-+
-+		if (!ctx->nr_events)
-+			return;
-+
-+		cpuctx = this_cpu_ptr(&perf_cpu_context);
-+		guard(perf_ctx_lock)(cpuctx, ctx);
-+
-+		ctx_sched_out(ctx, EVENT_TIME);
-+
-+		list_for_each_entry(event, &ctx->event_list, event_entry) {
-+			enabled |= event_enable_on_exec(event, ctx);
-+			event_type |= get_event_type(event);
-+		}
-+
-+		/*
-+		 * Unclone and reschedule this context if we enabled any event.
-+		 */
-+		if (enabled) {
-+			clone_ctx = unclone_ctx(ctx);
-+			ctx_resched(cpuctx, ctx, event_type);
-+		} else {
-+			ctx_sched_in(ctx, EVENT_TIME);
-+		}
- 	}
- 
--	/*
--	 * Unclone and reschedule this context if we enabled any event.
--	 */
--	if (enabled) {
--		clone_ctx = unclone_ctx(ctx);
--		ctx_resched(cpuctx, ctx, event_type);
--	} else {
--		ctx_sched_in(ctx, EVENT_TIME);
--	}
--	perf_ctx_unlock(cpuctx, ctx);
--
--out:
--	local_irq_restore(flags);
--
- 	if (clone_ctx)
- 		put_ctx(clone_ctx);
- }
-@@ -4367,34 +4364,29 @@ static void perf_event_remove_on_exec(st
- {
- 	struct perf_event_context *clone_ctx = NULL;
- 	struct perf_event *event, *next;
--	unsigned long flags;
- 	bool modified = false;
- 
--	mutex_lock(&ctx->mutex);
-+	scoped_guard (mutex, &ctx->mutex) {
-+		if (WARN_ON_ONCE(ctx->task != current))
-+			return;
- 
--	if (WARN_ON_ONCE(ctx->task != current))
--		goto unlock;
-+		list_for_each_entry_safe(event, next, &ctx->event_list, event_entry) {
-+			if (!event->attr.remove_on_exec)
-+				continue;
- 
--	list_for_each_entry_safe(event, next, &ctx->event_list, event_entry) {
--		if (!event->attr.remove_on_exec)
--			continue;
-+			if (!is_kernel_event(event))
-+				perf_remove_from_owner(event);
- 
--		if (!is_kernel_event(event))
--			perf_remove_from_owner(event);
-+			modified = true;
- 
--		modified = true;
-+			perf_event_exit_event(event, ctx);
-+		}
- 
--		perf_event_exit_event(event, ctx);
-+		guard(raw_spinlock_irqsave)(&ctx->lock);
-+		if (modified)
-+			clone_ctx = unclone_ctx(ctx);
- 	}
- 
--	raw_spin_lock_irqsave(&ctx->lock, flags);
--	if (modified)
--		clone_ctx = unclone_ctx(ctx);
--	raw_spin_unlock_irqrestore(&ctx->lock, flags);
--
--unlock:
--	mutex_unlock(&ctx->mutex);
--
- 	if (clone_ctx)
- 		put_ctx(clone_ctx);
- }
-
+ Makefile                            |    6 +-
+ arch/arm64/kernel/vdso32/Makefile   |    2 -
+ drivers/dma/ioat/dma.c              |   12 +-
+ include/linux/cleanup.h             |  167 ++++
+ include/linux/compiler-clang.h      |    9 +
+ include/linux/compiler_attributes.h |    6 +
+ include/linux/cpu.h                 |    2 +
+ include/linux/device.h              |    7 +
+ include/linux/file.h                |   11 +
+ include/linux/irqflags.h            |    7 +
+ include/linux/mutex.h               |    4 +
+ include/linux/percpu.h              |    4 +
+ include/linux/perf_event.h          |   14 +-
+ include/linux/preempt.h             |    5 +
+ include/linux/rcupdate.h            |    3 +
+ include/linux/rwsem.h               |    8 +
+ include/linux/sched/task.h          |    2 +
+ include/linux/slab.h                |    3 +
+ include/linux/spinlock.h            |   31 +
+ include/linux/srcu.h                |    5 +
+ kernel/events/core.c                | 1642 +++++++++++++++--------------------
+ kernel/sched/core.c                 |  931 +++++++++-----------
+ kernel/sched/sched.h                |   40 +
+ scripts/checkpatch.pl               |    2 +-
+ security/apparmor/include/lib.h     |    6 +-
+ 25 files changed, 1433 insertions(+), 1496 deletions(-)
 
