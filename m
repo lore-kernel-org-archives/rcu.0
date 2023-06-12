@@ -2,43 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE7CC7EE2E
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71EB2C7EE43
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235459AbjFLJ57 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
+        id S235987AbjFLJ6E (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233352AbjFLJyo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:44 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA0D4C1F;
-        Mon, 12 Jun 2023 02:39:07 -0700 (PDT)
+        with ESMTP id S232091AbjFLJyX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5204C10;
+        Mon, 12 Jun 2023 02:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=oJyDWnF7S8lcaog4Xmhyr6vhDojPiq7m8dz3r+ZsZG4=; b=rdH9P5/MC3KcY+M1BubJnq2SDA
-        VDGeL/wvRJ516ylJciShUfk/lLKhhrHMf84ST4NUiKTy2ExpNVzaIsxOt0cQrm7+eX/8udNe5etuq
-        a8fdjA1aakVHh17wbvSw2yH8JlQoRaJkmSyuc03oqmoc7UOXpLHURSRxkh0dVmI/veHKlufAu0gpY
-        Ns3St7yJnjxp7C9LWCYQAjUcurSze2tx9FwQXkuQqZEP3Medv20JQgxJrWc9w8JIbLUqKZH2b4jfd
-        jiWzkPTbr4fSMmiKp/dav0iBFlH+nbdDr15ksYyL2JPyPxZmPbWGcP2XPV4+cHOFrrcX0V4f4DCw+
-        S6QpV56A==;
+        bh=i7e4Ed2VApizqqMeLDQrTIcscOdlMDKi2d1+AvdLSfc=; b=wMzEZ40Omey0hsxhU/f3YtsHn5
+        zztcNlN85LbTkIssyfkfrL48NmxnO6Xui7xALjewqMlyvd6RZfe6D4fBUEzU8ivSmkwH/rB+mgo8T
+        DhIJ64bXK4MQAZHj4XNZbgTg99syxZL71a1nSxvAdXCC6Uq6WFU3Xo8Qau8qLevXW3vCcNOlO2hGd
+        kLRb3QAfPguHrywS9Q4UgqR5mxOfj+Fk/M4IRihmVpaRZyf1EnKiw6p0zeUoZx/4h4dCUGPxRMpDH
+        XqqMxcqWisvIc3MeLjMSkQ+D+XHT/6tgpmqY6cFvXD2CLwtL8aPDEHRB9Vg3FRPnxzDUV9pZfUiAM
+        GAqscdag==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q8e0l-008kQN-0e;
-        Mon, 12 Jun 2023 09:38:55 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1q8e0g-002N94-7B; Mon, 12 Jun 2023 09:38:50 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E854302EA7;
-        Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A9B5B302FB8;
+        Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 67EF730A77B58; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093538.942686455@infradead.org>
+        id 22F9530A70248; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093537.977924652@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:33 +0200
+Date:   Mon, 12 Jun 2023 11:07:21 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -66,7 +65,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 20/57] sched: Simplify tg_set_cfs_bandwidth()
+Subject: [PATCH v3 08/57] sched: Simplify wake_up_if_idle()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -78,95 +77,63 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/cpu.h |    2 ++
- kernel/sched/core.c |   42 +++++++++++++++++++++---------------------
- 2 files changed, 23 insertions(+), 21 deletions(-)
+ kernel/sched/core.c  |   20 ++++++--------------
+ kernel/sched/sched.h |   15 +++++++++++++++
+ 2 files changed, 21 insertions(+), 14 deletions(-)
 
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -148,6 +148,8 @@ static inline int remove_cpu(unsigned in
- static inline void smp_shutdown_nonboot_cpus(unsigned int primary_cpu) { }
- #endif	/* !CONFIG_HOTPLUG_CPU */
- 
-+DEFINE_LOCK_GUARD_0(cpus_read_lock, cpus_read_lock(), cpus_read_unlock())
-+
- #ifdef CONFIG_PM_SLEEP_SMP
- extern int freeze_secondary_cpus(int primary);
- extern void thaw_secondary_cpus(void);
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -10726,11 +10726,12 @@ static int tg_set_cfs_bandwidth(struct t
- 	 * Prevent race between setting of cfs_rq->runtime_enabled and
- 	 * unthrottle_offline_cfs_rqs().
- 	 */
--	cpus_read_lock();
--	mutex_lock(&cfs_constraints_mutex);
-+	guard(cpus_read_lock)();
-+	guard(mutex)(&cfs_constraints_mutex);
-+
- 	ret = __cfs_schedulable(tg, period, quota);
- 	if (ret)
--		goto out_unlock;
-+		return ret;
+@@ -3872,21 +3872,13 @@ static void __ttwu_queue_wakelist(struct
+ void wake_up_if_idle(int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+-	struct rq_flags rf;
  
- 	runtime_enabled = quota != RUNTIME_INF;
- 	runtime_was_enabled = cfs_b->quota != RUNTIME_INF;
-@@ -10740,39 +10741,38 @@ static int tg_set_cfs_bandwidth(struct t
- 	 */
- 	if (runtime_enabled && !runtime_was_enabled)
- 		cfs_bandwidth_usage_inc();
--	raw_spin_lock_irq(&cfs_b->lock);
--	cfs_b->period = ns_to_ktime(period);
--	cfs_b->quota = quota;
--	cfs_b->burst = burst;
+-	rcu_read_lock();
 -
--	__refill_cfs_bandwidth_runtime(cfs_b);
+-	if (!is_idle_task(rcu_dereference(rq->curr)))
+-		goto out;
 -
--	/* Restart the period timer (if active) to handle new period expiry: */
--	if (runtime_enabled)
--		start_cfs_bandwidth(cfs_b);
- 
--	raw_spin_unlock_irq(&cfs_b->lock);
-+	scoped_guard (raw_spinlock_irq, &cfs_b->lock) {
-+		cfs_b->period = ns_to_ktime(period);
-+		cfs_b->quota = quota;
-+		cfs_b->burst = burst;
-+
-+		__refill_cfs_bandwidth_runtime(cfs_b);
-+
-+		/*
-+		 * Restart the period timer (if active) to handle new
-+		 * period expiry:
-+		 */
-+		if (runtime_enabled)
-+			start_cfs_bandwidth(cfs_b);
+-	rq_lock_irqsave(rq, &rf);
+-	if (is_idle_task(rq->curr))
+-		resched_curr(rq);
+-	/* Else CPU is not idle, do nothing here: */
+-	rq_unlock_irqrestore(rq, &rf);
+-
+-out:
+-	rcu_read_unlock();
++	guard(rcu)();
++	if (is_idle_task(rcu_dereference(rq->curr))) {
++		guard(rq_lock)(rq);
++		if (is_idle_task(rq->curr))
++			resched_curr(rq);
 +	}
- 
- 	for_each_online_cpu(i) {
- 		struct cfs_rq *cfs_rq = tg->cfs_rq[i];
- 		struct rq *rq = cfs_rq->rq;
--		struct rq_flags rf;
- 
--		rq_lock_irq(rq, &rf);
-+		guard(rq_lock_irq)(rq);
- 		cfs_rq->runtime_enabled = runtime_enabled;
- 		cfs_rq->runtime_remaining = 0;
- 
- 		if (cfs_rq->throttled)
- 			unthrottle_cfs_rq(cfs_rq);
--		rq_unlock_irq(rq, &rf);
- 	}
-+
- 	if (runtime_was_enabled && !runtime_enabled)
- 		cfs_bandwidth_usage_dec();
--out_unlock:
--	mutex_unlock(&cfs_constraints_mutex);
--	cpus_read_unlock();
- 
--	return ret;
-+	return 0;
  }
  
- static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
+ bool cpus_share_cache(int this_cpu, int that_cpu)
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1678,6 +1678,21 @@ rq_unlock(struct rq *rq, struct rq_flags
+ 	raw_spin_rq_unlock(rq);
+ }
+ 
++DEFINE_LOCK_GUARD_1(rq_lock, struct rq,
++		    rq_lock(_T->lock, &_T->rf),
++		    rq_unlock(_T->lock, &_T->rf),
++		    struct rq_flags rf)
++
++DEFINE_LOCK_GUARD_1(rq_lock_irq, struct rq,
++		    rq_lock_irq(_T->lock, &_T->rf),
++		    rq_unlock_irq(_T->lock, &_T->rf),
++		    struct rq_flags rf)
++
++DEFINE_LOCK_GUARD_1(rq_lock_irqsave, struct rq,
++		    rq_lock_irqsave(_T->lock, &_T->rf),
++		    rq_unlock_irqrestore(_T->lock, &_T->rf),
++		    struct rq_flags rf)
++
+ static inline struct rq *
+ this_rq_lock_irq(struct rq_flags *rf)
+ 	__acquires(rq->lock)
 
 
