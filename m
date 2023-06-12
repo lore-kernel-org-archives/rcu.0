@@ -2,43 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9401C7EE2E
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE07C7EE45
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjFLJ6e (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
+        id S236137AbjFLJ6f (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233425AbjFLJyp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:45 -0400
+        with ESMTP id S231855AbjFLJyZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:25 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F334C1D;
-        Mon, 12 Jun 2023 02:39:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25155FF3;
+        Mon, 12 Jun 2023 02:38:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=szAn79F4mqfMUFH3NFua/nTnj8aGUQ8HGVR6NlJOzM4=; b=dmt6RRN5/6iW0nXv8WCs7Zhoq7
-        h66/OFpGSYq3NopaotDNajuFo8i5Abvywbk25Mkw64F7BKRPBDAMFErpkMVn5jc1JDWWixleXtBPh
-        TLPcdD6pTKzi2NGzuw4ny2PmQy/30yIqkBkkgI2XhvaBJgwGgdhaI4B8DWmnMj2mqvkcRzcAY6HRy
-        jk7gpJD/ftYk8Hikh4m2P22vJKm9NoD09zIFAZMUbUi4MpR8Yhp4gzJ6D7tuejbq/RRvcSqn4CrlB
-        sEMwyssBIPsqrQMHjdIJ8/AZRnWyKMbTE7D2j2333TyWpvcfxe9q1zhpgbPY6ZV8UERchXfhjI06e
-        QRlB8Skw==;
+        bh=9sqy4wj1SuZG+E1ZOkNDiw8zR5F8T4bHRpYkByM8S6o=; b=HNjtc1kou6jUKrPa93YlSTKipB
+        VhOpXUPSBCgjriMwtuZYiFbSO92NjXbfCsFmRFtzO7yfFSXIVuY/yN+Yj7pGBcnBI5S0hv8fNdtcN
+        //wmbKzY575t4i5oKfCiWpecYl0rAG6BFfdMSjKIXuCRhpuWcyhO2gVcrMTipwAY6sjO79StTEAIQ
+        VC8/ybwDlXuWf1vL/cHd1fVTSgl2eqKrBrD54rFBuftQGd/gu653fosXknQhYF8Op6cNrlThojVpp
+        8VS39gvDd4GbsgBVynRhv46UkSxPgULiSAQIabpdcmA7w8/j+yhjfaJwXT+KXZjarghiosRq198gW
+        o3zyz1kQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q8e0l-008kQP-0j;
-        Mon, 12 Jun 2023 09:38:56 +0000
+        id 1q8e0g-008kPB-1k;
+        Mon, 12 Jun 2023 09:38:51 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E96F302F7E;
-        Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0BFFE3031BE;
+        Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 6C74530A77B5C; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093539.014199820@infradead.org>
+        id 5832930A77B57; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093538.712217968@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:34 +0200
+Date:   Mon, 12 Jun 2023 11:07:30 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -66,7 +66,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 21/57] sched: Misc cleanups
+Subject: [PATCH v3 17/57] sched: Simplify yield_to()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,426 +74,102 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Random remaining guard use...
+Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |  163 ++++++++++++++++++++--------------------------------
- 1 file changed, 63 insertions(+), 100 deletions(-)
+ kernel/sched/core.c |   73 ++++++++++++++++++++++------------------------------
+ 1 file changed, 32 insertions(+), 41 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1454,16 +1454,12 @@ static void __uclamp_update_util_min_rt_
- 
- static void uclamp_update_util_min_rt_default(struct task_struct *p)
+@@ -8799,55 +8799,46 @@ int __sched yield_to(struct task_struct
  {
--	struct rq_flags rf;
--	struct rq *rq;
--
- 	if (!rt_task(p))
- 		return;
- 
- 	/* Protect updates to p->uclamp_* */
--	rq = task_rq_lock(p, &rf);
-+	guard(task_rq_lock)(p);
- 	__uclamp_update_util_min_rt_default(p);
--	task_rq_unlock(rq, p, &rf);
- }
- 
- static inline struct uclamp_se
-@@ -1759,9 +1755,8 @@ static void uclamp_update_root_tg(void)
- 	uclamp_se_set(&tg->uclamp_req[UCLAMP_MAX],
- 		      sysctl_sched_uclamp_util_max, false);
- 
--	rcu_read_lock();
-+	guard(rcu)();
- 	cpu_util_update_eff(&root_task_group.css);
--	rcu_read_unlock();
- }
- #else
- static void uclamp_update_root_tg(void) { }
-@@ -1788,10 +1783,9 @@ static void uclamp_sync_util_min_rt_defa
- 	smp_mb__after_spinlock();
- 	read_unlock(&tasklist_lock);
- 
--	rcu_read_lock();
-+	guard(rcu)();
- 	for_each_process_thread(g, p)
- 		uclamp_update_util_min_rt_default(p);
--	rcu_read_unlock();
- }
- 
- static int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
-@@ -2243,10 +2237,9 @@ void migrate_disable(void)
- 		return;
- 	}
- 
--	preempt_disable();
-+	guard(preempt)();
- 	this_rq()->nr_pinned++;
- 	p->migration_disabled = 1;
--	preempt_enable();
- }
- EXPORT_SYMBOL_GPL(migrate_disable);
- 
-@@ -2270,7 +2263,7 @@ void migrate_enable(void)
- 	 * Ensure stop_task runs either before or after this, and that
- 	 * __set_cpus_allowed_ptr(SCA_MIGRATE_ENABLE) doesn't schedule().
- 	 */
--	preempt_disable();
-+	guard(preempt)();
- 	if (p->cpus_ptr != &p->cpus_mask)
- 		__set_cpus_allowed_ptr(p, &ac);
- 	/*
-@@ -2281,7 +2274,6 @@ void migrate_enable(void)
- 	barrier();
- 	p->migration_disabled = 0;
- 	this_rq()->nr_pinned--;
--	preempt_enable();
- }
- EXPORT_SYMBOL_GPL(migrate_enable);
- 
-@@ -3449,13 +3441,11 @@ unsigned long wait_task_inactive(struct
-  */
- void kick_process(struct task_struct *p)
- {
--	int cpu;
-+	guard(preempt)();
-+	int cpu = task_cpu(p);
- 
--	preempt_disable();
--	cpu = task_cpu(p);
- 	if ((cpu != smp_processor_id()) && task_curr(p))
- 		smp_send_reschedule(cpu);
--	preempt_enable();
- }
- EXPORT_SYMBOL_GPL(kick_process);
- 
-@@ -6300,8 +6290,9 @@ static void sched_core_balance(struct rq
- 	struct sched_domain *sd;
- 	int cpu = cpu_of(rq);
- 
--	preempt_disable();
--	rcu_read_lock();
-+	guard(preempt)();
-+	guard(rcu)();
-+
- 	raw_spin_rq_unlock_irq(rq);
- 	for_each_domain(cpu, sd) {
- 		if (need_resched())
-@@ -6311,8 +6302,6 @@ static void sched_core_balance(struct rq
- 			break;
- 	}
- 	raw_spin_rq_lock_irq(rq);
--	rcu_read_unlock();
--	preempt_enable();
- }
- 
- static DEFINE_PER_CPU(struct balance_callback, core_balance_head);
-@@ -8169,8 +8158,6 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pi
- #ifdef CONFIG_SMP
- int dl_task_check_affinity(struct task_struct *p, const struct cpumask *mask)
- {
--	int ret = 0;
--
- 	/*
- 	 * If the task isn't a deadline task or admission control is
- 	 * disabled then we don't care about affinity changes.
-@@ -8184,11 +8171,11 @@ int dl_task_check_affinity(struct task_s
- 	 * tasks allowed to run on all the CPUs in the task's
- 	 * root_domain.
- 	 */
--	rcu_read_lock();
-+	guard(rcu)();
- 	if (!cpumask_subset(task_rq(p)->rd->span, mask))
--		ret = -EBUSY;
--	rcu_read_unlock();
--	return ret;
-+		return -EBUSY;
-+
-+	return 0;
- }
- #endif
- 
-@@ -9197,10 +9184,8 @@ int task_can_attach(struct task_struct *
- 	 * success of set_cpus_allowed_ptr() on all attached tasks
- 	 * before cpus_mask may be changed.
- 	 */
--	if (p->flags & PF_NO_SETAFFINITY) {
--		ret = -EINVAL;
--		goto out;
--	}
-+	if (p->flags & PF_NO_SETAFFINITY)
-+		return -EINVAL;
- 
- 	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
- 					      cs_effective_cpus)) {
-@@ -9211,7 +9196,6 @@ int task_can_attach(struct task_struct *
- 		ret = dl_cpu_busy(cpu, p);
- 	}
- 
--out:
- 	return ret;
- }
- 
-@@ -10433,11 +10417,9 @@ static int cpu_cgroup_css_online(struct
- 
- #ifdef CONFIG_UCLAMP_TASK_GROUP
- 	/* Propagate the effective uclamp value for the new group */
--	mutex_lock(&uclamp_mutex);
--	rcu_read_lock();
-+	guard(mutex)(&uclamp_mutex);
-+	guard(rcu)();
- 	cpu_util_update_eff(css);
--	rcu_read_unlock();
--	mutex_unlock(&uclamp_mutex);
- #endif
- 
- 	return 0;
-@@ -10588,8 +10570,8 @@ static ssize_t cpu_uclamp_write(struct k
- 
- 	static_branch_enable(&sched_uclamp_used);
- 
--	mutex_lock(&uclamp_mutex);
--	rcu_read_lock();
-+	guard(mutex)(&uclamp_mutex);
-+	guard(rcu)();
- 
- 	tg = css_tg(of_css(of));
- 	if (tg->uclamp_req[clamp_id].value != req.util)
-@@ -10604,9 +10586,6 @@ static ssize_t cpu_uclamp_write(struct k
- 	/* Update effective clamps to track the most restrictive value */
- 	cpu_util_update_eff(of_css(of));
- 
--	rcu_read_unlock();
--	mutex_unlock(&uclamp_mutex);
--
- 	return nbytes;
- }
- 
-@@ -10632,10 +10611,10 @@ static inline void cpu_uclamp_print(stru
- 	u64 percent;
- 	u32 rem;
- 
--	rcu_read_lock();
--	tg = css_tg(seq_css(sf));
--	util_clamp = tg->uclamp_req[clamp_id].value;
--	rcu_read_unlock();
-+	scoped_guard (rcu) {
-+		tg = css_tg(seq_css(sf));
-+		util_clamp = tg->uclamp_req[clamp_id].value;
-+	}
- 
- 	if (util_clamp == SCHED_CAPACITY_SCALE) {
- 		seq_puts(sf, "max\n");
-@@ -10952,7 +10931,6 @@ static int tg_cfs_schedulable_down(struc
- 
- static int __cfs_schedulable(struct task_group *tg, u64 period, u64 quota)
- {
--	int ret;
- 	struct cfs_schedulable_data data = {
- 		.tg = tg,
- 		.period = period,
-@@ -10964,11 +10942,8 @@ static int __cfs_schedulable(struct task
- 		do_div(data.quota, NSEC_PER_USEC);
- 	}
- 
--	rcu_read_lock();
--	ret = walk_tg_tree(tg_cfs_schedulable_down, tg_nop, &data);
--	rcu_read_unlock();
--
--	return ret;
-+	guard(rcu)();
-+	return walk_tg_tree(tg_cfs_schedulable_down, tg_nop, &data);
- }
- 
- static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
-@@ -11529,14 +11504,12 @@ int __sched_mm_cid_migrate_from_fetch_ci
- 	 * are not the last task to be migrated from this cpu for this mm, so
- 	 * there is no need to move src_cid to the destination cpu.
- 	 */
--	rcu_read_lock();
-+	guard(rcu)();
- 	src_task = rcu_dereference(src_rq->curr);
- 	if (READ_ONCE(src_task->mm_cid_active) && src_task->mm == mm) {
--		rcu_read_unlock();
- 		t->last_mm_cid = -1;
- 		return -1;
- 	}
--	rcu_read_unlock();
- 
- 	return src_cid;
- }
-@@ -11580,18 +11553,17 @@ int __sched_mm_cid_migrate_from_try_stea
- 	 * the lazy-put flag, this task will be responsible for transitioning
- 	 * from lazy-put flag set to MM_CID_UNSET.
- 	 */
--	rcu_read_lock();
--	src_task = rcu_dereference(src_rq->curr);
--	if (READ_ONCE(src_task->mm_cid_active) && src_task->mm == mm) {
--		rcu_read_unlock();
--		/*
--		 * We observed an active task for this mm, there is therefore
--		 * no point in moving this cid to the destination cpu.
--		 */
--		t->last_mm_cid = -1;
--		return -1;
-+	scoped_guard (rcu) {
-+		src_task = rcu_dereference(src_rq->curr);
-+		if (READ_ONCE(src_task->mm_cid_active) && src_task->mm == mm) {
-+			/*
-+			 * We observed an active task for this mm, there is therefore
-+			 * no point in moving this cid to the destination cpu.
-+			 */
-+			t->last_mm_cid = -1;
-+			return -1;
-+		}
- 	}
--	rcu_read_unlock();
- 
- 	/*
- 	 * The src_cid is unused, so it can be unset.
-@@ -11664,7 +11636,6 @@ static void sched_mm_cid_remote_clear(st
- {
- 	struct rq *rq = cpu_rq(cpu);
- 	struct task_struct *t;
+ 	struct task_struct *curr = current;
+ 	struct rq *rq, *p_rq;
 -	unsigned long flags;
- 	int cid, lazy_cid;
+ 	int yielded = 0;
  
- 	cid = READ_ONCE(pcpu_cid->cid);
-@@ -11699,23 +11670,21 @@ static void sched_mm_cid_remote_clear(st
- 	 * the lazy-put flag, that task will be responsible for transitioning
- 	 * from lazy-put flag set to MM_CID_UNSET.
- 	 */
--	rcu_read_lock();
--	t = rcu_dereference(rq->curr);
--	if (READ_ONCE(t->mm_cid_active) && t->mm == mm) {
--		rcu_read_unlock();
--		return;
-+	scoped_guard (rcu) {
-+		t = rcu_dereference(rq->curr);
-+		if (READ_ONCE(t->mm_cid_active) && t->mm == mm)
-+			return;
- 	}
--	rcu_read_unlock();
- 
- 	/*
- 	 * The cid is unused, so it can be unset.
- 	 * Disable interrupts to keep the window of cid ownership without rq
- 	 * lock small.
- 	 */
 -	local_irq_save(flags);
--	if (try_cmpxchg(&pcpu_cid->cid, &lazy_cid, MM_CID_UNSET))
--		__mm_cid_put(mm, cid);
--	local_irq_restore(flags);
+-	rq = this_rq();
 +	scoped_guard (irqsave) {
-+		if (try_cmpxchg(&pcpu_cid->cid, &lazy_cid, MM_CID_UNSET))
-+			__mm_cid_put(mm, cid);
-+	}
- }
++		rq = this_rq();
  
- static void sched_mm_cid_remote_clear_old(struct mm_struct *mm, int cpu)
-@@ -11737,14 +11706,13 @@ static void sched_mm_cid_remote_clear_ol
- 	 * snapshot associated with this cid if an active task using the mm is
- 	 * observed on this rq.
- 	 */
--	rcu_read_lock();
--	curr = rcu_dereference(rq->curr);
--	if (READ_ONCE(curr->mm_cid_active) && curr->mm == mm) {
--		WRITE_ONCE(pcpu_cid->time, rq_clock);
--		rcu_read_unlock();
--		return;
-+	scoped_guard (rcu) {
-+		curr = rcu_dereference(rq->curr);
-+		if (READ_ONCE(curr->mm_cid_active) && curr->mm == mm) {
-+			WRITE_ONCE(pcpu_cid->time, rq_clock);
-+			return;
-+		}
- 	}
--	rcu_read_unlock();
- 
- 	if (rq_clock < pcpu_cid->time + SCHED_MM_CID_PERIOD_NS)
- 		return;
-@@ -11838,7 +11806,6 @@ void task_tick_mm_cid(struct rq *rq, str
- void sched_mm_cid_exit_signals(struct task_struct *t)
- {
- 	struct mm_struct *mm = t->mm;
--	struct rq_flags rf;
- 	struct rq *rq;
- 
- 	if (!mm)
-@@ -11846,7 +11813,7 @@ void sched_mm_cid_exit_signals(struct ta
- 
- 	preempt_disable();
- 	rq = this_rq();
--	rq_lock_irqsave(rq, &rf);
-+	guard(rq_lock_irqsave)(rq);
- 	preempt_enable_no_resched();	/* holding spinlock */
- 	WRITE_ONCE(t->mm_cid_active, 0);
- 	/*
-@@ -11856,13 +11823,11 @@ void sched_mm_cid_exit_signals(struct ta
- 	smp_mb();
- 	mm_cid_put(mm);
- 	t->last_mm_cid = t->mm_cid = -1;
--	rq_unlock_irqrestore(rq, &rf);
- }
- 
- void sched_mm_cid_before_execve(struct task_struct *t)
- {
- 	struct mm_struct *mm = t->mm;
--	struct rq_flags rf;
- 	struct rq *rq;
- 
- 	if (!mm)
-@@ -11870,7 +11835,7 @@ void sched_mm_cid_before_execve(struct t
- 
- 	preempt_disable();
- 	rq = this_rq();
--	rq_lock_irqsave(rq, &rf);
-+	guard(rq_lock_irqsave)(rq);
- 	preempt_enable_no_resched();	/* holding spinlock */
- 	WRITE_ONCE(t->mm_cid_active, 0);
- 	/*
-@@ -11880,13 +11845,11 @@ void sched_mm_cid_before_execve(struct t
- 	smp_mb();
- 	mm_cid_put(mm);
- 	t->last_mm_cid = t->mm_cid = -1;
--	rq_unlock_irqrestore(rq, &rf);
- }
- 
- void sched_mm_cid_after_execve(struct task_struct *t)
- {
- 	struct mm_struct *mm = t->mm;
--	struct rq_flags rf;
- 	struct rq *rq;
- 
- 	if (!mm)
-@@ -11894,16 +11857,16 @@ void sched_mm_cid_after_execve(struct ta
- 
- 	preempt_disable();
- 	rq = this_rq();
--	rq_lock_irqsave(rq, &rf);
--	preempt_enable_no_resched();	/* holding spinlock */
--	WRITE_ONCE(t->mm_cid_active, 1);
+ again:
+-	p_rq = task_rq(p);
 -	/*
--	 * Store t->mm_cid_active before loading per-mm/cpu cid.
--	 * Matches barrier in sched_mm_cid_remote_clear_old().
+-	 * If we're the only runnable task on the rq and target rq also
+-	 * has only one task, there's absolutely no point in yielding.
 -	 */
--	smp_mb();
--	t->last_mm_cid = t->mm_cid = mm_cid_get(rq, mm);
--	rq_unlock_irqrestore(rq, &rf);
-+	scoped_guard (rq_lock_irqsave, rq) {
-+		preempt_enable_no_resched();	/* holding spinlock */
-+		WRITE_ONCE(t->mm_cid_active, 1);
-+		/*
-+		 * Store t->mm_cid_active before loading per-mm/cpu cid.
-+		 * Matches barrier in sched_mm_cid_remote_clear_old().
-+		 */
-+		smp_mb();
-+		t->last_mm_cid = t->mm_cid = mm_cid_get(rq, mm);
-+	}
- 	rseq_set_notify_resume(t);
- }
+-	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
+-		yielded = -ESRCH;
+-		goto out_irq;
+-	}
+-
+-	double_rq_lock(rq, p_rq);
+-	if (task_rq(p) != p_rq) {
+-		double_rq_unlock(rq, p_rq);
+-		goto again;
+-	}
+-
+-	if (!curr->sched_class->yield_to_task)
+-		goto out_unlock;
+-
+-	if (curr->sched_class != p->sched_class)
+-		goto out_unlock;
+-
+-	if (task_on_cpu(p_rq, p) || !task_is_running(p))
+-		goto out_unlock;
+-
+-	yielded = curr->sched_class->yield_to_task(rq, p);
+-	if (yielded) {
+-		schedstat_inc(rq->yld_count);
++		p_rq = task_rq(p);
+ 		/*
+-		 * Make p's CPU reschedule; pick_next_entity takes care of
+-		 * fairness.
++		 * If we're the only runnable task on the rq and target rq also
++		 * has only one task, there's absolutely no point in yielding.
+ 		 */
+-		if (preempt && rq != p_rq)
+-			resched_curr(p_rq);
+-	}
++		if (rq->nr_running == 1 && p_rq->nr_running == 1)
++			return -ESRCH;
  
+-out_unlock:
+-	double_rq_unlock(rq, p_rq);
+-out_irq:
+-	local_irq_restore(flags);
++		guard(double_rq_lock)(rq, p_rq);
++		if (task_rq(p) != p_rq)
++			goto again;
++
++		if (!curr->sched_class->yield_to_task)
++			return 0;
++
++		if (curr->sched_class != p->sched_class)
++			return 0;
++
++		if (task_on_cpu(p_rq, p) || !task_is_running(p))
++			return 0;
++
++		yielded = curr->sched_class->yield_to_task(rq, p);
++		if (yielded) {
++			schedstat_inc(rq->yld_count);
++			/*
++			 * Make p's CPU reschedule; pick_next_entity
++			 * takes care of fairness.
++			 */
++			if (preempt && rq != p_rq)
++				resched_curr(p_rq);
++		}
++	}
+ 
+-	if (yielded > 0)
++	if (yielded)
+ 		schedule();
+ 
+ 	return yielded;
 
 
