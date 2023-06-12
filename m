@@ -2,43 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41356C7EE43
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:57:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BD8DC83005
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:57:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbjFLJ5Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        id S231501AbjFLJ51 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbjFLJyu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE1DF9;
-        Mon, 12 Jun 2023 02:39:20 -0700 (PDT)
+        with ESMTP id S231321AbjFLJyX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6DF4C11;
+        Mon, 12 Jun 2023 02:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=/A/ePFAjeMC2GglceFED5TIbtUbkLmsSQSkhfQHRtFw=; b=kFbg2Jf4qYcn0XtHtKqR2yCbMd
-        H8amaE7vnYEWxcLgDO4zyoMl9/c1f9cvqTyiAU7MH8KX+IvKKJAqW9Sf8EIweVxdv6ScrGmGJyi0P
-        u8+kOhhR6xdwShh7mjg3MQDWp6nr/4UiMAukJyxwqHSwNzQ+PASFrxXd7QOcVveGNYd0JZPrR4N+g
-        EYGrvk4J11hBkeUPkxIvX/hhxL1jhGJmW4HO/81uJGpYfivRaZmHYneQuLRhD2D530TvYDj3B4wW5
-        K+uiqOt+PVGGlvAY8RwSAa0jFsZPi8DoURNPx2MXWp0DIkZGwYBfg4WMqhJzNkupmdNH+rBSU3Yul
-        4CLnKaUw==;
+        bh=4+/Q1nIn7pjeaoOkqiN8ZoN9dOzRXj0Qx8pmucBG9KU=; b=JTIbW/gvOSQ58b4TCHUoHGEDh4
+        Y1YJaLE27tmAx/JmH64kRErvzD0KUqyqfrX71MGF7wv0MltPgLgnjyg/kORWC199iFcMaqxABBB85
+        2ngIl0UzK18xlGkdJHKfnwYwA/Wl2lR2NRNxaCAnNGGdy6tjZchz97RFC/huuNDIRiljM+iyvvmex
+        VegKabbNI/sdQ6KSFyu7uT5aaMn9NnyH70zAM87Em+UPxNfTHrP0e+GNEWh2sXqUMKqamS/UzmCip
+        zhr1rYAeBzRzlh1FU7evBmwXBmRVHZ/P3LFM8ztGfR2bODV96a59vURa3b146za2hED5IY+f1Izzy
+        M5i/AT6A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q8e0u-008kS3-2y;
-        Mon, 12 Jun 2023 09:39:11 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1q8e0g-002N97-A5; Mon, 12 Jun 2023 09:38:50 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6B9DF30613A;
-        Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D205C303189;
+        Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 234A130A79084; Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
-Message-ID: <20230612093541.240573885@infradead.org>
+        id 3C3B930A70ADE; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093538.307089780@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:08:04 +0200
+Date:   Mon, 12 Jun 2023 11:07:25 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -66,7 +65,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 51/57] perf: Simplify perf_event_create_kernel_counter()
+Subject: [PATCH v3 12/57] sched: Simplify try_steal_cookie()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,130 +73,64 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/events/core.c |   79 ++++++++++++++++-----------------------------------
- 1 file changed, 26 insertions(+), 53 deletions(-)
+ kernel/sched/core.c |   21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -12569,12 +12569,6 @@ perf_event_create_kernel_counter(struct
- 				 perf_overflow_handler_t overflow_handler,
- 				 void *context)
- {
--	struct perf_event_pmu_context *pmu_ctx;
--	struct perf_event_context *ctx;
--	struct perf_event *event;
--	struct pmu *pmu;
--	int err;
--
- 	/*
- 	 * Grouping is not supported for kernel events, neither is 'AUX',
- 	 * make sure the caller's intentions are adjusted.
-@@ -12582,16 +12576,16 @@ perf_event_create_kernel_counter(struct
- 	if (attr->aux_output)
- 		return ERR_PTR(-EINVAL);
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6229,19 +6229,19 @@ static bool try_steal_cookie(int this, i
+ 	unsigned long cookie;
+ 	bool success = false;
  
--	event = perf_event_alloc(attr, cpu, task, NULL, NULL,
-+
-+	struct perf_event *event __free(free_event) =
-+		perf_event_alloc(attr, cpu, task, NULL, NULL,
- 				 overflow_handler, context, -1);
--	if (IS_ERR(event)) {
--		err = PTR_ERR(event);
--		goto err;
--	}
-+	if (IS_ERR(event))
-+		return event;
+-	local_irq_disable();
+-	double_rq_lock(dst, src);
++	guard(irq)();
++	guard(double_rq_lock)(dst, src);
  
- 	/* Mark owner so we could distinguish it from user events. */
- 	event->owner = TASK_TOMBSTONE;
--	pmu = event->pmu;
-+	struct pmu *pmu = event->pmu;
+ 	cookie = dst->core->core_cookie;
+ 	if (!cookie)
+-		goto unlock;
++		return false;
  
- 	if (pmu->task_ctx_nr == perf_sw_context)
- 		event->event_caps |= PERF_EV_CAP_SOFTWARE;
-@@ -12599,25 +12593,21 @@ perf_event_create_kernel_counter(struct
- 	/*
- 	 * Get the target context (task or percpu):
- 	 */
--	ctx = find_get_context(task, event);
--	if (IS_ERR(ctx)) {
--		err = PTR_ERR(ctx);
--		goto err_alloc;
--	}
-+	CLASS(find_get_ctx, ctx)(task, event);
-+	if (IS_ERR(ctx))
-+		return (void *)ctx;
+ 	if (dst->curr != dst->idle)
+-		goto unlock;
++		return false;
  
- 	WARN_ON_ONCE(ctx->parent_ctx);
--	mutex_lock(&ctx->mutex);
--	if (ctx->task == TASK_TOMBSTONE) {
--		err = -ESRCH;
--		goto err_unlock;
--	}
-+	guard(mutex)(&ctx->mutex);
+ 	p = sched_core_find(src, cookie);
+ 	if (!p)
+-		goto unlock;
++		return false;
  
--	pmu_ctx = find_get_pmu_context(pmu, ctx, event);
--	if (IS_ERR(pmu_ctx)) {
--		err = PTR_ERR(pmu_ctx);
--		goto err_unlock;
--	}
--	event->pmu_ctx = pmu_ctx;
-+	if (ctx->task == TASK_TOMBSTONE)
-+		return ERR_PTR(-ESRCH);
-+
-+
-+	struct perf_event_pmu_context *pmu_ctx __free(put_pmu_ctx) =
-+		find_get_pmu_context(pmu, ctx, event);
-+	if (!pmu_ctx)
-+		return ERR_PTR(-ENOMEM);
- 
- 	if (!task) {
+ 	do {
+ 		if (p == src->core_pick || p == src->curr)
+@@ -6253,9 +6253,10 @@ static bool try_steal_cookie(int this, i
+ 		if (p->core_occupation > dst->idle->core_occupation)
+ 			goto next;
  		/*
-@@ -12628,34 +12618,17 @@ perf_event_create_kernel_counter(struct
+-		 * sched_core_find() and sched_core_next() will ensure that task @p
+-		 * is not throttled now, we also need to check whether the runqueue
+-		 * of the destination CPU is being throttled.
++		 * sched_core_find() and sched_core_next() will ensure
++		 * that task @p is not throttled now, we also need to
++		 * check whether the runqueue of the destination CPU is
++		 * being throttled.
  		 */
- 		struct perf_cpu_context *cpuctx =
- 			container_of(ctx, struct perf_cpu_context, ctx);
--		if (!cpuctx->online) {
--			err = -ENODEV;
--			goto err_pmu_ctx;
--		}
-+		if (!cpuctx->online)
-+			return ERR_PTR(-ENODEV);
- 	}
+ 		if (sched_task_is_throttled(p, this))
+ 			goto next;
+@@ -6273,10 +6274,6 @@ static bool try_steal_cookie(int this, i
+ 		p = sched_core_next(p, cookie);
+ 	} while (p);
  
--	if (!exclusive_event_installable(event, ctx)) {
--		err = -EBUSY;
--		goto err_pmu_ctx;
--	}
-+	if (!exclusive_event_installable(event, ctx))
-+		return ERR_PTR(-EBUSY);
-+
-+	event->pmu_ctx = no_free_ptr(pmu_ctx);
-+	perf_install_in_context(get_ctx(ctx), event, event->cpu);
- 
--	perf_install_in_context(ctx, event, event->cpu);
--	perf_unpin_context(ctx);
--	mutex_unlock(&ctx->mutex);
+-unlock:
+-	double_rq_unlock(dst, src);
+-	local_irq_enable();
 -
--	return event;
--
--err_pmu_ctx:
--	put_pmu_ctx(pmu_ctx);
--	event->pmu_ctx = NULL; /* _free_event() */
--err_unlock:
--	mutex_unlock(&ctx->mutex);
--	perf_unpin_context(ctx);
--	put_ctx(ctx);
--err_alloc:
--	free_event(event);
--err:
--	return ERR_PTR(err);
-+	return_ptr(event);
+ 	return success;
  }
- EXPORT_SYMBOL_GPL(perf_event_create_kernel_counter);
  
 
 
