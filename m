@@ -2,42 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71EB2C7EE43
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84F11C7EE25
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbjFLJ6E (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
+        id S235991AbjFLJ6F (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjFLJyX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5204C10;
+        with ESMTP id S230025AbjFLJyV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059F24C0D;
         Mon, 12 Jun 2023 02:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=i7e4Ed2VApizqqMeLDQrTIcscOdlMDKi2d1+AvdLSfc=; b=wMzEZ40Omey0hsxhU/f3YtsHn5
-        zztcNlN85LbTkIssyfkfrL48NmxnO6Xui7xALjewqMlyvd6RZfe6D4fBUEzU8ivSmkwH/rB+mgo8T
-        DhIJ64bXK4MQAZHj4XNZbgTg99syxZL71a1nSxvAdXCC6Uq6WFU3Xo8Qau8qLevXW3vCcNOlO2hGd
-        kLRb3QAfPguHrywS9Q4UgqR5mxOfj+Fk/M4IRihmVpaRZyf1EnKiw6p0zeUoZx/4h4dCUGPxRMpDH
-        XqqMxcqWisvIc3MeLjMSkQ+D+XHT/6tgpmqY6cFvXD2CLwtL8aPDEHRB9Vg3FRPnxzDUV9pZfUiAM
-        GAqscdag==;
+        bh=by7PPFcazB/pK+2FaRs+OdI6JGfC9WsBX82VOJ7mM6o=; b=Y9O0dNQIJUKlbjZtt4rxwr8Rv6
+        BevFAXrP1152xD7o/GddMsCg4tPJSIDp0cRHFpQZjBJvwythjmmoKl8IQGNgf1x1/9e+43fYWMJqz
+        sBca6vwafwE3K9qpMLJDwrRFibEGyiTjmyFg9Q/GYkE3Zg1mWJ11eKDdJ/+LPCwS+GUqSqRrWiYkG
+        0QVjxQGVtDJq1lpG2kA59EZhMgxt2zHPN6qItB5KHnuG5+qudT11EyJ6SbRHs4K8aDlVGtBnaU2GF
+        XuieTeZwR3eToElJB0vqlwQ9UdcuvS6R9ZY/l/O9ZJhrDgojoRHi5Uh+8R/BJOkRPZkJa+DWzn+eL
+        9gEWkzJw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8e0g-002N94-7B; Mon, 12 Jun 2023 09:38:50 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q8e0g-008kP9-1f;
+        Mon, 12 Jun 2023 09:38:51 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A9B5B302FB8;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ECD763031B0;
         Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 22F9530A70248; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093537.977924652@infradead.org>
+        id 4C66430A77B55; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093538.546520916@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:21 +0200
+Date:   Mon, 12 Jun 2023 11:07:28 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -65,7 +66,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 08/57] sched: Simplify wake_up_if_idle()
+Subject: [PATCH v3 15/57] sched: Simplify syscalls
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,63 +78,246 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c  |   20 ++++++--------------
- kernel/sched/sched.h |   15 +++++++++++++++
- 2 files changed, 21 insertions(+), 14 deletions(-)
+ kernel/sched/core.c |  154 ++++++++++++++++++++++------------------------------
+ 1 file changed, 68 insertions(+), 86 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -3872,21 +3872,13 @@ static void __ttwu_queue_wakelist(struct
- void wake_up_if_idle(int cpu)
+@@ -7425,6 +7425,21 @@ static struct task_struct *find_process_
+ 	return pid ? find_task_by_vpid(pid) : current;
+ }
+ 
++static struct task_struct *find_get_task(pid_t pid)
++{
++	struct task_struct *p;
++	guard(rcu)();
++
++	p = find_process_by_pid(pid);
++	if (likely(p))
++		get_task_struct(p);
++
++	return p;
++}
++
++DEFINE_CLASS(find_get_task, struct task_struct *, if (_T) put_task_struct(_T),
++	     find_get_task(pid), pid_t pid)
++
+ /*
+  * sched_setparam() passes in -1 for its policy, to let the functions
+  * it calls know not to change it.
+@@ -7462,14 +7477,11 @@ static void __setscheduler_params(struct
+ static bool check_same_owner(struct task_struct *p)
  {
- 	struct rq *rq = cpu_rq(cpu);
--	struct rq_flags rf;
+ 	const struct cred *cred = current_cred(), *pcred;
+-	bool match;
++	guard(rcu)();
  
 -	rcu_read_lock();
--
--	if (!is_idle_task(rcu_dereference(rq->curr)))
--		goto out;
--
--	rq_lock_irqsave(rq, &rf);
--	if (is_idle_task(rq->curr))
--		resched_curr(rq);
--	/* Else CPU is not idle, do nothing here: */
--	rq_unlock_irqrestore(rq, &rf);
--
--out:
+ 	pcred = __task_cred(p);
+-	match = (uid_eq(cred->euid, pcred->euid) ||
+-		 uid_eq(cred->euid, pcred->uid));
 -	rcu_read_unlock();
+-	return match;
++	return (uid_eq(cred->euid, pcred->euid) ||
++		uid_eq(cred->euid, pcred->uid));
+ }
+ 
+ /*
+@@ -7873,27 +7885,17 @@ static int
+ do_sched_setscheduler(pid_t pid, int policy, struct sched_param __user *param)
+ {
+ 	struct sched_param lparam;
+-	struct task_struct *p;
+-	int retval;
+ 
+ 	if (!param || pid < 0)
+ 		return -EINVAL;
+ 	if (copy_from_user(&lparam, param, sizeof(struct sched_param)))
+ 		return -EFAULT;
+ 
+-	rcu_read_lock();
+-	retval = -ESRCH;
+-	p = find_process_by_pid(pid);
+-	if (likely(p))
+-		get_task_struct(p);
+-	rcu_read_unlock();
+-
+-	if (likely(p)) {
+-		retval = sched_setscheduler(p, policy, &lparam);
+-		put_task_struct(p);
+-	}
++	CLASS(find_get_task, p)(pid);
++	if (!p)
++		return -ESRCH;
+ 
+-	return retval;
++	return sched_setscheduler(p, policy, &lparam);
+ }
+ 
+ /*
+@@ -7989,7 +7991,6 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pi
+ 			       unsigned int, flags)
+ {
+ 	struct sched_attr attr;
+-	struct task_struct *p;
+ 	int retval;
+ 
+ 	if (!uattr || pid < 0 || flags)
+@@ -8004,21 +8005,14 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pi
+ 	if (attr.sched_flags & SCHED_FLAG_KEEP_POLICY)
+ 		attr.sched_policy = SETPARAM_POLICY;
+ 
+-	rcu_read_lock();
+-	retval = -ESRCH;
+-	p = find_process_by_pid(pid);
+-	if (likely(p))
+-		get_task_struct(p);
+-	rcu_read_unlock();
++	CLASS(find_get_task, p)(pid);
++	if (!p)
++		return -ESRCH;
+ 
+-	if (likely(p)) {
+-		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
+-			get_params(p, &attr);
+-		retval = sched_setattr(p, &attr);
+-		put_task_struct(p);
+-	}
++	if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
++		get_params(p, &attr);
+ 
+-	return retval;
++	return sched_setattr(p, &attr);
+ }
+ 
+ /**
+@@ -8036,16 +8030,17 @@ SYSCALL_DEFINE1(sched_getscheduler, pid_
+ 	if (pid < 0)
+ 		return -EINVAL;
+ 
+-	retval = -ESRCH;
+-	rcu_read_lock();
 +	guard(rcu)();
-+	if (is_idle_task(rcu_dereference(rq->curr))) {
-+		guard(rq_lock)(rq);
-+		if (is_idle_task(rq->curr))
-+			resched_curr(rq);
+ 	p = find_process_by_pid(pid);
+-	if (p) {
+-		retval = security_task_getscheduler(p);
+-		if (!retval)
+-			retval = p->policy
+-				| (p->sched_reset_on_fork ? SCHED_RESET_ON_FORK : 0);
++	if (!p)
++		return -ESRCH;
++
++	retval = security_task_getscheduler(p);
++	if (!retval) {
++		retval = p->policy;
++		if (p->sched_reset_on_fork)
++			retval |= SCHED_RESET_ON_FORK;
+ 	}
+-	rcu_read_unlock();
+ 	return retval;
+ }
+ 
+@@ -8066,30 +8061,23 @@ SYSCALL_DEFINE2(sched_getparam, pid_t, p
+ 	if (!param || pid < 0)
+ 		return -EINVAL;
+ 
+-	rcu_read_lock();
+-	p = find_process_by_pid(pid);
+-	retval = -ESRCH;
+-	if (!p)
+-		goto out_unlock;
++	scoped_guard (rcu) {
++		p = find_process_by_pid(pid);
++		if (!p)
++			return -ESRCH;
+ 
+-	retval = security_task_getscheduler(p);
+-	if (retval)
+-		goto out_unlock;
++		retval = security_task_getscheduler(p);
++		if (retval)
++			return retval;
+ 
+-	if (task_has_rt_policy(p))
+-		lp.sched_priority = p->rt_priority;
+-	rcu_read_unlock();
++		if (task_has_rt_policy(p))
++			lp.sched_priority = p->rt_priority;
 +	}
+ 
+ 	/*
+ 	 * This one might sleep, we cannot do it with a spinlock held ...
+ 	 */
+-	retval = copy_to_user(param, &lp, sizeof(*param)) ? -EFAULT : 0;
+-
+-	return retval;
+-
+-out_unlock:
+-	rcu_read_unlock();
+-	return retval;
++	return copy_to_user(param, &lp, sizeof(*param)) ? -EFAULT : 0;
  }
  
- bool cpus_share_cache(int this_cpu, int that_cpu)
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1678,6 +1678,21 @@ rq_unlock(struct rq *rq, struct rq_flags
- 	raw_spin_rq_unlock(rq);
+ /*
+@@ -8149,39 +8137,33 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pi
+ 	    usize < SCHED_ATTR_SIZE_VER0 || flags)
+ 		return -EINVAL;
+ 
+-	rcu_read_lock();
+-	p = find_process_by_pid(pid);
+-	retval = -ESRCH;
+-	if (!p)
+-		goto out_unlock;
++	scoped_guard (rcu) {
++		p = find_process_by_pid(pid);
++		if (!p)
++			return -ESRCH;
+ 
+-	retval = security_task_getscheduler(p);
+-	if (retval)
+-		goto out_unlock;
++		retval = security_task_getscheduler(p);
++		if (retval)
++			return retval;
+ 
+-	kattr.sched_policy = p->policy;
+-	if (p->sched_reset_on_fork)
+-		kattr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
+-	get_params(p, &kattr);
+-	kattr.sched_flags &= SCHED_FLAG_ALL;
++		kattr.sched_policy = p->policy;
++		if (p->sched_reset_on_fork)
++			kattr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
++		get_params(p, &kattr);
++		kattr.sched_flags &= SCHED_FLAG_ALL;
+ 
+ #ifdef CONFIG_UCLAMP_TASK
+-	/*
+-	 * This could race with another potential updater, but this is fine
+-	 * because it'll correctly read the old or the new value. We don't need
+-	 * to guarantee who wins the race as long as it doesn't return garbage.
+-	 */
+-	kattr.sched_util_min = p->uclamp_req[UCLAMP_MIN].value;
+-	kattr.sched_util_max = p->uclamp_req[UCLAMP_MAX].value;
++		/*
++		 * This could race with another potential updater, but this is fine
++		 * because it'll correctly read the old or the new value. We don't need
++		 * to guarantee who wins the race as long as it doesn't return garbage.
++		 */
++		kattr.sched_util_min = p->uclamp_req[UCLAMP_MIN].value;
++		kattr.sched_util_max = p->uclamp_req[UCLAMP_MAX].value;
+ #endif
+-
+-	rcu_read_unlock();
++	}
+ 
+ 	return sched_attr_copy_to_user(uattr, &kattr, usize);
+-
+-out_unlock:
+-	rcu_read_unlock();
+-	return retval;
  }
  
-+DEFINE_LOCK_GUARD_1(rq_lock, struct rq,
-+		    rq_lock(_T->lock, &_T->rf),
-+		    rq_unlock(_T->lock, &_T->rf),
-+		    struct rq_flags rf)
-+
-+DEFINE_LOCK_GUARD_1(rq_lock_irq, struct rq,
-+		    rq_lock_irq(_T->lock, &_T->rf),
-+		    rq_unlock_irq(_T->lock, &_T->rf),
-+		    struct rq_flags rf)
-+
-+DEFINE_LOCK_GUARD_1(rq_lock_irqsave, struct rq,
-+		    rq_lock_irqsave(_T->lock, &_T->rf),
-+		    rq_unlock_irqrestore(_T->lock, &_T->rf),
-+		    struct rq_flags rf)
-+
- static inline struct rq *
- this_rq_lock_irq(struct rq_flags *rf)
- 	__acquires(rq->lock)
+ #ifdef CONFIG_SMP
 
 
