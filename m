@@ -2,43 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E046BC87FDD
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE48CC7EE43
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbjFLJ6m (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
+        id S229877AbjFLJ6n (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234649AbjFLJy6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S234688AbjFLJy6 (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 12 Jun 2023 05:54:58 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1058619C;
-        Mon, 12 Jun 2023 02:39:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94603619E;
+        Mon, 12 Jun 2023 02:39:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=vBUL+P10jAOvg5j6kSlF2qo+oprvGK1yGYCCYSiAqlM=; b=dYxSMOmpH89QyKJycVjUFdz5f7
-        QtXIOBYtxj6iJTSn6IBQq1fqtULVL0EJ2lrui1BxP7PB9iMiZ4lEyl7wCumL8s9vGhOjw20sOJbra
-        725z2gvGDW4YGdUTOG3DhJos2Uqwqm3u0uM/Xz51OqqLHCKlVBRCImRY2ej8VsP680y/ClU1892d2
-        pR89p9K/dz055hwh/JicJK35+3pN11I9hXKXko13DmKjgOwOqJ7hje5V4nHvIH4N6rhh3dBrKyYGk
-        0PrV7Q++6iFwi0JLKHg0aSLxWz9+wRVSkaNTiQJTAygTQs7lE13Eu3Wip57JG6CG1kAY+37v5RmRu
-        sk2gQJ9g==;
+        bh=Hyp83c4zEQiDnre/2FuPX5V+t4FAU+QqZYq6E3vAduE=; b=Gtb5Ev6740h/Uu//z0ccX1hScc
+        Ck98D6/rxacYaUVGPfXtg073SExo3RFg4HAVAwuEx1OEQLLt9RbdVLZs4jgS8VYz19wXPm8F7X/I+
+        7WeQiyTsi1jlEeyPs1F0ihul+YLu1RJS1s+FeAP9xTHYjDaUYE3upOVxx5r6t3B62YsJAqx9lyVbj
+        UC381d09c/rXGi/P9xexX5myrbqbF5MzgVQvqLhDW1yv4cmbx/NmkwAE761i6+nygyHErTIh+dwz4
+        BeyuYoQfUEGmVnwjGaWuO5jR6RO3Wq+ZoiGVXZUL1/3FmffvSgadr0ZATXm7zlY8LN0s087WDHlEu
+        u2+sLK9g==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q8e0l-008kQZ-1p;
-        Mon, 12 Jun 2023 09:39:32 +0000
+        id 1q8e0m-008kQo-13;
+        Mon, 12 Jun 2023 09:39:33 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 27A9A3031B9;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E4A03032AF;
         Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 9C85030A77B66; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
-Message-ID: <20230612093539.611540686@infradead.org>
+        id AE93C30A77B6A; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093539.823493926@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:07:42 +0200
+Date:   Mon, 12 Jun 2023 11:07:45 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -66,7 +66,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 29/57] perf: Simplify: __perf_install_in_context()
+Subject: [PATCH v3 32/57] perf: Simplify perf_event_context_sched_in()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,57 +77,78 @@ X-Mailing-List: rcu@vger.kernel.org
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/events/core.c |   21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ kernel/events/core.c |   38 +++++++++++++++-----------------------
+ 1 file changed, 15 insertions(+), 23 deletions(-)
 
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -2732,13 +2732,13 @@ static int  __perf_install_in_context(vo
- 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
- 	struct perf_event_context *task_ctx = cpuctx->task_ctx;
- 	bool reprogram = true;
--	int ret = 0;
- 
--	raw_spin_lock(&cpuctx->ctx.lock);
--	if (ctx->task) {
--		raw_spin_lock(&ctx->lock);
-+	if (ctx->task)
- 		task_ctx = ctx;
- 
-+	guard(perf_ctx_lock)(cpuctx, task_ctx);
-+
-+	if (ctx->task) {
- 		reprogram = (ctx->task == current);
- 
- 		/*
-@@ -2748,14 +2748,10 @@ static int  __perf_install_in_context(vo
- 		 * If its not running, we don't care, ctx->lock will
- 		 * serialize against it becoming runnable.
- 		 */
--		if (task_curr(ctx->task) && !reprogram) {
--			ret = -ESRCH;
--			goto unlock;
--		}
-+		if (task_curr(ctx->task) && !reprogram)
-+			return -ESRCH;
- 
- 		WARN_ON_ONCE(reprogram && cpuctx->task_ctx && cpuctx->task_ctx != ctx);
--	} else if (task_ctx) {
--		raw_spin_lock(&task_ctx->lock);
- 	}
- 
- #ifdef CONFIG_CGROUP_PERF
-@@ -2778,10 +2774,7 @@ static int  __perf_install_in_context(vo
- 		add_event_to_ctx(event, ctx);
- 	}
- 
--unlock:
--	perf_ctx_unlock(cpuctx, task_ctx);
--
--	return ret;
-+	return 0;
+@@ -713,6 +713,9 @@ static void perf_ctx_enable(struct perf_
+ 		perf_pmu_enable(pmu_ctx->pmu);
  }
  
- static bool exclusive_event_installable(struct perf_event *event,
++DEFINE_GUARD(perf_ctx_disable, struct perf_event_context *,
++	     perf_ctx_disable(_T), perf_ctx_enable(_T))
++
+ static void ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type);
+ static void ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type);
+ 
+@@ -3906,31 +3909,27 @@ static void perf_event_context_sched_in(
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
+ 	struct perf_event_context *ctx;
+ 
+-	rcu_read_lock();
++	guard(rcu)();
++
+ 	ctx = rcu_dereference(task->perf_event_ctxp);
+ 	if (!ctx)
+-		goto rcu_unlock;
+-
+-	if (cpuctx->task_ctx == ctx) {
+-		perf_ctx_lock(cpuctx, ctx);
+-		perf_ctx_disable(ctx);
+-
+-		perf_ctx_sched_task_cb(ctx, true);
+-
+-		perf_ctx_enable(ctx);
+-		perf_ctx_unlock(cpuctx, ctx);
+-		goto rcu_unlock;
+-	}
++		return;
+ 
+-	perf_ctx_lock(cpuctx, ctx);
++	guard(perf_ctx_lock)(cpuctx, ctx);
+ 	/*
+ 	 * We must check ctx->nr_events while holding ctx->lock, such
+ 	 * that we serialize against perf_install_in_context().
+ 	 */
+ 	if (!ctx->nr_events)
+-		goto unlock;
++		return;
++
++	guard(perf_ctx_disable)(ctx);
++
++	if (cpuctx->task_ctx == ctx) {
++		perf_ctx_sched_task_cb(ctx, true);
++		return;
++	}
+ 
+-	perf_ctx_disable(ctx);
+ 	/*
+ 	 * We want to keep the following priority order:
+ 	 * cpu pinned (that don't need to move), task pinned,
+@@ -3950,13 +3949,6 @@ static void perf_event_context_sched_in(
+ 
+ 	if (!RB_EMPTY_ROOT(&ctx->pinned_groups.tree))
+ 		perf_ctx_enable(&cpuctx->ctx);
+-
+-	perf_ctx_enable(ctx);
+-
+-unlock:
+-	perf_ctx_unlock(cpuctx, ctx);
+-rcu_unlock:
+-	rcu_read_unlock();
+ }
+ 
+ /*
 
 
