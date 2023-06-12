@@ -2,42 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFDDBC7EE43
-	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2861C7EE2E
+	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236117AbjFLJ61 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+        id S236120AbjFLJ63 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233781AbjFLJyr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:47 -0400
+        with ESMTP id S231877AbjFLJya (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:30 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7EB618E;
-        Mon, 12 Jun 2023 02:39:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A300A5FFF;
+        Mon, 12 Jun 2023 02:39:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=DAYbQ04kMNbr7rbW92MpBohW/rYLgWGXJr8J1HFf6A8=; b=Eql5NktjOLj2JVeZy3dcrxBiKN
-        oWALo/DK/LD+f6T9ZB3Dgywb7GPNlY8H/tRWl4kVmO9CaHN201KZm8mVNoWCxScenFixVED6f65dd
-        iJvjjgm/3/g6SDb8g+O4H0vFDof5sX8qGgqc87R3eMRZAzpydHhdZbVck82t+acSqNl7nYRXGl5Ya
-        9Ur/TUPNUv4D5nUorGgGshJzNa7cbJ7ZIN5oDo8G7gx8X+tLK1erIaYpMHuGy/OZS4keZgugjEIeH
-        bI+dznInCYdmNjALn5gUQRRF1Z4aRfWMRQS531g9eeeBR+lMwpK4uCY/gCSh3DlrxbhtjarAQFF9J
-        /w8uXayg==;
+        bh=ldnPYKUyHMdijInwVZoC1NuQUIqnzmW6aookZYRZh1U=; b=bJBHJIBXVRdeQP4T7XcXUY8iMH
+        di/jzbHG8QdRKgt7X5fFBZSQuExIhm4OtWcsQgbp82u82KzPGnsNgHCPG1r7wDa+Zf3Yybo+MMKKD
+        6kzpW7tb12oZwh2LWxC5mYsLBh3EeFF5Mx+gfLH4YWuoPB20Wmu38WpRv0/JFEDPN3I3WnPAdrUZG
+        N9RCoJPL7qvE55pcs319+8ceIKd9bh09dAM074UmAS+nhI32VGb65JKPNV7DU57u9vWRkuYFwBSRv
+        PUJltPdiKo1thqnI10zGjkLcJXnNDVTEEIJgdNDcoNHm4ClkGvI5OiDwY24bhEmzI8eSOZmwAqbCa
+        RgBj18Gg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8e0v-002NJJ-NW; Mon, 12 Jun 2023 09:39:05 +0000
+        id 1q8e0l-002NB9-De; Mon, 12 Jun 2023 09:38:55 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6D67130613D;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18413303164;
         Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 2806930A79085; Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
-Message-ID: <20230612093541.311174114@infradead.org>
+        id 7F8B230A77B61; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093539.300603001@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:08:05 +0200
+Date:   Mon, 12 Jun 2023 11:07:38 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -65,7 +65,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 52/57] perf: Simplify perf_event_init_context()
+Subject: [PATCH v3 25/57] perf: Simplify perf_fget_light()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,105 +73,78 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Introduce fdnull and use it to simplify perf_fget_light() to either
+return a valid struct fd or not -- much like fdget() itself.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/events/core.c |   29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+ include/linux/file.h |    7 ++++++-
+ kernel/events/core.c |   22 +++++++++++-----------
+ 2 files changed, 17 insertions(+), 12 deletions(-)
 
+--- a/include/linux/file.h
++++ b/include/linux/file.h
+@@ -59,6 +59,8 @@ static inline struct fd __to_fd(unsigned
+ 	return (struct fd){(struct file *)(v & ~3),v & 3};
+ }
+ 
++#define fdnull __to_fd(0)
++
+ static inline struct fd fdget(unsigned int fd)
+ {
+ 	return __to_fd(__fdget(fd));
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -1450,6 +1450,10 @@ static void perf_unpin_context(struct pe
- 	raw_spin_unlock_irqrestore(&ctx->lock, flags);
- }
+@@ -5802,18 +5802,17 @@ EXPORT_SYMBOL_GPL(perf_event_period);
  
-+DEFINE_CLASS(pin_task_ctx, struct perf_event_context *,
-+	     if (_T) { perf_unpin_context(_T); put_ctx(_T); },
-+	     perf_pin_task_context(task), struct task_struct *task)
-+
- /*
-  * Update the record of the current time in a context.
-  */
-@@ -7939,18 +7943,13 @@ static void perf_event_addr_filters_exec
+ static const struct file_operations perf_fops;
  
- void perf_event_exec(void)
+-static inline int perf_fget_light(int fd, struct fd *p)
++static inline struct fd perf_fdget(int fd)
  {
--	struct perf_event_context *ctx;
--
--	ctx = perf_pin_task_context(current);
-+	CLASS(pin_task_ctx, ctx)(current);
- 	if (!ctx)
- 		return;
+ 	struct fd f = fdget(fd);
+ 	if (!f.file)
+-		return -EBADF;
++		return fdnull;
  
- 	perf_event_enable_on_exec(ctx);
- 	perf_event_remove_on_exec(ctx);
- 	perf_iterate_ctx(ctx, perf_event_addr_filters_exec, NULL, true);
--
--	perf_unpin_context(ctx);
--	put_ctx(ctx);
+ 	if (f.file->f_op != &perf_fops) {
+ 		fdput(f);
+-		return -EBADF;
++		return fdnull;
+ 	}
+-	*p = f;
+-	return 0;
++	return f;
  }
  
- struct remote_output {
-@@ -13226,8 +13225,7 @@ inherit_task_group(struct perf_event *ev
-  */
- static int perf_event_init_context(struct task_struct *child, u64 clone_flags)
- {
--	struct perf_event_context *child_ctx, *parent_ctx;
--	struct perf_event_context *cloned_ctx;
-+	struct perf_event_context *child_ctx, *cloned_ctx;
- 	struct perf_event *event;
- 	struct task_struct *parent = current;
- 	int inherited_all = 1;
-@@ -13241,7 +13239,7 @@ static int perf_event_init_context(struc
- 	 * If the parent's context is a clone, pin it so it won't get
- 	 * swapped under us.
- 	 */
--	parent_ctx = perf_pin_task_context(parent);
-+	CLASS(pin_task_ctx, parent_ctx)(parent);
- 	if (!parent_ctx)
- 		return 0;
+ static int perf_event_set_output(struct perf_event *event,
+@@ -5864,10 +5863,9 @@ static long _perf_ioctl(struct perf_even
+ 		int ret;
+ 		if (arg != -1) {
+ 			struct perf_event *output_event;
+-			struct fd output;
+-			ret = perf_fget_light(arg, &output);
+-			if (ret)
+-				return ret;
++			struct fd output = perf_fdget(arg);
++			if (!output.file)
++				return -EBADF;
+ 			output_event = output.file->private_data;
+ 			ret = perf_event_set_output(event, output_event);
+ 			fdput(output);
+@@ -12401,9 +12399,11 @@ SYSCALL_DEFINE5(perf_event_open,
+ 		return event_fd;
  
-@@ -13256,7 +13254,7 @@ static int perf_event_init_context(struc
- 	 * Lock the parent list. No need to lock the child - not PID
- 	 * hashed yet and not running, so nobody can access it.
- 	 */
--	mutex_lock(&parent_ctx->mutex);
-+	guard(mutex)(&parent_ctx->mutex);
- 
- 	/*
- 	 * We dont have to disable NMIs - we are only looking at
-@@ -13266,7 +13264,7 @@ static int perf_event_init_context(struc
- 		ret = inherit_task_group(event, parent, parent_ctx,
- 					 child, clone_flags, &inherited_all);
- 		if (ret)
--			goto out_unlock;
-+			return ret;
- 	}
- 
- 	/*
-@@ -13282,7 +13280,7 @@ static int perf_event_init_context(struc
- 		ret = inherit_task_group(event, parent, parent_ctx,
- 					 child, clone_flags, &inherited_all);
- 		if (ret)
--			goto out_unlock;
-+			return ret;
- 	}
- 
- 	raw_spin_lock_irqsave(&parent_ctx->lock, flags);
-@@ -13310,13 +13308,8 @@ static int perf_event_init_context(struc
- 	}
- 
- 	raw_spin_unlock_irqrestore(&parent_ctx->lock, flags);
--out_unlock:
--	mutex_unlock(&parent_ctx->mutex);
--
--	perf_unpin_context(parent_ctx);
--	put_ctx(parent_ctx);
- 
--	return ret;
-+	return 0;
- }
- 
- /*
+ 	if (group_fd != -1) {
+-		err = perf_fget_light(group_fd, &group);
+-		if (err)
++		group = perf_fdget(group_fd);
++		if (!group.file) {
++			err = -EBADF;
+ 			goto err_fd;
++		}
+ 		group_leader = group.file->private_data;
+ 		if (flags & PERF_FLAG_FD_OUTPUT)
+ 			output_event = group_leader;
 
 
