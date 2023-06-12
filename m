@@ -2,42 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97F0FC83005
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A24C7EE25
 	for <rcu@archiver.kernel.org>; Mon, 12 Jun 2023 09:58:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbjFLJ6W (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 05:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        id S236079AbjFLJ6V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 12 Jun 2023 05:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbjFLJyp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 05:54:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34D0618F;
-        Mon, 12 Jun 2023 02:39:09 -0700 (PDT)
+        with ESMTP id S233342AbjFLJyo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 12 Jun 2023 05:54:44 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB964C1B;
+        Mon, 12 Jun 2023 02:39:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=VxLoQWqPLfFOizpz6LclwAvcc6NhnspZtOnksJEP8nY=; b=p6PhqIfSxM8DiwUuU4pSepp9+t
-        sQDAs+RLgzLsKfJ0Kcen7QCEGUEiIeSA/rwAsAR7b6MfNGO9pcntCkHSiswQZFuF2xM2R+zf8J3ow
-        wX35cUTV1JxcFVTwq7nPW7+2yeRbGO9zPkqabUzEI167PNV6S41nRrSC4/lAzjfi/vOJ3w15MxDOX
-        ZX/q+B8JUmaFcJIBrT88ZNo/cz0VSFtkEr9L9mebjyXbMWd2ohnjBecsQJ/J3K5VJxidYIQPFKy+9
-        4HVU7cOA9JH1oDaOoJo11k/QJT8iAkLcVqjNx5HmWfEws0lEKwGfEU1AD+SSkaq9GPZUqJdegwQDg
-        EEzgg1Jw==;
+        bh=kTQMzLiQOiysp6z8Xt3S6oOFWuHsLtjxBsNekM1iUPM=; b=FnsYw1rgaWsOiA0J8R1O2i1uX3
+        e/F70Qz8dzTuEl3kifFu3bO7NPhClNyjvgCn8IyOXFExymb1mJLxjsIE1VNsGjM+ZK5UdyD9Uvpmx
+        8MMlCDrtOaWNKsB/UhUOB/ZOYncIt9ndU2q2e+wO9d2EOd9MKV6zm5aJXolVKFVPXj7clRX/cVNos
+        UIEMW7CktYOkUgJCjntPeUklJKZwTRaqyQxMkh9aZMJURF4j5ZOLong2c9l7tRmNOL8u2yfvD2bky
+        pOzCMpkX6wckfonGJZWPeiND+Om9Xf6BVzQSrlpTGvnF4Bd5KmsJ+mb8KpkZEAGen/+v1YgVnR9df
+        hpzryTVw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8e0u-002NIB-Nl; Mon, 12 Jun 2023 09:39:04 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q8e0n-008kR9-1O;
+        Mon, 12 Jun 2023 09:39:02 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6627730612F;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 446133033BD;
         Mon, 12 Jun 2023 11:38:53 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 1B34930A79083; Mon, 12 Jun 2023 11:38:49 +0200 (CEST)
-Message-ID: <20230612093541.097332151@infradead.org>
+        id D6BA430A77B71; Mon, 12 Jun 2023 11:38:48 +0200 (CEST)
+Message-ID: <20230612093540.324593804@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Jun 2023 11:08:02 +0200
+Date:   Mon, 12 Jun 2023 11:07:52 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     torvalds@linux-foundation.org, keescook@chromium.org,
         gregkh@linuxfoundation.org, pbonzini@redhat.com
@@ -65,7 +66,7 @@ Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
         rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
         tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
         luc.vanoostenryck@gmail.com
-Subject: [PATCH v3 49/57] perf: Simplify perf_event_alloc()
+Subject: [PATCH v3 39/57] perf: Simplify perf_event_*_userpage()
 References: <20230612090713.652690195@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -76,127 +77,98 @@ X-Mailing-List: rcu@vger.kernel.org
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/events/core.c |   47 ++++++++++++++++++-----------------------------
- 1 file changed, 18 insertions(+), 29 deletions(-)
+ kernel/events/core.c |   30 ++++++++++--------------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
 
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -5148,6 +5148,8 @@ static void __free_event(struct perf_eve
- 	call_rcu(&event->rcu_head, free_event_rcu);
+@@ -5971,10 +5971,10 @@ static void perf_event_init_userpage(str
+ 	struct perf_event_mmap_page *userpg;
+ 	struct perf_buffer *rb;
+ 
+-	rcu_read_lock();
++	guard(rcu)();
+ 	rb = rcu_dereference(event->rb);
+ 	if (!rb)
+-		goto unlock;
++		return;
+ 
+ 	userpg = rb->user_page;
+ 
+@@ -5983,9 +5983,6 @@ static void perf_event_init_userpage(str
+ 	userpg->size = offsetof(struct perf_event_mmap_page, __reserved);
+ 	userpg->data_offset = PAGE_SIZE;
+ 	userpg->data_size = perf_data_size(rb);
+-
+-unlock:
+-	rcu_read_unlock();
  }
  
-+DEFINE_FREE(__free_event, struct perf_event *, if (_T) __free_event(_T))
-+
- /* vs perf_event_alloc() success */
- static void _free_event(struct perf_event *event)
- {
-@@ -11694,7 +11696,6 @@ perf_event_alloc(struct perf_event_attr
- 		 void *context, int cgroup_fd)
- {
- 	struct pmu *pmu;
--	struct perf_event *event;
- 	struct hw_perf_event *hwc;
- 	long err = -EINVAL;
- 	int node;
-@@ -11709,8 +11710,8 @@ perf_event_alloc(struct perf_event_attr
- 	}
+ void __weak arch_perf_update_userpage(
+@@ -6004,10 +6001,10 @@ void perf_event_update_userpage(struct p
+ 	struct perf_buffer *rb;
+ 	u64 enabled, running, now;
  
- 	node = (cpu >= 0) ? cpu_to_node(cpu) : -1;
--	event = kmem_cache_alloc_node(perf_event_cache, GFP_KERNEL | __GFP_ZERO,
--				      node);
-+	struct perf_event *event __free(__free_event) =
-+		kmem_cache_alloc_node(perf_event_cache, GFP_KERNEL | __GFP_ZERO, node);
- 	if (!event)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -11815,51 +11816,43 @@ perf_event_alloc(struct perf_event_attr
- 	 * See perf_output_read().
- 	 */
- 	if (attr->inherit && (attr->sample_type & PERF_SAMPLE_READ))
--		goto err;
-+		return ERR_PTR(-EINVAL);
- 
- 	if (!has_branch_stack(event))
- 		event->attr.branch_sample_type = 0;
- 
- 	pmu = perf_init_event(event);
--	if (IS_ERR(pmu)) {
--		err = PTR_ERR(pmu);
--		goto err;
--	}
-+	if (IS_ERR(pmu))
-+		return (void*)pmu;
+-	rcu_read_lock();
++	guard(rcu)();
+ 	rb = rcu_dereference(event->rb);
+ 	if (!rb)
+-		goto unlock;
++		return;
  
  	/*
- 	 * Disallow uncore-task events. Similarly, disallow uncore-cgroup
- 	 * events (they don't make sense as the cgroup will be different
- 	 * on other CPUs in the uncore mask).
+ 	 * compute total_time_enabled, total_time_running
+@@ -6025,7 +6022,7 @@ void perf_event_update_userpage(struct p
+ 	 * Disable preemption to guarantee consistent time stamps are stored to
+ 	 * the user page.
  	 */
--	if (pmu->task_ctx_nr == perf_invalid_context && (task || cgroup_fd != -1)) {
--		err = -EINVAL;
--		goto err;
--	}
-+	if (pmu->task_ctx_nr == perf_invalid_context && (task || cgroup_fd != -1))
-+		return ERR_PTR(-EINVAL);
+-	preempt_disable();
++	guard(preempt)();
+ 	++userpg->lock;
+ 	barrier();
+ 	userpg->index = perf_event_index(event);
+@@ -6043,9 +6040,6 @@ void perf_event_update_userpage(struct p
  
- 	if (event->attr.aux_output &&
--	    !(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT)) {
--		err = -EOPNOTSUPP;
--		goto err;
--	}
-+	    !(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT))
-+		return ERR_PTR(-EOPNOTSUPP);
+ 	barrier();
+ 	++userpg->lock;
+-	preempt_enable();
+-unlock:
+-	rcu_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(perf_event_update_userpage);
  
- 	if (cgroup_fd != -1) {
- 		err = perf_cgroup_connect(cgroup_fd, event, attr, group_leader);
- 		if (err)
--			goto err;
-+			return ERR_PTR(err);
+@@ -6061,27 +6055,23 @@ static vm_fault_t perf_mmap_fault(struct
+ 		return ret;
  	}
  
- 	err = exclusive_event_init(event);
- 	if (err)
--		goto err;
-+		return ERR_PTR(err);
+-	rcu_read_lock();
++	guard(rcu)();
+ 	rb = rcu_dereference(event->rb);
+ 	if (!rb)
+-		goto unlock;
++		return ret;
  
- 	if (has_addr_filter(event)) {
- 		event->addr_filter_ranges = kcalloc(pmu->nr_addr_filters,
- 						    sizeof(struct perf_addr_filter_range),
- 						    GFP_KERNEL);
--		if (!event->addr_filter_ranges) {
--			err = -ENOMEM;
--			goto err;
--		}
-+		if (!event->addr_filter_ranges)
-+			return ERR_PTR(-ENOMEM);
+ 	if (vmf->pgoff && (vmf->flags & FAULT_FLAG_WRITE))
+-		goto unlock;
++		return ret;
  
- 		/*
- 		 * Clone the parent's vma offsets: they are valid until exec()
-@@ -11883,22 +11876,18 @@ perf_event_alloc(struct perf_event_attr
- 		if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) {
- 			err = get_callchain_buffers(attr->sample_max_stack);
- 			if (err)
--				goto err;
-+				return ERR_PTR(err);
- 		}
- 	}
+ 	vmf->page = perf_mmap_to_page(rb, vmf->pgoff);
+ 	if (!vmf->page)
+-		goto unlock;
++		return ret;
  
- 	err = security_perf_event_alloc(event);
- 	if (err)
--		goto err;
-+		return ERR_PTR(err);
+ 	get_page(vmf->page);
+ 	vmf->page->mapping = vmf->vma->vm_file->f_mapping;
+ 	vmf->page->index   = vmf->pgoff;
  
- 	/* symmetric to unaccount_event() in _free_event() */
- 	account_event(event);
- 
--	return event;
+-	ret = 0;
+-unlock:
+-	rcu_read_unlock();
 -
--err:
--	__free_event(event);
--	return ERR_PTR(err);
-+	return_ptr(event);
+-	return ret;
++	return 0;
  }
  
- static int perf_copy_attr(struct perf_event_attr __user *uattr,
+ static void ring_buffer_attach(struct perf_event *event,
 
 
