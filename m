@@ -2,82 +2,186 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E9E6C7EE2F
-	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 03:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04CFAC88CB6
+	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 05:56:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239548AbjFMDSG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 12 Jun 2023 23:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33990 "EHLO
+        id S239787AbjFMF4V convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Tue, 13 Jun 2023 01:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238629AbjFMDRe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 12 Jun 2023 23:17:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401D0184;
-        Mon, 12 Jun 2023 20:16:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C93B062A2D;
-        Tue, 13 Jun 2023 03:16:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CDA4C433D2;
-        Tue, 13 Jun 2023 03:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686626214;
-        bh=574MtmQBYF5Z2cqxJjhyhpDH313XmH785GV0HQJvXlM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dH7ZfpG6qhgomBac3YRIZDI5oK3J03ePzbhyac2LeBW5czAZ3JJ8uH32srqPyoL4N
-         qdEdlhGUEcrFa2pEjt2Jjk+DDPTV0cbv0bE5gHszB9OuuXjP4Tv5gcOVdYGW5oajN6
-         9Se8UB90brrmIdKD3SYCBlxar4+CU+ttSKkUbSobSs5NLU/wZnSG3F9iXWtJMQkjvA
-         IerpMxCbugjAa+J5AhyaHMN0puJdTrbfk/HOw6NUjB9eRsPFf100sRwJMIW+6Srixi
-         pnwFDXGLnDnOPkodJ4eAkX2EM2LHAaoGS1wphirCOt+6u6Wf+eriOQwwneGgtoiGOU
-         vLdYJyXq1JYZA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B5F79CE09E7; Mon, 12 Jun 2023 20:16:53 -0700 (PDT)
-Date:   Mon, 12 Jun 2023 20:16:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] docs/RCU: Add the missing rcu_read_unlock()
-Message-ID: <b384fa57-a760-40c5-a07b-faf166817772@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230613005701.8728-1-mmpgouride@gmail.com>
+        with ESMTP id S234474AbjFMF4U (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Jun 2023 01:56:20 -0400
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E9618E;
+        Mon, 12 Jun 2023 22:56:19 -0700 (PDT)
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4652fcb2ac1so2100964e0c.1;
+        Mon, 12 Jun 2023 22:56:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686635778; x=1689227778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CXoP/SfXeEJ/3wkZUjDn660T9VLgrFL+TBUwgZAoObU=;
+        b=iqLgDpZLQwdyissvPRLHjcy3JmFLoxoZlVg6GNaG/3XM1VcZQG8XM7fsRYdsJ9qe3x
+         h6dYWzAGUqVJpGGxy2rbb5eLFrkr4TdRt68ARWnvpbwNZ88kaoogpzWG5vKw28m5Zc2z
+         j2MW6uNU91YIjggpLap+bCd6gZdInnhL5yD2S0cTNsIot0GQxYSRY85L9P723AWjNF2+
+         s0LXlBa3Cr+AqwVuue2V1AvKXF5bpxnM06mpVMq6gdjGkddC60p5cwJ7iu5H0eW9F22t
+         Uk8B6Ec/O2Psjc9g8xA3kaKFFxdODwQyeZjpjwEIkg/w4uQD4aVcyD34lwhR+l/ZbSB8
+         FWLw==
+X-Gm-Message-State: AC+VfDyY3m5uxPLsxL/yO1LqtMgVoIFFUql31wF6aalpcZtw0GY5Rk2Z
+        nLa94QzqGF2YkvD6BzoWLzCysoxWm1jhdhXimWE=
+X-Google-Smtp-Source: ACHHUZ7Cj9u8WTOpvJ3k1N/xhXE9h8rxLIkzVesRwg9r4gsjesfbSe/X67dLrFf1E5Xf3TVgeqrXTm+8Y8tzoGTBqiw=
+X-Received: by 2002:a1f:4386:0:b0:45d:5914:80b with SMTP id
+ q128-20020a1f4386000000b0045d5914080bmr5911210vka.6.1686635778061; Mon, 12
+ Jun 2023 22:56:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230613005701.8728-1-mmpgouride@gmail.com>
+References: <20230612090713.652690195@infradead.org> <20230612093539.371360635@infradead.org>
+In-Reply-To: <20230612093539.371360635@infradead.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 12 Jun 2023 22:56:06 -0700
+Message-ID: <CAM9d7cjz4cnEgV_oAnTOqyCWXDeD3ECYQFc=Uksct2-HKuFmiQ@mail.gmail.com>
+Subject: Re: [PATCH v3 26/57] perf: Simplify event_function*()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     torvalds@linux-foundation.org, keescook@chromium.org,
+        gregkh@linuxfoundation.org, pbonzini@redhat.com,
+        masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        nicolas@fjasle.eu, catalin.marinas@arm.com, will@kernel.org,
+        vkoul@kernel.org, trix@redhat.com, ojeda@kernel.org,
+        mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
+        dennis@kernel.org, tj@kernel.org, cl@linux.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rientjes@google.com, vbabka@suse.cz, roman.gushchin@linux.dev,
+        42.hyeyoo@gmail.com, apw@canonical.com, joe@perches.com,
+        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        john.johansen@canonical.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        llvm@lists.linux.dev, linux-perf-users@vger.kernel.org,
+        rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
+        tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
+        luc.vanoostenryck@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 13, 2023 at 12:57:01AM +0000, Alan Huang wrote:
-> We should exit the RCU read-side critical section before re-entering.
-> 
-> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+Hi Peter,
 
-Queued and pushed, thank you!
-
-							Thanx, Paul
-
+On Mon, Jun 12, 2023 at 2:39 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Use guards to reduce gotos and simplify control flow.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  Documentation/RCU/rculist_nulls.rst | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-> index 9a734bf54..0612a6387 100644
-> --- a/Documentation/RCU/rculist_nulls.rst
-> +++ b/Documentation/RCU/rculist_nulls.rst
-> @@ -29,8 +29,10 @@ algorithms:
->    rcu_read_lock()
->    obj = lockless_lookup(key);
->    if (obj) {
-> -    if (!try_get_ref(obj)) // might fail for free objects
-> +    if (!try_get_ref(obj)) { // might fail for free objects
-> +      rcu_read_unlock();
->        goto begin;
-> +    }
->      /*
->      * Because a writer could delete object, and a writer could
->      * reuse these object before the RCU grace period, we
-> -- 
-> 2.34.1
-> 
+>  kernel/events/core.c |   39 ++++++++++++++++++++++++++-------------
+>  1 file changed, 26 insertions(+), 13 deletions(-)
+>
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -214,6 +214,25 @@ struct event_function_struct {
+>         void *data;
+>  };
+>
+> +typedef struct {
+> +       struct perf_cpu_context *cpuctx;
+> +       struct perf_event_context *ctx;
+> +} class_perf_ctx_lock_t;
+> +
+> +static inline void class_perf_ctx_lock_destructor(class_perf_ctx_lock_t *_T)
+> +{
+> +       if (_T->cpuctx)
+> +               perf_ctx_unlock(_T->cpuctx, _T->ctx);
+
+Shouldn't it be called unconditionally?
+
+Thanks,
+Namhyung
+
+> +}
+> +
+> +static inline class_perf_ctx_lock_t
+> +class_perf_ctx_lock_constructor(struct perf_cpu_context *cpuctx,
+> +                               struct perf_event_context *ctx)
+> +{
+> +       perf_ctx_lock(cpuctx, ctx);
+> +       return (class_perf_ctx_lock_t){ cpuctx, ctx };
+> +}
+> +
+>  static int event_function(void *info)
+>  {
+>         struct event_function_struct *efs = info;
+> @@ -224,17 +243,15 @@ static int event_function(void *info)
+>         int ret = 0;
+>
+>         lockdep_assert_irqs_disabled();
+> +       guard(perf_ctx_lock)(cpuctx, task_ctx);
+>
+> -       perf_ctx_lock(cpuctx, task_ctx);
+>         /*
+>          * Since we do the IPI call without holding ctx->lock things can have
+>          * changed, double check we hit the task we set out to hit.
+>          */
+>         if (ctx->task) {
+> -               if (ctx->task != current) {
+> -                       ret = -ESRCH;
+> -                       goto unlock;
+> -               }
+> +               if (ctx->task != current)
+> +                       return -ESRCH;
+>
+>                 /*
+>                  * We only use event_function_call() on established contexts,
+> @@ -254,8 +271,6 @@ static int event_function(void *info)
+>         }
+>
+>         efs->func(event, cpuctx, ctx, efs->data);
+> -unlock:
+> -       perf_ctx_unlock(cpuctx, task_ctx);
+>
+>         return ret;
+>  }
+> @@ -329,11 +344,11 @@ static void event_function_local(struct
+>                 task_ctx = ctx;
+>         }
+>
+> -       perf_ctx_lock(cpuctx, task_ctx);
+> +       guard(perf_ctx_lock)(cpuctx, task_ctx);
+>
+>         task = ctx->task;
+>         if (task == TASK_TOMBSTONE)
+> -               goto unlock;
+> +               return;
+>
+>         if (task) {
+>                 /*
+> @@ -343,18 +358,16 @@ static void event_function_local(struct
+>                  */
+>                 if (ctx->is_active) {
+>                         if (WARN_ON_ONCE(task != current))
+> -                               goto unlock;
+> +                               return;
+>
+>                         if (WARN_ON_ONCE(cpuctx->task_ctx != ctx))
+> -                               goto unlock;
+> +                               return;
+>                 }
+>         } else {
+>                 WARN_ON_ONCE(&cpuctx->ctx != ctx);
+>         }
+>
+>         func(event, cpuctx, ctx, data);
+> -unlock:
+> -       perf_ctx_unlock(cpuctx, task_ctx);
+>  }
+>
+>  #define PERF_FLAG_ALL (PERF_FLAG_FD_NO_GROUP |\
+>
+>
