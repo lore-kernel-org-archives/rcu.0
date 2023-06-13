@@ -2,146 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C940FC88CB6
-	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 07:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C077C77B7A
+	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 07:37:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbjFMHe1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Jun 2023 03:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
+        id S240276AbjFMHhS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Jun 2023 03:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234043AbjFMHeY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Jun 2023 03:34:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB8D10F7;
-        Tue, 13 Jun 2023 00:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tAKolwLuXUR1D5yD/hL0f+kZnHou+PxeYU9aqGSZlgk=; b=PJ7DjtI5p9Scuhe88BpMQDomP0
-        MKCJntJTn1U+Rd2ZhV3FQnt6v8jDArMbzoUNSNBw22KQvf4WZts+aU5TsuEO6LVgTBI9Lt5J5/tRM
-        J8ziNRHbscTBejaoYpXuU/l3qPuKSjn5T8wVUN8+JYdj713tuMnbHx+7gbgAdsmA8wZ38wg4ht6m7
-        i0+jX0ZKdElRGA4MizB5sMdH1s4BRkSbqJI4EUQFv5UwmALAHg55ZjQOv7/wSBKbBTi1uFQEMjskS
-        A/QCcZxrSOjGP5FrTd8O11G3S61ZxvJCh2x57TVAqR8kGkTdhlP7MuYlgXagHdz4r3FYQqRS+YNsG
-        xU47uqLA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1q8yXh-003ev7-B0; Tue, 13 Jun 2023 07:34:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0C1E9300322;
-        Tue, 13 Jun 2023 09:34:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB9FC262C92A1; Tue, 13 Jun 2023 09:34:15 +0200 (CEST)
-Date:   Tue, 13 Jun 2023 09:34:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     torvalds@linux-foundation.org, keescook@chromium.org,
-        pbonzini@redhat.com, masahiroy@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, nicolas@fjasle.eu,
-        catalin.marinas@arm.com, will@kernel.org, vkoul@kernel.org,
-        trix@redhat.com, ojeda@kernel.org, mingo@redhat.com,
-        longman@redhat.com, boqun.feng@gmail.com, dennis@kernel.org,
-        tj@kernel.org, cl@linux.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rientjes@google.com, vbabka@suse.cz, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, apw@canonical.com, joe@perches.com,
-        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        john.johansen@canonical.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        llvm@lists.linux.dev, linux-perf-users@vger.kernel.org,
-        rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
-        tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
-        luc.vanoostenryck@gmail.com
-Subject: Re: [PATCH v3 46/57] perf: Simplify pmu_dev_alloc()
-Message-ID: <20230613073415.GP4253@hirez.programming.kicks-ass.net>
-References: <20230612090713.652690195@infradead.org>
- <20230612093540.850386350@infradead.org>
- <20230612094400.GG4253@hirez.programming.kicks-ass.net>
- <2023061226-grumpily-entire-f06a@gregkh>
- <20230612141322.GA83892@hirez.programming.kicks-ass.net>
- <2023061217-mutable-curry-c2ac@gregkh>
+        with ESMTP id S240347AbjFMHhN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Jun 2023 03:37:13 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD967AA;
+        Tue, 13 Jun 2023 00:37:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QgL3j1yWpz4f3mmx;
+        Tue, 13 Jun 2023 15:37:05 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgD3X7OdHIhkfcdhLg--.52188S6;
+        Tue, 13 Jun 2023 15:37:07 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: [PATCH bpf-next v6 2/5] selftests/bpf: Output the correct error code for pthread APIs
+Date:   Tue, 13 Jun 2023 16:09:18 +0800
+Message-Id: <20230613080921.1623219-3-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20230613080921.1623219-1-houtao@huaweicloud.com>
+References: <20230613080921.1623219-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023061217-mutable-curry-c2ac@gregkh>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3X7OdHIhkfcdhLg--.52188S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr45Gw1Duw48uF4ruFWkXrb_yoW8Xry3pw
+        4rGa4UtFWrAF4jyw1UJa10yFyakwn7Xay3Xr4fJF4fZa47WFW5uryxKFyFqFs8CrW0q3Z8
+        ArnI9w45ZFs7JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 05:44:59PM +0200, Greg KH wrote:
+From: Hou Tao <houtao1@huawei.com>
 
-> Then in the last part of the file, I abuse the DEFINE_FREE() to handle a
-> special case of removing a proc file if things go bad (and add a
-> DEFINE_FREE() for class_destroy(), which should go into
-> include/device/class.h.
-> 
-> I've only test-built it, but is this the proper use of DEFINE_FREE()?
-> There wasn't much documentation :)
+The return value of pthread API is the error code when the called
+API fails, so output the return value instead of errno.
 
-Yes, this looks right.
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ tools/testing/selftests/bpf/bench.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-> To be fair the end-result of misc_init() is much nicer and cleaner and
-> "obviously correct", which is good, even with the crazy proc file mess
-> in it.  So I like the idea overall, need to figure out when to use
-> DEFINE_CLASS() vs. DEFINE_FREE(), that isn't obvious to me.
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+index d9c080ac1796..0b5d2b5303c9 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -441,12 +441,14 @@ static void setup_timer()
+ static void set_thread_affinity(pthread_t thread, int cpu)
+ {
+ 	cpu_set_t cpuset;
++	int err;
+ 
+ 	CPU_ZERO(&cpuset);
+ 	CPU_SET(cpu, &cpuset);
+-	if (pthread_setaffinity_np(thread, sizeof(cpuset), &cpuset)) {
++	err = pthread_setaffinity_np(thread, sizeof(cpuset), &cpuset);
++	if (err) {
+ 		fprintf(stderr, "setting affinity to CPU #%d failed: %d\n",
+-			cpu, errno);
++			cpu, -err);
+ 		exit(1);
+ 	}
+ }
+@@ -605,7 +607,7 @@ static void setup_benchmark(void)
+ 				     bench->consumer_thread, (void *)(long)i);
+ 		if (err) {
+ 			fprintf(stderr, "failed to create consumer thread #%d: %d\n",
+-				i, -errno);
++				i, -err);
+ 			exit(1);
+ 		}
+ 		if (env.affinity)
+@@ -624,7 +626,7 @@ static void setup_benchmark(void)
+ 				     bench->producer_thread, (void *)(long)i);
+ 		if (err) {
+ 			fprintf(stderr, "failed to create producer thread #%d: %d\n",
+-				i, -errno);
++				i, -err);
+ 			exit(1);
+ 		}
+ 		if (env.affinity)
+-- 
+2.29.2
 
-CLASS is meant for things that have an obvious contructor as well as a
-destructor, that always go together. Like for example the lock things,
-they always pair a lock and unlock. But also things like:
-fdget()+fdput(), these can also always be paired, and if you want the
-file to escape you simply take yet another reference to prevent the
-fdput() from being the final.
-
-> Also, you can't put a DEFINE_FREE() within a function declaration, which
-> I guess makes sense, but the build warning is very odd when you attempt
-> it, mentioning an "invalid storage class".  Is that supposed to be able
-> to work?
-
-No, DEFINE_FREE() and DEFINE_CLASS() end up defining a bunch of inline
-functions, which can't be done inside another function.
-
-If only C would have lambda functions ... alas.
-
-> @@ -280,29 +268,24 @@ static char *misc_devnode(const struct device *dev, umode_t *mode)
->  	return NULL;
->  }
->  
-> +DEFINE_FREE(class_destroy, struct class *, if (_T) class_destroy(_T));
-
-Documentation for class_create() says it will return ERR_PTR(), so then
-this should be something like:
-
-DEFINE_FRERE(class_destroy, struct class *, if (!IS_ERR_OR_NULL(_T)) class_destroy(_T))
-
-> +DEFINE_FREE(remove_proc, struct proc_dir_entry *, if (_T) remove_proc_entry("misc", NULL));
->  static int __init misc_init(void)
->  {
-> +	struct proc_dir_entry *ret __free(remove_proc) = proc_create_seq("misc", 0, NULL, &misc_seq_ops);
-> +	struct class *c __free(class_destroy) = class_create("misc");
->  
-> +	if (IS_ERR(c))
-> +		return PTR_ERR(c);
->  
->  	if (register_chrdev(MISC_MAJOR, "misc", &misc_fops))
-> +		return -EIO;
->  
-> +	c->devnode = misc_devnode;
-> +
-> +	misc_class = no_free_ptr(c);
-> +	no_free_ptr(ret);
-> +
-> +	return 0;
->  }
-
-And yes, this does look nicer.
