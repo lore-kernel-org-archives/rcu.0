@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FA4FC88CB2
-	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 07:37:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B537CC77B7A
+	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 07:37:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbjFMHhT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Jun 2023 03:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
+        id S240400AbjFMHhV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Jun 2023 03:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240416AbjFMHhR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S235218AbjFMHhR (ORCPT <rfc822;rcu@vger.kernel.org>);
         Tue, 13 Jun 2023 03:37:17 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3A91713;
-        Tue, 13 Jun 2023 00:37:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC501A5;
+        Tue, 13 Jun 2023 00:37:11 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QgL3h6w4Xz4f3jHv;
-        Tue, 13 Jun 2023 15:37:04 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QgL3l09dFz4f3tPC;
+        Tue, 13 Jun 2023 15:37:07 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgD3X7OdHIhkfcdhLg--.52188S4;
-        Tue, 13 Jun 2023 15:37:03 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgD3X7OdHIhkfcdhLg--.52188S7;
+        Tue, 13 Jun 2023 15:37:07 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
@@ -32,29 +32,31 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: [PATCH bpf-next v6 0/5] Add benchmark for bpf memory allocator
-Date:   Tue, 13 Jun 2023 16:09:16 +0800
-Message-Id: <20230613080921.1623219-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v6 3/5] selftests/bpf: Ensure that next_cpu() returns a valid CPU number
+Date:   Tue, 13 Jun 2023 16:09:19 +0800
+Message-Id: <20230613080921.1623219-4-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20230613080921.1623219-1-houtao@huaweicloud.com>
+References: <20230613080921.1623219-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3X7OdHIhkfcdhLg--.52188S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw4xGF1xJr4UuF4xGFy8Zrb_yoW5tFWxpa
-        n7Kw1Yyr13JFn7tw4xC34UtFWfAw1DWry5WrnIyr1UZ3W7JryFvr1xKrWrXFZ8ta4rtr1r
-        ZrZFqr1fW3WFy37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-TRANSID: gCh0CgD3X7OdHIhkfcdhLg--.52188S7
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr1DAFW3ur48ZryfJryrWFg_yoW8Ar18pa
+        97Gw1qyFWftF17t3W8GF409FWSkwn7XrWrtr17Jry3ZFyxJrZ7XF1xKFWrJFsxu39Yqr1f
+        Z397try5u3W8Jw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
+        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -63,74 +65,58 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
+When using option -a without --prod-affinity or --cons-affinity, if the
+number of producers and consumers is greater than the number of online
+CPUs, the benchmark will fail to run as shown below:
 
-This patchset includes some trivial fixes for benchmark framework and
-a new benchmark for bpf memory allocator originated from handle-reuse
-patchset. Because htab-mem benchmark depends the fixes, so I post these
-patches together.
+  $ getconf _NPROCESSORS_ONLN
+  8
+  $ ./bench bpf-loop -a -p9
+  Setting up benchmark 'bpf-loop'...
+  setting affinity to CPU #8 failed: -22
 
-Patch #1 fixes the allocation of local counter. Patch #2 fixes the
-outputted error code in error message when using pthead APIs. Patch #3
-makes the benchmark run successfuly when the number of consumers and
-producers are greater than the number of online CPUs. Patch #4 sets the
-default value of consumer_cnt as 0, so all online CPUs could be used by
-producer threads. Patch #5 adds a new bpf memory allocator benchmark to
-measure the performance and memory usage of bpf hash table map.
+Fix it by returning the remainder of next_cpu divided by the number of
+online CPUs in next_cpu().
 
-Please see individual patches for more details. Comments and suggestions
-are always welcome.
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ tools/testing/selftests/bpf/bench.c | 3 ++-
+ tools/testing/selftests/bpf/bench.h | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-Change Log:
-v6:
-  * add fix patches for benchmark framework
-  * updates for htab-mem benchmark (Most of updates are suggested by Alexei)
-    * remove --full and --max-entries and use a fixed 8k size for htab
-    * remove op_factor and increase op_cnt correctly
-    * use -a instead of --prod-affinity in run_bench_htab_mem.sh
-    * use $RUN_BENCH in run_bench_htab_mem.sh
-    * call cleanup_cgroup_environment() at the end of htab_mem_report_final()
-
-v5: https://lore.kernel.org/bpf/ff4b2396-48aa-28f1-c91b-7c8a4b9510bb@huaweicloud.com/
- * send the benchmark patch alone (suggested by Alexei)
- * limit the max number of touched elements per-bpf-program call to 64 (from Alexei)
- * show per-producer performance (from Alexei)
- * handle the return value of read() (from BPF CI)
- * do cleanup_cgroup_environment() in htab_mem_report_final()
-
-v4: https://lore.kernel.org/bpf/20230606035310.4026145-1-houtao@huaweicloud.com/
-
-Hou Tao (5):
-  selftests/bpf: Use producer_cnt to allocate local counter array
-  selftests/bpf: Output the correct error code for pthread APIs
-  selftests/bpf: Ensure that next_cpu() returns a valid CPU number
-  selftests/bpf: Set the default value of consumer_cnt as 0
-  selftests/bpf: Add benchmark for bpf memory allocator
-
- tools/testing/selftests/bpf/Makefile          |   3 +
- tools/testing/selftests/bpf/bench.c           |  19 +-
- tools/testing/selftests/bpf/bench.h           |   1 +
- .../bpf/benchs/bench_bloom_filter_map.c       |  14 +-
- .../benchs/bench_bpf_hashmap_full_update.c    |  10 +-
- .../bpf/benchs/bench_bpf_hashmap_lookup.c     |  10 +-
- .../selftests/bpf/benchs/bench_bpf_loop.c     |  10 +-
- .../selftests/bpf/benchs/bench_count.c        |  14 +-
- .../selftests/bpf/benchs/bench_htab_mem.c     | 303 ++++++++++++++++++
- .../bpf/benchs/bench_local_storage.c          |  12 +-
- .../bpf/benchs/bench_local_storage_create.c   |   8 +-
- .../bench_local_storage_rcu_tasks_trace.c     |  10 +-
- .../selftests/bpf/benchs/bench_rename.c       |  15 +-
- .../selftests/bpf/benchs/bench_ringbufs.c     |   2 +-
- .../selftests/bpf/benchs/bench_strncmp.c      |  11 +-
- .../selftests/bpf/benchs/bench_trigger.c      |  21 +-
- .../bpf/benchs/run_bench_htab_mem.sh          |  40 +++
- .../bpf/benchs/run_bench_ringbufs.sh          |  26 +-
- .../selftests/bpf/progs/htab_mem_bench.c      | 107 +++++++
- 19 files changed, 502 insertions(+), 134 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
- create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
-
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+index 0b5d2b5303c9..56f1c166a57b 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -469,7 +469,7 @@ static int next_cpu(struct cpu_set *cpu_set)
+ 		exit(1);
+ 	}
+ 
+-	return cpu_set->next_cpu++;
++	return cpu_set->next_cpu++ % env.nr_cpus;
+ }
+ 
+ static struct bench_state {
+@@ -659,6 +659,7 @@ static void collect_measurements(long delta_ns) {
+ 
+ int main(int argc, char **argv)
+ {
++	env.nr_cpus = get_nprocs();
+ 	parse_cmdline_args_init(argc, argv);
+ 
+ 	if (env.list) {
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/bpf/bench.h
+index 402729c6a3ac..7ff32be3d730 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -27,6 +27,7 @@ struct env {
+ 	bool quiet;
+ 	int consumer_cnt;
+ 	int producer_cnt;
++	int nr_cpus;
+ 	struct cpu_set prod_cpus;
+ 	struct cpu_set cons_cpus;
+ };
 -- 
 2.29.2
 
