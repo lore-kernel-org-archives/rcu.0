@@ -2,166 +2,185 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93EF6C88CB6
-	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 12:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0137CEB64D0
+	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 14:42:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242308AbjFMMFM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Jun 2023 08:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
+        id S239346AbjFMOmj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Jun 2023 10:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235323AbjFMMFK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Jun 2023 08:05:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5EEC6;
-        Tue, 13 Jun 2023 05:05:09 -0700 (PDT)
+        with ESMTP id S237979AbjFMOmi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Jun 2023 10:42:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD7DE55;
+        Tue, 13 Jun 2023 07:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=We450CvfOCP5c59KwNDZJAffsENowhZJ2YopwZtAM4U=; b=Jxuk4kbSPlYysuEXYwfqgZpIKY
-        2esqqWM2vPb/NR4S3/3h3PHrQNP1yhoWzfZQiQ5k4mzI+0L2rrX8QJXjeU07kXZofj0Bs2tcF7nOf
-        u9oVVlB0zcYqxpFYnALo2jah9gsThJH3osCk8TKX8CCm+NgukCW5X32WzTyt+CiZEU9wZ6h4xZWXE
-        3+6GILn6Up9tmfFZ65BUr/YifpIB8+Ic1e+8b1VKV1GaFV2eBvySCEsvi8vRwjhe0sujXdjYSEzat
-        eJxHoTMCuryayK5b7Sw18BWPtZifEGOFNAQbvy0WK0r2z6w/KLIn0kin1I3zzfj+tJQn8MN04QTRq
-        zMiiBHFw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q92lk-009M6P-1o;
-        Tue, 13 Jun 2023 12:05:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 573C3300322;
-        Tue, 13 Jun 2023 14:05:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 30EB0245C29F5; Tue, 13 Jun 2023 14:05:03 +0200 (CEST)
-Date:   Tue, 13 Jun 2023 14:05:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        pbonzini@redhat.com, masahiroy@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, nicolas@fjasle.eu,
-        catalin.marinas@arm.com, will@kernel.org, vkoul@kernel.org,
-        trix@redhat.com, ojeda@kernel.org, mingo@redhat.com,
-        longman@redhat.com, boqun.feng@gmail.com, dennis@kernel.org,
-        tj@kernel.org, cl@linux.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rientjes@google.com, vbabka@suse.cz, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, apw@canonical.com, joe@perches.com,
-        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        john.johansen@canonical.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        llvm@lists.linux.dev, linux-perf-users@vger.kernel.org,
-        rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
-        tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
-        luc.vanoostenryck@gmail.com
-Subject: Re: [PATCH v3 33/57] perf: Simplify perf_adjust_freq_unthr_context()
-Message-ID: <20230613120503.GV4253@hirez.programming.kicks-ass.net>
-References: <20230612090713.652690195@infradead.org>
- <20230612093539.895253662@infradead.org>
- <CAHk-=wgPtj9Y+nkMe+s20sntBPoadKL7GLxTr=mhfdONMR=iZg@mail.gmail.com>
- <20230612184403.GE83892@hirez.programming.kicks-ass.net>
- <CAHk-=wgaSkM4fjdP9dcdXQpLLjxW43ykgLA=FgzyHpyHayz8ww@mail.gmail.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=1ZebDa7Kz76JvAh7re62vgIonWyfZe/pNIHd3eKVHuo=; b=fCCXvj9aHuxjbZny0qIfOV5tQF
+        PQnP9RE4hpKI7jkXarKXiUMhvJ/pHxCtMDBjrloK1BKOKsrmr2EjJAL7Oi1NbPc1GtbaVzEj3QepZ
+        Pxsl79tkv9u6+GmWV4waiHMg4OhUdhlC2VHYgNYhcppjRsWElrGJQd7cGuYnwTkqKQG4j+gkGR9PC
+        aXQG0wD7AgJhs7AMHRDLFwmOHuY8EyAn5DfSb2Vuj72qO/5b94cZ4DlzsMjB/00oNz4o/K95H9BDe
+        a5VEE+/2VsjAlt1t3bv5O8/67Tb5OA8nlHuAdQ7nOzUr6MJx/ULtM1K7ubIxZTc/XEgrQZZRUj1uh
+        6vfKiS7w==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q95Du-008MOX-1D;
+        Tue, 13 Jun 2023 14:42:18 +0000
+Message-ID: <a3952f99-7ae9-8f8f-d87a-713690cbe1fb@infradead.org>
+Date:   Tue, 13 Jun 2023 07:42:17 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgaSkM4fjdP9dcdXQpLLjxW43ykgLA=FgzyHpyHayz8ww@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] rcuscale: fix building with RCU_TINY
+Content-Language: en-US
+To:     paulmck@kernel.org, Arnd Bergmann <arnd@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230609120522.3921015-1-arnd@kernel.org>
+ <9fd81723-4ba2-4a0b-a7da-f9fb121021de@paulmck-laptop>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <9fd81723-4ba2-4a0b-a7da-f9fb121021de@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 11:55:57AM -0700, Linus Torvalds wrote:
+Paul-
 
-> But thinking about it, it's not just that the value doesn't survive,
-> it's also that the "continue" will exit the scope in order to go back
-> to the "for()" loop.
+On 6/9/23 15:51, Paul E. McKenney wrote:
+> On Fri, Jun 09, 2023 at 02:05:14PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> Both the CONFIG_TASKS_RCU and CONFIG_TASKS_RUDE_RCU options
+>> are broken when RCU_TINY is enabled as well, as some functions
+>> are missing a declaration.
+>>
+>> In file included from kernel/rcu/update.c:649:
+>> kernel/rcu/tasks.h:1271:21: error: no previous prototype for 'get_rcu_tasks_rude_gp_kthread' [-Werror=missing-prototypes]
+>>  1271 | struct task_struct *get_rcu_tasks_rude_gp_kthread(void)
+>>       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/rcu/rcuscale.c:330:27: error: 'get_rcu_tasks_rude_gp_kthread' undeclared here (not in a function); did you mean 'get_rcu_tasks_trace_gp_kthread'?
+>>   330 |         .rso_gp_kthread = get_rcu_tasks_rude_gp_kthread,
+>>       |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>       |                           get_rcu_tasks_trace_gp_kthread
+>>
+>> In file included from /home/arnd/arm-soc/kernel/rcu/update.c:649:
+>> kernel/rcu/tasks.h:1113:21: error: no previous prototype for 'get_rcu_tasks_gp_kthread' [-Werror=missing-prototypes]
+>>  1113 | struct task_struct *get_rcu_tasks_gp_kthread(void)
+>>       |                     ^~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> Also, building with CONFIG_TASKS_RUDE_RCU but not CONFIG_TASKS_RCU is
+>> broken because of some missing stub functions:
+>>
+>> kernel/rcu/rcuscale.c:322:27: error: 'tasks_scale_read_lock' undeclared here (not in a function); did you mean 'srcu_scale_read_lock'?
+>>   322 |         .readlock       = tasks_scale_read_lock,
+>>       |                           ^~~~~~~~~~~~~~~~~~~~~
+>>       |                           srcu_scale_read_lock
+>> kernel/rcu/rcuscale.c:323:27: error: 'tasks_scale_read_unlock' undeclared here (not in a function); did you mean 'srcu_scale_read_unlock'?
+>>   323 |         .readunlock     = tasks_scale_read_unlock,
+>>       |                           ^~~~~~~~~~~~~~~~~~~~~~~
+>>       |                           srcu_scale_read_unlock
+>>
+>> Move the declarations outside of the RCU_TINY #ifdef and duplicate the
+>> shared stub functions to address all of the above.
+>>
+>> Fixes: 88d7ff818f0ce ("rcuscale: Add RCU Tasks Rude testing")
+>> Fixes: 755f1c5eb416b ("rcuscale: Measure RCU Tasks Trace grace-period kthread CPU time")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> Queued and pushed, thank you!
+> 
+> I clearly need to improve my Kconfig coverage here...
+> 
 
-So if you still feel the continue is a step too far; the alternative
-isn't horrible either..
+Pushed where. I'm still seeing this build error in linux-next 20230613.
 
----
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4090,7 +4090,7 @@ perf_adjust_freq_unthr_context(struct pe
- 	if (!(ctx->nr_freq || unthrottle))
- 		return;
- 
--	raw_spin_lock(&ctx->lock);
-+	guard(raw_spinlock)(&ctx->lock);
- 
- 	list_for_each_entry_rcu(event, &ctx->event_list, event_entry) {
- 		if (event->state != PERF_EVENT_STATE_ACTIVE)
-@@ -4100,7 +4100,7 @@ perf_adjust_freq_unthr_context(struct pe
- 		if (!event_filter_match(event))
- 			continue;
- 
--		perf_pmu_disable(event->pmu);
-+		guard(perf_pmu_disable)(event->pmu);
- 
- 		hwc = &event->hw;
- 
-@@ -4110,34 +4110,29 @@ perf_adjust_freq_unthr_context(struct pe
- 			event->pmu->start(event, 0);
- 		}
- 
--		if (!event->attr.freq || !event->attr.sample_freq)
--			goto next;
-+		if (event->attr.freq && event->attr.sample_freq) {
-+			/*
-+			 * stop the event and update event->count
-+			 */
-+			event->pmu->stop(event, PERF_EF_UPDATE);
-+
-+			now = local64_read(&event->count);
-+			delta = now - hwc->freq_count_stamp;
-+			hwc->freq_count_stamp = now;
-+
-+			/*
-+			 * restart the event
-+			 * reload only if value has changed
-+			 * we have stopped the event so tell that
-+			 * to perf_adjust_period() to avoid stopping it
-+			 * twice.
-+			 */
-+			if (delta > 0)
-+				perf_adjust_period(event, period, delta, false);
- 
--		/*
--		 * stop the event and update event->count
--		 */
--		event->pmu->stop(event, PERF_EF_UPDATE);
--
--		now = local64_read(&event->count);
--		delta = now - hwc->freq_count_stamp;
--		hwc->freq_count_stamp = now;
--
--		/*
--		 * restart the event
--		 * reload only if value has changed
--		 * we have stopped the event so tell that
--		 * to perf_adjust_period() to avoid stopping it
--		 * twice.
--		 */
--		if (delta > 0)
--			perf_adjust_period(event, period, delta, false);
--
--		event->pmu->start(event, delta > 0 ? PERF_EF_RELOAD : 0);
--	next:
--		perf_pmu_enable(event->pmu);
-+			event->pmu->start(event, delta > 0 ? PERF_EF_RELOAD : 0);
-+		}
- 	}
--
--	raw_spin_unlock(&ctx->lock);
- }
- 
- /*
+Thanks.
+
+> 
+>> ---
+>>  kernel/rcu/rcu.h      | 14 ++++++++------
+>>  kernel/rcu/rcuscale.c | 13 +++++++++++--
+>>  2 files changed, 19 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+>> index 9829d8161b213..5befd8780dcd3 100644
+>> --- a/kernel/rcu/rcu.h
+>> +++ b/kernel/rcu/rcu.h
+>> @@ -505,18 +505,20 @@ void rcu_async_relax(void);
+>>  void rcupdate_announce_bootup_oddness(void);
+>>  #ifdef CONFIG_TASKS_RCU_GENERIC
+>>  void show_rcu_tasks_gp_kthreads(void);
+>> -# ifdef CONFIG_TASKS_RCU
+>> -struct task_struct *get_rcu_tasks_gp_kthread(void);
+>> -# endif // # ifdef CONFIG_TASKS_RCU
+>> -# ifdef CONFIG_TASKS_RUDE_RCU
+>> -struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
+>> -# endif // # ifdef CONFIG_TASKS_RUDE_RCU
+>>  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+>>  static inline void show_rcu_tasks_gp_kthreads(void) {}
+>>  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+>>  void rcu_request_urgent_qs_task(struct task_struct *t);
+>>  #endif /* #else #ifdef CONFIG_TINY_RCU */
+>>  
+>> +#ifdef CONFIG_TASKS_RCU
+>> +struct task_struct *get_rcu_tasks_gp_kthread(void);
+>> +#endif // # ifdef CONFIG_TASKS_RCU
+>> +
+>> +#ifdef CONFIG_TASKS_RUDE_RCU
+>> +struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
+>> +#endif // # ifdef CONFIG_TASKS_RUDE_RCU
+>> +
+>>  #define RCU_SCHEDULER_INACTIVE	0
+>>  #define RCU_SCHEDULER_INIT	1
+>>  #define RCU_SCHEDULER_RUNNING	2
+>> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+>> index 5ce3b4e7ce711..a0eae19007088 100644
+>> --- a/kernel/rcu/rcuscale.c
+>> +++ b/kernel/rcu/rcuscale.c
+>> @@ -316,11 +316,20 @@ static struct rcu_scale_ops tasks_ops = {
+>>   * Definitions for RCU-tasks-rude scalability testing.
+>>   */
+>>  
+>> +static int tasks_rude_scale_read_lock(void)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +static void tasks_rude_scale_read_unlock(int idx)
+>> +{
+>> +}
+>> +
+>>  static struct rcu_scale_ops tasks_rude_ops = {
+>>  	.ptype		= RCU_TASKS_RUDE_FLAVOR,
+>>  	.init		= rcu_sync_scale_init,
+>> -	.readlock	= tasks_scale_read_lock,
+>> -	.readunlock	= tasks_scale_read_unlock,
+>> +	.readlock	= tasks_rude_scale_read_lock,
+>> +	.readunlock	= tasks_rude_scale_read_unlock,
+>>  	.get_gp_seq	= rcu_no_completed,
+>>  	.gp_diff	= rcu_seq_diff,
+>>  	.async		= call_rcu_tasks_rude,
+>> -- 
+>> 2.39.2
+>>
+
+-- 
+~Randy
