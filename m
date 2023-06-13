@@ -2,43 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7B09EB64D8
-	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 18:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A88CEB64D7
+	for <rcu@archiver.kernel.org>; Tue, 13 Jun 2023 18:25:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240423AbjFMSZQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 13 Jun 2023 14:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        id S240554AbjFMSZ1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 13 Jun 2023 14:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239370AbjFMSYn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 13 Jun 2023 14:24:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A54DE41;
-        Tue, 13 Jun 2023 11:24:42 -0700 (PDT)
+        with ESMTP id S239464AbjFMSYo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 13 Jun 2023 14:24:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A761709;
+        Tue, 13 Jun 2023 11:24:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F36063365;
-        Tue, 13 Jun 2023 18:24:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 125D1C433F1;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6530E62F60;
         Tue, 13 Jun 2023 18:24:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C47EC433D9;
+        Tue, 13 Jun 2023 18:24:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686680681;
-        bh=tKaE0feCA4Misffydrf5UR6uG+RXTeYv2hshyi6erLw=;
+        s=k20201202; t=1686680680;
+        bh=WK1M1XZ0REtusB+Bs/9PHEmAd7saEbfCwi8rA6lQtaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BhJ2cluNI4psNgHorBPau3CpVT1R9LA6maOtkq4Jg7r+eOP1b9SBvIOw2gL4U1U+p
-         sJTDHRyT0xThUGQQ3SLFPV51kBaQry3fG6EpHHmfpVx6TLUEBMwzHlrlcuav0vhQaV
-         BtJbiA9mYF3TaUyVgC1XDtp32cQR+GRJ5jE5SXiqkHGYF9M9LCMyC1VBaVAdeE8YB6
-         rbd54j5/RMZflfPPq/WfFhiV2g7HBVbkOaX4veNpewafKHPPILbiiNeVGRg4OX1rSp
-         24wcRcOPE9R4POUba/uQafK1PW/ggSSCEq1vPrrhTKW4g84QbMBGLbMau12YYQpZpk
-         ouVO+GoDJhOzg==
+        b=MqD8aL5xO0CWMpkkeYW/yEn/4+ZWMtrDpJOPYc0AU818+2mltncssD4pRjLE2v/YE
+         ul1fEqAlvphMYolgDGG9dNXMwTwv+yb6uyT1Jpv7xjDUnrbI3hMNu7NGhviBtdiQl8
+         eiWkvTmmoNciGcnP3TqkTDEujMewqkeFRiVq+yVsPLkHT7DCokzG9BA8GNHMjIwNH0
+         SE93O2hrvohcQJ499bLwlKsUGX6e/bFGvSJqT8kXNWjMJNS6rFJrrraKh+Z9noaoPD
+         P4+JcxyVTpuuiTC4hdmAoXL9K4eJOSQt17S27ncIO6i6z1VPi/hIsT8QPEtN5H5o5c
+         aqWzq9WFhO91g==
 From:   SeongJae Park <sj@kernel.org>
 To:     paulmck@kernel.org
 Cc:     SeongJae Park <sj@kernel.org>, joel@joelfernandes.org,
         mmpgouride@gmail.com, corbet@lwn.net, rcu@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] Docs/RCU/rculist_nulls: Fix wrong text about atomic_set_release()
-Date:   Tue, 13 Jun 2023 18:24:34 +0000
-Message-Id: <20230613182434.88317-5-sj@kernel.org>
+Subject: [PATCH v2 3/4] Docs/RCU/rculist_nulls: Fix hlist_head field name of 'obj'
+Date:   Tue, 13 Jun 2023 18:24:33 +0000
+Message-Id: <20230613182434.88317-4-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230613182434.88317-1-sj@kernel.org>
 References: <20230613182434.88317-1-sj@kernel.org>
@@ -48,40 +48,29 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The document says we can avoid extra _release() in insert function when
-hlist_nulls is used, but that's not true[1].  Drop it.
-
-[1] https://lore.kernel.org/rcu/46440869-644a-4982-b790-b71b43976c66@paulmck-laptop/
+The example code snippets on rculist_nulls.rst are assuming 'obj' to
+have the 'hlist_head' field named 'obj_node', but a sentence is wrongly
+mentioning 'obj->obj_node.next' as 'obj->obj_next'.  Fix it.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- Documentation/RCU/rculist_nulls.rst | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ Documentation/RCU/rculist_nulls.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-index 5cd6f3f8810f..018cc100d19b 100644
+index 94a8bfe9f560..5cd6f3f8810f 100644
 --- a/Documentation/RCU/rculist_nulls.rst
 +++ b/Documentation/RCU/rculist_nulls.rst
-@@ -129,8 +129,7 @@ very very fast (before the end of RCU grace period)
- Avoiding extra smp_rmb()
- ========================
+@@ -86,7 +86,7 @@ Quoting Corey Minyard::
+ 2) Insertion algorithm
+ ----------------------
  
--With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup()
--and extra _release() in insert function.
-+With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup().
- 
- For example, if we choose to store the slot number as the 'nulls'
- end-of-list marker for each slot of the hash table, we can detect
-@@ -182,6 +181,9 @@ scan the list again without harm.
- 2) Insert algorithm
- -------------------
- 
-+Same to the above one, but uses hlist_nulls_add_head_rcu() instead of
-+hlist_add_head_rcu().
-+
- ::
- 
-   /*
+-We need to make sure a reader cannot read the new 'obj->obj_next' value
++We need to make sure a reader cannot read the new 'obj->obj_node.next' value
+ and previous value of 'obj->key'. Otherwise, an item could be deleted
+ from a chain, and inserted into another chain. If new chain was empty
+ before the move, 'next' pointer is NULL, and lockless reader can not
 -- 
 2.25.1
 
