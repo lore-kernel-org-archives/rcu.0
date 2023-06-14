@@ -2,117 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66EAAEB64DD
-	for <rcu@archiver.kernel.org>; Wed, 14 Jun 2023 08:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07340EB64DB
+	for <rcu@archiver.kernel.org>; Wed, 14 Jun 2023 16:37:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243536AbjFNIZy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 14 Jun 2023 04:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        id S235249AbjFNQhY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 14 Jun 2023 12:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243433AbjFNIZw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 14 Jun 2023 04:25:52 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92951A1;
-        Wed, 14 Jun 2023 01:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=xz5/VyeWvrJxvz7Vj1Bej8cUKvcRWi1AM/YLcdj+D/Y=; b=BRDdoKzwDzkGKB+A7e3ag/q8ah
-        OuIxesfxVQag4DfRTqhUekNoppHbkzvJkwCCICkhEf8dky95UyM5bzWwWxiNms2GIKgSietdNCacr
-        HKrpLs/0yU3FtQlwoH2plJxAxqyXuzokNnbLBzeUE9RSI7aVLHoO8WAyzDiPUNVNg7d4jKQdfqnkK
-        9h4Yy3POzOVCIIQ6n1ZFg5fvmffQFY8z1DLGdH80TK1X/ioX1bFq0p3iImYmiPCTfOGxyHwcnHVIe
-        dc1+v/iDoOcVsxc8xJStSr7UlxJxe/mokgVK6nXWCJOg+fkstoS29jdcRppL3KDo7lAMYq+k7jWOq
-        4GBG8M1g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1q9Loz-00Abb2-0b;
-        Wed, 14 Jun 2023 08:25:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        with ESMTP id S235119AbjFNQhG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 14 Jun 2023 12:37:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588512684;
+        Wed, 14 Jun 2023 09:36:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C65B930031B;
-        Wed, 14 Jun 2023 10:25:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 975E227F86A4E; Wed, 14 Jun 2023 10:25:39 +0200 (CEST)
-Date:   Wed, 14 Jun 2023 10:25:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     torvalds@linux-foundation.org, keescook@chromium.org,
-        gregkh@linuxfoundation.org, pbonzini@redhat.com, nathan@kernel.org,
-        ndesaulniers@google.com, nicolas@fjasle.eu,
-        catalin.marinas@arm.com, will@kernel.org, vkoul@kernel.org,
-        trix@redhat.com, ojeda@kernel.org, mingo@redhat.com,
-        longman@redhat.com, boqun.feng@gmail.com, dennis@kernel.org,
-        tj@kernel.org, cl@linux.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        rientjes@google.com, vbabka@suse.cz, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, apw@canonical.com, joe@perches.com,
-        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        john.johansen@canonical.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        llvm@lists.linux.dev, linux-perf-users@vger.kernel.org,
-        rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
-        tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
-        luc.vanoostenryck@gmail.com
-Subject: Re: [PATCH v3 04/57] kbuild: Drop -Wdeclaration-after-statement
-Message-ID: <20230614082539.GB1639749@hirez.programming.kicks-ass.net>
-References: <20230612090713.652690195@infradead.org>
- <20230612093537.693926033@infradead.org>
- <CAK7LNARwAaw_22AjsheMtNwpVgF7FtKxh08mkg3cP=bY2016hw@mail.gmail.com>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E183D64098;
+        Wed, 14 Jun 2023 16:36:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47470C433C0;
+        Wed, 14 Jun 2023 16:36:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686760611;
+        bh=Q3hI23JS1gH/eq1EjaREWFCzmK5MREhtpdlNyvHwILw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tGKyM3FjC2pgb3RtrwXwRJCRJ1N4a2SUETeR/4kWmc0UAqN9jqE0kr6vFBs6Grhad
+         fzurYJye5OzfWYTrTc8CB11rauV5Ks8bRSiwAhVbolNLcOW77vRd6NdK665sjQtyyN
+         RfyBL0VFgAbnVIzH9DxI2wJhaHXbcrMe4+VEkNFmzHdBqD/yKII4y0XafZQ4pVT4RA
+         TZtcUaBdm74ggGAwP5N+V7oYOvpttb+ndspnhp7TIrj62Uy7Iij/TrPjJ8WRr4E1LJ
+         ci88t4/dTPvvh/X6Fsg5CwPbCqFNNsd7EckkgZ8WkQGEFDIPKQ+uSBZmr49oU2XMxr
+         WFk7qXKHDKQMg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CE03BCE2246; Wed, 14 Jun 2023 09:36:50 -0700 (PDT)
+Date:   Wed, 14 Jun 2023 09:36:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     joel@joelfernandes.org, mmpgouride@gmail.com, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] Docs/RCU/rculist_nulls: Fix hlist_head field name
+ of 'obj'
+Message-ID: <43943609-f80c-4b6a-9844-994eef800757@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230613182434.88317-1-sj@kernel.org>
+ <20230613182434.88317-4-sj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNARwAaw_22AjsheMtNwpVgF7FtKxh08mkg3cP=bY2016hw@mail.gmail.com>
+In-Reply-To: <20230613182434.88317-4-sj@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 03:13:03PM +0900, Masahiro Yamada wrote:
-> On Mon, Jun 12, 2023 at 6:39 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > With the advent on scope-based resource management it comes really
-> > tedious to abide by the contraints of -Wdeclaration-after-statement.
+On Tue, Jun 13, 2023 at 06:24:33PM +0000, SeongJae Park wrote:
+> The example code snippets on rculist_nulls.rst are assuming 'obj' to
+> have the 'hlist_head' field named 'obj_node', but a sentence is wrongly
+> mentioning 'obj->obj_node.next' as 'obj->obj_next'.  Fix it.
 > 
-> Where is the context of Linus' suggested-by?
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  Documentation/RCU/rculist_nulls.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I do not know where this came from.
-> I suddenly got a huge v3 in my mailbox.
-> 
-> 
-> I see an equivalent patch submitted last year:
-> https://lore.kernel.org/lkml/Y1w031iI6Ld29IVT@p183/
-> 
-> Linus rejected it. Did he change his mind?
+> diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
+> index 94a8bfe9f560..5cd6f3f8810f 100644
+> --- a/Documentation/RCU/rculist_nulls.rst
+> +++ b/Documentation/RCU/rculist_nulls.rst
+> @@ -86,7 +86,7 @@ Quoting Corey Minyard::
+>  2) Insertion algorithm
+>  ----------------------
+>  
+> -We need to make sure a reader cannot read the new 'obj->obj_next' value
+> +We need to make sure a reader cannot read the new 'obj->obj_node.next' value
 
-https://lkml.kernel.org/r/CAHk-%3Dwi-RyoUhbChiVaJZoZXheAwnJ7OO%3DGxe85BkPAd93TwDA%40mail.gmail.com
+I do like this being more specific, but if we are going do add this
+level of specificity, shouldn't we refer to a definition of ->obj_node?
 
-I'll add it as a Link tag to the Changelog.
+(I queued and pushed 1/4 and 2/4, thank you, and stopped here.)
 
+							Thanx, Paul
+
+>  and previous value of 'obj->key'. Otherwise, an item could be deleted
+>  from a chain, and inserted into another chain. If new chain was empty
+>  before the move, 'next' pointer is NULL, and lockless reader can not
+> -- 
+> 2.25.1
 > 
-> > It will still be recommeneded to place declarations at the start of a
-> > scope where possible, but it will no longer be enforced.
-> 
-> If you remove the warning, we will not be able to
-> detect code that opts out the recommendation
-> for no good reason.
-
-Yeah, so per that thread linked above I tried to play clever games with
-_Pragma() to get around this, but GCC hates on it (works fine with Clang
-though).
-
-Linus said to just give up and scrap the whole
--Wdeclaration-after-statement thing.
-
-I suppose it'll be up to reviewers and perhaps checkpatch like things to
-'enforce' the rules.
