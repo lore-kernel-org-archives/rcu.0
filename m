@@ -2,60 +2,100 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3487FEB64D9
-	for <rcu@archiver.kernel.org>; Thu, 15 Jun 2023 08:08:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D807FEB64D9
+	for <rcu@archiver.kernel.org>; Thu, 15 Jun 2023 17:30:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245213AbjFOIIi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 15 Jun 2023 04:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
+        id S230003AbjFORaG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 15 Jun 2023 13:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245245AbjFOIIS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 15 Jun 2023 04:08:18 -0400
-Received: from mail.socialglobal.pl (mail.socialglobal.pl [51.195.90.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62B9294E
-        for <rcu@vger.kernel.org>; Thu, 15 Jun 2023 01:08:15 -0700 (PDT)
-Received: by mail.socialglobal.pl (Postfix, from userid 1002)
-        id ACB262388B; Thu, 15 Jun 2023 08:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=socialglobal.pl;
-        s=mail; t=1686816356;
-        bh=XwhyqI/moZPDJ7KCfcA6Gip8fA7ZKcg5SWsKuF/26zk=;
-        h=Date:From:To:Subject:From;
-        b=R1k8e2McIhPZyt62+Vphe+uEf0ijyBVjHoXzLFk1Vgdmf+kxBBOBNUHHZcoL8G9yy
-         uWvnAixQiKVx9n9pjgEUyF8GFHk3YHOK+T1SCn7muo0iD2Eq4QTgKi3hYVT/aK6ZI2
-         MGGiVxo+gBR/kl9Lw3e1Le68AzwDzme9fXXSjbMDLyX9R+AMFwiuO5lVUS5RvXcJLl
-         a+5pVJF9MyYWUJTBp2Ia/GSN5vLs34PFDcEE/TqbPtLyqykG8mNrMBe2P/POu3qSz8
-         pO/8lbAwZkVbg+jBLVzkxDu6XgMzWpFxlu/RX2/cc9IXOOGuN1Q3ULPOs0Um+blcBY
-         jX5BoPtdPoTsA==
-Received: by mail.socialglobal.pl for <rcu@vger.kernel.org>; Thu, 15 Jun 2023 08:05:52 GMT
-Message-ID: <20230615064500-0.1.6l.1x6vh.0.wlp38arwqg@socialglobal.pl>
-Date:   Thu, 15 Jun 2023 08:05:52 GMT
-From:   "Dominik Perkowski" <dominik.perkowski@socialglobal.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Pozycjonowanie- informacja
-X-Mailer: mail.socialglobal.pl
+        with ESMTP id S229629AbjFORaF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 15 Jun 2023 13:30:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712372711;
+        Thu, 15 Jun 2023 10:30:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04E4762CB3;
+        Thu, 15 Jun 2023 17:30:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B88EDC433C8;
+        Thu, 15 Jun 2023 17:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686850202;
+        bh=6k2E/HCymMi+Pobov+FDLKMTyKLdXmhmMMQubn2X9mw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sWwSxCgCLH0WUIpbjt58Uyggj9hwD7ibn43ARD2yu1I97/hU0ZofR+PX27bh1q1rs
+         eqNvlr0mW4uM5wiLLXMRe1kEUln6sVWkIn8uIS0dTyVXJWUIMie8VSsbXcmj+Z6+rI
+         Am8gsmkWNGEEA1vPdqPXJSnGQU1Rmda5NjXrJJzS/hI32y1aZZATBE2D79ygZFglEj
+         RvYBqMQwINEURPhAo0YhNA5OozP7qbJUERMt6JaRxCZSkANgB0uQWt4sON84HZ2a3l
+         cPZQFjRhH/0kK7k5jmg+rORLyWxRNw+ET+qHaTi+rJLRX1fr7dZc4xjnX9I0uawnLN
+         W1a9CG2VTHXFA==
+From:   SeongJae Park <sj@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     SeongJae Park <sj@kernel.org>, joel@joelfernandes.org,
+        mmpgouride@gmail.com, corbet@lwn.net, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] Docs/RCU/rculist_nulls: Fix hlist_head field name of 'obj'
+Date:   Thu, 15 Jun 2023 17:30:00 +0000
+Message-Id: <20230615173000.84885-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <43943609-f80c-4b6a-9844-994eef800757@paulmck-laptop>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+On Wed, 14 Jun 2023 09:36:50 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
-j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
-e Google.=20
+> On Tue, Jun 13, 2023 at 06:24:33PM +0000, SeongJae Park wrote:
+> > The example code snippets on rculist_nulls.rst are assuming 'obj' to
+> > have the 'hlist_head' field named 'obj_node', but a sentence is wrongly
+> > mentioning 'obj->obj_node.next' as 'obj->obj_next'.  Fix it.
+> > 
+> > Signed-off-by: SeongJae Park <sj@kernel.org>
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  Documentation/RCU/rculist_nulls.rst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
+> > index 94a8bfe9f560..5cd6f3f8810f 100644
+> > --- a/Documentation/RCU/rculist_nulls.rst
+> > +++ b/Documentation/RCU/rculist_nulls.rst
+> > @@ -86,7 +86,7 @@ Quoting Corey Minyard::
+> >  2) Insertion algorithm
+> >  ----------------------
+> >  
+> > -We need to make sure a reader cannot read the new 'obj->obj_next' value
+> > +We need to make sure a reader cannot read the new 'obj->obj_node.next' value
+> 
+> I do like this being more specific, but if we are going do add this
+> level of specificity, shouldn't we refer to a definition of ->obj_node?
 
-Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
-=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
-w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
-owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
-dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
+Agreed, I will add the example definition in the next spin.  I also found we
+would better to further fix wrong 'member' field assumption, like below:
 
-Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
-edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
-edstawi=C4=87 ofert=C4=99?=20
+-       ({ obj = hlist_entry(pos, typeof(*obj), member); 1; });
++       ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
 
 
-Pozdrawiam serdecznie,
-Dominik Perkowski
+
+Thanks,
+SJ
+
+> 
+> (I queued and pushed 1/4 and 2/4, thank you, and stopped here.)
+> 
+> 							Thanx, Paul
+> 
+> >  and previous value of 'obj->key'. Otherwise, an item could be deleted
+> >  from a chain, and inserted into another chain. If new chain was empty
+> >  before the move, 'next' pointer is NULL, and lockless reader can not
+> > -- 
+> > 2.25.1
+> > 
+> 
