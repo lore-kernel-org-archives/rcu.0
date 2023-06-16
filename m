@@ -2,85 +2,131 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88C3BEB64D8
-	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 16:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D66EB64D7
+	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 17:46:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345936AbjFPQyP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Jun 2023 12:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
+        id S1344108AbjFPRqq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Jun 2023 13:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235280AbjFPQx5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Jun 2023 12:53:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8C649E7;
-        Fri, 16 Jun 2023 09:52:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 034B461E8F;
-        Fri, 16 Jun 2023 16:52:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FF43C433C8;
-        Fri, 16 Jun 2023 16:52:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686934328;
-        bh=N4xrbSWZmu3T5AgIRbp2PfwRes6IHyCFb+zWM/SdIvE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LbQTTNjKskMaw6acz5LDT6qOFMAnHCX5c38KxWj21xDjipbYdYPjPZljHNajsJI9n
-         We7QyGPbkN5fPmP1pxOtxK1kb1qUQgQxei6ZzIO3LDjCp5HqAiI3e/wCVckY5OTYYE
-         BFzUfErdi26Q1p9bmhRNzbJv7+xh/dB6jrlUhT0bXKw9ZhC0zGV+2bIKcsaG+AAXS+
-         tDDHKRcMoC3arXcs09DiBka4WUMblRkLQpRbloy4Mow9rV44JlMk7TwmosH9OO0B/H
-         pzcXC9EbtRMXkX4HJvq9TBbXscbRvWAJx0DVPG4+rLmBwmymPoXdq+LDK4ApHAWKfM
-         6IlohYq6/7LOg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F1164CE0BB2; Fri, 16 Jun 2023 09:52:07 -0700 (PDT)
-Date:   Fri, 16 Jun 2023 09:52:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     joel@joelfernandes.org, mmpgouride@gmail.com, corbet@lwn.net,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        with ESMTP id S229471AbjFPRqp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Jun 2023 13:46:45 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73722D50;
+        Fri, 16 Jun 2023 10:46:42 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666eba6f3d6so187046b3a.3;
+        Fri, 16 Jun 2023 10:46:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686937602; x=1689529602;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qc5mcss5JysJBaV9ccwFaXAHdESboYdCtDsaOK3hEYE=;
+        b=SZATOSCOGgdIJkARUx83+P/197aE/7PgooTDajaWYJVQI03IX3rHpgECGS+V1aZZMQ
+         SebN4eOO7kd/3PS+pM3zBHCJ6GmCTZgruPue546oy22ZHhws1awpxuQcr663UbJuuQ9e
+         a9v85ZjvQ08NDOgt9sjy6PhWoueKnRJhYSFgjosDEvO9pNAY9K9Jv0bBmFgBK5LJNWVT
+         dWjtz1MRJRGYNYLihHOhSkNrIPbM8WxGayAFeyCj7TvJ+ohtcIn1yqokS+p07AmkKTyi
+         BS1xpMKub6eXAdXVJMBCV96H/ttVdUyZSd4U8lg2i/SmSzgqSq3qLoBcVNSzsnL9wiGB
+         ZL4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686937602; x=1689529602;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qc5mcss5JysJBaV9ccwFaXAHdESboYdCtDsaOK3hEYE=;
+        b=Q77ev/YoZz7Y5k3J4B+QliNbBy0Yj7M+Wyit8aQSbq4vmwOi1o9slX4NNu3varWrxF
+         cex2+gkVRFNLCFlQY2zqqnTEvx2888I5b+IRxS3Nn6xfnDJn1SXzvq3USKVO2nx9geEw
+         JFC6KsE8oWjcTlUJzr1VEObKOA3pHly5xL3FQrl3bL6ytl7eYGvk4KivUtiScxuCe0fM
+         NFX6svGf0BT+B4t4uQkmEYZ227bKRXYAs0llIbg8m1SPwOdGBpbYMGe/Txw/OgO2Xjdc
+         pESmI+cvs16NboK7SUkEMcnDk1+Yvw/nwedHVYEuXwezhIIUlviRnLV+VQi6jQvlpHHh
+         gR5w==
+X-Gm-Message-State: AC+VfDxZozZPBVKO48hcny7yenXnVsZ5owaRtMwflcxUYd8rdVPOkU1t
+        lnTzMYxW0IsjbshQ5sfNKJk=
+X-Google-Smtp-Source: ACHHUZ73wt3phJfWuHNDQLZmbwJSQOBqFPmzjpCfia8jzzIzR3DtmP0nYXQhQ6B+qGFc5U/2Nq8hjA==
+X-Received: by 2002:a05:6a00:198f:b0:65f:2fbd:370a with SMTP id d15-20020a056a00198f00b0065f2fbd370amr2941290pfl.30.1686937602062;
+        Fri, 16 Jun 2023 10:46:42 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id m13-20020aa7900d000000b0064d2ad04cccsm1466778pfo.175.2023.06.16.10.46.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Jun 2023 10:46:41 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH v3 1/3] Docs/RCU/rculist_nulls: Specify type of the object
+ in examples
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <20230615181004.86850-2-sj@kernel.org>
+Date:   Sat, 17 Jun 2023 01:46:16 +0800
+Cc:     paulmck@kernel.org, Joel Fernandes <joel@joelfernandes.org>,
+        corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Docs/RCU/rculist_nulls: Minor fixup
-Message-ID: <6126d55b-a80d-4ee6-8b80-980ebbf44320@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <390935BF-9EC0-4D88-A277-7B37D68CC6C7@gmail.com>
 References: <20230615181004.86850-1-sj@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230615181004.86850-1-sj@kernel.org>
+ <20230615181004.86850-2-sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jun 15, 2023 at 06:10:01PM +0000, SeongJae Park wrote:
-> Changes from v2
-> (https://lore.kernel.org/rcu/20230613182434.88317-1-sj@kernel.org/)
-> - Drop first two patches that merged to Paul's tree
-> - Add definition of 'obj' (Paul E. McKenney)
-> - Fix more wrong hlist_[nulls]_head field name mentions
-> 
-> Changes from v1
-> (https://lore.kernel.org/rcu/20230518224008.2468-1-sj@kernel.org/)
-> - Add Reviewed-by tags from Joel Fernandes for first three patches
-> - Fix the text for wrong extra _release()
-> 
+
+> 2023=E5=B9=B46=E6=9C=8816=E6=97=A5 02:10=EF=BC=8CSeongJae Park =
+<sj@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> The type of 'obj' in example code of rculist_nulls.rst is implicit.
+> Provide the specific type of it before the example code.
+>=20
+> Suggested-by: aul E. McKenney <paulmck@kernel.org>
+
+Paul E. McKenney
+
+> Link: =
+https://lore.kernel.org/rcu/43943609-f80c-4b6a-9844-994eef800757@paulmck-l=
+aptop/
+> Signed-off-by: SeongJae Park <sj@kernel.org>
 > ---
-> 
-> Fix minor problems in example code snippets and the text of
-> rculist_nulls.rst file.
+> Documentation/RCU/rculist_nulls.rst | 14 +++++++++++++-
+> 1 file changed, 13 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/RCU/rculist_nulls.rst =
+b/Documentation/RCU/rculist_nulls.rst
+> index 94a8bfe9f560..4b66e2fd2fb5 100644
+> --- a/Documentation/RCU/rculist_nulls.rst
+> +++ b/Documentation/RCU/rculist_nulls.rst
+> @@ -18,7 +18,16 @@ to solve following problem.
+>=20
+> Without 'nulls', a typical RCU linked list managing objects which are
+> allocated with SLAB_TYPESAFE_BY_RCU kmem_cache can use the following
+> -algorithms:
+> +algorithms.  Following examples assume 'obj' is a pointer to such
+> +objects, which is having below type.
+> +
+> +::
+> +
+> +  struct object {
+> +    struct hlist_node obj_node;
+> +    refcount_t refcnt;
 
-Queued, thank you!
+atomic_t
 
-							Thanx, Paul
-
-> SeongJae Park (3):
->   Docs/RCU/rculist_nulls: Specify type of the object in examples
->   Docs/RCU/rculist_nulls: Fix hlist_[nulls]_head field names of 'obj'
->   Docs/RCU/rculist_nulls: Fix text about atomic_set_release()
-> 
->  Documentation/RCU/rculist_nulls.rst | 28 +++++++++++++++++++++-------
->  1 file changed, 21 insertions(+), 7 deletions(-)
-> 
-> -- 
+> +    unsigned int key;
+> +  };
+>=20
+> 1) Lookup algorithm
+> -------------------
+> @@ -142,6 +151,9 @@ the beginning. If the object was moved to the same =
+chain,
+> then the reader doesn't care: It might occasionally
+> scan the list again without harm.
+>=20
+> +Note that using hlist_nulls means the type of 'obj_node' field of
+> +'struct object' becomes 'struct hlist_nulls_node'.
+> +
+>=20
+> 1) lookup algorithm
+> -------------------
+> --=20
 > 2.25.1
-> 
+>=20
+
