@@ -2,118 +2,85 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C2EFEB64D7
-	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 16:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88C3BEB64D8
+	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 16:54:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245181AbjFPQkX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Jun 2023 12:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        id S1345936AbjFPQyP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Jun 2023 12:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345746AbjFPQkI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Jun 2023 12:40:08 -0400
+        with ESMTP id S235280AbjFPQx5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Jun 2023 12:53:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB4630F7;
-        Fri, 16 Jun 2023 09:39:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8C649E7;
+        Fri, 16 Jun 2023 09:52:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A7F5561199;
-        Fri, 16 Jun 2023 16:39:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F667C433C8;
-        Fri, 16 Jun 2023 16:39:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 034B461E8F;
+        Fri, 16 Jun 2023 16:52:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FF43C433C8;
+        Fri, 16 Jun 2023 16:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686933598;
-        bh=5lp9R0UpiEghbdexmZmI868ZlYvLCJEZHcBjVpepDvc=;
+        s=k20201202; t=1686934328;
+        bh=N4xrbSWZmu3T5AgIRbp2PfwRes6IHyCFb+zWM/SdIvE=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Bvg+jSnZGpx9jp4smNXOVqIlbxuvLZ/GdiDF8Z6iaohr/oBUVjWAXZjp/N8YmzFJb
-         98O3J+UrPCnzuvuXnRcBhOZFF4uBlJCDxYrW6uTIIbnr2rxd61tNNKe+svLNk/p/Z9
-         4g0d23mIOpfgAziPnrxymjPqaI9+CbVwicVtjsKiUKgWKi+nf8/KmDy4TYr5WTgW+M
-         OpE/C7d9q2JRuROPyyn1PcErTIn901m6QIttNW4DMEug+tO1U9vpGU6KIX4NOB5adk
-         y5hn6MoN+0QVJOgB4Gno6It5i8YCV14Vtlk8Q/a1/Sg44muDs6I3I3Hv/X7166gmK+
-         tFwFFb6FQMC8A==
+        b=LbQTTNjKskMaw6acz5LDT6qOFMAnHCX5c38KxWj21xDjipbYdYPjPZljHNajsJI9n
+         We7QyGPbkN5fPmP1pxOtxK1kb1qUQgQxei6ZzIO3LDjCp5HqAiI3e/wCVckY5OTYYE
+         BFzUfErdi26Q1p9bmhRNzbJv7+xh/dB6jrlUhT0bXKw9ZhC0zGV+2bIKcsaG+AAXS+
+         tDDHKRcMoC3arXcs09DiBka4WUMblRkLQpRbloy4Mow9rV44JlMk7TwmosH9OO0B/H
+         pzcXC9EbtRMXkX4HJvq9TBbXscbRvWAJx0DVPG4+rLmBwmymPoXdq+LDK4ApHAWKfM
+         6IlohYq6/7LOg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8FBBCCE0BB2; Fri, 16 Jun 2023 09:39:57 -0700 (PDT)
-Date:   Fri, 16 Jun 2023 09:39:57 -0700
+        id F1164CE0BB2; Fri, 16 Jun 2023 09:52:07 -0700 (PDT)
+Date:   Fri, 16 Jun 2023 09:52:07 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang.zhang1211@gmail.com>
-Cc:     frederic@kernel.org, joel@joelfernandes.org,
-        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
+To:     SeongJae Park <sj@kernel.org>
+Cc:     joel@joelfernandes.org, mmpgouride@gmail.com, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcuscale: Move schedule_timeout _uninterruptible to
- _idle in rcu_scale_writer()
-Message-ID: <a05a940b-208b-4a06-b3fd-f8cb59bcab3f@paulmck-laptop>
+Subject: Re: [PATCH v3 0/3] Docs/RCU/rculist_nulls: Minor fixup
+Message-ID: <6126d55b-a80d-4ee6-8b80-980ebbf44320@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230616073926.24462-1-qiang.zhang1211@gmail.com>
+References: <20230615181004.86850-1-sj@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230616073926.24462-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20230615181004.86850-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jun 16, 2023 at 03:39:26PM +0800, Zqiang wrote:
-> The rcuscale.holdoff can be used to delay the start of rcu_scale_writer
-> kthread, however, if the rcuscale.holdoff is set and the timeout is greater
-> than the hung_task_timeout_secs, can trigger the hung-task timeout:
+On Thu, Jun 15, 2023 at 06:10:01PM +0000, SeongJae Park wrote:
+> Changes from v2
+> (https://lore.kernel.org/rcu/20230613182434.88317-1-sj@kernel.org/)
+> - Drop first two patches that merged to Paul's tree
+> - Add definition of 'obj' (Paul E. McKenney)
+> - Fix more wrong hlist_[nulls]_head field name mentions
 > 
-> runqemu kvm nographic slirp qemuparams="-smp 4 -m 2048M"
-> bootparams="rcuscale.shutdown=0 rcuscale.holdoff=300"
+> Changes from v1
+> (https://lore.kernel.org/rcu/20230518224008.2468-1-sj@kernel.org/)
+> - Add Reviewed-by tags from Joel Fernandes for first three patches
+> - Fix the text for wrong extra _release()
 > 
-> [  247.071753] INFO: task rcu_scale_write:59 blocked for more than 122 seconds.
-> [  247.072529]       Not tainted 6.4.0-rc1-00134-gb9ed6de8d4ff #7
-> [  247.073400] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  247.074331] task:rcu_scale_write state:D stack:30144 pid:59    ppid:2      flags:0x00004000
-> [  247.075346] Call Trace:
-> [  247.075660]  <TASK>
-> [  247.075965]  __schedule+0x635/0x1280
-> [  247.076448]  ? __pfx___schedule+0x10/0x10
-> [  247.076967]  ? schedule_timeout+0x2dc/0x4d0
-> [  247.077471]  ? __pfx_lock_release+0x10/0x10
-> [  247.078018]  ? enqueue_timer+0xe2/0x220
-> [  247.078522]  schedule+0x84/0x120
-> [  247.078957]  schedule_timeout+0x2e1/0x4d0
-> [  247.079447]  ? __pfx_schedule_timeout+0x10/0x10
-> [  247.080032]  ? __pfx_rcu_scale_writer+0x10/0x10
-> [  247.080591]  ? __pfx_process_timeout+0x10/0x10
-> [  247.081163]  ? __pfx_sched_set_fifo_low+0x10/0x10
-> [  247.081760]  ? __pfx_rcu_scale_writer+0x10/0x10
-> [  247.082287]  rcu_scale_writer+0x6b1/0x7f0
-> [  247.082773]  ? mark_held_locks+0x29/0xa0
-> [  247.083252]  ? __pfx_rcu_scale_writer+0x10/0x10
-> [  247.083865]  ? __pfx_rcu_scale_writer+0x10/0x10
-> [  247.084412]  kthread+0x179/0x1c0
-> [  247.084759]  ? __pfx_kthread+0x10/0x10
-> [  247.085098]  ret_from_fork+0x2c/0x50
-> [  247.085433]  </TASK>
+> ---
 > 
-> This commit therefore replaces schedule_timeout_uninterruptible() with
-> schedule_timeout_idle().
-> 
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> Fix minor problems in example code snippets and the text of
+> rculist_nulls.rst file.
 
-Good catch, queued, thank you!
+Queued, thank you!
 
 							Thanx, Paul
 
-> ---
->  kernel/rcu/rcuscale.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> SeongJae Park (3):
+>   Docs/RCU/rculist_nulls: Specify type of the object in examples
+>   Docs/RCU/rculist_nulls: Fix hlist_[nulls]_head field names of 'obj'
+>   Docs/RCU/rculist_nulls: Fix text about atomic_set_release()
 > 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index a0eae1900708..ffdb30495e3c 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -469,7 +469,7 @@ rcu_scale_writer(void *arg)
->  	sched_set_fifo_low(current);
->  
->  	if (holdoff)
-> -		schedule_timeout_uninterruptible(holdoff * HZ);
-> +		schedule_timeout_idle(holdoff * HZ);
->  
->  	/*
->  	 * Wait until rcu_end_inkernel_boot() is called for normal GP tests
+>  Documentation/RCU/rculist_nulls.rst | 28 +++++++++++++++++++++-------
+>  1 file changed, 21 insertions(+), 7 deletions(-)
+> 
 > -- 
-> 2.17.1
+> 2.25.1
 > 
