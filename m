@@ -2,131 +2,94 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D66EB64D7
-	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 17:46:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81633EB64D7
+	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 18:50:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344108AbjFPRqq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Jun 2023 13:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
+        id S233054AbjFPSux (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Jun 2023 14:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjFPRqp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Jun 2023 13:46:45 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73722D50;
-        Fri, 16 Jun 2023 10:46:42 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666eba6f3d6so187046b3a.3;
-        Fri, 16 Jun 2023 10:46:42 -0700 (PDT)
+        with ESMTP id S229471AbjFPSuw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Jun 2023 14:50:52 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CAB30FB
+        for <rcu@vger.kernel.org>; Fri, 16 Jun 2023 11:50:51 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-98220bb31c6so156151366b.3
+        for <rcu@vger.kernel.org>; Fri, 16 Jun 2023 11:50:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686937602; x=1689529602;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qc5mcss5JysJBaV9ccwFaXAHdESboYdCtDsaOK3hEYE=;
-        b=SZATOSCOGgdIJkARUx83+P/197aE/7PgooTDajaWYJVQI03IX3rHpgECGS+V1aZZMQ
-         SebN4eOO7kd/3PS+pM3zBHCJ6GmCTZgruPue546oy22ZHhws1awpxuQcr663UbJuuQ9e
-         a9v85ZjvQ08NDOgt9sjy6PhWoueKnRJhYSFgjosDEvO9pNAY9K9Jv0bBmFgBK5LJNWVT
-         dWjtz1MRJRGYNYLihHOhSkNrIPbM8WxGayAFeyCj7TvJ+ohtcIn1yqokS+p07AmkKTyi
-         BS1xpMKub6eXAdXVJMBCV96H/ttVdUyZSd4U8lg2i/SmSzgqSq3qLoBcVNSzsnL9wiGB
-         ZL4A==
+        d=linux-foundation.org; s=google; t=1686941450; x=1689533450;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fn/qWt62UcmmaaPkId4UDrJc21A6804tWR7mlup1U/g=;
+        b=bI88/h029pU5pmJdvUquADcF/Hv3Cn+FDaQYxd2XC5ACQIY2/p6Borz3hEMGKS2pY1
+         cskFCeIBlU4rmEuhjDPFVQwO4Icz3Bmkli6V7si6jhkgRZJ3Rr7ZggEDy1IOLUDgpoy6
+         3CgkFWXbuuL5mr2BHnEuOxuQolxs9qRGE7tlE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686937602; x=1689529602;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qc5mcss5JysJBaV9ccwFaXAHdESboYdCtDsaOK3hEYE=;
-        b=Q77ev/YoZz7Y5k3J4B+QliNbBy0Yj7M+Wyit8aQSbq4vmwOi1o9slX4NNu3varWrxF
-         cex2+gkVRFNLCFlQY2zqqnTEvx2888I5b+IRxS3Nn6xfnDJn1SXzvq3USKVO2nx9geEw
-         JFC6KsE8oWjcTlUJzr1VEObKOA3pHly5xL3FQrl3bL6ytl7eYGvk4KivUtiScxuCe0fM
-         NFX6svGf0BT+B4t4uQkmEYZ227bKRXYAs0llIbg8m1SPwOdGBpbYMGe/Txw/OgO2Xjdc
-         pESmI+cvs16NboK7SUkEMcnDk1+Yvw/nwedHVYEuXwezhIIUlviRnLV+VQi6jQvlpHHh
-         gR5w==
-X-Gm-Message-State: AC+VfDxZozZPBVKO48hcny7yenXnVsZ5owaRtMwflcxUYd8rdVPOkU1t
-        lnTzMYxW0IsjbshQ5sfNKJk=
-X-Google-Smtp-Source: ACHHUZ73wt3phJfWuHNDQLZmbwJSQOBqFPmzjpCfia8jzzIzR3DtmP0nYXQhQ6B+qGFc5U/2Nq8hjA==
-X-Received: by 2002:a05:6a00:198f:b0:65f:2fbd:370a with SMTP id d15-20020a056a00198f00b0065f2fbd370amr2941290pfl.30.1686937602062;
-        Fri, 16 Jun 2023 10:46:42 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id m13-20020aa7900d000000b0064d2ad04cccsm1466778pfo.175.2023.06.16.10.46.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 16 Jun 2023 10:46:41 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH v3 1/3] Docs/RCU/rculist_nulls: Specify type of the object
- in examples
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <20230615181004.86850-2-sj@kernel.org>
-Date:   Sat, 17 Jun 2023 01:46:16 +0800
-Cc:     paulmck@kernel.org, Joel Fernandes <joel@joelfernandes.org>,
-        corbet@lwn.net, rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <390935BF-9EC0-4D88-A277-7B37D68CC6C7@gmail.com>
-References: <20230615181004.86850-1-sj@kernel.org>
- <20230615181004.86850-2-sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
+        d=1e100.net; s=20221208; t=1686941450; x=1689533450;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fn/qWt62UcmmaaPkId4UDrJc21A6804tWR7mlup1U/g=;
+        b=SnC0SQ5a4BojxLnOklnL7ocrpSXDOY0xmakW/hA350pInixTygQhAQHxpR7Xp8Hl/o
+         qe2dzVcUV0yw0GWlOzkUGv47VT9gOx5uDElAUl5h0TxE7ZULyNF4qHJm/1bipIsSDNXL
+         sTBA7mt/aXGRyf3TrrSWfNZgHFSNb/9EPBFU71pzW1eFxLmi7VTWV9ABKJZlA/wrMCT0
+         VRpxaMP5FndG/2PSQfO8ui3LExfKHhk5lrsgjXs4g/63gmS8YHjZK02I8AW/OYCMFzaS
+         gPOMlcmNXsBszkpxS733O2eQ+3vVmCxJlb0vHsS44hh2PsA0lGGPC5uD+aq6j6oLTyx/
+         9Wxw==
+X-Gm-Message-State: AC+VfDz0oX2H4zKhxTH2kLkl+Y/EP1Zo0iYgLpq/K3UuatgSDyyMVKaf
+        tACf75kIhK2IEe8q9jYhoT7UEP6MFw/lqqpfAVFq+6p/
+X-Google-Smtp-Source: ACHHUZ7L07yIWVOnP5A2NBjaFmrAV07R8eLKL2MpmE/M9hLPCE7MDQe4lfBCpEXb8jI9uNWIU86zXw==
+X-Received: by 2002:a17:907:97d2:b0:978:8685:71cd with SMTP id js18-20020a17090797d200b00978868571cdmr2989641ejc.71.1686941449741;
+        Fri, 16 Jun 2023 11:50:49 -0700 (PDT)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id c19-20020a170906925300b0096f67b55b0csm11127137ejx.115.2023.06.16.11.50.49
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jun 2023 11:50:49 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-51a3e6a952aso1015514a12.3
+        for <rcu@vger.kernel.org>; Fri, 16 Jun 2023 11:50:49 -0700 (PDT)
+X-Received: by 2002:aa7:cf19:0:b0:518:922a:bc38 with SMTP id
+ a25-20020aa7cf19000000b00518922abc38mr2364463edy.2.1686941448730; Fri, 16 Jun
+ 2023 11:50:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <21bdc866-f9ae-4cda-a996-370bde183fd0@paulmck-laptop>
+In-Reply-To: <21bdc866-f9ae-4cda-a996-370bde183fd0@paulmck-laptop>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 16 Jun 2023 11:50:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiPA8d0z2K1huqP0jCKxfmjBG_VYnJtoADeQWsvWLv9UQ@mail.gmail.com>
+Message-ID: <CAHk-=wiPA8d0z2K1huqP0jCKxfmjBG_VYnJtoADeQWsvWLv9UQ@mail.gmail.com>
+Subject: Re: [GIT PULL] RCU regression fix for v6.4
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rcu@vger.kernel.org, jonathanh@nvidia.com, wenst@chromium.org,
+        angelogioacchino.delregno@collabora.com,
+        rafael.j.wysocki@intel.com, mirq-linux@rere.qmqm.pl,
+        dmitry.osipenko@collabora.com, sachinp@linux.ibm.com,
+        qiang.zhang1211@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, 16 Jun 2023 at 09:34, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> Yes, it would be nice to abstract this somehow in order to hide it in
+> SRCU, but I still don't see a good way of doing this.
 
-> 2023=E5=B9=B46=E6=9C=8816=E6=97=A5 02:10=EF=BC=8CSeongJae Park =
-<sj@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> The type of 'obj' in example code of rculist_nulls.rst is implicit.
-> Provide the specific type of it before the example code.
->=20
-> Suggested-by: aul E. McKenney <paulmck@kernel.org>
+Ehh - like we actually do spinlocks in general, perhaps?
 
-Paul E. McKenney
+Spinlocks always exist. On UP - with no spinlock debugging - it turns
+into a zero-sized data structure, and the spin lock/unlock operations
+are no-ops.
 
-> Link: =
-https://lore.kernel.org/rcu/43943609-f80c-4b6a-9844-994eef800757@paulmck-l=
-aptop/
-> Signed-off-by: SeongJae Park <sj@kernel.org>
-> ---
-> Documentation/RCU/rculist_nulls.rst | 14 +++++++++++++-
-> 1 file changed, 13 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/RCU/rculist_nulls.rst =
-b/Documentation/RCU/rculist_nulls.rst
-> index 94a8bfe9f560..4b66e2fd2fb5 100644
-> --- a/Documentation/RCU/rculist_nulls.rst
-> +++ b/Documentation/RCU/rculist_nulls.rst
-> @@ -18,7 +18,16 @@ to solve following problem.
->=20
-> Without 'nulls', a typical RCU linked list managing objects which are
-> allocated with SLAB_TYPESAFE_BY_RCU kmem_cache can use the following
-> -algorithms:
-> +algorithms.  Following examples assume 'obj' is a pointer to such
-> +objects, which is having below type.
-> +
-> +::
-> +
-> +  struct object {
-> +    struct hlist_node obj_node;
-> +    refcount_t refcnt;
+Why don't you just do the exact same thing with the "struct
+srcu_usage". For Tiny SRCU, just make it an empty struct, with an
+empty initializer.
 
-atomic_t
+IOW, don't "abstract it out". Abstract it IN. Make tiny-rcu still have
+it, just as a no-op.
 
-> +    unsigned int key;
-> +  };
->=20
-> 1) Lookup algorithm
-> -------------------
-> @@ -142,6 +151,9 @@ the beginning. If the object was moved to the same =
-chain,
-> then the reader doesn't care: It might occasionally
-> scan the list again without harm.
->=20
-> +Note that using hlist_nulls means the type of 'obj_node' field of
-> +'struct object' becomes 'struct hlist_nulls_node'.
-> +
->=20
-> 1) lookup algorithm
-> -------------------
-> --=20
-> 2.25.1
->=20
+Anyway, I've pulled your fix, but maybe the above would have been the
+cleaner solution?
 
+          Linus
