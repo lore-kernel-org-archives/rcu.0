@@ -2,85 +2,118 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4510EEB64D8
-	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 16:34:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C2EFEB64D7
+	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 16:40:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344978AbjFPQe3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Jun 2023 12:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S245181AbjFPQkX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Jun 2023 12:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbjFPQe1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Jun 2023 12:34:27 -0400
+        with ESMTP id S1345746AbjFPQkI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Jun 2023 12:40:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC7C30F7;
-        Fri, 16 Jun 2023 09:34:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB4630F7;
+        Fri, 16 Jun 2023 09:39:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BFFB960EA5;
-        Fri, 16 Jun 2023 16:34:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28108C433C8;
-        Fri, 16 Jun 2023 16:34:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A7F5561199;
+        Fri, 16 Jun 2023 16:39:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F667C433C8;
+        Fri, 16 Jun 2023 16:39:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686933256;
-        bh=qE1OJbXrmRnZC4ivwx7brjgLHKgk/qZxmdlw3ZmqxXY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=E1URUOUraeyHzD/HPBb+XiBDLh+qnt7uQJhsay356i/Ij2MF+jQaE1bBFq5h++Y8T
-         4KZII45WI7QrCcNBXvYaN228uIIRm1VKuMOkYKKMfblnk0ajl/dV9V+9Gs/kiTchkG
-         emlEbg+idTJFtVRHCpbbE7clP2IEdJBQDPC22CgR08jyeoD8l94r+RdcoNtWOVAPg4
-         hi4/wf06lWSOvJxzpn2dN8Yw/WHuOU8YF9SP+gImQ5L8NeCnLrQEs+m0UBHBU3H14H
-         2UjeafmZGA0jYdtpkK3uA5E3eTcywtAc0wY1Lm/8bN+eRWupwzwlJgg96YYZFa2L4N
-         vavFBdlMuTh3w==
+        s=k20201202; t=1686933598;
+        bh=5lp9R0UpiEghbdexmZmI868ZlYvLCJEZHcBjVpepDvc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Bvg+jSnZGpx9jp4smNXOVqIlbxuvLZ/GdiDF8Z6iaohr/oBUVjWAXZjp/N8YmzFJb
+         98O3J+UrPCnzuvuXnRcBhOZFF4uBlJCDxYrW6uTIIbnr2rxd61tNNKe+svLNk/p/Z9
+         4g0d23mIOpfgAziPnrxymjPqaI9+CbVwicVtjsKiUKgWKi+nf8/KmDy4TYr5WTgW+M
+         OpE/C7d9q2JRuROPyyn1PcErTIn901m6QIttNW4DMEug+tO1U9vpGU6KIX4NOB5adk
+         y5hn6MoN+0QVJOgB4Gno6It5i8YCV14Vtlk8Q/a1/Sg44muDs6I3I3Hv/X7166gmK+
+         tFwFFb6FQMC8A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BDEF8CE0BB2; Fri, 16 Jun 2023 09:34:15 -0700 (PDT)
-Date:   Fri, 16 Jun 2023 09:34:15 -0700
+        id 8FBBCCE0BB2; Fri, 16 Jun 2023 09:39:57 -0700 (PDT)
+Date:   Fri, 16 Jun 2023 09:39:57 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rcu@vger.kernel.org, jonathanh@nvidia.com, wenst@chromium.org,
-        angelogioacchino.delregno@collabora.com,
-        rafael.j.wysocki@intel.com, mirq-linux@rere.qmqm.pl,
-        dmitry.osipenko@collabora.com, sachinp@linux.ibm.com,
-        qiang.zhang1211@gmail.com
-Subject: [GIT PULL] RCU regression fix for v6.4
-Message-ID: <21bdc866-f9ae-4cda-a996-370bde183fd0@paulmck-laptop>
+To:     Zqiang <qiang.zhang1211@gmail.com>
+Cc:     frederic@kernel.org, joel@joelfernandes.org,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcuscale: Move schedule_timeout _uninterruptible to
+ _idle in rcu_scale_writer()
+Message-ID: <a05a940b-208b-4a06-b3fd-f8cb59bcab3f@paulmck-laptop>
 Reply-To: paulmck@kernel.org
+References: <20230616073926.24462-1-qiang.zhang1211@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230616073926.24462-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello, Linus,
+On Fri, Jun 16, 2023 at 03:39:26PM +0800, Zqiang wrote:
+> The rcuscale.holdoff can be used to delay the start of rcu_scale_writer
+> kthread, however, if the rcuscale.holdoff is set and the timeout is greater
+> than the hung_task_timeout_secs, can trigger the hung-task timeout:
+> 
+> runqemu kvm nographic slirp qemuparams="-smp 4 -m 2048M"
+> bootparams="rcuscale.shutdown=0 rcuscale.holdoff=300"
+> 
+> [  247.071753] INFO: task rcu_scale_write:59 blocked for more than 122 seconds.
+> [  247.072529]       Not tainted 6.4.0-rc1-00134-gb9ed6de8d4ff #7
+> [  247.073400] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  247.074331] task:rcu_scale_write state:D stack:30144 pid:59    ppid:2      flags:0x00004000
+> [  247.075346] Call Trace:
+> [  247.075660]  <TASK>
+> [  247.075965]  __schedule+0x635/0x1280
+> [  247.076448]  ? __pfx___schedule+0x10/0x10
+> [  247.076967]  ? schedule_timeout+0x2dc/0x4d0
+> [  247.077471]  ? __pfx_lock_release+0x10/0x10
+> [  247.078018]  ? enqueue_timer+0xe2/0x220
+> [  247.078522]  schedule+0x84/0x120
+> [  247.078957]  schedule_timeout+0x2e1/0x4d0
+> [  247.079447]  ? __pfx_schedule_timeout+0x10/0x10
+> [  247.080032]  ? __pfx_rcu_scale_writer+0x10/0x10
+> [  247.080591]  ? __pfx_process_timeout+0x10/0x10
+> [  247.081163]  ? __pfx_sched_set_fifo_low+0x10/0x10
+> [  247.081760]  ? __pfx_rcu_scale_writer+0x10/0x10
+> [  247.082287]  rcu_scale_writer+0x6b1/0x7f0
+> [  247.082773]  ? mark_held_locks+0x29/0xa0
+> [  247.083252]  ? __pfx_rcu_scale_writer+0x10/0x10
+> [  247.083865]  ? __pfx_rcu_scale_writer+0x10/0x10
+> [  247.084412]  kthread+0x179/0x1c0
+> [  247.084759]  ? __pfx_kthread+0x10/0x10
+> [  247.085098]  ret_from_fork+0x2c/0x50
+> [  247.085433]  </TASK>
+> 
+> This commit therefore replaces schedule_timeout_uninterruptible() with
+> schedule_timeout_idle().
+> 
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 
-The following changes since commit ac9a78681b921877518763ba0e89202254349d1b:
+Good catch, queued, thank you!
 
-  Linux 6.4-rc1 (2023-05-07 13:34:35 -0700)
+							Thanx, Paul
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.06.11a
-
-for you to fetch changes up to de29a96acceae732c68a4094d08dc49079eefa02:
-
-  notifier: Initialize new struct srcu_usage field (2023-06-07 13:42:02 -0700)
-
-----------------------------------------------------------------
-Urgent RCU pull request for v6.4
-
-This commit fixes a spinlock-initialization regression in SRCU that causes
-the SRCU notifier to fail.  The fix simply adds the initialization,
-but introduces a #ifdef because there is no spinlock to initialize for
-the Tiny SRCU used in !SMP builds.
-
-Yes, it would be nice to abstract this somehow in order to hide it in
-SRCU, but I still don't see a good way of doing this.
-
-----------------------------------------------------------------
-Chen-Yu Tsai (1):
-      notifier: Initialize new struct srcu_usage field
-
- include/linux/notifier.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> ---
+>  kernel/rcu/rcuscale.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index a0eae1900708..ffdb30495e3c 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -469,7 +469,7 @@ rcu_scale_writer(void *arg)
+>  	sched_set_fifo_low(current);
+>  
+>  	if (holdoff)
+> -		schedule_timeout_uninterruptible(holdoff * HZ);
+> +		schedule_timeout_idle(holdoff * HZ);
+>  
+>  	/*
+>  	 * Wait until rcu_end_inkernel_boot() is called for normal GP tests
+> -- 
+> 2.17.1
+> 
