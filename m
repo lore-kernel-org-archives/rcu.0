@@ -2,72 +2,83 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 496DEEB64D8
-	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 18:57:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08AD4EB64D7
+	for <rcu@archiver.kernel.org>; Fri, 16 Jun 2023 21:27:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344031AbjFPS5i (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 16 Jun 2023 14:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
+        id S229585AbjFPV1C (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 16 Jun 2023 17:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345310AbjFPS5d (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 16 Jun 2023 14:57:33 -0400
+        with ESMTP id S231566AbjFPV1B (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 16 Jun 2023 17:27:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 669183C01;
-        Fri, 16 Jun 2023 11:57:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C7335A4;
+        Fri, 16 Jun 2023 14:27:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EEFFE630D6;
-        Fri, 16 Jun 2023 18:57:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5445DC433CA;
-        Fri, 16 Jun 2023 18:57:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7CB4C608D5;
+        Fri, 16 Jun 2023 21:27:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9E39C433C8;
+        Fri, 16 Jun 2023 21:26:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686941847;
-        bh=QuJGUVl5Vy8SP0NMtMAmbmMm10oshuwxE+dK2mF9Xfk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=OGQFRgPnjMNgn+L18N+vs10/baJ6lengkbypqG/OotJSGSgfd3M+6MlJCQl6AjB2b
-         gUq4VSWpzOk3alNXXceHKNoNuETS2pW0jj3Yh2LquHzSPcGW52MmrZwHlBV/V9mKJ9
-         e/mAxMhRi7gh2Devhsn/P0rHcBJXzdqOy6SiIs3Jw6GjGML4Th6pWuSQhRAqfY+Xbe
-         hFzgShOjP2bvMFcu07xgMv6cCL1QgimYuOifcCpg3LBv2cwOSHZeuvplRcPZAAnL0/
-         FMlPH60xHqAgM5c7YEwhuSeryIbMHDNdodVU+ckGXyhnL11KMWl1u3DSxgSfYJ0KVm
-         afksjn5Ht22aw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3C798C395E0;
-        Fri, 16 Jun 2023 18:57:27 +0000 (UTC)
-Subject: Re: [GIT PULL] RCU regression fix for v6.4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <21bdc866-f9ae-4cda-a996-370bde183fd0@paulmck-laptop>
-References: <21bdc866-f9ae-4cda-a996-370bde183fd0@paulmck-laptop>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <21bdc866-f9ae-4cda-a996-370bde183fd0@paulmck-laptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.06.11a
-X-PR-Tracked-Commit-Id: de29a96acceae732c68a4094d08dc49079eefa02
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b73056e9f82ebdf9f5dbcd378e5e51ae95d5000c
-Message-Id: <168694184724.2801.304043036098796333.pr-tracker-bot@kernel.org>
-Date:   Fri, 16 Jun 2023 18:57:27 +0000
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rcu@vger.kernel.org, jonathanh@nvidia.com,
-        wenst@chromium.org, angelogioacchino.delregno@collabora.com,
+        s=k20201202; t=1686950819;
+        bh=D9es2nKp9Ev8bORerv5Q2SQnj714HqIyXls58J2lvbQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jm7Bwmdnq20NMlCIR1RNJcA+lc039tU4uv/z/zpq5pvwTo+sys8G3LYFWVK4ij5Uk
+         9BlFlLSWoLotBJ3iI2LNYMnmjZ+0ib5Uy2WiET02sANALhAvkyDcNCu79hVoc2c3oF
+         cLv7jaCef70LbMKiqgKwJBASZThDEeTNbEt/IIpJpSEPcRuFe5tIuiPRNq2FprmhFo
+         wAQHASLo3WEcml1mzennCmg9bfsbnmiJl6uJgqQqgvWEQHIUp3yGpGFgqV8idb+b8B
+         u+hU5sEEXvP0PkXq5Ki2v6uSujD8Y9upvGE9x/QIKqUlsUQjm/ZqffKpe1K0ISb7zk
+         XKPlIX4nqlI8Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5D434CE0DD0; Fri, 16 Jun 2023 14:26:59 -0700 (PDT)
+Date:   Fri, 16 Jun 2023 14:26:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rcu@vger.kernel.org, jonathanh@nvidia.com, wenst@chromium.org,
+        angelogioacchino.delregno@collabora.com,
         rafael.j.wysocki@intel.com, mirq-linux@rere.qmqm.pl,
         dmitry.osipenko@collabora.com, sachinp@linux.ibm.com,
         qiang.zhang1211@gmail.com
+Subject: Re: [GIT PULL] RCU regression fix for v6.4
+Message-ID: <8c3ac35d-5056-4f4b-a8c4-ca625fa01b1f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <21bdc866-f9ae-4cda-a996-370bde183fd0@paulmck-laptop>
+ <CAHk-=wiPA8d0z2K1huqP0jCKxfmjBG_VYnJtoADeQWsvWLv9UQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiPA8d0z2K1huqP0jCKxfmjBG_VYnJtoADeQWsvWLv9UQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The pull request you sent on Fri, 16 Jun 2023 09:34:15 -0700:
+On Fri, Jun 16, 2023 at 11:50:31AM -0700, Linus Torvalds wrote:
+> On Fri, 16 Jun 2023 at 09:34, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Yes, it would be nice to abstract this somehow in order to hide it in
+> > SRCU, but I still don't see a good way of doing this.
+> 
+> Ehh - like we actually do spinlocks in general, perhaps?
+> 
+> Spinlocks always exist. On UP - with no spinlock debugging - it turns
+> into a zero-sized data structure, and the spin lock/unlock operations
+> are no-ops.
+> 
+> Why don't you just do the exact same thing with the "struct
+> srcu_usage". For Tiny SRCU, just make it an empty struct, with an
+> empty initializer.
+> 
+> IOW, don't "abstract it out". Abstract it IN. Make tiny-rcu still have
+> it, just as a no-op.
+> 
+> Anyway, I've pulled your fix, but maybe the above would have been the
+> cleaner solution?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/urgent-rcu.2023.06.11a
+Good point, thank you!  I will add the lock to Tiny SRCU, shooting for
+the v6.6 merge window.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b73056e9f82ebdf9f5dbcd378e5e51ae95d5000c
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+							Thanx, Paul
