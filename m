@@ -2,59 +2,59 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CBC3EB64D9
-	for <rcu@archiver.kernel.org>; Sat, 17 Jun 2023 11:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4745EEB64D9
+	for <rcu@archiver.kernel.org>; Sat, 17 Jun 2023 14:53:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbjFQLHP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 17 Jun 2023 07:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37634 "EHLO
+        id S230342AbjFQOxy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 17 Jun 2023 10:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjFQLHO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 17 Jun 2023 07:07:14 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62B010D;
-        Sat, 17 Jun 2023 04:07:12 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-666e97fcc60so506497b3a.3;
-        Sat, 17 Jun 2023 04:07:12 -0700 (PDT)
+        with ESMTP id S229675AbjFQOxx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 17 Jun 2023 10:53:53 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4761FD4;
+        Sat, 17 Jun 2023 07:53:52 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b5018cb4dcso9400125ad.2;
+        Sat, 17 Jun 2023 07:53:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687000032; x=1689592032;
+        d=gmail.com; s=20221208; t=1687013632; x=1689605632;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qhpY0RwqwHbZiwoJYp4Rqo6qZ2feyVpNaQrxVK7a/N0=;
-        b=IwygCn8giTzXhLQ87bisS6fBvSruFs1A/TuZ7cKl6CtQKBmwUXz8kttUmAuFG/qCKW
-         epK3DY0zD7Jh7kv6mTgGNVawIxA21KHkQvzO1nCBKupET1ZOoX7zpUdOaNsdW65epM5S
-         +C5t4MlU+cRcPPUo0YSG7/IECEH+i9WAEG43tXvci5CdkptJ8oFgjbdZeusHtkhz3vX1
-         J4MD4iB9EuLyfIaf/1xbSEaYp751THRUOHa4r0790PBMqNhTnY2SI8NjYORv9rApSwVT
-         +URcteoInj5SXiw9ljLqZPL5qd2z9F+3x4mFXUR8/8VyQNpi5eIlNRZHsxb9u0/0MhBP
-         12FQ==
+        bh=uQGpsZl973+aZ0cqgbaRCZSxnbhm+w0YCdfxFvpgF7c=;
+        b=Oq54Z86M0XOA8i0yCtYYA1pqWjYuX4g9Q4ZKY71G1KrkZHNXFaSV2yOWjkfe3NLSUF
+         lL2mNUYrPN0dEgVG3PV2RSpvOYZI4CJrI7wVMSulWvvVZssWJzP87Bl/70fvlH6yqGiS
+         /cHzd8ITyNdBy3B97EP0pneFoD34Y1IaA/z7vmspCcXeZO6D2i3vNEy2fFS2/yWfxrPH
+         e9ZJIswLNSMoJndJCC9iyx3nQ83QGzH4aCVI/LLPDorCvsMQi4TGgrFGmcFb5fB0vuEI
+         EKGhKM9re1OkG0wBY02XPX95DQI3wQ96t1KVjDQRXUMfcqTkf9s/0Ydv8gEW+n6+4D3e
+         YdiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687000032; x=1689592032;
+        d=1e100.net; s=20221208; t=1687013632; x=1689605632;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qhpY0RwqwHbZiwoJYp4Rqo6qZ2feyVpNaQrxVK7a/N0=;
-        b=aMZpJGNY/NKykpGP9FUnJfoNp6CZSupyM/DZCunIncUy2eqi9DDbIs71a6fKsJ95T2
-         tx672T/NqJtn/zR5eiYXeL3dbYpaAgHJ++A36+O1OIgQd+aFUGZrncLN3ztqRTaiOZZG
-         55DNQAMbCm5WJczOWBsHAV1MNQVh5+18VwbJkOydZW2zuw1pybb8KJ7qG+ybBFKe05MZ
-         ez3QDVn27tvwO/pPS/Cf4xwSgiuSJL+c7akaNUTDokXF5ZfH5xUak1ljkRBfjYArKZ9R
-         jjaKkAf/g6ZXOsb3QUwdIW8VYqM+MIKEIZDZ7war+xEJIL4kqGQ36+F+bmD569hylGPQ
-         l3jA==
-X-Gm-Message-State: AC+VfDyqeTWxBdIWExdkUxOkNw+bGoJU+I/I5XnKA9CXKkIX8mD5lacn
-        M0l6TN4Bgr7kDeUA/UymO2I=
-X-Google-Smtp-Source: ACHHUZ6wYJi/XN4fwYyCqPgqdm1gZEcxRI5zLxDY+iLcML4SILlCwH6KeLQXavnBDVPiosBa/92u2Q==
-X-Received: by 2002:a05:6a20:3d8f:b0:11d:235f:af93 with SMTP id s15-20020a056a203d8f00b0011d235faf93mr4017155pzi.44.1687000032108;
-        Sat, 17 Jun 2023 04:07:12 -0700 (PDT)
+        bh=uQGpsZl973+aZ0cqgbaRCZSxnbhm+w0YCdfxFvpgF7c=;
+        b=GQnWJBluQjRjFF1Azv+RgHOcrxIZaHi4DIVx48YMDvDyPgglWSXJ24UZms0RNidHyR
+         ZCREYM6xH16BnklmgEPMMBc/7kOVnexuLFcxv1kwrBXkeujwBeM+xB6Mm2l0f2Y1xFXQ
+         sVzwDOhisF7o0t52e18beb0Q8dY6qHZmrH9xMepH5OlIysXwFvjpWyLQ/ndPuxj7w8wC
+         +2MUalQD+06khsEUtChYrRJJ+dxqEOMRkVRBs/U92LbRCDVqvi8Qa0/zOllOsx+KxJbS
+         ioFevePxlcqepC4wY8NTAASO6yJLgYB8DWM4gNrSBlXb0IzfZu+wnc5uDH8Q1Fk0vYGK
+         RoDg==
+X-Gm-Message-State: AC+VfDy6EKn2Ns4gx8W14dIQ2Cn8iPPokomQ+lV4dIdRMxIYlfIk6QXv
+        aYSk7M6fhPaMn+R8KbJdAdY=
+X-Google-Smtp-Source: ACHHUZ59QGQAfScvNJJtG6od4Ez84/FMZ4IH/1kpr81tmZadi7m+LW1/0yOHwt05Ey+6o7S7sDNClw==
+X-Received: by 2002:a17:902:e884:b0:1b1:adb4:8fa8 with SMTP id w4-20020a170902e88400b001b1adb48fa8mr3982387plg.39.1687013632190;
+        Sat, 17 Jun 2023 07:53:52 -0700 (PDT)
 Received: from localhost ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id d7-20020a170903230700b001b526ec4a84sm3320101plh.279.2023.06.17.04.07.10
+        by smtp.gmail.com with ESMTPSA id m16-20020a170902db1000b001b23ee9def8sm17477552plx.213.2023.06.17.07.53.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jun 2023 04:07:11 -0700 (PDT)
+        Sat, 17 Jun 2023 07:53:51 -0700 (PDT)
 From:   Alan Huang <mmpgouride@gmail.com>
 To:     paulmck@kernel.org
 Cc:     joel@joelfernandes.org, corbet@lwn.net, rcu@vger.kernel.org,
         linux-doc@vger.kernel.org, Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] docs/RCU: Bring smp_wmb() back
-Date:   Sat, 17 Jun 2023 11:07:06 +0000
-Message-Id: <20230617110706.28941-1-mmpgouride@gmail.com>
+Subject: [PATCH v2] docs/RCU: Bring smp_wmb() back
+Date:   Sat, 17 Jun 2023 14:53:46 +0000
+Message-Id: <20230617145346.29009-1-mmpgouride@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,7 +63,7 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 There are two memory ordering required in the insertion algorithm,
-we need wo make obj->key is updated before obj->obj_node.next
+we need to make sure obj->key is updated before obj->obj_node.next
 and obj->refcnt, atomic_set_release is not enough to provide the
 required memory barrier.
 
