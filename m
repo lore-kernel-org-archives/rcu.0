@@ -2,131 +2,173 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96CA5EB64D9
-	for <rcu@archiver.kernel.org>; Mon, 19 Jun 2023 09:46:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48244EB64D9
+	for <rcu@archiver.kernel.org>; Mon, 19 Jun 2023 14:00:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbjFSJqo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Jun 2023 05:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
+        id S231366AbjFSOA0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Jun 2023 10:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbjFSJqi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Jun 2023 05:46:38 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A57139;
-        Mon, 19 Jun 2023 02:46:36 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-39cf00a2ad2so2207435b6e.1;
-        Mon, 19 Jun 2023 02:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687167996; x=1689759996;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E0M5oLj5cn7ynWhyyJDuHHDTH0wICAdKxkhUJt5kJHc=;
-        b=MdoPbAPSwR7b7ZHnU7rPQrji/p86DMxxBOcQdwaafeW0mO7IwusX0RyrZcOUa8IJ0r
-         144wiZzZzDuVvGgQSGUPg45+ybM0VNfKq2PPj2asjI0ZK9j6xH67FfUm3E1QiaN1/N+j
-         Tt1pDol1V2yQbtgYzroimkXOshqmHtG/MJfjpp4ix9YRmro2Jh6/uYafKUG7/lQNTWcs
-         rtFhBq2t4vmkAoMDdv9ofYpV5phkYek49Lu6hpujLWI4/bBibTaTHmJ4OEZSapg/sasJ
-         kxvh2Rp8DZSiJoDCXXgrDWWlRBNAbGw9yqGUv0oL8aqiUZP1uYyTNDsaXspPmgToJLah
-         kEDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687167996; x=1689759996;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E0M5oLj5cn7ynWhyyJDuHHDTH0wICAdKxkhUJt5kJHc=;
-        b=LoAWlDX2fNVjaJ1w/plsqn0nmbZgCzKXTIcFKeIWUVgdhOBOdu4gu07Z9crxvslqTw
-         drxJJQrCUEGCPNQuD0ne6Ml4uYfFqEMbe/a/t0vUHrNaZ1o60GawN19FIiyVQiqDlc1d
-         Y3UDwWBJbKwYvWbDPMYMNJVxjJyTSoq1MUVZNHVKQGiapj1JwQgnEUDW9l0Z4iiKkX7e
-         O3LmdEQmjsblgl3yOrDsgWbmBo2R0Eqe5GGr16+pW7QyvtLaQesJK4ePptxL4WDTOONR
-         ILuOzjq2CDUnAzvVeu3s73BLy4RV5LDujUNL2pd0sWCHARNVzgx8qpJBU54g9Q3xrBIL
-         ffxg==
-X-Gm-Message-State: AC+VfDyEhyCZxUcsv6qaXZ3e5dsmrvIZcUh64uerL3BUNpl9neW97lQi
-        z1uE4adnOEjWEgBnB1JOsJGEknYmuxUKsA==
-X-Google-Smtp-Source: ACHHUZ7NKvrtqJyOCIepwrTN3r5GDaBAf9XRFhjuDilngZYdxFCkMdZ4M7palGvv4uT87P+uwtllrw==
-X-Received: by 2002:a05:6808:2795:b0:39c:cd8b:61f5 with SMTP id es21-20020a056808279500b0039ccd8b61f5mr6786643oib.13.1687167996133;
-        Mon, 19 Jun 2023 02:46:36 -0700 (PDT)
-Received: from localhost ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id l3-20020a17090a72c300b0025930e50e28sm5274582pjk.41.2023.06.19.02.46.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jun 2023 02:46:35 -0700 (PDT)
-From:   Alan Huang <mmpgouride@gmail.com>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH] rcu: Add necessary WRITE_ONCE()
-Date:   Mon, 19 Jun 2023 09:46:24 +0000
-Message-Id: <20230619094624.205990-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229575AbjFSOA0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Jun 2023 10:00:26 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E7B19C;
+        Mon, 19 Jun 2023 07:00:24 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QlBH82SJkz4f4cBp;
+        Mon, 19 Jun 2023 22:00:20 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgCH77JtX5BkiIFAMA--.58229S6;
+        Mon, 19 Jun 2023 22:00:21 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: [RFC PATCH bpf-next v5 2/2] bpf: Call rcu_momentary_dyntick_idle() in task work periodically
+Date:   Mon, 19 Jun 2023 22:32:31 +0800
+Message-Id: <20230619143231.222536-3-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20230619143231.222536-1-houtao@huaweicloud.com>
+References: <20230619143231.222536-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCH77JtX5BkiIFAMA--.58229S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw47Cw1UCw43CrWfGFW5Awb_yoW5tw15pF
+        Way345Ars8XFsFgw4ayws7AwsxJw4Fqa47Kay7uas8urWSqwnxKas7KFy2vry5urWrGr13
+        AFWqyFyUu3y0kr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Commit c54a2744497d("list: Add hlist_unhashed_lockless()") and
-commit 860c8802ace1("rcu: Use WRITE_ONCE() for assignments to
-->pprev for hlist_nulls") added various WRITE_ONCE() to pair with
-the READ_ONCE() in hlist_unhashed_lockless(), but there are still
-some places where WRITE_ONCE() was not added, this commit adds that.
+From: Hou Tao <houtao1@huawei.com>
 
-Also add WRITE_ONCE() to pair with the READ_ONCE() in hlist_empty().
+After doing reuse-after-RCU-GP in bpf memory allocator, if there are
+intensive memory allocation and free in bpf memory allocator and RCU GP
+is slow, the peak memory usage for bpf memory allocator will be high.
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+To reduce memory usage for bpf memory allocator, call
+rcu_momentary_dyntick_idle() in task work periodically to accelerate the
+expiration of RCU grace period.
+
+The following benchmark results the memory usage reduce a lot after
+applying the patch:
+
+Before:
+overwrite           per-prod-op 49.11 ± 1.30k/s, avg mem 313.09 ± 80.36MiB, peak mem 509.09MiB
+batch_add_batch_del per-prod-op 76.06 ± 2.38k/s, avg mem 287.97 ± 63.59MiB, peak mem 496.81MiB
+add_del_on_diff_cpu per-prod-op 18.75 ± 0.09k/s, avg mem  27.71 ±  4.92MiB, peak mem  44.54MiB
+
+After:
+overwrite           per-prod-op 51.17 ± 0.30k/s, avg mem 105.09 ±  7.74MiB, peak mem 143.60MiB
+batch_add_batch_del per-prod-op 86.43 ± 0.90k/s, avg mem  85.82 ± 11.81MiB, peak mem 118.93MiB
+add_del_on_diff_cpu per-prod-op 18.71 ± 0.08k/s, avg mem  26.92 ±  5.50MiB, peak mem  43.18MiB
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- include/linux/list.h          | 6 +++---
- include/linux/list_nulls.h    | 2 +-
- include/linux/rculist_nulls.h | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ kernel/bpf/memalloc.c | 46 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/include/linux/list.h b/include/linux/list.h
-index ac366958ea..ef2d895d3c 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -912,7 +912,7 @@ static inline void hlist_del(struct hlist_node *n)
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 9b31c53fd285..c4b4cae04400 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -6,6 +6,7 @@
+ #include <linux/irq_work.h>
+ #include <linux/bpf_mem_alloc.h>
+ #include <linux/memcontrol.h>
++#include <linux/task_work.h>
+ #include <asm/local.h>
+ 
+ /* Any context (including NMI) BPF specific memory allocator.
+@@ -123,6 +124,16 @@ struct bpf_reuse_batch {
+ 	struct rcu_head rcu;
+ };
+ 
++#define BPF_GP_ACC_RUNNING 0
++
++struct bpf_rcu_gp_acc_ctx {
++	unsigned long flags;
++	unsigned long next_run;
++	struct callback_head work;
++};
++
++static DEFINE_PER_CPU(struct bpf_rcu_gp_acc_ctx, bpf_acc_ctx);
++
+ static struct llist_node notrace *__llist_del_first(struct llist_head *head)
  {
- 	__hlist_del(n);
- 	n->next = LIST_POISON1;
--	n->pprev = LIST_POISON2;
-+	WRITE_ONCE(n->pprev, LIST_POISON2);
+ 	struct llist_node *entry, *next;
+@@ -347,12 +358,47 @@ static void dyn_reuse_rcu(struct rcu_head *rcu)
+ 	kfree(batch);
  }
  
- /**
-@@ -1026,8 +1026,8 @@ static inline void hlist_move_list(struct hlist_head *old,
++static void bpf_rcu_gp_acc_work(struct callback_head *head)
++{
++	struct bpf_rcu_gp_acc_ctx *ctx = container_of(head, struct bpf_rcu_gp_acc_ctx, work);
++
++	local_irq_disable();
++	rcu_momentary_dyntick_idle();
++	local_irq_enable();
++
++	/* The interval between rcu_momentary_dyntick_idle() calls is
++	 * at least 10ms.
++	 */
++	WRITE_ONCE(ctx->next_run, jiffies + msecs_to_jiffies(10));
++	clear_bit(BPF_GP_ACC_RUNNING, &ctx->flags);
++}
++
++static void bpf_mem_rcu_gp_acc(struct bpf_mem_cache *c)
++{
++	struct bpf_rcu_gp_acc_ctx *ctx = this_cpu_ptr(&bpf_acc_ctx);
++
++	if (atomic_read(&c->dyn_reuse_rcu_cnt) < 128 ||
++	    time_before(jiffies, READ_ONCE(ctx->next_run)))
++		return;
++
++	if ((current->flags & PF_KTHREAD) ||
++	    test_and_set_bit(BPF_GP_ACC_RUNNING, &ctx->flags))
++		return;
++
++	init_task_work(&ctx->work, bpf_rcu_gp_acc_work);
++	/* Task is exiting ? */
++	if (task_work_add(current, &ctx->work, TWA_RESUME))
++		clear_bit(BPF_GP_ACC_RUNNING, &ctx->flags);
++}
++
+ static void reuse_bulk(struct bpf_mem_cache *c)
  {
- 	new->first = old->first;
- 	if (new->first)
--		new->first->pprev = &new->first;
--	old->first = NULL;
-+		WRITE_ONCE(new->first->pprev, &new->first);
-+	WRITE_ONCE(old->first, NULL);
- }
+ 	struct llist_node *head, *tail;
+ 	struct bpf_reuse_batch *batch;
+ 	unsigned long flags;
  
- #define hlist_entry(ptr, type, member) container_of(ptr,type,member)
-diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
-index fa6e8471bd..b63b0589fa 100644
---- a/include/linux/list_nulls.h
-+++ b/include/linux/list_nulls.h
-@@ -95,7 +95,7 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
- 
- 	n->next = first;
- 	WRITE_ONCE(n->pprev, &h->first);
--	h->first = n;
-+	WRITE_ONCE(h->first, n);
- 	if (!is_a_nulls(first))
- 		WRITE_ONCE(first->pprev, &n->next);
- }
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index ba4c00dd80..c65121655b 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -138,7 +138,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
- 
- 	if (last) {
- 		n->next = last->next;
--		n->pprev = &last->next;
-+		WRITE_ONCE(n->pprev, &last->next);
- 		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
- 	} else {
- 		hlist_nulls_add_head_rcu(n, h);
++	bpf_mem_rcu_gp_acc(c);
++
+ 	head = llist_del_all(&c->free_llist_extra);
+ 	tail = head;
+ 	while (tail && tail->next)
 -- 
-2.34.1
+2.29.2
 
