@@ -2,151 +2,84 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 851A3EB64D7
-	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 17:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E85CEEB64D8
+	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 17:55:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjFTRVU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Jun 2023 13:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S230460AbjFTRzo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Jun 2023 13:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjFTRVQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Jun 2023 13:21:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A225DC
-        for <rcu@vger.kernel.org>; Tue, 20 Jun 2023 10:21:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FD6C61328
-        for <rcu@vger.kernel.org>; Tue, 20 Jun 2023 17:21:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EADBEC433C8;
-        Tue, 20 Jun 2023 17:21:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687281674;
-        bh=vRBGBNUYYQ+cKeZDIJdCYfN3me99s3tDJZBUVKipd1k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QG1WsOA0E+yR1VvMJBq+dY6Ufw+DTIOnRNxIWn9EEbToRgmWLQzLDnBPA6/lhP8jp
-         cxS4ojHMymNV6xKlJq+wMnrTVgWwL7grqILf/2VWZMCT0Cy5SogAv1Wd/yL0ifqO02
-         MD/kp7mhBYYl0jlVWLCvTwDt8fMrnorIK1QrPVuf95mi7GPNZviAM+iCSnD+DEp5yp
-         qmhQST5b9Rue9FTQsPvMbvxNpupJ4kGQMCCNwtclwEOFEZyZVFLZ1m6DQBx9tSiSMo
-         3kSdIGcCPA9xRJ9xoL6HW/8HeJK1fOSyx7i+e5BFu9nAlEqpr9SAEFr5cN4si+D3O4
-         jDg/wnuAjxhXw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 87BB7CE39F5; Tue, 20 Jun 2023 10:21:13 -0700 (PDT)
-Date:   Tue, 20 Jun 2023 10:21:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-Subject: Re: [RFC PATCH bpf-next v5 2/2] bpf: Call
- rcu_momentary_dyntick_idle() in task work periodically
-Message-ID: <34c9a132-d34b-46d7-9790-3b6d8eb4204d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230619143231.222536-1-houtao@huaweicloud.com>
- <20230619143231.222536-3-houtao@huaweicloud.com>
- <CAADnVQLPpnTT2W1Ev6Q5g2h2qk6aoFa9uFsuc7Q6Xb36e4YV3w@mail.gmail.com>
+        with ESMTP id S229799AbjFTRzn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Jun 2023 13:55:43 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3886E1739
+        for <rcu@vger.kernel.org>; Tue, 20 Jun 2023 10:55:41 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5700b37da3fso45638067b3.1
+        for <rcu@vger.kernel.org>; Tue, 20 Jun 2023 10:55:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1687283740; x=1689875740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dNKXcZ39Z10NVBkiTIhQmIoTjYz8PY/jDnJTeB9TmWc=;
+        b=UFHcVNRgkeY635daGhoi/fIQLSvF6t6kSDruzQUr6UZvI1enwmwkKlT4X+XSSqYI13
+         JYV+8g2dudsKX/RZ0x+TweL08U4d1TiqHhVJbY4N4t996nceoVzkw3MBfKL7JvmuXdVc
+         jV02HfWoztqcCu7rAv1mOym4MgDqC6tnlrsQEqWAUcvevZOyP/8STcyUn/nA4Cz377Qg
+         tF3v8LCK+ihuPIFFJJxJTEjxK57FfZPl6vqsi2wGeG+FzRGy8zvx87yYr2B0jYlqeUL4
+         PiuA4UBhyBVBx6564O3T3tfiWATuPqvVeoFXJ/NSAy4IyAX45q2aWw2kMxPooKB7Wrvs
+         oOSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687283740; x=1689875740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dNKXcZ39Z10NVBkiTIhQmIoTjYz8PY/jDnJTeB9TmWc=;
+        b=aYA/40n9I8vdsH6St+klR3hc9i8DoPAaKoxqCfePs5FZwyw7UI6xpKpO2nFMVfy1xY
+         6cJae8ywgO16MdyU18M0+2jiVFNA0E8pilxBRf8S8oOLNzKPAH3UGVBCxYotw6S3tYQP
+         9bpRfCIkm6tCnXP73vWesm5AwvhpHIPeChAyZDrBnjAHYR/HJdCzBpEp2Y+o37N/M5g5
+         2pdO/K5FquW6CATrDv5VpSQuibWxF/p09rpomglfm8SjvcHTTPKm9OvpLvuo2sdnUbNN
+         SvKa5nCIPIOr50x8orD+OVTlaesiGasf46wF6Jmg9dIYqdsjY+COadAb/lqMm/7cPom+
+         ZhjQ==
+X-Gm-Message-State: AC+VfDx8mUiuX8xhhFQ5ry2eDCc8RZaWmyDP7zOseppEhFZ3XtPg9F7N
+        tMtKQXiJcN7BqL0PM7D7vS+26/ySvc894oyfPNOLxQ==
+X-Google-Smtp-Source: ACHHUZ4kFhYGq1McBHCrKGBedUf2xwnSf+RXgEGL3EzRFdNA+PwrVJgxb55iiZYNwNR7iwv3SzyxB835GCQeBrcfSkg=
+X-Received: by 2002:a25:2e0c:0:b0:bc3:843a:953a with SMTP id
+ u12-20020a252e0c000000b00bc3843a953amr8727613ybu.18.1687283740311; Tue, 20
+ Jun 2023 10:55:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLPpnTT2W1Ev6Q5g2h2qk6aoFa9uFsuc7Q6Xb36e4YV3w@mail.gmail.com>
+References: <20230614013548.1382385-1-surenb@google.com> <20230614013548.1382385-3-surenb@google.com>
+ <2023061925-overact-flakily-9830@gregkh>
+In-Reply-To: <2023061925-overact-flakily-9830@gregkh>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 20 Jun 2023 10:55:29 -0700
+Message-ID: <CAJuCfpHWpmLGjBTRAAtSiPSo=q273j7qRGXCt+bZ2qyHOP9x8A@mail.gmail.com>
+Subject: Re: [RESEND 1/1] linux-6.1/rcu/kvfree: Avoid freeing new kfree_rcu()
+ memory after old grace period
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, urezki@gmail.com,
+        oleksiy.avramchenko@sony.com, ziwei.dai@unisoc.com,
+        quic_mojha@quicinc.com, paulmck@kernel.org, wufangsuo@gmail.com,
+        rcu@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 20, 2023 at 09:15:03AM -0700, Alexei Starovoitov wrote:
-> On Mon, Jun 19, 2023 at 7:00 AM Hou Tao <houtao@huaweicloud.com> wrote:
+On Sun, Jun 18, 2023 at 11:21=E2=80=AFPM Greg KH <gregkh@linuxfoundation.or=
+g> wrote:
+>
+> On Tue, Jun 13, 2023 at 06:35:47PM -0700, Suren Baghdasaryan wrote:
+> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 > >
-> > +static void bpf_rcu_gp_acc_work(struct callback_head *head)
-> > +{
-> > +       struct bpf_rcu_gp_acc_ctx *ctx = container_of(head, struct bpf_rcu_gp_acc_ctx, work);
-> > +
-> > +       local_irq_disable();
-> > +       rcu_momentary_dyntick_idle();
-> > +       local_irq_enable();
-> 
-> We discussed this with Paul off-line and decided to go a different route.
-> Paul prepared a patch for us to expose rcu_request_urgent_qs_task().
-> I'll be sending the series later this week.
+> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+>
+> That's not the author of this commit, where did it come from?
 
-Just for completeness, this patch is in -rcu here and as shown below:
+True, that's the author of the backport. The commit author is Ziwei
+Dai <ziwei.dai@unisoc.com>
 
-b1edaa1e6364 ("rcu: Export rcu_request_urgent_qs_task()")
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit b1edaa1e6364caf9833a30b5dd7599080b6806b8
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu Jun 8 16:31:49 2023 -0700
-
-    rcu: Export rcu_request_urgent_qs_task()
-    
-    If a CPU is executing a long series of non-sleeping system calls,
-    RCU grace periods can be delayed for on the order of a couple hundred
-    milliseconds.  This is normally not a problem, but if each system call
-    does a call_rcu(), those callbacks can stack up.  RCU will eventually
-    notice this callback storm, but use of rcu_request_urgent_qs_task()
-    allows the code invoking call_rcu() to give RCU a heads up.
-    
-    This function is not for general use, not yet, anyway.
-    
-    Reported-by: Alexei Starovoitov <ast@kernel.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 7f17acf29dda..7b949292908a 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -138,6 +138,8 @@ static inline int rcu_needs_cpu(void)
- 	return 0;
- }
- 
-+static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
-+
- /*
-  * Take advantage of the fact that there is only one CPU, which
-  * allows us to ignore virtualization-based context switches.
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 56bccb5a8fde..126f6b418f6a 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -21,6 +21,7 @@ void rcu_softirq_qs(void);
- void rcu_note_context_switch(bool preempt);
- int rcu_needs_cpu(void);
- void rcu_cpu_stall_reset(void);
-+void rcu_request_urgent_qs_task(struct task_struct *t);
- 
- /*
-  * Note a virtualization-based context switch.  This is simply a
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 9829d8161b21..0c99ec19c8e0 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -493,7 +493,6 @@ static inline void rcu_expedite_gp(void) { }
- static inline void rcu_unexpedite_gp(void) { }
- static inline void rcu_async_hurry(void) { }
- static inline void rcu_async_relax(void) { }
--static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
- #else /* #ifdef CONFIG_TINY_RCU */
- bool rcu_gp_is_normal(void);     /* Internal RCU use. */
- bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
-@@ -514,7 +513,6 @@ struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
- static inline void show_rcu_tasks_gp_kthreads(void) {}
- #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
--void rcu_request_urgent_qs_task(struct task_struct *t);
- #endif /* #else #ifdef CONFIG_TINY_RCU */
- 
- #define RCU_SCHEDULER_INACTIVE	0
+>
+> confused,
+>
+> greg k-h
