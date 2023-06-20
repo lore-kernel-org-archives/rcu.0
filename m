@@ -2,88 +2,146 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EE76EB64D7
-	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 16:15:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 328D6EB64D7
+	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 17:14:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbjFTQPS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Jun 2023 12:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
+        id S230073AbjFTROA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Jun 2023 13:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231420AbjFTQPR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Jun 2023 12:15:17 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D9A1709;
-        Tue, 20 Jun 2023 09:15:16 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51a324beca6so6557912a12.1;
-        Tue, 20 Jun 2023 09:15:16 -0700 (PDT)
+        with ESMTP id S230382AbjFTRN6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Jun 2023 13:13:58 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E6A1726;
+        Tue, 20 Jun 2023 10:13:55 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b52bf6e659so22620185ad.3;
+        Tue, 20 Jun 2023 10:13:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687277715; x=1689869715;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ffr+q3XL7sJW03SA2FWvqcSs0TjZ+T5V8JGqqa2pw8I=;
-        b=fJcIYTcNt6nml9r5lt0E0SMAGTE8yvI/Wfs9Covy3YisTA9cD76maRRRrVvK62flgI
-         0qtx3yYmrryQxlAyZVoB2WafUfDEVJdwhO8WOvin2bGPEAq8tTEqBKegGN6muuKyiSFQ
-         AuVxJC8QbzYTaTQdBl6IsdN95jF3gX/jHFDD9eKgzGpdalwpiewDptPGmwyXpIWmvMxW
-         w34m00Yz060sxcybVqgEGFKXpZ7hEBBivHoJAAF6ZwNDpNW9po8PadDdsrBNZLmjDwfn
-         BGDDy6fvAKT2wbISUu8CXVG+7BwWVpJMu/4AGf7XAV5ZokOH7ERACBRWtmz1+xm1V57G
-         2kDA==
+        d=gmail.com; s=20221208; t=1687281235; x=1689873235;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FQVL+8eaCaxsNitQJJf0YFTeFjPE8938pH+IXJDEavY=;
+        b=BgPTfp4VPb6Brq698keka1gTnQc7c/3ZzVTj6QAeTMusvfziGWN6FtMN35aBzq3IOf
+         qpcwjm/C+dSzrCO7b7gXNX3jkiAg2CJ+AfrHbdKPr2yGVr71uzlUiqPPrT3eXiAqMMHD
+         UTGXjYr8ev561lbNB035DKZNoK3IV0sVKWD+aK0jE095BkQhW1w5KqklPyrR8FZeRu2J
+         LPOX0td7AsaSilXfGAjXjlzkuMUtKWh5Ykn9DpskMqM6QrUkDMIQgGYybQFk1WlMNMBx
+         l92zcvLg/mRIIxFhkTucNSjJhivbcUwpZAwZhklapxLZJ7NEDMtrqcdqOhBVdTwL1wgD
+         qdmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687277715; x=1689869715;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ffr+q3XL7sJW03SA2FWvqcSs0TjZ+T5V8JGqqa2pw8I=;
-        b=SUS0xlnirlKuD3V/l8BKyHfh8qSOrB0tqvFMQStJZ4Hv5oOV6ERXF2IPYNZhksZK8k
-         CO0IWulumHcZMU1UorjPlL1sj86URnZYLKfKKSIiSB+ePgWRJCVgAzY0p8hZmVx9F1cW
-         UQGx3hj0aSnTmfH0etI3yZfHfn7MdokgZYMeku81IWb31NcwL2IHj1NQnFfU05M/xwFr
-         Ub69szhMHAslkSQ2eRxbQM2+vgS7IdfxZazucxCzTOSX+9noxCjEYRA/7krxl0u63PM0
-         RTbKr9t5Gt1fH96sFIWGG81RNlEZnWB20gmr0nXkHgnYWQbrzNvqR1V5xBKAitLufLIk
-         p+ag==
-X-Gm-Message-State: AC+VfDxWAQXA04iJE1ioefm4C2/RqhheMFWAfQWPdG0r9Pn0R1HLeAjS
-        wmVVWg3uwNHFZA81OPuOnOGfFnrf6R+MR8ovUvA1HIZ9ohc=
-X-Google-Smtp-Source: ACHHUZ7zrvxwkth8Q1zNJtwIkNtsH0BybDYrUD5XeVtXTxi0paHENV++9WLvG8DHqwt0ylxdBhYg5NctFVYVF88Thrk=
-X-Received: by 2002:aa7:dbd9:0:b0:518:7ad9:64bb with SMTP id
- v25-20020aa7dbd9000000b005187ad964bbmr8321439edt.19.1687277714774; Tue, 20
- Jun 2023 09:15:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687281235; x=1689873235;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FQVL+8eaCaxsNitQJJf0YFTeFjPE8938pH+IXJDEavY=;
+        b=G2iulcgwKoxgqkYQmIJ7n+GW39oRAnLdgWoDimBVbeN9ns4K9+Qitxjij81U26RvwR
+         GjYybqFsVbdPfx8b6Dh6//Xc4CYzxScVInuisgXmihWO1W+dMxcXzlEdDWIC/kj4Xbaz
+         IMvfIbx25STZ3VZKeubieNTlROy6DSRE0yuGNQD55L1AfiCB6aiqwJ0AJaLPxWaWRo2y
+         /7mO5I6X5YhercSUFJyt2BhbOHD0NNx8IHWq2LRrXFr3ssBWnpSowNbw4GekBFzvF5df
+         7ku9ohZkwmH5HUyEvWalG4aVQhEXvR0FzveaE5LxjvC7AaCxpw4/BSi78bieloumK0Dx
+         53Rw==
+X-Gm-Message-State: AC+VfDxFXQ9X9Y9d56dPjXD6GKI52EyZFh6zihL1oD4G9VetBqr5iBy5
+        UEbdPfyJzm5+AYoKQAU39WDh11FMj74=
+X-Google-Smtp-Source: ACHHUZ6Q7CLwOGA+Kf6Go7zWJ6Kt6nfcoeQ6H4xJ3c/74pE3v8Xa9XlNRFsjx3hxrr6J408KJ8hrng==
+X-Received: by 2002:a17:902:ea01:b0:1ad:e633:ee96 with SMTP id s1-20020a170902ea0100b001ade633ee96mr8123222plg.55.1687281234782;
+        Tue, 20 Jun 2023 10:13:54 -0700 (PDT)
+Received: from localhost ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id n13-20020a170902d2cd00b001b1866f7b5csm1872888plc.138.2023.06.20.10.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jun 2023 10:13:54 -0700 (PDT)
+From:   Alan Huang <mmpgouride@gmail.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH v2] rcu: Add necessary WRITE_ONCE()
+Date:   Tue, 20 Jun 2023 17:13:46 +0000
+Message-Id: <20230620171346.207076-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230619143231.222536-1-houtao@huaweicloud.com> <20230619143231.222536-3-houtao@huaweicloud.com>
-In-Reply-To: <20230619143231.222536-3-houtao@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 20 Jun 2023 09:15:03 -0700
-Message-ID: <CAADnVQLPpnTT2W1Ev6Q5g2h2qk6aoFa9uFsuc7Q6Xb36e4YV3w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v5 2/2] bpf: Call rcu_momentary_dyntick_idle()
- in task work periodically
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 7:00=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> +static void bpf_rcu_gp_acc_work(struct callback_head *head)
-> +{
-> +       struct bpf_rcu_gp_acc_ctx *ctx =3D container_of(head, struct bpf_=
-rcu_gp_acc_ctx, work);
-> +
-> +       local_irq_disable();
-> +       rcu_momentary_dyntick_idle();
-> +       local_irq_enable();
+Commit c54a2744497d("list: Add hlist_unhashed_lockless()") and
+commit 860c8802ace1("rcu: Use WRITE_ONCE() for assignments to
+->pprev for hlist_nulls") added various WRITE_ONCE() to pair with
+the READ_ONCE() in hlist_unhashed_lockless(), but there are still
+some places where WRITE_ONCE() was not added, this commit adds that.
 
-We discussed this with Paul off-line and decided to go a different route.
-Paul prepared a patch for us to expose rcu_request_urgent_qs_task().
-I'll be sending the series later this week.
+Also add WRITE_ONCE() to pair with the READ_ONCE() in hlist_empty().
+
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+Changelog:
+V1 -> V2: 
+  Add WRITE_ONCE in hlist_del_init to pair with READ_ONCE in
+  hlist_unhashed_lockless.
+
+ include/linux/list.h          | 9 +++++----
+ include/linux/list_nulls.h    | 2 +-
+ include/linux/rculist_nulls.h | 2 +-
+ 3 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/list.h b/include/linux/list.h
+index ac366958ea..3a29b95bfe 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -912,7 +912,7 @@ static inline void hlist_del(struct hlist_node *n)
+ {
+ 	__hlist_del(n);
+ 	n->next = LIST_POISON1;
+-	n->pprev = LIST_POISON2;
++	WRITE_ONCE(n->pprev, LIST_POISON2);
+ }
+ 
+ /**
+@@ -925,7 +925,8 @@ static inline void hlist_del_init(struct hlist_node *n)
+ {
+ 	if (!hlist_unhashed(n)) {
+ 		__hlist_del(n);
+-		INIT_HLIST_NODE(n);
++		n->next = NULL;
++		WRITE_ONCE(n->pprev, NULL);
+ 	}
+ }
+ 
+@@ -1026,8 +1027,8 @@ static inline void hlist_move_list(struct hlist_head *old,
+ {
+ 	new->first = old->first;
+ 	if (new->first)
+-		new->first->pprev = &new->first;
+-	old->first = NULL;
++		WRITE_ONCE(new->first->pprev, &new->first);
++	WRITE_ONCE(old->first, NULL);
+ }
+ 
+ #define hlist_entry(ptr, type, member) container_of(ptr,type,member)
+diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
+index fa6e8471bd..b63b0589fa 100644
+--- a/include/linux/list_nulls.h
++++ b/include/linux/list_nulls.h
+@@ -95,7 +95,7 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
+ 
+ 	n->next = first;
+ 	WRITE_ONCE(n->pprev, &h->first);
+-	h->first = n;
++	WRITE_ONCE(h->first, n);
+ 	if (!is_a_nulls(first))
+ 		WRITE_ONCE(first->pprev, &n->next);
+ }
+diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+index ba4c00dd80..c65121655b 100644
+--- a/include/linux/rculist_nulls.h
++++ b/include/linux/rculist_nulls.h
+@@ -138,7 +138,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
+ 
+ 	if (last) {
+ 		n->next = last->next;
+-		n->pprev = &last->next;
++		WRITE_ONCE(n->pprev, &last->next);
+ 		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
+ 	} else {
+ 		hlist_nulls_add_head_rcu(n, h);
+-- 
+2.34.1
+
