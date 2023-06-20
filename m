@@ -2,146 +2,151 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 328D6EB64D7
-	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 17:14:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 851A3EB64D7
+	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 17:21:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjFTROA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Jun 2023 13:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
+        id S229694AbjFTRVU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Jun 2023 13:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjFTRN6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Jun 2023 13:13:58 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E6A1726;
-        Tue, 20 Jun 2023 10:13:55 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b52bf6e659so22620185ad.3;
-        Tue, 20 Jun 2023 10:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687281235; x=1689873235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FQVL+8eaCaxsNitQJJf0YFTeFjPE8938pH+IXJDEavY=;
-        b=BgPTfp4VPb6Brq698keka1gTnQc7c/3ZzVTj6QAeTMusvfziGWN6FtMN35aBzq3IOf
-         qpcwjm/C+dSzrCO7b7gXNX3jkiAg2CJ+AfrHbdKPr2yGVr71uzlUiqPPrT3eXiAqMMHD
-         UTGXjYr8ev561lbNB035DKZNoK3IV0sVKWD+aK0jE095BkQhW1w5KqklPyrR8FZeRu2J
-         LPOX0td7AsaSilXfGAjXjlzkuMUtKWh5Ykn9DpskMqM6QrUkDMIQgGYybQFk1WlMNMBx
-         l92zcvLg/mRIIxFhkTucNSjJhivbcUwpZAwZhklapxLZJ7NEDMtrqcdqOhBVdTwL1wgD
-         qdmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687281235; x=1689873235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FQVL+8eaCaxsNitQJJf0YFTeFjPE8938pH+IXJDEavY=;
-        b=G2iulcgwKoxgqkYQmIJ7n+GW39oRAnLdgWoDimBVbeN9ns4K9+Qitxjij81U26RvwR
-         GjYybqFsVbdPfx8b6Dh6//Xc4CYzxScVInuisgXmihWO1W+dMxcXzlEdDWIC/kj4Xbaz
-         IMvfIbx25STZ3VZKeubieNTlROy6DSRE0yuGNQD55L1AfiCB6aiqwJ0AJaLPxWaWRo2y
-         /7mO5I6X5YhercSUFJyt2BhbOHD0NNx8IHWq2LRrXFr3ssBWnpSowNbw4GekBFzvF5df
-         7ku9ohZkwmH5HUyEvWalG4aVQhEXvR0FzveaE5LxjvC7AaCxpw4/BSi78bieloumK0Dx
-         53Rw==
-X-Gm-Message-State: AC+VfDxFXQ9X9Y9d56dPjXD6GKI52EyZFh6zihL1oD4G9VetBqr5iBy5
-        UEbdPfyJzm5+AYoKQAU39WDh11FMj74=
-X-Google-Smtp-Source: ACHHUZ6Q7CLwOGA+Kf6Go7zWJ6Kt6nfcoeQ6H4xJ3c/74pE3v8Xa9XlNRFsjx3hxrr6J408KJ8hrng==
-X-Received: by 2002:a17:902:ea01:b0:1ad:e633:ee96 with SMTP id s1-20020a170902ea0100b001ade633ee96mr8123222plg.55.1687281234782;
-        Tue, 20 Jun 2023 10:13:54 -0700 (PDT)
-Received: from localhost ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id n13-20020a170902d2cd00b001b1866f7b5csm1872888plc.138.2023.06.20.10.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jun 2023 10:13:54 -0700 (PDT)
-From:   Alan Huang <mmpgouride@gmail.com>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH v2] rcu: Add necessary WRITE_ONCE()
-Date:   Tue, 20 Jun 2023 17:13:46 +0000
-Message-Id: <20230620171346.207076-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229896AbjFTRVQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Jun 2023 13:21:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A225DC
+        for <rcu@vger.kernel.org>; Tue, 20 Jun 2023 10:21:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FD6C61328
+        for <rcu@vger.kernel.org>; Tue, 20 Jun 2023 17:21:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EADBEC433C8;
+        Tue, 20 Jun 2023 17:21:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687281674;
+        bh=vRBGBNUYYQ+cKeZDIJdCYfN3me99s3tDJZBUVKipd1k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QG1WsOA0E+yR1VvMJBq+dY6Ufw+DTIOnRNxIWn9EEbToRgmWLQzLDnBPA6/lhP8jp
+         cxS4ojHMymNV6xKlJq+wMnrTVgWwL7grqILf/2VWZMCT0Cy5SogAv1Wd/yL0ifqO02
+         MD/kp7mhBYYl0jlVWLCvTwDt8fMrnorIK1QrPVuf95mi7GPNZviAM+iCSnD+DEp5yp
+         qmhQST5b9Rue9FTQsPvMbvxNpupJ4kGQMCCNwtclwEOFEZyZVFLZ1m6DQBx9tSiSMo
+         3kSdIGcCPA9xRJ9xoL6HW/8HeJK1fOSyx7i+e5BFu9nAlEqpr9SAEFr5cN4si+D3O4
+         jDg/wnuAjxhXw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 87BB7CE39F5; Tue, 20 Jun 2023 10:21:13 -0700 (PDT)
+Date:   Tue, 20 Jun 2023 10:21:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Hou Tao <houtao@huaweicloud.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+Subject: Re: [RFC PATCH bpf-next v5 2/2] bpf: Call
+ rcu_momentary_dyntick_idle() in task work periodically
+Message-ID: <34c9a132-d34b-46d7-9790-3b6d8eb4204d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230619143231.222536-1-houtao@huaweicloud.com>
+ <20230619143231.222536-3-houtao@huaweicloud.com>
+ <CAADnVQLPpnTT2W1Ev6Q5g2h2qk6aoFa9uFsuc7Q6Xb36e4YV3w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLPpnTT2W1Ev6Q5g2h2qk6aoFa9uFsuc7Q6Xb36e4YV3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Commit c54a2744497d("list: Add hlist_unhashed_lockless()") and
-commit 860c8802ace1("rcu: Use WRITE_ONCE() for assignments to
-->pprev for hlist_nulls") added various WRITE_ONCE() to pair with
-the READ_ONCE() in hlist_unhashed_lockless(), but there are still
-some places where WRITE_ONCE() was not added, this commit adds that.
+On Tue, Jun 20, 2023 at 09:15:03AM -0700, Alexei Starovoitov wrote:
+> On Mon, Jun 19, 2023 at 7:00 AM Hou Tao <houtao@huaweicloud.com> wrote:
+> >
+> > +static void bpf_rcu_gp_acc_work(struct callback_head *head)
+> > +{
+> > +       struct bpf_rcu_gp_acc_ctx *ctx = container_of(head, struct bpf_rcu_gp_acc_ctx, work);
+> > +
+> > +       local_irq_disable();
+> > +       rcu_momentary_dyntick_idle();
+> > +       local_irq_enable();
+> 
+> We discussed this with Paul off-line and decided to go a different route.
+> Paul prepared a patch for us to expose rcu_request_urgent_qs_task().
+> I'll be sending the series later this week.
 
-Also add WRITE_ONCE() to pair with the READ_ONCE() in hlist_empty().
+Just for completeness, this patch is in -rcu here and as shown below:
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
-Changelog:
-V1 -> V2: 
-  Add WRITE_ONCE in hlist_del_init to pair with READ_ONCE in
-  hlist_unhashed_lockless.
+b1edaa1e6364 ("rcu: Export rcu_request_urgent_qs_task()")
 
- include/linux/list.h          | 9 +++++----
- include/linux/list_nulls.h    | 2 +-
- include/linux/rculist_nulls.h | 2 +-
- 3 files changed, 7 insertions(+), 6 deletions(-)
+							Thanx, Paul
 
-diff --git a/include/linux/list.h b/include/linux/list.h
-index ac366958ea..3a29b95bfe 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -912,7 +912,7 @@ static inline void hlist_del(struct hlist_node *n)
- {
- 	__hlist_del(n);
- 	n->next = LIST_POISON1;
--	n->pprev = LIST_POISON2;
-+	WRITE_ONCE(n->pprev, LIST_POISON2);
+------------------------------------------------------------------------
+
+commit b1edaa1e6364caf9833a30b5dd7599080b6806b8
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Thu Jun 8 16:31:49 2023 -0700
+
+    rcu: Export rcu_request_urgent_qs_task()
+    
+    If a CPU is executing a long series of non-sleeping system calls,
+    RCU grace periods can be delayed for on the order of a couple hundred
+    milliseconds.  This is normally not a problem, but if each system call
+    does a call_rcu(), those callbacks can stack up.  RCU will eventually
+    notice this callback storm, but use of rcu_request_urgent_qs_task()
+    allows the code invoking call_rcu() to give RCU a heads up.
+    
+    This function is not for general use, not yet, anyway.
+    
+    Reported-by: Alexei Starovoitov <ast@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 7f17acf29dda..7b949292908a 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -138,6 +138,8 @@ static inline int rcu_needs_cpu(void)
+ 	return 0;
  }
  
- /**
-@@ -925,7 +925,8 @@ static inline void hlist_del_init(struct hlist_node *n)
- {
- 	if (!hlist_unhashed(n)) {
- 		__hlist_del(n);
--		INIT_HLIST_NODE(n);
-+		n->next = NULL;
-+		WRITE_ONCE(n->pprev, NULL);
- 	}
- }
++static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
++
+ /*
+  * Take advantage of the fact that there is only one CPU, which
+  * allows us to ignore virtualization-based context switches.
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 56bccb5a8fde..126f6b418f6a 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -21,6 +21,7 @@ void rcu_softirq_qs(void);
+ void rcu_note_context_switch(bool preempt);
+ int rcu_needs_cpu(void);
+ void rcu_cpu_stall_reset(void);
++void rcu_request_urgent_qs_task(struct task_struct *t);
  
-@@ -1026,8 +1027,8 @@ static inline void hlist_move_list(struct hlist_head *old,
- {
- 	new->first = old->first;
- 	if (new->first)
--		new->first->pprev = &new->first;
--	old->first = NULL;
-+		WRITE_ONCE(new->first->pprev, &new->first);
-+	WRITE_ONCE(old->first, NULL);
- }
+ /*
+  * Note a virtualization-based context switch.  This is simply a
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 9829d8161b21..0c99ec19c8e0 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -493,7 +493,6 @@ static inline void rcu_expedite_gp(void) { }
+ static inline void rcu_unexpedite_gp(void) { }
+ static inline void rcu_async_hurry(void) { }
+ static inline void rcu_async_relax(void) { }
+-static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
+ #else /* #ifdef CONFIG_TINY_RCU */
+ bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+ bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+@@ -514,7 +513,6 @@ struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void show_rcu_tasks_gp_kthreads(void) {}
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+-void rcu_request_urgent_qs_task(struct task_struct *t);
+ #endif /* #else #ifdef CONFIG_TINY_RCU */
  
- #define hlist_entry(ptr, type, member) container_of(ptr,type,member)
-diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
-index fa6e8471bd..b63b0589fa 100644
---- a/include/linux/list_nulls.h
-+++ b/include/linux/list_nulls.h
-@@ -95,7 +95,7 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
- 
- 	n->next = first;
- 	WRITE_ONCE(n->pprev, &h->first);
--	h->first = n;
-+	WRITE_ONCE(h->first, n);
- 	if (!is_a_nulls(first))
- 		WRITE_ONCE(first->pprev, &n->next);
- }
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index ba4c00dd80..c65121655b 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -138,7 +138,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
- 
- 	if (last) {
- 		n->next = last->next;
--		n->pprev = &last->next;
-+		WRITE_ONCE(n->pprev, &last->next);
- 		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
- 	} else {
- 		hlist_nulls_add_head_rcu(n, h);
--- 
-2.34.1
-
+ #define RCU_SCHEDULER_INACTIVE	0
