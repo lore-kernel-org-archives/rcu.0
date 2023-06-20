@@ -2,90 +2,152 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30FC7EB64D7
-	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 21:12:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DB3CEB64D7
+	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 22:26:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbjFTVMG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Jun 2023 17:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
+        id S229659AbjFTW0r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Jun 2023 18:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjFTVMF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Jun 2023 17:12:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B52D7;
-        Tue, 20 Jun 2023 14:12:03 -0700 (PDT)
+        with ESMTP id S229629AbjFTW0r (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Jun 2023 18:26:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739121735;
+        Tue, 20 Jun 2023 15:26:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5423B61042;
-        Tue, 20 Jun 2023 21:12:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA97BC433C8;
-        Tue, 20 Jun 2023 21:12:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 00DEA61291;
+        Tue, 20 Jun 2023 22:26:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DF9BC433C0;
+        Tue, 20 Jun 2023 22:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687295522;
-        bh=dGKpkqnJnVdfufwSQkdHUCe8nxQNTJDDP/cMBgRtCJk=;
+        s=k20201202; t=1687300005;
+        bh=MCSUz/MAQT4r5cMvV8x8YY+jmIPX87xmV2kPzuDjlpg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=K6J8H0yh7WwE/eCMoCNyz9fFo+FXSV7sMumrFJMl5yXarxfDz1Uw/o47GBh+8EXPx
-         0eiJbdia6qZ2p91DrkTp+lsWMTd/GC7FJLiTmcFaAkbddR2OySlWviFFaSV1M6VOYz
-         /P2orr792c8QBgnqEAy/Xili8zaZklwF15dCS4dW41/b9W3aMPRoI499IVsUNDR4Z8
-         WAdpfGkYlnx1DWVrjPPv8K20oeNAdo2jxfJlsjXgGJoq5bI1BolpXsVKhtk40VY9rd
-         6XMa6MmLP9MeazZL2aDzVde9s7jPowLq6KqRj+OTjUwKH2ZAk9n+vAYGN3aEwhvpwZ
-         Ai5kLs2rsIzqQ==
+        b=B3M56n8f6vGBjTVCCPyYYm0G7wujWstKyfAKiGUE4pBBIOTpqlFx3AuEPXSsn+Aif
+         raIznNSt2CXbCCNI0+ntn4m5k36dH8L+lkgISR4EEF/mzyxhtJaqgjsC+RZNHn99qD
+         +Ku1EXgl5T8aJ10vNBIRFQBFgbnQx2Gq7eSiJOcupOCoWDm4K8p4+VJcdV17O/LCUk
+         UTXuYboozzdUkTVkzLcgTZU5jpd93Tu0psReMwyqfYU2ia7wzpoCi5Fv/CbNb5nPZc
+         pycNnx28ydtXEt23XI+e7oksux3a74EbX+0Fn2DTVnp4ky86HBggyuej9p5Xt8149h
+         Tc2exysc5l3Fg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5C1BFCE17BC; Tue, 20 Jun 2023 14:12:02 -0700 (PDT)
-Date:   Tue, 20 Jun 2023 14:12:02 -0700
+        id ED053CE1CC5; Tue, 20 Jun 2023 15:26:44 -0700 (PDT)
+Date:   Tue, 20 Jun 2023 15:26:44 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     joel@joelfernandes.org, mmpgouride@gmail.com, corbet@lwn.net,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] Docs/RCU/rculist_nulls: Minor fixup
-Message-ID: <2df7d40d-2e80-46f7-9193-5e116fd0f265@paulmck-laptop>
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Add necessary WRITE_ONCE()
+Message-ID: <50c4aa37-388b-449c-8184-00a9d69471fc@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230616233626.83906-1-sj@kernel.org>
+References: <20230620171346.207076-1-mmpgouride@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230616233626.83906-1-sj@kernel.org>
+In-Reply-To: <20230620171346.207076-1-mmpgouride@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jun 16, 2023 at 11:36:23PM +0000, SeongJae Park wrote:
-> Changes from v3
-> (https://lore.kernel.org/rcu/20230615181004.86850-1-sj@kernel.org/)
-> - Fix Paul's name on 'Suggested-by:' tag
-> - Use 'atomic_t' for refcnt field of 'struct object'
+On Tue, Jun 20, 2023 at 05:13:46PM +0000, Alan Huang wrote:
+> Commit c54a2744497d("list: Add hlist_unhashed_lockless()") and
+> commit 860c8802ace1("rcu: Use WRITE_ONCE() for assignments to
+> ->pprev for hlist_nulls") added various WRITE_ONCE() to pair with
+> the READ_ONCE() in hlist_unhashed_lockless(), but there are still
+> some places where WRITE_ONCE() was not added, this commit adds that.
 > 
-> Changes from v2
-> (https://lore.kernel.org/rcu/20230613182434.88317-1-sj@kernel.org/)
-> - Drop first two patches that merged to Paul's tree
-> - Add definition of 'obj' (Paul E. McKenney)
-> - Fix more wrong hlist_[nulls]_head field name mentions
+> Also add WRITE_ONCE() to pair with the READ_ONCE() in hlist_empty().
 > 
-> Changes from v1
-> (https://lore.kernel.org/rcu/20230518224008.2468-1-sj@kernel.org/)
-> - Add Reviewed-by tags from Joel Fernandes for first three patches
-> - Fix the text for wrong extra _release()
-> 
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+
+On hlist_nulls_add_tail_rcu(), good catch, thank you!
+
+On the others, are there really cases where a lockless read races with
+the update?  At first glance, that sounds like a usage bug.  For example,
+as I understand it, when you use something like hlist_del(), you are
+supposed to ensure that there are no concurrent readers.  Which is the
+point of the assignment of the special value LIST_POISON2, right?
+
+Or is there some use case that I am missing?
+
+If I am not missing something, then switching the non-RCU APIs to
+WRITE_ONCE() would be a step backwards, because it would make it harder
+for tools like KCSAN to find bugs.
+
+							Thanx, Paul
+
 > ---
+> Changelog:
+> V1 -> V2: 
+>   Add WRITE_ONCE in hlist_del_init to pair with READ_ONCE in
+>   hlist_unhashed_lockless.
 > 
-> Fix minor problems in example code snippets and the text of
-> rculist_nulls.rst file.
-
-I am replacing the earlier versions with this version, thank you!!!
-
-						Thanx, Paul
-
-> SeongJae Park (3):
->   Docs/RCU/rculist_nulls: Specify type of the object in examples
->   Docs/RCU/rculist_nulls: Fix hlist_[nulls]_head field names of 'obj'
->   Docs/RCU/rculist_nulls: Fix text about atomic_set_release()
+>  include/linux/list.h          | 9 +++++----
+>  include/linux/list_nulls.h    | 2 +-
+>  include/linux/rculist_nulls.h | 2 +-
+>  3 files changed, 7 insertions(+), 6 deletions(-)
 > 
->  Documentation/RCU/rculist_nulls.rst | 28 +++++++++++++++++++++-------
->  1 file changed, 21 insertions(+), 7 deletions(-)
-> 
+> diff --git a/include/linux/list.h b/include/linux/list.h
+> index ac366958ea..3a29b95bfe 100644
+> --- a/include/linux/list.h
+> +++ b/include/linux/list.h
+> @@ -912,7 +912,7 @@ static inline void hlist_del(struct hlist_node *n)
+>  {
+>  	__hlist_del(n);
+>  	n->next = LIST_POISON1;
+> -	n->pprev = LIST_POISON2;
+> +	WRITE_ONCE(n->pprev, LIST_POISON2);
+>  }
+>  
+>  /**
+> @@ -925,7 +925,8 @@ static inline void hlist_del_init(struct hlist_node *n)
+>  {
+>  	if (!hlist_unhashed(n)) {
+>  		__hlist_del(n);
+> -		INIT_HLIST_NODE(n);
+> +		n->next = NULL;
+> +		WRITE_ONCE(n->pprev, NULL);
+>  	}
+>  }
+>  
+> @@ -1026,8 +1027,8 @@ static inline void hlist_move_list(struct hlist_head *old,
+>  {
+>  	new->first = old->first;
+>  	if (new->first)
+> -		new->first->pprev = &new->first;
+> -	old->first = NULL;
+> +		WRITE_ONCE(new->first->pprev, &new->first);
+> +	WRITE_ONCE(old->first, NULL);
+>  }
+>  
+>  #define hlist_entry(ptr, type, member) container_of(ptr,type,member)
+> diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
+> index fa6e8471bd..b63b0589fa 100644
+> --- a/include/linux/list_nulls.h
+> +++ b/include/linux/list_nulls.h
+> @@ -95,7 +95,7 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
+>  
+>  	n->next = first;
+>  	WRITE_ONCE(n->pprev, &h->first);
+> -	h->first = n;
+> +	WRITE_ONCE(h->first, n);
+>  	if (!is_a_nulls(first))
+>  		WRITE_ONCE(first->pprev, &n->next);
+>  }
+> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+> index ba4c00dd80..c65121655b 100644
+> --- a/include/linux/rculist_nulls.h
+> +++ b/include/linux/rculist_nulls.h
+> @@ -138,7 +138,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
+>  
+>  	if (last) {
+>  		n->next = last->next;
+> -		n->pprev = &last->next;
+> +		WRITE_ONCE(n->pprev, &last->next);
+>  		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
+>  	} else {
+>  		hlist_nulls_add_head_rcu(n, h);
 > -- 
-> 2.25.1
+> 2.34.1
 > 
