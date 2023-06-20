@@ -2,91 +2,225 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B71FEEB64D9
-	for <rcu@archiver.kernel.org>; Mon, 19 Jun 2023 20:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B23EB64DA
+	for <rcu@archiver.kernel.org>; Tue, 20 Jun 2023 01:42:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjFSUkX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 19 Jun 2023 16:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        id S229448AbjFTBmR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 19 Jun 2023 21:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjFSUkW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 19 Jun 2023 16:40:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABC2DF
-        for <rcu@vger.kernel.org>; Mon, 19 Jun 2023 13:40:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A1BA660EFC
-        for <rcu@vger.kernel.org>; Mon, 19 Jun 2023 20:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 037DCC433C8;
-        Mon, 19 Jun 2023 20:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687207221;
-        bh=P9VJOkKQ5H2vYWV+M2nWdtZpaQBLBa1WEG34I7CVKio=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FyBrtr/iyCtKuxzJFrvyWFbO+w3S5fhStwHjdxzaNz+KA6lp1QNXvGHvc1aWZ/E/0
-         vNE8zTG3BO71tVpmhxc8NpDbLif4tJwWCx4ngPbBxxwvtKNIZ7q52Cm8fY+Z2h6f34
-         XgXPCPn0lCobnl1cjZh/CKWQHThMO4wtnTpViCrPQROaDgwkhwNvIzL3zj9jjs45zz
-         0/NadvOxRQhaaWRvS+HE7RHXH06ob6omGEXj/+m2cfxRhPSez/rqRQO9LPzCig0cLM
-         qbtA7z9Cd30gKA5s5Jt2mixpk7le30OFdnN/bC/LNxsnctZT9JnQY7KLeRILJwHgLe
-         a3ShUA92DOhDA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D71F0E301F8;
-        Mon, 19 Jun 2023 20:40:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 0/5] Add benchmark for bpf memory allocator
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168720722086.28519.12176432068427562571.git-patchwork-notify@kernel.org>
-Date:   Mon, 19 Jun 2023 20:40:20 +0000
-References: <20230613080921.1623219-1-houtao@huaweicloud.com>
-In-Reply-To: <20230613080921.1623219-1-houtao@huaweicloud.com>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, martin.lau@linux.dev,
-        alexei.starovoitov@gmail.com, andrii@kernel.org, song@kernel.org,
-        haoluo@google.com, yhs@fb.com, daniel@iogearbox.net,
-        kpsingh@kernel.org, sdf@google.com, jolsa@kernel.org,
-        john.fastabend@gmail.com, paulmck@kernel.org, rcu@vger.kernel.org,
+        with ESMTP id S229562AbjFTBmQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 19 Jun 2023 21:42:16 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5FFE59;
+        Mon, 19 Jun 2023 18:42:13 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QlTrx72Z7z4f422l;
+        Tue, 20 Jun 2023 09:42:09 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgBHJ9XvA5Fkyw8VMA--.19533S2;
+        Tue, 20 Jun 2023 09:42:10 +0800 (CST)
+Subject: Re: [PATCH bpf-next v6 5/5] selftests/bpf: Add benchmark for bpf
+ memory allocator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
+References: <20230613080921.1623219-1-houtao@huaweicloud.com>
+ <20230613080921.1623219-6-houtao@huaweicloud.com>
+ <20230619203543.sb3pqx62uxqnucuo@MacBook-Pro-8.local>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <ead4cfa0-b446-e55d-fa22-588e0e2f31f6@huaweicloud.com>
+Date:   Tue, 20 Jun 2023 09:42:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20230619203543.sb3pqx62uxqnucuo@MacBook-Pro-8.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgBHJ9XvA5Fkyw8VMA--.19533S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXryDur13ZFy5uFWUXry5Jwb_yoWrWw1DpF
+        W0kay8GFn8tw1jvFyvqw4kJFW8Jrn8Jr12vry8K345Aryqk3WSgry3GFWrKF4rur95GF1j
+        9a1jqFZxCwn5XFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello:
+Hi Alexei,
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+On 6/20/2023 4:35 AM, Alexei Starovoitov wrote:
+> On Tue, Jun 13, 2023 at 04:09:21PM +0800, Hou Tao wrote:
+>> +
+>> +static void htab_mem_notify_wait_producer(pthread_barrier_t *notify)
+> notify_wait and wait_notify names are confusing.
+> The first one is doing map_update and 2nd is map_delete, right?
+> Just call them such?
+OK.
+>
+>> +{
+>> +	while (true) {
+>> +		(void)syscall(__NR_getpgid);
+>> +		/* Notify for start */
+> the comment is confusing too.
+> Maybe /* Notify map_deleter that map_updates are done */ ?
+Will update.
+>
+>> +		pthread_barrier_wait(notify);
+>> +		/* Wait for completion */
+> and /* Wait for deletions to complete */ ?
+Yes. Will update.
+>
+>> +		pthread_barrier_wait(notify);
+>> +	}
+>> +}
+>> +
+>> +static void htab_mem_wait_notify_producer(pthread_barrier_t *notify)
+>> +{
+>> +	while (true) {
+>> +		/* Wait for start */
+>> +		pthread_barrier_wait(notify);
+>> +		(void)syscall(__NR_getpgid);
+>> +		/* Notify for completion */
+> similar.
+Will update.
+>
+>> +		pthread_barrier_wait(notify);
+>> +	}
+>> +}
+>
+>> +static int write_htab(unsigned int i, struct update_ctx *ctx, unsigned int flags)
+>> +{
+>> +	if (ctx->from >= MAX_ENTRIES)
+>> +		return 1;
+> It can never be hit, right?
+> Remove it then?
+MAX_ENTRIES / 64 = 128, so when then number of producers is greater than
+128, it will be hit. But I think we can remove it and adjust max_entries
+accordingly when the number of producers is greater than 128.
+>
+>> +
+>> +	bpf_map_update_elem(&htab, &ctx->from, zeroed_value, flags);
+> please add error check.
+> I think update/delete notification is correct, but it could be silently broken.
+> update(BPF_NOEXIST) could be returning error in one thread and
+> map_delete_elem could be failing too...
+If these threads update or delete the non-overlapped part of the hash
+map, then there will be no fail. But when the number of producer is
+greater than the number of online CPU, there will be failure, but this
+use case is not expected benchmark use case.
 
-On Tue, 13 Jun 2023 16:09:16 +0800 you wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Hi,
-> 
-> This patchset includes some trivial fixes for benchmark framework and
-> a new benchmark for bpf memory allocator originated from handle-reuse
-> patchset. Because htab-mem benchmark depends the fixes, so I post these
-> patches together.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v6,1/5] selftests/bpf: Use producer_cnt to allocate local counter array
-    https://git.kernel.org/bpf/bpf-next/c/8ad663d3dfac
-  - [bpf-next,v6,2/5] selftests/bpf: Output the correct error code for pthread APIs
-    https://git.kernel.org/bpf/bpf-next/c/ea400d13fc92
-  - [bpf-next,v6,3/5] selftests/bpf: Ensure that next_cpu() returns a valid CPU number
-    https://git.kernel.org/bpf/bpf-next/c/da77ae2b27ec
-  - [bpf-next,v6,4/5] selftests/bpf: Set the default value of consumer_cnt as 0
-    https://git.kernel.org/bpf/bpf-next/c/970308a7b544
-  - [bpf-next,v6,5/5] selftests/bpf: Add benchmark for bpf memory allocator
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>
+>> +	ctx->from += ctx->step;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int overwrite_htab(unsigned int i, struct update_ctx *ctx)
+>> +{
+>> +	return write_htab(i, ctx, 0);
+>> +}
+>> +
+>> +static int newwrite_htab(unsigned int i, struct update_ctx *ctx)
+>> +{
+>> +	return write_htab(i, ctx, BPF_NOEXIST);
+>> +}
+>> +
+>> +static int del_htab(unsigned int i, struct update_ctx *ctx)
+>> +{
+>> +	if (ctx->from >= MAX_ENTRIES)
+>> +		return 1;
+> delete?
+Will fix.
+>
+>> +
+>> +	bpf_map_delete_elem(&htab, &ctx->from);
+> and here.
+>
+>> +	ctx->from += ctx->step;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +SEC("?tp/syscalls/sys_enter_getpgid")
+>> +int overwrite(void *ctx)
+>> +{
+>> +	struct update_ctx update;
+>> +
+>> +	update.from = bpf_get_smp_processor_id();
+>> +	update.step = nr_thread;
+>> +	bpf_loop(64, overwrite_htab, &update, 0);
+>> +	__sync_fetch_and_add(&op_cnt, 1);
+>> +	return 0;
+>> +}
+>> +
+>> +SEC("?tp/syscalls/sys_enter_getpgid")
+>> +int batch_add_batch_del(void *ctx)
+>> +{
+>> +	struct update_ctx update;
+>> +
+>> +	update.from = bpf_get_smp_processor_id();
+>> +	update.step = nr_thread;
+>> +	bpf_loop(64, overwrite_htab, &update, 0);
+>> +
+>> +	update.from = bpf_get_smp_processor_id();
+>> +	bpf_loop(64, del_htab, &update, 0);
+>> +
+>> +	__sync_fetch_and_add(&op_cnt, 2);
+>> +	return 0;
+>> +}
+>> +
+>> +SEC("?tp/syscalls/sys_enter_getpgid")
+>> +int add_del_on_diff_cpu(void *ctx)
+>> +{
+>> +	struct update_ctx update;
+>> +	unsigned int from;
+>> +
+>> +	from = bpf_get_smp_processor_id();
+>> +	update.from = from / 2;
+> why extra 'from' variable? Just combine above two lines.
+from is also used below to decide the bpf program should do update or
+deletion.
+>
+>> +	update.step = nr_thread / 2;
+>> +
+>> +	if (from & 1)
+>> +		bpf_loop(64, newwrite_htab, &update, 0);
+>> +	else
+>> +		bpf_loop(64, del_htab, &update, 0);
+> I think it's cleaner to split this into two bpf programs.
+> Do update(NOEXIST) in one triggered by sys_enter_getpgid
+> and do delete_elem() in another triggered by a different syscall.
+OK. Will do that in next version.
+>
+>> +
+>> +	__sync_fetch_and_add(&op_cnt, 1);
+>> +	return 0;
+>> +}
+>> -- 
+>> 2.29.2
+>>
 
