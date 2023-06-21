@@ -2,117 +2,157 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07286EB64D7
-	for <rcu@archiver.kernel.org>; Wed, 21 Jun 2023 01:21:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DF31EB64D7
+	for <rcu@archiver.kernel.org>; Wed, 21 Jun 2023 01:24:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjFUBVG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 20 Jun 2023 21:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59000 "EHLO
+        id S229967AbjFUBY6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 20 Jun 2023 21:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjFUBVF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 20 Jun 2023 21:21:05 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFB31BC;
-        Tue, 20 Jun 2023 18:21:04 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5196a728d90so7022919a12.0;
-        Tue, 20 Jun 2023 18:21:04 -0700 (PDT)
+        with ESMTP id S229523AbjFUBY6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 20 Jun 2023 21:24:58 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFB91988;
+        Tue, 20 Jun 2023 18:24:50 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6b45e465d4fso3533046a34.3;
+        Tue, 20 Jun 2023 18:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687310463; x=1689902463;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1687310690; x=1689902690;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UWBVUT+cD808rcc2n6ymRH7MFq+VQPAGI3BHK3Um+Y4=;
-        b=HWjJ6/5Tn/CD9kaPg91ZWHke2DU9pw/Vlb2h5ZmTmQ3auClyGF1ZDl1OhBt5TvFV8w
-         8mkAkFsX1q63yTYViN+KRS7dpTY64JoEXyUTnNIsCSFuryDcOW9fsR9uK2N0vuhnYOn1
-         /i6GH9l+h734t8bnW6ZWucoCrvyVilZOU0jhau74NQrm6AY34IjFOT30zYDvxFRy3Vym
-         dk8eDEzqFLexQvT24ghUQ12/pDdzheDbaYjP+RbL8939BOVGsJFQj/dlzk0jOaM8GMJC
-         XvW5uwE5X2fwwyZuBAc1F8Y0CgllLfQFK+LMw6fwkoTcrbowZkOMzxJxRSs91DWriU8m
-         ivYA==
+        bh=ht7Hvz2clcouuvqbQCR8mufswcFst26xxquJxEe3eF4=;
+        b=KHLuGKJ094RZXgksfWJB6K9PhrYZLnFumKM5gRwUovH1Inxi8XDAbDl7L3vETmbqs7
+         mYpe5k8dRvjIQVH9LmVLJORlX/AYuP+qhgxwhRqnTxJPj8OdB7jdRXKX5bbHMJ5NLjvd
+         l1W4ObldurLplfvE45pjtqLGSRus7O/5jOTeKimLE7XByVLfpP+PajgixgZ1i/Fd9Q+k
+         cN8LT+Ivgbte2bXoxH33aATtuo+Tz4n90uKh10cWKwTVVh/7aDvn0ZFnYFI+vAnISuVy
+         f4sOuLVMoWTTFixt5oxyZsV42BwBFEPgKSHjutlwlkEa4KRIp+gwk4NrR3iOiTW8RfN4
+         SETA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687310463; x=1689902463;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1687310690; x=1689902690;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UWBVUT+cD808rcc2n6ymRH7MFq+VQPAGI3BHK3Um+Y4=;
-        b=Xr+lIVK3mJjR4IZ1vtAl/KGCuVufd82Gv10j43VVw7rXoCZHCOs68KvPABQHR2sVOg
-         26DEkTQdPo77hETTn6fk3UPh9kDqSKIK01Pfj0mONP5CKabX2TplS3uvcB8Rv0WaDoB4
-         qz0htUCe6bxsE6qNUtQzIiVZlWk5XzKdZxz5+4szKZCCkU7tlU+mdLYmAUNHDiQ4NNm9
-         zU7Po+3/xgtt7q+ztRsWvaKVeCt+iKatLTE+TdE1V3KUOON7wR7MnSQ6wxMF4BFy577U
-         dPGLp2jpUy5s/5nyHa4T996W/RuYZxBRZ4/O+YG3d+dO2H9I6z49EESTBa5wwBtEuM/A
-         hsbA==
-X-Gm-Message-State: AC+VfDx70o3YcnpDJ2ofUqH1imohfSXhVWR85u716qcyfHtavc2SfTP9
-        m1/T9tpKIsdGiWi7g+77C0b7QgU6g+D3KdS6OSo=
-X-Google-Smtp-Source: ACHHUZ4SmQfz0sFH/Om0wBNV8pm0qEHWAIM4MuAaODCiUcceoVayHDfwrii3CF679IA2jbvgzNW1ZsWbL0/CVALccFE=
-X-Received: by 2002:a05:6402:124d:b0:514:9bb7:d0bd with SMTP id
- l13-20020a056402124d00b005149bb7d0bdmr10019012edw.24.1687310463066; Tue, 20
- Jun 2023 18:21:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230619143231.222536-1-houtao@huaweicloud.com>
- <20230619143231.222536-3-houtao@huaweicloud.com> <CAADnVQLPpnTT2W1Ev6Q5g2h2qk6aoFa9uFsuc7Q6Xb36e4YV3w@mail.gmail.com>
- <88a55864-d279-d004-e134-fa9a57c37bc7@huaweicloud.com>
-In-Reply-To: <88a55864-d279-d004-e134-fa9a57c37bc7@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 20 Jun 2023 18:20:51 -0700
-Message-ID: <CAADnVQ+xLcb3eb1xTnVdv_5MnG8UMD1hOor8-exVcqKsvfwD_A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v5 2/2] bpf: Call rcu_momentary_dyntick_idle()
- in task work periodically
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        bh=ht7Hvz2clcouuvqbQCR8mufswcFst26xxquJxEe3eF4=;
+        b=Gss3b3MsbaLo6fO49ahNp6NEgEOdq99m45tNsCzGroKxAG54RDBe22CcVZXyC+BxFY
+         rmNcMjoVONeTOrpJLmuHyFOBApSvSVfheqcLvpJq9m7mQGOHA24EyGte9o6EmaWLTlUa
+         il2HNvhM5byMvqxOAuzfWVZ8yT8jPIDpRW0oiNU8aDmY96NzwEGqIljychlsVx0DGXQS
+         R1utpVgD2N8L4oOXYn1VEPOr025Ay9v95oR2PgmOOP0WszdSNBnr0HkRkllK01mpjYd6
+         Sb5exoKSjfRyDf8zDoDQ5MQSUWk8egrRm4ySzva6WcRJfn/ys51u8vnp+KOp78/fxIpX
+         Z38w==
+X-Gm-Message-State: AC+VfDyDXTO861aEU+W4H9SUqTPE5ySVolv6/xB6tVlOeBO+ne5oIqHd
+        4QcSLqzl7cHQHTWSqrJAe1vNgKErb34=
+X-Google-Smtp-Source: ACHHUZ714CQayljNaVNuf8faXuCJR5ovrIeqDRf8X0bxkNecxSLfcCzvcyQhSGewWL1L/sUoyBr3+Q==
+X-Received: by 2002:a05:6358:e91a:b0:12b:dc0e:d385 with SMTP id gk26-20020a056358e91a00b0012bdc0ed385mr7974623rwb.15.1687310689538;
+        Tue, 20 Jun 2023 18:24:49 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id i14-20020aa78b4e000000b0065446092699sm1870347pfd.141.2023.06.20.18.24.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Jun 2023 18:24:48 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH v2] docs/RCU: Bring smp_wmb() back
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <002d991c-4064-4219-a4a1-ef98bba88a65@paulmck-laptop>
+Date:   Wed, 21 Jun 2023 09:24:30 +0800
+Cc:     Joel Fernandes <joel@joelfernandes.org>, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <BC255E5C-5F0A-42DF-B16A-54731ED7426C@gmail.com>
+References: <20230617145346.29009-1-mmpgouride@gmail.com>
+ <002d991c-4064-4219-a4a1-ef98bba88a65@paulmck-laptop>
+To:     paulmck@kernel.org
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jun 20, 2023 at 6:07=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> Hi,
->
-> On 6/21/2023 12:15 AM, Alexei Starovoitov wrote:
-> > On Mon, Jun 19, 2023 at 7:00=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> +static void bpf_rcu_gp_acc_work(struct callback_head *head)
-> >> +{
-> >> +       struct bpf_rcu_gp_acc_ctx *ctx =3D container_of(head, struct b=
-pf_rcu_gp_acc_ctx, work);
-> >> +
-> >> +       local_irq_disable();
-> >> +       rcu_momentary_dyntick_idle();
-> >> +       local_irq_enable();
-> > We discussed this with Paul off-line and decided to go a different rout=
-e.
-> "A different route" means the method used to reduce the memory footprint
-> is different or the method to do reuse-after-rcu-gp is different ?
 
-Pretty much everything is different.
 
-> > Paul prepared a patch for us to expose rcu_request_urgent_qs_task().
-> > I'll be sending the series later this week.
-> Do you plan to take over the reuse-after-rcu-gp patchset ?
+> 2023=E5=B9=B46=E6=9C=8821=E6=97=A5 06:33=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Sat, Jun 17, 2023 at 02:53:46PM +0000, Alan Huang wrote:
+>> There are two memory ordering required in the insertion algorithm,
+>> we need to make sure obj->key is updated before obj->obj_node.next
+>> and obj->refcnt, atomic_set_release is not enough to provide the
+>> required memory barrier.
+>>=20
+>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+>> ---
+>> Documentation/RCU/rculist_nulls.rst | 9 +++++++--
+>> 1 file changed, 7 insertions(+), 2 deletions(-)
+>>=20
+>> diff --git a/Documentation/RCU/rculist_nulls.rst =
+b/Documentation/RCU/rculist_nulls.rst
+>> index e06ed40bb6..77244adbdf 100644
+>> --- a/Documentation/RCU/rculist_nulls.rst
+>> +++ b/Documentation/RCU/rculist_nulls.rst
+>> @@ -98,7 +98,7 @@ Quoting Corey Minyard::
+>> ----------------------
+>>=20
+>> We need to make sure a reader cannot read the new =
+'obj->obj_node.next' value
+>> -and previous value of 'obj->key'. Otherwise, an item could be =
+deleted
+>> +and previous value of 'obj->key' at the same time. Otherwise, an =
+item could be deleted
+>> from a chain, and inserted into another chain. If new chain was empty
+>> before the move, 'next' pointer is NULL, and lockless reader can not
+>> detect the fact that it missed following items in original chain.
+>> @@ -112,7 +112,12 @@ detect the fact that it missed following items =
+in original chain.
+>>   obj =3D kmem_cache_alloc(...);
+>>   lock_chain(); // typically a spin_lock()
+>>   obj->key =3D key;
+>> -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
+>> +  /*
+>> +  * we need to make sure obj->key is updated before =
+obj->obj_node.next
+>> +  * and obj->refcnt
+>> +  */
+>> +  smp_wmb();
+>> +  atomic_set(&obj->refcnt, 1);
+>=20
+> You lost me on this one.
+>=20
+> =46rom what I can see, in the original the atomic_set_release() =
+provided
+> ordering between the ->key assignment and the ->refcnt assignment,
+> and then the rcu_assign_pointer() within hlist_add_head_rcu() provided
+> ordering between both the ->key and the ->refcnt assignments on the =
+one
+> hand and the list insertion on the other.
+>=20
+> What am I missing here?
 
-I took a different approach.
-It will be easier to discuss when I post patches.
-Hopefully later today or tomorrow.
+The objects are allocated with SLAB_TYPESAFE_BY_RCU, and there is=20
+n->next =3D first within hlist_add_head_rcu() before =
+rcu_assign_pointer(), which
+modifies obj->obj_node.next. There may be readers holding the reference =
+of obj in
+lockless_lookup, and when updater modifies ->next, readers can see the =
+change immediately=20
+because of SLAB_TYPESAFE_BY_RCU.
 
-> I did a quick test, it showed that the memory footprint is smaller and
-> the performance is similar when using rcu_request_urgent_qs_task()
-> instead of rcu_momentary_dyntick_idle().
+So, the line n->next =3D first is running concurrently with the line =
+pos->next in lockless_lookup.
 
-Right. I saw a similar effect as well.
-My understanding is that rcu_momentary_dyntick_idle() is a heavier mechanis=
-m
-and absolutely should not be used while holding rcu_read_lock().
-So calling from irq_work is not ok.
-Only kworker, as you did, is ok from safety pov.
-Still not recommended in general. Hence rcu_request_urgent_qs_task.
+As you can see, after pos->next in lockless_lookup is the smp_rmb(),=20
+we need to make sure obj->key is updated before obj->obj_node.next =
+(which is n->next =3D first in hlist_add_head_rcu).
+
+So, the smp_wmb() is synchronized with the smp_rmb() in =
+lockless_lookup() and the load acquire in try_get_ref().
+
+>=20
+> Thanx, Paul
+>=20
+>>   hlist_add_head_rcu(&obj->obj_node, list);
+>>   unlock_chain(); // typically a spin_unlock()
+>>=20
+>> --=20
+>> 2.34.1
+>>=20
+
