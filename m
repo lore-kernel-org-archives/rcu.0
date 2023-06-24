@@ -2,229 +2,143 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E647EB64D7
-	for <rcu@archiver.kernel.org>; Fri, 23 Jun 2023 22:07:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2831EB64DA
+	for <rcu@archiver.kernel.org>; Sat, 24 Jun 2023 03:13:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbjFWWHj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 23 Jun 2023 18:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
+        id S229494AbjFXDNk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 23 Jun 2023 23:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbjFWWHi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 23 Jun 2023 18:07:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F822729;
-        Fri, 23 Jun 2023 15:07:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3CCFE60FBF;
-        Fri, 23 Jun 2023 22:07:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5741C433C8;
-        Fri, 23 Jun 2023 22:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687558050;
-        bh=KM2vw/TVoZ1Uqo+WiqV6fhLMwd8iioGjCyq3NN1jyZU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kTpo3Hm6k78LBT5baO7KeBR/qaTQj+1qM6qpBJo7kUBB4cPHOlingESuEqicG8uZ1
-         I4ywicMlfDcBXK2qCdWORSBUnmjBwXWdJRmT/WVqBA3YOosFLYZS/BNE9Ww9ddkJa4
-         b4Q97M31jUvEYLnAtU9NNTT7ACDasNtScx4p9ahmMwljuSrWDw3Q2h5ZLhlpl/u4u+
-         FDjxcvdejJCXvBCf+2Zv31ooJJNTpBduo+HjzO0AxTJaGALvn9oybYAqXXFwb5RiPF
-         UH9IOoAOXa6SxA+KhXCBDQsmkHVqBbzLwhRzKdqrllJ6f/gEiFCzH55bzh2M9Mn7Yz
-         AENNHEpI2SgRA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 31804CE00B0; Fri, 23 Jun 2023 15:07:30 -0700 (PDT)
-Date:   Fri, 23 Jun 2023 15:07:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     will@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Add necessary WRITE_ONCE()
-Message-ID: <878647e3-1af3-42de-a713-e5e5e3ad0a21@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230620171346.207076-1-mmpgouride@gmail.com>
- <50c4aa37-388b-449c-8184-00a9d69471fc@paulmck-laptop>
- <B9A94CB4-DB9B-43D2-9D34-ADB4F7EA737D@gmail.com>
- <2fd1169a-a695-4bff-9611-a84dd02025b2@paulmck-laptop>
- <C75370D0-3A0C-48AA-AF20-ABCD74969F11@gmail.com>
+        with ESMTP id S229493AbjFXDNj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 23 Jun 2023 23:13:39 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217F3E47;
+        Fri, 23 Jun 2023 20:13:38 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56312517201so666701eaf.2;
+        Fri, 23 Jun 2023 20:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687576417; x=1690168417;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kof3tILyq2QWhgxlTTivqlLH4+fHohvvsiUKB9n1vWI=;
+        b=S1comwnLUtmnAvnLv3hzcDQSyUIyyg5wG2/oq/Y2zZNp5JarR1R/UDK+kkCda06cRl
+         4cBHROk6I0t33tEWAIWwYDG5FUP5hWtWgRcKdbatHQk9NDZ9/kcMbJXL2i7DLCi2YVEb
+         JscRJOahSHuvy5O/MV9vpaQ/GnRctQwbvGoQPFrafBr3gPhpJWA+hDLkoUPrTQiSiVSp
+         t4j1LXMYTuouEBU3SmyeOa6fjHh91QFsun88yVY82rk7fVfVFrqw+FFU/LC8UFGmZl1R
+         aKW/qpUsJSB4txBLXltPEhrXmzq/pHm5H8odHhfWk1gju0I29xLeUf+Z0hZr9YDDU+pu
+         aoLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687576417; x=1690168417;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kof3tILyq2QWhgxlTTivqlLH4+fHohvvsiUKB9n1vWI=;
+        b=OOcEog0LlnuRu22Q+fMzdYQiL6pUHHD86XD89lFGaPiNipVaRepH+X+DQbVdsU3Qam
+         nxyPyLe82ytn2XI+gyFKRs3WPo0YGkMY3LMQ3e7p6Lf5n6FsBK/Ga0rbhqsGlxWo+gLa
+         rtyGHbJJyFct9ojmWcpAr5w6fQUUXBPaLx6Qy94+LD7t6UK5DWgyduZ2dkie1vCSzSQK
+         KtOdKERhF0KI9nB2xIf5CvKm2BTWwTILbTNz0OCFsI31Ea82tHG5wTcmCfF8ksmK268a
+         kwdLO9FM8GaL18qKQ5ivhIi/opGlAqR5cbsXQEeoi9v6nRorMk2eGAL3mCIz9u4jXEr8
+         5U4Q==
+X-Gm-Message-State: AC+VfDw49IMj03fwZNlfmF3mLIencmLpr1dBjhk+GwNOHm/xj7Q5JmRr
+        Uyfa5nYAgBK7ULcZ+CW945nXzVvBzyU=
+X-Google-Smtp-Source: ACHHUZ5uq01H/9Q9NyAJ2gSugYagFtF95Hk+ct2uOPVUwDja9WarvunUL67+GNtg7+bsklaRSk/KYQ==
+X-Received: by 2002:a05:6359:60f:b0:130:e1d1:36d8 with SMTP id eh15-20020a056359060f00b00130e1d136d8mr16611708rwb.20.1687576417179;
+        Fri, 23 Jun 2023 20:13:37 -0700 (PDT)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:b07c])
+        by smtp.gmail.com with ESMTPSA id m24-20020a170902bb9800b001aaed55aff3sm239954pls.137.2023.06.23.20.13.35
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 23 Jun 2023 20:13:36 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     daniel@iogearbox.net, andrii@kernel.org, void@manifault.com,
+        houtao@huaweicloud.com, paulmck@kernel.org
+Cc:     tj@kernel.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 bpf-next 00/13] bpf: Introduce bpf_mem_cache_free_rcu().
+Date:   Fri, 23 Jun 2023 20:13:20 -0700
+Message-Id: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <C75370D0-3A0C-48AA-AF20-ABCD74969F11@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 24, 2023 at 02:31:12AM +0800, Alan Huang wrote:
-> 
-> > 2023年6月23日 下午1:17，Paul E. McKenney <paulmck@kernel.org> 写道：
-> > 
-> > On Wed, Jun 21, 2023 at 10:08:28AM +0800, Alan Huang wrote:
-> >> 
-> >>> 2023年6月21日 06:26，Paul E. McKenney <paulmck@kernel.org> 写道：
-> >>> 
-> >>> On Tue, Jun 20, 2023 at 05:13:46PM +0000, Alan Huang wrote:
-> >>>> Commit c54a2744497d("list: Add hlist_unhashed_lockless()") and
-> >>>> commit 860c8802ace1("rcu: Use WRITE_ONCE() for assignments to
-> >>>> ->pprev for hlist_nulls") added various WRITE_ONCE() to pair with
-> >>>> the READ_ONCE() in hlist_unhashed_lockless(), but there are still
-> >>>> some places where WRITE_ONCE() was not added, this commit adds that.
-> >>>> 
-> >>>> Also add WRITE_ONCE() to pair with the READ_ONCE() in hlist_empty().
-> >>>> 
-> >>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-> >>> 
-> >>> On hlist_nulls_add_tail_rcu(), good catch, thank you!
-> >>> 
-> >>> On the others, are there really cases where a lockless read races with
-> >>> the update?  At first glance, that sounds like a usage bug.  For example,
-> >>> as I understand it, when you use something like hlist_del(), you are
-> >>> supposed to ensure that there are no concurrent readers.  Which is the
-> >>> point of the assignment of the special value LIST_POISON2, right?
-> >> 
-> >> Do you mean there are cases where a lockless read races with hlist_add_head/hlist_add_before
-> >> hlist_add_behind/__hlist_del, but there is no real case where a lockless read races with the hlist_del_init/hlist_del
-> >> hlist_move_list?
-> >> 
-> >> There may be no real case where a lockless read races with the hlist_del_init/hlist_del
-> >> hlist_move_list. But for the sake of completeness, I added those WRITE_ONCE, after all, if there is WRITE_ONCE
-> >> in __hlist_del, why not add WRITE_ONCE in its caller, like hlist_del()?
-> > 
-> > You might well have located a larger issue.  We want to be able to use
-> > KCSAN to find unintended data races, but as you noted, there might
-> > be different requirements for RCU-protected linked lists and for
-> > lock-protected linked lists.  If there are, then there is probably
-> > existing linked-list code that is using the wrong primitive, for
-> > example, using (or failing to use) the one that Eric Dumazet provided.
-> > For example, mismatched API usage might be causing the differences in
-> > uses of _ONCE() primitives that you are calling out.
-> 
-> I noticed a thread:
-> 
-> https://lore.kernel.org/lkml/20200324153643.15527-2-will@kernel.org/
-> 
-> It seems like Will wanted to remove that hlist_unhashed_lockless()?
-> But I can’t find any further updates.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Indeed, the tricky part here is getting optimal data-race detection
-from KCSAN.  You noted (I suspect correctly) that the _rcu() list_head
-functions want the ->next pointer marked with *_ONCE(), but that the
-other function might well instead want the ->prev or ->pprev pointer
-marked with *_ONCE(), with the ->next pointer accesses unmarked.
+v1->v2:
+- Fixed race condition spotted by Hou. Patch 7.
 
-Working this out will require looking at the use cases.  And running
-KCSAN.  ;-)
+v1:
 
-> Will: Can you tell me what happened later?
-> 
-> > Would you be interested in digging into this?
-> 
-> I’d like to.
-> 
-> > You will of course need to be able to build and run kernels with KCSAN
-> > enabled, which is not hard to do given a laptop that can build a kernel
-> > and run a guest OS.
-> 
-> I’ll do that, :)
+Introduce bpf_mem_cache_free_rcu() that is similar to kfree_rcu except
+the objects will go through an additional RCU tasks trace grace period
+before being freed into slab.
 
-Very good, looking forward to seeing what you come up with!
+Patches 1-9 - a bunch of prep work
+Patch 10 - a patch from Paul that exports rcu_request_urgent_qs_task().
+Patch 12 - the main bpf_mem_cache_free_rcu patch.
+Patch 13 - use it in bpf_cpumask.
 
-Here are some LWN articles that should help, especially the last two:
+bpf_local_storage, bpf_obj_drop, qp-trie will be other users eventually.
 
-https://lwn.net/Articles/793253/
-	"Who's afraid of a big bad optimizing compiler?"
-https://lwn.net/Articles/799218/
-	"Calibrating your fear of big bad optimizing compilers"
-https://lwn.net/Articles/816850/
-	"Concurrency bugs should fear the big bad data-race detector (part 1)"
-https://lwn.net/Articles/816854/
-	"Concurrency bugs should fear the big bad data-race detector (part 2)"
+With additional hack patch to htab that replaces bpf_mem_cache_free with bpf_mem_cache_free_rcu
+the following are benchmark results:
+- map_perf_test 4 8 16348 1000000
+drops from 800k to 600k. Waiting for RCU GP makes objects cache cold.
 
-							Thanx, Paul
+- bench htab-mem -a -p 8
+20% drop in performance and big increase in memory. From 3 Mbyte to 50 Mbyte. As expected.
 
-> >> Thanks,
-> >> Alan
-> >> 
-> >>> 
-> >>> Or is there some use case that I am missing?
-> >>> 
-> >>> If I am not missing something, then switching the non-RCU APIs to
-> >>> WRITE_ONCE() would be a step backwards, because it would make it harder
-> >>> for tools like KCSAN to find bugs.
-> >>> 
-> >>> Thanx, Paul
-> >>> 
-> >>>> ---
-> >>>> Changelog:
-> >>>> V1 -> V2: 
-> >>>> Add WRITE_ONCE in hlist_del_init to pair with READ_ONCE in
-> >>>> hlist_unhashed_lockless.
-> >>>> 
-> >>>> include/linux/list.h          | 9 +++++----
-> >>>> include/linux/list_nulls.h    | 2 +-
-> >>>> include/linux/rculist_nulls.h | 2 +-
-> >>>> 3 files changed, 7 insertions(+), 6 deletions(-)
-> >>>> 
-> >>>> diff --git a/include/linux/list.h b/include/linux/list.h
-> >>>> index ac366958ea..3a29b95bfe 100644
-> >>>> --- a/include/linux/list.h
-> >>>> +++ b/include/linux/list.h
-> >>>> @@ -912,7 +912,7 @@ static inline void hlist_del(struct hlist_node *n)
-> >>>> {
-> >>>> __hlist_del(n);
-> >>>> n->next = LIST_POISON1;
-> >>>> - n->pprev = LIST_POISON2;
-> >>>> + WRITE_ONCE(n->pprev, LIST_POISON2);
-> >>>> }
-> >>>> 
-> >>>> /**
-> >>>> @@ -925,7 +925,8 @@ static inline void hlist_del_init(struct hlist_node *n)
-> >>>> {
-> >>>> if (!hlist_unhashed(n)) {
-> >>>> __hlist_del(n);
-> >>>> - INIT_HLIST_NODE(n);
-> >>>> + n->next = NULL;
-> >>>> + WRITE_ONCE(n->pprev, NULL);
-> >>>> }
-> >>>> }
-> >>>> 
-> >>>> @@ -1026,8 +1027,8 @@ static inline void hlist_move_list(struct hlist_head *old,
-> >>>> {
-> >>>> new->first = old->first;
-> >>>> if (new->first)
-> >>>> - new->first->pprev = &new->first;
-> >>>> - old->first = NULL;
-> >>>> + WRITE_ONCE(new->first->pprev, &new->first);
-> >>>> + WRITE_ONCE(old->first, NULL);
-> >>>> }
-> >>>> 
-> >>>> #define hlist_entry(ptr, type, member) container_of(ptr,type,member)
-> >>>> diff --git a/include/linux/list_nulls.h b/include/linux/list_nulls.h
-> >>>> index fa6e8471bd..b63b0589fa 100644
-> >>>> --- a/include/linux/list_nulls.h
-> >>>> +++ b/include/linux/list_nulls.h
-> >>>> @@ -95,7 +95,7 @@ static inline void hlist_nulls_add_head(struct hlist_nulls_node *n,
-> >>>> 
-> >>>> n->next = first;
-> >>>> WRITE_ONCE(n->pprev, &h->first);
-> >>>> - h->first = n;
-> >>>> + WRITE_ONCE(h->first, n);
-> >>>> if (!is_a_nulls(first))
-> >>>> WRITE_ONCE(first->pprev, &n->next);
-> >>>> }
-> >>>> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-> >>>> index ba4c00dd80..c65121655b 100644
-> >>>> --- a/include/linux/rculist_nulls.h
-> >>>> +++ b/include/linux/rculist_nulls.h
-> >>>> @@ -138,7 +138,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
-> >>>> 
-> >>>> if (last) {
-> >>>> n->next = last->next;
-> >>>> - n->pprev = &last->next;
-> >>>> + WRITE_ONCE(n->pprev, &last->next);
-> >>>> rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
-> >>>> } else {
-> >>>> hlist_nulls_add_head_rcu(n, h);
-> >>>> -- 
-> >>>> 2.34.1
-> 
+- bench htab-mem -a -p 16 --use-case add_del_on_diff_cpu
+Same performance and better memory consumption.
+Before these patches this bench would OOM (with or without 'reuse after GP')
+Patch 8 addresses the issue.
+
+At the end the performance drop and additional memory consumption due to _rcu()
+were expected and came out to be within reasonable margin.
+Without Paul's patch 10 the memory consumption in 'bench htab-mem' is in Gbytes
+which wouldn't be acceptable.
+
+Patch 8 is a heuristic to address 'alloc on one cpu, free on another' issue.
+It works well in practice. One can probably construct an artificial benchmark
+to make heuristic ineffective, but we have to trade off performance, code complexity,
+and memory consumption.
+
+The life cycle of objects:
+alloc: dequeue free_llist
+free: enqeueu free_llist
+free_llist above high watermark -> free_by_rcu_ttrace
+free_rcu: enqueue free_by_rcu -> waiting_for_gp
+after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
+
+Alexei Starovoitov (12):
+  bpf: Rename few bpf_mem_alloc fields.
+  bpf: Simplify code of destroy_mem_alloc() with kmemdup().
+  bpf: Let free_all() return the number of freed elements.
+  bpf: Refactor alloc_bulk().
+  bpf: Further refactor alloc_bulk().
+  bpf: Optimize moving objects from free_by_rcu_ttrace to
+    waiting_for_gp_ttrace.
+  bpf: Change bpf_mem_cache draining process.
+  bpf: Add a hint to allocated objects.
+  bpf: Allow reuse from waiting_for_gp_ttrace list.
+  selftests/bpf: Improve test coverage of bpf_mem_alloc.
+  bpf: Introduce bpf_mem_free_rcu() similar to kfree_rcu().
+  bpf: Convert bpf_cpumask to bpf_mem_cache_free_rcu.
+
+Paul E. McKenney (1):
+  rcu: Export rcu_request_urgent_qs_task()
+
+ include/linux/bpf_mem_alloc.h                 |   2 +
+ include/linux/rcutiny.h                       |   2 +
+ include/linux/rcutree.h                       |   1 +
+ kernel/bpf/cpumask.c                          |  20 +-
+ kernel/bpf/memalloc.c                         | 322 +++++++++++++-----
+ kernel/rcu/rcu.h                              |   2 -
+ .../testing/selftests/bpf/progs/linked_list.c |   2 +-
+ 7 files changed, 251 insertions(+), 100 deletions(-)
+
+-- 
+2.34.1
+
