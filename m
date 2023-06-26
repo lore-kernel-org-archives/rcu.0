@@ -2,156 +2,119 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58A7CEB64DA
-	for <rcu@archiver.kernel.org>; Mon, 26 Jun 2023 07:17:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6760CEB64D7
+	for <rcu@archiver.kernel.org>; Mon, 26 Jun 2023 12:25:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229454AbjFZHRU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Jun 2023 03:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        id S229448AbjFZMZC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Jun 2023 08:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjFZHRF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Jun 2023 03:17:05 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CCAE7D;
-        Mon, 26 Jun 2023 00:16:41 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QqK014gD0z4f3nyQ;
-        Mon, 26 Jun 2023 15:16:33 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgDXPypQO5lk8PWFLw--.36685S2;
-        Mon, 26 Jun 2023 15:16:35 +0800 (CST)
-Subject: Re: [PATCH v2 bpf-next 09/13] bpf: Allow reuse from
- waiting_for_gp_ttrace list.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Vernet <void@manifault.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
- <20230624031333.96597-10-alexei.starovoitov@gmail.com>
- <9cc35513-5522-9229-469b-7d691c9790e1@huaweicloud.com>
- <CAADnVQJViJh47Cze186XCS0_jeQMb1wu6BfVZiQL6982a_hhfg@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <417e4d9c-7b69-0b9a-07e3-9af4b3b3299f@huaweicloud.com>
-Date:   Mon, 26 Jun 2023 15:16:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S231264AbjFZMYX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Jun 2023 08:24:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F592970;
+        Mon, 26 Jun 2023 05:22:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 80C7E60E26;
+        Mon, 26 Jun 2023 12:22:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6806C433C0;
+        Mon, 26 Jun 2023 12:22:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687782168;
+        bh=QFJoYAoa2djqSERhowqC20itD6kv95F3np82eWmAz+Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i3jnKCElPEbglru8D6DfI9k7iJ3oTU2OgLAtuSR1cTHVDbx5ifZGflwTYAg4yhF1O
+         dQDDRBx/KXYZILa3/e164u2C7PBxgNDRXZIkWQ11X8yKy3Gvv44hS4ZuU1cI4lkfaV
+         fwPPAEXiXjwAcyYLpvEjI7tX3ZAYfFe0XL5api/mri1HFt2lfrlcNXPGG0Z2RGhUOm
+         YCaUbL88VvEEHyNrROXamBXPm9qNEMmoHALDylSN5P4GYYFfbzEippl1y9RHeCZt5j
+         hGN+389eLoFso3N7Pv+WdeH79D4Sh3EVz2d3wX/didUC8GBoVLQUrvh685YFUBQXFM
+         q1WSJ4f2++6TA==
+Date:   Mon, 26 Jun 2023 13:22:44 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Add necessary WRITE_ONCE()
+Message-ID: <20230626122243.GB19941@willie-the-truck>
+References: <20230620171346.207076-1-mmpgouride@gmail.com>
+ <50c4aa37-388b-449c-8184-00a9d69471fc@paulmck-laptop>
+ <B9A94CB4-DB9B-43D2-9D34-ADB4F7EA737D@gmail.com>
+ <2fd1169a-a695-4bff-9611-a84dd02025b2@paulmck-laptop>
+ <C75370D0-3A0C-48AA-AF20-ABCD74969F11@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJViJh47Cze186XCS0_jeQMb1wu6BfVZiQL6982a_hhfg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgDXPypQO5lk8PWFLw--.36685S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFyfZFW8XF15tw1DGFW7Jwb_yoW5uw1rpr
-        W8JFy5GFy8JrWIy3Wqqr48GFyqqr48JasrJayUXa4fKr15Xrn0qryfWry2grnxA3y8Cry7
-        tw4kWr1Ivr45C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+In-Reply-To: <C75370D0-3A0C-48AA-AF20-ABCD74969F11@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+On Sat, Jun 24, 2023 at 02:31:12AM +0800, Alan Huang wrote:
+> 
+> > 2023年6月23日 下午1:17，Paul E. McKenney <paulmck@kernel.org> 写道：
+> > 
+> > On Wed, Jun 21, 2023 at 10:08:28AM +0800, Alan Huang wrote:
+> >> 
+> >>> 2023年6月21日 06:26，Paul E. McKenney <paulmck@kernel.org> 写道：
+> >>> 
+> >>> On Tue, Jun 20, 2023 at 05:13:46PM +0000, Alan Huang wrote:
+> >>>> Commit c54a2744497d("list: Add hlist_unhashed_lockless()") and
+> >>>> commit 860c8802ace1("rcu: Use WRITE_ONCE() for assignments to
+> >>>> ->pprev for hlist_nulls") added various WRITE_ONCE() to pair with
+> >>>> the READ_ONCE() in hlist_unhashed_lockless(), but there are still
+> >>>> some places where WRITE_ONCE() was not added, this commit adds that.
+> >>>> 
+> >>>> Also add WRITE_ONCE() to pair with the READ_ONCE() in hlist_empty().
+> >>>> 
+> >>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> >>> 
+> >>> On hlist_nulls_add_tail_rcu(), good catch, thank you!
+> >>> 
+> >>> On the others, are there really cases where a lockless read races with
+> >>> the update?  At first glance, that sounds like a usage bug.  For example,
+> >>> as I understand it, when you use something like hlist_del(), you are
+> >>> supposed to ensure that there are no concurrent readers.  Which is the
+> >>> point of the assignment of the special value LIST_POISON2, right?
+> >> 
+> >> Do you mean there are cases where a lockless read races with hlist_add_head/hlist_add_before
+> >> hlist_add_behind/__hlist_del, but there is no real case where a lockless read races with the hlist_del_init/hlist_del
+> >> hlist_move_list?
+> >> 
+> >> There may be no real case where a lockless read races with the hlist_del_init/hlist_del
+> >> hlist_move_list. But for the sake of completeness, I added those WRITE_ONCE, after all, if there is WRITE_ONCE
+> >> in __hlist_del, why not add WRITE_ONCE in its caller, like hlist_del()?
+> > 
+> > You might well have located a larger issue.  We want to be able to use
+> > KCSAN to find unintended data races, but as you noted, there might
+> > be different requirements for RCU-protected linked lists and for
+> > lock-protected linked lists.  If there are, then there is probably
+> > existing linked-list code that is using the wrong primitive, for
+> > example, using (or failing to use) the one that Eric Dumazet provided.
+> > For example, mismatched API usage might be causing the differences in
+> > uses of _ONCE() primitives that you are calling out.
+> 
+> I noticed a thread:
+> 
+> https://lore.kernel.org/lkml/20200324153643.15527-2-will@kernel.org/
+> 
+> It seems like Will wanted to remove that hlist_unhashed_lockless()?
+> But I can’t find any further updates.
+> 
+> Will: Can you tell me what happened later?
 
-On 6/26/2023 12:42 PM, Alexei Starovoitov wrote:
-> On Sun, Jun 25, 2023 at 8:30 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 6/24/2023 11:13 AM, Alexei Starovoitov wrote:
->>> From: Alexei Starovoitov <ast@kernel.org>
->>>
->>> alloc_bulk() can reuse elements from free_by_rcu_ttrace.
->>> Let it reuse from waiting_for_gp_ttrace as well to avoid unnecessary kmalloc().
->>>
->>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->>> ---
->>>  kernel/bpf/memalloc.c | 9 +++++++++
->>>  1 file changed, 9 insertions(+)
->>>
->>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
->>> index 692a9a30c1dc..666917c16e87 100644
->>> --- a/kernel/bpf/memalloc.c
->>> +++ b/kernel/bpf/memalloc.c
->>> @@ -203,6 +203,15 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
->>>       if (i >= cnt)
->>>               return;
->>>
->>> +     for (; i < cnt; i++) {
->>> +             obj = llist_del_first(&c->waiting_for_gp_ttrace);
->> After allowing to reuse elements from waiting_for_gp_ttrace, there may
->> be concurrent llist_del_first() and llist_del_all() as shown below and
->> llist_del_first() is not safe because the elements freed from free_rcu()
->> could be reused immediately and head->first may be added back to
->> c0->waiting_for_gp_ttrace by other process.
->>
->> // c0
->> alloc_bulk()
->>     llist_del_first(&c->waiting_for_gp_ttrace)
->>
->> // c1->tgt = c0
->> free_rcu()
->>     llist_del_all(&c->waiting_for_gp_ttrace)
-> I'm still thinking about how to fix the other issues you've reported,
-> but this one, I believe, is fine.
-> Are you basing 'not safe' on a comment?
-> Why xchg(&head->first, NULL); on one cpu and
-> try_cmpxchg(&head->first, &entry, next);
-> is unsafe?
-No, I didn't reason it only based on the comment in llist.h. The reason
-I though it was not safe because llist_del_first() may have ABA problem
-as pointed by you early, because after __free_rcu(), the elements on
-waiting_for_gp_ttrace would be available immediately and
-waiting_for_gp_ttrace->first may be reused and then added back to
-waiting_for_gp_ttrace->first again as shown below.
+IIRC, there were potential correctness issues with accesses being torn
+(possibly by the compiler) which meant that some additional surgery was
+needed to make some of the list accesses safe without locks.
 
-// c0->waiting_for_gp_ttrace 
-A -> B -> C -> nil 
- 
-P1: 
-alloc_bulk(c0) 
-    llist_del_first(&c0->waiting_for_gp_ttrace) 
-        entry = A 
-        next = B 
- 
-    P2: __free_rcu 
-        // A/B/C is freed back to slab 
-        // c0->waiting_for_gp_ttrace->first = NULL 
-        free_all(llist_del_all(c0)) 
- 
-    P3: alloc_bulk(c1) 
-        // got A 
-        __kmalloc() 
- 
-    // free A (from c1), ..., last free X (allocated from c0) 
-    P3: unit_free(c1)
-        // the last freed element X is from c0
-        c1->tgt = c0 
-        c1->free_llist->first -> X -> Y -> ... -> A 
-    P3: free_bulk(c1) 
-        enque_to_free(c0) 
-            c0->free_by_rcu_ttrace->first -> A -> ... -> Y -> X 
-        __llist_add_batch(c0->waiting_for_gp_ttrace) 
-            c0->waiting_for_gp_ttrace = A -> ... -> Y -> X 
+I then ran into problems understanding how list_empty_careful() is supposed
+to work which weren't resolved. I think the best summary of where I got
+stuck (and moved onto more pressing things) is:
 
-P1: 
-    // A is added back as first again
-    // but llist_del_first() didn't know
-    try_cmpxhg(&c0->waiting_for_gp_ttrace->first, A, B) 
-    // c0->waiting_for_gp_trrace is corrupted 
-    c0->waiting_for_gp_ttrace->first = B
+https://lore.kernel.org/lkml/20200424173932.GK21141@willie-the-truck/
 
+Will
