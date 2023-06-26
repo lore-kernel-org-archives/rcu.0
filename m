@@ -2,119 +2,127 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6760CEB64D7
-	for <rcu@archiver.kernel.org>; Mon, 26 Jun 2023 12:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36334EB64D7
+	for <rcu@archiver.kernel.org>; Mon, 26 Jun 2023 15:42:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbjFZMZC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 26 Jun 2023 08:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        id S229792AbjFZPml (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 26 Jun 2023 11:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbjFZMYX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 26 Jun 2023 08:24:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F592970;
-        Mon, 26 Jun 2023 05:22:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 80C7E60E26;
-        Mon, 26 Jun 2023 12:22:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6806C433C0;
-        Mon, 26 Jun 2023 12:22:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687782168;
-        bh=QFJoYAoa2djqSERhowqC20itD6kv95F3np82eWmAz+Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i3jnKCElPEbglru8D6DfI9k7iJ3oTU2OgLAtuSR1cTHVDbx5ifZGflwTYAg4yhF1O
-         dQDDRBx/KXYZILa3/e164u2C7PBxgNDRXZIkWQ11X8yKy3Gvv44hS4ZuU1cI4lkfaV
-         fwPPAEXiXjwAcyYLpvEjI7tX3ZAYfFe0XL5api/mri1HFt2lfrlcNXPGG0Z2RGhUOm
-         YCaUbL88VvEEHyNrROXamBXPm9qNEMmoHALDylSN5P4GYYFfbzEippl1y9RHeCZt5j
-         hGN+389eLoFso3N7Pv+WdeH79D4Sh3EVz2d3wX/didUC8GBoVLQUrvh685YFUBQXFM
-         q1WSJ4f2++6TA==
-Date:   Mon, 26 Jun 2023 13:22:44 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Add necessary WRITE_ONCE()
-Message-ID: <20230626122243.GB19941@willie-the-truck>
-References: <20230620171346.207076-1-mmpgouride@gmail.com>
- <50c4aa37-388b-449c-8184-00a9d69471fc@paulmck-laptop>
- <B9A94CB4-DB9B-43D2-9D34-ADB4F7EA737D@gmail.com>
- <2fd1169a-a695-4bff-9611-a84dd02025b2@paulmck-laptop>
- <C75370D0-3A0C-48AA-AF20-ABCD74969F11@gmail.com>
+        with ESMTP id S229914AbjFZPmk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 26 Jun 2023 11:42:40 -0400
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91931125;
+        Mon, 26 Jun 2023 08:42:32 -0700 (PDT)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-3f6a494810fso29569541cf.1;
+        Mon, 26 Jun 2023 08:42:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687794151; x=1690386151;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ap4DruT+cyDgrBMqJwnVuTsbMhGM8HZMK/LnC9Abfxs=;
+        b=Novx5lHXJ6+qo7KJo5MYZCuezDn4fIAK9bsFd5i+L+tNGcLw5JMWhRujMoV7IrCEyA
+         sUP/O3Ey4VOhrf3Ipj47zqGutsLHjtzymT/6l3YDL4r5EWKWiR1+KacvUQXkMmNje1J1
+         VyDhjNRXPqXSVb3G76SWykJthdITjR98TFOWz30Yk+emQVRWPd2+HgLKJaJUXhISkia+
+         kJXf1RiKCn+U8CJxAWaPb33xit8VvFH4IIm4PfNBLaBShm4YXYzFlWU197c/wcbggmdn
+         N7Nw1RoKRi/B6JeUKka+7fujarJLvmYHS7l9Tf1m8Gl5bBL6zbvlJGxTYjT9HDxRgVus
+         lOrw==
+X-Gm-Message-State: AC+VfDwomlKgW902m7QmGnFM5yVLq+6TuuSIf+jiZSeArHlpYdA2XGha
+        y/zY+vJpPmbbvpWM/myE1UU=
+X-Google-Smtp-Source: ACHHUZ5boGjjUkA+gl9piYvoZjvqv1E2JNkSSPKnsfHtG4KSKTibJEnMUN9AIZOFkT53kwjUgPmb0g==
+X-Received: by 2002:a05:622a:2d3:b0:400:8b1f:dc3b with SMTP id a19-20020a05622a02d300b004008b1fdc3bmr12125117qtx.31.1687794151411;
+        Mon, 26 Jun 2023 08:42:31 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:58aa])
+        by smtp.gmail.com with ESMTPSA id l25-20020ac848d9000000b003f7369c7302sm3170433qtr.89.2023.06.26.08.42.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jun 2023 08:42:31 -0700 (PDT)
+Date:   Mon, 26 Jun 2023 10:42:28 -0500
+From:   David Vernet <void@manifault.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     daniel@iogearbox.net, andrii@kernel.org, houtao@huaweicloud.com,
+        paulmck@kernel.org, tj@kernel.org, rcu@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 13/13] bpf: Convert bpf_cpumask to
+ bpf_mem_cache_free_rcu.
+Message-ID: <20230626154228.GA6798@maniforge>
+References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
+ <20230624031333.96597-14-alexei.starovoitov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <C75370D0-3A0C-48AA-AF20-ABCD74969F11@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20230624031333.96597-14-alexei.starovoitov@gmail.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jun 24, 2023 at 02:31:12AM +0800, Alan Huang wrote:
+On Fri, Jun 23, 2023 at 08:13:33PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> > 2023年6月23日 下午1:17，Paul E. McKenney <paulmck@kernel.org> 写道：
-> > 
-> > On Wed, Jun 21, 2023 at 10:08:28AM +0800, Alan Huang wrote:
-> >> 
-> >>> 2023年6月21日 06:26，Paul E. McKenney <paulmck@kernel.org> 写道：
-> >>> 
-> >>> On Tue, Jun 20, 2023 at 05:13:46PM +0000, Alan Huang wrote:
-> >>>> Commit c54a2744497d("list: Add hlist_unhashed_lockless()") and
-> >>>> commit 860c8802ace1("rcu: Use WRITE_ONCE() for assignments to
-> >>>> ->pprev for hlist_nulls") added various WRITE_ONCE() to pair with
-> >>>> the READ_ONCE() in hlist_unhashed_lockless(), but there are still
-> >>>> some places where WRITE_ONCE() was not added, this commit adds that.
-> >>>> 
-> >>>> Also add WRITE_ONCE() to pair with the READ_ONCE() in hlist_empty().
-> >>>> 
-> >>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-> >>> 
-> >>> On hlist_nulls_add_tail_rcu(), good catch, thank you!
-> >>> 
-> >>> On the others, are there really cases where a lockless read races with
-> >>> the update?  At first glance, that sounds like a usage bug.  For example,
-> >>> as I understand it, when you use something like hlist_del(), you are
-> >>> supposed to ensure that there are no concurrent readers.  Which is the
-> >>> point of the assignment of the special value LIST_POISON2, right?
-> >> 
-> >> Do you mean there are cases where a lockless read races with hlist_add_head/hlist_add_before
-> >> hlist_add_behind/__hlist_del, but there is no real case where a lockless read races with the hlist_del_init/hlist_del
-> >> hlist_move_list?
-> >> 
-> >> There may be no real case where a lockless read races with the hlist_del_init/hlist_del
-> >> hlist_move_list. But for the sake of completeness, I added those WRITE_ONCE, after all, if there is WRITE_ONCE
-> >> in __hlist_del, why not add WRITE_ONCE in its caller, like hlist_del()?
-> > 
-> > You might well have located a larger issue.  We want to be able to use
-> > KCSAN to find unintended data races, but as you noted, there might
-> > be different requirements for RCU-protected linked lists and for
-> > lock-protected linked lists.  If there are, then there is probably
-> > existing linked-list code that is using the wrong primitive, for
-> > example, using (or failing to use) the one that Eric Dumazet provided.
-> > For example, mismatched API usage might be causing the differences in
-> > uses of _ONCE() primitives that you are calling out.
+> Convert bpf_cpumask to bpf_mem_cache_free_rcu.
 > 
-> I noticed a thread:
-> 
-> https://lore.kernel.org/lkml/20200324153643.15527-2-will@kernel.org/
-> 
-> It seems like Will wanted to remove that hlist_unhashed_lockless()?
-> But I can’t find any further updates.
-> 
-> Will: Can you tell me what happened later?
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-IIRC, there were potential correctness issues with accesses being torn
-(possibly by the compiler) which meant that some additional surgery was
-needed to make some of the list accesses safe without locks.
+Acked-by: David Vernet <void@manifault.com>
 
-I then ran into problems understanding how list_empty_careful() is supposed
-to work which weren't resolved. I think the best summary of where I got
-stuck (and moved onto more pressing things) is:
+LGTM, thanks for cleaning this up. I left one drive-by comment /
+observation below, but it's not a blocker for this patch / series.
 
-https://lore.kernel.org/lkml/20200424173932.GK21141@willie-the-truck/
+> ---
+>  kernel/bpf/cpumask.c | 20 ++++++--------------
+>  1 file changed, 6 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+> index 938a60ff4295..6983af8e093c 100644
+> --- a/kernel/bpf/cpumask.c
+> +++ b/kernel/bpf/cpumask.c
+> @@ -9,7 +9,6 @@
+>  /**
+>   * struct bpf_cpumask - refcounted BPF cpumask wrapper structure
+>   * @cpumask:	The actual cpumask embedded in the struct.
+> - * @rcu:	The RCU head used to free the cpumask with RCU safety.
+>   * @usage:	Object reference counter. When the refcount goes to 0, the
+>   *		memory is released back to the BPF allocator, which provides
+>   *		RCU safety.
+> @@ -25,7 +24,6 @@
+>   */
+>  struct bpf_cpumask {
+>  	cpumask_t cpumask;
+> -	struct rcu_head rcu;
+>  	refcount_t usage;
+>  };
+>  
+> @@ -82,16 +80,6 @@ __bpf_kfunc struct bpf_cpumask *bpf_cpumask_acquire(struct bpf_cpumask *cpumask)
+>  	return cpumask;
+>  }
+>  
+> -static void cpumask_free_cb(struct rcu_head *head)
+> -{
+> -	struct bpf_cpumask *cpumask;
+> -
+> -	cpumask = container_of(head, struct bpf_cpumask, rcu);
+> -	migrate_disable();
+> -	bpf_mem_cache_free(&bpf_cpumask_ma, cpumask);
+> -	migrate_enable();
+> -}
+> -
+>  /**
+>   * bpf_cpumask_release() - Release a previously acquired BPF cpumask.
+>   * @cpumask: The cpumask being released.
+> @@ -102,8 +90,12 @@ static void cpumask_free_cb(struct rcu_head *head)
+>   */
+>  __bpf_kfunc void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+>  {
+> -	if (refcount_dec_and_test(&cpumask->usage))
+> -		call_rcu(&cpumask->rcu, cpumask_free_cb);
+> +	if (!refcount_dec_and_test(&cpumask->usage))
+> +		return;
+> +
+> +	migrate_disable();
+> +	bpf_mem_cache_free_rcu(&bpf_cpumask_ma, cpumask);
+> +	migrate_enable();
 
-Will
+The fact that callers have to disable migration like this in order to
+safely free the memory feels a bit leaky. Is there any reason we can't
+move this into bpf_mem_{cache_}free_rcu()?
