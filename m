@@ -2,135 +2,52 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58302EB64D9
-	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 02:03:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD2A2EB64DC
+	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 08:03:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjF1CDo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 27 Jun 2023 22:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjF1CDn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 27 Jun 2023 22:03:43 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C65297C;
-        Tue, 27 Jun 2023 19:03:42 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QrPy32VgZz4f3pFp;
-        Wed, 28 Jun 2023 10:03:39 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgD31dP4lJtktNZ5Mg--.2504S2;
-        Wed, 28 Jun 2023 10:03:40 +0800 (CST)
-Subject: Re: [PATCH v2 bpf-next 12/13] bpf: Introduce bpf_mem_free_rcu()
- similar to kfree_rcu().
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@meta.com>, Tejun Heo <tj@kernel.org>,
-        rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Vernet <void@manifault.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
- <20230624031333.96597-13-alexei.starovoitov@gmail.com>
- <bfb3cbff-2837-156c-c240-5cf0a046ed38@huaweicloud.com>
- <3410a621-afc7-ba7b-47b8-b64e35f5a8fa@meta.com>
- <9e714217-e054-635d-a580-b677992385e5@huaweicloud.com>
- <CAADnVQJEzv-9ovAOJzaoN0+52iPTbce8QWHcpGmmMm3_93kw-w@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <63b6c8e9-e9fd-df77-c652-5508be367416@huaweicloud.com>
-Date:   Wed, 28 Jun 2023 10:03:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S232185AbjF1IDb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Jun 2023 04:03:31 -0400
+Received: from mail.slitrig.pl ([51.38.127.96]:47390 "EHLO mail.slitrig.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232180AbjF1IBK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Jun 2023 04:01:10 -0400
+Received: by mail.slitrig.pl (Postfix, from userid 1002)
+        id F267CA5CD6; Wed, 28 Jun 2023 07:41:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=slitrig.pl; s=mail;
+        t=1687938122; bh=q6g+ObtCV61LlnEBi7yLnSiOU+IF64224rZgvBJLEss=;
+        h=Date:From:To:Subject:From;
+        b=G5UqiZEXwINYjeXBLKlNymE9svJh88ZKthNcQaEKbVJp+Op5RcGIuYxYTzFLfx+PM
+         2N1PnM5WY3cOjK59amyqhwWsA+jEYhNxIW5UEkadmyjsKC1UZjKAW+PzAyo0reuiDG
+         pQRxwXfZ7V30rGk+0bw0VDFe94QeBrdZas8nj+dMjqmNpFzZl34GrP4DqDmqKgx50i
+         yHyhy6d+xJXR8VkTeuu39fVNgqGwmo57G3PvMg6gGnhMoBcKGcKcSnFIpTriKmZHL7
+         cZikwpzcCMVU7hUUE00xYrsNX9GU7VwgnGdTsJmfHOj7cs7ADcy+6Uu+vlUZAG3AiA
+         R2KA2BiDOXjsw==
+Received: by slitrig.pl for <rcu@vger.kernel.org>; Wed, 28 Jun 2023 07:41:17 GMT
+Message-ID: <20230628064520-0.1.ai.scy4.0.inhlktev6x@slitrig.pl>
+Date:   Wed, 28 Jun 2023 07:41:17 GMT
+From:   "Wiktor Nurek" <wiktor.nurek@slitrig.pl>
+To:     <rcu@vger.kernel.org>
+Subject: =?UTF-8?Q?Nap=C5=82yw_Klient=C3=B3w_ze_strony?=
+X-Mailer: mail.slitrig.pl
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJEzv-9ovAOJzaoN0+52iPTbce8QWHcpGmmMm3_93kw-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgD31dP4lJtktNZ5Mg--.2504S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFy8XF47KF4kCr4UKry5XFb_yoW8trW7pF
-        y8Jry8JrWUJF1xJr17Jr18ZFy3Jw1UJa4UJa48AFy2yw13trn0qFWkWr1S9ry5Ar4kGw15
-        JFW5XF1UZr4UXr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+Dzie=C5=84 dobry,
 
-On 6/28/2023 9:51 AM, Alexei Starovoitov wrote:
-> On Tue, Jun 27, 2023 at 6:43 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>
-SNIP
->>> re: draining.
->>> I'll switch to do if (draing) free_all; else call_rcu; scheme
->>> to address potential memory leak though I wasn't able to repro it.
->> For v2, it was also hard for me to reproduce the leak problem. But after
->> I injected some delay by using udelay() in __free_by_rcu/__free_rcu()
->> after reading c->draining, it was relatively easy to reproduce the problems.
-> 1. Please respin htab bench.
-> We're still discussing patching without having the same base line.
-Almost done. Need to do benchmark again to update the numbers in commit
-message.
->
-> 2. 'adding udelay()' is too vague. Pls post a diff hunk of what exactly
-> you mean.
+chcia=C5=82bym poinformowa=C4=87 Pa=C5=84stwa o mo=C5=BCliwo=C5=9Bci pozy=
+skania nowych zlece=C5=84 ze strony www.
 
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -4,6 +4,7 @@
- #include <linux/llist.h>
- #include <linux/bpf.h>
- #include <linux/irq_work.h>
-+#include <linux/delay.h>
- #include <linux/bpf_mem_alloc.h>
- #include <linux/memcontrol.h>
- #include <asm/local.h>
-@@ -261,12 +262,17 @@ static int free_all(struct llist_node *llnode,
-bool percpu)
-        return cnt;
- }
+Widzimy zainteresowanie potencjalnych Klient=C3=B3w Pa=C5=84stwa firm=C4=85=
+, dlatego ch=C4=99tnie pomo=C5=BCemy Pa=C5=84stwu dotrze=C4=87 z ofert=C4=
+=85 do wi=C4=99kszego grona odbiorc=C3=B3w poprzez efektywne metody pozyc=
+jonowania strony w Google.
 
-+static unsigned int delay;
-+module_param(delay, uint, 0644);
-+
- static void __free_rcu(struct rcu_head *head)
- {
-        struct bpf_mem_cache *c = container_of(head, struct
-bpf_mem_cache, rcu_ttrace);
+Czy m=C3=B3g=C5=82bym liczy=C4=87 na kontakt zwrotny?
 
-        if (unlikely(READ_ONCE(c->draining)))
-                goto out;
-+       if (delay)
-+               udelay(delay);
-        free_all(llist_del_all(&c->waiting_for_gp_ttrace),
-!!c->percpu_size);
- out:
-        atomic_set(&c->call_rcu_ttrace_in_progress, 0);
-@@ -361,6 +367,8 @@ static void __free_by_rcu(struct rcu_head *head)
 
-        if (unlikely(READ_ONCE(c->draining)))
-                goto out;
-+       if (delay)
-+               udelay(delay);
-
-        llnode = llist_del_all(&c->waiting_for_gp);
-        if (!llnode)
-
->
-> 3. I'll send v3 shortly. Let's move discussion there.
-Sure.
-
+Pozdrawiam serdecznie
+Wiktor Nurek
