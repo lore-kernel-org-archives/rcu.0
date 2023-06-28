@@ -2,53 +2,54 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC014C001B0
-	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 08:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E69EB64D7
+	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 08:54:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbjF1Iyc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Jun 2023 04:54:32 -0400
-Received: from dggsgout11.his.huawei.com ([45.249.212.51]:12483 "EHLO
-        dggsgout11.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236365AbjF1Iqn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Jun 2023 04:46:43 -0400
+        id S234032AbjF1Iyd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Jun 2023 04:54:33 -0400
+Received: from dggsgout12.his.huawei.com ([45.249.212.56]:11133 "EHLO
+        dggsgout12.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236249AbjF1Ipu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Jun 2023 04:45:50 -0400
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QrWf20CQLz4f3tNx;
-        Wed, 28 Jun 2023 14:20:10 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QrWZW5YyVz4f3whZ;
+        Wed, 28 Jun 2023 14:17:07 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgDHLCcY0ZtkMGAVMA--.25781S2;
-        Wed, 28 Jun 2023 14:20:10 +0800 (CST)
-Subject: Re: [PATCH v3 bpf-next 04/13] bpf: Refactor alloc_bulk().
+        by APP4 (Coremail) with SMTP id gCh0CgBXKK9j0JtkE3nXMg--.25641S2;
+        Wed, 28 Jun 2023 14:17:09 +0800 (CST)
+Subject: Re: [PATCH v3 bpf-next 02/13] bpf: Simplify code of
+ destroy_mem_alloc() with kmemdup().
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     tj@kernel.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, kernel-team@fb.com, daniel@iogearbox.net,
         andrii@kernel.org, void@manifault.com, paulmck@kernel.org
 References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
- <20230628015634.33193-5-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-3-alexei.starovoitov@gmail.com>
 From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <024101a3-e1ac-b60b-6e9c-71ddf27ba646@huaweicloud.com>
-Date:   Wed, 28 Jun 2023 14:20:08 +0800
+Message-ID: <ca469b96-1317-da92-6d05-6267ffd53a20@huaweicloud.com>
+Date:   Wed, 28 Jun 2023 14:17:07 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20230628015634.33193-5-alexei.starovoitov@gmail.com>
+In-Reply-To: <20230628015634.33193-3-alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-CM-TRANSID: cCh0CgDHLCcY0ZtkMGAVMA--.25781S2
+X-CM-TRANSID: gCh0CgBXKK9j0JtkE3nXMg--.25641S2
 X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYx7kC6x804xWl14x267AKxVW8JVW5JwAF
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY47kC6x804xWl14x267AKxVW8JVW5JwAF
         c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r
-        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1U
-        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-        VFxhVjvjDU0xZFpf9x07UGYL9UUUUU=
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
+        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1l
+        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+        C2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -60,8 +61,7 @@ X-Mailing-List: rcu@vger.kernel.org
 On 6/28/2023 9:56 AM, Alexei Starovoitov wrote:
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Factor out inner body of alloc_bulk into separate helper.
-> No functioncal changes.
+> Use kmemdup() to simplify the code.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Acked-by: Hou Tao <houtao1@huawei.com>
