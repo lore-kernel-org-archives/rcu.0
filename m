@@ -2,55 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11807EB64DC
-	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 08:54:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42A66EB64D7
+	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 09:20:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbjF1Iye (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Jun 2023 04:54:34 -0400
-Received: from dggsgout12.his.huawei.com ([45.249.212.56]:11132 "EHLO
-        dggsgout12.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235133AbjF1Ikv (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Jun 2023 04:40:51 -0400
+        id S233318AbjF1JUX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Jun 2023 05:20:23 -0400
+Received: from dggsgout11.his.huawei.com ([45.249.212.51]:7593 "EHLO
+        dggsgout11.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234472AbjF1IyX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Jun 2023 04:54:23 -0400
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QrWWg39Mxz4f3sYL;
-        Wed, 28 Jun 2023 14:14:39 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QrWmX5MGLz4f3m7w;
+        Wed, 28 Jun 2023 14:25:48 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgDXPyrNz5tkaxUVMA--.39125S2;
-        Wed, 28 Jun 2023 14:14:41 +0800 (CST)
-Subject: Re: [PATCH v3 bpf-next 01/13] bpf: Rename few bpf_mem_alloc fields.
+        by APP1 (Coremail) with SMTP id cCh0CgAXchxp0ptkeasVMA--.40149S2;
+        Wed, 28 Jun 2023 14:25:49 +0800 (CST)
+Subject: Re: [PATCH v3 bpf-next 06/13] bpf: Further refactor alloc_bulk().
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     tj@kernel.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, kernel-team@fb.com, daniel@iogearbox.net,
         andrii@kernel.org, void@manifault.com, paulmck@kernel.org
 References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
- <20230628015634.33193-2-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-7-alexei.starovoitov@gmail.com>
 From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <8edc494b-1399-da6e-5e7c-4410d7fe8723@huaweicloud.com>
-Date:   Wed, 28 Jun 2023 14:14:37 +0800
+Message-ID: <3f9a346f-e7c7-e050-bf53-da7794e194f3@huaweicloud.com>
+Date:   Wed, 28 Jun 2023 14:25:45 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20230628015634.33193-2-alexei.starovoitov@gmail.com>
+In-Reply-To: <20230628015634.33193-7-alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-CM-TRANSID: cCh0CgDXPyrNz5tkaxUVMA--.39125S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruw48KF4rCr4kJFWUXw45Awb_yoWfGFb_CF
-        4jvw18Cr13CanavF15GF12q34fCw4qqF43ur4Yqa4kJwn0g39Yva92yry7C34IqrsaqFyD
-        Gwn7JayDtFsxtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU1zuWJUUUUU==
+X-CM-TRANSID: cCh0CgAXchxp0ptkeasVMA--.40149S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYI7kC6x804xWl14x267AKxVW8JVW5JwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
+        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjxUrku4UUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -62,25 +60,11 @@ X-Mailing-List: rcu@vger.kernel.org
 On 6/28/2023 9:56 AM, Alexei Starovoitov wrote:
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Rename:
-> -       struct rcu_head rcu;
-> -       struct llist_head free_by_rcu;
-> -       struct llist_head waiting_for_gp;
-> -       atomic_t call_rcu_in_progress;
-> +       struct llist_head free_by_rcu_ttrace;
-> +       struct llist_head waiting_for_gp_ttrace;
-> +       struct rcu_head rcu_ttrace;
-> +       atomic_t call_rcu_ttrace_in_progress;
-> ...
-> -	static void do_call_rcu(struct bpf_mem_cache *c)
-> +	static void do_call_rcu_ttrace(struct bpf_mem_cache *c)
->
-> to better indicate intended use.
->
-> The 'tasks trace' is shortened to 'ttrace' to reduce verbosity.
-> No functional changes.
->
-> Later patches will add free_by_rcu/waiting_for_gp fields to be used with normal RCU.
+> In certain scenarios alloc_bulk() migth be taking free objects mainly from
+> free_by_rcu_ttrace list. In such case get_memcg() and set_active_memcg() are
+> redundant, but they show up in perf profile. Split the loop and only set memcg
+> when allocating from slab. No performance difference in this patch alone, but
+> it helps in combination with further patches.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Acked-by: Hou Tao <houtao1@huawei.com>
