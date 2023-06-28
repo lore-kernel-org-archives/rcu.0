@@ -2,52 +2,101 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD2A2EB64DC
-	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 08:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C0ECEB64DA
+	for <rcu@archiver.kernel.org>; Wed, 28 Jun 2023 08:06:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbjF1IDb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Jun 2023 04:03:31 -0400
-Received: from mail.slitrig.pl ([51.38.127.96]:47390 "EHLO mail.slitrig.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232180AbjF1IBK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Jun 2023 04:01:10 -0400
-Received: by mail.slitrig.pl (Postfix, from userid 1002)
-        id F267CA5CD6; Wed, 28 Jun 2023 07:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=slitrig.pl; s=mail;
-        t=1687938122; bh=q6g+ObtCV61LlnEBi7yLnSiOU+IF64224rZgvBJLEss=;
-        h=Date:From:To:Subject:From;
-        b=G5UqiZEXwINYjeXBLKlNymE9svJh88ZKthNcQaEKbVJp+Op5RcGIuYxYTzFLfx+PM
-         2N1PnM5WY3cOjK59amyqhwWsA+jEYhNxIW5UEkadmyjsKC1UZjKAW+PzAyo0reuiDG
-         pQRxwXfZ7V30rGk+0bw0VDFe94QeBrdZas8nj+dMjqmNpFzZl34GrP4DqDmqKgx50i
-         yHyhy6d+xJXR8VkTeuu39fVNgqGwmo57G3PvMg6gGnhMoBcKGcKcSnFIpTriKmZHL7
-         cZikwpzcCMVU7hUUE00xYrsNX9GU7VwgnGdTsJmfHOj7cs7ADcy+6Uu+vlUZAG3AiA
-         R2KA2BiDOXjsw==
-Received: by slitrig.pl for <rcu@vger.kernel.org>; Wed, 28 Jun 2023 07:41:17 GMT
-Message-ID: <20230628064520-0.1.ai.scy4.0.inhlktev6x@slitrig.pl>
-Date:   Wed, 28 Jun 2023 07:41:17 GMT
-From:   "Wiktor Nurek" <wiktor.nurek@slitrig.pl>
-To:     <rcu@vger.kernel.org>
-Subject: =?UTF-8?Q?Nap=C5=82yw_Klient=C3=B3w_ze_strony?=
-X-Mailer: mail.slitrig.pl
+        id S233049AbjF1IG0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Jun 2023 04:06:26 -0400
+Received: from dggsgout11.his.huawei.com ([45.249.212.51]:12482 "EHLO
+        dggsgout11.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232251AbjF1IBm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Jun 2023 04:01:42 -0400
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QrX7b36Tmz4f3lW1;
+        Wed, 28 Jun 2023 14:42:19 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgBnwRtI1ptky4UWMA--.28710S2;
+        Wed, 28 Jun 2023 14:42:20 +0800 (CST)
+Subject: Re: [PATCH v3 bpf-next 08/13] bpf: Add a hint to allocated objects.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     tj@kernel.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com, daniel@iogearbox.net,
+        andrii@kernel.org, void@manifault.com, paulmck@kernel.org
+References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-9-alexei.starovoitov@gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <72f4117b-566b-8d0f-4570-b6d43e6a9ff9@huaweicloud.com>
+Date:   Wed, 28 Jun 2023 14:42:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230628015634.33193-9-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgBnwRtI1ptky4UWMA--.28710S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF1DJF18Zr4UAF18GrW8Crg_yoW8uryxpF
+        WfCr9xJrn5ZFWavasIqw47C3s5ZwsYqry7K3y293sakr15Z34qqF47G34rXFy5CrWfZ343
+        Ar1qkrn7Wa1UZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU1E1v3UUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Hi,
 
-chcia=C5=82bym poinformowa=C4=87 Pa=C5=84stwa o mo=C5=BCliwo=C5=9Bci pozy=
-skania nowych zlece=C5=84 ze strony www.
+On 6/28/2023 9:56 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> To address OOM issue when one cpu is allocating and another cpu is freeing add
+> a target bpf_mem_cache hint to allocated objects and when local cpu free_llist
+> overflows free to that bpf_mem_cache. The hint addresses the OOM while
+> maintaing the same performance for common case when alloc/free are done on the
+> same cpu.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Hou Tao <houtao1@huawei.com>
 
-Widzimy zainteresowanie potencjalnych Klient=C3=B3w Pa=C5=84stwa firm=C4=85=
-, dlatego ch=C4=99tnie pomo=C5=BCemy Pa=C5=84stwu dotrze=C4=87 z ofert=C4=
-=85 do wi=C4=99kszego grona odbiorc=C3=B3w poprzez efektywne metody pozyc=
-jonowania strony w Google.
+But have a minor comment for do_call_rcu_ttrace() below.
+> ---
+>  kernel/bpf/memalloc.c | 46 ++++++++++++++++++++++++++-----------------
+>  1 file changed, 28 insertions(+), 18 deletions(-)
+SNIP
+>  static void do_call_rcu_ttrace(struct bpf_mem_cache *c)
+> @@ -295,7 +289,7 @@ static void do_call_rcu_ttrace(struct bpf_mem_cache *c)
+>  		return;
+>  
+>  	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp_ttrace));
+> -	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu_ttrace))
+> +	llist_for_each_safe(llnode, t, llist_del_all(&c->free_by_rcu_ttrace))
+>  		/* There is no concurrent __llist_add(waiting_for_gp_ttrace) access.
+>  		 * It doesn't race with llist_del_all either.
+>  		 * But there could be two concurrent llist_del_all(waiting_for_gp_ttrace):
+> @@ -312,16 +306,22 @@ static void do_call_rcu_ttrace(struct bpf_mem_cache *c)
+>  	 * If RCU Tasks Trace grace period implies RCU grace period, free
+>  	 * these elements directly, else use call_rcu() to wait for normal
+>  	 * progs to finish and finally do free_one() on each element.
+> +	 *
+> +	 * call_rcu_tasks_trace() enqueues to a global queue, so it's ok
+> +	 * that current cpu bpf_mem_cache != target bpf_mem_cache.
+>  	 */
+>  	call_rcu_tasks_trace(&c->rcu_ttrace, __free_rcu_tasks_trace);
+"a global queue" in the comment is not accurate. call_rcu_tasks_trace()
+will switch between to per-CPU queue when the global queue is too busy
+and rcupdate.rcu_task_enqueue_lim in boot cmdline also can be used to
+control whether or not a per-CPU queue is used.
 
-Czy m=C3=B3g=C5=82bym liczy=C4=87 na kontakt zwrotny?
-
-
-Pozdrawiam serdecznie
-Wiktor Nurek
