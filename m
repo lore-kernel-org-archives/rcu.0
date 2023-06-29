@@ -2,103 +2,149 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0265EB64D7
-	for <rcu@archiver.kernel.org>; Thu, 29 Jun 2023 02:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA0D3EB64D9
+	for <rcu@archiver.kernel.org>; Thu, 29 Jun 2023 03:42:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjF2C2t (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 28 Jun 2023 22:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
+        id S231154AbjF2Dms (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 28 Jun 2023 23:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbjF2C2t (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 28 Jun 2023 22:28:49 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FF81BE4;
-        Wed, 28 Jun 2023 19:28:48 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qs2SX4dQZz4f4F3C;
-        Thu, 29 Jun 2023 10:28:44 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP3 (Coremail) with SMTP id _Ch0CgDHuRda7Jxk9ehcLw--.33191S2;
-        Thu, 29 Jun 2023 10:28:45 +0800 (CST)
-Subject: Re: [PATCH bpf-next v7 1/2] selftests/bpf: Add min() and max() macros
- in bpf_util.h
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-References: <20230628115910.3817966-1-houtao@huaweicloud.com>
- <20230628115910.3817966-2-houtao@huaweicloud.com>
- <CAADnVQ+yg5iP59Y1oTsZmM6A2orOY=JNZME+m=TgJpOKwYbj_Q@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <91b90b24-3bdf-cbdc-dd59-d8b78b1af368@huaweicloud.com>
-Date:   Thu, 29 Jun 2023 10:28:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S231416AbjF2Dmp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 28 Jun 2023 23:42:45 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552312728;
+        Wed, 28 Jun 2023 20:42:44 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b6a084a34cso2881171fa.1;
+        Wed, 28 Jun 2023 20:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688010162; x=1690602162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wr149jZoNPWXuN3QHy5A1rvPR4vA8OIAR36UxjCf/SA=;
+        b=rwSqMVC8T5Rx1SRIA3yNto/INYUm6JZvH+MR2NTn3iYgnmO2idbdBrZTPXjC9eAQRk
+         NwKLWhQ3HmWcJTnKqnhkRYWlJfAbzVnSX5aL5rarctM1LxX6XjHMoveXJ1tVZqRUVCZz
+         j/EM+oc/QWq5MwD+NRtTCm0mm2KqPKReEV+aX7gt+riaLM1R+5pGchjKTGaqEvfZPwRL
+         tDr/qojRO/wp4dt55E6ZorMn5oImdLLQ2hmyS1sjcH9kbgS+QqQ/820n3vvNDlYpLcaS
+         +6AzDw5nFWt0majLak73aaIaOhHvMpZQ4E2qkIHTRnsHftsxjEMgnBpcgdZP6Q1U6ZQr
+         Gzww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688010162; x=1690602162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wr149jZoNPWXuN3QHy5A1rvPR4vA8OIAR36UxjCf/SA=;
+        b=JBfFKKVgAOQyL8eRsKLYUj94ZZuUiagjWbUtICeqBp/G6GmHCceizDKe9OogcrGAYZ
+         AA7PdtrCnVJ7GlE7pw0LO6dtOrqmhQVAcJoKt6+Qwgex30WhROlgeG/u/SPnqyd1uu0D
+         PjYP7qTzD4LWkxC8eZwPZslpUwF50tLV/cst5uRmyaRD/10LThtPd4o4dEeMqXmVbLg3
+         AROJSJlAwM+fTsU95tBFP8AvTe0g1j/y6IYj/8hDUr2cJjz6j6HhzFZvaBylnRdnvurz
+         3hQno10VX/2hzfyxtXZiqZTqrfLAfVWymGDV3NkzFdiOxwHDP3VWANazqHBEoR5zjyUh
+         AQ5Q==
+X-Gm-Message-State: AC+VfDyhbuaWkm3ODisa0JR7DhGXdVstq9f/Jx8/sNA91P6I9E/WqBx4
+        z1oCJFCcDHF52IVQw4yVG2WFaoQ/bJY7i0qdVxA=
+X-Google-Smtp-Source: ACHHUZ75OV1yg39k+UNCOrVGppDdjMiIKg9L95G0FO/zmcjy6aEDejVpRZNUf6xxTI9Ie721nq7UOLqJqfdqbuJ1crA=
+X-Received: by 2002:a2e:b602:0:b0:2b5:7f93:b3ae with SMTP id
+ r2-20020a2eb602000000b002b57f93b3aemr17941211ljn.38.1688010162270; Wed, 28
+ Jun 2023 20:42:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+yg5iP59Y1oTsZmM6A2orOY=JNZME+m=TgJpOKwYbj_Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: _Ch0CgDHuRda7Jxk9ehcLw--.33191S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF4DXFy3tw1rKr4fZw1xuFg_yoWDKFXEqr
-        4Fyr97AFWkCFyqv3WUCas3uFW8GayrWrsrJr45try3CF1DXa1rJFs5uryYvF9IgayDGFW3
-        JFsYvFZxJr4YqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        xUOyCJDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-13-alexei.starovoitov@gmail.com> <57ceda87-e882-54b0-057a-2767c4395122@huaweicloud.com>
+In-Reply-To: <57ceda87-e882-54b0-057a-2767c4395122@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 28 Jun 2023 20:42:31 -0700
+Message-ID: <CAADnVQ+V_SiZynZfGMWjSqkKb+8xggvBUmy7oTFUcvGq_2CcLg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 12/13] bpf: Introduce bpf_mem_free_rcu()
+ similar to kfree_rcu().
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Vernet <void@manifault.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi,
+On Wed, Jun 28, 2023 at 7:24=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
+>
+> Hi,
+>
+> On 6/28/2023 9:56 AM, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Introduce bpf_mem_[cache_]free_rcu() similar to kfree_rcu().
+> > Unlike bpf_mem_[cache_]free() that links objects for immediate reuse in=
+to
+> > per-cpu free list the _rcu() flavor waits for RCU grace period and then=
+ moves
+> > objects into free_by_rcu_ttrace list where they are waiting for RCU
+> > task trace grace period to be freed into slab.
+> >
+> > The life cycle of objects:
+> > alloc: dequeue free_llist
+> > free: enqeueu free_llist
+> > free_rcu: enqueue free_by_rcu -> waiting_for_gp
+> > free_llist above high watermark -> free_by_rcu_ttrace
+> > after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+> > free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> SNIP
+> >
+> > +static void __free_by_rcu(struct rcu_head *head)
+> > +{
+> > +     struct bpf_mem_cache *c =3D container_of(head, struct bpf_mem_cac=
+he, rcu);
+> > +     struct bpf_mem_cache *tgt =3D c->tgt;
+> > +     struct llist_node *llnode;
+> > +
+> > +     llnode =3D llist_del_all(&c->waiting_for_gp);
+> > +     if (!llnode)
+> > +             goto out;
+> > +
+> > +     llist_add_batch(llnode, c->waiting_for_gp_tail, &tgt->free_by_rcu=
+_ttrace);
+> > +
+> > +     /* Objects went through regular RCU GP. Send them to RCU tasks tr=
+ace */
+> > +     do_call_rcu_ttrace(tgt);
+>
+> I still got report about leaked free_by_rcu_ttrace without adding any
+> extra hack except using bpf_mem_cache_free_rcu() in htab.
 
-On 6/29/2023 2:02 AM, Alexei Starovoitov wrote:
-> On Wed, Jun 28, 2023 at 4:41 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> max() will be used by the following htab-mem benchmark patch.
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  tools/testing/selftests/bpf/bpf_util.h | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
->> index 10587a29b967..e87e9f8c13a7 100644
->> --- a/tools/testing/selftests/bpf/bpf_util.h
->> +++ b/tools/testing/selftests/bpf/bpf_util.h
->> @@ -59,4 +59,11 @@ static inline void bpf_strlcpy(char *dst, const char *src, size_t sz)
->>         (offsetof(TYPE, MEMBER) + sizeof_field(TYPE, MEMBER))
->>  #endif
->>
->> +#ifndef min
->> +#define min(x, y) ((x) < (y) ? (x) : (y))
->> +#endif
->> +#ifndef max
->> +#define max(x, y) ((x) < (y) ? (y) : (x))
->> +#endif
-> That's for user space only?
-> Just use the standard MIN/MAX macros.
-> .
-Yes. Will update and remove this prepare patch.
+Please share the steps to repro.
 
+> When bpf ma is freed through free_mem_alloc(), the following sequence
+> may lead to leak of free_by_rcu_ttrace:
+>
+> P1: bpf_mem_alloc_destroy()
+>     P2: __free_by_rcu()
+>
+>     // got false
+>     P2: read c->draining
+>
+> P1: c->draining =3D true
+> P1: llist_del_all(&c->free_by_rcu_ttrace)
+>
+>     // add to free_by_rcu_ttrace again
+>     P2: llist_add_batch(..., &tgt->free_by_rcu_ttrace)
+>         P2: do_call_rcu_ttrace()
+>             // call_rcu_ttrace_in_progress is 1, so xchg return 1
+>             // and it doesn't being moved to waiting_for_gp_ttrace
+>             P2: atomic_xchg(&c->call_rcu_ttrace_in_progress, 1)
+>
+> // got 1
+> P1: atomic_read(&c->call_rcu_ttrace_in_progress)
+> // objects in free_by_rcu_ttrace is leaked
+>
+> I think the race could be fixed by checking c->draining in
+> do_call_rcu_ttrace() when atomic_xchg() returns 1 as shown below:
+
+If the theory of the bug holds true then the fix makes sense,
+but did you repro without fix and cannot repro with the fix?
+We should not add extra code based on a hunch.
