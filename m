@@ -2,36 +2,36 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C771EB64D9
-	for <rcu@archiver.kernel.org>; Sun,  2 Jul 2023 20:02:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8643C001B0
+	for <rcu@archiver.kernel.org>; Sun,  2 Jul 2023 20:02:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbjGBUCA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 2 Jul 2023 16:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
+        id S233069AbjGBUCE (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 2 Jul 2023 16:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbjGBUBl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 2 Jul 2023 16:01:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054471FCF;
-        Sun,  2 Jul 2023 12:58:45 -0700 (PDT)
+        with ESMTP id S233134AbjGBUBm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 2 Jul 2023 16:01:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AA4E6F;
+        Sun,  2 Jul 2023 12:58:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E434660C91;
-        Sun,  2 Jul 2023 19:57:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 228D6C433C8;
-        Sun,  2 Jul 2023 19:57:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 98F8A60CA0;
+        Sun,  2 Jul 2023 19:58:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EF00C433C7;
+        Sun,  2 Jul 2023 19:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688327873;
-        bh=GmHyY+KbuYNz3lYgrNoNwpvv5twbrbZc6/4bOSyxr34=;
+        s=k20201202; t=1688327880;
+        bh=VuzZTMQKxt1IN4NGGKlGKeYAECnDfJTl4X36BNMWVaQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=Bv/Tid3W3IWor1midFZi0GRiyg+4zgDAZBG4KaBUshMOWoQAQdlyOmU9JbHnOLeZl
-         BpVXOnr45shKQ38d+F8ElKC65mCJDQ4e1qFQQmXkfnDPjD0ZZFYY1LmkKw51ZeaUDe
-         tF8BGRrdeDfSveHXSJ2u+A/PckNN/dzxa51Fne22rBcaaUE7mOV+1tkRVMNPRvH41V
-         oxmdVzkPk2Kdb7ebE548ctJ4F9d9dJik8HY57HSzN4+ngxpe5OZpCZiaAbk1jumAK9
-         cAj2g7rdMPIyd0iY384OhfodMJFEJ9lHeBeOHtGazfS4F5HdeX8fjmpk0pM//kVfGD
-         ymYUzIVEPYH7g==
+        b=RbS/yhOyc7DVOp+m1Mo3VfBI+KtPved5rwKIrACS2xpIhnC/ugYTO+W1kKtvRbMtU
+         fmpY9IOJzinnpNKWKT/Jd/j3wgJfaOt+ytKiB2uJkel37HO372m7o4aa3z4RuEXQGt
+         +HhAsZp0e/5K7nxskglO3TfLFJ2uSzqnegebonCtl4121QwNHPW8xS5oIf1y8wGBed
+         L15RLIsgkZsg4JTV7PT8y7TLWA6/Ec5fV10ss5/H+UQMOsrd72mFfWxNnOyfBIByFi
+         jv8j2AHB1CwJv2Wn+VzvIzt+CTl1iJ53TDAGHAmVAmfC+OPYrClyjzQVMi9lTpSrsh
+         qdunWTH/jgWNw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Shigeru Yoshida <syoshida@redhat.com>,
@@ -40,14 +40,14 @@ Cc:     Shigeru Yoshida <syoshida@redhat.com>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, joel@joelfernandes.org,
         josh@joshtriplett.org, boqun.feng@gmail.com, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.3 1/3] rcu-tasks: Avoid pr_info() with spin lock in cblist_init_generic()
-Date:   Sun,  2 Jul 2023 15:57:48 -0400
-Message-Id: <20230702195750.1793345-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 1/3] rcu-tasks: Avoid pr_info() with spin lock in cblist_init_generic()
+Date:   Sun,  2 Jul 2023 15:57:54 -0400
+Message-Id: <20230702195756.1793443-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.3.11
+X-stable-base: Linux 6.1.37
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -114,7 +114,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index bfb5e1549f2b2..e5cadc3d515af 100644
+index c8409601fec38..74da2ecfbfa65 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
 @@ -233,7 +233,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
