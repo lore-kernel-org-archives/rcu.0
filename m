@@ -2,112 +2,130 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42C97EB64DC
-	for <rcu@archiver.kernel.org>; Fri, 30 Jun 2023 21:59:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 306F3EB64D9
+	for <rcu@archiver.kernel.org>; Sun,  2 Jul 2023 03:32:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbjF3V7f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 30 Jun 2023 17:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        id S229516AbjGBDcK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 1 Jul 2023 23:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232301AbjF3V7e (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 30 Jun 2023 17:59:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133A8A2;
-        Fri, 30 Jun 2023 14:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=pLmKMTTWcPlhDJRThYi3vvzrndXSToTDlby8yODzt7M=; b=3y4C9XJ6gWEjENbGqKfEqJSwFZ
-        RrWhpEwYxhDjnwHjTHEvqm+WAfr4mofAYqNQ79I7ZChH9uIq7Np+198LGuJUj51epWSkWI9fJ9ifj
-        HcGUTeC+VtqbsIRibCJ7uSWRlcY82Gpt15uRV6n4Wu4Dxg0VerF9K4VaDp3qdd/pX9IP4a5GqwwNZ
-        mSWVOGHFAtPJWFCol90HZkADoJPUBrK0EqPjlIzvvMaEv8zTaZhH95SrUxaUc3oR1CXOQMQJrTgxl
-        ivXWPkl67MvlrrRlMIvxWH1a7yksSXW63kajdMwLEvGWhZfOFdE+D8MSk+NyPc7hszuz3Lj21u1Qz
-        NGr2+mKA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qFM8o-004dcM-2U;
-        Fri, 30 Jun 2023 21:58:58 +0000
-Message-ID: <4bdcf4c9-a956-f053-17bb-719889c0211d@infradead.org>
-Date:   Fri, 30 Jun 2023 14:58:57 -0700
+        with ESMTP id S229457AbjGBDcJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 1 Jul 2023 23:32:09 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4DC1703;
+        Sat,  1 Jul 2023 20:32:08 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-262e81f6154so1566132a91.2;
+        Sat, 01 Jul 2023 20:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688268728; x=1690860728;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZhN94lMUNnHFPAhVfo+rHKI0yY7VxURxglHWp96Srwg=;
+        b=H1lg1nuWSIDnWqY4UVAXcXDJAvhU1YHPpPrusiQohNNE5GvwsK4w5d69Q7qkFYlCoQ
+         84Fxd+lbFB7/3yFhjBHEutcwet2ZEWFcyPyx9Aiuz2AvTnO0DuUHAzVoq6G1FspI2tte
+         n9rLvN+0COGioC0U1u981OUG9XFc6lhXnN8I/qBfkElWhYTtUu6u3S2CF4dAMVi4KAnv
+         LtzVHkclYvagZB1hY7ZPMEONvED3cxV5uNqWv41hLLykZAZsPnIFRZfMy+hSSgBmAHwi
+         gi3FnH1A2+JRvnqN3YD4PpzxbfUlw6fwQtvaX5GDyVPDSLN608urxpB41kGVdFjezpSy
+         yjZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688268728; x=1690860728;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZhN94lMUNnHFPAhVfo+rHKI0yY7VxURxglHWp96Srwg=;
+        b=cJDrCuXmL64fXmOU+uKy6y50G5CVpsMbwclaBAS5i/OZfDaWtwKepCcMVfpch5urOx
+         B2eXxyGT6/LSYJ45x083w2/iI7iT/MA5Sj7t5jD3QzBJBf/ZhWhllIS9MW5PL5ms5iFQ
+         na+cbVmg93EsZbc/HPyKD+NADzssswWnSADJfBWpbxX18E4LPvEJQ2ygsQOQrzdNQCj6
+         Iqc3eA2es1zCkfYcAWXC0cGaXcOO8CbIL5LBV7+EBrhpzuy0ukDWuSo947H5+G/+cedm
+         MugHzalTbGk9QUDDrrY+2Wm6zD+Jf8TgzkQ1drtwYSAtvKECYQh0Yo1W287m2ISItO8e
+         DcqQ==
+X-Gm-Message-State: ABy/qLY/uF1GPib/ILMUC6ccpZnWsNtegwa+oemEKVoDtWAnhAVUQuO3
+        3IejLWXHJ4y2FaLuVN29aRI=
+X-Google-Smtp-Source: APBJJlHZiamPWt4nUWriHFvnZ613G5ox0ZTDJ3hV30nK4Q6VIh6/Ew5xaB6xL5oCJQI9wAnlyBBErA==
+X-Received: by 2002:a17:903:244a:b0:1b7:cee1:60c4 with SMTP id l10-20020a170903244a00b001b7cee160c4mr5800588pls.59.1688268727745;
+        Sat, 01 Jul 2023 20:32:07 -0700 (PDT)
+Received: from [192.168.0.103] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id w10-20020a1709029a8a00b001b567bb970esm12931622plp.84.2023.07.01.20.32.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 Jul 2023 20:32:07 -0700 (PDT)
+Message-ID: <e5b76a4f-81ae-5b09-535f-114149be5069@gmail.com>
+Date:   Sun, 2 Jul 2023 10:31:56 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v1] Fix documentation of panic_on_warn
 Content-Language: en-US
-To:     Olaf Hering <olaf@aepfle.de>, Jonathan Corbet <corbet@lwn.net>,
+To:     Eric DeVolder <eric.devolder@oracle.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        David R <david@unsolicited.net>,
+        Boris Ostrovsky <boris.ovstrosky@oracle.com>,
+        Miguel Luis <miguel.luis@oracle.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Wyes Karny <wyes.karny@amd.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-References: <20230630145307.25865-1-olaf@aepfle.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230630145307.25865-1-olaf@aepfle.de>
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RCU <rcu@vger.kernel.org>,
+        Wireguard Mailing List <wireguard@lists.zx2c4.com>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: RCU stalls with wireguard over bonding over igb on Linux 6.3.0+
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Olaf,
+Hi,
 
-On 6/30/23 07:53, Olaf Hering wrote:
-> The kernel cmdline option panic_on_warn expects an integer, it is not a
-> plain option as documented. A number of uses in the tree figured this
-> already, and use panic_on_warn=1 for their purpose.
+I notice a regression report on Bugzilla [1]. Quoting from it:
+
+> I've spent the last week on debugging a problem with my attempt to upgrade my kernel from 6.2.8 to 6.3.8 (now also with 6.4.0 too).
 > 
-> Adjust a comment which otherwise may mislead people in the future.
+> The lenghty and detailed bug reports with all aspects of git bisect are at
+> https://bugs.gentoo.org/909066
 > 
-> Fixes: 9e3961a097 ("kernel: add panic_on_warn")
+> A summary:
+> - if I do not configure wg0, the kernel does not hang
+> - if I use a kernel older than commit fed8d8773b8ea68ad99d9eee8c8343bef9da2c2c, it does not hang
 > 
-> Signed-off-by: Olaf Hering <olaf@aepfle.de>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 2 +-
->  tools/testing/selftests/rcutorture/bin/kvm.sh   | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> The commit refers to code that seems unrelated to the problem for my naiive eye.
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 9e5bab29685f..15196f84df49 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4049,7 +4049,7 @@
->  			extra details on the taint flags that users can pick
->  			to compose the bitmask to assign to panic_on_taint.
->  
-> -	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
-> +	panic_on_warn=1	panic() instead of WARN().  Useful to cause kdump
->  			on a WARN().
->  
+> The hardware is a Dell PowerEdge R620 running Gentoo ~amd64.
+> 
+> I have so far excluded:
+> - dracut for generating the initramfs is the same version over all kernels
+> - linux-firmware has been the same
+> - CPU microcode has been the same
+> 
+> It's been a long time since I seriously involved with software development and I have been even less involved with kernel development.
+> 
+> Gentoo maintainers recommended me to open a bug with upstream, so here I am.
+> 
+> I currently have no idea how to make progress, but I'm willing to try things.
 
-It's declared as an int instead of a boolean, but it's only tested for 0 or
-non-0.
+See Bugzilla for the full thread.
 
-In any case, this update needs to be done. Thanks.
+Anyway, I'm adding it to regzbot to make sure it doesn't fall through cracks
+unnoticed:
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+#regzbot introduced: fed8d8773b8ea6 https://bugzilla.kernel.org/show_bug.cgi?id=217620
+#regzbot title: correcting acpi_is_processor_usable() check causes RCU stalls with wireguard over bonding+igb
+#regzbot link: https://bugs.gentoo.org/909066
 
->  	parkbd.port=	[HW] Parallel port number the keyboard adapter is
-> diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-> index 62f3b0f56e4d..d3cdc2d33d4b 100755
-> --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-> +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-> @@ -655,4 +655,4 @@ fi
->  # Control buffer size: --bootargs trace_buf_size=3k
->  # Get trace-buffer dumps on all oopses: --bootargs ftrace_dump_on_oops
->  # Ditto, but dump only the oopsing CPU: --bootargs ftrace_dump_on_oops=orig_cpu
-> -# Heavy-handed way to also dump on warnings: --bootargs panic_on_warn
-> +# Heavy-handed way to also dump on warnings: --bootargs panic_on_warn=1
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217620
 
 -- 
-~Randy
+An old man doll... just what I always wanted! - Clara
