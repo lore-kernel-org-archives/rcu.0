@@ -2,36 +2,36 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 515C9EB64D9
-	for <rcu@archiver.kernel.org>; Sun,  2 Jul 2023 19:40:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A9C7C0015E
+	for <rcu@archiver.kernel.org>; Sun,  2 Jul 2023 19:40:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjGBTkS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 2 Jul 2023 15:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        id S231344AbjGBTkT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 2 Jul 2023 15:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbjGBTkI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231355AbjGBTkI (ORCPT <rfc822;rcu@vger.kernel.org>);
         Sun, 2 Jul 2023 15:40:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD1A10C1;
-        Sun,  2 Jul 2023 12:39:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8498D10C6;
+        Sun,  2 Jul 2023 12:39:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C549560CA3;
-        Sun,  2 Jul 2023 19:39:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26427C433C7;
-        Sun,  2 Jul 2023 19:39:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B9A1260C8C;
+        Sun,  2 Jul 2023 19:39:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25CF7C433C7;
+        Sun,  2 Jul 2023 19:39:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688326751;
-        bh=PNIokpclxdAzimCydZBKPG3yelQqnCeelkzUmquiXA8=;
+        s=k20201202; t=1688326761;
+        bh=Ae48q991+6sN+WpLvwffuwzxp3CKf3ahp86kBK08iQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IU4u97OqOurwbuAqz0xVQhIKPNjmDjVFcLMhGU14FtPZGuO9J8HicasvJ0dC+fg3h
-         b/tU+ElHHHHKGxAdA1OJJKalAvPXz7CimSnS2f8aiZS+sbPYef4EDuR2sMl4sOoe3H
-         i36hZilWgb5/BGO2w5bHPVgIplx9hE2qZFnsoC0l122FXMayUfbM42ANR1L96az5nY
-         UkMwvyrQokASo5XN9CwgBtZx3zfRR/tC9X/da7Ph4/VND91gGAJiSyG+B3HPedNrsu
-         txC1UmUHr1IPdBCJN8o664T6Q1Rj+BIt0hcxbNfgPg86+lqp6dmhi1Tx6UOO4wrHYo
-         INhjjV+2QAiKQ==
+        b=pkB4pelXrGACDlaB+jAINLTZhGIJsR8e19QXwqyRqFfYH5QRknwTpQNzRBNJiz3j8
+         2waGVD8o/h6aEUoCDy1oS3QHoSPW56c7xa41HLahPmZSvolTnI9la9GUe7Tjayw/Hi
+         MbsKa//S/D06t46+goVKzNq13RkoPYa/9Dvds2AKa3uxQUIv4/TuIUcFWNQ+5xHDRI
+         UZg9T/NxfY8aLb64BUV8pS/dnzBamvtCb7CMc1FG8LB6zHjvtjvTXwmyxBYqfkBE9s
+         UrQtc+CwKqB3mY73g6LYOE/1NHaAxCQsUY3QENQ8T4HfPUHZfYMCSmATcaS9GFVdi/
+         CdT3bJpdZ2KdQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zqiang <qiang1.zhang@intel.com>,
@@ -40,16 +40,16 @@ Cc:     Zqiang <qiang1.zhang@intel.com>,
         Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
         quic_neeraju@quicinc.com, josh@joshtriplett.org,
         boqun.feng@gmail.com, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 3/3] rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
-Date:   Sun,  2 Jul 2023 15:39:04 -0400
-Message-Id: <20230702193904.1775957-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 2/2] rcu: Protect rcu_print_task_exp_stall() ->exp_tasks access
+Date:   Sun,  2 Jul 2023 15:39:16 -0400
+Message-Id: <20230702193916.1776226-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230702193904.1775957-1-sashal@kernel.org>
-References: <20230702193904.1775957-1-sashal@kernel.org>
+In-Reply-To: <20230702193916.1776226-1-sashal@kernel.org>
+References: <20230702193916.1776226-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.37
+X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -98,10 +98,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 60732264a7d0b..e25321dbb068e 100644
+index ef6570137dcd5..401c1f331cafa 100644
 --- a/kernel/rcu/tree_exp.h
 +++ b/kernel/rcu/tree_exp.h
-@@ -800,9 +800,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
+@@ -707,9 +707,11 @@ static int rcu_print_task_exp_stall(struct rcu_node *rnp)
  	int ndetected = 0;
  	struct task_struct *t;
  
