@@ -2,90 +2,190 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA30FEB64DD
-	for <rcu@archiver.kernel.org>; Mon,  3 Jul 2023 14:36:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01FE3EB64DC
+	for <rcu@archiver.kernel.org>; Mon,  3 Jul 2023 21:52:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjGCOgc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 3 Jul 2023 10:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        id S230006AbjGCVwO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 3 Jul 2023 17:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjGCOga (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 3 Jul 2023 10:36:30 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4993794;
-        Mon,  3 Jul 2023 07:36:28 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id AEC2C31A;
-        Mon,  3 Jul 2023 14:36:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net AEC2C31A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1688394987; bh=RhCEIGtxJGVeV91EVDUY0yOhsp0I7Oxy2bLYCQ2RLRs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=i8En8lM+1Y6yKeeV2T7+Cf25m0U1/2TX4sskHWsT08HjQSaB7IKSbJzPq4RP6qf8M
-         pUfthZR6CBMFOazfPm4Niv0ZnLz5wrp1AR9519CEvBPg0Fk/Ytxl4rF4pEb3ITcgZ0
-         lCAwUQtFcckZGWEMKnrUOmVWgXwHqd1VqSK4jGUA2QKjKMtrAk3K03zGl2DcIM2FoZ
-         FLvHnP5rIPYBUpydER5JJoVEJHulntKYNlDj0Yw68hhAZA+S5dhjeGBjaLirzXV+sW
-         g6fGO5sND7+ECIzodWiUFmug2slV0W1fKlr7AkkrvZVzOSXkgJPUaE2RNGSmH3skCZ
-         hshplsxiqQ77g==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Olaf Hering <olaf@aepfle.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Wyes Karny <wyes.karny@amd.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v1] Fix documentation of panic_on_warn
-In-Reply-To: <20230630145307.25865-1-olaf@aepfle.de>
-References: <20230630145307.25865-1-olaf@aepfle.de>
-Date:   Mon, 03 Jul 2023 08:36:27 -0600
-Message-ID: <87ilb1jc44.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+        with ESMTP id S230156AbjGCVwN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 3 Jul 2023 17:52:13 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720F0FA;
+        Mon,  3 Jul 2023 14:52:12 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-553b2979fceso1872189a12.3;
+        Mon, 03 Jul 2023 14:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688421132; x=1691013132;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O4uuguBMJuINg9fUQIGTuCA7yJtjUnEHnEO3dRUqxso=;
+        b=TzBPGY2/HmytqFLZ3lsMk2uiVeAnhRcWIPFS3IdBtoPRpSPjWKuO3+fc638ZPLRsrh
+         MbN4wkH5diNdXkeevMuD0POAKIvEhXHJEkkH71wQlkC2Mk0+vybXZO+d1PBQDEhBybhK
+         yzaE6gPvi/cnZ3ER5V0VOVCye/Kwg55eVNa9dtEGgdZwDDsIJ67KjRtrYpvicxBPBxhP
+         UweLKKDf6X7SjCUooK98kDYmjcZVZibH1xkelTSbuy037E4DwzLb0o61vjRg9rxQbixi
+         R7O+nBumEXAibbNwR4qtpMfQELFVpsuYvUHAL7YUTX+Ybb/SEAFc5hrRWHXLCKI29vss
+         0nJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688421132; x=1691013132;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O4uuguBMJuINg9fUQIGTuCA7yJtjUnEHnEO3dRUqxso=;
+        b=Flu67QPa7heGJcehOeFY/NBukL7RxUD7arn5X48LblgRdM6vsLjJcEB09V00M60Ghi
+         6R/jO7VsnYH45J9nIdK/FN85c0eo6W5/tw6QMbU2NL8HOjFkfja2Yx60vbFKynuNDkKO
+         4xwEKw5/rPaCCRlk5zyPCGYTnk5oXB93IgX78qY0TFIH9tgA6pX4kTR0AC1D87yjsgDU
+         teoayaXC/i4q3NZYnqqlk3vBnQZDsqMvhO2U64/5j1MTi/VKdgZQCTJWaLEMtUPL/Jtq
+         RMYKFuDtcFQVR4J61ocK6UVaZyjp1lxmcpOK6e7iScurJ6XgduHwmUiKkaqfzYFAn3Ks
+         M3MA==
+X-Gm-Message-State: ABy/qLY1ztJ0R6NCf6f6w4Wq35m2IVmTMDiue2uUKM+ltl6KdnqwYJ2A
+        KnRolOxsd8JHKCZ5+klzjYw=
+X-Google-Smtp-Source: APBJJlH2FsqRvGiCrTEApKhDEn2T6iQpBEx51K02bT6q5dAS9fkVKs9Ltil7O2wT5/4/0kCPNAb/BA==
+X-Received: by 2002:a05:6a20:a5a8:b0:12d:a534:42bb with SMTP id bc40-20020a056a20a5a800b0012da53442bbmr9006357pzb.20.1688421131823;
+        Mon, 03 Jul 2023 14:52:11 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10::41f])
+        by smtp.gmail.com with ESMTPSA id l24-20020a62be18000000b006829ef1e179sm951716pff.99.2023.07.03.14.52.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Jul 2023 14:52:11 -0700 (PDT)
+Date:   Mon, 03 Jul 2023 14:52:09 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Message-ID: <64a34309e42aa_652052084f@john.notmuch>
+In-Reply-To: <20230703141332.3319271-1-houtao@huaweicloud.com>
+References: <20230703141332.3319271-1-houtao@huaweicloud.com>
+Subject: RE: [PATCH bpf-next v8] selftests/bpf: Add benchmark for bpf memory
+ allocator
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Olaf Hering <olaf@aepfle.de> writes:
+Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> =
 
-> The kernel cmdline option panic_on_warn expects an integer, it is not a
-> plain option as documented. A number of uses in the tree figured this
-> already, and use panic_on_warn=1 for their purpose.
->
-> Adjust a comment which otherwise may mislead people in the future.
->
-> Fixes: 9e3961a097 ("kernel: add panic_on_warn")
->
-> Signed-off-by: Olaf Hering <olaf@aepfle.de>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 2 +-
->  tools/testing/selftests/rcutorture/bin/kvm.sh   | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 9e5bab29685f..15196f84df49 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4049,7 +4049,7 @@
->  			extra details on the taint flags that users can pick
->  			to compose the bitmask to assign to panic_on_taint.
->  
-> -	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
-> +	panic_on_warn=1	panic() instead of WARN().  Useful to cause kdump
->  			on a WARN().
+> The benchmark could be used to compare the performance of hash map
+> operations and the memory usage between different flavors of bpf memory=
 
-Applied, thanks.
+> allocator (e.g., no bpf ma vs bpf ma vs reuse-after-gp bpf ma). It also=
 
-jon
+> could be used to check the performance improvement or the memory saving=
+
+> provided by optimization.
+> =
+
+> The benchmark creates a non-preallocated hash map which uses bpf memory=
+
+> allocator and shows the operation performance and the memory usage of
+> the hash map under different use cases:
+> (1) overwrite
+> Each CPU overwrites nonoverlapping part of hash map. When each CPU
+> completes overwriting of 64 elements in hash map, it increases the
+> op_count.
+> (2) batch_add_batch_del
+> Each CPU adds then deletes nonoverlapping part of hash map in batch.
+> When each CPU adds and deletes 64 elements in hash map, it increases
+> the op_count twice.
+> (3) add_del_on_diff_cpu
+> Each two-CPUs pair adds and deletes nonoverlapping part of map
+> cooperatively. When each CPU adds or deletes 64 elements in hash map,
+> it will increase the op_count.
+> =
+
+> The following is the benchmark results when comparing between different=
+
+> flavors of bpf memory allocator. These tests are conducted on a KVM gue=
+st
+> with 8 CPUs and 16 GB memory. The command line below is used to do all
+> the following benchmarks:
+> =
+
+>   ./bench htab-mem --use-case $name ${OPTS} -w3 -d10 -a -p8
+> =
+
+> These results show that preallocated hash map has both better performan=
+ce
+> and smaller memory footprint.
+> =
+
+> (1) non-preallocated + no bpf memory allocator (v6.0.19)
+> use kmalloc() + call_rcu
+> =
+
+> overwrite            per-prod-op: 11.24 =C2=B1 0.07k/s, avg mem: 82.64 =
+=C2=B1 26.32MiB, peak mem: 119.18MiB
+> batch_add_batch_del  per-prod-op: 18.45 =C2=B1 0.10k/s, avg mem: 50.47 =
+=C2=B1 14.51MiB, peak mem: 94.96MiB
+> add_del_on_diff_cpu  per-prod-op: 14.50 =C2=B1 0.03k/s, avg mem: 4.64 =C2=
+=B1 0.73MiB, peak mem: 7.20MiB
+> =
+
+> (2) preallocated
+> OPTS=3D--preallocated
+> =
+
+> overwrite            per-prod-op: 191.92 =C2=B1 0.07k/s, avg mem: 1.23 =
+=C2=B1 0.00MiB, peak mem: 1.49MiB
+> batch_add_batch_del  per-prod-op: 218.10 =C2=B1 0.25k/s, avg mem: 1.23 =
+=C2=B1 0.00MiB, peak mem: 1.49MiB
+> add_del_on_diff_cpu  per-prod-op: 39.59 =C2=B1 0.41k/s, avg mem: 1.48 =C2=
+=B1 0.11MiB, peak mem: 1.74MiB
+> =
+
+> (3) normal bpf memory allocator
+> =
+
+> overwrite            per-prod-op: 134.81 =C2=B1 0.22k/s, avg mem: 1.67 =
+=C2=B1 0.12MiB, peak mem: 2.74MiB
+> batch_add_batch_del  per-prod-op: 90.44 =C2=B1 0.34k/s, avg mem: 2.27 =C2=
+=B1 0.00MiB, peak mem: 2.74MiB
+> add_del_on_diff_cpu  per-prod-op: 28.20 =C2=B1 0.15k/s, avg mem: 1.73 =C2=
+=B1 0.17MiB, peak mem: 2.06MiB
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+> +
+> +static error_t htab_mem_parse_arg(int key, char *arg, struct argp_stat=
+e *state)
+> +{
+> +	switch (key) {
+> +	case ARG_VALUE_SIZE:
+> +		args.value_size =3D strtoul(arg, NULL, 10);
+> +		if (args.value_size > 4096) {
+> +			fprintf(stderr, "too big value size %u\n", args.value_size);
+> +			argp_usage(state);
+> +		}
+> +		break;
+> +	case ARG_USE_CASE:
+> +		args.use_case =3D strdup(arg);
+
+might be worth checking for null and returning an error? Only matters if =
+we
+run from CI or something and then this looks like a flake.
+
+> +		break;
+> +	case ARG_PREALLOCATED:
+> +		args.preallocated =3D true;
+> +		break;
+> +	default:
+> +		return ARGP_ERR_UNKNOWN;
+> +	}
+> +
+> +	return 0;
+> +}=
