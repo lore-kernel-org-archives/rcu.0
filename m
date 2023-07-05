@@ -2,96 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB4DEB64DD
-	for <rcu@archiver.kernel.org>; Wed,  5 Jul 2023 08:17:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CE9BC0015E
+	for <rcu@archiver.kernel.org>; Wed,  5 Jul 2023 12:21:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbjGEIRY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 5 Jul 2023 04:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
+        id S229730AbjGEMVk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 5 Jul 2023 08:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231749AbjGEIRW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 5 Jul 2023 04:17:22 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ED4171C;
-        Wed,  5 Jul 2023 01:17:19 -0700 (PDT)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Qwstf595zzTm9T;
-        Wed,  5 Jul 2023 16:16:10 +0800 (CST)
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 5 Jul 2023 16:17:12 +0800
-Subject: Re: [PATCH 2/2] rcu: Don't dump the stalled CPU on where RCU GP
- kthread last ran twice
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S231565AbjGEMVi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 5 Jul 2023 08:21:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C7A173F;
+        Wed,  5 Jul 2023 05:21:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A8BAF61551;
+        Wed,  5 Jul 2023 12:21:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90380C433C8;
+        Wed,  5 Jul 2023 12:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688559696;
+        bh=/RJsOdn51lmoJ/8lwVGWqKSTdVW/dqbGjnpp3Fk7yTk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z7bU/VyONhjKx7e0HYGs+kdNGwUk17YMvwNbjDZQbxc5ChxgAMteU0qqvrpi9CWFi
+         kOeoJwBdK79AJo4U1Hzv0qVxSLji4mMiqkVQR5czMtMZU/ipiHCGdRunBqznsAS7Uv
+         c0UEPSBG4yd1Ow5h29QbmFAWvwAz68Lay2zVNyFLjSz//N7U+RvXo9Bqp/iaaqV6+k
+         hz8iHYvwX4pgawpnyT2aIefPu67FTyzVA8CQj3uaycNHILH482BDFz3OcxJty/KFjj
+         EyGyZ2VDd9AJRCj5wwSYAdWXp90qw9UlaKz7myJidcX4qPSULnHzRfqLBPHM5JJXc9
+         tDH2Chp7hGyCQ==
+Date:   Wed, 5 Jul 2023 14:21:32 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230705073020.2030-1-thunder.leizhen@huawei.com>
- <20230705073020.2030-3-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <6e6bede7-288d-b793-89d1-fc8d6550a545@huawei.com>
-Date:   Wed, 5 Jul 2023 16:17:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: Re: [PATCH 2/9] rcu: Use rcu_segcblist_segempty() instead of open
+ coding it
+Message-ID: <ZKVgTDus667TOcYU@localhost.localdomain>
+References: <20230531101736.12981-1-frederic@kernel.org>
+ <20230531101736.12981-3-frederic@kernel.org>
+ <CAEXW_YQhufHtuNc5stZQpBY8JSd99NVWEzqv=-QbeMFOA-vDnQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20230705073020.2030-3-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YQhufHtuNc5stZQpBY8JSd99NVWEzqv=-QbeMFOA-vDnQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Le Fri, Jun 02, 2023 at 07:00:00PM -0400, Joel Fernandes a écrit :
+> On Wed, May 31, 2023 at 6:17 AM Frederic Weisbecker <frederic@kernel.org> wrote:
+> >
+> > This makes the code more readable.
+> >
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  kernel/rcu/rcu_segcblist.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index f71fac422c8f..1693ea22ef1b 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -368,7 +368,7 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
+> >         smp_mb(); /* Ensure counts are updated before callback is entrained. */
+> >         rhp->next = NULL;
+> >         for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
+> > -               if (rsclp->tails[i] != rsclp->tails[i - 1])
+> > +               if (!rcu_segcblist_segempty(rsclp, i))
+> 
+> Hopefully the compiler optimizer will be smart enough to remove this
+> from the inlined code ;-):
+> if (seg == RCU_DONE_TAIL)
+>    return &rsclp->head == rsclp->tails[RCU_DONE_TAIL];
 
-
-On 2023/7/5 15:30, Zhen Lei wrote:
-> The stacks of all stalled CPUs will be dumped. If the CPU on where RCU GP
-> kthread last ran is stalled, its stack does not need to be dumped again.
-
-Should I add Fixes?
-
-Fixes: 243027a3c805 ("rcu: For RCU grace-period kthread starvation, dump last CPU it ran on")
+I'm counting on that indeed :-)
 
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  kernel/rcu/tree_stall.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index dcfaa3d5db2cbc7..cc884cd49e026a3 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -534,12 +534,14 @@ static void rcu_check_gp_kthread_starvation(void)
->  		       data_race(READ_ONCE(rcu_state.gp_state)),
->  		       gpk ? data_race(READ_ONCE(gpk->__state)) : ~0, cpu);
->  		if (gpk) {
-> +			struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> +
->  			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
->  			pr_err("RCU grace-period kthread stack dump:\n");
->  			sched_show_task(gpk);
->  			if (cpu_is_offline(cpu)) {
->  				pr_err("RCU GP kthread last ran on offline CPU %d.\n", cpu);
-> -			} else  {
-> +			} else if (!(data_race(READ_ONCE(rdp->mynode->qsmask)) & rdp->grpmask)) {
->  				pr_err("Stack dump where RCU GP kthread last ran:\n");
->  				dump_cpu_task(cpu);
->  			}
-> 
+> Otherwise it appears to be no functional change for this and the below
+> change, and straightforward so for this patch:
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
--- 
-Regards,
-  Zhen Lei
+Thanks.
