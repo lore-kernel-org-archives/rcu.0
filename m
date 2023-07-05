@@ -2,90 +2,85 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CE9BC0015E
-	for <rcu@archiver.kernel.org>; Wed,  5 Jul 2023 12:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F3D9EB64DA
+	for <rcu@archiver.kernel.org>; Wed,  5 Jul 2023 12:41:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbjGEMVk (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 5 Jul 2023 08:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
+        id S230488AbjGEMlL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 5 Jul 2023 08:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbjGEMVi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 5 Jul 2023 08:21:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C7A173F;
-        Wed,  5 Jul 2023 05:21:37 -0700 (PDT)
+        with ESMTP id S230268AbjGEMlL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 5 Jul 2023 08:41:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADD4116;
+        Wed,  5 Jul 2023 05:41:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A8BAF61551;
-        Wed,  5 Jul 2023 12:21:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90380C433C8;
-        Wed,  5 Jul 2023 12:21:35 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0129161503;
+        Wed,  5 Jul 2023 12:41:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0202C433C8;
+        Wed,  5 Jul 2023 12:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688559696;
-        bh=/RJsOdn51lmoJ/8lwVGWqKSTdVW/dqbGjnpp3Fk7yTk=;
+        s=k20201202; t=1688560869;
+        bh=Q7lihklVNA978w7esJOsxnmRuuyHw/4jy8/HtRgD23U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z7bU/VyONhjKx7e0HYGs+kdNGwUk17YMvwNbjDZQbxc5ChxgAMteU0qqvrpi9CWFi
-         kOeoJwBdK79AJo4U1Hzv0qVxSLji4mMiqkVQR5czMtMZU/ipiHCGdRunBqznsAS7Uv
-         c0UEPSBG4yd1Ow5h29QbmFAWvwAz68Lay2zVNyFLjSz//N7U+RvXo9Bqp/iaaqV6+k
-         hz8iHYvwX4pgawpnyT2aIefPu67FTyzVA8CQj3uaycNHILH482BDFz3OcxJty/KFjj
-         EyGyZ2VDd9AJRCj5wwSYAdWXp90qw9UlaKz7myJidcX4qPSULnHzRfqLBPHM5JJXc9
-         tDH2Chp7hGyCQ==
-Date:   Wed, 5 Jul 2023 14:21:32 +0200
+        b=KgPbK1R+lK3ukRLbUfyqgffhL5OKUT+r72u8axNjes6sIDlmKKm2yPVKP2jHv5PFM
+         DhZMRnGTiEhynTpthgP+aOO5ltcgFqyhNP5gZ49L4A1LetkOxOxEZ7vDQooDLNGwJQ
+         oqQp2oUBpFYw+plcqxAdQqQ3UuACagbMqHa9SeFaelxsfvhz8JuyUjB094wvyAjYke
+         3npJw1S50ezR6vhdIxSmhuGXYVuQFuydfdjtbY5fIdLAqw5cREcMLvoAbgERooeoxQ
+         3Ah16NmqPBtABEnxoC5oWHep8X0u6dPKZH6bWiGdJKBKiUVOJPnfw3n6wGwH/n2jyc
+         MseidTfhd9Ksw==
+Date:   Wed, 5 Jul 2023 14:41:06 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: Re: [PATCH 2/9] rcu: Use rcu_segcblist_segempty() instead of open
- coding it
-Message-ID: <ZKVgTDus667TOcYU@localhost.localdomain>
+Subject: Re: [PATCH 0/9] rcu: Support for lazy callbacks on
+ !CONFIG_RCU_NOCB_CPU
+Message-ID: <ZKVk4jUtsPdfgjjJ@localhost.localdomain>
 References: <20230531101736.12981-1-frederic@kernel.org>
- <20230531101736.12981-3-frederic@kernel.org>
- <CAEXW_YQhufHtuNc5stZQpBY8JSd99NVWEzqv=-QbeMFOA-vDnQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQhufHtuNc5stZQpBY8JSd99NVWEzqv=-QbeMFOA-vDnQ@mail.gmail.com>
+In-Reply-To: <20230531101736.12981-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Fri, Jun 02, 2023 at 07:00:00PM -0400, Joel Fernandes a écrit :
-> On Wed, May 31, 2023 at 6:17 AM Frederic Weisbecker <frederic@kernel.org> wrote:
-> >
-> > This makes the code more readable.
-> >
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > ---
-> >  kernel/rcu/rcu_segcblist.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> > index f71fac422c8f..1693ea22ef1b 100644
-> > --- a/kernel/rcu/rcu_segcblist.c
-> > +++ b/kernel/rcu/rcu_segcblist.c
-> > @@ -368,7 +368,7 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
-> >         smp_mb(); /* Ensure counts are updated before callback is entrained. */
-> >         rhp->next = NULL;
-> >         for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
-> > -               if (rsclp->tails[i] != rsclp->tails[i - 1])
-> > +               if (!rcu_segcblist_segempty(rsclp, i))
+Le Wed, May 31, 2023 at 12:17:27PM +0200, Frederic Weisbecker a �crit :
+> Hi,
 > 
-> Hopefully the compiler optimizer will be smart enough to remove this
-> from the inlined code ;-):
-> if (seg == RCU_DONE_TAIL)
->    return &rsclp->head == rsclp->tails[RCU_DONE_TAIL];
+> Here is a first attempt at providing support for lazy callbacks on
+> non-offloaded CPUs. I have measured interesting results on my machine
+> when it is mostly idle (just an idle ssh connection kept alive) with
+> a gain of +10% idle time. This needs more serious testing though,
+> especially to make sure that no performance regression is introduced.
 
-I'm counting on that indeed :-)
+So after refining my measurements, it actually doesn't seem to bring
+much.
 
-> 
-> Otherwise it appears to be no functional change for this and the below
-> change, and straightforward so for this patch:
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Here's what I measured (it's an average after 100 runs):
+
+* 0.01% more idle time during a "sleep 10"
+* introduce 3% performance regression during an "scp" on the tools directory
+  of the kernel source.
+* Brings less than 1% performance improvement with a "make" on tools/perf
+
+It only brings unconditional improvement when rcu boost is enabled (callbacks
+offloaded to rcuc) but still below 1%.
+
+The reason for the performance penalty is unclear, I initially thought it
+was due to the batch execution delaying other softirqs vectors but it doesn't
+look that way after all.
+
+So for now I'm only going to re-iterate the cleanups in the beginning
+of the patchset and I'll wait for a good reason before ever proceeding with the
+rest.
 
 Thanks.
