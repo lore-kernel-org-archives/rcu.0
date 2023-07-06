@@ -2,102 +2,104 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 994E6EB64D9
-	for <rcu@archiver.kernel.org>; Thu,  6 Jul 2023 17:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6B0AEB64D9
+	for <rcu@archiver.kernel.org>; Thu,  6 Jul 2023 17:08:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbjGFRGD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 6 Jul 2023 13:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
+        id S229964AbjGFRIf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 6 Jul 2023 13:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjGFRGC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 6 Jul 2023 13:06:02 -0400
+        with ESMTP id S232480AbjGFRId (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 6 Jul 2023 13:08:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2A31BE1;
-        Thu,  6 Jul 2023 10:06:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330FC1BFC;
+        Thu,  6 Jul 2023 10:08:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2711B60F64;
-        Thu,  6 Jul 2023 17:06:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AE9BC433AD;
-        Thu,  6 Jul 2023 17:06:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C60F060F64;
+        Thu,  6 Jul 2023 17:08:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E2EC433C8;
+        Thu,  6 Jul 2023 17:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688663160;
-        bh=nW2uMa3dM6Rbpdf1TtLn2cGbPwpI8W7PDo0lEnEFIxo=;
+        s=k20201202; t=1688663308;
+        bh=BLriyU2lQdQ+9jLmtcnnU/JwBhc5ejNM5/UtXol14aI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SWQafKJlJ7E/0yn9ufCoZvx/NoEBiYJHc61mdMpnnacnpDz07NaiCNlvi2k5srhYT
-         W2mw2oixgaAUZFWxUUoqaA8k2HKhyPQPf6fcu0f/2pN04y6NzTBqcUdbO13M/GPQHk
-         ytKt9+GLoN81PZe/8WLPclNtbZ1V1cm+2GMq4wTKLlOJTUr8q569oKNiYD5GOWApXj
-         iA2kw+RxPy0Gvrq7zc4b4hxudYjjtcjHggPBVHTJqa8+ZDPxPWc7qtrpQ87CSzYDmW
-         sG0Fwo6IAhNIWn0A1oXsclwNl15X2jzBUzJCxd1f+G69Ma4hPVEq6EbUgycUQN0eZ7
-         71pvLdVnOTwJw==
+        b=Oql36+giQ1DnHS9/DvZeYxbWptAdZctYcjpnhXtp2ULoVSNifM2Dvjo4OHE2rMBZi
+         a2ayofrQXX1z1Wu24D5HbITvkO1lJUFVrcESdEy8QzFtRHrpPIShBMbDtCG4o75GaA
+         6vpuOFhwbusmkh++dEqUJzNKrRfd5fmpCBCuXJeyWQE2Zi27NJI/xTS7uCwB7p+BGT
+         R3FniIxECXHWjAVeTWoVvK7Czp+zZ9oY3mBQRKYAxntkRPtCpc8YKf970ltBPFcEgP
+         wnuulv42lxCjq63fcXA1oAbrVDMCkk4Tb+RwODpskPvzDUfn+C5bRqnQz6mX/TY5fB
+         YuzSmlmi6P73A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 16493CE3A5C; Thu,  6 Jul 2023 10:06:00 -0700 (PDT)
-Date:   Thu, 6 Jul 2023 10:06:00 -0700
+        id AF8FFCE3A5C; Thu,  6 Jul 2023 10:08:27 -0700 (PDT)
+Date:   Thu, 6 Jul 2023 10:08:27 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Zqiang <qiang.zhang1211@gmail.com>
 Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
         joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcu: Priority check rcu_gp_is_expedited() in
- synchronize_srcu()
-Message-ID: <2728d9db-d20d-4203-8152-f6bc7c089bbd@paulmck-laptop>
+Subject: Re: [PATCH] srcu: Make srcu_might_be_idle() take early return if
+ rcu_gp_is_normal() return true
+Message-ID: <77d16cbb-b28c-4b13-aecb-9ad787559557@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230704070809.31951-1-qiang.zhang1211@gmail.com>
+References: <20230704082615.7415-1-qiang.zhang1211@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230704070809.31951-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20230704082615.7415-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 04, 2023 at 03:08:09PM +0800, Zqiang wrote:
-> Since the atomic variable rcu_expedited_nesting is initialized to
-> true, so the rcu_gp_is_expedited() is always return true during
-> system startup until the rcu_end_inkernel_boot() is called. this
-> means that without setting rcupdate.rcu_normal=1 and before the
-> rcu_end_inkernel_boot() is executed, regardless of whether the
-> return value of srcu_might_be_idle() is true, call synchronize_srcu()
-> always fall back to synchronize_srcu_expedited(), so there is
-> no need to checking srcu_might_be_idle() return value.
+On Tue, Jul 04, 2023 at 04:26:15PM +0800, Zqiang wrote:
+> When invoke synchronize_srcu(), in the srcu_might_be_idle(), the current
+> CPU's sdp->lock will be acquired to check whether there are pending
+> callbacks in the sdp->srcu_cblist, if there are no pending callbacks,
+> probabilistically probe global state to decide whether to convert to
+> synchronize_srcu_expedited() call. however, for the rcupdate.rcu_normal=1
+> kernels and after the rcu_set_runtime_mode() is called, invoke the
+> rcu_gp_is_normal() is always return true, this mean that invoke the
+> synchronize_srcu_expedited() always fall back to synchronize_srcu(),
+> so there is no need to acquire sdp->lock to check sdp->srcu_cblist and
+> probe global state in srcu_might_be_idle().
 > 
-> For the rcupdate.rcu_normal=0, rcupdate.rcu_normal_after_boot=0 and
-> rcupdate.rcu_expedited=1 kernels, there is also no need to checking
-> srcu_might_be_idle() return value.
-> 
-> This commit therefore priority check rcu_gp_is_expedited() return value
-> in synchronize_srcu().
+> This commit therefore make srcu_might_be_idle() return immediately if the
+> rcu_gp_is_normal() return true.
 > 
 > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>  kernel/rcu/srcutree.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 20d7a238d675..aea49cb60a45 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -1172,6 +1172,8 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+>  	unsigned long tlast;
+>  
+>  	check_init_srcu_struct(ssp);
+> +	if (rcu_gp_is_normal())
+> +		return false;
 
-Thank you for taking the time to look into SRCU!
+Again, thank you for looking into SRCU!
 
-But are you seeing real performance issues that this addresses?
+I am not at all enthusiastic about this one.  With this change, the name
+srcu_might_be_idle() is no longer accurate.  Yes, the name could change,
+but any name would be longer and more confusing.
 
-My guess is "no", given that this is nowhere near a fastpath, but I
-figured that I should ask.
+So unless there is a measureable benefit to this one on a production
+workload, I cannot justify taking it.
+
+Is there a measureable benefit?
 
 							Thanx, Paul
 
-> ---
->  kernel/rcu/srcutree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 20d7a238d675..a819f11d9b90 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1435,7 +1435,7 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_expedited);
->   */
->  void synchronize_srcu(struct srcu_struct *ssp)
->  {
-> -	if (srcu_might_be_idle(ssp) || rcu_gp_is_expedited())
-> +	if (rcu_gp_is_expedited() || srcu_might_be_idle(ssp))
->  		synchronize_srcu_expedited(ssp);
->  	else
->  		__synchronize_srcu(ssp, true);
+>  	/* If the local srcu_data structure has callbacks, not idle.  */
+>  	sdp = raw_cpu_ptr(ssp->sda);
+>  	spin_lock_irqsave_rcu_node(sdp, flags);
 > -- 
 > 2.17.1
 > 
