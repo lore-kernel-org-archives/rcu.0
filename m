@@ -2,114 +2,83 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22D39EB64D9
-	for <rcu@archiver.kernel.org>; Thu,  6 Jul 2023 10:29:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 646C6EB64D9
+	for <rcu@archiver.kernel.org>; Thu,  6 Jul 2023 12:55:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjGFK3h (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 6 Jul 2023 06:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S229470AbjGFMzw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 6 Jul 2023 08:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbjGFK3h (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 6 Jul 2023 06:29:37 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544D41BD4;
-        Thu,  6 Jul 2023 03:29:30 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6689430d803so359431b3a.0;
-        Thu, 06 Jul 2023 03:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688639370; x=1691231370;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wXa/kRvaivKsZJZ49tsL8TqteMRykn/WK5NqJztc71Y=;
-        b=llwTDWRS9JBUk6c7OcaMj4IvgMMFXCbhfdRIINelHzV0KP8UPCOziMrQ3casKnc4TW
-         N6OQzRG0YqY7tT6GAPjF//gFR61B6wjnXCSnKqFY5ngsbcj23WYHboexvMPNbEy+3G4O
-         zWR4sgv+Dycp72mBDw2msFKFbFCGs2GTmQQPv2sI8NCCt/KKjNkYmvFG3lwmVU2HSMDi
-         WmTNOtlMtEkalkyCd485YwZFItqvPRoaDULzqed1uholrRCpkjEYBEBa6snrASHv6ApE
-         cIan3TOXaXbWn2bHMqAvdnv3i7dMkUneLW7/kqWZG7O2PAbD5PXUmoZBFCO/hOmXTtMZ
-         Nx1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688639370; x=1691231370;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wXa/kRvaivKsZJZ49tsL8TqteMRykn/WK5NqJztc71Y=;
-        b=EQ5IxC2IhAOq6Ht1qNGdyS2mf2JP1r6+1kVABzj0RqJ2N1sCSPTIsVh4PAN96dKQiZ
-         AfGWY2feo9n8xYLMJb2m4ya9K4TZxzZ6R59XBKXTj2kLquYfMreTu96d9oOUyF5oM2d+
-         XEsRhwOdfJCy3gExxWHFI58ONSx2yU0WlhA4P6aaPXaRZbVLo7i6J7SmLuCxSmrFoAG4
-         B2VddGhi6IdjCRt5FRWmDyzMk8th//hN1R/wt9EdwFu5WceeVVXWXJfpCsfiuzvBHQlK
-         NmbaT6e3dJIXtNMCB+LODG4IvSJOYrD9v7AspkLfRXYkmkWwwDPZMwo+oucjZRoVnm28
-         tWNg==
-X-Gm-Message-State: ABy/qLYohNQ5TkTDIqJrW7rkYxJw31BcNtKktPk3TkR3hwXKthWt4U9Q
-        dyNInkZmoQv+IjlCBtutOyI=
-X-Google-Smtp-Source: APBJJlH6rwCxUvgQcUF8OulBWj+asdlkhdqjegBBwX3eqsbhb8l3eL8LS58+a1EA9RUpcs3cI2fatA==
-X-Received: by 2002:a05:6a00:1a89:b0:682:562a:39ae with SMTP id e9-20020a056a001a8900b00682562a39aemr1176651pfv.32.1688639369627;
-        Thu, 06 Jul 2023 03:29:29 -0700 (PDT)
-Received: from localhost ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id u4-20020aa78484000000b00663ab37ff74sm994162pfn.72.2023.07.06.03.29.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jul 2023 03:29:29 -0700 (PDT)
-From:   Alan Huang <mmpgouride@gmail.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        boqun.feng@gmail.com, corbet@lwn.net
-Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH 2/2] docs/RCU: Bring back smp_wmb()
-Date:   Thu,  6 Jul 2023 10:28:49 +0000
-Message-Id: <20230706102849.437687-3-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230706102849.437687-1-mmpgouride@gmail.com>
-References: <20230706102849.437687-1-mmpgouride@gmail.com>
+        with ESMTP id S229452AbjGFMzv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 6 Jul 2023 08:55:51 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE9A19B;
+        Thu,  6 Jul 2023 05:55:50 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qxc2p5lK2z4f3wtH;
+        Thu,  6 Jul 2023 20:55:46 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgBH2DLKuaZkrmV+Mg--.26678S2;
+        Thu, 06 Jul 2023 20:55:42 +0800 (CST)
+Subject: Re: [PATCH v4 bpf-next 07/14] bpf: Change bpf_mem_cache draining
+ process.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     tj@kernel.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com, daniel@iogearbox.net,
+        andrii@kernel.org, void@manifault.com, paulmck@kernel.org
+References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
+ <20230706033447.54696-8-alexei.starovoitov@gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <15dd03d3-0aa8-cfd4-0222-db58aaab35b3@huaweicloud.com>
+Date:   Thu, 6 Jul 2023 20:55:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230706033447.54696-8-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgBH2DLKuaZkrmV+Mg--.26678S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruryfGw1xtr45Gr1DZrWrZrb_yoWfAFc_ZF
+        ZrAFyrZr43WFnaq395GF4I9w4DCrnFqF1qgFs8uFZ3J3s8Zr1kZFs3XrW5ArWxKwnrJasr
+        Jw13J3yqyrW3AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The objects are allocated with SLAB_TYPESAFE_BY_RCU, and there is
-n->next = first within hlist_add_head_rcu() before rcu_assign_pointer(),
-which modifies obj->obj_node.next. There may be readers holding the
-reference of obj in lockless_lookup, and when updater modifies ->next,
-readers can see the change immediately because of SLAB_TYPESAFE_BY_RCU.
 
-There are two memory ordering required in the insertion algorithm,
-we need to make sure obj->key is updated before obj->obj_node.next
-and obj->refcnt, atomic_set_release is not enough to provide the
-required memory barrier.
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
- Documentation/RCU/rculist_nulls.rst | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> The next patch will introduce cross-cpu llist access and existing
+> irq_work_sync() + drain_mem_cache() + rcu_barrier_tasks_trace() mechanism will
+> not be enough, since irq_work_sync() + drain_mem_cache() on cpu A won't
+> guarantee that llist on cpu A are empty. The free_bulk() on cpu B might add
+> objects back to llist of cpu A. Add 'bool draining' flag.
+> The modified sequence looks like:
+> for_each_cpu:
+>   WRITE_ONCE(c->draining, true); // do_call_rcu_ttrace() won't be doing call_rcu() any more
+>   irq_work_sync(); // wait for irq_work callback (free_bulk) to finish
+>   drain_mem_cache(); // free all objects
+> rcu_barrier_tasks_trace(); // wait for RCU callbacks to execute
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-index 21e40fcc08de..fa3729dc7e74 100644
---- a/Documentation/RCU/rculist_nulls.rst
-+++ b/Documentation/RCU/rculist_nulls.rst
-@@ -64,7 +64,7 @@ but a version with an additional memory barrier (smp_rmb())
-   {
-     struct hlist_node *node, *next;
-     for (pos = rcu_dereference((head)->first);
--         pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
-+         pos && ({ next = READ_ONCE(pos->next); smp_rmb(); prefetch(next); 1; }) &&
-          ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
-          pos = rcu_dereference(next))
-       if (obj->key == key)
-@@ -112,7 +112,12 @@ detect the fact that it missed following items in original chain.
-   obj = kmem_cache_alloc(...);
-   lock_chain(); // typically a spin_lock()
-   obj->key = key;
--  atomic_set_release(&obj->refcnt, 1); // key before refcnt
-+  /*
-+   * We need to make sure obj->key is updated before obj->obj_node.next
-+   * and obj->refcnt.
-+   */
-+  smp_wmb();
-+  atomic_set(&obj->refcnt, 1);
-   hlist_add_head_rcu(&obj->obj_node, list);
-   unlock_chain(); // typically a spin_unlock()
- 
--- 
-2.34.1
+Acked-by: Hou Tao <houtao1@huawei.com>
 
