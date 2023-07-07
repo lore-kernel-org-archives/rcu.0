@@ -2,109 +2,142 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7BE6EB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 14:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79176EB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 16:05:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbjGGO5o (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 10:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
+        id S231205AbjGGQFP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 12:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233181AbjGGO5m (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 10:57:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759471FE2
-        for <rcu@vger.kernel.org>; Fri,  7 Jul 2023 07:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688741819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eiOAjwadAWrcb7BoEkfxT+CYoQ+BF4xaAyjip1hV5Xs=;
-        b=Zs5tnBao6KyW3yjgqKWmYdIwSHI7uwQJDiv7BcjmvAiZ9YqSey9ZWdTGuBx8uIqpU7moa3
-        NZJE7RfaVcVxb0ttszGNqwSZ3vaYZKZokUtDUCO9lrniENb3EoqVM5SbCK8T22t9XobWxM
-        i9fHXCBTn6gRLh1fFUHs66RyIJ/jEV0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-172-IuoQqGI5NpuHDIjJsSoFHQ-1; Fri, 07 Jul 2023 10:56:53 -0400
-X-MC-Unique: IuoQqGI5NpuHDIjJsSoFHQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S229665AbjGGQFP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 12:05:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CA81FC4;
+        Fri,  7 Jul 2023 09:05:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79C973C0F685;
-        Fri,  7 Jul 2023 14:56:52 +0000 (UTC)
-Received: from [10.22.34.12] (unknown [10.22.34.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D2D2D2166B25;
-        Fri,  7 Jul 2023 14:56:51 +0000 (UTC)
-Message-ID: <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
-Date:   Fri, 7 Jul 2023 10:56:51 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] refscale: Fix use of uninitalized wait_queue_head_t
-Content-Language: en-US
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA901619D6;
+        Fri,  7 Jul 2023 16:05:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E213C433C7;
+        Fri,  7 Jul 2023 16:05:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688745913;
+        bh=h00EYl1uFKGRpwiBZCkL3Q5y92OJAd4qLZ4bgn1oQck=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QozHdtPAQgK6OsTbrfTPnyfZLsgI/ludXLGUQxE7JOgnHiDx9zNBkbjo8q4VltKBY
+         +ZRjzz8bZe4YeP79/C/hozVK8BVVkl4129NEdrIcoCGKf9yDfYPVEKtggG01ljyWW8
+         rbIa/SpK0uzZ1t0OsdeMjcrRZMdb/lCRozFKcKmdaArcgn+bwrk6eHugg35sCjN8kz
+         A34gxjcnggRpSg2GR4waNmBbnaaGbL5OE+vmgZAHZFLH8SFU0U1Py/k4KjXzUJsCZC
+         ixtMU2QY6corVlU50wJt9S2zT8HCWbz0A8Ry22wzt4bqahZDM5TQL0fi5jzNBTznqg
+         IIyitT7LzqiSQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8A2B6CE0073; Fri,  7 Jul 2023 09:05:12 -0700 (PDT)
+Date:   Fri, 7 Jul 2023 09:05:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Z qiang <qiang.zhang1211@gmail.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230707000117.2371697-1-longman@redhat.com>
- <y5g37s3yhsqtmdoqziwnsd4kxtudlpqwv2iunt372abpmdzrry@43e54c374j4s>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <y5g37s3yhsqtmdoqziwnsd4kxtudlpqwv2iunt372abpmdzrry@43e54c374j4s>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+Subject: Re: [PATCH] srcu: Make srcu_might_be_idle() take early return if
+ rcu_gp_is_normal() return true
+Message-ID: <087e3da2-ffd9-4cf4-8893-73f4edc3cfba@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230704082615.7415-1-qiang.zhang1211@gmail.com>
+ <77d16cbb-b28c-4b13-aecb-9ad787559557@paulmck-laptop>
+ <CALm+0cW6DojcxSnzf2mMXhXP-MHJ0aEvSqyh1TbtvBC4bzfsOw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALm+0cW6DojcxSnzf2mMXhXP-MHJ0aEvSqyh1TbtvBC4bzfsOw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 7/7/23 10:07, Davidlohr Bueso wrote:
-> On Thu, 06 Jul 2023, Waiman Long wrote:
->
->> It was found that running the refscale test might sometimes crash the
->> kernel with the following error:
->>
->> [ 8569.952896] BUG: unable to handle page fault for address: 
->> ffffffffffffffe8
->> [ 8569.952900] #PF: supervisor read access in kernel mode
->> [ 8569.952902] #PF: error_code(0x0000) - not-present page
->> [ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
->> [ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
->> [ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS 
->> 1.2.4 05/28/2021
->> [ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
->>  :
->> [ 8569.952940] Call Trace:
->> [ 8569.952941]  <TASK>
->> [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
->> [ 8569.952959]  kthread+0x10e/0x130
->> [ 8569.952966]  ret_from_fork+0x1f/0x30
->> [ 8569.952973]  </TASK>
->>
->> This is likely caused by the fact that init_waitqueue_head() is called
->> after the ref_scale_reader kthread is created. So the kthread may try
->> to use the waitqueue head before it is properly initialized. Fix this
->> by initializing the waitqueue head first before kthread creation.
->>
->> Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of 
->> read-side synchronization")
->> Signed-off-by: Waiman Long <longman@redhat.com>
->
-> Strange this wasn't reported sooner.
+On Fri, Jul 07, 2023 at 06:28:29PM +0800, Z qiang wrote:
+> >
+> > On Tue, Jul 04, 2023 at 04:26:15PM +0800, Zqiang wrote:
+> > > When invoke synchronize_srcu(), in the srcu_might_be_idle(), the current
+> > > CPU's sdp->lock will be acquired to check whether there are pending
+> > > callbacks in the sdp->srcu_cblist, if there are no pending callbacks,
+> > > probabilistically probe global state to decide whether to convert to
+> > > synchronize_srcu_expedited() call. however, for the rcupdate.rcu_normal=1
+> > > kernels and after the rcu_set_runtime_mode() is called, invoke the
+> > > rcu_gp_is_normal() is always return true, this mean that invoke the
+> > > synchronize_srcu_expedited() always fall back to synchronize_srcu(),
+> > > so there is no need to acquire sdp->lock to check sdp->srcu_cblist and
+> > > probe global state in srcu_might_be_idle().
+> > >
+> > > This commit therefore make srcu_might_be_idle() return immediately if the
+> > > rcu_gp_is_normal() return true.
+> > >
+> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > ---
+> > >  kernel/rcu/srcutree.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index 20d7a238d675..aea49cb60a45 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -1172,6 +1172,8 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+> > >       unsigned long tlast;
+> > >
+> > >       check_init_srcu_struct(ssp);
+> > > +     if (rcu_gp_is_normal())
+> > > +             return false;
+> >
+> > Again, thank you for looking into SRCU!
+> >
+> > I am not at all enthusiastic about this one.  With this change, the name
+> > srcu_might_be_idle() is no longer accurate.  Yes, the name could change,
+> > but any name would be longer and more confusing.
+> >
+> > So unless there is a measureable benefit to this one on a production
+> > workload, I cannot justify taking it.
+> >
+> > Is there a measureable benefit?
+> 
+> Hi, Paul
+> 
+> I only find that for Preempt-RT kernel,  the rcu_normal_after_boot is
+> set by default:
+> static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
+> This affects only rcu but also srcu, this make the synchronize_srcu() and
+> synchronize_srcu_expedited() always fall back to __synchronize_srcu(ssp, true),
+> this means that call the srcu_might_be_idle() is meaningless.
 
-Red Hat does have a pretty large QE organization that run all sort of 
-tests include this one pretty frequently. The race window is pretty 
-small, but they did hit this once in a while.
+I do understand that the current setup favors default kernel builds at
+runtime by a few low-cost instructions, and that your change favors,
+as you say, kernels built for real-time, kernels built for certain types
+of HPC workloads, and all kernels during a small time during boot.
 
-Cheers,
-Longman
+My question is instead whether any of this makes a measureable difference
+at the system level.
 
+My guess is "no, not even close", but the way to convince me otherwise
+would be to actually run the workload and kernels on real hardware and
+provide measurements showing a statistically significant difference that
+the workload(s) in question care(s) about.
+
+So what can you show me?
+
+And srcu_might_be_idle() is not meaningless in that situation, just
+ignored completely.  And that is in fact the nature and purpose of the
+C-language || operator.  ;-)
+
+							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> >
+> >                                                         Thanx, Paul
+> >
+> > >       /* If the local srcu_data structure has callbacks, not idle.  */
+> > >       sdp = raw_cpu_ptr(ssp->sda);
+> > >       spin_lock_irqsave_rcu_node(sdp, flags);
+> > > --
+> > > 2.17.1
+> > >
