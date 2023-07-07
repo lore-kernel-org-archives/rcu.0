@@ -2,129 +2,143 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A52BEB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 10:28:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 590BDEB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 13:09:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbjGGK2n (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 06:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        id S229955AbjGGNJ6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 09:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbjGGK2m (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 06:28:42 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DAC10B;
-        Fri,  7 Jul 2023 03:28:42 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26304be177fso961759a91.1;
-        Fri, 07 Jul 2023 03:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688725721; x=1691317721;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HLLYKihCnqonBva0uK0MK1UGblIUXGyxKDZM3oPQ2D4=;
-        b=D+vTiZXLec1XkE8ggtB6vOc60n/W6Z7GtUcmGAUuqfr95CKMbSTD+7EzYQTABQMkJm
-         biWKiQPTEXYpAMn7Kha0wSs9Wbh9kGLQ/o+6Cy2h4xVwm0dAAZ69E88iSvdRsArktABz
-         4/m84yP4TqFUpRa1OWG+9lzg9Rw4d8LtIG+a9oCUEek5sGs9Ygmze5ojDbl3/E9qEtE/
-         g2YBp1cfjMdiqzhNI3WDbQ006UpJfbj8sxLiMrbdNxDABRsP5mH5H9wRS3sgsPHxiwjY
-         0T9ezz7aDz6NQtaWPmOu46vg2UtTpBjt1OwWyW08ZnxeXd1ub2KewxOKpEYewArplt4E
-         HAcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688725721; x=1691317721;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HLLYKihCnqonBva0uK0MK1UGblIUXGyxKDZM3oPQ2D4=;
-        b=d0PA2RjW9r6dhCpaH4D9Rl9aYZN94hWDpaHMy5tvMO/GmdOXpDm1YTMK5iN5uNBbhf
-         NA5wzLCCK2WySFpSrHxdngVIC2oayx83QDo5NM3JEGOIY9gdZCyy3PAHxQQhExb++zZ+
-         +x20cTwSaFUqwsWuBDSCyrvJxPrOtITVH72laSb+TKoVIw8/JEumUnYUYrIpSBFwjw+M
-         3PeYQYWBZvk0nnaZXhP/LR1xWXOyJaxACLYpl6FcR1FdyuWbO0MQ3ZuHLVKqOcPNQu4S
-         KueGUeJZR6iXBdCWY3vS6/vrY/WemqiXDgeQtKPcjfwViYLo5i94ZrAMSuE7GGlxLLPh
-         5zjA==
-X-Gm-Message-State: ABy/qLbJsJanGjxp7eitNC58Or8tPHDDCgHg3Wjmg20oE5zJlkQBKod+
-        ioXFhoa0eI95iLUfecLyaGZTU1rqA6kSHnIHjkj2nFaK4MM=
-X-Google-Smtp-Source: APBJJlH2U3NiUmDB0oo2SWsnmGpWcPkdi6P/joEHI/qqzGclZG1vCN04xPiuZTiRy5OF0XabY2sR0MAbTr67ay3J18U=
-X-Received: by 2002:a17:90b:292:b0:263:528:144a with SMTP id
- az18-20020a17090b029200b002630528144amr3817073pjb.28.1688725721516; Fri, 07
- Jul 2023 03:28:41 -0700 (PDT)
+        with ESMTP id S229458AbjGGNJ5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 09:09:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8A41BF4
+        for <rcu@vger.kernel.org>; Fri,  7 Jul 2023 06:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1688735358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EggKBwzUqnd+oemu+sOZluKy6hIEM/b0yh51QTFGBVA=;
+        b=aIFDyZYqO02qJIyx0oWZsz/kY4J3KMLWKJTo/fSxzWgWD4rE6h+6RjPkCNP9VnvfDubbjN
+        qoQN9t0EoamtXcNNuapNwJbGzy0bmrxpDFptNW2+Wwj8rCOMmoQPKYcUtTRwY1b4990DgQ
+        N5fii8WJwhsQwl5oXQmDIj60dhbsVzc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-28-b-m9TsE5N2q0OmSuYaprgw-1; Fri, 07 Jul 2023 09:09:15 -0400
+X-MC-Unique: b-m9TsE5N2q0OmSuYaprgw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 64ECB1044591;
+        Fri,  7 Jul 2023 13:09:14 +0000 (UTC)
+Received: from [10.22.34.12] (unknown [10.22.34.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A78C1121330;
+        Fri,  7 Jul 2023 13:09:13 +0000 (UTC)
+Message-ID: <cd306d1c-2f7f-b129-4ed6-700e9e821653@redhat.com>
+Date:   Fri, 7 Jul 2023 09:09:13 -0400
 MIME-Version: 1.0
-References: <20230704082615.7415-1-qiang.zhang1211@gmail.com> <77d16cbb-b28c-4b13-aecb-9ad787559557@paulmck-laptop>
-In-Reply-To: <77d16cbb-b28c-4b13-aecb-9ad787559557@paulmck-laptop>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Fri, 7 Jul 2023 18:28:29 +0800
-Message-ID: <CALm+0cW6DojcxSnzf2mMXhXP-MHJ0aEvSqyh1TbtvBC4bzfsOw@mail.gmail.com>
-Subject: Re: [PATCH] srcu: Make srcu_might_be_idle() take early return if
- rcu_gp_is_normal() return true
-To:     paulmck@kernel.org
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] refscale: Fix use of uninitalized wait_queue_head_t
+Content-Language: en-US
+To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Cc:     "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230707000117.2371697-1-longman@redhat.com>
+ <CY8PR11MB713490FA7B31E495E8B5FB65892DA@CY8PR11MB7134.namprd11.prod.outlook.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CY8PR11MB713490FA7B31E495E8B5FB65892DA@CY8PR11MB7134.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On 7/7/23 03:27, Zhuo, Qiuxu wrote:
+>> From: Waiman Long <longman@redhat.com>
+>> ...
+>> Subject: [PATCH] refscale: Fix use of uninitalized wait_queue_head_t
+>>
+>> It was found that running the refscale test might sometimes crash the kernel
+>> with the following error:
+>>
+>> [ 8569.952896] BUG: unable to handle page fault for address: ffffffffffffffe8
+>> [ 8569.952900] #PF: supervisor read access in kernel mode [ 8569.952902]
+>> #PF: error_code(0x0000) - not-present page [ 8569.952904] PGD c4b048067
+>> P4D c4b049067 PUD c4b04b067 PMD 0 [ 8569.952910] Oops: 0000 [#1]
+>> PREEMPT_RT SMP NOPTI [ 8569.952916] Hardware name: Dell Inc.
+>> PowerEdge R750/0WMWCR, BIOS 1.2.4 05/28/2021 [ 8569.952917] RIP:
+>> 0010:prepare_to_wait_event+0x101/0x190
+>>    :
+>> [ 8569.952940] Call Trace:
+>> [ 8569.952941]  <TASK>
+>> [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale] [ 8569.952959]
+>> kthread+0x10e/0x130 [ 8569.952966]  ret_from_fork+0x1f/0x30
+>> [ 8569.952973]  </TASK>
+>>
+>> This is likely caused by the fact that init_waitqueue_head() is called after the
+>> ref_scale_reader kthread is created. So the kthread may try to use the
+>> waitqueue head before it is properly initialized. Fix this by initializing the
+>> waitqueue head first before kthread creation.
+>>
+>> Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read-
+>> side synchronization")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/rcu/refscale.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c index
+>> 1970ce5f22d4..e365d6f8c139 100644
+>> --- a/kernel/rcu/refscale.c
+>> +++ b/kernel/rcu/refscale.c
+>> @@ -1107,12 +1107,11 @@ ref_scale_init(void)
+>>   	VERBOSE_SCALEOUT("Starting %d reader threads", nreaders);
+>>
+>>   	for (i = 0; i < nreaders; i++) {
+>> +		init_waitqueue_head(&(reader_tasks[i].wq));
+> Running checkpatch.pl tool with the " --strict" option, it complained that
+> "CHECK: Unnecessary parentheses around reader_tasks[i].wq".
+> I know that you just moved the code position. The tool should have
+> complained the original code. 😊
 >
-> On Tue, Jul 04, 2023 at 04:26:15PM +0800, Zqiang wrote:
-> > When invoke synchronize_srcu(), in the srcu_might_be_idle(), the current
-> > CPU's sdp->lock will be acquired to check whether there are pending
-> > callbacks in the sdp->srcu_cblist, if there are no pending callbacks,
-> > probabilistically probe global state to decide whether to convert to
-> > synchronize_srcu_expedited() call. however, for the rcupdate.rcu_normal=1
-> > kernels and after the rcu_set_runtime_mode() is called, invoke the
-> > rcu_gp_is_normal() is always return true, this mean that invoke the
-> > synchronize_srcu_expedited() always fall back to synchronize_srcu(),
-> > so there is no need to acquire sdp->lock to check sdp->srcu_cblist and
-> > probe global state in srcu_might_be_idle().
-> >
-> > This commit therefore make srcu_might_be_idle() return immediately if the
-> > rcu_gp_is_normal() return true.
-> >
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  kernel/rcu/srcutree.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 20d7a238d675..aea49cb60a45 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -1172,6 +1172,8 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
-> >       unsigned long tlast;
-> >
-> >       check_init_srcu_struct(ssp);
-> > +     if (rcu_gp_is_normal())
-> > +             return false;
+> Other than that, this patch LGTM.
 >
-> Again, thank you for looking into SRCU!
+>      Reviewed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 >
-> I am not at all enthusiastic about this one.  With this change, the name
-> srcu_might_be_idle() is no longer accurate.  Yes, the name could change,
-> but any name would be longer and more confusing.
->
-> So unless there is a measureable benefit to this one on a production
-> workload, I cannot justify taking it.
->
-> Is there a measureable benefit?
->
+> Thanks!
+> -Qiuxu
 
+Thanks for the review. I will do --strict test next time.
 
-Hi, Paul
-
-I only find that for Preempt-RT kernel,  the rcu_normal_after_boot is
-set by default:
-static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
-This affects only rcu but also srcu, this make the synchronize_srcu() and
-synchronize_srcu_expedited() always fall back to __synchronize_srcu(ssp, true),
-this means that call the srcu_might_be_idle() is meaningless.
-
-Thanks
-Zqiang
+Cheers,
+Longman
 
 >
->                                                         Thanx, Paul
->
-> >       /* If the local srcu_data structure has callbacks, not idle.  */
-> >       sdp = raw_cpu_ptr(ssp->sda);
-> >       spin_lock_irqsave_rcu_node(sdp, flags);
-> > --
-> > 2.17.1
-> >
+>>   		firsterr = torture_create_kthread(ref_scale_reader, (void *)i,
+>>   						  reader_tasks[i].task);
+>>   		if (torture_init_error(firsterr))
+>>   			goto unwind;
+>> -
+>> -		init_waitqueue_head(&(reader_tasks[i].wq));
+>>   	}
+>>
+>>   	// Main Task
+>> --
+>> 2.31.1
+
