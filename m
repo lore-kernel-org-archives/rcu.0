@@ -2,108 +2,157 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9CDAEB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 16:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 323B5EB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 17:16:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjGGQQJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 12:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S232314AbjGGRQr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 13:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjGGQQI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 12:16:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F9E1FC6;
-        Fri,  7 Jul 2023 09:16:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D80CD619F4;
-        Fri,  7 Jul 2023 16:16:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DA0C433C7;
-        Fri,  7 Jul 2023 16:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688746566;
-        bh=Psq+MWPRLnkbm+5dY5Hpkk/UK5icgJossc/0TJsSnLg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gQYRsgmqESxIcuTv+Q8bgKan4bnssSc8tcAaoftDFJhh6+wlsDlJjSc670AOesF7U
-         NQA8mR7o5wFG51rwXXaI84Lyrrli6XM8WSj5CMGD6OOsZwrkG5ijDremST4LecrNwY
-         mNG9n2vI/LBOf/Hscu2P0ANiOw/8XGZv3rfw6Snkj3mK5K9hED8lqKczRJHZxJugeH
-         DEen0kpwWuD5OHrZnDN2MxBhWamG9Spt/Wnev0G0AsOp9M0kmBcCEXA7+fvx1n5yCi
-         esBPATBCay7GhW6jI4OLkIvbGe8DzlOAN4mC2fJ7aZcLVWwwl4X0vSrx1eTAEdvX51
-         GBckUNHL0BBKQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AEC9CCE0073; Fri,  7 Jul 2023 09:16:05 -0700 (PDT)
-Date:   Fri, 7 Jul 2023 09:16:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] refscale: Fix use of uninitalized wait_queue_head_t
-Message-ID: <8b827d44-b19b-4eb2-8860-f419cc61084e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230707000117.2371697-1-longman@redhat.com>
- <y5g37s3yhsqtmdoqziwnsd4kxtudlpqwv2iunt372abpmdzrry@43e54c374j4s>
- <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
+        with ESMTP id S232194AbjGGRQq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 13:16:46 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C371BE8
+        for <rcu@vger.kernel.org>; Fri,  7 Jul 2023 10:16:44 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b6a6f224a1so34816721fa.1
+        for <rcu@vger.kernel.org>; Fri, 07 Jul 2023 10:16:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1688750203; x=1691342203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g+3ftUrKkGKWTNUl/ff+NksMj5plBKBFyR+RGdmjZos=;
+        b=C9Va5MTTcTbYBoTWRyAjroFbhLGDCi9734g2/O9X2iYuULUit3WlukK/8oa6EG/vJw
+         z/NjnGfT0rP9Ym30qjGRlJtYy/nqLNO7pMFpC8E5YovHWxIDS33Ikso5mrvKehmmN07V
+         bfp1W9rObG7Ch/OW64rjV/67n4WHmDZiiFxG0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688750203; x=1691342203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g+3ftUrKkGKWTNUl/ff+NksMj5plBKBFyR+RGdmjZos=;
+        b=es/tDG8/zAsWprsqK41wge3V2Q/7sBLwxYfy+eIg20SAtSOnTJ/yUPKMtcjJMbDRMJ
+         fahjKYPBeh3KLNcAiUhLp4tQI3q6V9KXZSzxNFt303BOW81WPbRRWTinR1Mg/yXCs7ff
+         XfDIM54kaaXTHoPhkxP27OSJOytzoNUFCoK0gaFETlyOIQmynS0ESj6Xkl6aKGhAU7Rt
+         /KADlcGmyENhEnl4WToG/GtfquB6gQ45SCQzbCmEsEkkufG6eFFxF3ZkKwHozA87ZLfz
+         POvQ2rm8At3lqhKjznP5GKd31+cu+7h9ZhcNhFcaaaG0XEjyyb8pEQV34T0YfVlS/TEH
+         tIKA==
+X-Gm-Message-State: ABy/qLZCxKZU+M0tkWZl8H/0VWiOwnHb15iqE+tNNDOGLKdkkBt6dgmI
+        T+BaJHxVETWSepqoau0d0AxUmcJWa1WKs6rMD0qnnQ==
+X-Google-Smtp-Source: APBJJlGuAy0wLSoXaNkgFRdRYIchwP9YRwUB84DL3lJ/iIaXa1QXT3d98xpD9CPLKc9maFWRi64RchlLudBkRQJuJ6Q=
+X-Received: by 2002:a2e:9c95:0:b0:2b6:c16a:db06 with SMTP id
+ x21-20020a2e9c95000000b002b6c16adb06mr4517649lji.39.1688750202658; Fri, 07
+ Jul 2023 10:16:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
+References: <20230704082615.7415-1-qiang.zhang1211@gmail.com>
+ <77d16cbb-b28c-4b13-aecb-9ad787559557@paulmck-laptop> <CALm+0cW6DojcxSnzf2mMXhXP-MHJ0aEvSqyh1TbtvBC4bzfsOw@mail.gmail.com>
+ <087e3da2-ffd9-4cf4-8893-73f4edc3cfba@paulmck-laptop>
+In-Reply-To: <087e3da2-ffd9-4cf4-8893-73f4edc3cfba@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 7 Jul 2023 13:16:31 -0400
+Message-ID: <CAEXW_YSfMSQ=z-pEO16_jwZSYt5N+zJHFaDOxDsPNoojm1v4Sg@mail.gmail.com>
+Subject: Re: [PATCH] srcu: Make srcu_might_be_idle() take early return if
+ rcu_gp_is_normal() return true
+To:     paulmck@kernel.org
+Cc:     Z qiang <qiang.zhang1211@gmail.com>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 10:56:51AM -0400, Waiman Long wrote:
-> On 7/7/23 10:07, Davidlohr Bueso wrote:
-> > On Thu, 06 Jul 2023, Waiman Long wrote:
-> > 
-> > > It was found that running the refscale test might sometimes crash the
-> > > kernel with the following error:
-> > > 
-> > > [ 8569.952896] BUG: unable to handle page fault for address:
-> > > ffffffffffffffe8
-> > > [ 8569.952900] #PF: supervisor read access in kernel mode
-> > > [ 8569.952902] #PF: error_code(0x0000) - not-present page
-> > > [ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
-> > > [ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
-> > > [ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS
-> > > 1.2.4 05/28/2021
-> > > [ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
-> > >  :
-> > > [ 8569.952940] Call Trace:
-> > > [ 8569.952941]  <TASK>
-> > > [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
-> > > [ 8569.952959]  kthread+0x10e/0x130
-> > > [ 8569.952966]  ret_from_fork+0x1f/0x30
-> > > [ 8569.952973]  </TASK>
-> > > 
-> > > This is likely caused by the fact that init_waitqueue_head() is called
-> > > after the ref_scale_reader kthread is created. So the kthread may try
-> > > to use the waitqueue head before it is properly initialized. Fix this
-> > > by initializing the waitqueue head first before kthread creation.
-> > > 
-> > > Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of
-> > > read-side synchronization")
-> > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > 
-> > Strange this wasn't reported sooner.
-> 
-> Red Hat does have a pretty large QE organization that run all sort of tests
-> include this one pretty frequently. The race window is pretty small, but
-> they did hit this once in a while.
+On Fri, Jul 7, 2023 at 12:05=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Fri, Jul 07, 2023 at 06:28:29PM +0800, Z qiang wrote:
+> > >
+> > > On Tue, Jul 04, 2023 at 04:26:15PM +0800, Zqiang wrote:
+> > > > When invoke synchronize_srcu(), in the srcu_might_be_idle(), the cu=
+rrent
+> > > > CPU's sdp->lock will be acquired to check whether there are pending
+> > > > callbacks in the sdp->srcu_cblist, if there are no pending callback=
+s,
+> > > > probabilistically probe global state to decide whether to convert t=
+o
+> > > > synchronize_srcu_expedited() call. however, for the rcupdate.rcu_no=
+rmal=3D1
+> > > > kernels and after the rcu_set_runtime_mode() is called, invoke the
+> > > > rcu_gp_is_normal() is always return true, this mean that invoke the
+> > > > synchronize_srcu_expedited() always fall back to synchronize_srcu()=
+,
+> > > > so there is no need to acquire sdp->lock to check sdp->srcu_cblist =
+and
+> > > > probe global state in srcu_might_be_idle().
+> > > >
+> > > > This commit therefore make srcu_might_be_idle() return immediately =
+if the
+> > > > rcu_gp_is_normal() return true.
+> > > >
+> > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > > ---
+> > > >  kernel/rcu/srcutree.c | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > index 20d7a238d675..aea49cb60a45 100644
+> > > > --- a/kernel/rcu/srcutree.c
+> > > > +++ b/kernel/rcu/srcutree.c
+> > > > @@ -1172,6 +1172,8 @@ static bool srcu_might_be_idle(struct srcu_st=
+ruct *ssp)
+> > > >       unsigned long tlast;
+> > > >
+> > > >       check_init_srcu_struct(ssp);
+> > > > +     if (rcu_gp_is_normal())
+> > > > +             return false;
+> > >
+> > > Again, thank you for looking into SRCU!
+> > >
+> > > I am not at all enthusiastic about this one.  With this change, the n=
+ame
+> > > srcu_might_be_idle() is no longer accurate.  Yes, the name could chan=
+ge,
+> > > but any name would be longer and more confusing.
+> > >
+> > > So unless there is a measureable benefit to this one on a production
+> > > workload, I cannot justify taking it.
+> > >
+> > > Is there a measureable benefit?
+> >
+> > Hi, Paul
+> >
+> > I only find that for Preempt-RT kernel,  the rcu_normal_after_boot is
+> > set by default:
+> > static int rcu_normal_after_boot =3D IS_ENABLED(CONFIG_PREEMPT_RT);
+> > This affects only rcu but also srcu, this make the synchronize_srcu() a=
+nd
+> > synchronize_srcu_expedited() always fall back to __synchronize_srcu(ssp=
+, true),
+> > this means that call the srcu_might_be_idle() is meaningless.
+>
+> I do understand that the current setup favors default kernel builds at
+> runtime by a few low-cost instructions, and that your change favors,
+> as you say, kernels built for real-time, kernels built for certain types
+> of HPC workloads, and all kernels during a small time during boot.
+>
+> My question is instead whether any of this makes a measureable difference
+> at the system level.
+>
+> My guess is "no, not even close", but the way to convince me otherwise
+> would be to actually run the workload and kernels on real hardware and
+> provide measurements showing a statistically significant difference that
+> the workload(s) in question care(s) about.
+>
+> So what can you show me?
+>
+> And srcu_might_be_idle() is not meaningless in that situation, just
+> ignored completely.  And that is in fact the nature and purpose of the
+> C-language || operator.  ;-)
 
-I do run this fairly frequently, but haven't managed to hit it.
+I agree with Paul, without any evidence of improvement, optimizing an
+obvious slow path is a NAK.
 
-Good show on making it happen, and looking forward to the updated patch!
+thanks,
 
-							Thanx, Paul
+ - Joel
