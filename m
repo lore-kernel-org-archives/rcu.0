@@ -2,199 +2,188 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28C8FEB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 20:18:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2023AEB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 22:22:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbjGGUSE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 16:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S229642AbjGGWWd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 18:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232676AbjGGUSD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 16:18:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B131FEB
-        for <rcu@vger.kernel.org>; Fri,  7 Jul 2023 13:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688761037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ja6I/wlCNGzetpjcUGRAM7IU4Hq6+cDPYt/XrUo8AY=;
-        b=S9a0/CSJ8dhwpxmXph8sRB3qYgDuJZXymjI+7oW9w3QeEhQFRRtbx9UhIi2DqPdOg4h7bK
-        iu7vLdQ4FIPnuQmYKqRmqsidTbP/BeB8x8X80fJEqADJWTmNecS5E7LfEfNSBkaVtQxV+d
-        bkpx0Gc94WC9PuXRx0x4T4tNC6Qwv0A=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-458-n7iVeSmpM_2NpZEW2qghzw-1; Fri, 07 Jul 2023 16:17:12 -0400
-X-MC-Unique: n7iVeSmpM_2NpZEW2qghzw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8CA74185A78B;
-        Fri,  7 Jul 2023 20:17:11 +0000 (UTC)
-Received: from [10.22.34.12] (unknown [10.22.34.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AFD18200B402;
-        Fri,  7 Jul 2023 20:17:10 +0000 (UTC)
-Message-ID: <d7f3f526-8ceb-7b23-dba0-ee83f9b78168@redhat.com>
-Date:   Fri, 7 Jul 2023 16:17:10 -0400
+        with ESMTP id S229542AbjGGWWa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 18:22:30 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F582126
+        for <rcu@vger.kernel.org>; Fri,  7 Jul 2023 15:22:27 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b708e49059so34584561fa.3
+        for <rcu@vger.kernel.org>; Fri, 07 Jul 2023 15:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1688768545; x=1691360545;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=00HfUo8YcXDv95ABX4BX2QfGk15awNjnmrspcBnuyYI=;
+        b=S1i7GsgZS6/9vByJU1h9vaPxX6EfILktPvazZWP5Wsw3CH9mTfB2qSik2nthVCjVcH
+         dhKZHhoDxrcL3PiB9drM2KpAFU2A0aXDLxFLU1aTmDKKzbg6lZjFobaP2dcbg7nPvqgq
+         BkHbFpM4arUw2jbAEns8E4g+OGETlDhouCwVE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688768545; x=1691360545;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=00HfUo8YcXDv95ABX4BX2QfGk15awNjnmrspcBnuyYI=;
+        b=kQTzkRUBBWf87wK5enDavwvgaRPk6UB4EPM0Cy3vcSR2zIsw5bxJHSFNMYO5qLJPdF
+         eOEE3FENKGDyHU5qGma2daKO/clep4V4Y8SoVNTSqD1OS1Vnyc06YLiTQ+JaUpNtL3yn
+         d351mE0kD/N5KU0IXB83pzC86VSaKYPkgbOC5eZm4Fd6uNaz87P+NbHckiP08vHLYPRv
+         PnUEVboi/m7aUsTFfwJKy0KRz5BW3HqIyYqf1lDFRkwwkbn35ExPyLnyf93Km23V3axe
+         wWqYS22tz8NfJVAT1PvYjR1SSh/3YJGoQnY49we47z2g85TiFhXEIJ9uRq8682MxYOyS
+         Vw+Q==
+X-Gm-Message-State: ABy/qLaWAy9rHabRs+W0jIWaKdou8IWTOFLpevdpHM3yhkltzxHKKUBG
+        /feX9jPAh0nHZKDCd5clucVtJXyTTZk2HZu+JdI+Sw==
+X-Google-Smtp-Source: APBJJlGTfh3AMzN+1kdBePEo+sjnOFVyLZ+VfqZo0TJaDLXkoafqQ6YreSHG/oLP8hvr6qZ9xVkcY4QZq4PnYX82CO4=
+X-Received: by 2002:a2e:9d16:0:b0:2b6:e2cd:20f5 with SMTP id
+ t22-20020a2e9d16000000b002b6e2cd20f5mr4795299lji.9.1688768545324; Fri, 07 Jul
+ 2023 15:22:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v2] refscale: Fix use of uninitalized wait_queue_head_t
-Content-Language: en-US
+References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
+ <20230706033447.54696-10-alexei.starovoitov@gmail.com> <fe733a7b-3775-947a-23c0-0dadacabdca2@huaweicloud.com>
+ <CAADnVQJ3mNnzKEohRhYfAhBtB6R2Gh9dHAyqSJ5BU5ke+NTVuw@mail.gmail.com>
+ <4e0765b7-9054-a33d-8b1e-c986df353848@huaweicloud.com> <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
+ <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com> <CAADnVQL5O5uzy=sewNJ=NFSGV7JTb3ONHR=V2kWiT1YdN=ax8g@mail.gmail.com>
+ <3f72c4e7-340f-4374-9ebe-f9bffd08c755@paulmck-laptop>
+In-Reply-To: <3f72c4e7-340f-4374-9ebe-f9bffd08c755@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 7 Jul 2023 18:22:13 -0400
+Message-ID: <CAEXW_YRzJQvX+GVR0+jSDiL9phNgf1-NzH+B7UaCVtGBVT18Yg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 09/14] bpf: Allow reuse from
+ waiting_for_gp_ttrace list.
 To:     paulmck@kernel.org
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-References: <20230707175355.2442933-1-longman@redhat.com>
- <37d52a42-c6d5-4c4d-9879-53578c154d1f@paulmck-laptop>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <37d52a42-c6d5-4c4d-9879-53578c154d1f@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hou Tao <houtao@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+        rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 7/7/23 15:54, Paul E. McKenney wrote:
-> On Fri, Jul 07, 2023 at 01:53:55PM -0400, Waiman Long wrote:
->> It was found that running the refscale test might crash the kernel once
->> in a while with the following error:
->>
->> [ 8569.952896] BUG: unable to handle page fault for address: ffffffffffffffe8
->> [ 8569.952900] #PF: supervisor read access in kernel mode
->> [ 8569.952902] #PF: error_code(0x0000) - not-present page
->> [ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
->> [ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
->> [ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS 1.2.4 05/28/2021
->> [ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
->>    :
->> [ 8569.952940] Call Trace:
->> [ 8569.952941]  <TASK>
->> [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
->> [ 8569.952959]  kthread+0x10e/0x130
->> [ 8569.952966]  ret_from_fork+0x1f/0x30
->> [ 8569.952973]  </TASK>
->>
->> This is likely caused by the fact that init_waitqueue_head() is
->> called after the ref_scale_reader kthread is created. The kthread
->> can potentially try to use the waitqueue head before it is properly
->> initialized. The crash happened at
->>
->> 	static inline void __add_wait_queue(...)
->> 	{
->> 		:
->> 		if (!(wq->flags & WQ_FLAG_PRIORITY)) <=== Crash here
->>
->> The offset of flags from list_head entry in wait_queue_entry is -0x18. If
->> reader_tasks[i].wq.head.next is NULL as allocated reader_task structure
->> is zero initialized, the instruction will try to access address
->> 0xffffffffffffffe8 which is the fault address listed above.
->>
->> Fix this by initializing the waitqueue head first before kthread
->> creation.
->>
->> Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read-side synchronization")
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> Reviewed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-> Queued and pushed, thank you all!
+On Fri, Jul 7, 2023 at 1:47=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
 >
-> As always, I could not resist wordsmithing the commit log, please see
-> below.
+> On Fri, Jul 07, 2023 at 09:11:22AM -0700, Alexei Starovoitov wrote:
+> > On Thu, Jul 6, 2023 at 9:37=E2=80=AFPM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> > >
+> > > Hi,
+> > >
+> > > On 7/7/2023 12:16 PM, Alexei Starovoitov wrote:
+> > > > On Thu, Jul 6, 2023 at 8:39=E2=80=AFPM Hou Tao <houtao@huaweicloud.=
+com> wrote:
+> > > >> Hi,
+> > > >>
+> > > >> On 7/7/2023 10:12 AM, Alexei Starovoitov wrote:
+> > > >>> On Thu, Jul 6, 2023 at 7:07=E2=80=AFPM Hou Tao <houtao@huaweiclou=
+d.com> wrote:
+> > > >>>> Hi,
+> > > >>>>
+> > > >>>> On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
+> > > >>>>
+> > > SNIP
+> > > >>> and it's not just waiting_for_gp_ttrace. free_by_rcu_ttrace is si=
+milar.
+> > > >> I think free_by_rcu_ttrace is different, because the reuse is only
+> > > >> possible after one tasks trace RCU grace period as shown below, an=
+d the
+> > > >> concurrent llist_del_first() must have been completed when the hea=
+d is
+> > > >> reused and re-added into free_by_rcu_ttrace again.
+> > > >>
+> > > >> // c0->free_by_rcu_ttrace
+> > > >> A -> B -> C -> nil
+> > > >>
+> > > >> P1:
+> > > >> alloc_bulk()
+> > > >>     llist_del_first(&c->free_by_rcu_ttrace)
+> > > >>         entry =3D A
+> > > >>         next =3D B
+> > > >>
+> > > >> P2:
+> > > >> do_call_rcu_ttrace()
+> > > >>     // c->free_by_rcu_ttrace->first =3D NULL
+> > > >>     llist_del_all(&c->free_by_rcu_ttrace)
+> > > >>         move to c->waiting_for_gp_ttrace
+> > > >>
+> > > >> P1:
+> > > >> llist_del_first()
+> > > >>     return NULL
+> > > >>
+> > > >> // A is only reusable after one task trace RCU grace
+> > > >> // llist_del_first() must have been completed
+> > > > "must have been completed" ?
+> > > >
+> > > > I guess you're assuming that alloc_bulk() from irq_work
+> > > > is running within rcu_tasks_trace critical section,
+> > > > so __free_rcu_tasks_trace() callback will execute after
+> > > > irq work completed?
+> > > > I don't think that's the case.
+> > >
+> > > Yes. The following is my original thoughts. Correct me if I was wrong=
+:
+> > >
+> > > 1. llist_del_first() must be running concurrently with llist_del_all(=
+).
+> > > If llist_del_first() runs after llist_del_all(), it will return NULL
+> > > directly.
+> > > 2. call_rcu_tasks_trace() must happen after llist_del_all(), else the
+> > > elements in free_by_rcu_ttrace will not be freed back to slab.
+> > > 3. call_rcu_tasks_trace() will wait for one tasks trace RCU grace per=
+iod
+> > > to call __free_rcu_tasks_trace()
+> > > 4. llist_del_first() in running in an context with irq-disabled, so t=
+he
+> > > tasks trace RCU grace period will wait for the end of llist_del_first=
+()
+> > >
+> > > It seems you thought step 4) is not true, right ?
+> >
+> > Yes. I think so. For two reasons:
+> >
+> > 1.
+> > I believe irq disabled region isn't considered equivalent
+> > to rcu_read_lock_trace() region.
+> >
+> > Paul,
+> > could you clarify ?
+>
+> You are correct, Alexei.  Unlike vanilla RCU, RCU Tasks Trace does not
+> count irq-disabled regions of code as readers.
+>
+> But why not just put an rcu_read_lock_trace() and a matching
+> rcu_read_unlock_trace() within that irq-disabled region of code?
+>
+> For completeness, if it were not for CONFIG_TASKS_TRACE_RCU_READ_MB,
+> Hou Tao would be correct from a strict current-implementation
+> viewpoint.  The reason is that, given the current implementation in
+> CONFIG_TASKS_TRACE_RCU_READ_MB=3Dn kernels, a task must either block or
+> take an IPI in order for the grace-period machinery to realize that this
+> task is done with all prior readers.
+>
+> However, we need to account for the possibility of IPI-free
+> implementations, for example, if the real-time guys decide to start
+> making heavy use of BPF sleepable programs.  They would then insist on
+> getting rid of those IPIs for CONFIG_PREEMPT_RT=3Dy kernels.  At which
+> point, irq-disabled regions of code will absolutely not act as
+> RCU tasks trace readers.
+>
+> Again, why not just put an rcu_read_lock_trace() and a matching
+> rcu_read_unlock_trace() within that irq-disabled region of code?
 
-Thanks for the wordsmithing. I don't mind at all.
+If I remember correctly, the general guidance is to always put an
+explicit marker if it is in an RCU-reader, instead of relying on
+implementation details. So the suggestion to put the marker instead of
+relying on IRQ disabling does align with that.
 
-Cheers,
-Longman
-
-> 							Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit 933d3bf8f96d7cedf78081030e004d23aee2b56c
-> Author: Waiman Long <longman@redhat.com>
-> Date:   Fri Jul 7 13:53:55 2023 -0400
->
->      refscale: Fix uninitalized use of wait_queue_head_t
->      
->      Running the refscale test occasionally crashes the kernel with the
->      following error:
->      
->      [ 8569.952896] BUG: unable to handle page fault for address: ffffffffffffffe8
->      [ 8569.952900] #PF: supervisor read access in kernel mode
->      [ 8569.952902] #PF: error_code(0x0000) - not-present page
->      [ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
->      [ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
->      [ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS 1.2.4 05/28/2021
->      [ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
->        :
->      [ 8569.952940] Call Trace:
->      [ 8569.952941]  <TASK>
->      [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
->      [ 8569.952959]  kthread+0x10e/0x130
->      [ 8569.952966]  ret_from_fork+0x1f/0x30
->      [ 8569.952973]  </TASK>
->      
->      The likely cause is that init_waitqueue_head() is called after the call to
->      the torture_create_kthread() function that creates the ref_scale_reader
->      kthread.  Although this init_waitqueue_head() call will very likely
->      complete before this kthread is created and starts running, it is
->      possible that the calling kthread will be delayed between the calls to
->      torture_create_kthread() and init_waitqueue_head().  In this case, the
->      new kthread will use the waitqueue head before it is properly initialized,
->      which is not good for the kernel's health and well-being.
->      
->      The above crash happened here:
->      
->              static inline void __add_wait_queue(...)
->              {
->                      :
->                      if (!(wq->flags & WQ_FLAG_PRIORITY)) <=== Crash here
->      
->      The offset of flags from list_head entry in wait_queue_entry is
->      -0x18. If reader_tasks[i].wq.head.next is NULL as allocated reader_task
->      structure is zero initialized, the instruction will try to access address
->      0xffffffffffffffe8, which is exactly the fault address listed above.
->      
->      This commit therefore invokes init_waitqueue_head() before creating
->      the kthread.
->      
->      Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read-side synchronization")
->      Signed-off-by: Waiman Long <longman@redhat.com>
->      Reviewed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->      Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
->      Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-> index 1970ce5f22d4..71d138573856 100644
-> --- a/kernel/rcu/refscale.c
-> +++ b/kernel/rcu/refscale.c
-> @@ -1107,12 +1107,11 @@ ref_scale_init(void)
->   	VERBOSE_SCALEOUT("Starting %d reader threads", nreaders);
->   
->   	for (i = 0; i < nreaders; i++) {
-> +		init_waitqueue_head(&reader_tasks[i].wq);
->   		firsterr = torture_create_kthread(ref_scale_reader, (void *)i,
->   						  reader_tasks[i].task);
->   		if (torture_init_error(firsterr))
->   			goto unwind;
-> -
-> -		init_waitqueue_head(&(reader_tasks[i].wq));
->   	}
->   
->   	// Main Task
->
-
+Thanks.
