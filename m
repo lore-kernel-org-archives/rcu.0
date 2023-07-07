@@ -2,142 +2,155 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79176EB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 16:05:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4765BEB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 16:11:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjGGQFP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 12:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
+        id S229688AbjGGQLu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 12:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjGGQFP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 12:05:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CA81FC4;
-        Fri,  7 Jul 2023 09:05:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA901619D6;
-        Fri,  7 Jul 2023 16:05:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E213C433C7;
-        Fri,  7 Jul 2023 16:05:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688745913;
-        bh=h00EYl1uFKGRpwiBZCkL3Q5y92OJAd4qLZ4bgn1oQck=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QozHdtPAQgK6OsTbrfTPnyfZLsgI/ludXLGUQxE7JOgnHiDx9zNBkbjo8q4VltKBY
-         +ZRjzz8bZe4YeP79/C/hozVK8BVVkl4129NEdrIcoCGKf9yDfYPVEKtggG01ljyWW8
-         rbIa/SpK0uzZ1t0OsdeMjcrRZMdb/lCRozFKcKmdaArcgn+bwrk6eHugg35sCjN8kz
-         A34gxjcnggRpSg2GR4waNmBbnaaGbL5OE+vmgZAHZFLH8SFU0U1Py/k4KjXzUJsCZC
-         ixtMU2QY6corVlU50wJt9S2zT8HCWbz0A8Ry22wzt4bqahZDM5TQL0fi5jzNBTznqg
-         IIyitT7LzqiSQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8A2B6CE0073; Fri,  7 Jul 2023 09:05:12 -0700 (PDT)
-Date:   Fri, 7 Jul 2023 09:05:12 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcu: Make srcu_might_be_idle() take early return if
- rcu_gp_is_normal() return true
-Message-ID: <087e3da2-ffd9-4cf4-8893-73f4edc3cfba@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230704082615.7415-1-qiang.zhang1211@gmail.com>
- <77d16cbb-b28c-4b13-aecb-9ad787559557@paulmck-laptop>
- <CALm+0cW6DojcxSnzf2mMXhXP-MHJ0aEvSqyh1TbtvBC4bzfsOw@mail.gmail.com>
+        with ESMTP id S229480AbjGGQLt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 12:11:49 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF6B2105;
+        Fri,  7 Jul 2023 09:11:35 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b703c900e3so32320431fa.1;
+        Fri, 07 Jul 2023 09:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688746294; x=1691338294;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6pf5dnyrXQEda2yB2QUPvv6NwuWjzgPzEHR6aZnBBoI=;
+        b=cdVhKwZUfPiXWP69XMDCI6Bi2Exp1T0y7P7EVJYBQ62InMEESI+wq1gQFtgZrbhAcf
+         ZXmv4tj9SMi7mK1yQVN1VY532JCGPfr5ahfNCYz3qTFAehOWMOLEdpIp/xBW6abW7W3d
+         N3vaRdD78aqiVZUsLol6VZ3WwJaBLo+dHZPbN7emV+har8ya4e8Tkl65zcjoq40h6do6
+         7AZJRemxb1ml7mvBq83Jg4YDiefQw6yFt3REhoagAhxRLoB5gbFR/8q51sPV2rw/Jh/u
+         4RWjiMMDUsYmB/wy7GoG40fZUou05ffPheW5ih9VcaEYUw2bpLQPZvN34/37seIfOjsM
+         vrKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688746294; x=1691338294;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6pf5dnyrXQEda2yB2QUPvv6NwuWjzgPzEHR6aZnBBoI=;
+        b=d9h1M2lYESZOBELr3nnrs+XGeI3hoM0hOHZ8rIjxAOo4DLI2A7n6yDHI1y/H4+0QCL
+         v2wVhdVslX/hx/iIDt+dY7khyVnwszvewD3p/JHOk674ygot+4/l5EOnGs7FslLlTRdO
+         Z8oOM9dggXHMygRd5QAKjlOc7EoDcNRuyXhCr4azTyhOy0JR2L9LnDdBxdyTlY9PMKLR
+         RtRFWPzO0+Kbrt5uEwvYgwVmQ0qNN+QYwwBbFRsLPPmTZBOa1FwHybyr5m/b0RML4ZqZ
+         ja+GeumZNGMlismR5ttTOb5COE9C1LjTHlYkdFlCCT2MqkiyLeNFOmlvF2sZW7cl4D/9
+         X9mQ==
+X-Gm-Message-State: ABy/qLYe0Lq2IrEdT28sJtYUND9ShQPXoYj9+/0ox+tZntEKnfQNcW/5
+        kTb0Leujs1k3xS0mw8BHNWowBQci8lscIkA72P0=
+X-Google-Smtp-Source: APBJJlHIhhYIDDRcZFjdoEd3CK4wQXFWlTIhkaiipMXKjU/w9eDVUaF0RKUngfEmkJCjmtbmj4YEw7V6JxBDksC3lnw=
+X-Received: by 2002:a2e:9250:0:b0:2b6:fe3c:c3c1 with SMTP id
+ v16-20020a2e9250000000b002b6fe3cc3c1mr4167361ljg.4.1688746293623; Fri, 07 Jul
+ 2023 09:11:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cW6DojcxSnzf2mMXhXP-MHJ0aEvSqyh1TbtvBC4bzfsOw@mail.gmail.com>
+References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
+ <20230706033447.54696-10-alexei.starovoitov@gmail.com> <fe733a7b-3775-947a-23c0-0dadacabdca2@huaweicloud.com>
+ <CAADnVQJ3mNnzKEohRhYfAhBtB6R2Gh9dHAyqSJ5BU5ke+NTVuw@mail.gmail.com>
+ <4e0765b7-9054-a33d-8b1e-c986df353848@huaweicloud.com> <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
+ <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com>
+In-Reply-To: <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 7 Jul 2023 09:11:22 -0700
+Message-ID: <CAADnVQL5O5uzy=sewNJ=NFSGV7JTb3ONHR=V2kWiT1YdN=ax8g@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 09/14] bpf: Allow reuse from
+ waiting_for_gp_ttrace list.
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Vernet <void@manifault.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 06:28:29PM +0800, Z qiang wrote:
+On Thu, Jul 6, 2023 at 9:37=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
+>
+> Hi,
+>
+> On 7/7/2023 12:16 PM, Alexei Starovoitov wrote:
+> > On Thu, Jul 6, 2023 at 8:39=E2=80=AFPM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >> Hi,
+> >>
+> >> On 7/7/2023 10:12 AM, Alexei Starovoitov wrote:
+> >>> On Thu, Jul 6, 2023 at 7:07=E2=80=AFPM Hou Tao <houtao@huaweicloud.co=
+m> wrote:
+> >>>> Hi,
+> >>>>
+> >>>> On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
+> >>>>
+> SNIP
+> >>> and it's not just waiting_for_gp_ttrace. free_by_rcu_ttrace is simila=
+r.
+> >> I think free_by_rcu_ttrace is different, because the reuse is only
+> >> possible after one tasks trace RCU grace period as shown below, and th=
+e
+> >> concurrent llist_del_first() must have been completed when the head is
+> >> reused and re-added into free_by_rcu_ttrace again.
+> >>
+> >> // c0->free_by_rcu_ttrace
+> >> A -> B -> C -> nil
+> >>
+> >> P1:
+> >> alloc_bulk()
+> >>     llist_del_first(&c->free_by_rcu_ttrace)
+> >>         entry =3D A
+> >>         next =3D B
+> >>
+> >> P2:
+> >> do_call_rcu_ttrace()
+> >>     // c->free_by_rcu_ttrace->first =3D NULL
+> >>     llist_del_all(&c->free_by_rcu_ttrace)
+> >>         move to c->waiting_for_gp_ttrace
+> >>
+> >> P1:
+> >> llist_del_first()
+> >>     return NULL
+> >>
+> >> // A is only reusable after one task trace RCU grace
+> >> // llist_del_first() must have been completed
+> > "must have been completed" ?
 > >
-> > On Tue, Jul 04, 2023 at 04:26:15PM +0800, Zqiang wrote:
-> > > When invoke synchronize_srcu(), in the srcu_might_be_idle(), the current
-> > > CPU's sdp->lock will be acquired to check whether there are pending
-> > > callbacks in the sdp->srcu_cblist, if there are no pending callbacks,
-> > > probabilistically probe global state to decide whether to convert to
-> > > synchronize_srcu_expedited() call. however, for the rcupdate.rcu_normal=1
-> > > kernels and after the rcu_set_runtime_mode() is called, invoke the
-> > > rcu_gp_is_normal() is always return true, this mean that invoke the
-> > > synchronize_srcu_expedited() always fall back to synchronize_srcu(),
-> > > so there is no need to acquire sdp->lock to check sdp->srcu_cblist and
-> > > probe global state in srcu_might_be_idle().
-> > >
-> > > This commit therefore make srcu_might_be_idle() return immediately if the
-> > > rcu_gp_is_normal() return true.
-> > >
-> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > ---
-> > >  kernel/rcu/srcutree.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > index 20d7a238d675..aea49cb60a45 100644
-> > > --- a/kernel/rcu/srcutree.c
-> > > +++ b/kernel/rcu/srcutree.c
-> > > @@ -1172,6 +1172,8 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
-> > >       unsigned long tlast;
-> > >
-> > >       check_init_srcu_struct(ssp);
-> > > +     if (rcu_gp_is_normal())
-> > > +             return false;
-> >
-> > Again, thank you for looking into SRCU!
-> >
-> > I am not at all enthusiastic about this one.  With this change, the name
-> > srcu_might_be_idle() is no longer accurate.  Yes, the name could change,
-> > but any name would be longer and more confusing.
-> >
-> > So unless there is a measureable benefit to this one on a production
-> > workload, I cannot justify taking it.
-> >
-> > Is there a measureable benefit?
-> 
-> Hi, Paul
-> 
-> I only find that for Preempt-RT kernel,  the rcu_normal_after_boot is
-> set by default:
-> static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
-> This affects only rcu but also srcu, this make the synchronize_srcu() and
-> synchronize_srcu_expedited() always fall back to __synchronize_srcu(ssp, true),
-> this means that call the srcu_might_be_idle() is meaningless.
+> > I guess you're assuming that alloc_bulk() from irq_work
+> > is running within rcu_tasks_trace critical section,
+> > so __free_rcu_tasks_trace() callback will execute after
+> > irq work completed?
+> > I don't think that's the case.
+>
+> Yes. The following is my original thoughts. Correct me if I was wrong:
+>
+> 1. llist_del_first() must be running concurrently with llist_del_all().
+> If llist_del_first() runs after llist_del_all(), it will return NULL
+> directly.
+> 2. call_rcu_tasks_trace() must happen after llist_del_all(), else the
+> elements in free_by_rcu_ttrace will not be freed back to slab.
+> 3. call_rcu_tasks_trace() will wait for one tasks trace RCU grace period
+> to call __free_rcu_tasks_trace()
+> 4. llist_del_first() in running in an context with irq-disabled, so the
+> tasks trace RCU grace period will wait for the end of llist_del_first()
+>
+> It seems you thought step 4) is not true, right ?
 
-I do understand that the current setup favors default kernel builds at
-runtime by a few low-cost instructions, and that your change favors,
-as you say, kernels built for real-time, kernels built for certain types
-of HPC workloads, and all kernels during a small time during boot.
+Yes. I think so. For two reasons:
 
-My question is instead whether any of this makes a measureable difference
-at the system level.
+1.
+I believe irq disabled region isn't considered equivalent
+to rcu_read_lock_trace() region.
 
-My guess is "no, not even close", but the way to convince me otherwise
-would be to actually run the workload and kernels on real hardware and
-provide measurements showing a statistically significant difference that
-the workload(s) in question care(s) about.
+Paul,
+could you clarify ?
 
-So what can you show me?
-
-And srcu_might_be_idle() is not meaningless in that situation, just
-ignored completely.  And that is in fact the nature and purpose of the
-C-language || operator.  ;-)
-
-							Thanx, Paul
-
-> Thanks
-> Zqiang
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > >       /* If the local srcu_data structure has callbacks, not idle.  */
-> > >       sdp = raw_cpu_ptr(ssp->sda);
-> > >       spin_lock_irqsave_rcu_node(sdp, flags);
-> > > --
-> > > 2.17.1
-> > >
+2.
+Even if 1 is incorrect, in RT llist_del_first() from alloc_bulk()
+runs "in a per-CPU thread in preemptible context."
+See irq_work_run_list.
