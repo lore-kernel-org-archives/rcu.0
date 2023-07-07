@@ -2,155 +2,108 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4765BEB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 16:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9CDAEB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 16:16:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjGGQLu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 12:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
+        id S229540AbjGGQQJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 12:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjGGQLt (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 12:11:49 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF6B2105;
-        Fri,  7 Jul 2023 09:11:35 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b703c900e3so32320431fa.1;
-        Fri, 07 Jul 2023 09:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688746294; x=1691338294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6pf5dnyrXQEda2yB2QUPvv6NwuWjzgPzEHR6aZnBBoI=;
-        b=cdVhKwZUfPiXWP69XMDCI6Bi2Exp1T0y7P7EVJYBQ62InMEESI+wq1gQFtgZrbhAcf
-         ZXmv4tj9SMi7mK1yQVN1VY532JCGPfr5ahfNCYz3qTFAehOWMOLEdpIp/xBW6abW7W3d
-         N3vaRdD78aqiVZUsLol6VZ3WwJaBLo+dHZPbN7emV+har8ya4e8Tkl65zcjoq40h6do6
-         7AZJRemxb1ml7mvBq83Jg4YDiefQw6yFt3REhoagAhxRLoB5gbFR/8q51sPV2rw/Jh/u
-         4RWjiMMDUsYmB/wy7GoG40fZUou05ffPheW5ih9VcaEYUw2bpLQPZvN34/37seIfOjsM
-         vrKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688746294; x=1691338294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6pf5dnyrXQEda2yB2QUPvv6NwuWjzgPzEHR6aZnBBoI=;
-        b=d9h1M2lYESZOBELr3nnrs+XGeI3hoM0hOHZ8rIjxAOo4DLI2A7n6yDHI1y/H4+0QCL
-         v2wVhdVslX/hx/iIDt+dY7khyVnwszvewD3p/JHOk674ygot+4/l5EOnGs7FslLlTRdO
-         Z8oOM9dggXHMygRd5QAKjlOc7EoDcNRuyXhCr4azTyhOy0JR2L9LnDdBxdyTlY9PMKLR
-         RtRFWPzO0+Kbrt5uEwvYgwVmQ0qNN+QYwwBbFRsLPPmTZBOa1FwHybyr5m/b0RML4ZqZ
-         ja+GeumZNGMlismR5ttTOb5COE9C1LjTHlYkdFlCCT2MqkiyLeNFOmlvF2sZW7cl4D/9
-         X9mQ==
-X-Gm-Message-State: ABy/qLYe0Lq2IrEdT28sJtYUND9ShQPXoYj9+/0ox+tZntEKnfQNcW/5
-        kTb0Leujs1k3xS0mw8BHNWowBQci8lscIkA72P0=
-X-Google-Smtp-Source: APBJJlHIhhYIDDRcZFjdoEd3CK4wQXFWlTIhkaiipMXKjU/w9eDVUaF0RKUngfEmkJCjmtbmj4YEw7V6JxBDksC3lnw=
-X-Received: by 2002:a2e:9250:0:b0:2b6:fe3c:c3c1 with SMTP id
- v16-20020a2e9250000000b002b6fe3cc3c1mr4167361ljg.4.1688746293623; Fri, 07 Jul
- 2023 09:11:33 -0700 (PDT)
+        with ESMTP id S229480AbjGGQQI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 12:16:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F9E1FC6;
+        Fri,  7 Jul 2023 09:16:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D80CD619F4;
+        Fri,  7 Jul 2023 16:16:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DA0C433C7;
+        Fri,  7 Jul 2023 16:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688746566;
+        bh=Psq+MWPRLnkbm+5dY5Hpkk/UK5icgJossc/0TJsSnLg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=gQYRsgmqESxIcuTv+Q8bgKan4bnssSc8tcAaoftDFJhh6+wlsDlJjSc670AOesF7U
+         NQA8mR7o5wFG51rwXXaI84Lyrrli6XM8WSj5CMGD6OOsZwrkG5ijDremST4LecrNwY
+         mNG9n2vI/LBOf/Hscu2P0ANiOw/8XGZv3rfw6Snkj3mK5K9hED8lqKczRJHZxJugeH
+         DEen0kpwWuD5OHrZnDN2MxBhWamG9Spt/Wnev0G0AsOp9M0kmBcCEXA7+fvx1n5yCi
+         esBPATBCay7GhW6jI4OLkIvbGe8DzlOAN4mC2fJ7aZcLVWwwl4X0vSrx1eTAEdvX51
+         GBckUNHL0BBKQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AEC9CCE0073; Fri,  7 Jul 2023 09:16:05 -0700 (PDT)
+Date:   Fri, 7 Jul 2023 09:16:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] refscale: Fix use of uninitalized wait_queue_head_t
+Message-ID: <8b827d44-b19b-4eb2-8860-f419cc61084e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230707000117.2371697-1-longman@redhat.com>
+ <y5g37s3yhsqtmdoqziwnsd4kxtudlpqwv2iunt372abpmdzrry@43e54c374j4s>
+ <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
 MIME-Version: 1.0
-References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
- <20230706033447.54696-10-alexei.starovoitov@gmail.com> <fe733a7b-3775-947a-23c0-0dadacabdca2@huaweicloud.com>
- <CAADnVQJ3mNnzKEohRhYfAhBtB6R2Gh9dHAyqSJ5BU5ke+NTVuw@mail.gmail.com>
- <4e0765b7-9054-a33d-8b1e-c986df353848@huaweicloud.com> <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
- <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com>
-In-Reply-To: <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 7 Jul 2023 09:11:22 -0700
-Message-ID: <CAADnVQL5O5uzy=sewNJ=NFSGV7JTb3ONHR=V2kWiT1YdN=ax8g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 09/14] bpf: Allow reuse from
- waiting_for_gp_ttrace list.
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Vernet <void@manifault.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 6, 2023 at 9:37=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
-> Hi,
->
-> On 7/7/2023 12:16 PM, Alexei Starovoitov wrote:
-> > On Thu, Jul 6, 2023 at 8:39=E2=80=AFPM Hou Tao <houtao@huaweicloud.com>=
- wrote:
-> >> Hi,
-> >>
-> >> On 7/7/2023 10:12 AM, Alexei Starovoitov wrote:
-> >>> On Thu, Jul 6, 2023 at 7:07=E2=80=AFPM Hou Tao <houtao@huaweicloud.co=
-m> wrote:
-> >>>> Hi,
-> >>>>
-> >>>> On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
-> >>>>
-> SNIP
-> >>> and it's not just waiting_for_gp_ttrace. free_by_rcu_ttrace is simila=
-r.
-> >> I think free_by_rcu_ttrace is different, because the reuse is only
-> >> possible after one tasks trace RCU grace period as shown below, and th=
-e
-> >> concurrent llist_del_first() must have been completed when the head is
-> >> reused and re-added into free_by_rcu_ttrace again.
-> >>
-> >> // c0->free_by_rcu_ttrace
-> >> A -> B -> C -> nil
-> >>
-> >> P1:
-> >> alloc_bulk()
-> >>     llist_del_first(&c->free_by_rcu_ttrace)
-> >>         entry =3D A
-> >>         next =3D B
-> >>
-> >> P2:
-> >> do_call_rcu_ttrace()
-> >>     // c->free_by_rcu_ttrace->first =3D NULL
-> >>     llist_del_all(&c->free_by_rcu_ttrace)
-> >>         move to c->waiting_for_gp_ttrace
-> >>
-> >> P1:
-> >> llist_del_first()
-> >>     return NULL
-> >>
-> >> // A is only reusable after one task trace RCU grace
-> >> // llist_del_first() must have been completed
-> > "must have been completed" ?
-> >
-> > I guess you're assuming that alloc_bulk() from irq_work
-> > is running within rcu_tasks_trace critical section,
-> > so __free_rcu_tasks_trace() callback will execute after
-> > irq work completed?
-> > I don't think that's the case.
->
-> Yes. The following is my original thoughts. Correct me if I was wrong:
->
-> 1. llist_del_first() must be running concurrently with llist_del_all().
-> If llist_del_first() runs after llist_del_all(), it will return NULL
-> directly.
-> 2. call_rcu_tasks_trace() must happen after llist_del_all(), else the
-> elements in free_by_rcu_ttrace will not be freed back to slab.
-> 3. call_rcu_tasks_trace() will wait for one tasks trace RCU grace period
-> to call __free_rcu_tasks_trace()
-> 4. llist_del_first() in running in an context with irq-disabled, so the
-> tasks trace RCU grace period will wait for the end of llist_del_first()
->
-> It seems you thought step 4) is not true, right ?
+On Fri, Jul 07, 2023 at 10:56:51AM -0400, Waiman Long wrote:
+> On 7/7/23 10:07, Davidlohr Bueso wrote:
+> > On Thu, 06 Jul 2023, Waiman Long wrote:
+> > 
+> > > It was found that running the refscale test might sometimes crash the
+> > > kernel with the following error:
+> > > 
+> > > [ 8569.952896] BUG: unable to handle page fault for address:
+> > > ffffffffffffffe8
+> > > [ 8569.952900] #PF: supervisor read access in kernel mode
+> > > [ 8569.952902] #PF: error_code(0x0000) - not-present page
+> > > [ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
+> > > [ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
+> > > [ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS
+> > > 1.2.4 05/28/2021
+> > > [ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
+> > >  :
+> > > [ 8569.952940] Call Trace:
+> > > [ 8569.952941]  <TASK>
+> > > [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
+> > > [ 8569.952959]  kthread+0x10e/0x130
+> > > [ 8569.952966]  ret_from_fork+0x1f/0x30
+> > > [ 8569.952973]  </TASK>
+> > > 
+> > > This is likely caused by the fact that init_waitqueue_head() is called
+> > > after the ref_scale_reader kthread is created. So the kthread may try
+> > > to use the waitqueue head before it is properly initialized. Fix this
+> > > by initializing the waitqueue head first before kthread creation.
+> > > 
+> > > Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of
+> > > read-side synchronization")
+> > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > 
+> > Strange this wasn't reported sooner.
+> 
+> Red Hat does have a pretty large QE organization that run all sort of tests
+> include this one pretty frequently. The race window is pretty small, but
+> they did hit this once in a while.
 
-Yes. I think so. For two reasons:
+I do run this fairly frequently, but haven't managed to hit it.
 
-1.
-I believe irq disabled region isn't considered equivalent
-to rcu_read_lock_trace() region.
+Good show on making it happen, and looking forward to the updated patch!
 
-Paul,
-could you clarify ?
-
-2.
-Even if 1 is incorrect, in RT llist_del_first() from alloc_bulk()
-runs "in a per-CPU thread in preemptible context."
-See irq_work_run_list.
+							Thanx, Paul
