@@ -2,111 +2,85 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73221EB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 00:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20004EB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 01:45:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjGGACW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 6 Jul 2023 20:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        id S229452AbjGGBpW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 6 Jul 2023 21:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjGGACV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 6 Jul 2023 20:02:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2491986
-        for <rcu@vger.kernel.org>; Thu,  6 Jul 2023 17:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688688093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=td6ndgPu8UyiPBmx1pFKVKko26hP20xZBaFgi1+OAqA=;
-        b=headnakvzdreQlvEdT5Ta0/njw4pdFpxFl9PWK20MSAJbU2uY1nZpYC8tEj6JkVJdbiasY
-        VEuuiWEsD2pKcS1Qzx39LNoQzowESID1MbA4oNBVkaYa74Fi8zZLBp4FhF5i0SAp1wZ8Qp
-        OSyARkkRKjgVxqCQ3LwnofHJ0aeECqo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-374-R49XuHfEOle7pJJ01ySK9w-1; Thu, 06 Jul 2023 20:01:27 -0400
-X-MC-Unique: R49XuHfEOle7pJJ01ySK9w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 81647185A791;
-        Fri,  7 Jul 2023 00:01:26 +0000 (UTC)
-Received: from llong.com (unknown [10.22.9.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F4522166B25;
-        Fri,  7 Jul 2023 00:01:25 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] refscale: Fix use of uninitalized wait_queue_head_t
-Date:   Thu,  6 Jul 2023 20:01:17 -0400
-Message-Id: <20230707000117.2371697-1-longman@redhat.com>
+        with ESMTP id S230159AbjGGBpV (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 6 Jul 2023 21:45:21 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7D91BDB;
+        Thu,  6 Jul 2023 18:45:20 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qxx6j1vs1z4f3jYq;
+        Fri,  7 Jul 2023 09:45:17 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgBHZjArbqdkkI6mMg--.50539S2;
+        Fri, 07 Jul 2023 09:45:17 +0800 (CST)
+Subject: Re: [PATCH v4 bpf-next 12/14] bpf: Introduce bpf_mem_free_rcu()
+ similar to kfree_rcu().
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     tj@kernel.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com, daniel@iogearbox.net,
+        andrii@kernel.org, void@manifault.com, paulmck@kernel.org
+References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
+ <20230706033447.54696-13-alexei.starovoitov@gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <2c09b7d7-b91c-c561-3fd6-b8483aab01dc@huaweicloud.com>
+Date:   Fri, 7 Jul 2023 09:45:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+In-Reply-To: <20230706033447.54696-13-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgBHZjArbqdkkI6mMg--.50539S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruryfGw1fJF1UJFyUKF48JFb_yoWfJwb_WF
+        WkXF1rAr47GFWvqw1rCF4xAa15G3W5Ja409ry5XFyDGF15Wr98AF4xXry3Aayktw4SqF1U
+        J34rJa1DKrnxZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+        xUOyCJDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-It was found that running the refscale test might sometimes crash the
-kernel with the following error:
 
-[ 8569.952896] BUG: unable to handle page fault for address: ffffffffffffffe8
-[ 8569.952900] #PF: supervisor read access in kernel mode
-[ 8569.952902] #PF: error_code(0x0000) - not-present page
-[ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
-[ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
-[ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS 1.2.4 05/28/2021
-[ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
-  :
-[ 8569.952940] Call Trace:
-[ 8569.952941]  <TASK>
-[ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
-[ 8569.952959]  kthread+0x10e/0x130
-[ 8569.952966]  ret_from_fork+0x1f/0x30
-[ 8569.952973]  </TASK>
 
-This is likely caused by the fact that init_waitqueue_head() is called
-after the ref_scale_reader kthread is created. So the kthread may try
-to use the waitqueue head before it is properly initialized. Fix this
-by initializing the waitqueue head first before kthread creation.
+On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Introduce bpf_mem_[cache_]free_rcu() similar to kfree_rcu().
+> Unlike bpf_mem_[cache_]free() that links objects for immediate reuse into
+> per-cpu free list the _rcu() flavor waits for RCU grace period and then moves
+> objects into free_by_rcu_ttrace list where they are waiting for RCU
+> task trace grace period to be freed into slab.
+>
+> The life cycle of objects:
+> alloc: dequeue free_llist
+> free: enqeueu free_llist
+> free_rcu: enqueue free_by_rcu -> waiting_for_gp
+> free_llist above high watermark -> free_by_rcu_ttrace
+> after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+> free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read-side synchronization")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/rcu/refscale.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 1970ce5f22d4..e365d6f8c139 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -1107,12 +1107,11 @@ ref_scale_init(void)
- 	VERBOSE_SCALEOUT("Starting %d reader threads", nreaders);
- 
- 	for (i = 0; i < nreaders; i++) {
-+		init_waitqueue_head(&(reader_tasks[i].wq));
- 		firsterr = torture_create_kthread(ref_scale_reader, (void *)i,
- 						  reader_tasks[i].task);
- 		if (torture_init_error(firsterr))
- 			goto unwind;
--
--		init_waitqueue_head(&(reader_tasks[i].wq));
- 	}
- 
- 	// Main Task
--- 
-2.31.1
+Acked-by: Hou Tao <houtao1@huawei.com>
 
