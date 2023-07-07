@@ -2,116 +2,127 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4724AEB64D9
-	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 17:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 317F6EB64D9
+	for <rcu@archiver.kernel.org>; Fri,  7 Jul 2023 19:29:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbjGGR5z (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 13:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
+        id S232592AbjGGT3n (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 15:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjGGR5y (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 13:57:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1FD2108
-        for <rcu@vger.kernel.org>; Fri,  7 Jul 2023 10:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688752627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jJ/fuG3K5KSAUU81uckV1RdmVyNYdH1eHdjrqxK1TTw=;
-        b=CZ594bIgfcv+g6CtBgCjgZPAa0iyjmqhIQgWVGsEs5ZdjrxUkOg/pvNyir/cK6GojZeXtR
-        shr4fB8kj5e8lqfkYarDnU1A8Cq08HVhT0nIoeDe4sQ2ewQNOJb8ol58lW9sukw9BMEINM
-        IfgcdFiJAMR/J1sYPHX0Wd/Ti8OUBlU=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-510-Py09K79eOiubwylG_AYfpw-1; Fri, 07 Jul 2023 13:57:03 -0400
-X-MC-Unique: Py09K79eOiubwylG_AYfpw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0A895381D4D8;
-        Fri,  7 Jul 2023 17:57:03 +0000 (UTC)
-Received: from [10.22.34.12] (unknown [10.22.34.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E38A4087C6A;
-        Fri,  7 Jul 2023 17:57:02 +0000 (UTC)
-Message-ID: <f9531585-2782-bdfe-cdca-39d2de2e195f@redhat.com>
-Date:   Fri, 7 Jul 2023 13:57:02 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
+        with ESMTP id S233051AbjGGT1n (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 15:27:43 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3F426B0
+        for <rcu@vger.kernel.org>; Fri,  7 Jul 2023 12:25:11 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-76754b9eac0so208553385a.0
+        for <rcu@vger.kernel.org>; Fri, 07 Jul 2023 12:25:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1688757910; x=1691349910;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u+r3jktYVc7BJ0t7RIvh+DPkaX+O9am5ilz167T+8Rw=;
+        b=VksFiZLUMkRUpHwPfLwxO749mxs+riqT1fz/v77lK8YECz2jLXyeBn36G1BTzde71m
+         inTJDBVSJy+4wRdAg9ThlFwOCDK+wsUjCHVejqJ3AWaJ4XD6jA/KEb2XIgKfEoQIKcn3
+         hFPQMjfsrUT00FQ7KEPSGGVRmabgmg1Xq6ypk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688757910; x=1691349910;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u+r3jktYVc7BJ0t7RIvh+DPkaX+O9am5ilz167T+8Rw=;
+        b=WIDVP9oF5gTVtVnmzxiOYkKpABcrW9lSRsO5LITjfRv3Gc8/Af2p+FewCNS+CzrOsN
+         mF41kvqVGn+nFiLje4L3+wrtDvdbCFxHEn1WWEEyjsxw913JHbOR61wWk55qZ425OuRh
+         BcWR5SgVGehUKCLaYxvK25WcMtH0wTpzRTDm3IcMHDZ78TQKkrfNJmg0anG6e2O1rlcL
+         6hp1PrF87jX+j2lDXMgD8k0x8/cwlzONqB7666LbX+nj/6ZXKarrJeaE2WRCG8gPE6Q+
+         YY/zwvpxTaLpUYZlqbKqqCRTXa77d2+BHaJBgSsmHxOCeVEiwFqC2JiWlaflieV5xDSP
+         OrTg==
+X-Gm-Message-State: ABy/qLbErf4tPJ4MorE+V1FIWG7DbZm5md9pddkbUOosd3v10KofFgzI
+        PGPzVCnEVYz1gPYpt8YtokODbtF0sZ/ZUNTiZI8=
+X-Google-Smtp-Source: APBJJlGdt9CR1Br+OTI2jKF07n0KLFWGh5RQtRs6GLBBfCJFzu9aHwdJgrx+H0iU0UDJuixZQMchUw==
+X-Received: by 2002:a05:620a:28c4:b0:767:3b7d:687c with SMTP id l4-20020a05620a28c400b007673b7d687cmr7479809qkp.15.1688757909831;
+        Fri, 07 Jul 2023 12:25:09 -0700 (PDT)
+Received: from smtpclient.apple ([45.85.144.223])
+        by smtp.gmail.com with ESMTPSA id ou30-20020a05620a621e00b00754b7ee6922sm2131293qkn.9.2023.07.07.12.25.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Jul 2023 12:25:08 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
 Subject: Re: [PATCH] refscale: Fix use of uninitalized wait_queue_head_t
-Content-Language: en-US
-To:     paulmck@kernel.org
+Date:   Fri, 7 Jul 2023 15:24:58 -0400
+Message-Id: <140FCD95-052F-4DA9-AA5A-374D417490A9@joelfernandes.org>
+References: <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
 Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230707000117.2371697-1-longman@redhat.com>
- <y5g37s3yhsqtmdoqziwnsd4kxtudlpqwv2iunt372abpmdzrry@43e54c374j4s>
- <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
- <8b827d44-b19b-4eb2-8860-f419cc61084e@paulmck-laptop>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <8b827d44-b19b-4eb2-8860-f419cc61084e@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+In-Reply-To: <b3a22928-6537-ebca-d9c2-82d2f940208f@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 7/7/23 12:16, Paul E. McKenney wrote:
-> On Fri, Jul 07, 2023 at 10:56:51AM -0400, Waiman Long wrote:
->> On 7/7/23 10:07, Davidlohr Bueso wrote:
+
+
+> On Jul 7, 2023, at 10:56 AM, Waiman Long <longman@redhat.com> wrote:
+>=20
+> =EF=BB=BFOn 7/7/23 10:07, Davidlohr Bueso wrote:
 >>> On Thu, 06 Jul 2023, Waiman Long wrote:
->>>
->>>> It was found that running the refscale test might sometimes crash the
->>>> kernel with the following error:
->>>>
->>>> [ 8569.952896] BUG: unable to handle page fault for address:
->>>> ffffffffffffffe8
->>>> [ 8569.952900] #PF: supervisor read access in kernel mode
->>>> [ 8569.952902] #PF: error_code(0x0000) - not-present page
->>>> [ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
->>>> [ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
->>>> [ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS
->>>> 1.2.4 05/28/2021
->>>> [ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
->>>>   :
->>>> [ 8569.952940] Call Trace:
->>>> [ 8569.952941]  <TASK>
->>>> [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
->>>> [ 8569.952959]  kthread+0x10e/0x130
->>>> [ 8569.952966]  ret_from_fork+0x1f/0x30
->>>> [ 8569.952973]  </TASK>
->>>>
->>>> This is likely caused by the fact that init_waitqueue_head() is called
->>>> after the ref_scale_reader kthread is created. So the kthread may try
->>>> to use the waitqueue head before it is properly initialized. Fix this
->>>> by initializing the waitqueue head first before kthread creation.
->>>>
->>>> Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of
->>>> read-side synchronization")
->>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>> Strange this wasn't reported sooner.
->> Red Hat does have a pretty large QE organization that run all sort of tests
->> include this one pretty frequently. The race window is pretty small, but
->> they did hit this once in a while.
-> I do run this fairly frequently, but haven't managed to hit it.
->
-> Good show on making it happen, and looking forward to the updated patch!
+>>>=20
+>>> It was found that running the refscale test might sometimes crash the
+>>> kernel with the following error:
+>>>=20
+>>> [ 8569.952896] BUG: unable to handle page fault for address: fffffffffff=
+fffe8
+>>> [ 8569.952900] #PF: supervisor read access in kernel mode
+>>> [ 8569.952902] #PF: error_code(0x0000) - not-present page
+>>> [ 8569.952904] PGD c4b048067 P4D c4b049067 PUD c4b04b067 PMD 0
+>>> [ 8569.952910] Oops: 0000 [#1] PREEMPT_RT SMP NOPTI
+>>> [ 8569.952916] Hardware name: Dell Inc. PowerEdge R750/0WMWCR, BIOS 1.2.=
+4 05/28/2021
+>>> [ 8569.952917] RIP: 0010:prepare_to_wait_event+0x101/0x190
+>>>  :
+>>> [ 8569.952940] Call Trace:
+>>> [ 8569.952941]  <TASK>
+>>> [ 8569.952944]  ref_scale_reader+0x380/0x4a0 [refscale]
+>>> [ 8569.952959]  kthread+0x10e/0x130
+>>> [ 8569.952966]  ret_from_fork+0x1f/0x30
+>>> [ 8569.952973]  </TASK>
+>>>=20
+>>> This is likely caused by the fact that init_waitqueue_head() is called
+>>> after the ref_scale_reader kthread is created. So the kthread may try
+>>> to use the waitqueue head before it is properly initialized. Fix this
+>>> by initializing the waitqueue head first before kthread creation.
+>>>=20
+>>> Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read=
+-side synchronization")
+>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>=20
+>> Strange this wasn't reported sooner.
+>=20
+> Red Hat does have a pretty large QE organization that run all sort of test=
+s include this one pretty frequently. The race window is pretty small, but t=
+hey did hit this once in a while.
 
-v2 sent with a bit more explanation text in the commit log.
+Having worked on this test initially, I am happy to hear that Redhat runs th=
+is test!
 
-Cheers,
-Longman
+Thanks for fixing this issue.
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
+-Joel
+
+>=20
+> Cheers,
+> Longman
+>=20
