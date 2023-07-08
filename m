@@ -2,163 +2,187 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D7E7EB64D9
-	for <rcu@archiver.kernel.org>; Sat,  8 Jul 2023 02:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55ABFEB64DA
+	for <rcu@archiver.kernel.org>; Sat,  8 Jul 2023 02:17:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjGHCLq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 7 Jul 2023 22:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
+        id S232809AbjGHCRf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 7 Jul 2023 22:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbjGHCLp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 7 Jul 2023 22:11:45 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D011BF4;
-        Fri,  7 Jul 2023 19:11:44 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1b0605d4d11so2416417fac.1;
-        Fri, 07 Jul 2023 19:11:44 -0700 (PDT)
+        with ESMTP id S231245AbjGHCR3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 7 Jul 2023 22:17:29 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937C11FE7;
+        Fri,  7 Jul 2023 19:17:28 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-262ff3a4659so1908542a91.0;
+        Fri, 07 Jul 2023 19:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688782303; x=1691374303;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=c5+LP2Dka2g4JRdhYjLYJ87aW46X7bmdl20w2O3x1Fc=;
-        b=RVO/YQQr617tdYWue9F/AQ45bflDt3Vdcwg94pnXCS8yqRn68RmBnjsuJZG0qLbOc+
-         1bRo515Ia8FmOYLvV3cNZcY9RLqYjplGaVUEUHM00Ur7KRg72wuGwV1R3mq0LxLJw8uQ
-         KEag26c6sjNEXtpJlj1+QeAGosU2/JR9ZfmziHsRP5G3WuLyKJb31jvAME3Eb7+ElBz2
-         qQq6SjxfzYsWxVio71xj/wvZSaMl86louWcJOT62J0IhCWKwKU1GZlGGkBjsobQ80Z8j
-         ec9r2DOyuccQo/QKmaCd91EQN/186XQCJM6wUTekOI+GO0zxL7oo5NsV8s45+ozdMxuE
-         lbsQ==
+        d=gmail.com; s=20221208; t=1688782648; x=1691374648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SXGxtWnZxEjmWeImzBLbjmzHOWkOOTwPng2O3XQMmHk=;
+        b=BOZCXbL0d8ukbWVRAvqPpROsRcuxIQhor3FlO92kfXPW2NLGczXd08YBObZpsxzuOM
+         ayRn+DUzpqM2Avo7NWvb1bMVcgnT1YqUCrmbA4Io4nMKxBhxwUwvE+ncXXLgwogqND9x
+         0qiKhu3S2TjKZDJ3ozVSa6xdFo/tgtJ7eN79YFSkTZrNRqeRcjluo6zrb8VnhGSCKWr/
+         7lnos74hPFhs58QWh7s7G4zOrS7808CIKYIpeIz2kNTK47SNHB2jQ8CFk/tVRPxFx4aT
+         4PoZ8OYG/Db8lkUhYwH5XY6fI3GHk5UPRsfWEF/xHk+dmjgrCBgeg81P5rME2ZJXeuoW
+         uG0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688782303; x=1691374303;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c5+LP2Dka2g4JRdhYjLYJ87aW46X7bmdl20w2O3x1Fc=;
-        b=I7bVN81VDu4wjUhCWQth8J80/rNReWtxhm3VUpaEon2sedHArbIXP783qqsN83kNnJ
-         HyBwQIkT1t6WIE2kzvOMKaA14B3q2D0vMmLxAuN1UOgrEwm6lkb0fnM3v27AREhz5B4p
-         jPmCnFoXxn7/YjNEo0zc1iAYC6aVGIWueS/AKZay9jfLD7lz5nT0rGUmV/untHIaLsDv
-         3tBQJ5NbVj8B9p9xy0EcEYFyv9KY4ZBsokz1lJysusxYEx0eEF+Cu+EkbuyE39W6WRz8
-         rwIb67Hng8cq66F6YQRn2aql6zpuu5N7hcb5167DvSp8kK7LTEP/6TGklcojJEqx7dQd
-         r2UA==
-X-Gm-Message-State: ABy/qLY0UB/zPIPIi+L3MdNm+wj42tkiDRRQX/E6XfSN9NIYM167FOa4
-        0vMHv1TOiEbOSkqRTEu/gOCcPWKuRV7NnZpPdSXJ0SvH0KU=
-X-Google-Smtp-Source: APBJJlFZx2rjsRV9iAkOCPH+w3UTopPmyHfitPi57JOUsvQE/Ub/Gh3ea0RD8GwRk42OuAHbC49wN38QyMRq1AI4dak=
-X-Received: by 2002:a05:6870:a2d1:b0:1a6:a6fc:f6f1 with SMTP id
- w17-20020a056870a2d100b001a6a6fcf6f1mr8450138oak.26.1688782302756; Fri, 07
- Jul 2023 19:11:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688782648; x=1691374648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SXGxtWnZxEjmWeImzBLbjmzHOWkOOTwPng2O3XQMmHk=;
+        b=lEIGcyRsnbEuhQGYbGVcs83X21YFo9+2g2uojdsgUJkZofDflT/OXMf61LBVIZISe/
+         kbhQYNJKaz3n3zTKAjOpIj8c/E1+8G8CDqYB7Ct+pExDcernyxV2MPM23MfwdahROJnO
+         gVBjLErs9P9jSK31OqAvCORjH4qqU3W7msSwFPjjv5ygV9y3I5HdtUsfNAxaW1KaNtQI
+         3Ot2cVegIO/h0I7oZUx9thkJZAkYtqeTJkRmgw6B9A8nddBt+dnV7fABtQD58QYcZr1t
+         XaRyw2rD6LLpHLB0gZDSy9WizCB+Cf7AP1FNuj96Gp2TAxVB+f+xJneP2dzxDtd2Vldx
+         EUnA==
+X-Gm-Message-State: ABy/qLalvO6VlY26FkzDOzG8qpferf0ltNrWlYgTqKCeKtXuYLFRYrgm
+        BeXCA7wx4J/kD2wXoWs7UeYyDu84cygNWB2cbBc=
+X-Google-Smtp-Source: APBJJlFsIRF3TW3QXD5SryFDmhkns31WHfZjDAKXQ6QSDTuOZ2eaIiGmkGzPAs8eRKFoHe3sei332C1f0l/K1Yl7jCY=
+X-Received: by 2002:a17:90a:ac0d:b0:262:ec13:d3a with SMTP id
+ o13-20020a17090aac0d00b00262ec130d3amr6995449pjq.28.1688782647980; Fri, 07
+ Jul 2023 19:17:27 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230704082615.7415-1-qiang.zhang1211@gmail.com>
  <77d16cbb-b28c-4b13-aecb-9ad787559557@paulmck-laptop> <CALm+0cW6DojcxSnzf2mMXhXP-MHJ0aEvSqyh1TbtvBC4bzfsOw@mail.gmail.com>
- <087e3da2-ffd9-4cf4-8893-73f4edc3cfba@paulmck-laptop>
-In-Reply-To: <087e3da2-ffd9-4cf4-8893-73f4edc3cfba@paulmck-laptop>
+ <087e3da2-ffd9-4cf4-8893-73f4edc3cfba@paulmck-laptop> <CAEXW_YSfMSQ=z-pEO16_jwZSYt5N+zJHFaDOxDsPNoojm1v4Sg@mail.gmail.com>
+ <CAEXW_YR41AbVKncRP32sGEVApdmA2-R-2J0M-faGws38ECtsPw@mail.gmail.com>
+In-Reply-To: <CAEXW_YR41AbVKncRP32sGEVApdmA2-R-2J0M-faGws38ECtsPw@mail.gmail.com>
 From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Sat, 8 Jul 2023 10:11:30 +0800
-Message-ID: <CALm+0cV2WdFzSaLpGodqv6idxvBSjupHPHNuK_z3r8Xya7KUuw@mail.gmail.com>
+Date:   Sat, 8 Jul 2023 10:17:15 +0800
+Message-ID: <CALm+0cUtqWtC9XUszRuz5hLjoKv_ZY-4Oqp1OJ-jpbg1s4vgRQ@mail.gmail.com>
 Subject: Re: [PATCH] srcu: Make srcu_might_be_idle() take early return if
  rcu_gp_is_normal() return true
-To:     paulmck@kernel.org
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Sat, Jul 8, 2023 at 1:18=E2=80=AFAM Joel Fernandes <joel@joelfernandes.o=
+rg> wrote:
 >
-> On Fri, Jul 07, 2023 at 06:28:29PM +0800, Z qiang wrote:
-> > >
-> > > On Tue, Jul 04, 2023 at 04:26:15PM +0800, Zqiang wrote:
-> > > > When invoke synchronize_srcu(), in the srcu_might_be_idle(), the current
-> > > > CPU's sdp->lock will be acquired to check whether there are pending
-> > > > callbacks in the sdp->srcu_cblist, if there are no pending callbacks,
-> > > > probabilistically probe global state to decide whether to convert to
-> > > > synchronize_srcu_expedited() call. however, for the rcupdate.rcu_normal=1
-> > > > kernels and after the rcu_set_runtime_mode() is called, invoke the
-> > > > rcu_gp_is_normal() is always return true, this mean that invoke the
-> > > > synchronize_srcu_expedited() always fall back to synchronize_srcu(),
-> > > > so there is no need to acquire sdp->lock to check sdp->srcu_cblist and
-> > > > probe global state in srcu_might_be_idle().
-> > > >
-> > > > This commit therefore make srcu_might_be_idle() return immediately if the
-> > > > rcu_gp_is_normal() return true.
-> > > >
-> > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > > ---
-> > > >  kernel/rcu/srcutree.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > index 20d7a238d675..aea49cb60a45 100644
-> > > > --- a/kernel/rcu/srcutree.c
-> > > > +++ b/kernel/rcu/srcutree.c
-> > > > @@ -1172,6 +1172,8 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
-> > > >       unsigned long tlast;
-> > > >
-> > > >       check_init_srcu_struct(ssp);
-> > > > +     if (rcu_gp_is_normal())
-> > > > +             return false;
-> > >
-> > > Again, thank you for looking into SRCU!
-> > >
-> > > I am not at all enthusiastic about this one.  With this change, the name
-> > > srcu_might_be_idle() is no longer accurate.  Yes, the name could change,
-> > > but any name would be longer and more confusing.
-> > >
-> > > So unless there is a measureable benefit to this one on a production
-> > > workload, I cannot justify taking it.
-> > >
-> > > Is there a measureable benefit?
+> On Fri, Jul 7, 2023 at 1:16=E2=80=AFPM Joel Fernandes <joel@joelfernandes=
+.org> wrote:
 > >
-> > Hi, Paul
+> > On Fri, Jul 7, 2023 at 12:05=E2=80=AFPM Paul E. McKenney <paulmck@kerne=
+l.org> wrote:
+> > >
+> > > On Fri, Jul 07, 2023 at 06:28:29PM +0800, Z qiang wrote:
+> > > > >
+> > > > > On Tue, Jul 04, 2023 at 04:26:15PM +0800, Zqiang wrote:
+> > > > > > When invoke synchronize_srcu(), in the srcu_might_be_idle(), th=
+e current
+> > > > > > CPU's sdp->lock will be acquired to check whether there are pen=
+ding
+> > > > > > callbacks in the sdp->srcu_cblist, if there are no pending call=
+backs,
+> > > > > > probabilistically probe global state to decide whether to conve=
+rt to
+> > > > > > synchronize_srcu_expedited() call. however, for the rcupdate.rc=
+u_normal=3D1
+> > > > > > kernels and after the rcu_set_runtime_mode() is called, invoke =
+the
+> > > > > > rcu_gp_is_normal() is always return true, this mean that invoke=
+ the
+> > > > > > synchronize_srcu_expedited() always fall back to synchronize_sr=
+cu(),
+> > > > > > so there is no need to acquire sdp->lock to check sdp->srcu_cbl=
+ist and
+> > > > > > probe global state in srcu_might_be_idle().
+> > > > > >
+> > > > > > This commit therefore make srcu_might_be_idle() return immediat=
+ely if the
+> > > > > > rcu_gp_is_normal() return true.
+> > > > > >
+> > > > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > > > > ---
+> > > > > >  kernel/rcu/srcutree.c | 2 ++
+> > > > > >  1 file changed, 2 insertions(+)
+> > > > > >
+> > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > > > index 20d7a238d675..aea49cb60a45 100644
+> > > > > > --- a/kernel/rcu/srcutree.c
+> > > > > > +++ b/kernel/rcu/srcutree.c
+> > > > > > @@ -1172,6 +1172,8 @@ static bool srcu_might_be_idle(struct src=
+u_struct *ssp)
+> > > > > >       unsigned long tlast;
+> > > > > >
+> > > > > >       check_init_srcu_struct(ssp);
+> > > > > > +     if (rcu_gp_is_normal())
+> > > > > > +             return false;
+> > > > >
+> > > > > Again, thank you for looking into SRCU!
+> > > > >
+> > > > > I am not at all enthusiastic about this one.  With this change, t=
+he name
+> > > > > srcu_might_be_idle() is no longer accurate.  Yes, the name could =
+change,
+> > > > > but any name would be longer and more confusing.
+> > > > >
+> > > > > So unless there is a measureable benefit to this one on a product=
+ion
+> > > > > workload, I cannot justify taking it.
+> > > > >
+> > > > > Is there a measureable benefit?
+> > > >
+> > > > Hi, Paul
+> > > >
+> > > > I only find that for Preempt-RT kernel,  the rcu_normal_after_boot =
+is
+> > > > set by default:
+> > > > static int rcu_normal_after_boot =3D IS_ENABLED(CONFIG_PREEMPT_RT);
+> > > > This affects only rcu but also srcu, this make the synchronize_srcu=
+() and
+> > > > synchronize_srcu_expedited() always fall back to __synchronize_srcu=
+(ssp, true),
+> > > > this means that call the srcu_might_be_idle() is meaningless.
+> > >
+> > > I do understand that the current setup favors default kernel builds a=
+t
+> > > runtime by a few low-cost instructions, and that your change favors,
+> > > as you say, kernels built for real-time, kernels built for certain ty=
+pes
+> > > of HPC workloads, and all kernels during a small time during boot.
+> > >
+> > > My question is instead whether any of this makes a measureable differ=
+ence
+> > > at the system level.
+> > >
+> > > My guess is "no, not even close", but the way to convince me otherwis=
+e
+> > > would be to actually run the workload and kernels on real hardware an=
+d
+> > > provide measurements showing a statistically significant difference t=
+hat
+> > > the workload(s) in question care(s) about.
+> > >
+> > > So what can you show me?
+> > >
+> > > And srcu_might_be_idle() is not meaningless in that situation, just
+> > > ignored completely.  And that is in fact the nature and purpose of th=
+e
+> > > C-language || operator.  ;-)
 > >
-> > I only find that for Preempt-RT kernel,  the rcu_normal_after_boot is
-> > set by default:
-> > static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
-> > This affects only rcu but also srcu, this make the synchronize_srcu() and
-> > synchronize_srcu_expedited() always fall back to __synchronize_srcu(ssp, true),
-> > this means that call the srcu_might_be_idle() is meaningless.
+> > I agree with Paul, without any evidence of improvement, optimizing an
+> > obvious slow path is a NAK.
 >
-> I do understand that the current setup favors default kernel builds at
-> runtime by a few low-cost instructions, and that your change favors,
-> as you say, kernels built for real-time, kernels built for certain types
-> of HPC workloads, and all kernels during a small time during boot.
->
-> My question is instead whether any of this makes a measureable difference
-> at the system level.
->
-> My guess is "no, not even close", but the way to convince me otherwise
-> would be to actually run the workload and kernels on real hardware and
-> provide measurements showing a statistically significant difference that
-> the workload(s) in question care(s) about.
->
-> So what can you show me?
->
-> And srcu_might_be_idle() is not meaningless in that situation, just
-> ignored completely.  And that is in fact the nature and purpose of the
-> C-language || operator.  ;-)
+> Just to clarify, when I meant improvement I meant any kind (ex. better
+> for maintenance, better performance numbers etc.). In this case, the
+> extra 2 lines does not seem to buy much AFAICS.
 >
 
-Agree with you :)
-This make me want to ask another question,  why srcu also use
-rcupdate.rcu_normal and rcupdate.rcu_expedited to decide expedited
-srcu grace-period or only use normal grace-period instead of
-generating srcu_normal and srcu_expedited?
+Agree, optimization does require performance data.
 
 Thanks
 Zqiang
 
 >
->                                                         Thanx, Paul
->
-> > Thanks
-> > Zqiang
-> >
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > >       /* If the local srcu_data structure has callbacks, not idle.  */
-> > > >       sdp = raw_cpu_ptr(ssp->sda);
-> > > >       spin_lock_irqsave_rcu_node(sdp, flags);
-> > > > --
-> > > > 2.17.1
-> > > >
+> Thanks.
