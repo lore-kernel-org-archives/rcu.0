@@ -2,103 +2,91 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F61CC001B0
-	for <rcu@archiver.kernel.org>; Mon, 10 Jul 2023 20:31:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E670EB64DA
+	for <rcu@archiver.kernel.org>; Mon, 10 Jul 2023 20:33:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbjGJUbP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Jul 2023 16:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
+        id S229659AbjGJUdF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Jul 2023 16:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbjGJUbG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Jul 2023 16:31:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E7510FD;
-        Mon, 10 Jul 2023 13:30:45 -0700 (PDT)
+        with ESMTP id S230465AbjGJUdB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Jul 2023 16:33:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A813DAD;
+        Mon, 10 Jul 2023 13:33:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34F52611C6;
-        Mon, 10 Jul 2023 20:30:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91DD7C433C8;
-        Mon, 10 Jul 2023 20:30:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 439CE611DC;
+        Mon, 10 Jul 2023 20:33:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D16EC433C7;
+        Mon, 10 Jul 2023 20:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689021021;
-        bh=+wP0eAg2GbC5oQ+lb4sHxBJC/hNB0xXugQykCtxdp3Q=;
+        s=k20201202; t=1689021179;
+        bh=DUlvTGQbRlgHfvUIq64vgJvepRuPbwJU9Mj7tz1rw0s=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ph18YdcgRHei0djIICVwrzINl8fXNu2Jw01kwm6bnpg8sMfe2J/YRqfEKDwXSI+qJ
-         dXrpQeK20aARr8F7Ct7hmeUjISEnZ7ctt6yVzpzGDwyuuHzogL+eQ6gsxKrwZaCV+X
-         Jx7InrpQ5DHHzf9r2dRHzbWVl0M2VFltNgSQOz6Cd+Bnfy8MEY6Tw4XWu/5W2LXbC1
-         KIAwh/tVN/tkTx27x1ls/8jsZTfLv35O3PrMBGKZlew2mgvZNdZ4kXACpJ4vL4i9Zr
-         OBfzusJ4LI+DBJlQ6VnJr/3FdeSTqE0sReDH502YwHMZ6pURGMy4WVFp6fOcz645GC
-         Ec6w7khriGdAg==
+        b=NI6WSYFz2jmNWfkEvf0+/P78If/lMk7teaGNbkY14oPG5LxNRAlbj3Bw7XgvDAri5
+         aTMP2DQUhXpyDUvhmCsZHFCDg4mERmtcsk/aN5ClHpjAMGiEqGJUI5mLhbkJWuqDlc
+         SbxjivQ/TM4XEcCIeRdi84/dubkMYys++Rwh3i7HMtTnHfeZwyoJfAKcAUvGbG/usx
+         3zNzr4VpWHKOtZAMn2II9nS/fZjIb3xQtPk3UU2kNWxZn65BPj3s97gyQ6SeGZcBjh
+         eHO4HbQmZGmXLK+WvCvL5++3LjQdtoLrEr1iTKyi2C1uGxWZ8YdaVYymu1V+lHmk0T
+         6P2D1Ns9lM9jA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2F452CE008B; Mon, 10 Jul 2023 13:30:21 -0700 (PDT)
-Date:   Mon, 10 Jul 2023 13:30:21 -0700
+        id 213B7CE008B; Mon, 10 Jul 2023 13:32:59 -0700 (PDT)
+Date:   Mon, 10 Jul 2023 13:32:59 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Alan Huang <mmpgouride@gmail.com>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, josh@joshtriplett.org,
-        boqun.feng@gmail.com, corbet@lwn.net, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/2] rcu: Use WRITE_ONCE() for assignments to ->next for
- rculist_nulls
-Message-ID: <6563b226-0cbe-4600-be68-2748048cec78@paulmck-laptop>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] rcu: Don't dump the stalled CPU on where RCU GP
+ kthread last ran twice
+Message-ID: <33ec8708-35be-446a-8cc5-58d366a6d75d@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230706102849.437687-1-mmpgouride@gmail.com>
- <20230706102849.437687-2-mmpgouride@gmail.com>
- <CAEXW_YShqCHHH9Q1icU=oGBbeHO+a1PTY-Q-+KbqVdTm8mR3cw@mail.gmail.com>
+References: <20230705073020.2030-1-thunder.leizhen@huawei.com>
+ <20230705073020.2030-3-thunder.leizhen@huawei.com>
+ <39430021-dc0d-4abd-8266-642e4e2dc7df@paulmck-laptop>
+ <CAEXW_YR_t-x-eYKLFmruOLqZv91oi=AJKEEeuqYosejjdscn1g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YShqCHHH9Q1icU=oGBbeHO+a1PTY-Q-+KbqVdTm8mR3cw@mail.gmail.com>
+In-Reply-To: <CAEXW_YR_t-x-eYKLFmruOLqZv91oi=AJKEEeuqYosejjdscn1g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 04:01:07PM -0400, Joel Fernandes wrote:
-> On Thu, Jul 6, 2023 at 6:29 AM Alan Huang <mmpgouride@gmail.com> wrote:
+On Mon, Jul 10, 2023 at 03:55:16PM -0400, Joel Fernandes wrote:
+> On Mon, Jul 10, 2023 at 3:06 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > When the objects managed by rculist_nulls are allocated with
-> > SLAB_TYPESAFE_BY_RCU, readers may still hold references to this
-> > object that is being added, which means the modification of ->next
-> > is visible to readers. So, this patch uses WRITE_ONCE() for assignments
-> > to ->next.
+> > On Wed, Jul 05, 2023 at 03:30:20PM +0800, Zhen Lei wrote:
+> > > The stacks of all stalled CPUs will be dumped. If the CPU on where RCU GP
+> > > kthread last ran is stalled, its stack does not need to be dumped again.
+> > >
+> > > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > >
-> > Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-> > ---
-> >  include/linux/rculist_nulls.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-> > index ba4c00dd8005..89186c499dd4 100644
-> > --- a/include/linux/rculist_nulls.h
-> > +++ b/include/linux/rculist_nulls.h
-> > @@ -101,7 +101,7 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
-> >  {
-> >         struct hlist_nulls_node *first = h->first;
-> >
-> > -       n->next = first;
-> > +       WRITE_ONCE(n->next, first);
-> >         WRITE_ONCE(n->pprev, &h->first);
-> >         rcu_assign_pointer(hlist_nulls_first_rcu(h), n);
-> >         if (!is_a_nulls(first))
-> > @@ -137,7 +137,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
-> >                 last = i;
-> >
-> >         if (last) {
-> > -               n->next = last->next;
-> > +               WRITE_ONCE(n->next, last->next);
-> >                 n->pprev = &last->next;
-> >                 rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
-> >         } else {
+> > This one looks good.  Please feel free to rebase it before 1/2 and repost.
 > 
-> Don't you need READ_ONCE() for the read-side accesses as well?
+> Just a small comment:
+> I wondered if this would make it harder to identify which stack among
+> the various CPU stacks corresponds to the one the GP kthread is
+> running on. However, this line does print the CPU number of the
+> thread, so it is perhaps not an issue:
+> 
+>                 pr_err("%s kthread starved for %ld jiffies! g%ld f%#x
+> %s(%d) ->state=%#x ->cpu=%d\n",
+> 
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Both hlist_nulls_for_each_entry_rcu() and hlist_nulls_for_each_entry_safe()
-use rcu_dereference_raw().  To your point, both hlist_nulls_first_rcu()
-and hlist_nulls_next_rcu() look rather strange.  I would have expected
-them to also use rcu_dereference_raw().
+Thank you!  Zhen Lei, please feel free to add Joel's Reviewed-by on your
+next posting.
 
 							Thanx, Paul
