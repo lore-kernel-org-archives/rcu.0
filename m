@@ -2,96 +2,106 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D41D9EB64DA
-	for <rcu@archiver.kernel.org>; Mon, 10 Jul 2023 19:55:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88AD0EB64DA
+	for <rcu@archiver.kernel.org>; Mon, 10 Jul 2023 20:01:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbjGJTzh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Jul 2023 15:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
+        id S230258AbjGJUBY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Jul 2023 16:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjGJTzh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Jul 2023 15:55:37 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CAD13E
-        for <rcu@vger.kernel.org>; Mon, 10 Jul 2023 12:55:32 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b6fbf0c0e2so75224561fa.2
-        for <rcu@vger.kernel.org>; Mon, 10 Jul 2023 12:55:32 -0700 (PDT)
+        with ESMTP id S229954AbjGJUBY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Jul 2023 16:01:24 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D5413E
+        for <rcu@vger.kernel.org>; Mon, 10 Jul 2023 13:01:23 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b6ff1a637bso77694051fa.3
+        for <rcu@vger.kernel.org>; Mon, 10 Jul 2023 13:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689018931; x=1691610931;
+        d=joelfernandes.org; s=google; t=1689019281; x=1691611281;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/TuJbNypnpVhs5ccy6VCzsot2pQTpKecsxvKdtZKIDc=;
-        b=KPJY8cRksPc5Z0O4jWdx7NaLRSVgzJf7zoaN5iN7Rjd6JBlPbUP34t0S/Wyeb7wVYS
-         ZbtV1VnLSxowjpQqlvSoo6PWBGw3jzIYzeGPqrtpvxnFa+qkAceQdPECK/D2bcoFQX2J
-         rXi3290F7MqI0Vesipb7e2xYmoyzpcTfIiWC8=
+        bh=UVQddm2EFdyUg1lZY45lMs8lFNZyKaFAHPyUNGkCJXQ=;
+        b=TwY4aYwTH/qA6+coIWC80o97pbXwocmsDE8k0T5R+tc/7g1YooiSw1WkqeOdHg1KFz
+         GuUpRp5Ck2HuZANwYgDu58RbZF1Kp/oQCp32io6pstK1fO//JPi8dF9Ri/OUtcCPXQXW
+         05FdLd1S8rR44arV+clas0mYHnnqrgz6eiqR4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689018931; x=1691610931;
+        d=1e100.net; s=20221208; t=1689019281; x=1691611281;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/TuJbNypnpVhs5ccy6VCzsot2pQTpKecsxvKdtZKIDc=;
-        b=fJWsCp501ecRSF+cM0DUecoJHzPn7aEPzJo+BznHXWu6ocOG6B7AwPbGkM9oz3FxxU
-         TGqCz8IweeGHHB5YSOUU4Jfx/tfwHu6NwBms7KNx9gtcgr6DsA5Psh/S9jSvc0K8jlaF
-         4OjpMHGQ7lv5HB0+dYtfo/Hal0Jr1To0zG9e7b6LtSko1vwhrP9sAHnF8Ny+C5BOjGIP
-         C4Y65qH9x7FMp8vxh5C1TXoo/YZcfNqo59yVeK/jta39MhPSzzG8O4euKterkFQLoI2B
-         OgjyyK7xVCmIEunSsFDK+sk8fp9tUtRp7W5TMyI+pDiaRoo+bNoI1p/aIgwFP0NuiIG/
-         6lGw==
-X-Gm-Message-State: ABy/qLZrBCH/YpKfKYs7urAQ3c03paRd0/UdKg/08cnEl1P67YBM9pff
-        l20AZ0CvV3sYjxMuyRBu3l2YTZIhVxCLdr34ccJY6S9uhUKa2mvLL6U=
-X-Google-Smtp-Source: APBJJlE4GzEUhPNneqnHqAZyN9Cx1VMgS7n20DanqbTLQGz6tmFOKOmRk65skdqR0hjsqqeCdwk5pQFdcx/oW8GsqgA=
-X-Received: by 2002:a2e:8706:0:b0:2b6:cca1:975f with SMTP id
- m6-20020a2e8706000000b002b6cca1975fmr11339961lji.13.1689018930148; Mon, 10
- Jul 2023 12:55:30 -0700 (PDT)
+        bh=UVQddm2EFdyUg1lZY45lMs8lFNZyKaFAHPyUNGkCJXQ=;
+        b=Uwbtw45EaIjBcjevr+Yht+tGw4qPgj1TNA8GAW5rUJfgQYyu022NaO+Z0CbCpgq58a
+         9lp36kGfNQc9gn3/TrE112PKpHHCFaJRUr501ELCTwUhGo+9jNj7Ruz40WZoolaf1cpY
+         FtrdU3N7PFYwlAz37bC0jloFWfFJNyGYsEsiuGWze6mUSLIqmU7qqyrDyBKTqyCTV8V3
+         7lr0XhznlNrhfQebWV7qQ31vaYEmuZzQuudnhv+gLdrbKXdCCEuMOxhHd+OI4B+D0pKS
+         1KS7Buwuo4TF2lAiZ9rz/l+wzmVkZg8IkBVkwxY275vRkODld0on+STV09c23ndiY/7f
+         fstg==
+X-Gm-Message-State: ABy/qLYKG0Ffu/17dMg2cbqg87S2kmvLvkBrwW6AV4W/AUkri5onoiRx
+        0A/UwxFuS8F2UMsZmBNHrmEsMztBvx/q//LwTBt0uA==
+X-Google-Smtp-Source: APBJJlGgSLXp3yxbnFy0qDEYkmUE3GTfKvyf7aFFRBaVwMb9XLbkGdmsVhWedXpHmLgtZ5Ql2+eKt/zDdzDA5BtsEzI=
+X-Received: by 2002:a2e:9189:0:b0:2b4:78f6:d335 with SMTP id
+ f9-20020a2e9189000000b002b478f6d335mr10422076ljg.8.1689019280886; Mon, 10 Jul
+ 2023 13:01:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230705073020.2030-1-thunder.leizhen@huawei.com>
- <20230705073020.2030-3-thunder.leizhen@huawei.com> <39430021-dc0d-4abd-8266-642e4e2dc7df@paulmck-laptop>
-In-Reply-To: <39430021-dc0d-4abd-8266-642e4e2dc7df@paulmck-laptop>
+References: <20230706102849.437687-1-mmpgouride@gmail.com> <20230706102849.437687-2-mmpgouride@gmail.com>
+In-Reply-To: <20230706102849.437687-2-mmpgouride@gmail.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 10 Jul 2023 15:55:16 -0400
-Message-ID: <CAEXW_YR_t-x-eYKLFmruOLqZv91oi=AJKEEeuqYosejjdscn1g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rcu: Don't dump the stalled CPU on where RCU GP
- kthread last ran twice
-To:     paulmck@kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Mon, 10 Jul 2023 16:01:07 -0400
+Message-ID: <CAEXW_YShqCHHH9Q1icU=oGBbeHO+a1PTY-Q-+KbqVdTm8mR3cw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rcu: Use WRITE_ONCE() for assignments to ->next for rculist_nulls
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        josh@joshtriplett.org, boqun.feng@gmail.com, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 3:06=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
+On Thu, Jul 6, 2023 at 6:29=E2=80=AFAM Alan Huang <mmpgouride@gmail.com> wr=
+ote:
 >
-> On Wed, Jul 05, 2023 at 03:30:20PM +0800, Zhen Lei wrote:
-> > The stacks of all stalled CPUs will be dumped. If the CPU on where RCU =
-GP
-> > kthread last ran is stalled, its stack does not need to be dumped again=
-.
-> >
-> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> When the objects managed by rculist_nulls are allocated with
+> SLAB_TYPESAFE_BY_RCU, readers may still hold references to this
+> object that is being added, which means the modification of ->next
+> is visible to readers. So, this patch uses WRITE_ONCE() for assignments
+> to ->next.
 >
-> This one looks good.  Please feel free to rebase it before 1/2 and repost=
-.
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> ---
+>  include/linux/rculist_nulls.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.=
+h
+> index ba4c00dd8005..89186c499dd4 100644
+> --- a/include/linux/rculist_nulls.h
+> +++ b/include/linux/rculist_nulls.h
+> @@ -101,7 +101,7 @@ static inline void hlist_nulls_add_head_rcu(struct hl=
+ist_nulls_node *n,
+>  {
+>         struct hlist_nulls_node *first =3D h->first;
+>
+> -       n->next =3D first;
+> +       WRITE_ONCE(n->next, first);
+>         WRITE_ONCE(n->pprev, &h->first);
+>         rcu_assign_pointer(hlist_nulls_first_rcu(h), n);
+>         if (!is_a_nulls(first))
+> @@ -137,7 +137,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hl=
+ist_nulls_node *n,
+>                 last =3D i;
+>
+>         if (last) {
+> -               n->next =3D last->next;
+> +               WRITE_ONCE(n->next, last->next);
+>                 n->pprev =3D &last->next;
+>                 rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
+>         } else {
 
-Just a small comment:
-I wondered if this would make it harder to identify which stack among
-the various CPU stacks corresponds to the one the GP kthread is
-running on. However, this line does print the CPU number of the
-thread, so it is perhaps not an issue:
+Don't you need READ_ONCE() for the read-side accesses as well?
 
-                pr_err("%s kthread starved for %ld jiffies! g%ld f%#x
-%s(%d) ->state=3D%#x ->cpu=3D%d\n",
+thanks,
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Thanks.
+ - Joel
