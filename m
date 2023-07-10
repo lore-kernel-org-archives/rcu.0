@@ -2,91 +2,163 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9C6FC0015E
-	for <rcu@archiver.kernel.org>; Sun,  9 Jul 2023 14:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DB75EB64D9
+	for <rcu@archiver.kernel.org>; Mon, 10 Jul 2023 04:45:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbjGIO4s (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 9 Jul 2023 10:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
+        id S230273AbjGJEpe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Jul 2023 00:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjGIO4l (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 9 Jul 2023 10:56:41 -0400
+        with ESMTP id S230195AbjGJEpc (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Jul 2023 00:45:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08913E6A;
-        Sun,  9 Jul 2023 07:56:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A33128
+        for <rcu@vger.kernel.org>; Sun,  9 Jul 2023 21:45:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 212FD60BFF;
-        Sun,  9 Jul 2023 14:56:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A260C433C7;
-        Sun,  9 Jul 2023 14:56:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1868D6068C
+        for <rcu@vger.kernel.org>; Mon, 10 Jul 2023 04:45:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EE33C433C8;
+        Mon, 10 Jul 2023 04:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688914561;
-        bh=WfXYU0XTwimX7hvx+kdyEaHoUwk4tWIpYOn2FNmkAa4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VljG7WR1URF+pAxTspoFXc4fLHyauVk/qtI+NGS35TkBEc7KzyTLR0MPGZKCn6JgJ
-         7d9uPrGo0ohAyZ833tTW2TzAbzXpm1Gc2SOvejnuzpxtqPDIEOVCnaoVYFppMRL0sf
-         Mm/pB3BTCZmjPFGRvyNeCgLHmP2TgPN7UNSR7vKL4O7pwH2TARDJdiV8d7s+zJ5R5+
-         WuEYzjR9N6/pF8TqOCgFf/id9YEaBg2YxgHildPpHiQIa5BSzwboahKz2vq2KioqxH
-         OI4RgbimuNQw/+GOwdPdKFzjlZJPdNEklx3JNaDZL8TsvoX+2DKDM5gglnBHKvkotJ
-         iVfmM1pfSNzIQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, frederic@kernel.org,
-        quic_neeraju@quicinc.com, joel@joelfernandes.org,
-        josh@joshtriplett.org, boqun.feng@gmail.com, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4] rcu: Mark rcu_cpu_kthread() accesses to ->rcu_cpu_has_work
-Date:   Sun,  9 Jul 2023 10:55:58 -0400
-Message-Id: <20230709145558.512392-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        s=k20201202; t=1688964327;
+        bh=23Pfa5VQdzJCFB47DoTz0zuX9vR9F1OcJztYrLTuvkg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eLIlAPzdG0BYcspLLiI0DvQjTsF0yUIfXUx/MhiuWYS/gAnOM0df/yD6e1wmz5m15
+         7lAPpGfoDV5bMoQ99B65bzn8rUl9X7g0S//acODTz4KD8o4Mrv3fMslC7G8MYQflMZ
+         piNXRxKWCb21SzAs+vsA+LC1/VQrBbavV7lN3l8PkXMaPog48MkPjdQYjbSjZui0pz
+         dvL//A3ox/tQ87wlPmaoZ08gIaK7hpUfmXqi7s3Zl9GWbzWwSr9EYAp8ZuOFfHzEX6
+         NTv0hZ+Cd39qMPwS3gp6sq0lKXvoU0SjFOWdgoQQt3CoDMYVF27MF9ozb2fjPdgWMG
+         wQR63u1LgzKGA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E5190CE00A4; Sun,  9 Jul 2023 21:45:25 -0700 (PDT)
+Date:   Sun, 9 Jul 2023 21:45:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH v4 bpf-next 09/14] bpf: Allow reuse from
+ waiting_for_gp_ttrace list.
+Message-ID: <05074f73-9d84-41e8-8368-51311a794636@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
+ <20230706033447.54696-10-alexei.starovoitov@gmail.com>
+ <fe733a7b-3775-947a-23c0-0dadacabdca2@huaweicloud.com>
+ <CAADnVQJ3mNnzKEohRhYfAhBtB6R2Gh9dHAyqSJ5BU5ke+NTVuw@mail.gmail.com>
+ <4e0765b7-9054-a33d-8b1e-c986df353848@huaweicloud.com>
+ <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
+ <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com>
+ <CAADnVQL5O5uzy=sewNJ=NFSGV7JTb3ONHR=V2kWiT1YdN=ax8g@mail.gmail.com>
+ <3f72c4e7-340f-4374-9ebe-f9bffd08c755@paulmck-laptop>
+ <bdfc76dc-459a-7c23-bb23-854742fbd0c3@huaweicloud.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.249
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <bdfc76dc-459a-7c23-bb23-854742fbd0c3@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Sat, Jul 08, 2023 at 03:03:40PM +0800, Hou Tao wrote:
+> Hi,
+> 
+> On 7/8/2023 1:47 AM, Paul E. McKenney wrote:
+> > On Fri, Jul 07, 2023 at 09:11:22AM -0700, Alexei Starovoitov wrote:
+> >> On Thu, Jul 6, 2023 at 9:37 PM Hou Tao <houtao@huaweicloud.com> wrote:
+> SNIP
+> >>> I guess you're assuming that alloc_bulk() from irq_work
+> >>> is running within rcu_tasks_trace critical section,
+> >>> so __free_rcu_tasks_trace() callback will execute after
+> >>> irq work completed?
+> >>> I don't think that's the case.
+> >>> Yes. The following is my original thoughts. Correct me if I was wrong:
+> >>>
+> >>> 1. llist_del_first() must be running concurrently with llist_del_all().
+> >>> If llist_del_first() runs after llist_del_all(), it will return NULL
+> >>> directly.
+> >>> 2. call_rcu_tasks_trace() must happen after llist_del_all(), else the
+> >>> elements in free_by_rcu_ttrace will not be freed back to slab.
+> >>> 3. call_rcu_tasks_trace() will wait for one tasks trace RCU grace period
+> >>> to call __free_rcu_tasks_trace()
+> >>> 4. llist_del_first() in running in an context with irq-disabled, so the
+> >>> tasks trace RCU grace period will wait for the end of llist_del_first()
+> >>>
+> >>> It seems you thought step 4) is not true, right ?
+> >> Yes. I think so. For two reasons:
+> >>
+> >> 1.
+> >> I believe irq disabled region isn't considered equivalent
+> >> to rcu_read_lock_trace() region.
+> >>
+> >> Paul,
+> >> could you clarify ?
+> > You are correct, Alexei.  Unlike vanilla RCU, RCU Tasks Trace does not
+> > count irq-disabled regions of code as readers.
+> 
+> I see. But I still have one question: considering that in current
+> implementation one Tasks Trace RCU grace period implies one vanilla RCU
+> grace period (aka rcu_trace_implies_rcu_gp), so in my naive
+> understanding of RCU, does that mean __free_rcu_tasks_trace() will be
+> invoked after the expiration of current Task Trace RCU grace period,
+> right ? And does it also mean __free_rcu_tasks_trace() will be invoked
+> after the expiration of current vanilla RCU grace period, right ? If
+> these two conditions above are true, does it mean
+> __free_rcu_tasks_trace() will wait for the irq-disabled code reigion ?
 
-[ Upstream commit a24c1aab652ebacf9ea62470a166514174c96fe1 ]
+First, good show digging into the code!
 
-The rcu_data structure's ->rcu_cpu_has_work field can be modified by
-any CPU attempting to wake up the rcuc kthread.  Therefore, this commit
-marks accesses to this field from the rcu_cpu_kthread() function.
+However, this is guaranteed only if rcu_trace_implies_rcu_gp(), which
+right now happens to return the constant true.  In other words, that is
+an accident of the current implementation.  To rely on this, you must
+check the return value of rcu_trace_implies_rcu_gp() and then have some
+alternative code that does not rely on that synchronize_rcu().
 
-This data race was reported by KCSAN.  Not appropriate for backporting
-due to failure being unlikely.
+> > But why not just put an rcu_read_lock_trace() and a matching
+> > rcu_read_unlock_trace() within that irq-disabled region of code?
+> >
+> > For completeness, if it were not for CONFIG_TASKS_TRACE_RCU_READ_MB,
+> > Hou Tao would be correct from a strict current-implementation
+> > viewpoint.  The reason is that, given the current implementation in
+> > CONFIG_TASKS_TRACE_RCU_READ_MB=n kernels, a task must either block or
+> > take an IPI in order for the grace-period machinery to realize that this
+> > task is done with all prior readers.
+> 
+> Thanks for the detailed explanation.
+> 
+> > However, we need to account for the possibility of IPI-free
+> > implementations, for example, if the real-time guys decide to start
+> > making heavy use of BPF sleepable programs.  They would then insist on
+> > getting rid of those IPIs for CONFIG_PREEMPT_RT=y kernels.  At which
+> > point, irq-disabled regions of code will absolutely not act as
+> > RCU tasks trace readers.
+> >
+> > Again, why not just put an rcu_read_lock_trace() and a matching
+> > rcu_read_unlock_trace() within that irq-disabled region of code?
+> >
+> > Or maybe there is a better workaround.
+> 
+> Yes. I think we could use rcu_read_{lock,unlock}_trace to fix the ABA
+> problem for free_by_rcu_ttrace.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/rcu/tree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+That sounds good to me!
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 615283404d9dc..98d64f107fbb7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2457,12 +2457,12 @@ static void rcu_cpu_kthread(unsigned int cpu)
- 		*statusp = RCU_KTHREAD_RUNNING;
- 		local_irq_disable();
- 		work = *workp;
--		*workp = 0;
-+		WRITE_ONCE(*workp, 0);
- 		local_irq_enable();
- 		if (work)
- 			rcu_core();
- 		local_bh_enable();
--		if (*workp == 0) {
-+		if (!READ_ONCE(*workp)) {
- 			trace_rcu_utilization(TPS("End CPU kthread@rcu_wait"));
- 			*statusp = RCU_KTHREAD_WAITING;
- 			return;
--- 
-2.39.2
+							Thanx, Paul
 
+> >> 2.
+> >> Even if 1 is incorrect, in RT llist_del_first() from alloc_bulk()
+> >> runs "in a per-CPU thread in preemptible context."
+> >> See irq_work_run_list.
+> > Agreed, under RT, "interrupt handlers" often run in task context.
+> 
+> Yes, I missed that. I misread alloc_bulk(), and it seems it only does
+> inc_active() for c->free_llist.
+> > 						Thanx, Paul
+> 
