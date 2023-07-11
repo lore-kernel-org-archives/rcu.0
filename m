@@ -2,157 +2,117 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A83CFEB64DC
-	for <rcu@archiver.kernel.org>; Tue, 11 Jul 2023 16:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AB49EB64DC
+	for <rcu@archiver.kernel.org>; Tue, 11 Jul 2023 16:46:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbjGKQmE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Jul 2023 12:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
+        id S231901AbjGKQqb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Jul 2023 12:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjGKQmD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Jul 2023 12:42:03 -0400
+        with ESMTP id S230490AbjGKQqH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Jul 2023 12:46:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A4412F;
-        Tue, 11 Jul 2023 09:42:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2F61710;
+        Tue, 11 Jul 2023 09:45:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BB6F61562;
-        Tue, 11 Jul 2023 16:41:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1AC4C433C8;
-        Tue, 11 Jul 2023 16:41:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4390B61578;
+        Tue, 11 Jul 2023 16:45:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F642C433C7;
+        Tue, 11 Jul 2023 16:45:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689093718;
-        bh=e12fVv+jbg+rtuqgZVdbfY4QsX3pyZ0VOma3IqU2+NY=;
+        s=k20201202; t=1689093918;
+        bh=QHHaVhuDb/fpz3+5xT4XiUFFyUebF9LSiDkWDmgfTbE=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZA/ODN8NQ5VUYztVEv5WCj/EDFBzIgVSBCbRM8NBJgB04WuxBTE9U+m3rV/eFzGbY
-         eecTHXoY3UfvaaRq1fMeI2KQF1UbO21eUW4TJNMFUNxNf4iBfcvUMk6iZDx1QmpKIg
-         Zl55cGXb2v/WSII0Th2ZwiS2p+K5jJbJ1CWY3Q57xOUrm9h/2jtLwD48dT8zfZnack
-         tneQPkaq+r3SpbZ5/+y+K83NPjcPN8VE0J+3jyuNe2CEF6anJulMSDWZwENXHnOraY
-         xSb0/bo+KrIRUmhbrVTQTYewg0IQiu/RQAwCatuKoqmEj9R4WkEVWC32AxRZ53XYAJ
-         c0kAL6xmQbAvA==
+        b=ubCZgvjFumslnZJ2eGB0cJVb8Mvp8/FrsFWIamsyMOw4bds3tWkgMgOcBPeyP7IC7
+         1u4bqKu+s6hJ6EfobixPIc+FMjGhT7KrlF+v417NbAJopOpMbQv5m9qC8Ymhl8f8Uq
+         OWZL6De33NlZyosBveUh2QDSp8zlJuTbly1nquP1kgL+xt0B2kiMTOllmBVLD6jjQ4
+         TX/KPu2tFfo2r7lp1w6dlXmdINU7cuxWeOkwextQrtkFI9EAjT/PSLsHo06+hDyEye
+         0uuNBxado2+UaHsNFPF6daLAkN2gnapdtfeeiMqRaAw+rjfgUZXAAQZ/gVXPmfkr0p
+         zZNZ2IZAVGcng==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 709E9CE03F1; Tue, 11 Jul 2023 09:41:58 -0700 (PDT)
-Date:   Tue, 11 Jul 2023 09:41:58 -0700
+        id 2DB0BCE03F1; Tue, 11 Jul 2023 09:45:18 -0700 (PDT)
+Date:   Tue, 11 Jul 2023 09:45:18 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [linus:master] [rcu/nocb]  7625926086:
- WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass
-Message-ID: <842683bc-5859-48be-8ca5-17a1e4bf3f39@paulmck-laptop>
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, frederic@kernel.org,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        josh@joshtriplett.org, boqun.feng@gmail.com, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/2] rcu: Use WRITE_ONCE() for assignments to ->next for
+ rculist_nulls
+Message-ID: <e7268754-f6ed-4455-a965-848bf36df6f4@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <202307111535.4823c255-oliver.sang@intel.com>
- <ZK1983kQCrN+zCqs@lothringen>
+References: <20230706102849.437687-1-mmpgouride@gmail.com>
+ <20230706102849.437687-2-mmpgouride@gmail.com>
+ <CAEXW_YShqCHHH9Q1icU=oGBbeHO+a1PTY-Q-+KbqVdTm8mR3cw@mail.gmail.com>
+ <6563b226-0cbe-4600-be68-2748048cec78@paulmck-laptop>
+ <4179F0C7-D2A8-42A5-AF29-22949ADA15C0@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZK1983kQCrN+zCqs@lothringen>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4179F0C7-D2A8-42A5-AF29-22949ADA15C0@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 06:06:11PM +0200, Frederic Weisbecker wrote:
-> On Tue, Jul 11, 2023 at 04:48:06PM +0800, kernel test robot wrote:
-> > 
-> > 
-> > Hello,
-> > 
-> > kernel test robot noticed "WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass" on:
-> > 
-> > commit: 7625926086765123251f765d91fc3a70617d334d ("rcu/nocb: Fix shrinker race against callback enqueuer")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > 
-> > [test failed on linus/master Linux 6.5-rc1]
-> > [test failed on linux-next/master fe57d0d86f03a8b2afe2869a95477d0ed1824c96]
-> > 
-> > in testcase: trinity
-> > version: trinity-i386-abe9de86-1_20230429
-> > with following parameters:
-> > 
-> > 	runtime: 300s
-> > 	group: group-00
-> > 
-> > test-description: Trinity is a linux system call fuzz tester.
-> > test-url: http://codemonkey.org.uk/projects/trinity/
-> > 
-> > 
-> > compiler: gcc-12
-> > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> > 
-> > (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > 
-> > the WARNING only happens in a low rate (10 out of 204 runs as below).
-> > but since we never observed the issue on parent, and we also noticed
-> > there is a WARN_ON_ONCE in code change, so just report what we observed
-> > in our tests FYI.
-> > 
-> > 5c83cedbaaad6dfe 7625926086765123251f765d91f
-> > ---------------- ---------------------------
-> >        fail:runs  %reproduction    fail:runs
-> >            |             |             |
-> >            :202          5%          10:204   dmesg.RIP:rcu_nocb_bypass_lock
-> >            :202          5%          10:204   dmesg.RIP:rcu_nocb_try_bypass
-> >            :202          5%          10:204   dmesg.WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_bypass_lock
-> >            :202          5%          10:204   dmesg.WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass
-> > 
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <oliver.sang@intel.com>
-> > | Closes: https://lore.kernel.org/oe-lkp/202307111535.4823c255-oliver.sang@intel.com
-> > 
-> > 
-> > 
-> > [ 315.569574][ T16] WARNING: CPU: 1 PID: 16 at kernel/rcu/tree_nocb.h:124
-> > rcu_nocb_try_bypass (kernel/rcu/tree_nocb.h:124 kernel/rcu/tree_nocb.h:513)
+On Tue, Jul 11, 2023 at 10:56:02PM +0800, Alan Huang wrote:
 > 
-> It's:
+> > 2023年7月11日 04:30，Paul E. McKenney <paulmck@kernel.org> 写道：
+> > 
+> > On Mon, Jul 10, 2023 at 04:01:07PM -0400, Joel Fernandes wrote:
+> >> On Thu, Jul 6, 2023 at 6:29 AM Alan Huang <mmpgouride@gmail.com> wrote:
+> >>> 
+> >>> When the objects managed by rculist_nulls are allocated with
+> >>> SLAB_TYPESAFE_BY_RCU, readers may still hold references to this
+> >>> object that is being added, which means the modification of ->next
+> >>> is visible to readers. So, this patch uses WRITE_ONCE() for assignments
+> >>> to ->next.
+> >>> 
+> >>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> >>> ---
+> >>> include/linux/rculist_nulls.h | 4 ++--
+> >>> 1 file changed, 2 insertions(+), 2 deletions(-)
+> >>> 
+> >>> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+> >>> index ba4c00dd8005..89186c499dd4 100644
+> >>> --- a/include/linux/rculist_nulls.h
+> >>> +++ b/include/linux/rculist_nulls.h
+> >>> @@ -101,7 +101,7 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
+> >>> {
+> >>>        struct hlist_nulls_node *first = h->first;
+> >>> 
+> >>> -       n->next = first;
+> >>> +       WRITE_ONCE(n->next, first);
+> >>>        WRITE_ONCE(n->pprev, &h->first);
+> >>>        rcu_assign_pointer(hlist_nulls_first_rcu(h), n);
+> >>>        if (!is_a_nulls(first))
+> >>> @@ -137,7 +137,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
+> >>>                last = i;
+> >>> 
+> >>>        if (last) {
+> >>> -               n->next = last->next;
+> >>> +               WRITE_ONCE(n->next, last->next);
+> >>>                n->pprev = &last->next;
+> >>>                rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
+> >>>        } else {
+> >> 
+> >> Don't you need READ_ONCE() for the read-side accesses as well?
+> > 
+> > Both hlist_nulls_for_each_entry_rcu() and hlist_nulls_for_each_entry_safe()
+> > use rcu_dereference_raw().  To your point, both hlist_nulls_first_rcu()
+> > and hlist_nulls_next_rcu() look rather strange.  I would have expected
+> > them to also use rcu_dereference_raw().
 > 
-> static void rcu_nocb_wait_contended(struct rcu_data *rdp)
-> {
-> 	WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
-> 	while (WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))) <<< HERE
-> 		cpu_relax();
-> }
+> hlist_nulls_first_rcu() and hlist_nulls_next_rcu() were added in commit:
 > 
-> This is called on enqueue time by rcu_nocb_try_bypass().
+> 	67bdbffd696f(“rculist: avoid __rcu annotations”)
 > 
-> The places that can increment ->nocb_lock_contended are:
-> 
-> * rcu_nocb_try_bypass() itself, but it's not re-entrant
-> 
-> * rcu_nocb_rdp_deoffload(), but it executes on the local CPU with
->   IRQs disabled, so rcu_nocb_try_bypass() can't race
->   
-> * lazy_rcu_shrink_scan(): that's indeed the issue here
-> 
-> * rcu_barrier_entrain(), executed either locally with IRQs disabled
->   or remotely when the target is dead, so can't race with rcu_nocb_try_bypass()
->   
-> * rcutree_migrate_callback(): locally with IRQs disabled, can't race
-> 
-> So indeed lazy_rcu_shrink_scan() is the only possible culprit. But then
-> I wonder, what is the purpose of this ->nocb_lock_contended if it's actually
-> not an allowed behaviour?
-> 
-> Paul, any recollection of that?
+> According to the commit message, this avoids warnings from missing __rcu annotations.
 
-Heh!
-
-The purpose was to see if this lock was ever contended.  I guess we now
-have an answer, which is "Yes, but rarely."
-
-It looks like the victim commit increased the size of the ->nocb_lock
-critical section, just enough to make this happen sometimes.
-
-Removing the WARN_ON_ONCE() seems appropriate, especially given that
-this only happens when shrinking.
-
-Should we add something that monitors that lock's contention?  It is
-often the case that lock contention rises over time as new features and
-optimizations are added.
+Indeed it does, apologies for the noise!
 
 							Thanx, Paul
