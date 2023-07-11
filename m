@@ -2,31 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB3B9EB64D9
-	for <rcu@archiver.kernel.org>; Tue, 11 Jul 2023 03:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B134EB64DC
+	for <rcu@archiver.kernel.org>; Tue, 11 Jul 2023 03:26:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbjGKDUO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 10 Jul 2023 23:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
+        id S230342AbjGKD0g (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 10 Jul 2023 23:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGKDUN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 10 Jul 2023 23:20:13 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13610BC;
-        Mon, 10 Jul 2023 20:20:10 -0700 (PDT)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R0Qyt26dzztR9l;
-        Tue, 11 Jul 2023 11:17:10 +0800 (CST)
+        with ESMTP id S229627AbjGKD0f (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 10 Jul 2023 23:26:35 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA29C0;
+        Mon, 10 Jul 2023 20:26:34 -0700 (PDT)
+Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R0R711TZMzPk2H;
+        Tue, 11 Jul 2023 11:24:13 +0800 (CST)
 Received: from [10.174.178.55] (10.174.178.55) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 11 Jul 2023 11:20:07 +0800
-Subject: Re: [PATCH 1/2] rcu: Delete a redundant check in
- rcu_check_gp_kthread_starvation()
-To:     <paulmck@kernel.org>
+ 15.1.2507.27; Tue, 11 Jul 2023 11:26:31 +0800
+Subject: Re: [PATCH 2/2] rcu: Don't dump the stalled CPU on where RCU GP
+ kthread last ran twice
+To:     <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>
 CC:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -35,20 +34,22 @@ CC:     Frederic Weisbecker <frederic@kernel.org>,
         Zqiang <qiang.zhang1211@gmail.com>, <rcu@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 References: <20230705073020.2030-1-thunder.leizhen@huawei.com>
- <20230705073020.2030-2-thunder.leizhen@huawei.com>
- <f36c93ac-b735-4771-a4b5-4be80c431593@paulmck-laptop>
+ <20230705073020.2030-3-thunder.leizhen@huawei.com>
+ <39430021-dc0d-4abd-8266-642e4e2dc7df@paulmck-laptop>
+ <CAEXW_YR_t-x-eYKLFmruOLqZv91oi=AJKEEeuqYosejjdscn1g@mail.gmail.com>
+ <33ec8708-35be-446a-8cc5-58d366a6d75d@paulmck-laptop>
 From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <4c8e0ea4-9dee-7915-e2eb-206ba50b79f2@huawei.com>
-Date:   Tue, 11 Jul 2023 11:20:07 +0800
+Message-ID: <fec44f45-f5d8-69e6-ebd5-f10fc70e4b2f@huawei.com>
+Date:   Tue, 11 Jul 2023 11:26:30 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <f36c93ac-b735-4771-a4b5-4be80c431593@paulmck-laptop>
+In-Reply-To: <33ec8708-35be-446a-8cc5-58d366a6d75d@paulmck-laptop>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -57,73 +58,36 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 2023/7/11 3:03, Paul E. McKenney wrote:
-> On Wed, Jul 05, 2023 at 03:30:19PM +0800, Zhen Lei wrote:
->> The above condition "if (gpk)" already ensures that gp_kthread is created,
->> so the local variable 'cpu' cannot be negative here.
+On 2023/7/11 4:32, Paul E. McKenney wrote:
+> On Mon, Jul 10, 2023 at 03:55:16PM -0400, Joel Fernandes wrote:
+>> On Mon, Jul 10, 2023 at 3:06 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>>>
+>>> On Wed, Jul 05, 2023 at 03:30:20PM +0800, Zhen Lei wrote:
+>>>> The stacks of all stalled CPUs will be dumped. If the CPU on where RCU GP
+>>>> kthread last ran is stalled, its stack does not need to be dumped again.
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>
+>>> This one looks good.  Please feel free to rebase it before 1/2 and repost.
 >>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  kernel/rcu/tree_stall.h | 12 +++++-------
->>  1 file changed, 5 insertions(+), 7 deletions(-)
+>> Just a small comment:
+>> I wondered if this would make it harder to identify which stack among
+>> the various CPU stacks corresponds to the one the GP kthread is
+>> running on. However, this line does print the CPU number of the
+>> thread, so it is perhaps not an issue:
 >>
->> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
->> index b10b8349bb2a48b..dcfaa3d5db2cbc7 100644
->> --- a/kernel/rcu/tree_stall.h
->> +++ b/kernel/rcu/tree_stall.h
->> @@ -537,13 +537,11 @@ static void rcu_check_gp_kthread_starvation(void)
->>  			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
->>  			pr_err("RCU grace-period kthread stack dump:\n");
->>  			sched_show_task(gpk);
->> -			if (cpu >= 0) {
-> 
-> I am not quite this trusting of the relation between the relationship
-> between the existence of the grace-period khread and its CPU number
-> being in range.  Let's please start with something like this:
-> 
-> 			if (!WARN_ON_ONCE(cpu < 0)) {
-> 
-> Please note that this is not just me.  See for example the use of the
-> cpumask_check() function, albeit the opposite concern.
-
-git grep -wn "\->cpu" kernel/ include/
-kernel/kthread.c:583:   to_kthread(p)->cpu = cpu;				//kthread_create_on_cpu()
-kernel/sched/sched.h:2024:      WRITE_ONCE(task_thread_info(p)->cpu, cpu);	//__set_task_cpu()
-include/linux/sched.h:2250:     return READ_ONCE(task_thread_info(p)->cpu);	//task_cpu()
-
-git grep -wn "\.cpu" kernel/ include/						//There is no task related, the search result is omitted.
-
-Therefore, there is only one path "set_task_cpu()-->__set_task_cpu()" that can dynamically
-change the value of task_cpu(p). In fact, this guarantee has been made in set_task_cpu().
-set_task_cpu
-	WARN_ON_ONCE(!cpu_online(new_cpu));
-	__set_task_cpu(p, new_cpu);
-
-In addition, task_struct has member 'on_rq'. Therefore, when a task leaves the scheduling
-queue, setting the member 'cpu' to an invalid value will be thankless.
-
-Sorry, these two patches was posted too quickly, and I'm still regretting that I should have
-attached this to the commit description these days.
-
-
-> 
->> -				if (cpu_is_offline(cpu)) {
->> -					pr_err("RCU GP kthread last ran on offline CPU %d.\n", cpu);
->> -				} else  {
->> -					pr_err("Stack dump where RCU GP kthread last ran:\n");
->> -					dump_cpu_task(cpu);
->> -				}
->> +			if (cpu_is_offline(cpu)) {
->> +				pr_err("RCU GP kthread last ran on offline CPU %d.\n", cpu);
->> +			} else  {
->> +				pr_err("Stack dump where RCU GP kthread last ran:\n");
->> +				dump_cpu_task(cpu);
->>  			}
->>  			wake_up_process(gpk);
->>  		}
->> -- 
->> 2.25.1
+>>                 pr_err("%s kthread starved for %ld jiffies! g%ld f%#x
+>> %s(%d) ->state=%#x ->cpu=%d\n",
 >>
+>> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Thank you!  Zhen Lei, please feel free to add Joel's Reviewed-by on your
+> next posting.
+
+OK
+
+> 
+> 							Thanx, Paul
 > .
 > 
 
