@@ -2,153 +2,138 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AF59EB64DD
-	for <rcu@archiver.kernel.org>; Tue, 11 Jul 2023 15:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EBF0EB64DD
+	for <rcu@archiver.kernel.org>; Tue, 11 Jul 2023 16:06:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbjGKPJ7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 11 Jul 2023 11:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
+        id S232026AbjGKQGl (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 11 Jul 2023 12:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbjGKPJp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 11 Jul 2023 11:09:45 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4425D172C;
-        Tue, 11 Jul 2023 08:09:37 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6686a05bc66so3349957b3a.1;
-        Tue, 11 Jul 2023 08:09:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689088176; x=1691680176;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3erbx8Ek7C3mi08Ez8LVuYLzSHs+cA9FhcR7r2Ld+0w=;
-        b=pvyUVlXtrWavcgEIXtrtM71P9zbj5hacUserQfeUqt4Qr7fNz7g9TE9v4GBUo9D7WB
-         /AD24XiPw/1+GcR3nNV5Tl65Bg52lIKkTIHjDre1KCL/I4/tjihig4M+ldxE21xt8Jae
-         rVcrVPD51H3D7LtNHbk/jkVtzN7FIwe+rHyauIdAHKjLWRyo17Fq0cIOLSP1hI54TBNo
-         gNVvtrsrOWZUJXwDIv0H7a+BeKF+RXsnbu7oXcEoN/W6NyVAqLqn1TQLaY4pg3E/DBlz
-         fToEL2X9US+xnLY/qQUXNYjoq24f4w5deelblfJiQDnZKHfWQLatYPbvf+df5CaxxeTk
-         RmNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689088176; x=1691680176;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3erbx8Ek7C3mi08Ez8LVuYLzSHs+cA9FhcR7r2Ld+0w=;
-        b=mEeY5BikdaH9UyL9y0U5SPwG5ZVstIL6/T2hBf2pbG5DqWEw3iU3PrFck9+z7+KIWQ
-         5HBR+nTfAJMsMNNdpYLObnhfryeLVNoyXJEQHQUSC5AAQibVsF7n4BAo14hcFkxbNsSQ
-         H8gO8gwjCVCIMXZQTNuLzagPuoAvOXnBnAvldYmtXPHz1Vgd4WKNpOB0JpzyL2XrPhFG
-         FVR59mwDs+KNYom87peOP4Qqq65Q81oVknYX6Iutnw1JSQKBdV3DMLlunRnQ2aAG1eoh
-         98H8BF5jOeis/LU4oZvp4cIKqoVW+boOHnyPBS7ifqLvr9dChCg5cVY6iB+knM/oZzs+
-         4mtw==
-X-Gm-Message-State: ABy/qLbl7dtfazvqVXxbIF3r5x6sQcURN5M0OfyYhwEflWq8uv1sxeQ4
-        X9EoLEJ6/3wFf2Rifl/HLO8=
-X-Google-Smtp-Source: APBJJlF75Wfb6isvNccaAKvO3PJuQZKLoRopLlIWqeqY2LuD+11w4fiyC2buXqLnguTTTriQ9vSCJw==
-X-Received: by 2002:a17:902:a60f:b0:1b9:cca6:551b with SMTP id u15-20020a170902a60f00b001b9cca6551bmr7934365plq.7.1689088176414;
-        Tue, 11 Jul 2023 08:09:36 -0700 (PDT)
-Received: from localhost ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id g12-20020a63ad0c000000b00553d42a7cb5sm1701753pgf.68.2023.07.11.08.09.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 08:09:32 -0700 (PDT)
-From:   Alan Huang <mmpgouride@gmail.com>
-To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        boqun.feng@gmail.com, corbet@lwn.net
-Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        Alan Huang <mmpgouride@gmail.com>
-Subject: [PATCH v2] docs/RCU: Bring back smp_wmb()
-Date:   Tue, 11 Jul 2023 15:09:06 +0000
-Message-Id: <20230711150906.466434-1-mmpgouride@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S233288AbjGKQGY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 11 Jul 2023 12:06:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6083012F;
+        Tue, 11 Jul 2023 09:06:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E83CB614F8;
+        Tue, 11 Jul 2023 16:06:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA274C433C7;
+        Tue, 11 Jul 2023 16:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689091574;
+        bh=lIiHSNQhI0NPaeiwO6P+0Z9XTozkRssTiIbjVlaCYdI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tOL9XRVRLm8PS290j1eRrAcuSmTU1uE1NPvXpFGAe6TW24o8DbOGlgz9sypocwcE8
+         33cfkOgCBZvk0pBopVoytDj+DfBvU9KWG/XHZ4/z25ZB8MB44+yI+oGoPphLFhGmwY
+         MLl1twEcu1nYf4N9lTyJTREmuqm8+jeVQola97g7d0JA+Hq6P9AzbGepY7riOW3URU
+         6YioK/IsfvwJT2KbAEscf3LPkg3oOeEZtGZ9LcqLeDRxbz7i9wNrzWWZz/DhmpFOef
+         Tz1UxDPoJxh6dBZlJ1ianWw+RV8a32VkB5Mqq5byYSO3+Eo/FeQNoYJmT38OLtc3xT
+         iAUHSYsO9v5eQ==
+Date:   Tue, 11 Jul 2023 18:06:11 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     kernel test robot <oliver.sang@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [linus:master] [rcu/nocb]  7625926086:
+ WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass
+Message-ID: <ZK1983kQCrN+zCqs@lothringen>
+References: <202307111535.4823c255-oliver.sang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202307111535.4823c255-oliver.sang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The objects are allocated with SLAB_TYPESAFE_BY_RCU, and there is
-n->next = first within hlist_add_head_rcu() before rcu_assign_pointer(),
-which modifies obj->obj_node.next. There may be readers holding the
-reference of obj in lockless_lookup, and when updater modifies ->next,
-readers can see the change immediately because of SLAB_TYPESAFE_BY_RCU.
+On Tue, Jul 11, 2023 at 04:48:06PM +0800, kernel test robot wrote:
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass" on:
+> 
+> commit: 7625926086765123251f765d91fc3a70617d334d ("rcu/nocb: Fix shrinker race against callback enqueuer")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> [test failed on linus/master Linux 6.5-rc1]
+> [test failed on linux-next/master fe57d0d86f03a8b2afe2869a95477d0ed1824c96]
+> 
+> in testcase: trinity
+> version: trinity-i386-abe9de86-1_20230429
+> with following parameters:
+> 
+> 	runtime: 300s
+> 	group: group-00
+> 
+> test-description: Trinity is a linux system call fuzz tester.
+> test-url: http://codemonkey.org.uk/projects/trinity/
+> 
+> 
+> compiler: gcc-12
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> the WARNING only happens in a low rate (10 out of 204 runs as below).
+> but since we never observed the issue on parent, and we also noticed
+> there is a WARN_ON_ONCE in code change, so just report what we observed
+> in our tests FYI.
+> 
+> 5c83cedbaaad6dfe 7625926086765123251f765d91f
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :202          5%          10:204   dmesg.RIP:rcu_nocb_bypass_lock
+>            :202          5%          10:204   dmesg.RIP:rcu_nocb_try_bypass
+>            :202          5%          10:204   dmesg.WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_bypass_lock
+>            :202          5%          10:204   dmesg.WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202307111535.4823c255-oliver.sang@intel.com
+> 
+> 
+> 
+> [ 315.569574][ T16] WARNING: CPU: 1 PID: 16 at kernel/rcu/tree_nocb.h:124
+> rcu_nocb_try_bypass (kernel/rcu/tree_nocb.h:124 kernel/rcu/tree_nocb.h:513)
 
-There are two memory ordering required in the insertion algorithm,
-we need to make sure obj->key is updated before obj->obj_node.next
-and obj->refcnt, atomic_set_release is not enough to provide the
-required memory barrier.
+It's:
 
-Signed-off-by: Alan Huang <mmpgouride@gmail.com>
----
-Changelog:
-  v1 -> v2: Use _ONCE to protect obj->key.
+static void rcu_nocb_wait_contended(struct rcu_data *rdp)
+{
+	WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
+	while (WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))) <<< HERE
+		cpu_relax();
+}
 
- Documentation/RCU/rculist_nulls.rst | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+This is called on enqueue time by rcu_nocb_try_bypass().
 
-diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-index 21e40fcc08de..2a9f5a63d334 100644
---- a/Documentation/RCU/rculist_nulls.rst
-+++ b/Documentation/RCU/rculist_nulls.rst
-@@ -47,7 +47,7 @@ objects, which is having below type.
-     * reuse these object before the RCU grace period, we
-     * must check key after getting the reference on object
-     */
--    if (obj->key != key) { // not the object we expected
-+    if (READ_ONCE(obj->key) != key) { // not the object we expected
-       put_ref(obj);
-       rcu_read_unlock();
-       goto begin;
-@@ -64,10 +64,10 @@ but a version with an additional memory barrier (smp_rmb())
-   {
-     struct hlist_node *node, *next;
-     for (pos = rcu_dereference((head)->first);
--         pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
-+         pos && ({ next = READ_ONCE(pos->next); smp_rmb(); prefetch(next); 1; }) &&
-          ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
-          pos = rcu_dereference(next))
--      if (obj->key == key)
-+      if (READ_ONCE(obj->key) == key)
-         return obj;
-     return NULL;
-   }
-@@ -111,8 +111,13 @@ detect the fact that it missed following items in original chain.
-    */
-   obj = kmem_cache_alloc(...);
-   lock_chain(); // typically a spin_lock()
--  obj->key = key;
--  atomic_set_release(&obj->refcnt, 1); // key before refcnt
-+  WRITE_ONCE(obj->key, key);
-+  /*
-+   * We need to make sure obj->key is updated before obj->obj_node.next
-+   * and obj->refcnt.
-+   */
-+  smp_wmb();
-+  atomic_set(&obj->refcnt, 1);
-   hlist_add_head_rcu(&obj->obj_node, list);
-   unlock_chain(); // typically a spin_unlock()
- 
-@@ -165,12 +170,12 @@ Note that using hlist_nulls means the type of 'obj_node' field of
-   begin:
-   rcu_read_lock();
-   hlist_nulls_for_each_entry_rcu(obj, node, head, obj_node) {
--    if (obj->key == key) {
-+    if (READ_ONCE(obj->key) == key) {
-       if (!try_get_ref(obj)) { // might fail for free objects
- 	rcu_read_unlock();
-         goto begin;
-       }
--      if (obj->key != key) { // not the object we expected
-+      if (READ_ONCE(obj->key) != key) { // not the object we expected
-         put_ref(obj);
- 	rcu_read_unlock();
-         goto begin;
-@@ -206,7 +211,7 @@ hlist_add_head_rcu().
-    */
-   obj = kmem_cache_alloc(cachep);
-   lock_chain(); // typically a spin_lock()
--  obj->key = key;
-+  WRITE_ONCE(obj->key, key);
-   atomic_set_release(&obj->refcnt, 1); // key before refcnt
-   /*
-    * insert obj in RCU way (readers might be traversing chain)
--- 
-2.34.1
+The places that can increment ->nocb_lock_contended are:
 
+* rcu_nocb_try_bypass() itself, but it's not re-entrant
+
+* rcu_nocb_rdp_deoffload(), but it executes on the local CPU with
+  IRQs disabled, so rcu_nocb_try_bypass() can't race
+  
+* lazy_rcu_shrink_scan(): that's indeed the issue here
+
+* rcu_barrier_entrain(), executed either locally with IRQs disabled
+  or remotely when the target is dead, so can't race with rcu_nocb_try_bypass()
+  
+* rcutree_migrate_callback(): locally with IRQs disabled, can't race
+
+So indeed lazy_rcu_shrink_scan() is the only possible culprit. But then
+I wonder, what is the purpose of this ->nocb_lock_contended if it's actually
+not an allowed behaviour?
+
+Paul, any recollection of that?
+
+Thanks.
