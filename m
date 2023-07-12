@@ -2,76 +2,220 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4E6EB64DD
-	for <rcu@archiver.kernel.org>; Wed, 12 Jul 2023 16:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ABCEEB64DA
+	for <rcu@archiver.kernel.org>; Wed, 12 Jul 2023 17:03:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbjGLQ7n (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Jul 2023 12:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
+        id S232060AbjGLRC7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Jul 2023 13:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjGLQ7n (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Jul 2023 12:59:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3481BFA;
-        Wed, 12 Jul 2023 09:59:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B2C7761879;
-        Wed, 12 Jul 2023 16:59:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C69A6C433C8;
-        Wed, 12 Jul 2023 16:59:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689181181;
-        bh=HQtXkMg12Bx/r1+2FzstJ+bpGVWpL35U0D2HToug0qI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TbFnCeQ0k4sYSwBow+wy/0KN6BCCfYiinHy1ICWWBFz4isQyRq/qWecNr861xSpdH
-         FCnO+FW37zj66bmQni5dmPYpoCchqBMJQwde5Co3EYHS9AWTWIFpgvNaP/gzFmfcLw
-         E59Wp7SItpJ0QExhK3b6kh30OgjJ1cq1h316Jd4D7qPtzOso2nJAsmZM+IL1fTCW8p
-         rjEGTxddmM/qTfTX2Q4jQ1w9aZUzSeEEK4YEA/NJ8Nv5IU7DCUchrtvo1QeVJtu8I9
-         DFV4vDFpyJZDGjX/65ZCv/iFdlJhWhN7FByCOcnBt+2gBJIGFE7fRsQFiBqmVaw6Ow
-         J/2Mkpzn9jsRQ==
-Date:   Wed, 12 Jul 2023 18:59:38 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [linus:master] [rcu/nocb]  7625926086:
- WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass
-Message-ID: <ZK7b+vIJpOZhndbm@lothringen>
-References: <202307111535.4823c255-oliver.sang@intel.com>
- <ZK1983kQCrN+zCqs@lothringen>
- <842683bc-5859-48be-8ca5-17a1e4bf3f39@paulmck-laptop>
+        with ESMTP id S232835AbjGLRCu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Jul 2023 13:02:50 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3D91BD5
+        for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 10:02:48 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b6ff1a637bso117160081fa.3
+        for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 10:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689181367; x=1691773367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OvoEOajiEwYXBD3xzLluGfgCVtGjTJSaHMHQydgzNEE=;
+        b=cqQDuh7KkBC7Bp6ndhg7nXNYsINnQl/XnlT+1UAc8RaZTq+BuxgRGEoG8mqoOpE6js
+         XKPABgipIV5zI1bbzGToaFdttSQ9on3vO/0h7AHhN2349r+/o4nXk2tQ9zir/uj+PMqf
+         7U3DT3YK7cdjRWUEqF0PhnLEVmVuRgxy0mUC0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689181367; x=1691773367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OvoEOajiEwYXBD3xzLluGfgCVtGjTJSaHMHQydgzNEE=;
+        b=BBCB1IDkUl3fQyt1qHFsWi64w9FDn/AW82OxU/1z/bztUKOcrlGXkDSoBMd50G223+
+         f2EBfpXiXlXTdcgsub+7g4DyG0ZW2av6h8cVtxXbP2JtLbJ/tEM8rDU4/6TQwMGbs1+t
+         i/jvcPMA0sb9U+n9RJTMJlmWwZudnb54/HdlGO79dVMlHkfl2wrJFKTuqlDeEOvnANGB
+         KVufLPlnOOFadJjSGVQ3ba+O/NJnjDOLRKFN+xKiuMPniuZhrelBkci0YN2Wv0K4gVlx
+         95F2VqzzNHJFyiXz+EFp+WiPwO+PMpjHaDMX2NMhxmjKUX+OFdNPMto5DirNIN6R+tzg
+         Oasg==
+X-Gm-Message-State: ABy/qLZz5UlTxJ6HVJ2fJV+I0q4WDngRjoJlSXC/HIh/rzvPGEjzaYPp
+        coxlP+g/swDqhTsvBSkM5SpZ5F35Czje7le5VKV5aw==
+X-Google-Smtp-Source: APBJJlGlT858DQ/NfqPA3OlYGxIXp57HPZH8ded5Q4ToS48ybKGBOA2p1X6hcXClrEz/A6yz7yx5y/8vtOtl4ryFQpk=
+X-Received: by 2002:a2e:8909:0:b0:2b6:9f5d:e758 with SMTP id
+ d9-20020a2e8909000000b002b69f5de758mr19193207lji.9.1689181367032; Wed, 12 Jul
+ 2023 10:02:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <842683bc-5859-48be-8ca5-17a1e4bf3f39@paulmck-laptop>
+References: <20230711233816.2187577-1-dhavale@google.com>
+In-Reply-To: <20230711233816.2187577-1-dhavale@google.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 12 Jul 2023 13:02:35 -0400
+Message-ID: <CAEXW_YQvpiFEaaNoS=Msgi17mU3kZD+q8bNBaHYasMArG9aPig@mail.gmail.com>
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when !CONFIG_DEBUG_LOCK_ALLOC
+To:     Sandeep Dhavale <dhavale@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 09:41:58AM -0700, Paul E. McKenney wrote:
-> On Tue, Jul 11, 2023 at 06:06:11PM +0200, Frederic Weisbecker wrote:
-> Heh!
-> 
-> The purpose was to see if this lock was ever contended.  I guess we now
-> have an answer, which is "Yes, but rarely."
-> 
-> It looks like the victim commit increased the size of the ->nocb_lock
-> critical section, just enough to make this happen sometimes.
-> 
-> Removing the WARN_ON_ONCE() seems appropriate, especially given that
-> this only happens when shrinking.
+On Tue, Jul 11, 2023 at 7:38=E2=80=AFPM Sandeep Dhavale <dhavale@google.com=
+> wrote:
+>
+> Currently if CONFIG_DEBUG_LOCK_ALLOC is not set
+>
+> - rcu_read_lock_held() always returns 1
+> - rcu_read_lock_any_held() may return 0 with CONFIG_PREEMPT_RCU
+>
+> This is inconsistent and it was discovered when trying a fix
+> for problem reported [1] with CONFIG_DEBUG_LOCK_ALLOC is not
+> set and CONFIG_PREEMPT_RCU is enabled. Gist of the problem is
+> that EROFS wants to detect atomic context so it can do inline
+> decompression whenever possible, this is important performance
+> optimization. It turns out that z_erofs_decompressqueue_endio()
+> can be called from blk_mq_flush_plug_list() with rcu lock held
+> and hence fix uses rcu_read_lock_any_held() to decide to use
+> sync/inline decompression vs async decompression.
+>
+> As per documentation, we should return lock is held if we aren't
+> certain. But it seems we can improve the checks for if the lock
+> is held even if CONFIG_DEBUG_LOCK_ALLOC is not set instead of
+> hardcoding to always return true.
+>
+> * rcu_read_lock_held()
+> - For CONFIG_PREEMPT_RCU using rcu_preempt_depth()
+> - using preemptible() (indirectly preempt_count())
+>
+> * rcu_read_lock_bh_held()
+> - For CONFIG_PREEMPT_RT Using in_softirq() (indirectly softirq_cont())
+> - using preemptible() (indirectly preempt_count())
+>
+> Lastly to fix the inconsistency, rcu_read_lock_any_held() is updated
+> to use other rcu_read_lock_*_held() checks.
+>
+> Two of the improved checks are moved to kernel/rcu/update.c because
+> rcupdate.h is included from the very low level headers which do not know
+> what current (task_struct) is so the macro rcu_preempt_depth() cannot be
+> expanded in the rcupdate.h. See the original comment for
+> rcu_preempt_depth() in patch at [2] for more information.
+>
+> [1]
+> https://lore.kernel.org/all/20230621220848.3379029-1-dhavale@google.com/
+> [2]
+> https://lore.kernel.org/all/1281392111-25060-8-git-send-email-paulmck@lin=
+ux.vnet.ibm.com/
+>
+> Reported-by: Will Shiu <Will.Shiu@mediatek.com>
+> Signed-off-by: Sandeep Dhavale <dhavale@google.com>
+> ---
+>  include/linux/rcupdate.h | 12 +++---------
+>  kernel/rcu/update.c      | 21 ++++++++++++++++++++-
+>  2 files changed, 23 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 5e5f920ade90..0d1d1d8c2360 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -319,14 +319,11 @@ int rcu_read_lock_any_held(void);
+>  # define rcu_lock_acquire(a)           do { } while (0)
+>  # define rcu_lock_release(a)           do { } while (0)
+>
+> -static inline int rcu_read_lock_held(void)
+> -{
+> -       return 1;
+> -}
+> +int rcu_read_lock_held(void);
+>
+>  static inline int rcu_read_lock_bh_held(void)
+>  {
+> -       return 1;
+> +       return !preemptible() || in_softirq();
+>  }
+>
+>  static inline int rcu_read_lock_sched_held(void)
+> @@ -334,10 +331,7 @@ static inline int rcu_read_lock_sched_held(void)
+>         return !preemptible();
+>  }
+>
+> -static inline int rcu_read_lock_any_held(void)
+> -{
+> -       return !preemptible();
+> -}
+> +int rcu_read_lock_any_held(void);
+>
+>  static inline int debug_lockdep_rcu_enabled(void)
+>  {
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 19bf6fa3ee6a..b34fc5bb96cf 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -390,8 +390,27 @@ int rcu_read_lock_any_held(void)
+>  }
+>  EXPORT_SYMBOL_GPL(rcu_read_lock_any_held);
+>
+> -#endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> +#else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+>
+> +int rcu_read_lock_held(void)
+> +{
+> +       if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+> +               return rcu_preempt_depth();
+> +       return !preemptible();
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_read_lock_held);
+> +
+> +int rcu_read_lock_any_held(void)
+> +{
+> +       if (rcu_read_lock_held() ||
+> +           rcu_read_lock_bh_held() ||
+> +           rcu_read_lock_sched_held())
+> +               return 1;
+> +       return !preemptible();
 
-Ok, I'll check that.
+Actually even the original code is incorrect (the lockdep version)
+since preemptible() cannot be relied upon if CONFIG_PREEMPT_COUNT is
+not set. However, that's debug code. In this case, it is a real
+user (the fs code). In non-preemptible kernels, we are always in an
+RCU-sched section. So you can't really see if anyone called your code
+under rcu_read_lock(). The rcu_read_lock/unlock() would be getting
+NOOPed. In such a kernel, it will always tell your code it is in an
+RCU reader. That's not ideal for that erofs code?
 
-> Should we add something that monitors that lock's contention?  It is
-> often the case that lock contention rises over time as new features and
-> optimizations are added.
+Also, per that erofs code:
+        /* Use (kthread_)work and sync decompression for atomic contexts on=
+ly */
+        if (!in_task() || irqs_disabled() || rcu_read_lock_any_held()) {
 
-I'm not sure. Should we keep the current ->nocb_lock_contended based engine
-to report contention somehow somewhere? Also does it behave better than our
-current spinlock slow path implementations?
+I guess you are also assuming that rcu_read_lock_any_held() tells you
+something about atomicity but strictly speaking, it doesn't because
+preemptible RCU readers are preemptible. You can't block but
+preemption is possible so it is not "atomic". Maybe you meant "cannot
+block"?
 
-Thanks.
+As such this patch looks correct to me, one thing I noticed is that
+you can check rcu_is_watching() like the lockdep-enabled code does.
+That will tell you also if a reader-section is possible because in
+extended-quiescent-states, RCU readers should be non-existent or
+that's a bug.
+
+Could you also verify that this patch does not cause bloating of the
+kernel if lockdep is disabled?
+
+thanks,
+
+ - Joel
