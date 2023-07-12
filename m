@@ -2,99 +2,76 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A523EC001DC
-	for <rcu@archiver.kernel.org>; Wed, 12 Jul 2023 15:16:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4E6EB64DD
+	for <rcu@archiver.kernel.org>; Wed, 12 Jul 2023 16:59:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbjGLPQX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Jul 2023 11:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        id S232480AbjGLQ7n (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Jul 2023 12:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232636AbjGLPQW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Jul 2023 11:16:22 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FEB1BD7;
-        Wed, 12 Jul 2023 08:16:20 -0700 (PDT)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R1LsR4M9JzrRhJ;
-        Wed, 12 Jul 2023 23:15:39 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 12 Jul 2023 23:16:14 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, <rcu@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/2] rcu: Delete a redundant check in rcu_check_gp_kthread_starvation()
-Date:   Wed, 12 Jul 2023 23:15:56 +0800
-Message-ID: <20230712151557.760-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20230712151557.760-1-thunder.leizhen@huawei.com>
-References: <20230712151557.760-1-thunder.leizhen@huawei.com>
+        with ESMTP id S229446AbjGLQ7n (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Jul 2023 12:59:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3481BFA;
+        Wed, 12 Jul 2023 09:59:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B2C7761879;
+        Wed, 12 Jul 2023 16:59:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C69A6C433C8;
+        Wed, 12 Jul 2023 16:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689181181;
+        bh=HQtXkMg12Bx/r1+2FzstJ+bpGVWpL35U0D2HToug0qI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TbFnCeQ0k4sYSwBow+wy/0KN6BCCfYiinHy1ICWWBFz4isQyRq/qWecNr861xSpdH
+         FCnO+FW37zj66bmQni5dmPYpoCchqBMJQwde5Co3EYHS9AWTWIFpgvNaP/gzFmfcLw
+         E59Wp7SItpJ0QExhK3b6kh30OgjJ1cq1h316Jd4D7qPtzOso2nJAsmZM+IL1fTCW8p
+         rjEGTxddmM/qTfTX2Q4jQ1w9aZUzSeEEK4YEA/NJ8Nv5IU7DCUchrtvo1QeVJtu8I9
+         DFV4vDFpyJZDGjX/65ZCv/iFdlJhWhN7FByCOcnBt+2gBJIGFE7fRsQFiBqmVaw6Ow
+         J/2Mkpzn9jsRQ==
+Date:   Wed, 12 Jul 2023 18:59:38 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [linus:master] [rcu/nocb]  7625926086:
+ WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass
+Message-ID: <ZK7b+vIJpOZhndbm@lothringen>
+References: <202307111535.4823c255-oliver.sang@intel.com>
+ <ZK1983kQCrN+zCqs@lothringen>
+ <842683bc-5859-48be-8ca5-17a1e4bf3f39@paulmck-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <842683bc-5859-48be-8ca5-17a1e4bf3f39@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The kernel provides the only legal way, that is, function set_task_cpu(),
-to dynamically change the value of task_cpu(p). And in which the validity
-of the CPU ID is checked.
-set_task_cpu():
-	WARN_ON_ONCE(!cpu_online(new_cpu));
-	__set_task_cpu(p, new_cpu);
+On Tue, Jul 11, 2023 at 09:41:58AM -0700, Paul E. McKenney wrote:
+> On Tue, Jul 11, 2023 at 06:06:11PM +0200, Frederic Weisbecker wrote:
+> Heh!
+> 
+> The purpose was to see if this lock was ever contended.  I guess we now
+> have an answer, which is "Yes, but rarely."
+> 
+> It looks like the victim commit increased the size of the ->nocb_lock
+> critical section, just enough to make this happen sometimes.
+> 
+> Removing the WARN_ON_ONCE() seems appropriate, especially given that
+> this only happens when shrinking.
 
-Therefore, in normal cases, the value of task_cpu(gpk) is always valid.
-Then for the following snippet in rcu_check_gp_kthread_starvation():
-	cpu = gpk ? task_cpu(gpk) : -1;
-	if (gpk) {
-		if (cpu >= 0) {
+Ok, I'll check that.
 
-The above condition "if (gpk)" already ensures that gp_kthread is created,
-so the local variable 'cpu' cannot be negative here.
+> Should we add something that monitors that lock's contention?  It is
+> often the case that lock contention rises over time as new features and
+> optimizations are added.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- kernel/rcu/tree_stall.h | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+I'm not sure. Should we keep the current ->nocb_lock_contended based engine
+to report contention somehow somewhere? Also does it behave better than our
+current spinlock slow path implementations?
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b10b8349bb2a48b..dcfaa3d5db2cbc7 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -537,13 +537,11 @@ static void rcu_check_gp_kthread_starvation(void)
- 			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
- 			pr_err("RCU grace-period kthread stack dump:\n");
- 			sched_show_task(gpk);
--			if (cpu >= 0) {
--				if (cpu_is_offline(cpu)) {
--					pr_err("RCU GP kthread last ran on offline CPU %d.\n", cpu);
--				} else  {
--					pr_err("Stack dump where RCU GP kthread last ran:\n");
--					dump_cpu_task(cpu);
--				}
-+			if (cpu_is_offline(cpu)) {
-+				pr_err("RCU GP kthread last ran on offline CPU %d.\n", cpu);
-+			} else  {
-+				pr_err("Stack dump where RCU GP kthread last ran:\n");
-+				dump_cpu_task(cpu);
- 			}
- 			wake_up_process(gpk);
- 		}
--- 
-2.25.1
-
+Thanks.
