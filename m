@@ -2,60 +2,82 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1990FEB64D9
-	for <rcu@archiver.kernel.org>; Wed, 12 Jul 2023 07:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75CF8EB64D9
+	for <rcu@archiver.kernel.org>; Wed, 12 Jul 2023 10:12:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjGLHhU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Jul 2023 03:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
+        id S232569AbjGLKMA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Jul 2023 06:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232016AbjGLHhQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Jul 2023 03:37:16 -0400
-Received: from mail.socialglobal.pl (mail.socialglobal.pl [51.195.90.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477C3173A
-        for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 00:37:14 -0700 (PDT)
-Received: by mail.socialglobal.pl (Postfix, from userid 1002)
-        id A3F2623606; Wed, 12 Jul 2023 07:36:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=socialglobal.pl;
-        s=mail; t=1689147392;
-        bh=XwhyqI/moZPDJ7KCfcA6Gip8fA7ZKcg5SWsKuF/26zk=;
-        h=Date:From:To:Subject:From;
-        b=gOFjNXoO3IMXR7Z8aTnXCWy0oE6bR7o0/TuZD5dLftLB4YXIRQPS6u3s4fXgFChO8
-         Sd2LS2XYx1z8Bw4geZ3w3TDqM5bsNz96c3cNKM48OxXpc9td4Q0pnth7rTrXm+okp2
-         Bq+ypn8rB7wIPkOiGQHIPfKHxo8Q+1IsGJuEd/ToPoedsPTvCsSQtgZmcv+dUGXld0
-         6QXJ6W90GjH+2VXY4kHRycWLamKwkYwIBLN2UMUB79F9NoXvD93iua7k5Nz9rDpV5M
-         RkhcZo1frMezHbBIh5jW/V/I2ZjcdViVkeO480NWLko1CZ4va8M30r+3bdaLzUUBvb
-         emDa+NNPRqUNw==
-Received: by mail.socialglobal.pl for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 07:35:58 GMT
-Message-ID: <20230712064501-0.1.74.296m4.0.6oj77i3940@socialglobal.pl>
-Date:   Wed, 12 Jul 2023 07:35:58 GMT
-From:   "Dominik Perkowski" <dominik.perkowski@socialglobal.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Pozycjonowanie- informacja
-X-Mailer: mail.socialglobal.pl
+        with ESMTP id S231615AbjGLKL7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Jul 2023 06:11:59 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772571993;
+        Wed, 12 Jul 2023 03:11:58 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B9CD31C0E01; Wed, 12 Jul 2023 12:11:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1689156716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l2Y4PoQq7t84wSDXhTjv7xxRnyRD7me00mbEwlLgnHk=;
+        b=HSznmEO/ofiqKcE49Py+QgfRHivNm06Si3TCpCQUabEBo/MKU7poY5N34pV+UlECSTg2k0
+        r9L7WQcnWAcFUtZF9U+kTrKDaeo36HbREFgXaiiiBOjW4eYhPLt1+dvUrrmAFZfvLm43dO
+        JRDSfU8UiuP+TOMx3hGqYvm4o+1SY0A=
+Date:   Wed, 12 Jul 2023 12:11:56 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>, frederic@kernel.org,
+        quic_neeraju@quicinc.com, joel@joelfernandes.org,
+        josh@joshtriplett.org, boqun.feng@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.10] rcu: Mark rcu_cpu_kthread() accesses to
+ ->rcu_cpu_has_work
+Message-ID: <ZK58bFy80qmsRI/c@duo.ucw.cz>
+References: <20230702195806.1793552-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="T5plQyocUu8y0Gz4"
+Content-Disposition: inline
+In-Reply-To: <20230702195806.1793552-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
 
-jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
-j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
-e Google.=20
+--T5plQyocUu8y0Gz4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
-=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
-w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
-owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
-dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
+On Sun 2023-07-02 15:58:06, Sasha Levin wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+>=20
+> [ Upstream commit a24c1aab652ebacf9ea62470a166514174c96fe1 ]
+>=20
+> The rcu_data structure's ->rcu_cpu_has_work field can be modified by
+> any CPU attempting to wake up the rcuc kthread.  Therefore, this commit
+> marks accesses to this field from the rcu_cpu_kthread() function.
+>=20
+> This data race was reported by KCSAN.  Not appropriate for backporting
+> due to failure being unlikely.
 
-Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
-edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
-edstawi=C4=87 ofert=C4=99?=20
+Please drop.
 
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
 
-Pozdrawiam serdecznie,
-Dominik Perkowski
+--T5plQyocUu8y0Gz4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZK58bAAKCRAw5/Bqldv6
+8rD3AKCF4LKQV/oMG3jBaJY+I5XJc8o0+gCeOWkaQmErzClV1y77SKWv2TSDAKA=
+=R0/9
+-----END PGP SIGNATURE-----
+
+--T5plQyocUu8y0Gz4--
