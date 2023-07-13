@@ -2,24 +2,24 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 205C3EB64DD
-	for <rcu@archiver.kernel.org>; Thu, 13 Jul 2023 04:41:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BACDEB64DD
+	for <rcu@archiver.kernel.org>; Thu, 13 Jul 2023 04:51:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbjGMElX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 13 Jul 2023 00:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
+        id S233653AbjGMEvo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 13 Jul 2023 00:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbjGMElV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:41:21 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A39211E;
-        Wed, 12 Jul 2023 21:41:16 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VnFWGm4_1689223270;
-Received: from 30.97.48.217(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnFWGm4_1689223270)
+        with ESMTP id S233495AbjGMEvn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 13 Jul 2023 00:51:43 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1D61FFC;
+        Wed, 12 Jul 2023 21:51:41 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VnFjj4L_1689223895;
+Received: from 30.97.48.217(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnFjj4L_1689223895)
           by smtp.aliyun-inc.com;
-          Thu, 13 Jul 2023 12:41:11 +0800
-Message-ID: <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
-Date:   Thu, 13 Jul 2023 12:41:09 +0800
+          Thu, 13 Jul 2023 12:51:36 +0800
+Message-ID: <a7078657-823f-6283-bfeb-b5dc2c4c8d09@linux.alibaba.com>
+Date:   Thu, 13 Jul 2023 12:51:34 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.13.0
@@ -64,77 +64,25 @@ On 2023/7/13 12:27, Paul E. McKenney wrote:
 > On Thu, Jul 13, 2023 at 10:02:17AM +0800, Gao Xiang wrote:
 >>
 >>
->> On 2023/7/13 08:32, Joel Fernandes wrote:
->>> On Wed, Jul 12, 2023 at 02:20:56PM -0700, Sandeep Dhavale wrote:
->>> [..]
->>>>> As such this patch looks correct to me, one thing I noticed is that
->>>>> you can check rcu_is_watching() like the lockdep-enabled code does.
->>>>> That will tell you also if a reader-section is possible because in
->>>>> extended-quiescent-states, RCU readers should be non-existent or
->>>>> that's a bug.
->>>>>
->>>> Please correct me if I am wrong, reading from the comment in
->>>> kernel/rcu/update.c rcu_read_lock_held_common()
->>>> ..
->>>>     * The reason for this is that RCU ignores CPUs that are
->>>>    * in such a section, considering these as in extended quiescent state,
->>>>    * so such a CPU is effectively never in an RCU read-side critical section
->>>>    * regardless of what RCU primitives it invokes.
->>>>
->>>> It seems rcu will treat this as lock not held rather than a fact that
->>>> lock is not held. Is my understanding correct?
->>>
->>> If RCU treats it as a lock not held, that is a fact for RCU ;-). Maybe you
->>> mean it is not a fact for erofs?
->>
->> I'm not sure if I get what you mean, EROFS doesn't take any RCU read lock
->> here:
-> 
-> The key point is that we need lockdep to report errors when
-> rcu_read_lock(), rcu_dereference(), and friends are used when RCU is
-> not watching.  We also need lockdep to report an error when someone
-> uses rcu_dereference() when RCU is not watching, but also forgets the
-> rcu_read_lock().
-> 
-> And this is the job of rcu_read_lock_held(), which is one reason why
-> that rcu_is_watching() is needed.
-> 
->> z_erofs_decompressqueue_endio() is actually a "bio->bi_end_io", previously
->> which can be called under two scenarios:
->>
->>   1) under softirq context, which is actually part of device I/O compleltion;
->>
->>   2) under threaded context, like what dm-verity or likewise calls.
->>
->> But EROFS needs to decompress in a threaded context anyway, so we trigger
->> a workqueue to resolve the case 1).
->>
->> Recently, someone reported there could be some case 3) [I think it was
->> introduced recently but I have no time to dig into it]:
->>
->>   case 3: under RCU read lock context, which is shown by this:
->> https://lore.kernel.org/r/4a8254eb-ac39-1e19-3d82-417d3a7b9f94@linux.alibaba.com/T/#u
->>
->>   and such RCU read lock is taken in __blk_mq_run_dispatch_ops().
->>
->> But as the commit shown, we only need to trigger a workqueue for case 1)
->> and 3) due to performance reasons.
-> 
-> Just out of curiosity, exactly how much is it costing to trigger the
-> workqueue?
 
-There are lots of performance issues here and even a plumber
-topic last year to show that, see:
+... sorry forget some.
 
-[1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
-[2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
-[3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
-[4] https://lpc.events/event/16/contributions/1338/
-and more.
+> 
+> One additional question...  What is your plan for kernels built with
+> CONFIG_PREEMPT_COUNT=n?  After all, in such kernels, there is no way
+> that I know of for code to determine whether it is in an RCU read-side
+> critical section, holding a spinlock, or running with preemption disabled.
 
-I'm not sure if it's necessary to look info all of that,
-andSandeep knows more than I am (the scheduling issue
-becomes vital on some aarch64 platform.)
+I'm not sure if Android (or all targetted) users use or care about
+this configuration (CONFIG_PREEMPT_COUNT=n), personally I think
+for such configuration we could just fall back to the workqueue
+approach all the time.
+
+Anyway, such optimization really comes from real workloads /
+experience, users don't live well without such mitigation.
 
 Thanks,
 Gao Xiang
+
+> 
+> 						Thanx, Paul
