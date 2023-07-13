@@ -2,44 +2,65 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BC29C001B0
-	for <rcu@archiver.kernel.org>; Thu, 13 Jul 2023 18:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13266C0015E
+	for <rcu@archiver.kernel.org>; Thu, 13 Jul 2023 18:51:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbjGMSPB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 13 Jul 2023 14:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
+        id S231386AbjGMSvu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 13 Jul 2023 14:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbjGMSPA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:15:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4ED726AF;
-        Thu, 13 Jul 2023 11:14:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 545426185A;
-        Thu, 13 Jul 2023 18:14:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A37F7C433C8;
-        Thu, 13 Jul 2023 18:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689272097;
-        bh=gbBaDOLW8b5zJ6t+3hNGjxenn8ggPRUMHbXlJY7MZBk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tqNIuNvoYCyzicFL7M0IuA7oO/p8oI98C4Ha0s+IRm9ZZnYmfK0BLRV4vLQaiC4eU
-         j6Q0phJZ8zXfU7jN/2u1/K/uYhEzzXG+XDM+cswy8+sRLzB82QGyczw3eN+mnoAvIG
-         SyUOARlofcgKCqei4M6SkZonkhRn1I+dtcr4tjLJEYHIxMMGiJvsklygEF2ALi6rte
-         uI0AN2u4p7sVxP4Mbjae6i3hVWGZlC9iubmvtqtZ0/SIYwrPmnriTJHknPK83Ju7bG
-         LgklYKHbfP99PjVt07Qb0lYyG7hYBEIErmi1WKzhzuq+EtxWW8JJIWQEZgW2ARSoHx
-         PzzCXkdpIMVMg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 325E8CE009F; Thu, 13 Jul 2023 11:14:57 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 11:14:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
+        with ESMTP id S231171AbjGMSvs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 13 Jul 2023 14:51:48 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693892699
+        for <rcu@vger.kernel.org>; Thu, 13 Jul 2023 11:51:47 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbea14706eso9991135e9.2
+        for <rcu@vger.kernel.org>; Thu, 13 Jul 2023 11:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689274306; x=1691866306;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CRTSQeUdEcnOajeYoZyJyVr14RVak3GBVUbXP0XQdD8=;
+        b=k7idrVD3RsqeuHqTO9rpH6mwpxtDc61Ezz3IEiqaaW+yycMVDXcOUK25k1gnwf3Tsa
+         JNYyr6Xt7TBgsP42SCshexrnS4RlNtEsTI1sxsMokh2ipYJ175NJ/sj/+SDABByQ9sKL
+         N5zc+A76cNhWElOj+UaRMc7Ent2H9DfxvXu+mWuAuNcQ74m+MTlg9/zuGBdBj3NUimGx
+         7xWiLwHjZy3mHoNfQpJWazMejVBv5uZDM1IlQHjtRbUqOImER0W9F3FfI653/qlEvG9u
+         zdM9vIxR4Mj08dzzi3QzD8fp50AFpOqNq4Es0vBevPJUNy7DTazzlN78ZURrj0n94R0g
+         bk/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689274306; x=1691866306;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CRTSQeUdEcnOajeYoZyJyVr14RVak3GBVUbXP0XQdD8=;
+        b=bqFldVYzfi1CNosTMaWOIAToGfTI7hby1F26QFIzAHW9z1qneIrTI46KJWBrV6GVGG
+         OPh7ZQzBT1ypvJaMk7cW6i8RjPDyiGIMX9JuGjnoM8DAOLw6CQEkfJap5HqDD/+rxSEK
+         s2Y+KpRfnozw+9ybwhDkaQ1DzwUG6fdqO3Eun7uwGZy5IoEEGnNXGXZmry1XP28hx5fo
+         LIFrSENRyElqXoChkZ8Ps9bwcJQYWCSW532N4bakxY8ipOXxDJwHovlThaWil6x4Z9Xj
+         Dwko7FCGIdDxfDyZlKqQdeOa9SSrk4exeU+3aet6Ou3mCi90zos+3oNXfeEACEzDWBmT
+         Jgcw==
+X-Gm-Message-State: ABy/qLbzi7pzWjXnaEW/XPCDsjaY3P8/HzOKCp8zGcnYfSJLYBD7TY6o
+        grdJqxQFbFlQdjr1xK6iNDoN7Ov5l99g02s4uUaBVRlAfF1tP6J9qwVD+pmX
+X-Google-Smtp-Source: APBJJlGvHzvAe/oR+TTlkHcVqp0fo8lpXt8SG+ObjVCv6Vz7ojUSg+bE3wo3qfu/bC0DdnxZh+XcOdlxLsXIEcAD5hA=
+X-Received: by 2002:a7b:c5c5:0:b0:3fa:99d6:47a4 with SMTP id
+ n5-20020a7bc5c5000000b003fa99d647a4mr2316810wmk.22.1689274305706; Thu, 13 Jul
+ 2023 11:51:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
+ <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop> <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop> <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com> <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop> <CAB=BE-QSaRKvVQg28wu6zVoO9RwiHZgXJzUaEMdbtpieVLmT8A@mail.gmail.com>
+ <39923da8-16a1-43a8-99f1-5e13508e4ee4@paulmck-laptop>
+In-Reply-To: <39923da8-16a1-43a8-99f1-5e13508e4ee4@paulmck-laptop>
+From:   Sandeep Dhavale <dhavale@google.com>
+Date:   Thu, 13 Jul 2023 11:51:34 -0700
+Message-ID: <CAB=BE-QNFhOD=xe09hiZOLmDN7XQxnaxyMz1X=4EeU7SFKaRKA@mail.gmail.com>
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when !CONFIG_DEBUG_LOCK_ALLOC
+To:     paulmck@kernel.org
 Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -56,181 +77,54 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <c62bd3db-5ed3-4dbf-bba9-d9dace23312c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230713003201.GA469376@google.com>
- <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
- <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
- <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
- <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <F7D5032D-908E-4227-8A38-AF740AC86CDC@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F7D5032D-908E-4227-8A38-AF740AC86CDC@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 12:09:27AM +0800, Alan Huang wrote:
-> 
-> > 2023年7月13日 23:33，Joel Fernandes <joel@joelfernandes.org> 写道：
-> > 
-> > On Thu, Jul 13, 2023 at 10:34 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> >> 
-> >> 
-> >> 
-> >> On 2023/7/13 22:07, Joel Fernandes wrote:
-> >>> On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> >>>> On 2023/7/13 12:52, Paul E. McKenney wrote:
-> >>>>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
-> >>>>>> 
-> >>>>>> 
-> >>>> 
-> >>>> ...
-> >>>> 
-> >>>>>> 
-> >>>>>> There are lots of performance issues here and even a plumber
-> >>>>>> topic last year to show that, see:
-> >>>>>> 
-> >>>>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
-> >>>>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
-> >>>>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
-> >>>>>> [4] https://lpc.events/event/16/contributions/1338/
-> >>>>>> and more.
-> >>>>>> 
-> >>>>>> I'm not sure if it's necessary to look info all of that,
-> >>>>>> andSandeep knows more than I am (the scheduling issue
-> >>>>>> becomes vital on some aarch64 platform.)
-> >>>>> 
-> >>>>> Hmmm...  Please let me try again.
-> >>>>> 
-> >>>>> Assuming that this approach turns out to make sense, the resulting
-> >>>>> patch will need to clearly state the performance benefits directly in
-> >>>>> the commit log.
-> >>>>> 
-> >>>>> And of course, for the approach to make sense, it must avoid breaking
-> >>>>> the existing lockdep-RCU debugging code.
-> >>>>> 
-> >>>>> Is that more clear?
-> >>>> 
-> >>>> Personally I'm not working on Android platform any more so I don't
-> >>>> have a way to reproduce, hopefully Sandeep could give actually
-> >>>> number _again_ if dm-verity is enabled and trigger another
-> >>>> workqueue here and make a comparsion why the scheduling latency of
-> >>>> the extra work becomes unacceptable.
-> >>>> 
-> >>> 
-> >>> Question from my side, are we talking about only performance issues or
-> >>> also a crash? It appears z_erofs_decompress_pcluster() takes
-> >>> mutex_lock(&pcl->lock);
-> >>> 
-> >>> So if it is either in an RCU read-side critical section or in an
-> >>> atomic section, like the softirq path, then it may
-> >>> schedule-while-atomic or trigger RCU warnings.
-> >>> 
-> >>> z_erofs_decompressqueue_endio
-> >>> -> z_erofs_decompress_kickoff
-> >>>  ->z_erofs_decompressqueue_work
-> >>>   ->z_erofs_decompress_queue
-> >>>    -> z_erofs_decompress_pcluster
-> >>>     -> mutex_lock
-> >>> 
-> >> 
-> >> Why does the softirq path not trigger a workqueue instead?
-> > 
-> > I said "if it is". I was giving a scenario. mutex_lock() is not
-> > allowed in softirq context or in an RCU-reader.
-> > 
-> >>> Per Sandeep in [1], this stack happens under RCU read-lock in:
-> >>> 
-> >>> #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
-> >>> [...]
-> >>>                 rcu_read_lock();
-> >>>                 (dispatch_ops);
-> >>>                 rcu_read_unlock();
-> >>> [...]
-> >>> 
-> >>> Coming from:
-> >>> blk_mq_flush_plug_list ->
-> >>>                            blk_mq_run_dispatch_ops(q,
-> >>>                                 __blk_mq_flush_plug_list(q, plug));
-> >>> 
-> >>> and __blk_mq_flush_plug_list does this:
-> >>>           q->mq_ops->queue_rqs(&plug->mq_list);
-> >>> 
-> >>> This somehow ends up calling the bio_endio and the
-> >>> z_erofs_decompressqueue_endio which grabs the mutex.
-> >>> 
-> >>> So... I have a question, it looks like one of the paths in
-> >>> __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
-> >>> path uses RCU. Why does this alternate want to block even if it is not
-> >>> supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
-> >>> be set? It sounds like you want to block in the "else" path even
-> >>> though BLK_MQ_F_BLOCKING is not set:
-> >> 
-> >> BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
-> >> That is block layer and mq device driver stuffs. filesystems cannot set
-> >> this value.
-> >> 
-> >> As I said, as far as I understand, previously,
-> >> .end_io() can only be called without RCU context, so it will be fine,
-> >> but I don't know when .end_io() can be called under some RCU context
-> >> now.
-> > 
-> > From what Sandeep described, the code path is in an RCU reader. My
-> > question is more, why doesn't it use SRCU instead since it clearly
-> > does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
-> > dive needs to be made into that before concluding that the fix is to
-> > use rcu_read_lock_any_held().
-> 
-> Copied from [1]:
-> 
-> "Background: Historically erofs would always schedule a kworker for
->  decompression which would incur the scheduling cost regardless of
->  the context. But z_erofs_decompressqueue_endio() may not always
->  be in atomic context and we could actually benefit from doing the
->  decompression in z_erofs_decompressqueue_endio() if we are in
->  thread context, for example when running with dm-verity.
->  This optimization was later added in patch [2] which has shown
->  improvement in performance benchmarks.”
-> 
-> I’m not sure if it is a design issue.
+> Thank you for the background.
+>
+> > Paul, Joel,
+> > Shall we fix the rcu_read_lock_*held() regardless of how erofs
+> > improves the check?
+>
+> Help me out here.  Exactly what is broken with rcu_read_lock_*held(),
+> keeping in mind their intended use for lockdep-based debugging?
+>
+Hi Paul,
+With !CONFIG_DEBUG_ALLOC_LOCK
+rcu_read_lock_held() -> Always returns 1.
+rcu_read_lock_any_held()-> returns !preemptible() so may return 0.
 
-I have no official opinion myself, but there are quite a few people
-who firmly believe that any situation like this one (where driver or
-file-system code needs to query the current context to see if blocking
-is OK) constitutes a design flaw.  Such people might argue that this
-code path should have a clearly documented context, and that if that
-documentation states that the code might be in atomic context, then the
-driver/fs should assume atomic context.  Alternatively, if driver/fs
-needs the context to be non-atomic, the callers should make it so.
+Now current usages for rcu_read_lock_*held() are under RCU_LOCKDEP_WARN()
+which becomes noOP with !CONFIG_DEBUG_ALLOC_LOCK
+(due to debug_lockdep_rcu_enabled()) so this inconsistency is not causing
+any problems right now. So my question was about your opinion for fixing this
+for semantics if it's worth correcting.
 
-See for example in_atomic() and its comment header:
+Also it would have been better IMO if there was a reliable API
+for rcu_read_lock_*held() than erofs trying to figure it out at a higher level.
 
-/*
- * Are we running in atomic context?  WARNING: this macro cannot
- * always detect atomic context; in particular, it cannot know about
- * held spinlocks in non-preemptible kernels.  Thus it should not be
- * used in the general case to determine whether sleeping is possible.
- * Do not use in_atomic() in driver code.
- */
-#define in_atomic()	(preempt_count() != 0)
+> I have no official opinion myself, but there are quite a few people
+...
 
-In the immortal words of Dan Frye, this should be good clean fun!  ;-)
+Regarding erofs trying to detect this, I understand few people can
+have different
+opinions. Not scheduling a thread while being in a thread context itself
+is reasonable in my opinion which also has shown performance gains.
 
-							Thanx, Paul
+Thanks,
+Sandeep.
 
-> [1] https://lore.kernel.org/all/20230621220848.3379029-1-dhavale@google.com/
-> 
-> > 
-> > - Joel
-> 
-> 
+
+
+>                                                         Thanx, Paul
+>
+> > Thanks,
+> > Sandeep.
+> >
+> > [1] https://lore.kernel.org/linux-erofs/20230208093322.75816-1-hsiangkao@linux.alibaba.com/
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
