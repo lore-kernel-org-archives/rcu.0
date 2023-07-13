@@ -2,105 +2,136 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F58CC0015E
-	for <rcu@archiver.kernel.org>; Wed, 12 Jul 2023 21:50:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15359EB64DA
+	for <rcu@archiver.kernel.org>; Thu, 13 Jul 2023 01:35:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbjGLVu1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 12 Jul 2023 17:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        id S232278AbjGMBfc (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 12 Jul 2023 21:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjGLVu0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 12 Jul 2023 17:50:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3524F1FE3
-        for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 14:50:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A7FD76195E
-        for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 21:50:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 02D6BC433C7;
-        Wed, 12 Jul 2023 21:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689198624;
-        bh=OuAbfPmSlVi4EZZR7sYV2K+yruQB4yKAZfVpBjW/U3c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kHU204c3rkaKDAcBWdrlSI67BN98MeVpHtaMTjYv4bybpXL6RmMA5cgQJz4E2pF2I
-         QBPLZtY8zQDV3f6040cZII8gmyTqAEQQ69EycM51UFD8r4XbdrCCFDZzwiquSYCcO4
-         Fo8cj4XF9wX2Lcb93MoSyeBF/CC1oEMinps9iLysvGslCsnR4YiNaSI/DX5AXStuNn
-         XfSbHMF4WDjypYWrA4yllNJk3Jocg/3bNTrL/Ird1CKuvGz8+/eMpeEWZFRUb9zv94
-         hB/kVgajjkIen7UhJ8nCRJ/EPFxQVWT5J4ckARJBrzaDwosFUCs8fpJySUY119c8JZ
-         ow2+VNgjv9o3Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D7D6AE49BBF;
-        Wed, 12 Jul 2023 21:50:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229747AbjGMBfb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 12 Jul 2023 21:35:31 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDCF1FC8
+        for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 18:35:30 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-345d6dc271dso714285ab.0
+        for <rcu@vger.kernel.org>; Wed, 12 Jul 2023 18:35:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689212130; x=1691804130;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qaRxxdr7002yjY9Sb9rO/hl+wvbOVuHe+f71rQQmNs8=;
+        b=ZMHAvknOnwQhd7hwVntmR134VIf/xa8j7HZiHjXQ9avrdkys1ATjg4U+6vtSQiEsvf
+         GhRM6CAI2OjvDFIornwXuZ348pIlr8Y+MbRK0iFbTN3mULWh7l5Wo6vG2kDv1f1xKnde
+         +1VhH8VNCIxNdnXEyC9Uhgl1/ul6MJ6kfbsvc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689212130; x=1691804130;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qaRxxdr7002yjY9Sb9rO/hl+wvbOVuHe+f71rQQmNs8=;
+        b=WYcj9eYOSXg6Po/lhwgYWZO56PCJMNw2qoQoZrq2lMm2boywiNvCtEuCbCn+mR2LoV
+         sS+MU4nL3fXWbPgvAdhppXBRQ549NHObWxjzY3iwZD/AY8Xc+Ocu2PAJQRk2Amwgmjqs
+         HyKx3xlkp52e/YK0KnSiRFINUpQwkp11/m700zd0xsw1W3+6QBMLrV4SpqbsiANEkUP5
+         DQXRz3G8NRuR13RjhtNns3MVFCY9CqHvfGzmFn8CR/0ckN/x5rIYdhJTXZ8FGUyt+OJ2
+         R0AB6UtpwfkPDGksU1cv1AgRiaxW83rbbVivewD+ovdeQFlvCdQOVSLGv/b2I1ifA3RS
+         0RLg==
+X-Gm-Message-State: ABy/qLbhL/0dAUalOGDLJg+8vbjwBa9j380Ub6eYT/8rt0vzCR9tw+C0
+        XVOSuSvHcaygTZBrQ7AwDrxb1w==
+X-Google-Smtp-Source: APBJJlEreT5I7mhbY3CrgO4nPjdHks9kWfD2/wzw3a1D2fzQTpHAli4eHhivkahHLSwBjGrsEf0UHQ==
+X-Received: by 2002:a92:de0e:0:b0:347:70a8:1749 with SMTP id x14-20020a92de0e000000b0034770a81749mr71357ilm.24.1689212130076;
+        Wed, 12 Jul 2023 18:35:30 -0700 (PDT)
+Received: from localhost (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id k1-20020a02a701000000b0042b2df337ccsm1483077jam.76.2023.07.12.18.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 18:35:29 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 00:32:01 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Sandeep Dhavale <dhavale@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <20230713003201.GA469376@google.com>
+References: <20230711233816.2187577-1-dhavale@google.com>
+ <CAEXW_YQvpiFEaaNoS=Msgi17mU3kZD+q8bNBaHYasMArG9aPig@mail.gmail.com>
+ <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 bpf-next 00/14] bpf: Introduce bpf_mem_cache_free_rcu().
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168919862387.303.8813796941061436903.git-patchwork-notify@kernel.org>
-Date:   Wed, 12 Jul 2023 21:50:23 +0000
-References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     daniel@iogearbox.net, andrii@kernel.org, void@manifault.com,
-        houtao@huaweicloud.com, paulmck@kernel.org, tj@kernel.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed,  5 Jul 2023 20:34:33 -0700 you wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On Wed, Jul 12, 2023 at 02:20:56PM -0700, Sandeep Dhavale wrote:
+[..]
+> > As such this patch looks correct to me, one thing I noticed is that
+> > you can check rcu_is_watching() like the lockdep-enabled code does.
+> > That will tell you also if a reader-section is possible because in
+> > extended-quiescent-states, RCU readers should be non-existent or
+> > that's a bug.
+> >
+> Please correct me if I am wrong, reading from the comment in
+> kernel/rcu/update.c rcu_read_lock_held_common()
+> ..
+>   * The reason for this is that RCU ignores CPUs that are
+>  * in such a section, considering these as in extended quiescent state,
+>  * so such a CPU is effectively never in an RCU read-side critical section
+>  * regardless of what RCU primitives it invokes.
 > 
-> v3->v4:
-> - extra patch 14 from Hou to check for object leaks.
-> - fixed the race/leak in free_by_rcu_ttrace. Extra hunk in patch 8.
-> - added Acks and fixed typos.
-> 
-> [...]
+> It seems rcu will treat this as lock not held rather than a fact that
+> lock is not held. Is my understanding correct?
 
-Here is the summary with links:
-  - [v4,bpf-next,01/14] bpf: Rename few bpf_mem_alloc fields.
-    https://git.kernel.org/bpf/bpf-next/c/12c8d0f4c870
-  - [v4,bpf-next,02/14] bpf: Simplify code of destroy_mem_alloc() with kmemdup().
-    https://git.kernel.org/bpf/bpf-next/c/a80672d7e10e
-  - [v4,bpf-next,03/14] bpf: Let free_all() return the number of freed elements.
-    https://git.kernel.org/bpf/bpf-next/c/9de3e81521b4
-  - [v4,bpf-next,04/14] bpf: Refactor alloc_bulk().
-    https://git.kernel.org/bpf/bpf-next/c/05ae68656a8e
-  - [v4,bpf-next,05/14] bpf: Factor out inc/dec of active flag into helpers.
-    https://git.kernel.org/bpf/bpf-next/c/18e027b1c7c6
-  - [v4,bpf-next,06/14] bpf: Further refactor alloc_bulk().
-    https://git.kernel.org/bpf/bpf-next/c/7468048237b8
-  - [v4,bpf-next,07/14] bpf: Change bpf_mem_cache draining process.
-    https://git.kernel.org/bpf/bpf-next/c/d114dde245f9
-  - [v4,bpf-next,08/14] bpf: Add a hint to allocated objects.
-    https://git.kernel.org/bpf/bpf-next/c/822fb26bdb55
-  - [v4,bpf-next,09/14] bpf: Allow reuse from waiting_for_gp_ttrace list.
-    https://git.kernel.org/bpf/bpf-next/c/04fabf00b4d3
-  - [v4,bpf-next,10/14] rcu: Export rcu_request_urgent_qs_task()
-    https://git.kernel.org/bpf/bpf-next/c/43a89baecfe2
-  - [v4,bpf-next,11/14] selftests/bpf: Improve test coverage of bpf_mem_alloc.
-    https://git.kernel.org/bpf/bpf-next/c/f76faa65c971
-  - [v4,bpf-next,12/14] bpf: Introduce bpf_mem_free_rcu() similar to kfree_rcu().
-    https://git.kernel.org/bpf/bpf-next/c/5af6807bdb10
-  - [v4,bpf-next,13/14] bpf: Convert bpf_cpumask to bpf_mem_cache_free_rcu.
-    https://git.kernel.org/bpf/bpf-next/c/8e07bb9ebcd9
-  - [v4,bpf-next,14/14] bpf: Add object leak check.
-    https://git.kernel.org/bpf/bpf-next/c/4ed8b5bcfada
+If RCU treats it as a lock not held, that is a fact for RCU ;-). Maybe you
+mean it is not a fact for erofs?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> The reason I chose not to consult rcu_is_watching() in this version
+> is because check "sleeping function called from invalid context"
+> will still get triggered (please see kernel/sched/core.c __might_resched())
+> as it does not consult rcu_is_watching() instead looks at
+> rcu_preempt_depth() which will be non-zero if rcu_read_lock()
+> was called (only when CONFIG_PREEMPT_RCU is enabled).
 
+I am assuming you mean you would grab the mutex accidentally when in an RCU
+reader, and might_sleep() presumably in the mutex internal code will scream?
+
+I would expect in the erofs code that rcu_is_watching() should always return
+true, so it should not effect the decision of whether to block or not. I am
+suggesting add the check for rcu_is_watching() into the *held() functions for
+completeness.
+
+// will be if (!true) when RCU is actively watching the CPU for readers.
+bool rcu_read_lock_any_held() {
+	if (!rcu_is_watching())
+		return false;
+	// do the rest..
+}
+
+> > Could you also verify that this patch does not cause bloating of the
+> > kernel if lockdep is disabled?
+> >
+> Sure, I will do the comparison and send the details.
+
+Thanks! This is indeed an interesting usecase of grabbing mutex / blocking in
+the reader.
+
+thanks,
+
+ - Joel
 
