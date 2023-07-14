@@ -2,44 +2,31 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11760EB64DD
-	for <rcu@archiver.kernel.org>; Fri, 14 Jul 2023 02:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C352C001DC
+	for <rcu@archiver.kernel.org>; Fri, 14 Jul 2023 03:17:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjGNCQT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 13 Jul 2023 22:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
+        id S234817AbjGNDRP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 13 Jul 2023 23:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjGNCQS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:16:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A427726BA;
-        Thu, 13 Jul 2023 19:16:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 25F4861BC5;
-        Fri, 14 Jul 2023 02:16:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81EE9C433C7;
-        Fri, 14 Jul 2023 02:16:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689300975;
-        bh=uAVQKn3XrJvZfXm8GxKUNsUi9JDwhiLuZKguvR0XKN4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dRv0ToS9r49I28wAPbW2pKF0ybIjFqTwlsDjH0AB8NQg4H0tdDxR3pUOfMFK3I2zR
-         4+M8AuRrzbMbMPCniCP4ji8JgXDq8Iu0b9f2RTbQ2UsJ+N4sWyPTGGGPH55JwBRD8m
-         yz/2Q84JKIBnqEfY7+VNDf5pxBQlfQud0SLFcZLrXOoxmWfpV4LBCYP4FLGGY1W3ik
-         JMi2CU+iWkDhpJc3wHZEQ2BmBRUL9b+ikJRxRymOuMfKKW9YdL962BK/DSRcQtWK1Q
-         Aor3hrldqO0lS1fETSXX6zR1MBzZqqEtX/E1/OC7LW8QU/5XO0aDInPLfdqhz4xL5V
-         mmyL+6bS+p4cA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1B97BCE009E; Thu, 13 Jul 2023 19:16:15 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 19:16:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S234822AbjGNDRH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 13 Jul 2023 23:17:07 -0400
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A76230F4;
+        Thu, 13 Jul 2023 20:17:00 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VnK7oAI_1689304613;
+Received: from 172.20.10.3(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnK7oAI_1689304613)
+          by smtp.aliyun-inc.com;
+          Fri, 14 Jul 2023 11:16:56 +0800
+Message-ID: <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
+Date:   Fri, 14 Jul 2023 11:16:52 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+To:     paulmck@kernel.org, Sandeep Dhavale <dhavale@google.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
@@ -54,11 +41,8 @@ Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
         Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
         rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        linux-mediatek@lists.infradead.org,
+        Joel Fernandes <joel@joelfernandes.org>
 References: <20230713003201.GA469376@google.com>
  <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
  <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
@@ -69,157 +53,59 @@ References: <20230713003201.GA469376@google.com>
  <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
  <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
  <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
-> > On Thu, Jul 13, 2023 at 10:34 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> > > On 2023/7/13 22:07, Joel Fernandes wrote:
-> > > > On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> > > >> On 2023/7/13 12:52, Paul E. McKenney wrote:
-> > > >>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
-> > > >>
-> > > >> ...
-> > > >>
-> > > >>>>
-> > > >>>> There are lots of performance issues here and even a plumber
-> > > >>>> topic last year to show that, see:
-> > > >>>>
-> > > >>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
-> > > >>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
-> > > >>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
-> > > >>>> [4] https://lpc.events/event/16/contributions/1338/
-> > > >>>> and more.
-> > > >>>>
-> > > >>>> I'm not sure if it's necessary to look info all of that,
-> > > >>>> andSandeep knows more than I am (the scheduling issue
-> > > >>>> becomes vital on some aarch64 platform.)
-> > > >>>
-> > > >>> Hmmm...  Please let me try again.
-> > > >>>
-> > > >>> Assuming that this approach turns out to make sense, the resulting
-> > > >>> patch will need to clearly state the performance benefits directly in
-> > > >>> the commit log.
-> > > >>>
-> > > >>> And of course, for the approach to make sense, it must avoid breaking
-> > > >>> the existing lockdep-RCU debugging code.
-> > > >>>
-> > > >>> Is that more clear?
-> > > >>
-> > > >> Personally I'm not working on Android platform any more so I don't
-> > > >> have a way to reproduce, hopefully Sandeep could give actually
-> > > >> number _again_ if dm-verity is enabled and trigger another
-> > > >> workqueue here and make a comparsion why the scheduling latency of
-> > > >> the extra work becomes unacceptable.
-> > > >>
-> > > >
-> > > > Question from my side, are we talking about only performance issues or
-> > > > also a crash? It appears z_erofs_decompress_pcluster() takes
-> > > > mutex_lock(&pcl->lock);
-> > > >
-> > > > So if it is either in an RCU read-side critical section or in an
-> > > > atomic section, like the softirq path, then it may
-> > > > schedule-while-atomic or trigger RCU warnings.
-> > > >
-> > > > z_erofs_decompressqueue_endio
-> > > > -> z_erofs_decompress_kickoff
-> > > >   ->z_erofs_decompressqueue_work
-> > > >    ->z_erofs_decompress_queue
-> > > >     -> z_erofs_decompress_pcluster
-> > > >      -> mutex_lock
-> > > >
-> > >
-> > > Why does the softirq path not trigger a workqueue instead?
-> > 
-> > I said "if it is". I was giving a scenario. mutex_lock() is not
-> > allowed in softirq context or in an RCU-reader.
-> > 
-> > > > Per Sandeep in [1], this stack happens under RCU read-lock in:
-> > > >
-> > > > #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
-> > > > [...]
-> > > >                  rcu_read_lock();
-> > > >                  (dispatch_ops);
-> > > >                  rcu_read_unlock();
-> > > > [...]
-> > > >
-> > > > Coming from:
-> > > > blk_mq_flush_plug_list ->
-> > > >                             blk_mq_run_dispatch_ops(q,
-> > > >                                  __blk_mq_flush_plug_list(q, plug));
-> > > >
-> > > > and __blk_mq_flush_plug_list does this:
-> > > >            q->mq_ops->queue_rqs(&plug->mq_list);
-> > > >
-> > > > This somehow ends up calling the bio_endio and the
-> > > > z_erofs_decompressqueue_endio which grabs the mutex.
-> > > >
-> > > > So... I have a question, it looks like one of the paths in
-> > > > __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
-> > > > path uses RCU. Why does this alternate want to block even if it is not
-> > > > supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
-> > > > be set? It sounds like you want to block in the "else" path even
-> > > > though BLK_MQ_F_BLOCKING is not set:
-> > >
-> > > BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
-> > > That is block layer and mq device driver stuffs. filesystems cannot set
-> > > this value.
-> > >
-> > > As I said, as far as I understand, previously,
-> > > .end_io() can only be called without RCU context, so it will be fine,
-> > > but I don't know when .end_io() can be called under some RCU context
-> > > now.
-> > 
-> > >From what Sandeep described, the code path is in an RCU reader. My
-> > question is more, why doesn't it use SRCU instead since it clearly
-> > does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
-> > dive needs to be made into that before concluding that the fix is to
-> > use rcu_read_lock_any_held().
-> 
-> How can this be solved?
-> 
-> 1.	Always use a workqueue.  Simple, but is said to have performance
-> 	issues.
-> 
-> 2.	Pass a flag in that indicates whether or not the caller is in an
-> 	RCU read-side critical section.  Conceptually simple, but might
-> 	or might not be reasonable to actually implement in the code as
-> 	it exists now.	(You tell me!)
-> 
-> 3.	Create a function in z_erofs that gives you a decent
-> 	approximation, maybe something like the following.
-> 
-> 4.	Other ideas here.
 
-5.	#3 plus make the corresponding Kconfig option select
-	PREEMPT_COUNT, assuming that any users needing compression in
-	non-preemptible kernels are OK with PREEMPT_COUNT being set.
-	(Some users of non-preemptible kernels object strenuously
-	to the added overhead from CONFIG_PREEMPT_COUNT=y.)
 
-							Thanx, Paul
+On 2023/7/14 10:16, Paul E. McKenney wrote:
+> On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
+>> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
 
-> The following is untested, and is probably quite buggy, but it should
-> provide you with a starting point.
+...
+
+>>>
+>>> >From what Sandeep described, the code path is in an RCU reader. My
+>>> question is more, why doesn't it use SRCU instead since it clearly
+>>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
+>>> dive needs to be made into that before concluding that the fix is to
+>>> use rcu_read_lock_any_held().
+>>
+>> How can this be solved?
+>>
+>> 1.	Always use a workqueue.  Simple, but is said to have performance
+>> 	issues.
+>>
+>> 2.	Pass a flag in that indicates whether or not the caller is in an
+>> 	RCU read-side critical section.  Conceptually simple, but might
+>> 	or might not be reasonable to actually implement in the code as
+>> 	it exists now.	(You tell me!)
+>>
+>> 3.	Create a function in z_erofs that gives you a decent
+>> 	approximation, maybe something like the following.
+>>
+>> 4.	Other ideas here.
 > 
-> static bool z_erofs_wq_needed(void)
-> {
-> 	if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
-> 		return true;  // RCU reader
-> 	if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
-> 		return true;  // non-preemptible
-> 	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
-> 		return true;  // non-preeemptible kernel, so play it safe
-> 	return false;
-> }
-> 
-> You break it, you buy it!  ;-)
-> 
-> 							Thanx, Paul
+> 5.	#3 plus make the corresponding Kconfig option select
+> 	PREEMPT_COUNT, assuming that any users needing compression in
+> 	non-preemptible kernels are OK with PREEMPT_COUNT being set.
+> 	(Some users of non-preemptible kernels object strenuously
+> 	to the added overhead from CONFIG_PREEMPT_COUNT=y.)
+
+I'm not sure if it's a good idea, we need to work on
+CONFIG_PREEMPT_COUNT=n (why not?), we could just always trigger a
+workqueue for this.
+
+Anyway, before we proceed, I also think it'd be better to get some
+performance numbers first for this (e.g. with dm-verity) and record
+the numbers in the commit message to justify this.  Otherwise, I guess
+the same question will be raised again and again.
+
+Thanks,
+Gao Xiang
