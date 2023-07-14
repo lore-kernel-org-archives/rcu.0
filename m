@@ -2,30 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B604C001B0
-	for <rcu@archiver.kernel.org>; Fri, 14 Jul 2023 14:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5690EB64DC
+	for <rcu@archiver.kernel.org>; Fri, 14 Jul 2023 15:13:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235897AbjGNO4f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Jul 2023 10:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33524 "EHLO
+        id S235723AbjGNPN3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Jul 2023 11:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236206AbjGNO4f (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:56:35 -0400
+        with ESMTP id S235268AbjGNPN2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Jul 2023 11:13:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDE6359F;
-        Fri, 14 Jul 2023 07:56:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4162D4B;
+        Fri, 14 Jul 2023 08:13:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 56D5461D43;
-        Fri, 14 Jul 2023 14:56:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99B6CC433C7;
-        Fri, 14 Jul 2023 14:56:18 +0000 (UTC)
-Date:   Fri, 14 Jul 2023 10:56:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2270361D43;
+        Fri, 14 Jul 2023 15:13:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80E96C433C7;
+        Fri, 14 Jul 2023 15:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689347605;
+        bh=/ms++gXmzcCxNeQJmcaIIDi2dWJOZMkl3ilZS245fbU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=e9mTxiqT5SFcazYh/KzxJ9wXw+vBIuFDC8WF4/Okvoij7KXNzYOfm/RvZSWaTD8bk
+         nUptLTKsO/05/Wh8tKRGkHihY0wSXI4vimazLsZU168iyWjdxaJCgDVoVz7LoYIY3L
+         7q6/PMuoR0I5oCKZ6WQd4yNHt2rZptHITESUDPUYoc4wPjfNgejAa2ut6QoK115L8e
+         5NyTlO5PXgsHtrE4ApKb00z4ugJQWbtVIM8acy9YeG4fuZVv0XV4v5ectSv7UzbUV3
+         ahQMO2L7JTXmc9ldAL0BnrnNqXo9kYd/JsM8tAjwIE92XDtrbRzldP2YbHZt7qvSQn
+         mXYFq2F+eWAMQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 194ABCE0093; Fri, 14 Jul 2023 08:13:25 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 08:13:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Sandeep Dhavale <dhavale@google.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -44,45 +57,51 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
         linux-mediatek@lists.infradead.org
 Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
  !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <20230714105615.1ff9b8d2@gandalf.local.home>
-In-Reply-To: <fccca41d-8a72-27cf-e589-409f54cd5811@linux.alibaba.com>
-References: <20230713003201.GA469376@google.com>
-        <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
-        <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
-        <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
-        <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
-        <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
-        <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
-        <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
-        <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
-        <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
-        <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
-        <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
-        <CAEXW_YQCpUsPz24H4Mux6wOH1=RFRR-gsXLFTbJ37MgUJo3kCw@mail.gmail.com>
-        <fccca41d-8a72-27cf-e589-409f54cd5811@linux.alibaba.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Message-ID: <41a364d7-9dfa-4cd6-95f0-63f09c3a84b6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+ <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
+ <CAEXW_YQCpUsPz24H4Mux6wOH1=RFRR-gsXLFTbJ37MgUJo3kCw@mail.gmail.com>
+ <fccca41d-8a72-27cf-e589-409f54cd5811@linux.alibaba.com>
+ <20230714105615.1ff9b8d2@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714105615.1ff9b8d2@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, 14 Jul 2023 21:51:16 +0800
-Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-
-> >> we need to work on
-> >> CONFIG_PREEMPT_COUNT=n (why not?), we could just always trigger a
-> >> workqueue for this.
-> >>  
-> > 
-> > So CONFIG_PREEMPT_COUNT=n users don't deserve good performance? ;-)  
+On Fri, Jul 14, 2023 at 10:56:15AM -0400, Steven Rostedt wrote:
+> On Fri, 14 Jul 2023 21:51:16 +0800
+> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
 > 
-> I'm not sure if non-preemptible kernel users really care about
-> such sensitive latencies, I don't know, my 2 cents.
+> > >> we need to work on
+> > >> CONFIG_PREEMPT_COUNT=n (why not?), we could just always trigger a
+> > >> workqueue for this.
+> > >>  
+> > > 
+> > > So CONFIG_PREEMPT_COUNT=n users don't deserve good performance? ;-)  
+> > 
+> > I'm not sure if non-preemptible kernel users really care about
+> > such sensitive latencies, I don't know, my 2 cents.
+> 
+> CONFIG_PREEMPT_COUNT=n is for *performance* but not for *latency*. That is,
+> they care about the overall performance (batch processing) but not
+> interactive performance.
 
-CONFIG_PREEMPT_COUNT=n is for *performance* but not for *latency*. That is,
-they care about the overall performance (batch processing) but not
-interactive performance.
+Users of CONFIG_PREEMPT_COUNT=n do care about latency, but normally not
+in the sub-millisecond range.  If the February posting is representative
+(no idea, myself), these latencies are in the tens of milliseconds.
 
--- Steve
+So one question is "why not both?"
+
+One way would be for the call chain to indicate when in atomic context,
+and another would be use of SRCU, to Joel's earlier point.
+
+							Thanx, Paul
