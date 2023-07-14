@@ -2,44 +2,66 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D27B5EB64DC
-	for <rcu@archiver.kernel.org>; Fri, 14 Jul 2023 18:44:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F2B6EB64DC
+	for <rcu@archiver.kernel.org>; Fri, 14 Jul 2023 19:15:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbjGNSoL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Jul 2023 14:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        id S235931AbjGNTPi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 14 Jul 2023 15:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235463AbjGNSoK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:44:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331C21FF1;
-        Fri, 14 Jul 2023 11:44:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6858061DCF;
-        Fri, 14 Jul 2023 18:44:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0E94C433C8;
-        Fri, 14 Jul 2023 18:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689360246;
-        bh=asCo0dd5mxRE4px5f2OcxTb7m6Zaxpvf3NvcR8uu61U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gn+DOEFcqLlkcY/4WoNax0oKj6ls87rLsFfTTD8WPgySn3vvfMtKPn+ZX3JgPGNCd
-         FDm5Ru12kqKyEtQrpw8eWhZHEiMzjezQtAxWJqdrLSOw7DZaip8ChsOhcVh4XLlwlX
-         /Lv4JvjO4R3Xf7fM/4Ex3qeIsneiy75F6Eu5G3XK4ggLCx6b28BobahgmwhU0Tl4Gy
-         s0pz5u2QfVrnJOeioAXRIFecdDNn/usfOcjlOLvra00R6w4n4ADI0cITSLwW5ovXLO
-         5q5AKGMNfILldBZ3L64L3VQzTGpYJSUIfoJ6wKutfTSPPLSRnsLlsvurNEkfVPwzQ0
-         3I4CQNucM7vBw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 45F3ACE03B3; Fri, 14 Jul 2023 11:44:06 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 11:44:06 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        with ESMTP id S235883AbjGNTPi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 14 Jul 2023 15:15:38 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A4D35AB
+        for <rcu@vger.kernel.org>; Fri, 14 Jul 2023 12:15:37 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbab0d0b88so21929355e9.0
+        for <rcu@vger.kernel.org>; Fri, 14 Jul 2023 12:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689362135; x=1691954135;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cWpYs8CNOdGMvN7PUCKK7yk/Bn/GzPi3qlDukGM0svY=;
+        b=u6PqySub/kl2NX7TsnMPUgsANCQef+gR/n+Nhu9kgZ21hTNFF+QyOkoQ+7bqrPZe+E
+         UdkMBztk103Z31sNAKjHV6KrDcrynswJO7k3ORSB/DQhRFKAlb6qohsTScwFM0uHTJwd
+         70+51BNdlcX1ExDblhdHUhVMApT6fVpjxauHF3xkSf+Cpnaim3AYc8Q7z0ni83fW7erv
+         LjIKwOLvevXt/I+PVeReVV0TMhCbnEz9+kU0/CP1ZclewPwNX5kZzxxulJMxVF6+Sb2N
+         8qXhi2DpmbpHi0HT1wLRgi82sfikmTqLoht0QdiFfQx4nbeAibmSfARYGtPbClXL7FGr
+         vqDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689362135; x=1691954135;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cWpYs8CNOdGMvN7PUCKK7yk/Bn/GzPi3qlDukGM0svY=;
+        b=fLuT6MOvbdvCWUwQ3ygYXGbYYKDEAxgwjFVjeSVaJ9vPkzfxuuncIpoNg2C963CUWV
+         ZCHrj6ZkkOTJBF18ZOwmfz7GqKhbHJWa6sTTTqc1mJZOiAj7tRkZMD4BibEHHitAuRR0
+         tM+96qQgh07zgYbLVXSNTxQms66B6DYWZMeR8285th5NrTPHqMUU9Ah5SjqahR6SI1+s
+         LvpRdapYNtWODNieofyLgEHOqHouzgmxtX/1+bPT4a42jPdeWrbmMfSkGuZ/g/otXWzo
+         Vu2Ed00xCprccOXyVKh2/Rtgtv861XLIawjxVYebR6gAhZCwrPEA5LjZqR/OFrxoScNE
+         isXw==
+X-Gm-Message-State: ABy/qLbcQ0iRmIfsFVhYwJsDwrNzg/g++W0tE+waSk+lMwMsLCN+7DWT
+        LOUqn+WgGUnEu/YzLSb5dPRG05CgwkQXICEp3JiHQQ==
+X-Google-Smtp-Source: APBJJlHX6dLj7c4mGTpQQffA8nPlc153rMil3AEv5RNyi1HYhhgbFITU/Tv7HZL6ycDAMJ2p0B6XqAyqBusI0MosC4I=
+X-Received: by 2002:adf:e8d0:0:b0:313:e2e3:d431 with SMTP id
+ k16-20020adfe8d0000000b00313e2e3d431mr3161529wrn.12.1689362135219; Fri, 14
+ Jul 2023 12:15:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com> <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop> <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+ <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com> <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
+ <e8ee7006-c1d0-4c04-bd25-0f518fb6534b@paulmck-laptop> <D042B1CB-2ED4-4DF9-8CF5-5E455E7EAB73@gmail.com>
+ <453bcbbd-94f4-46da-98f6-c9fa5f931231@paulmck-laptop>
+In-Reply-To: <453bcbbd-94f4-46da-98f6-c9fa5f931231@paulmck-laptop>
+From:   Sandeep Dhavale <dhavale@google.com>
+Date:   Fri, 14 Jul 2023 12:15:23 -0700
+Message-ID: <CAB=BE-TC0s++t_5H6NjVVcpNvvvubtUpJhRxPsqq2p3ZgaFo9A@mail.gmail.com>
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when !CONFIG_DEBUG_LOCK_ALLOC
+To:     paulmck@kernel.org
+Cc:     Alan Huang <mmpgouride@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -56,93 +78,25 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <453bcbbd-94f4-46da-98f6-c9fa5f931231@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
- <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
- <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
- <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
- <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
- <e8ee7006-c1d0-4c04-bd25-0f518fb6534b@paulmck-laptop>
- <D042B1CB-2ED4-4DF9-8CF5-5E455E7EAB73@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D042B1CB-2ED4-4DF9-8CF5-5E455E7EAB73@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 02:40:08AM +0800, Alan Huang wrote:
-> > 2023年7月15日 01:02，Paul E. McKenney <paulmck@kernel.org> 写道：
-> > On Fri, Jul 14, 2023 at 11:54:47PM +0800, Alan Huang wrote:
-> >>> 2023年7月14日 23:35，Alan Huang <mmpgouride@gmail.com> 写道：
-> >>>> 2023年7月14日 10:16，Paul E. McKenney <paulmck@kernel.org> 写道：
+>
+> Sandeep, thoughts?
+>
+I prefer to modify erofs check and contain the fix there as erofs
+cares about it and it's
+least invasive. For contexts where erofs cannot tell for sure, it will
+always schedule kworker
+(like CONFIG_PREEMPT_COUNT=n).
 
-[ . . . ]
+I will also do measurements to see if erofs should continue to check
+for context and
+what are the benefits.
 
-> >>>>> How can this be solved?
-> >>>>> 
-> >>>>> 1. Always use a workqueue.  Simple, but is said to have performance
-> >>>>> issues.
-> >>>>> 
-> >>>>> 2. Pass a flag in that indicates whether or not the caller is in an
-> >>>>> RCU read-side critical section.  Conceptually simple, but might
-> >>>>> or might not be reasonable to actually implement in the code as
-> >>>>> it exists now. (You tell me!)
-> >>>>> 
-> >>>>> 3. Create a function in z_erofs that gives you a decent
-> >>>>> approximation, maybe something like the following.
-> >>>>> 
-> >>>>> 4. Other ideas here.
-> >>>> 
-> >>>> 5. #3 plus make the corresponding Kconfig option select
-> >>>> PREEMPT_COUNT, assuming that any users needing compression in
-> >>>> non-preemptible kernels are OK with PREEMPT_COUNT being set.
-> >>>> (Some users of non-preemptible kernels object strenuously
-> >>>> to the added overhead from CONFIG_PREEMPT_COUNT=y.)
-> >>> 
-> >>> 6. Set one bit in bio->bi_private, check the bit and flip it in rcu_read_lock() path,
-> >>> then in z_erofs_decompressqueue_endio, check if the bit has changed.
-> >> 
-> >> Seems bad, read and modify bi_private is a bad idea.
-> > 
-> > Is there some other field that would work?
-> 
-> Maybe bio->bi_opf, btrfs uses some bits of it.
-
-Sandeep, thoughts?
-
-
-							Thanx, Paul
-
-> >>> Not sure if this is feasible or acceptable. :)
-> >>> 
-> >>>> 
-> >>>> Thanx, Paul
-> >>>> 
-> >>>>> The following is untested, and is probably quite buggy, but it should
-> >>>>> provide you with a starting point.
-> >>>>> 
-> >>>>> static bool z_erofs_wq_needed(void)
-> >>>>> {
-> >>>>> if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
-> >>>>> return true;  // RCU reader
-> >>>>> if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
-> >>>>> return true;  // non-preemptible
-> >>>>> if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
-> >>>>> return true;  // non-preeemptible kernel, so play it safe
-> >>>>> return false;
-> >>>>> }
-> >>>>> 
-> >>>>> You break it, you buy it!  ;-)
-> >>>>> 
-> >>>>> Thanx, Paul
-> 
-> 
+Thanks,
+Sandeep.
+>                                                         Thanx, Paul
+>
