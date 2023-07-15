@@ -2,229 +2,228 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA83BC0015E
-	for <rcu@archiver.kernel.org>; Sat, 15 Jul 2023 00:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDFDEC001DE
+	for <rcu@archiver.kernel.org>; Sat, 15 Jul 2023 10:39:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbjGOAvX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 14 Jul 2023 20:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
+        id S230440AbjGOKjk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 15 Jul 2023 06:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOAvX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 14 Jul 2023 20:51:23 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28558E5C;
-        Fri, 14 Jul 2023 17:51:22 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-668730696a4so1763875b3a.1;
-        Fri, 14 Jul 2023 17:51:22 -0700 (PDT)
+        with ESMTP id S229494AbjGOKji (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 15 Jul 2023 06:39:38 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E18535AA;
+        Sat, 15 Jul 2023 03:39:37 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6682909acadso1954541b3a.3;
+        Sat, 15 Jul 2023 03:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689382281; x=1691974281;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RDRscaBv1w0JWMXd2m8J/EKtFh9sNf9PLS46tboQ92A=;
-        b=lEQpUhXoaQYq3ipsCgvn6ndAkMtqdYR33+sgW68eu0ocD14HS/NNWiGEDopcOs/GdZ
-         2u3CqZCITqL0ZnAClIJdxI0Q+peqW+0I5HCc1e6L6BV/T9JPuZPTAE5j0ZecAzTd3n52
-         FigZHs4dYcWPoX3V6NQkLubQtbgekjg0Sp6XxMwSclMjgd5J/QYZiYxG3oWa6NfhiOw+
-         jh+rB5El0lqLIskBvrlQvRfvxxWahdjB+/TmtSrYMmpe7nXcUXXYdXrRhfCseED2eoVi
-         OqUDB9Pi8Sac3y0ay/97IeIQW0KvxH2Z+/QRClTzZkBmF3P5CnZckthmmIBxym9nlmbs
-         A5iA==
+        d=gmail.com; s=20221208; t=1689417576; x=1692009576;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kkkbOsG5a5/O8531sLbibG1Jh/zjE8LtxfebLVzSHEQ=;
+        b=RVYs47VBfRzr4yR63PtPKTr8LxYyzLWAm36K0T71CjTOSFeDkmY1FdKDNykLa8diEP
+         39lhtO+Qdheoipkz2xdnp/fgJgwJGIBe/MTnA69d785djW+bAPiDXwSe7E/iNkXG6rT+
+         /NN08QTp8IyQAH4Vrm1oHAmalS0AFKJBQYyK+A6/SFFJ8/+b9M1L8r8IOHQCE834QUSg
+         ZU6IgFGzu7v6C9L4F02JE6TiZhkqE13a2qPIZsEQjx6tWusBPZcU1XlJUf6ciGZa/uFc
+         jfYuV8uEam/YB7WFEeg+RGvfEpaaNEK6VvJ+xsETrXhYYUFp+qZnQMzHUyjCPKaXAtS7
+         K+SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689382281; x=1691974281;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RDRscaBv1w0JWMXd2m8J/EKtFh9sNf9PLS46tboQ92A=;
-        b=N24LRDYn8U0tfVxIAID67vmIsLs6EbXNlPNsURU7LlZiG8ZRAXNzf+lU6iabXwumYy
-         0gJHlR0FEydmDQ3XB/+odEQoAZ0E7OaBxv9e6eRfd/VX7Z8qvo310TDvME7y4BWX2iCB
-         gXKqMvOnu5cTdbKrDFcQjZj4C66JZuvO/01XBljY9MarFB0mfT3XRj1t5n8TfxT/cMIL
-         WA9lInY/oTrQhrnkwNxMdR7FzT6PqK71jZ2rUvpa3eY2D+8FCWQXd1ni8oGsnJoKA3pp
-         bl88VMtUT0VfJRAZ14TO1OFbtetLg9GyryiHA6k2iF1EjCO8Y/dGu8iMJGtvIYKyUDJm
-         BZ1A==
-X-Gm-Message-State: ABy/qLYn10PcE+E+YCNbV1u3SzEKnb2XdkQtzBuhIpLXu5ZdLhz/OZCU
-        RVqAxKRR1bQShp9RJvJfyEA=
-X-Google-Smtp-Source: APBJJlHnnok9Mx+f7RYJsZHV8yEum4Sn1wcdAs7XUsX21sDjr1H6pLwz8q+mTssH7RCTpLZGXrDz3g==
-X-Received: by 2002:a05:6a00:392a:b0:668:8596:752f with SMTP id fh42-20020a056a00392a00b006688596752fmr6380571pfb.4.1689382281476;
-        Fri, 14 Jul 2023 17:51:21 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id d17-20020aa78691000000b0066a4e561beesm7959658pfo.173.2023.07.14.17.51.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jul 2023 17:51:21 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH v2] docs/RCU: Bring back smp_wmb()
+        d=1e100.net; s=20221208; t=1689417576; x=1692009576;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kkkbOsG5a5/O8531sLbibG1Jh/zjE8LtxfebLVzSHEQ=;
+        b=WJNOFG7V4LaJNnJ8nkFvjJjfUE72yq4A6O8KOS5cpgieMzObZgp9RWURejnd02Nhx6
+         eq4IQiDMTz0ThpplLOi+RvG7pI0ysJf8ahPx70E2qSft4WQj0ClUMIFiklCAswgeGp81
+         pvDYmvz6T8MQQgUAOAGl8tutCn3qbnGyU4MpLWlO1JEwmqdaWYSrefC/tYuWktkr92u+
+         TpoRfkVjApLPepmI9feU4jLqhdj5HRXcjKS+3fGzv2WlFWwmdzpvOCppd679+C08CtJh
+         qj51Z8azrc5rybpSNHI+HdyJqdDalOusJl9wTc9pt+2Lojueau0kP3PZqePlpRrWJjvG
+         bnvw==
+X-Gm-Message-State: ABy/qLYtEtmGldlz0YEG/EqtY1g3qbeWj3I31R/vNg6lbRk/crs/7aou
+        uv5rEhyGaQ9+JbDiEi+tZh0=
+X-Google-Smtp-Source: APBJJlFhDW+2w9DH5WJv6VeHG45E9uq4g+tz5w9EufrX8ox8j57ccn30JZXhOZVek//u3ROyzKHpjQ==
+X-Received: by 2002:a05:6a00:a82:b0:643:aa8d:8cd7 with SMTP id b2-20020a056a000a8200b00643aa8d8cd7mr9238053pfl.32.1689417576477;
+        Sat, 15 Jul 2023 03:39:36 -0700 (PDT)
+Received: from localhost ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id 18-20020aa79212000000b0064fd4a6b306sm8524733pfo.76.2023.07.15.03.39.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Jul 2023 03:39:36 -0700 (PDT)
 From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <9eaf506f-cc14-4da6-9efc-057c0c3e56b0@paulmck-laptop>
-Date:   Sat, 15 Jul 2023 08:50:23 +0800
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>, corbet@lwn.net,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9D42CEB7-FE22-4BC6-9E5C-8131579C129D@gmail.com>
-References: <20230711150906.466434-1-mmpgouride@gmail.com>
- <9eaf506f-cc14-4da6-9efc-057c0c3e56b0@paulmck-laptop>
-To:     paulmck@kernel.org
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        boqun.feng@gmail.com, corbet@lwn.net
+Cc:     rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH v3] docs/RCU: Bring back smp_wmb()
+Date:   Sat, 15 Jul 2023 10:39:22 +0000
+Message-Id: <20230715103922.472171-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+The objects are allocated with SLAB_TYPESAFE_BY_RCU, and there is
+n->next = first within hlist_add_head_rcu() before rcu_assign_pointer(),
+which modifies obj->obj_node.next. There may be readers holding the
+reference of obj in lockless_lookup, and when updater modifies ->next,
+readers can see the change immediately because of SLAB_TYPESAFE_BY_RCU.
 
-> 2023=E5=B9=B47=E6=9C=8815=E6=97=A5 07:23=EF=BC=8CPaul E. McKenney =
-<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Tue, Jul 11, 2023 at 03:09:06PM +0000, Alan Huang wrote:
->> The objects are allocated with SLAB_TYPESAFE_BY_RCU, and there is
->> n->next =3D first within hlist_add_head_rcu() before =
-rcu_assign_pointer(),
->> which modifies obj->obj_node.next. There may be readers holding the
->> reference of obj in lockless_lookup, and when updater modifies =
-->next,
->> readers can see the change immediately because =
-ofSLAB_TYPESAFE_BY_RCU.
->>=20
->> There are two memory ordering required in the insertion algorithm,
->> we need to make sure obj->key is updated before obj->obj_node.next
->> and obj->refcnt, atomic_set_release is not enough to provide the
->> required memory barrier.
->>=20
->> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
->=20
-> This is an interesting one!!!
->=20
-> Now I am having a hard time believing that the smp_rmb() suffices.
->=20
->> ---
->> Changelog:
->>  v1 -> v2: Use _ONCE to protect obj->key.
->>=20
->> Documentation/RCU/rculist_nulls.rst | 21 +++++++++++++--------
->> 1 file changed, 13 insertions(+), 8 deletions(-)
->>=20
->> diff --git a/Documentation/RCU/rculist_nulls.rst =
-b/Documentation/RCU/rculist_nulls.rst
->> index 21e40fcc08de..2a9f5a63d334 100644
->> --- a/Documentation/RCU/rculist_nulls.rst
->> +++ b/Documentation/RCU/rculist_nulls.rst
->> @@ -47,7 +47,7 @@ objects, which is having below type.
->>     * reuse these object before the RCU grace period, we
->>     * must check key after getting the reference on object
->>     */
->> -    if (obj->key !=3D key) { // not the object we expected
->> +    if (READ_ONCE(obj->key) !=3D key) { // not the object we =
-expected
->>       put_ref(obj);
->>       rcu_read_unlock();
->>       goto begin;
->> @@ -64,10 +64,10 @@ but a version with an additional memory barrier =
-(smp_rmb())
->>   {
->>     struct hlist_node *node, *next;
->>     for (pos =3D rcu_dereference((head)->first);
->> -         pos && ({ next =3D pos->next; smp_rmb(); prefetch(next); 1; =
-}) &&
->> +         pos && ({ next =3D READ_ONCE(pos->next); smp_rmb(); =
-prefetch(next); 1; }) &&
->=20
-> Suppose that lockless_lookup() is delayed just before fetching =
-pos->next,
-> and that there were 17 more node to search in the list.
->=20
-> Then consider the following sequence of events:
->=20
-> o The updater deletes this same node and kmem_cache_free()s it.
->=20
-> o Another updater kmem_cache_alloc()s that same memory and
-> inserts it into an empty hash chain with a different key.
->=20
-> o Then lockless_lookup() fetches pos->next and sees a NULL pointer,
-> thus failing to search the remaining 17 nodes in the list,
-> one of which had the desired key value.
->=20
-> o The lookup algorithm resumes and sees the NULL return from
-> lockless_lookup(), and ends up with a NULL obj.
->=20
-> And this happens even with the strongest possible ordering
-> everywhere.
->=20
-> OK, yes, it is late on Friday.  So what am I missing here?
+There are two memory ordering required in the insertion algorithm,
+we need to make sure obj->key is updated before obj->obj_node.next
+and obj->refcnt, atomic_set_release is not enough to provide the
+required memory barrier.
 
-You missed nothing!
+Also use compute_slot to detect whether the object has been moved.
 
-The lockless_lockup should not be a function, but a macro like =
-hlist_for_each_entry_rcu.
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+Changelog:
+ V2 -> V3: Use compute_slot to detect whether the object has been
+           moved. Remove the broken lockless_lookup, use macro instead.
 
->=20
-> Independent of that, does hlist_add_head_rcu() need to replace its
-> "n->next =3D first" with "WRITE_ONCE(n->next, first)"?
+ v1 -> v2: Use _ONCE to protect obj->key.
 
-I think users who want to use hlist with SLAB_TYPESAFE_BY_RCU should use =
-rculist_nulls?
+ Documentation/RCU/rculist_nulls.rst | 73 +++++++++++++++--------------
+ 1 file changed, 39 insertions(+), 34 deletions(-)
 
-I didn=E2=80=99t find a case using hlist with SLAB_TYPESAFE_BY_RCU, but =
-I did find a case using list
-with SLAB_TYPESAFE_BY_RCU in drivers/gpu/drm/i915, the driver also =
-doesn=E2=80=99t use _ONCE
-on the fields of the objects allocated with SLAB_TYPESAFE_BY_RCU.
-
->=20
-> Thanx, Paul
->=20
->>          ({ obj =3D hlist_entry(pos, typeof(*obj), obj_node); 1; });
->>          pos =3D rcu_dereference(next))
->> -      if (obj->key =3D=3D key)
->> +      if (READ_ONCE(obj->key) =3D=3D key)
->>         return obj;
->>     return NULL;
->>   }
->> @@ -111,8 +111,13 @@ detect the fact that it missed following items =
-in original chain.
->>    */
->>   obj =3D kmem_cache_alloc(...);
->>   lock_chain(); // typically a spin_lock()
->> -  obj->key =3D key;
->> -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
->> +  WRITE_ONCE(obj->key, key);
->> +  /*
->> +   * We need to make sure obj->key is updated before =
-obj->obj_node.next
->> +   * and obj->refcnt.
->> +   */
->> +  smp_wmb();
->> +  atomic_set(&obj->refcnt, 1);
->>   hlist_add_head_rcu(&obj->obj_node, list);
->>   unlock_chain(); // typically a spin_unlock()
->>=20
->> @@ -165,12 +170,12 @@ Note that using hlist_nulls means the type of =
-'obj_node' field of
->>   begin:
->>   rcu_read_lock();
->>   hlist_nulls_for_each_entry_rcu(obj, node, head, obj_node) {
->> -    if (obj->key =3D=3D key) {
->> +    if (READ_ONCE(obj->key) =3D=3D key) {
->>       if (!try_get_ref(obj)) { // might fail for free objects
->> rcu_read_unlock();
->>         goto begin;
->>       }
->> -      if (obj->key !=3D key) { // not the object we expected
->> +      if (READ_ONCE(obj->key) !=3D key) { // not the object we =
-expected
->>         put_ref(obj);
->> rcu_read_unlock();
->>         goto begin;
->> @@ -206,7 +211,7 @@ hlist_add_head_rcu().
->>    */
->>   obj =3D kmem_cache_alloc(cachep);
->>   lock_chain(); // typically a spin_lock()
->> -  obj->key =3D key;
->> +  WRITE_ONCE(obj->key, key);
->>   atomic_set_release(&obj->refcnt, 1); // key before refcnt
->>   /*
->>    * insert obj in RCU way (readers might be traversing chain)
->> --=20
->> 2.34.1
-
+diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
+index 21e40fcc08de..9d39394602b0 100644
+--- a/Documentation/RCU/rculist_nulls.rst
++++ b/Documentation/RCU/rculist_nulls.rst
+@@ -34,54 +34,54 @@ objects, which is having below type.
+ 
+ ::
+ 
++  object *obj;
++  struct hlist_node *pos, *next;
++  slot = compute_slot(key);
++  head = &table[slot];
+   begin:
+   rcu_read_lock();
+-  obj = lockless_lookup(key);
+-  if (obj) {
+-    if (!try_get_ref(obj)) { // might fail for free objects
++  obj_for_each_entry_rcu(obj, pos, head, next) {
++    if (compute_slot(READ_ONCE(obj->key)) != slot) { // object is moved
+       rcu_read_unlock();
+       goto begin;
+     }
+-    /*
+-    * Because a writer could delete object, and a writer could
+-    * reuse these object before the RCU grace period, we
+-    * must check key after getting the reference on object
+-    */
+-    if (obj->key != key) { // not the object we expected
+-      put_ref(obj);
+-      rcu_read_unlock();
+-      goto begin;
++    if (READ_ONCE(obj->key) == key) {
++      if (!try_get_ref(obj)) { // might fail for free objects
++        rcu_read_unlock();
++        goto begin;
++      }
++      /*
++      * Because a writer could delete object, and a writer could
++      * reuse these object before the RCU grace period, we
++      * must check key after getting the reference on object
++      */
++      if (READ_ONCE(obj->key) != key) { // not the object we expected
++        put_ref(obj);
++        rcu_read_unlock();
++        goto begin;
++      }
++      goto out;
+     }
+   }
++  out:
+   rcu_read_unlock();
+ 
+-Beware that lockless_lookup(key) cannot use traditional hlist_for_each_entry_rcu()
++Beware that obj_for_each_entry_rcu() cannot use traditional hlist_for_each_entry_rcu()
+ but a version with an additional memory barrier (smp_rmb())
+ 
+ ::
+ 
+-  lockless_lookup(key)
+-  {
+-    struct hlist_node *node, *next;
+-    for (pos = rcu_dereference((head)->first);
+-         pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
+-         ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
+-         pos = rcu_dereference(next))
+-      if (obj->key == key)
+-        return obj;
+-    return NULL;
+-  }
++  for (pos = rcu_dereference((head)->first);
++       pos && ({ next = READ_ONCE(pos->next); smp_rmb(); prefetch(next); 1; }) &&
++       ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
++       pos = rcu_dereference(next))
+ 
+ And note the traditional hlist_for_each_entry_rcu() misses this smp_rmb()::
+ 
+-  struct hlist_node *node;
+   for (pos = rcu_dereference((head)->first);
+        pos && ({ prefetch(pos->next); 1; }) &&
+        ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
+        pos = rcu_dereference(pos->next))
+-    if (obj->key == key)
+-      return obj;
+-  return NULL;
+ 
+ Quoting Corey Minyard::
+ 
+@@ -111,8 +111,13 @@ detect the fact that it missed following items in original chain.
+    */
+   obj = kmem_cache_alloc(...);
+   lock_chain(); // typically a spin_lock()
+-  obj->key = key;
+-  atomic_set_release(&obj->refcnt, 1); // key before refcnt
++  WRITE_ONCE(obj->key, key);
++  /*
++   * We need to make sure obj->key is updated before obj->obj_node.next
++   * and obj->refcnt.
++   */
++  smp_wmb();
++  atomic_set(&obj->refcnt, 1);
+   hlist_add_head_rcu(&obj->obj_node, list);
+   unlock_chain(); // typically a spin_unlock()
+ 
+@@ -140,7 +145,7 @@ very very fast (before the end of RCU grace period)
+ Avoiding extra smp_rmb()
+ ========================
+ 
+-With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup().
++With hlist_nulls we can avoid extra smp_rmb() in obj_for_each_entry_rcu().
+ 
+ For example, if we choose to store the slot number as the 'nulls'
+ end-of-list marker for each slot of the hash table, we can detect
+@@ -165,12 +170,12 @@ Note that using hlist_nulls means the type of 'obj_node' field of
+   begin:
+   rcu_read_lock();
+   hlist_nulls_for_each_entry_rcu(obj, node, head, obj_node) {
+-    if (obj->key == key) {
++    if (READ_ONCE(obj->key) == key) {
+       if (!try_get_ref(obj)) { // might fail for free objects
+ 	rcu_read_unlock();
+         goto begin;
+       }
+-      if (obj->key != key) { // not the object we expected
++      if (READ_ONCE(obj->key) != key) { // not the object we expected
+         put_ref(obj);
+ 	rcu_read_unlock();
+         goto begin;
+@@ -206,7 +211,7 @@ hlist_add_head_rcu().
+    */
+   obj = kmem_cache_alloc(cachep);
+   lock_chain(); // typically a spin_lock()
+-  obj->key = key;
++  WRITE_ONCE(obj->key, key);
+   atomic_set_release(&obj->refcnt, 1); // key before refcnt
+   /*
+    * insert obj in RCU way (readers might be traversing chain)
+-- 
+2.34.1
 
