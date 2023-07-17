@@ -2,95 +2,71 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 251BCEB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:17:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 499A2EB64DC
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:18:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjGQSRh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S230236AbjGQSSh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjGQSRd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:17:33 -0400
+        with ESMTP id S230288AbjGQSSd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jul 2023 14:18:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAE1E6C;
-        Mon, 17 Jul 2023 11:17:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E89E6F;
+        Mon, 17 Jul 2023 11:18:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EDCDC611DF;
-        Mon, 17 Jul 2023 18:16:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CB8EC433C8;
-        Mon, 17 Jul 2023 18:16:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FECF611D1;
+        Mon, 17 Jul 2023 18:18:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F85EC433C7;
+        Mon, 17 Jul 2023 18:18:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689617807;
-        bh=ZkG1DY9f2GypLSPk4E+7zlO8qVsaxvNixc+2Zkpr1xg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=e642X59HxF5G3wNr08XvjGa0v7tLb408unc9QwKPY+HTeGN1o/GFFUZfFrj56Okiu
-         jhHIW4IEDqFkqG2FIWwp9tNY1RX9MwVZ2aXoV385tmyxxP+jHeJVRyCThuNeh4FST3
-         QGWXGf8U7wLXM016lHznxn+1a21NriA+3AvPcfgLT3dyXeeAHc9R/Rn+59o7LuOztI
-         yCtxs2XeX0ZYJxulKgxhIHFihvXpdVa0nFUNWmbJykbPuYhXOkgud/mops7hfPBVi8
-         zzwYx7VTwqiRuJ/7Mah03WNaC2AjEMaG8v4dCTUgnjnIgLPLd2HxDAyE9aKNCL5222
-         2FDslCSs8OgGA==
+        s=k20201202; t=1689617893;
+        bh=qWUu8PF0tZZSAIf3SBn9RhDk4Qva5kb5eZvPW+nZlN0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=A6TR5Eu2lWcSMwhT4Ng67kkz8cXprRJnjUVJeJ9WLTXO4s9LBOW1ZzhW27uvqTZ5n
+         BtwtnyYTelmF8Dz/3lX+524S/9Co+5ROOzICA1rNY5SCJEKmSVFEgbsoowv6C6gIx2
+         uiaK15rN45gSuB25N4SOxoU6iofi+ZIq3gbsbhHuHeuelBMzLG/N7E+cWsRMxRinwk
+         /ZKAgimJmg1UWNVvz1UtjkViFGSQYmRFuqBt9m7PQ5aBqNO6dHzUhtsUAQ9bw1VBnm
+         mnUH7mmtMAXmfQqhsWytOchtKs/c7xPeXMNR1A8vDY7C+S/tpme4Eu3SyGgMnFKzgi
+         qF3f/vNJkY35w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 003E2CE03F1; Mon, 17 Jul 2023 11:16:46 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 11:16:46 -0700
+        id 562B3CE03F1; Mon, 17 Jul 2023 11:18:13 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 11:18:13 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        atthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH rcu 3/6] srcu,notifier: Remove #ifdefs in favor of SRCU
- Tiny srcu_usage
-Message-ID: <e27ec83e-ab0c-4b46-b01d-4d1a5dd43b64@paulmck-laptop>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/4] Torture-test updates for smp_call_function()
+Message-ID: <38be0135-a7a4-4c16-b2c6-1b3817c3067f@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
- <20230717180317.1097590-3-paulmck@kernel.org>
- <CAHk-=whqX8r3EaaO48dgi=wEBZxJETg1m67HrScRbH1FK7GTRw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whqX8r3EaaO48dgi=wEBZxJETg1m67HrScRbH1FK7GTRw@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 11:09:56AM -0700, Linus Torvalds wrote:
-> On Mon, 17 Jul 2023 at 11:03, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > +// Dummy structure for srcu_notifier_head.
-> > +struct srcu_usage {
-> > +       char srcuu_dummy;
-> > +};
-> > +
-> > +#define __SRCU_USAGE_INIT(name) { .srcuu_dummy = 0, }
-> 
-> You really should be able to just do
-> 
->    struct srcu_usage { };
->    #define __SRCU_USAGE_INIT(name) { }
-> 
-> which is something we've done for ages for spinlocks in
-> 
->     include/linux/spinlock_types_up.h
-> 
-> because while we had a gcc bug wrt empty structures, that was ages ago
-> (ie "gcc-2.x").
-> 
-> See commit a1365647022e ("[PATCH] remove gcc-2 checks") from 2006.
-> 
-> So we've already had these kinds of empty dummy structs for literally
-> over a decade in active use. Exactly so that you can avoid having to
-> use #ifdef's etc, and can just always assume you have a spinlock, even
-> if it doesn't generate any code or any data overhead.
+Hello!
 
-Showing my age again, I guess.  ;-)
+This series contains updates for the smp_call_function() torture tests:
 
-Thank you for the hint!  I will rework this as you suggest.
+1.	Scale scftorture memory based on number of CPUs.
 
-							Thanx, Paul
+2.	Forgive memory-allocation failure if KASAN.
+
+3.	Pause testing after memory-allocation failure.
+
+4.	Add CONFIG_PREEMPT_DYNAMIC=n to NOPREEMPT scenario.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/scftorture.c                                      |    6 ++++--
+ b/tools/testing/selftests/rcutorture/bin/torture.sh        |    4 +++-
+ b/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT |    2 ++
+ kernel/scftorture.c                                        |    6 +++++-
+ 4 files changed, 14 insertions(+), 4 deletions(-)
