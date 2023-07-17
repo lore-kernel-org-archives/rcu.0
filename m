@@ -2,45 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBCDC001DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:11:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36019C001E0
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:11:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbjGQSLp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
+        id S231283AbjGQSLq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjGQSLn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230505AbjGQSLn (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 17 Jul 2023 14:11:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4097799;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382DD8E;
         Mon, 17 Jul 2023 11:11:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 207DE611E1;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2341B611E4;
         Mon, 17 Jul 2023 18:11:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB43C433A9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D6EAC433AD;
         Mon, 17 Jul 2023 18:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689617500;
-        bh=N9K+fD3EFCsSjTZTUsdzLJiPJxPM1QAGdJD0a23WnpA=;
+        bh=MIhkeztsVEuhvwr2MszSXvW/fHdP74ZIBpgGzjKJOiI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o7DsUuPadJm0BDm8NK9h1ln05KhLCAhlYqBXu/hQty300WAYdzBGEx2rG1p+0r29v
-         xer+JPV5IGFeVJkJaoBr6vK8LjOXn99WhzbPIcfW5H4mCcR+fGY8fido2K2CYfu1gV
-         m/+cHby9EP0HYX+W6S2tpbiC0lctt+ab19BKn/pT/THkFNBv0xW/5zJLeiLHfzJW5e
-         H0rrNY1Epood0uZ/HUb44+YjzD5K8R85BOrQjOR5GczIK00mSArjD9EQO/alCarggU
-         S4q8ekVvGcbYJc4F0xhlQgpBB3nb/qCw57puNgj+vdY9sZMQkh0gd+ELGzpOnDYFq6
-         l7OMtMu1lPAcQ==
+        b=ESE4wom7KKaNW9leiHXoMJj7L0T+MzWGD5OkIzc64KKMmdDl2S8BaLZ0gkas26IWv
+         LUY2EYq2hYp6TFC3lzbhVniZmDfAJ1iMCH4lOzBLurSnrX4Sj8Uv09PlOOhdu4vU/m
+         EKUV5Mo+YKDz3ScEWvDirSmjJbpeNWraepE0TxU947n73KC2CcuMETZDbQIJwzMjHZ
+         gvX8s9oKlHGvRjBVC+ZnTJbJEzTxBSJBTP85411UzR/b2cyx2UilK2t6jISodbky8D
+         cvBtpcvCEhyGThcxpko2XfW4/AzE0xds15W184m/HtfVwY49BFtGhXMv1Cy6DR2yQA
+         9ox0Xw/6FW4gQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BE377CE093C; Mon, 17 Jul 2023 11:11:39 -0700 (PDT)
+        id B9A28CE092F; Mon, 17 Jul 2023 11:11:39 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 08/13] rcuscale: Print grace-period kthread CPU time, if recorded
-Date:   Mon, 17 Jul 2023 11:11:33 -0700
-Message-Id: <20230717181138.1098063-8-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Yujie Liu <yujie.liu@intel.com>
+Subject: [PATCH rcu 06/13] rcuscale: Measure grace-period kthread CPU time
+Date:   Mon, 17 Jul 2023 11:11:31 -0700
+Message-Id: <20230717181138.1098063-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c5a593d3-abe0-40fd-92bd-28d269042aa1@paulmck-laptop>
 References: <c5a593d3-abe0-40fd-92bd-28d269042aa1@paulmck-laptop>
@@ -50,39 +51,114 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit prints out the CPU time consumed by the grace-period kthread,
-if the specified RCU flavor supports this notion.
+This commit adds the ability to output the CPU time consumed by the
+grace-period kthread for the RCU variant under test.  The CPU time is
+whatever is in the designated task's current->stime field, and thus is
+controlled by whatever CPU-time accounting scheme is in effect.
+
+This output appears in microseconds as follows on the console:
+
+rcu_scale: Grace-period kthread CPU time: 42367.037
+
+[ paulmck: Apply feedback from Stephen Rothwell and kernel test robot. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Yujie Liu <yujie.liu@intel.com>
 ---
- .../selftests/rcutorture/bin/kvm-recheck-rcuscale.sh      | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ include/linux/rcupdate_trace.h |  1 +
+ kernel/rcu/rcuscale.c          | 21 +++++++++++++++++++++
+ kernel/rcu/tasks.h             |  6 ++++++
+ 3 files changed, 28 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcuscale.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcuscale.sh
-index b582113178ac..f683e424ddd5 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcuscale.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcuscale.sh
-@@ -40,6 +40,10 @@ awk '
- 	sum += $5 / 1000.;
- }
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index 9bc8cbb33340..eda493200663 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -87,6 +87,7 @@ static inline void rcu_read_unlock_trace(void)
+ void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
+ void synchronize_rcu_tasks_trace(void);
+ void rcu_barrier_tasks_trace(void);
++struct task_struct *get_rcu_tasks_trace_gp_kthread(void);
+ #else
+ /*
+  * The BPF JIT forms these addresses even when it doesn't call these
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 821a3e65c54a..7fba3ab66e35 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -141,6 +141,7 @@ struct rcu_scale_ops {
+ 	void (*gp_barrier)(void);
+ 	void (*sync)(void);
+ 	void (*exp_sync)(void);
++	struct task_struct *(*rso_gp_kthread)(void);
+ 	const char *name;
+ };
  
-+/rcu_scale: Grace-period kthread CPU time/ {
-+	cputime = $6;
-+}
+@@ -336,6 +337,7 @@ static struct rcu_scale_ops tasks_tracing_ops = {
+ 	.gp_barrier	= rcu_barrier_tasks_trace,
+ 	.sync		= synchronize_rcu_tasks_trace,
+ 	.exp_sync	= synchronize_rcu_tasks_trace,
++	.rso_gp_kthread	= get_rcu_tasks_trace_gp_kthread,
+ 	.name		= "tasks-tracing"
+ };
+ 
+@@ -563,6 +565,8 @@ static struct task_struct **kfree_reader_tasks;
+ static int kfree_nrealthreads;
+ static atomic_t n_kfree_scale_thread_started;
+ static atomic_t n_kfree_scale_thread_ended;
++static struct task_struct *kthread_tp;
++static u64 kthread_stime;
+ 
+ struct kfree_obj {
+ 	char kfree_obj[8];
+@@ -808,6 +812,18 @@ rcu_scale_cleanup(void)
+ 	if (gp_exp && gp_async)
+ 		SCALEOUT_ERRSTRING("No expedited async GPs, so went with async!");
+ 
++	// If built-in, just report all of the GP kthread's CPU time.
++	if (IS_BUILTIN(CONFIG_RCU_SCALE_TEST) && !kthread_tp && cur_ops->rso_gp_kthread)
++		kthread_tp = cur_ops->rso_gp_kthread();
++	if (kthread_tp) {
++		u32 ns;
++		u64 us;
 +
- END {
- 	newNR = asort(gptimes);
- 	if (newNR <= 0) {
-@@ -78,6 +82,8 @@ END {
- 	print "90th percentile grace-period duration: " gptimes[pct90];
- 	print "99th percentile grace-period duration: " gptimes[pct99];
- 	print "Maximum grace-period duration: " gptimes[newNR];
--	print "Grace periods: " ngps + 0 " Batches: " nbatches + 0 " Ratio: " ngps / nbatches;
-+	if (cputime != "")
-+		cpustr = " CPU: " cputime;
-+	print "Grace periods: " ngps + 0 " Batches: " nbatches + 0 " Ratio: " ngps / nbatches cpustr;
- 	print "Computed from rcuscale printk output.";
- }'
++		kthread_stime = kthread_tp->stime - kthread_stime;
++		us = div_u64_rem(kthread_stime, 1000, &ns);
++		pr_info("rcu_scale: Grace-period kthread CPU time: %llu.%03u us\n", us, ns);
++		show_rcu_gp_kthreads();
++	}
+ 	if (kfree_rcu_test) {
+ 		kfree_scale_cleanup();
+ 		return;
+@@ -921,6 +937,11 @@ rcu_scale_init(void)
+ 	if (cur_ops->init)
+ 		cur_ops->init();
+ 
++	if (cur_ops->rso_gp_kthread) {
++		kthread_tp = cur_ops->rso_gp_kthread();
++		if (kthread_tp)
++			kthread_stime = kthread_tp->stime;
++	}
+ 	if (kfree_rcu_test)
+ 		return kfree_scale_init();
+ 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index b770add3f843..990a6cf5fa35 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1830,6 +1830,12 @@ void show_rcu_tasks_trace_gp_kthread(void)
+ EXPORT_SYMBOL_GPL(show_rcu_tasks_trace_gp_kthread);
+ #endif // !defined(CONFIG_TINY_RCU)
+ 
++struct task_struct *get_rcu_tasks_trace_gp_kthread(void)
++{
++	return rcu_tasks_trace.kthread_ptr;
++}
++EXPORT_SYMBOL_GPL(get_rcu_tasks_trace_gp_kthread);
++
+ #else /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ static void exit_tasks_rcu_finish_trace(struct task_struct *t) { }
+ #endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
 -- 
 2.40.1
 
