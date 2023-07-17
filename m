@@ -2,52 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81687EB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:05:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 009E0C0015E
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:05:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjGQSFV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        id S231364AbjGQSFX (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbjGQSFJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S229995AbjGQSFJ (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 17 Jul 2023 14:05:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02401BE1;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA601BD4;
         Mon, 17 Jul 2023 11:04:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45E44611D5;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DD3F611CF;
         Mon, 17 Jul 2023 18:04:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2388C433CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92600C433C9;
         Mon, 17 Jul 2023 18:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689617095;
-        bh=z5xJPNvzuFRjo2lR/l/wLkVKNv1SHd09S5ncMfb7TjY=;
+        bh=a+qFf3w4u9E73iijzqt1C1Oe4CG3736gzxYOpqJxCPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cYt2oIUYUT5pC68a8AdfGvE7WCB9HYuDQCTvgQXOZYLpS4p1Hxh4GFFaGy7Iuj2AT
-         MAoo0tdMoFMV264r7XQFcDWalXuQqA/Tg2hd3g1obZ9k+DGOkOHT4bEEeyW4Usvy8Q
-         PLAJcrOLgPZb9m40+DnRS7yEFB6BL5wcLYNYsfLen+9EpHRfxVZq36bPsRKOHlsMnK
-         1bFVAiFBvrIA8UF17g6tw6Xw40hQGAN+4PceBM2Sx0egUp+QaJ9zs4OGrol7eA2mnG
-         qNbZ0je4cj+eUqLh/tkOKAzZYlVun9e2B62ePPtJh2RnrmbykNJX46G+DIPj/86bhX
-         03iiHStrPifgQ==
+        b=fqcZyjPf+/n6FWpk64kKMskETZOpf5iI5GKH2VZjLrg4eIS4o2vZqbv4Y7i2bKOBu
+         Ny8uU1JsVN110wxBh6evNZLPYgDnUhk4TWfh9Xr89UIwI0WVQPn1J12SAqzKdDPvlP
+         3zSq0o4dqlwg60z7+MRXZ8YUtbEA2FMY9Uzqb7YHLfMEKwQ+t7whihM73pC8Ng264q
+         QAsPyFe8nRnCcFhsikv08rGsmAgJn9ox/+NcNUxIjZwLQFscXG0oVf0QfqoPmlstgX
+         1gN1ZGnNQ07lpEWbBAXcaUhjIbz/+vI+FARugBDWgOkjScZTunBtAN+mhdNwTHbPNq
+         mNvNP6PHAaSSQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5ED95CE0902; Mon, 17 Jul 2023 11:04:55 -0700 (PDT)
+        id 59BB8CE0806; Mon, 17 Jul 2023 11:04:55 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of RCU Tasks Trace
-Date:   Mon, 17 Jul 2023 11:04:54 -0700
-Message-Id: <20230717180454.1097714-5-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 3/5] rcu-tasks: Add kernel boot parameters for callback laziness
+Date:   Mon, 17 Jul 2023 11:04:52 -0700
+Message-Id: <20230717180454.1097714-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
 References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
@@ -57,54 +50,105 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RCU Tasks Trace is quite specialized, having been created specifically
-for sleepable BPF programs.  Because it allows general blocking within
-readers, any new use of RCU Tasks Trace must take current use cases into
-account.  Therefore, update checkpatch.pl to complain about use of any of
-the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
+This commit adds kernel boot parameters for callback laziness, allowing
+the RCU Tasks flavors to be individually adjusted.
 
-Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
-Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
-Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: <bpf@vger.kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- scripts/checkpatch.pl | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ .../admin-guide/kernel-parameters.txt         | 23 +++++++++++++++++++
+ kernel/rcu/tasks.h                            | 15 ++++++++++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 880fde13d9b8..24bab980bc6f 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -7457,6 +7457,24 @@ sub process {
- 			}
- 		}
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a1457995fd41..a0f427e1a562 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5293,6 +5293,29 @@
+ 			A change in value does not take effect until
+ 			the beginning of the next grace period.
  
-+# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-+		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
-+		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
-+		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
-+		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
-+		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
-+		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
-+		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
-+			if ($realfile !~ m@^kernel/bpf@ &&
-+			    $realfile !~ m@^include/linux/bpf@ &&
-+			    $realfile !~ m@^net/bpf@ &&
-+			    $realfile !~ m@^kernel/rcu@ &&
-+			    $realfile !~ m@^include/linux/rcu@) {
-+				WARN("RCU_TASKS_TRACE",
-+				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-+			}
-+		}
++	rcupdate.rcu_tasks_lazy_ms= [KNL]
++			Set timeout in milliseconds RCU Tasks asynchronous
++			callback batching for call_rcu_tasks().
++			A negative value will take the default.  A value
++			of zero will disable batching.	Batching is
++			always disabled for synchronize_rcu_tasks().
 +
- # check for lockdep_set_novalidate_class
- 		if ($line =~ /^.\s*lockdep_set_novalidate_class\s*\(/ ||
- 		    $line =~ /__lockdep_no_validate__\s*\)/ ) {
++	rcupdate.rcu_tasks_rude_lazy_ms= [KNL]
++			Set timeout in milliseconds RCU Tasks
++			Rude asynchronous callback batching for
++			call_rcu_tasks_rude().	A negative value
++			will take the default.	A value of zero will
++			disable batching.  Batching is always disabled
++			for synchronize_rcu_tasks_rude().
++
++	rcupdate.rcu_tasks_trace_lazy_ms= [KNL]
++			Set timeout in milliseconds RCU Tasks
++			Trace asynchronous callback batching for
++			call_rcu_tasks_trace().  A negative value
++			will take the default.	A value of zero will
++			disable batching.  Batching is always disabled
++			for synchronize_rcu_tasks_trace().
++
+ 	rcupdate.rcu_self_test= [KNL]
+ 			Run the RCU early boot self tests
+ 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 7eae67fbe47c..28e986627e3f 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1083,11 +1083,16 @@ void rcu_barrier_tasks(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_barrier_tasks);
+ 
++int rcu_tasks_lazy_ms = -1;
++module_param(rcu_tasks_lazy_ms, int, 0444);
++
+ static int __init rcu_spawn_tasks_kthread(void)
+ {
+ 	cblist_init_generic(&rcu_tasks);
+ 	rcu_tasks.gp_sleep = HZ / 10;
+ 	rcu_tasks.init_fract = HZ / 10;
++	if (rcu_tasks_lazy_ms >= 0)
++		rcu_tasks.lazy_jiffies = msecs_to_jiffies(rcu_tasks_lazy_ms);
+ 	rcu_tasks.pregp_func = rcu_tasks_pregp_step;
+ 	rcu_tasks.pertask_func = rcu_tasks_pertask;
+ 	rcu_tasks.postscan_func = rcu_tasks_postscan;
+@@ -1236,10 +1241,15 @@ void rcu_barrier_tasks_rude(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_rude);
+ 
++int rcu_tasks_rude_lazy_ms = -1;
++module_param(rcu_tasks_rude_lazy_ms, int, 0444);
++
+ static int __init rcu_spawn_tasks_rude_kthread(void)
+ {
+ 	cblist_init_generic(&rcu_tasks_rude);
+ 	rcu_tasks_rude.gp_sleep = HZ / 10;
++	if (rcu_tasks_rude_lazy_ms >= 0)
++		rcu_tasks_rude.lazy_jiffies = msecs_to_jiffies(rcu_tasks_rude_lazy_ms);
+ 	rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
+ 	return 0;
+ }
+@@ -1856,6 +1866,9 @@ void rcu_barrier_tasks_trace(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_trace);
+ 
++int rcu_tasks_trace_lazy_ms = -1;
++module_param(rcu_tasks_trace_lazy_ms, int, 0444);
++
+ static int __init rcu_spawn_tasks_trace_kthread(void)
+ {
+ 	cblist_init_generic(&rcu_tasks_trace);
+@@ -1870,6 +1883,8 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
+ 		if (rcu_tasks_trace.init_fract <= 0)
+ 			rcu_tasks_trace.init_fract = 1;
+ 	}
++	if (rcu_tasks_trace_lazy_ms >= 0)
++		rcu_tasks_trace.lazy_jiffies = msecs_to_jiffies(rcu_tasks_trace_lazy_ms);
+ 	rcu_tasks_trace.pregp_func = rcu_tasks_trace_pregp_step;
+ 	rcu_tasks_trace.postscan_func = rcu_tasks_trace_postscan;
+ 	rcu_tasks_trace.holdouts_func = check_all_holdout_tasks_trace;
 -- 
 2.40.1
 
