@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70B3AEB64DC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FF89C001DC
 	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:11:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbjGQSLt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
+        id S231321AbjGQSLs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231217AbjGQSLo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231151AbjGQSLo (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 17 Jul 2023 14:11:44 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E5FE7F;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BCBE6C;
         Mon, 17 Jul 2023 11:11:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 46473611F5;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 324CF611F3;
         Mon, 17 Jul 2023 18:11:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 829E6C433BF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FB60C433B8;
         Mon, 17 Jul 2023 18:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689617500;
-        bh=1idW3qeMxeR/pQhpNzqDLOrZBK/BHCj+UCLTJY852f4=;
+        bh=69vKKKzfGC7L050YBgFnUQUwQJCbn9lPzoOVI5TYOis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MoJLg8xuXNwGHpVNV1qzauZ71fIsFOh0jKQChIYHxZSM1WVf6Xk8tngWps4HXo9wl
-         z5P51FfAZ+uBQMShS7/hMnooBscEB0s/vAlBvQ26yWhTPlr0Ax49opu+8WNcDLuEA0
-         nQFO8T8J8clIdadcRqCfdsAyJ+DPsh/DN+l6W9PfcBCgVa9CDBmPs05xD9orHk2OfZ
-         i8eTwk7kJrePNe0BIQhYysCWFV+2y+kUSeD9QC8P1zPXWAHu1EaxPx2CS6cNX/LDJ8
-         pLFxADrYHZZTd3JNYVuHxl/iR0yQkpjVUxCk2waPrmBu/a6x5VUL0t4zDSOZRK593J
-         G4/+x6FwPSj/g==
+        b=HVBenQcQwciEEi4nOUmcwSTWJCl+76G9JTcvk7eW50gDhvG+pCZHN6i1q+i4LhGMd
+         DoXwb5iZWAhKlTH0zF72oKkA/fHlGp88yJ7Xw0ti9qWjgKZkpByDPfuSLneOFG5kln
+         Ovo7U0Ak1LOzLmGd8PNnjrH2dFU3QwDRSBVdrgFEv7Flm3yWutenNvOBGiXMj7UVb9
+         eP0dgm9HyptgyRwZW4bqN34OtyuCjpQQtQPnd4Utfn1LuKVQHNpbN1hkBt77hIFfAV
+         h1iPYEGGDrRze58f9ra76iLfYYaM+vpT1g96yClf8B9JakXLG1ojz7frQ64bZW3tIC
+         xf/zXFS/m88OQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C8EC7CE0A11; Mon, 17 Jul 2023 11:11:39 -0700 (PDT)
+        id C28D6CE09E0; Mon, 17 Jul 2023 11:11:39 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 13/13] rcuscale: Add CONFIG_PREEMPT_DYNAMIC=n to TRACE01 scenario
-Date:   Mon, 17 Jul 2023 11:11:38 -0700
-Message-Id: <20230717181138.1098063-13-paulmck@kernel.org>
+Subject: [PATCH rcu 10/13] rcuscale: Add RCU Tasks Rude testing
+Date:   Mon, 17 Jul 2023 11:11:35 -0700
+Message-Id: <20230717181138.1098063-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c5a593d3-abe0-40fd-92bd-28d269042aa1@paulmck-laptop>
 References: <c5a593d3-abe0-40fd-92bd-28d269042aa1@paulmck-laptop>
@@ -50,29 +50,109 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-It is no longer possible to build a kernel with a preemption-disabled
-RCU without use of CONFIG_PREEMPT_DYNAMIC=n.  This commit therefore
-adds CONFIG_PREEMPT_DYNAMIC=n to the rcuscale torture type's TRACE01
-scenario file.
+Add a "tasks-rude" option to the rcuscale.scale_type module parameter.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01 | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/rcu/rcu.h                              |  3 ++
+ kernel/rcu/rcuscale.c                         | 31 ++++++++++++++++++-
+ kernel/rcu/tasks.h                            |  7 +++++
+ .../rcutorture/configs/rcuscale/CFcommon      |  2 ++
+ 4 files changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01 b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
-index 227aba7783af..0059592c7408 100644
---- a/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01
-@@ -2,6 +2,8 @@ CONFIG_SMP=y
- CONFIG_PREEMPT_NONE=y
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
-+CONFIG_PREEMPT_DYNAMIC=n
-+#CHECK#CONFIG_TREE_RCU=y
- CONFIG_HZ_PERIODIC=n
- CONFIG_NO_HZ_IDLE=y
- CONFIG_NO_HZ_FULL=n
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index d58bc0e86769..9829d8161b21 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -508,6 +508,9 @@ void show_rcu_tasks_gp_kthreads(void);
+ # ifdef CONFIG_TASKS_RCU
+ struct task_struct *get_rcu_tasks_gp_kthread(void);
+ # endif // # ifdef CONFIG_TASKS_RCU
++# ifdef CONFIG_TASKS_RUDE_RCU
++struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
++# endif // # ifdef CONFIG_TASKS_RUDE_RCU
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void show_rcu_tasks_gp_kthreads(void) {}
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 35e06c86acc9..5ce3b4e7ce71 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -310,6 +310,35 @@ static struct rcu_scale_ops tasks_ops = {
+ 
+ #endif // #else // #ifdef CONFIG_TASKS_RCU
+ 
++#ifdef CONFIG_TASKS_RUDE_RCU
++
++/*
++ * Definitions for RCU-tasks-rude scalability testing.
++ */
++
++static struct rcu_scale_ops tasks_rude_ops = {
++	.ptype		= RCU_TASKS_RUDE_FLAVOR,
++	.init		= rcu_sync_scale_init,
++	.readlock	= tasks_scale_read_lock,
++	.readunlock	= tasks_scale_read_unlock,
++	.get_gp_seq	= rcu_no_completed,
++	.gp_diff	= rcu_seq_diff,
++	.async		= call_rcu_tasks_rude,
++	.gp_barrier	= rcu_barrier_tasks_rude,
++	.sync		= synchronize_rcu_tasks_rude,
++	.exp_sync	= synchronize_rcu_tasks_rude,
++	.rso_gp_kthread	= get_rcu_tasks_rude_gp_kthread,
++	.name		= "tasks-rude"
++};
++
++#define TASKS_RUDE_OPS &tasks_rude_ops,
++
++#else // #ifdef CONFIG_TASKS_RUDE_RCU
++
++#define TASKS_RUDE_OPS
++
++#endif // #else // #ifdef CONFIG_TASKS_RUDE_RCU
++
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 
+ /*
+@@ -913,7 +942,7 @@ rcu_scale_init(void)
+ 	long i;
+ 	int firsterr = 0;
+ 	static struct rcu_scale_ops *scale_ops[] = {
+-		&rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS TASKS_TRACING_OPS
++		&rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+ 	};
+ 
+ 	if (!torture_init_begin(scale_type, verbose))
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 0f03de023097..0372c5cbc83b 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1194,6 +1194,13 @@ void show_rcu_tasks_rude_gp_kthread(void)
+ }
+ EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
+ #endif // !defined(CONFIG_TINY_RCU)
++
++struct task_struct *get_rcu_tasks_rude_gp_kthread(void)
++{
++	return rcu_tasks_rude.kthread_ptr;
++}
++EXPORT_SYMBOL_GPL(get_rcu_tasks_rude_gp_kthread);
++
+ #endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
+ 
+ ////////////////////////////////////////////////////////////////////////
+diff --git a/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
+index 6a00157bee5b..b1ffd7c67604 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
++++ b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
+@@ -2,5 +2,7 @@ CONFIG_RCU_SCALE_TEST=y
+ CONFIG_PRINTK_TIME=y
+ CONFIG_FORCE_TASKS_RCU=y
+ #CHECK#CONFIG_TASKS_RCU=y
++CONFIG_FORCE_TASKS_RUDE_RCU=y
++#CHECK#CONFIG_TASKS_RUDE_RCU=y
+ CONFIG_FORCE_TASKS_TRACE_RCU=y
+ #CHECK#CONFIG_TASKS_TRACE_RCU=y
 -- 
 2.40.1
 
