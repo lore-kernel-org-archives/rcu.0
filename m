@@ -2,143 +2,75 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB352EB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF2C8EB64DC
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:24:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjGQSXs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
+        id S230366AbjGQSYB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjGQSXr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:23:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760B5E56;
-        Mon, 17 Jul 2023 11:23:35 -0700 (PDT)
+        with ESMTP id S230147AbjGQSXy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jul 2023 14:23:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734A9187;
+        Mon, 17 Jul 2023 11:23:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A43F611D1;
-        Mon, 17 Jul 2023 18:23:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72307C433C7;
-        Mon, 17 Jul 2023 18:23:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 122F8611EB;
+        Mon, 17 Jul 2023 18:23:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF88C433C8;
+        Mon, 17 Jul 2023 18:23:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689618214;
-        bh=Kfoxnxr+2TTZpNOD4vqbiveWcX93cGtNMm57sfTfn0o=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=XfREkXjm8utcp2ax69ybDgYlzKm6bNwK1bcOo0XSZYETl0Mz9d/MU6lyUDY3Ql7hr
-         N7xeT/OsISM7MctBKDo3K2IjsNLnDW3MEgz/yMUytcxReVuIrz0wW192AMsG30WheK
-         NW/yxNDDW6dgn59IqZg2ZyrFNwgAZs9cQGddjmI4XbhURuE5rbQ44oOrEtG0nTYADf
-         n4froOSNIrhzwlUUhnPMdO+jnrz+iH4WW5Sk3GuQbKphWqaHfBBWIg/S/izjB3QStF
-         3cYIqIDxkdwK/GF7tBwF6DfmT22ypBTcQZpyxTma5FrSja4kkQT+AZ/l1dip6kqxk7
-         OdwEMSn7t4Qeg==
+        s=k20201202; t=1689618219;
+        bh=b/eNon7mDrEjuIWvXF4pUCAkjYxY4mdPTldqQXIN8lI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sffcGzzCyP7e8aMbrCQhThT6SQGeiLJuDgstLhi0w8hXnd1OqKb6ljkq0R0nAZfe3
+         Flt3+eoGgPdJ84j6CJ7ziMDLgO+8DMWC8L4xclyzxsbyhc+6eRTGpUaqtZeOx5tLis
+         cp60Od69zy+A6qrwm4bq5wSckYzTq/LaxeEreLqBQ+K2MwHuiNMvN0bJ9M0w0kBxni
+         jTKpnKiBqIlyoLfGRBNOyPUuwEWNTcEBTHVPdgB03qXLjn8HzcbLDXW/Zj5gzY9kRO
+         pqvVp+sc6fir6nv8vEFOUgz2jDFSFWw6q/2y88CXSym9IFYZKOutxd5uBVo5/KDoMc
+         Nqw0QNLDR/ajA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 01F7DCE03F1; Mon, 17 Jul 2023 11:23:33 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 11:23:33 -0700
+        id 1ECF7CE03F1; Mon, 17 Jul 2023 11:23:39 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/18] Torture-test scripting updates for v6.6
-Message-ID: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Subject: [PATCH rcu 01/18] rcutorture: Remove obsolete BOOTPARAM_HOTPLUG_CPU0 Kconfig option
+Date:   Mon, 17 Jul 2023 11:23:20 -0700
+Message-Id: <20230717182337.1098991-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
+References: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Now that the BOOTPARAM_HOTPLUG_CPU0 Kconfig option is in the process of
+being removed, it is time to remove rcutorture's use of it.
 
-This series contains updates for torture-test scripting:
+Link: https://lore.kernel.org/lkml/20230414232309.510911744@linutronix.de/
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: <x86@kernel.org>
+---
+ tools/testing/selftests/rcutorture/configs/rcu/TREE01 | 1 -
+ 1 file changed, 1 deletion(-)
 
-1.	Remove obsolete BOOTPARAM_HOTPLUG_CPU0 Kconfig option.
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE01 b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
+index 04831ef1f9b5..8ae41d5f81a3 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE01
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
+@@ -15,4 +15,3 @@ CONFIG_DEBUG_LOCK_ALLOC=n
+ CONFIG_RCU_BOOST=n
+ CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+ CONFIG_RCU_EXPERT=y
+-CONFIG_BOOTPARAM_HOTPLUG_CPU0=y
+-- 
+2.40.1
 
-2.	Remove formal-verification tests.
-
-3.	Add "--no-" as synonym for "--do-no-" in torture.sh.
-
-4.	Remove contradictory Kconfig constraint.
-
-5.	Allow #CHECK# in --kconfig argument to kvm.sh.
-
-6.	Make kvm-recheck.sh report .config errors.
-
-7.	Add RCU Tasks individual-flavor build tests.
-
-8.	Make kvm-remote print diagnostics on initial ssh failure.
-
-9.	Remove obsolete parameter check from mkinitrd.sh.
-
-10.	Place --bootargs parameters at end of -append list.
-
-11.	Make torture.sh summarize config and build errors.
-
-12.	Loosen .config checks for KCSAN kernels.
-
-13.	Add srcu_lockdep.sh to torture.sh.
-
-14.	Avoid torture-test reboot loops.
-
-15.	Add init-program support for loongarch.
-
-16.	Switch qemu from -nographic to -display none.
-
-17.	Make init program dump command-line arguments.
-
-18.	Cause mkinitrd.sh to indicate failure on compile errors.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/tools/testing/selftests/rcutorture/bin/configcheck.sh                                   |   61 -
- b/tools/testing/selftests/rcutorture/bin/functions.sh                                     |    2 
- b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh                                   |   37 
- b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh                                    |   12 
- b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh                                |    1 
- b/tools/testing/selftests/rcutorture/bin/kvm.sh                                           |    2 
- b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh                                      |    1 
- b/tools/testing/selftests/rcutorture/bin/torture.sh                                       |   44 -
- b/tools/testing/selftests/rcutorture/configs/lock/ver_functions.sh                        |    5 
- b/tools/testing/selftests/rcutorture/configs/rcu/TASKS03                                  |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE01                                   |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/ver_functions.sh                         |    5 
- b/tools/testing/selftests/rcutorture/configs/rcuscale/ver_functions.sh                    |    5 
- b/tools/testing/selftests/rcutorture/configs/refscale/ver_functions.sh                    |    5 
- b/tools/testing/selftests/rcutorture/configs/scf/ver_functions.sh                         |    5 
- tools/testing/selftests/rcutorture/bin/kvm-recheck.sh                                     |    7 
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh                                  |   19 
- tools/testing/selftests/rcutorture/bin/mkinitrd.sh                                        |   17 
- tools/testing/selftests/rcutorture/bin/torture.sh                                         |   77 ++
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/.gitignore                            |    2 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/Makefile                              |   17 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/include/linux/.gitignore              |    2 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/include/linux/kconfig.h               |    1 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/include/linux/types.h                 |  152 ----
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/modify_srcu.awk                       |  376 ----------
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/assume.h                          |   17 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/barriers.h                        |   41 -
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/bug_on.h                          |   14 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/combined_source.c                 |   14 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/config.h                          |   28 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/include_srcu.c                    |   32 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/int_typedefs.h                    |   34 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h                           |  221 -----
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/misc.c                            |   12 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/misc.h                            |   58 -
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/percpu.h                          |   93 --
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/preempt.c                         |   79 --
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/preempt.h                         |   59 -
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/simple_sync_srcu.c                |   51 -
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/workqueues.h                      |  103 --
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/store_buffering/.gitignore      |    2 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/store_buffering/Makefile        |   12 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/store_buffering/assert_end.fail |    1 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/store_buffering/force.fail      |    1 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/store_buffering/force2.fail     |    1 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/store_buffering/force3.fail     |    1 
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/store_buffering/test.c          |   73 -
- tools/testing/selftests/rcutorture/formal/srcu-cbmc/tests/test_script.sh                  |  103 --
- 48 files changed, 218 insertions(+), 1689 deletions(-)
