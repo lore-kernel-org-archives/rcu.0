@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96129C0015E
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:24:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07F87C001DC
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:24:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjGQSYE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
+        id S231452AbjGQSYM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjGQSX5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:23:57 -0400
+        with ESMTP id S231124AbjGQSYE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jul 2023 14:24:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B48818B;
-        Mon, 17 Jul 2023 11:23:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61356B1;
+        Mon, 17 Jul 2023 11:23:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C2F8611F0;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A6435611F4;
         Mon, 17 Jul 2023 18:23:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 897C2C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCF43C4339A;
         Mon, 17 Jul 2023 18:23:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689618219;
-        bh=GArP46UHcP0/syJ9tA7kCUoRFHn+NxiDlARBBLRzqlI=;
+        bh=Y4qEan4Bht4WZhImYKyYPdEi4fHI0gcDqvRNnRmfnWU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n5BlG2BYfXv+uFaKXM6SZpOQywVb+8jUu1geyGyFU79KUtcTTtRmxACiLoCe4K9Pj
-         zn/Vv3EA9KVH7pfz2wEXOmVbUQO2UXrJSB0YDigCrIXncqyUjqjW9lceIrjtuMGJgH
-         B8u7xHiZQJ6VuMuYNq7kdpjKMy5dNBMHR+LCelnq0WJSaKaTK8Z7fxUvcC82hIiomB
-         MR+Xbx5tJTPuAQChc3n9iyhylfasq6yRGKBzqzKozwRjqFUJJRN/11PyH3vp3im4Ip
-         MRuRvHzC41Cme8ir74IqnAFlYYuh5nXXIDZ0meSZKd27yqCumXILM/rUqjNM2WruIF
-         GsQKvrUfqqvLg==
+        b=s6HELBkflFiaMJQlucVyqGiw3EuBWOlewxbh5yx95kHBEpenu48/nZS7/3gjzGeGg
+         DCbos1fc5VQdHqLOs0uOPKbfsVH7Sfc4j5ee7+cbqiJbua/5Py7u5tQT2WhrOzTuBv
+         Bc2A2L+KoLBfbH9Pg51n0OxMMOla5INiT3+iBMcHbCqcu3DyhkE1NwnWOA8Je42d+5
+         FA6k3ZvUWY1wkVBiM8Q07agtBeS+S5xHMqzYo4rs5vfLmNixFI2MxFmTKbED+MWelV
+         zapSQk4H2MZo4MKL63BwhnBj5zXdW7eSCP3RYdSrwRTC68toTSt1rWGObBtHowFARM
+         yW5U+LoskKuMw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2529ACE0806; Mon, 17 Jul 2023 11:23:39 -0700 (PDT)
+        id 2BCDECE092F; Mon, 17 Jul 2023 11:23:39 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 03/18] torture: Add "--no-" as synonym for "--do-no-" in torture.sh
-Date:   Mon, 17 Jul 2023 11:23:22 -0700
-Message-Id: <20230717182337.1098991-3-paulmck@kernel.org>
+Subject: [PATCH rcu 06/18] torture: Make kvm-recheck.sh report .config errors
+Date:   Mon, 17 Jul 2023 11:23:25 -0700
+Message-Id: <20230717182337.1098991-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
 References: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
@@ -50,105 +50,115 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In order to (for example) omit the real-time testing that torture.sh would
-otherwise carry out, you put "--do-no-rt" on the torture.sh command line.
-This works, but it is all too easy to instead type "--no-rt".  This is
-unambiguous and easier to type, so this commit therefore allows all
-"--no-" arguments as synonyms for their "--do-no-" counterparts.
+Currently, kvm-recheck.sh will print out any .config errors with messages
+of the form:
+
+:CONFIG_TASKS_TRACE_RCU=y: improperly set
+
+However, if these are the only errors, the resulting exit code will
+declare the run successful.  This commit therefore causes kvm-recheck.sh
+to record .config errors in the results directory in a file named
+ConfigFragment.diags and also returns a non-zero error code in that case.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/torture.sh       | 44 +++++++++----------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ .../selftests/rcutorture/bin/kvm-recheck.sh   | 37 +++++++++++++++----
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 5a2ae2264403..c3190ca9c96f 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -73,18 +73,18 @@ usage () {
- 	echo "       --configs-locktorture \"config-file list w/ repeat factor (10*LOCK01)\""
- 	echo "       --configs-scftorture \"config-file list w/ repeat factor (2*CFLIST)\""
- 	echo "       --do-all"
--	echo "       --do-allmodconfig / --do-no-allmodconfig"
--	echo "       --do-clocksourcewd / --do-no-clocksourcewd"
--	echo "       --do-kasan / --do-no-kasan"
--	echo "       --do-kcsan / --do-no-kcsan"
--	echo "       --do-kvfree / --do-no-kvfree"
--	echo "       --do-locktorture / --do-no-locktorture"
-+	echo "       --do-allmodconfig / --do-no-allmodconfig / --no-allmodconfig"
-+	echo "       --do-clocksourcewd / --do-no-clocksourcewd / --no-clocksourcewd"
-+	echo "       --do-kasan / --do-no-kasan / --no-kasan"
-+	echo "       --do-kcsan / --do-no-kcsan / --no-kcsan"
-+	echo "       --do-kvfree / --do-no-kvfree / --no-kvfree"
-+	echo "       --do-locktorture / --do-no-locktorture / --no-locktorture"
- 	echo "       --do-none"
--	echo "       --do-rcuscale / --do-no-rcuscale"
--	echo "       --do-rcutorture / --do-no-rcutorture"
--	echo "       --do-refscale / --do-no-refscale"
--	echo "       --do-rt / --do-no-rt"
--	echo "       --do-scftorture / --do-no-scftorture"
-+	echo "       --do-rcuscale / --do-no-rcuscale / --no-rcuscale"
-+	echo "       --do-rcutorture / --do-no-rcutorture / --no-rcutorture"
-+	echo "       --do-refscale / --do-no-refscale / --no-refscale"
-+	echo "       --do-rt / --do-no-rt / --no-rt"
-+	echo "       --do-scftorture / --do-no-scftorture / --no-scftorture"
- 	echo "       --duration [ <minutes> | <hours>h | <days>d ]"
- 	echo "       --kcsan-kmake-arg kernel-make-arguments"
- 	exit 1
-@@ -126,22 +126,22 @@ do
- 		do_kcsan=yes
- 		do_clocksourcewd=yes
- 		;;
--	--do-allmodconfig|--do-no-allmodconfig)
-+	--do-allmodconfig|--do-no-allmodconfig|--no-allmodconfig)
- 		do_allmodconfig=`doyesno "$1" --do-allmodconfig`
- 		;;
--	--do-clocksourcewd|--do-no-clocksourcewd)
-+	--do-clocksourcewd|--do-no-clocksourcewd|--no-clocksourcewd)
- 		do_clocksourcewd=`doyesno "$1" --do-clocksourcewd`
- 		;;
--	--do-kasan|--do-no-kasan)
-+	--do-kasan|--do-no-kasan|--no-kasan)
- 		do_kasan=`doyesno "$1" --do-kasan`
- 		;;
--	--do-kcsan|--do-no-kcsan)
-+	--do-kcsan|--do-no-kcsan|--no-kcsan)
- 		do_kcsan=`doyesno "$1" --do-kcsan`
- 		;;
--	--do-kvfree|--do-no-kvfree)
-+	--do-kvfree|--do-no-kvfree|--no-kvfree)
- 		do_kvfree=`doyesno "$1" --do-kvfree`
- 		;;
--	--do-locktorture|--do-no-locktorture)
-+	--do-locktorture|--do-no-locktorture|--no-locktorture)
- 		do_locktorture=`doyesno "$1" --do-locktorture`
- 		;;
- 	--do-none|--donone)
-@@ -157,19 +157,19 @@ do
- 		do_kcsan=no
- 		do_clocksourcewd=no
- 		;;
--	--do-rcuscale|--do-no-rcuscale)
-+	--do-rcuscale|--do-no-rcuscale|--no-rcuscale)
- 		do_rcuscale=`doyesno "$1" --do-rcuscale`
- 		;;
--	--do-rcutorture|--do-no-rcutorture)
-+	--do-rcutorture|--do-no-rcutorture|--no-rcutorture)
- 		do_rcutorture=`doyesno "$1" --do-rcutorture`
- 		;;
--	--do-refscale|--do-no-refscale)
-+	--do-refscale|--do-no-refscale|--no-refscale)
- 		do_refscale=`doyesno "$1" --do-refscale`
- 		;;
--	--do-rt|--do-no-rt)
-+	--do-rt|--do-no-rt|--no-rt)
- 		do_rt=`doyesno "$1" --do-rt`
- 		;;
--	--do-scftorture|--do-no-scftorture)
-+	--do-scftorture|--do-no-scftorture|--no-scftorture)
- 		do_scftorture=`doyesno "$1" --do-scftorture`
- 		;;
- 	--duration)
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+index 1df7e695edf7..97bdacc3fc55 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+@@ -16,6 +16,8 @@
+ T=/tmp/kvm-recheck.sh.$$
+ trap 'rm -f $T' 0 2
+ 
++configerrors=0
++
+ PATH=`pwd`/tools/testing/selftests/rcutorture/bin:$PATH; export PATH
+ . functions.sh
+ for rd in "$@"
+@@ -32,7 +34,7 @@ do
+ 		fi
+ 		TORTURE_SUITE="`cat $i/../torture_suite`" ; export TORTURE_SUITE
+ 		configfile=`echo $i | sed -e 's,^.*/,,'`
+-		rm -f $i/console.log.*.diags
++		rm -f $i/console.log.*.diags $i/ConfigFragment.diags
+ 		case "${TORTURE_SUITE}" in
+ 		X*)
+ 			;;
+@@ -49,8 +51,14 @@ do
+ 			then
+ 				echo QEMU killed
+ 			fi
+-			configcheck.sh $i/.config $i/ConfigFragment > $T 2>&1
+-			cat $T
++			configcheck.sh $i/.config $i/ConfigFragment > $i/ConfigFragment.diags 2>&1
++			if test -s $i/ConfigFragment.diags
++			then
++				cat $i/ConfigFragment.diags
++				configerrors=$((configerrors+1))
++			else
++				rm $i/ConfigFragment.diags
++			fi
+ 			if test -r $i/Make.oldconfig.err
+ 			then
+ 				cat $i/Make.oldconfig.err
+@@ -65,7 +73,14 @@ do
+ 			if test -f "$i/buildonly"
+ 			then
+ 				echo Build-only run, no boot/test
+-				configcheck.sh $i/.config $i/ConfigFragment
++				configcheck.sh $i/.config $i/ConfigFragment > $i/ConfigFragment.diags 2>&1
++				if test -s $i/ConfigFragment.diags
++				then
++					cat $i/ConfigFragment.diags
++					configerrors=$((configerrors+1))
++				else
++					rm $i/ConfigFragment.diags
++				fi
+ 				parse-build.sh $i/Make.out $configfile
+ 			elif test -f "$i/qemu-cmd"
+ 			then
+@@ -79,10 +94,10 @@ do
+ 	done
+ 	if test -f "$rd/kcsan.sum"
+ 	then
+-		if ! test -f $T
++		if ! test -f $i/ConfigFragment.diags
+ 		then
+ 			:
+-		elif grep -q CONFIG_KCSAN=y $T
++		elif grep -q CONFIG_KCSAN=y $i/ConfigFragment.diags
+ 		then
+ 			echo "Compiler or architecture does not support KCSAN!"
+ 			echo Did you forget to switch your compiler with '--kmake-arg CC=<cc-that-supports-kcsan>'?
+@@ -94,17 +109,23 @@ do
+ 		fi
+ 	fi
+ done
++
++if test "$configerrors" -gt 0
++then
++	echo $configerrors runs with .config errors.
++	ret=1
++fi
+ EDITOR=echo kvm-find-errors.sh "${@: -1}" > $T 2>&1
+ builderrors="`tr ' ' '\012' < $T | grep -c '/Make.out.diags'`"
+ if test "$builderrors" -gt 0
+ then
+ 	echo $builderrors runs with build errors.
+-	ret=1
++	ret=2
+ fi
+ runerrors="`tr ' ' '\012' < $T | grep -c '/console.log.diags'`"
+ if test "$runerrors" -gt 0
+ then
+ 	echo $runerrors runs with runtime errors.
+-	ret=2
++	ret=3
+ fi
+ exit $ret
 -- 
 2.40.1
 
