@@ -2,47 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 649D5EB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:01:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CED66C001E0
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:01:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbjGQSBQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        id S231224AbjGQSBR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbjGQSBO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:01:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBC9E76;
-        Mon, 17 Jul 2023 11:01:13 -0700 (PDT)
+        with ESMTP id S229603AbjGQSBP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jul 2023 14:01:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37FEE6C;
+        Mon, 17 Jul 2023 11:01:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D961B611CD;
-        Mon, 17 Jul 2023 18:01:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44FACC433C7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5737F611D5;
+        Mon, 17 Jul 2023 18:01:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F604C433AD;
         Mon, 17 Jul 2023 18:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689616872;
-        bh=3M0SpVkyWqfYcXcGZBOE8myfp0f75lb5pDV5D9CsGeY=;
+        bh=xfeG1xbltoTNTdzL3NqsELbTv/pa9FZB5bRq1zF+OuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=afXPWLmb4HPEM6fiia71/JKSX40Lvp7TBlcEji2LtAn9S9oRB+ZMODyrPR5gjN7B6
-         wzJsYdjGlJX9aQsI9GuuEulcxHqfek81LzayTYxTqOfTxlrXmhrDXcstXa07HeDxim
-         SezmFQVm65dlBNQST2StigcXNJiGCMCJXqKiZAaegLT/8uXmHwGT0JbARInUsIk083
-         ZvSASeRPAjV+HraDMQm7aI37pjiL8tHN6OvlU1RKKgW6I0rnNKfSshRgAOMil5d7a+
-         BeMlWLDhvc0krR7ouaabAIr3vSoLQFm8ZP4Sgmw44uNa4AVfEY1NCAOqlbarkDOqGG
-         l+AY2Cg4whPWQ==
+        b=rYV63FMskzWxOynzItXA45uVGlpO3lupAQaIN8axaEuksbv960TRV2h2o3luJZuLB
+         ylpn6KwLy/bs8SfIVknVOgKv8FSWLf6x2t3tGV90Et5z3obUQEhd0PB+5r8q8Q20gT
+         1U0pEZlKNIDmCcFQLNI1rc9YmIJxMlQlkau6jGm4gpBmx7EA9jmXCgspiaiH6ADrL/
+         jFtZTpIFTVLrjZMIEkbzCf4+E3Dwzr8yrCe2E2B2XMwJmf3H6bobh2FTgoEvXFpQBh
+         U8F2eFEoBpz52Vc2H1mZahNNCwyysN3SBwdKXiXbv1PKzPNT2lusiHhW8zsUDj8+HT
+         Txi7v1wuTyKrg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D65F4CE0806; Mon, 17 Jul 2023 11:01:11 -0700 (PDT)
+        id DF4D9CE0930; Mon, 17 Jul 2023 11:01:11 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, SeongJae Park <sj@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/7] Docs/RCU/rculist_nulls: Fix trivial coding style
-Date:   Mon, 17 Jul 2023 11:01:06 -0700
-Message-Id: <20230717180110.1097362-3-paulmck@kernel.org>
+Subject: [PATCH rcu 7/7] Docs/RCU/rculist_nulls: Fix text about atomic_set_release()
+Date:   Mon, 17 Jul 2023 11:01:10 -0700
+Message-Id: <20230717180110.1097362-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <ee7a3e6b-eb1b-4413-b5c3-83b22f7271dd@paulmck-laptop>
 References: <ee7a3e6b-eb1b-4413-b5c3-83b22f7271dd@paulmck-laptop>
@@ -54,42 +53,41 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: SeongJae Park <sj@kernel.org>
 
-Lookup example of non-hlist_nulls management is missing a semicolon, and
-having inconsistent indentation (one line is using single space
-indentation while others are using two spaces indentation).  Fix the
-trivial issues.
+The document says we can avoid extra _release() in insert function when
+hlist_nulls is used, but that's not true[1].  Drop it.
+
+[1] https://lore.kernel.org/rcu/46440869-644a-4982-b790-b71b43976c66@paulmck-laptop/
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/rculist_nulls.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/RCU/rculist_nulls.rst | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-index 0612a6387d8e..25b739885cfa 100644
+index 1fb086066377..21e40fcc08de 100644
 --- a/Documentation/RCU/rculist_nulls.rst
 +++ b/Documentation/RCU/rculist_nulls.rst
-@@ -26,7 +26,7 @@ algorithms:
+@@ -140,8 +140,7 @@ very very fast (before the end of RCU grace period)
+ Avoiding extra smp_rmb()
+ ========================
+ 
+-With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup()
+-and extra _release() in insert function.
++With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup().
+ 
+ For example, if we choose to store the slot number as the 'nulls'
+ end-of-list marker for each slot of the hash table, we can detect
+@@ -196,6 +195,9 @@ Note that using hlist_nulls means the type of 'obj_node' field of
+ 2) Insert algorithm
+ -------------------
+ 
++Same to the above one, but uses hlist_nulls_add_head_rcu() instead of
++hlist_add_head_rcu().
++
  ::
  
-   begin:
--  rcu_read_lock()
-+  rcu_read_lock();
-   obj = lockless_lookup(key);
-   if (obj) {
-     if (!try_get_ref(obj)) { // might fail for free objects
-@@ -70,8 +70,8 @@ And note the traditional hlist_for_each_entry_rcu() misses this smp_rmb()::
-        pos && ({ prefetch(pos->next); 1; }) &&
-        ({ tpos = hlist_entry(pos, typeof(*tpos), member); 1; });
-        pos = rcu_dereference(pos->next))
--   if (obj->key == key)
--     return obj;
-+    if (obj->key == key)
-+      return obj;
-   return NULL;
- 
- Quoting Corey Minyard::
+   /*
 -- 
 2.40.1
 
