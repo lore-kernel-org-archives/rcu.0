@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B9A1EB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:20:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1770C0015E
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:21:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbjGQSUy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
+        id S231842AbjGQSVA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbjGQSUv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231720AbjGQSUv (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 17 Jul 2023 14:20:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84939A1;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9383412A;
         Mon, 17 Jul 2023 11:20:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21F94611F5;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 297F6611F9;
         Mon, 17 Jul 2023 18:20:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C4B6C43395;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E68BC433AB;
         Mon, 17 Jul 2023 18:20:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689618044;
-        bh=XDuRFq+mHkr5+XpHsV+2nDbFWbS9cEpeXF9JX6lizsE=;
+        bh=rjWu88ZInJ4JHuHDuFwXlfJM5irHmICbqQMPaTiPJrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0wuZpGJ7JN1bE4+fsoi2u1d+PL8FRvgU4yt0JU5sf6WcLvJHULSxnr3gCQmFdGZ6
-         xBGkY+hsNjQvzjEc3JYU7cDtdbKeHlhnRAYYZnWD/lX3YGwHNYHv6VXN0PcnWM2Xtf
-         H1PJKsIRf3V97vgU3YHzjFZpYC8mPKOjk4LQ0sLZpd/4ArSr6curreirh3x6haq4lF
-         cmV60F2/THlsq/nOkIpSFdgOOMD4ROjYUmrD3G6eyNof3xt7+x3+tIgK7j4ow0t8+i
-         zjBPt65uOHrtzW1YVxnteQU/qA/z7cZIxzrVwSWOViRB173qvBxq82+v3K+ih6kRNJ
-         LfkBxG3mWJ5tQ==
+        b=EEdtDlDdtsm4f4+b40C0oOQzkiSZJU0C/5DEMh5WPQ73XD56n52u3rs8cW9pvRDb7
+         iF9LnrMCv9gB4K3mqVpe6uvusmeOcCZ5m2QnatwWtv1Qhw0uBguiUI1Jg36qviyygR
+         05HTvrAk1jm6sjrJOmAiVQjL3+2Hb29TFhX4zT/pzsA4NpQj+mgiLfN8fQdsycfa9e
+         4O2VI/fJp+8UnPcTPGE/5Y4uXiREqdvwDCTV6GmQZaz+Vqg9ys3ZHcP3XO1fJlfvgT
+         lQ4GHi8fFPuwNaEjGIoHUmIhSmOgXJNPfdnKqCwJLKTlhlOgt7h0M7PxflS/mP48k2
+         uMIu+Wkzlyz5A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9D205CE097F; Mon, 17 Jul 2023 11:20:43 -0700 (PDT)
+        id 9B20ECE093C; Mon, 17 Jul 2023 11:20:43 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 9/9] rcutorture: Stop right-shifting torture_random() return values
-Date:   Mon, 17 Jul 2023 11:20:42 -0700
-Message-Id: <20230717182042.1098651-9-paulmck@kernel.org>
+Subject: [PATCH rcu 8/9] torture: Stop right-shifting torture_random() return values
+Date:   Mon, 17 Jul 2023 11:20:41 -0700
+Message-Id: <20230717182042.1098651-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <bca717ca-a83a-4540-80ec-732c12623d2d@paulmck-laptop>
 References: <bca717ca-a83a-4540-80ec-732c12623d2d@paulmck-laptop>
@@ -57,40 +57,31 @@ therefore removes the right-shifting of torture_random() return values.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/torture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index d291a1438c30..ade42d6a9d9b 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1877,7 +1877,7 @@ static int
- rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- {
- 	int mask = rcutorture_extend_mask_max();
--	unsigned long randmask1 = torture_random(trsp) >> 8;
-+	unsigned long randmask1 = torture_random(trsp);
- 	unsigned long randmask2 = randmask1 >> 3;
- 	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
- 	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
-@@ -1936,7 +1936,7 @@ rcutorture_loop_extend(int *readstate, struct torture_random_state *trsp,
- 	if (!((mask - 1) & mask))
- 		return rtrsp;  /* Current RCU reader not extendable. */
- 	/* Bias towards larger numbers of loops. */
--	i = (torture_random(trsp) >> 3);
-+	i = torture_random(trsp);
- 	i = ((i | (i >> 3)) & RCUTORTURE_RDR_MAX_LOOPS) + 1;
- 	for (j = 0; j < i; j++) {
- 		mask = rcutorture_extend_mask(*readstate, trsp);
-@@ -2137,7 +2137,7 @@ static int rcu_nocb_toggle(void *arg)
- 		toggle_fuzz = NSEC_PER_USEC;
- 	do {
- 		r = torture_random(&rand);
--		cpu = (r >> 4) % (maxcpu + 1);
-+		cpu = (r >> 1) % (maxcpu + 1);
- 		if (r & 0x1) {
- 			rcu_nocb_cpu_offload(cpu);
- 			atomic_long_inc(&n_nocb_offload);
+diff --git a/kernel/torture.c b/kernel/torture.c
+index 92704f04a141..b59eb6048eab 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -95,7 +95,7 @@ int torture_hrtimeout_ns(ktime_t baset_ns, u32 fuzzt_ns, struct torture_random_s
+ 	ktime_t hto = baset_ns;
+ 
+ 	if (trsp)
+-		hto += (torture_random(trsp) >> 3) % fuzzt_ns;
++		hto += torture_random(trsp) % fuzzt_ns;
+ 	set_current_state(TASK_IDLE);
+ 	return schedule_hrtimeout(&hto, HRTIMER_MODE_REL);
+ }
+@@ -365,7 +365,7 @@ torture_onoff(void *arg)
+ 			torture_hrtimeout_jiffies(HZ / 10, &rand);
+ 			continue;
+ 		}
+-		cpu = (torture_random(&rand) >> 4) % (maxcpu + 1);
++		cpu = torture_random(&rand) % (maxcpu + 1);
+ 		if (!torture_offline(cpu,
+ 				     &n_offline_attempts, &n_offline_successes,
+ 				     &sum_offline, &min_offline, &max_offline))
 -- 
 2.40.1
 
