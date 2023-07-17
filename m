@@ -2,45 +2,45 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8F15EB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:10:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72BB4C001DC
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:10:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjGQSKL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S229517AbjGQSKL (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Mon, 17 Jul 2023 14:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGQSKK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S230089AbjGQSKK (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 17 Jul 2023 14:10:10 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EE6E55;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394F6A1;
         Mon, 17 Jul 2023 11:10:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D56B4611D5;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C06D6611D3;
         Mon, 17 Jul 2023 18:10:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 419A6C433CB;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28CF3C433C8;
         Mon, 17 Jul 2023 18:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689617408;
-        bh=9DECvy9XfdgRY+x9LckD1Cegiv8FGc1KYWwYrCtIolA=;
+        bh=Sdq5gQ+aL3LLkEeJ/3g5VCOtLbSSBFoRGd1+OGzUMlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uQ20wt8hXUnilQK44b7T3ETV6YhnGxFIP2ItWK0ReN+Zb2YZlIDPq60bkKEStAXae
-         SehDce8e8mztDJ3zyMNhgIKie5LnJtmimW0pig1upIknxQq6JejG0ModyG3B/I7RMZ
-         +Om3p/UisF3Y0+hg4LVyoelXGyghl171Kyss58KU1iIWY1nI6aCDY6jeyhAe6kbXoV
-         /+KGKXgxJ84EP8pcGZ0V5rGafu9ubEEC7WfXMbiz/zQeH/CNshuGzRPA/BV6zcEx12
-         xBZgTXwj4TzdH1FcTtzHbYvjLLXqveMUXz3CjyaJNwDTUUCL+ZvrEFzMrWTz/ZbpCt
-         ZRrrQtWnUxhXg==
+        b=dP1hdja+w1VHezoiNAIR5UXWSAX7RxMmhxU6eDztOX/7OWfZYgVRTA3fTj8ux0b8E
+         fUCdtl6MVWjYKFQsxb37wbIe9h0lviBUxI43IJfDXooMy98VyrA056KzmXbCr+9THo
+         uhikJIOQQYwcQ9Ie5YPRcAOJd/JxgmFsxmGCttwoZieX0effr8zKwFdcIsXnsarCAm
+         n3KPLmHv09EkxiQ4V1OoBABdpX8cWC9C+gV31pbjM4tE9X51kugONHRr8rHev7H6ut
+         JQzHKjYO/eHj4nWQd2P+CzBW8M92oCyWo0/w7wpXQaoFJc8pEBb73qmyTHBl5xnGEw
+         H9kacEnHfQkBA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D45E7CE0806; Mon, 17 Jul 2023 11:10:07 -0700 (PDT)
+        id CE48ACE03F1; Mon, 17 Jul 2023 11:10:07 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/3] refscale: Add a "jiffies" test
-Date:   Mon, 17 Jul 2023 11:10:06 -0700
-Message-Id: <20230717181006.1097957-3-paulmck@kernel.org>
+Subject: [PATCH rcu 1/3] refscale: Add CONFIG_PREEMPT_DYNAMIC=n to NOPREEMPT scenario
+Date:   Mon, 17 Jul 2023 11:10:04 -0700
+Message-Id: <20230717181006.1097957-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <2c4aea8b-6f82-45ab-988e-a6bb19129808@paulmck-laptop>
 References: <2c4aea8b-6f82-45ab-988e-a6bb19129808@paulmck-laptop>
@@ -50,68 +50,28 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds a "jiffies" test to refscale, allowing use of jiffies
-to be compared to ktime_get_real_fast_ns().  On my x86 laptop, jiffies
-is more than 20x faster.  (Though for many uses, the tens-of-nanoseconds
-overhead of ktime_get_real_fast_ns() will be just fine.)
+It is no longer possible to build a kernel with a preemption-disabled
+RCU without use of CONFIG_PREEMPT_DYNAMIC=n.  This commit therefore
+adds CONFIG_PREEMPT_DYNAMIC=n to the refscale torture type's NOPREEMPT
+scenario file.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refscale.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 71d138573856..91a0fd0d4d9a 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -528,6 +528,38 @@ static struct ref_scale_ops clock_ops = {
- 	.name		= "clock"
- };
- 
-+static void ref_jiffies_section(const int nloops)
-+{
-+	u64 x = 0;
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--)
-+		x += jiffies;
-+	preempt_enable();
-+	stopopts = x;
-+}
-+
-+static void ref_jiffies_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	u64 x = 0;
-+	int i;
-+
-+	preempt_disable();
-+	for (i = nloops; i >= 0; i--) {
-+		x += jiffies;
-+		un_delay(udl, ndl);
-+	}
-+	preempt_enable();
-+	stopopts = x;
-+}
-+
-+static struct ref_scale_ops jiffies_ops = {
-+	.readsection	= ref_jiffies_section,
-+	.delaysection	= ref_jiffies_delay_section,
-+	.name		= "jiffies"
-+};
-+
- ////////////////////////////////////////////////////////////////////////
- //
- // Methods leveraging SLAB_TYPESAFE_BY_RCU.
-@@ -1047,7 +1079,7 @@ ref_scale_init(void)
- 	int firsterr = 0;
- 	static struct ref_scale_ops *scale_ops[] = {
- 		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
--		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops,
-+		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
- 		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
- 	};
- 
+diff --git a/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
+index ef2b501a6971..67f9d2998afd 100644
+--- a/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
++++ b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
+@@ -2,6 +2,7 @@ CONFIG_SMP=y
+ CONFIG_PREEMPT_NONE=y
+ CONFIG_PREEMPT_VOLUNTARY=n
+ CONFIG_PREEMPT=n
++CONFIG_PREEMPT_DYNAMIC=n
+ #CHECK#CONFIG_PREEMPT_RCU=n
+ CONFIG_HZ_PERIODIC=n
+ CONFIG_NO_HZ_IDLE=y
 -- 
 2.40.1
 
