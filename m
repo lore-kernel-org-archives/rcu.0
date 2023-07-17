@@ -2,45 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 606B0C001DE
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC948C001DF
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:20:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbjGQSUu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
+        id S229718AbjGQSUt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbjGQSUs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        with ESMTP id S231391AbjGQSUs (ORCPT <rfc822;rcu@vger.kernel.org>);
         Mon, 17 Jul 2023 14:20:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5141A10D9;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282608E;
         Mon, 17 Jul 2023 11:20:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B210E611ED;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8AC19611E7;
         Mon, 17 Jul 2023 18:20:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16608C433D9;
-        Mon, 17 Jul 2023 18:20:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2389C433C9;
+        Mon, 17 Jul 2023 18:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689618044;
-        bh=sBPRM0sRIpbE6zvq9jaA1AWHNVj70yVAkkvNX0VwPQA=;
+        s=k20201202; t=1689618043;
+        bh=2Slt+IrSEDPTRvcods8x8gQpC5P9QCC5UcNVjkmH36M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y7sDl/2TGu3C45dkI0F4XlyVjTIewa8HrGGM02f8RgU52YHwQIvUdt258iRQNEm07
-         1FEHY4Sey3+dPfRnWR5l4rBPoEyH35xaoG4NtYBFi05CqQYLYejMMCZtf+WY/pYitY
-         KmBso4AwVMnl3T1YpW4hK6NkH3ifnoMqdq6On8/uluQmg3Ux/jQnZU8r8yi2UbD4Uw
-         Wsr5KU2WVaKk3NRUxAoZ3uYA5U5dkHXP2OiFFSUF+ARnPawDno261V91VCR3zd09Cz
-         X7IiGC4Mw7WexuHXpj2NBMX2f0v0hksb2CJ5D7ZRnOyKcz7qL3qBpVK7hjTYd37MH2
-         7pt0mQiFgQWUw==
+        b=r4JwDIU2WkXnsck6qwzLK6vpNYgskw2MPjWEXN07ysKStgn6bit89R2rMW/er603p
+         Hf885dbVtRykn2Hfodigm5Da9iRLzDgRdmKr1pm3N56kA9VCsXDc5CelNy5EfKMsQu
+         ZRqnOCqVlmSJe41TeRVCWDS3xZlqbdHs/P5/XZOKMYlFSw2k+k1CuuvOUiwgDOe7tS
+         S2ySKhZRZFhJx8UzHTf37vMO+8xSTvB0OCeKbwrZsP9A2Prdx22y4+rqGLxwBl69Li
+         vgtqOkRLA5q6DWJw0Q+apyAG/OA/ck/G9iEnEl8oDT7NyUDP6xrGikkXR15LCHGrsS
+         vc5GebhHI7x6g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9510DCE0902; Mon, 17 Jul 2023 11:20:43 -0700 (PDT)
+        id 8DF9ECE04CD; Mon, 17 Jul 2023 11:20:43 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/9] torture: Move torture_onoff() timeouts to hrtimers
-Date:   Mon, 17 Jul 2023 11:20:38 -0700
-Message-Id: <20230717182042.1098651-5-paulmck@kernel.org>
+        rostedt@goodmis.org, Connor O'Brien <connoro@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        kernel-team@android.com, John Stultz <jstultz@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [PATCH rcu 2/9] torture: Support randomized shuffling for proxy exec testing
+Date:   Mon, 17 Jul 2023 11:20:35 -0700
+Message-Id: <20230717182042.1098651-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <bca717ca-a83a-4540-80ec-732c12623d2d@paulmck-laptop>
 References: <bca717ca-a83a-4540-80ec-732c12623d2d@paulmck-laptop>
@@ -50,42 +58,67 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-In order to gain better race coverage, move the CPU-hotplug-related
-timed waits in torture_onoff() to torture_hrtimeout_jiffies().
+From: Connor O'Brien <connoro@google.com>
 
+Currently shuffling sets the same cpu affinities for all tasks,
+which makes us less likely to hit paths involving migrating
+blocked tasks onto a cpu where they can't run.
+
+This patch adds an element of randomness to allow affinities of
+different writer tasks to diverge.
+
+This has helped uncover issues in testing with Proxy Execution
+
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: kernel-team@android.com
+Signed-off-by: Connor O'Brien <connoro@google.com>
+Signed-off-by: John Stultz <jstultz@google.com>
+Acked-by: Davidlohr Bueso <dave@stgolabs.net>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/torture.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/torture.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/torture.c b/kernel/torture.c
-index 836fefa44373..fc873116a399 100644
+index 1a0519b836ac..8be83fdc6be1 100644
 --- a/kernel/torture.c
 +++ b/kernel/torture.c
-@@ -357,12 +357,12 @@ torture_onoff(void *arg)
+@@ -54,6 +54,9 @@ module_param(verbose_sleep_frequency, int, 0444);
+ static int verbose_sleep_duration = 1;
+ module_param(verbose_sleep_duration, int, 0444);
  
- 	if (onoff_holdoff > 0) {
- 		VERBOSE_TOROUT_STRING("torture_onoff begin holdoff");
--		schedule_timeout_interruptible(onoff_holdoff);
-+		torture_hrtimeout_jiffies(onoff_holdoff, &rand);
- 		VERBOSE_TOROUT_STRING("torture_onoff end holdoff");
- 	}
- 	while (!torture_must_stop()) {
- 		if (disable_onoff_at_boot && !rcu_inkernel_boot_has_ended()) {
--			schedule_timeout_interruptible(HZ / 10);
-+			torture_hrtimeout_jiffies(HZ / 10, &rand);
- 			continue;
- 		}
- 		cpu = (torture_random(&rand) >> 4) % (maxcpu + 1);
-@@ -372,7 +372,7 @@ torture_onoff(void *arg)
- 			torture_online(cpu,
- 				       &n_online_attempts, &n_online_successes,
- 				       &sum_online, &min_online, &max_online);
--		schedule_timeout_interruptible(onoff_interval);
-+		torture_hrtimeout_jiffies(onoff_interval, &rand);
- 	}
++static int random_shuffle;
++module_param(random_shuffle, int, 0444);
++
+ static char *torture_type;
+ static int verbose;
  
- stop:
+@@ -518,6 +521,7 @@ static void torture_shuffle_task_unregister_all(void)
+  */
+ static void torture_shuffle_tasks(void)
+ {
++	DEFINE_TORTURE_RANDOM(rand);
+ 	struct shuffle_task *stp;
+ 
+ 	cpumask_setall(shuffle_tmp_mask);
+@@ -537,8 +541,10 @@ static void torture_shuffle_tasks(void)
+ 		cpumask_clear_cpu(shuffle_idle_cpu, shuffle_tmp_mask);
+ 
+ 	mutex_lock(&shuffle_task_mutex);
+-	list_for_each_entry(stp, &shuffle_task_list, st_l)
+-		set_cpus_allowed_ptr(stp->st_t, shuffle_tmp_mask);
++	list_for_each_entry(stp, &shuffle_task_list, st_l) {
++		if (!random_shuffle || torture_random(&rand) & 0x1)
++			set_cpus_allowed_ptr(stp->st_t, shuffle_tmp_mask);
++	}
+ 	mutex_unlock(&shuffle_task_mutex);
+ 
+ 	cpus_read_unlock();
 -- 
 2.40.1
 
