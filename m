@@ -2,71 +2,90 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 499A2EB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:18:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D4E4C001DE
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:18:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjGQSSh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S231708AbjGQSSj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbjGQSSd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:18:33 -0400
+        with ESMTP id S231730AbjGQSSf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jul 2023 14:18:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E89E6F;
-        Mon, 17 Jul 2023 11:18:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3B41701;
+        Mon, 17 Jul 2023 11:18:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FECF611D1;
-        Mon, 17 Jul 2023 18:18:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F85EC433C7;
-        Mon, 17 Jul 2023 18:18:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1A31611E9;
+        Mon, 17 Jul 2023 18:18:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A8CEC433C8;
+        Mon, 17 Jul 2023 18:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689617893;
-        bh=qWUu8PF0tZZSAIf3SBn9RhDk4Qva5kb5eZvPW+nZlN0=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=A6TR5Eu2lWcSMwhT4Ng67kkz8cXprRJnjUVJeJ9WLTXO4s9LBOW1ZzhW27uvqTZ5n
-         BtwtnyYTelmF8Dz/3lX+524S/9Co+5ROOzICA1rNY5SCJEKmSVFEgbsoowv6C6gIx2
-         uiaK15rN45gSuB25N4SOxoU6iofi+ZIq3gbsbhHuHeuelBMzLG/N7E+cWsRMxRinwk
-         /ZKAgimJmg1UWNVvz1UtjkViFGSQYmRFuqBt9m7PQ5aBqNO6dHzUhtsUAQ9bw1VBnm
-         mnUH7mmtMAXmfQqhsWytOchtKs/c7xPeXMNR1A8vDY7C+S/tpme4Eu3SyGgMnFKzgi
-         qF3f/vNJkY35w==
+        s=k20201202; t=1689617903;
+        bh=kOL1Zapyu+0MBMzzQqJDacaa50DKEhK1uQVmnZTCnQ0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CLMMENSAlauGHHkJchd64UixIimj8OJg9ZLFeIoziZqM3aKwBgkk3OEuhNTxbtRlh
+         dqAGx/9rPN0279PCKUbxno0BSqA/CVNOrvWMBGIm1r2XUr+umK+atSNrov1EiKP5VP
+         DlRaHqW4dztQduvXmWBTX7QasopCbVzfem/fcUwagPF2BKAgHUw/eTcD9dXMedbOHT
+         +8ZbCouvpqRP+zEI+Y10OTRP72eQaigg0DeenPo3Kqk3jmnYBcdYVXk3QtIrZU2HA8
+         cl7VVKTbVbgvnGvE04TlxKc4pB/STaqf3t1L0pedF6mojy/q/VWCPrVy1iUaFaHvG1
+         fl2N02j7GZVNg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 562B3CE03F1; Mon, 17 Jul 2023 11:18:13 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 11:18:13 -0700
+        id AB6ADCE04CD; Mon, 17 Jul 2023 11:18:22 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/4] Torture-test updates for smp_call_function()
-Message-ID: <38be0135-a7a4-4c16-b2c6-1b3817c3067f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/4] scftorture: Forgive memory-allocation failure if KASAN
+Date:   Mon, 17 Jul 2023 11:18:18 -0700
+Message-Id: <20230717181820.1098541-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <38be0135-a7a4-4c16-b2c6-1b3817c3067f@paulmck-laptop>
+References: <38be0135-a7a4-4c16-b2c6-1b3817c3067f@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+Kernels built with CONFIG_KASAN=y quarantine newly freed memory in order
+to better detect use-after-free errors.  However, this can exhaust memory
+more quickly in allocator-heavy tests, which can result in spurious
+scftorture failure.  This commit therefore forgives memory-allocation
+failure in kernels built with CONFIG_KASAN=y, but continues counting
+the errors for use in detailed test-result analyses.
 
-This series contains updates for the smp_call_function() torture tests:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/scftorture.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-1.	Scale scftorture memory based on number of CPUs.
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 5d113aa59e77..83c33ba0ca7e 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -171,7 +171,8 @@ static void scf_torture_stats_print(void)
+ 		scfs.n_all_wait += scf_stats_p[i].n_all_wait;
+ 	}
+ 	if (atomic_read(&n_errs) || atomic_read(&n_mb_in_errs) ||
+-	    atomic_read(&n_mb_out_errs) || atomic_read(&n_alloc_errs))
++	    atomic_read(&n_mb_out_errs) ||
++	    (!IS_ENABLED(CONFIG_KASAN) && atomic_read(&n_alloc_errs)))
+ 		bangstr = "!!! ";
+ 	pr_alert("%s %sscf_invoked_count %s: %lld resched: %lld single: %lld/%lld single_ofl: %lld/%lld single_rpc: %lld single_rpc_ofl: %lld many: %lld/%lld all: %lld/%lld ",
+ 		 SCFTORT_FLAG, bangstr, isdone ? "VER" : "ver", invoked_count, scfs.n_resched,
+@@ -323,7 +324,8 @@ static void scftorture_invoke_one(struct scf_statistics *scfp, struct torture_ra
+ 		preempt_disable();
+ 	if (scfsp->scfs_prim == SCF_PRIM_SINGLE || scfsp->scfs_wait) {
+ 		scfcp = kmalloc(sizeof(*scfcp), GFP_ATOMIC);
+-		if (WARN_ON_ONCE(!scfcp)) {
++		if (!scfcp) {
++			WARN_ON_ONCE(!IS_ENABLED(CONFIG_KASAN));
+ 			atomic_inc(&n_alloc_errs);
+ 		} else {
+ 			scfcp->scfc_cpu = -1;
+-- 
+2.40.1
 
-2.	Forgive memory-allocation failure if KASAN.
-
-3.	Pause testing after memory-allocation failure.
-
-4.	Add CONFIG_PREEMPT_DYNAMIC=n to NOPREEMPT scenario.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/scftorture.c                                      |    6 ++++--
- b/tools/testing/selftests/rcutorture/bin/torture.sh        |    4 +++-
- b/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT |    2 ++
- kernel/scftorture.c                                        |    6 +++++-
- 4 files changed, 14 insertions(+), 4 deletions(-)
