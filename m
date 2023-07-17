@@ -2,74 +2,75 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EAAAEB64DC
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:05:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBCE8C0015E
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:05:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbjGQSFR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34792 "EHLO
+        id S230509AbjGQSFU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbjGQSFF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:05:05 -0400
+        with ESMTP id S230435AbjGQSFI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jul 2023 14:05:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BC1172D;
-        Mon, 17 Jul 2023 11:04:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08EF198E;
+        Mon, 17 Jul 2023 11:04:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E35DE611CB;
-        Mon, 17 Jul 2023 18:04:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 512DBC433C7;
-        Mon, 17 Jul 2023 18:04:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 30508611D1;
+        Mon, 17 Jul 2023 18:04:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96001C433C7;
+        Mon, 17 Jul 2023 18:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689617090;
-        bh=0EJJmYXOL7M7V4ygQyDxCfubtMpDAB+gg67o07k8rOc=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=RE4uJNSbMz8uSmwquQbgbKv8XWj+SU3ZrwbfBS9kW5nRgrD8SFI5IfrSxe9pkdqcp
-         WIuptz3P1XXRhbsS2M9r8lw6WfMCzNxYwTZ6LdLvBkiicLoP70/6OylTHmCNEen1n2
-         yEK5XkARFhQpPypIySKGJR0XkA7Kj5299/M4Vk+WgCxRuyExYCwPABwDpAbgVvG4Oa
-         mmkfmDiw+JRXFuzylnvRnLkxW4/z5nLailmfX6j9LzgTel3/gueA76Hsa2/o+c4peT
-         QWaQbbAtajcvkauk1OuN5wa2R4yhwY3xDiITIJ/P2TtOmVzUxIuY2byGFdKNJVZjyS
-         oZO3rxf5DpCeA==
+        s=k20201202; t=1689617095;
+        bh=MFE5zfhf0lge+PlNtey6NsBHeE7FU1t9598D+2WWazI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cFVx6RCzlCHQeu5P4ovX7IXKbUO7PwJTzL6RqFD51A2XX1zzsYJAwgrg6Ih3gegDL
+         a6gZF/SS3K0imID7jRZ/7ZwKAS0TEBX2hWaiJK7KASXoITkTqX7FkJtCdVUvBrI/Ly
+         cNzT907+NO7KGkvgVy6xCO7hHG5dSN+RsMgGplqFT49QwA/ph3RAya0PyHCjvxiimh
+         voaiCHocjeuX2JOEj4PlPx0JWiYAbEowqDZFUmtSWPHNEakVacF/4Qi3L122l01azp
+         JB3/hjA8G2X3uUcR/9FXy4IGUl22E6tAHO1wZEe8RaySkURFihswkgf/w46c857rza
+         GJ1njkKZUTYgw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F29A7CE03F1; Mon, 17 Jul 2023 11:04:49 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 11:04:49 -0700
+        id 575C5CE04CD; Mon, 17 Jul 2023 11:04:55 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: [PATCH rcu 0/5] Tasks RCU updates for v6.6
-Message-ID: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 2/5] rcu-tasks: Remove redundant #ifdef CONFIG_TASKS_RCU
+Date:   Mon, 17 Jul 2023 11:04:51 -0700
+Message-Id: <20230717180454.1097714-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
+References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+The kernel/rcu/tasks.h file has a #endif immediately followed by an
 
-This series contains Tasks RCU updates.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/tasks.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-1.	rcu-tasks: Treat only synchronous grace periods urgently.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index c88d7fe29d92..7eae67fbe47c 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -146,9 +146,7 @@ static struct rcu_tasks rt_name =							\
+ #ifdef CONFIG_TASKS_RCU
+ /* Track exiting tasks in order to allow them to be waited for. */
+ DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
+-#endif
+ 
+-#ifdef CONFIG_TASKS_RCU
+ /* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
+ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+ static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
+-- 
+2.40.1
 
-2.	rcu-tasks: Remove redundant #ifdef CONFIG_TASKS_RCU.
-
-3.	rcu-tasks: Add kernel boot parameters for callback laziness.
-
-4.	rcu-tasks: Cancel callback laziness if too many callbacks.
-
-5.	Complain about unexpected uses of RCU Tasks Trace.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt   |    7 +
- b/Documentation/admin-guide/kernel-parameters.txt |   23 ++++++
- b/kernel/rcu/tasks.h                              |   81 +++++++++++++++++++---
- b/scripts/checkpatch.pl                           |   18 ++++
- kernel/rcu/tasks.h                                |   24 +++++-
- 5 files changed, 141 insertions(+), 12 deletions(-)
