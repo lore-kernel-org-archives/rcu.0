@@ -2,109 +2,79 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF3C7C001DE
-	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD5FEB64DC
+	for <rcu@archiver.kernel.org>; Mon, 17 Jul 2023 18:03:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjGQSBT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 14:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        id S229664AbjGQSDQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 17 Jul 2023 14:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjGQSBP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:01:15 -0400
+        with ESMTP id S229562AbjGQSDQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 17 Jul 2023 14:03:16 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38EB10C7;
-        Mon, 17 Jul 2023 11:01:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67372B3;
+        Mon, 17 Jul 2023 11:03:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 56611611D4;
-        Mon, 17 Jul 2023 18:01:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81611C433A9;
-        Mon, 17 Jul 2023 18:01:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D3EFB611BF;
+        Mon, 17 Jul 2023 18:03:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DA0DC433C8;
+        Mon, 17 Jul 2023 18:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689616872;
-        bh=vMU/XgK+8/tyV/dKBByzpBIuwOGp8w97JCzbfLX+ZeY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c9PPHQZiElIu01MSdWkSAMWPCHtk3+ULIDkRUtTy+2KSA4s50662trJuB+lhQlESi
-         6yImgsJSej19sc8OrrtpAlUsnkBaPz1Lu4p33NvTC3l5VhC3z0Ki2wN0lVlEueJ8BT
-         y1HHhmXwV2PEB65Xzt/2EcMVOJKgD3DPo2PVMp8FBTt9IC0lVpubSaZoFJFkd0w1Td
-         EEnAfNjZhqYu/iR1d/b/1+L4yXRRjULLr7IApvLNZzGwG8Hlo9iARtupoykSmcOSEM
-         5rhY5kUujZybVuRJa3BAr3coH8hkC0f25wkqyjJ2J21Z5oUK5y5erARLAtsm3XiimC
-         3duUJiqkDYsZw==
+        s=k20201202; t=1689616994;
+        bh=aUyjBUMINCyfPovEBJv8iduU9zI+11vnLgqgR3Vbln0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Wtf4vRW5oaC0jcIo5s268/VivTcurhKJ/0WFB6MCF5VO2SVVn0fSHi9/E6zopy3jd
+         p78VSy6AkjTlaxWeiSPBJu1EglCmaquuKsQRJLEOcZkEyyGhbbCSZnm2KYeXvmzHdK
+         ODnArlYhxyHDGBl9af+Q8/myHV2eYrFZS3+RFn9/aEb4bxcbeuVv8X4c9UXHu84VTR
+         kLbXpZzFUUSWRACeelIpWGQgXA3Vn6XeVEWbVlzVuWuJDPJzA/3315xm8LE4tMJlzO
+         R1R2AJl+AScWxokaC1fuQGtspHdg88o4mce0XIwRx5YfL5Wbh7z0eeyBsMv2ST77dk
+         D152MoLy9lVZA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DD2EECE092F; Mon, 17 Jul 2023 11:01:11 -0700 (PDT)
+        id CDA36CE03F1; Mon, 17 Jul 2023 11:03:13 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 11:03:13 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, SeongJae Park <sj@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 6/7] Docs/RCU/rculist_nulls: Fix hlist_[nulls]_head field names of 'obj'
-Date:   Mon, 17 Jul 2023 11:01:09 -0700
-Message-Id: <20230717180110.1097362-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <ee7a3e6b-eb1b-4413-b5c3-83b22f7271dd@paulmck-laptop>
-References: <ee7a3e6b-eb1b-4413-b5c3-83b22f7271dd@paulmck-laptop>
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/6] Miscellaneous fixes for v6.6
+Message-ID: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: SeongJae Park <sj@kernel.org>
+Hello!
 
-The example code snippets on rculist_nulls.rst are assuming 'obj' to
-have the 'hlist_head' or 'hlist_nulls_head' field named 'obj_node', but
-a sentence and some code snippets are wrongly calling
-'obj->obj_node.next' as 'obj->obj_next', or 'obj->obj_node' as 'member'.
-Fix it.
+This series has miscellaneous fixes:
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/RCU/rculist_nulls.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+1.	Update synchronize_rcu_mult() comment for call_rcu_hurry().
 
-diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-index 479cedfec446..1fb086066377 100644
---- a/Documentation/RCU/rculist_nulls.rst
-+++ b/Documentation/RCU/rculist_nulls.rst
-@@ -65,7 +65,7 @@ but a version with an additional memory barrier (smp_rmb())
-     struct hlist_node *node, *next;
-     for (pos = rcu_dereference((head)->first);
-          pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
--         ({ obj = hlist_entry(pos, typeof(*obj), member); 1; });
-+         ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
-          pos = rcu_dereference(next))
-       if (obj->key == key)
-         return obj;
-@@ -77,7 +77,7 @@ And note the traditional hlist_for_each_entry_rcu() misses this smp_rmb()::
-   struct hlist_node *node;
-   for (pos = rcu_dereference((head)->first);
-        pos && ({ prefetch(pos->next); 1; }) &&
--       ({ obj = hlist_entry(pos, typeof(*obj), member); 1; });
-+       ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
-        pos = rcu_dereference(pos->next))
-     if (obj->key == key)
-       return obj;
-@@ -97,7 +97,7 @@ Quoting Corey Minyard::
- 2) Insertion algorithm
- ----------------------
- 
--We need to make sure a reader cannot read the new 'obj->obj_next' value
-+We need to make sure a reader cannot read the new 'obj->obj_node.next' value
- and previous value of 'obj->key'. Otherwise, an item could be deleted
- from a chain, and inserted into another chain. If new chain was empty
- before the move, 'next' pointer is NULL, and lockless reader can not
-@@ -165,7 +165,7 @@ Note that using hlist_nulls means the type of 'obj_node' field of
-   head = &table[slot];
-   begin:
-   rcu_read_lock();
--  hlist_nulls_for_each_entry_rcu(obj, node, head, member) {
-+  hlist_nulls_for_each_entry_rcu(obj, node, head, obj_node) {
-     if (obj->key == key) {
-       if (!try_get_ref(obj)) { // might fail for free objects
- 	rcu_read_unlock();
--- 
-2.40.1
+2.	Clarify rcu_is_watching() kernel-doc comment.
 
+3.	srcu,notifier: Remove #ifdefs in favor of SRCU Tiny srcu_usage.
+
+4.	Mark __rcu_irq_enter_check_tick() ->rcu_urgent_qs load.
+
+5.	Make the rcu_nocb_poll boot parameter usable via boot config.
+
+6.	Use WRITE_ONCE() for assignments to ->next for rculist_nulls,
+	courtesy of Alan Huang.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/notifier.h      |   11 -----------
+ b/include/linux/rculist_nulls.h |    4 ++--
+ b/include/linux/rcupdate_wait.h |    5 +++++
+ b/include/linux/srcutiny.h      |    7 +++++++
+ b/kernel/rcu/tree.c             |   12 ++++++++----
+ b/kernel/rcu/tree_nocb.h        |    4 ++--
+ kernel/rcu/tree.c               |    2 +-
+ 7 files changed, 25 insertions(+), 20 deletions(-)
