@@ -2,122 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50AA2EB64DC
-	for <rcu@archiver.kernel.org>; Tue, 18 Jul 2023 18:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F339DEB64DC
+	for <rcu@archiver.kernel.org>; Tue, 18 Jul 2023 18:32:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbjGRSMO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Jul 2023 14:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        id S230146AbjGRScF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Jul 2023 14:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjGRSMO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:12:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AC9F0;
-        Tue, 18 Jul 2023 11:12:11 -0700 (PDT)
+        with ESMTP id S230169AbjGRScD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Jul 2023 14:32:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1473F0;
+        Tue, 18 Jul 2023 11:32:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FCB8616A8;
-        Tue, 18 Jul 2023 18:12:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 790B6C433C8;
-        Tue, 18 Jul 2023 18:12:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 33A0D61653;
+        Tue, 18 Jul 2023 18:32:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE9BC433C7;
+        Tue, 18 Jul 2023 18:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689703930;
-        bh=SgmfOxTN3A7k/1x1z6TYR940uNgzGBHhufvUsnf5kxs=;
+        s=k20201202; t=1689705121;
+        bh=l8baMBxLHo8xo/gePwxWBpJyf65ETLy32ieqmnFWIWA=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SQhAvDmxl90UsIovfEIEg2UTWS9oYA3b2oZ2ZjKqDX9DZ8oGOZH06syF+oX6oeSOo
-         kOl237ruu51QeJ6VRvlzl9bQUdGJEDZNyOxgg03BOtuAkIvn0d+3g3nztARo0Xw23C
-         hycULlGLfhcTtpQD6HQ5eb6hU57azkKv5uRh0iIWAHbJtwr12TfXgjsvhciQcK0D1b
-         0E9hBGJqD74sNrpjqt8ScAT/DqJCHiP1eg1ejH99RPvzSMx8c85071L7Vm/5L4wX7O
-         /zw1p3fV5VA1JCMqfMbk8im8uOMTWq/ADBponPk3SFc/gTAmalkq7PJ6cZW82FHXR8
-         mu2UEdsUlgVrg==
+        b=J83MPQUNKBD+OnvqW/hkocKgtvizr6JsNsiLnkizdxB0+jwAXkqM3ERcS7JlE3em+
+         I2+f+hjqkN0ANtwk1e4MNsAV7vLEqMqKQ6hvZvs5A9fEETMoHisu4/yYAb18wBM3rD
+         KKvl8SPSI6T0QKbXuq2cRC+cOQOVYQeGOcY8Q4bJ8x5s5MUFMmEaeheBKBxyPFZ+dc
+         InUwbFSzOgrB2xy+RFMBRAbpOe3XwxvJFCNfOWT7UmFF0iy0sXsUKUGSogFLexTARW
+         9UaaTlk7heJBf3Wbzkai3VNHJ9VlpF3u08YwiG4yng/PSSlqrBAdVdchadjLsQiGva
+         7+1ckpQY9VMNA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0D068CE04CD; Tue, 18 Jul 2023 11:12:10 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 11:12:10 -0700
+        id 2D0BCCE04CD; Tue, 18 Jul 2023 11:32:01 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 11:32:01 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
-Message-ID: <2e404769-67af-4240-b572-bd0808503486@paulmck-laptop>
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
+ for rculist_nulls
+Message-ID: <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
- <20230717180317.1097590-2-paulmck@kernel.org>
- <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
+ <20230717180317.1097590-6-paulmck@kernel.org>
+ <9651c3b4-0791-5cd7-567f-f65d28bc8fae@joelfernandes.org>
+ <BE64BF3F-69AD-4522-965E-0B7E4054D737@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BE64BF3F-69AD-4522-965E-0B7E4054D737@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 08:52:30AM -0400, Joel Fernandes wrote:
-> Hi Paul,
+On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
 > 
-> On 7/17/23 14:03, Paul E. McKenney wrote:
-> > Make it clear that this function always returns either true or false
-> > without other planned failure modes.
+> > 2023年7月18日 21:49，Joel Fernandes <joel@joelfernandes.org> 写道：
 > > 
-> > Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >   kernel/rcu/tree.c | 12 ++++++++----
-> >   1 file changed, 8 insertions(+), 4 deletions(-)
+> > On 7/17/23 14:03, Paul E. McKenney wrote:
+> >> From: Alan Huang <mmpgouride@gmail.com>
+> >> When the objects managed by rculist_nulls are allocated with
+> >> SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an object
+> >> even though it is just now being added, which means the modification of
+> >> ->next is visible to readers.  This patch therefore uses WRITE_ONCE()
+> >> for assignments to ->next.
+> >> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> >> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 1449cb69a0e0..fae9b4e29c93 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
-> >   /**
-> >    * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+> > Did we ever conclude that the READ_ONCE() counterparts were not needed? ;-)
 > 
-> Would it be better to modify the 'not idle' to 'not idle from an RCU
-> viewpoint'? This matches the comments in ct_nmi_enter() as well.
+> Read-side is already protected by rcu_dereference_raw() in hlist_nulls_for_each_entry_{rcu, safe}.
 
-We have the "if RCU thinks that" earlier.
+It turns out that different traversal synchronization designs want
+different pointers using WRITE_ONCE().
 
-But maybe something like this?
+> > But incremental progress and all, so this LGTM:
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
- * rcu_is_watching - RCU read-side critical sections permitted on current CPU?
-
-> >    *
-> > - * Return true if RCU is watching the running CPU, which means that this
-> > - * CPU can safely enter RCU read-side critical sections.  In other words,
-> > - * if the current CPU is not in its idle loop or is in an interrupt or
-> > - * NMI handler, return true.
-> > + * Return @true if RCU is watching the running CPU and @false otherwise.
-> > + * An @true return means that this CPU can safely enter RCU read-side
-> > + * critical sections.
-> > + *
-> > + * More specifically, if the current CPU is not deep within its idle
-> > + * loop, return @true.  Note that rcu_is_watching() will return @true if
-> > + * invoked from an interrupt or NMI handler, even if that interrupt or
-> > + * NMI interrupted the CPU while it was deep within its idle loop.
-> 
-> But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task
-> running could be idle from RCU's viewpoint? Could that be clarified more?
-
-Perhaps something like this?
-
- * Although calls to rcu_is_watching() from most parts of the kernel
- * will return @true, there are important exceptions.  For example, if the
- * current CPU is deep within its idle loop, in kernel entry/exit code,
- * or offline, rcu_is_watching() will return @false.
-
-(Where nohz_full CPUs are covered by kernel entry/exit code.)
+I will apply all four on my next rebase, thank you!
 
 							Thanx, Paul
 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> >    *
-> >    * Make notrace because it can be called by the internal functions of
-> >    * ftrace, and making this notrace removes unnecessary recursion calls.
+> > thanks,
+> > 
+> > - Joel
+> > 
+> > 
+> >> ---
+> >>  include/linux/rculist_nulls.h | 4 ++--
+> >>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >> diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+> >> index ba4c00dd8005..89186c499dd4 100644
+> >> --- a/include/linux/rculist_nulls.h
+> >> +++ b/include/linux/rculist_nulls.h
+> >> @@ -101,7 +101,7 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
+> >>  {
+> >>   struct hlist_nulls_node *first = h->first;
+> >>  - n->next = first;
+> >> + WRITE_ONCE(n->next, first);
+> >>   WRITE_ONCE(n->pprev, &h->first);
+> >>   rcu_assign_pointer(hlist_nulls_first_rcu(h), n);
+> >>   if (!is_a_nulls(first))
+> >> @@ -137,7 +137,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
+> >>   last = i;
+> >>     if (last) {
+> >> - n->next = last->next;
+> >> + WRITE_ONCE(n->next, last->next);
+> >>   n->pprev = &last->next;
+> >>   rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
+> >>   } else {
+> > 
 > 
