@@ -2,116 +2,98 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C17DFEB64DA
-	for <rcu@archiver.kernel.org>; Tue, 18 Jul 2023 12:52:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40BCBEB64DA
+	for <rcu@archiver.kernel.org>; Tue, 18 Jul 2023 12:58:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjGRMwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Jul 2023 08:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S232361AbjGRM6t (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Jul 2023 08:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbjGRMwe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:52:34 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47421701
-        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-63770af327fso39516566d6.2
-        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
+        with ESMTP id S230288AbjGRM6t (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Jul 2023 08:58:49 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C939E77
+        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 05:58:48 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a43cbb432aso3332760b6e.3
+        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 05:58:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689684752; x=1692276752;
+        d=joelfernandes.org; s=google; t=1689685127; x=1692277127;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
-        b=K4el8zaF7GsWp0e/0K51xh7dyYz33FPapKxS1UckiNXGuFtdTwfsQzoMnWpNprO9aI
-         m9+4M+ky7KirepVAMx7e4j2URNiQxFnPT4qkv6kWl909NeuzSj7V04KDrwwXvWgMTDir
-         YezkZuAm9AsXuP/2GigubezbzwdlMquPSHkKs=
+        bh=s3kTN4YamSI+ko6dM/L7aHZSrCBexbIuSEJDZBtJUAU=;
+        b=V+gPh2q0SUEyDUZvPYeclcaF/8fPibKR2Mh4HcvaG7m+e1W9m2jy6j86KjZKJqPyli
+         Ex5mdJMaInMua4Pci1caiiBmH9NhSkantEJiqAe9/wrWVklSVmW1JyJRgMkRKd59QlVM
+         Emtpvet9H93Uwl5XzgunsWYR+Xhp9Ts6EBKlw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689684752; x=1692276752;
+        d=1e100.net; s=20221208; t=1689685127; x=1692277127;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
-        b=FAHZVINmgFmOKp1aV0xuUmxosm70uynd9D92R8Mhtr20iuNG3sxotD6u5f3nBvRdu0
-         eABSEoTvlXh9YW9Ouv1+tFn1mBASFTGjIhFViJKbFlwpp8LMjLl5Pwy/EIQG+XI9zJ/8
-         XtC77zXIRFxVuTdsXMwmwjcTClvYbXhJjCfAKkzrIzVGZWxXJYR1pivJAUftM6WQscDj
-         GkZP8X5JXPz04m5gKLjRJzzgfmDbq+JyX1roBWLD//bTFrJr8wgo+CAxaOKmKcvuOKA3
-         RtcNg+0WJ+YpMuMGt1hz4loSQFt2QCWoXuPR4kEhJeYHzO7YtuRPXkYsA82Nmd1hwH2T
-         L0fA==
-X-Gm-Message-State: ABy/qLag2yAM9dZz0oI66Yd7EtlzjAh/JJqR6vgyloO+POomhdwbZeDM
-        Hs8iuiZmibuoUbO4diCeSBYFig==
-X-Google-Smtp-Source: APBJJlEkZiRXxB4ZPx8mBFrErvCSAqCeax0elCpY/p8JEmV9/fR3JLF1NdI7PqcOR3w9eHK329oLAQ==
-X-Received: by 2002:a0c:e0cb:0:b0:635:dcef:b5b7 with SMTP id x11-20020a0ce0cb000000b00635dcefb5b7mr15007890qvk.56.1689684751947;
-        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
+        bh=s3kTN4YamSI+ko6dM/L7aHZSrCBexbIuSEJDZBtJUAU=;
+        b=IkWJkNm5XwF3ik9sBx09zffuyFeeM82oSJx6pGusumjZLIQJFJrfaWENEec3OWD4Ij
+         /FPzGgVry8Ec24cfxTupXyvvNB6gO5poqMOO0eqc0BCinEOHd5ysS9OUl3ASE9dFMF0d
+         LPRSpaCH6j/Y8vwZsj/cAY23FvxQFmK8b8sDYCGBkWinPhruTKcwpVt5+ww7Mb0MR4NR
+         l+a/epiGLitP4umay3QypWypj5eYjFW0b9umNxFYYkYegAqfFouFp0a0Z+wtHZ0bFTWH
+         7yftnTDs+UjEpMwZUO+Gy3AvghoR1gTHH03c4TWP9FCK6B9B84wQt2QG2IDjy9jGKjDk
+         0BQw==
+X-Gm-Message-State: ABy/qLa6VACBKc8uCw0anxl+Ykuoz0UrNZ7Lp3Kx57w1n60ZncD4anUq
+        XkHdGOukU3M6dKH3thGGQpGMsg==
+X-Google-Smtp-Source: APBJJlEeGKkl9XfQikXV6rHJcKhcxgaZv0WTquFZ9YpiKbVJxip385yT/48/pCqV0JXTJun8tsNziw==
+X-Received: by 2002:aca:bd03:0:b0:3a4:1539:afff with SMTP id n3-20020acabd03000000b003a41539afffmr12850777oif.25.1689685127233;
+        Tue, 18 Jul 2023 05:58:47 -0700 (PDT)
 Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id y6-20020a37e306000000b00767cfac77c3sm543674qki.134.2023.07.18.05.52.30
+        by smtp.gmail.com with ESMTPSA id t8-20020a0cde08000000b00635efe2f65csm709096qvk.30.2023.07.18.05.58.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
-Message-ID: <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
-Date:   Tue, 18 Jul 2023 08:52:30 -0400
+        Tue, 18 Jul 2023 05:58:46 -0700 (PDT)
+Message-ID: <e34dd41a-b48c-578d-e45b-8c3b4a5df93a@joelfernandes.org>
+Date:   Tue, 18 Jul 2023 08:58:45 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
+Subject: Re: [PATCH rcu 4/6] rcu: Mark __rcu_irq_enter_check_tick()
+ ->rcu_urgent_qs load
 Content-Language: en-US
 To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Masami Hiramatsu <mhiramat@kernel.org>
+        rostedt@goodmis.org
 References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
- <20230717180317.1097590-2-paulmck@kernel.org>
+ <20230717180317.1097590-4-paulmck@kernel.org>
 From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20230717180317.1097590-2-paulmck@kernel.org>
+In-Reply-To: <20230717180317.1097590-4-paulmck@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
-
 On 7/17/23 14:03, Paul E. McKenney wrote:
-> Make it clear that this function always returns either true or false
-> without other planned failure modes.
+> The rcu_request_urgent_qs_task() function does a cross-CPU store
+> to ->rcu_urgent_qs, so this commit therefore marks the load in
+> __rcu_irq_enter_check_tick() with READ_ONCE().
 > 
-> Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->   kernel/rcu/tree.c | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
+>   kernel/rcu/tree.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 1449cb69a0e0..fae9b4e29c93 100644
+> index fae9b4e29c93..aec07f2ec638 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
->   /**
->    * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+> @@ -632,7 +632,7 @@ void __rcu_irq_enter_check_tick(void)
+>   	// prevents self-deadlock.  So we can safely recheck under the lock.
+>   	// Note that the nohz_full state currently cannot change.
+>   	raw_spin_lock_rcu_node(rdp->mynode);
+> -	if (rdp->rcu_urgent_qs && !rdp->rcu_forced_tick) {
+> +	if (READ_ONCE(rdp->rcu_urgent_qs) && !rdp->rcu_forced_tick) {
+>   		// A nohz_full CPU is in the kernel and RCU needs a
+>   		// quiescent state.  Turn on the tick!
+>   		WRITE_ONCE(rdp->rcu_forced_tick, 
 
-Would it be better to modify the 'not idle' to 'not idle from an RCU viewpoint'? 
-This matches the comments in ct_nmi_enter() as well.
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
->    *
-> - * Return true if RCU is watching the running CPU, which means that this
-> - * CPU can safely enter RCU read-side critical sections.  In other words,
-> - * if the current CPU is not in its idle loop or is in an interrupt or
-> - * NMI handler, return true.
-> + * Return @true if RCU is watching the running CPU and @false otherwise.
-> + * An @true return means that this CPU can safely enter RCU read-side
-> + * critical sections.
-> + *
-> + * More specifically, if the current CPU is not deep within its idle
-> + * loop, return @true.  Note that rcu_is_watching() will return @true if
-> + * invoked from an interrupt or NMI handler, even if that interrupt or
-> + * NMI interrupted the CPU while it was deep within its idle loop.
-
-But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task 
-running could be idle from RCU's viewpoint? Could that be clarified more?
 
 thanks,
 
-  - Joel
-
-
->    *
->    * Make notrace because it can be called by the internal functions of
->    * ftrace, and making this notrace removes unnecessary recursion calls.
-
+- Joel
