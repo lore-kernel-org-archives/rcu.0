@@ -2,107 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DCEEEB64DC
-	for <rcu@archiver.kernel.org>; Tue, 18 Jul 2023 02:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C17DFEB64DA
+	for <rcu@archiver.kernel.org>; Tue, 18 Jul 2023 12:52:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjGRC4W (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 17 Jul 2023 22:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
+        id S231402AbjGRMwf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Jul 2023 08:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjGRC4W (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 17 Jul 2023 22:56:22 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A3C19A;
-        Mon, 17 Jul 2023 19:56:20 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fb7589b187so8325858e87.1;
-        Mon, 17 Jul 2023 19:56:20 -0700 (PDT)
+        with ESMTP id S231263AbjGRMwe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Jul 2023 08:52:34 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47421701
+        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-63770af327fso39516566d6.2
+        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689648978; x=1692240978;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b3rk58Psl7S27OHhby9JRH6L//IDEFzEiQ47i4U3yc4=;
-        b=ncVOk5kYgL7+rcKlGpeTa1hll32+iLmlGddfvgYDOWLuC8JOE98muS4SCAsa37oVhx
-         J9jU/aRpA37YOZR4ve+K1v7t9Kkno8TtArEwvypwK7jhJcj1FoE+qXabLRhO3obxmkg2
-         +sWspyEBMQ/x3UGx/xQ8Yhb2LKo3/Ot8gNV8RGlUTswZZ9Z6i5W/EecorPVpq5Z+kDzO
-         v00dx2HFFe6i4XnLPnQLJ3XxATCYaO4Z0hazhYDRlUFK5u9VegV8+vSNYwd821CO82Ym
-         nMx9cVKJoeBTkZ716+pRwfquQpt7xUY3rl0suH0HeDdit1OvsjEF/sffForcFt9san3p
-         Jqyg==
+        d=joelfernandes.org; s=google; t=1689684752; x=1692276752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
+        b=K4el8zaF7GsWp0e/0K51xh7dyYz33FPapKxS1UckiNXGuFtdTwfsQzoMnWpNprO9aI
+         m9+4M+ky7KirepVAMx7e4j2URNiQxFnPT4qkv6kWl909NeuzSj7V04KDrwwXvWgMTDir
+         YezkZuAm9AsXuP/2GigubezbzwdlMquPSHkKs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689648978; x=1692240978;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b3rk58Psl7S27OHhby9JRH6L//IDEFzEiQ47i4U3yc4=;
-        b=Uz3aWjYmY4D6nL1DuMH7n9GQwuOUZMe9TWtfZZl5nzvQWJICE0k0z0Tc4zdoirGhJx
-         M5/T8GHiQGsakTb6j/PF77zS8FTsd9gJUPYJ7QS5Mty/dZUQcQ8AP9OxwAlYdM/mE23V
-         +a4LQ15nKK42pSwwTwiTo3JaEifgYdazdCXDq4Xj3/Er1y5wKETTflhbdA7cNfvZjnLr
-         Y7gb7MvgXcnnpq3XSbqWktQgddU+P06Zuw1zsDE+7gpHoWwoO2MnT8gCG4BaXW5PL6JF
-         2UamT8yr9eGBAUIr10gBkv5WcSf+JAEU09MiF6jXfcR+7SRREbgiKC9IGXpFBwKoODcr
-         GK+g==
-X-Gm-Message-State: ABy/qLZ/AsmLIfGE0E6XKpJ3+EBm5CDNR7Mj3KBScbhGRLi9blBoQm7x
-        fpsbZn4Q3ZzxyG8LZMnS9gHmnQKRvUN+U9shpxn+JHfI7Wz8Jw==
-X-Google-Smtp-Source: APBJJlGgkMFAlkppJ+m7HuWzIJzEOQp9Zs3QTAsYqBgR62KQzgDr1tAOBnpNs608/lC/1KSmywjeialRqKx4EViQblA=
-X-Received: by 2002:a05:6512:234a:b0:4f8:7617:6445 with SMTP id
- p10-20020a056512234a00b004f876176445mr9643132lfu.48.1689648978222; Mon, 17
- Jul 2023 19:56:18 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689684752; x=1692276752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
+        b=FAHZVINmgFmOKp1aV0xuUmxosm70uynd9D92R8Mhtr20iuNG3sxotD6u5f3nBvRdu0
+         eABSEoTvlXh9YW9Ouv1+tFn1mBASFTGjIhFViJKbFlwpp8LMjLl5Pwy/EIQG+XI9zJ/8
+         XtC77zXIRFxVuTdsXMwmwjcTClvYbXhJjCfAKkzrIzVGZWxXJYR1pivJAUftM6WQscDj
+         GkZP8X5JXPz04m5gKLjRJzzgfmDbq+JyX1roBWLD//bTFrJr8wgo+CAxaOKmKcvuOKA3
+         RtcNg+0WJ+YpMuMGt1hz4loSQFt2QCWoXuPR4kEhJeYHzO7YtuRPXkYsA82Nmd1hwH2T
+         L0fA==
+X-Gm-Message-State: ABy/qLag2yAM9dZz0oI66Yd7EtlzjAh/JJqR6vgyloO+POomhdwbZeDM
+        Hs8iuiZmibuoUbO4diCeSBYFig==
+X-Google-Smtp-Source: APBJJlEkZiRXxB4ZPx8mBFrErvCSAqCeax0elCpY/p8JEmV9/fR3JLF1NdI7PqcOR3w9eHK329oLAQ==
+X-Received: by 2002:a0c:e0cb:0:b0:635:dcef:b5b7 with SMTP id x11-20020a0ce0cb000000b00635dcefb5b7mr15007890qvk.56.1689684751947;
+        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
+Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id y6-20020a37e306000000b00767cfac77c3sm543674qki.134.2023.07.18.05.52.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
+Message-ID: <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
+Date:   Tue, 18 Jul 2023 08:52:30 -0400
 MIME-Version: 1.0
-References: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop> <20230717182337.1098991-15-paulmck@kernel.org>
-In-Reply-To: <20230717182337.1098991-15-paulmck@kernel.org>
-From:   Feiyang Chen <chris.chenfeiyang@gmail.com>
-Date:   Tue, 18 Jul 2023 10:56:06 +0800
-Message-ID: <CACWXhK=Vc0kKpnOLRxgw-oP+QDJYt3AqD-kvcA1QkUitiW2Jng@mail.gmail.com>
-Subject: Re: [PATCH rcu 15/18] torture: Add init-program support for loongarch
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Feiyang Chen <chenfeiyang@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>, Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, Masami Hiramatsu <mhiramat@kernel.org>
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-2-paulmck@kernel.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20230717180317.1097590-2-paulmck@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 2:23=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> This commit adds the __loongarch__, __loongarch_lp64, and
-> __loongarch_double_float targets to rcutorture's mkinitrd.sh
-> script in order to allow nolibc init programs for loongarch.
->
-> Cc: Feiyang Chen <chenfeiyang@loongson.cn>
-> Cc: Huacai Chen <chenhuacai@loongson.cn>
-> Cc: Willy Tarreau <w@1wt.eu>
+Hi Paul,
+
+On 7/17/23 14:03, Paul E. McKenney wrote:
+> Make it clear that this function always returns either true or false
+> without other planned failure modes.
+> 
+> Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->  tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/t=
-esting/selftests/rcutorture/bin/mkinitrd.sh
-> index 3af3a86a0091..e7e23615dbe3 100755
-> --- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-> +++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-> @@ -63,7 +63,8 @@ ___EOF___
->  # build using nolibc on supported archs (smaller executable) and fall
->  # back to regular glibc on other ones.
->  if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
-> -           "||__ARM_EABI__||__aarch64__||__s390x__\nyes\n#endif" \
-> +           "||__ARM_EABI__||__aarch64__||__s390x__"\
-> +          "||__loongarch__||__loongarch_lp64||__loongarch_double_float\n=
-yes\n#endif" \
+>   kernel/rcu/tree.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 1449cb69a0e0..fae9b4e29c93 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+>   /**
+>    * rcu_is_watching - see if RCU thinks that the current CPU is not idle
 
-Hi, Paul,
+Would it be better to modify the 'not idle' to 'not idle from an RCU viewpoint'? 
+This matches the comments in ct_nmi_enter() as well.
 
-Thank you for the patch, but I believe adding only the __loongarch__
-should be sufficient.
+>    *
+> - * Return true if RCU is watching the running CPU, which means that this
+> - * CPU can safely enter RCU read-side critical sections.  In other words,
+> - * if the current CPU is not in its idle loop or is in an interrupt or
+> - * NMI handler, return true.
+> + * Return @true if RCU is watching the running CPU and @false otherwise.
+> + * An @true return means that this CPU can safely enter RCU read-side
+> + * critical sections.
+> + *
+> + * More specifically, if the current CPU is not deep within its idle
+> + * loop, return @true.  Note that rcu_is_watching() will return @true if
+> + * invoked from an interrupt or NMI handler, even if that interrupt or
+> + * NMI interrupted the CPU while it was deep within its idle loop.
 
-Thanks,
-Feiyang
+But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task 
+running could be idle from RCU's viewpoint? Could that be clarified more?
 
->     | ${CROSS_COMPILE}gcc -E -nostdlib -xc - \
->     | grep -q '^yes'; then
->         # architecture supported by nolibc
-> --
-> 2.40.1
+thanks,
+
+  - Joel
+
+
+>    *
+>    * Make notrace because it can be called by the internal functions of
+>    * ftrace, and making this notrace removes unnecessary recursion calls.
+
