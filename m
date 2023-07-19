@@ -2,244 +2,71 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAB0FC001B0
-	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 18:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DE34C001B0
+	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 18:44:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjGSS15 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Jul 2023 14:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
+        id S229540AbjGSSo0 convert rfc822-to-8bit (ORCPT
+        <rfc822;rcu@archiver.kernel.org>); Wed, 19 Jul 2023 14:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjGSS14 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Jul 2023 14:27:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B65E10FC;
-        Wed, 19 Jul 2023 11:27:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 940D7616FD;
-        Wed, 19 Jul 2023 18:27:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDBDEC433C8;
-        Wed, 19 Jul 2023 18:27:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689791273;
-        bh=abnVgmoykOrPBnFbts3x0YYarmtT6yCNCnDn9/9ZvQM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iMpmumbM2AgUGjTSrP0pLzS5YwuVEFC7WmOPLk2Um7JpzC8pqn6yHsIX/V2PEkMJE
-         JHl7Y/mKrivqULXRMemYhDVZNrHrAnrFH5rqYSETChScbbur6bkUf5QxocDHKTL6SD
-         vtiN5bFSOGAgPs5l951xs/qFe0q6OGweOXy5rIikXX2nsDrR508JqlZ0NShIP1ja1m
-         g+Og93DmD6YKsiW9/e6epsXV9UPFGoMEhWV2vYpCogzAV9C4bTs6meFN3LYg2YgX0s
-         zSS9bw+iIpZXK6L8o1DWi4IUqzfHjQPE8/eZmD46VI5A4xt5OiEb+EuA9CnCyZsGMd
-         WLPbEK7fdYQYA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9B04DCE092F; Wed, 19 Jul 2023 11:27:52 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 11:27:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Joe Perches <joe@perches.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Andy Whitcroft <apw@canonical.com>,
+        with ESMTP id S229451AbjGSSo0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Jul 2023 14:44:26 -0400
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC9A9D;
+        Wed, 19 Jul 2023 11:44:24 -0700 (PDT)
+Received: from omf15.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay03.hostedemail.com (Postfix) with ESMTP id 32245A037B;
+        Wed, 19 Jul 2023 18:44:22 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 4C90117;
+        Wed, 19 Jul 2023 18:44:18 +0000 (UTC)
+Message-ID: <67766eb5a995634e001b842fe988a423cf3d0eab.camel@perches.com>
+Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
+ RCU Tasks Trace
+From:   Joe Perches <joe@perches.com>
+To:     paulmck@kernel.org, Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Andy Whitcroft <apw@canonical.com>,
         Dwaipayan Ray <dwaipayanray1@gmail.com>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
- RCU Tasks Trace
-Message-ID: <351d0261-210a-44a3-ade6-59289f407db2@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Date:   Wed, 19 Jul 2023 11:44:17 -0700
+In-Reply-To: <351d0261-210a-44a3-ade6-59289f407db2@paulmck-laptop>
 References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
- <20230717180454.1097714-5-paulmck@kernel.org>
- <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
- <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
- <a0f6e131-a649-1731-b096-46313a0460a9@joelfernandes.org>
+         <20230717180454.1097714-5-paulmck@kernel.org>
+         <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
+         <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
+         <a0f6e131-a649-1731-b096-46313a0460a9@joelfernandes.org>
+         <351d0261-210a-44a3-ade6-59289f407db2@paulmck-laptop>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a0f6e131-a649-1731-b096-46313a0460a9@joelfernandes.org>
+X-Rspamd-Queue-Id: 4C90117
+X-Rspamd-Server: rspamout06
+X-Stat-Signature: ftxe36kuiqofqtn78eri53x5qiwaae5c
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX197GdII1dUBVk1hNyCI5ovl0ED8+iGgAYk=
+X-HE-Tag: 1689792258-611757
+X-HE-Meta: U2FsdGVkX1+/1d61TKZjaJ5v+F++hdzvR7Ws20jch90gHlih17kSgk/71ZQXWxwtY5tIZnhiNM9PcSr8bYM+isOKT7EjvDUdjnEF7OG6qPkVKBzOKIh7AR+r72pRazYmG4NH6VJCsR1pPg3D33tjZvHhktcFELioyjbR83sSx4j91+/dgsWFSamlVYRoJg0bY9r1ujqzY/U7uJo+Nn8SO30u4J2qEp/ldJlA/vTE/ITJC1arBkRLndpSHOQNhCrIf/BtgtmyhkMkATTOLD7XPORathsgJNeu/9YR9P125IGqPcCJcDrQPGNzAVYRiFDH
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 07:51:58AM -0400, Joel Fernandes wrote:
-> 
-> 
-> On 7/17/23 19:34, Paul E. McKenney wrote:
-> > On Mon, Jul 17, 2023 at 03:34:14PM -0700, Joe Perches wrote:
-> > > On Mon, 2023-07-17 at 11:04 -0700, Paul E. McKenney wrote:
-> > > > RCU Tasks Trace is quite specialized, having been created specifically
-> > > > for sleepable BPF programs.  Because it allows general blocking within
-> > > > readers, any new use of RCU Tasks Trace must take current use cases into
-> > > > account.  Therefore, update checkpatch.pl to complain about use of any of
-> > > > the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
+On Wed, 2023-07-19 at 11:27 -0700, Paul E. McKenney wrote:
+[]
 > > > > 
-> > > > Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
-> > > > Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
-> > > > Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
-> > > > Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > > Cc: <bpf@vger.kernel.org>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >   scripts/checkpatch.pl | 18 ++++++++++++++++++
-> > > >   1 file changed, 18 insertions(+)
-> > > > 
-> > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > []
-> > > > @@ -7457,6 +7457,24 @@ sub process {
-> > > >   			}
-> > > >   		}
-> > > > +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > > > +		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
-> > > > +		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
-> > > > +		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
-> > > > +		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
-> > > > +		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
-> > > > +		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
-> > > > +		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
-> > > > +			if ($realfile !~ m@^kernel/bpf@ &&
-> > > > +			    $realfile !~ m@^include/linux/bpf@ &&
-> > > > +			    $realfile !~ m@^net/bpf@ &&
-> > > > +			    $realfile !~ m@^kernel/rcu@ &&
-> > > > +			    $realfile !~ m@^include/linux/rcu@) {
-> > > 
-> > > Functions and paths like these tend to be accreted.
-> > > 
-> > > Please use a variable or 2 like:
-> > > 
-> > > our $rcu_trace_funcs = qr{(?x:
-> > > 	rcu_read_lock_trace |
-> > > 	rcu_read_lock_trace_held |
-> > > 	rcu_read_unlock_trace |
-> > > 	call_rcu_tasks_trace |
-> > > 	synchronize_rcu_tasks_trace |
-> > > 	rcu_barrier_tasks_trace |
-> > > 	rcu_request_urgent_qs_task
-> > > )};
-> > > our $rcu_trace_paths = qr{(?x:
-> > > 	kernel/bfp/ |
-> > > 	include/linux/bpf |
-> > > 	net/bpf/ |
-> > > 	kernel/rcu/ |
-> > > 	include/linux/rcu
-> > > )};
-> > 
-> > Like this?
-> > 
-> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > 		our $rcu_trace_funcs = qr{(?x:
-> > 			rcu_read_lock_trace |
-> > 			rcu_read_lock_trace_held |
-> > 			rcu_read_unlock_trace |
-> > 			call_rcu_tasks_trace |
-> > 			synchronize_rcu_tasks_trace |
-> > 			rcu_barrier_tasks_trace |
-> > 			rcu_request_urgent_qs_task
-> > 		)};
-> > 		our $rcu_trace_paths = qr{(?x:
-> > 			kernel/bfp/ |
-> > 			include/linux/bpf |
-> > 			net/bpf/ |
-> > 			kernel/rcu/ |
-> > 			include/linux/rcu
-> > 		)};
-> > 		if ($line =~ /$rcu_trace_funcs/) {
-> > 			if ($realfile !~ m@^$rcu_trace_paths@) {
-> > 				WARN("RCU_TASKS_TRACE",
-> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> > 			}
-> > 		}
-> > 
-> > No, that is definitely wrong.  It has lost track of the list of pathnames,
-> > thus complaining about uses of those functions in files where their use
-> > is permitted.
-> > 
-> > But this seems to work:
-> > 
-> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > 		our $rcu_trace_funcs = qr{(?x:
-> > 			rcu_read_lock_trace |
-> > 			rcu_read_lock_trace_held |
-> > 			rcu_read_unlock_trace |
-> > 			call_rcu_tasks_trace |
-> > 			synchronize_rcu_tasks_trace |
-> > 			rcu_barrier_tasks_trace |
-> > 			rcu_request_urgent_qs_task
-> > 		)};
-> > 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> > 			if ($realfile !~ m@^kernel/bpf@ &&
-> > 			    $realfile !~ m@^include/linux/bpf@ &&
-> > 			    $realfile !~ m@^net/bpf@ &&
-> > 			    $realfile !~ m@^kernel/rcu@ &&
-> > 			    $realfile !~ m@^include/linux/rcu@) {
-> > 				WARN("RCU_TASKS_TRACE",
-> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> > 			}
-> > 		}
-> > 
-> > Maybe the "^" needs to be distributed into $rcu_trace_paths?
-> > 
-> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > 		our $rcu_trace_funcs = qr{(?x:
-> > 			rcu_read_lock_trace |
-> > 			rcu_read_lock_trace_held |
-> > 			rcu_read_unlock_trace |
-> > 			call_rcu_tasks_trace |
-> > 			synchronize_rcu_tasks_trace |
-> > 			rcu_barrier_tasks_trace |
-> > 			rcu_request_urgent_qs_task
-> > 		)};
-> > 		our $rcu_trace_paths = qr{(?x:
-> > 			^kernel/bfp/ |
-> > 			^include/linux/bpf |
-> > 			^net/bpf/ |
-> > 			^kernel/rcu/ |
-> > 			^include/linux/rcu
-> > 		)};
-> > 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> > 			if ($realfile !~ m@$rcu_trace_paths@) {
-> > 				WARN("RCU_TASKS_TRACE",
-> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> > 			}
-> > 		}
-> > 
-> > But no joy here, either.  Which is no surprise, given that perl is
-> > happy to distribute the "\b" and the "\s*\(" across the elements of
-> > $rcu_trace_funcs.  I tried a number of other variations, including
-> > inverting the "if" condition "(!(... =~ ...))", inverting the "if"
-> > condition via an empty "then" clause, replacing the "m@" with "/",
-> > replacing the "|" in the "qr{}" with "&", and a few others.
-> > 
-> > Again, listing the pathnames explicitly in the second "if" condition
-> > works just fine.
-> > 
+> Given perl's tendency to have corner cases in its corner cases, I
+> am guessing that the "^" character combined with the "/" character is
+> causing trouble here.  Especially given that I don't see any use of such
+> a pattern anywhere in checkpatch.pl except directly in a "~" expression,
+> and there are a lot of those.
 > 
-> Not a perl expert but I wonder if the following are any options at all:
-> 
-> 1. Instead of having a complex list of strings in a regex variable, it might
-> be easier to hold the strings as a perl array, and then iterate over that
-> array checking each element of the array on every iteration, against the
-> line.
-> 
-> 2. Roll the "\b" and/or "^" in into the regex variable itself than trying
-> make them play with the variable later.
-> 
-> 3. Use parentheses around the variable? Not sure if that will work but I
-> wonder if it has something to do with operator precedence.
-> 
-> 4. Instead of a list of paths, maybe it is better to look for "rcu" or "bpf"
-> in the regex itself? That way new paths don't require script updates (at the
-> expense though of false-positives (highly unlikely, IMHO)).
+> So I will keep it as is unless I hear otherwise from Joe Perches.
 
-Given perl's tendency to have corner cases in its corner cases, I
-am guessing that the "^" character combined with the "/" character is
-causing trouble here.  Especially given that I don't see any use of such
-a pattern anywhere in checkpatch.pl except directly in a "~" expression,
-and there are a lot of those.
+I played with it a bit and can't think of anything better.
 
-So I will keep it as is unless I hear otherwise from Joe Perches.
-
-							Thanx, Paul
+Code is always something that can be improved later so the
+way Paul has it now is fine with me.
