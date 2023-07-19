@@ -2,145 +2,96 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57888C001B0
-	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 17:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA08AC0015E
+	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 18:20:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbjGSR2o (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Jul 2023 13:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
+        id S229451AbjGSSUn (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Jul 2023 14:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjGSR2o (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:28:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E6D1FC0;
-        Wed, 19 Jul 2023 10:28:42 -0700 (PDT)
+        with ESMTP id S229531AbjGSSUm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Jul 2023 14:20:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEDDB6;
+        Wed, 19 Jul 2023 11:20:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 12E9A6171C;
-        Wed, 19 Jul 2023 17:28:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59B69C433C7;
-        Wed, 19 Jul 2023 17:28:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 533BC617DF;
+        Wed, 19 Jul 2023 18:20:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9575C433C7;
+        Wed, 19 Jul 2023 18:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689787721;
-        bh=+f83S3DiDQvXqaslI+dGivhTHhFNTXzJXPcfGpsGB+s=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=oHF054RRduCATEwO50jXhXqm/hi9n981z+SPN2/BbS/O/U4C4RMsucoiFoGqQoxYP
-         UVgDHodTshLL176N81xt8a/WTQOSOLRyO9946+nUwzKygxbmZxs54C47hVsCTwL1Fg
-         B2kgHvU9EtDbzaWnJG1lNCMyWNIi8uQJ7rn/tsGJ4Lo/kSPbaf67uhrdXUxzz9qVLA
-         vUYhSCMqkP/WxAsD7QlMBPE90ie8tGrj2oFznLAZptML06bTIPbBqrzTiNelGId5LQ
-         Ezcs84ORv3d2FrrdTJlqL0nyap/+5PzQw+YdLH8VI8w8B9wIO7SxX3XYMwy/6sR9+N
-         S9KYpkAfO07ug==
+        s=k20201202; t=1689790836;
+        bh=STDrO2XG5LQFsEtCL+3146/AIGbyOQu+kSYgcPpwbqE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YP6THxhJrcWyOm88VDT+pQ6UdtyGZyURfg960GO72IfdKvfr863gwxG9KH7h0szw4
+         h8lc46JXX5FbCID14+MPczGiX98APiA+CQ4Pz/mrbHOXCaXhNhB47Nji6/g5rYMK7q
+         mq/5fcYT4xrd+weSmhIdLFBmi2QBzHn+QDWtTMiLJQbgggj6x13kbbmqQyX84ZwjcY
+         SZBCL9++rFHIckEUJZ1dqUACZ2rq3d2jS26/5Yz/FS/SungAO8Zy71OK0YqKCxRiZv
+         JgaunElg6A2QjjfpkgkEDH9yzGHjC8lQOVayGiOHwUYWG6Yeh50A1oguN0Kmr7u8SM
+         Jn5ivIXl/wXgA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E23AFCE092F; Wed, 19 Jul 2023 10:28:40 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 10:28:40 -0700
+        id 56910CE092F; Wed, 19 Jul 2023 11:20:36 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 11:20:36 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     rostedt@goodmis.org, akaher@vmware.com, shuah@kernel.org,
-        rcu@vger.kernel.org
-Subject: [BUG] unable to handle page fault for address
-Message-ID: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Alan Huang <mmpgouride@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
+ for rculist_nulls
+Message-ID: <50bc6e0d-7d9b-4634-999a-2ee8f503e86a@paulmck-laptop>
 Reply-To: paulmck@kernel.org
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-6-paulmck@kernel.org>
+ <9651c3b4-0791-5cd7-567f-f65d28bc8fae@joelfernandes.org>
+ <BE64BF3F-69AD-4522-965E-0B7E4054D737@gmail.com>
+ <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
+ <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello!
+On Tue, Jul 18, 2023 at 09:48:59PM -0400, Joel Fernandes wrote:
+> 
+> 
+> On 7/18/23 14:32, Paul E. McKenney wrote:
+> > On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
+> > > 
+> > > > 2023å¹´7æœˆ18æ—¥ 21:49ï¼ŒJoel Fernandes <joel@joelfernandes.org> å†™é“ï¼š
+> > > > 
+> > > > On 7/17/23 14:03, Paul E. McKenney wrote:
+> > > > > From: Alan Huang <mmpgouride@gmail.com>
+> > > > > When the objects managed by rculist_nulls are allocated with
+> > > > > SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an object
+> > > > > even though it is just now being added, which means the modification of
+> > > > > ->next is visible to readers.  This patch therefore uses WRITE_ONCE()
+> > > > > for assignments to ->next.
+> > > > > Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > 
+> > > > Did we ever conclude that the READ_ONCE() counterparts were not needed? ;-)
+> > > 
+> > > Read-side is already protected by rcu_dereference_raw() in hlist_nulls_for_each_entry_{rcu, safe}.
+> > 
+> > It turns out that different traversal synchronization designs want
+> > different pointers using WRITE_ONCE().
+> 
+> Thank you Alan and Paul,
+> 
+> Btw, I don't see any users of hlist_nulls_unhashed_lockless(), maybe it can
+> be removed?
 
-Just FYI for the moment, I hit a BUG in 10-hour overnight qemu/KVM-based
-rcutorture testing of the TASKS01, TASKS03, TREE03, and TREE07 rcutorture
-on the mainline commit:
+Either that or the people who removed uses injected bugs...
 
-ccff6d117d8d ("Merge tag 'perf-tools-fixes-for-v6.5-1-2023-07-18' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools")
+But if this one really does go away, do we need ->pprev to be
+protected by _ONCE()?
 
-This commit was merged with the -rcu "dev" branch, which just yesterday
-passes overnight tests when based on v6.5-rc1.  A web search got me the
-following, which is not a very close match, but the best that there is:
-
-https://www.spinics.net/lists/bpf/msg91848.html
-
-Here is a representative splat out of 29 of them:
-
-[22544.494701] BUG: unable to handle page fault for address: fffffe0000af0038
-[22544.496012] #PF: supervisor read access in user mode
-[22544.496985] #PF: error_code(0x0000) - not-present page
-[22544.497970] IDT: 0xfffffe0000000000 (limit=0xfff) GDT: 0xfffffe355b3fd000 (limit=0x7f)
-[22544.499479] LDTR: NULL
-[22544.499959] TR: 0x40 -- base=0xfffffe355b3ff000 limit=0x4087
-[22544.501073] PGD 1ffd2067 P4D 1ffd2067 PUD 1124067 PMD 0
-[22544.502149] Oops: 0000 [#1] PREEMPT SMP PTI
-[22544.502967] CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc2-00128-g68052f2f9e35 #5844
-[22544.504435] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[22544.506581] RIP: 0033:0x400181
-[22544.507256] Code: 00 45 31 d2 4c 8d 44 24 f0 48 c7 44 24 f8 00 00 00 00 0f 05 b8 60 00 00 00 48 8d 7c 24 e0 0f 05 41 89 c0 85 c0 75 c6 44 89 c0 <89> c2 0f af d0 ff c0 48 63 d2 48 89 15 06 01 20 00 3d a0 86 01 00
-[22544.510954] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-[22544.511963] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
-[22544.513386] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
-[22544.514751] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-[22544.516079] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-[22544.517452] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[22544.518818] FS:  0000000000000000 GS:  0000000000000000
-[22544.519864] Modules linked in:
-[22544.520653] CR2: fffffe0000af0038
-[22544.521401] ---[ end trace 0000000000000000 ]---
-[22544.522297] RIP: 0033:0x400181
-[22544.522887] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-[22544.523887] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
-[22544.525257] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
-[22544.526623] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-[22544.528016] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-[22544.529439] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[22544.530909] FS:  0000000000000000(0000) GS:ffff8d101f400000(0000) knlGS:0000000000000000
-[22544.532564] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
-[22544.533760] CR2: fffffe0000af0038 CR3: 0000000002d8e000 CR4: 00000000000006f0
-[22544.535286] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[22544.536738] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[22544.538228] note: init[1] exited with irqs disabled
-[22544.540087] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-[22544.544806] Kernel Offset: 0x9600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-
-The failure rates for each scenario are as follows:
-
-TASKS01: 13 of 15
-TASKS03: 7 of 15
-TREE03: 4 of 15
-TREE07: 5 of 15
-
-In other words, for TASKS01, there were 15 10-hour runs, and 13 of them
-hit this bug.
-
-Except that these failures were corellated:
-
-o	TASKS01 and TASKS03 failures are in batch 17 running on
-	kerneltest053.05.atn6.
-
-o	TREE03 and one of the TREE07 failures are in batch 4 running
-	on kerneltest025.05.atn6.
-
-o	Five of the TREE07 failures are in batch 6 running on
-	kerneltest010.05.atn6.
-
-All of the failures in a given batch happened at about the same time,
-suggesting a reaction to some stimulus from the host system.  There
-was no console output from any of these host systems during the test,
-other than the usual complaint about qemu having an executable stack.
-
-Now, perhaps this is hardware or configuration failure on those three
-systems.  But I have been using them for quite some time, and so why
-would three fail at the same time?
-
-Bisection will not be easy given that there were only three actual
-failures in ten hours over 20 batches.  If this is in fact a random
-kernel failure, there would be almost a 4% chance of a false positive
-on each bisection step, which gives about a 50% chance of bisecting to
-the wrong place if the usual 16 steps are required.
-
-I will give this another try this evening, Pacific Time.  In the
-meantime, FYI.
-
-						Thanx, Paul
+							Thanx, Paul
