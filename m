@@ -2,66 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20AA3C0015E
-	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 19:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C37B1C0015E
+	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 20:03:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjGSTSS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Jul 2023 15:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        id S231337AbjGSUDH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Jul 2023 16:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGSTSR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:18:17 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A191BF7;
-        Wed, 19 Jul 2023 12:18:16 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b8baa836a5so57166615ad.1;
-        Wed, 19 Jul 2023 12:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689794296; x=1692386296;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uAwDIYHwLc+Xj27zzKl9lhwsFCjNoPTFqoz1deZ/UnU=;
-        b=W4C/qtU+KQcteUJ8wTKkr1eaI7Vi0ybjTHHReI44+81f8jtkvyUcuO9Z1nU6lh37U1
-         krRxDiPE9dQDcCkNXBEdCvPYbdb8csURt9qUki0mIDE/tztNBg+WUC000Vrd7T+KN38j
-         YMNe6uxCCEGHWcIkyra0JxJ/RegzuuC9C8sJDHj/6gBVmVm9uCrGQxjwLOjM33NFP45u
-         +gYg84znqJ8WUQngQm4CpjIMr37AJHI1hanjA4FpDXb+HHecK74u6Mp0QC+zIOC8tl32
-         hnavcoFCiqgf+cFn/vRIda4p32/OAspaVPzUqA0MpFtIHfp5VX8mHX8TfDD3sBaTGz6l
-         m99w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689794296; x=1692386296;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uAwDIYHwLc+Xj27zzKl9lhwsFCjNoPTFqoz1deZ/UnU=;
-        b=DJUaMXDeYplG6HJ0DiBTjXdJ6iRVPL086msgmjVhWTmZ+ElnDxfU/bkeUMqpqJI494
-         rFCEb+xz4W8v2XrYvZ4Z7ND/wO66ZhKoomSsd7Xbvk8sJ5CT3DsXb8PhHUjbQ9J//HQy
-         NHkkkZBDp8L/N3BMwFDjuVcbGPbGM+Yi8TQjWew5wpCi2+MWJeiro/fwkWsV+pVHxvQi
-         iRGKFaEh3kqng4XDt/e3jPYexAJtcZkUkcrDc3Dn0fZ1yfZtpIJmIdj08UyvWaCs/Udg
-         8ZrkOW394k1+ryw7DluF5yeXmbVVUdoQ5HDfXtK/lah+ooKFQ/Dl3PjIXCaUGaj78i72
-         5R9Q==
-X-Gm-Message-State: ABy/qLbAvs+SQZwkzWXvtJPCQHH8roPKyPuQrSzVSsOlFNscy8TL/LL2
-        pAESD8xtWuG5CSkNbXheZ0I=
-X-Google-Smtp-Source: APBJJlHgbivOunptU2yauUXiHDEEH7aus0WsX3ZWh+X/g44yaDdtTx8tsjSOnJ1huDk3uL92H/eFUQ==
-X-Received: by 2002:a17:902:7293:b0:1b8:73a4:706a with SMTP id d19-20020a170902729300b001b873a4706amr16637327pll.69.1689794296018;
-        Wed, 19 Jul 2023 12:18:16 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id h2-20020a170902f7c200b001b9daaffd26sm4314303plw.304.2023.07.19.12.18.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Jul 2023 12:18:15 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
- for rculist_nulls
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <50bc6e0d-7d9b-4634-999a-2ee8f503e86a@paulmck-laptop>
-Date:   Thu, 20 Jul 2023 03:17:58 +0800
+        with ESMTP id S231445AbjGSUDD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Jul 2023 16:03:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CC1210E;
+        Wed, 19 Jul 2023 13:03:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C93EC61805;
+        Wed, 19 Jul 2023 20:02:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DBB8C433C7;
+        Wed, 19 Jul 2023 20:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689796979;
+        bh=scbk5YRYsVggHMvCaLAFxu3w656JVeYWrqypMrbUNs0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=T8zE3XeWVAqzDIHZTQOGiRbKNetAkz0LqiLaOjD0p2A/T1BBR/S9neEsx4JahhOMn
+         jSwUDMEVzRGEXDpS0A8z83xWGyYcYgcjaQwHZ7zeYgjWBfrjCJGHThw3s+tm9/0zdC
+         zO3lGVA2KuPOP+0axdHyncagf598QQV5sPca1d5t5rgCywefd64zTVMYsTGOs9IjK9
+         yNb1oA7ERkMymImQYWV9O3rGDEN6g4zbxnl9tZtpH1YToRfCd9f+mQftiCu9o6hqQy
+         nllriGnmlQ9L9CSUEi5zaW6GvAMoULjpX8TsumAcwLoScgbpXtlO891B7RSflz/SJu
+         mLETum6PfSa1Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B4F40CE0928; Wed, 19 Jul 2023 13:02:58 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 13:02:58 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Huang <mmpgouride@gmail.com>
 Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <129BFB2B-1A19-437E-B04E-16B16AA4C838@gmail.com>
+Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
+ for rculist_nulls
+Message-ID: <1c3260bc-9e22-4ea4-9790-50f9a78581ee@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
  <20230717180317.1097590-6-paulmck@kernel.org>
  <9651c3b4-0791-5cd7-567f-f65d28bc8fae@joelfernandes.org>
@@ -69,71 +51,65 @@ References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
  <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
  <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
  <50bc6e0d-7d9b-4634-999a-2ee8f503e86a@paulmck-laptop>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
+ <129BFB2B-1A19-437E-B04E-16B16AA4C838@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <129BFB2B-1A19-437E-B04E-16B16AA4C838@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Jul 20, 2023 at 03:17:58AM +0800, Alan Huang wrote:
+> 
+> > 2023年7月20日 02:20，Paul E. McKenney <paulmck@kernel.org> 写道：
+> > 
+> > On Tue, Jul 18, 2023 at 09:48:59PM -0400, Joel Fernandes wrote:
+> >> 
+> >> 
+> >> On 7/18/23 14:32, Paul E. McKenney wrote:
+> >>> On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
+> >>>> 
+> >>>>> 2023年7月18日 21:49，Joel Fernandes <joel@joelfernandes.org> 写道：
+> >>>>> 
+> >>>>> On 7/17/23 14:03, Paul E. McKenney wrote:
+> >>>>>> From: Alan Huang <mmpgouride@gmail.com>
+> >>>>>> When the objects managed by rculist_nulls are allocated with
+> >>>>>> SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an object
+> >>>>>> even though it is just now being added, which means the modification of
+> >>>>>> ->next is visible to readers.  This patch therefore uses WRITE_ONCE()
+> >>>>>> for assignments to ->next.
+> >>>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> >>>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >>>>> 
+> >>>>> Did we ever conclude that the READ_ONCE() counterparts were not needed? ;-)
+> >>>> 
+> >>>> Read-side is already protected by rcu_dereference_raw() in hlist_nulls_for_each_entry_{rcu, safe}.
+> >>> 
+> >>> It turns out that different traversal synchronization designs want
+> >>> different pointers using WRITE_ONCE().
+> >> 
+> >> Thank you Alan and Paul,
+> >> 
+> >> Btw, I don't see any users of hlist_nulls_unhashed_lockless(), maybe it can
+> >> be removed?
+> > 
+> > Either that or the people who removed uses injected bugs...
+> 
+> It has never been used.
+> 
+> That said, the data race has been there almost for four years.
+> 
+> And the network people use sk_unhashed() for both hlist_node and hlist_nulls_node.
+> So, I plan to use hlist_unhashed_lockless() in sk_unhashed(), that will be one of my future patches.
+> 
+> > 
+> > But if this one really does go away, do we need ->pprev to be
+> > protected by _ONCE()?
+> 
+> The ->pprev thing is what I’m currently working on. :)
 
-> 2023=E5=B9=B47=E6=9C=8820=E6=97=A5 02:20=EF=BC=8CPaul E. McKenney =
-<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Tue, Jul 18, 2023 at 09:48:59PM -0400, Joel Fernandes wrote:
->>=20
->>=20
->> On 7/18/23 14:32, Paul E. McKenney wrote:
->>> On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
->>>>=20
->>>>> 2023=E5=B9=B47=E6=9C=8818=E6=97=A5 21:49=EF=BC=8CJoel Fernandes =
-<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>=20
->>>>> On 7/17/23 14:03, Paul E. McKenney wrote:
->>>>>> From: Alan Huang <mmpgouride@gmail.com>
->>>>>> When the objects managed by rculist_nulls are allocated with
->>>>>> SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an =
-object
->>>>>> even though it is just now being added, which means the =
-modification of
->>>>>> ->next is visible to readers.  This patch therefore uses =
-WRITE_ONCE()
->>>>>> for assignments to ->next.
->>>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
->>>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>>>=20
->>>>> Did we ever conclude that the READ_ONCE() counterparts were not =
-needed? ;-)
->>>>=20
->>>> Read-side is already protected by rcu_dereference_raw() in =
-hlist_nulls_for_each_entry_{rcu, safe}.
->>>=20
->>> It turns out that different traversal synchronization designs want
->>> different pointers using WRITE_ONCE().
->>=20
->> Thank you Alan and Paul,
->>=20
->> Btw, I don't see any users of hlist_nulls_unhashed_lockless(), maybe =
-it can
->> be removed?
->=20
-> Either that or the people who removed uses injected bugs...
+Very good, looking forward to seeing what you come up with!
 
-It has never been used.
-
-That said, the data race has been there almost for four years.
-
-And the network people use sk_unhashed() for both hlist_node and =
-hlist_nulls_node.
-So, I plan to use hlist_unhashed_lockless() in sk_unhashed(), that will =
-be one of my future patches.
-
->=20
-> But if this one really does go away, do we need ->pprev to be
-> protected by _ONCE()?
-
-The ->pprev thing is what I=E2=80=99m currently working on. :)
-
->=20
-> Thanx, Paul
-
-
+							Thanx, Paul
