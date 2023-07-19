@@ -2,162 +2,131 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86052C0015E
-	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 20:07:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0132AC001B0
+	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 20:38:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjGSUHU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Jul 2023 16:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
+        id S229531AbjGSUie (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Jul 2023 16:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjGSUHU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:07:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E1992;
-        Wed, 19 Jul 2023 13:07:18 -0700 (PDT)
+        with ESMTP id S229694AbjGSUid (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Jul 2023 16:38:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EE71FD5;
+        Wed, 19 Jul 2023 13:38:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62D4C61806;
-        Wed, 19 Jul 2023 20:07:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7061C433C7;
-        Wed, 19 Jul 2023 20:07:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 655E761807;
+        Wed, 19 Jul 2023 20:38:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5790C433C7;
+        Wed, 19 Jul 2023 20:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689797237;
-        bh=ijTQFn+UUwawMg9/ox6FWUtSRipPCufd57gHfxuHsec=;
+        s=k20201202; t=1689799110;
+        bh=MX1OE5fjXcKD7FNhNvGIrSI3FvsSGAQiIhW5RAzciLU=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=snjQa7HHSMyYNSdd2hjgeh8PUAxBTefShmrygu2tBtTM+GC+qN6J6LWByDzmKCAs1
-         aH53N3WeiIjr/WLBjyHkVhVAbBKiOM7aGSwLyTL0tDcI0dPPyXTvf33w1hMUoBHNHO
-         pOkg9quc6DBSksRiKDBfGCnqix6DbWm0TuYeBht/avJVf8BYOzuaxsA1MamPHrakBf
-         UDFR0oohq929qEdBltXLniUAh//5DUkz+xgdLe7SNRfCPDgAp7NWEBgTHiWgOHyGaY
-         E9zjOrOe/vQ+SZ3WtkuevMbrE0sBtmoKcQ+67USDrf7dqtjWZonz/M/K4PHtag7nX9
-         OBWTUAxEuFyHA==
+        b=UqeFX6fDaD8ZBU4DrJqo6mibQqK/FIOJYQTZEX0Oo4lnUVX100DG0WoSKqd/vyJfj
+         cVzo4ouC7DEMEGXpPCLvrHLXOCLPBy8qNH2KFqv8qlHxQS9EsGauvOTC78VQVyWJjY
+         +4O1grFVx5Zk8H41nn8b+MSWNBFNJTzMV4BLyWFJKTLahsP6eAgvDY0hzNaPBUZAc4
+         Hl3Q72jryEOXhIUSehz1txWRmloP1awPmEtX6uGXgYb38i9G0AwKAXiTnI1W5k7P8F
+         pvsu1Z0DHh2NnIQ+jPkHsikyF+Pfwf4QQEa0sq63wyQAoaGyuYOgVFaXf7UKpD39R/
+         p05rmxOz8Q22Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 43F52CE0928; Wed, 19 Jul 2023 13:07:17 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 13:07:17 -0700
+        id 610E7CE0928; Wed, 19 Jul 2023 13:38:30 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 13:38:30 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        akaher@vmware.com, shuah@kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] unable to handle page fault for address
-Message-ID: <23b091fc-cc2e-4ace-b860-a0ddf662d1ae@paulmck-laptop>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
+Message-ID: <bebbfb7d-35c4-4edf-bfa2-5a6224c17966@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
- <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com>
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-2-paulmck@kernel.org>
+ <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
+ <2e404769-67af-4240-b572-bd0808503486@paulmck-laptop>
+ <998db46d-9c76-a3c5-e7c5-b7adf1770352@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com>
+In-Reply-To: <998db46d-9c76-a3c5-e7c5-b7adf1770352@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 03:03:53AM +0800, Zhouyi Zhou wrote:
-> On Thu, Jul 20, 2023 at 1:40 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > Hello!
-> >
-> > Just FYI for the moment, I hit a BUG in 10-hour overnight qemu/KVM-based
-> > rcutorture testing of the TASKS01, TASKS03, TREE03, and TREE07 rcutorture
-> > on the mainline commit:
-> >
-> > ccff6d117d8d ("Merge tag 'perf-tools-fixes-for-v6.5-1-2023-07-18' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools")
-> >
-> > This commit was merged with the -rcu "dev" branch, which just yesterday
-> > passes overnight tests when based on v6.5-rc1.  A web search got me the
-> > following, which is not a very close match, but the best that there is:
-> >
-> > https://www.spinics.net/lists/bpf/msg91848.html
-> >
-> > Here is a representative splat out of 29 of them:
-> >
-> > [22544.494701] BUG: unable to handle page fault for address: fffffe0000af0038
-> > [22544.496012] #PF: supervisor read access in user mode
-> > [22544.496985] #PF: error_code(0x0000) - not-present page
-> > [22544.497970] IDT: 0xfffffe0000000000 (limit=0xfff) GDT: 0xfffffe355b3fd000 (limit=0x7f)
-> > [22544.499479] LDTR: NULL
-> > [22544.499959] TR: 0x40 -- base=0xfffffe355b3ff000 limit=0x4087
-> > [22544.501073] PGD 1ffd2067 P4D 1ffd2067 PUD 1124067 PMD 0
-> > [22544.502149] Oops: 0000 [#1] PREEMPT SMP PTI
-> > [22544.502967] CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc2-00128-g68052f2f9e35 #5844
-> > [22544.504435] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> > [22544.506581] RIP: 0033:0x400181
-> > [22544.507256] Code: 00 45 31 d2 4c 8d 44 24 f0 48 c7 44 24 f8 00 00 00 00 0f 05 b8 60 00 00 00 48 8d 7c 24 e0 0f 05 41 89 c0 85 c0 75 c6 44 89 c0 <89> c2 0f af d0 ff c0 48 63 d2 48 89 15 06 01 20 00 3d a0 86 01 00
-> > [22544.510954] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> > [22544.511963] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
-> > [22544.513386] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
-> > [22544.514751] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > [22544.516079] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > [22544.517452] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > [22544.518818] FS:  0000000000000000 GS:  0000000000000000
-> > [22544.519864] Modules linked in:
-> > [22544.520653] CR2: fffffe0000af0038
-> > [22544.521401] ---[ end trace 0000000000000000 ]---
-> > [22544.522297] RIP: 0033:0x400181
-> > [22544.522887] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> > [22544.523887] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
-> > [22544.525257] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
-> > [22544.526623] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > [22544.528016] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > [22544.529439] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > [22544.530909] FS:  0000000000000000(0000) GS:ffff8d101f400000(0000) knlGS:0000000000000000
-> > [22544.532564] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [22544.533760] CR2: fffffe0000af0038 CR3: 0000000002d8e000 CR4: 00000000000006f0
-> > [22544.535286] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [22544.536738] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [22544.538228] note: init[1] exited with irqs disabled
-> > [22544.540087] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-> > [22544.544806] Kernel Offset: 0x9600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> >
-> > The failure rates for each scenario are as follows:
-> >
-> > TASKS01: 13 of 15
-> > TASKS03: 7 of 15
-> > TREE03: 4 of 15
-> > TREE07: 5 of 15
-> >
-> > In other words, for TASKS01, there were 15 10-hour runs, and 13 of them
-> > hit this bug.
-> >
-> > Except that these failures were corellated:
-> >
-> > o       TASKS01 and TASKS03 failures are in batch 17 running on
-> >         kerneltest053.05.atn6.
-> >
-> > o       TREE03 and one of the TREE07 failures are in batch 4 running
-> >         on kerneltest025.05.atn6.
-> >
-> > o       Five of the TREE07 failures are in batch 6 running on
-> >         kerneltest010.05.atn6.
-> >
-> > All of the failures in a given batch happened at about the same time,
-> > suggesting a reaction to some stimulus from the host system.  There
-> > was no console output from any of these host systems during the test,
-> > other than the usual complaint about qemu having an executable stack.
-> >
-> > Now, perhaps this is hardware or configuration failure on those three
-> > systems.  But I have been using them for quite some time, and so why
-> > would three fail at the same time?
-> >
-> > Bisection will not be easy given that there were only three actual
-> > failures in ten hours over 20 batches.  If this is in fact a random
-> > kernel failure, there would be almost a 4% chance of a false positive
-> > on each bisection step, which gives about a 50% chance of bisecting to
-> > the wrong place if the usual 16 steps are required.
-> Hi Paul
-> I am also very interested in tracing this bug.
-> I have invoked ./tools/testing/selftests/rcutorture/bin/torture.sh on
-> my 16 core Intel(R) Xeon(R) CPU E5-2660 server a moment ago to see
-> what happens
+On Tue, Jul 18, 2023 at 09:56:38PM -0400, Joel Fernandes wrote:
+> Hi Paul,
+> 
+> On 7/18/23 14:12, Paul E. McKenney wrote:
+> > On Tue, Jul 18, 2023 at 08:52:30AM -0400, Joel Fernandes wrote:
+> > > Hi Paul,
+> > > 
+> > > On 7/17/23 14:03, Paul E. McKenney wrote:
+> > > > Make it clear that this function always returns either true or false
+> > > > without other planned failure modes.
+> > > > 
+> > > > Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > ---
+> > > >    kernel/rcu/tree.c | 12 ++++++++----
+> > > >    1 file changed, 8 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index 1449cb69a0e0..fae9b4e29c93 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+> > > >    /**
+> > > >     * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+> > > 
+> > > Would it be better to modify the 'not idle' to 'not idle from an RCU
+> > > viewpoint'? This matches the comments in ct_nmi_enter() as well.
+> > 
+> > We have the "if RCU thinks that" earlier.
+> > 
+> > But maybe something like this?
+> > 
+> >   * rcu_is_watching - RCU read-side critical sections permitted on current CPU?
+> > 
+> 
+> Yes, that's better.
+> 
+> > > >     *
+> > > > - * Return true if RCU is watching the running CPU, which means that this
+> > > > - * CPU can safely enter RCU read-side critical sections.  In other words,
+> > > > - * if the current CPU is not in its idle loop or is in an interrupt or
+> > > > - * NMI handler, return true.
+> > > > + * Return @true if RCU is watching the running CPU and @false otherwise.
+> > > > + * An @true return means that this CPU can safely enter RCU read-side
+> > > > + * critical sections.
+> > > > + *
+> > > > + * More specifically, if the current CPU is not deep within its idle
+> > > > + * loop, return @true.  Note that rcu_is_watching() will return @true if
+> > > > + * invoked from an interrupt or NMI handler, even if that interrupt or
+> > > > + * NMI interrupted the CPU while it was deep within its idle loop.
+> > > 
+> > > But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task
+> > > running could be idle from RCU's viewpoint? Could that be clarified more?
+> > 
+> > Perhaps something like this?
+> > 
+> >   * Although calls to rcu_is_watching() from most parts of the kernel
+> >   * will return @true, there are important exceptions.  For example, if the
+> >   * current CPU is deep within its idle loop, in kernel entry/exit code,
+> >   * or offline, rcu_is_watching() will return @false.
+> > 
+> > (Where nohz_full CPUs are covered by kernel entry/exit code.)
+> 
+> To me, "kernel exit" does not immediately make the nohz_full CPU case
+> obvious. But yes, your suggestion is an improvement so we can go with that.
+> :)
+> 
+> Also because we agree on the changes, for next revision:
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Looking forward to hearing what you find!
+Very good, thank you!  The update should appear shortly.  For some
+definition of "shortly".  ;-)
 
 							Thanx, Paul
-
-> Thanx, Zhouyi
-> >
-> > I will give this another try this evening, Pacific Time.  In the
-> > meantime, FYI.
-> >
-> >                                                 Thanx, Paul
