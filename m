@@ -2,189 +2,138 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F807C0015E
-	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 19:04:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20AA3C0015E
+	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 19:18:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjGSTEH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Jul 2023 15:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S229632AbjGSTSS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Jul 2023 15:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjGSTEH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:04:07 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E6C171E;
-        Wed, 19 Jul 2023 12:04:05 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b89b75dc1cso7937325ad.1;
-        Wed, 19 Jul 2023 12:04:05 -0700 (PDT)
+        with ESMTP id S229450AbjGSTSR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Jul 2023 15:18:17 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A191BF7;
+        Wed, 19 Jul 2023 12:18:16 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b8baa836a5so57166615ad.1;
+        Wed, 19 Jul 2023 12:18:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689793445; x=1690398245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689794296; x=1692386296;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GLH+6Zz46LlJzl1i1yA09JxIas5O/oPOUZyhI4T7mFI=;
-        b=n5b0q4Xn3rg53RrIdrTmMhLjm42HpNeM5NZdvruufDwj9or//t8d4CHm2YacGw7iZU
-         Wga0aCISIPVVF5R+se/leWL3Ja8VaGzqyVaZhYnwMd6f02eB7MnwP7a9v9zHru0F2wXt
-         PbITzYEvfPXjmuTIrT2BKVso2Bzw1vprxt+sDtvA2xqoXZDJE8gFrLMtjzASDPb7uhmp
-         AmNigSmoRe0YVkvnA+bd8ShGJVApCQAVstcKXJF6yRq2YIX+ZKhg5e8U/wsdK4bh2szi
-         Ih6+LEqtaEGkJFrf/8vQvuIMhoD22/TGAKGOjYNLFzhjgcBohgrqb9VS0gbRc/CW3ScO
-         LbhQ==
+        bh=uAwDIYHwLc+Xj27zzKl9lhwsFCjNoPTFqoz1deZ/UnU=;
+        b=W4C/qtU+KQcteUJ8wTKkr1eaI7Vi0ybjTHHReI44+81f8jtkvyUcuO9Z1nU6lh37U1
+         krRxDiPE9dQDcCkNXBEdCvPYbdb8csURt9qUki0mIDE/tztNBg+WUC000Vrd7T+KN38j
+         YMNe6uxCCEGHWcIkyra0JxJ/RegzuuC9C8sJDHj/6gBVmVm9uCrGQxjwLOjM33NFP45u
+         +gYg84znqJ8WUQngQm4CpjIMr37AJHI1hanjA4FpDXb+HHecK74u6Mp0QC+zIOC8tl32
+         hnavcoFCiqgf+cFn/vRIda4p32/OAspaVPzUqA0MpFtIHfp5VX8mHX8TfDD3sBaTGz6l
+         m99w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689793445; x=1690398245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689794296; x=1692386296;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GLH+6Zz46LlJzl1i1yA09JxIas5O/oPOUZyhI4T7mFI=;
-        b=ZDJGPpiNxr5RMklhJj4MJOVKjqFW3RF9PUDtWLycFkq7jgF6FqQxQ9kEzGG+DNZTuH
-         6zs+yj88dH0ZTC50O2s+e6KzW+IX61YRpB6I+Qq7rmW9GQIewRYIo8bpQaSifCsXAz7o
-         hh1qcS3gpjbNlvkw5D9FjnN5KGBMxmpQ2duGlug0hhcWQFR/R+93k1EKXNL/OyPfd0yQ
-         ttKBy7YSkWklDVevi3kaNkKmf/d7vZB1I5xH+Fzz9JvtnXomcSHB1XB4BJlG67vIBHTb
-         MnF/6HX9TpvnpybFiPfci9hY+3rzV0hcje2JZ8wQ7h87b7U3nAWJu9ZM7brIW+xyf8XY
-         PK9A==
-X-Gm-Message-State: ABy/qLauN7VCPnPvXRdPzLEspf8ZkE0bAb+1PxWfVhy33jr/pVBDWUX9
-        Q015BQdf4LAsQ/aG2VzWShektdvqt1ognYa9iMw=
-X-Google-Smtp-Source: APBJJlEobVKQwUTZELYFREJLzp3dv1g8/xLG9BPAiuSNXxuLtHGl8yz3eCa/ZDI+C4ZHXNQZAEXv3s/CnHI35Wlbb/U=
-X-Received: by 2002:a17:90a:8902:b0:25e:fb6d:ce68 with SMTP id
- u2-20020a17090a890200b0025efb6dce68mr4042609pjn.6.1689793445006; Wed, 19 Jul
- 2023 12:04:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
-In-Reply-To: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Thu, 20 Jul 2023 03:03:53 +0800
-Message-ID: <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com>
-Subject: Re: [BUG] unable to handle page fault for address
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        akaher@vmware.com, shuah@kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        bh=uAwDIYHwLc+Xj27zzKl9lhwsFCjNoPTFqoz1deZ/UnU=;
+        b=DJUaMXDeYplG6HJ0DiBTjXdJ6iRVPL086msgmjVhWTmZ+ElnDxfU/bkeUMqpqJI494
+         rFCEb+xz4W8v2XrYvZ4Z7ND/wO66ZhKoomSsd7Xbvk8sJ5CT3DsXb8PhHUjbQ9J//HQy
+         NHkkkZBDp8L/N3BMwFDjuVcbGPbGM+Yi8TQjWew5wpCi2+MWJeiro/fwkWsV+pVHxvQi
+         iRGKFaEh3kqng4XDt/e3jPYexAJtcZkUkcrDc3Dn0fZ1yfZtpIJmIdj08UyvWaCs/Udg
+         8ZrkOW394k1+ryw7DluF5yeXmbVVUdoQ5HDfXtK/lah+ooKFQ/Dl3PjIXCaUGaj78i72
+         5R9Q==
+X-Gm-Message-State: ABy/qLbAvs+SQZwkzWXvtJPCQHH8roPKyPuQrSzVSsOlFNscy8TL/LL2
+        pAESD8xtWuG5CSkNbXheZ0I=
+X-Google-Smtp-Source: APBJJlHgbivOunptU2yauUXiHDEEH7aus0WsX3ZWh+X/g44yaDdtTx8tsjSOnJ1huDk3uL92H/eFUQ==
+X-Received: by 2002:a17:902:7293:b0:1b8:73a4:706a with SMTP id d19-20020a170902729300b001b873a4706amr16637327pll.69.1689794296018;
+        Wed, 19 Jul 2023 12:18:16 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170902f7c200b001b9daaffd26sm4314303plw.304.2023.07.19.12.18.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Jul 2023 12:18:15 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
+ for rculist_nulls
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <50bc6e0d-7d9b-4634-999a-2ee8f503e86a@paulmck-laptop>
+Date:   Thu, 20 Jul 2023 03:17:58 +0800
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <129BFB2B-1A19-437E-B04E-16B16AA4C838@gmail.com>
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-6-paulmck@kernel.org>
+ <9651c3b4-0791-5cd7-567f-f65d28bc8fae@joelfernandes.org>
+ <BE64BF3F-69AD-4522-965E-0B7E4054D737@gmail.com>
+ <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
+ <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
+ <50bc6e0d-7d9b-4634-999a-2ee8f503e86a@paulmck-laptop>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 1:40=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> Hello!
->
-> Just FYI for the moment, I hit a BUG in 10-hour overnight qemu/KVM-based
-> rcutorture testing of the TASKS01, TASKS03, TREE03, and TREE07 rcutorture
-> on the mainline commit:
->
-> ccff6d117d8d ("Merge tag 'perf-tools-fixes-for-v6.5-1-2023-07-18' of git:=
-//git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools")
->
-> This commit was merged with the -rcu "dev" branch, which just yesterday
-> passes overnight tests when based on v6.5-rc1.  A web search got me the
-> following, which is not a very close match, but the best that there is:
->
-> https://www.spinics.net/lists/bpf/msg91848.html
->
-> Here is a representative splat out of 29 of them:
->
-> [22544.494701] BUG: unable to handle page fault for address: fffffe0000af=
-0038
-> [22544.496012] #PF: supervisor read access in user mode
-> [22544.496985] #PF: error_code(0x0000) - not-present page
-> [22544.497970] IDT: 0xfffffe0000000000 (limit=3D0xfff) GDT: 0xfffffe355b3=
-fd000 (limit=3D0x7f)
-> [22544.499479] LDTR: NULL
-> [22544.499959] TR: 0x40 -- base=3D0xfffffe355b3ff000 limit=3D0x4087
-> [22544.501073] PGD 1ffd2067 P4D 1ffd2067 PUD 1124067 PMD 0
-> [22544.502149] Oops: 0000 [#1] PREEMPT SMP PTI
-> [22544.502967] CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc2-00128-g6805=
-2f2f9e35 #5844
-> [22544.504435] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS r=
-el-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> [22544.506581] RIP: 0033:0x400181
-> [22544.507256] Code: 00 45 31 d2 4c 8d 44 24 f0 48 c7 44 24 f8 00 00 00 0=
-0 0f 05 b8 60 00 00 00 48 8d 7c 24 e0 0f 05 41 89 c0 85 c0 75 c6 44 89 c0 <=
-89> c2 0f af d0 ff c0 48 63 d2 48 89 15 06 01 20 00 3d a0 86 01 00
-> [22544.510954] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> [22544.511963] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 000000000=
-04001a7
-> [22544.513386] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde=
-5192258
-> [22544.514751] RBP: 0000000000000000 R08: 0000000000000000 R09: 000000000=
-0000000
-> [22544.516079] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000=
-0000000
-> [22544.517452] R13: 0000000000000000 R14: 0000000000000000 R15: 000000000=
-0000000
-> [22544.518818] FS:  0000000000000000 GS:  0000000000000000
-> [22544.519864] Modules linked in:
-> [22544.520653] CR2: fffffe0000af0038
-> [22544.521401] ---[ end trace 0000000000000000 ]---
-> [22544.522297] RIP: 0033:0x400181
-> [22544.522887] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> [22544.523887] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 000000000=
-04001a7
-> [22544.525257] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde=
-5192258
-> [22544.526623] RBP: 0000000000000000 R08: 0000000000000000 R09: 000000000=
-0000000
-> [22544.528016] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000=
-0000000
-> [22544.529439] R13: 0000000000000000 R14: 0000000000000000 R15: 000000000=
-0000000
-> [22544.530909] FS:  0000000000000000(0000) GS:ffff8d101f400000(0000) knlG=
-S:0000000000000000
-> [22544.532564] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [22544.533760] CR2: fffffe0000af0038 CR3: 0000000002d8e000 CR4: 000000000=
-00006f0
-> [22544.535286] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
-0000000
-> [22544.536738] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
-0000400
-> [22544.538228] note: init[1] exited with irqs disabled
-> [22544.540087] Kernel panic - not syncing: Attempted to kill init! exitco=
-de=3D0x00000009
-> [22544.544806] Kernel Offset: 0x9600000 from 0xffffffff81000000 (relocati=
-on range: 0xffffffff80000000-0xffffffffbfffffff)
->
-> The failure rates for each scenario are as follows:
->
-> TASKS01: 13 of 15
-> TASKS03: 7 of 15
-> TREE03: 4 of 15
-> TREE07: 5 of 15
->
-> In other words, for TASKS01, there were 15 10-hour runs, and 13 of them
-> hit this bug.
->
-> Except that these failures were corellated:
->
-> o       TASKS01 and TASKS03 failures are in batch 17 running on
->         kerneltest053.05.atn6.
->
-> o       TREE03 and one of the TREE07 failures are in batch 4 running
->         on kerneltest025.05.atn6.
->
-> o       Five of the TREE07 failures are in batch 6 running on
->         kerneltest010.05.atn6.
->
-> All of the failures in a given batch happened at about the same time,
-> suggesting a reaction to some stimulus from the host system.  There
-> was no console output from any of these host systems during the test,
-> other than the usual complaint about qemu having an executable stack.
->
-> Now, perhaps this is hardware or configuration failure on those three
-> systems.  But I have been using them for quite some time, and so why
-> would three fail at the same time?
->
-> Bisection will not be easy given that there were only three actual
-> failures in ten hours over 20 batches.  If this is in fact a random
-> kernel failure, there would be almost a 4% chance of a false positive
-> on each bisection step, which gives about a 50% chance of bisecting to
-> the wrong place if the usual 16 steps are required.
-Hi Paul
-I am also very interested in tracing this bug.
-I have invoked ./tools/testing/selftests/rcutorture/bin/torture.sh on
-my 16 core Intel(R) Xeon(R) CPU E5-2660 server a moment ago to see
-what happens
-Thanx, Zhouyi
->
-> I will give this another try this evening, Pacific Time.  In the
-> meantime, FYI.
->
->                                                 Thanx, Paul
+
+> 2023=E5=B9=B47=E6=9C=8820=E6=97=A5 02:20=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Tue, Jul 18, 2023 at 09:48:59PM -0400, Joel Fernandes wrote:
+>>=20
+>>=20
+>> On 7/18/23 14:32, Paul E. McKenney wrote:
+>>> On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
+>>>>=20
+>>>>> 2023=E5=B9=B47=E6=9C=8818=E6=97=A5 21:49=EF=BC=8CJoel Fernandes =
+<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>=20
+>>>>> On 7/17/23 14:03, Paul E. McKenney wrote:
+>>>>>> From: Alan Huang <mmpgouride@gmail.com>
+>>>>>> When the objects managed by rculist_nulls are allocated with
+>>>>>> SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an =
+object
+>>>>>> even though it is just now being added, which means the =
+modification of
+>>>>>> ->next is visible to readers.  This patch therefore uses =
+WRITE_ONCE()
+>>>>>> for assignments to ->next.
+>>>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+>>>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>>>>=20
+>>>>> Did we ever conclude that the READ_ONCE() counterparts were not =
+needed? ;-)
+>>>>=20
+>>>> Read-side is already protected by rcu_dereference_raw() in =
+hlist_nulls_for_each_entry_{rcu, safe}.
+>>>=20
+>>> It turns out that different traversal synchronization designs want
+>>> different pointers using WRITE_ONCE().
+>>=20
+>> Thank you Alan and Paul,
+>>=20
+>> Btw, I don't see any users of hlist_nulls_unhashed_lockless(), maybe =
+it can
+>> be removed?
+>=20
+> Either that or the people who removed uses injected bugs...
+
+It has never been used.
+
+That said, the data race has been there almost for four years.
+
+And the network people use sk_unhashed() for both hlist_node and =
+hlist_nulls_node.
+So, I plan to use hlist_unhashed_lockless() in sk_unhashed(), that will =
+be one of my future patches.
+
+>=20
+> But if this one really does go away, do we need ->pprev to be
+> protected by _ONCE()?
+
+The ->pprev thing is what I=E2=80=99m currently working on. :)
+
+>=20
+> Thanx, Paul
+
+
