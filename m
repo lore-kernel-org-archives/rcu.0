@@ -2,104 +2,102 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E570C001DC
-	for <rcu@archiver.kernel.org>; Tue, 18 Jul 2023 18:41:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACD33EB64DC
+	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 01:49:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjGRSlx (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 18 Jul 2023 14:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S229516AbjGSBtL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 18 Jul 2023 21:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGRSlx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:41:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45957E8;
-        Tue, 18 Jul 2023 11:41:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CDBF3616A8;
-        Tue, 18 Jul 2023 18:41:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C33BC433C8;
-        Tue, 18 Jul 2023 18:41:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689705711;
-        bh=a5euet8QU4I8gSkyqhMce+/xHpcOSEb0+0iBwAwp+Po=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=a75EYDWVHBTWwdDr/oRRYA49Z8F0oIYn+iEQIbUxOEHCBHR6VgVkPDcUxNUk6d7Nv
-         mIBg9N2Q9X4n7YoQ8HDvKsgRWooB3vbX9dcKSL4NmujAwVTGHH5a3t9xiscnLEass3
-         bk/iyNQcGNzJdPyV+nBHd3GqXqFogb86cr5YCj3t0yXYSbJCl3opC4So3jly/d5gY/
-         7lQ0mIF7JS7RSTMHmlzr+VhpbsS70U1Oh0FDx0J7bv3beQTaOY5ItjQ54/lIoQdynR
-         cE0EOz1c165exTwIDOE43OzT7Y3wnsQyhSjFHBUQp4u0aw6a12VsndXU+afMt6kxHz
-         Jd1hvz+0QFG2A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AECA1CE04CD; Tue, 18 Jul 2023 11:41:50 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 11:41:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feiyang Chen <chris.chenfeiyang@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Feiyang Chen <chenfeiyang@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>, Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH rcu 15/18] torture: Add init-program support for loongarch
-Message-ID: <b6283b82-8a65-4455-8bbf-d597efc26402@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
- <20230717182337.1098991-15-paulmck@kernel.org>
- <CACWXhK=Vc0kKpnOLRxgw-oP+QDJYt3AqD-kvcA1QkUitiW2Jng@mail.gmail.com>
+        with ESMTP id S229463AbjGSBtJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 18 Jul 2023 21:49:09 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7379F1BF3
+        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 18:49:03 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-635ee3baa14so29248596d6.3
+        for <rcu@vger.kernel.org>; Tue, 18 Jul 2023 18:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689731342; x=1692323342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ePt0qbb27tTycT4WqVSlGhy/F+k69bMQ3wHHNqGkw8g=;
+        b=ftucftlqM1A7m+5a0NUNMyV+yCtx/VHUnCHBo09FAO+BJiokRssGXbLclum0Rb7Vjw
+         OF14yQ6yMnk28o83XcoVCyaGy9zhWUkZcamdMCbOWueKnvVfZG7kUvK3/73RvtuxhTEG
+         1qErlQtIZtTT2udV1v6oU6Iu+pwKvF9V5ODB8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689731342; x=1692323342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ePt0qbb27tTycT4WqVSlGhy/F+k69bMQ3wHHNqGkw8g=;
+        b=YvvSEQJGmOpYC3jCcpuPleptBfum84WASzIhENIMmGS4f24McaADg7CZusXIp9m5X/
+         HVxQO6Gj48PKuYntqw4EOGpDM5HG4NJy9Cfn4fWV/SbWZ4BBHcFISEqedhwVvtb9ny9Y
+         Rem0hMhyNhv8+EH9OydebX4DwHHzbxU1chGsK8zXD9BA7ihPZuactmcObVrmo0KxEz8b
+         dOryuct75jc2ClKxY+muGa3aNUWH/oumyN3OJ4ljRjrYlPBJ5UZQHBjGXpZTUyJRnPIO
+         K9QYzxamC/ehEL/SzCzJVxK2trwLv+O7qN1wAVBPyjgyhi3JGyWQGOcKKAwT9+yn7+tA
+         zkgA==
+X-Gm-Message-State: ABy/qLZonn8pz9AO90RHMczSNfgk0f5dUvFIYRQw3+V5h7OB4TU5+jRE
+        VuUC9NlD54h43xJkSEWAHkWFOw==
+X-Google-Smtp-Source: APBJJlEbQus1ueG5nPA4LisVdRCPwwlIEy0GOp7b9nLeIrxcSPFqAoKWGhXBDRtsYYeD/EHzxIsLsw==
+X-Received: by 2002:a0c:be88:0:b0:62d:ddeb:3782 with SMTP id n8-20020a0cbe88000000b0062dddeb3782mr13468345qvi.49.1689731342551;
+        Tue, 18 Jul 2023 18:49:02 -0700 (PDT)
+Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id t25-20020a0cb399000000b006238f82cde4sm1123436qve.108.2023.07.18.18.49.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 18:49:00 -0700 (PDT)
+Message-ID: <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
+Date:   Tue, 18 Jul 2023 21:48:59 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
+ for rculist_nulls
+Content-Language: en-US
+To:     paulmck@kernel.org, Alan Huang <mmpgouride@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-6-paulmck@kernel.org>
+ <9651c3b4-0791-5cd7-567f-f65d28bc8fae@joelfernandes.org>
+ <BE64BF3F-69AD-4522-965E-0B7E4054D737@gmail.com>
+ <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACWXhK=Vc0kKpnOLRxgw-oP+QDJYt3AqD-kvcA1QkUitiW2Jng@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:56:06AM +0800, Feiyang Chen wrote:
-> On Tue, Jul 18, 2023 at 2:23 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > This commit adds the __loongarch__, __loongarch_lp64, and
-> > __loongarch_double_float targets to rcutorture's mkinitrd.sh
-> > script in order to allow nolibc init programs for loongarch.
-> >
-> > Cc: Feiyang Chen <chenfeiyang@loongson.cn>
-> > Cc: Huacai Chen <chenhuacai@loongson.cn>
-> > Cc: Willy Tarreau <w@1wt.eu>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-> > index 3af3a86a0091..e7e23615dbe3 100755
-> > --- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-> > +++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-> > @@ -63,7 +63,8 @@ ___EOF___
-> >  # build using nolibc on supported archs (smaller executable) and fall
-> >  # back to regular glibc on other ones.
-> >  if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
-> > -           "||__ARM_EABI__||__aarch64__||__s390x__\nyes\n#endif" \
-> > +           "||__ARM_EABI__||__aarch64__||__s390x__"\
-> > +          "||__loongarch__||__loongarch_lp64||__loongarch_double_float\nyes\n#endif" \
+
+
+On 7/18/23 14:32, Paul E. McKenney wrote:
+> On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
+>>
+>>> 2023年7月18日 21:49，Joel Fernandes <joel@joelfernandes.org> 写道：
+>>>
+>>> On 7/17/23 14:03, Paul E. McKenney wrote:
+>>>> From: Alan Huang <mmpgouride@gmail.com>
+>>>> When the objects managed by rculist_nulls are allocated with
+>>>> SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an object
+>>>> even though it is just now being added, which means the modification of
+>>>> ->next is visible to readers.  This patch therefore uses WRITE_ONCE()
+>>>> for assignments to ->next.
+>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>>
+>>> Did we ever conclude that the READ_ONCE() counterparts were not needed? ;-)
+>>
+>> Read-side is already protected by rcu_dereference_raw() in hlist_nulls_for_each_entry_{rcu, safe}.
 > 
-> Hi, Paul,
-> 
-> Thank you for the patch, but I believe adding only the __loongarch__
-> should be sufficient.
+> It turns out that different traversal synchronization designs want
+> different pointers using WRITE_ONCE().
 
-Very well, I will remove the others on my next rebase with attribution.
+Thank you Alan and Paul,
 
-And thank you for looking this over!  Especially as I have no way
-to test it.  ;-)
+Btw, I don't see any users of hlist_nulls_unhashed_lockless(), maybe it 
+can be removed?
 
-							Thanx, Paul
+  - Joel
 
-> Thanks,
-> Feiyang
-> 
-> >     | ${CROSS_COMPILE}gcc -E -nostdlib -xc - \
-> >     | grep -q '^yes'; then
-> >         # architecture supported by nolibc
-> > --
-> > 2.40.1
