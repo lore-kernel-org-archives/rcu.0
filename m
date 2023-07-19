@@ -2,251 +2,145 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2551EB64DA
-	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 11:52:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57888C001B0
+	for <rcu@archiver.kernel.org>; Wed, 19 Jul 2023 17:28:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjGSLwF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 19 Jul 2023 07:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
+        id S229512AbjGSR2o (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 19 Jul 2023 13:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbjGSLwD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:52:03 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631A911B
-        for <rcu@vger.kernel.org>; Wed, 19 Jul 2023 04:52:01 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7659c6cae2cso460780785a.1
-        for <rcu@vger.kernel.org>; Wed, 19 Jul 2023 04:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689767520; x=1692359520;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CQ51DqXnBkZV20qyGIq5WlkmAAtxCH+iOBfKBuzqws4=;
-        b=NpCaE0RVwBfwhBRCtkm6Wz2nLaJ38NRPC37jTs/6NDu1hKJfcOkFo+wnLIi8kakdJP
-         UDjGJg+vj3F1hWYvAcyxlT/GADL+Es5lw52BKjt+TMy7D97g7co1LDfGceu6TmvDVjTj
-         bWoLzR3TmjTc5Qj313+nRFjaLFn+zgmNf8pt8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689767520; x=1692359520;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CQ51DqXnBkZV20qyGIq5WlkmAAtxCH+iOBfKBuzqws4=;
-        b=RibzCsA1egevtpl2pmsnNWFwJPs3IA4McH3EPqrHBfhqNiV+OgwLFvzNdFTwBWpC7J
-         LzmrQA0vEoOiazaDk9lhyp/hDGJ014nwn4nxVX9WQuxkgvnOB2w5sX4Rd8+fFnaIO9/R
-         BHxTnm/szQ8q5vqzOkyLv8xIK67mLNnw6u+bXpDRIAeb2Hj7gdl/LkdZ0cmY61ljxPVc
-         ZMc8jDm9GsA2/dMnZNaHXR2TlRslp8HGCYGLQjsqGuTwWsI1aelicHgYmnPIxQ3ddvCZ
-         fxr5VRUKmn2n4OXc/+Pvx0QQxFgq64jrOYLnyCYwpk9Sl2qJbzAq4FQGWBzqlspvccvF
-         P70Q==
-X-Gm-Message-State: ABy/qLZd9EtLSSswfaMN+wYATXB17Iq14njbLXfiMp1IsCyr/8TAd/Cq
-        zfT+cSYm7iBL+1UrJCmTxJUI8g==
-X-Google-Smtp-Source: APBJJlGwesG3yuMa1fWVA6ume80PY+SCQJgp1ByEPg7SYmYqelgStBp+RrzF0MrH3mmOCIo0SfIpfQ==
-X-Received: by 2002:a05:620a:6783:b0:765:35ec:5ff7 with SMTP id rr3-20020a05620a678300b0076535ec5ff7mr1963550qkn.20.1689767520447;
-        Wed, 19 Jul 2023 04:52:00 -0700 (PDT)
-Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id f21-20020ae9ea15000000b00767b37256ecsm1195782qkg.107.2023.07.19.04.51.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 04:51:59 -0700 (PDT)
-Message-ID: <a0f6e131-a649-1731-b096-46313a0460a9@joelfernandes.org>
-Date:   Wed, 19 Jul 2023 07:51:58 -0400
+        with ESMTP id S230182AbjGSR2o (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 19 Jul 2023 13:28:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E6D1FC0;
+        Wed, 19 Jul 2023 10:28:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 12E9A6171C;
+        Wed, 19 Jul 2023 17:28:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59B69C433C7;
+        Wed, 19 Jul 2023 17:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689787721;
+        bh=+f83S3DiDQvXqaslI+dGivhTHhFNTXzJXPcfGpsGB+s=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=oHF054RRduCATEwO50jXhXqm/hi9n981z+SPN2/BbS/O/U4C4RMsucoiFoGqQoxYP
+         UVgDHodTshLL176N81xt8a/WTQOSOLRyO9946+nUwzKygxbmZxs54C47hVsCTwL1Fg
+         B2kgHvU9EtDbzaWnJG1lNCMyWNIi8uQJ7rn/tsGJ4Lo/kSPbaf67uhrdXUxzz9qVLA
+         vUYhSCMqkP/WxAsD7QlMBPE90ie8tGrj2oFznLAZptML06bTIPbBqrzTiNelGId5LQ
+         Ezcs84ORv3d2FrrdTJlqL0nyap/+5PzQw+YdLH8VI8w8B9wIO7SxX3XYMwy/6sR9+N
+         S9KYpkAfO07ug==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E23AFCE092F; Wed, 19 Jul 2023 10:28:40 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 10:28:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     rostedt@goodmis.org, akaher@vmware.com, shuah@kernel.org,
+        rcu@vger.kernel.org
+Subject: [BUG] unable to handle page fault for address
+Message-ID: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of RCU
- Tasks Trace
-Content-Language: en-US
-To:     paulmck@kernel.org, Joe Perches <joe@perches.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
- <20230717180454.1097714-5-paulmck@kernel.org>
- <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
- <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Hello!
 
+Just FYI for the moment, I hit a BUG in 10-hour overnight qemu/KVM-based
+rcutorture testing of the TASKS01, TASKS03, TREE03, and TREE07 rcutorture
+on the mainline commit:
 
-On 7/17/23 19:34, Paul E. McKenney wrote:
-> On Mon, Jul 17, 2023 at 03:34:14PM -0700, Joe Perches wrote:
->> On Mon, 2023-07-17 at 11:04 -0700, Paul E. McKenney wrote:
->>> RCU Tasks Trace is quite specialized, having been created specifically
->>> for sleepable BPF programs.  Because it allows general blocking within
->>> readers, any new use of RCU Tasks Trace must take current use cases into
->>> account.  Therefore, update checkpatch.pl to complain about use of any of
->>> the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
->>>
->>> Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
->>> Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
->>> Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
->>> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->>> Cc: Alexei Starovoitov <ast@kernel.org>
->>> Cc: Daniel Borkmann <daniel@iogearbox.net>
->>> Cc: John Fastabend <john.fastabend@gmail.com>
->>> Cc: <bpf@vger.kernel.org>
->>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>> ---
->>>   scripts/checkpatch.pl | 18 ++++++++++++++++++
->>>   1 file changed, 18 insertions(+)
->>>
->>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
->> []
->>> @@ -7457,6 +7457,24 @@ sub process {
->>>   			}
->>>   		}
->>>   
->>> +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
->>> +		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
->>> +		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
->>> +		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
->>> +		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
->>> +		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
->>> +		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
->>> +		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
->>> +			if ($realfile !~ m@^kernel/bpf@ &&
->>> +			    $realfile !~ m@^include/linux/bpf@ &&
->>> +			    $realfile !~ m@^net/bpf@ &&
->>> +			    $realfile !~ m@^kernel/rcu@ &&
->>> +			    $realfile !~ m@^include/linux/rcu@) {
->>
->> Functions and paths like these tend to be accreted.
->>
->> Please use a variable or 2 like:
->>
->> our $rcu_trace_funcs = qr{(?x:
->> 	rcu_read_lock_trace |
->> 	rcu_read_lock_trace_held |
->> 	rcu_read_unlock_trace |
->> 	call_rcu_tasks_trace |
->> 	synchronize_rcu_tasks_trace |
->> 	rcu_barrier_tasks_trace |
->> 	rcu_request_urgent_qs_task
->> )};
->> our $rcu_trace_paths = qr{(?x:
->> 	kernel/bfp/ |
->> 	include/linux/bpf |
->> 	net/bpf/ |
->> 	kernel/rcu/ |
->> 	include/linux/rcu
->> )};
-> 
-> Like this?
-> 
-> # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> 		our $rcu_trace_funcs = qr{(?x:
-> 			rcu_read_lock_trace |
-> 			rcu_read_lock_trace_held |
-> 			rcu_read_unlock_trace |
-> 			call_rcu_tasks_trace |
-> 			synchronize_rcu_tasks_trace |
-> 			rcu_barrier_tasks_trace |
-> 			rcu_request_urgent_qs_task
-> 		)};
-> 		our $rcu_trace_paths = qr{(?x:
-> 			kernel/bfp/ |
-> 			include/linux/bpf |
-> 			net/bpf/ |
-> 			kernel/rcu/ |
-> 			include/linux/rcu
-> 		)};
-> 		if ($line =~ /$rcu_trace_funcs/) {
-> 			if ($realfile !~ m@^$rcu_trace_paths@) {
-> 				WARN("RCU_TASKS_TRACE",
-> 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> 			}
-> 		}
-> 
-> No, that is definitely wrong.  It has lost track of the list of pathnames,
-> thus complaining about uses of those functions in files where their use
-> is permitted.
-> 
-> But this seems to work:
-> 
-> # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> 		our $rcu_trace_funcs = qr{(?x:
-> 			rcu_read_lock_trace |
-> 			rcu_read_lock_trace_held |
-> 			rcu_read_unlock_trace |
-> 			call_rcu_tasks_trace |
-> 			synchronize_rcu_tasks_trace |
-> 			rcu_barrier_tasks_trace |
-> 			rcu_request_urgent_qs_task
-> 		)};
-> 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> 			if ($realfile !~ m@^kernel/bpf@ &&
-> 			    $realfile !~ m@^include/linux/bpf@ &&
-> 			    $realfile !~ m@^net/bpf@ &&
-> 			    $realfile !~ m@^kernel/rcu@ &&
-> 			    $realfile !~ m@^include/linux/rcu@) {
-> 				WARN("RCU_TASKS_TRACE",
-> 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> 			}
-> 		}
-> 
-> Maybe the "^" needs to be distributed into $rcu_trace_paths?
-> 
-> # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> 		our $rcu_trace_funcs = qr{(?x:
-> 			rcu_read_lock_trace |
-> 			rcu_read_lock_trace_held |
-> 			rcu_read_unlock_trace |
-> 			call_rcu_tasks_trace |
-> 			synchronize_rcu_tasks_trace |
-> 			rcu_barrier_tasks_trace |
-> 			rcu_request_urgent_qs_task
-> 		)};
-> 		our $rcu_trace_paths = qr{(?x:
-> 			^kernel/bfp/ |
-> 			^include/linux/bpf |
-> 			^net/bpf/ |
-> 			^kernel/rcu/ |
-> 			^include/linux/rcu
-> 		)};
-> 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> 			if ($realfile !~ m@$rcu_trace_paths@) {
-> 				WARN("RCU_TASKS_TRACE",
-> 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> 			}
-> 		}
-> 
-> But no joy here, either.  Which is no surprise, given that perl is
-> happy to distribute the "\b" and the "\s*\(" across the elements of
-> $rcu_trace_funcs.  I tried a number of other variations, including
-> inverting the "if" condition "(!(... =~ ...))", inverting the "if"
-> condition via an empty "then" clause, replacing the "m@" with "/",
-> replacing the "|" in the "qr{}" with "&", and a few others.
-> 
-> Again, listing the pathnames explicitly in the second "if" condition
-> works just fine.
-> 
+ccff6d117d8d ("Merge tag 'perf-tools-fixes-for-v6.5-1-2023-07-18' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools")
 
-Not a perl expert but I wonder if the following are any options at all:
+This commit was merged with the -rcu "dev" branch, which just yesterday
+passes overnight tests when based on v6.5-rc1.  A web search got me the
+following, which is not a very close match, but the best that there is:
 
-1. Instead of having a complex list of strings in a regex variable, it 
-might be easier to hold the strings as a perl array, and then iterate 
-over that array checking each element of the array on every iteration, 
-against the line.
+https://www.spinics.net/lists/bpf/msg91848.html
 
-2. Roll the "\b" and/or "^" in into the regex variable itself than 
-trying make them play with the variable later.
+Here is a representative splat out of 29 of them:
 
-3. Use parentheses around the variable? Not sure if that will work but I 
-wonder if it has something to do with operator precedence.
+[22544.494701] BUG: unable to handle page fault for address: fffffe0000af0038
+[22544.496012] #PF: supervisor read access in user mode
+[22544.496985] #PF: error_code(0x0000) - not-present page
+[22544.497970] IDT: 0xfffffe0000000000 (limit=0xfff) GDT: 0xfffffe355b3fd000 (limit=0x7f)
+[22544.499479] LDTR: NULL
+[22544.499959] TR: 0x40 -- base=0xfffffe355b3ff000 limit=0x4087
+[22544.501073] PGD 1ffd2067 P4D 1ffd2067 PUD 1124067 PMD 0
+[22544.502149] Oops: 0000 [#1] PREEMPT SMP PTI
+[22544.502967] CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc2-00128-g68052f2f9e35 #5844
+[22544.504435] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+[22544.506581] RIP: 0033:0x400181
+[22544.507256] Code: 00 45 31 d2 4c 8d 44 24 f0 48 c7 44 24 f8 00 00 00 00 0f 05 b8 60 00 00 00 48 8d 7c 24 e0 0f 05 41 89 c0 85 c0 75 c6 44 89 c0 <89> c2 0f af d0 ff c0 48 63 d2 48 89 15 06 01 20 00 3d a0 86 01 00
+[22544.510954] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
+[22544.511963] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
+[22544.513386] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
+[22544.514751] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[22544.516079] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[22544.517452] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[22544.518818] FS:  0000000000000000 GS:  0000000000000000
+[22544.519864] Modules linked in:
+[22544.520653] CR2: fffffe0000af0038
+[22544.521401] ---[ end trace 0000000000000000 ]---
+[22544.522297] RIP: 0033:0x400181
+[22544.522887] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
+[22544.523887] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
+[22544.525257] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
+[22544.526623] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[22544.528016] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+[22544.529439] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[22544.530909] FS:  0000000000000000(0000) GS:ffff8d101f400000(0000) knlGS:0000000000000000
+[22544.532564] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
+[22544.533760] CR2: fffffe0000af0038 CR3: 0000000002d8e000 CR4: 00000000000006f0
+[22544.535286] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[22544.536738] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[22544.538228] note: init[1] exited with irqs disabled
+[22544.540087] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+[22544.544806] Kernel Offset: 0x9600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
 
-4. Instead of a list of paths, maybe it is better to look for "rcu" or 
-"bpf" in the regex itself? That way new paths don't require script 
-updates (at the expense though of false-positives (highly unlikely, IMHO)).
+The failure rates for each scenario are as follows:
 
-thanks,
+TASKS01: 13 of 15
+TASKS03: 7 of 15
+TREE03: 4 of 15
+TREE07: 5 of 15
 
-- Joel
+In other words, for TASKS01, there were 15 10-hour runs, and 13 of them
+hit this bug.
+
+Except that these failures were corellated:
+
+o	TASKS01 and TASKS03 failures are in batch 17 running on
+	kerneltest053.05.atn6.
+
+o	TREE03 and one of the TREE07 failures are in batch 4 running
+	on kerneltest025.05.atn6.
+
+o	Five of the TREE07 failures are in batch 6 running on
+	kerneltest010.05.atn6.
+
+All of the failures in a given batch happened at about the same time,
+suggesting a reaction to some stimulus from the host system.  There
+was no console output from any of these host systems during the test,
+other than the usual complaint about qemu having an executable stack.
+
+Now, perhaps this is hardware or configuration failure on those three
+systems.  But I have been using them for quite some time, and so why
+would three fail at the same time?
+
+Bisection will not be easy given that there were only three actual
+failures in ten hours over 20 batches.  If this is in fact a random
+kernel failure, there would be almost a 4% chance of a false positive
+on each bisection step, which gives about a 50% chance of bisecting to
+the wrong place if the usual 16 steps are required.
+
+I will give this another try this evening, Pacific Time.  In the
+meantime, FYI.
+
+						Thanx, Paul
