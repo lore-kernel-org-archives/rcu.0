@@ -2,216 +2,179 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC5A6EB64DA
-	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 07:29:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F8DAEB64DC
+	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 13:28:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbjGTH3y convert rfc822-to-8bit (ORCPT
-        <rfc822;rcu@archiver.kernel.org>); Thu, 20 Jul 2023 03:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
+        id S230018AbjGTN2F (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Jul 2023 09:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbjGTH3w (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:29:52 -0400
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4E02118;
-        Thu, 20 Jul 2023 00:29:50 -0700 (PDT)
-Received: from omf20.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay05.hostedemail.com (Postfix) with ESMTP id 5A86E401AC;
-        Thu, 20 Jul 2023 07:29:48 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id E4DEC20028;
-        Thu, 20 Jul 2023 07:29:43 +0000 (UTC)
-Message-ID: <589412dd594b7efc618728fe68ad6c86f3c60878.camel@perches.com>
-Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
- RCU Tasks Trace
-From:   Joe Perches <joe@perches.com>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Date:   Thu, 20 Jul 2023 00:29:42 -0700
-In-Reply-To: <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
-References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
-         <20230717180454.1097714-5-paulmck@kernel.org>
-         <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
-         <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        with ESMTP id S231936AbjGTN1z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Jul 2023 09:27:55 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D152D7C
+        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 06:27:30 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-783546553ddso34401339f.0
+        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 06:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689859635; x=1690464435;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sq7dHUeD+Xg/tMSj+YLwfJ2caZRXOmmvG1cR5ZPGm8A=;
+        b=Tc135+5ZinqDRf/Bhdyx/BtYNsMQjvCJ5rASuyucyDEkD4ems4r4v2MtkPvRDDdYc2
+         kCwti8V/HKVPBOW/SYaNJzwp4qMg49QcEhiXGgym+XP6rKo49mxMQ0bZVeAhbwGYwAnE
+         h/FA8CNRySBf0XLwfjgIqTG+sbFnS4jc+2RGM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689859635; x=1690464435;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sq7dHUeD+Xg/tMSj+YLwfJ2caZRXOmmvG1cR5ZPGm8A=;
+        b=Mqn2+3N2/mgU+EEgCI3zACDJaFvUyy+VfXRbHpoBDsw3gK7FQfnJbYNxuxWU92cl4z
+         uH6j2BOw3IHg4Udrj/TGrztcjzjOc58weYxCB61GjGLpU6gr40CRQmi2jhxXdGXFncp/
+         Fu5/EYbmfJWgpf3Plf7VjLkSpT/H8mfBkH+7umAVl4B80OoCwQWzJFeZdW1mQsYAXLCb
+         A6kULBsBkoDTo5og7gNRo5+nKq10GUIMrRKYSiBsbZ7NnNCqnUNGFiBbl26iPh5+yxn8
+         0NPNakRQztnIbQMf9fa84ErQCp6buP5NvPaKjBnI/PA8ucDGZRneqimYOPGubj704ChV
+         87Ag==
+X-Gm-Message-State: ABy/qLaAiJhdywgteVCdSvUzhmpdytiaWd5qT6/0DF10h5EqISO5Ag6w
+        LXHE6I+jE2tUWByLmGvBHlnSDg==
+X-Google-Smtp-Source: APBJJlG2tTjykjLc6oXMJS1fb3KCcg1yffV1LWPPQqNtREvqQZsKQ/3ZLAWNKu6ZiV5N/eImx4cfJg==
+X-Received: by 2002:a5e:a90b:0:b0:783:63ac:25cf with SMTP id c11-20020a5ea90b000000b0078363ac25cfmr8231109iod.7.1689859635559;
+        Thu, 20 Jul 2023 06:27:15 -0700 (PDT)
+Received: from localhost (195.121.66.34.bc.googleusercontent.com. [34.66.121.195])
+        by smtp.gmail.com with ESMTPSA id n11-20020a6bf60b000000b00786ea00bdb5sm326933ioh.2.2023.07.20.06.27.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 06:27:14 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 13:27:14 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz, rcu@vger.kernel.org
+Subject: [BUG] Re: Linux 6.4.4
+Message-ID: <20230720132714.GA3726096@google.com>
+References: <2023071940-suspect-ominous-4a6a@gregkh>
 MIME-Version: 1.0
-X-Stat-Signature: cijt47qa3gutgm4mse8f61ihc156sytj
-X-Rspamd-Server: rspamout07
-X-Rspamd-Queue-Id: E4DEC20028
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19bWiq7WZ/5O5QREbocb7bKaf2iJ1IJsm8=
-X-HE-Tag: 1689838183-320032
-X-HE-Meta: U2FsdGVkX1/WarbZk931biGimJZzUmR0O/BUkC16MDMYi+FZCE9vkChV5+1oQv6fW7ys3SKQXW6ny8ivNo+4hr59Zu0HwPgQVExCwjMOWdBjkXj1wru2zKknxwNVBrYhpYn3niGT0jMfQaKKf5f2K+lZNMiT/Tuu0zydTf+uBcVFdyzJpgNCqTHtB/RwZNqaaJH3+WWoKuBdrBdTfOyTyol2UlAOv9t7t6x1uwPo33MeFYV3deDRqHFbev2Xfx3cBsG+gkVwiwRtStG89YFKfgTozhO0ixB3fYkRsV8GMqTEQcmqZgsAxa6w76geQUWVpfdy6KJHLa/FHKsZ+1wKwkhWHVT9ncBcctS0nvMkNa9f8w75v8m2Iwpm3CW7x51aSRX2TcwtlxR5eKcfSI9NMEFRuusF334j39b6nkzTbutvUyxguv6WODZhCYB35codJJ0JdujRE//8K4pa6ZyjVJevUpcc5HdLH3YoN5mccX05SDuyrKmHmx93iyb6J6K98o592DeGGMU1+AQYQZNLni5OtqEPJxqhM90T6jyrh+HXqY829BrUsXQFRu6vlMqmmQpeC1NKC3I=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023071940-suspect-ominous-4a6a@gregkh>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 2023-07-17 at 16:34 -0700, Paul E. McKenney wrote:
-> On Mon, Jul 17, 2023 at 03:34:14PM -0700, Joe Perches wrote:
-> > On Mon, 2023-07-17 at 11:04 -0700, Paul E. McKenney wrote:
-> > > RCU Tasks Trace is quite specialized, having been created specifically
-> > > for sleepable BPF programs.  Because it allows general blocking within
-> > > readers, any new use of RCU Tasks Trace must take current use cases into
-> > > account.  Therefore, update checkpatch.pl to complain about use of any of
-> > > the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
-> > > 
-> > > Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
-> > > Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
-> > > Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
-> > > Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > Cc: <bpf@vger.kernel.org>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > >  scripts/checkpatch.pl | 18 ++++++++++++++++++
-> > >  1 file changed, 18 insertions(+)
-> > > 
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -7457,6 +7457,24 @@ sub process {
-> > >  			}
-> > >  		}
-> > >  
-> > > +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > > +		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
-> > > +		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
-> > > +		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
-> > > +		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
-> > > +		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
-> > > +		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
-> > > +		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
-> > > +			if ($realfile !~ m@^kernel/bpf@ &&
-> > > +			    $realfile !~ m@^include/linux/bpf@ &&
-> > > +			    $realfile !~ m@^net/bpf@ &&
-> > > +			    $realfile !~ m@^kernel/rcu@ &&
-> > > +			    $realfile !~ m@^include/linux/rcu@) {
-> > 
-> > Functions and paths like these tend to be accreted.
-> > 
-> > Please use a variable or 2 like:
-> > 
-> > our $rcu_trace_funcs = qr{(?x:
-> > 	rcu_read_lock_trace |
-> > 	rcu_read_lock_trace_held |
-> > 	rcu_read_unlock_trace |
-> > 	call_rcu_tasks_trace |
-> > 	synchronize_rcu_tasks_trace |
-> > 	rcu_barrier_tasks_trace |
-> > 	rcu_request_urgent_qs_task
-> > )};
-> > our $rcu_trace_paths = qr{(?x:
-> > 	kernel/bfp/ |
-		^^
-	kernel/bfp/ |
+On Wed, Jul 19, 2023 at 05:06:39PM +0200, Greg Kroah-Hartman wrote:
+> I'm announcing the release of the 6.4.4 kernel.
+> 
+> All users of the 6.4 kernel series must upgrade.
+> 
+> The updated 6.4.y git tree can be found at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.4.y
+> and can be browsed at the normal kernel.org git web browser:
+> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-(umm, oops...)
-I think my original suggestion works better when I don't typo the path.
+I have been consistently hitting the following splat with rcutorture's TREE03
+test on 6.4.4. This happened with 6.4.4-rc3 as well.
 
-> > 	include/linux/bpf |
-> > 	net/bpf/ |
-> > 	kernel/rcu/ |
-> > 	include/linux/rcu
-> > )};
-> 
-> Like this?
-> 
-> # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> 		our $rcu_trace_funcs = qr{(?x:
-> 			rcu_read_lock_trace |
-> 			rcu_read_lock_trace_held |
-> 			rcu_read_unlock_trace |
-> 			call_rcu_tasks_trace |
-> 			synchronize_rcu_tasks_trace |
-> 			rcu_barrier_tasks_trace |
-> 			rcu_request_urgent_qs_task
-> 		)};
-> 		our $rcu_trace_paths = qr{(?x:
-> 			kernel/bfp/ |
-> 			include/linux/bpf |
-> 			net/bpf/ |
-> 			kernel/rcu/ |
-> 			include/linux/rcu
-> 		)};
-> 		if ($line =~ /$rcu_trace_funcs/) {
-> 			if ($realfile !~ m@^$rcu_trace_paths@) {
-> 				WARN("RCU_TASKS_TRACE",
-> 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> 			}
-> 		}
-> 
-> No, that is definitely wrong.  It has lost track of the list of pathnames,
-> thus complaining about uses of those functions in files where their use
-> is permitted.
-> 
-> But this seems to work:
-> 
-> # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> 		our $rcu_trace_funcs = qr{(?x:
-> 			rcu_read_lock_trace |
-> 			rcu_read_lock_trace_held |
-> 			rcu_read_unlock_trace |
-> 			call_rcu_tasks_trace |
-> 			synchronize_rcu_tasks_trace |
-> 			rcu_barrier_tasks_trace |
-> 			rcu_request_urgent_qs_task
-> 		)};
-> 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> 			if ($realfile !~ m@^kernel/bpf@ &&
-> 			    $realfile !~ m@^include/linux/bpf@ &&
-> 			    $realfile !~ m@^net/bpf@ &&
-> 			    $realfile !~ m@^kernel/rcu@ &&
-> 			    $realfile !~ m@^include/linux/rcu@) {
-> 				WARN("RCU_TASKS_TRACE",
-> 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> 			}
-> 		}
-> 
-> Maybe the "^" needs to be distributed into $rcu_trace_paths?
-> 
-> # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> 		our $rcu_trace_funcs = qr{(?x:
-> 			rcu_read_lock_trace |
-> 			rcu_read_lock_trace_held |
-> 			rcu_read_unlock_trace |
-> 			call_rcu_tasks_trace |
-> 			synchronize_rcu_tasks_trace |
-> 			rcu_barrier_tasks_trace |
-> 			rcu_request_urgent_qs_task
-> 		)};
-> 		our $rcu_trace_paths = qr{(?x:
-> 			^kernel/bfp/ |
-> 			^include/linux/bpf |
-> 			^net/bpf/ |
-> 			^kernel/rcu/ |
-> 			^include/linux/rcu
-> 		)};
-> 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> 			if ($realfile !~ m@$rcu_trace_paths@) {
-> 				WARN("RCU_TASKS_TRACE",
-> 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> 			}
-> 		}
-> 
-> But no joy here, either.  Which is no surprise, given that perl is
-> happy to distribute the "\b" and the "\s*\(" across the elements of
-> $rcu_trace_funcs.  I tried a number of other variations, including
-> inverting the "if" condition "(!(... =~ ...))", inverting the "if"
-> condition via an empty "then" clause, replacing the "m@" with "/",
-> replacing the "|" in the "qr{}" with "&", and a few others.
-> 
-> Again, listing the pathnames explicitly in the second "if" condition
-> works just fine.
-> 
-> Help?
-> 
-> 							Thanx, Paul
+Happens at:
+		WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost failed (TIMER_SOFTIRQ RT prio?)
+
+So likely RCU boosting is failing:
+
+The full TREE03 splat:
+[   54.243588] ------------[ cut here ]------------
+[   54.244547] rcu-torture: rcu_torture_boost started
+[   54.247643] WARNING: CPU: 12 PID: 166 at kernel/rcu/rcutorture.c:2227 rcu_torture_stats_print+0x5b2/0x620
+[   54.273082] Modules linked in:
+[   54.278336] CPU: 12 PID: 166 Comm: rcu_torture_sta Not tainted 6.4.4-g62813c2d2a36 #1
+[   54.288540] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
+[   54.307525] Code: 00 00 48 8b 05 3f 6c 46 02 e9 4a fe ff ff 0f 0b e9 02 fd ff ff 0f 0b e9 09 fd ff ff 0f 0b e9 10 fd ff ff 0f 0b e9 17 fd ff ff <0f> 0b e9 1e fd ff ff 0f 0b e9 21 fd ff ff e8 0b 54 ff ff 84 c0 0f
+[   54.331276] RSP: 0000:ffff9fef805efe08 EFLAGS: 00010202
+[   54.338374] RAX: 0000000000000000 RBX: ffff9fef805efe88 RCX: 00000000ffffdfff
+[   54.347738] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+[   54.358923] RBP: ffff9fef805efe30 R08: 00000000ffffdfff R09: 00000000ffffdfff
+[   54.368209] R10: ffffffff94e59280 R11: ffffffff94e59280 R12: 0000000000000001
+[   54.377367] R13: 0000000000000000 R14: 00000000000002fc R15: ffffffff93514000
+[   54.386739] FS:  0000000000000000(0000) GS:ffff9c901f500000(0000) knlGS:0000000000000000
+[   54.397130] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   54.404585] CR2: 0000000000000000 CR3: 000000000308e000 CR4: 00000000000006e0
+[   54.413884] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   54.423118] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   54.432192] Call Trace:
+[   54.435634]  <TASK>
+[   54.438512]  ? rcu_torture_stats_print+0x5b2/0x620
+[   54.444904]  ? __warn+0x7c/0x130
+[   54.449221]  ? rcu_torture_stats_print+0x5b2/0x620
+[   54.455737]  ? report_bug+0x171/0x1a0
+[   54.460935]  ? handle_bug+0x3c/0x70
+[   54.465874]  ? exc_invalid_op+0x17/0x70
+[   54.471336]  ? asm_exc_invalid_op+0x1a/0x20
+[   54.477092]  ? __pfx_rcu_torture_stats+0x10/0x10
+[   54.483472]  ? rcu_torture_stats_print+0x5b2/0x620
+[   54.490029]  ? rcu_torture_stats_print+0x28a/0x620
+[   54.496565]  ? finish_task_switch.isra.0+0x7e/0x240
+[   54.503261]  rcu_torture_stats+0x25/0x70
+[   54.508686]  kthread+0xe3/0x110
+[   54.513141]  ? __pfx_kthread+0x10/0x10
+[   54.518330]  ret_from_fork+0x2c/0x50
+[   54.523356]  </TASK>
+[   54.526500] ---[ end trace 0000000000000000 ]---
+
+Also other issues in 6.4.4, I am seeing RCU failures with TREE07 about 40
+minutes into the test. This warning indicates that an rcu_torture object from
+the rcu_torture pool is still allocated which is an indiciation that RCU is
+not working.
+
+[ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+
+However, if we are to believe the '9', it appears the object did made it
+quite some till the end of the pipe array but not until the free pool.
+
+The full TREE07 splat:
+[ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+[ 2169.489413] WARNING: CPU: 4 PID: 130 at kernel/rcu/rcutorture.c:1584 rcu_torture_writer+0x7f2/0xd80
+[ 2169.504064] Modules linked in:
+[ 2169.508957] CPU: 4 PID: 130 Comm: rcu_torture_wri Not tainted 6.4.4-g62813c2d2a36 #2
+[ 2169.521735] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 2169.540908] RIP: 0010:rcu_torture_writer+0x7f2/0xd80
+[ 2169.548542] Code: 15 8b 62 45 02 49 8d 45 e8 48 39 c2 74 bf e8 85 03 08 00 41 8b 55 f8 48 c7 c6 d0 f7 e0 9d 48 c7 c7 d7 7b 28 9e e8 ce 29 f7 ff <0f> 0b 8b 05 9a 48 45 02 85 c0 75 97 89 d8 87 05 8e 48 45 02 85 c0
+[ 2169.578445] RSP: 0000:ffffa645804cfe20 EFLAGS: 00010282
+[ 2169.586793] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 00000000ffffdfff
+[ 2169.598069] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000009ffb
+[ 2169.609359] RBP: ffffa645804cff10 R08: 00000000ffffdfff R09: 00000000ffffdfff
+[ 2169.620717] R10: ffffffff9e659220 R11: ffffffff9e659220 R12: 0000000000000017
+[ 2169.631918] R13: ffffffff9f166b60 R14: 0000000000000000 R15: 0000000000000001
+[ 2169.643365] FS:  0000000000000000(0000) GS:ffff8b3a5f300000(0000) knlGS:0000000000000000
+[ 2169.655249] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2169.663207] CR2: 0000000000000000 CR3: 000000001562e000 CR4: 00000000000006e0
+[ 2169.672806] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 2169.682194] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 2169.693530] Call Trace:
+[ 2169.698054]  <TASK>
+[ 2169.701786]  ? rcu_torture_writer+0x7f2/0xd80
+[ 2169.708853]  ? __warn+0x7c/0x120
+[ 2169.714088]  ? rcu_torture_writer+0x7f2/0xd80
+[ 2169.721066]  ? report_bug+0x15d/0x180
+[ 2169.726125]  ? handle_bug+0x3c/0x70
+[ 2169.730948]  ? exc_invalid_op+0x17/0x70
+[ 2169.736238]  ? asm_exc_invalid_op+0x1a/0x20
+[ 2169.742047]  ? rcu_torture_writer+0x7f2/0xd80
+[ 2169.747907]  ? __pfx_rcu_torture_writer+0x10/0x10
+[ 2169.754175]  kthread+0xcb/0xf0
+[ 2169.758407]  ? __pfx_kthread+0x10/0x10
+[ 2169.763501]  ret_from_fork+0x2c/0x50
+[ 2169.768420]  </TASK>
+[ 2169.771445] ---[ end trace 0000000000000000 ]---
+[ 2169.777698] Dumping ftrace buffer:
+[ 2169.782470]    (ftrace buffer empty)
+[ 2169.787241] ------------[ cut here ]------------
+
+
+I will continue to monitor and debug these but since I recently re-started
+testing stable (my infra was down for a long time), I don't have any
+reference for when these started happening.
+
+thanks,
+
+ - Joel
 
