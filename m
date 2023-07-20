@@ -2,277 +2,354 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE93DEB64DA
-	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 16:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A0CEB64DA
+	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 16:32:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjGTQb3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Jul 2023 12:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
+        id S231150AbjGTQcf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Jul 2023 12:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTQb2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:31:28 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12BC123
-        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 09:31:26 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b8392076c9so14839131fa.1
-        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 09:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689870685; x=1690475485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CQLbcSCN+2YyuVHPRVItbT+Q+tqkJu9oKiuCw5Oe340=;
-        b=MlJxPF5ThvM0GyLpEb9PGaxLrJf7fXVC+WnbtZr5eIXul2XCeW7Czs8Shjd4EL1Qmg
-         Fa79yliMRnoR3stB5j3fv29PS4l4v7xzcWa7Bs0NBNCzBhez6n+m4Wq0f+KuIuKtd4ql
-         poBR5MBm4ef83jDnkiauHf/yC+aRz01odih5Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689870685; x=1690475485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CQLbcSCN+2YyuVHPRVItbT+Q+tqkJu9oKiuCw5Oe340=;
-        b=M7Wh31NUniA5NnLZQFnLbZoqtSOxUXQj/RThR6LbRy+cPaWM6hXt+nTC6Xrq91KMEh
-         MPZb2jCvsY6LJoedFDfDK38qyMyysAN8vJKFDVAUzJkLN6MNQBXGzHzQWfjwJ55DIOGq
-         IJZnXeCWgXcDBM5JlFJ58GavRy2FfBr1f99WZveh69j1LadSs5y4/6eN2nIaY6zelxeT
-         bMQq1HVjFh+EnVwMfUAFs7RyEAIuAHach+ZfVMRd4FXnLifTmTZcvvxGxLkBFyuohlQj
-         H8nwg9SpOToeEhIGscAvcMxtGpy5+nDEmx1AvwmtFm+mTVf77P3x0gFwTZx7CyVmebhO
-         1Ktw==
-X-Gm-Message-State: ABy/qLbrlNpA6RV9Qoifpf2kVaeXCS7cBsGISxMVsJYEOWybuqh9Ccnh
-        AB/iY3yHUpnMNm1Nt6vvreMAjg9w0ewMQ1v8dBVnPg==
-X-Google-Smtp-Source: APBJJlHw0HhTHSnqucY0VLNy7nbD/ychKrMggduRYAFvn4K5TowI89/A/c9j6ExMpmWj0mMEKmIYV9Wk1aMk90nWBe4=
-X-Received: by 2002:a2e:b60e:0:b0:2b6:a6e7:5afa with SMTP id
- r14-20020a2eb60e000000b002b6a6e75afamr2313197ljn.12.1689870684741; Thu, 20
- Jul 2023 09:31:24 -0700 (PDT)
+        with ESMTP id S229597AbjGTQce (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Jul 2023 12:32:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEDA1701
+        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 09:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689870707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=itPzsUWzfa/0r+cdUWVW66YAXwbafCm93m3nlhq1CyM=;
+        b=HEg0/QZGYUs6w1mGEk5nbXz0A4SQjj93ZjUfdpz8XCN0n5L/xNnrtSJ/4/bip22xSsj17q
+        yR5AMI/gmad5/h82JJjkEQWn+aet6pzJ+jK3APpBp1ydWfSrFCe9cIzQB15lz9u72U5AGj
+        ayjI+/ibM/ECUl3cxZwjJBBumuielCk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-668-S2s6ay7gNwe_HYPF87xsVQ-1; Thu, 20 Jul 2023 12:31:44 -0400
+X-MC-Unique: S2s6ay7gNwe_HYPF87xsVQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3CF61101A54E;
+        Thu, 20 Jul 2023 16:31:40 +0000 (UTC)
+Received: from vschneid.remote.csb (unknown [10.42.28.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B00840C206F;
+        Thu, 20 Jul 2023 16:31:29 +0000 (UTC)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: [RFC PATCH v2 00/20] context_tracking,x86: Defer some IPIs until a user->kernel transition
+Date:   Thu, 20 Jul 2023 17:30:36 +0100
+Message-Id: <20230720163056.2564824-1-vschneid@redhat.com>
 MIME-Version: 1.0
-References: <2023071940-suspect-ominous-4a6a@gregkh> <20230720132714.GA3726096@google.com>
- <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
-In-Reply-To: <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 20 Jul 2023 12:31:13 -0400
-Message-ID: <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
-Subject: Re: [BUG] Re: Linux 6.4.4
-To:     paulmck@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+Context
+=======
 
-On Thu, Jul 20, 2023 at 11:55=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
-rg> wrote:
->
-> On Thu, Jul 20, 2023 at 01:27:14PM +0000, Joel Fernandes wrote:
-> > On Wed, Jul 19, 2023 at 05:06:39PM +0200, Greg Kroah-Hartman wrote:
-> > > I'm announcing the release of the 6.4.4 kernel.
-> > >
-> > > All users of the 6.4 kernel series must upgrade.
-> > >
-> > > The updated 6.4.y git tree can be found at:
-> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
-.git linux-6.4.y
-> > > and can be browsed at the normal kernel.org git web browser:
-> > >     https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-stable.=
-git;a=3Dsummary
-> >
-> > I have been consistently hitting the following splat with rcutorture's =
-TREE03
-> > test on 6.4.4. This happened with 6.4.4-rc3 as well.
-> >
-> > Happens at:
-> >               WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost faile=
-d (TIMER_SOFTIRQ RT prio?)
-> >
-> > So likely RCU boosting is failing:
-> >
-> > The full TREE03 splat:
-> > [   54.243588] ------------[ cut here ]------------
-> > [   54.244547] rcu-torture: rcu_torture_boost started
-> > [   54.247643] WARNING: CPU: 12 PID: 166 at kernel/rcu/rcutorture.c:222=
-7 rcu_torture_stats_print+0x5b2/0x620
-> > [   54.273082] Modules linked in:
-> > [   54.278336] CPU: 12 PID: 166 Comm: rcu_torture_sta Not tainted 6.4.4=
--g62813c2d2a36 #1
-> > [   54.288540] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
- 1.16.2-debian-1.16.2-1 04/01/2014
-> > [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
-> > [   54.307525] Code: 00 00 48 8b 05 3f 6c 46 02 e9 4a fe ff ff 0f 0b e9=
- 02 fd ff ff 0f 0b e9 09 fd ff ff 0f 0b e9 10 fd ff ff 0f 0b e9 17 fd ff ff=
- <0f> 0b e9 1e fd ff ff 0f 0b e9 21 fd ff ff e8 0b 54 ff ff 84 c0 0f
-> > [   54.331276] RSP: 0000:ffff9fef805efe08 EFLAGS: 00010202
-> > [   54.338374] RAX: 0000000000000000 RBX: ffff9fef805efe88 RCX: 0000000=
-0ffffdfff
-> > [   54.347738] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000=
-000000001
-> > [   54.358923] RBP: ffff9fef805efe30 R08: 00000000ffffdfff R09: 0000000=
-0ffffdfff
-> > [   54.368209] R10: ffffffff94e59280 R11: ffffffff94e59280 R12: 0000000=
-000000001
-> > [   54.377367] R13: 0000000000000000 R14: 00000000000002fc R15: fffffff=
-f93514000
-> > [   54.386739] FS:  0000000000000000(0000) GS:ffff9c901f500000(0000) kn=
-lGS:0000000000000000
-> > [   54.397130] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   54.404585] CR2: 0000000000000000 CR3: 000000000308e000 CR4: 0000000=
-0000006e0
-> > [   54.413884] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> > [   54.423118] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> > [   54.432192] Call Trace:
-> > [   54.435634]  <TASK>
-> > [   54.438512]  ? rcu_torture_stats_print+0x5b2/0x620
-> > [   54.444904]  ? __warn+0x7c/0x130
-> > [   54.449221]  ? rcu_torture_stats_print+0x5b2/0x620
-> > [   54.455737]  ? report_bug+0x171/0x1a0
-> > [   54.460935]  ? handle_bug+0x3c/0x70
-> > [   54.465874]  ? exc_invalid_op+0x17/0x70
-> > [   54.471336]  ? asm_exc_invalid_op+0x1a/0x20
-> > [   54.477092]  ? __pfx_rcu_torture_stats+0x10/0x10
-> > [   54.483472]  ? rcu_torture_stats_print+0x5b2/0x620
-> > [   54.490029]  ? rcu_torture_stats_print+0x28a/0x620
-> > [   54.496565]  ? finish_task_switch.isra.0+0x7e/0x240
-> > [   54.503261]  rcu_torture_stats+0x25/0x70
-> > [   54.508686]  kthread+0xe3/0x110
-> > [   54.513141]  ? __pfx_kthread+0x10/0x10
-> > [   54.518330]  ret_from_fork+0x2c/0x50
-> > [   54.523356]  </TASK>
-> > [   54.526500] ---[ end trace 0000000000000000 ]---
->
-> Agreed, this indicates that RCU priority boosting isn't getting its
-> job done.  Does this consistently fail about a minute into the run,
-> or is it less deterministic than that?
+We've observed within Red Hat that isolated, NOHZ_FULL CPUs running a
+pure-userspace application get regularly interrupted by IPIs sent from
+housekeeping CPUs. Those IPIs are caused by activity on the housekeeping CPUs
+leading to various on_each_cpu() calls, e.g.:
 
-It is not consistently a minute in, on another run it happened in an hour:
-[ 3611.018653] WARNING: CPU: 10 PID: 168 at
-kernel/rcu/rcutorture.c:2227 rcu_torture_stats_print+0x5b2/0x620
+  64359.052209596    NetworkManager       0    1405     smp_call_function_many_cond (cpu=0, func=do_kernel_range_flush)
+    smp_call_function_many_cond+0x1
+    smp_call_function+0x39
+    on_each_cpu+0x2a
+    flush_tlb_kernel_range+0x7b
+    __purge_vmap_area_lazy+0x70
+    _vm_unmap_aliases.part.42+0xdf
+    change_page_attr_set_clr+0x16a
+    set_memory_ro+0x26
+    bpf_int_jit_compile+0x2f9
+    bpf_prog_select_runtime+0xc6
+    bpf_prepare_filter+0x523
+    sk_attach_filter+0x13
+    sock_setsockopt+0x92c
+    __sys_setsockopt+0x16a
+    __x64_sys_setsockopt+0x20
+    do_syscall_64+0x87
+    entry_SYSCALL_64_after_hwframe+0x65
 
-> > Also other issues in 6.4.4, I am seeing RCU failures with TREE07 about =
-40
-> > minutes into the test. This warning indicates that an rcu_torture objec=
-t from
-> > the rcu_torture pool is still allocated which is an indiciation that RC=
-U is
-> > not working.
-> >
-> > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> >
-> > However, if we are to believe the '9', it appears the object did made i=
-t
-> > quite some till the end of the pipe array but not until the free pool.
->
-> This is from this if/for statement, correct?
->
->                 stutter_waited =3D stutter_wait("rcu_torture_writer");
->                 if (stutter_waited &&
->                     !atomic_read(&rcu_fwd_cb_nodelay) &&
->                     !cur_ops->slow_gps &&
->                     !torture_must_stop() &&
->                     boot_ended)
->                         for (i =3D 0; i < ARRAY_SIZE(rcu_tortures); i++)
->                                 if (list_empty(&rcu_tortures[i].rtort_fre=
-e) &&
->                                     rcu_access_pointer(rcu_torture_curren=
-t) !=3D
->                                     &rcu_tortures[i]) {
->                                         tracing_off();
->                                         show_rcu_gp_kthreads();
->                                         WARN(1, "%s: rtort_pipe_count: %d=
-\n", __func__, rcu_tortures[i].rtort_pipe_count);
->                                         rcu_ftrace_dump(DUMP_ALL);
->                                 }
+The heart of this series is the thought that while we cannot remove NOHZ_FULL
+CPUs from the list of CPUs targeted by these IPIs, they may not have to execute
+the callbacks immediately. Anything that only affects kernelspace can wait
+until the next user->kernel transition, providing it can be executed "early
+enough" in the entry code.
 
-Yes, that's right.
+The original implementation is from Peter [1]. Nicolas then added kernel TLB
+invalidation deferral to that [2], and I picked it up from there.
 
->
-> If so, this happens when there was a stutter wait, but RCU grace
-> periods failed to clear out the backlog during the several seconds that
-> rcutorture was forced idle.  This might be related to the RCU priority
-> boosting failure, in which a preempted reader persisted across the
-> stutter interval.
+Deferral approach
+=================
 
-When RCU is operating normally, shouldn't the check
-"(list_empty(&rcu_tortures[i].rtort_free)" not run until the preempted
-reader unblocks and exits its RCU read-side critical section?
+Storing each and every callback, like a secondary call_single_queue turned out
+to be a no-go: the whole point of deferral is to keep NOHZ_FULL CPUs in
+userspace for as long as possible - no signal of any form would be sent when
+deferring an IPI. This means that any form of queuing for deferred callbacks
+would end up as a convoluted memory leak.
 
-One thing that confuses me, in the case of
-"cur_ops->deferred_free(old_rp);" , the earlier do-while loop may exit
-before the async callbacks can finish. So what prevents the
-"(list_empty(&rcu_tortures[i].rtort_free)" check from happening before
-grace periods happen? Thanks for any clarification.
+Deferred IPIs must thus be coalesced, which this series achieves by assigning
+IPIs a "type" and having a mapping of IPI type to callback, leveraged upon
+kernel entry.
 
->
-> > The full TREE07 splat:
-> > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> > [ 2169.489413] WARNING: CPU: 4 PID: 130 at kernel/rcu/rcutorture.c:1584=
- rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.504064] Modules linked in:
-> > [ 2169.508957] CPU: 4 PID: 130 Comm: rcu_torture_wri Not tainted 6.4.4-=
-g62813c2d2a36 #2
-> > [ 2169.521735] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
- 1.16.2-debian-1.16.2-1 04/01/2014
-> > [ 2169.540908] RIP: 0010:rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.548542] Code: 15 8b 62 45 02 49 8d 45 e8 48 39 c2 74 bf e8 85 03=
- 08 00 41 8b 55 f8 48 c7 c6 d0 f7 e0 9d 48 c7 c7 d7 7b 28 9e e8 ce 29 f7 ff=
- <0f> 0b 8b 05 9a 48 45 02 85 c0 75 97 89 d8 87 05 8e 48 45 02 85 c0
-> > [ 2169.578445] RSP: 0000:ffffa645804cfe20 EFLAGS: 00010282
-> > [ 2169.586793] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000=
-0ffffdfff
-> > [ 2169.598069] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000=
-000009ffb
-> > [ 2169.609359] RBP: ffffa645804cff10 R08: 00000000ffffdfff R09: 0000000=
-0ffffdfff
-> > [ 2169.620717] R10: ffffffff9e659220 R11: ffffffff9e659220 R12: 0000000=
-000000017
-> > [ 2169.631918] R13: ffffffff9f166b60 R14: 0000000000000000 R15: 0000000=
-000000001
-> > [ 2169.643365] FS:  0000000000000000(0000) GS:ffff8b3a5f300000(0000) kn=
-lGS:0000000000000000
-> > [ 2169.655249] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 2169.663207] CR2: 0000000000000000 CR3: 000000001562e000 CR4: 0000000=
-0000006e0
-> > [ 2169.672806] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> > [ 2169.682194] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> > [ 2169.693530] Call Trace:
-> > [ 2169.698054]  <TASK>
-> > [ 2169.701786]  ? rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.708853]  ? __warn+0x7c/0x120
-> > [ 2169.714088]  ? rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.721066]  ? report_bug+0x15d/0x180
-> > [ 2169.726125]  ? handle_bug+0x3c/0x70
-> > [ 2169.730948]  ? exc_invalid_op+0x17/0x70
-> > [ 2169.736238]  ? asm_exc_invalid_op+0x1a/0x20
-> > [ 2169.742047]  ? rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.747907]  ? __pfx_rcu_torture_writer+0x10/0x10
-> > [ 2169.754175]  kthread+0xcb/0xf0
-> > [ 2169.758407]  ? __pfx_kthread+0x10/0x10
-> > [ 2169.763501]  ret_from_fork+0x2c/0x50
-> > [ 2169.768420]  </TASK>
-> > [ 2169.771445] ---[ end trace 0000000000000000 ]---
-> > [ 2169.777698] Dumping ftrace buffer:
-> > [ 2169.782470]    (ftrace buffer empty)
-> > [ 2169.787241] ------------[ cut here ]------------
-> >
-> >
-> > I will continue to monitor and debug these but since I recently re-star=
-ted
-> > testing stable (my infra was down for a long time), I don't have any
-> > reference for when these started happening.
->
-> I haven't been seeing this in v6.4, though there is always the possibilit=
-y
-> that your hardware setup has timing differences from mine, so maybe my
-> testing simply isn't seeing this.
->
-> And thank you very much for testing this!!!
+What about IPIs whose callback take a parameter, you may ask?
 
-Sure, my pleasure, thanks!
+Peter suggested during OSPM23 [3] that since on_each_cpu() targets
+housekeeping CPUs *and* isolated CPUs, isolated CPUs can access either global or
+housekeeping-CPU-local state to "reconstruct" the data that would have been sent
+via the IPI.
 
- - Joel
+This series does not affect any IPI callback that requires an argument, but the
+approach would remain the same (one coalescable callback executed on kernel
+entry).
+
+Kernel entry vs execution of the deferred operation
+===================================================
+
+There is a non-zero length of code that is executed upon kernel entry before the
+deferred operation can be itself executed (i.e. before we start getting into
+context_tracking.c proper).
+
+This means one must take extra care to what can happen in the early entry code,
+and that <bad things> cannot happen. For instance, we really don't want to hit
+instructions that have been modified by a remote text_poke() while we're on our
+way to execute a deferred sync_core().
+
+Patches
+=======
+
+o Patches 1-9 have been submitted separately and are included for the sake of
+  testing 
+
+o Patches 10-14 focus on having objtool detect problematic static key usage in
+  early entry
+  
+o Patch 15 adds the infrastructure for IPI deferral.
+o Patches 16-17 add some RCU testing infrastructure
+o Patch 18 adds text_poke() IPI deferral.
+
+o Patches 19-20 add vunmap() flush_tlb_kernel_range() IPI deferral
+
+  These ones I'm a lot less confident about, mostly due to lacking
+  instrumentation/verification.
+  
+  The actual deferred callback is also incomplete as it's not properly noinstr:
+    vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x19: call to native_write_cr4() leaves .noinstr.text section
+  and it doesn't support PARAVIRT - it's going to need a pv_ops.mmu entry, but I
+  have *no idea* what a sane implementation would be for Xen so I haven't
+  touched that yet.
+
+Patches are also available at:
+
+https://gitlab.com/vschneid/linux.git -b redhat/isolirq/defer/v2
+
+Testing
+=======
+
+Note: this is a different machine than used for v1, because that machine decided
+to act difficult.
+
+Xeon E5-2699 system with SMToff, NOHZ_FULL, isolated CPUs.
+RHEL9 userspace.
+
+Workload is using rteval (kernel compilation + hackbench) on housekeeping CPUs
+and a dummy stay-in-userspace loop on the isolated CPUs. The main invocation is:
+
+$ trace-cmd record -e "csd_queue_cpu" -f "cpu & CPUS{$ISOL_CPUS}" \
+ 	           -e "ipi_send_cpumask" -f "cpumask & CPUS{$ISOL_CPUS}" \
+	           -e "ipi_send_cpu"     -f "cpu & CPUS{$ISOL_CPUS}" \
+		   rteval --onlyload --loads-cpulist=$HK_CPUS \
+		   --hackbench-runlowmem=True --duration=$DURATION
+
+This only records IPIs sent to isolated CPUs, so any event there is interference
+(with a bit of fuzz at the start/end of the workload when spawning the
+processes). All tests were done with a duration of 30 minutes.
+
+v6.5-rc1 (+ cpumask filtering patches):
+# This is the actual IPI count
+$ trace-cmd report | grep callback | awk '{ print $(NF) }' | sort | uniq -c | sort -nr
+    338 callback=generic_smp_call_function_single_interrupt+0x0
+
+# These are the different CSD's that caused IPIs    
+$ trace-cmd report | grep csd_queue | awk '{ print $(NF-1) }' | sort | uniq -c | sort -nr
+   9207 func=do_flush_tlb_all
+   1116 func=do_sync_core
+     62 func=do_kernel_range_flush
+      3 func=nohz_full_kick_func
+
+v6.5-rc1 + patches:
+# This is the actual IPI count
+$ trace-cmd report | grep callback | awk '{ print $(NF) }' | sort | uniq -c | sort -nr
+      2 callback=generic_smp_call_function_single_interrupt+0x0
+
+# These are the different CSD's that caused IPIs          
+$ trace-cmd report | grep csd_queue | awk '{ print $(NF-1) }' | sort | uniq -c | sort -nr
+      2 func=nohz_full_kick_func
+
+The incriminating IPIs are all gone, but note that on the machine I used to test
+v1 there were still some do_flush_tlb_all() IPIs caused by
+pcpu_balance_workfn(), since only vmalloc is affected by the deferral
+mechanism.
+
+
+Acknowledgements
+================
+
+Special thanks to:
+o Clark Williams for listening to my ramblings about this and throwing ideas my way
+o Josh Poimboeuf for his guidance regarding objtool and hinting at the
+  .data..ro_after_init section.
+
+Links
+=====
+
+[1]: https://lore.kernel.org/all/20210929151723.162004989@infradead.org/
+[2]: https://github.com/vianpl/linux.git -b ct-work-defer-wip
+[3]: https://youtu.be/0vjE6fjoVVE
+
+Revisions
+=========
+
+RFCv1 -> RFCv2
+++++++++++++++
+
+o Rebased onto v6.5-rc1
+
+o Updated the trace filter patches (Steven)
+
+o Fixed __ro_after_init keys used in modules (Peter)
+o Dropped the extra context_tracking atomic, squashed the new bits in the
+  existing .state field (Peter, Frederic)
+  
+o Added an RCU_EXPERT config for the RCU dynticks counter size, and added an
+  rcutorture case for a low-size counter (Paul)
+
+  The new TREE11 case with a 2-bit dynticks counter seems to pass when ran
+  against this series.
+
+o Fixed flush_tlb_kernel_range_deferrable() definition
+
+Peter Zijlstra (1):
+  jump_label,module: Don't alloc static_key_mod for __ro_after_init keys
+
+Valentin Schneider (19):
+  tracing/filters: Dynamically allocate filter_pred.regex
+  tracing/filters: Enable filtering a cpumask field by another cpumask
+  tracing/filters: Enable filtering a scalar field by a cpumask
+  tracing/filters: Enable filtering the CPU common field by a cpumask
+  tracing/filters: Optimise cpumask vs cpumask filtering when user mask
+    is a single CPU
+  tracing/filters: Optimise scalar vs cpumask filtering when the user
+    mask is a single CPU
+  tracing/filters: Optimise CPU vs cpumask filtering when the user mask
+    is a single CPU
+  tracing/filters: Further optimise scalar vs cpumask comparison
+  tracing/filters: Document cpumask filtering
+  objtool: Flesh out warning related to pv_ops[] calls
+  objtool: Warn about non __ro_after_init static key usage in .noinstr
+  context_tracking: Make context_tracking_key __ro_after_init
+  x86/kvm: Make kvm_async_pf_enabled __ro_after_init
+  context-tracking: Introduce work deferral infrastructure
+  rcu: Make RCU dynticks counter size configurable
+  rcutorture: Add a test config to torture test low RCU_DYNTICKS width
+  context_tracking,x86: Defer kernel text patching IPIs
+  context_tracking,x86: Add infrastructure to defer kernel TLBI
+  x86/mm, mm/vmalloc: Defer flush_tlb_kernel_range() targeting NOHZ_FULL
+    CPUs
+
+ Documentation/trace/events.rst                |  14 +
+ arch/Kconfig                                  |   9 +
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/include/asm/context_tracking_work.h  |  20 ++
+ arch/x86/include/asm/text-patching.h          |   1 +
+ arch/x86/include/asm/tlbflush.h               |   2 +
+ arch/x86/kernel/alternative.c                 |  24 +-
+ arch/x86/kernel/kprobes/core.c                |   4 +-
+ arch/x86/kernel/kprobes/opt.c                 |   4 +-
+ arch/x86/kernel/kvm.c                         |   2 +-
+ arch/x86/kernel/module.c                      |   2 +-
+ arch/x86/mm/tlb.c                             |  40 ++-
+ include/asm-generic/sections.h                |   5 +
+ include/linux/context_tracking.h              |  26 ++
+ include/linux/context_tracking_state.h        |  65 +++-
+ include/linux/context_tracking_work.h         |  28 ++
+ include/linux/jump_label.h                    |   1 +
+ include/linux/trace_events.h                  |   1 +
+ init/main.c                                   |   1 +
+ kernel/context_tracking.c                     |  53 ++-
+ kernel/jump_label.c                           |  49 +++
+ kernel/rcu/Kconfig                            |  33 ++
+ kernel/time/Kconfig                           |   5 +
+ kernel/trace/trace_events_filter.c            | 302 ++++++++++++++++--
+ mm/vmalloc.c                                  |  19 +-
+ tools/objtool/check.c                         |  22 +-
+ tools/objtool/include/objtool/check.h         |   1 +
+ tools/objtool/include/objtool/special.h       |   2 +
+ tools/objtool/special.c                       |   3 +
+ .../selftests/rcutorture/configs/rcu/TREE11   |  19 ++
+ .../rcutorture/configs/rcu/TREE11.boot        |   1 +
+ 31 files changed, 695 insertions(+), 64 deletions(-)
+ create mode 100644 arch/x86/include/asm/context_tracking_work.h
+ create mode 100644 include/linux/context_tracking_work.h
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
+
+--
+2.31.1
+
