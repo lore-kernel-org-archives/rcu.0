@@ -2,47 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F4E9EB64DA
-	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 16:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E943AC0015E
+	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 16:40:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbjGTQht (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Jul 2023 12:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
+        id S231902AbjGTQkT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Jul 2023 12:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbjGTQhZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:37:25 -0400
+        with ESMTP id S231479AbjGTQkD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Jul 2023 12:40:03 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2973596
-        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 09:35:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DD111D
+        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 09:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689870877;
+        s=mimecast20190719; t=1689871082;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qlKugqrUieeoCK15s+XaSmSpmpWi+6cYdLHEecxMVFQ=;
-        b=OcU9zw0h7zBApjuoQctxqPIx+OV5Yk94dSB3XH1Cc4Mb2vtV1zGd2B6CHa9w0kLD4d5YxZ
-        09Lw5NcGCCla97nSdJLkcF/SDLGqlXwjev+LmeIdzpo3kddNrFyyAyJzQ4uJfoj6wdSTep
-        xH60arkvKDWjLkvVfuUMjJga9KH9Sbc=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-240-myilGmoaNUKUY_DOur6_gg-1; Thu, 20 Jul 2023 12:34:35 -0400
-X-MC-Unique: myilGmoaNUKUY_DOur6_gg-1
+        bh=D+WoXJvLSOgt+Kve5Q+fkVLRoN9HdK3x6VSzpxIN5vU=;
+        b=N0N3S4BrI6ewibq0g7IofA8z40aKKra/Je/vl2HFEGe0r3FBnOwwhDcE+8xtiae+vPEpjM
+        t4gtBKW8eLdYyo1Z/0FVoTDkpmiY7eW8ZdHOnlDP6LDsBabPrMJ549WdgSgSJJRk9KONZJ
+        naP6dCbk1rK9ad7+vvc0w2ceGbiO1kg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-225-n6Pvv7lTMfCgsmkY3ui-qw-1; Thu, 20 Jul 2023 12:34:19 -0400
+X-MC-Unique: n6Pvv7lTMfCgsmkY3ui-qw-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 95D7E3815EEF;
-        Thu, 20 Jul 2023 16:34:32 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5937B185A78F;
+        Thu, 20 Jul 2023 16:34:16 +0000 (UTC)
 Received: from vschneid.remote.csb (unknown [10.42.28.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 28EAC40C2070;
-        Thu, 20 Jul 2023 16:34:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D32A40C2070;
+        Thu, 20 Jul 2023 16:34:08 +0000 (UTC)
 From:   Valentin Schneider <vschneid@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -55,7 +56,6 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -90,9 +90,9 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Yair Podemsky <ypodemsk@redhat.com>
-Subject: [RFC PATCH v2 19/20] context_tracking,x86: Add infrastructure to defer kernel TLBI
-Date:   Thu, 20 Jul 2023 17:30:55 +0100
-Message-Id: <20230720163056.2564824-20-vschneid@redhat.com>
+Subject: [RFC PATCH v2 17/20] rcutorture: Add a test config to torture test low RCU_DYNTICKS width
+Date:   Thu, 20 Jul 2023 17:30:53 +0100
+Message-Id: <20230720163056.2564824-18-vschneid@redhat.com>
 In-Reply-To: <20230720163056.2564824-1-vschneid@redhat.com>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
 MIME-Version: 1.0
@@ -102,122 +102,54 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Kernel TLB invalidation IPIs are a common source of interference on
-NOHZ_FULL CPUs. Given NOHZ_FULL CPUs executing in userspace are not
-accessing any kernel addresses, these invalidations do not need to happen
-immediately, and can be deferred until the next user->kernel transition.
+We now have an RCU_EXPORT knob for configuring the size of the dynticks
+counter: CONFIG_RCU_DYNTICKS_BITS.
 
-Rather than make __flush_tlb_all() noinstr, add a minimal noinstr
-variant that doesn't try to leverage INVPCID.
+Add a torture config for a ridiculously small counter (2 bits). This is ac
+opy of TREE4 with the added counter size restriction.
 
-FIXME: not fully noinstr compliant
-XXX: same issue as with ins patching, when do we access data that should be
-invalidated?
-
+Link: http://lore.kernel.org/r/4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- arch/x86/include/asm/context_tracking_work.h |  4 ++++
- arch/x86/include/asm/tlbflush.h              |  1 +
- arch/x86/mm/tlb.c                            | 17 +++++++++++++++++
- include/linux/context_tracking_state.h       |  4 ++++
- include/linux/context_tracking_work.h        |  2 ++
- 5 files changed, 28 insertions(+)
+ .../selftests/rcutorture/configs/rcu/TREE11   | 19 +++++++++++++++++++
+ .../rcutorture/configs/rcu/TREE11.boot        |  1 +
+ 2 files changed, 20 insertions(+)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
 
-diff --git a/arch/x86/include/asm/context_tracking_work.h b/arch/x86/include/asm/context_tracking_work.h
-index 2c66687ce00e2..9d4f021b5a45b 100644
---- a/arch/x86/include/asm/context_tracking_work.h
-+++ b/arch/x86/include/asm/context_tracking_work.h
-@@ -3,6 +3,7 @@
- #define _ASM_X86_CONTEXT_TRACKING_WORK_H
- 
- #include <asm/sync_core.h>
-+#include <asm/tlbflush.h>
- 
- static __always_inline void arch_context_tracking_work(int work)
- {
-@@ -10,6 +11,9 @@ static __always_inline void arch_context_tracking_work(int work)
- 	case CONTEXT_WORK_SYNC:
- 		sync_core();
- 		break;
-+	case CONTEXT_WORK_TLBI:
-+		__flush_tlb_all_noinstr();
-+		break;
- 	}
- }
- 
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index 80450e1d5385a..323b971987af7 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -17,6 +17,7 @@
- DECLARE_PER_CPU(u64, tlbstate_untag_mask);
- 
- void __flush_tlb_all(void);
-+void noinstr __flush_tlb_all_noinstr(void);
- 
- #define TLB_FLUSH_ALL	-1UL
- #define TLB_GENERATION_INVALID	0
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 267acf27480af..631df9189ded4 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -1237,6 +1237,23 @@ void __flush_tlb_all(void)
- }
- EXPORT_SYMBOL_GPL(__flush_tlb_all);
- 
-+void noinstr __flush_tlb_all_noinstr(void)
-+{
-+	/*
-+	 * This is for invocation in early entry code that cannot be
-+	 * instrumented. A RMW to CR4 works for most cases, but relies on
-+	 * being able to flip either of the PGE or PCIDE bits. Flipping CR4.PCID
-+	 * would require also resetting CR3.PCID, so just try with CR4.PGE, else
-+	 * do the CR3 write.
-+	 *
-+	 * TODO: paravirt
-+	 */
-+	if (cpu_feature_enabled(X86_FEATURE_PGE))
-+		__native_tlb_flush_global(this_cpu_read(cpu_tlbstate.cr4));
-+	else
-+		flush_tlb_local();
-+}
-+
- void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
- {
- 	struct flush_tlb_info *info;
-diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
-index 292a0b7c06948..3571c62cbb9cd 100644
---- a/include/linux/context_tracking_state.h
-+++ b/include/linux/context_tracking_state.h
-@@ -62,6 +62,10 @@ enum ctx_state {
- #define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
- #define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
- 
-+/*
-+ * When CONFIG_CONTEXT_TRACKING_WORK=n, _END is 1 behind _START, which makes
-+ * the CONTEXT_WORK size computation below 0, which is what we want!
-+ */
- #define	CONTEXT_WORK_START (CONTEXT_STATE_END + 1)
- #define CONTEXT_WORK_END   (RCU_DYNTICKS_START - 1)
- 
-diff --git a/include/linux/context_tracking_work.h b/include/linux/context_tracking_work.h
-index 13fc97b395030..47d5ced39a43a 100644
---- a/include/linux/context_tracking_work.h
-+++ b/include/linux/context_tracking_work.h
-@@ -6,11 +6,13 @@
- 
- enum {
- 	CONTEXT_WORK_SYNC_OFFSET,
-+	CONTEXT_WORK_TLBI_OFFSET,
- 	CONTEXT_WORK_MAX_OFFSET
- };
- 
- enum ct_work {
- 	CONTEXT_WORK_SYNC     = BIT(CONTEXT_WORK_SYNC_OFFSET),
-+	CONTEXT_WORK_TLBI     = BIT(CONTEXT_WORK_TLBI_OFFSET),
- 	CONTEXT_WORK_MAX      = BIT(CONTEXT_WORK_MAX_OFFSET)
- };
- 
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+new file mode 100644
+index 0000000000000..aa7274efd9819
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+@@ -0,0 +1,19 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=8
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=y
++CONFIG_PREEMPT=n
++CONFIG_PREEMPT_DYNAMIC=n
++#CHECK#CONFIG_TREE_RCU=y
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=n
++CONFIG_NO_HZ_FULL=y
++CONFIG_RCU_TRACE=y
++CONFIG_RCU_FANOUT=4
++CONFIG_RCU_FANOUT_LEAF=3
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_RCU_EXPERT=y
++CONFIG_RCU_EQS_DEBUG=y
++CONFIG_RCU_LAZY=y
++CONFIG_RCU_DYNTICKS_BITS=2
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
+new file mode 100644
+index 0000000000000..a8d94caf7d2fd
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
+@@ -0,0 +1 @@
++rcutree.rcu_fanout_leaf=4 nohz_full=1-N
 -- 
 2.31.1
 
