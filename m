@@ -2,47 +2,48 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A68EB64DD
-	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 16:40:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F131EB64DD
+	for <rcu@archiver.kernel.org>; Thu, 20 Jul 2023 16:42:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjGTQka (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Jul 2023 12:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
+        id S229666AbjGTQme (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Jul 2023 12:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjGTQkH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:40:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAE930EC
-        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 09:39:00 -0700 (PDT)
+        with ESMTP id S229563AbjGTQmd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Jul 2023 12:42:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DF3272D
+        for <rcu@vger.kernel.org>; Thu, 20 Jul 2023 09:41:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689871081;
+        s=mimecast20190719; t=1689871260;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gPdSzcTTJlOeO2aEdgyECLhQy37txJLWdi6TDmez9kY=;
-        b=eCITkmSS+alYr3wiCgQ+m4/JuDZJxY+NjjBmVdMxQk1phj0TP9uWJezTQA+b5zj3ILugYM
-        JQUo1VvV4fuVe66H1lsx8lrD7Kx/dKL99C0+1JKUXLi2jLZ8Kl3mzclZT+cOQz8e8YGSj/
-        l0aOTNXGzA2nRkWtlAAFSzrDCWmzSNI=
+        bh=QESi3DN0fC8QnZsNV/N4VXfEg//bCfMhfN1lMbJjDRM=;
+        b=csadNJQJAchCWLtPvGBJWtvxKgEPkOxeiaPL42laqQqKz23I2Xgu9t9mmQggl+g+10u/p5
+        yHd5F2T0MBK5+NgQHCklmYNp/cFsS6tA2F3FxY6ggEm4me+BC3kgOVz33fLvQJB6JeP9YU
+        pSl8p/nrfDcBSVHhnlg89UeLjRF7Z70=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-230-kFK-c7oyNgC289gF1X8KZw-1; Thu, 20 Jul 2023 12:34:11 -0400
-X-MC-Unique: kFK-c7oyNgC289gF1X8KZw-1
+ us-mta-183-lKQNgwDjNBmDn1pKucKVhA-1; Thu, 20 Jul 2023 12:34:27 -0400
+X-MC-Unique: lKQNgwDjNBmDn1pKucKVhA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FA07101A54E;
-        Thu, 20 Jul 2023 16:34:08 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BF85A936D34;
+        Thu, 20 Jul 2023 16:34:24 +0000 (UTC)
 Received: from vschneid.remote.csb (unknown [10.42.28.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29A9240C206F;
-        Thu, 20 Jul 2023 16:33:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BFF9140C2070;
+        Thu, 20 Jul 2023 16:34:16 +0000 (UTC)
 From:   Valentin Schneider <vschneid@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -54,8 +55,8 @@ Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         Wanpeng Li <wanpengli@tencent.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -90,9 +91,9 @@ Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Yair Podemsky <ypodemsk@redhat.com>
-Subject: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size configurable
-Date:   Thu, 20 Jul 2023 17:30:52 +0100
-Message-Id: <20230720163056.2564824-17-vschneid@redhat.com>
+Subject: [RFC PATCH v2 18/20] context_tracking,x86: Defer kernel text patching IPIs
+Date:   Thu, 20 Jul 2023 17:30:54 +0100
+Message-Id: <20230720163056.2564824-19-vschneid@redhat.com>
 In-Reply-To: <20230720163056.2564824-1-vschneid@redhat.com>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
 MIME-Version: 1.0
@@ -102,93 +103,221 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-CONTEXT_TRACKING_WORK reduces the size of the dynticks counter to free up
-some bits for work deferral. Paul suggested making the actual counter size
-configurable for rcutorture to poke at, so do that.
+text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
+them vs the newly patched instruction. CPUs that are executing in userspace
+do not need this synchronization to happen immediately, and this is
+actually harmful interference for NOHZ_FULL CPUs.
 
-Make it only configurable under RCU_EXPERT. Previous commits have added
-build-time checks that ensure a kernel with problematic dynticks counter
-width can't be built.
+As the synchronization IPIs are sent using a blocking call, returning from
+text_poke_bp_batch() implies all CPUs will observe the patched
+instruction(s), and this should be preserved even if the IPI is deferred.
+In other words, to safely defer this synchronization, any kernel
+instruction leading to the execution of the deferred instruction
+sync (ct_work_flush()) must *not* be mutable (patchable) at runtime.
 
-Link: http://lore.kernel.org/r/4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+This means we must pay attention to mutable instructions in the early entry
+code:
+- alternatives
+- static keys
+- all sorts of probes (kprobes/ftrace/bpf/???)
+
+The early entry code leading to ct_work_flush() is noinstr, which gets rid
+of the probes.
+
+Alternatives are safe, because it's boot-time patching (before SMP is
+even brought up) which is before any IPI deferral can happen.
+
+This leaves us with static keys. Any static key used in early entry code
+should be only forever-enabled at boot time, IOW __ro_after_init (pretty
+much like alternatives). Objtool is now able to point at static keys that
+don't respect this, and all static keys used in early entry code have now
+been verified as behaving like so.
+
+Leverage the new context_tracking infrastructure to defer sync_core() IPIs
+to a target CPU's next kernel entry.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- include/linux/context_tracking.h       |  3 ++-
- include/linux/context_tracking_state.h |  3 +--
- kernel/rcu/Kconfig                     | 33 ++++++++++++++++++++++++++
- 3 files changed, 36 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/context_tracking_work.h |  6 +++--
+ arch/x86/include/asm/text-patching.h         |  1 +
+ arch/x86/kernel/alternative.c                | 24 ++++++++++++++++----
+ arch/x86/kernel/kprobes/core.c               |  4 ++--
+ arch/x86/kernel/kprobes/opt.c                |  4 ++--
+ arch/x86/kernel/module.c                     |  2 +-
+ include/linux/context_tracking_work.h        |  4 ++--
+ 7 files changed, 32 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
-index 8aee086d0a25f..9c0c622bc27bb 100644
---- a/include/linux/context_tracking.h
-+++ b/include/linux/context_tracking.h
-@@ -12,7 +12,8 @@
+diff --git a/arch/x86/include/asm/context_tracking_work.h b/arch/x86/include/asm/context_tracking_work.h
+index 5bc29e6b2ed38..2c66687ce00e2 100644
+--- a/arch/x86/include/asm/context_tracking_work.h
++++ b/arch/x86/include/asm/context_tracking_work.h
+@@ -2,11 +2,13 @@
+ #ifndef _ASM_X86_CONTEXT_TRACKING_WORK_H
+ #define _ASM_X86_CONTEXT_TRACKING_WORK_H
  
- #ifdef CONFIG_CONTEXT_TRACKING_WORK
- static_assert(CONTEXT_WORK_MAX_OFFSET <= CONTEXT_WORK_END + 1 - CONTEXT_WORK_START,
--	      "Not enough bits for CONTEXT_WORK");
-+	      "Not enough bits for CONTEXT_WORK, "
-+	      "CONFIG_RCU_DYNTICKS_BITS might be too high");
- #endif
++#include <asm/sync_core.h>
++
+ static __always_inline void arch_context_tracking_work(int work)
+ {
+ 	switch (work) {
+-	case CONTEXT_WORK_n:
+-		// Do work...
++	case CONTEXT_WORK_SYNC:
++		sync_core();
+ 		break;
+ 	}
+ }
+diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
+index 29832c338cdc5..b6939e965e69d 100644
+--- a/arch/x86/include/asm/text-patching.h
++++ b/arch/x86/include/asm/text-patching.h
+@@ -43,6 +43,7 @@ extern void text_poke_early(void *addr, const void *opcode, size_t len);
+  */
+ extern void *text_poke(void *addr, const void *opcode, size_t len);
+ extern void text_poke_sync(void);
++extern void text_poke_sync_deferrable(void);
+ extern void *text_poke_kgdb(void *addr, const void *opcode, size_t len);
+ extern void *text_poke_copy(void *addr, const void *opcode, size_t len);
+ extern void *text_poke_copy_locked(void *addr, const void *opcode, size_t len, bool core_ok);
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 72646d75b6ffe..fcce480e1919e 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -18,6 +18,7 @@
+ #include <linux/mmu_context.h>
+ #include <linux/bsearch.h>
+ #include <linux/sync_core.h>
++#include <linux/context_tracking.h>
+ #include <asm/text-patching.h>
+ #include <asm/alternative.h>
+ #include <asm/sections.h>
+@@ -1933,9 +1934,24 @@ static void do_sync_core(void *info)
+ 	sync_core();
+ }
  
- #ifdef CONFIG_CONTEXT_TRACKING_USER
-diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
-index 828fcdb801f73..292a0b7c06948 100644
---- a/include/linux/context_tracking_state.h
-+++ b/include/linux/context_tracking_state.h
-@@ -58,8 +58,7 @@ enum ctx_state {
- #define CONTEXT_STATE_START 0
- #define CONTEXT_STATE_END   (bits_per(CONTEXT_MAX - 1) - 1)
++static bool do_sync_core_defer_cond(int cpu, void *info)
++{
++	return !ct_set_cpu_work(cpu, CONTEXT_WORK_SYNC);
++}
++
++static void __text_poke_sync(smp_cond_func_t cond_func)
++{
++	on_each_cpu_cond(cond_func, do_sync_core, NULL, 1);
++}
++
+ void text_poke_sync(void)
+ {
+-	on_each_cpu(do_sync_core, NULL, 1);
++	__text_poke_sync(NULL);
++}
++
++void text_poke_sync_deferrable(void)
++{
++	__text_poke_sync(do_sync_core_defer_cond);
+ }
  
--#define RCU_DYNTICKS_BITS  (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? 16 : 31)
--#define RCU_DYNTICKS_START (CT_STATE_SIZE - RCU_DYNTICKS_BITS)
-+#define RCU_DYNTICKS_START (CT_STATE_SIZE - CONFIG_RCU_DYNTICKS_BITS)
- #define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
- #define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
+ /*
+@@ -2145,7 +2161,7 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+ 		text_poke(text_poke_addr(&tp[i]), &int3, INT3_INSN_SIZE);
+ 	}
  
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index bdd7eadb33d8f..1ff2aab24e964 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
- 	  Say Y here if you need tighter callback-limit enforcement.
- 	  Say N here if you are unsure.
+-	text_poke_sync();
++	text_poke_sync_deferrable();
  
-+config RCU_DYNTICKS_RANGE_BEGIN
-+	int
-+	depends on !RCU_EXPERT
-+	default 31 if !CONTEXT_TRACKING_WORK
-+	default 16 if CONTEXT_TRACKING_WORK
-+
-+config RCU_DYNTICKS_RANGE_BEGIN
-+	int
-+	depends on RCU_EXPERT
-+	default 2
-+
-+config RCU_DYNTICKS_RANGE_END
-+	int
-+	default 31 if !CONTEXT_TRACKING_WORK
-+	default 16 if CONTEXT_TRACKING_WORK
-+
-+config RCU_DYNTICKS_BITS_DEFAULT
-+       int
-+       default 31 if !CONTEXT_TRACKING_WORK
-+       default 16 if CONTEXT_TRACKING_WORK
-+
-+config RCU_DYNTICKS_BITS
-+	int "Dynticks counter width" if CONTEXT_TRACKING_WORK
-+	range RCU_DYNTICKS_RANGE_BEGIN RCU_DYNTICKS_RANGE_END
-+	default RCU_DYNTICKS_BITS_DEFAULT
-+	help
-+	  This option controls the width of the dynticks counter.
-+
-+	  Lower values will make overflows more frequent, which will increase
-+	  the likelihood of extending grace-periods.
-+
-+	  Don't touch this unless you are running some tests.
-+
- endmenu # "RCU Subsystem"
+ 	/*
+ 	 * Second step: update all but the first byte of the patched range.
+@@ -2207,7 +2223,7 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+ 		 * not necessary and we'd be safe even without it. But
+ 		 * better safe than sorry (plus there's not only Intel).
+ 		 */
+-		text_poke_sync();
++		text_poke_sync_deferrable();
+ 	}
+ 
+ 	/*
+@@ -2228,7 +2244,7 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+ 	}
+ 
+ 	if (do_sync)
+-		text_poke_sync();
++		text_poke_sync_deferrable();
+ 
+ 	/*
+ 	 * Remove and wait for refs to be zero.
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index f7f6042eb7e6c..a38c914753397 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -735,7 +735,7 @@ void arch_arm_kprobe(struct kprobe *p)
+ 	u8 int3 = INT3_INSN_OPCODE;
+ 
+ 	text_poke(p->addr, &int3, 1);
+-	text_poke_sync();
++	text_poke_sync_deferrable();
+ 	perf_event_text_poke(p->addr, &p->opcode, 1, &int3, 1);
+ }
+ 
+@@ -745,7 +745,7 @@ void arch_disarm_kprobe(struct kprobe *p)
+ 
+ 	perf_event_text_poke(p->addr, &int3, 1, &p->opcode, 1);
+ 	text_poke(p->addr, &p->opcode, 1);
+-	text_poke_sync();
++	text_poke_sync_deferrable();
+ }
+ 
+ void arch_remove_kprobe(struct kprobe *p)
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index 57b0037d0a996..88451a744ceda 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -521,11 +521,11 @@ void arch_unoptimize_kprobe(struct optimized_kprobe *op)
+ 	       JMP32_INSN_SIZE - INT3_INSN_SIZE);
+ 
+ 	text_poke(addr, new, INT3_INSN_SIZE);
+-	text_poke_sync();
++	text_poke_sync_deferrable();
+ 	text_poke(addr + INT3_INSN_SIZE,
+ 		  new + INT3_INSN_SIZE,
+ 		  JMP32_INSN_SIZE - INT3_INSN_SIZE);
+-	text_poke_sync();
++	text_poke_sync_deferrable();
+ 
+ 	perf_event_text_poke(op->kp.addr, old, JMP32_INSN_SIZE, new, JMP32_INSN_SIZE);
+ }
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index b05f62ee2344b..8b4542dc51b6d 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -242,7 +242,7 @@ static int write_relocate_add(Elf64_Shdr *sechdrs,
+ 				   write, apply);
+ 
+ 	if (!early) {
+-		text_poke_sync();
++		text_poke_sync_deferrable();
+ 		mutex_unlock(&text_mutex);
+ 	}
+ 
+diff --git a/include/linux/context_tracking_work.h b/include/linux/context_tracking_work.h
+index fb74db8876dd2..13fc97b395030 100644
+--- a/include/linux/context_tracking_work.h
++++ b/include/linux/context_tracking_work.h
+@@ -5,12 +5,12 @@
+ #include <linux/bitops.h>
+ 
+ enum {
+-	CONTEXT_WORK_n_OFFSET,
++	CONTEXT_WORK_SYNC_OFFSET,
+ 	CONTEXT_WORK_MAX_OFFSET
+ };
+ 
+ enum ct_work {
+-	CONTEXT_WORK_n        = BIT(CONTEXT_WORK_n_OFFSET),
++	CONTEXT_WORK_SYNC     = BIT(CONTEXT_WORK_SYNC_OFFSET),
+ 	CONTEXT_WORK_MAX      = BIT(CONTEXT_WORK_MAX_OFFSET)
+ };
+ 
 -- 
 2.31.1
 
