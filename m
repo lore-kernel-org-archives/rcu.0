@@ -2,210 +2,295 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21EFDC04E69
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 18:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD2DBC001DC
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 19:20:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbjGUSQF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 14:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
+        id S232114AbjGUTU6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 15:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjGUSQC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 14:16:02 -0400
-Received: from MW2PR02CU002.outbound.protection.outlook.com (mail-westus2azon11013010.outbound.protection.outlook.com [52.101.49.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B9B2D4C;
-        Fri, 21 Jul 2023 11:16:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LroHHHDEKWgMIAN4qcQ0s6k4eaBoAYRlFvuBxUB+U4Twx/hLodNPH7452fWsg+lTlWAmRT3PLFxAYAw3e/Z8ET/VGiLDKrDNVzxEN4Xa1UDJxS3L+jY88gghKmM8j5Zz6c09wvs/iCyhNLyM9krMQIxHlyZAzXQ5PkxFJG/8Nec1Q7XBGfwgyMGEF9cgKT+/vSpX4B7iS8ka5oo43XEW0dHcpv5bfQjuAcNlmSszRWjFrqmLyQJUqKopFvIFhwyBTTONXWbjvPpGGz4z39L4LyJWC2eyIXtw6DhmW0IMXYGfHhbpF1/ujYpIkOSKGGea1Yvpc287339wt5KKNgJqjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WuaYdPhlhzktyg0kW53rS+aJMpwJ194mHIcpT+uSocA=;
- b=SSBr4966XC0JxYFg7ElnS5jOfnbNbYTncf3L/wjuzFLne2H1I+ErMwkG9284dQwDbiWhyljuciJZe7bJpXPDJNIc9fPMPqNTffhcZH/NoivBEiU9adv2Lwd2jh2s8m9msxnXy8O+oAxu8bBCNG71phrWj32snKXsF7/3VFjLRevGI6oXJX3dHCN/howc3ocPTgpj3Bxs8iTOiTUkqvDNTYDY7DB/5gB5Ipb4q4LAsq6/mcaqckXlsAzjaJLjCCacqPYGJrK5cchwgfBbfuTZV73VERuhS2XYxHjXf/d7BDXDw4iwlHLMEJikimn6xYT2K/lZN4q/QbRLya8zFKRe6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WuaYdPhlhzktyg0kW53rS+aJMpwJ194mHIcpT+uSocA=;
- b=yp6J5KzwRkl+r4Ksg+FkdF/E4mLIS3DmwIYLz/OjQp0EEWfUC/VFnNcGrshodnc6N0ewRqpStSCqMf/StpYUskEm8/PFsnZAiwf2y7wH9y2OBVJ/ID29pk6ziQoEEd/yEsYd42qtzYYjndq/PZErISd1z0sLGZkF9+lksHMffwY=
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
- by CH3PR05MB9580.namprd05.prod.outlook.com (2603:10b6:610:14d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Fri, 21 Jul
- 2023 18:15:58 +0000
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::92ad:8382:ae15:59a9]) by BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::92ad:8382:ae15:59a9%7]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
- 18:15:58 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Valentin Schneider <vschneid@redhat.com>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        =?utf-8?B?VGhvbWFzIFdlacOfc2NodWg=?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 20/20] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-Thread-Topic: [RFC PATCH v2 20/20] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-Thread-Index: AQHZuygc2EqEnKJbqk2MRjNS6hbswq/EiG2A
-Date:   Fri, 21 Jul 2023 18:15:57 +0000
-Message-ID: <188AEA79-10E6-4DFF-86F4-FE624FD1880F@vmware.com>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-21-vschneid@redhat.com>
-In-Reply-To: <20230720163056.2564824-21-vschneid@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.600.7)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY3PR05MB8531:EE_|CH3PR05MB9580:EE_
-x-ms-office365-filtering-correlation-id: 59c252e6-1ff8-4754-19a0-08db8a16881c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cwhAaEE72WeGhalf9IjrMCAqqyJ5IG3ocg1iongIR3SApwlPLWO875LS92WdAwMO7JZVahsc3DJ2ZjmHmCZ+JSUJo9+sK+OGEMgc0+gXTGvVLUJEa/ufZVdB0k4xTrI1uGPJr6sMvRVjoDUni9ii9KHb4YtV5KES+fBnS3qyG2k1cC8MuqSMFnuiwYF/zC1QMRRuqHB+Eqo75vp7/QXDHVwpGlmDzm2QtpTyebUXTPz4XAl6hEaQc8n4z3TPuJFye7fQCtORGaWH+pfSyzLusCEULVSP+PSIYrHn9KbMyLH1g+o7PSxqq4Doup187XjcnaL6Wki3HnbIU2OdOVd1S2Cb5EnVeXlNRgn//5vkfIkUrrnnEqFuaVum24pUgHxhT0f5ZDtrNiseddaM1zwgOrZheCVwZ/h1WV1aaeIiuKyYkJ8nFGxRjez47xzdr/TbiLPqksZT8yfwUI2bDc650z6W5MSEyGPB2am1G83JhRU5LQeOGxVLlddIrpUPr6sfkwdso7e/GhWrkGrLsLrwlGY5fs9HlY+Wk7LNC9vpMpgMJVAjX2GBESQ/CI+JN73FX9z+b/6zOPVaWIrdSAhiNBj1ND56Gjy1MRHL7kvIYsxxforR4p2ZOSURkl/Pbl9QvLFpWlsHo0OCx+EO/bnDmVtwJfNpWDVGrA7VW8N2ac5GWdSnq4TjWuyCjJSDf6wu0dBLppsWhqBtWHFW8bpsi9nqFQjw+06J1KnNZFmD4Ew=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(366004)(396003)(39860400002)(136003)(376002)(451199021)(316002)(41300700001)(66476007)(4326008)(64756008)(6916009)(66946007)(5660300002)(66556008)(66446008)(8936002)(8676002)(966005)(33656002)(83380400001)(2616005)(86362001)(38070700005)(122000001)(38100700002)(76116006)(26005)(186003)(6486002)(6506007)(36756003)(6512007)(54906003)(53546011)(478600001)(71200400001)(7416002)(7406005)(7366002)(2906002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MVZyUzE1RnQzWW1DY1BJK0lsdHBma2FIYXU3bVU2TW0rUDhBTXBwem1BQmZB?=
- =?utf-8?B?cU1VejBCdEQxcSt4ZFZEZ0l3c3ZsR0NqczZvVjBKdW5vYjlJLzkydlZhbTFq?=
- =?utf-8?B?L1Ntb3A3YlcyTU5IcHRTSVFrNDhRcWcvb0hrMmROVmo4QndqYXl2R28yNDQz?=
- =?utf-8?B?TmJHeVgyQjVscTJaNWtxeU5XNXFIaXJtdlpEQlU0NE9pNVZvK09TVnVLanVi?=
- =?utf-8?B?TExZT2xnZEJLMGNQNGdjUHdYWGUzRHFWeTJWZ0ZYWTFqbWR4dnVhcDJ2K0dI?=
- =?utf-8?B?ZkNWcDVpK3VxNFlIYVVsMVI3VTZGczNvaVBvYTlqNmtjSThiM1RxRHQ2Nkk4?=
- =?utf-8?B?QkNmbWQvUTBpbjQyNjVJenpqSERWQ1FHOTY3MmZVblpZVDNyajN5aSt3eVBw?=
- =?utf-8?B?SGJUK3RwMGtGL2pGbVJNU2tjZXJ3NHQyQW04ME42UmVmZ2xEWWMzUXRENGFH?=
- =?utf-8?B?RDRUYU9oR3Flbmd4b050bUdTNGFSR3QxeGVxQzE4T2NDaDhzaExYS1B6bnZi?=
- =?utf-8?B?U280bGVvNGIrM3V6d2NrSzY1N2hqVzRsY3RncU9rd0Z4RWR3ZXZrS2pKSjBz?=
- =?utf-8?B?eHN2dmlBV1NVNUtFaG1qTFFnMFA4ZzUvNXZZbXpDVnJHamNTd2pXNCtOZjhM?=
- =?utf-8?B?WWFYNHcwYm54N2M4c3ppZWRkS3h4a2VIU1FqK0xPbnY4TnBlaFByUTFVbndZ?=
- =?utf-8?B?MDRQWVY1YlBiblNCWE5vQVJhMnFDT3ZVTzFOdXV6ZGZDbi9kYXBKaC9FL3hv?=
- =?utf-8?B?aWZKS2ZkNnBTMml3eFlYeHk2bzBuRXhLaS9kbVpCN2tpelJPVUlUVzkva0Fi?=
- =?utf-8?B?eXp0SjBjY0RDemtBWTcxMUU0cS9hUlFhcG53cWZteS9vTmFRcC9FdENuZGRE?=
- =?utf-8?B?cnVVNXdXYnZCNEx5WWtqYXV1d0RXTmN1Y2k0R2s2dnhIMlA3R3hoUFltVzhP?=
- =?utf-8?B?bmhQR3BvTGRPdGg1K3NKaHRQRFByZjAzTDFtdmhLY0hFck9DOC90UU4yV0Z6?=
- =?utf-8?B?V1pub1ZTNENJVzhlTVlTMGd6a2pDNFBjbjJrU3l6MWVUUnU1cDFsc0J4QUJF?=
- =?utf-8?B?dHpuWjBKS005Ti93Nm1jcXN0RjRiS0UvVjVSc0hVY1R0YkRxZ0xLaFh6N1Rh?=
- =?utf-8?B?TVpsSld6L2tkRFdzYUx4V1MzT3N2dlVVeE9ySzVQVnV0bkJIZlFaZVh4bHds?=
- =?utf-8?B?dVJKWHE0YngwQitpMVB4YXRmU1FZRWQ4VTJZZDJ1cnMxM1laTDNmWTIvMm9Y?=
- =?utf-8?B?NjhqZnQ0cXNLQW5CZnBweWlMOEJ5eS94eXVWVXplSllPdnNHM1k5RUpPRjNp?=
- =?utf-8?B?QjBhZUNsYmo3ckcvR1IveVV1bFNFb0s1enFZTkdvbVlyREdqazN1N2dkalpp?=
- =?utf-8?B?ajhSR3FXVlo2U1lzc0RTY1BneGhJc2grQ09rMUp1TUNJbGgyRDhJdWVLWitY?=
- =?utf-8?B?VEgvLzJOczJSSENVeEhrQ3c5T2xwdFFsSE52dTNqN2gyTG1VWjI1MHAvaDhT?=
- =?utf-8?B?ckFyMTR2T1hhMzhxaGp4VDhIUDlsclJNVU5UNHhZZExwdzg1clRBb1NzTWdR?=
- =?utf-8?B?cUVidTUrdUE5ejNSRzVTdjNqRzdVRXdFS0x4d3dCd0RmZlJ1K3VybDh2RU5a?=
- =?utf-8?B?L1I3dWJsK1BHM0ZoVDNDODVaU3daejVPaHE0NVY0ekE0cG9ZbXljMFZsN3ln?=
- =?utf-8?B?RTlLZWxyRjJZbjBocDFoVFFCZHJTQVZPZXcvU3RKcUNhRGYvbWxWemRoUGZp?=
- =?utf-8?B?WGRMQk5ZVHc1bnUxeVpkOWdtTThLZkdEZng3dS96RHFUNysyL0hJZFFRMUpZ?=
- =?utf-8?B?U01uUkhOc29aTEUyMkN2MzM1UmVpaGhYbEN3MkZtcnVzZWxuRWtKdExqL2Vm?=
- =?utf-8?B?cGNTU3V4bzJrMmVyTnJjTllxT1JhZ3B5L284QkNpK1BjOHJ4WUdGL0pXOUcv?=
- =?utf-8?B?TVBXNnhlaCtodHQyZ0R1dXdETVJXMHQ3WS9wZ0Z0RlMrcGh1cS9FL09OYzg0?=
- =?utf-8?B?WUtFNFl2dER4c2FkemFIb2RjSWtqTVR4Tkl4ekpZbkVsR2ZGdUZ5OEpEUWdm?=
- =?utf-8?B?eTNFc1R1aEhFdmxUTkN2aXhtRit2RVZBY1B0bHpRU3JEcEdxc0phNmxTMGxD?=
- =?utf-8?Q?H/gpo18tl5TUkKlYenFmqLhLt?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7766A4269FAF454CB9966780F5A51F95@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S232117AbjGUTUy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 15:20:54 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B873A30EA
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 12:20:51 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-63ce8bea776so571456d6.0
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 12:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689967251; x=1690572051;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gVLht2DkkpNq7SBlRJvR3FFoekKm//GcsByuwOIRh5c=;
+        b=sn+TuX6yDPWPGmIE18lk8KdECmq4UypqVf1UZ/HSBedoa+3FFGKQTlkQryRE7CFJZb
+         ObKksKomePZCwmYlz6erwXrGrEahfYJ7FA3dVBrilFcfwvjBbE+/aFJmF5OLwqC/2QjZ
+         HJzxlnEV9bIFQGJEf9XBLiluxE3QS/5UaCkWQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689967251; x=1690572051;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gVLht2DkkpNq7SBlRJvR3FFoekKm//GcsByuwOIRh5c=;
+        b=hM3OmRgR1L4koyTEYWen7hPhlUHdqt4/AhNTlgEXCE+J/RdO7IxZs6AiCdB+YzdGn7
+         wZ1mjV/+MNCxeo7cSA6FtapUZWDycqipe61XDKCuyn3zljEQxPzqnoHfh8i7YALFrejJ
+         yLs5E7ZxmOageFE/Equ+G4asYjSwKcqoR9NugMxWRghsNHjfApxb+zZMPGFBiUUKRCpS
+         av5coexRpJLlcb8gC9c9yB2NjGDyvPFIrfnFiX6q4kq0hf2O3yRUpjCqQiROahDWkFUz
+         PrAXP/xanlfIHIJmwH9nzsPRMW9qfXJ4PgfRwSy3aiIc7MGxYy5sqV2Q+j/XbzOMlg7m
+         3RPQ==
+X-Gm-Message-State: ABy/qLZmGwEsHIvXvuT6BiARlozChkG42y0OIzyzt8OJ1j0GfCA+czOh
+        pviPmEgz8RWsJqth2twBN76Zhw==
+X-Google-Smtp-Source: APBJJlEzKRW06Nmn01vfB7usPeznyCnZo/8lMp6GPv6bFuVhXPhCpe3b/j3i/7YnntE3sRhPtRfdKA==
+X-Received: by 2002:a05:6214:e4d:b0:635:df71:1fe5 with SMTP id o13-20020a0562140e4d00b00635df711fe5mr1114700qvc.34.1689967250671;
+        Fri, 21 Jul 2023 12:20:50 -0700 (PDT)
+Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id x20-20020a0cb214000000b00626362f1bf1sm1501058qvd.63.2023.07.21.12.20.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 12:20:49 -0700 (PDT)
+Message-ID: <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 15:20:48 -0400
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59c252e6-1ff8-4754-19a0-08db8a16881c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2023 18:15:58.0227
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0rdCcokAB1aG4MfPkmZNtscOZlXbH6rJCiF+1bqovADrr7naEPMhKOzgGfGuY+9rdDY9Hjf+XOHA2SUCyt0sOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR05MB9580
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [BUG] Re: Linux 6.4.4
+Content-Language: en-US
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+References: <2023071940-suspect-ominous-4a6a@gregkh>
+ <20230720132714.GA3726096@google.com>
+ <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
+ <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
+ <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
+ <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
+ <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
+ <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
+In-Reply-To: <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-DQoNCj4gT24gSnVsIDIwLCAyMDIzLCBhdCA5OjMwIEFNLCBWYWxlbnRpbiBTY2huZWlkZXIgPHZz
-Y2huZWlkQHJlZGhhdC5jb20+IHdyb3RlOg0KPiANCj4gdnVubWFwKCkncyBpc3N1ZWQgZnJvbSBo
-b3VzZWtlZXBpbmcgQ1BVcyBhcmUgYSByZWxhdGl2ZWx5IGNvbW1vbiBzb3VyY2Ugb2YNCj4gaW50
-ZXJmZXJlbmNlIGZvciBpc29sYXRlZCBOT0haX0ZVTEwgQ1BVcywgYXMgdGhleSBhcmUgaGl0IGJ5
-IHRoZQ0KPiBmbHVzaF90bGJfa2VybmVsX3JhbmdlKCkgSVBJcy4NCj4gDQo+IEdpdmVuIHRoYXQg
-Q1BVcyBleGVjdXRpbmcgaW4gdXNlcnNwYWNlIGRvIG5vdCBhY2Nlc3MgZGF0YSBpbiB0aGUgdm1h
-bGxvYw0KPiByYW5nZSwgdGhlc2UgSVBJcyBjb3VsZCBiZSBkZWZlcnJlZCB1bnRpbCB0aGVpciBu
-ZXh0IGtlcm5lbCBlbnRyeS4NCg0KU28gSSB0aGluayB0aGVyZSBhcmUgYSBmZXcgYXNzdW1wdGlv
-bnMgaGVyZSB0aGF0IGl0IHNlZW1zIHN1aXRhYmxlIHRvIGNvbmZpcm0NCmFuZCBhY2tub3dsZWRn
-ZSB0aGUgbWFqb3Igb25lIGluIHRoZSBjb21taXQgbG9nIChhc3N1bWluZyB0aGV5IGhvbGQpLg0K
-DQpUaGVyZSBpcyBhbiBhc3N1bXB0aW9uIHRoYXQgVk1BUCBwYWdlLXRhYmxlcyBhcmUgbm90IGZy
-ZWVkLiBJIGFjdHVhbGx5DQpuZXZlciBwYWlkIGF0dGVudGlvbiB0byB0aGF0LCBidXQgc2tpbW1p
-bmcgdGhlIGNvZGUgaXQgZG9lcyBzZWVtIHNvLiBUbw0KY2xhcmlmeSB0aGUgaXNzdWU6IGlmIHBh
-Z2UtdGFibGVzIHdlcmUgZnJlZWQgYW5kIHRoZWlyIHBhZ2VzIHdlcmUgcmV1c2VkLA0KdGhlcmUg
-d291bGQgYmUgYSBwcm9ibGVtIHRoYXQgcGFnZS13YWxrIGNhY2hlcyBmb3IgaW5zdGFuY2Ugd291
-bGQgYmUgdXNlZA0KYW5kIOKAnGp1bmvigJ0gZW50cmllcyBmcm9tIHRoZSByZXVzZWQgcGFnZXMg
-d291bGQgYmUgdXNlZC4gU2VlIFsxXS4NCg0KSSB3b3VsZCBhbHNvIGFzc3VtZSB0aGUgbWVtb3J5
-LWhvdC11bnBsdWcgb2Ygc29tZSBzb3J0cyBpcyBub3QgYW4gaXNzdWUsDQooaS5lLiwgeW91IGNh
-bm5vdCBoYXZlIGEgc3RhbGUgVExCIGVudHJ5IHBvaW50aW5nIHRvIG1lbW9yeSB0aGF0IHdhcw0K
-dW5wbHVnZ2VkKS4gIA0KDQpJIGFsc28gdGhpbmsgdGhhdCB0aGVyZSBtaWdodCBiZSBzcGVjdWxh
-dGl2ZSBjb2RlIGV4ZWN1dGlvbiB1c2luZyBzdGFsZQ0KVExCIGVudHJpZXMgdGhhdCB3b3VsZCBw
-b2ludCB0byBtZW1vcnkgdGhhdCBoYXMgYmVlbiByZXVzZWQgYW5kIHBlcmhhcHMNCmNvbnRyb2xs
-YWJsZSBieSB0aGUgdXNlci4gSWYgc29tZWhvdyB0aGUgQ1BVL09TIGlzIHRyaWNrZWQgdG8gdXNl
-IHRoZQ0Kc3RhbGUgZXhlY3V0YWJsZSBUTEIgZW50cmllcyBlYXJseSBlbm91Z2ggb24ga2VybmVs
-IGVudHJ5IHRoYXQgbWlnaHQgYmUNCmFuIGlzc3VlLiBJIGd1ZXNzIGl0IGlzIHByb2JhYmx5IHRo
-ZW9yZXRpY2FsIGlzc3VlLCBidXQgaXQgd291bGQgYmUgaGVscGZ1bA0KdG8gY29uZmlybS4NCg0K
-SW4gZ2VuZXJhbCwgZGVmZXJyaW5nIFRMQiBmbHVzaGVzIGNhbiBiZSBkb25lIHNhZmVseS4gVGhp
-cyBwYXRjaCwgSSB0aGluaywNCnRha2VzIGl0IG9uZSBzdGVwIGZvcndhcmQgYW5kIGFsbG93cyB0
-aGUgcmV1c2Ugb2YgdGhlIG1lbW9yeSBiZWZvcmUgdGhlIFRMQg0KZmx1c2ggaXMgYWN0dWFsbHkg
-ZG9uZS4gVGhpcyBpcyBtb3JlIGRhbmdlcm91cy4NCg0KWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL2xrbWwvdGlwLWI5NTY1NzViZWQ5MWVjZmIxMzZhODMwMDc0MmVjYmJmNDUxNDcxYWJAZ2l0
-Lmtlcm5lbC5vcmcv
+(Trimming the CC list a bit)
+
+On 7/21/23 08:13, Joel Fernandes wrote:
+> On 7/20/23 15:47, Paul E. McKenney wrote:
+>> On Thu, Jul 20, 2023 at 03:32:35PM -0400, Joel Fernandes wrote:
+>>> On 7/20/23 15:04, Paul E. McKenney wrote:
+>>>> On Thu, Jul 20, 2023 at 12:31:13PM -0400, Joel Fernandes wrote:
+>>>>> Hi Paul,
+>>>>>
+>>>>> On Thu, Jul 20, 2023 at 11:55 AM Paul E. McKenney
+>>>>> <paulmck@kernel.org> wrote:
+>>>>>>
+>>>>>> On Thu, Jul 20, 2023 at 01:27:14PM +0000, Joel Fernandes wrote:
+>>> [...]
+>>>>>>>
+>>>>>>> So likely RCU boosting is failing:
+>>>>>>>
+>>>>>>> The full TREE03 splat:
+>>>>>>> [   54.243588] ------------[ cut here ]------------
+>>>>>>> [   54.244547] rcu-torture: rcu_torture_boost started
+>>> [...]
+>>>>>>> [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
+>>> [...]
+>>>>>>> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+>>>>>>>
+>>>>>>> However, if we are to believe the '9', it appears the object did
+>>>>>>> made it
+>>>>>>> quite some till the end of the pipe array but not until the free
+>>>>>>> pool.
+>>>>>>
+>>>>>> This is from this if/for statement, correct?
+>>>>>>
+>>>>>>                   stutter_waited =
+>>>>>> stutter_wait("rcu_torture_writer");
+>>>>>>                   if (stutter_waited &&
+>>>>>>                       !atomic_read(&rcu_fwd_cb_nodelay) &&
+>>>>>>                       !cur_ops->slow_gps &&
+>>>>>>                       !torture_must_stop() &&
+>>>>>>                       boot_ended)
+>>>>>>                           for (i = 0; i <
+>>>>>> ARRAY_SIZE(rcu_tortures); i++)
+>>>>>>                                   if
+>>>>>> (list_empty(&rcu_tortures[i].rtort_free) &&
+>>>>>>                                      
+>>>>>> rcu_access_pointer(rcu_torture_current) !=
+>>>>>>                                       &rcu_tortures[i]) {
+>>>>>>                                           tracing_off();
+>>>>>>                                           show_rcu_gp_kthreads();
+>>>>>>                                           WARN(1, "%s:
+>>>>>> rtort_pipe_count:
+>>>>>>                                           rcu_ftrace_dump(DUMP_ALL);
+>>>>>>                                   }
+>>>>>
+>>>>> Yes, that's right.
+>>>>>
+>>>>>> If so, this happens when there was a stutter wait, but RCU grace
+>>>>>> periods failed to clear out the backlog during the several seconds
+>>>>>> that
+>>>>>> rcutorture was forced idle.  This might be related to the RCU
+>>>>>> priority
+>>>>>> boosting failure, in which a preempted reader persisted across the
+>>>>>> stutter interval.
+>>>>>
+>>>>> When RCU is operating normally, shouldn't the check
+>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" not run until the preempted
+>>>>> reader unblocks and exits its RCU read-side critical section?
+>>>>
+>>>> Yes, but not just "until", but rather "long after".  If RCU is doing
+>>>> grace periods correctly, an active reader on a given rcu_tortures[]
+>>>> element will prevent .rtort_pipe_count from exceeding the value 2.
+>>>
+>>> Ah ok, so the rtort_pipe_count being 9 is a sign RCU isn't making
+>>> progress
+>>> thus making it absent from the free list.
+>>
+>> Yes, though RCU is -just- -barely- too slow, as one more grace period
+>> would have done it.
+>>
+>>>> The element will not be put on a list until .rtort_pipe_count is equal
+>>>> to RCU_TORTURE_PIPE_LEN, which is 10.
+>>>>
+>>>> This warning usually appears when something is holding up the
+>>>> grace-period
+>>>> kthread.  Historically, this has included deadlocks, missed timers,
+>>>> and whatever else can prevent the grace-period kthread from running.
+>>>
+>>> Makes sense.
+>>>
+>>>>> One thing that confuses me, in the case of
+>>>>> "cur_ops->deferred_free(old_rp);" , the earlier do-while loop may exit
+>>>>> before the async callbacks can finish. So what prevents the
+>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" check from happening before
+>>>>> grace periods happen? Thanks for any clarification.
+>>>>
+>>>> We only enter this code if the stutter_wait() actually waited, and by
+>>>> default this function will wait about five seconds.  Since the
+>>>> rcutorture
+>>>> testing goes idle during this time period (or is supposed to!), if
+>>>> things
+>>>> are working properly, knocking off ten grace periods during that time
+>>>> should be pretty much a given.
+>>>
+>>> Sure, makes sense. And this is not Lazy-RCU so 5 seconds should be
+>>> plenty
+>>> ;). I think I was subconsciously expecting an rcu_barrier() somewhere
+>>> in the
+>>> code before those checks, but that's not needed as you pointed that the
+>>> stutter should be giving enough time for RCU to make progress.
+>>
+>> And there might need to be a call_rcu_hurry() in there somewhere,
+>> now that you mention it.  Which would pretty much defeat any sort of
+>> lazy-RCU-callback testing in rcutorture, but testing of laziness might
+>> need to be separate anyway.
+>>
+>>> So hmm, the count being 9 means that not enough RCU grace periods have
+>>> passed for the rcu_torture object in question thus keeping it always
+>>> allocated. The GP thread not getting CPU can do that indeed, or perhaps
+>>> something else stalling RCU like a preempted reader, length preemption
+>>> disabling on a CPU and so forth..  I'll try to collect a trace when it
+>>> happens.
+>>
+>> Looking forward to seeing what you come up with!
+> 
+> So far I found this. Before the crash, GPs took about 50ms, during the
+> crash it took 5 seconds before the warning which aligns with what you
+> mentioned about stutter.
+> 
+> 
+> The GP that never completed is at this line:
+> 
+> [ 2816.041082]    <...>-13       13d.... 1237016139us :
+> rcu_grace_period: rcu_sched 144681 start
+> 
+> And fqs loop got a "dti" for CPUs:
+> 1
+> 2
+> 12
+> 
+> And I see cpuqs for:
+> 13
+> 6
+> 10
+> 5
+> 4
+> 11
+> 
+> No idea what happened to 3, 8, 9, 14, 15. Maybe the "dti" for those did
+> not show in the trace?
+> 
+> However, I see that CPU 7 did this:
+> [ 2816.205277]   <idle>-0         7d.... 1237016284us : sched_switch:
+> prev_comm=swapper/7 prev_pid=0 prev_prio=120 prev_state=R ==>
+> next_comm=rcu_torture_rea next_pid=149 next_prio=139
+> 
+> 
+> and then did this about 3 seconds later:
+> [ 2819.394111] rcu_tort-149       7dNs.. 1237025699us :
+> rcu_grace_period: rcu_sched 144677 cpuend
+> [ 2819.412745] rcu_tort-149       7dNs.. 1237025699us :
+> rcu_grace_period: rcu_sched 144681 cpustart
+> 
+> 
+> Which means it never switched out from the CPU all this while. Neither
+> did it report cpuqs. Ok it did notice the new GP started, welcome to the
+> party mate ;)
+> 
+> That points the issue I think. I wonder if the emergency provisions for
+> forcing quiescent states on NOHZ_FULL CPUs kicked in. ISTR, we had
+> issues with that in the past where we had to fix the tick path to report
+> a QS.
+> 
+> I'll add some more traces. Especially around preempted readers, the
+> emergency provisions for forcing a QS and so forth and see if I can dig
+> more information.
+
+In another instance, I caught a stack trace of CPU5 when it did not
+check-in with RCU for 3 seconds or so:
+
+[ 1127.067889]  kmalloc_trace+0x25/0x90
+[ 1127.072823]  rcu_torture_fwd_prog+0x3d8/0xa60
+[ 1127.078749]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
+[ 1127.085468]  ? kthread+0xcb/0xf0
+[ 1127.090040]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
+[ 1127.096626]  kthread+0xcb/0xf0
+[ 1127.100803]  ? __pfx_kthread+0x10/0x10
+[ 1127.107207]  ret_from_fork+0x2c/0x50
+[ 1127.113662]  </TASK>
+[ 1127.117818] Kernel panic - not syncing: kernel: panic_on_warn set ...
+
+It appears it was in "rcu_torture_fwd_prog" at the time. It got stuck
+there for 2 seconds.
+
+Interestingly, I did find the scheduler tick was trying to get in touch
+with the CPU and it was running code on it even:
+[ 5858.463102] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
+Start scheduler-tick
+[ 5858.472903] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
+End scheduler-tick
+
+So I could add some traces there to figure out what is it upto. ISTR, we
+also send IPIs to these CPUs? So maybe adding some traces there too is
+in order.
+
+Also earlier in dmesg it did this:
+[ 1124.825504] rcu_torture_fwd_prog n_max_cbs: 44181
+[ 1124.832158] rcu_torture_fwd_prog: Starting forward-progress test 0
+[ 1124.840977] rcu_torture_fwd_prog_cr: Starting forward-progress test 0
+[ 1126.726621] ------------[ cut here ]------------
+[ 1126.733296] rcutorture_oom_notify invoked upon OOM during
+forward-progress testing.
+
+Before that "cut here", there is a 2 second gap which tells me it got
+stuck there.
+
+So this function rcu_torture_fwd_prog() is keeping the CPU unresponsive
+from an RCU perspective for some reason? Because I never saw the
+"rcu_torture_fwd_prog_cr: Waiting for CBs" message before it panicked.
+
+Collecting traces again.. ;) thanks,
+
+ - Joel
+
