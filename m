@@ -2,246 +2,95 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A8AEC001DE
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 21:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B6EBC001DC
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 21:43:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjGUVZu (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 17:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S229592AbjGUVnu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 17:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbjGUVZb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 17:25:31 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EBC3A97;
-        Fri, 21 Jul 2023 14:25:10 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bb81809ca8so367515ad.3;
-        Fri, 21 Jul 2023 14:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689974710; x=1690579510;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WTGORxsrxN9RZGG729FMXCa8oJ9OGght7Ge2MF78D6E=;
-        b=QWoW73AGyL+cYA1lbcR1wddOXTnugG27xBKAgMhBCbr88SyFmCZlEt+RYpWiheqZi8
-         i/KnW9kO/XER3UVk0CUW++nCN1/SuYGSs2DMkXeAb8Zf01KPobvuGZOuhOtYWWrlzn9b
-         cvL1gPAEiilUL1IiIxbr5CfkxsuXSFBxLOrftMIeUOgOZbQpUVubp9t+jMWw4ZzJ4YA7
-         GH+6S74PP0jL8wNqrZpyuWYze01BBX50Luvf5hfu6U9yryZNnk3zmoHfcis9qhm7oAQL
-         3QkLJnmmkObAhz6WiLEUHQfJlXm5P7yL6LBpRlqTncQ0mK7Bz77RRNAbNjV7HS2jIQ4s
-         IRJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689974710; x=1690579510;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WTGORxsrxN9RZGG729FMXCa8oJ9OGght7Ge2MF78D6E=;
-        b=gysDeEV/7WZfk9swY0p7aKu4EEtKJgxgxlQnlG+F9XhGvFs7neztDem2JZ7qaKVvG7
-         mvYdBTNO95chj/M6eBswYkFeMLnnQdjBCmuV4D3fjiDAe2Q1pAQKAmvD4L2dMxBBiJuY
-         xibeJ4No8fJX6Ea5QqIop+YD0sxOe+tZb3blXTzC6U9JHoGkpVCrkps/GSAVwvVS2Pye
-         FX8sFY+TNDYIy+f9JsRd/cx0vGOgNeUfuyRSJ11RGZVM+hH1pBWxfOBO/jvNW+PaOogF
-         QsD8guS1SPpAv/kqpv0NQ+SbCGte6YLEYoIc2pHroB36CoJl6kUUN/BduUoimInLDNrW
-         JYVg==
-X-Gm-Message-State: ABy/qLZ41fLkjVGv9oUV2h5J7u8uZrYC2vxR6EOKYStSbVredfsxsRG+
-        TwUqnkGJNhfH6Xdj100bkVcloPIVQ3TPtg==
-X-Google-Smtp-Source: APBJJlEpJqXCl9FEtpk+Z2mPIi7Fr+gWrcSB3P6dwJ6tsz2QsUmNFJ22BZwIZmkGmRQFGZmVQei2aA==
-X-Received: by 2002:a17:903:4285:b0:1b9:db3d:9f22 with SMTP id ju5-20020a170903428500b001b9db3d9f22mr3062056plb.48.1689974710313;
-        Fri, 21 Jul 2023 14:25:10 -0700 (PDT)
-Received: from [127.0.0.1] ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id ja21-20020a170902efd500b001b8a3a0c928sm3963820plb.181.2023.07.21.14.25.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Jul 2023 14:25:09 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <ED5C700E-0C63-41E5-8A46-F7BC93B2FD42@gmail.com>
-Date:   Sat, 22 Jul 2023 05:25:02 +0800
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <25321527-3040-434D-80EC-82DFD17C710C@gmail.com>
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
- <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
- <ED9F14A2-533B-471E-9B79-F75CEEE9A216@gmail.com>
- <ED5C700E-0C63-41E5-8A46-F7BC93B2FD42@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, roman.gushchin@linux.dev,
-        "David.Laight@aculab.com" <David.Laight@ACULAB.COM>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        with ESMTP id S230403AbjGUVnt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 17:43:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F703A86;
+        Fri, 21 Jul 2023 14:43:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A61B861D9E;
+        Fri, 21 Jul 2023 21:43:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08A65C433C7;
+        Fri, 21 Jul 2023 21:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689975828;
+        bh=5OypTY92vR4ii5FD5NdPd22+sYnRdWN6NGC5ng0U2No=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=M5aI52EmmH2dyMkJeZpuhvn8b99Z/c8eBlHhZ5LvSz78tdVK0EZ71qcGTjKnzn3Aq
+         q1fyq+kMuzFhs6RFP3XxjLKR8hq74R8mErvhlLqTFb75jlzSlqezJfSMKPbtupxJd/
+         bQG1QhoCrxYdkiinZ/DcCnhRtHtIRWsvsn8rZQnYD2xTRzWTZRZkXd88gKHrOjMSCF
+         YjClnzwVtOnutwjPKVegC/DsEMjiN0jFxQ/c1PS5CMTWkm8nILsVNUasLhxLeCqQiG
+         J9uXtOmqgSDiYd1su4l+aJYiI15JssKHAmMfHBttVlcgzvN9ZevOMN9JE+I7qY6HG1
+         9jtQZoTyvuZNg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8C580CE09E0; Fri, 21 Jul 2023 14:43:47 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 14:43:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Levi Yun <ppbuk5246@gmail.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on
+ rcu_report_qs_rdp
+Message-ID: <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230721121534.44328-1-ppbuk5246@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721121534.44328-1-ppbuk5246@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Jul 21, 2023 at 01:15:33PM +0100, Levi Yun wrote:
+> Wherever rcu_report_qs_rdp is called, cpu_no_qs.norm value is false.
+> Therefore, Remove unnecessary check in rcu_report_qs_rdp.
+> 
+> Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
 
-> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 =E4=B8=8A=E5=8D=884:40=EF=BC=8CAlan =
-Huang <mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
->=20
->> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 =E4=B8=8A=E5=8D=884:08=EF=BC=8CAlan =
-Huang <mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->>=20
->>=20
->>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 =E4=B8=8B=E5=8D=8811:21=EF=BC=8CJoe=
-l Fernandes <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>=20
->>> On 7/21/23 10:27, Alan Huang wrote:
->>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
-<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>=20
->>>>>=20
->>>>>=20
->>>>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> =
-wrote:
->>>>>>=20
->>>>>> =EF=BB=BF
->>>>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>>>=20
->>>>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>>>>>>>=20
->>>>>>>> Hi,
->>>>>>>>=20
->>>>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
-first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
->>>>>>>> and a related discussion [1].
->>>>>>>>=20
->>>>>>>> After reading the whole discussion, it seems like that =
-ptr->field was cached by gcc even with the deprecated
->>>>>>>> ACCESS_ONCE(), so my question is:
->>>>>>>>=20
->>>>>>>>    Is that a compiler bug? If so, has this bug been fixed =
-today, ten years later?
->>>>>>>>=20
->>>>>>>>    What about READ_ONCE(ptr->field)?
->>>>>>>=20
->>>>>>> Make sure sparse is happy.
->>>>>>=20
->>>>>> It caused a problem without barrier(), and the deprecated =
-ACCESS_ONCE() didn=E2=80=99t help:
->>>>>>=20
->>>>>> https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->>>>>>=20
->>>>>> So, my real question is: With READ_ONCE(ptr->field), are there =
-still some unusual cases where gcc
->>>>>> decides not to reload ptr->field?
->>>>>=20
->>>>> I am a bit doubtful there will be strong (any?) interest in =
-replacing the barrier() with READ_ONCE() without any tangible reason, =
-regardless of whether a gcc issue was fixed.
->>>>>=20
->>>>> But hey, if you want to float the idea=E2=80=A6
->>>> We already had the READ_ONCE() in rcu_deference_raw().
->>>> The barrier() here makes me think we need write code like below:
->>>> =09
->>>> 	READ_ONCE(head->first);
->>>> 	barrier();
->>>> 	READ_ONCE(head->first);
->>>> With READ_ONCE (or the deprecated ACCESS_ONCE),
->>>> I don=E2=80=99t think a compiler should cache the value of =
-head->first.
->>>=20
->>>=20
->>> Right, it shouldn't need to cache. To Eric's point it might be risky =
-to remove the barrier() and someone needs to explain that issue first =
-(or IMO there needs to be another tangible reason like performance etc). =
-Anyway, FWIW I wrote a simple program and I am not seeing the =
-head->first cached with the pattern you shared above:
->>>=20
->>> #include <stdlib.h>
->>>=20
->>> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
->>> #define barrier() __asm__ __volatile__("": : :"memory")
->>>=20
->>> typedef struct list_head {
->>>  int first;
->>>  struct list_head *next;
->>> } list_head;
->>>=20
->>> int main() {
->>>  list_head *head =3D (list_head *)malloc(sizeof(list_head));
->>>  head->first =3D 1;
->>>  head->next =3D 0;
->>>=20
->>>  READ_ONCE(head->first);
->>>  barrier();
->>>  READ_ONCE(head->first);
->>>=20
->>>  free(head);
->>>  return 0;
->>> }
->>>=20
->>> On ARM 32-bit, 64-bit and x86_64, with -Os and then another =
-experiment with -O2 on new gcc versions.
->>=20
->> Well, when I change the code as below:
->>=20
->> #include <stdlib.h>
->>=20
->> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
->> #define barrier() __asm__ __volatile__("": : :"memory")
->>=20
->> typedef struct list_head {
->>  struct list_head *next;
->>  int first;					// difference here
->> } list_head;
->>=20
->> int main() {
->>  list_head *head =3D (list_head *)malloc(sizeof(list_head));
->>  head->first =3D 1;
->>  head->next =3D 0;
->>=20
->>  READ_ONCE(head->first);
->>  READ_ONCE(head->first);
->>=20
->>  free(head);
->>  return 0;
->> }
->>=20
->> GCC 8, GCC 10, GCC 11 generate the following code (with -O2):
->>=20
->> main:
->>       subq    $8, %rsp
->>       movl    $16, %edi
->>       call    malloc
->>       movl    $1, 8(%rax)
->>       movq    %rax, %rdi
->>       call    free
->>       xorl    %eax, %eax
->>       addq    $8, %rsp
->>       ret
->>=20
->>=20
->> The READ_ONCE has been optimized away. The difference in the source =
-code is that I put ->first to the second member.
->>=20
->> That means, GCC 8, 10, 11 have the bug!
->>=20
->>=20
->=20
-> Found a related discussion:
->=20
-> 	https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D102714
+Why not start with something like this?
 
-And this:
+	if (!WARN_ON_ONCE(!rdp->cpu_no_qs.b.norm) ||
+	    rdp->gp_seq != rnp->gp_seq || rdp->gpwrap) {
 
-	https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D47409
+Except that rcu_report_qs_rdp() is invoked with interrupts enabled,
+which means that there is some possibility of state changes up to the
+raw_spin_lock_irqsave_rcu_node(rnp, flags) statement.
 
-So, the compiler had the bug ten years ago.
+So, did you check whether RCU's interrupt paths change this state?
 
->=20
-> Looks like GCC 10, 11 have been backported, not sure whether GCC 8 has =
-been backported.
->=20
-> So, I have the following questions:
->=20
-> Given that some people might not update their GCC, do they need to be =
-notified?
->=20
-> Do we need to CC Linus?
->=20
->=20
+						Thanx, Paul
 
+> ---
+>  kernel/rcu/tree.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 1449cb69a0e0..d840596e9903 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1962,8 +1962,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
+>  	rnp = rdp->mynode;
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> -	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
+> -	    rdp->gpwrap) {
+> +	if (rdp->gp_seq != rnp->gp_seq || rdp->gpwrap) {
+> 
+>  		/*
+>  		 * The grace period in which this quiescent state was
+> --
+> 2.37.2
