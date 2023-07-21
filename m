@@ -2,140 +2,150 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E97AC04A94
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 14:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE04EB64DC
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 14:27:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjGUOKH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 10:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
+        id S229651AbjGUO1e (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 10:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGUOKF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:10:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7170CE;
-        Fri, 21 Jul 2023 07:10:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6558E6195D;
-        Fri, 21 Jul 2023 14:10:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39B4C433C7;
-        Fri, 21 Jul 2023 14:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689948603;
-        bh=mqpc+bgxfipMEEmdMi0c2/ZJlESRyidyP20iwu1ubiU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mwXJ4tWAGVS1YQv279yKam6lNor4fbv+EyYgPE9RKEXpJy6cXNZvFlP/KKxzKOTcB
-         +lqGPmG2ffZZ0Efx0S0TqnBE8IaMzk2MnCLGRhRMBEWpOJudId0i07k3cmP/nZVUaq
-         SHQPI6oYI5J2Ttnh4Enh9amoPJh7ypEjFICnaRQdDw7U29St7RlFkhJ+D7ihhqnWOv
-         xJjOEA3EUwNJAeTjNQJuuLgeXIWPSt3vBhtsEYX+1h3uDFaCPOyDIo8LBS3B298nuq
-         TrABcFKxVgUZNpuCKIaTgVNCGRGx0+QB9sHGcYJxF9jYzQi65FyVdVCSm+wLi6c1Xq
-         S45vKWYuRh3Iw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5E67BCE097F; Fri, 21 Jul 2023 07:10:03 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 07:10:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size
- configurable
-Message-ID: <28d4abb7-8496-45ec-b270-ea2b6164537b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-17-vschneid@redhat.com>
- <xhsmhjzutu18u.mognet@vschneid.remote.csb>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xhsmhjzutu18u.mognet@vschneid.remote.csb>
+        with ESMTP id S229599AbjGUO1d (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 10:27:33 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5B61BD;
+        Fri, 21 Jul 2023 07:27:33 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-666ed230c81so1794762b3a.0;
+        Fri, 21 Jul 2023 07:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689949652; x=1690554452;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AF7tCZuwq+7c0GWnUSkmQBp9SWKqeqYjs69ZFgQZ6/0=;
+        b=sAZr0HTeun5o4leNcfqFqWEcQpk/QFEaCNV2+hVfs8oDk/d/b4+nkakv6bKZtz3rCN
+         N5+LGFJiDK8K+/2+c+wCeKaPUPdnhQGo+Wam+Ee6wYW+Q/uaobNzON4AAYq2ibELIMR+
+         YJOZ22TP//Olc8+xWh12X+BjKvnwffUh4B7aJcGIoWiVsfFkQU3kwZuoFuYoLpw4uKui
+         ihIluiFAmsyMVIQE7TSnjtFaJ87sIDLWBYHW69sDfWeukFN4fMOsi+m1f5m42Lol9kJm
+         Ag7aW+yz8QqhYTecTULWr9csPb5fBaqxgQ4LGZDm8BQ2fFn4fgcNyqHadr6fBkksH6vl
+         2ykg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689949652; x=1690554452;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AF7tCZuwq+7c0GWnUSkmQBp9SWKqeqYjs69ZFgQZ6/0=;
+        b=GhMY0xxl88wPROhA/AU+MZ6PejUr1ZrogZtj/+8BVKi1D4krqeJVc+ic5rMmbAn3ai
+         UPIbH5yPfBO9SfAf53N2QH2IMbca4yDXbvmrftI2oc2xGmZ1qQjOAAnCI39urKGf26HV
+         f7quuSYKEQcsrxKMeMWjbQgTeGZwghkt9pXmvQDihBfczm7+M7m5fN5bsgyP+jozDOXy
+         C78eTSeDMySRPnUN/WiWteDbkfD91mBZo9seDzrvO2W+xQZVr48HgqJLmPVxUZHC4wGI
+         MM4qIgIHQiFW48vKvJ4auTe0TtiE23QVD7CIpXLgnt/ZysMOWpynLLhEn8+2bkURnLLc
+         wHrA==
+X-Gm-Message-State: ABy/qLbL6QT4yzC/SMfZ1iLcgqx2BqZmjsuSyzIDI8+3FGY0yAlLcEcN
+        hvb8Y7A7x6Rtiiu+c4WOZ3I=
+X-Google-Smtp-Source: APBJJlH0fUBj49AhwwYk/EthIBUkAlu3Lt3Vcp3X972820zaXpul3Od1X33iDe7vyQe6a8Ba8hhK8g==
+X-Received: by 2002:a05:6a00:1995:b0:676:76ea:e992 with SMTP id d21-20020a056a00199500b0067676eae992mr276148pfl.5.1689949652460;
+        Fri, 21 Jul 2023 07:27:32 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id e2-20020aa78c42000000b00666e2dac482sm3051742pfd.124.2023.07.21.07.27.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Jul 2023 07:27:32 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 22:27:04 +0800
+Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>, roman.gushchin@linux.dev
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 09:17:53AM +0100, Valentin Schneider wrote:
-> On 20/07/23 17:30, Valentin Schneider wrote:
-> > index bdd7eadb33d8f..1ff2aab24e964 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
-> >         Say Y here if you need tighter callback-limit enforcement.
-> >         Say N here if you are unsure.
-> >
-> > +config RCU_DYNTICKS_RANGE_BEGIN
-> > +	int
-> > +	depends on !RCU_EXPERT
-> > +	default 31 if !CONTEXT_TRACKING_WORK
-> 
-> You'll note that this should be 30 really, because the lower *2* bits are
-> taken by the context state (CONTEXT_GUEST has a value of 3).
-> 
-> This highlights the fragile part of this: the Kconfig values are hardcoded,
-> but they depend on CT_STATE_SIZE, CONTEXT_MASK and CONTEXT_WORK_MAX. The
-> static_assert() will at least capture any misconfiguration, but having that
-> enforced by the actual Kconfig ranges would be less awkward.
-> 
-> Do we currently have a way of e.g. making a Kconfig file depend on and use
-> values generated by a C header?
 
-Why not just have something like a boolean RCU_DYNTICKS_TORTURE Kconfig
-option and let the C code work out what the number of bits should be?
+> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
+<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+>=20
+>=20
+>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
+>>=20
+>> =EF=BB=BF
+>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>>>=20
+>>>> Hi,
+>>>>=20
+>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
+first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
+>>>> and a related discussion [1].
+>>>>=20
+>>>> After reading the whole discussion, it seems like that ptr->field =
+was cached by gcc even with the deprecated
+>>>> ACCESS_ONCE(), so my question is:
+>>>>=20
+>>>>      Is that a compiler bug? If so, has this bug been fixed today, =
+ten years later?
+>>>>=20
+>>>>      What about READ_ONCE(ptr->field)?
+>>>=20
+>>> Make sure sparse is happy.
+>>=20
+>> It caused a problem without barrier(), and the deprecated =
+ACCESS_ONCE() didn=E2=80=99t help:
+>>=20
+>>   https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>=20
+>> So, my real question is: With READ_ONCE(ptr->field), are there still =
+some unusual cases where gcc=20
+>> decides not to reload ptr->field?
+>=20
+> I am a bit doubtful there will be strong (any?) interest in replacing =
+the barrier() with READ_ONCE() without any tangible reason, regardless =
+of whether a gcc issue was fixed.
+>=20
+> But hey, if you want to float the idea=E2=80=A6
 
-I suppose that there might be a failure whose frequency depended on
-the number of bits, which might be an argument for keeping something
-like RCU_DYNTICKS_RANGE_BEGIN for fault isolation.  But still using
-RCU_DYNTICKS_TORTURE for normal testing.
+We already had the READ_ONCE() in rcu_deference_raw().
 
-Thoughts?
+The barrier() here makes me think we need write code like below:
+=09
+	READ_ONCE(head->first);
+	barrier();
+	READ_ONCE(head->first);
 
-							Thanx, Paul
+With READ_ONCE (or the deprecated ACCESS_ONCE),
+I don=E2=80=99t think a compiler should cache the value of head->first.
+
+>=20
+> Thanks,
+>=20
+> - Joel
+>=20
+>>=20
+>>>=20
+>>> Do you have a patch for review ?
+>>=20
+>> Possibly next month. :)
+>>=20
+>>>=20
+>>>=20
+>>>>=20
+>>>>=20
+>>>> [1] =
+https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glaptop/
+>>>>=20
+>>>> Thanks,
+>>>> Alan
+>>=20
+
