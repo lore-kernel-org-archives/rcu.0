@@ -2,167 +2,144 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAAC7C04A6A
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 07:59:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5160C04A6A
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 08:04:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjGUH7v (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 03:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
+        id S231308AbjGUIEY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 04:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbjGUH7r (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:59:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7322704
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 00:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689926338;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OMiNfezuDp8QZVlAhLlbiIMuGymmCNYB2I4q0EEFUSk=;
-        b=es9VMHsiDg2kuJVCMyTCvHzFaAuKoWL4QN9LjBQxFyxYc2fjsb2ogQ78VCKuGxIJAwnq9u
-        u3eXDF1fgpsBDz13/yue0Z+cwF00LhcZnXJYCXZZky1FsICn2cuMzs7vHFE+EhMfimzW4p
-        xEMc+hIL3o4dp33wXsBxVpL70l3Saic=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-8-FDHdC72uOdazp-vxz1EhIw-1; Fri, 21 Jul 2023 03:58:57 -0400
-X-MC-Unique: FDHdC72uOdazp-vxz1EhIw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-314291caa91so874457f8f.2
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 00:58:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689926336; x=1690531136;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMiNfezuDp8QZVlAhLlbiIMuGymmCNYB2I4q0EEFUSk=;
-        b=NP4HVYWOUVJ4Qazh9jWmweZOIQBsrDiimTzrlA2jchbAhMNkvVn5G3YtlMbXQwp9At
-         0Blw2EoYCLrQp4+NPp9YCUTiVCEB+r/gE733c4KmZ5F7mltTfSXTcjnqjBU0gHakLnim
-         JQBCp+xGzWPMxGxytCHQcy4Y94Aj3H8NKc7GvENHQP5hcvUjDmBqKWH6JPJKmAIWR7Fw
-         y1REVD9X9UerAmCRhDyNqLEzLzD2MvHLaNpFS39BO/32RVkrvXEMdbO5ImtoBNmEbXID
-         Ugpf9qZ+YOhv/HZkpiWhGPQojJ1Bw1xNXSPhUOarg4uk7SiLwaggUCts+CosA7XT/fqP
-         liRQ==
-X-Gm-Message-State: ABy/qLaBCVKD2tQ5XE+1PSf+R/3qlZFn0ee6SYBLZjA+1OIqKz1OQNeY
-        bM0/6h82M/3uULAllPRK2Ns14XOKm/acMLUdQbrlRHqNN4Yc+bIQ4s8a0CdCyVt99uFmDQ6RXGY
-        +FQ4i/p0X6/Fn
-X-Received: by 2002:a5d:6103:0:b0:313:e559:2d4c with SMTP id v3-20020a5d6103000000b00313e5592d4cmr798836wrt.45.1689926336423;
-        Fri, 21 Jul 2023 00:58:56 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHidrlV6ut/P6AGZyG//+hfTFRQfLD41RE3t6gFtW0P8dq2RF0fuunZIegUj7e2SS5Snlr4dg==
-X-Received: by 2002:a5d:6103:0:b0:313:e559:2d4c with SMTP id v3-20020a5d6103000000b00313e5592d4cmr798794wrt.45.1689926336070;
-        Fri, 21 Jul 2023 00:58:56 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id i7-20020a05600011c700b00313fd294d6csm3510472wrx.7.2023.07.21.00.58.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 00:58:55 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S231273AbjGUIEX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 04:04:23 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760512707;
+        Fri, 21 Jul 2023 01:04:22 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6hsZ65jTz4f403c;
+        Fri, 21 Jul 2023 16:04:18 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgA34qX_O7pk9KzbOQ--.39718S6;
+        Fri, 21 Jul 2023 16:04:19 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 17/20] rcutorture: Add a test config to torture
- test low RCU_DYNTICKS width
-In-Reply-To: <5143d0a9-bc02-4b9a-8613-2383bfdee35c@paulmck-laptop>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-18-vschneid@redhat.com>
- <24b55289-1c35-41cc-9ad3-baa957f1c9cb@paulmck-laptop>
- <5143d0a9-bc02-4b9a-8613-2383bfdee35c@paulmck-laptop>
-Date:   Fri, 21 Jul 2023 08:58:53 +0100
-Message-ID: <xhsmhmszpu24i.mognet@vschneid.remote.csb>
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 2/2] rcu: Simplify check_cpu_stall()
+Date:   Fri, 21 Jul 2023 15:57:16 +0800
+Message-Id: <20230721075716.857-3-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
+In-Reply-To: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
+References: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgA34qX_O7pk9KzbOQ--.39718S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw1xuF4xWFy8Cry3WFykXwb_yoW5Gr4Upa
+        9xJa42gan8JFs29392q34kJr15Ar4kXFy7Jasrtw1Fya9rAF1Fgas09ryfGFy5ur93Xr4S
+        vFyFqr1UCa1DtFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBCb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r106r1rM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+        0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWU
+        JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwAKzVCY07xG64k0F2
+        4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWU
+        JVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7V
+        AKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42
+        IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7g4SUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 20/07/23 21:00, Paul E. McKenney wrote:
-> On Thu, Jul 20, 2023 at 12:53:05PM -0700, Paul E. McKenney wrote:
->> On Thu, Jul 20, 2023 at 05:30:53PM +0100, Valentin Schneider wrote:
->> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
->> > new file mode 100644
->> > index 0000000000000..aa7274efd9819
->> > --- /dev/null
->> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
->> > @@ -0,0 +1,19 @@
->> > +CONFIG_SMP=y
->> > +CONFIG_NR_CPUS=8
->> > +CONFIG_PREEMPT_NONE=n
->> > +CONFIG_PREEMPT_VOLUNTARY=y
->> > +CONFIG_PREEMPT=n
->> > +CONFIG_PREEMPT_DYNAMIC=n
->> > +#CHECK#CONFIG_TREE_RCU=y
->> > +CONFIG_HZ_PERIODIC=n
->> > +CONFIG_NO_HZ_IDLE=n
->> > +CONFIG_NO_HZ_FULL=y
->> > +CONFIG_RCU_TRACE=y
->> > +CONFIG_RCU_FANOUT=4
->> > +CONFIG_RCU_FANOUT_LEAF=3
->> > +CONFIG_DEBUG_LOCK_ALLOC=n
->> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
->> > +CONFIG_RCU_EXPERT=y
->> > +CONFIG_RCU_EQS_DEBUG=y
->> > +CONFIG_RCU_LAZY=y
->> > +CONFIG_RCU_DYNTICKS_BITS=2
->>
->> Why not just add this last line to the existing TREE04 scenario?
->> That would ensure that it gets tested regularly without extending the
->> time required to run a full set of rcutorture tests.
->
-> Please see below for the version of this patch that I am running overnight
-> tests with.  Does this one work for you?
->
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Yep that's fine with me. I only went with a separate test file as wasn't
-sure how new test options should be handled (merged into existing tests vs
-new tests created), and didn't want to negatively impact TREE04 or
-TREE06. If merging into TREE04 is preferred, then I'll do just that and
-carry this path moving forwards.
+The code and comments of self detected and other detected are the same
+except the output function. Combine the same parts to avoid duplication.
 
-Thanks!
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/rcu/tree_stall.h | 36 +++++++++++-------------------------
+ 1 file changed, 11 insertions(+), 25 deletions(-)
+
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 371713f3f7d15d9..0ade7f9dcaa18da 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -711,7 +711,7 @@ static void print_cpu_stall(unsigned long gps)
+ 
+ static void check_cpu_stall(struct rcu_data *rdp)
+ {
+-	bool didstall = false;
++	bool self_detected;
+ 	unsigned long gs1;
+ 	unsigned long gs2;
+ 	unsigned long gps;
+@@ -758,10 +758,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 		return; /* No stall or GP completed since entering function. */
+ 	rnp = rdp->mynode;
+ 	jn = jiffies + ULONG_MAX / 2;
++	self_detected = READ_ONCE(rnp->qsmask) & rdp->grpmask;
+ 	if (rcu_gp_in_progress() &&
+-	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
++	    (self_detected || ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY)) &&
+ 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+-
+ 		/*
+ 		 * If a virtual machine is stopped by the host it can look to
+ 		 * the watchdog like an RCU stall. Check to see if the host
+@@ -770,31 +770,17 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 		if (kvm_check_and_clear_guest_paused())
+ 			return;
+ 
+-		/* We haven't checked in, so go dump stack. */
+-		print_cpu_stall(gps);
+-		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+-			rcu_ftrace_dump(DUMP_ALL);
+-		didstall = true;
+-
+-	} else if (rcu_gp_in_progress() &&
+-		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+-		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+-
+-		/*
+-		 * If a virtual machine is stopped by the host it can look to
+-		 * the watchdog like an RCU stall. Check to see if the host
+-		 * stopped the vm.
+-		 */
+-		if (kvm_check_and_clear_guest_paused())
+-			return;
++		if (self_detected) {
++			/* We haven't checked in, so go dump stack. */
++			print_cpu_stall(gps);
++		} else {
++			/* They had a few time units to dump stack, so complain. */
++			print_other_cpu_stall(gs2, gps);
++		}
+ 
+-		/* They had a few time units to dump stack, so complain. */
+-		print_other_cpu_stall(gs2, gps);
+ 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+ 			rcu_ftrace_dump(DUMP_ALL);
+-		didstall = true;
+-	}
+-	if (didstall) {
++
+ 		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+ 		WRITE_ONCE(rcu_state.jiffies_stall, jn);
+ 	}
+-- 
+2.25.1
 
