@@ -2,39 +2,39 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F22E6EB64DD
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 22:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A4ABEB64DD
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 22:45:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbjGUWhJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 18:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        id S229844AbjGUWpq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 18:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGUWhI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:37:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B9835A1;
-        Fri, 21 Jul 2023 15:37:07 -0700 (PDT)
+        with ESMTP id S229768AbjGUWpq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 18:45:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BA83A86;
+        Fri, 21 Jul 2023 15:45:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 85A0A61DA7;
-        Fri, 21 Jul 2023 22:37:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0582C433C8;
-        Fri, 21 Jul 2023 22:37:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFFA661DA7;
+        Fri, 21 Jul 2023 22:45:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AF70C433C7;
+        Fri, 21 Jul 2023 22:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689979025;
-        bh=JtgWv9gkBPTO/7duoIXZzImHZiRPR2Xkc9D0oLfDOBk=;
+        s=k20201202; t=1689979544;
+        bh=laRv+88wjjpHhHhYfLumJkXL3NcEacG+YNj/KogaWHw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JoVHpeRvt3srOFXA2jb354adqL1WTBXimO/3s/1QSu8ZQayaZw3ztC5HTPvU1vhcy
-         U0/IgCP+osmKT6VArwK2SQDQbHwQ6upGSQDCpUDRaa/sdvqVrqiirAdHjbpM7IHJfe
-         7LYsg+/J9ChUmiG5Z3idC+wJydiBUJBNIZDouEoltKWn4LgVFlTnQR+r8rRauIhZ1G
-         pVCFTK8fKXLm5u/5Kpz0PGJ6eIEe+6wT/03dFMSYeRJRp3UNaDOeRMhSNrKa7XfGjM
-         24iV7erB8ooFeq+UGWU1zEHlm0OIPE3YHB2xlPLUWWmSoTahLNuQ58yV3rS6f75hrB
-         x8VfcF3+TM80w==
+        b=sILDCG+Nyv2MjbxqdB0F9NtfAnW/bHyrBpTTczIsVnZ6hD0mIF8OXUv+y+RAIDjmc
+         33Fs4/QilZWF/xqmpQwIxY95Sr5I23O03Mw2CiLNxIiCnB1cGq4SLIcXElTjTSO387
+         aOLBnd0zyyrR0FSZT9BQYRl5iF7hPk0MG57buI+Mp6eb74WcmxUVY6gG102VkFvegh
+         OwIiqc6UqJgVPk0vI0Cw4SgmIb62wftEBSoQcIGIuXIUg+YXHVKQdPe8BbOwZteuBq
+         jREMjvgreFUG4ndSiBVcobMRZ0LqBNGkdrJ9r6jPUhn/JpnoRW58Y1ClZfsQvMeJx7
+         bPdMuk0HSl9bA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 74D24CE09E0; Fri, 21 Jul 2023 15:37:05 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 15:37:05 -0700
+        id BEF8CCE09E0; Fri, 21 Jul 2023 15:45:43 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 15:45:43 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     thunder.leizhen@huaweicloud.com
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
@@ -47,71 +47,100 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH 1/2] rcu: Delete a redundant check in check_cpu_stall()
-Message-ID: <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
+Subject: Re: [PATCH 2/2] rcu: Simplify check_cpu_stall()
+Message-ID: <3a275469-63aa-4929-acbc-28b7ea4b7bc9@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
- <20230721075716.857-2-thunder.leizhen@huaweicloud.com>
+ <20230721075716.857-3-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230721075716.857-2-thunder.leizhen@huaweicloud.com>
+In-Reply-To: <20230721075716.857-3-thunder.leizhen@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 03:57:15PM +0800, thunder.leizhen@huaweicloud.com wrote:
+On Fri, Jul 21, 2023 at 03:57:16PM +0800, thunder.leizhen@huaweicloud.com wrote:
 > From: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> j = jiffies;
-> js = READ_ONCE(rcu_state.jiffies_stall);			(1)
-> if (ULONG_CMP_LT(j, js))					(2)
-> 	return;
+> The code and comments of self detected and other detected are the same
+> except the output function. Combine the same parts to avoid duplication.
 > 
-> if (cmpxchg(&rcu_state.jiffies_stall, js, jn) == js)		(3)
-> 	didstall = true;
-> 
-> if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {	(4)
-> 	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-> 	WRITE_ONCE(rcu_state.jiffies_stall, jn);
-> }
-> 
-> For ease of description, the pseudo code is extracted as above. First,
-> assume that only one CPU is operating, the condition 'didstall' is true
-> means that (3) succeeds. That is, the value of rcu_state.jiffies_stall
-> must be 'jn'.
-> 
-> Then, assuming that another CPU is also operating at the same time, there
-> are two cases:
-> 1. That CPU sees the updated result at (1), it returns at (2).
-> 2. That CPU does not see the updated result at (1), it fails at (3) and
->    cmpxchg returns jn. So that, didstall cannot be true.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-The history behind this one is that there are races in which the stall
-can end in the midst of check_cpu_stall().  For example, when the activity
-of producing the stall warning breaks things loose.
+This looks like a nice simplification, thank you!
 
-And yes, long ago, I figured that if things had been static for so
-many seconds, they were unlikely to change, and thus omitted any and
-all synchronization.  The Linux kernel taught me better.  ;-)
+Please make this not depend on the earlier patch and resend.
 
 							Thanx, Paul
 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
->  kernel/rcu/tree_stall.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  kernel/rcu/tree_stall.h | 36 +++++++++++-------------------------
+>  1 file changed, 11 insertions(+), 25 deletions(-)
 > 
 > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index cc884cd49e026a3..371713f3f7d15d9 100644
+> index 371713f3f7d15d9..0ade7f9dcaa18da 100644
 > --- a/kernel/rcu/tree_stall.h
 > +++ b/kernel/rcu/tree_stall.h
-> @@ -794,7 +794,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+> @@ -711,7 +711,7 @@ static void print_cpu_stall(unsigned long gps)
+>  
+>  static void check_cpu_stall(struct rcu_data *rdp)
+>  {
+> -	bool didstall = false;
+> +	bool self_detected;
+>  	unsigned long gs1;
+>  	unsigned long gs2;
+>  	unsigned long gps;
+> @@ -758,10 +758,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		return; /* No stall or GP completed since entering function. */
+>  	rnp = rdp->mynode;
+>  	jn = jiffies + ULONG_MAX / 2;
+> +	self_detected = READ_ONCE(rnp->qsmask) & rdp->grpmask;
+>  	if (rcu_gp_in_progress() &&
+> -	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+> +	    (self_detected || ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY)) &&
+>  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> -
+>  		/*
+>  		 * If a virtual machine is stopped by the host it can look to
+>  		 * the watchdog like an RCU stall. Check to see if the host
+> @@ -770,31 +770,17 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		if (kvm_check_and_clear_guest_paused())
+>  			return;
+>  
+> -		/* We haven't checked in, so go dump stack. */
+> -		print_cpu_stall(gps);
+> -		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> -			rcu_ftrace_dump(DUMP_ALL);
+> -		didstall = true;
+> -
+> -	} else if (rcu_gp_in_progress() &&
+> -		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+> -		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> -
+> -		/*
+> -		 * If a virtual machine is stopped by the host it can look to
+> -		 * the watchdog like an RCU stall. Check to see if the host
+> -		 * stopped the vm.
+> -		 */
+> -		if (kvm_check_and_clear_guest_paused())
+> -			return;
+> +		if (self_detected) {
+> +			/* We haven't checked in, so go dump stack. */
+> +			print_cpu_stall(gps);
+> +		} else {
+> +			/* They had a few time units to dump stack, so complain. */
+> +			print_other_cpu_stall(gs2, gps);
+> +		}
+>  
+> -		/* They had a few time units to dump stack, so complain. */
+> -		print_other_cpu_stall(gs2, gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
 >  			rcu_ftrace_dump(DUMP_ALL);
->  		didstall = true;
->  	}
-> -	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
-> +	if (didstall) {
+> -		didstall = true;
+> -	}
+> -	if (didstall) {
+> +
 >  		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
 >  		WRITE_ONCE(rcu_state.jiffies_stall, jn);
 >  	}
