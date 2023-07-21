@@ -2,156 +2,117 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DB35C04E69
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 16:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B8FBEB64DC
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 17:14:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbjGUQJT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 12:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
+        id S229977AbjGURO5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 13:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbjGUQJQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:09:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712E22D50;
-        Fri, 21 Jul 2023 09:09:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 018EF61D2F;
-        Fri, 21 Jul 2023 16:09:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 689E4C433CD;
-        Fri, 21 Jul 2023 16:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689955754;
-        bh=BlEi7p0BDMKhiEwXg1jOq/zD4Xedk5tjgloH9k5cDxI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OFTQ6DuOnqrG6CVGHgozLdOfqNJoDAb4DdM10deIzFIcuAksLBrn/okq4ws1Ur9lw
-         vnsF0PAylGPOwrvzqd8MD7OI6RQvWiDFcruohc1T27dsQlVcsq24OAk01Uc8ndiK4V
-         53gusbrsSeE7IS4F3aXX11DrNumr93rNPkzbgk6BqkWkpecmtxIc1RCSwyiRuReBW/
-         IcFeyllltS2xScVQstI79rpDOfa4H6ZPHQWUsAuDPJvk1Dq9LsQE2p69D0x+BcaX1W
-         VlHj29+EmuuFk1Q1AOo/Ojy8Ijv1Fva0Kmm6Sj3z4ngf26Cy0NypimaJ5plEn9OvV7
-         JbudTDJwiSXEQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0571ACE092F; Fri, 21 Jul 2023 09:09:14 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 09:09:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size
- configurable
-Message-ID: <ac2ec330-191e-43e6-817d-ca4a22207d98@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-17-vschneid@redhat.com>
- <xhsmhjzutu18u.mognet@vschneid.remote.csb>
- <28d4abb7-8496-45ec-b270-ea2b6164537b@paulmck-laptop>
- <xhsmhbkg5ti91.mognet@vschneid.remote.csb>
+        with ESMTP id S229864AbjGUROz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 13:14:55 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E71171B
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 10:14:53 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b702319893so32786621fa.3
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 10:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689959692; x=1690564492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9K5VHhZFEzQffhn522CBvGHgBcaIDvu9FEQtTEAlvh8=;
+        b=v9suOoHBlIk67EKDKPqWLhrvssc3VmdYen5EzwX5m/TcUyTOkr+Ok1N1Qaa2m2hhVU
+         dqHw3CQNBMJ741j1Q41aKPaQP8tzE+Ad/rNDqGHrMjkShpnw72khf+y+t5siZc4LowW8
+         oTLzbsiQo87tyS4+gTUmElWm6wi61LFe0O8IY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689959692; x=1690564492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9K5VHhZFEzQffhn522CBvGHgBcaIDvu9FEQtTEAlvh8=;
+        b=GNZ/7vVbcgggn2C3my0ijlT+T+we2zJ9/zaxCQwm+x7OVKrLpUswWzLh4cib3dF6rl
+         R5XQUy/yOs1XgdSMbD5ae0jfvTmz5Q2gLKXHVdsV2Zl92spfuIeq8cHpG8eTMZ2ZjWQy
+         LYdium5RN+eLTb4lhUTxfiimeeWYx6sVXijO+IFuPBguEG687fdYFDOESsLXHFbW/Mty
+         iCLSmu88ajyMFWz73sJ3QGtJU3qJi1LeAFRcwf2khPdTTT9bK3/wGiFWs+XnYUPTpLhY
+         udKNY0qfJXLcW1ltFTD26BvrkbOH6FzF8qx0WbuTFEbqDVr2wipBniqJhNBCMpN800jm
+         rPzA==
+X-Gm-Message-State: ABy/qLYXdo9tNp5ERUnGoLWxXoHUc4flwVEkc1qd5oiNOzKlVrMjrSbP
+        20u1fhQU/Zao4129rXiiON0bv8Mq1SmgAvjkUBkV1w==
+X-Google-Smtp-Source: APBJJlFcu8j3/DkgCopyZdnnpMfBq1CbxSvKbDwtsMsSsOQpSDKDCSmQi43l3aGLy2W0gXu1smDknxyIQxjYzck0H0o=
+X-Received: by 2002:a05:651c:205:b0:2b5:9f54:e290 with SMTP id
+ y5-20020a05651c020500b002b59f54e290mr1980021ljn.0.1689959691909; Fri, 21 Jul
+ 2023 10:14:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xhsmhbkg5ti91.mognet@vschneid.remote.csb>
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org> <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+ <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org> <962bb2b940e64e7da7b71d11b307defc@AcuMS.aculab.com>
+In-Reply-To: <962bb2b940e64e7da7b71d11b307defc@AcuMS.aculab.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 13:14:40 -0400
+Message-ID: <CAEXW_YS_raHUrvVAFPpnhL2PRH0hkcqT=1hD+gQOg_cMLkGrjQ@mail.gmail.com>
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Alan Huang <mmpgouride@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 04:08:10PM +0100, Valentin Schneider wrote:
-> On 21/07/23 07:10, Paul E. McKenney wrote:
-> > On Fri, Jul 21, 2023 at 09:17:53AM +0100, Valentin Schneider wrote:
-> >> On 20/07/23 17:30, Valentin Schneider wrote:
-> >> > index bdd7eadb33d8f..1ff2aab24e964 100644
-> >> > --- a/kernel/rcu/Kconfig
-> >> > +++ b/kernel/rcu/Kconfig
-> >> > @@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
-> >> >         Say Y here if you need tighter callback-limit enforcement.
-> >> >         Say N here if you are unsure.
-> >> >
-> >> > +config RCU_DYNTICKS_RANGE_BEGIN
-> >> > +	int
-> >> > +	depends on !RCU_EXPERT
-> >> > +	default 31 if !CONTEXT_TRACKING_WORK
-> >>
-> >> You'll note that this should be 30 really, because the lower *2* bits are
-> >> taken by the context state (CONTEXT_GUEST has a value of 3).
-> >>
-> >> This highlights the fragile part of this: the Kconfig values are hardcoded,
-> >> but they depend on CT_STATE_SIZE, CONTEXT_MASK and CONTEXT_WORK_MAX. The
-> >> static_assert() will at least capture any misconfiguration, but having that
-> >> enforced by the actual Kconfig ranges would be less awkward.
-> >>
-> >> Do we currently have a way of e.g. making a Kconfig file depend on and use
-> >> values generated by a C header?
+On Fri, Jul 21, 2023 at 11:59=E2=80=AFAM David Laight <David.Laight@aculab.=
+com> wrote:
+>
+> ....
+> > Right, it shouldn't need to cache. To Eric's point it might be risky to=
+ remove
+> > the barrier() and someone needs to explain that issue first (or IMO the=
+re needs
+> > to be another tangible reason like performance etc). Anyway, FWIW I wro=
+te a
+> > simple program and I am not seeing the head->first cached with the patt=
+ern you
+> > shared above:
 > >
-> > Why not just have something like a boolean RCU_DYNTICKS_TORTURE Kconfig
-> > option and let the C code work out what the number of bits should be?
+> > #include <stdlib.h>
 > >
-> > I suppose that there might be a failure whose frequency depended on
-> > the number of bits, which might be an argument for keeping something
-> > like RCU_DYNTICKS_RANGE_BEGIN for fault isolation.  But still using
-> > RCU_DYNTICKS_TORTURE for normal testing.
+> > #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+> > #define barrier() __asm__ __volatile__("": : :"memory")
 > >
-> > Thoughts?
+> > typedef struct list_head {
+> >      int first;
+> >      struct list_head *next;
+> > } list_head;
 > >
-> 
-> AFAICT if we run tests with the minimum possible width, then intermediate
-> values shouldn't have much value.
-> 
-> Your RCU_DYNTICKS_TORTURE suggestion sounds like a saner option than what I
-> came up with, as we can let the context tracking code figure out the widths
-> itself and not expose any of that to Kconfig.
+> > int main() {
+> >      list_head *head =3D (list_head *)malloc(sizeof(list_head));
+> >      head->first =3D 1;
+> >      head->next =3D 0;
+> >
+> >      READ_ONCE(head->first);
+> >      barrier();
+> >      READ_ONCE(head->first);
+> >
+> >      free(head);
+> >      return 0;
+> > }
+>
+> You probably need to try harder to generate the error.
+> It probably has something to do code surrounding the
+> sk_nulls_for_each_rcu() in the ca065d0c^ version of udp.c.
+>
+> That patch removes the retry loop - and probably breaks udp receive.
+> The issue is that sockets can be moved between the 'hash2' chains
+> (eg by connect()) without being freed.
 
-Agreed.  If a need for variable numbers of bits ever does arise, we can
-worry about it at that time.  And then we would have more information
-on what a variable-bit facility should look like.
+I was just replying to Alan's question on the behavior of READ_ONCE()
+since I myself recently got surprised by compiler optimizations
+related to it. I haven't looked into the actual UDP code.
 
-							Thanx, Paul
+ - Joel
