@@ -2,225 +2,223 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EDEEEB64DA
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 01:42:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BC63EB64DA
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 01:51:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbjGUBmE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 20 Jul 2023 21:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
+        id S229766AbjGUBv4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 20 Jul 2023 21:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGUBmD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 20 Jul 2023 21:42:03 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86B42106;
-        Thu, 20 Jul 2023 18:42:01 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5701eaf0d04so14550817b3.2;
-        Thu, 20 Jul 2023 18:42:01 -0700 (PDT)
+        with ESMTP id S229450AbjGUBvz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 20 Jul 2023 21:51:55 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A66270D;
+        Thu, 20 Jul 2023 18:51:53 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5774098f16eso15156977b3.0;
+        Thu, 20 Jul 2023 18:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689903721; x=1690508521;
+        d=gmail.com; s=20221208; t=1689904313; x=1690509113;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MDIkYzYS0LLZBHW+9C9lfE92AFJGAZSUFjeM3IcTfrU=;
-        b=cjv+t/mm/JN+ZNKiJ2rFwGdk8RCeUtLhlkAi2R7CFpSetWcBVUJtArCkT/MQ+Qkg4G
-         u6cXT87M6Lhg6Tg43jsA5mSWByY+q9VlF0TN2d+7/EIz/4pf+iLqmt7v8bsiKI6ArOPI
-         M6r3m1TMReD4UfwjfLmicROEdERaGfJ8xLYYYtWZoYjZMKVha69F3hAKph/MUl/NKjlF
-         bcwlXP8h1d20rr7RPQb3Rtcgs+p28VJBB3O9EK+6CGtRT9xA5BQcHrxjq+2Kh29pmlQo
-         0bHJxzhr1g6zuUjIXLpi/5tljFWtRXlO2m91xR34eBqxu7U4Dwwj772az7RFSGBQliB7
-         agwA==
+        bh=KTDmOEm4mA9XRGO4lE7YTkgO5ZAT3mA0rEEKhTrRvPc=;
+        b=cnH4y90cXhLSXISiwylzqmfToN/dBqTDI2nYAfvuCmBgfj+Iabm4+MvaJ5sjR/4D0K
+         JSURBtgytk3ygQDfVhMYh6iuvCSyXbZ12bKJe0yRROYhoQXXePvn7pM1ZGvGY7jK+iCl
+         TJ6+NtzBeAwWjT4MRNKhlR/gDZGcTqmvpn+zYLm4gv+Qne8QJLVQNCMTs9PvW9S2wtDA
+         Fu9T9fmFcs6U8Os+sVPQsI6iLceADfaxdX5JoqGAl0UrSIk1esxV0dDSKU2NJqJi1ZJK
+         GC9fBoZY85L3HTMMQt2/A0EAQhowxnkr3kHJiIk6hcdfjryU1UprqWalTdW0l0/6eURU
+         EfWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689903721; x=1690508521;
+        d=1e100.net; s=20221208; t=1689904313; x=1690509113;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MDIkYzYS0LLZBHW+9C9lfE92AFJGAZSUFjeM3IcTfrU=;
-        b=hd0SX+iyvoKntJACDHlTjrscuhu2KSgRhT3tbhSC1hdLEbzSq3qAXopQd8RJPhzq7Y
-         w3uK78hpwVyOXccUzfnlfky7miJ08QhB68p6FNgRmqTUg4scRE2kVEE4QDb4nLo/eL3X
-         It9f41f6EDUAE7u0+3yQnmvE+4wEcNtmxfuAlc68xSlWxZitjp4OFaQTIf0RFxoOI0rD
-         2m3IU+4QKWKhacQZfJzr/OTp4yX/lg6pDd9oOi3PslZAJKzO9OZ2M0fjpYLJu/9119sp
-         JsS5gyMMuBDlUic3b9e7Tppf6BYvhjsiPu8GDLU70p1vMbP2Ocqn10I2zs0N9ugy4zWZ
-         9JBg==
-X-Gm-Message-State: ABy/qLalJJXMlMeKUOM/cAZGybGOiHO5Gh6DxlN0bK+4Q+g0eD7LBzSv
-        iBK/hQPcJgFis2qNH4LMhnlPfmIrl+WcQ/tqOF0=
-X-Google-Smtp-Source: APBJJlHg3Pbj5W1SIdKLPzFUMSsgfL7BoZY+J7iRaQLvSyh66xZiziO29wIp6pAHrtzeoZjLKtvhhgE0lo8PXxLe9uA=
-X-Received: by 2002:a81:a0d0:0:b0:573:bb84:737c with SMTP id
- x199-20020a81a0d0000000b00573bb84737cmr778464ywg.26.1689903720813; Thu, 20
- Jul 2023 18:42:00 -0700 (PDT)
+        bh=KTDmOEm4mA9XRGO4lE7YTkgO5ZAT3mA0rEEKhTrRvPc=;
+        b=i5adkpWI4y+Vo45gJTefgvGxNJwoWXCjU67BKhRVxkzx4l8f7gOTYTJW2fA4gWcT1K
+         JFzy1YbE4D/Vmc82MUOEtPgpcYf2mPnKjS3FrcDWWvsprNfzp02XIoqvfBQ7yVxCTg2w
+         6I7JxXxvc7jSsu5p7XbkBOYrcXffU1Bn9MoRl+gYveuE+ft3p+vMPEcjVlRwOTbSNyZR
+         tdOQHJjAZWJg5LfxoBsK+sEJo7Q/EB1vGWUvRbS1ucm2o8pA0FtndCyMTP8IOIRjLsa6
+         Z1E9slIPWlWfrI6cEwumd9U6bF0THd8PWmPze04LtYCmZE+rG/QJEv71WD/0s17N7Gvq
+         mvWw==
+X-Gm-Message-State: ABy/qLZA8H/GcFFCTRrMYYPAyRgw2pm/KTAANLd3QTUBkVucxtklHBKM
+        7lsPSrnvIbEXP6mfG2YdoFxxXBJzG3GeXY5SHbs=
+X-Google-Smtp-Source: APBJJlG2/BMKB7AvWTT03N84VuviMayMrk7JTWEav2C8ogei6jsni1OSPZaYVcjs0lngAgsqQqAJZvjmjACBCEL22vM=
+X-Received: by 2002:a0d:dbca:0:b0:577:228f:4687 with SMTP id
+ d193-20020a0ddbca000000b00577228f4687mr702720ywe.6.1689904312786; Thu, 20 Jul
+ 2023 18:51:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
- <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com> <23b091fc-cc2e-4ace-b860-a0ddf662d1ae@paulmck-laptop>
-In-Reply-To: <23b091fc-cc2e-4ace-b860-a0ddf662d1ae@paulmck-laptop>
+References: <2023071940-suspect-ominous-4a6a@gregkh> <20230720132714.GA3726096@google.com>
+In-Reply-To: <20230720132714.GA3726096@google.com>
 From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Fri, 21 Jul 2023 09:41:49 +0800
-Message-ID: <CAABZP2xt=7StCjywBmZoDfAE81d31ka+0QuKSnZbmJGbzV_Xcw@mail.gmail.com>
-Subject: Re: [BUG] unable to handle page fault for address
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        akaher@vmware.com, shuah@kernel.org, rcu@vger.kernel.org
+Date:   Fri, 21 Jul 2023 09:51:41 +0800
+Message-ID: <CAABZP2xrLRTVM6te22RFTYCpFB6CnyZ1ASjq=vsGuhpnRfU-OA@mail.gmail.com>
+Subject: Re: [BUG] Re: Linux 6.4.4
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 4:07=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
+On Thu, Jul 20, 2023 at 9:31=E2=80=AFPM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
 >
-> On Thu, Jul 20, 2023 at 03:03:53AM +0800, Zhouyi Zhou wrote:
-> > On Thu, Jul 20, 2023 at 1:40=E2=80=AFAM Paul E. McKenney <paulmck@kerne=
-l.org> wrote:
-> > >
-> > > Hello!
-> > >
-> > > Just FYI for the moment, I hit a BUG in 10-hour overnight qemu/KVM-ba=
-sed
-> > > rcutorture testing of the TASKS01, TASKS03, TREE03, and TREE07 rcutor=
-ture
-> > > on the mainline commit:
-> > >
-> > > ccff6d117d8d ("Merge tag 'perf-tools-fixes-for-v6.5-1-2023-07-18' of =
-git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools")
-> > >
-> > > This commit was merged with the -rcu "dev" branch, which just yesterd=
-ay
-> > > passes overnight tests when based on v6.5-rc1.  A web search got me t=
-he
-> > > following, which is not a very close match, but the best that there i=
-s:
-> > >
-> > > https://www.spinics.net/lists/bpf/msg91848.html
-> > >
-> > > Here is a representative splat out of 29 of them:
-> > >
-> > > [22544.494701] BUG: unable to handle page fault for address: fffffe00=
-00af0038
-> > > [22544.496012] #PF: supervisor read access in user mode
-> > > [22544.496985] #PF: error_code(0x0000) - not-present page
-> > > [22544.497970] IDT: 0xfffffe0000000000 (limit=3D0xfff) GDT: 0xfffffe3=
-55b3fd000 (limit=3D0x7f)
-> > > [22544.499479] LDTR: NULL
-> > > [22544.499959] TR: 0x40 -- base=3D0xfffffe355b3ff000 limit=3D0x4087
-> > > [22544.501073] PGD 1ffd2067 P4D 1ffd2067 PUD 1124067 PMD 0
-> > > [22544.502149] Oops: 0000 [#1] PREEMPT SMP PTI
-> > > [22544.502967] CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc2-00128-g=
-68052f2f9e35 #5844
-> > > [22544.504435] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BI=
-OS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> > > [22544.506581] RIP: 0033:0x400181
-> > > [22544.507256] Code: 00 45 31 d2 4c 8d 44 24 f0 48 c7 44 24 f8 00 00 =
-00 00 0f 05 b8 60 00 00 00 48 8d 7c 24 e0 0f 05 41 89 c0 85 c0 75 c6 44 89 =
-c0 <89> c2 0f af d0 ff c0 48 63 d2 48 89 15 06 01 20 00 3d a0 86 01 00
-> > > [22544.510954] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> > > [22544.511963] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000=
-000004001a7
-> > > [22544.513386] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007=
-ffde5192258
-> > > [22544.514751] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000=
-00000000000
-> > > [22544.516079] R10: 0000000000000000 R11: 0000000000000246 R12: 00000=
-00000000000
-> > > [22544.517452] R13: 0000000000000000 R14: 0000000000000000 R15: 00000=
-00000000000
-> > > [22544.518818] FS:  0000000000000000 GS:  0000000000000000
-> > > [22544.519864] Modules linked in:
-> > > [22544.520653] CR2: fffffe0000af0038
-> > > [22544.521401] ---[ end trace 0000000000000000 ]---
-> > > [22544.522297] RIP: 0033:0x400181
-> > > [22544.522887] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> > > [22544.523887] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000=
-000004001a7
-> > > [22544.525257] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007=
-ffde5192258
-> > > [22544.526623] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000=
-00000000000
-> > > [22544.528016] R10: 0000000000000000 R11: 0000000000000246 R12: 00000=
-00000000000
-> > > [22544.529439] R13: 0000000000000000 R14: 0000000000000000 R15: 00000=
-00000000000
-> > > [22544.530909] FS:  0000000000000000(0000) GS:ffff8d101f400000(0000) =
-knlGS:0000000000000000
-> > > [22544.532564] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [22544.533760] CR2: fffffe0000af0038 CR3: 0000000002d8e000 CR4: 00000=
-000000006f0
-> > > [22544.535286] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000=
-00000000000
-> > > [22544.536738] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000=
-00000000400
-> > > [22544.538228] note: init[1] exited with irqs disabled
-> > > [22544.540087] Kernel panic - not syncing: Attempted to kill init! ex=
-itcode=3D0x00000009
-> > > [22544.544806] Kernel Offset: 0x9600000 from 0xffffffff81000000 (relo=
-cation range: 0xffffffff80000000-0xffffffffbfffffff)
-> > >
-> > > The failure rates for each scenario are as follows:
-> > >
-> > > TASKS01: 13 of 15
-> > > TASKS03: 7 of 15
-> > > TREE03: 4 of 15
-> > > TREE07: 5 of 15
-> > >
-> > > In other words, for TASKS01, there were 15 10-hour runs, and 13 of th=
-em
-> > > hit this bug.
-> > >
-> > > Except that these failures were corellated:
-> > >
-> > > o       TASKS01 and TASKS03 failures are in batch 17 running on
-> > >         kerneltest053.05.atn6.
-> > >
-> > > o       TREE03 and one of the TREE07 failures are in batch 4 running
-> > >         on kerneltest025.05.atn6.
-> > >
-> > > o       Five of the TREE07 failures are in batch 6 running on
-> > >         kerneltest010.05.atn6.
-> > >
-> > > All of the failures in a given batch happened at about the same time,
-> > > suggesting a reaction to some stimulus from the host system.  There
-> > > was no console output from any of these host systems during the test,
-> > > other than the usual complaint about qemu having an executable stack.
-> > >
-> > > Now, perhaps this is hardware or configuration failure on those three
-> > > systems.  But I have been using them for quite some time, and so why
-> > > would three fail at the same time?
-> > >
-> > > Bisection will not be easy given that there were only three actual
-> > > failures in ten hours over 20 batches.  If this is in fact a random
-> > > kernel failure, there would be almost a 4% chance of a false positive
-> > > on each bisection step, which gives about a 50% chance of bisecting t=
-o
-> > > the wrong place if the usual 16 steps are required.
-> > Hi Paul
-> > I am also very interested in tracing this bug.
-> > I have invoked ./tools/testing/selftests/rcutorture/bin/torture.sh on
-> > my 16 core Intel(R) Xeon(R) CPU E5-2660 server a moment ago to see
-> > what happens
+> On Wed, Jul 19, 2023 at 05:06:39PM +0200, Greg Kroah-Hartman wrote:
+> > I'm announcing the release of the 6.4.4 kernel.
+> >
+> > All users of the 6.4 kernel series must upgrade.
+> >
+> > The updated 6.4.y git tree can be found at:
+> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+.git linux-6.4.y
+> > and can be browsed at the normal kernel.org git web browser:
+> >       https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-stable.=
+git;a=3Dsummary
 >
-> Looking forward to hearing what you find!
-I performed two rounds of ccff6d117d8d ("Merge tag
-'perf-tools-fixes-for-v6.5-1-2023-07-18' of
-git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools") on 16
-core Intel(R) Xeon(R) CPU E5-2660 server (8:3 hours and 7:24 hours
-respectively)
-The test results show:
-Summary: Successes: 55 Failures: 0
+> I have been consistently hitting the following splat with rcutorture's TR=
+EE03
+> test on 6.4.4. This happened with 6.4.4-rc3 as well.
+Hi, I am also interested in this topic , I am going to test 6.4.4 on my lap=
+top
 
-and
-
-I performed two rounds of bfa3037d8280 (Merge tag 'fuse-update-6.5' of
-git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse) on 8 core
-Intel(R) Core(TM) i7-11800H laptop (7:04 and 7:10 respectively)
-The test results show:
-Summary: Successes: 55 Failures: 0
-
-I can't reproduce the bug ;-(, could you tell me what I could do next?
-
-Thanks Zhouyi
+Thanks, Zhouyi
 >
->                                                         Thanx, Paul
+> Happens at:
+>                 WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost faile=
+d (TIMER_SOFTIRQ RT prio?)
 >
-> > Thanx, Zhouyi
-> > >
-> > > I will give this another try this evening, Pacific Time.  In the
-> > > meantime, FYI.
-> > >
-> > >                                                 Thanx, Paul
+> So likely RCU boosting is failing:
+>
+> The full TREE03 splat:
+> [   54.243588] ------------[ cut here ]------------
+> [   54.244547] rcu-torture: rcu_torture_boost started
+> [   54.247643] WARNING: CPU: 12 PID: 166 at kernel/rcu/rcutorture.c:2227 =
+rcu_torture_stats_print+0x5b2/0x620
+> [   54.273082] Modules linked in:
+> [   54.278336] CPU: 12 PID: 166 Comm: rcu_torture_sta Not tainted 6.4.4-g=
+62813c2d2a36 #1
+> [   54.288540] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
+.16.2-debian-1.16.2-1 04/01/2014
+> [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
+> [   54.307525] Code: 00 00 48 8b 05 3f 6c 46 02 e9 4a fe ff ff 0f 0b e9 0=
+2 fd ff ff 0f 0b e9 09 fd ff ff 0f 0b e9 10 fd ff ff 0f 0b e9 17 fd ff ff <=
+0f> 0b e9 1e fd ff ff 0f 0b e9 21 fd ff ff e8 0b 54 ff ff 84 c0 0f
+> [   54.331276] RSP: 0000:ffff9fef805efe08 EFLAGS: 00010202
+> [   54.338374] RAX: 0000000000000000 RBX: ffff9fef805efe88 RCX: 00000000f=
+fffdfff
+> [   54.347738] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 000000000=
+0000001
+> [   54.358923] RBP: ffff9fef805efe30 R08: 00000000ffffdfff R09: 00000000f=
+fffdfff
+> [   54.368209] R10: ffffffff94e59280 R11: ffffffff94e59280 R12: 000000000=
+0000001
+> [   54.377367] R13: 0000000000000000 R14: 00000000000002fc R15: ffffffff9=
+3514000
+> [   54.386739] FS:  0000000000000000(0000) GS:ffff9c901f500000(0000) knlG=
+S:0000000000000000
+> [   54.397130] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   54.404585] CR2: 0000000000000000 CR3: 000000000308e000 CR4: 000000000=
+00006e0
+> [   54.413884] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
+0000000
+> [   54.423118] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
+0000400
+> [   54.432192] Call Trace:
+> [   54.435634]  <TASK>
+> [   54.438512]  ? rcu_torture_stats_print+0x5b2/0x620
+> [   54.444904]  ? __warn+0x7c/0x130
+> [   54.449221]  ? rcu_torture_stats_print+0x5b2/0x620
+> [   54.455737]  ? report_bug+0x171/0x1a0
+> [   54.460935]  ? handle_bug+0x3c/0x70
+> [   54.465874]  ? exc_invalid_op+0x17/0x70
+> [   54.471336]  ? asm_exc_invalid_op+0x1a/0x20
+> [   54.477092]  ? __pfx_rcu_torture_stats+0x10/0x10
+> [   54.483472]  ? rcu_torture_stats_print+0x5b2/0x620
+> [   54.490029]  ? rcu_torture_stats_print+0x28a/0x620
+> [   54.496565]  ? finish_task_switch.isra.0+0x7e/0x240
+> [   54.503261]  rcu_torture_stats+0x25/0x70
+> [   54.508686]  kthread+0xe3/0x110
+> [   54.513141]  ? __pfx_kthread+0x10/0x10
+> [   54.518330]  ret_from_fork+0x2c/0x50
+> [   54.523356]  </TASK>
+> [   54.526500] ---[ end trace 0000000000000000 ]---
+>
+> Also other issues in 6.4.4, I am seeing RCU failures with TREE07 about 40
+> minutes into the test. This warning indicates that an rcu_torture object =
+from
+> the rcu_torture pool is still allocated which is an indiciation that RCU =
+is
+> not working.
+>
+> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+>
+> However, if we are to believe the '9', it appears the object did made it
+> quite some till the end of the pipe array but not until the free pool.
+>
+> The full TREE07 splat:
+> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> [ 2169.489413] WARNING: CPU: 4 PID: 130 at kernel/rcu/rcutorture.c:1584 r=
+cu_torture_writer+0x7f2/0xd80
+> [ 2169.504064] Modules linked in:
+> [ 2169.508957] CPU: 4 PID: 130 Comm: rcu_torture_wri Not tainted 6.4.4-g6=
+2813c2d2a36 #2
+> [ 2169.521735] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
+.16.2-debian-1.16.2-1 04/01/2014
+> [ 2169.540908] RIP: 0010:rcu_torture_writer+0x7f2/0xd80
+> [ 2169.548542] Code: 15 8b 62 45 02 49 8d 45 e8 48 39 c2 74 bf e8 85 03 0=
+8 00 41 8b 55 f8 48 c7 c6 d0 f7 e0 9d 48 c7 c7 d7 7b 28 9e e8 ce 29 f7 ff <=
+0f> 0b 8b 05 9a 48 45 02 85 c0 75 97 89 d8 87 05 8e 48 45 02 85 c0
+> [ 2169.578445] RSP: 0000:ffffa645804cfe20 EFLAGS: 00010282
+> [ 2169.586793] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 00000000f=
+fffdfff
+> [ 2169.598069] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 000000000=
+0009ffb
+> [ 2169.609359] RBP: ffffa645804cff10 R08: 00000000ffffdfff R09: 00000000f=
+fffdfff
+> [ 2169.620717] R10: ffffffff9e659220 R11: ffffffff9e659220 R12: 000000000=
+0000017
+> [ 2169.631918] R13: ffffffff9f166b60 R14: 0000000000000000 R15: 000000000=
+0000001
+> [ 2169.643365] FS:  0000000000000000(0000) GS:ffff8b3a5f300000(0000) knlG=
+S:0000000000000000
+> [ 2169.655249] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2169.663207] CR2: 0000000000000000 CR3: 000000001562e000 CR4: 000000000=
+00006e0
+> [ 2169.672806] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
+0000000
+> [ 2169.682194] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
+0000400
+> [ 2169.693530] Call Trace:
+> [ 2169.698054]  <TASK>
+> [ 2169.701786]  ? rcu_torture_writer+0x7f2/0xd80
+> [ 2169.708853]  ? __warn+0x7c/0x120
+> [ 2169.714088]  ? rcu_torture_writer+0x7f2/0xd80
+> [ 2169.721066]  ? report_bug+0x15d/0x180
+> [ 2169.726125]  ? handle_bug+0x3c/0x70
+> [ 2169.730948]  ? exc_invalid_op+0x17/0x70
+> [ 2169.736238]  ? asm_exc_invalid_op+0x1a/0x20
+> [ 2169.742047]  ? rcu_torture_writer+0x7f2/0xd80
+> [ 2169.747907]  ? __pfx_rcu_torture_writer+0x10/0x10
+> [ 2169.754175]  kthread+0xcb/0xf0
+> [ 2169.758407]  ? __pfx_kthread+0x10/0x10
+> [ 2169.763501]  ret_from_fork+0x2c/0x50
+> [ 2169.768420]  </TASK>
+> [ 2169.771445] ---[ end trace 0000000000000000 ]---
+> [ 2169.777698] Dumping ftrace buffer:
+> [ 2169.782470]    (ftrace buffer empty)
+> [ 2169.787241] ------------[ cut here ]------------
+>
+>
+> I will continue to monitor and debug these but since I recently re-starte=
+d
+> testing stable (my infra was down for a long time), I don't have any
+> reference for when these started happening.
+>
+> thanks,
+>
+>  - Joel
+>
