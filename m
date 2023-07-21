@@ -2,116 +2,167 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05BF0EB64DD
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 04:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAAC7C04A6A
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 07:59:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjGUEkJ convert rfc822-to-8bit (ORCPT
-        <rfc822;rcu@archiver.kernel.org>); Fri, 21 Jul 2023 00:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
+        id S230246AbjGUH7v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 03:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbjGUEjl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 00:39:41 -0400
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4904D273C;
-        Thu, 20 Jul 2023 21:39:01 -0700 (PDT)
-Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay02.hostedemail.com (Postfix) with ESMTP id BD4D612012D;
-        Fri, 21 Jul 2023 04:38:55 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 5315C2E;
-        Fri, 21 Jul 2023 04:38:52 +0000 (UTC)
-Message-ID: <be08b429164e18b70f8341eab3deb075fc8b63b4.camel@perches.com>
-Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
- RCU Tasks Trace
-From:   Joe Perches <joe@perches.com>
+        with ESMTP id S230242AbjGUH7r (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 03:59:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7322704
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 00:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689926338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OMiNfezuDp8QZVlAhLlbiIMuGymmCNYB2I4q0EEFUSk=;
+        b=es9VMHsiDg2kuJVCMyTCvHzFaAuKoWL4QN9LjBQxFyxYc2fjsb2ogQ78VCKuGxIJAwnq9u
+        u3eXDF1fgpsBDz13/yue0Z+cwF00LhcZnXJYCXZZky1FsICn2cuMzs7vHFE+EhMfimzW4p
+        xEMc+hIL3o4dp33wXsBxVpL70l3Saic=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-8-FDHdC72uOdazp-vxz1EhIw-1; Fri, 21 Jul 2023 03:58:57 -0400
+X-MC-Unique: FDHdC72uOdazp-vxz1EhIw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-314291caa91so874457f8f.2
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 00:58:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689926336; x=1690531136;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OMiNfezuDp8QZVlAhLlbiIMuGymmCNYB2I4q0EEFUSk=;
+        b=NP4HVYWOUVJ4Qazh9jWmweZOIQBsrDiimTzrlA2jchbAhMNkvVn5G3YtlMbXQwp9At
+         0Blw2EoYCLrQp4+NPp9YCUTiVCEB+r/gE733c4KmZ5F7mltTfSXTcjnqjBU0gHakLnim
+         JQBCp+xGzWPMxGxytCHQcy4Y94Aj3H8NKc7GvENHQP5hcvUjDmBqKWH6JPJKmAIWR7Fw
+         y1REVD9X9UerAmCRhDyNqLEzLzD2MvHLaNpFS39BO/32RVkrvXEMdbO5ImtoBNmEbXID
+         Ugpf9qZ+YOhv/HZkpiWhGPQojJ1Bw1xNXSPhUOarg4uk7SiLwaggUCts+CosA7XT/fqP
+         liRQ==
+X-Gm-Message-State: ABy/qLaBCVKD2tQ5XE+1PSf+R/3qlZFn0ee6SYBLZjA+1OIqKz1OQNeY
+        bM0/6h82M/3uULAllPRK2Ns14XOKm/acMLUdQbrlRHqNN4Yc+bIQ4s8a0CdCyVt99uFmDQ6RXGY
+        +FQ4i/p0X6/Fn
+X-Received: by 2002:a5d:6103:0:b0:313:e559:2d4c with SMTP id v3-20020a5d6103000000b00313e5592d4cmr798836wrt.45.1689926336423;
+        Fri, 21 Jul 2023 00:58:56 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHidrlV6ut/P6AGZyG//+hfTFRQfLD41RE3t6gFtW0P8dq2RF0fuunZIegUj7e2SS5Snlr4dg==
+X-Received: by 2002:a5d:6103:0:b0:313:e559:2d4c with SMTP id v3-20020a5d6103000000b00313e5592d4cmr798794wrt.45.1689926336070;
+        Fri, 21 Jul 2023 00:58:56 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id i7-20020a05600011c700b00313fd294d6csm3510472wrx.7.2023.07.21.00.58.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 00:58:55 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
 To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Date:   Thu, 20 Jul 2023 21:38:51 -0700
-In-Reply-To: <c0ca3071-231a-49b1-b153-38ff0328470d@paulmck-laptop>
-References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
-         <20230717180454.1097714-5-paulmck@kernel.org>
-         <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
-         <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
-         <589412dd594b7efc618728fe68ad6c86f3c60878.camel@perches.com>
-         <798959b0-b107-44c4-8262-075930ebfeaa@paulmck-laptop>
-         <c0ca3071-231a-49b1-b153-38ff0328470d@paulmck-laptop>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 17/20] rcutorture: Add a test config to torture
+ test low RCU_DYNTICKS width
+In-Reply-To: <5143d0a9-bc02-4b9a-8613-2383bfdee35c@paulmck-laptop>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-18-vschneid@redhat.com>
+ <24b55289-1c35-41cc-9ad3-baa957f1c9cb@paulmck-laptop>
+ <5143d0a9-bc02-4b9a-8613-2383bfdee35c@paulmck-laptop>
+Date:   Fri, 21 Jul 2023 08:58:53 +0100
+Message-ID: <xhsmhmszpu24i.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 5315C2E
-X-Rspamd-Server: rspamout06
-X-Stat-Signature: zq46css7dks6o8yhj8hrd7y6bptxohp5
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+5xXj83YKHor2G47+awlxQmgdqpcoeN8k=
-X-HE-Tag: 1689914332-372370
-X-HE-Meta: U2FsdGVkX19C7F6Fql0Q3oAwHQE+xh5l90Ob83AJnEJ+fJHYNBiwUCzHrswoKK499ZIlqGCSEEvKBYE4ViKQMcG1xbyhSlb1byHn31rXTeijwRcVuEUFvOiT64RaInnk2gNskWCA5fXeI9oHowKIg5ZCniYfk/XqVqJRYAo7RAgLgWB00Ut+UQeQeYNpS/1lDZoOMmNPio+H4rqQTKbopFSEiwROaAn7lZmdnZzBimoYLrCwTVbhhbUOpY5UsaVTANTlChm5VCaDq0ew5/pM8uk6ug7JDpLL3M31zlbthM1xDZAvrj3lp5UDKQejYW4Yp5il5ALXDuH2iPNKd3H/wiMUcVWT3kZSv2UJCIsLroNquFam1sZD1GhRF5XVuXxj
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, 2023-07-20 at 20:56 -0700, Paul E. McKenney wrote:
+On 20/07/23 21:00, Paul E. McKenney wrote:
+> On Thu, Jul 20, 2023 at 12:53:05PM -0700, Paul E. McKenney wrote:
+>> On Thu, Jul 20, 2023 at 05:30:53PM +0100, Valentin Schneider wrote:
+>> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+>> > new file mode 100644
+>> > index 0000000000000..aa7274efd9819
+>> > --- /dev/null
+>> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+>> > @@ -0,0 +1,19 @@
+>> > +CONFIG_SMP=y
+>> > +CONFIG_NR_CPUS=8
+>> > +CONFIG_PREEMPT_NONE=n
+>> > +CONFIG_PREEMPT_VOLUNTARY=y
+>> > +CONFIG_PREEMPT=n
+>> > +CONFIG_PREEMPT_DYNAMIC=n
+>> > +#CHECK#CONFIG_TREE_RCU=y
+>> > +CONFIG_HZ_PERIODIC=n
+>> > +CONFIG_NO_HZ_IDLE=n
+>> > +CONFIG_NO_HZ_FULL=y
+>> > +CONFIG_RCU_TRACE=y
+>> > +CONFIG_RCU_FANOUT=4
+>> > +CONFIG_RCU_FANOUT_LEAF=3
+>> > +CONFIG_DEBUG_LOCK_ALLOC=n
+>> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+>> > +CONFIG_RCU_EXPERT=y
+>> > +CONFIG_RCU_EQS_DEBUG=y
+>> > +CONFIG_RCU_LAZY=y
+>> > +CONFIG_RCU_DYNTICKS_BITS=2
+>>
+>> Why not just add this last line to the existing TREE04 scenario?
+>> That would ensure that it gets tested regularly without extending the
+>> time required to run a full set of rcutorture tests.
+>
+> Please see below for the version of this patch that I am running overnight
+> tests with.  Does this one work for you?
+>
 
-> 
-> > That works much better, thank you!  I will update the patch on my
-> > next rebase.
-> 
-> As shown below.  Is this what you had in mind?
-[]
-> commit 496aa3821b40459b107f4bbc14ca867daad21fb6
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Jul 6 11:48:07 2023 -0700
-> 
->     checkpatch: Complain about unexpected uses of RCU Tasks Trace
->     
->     RCU Tasks Trace is quite specialized, having been created specifically
->     for sleepable BPF programs.  Because it allows general blocking within
->     readers, any new use of RCU Tasks Trace must take current use cases into
->     account.  Therefore, update checkpatch.pl to complain about use of any of
->     the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -7457,6 +7457,30 @@ sub process {
->  			}
->  		}
->  
-> +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> +		our $rcu_trace_funcs = qr{(?x:
-> +			rcu_read_lock_trace |
-> +			rcu_read_lock_trace_held |
-> +			rcu_read_unlock_trace |
-> +			call_rcu_tasks_trace |
-> +			synchronize_rcu_tasks_trace |
-> +			rcu_barrier_tasks_trace |
-> +			rcu_request_urgent_qs_task
-> +		)};
-> +		our $rcu_trace_paths = qr{(?x:
-> +			kernel/bpf/ |
-> +			include/linux/bpf |
-> +			net/bpf/ |
-> +			kernel/rcu/ |
-> +			include/linux/rcu
-> +		)};
-> +		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> +			if ($realfile !~ m@^$rcu_trace_paths@) {
-> +				WARN("RCU_TASKS_TRACE",
-> +				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
+Yep that's fine with me. I only went with a separate test file as wasn't
+sure how new test options should be handled (merged into existing tests vs
+new tests created), and didn't want to negatively impact TREE04 or
+TREE06. If merging into TREE04 is preferred, then I'll do just that and
+carry this path moving forwards.
 
-Exactly yes.
-
-(though I still suggest a capture group to show the function like below)
-
-		if ($line =~ /\b($rcu_trace_funcs)\s*\(/ &&
-		    $realfile !~ m{^$rcu_trace_paths}) {
-			WARN("RCU_TASKS_TRACE",
-			     "use of RCU task trace '$1' is incorrect outside BPF or core RCU code\n" . $herecurr);
-		}
-
+Thanks!
 
