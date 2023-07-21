@@ -2,151 +2,227 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 359B3EB64DC
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 15:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FF1AC001DC
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 15:22:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbjGUPWU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 11:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
+        id S230041AbjGUPWr (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 11:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbjGUPV7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:21:59 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030773A8F
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 08:21:35 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-78a5384a5daso731077241.0
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 08:21:35 -0700 (PDT)
+        with ESMTP id S230027AbjGUPWe (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 11:22:34 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB63A4211;
+        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6687446eaccso1815031b3a.3;
+        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689952888; x=1690557688;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kCexeoAq5WFou5O/MRG2hFsQoOlYTuihLodnFL02nHg=;
-        b=RoI4XoW6aSQvP9Q8TIXeE+OOEjdFRCDb5vCkv39l0cVz+nN1XkGHe+kfutsTKJD3Yn
-         K9EA33tFVnX6nMGiNfLaqLq6BPH9onR1FfYwtc61aWR58Y4ISItozVXJBpmwVx0WKbke
-         kWA4KBDXbV2hUWcpwHyqaT/eOfar/9gB9G85I=
+        d=gmail.com; s=20221208; t=1689952931; x=1690557731;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3b96Yds/aQ6m9sjATDOT3D72vDFAPpeGAK4iIlmZPEk=;
+        b=CrFonG/fTjyuXUYCQTKQkLaHl8mVRCTCI2whp+UEAK29c6jgKRukIEAMFnBUSAIlx0
+         MkEDf8Lk3wlhq5FSwQJo4M4zSRpPlU5HAXnFPbvhoSZIaNIx9/RLC6bIqmA546ktD+0F
+         s4NVIJWob9X3aH+cOKiOIePaYe6hpInNMR2rNtolODf/TZpdRmB+sWvvQzq9igQIzwP/
+         KNFhHbvrxry6n+yuC8sjzZ47vRJ/ASey849KytOpkqKdR482fN9Di4ZIsLlvFGguhq37
+         I641beAmzO9awfza7S0fy9ALfnV19qGg2xYWs3kgrjl9qaK7sDkRZmA41SGLsekvGZl7
+         QZBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952888; x=1690557688;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kCexeoAq5WFou5O/MRG2hFsQoOlYTuihLodnFL02nHg=;
-        b=gx+fYWDdcJ6DmqU+e2/MEESnkekYrqTs/MH8SQyQ7AkYMEdkCwwYZZ4NBkBWXmsuUQ
-         83Cu6n8xQ6v7uiJptRH/GOiFxrRgR+YoXONPhfqdcQOmVrBNrx7PNTZj0XDVliITTmLs
-         i924Aj6fA+l3kYu8dYYJxYg2HgCwy50luatA7pJvgSI7KsD7+aGGkZldC8ss2WZqG7Rm
-         L0VuqcsU+dEqkWNHdSdjXo9PteZamavk/ud8o/1yWXn5uA/fAxVVVqVXYJG32Tkje95P
-         Wx6eyV4SXQPZUT+A1Hdj3Duiw3wuA8bukNyz+3pqGOXii2S+FkzFnpybGZcFhWIUMvC5
-         o1YQ==
-X-Gm-Message-State: ABy/qLagcJls8QcJlfyZx7NOK7ZcCeyUafITTR9zGKlN/vGYnMVDxVZc
-        OSOtbaXcRccTudj1v+YLzbeX0A==
-X-Google-Smtp-Source: APBJJlFf1VC+mAzw0+PKkMHibS0p4yDHmiPMsps0CguK5DiWnKA7KpFGtyoPE7ky4Z9ArKM/pexs2Q==
-X-Received: by 2002:a67:f244:0:b0:443:6792:38a with SMTP id y4-20020a67f244000000b004436792038amr208591vsm.34.1689952888401;
-        Fri, 21 Jul 2023 08:21:28 -0700 (PDT)
-Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id k30-20020a0cb25e000000b0063cdcd5699csm517512qve.118.2023.07.21.08.21.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:21:27 -0700 (PDT)
-Message-ID: <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
-Date:   Fri, 21 Jul 2023 11:21:26 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+        d=1e100.net; s=20221208; t=1689952931; x=1690557731;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3b96Yds/aQ6m9sjATDOT3D72vDFAPpeGAK4iIlmZPEk=;
+        b=NWJZV7jk24lQp9mKjwZdcxIF/yG+pHA3a8Bg6HGE2mBXpvZuu0l7B/6a0q5JAlgt1E
+         CL3lxstFOlUZov13W+6xjMP6owLiw7GqSB6IDk2psxEkC/aAutqcL/qaBXtSdi/sNdaE
+         MNvW9i/4dRNRp+fgwHHaIHH8IbYOBewOQEiMTwGI/TbO60gntjbthxHx3u87dvrMseeZ
+         RK0rq7st2Occ5GsftUFBVU1K9FCG3AwUAycBwwmt0Fi1E5TNhc6/Um6DwxZzDWrW6MEk
+         C4cX2LDqy5hkYAZ4ty2me9A9Y+XvP6LN04Qe2MtJ5VaYPwQFww3GmfireIoQGYc3KAQP
+         pyLA==
+X-Gm-Message-State: ABy/qLaU7z34FcDQA46LqGVHHP5WlIdD8qyQOrgFSrfsPIVXpPLZp7Z+
+        k9YIkzbYX3/QzNjJBvbvgHg=
+X-Google-Smtp-Source: APBJJlHwDiwChgFArU+ABqubLCi+ve9YBR306/8gDwMIMwIBPOtJ2y2iWH+l1a2Ut87X0+sEXkvssg==
+X-Received: by 2002:a05:6a20:1614:b0:132:f61e:7d41 with SMTP id l20-20020a056a20161400b00132f61e7d41mr2596615pzj.5.1689952931435;
+        Fri, 21 Jul 2023 08:22:11 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id n23-20020aa78a57000000b0068288aaf23esm3118541pfa.100.2023.07.21.08.22.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Jul 2023 08:22:10 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
 Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-Content-Language: en-US
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rcu@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>, roman.gushchin@linux.dev
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <CANn89iL47bu8bWu2EziK2gCJDBDb4Z5LAZJt1xhb_jQMaieG-g@mail.gmail.com>
+Date:   Fri, 21 Jul 2023 23:21:51 +0800
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        roman.gushchin@linux.dev
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E722F06F-FB78-4566-B5BD-754C1F6BD641@gmail.com>
+References: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
+ <CANn89iKJWw7zUP-E_d=Yhaz=Qw0R3Ae7ULaGgrtsi1yf2pfpGg@mail.gmail.com>
+ <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <CANn89iLqU=huOuCt2kXmrXf68TUU-N90aQnMykkYcZ+Arx9-aA@mail.gmail.com>
+ <EDE1C0AE-B479-49F9-995D-DA9CC1A6EA57@gmail.com>
+ <CANn89iL47bu8bWu2EziK2gCJDBDb4Z5LAZJt1xhb_jQMaieG-g@mail.gmail.com>
+To:     Eric Dumazet <edumazet@google.com>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 7/21/23 10:27, Alan Huang wrote:
-> 
->> 2023年7月21日 20:54，Joel Fernandes <joel@joelfernandes.org> 写道：
->>
->>
->>
->>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
->>>
->>> ﻿
->>>> 2023年7月21日 03:22，Eric Dumazet <edumazet@google.com> 写道：
->>>>
->>>>> On Thu, Jul 20, 2023 at 8:54 PM Alan Huang <mmpgouride@gmail.com> wrote:
->>>>>
->>>>> Hi,
->>>>>
->>>>> I noticed a commit c87a124a5d5e(“net: force a reload of first item in hlist_nulls_for_each_entry_rcu”)
->>>>> and a related discussion [1].
->>>>>
->>>>> After reading the whole discussion, it seems like that ptr->field was cached by gcc even with the deprecated
->>>>> ACCESS_ONCE(), so my question is:
->>>>>
->>>>>       Is that a compiler bug? If so, has this bug been fixed today, ten years later?
->>>>>
->>>>>       What about READ_ONCE(ptr->field)?
->>>>
->>>> Make sure sparse is happy.
->>>
->>> It caused a problem without barrier(), and the deprecated ACCESS_ONCE() didn’t help:
->>>
->>>    https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->>>
->>> So, my real question is: With READ_ONCE(ptr->field), are there still some unusual cases where gcc
->>> decides not to reload ptr->field?
->>
->> I am a bit doubtful there will be strong (any?) interest in replacing the barrier() with READ_ONCE() without any tangible reason, regardless of whether a gcc issue was fixed.
->>
->> But hey, if you want to float the idea…
-> 
-> We already had the READ_ONCE() in rcu_deference_raw().
-> 
-> The barrier() here makes me think we need write code like below:
-> 	
-> 	READ_ONCE(head->first);
-> 	barrier();
-> 	READ_ONCE(head->first);
-> 
-> With READ_ONCE (or the deprecated ACCESS_ONCE),
-> I don’t think a compiler should cache the value of head->first.
+
+> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 22:47=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Fri, Jul 21, 2023 at 4:31=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>=20
+>>=20
+>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 05:11=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>> On Thu, Jul 20, 2023 at 10:00=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>>>=20
+>>>>=20
+>>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>=20
+>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>>>>>=20
+>>>>>> Hi,
+>>>>>>=20
+>>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
+first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
+>>>>>> and a related discussion [1].
+>>>>>>=20
+>>>>>> After reading the whole discussion, it seems like that ptr->field =
+was cached by gcc even with the deprecated
+>>>>>> ACCESS_ONCE(), so my question is:
+>>>>>>=20
+>>>>>>      Is that a compiler bug? If so, has this bug been fixed =
+today, ten years later?
+>>>>>>=20
+>>>>>>      What about READ_ONCE(ptr->field)?
+>>>>>=20
+>>>>> Make sure sparse is happy.
+>>>>=20
+>>>> It caused a problem without barrier(), and the deprecated =
+ACCESS_ONCE() didn=E2=80=99t help:
+>>>>=20
+>>>>       https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>>>=20
+>>>> So, my real question is: With READ_ONCE(ptr->field), are there =
+still some unusual cases where gcc
+>>>> decides not to reload ptr->field?
+>>>=20
+>>> I can not really answer without seeing an actual patch...
+>>=20
+>> The content of the potential patch:
+>>=20
+>> diff --git a/include/linux/rculist_nulls.h =
+b/include/linux/rculist_nulls.h
+>> index 89186c499dd4..bcd39670f359 100644
+>> --- a/include/linux/rculist_nulls.h
+>> +++ b/include/linux/rculist_nulls.h
+>> @@ -158,15 +158,9 @@ static inline void hlist_nulls_add_fake(struct =
+hlist_nulls_node *n)
+>>  * @pos:       the &struct hlist_nulls_node to use as a loop cursor.
+>>  * @head:      the head of the list.
+>>  * @member:    the name of the hlist_nulls_node within the struct.
+>> - *
+>> - * The barrier() is needed to make sure compiler doesn't cache first =
+element [1],
+>> - * as this loop can be restarted [2]
+>> - * [1] Documentation/memory-barriers.txt around line 1533
+>> - * [2] Documentation/RCU/rculist_nulls.rst around line 146
+>>  */
+>> #define hlist_nulls_for_each_entry_rcu(tpos, pos, head, member)       =
+                 \
+>> -       for (({barrier();}),                                          =
+          \
+>> -            pos =3D =
+rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
+>> +       for (pos =3D =
+rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
+>>                (!is_a_nulls(pos)) &&                                  =
+         \
+>>                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
+member); 1; }); \
+>>                pos =3D =
+rcu_dereference_raw(hlist_nulls_next_rcu(pos)))
+>> @@ -180,8 +174,7 @@ static inline void hlist_nulls_add_fake(struct =
+hlist_nulls_node *n)
+>>  * @member:    the name of the hlist_nulls_node within the struct.
+>>  */
+>> #define hlist_nulls_for_each_entry_safe(tpos, pos, head, member)      =
+         \
+>> -       for (({barrier();}),                                          =
+          \
+>> -            pos =3D =
+rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
+>> +       for (pos =3D =
+rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
+>>                (!is_a_nulls(pos)) &&                                  =
+         \
+>>                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
+member);        \
+>>                   pos =3D =
+rcu_dereference_raw(hlist_nulls_next_rcu(pos)); 1; });)
+>>=20
+>>=20
+>>>=20
+>>> Why are you asking ? Are you tracking compiler bug fixes ?
+>>=20
+>> The barrier() here makes me confused.
+>>=20
+>> If we really need that, do we need:
+>>=20
+>>        READ_ONCE(head->first);
+>>        barrier();
+>>        READ_ONCE(head->first);
+>>=20
+>=20
+> Nope, the patch you want to revert (while it did fix (by pure luck
+> ???) a real bug back in the days) was replacing
+>=20
+> ACCESS_ONCE()
+>=20
+> by
+>=20
+> barrier();
+> ACCESS_ONCE();
+
+Yeah.
+
+The commit message and related discussions all indicate
+that the compiler cached a value accessed through volatile.
+
+That=E2=80=99s why I asked here.
+
+>=20
+> (There is one ACCESS_ONCE(), not two of them)
+>=20
+> BTW,
+>  barrier();
+>  followed by an arbitrary number of barrier(); back to back,
+> translates to one barrier()
+>=20
+> Frankly, I would not change the code, unless someone can explain what
+> was the issue.
+> (Perhaps there was a missing barrier elsewhere)
+
+Fair enough, although I feel like this is masking the real issue.
+
+(I feel like no one will know the real issue ten years later, when no =
+one knew it ten years ago.)
+
+Anyway, thanks for your time.
 
 
-Right, it shouldn't need to cache. To Eric's point it might be risky to remove 
-the barrier() and someone needs to explain that issue first (or IMO there needs 
-to be another tangible reason like performance etc). Anyway, FWIW I wrote a 
-simple program and I am not seeing the head->first cached with the pattern you 
-shared above:
 
-#include <stdlib.h>
-
-#define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
-#define barrier() __asm__ __volatile__("": : :"memory")
-
-typedef struct list_head {
-     int first;
-     struct list_head *next;
-} list_head;
-
-int main() {
-     list_head *head = (list_head *)malloc(sizeof(list_head));
-     head->first = 1;
-     head->next = 0;
-
-     READ_ONCE(head->first);
-     barrier();
-     READ_ONCE(head->first);
-
-     free(head);
-     return 0;
-}
-
-On ARM 32-bit, 64-bit and x86_64, with -Os and then another experiment with -O2 
-on new gcc versions.
 
