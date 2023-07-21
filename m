@@ -2,179 +2,151 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7520CC04FDF
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 15:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 359B3EB64DC
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 15:22:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbjGUPJS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 11:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
+        id S230206AbjGUPWU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 11:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjGUPI5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:08:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C2330D4
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 08:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689952090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B0XnA9BE8o3D7MPThucf/ZBJtbCoqYoCMw1W8WX/w6k=;
-        b=EHkYpasJZsFd5iXjGYYJco08SR4fRzI2pdenG1qOmKr026tnnZu0snIEKydQmpBe/xTPMM
-        3i9U3ESpqqF0IAUTgi4AfObTzST4M5bYa+iUKWP+NqGcwhXfr5TvJY4nUBRf7QCbqmh3P4
-        gUbCAHy+zW0tFdC3tEPqLKZ5kSx85rA=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-462-6tmCBhvQOq2mJjuAoED-GQ-1; Fri, 21 Jul 2023 11:08:08 -0400
-X-MC-Unique: 6tmCBhvQOq2mJjuAoED-GQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-314256aedcbso1053962f8f.0
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 08:08:08 -0700 (PDT)
+        with ESMTP id S230427AbjGUPV7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 11:21:59 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030773A8F
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 08:21:35 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-78a5384a5daso731077241.0
+        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 08:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689952888; x=1690557688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kCexeoAq5WFou5O/MRG2hFsQoOlYTuihLodnFL02nHg=;
+        b=RoI4XoW6aSQvP9Q8TIXeE+OOEjdFRCDb5vCkv39l0cVz+nN1XkGHe+kfutsTKJD3Yn
+         K9EA33tFVnX6nMGiNfLaqLq6BPH9onR1FfYwtc61aWR58Y4ISItozVXJBpmwVx0WKbke
+         kWA4KBDXbV2hUWcpwHyqaT/eOfar/9gB9G85I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952087; x=1690556887;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B0XnA9BE8o3D7MPThucf/ZBJtbCoqYoCMw1W8WX/w6k=;
-        b=ZPpzBgwoklvA96aPALZ4FSUoK98twzkNiTabXz/IHNwt+Zr3l9NKNKuLa7ZDRtpUv3
-         EKncCFwEmbT8YnNcZhqToQ4vFuHLtVZbkktol9zzxPzwHYOjd0oJCIGTZPT2tqkjfrNi
-         Dc6GEwavEy26vtQuPaVhDg0ZtstxPsaIqG/y2JpaIaOYyZToFe3gIPyN3vM5BHaH5Qg+
-         wG7wUPCl43k9YccigpjgVXCKXv1q+PxN8WT5Be/ocsoUxmR51PTCIevbO5+M4ASfdp1E
-         KZ7NYd9E9Xzz6nyejq2AKZewBlYMbzg+cP1ex0FuTuGgFUQB/DbCFtxxytFkuiIXfwjA
-         +Ocg==
-X-Gm-Message-State: ABy/qLY1wtKnY22oSvPVEPxvJDBs86XZFw2hTq+vFn+YuZjyOGdFNS6d
-        uAi9XvZECGi9PU6eKyIz7Nf75focF7Zjlr0L6iXTtDET8BhTIq32INQ8lFxtexpsMfwI1ytizOX
-        gaXy297PHhsyp
-X-Received: by 2002:a5d:65d0:0:b0:311:180d:cf38 with SMTP id e16-20020a5d65d0000000b00311180dcf38mr1610851wrw.24.1689952087593;
-        Fri, 21 Jul 2023 08:08:07 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHaTM5vQ7KW9sCHDc43jdJFwo9+cb7+zAoGs4JK1/FURFo7hfFESg+0SCq3xlf/D0c/gEW3UQ==
-X-Received: by 2002:a5d:65d0:0:b0:311:180d:cf38 with SMTP id e16-20020a5d65d0000000b00311180dcf38mr1610794wrw.24.1689952087302;
-        Fri, 21 Jul 2023 08:08:07 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id j6-20020adfff86000000b0031274a184d5sm4426018wrr.109.2023.07.21.08.08.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 08:08:06 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 17/20] rcutorture: Add a test config to torture
- test low RCU_DYNTICKS width
-In-Reply-To: <7d2fdbb7-e574-40e8-8561-40a3873abc88@paulmck-laptop>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-18-vschneid@redhat.com>
- <24b55289-1c35-41cc-9ad3-baa957f1c9cb@paulmck-laptop>
- <5143d0a9-bc02-4b9a-8613-2383bfdee35c@paulmck-laptop>
- <xhsmhmszpu24i.mognet@vschneid.remote.csb>
- <7d2fdbb7-e574-40e8-8561-40a3873abc88@paulmck-laptop>
-Date:   Fri, 21 Jul 2023 16:08:04 +0100
-Message-ID: <xhsmhcz0lti97.mognet@vschneid.remote.csb>
+        d=1e100.net; s=20221208; t=1689952888; x=1690557688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kCexeoAq5WFou5O/MRG2hFsQoOlYTuihLodnFL02nHg=;
+        b=gx+fYWDdcJ6DmqU+e2/MEESnkekYrqTs/MH8SQyQ7AkYMEdkCwwYZZ4NBkBWXmsuUQ
+         83Cu6n8xQ6v7uiJptRH/GOiFxrRgR+YoXONPhfqdcQOmVrBNrx7PNTZj0XDVliITTmLs
+         i924Aj6fA+l3kYu8dYYJxYg2HgCwy50luatA7pJvgSI7KsD7+aGGkZldC8ss2WZqG7Rm
+         L0VuqcsU+dEqkWNHdSdjXo9PteZamavk/ud8o/1yWXn5uA/fAxVVVqVXYJG32Tkje95P
+         Wx6eyV4SXQPZUT+A1Hdj3Duiw3wuA8bukNyz+3pqGOXii2S+FkzFnpybGZcFhWIUMvC5
+         o1YQ==
+X-Gm-Message-State: ABy/qLagcJls8QcJlfyZx7NOK7ZcCeyUafITTR9zGKlN/vGYnMVDxVZc
+        OSOtbaXcRccTudj1v+YLzbeX0A==
+X-Google-Smtp-Source: APBJJlFf1VC+mAzw0+PKkMHibS0p4yDHmiPMsps0CguK5DiWnKA7KpFGtyoPE7ky4Z9ArKM/pexs2Q==
+X-Received: by 2002:a67:f244:0:b0:443:6792:38a with SMTP id y4-20020a67f244000000b004436792038amr208591vsm.34.1689952888401;
+        Fri, 21 Jul 2023 08:21:28 -0700 (PDT)
+Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id k30-20020a0cb25e000000b0063cdcd5699csm517512qve.118.2023.07.21.08.21.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 08:21:27 -0700 (PDT)
+Message-ID: <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 11:21:26 -0400
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+Content-Language: en-US
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>, roman.gushchin@linux.dev
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+ <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 21/07/23 07:07, Paul E. McKenney wrote:
-> On Fri, Jul 21, 2023 at 08:58:53AM +0100, Valentin Schneider wrote:
->> On 20/07/23 21:00, Paul E. McKenney wrote:
->> > On Thu, Jul 20, 2023 at 12:53:05PM -0700, Paul E. McKenney wrote:
->> >> On Thu, Jul 20, 2023 at 05:30:53PM +0100, Valentin Schneider wrote:
->> >> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
->> >> > new file mode 100644
->> >> > index 0000000000000..aa7274efd9819
->> >> > --- /dev/null
->> >> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
->> >> > @@ -0,0 +1,19 @@
->> >> > +CONFIG_SMP=y
->> >> > +CONFIG_NR_CPUS=8
->> >> > +CONFIG_PREEMPT_NONE=n
->> >> > +CONFIG_PREEMPT_VOLUNTARY=y
->> >> > +CONFIG_PREEMPT=n
->> >> > +CONFIG_PREEMPT_DYNAMIC=n
->> >> > +#CHECK#CONFIG_TREE_RCU=y
->> >> > +CONFIG_HZ_PERIODIC=n
->> >> > +CONFIG_NO_HZ_IDLE=n
->> >> > +CONFIG_NO_HZ_FULL=y
->> >> > +CONFIG_RCU_TRACE=y
->> >> > +CONFIG_RCU_FANOUT=4
->> >> > +CONFIG_RCU_FANOUT_LEAF=3
->> >> > +CONFIG_DEBUG_LOCK_ALLOC=n
->> >> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
->> >> > +CONFIG_RCU_EXPERT=y
->> >> > +CONFIG_RCU_EQS_DEBUG=y
->> >> > +CONFIG_RCU_LAZY=y
->> >> > +CONFIG_RCU_DYNTICKS_BITS=2
->> >>
->> >> Why not just add this last line to the existing TREE04 scenario?
->> >> That would ensure that it gets tested regularly without extending the
->> >> time required to run a full set of rcutorture tests.
->> >
->> > Please see below for the version of this patch that I am running overnight
->> > tests with.  Does this one work for you?
+On 7/21/23 10:27, Alan Huang wrote:
+> 
+>> 2023年7月21日 20:54，Joel Fernandes <joel@joelfernandes.org> 写道：
 >>
->> Yep that's fine with me. I only went with a separate test file as wasn't
->> sure how new test options should be handled (merged into existing tests vs
->> new tests created), and didn't want to negatively impact TREE04 or
->> TREE06. If merging into TREE04 is preferred, then I'll do just that and
->> carry this path moving forwards.
->
-> Things worked fine for this one-hour-per-scenario test run on my laptop,
+>>
+>>
+>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
+>>>
+>>> ﻿
+>>>> 2023年7月21日 03:22，Eric Dumazet <edumazet@google.com> 写道：
+>>>>
+>>>>> On Thu, Jul 20, 2023 at 8:54 PM Alan Huang <mmpgouride@gmail.com> wrote:
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> I noticed a commit c87a124a5d5e(“net: force a reload of first item in hlist_nulls_for_each_entry_rcu”)
+>>>>> and a related discussion [1].
+>>>>>
+>>>>> After reading the whole discussion, it seems like that ptr->field was cached by gcc even with the deprecated
+>>>>> ACCESS_ONCE(), so my question is:
+>>>>>
+>>>>>       Is that a compiler bug? If so, has this bug been fixed today, ten years later?
+>>>>>
+>>>>>       What about READ_ONCE(ptr->field)?
+>>>>
+>>>> Make sure sparse is happy.
+>>>
+>>> It caused a problem without barrier(), and the deprecated ACCESS_ONCE() didn’t help:
+>>>
+>>>    https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>>
+>>> So, my real question is: With READ_ONCE(ptr->field), are there still some unusual cases where gcc
+>>> decides not to reload ptr->field?
+>>
+>> I am a bit doubtful there will be strong (any?) interest in replacing the barrier() with READ_ONCE() without any tangible reason, regardless of whether a gcc issue was fixed.
+>>
+>> But hey, if you want to float the idea…
+> 
+> We already had the READ_ONCE() in rcu_deference_raw().
+> 
+> The barrier() here makes me think we need write code like below:
+> 	
+> 	READ_ONCE(head->first);
+> 	barrier();
+> 	READ_ONCE(head->first);
+> 
+> With READ_ONCE (or the deprecated ACCESS_ONCE),
+> I don’t think a compiler should cache the value of head->first.
 
-Many thanks for testing!
 
-> except for the CONFIG_SMP=n runs, which all got build errors like the
-> following.
->
+Right, it shouldn't need to cache. To Eric's point it might be risky to remove 
+the barrier() and someone needs to explain that issue first (or IMO there needs 
+to be another tangible reason like performance etc). Anyway, FWIW I wrote a 
+simple program and I am not seeing the head->first cached with the pattern you 
+shared above:
 
-Harumph, yes !SMP (and !CONTEXT_TRACKING_WORK) doesn't compile nicely, I'll
-fix that for v3.
+#include <stdlib.h>
+
+#define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+#define barrier() __asm__ __volatile__("": : :"memory")
+
+typedef struct list_head {
+     int first;
+     struct list_head *next;
+} list_head;
+
+int main() {
+     list_head *head = (list_head *)malloc(sizeof(list_head));
+     head->first = 1;
+     head->next = 0;
+
+     READ_ONCE(head->first);
+     barrier();
+     READ_ONCE(head->first);
+
+     free(head);
+     return 0;
+}
+
+On ARM 32-bit, 64-bit and x86_64, with -Os and then another experiment with -O2 
+on new gcc versions.
 
