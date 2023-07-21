@@ -2,96 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FF1AC001DC
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 15:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9F40EB64DC
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 15:55:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjGUPWr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 11:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        id S230201AbjGUPz1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 11:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjGUPWe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:22:34 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB63A4211;
-        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6687446eaccso1815031b3a.3;
-        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
+        with ESMTP id S230355AbjGUPz0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 11:55:26 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06403AB0;
+        Fri, 21 Jul 2023 08:55:00 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6686708c986so1835723b3a.0;
+        Fri, 21 Jul 2023 08:55:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689952931; x=1690557731;
+        d=gmail.com; s=20221208; t=1689954900; x=1690559700;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3b96Yds/aQ6m9sjATDOT3D72vDFAPpeGAK4iIlmZPEk=;
-        b=CrFonG/fTjyuXUYCQTKQkLaHl8mVRCTCI2whp+UEAK29c6jgKRukIEAMFnBUSAIlx0
-         MkEDf8Lk3wlhq5FSwQJo4M4zSRpPlU5HAXnFPbvhoSZIaNIx9/RLC6bIqmA546ktD+0F
-         s4NVIJWob9X3aH+cOKiOIePaYe6hpInNMR2rNtolODf/TZpdRmB+sWvvQzq9igQIzwP/
-         KNFhHbvrxry6n+yuC8sjzZ47vRJ/ASey849KytOpkqKdR482fN9Di4ZIsLlvFGguhq37
-         I641beAmzO9awfza7S0fy9ALfnV19qGg2xYWs3kgrjl9qaK7sDkRZmA41SGLsekvGZl7
-         QZBA==
+        bh=WZxER7TIVhSnV+xmwfN9+r3oqw1Tk9t+HVETN8trMAE=;
+        b=g6An1sIieyGlOOXL0byEVOlxStzgXllu0/T3IHHvZl3AOiLqUirmU8/1199okGG8Id
+         V406almeeph/BKkxzAq4PljPPSekH/bRwJWwHaEQa/ECD3rrze5dj2zOio2U9nlrpJAx
+         NQQmghecokjVtq/pVlCydE5CQk3eDjvgoXEXEVqZ5XzEbMcoq9qA9BP5+qamQCwBBstX
+         +PJpabN+2nHM8flz9SW1T6IKoHgpgUlk85Q1cGPxZ5S1efOchFzMNEaThb7RmmQz9yFB
+         jWzwR+KgArxD33F7id2ZLpEgc1Rrc1+xTOCm8ye2U/hkA3oS3rRBvJx9rFQwBKflGb/z
+         mK9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952931; x=1690557731;
+        d=1e100.net; s=20221208; t=1689954900; x=1690559700;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3b96Yds/aQ6m9sjATDOT3D72vDFAPpeGAK4iIlmZPEk=;
-        b=NWJZV7jk24lQp9mKjwZdcxIF/yG+pHA3a8Bg6HGE2mBXpvZuu0l7B/6a0q5JAlgt1E
-         CL3lxstFOlUZov13W+6xjMP6owLiw7GqSB6IDk2psxEkC/aAutqcL/qaBXtSdi/sNdaE
-         MNvW9i/4dRNRp+fgwHHaIHH8IbYOBewOQEiMTwGI/TbO60gntjbthxHx3u87dvrMseeZ
-         RK0rq7st2Occ5GsftUFBVU1K9FCG3AwUAycBwwmt0Fi1E5TNhc6/Um6DwxZzDWrW6MEk
-         C4cX2LDqy5hkYAZ4ty2me9A9Y+XvP6LN04Qe2MtJ5VaYPwQFww3GmfireIoQGYc3KAQP
-         pyLA==
-X-Gm-Message-State: ABy/qLaU7z34FcDQA46LqGVHHP5WlIdD8qyQOrgFSrfsPIVXpPLZp7Z+
-        k9YIkzbYX3/QzNjJBvbvgHg=
-X-Google-Smtp-Source: APBJJlHwDiwChgFArU+ABqubLCi+ve9YBR306/8gDwMIMwIBPOtJ2y2iWH+l1a2Ut87X0+sEXkvssg==
-X-Received: by 2002:a05:6a20:1614:b0:132:f61e:7d41 with SMTP id l20-20020a056a20161400b00132f61e7d41mr2596615pzj.5.1689952931435;
-        Fri, 21 Jul 2023 08:22:11 -0700 (PDT)
+        bh=WZxER7TIVhSnV+xmwfN9+r3oqw1Tk9t+HVETN8trMAE=;
+        b=UHe4nU8JrEnfRsOiLp2dl7y5vg+z7poq5DKErv0Sqd+4iT+MS5yW4b7PHw33P8wpUj
+         KnXsplfKVoa6dUdI8/h82YX0U1J7jQ3dWvlJ1i+TWK8UM2zWwhneXkk121bckoxfrKYA
+         y+gg8Aj8ajYjZR64IOKvX2OahOD99Wi6CpcuyhFKIBJ9mjnm84ARpo+Vo9IkiORZPB+l
+         6yG5fF/+JXhFIValIs3LO65X4WB1vhcSJBndNJuRIKSDul2o72k+NjczlMsbZyrfE7Pn
+         waFJyZBjfmuoFnsgQRz/fZyS/pnFdtvyl5vCLDu7HyqP82Np7it2yJN4NgghGJZFh0D1
+         3U1g==
+X-Gm-Message-State: ABy/qLZwr9wd1WK9e9yfo6pJcZiVaajMmB3Y+dbJft9yWnlRBlEhdNWu
+        wuAtBHBxa62810KJl+HBXPA=
+X-Google-Smtp-Source: APBJJlFJr0PyxT/oCciTOu848MpX3AkcC/p4TwSFmWdXXKpcqAuJF7tp36NbCVrN4CWWBAGfqne3gA==
+X-Received: by 2002:a05:6a20:1585:b0:137:2b6f:4307 with SMTP id h5-20020a056a20158500b001372b6f4307mr2994999pzj.27.1689954899988;
+        Fri, 21 Jul 2023 08:54:59 -0700 (PDT)
 Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id n23-20020aa78a57000000b0068288aaf23esm3118541pfa.100.2023.07.21.08.22.04
+        by smtp.gmail.com with ESMTPSA id y8-20020a62b508000000b00663b712bfbdsm3145756pfe.57.2023.07.21.08.54.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:22:10 -0700 (PDT)
+        Fri, 21 Jul 2023 08:54:59 -0700 (PDT)
 Content-Type: text/plain;
         charset=utf-8
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
 Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
 From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <CANn89iL47bu8bWu2EziK2gCJDBDb4Z5LAZJt1xhb_jQMaieG-g@mail.gmail.com>
-Date:   Fri, 21 Jul 2023 23:21:51 +0800
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        roman.gushchin@linux.dev
+In-Reply-To: <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 23:54:34 +0800
+Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>, roman.gushchin@linux.dev
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <E722F06F-FB78-4566-B5BD-754C1F6BD641@gmail.com>
-References: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
- <CANn89iKJWw7zUP-E_d=Yhaz=Qw0R3Ae7ULaGgrtsi1yf2pfpGg@mail.gmail.com>
- <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <CANn89iLqU=huOuCt2kXmrXf68TUU-N90aQnMykkYcZ+Arx9-aA@mail.gmail.com>
- <EDE1C0AE-B479-49F9-995D-DA9CC1A6EA57@gmail.com>
- <CANn89iL47bu8bWu2EziK2gCJDBDb4Z5LAZJt1xhb_jQMaieG-g@mail.gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
+Message-Id: <7D269BDF-102C-46B8-B31C-A559D2E410E0@gmail.com>
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+ <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+ <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
 X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
-> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 22:47=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 23:21=EF=BC=8CJoel Fernandes =
+<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
 >=20
-> On Fri, Jul 21, 2023 at 4:31=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>=20
->>=20
->>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 05:11=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+> On 7/21/23 10:27, Alan Huang wrote:
+>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
+<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
 >>>=20
->>> On Thu, Jul 20, 2023 at 10:00=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
+>>>=20
+>>>=20
+>>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> =
+wrote:
 >>>>=20
->>>>=20
+>>>> =EF=BB=BF
 >>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
 <edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
 >>>>>=20
->>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
+>>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
 <mmpgouride@gmail.com> wrote:
 >>>>>>=20
 >>>>>> Hi,
@@ -114,115 +111,77 @@ today, ten years later?
 >>>> It caused a problem without barrier(), and the deprecated =
 ACCESS_ONCE() didn=E2=80=99t help:
 >>>>=20
->>>>       https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>>>   https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
 >>>>=20
 >>>> So, my real question is: With READ_ONCE(ptr->field), are there =
 still some unusual cases where gcc
 >>>> decides not to reload ptr->field?
 >>>=20
->>> I can not really answer without seeing an actual patch...
->>=20
->> The content of the potential patch:
->>=20
->> diff --git a/include/linux/rculist_nulls.h =
-b/include/linux/rculist_nulls.h
->> index 89186c499dd4..bcd39670f359 100644
->> --- a/include/linux/rculist_nulls.h
->> +++ b/include/linux/rculist_nulls.h
->> @@ -158,15 +158,9 @@ static inline void hlist_nulls_add_fake(struct =
-hlist_nulls_node *n)
->>  * @pos:       the &struct hlist_nulls_node to use as a loop cursor.
->>  * @head:      the head of the list.
->>  * @member:    the name of the hlist_nulls_node within the struct.
->> - *
->> - * The barrier() is needed to make sure compiler doesn't cache first =
-element [1],
->> - * as this loop can be restarted [2]
->> - * [1] Documentation/memory-barriers.txt around line 1533
->> - * [2] Documentation/RCU/rculist_nulls.rst around line 146
->>  */
->> #define hlist_nulls_for_each_entry_rcu(tpos, pos, head, member)       =
-                 \
->> -       for (({barrier();}),                                          =
-          \
->> -            pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->> +       for (pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->>                (!is_a_nulls(pos)) &&                                  =
-         \
->>                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
-member); 1; }); \
->>                pos =3D =
-rcu_dereference_raw(hlist_nulls_next_rcu(pos)))
->> @@ -180,8 +174,7 @@ static inline void hlist_nulls_add_fake(struct =
-hlist_nulls_node *n)
->>  * @member:    the name of the hlist_nulls_node within the struct.
->>  */
->> #define hlist_nulls_for_each_entry_safe(tpos, pos, head, member)      =
-         \
->> -       for (({barrier();}),                                          =
-          \
->> -            pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->> +       for (pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->>                (!is_a_nulls(pos)) &&                                  =
-         \
->>                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
-member);        \
->>                   pos =3D =
-rcu_dereference_raw(hlist_nulls_next_rcu(pos)); 1; });)
->>=20
->>=20
+>>> I am a bit doubtful there will be strong (any?) interest in =
+replacing the barrier() with READ_ONCE() without any tangible reason, =
+regardless of whether a gcc issue was fixed.
 >>>=20
->>> Why are you asking ? Are you tracking compiler bug fixes ?
+>>> But hey, if you want to float the idea=E2=80=A6
+>> We already had the READ_ONCE() in rcu_deference_raw().
+>> The barrier() here makes me think we need write code like below:
 >>=20
->> The barrier() here makes me confused.
->>=20
->> If we really need that, do we need:
->>=20
->>        READ_ONCE(head->first);
->>        barrier();
->>        READ_ONCE(head->first);
->>=20
+>> READ_ONCE(head->first);
+>> barrier();
+>> READ_ONCE(head->first);
+>> With READ_ONCE (or the deprecated ACCESS_ONCE),
+>> I don=E2=80=99t think a compiler should cache the value of =
+head->first.
 >=20
-> Nope, the patch you want to revert (while it did fix (by pure luck
-> ???) a real bug back in the days) was replacing
 >=20
-> ACCESS_ONCE()
+> Right, it shouldn't need to cache. To Eric's point it might be risky =
+to remove the barrier() and someone needs to explain that issue first =
+(or IMO there needs to be another tangible reason like performance etc). =
+Anyway, FWIW I wrote a simple program and I am not seeing the =
+head->first cached with the pattern you shared above:
 >=20
-> by
+> #include <stdlib.h>
 >=20
-> barrier();
-> ACCESS_ONCE();
-
-Yeah.
-
-The commit message and related discussions all indicate
-that the compiler cached a value accessed through volatile.
-
-That=E2=80=99s why I asked here.
-
+> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+> #define barrier() __asm__ __volatile__("": : :"memory")
 >=20
-> (There is one ACCESS_ONCE(), not two of them)
+> typedef struct list_head {
+>    int first;
+>    struct list_head *next;
+> } list_head;
 >=20
-> BTW,
->  barrier();
->  followed by an arbitrary number of barrier(); back to back,
-> translates to one barrier()
+> int main() {
+>    list_head *head =3D (list_head *)malloc(sizeof(list_head));
+>    head->first =3D 1;
+>    head->next =3D 0;
 >=20
-> Frankly, I would not change the code, unless someone can explain what
-> was the issue.
-> (Perhaps there was a missing barrier elsewhere)
+>    READ_ONCE(head->first);
+>    barrier();
 
-Fair enough, although I feel like this is masking the real issue.
+Thanks for your time!
 
-(I feel like no one will know the real issue ten years later, when no =
-one knew it ten years ago.)
+However, what I'm trying to say here is that without this barrier(), GCC =
+wouldn't cache this value either.
 
-Anyway, thanks for your time.
+So, I removed the barrier() and tested, GCC didn=E2=80=99t cache the =
+value of head->first.
+(Only tested on x86-64 (all the possible versions of gcc that Compiler =
+Explorer has) where the original issue occurred [1].)
+
+Therefore, the commit message and the related discussion ten years ago =
+is misleading.
+
+Thanks again!
+
+[1] https://lkml.org/lkml/2013/4/16/371
 
 
+>    READ_ONCE(head->first);
+>=20
+>    free(head);
+>    return 0;
+> }
+>=20
+> On ARM 32-bit, 64-bit and x86_64, with -Os and then another experiment =
+with -O2 on new gcc versions.
 
 
