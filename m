@@ -2,128 +2,239 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 731C0EB64DC
-	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 12:54:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC72FC001DF
+	for <rcu@archiver.kernel.org>; Fri, 21 Jul 2023 14:07:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjGUMyc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 08:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        id S230319AbjGUOHQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 10:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbjGUMyb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:54:31 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5138D10D2
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 05:54:30 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-403a0d7afafso13802091cf.1
-        for <rcu@vger.kernel.org>; Fri, 21 Jul 2023 05:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689944069; x=1690548869;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=py/BFgmRS4KvWpQnkGKaFJgWYXIsOQByY26EFKRGjhs=;
-        b=gEpb7UoxryK77HdI/F6jakyvQpTFKvaYavHFK1+LsFOVyxguE8Fcxu/sKbK7dVo1b7
-         qnnCizvtiDvOCmoUK9iReH6sJSBhI5WjGfDDUMHrl65K+jn24p9T0jP/Hldz6QEbGOm1
-         W37hvvtQXy7DVWXSpMkzLGTMAiB2CO8hBPeUs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689944069; x=1690548869;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=py/BFgmRS4KvWpQnkGKaFJgWYXIsOQByY26EFKRGjhs=;
-        b=CrQebbLF3aytGGALPCgTypvEUDsfVQR4oySrM7kPlNN8/OJD2L2CXg6d5M3LhGgMGV
-         t4He55fGvVFt4dXWf/hYt3BCF0QB2yqMCSmIVMLuFCuZF9XqOC58wFkU0kkE6Ikote4I
-         9jwF2h1G4aYuyzpjbuXM5wpOtEF7NJqDxGh6Z3cJImcDbtqLselFR/YqAEtthC8xgLwR
-         hvMEoXpZ1cP8TepssCPQ4riNGOj2GkJZLCSmApkymh9Z1cEtp4hV+pKOdFKnDT6930yi
-         1Px1GjGyjV+eDLJMnd2P6CJde7yKBQdB3c3z+FJU654/nTFzysUbyDFuSZnZHnpfpYaG
-         qRMA==
-X-Gm-Message-State: ABy/qLaiuQA7W7nooDlW5hMruANf4NgnXvwJbunpFPrxJiGpE/sui2Zi
-        6zfIm6SnQLGeLuUhubD8r/ec7Q==
-X-Google-Smtp-Source: APBJJlHk4xMVwdmRohsI0u8gJGglJgtYLzzbXNqS94S9I8EeGMjOfJkdwblJh+8XT9njVSO8qAeysA==
-X-Received: by 2002:ac8:5e0c:0:b0:3ff:3110:bb5e with SMTP id h12-20020ac85e0c000000b003ff3110bb5emr1816763qtx.30.1689944069337;
-        Fri, 21 Jul 2023 05:54:29 -0700 (PDT)
-Received: from smtpclient.apple ([192.145.116.83])
-        by smtp.gmail.com with ESMTPSA id v18-20020ac873d2000000b004035b79860dsm1188209qtp.81.2023.07.21.05.54.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 05:54:27 -0700 (PDT)
+        with ESMTP id S229801AbjGUOHP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 10:07:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5B3FD;
+        Fri, 21 Jul 2023 07:07:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5506061B68;
+        Fri, 21 Jul 2023 14:07:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E85C433C9;
+        Fri, 21 Jul 2023 14:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689948432;
+        bh=bTZdyxvTtZgnsZIW0qXy4zcErrTkNn0mTmm4UjRN+Vs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qESCCl0+iQuLHfyRueHqahM4vVWNdMg3ivuHV7vx8jYnR+7wPhZY8zxBCOR+/Q7B+
+         2IPqxdHva9fDbtK4KqaE5essvLqJZfMMdcrOaEJ3xhA3+GEUDjErJQc6WDsvXH9Xlm
+         O6YzicfTK43iABbFokQ3yq+4TDo36v7PF4hQja1WkvfmXc0aNeDxLQ9vOWQRnGz6oj
+         iqngu9qEVKyMUnuFoOVpmT/28R7PGzE/wwLhLFdaUMMrBB2UKzWO32+2kb4cjenWuF
+         m1LGc9DZmuhDAnlSnF/QuDXgHZ1aW7hzcn+NKl/cPSU3dCp6K2wLYJ+cXIlglx9lqg
+         Rr41b98rrUu8A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 503BDCE097F; Fri, 21 Jul 2023 07:07:12 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 07:07:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 17/20] rcutorture: Add a test config to torture
+ test low RCU_DYNTICKS width
+Message-ID: <7d2fdbb7-e574-40e8-8561-40a3873abc88@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-18-vschneid@redhat.com>
+ <24b55289-1c35-41cc-9ad3-baa957f1c9cb@paulmck-laptop>
+ <5143d0a9-bc02-4b9a-8613-2383bfdee35c@paulmck-laptop>
+ <xhsmhmszpu24i.mognet@vschneid.remote.csb>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-Date:   Fri, 21 Jul 2023 08:54:17 -0400
-Message-Id: <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rcu@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>, roman.gushchin@linux.dev
-In-Reply-To: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
-To:     Alan Huang <mmpgouride@gmail.com>
-X-Mailer: iPhone Mail (20B101)
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <xhsmhmszpu24i.mognet@vschneid.remote.csb>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Jul 21, 2023 at 08:58:53AM +0100, Valentin Schneider wrote:
+> On 20/07/23 21:00, Paul E. McKenney wrote:
+> > On Thu, Jul 20, 2023 at 12:53:05PM -0700, Paul E. McKenney wrote:
+> >> On Thu, Jul 20, 2023 at 05:30:53PM +0100, Valentin Schneider wrote:
+> >> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+> >> > new file mode 100644
+> >> > index 0000000000000..aa7274efd9819
+> >> > --- /dev/null
+> >> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+> >> > @@ -0,0 +1,19 @@
+> >> > +CONFIG_SMP=y
+> >> > +CONFIG_NR_CPUS=8
+> >> > +CONFIG_PREEMPT_NONE=n
+> >> > +CONFIG_PREEMPT_VOLUNTARY=y
+> >> > +CONFIG_PREEMPT=n
+> >> > +CONFIG_PREEMPT_DYNAMIC=n
+> >> > +#CHECK#CONFIG_TREE_RCU=y
+> >> > +CONFIG_HZ_PERIODIC=n
+> >> > +CONFIG_NO_HZ_IDLE=n
+> >> > +CONFIG_NO_HZ_FULL=y
+> >> > +CONFIG_RCU_TRACE=y
+> >> > +CONFIG_RCU_FANOUT=4
+> >> > +CONFIG_RCU_FANOUT_LEAF=3
+> >> > +CONFIG_DEBUG_LOCK_ALLOC=n
+> >> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+> >> > +CONFIG_RCU_EXPERT=y
+> >> > +CONFIG_RCU_EQS_DEBUG=y
+> >> > +CONFIG_RCU_LAZY=y
+> >> > +CONFIG_RCU_DYNTICKS_BITS=2
+> >>
+> >> Why not just add this last line to the existing TREE04 scenario?
+> >> That would ensure that it gets tested regularly without extending the
+> >> time required to run a full set of rcutorture tests.
+> >
+> > Please see below for the version of this patch that I am running overnight
+> > tests with.  Does this one work for you?
+> 
+> Yep that's fine with me. I only went with a separate test file as wasn't
+> sure how new test options should be handled (merged into existing tests vs
+> new tests created), and didn't want to negatively impact TREE04 or
+> TREE06. If merging into TREE04 is preferred, then I'll do just that and
+> carry this path moving forwards.
 
+Things worked fine for this one-hour-per-scenario test run on my laptop,
+except for the CONFIG_SMP=n runs, which all got build errors like the
+following.
 
-> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
->=20
-> =EF=BB=BF
->> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet <edumazet@g=
-oogle.com> =E5=86=99=E9=81=93=EF=BC=9A
->>=20
->>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang <mmpgouride@gmail.com=
-> wrote:
->>>=20
->>> Hi,
->>>=20
->>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of first it=
-em in hlist_nulls_for_each_entry_rcu=E2=80=9D)
->>> and a related discussion [1].
->>>=20
->>> After reading the whole discussion, it seems like that ptr->field was ca=
-ched by gcc even with the deprecated
->>> ACCESS_ONCE(), so my question is:
->>>=20
->>>       Is that a compiler bug? If so, has this bug been fixed today, ten y=
-ears later?
->>>=20
->>>       What about READ_ONCE(ptr->field)?
->>=20
->> Make sure sparse is happy.
->=20
-> It caused a problem without barrier(), and the deprecated ACCESS_ONCE() di=
-dn=E2=80=99t help:
->=20
->    https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->=20
-> So, my real question is: With READ_ONCE(ptr->field), are there still some u=
-nusual cases where gcc=20
-> decides not to reload ptr->field?
+							Thanx, Paul
 
-I am a bit doubtful there will be strong (any?) interest in replacing the ba=
-rrier() with READ_ONCE() without any tangible reason, regardless of whether a=
- gcc issue was fixed.
+------------------------------------------------------------------------
 
-But hey, if you want to float the idea=E2=80=A6
-
-Thanks,
-
- - Joel
-
->=20
->>=20
->> Do you have a patch for review ?
->=20
-> Possibly next month. :)
->=20
->>=20
->>=20
->>>=20
->>>=20
->>> [1] https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glapt=
-op/
->>>=20
->>> Thanks,
->>> Alan
->=20
+In file included from ./include/linux/container_of.h:5,
+                 from ./include/linux/list.h:5,
+                 from ./include/linux/swait.h:5,
+                 from ./include/linux/completion.h:12,
+                 from ./include/linux/crypto.h:15,
+                 from arch/x86/kernel/asm-offsets.c:9:
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:61:29: note: in expansion of macro ‘CT_STATE_SIZE’
+   61 | #define RCU_DYNTICKS_START (CT_STATE_SIZE - CONFIG_RCU_DYNTICKS_BITS)
+      |                             ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:70:29: note: in expansion of macro ‘RCU_DYNTICKS_START’
+   70 | #define CONTEXT_WORK_END   (RCU_DYNTICKS_START - 1)
+      |                             ^~~~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:74:16: note: in expansion of macro ‘CONTEXT_WORK_END’
+   74 |               (CONTEXT_WORK_END  + 1 - CONTEXT_WORK_START) +
+      |                ^~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:62:29: note: in expansion of macro ‘CT_STATE_SIZE’
+   62 | #define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
+      |                             ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:75:16: note: in expansion of macro ‘RCU_DYNTICKS_END’
+   75 |               (RCU_DYNTICKS_END  + 1 - RCU_DYNTICKS_START) ==
+      |                ^~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:61:29: note: in expansion of macro ‘CT_STATE_SIZE’
+   61 | #define RCU_DYNTICKS_START (CT_STATE_SIZE - CONFIG_RCU_DYNTICKS_BITS)
+      |                             ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:75:40: note: in expansion of macro ‘RCU_DYNTICKS_START’
+   75 |               (RCU_DYNTICKS_END  + 1 - RCU_DYNTICKS_START) ==
+      |                                        ^~~~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:76:15: note: in expansion of macro ‘CT_STATE_SIZE’
+   76 |               CT_STATE_SIZE);
+      |               ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:73:15: error: expression in static assertion is not an integer
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      |               ^
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+make[2]: *** [scripts/Makefile.build:116: arch/x86/kernel/asm-offsets.s] Error 1
+make[1]: *** [/home/git/linux-rcu-1/Makefile:1275: prepare0] Error 2
+make[1]: *** Waiting for unfinished jobs....
+  LD      /home/git/linux-rcu-1/tools/objtool/objtool-in.o
+  LINK    /home/git/linux-rcu-1/tools/objtool/objtool
+make: *** [Makefile:234: __sub-make] Error 2
