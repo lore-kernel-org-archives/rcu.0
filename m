@@ -2,235 +2,356 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F354EB64DD
-	for <rcu@archiver.kernel.org>; Sat, 22 Jul 2023 01:00:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19BEBC0015E
+	for <rcu@archiver.kernel.org>; Sat, 22 Jul 2023 01:02:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjGVBA3 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 21 Jul 2023 21:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
+        id S229763AbjGVBC5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 21 Jul 2023 21:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGVBA3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 21 Jul 2023 21:00:29 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB2B30E2;
-        Fri, 21 Jul 2023 18:00:27 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-55b1238a013so1642716a12.3;
-        Fri, 21 Jul 2023 18:00:27 -0700 (PDT)
+        with ESMTP id S229487AbjGVBC4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 21 Jul 2023 21:02:56 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3882F30D7;
+        Fri, 21 Jul 2023 18:02:55 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1647656a12.1;
+        Fri, 21 Jul 2023 18:02:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689987627; x=1690592427;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689987774; x=1690592574;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kt0L4P+NzBcsq1EI6gbREXBo3crNA7JQvLXOnGryS3A=;
-        b=Q5SLPPrraqwPzMqgDS9A6HVHNilC+mrMvIeEymDFq5eDRMMcunbFym10hZ4ciU4Zmx
-         LzMRTu6bZBy0yV89Od8oQkMUgUvHqi8Uy5F1RSSAvomIkaXHvwr9krcdp73Jwxwcqer9
-         UuYrOrUPH8r028tuaUz8pLnBJQjosrXQHla++Te+jOU9SY4OkYD967SSX/U8Dpohel1A
-         JvgM9bBmL4MIOKlczLvwa+iuAgzYme69CsV90DGyp8PWkxyEXnBT3ZPBNMFdk7cwgEnc
-         gacXcrJz1te0wOVJsmMhW7LSqh8HX9aOH//iYLjIvGlEETaZ4EWOXHJofIu5lQz0bClE
-         MjVw==
+        bh=dGYnqhJpWuVQ6nBOOEbx55botldEKDEEdNGDus7lcb0=;
+        b=QO51gEh7/OMPfhhqy195AGaii9iZZ+G5cuhcAC9nkdc6PaXtGe+EmoRittU3n1hub3
+         dWbivs0bKvxU59muYh9WKgPLkYMfbtpIxlVaplfhGbLBCdmMHM0P/h85xS5EUvdF5Awe
+         2h8Uwd3alOT3oFSsoCFOxQXeMuvaAW9Gdj8nhtvzQXgOE/x1oSBR+wMmqthfRD0Keex+
+         +ljl/ag2FutSp8aKYQKVyTPrqhNGowwYHHClVSZudeaN1QO6ZZd2BdOvKHbsVXIshmU7
+         3OKBW/FiCZdXmWP/PAZWHNP4UpmSKlSIHxHJMViF2+RrmXpTm/J7vqj6vrAOTX8NW95x
+         WLnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689987627; x=1690592427;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689987774; x=1690592574;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kt0L4P+NzBcsq1EI6gbREXBo3crNA7JQvLXOnGryS3A=;
-        b=IBeOMLSOh2x1v+duLGV5d+Xmo+WtlQpYGV8/bvPjbLOE+o95BlfMxth7N4calAy6on
-         sX9nTEPmaKErZoNjYTdt3ErNgK8rhlnMWKWfkE3C5EQrSwdIbv2eQkOMcgd/QW+ot00w
-         mAuuwuprU7K7WJbgPhykoXAsLskLynXcKRKG8BMVMsQqzMbYgVDBNdfmY2gljW8dU/88
-         6Wd34GBq4zu3Z7CC0X/1Vr87BcOR1h9pJX69zyyQVvW2tUbHJBh2hNwz2L4bVaQeRmXm
-         c/RlUHN07zVWZhJWCLonW0VtnbRGhBtgFxMur/jfV1Gc1HbNi50KUW8eMEkvGFq3Bwbl
-         DchQ==
-X-Gm-Message-State: ABy/qLbpAqgjmfbQ5mO3IZ6Y3cTS/vYMGaYTQ26ng4c1Vg4BufTOdJT1
-        ioUlW3HCOcBRIGN5F7R0en/DQE6MDtGayPBC0RA=
-X-Google-Smtp-Source: APBJJlErQDKC2spyVvLJo0TWM2uNcJFI1HXF/BgIiiNW2LTRbaUdthOL1NCqdDVYAp0tn2xTS2TpaXRl7fkBBNZf5Vo=
-X-Received: by 2002:a17:903:258b:b0:1b8:1c9e:444e with SMTP id
- jb11-20020a170903258b00b001b81c9e444emr2888360plb.25.1689987627037; Fri, 21
- Jul 2023 18:00:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <2023071940-suspect-ominous-4a6a@gregkh> <20230720132714.GA3726096@google.com>
- <CAABZP2xrLRTVM6te22RFTYCpFB6CnyZ1ASjq=vsGuhpnRfU-OA@mail.gmail.com>
-In-Reply-To: <CAABZP2xrLRTVM6te22RFTYCpFB6CnyZ1ASjq=vsGuhpnRfU-OA@mail.gmail.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Sat, 22 Jul 2023 09:00:16 +0800
-Message-ID: <CAABZP2xwBczWqpPv09JWT+GrJ5oKjeBO7VV1O23yCX7AsbxGBw@mail.gmail.com>
-Subject: Re: [BUG] Re: Linux 6.4.4
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        bh=dGYnqhJpWuVQ6nBOOEbx55botldEKDEEdNGDus7lcb0=;
+        b=ZVQuIp1Pk79XU+qWKY4jj5Iz3VkDj8aEMUrr8Gr0F+cW+NGv5Tc5DAODaKI7E2knoU
+         kcVIcqHCQjNvej9cKqXMXhxQ8P0dRivaBfwg1N7NgaCo6xvbNJeYLE7DRh26drki1c+g
+         NxMpS5yaRBzD+qH0me87U/+XBAfIDPCHgVRGuPm5DPCkTgL6aX+SjPA4RUSPk1bZeEsm
+         LL70JQZHa/qf682jBCdM0FoV51Sls9h+4FxhTnQ8LujJSNTAfkBc+oTfsyGZ63nu3wzV
+         fMtfJmxFEOgBeZlBFDWFpY1QLWw5wqWvAIP5ADdQq+kHZ27rkuVLaTxvBoH9cZezqDC/
+         Wkwg==
+X-Gm-Message-State: ABy/qLYBcaoMq6ypCV/EfVF4M236JprlARZxjpt0ugr/m+XfcHAS2lGT
+        1gnvkSpqszzLLgyUu4JDIuw=
+X-Google-Smtp-Source: APBJJlEb8c+SPJEhCixQUxMSHr1TMATnCt/LGgbkiTVDpIZsQTKAO6DQ3f8nn+BVzJ1s0ziJ98dchw==
+X-Received: by 2002:a17:90a:5895:b0:267:6a1d:323c with SMTP id j21-20020a17090a589500b002676a1d323cmr3161048pji.43.1689987774443;
+        Fri, 21 Jul 2023 18:02:54 -0700 (PDT)
+Received: from [127.0.0.1] ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id d8-20020a17090a564800b002657aa777f1sm4695884pji.19.2023.07.21.18.02.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Jul 2023 18:02:54 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2] docs/RCU: Bring back smp_wmb()
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <8d54c0a5-11ab-48e2-b187-25b229406b2a@paulmck-laptop>
+Date:   Sat, 22 Jul 2023 09:02:46 +0800
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <99F1D0AB-5085-42CA-BFF0-6D5AC488F960@gmail.com>
+References: <20230711150906.466434-1-mmpgouride@gmail.com>
+ <9eaf506f-cc14-4da6-9efc-057c0c3e56b0@paulmck-laptop>
+ <9D42CEB7-FE22-4BC6-9E5C-8131579C129D@gmail.com>
+ <eabec10a-9283-42eb-85c7-e447e2368c91@paulmck-laptop>
+ <6E813D30-2791-4DE8-A70C-E1F91011631D@gmail.com>
+ <02a84e4b-a322-4c43-ad9d-1832ce277c2f@paulmck-laptop>
+ <636D1ED4-C90D-47CA-A46A-28E40E777966@gmail.com>
+ <9b1967c5-6b8d-4d66-879c-42818d6e3170@paulmck-laptop>
+ <30E3504D-4E64-4C61-9503-690C1657C6F3@gmail.com>
+ <8d54c0a5-11ab-48e2-b187-25b229406b2a@paulmck-laptop>
+To:     paulmck@kernel.org
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 9:51=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gmail.com> =
-wrote:
->
-> On Thu, Jul 20, 2023 at 9:31=E2=80=AFPM Joel Fernandes <joel@joelfernande=
-s.org> wrote:
-> >
-> > On Wed, Jul 19, 2023 at 05:06:39PM +0200, Greg Kroah-Hartman wrote:
-> > > I'm announcing the release of the 6.4.4 kernel.
-> > >
-> > > All users of the 6.4 kernel series must upgrade.
-> > >
-> > > The updated 6.4.y git tree can be found at:
-> > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le.git linux-6.4.y
-> > > and can be browsed at the normal kernel.org git web browser:
-> > >       https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-stabl=
-e.git;a=3Dsummary
-> >
-> > I have been consistently hitting the following splat with rcutorture's =
-TREE03
-> > test on 6.4.4. This happened with 6.4.4-rc3 as well.
-> Hi, I am also interested in this topic , I am going to test 6.4.4 on my l=
-aptop
-I rcu tortured 6.4.4 on my Intel(R) Core(TM) i7-11800H laptop for 2
-rounds each of which lasting 7 hours.
-all of them report:
-Summary: Successes: 55 Failures: 0.
 
-Thanks, Zhouyi
->
-> Thanks, Zhouyi
-> >
-> > Happens at:
-> >                 WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost fai=
-led (TIMER_SOFTIRQ RT prio?)
-> >
-> > So likely RCU boosting is failing:
-> >
-> > The full TREE03 splat:
-> > [   54.243588] ------------[ cut here ]------------
-> > [   54.244547] rcu-torture: rcu_torture_boost started
-> > [   54.247643] WARNING: CPU: 12 PID: 166 at kernel/rcu/rcutorture.c:222=
-7 rcu_torture_stats_print+0x5b2/0x620
-> > [   54.273082] Modules linked in:
-> > [   54.278336] CPU: 12 PID: 166 Comm: rcu_torture_sta Not tainted 6.4.4=
--g62813c2d2a36 #1
-> > [   54.288540] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
- 1.16.2-debian-1.16.2-1 04/01/2014
-> > [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
-> > [   54.307525] Code: 00 00 48 8b 05 3f 6c 46 02 e9 4a fe ff ff 0f 0b e9=
- 02 fd ff ff 0f 0b e9 09 fd ff ff 0f 0b e9 10 fd ff ff 0f 0b e9 17 fd ff ff=
- <0f> 0b e9 1e fd ff ff 0f 0b e9 21 fd ff ff e8 0b 54 ff ff 84 c0 0f
-> > [   54.331276] RSP: 0000:ffff9fef805efe08 EFLAGS: 00010202
-> > [   54.338374] RAX: 0000000000000000 RBX: ffff9fef805efe88 RCX: 0000000=
-0ffffdfff
-> > [   54.347738] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000=
-000000001
-> > [   54.358923] RBP: ffff9fef805efe30 R08: 00000000ffffdfff R09: 0000000=
-0ffffdfff
-> > [   54.368209] R10: ffffffff94e59280 R11: ffffffff94e59280 R12: 0000000=
-000000001
-> > [   54.377367] R13: 0000000000000000 R14: 00000000000002fc R15: fffffff=
-f93514000
-> > [   54.386739] FS:  0000000000000000(0000) GS:ffff9c901f500000(0000) kn=
-lGS:0000000000000000
-> > [   54.397130] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   54.404585] CR2: 0000000000000000 CR3: 000000000308e000 CR4: 0000000=
-0000006e0
-> > [   54.413884] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> > [   54.423118] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> > [   54.432192] Call Trace:
-> > [   54.435634]  <TASK>
-> > [   54.438512]  ? rcu_torture_stats_print+0x5b2/0x620
-> > [   54.444904]  ? __warn+0x7c/0x130
-> > [   54.449221]  ? rcu_torture_stats_print+0x5b2/0x620
-> > [   54.455737]  ? report_bug+0x171/0x1a0
-> > [   54.460935]  ? handle_bug+0x3c/0x70
-> > [   54.465874]  ? exc_invalid_op+0x17/0x70
-> > [   54.471336]  ? asm_exc_invalid_op+0x1a/0x20
-> > [   54.477092]  ? __pfx_rcu_torture_stats+0x10/0x10
-> > [   54.483472]  ? rcu_torture_stats_print+0x5b2/0x620
-> > [   54.490029]  ? rcu_torture_stats_print+0x28a/0x620
-> > [   54.496565]  ? finish_task_switch.isra.0+0x7e/0x240
-> > [   54.503261]  rcu_torture_stats+0x25/0x70
-> > [   54.508686]  kthread+0xe3/0x110
-> > [   54.513141]  ? __pfx_kthread+0x10/0x10
-> > [   54.518330]  ret_from_fork+0x2c/0x50
-> > [   54.523356]  </TASK>
-> > [   54.526500] ---[ end trace 0000000000000000 ]---
-> >
-> > Also other issues in 6.4.4, I am seeing RCU failures with TREE07 about =
-40
-> > minutes into the test. This warning indicates that an rcu_torture objec=
-t from
-> > the rcu_torture pool is still allocated which is an indiciation that RC=
-U is
-> > not working.
-> >
-> > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> >
-> > However, if we are to believe the '9', it appears the object did made i=
-t
-> > quite some till the end of the pipe array but not until the free pool.
-> >
-> > The full TREE07 splat:
-> > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> > [ 2169.489413] WARNING: CPU: 4 PID: 130 at kernel/rcu/rcutorture.c:1584=
- rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.504064] Modules linked in:
-> > [ 2169.508957] CPU: 4 PID: 130 Comm: rcu_torture_wri Not tainted 6.4.4-=
-g62813c2d2a36 #2
-> > [ 2169.521735] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
- 1.16.2-debian-1.16.2-1 04/01/2014
-> > [ 2169.540908] RIP: 0010:rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.548542] Code: 15 8b 62 45 02 49 8d 45 e8 48 39 c2 74 bf e8 85 03=
- 08 00 41 8b 55 f8 48 c7 c6 d0 f7 e0 9d 48 c7 c7 d7 7b 28 9e e8 ce 29 f7 ff=
- <0f> 0b 8b 05 9a 48 45 02 85 c0 75 97 89 d8 87 05 8e 48 45 02 85 c0
-> > [ 2169.578445] RSP: 0000:ffffa645804cfe20 EFLAGS: 00010282
-> > [ 2169.586793] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000=
-0ffffdfff
-> > [ 2169.598069] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000=
-000009ffb
-> > [ 2169.609359] RBP: ffffa645804cff10 R08: 00000000ffffdfff R09: 0000000=
-0ffffdfff
-> > [ 2169.620717] R10: ffffffff9e659220 R11: ffffffff9e659220 R12: 0000000=
-000000017
-> > [ 2169.631918] R13: ffffffff9f166b60 R14: 0000000000000000 R15: 0000000=
-000000001
-> > [ 2169.643365] FS:  0000000000000000(0000) GS:ffff8b3a5f300000(0000) kn=
-lGS:0000000000000000
-> > [ 2169.655249] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 2169.663207] CR2: 0000000000000000 CR3: 000000001562e000 CR4: 0000000=
-0000006e0
-> > [ 2169.672806] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> > [ 2169.682194] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> > [ 2169.693530] Call Trace:
-> > [ 2169.698054]  <TASK>
-> > [ 2169.701786]  ? rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.708853]  ? __warn+0x7c/0x120
-> > [ 2169.714088]  ? rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.721066]  ? report_bug+0x15d/0x180
-> > [ 2169.726125]  ? handle_bug+0x3c/0x70
-> > [ 2169.730948]  ? exc_invalid_op+0x17/0x70
-> > [ 2169.736238]  ? asm_exc_invalid_op+0x1a/0x20
-> > [ 2169.742047]  ? rcu_torture_writer+0x7f2/0xd80
-> > [ 2169.747907]  ? __pfx_rcu_torture_writer+0x10/0x10
-> > [ 2169.754175]  kthread+0xcb/0xf0
-> > [ 2169.758407]  ? __pfx_kthread+0x10/0x10
-> > [ 2169.763501]  ret_from_fork+0x2c/0x50
-> > [ 2169.768420]  </TASK>
-> > [ 2169.771445] ---[ end trace 0000000000000000 ]---
-> > [ 2169.777698] Dumping ftrace buffer:
-> > [ 2169.782470]    (ftrace buffer empty)
-> > [ 2169.787241] ------------[ cut here ]------------
-> >
-> >
-> > I will continue to monitor and debug these but since I recently re-star=
-ted
-> > testing stable (my infra was down for a long time), I don't have any
-> > reference for when these started happening.
-> >
-> > thanks,
-> >
-> >  - Joel
-> >
+> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 =E4=B8=8A=E5=8D=886:49=EF=BC=8CPaul =
+E. McKenney <paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Wed, Jul 19, 2023 at 12:08:33AM +0800, Alan Huang wrote:
+>>=20
+>>> 2023=E5=B9=B47=E6=9C=8818=E6=97=A5 03:06=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>> On Tue, Jul 18, 2023 at 01:53:10AM +0800, Alan Huang wrote:
+>>>>> 2023=E5=B9=B47=E6=9C=8818=E6=97=A5 00:02=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>> On Sun, Jul 16, 2023 at 07:21:28PM +0800, Alan Huang wrote:
+>>>>>>> 2023=E5=B9=B47=E6=9C=8816=E6=97=A5 01:19=EF=BC=8CPaul E. =
+McKenney <paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>>> On Sat, Jul 15, 2023 at 08:50:23AM +0800, Alan Huang wrote:
+>>>>>>>>> 2023=E5=B9=B47=E6=9C=8815=E6=97=A5 07:23=EF=BC=8CPaul E. =
+McKenney <paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>>>>> On Tue, Jul 11, 2023 at 03:09:06PM +0000, Alan Huang wrote:
+>>>>>>>>>> The objects are allocated with SLAB_TYPESAFE_BY_RCU, and =
+there is
+>>>>>>>>>> n->next =3D first within hlist_add_head_rcu() before =
+rcu_assign_pointer(),
+>>>>>>>>>> which modifies obj->obj_node.next. There may be readers =
+holding the
+>>>>>>>>>> reference of obj in lockless_lookup, and when updater =
+modifies ->next,
+>>>>>>>>>> readers can see the change immediately because =
+ofSLAB_TYPESAFE_BY_RCU.
+>>>>>>>>>>=20
+>>>>>>>>>> There are two memory ordering required in the insertion =
+algorithm,
+>>>>>>>>>> we need to make sure obj->key is updated before =
+obj->obj_node.next
+>>>>>>>>>> and obj->refcnt, atomic_set_release is not enough to provide =
+the
+>>>>>>>>>> required memory barrier.
+>>>>>>>>>>=20
+>>>>>>>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+>>>>>>>>>=20
+>>>>>>>>> This is an interesting one!!!
+>>>>>>>>>=20
+>>>>>>>>> Now I am having a hard time believing that the smp_rmb() =
+suffices.
+>>>>>>>>>=20
+>>>>>>>>>> ---
+>>>>>>>>>> Changelog:
+>>>>>>>>>> v1 -> v2: Use _ONCE to protect obj->key.
+>>>>>>>>>>=20
+>>>>>>>>>> Documentation/RCU/rculist_nulls.rst | 21 =
++++++++++++++--------
+>>>>>>>>>> 1 file changed, 13 insertions(+), 8 deletions(-)
+>>>>>>>>>>=20
+>>>>>>>>>> diff --git a/Documentation/RCU/rculist_nulls.rst =
+b/Documentation/RCU/rculist_nulls.rst
+>>>>>>>>>> index 21e40fcc08de..2a9f5a63d334 100644
+>>>>>>>>>> --- a/Documentation/RCU/rculist_nulls.rst
+>>>>>>>>>> +++ b/Documentation/RCU/rculist_nulls.rst
+>>>>>>>>>> @@ -47,7 +47,7 @@ objects, which is having below type.
+>>>>>>>>>> * reuse these object before the RCU grace period, we
+>>>>>>>>>> * must check key after getting the reference on object
+>>>>>>>>>> */
+>>>>>>>>>> -    if (obj->key !=3D key) { // not the object we expected
+>>>>>>>>>> +    if (READ_ONCE(obj->key) !=3D key) { // not the object we =
+expected
+>>>>>>>>>>   put_ref(obj);
+>>>>>>>>>>   rcu_read_unlock();
+>>>>>>>>>>   goto begin;
+>>>>>>>>>> @@ -64,10 +64,10 @@ but a version with an additional memory =
+barrier (smp_rmb())
+>>>>>>>>>> {
+>>>>>>>>>> struct hlist_node *node, *next;
+>>>>>>>>>> for (pos =3D rcu_dereference((head)->first);
+>>>>>>>>>> -         pos && ({ next =3D pos->next; smp_rmb(); =
+prefetch(next); 1; }) &&
+>>>>>>>>>> +         pos && ({ next =3D READ_ONCE(pos->next); smp_rmb(); =
+prefetch(next); 1; }) &&
+>>>>>>>>>=20
+>>>>>>>>> Suppose that lockless_lookup() is delayed just before fetching =
+pos->next,
+>>>>>>>>> and that there were 17 more node to search in the list.
+>>>>>>>>>=20
+>>>>>>>>> Then consider the following sequence of events:
+>>>>>>>>>=20
+>>>>>>>>> o The updater deletes this same node and kmem_cache_free()s =
+it.
+>>>>>>>>>=20
+>>>>>>>>> o Another updater kmem_cache_alloc()s that same memory and
+>>>>>>>>> inserts it into an empty hash chain with a different key.
+>>>>>>>>>=20
+>>>>>>>>> o Then lockless_lookup() fetches pos->next and sees a NULL =
+pointer,
+>>>>>>>>> thus failing to search the remaining 17 nodes in the list,
+>>>>>>>>> one of which had the desired key value.
+>>>>>>>>>=20
+>>>>>>>>> o The lookup algorithm resumes and sees the NULL return from
+>>>>>>>>> lockless_lookup(), and ends up with a NULL obj.
+>>>>>>>>>=20
+>>>>>>>>> And this happens even with the strongest possible ordering
+>>>>>>>>> everywhere.
+>>>>>>>>>=20
+>>>>>>>>> OK, yes, it is late on Friday.  So what am I missing here?
+>>>>>>>>=20
+>>>>>>>> You missed nothing!
+>>>>>>>>=20
+>>>>>>>> The lockless_lockup should not be a function, but a macro like =
+hlist_for_each_entry_rcu.
+>>>>>>>=20
+>>>>>>> How would you fix this using a macro?
+>>>>>>=20
+>>>>>> With additional detection code. A moved object (in another chain) =
+will have a different slot.
+>>>>>> (I have sent patch v3. )
+>>>>>>=20
+>>>>>>>=20
+>>>>>>>>> Independent of that, does hlist_add_head_rcu() need to replace =
+its
+>>>>>>>>> "n->next =3D first" with "WRITE_ONCE(n->next, first)"?
+>>>>>>>>=20
+>>>>>>>> I think users who want to use hlist with SLAB_TYPESAFE_BY_RCU =
+should use rculist_nulls?
+>>>>>>>=20
+>>>>>>> I believe that you are correct.  Would you like to propose a =
+patch, or
+>>>>>>> would you rather I put something together?  My current thought =
+is to
+>>>>>>=20
+>>>>>> Feel free to add.=20
+>>>>>>=20
+>>>>>> One thing I think would be useful is to tell readers where the =
+=E2=80=98next' is.=20
+>>>>>> The document mentions =E2=80=99next=E2=80=99 many times, but =
+it=E2=80=99s hard for me, as a reader, to realize that
+>>>>>> the =E2=80=98next' is within hlist_add_head_rcu(). (I have no =
+idea where to put the hint.)
+>>>>>>=20
+>>>>>>=20
+>>>>>>> keep the examples, but to show why the one with smp_rmb() is =
+broken.
+>>>>>>=20
+>>>>>> I think the example needs to be fixed. :)
+>>>>>=20
+>>>>> Even better!  I will take a look, but in the meantime, would you =
+be
+>>>>> interested in updating the wording to explain how the back-pointer =
+works?
+>>>>=20
+>>>> Which document needs to be updated?=20
+>>>> And is there anything that I can refer to? It=E2=80=99s the first =
+time I have ever heard about it.
+>>>=20
+>>> Documentation/RCU/rculist_nulls.rst, the one that you are updating.
+>>>=20
+>>> There admittedly isn't a whole lot of commentary.
+>>>=20
+>>>>> (Looks similar to the is_a_nulls() pointer, but in each element =
+instead of
+>>>>> just at the end.  One advantage is the ability to detect a move =
+mid-list,
+>>>>> though that is not a big deal in well-tuned hash tables, which =
+tend to
+>>>>> have short hash chains.  The need to move elements to the front of =
+the
+>>>>> destination list remains, though in both cases only if it has been =
+less
+>>>>> than a grace period since the last move.)
+>>>>=20
+>>>> Looks like that I need to learn it first. :)
+>>>=20
+>>> Well, you wrote the code, so...  ;-)
+>>=20
+>> If I understand correctly, it works only for 64-bit machines?
+>>=20
+>> And the number of slots of the hash table will be limited?
+>=20
+> You are asking about the is_a_nulls() value?  If so, it works on both
+> 32-bit and 64-bit machines.  They each have enough bits for the nulls
+> value to cover all possible two-byte objects in the full address =
+space.
+>=20
+> If that wasn't what you were asking, please help me with your =
+question.
+
+I=E2=80=99m asking the =E2=80=98back-pointer=E2=80=99, which
+
+	"Looks similar to the is_a_nulls() pointer, but in each element =
+instead of
+	 just at the end=E2=80=9D
+
+If I understand correctly, we need to store the nulls in the upper =
+unused bits.
+
+And we only have several bits unused. One advantage I can think of is =
+that it=20
+will improve the performance once we have something like the Intel Upper =
+Address Ignore (UAI),
+which also works only for 64-bit machine.
+
+
+>=20
+> 						Thanx, Paul
+>=20
+>>> Thanx, Paul
+>>>=20
+>>>>> Thanx, Paul
+>>>>>=20
+>>>>>>>> I didn=E2=80=99t find a case using hlist with =
+SLAB_TYPESAFE_BY_RCU, but I did find a case using list
+>>>>>>>> with SLAB_TYPESAFE_BY_RCU in drivers/gpu/drm/i915, the driver =
+also doesn=E2=80=99t use _ONCE
+>>>>>>>> on the fields of the objects allocated with =
+SLAB_TYPESAFE_BY_RCU.
+>>>>>>>=20
+>>>>>>> Feel free to send them a patch, though I cannot speak for their
+>>>>>>> reception of it.
+>>>>>>>=20
+>>>>>>> Thanx, Paul
+>>>>>>>=20
+>>>>>>>>> Thanx, Paul
+>>>>>>>>>=20
+>>>>>>>>>>      ({ obj =3D hlist_entry(pos, typeof(*obj), obj_node); 1; =
+});
+>>>>>>>>>>      pos =3D rcu_dereference(next))
+>>>>>>>>>> -      if (obj->key =3D=3D key)
+>>>>>>>>>> +      if (READ_ONCE(obj->key) =3D=3D key)
+>>>>>>>>>>     return obj;
+>>>>>>>>>> return NULL;
+>>>>>>>>>> }
+>>>>>>>>>> @@ -111,8 +111,13 @@ detect the fact that it missed following =
+items in original chain.
+>>>>>>>>>> */
+>>>>>>>>>> obj =3D kmem_cache_alloc(...);
+>>>>>>>>>> lock_chain(); // typically a spin_lock()
+>>>>>>>>>> -  obj->key =3D key;
+>>>>>>>>>> -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
+>>>>>>>>>> +  WRITE_ONCE(obj->key, key);
+>>>>>>>>>> +  /*
+>>>>>>>>>> +   * We need to make sure obj->key is updated before =
+obj->obj_node.next
+>>>>>>>>>> +   * and obj->refcnt.
+>>>>>>>>>> +   */
+>>>>>>>>>> +  smp_wmb();
+>>>>>>>>>> +  atomic_set(&obj->refcnt, 1);
+>>>>>>>>>> hlist_add_head_rcu(&obj->obj_node, list);
+>>>>>>>>>> unlock_chain(); // typically a spin_unlock()
+>>>>>>>>>>=20
+>>>>>>>>>> @@ -165,12 +170,12 @@ Note that using hlist_nulls means the =
+type of 'obj_node' field of
+>>>>>>>>>> begin:
+>>>>>>>>>> rcu_read_lock();
+>>>>>>>>>> hlist_nulls_for_each_entry_rcu(obj, node, head, obj_node) {
+>>>>>>>>>> -    if (obj->key =3D=3D key) {
+>>>>>>>>>> +    if (READ_ONCE(obj->key) =3D=3D key) {
+>>>>>>>>>>   if (!try_get_ref(obj)) { // might fail for free objects
+>>>>>>>>>> rcu_read_unlock();
+>>>>>>>>>>     goto begin;
+>>>>>>>>>>   }
+>>>>>>>>>> -      if (obj->key !=3D key) { // not the object we expected
+>>>>>>>>>> +      if (READ_ONCE(obj->key) !=3D key) { // not the object =
+we expected
+>>>>>>>>>>     put_ref(obj);
+>>>>>>>>>> rcu_read_unlock();
+>>>>>>>>>>     goto begin;
+>>>>>>>>>> @@ -206,7 +211,7 @@ hlist_add_head_rcu().
+>>>>>>>>>> */
+>>>>>>>>>> obj =3D kmem_cache_alloc(cachep);
+>>>>>>>>>> lock_chain(); // typically a spin_lock()
+>>>>>>>>>> -  obj->key =3D key;
+>>>>>>>>>> +  WRITE_ONCE(obj->key, key);
+>>>>>>>>>> atomic_set_release(&obj->refcnt, 1); // key before refcnt
+>>>>>>>>>> /*
+>>>>>>>>>> * insert obj in RCU way (readers might be traversing chain)
+>>>>>>>>>> --=20
+>>>>>>>>>> 2.34.1
+
