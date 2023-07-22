@@ -2,366 +2,305 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70BF7C001B0
-	for <rcu@archiver.kernel.org>; Sat, 22 Jul 2023 12:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C22B4EB64DA
+	for <rcu@archiver.kernel.org>; Sat, 22 Jul 2023 13:32:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjGVMiJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 22 Jul 2023 08:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        id S230073AbjGVNc5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 22 Jul 2023 09:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbjGVMiJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 22 Jul 2023 08:38:09 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20AA10F4
-        for <rcu@vger.kernel.org>; Sat, 22 Jul 2023 05:38:05 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-7658752ce2fso220330385a.1
-        for <rcu@vger.kernel.org>; Sat, 22 Jul 2023 05:38:05 -0700 (PDT)
+        with ESMTP id S229569AbjGVNc5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 22 Jul 2023 09:32:57 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C84E47;
+        Sat, 22 Jul 2023 06:32:55 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34896a1574dso15497425ab.0;
+        Sat, 22 Jul 2023 06:32:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690029485; x=1690634285;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V2juWSz6t/8p6tXecBiY3aft3meJRr24apRAI1wBlKc=;
-        b=Yjk/R9WVmfNIOu8DkRnngunjRPklAjUbjQmeDP2I6x//lXl4qY/pnBfyoNCbI74tLY
-         vEx5ntjMj2WNLlNuOfOiZEiGLUagbRHgsCPcMUaZbKs0xtAxF2HD+JLu3eV7xL5Smcln
-         elWKVrw5bpd7HYE/tvQz8PmvvaVCMlMAfWbLk=
+        d=gmail.com; s=20221208; t=1690032775; x=1690637575;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MFVDXv2D7sWZUmHyufFhaQUMrCjeUslkjY6PdPoGRZY=;
+        b=qpvC1AsbeQA4qlCRCXiCYE7Joe9UruOopossHc3u+yEqozc8gWZozjh/A3px2Isnt3
+         tVmu8v4qrgqBmTYIWoyk8cpSEjiLetHkon6A5Joch0lKEyyDeT2ObBmJKOUFRL3y3uCf
+         GTMvnEr8hiEQIJMh9osGdtBX6jhaeD9Lfn/JhYtaBed7Nb308/sppEhJqGSWhNbe205s
+         xPfxQqmnKHMleL8aQfM4EF+UujsBJSMjAoWJh4vPOJy+HuTVwPZIRozbMF74cq7jxQDs
+         vzTroff42sdn8JSwgwU2gLopKjr+3VRckxIEU9dCB64TGt9Tc02t/LKCSE/TFtdErVCt
+         ZHbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690029485; x=1690634285;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V2juWSz6t/8p6tXecBiY3aft3meJRr24apRAI1wBlKc=;
-        b=h/5dThG/BEvzk1uHcIqxTGFmKV7zyhseHHrAS9yJkcrxI2nm6Mk1ikEHdSZvRMvaaJ
-         Kyr20TY4VaRT2n1X1F6S8TlKJCu4N048O5HQYYCrlCMTFj0i+LWmrxaeIPEC+pl8Nm8U
-         BNWVTrd7uwULoxSo37NZUkKi3LE7NzfeBxrTTsESMOazuQveomIIojLguCeOZ1HlU9zW
-         e/4TOb8NIW7vTK/ouhOmIHe5jcmNeUoB8lYRfM+r3n+NHJ5dMgAIYScDELYwmBts2CVk
-         da6W9KPAie6LiwlSrbauNGca7mHTt2QS+/5e70zQqHNAp6EyNtGsSK5QR0Wvk78KSudH
-         m0GQ==
-X-Gm-Message-State: ABy/qLa0bDpZYHNvVMJ9XNRU/1hEs3NjghPf9iANW68FE6+XrXYht6DZ
-        D1z21/YmLa8Hr2VevB5p686bw0lyGnczzKmjyBc=
-X-Google-Smtp-Source: APBJJlGw2/IwLcoVXjm4BA02re31AQ+ZWXJzV3EcwA5Je+mXcfKPUhBVSEFg2k2Cjl00OIeC52Iiyw==
-X-Received: by 2002:a05:620a:e9b:b0:767:100e:4cbd with SMTP id w27-20020a05620a0e9b00b00767100e4cbdmr2407817qkm.0.1690029484629;
-        Sat, 22 Jul 2023 05:38:04 -0700 (PDT)
-Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id s17-20020a05620a031100b00767f5c70b3dsm1789432qkm.96.2023.07.22.05.38.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Jul 2023 05:38:03 -0700 (PDT)
-Message-ID: <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
-Date:   Sat, 22 Jul 2023 08:38:02 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [BUG] Re: Linux 6.4.4
-Content-Language: en-US
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-References: <2023071940-suspect-ominous-4a6a@gregkh>
- <20230720132714.GA3726096@google.com>
- <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
- <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
- <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
- <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
- <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
- <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
- <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
- <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20221208; t=1690032775; x=1690637575;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MFVDXv2D7sWZUmHyufFhaQUMrCjeUslkjY6PdPoGRZY=;
+        b=kyyuSmUWkZzm0a1QkUcn0WNmq3rbtMP1Ihlpb+KtXDtExgBFi4BULNu/Qzjy1RAbdG
+         AqKli4SvajC8kW9FQBUeQqBHYpJc13sYtoOHAYk1PFHrtZ76Fe9fnFWwWjroBgMXQ0tU
+         EtrtAoeENZDZq86ks4UXyjRAu6MpPsjhePsSIpr59YTObN+AYl6EfObq64Jyd54nDzzu
+         Ozdx1GqhDtMyTOQD4lfDnPtUnr/2RpXOurBnrGlmX4iYne19+mhfjm4Tnf0VhLIN3J60
+         GDkwRCu8sJ+eo2zUcAPPnfSmAF7z9HWS4ySsTJaIelayB66XEpprCXUDjCKLJIoANGD4
+         DLYA==
+X-Gm-Message-State: ABy/qLb1m18/OxLKgqz75oNQAdQso4yXpbBjsVwe0gXrGNjZ+MAPxvO/
+        A5vEX5FdcQZv9In6oP0vSpw=
+X-Google-Smtp-Source: APBJJlEro5jXuQX2hLCT7E7OXdctLY8DI+WNw7E3sXmUsmNVrDB8kc5at7gpUyWt9NcEP+3isQNngw==
+X-Received: by 2002:a92:cacb:0:b0:348:7d72:86f4 with SMTP id m11-20020a92cacb000000b003487d7286f4mr2368411ilq.31.1690032774076;
+        Sat, 22 Jul 2023 06:32:54 -0700 (PDT)
+Received: from smtpclient.apple ([111.0.233.213])
+        by smtp.gmail.com with ESMTPSA id b26-20020a63a11a000000b00563962dbc70sm1406674pgf.58.2023.07.22.06.32.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 22 Jul 2023 06:32:53 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <ED5C700E-0C63-41E5-8A46-F7BC93B2FD42@gmail.com>
+Date:   Sat, 22 Jul 2023 21:32:01 +0800
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <76552616-5DF1-4A05-BA5A-AE0677F861FC@gmail.com>
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+ <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+ <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+ <ED9F14A2-533B-471E-9B79-F75CEEE9A216@gmail.com>
+ <ED5C700E-0C63-41E5-8A46-F7BC93B2FD42@gmail.com>
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Eric Dumazet <edumazet@google.com>, roman.gushchin@linux.dev,
+        "David.Laight@aculab.com" <David.Laight@ACULAB.COM>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
+> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 04:40=EF=BC=8CAlan Huang =
+<mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+>=20
+>> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 =E4=B8=8A=E5=8D=884:08=EF=BC=8CAlan =
+Huang <mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>=20
+>>=20
+>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 =E4=B8=8B=E5=8D=8811:21=EF=BC=8CJoe=
+l Fernandes <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>> On 7/21/23 10:27, Alan Huang wrote:
+>>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
+<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> =
+wrote:
+>>>>>>=20
+>>>>>> =EF=BB=BF
+>>>>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>>>=20
+>>>>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>>>>>>>=20
+>>>>>>>> Hi,
+>>>>>>>>=20
+>>>>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
+first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
+>>>>>>>> and a related discussion [1].
+>>>>>>>>=20
+>>>>>>>> After reading the whole discussion, it seems like that =
+ptr->field was cached by gcc even with the deprecated
+>>>>>>>> ACCESS_ONCE(), so my question is:
+>>>>>>>>=20
+>>>>>>>>    Is that a compiler bug? If so, has this bug been fixed =
+today, ten years later?
+>>>>>>>>=20
+>>>>>>>>    What about READ_ONCE(ptr->field)?
+>>>>>>>=20
+>>>>>>> Make sure sparse is happy.
+>>>>>>=20
+>>>>>> It caused a problem without barrier(), and the deprecated =
+ACCESS_ONCE() didn=E2=80=99t help:
+>>>>>>=20
+>>>>>> https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>>>>>=20
+>>>>>> So, my real question is: With READ_ONCE(ptr->field), are there =
+still some unusual cases where gcc
+>>>>>> decides not to reload ptr->field?
+>>>>>=20
+>>>>> I am a bit doubtful there will be strong (any?) interest in =
+replacing the barrier() with READ_ONCE() without any tangible reason, =
+regardless of whether a gcc issue was fixed.
+>>>>>=20
+>>>>> But hey, if you want to float the idea=E2=80=A6
+>>>> We already had the READ_ONCE() in rcu_deference_raw().
+>>>> The barrier() here makes me think we need write code like below:
+>>>>=20
+>>>> READ_ONCE(head->first);
+>>>> barrier();
+>>>> READ_ONCE(head->first);
+>>>> With READ_ONCE (or the deprecated ACCESS_ONCE),
+>>>> I don=E2=80=99t think a compiler should cache the value of =
+head->first.
+>>>=20
+>>>=20
+>>> Right, it shouldn't need to cache. To Eric's point it might be risky =
+to remove the barrier() and someone needs to explain that issue first =
+(or IMO there needs to be another tangible reason like performance etc). =
+Anyway, FWIW I wrote a simple program and I am not seeing the =
+head->first cached with the pattern you shared above:
+>>>=20
+>>> #include <stdlib.h>
+>>>=20
+>>> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+>>> #define barrier() __asm__ __volatile__("": : :"memory")
+>>>=20
+>>> typedef struct list_head {
+>>>  int first;
+>>>  struct list_head *next;
+>>> } list_head;
+>>>=20
+>>> int main() {
+>>>  list_head *head =3D (list_head *)malloc(sizeof(list_head));
+>>>  head->first =3D 1;
+>>>  head->next =3D 0;
+>>>=20
+>>>  READ_ONCE(head->first);
+>>>  barrier();
+>>>  READ_ONCE(head->first);
+>>>=20
+>>>  free(head);
+>>>  return 0;
+>>> }
+>>>=20
+>>> On ARM 32-bit, 64-bit and x86_64, with -Os and then another =
+experiment with -O2 on new gcc versions.
+>>=20
+>> Well, when I change the code as below:
+>>=20
+>> #include <stdlib.h>
+>>=20
+>> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+>> #define barrier() __asm__ __volatile__("": : :"memory")
+>>=20
+>> typedef struct list_head {
+>>  struct list_head *next;
+>>  int first; // difference here
+>> } list_head;
+>>=20
+>> int main() {
+>>  list_head *head =3D (list_head *)malloc(sizeof(list_head));
+>>  head->first =3D 1;
+>>  head->next =3D 0;
+>>=20
+>>  READ_ONCE(head->first);
+>>  READ_ONCE(head->first);
+>>=20
+>>  free(head);
+>>  return 0;
+>> }
+>>=20
+>> GCC 8, GCC 10, GCC 11 generate the following code (with -O2):
+>>=20
+>> main:
+>>       subq    $8, %rsp
+>>       movl    $16, %edi
+>>       call    malloc
+>>       movl    $1, 8(%rax)
+>>       movq    %rax, %rdi
+>>       call    free
+>>       xorl    %eax, %eax
+>>       addq    $8, %rsp
+>>       ret
+>>=20
+>>=20
+>> The READ_ONCE has been optimized away. The difference in the source =
+code is that I put ->first to the second member.
+>>=20
+>> That means, GCC 8, 10, 11 have the bug!
+>>=20
+>>=20
+>=20
+> Found a related discussion:
+>=20
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D102714
+>=20
+> Looks like GCC 10, 11 have been backported, not sure whether GCC 8 has =
+been backported.
+>=20
+> So, I have the following questions:
+>=20
+> Given that some people might not update their GCC, do they need to be =
+notified?
+>=20
+> Do we need to CC Linus?
 
-On 7/21/23 18:08, Paul E. McKenney wrote:
-> On Fri, Jul 21, 2023 at 03:20:48PM -0400, Joel Fernandes wrote:
->> (Trimming the CC list a bit)
->> On 7/21/23 08:13, Joel Fernandes wrote:
->>> On 7/20/23 15:47, Paul E. McKenney wrote:
->>>> On Thu, Jul 20, 2023 at 03:32:35PM -0400, Joel Fernandes wrote:
->>>>> On 7/20/23 15:04, Paul E. McKenney wrote:
->>>>>> On Thu, Jul 20, 2023 at 12:31:13PM -0400, Joel Fernandes wrote:
->>>>>>> Hi Paul,
->>>>>>>
->>>>>>> On Thu, Jul 20, 2023 at 11:55 AM Paul E. McKenney
->>>>>>> <paulmck@kernel.org> wrote:
->>>>>>>>
->>>>>>>> On Thu, Jul 20, 2023 at 01:27:14PM +0000, Joel Fernandes wrote:
->>>>> [...]
->>>>>>>>>
->>>>>>>>> So likely RCU boosting is failing:
->>>>>>>>>
->>>>>>>>> The full TREE03 splat:
->>>>>>>>> [   54.243588] ------------[ cut here ]------------
->>>>>>>>> [   54.244547] rcu-torture: rcu_torture_boost started
->>>>> [...]
->>>>>>>>> [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
->>>>> [...]
->>>>>>>>> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
->>>>>>>>>
->>>>>>>>> However, if we are to believe the '9', it appears the object did
->>>>>>>>> made it
->>>>>>>>> quite some till the end of the pipe array but not until the free
->>>>>>>>> pool.
->>>>>>>>
->>>>>>>> This is from this if/for statement, correct?
->>>>>>>>
->>>>>>>>                   stutter_waited =
->>>>>>>> stutter_wait("rcu_torture_writer");
->>>>>>>>                   if (stutter_waited &&
->>>>>>>>                       !atomic_read(&rcu_fwd_cb_nodelay) &&
->>>>>>>>                       !cur_ops->slow_gps &&
->>>>>>>>                       !torture_must_stop() &&
->>>>>>>>                       boot_ended)
->>>>>>>>                           for (i = 0; i <
->>>>>>>> ARRAY_SIZE(rcu_tortures); i++)
->>>>>>>>                                   if
->>>>>>>> (list_empty(&rcu_tortures[i].rtort_free) &&
->>>>>>>>                                      
->>>>>>>> rcu_access_pointer(rcu_torture_current) !=
->>>>>>>>                                       &rcu_tortures[i]) {
->>>>>>>>                                           tracing_off();
->>>>>>>>                                           show_rcu_gp_kthreads();
->>>>>>>>                                           WARN(1, "%s:
->>>>>>>> rtort_pipe_count:
->>>>>>>>                                           rcu_ftrace_dump(DUMP_ALL);
->>>>>>>>                                   }
->>>>>>>
->>>>>>> Yes, that's right.
->>>>>>>
->>>>>>>> If so, this happens when there was a stutter wait, but RCU grace
->>>>>>>> periods failed to clear out the backlog during the several seconds
->>>>>>>> that
->>>>>>>> rcutorture was forced idle.  This might be related to the RCU
->>>>>>>> priority
->>>>>>>> boosting failure, in which a preempted reader persisted across the
->>>>>>>> stutter interval.
->>>>>>>
->>>>>>> When RCU is operating normally, shouldn't the check
->>>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" not run until the preempted
->>>>>>> reader unblocks and exits its RCU read-side critical section?
->>>>>>
->>>>>> Yes, but not just "until", but rather "long after".  If RCU is doing
->>>>>> grace periods correctly, an active reader on a given rcu_tortures[]
->>>>>> element will prevent .rtort_pipe_count from exceeding the value 2.
->>>>>
->>>>> Ah ok, so the rtort_pipe_count being 9 is a sign RCU isn't making
->>>>> progress
->>>>> thus making it absent from the free list.
->>>>
->>>> Yes, though RCU is -just- -barely- too slow, as one more grace period
->>>> would have done it.
->>>>
->>>>>> The element will not be put on a list until .rtort_pipe_count is equal
->>>>>> to RCU_TORTURE_PIPE_LEN, which is 10.
->>>>>>
->>>>>> This warning usually appears when something is holding up the
->>>>>> grace-period
->>>>>> kthread.  Historically, this has included deadlocks, missed timers,
->>>>>> and whatever else can prevent the grace-period kthread from running.
->>>>>
->>>>> Makes sense.
->>>>>
->>>>>>> One thing that confuses me, in the case of
->>>>>>> "cur_ops->deferred_free(old_rp);" , the earlier do-while loop may exit
->>>>>>> before the async callbacks can finish. So what prevents the
->>>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" check from happening before
->>>>>>> grace periods happen? Thanks for any clarification.
->>>>>>
->>>>>> We only enter this code if the stutter_wait() actually waited, and by
->>>>>> default this function will wait about five seconds.  Since the
->>>>>> rcutorture
->>>>>> testing goes idle during this time period (or is supposed to!), if
->>>>>> things
->>>>>> are working properly, knocking off ten grace periods during that time
->>>>>> should be pretty much a given.
->>>>>
->>>>> Sure, makes sense. And this is not Lazy-RCU so 5 seconds should be
->>>>> plenty
->>>>> ;). I think I was subconsciously expecting an rcu_barrier() somewhere
->>>>> in the
->>>>> code before those checks, but that's not needed as you pointed that the
->>>>> stutter should be giving enough time for RCU to make progress.
->>>>
->>>> And there might need to be a call_rcu_hurry() in there somewhere,
->>>> now that you mention it.  Which would pretty much defeat any sort of
->>>> lazy-RCU-callback testing in rcutorture, but testing of laziness might
->>>> need to be separate anyway.
->>>>
->>>>> So hmm, the count being 9 means that not enough RCU grace periods have
->>>>> passed for the rcu_torture object in question thus keeping it always
->>>>> allocated. The GP thread not getting CPU can do that indeed, or perhaps
->>>>> something else stalling RCU like a preempted reader, length preemption
->>>>> disabling on a CPU and so forth..  I'll try to collect a trace when it
->>>>> happens.
->>>>
->>>> Looking forward to seeing what you come up with!
->>>
->>> So far I found this. Before the crash, GPs took about 50ms, during the
->>> crash it took 5 seconds before the warning which aligns with what you
->>> mentioned about stutter.
->>>
->>>
->>> The GP that never completed is at this line:
->>>
->>> [ 2816.041082]    <...>-13       13d.... 1237016139us :
->>> rcu_grace_period: rcu_sched 144681 start
->>>
->>> And fqs loop got a "dti" for CPUs:
->>> 1
->>> 2
->>> 12
->>>
->>> And I see cpuqs for:
->>> 13
->>> 6
->>> 10
->>> 5
->>> 4
->>> 11
->>>
->>> No idea what happened to 3, 8, 9, 14, 15. Maybe the "dti" for those did
->>> not show in the trace?
->>>
->>> However, I see that CPU 7 did this:
->>> [ 2816.205277]   <idle>-0         7d.... 1237016284us : sched_switch:
->>> prev_comm=swapper/7 prev_pid=0 prev_prio=120 prev_state=R ==>
->>> next_comm=rcu_torture_rea next_pid=149 next_prio=139
->>>
->>>
->>> and then did this about 3 seconds later:
->>> [ 2819.394111] rcu_tort-149       7dNs.. 1237025699us :
->>> rcu_grace_period: rcu_sched 144677 cpuend
->>> [ 2819.412745] rcu_tort-149       7dNs.. 1237025699us :
->>> rcu_grace_period: rcu_sched 144681 cpustart
->>>
->>>
->>> Which means it never switched out from the CPU all this while. Neither
->>> did it report cpuqs. Ok it did notice the new GP started, welcome to the
->>> party mate ;)
->>>
->>> That points the issue I think. I wonder if the emergency provisions for
->>> forcing quiescent states on NOHZ_FULL CPUs kicked in. ISTR, we had
->>> issues with that in the past where we had to fix the tick path to report
->>> a QS.
->>>
->>> I'll add some more traces. Especially around preempted readers, the
->>> emergency provisions for forcing a QS and so forth and see if I can dig
->>> more information.
->>
->> In another instance, I caught a stack trace of CPU5 when it did not
->> check-in with RCU for 3 seconds or so:
->>
->> [ 1127.067889]  kmalloc_trace+0x25/0x90
->> [ 1127.072823]  rcu_torture_fwd_prog+0x3d8/0xa60
->> [ 1127.078749]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
->> [ 1127.085468]  ? kthread+0xcb/0xf0
->> [ 1127.090040]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
->> [ 1127.096626]  kthread+0xcb/0xf0
->> [ 1127.100803]  ? __pfx_kthread+0x10/0x10
->> [ 1127.107207]  ret_from_fork+0x2c/0x50
->> [ 1127.113662]  </TASK>
->> [ 1127.117818] Kernel panic - not syncing: kernel: panic_on_warn set ...
->>
->> It appears it was in "rcu_torture_fwd_prog" at the time. It got stuck
->> there for 2 seconds.
->>
->> Interestingly, I did find the scheduler tick was trying to get in touch
->> with the CPU and it was running code on it even:
->> [ 5858.463102] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
->> Start scheduler-tick
->> [ 5858.472903] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
->> End scheduler-tick
->>
->> So I could add some traces there to figure out what is it upto. ISTR, we
->> also send IPIs to these CPUs? So maybe adding some traces there too is
->> in order.
->>
->> Also earlier in dmesg it did this:
->> [ 1124.825504] rcu_torture_fwd_prog n_max_cbs: 44181
->> [ 1124.832158] rcu_torture_fwd_prog: Starting forward-progress test 0
->> [ 1124.840977] rcu_torture_fwd_prog_cr: Starting forward-progress test 0
->> [ 1126.726621] ------------[ cut here ]------------
->> [ 1126.733296] rcutorture_oom_notify invoked upon OOM during
->> forward-progress testing.
->>
->> Before that "cut here", there is a 2 second gap which tells me it got
->> stuck there.
->>
->> So this function rcu_torture_fwd_prog() is keeping the CPU unresponsive
->> from an RCU perspective for some reason? Because I never saw the
->> "rcu_torture_fwd_prog_cr: Waiting for CBs" message before it panicked.
-> 
-> Thank you for digging into this!
-> 
-> Yes, rcu_torture_fwd_prog() is supposed to monopolize CPUs.  But it
-> is supposed to respect stuttering.  It is quite possible that the
-> synchronization is insufficient.  Or that the "supposed to" never
-> made it into the code.
-> 
->> Collecting traces again.. ;) thanks,
-> 
-> ;-) ;-) ;-)
+No need.
 
-I narrowed it down to the timer softirq taking too long and doing this
-for 4 seconds:
+I put the following code into a kernel module:
 
-[ 6781.411834] ksoftirq-12        0dNs.. 206231531us : sched_wakeup:
-comm=rcu_torture_rea pid=153 prio=139 target_cpu=000
-[ 6781.424854] ksoftirq-12        0dNs.. 206231531us : sched_waking:
-comm=rcu_torture_rea pid=164 prio=139 target_cpu=006
-[ 6781.437650] ksoftirq-12        0dNs.. 206231533us : sched_wakeup:
-comm=rcu_torture_rea pid=164 prio=139 target_cpu=000
-[ 6781.451019] ksoftirq-12        0dNs.. 206231533us : sched_waking:
-comm=rcu_torture_rea pid=162 prio=139 target_cpu=002
-[ 6781.463825] ksoftirq-12        0dNs.. 206231535us : sched_wakeup:
-comm=rcu_torture_rea pid=162 prio=139 target_cpu=000
-[ 6781.476290] ksoftirq-12        0dNs.. 206231535us : sched_waking:
-comm=rcu_torture_wri pid=143 prio=139 target_cpu=004
-[ 6781.489257] ksoftirq-12        0dNs.. 206231537us : sched_wakeup:
-comm=rcu_torture_wri pid=143 prio=139 target_cpu=000
-[ 6781.502559] ksoftirq-12        0dNs.. 206231538us : sched_waking:
-comm=rcu_torture_rea pid=154 prio=139 target_cpu=006
-[ 6781.515093] ksoftirq-12        0dNs.. 206231539us : sched_wakeup:
-comm=rcu_torture_rea pid=154 prio=139 target_cpu=000
-[ 6781.527622] ksoftirq-12        0dNs.. 206231539us : sched_waking:
-comm=rcu_torture_fak pid=149 prio=139 target_cpu=003
-[ 6781.539979] ksoftirq-12        0dNs.. 206231541us : sched_wakeup:
-comm=rcu_torture_fak pid=149 prio=139 target_cpu=000
-[ 6781.552717] ksoftirq-12        0dNs.. 206231541us : sched_waking:
-comm=rcu_torture_fak pid=145 prio=139 target_cpu=005
-[ 6781.565074] ksoftirq-12        0dNs.. 206231543us : sched_wakeup:
-comm=rcu_torture_fak pid=145 prio=139 target_cpu=000
-[ 6781.577580] ksoftirq-12        0dNs.. 206231543us : sched_waking:
-comm=rcu_torture_rea pid=166 prio=139 target_cpu=003
-[ 6781.590211] ksoftirq-12        0dNs.. 206231547us : sched_wakeup:
-comm=rcu_torture_rea pid=166 prio=139 target_cpu=000
+typedef struct list_head_shit {
+	int next;
+	struct list_head *first;
+} list_head_shit;
 
-And I caught the softirq exit which told me it is coming from timer softirq:
-[ 6781.603150] ksoftirq-12        0.Ns.. 206231552us : __do_softirq:
-softirq exit: name: TIMER, action handler: run_timer_softirq
+static void noinline so_shit(void) {
+	list_head_shit *head =3D (list_head_shit =
+*)kmalloc(sizeof(list_head_shit), GFP_KERNEL);
+	head->first =3D 0;
+	head->next =3D 1;
 
-Maybe something to do with calls to stuttering or lack of cond_resched()
-in the torture code somewhere? Unfortunately I was not able to get a
-stack trace and what is doing the wake ups.
+	READ_ONCE(head->first);
+	READ_ONCE(head->first);
 
-This is at least one of the issues. I do believe the fwd prog functions
-taking too long in the kernel without doing a cond_resched() is another
-issue but I need to reduce the RCU stall timeout to 2 seconds to see
-those happen otherwise I think those just get "hidden".
+	kfree(head);
+}
 
-Both these issues appear to be threads spending too much time in kernel
-mode in non-preemptible kernels. The RCU GP thread was able to get CPU
-so that wasn't the issue in these instances.
+x86_64-linux-gnu-gcc-11 generate the following code:
 
-Thoughts?
+0000000000000000 <so_shit>:
+   0:	48 8b 3d 00 00 00 00 	mov    0x0(%rip),%rdi        # 7 =
+<so_shit+0x7>
+   7:	ba 10 00 00 00       		mov    $0x10,%edx
+   c:	be c0 0c 00 00      	 	mov    $0xcc0,%esi
+  11:	e8 00 00 00 00      	 	call   16 <so_shit+0x16>
+  16:	48 c7 40 08 00 00 00 	movq   $0x0,0x8(%rax)
+  1d:	00
+  1e:	48 89 c7             		mov    %rax,%rdi
+  21:	c7 00 01 00 00 00    	movl   $0x1,(%rax)
+  27:	48 8b 47 08          		mov    0x8(%rdi),%rax	  # =
+READ_ONCE here
+  2b:	48 8b 47 08          		mov    0x8(%rdi),%rax	  # =
+READ_ONCE here
+  2f:	e9 00 00 00 00      	 	jmp    34 <so_shit+0x34>
+  34:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+  3b:	00 00 00 00
+  3f:	90                   			nop
 
-Next plan of action is to get sched_waking stack traces since I have a
-very reliable repro of this now.
+The conclusion is that we can rely on READ_ONCE when writing kernel =
+code.
 
-thanks,
+The kernel=E2=80=99s READ_ONCE is different with the one Joel wrote =
+yesterday. (Joel=E2=80=99s is the same as the old ACCESS_ONCE)=20
 
- - Joel
+The compiler does have the bug when using simple volatile access:
+
+	https://lwn.net/Articles/624126/
+
+The C standard before the upcoming C23 only says accessing volatile =
+object,=20
+So I think volatile access (_ONCE) is implemented differently by GCC, =
+that=E2=80=99s why the simple ACCESS_ONCE didn=E2=80=99t work.
+
+With the upcoming C23, they will have the same side effect (Section =
+5.1.2.3):
+
+	https://open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf
+
+I think we can remove the barrier() now. :)
+
+Thanks,
+Alan
+
+
