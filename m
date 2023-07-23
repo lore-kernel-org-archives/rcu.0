@@ -2,260 +2,113 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3885C001B0
-	for <rcu@archiver.kernel.org>; Sun, 23 Jul 2023 00:40:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4D0C001E0
+	for <rcu@archiver.kernel.org>; Sun, 23 Jul 2023 06:23:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjGWAkA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 22 Jul 2023 20:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
+        id S229640AbjGWGXO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 Jul 2023 02:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjGWAj7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 22 Jul 2023 20:39:59 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F52D199D;
-        Sat, 22 Jul 2023 17:39:58 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b89cfb4571so25146505ad.3;
-        Sat, 22 Jul 2023 17:39:58 -0700 (PDT)
+        with ESMTP id S229456AbjGWGXN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 23 Jul 2023 02:23:13 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D7610E7;
+        Sat, 22 Jul 2023 23:23:12 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-4052d327682so19249291cf.1;
+        Sat, 22 Jul 2023 23:23:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690072797; x=1690677597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8JUqzz2luCw+ctpy0rc5BCEXDL94cbKYesxevVtZQqs=;
-        b=fxUYcMX+v8PpLhfXVkYSRxl2sdLCXCWYO0gVFSV5LRbi4vAUDuS5aP7c9cAHQ6Olus
-         RWHTmw6LISRfoS4Bfb0GCCh1CUTOkaIWY+KqDp9kowenAlDgJ6U8oqNya4md5lAyeJ0x
-         WrmkFNBsBPQxJDiER/EZtcUGJlLP87yKwGZ2p+6xAtDzPTavApX6V51EyR67d3sIjIc3
-         2ZGmG0y9mPuPXqG5IfwBPfdrKdLnrzb/KP51D9YEpj8sgrIa1brwl562ZBQfiNubsDTK
-         2fkc+rKNsoVb3COFvZrtcCwcu9tZToY3liR1HxkuM+edmMV5zALUF2E2p+9UZb1M4dNq
-         cfiA==
+        d=gmail.com; s=20221208; t=1690093391; x=1690698191;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pgNUomoA1S4vwFAss5q0b7YSFR9OEzG22McdC65lJfs=;
+        b=slKBOIsmDtcR6ZOWZyrPAEWFEeKSIhZeiXIMpODVnhkN1M/4mT7SpjYCqR7hig1VTY
+         +yU/do4NtYaXThgkfqbN2D5qQv5qA380kaf+Z7RHlH2UeXshoPeckujEb/tfKAMWMu/I
+         W1dXVaERD0S7mo6/gDgS2v10yFeVG+6umMP+e2QXpnDf/YWgchrl7sxeKMPTcKP7nv3S
+         NPU6njcy69DMFeCuXRmyzoLqPkw0R5o7/wQeodJuPYsidppX/qIZAZRyzCOufNzXY0hq
+         TJKHN6mbH3luVcqgDB6myKj3md7lK0KSi8ce3xi1hY9Pt0hlAD64p3Rcs02Ov9yKUVXb
+         MFMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690072797; x=1690677597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8JUqzz2luCw+ctpy0rc5BCEXDL94cbKYesxevVtZQqs=;
-        b=G6TmmCQLEl/ALbFIIz/X493CtxrPP9V5nC+ic6Up79Jmkbwg/LwPaY1ZoSWnhlVQuc
-         BynLC3Go7adFcs2jiT+AFJQxvjl3GlVsg950g6yY86K4Z06/azib79a1aKWXzzpTFUQU
-         1BbuVtsJy33qnwNcVFI0nuOzkm4ZbHuf4sjtxC6Zd6bWMqySoQ5edNDrfkXxWpR2jMUL
-         2F+AW4EuA/xDQYSWgCzbvMUYWhr9BaATQ0R2q5Ixe+hDRjuTUtNI2ffFXA41AYl9spuk
-         wQoqZmnihwT+CFh9VzRlOxm1MPvFx9mzV8xNnfrwKxHe/Gce7VcTrdt/mM6p4FGMMOAs
-         HrSg==
-X-Gm-Message-State: ABy/qLYOGoZCJ+dsMEbqdzyqP6oWInZlVn6qGBH0kukt+iGf1q9CtU+D
-        pPZ8LrenJr995y8skYGM12/7w1i3DmsuxSSCK0w=
-X-Google-Smtp-Source: APBJJlFSRrU345/sVvT9X7n1pCDwsFxZZN35xvavkVYufN1Lg+6pTggjJioPVsbnfwTIg/+nzVOTRa17svDXykjkCdY=
-X-Received: by 2002:a17:903:442:b0:1b8:1bac:3782 with SMTP id
- iw2-20020a170903044200b001b81bac3782mr5918228plb.6.1690072797413; Sat, 22 Jul
- 2023 17:39:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690093391; x=1690698191;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pgNUomoA1S4vwFAss5q0b7YSFR9OEzG22McdC65lJfs=;
+        b=PgD3iX1wkIuf9njESXMz8bX0rferUyRpCxE2WUOxyXWKbteWjjTraBrCavYEV/bJR1
+         2NtFDgEyXgz8Trp5JN0d4ht6g5faa5OUUbnikcq1DGl1DQ+gQUaXViMwnt4uT1ONP1NX
+         F8hkGijz9hlGKviZ5VN4BNzqtn9ejFF+DY4DcntheFDvM8CQh3PknWefGjO3G31pExHS
+         d25OIhjR6HeG1LM+GFM2RqjIIyfY8o7dEjwNdko8O+Gc+3ubSO8v42uScrTgNDyeimDV
+         BrTC9g10qISauE9JulOxX0GvCFI77myGQ1ojFoZibOPETIDc679vyUtPxX+E1R68o+aA
+         z5jw==
+X-Gm-Message-State: ABy/qLb2VtXV4PxpSq2T0BH0sxIj8W/0MnE/kBSrCoyf6KdfFcsDVan/
+        wqL1jbfL5DI6VaJ74pMX4KjXdC8hr6FuiRiiVrkm7da3xzqMLw==
+X-Google-Smtp-Source: APBJJlFDIShvfymNk6ueTOmxQrVX2vxSJpQDkOCqirs8jFzDQrZM1ehHuQi+7kRhveH/WtTQ1XzzxD6qJKeV9WPbb7Y=
+X-Received: by 2002:ac8:7d16:0:b0:403:fdf1:e513 with SMTP id
+ g22-20020ac87d16000000b00403fdf1e513mr5701726qtb.8.1690093391262; Sat, 22 Jul
+ 2023 23:23:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <2023071940-suspect-ominous-4a6a@gregkh> <20230720132714.GA3726096@google.com>
- <CAABZP2xrLRTVM6te22RFTYCpFB6CnyZ1ASjq=vsGuhpnRfU-OA@mail.gmail.com>
- <CAABZP2xwBczWqpPv09JWT+GrJ5oKjeBO7VV1O23yCX7AsbxGBw@mail.gmail.com> <20230723002658.GB284241@google.com>
-In-Reply-To: <20230723002658.GB284241@google.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Sun, 23 Jul 2023 08:39:46 +0800
-Message-ID: <CAABZP2wSvJpvbp6ze0OihO7Tqdx2Vu2FQbsAXAiJTv+PDrJpwg@mail.gmail.com>
-Subject: Re: [BUG] Re: Linux 6.4.4
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz, rcu@vger.kernel.org
+References: <20230721121534.44328-1-ppbuk5246@gmail.com> <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
+ <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
+ <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop> <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
+ <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop>
+In-Reply-To: <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Sun, 23 Jul 2023 07:23:00 +0100
+Message-ID: <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
+Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on rcu_report_qs_rdp
+To:     paulmck@kernel.org
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 8:27=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
-org> wrote:
->
-> On Sat, Jul 22, 2023 at 09:00:16AM +0800, Zhouyi Zhou wrote:
-> > On Fri, Jul 21, 2023 at 9:51=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gmail.c=
-om> wrote:
-> > >
-> > > On Thu, Jul 20, 2023 at 9:31=E2=80=AFPM Joel Fernandes <joel@joelfern=
-andes.org> wrote:
-> > > >
-> > > > On Wed, Jul 19, 2023 at 05:06:39PM +0200, Greg Kroah-Hartman wrote:
-> > > > > I'm announcing the release of the 6.4.4 kernel.
-> > > > >
-> > > > > All users of the 6.4 kernel series must upgrade.
-> > > > >
-> > > > > The updated 6.4.y git tree can be found at:
-> > > > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
-stable.git linux-6.4.y
-> > > > > and can be browsed at the normal kernel.org git web browser:
-> > > > >       https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-s=
-table.git;a=3Dsummary
-> > > >
-> > > > I have been consistently hitting the following splat with rcutortur=
-e's TREE03
-> > > > test on 6.4.4. This happened with 6.4.4-rc3 as well.
-> > > Hi, I am also interested in this topic , I am going to test 6.4.4 on =
-my laptop
-> > I rcu tortured 6.4.4 on my Intel(R) Core(TM) i7-11800H laptop for 2
-> > rounds each of which lasting 7 hours.
-> > all of them report:
-> > Summary: Successes: 55 Failures: 0.
->
-> Thanks for checking. One thing about my environment is it is nested
-> virtualized. So rcutorture is actually running inside a second-level of
-> virtualization which probably adds a lot of timing related uncertainty to=
- my
-> testing (which could be a good thing :P).
-Thank Joel for your great guidance, now I learned a advanced way to
-torture the RCU.
-I will try to establish such an environment.
+Thanks for replying to reply Paul :)
 
-thanks,
-  - Zhouyi
->
-> thanks,
->
->  - Joel
->
->
-> >
-> > Thanks, Zhouyi
-> > >
-> > > Thanks, Zhouyi
-> > > >
-> > > > Happens at:
-> > > >                 WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost=
- failed (TIMER_SOFTIRQ RT prio?)
-> > > >
-> > > > So likely RCU boosting is failing:
-> > > >
-> > > > The full TREE03 splat:
-> > > > [   54.243588] ------------[ cut here ]------------
-> > > > [   54.244547] rcu-torture: rcu_torture_boost started
-> > > > [   54.247643] WARNING: CPU: 12 PID: 166 at kernel/rcu/rcutorture.c=
-:2227 rcu_torture_stats_print+0x5b2/0x620
-> > > > [   54.273082] Modules linked in:
-> > > > [   54.278336] CPU: 12 PID: 166 Comm: rcu_torture_sta Not tainted 6=
-.4.4-g62813c2d2a36 #1
-> > > > [   54.288540] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), =
-BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> > > > [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
-> > > > [   54.307525] Code: 00 00 48 8b 05 3f 6c 46 02 e9 4a fe ff ff 0f 0=
-b e9 02 fd ff ff 0f 0b e9 09 fd ff ff 0f 0b e9 10 fd ff ff 0f 0b e9 17 fd f=
-f ff <0f> 0b e9 1e fd ff ff 0f 0b e9 21 fd ff ff e8 0b 54 ff ff 84 c0 0f
-> > > > [   54.331276] RSP: 0000:ffff9fef805efe08 EFLAGS: 00010202
-> > > > [   54.338374] RAX: 0000000000000000 RBX: ffff9fef805efe88 RCX: 000=
-00000ffffdfff
-> > > > [   54.347738] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 000=
-0000000000001
-> > > > [   54.358923] RBP: ffff9fef805efe30 R08: 00000000ffffdfff R09: 000=
-00000ffffdfff
-> > > > [   54.368209] R10: ffffffff94e59280 R11: ffffffff94e59280 R12: 000=
-0000000000001
-> > > > [   54.377367] R13: 0000000000000000 R14: 00000000000002fc R15: fff=
-fffff93514000
-> > > > [   54.386739] FS:  0000000000000000(0000) GS:ffff9c901f500000(0000=
-) knlGS:0000000000000000
-> > > > [   54.397130] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > [   54.404585] CR2: 0000000000000000 CR3: 000000000308e000 CR4: 000=
-00000000006e0
-> > > > [   54.413884] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
-0000000000000
-> > > > [   54.423118] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
-0000000000400
-> > > > [   54.432192] Call Trace:
-> > > > [   54.435634]  <TASK>
-> > > > [   54.438512]  ? rcu_torture_stats_print+0x5b2/0x620
-> > > > [   54.444904]  ? __warn+0x7c/0x130
-> > > > [   54.449221]  ? rcu_torture_stats_print+0x5b2/0x620
-> > > > [   54.455737]  ? report_bug+0x171/0x1a0
-> > > > [   54.460935]  ? handle_bug+0x3c/0x70
-> > > > [   54.465874]  ? exc_invalid_op+0x17/0x70
-> > > > [   54.471336]  ? asm_exc_invalid_op+0x1a/0x20
-> > > > [   54.477092]  ? __pfx_rcu_torture_stats+0x10/0x10
-> > > > [   54.483472]  ? rcu_torture_stats_print+0x5b2/0x620
-> > > > [   54.490029]  ? rcu_torture_stats_print+0x28a/0x620
-> > > > [   54.496565]  ? finish_task_switch.isra.0+0x7e/0x240
-> > > > [   54.503261]  rcu_torture_stats+0x25/0x70
-> > > > [   54.508686]  kthread+0xe3/0x110
-> > > > [   54.513141]  ? __pfx_kthread+0x10/0x10
-> > > > [   54.518330]  ret_from_fork+0x2c/0x50
-> > > > [   54.523356]  </TASK>
-> > > > [   54.526500] ---[ end trace 0000000000000000 ]---
-> > > >
-> > > > Also other issues in 6.4.4, I am seeing RCU failures with TREE07 ab=
-out 40
-> > > > minutes into the test. This warning indicates that an rcu_torture o=
-bject from
-> > > > the rcu_torture pool is still allocated which is an indiciation tha=
-t RCU is
-> > > > not working.
-> > > >
-> > > > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> > > >
-> > > > However, if we are to believe the '9', it appears the object did ma=
-de it
-> > > > quite some till the end of the pipe array but not until the free po=
-ol.
-> > > >
-> > > > The full TREE07 splat:
-> > > > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> > > > [ 2169.489413] WARNING: CPU: 4 PID: 130 at kernel/rcu/rcutorture.c:=
-1584 rcu_torture_writer+0x7f2/0xd80
-> > > > [ 2169.504064] Modules linked in:
-> > > > [ 2169.508957] CPU: 4 PID: 130 Comm: rcu_torture_wri Not tainted 6.=
-4.4-g62813c2d2a36 #2
-> > > > [ 2169.521735] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), =
-BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> > > > [ 2169.540908] RIP: 0010:rcu_torture_writer+0x7f2/0xd80
-> > > > [ 2169.548542] Code: 15 8b 62 45 02 49 8d 45 e8 48 39 c2 74 bf e8 8=
-5 03 08 00 41 8b 55 f8 48 c7 c6 d0 f7 e0 9d 48 c7 c7 d7 7b 28 9e e8 ce 29 f=
-7 ff <0f> 0b 8b 05 9a 48 45 02 85 c0 75 97 89 d8 87 05 8e 48 45 02 85 c0
-> > > > [ 2169.578445] RSP: 0000:ffffa645804cfe20 EFLAGS: 00010282
-> > > > [ 2169.586793] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 000=
-00000ffffdfff
-> > > > [ 2169.598069] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 000=
-0000000009ffb
-> > > > [ 2169.609359] RBP: ffffa645804cff10 R08: 00000000ffffdfff R09: 000=
-00000ffffdfff
-> > > > [ 2169.620717] R10: ffffffff9e659220 R11: ffffffff9e659220 R12: 000=
-0000000000017
-> > > > [ 2169.631918] R13: ffffffff9f166b60 R14: 0000000000000000 R15: 000=
-0000000000001
-> > > > [ 2169.643365] FS:  0000000000000000(0000) GS:ffff8b3a5f300000(0000=
-) knlGS:0000000000000000
-> > > > [ 2169.655249] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > [ 2169.663207] CR2: 0000000000000000 CR3: 000000001562e000 CR4: 000=
-00000000006e0
-> > > > [ 2169.672806] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
-0000000000000
-> > > > [ 2169.682194] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
-0000000000400
-> > > > [ 2169.693530] Call Trace:
-> > > > [ 2169.698054]  <TASK>
-> > > > [ 2169.701786]  ? rcu_torture_writer+0x7f2/0xd80
-> > > > [ 2169.708853]  ? __warn+0x7c/0x120
-> > > > [ 2169.714088]  ? rcu_torture_writer+0x7f2/0xd80
-> > > > [ 2169.721066]  ? report_bug+0x15d/0x180
-> > > > [ 2169.726125]  ? handle_bug+0x3c/0x70
-> > > > [ 2169.730948]  ? exc_invalid_op+0x17/0x70
-> > > > [ 2169.736238]  ? asm_exc_invalid_op+0x1a/0x20
-> > > > [ 2169.742047]  ? rcu_torture_writer+0x7f2/0xd80
-> > > > [ 2169.747907]  ? __pfx_rcu_torture_writer+0x10/0x10
-> > > > [ 2169.754175]  kthread+0xcb/0xf0
-> > > > [ 2169.758407]  ? __pfx_kthread+0x10/0x10
-> > > > [ 2169.763501]  ret_from_fork+0x2c/0x50
-> > > > [ 2169.768420]  </TASK>
-> > > > [ 2169.771445] ---[ end trace 0000000000000000 ]---
-> > > > [ 2169.777698] Dumping ftrace buffer:
-> > > > [ 2169.782470]    (ftrace buffer empty)
-> > > > [ 2169.787241] ------------[ cut here ]------------
-> > > >
-> > > >
-> > > > I will continue to monitor and debug these but since I recently re-=
-started
-> > > > testing stable (my infra was down for a long time), I don't have an=
-y
-> > > > reference for when these started happening.
-> > > >
-> > > > thanks,
-> > > >
-> > > >  - Joel
-> > > >
+> And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n.
+> Though there might be better Kconfig options to use.  Those two come
+> immediately to mind.
+
+I've tested with this option via rcu torture.
+and it doesn't report any problems.
+and after commit 6d60ea03ac2d3 ("rcu: Report QS for outermost
+PREEMPT=n rcu_read_unlock() for strict GPs")
+it always makes cpu_no_qs.b.norm false whenever it calls
+rcu_report_qs_rdp in rcu_read_unlock.
+
+> But one critical piece is that softirq handlers, including the RCU_SOFTIRQ
+> handler rcu_core_si(), can be invoked upon return from interrupts.
+
+I think in that case, no problem because if it reports qs already,
+rcu_check_quiescent_state wouldn't call rcu_report_qs_rdp again.
+And if RCU_SOFTIRQ is called as soon as RCU interrupt is finished,
+it seems the fastest one to notify qs to related tree.
+
+> Another critical piece is that if a CPU is idle during any part of a
+> grace period, the grace-period kthread can report a quiescent state on
+> its behalf.
+
+I think
+    1) If timer interrupt is still programed,
+          - when rcu_sched_clock_irq first reports qs, no problem
+          - If qs is reported via grace period thread first,
+note_gp_chagned in rcu interrupt
+            will recognize this situation by setting core_needs_qs as false,
+            it doesn't call rcu_report_qs_rdp thou cpu_no_qs.b.norm is true.
+
+     2) If the timer interrupt isn't programmed,
+          - rcu_gp_kthreaad reports its qs, no problem.
+
+So, I think there's no problem removing
+      "rdp->cpu_no_qs.b.norm" check in rcu_report_qs_rdp.
+or wrap this condition check as WARN_ON_ONCE.
+
+> Does that help?
+Many thanks always :)
+
+--------
+SIncerely,
+Levi.
