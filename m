@@ -2,113 +2,117 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4D0C001E0
-	for <rcu@archiver.kernel.org>; Sun, 23 Jul 2023 06:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96125C001B0
+	for <rcu@archiver.kernel.org>; Sun, 23 Jul 2023 14:50:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjGWGXO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 23 Jul 2023 02:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
+        id S229645AbjGWOua (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 Jul 2023 10:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWGXN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 23 Jul 2023 02:23:13 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D7610E7;
-        Sat, 22 Jul 2023 23:23:12 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-4052d327682so19249291cf.1;
-        Sat, 22 Jul 2023 23:23:12 -0700 (PDT)
+        with ESMTP id S229468AbjGWOua (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 23 Jul 2023 10:50:30 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403E3A6
+        for <rcu@vger.kernel.org>; Sun, 23 Jul 2023 07:50:29 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-635eb5b0320so26972776d6.3
+        for <rcu@vger.kernel.org>; Sun, 23 Jul 2023 07:50:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690093391; x=1690698191;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pgNUomoA1S4vwFAss5q0b7YSFR9OEzG22McdC65lJfs=;
-        b=slKBOIsmDtcR6ZOWZyrPAEWFEeKSIhZeiXIMpODVnhkN1M/4mT7SpjYCqR7hig1VTY
-         +yU/do4NtYaXThgkfqbN2D5qQv5qA380kaf+Z7RHlH2UeXshoPeckujEb/tfKAMWMu/I
-         W1dXVaERD0S7mo6/gDgS2v10yFeVG+6umMP+e2QXpnDf/YWgchrl7sxeKMPTcKP7nv3S
-         NPU6njcy69DMFeCuXRmyzoLqPkw0R5o7/wQeodJuPYsidppX/qIZAZRyzCOufNzXY0hq
-         TJKHN6mbH3luVcqgDB6myKj3md7lK0KSi8ce3xi1hY9Pt0hlAD64p3Rcs02Ov9yKUVXb
-         MFMg==
+        d=joelfernandes.org; s=google; t=1690123828; x=1690728628;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XbJYLMBE6yZWZtHXhUUqaRNiGofik3CcRLGI3pFqykE=;
+        b=YkO18S8ZdFq2T6J3xUhBXqe+9SNwwSJ7cixs31sAhRpASF13+CPFZHEg9o4u3AcqmB
+         OPYq3xPQttUC3SQG9ok2raOKj8pJyeZViQtwciZWZmuXPnEOIfTO8ZzgxqGcPGyFHime
+         4LLa1KOAt2Q/S+9VTxORf1n5OE8eFSWas9CGs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690093391; x=1690698191;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pgNUomoA1S4vwFAss5q0b7YSFR9OEzG22McdC65lJfs=;
-        b=PgD3iX1wkIuf9njESXMz8bX0rferUyRpCxE2WUOxyXWKbteWjjTraBrCavYEV/bJR1
-         2NtFDgEyXgz8Trp5JN0d4ht6g5faa5OUUbnikcq1DGl1DQ+gQUaXViMwnt4uT1ONP1NX
-         F8hkGijz9hlGKviZ5VN4BNzqtn9ejFF+DY4DcntheFDvM8CQh3PknWefGjO3G31pExHS
-         d25OIhjR6HeG1LM+GFM2RqjIIyfY8o7dEjwNdko8O+Gc+3ubSO8v42uScrTgNDyeimDV
-         BrTC9g10qISauE9JulOxX0GvCFI77myGQ1ojFoZibOPETIDc679vyUtPxX+E1R68o+aA
-         z5jw==
-X-Gm-Message-State: ABy/qLb2VtXV4PxpSq2T0BH0sxIj8W/0MnE/kBSrCoyf6KdfFcsDVan/
-        wqL1jbfL5DI6VaJ74pMX4KjXdC8hr6FuiRiiVrkm7da3xzqMLw==
-X-Google-Smtp-Source: APBJJlFDIShvfymNk6ueTOmxQrVX2vxSJpQDkOCqirs8jFzDQrZM1ehHuQi+7kRhveH/WtTQ1XzzxD6qJKeV9WPbb7Y=
-X-Received: by 2002:ac8:7d16:0:b0:403:fdf1:e513 with SMTP id
- g22-20020ac87d16000000b00403fdf1e513mr5701726qtb.8.1690093391262; Sat, 22 Jul
- 2023 23:23:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690123828; x=1690728628;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbJYLMBE6yZWZtHXhUUqaRNiGofik3CcRLGI3pFqykE=;
+        b=lkaKsRyRVz+ERFkYrp11YFb3cwlqJ7+sThCPX7Mti65XRk9NfM5sGu2l0UTYkJe5yl
+         cfTtlvtUy4vnv7K3v45rXMkQQW1PzxL2Z56AL++9ooC2+lp8PKXP/AkM0JdNInXUMIrW
+         l4fPyEFckon/a6vvTNprda4dxUBY2oQ6NDbYdgu3EaujFFVwILpDu8NGARYSn9egkwZC
+         fcru0fRdpQ5xW7P/03t+kf7ACPp1U8bibBQbgSh/9Cm0Thir2RZwqDLWCixVvEWzSCUc
+         h0+bj7Q6+G+uqJBXpqqvdwSFOXbfyt8TupDX1D1Yd28AWBbJyGxL1skA0PLsVG6ZYwmH
+         SY6w==
+X-Gm-Message-State: ABy/qLYsfHU5DJ5VYT/Xn45OBPzPeP17dyyiG4+NeLIr4Tpi98rwfDlQ
+        q5Skeak3hCkh5/zimHwarrwRrA==
+X-Google-Smtp-Source: APBJJlGtEhT2RjFcanL8kjdpwZNzyNf9eCcws/91q63UCpS2CEvwDCdEc5+8vWTKgA3nRM5sKEqpAw==
+X-Received: by 2002:a0c:b551:0:b0:63c:f999:ba83 with SMTP id w17-20020a0cb551000000b0063cf999ba83mr1757454qvd.32.1690123828250;
+        Sun, 23 Jul 2023 07:50:28 -0700 (PDT)
+Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id s15-20020a0ce30f000000b00637abbfaac9sm97573qvl.98.2023.07.23.07.50.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Jul 2023 07:50:27 -0700 (PDT)
+Message-ID: <a7bcbcf2-9b34-4326-822f-e1f2aa5c5668@joelfernandes.org>
+Date:   Sun, 23 Jul 2023 10:50:26 -0400
 MIME-Version: 1.0
-References: <20230721121534.44328-1-ppbuk5246@gmail.com> <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
- <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
- <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop> <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
- <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop>
-In-Reply-To: <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Sun, 23 Jul 2023 07:23:00 +0100
-Message-ID: <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
-Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on rcu_report_qs_rdp
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [BUG] Re: Linux 6.4.4
+Content-Language: en-US
 To:     paulmck@kernel.org
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+References: <20230720132714.GA3726096@google.com>
+ <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
+ <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
+ <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
+ <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
+ <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
+ <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
+ <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
+ <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
+ <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
+ <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Thanks for replying to reply Paul :)
 
-> And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n.
-> Though there might be better Kconfig options to use.  Those two come
-> immediately to mind.
 
-I've tested with this option via rcu torture.
-and it doesn't report any problems.
-and after commit 6d60ea03ac2d3 ("rcu: Report QS for outermost
-PREEMPT=n rcu_read_unlock() for strict GPs")
-it always makes cpu_no_qs.b.norm false whenever it calls
-rcu_report_qs_rdp in rcu_read_unlock.
+On 7/22/23 13:27, Paul E. McKenney wrote:
+[..]
+> 
+> OK, if this kernel is non-preemptible, you are not running TREE03,
+> correct?
+> 
+>> Next plan of action is to get sched_waking stack traces since I have a
+>> very reliable repro of this now.
+> 
+> Too much fun!  ;-)
 
-> But one critical piece is that softirq handlers, including the RCU_SOFTIRQ
-> handler rcu_core_si(), can be invoked upon return from interrupts.
+For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
+in stutter_wait() that is beating up the CPU0 for 4 seconds.
 
-I think in that case, no problem because if it reports qs already,
-rcu_check_quiescent_state wouldn't call rcu_report_qs_rdp again.
-And if RCU_SOFTIRQ is called as soon as RCU interrupt is finished,
-it seems the fastest one to notify qs to related tree.
+This is very similar to the issue I fixed in New year in d52d3a2bf408
+("torture: Fix hang during kthread shutdown phase")
 
-> Another critical piece is that if a CPU is idle during any part of a
-> grace period, the grace-period kthread can report a quiescent state on
-> its behalf.
+Adding a cond_resched() there also did not help.
 
-I think
-    1) If timer interrupt is still programed,
-          - when rcu_sched_clock_irq first reports qs, no problem
-          - If qs is reported via grace period thread first,
-note_gp_chagned in rcu interrupt
-            will recognize this situation by setting core_needs_qs as false,
-            it doesn't call rcu_report_qs_rdp thou cpu_no_qs.b.norm is true.
+I think the issue is the stutter thread fails to move spt forward
+because it does not get CPU time. But spt == 1 should be very brief
+AFAIU. I was wondering if we could set that to RT.
 
-     2) If the timer interrupt isn't programmed,
-          - rcu_gp_kthreaad reports its qs, no problem.
+But also maybe the following will cure it like it did for the shutdown
+issue, giving the stutter thread just enough CPU time to move spt forward.
 
-So, I think there's no problem removing
-      "rdp->cpu_no_qs.b.norm" check in rcu_report_qs_rdp.
-or wrap this condition check as WARN_ON_ONCE.
+Now I am trying the following and will let it run while I go do other
+family related things. ;)
 
-> Does that help?
-Many thanks always :)
++++ b/kernel/torture.c
+@@ -733,6 +733,6 @@ bool stutter_wait(const char *title)
+                        ret = true;
+                }
+                if (spt == 1) {
+-                       schedule_timeout_interruptible(1);
++                       schedule_timeout_interruptible(HZ / 20);
+                        cond_resched();
+                } else if (spt == 2) {
 
---------
-SIncerely,
-Levi.
