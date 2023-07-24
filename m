@@ -2,152 +2,178 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6F94EB64DD
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 20:50:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BDF2C001DE
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 23:04:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjGXUux (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jul 2023 16:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
+        id S229999AbjGXXEh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 19:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjGXUuw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jul 2023 16:50:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5FA10F0;
-        Mon, 24 Jul 2023 13:50:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 22D61613FB;
-        Mon, 24 Jul 2023 20:50:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538DDC433C7;
-        Mon, 24 Jul 2023 20:50:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690231849;
-        bh=DFatD/8er2XHTS8u7l5OiI/Lcu2tgMSdd66Ul8F/1ts=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=I4xAiGBEvJmE49pXerQpQg2EWC6pPN3rbcKAgv35FeoZyjb/IYWC7AtK1IizmAH/f
-         kOyhn/anhpUHhSW8tQMUBxpd2/Fy8FRE1yUcal1rMPMrq1yAx8tYfnZwsZQnEr8apa
-         gQax9MqvlakqREl6MRuOAKc4sz4ZfGyWsX/C1GIbSUUFS75Fjll9+hrhkzdQeguD75
-         JTONTz4Sf8ozQ1xpJnoP30tv2RBUcxXLPKqreZc3ODq8pcrl4XENu6ePGFjFhymxs2
-         1ChdDx368tZSBuWQzR+1XoSahmbYldLwotZ4I9scUkelYpvi2cWAjAcmJoQkq2Acel
-         5w/aFvgA1sXSg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E81A9CE0974; Mon, 24 Jul 2023 13:50:48 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 13:50:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     thunder.leizhen@huaweicloud.com
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH v2 1/1] rcu: Simplify check_cpu_stall()
-Message-ID: <e18908fd-0512-4fbd-afd4-733f56d829e7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230724022651.899-1-thunder.leizhen@huaweicloud.com>
- <20230724022651.899-2-thunder.leizhen@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724022651.899-2-thunder.leizhen@huaweicloud.com>
+        with ESMTP id S230408AbjGXXEa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 19:04:30 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AF710FA
+        for <rcu@vger.kernel.org>; Mon, 24 Jul 2023 16:04:28 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-63d058b9cafso7775886d6.2
+        for <rcu@vger.kernel.org>; Mon, 24 Jul 2023 16:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1690239867; x=1690844667;
+        h=to:references:message-id:date:cc:in-reply-to:from:mime-version
+         :subject:content-transfer-encoding:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2LXtorpou+Rntqb6dTPTasH604CVMh1dch7l87Dmks4=;
+        b=ZeDVrssVR9RnInRKhSi2QDZnnuNdmhZWng4oqfa/1pgNVbWCyhKMkSX2Bi/Pz5wBNo
+         gjw7gyl11AZJAC19mXP7OfVb7AqoBPGSrRGyKv4jp1EG8IWbKc00PsOya3xxMPSh8ahD
+         9RLy5xi53au7LFW15WmkTj/e3tDD7aehtTXUo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690239867; x=1690844667;
+        h=to:references:message-id:date:cc:in-reply-to:from:mime-version
+         :subject:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2LXtorpou+Rntqb6dTPTasH604CVMh1dch7l87Dmks4=;
+        b=asvrI1r2X5QMdL5U9GdoS1vU/Fx4NysQMg2tBNnu/AUQqw3K0cK+s1AXpHb6Sr7fgZ
+         wmAugHIMI0hEjgqN3fv1oYQSWTPWOjsT0fNug3xiuEUq4Ydbmd8WYlIEtwBI3qcmnJ3H
+         oVm3g9DAFlaOnbpPE55CStM2pb50yAR35OuHaJBiKoxU1dl1/e9sj4EhitKCd9pH5o7o
+         M1nLYCPgYBTwpG7/Ba52DMsaeIjJZXM7/36WiknU8QM7+c2YrEEm7pmROwHGH+OZh6Ta
+         rNIXErBC2oniW4N23HuZXqEl+4AdsI2getnUxOPFix5af0qgX9szBVJalqbcJeCrgTvL
+         qGbQ==
+X-Gm-Message-State: ABy/qLYf1PorxCKujdag3k8Bf6aW1ovFgfI6KCijwTwJPNLO9CbjftIO
+        LB6YQVuMxpgt5seatAMoRTyh9KwLK74zeAjOsmc=
+X-Google-Smtp-Source: APBJJlGPAEEJq51dg5WK/pI1EJhqLCwRfejHDT1BUIqI7Qy6/6W93B4v/VTAm+MwO2pEvj8jnWjcNA==
+X-Received: by 2002:a0c:f051:0:b0:632:2e63:d34b with SMTP id b17-20020a0cf051000000b006322e63d34bmr282386qvl.14.1690239867204;
+        Mon, 24 Jul 2023 16:04:27 -0700 (PDT)
+Received: from smtpclient.apple ([192.145.116.44])
+        by smtp.gmail.com with ESMTPSA id bn9-20020a05620a2ac900b00767e2668536sm3314658qkb.17.2023.07.24.16.04.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 16:04:25 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [BUG] Re: Linux 6.4.4
+Mime-Version: 1.0 (1.0)
+X-Apple-Notify-Thread: NO
+X-Universally-Unique-Identifier: EB10CBA5-D87D-47AD-8CB1-4ED1C1201EB1
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <4b231ce5-7bb8-4abf-9c40-04aa676d1e45@paulmck-laptop>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Date:   Mon, 24 Jul 2023 19:04:14 -0400
+X-Apple-Message-Smime-Encrypt: NO
+Message-Id: <123C6650-490B-4D08-96B4-39B118AD0054@joelfernandes.org>
+References: <4b231ce5-7bb8-4abf-9c40-04aa676d1e45@paulmck-laptop>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:26:51AM +0800, thunder.leizhen@huaweicloud.com wrote:
-> From: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> The code and comments of self detected and other detected are the same
-> except the output function. Combine the same parts to avoid duplication.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Queued and pushed, thank you!!!
 
-							Thanx, Paul
+> On Jul 24, 2023, at 12:00 PM, Paul E. McKenney <paulmck@kernel.org> wrote:=
 
-> ---
->  kernel/rcu/tree_stall.h | 42 +++++++++++++++--------------------------
->  1 file changed, 15 insertions(+), 27 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index cc884cd49e026a3..b45d7e49944cdd7 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -711,7 +711,7 @@ static void print_cpu_stall(unsigned long gps)
->  
->  static void check_cpu_stall(struct rcu_data *rdp)
->  {
-> -	bool didstall = false;
-> +	bool self_detected;
->  	unsigned long gs1;
->  	unsigned long gs2;
->  	unsigned long gps;
-> @@ -758,10 +758,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  		return; /* No stall or GP completed since entering function. */
->  	rnp = rdp->mynode;
->  	jn = jiffies + ULONG_MAX / 2;
-> +	self_detected = READ_ONCE(rnp->qsmask) & rdp->grpmask;
->  	if (rcu_gp_in_progress() &&
-> -	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
-> +	    (self_detected || ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY)) &&
->  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-> -
->  		/*
->  		 * If a virtual machine is stopped by the host it can look to
->  		 * the watchdog like an RCU stall. Check to see if the host
-> @@ -770,33 +770,21 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  		if (kvm_check_and_clear_guest_paused())
->  			return;
->  
-> -		/* We haven't checked in, so go dump stack. */
-> -		print_cpu_stall(gps);
-> -		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-> -			rcu_ftrace_dump(DUMP_ALL);
-> -		didstall = true;
-> -
-> -	} else if (rcu_gp_in_progress() &&
-> -		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
-> -		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
-> -
-> -		/*
-> -		 * If a virtual machine is stopped by the host it can look to
-> -		 * the watchdog like an RCU stall. Check to see if the host
-> -		 * stopped the vm.
-> -		 */
-> -		if (kvm_check_and_clear_guest_paused())
-> -			return;
-> +		if (self_detected) {
-> +			/* We haven't checked in, so go dump stack. */
-> +			print_cpu_stall(gps);
-> +		} else {
-> +			/* They had a few time units to dump stack, so complain. */
-> +			print_other_cpu_stall(gs2, gps);
-> +		}
->  
-> -		/* They had a few time units to dump stack, so complain. */
-> -		print_other_cpu_stall(gs2, gps);
->  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
->  			rcu_ftrace_dump(DUMP_ALL);
-> -		didstall = true;
-> -	}
-> -	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
-> -		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-> -		WRITE_ONCE(rcu_state.jiffies_stall, jn);
-> +
-> +		if (READ_ONCE(rcu_state.jiffies_stall) == jn) {
-> +			jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-> +			WRITE_ONCE(rcu_state.jiffies_stall, jn);
-> +		}
->  	}
->  }
->  
-> -- 
-> 2.25.1
-> 
+>=20
+> =EF=BB=BFOn Mon, Jul 24, 2023 at 09:36:02AM -0400, Joel Fernandes wrote:
+>>> On Sun, Jul 23, 2023 at 11:35=E2=80=AFPM Paul E. McKenney <paulmck@kerne=
+l.org> wrote:
+>>>=20
+>>> On Mon, Jul 24, 2023 at 12:32:57AM +0000, Joel Fernandes wrote:
+>>>> On Sun, Jul 23, 2023 at 10:19:27AM -0700, Paul E. McKenney wrote:
+>>>>> On Sun, Jul 23, 2023 at 10:50:26AM -0400, Joel Fernandes wrote:
+>>>>>>=20
+>>>>>>=20
+>>>>>> On 7/22/23 13:27, Paul E. McKenney wrote:
+>>>>>> [..]
+>>>>>>>=20
+>>>>>>> OK, if this kernel is non-preemptible, you are not running TREE03,
+>>>>>>> correct?
+>>>>>>>=20
+>>>>>>>> Next plan of action is to get sched_waking stack traces since I hav=
+e a
+>>>>>>>> very reliable repro of this now.
+>>>>>>>=20
+>>>>>>> Too much fun!  ;-)
+>>>>>>=20
+>>>>>> For TREE07 issue, it is actually the schedule_timeout_interruptible(1=
+)
+>>>>>> in stutter_wait() that is beating up the CPU0 for 4 seconds.
+>>>>>>=20
+>>>>>> This is very similar to the issue I fixed in New year in d52d3a2bf408=
+
+>>>>>> ("torture: Fix hang during kthread shutdown phase")
+>>>>>=20
+>>>>> Agreed, if there are enough kthreads, and all the kthreads are on a
+>>>>> single CPU, this could consume that CPU.
+>>>>>=20
+>>>>>> Adding a cond_resched() there also did not help.
+>>>>>>=20
+>>>>>> I think the issue is the stutter thread fails to move spt forward
+>>>>>> because it does not get CPU time. But spt =3D=3D 1 should be very bri=
+ef
+>>>>>> AFAIU. I was wondering if we could set that to RT.
+>>>>>=20
+>>>>> Or just use a single hrtimer-based wait for each kthread?
+>>>>=20
+>>>> [Joel]
+>>>> Yes this might be better, but there's still the issue that spt may not b=
+e set
+>>>> back to 0 in some future release where the thread gets starved.
+>>>=20
+>>> But if each thread knows the absolute time at which the current stutter
+>>> period is supposed to end, there should not be any need for the spt
+>>> variable, correct?
+>>=20
+>> Yes.
+>>=20
+>>>>>> But also maybe the following will cure it like it did for the shutdow=
+n
+>>>>>> issue, giving the stutter thread just enough CPU time to move spt for=
+ward.
+>>>>>>=20
+>>>>>> Now I am trying the following and will let it run while I go do other=
+
+>>>>>> family related things. ;)
+>>>>>=20
+>>>>> Good point, if this avoids the problem, that gives a strong indication=
+
+>>>>> that your hypothesis on the root cause is correct.
+>>>>=20
+>>>> [Joel]
+>>>> And the TREE07 issue is gone with that change!
+>> [...]
+>>>> Let me know what you think, thanks!
+>>>=20
+>>> If we can make the stutter kthread set an absolute time for the current
+>>> stutter period to end, then we should be able to simplify the code quite=
+
+>>> a bit and get rid of the CPU consumption entirely.  (Give or take the
+>>> possible need for a given thread to check whether it was erroneously
+>>> awakened early.)
+>>>=20
+>>> But what specifically did you have in mind?
+>>=20
+>> I was thinking of a 2 counter approach storing the absolute time. Use
+>> an alternative counter for different stuttering sessions. But yes,
+>> generally I agree with the absolute time idea. What do you think Paul?
+>>=20
+>> Do we want to just do  the simpler schedule_timeout at HZ / 20 to keep st=
+able
+>> green, and do the absolute-time approach for mainline? That might be bett=
+er
+>> from a process PoV. But I think stable requires patches to be upstream. G=
+reg?
+>>=20
+>> I will try to send out patches this week to discuss this, thanks,
+>=20
+> Heh!!!
+>=20
+> Me, I was just thinking of mainline.  ;-)
+
+Turns out it is simple enough for both mainline and stable :-).
+Will test more and send it out soon.
+
+Thanks,
+
+- Joel
+
+
+>=20
+>                            Thanx, Paul
