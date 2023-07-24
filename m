@@ -2,140 +2,144 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4126C001B0
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 02:54:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C0A0EB64DD
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 03:21:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjGXCy0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 23 Jul 2023 22:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        id S229644AbjGXDVT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 Jul 2023 23:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjGXCyZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:54:25 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10449107;
-        Sun, 23 Jul 2023 19:54:24 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8N9Q3qm7z4f3mWg;
-        Mon, 24 Jul 2023 09:38:50 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgBnHbEo1r1kmzauOg--.11345S3;
-        Mon, 24 Jul 2023 09:38:51 +0800 (CST)
-Subject: Re: [PATCH 1/2] rcu: Delete a redundant check in check_cpu_stall()
-To:     paulmck@kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-References: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
- <20230721075716.857-2-thunder.leizhen@huaweicloud.com>
- <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <042c0f6d-3579-228c-dea4-5f2c880a43f7@huaweicloud.com>
-Date:   Mon, 24 Jul 2023 09:38:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        with ESMTP id S229506AbjGXDVS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 23 Jul 2023 23:21:18 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C57313D;
+        Sun, 23 Jul 2023 20:21:17 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-262d33fa37cso1907953a91.3;
+        Sun, 23 Jul 2023 20:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690168876; x=1690773676;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/vh+lK1Kh/jWqDSpT68Nj187KVXpeHhtW55C4KVCYTk=;
+        b=iA/Ir/yGS0vqXQZi4NOyNhedqIeJhPp3btHk7G1v9ThEQtt7OtrG8tJURqt+Li4WyW
+         Qauzg9aBt5YDzl+qInTFWzgjGTB8sSeSQgVEIePQugCQtTANxP1ilXT2APH3niscwpxY
+         D0JxS8xqEHc9HUCPWdqUQ95Zb72o3v+T/oj/y6YB1hmANQE9IEQriSnAsFQ7GiraGy+1
+         6tMA+020gpkM47AAsrglLQQgS5bz5iKGUOMCE2cFT3DqqxBJB0/dlSg+PGzMDz95P2+H
+         Jq23+GTpr4fDuOGHOpxaF7XLez72wPqEK4s+M7w36g81E8Vo339tixNgPo8S9bzekE6d
+         JRwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690168876; x=1690773676;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/vh+lK1Kh/jWqDSpT68Nj187KVXpeHhtW55C4KVCYTk=;
+        b=OK2SzRUFogeH9rZKxNhc+KS6tOGklJTKvPVZn/KQJNdCO4cwAjfijZQC1OXXNUNZHJ
+         h3ou+4W+jY2EspX5sNdit0DfvOjv2ilh3NEPa9V8C3pmx1XqB1e/YoVUG8M6Mx8zEi+g
+         MbawDfHU1axQU/bXw06Xevw/XCYcqNgbUjy4t0Fuxosrauaf/dGGv6iVe5NkXLmGHbkG
+         5/P3cabEOX5Tp1N33TdBy0TUMkvVXU24GG5/4TUcJW8JDH0nWleBQhHrTzxBg8rWzrot
+         kmjC0DleunX+s86dBo6kZSdr5zCR2KzIuyxzVNZX98qXy8Ptsabdx6Mmst47Xf3/7fZ+
+         2PwQ==
+X-Gm-Message-State: ABy/qLa+jR6AqXxPt/7PNuwDNU03iw7E3IGirXC7eX55A8/MWMbPFRTh
+        u7PolZ/S+q3+PDwafd8c3SAy4aTWF7dzGbinyMtY3nnSEck=
+X-Google-Smtp-Source: APBJJlHGLB6OIEJJMDDXEPw9cpQLWZTCMVrlutdyPmJ2m/b+yBTr5E0zMBA2SgaqhVDIldRwS3ig/mQxDwoHAbjC+PI=
+X-Received: by 2002:a17:90a:f2d3:b0:267:ce35:2f10 with SMTP id
+ gt19-20020a17090af2d300b00267ce352f10mr7398282pjb.4.1690168876417; Sun, 23
+ Jul 2023 20:21:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgBnHbEo1r1kmzauOg--.11345S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tryfXr1xXry7AFyDWFykKrg_yoW8tFyDpF
-        W8J3WjgFs5GF1IkwnFyw1kJryUZa1jgryUt3WDWryFy3sIy3WfKFyDWFyrWFWFvr93Xw4S
-        qw1vqwnrCw4jyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
+References: <20230721121534.44328-1-ppbuk5246@gmail.com> <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
+ <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
+ <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop> <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
+ <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop> <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
+In-Reply-To: <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Mon, 24 Jul 2023 11:21:04 +0800
+Message-ID: <CALm+0cWeZnMUk8Lj_nF3Htd14czGcT_Yt71nVwJdGhTECQOAWg@mail.gmail.com>
+Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on rcu_report_qs_rdp
+To:     Yun Levi <ppbuk5246@gmail.com>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+>
+> Thanks for replying to reply Paul :)
+>
+> > And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n.
+> > Though there might be better Kconfig options to use.  Those two come
+> > immediately to mind.
+>
+> I've tested with this option via rcu torture.
+> and it doesn't report any problems.
+> and after commit 6d60ea03ac2d3 ("rcu: Report QS for outermost
+> PREEMPT=n rcu_read_unlock() for strict GPs")
+> it always makes cpu_no_qs.b.norm false whenever it calls
+> rcu_report_qs_rdp in rcu_read_unlock.
+>
+> > But one critical piece is that softirq handlers, including the RCU_SOFTIRQ
+> > handler rcu_core_si(), can be invoked upon return from interrupts.
+>
+> I think in that case, no problem because if it reports qs already,
+> rcu_check_quiescent_state wouldn't call rcu_report_qs_rdp again.
+> And if RCU_SOFTIRQ is called as soon as RCU interrupt is finished,
+> it seems the fastest one to notify qs to related tree.
+>
+> > Another critical piece is that if a CPU is idle during any part of a
+> > grace period, the grace-period kthread can report a quiescent state on
+> > its behalf.
+>
+> I think
+>     1) If timer interrupt is still programed,
+>           - when rcu_sched_clock_irq first reports qs, no problem
+>           - If qs is reported via grace period thread first,
+> note_gp_chagned in rcu interrupt
+>             will recognize this situation by setting core_needs_qs as false,
+>             it doesn't call rcu_report_qs_rdp thou cpu_no_qs.b.norm is true.
+>
+>      2) If the timer interrupt isn't programmed,
+>           - rcu_gp_kthreaad reports its qs, no problem.
+>
+> So, I think there's no problem removing
+>       "rdp->cpu_no_qs.b.norm" check in rcu_report_qs_rdp.
+> or wrap this condition check as WARN_ON_ONCE.
+>
+> > Does that help?
+> Many thanks always :)
+>
 
 
-On 2023/7/22 6:37, Paul E. McKenney wrote:
-> On Fri, Jul 21, 2023 at 03:57:15PM +0800, thunder.leizhen@huaweicloud.com wrote:
->> From: Zhen Lei <thunder.leizhen@huawei.com>
->>
->> j = jiffies;
->> js = READ_ONCE(rcu_state.jiffies_stall);			(1)
->> if (ULONG_CMP_LT(j, js))					(2)
->> 	return;
->>
->> if (cmpxchg(&rcu_state.jiffies_stall, js, jn) == js)		(3)
->> 	didstall = true;
->>
->> if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {	(4)
->> 	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
->> 	WRITE_ONCE(rcu_state.jiffies_stall, jn);
->> }
->>
->> For ease of description, the pseudo code is extracted as above. First,
->> assume that only one CPU is operating, the condition 'didstall' is true
->> means that (3) succeeds. That is, the value of rcu_state.jiffies_stall
->> must be 'jn'.
->>
->> Then, assuming that another CPU is also operating at the same time, there
->> are two cases:
->> 1. That CPU sees the updated result at (1), it returns at (2).
->> 2. That CPU does not see the updated result at (1), it fails at (3) and
->>    cmpxchg returns jn. So that, didstall cannot be true.
-> 
-> The history behind this one is that there are races in which the stall
-> can end in the midst of check_cpu_stall().  For example, when the activity
-> of producing the stall warning breaks things loose.
-> 
-> And yes, long ago, I figured that if things had been static for so
-> many seconds, they were unlikely to change, and thus omitted any and
-> all synchronization.  The Linux kernel taught me better.  ;-)
+Hi Levi
 
-Okay, got it, thank you
+For built with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n kernels
+Consider the following scenario:
 
-> 
-> 							Thanx, Paul
-> 
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  kernel/rcu/tree_stall.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
->> index cc884cd49e026a3..371713f3f7d15d9 100644
->> --- a/kernel/rcu/tree_stall.h
->> +++ b/kernel/rcu/tree_stall.h
->> @@ -794,7 +794,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
->>  			rcu_ftrace_dump(DUMP_ALL);
->>  		didstall = true;
->>  	}
->> -	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
->> +	if (didstall) {
->>  		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
->>  		WRITE_ONCE(rcu_state.jiffies_stall, jn);
->>  	}
->> -- 
->> 2.25.1
->>
-> .
-> 
+__rcu_read_unlock()
+   -> rcu_read_unlock_strict()
+        ->rdp = this_cpu_ptr(&rcu_data);
+        ->rdp->cpu_no_qs.b.norm = false;
 
--- 
-Regards,
-  Zhen Lei
+                 by interrupt and return invoke rcu_core():
+                 ->rcu_check_quiescent_state()
+                      ->rdp = raw_cpu_ptr(&rcu_data);
+                      -> rcu_check_quiescent_state(rdp);
+                            ->note_gp_changes(rdp);
+                                -> __note_gp_changes(rnp, rdp)
+                                start new gp
+                                ->rdp->cpu_no_qs.b.norm = true;
 
+        ->rcu_report_qs_rdp(rdp);
+           ->if (rdp->cpu_no_qs.b.norm || ...)
+
+
+Thanks
+Zqiang
+
+
+>
+> --------
+> SIncerely,
+> Levi.
