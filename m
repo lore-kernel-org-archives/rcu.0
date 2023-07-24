@@ -2,117 +2,152 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBDD4C00528
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 19:19:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6F94EB64DD
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 20:50:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjGXTTE (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jul 2023 15:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S229547AbjGXUux (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 16:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjGXTTC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:19:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC24B122;
-        Mon, 24 Jul 2023 12:19:01 -0700 (PDT)
+        with ESMTP id S229481AbjGXUuw (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 16:50:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5FA10F0;
+        Mon, 24 Jul 2023 13:50:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 385EB6133D;
-        Mon, 24 Jul 2023 19:19:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAAD8C433C7;
-        Mon, 24 Jul 2023 19:18:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22D61613FB;
+        Mon, 24 Jul 2023 20:50:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538DDC433C7;
+        Mon, 24 Jul 2023 20:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690226340;
-        bh=+LZ4eYxU8Ln7Boi9fvVDKSeBa0mdLKhS5TxPxP6U5z0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z5AG13I0eH3r/+JSxGx9V3KuQ5ylHVmcPa9CYhTBkOLcUC66vL7aUBLfmCEWqCzs1
-         kd9VaGz4WlPaTpBu9omhaYQsqJONitcO0G7YTsH8ytsIisX70dDfHM0UeGfGEFA1wh
-         E8Xhox9lBrf3cJzEYVfWEOWPDBWsCC/cy+8NBlnfSkjhTz10yjXYJNMOiI8SkmbneQ
-         Om6JFX5LOy7ta8iPjHIZgupC1tbyg4AlfXomMtY3a4A0vOYBOYMi4dxdQhXyqUdoeZ
-         p0rTqA6x7c6miitYlN49KP50tlIssxGzF2fzCfCe7ARt9xAtTfki69TnzMu46eGMVG
-         uuDqcdB6qdZuQ==
-Date:   Mon, 24 Jul 2023 21:18:57 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        s=k20201202; t=1690231849;
+        bh=DFatD/8er2XHTS8u7l5OiI/Lcu2tgMSdd66Ul8F/1ts=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=I4xAiGBEvJmE49pXerQpQg2EWC6pPN3rbcKAgv35FeoZyjb/IYWC7AtK1IizmAH/f
+         kOyhn/anhpUHhSW8tQMUBxpd2/Fy8FRE1yUcal1rMPMrq1yAx8tYfnZwsZQnEr8apa
+         gQax9MqvlakqREl6MRuOAKc4sz4ZfGyWsX/C1GIbSUUFS75Fjll9+hrhkzdQeguD75
+         JTONTz4Sf8ozQ1xpJnoP30tv2RBUcxXLPKqreZc3ODq8pcrl4XENu6ePGFjFhymxs2
+         1ChdDx368tZSBuWQzR+1XoSahmbYldLwotZ4I9scUkelYpvi2cWAjAcmJoQkq2Acel
+         5w/aFvgA1sXSg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E81A9CE0974; Mon, 24 Jul 2023 13:50:48 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 13:50:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     thunder.leizhen@huaweicloud.com
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <ZL7OoUMLZwfUttjV@lothringen>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-16-vschneid@redhat.com>
- <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
- <xhsmh351dtfjj.mognet@vschneid.remote.csb>
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
+Subject: Re: [PATCH v2 1/1] rcu: Simplify check_cpu_stall()
+Message-ID: <e18908fd-0512-4fbd-afd4-733f56d829e7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230724022651.899-1-thunder.leizhen@huaweicloud.com>
+ <20230724022651.899-2-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xhsmh351dtfjj.mognet@vschneid.remote.csb>
+In-Reply-To: <20230724022651.899-2-thunder.leizhen@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:55:44PM +0100, Valentin Schneider wrote:
-> I can make that a 'do {} while ()' instead to force at least one execution
-> of the cmpxchg().
+On Mon, Jul 24, 2023 at 10:26:51AM +0800, thunder.leizhen@huaweicloud.com wrote:
+> From: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> This is only about reducing the race window, right? If we're executing this
-> just as the target CPU is about to enter userspace, we're going to be in
-> racy territory anyway. Regardless, I'm happy to do that change.
+> The code and comments of self detected and other detected are the same
+> except the output function. Combine the same parts to avoid duplication.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Right, it's only about narrowing down the race window. It probably don't matter
-in practice, but it's one less thing to consider for the brain :-)
+Queued and pushed, thank you!!!
 
-Also, why bothering with handling CONTEXT_IDLE?
+							Thanx, Paul
 
-Thanks.
+> ---
+>  kernel/rcu/tree_stall.h | 42 +++++++++++++++--------------------------
+>  1 file changed, 15 insertions(+), 27 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index cc884cd49e026a3..b45d7e49944cdd7 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -711,7 +711,7 @@ static void print_cpu_stall(unsigned long gps)
+>  
+>  static void check_cpu_stall(struct rcu_data *rdp)
+>  {
+> -	bool didstall = false;
+> +	bool self_detected;
+>  	unsigned long gs1;
+>  	unsigned long gs2;
+>  	unsigned long gps;
+> @@ -758,10 +758,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		return; /* No stall or GP completed since entering function. */
+>  	rnp = rdp->mynode;
+>  	jn = jiffies + ULONG_MAX / 2;
+> +	self_detected = READ_ONCE(rnp->qsmask) & rdp->grpmask;
+>  	if (rcu_gp_in_progress() &&
+> -	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+> +	    (self_detected || ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY)) &&
+>  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> -
+>  		/*
+>  		 * If a virtual machine is stopped by the host it can look to
+>  		 * the watchdog like an RCU stall. Check to see if the host
+> @@ -770,33 +770,21 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		if (kvm_check_and_clear_guest_paused())
+>  			return;
+>  
+> -		/* We haven't checked in, so go dump stack. */
+> -		print_cpu_stall(gps);
+> -		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> -			rcu_ftrace_dump(DUMP_ALL);
+> -		didstall = true;
+> -
+> -	} else if (rcu_gp_in_progress() &&
+> -		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+> -		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> -
+> -		/*
+> -		 * If a virtual machine is stopped by the host it can look to
+> -		 * the watchdog like an RCU stall. Check to see if the host
+> -		 * stopped the vm.
+> -		 */
+> -		if (kvm_check_and_clear_guest_paused())
+> -			return;
+> +		if (self_detected) {
+> +			/* We haven't checked in, so go dump stack. */
+> +			print_cpu_stall(gps);
+> +		} else {
+> +			/* They had a few time units to dump stack, so complain. */
+> +			print_other_cpu_stall(gs2, gps);
+> +		}
+>  
+> -		/* They had a few time units to dump stack, so complain. */
+> -		print_other_cpu_stall(gs2, gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+>  			rcu_ftrace_dump(DUMP_ALL);
+> -		didstall = true;
+> -	}
+> -	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
+> -		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+> -		WRITE_ONCE(rcu_state.jiffies_stall, jn);
+> +
+> +		if (READ_ONCE(rcu_state.jiffies_stall) == jn) {
+> +			jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+> +			WRITE_ONCE(rcu_state.jiffies_stall, jn);
+> +		}
+>  	}
+>  }
+>  
+> -- 
+> 2.25.1
+> 
