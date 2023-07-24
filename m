@@ -2,99 +2,190 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7D26C04FE0
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 12:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA356C001B0
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 13:23:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjGXM1M (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jul 2023 08:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        id S230441AbjGXNXt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 09:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjGXM1J (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:27:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DB419B;
-        Mon, 24 Jul 2023 05:27:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FgtQe2iC/0NBUdTIYwU6FvaIC/2mZu3i/WpphGYT+1k=; b=ZIw/NB6uEo0641+Wq8EzNrbHBV
-        rrdS2AkdlanLUW4jtuNV7YJmE8dx65rhuqNN6d+O2A+YB9l53nFIBcRLIER24dz2SZGSbQpUdfRFt
-        O+SQB8u46jmJ0V3lkB2dv55l0XkOFJ2vLXAjC15/xKJogcvcsepgRzVe5Zf2VfboPt9BBV/mRWBu/
-        r1HeDooSZKO8KrM91YanEuhJbHVgQEIeOAYvY50OE9Oa0XF31R7B/jnZvsmScHku30xY6VnjseHTr
-        PXjdkkROSxxW+REohqgqj+xc5EAtZBuKqFbmv/xo9QoVvk4ORWEH1k1N/to1rfbfNrbjLNy69S5M/
-        AYY+hq7g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qNudM-004Ned-Mr; Mon, 24 Jul 2023 12:25:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B0440300195;
-        Mon, 24 Jul 2023 14:25:49 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5C178266885CD; Mon, 24 Jul 2023 14:25:49 +0200 (CEST)
-Date:   Mon, 24 Jul 2023 14:25:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for
- dynamically allocating shrinker
-Message-ID: <20230724122549.GA3731903@hirez.programming.kicks-ass.net>
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-4-zhengqi.arch@bytedance.com>
+        with ESMTP id S230310AbjGXNXs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 09:23:48 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC58DA;
+        Mon, 24 Jul 2023 06:23:47 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R8gph6cbxz4f3nyk;
+        Mon, 24 Jul 2023 21:23:40 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBn0LNbe75kcavTOg--.2237S6;
+        Mon, 24 Jul 2023 21:23:43 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 2/2] softirq: redefine the type of kernel_stat.softirqs[] as unsigned long
+Date:   Mon, 24 Jul 2023 21:22:24 +0800
+Message-Id: <20230724132224.916-3-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
+In-Reply-To: <20230724132224.916-1-thunder.leizhen@huaweicloud.com>
+References: <20230724132224.916-1-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724094354.90817-4-zhengqi.arch@bytedance.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBn0LNbe75kcavTOg--.2237S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF43tF48KF13JF1UJryUAwb_yoW7Jw17pF
+        yqkFy7Kw4UGa4jvas7JF4DuryUJwn5Ga4akwsxt34fta45Jr1FgFn3u34qqrWjgrW8Ga1S
+        yFWayrWjg3yDW3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBKb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4
+        xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
+        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
+        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
+        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
+        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1yEEUUUUUU=
+        =
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:43:10PM +0800, Qi Zheng wrote:
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-> +void shrinker_unregister(struct shrinker *shrinker)
-> +{
-> +	struct dentry *debugfs_entry;
-> +	int debugfs_id;
-> +
-> +	if (!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))
-> +		return;
-> +
-> +	down_write(&shrinker_rwsem);
-> +	list_del(&shrinker->list);
-> +	shrinker->flags &= ~SHRINKER_REGISTERED;
-> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> +		unregister_memcg_shrinker(shrinker);
-> +	debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
-> +	up_write(&shrinker_rwsem);
-> +
-> +	shrinker_debugfs_remove(debugfs_entry, debugfs_id);
+As commit aa0ce5bbc2db ("softirq: introduce statistics for softirq")
+mentioned, the number of one softirq can exceed 100 per second. At this
+rate, the 32-bit sum will overflow after 1.5 years. This problem can be
+avoided if the type of 'softirqs[]' is changed to u64, but the atomicity
+of the counting operation cannot be guaranteed on 32-bit processors.
+Changing to unsigned long can safely solve the problem on 64-bit
+processors, and it is the same as the type of 'irqs_sum'.
 
-Should there not be an rcu_barrier() right about here?
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ fs/proc/softirqs.c          | 2 +-
+ fs/proc/stat.c              | 2 +-
+ include/linux/kernel_stat.h | 8 ++++----
+ kernel/rcu/tree.h           | 2 +-
+ kernel/rcu/tree_stall.h     | 6 +++---
+ 5 files changed, 10 insertions(+), 10 deletions(-)
 
-> +
-> +	kfree(shrinker->nr_deferred);
-> +	shrinker->nr_deferred = NULL;
-> +
-> +	kfree(shrinker);
-> +}
-> +EXPORT_SYMBOL(shrinker_unregister);
+diff --git a/fs/proc/softirqs.c b/fs/proc/softirqs.c
+index f4616083faef3bb..985be6904d748ab 100644
+--- a/fs/proc/softirqs.c
++++ b/fs/proc/softirqs.c
+@@ -20,7 +20,7 @@ static int show_softirqs(struct seq_file *p, void *v)
+ 	for (i = 0; i < NR_SOFTIRQS; i++) {
+ 		seq_printf(p, "%12s:", softirq_to_name[i]);
+ 		for_each_possible_cpu(j)
+-			seq_printf(p, " %10u", kstat_softirqs_cpu(i, j));
++			seq_printf(p, " %10lu", kstat_softirqs_cpu(i, j));
+ 		seq_putc(p, '\n');
+ 	}
+ 	return 0;
+diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+index 84aac577a50cabb..7d40d98471d5ab2 100644
+--- a/fs/proc/stat.c
++++ b/fs/proc/stat.c
+@@ -116,7 +116,7 @@ static int show_stat(struct seq_file *p, void *v)
+ 		sum		+= arch_irq_stat_cpu(i);
+ 
+ 		for (j = 0; j < NR_SOFTIRQS; j++) {
+-			unsigned int softirq_stat = kstat_softirqs_cpu(j, i);
++			unsigned long softirq_stat = kstat_softirqs_cpu(j, i);
+ 
+ 			per_softirq_sums[j] += softirq_stat;
+ 			sum_softirq += softirq_stat;
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 9935f7ecbfb9e31..b6c5723a1149cd6 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -40,7 +40,7 @@ struct kernel_cpustat {
+ 
+ struct kernel_stat {
+ 	unsigned long irqs_sum;
+-	unsigned int softirqs[NR_SOFTIRQS];
++	unsigned long softirqs[NR_SOFTIRQS];
+ };
+ 
+ DECLARE_PER_CPU(struct kernel_stat, kstat);
+@@ -63,15 +63,15 @@ static inline void kstat_incr_softirqs_this_cpu(unsigned int irq)
+ 	__this_cpu_inc(kstat.softirqs[irq]);
+ }
+ 
+-static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
++static inline unsigned long kstat_softirqs_cpu(unsigned int irq, int cpu)
+ {
+        return kstat_cpu(cpu).softirqs[irq];
+ }
+ 
+-static inline unsigned int kstat_cpu_softirqs_sum(int cpu)
++static inline unsigned long kstat_cpu_softirqs_sum(int cpu)
+ {
+ 	int i;
+-	unsigned int sum = 0;
++	unsigned long sum = 0;
+ 
+ 	for (i = 0; i < NR_SOFTIRQS; i++)
+ 		sum += kstat_softirqs_cpu(i, cpu);
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 192536916f9a607..ce51640cd34f66b 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -268,7 +268,7 @@ struct rcu_data {
+ 	unsigned long rcuc_activity;
+ 
+ 	/* 7) Diagnostic data, including RCU CPU stall warnings. */
+-	unsigned int softirq_snap;	/* Snapshot of softirq activity. */
++	unsigned long softirq_snap;	/* Snapshot of softirq activity. */
+ 	/* ->rcu_iw* fields protected by leaf rcu_node ->lock. */
+ 	struct irq_work rcu_iw;		/* Check for non-irq activity. */
+ 	bool rcu_iw_pending;		/* Is ->rcu_iw pending? */
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 0ade7f9dcaa18da..d5b22700abcc385 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -446,7 +446,7 @@ static void print_cpu_stat_info(int cpu)
+ 	rsr.cputime_system  = kcpustat_field(kcsp, CPUTIME_SYSTEM, cpu);
+ 
+ 	pr_err("\t         hardirqs   softirqs   csw/system\n");
+-	pr_err("\t number: %8ld %10d %12lld\n",
++	pr_err("\t number: %8ld %10ld %12lld\n",
+ 		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
+ 		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
+ 		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
+@@ -498,7 +498,7 @@ static void print_cpu_stall_info(int cpu)
+ 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
+ 	if (rcuc_starved)
+ 		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
+-	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
++	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%lu/%lu fqs=%ld%s%s\n",
+ 	       cpu,
+ 	       "O."[!!cpu_online(cpu)],
+ 	       "o."[!!(rdp->grpmask & rdp->mynode->qsmaskinit)],
+@@ -575,7 +575,7 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
+ 		       data_race(rcu_state.gp_flags),
+ 		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
+ 		       data_race(READ_ONCE(gpk->__state)));
+-		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
++		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%lu\n",
+ 		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
+ 	}
+ }
+-- 
+2.25.1
 
