@@ -2,248 +2,145 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84D8FC001DF
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 14:52:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C1A2C001B0
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 16:00:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjGXOwn (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jul 2023 10:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
+        id S231178AbjGXQAo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 12:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbjGXOwl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:52:41 -0400
+        with ESMTP id S231254AbjGXQAn (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 12:00:43 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DBF10D7;
-        Mon, 24 Jul 2023 07:52:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364F5E76;
+        Mon, 24 Jul 2023 09:00:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6DBB3611F6;
-        Mon, 24 Jul 2023 14:52:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA815C433C8;
-        Mon, 24 Jul 2023 14:52:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D19061234;
+        Mon, 24 Jul 2023 16:00:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC40AC433C8;
+        Mon, 24 Jul 2023 16:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690210353;
-        bh=Io85B1vzGj1NiepBNP1CXkgl9j43eYMLYiUZyMtHevU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CJj9nVWeVnJDFBR0XVDtKFcRx4DdPvYzBxJs7NdyqhCdkyJSi7ns/QunyuF5T7ps6
-         XU2A2MDFy7UQQzJsIx/xDqLe0FliBY/Oeg0aB/OquAS8cepo48SytLWwhoRHBnqAgE
-         wTZhFOxngaubHLo/KhuNmg/icDkWf3KABmSQcw7hRGodIB5PblbvuCT6kpl36W6FZr
-         hIH+s80Togjk4lAfltww4D/tmAcJlqIFj1q84XSHWsxVyk2brxNcyWdq/AUnuQb02p
-         QLpBDuBflcJsU3fMXLT8vIMOo2OPS1Po+gVqEtzb2kBqqlYChJ+9nWv8THywbJoX77
-         fSGCA/VpqlDFg==
-Date:   Mon, 24 Jul 2023 16:52:19 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-16-vschneid@redhat.com>
+        s=k20201202; t=1690214440;
+        bh=HiWKiSQHyMaDEa0UiXE1Jt4gJBcBxoHYQfLcTXtdLDQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=JsgYAt5GJCqyn3QYlUMN4EXGVsqVeZ/6C2hqUKN5bwIJ89GPa3ZpLKd/CJxVCxk3G
+         RW63NxZSjsP1SotXymG3DgXJPnK3OoGlO3+451CjPs0BWhbm/TjbsmCtZZV28zN2HR
+         DvqSZLQDDC6Ab5kxW69aS6BidQ4NRRoTB5/Vb2JipHYwYA/tZ4R0S9JOG2VRDxOtZD
+         yH/OX7MtDrBX+Q9l8ykUQq/s3geiWJafOaho7zT8/cumXa8IiNVarDork0te5btsX/
+         VE8AMUkSdmE0SRCAPlOVR//hO38orIK9rNu/ZwSvicxH7sCDT7y614CY+O91Dt8e/q
+         kcCMpTlo/V3Cw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6D342CE0C4B; Mon, 24 Jul 2023 09:00:40 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 09:00:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [BUG] Re: Linux 6.4.4
+Message-ID: <4b231ce5-7bb8-4abf-9c40-04aa676d1e45@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
+ <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
+ <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
+ <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
+ <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
+ <a7bcbcf2-9b34-4326-822f-e1f2aa5c5668@joelfernandes.org>
+ <ebde8612-95de-4eaf-aa56-34e9b3a3fa86@paulmck-laptop>
+ <20230724003257.GA60074@google.com>
+ <381862e5-153c-4641-a60e-8175acae971d@paulmck-laptop>
+ <CAEXW_YQsP_j9ZBAYKGk0mBfa3x-RikMoWE01Z6q1GXkLug2xoQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230720163056.2564824-16-vschneid@redhat.com>
+In-Reply-To: <CAEXW_YQsP_j9ZBAYKGk0mBfa3x-RikMoWE01Z6q1GXkLug2xoQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Thu, Jul 20, 2023 at 05:30:51PM +0100, Valentin Schneider a écrit :
-> +enum ctx_state {
-> +	/* Following are values */
-> +	CONTEXT_DISABLED	= -1,	/* returned by ct_state() if unknown */
-> +	CONTEXT_KERNEL		= 0,
-> +	CONTEXT_IDLE		= 1,
-> +	CONTEXT_USER		= 2,
-> +	CONTEXT_GUEST		= 3,
-> +	CONTEXT_MAX             = 4,
-> +};
-> +
-> +/*
-> + * We cram three different things within the same atomic variable:
-> + *
-> + *                CONTEXT_STATE_END                        RCU_DYNTICKS_END
-> + *                         |       CONTEXT_WORK_END                |
-> + *                         |               |                       |
-> + *                         v               v                       v
-> + *         [ context_state ][ context work ][ RCU dynticks counter ]
-> + *         ^                ^               ^
-> + *         |                |               |
-> + *         |        CONTEXT_WORK_START      |
-> + * CONTEXT_STATE_START              RCU_DYNTICKS_START
-
-Should the layout be displayed in reverse? Well at least I always picture
-bitmaps in reverse, that's probably due to the direction of the shift arrows.
-Not sure what is the usual way to picture it though...
-
-> + */
-> +
-> +#define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
-> +
-> +#define CONTEXT_STATE_START 0
-> +#define CONTEXT_STATE_END   (bits_per(CONTEXT_MAX - 1) - 1)
-
-Since you have non overlapping *_START symbols, perhaps the *_END
-are superfluous?
-
-> +
-> +#define RCU_DYNTICKS_BITS  (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? 16 : 31)
-> +#define RCU_DYNTICKS_START (CT_STATE_SIZE - RCU_DYNTICKS_BITS)
-> +#define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
-> +#define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
-
-Might be the right time to standardize and fix our naming:
-
-CT_STATE_START,
-CT_STATE_KERNEL,
-CT_STATE_USER,
-...
-CT_WORK_START,
-CT_WORK_*,
-...
-CT_RCU_DYNTICKS_START,
-CT_RCU_DYNTICKS_IDX
-
-> +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
-> +{
-> +	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-> +	unsigned int old;
-> +	bool ret = false;
-> +
-> +	preempt_disable();
-> +
-> +	old = atomic_read(&ct->state);
-> +	/*
-> +	 * Try setting the work until either
-> +	 * - the target CPU no longer accepts any more deferred work
-> +	 * - the work has been set
-> +	 *
-> +	 * NOTE: CONTEXT_GUEST intersects with CONTEXT_USER and CONTEXT_IDLE
-> +	 * as they are regular integers rather than bits, but that doesn't
-> +	 * matter here: if any of the context state bit is set, the CPU isn't
-> +	 * in kernel context.
-> +	 */
-> +	while ((old & (CONTEXT_GUEST | CONTEXT_USER | CONTEXT_IDLE)) && !ret)
-
-That may still miss a recent entry to userspace due to the first plain read, ending
-with an undesired interrupt.
-
-You need at least one cmpxchg. Well, of course that stays racy by nature because
-between the cmpxchg() returning CONTEXT_KERNEL and the actual IPI raised and
-received, the remote CPU may have gone to userspace already. But still it limits
-a little the window.
-
-Thanks.
-
-> +		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CONTEXT_WORK_START));
-> +
-> +	preempt_enable();
-> +	return ret;
-> +}
-> +#else
-> +static __always_inline void ct_work_flush(unsigned long work) { }
-> +static __always_inline void ct_work_clear(struct context_tracking *ct) { }
-> +#endif
-> +
->  /*
->   * Record entry into an extended quiescent state.  This is only to be
->   * called when not already in an extended quiescent state, that is,
-> @@ -88,7 +133,8 @@ static noinstr void ct_kernel_exit_state(int offset)
->  	 * next idle sojourn.
->  	 */
->  	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
-> -	seq = ct_state_inc(offset);
-> +	seq = ct_state_inc_clear_work(offset);
-> +
->  	// RCU is no longer watching.  Better be in extended quiescent state!
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & RCU_DYNTICKS_IDX));
->  }
-> @@ -100,7 +146,7 @@ static noinstr void ct_kernel_exit_state(int offset)
->   */
->  static noinstr void ct_kernel_enter_state(int offset)
->  {
-> -	int seq;
-> +	unsigned long seq;
->  
->  	/*
->  	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
-> @@ -108,6 +154,7 @@ static noinstr void ct_kernel_enter_state(int offset)
->  	 * critical section.
->  	 */
->  	seq = ct_state_inc(offset);
-> +	ct_work_flush(seq);
->  	// RCU is now watching.  Better not be in an extended quiescent state!
->  	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & RCU_DYNTICKS_IDX));
-> diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-> index bae8f11070bef..fdb266f2d774b 100644
-> --- a/kernel/time/Kconfig
-> +++ b/kernel/time/Kconfig
-> @@ -181,6 +181,11 @@ config CONTEXT_TRACKING_USER_FORCE
->  	  Say N otherwise, this option brings an overhead that you
->  	  don't want in production.
->  
-> +config CONTEXT_TRACKING_WORK
-> +	bool
-> +	depends on HAVE_CONTEXT_TRACKING_WORK && CONTEXT_TRACKING_USER
-> +	default y
-> +
->  config NO_HZ
->  	bool "Old Idle dynticks config"
->  	help
-> -- 
-> 2.31.1
+On Mon, Jul 24, 2023 at 09:36:02AM -0400, Joel Fernandes wrote:
+> On Sun, Jul 23, 2023 at 11:35â€¯PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Mon, Jul 24, 2023 at 12:32:57AM +0000, Joel Fernandes wrote:
+> > > On Sun, Jul 23, 2023 at 10:19:27AM -0700, Paul E. McKenney wrote:
+> > > > On Sun, Jul 23, 2023 at 10:50:26AM -0400, Joel Fernandes wrote:
+> > > > >
+> > > > >
+> > > > > On 7/22/23 13:27, Paul E. McKenney wrote:
+> > > > > [..]
+> > > > > >
+> > > > > > OK, if this kernel is non-preemptible, you are not running TREE03,
+> > > > > > correct?
+> > > > > >
+> > > > > >> Next plan of action is to get sched_waking stack traces since I have a
+> > > > > >> very reliable repro of this now.
+> > > > > >
+> > > > > > Too much fun!  ;-)
+> > > > >
+> > > > > For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
+> > > > > in stutter_wait() that is beating up the CPU0 for 4 seconds.
+> > > > >
+> > > > > This is very similar to the issue I fixed in New year in d52d3a2bf408
+> > > > > ("torture: Fix hang during kthread shutdown phase")
+> > > >
+> > > > Agreed, if there are enough kthreads, and all the kthreads are on a
+> > > > single CPU, this could consume that CPU.
+> > > >
+> > > > > Adding a cond_resched() there also did not help.
+> > > > >
+> > > > > I think the issue is the stutter thread fails to move spt forward
+> > > > > because it does not get CPU time. But spt == 1 should be very brief
+> > > > > AFAIU. I was wondering if we could set that to RT.
+> > > >
+> > > > Or just use a single hrtimer-based wait for each kthread?
+> > >
+> > > [Joel]
+> > > Yes this might be better, but there's still the issue that spt may not be set
+> > > back to 0 in some future release where the thread gets starved.
+> >
+> > But if each thread knows the absolute time at which the current stutter
+> > period is supposed to end, there should not be any need for the spt
+> > variable, correct?
 > 
+> Yes.
+> 
+> > > > > But also maybe the following will cure it like it did for the shutdown
+> > > > > issue, giving the stutter thread just enough CPU time to move spt forward.
+> > > > >
+> > > > > Now I am trying the following and will let it run while I go do other
+> > > > > family related things. ;)
+> > > >
+> > > > Good point, if this avoids the problem, that gives a strong indication
+> > > > that your hypothesis on the root cause is correct.
+> > >
+> > > [Joel]
+> > > And the TREE07 issue is gone with that change!
+> [...]
+> > > Let me know what you think, thanks!
+> >
+> > If we can make the stutter kthread set an absolute time for the current
+> > stutter period to end, then we should be able to simplify the code quite
+> > a bit and get rid of the CPU consumption entirely.  (Give or take the
+> > possible need for a given thread to check whether it was erroneously
+> > awakened early.)
+> >
+> > But what specifically did you have in mind?
+> 
+> I was thinking of a 2 counter approach storing the absolute time. Use
+> an alternative counter for different stuttering sessions. But yes,
+> generally I agree with the absolute time idea. What do you think Paul?
+> 
+> Do we want to just do  the simpler schedule_timeout at HZ / 20 to keep stable
+> green, and do the absolute-time approach for mainline? That might be better
+> from a process PoV. But I think stable requires patches to be upstream. Greg?
+> 
+> I will try to send out patches this week to discuss this, thanks,
+
+Heh!!!
+
+Me, I was just thinking of mainline.  ;-)
+
+							Thanx, Paul
