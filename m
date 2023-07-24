@@ -2,27 +2,27 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28BBDC001DE
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 02:28:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4126C001B0
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 02:54:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbjGXC2y (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 23 Jul 2023 22:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
+        id S229551AbjGXCy0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 23 Jul 2023 22:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjGXC2u (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:28:50 -0400
+        with ESMTP id S229548AbjGXCyZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 23 Jul 2023 22:54:25 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDA7102;
-        Sun, 23 Jul 2023 19:28:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10449107;
+        Sun, 23 Jul 2023 19:54:24 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8PH02d5Xz4f3p16;
-        Mon, 24 Jul 2023 10:28:44 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgCX_7LY4b1k4_awOg--.28306S5;
-        Mon, 24 Jul 2023 10:28:45 +0800 (CST)
-From:   thunder.leizhen@huaweicloud.com
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8N9Q3qm7z4f3mWg;
+        Mon, 24 Jul 2023 09:38:50 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBnHbEo1r1kmzauOg--.11345S3;
+        Mon, 24 Jul 2023 09:38:51 +0800 (CST)
+Subject: Re: [PATCH 1/2] rcu: Delete a redundant check in check_cpu_stall()
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -31,122 +31,111 @@ To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] rcu: Simplify check_cpu_stall()
-Date:   Mon, 24 Jul 2023 10:26:51 +0800
-Message-Id: <20230724022651.899-2-thunder.leizhen@huaweicloud.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20230724022651.899-1-thunder.leizhen@huaweicloud.com>
-References: <20230724022651.899-1-thunder.leizhen@huaweicloud.com>
+        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
+ <20230721075716.857-2-thunder.leizhen@huaweicloud.com>
+ <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <042c0f6d-3579-228c-dea4-5f2c880a43f7@huaweicloud.com>
+Date:   Mon, 24 Jul 2023 09:38:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCX_7LY4b1k4_awOg--.28306S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1xuF4xWFy3Gw43uFW8tFb_yoW5Xw48pa
-        9rJ342gan8JF4Ik39rt34kJr15Xws5XFy7JasrJr1Fya9rAr1Fgas0qryfGFy5ur93Xr4S
-        vF95tr17Ca1DtFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBKb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4
-        xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
-        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8qFAJUUUUU=
-        =
+In-Reply-To: <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgBnHbEo1r1kmzauOg--.11345S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tryfXr1xXry7AFyDWFykKrg_yoW8tFyDpF
+        W8J3WjgFs5GF1IkwnFyw1kJryUZa1jgryUt3WDWryFy3sIy3WfKFyDWFyrWFWFvr93Xw4S
+        qw1vqwnrCw4jyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
 X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
 
-The code and comments of self detected and other detected are the same
-except the output function. Combine the same parts to avoid duplication.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- kernel/rcu/tree_stall.h | 42 +++++++++++++++--------------------------
- 1 file changed, 15 insertions(+), 27 deletions(-)
+On 2023/7/22 6:37, Paul E. McKenney wrote:
+> On Fri, Jul 21, 2023 at 03:57:15PM +0800, thunder.leizhen@huaweicloud.com wrote:
+>> From: Zhen Lei <thunder.leizhen@huawei.com>
+>>
+>> j = jiffies;
+>> js = READ_ONCE(rcu_state.jiffies_stall);			(1)
+>> if (ULONG_CMP_LT(j, js))					(2)
+>> 	return;
+>>
+>> if (cmpxchg(&rcu_state.jiffies_stall, js, jn) == js)		(3)
+>> 	didstall = true;
+>>
+>> if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {	(4)
+>> 	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+>> 	WRITE_ONCE(rcu_state.jiffies_stall, jn);
+>> }
+>>
+>> For ease of description, the pseudo code is extracted as above. First,
+>> assume that only one CPU is operating, the condition 'didstall' is true
+>> means that (3) succeeds. That is, the value of rcu_state.jiffies_stall
+>> must be 'jn'.
+>>
+>> Then, assuming that another CPU is also operating at the same time, there
+>> are two cases:
+>> 1. That CPU sees the updated result at (1), it returns at (2).
+>> 2. That CPU does not see the updated result at (1), it fails at (3) and
+>>    cmpxchg returns jn. So that, didstall cannot be true.
+> 
+> The history behind this one is that there are races in which the stall
+> can end in the midst of check_cpu_stall().  For example, when the activity
+> of producing the stall warning breaks things loose.
+> 
+> And yes, long ago, I figured that if things had been static for so
+> many seconds, they were unlikely to change, and thus omitted any and
+> all synchronization.  The Linux kernel taught me better.  ;-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index cc884cd49e026a3..b45d7e49944cdd7 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -711,7 +711,7 @@ static void print_cpu_stall(unsigned long gps)
- 
- static void check_cpu_stall(struct rcu_data *rdp)
- {
--	bool didstall = false;
-+	bool self_detected;
- 	unsigned long gs1;
- 	unsigned long gs2;
- 	unsigned long gps;
-@@ -758,10 +758,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		return; /* No stall or GP completed since entering function. */
- 	rnp = rdp->mynode;
- 	jn = jiffies + ULONG_MAX / 2;
-+	self_detected = READ_ONCE(rnp->qsmask) & rdp->grpmask;
- 	if (rcu_gp_in_progress() &&
--	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
-+	    (self_detected || ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY)) &&
- 	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
--
- 		/*
- 		 * If a virtual machine is stopped by the host it can look to
- 		 * the watchdog like an RCU stall. Check to see if the host
-@@ -770,33 +770,21 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 		if (kvm_check_and_clear_guest_paused())
- 			return;
- 
--		/* We haven't checked in, so go dump stack. */
--		print_cpu_stall(gps);
--		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
--			rcu_ftrace_dump(DUMP_ALL);
--		didstall = true;
--
--	} else if (rcu_gp_in_progress() &&
--		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
--		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
--
--		/*
--		 * If a virtual machine is stopped by the host it can look to
--		 * the watchdog like an RCU stall. Check to see if the host
--		 * stopped the vm.
--		 */
--		if (kvm_check_and_clear_guest_paused())
--			return;
-+		if (self_detected) {
-+			/* We haven't checked in, so go dump stack. */
-+			print_cpu_stall(gps);
-+		} else {
-+			/* They had a few time units to dump stack, so complain. */
-+			print_other_cpu_stall(gs2, gps);
-+		}
- 
--		/* They had a few time units to dump stack, so complain. */
--		print_other_cpu_stall(gs2, gps);
- 		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
- 			rcu_ftrace_dump(DUMP_ALL);
--		didstall = true;
--	}
--	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
--		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
--		WRITE_ONCE(rcu_state.jiffies_stall, jn);
-+
-+		if (READ_ONCE(rcu_state.jiffies_stall) == jn) {
-+			jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-+			WRITE_ONCE(rcu_state.jiffies_stall, jn);
-+		}
- 	}
- }
- 
+Okay, got it, thank you
+
+> 
+> 							Thanx, Paul
+> 
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  kernel/rcu/tree_stall.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+>> index cc884cd49e026a3..371713f3f7d15d9 100644
+>> --- a/kernel/rcu/tree_stall.h
+>> +++ b/kernel/rcu/tree_stall.h
+>> @@ -794,7 +794,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>>  			rcu_ftrace_dump(DUMP_ALL);
+>>  		didstall = true;
+>>  	}
+>> -	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
+>> +	if (didstall) {
+>>  		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+>>  		WRITE_ONCE(rcu_state.jiffies_stall, jn);
+>>  	}
+>> -- 
+>> 2.25.1
+>>
+> .
+> 
+
 -- 
-2.25.1
+Regards,
+  Zhen Lei
 
