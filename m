@@ -2,290 +2,242 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18B37C001B0
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 16:09:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E611FC00528
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 16:56:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjGXQJV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jul 2023 12:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S230170AbjGXQ4j (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 12:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGXQJU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:09:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB0710CB;
-        Mon, 24 Jul 2023 09:09:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3781E611BC;
-        Mon, 24 Jul 2023 16:09:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DD9BC433C8;
-        Mon, 24 Jul 2023 16:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690214957;
-        bh=SS517FDrub13I1X/zAvXvM2CjJSw9NwOoXHKpcCe298=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XTxlUg7jrkfPl8f7q1XVCG2a24RmuJzom4/9IrXWXsEHla7nbU7o+0u2Rx/u9GJ7C
-         IQFSq0GAwR8QehJhMc1wLx+adEnecbIg+s+4cAPS6EjRv7CfrjRaxXWgvRpMOo1sQR
-         qBOrFEayv8nHrp+StKgpJK8bzNTIuaJ1SIwqzKYrjvt9qPbSyTFGirwvIjAWvnAB5e
-         2Tsn3Ibfno3GhX4wrr/Jz9rgWXXUeRbfOGM9J/Rrf7gvRdj/H7c8iW02C7v0sc1lGl
-         zjOjJRsp4xucUgf+3y39dCsKypi1Amg+0SNbaov5af6vIUmlg7VaRR/zL5GbLD7QU8
-         9vW4P8utVZZ4w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 22C0ACE0C4B; Mon, 24 Jul 2023 09:09:17 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 09:09:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S229481AbjGXQ4i (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 12:56:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0C9D7
+        for <rcu@vger.kernel.org>; Mon, 24 Jul 2023 09:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690217751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+i0Z9WjluIMP5uW/WBHzltLXbYemxnhhH7IUl23Qdow=;
+        b=CrezZT/7bc+y3KnQGT4mdEyvJ3Xed/Ma2lA7YEmXMPHdnVYT/AK+bB6YnOciWlBlcRlEWz
+        xB1NYm8pY1rINBPI3pOzs8aM6dyijzl1whd8GbxltEYMzSJ3cTSzdeptt2TXliRP4MKDnI
+        Q0uoUnBPrGoTDLv6bN8xNcL4jW9CyxA=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-315-B_Vac8fzNxeHBmRWFFAIHg-1; Mon, 24 Jul 2023 12:55:49 -0400
+X-MC-Unique: B_Vac8fzNxeHBmRWFFAIHg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4fbe4f88b67so3935665e87.0
+        for <rcu@vger.kernel.org>; Mon, 24 Jul 2023 09:55:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690217748; x=1690822548;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+i0Z9WjluIMP5uW/WBHzltLXbYemxnhhH7IUl23Qdow=;
+        b=c5/kgDVAKc8y00jq4ZqbjRsNA1kO4B7hk4WgVDovGhW7QJa9XLWDuV+tmod4C5niJC
+         X4FQkEcSG3Er/EURmmzGACkeYxx+RdQCPj68+hS2EM5lcFvBNd3JK2KotOA2x+tQzRBz
+         p8kCuUlhxMRbyeFW9T4OmnxD1HzA019NnM5f/jJhslbBms4yF+6FjdpXB3Azvt0nQko9
+         oEvbFY+bqKtDiYwuav7b6gO6KYLEWxJ3rRFOHEGmsFTWMTNOukTi5y6XhCekRLoKQ08z
+         NYnckaKEsZyIOXCTzkPoN77E6EZQ08br747vt1d1x4j8fbtyR9LxK7OzR2KHAtFORnPN
+         XAhg==
+X-Gm-Message-State: ABy/qLawTfJohGcUIO2ctygc7gfOUE6OXNHHVc9Ps+5zaU1Nu89mo92S
+        zt1tmKOWhs1vnuAYNDvaCwYR5rcBybU2Wph/xcM4BYG2PA5XdTkRlVIJXT15V19NZg4RZkmDa5k
+        sX2umG3gr1pX9
+X-Received: by 2002:ac2:5dee:0:b0:4fb:99c6:8533 with SMTP id z14-20020ac25dee000000b004fb99c68533mr5480488lfq.33.1690217747940;
+        Mon, 24 Jul 2023 09:55:47 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlESyHT5vseo1Fe9EOmjjndUHiTWba8Rkai6N/Uo2tJlbGYCmmO/8/5WknEFctQ/nYDYCoWt/g==
+X-Received: by 2002:ac2:5dee:0:b0:4fb:99c6:8533 with SMTP id z14-20020ac25dee000000b004fb99c68533mr5480427lfq.33.1690217747520;
+        Mon, 24 Jul 2023 09:55:47 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id o25-20020a1c7519000000b003fbaade0735sm13965691wmc.19.2023.07.24.09.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 09:55:47 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>, corbet@lwn.net,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] docs/RCU: Bring back smp_wmb()
-Message-ID: <2c7ebfde-40e7-442c-9483-4a3ca3b72f2d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <9eaf506f-cc14-4da6-9efc-057c0c3e56b0@paulmck-laptop>
- <9D42CEB7-FE22-4BC6-9E5C-8131579C129D@gmail.com>
- <eabec10a-9283-42eb-85c7-e447e2368c91@paulmck-laptop>
- <6E813D30-2791-4DE8-A70C-E1F91011631D@gmail.com>
- <02a84e4b-a322-4c43-ad9d-1832ce277c2f@paulmck-laptop>
- <636D1ED4-C90D-47CA-A46A-28E40E777966@gmail.com>
- <9b1967c5-6b8d-4d66-879c-42818d6e3170@paulmck-laptop>
- <30E3504D-4E64-4C61-9503-690C1657C6F3@gmail.com>
- <8d54c0a5-11ab-48e2-b187-25b229406b2a@paulmck-laptop>
- <99F1D0AB-5085-42CA-BFF0-6D5AC488F960@gmail.com>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
+ infrastructure
+In-Reply-To: <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-16-vschneid@redhat.com>
+ <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
+Date:   Mon, 24 Jul 2023 17:55:44 +0100
+Message-ID: <xhsmh351dtfjj.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <99F1D0AB-5085-42CA-BFF0-6D5AC488F960@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 09:02:46AM +0800, Alan Huang wrote:
-> 
-> > 2023年7月22日 上午6:49，Paul E. McKenney <paulmck@kernel.org> 写道：
-> > 
-> > On Wed, Jul 19, 2023 at 12:08:33AM +0800, Alan Huang wrote:
-> >> 
-> >>> 2023年7月18日 03:06，Paul E. McKenney <paulmck@kernel.org> 写道：
-> >>> 
-> >>> On Tue, Jul 18, 2023 at 01:53:10AM +0800, Alan Huang wrote:
-> >>>>> 2023年7月18日 00:02，Paul E. McKenney <paulmck@kernel.org> 写道：
-> >>>>> On Sun, Jul 16, 2023 at 07:21:28PM +0800, Alan Huang wrote:
-> >>>>>>> 2023年7月16日 01:19，Paul E. McKenney <paulmck@kernel.org> 写道：
-> >>>>>>> On Sat, Jul 15, 2023 at 08:50:23AM +0800, Alan Huang wrote:
-> >>>>>>>>> 2023年7月15日 07:23，Paul E. McKenney <paulmck@kernel.org> 写道：
-> >>>>>>>>> On Tue, Jul 11, 2023 at 03:09:06PM +0000, Alan Huang wrote:
-> >>>>>>>>>> The objects are allocated with SLAB_TYPESAFE_BY_RCU, and there is
-> >>>>>>>>>> n->next = first within hlist_add_head_rcu() before rcu_assign_pointer(),
-> >>>>>>>>>> which modifies obj->obj_node.next. There may be readers holding the
-> >>>>>>>>>> reference of obj in lockless_lookup, and when updater modifies ->next,
-> >>>>>>>>>> readers can see the change immediately because ofSLAB_TYPESAFE_BY_RCU.
-> >>>>>>>>>> 
-> >>>>>>>>>> There are two memory ordering required in the insertion algorithm,
-> >>>>>>>>>> we need to make sure obj->key is updated before obj->obj_node.next
-> >>>>>>>>>> and obj->refcnt, atomic_set_release is not enough to provide the
-> >>>>>>>>>> required memory barrier.
-> >>>>>>>>>> 
-> >>>>>>>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-> >>>>>>>>> 
-> >>>>>>>>> This is an interesting one!!!
-> >>>>>>>>> 
-> >>>>>>>>> Now I am having a hard time believing that the smp_rmb() suffices.
-> >>>>>>>>> 
-> >>>>>>>>>> ---
-> >>>>>>>>>> Changelog:
-> >>>>>>>>>> v1 -> v2: Use _ONCE to protect obj->key.
-> >>>>>>>>>> 
-> >>>>>>>>>> Documentation/RCU/rculist_nulls.rst | 21 +++++++++++++--------
-> >>>>>>>>>> 1 file changed, 13 insertions(+), 8 deletions(-)
-> >>>>>>>>>> 
-> >>>>>>>>>> diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
-> >>>>>>>>>> index 21e40fcc08de..2a9f5a63d334 100644
-> >>>>>>>>>> --- a/Documentation/RCU/rculist_nulls.rst
-> >>>>>>>>>> +++ b/Documentation/RCU/rculist_nulls.rst
-> >>>>>>>>>> @@ -47,7 +47,7 @@ objects, which is having below type.
-> >>>>>>>>>> * reuse these object before the RCU grace period, we
-> >>>>>>>>>> * must check key after getting the reference on object
-> >>>>>>>>>> */
-> >>>>>>>>>> -    if (obj->key != key) { // not the object we expected
-> >>>>>>>>>> +    if (READ_ONCE(obj->key) != key) { // not the object we expected
-> >>>>>>>>>>   put_ref(obj);
-> >>>>>>>>>>   rcu_read_unlock();
-> >>>>>>>>>>   goto begin;
-> >>>>>>>>>> @@ -64,10 +64,10 @@ but a version with an additional memory barrier (smp_rmb())
-> >>>>>>>>>> {
-> >>>>>>>>>> struct hlist_node *node, *next;
-> >>>>>>>>>> for (pos = rcu_dereference((head)->first);
-> >>>>>>>>>> -         pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
-> >>>>>>>>>> +         pos && ({ next = READ_ONCE(pos->next); smp_rmb(); prefetch(next); 1; }) &&
-> >>>>>>>>> 
-> >>>>>>>>> Suppose that lockless_lookup() is delayed just before fetching pos->next,
-> >>>>>>>>> and that there were 17 more node to search in the list.
-> >>>>>>>>> 
-> >>>>>>>>> Then consider the following sequence of events:
-> >>>>>>>>> 
-> >>>>>>>>> o The updater deletes this same node and kmem_cache_free()s it.
-> >>>>>>>>> 
-> >>>>>>>>> o Another updater kmem_cache_alloc()s that same memory and
-> >>>>>>>>> inserts it into an empty hash chain with a different key.
-> >>>>>>>>> 
-> >>>>>>>>> o Then lockless_lookup() fetches pos->next and sees a NULL pointer,
-> >>>>>>>>> thus failing to search the remaining 17 nodes in the list,
-> >>>>>>>>> one of which had the desired key value.
-> >>>>>>>>> 
-> >>>>>>>>> o The lookup algorithm resumes and sees the NULL return from
-> >>>>>>>>> lockless_lookup(), and ends up with a NULL obj.
-> >>>>>>>>> 
-> >>>>>>>>> And this happens even with the strongest possible ordering
-> >>>>>>>>> everywhere.
-> >>>>>>>>> 
-> >>>>>>>>> OK, yes, it is late on Friday.  So what am I missing here?
-> >>>>>>>> 
-> >>>>>>>> You missed nothing!
-> >>>>>>>> 
-> >>>>>>>> The lockless_lockup should not be a function, but a macro like hlist_for_each_entry_rcu.
-> >>>>>>> 
-> >>>>>>> How would you fix this using a macro?
-> >>>>>> 
-> >>>>>> With additional detection code. A moved object (in another chain) will have a different slot.
-> >>>>>> (I have sent patch v3. )
-> >>>>>> 
-> >>>>>>> 
-> >>>>>>>>> Independent of that, does hlist_add_head_rcu() need to replace its
-> >>>>>>>>> "n->next = first" with "WRITE_ONCE(n->next, first)"?
-> >>>>>>>> 
-> >>>>>>>> I think users who want to use hlist with SLAB_TYPESAFE_BY_RCU should use rculist_nulls?
-> >>>>>>> 
-> >>>>>>> I believe that you are correct.  Would you like to propose a patch, or
-> >>>>>>> would you rather I put something together?  My current thought is to
-> >>>>>> 
-> >>>>>> Feel free to add. 
-> >>>>>> 
-> >>>>>> One thing I think would be useful is to tell readers where the ‘next' is. 
-> >>>>>> The document mentions ’next’ many times, but it’s hard for me, as a reader, to realize that
-> >>>>>> the ‘next' is within hlist_add_head_rcu(). (I have no idea where to put the hint.)
-> >>>>>> 
-> >>>>>> 
-> >>>>>>> keep the examples, but to show why the one with smp_rmb() is broken.
-> >>>>>> 
-> >>>>>> I think the example needs to be fixed. :)
-> >>>>> 
-> >>>>> Even better!  I will take a look, but in the meantime, would you be
-> >>>>> interested in updating the wording to explain how the back-pointer works?
-> >>>> 
-> >>>> Which document needs to be updated? 
-> >>>> And is there anything that I can refer to? It’s the first time I have ever heard about it.
-> >>> 
-> >>> Documentation/RCU/rculist_nulls.rst, the one that you are updating.
-> >>> 
-> >>> There admittedly isn't a whole lot of commentary.
-> >>> 
-> >>>>> (Looks similar to the is_a_nulls() pointer, but in each element instead of
-> >>>>> just at the end.  One advantage is the ability to detect a move mid-list,
-> >>>>> though that is not a big deal in well-tuned hash tables, which tend to
-> >>>>> have short hash chains.  The need to move elements to the front of the
-> >>>>> destination list remains, though in both cases only if it has been less
-> >>>>> than a grace period since the last move.)
-> >>>> 
-> >>>> Looks like that I need to learn it first. :)
-> >>> 
-> >>> Well, you wrote the code, so...  ;-)
-> >> 
-> >> If I understand correctly, it works only for 64-bit machines?
-> >> 
-> >> And the number of slots of the hash table will be limited?
-> > 
-> > You are asking about the is_a_nulls() value?  If so, it works on both
-> > 32-bit and 64-bit machines.  They each have enough bits for the nulls
-> > value to cover all possible two-byte objects in the full address space.
-> > 
-> > If that wasn't what you were asking, please help me with your question.
-> 
-> I’m asking the ‘back-pointer’, which
-> 
-> 	"Looks similar to the is_a_nulls() pointer, but in each element instead of
-> 	 just at the end”
-> 
-> If I understand correctly, we need to store the nulls in the upper unused bits.
-> 
-> And we only have several bits unused. One advantage I can think of is that it 
-> will improve the performance once we have something like the Intel Upper Address Ignore (UAI),
-> which also works only for 64-bit machine.
+On 24/07/23 16:52, Frederic Weisbecker wrote:
+> Le Thu, Jul 20, 2023 at 05:30:51PM +0100, Valentin Schneider a =C3=A9crit=
+ :
+>> +enum ctx_state {
+>> +	/* Following are values */
+>> +	CONTEXT_DISABLED	=3D -1,	/* returned by ct_state() if unknown */
+>> +	CONTEXT_KERNEL		=3D 0,
+>> +	CONTEXT_IDLE		=3D 1,
+>> +	CONTEXT_USER		=3D 2,
+>> +	CONTEXT_GUEST		=3D 3,
+>> +	CONTEXT_MAX             =3D 4,
+>> +};
+>> +
+>> +/*
+>> + * We cram three different things within the same atomic variable:
+>> + *
+>> + *                CONTEXT_STATE_END                        RCU_DYNTICKS=
+_END
+>> + *                         |       CONTEXT_WORK_END                |
+>> + *                         |               |                       |
+>> + *                         v               v                       v
+>> + *         [ context_state ][ context work ][ RCU dynticks counter ]
+>> + *         ^                ^               ^
+>> + *         |                |               |
+>> + *         |        CONTEXT_WORK_START      |
+>> + * CONTEXT_STATE_START              RCU_DYNTICKS_START
+>
+> Should the layout be displayed in reverse? Well at least I always picture
+> bitmaps in reverse, that's probably due to the direction of the shift arr=
+ows.
+> Not sure what is the usual way to picture it though...
+>
 
-Ah, I was using the word "similar" very loosely.  Not "implemented in
-a manner similar to is_a_nulls(), but rather "serves roughly the same
-function as is_a_nulls()".
+Surprisingly, I managed to confuse myself with that comment :-)  I think I
+am subconsciously more used to the reverse as well. I've flipped that and
+put "MSB" / "LSB" at either end.
 
-You should be able to just have the pointer to the bucket in each
-element, and just compare for each element.  No need for extra bits,
-though UAI, like its pre-existing ARM counterpart, might also help catch
-use-after-free bugs when resizing the hash table.
+>> + */
+>> +
+>> +#define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * =
+BITS_PER_BYTE)
+>> +
+>> +#define CONTEXT_STATE_START 0
+>> +#define CONTEXT_STATE_END   (bits_per(CONTEXT_MAX - 1) - 1)
+>
+> Since you have non overlapping *_START symbols, perhaps the *_END
+> are superfluous?
+>
 
-							Thanx, Paul
+They're only really there to tidy up the GENMASK() further down - it keeps
+the range and index definitions in one hunk. I tried defining that directly
+within the GENMASK() themselves but it got too ugly IMO.
 
-> >>>>>>>> I didn’t find a case using hlist with SLAB_TYPESAFE_BY_RCU, but I did find a case using list
-> >>>>>>>> with SLAB_TYPESAFE_BY_RCU in drivers/gpu/drm/i915, the driver also doesn’t use _ONCE
-> >>>>>>>> on the fields of the objects allocated with SLAB_TYPESAFE_BY_RCU.
-> >>>>>>> 
-> >>>>>>> Feel free to send them a patch, though I cannot speak for their
-> >>>>>>> reception of it.
-> >>>>>>> 
-> >>>>>>> Thanx, Paul
-> >>>>>>> 
-> >>>>>>>>> Thanx, Paul
-> >>>>>>>>> 
-> >>>>>>>>>>      ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
-> >>>>>>>>>>      pos = rcu_dereference(next))
-> >>>>>>>>>> -      if (obj->key == key)
-> >>>>>>>>>> +      if (READ_ONCE(obj->key) == key)
-> >>>>>>>>>>     return obj;
-> >>>>>>>>>> return NULL;
-> >>>>>>>>>> }
-> >>>>>>>>>> @@ -111,8 +111,13 @@ detect the fact that it missed following items in original chain.
-> >>>>>>>>>> */
-> >>>>>>>>>> obj = kmem_cache_alloc(...);
-> >>>>>>>>>> lock_chain(); // typically a spin_lock()
-> >>>>>>>>>> -  obj->key = key;
-> >>>>>>>>>> -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
-> >>>>>>>>>> +  WRITE_ONCE(obj->key, key);
-> >>>>>>>>>> +  /*
-> >>>>>>>>>> +   * We need to make sure obj->key is updated before obj->obj_node.next
-> >>>>>>>>>> +   * and obj->refcnt.
-> >>>>>>>>>> +   */
-> >>>>>>>>>> +  smp_wmb();
-> >>>>>>>>>> +  atomic_set(&obj->refcnt, 1);
-> >>>>>>>>>> hlist_add_head_rcu(&obj->obj_node, list);
-> >>>>>>>>>> unlock_chain(); // typically a spin_unlock()
-> >>>>>>>>>> 
-> >>>>>>>>>> @@ -165,12 +170,12 @@ Note that using hlist_nulls means the type of 'obj_node' field of
-> >>>>>>>>>> begin:
-> >>>>>>>>>> rcu_read_lock();
-> >>>>>>>>>> hlist_nulls_for_each_entry_rcu(obj, node, head, obj_node) {
-> >>>>>>>>>> -    if (obj->key == key) {
-> >>>>>>>>>> +    if (READ_ONCE(obj->key) == key) {
-> >>>>>>>>>>   if (!try_get_ref(obj)) { // might fail for free objects
-> >>>>>>>>>> rcu_read_unlock();
-> >>>>>>>>>>     goto begin;
-> >>>>>>>>>>   }
-> >>>>>>>>>> -      if (obj->key != key) { // not the object we expected
-> >>>>>>>>>> +      if (READ_ONCE(obj->key) != key) { // not the object we expected
-> >>>>>>>>>>     put_ref(obj);
-> >>>>>>>>>> rcu_read_unlock();
-> >>>>>>>>>>     goto begin;
-> >>>>>>>>>> @@ -206,7 +211,7 @@ hlist_add_head_rcu().
-> >>>>>>>>>> */
-> >>>>>>>>>> obj = kmem_cache_alloc(cachep);
-> >>>>>>>>>> lock_chain(); // typically a spin_lock()
-> >>>>>>>>>> -  obj->key = key;
-> >>>>>>>>>> +  WRITE_ONCE(obj->key, key);
-> >>>>>>>>>> atomic_set_release(&obj->refcnt, 1); // key before refcnt
-> >>>>>>>>>> /*
-> >>>>>>>>>> * insert obj in RCU way (readers might be traversing chain)
-> >>>>>>>>>> -- 
-> >>>>>>>>>> 2.34.1
-> 
+>> +
+>> +#define RCU_DYNTICKS_BITS  (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? =
+16 : 31)
+>> +#define RCU_DYNTICKS_START (CT_STATE_SIZE - RCU_DYNTICKS_BITS)
+>> +#define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
+>> +#define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
+>
+> Might be the right time to standardize and fix our naming:
+>
+> CT_STATE_START,
+> CT_STATE_KERNEL,
+> CT_STATE_USER,
+> ...
+> CT_WORK_START,
+> CT_WORK_*,
+> ...
+> CT_RCU_DYNTICKS_START,
+> CT_RCU_DYNTICKS_IDX
+>
+
+Heh, I have actually already done this for v3, though I hadn't touched the
+RCU_DYNTICKS* family. I'll fold that in.
+
+>> +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+>> +{
+>> +	struct context_tracking *ct =3D per_cpu_ptr(&context_tracking, cpu);
+>> +	unsigned int old;
+>> +	bool ret =3D false;
+>> +
+>> +	preempt_disable();
+>> +
+>> +	old =3D atomic_read(&ct->state);
+>> +	/*
+>> +	 * Try setting the work until either
+>> +	 * - the target CPU no longer accepts any more deferred work
+>> +	 * - the work has been set
+>> +	 *
+>> +	 * NOTE: CONTEXT_GUEST intersects with CONTEXT_USER and CONTEXT_IDLE
+>> +	 * as they are regular integers rather than bits, but that doesn't
+>> +	 * matter here: if any of the context state bit is set, the CPU isn't
+>> +	 * in kernel context.
+>> +	 */
+>> +	while ((old & (CONTEXT_GUEST | CONTEXT_USER | CONTEXT_IDLE)) && !ret)
+>
+> That may still miss a recent entry to userspace due to the first plain re=
+ad, ending
+> with an undesired interrupt.
+>
+> You need at least one cmpxchg. Well, of course that stays racy by nature =
+because
+> between the cmpxchg() returning CONTEXT_KERNEL and the actual IPI raised =
+and
+> received, the remote CPU may have gone to userspace already. But still it=
+ limits
+> a little the window.
+>
+
+I can make that a 'do {} while ()' instead to force at least one execution
+of the cmpxchg().
+
+This is only about reducing the race window, right? If we're executing this
+just as the target CPU is about to enter userspace, we're going to be in
+racy territory anyway. Regardless, I'm happy to do that change.
+
