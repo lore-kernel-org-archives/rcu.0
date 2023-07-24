@@ -2,145 +2,290 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C1A2C001B0
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 16:00:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18B37C001B0
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 16:09:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjGXQAo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jul 2023 12:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
+        id S230236AbjGXQJV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 12:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjGXQAn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:00:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364F5E76;
-        Mon, 24 Jul 2023 09:00:42 -0700 (PDT)
+        with ESMTP id S229502AbjGXQJU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 12:09:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB0710CB;
+        Mon, 24 Jul 2023 09:09:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D19061234;
-        Mon, 24 Jul 2023 16:00:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC40AC433C8;
-        Mon, 24 Jul 2023 16:00:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3781E611BC;
+        Mon, 24 Jul 2023 16:09:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DD9BC433C8;
+        Mon, 24 Jul 2023 16:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690214440;
-        bh=HiWKiSQHyMaDEa0UiXE1Jt4gJBcBxoHYQfLcTXtdLDQ=;
+        s=k20201202; t=1690214957;
+        bh=SS517FDrub13I1X/zAvXvM2CjJSw9NwOoXHKpcCe298=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JsgYAt5GJCqyn3QYlUMN4EXGVsqVeZ/6C2hqUKN5bwIJ89GPa3ZpLKd/CJxVCxk3G
-         RW63NxZSjsP1SotXymG3DgXJPnK3OoGlO3+451CjPs0BWhbm/TjbsmCtZZV28zN2HR
-         DvqSZLQDDC6Ab5kxW69aS6BidQ4NRRoTB5/Vb2JipHYwYA/tZ4R0S9JOG2VRDxOtZD
-         yH/OX7MtDrBX+Q9l8ykUQq/s3geiWJafOaho7zT8/cumXa8IiNVarDork0te5btsX/
-         VE8AMUkSdmE0SRCAPlOVR//hO38orIK9rNu/ZwSvicxH7sCDT7y614CY+O91Dt8e/q
-         kcCMpTlo/V3Cw==
+        b=XTxlUg7jrkfPl8f7q1XVCG2a24RmuJzom4/9IrXWXsEHla7nbU7o+0u2Rx/u9GJ7C
+         IQFSq0GAwR8QehJhMc1wLx+adEnecbIg+s+4cAPS6EjRv7CfrjRaxXWgvRpMOo1sQR
+         qBOrFEayv8nHrp+StKgpJK8bzNTIuaJ1SIwqzKYrjvt9qPbSyTFGirwvIjAWvnAB5e
+         2Tsn3Ibfno3GhX4wrr/Jz9rgWXXUeRbfOGM9J/Rrf7gvRdj/H7c8iW02C7v0sc1lGl
+         zjOjJRsp4xucUgf+3y39dCsKypi1Amg+0SNbaov5af6vIUmlg7VaRR/zL5GbLD7QU8
+         9vW4P8utVZZ4w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6D342CE0C4B; Mon, 24 Jul 2023 09:00:40 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 09:00:40 -0700
+        id 22C0ACE0C4B; Mon, 24 Jul 2023 09:09:17 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 09:09:17 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [BUG] Re: Linux 6.4.4
-Message-ID: <4b231ce5-7bb8-4abf-9c40-04aa676d1e45@paulmck-laptop>
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>, corbet@lwn.net,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] docs/RCU: Bring back smp_wmb()
+Message-ID: <2c7ebfde-40e7-442c-9483-4a3ca3b72f2d@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
- <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
- <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
- <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
- <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
- <a7bcbcf2-9b34-4326-822f-e1f2aa5c5668@joelfernandes.org>
- <ebde8612-95de-4eaf-aa56-34e9b3a3fa86@paulmck-laptop>
- <20230724003257.GA60074@google.com>
- <381862e5-153c-4641-a60e-8175acae971d@paulmck-laptop>
- <CAEXW_YQsP_j9ZBAYKGk0mBfa3x-RikMoWE01Z6q1GXkLug2xoQ@mail.gmail.com>
+References: <9eaf506f-cc14-4da6-9efc-057c0c3e56b0@paulmck-laptop>
+ <9D42CEB7-FE22-4BC6-9E5C-8131579C129D@gmail.com>
+ <eabec10a-9283-42eb-85c7-e447e2368c91@paulmck-laptop>
+ <6E813D30-2791-4DE8-A70C-E1F91011631D@gmail.com>
+ <02a84e4b-a322-4c43-ad9d-1832ce277c2f@paulmck-laptop>
+ <636D1ED4-C90D-47CA-A46A-28E40E777966@gmail.com>
+ <9b1967c5-6b8d-4d66-879c-42818d6e3170@paulmck-laptop>
+ <30E3504D-4E64-4C61-9503-690C1657C6F3@gmail.com>
+ <8d54c0a5-11ab-48e2-b187-25b229406b2a@paulmck-laptop>
+ <99F1D0AB-5085-42CA-BFF0-6D5AC488F960@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQsP_j9ZBAYKGk0mBfa3x-RikMoWE01Z6q1GXkLug2xoQ@mail.gmail.com>
+In-Reply-To: <99F1D0AB-5085-42CA-BFF0-6D5AC488F960@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 09:36:02AM -0400, Joel Fernandes wrote:
-> On Sun, Jul 23, 2023 at 11:35 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Jul 24, 2023 at 12:32:57AM +0000, Joel Fernandes wrote:
-> > > On Sun, Jul 23, 2023 at 10:19:27AM -0700, Paul E. McKenney wrote:
-> > > > On Sun, Jul 23, 2023 at 10:50:26AM -0400, Joel Fernandes wrote:
-> > > > >
-> > > > >
-> > > > > On 7/22/23 13:27, Paul E. McKenney wrote:
-> > > > > [..]
-> > > > > >
-> > > > > > OK, if this kernel is non-preemptible, you are not running TREE03,
-> > > > > > correct?
-> > > > > >
-> > > > > >> Next plan of action is to get sched_waking stack traces since I have a
-> > > > > >> very reliable repro of this now.
-> > > > > >
-> > > > > > Too much fun!  ;-)
-> > > > >
-> > > > > For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
-> > > > > in stutter_wait() that is beating up the CPU0 for 4 seconds.
-> > > > >
-> > > > > This is very similar to the issue I fixed in New year in d52d3a2bf408
-> > > > > ("torture: Fix hang during kthread shutdown phase")
-> > > >
-> > > > Agreed, if there are enough kthreads, and all the kthreads are on a
-> > > > single CPU, this could consume that CPU.
-> > > >
-> > > > > Adding a cond_resched() there also did not help.
-> > > > >
-> > > > > I think the issue is the stutter thread fails to move spt forward
-> > > > > because it does not get CPU time. But spt == 1 should be very brief
-> > > > > AFAIU. I was wondering if we could set that to RT.
-> > > >
-> > > > Or just use a single hrtimer-based wait for each kthread?
-> > >
-> > > [Joel]
-> > > Yes this might be better, but there's still the issue that spt may not be set
-> > > back to 0 in some future release where the thread gets starved.
-> >
-> > But if each thread knows the absolute time at which the current stutter
-> > period is supposed to end, there should not be any need for the spt
-> > variable, correct?
+On Sat, Jul 22, 2023 at 09:02:46AM +0800, Alan Huang wrote:
 > 
-> Yes.
+> > 2023年7月22日 上午6:49，Paul E. McKenney <paulmck@kernel.org> 写道：
+> > 
+> > On Wed, Jul 19, 2023 at 12:08:33AM +0800, Alan Huang wrote:
+> >> 
+> >>> 2023年7月18日 03:06，Paul E. McKenney <paulmck@kernel.org> 写道：
+> >>> 
+> >>> On Tue, Jul 18, 2023 at 01:53:10AM +0800, Alan Huang wrote:
+> >>>>> 2023年7月18日 00:02，Paul E. McKenney <paulmck@kernel.org> 写道：
+> >>>>> On Sun, Jul 16, 2023 at 07:21:28PM +0800, Alan Huang wrote:
+> >>>>>>> 2023年7月16日 01:19，Paul E. McKenney <paulmck@kernel.org> 写道：
+> >>>>>>> On Sat, Jul 15, 2023 at 08:50:23AM +0800, Alan Huang wrote:
+> >>>>>>>>> 2023年7月15日 07:23，Paul E. McKenney <paulmck@kernel.org> 写道：
+> >>>>>>>>> On Tue, Jul 11, 2023 at 03:09:06PM +0000, Alan Huang wrote:
+> >>>>>>>>>> The objects are allocated with SLAB_TYPESAFE_BY_RCU, and there is
+> >>>>>>>>>> n->next = first within hlist_add_head_rcu() before rcu_assign_pointer(),
+> >>>>>>>>>> which modifies obj->obj_node.next. There may be readers holding the
+> >>>>>>>>>> reference of obj in lockless_lookup, and when updater modifies ->next,
+> >>>>>>>>>> readers can see the change immediately because ofSLAB_TYPESAFE_BY_RCU.
+> >>>>>>>>>> 
+> >>>>>>>>>> There are two memory ordering required in the insertion algorithm,
+> >>>>>>>>>> we need to make sure obj->key is updated before obj->obj_node.next
+> >>>>>>>>>> and obj->refcnt, atomic_set_release is not enough to provide the
+> >>>>>>>>>> required memory barrier.
+> >>>>>>>>>> 
+> >>>>>>>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> >>>>>>>>> 
+> >>>>>>>>> This is an interesting one!!!
+> >>>>>>>>> 
+> >>>>>>>>> Now I am having a hard time believing that the smp_rmb() suffices.
+> >>>>>>>>> 
+> >>>>>>>>>> ---
+> >>>>>>>>>> Changelog:
+> >>>>>>>>>> v1 -> v2: Use _ONCE to protect obj->key.
+> >>>>>>>>>> 
+> >>>>>>>>>> Documentation/RCU/rculist_nulls.rst | 21 +++++++++++++--------
+> >>>>>>>>>> 1 file changed, 13 insertions(+), 8 deletions(-)
+> >>>>>>>>>> 
+> >>>>>>>>>> diff --git a/Documentation/RCU/rculist_nulls.rst b/Documentation/RCU/rculist_nulls.rst
+> >>>>>>>>>> index 21e40fcc08de..2a9f5a63d334 100644
+> >>>>>>>>>> --- a/Documentation/RCU/rculist_nulls.rst
+> >>>>>>>>>> +++ b/Documentation/RCU/rculist_nulls.rst
+> >>>>>>>>>> @@ -47,7 +47,7 @@ objects, which is having below type.
+> >>>>>>>>>> * reuse these object before the RCU grace period, we
+> >>>>>>>>>> * must check key after getting the reference on object
+> >>>>>>>>>> */
+> >>>>>>>>>> -    if (obj->key != key) { // not the object we expected
+> >>>>>>>>>> +    if (READ_ONCE(obj->key) != key) { // not the object we expected
+> >>>>>>>>>>   put_ref(obj);
+> >>>>>>>>>>   rcu_read_unlock();
+> >>>>>>>>>>   goto begin;
+> >>>>>>>>>> @@ -64,10 +64,10 @@ but a version with an additional memory barrier (smp_rmb())
+> >>>>>>>>>> {
+> >>>>>>>>>> struct hlist_node *node, *next;
+> >>>>>>>>>> for (pos = rcu_dereference((head)->first);
+> >>>>>>>>>> -         pos && ({ next = pos->next; smp_rmb(); prefetch(next); 1; }) &&
+> >>>>>>>>>> +         pos && ({ next = READ_ONCE(pos->next); smp_rmb(); prefetch(next); 1; }) &&
+> >>>>>>>>> 
+> >>>>>>>>> Suppose that lockless_lookup() is delayed just before fetching pos->next,
+> >>>>>>>>> and that there were 17 more node to search in the list.
+> >>>>>>>>> 
+> >>>>>>>>> Then consider the following sequence of events:
+> >>>>>>>>> 
+> >>>>>>>>> o The updater deletes this same node and kmem_cache_free()s it.
+> >>>>>>>>> 
+> >>>>>>>>> o Another updater kmem_cache_alloc()s that same memory and
+> >>>>>>>>> inserts it into an empty hash chain with a different key.
+> >>>>>>>>> 
+> >>>>>>>>> o Then lockless_lookup() fetches pos->next and sees a NULL pointer,
+> >>>>>>>>> thus failing to search the remaining 17 nodes in the list,
+> >>>>>>>>> one of which had the desired key value.
+> >>>>>>>>> 
+> >>>>>>>>> o The lookup algorithm resumes and sees the NULL return from
+> >>>>>>>>> lockless_lookup(), and ends up with a NULL obj.
+> >>>>>>>>> 
+> >>>>>>>>> And this happens even with the strongest possible ordering
+> >>>>>>>>> everywhere.
+> >>>>>>>>> 
+> >>>>>>>>> OK, yes, it is late on Friday.  So what am I missing here?
+> >>>>>>>> 
+> >>>>>>>> You missed nothing!
+> >>>>>>>> 
+> >>>>>>>> The lockless_lockup should not be a function, but a macro like hlist_for_each_entry_rcu.
+> >>>>>>> 
+> >>>>>>> How would you fix this using a macro?
+> >>>>>> 
+> >>>>>> With additional detection code. A moved object (in another chain) will have a different slot.
+> >>>>>> (I have sent patch v3. )
+> >>>>>> 
+> >>>>>>> 
+> >>>>>>>>> Independent of that, does hlist_add_head_rcu() need to replace its
+> >>>>>>>>> "n->next = first" with "WRITE_ONCE(n->next, first)"?
+> >>>>>>>> 
+> >>>>>>>> I think users who want to use hlist with SLAB_TYPESAFE_BY_RCU should use rculist_nulls?
+> >>>>>>> 
+> >>>>>>> I believe that you are correct.  Would you like to propose a patch, or
+> >>>>>>> would you rather I put something together?  My current thought is to
+> >>>>>> 
+> >>>>>> Feel free to add. 
+> >>>>>> 
+> >>>>>> One thing I think would be useful is to tell readers where the ‘next' is. 
+> >>>>>> The document mentions ’next’ many times, but it’s hard for me, as a reader, to realize that
+> >>>>>> the ‘next' is within hlist_add_head_rcu(). (I have no idea where to put the hint.)
+> >>>>>> 
+> >>>>>> 
+> >>>>>>> keep the examples, but to show why the one with smp_rmb() is broken.
+> >>>>>> 
+> >>>>>> I think the example needs to be fixed. :)
+> >>>>> 
+> >>>>> Even better!  I will take a look, but in the meantime, would you be
+> >>>>> interested in updating the wording to explain how the back-pointer works?
+> >>>> 
+> >>>> Which document needs to be updated? 
+> >>>> And is there anything that I can refer to? It’s the first time I have ever heard about it.
+> >>> 
+> >>> Documentation/RCU/rculist_nulls.rst, the one that you are updating.
+> >>> 
+> >>> There admittedly isn't a whole lot of commentary.
+> >>> 
+> >>>>> (Looks similar to the is_a_nulls() pointer, but in each element instead of
+> >>>>> just at the end.  One advantage is the ability to detect a move mid-list,
+> >>>>> though that is not a big deal in well-tuned hash tables, which tend to
+> >>>>> have short hash chains.  The need to move elements to the front of the
+> >>>>> destination list remains, though in both cases only if it has been less
+> >>>>> than a grace period since the last move.)
+> >>>> 
+> >>>> Looks like that I need to learn it first. :)
+> >>> 
+> >>> Well, you wrote the code, so...  ;-)
+> >> 
+> >> If I understand correctly, it works only for 64-bit machines?
+> >> 
+> >> And the number of slots of the hash table will be limited?
+> > 
+> > You are asking about the is_a_nulls() value?  If so, it works on both
+> > 32-bit and 64-bit machines.  They each have enough bits for the nulls
+> > value to cover all possible two-byte objects in the full address space.
+> > 
+> > If that wasn't what you were asking, please help me with your question.
 > 
-> > > > > But also maybe the following will cure it like it did for the shutdown
-> > > > > issue, giving the stutter thread just enough CPU time to move spt forward.
-> > > > >
-> > > > > Now I am trying the following and will let it run while I go do other
-> > > > > family related things. ;)
-> > > >
-> > > > Good point, if this avoids the problem, that gives a strong indication
-> > > > that your hypothesis on the root cause is correct.
-> > >
-> > > [Joel]
-> > > And the TREE07 issue is gone with that change!
-> [...]
-> > > Let me know what you think, thanks!
-> >
-> > If we can make the stutter kthread set an absolute time for the current
-> > stutter period to end, then we should be able to simplify the code quite
-> > a bit and get rid of the CPU consumption entirely.  (Give or take the
-> > possible need for a given thread to check whether it was erroneously
-> > awakened early.)
-> >
-> > But what specifically did you have in mind?
+> I’m asking the ‘back-pointer’, which
 > 
-> I was thinking of a 2 counter approach storing the absolute time. Use
-> an alternative counter for different stuttering sessions. But yes,
-> generally I agree with the absolute time idea. What do you think Paul?
+> 	"Looks similar to the is_a_nulls() pointer, but in each element instead of
+> 	 just at the end”
 > 
-> Do we want to just do  the simpler schedule_timeout at HZ / 20 to keep stable
-> green, and do the absolute-time approach for mainline? That might be better
-> from a process PoV. But I think stable requires patches to be upstream. Greg?
+> If I understand correctly, we need to store the nulls in the upper unused bits.
 > 
-> I will try to send out patches this week to discuss this, thanks,
+> And we only have several bits unused. One advantage I can think of is that it 
+> will improve the performance once we have something like the Intel Upper Address Ignore (UAI),
+> which also works only for 64-bit machine.
 
-Heh!!!
+Ah, I was using the word "similar" very loosely.  Not "implemented in
+a manner similar to is_a_nulls(), but rather "serves roughly the same
+function as is_a_nulls()".
 
-Me, I was just thinking of mainline.  ;-)
+You should be able to just have the pointer to the bucket in each
+element, and just compare for each element.  No need for extra bits,
+though UAI, like its pre-existing ARM counterpart, might also help catch
+use-after-free bugs when resizing the hash table.
 
 							Thanx, Paul
+
+> >>>>>>>> I didn’t find a case using hlist with SLAB_TYPESAFE_BY_RCU, but I did find a case using list
+> >>>>>>>> with SLAB_TYPESAFE_BY_RCU in drivers/gpu/drm/i915, the driver also doesn’t use _ONCE
+> >>>>>>>> on the fields of the objects allocated with SLAB_TYPESAFE_BY_RCU.
+> >>>>>>> 
+> >>>>>>> Feel free to send them a patch, though I cannot speak for their
+> >>>>>>> reception of it.
+> >>>>>>> 
+> >>>>>>> Thanx, Paul
+> >>>>>>> 
+> >>>>>>>>> Thanx, Paul
+> >>>>>>>>> 
+> >>>>>>>>>>      ({ obj = hlist_entry(pos, typeof(*obj), obj_node); 1; });
+> >>>>>>>>>>      pos = rcu_dereference(next))
+> >>>>>>>>>> -      if (obj->key == key)
+> >>>>>>>>>> +      if (READ_ONCE(obj->key) == key)
+> >>>>>>>>>>     return obj;
+> >>>>>>>>>> return NULL;
+> >>>>>>>>>> }
+> >>>>>>>>>> @@ -111,8 +111,13 @@ detect the fact that it missed following items in original chain.
+> >>>>>>>>>> */
+> >>>>>>>>>> obj = kmem_cache_alloc(...);
+> >>>>>>>>>> lock_chain(); // typically a spin_lock()
+> >>>>>>>>>> -  obj->key = key;
+> >>>>>>>>>> -  atomic_set_release(&obj->refcnt, 1); // key before refcnt
+> >>>>>>>>>> +  WRITE_ONCE(obj->key, key);
+> >>>>>>>>>> +  /*
+> >>>>>>>>>> +   * We need to make sure obj->key is updated before obj->obj_node.next
+> >>>>>>>>>> +   * and obj->refcnt.
+> >>>>>>>>>> +   */
+> >>>>>>>>>> +  smp_wmb();
+> >>>>>>>>>> +  atomic_set(&obj->refcnt, 1);
+> >>>>>>>>>> hlist_add_head_rcu(&obj->obj_node, list);
+> >>>>>>>>>> unlock_chain(); // typically a spin_unlock()
+> >>>>>>>>>> 
+> >>>>>>>>>> @@ -165,12 +170,12 @@ Note that using hlist_nulls means the type of 'obj_node' field of
+> >>>>>>>>>> begin:
+> >>>>>>>>>> rcu_read_lock();
+> >>>>>>>>>> hlist_nulls_for_each_entry_rcu(obj, node, head, obj_node) {
+> >>>>>>>>>> -    if (obj->key == key) {
+> >>>>>>>>>> +    if (READ_ONCE(obj->key) == key) {
+> >>>>>>>>>>   if (!try_get_ref(obj)) { // might fail for free objects
+> >>>>>>>>>> rcu_read_unlock();
+> >>>>>>>>>>     goto begin;
+> >>>>>>>>>>   }
+> >>>>>>>>>> -      if (obj->key != key) { // not the object we expected
+> >>>>>>>>>> +      if (READ_ONCE(obj->key) != key) { // not the object we expected
+> >>>>>>>>>>     put_ref(obj);
+> >>>>>>>>>> rcu_read_unlock();
+> >>>>>>>>>>     goto begin;
+> >>>>>>>>>> @@ -206,7 +211,7 @@ hlist_add_head_rcu().
+> >>>>>>>>>> */
+> >>>>>>>>>> obj = kmem_cache_alloc(cachep);
+> >>>>>>>>>> lock_chain(); // typically a spin_lock()
+> >>>>>>>>>> -  obj->key = key;
+> >>>>>>>>>> +  WRITE_ONCE(obj->key, key);
+> >>>>>>>>>> atomic_set_release(&obj->refcnt, 1); // key before refcnt
+> >>>>>>>>>> /*
+> >>>>>>>>>> * insert obj in RCU way (readers might be traversing chain)
+> >>>>>>>>>> -- 
+> >>>>>>>>>> 2.34.1
+> 
