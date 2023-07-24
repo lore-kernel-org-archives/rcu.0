@@ -2,135 +2,213 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80EDDC0015E
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 03:35:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C162C0015E
+	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 05:28:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbjGXDf4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 23 Jul 2023 23:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
+        id S229578AbjGXF2v (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 01:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjGXDfy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:35:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76102E40;
-        Sun, 23 Jul 2023 20:35:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 06BE160F19;
-        Mon, 24 Jul 2023 03:35:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ACB6C433C9;
-        Mon, 24 Jul 2023 03:35:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690169752;
-        bh=r8OMqjgkYTM37vdEaKCReVtxqi+YxupAe66Ipr1F05E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nMIAYIMiGC+CJ+TLr6JMBh8wEN3pvdoBakp3jqbUu0MmLBd9ZtXCLHZafMX0tPJZR
-         uRtTSB5nrpAW8cwsL+PhREr7zCqxIHdT/RmYS3EP70PEqDEywioVs/HXatoE2sWP/P
-         h1xwc4wTKie2bmDfwTqRrGAzn6mXFTP9dqg67m+SqXk00Ece3e2tVwuB2pkaV7OYnW
-         1stdLtC64fwMJexMbVsU7/IsphIzn2GlHa5jTXFZPKv+wcJ22LZCyS9UrOXlpZm4Io
-         P6iFseU1kmO0ET1tBW2vUgJBb+DLx5hyV3nDsPImIiviDQ6HYCZn1bZ6NBkj/Cl1GR
-         csldwMNPqnNtA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D991ACE0ACC; Sun, 23 Jul 2023 20:35:51 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 20:35:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [BUG] Re: Linux 6.4.4
-Message-ID: <381862e5-153c-4641-a60e-8175acae971d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
- <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
- <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
- <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
- <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
- <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
- <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
- <a7bcbcf2-9b34-4326-822f-e1f2aa5c5668@joelfernandes.org>
- <ebde8612-95de-4eaf-aa56-34e9b3a3fa86@paulmck-laptop>
- <20230724003257.GA60074@google.com>
+        with ESMTP id S229499AbjGXF2u (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 01:28:50 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E259E46;
+        Sun, 23 Jul 2023 22:28:48 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-3ff24a193dbso28876141cf.3;
+        Sun, 23 Jul 2023 22:28:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690176527; x=1690781327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AIVichlo2tjhXjSPPSS2sZB3SIismoqhgH3V/jU2V8g=;
+        b=qtr6NmlZ4epRdBNhQSZGVZCfMQKUL85ZWxtrF+im/ZQSAYchlLenAKUGRQ8JMhYXea
+         R5rimxpdlNqU/RfLX54uaa41Qj6GzGY0dvhhIJHDuLvjYq4wrXYjQK1frzbK7QOpI59+
+         DIMQZdQFck/9iKfSO/PVbiStlVVhn4HSZ0rLtECtKn63mQrggSOzb+n7Y8Gv/F68tEZd
+         GiXLzaVJxsOBcqQnSSFCA2zGamjcrqLhCWgYVBRDs3XxEgQ2jTMZQf+g+ERO+LQGJhdg
+         dtMDsGsiP+5hDemOyfpZyi9QsJJQzd0N38OphCmFDpwAPq9WpHeK15ZLdsEzsnPhnObo
+         tsuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690176527; x=1690781327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AIVichlo2tjhXjSPPSS2sZB3SIismoqhgH3V/jU2V8g=;
+        b=f2g2X9cbgkmTQhACS7eXduQjsLH+bSUk76TQm/PWu2+9Kl/djG3B5KL7Gav6T/t4a6
+         9tElRQwPf3oHsFek/KBJ1NncrVX6L9nA/fh1CenEcsbqT06xDCsNgIkzXSPj2c+Eg95Q
+         3B34g7jkYEXE5mO9PTHvUesOiqLp2Iq6onRU+rgQ69woD3OY6W8hTYTZ5FY/tLQTVPMU
+         sAS5GVNnOAr8BmedGsc+OLkeiVoKq08yGhEioJ7l0mLnr3prcrFUg5C2va9/XlTuGdhs
+         gqg7BRhgtlmjlDekuiB2Crm87nfqE74dDfhGnm2FlQa6B0XUNV9oRA5g9kec0e2nij8c
+         8uPQ==
+X-Gm-Message-State: ABy/qLa6kgqbe2qWGcyTL8vp1oSGeK85eOgvSLCl54LrO0lhKUSu6rSB
+        Z/lO4Saum4thn8bmCQLL1CQqDGFglodS2f57f3o=
+X-Google-Smtp-Source: APBJJlGg4frVLm2pAtiWixV84NFS4IGavAz0GyJntVi0mc+Mnia1ZaEaITgLkH97wCtY+vMlcw7Pe6PnMvsLJtaary8=
+X-Received: by 2002:ac8:5c83:0:b0:403:a262:7751 with SMTP id
+ r3-20020ac85c83000000b00403a2627751mr9598232qta.12.1690176527050; Sun, 23 Jul
+ 2023 22:28:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724003257.GA60074@google.com>
+References: <20230721121534.44328-1-ppbuk5246@gmail.com> <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
+ <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
+ <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop> <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
+ <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop> <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
+ <CALm+0cWeZnMUk8Lj_nF3Htd14czGcT_Yt71nVwJdGhTECQOAWg@mail.gmail.com>
+In-Reply-To: <CALm+0cWeZnMUk8Lj_nF3Htd14czGcT_Yt71nVwJdGhTECQOAWg@mail.gmail.com>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Mon, 24 Jul 2023 06:28:35 +0100
+Message-ID: <CAM7-yPR2jG=4MkBF1+=f8KUNqmSopq3yTTfWN6YvLcmJjpq8Hw@mail.gmail.com>
+Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on rcu_report_qs_rdp
+To:     Z qiang <qiang.zhang1211@gmail.com>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 12:32:57AM +0000, Joel Fernandes wrote:
-> On Sun, Jul 23, 2023 at 10:19:27AM -0700, Paul E. McKenney wrote:
-> > On Sun, Jul 23, 2023 at 10:50:26AM -0400, Joel Fernandes wrote:
-> > > 
-> > > 
-> > > On 7/22/23 13:27, Paul E. McKenney wrote:
-> > > [..]
-> > > > 
-> > > > OK, if this kernel is non-preemptible, you are not running TREE03,
-> > > > correct?
-> > > > 
-> > > >> Next plan of action is to get sched_waking stack traces since I have a
-> > > >> very reliable repro of this now.
-> > > > 
-> > > > Too much fun!  ;-)
-> > > 
-> > > For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
-> > > in stutter_wait() that is beating up the CPU0 for 4 seconds.
-> > > 
-> > > This is very similar to the issue I fixed in New year in d52d3a2bf408
-> > > ("torture: Fix hang during kthread shutdown phase")
-> > 
-> > Agreed, if there are enough kthreads, and all the kthreads are on a
-> > single CPU, this could consume that CPU.
-> > 
-> > > Adding a cond_resched() there also did not help.
-> > > 
-> > > I think the issue is the stutter thread fails to move spt forward
-> > > because it does not get CPU time. But spt == 1 should be very brief
-> > > AFAIU. I was wondering if we could set that to RT.
-> > 
-> > Or just use a single hrtimer-based wait for each kthread?
-> 
-> [Joel]
-> Yes this might be better, but there's still the issue that spt may not be set
-> back to 0 in some future release where the thread gets starved.
+Hi Z qiang!
 
-But if each thread knows the absolute time at which the current stutter
-period is supposed to end, there should not be any need for the spt
-variable, correct?
+Thanks for replying. But I'm pinned on something wrong..!
 
-> > > But also maybe the following will cure it like it did for the shutdown
-> > > issue, giving the stutter thread just enough CPU time to move spt forward.
-> > > 
-> > > Now I am trying the following and will let it run while I go do other
-> > > family related things. ;)
-> > 
-> > Good point, if this avoids the problem, that gives a strong indication
-> > that your hypothesis on the root cause is correct.
-> 
-> [Joel]
-> And the TREE07 issue is gone with that change! So I think I'll roll into a
-> patch and send it to you. But I am also hoping that you are Ok with me
-> setting the stutter thread to RT in addition to the longer schedule_timeout.
-> That's just to make it more robust since I think it is crucial that it does
-> not stutter threads indefinitely due to the scheduler (for any unforeseen
-> reason in the future, such as scheduler issues). And maybe, as a part of
-> that I could also tackle that other TODO item about cleaning up
-> torture_create_kthead() as well to add support to it for setting things to
-> RT and use it for that.
+> For built with CONFIG_RCU_STRICT_GRACE_PERIOD=3Dy and CONFIG_PREEMPT=3Dn =
+kernels
+> Consider the following scenario:
+>
+> __rcu_read_unlock()
+>    -> rcu_read_unlock_strict()
+>         ->rdp =3D this_cpu_ptr(&rcu_data);
+>         ->rdp->cpu_no_qs.b.norm =3D false;
+>
+>                  by interrupt and return invoke rcu_core():
+>                  ->rcu_check_quiescent_state()
+>                       ->rdp =3D raw_cpu_ptr(&rcu_data);
+>                       -> rcu_check_quiescent_state(rdp);
+>                             ->note_gp_changes(rdp);
+>                                 -> __note_gp_changes(rnp, rdp)
+>                                 start new gp
+>                                 ->rdp->cpu_no_qs.b.norm =3D true;
+>
+>         ->rcu_report_qs_rdp(rdp);
+>            ->if (rdp->cpu_no_qs.b.norm || ...)
 
-Very good, thank you!
+I've already seen this scenario, But I think something is missing in my vie=
+w.
+What I couldn't catch is
 
-> Let me know what you think, thanks!
+                  ->rcu_check_quiescent_state()
+                       ->rdp =3D raw_cpu_ptr(&rcu_data);
+                       -> rcu_check_quiescent_state(rdp);
+                             ->note_gp_changes(rdp);
+                                 -> __note_gp_changes(rnp, rdp)
+                                 start new gp
 
-If we can make the stutter kthread set an absolute time for the current
-stutter period to end, then we should be able to simplify the code quite
-a bit and get rid of the CPU consumption entirely.  (Give or take the
-possible need for a given thread to check whether it was erroneously
-awakened early.)
+the new gp is started.
 
-But what specifically did you have in mind?
+to set cpu_no_qs.b.norm as true, below condition should be true
 
-							Thanx, Paul
+1201 >---if (rcu_seq_new_gp(rdp->gp_seq, rnp->gp_seq) ||
+  1202 >---    unlikely(READ_ONCE(rdp->gpwrap))) {
+
+Here,
+How rcu_seq_new_gp could return true and new gp already started via
+rcu_gp_kthread.
+IIUC, because rcu_gp_fqs_loop couldn't see the root rnp->qsmask is
+zero, it couldn't call rcu_gp_init.
+
+Sorry to make noise, but would you correct me what I'm thinking wrong?
+
+Many thanks..!
+
+-----------
+Sincerely,
+Levi.
+
+On Mon, Jul 24, 2023 at 4:21=E2=80=AFAM Z qiang <qiang.zhang1211@gmail.com>=
+ wrote:
+>
+> >
+> > Thanks for replying to reply Paul :)
+> >
+> > > And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=3Dy and CONFIG_PR=
+EEMPT=3Dn.
+> > > Though there might be better Kconfig options to use.  Those two come
+> > > immediately to mind.
+> >
+> > I've tested with this option via rcu torture.
+> > and it doesn't report any problems.
+> > and after commit 6d60ea03ac2d3 ("rcu: Report QS for outermost
+> > PREEMPT=3Dn rcu_read_unlock() for strict GPs")
+> > it always makes cpu_no_qs.b.norm false whenever it calls
+> > rcu_report_qs_rdp in rcu_read_unlock.
+> >
+> > > But one critical piece is that softirq handlers, including the RCU_SO=
+FTIRQ
+> > > handler rcu_core_si(), can be invoked upon return from interrupts.
+> >
+> > I think in that case, no problem because if it reports qs already,
+> > rcu_check_quiescent_state wouldn't call rcu_report_qs_rdp again.
+> > And if RCU_SOFTIRQ is called as soon as RCU interrupt is finished,
+> > it seems the fastest one to notify qs to related tree.
+> >
+> > > Another critical piece is that if a CPU is idle during any part of a
+> > > grace period, the grace-period kthread can report a quiescent state o=
+n
+> > > its behalf.
+> >
+> > I think
+> >     1) If timer interrupt is still programed,
+> >           - when rcu_sched_clock_irq first reports qs, no problem
+> >           - If qs is reported via grace period thread first,
+> > note_gp_chagned in rcu interrupt
+> >             will recognize this situation by setting core_needs_qs as f=
+alse,
+> >             it doesn't call rcu_report_qs_rdp thou cpu_no_qs.b.norm is =
+true.
+> >
+> >      2) If the timer interrupt isn't programmed,
+> >           - rcu_gp_kthreaad reports its qs, no problem.
+> >
+> > So, I think there's no problem removing
+> >       "rdp->cpu_no_qs.b.norm" check in rcu_report_qs_rdp.
+> > or wrap this condition check as WARN_ON_ONCE.
+> >
+> > > Does that help?
+> > Many thanks always :)
+> >
+>
+>
+> Hi Levi
+>
+> For built with CONFIG_RCU_STRICT_GRACE_PERIOD=3Dy and CONFIG_PREEMPT=3Dn =
+kernels
+> Consider the following scenario:
+>
+> __rcu_read_unlock()
+>    -> rcu_read_unlock_strict()
+>         ->rdp =3D this_cpu_ptr(&rcu_data);
+>         ->rdp->cpu_no_qs.b.norm =3D false;
+>
+>                  by interrupt and return invoke rcu_core():
+>                  ->rcu_check_quiescent_state()
+>                       ->rdp =3D raw_cpu_ptr(&rcu_data);
+>                       -> rcu_check_quiescent_state(rdp);
+>                             ->note_gp_changes(rdp);
+>                                 -> __note_gp_changes(rnp, rdp)
+>                                 start new gp
+>                                 ->rdp->cpu_no_qs.b.norm =3D true;
+>
+>         ->rcu_report_qs_rdp(rdp);
+>            ->if (rdp->cpu_no_qs.b.norm || ...)
+>
+>
+> Thanks
+> Zqiang
+>
+>
+> >
+> > --------
+> > SIncerely,
+> > Levi.
