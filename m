@@ -2,49 +2,70 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B531C04A6A
-	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 13:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DCB2C0015E
+	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 14:04:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbjGYNjp (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jul 2023 09:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
+        id S232159AbjGYOEK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jul 2023 10:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjGYNjn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jul 2023 09:39:43 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6D2BE;
-        Tue, 25 Jul 2023 06:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=AqhhXygkgYbNIUoMbam6nKKv+65xhkGjy3g6V0cI3YE=; b=hU0juKjhnKQNMPcWxGTglXF1kD
-        xBeNXFwO6bnr7cRSGSRHFONAWDnx+6524lg/8FLjxvB00LuNdyZOyZfcpfPUYsI9/m4/wxx3XADTa
-        IhO/K2oW4GRTfGIQ608wBXqm9GjRT1kOVe8WYSkXmy8R6Xy4Kmol7TQFesj4k3+2Ucyms3qwYaJY7
-        jLJUnGnJNEcVrXPXgDy1IK44aIJfxkS+/FqW0+yWhU8qeyJh4cu9RXzeK/Gb1Zl8copgtkKLHoxDF
-        JMGM13VNEgUa451vGA877Yf6lodJWN7+QQiNx8EG7C7Z5r9rUdrUihkgPelx/JvMdyFS4IfyITpst
-        ZPZuwbig==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOIGH-004AGP-0U;
-        Tue, 25 Jul 2023 13:39:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C0A9B300095;
-        Tue, 25 Jul 2023 15:39:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A54B92CCD6B85; Tue, 25 Jul 2023 15:39:36 +0200 (CEST)
-Date:   Tue, 25 Jul 2023 15:39:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        with ESMTP id S232147AbjGYOEJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Jul 2023 10:04:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66881FC9
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 07:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690293804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGwtpv4sQ6tMlJnBprHpZy+A2shb5owm6FTDMaQEmXQ=;
+        b=QBE94+KygCiaAoBdmIFkuhqEiEpfz5v8JIy4/Ac6AlHtOed1d80dobXqcVEAC/ZUOFQJ+T
+        mjgwkjcru8GfRTAnM64vWyhgvYSf5c79hrr8scu2ulDeSJLOhhNQ+ETiRDykhLbG0Cic4P
+        +6vhdY2kDHYrPmoGLefELu2blJIPUS4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-199-Rjvn4AVmP5GAXzu6bAFqNA-1; Tue, 25 Jul 2023 10:03:21 -0400
+X-MC-Unique: Rjvn4AVmP5GAXzu6bAFqNA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fb416d7731so27517145e9.2
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 07:03:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690293799; x=1690898599;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uGwtpv4sQ6tMlJnBprHpZy+A2shb5owm6FTDMaQEmXQ=;
+        b=E57PljnsjZHH95zZAX+vH+diuFx2vPEr//HnjeLyZORkqelwjAwXXkf6cof8x+MiMz
+         Ckv0T44rHKa3AdTAkKA98Guhp6Ni9IrNK2P5QFrV1PPtJwXtNrQpFK+DmMrr4R6NmGtH
+         iSVctNxhDbHHAmUfmRY8EQvBPW7ckusW4uyu7YBacOicmz9yId8DNtPESWfDkAr0OX4y
+         DDAs1cRW9ISQoP+A3bQeuZrf47+iL4zBsO81CzSsuHJ4WBWpwUHw0qJSggDrUaAjb2wt
+         NXYZNfnROyIZTeXXTlhCj0cqovfymogDiQb7gKwVarteSiFg6QMv40CpzQ+5EyrHLdB0
+         UTXA==
+X-Gm-Message-State: ABy/qLZEIL870qS+OOFba/D89Sdnp2F3uZez6CfQeiczzxu9h2CI0umi
+        hem+G8D8yr1tyKnOu/9zkA2/z67uxB1aPoaGLMsiPnObHHoBP6HK6Qhc35EeiS716GXCcT7Q0Zo
+        62HaPxQc5CgPM
+X-Received: by 2002:a05:600c:2981:b0:3fb:b890:128b with SMTP id r1-20020a05600c298100b003fbb890128bmr9613804wmd.27.1690293798848;
+        Tue, 25 Jul 2023 07:03:18 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGWt7E0uSkTs/ryo2PFkVv/T+3yWUu9tffF3NSN1ZjOzS6i3uoLFxbI/VM6mSJfkjz65gbRPQ==
+X-Received: by 2002:a05:600c:2981:b0:3fb:b890:128b with SMTP id r1-20020a05600c298100b003fbb890128bmr9613787wmd.27.1690293798543;
+        Tue, 25 Jul 2023 07:03:18 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id s15-20020a05600c044f00b003fbc89af035sm13424142wmb.17.2023.07.25.07.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 07:03:18 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Nadav Amit <namit@vmware.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -59,6 +80,7 @@ Cc:     Valentin Schneider <vschneid@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -77,7 +99,6 @@ Cc:     Valentin Schneider <vschneid@redhat.com>,
         Juerg Haefliger <juerg.haefliger@canonical.com>,
         Nicolas Saenz Julienne <nsaenz@kernel.org>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
         Dan Carpenter <error27@gmail.com>,
         Chuang Wang <nashuiliang@gmail.com>,
         Yang Jihong <yangjihong1@huawei.com>,
@@ -86,58 +107,78 @@ Cc:     Valentin Schneider <vschneid@redhat.com>,
         Julian Pidancet <julian.pidancet@oracle.com>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
         Juri Lelli <juri.lelli@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 18/20] context_tracking,x86: Defer kernel text
- patching IPIs
-Message-ID: <20230725133936.GM3765278@hirez.programming.kicks-ass.net>
-References: <20230720163056.2564824-19-vschneid@redhat.com>
- <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
+Subject: Re: [RFC PATCH v2 20/20] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+In-Reply-To: <20230725132155.GJ3765278@hirez.programming.kicks-ass.net>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-21-vschneid@redhat.com>
+ <188AEA79-10E6-4DFF-86F4-FE624FD1880F@vmware.com>
+ <xhsmh8rb5tui1.mognet@vschneid.remote.csb>
+ <2284d0db-f94a-e059-7bd0-bab4f112ed35@intel.com>
+ <20230725132155.GJ3765278@hirez.programming.kicks-ass.net>
+Date:   Tue, 25 Jul 2023 15:03:15 +0100
+Message-ID: <xhsmhr0owrsv0.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 06:49:45AM -0400, Joel Fernandes wrote:
-> Interesting series Valentin. Some high-level question/comments on this one:
-> 
-> > On Jul 20, 2023, at 12:34 PM, Valentin Schneider <vschneid@redhat.com> wrote:
-> > 
-> > ﻿text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
-> > them vs the newly patched instruction. CPUs that are executing in userspace
-> > do not need this synchronization to happen immediately, and this is
-> > actually harmful interference for NOHZ_FULL CPUs.
-> 
-> Does the amount of harm not correspond to practical frequency of text_poke? 
-> How often does instruction patching really happen? If it is very infrequent
-> then I am not sure if it is that harmful.
 
-Well, it can happen quite a bit, also from things people would not
-typically 'expect' it.
+Sorry, I missed out Dave's email, so now I'm taking my time to page (hah!)
+all of this.
 
-For instance, the moment you create the first per-task perf event we
-frob some jump-labels (and again some second after the last one goes
-away).
+On 25/07/23 15:21, Peter Zijlstra wrote:
+> On Mon, Jul 24, 2023 at 10:40:04AM -0700, Dave Hansen wrote:
+>
+>> TLB flushes for freed page tables are another game entirely.  The CPU is
+>> free to cache any part of the paging hierarchy it wants at any time.
+>> It's also free to set accessed and dirty bits at any time, even for
+>> instructions that may never execute architecturally.
+>>
+>> That basically means that if you have *ANY* freed page table page
+>> *ANYWHERE* in the page table hierarchy of any CPU at any time ... you're
+>> screwed.
+>>
+>> There's no reasoning about accesses or ordering.  As soon as the CPU
+>> does *anything*, it's out to get you.
+>>
 
-The same for a bunch of runtime network configurations.
+OK, I feel like I need to go back do some more reading now, but I think I
+get the difference. Thanks for spelling it out.
 
-> > As the synchronization IPIs are sent using a blocking call, returning from
-> > text_poke_bp_batch() implies all CPUs will observe the patched
-> > instruction(s), and this should be preserved even if the IPI is deferred.
-> > In other words, to safely defer this synchronization, any kernel
-> > instruction leading to the execution of the deferred instruction
-> > sync (ct_work_flush()) must *not* be mutable (patchable) at runtime.
-> 
-> If it is not infrequent, then are you handling the case where userland
-> spends multiple seconds before entering the kernel, and all this while
-> the blocking call waits? Perhaps in such situation you want the real IPI
-> to be sent out instead of the deferred one?
+>> You're going to need to do something a lot more radical to deal with
+>> free page table pages.
+>
+> Ha! IIRC the only thing we can reasonably do there is to have strict
+> per-cpu page-tables such that NOHZ_FULL CPUs can be isolated. That is,
+> as long we the per-cpu tables do not contain -- and have never contained
+> -- a particular table page, we can avoid flushing it. Because if it
+> never was there, it also couldn't have speculatively loaded it.
+>
+> Now, x86 doesn't really do per-cpu page tables easily (otherwise we'd
+> have done them ages ago) and doing them is going to be *major* surgery
+> and pain.
+>
+> Other than that, we must take the TLBI-IPI when freeing
+> page-table-pages.
+>
+>
+> But yeah, I think Nadav is right, vmalloc.c never frees page-tables (or
+> at least, I couldn't find it in a hurry either), but if we're going to
+> be doing this, then that file must include a very prominent comment
+> explaining it must never actually do so either.
+>
 
-Please re-read what Valentin wrote -- nobody is waiting on anything.
+I also couldn't find any freeing of the page-table-pages, I'll do another
+pass and sharpen my quill for a big fat comment.
+
+> Not being able to free page-tables might be a 'problem' if we're going
+> to be doing more of HUGE_VMALLOC, because that means it becomes rather
+> hard to swizzle from small to large pages.
+
