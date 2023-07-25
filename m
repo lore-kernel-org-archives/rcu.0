@@ -2,147 +2,105 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 238A8EB64DD
-	for <rcu@archiver.kernel.org>; Mon, 24 Jul 2023 23:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDF98EB64DD
+	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 02:00:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbjGXXRg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 24 Jul 2023 19:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
+        id S229755AbjGYCAq (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 24 Jul 2023 22:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjGXXRf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 24 Jul 2023 19:17:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED5F10FA;
-        Mon, 24 Jul 2023 16:17:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3031A6140B;
-        Mon, 24 Jul 2023 23:17:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 642A4C433C8;
-        Mon, 24 Jul 2023 23:17:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690240653;
-        bh=AuhJ0meEb0ilI4LS4R/kOuDmIjC7JpqrRYCWmQXklVA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=E2W19COfmxbvxeM3Hp2ckOuFMY2UKGhnudGU94+jagQkXjgW53nEip/GGjdP/lipL
-         0I1u+JIAPeQL+IIND38oGfFPhbyTQhE01m+7NA0i5GWEdV651UsdjQ9lKDY5HOlLdF
-         8ik67UB/v+It5kolPLLrz77WhKM7TjVZn63xzHpxcYrUZWAMQ6BN3McL6GeoMf4ncm
-         /XQHm05OZrMoI3A3A113BuBVNkp2UxI+3lg/2/jFLqlmNjfaNV7Fxru5j4vtSKbHdg
-         7HeEtg9bVZd8SNkSQKuVkdi6jkLlBeoJmcjtgGykSFQTGMGOmZHeEMTOwahSFLN5ig
-         hiRPfcsAFFAbg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id ECCCDCE0908; Mon, 24 Jul 2023 16:17:32 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 16:17:32 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [BUG] Re: Linux 6.4.4
-Message-ID: <fa417689-cf91-4687-8308-3ffe6759cf1d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <4b231ce5-7bb8-4abf-9c40-04aa676d1e45@paulmck-laptop>
- <123C6650-490B-4D08-96B4-39B118AD0054@joelfernandes.org>
+        with ESMTP id S229475AbjGYCAp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 24 Jul 2023 22:00:45 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7108610F0;
+        Mon, 24 Jul 2023 19:00:44 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R90c76d3gz4f3nb1;
+        Tue, 25 Jul 2023 10:00:39 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgAHcLPGLL9k+mv8Og--.60794S3;
+        Tue, 25 Jul 2023 10:00:40 +0800 (CST)
+Subject: Re: [PATCH 1/2] softirq: fix integer overflow in function show_stat()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230724132224.916-1-thunder.leizhen@huaweicloud.com>
+ <20230724132224.916-2-thunder.leizhen@huaweicloud.com>
+ <ZL6BwiHhvQneJZYH@casper.infradead.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <6e38e31f-4413-1aff-8973-5c3d660bedea@huaweicloud.com>
+Date:   Tue, 25 Jul 2023 10:00:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <ZL6BwiHhvQneJZYH@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <123C6650-490B-4D08-96B4-39B118AD0054@joelfernandes.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgAHcLPGLL9k+mv8Og--.60794S3
+X-Coremail-Antispam: 1UD129KBjvJXoWrKFyrJFWDKrWkZr13KF1xXwb_yoW8JF17pF
+        yUKw1UGr4kCFyxAr92qr18GF4xAws8Ja45Zr17Ca4IvFZ8Ar9IgF47GrWjqasrWr9agw4F
+        van2gr9rCayYv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 07:04:14PM -0400, Joel Fernandes wrote:
-> 
-> 
-> > On Jul 24, 2023, at 12:00 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > 
-> > ﻿On Mon, Jul 24, 2023 at 09:36:02AM -0400, Joel Fernandes wrote:
-> >>> On Sun, Jul 23, 2023 at 11:35 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >>> 
-> >>> On Mon, Jul 24, 2023 at 12:32:57AM +0000, Joel Fernandes wrote:
-> >>>> On Sun, Jul 23, 2023 at 10:19:27AM -0700, Paul E. McKenney wrote:
-> >>>>> On Sun, Jul 23, 2023 at 10:50:26AM -0400, Joel Fernandes wrote:
-> >>>>>> 
-> >>>>>> 
-> >>>>>> On 7/22/23 13:27, Paul E. McKenney wrote:
-> >>>>>> [..]
-> >>>>>>> 
-> >>>>>>> OK, if this kernel is non-preemptible, you are not running TREE03,
-> >>>>>>> correct?
-> >>>>>>> 
-> >>>>>>>> Next plan of action is to get sched_waking stack traces since I have a
-> >>>>>>>> very reliable repro of this now.
-> >>>>>>> 
-> >>>>>>> Too much fun!  ;-)
-> >>>>>> 
-> >>>>>> For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
-> >>>>>> in stutter_wait() that is beating up the CPU0 for 4 seconds.
-> >>>>>> 
-> >>>>>> This is very similar to the issue I fixed in New year in d52d3a2bf408
-> >>>>>> ("torture: Fix hang during kthread shutdown phase")
-> >>>>> 
-> >>>>> Agreed, if there are enough kthreads, and all the kthreads are on a
-> >>>>> single CPU, this could consume that CPU.
-> >>>>> 
-> >>>>>> Adding a cond_resched() there also did not help.
-> >>>>>> 
-> >>>>>> I think the issue is the stutter thread fails to move spt forward
-> >>>>>> because it does not get CPU time. But spt == 1 should be very brief
-> >>>>>> AFAIU. I was wondering if we could set that to RT.
-> >>>>> 
-> >>>>> Or just use a single hrtimer-based wait for each kthread?
-> >>>> 
-> >>>> [Joel]
-> >>>> Yes this might be better, but there's still the issue that spt may not be set
-> >>>> back to 0 in some future release where the thread gets starved.
-> >>> 
-> >>> But if each thread knows the absolute time at which the current stutter
-> >>> period is supposed to end, there should not be any need for the spt
-> >>> variable, correct?
-> >> 
-> >> Yes.
-> >> 
-> >>>>>> But also maybe the following will cure it like it did for the shutdown
-> >>>>>> issue, giving the stutter thread just enough CPU time to move spt forward.
-> >>>>>> 
-> >>>>>> Now I am trying the following and will let it run while I go do other
-> >>>>>> family related things. ;)
-> >>>>> 
-> >>>>> Good point, if this avoids the problem, that gives a strong indication
-> >>>>> that your hypothesis on the root cause is correct.
-> >>>> 
-> >>>> [Joel]
-> >>>> And the TREE07 issue is gone with that change!
-> >> [...]
-> >>>> Let me know what you think, thanks!
-> >>> 
-> >>> If we can make the stutter kthread set an absolute time for the current
-> >>> stutter period to end, then we should be able to simplify the code quite
-> >>> a bit and get rid of the CPU consumption entirely.  (Give or take the
-> >>> possible need for a given thread to check whether it was erroneously
-> >>> awakened early.)
-> >>> 
-> >>> But what specifically did you have in mind?
-> >> 
-> >> I was thinking of a 2 counter approach storing the absolute time. Use
-> >> an alternative counter for different stuttering sessions. But yes,
-> >> generally I agree with the absolute time idea. What do you think Paul?
-> >> 
-> >> Do we want to just do  the simpler schedule_timeout at HZ / 20 to keep stable
-> >> green, and do the absolute-time approach for mainline? That might be better
-> >> from a process PoV. But I think stable requires patches to be upstream. Greg?
-> >> 
-> >> I will try to send out patches this week to discuss this, thanks,
-> > 
-> > Heh!!!
-> > 
-> > Me, I was just thinking of mainline.  ;-)
-> 
-> Turns out it is simple enough for both mainline and stable :-).
-> Will test more and send it out soon.
 
-Woo-hoo!!!  Some times you get lucky!
 
-							Thanx, Paul
+On 2023/7/24 21:50, Matthew Wilcox wrote:
+> On Mon, Jul 24, 2023 at 09:22:23PM +0800, thunder.leizhen@huaweicloud.com wrote:
+>> From: Zhen Lei <thunder.leizhen@huawei.com>
+>>
+>> The statistics function of softirq is supported by commit aa0ce5bbc2db
+>> ("softirq: introduce statistics for softirq") in 2009. At that time,
+>> 64-bit processors should not have many cores and would not face
+>> significant count overflow problems. Now it's common for a processor to
+>> have hundreds of cores. Assume that there are 100 cores and 10
+>> TIMER_SOFTIRQ are generated per second, then the 32-bit sum will be
+>> overflowed after 50 days.
+> 
+> 50 days is long enough to take a snapshot.  You should always be using
+> difference between, not absolute values, and understand that they can
+> wrap.  We only tend to change the size of a counter when it can wrap
+> sufficiently quickly that we might miss a wrap (eg tens of seconds).
+
+Yes, I think patch 2/2 can be dropped. I reduced the number of soft
+interrupts generated in one second, and actually 100+ or 1000 is normal.
+But I think patch 1/2 is necessary. The sum of the output scattered values
+does not match the output sum. To solve this problem, we only need to
+adjust the type of a local variable.
+
+
+> 
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
+
