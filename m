@@ -2,64 +2,64 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63F87C001DE
-	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 17:41:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 744DAC001DE
+	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 17:47:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbjGYRlj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jul 2023 13:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
+        id S229975AbjGYRrS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jul 2023 13:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjGYRli (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:41:38 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41152121
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 10:41:36 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-403b6b7c0f7so44614581cf.0
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 10:41:36 -0700 (PDT)
+        with ESMTP id S230007AbjGYRrP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Jul 2023 13:47:15 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6ED3E67
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 10:47:12 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-76d846a4b85so1871991241.1
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 10:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690306895; x=1690911695;
+        d=joelfernandes.org; s=google; t=1690307232; x=1690912032;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WJvVodEb8nnJEl20cUTyJdImyktiXScfem+69qgqo3Q=;
-        b=e5ID1UqXliZ+Zyl9RyCsKE4cEfBV1Yk3CrsZNrSv5V3zn6E8LT99TL1D17Nwe6Lqiv
-         nW/9bnXAFTLNnHj1mEGcktsTtyeTL09GQF65dj1XCRs8uhbyeGqbtPrqeu2zjjCtPw6E
-         CGqFZ4KvpaNSKdpjWcT/8chMGtdRtPBD4m7d8=
+        bh=tjxGQ97jdZy+msttaE6/InGye12w/eRXu8aDXNaXRhA=;
+        b=mJItfjJo0J8vq8ZI7eQRqgBugJTE/Qjls8F9j5zJT4/6drjQg4QRDl54H4s/m4+/B6
+         OdBZ9Wq1QAC//eamW92We5bVMlBhbiRysXzmrEde6b6WilxsOOxfPGb41E5gLvLxIRQd
+         mG8WW9RKwkhn1rvhmTvmgDcKKzEniO9bQreDA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690306895; x=1690911695;
+        d=1e100.net; s=20221208; t=1690307232; x=1690912032;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WJvVodEb8nnJEl20cUTyJdImyktiXScfem+69qgqo3Q=;
-        b=N6gxut0uNZ7dpJdz5cjGR0WHLAIv+4p37DDKMTfLabqajQF7QOZjaSvnx9r7kpSjHN
-         U87pVXPtmF4vYLexk6zIxW355RDW7Kayn56ZF5DLx4j9uf2WCI5435uqNvHhDos4hfSt
-         lggq9HRQsVGe8Q3wQD6R6nzeiIsk01VCJ5v+5ZcwoqCmp7P57OYsXVcowzj4sZrZ3y3w
-         mNliRii5/otYY1Mke5PukulrunkY1SYBYocyCimU3teGcwLUPFU5qndZBcD6E7AExwsc
-         iHI+IkUHzSZ3VlJ8SP8RLcYNDMjZx4+3q8f6JGcND8/5gT2yJlVnn5gPdjELp2REDYDn
-         jcTw==
-X-Gm-Message-State: ABy/qLYlbDHup8XnKkVgRH43LjNTRs8iry7SRlOEq+tFTvvdecx+BvkA
-        ypbAcJ9lwHJ67AXtsyxFfWbPBg==
-X-Google-Smtp-Source: APBJJlHBHpNnHoYZv15+3LbjPWhNhvppPgE8W+pmrg9pYJauopPMXA+KIqGV321IR1oTEDcTpImI2Q==
-X-Received: by 2002:a05:622a:1742:b0:403:b6a9:b8f9 with SMTP id l2-20020a05622a174200b00403b6a9b8f9mr3981171qtk.36.1690306895263;
-        Tue, 25 Jul 2023 10:41:35 -0700 (PDT)
+        bh=tjxGQ97jdZy+msttaE6/InGye12w/eRXu8aDXNaXRhA=;
+        b=NNQgs2noUbWgrRCmnwG9uwhfR3+LArIdJQl9Z8PrUEHpubSksEzmPz5X6/irtZmkbb
+         2gcqpRdeWzN0b+3mMaI6xL28A+MmXYqOdEasSOmjM5agR7JkP1AnTs/rateFKvLnp2vi
+         q/DnoHGNxZ5fKEPMFieXusA1SZPuBokLAyLzLvsMcMjIzsgRIDG4XIArm5VEzIE2BrGy
+         /EYXC1+Je+v0R4vrlse4v8F8bciTY7E96fnYQeYahpRYMCLXIUcB78XDC01ZLPcsfMNC
+         tc1ORjrTds6PIKryht4DrrSPck56ccRmuIUfUkLNCxPOPLBwbaV2jKlVBZ/co1TBeugp
+         nE+A==
+X-Gm-Message-State: ABy/qLZIHiZB7n8jJMYeiphWKGpif4aQtV/7D6IjPyIjoazBIBLoyzM4
+        h4Jife2iTY/v6v/i70aD6IPePA==
+X-Google-Smtp-Source: APBJJlFxF234D/M5tS2Q+/KCUeJ8ymhGYnmYBO9RSoGjcR24zk88rZomSukAB6JnjgPjlb4vStmdHw==
+X-Received: by 2002:a67:b106:0:b0:443:60d7:3925 with SMTP id w6-20020a67b106000000b0044360d73925mr5444114vsl.20.1690307231746;
+        Tue, 25 Jul 2023 10:47:11 -0700 (PDT)
 Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id z4-20020a05622a124400b004054b7cc490sm3480130qtx.73.2023.07.25.10.41.33
+        by smtp.gmail.com with ESMTPSA id c11-20020a0cf2cb000000b0063d1f967268sm404045qvm.111.2023.07.25.10.47.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 10:41:34 -0700 (PDT)
-Message-ID: <1e254a35-d0c2-8d41-f020-21694945911a@joelfernandes.org>
-Date:   Tue, 25 Jul 2023 13:41:32 -0400
+        Tue, 25 Jul 2023 10:47:11 -0700 (PDT)
+Message-ID: <c72c1089-f5ac-9ed2-3412-cdb310cf5b51@joelfernandes.org>
+Date:   Tue, 25 Jul 2023 13:47:09 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
 Subject: Re: [RFC PATCH v2 18/20] context_tracking,x86: Defer kernel text
  patching IPIs
 Content-Language: en-US
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
         linux-kselftest@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
         Nicolas Saenz Julienne <nsaenzju@redhat.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
@@ -109,9 +109,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         Yair Podemsky <ypodemsk@redhat.com>
 References: <20230720163056.2564824-19-vschneid@redhat.com>
  <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
- <xhsmhtttsru2s.mognet@vschneid.remote.csb>
+ <20230725133936.GM3765278@hirez.programming.kicks-ass.net>
 From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <xhsmhtttsru2s.mognet@vschneid.remote.csb>
+In-Reply-To: <20230725133936.GM3765278@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -120,8 +120,8 @@ X-Mailing-List: rcu@vger.kernel.org
 
 
 
-On 7/25/23 09:36, Valentin Schneider wrote:
-> On 25/07/23 06:49, Joel Fernandes wrote:
+On 7/25/23 09:39, Peter Zijlstra wrote:
+> On Tue, Jul 25, 2023 at 06:49:45AM -0400, Joel Fernandes wrote:
 >> Interesting series Valentin. Some high-level question/comments on this one:
 >>
 >>> On Jul 20, 2023, at 12:34 PM, Valentin Schneider <vschneid@redhat.com> wrote:
@@ -131,20 +131,22 @@ On 7/25/23 09:36, Valentin Schneider wrote:
 >>> do not need this synchronization to happen immediately, and this is
 >>> actually harmful interference for NOHZ_FULL CPUs.
 >>
->> Does the amount of harm not correspond to practical frequency of text_poke?
+>> Does the amount of harm not correspond to practical frequency of text_poke? 
 >> How often does instruction patching really happen? If it is very infrequent
 >> then I am not sure if it is that harmful.
->>
 > 
-> Being pushed over a latency threshold *once* is enough to impact the
-> latency evaluation of your given system/application.
+> Well, it can happen quite a bit, also from things people would not
+> typically 'expect' it.
 > 
-> It's mainly about shielding the isolated, NOHZ_FULL CPUs from whatever the
-> housekeeping CPUs may be up to (flipping static keys, loading kprobes,
-> using ftrace...) - frequency of the interference isn't such a big part of
-> the reasoning.
+> For instance, the moment you create the first per-task perf event we
+> frob some jump-labels (and again some second after the last one goes
+> away).
+> 
+> The same for a bunch of runtime network configurations.
 
-Makes sense.
+Ok cool. I guess I still have memories of that old ARM device I had
+where modifications to kernel text was forbidden by hardware (was a
+security feature). That was making kprobes unusable...
 
 >>> As the synchronization IPIs are sent using a blocking call, returning from
 >>> text_poke_bp_batch() implies all CPUs will observe the patched
@@ -157,16 +159,12 @@ Makes sense.
 >> spends multiple seconds before entering the kernel, and all this while
 >> the blocking call waits? Perhaps in such situation you want the real IPI
 >> to be sent out instead of the deferred one?
->>
 > 
-> The blocking call only waits for CPUs for which it queued a CSD. Deferred
-> calls do not queue a CSD thus do not impact the waiting at all. See
-> smp_call_function_many_cond().
+> Please re-read what Valentin wrote -- nobody is waiting on anything.
 
-Ah I see you are using on_each_cpu_cond(). I should have gone through
-the other patch before making noise.
-
-thanks,
+Makes sense. To be fair I received his email 3 minutes before yours ;-).
+But thank you both for clarifying!
 
  - Joel
+
 
