@@ -2,169 +2,81 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 744DAC001DE
-	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 17:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CCEBEB64DD
+	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 23:29:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjGYRrS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jul 2023 13:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        id S231535AbjGYX32 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jul 2023 19:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbjGYRrP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jul 2023 13:47:15 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6ED3E67
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 10:47:12 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-76d846a4b85so1871991241.1
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 10:47:12 -0700 (PDT)
+        with ESMTP id S231576AbjGYX31 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Jul 2023 19:29:27 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F4B19BA
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 16:29:26 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-785d738d3feso11609439f.0
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 16:29:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690307232; x=1690912032;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tjxGQ97jdZy+msttaE6/InGye12w/eRXu8aDXNaXRhA=;
-        b=mJItfjJo0J8vq8ZI7eQRqgBugJTE/Qjls8F9j5zJT4/6drjQg4QRDl54H4s/m4+/B6
-         OdBZ9Wq1QAC//eamW92We5bVMlBhbiRysXzmrEde6b6WilxsOOxfPGb41E5gLvLxIRQd
-         mG8WW9RKwkhn1rvhmTvmgDcKKzEniO9bQreDA=
+        d=joelfernandes.org; s=google; t=1690327766; x=1690932566;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XskhyFxausVEKDa69mPrTba2xx/2UiRzs2iaafcHW9Y=;
+        b=bxd6mWv0jxIK0mSMvOs0QEkrssoJdAQb9LD2SIJNiQajQ7TI6uSw1o4RpnrZno2+bh
+         QhYknwTfmiLZTA1bkJZnjl8LU8KdgSUklfgZkYzXf4GjMJexjyvOwMHom7xXHHcJw1bc
+         HcLwaEMCdFJj0zKfzgnAN7didRVNwCr4OhE6c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690307232; x=1690912032;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tjxGQ97jdZy+msttaE6/InGye12w/eRXu8aDXNaXRhA=;
-        b=NNQgs2noUbWgrRCmnwG9uwhfR3+LArIdJQl9Z8PrUEHpubSksEzmPz5X6/irtZmkbb
-         2gcqpRdeWzN0b+3mMaI6xL28A+MmXYqOdEasSOmjM5agR7JkP1AnTs/rateFKvLnp2vi
-         q/DnoHGNxZ5fKEPMFieXusA1SZPuBokLAyLzLvsMcMjIzsgRIDG4XIArm5VEzIE2BrGy
-         /EYXC1+Je+v0R4vrlse4v8F8bciTY7E96fnYQeYahpRYMCLXIUcB78XDC01ZLPcsfMNC
-         tc1ORjrTds6PIKryht4DrrSPck56ccRmuIUfUkLNCxPOPLBwbaV2jKlVBZ/co1TBeugp
-         nE+A==
-X-Gm-Message-State: ABy/qLZIHiZB7n8jJMYeiphWKGpif4aQtV/7D6IjPyIjoazBIBLoyzM4
-        h4Jife2iTY/v6v/i70aD6IPePA==
-X-Google-Smtp-Source: APBJJlFxF234D/M5tS2Q+/KCUeJ8ymhGYnmYBO9RSoGjcR24zk88rZomSukAB6JnjgPjlb4vStmdHw==
-X-Received: by 2002:a67:b106:0:b0:443:60d7:3925 with SMTP id w6-20020a67b106000000b0044360d73925mr5444114vsl.20.1690307231746;
-        Tue, 25 Jul 2023 10:47:11 -0700 (PDT)
-Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id c11-20020a0cf2cb000000b0063d1f967268sm404045qvm.111.2023.07.25.10.47.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 10:47:11 -0700 (PDT)
-Message-ID: <c72c1089-f5ac-9ed2-3412-cdb310cf5b51@joelfernandes.org>
-Date:   Tue, 25 Jul 2023 13:47:09 -0400
+        d=1e100.net; s=20221208; t=1690327766; x=1690932566;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XskhyFxausVEKDa69mPrTba2xx/2UiRzs2iaafcHW9Y=;
+        b=PK8RzyWfDrIDxJKhCs3xR/TpfpNEk1Hj+tFndMNEZoNGv1nKZ98j7KPiIl0UGSZNTQ
+         Gb+bf4pJWCrsb6BwVnA7uzm0LgsEXlvm6FBkiyITcPY7LE2ocolOks77qRMN2RXKNDzh
+         TtEqPvpXFWlazw69EJq9PC2c+abZttNXsj9tQauDQd8olBB3q39kKQqfkT3J29wjP/3G
+         BTLDtzHVaigDrjEYrCNquSjzz9jC1xIBMQ19VBoZEdcB7WjcY7OBu9kcCaNWlCFfr8HQ
+         8H+Ym3bcLtxwTnfuo4BRgQpFPfD/2p5BdTVRgLH01vQDTqt8p+zC7lza1HgODItMqZ+5
+         9w/Q==
+X-Gm-Message-State: ABy/qLbHrwW0mq01fxV6RIv5NCqeyNJE2vx5RWbH2OL5Ine7H5E2VyJZ
+        QHLyyMOmtVwyW84PKevKQfDldw==
+X-Google-Smtp-Source: APBJJlEXrYsv1laOOOPXu57nHWmEe+B61bHLj+F3QYQrE4VSub6WJkN4PCPEuF++v8DZgNOFsHfxKA==
+X-Received: by 2002:a05:6602:164b:b0:785:cac9:2d49 with SMTP id y11-20020a056602164b00b00785cac92d49mr2740006iow.1.1690327766107;
+        Tue, 25 Jul 2023 16:29:26 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id m18-20020a02c892000000b0041d859c5721sm3932053jao.64.2023.07.25.16.29.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 16:29:25 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     rcu@vger.kernel.org, paulmck@kernel.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH 0/5] misc RCU fixes and cleanups
+Date:   Tue, 25 Jul 2023 23:29:05 +0000
+Message-ID: <20230725232913.2981357-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH v2 18/20] context_tracking,x86: Defer kernel text
- patching IPIs
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-References: <20230720163056.2564824-19-vschneid@redhat.com>
- <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
- <20230725133936.GM3765278@hirez.programming.kicks-ass.net>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20230725133936.GM3765278@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Here are some RCU fixes and cleanups. The main one is the TREE07 stuttering fix
+which makes the test pass now. I am continuing to test these but I am sending
+it out for review in advance. Thanks.
 
+Joel Fernandes (Google) (5):
+  rcutorture: Fix stuttering races and other issues
+  srcu: Fix error handling in init_srcu_struct_fields()
+  tree/nocb: Adjust RCU_NOCB_WAKE_* macros from weaker to stronger
+  tree/nocb: Improve readability of nocb_gp_wait()
+  Revert "checkpatch: Error out if deprecated RCU API used"
 
-On 7/25/23 09:39, Peter Zijlstra wrote:
-> On Tue, Jul 25, 2023 at 06:49:45AM -0400, Joel Fernandes wrote:
->> Interesting series Valentin. Some high-level question/comments on this one:
->>
->>> On Jul 20, 2023, at 12:34 PM, Valentin Schneider <vschneid@redhat.com> wrote:
->>>
->>> ﻿text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
->>> them vs the newly patched instruction. CPUs that are executing in userspace
->>> do not need this synchronization to happen immediately, and this is
->>> actually harmful interference for NOHZ_FULL CPUs.
->>
->> Does the amount of harm not correspond to practical frequency of text_poke? 
->> How often does instruction patching really happen? If it is very infrequent
->> then I am not sure if it is that harmful.
-> 
-> Well, it can happen quite a bit, also from things people would not
-> typically 'expect' it.
-> 
-> For instance, the moment you create the first per-task perf event we
-> frob some jump-labels (and again some second after the last one goes
-> away).
-> 
-> The same for a bunch of runtime network configurations.
+ kernel/rcu/srcutree.c  |  31 ++++++-----
+ kernel/rcu/tree.h      |   4 +-
+ kernel/rcu/tree_nocb.h | 113 ++++++++++++++++++++++++-----------------
+ kernel/torture.c       |  46 +++++------------
+ scripts/checkpatch.pl  |   9 ----
+ 5 files changed, 98 insertions(+), 105 deletions(-)
 
-Ok cool. I guess I still have memories of that old ARM device I had
-where modifications to kernel text was forbidden by hardware (was a
-security feature). That was making kprobes unusable...
-
->>> As the synchronization IPIs are sent using a blocking call, returning from
->>> text_poke_bp_batch() implies all CPUs will observe the patched
->>> instruction(s), and this should be preserved even if the IPI is deferred.
->>> In other words, to safely defer this synchronization, any kernel
->>> instruction leading to the execution of the deferred instruction
->>> sync (ct_work_flush()) must *not* be mutable (patchable) at runtime.
->>
->> If it is not infrequent, then are you handling the case where userland
->> spends multiple seconds before entering the kernel, and all this while
->> the blocking call waits? Perhaps in such situation you want the real IPI
->> to be sent out instead of the deferred one?
-> 
-> Please re-read what Valentin wrote -- nobody is waiting on anything.
-
-Makes sense. To be fair I received his email 3 minutes before yours ;-).
-But thank you both for clarifying!
-
- - Joel
-
+-- 
+2.41.0.487.g6d72f3e995-goog
 
