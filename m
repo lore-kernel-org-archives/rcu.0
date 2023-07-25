@@ -2,376 +2,168 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70CA9C001DE
-	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 09:57:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BBBBC04FDF
+	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 10:11:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbjGYJ5R (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jul 2023 05:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        id S231792AbjGYKL1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jul 2023 06:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233476AbjGYJ5N (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:57:13 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1C810CC
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2659b1113c2so706747a91.1
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690279003; x=1690883803;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/casiWQBa8FLPDyI/Gjog1Q/iFy65e/7JWaM5Gwrppw=;
-        b=kzP9jxhdW7EUIP2JpY6nQ4V3KB8KzHZHwXd+bJOEeLU9gCN3lvtKTIOyV+D6pg6POw
-         Q2+Agk0fHs6Wf0nJIf8rf8T9VZNFr/hsapg2zga11FSk7AOs0JkWfaLjemq0FDeG0Uw5
-         HhEk2mitTuKDolaaQqjf+O9IL+c+U5F1pPsQI+4eucs75jhsRhGM9fqq3uQDPTEvroq0
-         /U4/CVAvtL3Xk0W286vaVtW9MXQ1p85A5kNQw+kxMFfLtXWo8Tn1go6QyxS1jqmnrw9a
-         uFzHc2WhcIqVkW0xdKzdkJ+42hQ6tNSe2IXCsgIEyfURXIjl60ODrk022w8+JVfo8hQI
-         ne/Q==
+        with ESMTP id S231552AbjGYKLZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Jul 2023 06:11:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8427E10CB
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 03:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690279837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qHJHNAQ/EaLrVgiClukNB6YD2cCwQOLa9+8g/RD5pIg=;
+        b=iY4wOsydtMEtxvUuDux6MVHCf2tojKmzGry+T6klLphKk6SXYPUWf5hBJrawogE13qw/PH
+        2AjawmjJhIl2TYiDj9I+JHz9xDtotGkGBvQ2aEI3RZSEPDKHx/bmVODoS1rfHxEFpgH1Fy
+        Hg5C7SoCJeT8AMYCsbUXtDy7h8TIMJk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-121-dkOICcl7MQukdiLbjjtCHQ-1; Tue, 25 Jul 2023 06:10:36 -0400
+X-MC-Unique: dkOICcl7MQukdiLbjjtCHQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fa8f8fb7b3so31723465e9.2
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 03:10:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690279003; x=1690883803;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/casiWQBa8FLPDyI/Gjog1Q/iFy65e/7JWaM5Gwrppw=;
-        b=RP1TeP2vBB3yluZum2rrjzDqTJ0UjmqNsRMBJp8z7JdSdirlHa8egxXXiH/S2qreRK
-         aP1iavjofZSbC1saAw440cH6qOvVNuENu8GWB+ndrpQ9jcuOyywciFHIz3fv95wQQyax
-         PwpOawwtpvgg6jKwo8DtEUB8H766YvTFOkCaCg4b9schD+Cz1FZsgGdTwXLavEbR33Bq
-         i8h8SYl9SBgZbR0rDrU5KQXapcWklX1SXVZhC5ppRebSEXee98WvqLINbhZGCRGq2KA+
-         79B5jwE/be3vdiMa/KltWgVz22LurYaf285Dn+EfRgCagutJBLWiMl0lOmZ5SiqzSCcm
-         FQOA==
-X-Gm-Message-State: ABy/qLa3ljFcV8ySRRbn5z6HKjkjrOPwsggRmq34kizA2T/mTzCH1ZQg
-        hYDfwzxrQQvEqhOvz3w01/aiyA==
-X-Google-Smtp-Source: APBJJlE4g3zxacKAsn4H4YysRKAp71VN9gqUpsqodFXfAXxBRsoAel6FjePiWo+WkUy1agkNvA6LJQ==
-X-Received: by 2002:a17:90a:74cf:b0:268:196f:9656 with SMTP id p15-20020a17090a74cf00b00268196f9656mr4627258pjl.1.1690279003192;
-        Tue, 25 Jul 2023 02:56:43 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j8-20020a170902da8800b001b39ffff838sm10605398plx.25.2023.07.25.02.56.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 02:56:42 -0700 (PDT)
-Message-ID: <c1a1952f-0c3e-2fa1-fdf9-8b3b8a592b23@bytedance.com>
-Date:   Tue, 25 Jul 2023 17:56:29 +0800
+        d=1e100.net; s=20221208; t=1690279835; x=1690884635;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qHJHNAQ/EaLrVgiClukNB6YD2cCwQOLa9+8g/RD5pIg=;
+        b=CBS8kGx74M8qXmU1iLd70C/SEMv/ibYHZX67hVcdMqOnKA9HLo3W7v7lifDfZERIm6
+         ScWqyPvL6RWfxAGByjHe4V3ZOwE7Li6v31w5pR25v414gUdzbVRqoxOy8hby6L1zAEjT
+         0oJtinPZSItf2NGmvBQvV4H6vw3SJh5xo2oTewoCqnjJViD3dZo3d+wMyF/rVx8FGGIf
+         Wx2OS1ifxAx3TxmHVFbSMWwa1aulHDFr9dwbWsYw0vBhhRf8pkQlYpp0uhXTrpfAAvSu
+         mPVo19cS08ZcPVttIKJm/2Eth0/ZqOOMLoywSAEdUuTpyHQWcjnKTuyQ7tbMCxnzq4MN
+         QSFg==
+X-Gm-Message-State: ABy/qLaqAFBSargeaR4iK9IzUoVhv7eXPqPJhEzuCwrrhOm25VGR22tP
+        4wL+vvSUXWMesZI09OLSxBjIO9s/q0NsMkyGVP2N6JICC/Myf6QuxWyMkWeiAKmwGLiqes7GzAS
+        N3QCClkzdKX3/
+X-Received: by 2002:a7b:c3c8:0:b0:3fc:182:7eac with SMTP id t8-20020a7bc3c8000000b003fc01827eacmr9484356wmj.33.1690279835121;
+        Tue, 25 Jul 2023 03:10:35 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEBwe5grVle2BJoQfU1CdlrA5E008mXbdTKHKW2tEfZga9rph2myp9KegOF9DFTCjiBwJ8J/Q==
+X-Received: by 2002:a7b:c3c8:0:b0:3fc:182:7eac with SMTP id t8-20020a7bc3c8000000b003fc01827eacmr9484330wmj.33.1690279834786;
+        Tue, 25 Jul 2023 03:10:34 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id p1-20020a05600c204100b003fc17e8a1efsm15201059wmg.45.2023.07.25.03.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 03:10:34 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
+ infrastructure
+In-Reply-To: <ZL7OoUMLZwfUttjV@lothringen>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-16-vschneid@redhat.com>
+ <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
+ <xhsmh351dtfjj.mognet@vschneid.remote.csb> <ZL7OoUMLZwfUttjV@lothringen>
+Date:   Tue, 25 Jul 2023 11:10:31 +0100
+Message-ID: <xhsmhzg3ks3mw.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for dynamically
- allocating shrinker
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-4-zhengqi.arch@bytedance.com>
- <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Muchun,
+On 24/07/23 21:18, Frederic Weisbecker wrote:
+> On Mon, Jul 24, 2023 at 05:55:44PM +0100, Valentin Schneider wrote:
+>> I can make that a 'do {} while ()' instead to force at least one execution
+>> of the cmpxchg().
+>>
+>> This is only about reducing the race window, right? If we're executing this
+>> just as the target CPU is about to enter userspace, we're going to be in
+>> racy territory anyway. Regardless, I'm happy to do that change.
+>
+> Right, it's only about narrowing down the race window. It probably don't matter
+> in practice, but it's one less thing to consider for the brain :-)
+>
 
-On 2023/7/25 17:02, Muchun Song wrote:
-> 
-> 
-> On 2023/7/24 17:43, Qi Zheng wrote:
->> Currently, the shrinker instances can be divided into the following three
->> types:
->>
->> a) global shrinker instance statically defined in the kernel, such as
->>     workingset_shadow_shrinker.
->>
->> b) global shrinker instance statically defined in the kernel modules, 
->> such
->>     as mmu_shrinker in x86.
->>
->> c) shrinker instance embedded in other structures.
->>
->> For case a, the memory of shrinker instance is never freed. For case b,
->> the memory of shrinker instance will be freed after synchronize_rcu() 
->> when
->> the module is unloaded. For case c, the memory of shrinker instance will
->> be freed along with the structure it is embedded in.
->>
->> In preparation for implementing lockless slab shrink, we need to
->> dynamically allocate those shrinker instances in case c, then the memory
->> can be dynamically freed alone by calling kfree_rcu().
->>
->> So this commit adds the following new APIs for dynamically allocating
->> shrinker, and add a private_data field to struct shrinker to record and
->> get the original embedded structure.
->>
->> 1. shrinker_alloc()
->>
->> Used to allocate shrinker instance itself and related memory, it will
->> return a pointer to the shrinker instance on success and NULL on failure.
->>
->> 2. shrinker_free_non_registered()
->>
->> Used to destroy the non-registered shrinker instance.
-> 
-> At least I don't like this name. I know you want to tell others
-> this function only should be called when shrinker has not been
-> registed but allocated. Maybe shrinker_free() is more simple.
-> And and a comment to tell the users when to use it.
+Ack
 
-OK, if no one else objects, I will change it to shrinker_free() in
-the next version.
+> Also, why bothering with handling CONTEXT_IDLE?
+>
 
-> 
->>
->> 3. shrinker_register()
->>
->> Used to register the shrinker instance, which is same as the current
->> register_shrinker_prepared().
->>
->> 4. shrinker_unregister()
->>
->> Used to unregister and free the shrinker instance.
->>
->> In order to simplify shrinker-related APIs and make shrinker more
->> independent of other kernel mechanisms, subsequent submissions will use
->> the above API to convert all shrinkers (including case a and b) to
->> dynamically allocated, and then remove all existing APIs.
->>
->> This will also have another advantage mentioned by Dave Chinner:
->>
->> ```
->> The other advantage of this is that it will break all the existing
->> out of tree code and third party modules using the old API and will
->> no longer work with a kernel using lockless slab shrinkers. They
->> need to break (both at the source and binary levels) to stop bad
->> things from happening due to using uncoverted shrinkers in the new
->> setup.
->> ```
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   include/linux/shrinker.h |   6 +++
->>   mm/shrinker.c            | 113 +++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 119 insertions(+)
->>
->> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
->> index 961cb84e51f5..296f5e163861 100644
->> --- a/include/linux/shrinker.h
->> +++ b/include/linux/shrinker.h
->> @@ -70,6 +70,8 @@ struct shrinker {
->>       int seeks;    /* seeks to recreate an obj */
->>       unsigned flags;
->> +    void *private_data;
->> +
->>       /* These are for internal use */
->>       struct list_head list;
->>   #ifdef CONFIG_MEMCG
->> @@ -98,6 +100,10 @@ struct shrinker {
->>   unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup 
->> *memcg,
->>                 int priority);
->> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, 
->> ...);
->> +void shrinker_free_non_registered(struct shrinker *shrinker);
->> +void shrinker_register(struct shrinker *shrinker);
->> +void shrinker_unregister(struct shrinker *shrinker);
->>   extern int __printf(2, 3) prealloc_shrinker(struct shrinker *shrinker,
->>                           const char *fmt, ...);
->> diff --git a/mm/shrinker.c b/mm/shrinker.c
->> index 0a32ef42f2a7..d820e4cc5806 100644
->> --- a/mm/shrinker.c
->> +++ b/mm/shrinker.c
->> @@ -548,6 +548,119 @@ unsigned long shrink_slab(gfp_t gfp_mask, int 
->> nid, struct mem_cgroup *memcg,
->>       return freed;
->>   }
->> +struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, 
->> ...)
->> +{
->> +    struct shrinker *shrinker;
->> +    unsigned int size;
->> +    va_list __maybe_unused ap;
->> +    int err;
->> +
->> +    shrinker = kzalloc(sizeof(struct shrinker), GFP_KERNEL);
->> +    if (!shrinker)
->> +        return NULL;
->> +
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +    va_start(ap, fmt);
->> +    shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
->> +    va_end(ap);
->> +    if (!shrinker->name)
->> +        goto err_name;
->> +#endif
-> 
-> So why not introduce another helper to handle this and declare it
-> as a void function when !CONFIG_SHRINKER_DEBUG? Something like the
-> following:
-> 
-> #ifdef CONFIG_SHRINKER_DEBUG
-> static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
-> char *fmt,
->                                         va_list vargs)
-> 
-> {
->      shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, vargs);
->      return shrinker->name ? 0 : -ENOMEM;
-> }
-> #else
-> static int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const 
-> char *fmt,
->                                         va_list vargs)
-> {
->      return 0;
-> }
-> #endif
+I have reasons! I just swept them under the rug and didn't mention them :D
+Also looking at the config dependencies again I got it wrong, but
+nevertheless that means I get to ramble about it.
 
-Will do in the next version.
+With NO_HZ_IDLE, we get CONTEXT_TRACKING_IDLE, so we get these
+transitions:
 
-> 
->> +    shrinker->flags = flags;
->> +
->> +    if (flags & SHRINKER_MEMCG_AWARE) {
->> +        err = prealloc_memcg_shrinker(shrinker);
->> +        if (err == -ENOSYS)
->> +            shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
->> +        else if (err == 0)
->> +            goto done;
->> +        else
->> +            goto err_flags;
->> +    }
->> +
->> +    /*
->> +     * The nr_deferred is available on per memcg level for memcg aware
->> +     * shrinkers, so only allocate nr_deferred in the following cases:
->> +     *  - non memcg aware shrinkers
->> +     *  - !CONFIG_MEMCG
->> +     *  - memcg is disabled by kernel command line
->> +     */
->> +    size = sizeof(*shrinker->nr_deferred);
->> +    if (flags & SHRINKER_NUMA_AWARE)
->> +        size *= nr_node_ids;
->> +
->> +    shrinker->nr_deferred = kzalloc(size, GFP_KERNEL);
->> +    if (!shrinker->nr_deferred)
->> +        goto err_flags;
->> +
->> +done:
->> +    return shrinker;
->> +
->> +err_flags:
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +    kfree_const(shrinker->name);
->> +    shrinker->name = NULL;
-> 
-> This could be shrinker_debugfs_name_free()
+  ct_idle_enter()
+    ct_kernel_exit()
+      ct_state_inc_clear_work()
 
-Will do.
+  ct_idle_exit()
+    ct_kernel_enter()
+      ct_work_flush()
 
-> 
->> +err_name:
->> +#endif
->> +    kfree(shrinker);
->> +    return NULL;
->> +}
->> +EXPORT_SYMBOL(shrinker_alloc);
->> +
->> +void shrinker_free_non_registered(struct shrinker *shrinker)
->> +{
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +    kfree_const(shrinker->name);
->> +    shrinker->name = NULL;
-> 
-> This could be shrinker_debugfs_name_free()
-> 
->> +#endif
->> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
->> +        down_write(&shrinker_rwsem);
->> +        unregister_memcg_shrinker(shrinker);
->> +        up_write(&shrinker_rwsem);
->> +    }
->> +
->> +    kfree(shrinker->nr_deferred);
->> +    shrinker->nr_deferred = NULL;
->> +
->> +    kfree(shrinker);
->> +}
->> +EXPORT_SYMBOL(shrinker_free_non_registered);
->> +
->> +void shrinker_register(struct shrinker *shrinker)
->> +{
->> +    down_write(&shrinker_rwsem);
->> +    list_add_tail(&shrinker->list, &shrinker_list);
->> +    shrinker->flags |= SHRINKER_REGISTERED;
->> +    shrinker_debugfs_add(shrinker);
->> +    up_write(&shrinker_rwsem);
->> +}
->> +EXPORT_SYMBOL(shrinker_register);
->> +
->> +void shrinker_unregister(struct shrinker *shrinker)
-> 
-> You have made all shrinkers to be dynamically allocated, so
-> we should prevent users from allocating shrinkers statically and
-> use this function to unregister it. It is better to add a
-> flag like SHRINKER_ALLOCATED which is set in shrinker_alloc(),
-> and check whether it is set in shrinker_unregister(), if not
-> maybe a warning should be added to tell the users what happened.
+Now, if we just make CONTEXT_TRACKING_WORK depend on CONTEXT_TRACKING_IDLE
+rather than CONTEXT_TRACKING_USER, we get to leverage the IPI deferral for
+NO_HZ_IDLE kernels - in other words, we get to keep idle CPUs idle longer.
 
-Make sense, will do.
+It's a completely different argument than reducing interference for
+NOHZ_FULL userspace applications and I should have at the very least
+mentioned it in the cover letter, but it's the exact same backing
+mechanism.
 
-> 
->> +{
->> +    struct dentry *debugfs_entry;
->> +    int debugfs_id;
->> +
->> +    if (!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))
->> +        return;
->> +
->> +    down_write(&shrinker_rwsem);
->> +    list_del(&shrinker->list);
->> +    shrinker->flags &= ~SHRINKER_REGISTERED;
->> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE)
->> +        unregister_memcg_shrinker(shrinker);
->> +    debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
-> 
-> In the internal of this function, you also could use
-> shrinker_debugfs_name_free().
+Looking at it again, I'll probably make the CONTEXT_IDLE thing a separate
+patch with a proper changelog.
 
-Yeah, will do.
-
-Thanks,
-Qi
-
-> 
-> Thanks.
-> 
->> +    up_write(&shrinker_rwsem);
->> +
->> +    shrinker_debugfs_remove(debugfs_entry, debugfs_id);
->> +
->> +    kfree(shrinker->nr_deferred);
->> +    shrinker->nr_deferred = NULL;
->> +
->> +    kfree(shrinker);
->> +}
->> +EXPORT_SYMBOL(shrinker_unregister);
->> +
->>   /*
->>    * Add a shrinker callback to be called from the vm.
->>    */
-> 
