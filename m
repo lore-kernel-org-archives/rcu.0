@@ -2,37 +2,37 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D72CC04E69
-	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 09:21:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FC43C04A6A
+	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 09:23:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbjGYJVW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jul 2023 05:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        id S231897AbjGYJXS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jul 2023 05:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjGYJVA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jul 2023 05:21:00 -0400
-Received: from out-60.mta0.migadu.com (out-60.mta0.migadu.com [91.218.175.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A881FEB
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 02:20:27 -0700 (PDT)
+        with ESMTP id S233207AbjGYJXD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Jul 2023 05:23:03 -0400
+Received: from out-35.mta1.migadu.com (out-35.mta1.migadu.com [95.215.58.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC59137
+        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 02:22:41 -0700 (PDT)
 Content-Type: text/plain;
         charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690276823;
+        t=1690276959;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lWqqPzpNBtB6jTVVrWh0b/e9soljzkJiIrV3enhBysE=;
-        b=hQXVvzFcrWWWpy9SLwyFzJJZuDADbBS2OdiYg60cVhz1X3iYVafxnHWqF9F5gbQE+t5rUv
-        I46fSuLx9fxRRB/KaBl036o5sGpNNMaguRBPQls2fbyMfQnAsVHD21W1LE1DjorXmO7V65
-        cgmVLn1Ua4w1+HIDSsYSdCmvQqociDo=
+        bh=O0aj+CEvUWLWW/lym+SjHnwm8OSi0vQ8fgtochDa6Vs=;
+        b=xJfsnq4tfri4+FrxQ/wgEMA3zFz0o0z0uW0gHHJCvckela5K3HUZXJd8znm8ohjnxlmbHS
+        uH4lNpUNfMnIh4HG6zSYXwQDD4QbiVOnWxcUq/Ckyge75DILepht+8WUJVUEtTuA6yQWPk
+        2nBkRdUkFluXDihkXSSSRwQEBatV+pk=
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 06/47] drm/ttm: dynamically allocate the drm-ttm_pool
- shrinker
+Subject: Re: [PATCH v2 07/47] xenbus/backend: dynamically allocate the
+ xen-backend shrinker
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-7-zhengqi.arch@bytedance.com>
-Date:   Tue, 25 Jul 2023 17:19:40 +0800
+In-Reply-To: <20230724094354.90817-8-zhengqi.arch@bytedance.com>
+Date:   Tue, 25 Jul 2023 17:22:00 +0800
 Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
         tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
         Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
@@ -53,9 +53,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
 Content-Transfer-Encoding: 7bit
-Message-Id: <1A349AE9-C4B3-42EB-B2D6-018583CCB102@linux.dev>
+Message-Id: <CD39258F-AAA8-42A7-BBA9-6528A629B315@linux.dev>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-7-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-8-zhengqi.arch@bytedance.com>
 To:     Qi Zheng <zhengqi.arch@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
@@ -66,7 +66,7 @@ X-Mailing-List: rcu@vger.kernel.org
 
 > On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 > 
-> Use new APIs to dynamically allocate the drm-ttm_pool shrinker.
+> Use new APIs to dynamically allocate the xen-backend shrinker.
 > 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
