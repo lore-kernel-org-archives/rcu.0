@@ -2,264 +2,144 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AE27C001E0
-	for <rcu@archiver.kernel.org>; Wed, 26 Jul 2023 20:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9411C001DC
+	for <rcu@archiver.kernel.org>; Wed, 26 Jul 2023 21:08:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbjGZU7m (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Jul 2023 16:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
+        id S231130AbjGZVHw (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Jul 2023 17:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbjGZU7m (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Jul 2023 16:59:42 -0400
+        with ESMTP id S230306AbjGZVHv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Jul 2023 17:07:51 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A4119AD;
-        Wed, 26 Jul 2023 13:59:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D89B2122;
+        Wed, 26 Jul 2023 14:07:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4BBA461CB5;
-        Wed, 26 Jul 2023 20:59:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A91B6C433C7;
-        Wed, 26 Jul 2023 20:59:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F96661CAA;
+        Wed, 26 Jul 2023 21:07:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD1ECC433C8;
+        Wed, 26 Jul 2023 21:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690405179;
-        bh=qFmhNVrbhVXAVXjyRI0k8f6CFr7UpXG0gEv/ux63DIc=;
+        s=k20201202; t=1690405667;
+        bh=jxWkxAJfmYCp6DgVJWz6SjhDGtLFuqITHEbKhdu2CYc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uPhXfbLvmdMwjToaC7cVmUex0b6I6aDOKZl6/J0WED5HW+6SUd/1RhDYZZmAfPz3X
-         QScqY22S5Vug9ct1DP/8Z6o/7uaD9CeeYU0a+fmhzsqRjowqFHBJErj/wMSXuvbJRT
-         oT16Z1/TqThQmj3NNK4buhQ+YLZWY7+ghfPDhG89tAZYyIGv/VCqgj0QjtIIkb1QXo
-         NT6806kHSF19IpCh5YuAij3Cy0acYE+OgdA0ltcI1NUxzgyO8PgQmclCn9T2A1JSlM
-         fmXUOxXqmRLY1bzIXyP2VE6k0eFTCvuRCx39v9ObYYa8i45p5kZd8pR91nI3brzil5
-         QbEmCcP6qQbLQ==
+        b=I+uBZsz/Y+rltdxHSVYiKo/PhWomuGRhxVQuFMkxxHQwqcDJZM4o46G+U5LRt4k2E
+         DjrEigYzGpCM0Lj4YrSEfxyzffBsvmpXsj2gjMGFrR8S3p2mKIldz5xUZ4DbjZQSNJ
+         sTLqTg/FA1bq6C833xsB2MaQlQESyFR1FRyCi4RHmaXR4HURqTuyWOxTaxOB8RBGDx
+         gIV77ydV+V3+ZQogHF4TpcVpjQhf1U6i7RrWaLpVddPkXH9lXNqFrcJ92L8pWPvqYB
+         a/2/t5HrmlLZ7JfHWtJN/5ri3LdpQOKse+nSB0fwqV5pmOmWdU2wJfFgeIqFCZ0mdV
+         Ukpzfi+TfHidQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3318CCE0A1C; Wed, 26 Jul 2023 13:59:39 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 13:59:39 -0700
+        id 74B28CE0A1C; Wed, 26 Jul 2023 14:07:47 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 14:07:47 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 1/5] rcutorture: Fix stuttering races and other issues
-Message-ID: <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "open list:SLEEPABLE READ-COPY UPDATE (SRCU)" <rcu@vger.kernel.org>
+Subject: Re: [PATCH 2/5] srcu: Fix error handling in init_srcu_struct_fields()
+Message-ID: <1943e34c-3c8e-411c-a677-33f8c5b4b0e5@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20230725232913.2981357-1-joel@joelfernandes.org>
- <20230725232913.2981357-2-joel@joelfernandes.org>
+ <20230725232913.2981357-3-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725232913.2981357-2-joel@joelfernandes.org>
+In-Reply-To: <20230725232913.2981357-3-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 11:29:06PM +0000, Joel Fernandes (Google) wrote:
-> The stuttering code isn't functioning as expected. Ideally, it should
-> pause the torture threads for a designated period before resuming. Yet,
-> it fails to halt the test for the correct duration. Additionally, a race
-> condition exists, potentially causing the stuttering code to pause for
-> an extended period if the 'spt' variable is non-zero due to the stutter
-> orchestration thread's inadequate CPU time.
+On Tue, Jul 25, 2023 at 11:29:07PM +0000, Joel Fernandes (Google) wrote:
+> The current error handling in init_srcu_struct_fields() is a bit
+> inconsistent.  If init_srcu_struct_nodes() fails, the function either
+> returns -ENOMEM or 0 depending on whether ssp->sda_is_static is true or
+> false. This can make init_srcu_struct_fields() return 0 even if memory
+> allocation failed!
 > 
-> Moreover, over-stuttering can hinder RCU's progress on TREE07 kernels.
-> This happens as the stuttering code may run within a softirq due to RCU
-> callbacks. Consequently, ksoftirqd keeps a CPU busy for several seconds,
-> thus obstructing RCU's progress. This situation triggers a warning
-> message in the logs:
+> Simplify the error handling by always returning -ENOMEM if either
+> init_srcu_struct_nodes() or the per-CPU allocation fails. This makes the
+> control flow easier to follow and avoids the inconsistent return values.
 > 
-> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> Add goto labels to avoid duplicating the error cleanup code.
 > 
-> This warning suggests that an RCU torture object, although invisible to
-> RCU readers, couldn't make it past the pipe array and be freed -- a
-> strong indication that there weren't enough grace periods during the
-> stutter interval.
-> 
-> To address these issues, this patch sets the "stutter end" time to an
-> absolute point in the future set by the main stutter thread. This is
-> then used for waiting in stutter_wait(). While the stutter thread still
-> defines this absolute time, the waiters' waiting logic doesn't rely on
-> the stutter thread receiving sufficient CPU time to halt the stuttering
-> as the halting is now self-controlled.
-> 
+> Link: https://lore.kernel.org/r/20230404003508.GA254019@google.com
 > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/torture.c | 46 +++++++++++++---------------------------------
->  1 file changed, 13 insertions(+), 33 deletions(-)
-> 
-> diff --git a/kernel/torture.c b/kernel/torture.c
-> index 68dba4ecab5c..63f8f2a7d960 100644
-> --- a/kernel/torture.c
-> +++ b/kernel/torture.c
-> @@ -719,7 +719,7 @@ static void torture_shutdown_cleanup(void)
->   * suddenly applied to or removed from the system.
->   */
->  static struct task_struct *stutter_task;
-> -static int stutter_pause_test;
-> +static ktime_t stutter_till_abs_time;
->  static int stutter;
->  static int stutter_gap;
->  
-> @@ -729,30 +729,17 @@ static int stutter_gap;
->   */
->  bool stutter_wait(const char *title)
->  {
-> -	unsigned int i = 0;
->  	bool ret = false;
-> -	int spt;
-> +	ktime_t now_ns, till_ns;
->  
->  	cond_resched_tasks_rcu_qs();
-> -	spt = READ_ONCE(stutter_pause_test);
-> -	for (; spt; spt = READ_ONCE(stutter_pause_test)) {
-> -		if (!ret && !rt_task(current)) {
-> -			sched_set_normal(current, MAX_NICE);
-> -			ret = true;
-> -		}
-> -		if (spt == 1) {
-> -			torture_hrtimeout_jiffies(1, NULL);
-> -		} else if (spt == 2) {
-> -			while (READ_ONCE(stutter_pause_test)) {
-> -				if (!(i++ & 0xffff))
-> -					torture_hrtimeout_us(10, 0, NULL);
-> -				cond_resched();
-> -			}
-> -		} else {
-> -			torture_hrtimeout_jiffies(round_jiffies_relative(HZ), NULL);
-> -		}
-> -		torture_shutdown_absorb(title);
-> +	now_ns = ktime_get();
-> +	till_ns = READ_ONCE(stutter_till_abs_time);
-> +	if (till_ns && ktime_before(now_ns, till_ns)) {
-> +		torture_hrtimeout_ns(ktime_sub(till_ns, now_ns), 0, NULL);
 
-This ktime_sub() is roughly cancelled out by a ktime_add_safe() in
-__hrtimer_start_range_ns().  Perhaps torture_hrtimeout_ns() needs to
-take a mode argument as in the patch at the end of this email, allowing
-you to ditch that ktime_sub() in favor of HRTIMER_MODE_ABS.
+Looks good, nice simplification!  One nit below.
 
 							Thanx, Paul
 
-> +		ret = true;
->  	}
-> +	torture_shutdown_absorb(title);
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(stutter_wait);
-> @@ -763,23 +750,16 @@ EXPORT_SYMBOL_GPL(stutter_wait);
->   */
->  static int torture_stutter(void *arg)
->  {
-> -	DEFINE_TORTURE_RANDOM(rand);
-> -	int wtime;
-> +	ktime_t till_ns;
->  
->  	VERBOSE_TOROUT_STRING("torture_stutter task started");
->  	do {
->  		if (!torture_must_stop() && stutter > 1) {
-> -			wtime = stutter;
-> -			if (stutter > 2) {
-> -				WRITE_ONCE(stutter_pause_test, 1);
-> -				wtime = stutter - 3;
-> -				torture_hrtimeout_jiffies(wtime, &rand);
-> -				wtime = 2;
+> ---
+>  kernel/rcu/srcutree.c | 31 +++++++++++++++++--------------
+>  1 file changed, 17 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 20d7a238d675..cbc37cbc1805 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -255,29 +255,32 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  	ssp->srcu_sup->sda_is_static = is_static;
+>  	if (!is_static)
+>  		ssp->sda = alloc_percpu(struct srcu_data);
+> -	if (!ssp->sda) {
+> -		if (!is_static)
+> -			kfree(ssp->srcu_sup);
+> -		return -ENOMEM;
+> -	}
+> +	if (!ssp->sda)
+> +		goto err_free_sup;
+>  	init_srcu_struct_data(ssp);
+>  	ssp->srcu_sup->srcu_gp_seq_needed_exp = 0;
+>  	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
+>  	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
+> -		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC)) {
+> -			if (!ssp->srcu_sup->sda_is_static) {
+
+I was going to complain about this ssp->srcu_sup->sda_is_static becoming
+just is_static, but now I cannot see why I didn't just use is_static in
+the first place.  ;-)
+
+> -				free_percpu(ssp->sda);
+> -				ssp->sda = NULL;
+> -				kfree(ssp->srcu_sup);
+> -				return -ENOMEM;
 > -			}
-> -			WRITE_ONCE(stutter_pause_test, 2);
-> -			torture_hrtimeout_jiffies(wtime, NULL);
-> +			till_ns = ktime_add_ns(ktime_get(),
-> +					       jiffies_to_nsecs(stutter));
-> +			WRITE_ONCE(stutter_till_abs_time, till_ns);
-> +			torture_hrtimeout_jiffies(stutter - 1, NULL);
->  		}
-> -		WRITE_ONCE(stutter_pause_test, 0);
->  		if (!torture_must_stop())
->  			torture_hrtimeout_jiffies(stutter_gap, NULL);
->  		torture_shutdown_absorb("torture_stutter");
+> -		} else {
+> +		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
+> +			goto err_free_sda;
+> +		else
+>  			WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
 
-------------------------------------------------------------------------
+Given that the "then" clause is a goto, what is the "else" clause doing
+for us?
 
-commit 6445f014c3d4d20a0b69bd97d3b76a222820612f
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed Jul 26 13:57:03 2023 -0700
-
-    torture: Make torture_hrtimeout_ns() take an hrtimer mode parameter
-    
-    The current torture-test sleeps are waiting for a duration, but there
-    are situations where it is better to wait for an absolute time, for
-    example, when ending a stutter interval.  This commit therefore adds
-    an hrtimer mode parameter to torture_hrtimeout_ns().  Why not also the
-    other torture_hrtimeout_*() functions?  The theory is that most absolute
-    times will be in nanoseconds, especially not (say) jiffies.
-    
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/include/linux/torture.h b/include/linux/torture.h
-index bb466eec01e4..017f0f710815 100644
---- a/include/linux/torture.h
-+++ b/include/linux/torture.h
-@@ -81,7 +81,8 @@ static inline void torture_random_init(struct torture_random_state *trsp)
- }
- 
- /* Definitions for high-resolution-timer sleeps. */
--int torture_hrtimeout_ns(ktime_t baset_ns, u32 fuzzt_ns, struct torture_random_state *trsp);
-+int torture_hrtimeout_ns(ktime_t baset_ns, u32 fuzzt_ns, const enum hrtimer_mode mode,
-+			 struct torture_random_state *trsp);
- int torture_hrtimeout_us(u32 baset_us, u32 fuzzt_ns, struct torture_random_state *trsp);
- int torture_hrtimeout_ms(u32 baset_ms, u32 fuzzt_us, struct torture_random_state *trsp);
- int torture_hrtimeout_jiffies(u32 baset_j, struct torture_random_state *trsp);
-diff --git a/kernel/torture.c b/kernel/torture.c
-index 68dba4ecab5c..6ba62e5993e7 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -87,14 +87,15 @@ EXPORT_SYMBOL_GPL(verbose_torout_sleep);
-  * nanosecond random fuzz.  This function and its friends desynchronize
-  * testing from the timer wheel.
-  */
--int torture_hrtimeout_ns(ktime_t baset_ns, u32 fuzzt_ns, struct torture_random_state *trsp)
-+int torture_hrtimeout_ns(ktime_t baset_ns, u32 fuzzt_ns, const enum hrtimer_mode mode,
-+			 struct torture_random_state *trsp)
- {
- 	ktime_t hto = baset_ns;
- 
- 	if (trsp)
- 		hto += torture_random(trsp) % fuzzt_ns;
- 	set_current_state(TASK_IDLE);
--	return schedule_hrtimeout(&hto, HRTIMER_MODE_REL);
-+	return schedule_hrtimeout(&hto, mode);
- }
- EXPORT_SYMBOL_GPL(torture_hrtimeout_ns);
- 
-@@ -106,7 +107,7 @@ int torture_hrtimeout_us(u32 baset_us, u32 fuzzt_ns, struct torture_random_state
- {
- 	ktime_t baset_ns = baset_us * NSEC_PER_USEC;
- 
--	return torture_hrtimeout_ns(baset_ns, fuzzt_ns, trsp);
-+	return torture_hrtimeout_ns(baset_ns, fuzzt_ns, HRTIMER_MODE_REL, trsp);
- }
- EXPORT_SYMBOL_GPL(torture_hrtimeout_us);
- 
-@@ -123,7 +124,7 @@ int torture_hrtimeout_ms(u32 baset_ms, u32 fuzzt_us, struct torture_random_state
- 		fuzzt_ns = (u32)~0U;
- 	else
- 		fuzzt_ns = fuzzt_us * NSEC_PER_USEC;
--	return torture_hrtimeout_ns(baset_ns, fuzzt_ns, trsp);
-+	return torture_hrtimeout_ns(baset_ns, fuzzt_ns, HRTIMER_MODE_REL, trsp);
- }
- EXPORT_SYMBOL_GPL(torture_hrtimeout_ms);
- 
-@@ -136,7 +137,7 @@ int torture_hrtimeout_jiffies(u32 baset_j, struct torture_random_state *trsp)
- {
- 	ktime_t baset_ns = jiffies_to_nsecs(baset_j);
- 
--	return torture_hrtimeout_ns(baset_ns, jiffies_to_nsecs(1), trsp);
-+	return torture_hrtimeout_ns(baset_ns, jiffies_to_nsecs(1), HRTIMER_MODE_REL, trsp);
- }
- EXPORT_SYMBOL_GPL(torture_hrtimeout_jiffies);
- 
-@@ -153,7 +154,7 @@ int torture_hrtimeout_s(u32 baset_s, u32 fuzzt_ms, struct torture_random_state *
- 		fuzzt_ns = (u32)~0U;
- 	else
- 		fuzzt_ns = fuzzt_ms * NSEC_PER_MSEC;
--	return torture_hrtimeout_ns(baset_ns, fuzzt_ns, trsp);
-+	return torture_hrtimeout_ns(baset_ns, fuzzt_ns, HRTIMER_MODE_REL, trsp);
- }
- EXPORT_SYMBOL_GPL(torture_hrtimeout_s);
- 
+> -		}
+>  	}
+>  	ssp->srcu_sup->srcu_ssp = ssp;
+>  	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
+>  	return 0;
+> +
+> +err_free_sda:
+> +	if (!is_static) {
+> +		free_percpu(ssp->sda);
+> +		ssp->sda = NULL;
+> +	}
+> +err_free_sup:
+> +	if (!is_static) {
+> +		kfree(ssp->srcu_sup);
+> +		ssp->srcu_sup = NULL;
+> +	}
+> +	return -ENOMEM;
+>  }
+>  
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
