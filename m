@@ -2,99 +2,130 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BEC3C001DF
-	for <rcu@archiver.kernel.org>; Tue, 25 Jul 2023 23:29:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0198BEB64DD
+	for <rcu@archiver.kernel.org>; Wed, 26 Jul 2023 00:59:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbjGYX3t (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 25 Jul 2023 19:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        id S229475AbjGZA7W (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 25 Jul 2023 20:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231907AbjGYX3o (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 25 Jul 2023 19:29:44 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9A31FCF
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 16:29:34 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-78360b822abso260457239f.2
-        for <rcu@vger.kernel.org>; Tue, 25 Jul 2023 16:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690327773; x=1690932573;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ynoALsv1aca8y8xpjhuiunc/CTMUKjN2qeAE0MoxzWk=;
-        b=T1/qgW80ZW0ruvAexTl3SwPC/VD8efNMinccPq8SOmll1PeYaL7nJcC+rT2y/ICCI/
-         Zm7HzPisHr2CWscQ8DNq4ATfmZQ4copg8Byy3hFGTtKvq0+ing3UNCdbIzc4z9yskHeM
-         i6XYgDFBYacc8aSIAdToK+pj+H/fS21Ias0jU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690327773; x=1690932573;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ynoALsv1aca8y8xpjhuiunc/CTMUKjN2qeAE0MoxzWk=;
-        b=H880LOZW0ZAZzo+rPare5xPE0PU77ByI582ICBiQXVIIpF8dwAAKe1ab9mWBCwY96b
-         BDDpjgcPcCHuQKyEalW4sqBmZzut4A7wl37LBTZO0wcCS6z//87VVtndgFZY7d/KMqvc
-         VCOYXGXS5+MnP1frDWrljpRlsrRXVOgiZp91CghKMWUd722qNgRru2ClWDtDeNvSQtd/
-         PLOhwcmM6b5EIs3nA1RyfAio4lybWxuOTLC5varJmzJhv4UnERstvstxeqUwl2vvJUqB
-         oUd0jzGtDZ7Ns6F+7iST4q20WTd/myntQQWzVc8Y0r7HwGmSVM/nNJ57j/jYvPiqaCW7
-         J2eA==
-X-Gm-Message-State: ABy/qLaSEpatjsIvk59alf8duks8OXtpPWb9hKxkZuefySAi7aTt6tCQ
-        SMP8SCtXNMFWdTQdv30AbMumN6Mzl9J6OQWbHE4=
-X-Google-Smtp-Source: APBJJlFOYFaGXIDd2DLLQ0HZ+PPI+wBB+NlGxhegixuv5PbL5oqsOrir68iUsUdxnVKRboGwsYrdZA==
-X-Received: by 2002:a5e:8a4c:0:b0:787:34d:ee9e with SMTP id o12-20020a5e8a4c000000b00787034dee9emr356394iom.7.1690327773744;
-        Tue, 25 Jul 2023 16:29:33 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id m18-20020a02c892000000b0041d859c5721sm3932053jao.64.2023.07.25.16.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 16:29:32 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     rcu@vger.kernel.org, paulmck@kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 5/5] Revert "checkpatch: Error out if deprecated RCU API used"
-Date:   Tue, 25 Jul 2023 23:29:10 +0000
-Message-ID: <20230725232913.2981357-6-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-In-Reply-To: <20230725232913.2981357-1-joel@joelfernandes.org>
-References: <20230725232913.2981357-1-joel@joelfernandes.org>
+        with ESMTP id S229459AbjGZA7U (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 25 Jul 2023 20:59:20 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15FCBC;
+        Tue, 25 Jul 2023 17:59:18 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R9bBp5Pnhz4f3kkW;
+        Wed, 26 Jul 2023 08:59:14 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rHhb8Bk5rZFOw--.10487S3;
+        Wed, 26 Jul 2023 08:59:15 +0800 (CST)
+Subject: Re: [PATCH 1/2] softirq: fix integer overflow in function show_stat()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230724132224.916-1-thunder.leizhen@huaweicloud.com>
+ <20230724132224.916-2-thunder.leizhen@huaweicloud.com>
+ <ZL6BwiHhvQneJZYH@casper.infradead.org>
+ <6e38e31f-4413-1aff-8973-5c3d660bedea@huaweicloud.com>
+ <3b1ba209-58c8-b2b6-115a-6c43cba80098@huaweicloud.com>
+ <ZL/pvjMMtlxvBSCm@casper.infradead.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <d6f00e09-757a-9935-bc22-c2a1d9c99c52@huaweicloud.com>
+Date:   Wed, 26 Jul 2023 08:59:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZL/pvjMMtlxvBSCm@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgBH_rHhb8Bk5rZFOw--.10487S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4kAF4ftF1kWrWDuFWfZrb_yoW5JFWfpF
+        W7t3Wjkr4kCFyIyrn2qrn7Xr12yw48J345Zrn8C3y8AFZ5Z3sagF47Kr4Y9Fyxur1Sgw4F
+        vayjg3s7CFyDZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The check for single-argument kfree_rcu() is no longer needed as all
-users have been converted.
 
-This reverts commit 1eacac3255495be7502d406e2ba5444fb5c3607c.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- scripts/checkpatch.pl | 9 ---------
- 1 file changed, 9 deletions(-)
+On 2023/7/25 23:26, Matthew Wilcox wrote:
+> On Tue, Jul 25, 2023 at 05:09:05PM +0800, Leizhen (ThunderTown) wrote:
+>> On 2023/7/25 10:00, Leizhen (ThunderTown) wrote:
+>>> On 2023/7/24 21:50, Matthew Wilcox wrote:
+>>>> On Mon, Jul 24, 2023 at 09:22:23PM +0800, thunder.leizhen@huaweicloud.com wrote:
+>>>>> From: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>>
+>>>>> The statistics function of softirq is supported by commit aa0ce5bbc2db
+>>>>> ("softirq: introduce statistics for softirq") in 2009. At that time,
+>>>>> 64-bit processors should not have many cores and would not face
+>>>>> significant count overflow problems. Now it's common for a processor to
+>>>>> have hundreds of cores. Assume that there are 100 cores and 10
+>>>>> TIMER_SOFTIRQ are generated per second, then the 32-bit sum will be
+>>>>> overflowed after 50 days.
+>>>>
+>>>> 50 days is long enough to take a snapshot.  You should always be using
+>>>> difference between, not absolute values, and understand that they can
+>>>> wrap.  We only tend to change the size of a counter when it can wrap
+>>>> sufficiently quickly that we might miss a wrap (eg tens of seconds).
+>>
+>> Sometimes it can take a long time to view it again. For example, it is
+>> possible to run a complete business test for hours or even days, and
+>> then calculate the average.
+> 
+> I've been part of teams which have done such multi-hour tests.  That
+> isn't how monitoring was performed.  Instead snapshots were taken every
+> minute or even more frequently, because we wanted to know how these
+> counters were fluctuating during the test -- were there time periods
+> when the number of sortirqs spiked, or was it constant during the test?
+> 
+>>> Yes, I think patch 2/2 can be dropped. I reduced the number of soft
+>>> interrupts generated in one second, and actually 100+ or 1000 is normal.
+>>> But I think patch 1/2 is necessary. The sum of the output scattered values
+>>> does not match the output sum. To solve this problem, we only need to
+>>> adjust the type of a local variable.
+>>
+>> However, it is important to consider that when the local variable is changed
+>> to u64, the output string becomes longer. It is not clear if the user-mode
+>> program parses it only by u32.
+> 
+> There's no need for the numbers to add up.  They won't anyway, because
+> summing them is racy , so they'll always be a little off.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index a9841148cde2..528f619520eb 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6422,15 +6422,6 @@ sub process {
- 			}
- 		}
- 
--# check for soon-to-be-deprecated single-argument k[v]free_rcu() API
--		if ($line =~ /\bk[v]?free_rcu\s*\([^(]+\)/) {
--			if ($line =~ /\bk[v]?free_rcu\s*\([^,]+\)/) {
--				ERROR("DEPRECATED_API",
--				      "Single-argument k[v]free_rcu() API is deprecated, please pass rcu_head object or call k[v]free_rcu_mightsleep()." . $herecurr);
--			}
--		}
--
--
- # check for unnecessary "Out of Memory" messages
- 		if ($line =~ /^\+.*\b$logFunctions\s*\(/ &&
- 		    $prevline =~ /^[ \+]\s*if\s*\(\s*(\!\s*|NULL\s*==\s*)?($Lval)(\s*==\s*NULL\s*)?\s*\)/ &&
+Okay, thanks for the reply. I got it. I just summed it up temporarily to
+prove that integer overflow is possible, and there's no actual requirement.
+
+> 
+> .
+> 
+
 -- 
-2.41.0.487.g6d72f3e995-goog
+Regards,
+  Zhen Lei
 
