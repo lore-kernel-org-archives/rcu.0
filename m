@@ -2,194 +2,139 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7D72C001E0
-	for <rcu@archiver.kernel.org>; Wed, 26 Jul 2023 09:36:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BDBEC04A6A
+	for <rcu@archiver.kernel.org>; Wed, 26 Jul 2023 19:42:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbjGZJgD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Jul 2023 05:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
+        id S232109AbjGZTmG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Jul 2023 15:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233612AbjGZJfc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Jul 2023 05:35:32 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47D9271B
-        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 02:33:50 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b7dfb95761so8911885ad.1
-        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 02:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690364030; x=1690968830;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0oULOTnWb1HIc+jcDQkyDbPD+ewEuK6cRZsxNFZBJHs=;
-        b=QJhhRpaTfMAfucHkCz2d9TS31hpYk30s2kQKv681O+Sl1mLTZQhZq5VKb4l9mXe+gX
-         5Eax6ixoNcCSNY9H6aAkwgnBd/g9cM9X43ylT+UhHbYekfmlgjo/JXqlix6WaCFQ7jVV
-         2D4QfnYhGItzA17GFTgozRmivkdC7H5IwsXEWhmkOBzQK5UpXhnT6Ls+I4I3tsoeozxU
-         24KbqK2Cq3sIWZ8RaqWYBiX9Q9627K0AND5qR2t9+dtM8IjHsDiCPK6lh5ggLgTON/bP
-         sMZVbirBGOz1XlXtXsxmGmw+9U7+KmVQpZdmOnau0hPanAHKCfZx0jR+DbnWSE4a/7ep
-         yq9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690364030; x=1690968830;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0oULOTnWb1HIc+jcDQkyDbPD+ewEuK6cRZsxNFZBJHs=;
-        b=J/rvW1YC8dxjQ6c2c13OhtDUn/y6A1I1gUbBGLaVoOTkYXjREfkeJG+xtx8fsRUMb5
-         558+R4QSS2LDWQ76eolJaBtGAgYi8h9Z5Dnp/IHv5afeSMtu6KGqn4C5NIgKyT3d5IlZ
-         JenffzO9KYvFRLd1/LLCIJkgzaVKrc3tcA3+b6S7mTR5h7O4XFannKcbjfu6hX7Pxvjf
-         J3sNWTpSd0isSh+51sMiWmEbI7oraI+GpxuH8fiEvo1gD77QgTqaNQk7UzDUakRxAz9u
-         stkjNHJKoVnCe3mhey2TKLC5Zv4DYUot0FcAb+Czoa3RT2dYIuquxg/3rOeUYz1u2eWL
-         fiJQ==
-X-Gm-Message-State: ABy/qLZtWCF6MeFsPiVwdUXIvRPwGObLbvwrqy5FWB3YpFR25+Ek4833
-        kiGES8kdr7H5rSb1xyWXXWGk9w==
-X-Google-Smtp-Source: APBJJlG8LKe8O0SB++JE7Hsj6dMankp6b2TdGG8KZmgQCX7ZvwrXNm6kysx08G1J6PXDjDRRJyafNA==
-X-Received: by 2002:a17:903:32c9:b0:1b8:5827:8763 with SMTP id i9-20020a17090332c900b001b858278763mr2037984plr.4.1690364030014;
-        Wed, 26 Jul 2023 02:33:50 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902d2c500b001b89466a5f4sm12582766plc.105.2023.07.26.02.33.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:33:49 -0700 (PDT)
-Message-ID: <0f12022e-5dd2-fb1c-f018-05f8ff0303ae@bytedance.com>
-Date:   Wed, 26 Jul 2023 17:33:36 +0800
+        with ESMTP id S230484AbjGZTmE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Jul 2023 15:42:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F1B1BE3;
+        Wed, 26 Jul 2023 12:42:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6014861CBB;
+        Wed, 26 Jul 2023 19:42:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0408AC433C7;
+        Wed, 26 Jul 2023 19:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690400522;
+        bh=6e6cReriYF7em75Hf0iAxdRhfTIt48diinTa2LCaE+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sLyIAGyV6TUHuowqKx/5JfDcmeo0WhbUg1yCQ8GAUu2bA1CHQXElka+Q1GRT7V1yv
+         R0EddtJuV1su72lOKWDmqPZkTqr3rjqushe4n3Y0JyPwiujSaR6lzMnBE/bXB37uce
+         8O1V4aPEPJ7CtaWT6N1qd3sf2g3qg1GZ/ysRkHn0W2duBIi4pMtC3lDu6nsoC6Pt3/
+         swHIlZLsRsV+7qlwiW9MPLzwOhahR6eIG7+fvoyQ2iGsIvPP2A61lMuC8l5VN12v0v
+         2zw+8Jdxg6lE+m401O76ze1xAH8enmcSNQ3pjVXumpOLBXI9Yvybgks7Mc9qIvNX4N
+         FrlfiSoNf+zHg==
+Date:   Wed, 26 Jul 2023 12:41:48 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a cpumask
+ field by another cpumask
+Message-ID: <20230726194148.4jhyqqbtn3qqqqsq@treble>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-3-vschneid@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 28/47] bcache: dynamically allocate the md-bcache
- shrinker
-Content-Language: en-US
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-29-zhengqi.arch@bytedance.com>
- <4ee26da4-314e-0517-5d9a-31fb107368ef@linux.dev>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <4ee26da4-314e-0517-5d9a-31fb107368ef@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230720163056.2564824-3-vschneid@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Thu, Jul 20, 2023 at 05:30:38PM +0100, Valentin Schneider wrote:
+>  int filter_assign_type(const char *type)
+>  {
+> -	if (strstr(type, "__data_loc") && strstr(type, "char"))
+> -		return FILTER_DYN_STRING;
+> +	if (strstr(type, "__data_loc")) {
+> +		if (strstr(type, "char"))
+> +			return FILTER_DYN_STRING;
+> +		if (strstr(type, "cpumask_t"))
+> +			return FILTER_CPUMASK;
+> +		}
 
+The closing bracket has the wrong indentation.
 
-On 2023/7/26 15:32, Muchun Song wrote:
-> 
-> 
-> On 2023/7/24 17:43, Qi Zheng wrote:
->> In preparation for implementing lockless slab shrink, use new APIs to
->> dynamically allocate the md-bcache shrinker, so that it can be freed
->> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
->> read-side critical section when releasing the struct cache_set.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   drivers/md/bcache/bcache.h |  2 +-
->>   drivers/md/bcache/btree.c  | 27 ++++++++++++++++-----------
->>   drivers/md/bcache/sysfs.c  |  3 ++-
->>   3 files changed, 19 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
->> index 5a79bb3c272f..c622bc50f81b 100644
->> --- a/drivers/md/bcache/bcache.h
->> +++ b/drivers/md/bcache/bcache.h
->> @@ -541,7 +541,7 @@ struct cache_set {
->>       struct bio_set        bio_split;
->>       /* For the btree cache */
->> -    struct shrinker        shrink;
->> +    struct shrinker        *shrink;
->>       /* For the btree cache and anything allocation related */
->>       struct mutex        bucket_lock;
->> diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
->> index fd121a61f17c..c176c7fc77d9 100644
->> --- a/drivers/md/bcache/btree.c
->> +++ b/drivers/md/bcache/btree.c
->> @@ -667,7 +667,7 @@ static int mca_reap(struct btree *b, unsigned int 
->> min_order, bool flush)
->>   static unsigned long bch_mca_scan(struct shrinker *shrink,
->>                     struct shrink_control *sc)
->>   {
->> -    struct cache_set *c = container_of(shrink, struct cache_set, 
->> shrink);
->> +    struct cache_set *c = shrink->private_data;
->>       struct btree *b, *t;
->>       unsigned long i, nr = sc->nr_to_scan;
->>       unsigned long freed = 0;
->> @@ -734,7 +734,7 @@ static unsigned long bch_mca_scan(struct shrinker 
->> *shrink,
->>   static unsigned long bch_mca_count(struct shrinker *shrink,
->>                      struct shrink_control *sc)
->>   {
->> -    struct cache_set *c = container_of(shrink, struct cache_set, 
->> shrink);
->> +    struct cache_set *c = shrink->private_data;
->>       if (c->shrinker_disabled)
->>           return 0;
->> @@ -752,8 +752,8 @@ void bch_btree_cache_free(struct cache_set *c)
->>       closure_init_stack(&cl);
->> -    if (c->shrink.list.next)
->> -        unregister_shrinker(&c->shrink);
->> +    if (c->shrink)
->> +        shrinker_unregister(c->shrink);
->>       mutex_lock(&c->bucket_lock);
->> @@ -828,14 +828,19 @@ int bch_btree_cache_alloc(struct cache_set *c)
->>           c->verify_data = NULL;
->>   #endif
->> -    c->shrink.count_objects = bch_mca_count;
->> -    c->shrink.scan_objects = bch_mca_scan;
->> -    c->shrink.seeks = 4;
->> -    c->shrink.batch = c->btree_pages * 2;
->> +    c->shrink = shrinker_alloc(0, "md-bcache:%pU", c->set_uuid);
->> +    if (!c->shrink) {
->> +        pr_warn("bcache: %s: could not allocate shrinker\n", __func__);
->> +        return -ENOMEM;
-> 
-> Seems you have cheanged the semantic of this. In the past,
-> it is better to have a shrinker, but now it becomes a mandatory.
-> Right? I don't know if it is acceptable. From my point of view,
-> just do the cleanup, don't change any behaviour.
+> +		/* Copy the cpulist between { and } */
+> +		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
+> +		strscpy(tmp, str + maskstart, (i - maskstart) + 1);
 
-Oh, should return 0 here, will do.
+Need to check kmalloc() failure?  And also free tmp?
 
-> 
->> +    }
->> +
->> +    c->shrink->count_objects = bch_mca_count;
->> +    c->shrink->scan_objects = bch_mca_scan;
->> +    c->shrink->seeks = 4;
->> +    c->shrink->batch = c->btree_pages * 2;
->> +    c->shrink->private_data = c;
->> -    if (register_shrinker(&c->shrink, "md-bcache:%pU", c->set_uuid))
->> -        pr_warn("bcache: %s: could not register shrinker\n",
->> -                __func__);
->> +    shrinker_register(c->shrink);
->>       return 0;
->>   }
->> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
->> index 0e2c1880f60b..45d8af755de6 100644
->> --- a/drivers/md/bcache/sysfs.c
->> +++ b/drivers/md/bcache/sysfs.c
->> @@ -866,7 +866,8 @@ STORE(__bch_cache_set)
->>           sc.gfp_mask = GFP_KERNEL;
->>           sc.nr_to_scan = strtoul_or_return(buf);
->> -        c->shrink.scan_objects(&c->shrink, &sc);
->> +        if (c->shrink)
->> +            c->shrink->scan_objects(c->shrink, &sc);
->>       }
->>       sysfs_strtoul_clamp(congested_read_threshold_us,
-> 
+> +
+> +		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
+> +		if (!pred->mask)
+> +			goto err_mem;
+> +
+> +		/* Now parse it */
+> +		if (cpulist_parse(tmp, pred->mask)) {
+> +			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
+> +			goto err_free;
+> +		}
+> +
+> +		/* Move along */
+> +		i++;
+> +		if (field->filter_type == FILTER_CPUMASK)
+> +			pred->fn_num = FILTER_PRED_FN_CPUMASK;
+> +
+
+-- 
+Josh
