@@ -2,126 +2,95 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CAF9C001E0
-	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 10:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD2D0C001DC
+	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 11:35:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbjG0KdS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jul 2023 06:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
+        id S232387AbjG0Lfk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jul 2023 07:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234086AbjG0Kcw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:32:52 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCD5170D
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 03:32:26 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2659b1113c2so160334a91.1
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 03:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690453945; x=1691058745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
-        b=Zr/NhsMbDbdIdSqoueTQTw00LusmUmyLrdR7MeDx+ZO5Q+75jdmzv373GL0Ee5CtKr
-         W6fluKiuFJCg5ZU3kW0Km101UvphMU1vBCY7hDEO6TFqab4XzqrIV8fVDPR2Owpqim7U
-         N3OX4eAxVQVjc5z6Zvv7YweV9TAIgzv2mVUZoaytYD45Z4tHHiC7Kn023GaYmi5v6RKy
-         g9n+r/2KPb5qfD2ZK/MDUQIwCLsfUVl7c4q/2XRu1uefpNinWMEwlZLohyik+zojbFUF
-         urJtl81vW3ulTBjRT5ht+WLfC03kh8PaMNuzZ2kESl6uu5dT49u0KrVoAN4kKuQ8SPSD
-         k2iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690453945; x=1691058745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
-        b=HDK9L8lSv/21q2MxFzI7QgK+bddswSjuaz7hXrpOVlr1TLhem4h2xfKYCKffDen5t6
-         EaTmAhao6QQjbSIFBR2KsmCxII8CvJKzx28nPDgklUjSUUvCoL1d/Vi9cq2VRwpl3iXo
-         bdZiZD75hy9BbrigLa5WfKrpe58dCZy18AfwRrVqlUHgtFCJuAAaVggiowdxyF+6F6AC
-         1DiYIGhPAmgnsaU74ldw8xDKQLT8WhHH9wunmmD1oWre/8t1KLvK15rltnh4VgdoYGfm
-         GRVVoop9pd3QsiiI0D5ib+xPc0/HOQtvnR0+PktLMwNDFc6YKSDkUTRaNBSNTFDz4oTH
-         n5vw==
-X-Gm-Message-State: ABy/qLYkial2hrD6RGvIZyv2+IW7fZ9jYvChACaPFZ4EH36U59pS7aJV
-        SsxhDBHj8g8o4qwkp9O431e5xQ==
-X-Google-Smtp-Source: APBJJlGmzPZn88CMJAqpsojyTb97uikW28yo5O3pi8rH8SDlSH8BwjASuoOudfeGFyxgCSRxAf0mLA==
-X-Received: by 2002:a17:90a:1b06:b0:263:2312:60c2 with SMTP id q6-20020a17090a1b0600b00263231260c2mr4299433pjq.3.1690453945653;
-        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id 8-20020a17090a018800b0026309d57724sm2755058pjc.39.2023.07.27.03.32.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
-Message-ID: <cc819e13-cb25-ddaa-e0e3-7328f5ea3a4f@bytedance.com>
-Date:   Thu, 27 Jul 2023 18:32:10 +0800
+        with ESMTP id S229946AbjG0Lfj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jul 2023 07:35:39 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265E1213F;
+        Thu, 27 Jul 2023 04:35:25 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B05001C0A94; Thu, 27 Jul 2023 13:35:22 +0200 (CEST)
+Date:   Thu, 27 Jul 2023 13:35:22 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
+Message-ID: <ZMJWet00+9yIl/9c@duo.ucw.cz>
+References: <20230725104514.821564989@linuxfoundation.org>
+ <20230727035846.GA3644016@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
- shrinker
-Content-Language: en-US
-To:     Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-29-zhengqi.arch@bytedance.com>
- <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
- <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
- <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="v37RfGbpMGXlYcwp"
+Content-Disposition: inline
+In-Reply-To: <20230727035846.GA3644016@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 
+--v37RfGbpMGXlYcwp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/7/27 18:20, Damien Le Moal wrote:
-> On 7/27/23 17:55, Qi Zheng wrote:
->>>>            goto err;
->>>>        }
->>>>    +    zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
->>>> +    zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
->>>> +    zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
->>>> +    zmd->mblk_shrinker->private_data = zmd;
->>>> +
->>>> +    shrinker_register(zmd->mblk_shrinker);
->>>
->>> I fail to see how this new shrinker API is better... Why isn't there a
->>> shrinker_alloc_and_register() function ? That would avoid adding all this code
->>> all over the place as the new API call would be very similar to the current
->>> shrinker_register() call with static allocation.
->>
->> In some registration scenarios, memory needs to be allocated in advance.
->> So we continue to use the previous prealloc/register_prepared()
->> algorithm. The shrinker_alloc_and_register() is just a helper function
->> that combines the two, and this increases the number of APIs that
->> shrinker exposes to the outside, so I choose not to add this helper.
-> 
-> And that results in more code in many places instead of less code + a simple
-> inline helper in the shrinker header file... So not adding that super simple
+Hi!
 
-It also needs to be exported to the driver for use.
+> > This is the start of the stable review cycle for the 6.4.7 release.
+> > There are 227 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >=20
+> > Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
+> > Anything received after that time might be too late.
+> >=20
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.7=
+-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.g=
+it linux-6.4.y
+> > and the diffstat can be found below.
+>=20
+> I saw this when running rcutorture, this one happened in the TREE04
+> configuration. This is likely due to the stuttering issues we are discuss=
+ing
+> in the other thread. Anyway I am just making a note here while I am
+> continuing to look into it.
 
-> helper is not exactly the best choice in my opinion.
+So is the stuttering new in 6.4.7?
 
-Hm, either one is fine for me. If no one else objects, I can add this
-helper. ;)
+> Other than that, all tests pass:
+> Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-> 
+=2E..or you still believe 6.4.7 is okay to release?
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--v37RfGbpMGXlYcwp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZMJWegAKCRAw5/Bqldv6
+8u8RAJ0aWW+qCQPiDjOB9diBiJQL+qWo9ACaAgyIcHs0X3Tgy7OLCSwhGHymGF0=
+=WG+w
+-----END PGP SIGNATURE-----
+
+--v37RfGbpMGXlYcwp--
