@@ -2,167 +2,103 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF10C001E0
-	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 09:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F6B5C0015E
+	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 10:21:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbjG0Jsf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jul 2023 05:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
+        id S233575AbjG0KU6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jul 2023 06:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234019AbjG0Jra (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:47:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4384A2
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 02:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690451199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9/ZtPwamYEdAIqsg4Eha/G0ZWoXDeFDSv2EcRY5ZelM=;
-        b=ElA+djzD54PmSaLqPYVLagO86vrJIo5ndba6ka7QFSqTsAKw94/alTgdtXVd9Kuc2RLKAT
-        LF06t5/O/KT1UzqYQ0SyR1yjF3COv1plsBkkPA1PvXS2fhzmGJkRa/WHR2CKtU9J8B0+2z
-        IvhVpr0VvDy9mOJ+e4O92cZaP/z8hRM=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-539-dSbM3CUDN3yjceLDYJ0WGQ-1; Thu, 27 Jul 2023 05:46:38 -0400
-X-MC-Unique: dSbM3CUDN3yjceLDYJ0WGQ-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fb748a83b4so672597e87.2
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 02:46:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690451197; x=1691055997;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9/ZtPwamYEdAIqsg4Eha/G0ZWoXDeFDSv2EcRY5ZelM=;
-        b=OUKJpbh50naYsecfJEbYfRbv2aC8reIDy3P88hwXQXjZabqFR1NQI8psCaskNEQF1x
-         lC1XPgixnAPPv1u9ebNcwoPIUW3UVMhU6hs6Ne6l2p+V30+bM47fLIJkDDVlCY2ij1v+
-         9kLxNnnstB6ZFfbvdERvf/s+ypVsPxdTYub+r2gmMSyAV+eRUSDhb3e9UuEeeBf0j9Xu
-         YcZwYu69z2oLvVadNhpSo8Z4uM524p5LPqS4Pxd8/loNEu2uE+2JZ5Q6h5OiCttRPP7D
-         oLuGMZD2CLzJf3xIT106oLEsvFQ47GuJgEcToQ5KZU/CTwXsuSMSDMugjGS/2mU55Qm8
-         W9gQ==
-X-Gm-Message-State: ABy/qLZkQL0op2HLmZ3lkKAgrU3yX6mDX1fZSWiWlzc2dkll9RPDdt5n
-        hUE/pHctyPi3HHhIdp8T/TRDFe328AHnGT1zrhe4NpQTlUOsqhJjiqbjSV4xyVnf70Y435T7Mnr
-        HRUjn4JQNzZ2I
-X-Received: by 2002:a05:6512:3186:b0:4f8:7513:8cb0 with SMTP id i6-20020a056512318600b004f875138cb0mr1763682lfe.2.1690451196872;
-        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHWfc8e6nRRU05KgrIaBfOnm87x2dNku7t4qZB3XfKVqk/Go7XcWjycqa01reYQ5M3BH+RFoA==
-X-Received: by 2002:a05:6512:3186:b0:4f8:7513:8cb0 with SMTP id i6-20020a056512318600b004f875138cb0mr1763631lfe.2.1690451196504;
-        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id l10-20020a05600c1d0a00b003fd2d3462fcsm6308442wms.1.2023.07.27.02.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a
- cpumask field by another cpumask
-In-Reply-To: <20230726194148.4jhyqqbtn3qqqqsq@treble>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-3-vschneid@redhat.com>
- <20230726194148.4jhyqqbtn3qqqqsq@treble>
-Date:   Thu, 27 Jul 2023 10:46:33 +0100
-Message-ID: <xhsmho7jxsn46.mognet@vschneid.remote.csb>
+        with ESMTP id S233571AbjG0KUy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jul 2023 06:20:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A385619AF;
+        Thu, 27 Jul 2023 03:20:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38C6E61DED;
+        Thu, 27 Jul 2023 10:20:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9266C433C8;
+        Thu, 27 Jul 2023 10:20:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690453251;
+        bh=Uv0jglg4XDxm5uiOcl1Fs0VDdmS3vnj5J06IHksC3j0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VjGCTE5fXWQGMkstr5mWfG/olGcukHbx9MJ5gIHM1kJfwo/BiFcjiuEaiA2TxQad6
+         b/CL9D78jYHhDiLBxLD9gCBB6CtR9Pngnq1E4RM+cWQl1ITCzXzhPBEMorh0UStJGb
+         V5QypMia7H1mT7Yv9W7oIRfkDRB1G3xJIxfo7Y/Lymzj+mXx3lcBAFmRFbWxhh8lk9
+         h4N9LjcMkMC3/ZfJEah0qCVly/fWQ4ostsbFgLI1m7GG/WQbkHJ87BAgn9cUsNUERW
+         XrnUyEDaK9+tFU+Iukly/qv+tfC9IZiVkgJJJYsmEkH+2gmJEivzAz4IAcCpkEsNUW
+         WY8rxT9ubVHrA==
+Message-ID: <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
+Date:   Thu, 27 Jul 2023 19:20:46 +0900
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
+ shrinker
+Content-Language: en-US
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-29-zhengqi.arch@bytedance.com>
+ <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
+ <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 26/07/23 12:41, Josh Poimboeuf wrote:
-> On Thu, Jul 20, 2023 at 05:30:38PM +0100, Valentin Schneider wrote:
->>  int filter_assign_type(const char *type)
->>  {
->> -	if (strstr(type, "__data_loc") && strstr(type, "char"))
->> -		return FILTER_DYN_STRING;
->> +	if (strstr(type, "__data_loc")) {
->> +		if (strstr(type, "char"))
->> +			return FILTER_DYN_STRING;
->> +		if (strstr(type, "cpumask_t"))
->> +			return FILTER_CPUMASK;
->> +		}
->
-> The closing bracket has the wrong indentation.
->
->> +		/* Copy the cpulist between { and } */
->> +		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
->> +		strscpy(tmp, str + maskstart, (i - maskstart) + 1);
->
-> Need to check kmalloc() failure?  And also free tmp?
->
+On 7/27/23 17:55, Qi Zheng wrote:
+>>>           goto err;
+>>>       }
+>>>   +    zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
+>>> +    zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
+>>> +    zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
+>>> +    zmd->mblk_shrinker->private_data = zmd;
+>>> +
+>>> +    shrinker_register(zmd->mblk_shrinker);
+>>
+>> I fail to see how this new shrinker API is better... Why isn't there a
+>> shrinker_alloc_and_register() function ? That would avoid adding all this code
+>> all over the place as the new API call would be very similar to the current
+>> shrinker_register() call with static allocation.
+> 
+> In some registration scenarios, memory needs to be allocated in advance.
+> So we continue to use the previous prealloc/register_prepared()
+> algorithm. The shrinker_alloc_and_register() is just a helper function
+> that combines the two, and this increases the number of APIs that
+> shrinker exposes to the outside, so I choose not to add this helper.
 
-Heh, indeed, shoddy that :-)
+And that results in more code in many places instead of less code + a simple
+inline helper in the shrinker header file... So not adding that super simple
+helper is not exactly the best choice in my opinion.
 
-Thanks!
-
->> +
->> +		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
->> +		if (!pred->mask)
->> +			goto err_mem;
->> +
->> +		/* Now parse it */
->> +		if (cpulist_parse(tmp, pred->mask)) {
->> +			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
->> +			goto err_free;
->> +		}
->> +
->> +		/* Move along */
->> +		i++;
->> +		if (field->filter_type == FILTER_CPUMASK)
->> +			pred->fn_num = FILTER_PRED_FN_CPUMASK;
->> +
->
-> --
-> Josh
+-- 
+Damien Le Moal
+Western Digital Research
 
