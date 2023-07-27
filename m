@@ -2,177 +2,167 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB0BEC001DC
-	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 09:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF10C001E0
+	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 09:48:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbjG0Jaf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jul 2023 05:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
+        id S232249AbjG0Jsf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jul 2023 05:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233849AbjG0JaL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:30:11 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0FD9A9A
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 02:20:04 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-55b78bf0423so53655a12.0
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 02:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690449603; x=1691054403;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cb79b5va6gFfSJneJi5lY4rGeRwgOukMupryAUVW6kI=;
-        b=YCWSTu9U7oWMIxlz666y2QG523oA3QX5qQv7ZytrRVu6fJw8dRHyUfgDIT1gU69FG8
-         THUguZfsi1KeJApNPmw0jxmv7f8KFlV4UTxlH9XbeulHxoa/ldWA269gxLsqPd7fsDUL
-         3wrs7fjkTjLEvVIuFKVgIWoEr+OE7ZGV4f2QptD03saCT0x1g+4lQFRHQ9ruqft2Rhft
-         lQsKff8YPeqYMpcr6auHVhvyZ4A0b6O2v3t87pxn8FkR9lCy8v/ntqGuUNKm9Zf3rtD1
-         Pt/WGCyBPHzJX+fw7G8Ac9jWyGkR4LQhg8QoLvoZwbFMr8CqGaDCh/cUGTEJkXif0gLU
-         NqYA==
+        with ESMTP id S234019AbjG0Jra (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jul 2023 05:47:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4384A2
+        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 02:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690451199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9/ZtPwamYEdAIqsg4Eha/G0ZWoXDeFDSv2EcRY5ZelM=;
+        b=ElA+djzD54PmSaLqPYVLagO86vrJIo5ndba6ka7QFSqTsAKw94/alTgdtXVd9Kuc2RLKAT
+        LF06t5/O/KT1UzqYQ0SyR1yjF3COv1plsBkkPA1PvXS2fhzmGJkRa/WHR2CKtU9J8B0+2z
+        IvhVpr0VvDy9mOJ+e4O92cZaP/z8hRM=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-539-dSbM3CUDN3yjceLDYJ0WGQ-1; Thu, 27 Jul 2023 05:46:38 -0400
+X-MC-Unique: dSbM3CUDN3yjceLDYJ0WGQ-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fb748a83b4so672597e87.2
+        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 02:46:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690449603; x=1691054403;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cb79b5va6gFfSJneJi5lY4rGeRwgOukMupryAUVW6kI=;
-        b=hApD7Q4p8JTz9clGUogIUhBRPemE1cvReC3R7uHSnIMVuET/HGqcCxt+e7fyvLveYd
-         gdzleX0IcLKGbaD53ggQQlkcKC9xRsxG4mRSLSDBZXgkDawSuSbUvGLskNv4ZCXQ6KOr
-         ZOSgIKf7YP+o9HTQ47KXVle9cGh9j5Ju2IbJx2CbNM38ZQfqkIUro/CSuf5VgS7IJ54/
-         2JPwS5ArsZ0mwr7ls89jOrO7Y1dtDaK43qmCPsy6G3noIGmP+tktDpDasSoF8AQxXnIF
-         35DBKvowebyER50cs5gaYiE386GUZs6q6SRYk5xOpPezGvTkmDEuFKvQ0XdfDVLyOfud
-         HHhg==
-X-Gm-Message-State: ABy/qLZ3A7C9AiAuygWjteDCmDSDs89ller/m1JXCnD3qQ9lgUAots24
-        QhTD9ge2wAxnHRa60yMQMpoLkA==
-X-Google-Smtp-Source: APBJJlH+dm0mCsob/js+yZXnXAfwEH4KDToex0aS0MQ56gbjyJxo+xxDZzOa2lZ9gy3mjvwdmWQa2g==
-X-Received: by 2002:a17:902:da82:b0:1b8:811:b079 with SMTP id j2-20020a170902da8200b001b80811b079mr5785873plx.0.1690449602958;
-        Thu, 27 Jul 2023 02:20:02 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id 5-20020a170902c24500b001bbb7d8fff2sm1109046plg.116.2023.07.27.02.19.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 02:20:02 -0700 (PDT)
-Message-ID: <5f1b85b8-3655-1700-4d16-fa056b31ceeb@bytedance.com>
-Date:   Thu, 27 Jul 2023 17:19:49 +0800
+        d=1e100.net; s=20221208; t=1690451197; x=1691055997;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9/ZtPwamYEdAIqsg4Eha/G0ZWoXDeFDSv2EcRY5ZelM=;
+        b=OUKJpbh50naYsecfJEbYfRbv2aC8reIDy3P88hwXQXjZabqFR1NQI8psCaskNEQF1x
+         lC1XPgixnAPPv1u9ebNcwoPIUW3UVMhU6hs6Ne6l2p+V30+bM47fLIJkDDVlCY2ij1v+
+         9kLxNnnstB6ZFfbvdERvf/s+ypVsPxdTYub+r2gmMSyAV+eRUSDhb3e9UuEeeBf0j9Xu
+         YcZwYu69z2oLvVadNhpSo8Z4uM524p5LPqS4Pxd8/loNEu2uE+2JZ5Q6h5OiCttRPP7D
+         oLuGMZD2CLzJf3xIT106oLEsvFQ47GuJgEcToQ5KZU/CTwXsuSMSDMugjGS/2mU55Qm8
+         W9gQ==
+X-Gm-Message-State: ABy/qLZkQL0op2HLmZ3lkKAgrU3yX6mDX1fZSWiWlzc2dkll9RPDdt5n
+        hUE/pHctyPi3HHhIdp8T/TRDFe328AHnGT1zrhe4NpQTlUOsqhJjiqbjSV4xyVnf70Y435T7Mnr
+        HRUjn4JQNzZ2I
+X-Received: by 2002:a05:6512:3186:b0:4f8:7513:8cb0 with SMTP id i6-20020a056512318600b004f875138cb0mr1763682lfe.2.1690451196872;
+        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHWfc8e6nRRU05KgrIaBfOnm87x2dNku7t4qZB3XfKVqk/Go7XcWjycqa01reYQ5M3BH+RFoA==
+X-Received: by 2002:a05:6512:3186:b0:4f8:7513:8cb0 with SMTP id i6-20020a056512318600b004f875138cb0mr1763631lfe.2.1690451196504;
+        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id l10-20020a05600c1d0a00b003fd2d3462fcsm6308442wms.1.2023.07.27.02.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a
+ cpumask field by another cpumask
+In-Reply-To: <20230726194148.4jhyqqbtn3qqqqsq@treble>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-3-vschneid@redhat.com>
+ <20230726194148.4jhyqqbtn3qqqqsq@treble>
+Date:   Thu, 27 Jul 2023 10:46:33 +0100
+Message-ID: <xhsmho7jxsn46.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 40/49] xfs: dynamically allocate the xfs-qm shrinker
-Content-Language: en-US
-To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-41-zhengqi.arch@bytedance.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20230727080502.77895-41-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On 26/07/23 12:41, Josh Poimboeuf wrote:
+> On Thu, Jul 20, 2023 at 05:30:38PM +0100, Valentin Schneider wrote:
+>>  int filter_assign_type(const char *type)
+>>  {
+>> -	if (strstr(type, "__data_loc") && strstr(type, "char"))
+>> -		return FILTER_DYN_STRING;
+>> +	if (strstr(type, "__data_loc")) {
+>> +		if (strstr(type, "char"))
+>> +			return FILTER_DYN_STRING;
+>> +		if (strstr(type, "cpumask_t"))
+>> +			return FILTER_CPUMASK;
+>> +		}
+>
+> The closing bracket has the wrong indentation.
+>
+>> +		/* Copy the cpulist between { and } */
+>> +		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
+>> +		strscpy(tmp, str + maskstart, (i - maskstart) + 1);
+>
+> Need to check kmalloc() failure?  And also free tmp?
+>
 
+Heh, indeed, shoddy that :-)
 
-On 2023/7/27 16:04, Qi Zheng wrote:
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the xfs-qm shrinker, so that it can be freed
-> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct xfs_quotainfo.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->   fs/xfs/xfs_qm.c | 26 +++++++++++++-------------
->   fs/xfs/xfs_qm.h |  2 +-
->   2 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_qm.c b/fs/xfs/xfs_qm.c
-> index 6abcc34fafd8..032f0a208bd2 100644
-> --- a/fs/xfs/xfs_qm.c
-> +++ b/fs/xfs/xfs_qm.c
-> @@ -504,8 +504,7 @@ xfs_qm_shrink_scan(
->   	struct shrinker		*shrink,
->   	struct shrink_control	*sc)
->   {
-> -	struct xfs_quotainfo	*qi = container_of(shrink,
-> -					struct xfs_quotainfo, qi_shrinker);
-> +	struct xfs_quotainfo	*qi = shrink->private_data;
->   	struct xfs_qm_isolate	isol;
->   	unsigned long		freed;
->   	int			error;
-> @@ -539,8 +538,7 @@ xfs_qm_shrink_count(
->   	struct shrinker		*shrink,
->   	struct shrink_control	*sc)
->   {
-> -	struct xfs_quotainfo	*qi = container_of(shrink,
-> -					struct xfs_quotainfo, qi_shrinker);
-> +	struct xfs_quotainfo	*qi = shrink->private_data;
->   
->   	return list_lru_shrink_count(&qi->qi_lru, sc);
->   }
-> @@ -680,16 +678,18 @@ xfs_qm_init_quotainfo(
->   	if (XFS_IS_PQUOTA_ON(mp))
->   		xfs_qm_set_defquota(mp, XFS_DQTYPE_PROJ, qinf);
->   
-> -	qinf->qi_shrinker.count_objects = xfs_qm_shrink_count;
-> -	qinf->qi_shrinker.scan_objects = xfs_qm_shrink_scan;
-> -	qinf->qi_shrinker.seeks = DEFAULT_SEEKS;
-> -	qinf->qi_shrinker.flags = SHRINKER_NUMA_AWARE;
-> -
-> -	error = register_shrinker(&qinf->qi_shrinker, "xfs-qm:%s",
-> -				  mp->m_super->s_id);
-> -	if (error)
-> +	qinf->qi_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "xfs-qm:%s",
-> +					   mp->m_super->s_id);
-> +	if (!qinf->qi_shrinker)
+Thanks!
 
-Here should set error to -ENOMEM, will fix.
+>> +
+>> +		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
+>> +		if (!pred->mask)
+>> +			goto err_mem;
+>> +
+>> +		/* Now parse it */
+>> +		if (cpulist_parse(tmp, pred->mask)) {
+>> +			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
+>> +			goto err_free;
+>> +		}
+>> +
+>> +		/* Move along */
+>> +		i++;
+>> +		if (field->filter_type == FILTER_CPUMASK)
+>> +			pred->fn_num = FILTER_PRED_FN_CPUMASK;
+>> +
+>
+> --
+> Josh
 
->   		goto out_free_inos;
->   
-> +	qinf->qi_shrinker->count_objects = xfs_qm_shrink_count;
-> +	qinf->qi_shrinker->scan_objects = xfs_qm_shrink_scan;
-> +	qinf->qi_shrinker->seeks = DEFAULT_SEEKS;
-> +	qinf->qi_shrinker->private_data = qinf;
-> +
-> +	shrinker_register(qinf->qi_shrinker);
-> +
->   	return 0;
->   
->   out_free_inos:
-> @@ -718,7 +718,7 @@ xfs_qm_destroy_quotainfo(
->   	qi = mp->m_quotainfo;
->   	ASSERT(qi != NULL);
->   
-> -	unregister_shrinker(&qi->qi_shrinker);
-> +	shrinker_free(qi->qi_shrinker);
->   	list_lru_destroy(&qi->qi_lru);
->   	xfs_qm_destroy_quotainos(qi);
->   	mutex_destroy(&qi->qi_tree_lock);
-> diff --git a/fs/xfs/xfs_qm.h b/fs/xfs/xfs_qm.h
-> index 9683f0457d19..d5c9fc4ba591 100644
-> --- a/fs/xfs/xfs_qm.h
-> +++ b/fs/xfs/xfs_qm.h
-> @@ -63,7 +63,7 @@ struct xfs_quotainfo {
->   	struct xfs_def_quota	qi_usr_default;
->   	struct xfs_def_quota	qi_grp_default;
->   	struct xfs_def_quota	qi_prj_default;
-> -	struct shrinker		qi_shrinker;
-> +	struct shrinker		*qi_shrinker;
->   
->   	/* Minimum and maximum quota expiration timestamp values. */
->   	time64_t		qi_expiry_min;
