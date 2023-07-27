@@ -2,107 +2,141 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20A8EEB64DD
-	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 04:24:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57333C00528
+	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 08:11:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbjG0EYR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jul 2023 00:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
+        id S233475AbjG0IK7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jul 2023 04:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG0EYP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jul 2023 00:24:15 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693A02704
-        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 21:24:14 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-765a7768f1dso51052185a.0
-        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 21:24:14 -0700 (PDT)
+        with ESMTP id S233762AbjG0IK0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jul 2023 04:10:26 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE9B173F
+        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 01:07:02 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686f6231bdeso112250b3a.1
+        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 01:07:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690431853; x=1691036653;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xC7j4/Ybsi2RpHHYT/JlFV6MzEyCzEDWGCxlDztTpBQ=;
-        b=hu0B4U9NzBtrHwz21VKdrZCXFVrK91xv3HNuQhYyZ9MvxOvMlweLbzTdtyhmauFTqd
-         M429DBdEVc5GSlBRPDkVSus7ltNs/sx6BcCh96cqDlwd13JaxXMGFvH77pYZTFQ/eqRI
-         3qx7gvutywmUgGLKuPUTMoKNdTIXuCIIHwvm0=
+        d=bytedance.com; s=google; t=1690445160; x=1691049960;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CmSKD1W4o1llBpukOwDAPdWOg+LYzWoL67ya0UPwqvg=;
+        b=bWsdCjXI/QTCbfrXnl1D1RHs1UzV532bO1xy0F2QKWdmxdeZNg1bc8fwYppoEa2Sii
+         fv3Dw05OLiEoJFGdDqA0cK2BR0yissZW0QGh0p8G2jYOCo1VM3qmhhRKOuDu3Ld44+HC
+         IlU/6E6PL7OGmulpkRgvQIFGvR7K7vSKmFATJlzNsM5VU0kfb+Q9ux9XLDln9HSGLjNa
+         erFo50JbYYva+gdlhuASAFmcGCxJk1UklUElA3OcQq/NsulVXFSALP8x8A3jEL8k5O2s
+         pAuqLDXkBW250K5e8xHlcez81V5k+DmAOms7sfdEUrryxL8JhS9LUOK5EJtF0pDaEYI9
+         8JWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690431853; x=1691036653;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690445160; x=1691049960;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xC7j4/Ybsi2RpHHYT/JlFV6MzEyCzEDWGCxlDztTpBQ=;
-        b=aZd6Rw2RWMJ9HGTnIcGPeu/LCoV3zx6lMJDQJjOMY0xT33juW2i1TB1kX+Hy+MTqjg
-         GwddobScZ0zKHAO9zwS/hWgver3Td5FYWKMQOCQCdW3Oky5CI0sht0QHx+ZIu7Woh8ZM
-         QUUt/dpgVmOFIFYUtmjhBHYAQo2STR1fuYYoPt5F2av01HFPXoE1RwJmpuoI6BITX2Aa
-         8zWgJ1bcrbYYqbxLOPbQNP1Qj0ICmDfKrbiJVjbM7Kty1pI0slCEANzaatqx+UFTKXl+
-         LYm6CC2SlSBWgKfI+9atyG6/+LWjdm4pbUsdbN8aRKS9Ag+qq3tSvmAlXt7RtHSZjsOn
-         FFRg==
-X-Gm-Message-State: ABy/qLYB4EiA6KoAI+dpFzoz3txvDOJ4es7xVw/a8bd1pAVAiCxMib+F
-        yC/AVZix16EOQxTRO4Tw6CPTeg==
-X-Google-Smtp-Source: APBJJlG1aaXSxZK68BetchlHiLw/a2m/lftrHBhwyRYMkEZnvIHQOK5/DLILpg/zoJLyE55F082GSw==
-X-Received: by 2002:a05:620a:2495:b0:767:e04c:8d6e with SMTP id i21-20020a05620a249500b00767e04c8d6emr4368433qkn.51.1690431853521;
-        Wed, 26 Jul 2023 21:24:13 -0700 (PDT)
-Received: from smtpclient.apple ([45.88.220.67])
-        by smtp.gmail.com with ESMTPSA id j13-20020a37c24d000000b00763b94432ebsm155487qkm.18.2023.07.26.21.24.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 21:24:12 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 2/5] srcu: Fix error handling in init_srcu_struct_fields()
-Date:   Thu, 27 Jul 2023 00:24:01 -0400
-Message-Id: <6443E8C5-0271-48C3-B3D1-3CD20DB782FD@joelfernandes.org>
-References: <3549e916-3829-40b8-b2ae-7a969826105c@paulmck-laptop>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "open list:SLEEPABLE READ-COPY UPDATE (SRCU)" <rcu@vger.kernel.org>
-In-Reply-To: <3549e916-3829-40b8-b2ae-7a969826105c@paulmck-laptop>
-To:     paulmck@kernel.org
-X-Mailer: iPhone Mail (20B101)
+        bh=CmSKD1W4o1llBpukOwDAPdWOg+LYzWoL67ya0UPwqvg=;
+        b=Gdew1TmG3xDL31bAV6aIavUvTCXdA4jxYtiCqTyJHNu4KplyUJICTYMALMsgQGyBnP
+         dppqEp9n9LZroe39qWC1LBReBRABYty8/T8vze4cWvOTjF63dadPIaDMMa7AN2JMxoGD
+         +0S41RZPvTOU+16oOP8HU7123QzYp+BvojZgHkU7Luf6stzP8wV1yw44T9TWfzjoUcM1
+         ucLT6LYJ2NAH/5PTB5t9dPlpd7IxnmBuGQgOLOjC5W1jXhDkQIn8HUy9TRUzVsyN9AUE
+         yEF26aN1miNSQgD4yEPmUI/xlOxL3VjWBmCgmYvC8DnyRtbbUkqJYHFlEutDNLc4tTyx
+         VqgA==
+X-Gm-Message-State: ABy/qLZBWVB+d0JbRJdFUjgKautTott8IWjcnHCeE6lN3aGUu8xyjaRG
+        4jbNWb94yIw2L3ePN0q+D8zupw==
+X-Google-Smtp-Source: APBJJlGsBl3klUilUFzaktHEHOMbkNlcOB/1K8g6HjcIbYlgfdxi92AgDTolw1HjCRkDLU6/tzA6hQ==
+X-Received: by 2002:a05:6a21:78a8:b0:137:3eba:b81f with SMTP id bf40-20020a056a2178a800b001373ebab81fmr6002609pzc.3.1690445159927;
+        Thu, 27 Jul 2023 01:05:59 -0700 (PDT)
+Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.05.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 01:05:59 -0700 (PDT)
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Carlos Llamas <cmllamas@google.com>
+Subject: [PATCH v3 01/49] binder: fix memory leak in binder_init()
+Date:   Thu, 27 Jul 2023 16:04:14 +0800
+Message-Id: <20230727080502.77895-2-zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+In binder_init(), the destruction of binder_alloc_shrinker_init() is not
+performed in the wrong path, which will cause memory leaks. So this commit
+introduces binder_alloc_shrinker_exit() and calls it in the wrong path to
+fix that.
 
+Fixes: f2517eb76f1f ("android: binder: Add global lru shrinker to binder")
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Acked-by: Carlos Llamas <cmllamas@google.com>
+---
+ drivers/android/binder.c       | 1 +
+ drivers/android/binder_alloc.c | 6 ++++++
+ drivers/android/binder_alloc.h | 1 +
+ 3 files changed, 8 insertions(+)
 
-> On Jul 27, 2023, at 12:02 AM, Paul E. McKenney <paulmck@kernel.org> wrote:=
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index 486c8271cab7..d720f93d8b19 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -6617,6 +6617,7 @@ static int __init binder_init(void)
+ 
+ err_alloc_device_names_failed:
+ 	debugfs_remove_recursive(binder_debugfs_dir_entry_root);
++	binder_alloc_shrinker_exit();
+ 
+ 	return ret;
+ }
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index 662a2a2e2e84..e3db8297095a 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -1087,6 +1087,12 @@ int binder_alloc_shrinker_init(void)
+ 	return ret;
+ }
+ 
++void binder_alloc_shrinker_exit(void)
++{
++	unregister_shrinker(&binder_shrinker);
++	list_lru_destroy(&binder_alloc_lru);
++}
++
+ /**
+  * check_buffer() - verify that buffer/offset is safe to access
+  * @alloc: binder_alloc for this proc
+diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
+index 138d1d5af9ce..dc1e2b01dd64 100644
+--- a/drivers/android/binder_alloc.h
++++ b/drivers/android/binder_alloc.h
+@@ -129,6 +129,7 @@ extern struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+ 						  int pid);
+ extern void binder_alloc_init(struct binder_alloc *alloc);
+ extern int binder_alloc_shrinker_init(void);
++extern void binder_alloc_shrinker_exit(void);
+ extern void binder_alloc_vma_close(struct binder_alloc *alloc);
+ extern struct binder_buffer *
+ binder_alloc_prepare_to_free(struct binder_alloc *alloc,
+-- 
+2.30.2
 
->=20
-> =EF=BB=BFOn Wed, Jul 26, 2023 at 11:04:04PM -0400, Joel Fernandes wrote:
->>=20
->>=20
->> On 7/26/23 17:07, Paul E. McKenney wrote:
->>>> -                free_percpu(ssp->sda);
->>>> -                ssp->sda =3D NULL;
->>>> -                kfree(ssp->srcu_sup);
->>>> -                return -ENOMEM;
->>>> -            }
->>>> -        } else {
->>>> +        if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
->>>> +            goto err_free_sda;
->>>> +        else
->>>>            WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
->>> Given that the "then" clause is a goto, what is the "else" clause doing
->>> for us?
->>>=20
->>=20
->> Not much. Agreed we can get rid of "else" and reduce indent of the
->> WRITE_ONCE that follows.
->>=20
->> Would you mind making this fixup in the patch for your apply, or would
->> you like me to refresh the patch? Let me know either way, thank you!
->=20
-> Please include it with your next series, which has at least one other
-> change anyway.  ;-)
-
-My pleasure ;-).
-
-- Joel
-
-
->=20
->                            Thanx, Paul
