@@ -2,129 +2,178 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4C24C00528
-	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 02:55:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB4AC0015E
+	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 03:01:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjG0Czr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 26 Jul 2023 22:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S231334AbjG0DB4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 26 Jul 2023 23:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbjG0Czo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 26 Jul 2023 22:55:44 -0400
+        with ESMTP id S231194AbjG0DBz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 26 Jul 2023 23:01:55 -0400
 Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB9C2115
-        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 19:55:37 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b962c226ceso6275951fa.3
-        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 19:55:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D681BCB
+        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 20:01:53 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b74209fb60so6673021fa.0
+        for <rcu@vger.kernel.org>; Wed, 26 Jul 2023 20:01:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690426536; x=1691031336;
+        d=joelfernandes.org; s=google; t=1690426912; x=1691031712;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p06jw+7gyGJ+2D+u0RTPTv2XoWSvckEyu8XfDgXy19Y=;
-        b=vS9gReamfdyrkYFZ3PabrVrVKUBNEONo69kEptL7m4J1DFoun7O6jhXqbB44QM44FI
-         ee3K20EOsa0JgjhYLcPWkXt9fA2Kzk0v9dOYOEo2918oK0jH0I+TN6Jw9wHoXwyfc0ao
-         +s23QyIpc9jOiYwfZ1O3ebEMkDJsse3fsenMk=
+        bh=28kM+66MW+/ZE/QhfQIXTCdNMEwChH0F8W+wviNU5N4=;
+        b=i261GX+ISLVBQWkZJlC8JRSTm8YljJalFdC0xw+oAOtekwYguIX3lJETIZEfqN6p6e
+         hbc+y0nlxiMJ1OIUQAUmvgz3nM1Um64qCuh0JGjRzewYJM/VmOn5dwj7nq2BJJYjb8Be
+         DP11WIROHODl84N7ysvCYEPdQSeb8it8IOSPE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690426536; x=1691031336;
+        d=1e100.net; s=20221208; t=1690426912; x=1691031712;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=p06jw+7gyGJ+2D+u0RTPTv2XoWSvckEyu8XfDgXy19Y=;
-        b=AtdZLyFTQlpAypf/WS8LwwpzwJq4L5dUkut5rA2OMpdETv71jWrOaoxazqk9GbXftY
-         1f4rUobzcrt1xGtWkaydd9XvzqPlX3dzuWkv9X4XyOXOYQ+lIX06M5Ce6x+tx+Gbl+N8
-         WTEpSLMrqHswmS6f4Fd9BrKqHrpucpnIcXuoe4eG9O/Rh0W4ow1kR+vl608yMP02utk8
-         beXcjfBbWd13OsqX4FXSKmpSImq9NSKnGxIK55ZsRk+8gDSZHizDHVHrfO6mp1W0LayT
-         0mlsO7nIxlDzGypZmM206eou/UfdZ/PgG9xRtLhshcuwjJLmSXRSr6FgHSqhOqVv0qWG
-         WaJQ==
-X-Gm-Message-State: ABy/qLaST53y5XJD2HehI0RQBMhQCpNxXnK/wjbvs78QSp5ij0uofYXZ
-        6ixyiaw+w2awLP4QTuJZVob6Zh9G/KRzzudt1QfSEg==
-X-Google-Smtp-Source: APBJJlGF38hdrXpP3Gug5ZZE1044c9gD+O4/VgrqNsLnGncK8QowBdjIP3ZB81wzoYfTyGeb6+/7JYdYuYhjc8M/VQ0=
-X-Received: by 2002:a2e:9b0b:0:b0:2b6:d137:b5a1 with SMTP id
- u11-20020a2e9b0b000000b002b6d137b5a1mr594734lji.43.1690426535828; Wed, 26 Jul
- 2023 19:55:35 -0700 (PDT)
+        bh=28kM+66MW+/ZE/QhfQIXTCdNMEwChH0F8W+wviNU5N4=;
+        b=azL/a685YOG/eYXFAe8xVyMcBgiQGc7l34/nqE3RZil/uVFLg2pcSIP1GiQUjBslcT
+         IdWmAFyzgUuHbvQ3+AY9eb7EsC6vbm4B719FTJ3rYG3SeJnHBnhpGqILCAE1DXiClhJV
+         BArzgkdldRvPTxL8EiDt+yaDikOnhT1UKpgo9Y/HDAyV5Pa6YiXUKb5OhSMhnakys7Nl
+         NI33iJWeaZ3VI02TDPCBEl/pOc1pyG3YBEx1ZCpw6EIYlyoVQBobKRXPK/PFZASZJdQa
+         qn9IS5xHBuZuH7J8es6fW345FCexLqSOEddC+OM/amIcnJzdSrawrhvaBMw91QHWVd1q
+         B/AA==
+X-Gm-Message-State: ABy/qLZh7GlJRF2SJg4l46x1dHT1BlsYk4srlqVFRtQtS796TuWYBGm7
+        K0msrc885Olfxhf8D7kqSzQdLM5MTP5plMT1CRP39A==
+X-Google-Smtp-Source: APBJJlEx6ky2cjrQJP4D+4530EmV6PxTY62HotbnTfmh+ipGNijarsBTGEmVIjyEv5iR/HbLmjdJG6rq5EMrz4S83rw=
+X-Received: by 2002:a2e:a0ca:0:b0:2b6:cf0f:1fbf with SMTP id
+ f10-20020a2ea0ca000000b002b6cf0f1fbfmr538037ljm.42.1690426912206; Wed, 26 Jul
+ 2023 20:01:52 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230725232913.2981357-1-joel@joelfernandes.org>
- <20230725232913.2981357-6-joel@joelfernandes.org> <a28a2b4d-18f3-418a-ab9d-46d42616a118@paulmck-laptop>
-In-Reply-To: <a28a2b4d-18f3-418a-ab9d-46d42616a118@paulmck-laptop>
+ <20230725232913.2981357-2-joel@joelfernandes.org> <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
+In-Reply-To: <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 26 Jul 2023 22:55:24 -0400
-Message-ID: <CAEXW_YSUOzRxCX9cBeaXbBODt6EaNG+Xm-KF3nx7UoVCV4L3NQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] Revert "checkpatch: Error out if deprecated RCU API used"
+Date:   Wed, 26 Jul 2023 23:01:40 -0400
+Message-ID: <CAEXW_YTfo8MDcAQk23cw=vxzReZntSXgkUefD+=4yZ+Gb+ZAww@mail.gmail.com>
+Subject: Re: [PATCH 1/5] rcutorture: Fix stuttering races and other issues
 To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 5:12=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+On Wed, Jul 26, 2023 at 4:59=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
 g> wrote:
 >
-> On Tue, Jul 25, 2023 at 11:29:10PM +0000, Joel Fernandes (Google) wrote:
-> > The check for single-argument kfree_rcu() is no longer needed as all
-> > users have been converted.
+> On Tue, Jul 25, 2023 at 11:29:06PM +0000, Joel Fernandes (Google) wrote:
+> > The stuttering code isn't functioning as expected. Ideally, it should
+> > pause the torture threads for a designated period before resuming. Yet,
+> > it fails to halt the test for the correct duration. Additionally, a rac=
+e
+> > condition exists, potentially causing the stuttering code to pause for
+> > an extended period if the 'spt' variable is non-zero due to the stutter
+> > orchestration thread's inadequate CPU time.
 > >
-> > This reverts commit 1eacac3255495be7502d406e2ba5444fb5c3607c.
+> > Moreover, over-stuttering can hinder RCU's progress on TREE07 kernels.
+> > This happens as the stuttering code may run within a softirq due to RCU
+> > callbacks. Consequently, ksoftirqd keeps a CPU busy for several seconds=
+,
+> > thus obstructing RCU's progress. This situation triggers a warning
+> > message in the logs:
+> >
+> > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> >
+> > This warning suggests that an RCU torture object, although invisible to
+> > RCU readers, couldn't make it past the pipe array and be freed -- a
+> > strong indication that there weren't enough grace periods during the
+> > stutter interval.
+> >
+> > To address these issues, this patch sets the "stutter end" time to an
+> > absolute point in the future set by the main stutter thread. This is
+> > then used for waiting in stutter_wait(). While the stutter thread still
+> > defines this absolute time, the waiters' waiting logic doesn't rely on
+> > the stutter thread receiving sufficient CPU time to halt the stuttering
+> > as the halting is now self-controlled.
 > >
 > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/torture.c | 46 +++++++++++++---------------------------------
+> >  1 file changed, 13 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/kernel/torture.c b/kernel/torture.c
+> > index 68dba4ecab5c..63f8f2a7d960 100644
+> > --- a/kernel/torture.c
+> > +++ b/kernel/torture.c
+> > @@ -719,7 +719,7 @@ static void torture_shutdown_cleanup(void)
+> >   * suddenly applied to or removed from the system.
+> >   */
+> >  static struct task_struct *stutter_task;
+> > -static int stutter_pause_test;
+> > +static ktime_t stutter_till_abs_time;
+> >  static int stutter;
+> >  static int stutter_gap;
+> >
+> > @@ -729,30 +729,17 @@ static int stutter_gap;
+> >   */
+> >  bool stutter_wait(const char *title)
+> >  {
+> > -     unsigned int i =3D 0;
+> >       bool ret =3D false;
+> > -     int spt;
+> > +     ktime_t now_ns, till_ns;
+> >
+> >       cond_resched_tasks_rcu_qs();
+> > -     spt =3D READ_ONCE(stutter_pause_test);
+> > -     for (; spt; spt =3D READ_ONCE(stutter_pause_test)) {
+> > -             if (!ret && !rt_task(current)) {
+> > -                     sched_set_normal(current, MAX_NICE);
+> > -                     ret =3D true;
+> > -             }
+> > -             if (spt =3D=3D 1) {
+> > -                     torture_hrtimeout_jiffies(1, NULL);
+> > -             } else if (spt =3D=3D 2) {
+> > -                     while (READ_ONCE(stutter_pause_test)) {
+> > -                             if (!(i++ & 0xffff))
+> > -                                     torture_hrtimeout_us(10, 0, NULL)=
+;
+> > -                             cond_resched();
+> > -                     }
+> > -             } else {
+> > -                     torture_hrtimeout_jiffies(round_jiffies_relative(=
+HZ), NULL);
+> > -             }
+> > -             torture_shutdown_absorb(title);
+> > +     now_ns =3D ktime_get();
+> > +     till_ns =3D READ_ONCE(stutter_till_abs_time);
+> > +     if (till_ns && ktime_before(now_ns, till_ns)) {
+> > +             torture_hrtimeout_ns(ktime_sub(till_ns, now_ns), 0, NULL)=
+;
 >
-> Good eyes, thank you!
->
-> I applied this with an updated commit log as shown below.  Please let
-> me know if I messed something up.
+> This ktime_sub() is roughly cancelled out by a ktime_add_safe() in
+> __hrtimer_start_range_ns().
 
-LGTM. Thank you!
+Yes, functionally it is the same but your suggestion is more robust I think=
+.
+
+> Perhaps torture_hrtimeout_ns() needs to
+> take a mode argument as in the patch at the end of this email, allowing
+> you to ditch that ktime_sub() in favor of HRTIMER_MODE_ABS.
+
+Sure, or we can add a new API and keep the default as relative?
+
+Or have 2 APIs:
+torture_hrtimeout_relative_ns();
+
+and:
+torture_hrtimeout_absolute_ns();
+
+That makes it more readable IMHO.
+
+Also, do you want me to make both changes (API and usage) in the same
+patch? Or were you planning to have a separate patch yourself in -dev
+which I can use? Let me know either way, and then I'll refresh the
+patch.
+
+thanks,
 
  - Joel
 
-
->
->                                                         Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit 1f5f0053f7662385d9ead46d4c0d2d4fe9aaa73a
-> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Date:   Tue Jul 25 23:29:10 2023 +0000
->
->     Revert "checkpatch: Error out if deprecated RCU API used"
->
->     The definition for single-argument kfree_rcu() has been removed,
->     so that any further attempt to use it will result in a build error.
->     Because of this build error, there is no longer any need for a specia=
-l
->     check in checkpatch.pl.
->
->     Therefore, revert commit 1eacac3255495be7502d406e2ba5444fb5c3607c.
->
->     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index a9841148cde2..528f619520eb 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -6422,15 +6422,6 @@ sub process {
->                         }
->                 }
->
-> -# check for soon-to-be-deprecated single-argument k[v]free_rcu() API
-> -               if ($line =3D~ /\bk[v]?free_rcu\s*\([^(]+\)/) {
-> -                       if ($line =3D~ /\bk[v]?free_rcu\s*\([^,]+\)/) {
-> -                               ERROR("DEPRECATED_API",
-> -                                     "Single-argument k[v]free_rcu() API=
- is deprecated, please pass rcu_head object or call k[v]free_rcu_mightsleep=
-()." . $herecurr);
-> -                       }
-> -               }
-> -
-> -
->  # check for unnecessary "Out of Memory" messages
->                 if ($line =3D~ /^\+.*\b$logFunctions\s*\(/ &&
->                     $prevline =3D~ /^[ \+]\s*if\s*\(\s*(\!\s*|NULL\s*=3D=
-=3D\s*)?($Lval)(\s*=3D=3D\s*NULL\s*)?\s*\)/ &&
+[..]
