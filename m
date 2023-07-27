@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B26C001DC
-	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 08:31:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1299C001E0
+	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 08:31:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234357AbjG0IbM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jul 2023 04:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
+        id S233290AbjG0IbO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jul 2023 04:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234458AbjG0I2N (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:28:13 -0400
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB45083CF
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 01:14:39 -0700 (PDT)
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6862d4a1376so189480b3a.0
-        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 01:14:39 -0700 (PDT)
+        with ESMTP id S234670AbjG0I2l (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jul 2023 04:28:41 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA38086AC
+        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 01:14:58 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686f74a8992so78535b3a.1
+        for <rcu@vger.kernel.org>; Thu, 27 Jul 2023 01:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690445550; x=1691050350;
+        d=bytedance.com; s=google; t=1690445661; x=1691050461;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xVRvDV5EwClRaurogoo7jeCmWiPiam6NNimoVigpYsU=;
-        b=VWs5xsEpAgA4DYNqF8K/FN4j7udZSbXqCeXnxv3YTG0Ik0TL2nl/Ugga9u7R+ZJeNR
-         Wigeakgpk32H5TPwyUhkE7IqyM04zeUMVcePDa9eTKcIqF7mvyeMYMdU6pDKFeWcNWaR
-         qvQCy7Nu/xowW6gGi5vD7bu0NuXZ8UlBiffMC2ufEn1khdTpqjsjaFRzBjIrPJfwSFKG
-         LuwPnQLNAsZ+sSXWuMdy2i4BIcl75Eemb6JwQ/h/qU8W848mv79pSK1svvdUmrASzQOQ
-         aQzV7ZNEhcTzx5oZvxCfNrl/tTU7BbbCJB9SufDvnC5P9J0UXQ5a+DGx/aTVEKn/U2IP
-         9i7w==
+        bh=Z8shjZqP4Y8hZDaFLi0y7A+vG6rpfakjLEwLFWECHfw=;
+        b=M90va2ss9YMh+De8/KZ+mVAcBrFGEU+GzcGNqxT+B7hxTFEFMd5WuiRk55c0waVg/i
+         KUSKiUTPKXnQRLgL7+hNGJB6n7fW48sv8jtOOA7F/yud6N73bo3romR87IwxTWFghhtj
+         +YqkOMHpv3kLBbjEgh8NplH0r6imKflx3JaCipHnW/k8FR0eXG63PDYGiheNwgxfAvYO
+         s4RNvSYPNCMRAhjFOV4c7zk3yoOMMnjDLt+tw6HnbliXEGOVORcHeWA+2V79c3P+B/9H
+         uhy/DS05CaNG4GhbfQJuetBgKgR0N62DJbP4l44spA0q6/uulU3xcf96dcv+7F9txF9C
+         bWPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690445550; x=1691050350;
+        d=1e100.net; s=20221208; t=1690445661; x=1691050461;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xVRvDV5EwClRaurogoo7jeCmWiPiam6NNimoVigpYsU=;
-        b=H7vstiWU4c5srE96HYLc1WZpCLuCu25u9O53N9UL6Ws0Deff7H0zjIdoyZRh9hEy7T
-         BGN7GSFEkpJx9E3Lyetjrj5wD1Uc6O20zqRmJiytK3HCid5i547PIbDzdnsBmGNjXsTq
-         AW6e8HjtrDzePWzjhm/9a/qMEkRP19VRdIpanQ8ZbB1SkcsVzLbMvs0PvY4XtiRO/184
-         PtigP4frk5Y92G9mtrz0fKWfGcHg4KkMQgTGaL2zPQEqGxNkianPqw5byN/oS2su2XxO
-         6PFMJLLl/sqAGdTvOP+TtI3LXWFp8SWLvxjOHawSGiZmedqxERnLFWu4OMhOLLnIkLk+
-         cAJw==
-X-Gm-Message-State: ABy/qLZXG25mfSTfTXL9MYcJWJ4+YxnVIwiCdyuLBbyDOxp7a6qB3Hq9
-        oqAsrCgfh1+XTVB1CYSK/hVWKw==
-X-Google-Smtp-Source: APBJJlF08KF/2Ja1GiYKXzi0SbMDWba0XluK8fJxZEI3QrufrkFF+7lpMuNnhPZU1iQtSxNfzq1jqw==
-X-Received: by 2002:a05:6a21:32a9:b0:136:f3ef:4d2 with SMTP id yt41-20020a056a2132a900b00136f3ef04d2mr6069372pzb.3.1690445550183;
-        Thu, 27 Jul 2023 01:12:30 -0700 (PDT)
+        bh=Z8shjZqP4Y8hZDaFLi0y7A+vG6rpfakjLEwLFWECHfw=;
+        b=PpeL8NM5xkdGqK/ZWPDEJlBjpQIa/HgEGMvvLRc1hsUuKKQkKSSzJ9PfD+HZ8TeoWl
+         1AlFHIz5+rJHmb20w4XH15b+TFLnbPGIfthv2WGmdlgfavijw2a4DPkFJ8qx34IVl8/I
+         vQZn6Wi+VIhdunh4gjnr4lNc8mrTlcQokQa0ssAlD132ybfoe/QNQu4F7rXmCx2/LjqQ
+         S9ZkpaWUZzUg6z/xWaxgVDwqP3EMgTo2LWCDKcnFDeUvSWj02su5MB/7Wc4+5imJ+C9R
+         IBo+tWl54alrDgiXsjrAHkyX5mMDBiOBnLV6bkHlNSmoPKR0p2kY1vgHQxSRHpfyoSuU
+         c5LA==
+X-Gm-Message-State: ABy/qLbe3HqfVSz2ZY6DLIOahIUJJUW7/V+q+MeWav3eiunAfIzqPD3l
+        aMRKq5OpYcaYKezYm9Kq/ldOBA==
+X-Google-Smtp-Source: APBJJlFLUJzqiKbCmr51AmVixakC62oPoMujZW4POdUPOnyVlrtViOXc2TPW8l2+gcY0Xyv3B9lWUA==
+X-Received: by 2002:a05:6a20:4304:b0:111:a0e5:d2b7 with SMTP id h4-20020a056a20430400b00111a0e5d2b7mr5727834pzk.4.1690445661472;
+        Thu, 27 Jul 2023 01:14:21 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.12.18
+        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.14.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 01:12:29 -0700 (PDT)
+        Thu, 27 Jul 2023 01:14:21 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -70,9 +70,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3 33/49] mbcache: dynamically allocate the mbcache shrinker
-Date:   Thu, 27 Jul 2023 16:04:46 +0800
-Message-Id: <20230727080502.77895-34-zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 42/49] fs: super: dynamically allocate the s_shrink
+Date:   Thu, 27 Jul 2023 16:04:55 +0800
+Message-Id: <20230727080502.77895-43-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
 References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
@@ -83,83 +83,177 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the mbcache shrinker, so that it can be freed
-asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct mb_cache.
+dynamically allocate the s_shrink, so that it can be freed asynchronously
+using kfree_rcu(). Then it doesn't need to wait for RCU read-side critical
+section when releasing the struct super_block.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- fs/mbcache.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ fs/btrfs/super.c   |  2 +-
+ fs/kernfs/mount.c  |  2 +-
+ fs/proc/root.c     |  2 +-
+ fs/super.c         | 36 ++++++++++++++++++++----------------
+ include/linux/fs.h |  2 +-
+ 5 files changed, 24 insertions(+), 20 deletions(-)
 
-diff --git a/fs/mbcache.c b/fs/mbcache.c
-index 2a4b8b549e93..0d1e24e9a5e3 100644
---- a/fs/mbcache.c
-+++ b/fs/mbcache.c
-@@ -37,7 +37,7 @@ struct mb_cache {
- 	struct list_head	c_list;
- 	/* Number of entries in cache */
- 	unsigned long		c_entry_count;
--	struct shrinker		c_shrink;
-+	struct shrinker		*c_shrink;
- 	/* Work for shrinking when the cache has too many entries */
- 	struct work_struct	c_shrink_work;
- };
-@@ -293,8 +293,7 @@ EXPORT_SYMBOL(mb_cache_entry_touch);
- static unsigned long mb_cache_count(struct shrinker *shrink,
- 				    struct shrink_control *sc)
- {
--	struct mb_cache *cache = container_of(shrink, struct mb_cache,
--					      c_shrink);
-+	struct mb_cache *cache = shrink->private_data;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index cffdd6f7f8e8..4c9c878b0da4 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1519,7 +1519,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+ 			error = -EBUSY;
+ 	} else {
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
+-		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s", fs_type->name,
++		shrinker_debugfs_rename(s->s_shrink, "sb-%s:%s", fs_type->name,
+ 					s->s_id);
+ 		btrfs_sb(s)->bdev_holder = fs_type;
+ 		error = btrfs_fill_super(s, fs_devices, data);
+diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+index d49606accb07..2657ff1181f1 100644
+--- a/fs/kernfs/mount.c
++++ b/fs/kernfs/mount.c
+@@ -256,7 +256,7 @@ static int kernfs_fill_super(struct super_block *sb, struct kernfs_fs_context *k
+ 	sb->s_time_gran = 1;
  
- 	return cache->c_entry_count;
- }
-@@ -333,8 +332,7 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
- static unsigned long mb_cache_scan(struct shrinker *shrink,
- 				   struct shrink_control *sc)
- {
--	struct mb_cache *cache = container_of(shrink, struct mb_cache,
--					      c_shrink);
-+	struct mb_cache *cache = shrink->private_data;
- 	return mb_cache_shrink(cache, sc->nr_to_scan);
- }
+ 	/* sysfs dentries and inodes don't require IO to create */
+-	sb->s_shrink.seeks = 0;
++	sb->s_shrink->seeks = 0;
  
-@@ -377,15 +375,20 @@ struct mb_cache *mb_cache_create(int bucket_bits)
- 	for (i = 0; i < bucket_count; i++)
- 		INIT_HLIST_BL_HEAD(&cache->c_hash[i]);
+ 	/* get root inode, initialize and unlock it */
+ 	down_read(&kf_root->kernfs_rwsem);
+diff --git a/fs/proc/root.c b/fs/proc/root.c
+index a86e65a608da..22b78b28b477 100644
+--- a/fs/proc/root.c
++++ b/fs/proc/root.c
+@@ -188,7 +188,7 @@ static int proc_fill_super(struct super_block *s, struct fs_context *fc)
+ 	s->s_stack_depth = FILESYSTEM_MAX_STACK_DEPTH;
  
--	cache->c_shrink.count_objects = mb_cache_count;
--	cache->c_shrink.scan_objects = mb_cache_scan;
--	cache->c_shrink.seeks = DEFAULT_SEEKS;
--	if (register_shrinker(&cache->c_shrink, "mbcache-shrinker")) {
-+	cache->c_shrink = shrinker_alloc(0, "mbcache-shrinker");
-+	if (!cache->c_shrink) {
- 		kfree(cache->c_hash);
- 		kfree(cache);
- 		goto err_out;
- 	}
+ 	/* procfs dentries and inodes don't require IO to create */
+-	s->s_shrink.seeks = 0;
++	s->s_shrink->seeks = 0;
  
-+	cache->c_shrink->count_objects = mb_cache_count;
-+	cache->c_shrink->scan_objects = mb_cache_scan;
-+	cache->c_shrink->seeks = DEFAULT_SEEKS;
-+	cache->c_shrink->private_data = cache;
-+
-+	shrinker_register(cache->c_shrink);
-+
- 	INIT_WORK(&cache->c_shrink_work, mb_cache_shrink_worker);
+ 	pde_get(&proc_root);
+ 	root_inode = proc_get_inode(s, &proc_root);
+diff --git a/fs/super.c b/fs/super.c
+index da68584815e4..68b3877af941 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -67,7 +67,7 @@ static unsigned long super_cache_scan(struct shrinker *shrink,
+ 	long	dentries;
+ 	long	inodes;
  
- 	return cache;
-@@ -406,7 +409,7 @@ void mb_cache_destroy(struct mb_cache *cache)
- {
- 	struct mb_cache_entry *entry, *next;
- 
--	unregister_shrinker(&cache->c_shrink);
-+	shrinker_free(cache->c_shrink);
+-	sb = container_of(shrink, struct super_block, s_shrink);
++	sb = shrink->private_data;
  
  	/*
- 	 * We don't bother with any locking. Cache must not be used at this
+ 	 * Deadlock avoidance.  We may hold various FS locks, and we don't want
+@@ -120,7 +120,7 @@ static unsigned long super_cache_count(struct shrinker *shrink,
+ 	struct super_block *sb;
+ 	long	total_objects = 0;
+ 
+-	sb = container_of(shrink, struct super_block, s_shrink);
++	sb = shrink->private_data;
+ 
+ 	/*
+ 	 * We don't call trylock_super() here as it is a scalability bottleneck,
+@@ -182,7 +182,7 @@ static void destroy_unused_super(struct super_block *s)
+ 	security_sb_free(s);
+ 	put_user_ns(s->s_user_ns);
+ 	kfree(s->s_subtype);
+-	free_prealloced_shrinker(&s->s_shrink);
++	shrinker_free(s->s_shrink);
+ 	/* no delays needed */
+ 	destroy_super_work(&s->destroy_work);
+ }
+@@ -259,16 +259,20 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+ 	s->s_time_min = TIME64_MIN;
+ 	s->s_time_max = TIME64_MAX;
+ 
+-	s->s_shrink.seeks = DEFAULT_SEEKS;
+-	s->s_shrink.scan_objects = super_cache_scan;
+-	s->s_shrink.count_objects = super_cache_count;
+-	s->s_shrink.batch = 1024;
+-	s->s_shrink.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE;
+-	if (prealloc_shrinker(&s->s_shrink, "sb-%s", type->name))
++	s->s_shrink = shrinker_alloc(SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE,
++				     "sb-%s", type->name);
++	if (!s->s_shrink)
+ 		goto fail;
+-	if (list_lru_init_memcg(&s->s_dentry_lru, &s->s_shrink))
++
++	s->s_shrink->seeks = DEFAULT_SEEKS;
++	s->s_shrink->scan_objects = super_cache_scan;
++	s->s_shrink->count_objects = super_cache_count;
++	s->s_shrink->batch = 1024;
++	s->s_shrink->private_data = s;
++
++	if (list_lru_init_memcg(&s->s_dentry_lru, s->s_shrink))
+ 		goto fail;
+-	if (list_lru_init_memcg(&s->s_inode_lru, &s->s_shrink))
++	if (list_lru_init_memcg(&s->s_inode_lru, s->s_shrink))
+ 		goto fail;
+ 	return s;
+ 
+@@ -326,7 +330,7 @@ void deactivate_locked_super(struct super_block *s)
+ {
+ 	struct file_system_type *fs = s->s_type;
+ 	if (atomic_dec_and_test(&s->s_active)) {
+-		unregister_shrinker(&s->s_shrink);
++		shrinker_free(s->s_shrink);
+ 		fs->kill_sb(s);
+ 
+ 		/*
+@@ -599,7 +603,7 @@ struct super_block *sget_fc(struct fs_context *fc,
+ 	hlist_add_head(&s->s_instances, &s->s_type->fs_supers);
+ 	spin_unlock(&sb_lock);
+ 	get_filesystem(s->s_type);
+-	register_shrinker_prepared(&s->s_shrink);
++	shrinker_register(s->s_shrink);
+ 	return s;
+ 
+ share_extant_sb:
+@@ -678,7 +682,7 @@ struct super_block *sget(struct file_system_type *type,
+ 	hlist_add_head(&s->s_instances, &type->fs_supers);
+ 	spin_unlock(&sb_lock);
+ 	get_filesystem(type);
+-	register_shrinker_prepared(&s->s_shrink);
++	shrinker_register(s->s_shrink);
+ 	return s;
+ }
+ EXPORT_SYMBOL(sget);
+@@ -1312,7 +1316,7 @@ int get_tree_bdev(struct fs_context *fc,
+ 		down_write(&s->s_umount);
+ 	} else {
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
+-		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
++		shrinker_debugfs_rename(s->s_shrink, "sb-%s:%s",
+ 					fc->fs_type->name, s->s_id);
+ 		sb_set_blocksize(s, block_size(bdev));
+ 		error = fill_super(s, fc);
+@@ -1385,7 +1389,7 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
+ 		down_write(&s->s_umount);
+ 	} else {
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
+-		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
++		shrinker_debugfs_rename(s->s_shrink, "sb-%s:%s",
+ 					fs_type->name, s->s_id);
+ 		sb_set_blocksize(s, block_size(bdev));
+ 		error = fill_super(s, data, flags & SB_SILENT ? 1 : 0);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 891cf662b26f..500238213fd9 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1232,7 +1232,7 @@ struct super_block {
+ 
+ 	const struct dentry_operations *s_d_op; /* default d_op for dentries */
+ 
+-	struct shrinker s_shrink;	/* per-sb shrinker handle */
++	struct shrinker *s_shrink;	/* per-sb shrinker handle */
+ 
+ 	/* Number of inodes with nlink == 0 but still referenced */
+ 	atomic_long_t s_remove_count;
 -- 
 2.30.2
 
