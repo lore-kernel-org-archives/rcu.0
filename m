@@ -2,125 +2,166 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCA87C04E69
-	for <rcu@archiver.kernel.org>; Thu, 27 Jul 2023 23:49:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 152D3C41513
+	for <rcu@archiver.kernel.org>; Fri, 28 Jul 2023 03:22:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbjG0XtH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 27 Jul 2023 19:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S231645AbjG1DWK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 27 Jul 2023 23:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbjG0Xs7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 27 Jul 2023 19:48:59 -0400
+        with ESMTP id S231546AbjG1DWJ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 27 Jul 2023 23:22:09 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395133A8B;
-        Thu, 27 Jul 2023 16:48:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F1926AE;
+        Thu, 27 Jul 2023 20:22:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2C1461EFF;
-        Thu, 27 Jul 2023 23:48:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E5FDC433C7;
-        Thu, 27 Jul 2023 23:48:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A30D161FBA;
+        Fri, 28 Jul 2023 03:22:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ABD7C433C8;
+        Fri, 28 Jul 2023 03:22:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690501724;
-        bh=Ttxo2VAoV3s10tVDpG1rs4f+uNBtPiAAdsRn7qEPqAI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Ak6ozI5MGJ+V/aaPZbipUbe6ZARep0hinqcaIFmiUbGlXqA4l6qqKubv3sXd24Wis
-         E3nRqNpMPjywrGRezhx8kIl9BfOcFGOjuYtEl0wjzGKmd2W/r6L34Y8Q/Asia9+Ai+
-         N65piXMA54Y1i5SwziMjZGbgl+PlpLxLOgApRck3LvpJfpGiaZrCds1yq/RX5+TIOO
-         TcyhaMq04sGg4mmvI/xNg53Zl5ogRkSJoPUjgXBUN2wkW+R/Z24fG4Bcn7szmrfhkb
-         1Y0rUs2KyI/CXZncywoQIP9j5+uNlee3CVuHYo0iSwOTdXpuIWfOUm7reRjWTqpcd1
-         EASuIvTp5UKtQ==
-Message-ID: <217f3a7e-7681-0da6-aaa7-252a1451f7ba@kernel.org>
-Date:   Fri, 28 Jul 2023 08:48:37 +0900
+        s=k20201202; t=1690514527;
+        bh=pePRLhloPz4DGnxJGIgPUrkXOZW3z9f15MMNigCf+AE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZgNThzMN2+YVZIpTDtIJk1ju7SvUJq7OeeMMUiGKAZksuIHYr42ZrgSTuFsI3nr8H
+         Ny/2mioMaJz8spo/ukf+try9J4nILwWrmePuAXvhdQht0LV5+ySPW3dxOdhbDa3KAJ
+         ZURdd+1GO70TLoQTP4Bl/Px0N/2TMMeGnyA/87HkrMk4my8YCGqJL557N9nWUvtFVz
+         3Sy4TS3h1+n2lFn9wU381HhEKeTiMY1kFx1Rtsohmj01gaeh4ck6QkW3Yv87Lm+zjF
+         kvzPBdawV27OzWPLTaljNmjSKOnN9WRcRCRS8MycZs+dAAMtavhjimoAa7xHqfJgBK
+         Sp6JvgYfXi0dQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9F6BBCE0AD7; Thu, 27 Jul 2023 20:22:06 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 20:22:06 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        kernel-team@android.com, John Stultz <jstultz@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [PATCH rcu 3/9] torture: Add lock_torture_writer_fifo module
+ param
+Message-ID: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <bca717ca-a83a-4540-80ec-732c12623d2d@paulmck-laptop>
+ <20230717182042.1098651-3-paulmck@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
- shrinker
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-29-zhengqi.arch@bytedance.com>
- <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
- <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
- <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
- <ZML22YJi5vPBDEDj@dread.disaster.area>
-Content-Language: en-US
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <ZML22YJi5vPBDEDj@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717182042.1098651-3-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 7/28/23 07:59, Dave Chinner wrote:
-> On Thu, Jul 27, 2023 at 07:20:46PM +0900, Damien Le Moal wrote:
->> On 7/27/23 17:55, Qi Zheng wrote:
->>>>>           goto err;
->>>>>       }
->>>>>   +    zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
->>>>> +    zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
->>>>> +    zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
->>>>> +    zmd->mblk_shrinker->private_data = zmd;
->>>>> +
->>>>> +    shrinker_register(zmd->mblk_shrinker);
->>>>
->>>> I fail to see how this new shrinker API is better... Why isn't there a
->>>> shrinker_alloc_and_register() function ? That would avoid adding all this code
->>>> all over the place as the new API call would be very similar to the current
->>>> shrinker_register() call with static allocation.
->>>
->>> In some registration scenarios, memory needs to be allocated in advance.
->>> So we continue to use the previous prealloc/register_prepared()
->>> algorithm. The shrinker_alloc_and_register() is just a helper function
->>> that combines the two, and this increases the number of APIs that
->>> shrinker exposes to the outside, so I choose not to add this helper.
->>
->> And that results in more code in many places instead of less code + a simple
->> inline helper in the shrinker header file...
+On Mon, Jul 17, 2023 at 11:20:36AM -0700, Paul E. McKenney wrote:
+> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
 > 
-> It's not just a "simple helper" - it's a function that has to take 6
-> or 7 parameters with a return value that must be checked and
-> handled.
+> Modifies locktorture writer to run as RT task.
 > 
-> This was done in the first versions of the patch set - the amount of
-> code in each caller does not go down and, IMO, was much harder to
-> read and determine "this is obviously correct" that what we have
-> now.
+> To use it:
+> insmod /lib/modules/torture.ko random_shuffle=1 lock_torture_writer_fifo=1
+>                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> insmod /lib/modules/locktorture.ko torture_type=mutex_lock rt_boost=1 rt_boost_factor=50 nested_locks=3
 > 
->> So not adding that super simple
->> helper is not exactly the best choice in my opinion.
+> This patch has been helpful to uncover issues with the proxy-execution
+> series.
 > 
-> Each to their own - I much prefer the existing style/API over having
-> to go look up a helper function every time I want to check some
-> random shrinker has been set up correctly....
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: kernel-team@android.com
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> [jstultz: Include header change to build, reword commit message]
+> Signed-off-by: John Stultz <jstultz@google.com>
+> Acked-by: Davidlohr Bueso <dave@stgolabs.net>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/locking/locktorture.c |  3 ++-
+>  kernel/torture.c             | 11 ++++++++++-
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+> index 949d3deae506..aac48d323254 100644
+> --- a/kernel/locking/locktorture.c
+> +++ b/kernel/locking/locktorture.c
+> @@ -809,7 +809,8 @@ static int lock_torture_writer(void *arg)
+>  	bool skip_main_lock;
+>  
+>  	VERBOSE_TOROUT_STRING("lock_torture_writer task started");
+> -	set_user_nice(current, MAX_NICE);
+> +	if (!rt_task(current))
+> +		set_user_nice(current, MAX_NICE);
+>  
+>  	do {
+>  		if ((torture_random(&rand) & 0xfffff) == 0)
+> diff --git a/kernel/torture.c b/kernel/torture.c
+> index 8be83fdc6be1..db79197e257a 100644
+> --- a/kernel/torture.c
+> +++ b/kernel/torture.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/ktime.h>
+>  #include <asm/byteorder.h>
+>  #include <linux/torture.h>
+> +#include <linux/sched/rt.h>
+>  #include "rcu/rcu.h"
+>  
+>  MODULE_LICENSE("GPL");
+> @@ -57,6 +58,9 @@ module_param(verbose_sleep_duration, int, 0444);
+>  static int random_shuffle;
+>  module_param(random_shuffle, int, 0444);
+>  
+> +static int lock_torture_writer_fifo;
+> +module_param(lock_torture_writer_fifo, int, 0444);
+> +
+>  static char *torture_type;
+>  static int verbose;
+>  
+> @@ -734,7 +738,7 @@ bool stutter_wait(const char *title)
+>  	cond_resched_tasks_rcu_qs();
+>  	spt = READ_ONCE(stutter_pause_test);
+>  	for (; spt; spt = READ_ONCE(stutter_pause_test)) {
+> -		if (!ret) {
+> +		if (!ret && !rt_task(current)) {
+>  			sched_set_normal(current, MAX_NICE);
+>  			ret = true;
+>  		}
+> @@ -944,6 +948,11 @@ int _torture_create_kthread(int (*fn)(void *arg), void *arg, char *s, char *m,
+>  		*tp = NULL;
+>  		return ret;
+>  	}
+> +
+> +	if (lock_torture_writer_fifo &&
+> +	    !strncmp(s, "lock_torture_writer", strlen(s)))
+> +		sched_set_fifo(*tp);
 
-OK. All fair points.
+I replaced this with a callback function in order to confine
+locktorture-specific code to kernel/locking/locktorture.c.
 
+I will reply with the following two patches.
 
--- 
-Damien Le Moal
-Western Digital Research
+1.	Add a kthread-creation callback to _torture_create_kthread().
 
+2.	Add lock_torture writer_fifo module parameter, courtesy of
+	Dietmar Eggemann.
+
+Please let me know if you have objections to this change.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt |    4 ++++
+ b/include/linux/torture.h                         |    7 +++++--
+ b/kernel/locking/locktorture.c                    |   12 +++++++-----
+ b/kernel/torture.c                                |    6 +++++-
+ kernel/torture.c                                  |    3 ++-
+ 5 files changed, 23 insertions(+), 9 deletions(-)
