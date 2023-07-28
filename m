@@ -2,44 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2254C04A6A
-	for <rcu@archiver.kernel.org>; Fri, 28 Jul 2023 15:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D915C001DF
+	for <rcu@archiver.kernel.org>; Fri, 28 Jul 2023 16:00:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236942AbjG1PgI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 28 Jul 2023 11:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S236580AbjG1QA2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 28 Jul 2023 12:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjG1PgH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:36:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F03110FA;
-        Fri, 28 Jul 2023 08:36:06 -0700 (PDT)
+        with ESMTP id S234529AbjG1QA0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 28 Jul 2023 12:00:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E0D110;
+        Fri, 28 Jul 2023 09:00:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 12E276218D;
-        Fri, 28 Jul 2023 15:36:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F875C433D9;
-        Fri, 28 Jul 2023 15:35:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 846536217D;
+        Fri, 28 Jul 2023 16:00:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95828C433C8;
+        Fri, 28 Jul 2023 16:00:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690558565;
-        bh=RiameAJyaqASlv6hb4c10KMAlN4/6+6/hqnDkYkEzPY=;
+        s=k20201202; t=1690560024;
+        bh=hYf2rKT66EA0CLZn0dh5++ZEnZG97g1m9o59RcdzOUI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p5Tu2hgT+a6gPKQMW1urJHIGxB0ZTZOTtxLFvSij1f/yjSQQyTa3zf0mqdYayXPmV
-         iccIrLhwD4QgY1Nagc4saDTCQBBcQAV3RcD1m6I2F1ForGzrpqfl32G6a840/Taa7m
-         jAW0KefOuBEpEOxh9v1oNKyA0vJvkBsDdk4UOR1d8fmxbhTXNBN479coNCzX9EKVkf
-         g7e48OjBzRhIJ1ioN6rN2lAkY9uA3PrFeg93sId02DNN6tLC0glfzPl7gZYl7gg3Gu
-         4sC+6Du26Ly24TZAb5B0eOcNMIwGZbynuoLApCVvleEIQpqXqssPsuv7UECOCOrQMQ
-         03M7Kq16bokjw==
-Date:   Fri, 28 Jul 2023 10:35:57 -0500
+        b=Td4BxKeLp8QaPwWqHQy6Fx8W2LrPCrYUlu1FHCBUsHZ8/LXjVoR3VvSXxZEnMOk+8
+         i337flH1gYWa/tB98k96VkLHwDSJ+1PwC98Kzs1DyywIpuw5G7NXMPM3FLfSrU1/tC
+         cBI6M2GLk95RDUgycJ7+eBXJGEKJyIkwRBbAKoJNmRJunmbvtQI5nDCnoXjP/MQf1D
+         3yLjOHYu0p2S53UnrI14nFrYm+1xXZxoO7U7N+5vLDMvCBs59Sf7pwbG6y4K8qb+UV
+         73axdh7/A0S74p9M6VVrD8rFpNpgPlupr2+Ne5VA9RxvXeOoCAEAAxKv1+S9w1/tRQ
+         v+JeeohU1wfFw==
+Date:   Fri, 28 Jul 2023 11:00:14 -0500
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     Valentin Schneider <vschneid@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
         linux-kselftest@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -87,47 +86,47 @@ Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 12/20] objtool: Warn about non __ro_after_init
- static key usage in .noinstr
-Message-ID: <20230728153557.frzmaayyy3auibx3@treble>
+Subject: Re: [RFC PATCH v2 13/20] context_tracking: Make context_tracking_key
+ __ro_after_init
+Message-ID: <20230728160014.vjxikkoo4rieng55@treble>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-13-vschneid@redhat.com>
+ <20230720163056.2564824-14-vschneid@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230720163056.2564824-13-vschneid@redhat.com>
+In-Reply-To: <20230720163056.2564824-14-vschneid@redhat.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 05:30:48PM +0100, Valentin Schneider wrote:
-> +static int validate_static_key(struct instruction *insn, struct insn_state *state)
-> +{
-> +	if (state->noinstr && state->instr <= 0) {
-> +		if ((strcmp(insn->key_sym->sec->name, ".data..ro_after_init"))) {
-> +			WARN_INSN(insn,
-> +				  "Non __ro_after_init static key \"%s\" in .noinstr section",
+On Thu, Jul 20, 2023 at 05:30:49PM +0100, Valentin Schneider wrote:
+> objtool now warns about it:
+> 
+>   vmlinux.o: warning: objtool: enter_from_user_mode+0x4e: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   vmlinux.o: warning: objtool: enter_from_user_mode+0x50: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x60: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x62: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   [...]
+> 
+> The key can only be enabled (and not disabled) in the __init function
+> ct_cpu_tracker_user(), so mark it as __ro_after_init.
+> 
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 
-For consistency with other warnings, this should start with a lowercase
-"n" and the string literal should be on the same line as the WARN_INSN,
-like
+It's best to avoid temporarily introducing warnings.  Bots will
+rightfully complain about that.  This patch and the next one should come
+before the objtool patches.
 
-			WARN_INSN(insn, "non __ro_after_init static key \"%s\" in .noinstr section",
-				  ...
+Also it would be helpful for the commit log to have a brief
+justification for the patch beyond "fix the objtool warning".  Something
+roughly like:
 
-> diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-> index 91b1950f5bd8a..1f76cfd815bf3 100644
-> --- a/tools/objtool/special.c
-> +++ b/tools/objtool/special.c
-> @@ -127,6 +127,9 @@ static int get_alt_entry(struct elf *elf, const struct special_entry *entry,
->  			return -1;
->  		}
->  		alt->key_addend = reloc_addend(key_reloc);
-> +
-> +		reloc_to_sec_off(key_reloc, &sec, &offset);
-> +		alt->key_sym = find_symbol_by_offset(sec, offset & ~2);
+  Soon, runtime-mutable text won't be allowed in .noinstr sections, so
+  that a code patching IPI to a userspace-bound CPU can be safely
+  deferred to the next kernel entry.
 
-Bits 0 and 1 can both store data, should be ~3?
+  'context_tracking_key' is only enabled in __init ct_cpu_tracker_user().
+  Mark it as __ro_after_init.
 
 -- 
 Josh
