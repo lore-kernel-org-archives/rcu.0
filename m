@@ -2,193 +2,80 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07018C001DC
-	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 08:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CF98C001DC
+	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 14:27:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbjG2Isv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 29 Jul 2023 04:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S231877AbjG2O15 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Jul 2023 10:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjG2Isg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 29 Jul 2023 04:48:36 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1D044A9
-        for <rcu@vger.kernel.org>; Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-682ae5d4184so685361b3a.1
-        for <rcu@vger.kernel.org>; Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
+        with ESMTP id S229619AbjG2O14 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Jul 2023 10:27:56 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EEFE7A
+        for <rcu@vger.kernel.org>; Sat, 29 Jul 2023 07:27:55 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-348fac49ef1so9673545ab.0
+        for <rcu@vger.kernel.org>; Sat, 29 Jul 2023 07:27:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690620488; x=1691225288;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AbdgPGpGzwv3Ba9ss/qbC8w4dcIJ6EfJ8tT9+ztVBsQ=;
-        b=DZFLwwmJndUW6zfnORbYzoucbeb9saaQKrl/QBur5VgS6P58gRgdpp8MYduMN550+T
-         ThpBMQd+wqwbcBoSGmvKI7V9Ma4LCpYLWFunl5NiegFEHJNTQE3HPx1j7Fgc5gNqx8Iq
-         YHUiWta6/cfbGMyg9gyEl8Eynz728/mHaw1lMQy+t/GfUp9Wqb7L9kJmHKg93SZhln4L
-         nQEOOjCm3XtItdkVREm8m6+qA283u73jSwvq4ou9Fha1ZKE4dHZmspSiYw7ywEJDGstN
-         q98qzRnKmdM4q9DzoCiLAmxpMakkQvrAM25zQsh718wYNXYSnABRZn4Jdwg4vno9Osq9
-         PVdQ==
+        d=joelfernandes.org; s=google; t=1690640875; x=1691245675;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8IWBZgms5btefVZlTaezAIwxlPX9SRsrOFa3RHW5pXM=;
+        b=O9PYpjAU2mRlvZCRI3y99M0z4R349x+52Ib8Dc28f895NT3GrjR1GSxX47Wgh9dLb0
+         ukrEPgBwXmeoAB3/P8c/JylfAwo7dCTN+gVuSYhck9s0iTXEWerrZ+lsD+0fpjOr23ti
+         dNApW9itmzCSz2tZE9VQOYUGwQsoBhJRDW5o4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690620488; x=1691225288;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AbdgPGpGzwv3Ba9ss/qbC8w4dcIJ6EfJ8tT9+ztVBsQ=;
-        b=OYjlueMxa0Fvbcf/CV+JNBiQuK0008vwJRfClh4ssZWu0aOoH3OGgyTqWVUIC2A1zZ
-         2QjXw0N3I/SLpLbFJ8LL5c+M0/J1SqdMOmj9Fxfa3vyXnShaDIGyHhX9ainNxLHi+aF/
-         uBitNHwq57v/Wpe+619xG8z643c0lMnUzIziMlQszQaaOwNQy7uZ4+OznLgbDwmhHPtc
-         sozOn1iE0lPgpuwaPxfjm3pBtHEXuRF6XN3BshGHyQ9/4ib9PAzZbj6T2EYupqdCUsWp
-         tJIIeatUeXfUS0BIMQZrEWyhVdFbfxQMoyVF6D9G0+PDK5I76+Iaw4tsXsc78HnTrtxw
-         8UwQ==
-X-Gm-Message-State: ABy/qLb4lhPSIsrUQLHMpWJ170nyBkkeQQSXQtyK271xnscbec2N/lvj
-        xBsjUqs7PHSwyu1AriSKFlAY1Q==
-X-Google-Smtp-Source: APBJJlGU4WvDtIE3roPXfr2RIP3jnPqKjXBKgd99me7vK4BYh3P3V9BBkMbm8JQkpcQK7ib8McexOg==
-X-Received: by 2002:a05:6a00:32c8:b0:67f:7403:1fe8 with SMTP id cl8-20020a056a0032c800b0067f74031fe8mr1763906pfb.3.1690620488142;
-        Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
-Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([240e:694:e21:b::2])
-        by smtp.gmail.com with ESMTPSA id s1-20020a62e701000000b00687087d8bc3sm2935245pfh.141.2023.07.29.01.47.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Jul 2023 01:48:07 -0700 (PDT)
-Message-ID: <5e50711c-a616-f95f-d6d2-c69627ac3cf0@bytedance.com>
-Date:   Sat, 29 Jul 2023 16:47:57 +0800
+        d=1e100.net; s=20221208; t=1690640875; x=1691245675;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8IWBZgms5btefVZlTaezAIwxlPX9SRsrOFa3RHW5pXM=;
+        b=bb4ITGLfP0RO/lBA6AuhLI08jIYPKZPUNpx/ff1AElgK7CSLFF99HoNKK0m2WmgJoF
+         luw9xyq4Rm771H4C5LHIKoenIs/3/piPRW9eUaLUS/nzUT9TNTqc5FRE6/rPJU1VZDPB
+         2FJyGhf5Gx85HXtvUNojhnQHJQCA2cLd8ib3QTrI2bR7Y+D7ty9q6Dx2uObhhUfueGGl
+         fmvBhxUM407Ois+2JSNB27fJufOa7/VnNQdPaT1RmXuxbt8nlZmiu3hg4Ub3VXlLrr+x
+         ulSLVV97sEHC5dsFeU9nN0yi66IQQD3GNFjRdwZ3bfLyE4Kk8yeaQM6UjxCkRvCO0Mnn
+         l4dA==
+X-Gm-Message-State: ABy/qLaG4bx6Cld6CYZt9mQfxR+29VEJwTAjtcvzA4WdYlx7FGsU5KVY
+        lkFkRK0Amyal/XRtZVNownBwBQ==
+X-Google-Smtp-Source: APBJJlGJY6no0cIsUkgJAXHpi+vW+SWmEfHSKAb+ivdT3ojIa4isYLZDeGSAIcbyWDyPITK8UZvEZw==
+X-Received: by 2002:a05:6e02:164d:b0:348:f1c6:b978 with SMTP id v13-20020a056e02164d00b00348f1c6b978mr3138451ilu.0.1690640874846;
+        Sat, 29 Jul 2023 07:27:54 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (254.82.172.34.bc.googleusercontent.com. [34.172.82.254])
+        by smtp.gmail.com with ESMTPSA id q9-20020a0566380ec900b0042b35c7b8c5sm1855362jas.61.2023.07.29.07.27.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Jul 2023 07:27:54 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     rcu@vger.kernel.org, paulmck@kernel.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v2 0/5] misc RCU fixes and cleanups
+Date:   Sat, 29 Jul 2023 14:27:30 +0000
+Message-ID: <20230729142738.222208-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 05/49] mm: shrinker: add infrastructure for dynamically
- allocating shrinker
-Content-Language: en-US
-To:     Simon Horman <simon.horman@corigine.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-6-zhengqi.arch@bytedance.com>
- <ZMOx0y+wdHEATDho@corigine.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ZMOx0y+wdHEATDho@corigine.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Simon,
+Here are some RCU fixes and cleanups. The main one is the TREE07 stuttering fix
+which makes the test pass now. Thanks.
 
-On 2023/7/28 20:17, Simon Horman wrote:
-> On Thu, Jul 27, 2023 at 04:04:18PM +0800, Qi Zheng wrote:
->> Currently, the shrinker instances can be divided into the following three
->> types:
->>
->> a) global shrinker instance statically defined in the kernel, such as
->>     workingset_shadow_shrinker.
->>
->> b) global shrinker instance statically defined in the kernel modules, such
->>     as mmu_shrinker in x86.
->>
->> c) shrinker instance embedded in other structures.
->>
->> For case a, the memory of shrinker instance is never freed. For case b,
->> the memory of shrinker instance will be freed after synchronize_rcu() when
->> the module is unloaded. For case c, the memory of shrinker instance will
->> be freed along with the structure it is embedded in.
->>
->> In preparation for implementing lockless slab shrink, we need to
->> dynamically allocate those shrinker instances in case c, then the memory
->> can be dynamically freed alone by calling kfree_rcu().
->>
->> So this commit adds the following new APIs for dynamically allocating
->> shrinker, and add a private_data field to struct shrinker to record and
->> get the original embedded structure.
->>
->> 1. shrinker_alloc()
->>
->> Used to allocate shrinker instance itself and related memory, it will
->> return a pointer to the shrinker instance on success and NULL on failure.
->>
->> 2. shrinker_register()
->>
->> Used to register the shrinker instance, which is same as the current
->> register_shrinker_prepared().
->>
->> 3. shrinker_free()
->>
->> Used to unregister (if needed) and free the shrinker instance.
->>
->> In order to simplify shrinker-related APIs and make shrinker more
->> independent of other kernel mechanisms, subsequent submissions will use
->> the above API to convert all shrinkers (including case a and b) to
->> dynamically allocated, and then remove all existing APIs.
->>
->> This will also have another advantage mentioned by Dave Chinner:
->>
->> ```
->> The other advantage of this is that it will break all the existing
->> out of tree code and third party modules using the old API and will
->> no longer work with a kernel using lockless slab shrinkers. They
->> need to break (both at the source and binary levels) to stop bad
->> things from happening due to using uncoverted shrinkers in the new
-> 
-> nit: uncoverted -> unconverted
+Joel Fernandes (Google) (5):
+  rcutorture: Fix stuttering races and other issues
+  srcu: Fix error handling in init_srcu_struct_fields()
+  tree/nocb: Adjust RCU_NOCB_WAKE_* macros from weaker to stronger
+  tree/nocb: Improve readability of nocb_gp_wait()
+  rcu/tree: Remove superfluous return from void call_rcu* functions
 
-Thanks. Will fix.
+ kernel/rcu/srcutree.c  |  32 ++++++------
+ kernel/rcu/tree.c      |   4 +-
+ kernel/rcu/tree.h      |   4 +-
+ kernel/rcu/tree_nocb.h | 113 ++++++++++++++++++++++++-----------------
+ kernel/torture.c       |  45 +++++-----------
+ 5 files changed, 99 insertions(+), 99 deletions(-)
 
-> 
->> setup.
->> ```
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> ...
-> 
->> diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
->> index f1becfd45853..506257585408 100644
->> --- a/mm/shrinker_debug.c
->> +++ b/mm/shrinker_debug.c
->> @@ -191,6 +191,20 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
->>   	return 0;
->>   }
->>   
->> +int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const char *fmt,
->> +				va_list ap)
->> +{
->> +	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
->> +
->> +	return shrinker->name ? 0 : -ENOMEM;
->> +}
->> +
->> +void shrinker_debugfs_name_free(struct shrinker *shrinker)
->> +{
->> +	kfree_const(shrinker->name);
->> +	shrinker->name = NULL;
->> +}
->> +
-> 
-> These functions have no prototype in this file,
-> perhaps internal.h should be included?
+-- 
+2.41.0.487.g6d72f3e995-goog
 
-The compiler can find these implementations, so I don't think there
-is a need to include internal.h here?
-
-Thanks,
-Qi
-
-> 
->>   int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
->>   {
->>   	struct dentry *entry;
-> 
-> ...
