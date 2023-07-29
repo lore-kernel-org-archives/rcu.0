@@ -2,141 +2,102 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88811C04A6A
-	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 19:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20AB6C0015E
+	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 22:19:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjG2Tz7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 29 Jul 2023 15:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        id S229663AbjG2WTV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Jul 2023 18:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjG2Tz5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 29 Jul 2023 15:55:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3343730DC;
-        Sat, 29 Jul 2023 12:55:54 -0700 (PDT)
+        with ESMTP id S229459AbjG2WTU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Jul 2023 18:19:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CDEE5F;
+        Sat, 29 Jul 2023 15:19:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A52AE6066F;
-        Sat, 29 Jul 2023 19:55:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA441C433C7;
-        Sat, 29 Jul 2023 19:55:48 +0000 (UTC)
-Date:   Sat, 29 Jul 2023 15:55:47 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C74D60B29;
+        Sat, 29 Jul 2023 22:19:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB17C433C8;
+        Sat, 29 Jul 2023 22:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690669158;
+        bh=hJ6YsESUwInT54UMXHoGOjcL1xW0mvMKXXRrjA3yRK0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GO0GDSAIgY5+Smpv5YCg9yR0+mOx/9snKdfK+Vnom1wx5sEa0aDtFk6upo3KScKkL
+         g6pvbJ44TEz+WcmNU63AOvBaBV8uK2EfLP+JyVG3+QDSTTXqrP/kN28VvlAOrpB0Vd
+         yh652SssPFQOEjq3g3yRLPYuc9lvR9XghFHhJCMn6SO+zFb+h3RPHRlt/e34mhFLzJ
+         3nBbdO1Dw4MLFYNj45wWavpypyQYWx068OMWMvxbJ+gzpABbB02d1/F0hSfzDoMAio
+         HDc281006Qo+Dz8R/duI2KQzOw3qQ3o/+NL3YxQAln1iECIcC1XG+cA6blYmPguhHi
+         ZBso+I092jJJw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1CCC6CE0BB1; Sat, 29 Jul 2023 15:19:18 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 15:19:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs
- cpumask filtering when the user mask is a single CPU
-Message-ID: <20230729155547.35719a1f@rorschach.local.home>
-In-Reply-To: <20230720163056.2564824-7-vschneid@redhat.com>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
-        <20230720163056.2564824-7-vschneid@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 5/5] rcu/tree: Remove superfluous return from void
+ call_rcu* functions
+Message-ID: <96b57ee8-0dc3-4f07-bb6c-3d7c7556deb9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230729142738.222208-1-joel@joelfernandes.org>
+ <20230729142738.222208-7-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230729142738.222208-7-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, 20 Jul 2023 17:30:42 +0100
-Valentin Schneider <vschneid@redhat.com> wrote:
+On Sat, Jul 29, 2023 at 02:27:36PM +0000, Joel Fernandes (Google) wrote:
+> The return keyword is not needed here.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-> Steven noted that when the user-provided cpumask contains a single CPU,
-> then the filtering function can use a scalar as input instead of a
-> full-fledged cpumask.
-> 
-> When the mask contains a single CPU, directly re-use the unsigned field
-> predicate functions. Transform '&' into '==' beforehand.
-> 
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+Odd that this is allowed.  ;-)
+
+I took 1, 2, and 5, thank you!  It would still be good to get Frederic's
+eyes on 3 and 4.
+
+							Thanx, Paul
+
 > ---
->  kernel/trace/trace_events_filter.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  kernel/rcu/tree.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-> index 2fe65ddeb34ef..54d642fabb7f1 100644
-> --- a/kernel/trace/trace_events_filter.c
-> +++ b/kernel/trace/trace_events_filter.c
-> @@ -1750,7 +1750,7 @@ static int parse_pred(const char *str, void *data,
->  		 * then we can treat it as a scalar input.
->  		 */
->  		single = cpumask_weight(pred->mask) == 1;
-> -		if (single && field->filter_type == FILTER_CPUMASK) {
-> +		if (single && field->filter_type != FILTER_CPU) {
->  			pred->val = cpumask_first(pred->mask);
->  			kfree(pred->mask);
->  		}
-> @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void *data,
->  				FILTER_PRED_FN_CPUMASK;
->  		} else if (field->filter_type == FILTER_CPU) {
->  			pred->fn_num = FILTER_PRED_FN_CPU_CPUMASK;
-> +		} else if (single) {
-> +			pred->op = pred->op == OP_BAND ? OP_EQ : pred->op;
-
-Nit, the above can be written as:
-
-			pred->op = pret->op != OP_BAND ? : OP_EQ;
-
--- Steve
-
-
-> +			pred->fn_num = select_comparison_fn(pred->op, field->size, false);
-> +			if (pred->op == OP_NE)
-> +				pred->not = 1;
->  		} else {
->  			switch (field->size) {
->  			case 8:
-
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index cb1caefa8bd0..7c79480bfaa0 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2713,7 +2713,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+>   */
+>  void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+>  {
+> -	return __call_rcu_common(head, func, false);
+> +	__call_rcu_common(head, func, false);
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+>  #endif
+> @@ -2764,7 +2764,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+>   */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  {
+> -	return __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> +	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu);
+>  
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
