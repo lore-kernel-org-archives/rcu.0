@@ -2,31 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70DCAC41513
-	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 19:09:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDF34C001E0
+	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 19:35:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjG2TJK (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 29 Jul 2023 15:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        id S229897AbjG2Ter (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Jul 2023 15:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjG2TJJ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 29 Jul 2023 15:09:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C2210C0;
-        Sat, 29 Jul 2023 12:09:08 -0700 (PDT)
+        with ESMTP id S229578AbjG2Teq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Jul 2023 15:34:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A99CE;
+        Sat, 29 Jul 2023 12:34:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05B8A60288;
-        Sat, 29 Jul 2023 19:09:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E1ADC433C7;
-        Sat, 29 Jul 2023 19:09:03 +0000 (UTC)
-Date:   Sat, 29 Jul 2023 15:09:01 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B102C601D6;
+        Sat, 29 Jul 2023 19:34:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27432C433C8;
+        Sat, 29 Jul 2023 19:34:38 +0000 (UTC)
+Date:   Sat, 29 Jul 2023 15:34:36 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
         bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
         linux-kselftest@vger.kernel.org,
@@ -54,6 +53,7 @@ Cc:     Valentin Schneider <vschneid@redhat.com>,
         Uladzislau Rezki <urezki@gmail.com>,
         Christoph Hellwig <hch@infradead.org>,
         Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
         Jason Baron <jbaron@akamai.com>,
         Kees Cook <keescook@chromium.org>,
         Sami Tolvanen <samitolvanen@google.com>,
@@ -76,13 +76,12 @@ Cc:     Valentin Schneider <vschneid@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a
- cpumask field by another cpumask
-Message-ID: <20230729150901.25b9ae0c@rorschach.local.home>
-In-Reply-To: <20230726194148.4jhyqqbtn3qqqqsq@treble>
+Subject: Re: [RFC PATCH v2 05/20] tracing/filters: Optimise cpumask vs
+ cpumask filtering when user mask is a single CPU
+Message-ID: <20230729153436.1e07bfa6@rorschach.local.home>
+In-Reply-To: <20230720163056.2564824-6-vschneid@redhat.com>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
-        <20230720163056.2564824-3-vschneid@redhat.com>
-        <20230726194148.4jhyqqbtn3qqqqsq@treble>
+        <20230720163056.2564824-6-vschneid@redhat.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -91,62 +90,27 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, 26 Jul 2023 12:41:48 -0700
-Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+On Thu, 20 Jul 2023 17:30:41 +0100
+Valentin Schneider <vschneid@redhat.com> wrote:
 
-> On Thu, Jul 20, 2023 at 05:30:38PM +0100, Valentin Schneider wrote:
-> >  int filter_assign_type(const char *type)
-> >  {
-> > -	if (strstr(type, "__data_loc") && strstr(type, "char"))
-> > -		return FILTER_DYN_STRING;
-> > +	if (strstr(type, "__data_loc")) {
-> > +		if (strstr(type, "char"))
-> > +			return FILTER_DYN_STRING;
-> > +		if (strstr(type, "cpumask_t"))
-> > +			return FILTER_CPUMASK;
-> > +		}  
-> 
-> The closing bracket has the wrong indentation.
-> 
-> > +		/* Copy the cpulist between { and } */
-> > +		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
-> > +		strscpy(tmp, str + maskstart, (i - maskstart) + 1);  
-> 
-> Need to check kmalloc() failure?  And also free tmp?
+>  		/* Move along */
+>  		i++;
+> +
+> +		/*
+> +		 * Optimisation: if the user-provided mask has a weight of one
+> +		 * then we can treat it as a scalar input.
+> +		 */
+> +		single = cpumask_weight(pred->mask) == 1;
+> +		if (single && field->filter_type == FILTER_CPUMASK) {
+> +			pred->val = cpumask_first(pred->mask);
+> +			kfree(pred->mask);
 
-I came to state the same thing.
+Don't we need:
+			pred->mask = NULL;
 
-Also, when you do an empty for loop:
-
-	for (; str[i] && str[i] != '}'; i++);
-
-Always put the semicolon on the next line, otherwise it is really easy
-to think that the next line is part of the for loop. That is, instead
-of the above, do:
-
-	for (; str[i] && str[i] != '}'; i++)
-		;
-
+here, or the free_predicate() will cause a double free?
 
 -- Steve
 
-
-> 
-> > +
-> > +		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
-> > +		if (!pred->mask)
-> > +			goto err_mem;
-> > +
-> > +		/* Now parse it */
-> > +		if (cpulist_parse(tmp, pred->mask)) {
-> > +			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
-> > +			goto err_free;
-> > +		}
-> > +
-> > +		/* Move along */
-> > +		i++;
-> > +		if (field->filter_type == FILTER_CPUMASK)
-> > +			pred->fn_num = FILTER_PRED_FN_CPUMASK;
-> > +  
-> 
-
+> +		}
+> +
