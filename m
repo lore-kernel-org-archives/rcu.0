@@ -2,305 +2,193 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75ACCC001DC
-	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 05:50:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07018C001DC
+	for <rcu@archiver.kernel.org>; Sat, 29 Jul 2023 08:48:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjG2FuF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 29 Jul 2023 01:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
+        id S231587AbjG2Isv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 29 Jul 2023 04:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjG2FuE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 29 Jul 2023 01:50:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7EC44B7;
-        Fri, 28 Jul 2023 22:50:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E78E5601D7;
-        Sat, 29 Jul 2023 05:50:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D22FC433C8;
-        Sat, 29 Jul 2023 05:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690609802;
-        bh=v5hGWBiTSJxlL4QxQcZ8c+IeC6bh8js9tr3aOFwSrnk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CvMw+NEc9eDF8Uj98uBteDltkmPgxWI8iAVSBxwnPxKomZg+a5/joAtcnHkQ516ke
-         QZSKWTa++L0zF4l1ldf0O3hcFCngaVpw51l0NVTxJiGsEpXaIoJTnlFYjY1Y3zLUpw
-         b20WcdLoMg8fS0zf3o30Y947+TQ1UhrfDw4RG5V0eJ6/pylDeW848AirCR5HqLbNwi
-         i5wXbl/s6OsF3iZyu/A+Eq6kayYf3RKPFurBL17WN9bNtWrye7jflcKMTD6/2P1KI3
-         tiEONlnLSGhoX/vK3wVvjvgRR7+RmZRtnGVZzxJM8ihELRcB2ml4jZHGOsr65VFyCB
-         SLqU/Ao/3LJbA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C710ECE0ADE; Fri, 28 Jul 2023 22:50:01 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 22:50:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
-Message-ID: <aa4ea5e3-ca5f-4a52-b6d1-375233af4f3c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
- <99B56FC7-9474-4968-B1DD-5862572FD0BA@joelfernandes.org>
- <a174c501-48df-404e-ae61-10ddaeb8e557@paulmck-laptop>
- <CAEXW_YS3hK8Y5TKCPvnNC9fsbmmMvcjx2f-G4uCXX=F2WNz-HQ@mail.gmail.com>
+        with ESMTP id S229668AbjG2Isg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 29 Jul 2023 04:48:36 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1D044A9
+        for <rcu@vger.kernel.org>; Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-682ae5d4184so685361b3a.1
+        for <rcu@vger.kernel.org>; Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690620488; x=1691225288;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AbdgPGpGzwv3Ba9ss/qbC8w4dcIJ6EfJ8tT9+ztVBsQ=;
+        b=DZFLwwmJndUW6zfnORbYzoucbeb9saaQKrl/QBur5VgS6P58gRgdpp8MYduMN550+T
+         ThpBMQd+wqwbcBoSGmvKI7V9Ma4LCpYLWFunl5NiegFEHJNTQE3HPx1j7Fgc5gNqx8Iq
+         YHUiWta6/cfbGMyg9gyEl8Eynz728/mHaw1lMQy+t/GfUp9Wqb7L9kJmHKg93SZhln4L
+         nQEOOjCm3XtItdkVREm8m6+qA283u73jSwvq4ou9Fha1ZKE4dHZmspSiYw7ywEJDGstN
+         q98qzRnKmdM4q9DzoCiLAmxpMakkQvrAM25zQsh718wYNXYSnABRZn4Jdwg4vno9Osq9
+         PVdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690620488; x=1691225288;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AbdgPGpGzwv3Ba9ss/qbC8w4dcIJ6EfJ8tT9+ztVBsQ=;
+        b=OYjlueMxa0Fvbcf/CV+JNBiQuK0008vwJRfClh4ssZWu0aOoH3OGgyTqWVUIC2A1zZ
+         2QjXw0N3I/SLpLbFJ8LL5c+M0/J1SqdMOmj9Fxfa3vyXnShaDIGyHhX9ainNxLHi+aF/
+         uBitNHwq57v/Wpe+619xG8z643c0lMnUzIziMlQszQaaOwNQy7uZ4+OznLgbDwmhHPtc
+         sozOn1iE0lPgpuwaPxfjm3pBtHEXuRF6XN3BshGHyQ9/4ib9PAzZbj6T2EYupqdCUsWp
+         tJIIeatUeXfUS0BIMQZrEWyhVdFbfxQMoyVF6D9G0+PDK5I76+Iaw4tsXsc78HnTrtxw
+         8UwQ==
+X-Gm-Message-State: ABy/qLb4lhPSIsrUQLHMpWJ170nyBkkeQQSXQtyK271xnscbec2N/lvj
+        xBsjUqs7PHSwyu1AriSKFlAY1Q==
+X-Google-Smtp-Source: APBJJlGU4WvDtIE3roPXfr2RIP3jnPqKjXBKgd99me7vK4BYh3P3V9BBkMbm8JQkpcQK7ib8McexOg==
+X-Received: by 2002:a05:6a00:32c8:b0:67f:7403:1fe8 with SMTP id cl8-20020a056a0032c800b0067f74031fe8mr1763906pfb.3.1690620488142;
+        Sat, 29 Jul 2023 01:48:08 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([240e:694:e21:b::2])
+        by smtp.gmail.com with ESMTPSA id s1-20020a62e701000000b00687087d8bc3sm2935245pfh.141.2023.07.29.01.47.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 Jul 2023 01:48:07 -0700 (PDT)
+Message-ID: <5e50711c-a616-f95f-d6d2-c69627ac3cf0@bytedance.com>
+Date:   Sat, 29 Jul 2023 16:47:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YS3hK8Y5TKCPvnNC9fsbmmMvcjx2f-G4uCXX=F2WNz-HQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3 05/49] mm: shrinker: add infrastructure for dynamically
+ allocating shrinker
+Content-Language: en-US
+To:     Simon Horman <simon.horman@corigine.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-6-zhengqi.arch@bytedance.com>
+ <ZMOx0y+wdHEATDho@corigine.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZMOx0y+wdHEATDho@corigine.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 09:25:35PM -0400, Joel Fernandes wrote:
-> On Fri, Jul 28, 2023 at 6:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > > On Fri, Jul 28, 2023 at 05:17:59PM -0400, Joel Fernandes wrote:
-> > >
-> > >   On Jul 27, 2023, at 7:18 PM, Joel Fernandes <joel@joelfernandes.org>
-> > >   wrote:
-> > >
-> > > ﻿
-> > >
-> > >   On Jul 27, 2023, at 4:33 PM, Paul E. McKenney <paulmck@kernel.org>
-> > >   wrote:
-> > >
-> > >   ﻿On Thu, Jul 27, 2023 at 10:39:17AM -0700, Guenter Roeck wrote:
-> > >
-> > >   On 7/27/23 09:07, Paul E. McKenney wrote:
-> > >
-> > >   ...]
-> > >
-> > >   No. However, (unrelated) in linux-next, rcu tests sometimes result
-> > >   in apparent hangs
-> > >
-> > >   or long runtime.
-> > >
-> > >   [    0.778841] Mount-cache hash table entries: 512 (order: 0, 4096
-> > >   bytes, linear)
-> > >
-> > >   [    0.779011] Mountpoint-cache hash table entries: 512 (order: 0,
-> > >   4096 bytes, linear)
-> > >
-> > >   [    0.797998] Running RCU synchronous self tests
-> > >
-> > >   [    0.798209] Running RCU synchronous self tests
-> > >
-> > >   [    0.912368] smpboot: CPU0: AMD Opteron 63xx class CPU (family:
-> > >   0x15, model: 0x2, stepping: 0x0)
-> > >
-> > >   [    0.923398] RCU Tasks: Setting shift to 2 and lim to 1
-> > >   rcu_task_cb_adjust=1.
-> > >
-> > >   [    0.925419] Running RCU-tasks wait API self tests
-> > >
-> > >   (hangs until aborted). This is primarily with Opteron CPUs, but also
-> > >   with others such as Haswell,
-> [...]
-> > >   Building
-> > >   x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:me
-> > >   m2G:virtio:cd ... running ......... passed
-> [...]
-> > >   I freely confess that I am having a hard time imagining what would
-> > >
-> > >   be CPU dependent in that code.  Timing, maybe?  Whatever the reason,
-> > >
-> > >   I am not seeing these failures in my testing.
-> > >
-> > >   So which of the following Kconfig options is defined in your
-> > >   .config?
-> > >
-> > >   CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
-> > >
-> > >   If you have more than one of them, could you please apply this patch
-> > >
-> > >   and show me the corresponding console output from the resulting
-> > >   hang?
-> > >
-> > > FWIW, I am not able to repro this issue either. If a .config can be
-> > > shared of the problem system, I can try it out to see if it can be
-> > > reproduced on my side.
-> > >
-> > > I do see this now on 5.15 stable:
-> > >
-> > >TASKS03 ------- 3089 GPs (0.858056/s)
-> > >QEMU killed
-> > >TASKS03 no success message, 64 successful version messages
-> > >!!! PID 3309783 hung at 3781 vs. 3600 seconds
-> > >
-> > > I have not looked too closely yet. The full test artifacts are here:
-> > >
-> > > [1]Artifacts of linux-5.15.y 5.15.123 :
-> > > /tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44 [Jenkins]
-> > > [2]box.joelfernandes.org
-> > > [3]apple-touch-icon.png
-> > >
-> > > Thanks,
-> > >
-> > > - Joel
-> > >
-> > > (Apologies if the email is html, I am sending from phone).
-> >
-> > Heh.  I have a script that runs lynx.  Which isn't perfect, but usually
-> > makes things at least somewhat legible.
-> 
-> Sorry I was too optimistic about the iPhone's capabilities when it
-> came to mailing list emails.
-> Here's what I said:
-> --------------
-> I do see this now on 5.15 stable:
-> 
-> TASKS03 ------- 3089 GPs (0.858056/s)
-> QEMU killed
-> TASKS03 no success message, 64 successful version messages
-> !!! PID 3309783 hung at 3781 vs. 3600 seconds
-> 
-> Link to full logs/artifacts:
-> http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
-> ----------------
-> 
-> > This looks like the prototypical hard hang with interrupts disabled,
-> > which could be anywhere in the kernel, including RCU.  I am not seeing
-> > this.  but the usual cause when I have seen it in the past was deadlock
-> > of irq-disabled locks.  In one spectacular case, it was a timekeeping
-> > failure that messed up a CPU-hotplug operation.
-> >
-> > If this is reproducible, one trick would be to have a script look at
-> > the console.log file, and have it do something (NMI? sysrq?  something
-> > else?) to qemu if output ceased for too long.
-> >
-> > One way to do this without messing with the rcutorture scripting is to
-> > grab the qemu-cmd file from this run, and then invoke that file from your
-> > own script, possibly with suitable modifications to qemu's parameters.
-> 
-> Would it be better to have such monitoring as part of rcutorture
-> testing itself? Alternatively there is the NMI hardlockup detector
-> which I believe should also detect such cases and dump stacks.
+Hi Simon,
 
-Quite possibly.  But special-casing the prototype is probably going to be
-a lot faster and easier.  If it works, then it might make a lot of sense
-to upgrade the scripting.  If it doesn't work, then quite a bit less time
-is wasted than would be by messing with the scripting from the get-go.
-
-Also, you have the option of making qemu be interactive and manually
-triggering things, for example by checking up on the run near the end.
-Or having something handing commands to qemu.
-
-Either way allows much more interaction with qemu, and better
-experiementation, than could be done reasonably with the scripts.
-
-						Thanx, Paul
-
-> thanks,
+On 2023/7/28 20:17, Simon Horman wrote:
+> On Thu, Jul 27, 2023 at 04:04:18PM +0800, Qi Zheng wrote:
+>> Currently, the shrinker instances can be divided into the following three
+>> types:
+>>
+>> a) global shrinker instance statically defined in the kernel, such as
+>>     workingset_shadow_shrinker.
+>>
+>> b) global shrinker instance statically defined in the kernel modules, such
+>>     as mmu_shrinker in x86.
+>>
+>> c) shrinker instance embedded in other structures.
+>>
+>> For case a, the memory of shrinker instance is never freed. For case b,
+>> the memory of shrinker instance will be freed after synchronize_rcu() when
+>> the module is unloaded. For case c, the memory of shrinker instance will
+>> be freed along with the structure it is embedded in.
+>>
+>> In preparation for implementing lockless slab shrink, we need to
+>> dynamically allocate those shrinker instances in case c, then the memory
+>> can be dynamically freed alone by calling kfree_rcu().
+>>
+>> So this commit adds the following new APIs for dynamically allocating
+>> shrinker, and add a private_data field to struct shrinker to record and
+>> get the original embedded structure.
+>>
+>> 1. shrinker_alloc()
+>>
+>> Used to allocate shrinker instance itself and related memory, it will
+>> return a pointer to the shrinker instance on success and NULL on failure.
+>>
+>> 2. shrinker_register()
+>>
+>> Used to register the shrinker instance, which is same as the current
+>> register_shrinker_prepared().
+>>
+>> 3. shrinker_free()
+>>
+>> Used to unregister (if needed) and free the shrinker instance.
+>>
+>> In order to simplify shrinker-related APIs and make shrinker more
+>> independent of other kernel mechanisms, subsequent submissions will use
+>> the above API to convert all shrinkers (including case a and b) to
+>> dynamically allocated, and then remove all existing APIs.
+>>
+>> This will also have another advantage mentioned by Dave Chinner:
+>>
+>> ```
+>> The other advantage of this is that it will break all the existing
+>> out of tree code and third party modules using the old API and will
+>> no longer work with a kernel using lockless slab shrinkers. They
+>> need to break (both at the source and binary levels) to stop bad
+>> things from happening due to using uncoverted shrinkers in the new
 > 
->  - Joel
+> nit: uncoverted -> unconverted
+
+Thanks. Will fix.
+
 > 
-> >
-> > Thoughts?
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Cheers,
-> > > - Joel
-> > >
-> > >                             Thanx, Paul
-> > >
-> > >   --------------------------------------------------------------------
-> > >   ----
-> > >
-> > >   commit 709a917710dc01798e01750ea628ece4bfc42b7b
-> > >
-> > >   Author: Paul E. McKenney <paulmck@kernel.org>
-> > >
-> > >   Date:   Thu Jul 27 13:13:46 2023 -0700
-> > >
-> > >     rcu-tasks: Add printk()s to localize boot-time self-test hang
-> > >
-> > >     Currently, rcu_tasks_initiate_self_tests() prints a message and
-> > >   then
-> > >
-> > >     initiates self tests on up to three different RCU Tasks flavors.
-> > >   If one
-> > >
-> > >     of the flavors has a grace-period hang, it is not easy to work out
-> > >   which
-> > >
-> > >     of the three hung.  This commit therefore prints a message prior
-> > >   to each
-> > >
-> > >     individual test.
-> > >
-> > >     Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > >
-> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > >
-> > >   diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > >
-> > >   index 56c470a489c8..427433c90935 100644
-> > >
-> > >   --- a/kernel/rcu/tasks.h
-> > >
-> > >   +++ b/kernel/rcu/tasks.h
-> > >
-> > >   @@ -1981,20 +1981,22 @@ static void test_rcu_tasks_callback(struct
-> > >   rcu_head *rhp)
-> > >
-> > >   static void rcu_tasks_initiate_self_tests(void)
-> > >
-> > >   {
-> > >
-> > >   -    pr_info("Running RCU-tasks wait API self tests\n");
-> > >
-> > >   #ifdef CONFIG_TASKS_RCU
-> > >
-> > >   +    pr_info("Running RCU Tasks wait API self tests\n");
-> > >
-> > >     tests[0].runstart = jiffies;
-> > >
-> > >     synchronize_rcu_tasks();
-> > >
-> > >     call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
-> > >
-> > >   #endif
-> > >
-> > >   #ifdef CONFIG_TASKS_RUDE_RCU
-> > >
-> > >   +    pr_info("Running RCU Tasks Rude wait API self tests\n");
-> > >
-> > >     tests[1].runstart = jiffies;
-> > >
-> > >     synchronize_rcu_tasks_rude();
-> > >
-> > >     call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
-> > >
-> > >   #endif
-> > >
-> > >   #ifdef CONFIG_TASKS_TRACE_RCU
-> > >
-> > >   +    pr_info("Running RCU Tasks Trace wait API self tests\n");
-> > >
-> > >     tests[2].runstart = jiffies;
-> > >
-> > >     synchronize_rcu_tasks_trace();
-> > >
-> > >     call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
-> > >
-> > >References
-> > >
-> > > Visible links:
-> > > 1. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
-> > > 2. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
-> > > 3. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
-> > >
-> > > Hidden links:
-> > > 5. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
+>> setup.
+>> ```
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> 
+> ...
+> 
+>> diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
+>> index f1becfd45853..506257585408 100644
+>> --- a/mm/shrinker_debug.c
+>> +++ b/mm/shrinker_debug.c
+>> @@ -191,6 +191,20 @@ int shrinker_debugfs_add(struct shrinker *shrinker)
+>>   	return 0;
+>>   }
+>>   
+>> +int shrinker_debugfs_name_alloc(struct shrinker *shrinker, const char *fmt,
+>> +				va_list ap)
+>> +{
+>> +	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
+>> +
+>> +	return shrinker->name ? 0 : -ENOMEM;
+>> +}
+>> +
+>> +void shrinker_debugfs_name_free(struct shrinker *shrinker)
+>> +{
+>> +	kfree_const(shrinker->name);
+>> +	shrinker->name = NULL;
+>> +}
+>> +
+> 
+> These functions have no prototype in this file,
+> perhaps internal.h should be included?
+
+The compiler can find these implementations, so I don't think there
+is a need to include internal.h here?
+
+Thanks,
+Qi
+
+> 
+>>   int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
+>>   {
+>>   	struct dentry *entry;
+> 
+> ...
