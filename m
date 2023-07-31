@@ -2,139 +2,109 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D4AEC00528
-	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 12:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8142C001DE
+	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 14:20:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbjGaMID (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Jul 2023 08:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
+        id S231510AbjGaOUG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Jul 2023 10:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbjGaMIB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:08:01 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFC410DF
-        for <rcu@vger.kernel.org>; Mon, 31 Jul 2023 05:07:57 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbea14700bso41132965e9.3
-        for <rcu@vger.kernel.org>; Mon, 31 Jul 2023 05:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690805276; x=1691410076;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RtmERFMlZOzYX/xBspxMX5ThTF00TCl7wQ49mzpQ0/E=;
-        b=ckvKa3Zx6KLTC/M6VWdrDZz/SSn75QqFRlMc0INiSsSBx74N0XLvwMHXr/+1kT27eP
-         2VJgFZt4x2XA8zK/QCSOllF4qlJL0zdlWeiSenxoo5XA6bg0BWmo4iAsdwWj5iJRGauk
-         wDEn65j7MAM1S5M1tIugT7l19Cfb4tdy6ef+XqorZf5v2By4dSwzVTenowDcofckzNyO
-         K3OktzO+ncq6RAs2ijzNHWsQJJW4olboxJSVETmXZPSjGFq7VH+zra5n0r2r2pTXta7N
-         Q1Jy7aFI41e+av0nqqcbhUAS0OF7+1gTr+jZqBOc0NfGDi0XeErtkvl+rKkCg5HXkczs
-         4qsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690805276; x=1691410076;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RtmERFMlZOzYX/xBspxMX5ThTF00TCl7wQ49mzpQ0/E=;
-        b=DUOuaLuMEcRlR2DLI1uyLi6EmxQbg5mDyTbk1h6a4SO9j4lb80h8b8tBgbPiO44q4D
-         fLV7i5VYc9l3J96P4BrqjSjNMWpREKkiDgFZEushKLqst/oS+ykqLxSxzXvru8kjtpc7
-         SENEg/Alugk99MWseeDspm9i8ol3tKBWXYDRyrxz2qfyxoC8o2NvUYZ/gSwokZIeooSP
-         eyA2BEcs82dza8LlUTyWs4NinCI+V2V5IbN3HL3iP+v9zptWJrQW6zOxmOhUC1Vjc4Nb
-         oUoWoUDHnPGAdPVElup0WaZLCGtGSFRb7bsg6ndsPnw62TZQ7CgCk5hnfAGp7YsMKOTa
-         ZuQQ==
-X-Gm-Message-State: ABy/qLaKHthRlSqlj0D/SbSRbJ5Rgg9p+NDDz3rw2mc5P3uc7f5uQGd7
-        2TozlHm28l26IOdi6awpuGufWQ==
-X-Google-Smtp-Source: APBJJlFr6e04BsmGj0Si0aJ/H+RJXUxKxJY/Gls37u74uRa2g6gDjuh0SZ+KHpB0+aEfGznvQoXMRw==
-X-Received: by 2002:a5d:6889:0:b0:313:f548:25b9 with SMTP id h9-20020a5d6889000000b00313f54825b9mr6424281wru.40.1690805275895;
-        Mon, 31 Jul 2023 05:07:55 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id q15-20020a7bce8f000000b003fe20533a1esm3193045wmj.44.2023.07.31.05.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 05:07:55 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 15:07:52 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs cpumask
- filtering when the user mask is a single CPU
-Message-ID: <04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-7-vschneid@redhat.com>
- <20230729155547.35719a1f@rorschach.local.home>
+        with ESMTP id S230171AbjGaOUE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Jul 2023 10:20:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C07BB6;
+        Mon, 31 Jul 2023 07:20:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HHSsgCNjhHdFIGMQf5i+HECrKrb/KpWdhY3pLbYw1XQ=; b=shzvgZ5MR8NVHhRx3eD7xO1ViD
+        K9qpI4RQJ/e43YTDHsUFoQYLazXH6Ge36IwmKu+3pR9fDqMliYZ2Q2cm4ci0auq3oU+ii6qr6PY2Q
+        1zzsnQ5ZOMuT0bX1PCilQUVKc+nm8zPy6tyr1VACKxtqHdsRZ1Psr/1uTmfTE5Zb/51y3j0I45/HK
+        ErHKpItC8xcFt7QeAWgygfvAdsG4Q02bTNxnrt2Q0rEEz7HVwtdRW3ErwNatV7wqFaKDTLtpfuKIo
+        pooLJSZKqsZXxTPLhChgkmKJGr0G+dfFu62+bLC4in5g7zUj09jkJGmPWsDI+T2jzzzYlpwoNcKGx
+        W89FVHkA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQTkF-0024Yq-8F; Mon, 31 Jul 2023 14:19:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9DCF6300134;
+        Mon, 31 Jul 2023 16:19:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7BEB4203EA053; Mon, 31 Jul 2023 16:19:34 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 16:19:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+Message-ID: <20230731141934.GK29590@hirez.programming.kicks-ass.net>
+References: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
+ <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
+ <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230729155547.35719a1f@rorschach.local.home>
+In-Reply-To: <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 03:55:47PM -0400, Steven Rostedt wrote:
-> > @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void *data,
-> >  				FILTER_PRED_FN_CPUMASK;
-> >  		} else if (field->filter_type == FILTER_CPU) {
-> >  			pred->fn_num = FILTER_PRED_FN_CPU_CPUMASK;
-> > +		} else if (single) {
-> > +			pred->op = pred->op == OP_BAND ? OP_EQ : pred->op;
+On Sat, Jul 29, 2023 at 09:00:02PM -0700, Guenter Roeck wrote:
+> On 7/27/23 16:18, Joel Fernandes wrote:
 > 
-> Nit, the above can be written as:
+> [ ... ]
 > 
-> 			pred->op = pret->op != OP_BAND ? : OP_EQ;
+> > > I freely confess that I am having a hard time imagining what would
+> > > be CPU dependent in that code.  Timing, maybe?  Whatever the reason,
+> > > I am not seeing these failures in my testing.
+> > > 
+> > > So which of the following Kconfig options is defined in your .config?
+> > > CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
+> > > 
+> > > If you have more than one of them, could you please apply this patch
+> > > and show me the corresponding console output from the resulting hang?
+> > 
+> > FWIW, I am not able to repro this issue either. If a .config can be shared of the problem system, I can try it out to see if it can be reproduced on my side.
+> > 
 > 
+> I managed to bisect the problem. See bisect log below. Bisect repeated twice.
+> so it should be reliable. I don't really understand it, but the following
+> reverts fix the problem. This is on top of next-20230721 because next-20230728
+> crashes immediately in my tests.
+> 
+> 0caafe9b94ab (HEAD) Revert "sched/fair: Remove sched_feat(START_DEBIT)"
+> 518bdbd39fdb Revert "sched/fair: Add lag based placement"
+> a011162c3e32 Revert "sched/fair: Implement an EEVDF-like scheduling policy"
+> df579720bf98 Revert "sched/fair: Commit to lag based placement"
+> aac459a7e738 Revert "sched/smp: Use lag to simplify cross-runqueue placement"
+> 8d686eb173e1 Revert "sched/fair: Commit to EEVDF"
+> 486474c50f95 Revert "sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice"
+> 79e94d67d08a Revert "sched/fair: Propagate enqueue flags into place_entity()"
+> ae867bc97b71 (tag: next-20230721) Add linux-next specific files for 20230721
+> 
+> For context: x86 images (32 and 64 bit) in -next tend to hang at
+> 
+> [    2.309323] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
+> [    2.311634] Running RCU-tasks wait API self tests
+> 
+> The hang is not seen with every boot; it happens roughly about once every
+> 10 boot attempts. It is not CPU dependent as I initially thought.
+> 
+> Configuration file is at http://server.roeck-us.net/qemu/x86-next/config.
+> Example qemu command line:
 
-Heh.  Those are not equivalent.  The right way to write this is:
-
-	if (pred->op == OP_BAND)
-		pred->op = OP_EQ;
-
-regards,
-dan carpenter
-
+Hurmph, let me see if I can reproduce on next-20230731 (not having the
+older next thingies around).
