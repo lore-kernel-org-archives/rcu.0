@@ -2,29 +2,55 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A92FCC001DE
-	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 15:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 200F9C04E69
+	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 16:03:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjGaPzN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Jul 2023 11:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S233080AbjGaQDV (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Jul 2023 12:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232898AbjGaPzK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:55:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA9A173F;
-        Mon, 31 Jul 2023 08:55:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E39D611E1;
-        Mon, 31 Jul 2023 15:55:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 494BDC433C7;
-        Mon, 31 Jul 2023 15:54:55 +0000 (UTC)
-Date:   Mon, 31 Jul 2023 11:54:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
+        with ESMTP id S233394AbjGaQDS (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Jul 2023 12:03:18 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CE21BE
+        for <rcu@vger.kernel.org>; Mon, 31 Jul 2023 09:03:15 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742bso52012225e9.2
+        for <rcu@vger.kernel.org>; Mon, 31 Jul 2023 09:03:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690819394; x=1691424194;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjX9vqrNZsVo8pAJHyJfBfDqvLmz9Q9LwcwZTP61/cs=;
+        b=kYzWRu4k1QcGoE6XKlByF3TqlwnnuXUy4dR/Gmke34HiIojnc6bDt5mnmDrOMIanBC
+         QUevvvfek0A0kIhfRLCo8R/86BFpovIiHnnInbzwZivWg2DRSm+X5e15n19MoM8ITjcG
+         /+J6EfoaBtyNvPh2Yg2/K4Zf7rrxdQB0bQhvIF9F1h5QqrkpNHuKfSzod4rrLRa1ifOB
+         nEUhBA9+KaGfeeecCMie9MebsjXRqYzaUgOSq09dmjhabu7gzNjGo+iXkB9N7h9h4gTU
+         J2wpszV9xtd4d81pKysjcOiYL/WmjuQhdAci9fviFugAru1L92cwlrTrGrXfizKWktqj
+         yppQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690819394; x=1691424194;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wjX9vqrNZsVo8pAJHyJfBfDqvLmz9Q9LwcwZTP61/cs=;
+        b=Y8fvlsGv/ksPeR69jmr+BQRISMSW7c2kQQBgtqVbeNIoZUMS4VPDAHBxc7A6oXJk2g
+         vNVZPFzSQuY6TAATU4TFvoqjlsdzlI0AyEZ4MnsBn3zboBEIXrQMaIA3n21RQbLEW1nV
+         9BtEPPCgJz7lgTkDFUZw/clwD08znCKhkfq8MXHGkDuLqSSzAEqKAWdjtDNRoHcQzQlT
+         qB9okVE/2VHTcwTJKHLaz08DEnmDZSJr2osV286cmh5A4hzp2Nh3LHT3iWzX4Enqeupv
+         fhmVOhKC1A31A4kkY82Wdl7tXe8suWEpORxD7YThArVxWGB3WSDvk0etgYUg/D6+Z9fU
+         Ey+A==
+X-Gm-Message-State: ABy/qLaz8rD7n3F9E6bQnw2TbWJ9YXru2Qd5dZpc8kySKJyznFdJAWxL
+        dKOhP4QimJ3fTIOBgSovl4Jfrw==
+X-Google-Smtp-Source: APBJJlH9s43EMKigyuVBab9J9RMVZV2UplPMJan+41yuvFpRsQzS559KIDbR9x9cZ2CPnZZf/f6ReA==
+X-Received: by 2002:a1c:7505:0:b0:3fc:2e8:ea8b with SMTP id o5-20020a1c7505000000b003fc02e8ea8bmr295454wmc.28.1690819394291;
+        Mon, 31 Jul 2023 09:03:14 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id v18-20020a05600c215200b003fe0bb31a6asm8872643wml.43.2023.07.31.09.03.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 09:03:13 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 19:03:04 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Valentin Schneider <vschneid@redhat.com>,
         linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
@@ -72,51 +98,63 @@ Cc:     Valentin Schneider <vschneid@redhat.com>,
         Julian Pidancet <julian.pidancet@oracle.com>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
         Juri Lelli <juri.lelli@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs
- cpumask filtering when the user mask is a single CPU
-Message-ID: <20230731115453.395d20c6@gandalf.local.home>
-In-Reply-To: <04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
+Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs cpumask
+ filtering when the user mask is a single CPU
+Message-ID: <b7cf996a-f443-402c-8e13-c5f25a964184@kadam.mountain>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
-        <20230720163056.2564824-7-vschneid@redhat.com>
-        <20230729155547.35719a1f@rorschach.local.home>
-        <04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20230720163056.2564824-7-vschneid@redhat.com>
+ <20230729155547.35719a1f@rorschach.local.home>
+ <04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
+ <20230731115453.395d20c6@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731115453.395d20c6@gandalf.local.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, 31 Jul 2023 15:07:52 +0300
-Dan Carpenter <dan.carpenter@linaro.org> wrote:
-
-> On Sat, Jul 29, 2023 at 03:55:47PM -0400, Steven Rostedt wrote:
-> > > @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void *data,
-> > >  				FILTER_PRED_FN_CPUMASK;
-> > >  		} else if (field->filter_type == FILTER_CPU) {
-> > >  			pred->fn_num = FILTER_PRED_FN_CPU_CPUMASK;
-> > > +		} else if (single) {
-> > > +			pred->op = pred->op == OP_BAND ? OP_EQ : pred->op;  
-> > 
-> > Nit, the above can be written as:
-> > 
-> > 			pred->op = pret->op != OP_BAND ? : OP_EQ;
-> >   
+On Mon, Jul 31, 2023 at 11:54:53AM -0400, Steven Rostedt wrote:
+> On Mon, 31 Jul 2023 15:07:52 +0300
+> Dan Carpenter <dan.carpenter@linaro.org> wrote:
 > 
-> Heh.  Those are not equivalent.  The right way to write this is:
-
-You mean because of my typo?
-
+> > On Sat, Jul 29, 2023 at 03:55:47PM -0400, Steven Rostedt wrote:
+> > > > @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void *data,
+> > > >  				FILTER_PRED_FN_CPUMASK;
+> > > >  		} else if (field->filter_type == FILTER_CPU) {
+> > > >  			pred->fn_num = FILTER_PRED_FN_CPU_CPUMASK;
+> > > > +		} else if (single) {
+> > > > +			pred->op = pred->op == OP_BAND ? OP_EQ : pred->op;  
+> > > 
+> > > Nit, the above can be written as:
+> > > 
+> > > 			pred->op = pret->op != OP_BAND ? : OP_EQ;
+> > >   
+> > 
+> > Heh.  Those are not equivalent.  The right way to write this is:
 > 
-> 	if (pred->op == OP_BAND)
-> 		pred->op = OP_EQ;
+> You mean because of my typo?
 
-But sure, I'm fine with that, and it's probably more readable too.
+No, I hadn't seen the s/pred/pret/ typo.  Your code does:
 
--- Steve
+	if (pred->op != OP_BAND)
+		pred->op = true;
+	else
+		pred->op OP_EQ;
+
+Realy we should probably trigger a static checker warning any time
+someone does a compare operations as part of a "x = comparison ?: bar;
+Years ago, someone asked me to do that with regards to error codes like:
+
+	return ret < 0 ?: -EINVAL;
+
+but I don't remember the results.
+
+regards,
+dan carpenter
+
