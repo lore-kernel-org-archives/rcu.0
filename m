@@ -2,142 +2,160 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6020C001DC
-	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 04:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BF54C001DC
+	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 11:17:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbjGaERJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Jul 2023 00:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        id S231605AbjGaLRs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Jul 2023 07:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbjGaERE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Jul 2023 00:17:04 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A60119;
-        Sun, 30 Jul 2023 21:17:02 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686b91c2744so2864901b3a.0;
-        Sun, 30 Jul 2023 21:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690777022; x=1691381822;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=InO4fB71UppySdmBaFe7IJBmYOMGORvt2/2z9f7w8Mo=;
-        b=WDP0Jj/72CwoAduZqkX03b85dhAPk5h0OFjQ0w2iKJnTY5cqgURnS6BbD3pTlMfyES
-         RI32KKl+Oo6XtnJIAxbxKl9/xJMIq5sXVBr99uaesy48VChj2vrVnO1ZAzkM/BP/gu9D
-         Bcl45NfCpDEHN0zpd8v5/hR3xoLavO0GWjcOonKW6vgPIGy8CBXggPwmDspZZvxnEpNE
-         oqRciRXdI1PxAHyWx9TFSRrLI1lVM1oLFeaK2HtauY/eTEd3bG1iw1yL1Qi79VL9pAEe
-         VY1m5HIFRBHdRyUVNR2zGAwOOOr+cZwBa8SvxrbEjuTeJCSckn/B9w7f7kLLKyM0RjIv
-         I/hQ==
+        with ESMTP id S231402AbjGaLRm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Jul 2023 07:17:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1489E7A
+        for <rcu@vger.kernel.org>; Mon, 31 Jul 2023 04:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690802216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+0D5IDco97vTYvh6fNm/B5oplVBZcV0X3CdU07UZHvk=;
+        b=MTfLqBeNmzydu8o7PYl0NQaBneTqj+4IYUDyelf2pEZgYuMdKIfophppcTfVyhG4v5OhnL
+        CD1go5dS+YDlw3NRPl+GeCJv9gIS3akE2qL+49twL+jw5SWIaEdKjzId8W7grcJBEeJnFU
+        Pj0A5Y2U4daoE8TkSpRgV37c5xPNEE0=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-217-WGOLi0axMlKzxkpcnqv3bg-1; Mon, 31 Jul 2023 07:16:55 -0400
+X-MC-Unique: WGOLi0axMlKzxkpcnqv3bg-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-4479331a4f0so168849137.0
+        for <rcu@vger.kernel.org>; Mon, 31 Jul 2023 04:16:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690777022; x=1691381822;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=InO4fB71UppySdmBaFe7IJBmYOMGORvt2/2z9f7w8Mo=;
-        b=c2jqVYwGFbhAHwfDiy/h6zybm1z/HacmNKxjbNqBMwXsF0ixGRrWCm4yLEu+/n7c8j
-         hCDV0EGY/ruV9xOLMVhwwmaReui8iwvxirg0o7YK3FhdVkDtJFWq/2qvYDPSMBt+mabn
-         9McS2ea/jmGI82OvEGSfFaPHE626pU6d30uVZS91nzJasnzUbqKC04hrN/dhbL2EN38Q
-         uCxM+SrtPf+noXAiQZRTNkj/RwrLxHfzqNususMTUcmn4VSv4bGe2BR9wXsUiyad9faC
-         tJB5662BUICAxZaGowImW6FJ0zw6zrQptZi8k+kHHbIs1kYBOnbXoEXtjjOp1zGBqd1T
-         wssg==
-X-Gm-Message-State: ABy/qLYadRQGokM1eWUBzX3HkT2sN9ByKcBw24/Qk44hS/QhmieQw9D6
-        iYU45JGfmFagzSTvDjCon/w=
-X-Google-Smtp-Source: APBJJlHCKP6JrqL7v8nAHmmKHENRxl+XH/aY87MHs8R2HMC1XY+gkjsGpAxlhGUtJHy6fzP3Kq5KnQ==
-X-Received: by 2002:a05:6a00:1147:b0:66a:6339:e8f9 with SMTP id b7-20020a056a00114700b0066a6339e8f9mr9671743pfm.0.1690777021642;
-        Sun, 30 Jul 2023 21:17:01 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e3-20020aa78c43000000b00682562bf477sm6588959pfd.82.2023.07.30.21.16.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 21:17:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <0a07880d-1e6a-25d5-18c7-cf0bfa58cee9@roeck-us.net>
-Date:   Sun, 30 Jul 2023 21:16:59 -0700
+        d=1e100.net; s=20221208; t=1690802214; x=1691407014;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+0D5IDco97vTYvh6fNm/B5oplVBZcV0X3CdU07UZHvk=;
+        b=R5rL9x6rWenvWd0g+WWNq+7I5M5ZBphCsMokG1qsXbHhtEKyr84LkpkTFMZal7jR1t
+         CT8QERwiDcSY49CrgJcv+1OsRgSmY1YcCh3XCtzsMpH3M1daLbAYPo8mheryGjK1a5v4
+         qgrMWXbDdgPrUMEicIbaP2Wga8nvqizod+AEd/DHMeSmo8ShnF78buSn7g1c7kBtybNx
+         7zDyNUTE4dyfmRPvansP53445UTvNCIOyYH62X/K4IwdLaO6Ou9ntMqKUOfanzNjcegb
+         wQ/hij53l0HHcTi3LKyahy3hyVXa/QyWEs9OhB8qmslBkN8mN9ham4Lnz6+nJZLxnbty
+         Du0w==
+X-Gm-Message-State: ABy/qLYWynnzh6pWfEV6YGBKhWK81p+7jlDluUclekIt75aMsLTh/Pmo
+        u5iTJeKtfdkWBes2R26YbcZK8PBuhlonWvpPfVEm/8uoS1adS9OVXtpPfI02xCNxXL76nDZCMlP
+        i65MQUKb+pFet
+X-Received: by 2002:a67:cfc7:0:b0:443:92a5:f454 with SMTP id h7-20020a67cfc7000000b0044392a5f454mr4890266vsm.26.1690802214759;
+        Mon, 31 Jul 2023 04:16:54 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGotwePfsXKLeBlKhf8sO13ly4OfXrqZZNVUmXDsF4Tb1xqGBmiDGw9g/K6bGBIoBOR4Hianw==
+X-Received: by 2002:a67:cfc7:0:b0:443:92a5:f454 with SMTP id h7-20020a67cfc7000000b0044392a5f454mr4890212vsm.26.1690802214510;
+        Mon, 31 Jul 2023 04:16:54 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id r7-20020a0c8d07000000b0063d119034a9sm3601878qvb.140.2023.07.31.04.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 04:16:53 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 13/20] context_tracking: Make
+ context_tracking_key __ro_after_init
+In-Reply-To: <20230728160014.vjxikkoo4rieng55@treble>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-14-vschneid@redhat.com>
+ <20230728160014.vjxikkoo4rieng55@treble>
+Date:   Mon, 31 Jul 2023 12:16:43 +0100
+Message-ID: <xhsmha5vcs544.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org
-References: <ZMJWet00+9yIl/9c@duo.ucw.cz>
- <78722041-D1F7-45FA-BA1C-41B92209BA6C@joelfernandes.org>
- <0751f5a8-2727-4a08-8bb8-50bbd4244c9c@paulmck-laptop>
- <67eba84a-ae24-2983-a756-463f39f3ca71@roeck-us.net>
- <ebe4a969-8a24-4bb8-8dbe-f77db89f65c9@paulmck-laptop>
- <2f4b012e-1f95-30aa-3f43-c31e84cb2c42@roeck-us.net>
- <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
- <6d45f1d0-25e5-8603-0fbb-73374be00503@roeck-us.net>
- <bfa768e7-fc4f-4511-ad3a-67772f41d50c@paulmck-laptop>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
-In-Reply-To: <bfa768e7-fc4f-4511-ad3a-67772f41d50c@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 7/30/23 20:54, Paul E. McKenney wrote:
-> On Thu, Jul 27, 2023 at 09:22:52PM -0700, Guenter Roeck wrote:
->> On 7/27/23 13:33, Paul E. McKenney wrote:
->> [ ... ]
+On 28/07/23 11:00, Josh Poimboeuf wrote:
+> On Thu, Jul 20, 2023 at 05:30:49PM +0100, Valentin Schneider wrote:
+>> objtool now warns about it:
 >>
->>> So which of the following Kconfig options is defined in your .config?
->>> CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
->>>
+>>   vmlinux.o: warning: objtool: enter_from_user_mode+0x4e: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>>   vmlinux.o: warning: objtool: enter_from_user_mode+0x50: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x60: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x62: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>>   [...]
 >>
->> Only CONFIG_TASKS_RCU. I added another log message after call_rcu_tasks().
->> It never returns from that function.
+>> The key can only be enabled (and not disabled) in the __init function
+>> ct_cpu_tracker_user(), so mark it as __ro_after_init.
 >>
->> [    1.168993] Running RCU synchronous self tests
->> [    1.169219] Running RCU synchronous self tests
->> [    1.285795] smpboot: CPU0: Intel Xeon Processor (Cascadelake) (family: 0x6, model: 0x55, stepping: 0x6)
->> [    1.302827] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
->> [    1.304526] Running RCU Tasks wait API self tests
->>
->> ... and then nothing for at least 10 minutes (then I gave up and stopped the test).
->>
->> Qemu command line:
->>
->> qemu-system-x86_64 -kernel \
->>       arch/x86/boot/bzImage -M q35 -cpu Cascadelake-Server -no-reboot \
->>       -snapshot -device e1000e,netdev=net0 -netdev user,id=net0 -m 256 \
->>       -drive file=rootfs.iso,format=raw,if=ide,media=cdrom \
->>       --append "earlycon=uart8250,io,0x3f8,9600n8 panic=-1 slub_debug=FZPUA root=/dev/sr0 rootwait console=ttyS0 noreboot" \
->>       -d unimp,guest_errors -nographic -monitor none
->>
->> Again, this doesn't happen all the time. With Cascadelake-Server
->> I see it maybe once every 5 boot attempts. I tried with qemu v8.0
->> and v8.1. Note that it does seem to happen with various CPU types,
->> only for some it seems to me more likely to happen (so maybe the
->> CPU type was a red herring). It does seem to depend on the system
->> load, and happen more often if the system is under heavy load.
-> 
-> Hmmm...  What kernel are you using as your qemu/KVM hypervisor?
-> 
+>> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+>
+> It's best to avoid temporarily introducing warnings.  Bots will
+> rightfully complain about that.  This patch and the next one should come
+> before the objtool patches.
+>
 
-Not sure I understand the question. KVM is disabled in my systems.
-The host CPUs are Ryzen 3900X and 5900X, but I don't really see why
-that would matter.
+Ack, I'll reverse the order of these.
 
-> And I echo Joel's requests for your .config file.
-> 
+> Also it would be helpful for the commit log to have a brief
+> justification for the patch beyond "fix the objtool warning".  Something
+> roughly like:
+>
+>   Soon, runtime-mutable text won't be allowed in .noinstr sections, so
+>   that a code patching IPI to a userspace-bound CPU can be safely
+>   deferred to the next kernel entry.
+>
+>   'context_tracking_key' is only enabled in __init ct_cpu_tracker_user().
+>   Mark it as __ro_after_init.
+>
 
-Did you see the e-mail I sent about this problem earlier today ?
+Looks better indeed, thanks!
 
-https://lore.kernel.org/lkml/3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net/
-
-I think I'll declare this to be a problem with my test environment and disable
-RCU debugging.
-
-Thanks,
-Guenter
+> --
+> Josh
 
