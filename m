@@ -2,133 +2,80 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ABC8C00528
-	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 20:09:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73914C41513
+	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 21:15:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbjGaUJ6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Jul 2023 16:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
+        id S229854AbjGaVPz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Jul 2023 17:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjGaUJ5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:09:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263A51BC3;
-        Mon, 31 Jul 2023 13:09:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S229526AbjGaVPy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Jul 2023 17:15:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9496B10E3;
+        Mon, 31 Jul 2023 14:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8Z0bnX+zfeyn+xeBGa8nfbsyJ1d05F9zNyCvh1HSV9w=; b=n40PUItnguJa/y82nltY7Rc44c
+        +JlbSn6ruHARFqpzY2jyIWVoWeQAf+RLrBocwqvKvSmdycbPKFNJoD/cT8kWhIwk4tzm3aw1MkNq0
+        Yq8Do9CYvKeDskBbOWCUbd8bnENCsN0g5AxUDspkPTzjqvANZ1ukB0YSgF4CjWY5a3YeT+/Jl3yWa
+        dGwnZFPC9SuESSDeUV/WnaH05c711yYFDAZQEAt5jYD7I+k3M7wvXkp5fP4zIRtRaYYEQGMHksZhr
+        jvyuCsqxhnNBiVKMxqoW9Ssk76Ky1w59zFSb+jZJkT+dojcWl5BBd/byXawMq8xZEeVHm+j3aQq4e
+        bPuQIEtg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQaEY-003rwv-Bn; Mon, 31 Jul 2023 21:15:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF2E8612C9;
-        Mon, 31 Jul 2023 20:09:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1342EC433C8;
-        Mon, 31 Jul 2023 20:09:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690834194;
-        bh=Yv9eIR3jcIkEdTn0HOZVv1V441z6076tjCIjywPROTA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=A+7XY4WXlGZjlbZ8kK78b2N8m9ugG5ke3EVSXIpiUChiK1UHAnPfDKp67wJut7d0j
-         XkGlufl66qwTluGJFaQQ5nRC752ZGbOFy39Qu4jFvUt/+wDQc8aX/WdxFtuikmEbQN
-         6jcplC8Iq4Fvky+uLxK6/VoFLaY4OnSu8KSiBh8+Mu1SEk4mRm4xQYSKiaYhE0QT6q
-         468RUUdSFo/eEoi3nYtBRypUV9P0QQTV2WXq1zGWFpK6QPydJ25DKsh/JWujhYHfC5
-         dNj7ZtJx6z60xEVKFIVRLZdL7FWoLGTnSP050apyh6SWGGHNq3Owytz+4EjVVYPeJj
-         cmwJiVjaW854A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A5A98CE1066; Mon, 31 Jul 2023 13:09:53 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 13:09:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, roman.gushchin@linux.dev
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-Message-ID: <43d29007-3c59-4497-a1e5-26f182a7f4c5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 919023002CE;
+        Mon, 31 Jul 2023 23:15:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7B21620D70602; Mon, 31 Jul 2023 23:15:17 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 23:15:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Roy Hopkins <rhopkins@suse.de>,
+        Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+Message-ID: <20230731211517.GA51835@hirez.programming.kicks-ass.net>
+References: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
+ <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
+ <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
+ <20230731141934.GK29590@hirez.programming.kicks-ass.net>
+ <20230731143954.GB37820@hirez.programming.kicks-ass.net>
+ <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
+ <20230731145232.GM29590@hirez.programming.kicks-ass.net>
+ <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
+ <20230731161452.GA40850@hirez.programming.kicks-ass.net>
+ <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+In-Reply-To: <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:27:04PM +0800, Alan Huang wrote:
+On Mon, Jul 31, 2023 at 09:34:29AM -0700, Guenter Roeck wrote:
+> > Ha!, I was poking around the same thing. My hack below seems to (so far,
+> > <20 boots) help things.
+> > 
 > 
-> > 2023年7月21日 20:54，Joel Fernandes <joel@joelfernandes.org> 写道：
-> > 
-> > 
-> > 
-> >> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
-> >> 
-> >> ﻿
-> >>> 2023年7月21日 03:22，Eric Dumazet <edumazet@google.com> 写道：
-> >>> 
-> >>>> On Thu, Jul 20, 2023 at 8:54 PM Alan Huang <mmpgouride@gmail.com> wrote:
-> >>>> 
-> >>>> Hi,
-> >>>> 
-> >>>> I noticed a commit c87a124a5d5e(“net: force a reload of first item in hlist_nulls_for_each_entry_rcu”)
-> >>>> and a related discussion [1].
-> >>>> 
-> >>>> After reading the whole discussion, it seems like that ptr->field was cached by gcc even with the deprecated
-> >>>> ACCESS_ONCE(), so my question is:
-> >>>> 
-> >>>>      Is that a compiler bug? If so, has this bug been fixed today, ten years later?
-> >>>> 
-> >>>>      What about READ_ONCE(ptr->field)?
-> >>> 
-> >>> Make sure sparse is happy.
-> >> 
-> >> It caused a problem without barrier(), and the deprecated ACCESS_ONCE() didn’t help:
-> >> 
-> >>   https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
-> >> 
-> >> So, my real question is: With READ_ONCE(ptr->field), are there still some unusual cases where gcc 
-> >> decides not to reload ptr->field?
-> > 
-> > I am a bit doubtful there will be strong (any?) interest in replacing the barrier() with READ_ONCE() without any tangible reason, regardless of whether a gcc issue was fixed.
-> > 
-> > But hey, if you want to float the idea…
-> 
-> We already had the READ_ONCE() in rcu_deference_raw().
-> 
-> The barrier() here makes me think we need write code like below:
-> 	
-> 	READ_ONCE(head->first);
-> 	barrier();
-> 	READ_ONCE(head->first);
-> 
-> With READ_ONCE (or the deprecated ACCESS_ONCE),
-> I don’t think a compiler should cache the value of head->first.
+> So, dumb question:
+> How comes this bisects to "sched/fair: Remove sched_feat(START_DEBIT)" ?
 
-Apologies for the late reply!
-
-If both are READ_ONCE(), you should not need the barrier().  Unless there
-is some other code not shown in your example that requires it, that is.
-
-							Thanx, Paul
-
-> > Thanks,
-> > 
-> > - Joel
-> > 
-> >> 
-> >>> 
-> >>> Do you have a patch for review ?
-> >> 
-> >> Possibly next month. :)
-> >> 
-> >>> 
-> >>> 
-> >>>> 
-> >>>> 
-> >>>> [1] https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glaptop/
-> >>>> 
-> >>>> Thanks,
-> >>>> Alan
-> >> 
-> 
+That commit changes the timings of things; dumb luck otherwise.
