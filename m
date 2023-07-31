@@ -2,154 +2,137 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36E37C04A94
-	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 21:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 095E2C001DF
+	for <rcu@archiver.kernel.org>; Mon, 31 Jul 2023 23:11:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjGaVqW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 31 Jul 2023 17:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
+        id S229716AbjGaXLz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 31 Jul 2023 19:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjGaVqV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:46:21 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747AB130;
-        Mon, 31 Jul 2023 14:46:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vTIB+9jOZpp5OUrJxulSYIOZhA9Dpc6dGOGdH6SgMUw=; b=CztjLyfqcdrFKznDsLQyVMumAI
-        MN3Xna4qhxwpkV4FiIedm9yhrd8/l9X3R1rELIM6w6jiAUYNvsWeUNfNX0kRxnWuibkdN56xgYU3F
-        WqI7lUf1lNSIxS51cJCvE4zW3pDRLHuMSlh2ESprJKMTkPFNV+FTAdXNCdTAMqBOQJeRw+5TDcwPk
-        WLl4wnTsMUR97Exiyc0+o18OmIW+qTmQmfo7V4o+svym0ooDszJ6obRAKyK/Cz9rCAlkte3H+V4xv
-        TjvBifgNXlOtGpzS09pMJuV8fsPGfHcZH+mMOCpPjhyJY51SrujtQrMqBzVhk2Ji3cQ0Vp4WSlYXg
-        X1xkQqJQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQaiU-00D67l-29;
-        Mon, 31 Jul 2023 21:46:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        with ESMTP id S229622AbjGaXLy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 31 Jul 2023 19:11:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2E51A5;
+        Mon, 31 Jul 2023 16:11:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9831D300134;
-        Mon, 31 Jul 2023 23:46:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7BAE620D70602; Mon, 31 Jul 2023 23:46:12 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 23:46:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 11/20] objtool: Flesh out warning related to
- pv_ops[] calls
-Message-ID: <20230731214612.GC51835@hirez.programming.kicks-ass.net>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-12-vschneid@redhat.com>
- <20230728153334.myvh5sxppvjzd3oz@treble>
- <xhsmh8raws53o.mognet@vschneid.remote.csb>
- <20230731213631.pywytiwdqgtgx4ps@treble>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F18986134F;
+        Mon, 31 Jul 2023 23:11:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D1E1C433C7;
+        Mon, 31 Jul 2023 23:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690845110;
+        bh=QLAjE/GGSiZipKUex73TsazKgLlG2VFV8t+GpNpJUrs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QT7qFPwbt++C6pX1FEft72MhAT12SkEdw5f7xZYXniCoFrQYe82clCPDDxdSGX3I0
+         Vv0CPidxzYvsT9AI4yTlxnLZwUaMyqBeSnhEr1+ZAXsEm2wTSx95f6uL4LdKhkvvak
+         ZQe6DKpsaDCUBaiMPu0cA0wV38sPhtDHQ4zycelDCBsXdIvInxYRvb2yCXA1wMCMtN
+         CDf/GFjm7G7ObpadRPHVSc/f2EWuVCq9dSSuGNoUpol7138IlGOmdiITt/jpnOm330
+         ucSpVbKBv8QSpSIzy0/04p0kuscGRFZVerowhDFwENPkfzH+VxtQtcDXjpNSrisVhP
+         UFP7H51bAB5kA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id EE140CE1065; Mon, 31 Jul 2023 16:11:49 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 16:11:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: [PATCH rcu 6/5] rcu-tasks: Permit use of debug-objects with RCU
+ Tasks flavors
+Message-ID: <0bb374e7-694e-4b2d-b2aa-472a5a4e1670@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731213631.pywytiwdqgtgx4ps@treble>
+In-Reply-To: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 04:36:31PM -0500, Josh Poimboeuf wrote:
-> On Mon, Jul 31, 2023 at 12:16:59PM +0100, Valentin Schneider wrote:
-> > You're quite right - fabricating an artificial warning with a call to __flush_tlb_local():
-> > 
-> >   vmlinux.o: warning: objtool: pv_ops[1]: indirect call to native_flush_tlb_local() leaves .noinstr.text section
-> >   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to {dynamic}() leaves .noinstr.text section
-> > 
-> > Interestingly the second one doesn't seem to have triggered the "pv_ops"
-> > bit of call_dest_name. Seems like any call to insn_reloc(NULL, x) will
-> > return NULL.
-> 
-> Yeah, that's weird.
-> 
-> > Trickling down the file yields:
-> > 
-> >   vmlinux.o: warning: objtool: pv_ops[1]: indirect call to native_flush_tlb_local() leaves .noinstr.text section
-> >   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to pv_ops[0]() leaves .noinstr.text section
-> > 
-> > In my case (!PARAVIRT_XXL) pv_ops should look like:
-> >   [0]: .cpu.io_delay
-> >   [1]: .mmu.flush_tlb_user()
-> > 
-> > so pv_ops[1] looks right. Seems like pv_call_dest() gets it right because
-> > it uses arch_dest_reloc_offset().
-> > 
-> > If I use the above to fix up validate_call(), would we still need
-> > pv_call_dest() & co?
-> 
-> The functionality in pv_call_dest() is still needed because it goes
-> through all the possible targets for the .mmu.flush_tlb_user() pointer
-> -- xen_flush_tlb() and native_flush_tlb_local() -- and makes sure
-> they're noinstr.
-> 
-> Ideally it would only print a single warning for this case, something
-> like:
-> 
->   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: indirect call to native_flush_tlb_local() leaves .noinstr.text section
+rcu-tasks: Permit use of debug-objects with RCU Tasks flavors
 
-But then what for the case where there are multiple implementations and
-more than one isn't noinstr? IIRC that is where these double prints came
-from. One is the callsite (always one) and the second is the offending
-implementation (but there could be more).
+Currently, cblist_init_generic() holds a raw spinlock when invoking
+INIT_WORK().  This fails in kernels built with CONFIG_DEBUG_OBJECTS=y
+due to memory allocation being forbidden while holding a raw spinlock.
+But the only reason for holding the raw spinlock is to synchronize
+with early boot calls to call_rcu_tasks(), call_rcu_tasks_rude, and,
+last but not least, call_rcu_tasks_trace().  These calls also invoke
+cblist_init_generic() in order to support early boot queueing of
+callbacks.
 
-> I left out "pv_ops[1]" because it's already long enough :-)
+Except that there are no early boot calls to either of these three
+functions, and the BPF guys confirm that they have no plans to add any
+such calls.
 
-The index number is useful when also looking at the assembler, which
-IIRC is an indexed indirect call.
+This commit therefore removes the synchronization and adds a
+WARN_ON_ONCE() to catch the case of now-prohibited early boot RCU Tasks
+callback queueing.
+
+If early boot queueing is needed, an "initialized" flag may be added to
+the rcu_tasks structure.  Then queueing a callback before this flag is set
+would initialize the callback list (if needed) and queue the callback.
+The decision as to where to queue the callback given the possibility of
+non-zero boot CPUs is left as an exercise for the reader.
+
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 291d536b1789..a4cd4ea2402c 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -236,7 +236,7 @@ static const char *tasks_gp_state_getname(struct rcu_tasks *rtp)
+ #endif /* #ifndef CONFIG_TINY_RCU */
+ 
+ // Initialize per-CPU callback lists for the specified flavor of
+-// Tasks RCU.
++// Tasks RCU.  Do not enqueue callbacks before this function is invoked.
+ static void cblist_init_generic(struct rcu_tasks *rtp)
+ {
+ 	int cpu;
+@@ -244,7 +244,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+ 	int lim;
+ 	int shift;
+ 
+-	raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
+ 	if (rcu_task_enqueue_lim < 0) {
+ 		rcu_task_enqueue_lim = 1;
+ 		rcu_task_cb_adjust = true;
+@@ -267,17 +266,16 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+ 		WARN_ON_ONCE(!rtpcp);
+ 		if (cpu)
+ 			raw_spin_lock_init(&ACCESS_PRIVATE(rtpcp, lock));
+-		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
++		local_irq_save(flags);  // serialize initialization
+ 		if (rcu_segcblist_empty(&rtpcp->cblist))
+ 			rcu_segcblist_init(&rtpcp->cblist);
++		local_irq_restore(flags);
+ 		INIT_WORK(&rtpcp->rtp_work, rcu_tasks_invoke_cbs_wq);
+ 		rtpcp->cpu = cpu;
+ 		rtpcp->rtpp = rtp;
+ 		if (!rtpcp->rtp_blkd_tasks.next)
+ 			INIT_LIST_HEAD(&rtpcp->rtp_blkd_tasks);
+-		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
+ 	}
+-	raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
+ 
+ 	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
+ 			data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim), rcu_task_cb_adjust);
+@@ -351,11 +349,9 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 		    READ_ONCE(rtp->percpu_enqueue_lim) != nr_cpu_ids)
+ 			needadjust = true;  // Defer adjustment to avoid deadlock.
+ 	}
+-	if (!rcu_segcblist_is_enabled(&rtpcp->cblist)) {
+-		raw_spin_unlock_rcu_node(rtpcp); // irqs remain disabled.
+-		cblist_init_generic(rtp);
+-		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
+-	}
++	// Queuing callbacks before initialization not yet supported.
++	if (WARN_ON_ONCE(!rcu_segcblist_is_enabled(&rtpcp->cblist)))
++		rcu_segcblist_init(&rtpcp->cblist);
+ 	needwake = (func == wakeme_after_rcu) ||
+ 		   (rcu_segcblist_n_cbs(&rtpcp->cblist) == rcu_task_lazy_lim);
+ 	if (havekthread && !needwake && !timer_pending(&rtpcp->lazy_timer)) {
