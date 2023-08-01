@@ -2,44 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41B97C04A94
-	for <rcu@archiver.kernel.org>; Tue,  1 Aug 2023 19:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36A0EC00528
+	for <rcu@archiver.kernel.org>; Tue,  1 Aug 2023 19:11:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbjHATJZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Aug 2023 15:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
+        id S229774AbjHATLI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Aug 2023 15:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbjHATJY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:09:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC1F1BF1;
-        Tue,  1 Aug 2023 12:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bVP85O9/QcNBPIvfcxax7LD7hWg5oCRrHtBzjxz8bi4=; b=WIo8351O6aN09tVsscNgMq+qor
-        xOZP9/a7mh273Btla3YmqEMCZnBtPeJjHw6u5T7VA6FxqJRFehzBcG6QBIC3FZ6goP173sts64DnD
-        gpcB6/u9ZpcBnGWmYMY0Uw1S47k5JWvL5vGNAMzoAL276v7iIVVxRAAQBm5c9g81MwqE5miESZk91
-        e2+LHOZmkHpK2qB9X+b46spycuXObuWAMu0v0zd1yNNTv1xiUG25Al+dPk4rwpPd5MeOuBZilsg3x
-        ysx+ZazrzVRb44wiSKmxLKaVf7k//WZwMTwYlWQGybC1VHtyV6ZI6J1AtwICDlav4vLoSRtGhyw3W
-        gyeoy/JQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qQujl-00AUuc-PR; Tue, 01 Aug 2023 19:08:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        with ESMTP id S230138AbjHATLH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Aug 2023 15:11:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AB21FFD;
+        Tue,  1 Aug 2023 12:11:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 92BF6300134;
-        Tue,  1 Aug 2023 21:08:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 81821201BD3C3; Tue,  1 Aug 2023 21:08:52 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 21:08:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E75E616AE;
+        Tue,  1 Aug 2023 19:11:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4E61C433C7;
+        Tue,  1 Aug 2023 19:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690917064;
+        bh=I5IRbbk5GYsrJAddIdo+1EAx+W7o18ZR/bm/hKMCs0U=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nUeYYOy2Gu9i2qPYiR+4CKM2bYReaet0i38eiL8kxwMksQ1i/bxlHN4OK1RZ8A6p8
+         5ED7U2ui0RUWLiURWSl2vCgwX10E4yqjMrnBMWQ0DcdXzDSqohk7H8AZ/WLcNVgJYx
+         +M3oTCc9tpoHIyJVc8aOyQLP58p3x8UzK6th8cOaF/2VZZYk0cxPQqKJfiHWZ8yQEa
+         mkKhi0koiAJDUx77Zey9rR6VIn1Zr2Wk6uRoMj0OS6dq9uXdEChiT7gdWyqYJsDLUs
+         uXoB4oRObaHkc6Wuwptx3UHgaOABBy2Vdj5xNODaG7DxCOwx7Z6qkASybTS9SxWflG
+         gaG/fmTC3meHQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 42F01CE0908; Tue,  1 Aug 2023 12:11:04 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 12:11:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Roy Hopkins <rhopkins@suse.de>,
-        Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Roy Hopkins <rhopkins@suse.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Pavel Machek <pavel@denx.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, patches@lists.linux.dev,
@@ -48,12 +48,11 @@ Cc:     Roy Hopkins <rhopkins@suse.de>,
         lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
         f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
         srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
 Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
  6.4.7-rc1 review)
-Message-ID: <20230801190852.GG11704@hirez.programming.kicks-ass.net>
+Message-ID: <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
  <20230731141934.GK29590@hirez.programming.kicks-ass.net>
  <20230731143954.GB37820@hirez.programming.kicks-ass.net>
@@ -93,5 +92,41 @@ On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
 > This in turn makes me wonder if it would be possible to define a test which
 > would uncover such problems without the START_DEBIT patch. Any idea ?
 
-IIRC some of the thread sanitizers use breakpoints to inject random
-sleeps, specifically to tickle races.
+Thank you all for tracking this down!
+
+One way is to put a schedule_timeout_idle(100) right before the call to
+rcu_tasks_one_gp() from synchronize_rcu_tasks_generic().  That is quite
+specific to this particular issue, but it does have the virtue of making
+it actually happen in my testing.
+
+There have been a few academic projects that inject delays at points
+chosen by various heuristics plus some randomness.  But this would be
+a bit of a challenge to those because each kernel only passes through
+this window once at boot time.
+
+Please see below for my preferred fix.  Does this work for you guys?
+
+Back to figuring out why recent kernels occasionally to blow up all
+rcutorture guest OSes...
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 7294be62727b..2d5b8385c357 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -570,10 +570,12 @@ static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
+ 	if (unlikely(midboot)) {
+ 		needgpcb = 0x2;
+ 	} else {
++		mutex_unlock(&rtp->tasks_gp_mutex);
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+ 		rcuwait_wait_event(&rtp->cbs_wait,
+ 				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
+ 				   TASK_IDLE);
++		mutex_lock(&rtp->tasks_gp_mutex);
+ 	}
+ 
+ 	if (needgpcb & 0x2) {
