@@ -2,26 +2,34 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1131EC001E0
-	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 03:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BDBAC001DF
+	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 03:49:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbjHBDqB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Aug 2023 23:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
+        id S230387AbjHBDti (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Aug 2023 23:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbjHBDp7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:45:59 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1A419B9;
-        Tue,  1 Aug 2023 20:45:56 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFyYp6hHpz4f4K0W;
-        Wed,  2 Aug 2023 11:45:50 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgD3X7Nq0clky7F2PQ--.46299S5;
-        Wed, 02 Aug 2023 11:45:53 +0800 (CST)
-From:   thunder.leizhen@huaweicloud.com
-To:     Christoph Lameter <cl@linux.com>,
+        with ESMTP id S231461AbjHBDth (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Aug 2023 23:49:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2CD1BC1;
+        Tue,  1 Aug 2023 20:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Hqrdnm/XvcXGx4CoVVqbXlCI1yx06HjsI6afQOMMR/E=; b=uDAU8DGIp4xKzrZQCUWm/ggWaS
+        5myrCY6iUfJ9WoOC7gPPZzjmCHpYlY8bihWa871eSGTWy5E42am7uR4gty+dCYaLgoVWmLRIcq5d5
+        a43HZDUCy+z5zFDR3VaGYo5OuDnUxfvZ2FAfjPc/9HmbKBeN3VtY1z/S3Q5e1dkRw3MIr3sQ2r4+8
+        T5+4Y+adBhaVAPXQ9y8H/4JWCqxZxrWUF8GrtVZ69nIf8dXAZrrNiVqfAkcEsaJoroDDIpEh7glvv
+        xmiZiEkaGw20v6opkSAXpd9YI3f00BpqoEoAmgGHs9dURbbf0SlBtkajBtihyzVE2qD7MOsPk0QJK
+        4iHgecHg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qR2r1-00CiGN-4l; Wed, 02 Aug 2023 03:48:55 +0000
+Date:   Wed, 2 Aug 2023 04:48:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     thunder.leizhen@huaweicloud.com
+Cc:     Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
@@ -40,64 +48,22 @@ To:     Christoph Lameter <cl@linux.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, openeuler <kernel@openeuler.org>
-Subject: [PATCH v3 1/2] mm: Provide empty function for kmem_dump_obj() when CONFIG_PRINTK=n
-Date:   Wed,  2 Aug 2023 11:45:16 +0800
-Message-Id: <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
+Subject: Re: [PATCH v3 2/2] rcu: Dump memory object info if callback function
+ is invalid
+Message-ID: <ZMnSJ86Wg3uWNTG5@casper.infradead.org>
 References: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
+ <20230802034518.1115-3-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3X7Nq0clky7F2PQ--.46299S5
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr4kZFyrZF47Xw48CryxGrg_yoWDArcEy3
-        4fXw1xWr4xXF1xC3Wjyw4fZF1rGw4UJFy3A3sYkr13Zr1Yvanxtw4DJFn0v3yUuFs5Jr9F
-        9a18Ca93KrnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb6kYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r18M2
-        8IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
-        021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
-        4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-        0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-        JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwAKzVCY07xG64k0F2
-        4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWU
-        JVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7V
-        AKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42
-        IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwjjgUUUUU
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802034518.1115-3-thunder.leizhen@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+On Wed, Aug 02, 2023 at 11:45:17AM +0800, thunder.leizhen@huaweicloud.com wrote:
+> +#include <linux/mm.h>
 
-Commit 5bb1bb353cfe ("mm: Don't build mm_dump_obj() on CONFIG_PRINTK=n
-kernels") only provides static inline empty function for mem_dump_obj().
-But functions kmem_valid_obj() and kmem_dump_obj() are also exported,
-they may be called by functions other than mem_dump_obj(), so their empty
-functions should also be provided when CONFIG_PRINTK=n.
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- include/linux/slab.h | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 848c7c82ad5ad0b..fc05fe288d176b4 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -246,6 +246,9 @@ size_t ksize(const void *objp);
- #ifdef CONFIG_PRINTK
- bool kmem_valid_obj(void *object);
- void kmem_dump_obj(void *object);
-+#else
-+static inline bool kmem_valid_obj(void *object) { return false; }
-+static inline void kmem_dump_obj(void *object) {}
- #endif
- 
- /*
--- 
-2.34.1
+mm.h is a very complex file with many dependencies.  Don't you really
+only need slab.h?
 
