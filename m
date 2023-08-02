@@ -2,58 +2,135 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE8D4C00528
-	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 08:20:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC0F0C001DF
+	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 11:12:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbjHBIU6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Aug 2023 04:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
+        id S231765AbjHBLMk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Aug 2023 07:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbjHBIU4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:20:56 -0400
-X-Greylist: delayed 556 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Aug 2023 01:20:54 PDT
-Received: from mail.tarbert.pl (mail.tarbert.pl [51.38.99.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044D0DA
-        for <rcu@vger.kernel.org>; Wed,  2 Aug 2023 01:20:53 -0700 (PDT)
-Received: by mail.tarbert.pl (Postfix, from userid 1002)
-        id E34112459C; Wed,  2 Aug 2023 08:11:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tarbert.pl; s=mail;
-        t=1690963870; bh=n9RRp8MlabRDJBtJNro49Rmci90RtotaZYZ8+xo6WI4=;
-        h=Date:From:To:Subject:From;
-        b=N+HHkaoSChhvxRiH5KhGFGFaGbZu2M1rdPM13ZEbeiXDC+8eE56oN1J6fAuUhF2r4
-         X1Kyry0nY3+s2tSKYIYF/51kLaNlS43XB86ud2KDs1XgfalVfwxXYYtVg+fPljwx1v
-         cJDvYdRLzwURjnNys2LGsqoKAMpUVw2bwnoSsX1h80pj3q+fIWCh9zSll68Whn1QcH
-         NqWDPJzVMm3sKIkOVgp6PfJG3r/rDYtzFciQn8dhDWGr88sklifJ1eqIDIq/yZNAtF
-         fuN9GspN0BpTYFn4ZPGxCKuGdWHn6TVo4XrQaje0XLb896bDSQdnGZvk9HAwPwhjh0
-         NETl2wQtuNubQ==
-Received: by tarbert.pl for <rcu@vger.kernel.org>; Wed,  2 Aug 2023 08:10:47 GMT
-Message-ID: <20230802064520-0.1.61.j5fj.0.rje3lihlim@tarbert.pl>
-Date:   Wed,  2 Aug 2023 08:10:47 GMT
-From:   =?UTF-8?Q? "Konrad_Zieli=C5=84ski_" ?= 
-        <konrad.zielinski@tarbert.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Instalacja pv
-X-Mailer: mail.tarbert.pl
+        with ESMTP id S229623AbjHBLMj (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Aug 2023 07:12:39 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9B9123;
+        Wed,  2 Aug 2023 04:12:38 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RG8TD0yGcz4f4y0p;
+        Wed,  2 Aug 2023 19:12:32 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgCnD7PIOcpkYBWPPQ--.20712S3;
+        Wed, 02 Aug 2023 19:11:06 +0800 (CST)
+Subject: Re: [PATCH v3 1/2] mm: Provide empty function for kmem_dump_obj()
+ when CONFIG_PRINTK=n
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openeuler <kernel@openeuler.org>
+References: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
+ <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
+ <ZMnUR61eFmO014EL@casper.infradead.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <91233a90-94bb-0318-3bcb-10a4403cd526@huaweicloud.com>
+Date:   Wed, 2 Aug 2023 19:11:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZMnUR61eFmO014EL@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgCnD7PIOcpkYBWPPQ--.20712S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4DZw1xXr17tr43WF4rXwb_yoW8Xryxp3
+        saqa9xWrWUAr9rJrn7A3ZakFy5Gr48XrnxC3Z0qw45Zr18X397Z3s7K34YqFn8JFy7Xr10
+        yaykuFs7A3yqyrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU13rcDUUUUU==
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
-
-czy s=C4=85 Pa=C5=84stwo otwarci na niezobowi=C4=85zuj=C4=85c=C4=85 rozmo=
-w=C4=99 na temat fotowoltaiki?
-
-Jako firma specjalizuj=C4=85ca si=C4=99 w instalacji i serwisie najlepszy=
-ch jako=C5=9Bciowo paneli s=C5=82onecznych na rynku chcia=C5=82bym przeds=
-tawi=C4=87 propozycj=C4=99, jak=C4=85 wsp=C3=B3lnie z zespo=C5=82em przyg=
-otowali=C5=9Bmy dla Pa=C5=84stwa obiektu.
-
-B=C4=99d=C4=99 wdzi=C4=99czny za wiadomo=C5=9B=C4=87 od Pa=C5=84stwa czy =
-mo=C5=BCemy porozmawia=C4=87.
 
 
-Pozdrawiam
-Konrad Zieli=C5=84ski 
+On 2023/8/2 11:57, Matthew Wilcox wrote:
+> On Wed, Aug 02, 2023 at 11:45:16AM +0800, thunder.leizhen@huaweicloud.com wrote:
+>> +++ b/include/linux/slab.h
+>> @@ -246,6 +246,9 @@ size_t ksize(const void *objp);
+>>  #ifdef CONFIG_PRINTK
+>>  bool kmem_valid_obj(void *object);
+>>  void kmem_dump_obj(void *object);
+>> +#else
+>> +static inline bool kmem_valid_obj(void *object) { return false; }
+> 
+> That is very confusing.  kmem_valid_obj() looks like a function which
+> should exist regardless of CONFIG_PRINTK and to have it always return
+> false if CONFIG_PRINTK isn't set seems weird.
+
+Yes, I noticed it, but I didn't come up with a good idea.
+
+> 
+> I see we have one caller of kmem_valid_obj() right now.  Which means it
+> shouldn't be an EXPORT_SYMBOL since that caller is not a module.
+> 
+> I think the right solution is to convert kmem_dump_obj() to
+> work the same way as vmalloc_dump_obj().  ie:
+
+Okay, it's a good suggestion.
+
+In fact, kmem_dump_obj() also does what kmem_valid_obj() does, except
+that it will print warning if the check fails. So, do as you suggest,
+the duplicated code can be eliminated.
+
+> 
+> +++ b/mm/util.c
+> @@ -1057,11 +1057,8 @@ void mem_dump_obj(void *object)
+>  {
+>         const char *type;
+> 
+> -       if (kmem_valid_obj(object)) {
+> -               kmem_dump_obj(object);
+> +       if (kmem_dump_obj(object))
+>                 return;
+> -       }
+> -
+>         if (vmalloc_dump_obj(object))
+>                 return;
+> 
+> ... with corresponding changes to eliminate kmem_valid_obj() as a
+> symbol.
+> 
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
+
