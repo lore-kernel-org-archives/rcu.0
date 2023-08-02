@@ -2,111 +2,107 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD5A0C0015E
-	for <rcu@archiver.kernel.org>; Tue,  1 Aug 2023 21:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FA8CC001DF
+	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 03:46:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbjHAVcY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Aug 2023 17:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
+        id S230033AbjHBDqA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Aug 2023 23:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbjHAVcX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:32:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469B01B6;
-        Tue,  1 Aug 2023 14:32:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BC6326170B;
-        Tue,  1 Aug 2023 21:32:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FAEEC433C7;
-        Tue,  1 Aug 2023 21:32:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690925539;
-        bh=mlLJwvIQ28in3hFDAHgMaBkqadXCSNy7GdeKaCPuqZE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=l9XhNVJGckmHfYujiSYBsJ7YApijXQj8Jo0yIajaRkRGPyQNzi0llLBftY9lUu6V0
-         vzXfru2a+7ey7T7oNksxGnz2QDFBFwslI/sECS3OsqQoS0E75LuLbMoYIiq3vYLU5e
-         RpSD9+k4MnTWJMNFD9KGcYsSmizswMw1fmTG9hIZjSSQeWpFASxd3EgUghuyoAqtn9
-         pSxOkPoMOwG8+iVLLXlhS+/ig5tyM4urfdSxAvhIk+7cmm9jU5GvOoh5or41yNzf3W
-         mI3tk6AJ0Q3HNXS5WhdTd+FKXcTXYrxlo0/CXyGJx9BFDzn7YNgMxfNGM1gw+//rFN
-         TwRX76lVadhsg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B632ECE0908; Tue,  1 Aug 2023 14:32:18 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 14:32:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Roy Hopkins <rhopkins@suse.de>,
+        with ESMTP id S230082AbjHBDp7 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Aug 2023 23:45:59 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CC91BC1;
+        Tue,  1 Aug 2023 20:45:55 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFyYn5bvxz4f3jHr;
+        Wed,  2 Aug 2023 11:45:49 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgD3X7Nq0clky7F2PQ--.46299S4;
+        Wed, 02 Aug 2023 11:45:51 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>
-Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
- 6.4.7-rc1 review)
-Message-ID: <9154ee27-6f38-4efe-9391-ef626cdc2ff4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230731141934.GK29590@hirez.programming.kicks-ass.net>
- <20230731143954.GB37820@hirez.programming.kicks-ass.net>
- <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
- <20230731145232.GM29590@hirez.programming.kicks-ass.net>
- <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
- <20230731161452.GA40850@hirez.programming.kicks-ass.net>
- <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
- <20230731211517.GA51835@hirez.programming.kicks-ass.net>
- <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
- <20230801190852.GG11704@hirez.programming.kicks-ass.net>
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openeuler <kernel@openeuler.org>
+Subject: [PATCH v3 0/2] rcu: Dump memory object info if callback function is invalid
+Date:   Wed,  2 Aug 2023 11:45:15 +0800
+Message-Id: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801190852.GG11704@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3X7Nq0clky7F2PQ--.46299S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1DKr1rGrWUZF4DZrW8Zwb_yoWkurXEq3
+        40q348Xr47XF1xAF1ayFWxXryDCr4kCas2y3y3Kw4Syry3Xa1fZw4DJFn8Za48Za1vyrsF
+        kr93Ar9rK3srXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0
+        rVAKj4xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
+        JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwV
+        bkUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 09:08:52PM +0200, Peter Zijlstra wrote:
-> On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
-> > On 7/31/23 14:15, Peter Zijlstra wrote:
-> > > On Mon, Jul 31, 2023 at 09:34:29AM -0700, Guenter Roeck wrote:
-> > > > > Ha!, I was poking around the same thing. My hack below seems to (so far,
-> > > > > <20 boots) help things.
-> > > > > 
-> > > > 
-> > > > So, dumb question:
-> > > > How comes this bisects to "sched/fair: Remove sched_feat(START_DEBIT)" ?
-> > > 
-> > > That commit changes the timings of things; dumb luck otherwise.
-> > 
-> > Kind of scary. So I only experienced the problem because the START_DEBIT patch
-> > happened to be queued roughly at the same time, and it might otherwise have
-> > found its way unnoticed into the upstream kernel. That makes me wonder if this
-> > or other similar patches may uncover similar problems elsewhere in the kernel
-> > (i.e., either hide new or existing race conditions or expose existing ones).
-> > 
-> > This in turn makes me wonder if it would be possible to define a test which
-> > would uncover such problems without the START_DEBIT patch. Any idea ?
-> 
-> IIRC some of the thread sanitizers use breakpoints to inject random
-> sleeps, specifically to tickle races.
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-I have heard of are some of these, arguably including KCSAN, but they
-would have a tough time on this one.
+v2 --> v3:
+1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+   more than 97.5%, and vmalloc accounts for less than 1%. So change call
+   mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+   avoid the potential deadlock risk of vmalloc_dump_obj().
+-		mem_dump_obj(rhp);
++		if (kmem_valid_obj(rhp))
++			kmem_dump_obj(rhp);
 
-They would have to inject many milliseconds between the check of
-->kthread_ptr in synchronize_rcu_tasks_generic() and that mutex_lock()
-in rcu_tasks_one_gp().  Plus this window only occurs during boot shortly
-before init is spawned.
+   The discussion about vmap_area_lock deadlock in v2:
+   https://lkml.org/lkml/2022/11/11/493
 
-On the other hand, randomly injecting delay just before acquiring each
-lock would cover this case.  But such a sanitzer would still only get
-one shot per boot of the kernel for this particular bug.
+2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
+   when CONFIG_PRINTK=n.
 
-							Thanx, Paul
+v1 --> v2:
+1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+2. Paul E. McKenney helped me update the commit message, thanks.
+
+Zhen Lei (2):
+  mm: Provide empty function for kmem_dump_obj() when CONFIG_PRINTK=n
+  rcu: Dump memory object info if callback function is invalid
+
+ include/linux/slab.h  | 3 +++
+ kernel/rcu/rcu.h      | 9 +++++++++
+ kernel/rcu/srcutiny.c | 1 +
+ kernel/rcu/srcutree.c | 1 +
+ kernel/rcu/tasks.h    | 1 +
+ kernel/rcu/tiny.c     | 1 +
+ kernel/rcu/tree.c     | 1 +
+ 7 files changed, 17 insertions(+)
+
+-- 
+2.34.1
+
