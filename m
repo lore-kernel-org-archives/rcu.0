@@ -2,98 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBA4BC001DE
-	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 03:58:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE8D4C00528
+	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 08:20:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjHBD6e (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Aug 2023 23:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
+        id S233812AbjHBIU6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Aug 2023 04:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjHBD6d (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:58:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD7B103;
-        Tue,  1 Aug 2023 20:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1sxh7WBnvHVhsALDL7UYNMUiOC+6/e9sMU+u5Ot8mLc=; b=v/OfBmitMKXbq60FtWwAjeBzPD
-        rHrouKtj7RhHZCdeJfVP87aaiq3a4NJoBF0hxzExrnEssr28/oU8mEXEW4Hs1C/AkDDqxxNrzwqLh
-        tLq58oHhLkRLu0/KTfJfIJ30KY1Ip6O0z0KkdJ9948Y9knve/1zDrSJBUVhQvg6JR9iQe2Wpfi3IS
-        RUjIfpbnSBORbjuT+4lHQQedW577OMpZWQLx9aCZ+ffNKBIFbRvJQ5cWhklc01w389Cmlt6ktxd+V
-        9uq7t2DYYa5mR3LoyLaMuMRmlspok+w0dVi9cTk4UeJZdExtQ82vDxNZt4J1iSVQb8FH5/1Bx/SkJ
-        ABFAu7Vg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qR2zn-00Ckt2-3N; Wed, 02 Aug 2023 03:57:59 +0000
-Date:   Wed, 2 Aug 2023 04:57:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     thunder.leizhen@huaweicloud.com
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openeuler <kernel@openeuler.org>
-Subject: Re: [PATCH v3 1/2] mm: Provide empty function for kmem_dump_obj()
- when CONFIG_PRINTK=n
-Message-ID: <ZMnUR61eFmO014EL@casper.infradead.org>
-References: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
- <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
+        with ESMTP id S231561AbjHBIU4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Aug 2023 04:20:56 -0400
+X-Greylist: delayed 556 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Aug 2023 01:20:54 PDT
+Received: from mail.tarbert.pl (mail.tarbert.pl [51.38.99.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044D0DA
+        for <rcu@vger.kernel.org>; Wed,  2 Aug 2023 01:20:53 -0700 (PDT)
+Received: by mail.tarbert.pl (Postfix, from userid 1002)
+        id E34112459C; Wed,  2 Aug 2023 08:11:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tarbert.pl; s=mail;
+        t=1690963870; bh=n9RRp8MlabRDJBtJNro49Rmci90RtotaZYZ8+xo6WI4=;
+        h=Date:From:To:Subject:From;
+        b=N+HHkaoSChhvxRiH5KhGFGFaGbZu2M1rdPM13ZEbeiXDC+8eE56oN1J6fAuUhF2r4
+         X1Kyry0nY3+s2tSKYIYF/51kLaNlS43XB86ud2KDs1XgfalVfwxXYYtVg+fPljwx1v
+         cJDvYdRLzwURjnNys2LGsqoKAMpUVw2bwnoSsX1h80pj3q+fIWCh9zSll68Whn1QcH
+         NqWDPJzVMm3sKIkOVgp6PfJG3r/rDYtzFciQn8dhDWGr88sklifJ1eqIDIq/yZNAtF
+         fuN9GspN0BpTYFn4ZPGxCKuGdWHn6TVo4XrQaje0XLb896bDSQdnGZvk9HAwPwhjh0
+         NETl2wQtuNubQ==
+Received: by tarbert.pl for <rcu@vger.kernel.org>; Wed,  2 Aug 2023 08:10:47 GMT
+Message-ID: <20230802064520-0.1.61.j5fj.0.rje3lihlim@tarbert.pl>
+Date:   Wed,  2 Aug 2023 08:10:47 GMT
+From:   =?UTF-8?Q? "Konrad_Zieli=C5=84ski_" ?= 
+        <konrad.zielinski@tarbert.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Instalacja pv
+X-Mailer: mail.tarbert.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 11:45:16AM +0800, thunder.leizhen@huaweicloud.com wrote:
-> +++ b/include/linux/slab.h
-> @@ -246,6 +246,9 @@ size_t ksize(const void *objp);
->  #ifdef CONFIG_PRINTK
->  bool kmem_valid_obj(void *object);
->  void kmem_dump_obj(void *object);
-> +#else
-> +static inline bool kmem_valid_obj(void *object) { return false; }
+Dzie=C5=84 dobry,
 
-That is very confusing.  kmem_valid_obj() looks like a function which
-should exist regardless of CONFIG_PRINTK and to have it always return
-false if CONFIG_PRINTK isn't set seems weird.
+czy s=C4=85 Pa=C5=84stwo otwarci na niezobowi=C4=85zuj=C4=85c=C4=85 rozmo=
+w=C4=99 na temat fotowoltaiki?
 
-I see we have one caller of kmem_valid_obj() right now.  Which means it
-shouldn't be an EXPORT_SYMBOL since that caller is not a module.
+Jako firma specjalizuj=C4=85ca si=C4=99 w instalacji i serwisie najlepszy=
+ch jako=C5=9Bciowo paneli s=C5=82onecznych na rynku chcia=C5=82bym przeds=
+tawi=C4=87 propozycj=C4=99, jak=C4=85 wsp=C3=B3lnie z zespo=C5=82em przyg=
+otowali=C5=9Bmy dla Pa=C5=84stwa obiektu.
 
-I think the right solution is to convert kmem_dump_obj() to
-work the same way as vmalloc_dump_obj().  ie:
+B=C4=99d=C4=99 wdzi=C4=99czny za wiadomo=C5=9B=C4=87 od Pa=C5=84stwa czy =
+mo=C5=BCemy porozmawia=C4=87.
 
-+++ b/mm/util.c
-@@ -1057,11 +1057,8 @@ void mem_dump_obj(void *object)
- {
-        const char *type;
 
--       if (kmem_valid_obj(object)) {
--               kmem_dump_obj(object);
-+       if (kmem_dump_obj(object))
-                return;
--       }
--
-        if (vmalloc_dump_obj(object))
-                return;
-
-... with corresponding changes to eliminate kmem_valid_obj() as a
-symbol.
-
+Pozdrawiam
+Konrad Zieli=C5=84ski 
