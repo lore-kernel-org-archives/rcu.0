@@ -2,28 +2,26 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF412C001DF
-	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 11:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3F9FC41513
+	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 13:09:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjHBLNM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Aug 2023 07:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
+        id S232556AbjHBNJe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Aug 2023 09:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjHBLNL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:13:11 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCF01FC3;
-        Wed,  2 Aug 2023 04:13:10 -0700 (PDT)
+        with ESMTP id S231176AbjHBNJd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Aug 2023 09:09:33 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0527268E;
+        Wed,  2 Aug 2023 06:09:30 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RG8Tr5QQKz4f4yWx;
-        Wed,  2 Aug 2023 19:13:04 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgA30JMCOspkVyOPPQ--.62365S3;
-        Wed, 02 Aug 2023 19:12:03 +0800 (CST)
-Subject: Re: [PATCH v3 2/2] rcu: Dump memory object info if callback function
- is invalid
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Lameter <cl@linux.com>,
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGC431vmCz4f3nwj;
+        Wed,  2 Aug 2023 21:09:23 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgAHvbCBVcpkDKSVPQ--.59231S4;
+        Wed, 02 Aug 2023 21:09:24 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
@@ -41,58 +39,81 @@ Cc:     Christoph Lameter <cl@linux.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openeuler <kernel@openeuler.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-References: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
- <20230802034518.1115-3-thunder.leizhen@huaweicloud.com>
- <ZMnSJ86Wg3uWNTG5@casper.infradead.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <dfb98930-2b9e-687c-ed54-103a37f00adc@huaweicloud.com>
-Date:   Wed, 2 Aug 2023 19:12:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v4 0/2] rcu: Dump memory object info if callback function is invalid
+Date:   Wed,  2 Aug 2023 21:09:16 +0800
+Message-Id: <20230802130918.1132-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-In-Reply-To: <ZMnSJ86Wg3uWNTG5@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgA30JMCOspkVyOPPQ--.62365S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY47kC6x804xWl14x267AKxVW5JVWrJwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvf
-        C2KfnxnUUI43ZEXa7IUbG2NtUUUUU==
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAHvbCBVcpkDKSVPQ--.59231S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWfXrW8KrWrCr4rXry8Grg_yoW8Gw13pw
+        nxW3sxWr15Jry3CF13ZF1Ikry5Gay8KFsIk3ZxZws5Zw15Zr97uFykJr1IqF9xGF97K3W0
+        ya1YkF1jkr4DArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7M4kE6xkI
+        j40Ew7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+        UKfO7UUUUU=
 X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+From: Zhen Lei <thunder.leizhen@huawei.com>
+
+v3 --> v4:
+1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
+   as vmalloc_dump_obj().
+2. In kernel/rcu/rcu.h
+-#include <linux/mm.h>
++#include <linux/slab.h>
+
+v2 --> v3:
+1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+   more than 97.5%, and vmalloc accounts for less than 1%. So change call
+   mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+   avoid the potential deadlock risk of vmalloc_dump_obj().
+-		mem_dump_obj(rhp);
++		if (kmem_valid_obj(rhp))
++			kmem_dump_obj(rhp);
+
+   The discussion about vmap_area_lock deadlock in v2:
+   https://lkml.org/lkml/2022/11/11/493
+
+2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
+   when CONFIG_PRINTK=n.
+
+v1 --> v2:
+1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+2. Paul E. McKenney helped me update the commit message, thanks.
 
 
-On 2023/8/2 11:48, Matthew Wilcox wrote:
-> On Wed, Aug 02, 2023 at 11:45:17AM +0800, thunder.leizhen@huaweicloud.com wrote:
->> +#include <linux/mm.h>
-> 
-> mm.h is a very complex file with many dependencies.  Don't you really
-> only need slab.h?
+Zhen Lei (2):
+  mm: Remove kmem_valid_obj()
+  rcu: Dump memory object info if callback function is invalid
 
-Oh, yes, thanks.
-
-> 
-> .
-> 
+ include/linux/slab.h  |  5 +++--
+ kernel/rcu/rcu.h      |  7 +++++++
+ kernel/rcu/srcutiny.c |  1 +
+ kernel/rcu/srcutree.c |  1 +
+ kernel/rcu/tasks.h    |  1 +
+ kernel/rcu/tiny.c     |  1 +
+ kernel/rcu/tree.c     |  1 +
+ mm/slab_common.c      | 41 +++++++++++------------------------------
+ mm/util.c             |  4 +---
+ 9 files changed, 27 insertions(+), 35 deletions(-)
 
 -- 
-Regards,
-  Zhen Lei
+2.34.1
 
