@@ -2,167 +2,195 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DE02C001DF
-	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 17:20:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BB1CC04FDF
+	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 17:49:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjHBRUT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 2 Aug 2023 13:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
+        id S234142AbjHBRt6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 2 Aug 2023 13:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjHBRUS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:20:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A2F194;
-        Wed,  2 Aug 2023 10:20:17 -0700 (PDT)
+        with ESMTP id S231936AbjHBRtm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 2 Aug 2023 13:49:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CA544B7;
+        Wed,  2 Aug 2023 10:49:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0193461A33;
-        Wed,  2 Aug 2023 17:20:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56677C433C7;
-        Wed,  2 Aug 2023 17:20:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BBB4B61A73;
+        Wed,  2 Aug 2023 17:48:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 236FFC433C8;
+        Wed,  2 Aug 2023 17:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690996816;
-        bh=G1ZqlvVLhqnJmweScyr8cCpL2db0z118pIKtokAkSOw=;
+        s=k20201202; t=1690998534;
+        bh=ec++qd+96KFIy686wWR0g6gZlFG7AhB4I5X3AHouovE=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=W6mw66bo57BQ8IwLdJc+wT3rOruze/svflCCPm+GE0UBZ1sIbeih9CMCMeojiWpsr
-         PAYOXrncMGsArfcqxNt8JNogF5PhbrPFbqvCAVP9I5gNhZtDSc1rz6hzjfuDQl6qPw
-         p3Q/yDmFFXm3T4cMFg+UOAbeSHwDyvDyL4nanpzZctis/qSoveXsJDL98B4W9g4RH+
-         Owg0lfwPe+PQ+6qFB5XooHx+CvLASmq2lLeiRcMfMVt9PLuvw8d90QAmw4qkelNtUA
-         PF5n4OIShcKGmIbssvG8CCQ1oP5YRfYXueRT0DEwOiYkn1xVdv0SdbQUj/YawVH6fi
-         uskuWkW4uRQzQ==
+        b=gQgov8TXV7aMMrG4qm3LbiCBnMZBGnIhXpvZ3e/awF1e7R8hw19JT/Urv7O3laRfT
+         fshhhiU4UR5UXbvsf8Y81pRqirlso7KI13sNI2AXwcFemvPj9iYIX5zErlveCaFYoS
+         0EOExx6E60EDCMnxxO66zLQn3T5EBeoZ9rVW1dSHsThPovkvNqHPMaUS1WZwgv1IZ4
+         os+UAD2cg5KaUBykb4cfjfeQ9qwZFeVAUjB4Ija7ecOw61LYXJLul1oEt7sQ5ucFqI
+         DW06aWKd2Jk3M4ba3qq0Ula1BIkilSRa+BJaBqAMchOEWVJ7EkrhOiDR76FEHS5wut
+         m3YSwr8S2IKZw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E2105CE0922; Wed,  2 Aug 2023 10:20:15 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 10:20:15 -0700
+        id A8786CE0927; Wed,  2 Aug 2023 10:48:53 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 10:48:53 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Roy Hopkins <rhopkins@suse.de>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
         Peter Zijlstra <peterz@infradead.org>,
+        Roy Hopkins <rhopkins@suse.de>,
         Joel Fernandes <joel@joelfernandes.org>,
         Pavel Machek <pavel@denx.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
         f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
         srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
         rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
 Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
  6.4.7-rc1 review)
-Message-ID: <b31ead5b-d410-4b34-b580-81af6fabb4d0@paulmck-laptop>
+Message-ID: <8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230731145232.GM29590@hirez.programming.kicks-ass.net>
+References: <20230731143954.GB37820@hirez.programming.kicks-ass.net>
+ <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
+ <20230731145232.GM29590@hirez.programming.kicks-ass.net>
  <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
  <20230731161452.GA40850@hirez.programming.kicks-ass.net>
  <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
  <20230731211517.GA51835@hirez.programming.kicks-ass.net>
  <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
  <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
- <4f18d78411a5477690640a168e0e5d9f28d1c015.camel@suse.de>
- <063a2eba-6b5e-40bc-afd4-7d26f12762e4@paulmck-laptop>
- <2568f0ca-af88-4001-79c4-571a9b6a8fb3@roeck-us.net>
+ <CAHk-=wj5iESP-=gJSHe0Mfi=Xh2HdSsy+nm8NSr7DbXB9aBDGQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2568f0ca-af88-4001-79c4-571a9b6a8fb3@roeck-us.net>
+In-Reply-To: <CAHk-=wj5iESP-=gJSHe0Mfi=Xh2HdSsy+nm8NSr7DbXB9aBDGQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:45:06AM -0700, Guenter Roeck wrote:
-> On 8/2/23 08:05, Paul E. McKenney wrote:
-> > On Wed, Aug 02, 2023 at 02:57:56PM +0100, Roy Hopkins wrote:
-> > > On Tue, 2023-08-01 at 12:11 -0700, Paul E. McKenney wrote:
-> > > > On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
-> > > > 
-> > > > 
-> > > > Please see below for my preferred fix.  Does this work for you guys?
-> > > > 
-> > > > Back to figuring out why recent kernels occasionally to blow up all
-> > > > rcutorture guest OSes...
-> > > > 
-> > > >                                                          Thanx, Paul
-> > > > 
-> > > > ------------------------------------------------------------------------
-> > > > 
-> > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > index 7294be62727b..2d5b8385c357 100644
-> > > > --- a/kernel/rcu/tasks.h
-> > > > +++ b/kernel/rcu/tasks.h
-> > > > @@ -570,10 +570,12 @@ static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
-> > > >          if (unlikely(midboot)) {
-> > > >                  needgpcb = 0x2;
-> > > >          } else {
-> > > > +               mutex_unlock(&rtp->tasks_gp_mutex);
-> > > >                  set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
-> > > >                  rcuwait_wait_event(&rtp->cbs_wait,
-> > > >                                     (needgpcb = rcu_tasks_need_gpcb(rtp)),
-> > > >                                     TASK_IDLE);
-> > > > +               mutex_lock(&rtp->tasks_gp_mutex);
-> > > >          }
-> > > >          if (needgpcb & 0x2) {
-> > > 
-> > > Your preferred fix looks good to me.
-> > > 
-> > > With the original code I can quite easily reproduce the problem on my
-> > > system every 10 reboots or so. With your fix in place the problem no
-> > > longer occurs.
-> > 
-> > Very good, thank you!  May I add your Tested-by?
-> > 
+On Wed, Aug 02, 2023 at 10:14:51AM -0700, Linus Torvalds wrote:
+> Two quick comments, both of them "this code is a bit odd" rather than
+> anything else.
+
+Good to get eyes on this code, so thank you very much!!!
+
+> On Tue, 1 Aug 2023 at 12:11, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
 > 
-> FWIW, I am still working on it. So far I get
+> Why is this file called "tasks.h"?
 > 
-> [    8.191589]     KTAP version 1
-> [    8.191769]     # Subtest: kunit_executor_test
-> [    8.191972]     # module: kunit
-> [    8.192012]     1..8
-> [    8.197643]     ok 1 parse_filter_test
-> [    8.201851]     ok 2 filter_suites_test
-> [    8.206713]     ok 3 filter_suites_test_glob_test
-> [    8.211806]     ok 4 filter_suites_to_empty_test
-> [    8.214077] kunit executor: filter operation not found: speed>slow, module!=example
-> [    8.217933]     # parse_filter_attr_test: ASSERTION FAILED at lib/kunit/executor_test.c:126
-> [    8.217933]     Expected err == 0, but
-> [    8.217933]         err == -22 (0xffffffffffffffea)
-> [    8.217933]
-> [    8.217933] failed to parse filter '(efault)'
-> [    8.221266]     not ok 5 parse_filter_attr_test
-> [    8.224224] kunit executor: filter operation not found: speed>slow
-> [    8.225837]     # filter_attr_test: ASSERTION FAILED at lib/kunit/executor_test.c:165
-> [    8.225837]     Expected err == 0, but
-> [    8.225837]         err == -22 (0xffffffffffffffea)
-> [    8.228850]     not ok 6 filter_attr_test
-> [    8.230942] kunit executor: filter operation not found: module!=dummy
-> [    8.232167]     # filter_attr_empty_test: ASSERTION FAILED at lib/kunit/executor_test.c:190
-> [    8.232167]     Expected err == 0, but
-> [    8.232167]         err == -22 (0xffffffffffffffea)
-> [    8.235317]     not ok 7 filter_attr_empty_test
-> [    8.237065] kunit executor: filter operation not found: speed>slow
-> [    8.238796]     # filter_attr_skip_test: ASSERTION FAILED at lib/kunit/executor_test.c:209
-> [    8.238796]     Expected err == 0, but
-> [    8.238796]         err == -22 (0xffffffffffffffea)
-> [    8.241897]     not ok 8 filter_attr_skip_test
-> [    8.241947] # kunit_executor_test: pass:4 fail:4 skip:0 total:8
-> [    8.242144] # Totals: pass:4 fail:4 skip:0 total:8
+> It's not a header file. It makes no sense. It's full of C code. It's
+> included in only one place. It's just _weird_.
+
+You are right, it is weird.
+
+This is a holdover from when I was much more concerned about being
+criticized for having #ifdef in a .c file, and pretty much every
+line in this file is under some combination or another of #ifdefs.
+This concern led to kernel/rcu/tree_plugin.h being set up in this way
+back when preemptible RCU was introduced, and for good or for bad I just
+kept following that pattern.
+
+We could convert this to a .c file, keep the #ifdefs, drop some instances
+of "static", add a bunch of declarations, and maybe (or maybe not) push a
+function or two into some .h file for performance/inlining reasons.  Me, I
+would prefer to leave it alone, but we can certainly change it.
+
+> However, more relevantly:
 > 
-> and it looks like the console no longer works. Most likely this is some other problem
-> that was introduced while tests were broken. It will take me some time to track that down.
+> > +               mutex_unlock(&rtp->tasks_gp_mutex);
+> >                 set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+> 
+> Isn't the tasks_gp_mutex the thing that protects the gp state here?
+> Shouldn't it be after setting?
 
-No rush.
+Much of the gp state is protected by being accessed only by the gp
+kthread.  But there is a window in time where the gp might be driven
+directly out of the synchronize_rcu_tasks() call.  That window in time
+does not have a definite end, so this ->tasks_gp_mutex does the needed
+mutual exclusion during the transition of gp processing to the newly
+created gp kthread.
 
-Given that this bug is a year old, that it happens only when debug
-options are enabled, and that it has only been seen in current -next,
-my plan is to submit it into the next merge window.
+> >                 rcuwait_wait_event(&rtp->cbs_wait,
+> >                                    (needgpcb = rcu_tasks_need_gpcb(rtp)),
+> >                                    TASK_IDLE);
+> 
+> Also, looking at rcu_tasks_need_gpcb() that is now called outside the
+> lock, it does something quite odd.
 
-So this one stays mutable for about another 10 days.
+The state of each callback list is protected by the ->lock field of
+the rcu_tasks_percpu structure.  Yes, rcu_segcblist_n_cbs() is invoked
+int rcu_tasks_need_gpcb() outside of the lock, but it is designed for
+lockless use.  If it is modified just after the check, then there will
+be a later wakeup on the one hand or we will just uselessly acquire that
+->lock this one time on the other.
 
-On the strength of Roy's Tested-by, however, I will push this patch into
--next soon, so that should make things a bit easier.  Or so I hope.
+Also, ncbs records the number of callbacks seen in that first loop,
+then used later, where its value might be stale.  This might result in
+a collapse back to single-callback-queue operation and a later expansion
+back up.  Except that at this point we are still in single-CPU mode, so
+there should not be any lock contention, which means that there should
+still be but a single callback queue.  The transition itself is protected
+by ->cbs_gbl_lock.
 
-And again, thank you all for tracking this down!
+> At the very top of the function does
+> 
+>         for (cpu = 0; cpu < smp_load_acquire(&rtp->percpu_dequeue_lim); cpu++) {
+> 
+> and 'smp_load_acquire()' is all about saying "everything *after* this
+> load is ordered,
+> 
+> But the way it is done in that loop, it is indeed done at the
+> beginning of the loop, but then it's done *after* the loop too, so the
+> last smp_load_acquire seems a bit nonsensical.
+> 
+> If you want to load a value and say "this value is now sensible for
+> everything that follows", I think you should load it *first*. No?
+> 
+> IOW, wouldn't the whole sequence make more sense as
+> 
+>         dequeue_limit = smp_load_acquire(&rtp->percpu_dequeue_lim);
+>         for (cpu = 0; cpu < dequeue_limit; cpu++) {
+> 
+> and say that everything in rcu_tasks_need_gpcb() is ordered wrt the
+> initial limit on entry?
+> 
+> I dunno. That use of "smp_load_acquire()" just seems odd. Memory
+> ordering is hard to understand to begin with, but then when you have
+> things like loops that do the same ordered load multiple times, it
+> goes from "hard to understand" to positively confusing.
+
+Excellent point.  I am queueing that change with your Suggested-by.
+If testing goes well, it will be as shown below.
 
 							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 83049a893de5..94bb5abdbb37 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -432,6 +432,7 @@ static void rcu_barrier_tasks_generic(struct rcu_tasks *rtp)
+ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ {
+ 	int cpu;
++	int dequeue_limit;
+ 	unsigned long flags;
+ 	bool gpdone = poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq);
+ 	long n;
+@@ -439,7 +440,8 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 	long ncbsnz = 0;
+ 	int needgpcb = 0;
+ 
+-	for (cpu = 0; cpu < smp_load_acquire(&rtp->percpu_dequeue_lim); cpu++) {
++	dequeue_limit = smp_load_acquire(&rtp->percpu_dequeue_lim);
++	for (cpu = 0; cpu < dequeue_limit; cpu++) {
+ 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
+ 
+ 		/* Advance and accelerate any new callbacks. */
