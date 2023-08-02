@@ -2,31 +2,31 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BDBAC001DF
-	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 03:49:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBA4BC001DE
+	for <rcu@archiver.kernel.org>; Wed,  2 Aug 2023 03:58:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbjHBDti (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 1 Aug 2023 23:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
+        id S229821AbjHBD6e (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 1 Aug 2023 23:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjHBDth (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:49:37 -0400
+        with ESMTP id S229558AbjHBD6d (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 1 Aug 2023 23:58:33 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2CD1BC1;
-        Tue,  1 Aug 2023 20:49:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD7B103;
+        Tue,  1 Aug 2023 20:58:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Hqrdnm/XvcXGx4CoVVqbXlCI1yx06HjsI6afQOMMR/E=; b=uDAU8DGIp4xKzrZQCUWm/ggWaS
-        5myrCY6iUfJ9WoOC7gPPZzjmCHpYlY8bihWa871eSGTWy5E42am7uR4gty+dCYaLgoVWmLRIcq5d5
-        a43HZDUCy+z5zFDR3VaGYo5OuDnUxfvZ2FAfjPc/9HmbKBeN3VtY1z/S3Q5e1dkRw3MIr3sQ2r4+8
-        T5+4Y+adBhaVAPXQ9y8H/4JWCqxZxrWUF8GrtVZ69nIf8dXAZrrNiVqfAkcEsaJoroDDIpEh7glvv
-        xmiZiEkaGw20v6opkSAXpd9YI3f00BpqoEoAmgGHs9dURbbf0SlBtkajBtihyzVE2qD7MOsPk0QJK
-        4iHgecHg==;
+        bh=1sxh7WBnvHVhsALDL7UYNMUiOC+6/e9sMU+u5Ot8mLc=; b=v/OfBmitMKXbq60FtWwAjeBzPD
+        rHrouKtj7RhHZCdeJfVP87aaiq3a4NJoBF0hxzExrnEssr28/oU8mEXEW4Hs1C/AkDDqxxNrzwqLh
+        tLq58oHhLkRLu0/KTfJfIJ30KY1Ip6O0z0KkdJ9948Y9knve/1zDrSJBUVhQvg6JR9iQe2Wpfi3IS
+        RUjIfpbnSBORbjuT+4lHQQedW577OMpZWQLx9aCZ+ffNKBIFbRvJQ5cWhklc01w389Cmlt6ktxd+V
+        9uq7t2DYYa5mR3LoyLaMuMRmlspok+w0dVi9cTk4UeJZdExtQ82vDxNZt4J1iSVQb8FH5/1Bx/SkJ
+        ABFAu7Vg==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qR2r1-00CiGN-4l; Wed, 02 Aug 2023 03:48:55 +0000
-Date:   Wed, 2 Aug 2023 04:48:55 +0100
+        id 1qR2zn-00Ckt2-3N; Wed, 02 Aug 2023 03:57:59 +0000
+Date:   Wed, 2 Aug 2023 04:57:59 +0100
 From:   Matthew Wilcox <willy@infradead.org>
 To:     thunder.leizhen@huaweicloud.com
 Cc:     Christoph Lameter <cl@linux.com>,
@@ -48,22 +48,52 @@ Cc:     Christoph Lameter <cl@linux.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, openeuler <kernel@openeuler.org>
-Subject: Re: [PATCH v3 2/2] rcu: Dump memory object info if callback function
- is invalid
-Message-ID: <ZMnSJ86Wg3uWNTG5@casper.infradead.org>
+Subject: Re: [PATCH v3 1/2] mm: Provide empty function for kmem_dump_obj()
+ when CONFIG_PRINTK=n
+Message-ID: <ZMnUR61eFmO014EL@casper.infradead.org>
 References: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
- <20230802034518.1115-3-thunder.leizhen@huaweicloud.com>
+ <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802034518.1115-3-thunder.leizhen@huaweicloud.com>
+In-Reply-To: <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 11:45:17AM +0800, thunder.leizhen@huaweicloud.com wrote:
-> +#include <linux/mm.h>
+On Wed, Aug 02, 2023 at 11:45:16AM +0800, thunder.leizhen@huaweicloud.com wrote:
+> +++ b/include/linux/slab.h
+> @@ -246,6 +246,9 @@ size_t ksize(const void *objp);
+>  #ifdef CONFIG_PRINTK
+>  bool kmem_valid_obj(void *object);
+>  void kmem_dump_obj(void *object);
+> +#else
+> +static inline bool kmem_valid_obj(void *object) { return false; }
 
-mm.h is a very complex file with many dependencies.  Don't you really
-only need slab.h?
+That is very confusing.  kmem_valid_obj() looks like a function which
+should exist regardless of CONFIG_PRINTK and to have it always return
+false if CONFIG_PRINTK isn't set seems weird.
+
+I see we have one caller of kmem_valid_obj() right now.  Which means it
+shouldn't be an EXPORT_SYMBOL since that caller is not a module.
+
+I think the right solution is to convert kmem_dump_obj() to
+work the same way as vmalloc_dump_obj().  ie:
+
++++ b/mm/util.c
+@@ -1057,11 +1057,8 @@ void mem_dump_obj(void *object)
+ {
+        const char *type;
+
+-       if (kmem_valid_obj(object)) {
+-               kmem_dump_obj(object);
++       if (kmem_dump_obj(object))
+                return;
+-       }
+-
+        if (vmalloc_dump_obj(object))
+                return;
+
+... with corresponding changes to eliminate kmem_valid_obj() as a
+symbol.
 
