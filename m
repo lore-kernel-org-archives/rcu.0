@@ -2,165 +2,187 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FCE8C04A6A
-	for <rcu@archiver.kernel.org>; Thu,  3 Aug 2023 10:35:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C510C001DF
+	for <rcu@archiver.kernel.org>; Thu,  3 Aug 2023 12:09:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbjHCKfD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Aug 2023 06:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        id S235442AbjHCMJG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Aug 2023 08:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235346AbjHCKfB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:35:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03B019B0;
-        Thu,  3 Aug 2023 03:34:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2C07B1F853;
-        Thu,  3 Aug 2023 10:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691058898; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cYn5KTL6hoclU8R8tOQwMLLVXag1TZw3PWIRsarQ/JU=;
-        b=WHS9GyBrNm1Q32Q6akgqrEDRLlMuziSOm0sS4ZqVqfoCCLRBcGOGliKsEUOpvB8pdK8gaq
-        2irAU7N+SJj+EQGj6IFxUk8oyYdSCHAp3WE4ozKfWaqRiJhmEFb0sisnHahQllSvMz8hS/
-        ZdPh43f2o/87KkA0OZKU7GTqq9RVN3k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691058898;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cYn5KTL6hoclU8R8tOQwMLLVXag1TZw3PWIRsarQ/JU=;
-        b=+PeNjKME0A1mlH6xUdfp4hc1szcFjxSYfCFO3FRSxlnXJDNvqAFJA1qwv0GDK20ivobkvD
-        my5WiFPlCRqr8LCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C24FD134B0;
-        Thu,  3 Aug 2023 10:34:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BDi+LtGCy2RrFgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 03 Aug 2023 10:34:57 +0000
-Message-ID: <8a08b7aa-ce1f-4b3d-abb5-cf3191474725@suse.cz>
-Date:   Thu, 3 Aug 2023 12:34:57 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v5 3/3] mm: Dump the memory of slab object in
- kmem_dump_obj()
-Content-Language: en-US
-To:     thunder.leizhen@huaweicloud.com, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+        with ESMTP id S234546AbjHCMJF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Aug 2023 08:09:05 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B142D5F;
+        Thu,  3 Aug 2023 05:09:04 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686f090310dso803433b3a.0;
+        Thu, 03 Aug 2023 05:09:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691064544; x=1691669344;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xx2oQNP8dRig7LZXLqCiP6SuqwiYqFZRo7LyhqCpqHE=;
+        b=IWonB6QUJ4N8aOKnWPyxE8cS5xjIgORpLfILdZrQsbCOO+rypbS3BZuhJ5KnTCcCFw
+         EKXkMK4V/+m0CuWpQlg7DK+azW1pksjVKIuso4yhfG0CBhGGFsGtAgFeqQbJaL1T57P4
+         1eSFYN823Wr3GtpwgzB+R+U/ian13/p8aL0tkVOwnDr+lNmCDXcz7UxxirryGzDC0WQt
+         Wz3JvSPqCxOyV9i8zgawCugOmAlBAO9fQ8pinx8H2W4WCVhVcqvET5JPaLI0ttTn9W15
+         DDatRD3T2sqadjeIhlY/QycfDE5FlnIbMic4TJ342EP/TC4kb0AfxZF8W++k0AKpcYLu
+         04/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691064544; x=1691669344;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xx2oQNP8dRig7LZXLqCiP6SuqwiYqFZRo7LyhqCpqHE=;
+        b=hmrRD+9GjOFHqs0d8Hv0stjO9TyA7/QOsxFfYCpcXe4jDskezdZ2rhap4qmTFjeB//
+         vZl+bN/Zwucf8Kcn9+oC0CU4pCn3BIpgS7nHhT+tBP7aAhqkdIx9tA/M/nvih4tvGMqr
+         R+fN8lDT24BsP1hWxFiChdhXSTB0Ddk56Wij7z0k2ZC0qjn0jGyK3p4FByxh6EnJL3BH
+         08usM8FwGj2vVGStijPFPz84S6JkLU2JwuqPdr7ohAdm5HK2gTGX0UO5Ow6M/EswitAR
+         YhkybyC/APmSxhDWUe5Tw8AsdNqxpqlIcWRofTwZykYbea8Opl+sa5LCBbGEUmPQospS
+         Wt9A==
+X-Gm-Message-State: ABy/qLZXa6QUvLVa5VLH2xElQuy6P2jOoVHJpYhIwcMLKMS4UU1WVYvw
+        VvE3yMp/G2HBNcmwZMhefoGTlO6sAZo=
+X-Google-Smtp-Source: APBJJlHfPOmNVqzk4UYYb0aPNzRDVgHbymXt7FDbUU5DACSUoqSe98naInUtdRs/F8Go2LAhLORjsw==
+X-Received: by 2002:a05:6a00:ad4:b0:681:c372:5aa4 with SMTP id c20-20020a056a000ad400b00681c3725aa4mr23931679pfl.27.1691064543845;
+        Thu, 03 Aug 2023 05:09:03 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id v14-20020a62a50e000000b00681783cfc85sm13083358pfm.144.2023.08.03.05.08.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Aug 2023 05:09:03 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
+ requirements
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <20230803032408.2514989-1-joel@joelfernandes.org>
+Date:   Thu, 3 Aug 2023 20:08:42 +0800
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-References: <20230803101754.1149-1-thunder.leizhen@huaweicloud.com>
- <20230803101754.1149-4-thunder.leizhen@huaweicloud.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230803101754.1149-4-thunder.leizhen@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
+References: <20230803032408.2514989-1-joel@joelfernandes.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 8/3/23 12:17, thunder.leizhen@huaweicloud.com wrote:
-> From: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> The contents of the slab object may contain some magic words and other
-> useful information that may be helpful in locating problems such as
-> memory corruption and use-after-free.
-> 
-> To avoid print flooding, dump up to "16 * sizeof(int) = 64" bytes
-> centered on argument 'ojbect'.
-> 
-> For example:
-> slab kmalloc-64 start ffff4043802d8b40 pointer offset 24 size 64
-> [8b40]: 12345678 00000000 8092d000 ffff8000
-> [8b50]: 00101000 00000000 8199ee00 ffff4043
-> [8b60]: 00000000 00000000 00000000 00000100
-> [8b70]: 00000000 9abcdef0 a8744de4 ffffc7fe
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+
+> 2023=E5=B9=B48=E6=9C=883=E6=97=A5 11:24=EF=BC=8CJoel Fernandes =
+(Google) <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> Add a detailed note to explain the potential side effects of
+> plain-accessing the gp pointer using a plain load, without using the
+> rcu_dereference() macros; which might trip neighboring code that does
+> use rcu_dereference().
+>=20
+> I haven't verified this with a compiler, but this is what I gather =
+from
+> the below link using Will's experience with READ_ONCE().
+>=20
+> Link: =
+https://lore.kernel.org/all/20230728124412.GA21303@willie-the-truck/
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  mm/slab_common.c | 30 +++++++++++++++++++++++++++---
->  1 file changed, 27 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index ee6ed6dd7ba9fa5..0232de9a3b29cf5 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -553,7 +553,7 @@ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *
->  bool kmem_dump_obj(void *object)
->  {
->  	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
-> -	int i;
-> +	int i, object_size = 0;
->  	struct slab *slab;
->  	unsigned long ptroffset;
->  	struct kmem_obj_info kp = { };
-> @@ -580,12 +580,36 @@ bool kmem_dump_obj(void *object)
->  		ptroffset = ((char *)object - (char *)kp.kp_objp) - kp.kp_data_offset;
->  		pr_cont(" pointer offset %lu", ptroffset);
->  	}
-> -	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size)
-> -		pr_cont(" size %u", kp.kp_slab_cache->object_size);
-> +	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size) {
-> +		object_size = kp.kp_slab_cache->object_size;
-> +		pr_cont(" size %u", object_size);
-> +	}
->  	if (kp.kp_ret)
->  		pr_cont(" allocated at %pS\n", kp.kp_ret);
->  	else
->  		pr_cont("\n");
+> .../RCU/Design/Requirements/Requirements.rst  | 32 +++++++++++++++++++
+> 1 file changed, 32 insertions(+)
+>=20
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst =
+b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index f3b605285a87..e0b896d3fb9b 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -376,6 +376,38 @@ mechanism, most commonly locking or reference =
+counting
+> .. |high-quality implementation of C11 memory_order_consume [PDF]| =
+replace:: high-quality implementation of C11 ``memory_order_consume`` =
+[PDF]
+> .. _high-quality implementation of C11 memory_order_consume [PDF]: =
+http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
+>=20
+> +Note that, there can be strange side effects (due to compiler =
+optimizations) if
+> +``gp`` is ever accessed using a plain load (i.e. without =
+``READ_ONCE()`` or
+> +``rcu_dereference()``) potentially hurting any succeeding
+> +``rcu_dereference()``. For example, consider the code:
 > +
-> +	/* Dump a small piece of memory centered on 'object' */
-> +	if (kp.kp_objp && object_size) {
-> +		int *p = object, n = 16;
+> +   ::
 > +
-> +		p += n / 2;
-> +		if ((void *)p > kp.kp_objp + object_size)
-> +			p = kp.kp_objp + object_size;
+> +       1 bool do_something_gp(void)
+> +       2 {
+> +       3   void *tmp;
+> +       4   rcu_read_lock();
+> +       5   tmp =3D gp; // Plain-load of GP.
+> +       6   printk("Point gp =3D %p\n", tmp);
+> +       7
+> +       8   p =3D rcu_dereference(gp);
+> +       9   if (p) {
+> +      10     do_something(p->a, p->b);
+> +      11     rcu_read_unlock();
+> +      12     return true;
+> +      13   }
+> +      14   rcu_read_unlock();
+> +      15   return false;
+> +      16 }
 > +
-> +		p -= n;
-> +		if ((void *)p < kp.kp_objp)
-> +			p = kp.kp_objp;
-> +
-> +		n = min_t(int, object_size / sizeof(int), n);
-> +		for (i = 0; i < n; i++, p++) {
-> +			if (i % 4 == 0)
-> +				pr_info("[%04lx]:", 0xffff & (unsigned long)p);
-> +			pr_cont(" %08x", *p);
-> +		}
-> +		pr_cont("\n");
+> +The behavior of plain accesses involved in a data race is =
+non-deterministic in
+> +the face of compiler optimizations. Since accesses to the ``gp`` =
+pointer is
+> +by-design a data race, the compiler could trip this code by caching =
+the value
+> +of ``gp`` into a register in line 5, and then using the value of the =
+register
+> +to satisfy the load in line 10. Thus it is important to never mix
 
-There's a print_hex_dump() for this, see how it's used from e.g. __dump_page().
+Will=E2=80=99s example is:
 
+	 // Assume *ptr is initially 0 and somebody else writes it to 1
+	 // concurrently
 
-> +	}
+	 foo =3D *ptr;
+	 bar =3D READ_ONCE(*ptr);
+	 baz =3D *ptr;
+
+Then the compiler is within its right to reorder it to:
+
+	foo =3D *ptr;
+ 	baz =3D *ptr;
+ 	bar =3D READ_ONCE(*ptr);
+
+So, the result foo =3D=3D baz =3D=3D 0 but bar =3D=3D 1 is perfectly =
+legal.
+
+But the example here is different, the compiler can not use the value =
+loaded from line 5
+unless the compiler can deduce that the tmp is equals to p in which case =
+the address dependency
+doesn=E2=80=99t exist anymore.
+
+What am I missing here?
+
+> +plain accesses of a memory location with rcu_dereference() of the =
+same memory
+> +location, in code involved in a data race.
 > +
->  	for (i = 0; i < ARRAY_SIZE(kp.kp_stack); i++) {
->  		if (!kp.kp_stack[i])
->  			break;
+> In short, updaters use rcu_assign_pointer() and readers use
+> rcu_dereference(), and these two RCU API elements work together to
+> ensure that readers have a consistent view of newly added data =
+elements.
+> --=20
+> 2.41.0.585.gd2178a4bd4-goog
+>=20
 
