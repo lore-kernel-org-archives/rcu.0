@@ -2,108 +2,105 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86E62EB64DD
-	for <rcu@archiver.kernel.org>; Thu,  3 Aug 2023 16:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DAC2EB64DD
+	for <rcu@archiver.kernel.org>; Thu,  3 Aug 2023 18:52:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234057AbjHCQcl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Aug 2023 12:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
+        id S231217AbjHCSwp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Aug 2023 14:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232507AbjHCQck (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:32:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BC730D5;
-        Thu,  3 Aug 2023 09:32:40 -0700 (PDT)
+        with ESMTP id S230423AbjHCSwo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Aug 2023 14:52:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3FE4219;
+        Thu,  3 Aug 2023 11:52:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ACE9661E3A;
-        Thu,  3 Aug 2023 16:32:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C128C433C8;
-        Thu,  3 Aug 2023 16:32:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FAD261E67;
+        Thu,  3 Aug 2023 18:52:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD36FC433C7;
+        Thu,  3 Aug 2023 18:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691080359;
-        bh=ptaxZ4bU16R1uvGfuuzlliYFRX98Xym9B152pK1Wfyk=;
+        s=k20201202; t=1691088726;
+        bh=C4EW4wbKCHTYy6MNIaLyL7a1gGIegviHQ8l+Ecex1SQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gc2iGCVD1BlpyHtmLfHMiJRXTSzasjCXFMP+d2p0/seDfDMNm638QDAbfwh4qzSd9
-         4t6sUHmb4jI3hjeKdReELofbpLOC+s6c6plA+VYoeDsk3LP9sJLzsVtgTOsmKiA56X
-         0W/QZZMNKK+rVfB42rX5Ib41UWve0bDWLLfZZCgUTWjirgCku0+wrahyz31BEES2po
-         IPlxZAEHgK1vKIS4h1v0wL2wNZNNzyl259lXWabOkmsr2Z5E4PVn7lrcA2WPiec6wU
-         3VG861tsr5CQx7D5fzFRUGQQ1Jm/Dqll3GZftUhnSJjcEUp7iGwSU5bgf0gPdHTr2N
-         H5+I8OwHNKZ6A==
+        b=H2C7gNwNpz8RClNWocDqQRDE8DGjNnPE6tJd4q10HUbE0iwB4z0IsH1/GPe0yB1c5
+         1+bZR2EYET3zvXmCCKtfFMBjVc/6DbZOpMXFvvcWJyltoA3mKnMfXXU1zEuVig+8j3
+         HeXmq2nGSe+vwQdzm5XVpgaTj1i/vNBWJHlrfJDnyUHK6OOcZY/JaYgc9ZzOILxvOf
+         O2XUOZKoarBoCwdyn0bL6Ygc9DBlY68A5Lzq/NC/QSP7CbsEC+5wexdePO4DXvJRdV
+         ydHeSFYXrUgXl85O4TZx/t5VSqUsMKp1H1qlMeCXwp0HO3vC6XefVHpCkoV4I4NKQc
+         S9mlIyA83T0Tg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 97057CE0C8E; Thu,  3 Aug 2023 09:32:38 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 09:32:38 -0700
+        id 3DE1ACE0AE0; Thu,  3 Aug 2023 11:52:06 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 11:52:06 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: include torture_sched_setaffinity() declaration
-Message-ID: <10180121-4584-463a-af52-1005b23271e7@paulmck-laptop>
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 2/2] docs: memory-barriers: Add note on plain-accesses to
+ address-dependency barriers
+Message-ID: <626d1b48-de6a-4a0b-95d3-3ac438878757@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230803144025.14023-1-arnd@kernel.org>
- <CAEXW_YQSO_OZ5MCT6kaTHLV7SgBWyiu8ATfcU7fsCdO=GwiQ9Q@mail.gmail.com>
+References: <20230803032408.2514989-1-joel@joelfernandes.org>
+ <20230803032408.2514989-2-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQSO_OZ5MCT6kaTHLV7SgBWyiu8ATfcU7fsCdO=GwiQ9Q@mail.gmail.com>
+In-Reply-To: <20230803032408.2514989-2-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:02:52PM -0400, Joel Fernandes wrote:
-> On Thu, Aug 3, 2023 at 10:40 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The prototype for torture_sched_setaffinity() moved to a
-> > different header, which needs to be included from update.c
-> > to avoid this W=1 warning:
-> >
-> > kernel/rcu/update.c:529:6: error: no previous prototype for 'torture_sched_setaffinity' [-Werror=missing-prototypes]
-> >   529 | long torture_sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
-> >
-> > Fixes: 521ec59e5453e ("torture: Move rcutorture_sched_setaffinity() out of rcutorture")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Thu, Aug 03, 2023 at 03:24:07AM +0000, Joel Fernandes (Google) wrote:
+> The compiler has the ability to cause misordering by destroying
+> address-dependency barriers if comparison operations are used. Add a
+> note about this to memory-barriers.txt and point to rcu-dereference.rst
+> for more information.
 > 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  Documentation/memory-barriers.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+> index 06e14efd8662..acc8ec5ce563 100644
+> --- a/Documentation/memory-barriers.txt
+> +++ b/Documentation/memory-barriers.txt
+> @@ -435,6 +435,11 @@ Memory barriers come in four basic varieties:
+>       variables such as READ_ONCE() and rcu_dereference() provide implicit
+>       address-dependency barriers.
+>  
+> +     [!] Note that address dependency barriers can be destroyed by comparison
+> +     of a pointer obtained by a marked accessor such as READ_ONCE() or
+> +     rcu_dereference() with some value.  For an example of this, see
+> +     rcu_dereference.rst (part where the comparison of pointers is discussed).
 
-Queued (likely for the v6.7 merge window), thank you both!
+Hmmm...
+
+Given that this is in a section marked "historical" (for the old
+smp_read_barrier_depends() API), why not instead add a pointer to
+Documentation/RCU/rcu_dereference.rst to the beginning of the section,
+noted as the updated material?
 
 							Thanx, Paul
 
-> thanks,
+> +
+>   (3) Read (or load) memory barriers.
+>  
+>       A read barrier is an address-dependency barrier plus a guarantee that all
+> -- 
+> 2.41.0.585.gd2178a4bd4-goog
 > 
-> - Joel
-> 
-> 
-> > ---
-> >  kernel/rcu/update.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> > index 0533b510f0a8..c534d6806d3d 100644
-> > --- a/kernel/rcu/update.c
-> > +++ b/kernel/rcu/update.c
-> > @@ -25,6 +25,7 @@
-> >  #include <linux/interrupt.h>
-> >  #include <linux/sched/signal.h>
-> >  #include <linux/sched/debug.h>
-> > +#include <linux/torture.h>
-> >  #include <linux/atomic.h>
-> >  #include <linux/bitops.h>
-> >  #include <linux/percpu.h>
-> > --
-> > 2.39.2
-> >
