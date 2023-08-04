@@ -2,43 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D21ACC001DE
-	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 17:03:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC00AC001DB
+	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 17:27:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbjHDRDR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Aug 2023 13:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        id S231438AbjHDR1p (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Aug 2023 13:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231651AbjHDRDQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:03:16 -0400
+        with ESMTP id S229662AbjHDR1o (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Aug 2023 13:27:44 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60214ED8;
-        Fri,  4 Aug 2023 10:02:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3E7212D;
+        Fri,  4 Aug 2023 10:27:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4700E620B6;
-        Fri,  4 Aug 2023 17:02:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B1BC433C7;
-        Fri,  4 Aug 2023 17:02:35 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BC513620D1;
+        Fri,  4 Aug 2023 17:27:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ACA1C433C7;
+        Fri,  4 Aug 2023 17:27:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691168555;
-        bh=qs+QIUdxIFzWyrOJasFngXnPWrwLq+ttceEWpfXB7gA=;
+        s=k20201202; t=1691170062;
+        bh=AYANuhJfkDjAfC3MryJ2A7DPDDjZNIDvTaz4RAUTOpY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Dfobvzeom7UUgAciwwnr1JIJaz0EGNd19anbt3F12V6m7EFWQ7f4DOqLjd1JwyN5F
-         w+laxEkHXag5X+37j3sXmiX0DNLnK9cgXLmd4AZBtKDac936ewuqiwfchAvB0PcFFt
-         2cnOGPBJyYwq6nCW5MGDPu847k4b9AnYSK7NbTIob6sI/0o2gMkNF29qhDE2qUiKkm
-         azct+rjEaAumtoBKHA6dxrSc+PIgAR1HU8I74gQv8ExNBRGe68W96m2XOC8eqfRZeH
-         A+UyRU/6FlphkH0gBLQ3fUvz7rrohF3uwSG3rJayHTg6ek6YOSJSMBZ2MdJt8VuxBA
-         xnJhm6TaPqh5g==
+        b=rkC7cPXnep9FLlFMDySqsRPneYVihwtFwRZSsd8LYlIjnvLDzJahYx8fWNJXmdja4
+         i49pJRPuRXKCmeg5HOsbyFVcS3MdhDS5WTCZkIcMPfKi6H0cDAHka0t53ePVVhy3w2
+         AOwrYpMdjbmjth+HAXZmPFRd4esoxrR9NNhNXiEW83mI7MSrq3hk2Zd+cPVMVTZUwT
+         yPxvhrR4shdcQQhB+aJME9qUABrjnN6eA5gMd1WTcIRAz7SD4x0ioQ+V3OrA2NiQUt
+         BbyoWJRGje+fYQMKk9gUFVN5qXW5e+cIGmkuCueT0JYjK7KbQP4mF4WrpfXt0t9p9A
+         HImuRgYMh6qSw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2D49ACE0591; Fri,  4 Aug 2023 10:02:35 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 10:02:35 -0700
+        id C4316CE0591; Fri,  4 Aug 2023 10:27:41 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 10:27:41 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Alan Huang <mmpgouride@gmail.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, Will Deacon <will@kernel.org>,
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -50,53 +51,108 @@ Cc:     Alan Huang <mmpgouride@gmail.com>, linux-kernel@vger.kernel.org,
         Jonathan Corbet <corbet@lwn.net>
 Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
  requirements
-Message-ID: <81d02e70-a05d-4230-9b86-0026d4874ea7@paulmck-laptop>
+Message-ID: <c74dd105-cec6-468e-b97e-b22434fa0176@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <f5652b1a-de71-4881-8825-fedd73544f54@paulmck-laptop>
- <D594A2D8-0C46-402D-B186-39DE7B65ED61@joelfernandes.org>
- <b8fd5f26-f101-4b58-aa62-649996b6ac5e@paulmck-laptop>
- <CAEXW_YQQsFiVqihOXN1pCtvvek4OBmphDR6D4gGFKkd4x9DQxQ@mail.gmail.com>
+References: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
+ <148CE02E-BBEC-4D30-9C75-6632A110FFC0@joelfernandes.org>
+ <E96297CF-6C81-4BB5-BA5A-6734F6B629F4@gmail.com>
+ <CAEXW_YRXA3j3k9VRuZJ7d=yo6__TRpeE6igrQ+GEZiyKtFmUOQ@mail.gmail.com>
+ <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
+ <f5652b1a-de71-4881-8825-fedd73544f54@paulmck-laptop>
+ <DFBE4F45-BF8B-4267-93C7-B085A88BE356@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YQQsFiVqihOXN1pCtvvek4OBmphDR6D4gGFKkd4x9DQxQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DFBE4F45-BF8B-4267-93C7-B085A88BE356@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:17:58PM -0400, Joel Fernandes wrote:
-> [...]
-> > > >> However, the kernel consider the volatile access to be atomic, right?
-> > > >
-> > > > The compiler must therefore act as if a volatile access to an aligned
-> > > > machine-word size location is atomic.  To see this, consider accesses
-> > > > to memory that is shared by a device driver and that device's firmware,
-> > > > both of which are written in either C or C++.
-> > >
-> > > Btw it appears TSAN complaints bitterly on even volatile 4 byte data races.
-> > > Hence we have to explicitly use atomic API for data race accesses in Chrome.
-> >
-> > That might have been a conscious and deliberate choice on the part of
-> > the TSAN guys.  Volatile does not imply any ordering in the standard
-> > (other than the compiler avoiding emitting volatile operations out of
-> > order), but some compilers did emit memory-barrier instructions for
-> > volatile accesses.  Which resulted in a lot of problems when such code
-> > found compilers that did not cause the CPU to order volatile operations.
-> >
-> > So a lot of people decided to thrown the volatile baby out with the
-> > unordered bathwather.  ;-)
+On Sat, Aug 05, 2023 at 12:33:03AM +0800, Alan Huang wrote:
 > 
-> Thanks for the input, I think TSAN was indeed worried about
-> memory-ordering even if relaxed ordering was intended. I think there
-> is a way to tell TSAN to shut-up in such situations but in my last
-> Chrome sprint, I just used the atomic API with relaxed ordering and
-> called it a day. :-)
+> >> Yes, a write-write data race where the value is the same is also fine.
+> >> 
+> >> But they are still data race, if the compiler is within its right to do anything it likes (due to data race),
+> >> we still need WRITE_ONCE() in these cases, though it’s semantically safe.
+> >> 
+> >> IIUC, even with _ONCE(), the compiler is within its right do anything according to the standard (at least before the upcoming C23), because the standard doesn’t consider a volatile access to be atomic.
+> > 
+> > Volatile accesses are not specified very well in the standard.  However,
+> > as a practical matter, compilers that wish to be able to device drivers
+> > (whether in kernels or userspace applications) must compile those volatile
+> > accesses in such a way to allow reliable device drivers to be written.
+> > 
+> >> However, the kernel consider the volatile access to be atomic, right?
+> > 
+> > The compiler must therefore act as if a volatile access to an aligned
+> > machine-word size location is atomic.  To see this, consider accesses
+> > to memory that is shared by a device driver and that device's firmware,
+> > both of which are written in either C or C++.
+> 
+> I learned these things a few months ago. But still thank you!
+> 
+> The real problem is that there may be a data race at line 5, so Joel is correct that the compiler
+> can cache the value loaded from line 5 according to the standard given that the standard says that
+> a data race result in undefined behavior, so the compiler might be allowed to do anything. But from the
+> perspective of the kernel, line 5 is likely a diagnostic read, so it’s fine without READ_ONCE() and the
+> compiler is not allowed to cache the value.
+> 
+> This situation is like the volatile access.
+> 
+> Am I missing something?
 
-Fair enough!
+I think you have it right.
 
-Note that the Linux kernel's version of TSAN, which is KCSAN, does
-interpret volatile accesses more or less as if they were relaxed atomics.
+The point is that we are sometimes more concerned about focusing KCSAN
+diagnostics on the core concurrent algorithm, and are willing to take
+the very low risk of messed-up diagnostic output in order to get simpler
+and better KCSAN diagnostics on the main algorithm.
 
-So TSAN could change, but I don't have a dog in that fight.  ;-)
+So in that case, we use data_race() on the diagnostics and other markings
+in the main algorithm.
+
+For example, suppose that we had a core algorithm that relied on strict
+locking.  In that case, we want to use unmarked plain C-language accesses
+in the core algorithm, which will allow KCSAN to flag and accesses that
+are not protected by the lock.  But it might be bad for the diagnostic
+code to acquire that lock, as this would suppress diagnostics in the case
+where the lock was held for too long a time period.  Using data_race()
+in the diagnostic code addresses this situation.
 
 							Thanx, Paul
+
+
+> > Does that help?
+> > 
+> > Thanx, Paul
+> > 
+> >> BTW, line 5 in the example is likely to be optimized away. And yes, the compiler can cache the value loaded from line 5 from the perspective of undefined behavior, even if I believe it would be a compiler bug from the perspective of kernel.
+> >> 
+> >>> result will not change the semantics of the program. But otherwise,
+> >>> that's bad.
+> >>> 
+> >>> [1] https://lwn.net/Articles/793253/#Store%20Tearing
+> >>> 
+> >>> thanks,
+> >>> 
+> >>> - Joel
+> >>> 
+> >>> 
+> >>>> 
+> >>>>> 
+> >>>>> Thanks.
+> >>>>> 
+> >>>>> 
+> >>>>> 
+> >>>>>> 
+> >>>>>>> +plain accesses of a memory location with rcu_dereference() of the same memory
+> >>>>>>> +location, in code involved in a data race.
+> >>>>>>> +
+> >>>>>>> In short, updaters use rcu_assign_pointer() and readers use
+> >>>>>>> rcu_dereference(), and these two RCU API elements work together to
+> >>>>>>> ensure that readers have a consistent view of newly added data elements.
+> >>>>>>> --
+> >>>>>>> 2.41.0.585.gd2178a4bd4-goog
+> 
+> 
