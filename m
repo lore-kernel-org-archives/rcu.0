@@ -2,232 +2,173 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26F25C0015E
-	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 00:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04C99EB64DD
+	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 01:44:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbjHDAB1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Aug 2023 20:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
+        id S232335AbjHDBoe (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 3 Aug 2023 21:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbjHDAB0 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Aug 2023 20:01:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBA13A9C;
-        Thu,  3 Aug 2023 17:01:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7636B61EE2;
-        Fri,  4 Aug 2023 00:01:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E72C433C8;
-        Fri,  4 Aug 2023 00:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691107283;
-        bh=cHmGqKaVH+JbvJeqZpbkMs70GSXfEJuWpiEzl0HQHYM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bYC0x5zWPaRuUsIMmGjgGrkPWBzSpzv0+95f0+oAp736qSNn+HhpkdS0FJ2qUZPFs
-         uFRW0ipfbkpEmt0z1D/2YJgeADdOsIKPjfTGNi4AOHMz2QNXspMjmYk7xATYJO+MmQ
-         Qm/qZ5LsDUEyf5q5H16tneaY+geBaQc0Yw3LhNtWk3ltVT8aAVEs3BOqUdWBzs5LWh
-         4lZ048sZRNLITtHyBlaZVSBbvFezz1ML6m1qfAN7tBEaT9T3SUTbBurFDO1snyTcN+
-         zMGlGGhD4sDJTXxg2RAYJECJ0yi+L2++411yoPqjlNUAuyJCLb7j5AWknFs17d7FLa
-         9MMHp1CUpnaog==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5EF78CE092F; Thu,  3 Aug 2023 17:01:23 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 17:01:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
+        with ESMTP id S232056AbjHDBod (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 3 Aug 2023 21:44:33 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F4B1BD;
+        Thu,  3 Aug 2023 18:44:31 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RH7mr06kfz4f3jqs;
+        Fri,  4 Aug 2023 09:44:28 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgD3X7P6V8xk6Z0MPg--.4994S3;
+        Fri, 04 Aug 2023 09:44:28 +0800 (CST)
+Subject: Re: [PATCH v5 3/3] mm: Dump the memory of slab object in
+ kmem_dump_obj()
+To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
- requirements
-Message-ID: <f5652b1a-de71-4881-8825-fedd73544f54@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
- <148CE02E-BBEC-4D30-9C75-6632A110FFC0@joelfernandes.org>
- <E96297CF-6C81-4BB5-BA5A-6734F6B629F4@gmail.com>
- <CAEXW_YRXA3j3k9VRuZJ7d=yo6__TRpeE6igrQ+GEZiyKtFmUOQ@mail.gmail.com>
- <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230803101754.1149-1-thunder.leizhen@huaweicloud.com>
+ <20230803101754.1149-4-thunder.leizhen@huaweicloud.com>
+ <8a08b7aa-ce1f-4b3d-abb5-cf3191474725@suse.cz>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <5d625946-28f1-f532-dd58-af18263a8bea@huaweicloud.com>
+Date:   Fri, 4 Aug 2023 09:44:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <8a08b7aa-ce1f-4b3d-abb5-cf3191474725@suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgD3X7P6V8xk6Z0MPg--.4994S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw13Kw4fJrWUZF1UGr45ZFb_yoW5WF4kpr
+        98Gr1UKrZ7ArnrCrn7X3WDJFnxJ3ykCF1kA3yav3W2vryDXr48uFyktF97uFyrAF1Sq39F
+        yr4qqF9I934UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 03:25:57AM +0800, Alan Huang wrote:
-> > 2023年8月4日 00:01，Joel Fernandes <joel@joelfernandes.org> 写道：
-> > On Thu, Aug 3, 2023 at 9:36 AM Alan Huang <mmpgouride@gmail.com> wrote:
-> >>> 2023年8月3日 下午8:35，Joel Fernandes <joel@joelfernandes.org> 写道：
-> >>>> On Aug 3, 2023, at 8:09 AM, Alan Huang <mmpgouride@gmail.com> wrote:
-> >>>>> 2023年8月3日 11:24，Joel Fernandes (Google) <joel@joelfernandes.org> 写道：
-> >>>>> Add a detailed note to explain the potential side effects of
-> >>>>> plain-accessing the gp pointer using a plain load, without using the
-> >>>>> rcu_dereference() macros; which might trip neighboring code that does
-> >>>>> use rcu_dereference().
-> >>>>> 
-> >>>>> I haven't verified this with a compiler, but this is what I gather from
-> >>>>> the below link using Will's experience with READ_ONCE().
-> >>>>> 
-> >>>>> Link: https://lore.kernel.org/all/20230728124412.GA21303@willie-the-truck/
-> >>>>> Cc: Will Deacon <will@kernel.org>
-> >>>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >>>>> ---
-> >>>>> .../RCU/Design/Requirements/Requirements.rst  | 32 +++++++++++++++++++
-> >>>>> 1 file changed, 32 insertions(+)
-> >>>>> 
-> >>>>> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> >>>>> index f3b605285a87..e0b896d3fb9b 100644
-> >>>>> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> >>>>> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> >>>>> @@ -376,6 +376,38 @@ mechanism, most commonly locking or reference counting
-> >>>>> .. |high-quality implementation of C11 memory_order_consume [PDF]| replace:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
-> >>>>> .. _high-quality implementation of C11 memory_order_consume [PDF]: http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
-> >>>>> 
-> >>>>> +Note that, there can be strange side effects (due to compiler optimizations) if
-> >>>>> +``gp`` is ever accessed using a plain load (i.e. without ``READ_ONCE()`` or
-> >>>>> +``rcu_dereference()``) potentially hurting any succeeding
-> >>>>> +``rcu_dereference()``. For example, consider the code:
-> >>>>> +
-> >>>>> +   ::
-> >>>>> +
-> >>>>> +       1 bool do_something_gp(void)
-> >>>>> +       2 {
-> >>>>> +       3   void *tmp;
-> >>>>> +       4   rcu_read_lock();
-> >>>>> +       5   tmp = gp; // Plain-load of GP.
-> >>>>> +       6   printk("Point gp = %p\n", tmp);
-> >>>>> +       7
-> >>>>> +       8   p = rcu_dereference(gp);
-> >>>>> +       9   if (p) {
-> >>>>> +      10     do_something(p->a, p->b);
-> >>>>> +      11     rcu_read_unlock();
-> >>>>> +      12     return true;
-> >>>>> +      13   }
-> >>>>> +      14   rcu_read_unlock();
-> >>>>> +      15   return false;
-> >>>>> +      16 }
-> >>>>> +
-> >>>>> +The behavior of plain accesses involved in a data race is non-deterministic in
-> >>>>> +the face of compiler optimizations. Since accesses to the ``gp`` pointer is
-> >>>>> +by-design a data race, the compiler could trip this code by caching the value
-> >>>>> +of ``gp`` into a register in line 5, and then using the value of the register
-> >>>>> +to satisfy the load in line 10. Thus it is important to never mix
-> >>>> 
-> >>>> Will’s example is:
-> >>>> 
-> >>>>   // Assume *ptr is initially 0 and somebody else writes it to 1
-> >>>>   // concurrently
-> >>>> 
-> >>>>   foo = *ptr;
-> >>>>   bar = READ_ONCE(*ptr);
-> >>>>   baz = *ptr;
-> >>>> 
-> >>>> Then the compiler is within its right to reorder it to:
-> >>>> 
-> >>>>  foo = *ptr;
-> >>>>  baz = *ptr;
-> >>>>  bar = READ_ONCE(*ptr);
-> >>>> 
-> >>>> So, the result foo == baz == 0 but bar == 1 is perfectly legal.
-> >>> 
-> >>> Yes, a bad outcome is perfectly legal amidst data race. Who said it is not legal?
-> >> 
-> >> My understanding is that it is legal even without data race, and the compiler only keeps the order of volatile access.
-> > 
-> > Yes, but I can bet on it the author of the code would not have
-> > intended such an outcome, if they did then Will wouldn't have been
-> > debugging it ;-). That's why I called it a bad outcome. The goal of
-> > this patch is to document such a possible unintentional outcome.
-> > 
-> >>>> But the example here is different,
-> >>> 
-> >>> That is intentional. Wills discussion partially triggered this. Though I am wondering
-> >>> if we should document that as well.
-> >>> 
-> >>>> the compiler can not use the value loaded from line 5
-> >>>> unless the compiler can deduce that the tmp is equals to p in which case the address dependency
-> >>>> doesn’t exist anymore.
-> >>>> 
-> >>>> What am I missing here?
-> >>> 
-> >>> Maybe you are trying to rationalize too much that the sequence mentioned cannot result
-> >>> in a counter intuitive outcome like I did?
-> >>> 
-> >>> The point AFAIU is not just about line 10 but that the compiler can replace any of the
-> >>> lines after the plain access with the cached value.
-> >> 
-> >> Well, IIUC, according to the C standard, the compiler can do anything if there is a data race (undefined behavior).
-> >> 
-> >> However, what if a write is not protected with WRITE_ONCE and the read is marked with READ_ONCE?
-> >> That’s also a data race, right? But the kernel considers it is Okay if the write is machine word aligned.
-> > 
-> > Yes, but there is a compiler between the HLL code and what the
-> > processor sees which can tear the write. How can not using
-> > WRITE_ONCE() prevent store-tearing? See [1]. My understanding is that
-> > it is OK only if the reader did a NULL check. In that case the torn
+
+
+On 2023/8/3 18:34, Vlastimil Babka wrote:
+> On 8/3/23 12:17, thunder.leizhen@huaweicloud.com wrote:
+>> From: Zhen Lei <thunder.leizhen@huawei.com>
+>>
+>> The contents of the slab object may contain some magic words and other
+>> useful information that may be helpful in locating problems such as
+>> memory corruption and use-after-free.
+>>
+>> To avoid print flooding, dump up to "16 * sizeof(int) = 64" bytes
+>> centered on argument 'ojbect'.
+>>
+>> For example:
+>> slab kmalloc-64 start ffff4043802d8b40 pointer offset 24 size 64
+>> [8b40]: 12345678 00000000 8092d000 ffff8000
+>> [8b50]: 00101000 00000000 8199ee00 ffff4043
+>> [8b60]: 00000000 00000000 00000000 00000100
+>> [8b70]: 00000000 9abcdef0 a8744de4 ffffc7fe
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  mm/slab_common.c | 30 +++++++++++++++++++++++++++---
+>>  1 file changed, 27 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/slab_common.c b/mm/slab_common.c
+>> index ee6ed6dd7ba9fa5..0232de9a3b29cf5 100644
+>> --- a/mm/slab_common.c
+>> +++ b/mm/slab_common.c
+>> @@ -553,7 +553,7 @@ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *
+>>  bool kmem_dump_obj(void *object)
+>>  {
+>>  	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
+>> -	int i;
+>> +	int i, object_size = 0;
+>>  	struct slab *slab;
+>>  	unsigned long ptroffset;
+>>  	struct kmem_obj_info kp = { };
+>> @@ -580,12 +580,36 @@ bool kmem_dump_obj(void *object)
+>>  		ptroffset = ((char *)object - (char *)kp.kp_objp) - kp.kp_data_offset;
+>>  		pr_cont(" pointer offset %lu", ptroffset);
+>>  	}
+>> -	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size)
+>> -		pr_cont(" size %u", kp.kp_slab_cache->object_size);
+>> +	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size) {
+>> +		object_size = kp.kp_slab_cache->object_size;
+>> +		pr_cont(" size %u", object_size);
+>> +	}
+>>  	if (kp.kp_ret)
+>>  		pr_cont(" allocated at %pS\n", kp.kp_ret);
+>>  	else
+>>  		pr_cont("\n");
+>> +
+>> +	/* Dump a small piece of memory centered on 'object' */
+>> +	if (kp.kp_objp && object_size) {
+>> +		int *p = object, n = 16;
+>> +
+>> +		p += n / 2;
+>> +		if ((void *)p > kp.kp_objp + object_size)
+>> +			p = kp.kp_objp + object_size;
+>> +
+>> +		p -= n;
+>> +		if ((void *)p < kp.kp_objp)
+>> +			p = kp.kp_objp;
+>> +
+>> +		n = min_t(int, object_size / sizeof(int), n);
+>> +		for (i = 0; i < n; i++, p++) {
+>> +			if (i % 4 == 0)
+>> +				pr_info("[%04lx]:", 0xffff & (unsigned long)p);
+>> +			pr_cont(" %08x", *p);
+>> +		}
+>> +		pr_cont("\n");
 > 
-> Yes, a write-write data race where the value is the same is also fine.
-> 
-> But they are still data race, if the compiler is within its right to do anything it likes (due to data race),
-> we still need WRITE_ONCE() in these cases, though it’s semantically safe.
-> 
-> IIUC, even with _ONCE(), the compiler is within its right do anything according to the standard (at least before the upcoming C23), because the standard doesn’t consider a volatile access to be atomic.
+> There's a print_hex_dump() for this, see how it's used from e.g. __dump_page().
 
-Volatile accesses are not specified very well in the standard.  However,
-as a practical matter, compilers that wish to be able to device drivers
-(whether in kernels or userspace applications) must compile those volatile
-accesses in such a way to allow reliable device drivers to be written.
+Thank you very much. The code has suddenly been a lot simpler.
 
-> However, the kernel consider the volatile access to be atomic, right?
+However, print_hex_dump() can be further enhanced, I will add a patch, let's
+discuss it together.
 
-The compiler must therefore act as if a volatile access to an aligned
-machine-word size location is atomic.  To see this, consider accesses
-to memory that is shared by a device driver and that device's firmware,
-both of which are written in either C or C++.
-
-Does that help?
-
-							Thanx, Paul
-
-> BTW, line 5 in the example is likely to be optimized away. And yes, the compiler can cache the value loaded from line 5 from the perspective of undefined behavior, even if I believe it would be a compiler bug from the perspective of kernel.
-> 
-> > result will not change the semantics of the program. But otherwise,
-> > that's bad.
-> > 
-> > [1] https://lwn.net/Articles/793253/#Store%20Tearing
-> > 
-> > thanks,
-> > 
-> > - Joel
-> > 
-> > 
-> >> 
-> >>> 
-> >>> Thanks.
-> >>> 
-> >>> 
-> >>> 
-> >>>> 
-> >>>>> +plain accesses of a memory location with rcu_dereference() of the same memory
-> >>>>> +location, in code involved in a data race.
-> >>>>> +
-> >>>>> In short, updaters use rcu_assign_pointer() and readers use
-> >>>>> rcu_dereference(), and these two RCU API elements work together to
-> >>>>> ensure that readers have a consistent view of newly added data elements.
-> >>>>> --
-> >>>>> 2.41.0.585.gd2178a4bd4-goog
 > 
 > 
+>> +	}
+>> +
+>>  	for (i = 0; i < ARRAY_SIZE(kp.kp_stack); i++) {
+>>  		if (!kp.kp_stack[i])
+>>  			break;
+> 
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
+
