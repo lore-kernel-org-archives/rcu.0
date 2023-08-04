@@ -2,64 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFC0AC001DB
-	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 16:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D21ACC001DE
+	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 17:03:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjHDQd0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Aug 2023 12:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
+        id S231652AbjHDRDR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Aug 2023 13:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjHDQdZ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:33:25 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51A8E7;
-        Fri,  4 Aug 2023 09:33:23 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b8b2b60731so15817085ad.2;
-        Fri, 04 Aug 2023 09:33:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691166803; x=1691771603;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0zUbJG0vNvOSjbaG5BW1E6w7zVIXM3WGSGO6CRILvPk=;
-        b=gf1ZN7J1Njt17I/hnulTGGLsW+J0Z5NZXPV+XvdQxCkIRh5urgM+6psdsVkAlOyDwO
-         MSPbOWNqRE5bCyO/t+GMUE/+SZJKXVnDct135Sb4YBD2jPuupGDxRpcBXGfU3C3nRxJk
-         k7rDIzRp2wRN5mB3jAf1YWixbI7ofH5Is8i3K3afPXTKfOghoW3qYAy3TUjhliP9sZ4q
-         2cNA1uck+xyKCcxS5OiHKij6ZHLPI9pwiBiXhlysp4/oF4+sYYdNKA0pWzwEjJDvd8nq
-         vrPACOo/fei6SRqLdUAIxMS0wZMFVBkjO7v+TbET9RqnKZkzzMIsbmBcibJ6HMu9KJ6y
-         /N1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691166803; x=1691771603;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0zUbJG0vNvOSjbaG5BW1E6w7zVIXM3WGSGO6CRILvPk=;
-        b=DLKs5Lpk3kv3LfurRdw8oXNJ9vP343BvMGCBs9H1rm2lRE2OttDwVbJu9RDyryRAB4
-         chcRWi9WCt10wfnmxKe5dGnBnmWlFRGc1GyfXWDVDX/kumdkRuz9iRX3rCPl9P0Q8TeE
-         569556lfiHHbRESYlYazap01BUj8TQVLvooduzljPjU3OrwsZHgwU43uOB0nfIEWpenO
-         0C2eKlubVMkyrlSfoqkU7XPlwnbSRZiDTyGh79lwzvM9Oh/KzgnA1melq/dDRsWXQD48
-         CgYaHWup1rojnk+LpHv73z1DBEiliP5bNvqRdOU65uMKqncCTX/OOrtNr7/OoafnBYov
-         Qimg==
-X-Gm-Message-State: AOJu0Yz1DHINUhQWwoq21v312Ki8+FDS5AWrhp+oNtf6ApxYCKbuFIC2
-        iQdQfYIYyhVCPem1GV33VSKSnZ4JmAg=
-X-Google-Smtp-Source: AGHT+IHul1Nv0wZnQ7/SJVYhL7LA+a5xoo2SEKtdh3x2agzpbIWhw44NuHUQvzYGdsoOnXVHWowwaA==
-X-Received: by 2002:a17:902:c246:b0:1bb:b86e:8d6d with SMTP id 6-20020a170902c24600b001bbb86e8d6dmr2054741plg.29.1691166802975;
-        Fri, 04 Aug 2023 09:33:22 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id b14-20020a170902650e00b001bba3650448sm1979650plk.258.2023.08.04.09.33.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Aug 2023 09:33:22 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
- requirements
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <f5652b1a-de71-4881-8825-fedd73544f54@paulmck-laptop>
-Date:   Sat, 5 Aug 2023 00:33:03 +0800
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
+        with ESMTP id S231651AbjHDRDQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Aug 2023 13:03:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60214ED8;
+        Fri,  4 Aug 2023 10:02:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4700E620B6;
+        Fri,  4 Aug 2023 17:02:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B1BC433C7;
+        Fri,  4 Aug 2023 17:02:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691168555;
+        bh=qs+QIUdxIFzWyrOJasFngXnPWrwLq+ttceEWpfXB7gA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Dfobvzeom7UUgAciwwnr1JIJaz0EGNd19anbt3F12V6m7EFWQ7f4DOqLjd1JwyN5F
+         w+laxEkHXag5X+37j3sXmiX0DNLnK9cgXLmd4AZBtKDac936ewuqiwfchAvB0PcFFt
+         2cnOGPBJyYwq6nCW5MGDPu847k4b9AnYSK7NbTIob6sI/0o2gMkNF29qhDE2qUiKkm
+         azct+rjEaAumtoBKHA6dxrSc+PIgAR1HU8I74gQv8ExNBRGe68W96m2XOC8eqfRZeH
+         A+UyRU/6FlphkH0gBLQ3fUvz7rrohF3uwSG3rJayHTg6ek6YOSJSMBZ2MdJt8VuxBA
+         xnJhm6TaPqh5g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2D49ACE0591; Fri,  4 Aug 2023 10:02:35 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 10:02:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Alan Huang <mmpgouride@gmail.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, Will Deacon <will@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -69,102 +48,55 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>,
         Jonathan Corbet <corbet@lwn.net>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DFBE4F45-BF8B-4267-93C7-B085A88BE356@gmail.com>
-References: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
- <148CE02E-BBEC-4D30-9C75-6632A110FFC0@joelfernandes.org>
- <E96297CF-6C81-4BB5-BA5A-6734F6B629F4@gmail.com>
- <CAEXW_YRXA3j3k9VRuZJ7d=yo6__TRpeE6igrQ+GEZiyKtFmUOQ@mail.gmail.com>
- <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
- <f5652b1a-de71-4881-8825-fedd73544f54@paulmck-laptop>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
+Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
+ requirements
+Message-ID: <81d02e70-a05d-4230-9b86-0026d4874ea7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f5652b1a-de71-4881-8825-fedd73544f54@paulmck-laptop>
+ <D594A2D8-0C46-402D-B186-39DE7B65ED61@joelfernandes.org>
+ <b8fd5f26-f101-4b58-aa62-649996b6ac5e@paulmck-laptop>
+ <CAEXW_YQQsFiVqihOXN1pCtvvek4OBmphDR6D4gGFKkd4x9DQxQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YQQsFiVqihOXN1pCtvvek4OBmphDR6D4gGFKkd4x9DQxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Fri, Aug 04, 2023 at 12:17:58PM -0400, Joel Fernandes wrote:
+> [...]
+> > > >> However, the kernel consider the volatile access to be atomic, right?
+> > > >
+> > > > The compiler must therefore act as if a volatile access to an aligned
+> > > > machine-word size location is atomic.  To see this, consider accesses
+> > > > to memory that is shared by a device driver and that device's firmware,
+> > > > both of which are written in either C or C++.
+> > >
+> > > Btw it appears TSAN complaints bitterly on even volatile 4 byte data races.
+> > > Hence we have to explicitly use atomic API for data race accesses in Chrome.
+> >
+> > That might have been a conscious and deliberate choice on the part of
+> > the TSAN guys.  Volatile does not imply any ordering in the standard
+> > (other than the compiler avoiding emitting volatile operations out of
+> > order), but some compilers did emit memory-barrier instructions for
+> > volatile accesses.  Which resulted in a lot of problems when such code
+> > found compilers that did not cause the CPU to order volatile operations.
+> >
+> > So a lot of people decided to thrown the volatile baby out with the
+> > unordered bathwather.  ;-)
+> 
+> Thanks for the input, I think TSAN was indeed worried about
+> memory-ordering even if relaxed ordering was intended. I think there
+> is a way to tell TSAN to shut-up in such situations but in my last
+> Chrome sprint, I just used the atomic API with relaxed ordering and
+> called it a day. :-)
 
->> Yes, a write-write data race where the value is the same is also =
-fine.
->>=20
->> But they are still data race, if the compiler is within its right to =
-do anything it likes (due to data race),
->> we still need WRITE_ONCE() in these cases, though it=E2=80=99s =
-semantically safe.
->>=20
->> IIUC, even with _ONCE(), the compiler is within its right do anything =
-according to the standard (at least before the upcoming C23), because =
-the standard doesn=E2=80=99t consider a volatile access to be atomic.
->=20
-> Volatile accesses are not specified very well in the standard.  =
-However,
-> as a practical matter, compilers that wish to be able to device =
-drivers
-> (whether in kernels or userspace applications) must compile those =
-volatile
-> accesses in such a way to allow reliable device drivers to be written.
->=20
->> However, the kernel consider the volatile access to be atomic, right?
->=20
-> The compiler must therefore act as if a volatile access to an aligned
-> machine-word size location is atomic.  To see this, consider accesses
-> to memory that is shared by a device driver and that device's =
-firmware,
-> both of which are written in either C or C++.
+Fair enough!
 
-I learned these things a few months ago. But still thank you!
+Note that the Linux kernel's version of TSAN, which is KCSAN, does
+interpret volatile accesses more or less as if they were relaxed atomics.
 
-The real problem is that there may be a data race at line 5, so Joel is =
-correct that the compiler
-can cache the value loaded from line 5 according to the standard given =
-that the standard says that
-a data race result in undefined behavior, so the compiler might be =
-allowed to do anything. But from the
-perspective of the kernel, line 5 is likely a diagnostic read, so it=E2=80=
-=99s fine without READ_ONCE() and the
-compiler is not allowed to cache the value.
+So TSAN could change, but I don't have a dog in that fight.  ;-)
 
-This situation is like the volatile access.
-
-Am I missing something?
-
->=20
-> Does that help?
->=20
-> Thanx, Paul
->=20
->> BTW, line 5 in the example is likely to be optimized away. And yes, =
-the compiler can cache the value loaded from line 5 from the perspective =
-of undefined behavior, even if I believe it would be a compiler bug from =
-the perspective of kernel.
->>=20
->>> result will not change the semantics of the program. But otherwise,
->>> that's bad.
->>>=20
->>> [1] https://lwn.net/Articles/793253/#Store%20Tearing
->>>=20
->>> thanks,
->>>=20
->>> - Joel
->>>=20
->>>=20
->>>>=20
->>>>>=20
->>>>> Thanks.
->>>>>=20
->>>>>=20
->>>>>=20
->>>>>>=20
->>>>>>> +plain accesses of a memory location with rcu_dereference() of =
-the same memory
->>>>>>> +location, in code involved in a data race.
->>>>>>> +
->>>>>>> In short, updaters use rcu_assign_pointer() and readers use
->>>>>>> rcu_dereference(), and these two RCU API elements work together =
-to
->>>>>>> ensure that readers have a consistent view of newly added data =
-elements.
->>>>>>> --
->>>>>>> 2.41.0.585.gd2178a4bd4-goog
-
-
+							Thanx, Paul
