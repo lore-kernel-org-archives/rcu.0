@@ -2,142 +2,162 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F990C41513
-	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 17:31:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D239DC001DF
+	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 18:02:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjHDRbO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Aug 2023 13:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
+        id S229566AbjHDSCu (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Aug 2023 14:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbjHDRbM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:31:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE093C25;
-        Fri,  4 Aug 2023 10:31:09 -0700 (PDT)
+        with ESMTP id S229447AbjHDSCt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Aug 2023 14:02:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E09122;
+        Fri,  4 Aug 2023 11:02:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B2110620BC;
-        Fri,  4 Aug 2023 17:31:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08D1AC433C8;
-        Fri,  4 Aug 2023 17:31:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AC43C620DD;
+        Fri,  4 Aug 2023 18:02:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B782C433C7;
+        Fri,  4 Aug 2023 18:02:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691170268;
-        bh=svLxVh9EeYIhyoGvToGfRdn37hDgyQdFwVgjw2oh8nQ=;
+        s=k20201202; t=1691172167;
+        bh=2TvmXhNnlzrlxfa1YleRyPaLS686Vc214nW78iEHJIE=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PIUqNuaYxNoZft5tJIhSnXfn7eaWCdwyqPXcwCtmloo2Z5chJXv8A8XcKrcP/Xh1q
-         4H/QW+fk25Ia3xV1e/Uo+QeydoCgr5/UNtVbZmgsbo+yIA2nmDuyolv4bzwWMIKzHD
-         q7mx3rdHg1DRuUo8DlH1q7Cz46gNuzK6NyaUM67HawGWpqI/l2QMfyc4g2m/BmJC3S
-         90WGVQJ4aQEACno7QEdLmnFHS6wGBbOqVUkfJu/SSsZS+m2j8p5TH77DbU1XaZgnM3
-         KshU0IaBDpQRDGfiyrAx1B9u9PAZw6un+5gsC5Ng6vKoYGyPEiawjpM4vDwAB+sg49
-         DoUV+5BnZ3M8A==
+        b=DLoyn0XMIWLZLuaWV44AG7aZS8BoWqfiBwaq9zIq7p56W3ckyaHI2bJQL0ZBBeORC
+         bGY5sgnQq7XjgRDxVIx96myD/7xHQALOKYSZpRdKgO0ckkBmIY8z+SGyEYfPF0X3HN
+         pjzue1NE6JCEIVb5QdHw9KFveO2jtdspoBrS0a/d39yC/uPF+RS5CRijUeo1UmHil2
+         M1ezE8yB2VjQ6rA3mV3+qtLr5CD3Sf8v4yGtwa+IzVVdiMuvuWOPoKe0mF5vb5AqmO
+         Q3Qr06373/9rmjcHWZcNAAT3HWfZbBt4lWcocHq6AFMKlly4GI3NpvI2+cjZfd0lLr
+         gQb6Qh065jrgg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 85710CE0591; Fri,  4 Aug 2023 10:31:07 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 10:31:07 -0700
+        id 94D87CE0591; Fri,  4 Aug 2023 11:02:46 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:02:46 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     thunder.leizhen@huaweicloud.com
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH v6 0/5] rcu: Dump memory object info if callback function
- is invalid
-Message-ID: <7af1d3d8-2d51-40a8-8021-0141e4bf1a0e@paulmck-laptop>
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 2/2] docs: memory-barriers: Add note on plain-accesses to
+ address-dependency barriers
+Message-ID: <dbde9441-e749-46fa-b842-8d2a9390bf3c@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
+References: <20230803032408.2514989-1-joel@joelfernandes.org>
+ <20230803032408.2514989-2-joel@joelfernandes.org>
+ <626d1b48-de6a-4a0b-95d3-3ac438878757@paulmck-laptop>
+ <20230804051127.GA3860381@google.com>
+ <3f53035f-3251-4531-b9b9-e12f371c1051@paulmck-laptop>
+ <20230804162745.GA256944@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
+In-Reply-To: <20230804162745.GA256944@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 05:11:30PM +0800, thunder.leizhen@huaweicloud.com wrote:
-> From: Zhen Lei <thunder.leizhen@huawei.com>
+On Fri, Aug 04, 2023 at 04:27:45PM +0000, Joel Fernandes wrote:
+> On Fri, Aug 04, 2023 at 06:52:32AM -0700, Paul E. McKenney wrote:
+> > On Fri, Aug 04, 2023 at 05:11:27AM +0000, Joel Fernandes wrote:
+> > > On Thu, Aug 03, 2023 at 11:52:06AM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Aug 03, 2023 at 03:24:07AM +0000, Joel Fernandes (Google) wrote:
+> > > > > The compiler has the ability to cause misordering by destroying
+> > > > > address-dependency barriers if comparison operations are used. Add a
+> > > > > note about this to memory-barriers.txt and point to rcu-dereference.rst
+> > > > > for more information.
+> > > > > 
+> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > ---
+> > > > >  Documentation/memory-barriers.txt | 5 +++++
+> > > > >  1 file changed, 5 insertions(+)
+> > > > > 
+> > > > > diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+> > > > > index 06e14efd8662..acc8ec5ce563 100644
+> > > > > --- a/Documentation/memory-barriers.txt
+> > > > > +++ b/Documentation/memory-barriers.txt
+> > > > > @@ -435,6 +435,11 @@ Memory barriers come in four basic varieties:
+> > > > >       variables such as READ_ONCE() and rcu_dereference() provide implicit
+> > > > >       address-dependency barriers.
+> > > > >  
+> > > > > +     [!] Note that address dependency barriers can be destroyed by comparison
+> > > > > +     of a pointer obtained by a marked accessor such as READ_ONCE() or
+> > > > > +     rcu_dereference() with some value.  For an example of this, see
+> > > > > +     rcu_dereference.rst (part where the comparison of pointers is discussed).
+> > > > 
+> > > > Hmmm...
+> > > > 
+> > > > Given that this is in a section marked "historical" (for the old
+> > > > smp_read_barrier_depends() API), why not instead add a pointer to
+> > > > Documentation/RCU/rcu_dereference.rst to the beginning of the section,
+> > > > noted as the updated material?
+> > > 
+> > > Sounds good. There's also another section in the same file on Address
+> > > dependency barriers (also marked historical). So something like the
+> > > following?
+> > 
+> > Given a Signed-off-by and so forth, I would be happy to take this one.
 > 
-> v5 --> v6:
-> 1. Use print_hex_dump() to dump the memory of slab object.
-> 2. Add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
-> 3. Minimize the output width of the offset
+> Thank you for helping me improve the docs, here it goes:
 > 
-> v4 --> v5:
-> 1. Add Reviewed-by Acked-by for patch 1/3
-> 2. Add patch 3/3:
->    mm: Dump the memory of slab object in kmem_dump_obj()
+> ---8<-----------------------
 > 
-> v3 --> v4:
-> 1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
->    as vmalloc_dump_obj().
-> 2. In kernel/rcu/rcu.h
-> -#include <linux/mm.h>
-> +#include <linux/slab.h>
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Subject: [PATCH] docs: memory-barriers: Add note on compiler transformation
+>  and address deps
 > 
-> v2 --> v3:
-> 1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
->    more than 97.5%, and vmalloc accounts for less than 1%. So change call
->    mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
->    avoid the potential deadlock risk of vmalloc_dump_obj().
-> -		mem_dump_obj(rhp);
-> +		if (kmem_valid_obj(rhp))
-> +			kmem_dump_obj(rhp);
+> The compiler has the ability to cause misordering by destroying
+> address-dependency barriers if comparison operations are used. Add a
+> note about this to memory-barriers.txt in the beginning of both the
+> historical address-dependency sections and point to rcu-dereference.rst
+> for more information.
 > 
->    The discussion about vmap_area_lock deadlock in v2:
->    https://lkml.org/lkml/2022/11/11/493
-> 
-> 2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
->    when CONFIG_PRINTK=n.
-> 
-> v1 --> v2:
-> 1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
-> 2. Paul E. McKenney helped me update the commit message, thanks.
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-I would be happy to take the patch that Matthew and Vlastimil are happy
-with, and also the one against RCU.  But unless you tell me otherwise,
-I will assume that you would prefer me to wait until the entire series
-is ready.  The best way to tell me otherwise is of course to resend just
-those two patches in their own series.  ;-)
+Queued and pushed, thank you!
 
 							Thanx, Paul
 
-> Zhen Lei (5):
->   hexdump: add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
->   hexdump: minimize the output width of the offset
->   mm: Remove kmem_valid_obj()
->   mm: Dump the memory of slab object in kmem_dump_obj()
->   rcu: Dump memory object info if callback function is invalid
+> ---
+>  Documentation/memory-barriers.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
->  include/linux/printk.h |  1 +
->  include/linux/slab.h   |  5 ++--
->  kernel/rcu/rcu.h       |  7 +++++
->  kernel/rcu/srcutiny.c  |  1 +
->  kernel/rcu/srcutree.c  |  1 +
->  kernel/rcu/tasks.h     |  1 +
->  kernel/rcu/tiny.c      |  1 +
->  kernel/rcu/tree.c      |  1 +
->  lib/hexdump.c          | 17 +++++++++--
->  mm/slab_common.c       | 68 ++++++++++++++++++++++--------------------
->  mm/util.c              |  4 +--
->  11 files changed, 67 insertions(+), 40 deletions(-)
-> 
+> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+> index acc8ec5ce563..ba50220716ca 100644
+> --- a/Documentation/memory-barriers.txt
+> +++ b/Documentation/memory-barriers.txt
+> @@ -396,6 +396,10 @@ Memory barriers come in four basic varieties:
+>  
+>  
+>   (2) Address-dependency barriers (historical).
+> +     [!] This section is marked as HISTORICAL: For more up-to-date
+> +     information, including how compiler transformations related to pointer
+> +     comparisons can sometimes cause problems, see
+> +     Documentation/RCU/rcu_dereference.rst.
+>  
+>       An address-dependency barrier is a weaker form of read barrier.  In the
+>       case where two loads are performed such that the second depends on the
+> @@ -561,6 +565,9 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
+>  
+>  ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
+>  ----------------------------------------
+> +[!] This section is marked as HISTORICAL: For more up-to-date information,
+> +including how compiler transformations related to pointer comparisons can
+> +sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
+>  
+>  As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for
+>  DEC Alpha, which means that about the only people who need to pay attention
 > -- 
-> 2.34.1
+> 2.41.0.585.gd2178a4bd4-goog
 > 
