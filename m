@@ -2,157 +2,142 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC00AC001DB
-	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 17:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F990C41513
+	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 17:31:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbjHDR1p (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Aug 2023 13:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
+        id S231216AbjHDRbO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Aug 2023 13:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjHDR1o (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:27:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3E7212D;
-        Fri,  4 Aug 2023 10:27:43 -0700 (PDT)
+        with ESMTP id S232287AbjHDRbM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Aug 2023 13:31:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE093C25;
+        Fri,  4 Aug 2023 10:31:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BC513620D1;
-        Fri,  4 Aug 2023 17:27:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ACA1C433C7;
-        Fri,  4 Aug 2023 17:27:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B2110620BC;
+        Fri,  4 Aug 2023 17:31:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08D1AC433C8;
+        Fri,  4 Aug 2023 17:31:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691170062;
-        bh=AYANuhJfkDjAfC3MryJ2A7DPDDjZNIDvTaz4RAUTOpY=;
+        s=k20201202; t=1691170268;
+        bh=svLxVh9EeYIhyoGvToGfRdn37hDgyQdFwVgjw2oh8nQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rkC7cPXnep9FLlFMDySqsRPneYVihwtFwRZSsd8LYlIjnvLDzJahYx8fWNJXmdja4
-         i49pJRPuRXKCmeg5HOsbyFVcS3MdhDS5WTCZkIcMPfKi6H0cDAHka0t53ePVVhy3w2
-         AOwrYpMdjbmjth+HAXZmPFRd4esoxrR9NNhNXiEW83mI7MSrq3hk2Zd+cPVMVTZUwT
-         yPxvhrR4shdcQQhB+aJME9qUABrjnN6eA5gMd1WTcIRAz7SD4x0ioQ+V3OrA2NiQUt
-         BbyoWJRGje+fYQMKk9gUFVN5qXW5e+cIGmkuCueT0JYjK7KbQP4mF4WrpfXt0t9p9A
-         HImuRgYMh6qSw==
+        b=PIUqNuaYxNoZft5tJIhSnXfn7eaWCdwyqPXcwCtmloo2Z5chJXv8A8XcKrcP/Xh1q
+         4H/QW+fk25Ia3xV1e/Uo+QeydoCgr5/UNtVbZmgsbo+yIA2nmDuyolv4bzwWMIKzHD
+         q7mx3rdHg1DRuUo8DlH1q7Cz46gNuzK6NyaUM67HawGWpqI/l2QMfyc4g2m/BmJC3S
+         90WGVQJ4aQEACno7QEdLmnFHS6wGBbOqVUkfJu/SSsZS+m2j8p5TH77DbU1XaZgnM3
+         KshU0IaBDpQRDGfiyrAx1B9u9PAZw6un+5gsC5Ng6vKoYGyPEiawjpM4vDwAB+sg49
+         DoUV+5BnZ3M8A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C4316CE0591; Fri,  4 Aug 2023 10:27:41 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 10:27:41 -0700
+        id 85710CE0591; Fri,  4 Aug 2023 10:31:07 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 10:31:07 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
+To:     thunder.leizhen@huaweicloud.com
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
- requirements
-Message-ID: <c74dd105-cec6-468e-b97e-b22434fa0176@paulmck-laptop>
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
+Subject: Re: [PATCH v6 0/5] rcu: Dump memory object info if callback function
+ is invalid
+Message-ID: <7af1d3d8-2d51-40a8-8021-0141e4bf1a0e@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
- <148CE02E-BBEC-4D30-9C75-6632A110FFC0@joelfernandes.org>
- <E96297CF-6C81-4BB5-BA5A-6734F6B629F4@gmail.com>
- <CAEXW_YRXA3j3k9VRuZJ7d=yo6__TRpeE6igrQ+GEZiyKtFmUOQ@mail.gmail.com>
- <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
- <f5652b1a-de71-4881-8825-fedd73544f54@paulmck-laptop>
- <DFBE4F45-BF8B-4267-93C7-B085A88BE356@gmail.com>
+References: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DFBE4F45-BF8B-4267-93C7-B085A88BE356@gmail.com>
+In-Reply-To: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 12:33:03AM +0800, Alan Huang wrote:
+On Fri, Aug 04, 2023 at 05:11:30PM +0800, thunder.leizhen@huaweicloud.com wrote:
+> From: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> >> Yes, a write-write data race where the value is the same is also fine.
-> >> 
-> >> But they are still data race, if the compiler is within its right to do anything it likes (due to data race),
-> >> we still need WRITE_ONCE() in these cases, though it’s semantically safe.
-> >> 
-> >> IIUC, even with _ONCE(), the compiler is within its right do anything according to the standard (at least before the upcoming C23), because the standard doesn’t consider a volatile access to be atomic.
-> > 
-> > Volatile accesses are not specified very well in the standard.  However,
-> > as a practical matter, compilers that wish to be able to device drivers
-> > (whether in kernels or userspace applications) must compile those volatile
-> > accesses in such a way to allow reliable device drivers to be written.
-> > 
-> >> However, the kernel consider the volatile access to be atomic, right?
-> > 
-> > The compiler must therefore act as if a volatile access to an aligned
-> > machine-word size location is atomic.  To see this, consider accesses
-> > to memory that is shared by a device driver and that device's firmware,
-> > both of which are written in either C or C++.
+> v5 --> v6:
+> 1. Use print_hex_dump() to dump the memory of slab object.
+> 2. Add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+> 3. Minimize the output width of the offset
 > 
-> I learned these things a few months ago. But still thank you!
+> v4 --> v5:
+> 1. Add Reviewed-by Acked-by for patch 1/3
+> 2. Add patch 3/3:
+>    mm: Dump the memory of slab object in kmem_dump_obj()
 > 
-> The real problem is that there may be a data race at line 5, so Joel is correct that the compiler
-> can cache the value loaded from line 5 according to the standard given that the standard says that
-> a data race result in undefined behavior, so the compiler might be allowed to do anything. But from the
-> perspective of the kernel, line 5 is likely a diagnostic read, so it’s fine without READ_ONCE() and the
-> compiler is not allowed to cache the value.
+> v3 --> v4:
+> 1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
+>    as vmalloc_dump_obj().
+> 2. In kernel/rcu/rcu.h
+> -#include <linux/mm.h>
+> +#include <linux/slab.h>
 > 
-> This situation is like the volatile access.
+> v2 --> v3:
+> 1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+>    more than 97.5%, and vmalloc accounts for less than 1%. So change call
+>    mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+>    avoid the potential deadlock risk of vmalloc_dump_obj().
+> -		mem_dump_obj(rhp);
+> +		if (kmem_valid_obj(rhp))
+> +			kmem_dump_obj(rhp);
 > 
-> Am I missing something?
+>    The discussion about vmap_area_lock deadlock in v2:
+>    https://lkml.org/lkml/2022/11/11/493
+> 
+> 2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
+>    when CONFIG_PRINTK=n.
+> 
+> v1 --> v2:
+> 1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+> 2. Paul E. McKenney helped me update the commit message, thanks.
 
-I think you have it right.
-
-The point is that we are sometimes more concerned about focusing KCSAN
-diagnostics on the core concurrent algorithm, and are willing to take
-the very low risk of messed-up diagnostic output in order to get simpler
-and better KCSAN diagnostics on the main algorithm.
-
-So in that case, we use data_race() on the diagnostics and other markings
-in the main algorithm.
-
-For example, suppose that we had a core algorithm that relied on strict
-locking.  In that case, we want to use unmarked plain C-language accesses
-in the core algorithm, which will allow KCSAN to flag and accesses that
-are not protected by the lock.  But it might be bad for the diagnostic
-code to acquire that lock, as this would suppress diagnostics in the case
-where the lock was held for too long a time period.  Using data_race()
-in the diagnostic code addresses this situation.
+I would be happy to take the patch that Matthew and Vlastimil are happy
+with, and also the one against RCU.  But unless you tell me otherwise,
+I will assume that you would prefer me to wait until the entire series
+is ready.  The best way to tell me otherwise is of course to resend just
+those two patches in their own series.  ;-)
 
 							Thanx, Paul
 
-
-> > Does that help?
-> > 
-> > Thanx, Paul
-> > 
-> >> BTW, line 5 in the example is likely to be optimized away. And yes, the compiler can cache the value loaded from line 5 from the perspective of undefined behavior, even if I believe it would be a compiler bug from the perspective of kernel.
-> >> 
-> >>> result will not change the semantics of the program. But otherwise,
-> >>> that's bad.
-> >>> 
-> >>> [1] https://lwn.net/Articles/793253/#Store%20Tearing
-> >>> 
-> >>> thanks,
-> >>> 
-> >>> - Joel
-> >>> 
-> >>> 
-> >>>> 
-> >>>>> 
-> >>>>> Thanks.
-> >>>>> 
-> >>>>> 
-> >>>>> 
-> >>>>>> 
-> >>>>>>> +plain accesses of a memory location with rcu_dereference() of the same memory
-> >>>>>>> +location, in code involved in a data race.
-> >>>>>>> +
-> >>>>>>> In short, updaters use rcu_assign_pointer() and readers use
-> >>>>>>> rcu_dereference(), and these two RCU API elements work together to
-> >>>>>>> ensure that readers have a consistent view of newly added data elements.
-> >>>>>>> --
-> >>>>>>> 2.41.0.585.gd2178a4bd4-goog
+> Zhen Lei (5):
+>   hexdump: add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+>   hexdump: minimize the output width of the offset
+>   mm: Remove kmem_valid_obj()
+>   mm: Dump the memory of slab object in kmem_dump_obj()
+>   rcu: Dump memory object info if callback function is invalid
 > 
+>  include/linux/printk.h |  1 +
+>  include/linux/slab.h   |  5 ++--
+>  kernel/rcu/rcu.h       |  7 +++++
+>  kernel/rcu/srcutiny.c  |  1 +
+>  kernel/rcu/srcutree.c  |  1 +
+>  kernel/rcu/tasks.h     |  1 +
+>  kernel/rcu/tiny.c      |  1 +
+>  kernel/rcu/tree.c      |  1 +
+>  lib/hexdump.c          | 17 +++++++++--
+>  mm/slab_common.c       | 68 ++++++++++++++++++++++--------------------
+>  mm/util.c              |  4 +--
+>  11 files changed, 67 insertions(+), 40 deletions(-)
+> 
+> -- 
+> 2.34.1
 > 
