@@ -2,61 +2,56 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF955C001DF
-	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 15:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE74FC001DE
+	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 16:15:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbjHDPrf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Aug 2023 11:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S229782AbjHDQP6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Aug 2023 12:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbjHDPre (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:47:34 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D485C212D;
-        Fri,  4 Aug 2023 08:47:29 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bbf8cb61aeso16251485ad.2;
-        Fri, 04 Aug 2023 08:47:29 -0700 (PDT)
+        with ESMTP id S229513AbjHDQP5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Aug 2023 12:15:57 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C465A1BDD
+        for <rcu@vger.kernel.org>; Fri,  4 Aug 2023 09:15:55 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b9b9f0387dso35806391fa.0
+        for <rcu@vger.kernel.org>; Fri, 04 Aug 2023 09:15:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691164049; x=1691768849;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1691165754; x=1691770554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8ctInikzj3f4VpN981g0mMHNMH1CbLINvv2oH+wydFI=;
-        b=JYTWbas5LEdXilRfPo6X+gqolIBnQ6MBx32VolWDIsJGJFBkx187sI0DHIMtztbUBO
-         re/CgVZQXMeZDRl8/SMXYIplCydyGN+lFpv7PwUpvWIGW7tcTnMgRcUlN9UfmwIYgahG
-         tuJdRJK14XWPS8eW+nO9ZJUc1zlcDC9IGD4jInbslWUgZndhzX/GkN0sFwPcCozxu5Ft
-         39K+ODuTFqYtmIuWUD5LZ26+0GqCnay6e7Dbf27Yoo3F4XeKBHxsdmtcUBsQ04VlTEFM
-         QqZQpbybpdpXGyQB4AVQ1RN2Jj0RhxJuTiXudICOK5l4TwnuHxVNPmAFEwohf+S38350
-         N5uQ==
+        bh=BTBUb3xh/xSekY6RSb7j+KpzPBpu+PCrs+mM2PREP98=;
+        b=N4DmQlDgCgVlj+OgQMCL68oTHRJXSLJ6h5w8IJMvPcG7q+kTyomUERidAwgdwsfs2N
+         GYRFJHiVfBHl3vYIIVmZVPtwH8aDTjIGOpAiuhKCoC8NyfW+FNXy4ggW7WY/HMsa0tnA
+         F6nLx8VxtedW54h1lDvDn84Mug2PT5fT8GHhE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691164049; x=1691768849;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691165754; x=1691770554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8ctInikzj3f4VpN981g0mMHNMH1CbLINvv2oH+wydFI=;
-        b=krZfRD0V0RVm+dGxCU1MXHY3buNubi2ZRxdhtu4+RxoiY97+gvArZI/f94lQhtWCsM
-         Onp17qZ1mSBfEqdT1U2GC6512q+B8UagvQ5LrXtxAjXZ3bSGr9DMBkLWyA1Vu58Rs/dp
-         bI/BZTzYG6GTvQDOj3MaiY+J9shhFFclJ0KkODpqcwUvRF/OG9UHh1yHwqHmN9xNSfXF
-         I1b9e5b87DHTERLmqnpBEUFD57lHrlCwl7vAnQk68zwXabkf5AsikDF6da/PR63/3VLa
-         xT/u5Yov6AV7TdqQMwz8WiezZk4J5DA4r2VrTIq6Kos28uVHNhMORjWg/NJtOiv4f4Dx
-         DHfg==
-X-Gm-Message-State: AOJu0YwAl44MlKF4o4MFUXmsKqBn1ALcBfX019PG7nuV9nfaDcUdUcAl
-        /PCsyMeCRdNAt43dOltsvkE=
-X-Google-Smtp-Source: AGHT+IHK1+GmGTe5McxKKfiRHWuia9yCNRvRVTipWjE0B5SPJN6DbVW0YYSfmF7ikfMX18/fWFw9ug==
-X-Received: by 2002:a17:902:ecc8:b0:1bb:32de:95c5 with SMTP id a8-20020a170902ecc800b001bb32de95c5mr2297892plh.65.1691164049245;
-        Fri, 04 Aug 2023 08:47:29 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id p8-20020a170902a40800b001b8b73da7b1sm1914812plq.227.2023.08.04.08.47.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Aug 2023 08:47:28 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
- requirements
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org>
-Date:   Fri, 4 Aug 2023 23:47:07 +0800
+        bh=BTBUb3xh/xSekY6RSb7j+KpzPBpu+PCrs+mM2PREP98=;
+        b=IyCgwlJRH//znlm0X+civf44l5XFLfZ5wjoPyawiQ2oAylpSrx9dUh+xYLyw4HChgb
+         hGUDWxHgrAaw0wHnQr/eib5gWaDZH9NNFXTRuBbfBnbv5QEkTk0C/ZkB2B81ZT3V1aab
+         1q+EnVXwuKjCUFZ2X49qzjFmCDJqY5AlLrW8t3RyMrwddR+Vj3K66SX5MLUtSzWKXq37
+         XY7aeJ4gRvSHeECrT+ySD5GaWu00Pc6ScEGVpUHtS9yTYkDvdxqVE2IHzUK9rkCGvwMM
+         h+5ENnXqz50XzTnyhew4j/WJTWAgA3g4MasoamDKyfPL2Yz6/uGyxlUuf4JiKS2b45eK
+         /vLQ==
+X-Gm-Message-State: AOJu0Yw5ZfQ10fv2cSc7g2evwDJ127amUNYy6Efwhe+mMjqlA4wd9W9U
+        YqN3CBYzxGn6s0XGMsuV+BuzVLrezkKwnqv1umHHFw==
+X-Google-Smtp-Source: AGHT+IHQCcgsXJrB40IvL18uKSefZUicbvmvqkVOw7aqPOFqbOthOu0+QpZEGWJSGc3XA5Av3QydXUr6or3RxSqiY+A=
+X-Received: by 2002:a2e:95cf:0:b0:2b6:a763:5d13 with SMTP id
+ y15-20020a2e95cf000000b002b6a7635d13mr1812635ljh.27.1691165753842; Fri, 04
+ Aug 2023 09:15:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
+ <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org> <E6EDDDE7-5D59-4284-931E-23E3636C8CF0@gmail.com>
+In-Reply-To: <E6EDDDE7-5D59-4284-931E-23E3636C8CF0@gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 4 Aug 2023 12:15:42 -0400
+Message-ID: <CAEXW_YQez6yNzwLXg_mbKN9pZV1=EzO7-X5s5GLj_F34P6c+kw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to requirements
+To:     Alan Huang <mmpgouride@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         Will Deacon <will@kernel.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -69,128 +64,91 @@ Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>,
         Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <E6EDDDE7-5D59-4284-931E-23E3636C8CF0@gmail.com>
-References: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
- <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->=20
->>>=20
->>>>>> But the example here is different,
->>>>>=20
->>>>> That is intentional. Wills discussion partially triggered this. =
-Though I am wondering
->>>>> if we should document that as well.
->>>>>=20
->>>>>> the compiler can not use the value loaded from line 5
->>>>>> unless the compiler can deduce that the tmp is equals to p in =
-which case the address dependency
->>>>>> doesn=E2=80=99t exist anymore.
->>>>>>=20
->>>>>> What am I missing here?
->>>>>=20
->>>>> Maybe you are trying to rationalize too much that the sequence =
-mentioned cannot result
->>>>> in a counter intuitive outcome like I did?
->>>>>=20
->>>>> The point AFAIU is not just about line 10 but that the compiler =
-can replace any of the
->>>>> lines after the plain access with the cached value.
->>>>=20
->>>> Well, IIUC, according to the C standard, the compiler can do =
-anything if there is a data race (undefined behavior).
->>>>=20
->>>> However, what if a write is not protected with WRITE_ONCE and the =
-read is marked with READ_ONCE?
->>>> That=E2=80=99s also a data race, right? But the kernel considers it =
+On Fri, Aug 4, 2023 at 11:47=E2=80=AFAM Alan Huang <mmpgouride@gmail.com> w=
+rote:
+>
+> >
+> >>>
+> >>>>>> But the example here is different,
+> >>>>>
+> >>>>> That is intentional. Wills discussion partially triggered this. Tho=
+ugh I am wondering
+> >>>>> if we should document that as well.
+> >>>>>
+> >>>>>> the compiler can not use the value loaded from line 5
+> >>>>>> unless the compiler can deduce that the tmp is equals to p in whic=
+h case the address dependency
+> >>>>>> doesn=E2=80=99t exist anymore.
+> >>>>>>
+> >>>>>> What am I missing here?
+> >>>>>
+> >>>>> Maybe you are trying to rationalize too much that the sequence ment=
+ioned cannot result
+> >>>>> in a counter intuitive outcome like I did?
+> >>>>>
+> >>>>> The point AFAIU is not just about line 10 but that the compiler can=
+ replace any of the
+> >>>>> lines after the plain access with the cached value.
+> >>>>
+> >>>> Well, IIUC, according to the C standard, the compiler can do anythin=
+g if there is a data race (undefined behavior).
+> >>>>
+> >>>> However, what if a write is not protected with WRITE_ONCE and the re=
+ad is marked with READ_ONCE?
+> >>>> That=E2=80=99s also a data race, right? But the kernel considers it =
 is Okay if the write is machine word aligned.
->>>=20
->>> Yes, but there is a compiler between the HLL code and what the
->>> processor sees which can tear the write. How can not using
->>> WRITE_ONCE() prevent store-tearing? See [1]. My understanding is =
-that
->>> it is OK only if the reader did a NULL check. In that case the torn
->>=20
->> Yes, a write-write data race where the value is the same is also =
-fine.
->>=20
->> But they are still data race, if the compiler is within its right to =
-do anything it likes (due to data race),
->> we still need WRITE_ONCE() in these cases, though it=E2=80=99s =
-semantically safe.
->>=20
->> IIUC, even with _ONCE(), the compiler is within its right do anything =
-according to the standard (at least before the upcoming C23), because =
-the standard doesn=E2=80=99t consider a volatile access to be atomic.
->>=20
->> However, the kernel consider the volatile access to be atomic, right?
->>=20
->> BTW, line 5 in the example is likely to be optimized away. And yes, =
-the compiler can cache the value loaded from line 5 from the perspective =
-of undefined behavior, even if I believe it would be a compiler bug from =
-the perspective of kernel.
->=20
-> I am actually a bit lost with what you are trying to say.  Are you =
-saying that mixing
-> plain accesses with marked accesses is an acceptable practice?=20
+> >>>
+> >>> Yes, but there is a compiler between the HLL code and what the
+> >>> processor sees which can tear the write. How can not using
+> >>> WRITE_ONCE() prevent store-tearing? See [1]. My understanding is that
+> >>> it is OK only if the reader did a NULL check. In that case the torn
+> >>
+> >> Yes, a write-write data race where the value is the same is also fine.
+> >>
+> >> But they are still data race, if the compiler is within its right to d=
+o anything it likes (due to data race),
+> >> we still need WRITE_ONCE() in these cases, though it=E2=80=99s semanti=
+cally safe.
+> >>
+> >> IIUC, even with _ONCE(), the compiler is within its right do anything =
+according to the standard (at least before the upcoming C23), because the s=
+tandard doesn=E2=80=99t consider a volatile access to be atomic.
+> >>
+> >> However, the kernel consider the volatile access to be atomic, right?
+> >>
+> >> BTW, line 5 in the example is likely to be optimized away. And yes, th=
+e compiler can cache the value loaded from line 5 from the perspective of u=
+ndefined behavior, even if I believe it would be a compiler bug from the pe=
+rspective of kernel.
+> >
+> > I am actually a bit lost with what you are trying to say.  Are you sayi=
+ng that mixing
+> > plain accesses with marked accesses is an acceptable practice?
+>
+>
+> I=E2=80=99m trying to say that sometimes data race is fine, that=E2=80=99=
+s why we have the data_race().
+>
+> Even if the standard says data race results in UB.
+>
+> And IMHO, the possible data race at line 5 in this example is also fine, =
+unless the compiler
+> deduces that the value of gp is always the same.
 
+IMHO, no one is saying it is not "fine". As in, such behavior is
+neither a compiler nor strictly a kernel bug.  More a wtf that the
+programmer should know off (does not hurt to know).
 
-I=E2=80=99m trying to say that sometimes data race is fine, that=E2=80=99s=
- why we have the data_race().
+I will rest my case with AlanH pending any input from people who know
+more than me. If there is a better way to represent such matters in
+the docs, I am happy to make changes to this patch.
 
-Even if the standard says data race results in UB.
+Cheers,
 
-And IMHO, the possible data race at line 5 in this example is also fine, =
-unless the compiler=20
-deduces that the value of gp is always the same.
-
-
->=20
-> I would like others to weight in as well since I am not seeing what =
-Alan is suggesting.
-> AFAICS, in the absence of barrier(), any optimization caused by plain =
-access
-> makes it a bad practice to mix it.
->=20
-> Thanks,
->=20
-> - Joel
->=20
->=20
->=20
->>=20
->>> result will not change the semantics of the program. But otherwise,
->>> that's bad.
->>>=20
->>> [1] https://lwn.net/Articles/793253/#Store%20Tearing
->>>=20
->>> thanks,
->>>=20
->>> - Joel
->>>=20
->>>=20
->>>>=20
->>>>>=20
->>>>> Thanks.
->>>>>=20
->>>>>=20
->>>>>=20
->>>>>>=20
->>>>>>> +plain accesses of a memory location with rcu_dereference() of =
-the same memory
->>>>>>> +location, in code involved in a data race.
->>>>>>> +
->>>>>>> In short, updaters use rcu_assign_pointer() and readers use
->>>>>>> rcu_dereference(), and these two RCU API elements work together =
-to
->>>>>>> ensure that readers have a consistent view of newly added data =
-elements.
->>>>>>> --
->>>>>>> 2.41.0.585.gd2178a4bd4-goog
-
-
+ - Joel
