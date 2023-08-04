@@ -2,173 +2,139 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04C99EB64DD
-	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 01:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D04CFC001DE
+	for <rcu@archiver.kernel.org>; Fri,  4 Aug 2023 05:15:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbjHDBoe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 3 Aug 2023 21:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
+        id S233791AbjHDFPh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Aug 2023 01:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjHDBod (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:44:33 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F4B1BD;
-        Thu,  3 Aug 2023 18:44:31 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RH7mr06kfz4f3jqs;
-        Fri,  4 Aug 2023 09:44:28 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgD3X7P6V8xk6Z0MPg--.4994S3;
-        Fri, 04 Aug 2023 09:44:28 +0800 (CST)
-Subject: Re: [PATCH v5 3/3] mm: Dump the memory of slab object in
- kmem_dump_obj()
-To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
+        with ESMTP id S231901AbjHDFNu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Aug 2023 01:13:50 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1A24EC7
+        for <rcu@vger.kernel.org>; Thu,  3 Aug 2023 22:11:30 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-790c6d966e0so64445739f.0
+        for <rcu@vger.kernel.org>; Thu, 03 Aug 2023 22:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1691125889; x=1691730689;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9mXHvfvIJ86YmhvvCOBZgm/vP7NqAH1aP/FOLgaiHHM=;
+        b=w0u26uP1zSf9/wGVBmdBh+lsfIcl5US1M1ShyfndXMrO7UGBqziwbcrQDCWG+sYz88
+         gW5qL+yNBaYAHnphtPeS6vtre6uKPmddqpjhqyYoeCeaXGxCPO4zDQWaUTTDe0wPiXAT
+         PT9FC5LROIPjcinOssm+gR+g3V/Zt3VS/QxM8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691125889; x=1691730689;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9mXHvfvIJ86YmhvvCOBZgm/vP7NqAH1aP/FOLgaiHHM=;
+        b=dLBUejNBsaxxz6no5LVlTub2HwwBaxeb7ttKaoknF0hFOaAeBLLBv+GIHAx2VFhGWM
+         H1jwHHxqvzJsPhnwsTrHGaEB0eqdsHlEWYIgH27Fd8mNZ46pzDa5yQNKDGwZ6Yu1gbDv
+         Q5P8AlQytBRrfiXx9Q0dv1qkhdXZD1ZjdUwAvxh0CPIP2MRoMyIwp8TmZdkcOD4KvT8s
+         zwDvq6qxDLCG4MROcpv7q/eMykTOAjSdIOpabBHlSgFPGn4pSvtNHHKcz2arXlPq+LFR
+         0Aphpw8SPVbSI9kGUpyQpYzA3Ta43MV/GQsYFQRa+cezgUUSt2BciPtQFJdS9XhHHain
+         uNSQ==
+X-Gm-Message-State: AOJu0Ywt0xzm7cIVExN8cow6tfixknBm1ofOCWkndkyfFiDYapXYJiwC
+        dru7G8qtjG6kGVnnQJwCEAyz9Q==
+X-Google-Smtp-Source: AGHT+IF3rVl5MnFnibYL2nSDUEkUozI392hnFu0eIKgFCwCfBZoGMPClTmzkhKJt8KlHfXF+LIVQxw==
+X-Received: by 2002:a5e:a619:0:b0:790:d21a:a7ba with SMTP id q25-20020a5ea619000000b00790d21aa7bamr790640ioi.15.1691125889318;
+        Thu, 03 Aug 2023 22:11:29 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id i5-20020a5d8405000000b0076ffebfc9fasm403681ion.47.2023.08.03.22.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 22:11:28 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 05:11:27 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-References: <20230803101754.1149-1-thunder.leizhen@huaweicloud.com>
- <20230803101754.1149-4-thunder.leizhen@huaweicloud.com>
- <8a08b7aa-ce1f-4b3d-abb5-cf3191474725@suse.cz>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <5d625946-28f1-f532-dd58-af18263a8bea@huaweicloud.com>
-Date:   Fri, 4 Aug 2023 09:44:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 2/2] docs: memory-barriers: Add note on plain-accesses to
+ address-dependency barriers
+Message-ID: <20230804051127.GA3860381@google.com>
+References: <20230803032408.2514989-1-joel@joelfernandes.org>
+ <20230803032408.2514989-2-joel@joelfernandes.org>
+ <626d1b48-de6a-4a0b-95d3-3ac438878757@paulmck-laptop>
 MIME-Version: 1.0
-In-Reply-To: <8a08b7aa-ce1f-4b3d-abb5-cf3191474725@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgD3X7P6V8xk6Z0MPg--.4994S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw13Kw4fJrWUZF1UGr45ZFb_yoW5WF4kpr
-        98Gr1UKrZ7ArnrCrn7X3WDJFnxJ3ykCF1kA3yav3W2vryDXr48uFyktF97uFyrAF1Sq39F
-        yr4qqF9I934UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <626d1b48-de6a-4a0b-95d3-3ac438878757@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-
-
-On 2023/8/3 18:34, Vlastimil Babka wrote:
-> On 8/3/23 12:17, thunder.leizhen@huaweicloud.com wrote:
->> From: Zhen Lei <thunder.leizhen@huawei.com>
->>
->> The contents of the slab object may contain some magic words and other
->> useful information that may be helpful in locating problems such as
->> memory corruption and use-after-free.
->>
->> To avoid print flooding, dump up to "16 * sizeof(int) = 64" bytes
->> centered on argument 'ojbect'.
->>
->> For example:
->> slab kmalloc-64 start ffff4043802d8b40 pointer offset 24 size 64
->> [8b40]: 12345678 00000000 8092d000 ffff8000
->> [8b50]: 00101000 00000000 8199ee00 ffff4043
->> [8b60]: 00000000 00000000 00000000 00000100
->> [8b70]: 00000000 9abcdef0 a8744de4 ffffc7fe
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  mm/slab_common.c | 30 +++++++++++++++++++++++++++---
->>  1 file changed, 27 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/slab_common.c b/mm/slab_common.c
->> index ee6ed6dd7ba9fa5..0232de9a3b29cf5 100644
->> --- a/mm/slab_common.c
->> +++ b/mm/slab_common.c
->> @@ -553,7 +553,7 @@ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *
->>  bool kmem_dump_obj(void *object)
->>  {
->>  	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
->> -	int i;
->> +	int i, object_size = 0;
->>  	struct slab *slab;
->>  	unsigned long ptroffset;
->>  	struct kmem_obj_info kp = { };
->> @@ -580,12 +580,36 @@ bool kmem_dump_obj(void *object)
->>  		ptroffset = ((char *)object - (char *)kp.kp_objp) - kp.kp_data_offset;
->>  		pr_cont(" pointer offset %lu", ptroffset);
->>  	}
->> -	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size)
->> -		pr_cont(" size %u", kp.kp_slab_cache->object_size);
->> +	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size) {
->> +		object_size = kp.kp_slab_cache->object_size;
->> +		pr_cont(" size %u", object_size);
->> +	}
->>  	if (kp.kp_ret)
->>  		pr_cont(" allocated at %pS\n", kp.kp_ret);
->>  	else
->>  		pr_cont("\n");
->> +
->> +	/* Dump a small piece of memory centered on 'object' */
->> +	if (kp.kp_objp && object_size) {
->> +		int *p = object, n = 16;
->> +
->> +		p += n / 2;
->> +		if ((void *)p > kp.kp_objp + object_size)
->> +			p = kp.kp_objp + object_size;
->> +
->> +		p -= n;
->> +		if ((void *)p < kp.kp_objp)
->> +			p = kp.kp_objp;
->> +
->> +		n = min_t(int, object_size / sizeof(int), n);
->> +		for (i = 0; i < n; i++, p++) {
->> +			if (i % 4 == 0)
->> +				pr_info("[%04lx]:", 0xffff & (unsigned long)p);
->> +			pr_cont(" %08x", *p);
->> +		}
->> +		pr_cont("\n");
+On Thu, Aug 03, 2023 at 11:52:06AM -0700, Paul E. McKenney wrote:
+> On Thu, Aug 03, 2023 at 03:24:07AM +0000, Joel Fernandes (Google) wrote:
+> > The compiler has the ability to cause misordering by destroying
+> > address-dependency barriers if comparison operations are used. Add a
+> > note about this to memory-barriers.txt and point to rcu-dereference.rst
+> > for more information.
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  Documentation/memory-barriers.txt | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+> > index 06e14efd8662..acc8ec5ce563 100644
+> > --- a/Documentation/memory-barriers.txt
+> > +++ b/Documentation/memory-barriers.txt
+> > @@ -435,6 +435,11 @@ Memory barriers come in four basic varieties:
+> >       variables such as READ_ONCE() and rcu_dereference() provide implicit
+> >       address-dependency barriers.
+> >  
+> > +     [!] Note that address dependency barriers can be destroyed by comparison
+> > +     of a pointer obtained by a marked accessor such as READ_ONCE() or
+> > +     rcu_dereference() with some value.  For an example of this, see
+> > +     rcu_dereference.rst (part where the comparison of pointers is discussed).
 > 
-> There's a print_hex_dump() for this, see how it's used from e.g. __dump_page().
-
-Thank you very much. The code has suddenly been a lot simpler.
-
-However, print_hex_dump() can be further enhanced, I will add a patch, let's
-discuss it together.
-
+> Hmmm...
 > 
-> 
->> +	}
->> +
->>  	for (i = 0; i < ARRAY_SIZE(kp.kp_stack); i++) {
->>  		if (!kp.kp_stack[i])
->>  			break;
-> 
-> .
-> 
+> Given that this is in a section marked "historical" (for the old
+> smp_read_barrier_depends() API), why not instead add a pointer to
+> Documentation/RCU/rcu_dereference.rst to the beginning of the section,
+> noted as the updated material?
 
--- 
-Regards,
-  Zhen Lei
+Sounds good. There's also another section in the same file on Address
+dependency barriers (also marked historical). So something like the
+following?
 
+---8<-----------------------
+
+diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+index acc8ec5ce563..ba50220716ca 100644
+--- a/Documentation/memory-barriers.txt
++++ b/Documentation/memory-barriers.txt
+@@ -396,6 +396,10 @@ Memory barriers come in four basic varieties:
+ 
+ 
+  (2) Address-dependency barriers (historical).
++     [!] This section is marked as HISTORICAL: For more up-to-date
++     information, including how compiler transformations related to pointer
++     comparisons can sometimes cause problems, see
++     Documentation/RCU/rcu_dereference.rst.
+ 
+      An address-dependency barrier is a weaker form of read barrier.  In the
+      case where two loads are performed such that the second depends on the
+@@ -561,6 +565,9 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
+ 
+ ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
+ ----------------------------------------
++[!] This section is marked as HISTORICAL: For more up-to-date information,
++including how compiler transformations related to pointer comparisons can
++sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
+ 
+ As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for
+ DEC Alpha, which means that about the only people who need to pay attention
