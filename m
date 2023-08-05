@@ -2,32 +2,26 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B545EC00528
-	for <rcu@archiver.kernel.org>; Sat,  5 Aug 2023 02:30:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34694C001DB
+	for <rcu@archiver.kernel.org>; Sat,  5 Aug 2023 03:21:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjHECaS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 4 Aug 2023 22:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S229496AbjHEDU7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 4 Aug 2023 23:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHECaR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 4 Aug 2023 22:30:17 -0400
+        with ESMTP id S229437AbjHEDU6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 4 Aug 2023 23:20:58 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B5B4EDC;
-        Fri,  4 Aug 2023 19:30:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13B24ED6;
+        Fri,  4 Aug 2023 20:20:56 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHml63lQVz4f3nKM;
-        Sat,  5 Aug 2023 10:30:10 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgBH_rEvtM1krxhcPg--.25609S3;
-        Sat, 05 Aug 2023 10:30:10 +0800 (CST)
-Subject: Re: [PATCH v6 0/5] rcu: Dump memory object info if callback function
- is invalid
-To:     paulmck@kernel.org
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Christoph Lameter <cl@linux.com>,
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHnsc5Kfvz4f3lfp;
+        Sat,  5 Aug 2023 11:20:52 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgAHoZQRwM1kZdNePg--.61999S4;
+        Sat, 05 Aug 2023 11:20:52 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
@@ -35,131 +29,106 @@ Cc:     Petr Mladek <pmladek@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-References: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
- <7af1d3d8-2d51-40a8-8021-0141e4bf1a0e@paulmck-laptop>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <fad9df02-e57a-9a6c-84d8-e7c7b09cb021@huaweicloud.com>
-Date:   Sat, 5 Aug 2023 10:30:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v7 0/2] rcu: Dump memory object info if callback function is invalid
+Date:   Sat,  5 Aug 2023 11:17:24 +0800
+Message-Id: <20230805031726.1230-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-In-Reply-To: <7af1d3d8-2d51-40a8-8021-0141e4bf1a0e@paulmck-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgBH_rEvtM1krxhcPg--.25609S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw1DKF4UWFyfCw15tFyxKrg_yoW5XF17p3
-        sxWasxKrn8Xry7Cr1fZr1xCry5ta1fKFsxKFnxZwn5u3WUZr9ayr95Ar4xWa4UGFWxKF1j
-        y3WYyF1qkr15ArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAHoZQRwM1kZdNePg--.61999S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWfJry8Cw4rJw18XrW8WFg_yoW8Zr18p3
+        ZxW3sxWr1DJry3CF1fZF1xCry5Zay8GFsIk3ZxZw4kuw1YvF97uF97Jr1IqF98GF93K3Wj
+        ya1Y9F1jka1DZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
         xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
         0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
         6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7M4kE6xkI
+        j40Ew7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+        UKfO7UUUUU=
 X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+From: Zhen Lei <thunder.leizhen@huawei.com>
+
+v6 --> v7:
+To avoid snowballing, resend the two RCU-related patches that we've discussed
+OK. The remaining three patches themselves do not need to be gone into RCU tree,
+I'll send them separately for discussion.
+
+v5 --> v6:
+1. Use print_hex_dump() to dump the memory of slab object.
+2. Add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+3. Minimize the output width of the offset
+
+v4 --> v5:
+1. Add Reviewed-by Acked-by for patch 1/3
+2. Add patch 3/3:
+   mm: Dump the memory of slab object in kmem_dump_obj()
+
+v3 --> v4:
+1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
+   as vmalloc_dump_obj().
+2. In kernel/rcu/rcu.h
+-#include <linux/mm.h>
++#include <linux/slab.h>
+
+v2 --> v3:
+1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+   more than 97.5%, and vmalloc accounts for less than 1%. So change call
+   mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+   avoid the potential deadlock risk of vmalloc_dump_obj().
+-		mem_dump_obj(rhp);
++		if (kmem_valid_obj(rhp))
++			kmem_dump_obj(rhp);
+
+   The discussion about vmap_area_lock deadlock in v2:
+   https://lkml.org/lkml/2022/11/11/493
+
+2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
+   when CONFIG_PRINTK=n.
+
+v1 --> v2:
+1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+2. Paul E. McKenney helped me update the commit message, thanks.
 
 
-On 2023/8/5 1:31, Paul E. McKenney wrote:
-> On Fri, Aug 04, 2023 at 05:11:30PM +0800, thunder.leizhen@huaweicloud.com wrote:
->> From: Zhen Lei <thunder.leizhen@huawei.com>
->>
->> v5 --> v6:
->> 1. Use print_hex_dump() to dump the memory of slab object.
->> 2. Add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
->> 3. Minimize the output width of the offset
->>
->> v4 --> v5:
->> 1. Add Reviewed-by Acked-by for patch 1/3
->> 2. Add patch 3/3:
->>    mm: Dump the memory of slab object in kmem_dump_obj()
->>
->> v3 --> v4:
->> 1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
->>    as vmalloc_dump_obj().
->> 2. In kernel/rcu/rcu.h
->> -#include <linux/mm.h>
->> +#include <linux/slab.h>
->>
->> v2 --> v3:
->> 1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
->>    more than 97.5%, and vmalloc accounts for less than 1%. So change call
->>    mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
->>    avoid the potential deadlock risk of vmalloc_dump_obj().
->> -		mem_dump_obj(rhp);
->> +		if (kmem_valid_obj(rhp))
->> +			kmem_dump_obj(rhp);
->>
->>    The discussion about vmap_area_lock deadlock in v2:
->>    https://lkml.org/lkml/2022/11/11/493
->>
->> 2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
->>    when CONFIG_PRINTK=n.
->>
->> v1 --> v2:
->> 1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
->> 2. Paul E. McKenney helped me update the commit message, thanks.
-> 
-> I would be happy to take the patch that Matthew and Vlastimil are happy
-> with, and also the one against RCU.  But unless you tell me otherwise,
-> I will assume that you would prefer me to wait until the entire series
-> is ready.  The best way to tell me otherwise is of course to resend just
-> those two patches in their own series.  ;-)
+Zhen Lei (2):
+  mm: Remove kmem_valid_obj()
+  rcu: Dump memory object info if callback function is invalid
 
-Yes, I also feel this snowball rolling bigger and bigger. Let me resend the two
-RCU-related patches that we've discussed OK.
-
-> 
-> 							Thanx, Paul
-> 
->> Zhen Lei (5):
->>   hexdump: add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
->>   hexdump: minimize the output width of the offset
->>   mm: Remove kmem_valid_obj()
->>   mm: Dump the memory of slab object in kmem_dump_obj()
->>   rcu: Dump memory object info if callback function is invalid
->>
->>  include/linux/printk.h |  1 +
->>  include/linux/slab.h   |  5 ++--
->>  kernel/rcu/rcu.h       |  7 +++++
->>  kernel/rcu/srcutiny.c  |  1 +
->>  kernel/rcu/srcutree.c  |  1 +
->>  kernel/rcu/tasks.h     |  1 +
->>  kernel/rcu/tiny.c      |  1 +
->>  kernel/rcu/tree.c      |  1 +
->>  lib/hexdump.c          | 17 +++++++++--
->>  mm/slab_common.c       | 68 ++++++++++++++++++++++--------------------
->>  mm/util.c              |  4 +--
->>  11 files changed, 67 insertions(+), 40 deletions(-)
->>
->> -- 
->> 2.34.1
->>
-> .
-> 
+ include/linux/slab.h  |  5 +++--
+ kernel/rcu/rcu.h      |  7 +++++++
+ kernel/rcu/srcutiny.c |  1 +
+ kernel/rcu/srcutree.c |  1 +
+ kernel/rcu/tasks.h    |  1 +
+ kernel/rcu/tiny.c     |  1 +
+ kernel/rcu/tree.c     |  1 +
+ mm/slab_common.c      | 41 +++++++++++------------------------------
+ mm/util.c             |  4 +---
+ 9 files changed, 27 insertions(+), 35 deletions(-)
 
 -- 
-Regards,
-  Zhen Lei
+2.34.1
 
