@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA110C001DB
-	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:13:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AE27C04FE0
+	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:13:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbjHGLNv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Aug 2023 07:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
+        id S232027AbjHGLNx (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Aug 2023 07:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbjHGLNX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:13:23 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0061FD8
-        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:12:25 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bb91c20602so9342255ad.0
-        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:12:25 -0700 (PDT)
+        with ESMTP id S232013AbjHGLNY (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Aug 2023 07:13:24 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3421721
+        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:12:55 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so361997a12.0
+        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691406712; x=1692011512;
+        d=bytedance.com; s=google; t=1691406737; x=1692011537;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ubpyp4SIhGXjO6/VTKiZvWjlRzyN8ANvKHVN5xSGnIw=;
-        b=G6tJn+16QVti2qtu2hqYljseIE/XGpe1Yhsul4LFU6R/aCDAM7lceOlES83Z0B/Pue
-         2irlih/PCzGRhADqlmxdT4ZmTPg/rDw2XT4QeZKx/Tui9xhVWAtyJogqiocaYi2mPJVJ
-         JfsH0RSoKbpVavaYBWWtyo/mJh8W+H0WFTE4SVefHn6UoqHLIS8l90Z//i2iVib88cLh
-         SO8x9HJ9eijOF2Obr6A8OaZNG3N0xetNtsejNB5r0CVLeObeV8ZzJa8r4m2G8/H610tO
-         JRFiieD8eIQL4G+uzuFBv5AMDY6TbkMqFwB+fegzuV4xQGReerwz1d1NP8JNZHZ17Zsd
-         g+Fg==
+        bh=XAY9+N2BbVQBjCT3MmFWkPxUR/2vf6o4m+CtMBoAzag=;
+        b=Owhbp+vjTX9LgSb8kQ7MIhVXGKwDLhR+Ce+1Ax0621Bs9MrN8XWMe5+Ejw9lnwM3Ap
+         IYUW911/vhmnbFJp/stmhIc489u8MPAzdlnhNeoJi8rBqpYOKUrjixaEdD0XprSya4Vj
+         PDunDNjaDu16T3tMnzjFT3t7h/oKuuaUvjmMy7sBXTr5KsxElViOqZ7/5M9dmikw8+EO
+         wMQGbexE8DINXXSrzaCt4DliIlnjdofAsiKIz1t/gb0CaZI+4t4MLa+CBQGQ2Bhdx8d2
+         /xQiP0jkFYD6YIUPc+4v26SX8VshwmbMbumt9peptq8jkLOVQze1kYBLFAMAnfkePzJe
+         dicw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691406712; x=1692011512;
+        d=1e100.net; s=20221208; t=1691406737; x=1692011537;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ubpyp4SIhGXjO6/VTKiZvWjlRzyN8ANvKHVN5xSGnIw=;
-        b=WBg8QiPMHDJ7NpqAgqbr4me/dgEtaEhm3cDxzN/mDXSP4CNH8KmI1Rc1Um1I2P23zS
-         FavRQPg9Dh5eq33NaR5RWDuub55gEs+mRSJKk4N8S17aTOMhalJ37akJNcufmeRrG1mK
-         9YKi1toJtai0XAXTVLQXb4Z/qpkkMW8F8Ah/Titm8F+L1SHUKSGgm3DsYNAUzBqXQAMC
-         P5q3yWDgWUHWKPuvalvhmHN8hdmGuWJFwPZjpiS5h4jBWv30aDcpH3LRsgVARGAaycdi
-         XrL/p+M81ztxZ/2+ADAEDUvFZWLfy/m4nrd++swwnCycx2XJsD94Y11LVFSvIYJFtV/u
-         7kMw==
-X-Gm-Message-State: ABy/qLbnCT1PBOuRnp4jwh82o2C5WjVfd/5I9pYL9pnpPLu7oB+4aXJg
-        NKJSpbJj9ZjRPjKsuvuvnkL35w==
-X-Google-Smtp-Source: APBJJlGAdl0ewhYUg6UhJdRJKXIwq0U3XoR/AJshcbF16xE0A4mgQC4Umc8PgwnpC/Hq6tl8ikCZEw==
-X-Received: by 2002:a17:902:ea04:b0:1b8:17e8:547e with SMTP id s4-20020a170902ea0400b001b817e8547emr32460173plg.1.1691406712196;
-        Mon, 07 Aug 2023 04:11:52 -0700 (PDT)
+        bh=XAY9+N2BbVQBjCT3MmFWkPxUR/2vf6o4m+CtMBoAzag=;
+        b=AQkF4WFtOw1vtlBYhNmwRI5hawz37UnOg55Q2+RXRsuN4faW9aD6Nc0q3gZo3QcPES
+         +oEHgLdzRlMr5M3Z8JqqbhLv21jAvp8aIe0X4zdqRIoVa80TmuUmqyutHfpwd8h17z01
+         Ps6HpCebKjHRLAAJCju9cp0M6nyY80izQ0iLzy90xpUuaSsE8LJi+Qm1HpsWDLk8Qsu3
+         nAnqdKl2rXcVY7mCDsvldVpQsi9t5QWO7xXLMsjrswMY7UFQqJlTDh5cEFJWn4/dRTQT
+         Bg3U2hm2jdFxSyENsjSITgkuAxwt9ILF+5yiVrVznntajP8Is+xC1ERA23I42rGlKFIf
+         5KqQ==
+X-Gm-Message-State: ABy/qLZy7XHhaVW7J6OOGpRvp1ro9ik6lNJzFO2qrx1ABTv1io7ZndIR
+        sl8BvtZ/gCglV02nnbgyqo6OLg==
+X-Google-Smtp-Source: APBJJlGzkEm3Uqt9ffvJXbz1uvSm9jYeOQTwgnDKGaV/IZVLtdfAA6YtivYmWFIriEmVEE/lzsK+Ow==
+X-Received: by 2002:a17:90a:faf:b0:268:abc:83d5 with SMTP id 44-20020a17090a0faf00b002680abc83d5mr23476433pjz.4.1691406737630;
+        Mon, 07 Aug 2023 04:12:17 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.11.39
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.12.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:11:51 -0700 (PDT)
+        Mon, 07 Aug 2023 04:12:17 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -71,9 +71,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 09/48] erofs: dynamically allocate the erofs-shrinker
-Date:   Mon,  7 Aug 2023 19:08:57 +0800
-Message-Id: <20230807110936.21819-10-zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 11/48] gfs2: dynamically allocate the gfs2-glock shrinker
+Date:   Mon,  7 Aug 2023 19:08:59 +0800
+Message-Id: <20230807110936.21819-12-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
@@ -83,51 +83,63 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Use new APIs to dynamically allocate the erofs-shrinker.
+Use new APIs to dynamically allocate the gfs2-glock shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- fs/erofs/utils.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ fs/gfs2/glock.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
-index cc6fb9e98899..6e1a828e6ca3 100644
---- a/fs/erofs/utils.c
-+++ b/fs/erofs/utils.c
-@@ -270,19 +270,25 @@ static unsigned long erofs_shrink_scan(struct shrinker *shrink,
- 	return freed;
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index 1438e7465e30..8d582ba7514f 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -2046,11 +2046,7 @@ static unsigned long gfs2_glock_shrink_count(struct shrinker *shrink,
+ 	return vfs_pressure_ratio(atomic_read(&lru_count));
  }
  
--static struct shrinker erofs_shrinker_info = {
--	.scan_objects = erofs_shrink_scan,
--	.count_objects = erofs_shrink_count,
+-static struct shrinker glock_shrinker = {
 -	.seeks = DEFAULT_SEEKS,
+-	.count_objects = gfs2_glock_shrink_count,
+-	.scan_objects = gfs2_glock_shrink_scan,
 -};
-+static struct shrinker *erofs_shrinker_info;
++static struct shrinker *glock_shrinker;
  
- int __init erofs_init_shrinker(void)
- {
--	return register_shrinker(&erofs_shrinker_info, "erofs-shrinker");
-+	erofs_shrinker_info = shrinker_alloc(0, "erofs-shrinker");
-+	if (!erofs_shrinker_info)
+ /**
+  * glock_hash_walk - Call a function for glock in a hash bucket
+@@ -2472,13 +2468,19 @@ int __init gfs2_glock_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	ret = register_shrinker(&glock_shrinker, "gfs2-glock");
+-	if (ret) {
++	glock_shrinker = shrinker_alloc(0, "gfs2-glock");
++	if (!glock_shrinker) {
+ 		destroy_workqueue(glock_workqueue);
+ 		rhashtable_destroy(&gl_hash_table);
+-		return ret;
 +		return -ENOMEM;
-+
-+	erofs_shrinker_info->count_objects = erofs_shrink_count;
-+	erofs_shrinker_info->scan_objects = erofs_shrink_scan;
-+	erofs_shrinker_info->seeks = DEFAULT_SEEKS;
-+
-+	shrinker_register(erofs_shrinker_info);
-+
-+	return 0;
- }
+ 	}
  
- void erofs_exit_shrinker(void)
++	glock_shrinker->count_objects = gfs2_glock_shrink_count;
++	glock_shrinker->scan_objects = gfs2_glock_shrink_scan;
++	glock_shrinker->seeks = DEFAULT_SEEKS;
++
++	shrinker_register(glock_shrinker);
++
+ 	for (i = 0; i < GLOCK_WAIT_TABLE_SIZE; i++)
+ 		init_waitqueue_head(glock_wait_table + i);
+ 
+@@ -2487,7 +2489,7 @@ int __init gfs2_glock_init(void)
+ 
+ void gfs2_glock_exit(void)
  {
--	unregister_shrinker(&erofs_shrinker_info);
-+	shrinker_free(erofs_shrinker_info);
+-	unregister_shrinker(&glock_shrinker);
++	shrinker_free(glock_shrinker);
+ 	rhashtable_destroy(&gl_hash_table);
+ 	destroy_workqueue(glock_workqueue);
  }
- #endif	/* !CONFIG_EROFS_FS_ZIP */
 -- 
 2.30.2
 
