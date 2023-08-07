@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96460C04FE1
-	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D83EBEB64DD
+	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:39:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbjHGLim (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Aug 2023 07:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
+        id S233081AbjHGLjF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Aug 2023 07:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233053AbjHGLhr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:37:47 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A7E3C30
-        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:34:29 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7748ca56133so28736639f.0
-        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:34:29 -0700 (PDT)
+        with ESMTP id S232473AbjHGLit (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Aug 2023 07:38:49 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EA51B1
+        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:35:25 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1bb6334fec5so673670fac.1
+        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691408026; x=1692012826;
+        d=bytedance.com; s=google; t=1691408064; x=1692012864;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2n4eBW/y496rw0R30jGqgr9PaTd+TyGx4MFgxeJTY98=;
-        b=is0dyYqe89RkQRr5bqUTRCf0ChBQw+cDjUMX2KqP+9MQkXGE7Xm+/0lRzySibQwbnB
-         jCbllT+fLbnxU9+QGn/EZ+wTUtck/JCk98dCt3bV07FBhCP9ycT0nv51EqRYzUGNgDwa
-         inAor5iwqlnsMF+loR1GNN0mhPzVbvBNv36Y5fSb6kcIN/Zf5W43OW8nmA9zdlcRI1YH
-         FPGXWNhO2J8r0HjHfcKitJxQfxElY7ZnQYdc3dtLysLzX1JUWvmIVfuWuv28ytR8+sOP
-         nDPlDbQktVnCyRFAAxjb8xLPWajkesnwk3qJ3V54WYNGp6hMjm1VBRr8Nm6ThO3/EbXX
-         lf4g==
+        bh=jaqVlo27zysQOw4inLaa7RWYi61naAqQm5GJ5upJpN4=;
+        b=GP/YOp504dsq5etJIFmOS3uROgdrjQgwQl+/HLIKAThbvBRfs5vwuROb9Y9iqD/15r
+         8lR+mNrg9FRpUbqNlgk3XEGsrSO2XiD+YvvDuOZMFGXtacdLJAqI9JAh6sbZ9BG9uCMj
+         jp9ygri5+mZ2dD+7wDltv9Qn118ncP7MBz1MErm8ax2rQcVbxygsxp0rdP5PdF29ZYkl
+         gB9pW4ltr2VdWmHlDZZAKu0Hl1UKHUY+bjY3yj9IAT3/z7BcsAF2TtNhZVt5PPrEh8tc
+         egFRw6K446+yoLw9y5932ZuV4uoLnXwaHyDD/cLmpqk6OUHaxQbKSJmokOPK6nHgdJuW
+         fNTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691408026; x=1692012826;
+        d=1e100.net; s=20221208; t=1691408064; x=1692012864;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2n4eBW/y496rw0R30jGqgr9PaTd+TyGx4MFgxeJTY98=;
-        b=Q8STBTYGjVRBV/Z4wHGnt55lyeHlDWKclQylDaGVKIUuobDqpmXu9QY6W2ntgJhEqv
-         eTfreNKdvVpbyzHaHnkDSHIgTH1pXEKEUCQUayj7+nRmCohPI75bW3ysOM3WriQfPU5M
-         Xb/XbIxNHO1ypEqxag/7T/ORhTTAVY1Z8ui/ba9mfV9gaYYU+cTYe9GirpFxIrqn/eTw
-         WB6WwnqsXUyRj9UNGY+cQlEQQWyNhSs8xBGIS5QMcwbnDMhBcshVHJyJB2+77mu8rRds
-         tQkcW5U0q9a14bKg+BCV073RY4oCAskXJVN01D8ztdL9kOHGglgFi3pYHkNVilERD+Xy
-         JVSA==
-X-Gm-Message-State: ABy/qLZB1E6cJyk69/v2ncBiJwZ1qH3mpEZeR1sc4YOR12TXz2RioSrd
-        TQGlROeJX2HrtoAvpumoygKyTgUgBxWWFJUHfcU=
-X-Google-Smtp-Source: APBJJlGfZoIKy5dlf67l9aDnuNmoWN294jSLFWBRn8Nrl68gwCTSSg7v4NaF4AAHW/6J0zEJitKJCg==
-X-Received: by 2002:a17:90a:1f83:b0:268:3dc6:f0c5 with SMTP id x3-20020a17090a1f8300b002683dc6f0c5mr25038018pja.0.1691406981820;
-        Mon, 07 Aug 2023 04:16:21 -0700 (PDT)
+        bh=jaqVlo27zysQOw4inLaa7RWYi61naAqQm5GJ5upJpN4=;
+        b=OGAwUxwGkpPCtVR423LUE70FRBMeVqGJIoYFZ0nuROuZ61yaxmZ7MRleaO0uzlrZ8F
+         s5bOxhXo8gZ2yGs7ixNDE+mj9atrhjuJhIXpT9da7I1FGsdPtFp4SHEQ4Ks8FEt8RXH1
+         icxdu5vE/+Jx9prKNKoSz6t+9rpuq1U0gA7+aykJJ6+BFs0GaFKt+OwUk9xZvwej+EPh
+         S0Y1K5VsB9q2vNBkVkbNeagBuoyGKZ3fsForNMMGphn0VoLi0UsHiLI35FLozRJW2KLB
+         pvGhdnMhTJlhg53txk4w5GeoueJ5daAKK9cRdRbxQBCEx+m69/opJCNHHEyL/0Y2835x
+         /tLQ==
+X-Gm-Message-State: ABy/qLY6A2XsZW4zax3gaudvBWxbwyMPrEc0fMXaOMenZ2Kd8DXUxMaF
+        CzHJmANtI0f1BSWHGP6GEvxYN9adqxWd8U2Kdzc=
+X-Google-Smtp-Source: AGHT+IHBSjfm4qMxfKY1o30DsQrf62j+YLyyzQgOSjZX7MvZKQZkongUtrzUOFN5xrnWaoCKIehpOA==
+X-Received: by 2002:a17:90a:9c3:b0:269:41cf:7212 with SMTP id 61-20020a17090a09c300b0026941cf7212mr4969668pjo.4.1691407071669;
+        Mon, 07 Aug 2023 04:17:51 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.16.09
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.17.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:16:21 -0700 (PDT)
+        Mon, 07 Aug 2023 04:17:51 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -71,9 +71,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 30/48] vmw_balloon: dynamically allocate the vmw-balloon shrinker
-Date:   Mon,  7 Aug 2023 19:09:18 +0800
-Message-Id: <20230807110936.21819-31-zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 37/48] xfs: dynamically allocate the xfs-buf shrinker
+Date:   Mon,  7 Aug 2023 19:09:25 +0800
+Message-Id: <20230807110936.21819-38-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
@@ -84,100 +84,88 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the vmw-balloon shrinker, so that it can be freed
+dynamically allocate the xfs-buf shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct vmballoon.
-
-And we can simply exit vmballoon_init() when registering the shrinker
-fails. So the shrinker_registered indication is redundant, just remove it.
+read-side critical section when releasing the struct xfs_buftarg.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- drivers/misc/vmw_balloon.c | 38 ++++++++++++--------------------------
- 1 file changed, 12 insertions(+), 26 deletions(-)
+ fs/xfs/xfs_buf.c | 25 ++++++++++++++-----------
+ fs/xfs/xfs_buf.h |  2 +-
+ 2 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/misc/vmw_balloon.c b/drivers/misc/vmw_balloon.c
-index 9ce9b9e0e9b6..ac2cdb6cdf74 100644
---- a/drivers/misc/vmw_balloon.c
-+++ b/drivers/misc/vmw_balloon.c
-@@ -380,16 +380,7 @@ struct vmballoon {
- 	/**
- 	 * @shrinker: shrinker interface that is used to avoid over-inflation.
- 	 */
--	struct shrinker shrinker;
--
--	/**
--	 * @shrinker_registered: whether the shrinker was registered.
--	 *
--	 * The shrinker interface does not handle gracefully the removal of
--	 * shrinker that was not registered before. This indication allows to
--	 * simplify the unregistration process.
--	 */
--	bool shrinker_registered;
-+	struct shrinker *shrinker;
- };
- 
- static struct vmballoon balloon;
-@@ -1568,29 +1559,27 @@ static unsigned long vmballoon_shrinker_count(struct shrinker *shrinker,
- 
- static void vmballoon_unregister_shrinker(struct vmballoon *b)
+diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+index 15d1e5a7c2d3..715730fc91cb 100644
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@ -1906,8 +1906,7 @@ xfs_buftarg_shrink_scan(
+ 	struct shrinker		*shrink,
+ 	struct shrink_control	*sc)
  {
--	if (b->shrinker_registered)
--		unregister_shrinker(&b->shrinker);
--	b->shrinker_registered = false;
-+	shrinker_free(b->shrinker);
- }
+-	struct xfs_buftarg	*btp = container_of(shrink,
+-					struct xfs_buftarg, bt_shrinker);
++	struct xfs_buftarg	*btp = shrink->private_data;
+ 	LIST_HEAD(dispose);
+ 	unsigned long		freed;
  
- static int vmballoon_register_shrinker(struct vmballoon *b)
+@@ -1929,8 +1928,7 @@ xfs_buftarg_shrink_count(
+ 	struct shrinker		*shrink,
+ 	struct shrink_control	*sc)
  {
--	int r;
--
- 	/* Do nothing if the shrinker is not enabled */
- 	if (!vmwballoon_shrinker_enable)
- 		return 0;
- 
--	b->shrinker.scan_objects = vmballoon_shrinker_scan;
--	b->shrinker.count_objects = vmballoon_shrinker_count;
--	b->shrinker.seeks = DEFAULT_SEEKS;
-+	b->shrinker = shrinker_alloc(0, "vmw-balloon");
-+	if (!b->shrinker)
-+		return -ENOMEM;
- 
--	r = register_shrinker(&b->shrinker, "vmw-balloon");
-+	b->shrinker->scan_objects = vmballoon_shrinker_scan;
-+	b->shrinker->count_objects = vmballoon_shrinker_count;
-+	b->shrinker->seeks = DEFAULT_SEEKS;
-+	b->shrinker->private_data = b;
- 
--	if (r == 0)
--		b->shrinker_registered = true;
-+	shrinker_register(b->shrinker);
- 
--	return r;
-+	return 0;
+-	struct xfs_buftarg	*btp = container_of(shrink,
+-					struct xfs_buftarg, bt_shrinker);
++	struct xfs_buftarg	*btp = shrink->private_data;
+ 	return list_lru_shrink_count(&btp->bt_lru, sc);
  }
  
- /*
-@@ -1883,7 +1872,7 @@ static int __init vmballoon_init(void)
+@@ -1938,7 +1936,7 @@ void
+ xfs_free_buftarg(
+ 	struct xfs_buftarg	*btp)
+ {
+-	unregister_shrinker(&btp->bt_shrinker);
++	shrinker_free(btp->bt_shrinker);
+ 	ASSERT(percpu_counter_sum(&btp->bt_io_count) == 0);
+ 	percpu_counter_destroy(&btp->bt_io_count);
+ 	list_lru_destroy(&btp->bt_lru);
+@@ -2021,13 +2019,18 @@ xfs_alloc_buftarg(
+ 	if (percpu_counter_init(&btp->bt_io_count, 0, GFP_KERNEL))
+ 		goto error_lru;
  
- 	error = vmballoon_register_shrinker(&balloon);
- 	if (error)
--		goto fail;
-+		return error;
+-	btp->bt_shrinker.count_objects = xfs_buftarg_shrink_count;
+-	btp->bt_shrinker.scan_objects = xfs_buftarg_shrink_scan;
+-	btp->bt_shrinker.seeks = DEFAULT_SEEKS;
+-	btp->bt_shrinker.flags = SHRINKER_NUMA_AWARE;
+-	if (register_shrinker(&btp->bt_shrinker, "xfs-buf:%s",
+-			      mp->m_super->s_id))
++	btp->bt_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "xfs-buf:%s",
++					  mp->m_super->s_id);
++	if (!btp->bt_shrinker)
+ 		goto error_pcpu;
++
++	btp->bt_shrinker->count_objects = xfs_buftarg_shrink_count;
++	btp->bt_shrinker->scan_objects = xfs_buftarg_shrink_scan;
++	btp->bt_shrinker->seeks = DEFAULT_SEEKS;
++	btp->bt_shrinker->private_data = btp;
++
++	shrinker_register(btp->bt_shrinker);
++
+ 	return btp;
  
- 	/*
- 	 * Initialization of compaction must be done after the call to
-@@ -1905,9 +1894,6 @@ static int __init vmballoon_init(void)
- 	vmballoon_debugfs_init(&balloon);
+ error_pcpu:
+diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
+index 549c60942208..4e6969a675f7 100644
+--- a/fs/xfs/xfs_buf.h
++++ b/fs/xfs/xfs_buf.h
+@@ -102,7 +102,7 @@ typedef struct xfs_buftarg {
+ 	size_t			bt_logical_sectormask;
  
- 	return 0;
--fail:
--	vmballoon_unregister_shrinker(&balloon);
--	return error;
- }
+ 	/* LRU control structures */
+-	struct shrinker		bt_shrinker;
++	struct shrinker		*bt_shrinker;
+ 	struct list_lru		bt_lru;
  
- /*
+ 	struct percpu_counter	bt_io_count;
 -- 
 2.30.2
 
