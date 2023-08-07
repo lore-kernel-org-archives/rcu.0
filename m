@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAAB9EB64DD
-	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:31:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3D0BC001B0
+	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:32:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbjHGLbd (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Aug 2023 07:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
+        id S232796AbjHGLcS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Aug 2023 07:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbjHGLbM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:31:12 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8094ED0
-        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:28:21 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6879986a436so692616b3a.0
-        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:28:21 -0700 (PDT)
+        with ESMTP id S232803AbjHGLcD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Aug 2023 07:32:03 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B235C5BA0
+        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:29:23 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1bb6d6b09d6so912320fac.1
+        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691407650; x=1692012450;
+        d=bytedance.com; s=google; t=1691407719; x=1692012519;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8Rfav5Nxe+GtybemfHCRLQWJ1Wm1Jr8phC3oTaQ6f/s=;
-        b=iy8ums/JtBRcMAH0OFgyBGJaR3kHJfYyGraz6xWMNmTyVNOX3VUXasCWnhs9jUm3y/
-         ocS1S15FBluS7Yspd6RrRfikwTmPtgloO96FECQtiPD3qz8eRbgrYhuN0FODtq+1Inll
-         gddsNPWKdd7D2ddFRbW1OcvaLI0zYkC59lAwRXaKngoSuScoTNJQARR6Y3i5ygdjyP8j
-         ftKx3YvrCIvy6OBLi8UQdrsJZLekHBadot1qj4bXizd7nLZ6q64DYobmcoy6o/ezsO+G
-         toy6jrq8e9xZxcu5kXmEGv4OlxMgzZeNrjhCLStLu20+Ailly4fuHBGPTgKajxtkIgdD
-         cI6g==
+        bh=v5vYJ8kE3O6JXdLxdEEyUgUMjz4KJqSKKSB151wqkNo=;
+        b=E5BRiwe6uR6j3XVuSwMGZc0940WG0R6bkQbDoePH+kYmGGcJtV6Gkyd4bMIsWCQ4lL
+         0OJy9e3GBhhxZmA9ZZfXGAeo5YFXu+KMGhIVljyukGolf1XwkXUcjZ/x1bqNrNA0BsZi
+         ypeh64CcKywi0PRP0QM7RbiYPeKSKUZHC46lDZ5/bojy/7smJN6YJp5R1sR7iiSWzZAa
+         fX2A91dVf5aOAp6FGK7Lw+Fk8tda+ESsFU4y7o7sgv7GyFSKCZSf1xOYwknauMzLaJY0
+         mF8wCSD2j+AzwAnKBQTG1FBvunjex4xUYiWrPyQPWILrEUAFw2Zo0GoPAoZ9/dB1ddj2
+         pvXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691407650; x=1692012450;
+        d=1e100.net; s=20221208; t=1691407719; x=1692012519;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8Rfav5Nxe+GtybemfHCRLQWJ1Wm1Jr8phC3oTaQ6f/s=;
-        b=bf4ZUVtGogxoVBH5QXUjtGQ8Fn6qWy0xcOi+MbT3UH0Qg1ov8i5ixG0ciKXxqCBl0p
-         u8CHn0r38kc9ZqlGUHprhBtdrPK3b4GSzpq3EsLmyy+OYTAl9loEO32M47Ymgbbulr1m
-         uNemTTHx0GMSNsMq2qLWRFe7XXBV3PGYFuDpHavnjO7Ecxq1reLLwWt7gNhhOrVKfoL6
-         b8Rh7J2uakz2OYTxHcpu13Lhn58XvXec97aqpyxh5BSjNFipSqZNL3+A66sgWjm1IVM7
-         mLht1kzmd+pViIs2DP6k0davoR8EGjxT5QIUPWJGHeCR9Y8L+CRokaCmNXDwfHpTCkDB
-         cvWg==
-X-Gm-Message-State: ABy/qLb9RyOHmf+1uBtTm0upBNonrpUtG3qLqZ1WGwXYJoweiXSEpUQW
-        dTaqYJokjuob7nlw+gxa1s8GVLlqZ7MKmux0gHk=
-X-Google-Smtp-Source: AGHT+IFWvaKty2qg3Zp4xukmaRzjC+XhBT002dXZP422OqSqCh0qrR2HTT2eLu1rJ18Y9R5+7t84vA==
-X-Received: by 2002:a92:6408:0:b0:349:5c87:e712 with SMTP id y8-20020a926408000000b003495c87e712mr5356429ilb.1.1691406930655;
-        Mon, 07 Aug 2023 04:15:30 -0700 (PDT)
+        bh=v5vYJ8kE3O6JXdLxdEEyUgUMjz4KJqSKKSB151wqkNo=;
+        b=i5mOOYB9iczaITDzgzv+kdUyip85D0pqJQK4X8RKEEvqY/YvOex7r6pY43dfSNfvzX
+         lpP6SKmOXNYjd5BgrSu58Vser90bI1yTraf+ecFTVUv0g7cGEDYPsvVOguEcNQr/dkS2
+         9QWAsTb7eNIOa0iruMvJPjbyKgXvGoE7Pn/Q37uwpgLsckjGqwe+RFJvRwyM/VG2FYbO
+         ySiW5v0+xqPqsRpuxsOJYsuxQvrlLfquTJbN1Oi4n/Dj24Xn3Bcgxg/QmFAspKqr19dj
+         7MSXbjQUoCQX86v1a1NlWrNDFnca0NVW4ZeyhpzZNymCtcS6YfPEj7h8ctCmo/TwFR49
+         TGlQ==
+X-Gm-Message-State: AOJu0YxYLXgXBP40CL2/WpTnkkx7tCunOXOJV3dMvPXG57ajRa0ssoJ9
+        BG3Bcn8q049b9OsF5UFC+PSVTt0wgJimYdLFqzA=
+X-Google-Smtp-Source: APBJJlFyAF6s6JefOZNl/scuUGwKU5q0BmH7yK6Qf+JZ3E1mrAS2lh5NuGQm2RRGuEVfms4+14afyQ==
+X-Received: by 2002:a17:90a:3f08:b0:268:1e3b:14c9 with SMTP id l8-20020a17090a3f0800b002681e3b14c9mr23486908pjc.2.1691407045970;
+        Mon, 07 Aug 2023 04:17:25 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.15.18
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.17.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:15:30 -0700 (PDT)
+        Mon, 07 Aug 2023 04:17:25 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -70,10 +70,11 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 26/48] dm: dynamically allocate the dm-bufio shrinker
-Date:   Mon,  7 Aug 2023 19:09:14 +0800
-Message-Id: <20230807110936.21819-27-zhengqi.arch@bytedance.com>
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v4 35/48] nfsd: dynamically allocate the nfsd-client shrinker
+Date:   Mon,  7 Aug 2023 19:09:23 +0800
+Message-Id: <20230807110936.21819-36-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
@@ -84,84 +85,77 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the dm-bufio shrinker, so that it can be freed
+dynamically allocate the nfsd-client shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct dm_bufio_client.
+read-side critical section when releasing the struct nfsd_net.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Chuck Lever <chuck.lever@oracle.com>
+Acked-by: Jeff Layton <jlayton@kernel.org>
 ---
- drivers/md/dm-bufio.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ fs/nfsd/netns.h     |  2 +-
+ fs/nfsd/nfs4state.c | 20 ++++++++++++--------
+ 2 files changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
-index bc309e41d074..62eb27639c9b 100644
---- a/drivers/md/dm-bufio.c
-+++ b/drivers/md/dm-bufio.c
-@@ -963,7 +963,7 @@ struct dm_bufio_client {
+diff --git a/fs/nfsd/netns.h b/fs/nfsd/netns.h
+index ec49b200b797..f669444d5336 100644
+--- a/fs/nfsd/netns.h
++++ b/fs/nfsd/netns.h
+@@ -195,7 +195,7 @@ struct nfsd_net {
+ 	int			nfs4_max_clients;
  
- 	sector_t start;
+ 	atomic_t		nfsd_courtesy_clients;
+-	struct shrinker		nfsd_client_shrinker;
++	struct shrinker		*nfsd_client_shrinker;
+ 	struct work_struct	nfsd_shrinker_work;
+ };
  
--	struct shrinker shrinker;
-+	struct shrinker *shrinker;
- 	struct work_struct shrink_work;
- 	atomic_long_t need_shrink;
- 
-@@ -2368,7 +2368,7 @@ static unsigned long dm_bufio_shrink_scan(struct shrinker *shrink, struct shrink
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 8534693eb6a4..9e401db8a6d2 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -4400,8 +4400,7 @@ static unsigned long
+ nfsd4_state_shrinker_count(struct shrinker *shrink, struct shrink_control *sc)
  {
- 	struct dm_bufio_client *c;
+ 	int count;
+-	struct nfsd_net *nn = container_of(shrink,
+-			struct nfsd_net, nfsd_client_shrinker);
++	struct nfsd_net *nn = shrink->private_data;
  
--	c = container_of(shrink, struct dm_bufio_client, shrinker);
-+	c = shrink->private_data;
- 	atomic_long_add(sc->nr_to_scan, &c->need_shrink);
- 	queue_work(dm_bufio_wq, &c->shrink_work);
+ 	count = atomic_read(&nn->nfsd_courtesy_clients);
+ 	if (!count)
+@@ -8149,12 +8148,17 @@ static int nfs4_state_create_net(struct net *net)
+ 	INIT_WORK(&nn->nfsd_shrinker_work, nfsd4_state_shrinker_worker);
+ 	get_net(net);
  
-@@ -2377,7 +2377,7 @@ static unsigned long dm_bufio_shrink_scan(struct shrinker *shrink, struct shrink
- 
- static unsigned long dm_bufio_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- {
--	struct dm_bufio_client *c = container_of(shrink, struct dm_bufio_client, shrinker);
-+	struct dm_bufio_client *c = shrink->private_data;
- 	unsigned long count = cache_total(&c->cache);
- 	unsigned long retain_target = get_retain_buffers(c);
- 	unsigned long queued_for_cleanup = atomic_long_read(&c->need_shrink);
-@@ -2490,14 +2490,20 @@ struct dm_bufio_client *dm_bufio_client_create(struct block_device *bdev, unsign
- 	INIT_WORK(&c->shrink_work, shrink_work);
- 	atomic_long_set(&c->need_shrink, 0);
- 
--	c->shrinker.count_objects = dm_bufio_shrink_count;
--	c->shrinker.scan_objects = dm_bufio_shrink_scan;
--	c->shrinker.seeks = 1;
--	c->shrinker.batch = 0;
--	r = register_shrinker(&c->shrinker, "dm-bufio:(%u:%u)",
--			      MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
--	if (r)
-+	c->shrinker = shrinker_alloc(0, "dm-bufio:(%u:%u)",
-+				     MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
-+	if (!c->shrinker) {
-+		r = -ENOMEM;
- 		goto bad;
-+	}
+-	nn->nfsd_client_shrinker.scan_objects = nfsd4_state_shrinker_scan;
+-	nn->nfsd_client_shrinker.count_objects = nfsd4_state_shrinker_count;
+-	nn->nfsd_client_shrinker.seeks = DEFAULT_SEEKS;
+-
+-	if (register_shrinker(&nn->nfsd_client_shrinker, "nfsd-client"))
++	nn->nfsd_client_shrinker = shrinker_alloc(0, "nfsd-client");
++	if (!nn->nfsd_client_shrinker)
+ 		goto err_shrinker;
 +
-+	c->shrinker->count_objects = dm_bufio_shrink_count;
-+	c->shrinker->scan_objects = dm_bufio_shrink_scan;
-+	c->shrinker->seeks = 1;
-+	c->shrinker->batch = 0;
-+	c->shrinker->private_data = c;
++	nn->nfsd_client_shrinker->scan_objects = nfsd4_state_shrinker_scan;
++	nn->nfsd_client_shrinker->count_objects = nfsd4_state_shrinker_count;
++	nn->nfsd_client_shrinker->seeks = DEFAULT_SEEKS;
++	nn->nfsd_client_shrinker->private_data = nn;
 +
-+	shrinker_register(c->shrinker);
++	shrinker_register(nn->nfsd_client_shrinker);
++
+ 	return 0;
  
- 	mutex_lock(&dm_bufio_clients_lock);
- 	dm_bufio_client_count++;
-@@ -2537,7 +2543,7 @@ void dm_bufio_client_destroy(struct dm_bufio_client *c)
+ err_shrinker:
+@@ -8252,7 +8256,7 @@ nfs4_state_shutdown_net(struct net *net)
+ 	struct list_head *pos, *next, reaplist;
+ 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
  
- 	drop_buffers(c);
- 
--	unregister_shrinker(&c->shrinker);
-+	shrinker_free(c->shrinker);
- 	flush_work(&c->shrink_work);
- 
- 	mutex_lock(&dm_bufio_clients_lock);
+-	unregister_shrinker(&nn->nfsd_client_shrinker);
++	shrinker_free(nn->nfsd_client_shrinker);
+ 	cancel_work(&nn->nfsd_shrinker_work);
+ 	cancel_delayed_work_sync(&nn->laundromat_work);
+ 	locks_end_grace(&nn->nfsd4_manager);
 -- 
 2.30.2
 
