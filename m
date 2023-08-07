@@ -2,53 +2,53 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E964C04E69
-	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:17:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD6ADC3DA41
+	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 11:17:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjHGLRb (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Aug 2023 07:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
+        id S232173AbjHGLRs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Aug 2023 07:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbjHGLRM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:17:12 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F731FDA
-        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:15:24 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so362194a12.0
-        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:15:24 -0700 (PDT)
+        with ESMTP id S232254AbjHGLR2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Aug 2023 07:17:28 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E174170A
+        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 04:15:42 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-26890669c8eso931990a91.1
+        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 04:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691406841; x=1692011641;
+        d=bytedance.com; s=google; t=1691406880; x=1692011680;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a0ijFA9s9bGVMHT4vLgTYS12L8yx2Rc7o6TjM9ZoJx8=;
-        b=j23yTPIuNE+5ql7c6DjTIXWDr8oKTSMtsFBsjjClL+S91jhwZsCcQpsRFgnSFEePMC
-         wDGERQ9BkTMGtvLZ5zfdg/UY3HTRyGts+YmZTXabmNDPI0OPAQAqDfrw+jtLBHzydYmo
-         a162rquUe53dODAJSpyuVfvHf3Ov/M30E8XZRIYttEwAxKqQFIS0/ih88OAzPNYyRzzl
-         3HkOwk/otVmt9H2o9TgGnt1eeNwmmBoINVdlSrRso11GlktIoEp92Q8ZBNulwW/JkpbE
-         xeEGYB8AYsoVpHQBF7XcqQ5QT7dfjGJtE4RXA0EdlD1H8/kYwDQ1OkZhdkl3HITdo9Iq
-         hOkA==
+        bh=uDu/4z0sff3MNLq2Hem41DvJLtW9HR7Ht2OY0+o3IBw=;
+        b=B1CW4rX5HR96iE4C61mcE8Vf6RLeUtYXgDxnwBceT7ft1IC5S++icQmFIFvrt4cG/L
+         0c/u6FKIvYpbVXU295bMslZ7j2rgVaXwSjJRaIMLa4dIqq6HefzeIHqMKw0/Lo0rsfaU
+         nsC5mn0wc4B6AcTwpHE7UQo4S/4ZAugQvuMvQEsWqhRZLmPoe9oa0Q7yCYFnuuapzCun
+         SWccc4DpmmmlhTogFq9P0LyJEl3ZRZ2cm803+AIasPp033eu68uxaCfAoKnHA+NQuDMw
+         Rtim+7y0rt6vcYQJO+qKgz5xgBY8yFO2AMQKXPDTy0z1fvoO5gByJOuvIrJQUEDpduII
+         rIFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691406841; x=1692011641;
+        d=1e100.net; s=20221208; t=1691406880; x=1692011680;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a0ijFA9s9bGVMHT4vLgTYS12L8yx2Rc7o6TjM9ZoJx8=;
-        b=P5sbZkRVOBC7V1gf/rQc0zf4OT1Az6M6iJyxE1ONY9XTvPB192U3lkB6TWqKFwhj6A
-         faK4svCUTmhcD+8OHmcyriMTyfZHg87zBRYyKQ/DuQ/66hHlg9O33yOiIm/82G1feHMp
-         pi2utV9i6LSYJZu+U+06SK4au0ootJKtXysWzV+YODf6Yv0YfQAo9W8MxMUW/TO/HpmG
-         hebyhtWSCwDCMM4oWLpvUrutak0js0GgKlLgIh9MFS/3wUB6mb0Ku0paU6zfUtRnkDfH
-         wY91HC2ast+fmya8CJ9AniO5BWz9aLqJ55+iWgHpLz4gSqWHqhxajrxMAQoXYmMjqk6G
-         UXcA==
-X-Gm-Message-State: AOJu0YzHXAZK0J37pMI7RC4+fNfjGFUSb+zLkyfZux4G+6eLv1Ea83sl
-        fctSg1tNZDKzwLqTOEdUgj965Q==
-X-Google-Smtp-Source: AGHT+IELWLhV4Bj40lkko/D2F7gtSRcHKPclt9k8JlXsq8dyT7OdoG/0VZRRAUzfMJnehzLNwTS/oA==
-X-Received: by 2002:a17:90a:2909:b0:269:5bf7:d79c with SMTP id g9-20020a17090a290900b002695bf7d79cmr2214416pjd.1.1691406841328;
-        Mon, 07 Aug 2023 04:14:01 -0700 (PDT)
+        bh=uDu/4z0sff3MNLq2Hem41DvJLtW9HR7Ht2OY0+o3IBw=;
+        b=BEn6BNsQR1PZPZhP9fqCheODhMMN/DwKwTeYBdS9c2Hi/AUg46mJCmRcgNUZgT4mX7
+         JNLqXnr/LKROfXwfBZsJP01WJYhqTaSlOcISydWLhJec5oJYacd6+ZV4StCkBVWmPDTT
+         DJ0kp9g78lcpSxN5/Qz8Ymc75T4JfjAxEajn003uhtITX80eNST/J1g20u/qhjf7MfIQ
+         S5I57CsMZ8eqUEE5kdCeAU3syrv381ySiOyKCK7SuCjewtaYyKz4/+y+NF/4IcOGkFh+
+         O9qxOmjeBlPZJ5LN08OIvyOUQAVs8G8aX5kgIlRKL+MzB7363UKzYoVQVJkD2TB3Pskj
+         TZug==
+X-Gm-Message-State: ABy/qLZQDkdFwDut1gJzby2w9yKSxV4M+q6RCq+UgJrYnbZ8xe8Xgn3d
+        wEgDYM+WN26zg0x3KdFSk9UWTQ==
+X-Google-Smtp-Source: APBJJlE+JUQU2KnCMqxKRhVbnyE7g/MjXwiwJL23ihCwbN9GtK/yS0Snkx/m2fq2fyEzRCC+VQ52VA==
+X-Received: by 2002:a17:90a:1f83:b0:268:3dc6:f0c5 with SMTP id x3-20020a17090a1f8300b002683dc6f0c5mr25034377pja.0.1691406879873;
+        Mon, 07 Aug 2023 04:14:39 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.13.49
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.14.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:14:01 -0700 (PDT)
+        Mon, 07 Aug 2023 04:14:39 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -70,9 +70,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v4 19/48] rcu: dynamically allocate the rcu-kfree shrinker
-Date:   Mon,  7 Aug 2023 19:09:07 +0800
-Message-Id: <20230807110936.21819-20-zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 22/48] mm: workingset: dynamically allocate the mm-shadow shrinker
+Date:   Mon,  7 Aug 2023 19:09:10 +0800
+Message-Id: <20230807110936.21819-23-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
@@ -82,60 +82,73 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Use new APIs to dynamically allocate the rcu-kfree shrinker.
+Use new APIs to dynamically allocate the mm-shadow shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- kernel/rcu/tree.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ mm/workingset.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 7c79480bfaa0..3b20fc46c514 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3449,13 +3449,6 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 	return freed == 0 ? SHRINK_STOP : freed;
+diff --git a/mm/workingset.c b/mm/workingset.c
+index da58a26d0d4d..3c53138903a7 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -763,13 +763,6 @@ static unsigned long scan_shadow_nodes(struct shrinker *shrinker,
+ 					NULL);
  }
  
--static struct shrinker kfree_rcu_shrinker = {
--	.count_objects = kfree_rcu_shrink_count,
--	.scan_objects = kfree_rcu_shrink_scan,
--	.batch = 0,
--	.seeks = DEFAULT_SEEKS,
+-static struct shrinker workingset_shadow_shrinker = {
+-	.count_objects = count_shadow_nodes,
+-	.scan_objects = scan_shadow_nodes,
+-	.seeks = 0, /* ->count reports only fully expendable nodes */
+-	.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE,
 -};
 -
- void __init kfree_rcu_scheduler_running(void)
- {
- 	int cpu;
-@@ -4931,6 +4924,7 @@ static void __init kfree_rcu_batch_init(void)
- {
- 	int cpu;
- 	int i, j;
-+	struct shrinker *kfree_rcu_shrinker;
+ /*
+  * Our list_lru->lock is IRQ-safe as it nests inside the IRQ-safe
+  * i_pages lock.
+@@ -778,9 +771,10 @@ static struct lock_class_key shadow_nodes_key;
  
- 	/* Clamp it to [0:100] seconds interval. */
- 	if (rcu_delay_page_cache_fill_msec < 0 ||
-@@ -4962,8 +4956,18 @@ static void __init kfree_rcu_batch_init(void)
- 		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
- 		krcp->initialized = true;
- 	}
--	if (register_shrinker(&kfree_rcu_shrinker, "rcu-kfree"))
--		pr_err("Failed to register kfree_rcu() shrinker!\n");
+ static int __init workingset_init(void)
+ {
++	struct shrinker *workingset_shadow_shrinker;
+ 	unsigned int timestamp_bits;
+ 	unsigned int max_order;
+-	int ret;
++	int ret = -ENOMEM;
+ 
+ 	BUILD_BUG_ON(BITS_PER_LONG < EVICTION_SHIFT);
+ 	/*
+@@ -797,17 +791,24 @@ static int __init workingset_init(void)
+ 	pr_info("workingset: timestamp_bits=%d max_order=%d bucket_order=%u\n",
+ 	       timestamp_bits, max_order, bucket_order);
+ 
+-	ret = prealloc_shrinker(&workingset_shadow_shrinker, "mm-shadow");
+-	if (ret)
++	workingset_shadow_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE |
++						    SHRINKER_MEMCG_AWARE,
++						    "mm-shadow");
++	if (!workingset_shadow_shrinker)
+ 		goto err;
 +
-+	kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
-+	if (!kfree_rcu_shrinker) {
-+		pr_err("Failed to allocate kfree_rcu() shrinker!\n");
-+		return;
-+	}
+ 	ret = __list_lru_init(&shadow_nodes, true, &shadow_nodes_key,
+-			      &workingset_shadow_shrinker);
++			      workingset_shadow_shrinker);
+ 	if (ret)
+ 		goto err_list_lru;
+-	register_shrinker_prepared(&workingset_shadow_shrinker);
 +
-+	kfree_rcu_shrinker->count_objects = kfree_rcu_shrink_count;
-+	kfree_rcu_shrinker->scan_objects = kfree_rcu_shrink_scan;
-+	kfree_rcu_shrinker->seeks = DEFAULT_SEEKS;
++	workingset_shadow_shrinker->count_objects = count_shadow_nodes;
++	workingset_shadow_shrinker->scan_objects = scan_shadow_nodes;
 +
-+	shrinker_register(kfree_rcu_shrinker);
++	shrinker_register(workingset_shadow_shrinker);
+ 	return 0;
+ err_list_lru:
+-	free_prealloced_shrinker(&workingset_shadow_shrinker);
++	shrinker_free(workingset_shadow_shrinker);
+ err:
+ 	return ret;
  }
- 
- void __init rcu_init(void)
 -- 
 2.30.2
 
