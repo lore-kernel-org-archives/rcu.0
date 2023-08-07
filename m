@@ -2,146 +2,104 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F6D7C04A94
-	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 14:16:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F17EDC00528
+	for <rcu@archiver.kernel.org>; Mon,  7 Aug 2023 14:22:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbjHGOQR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Aug 2023 10:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S230050AbjHGOWh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Aug 2023 10:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbjHGOQP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:16:15 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9F5E7A
-        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 07:16:10 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so73207491fa.3
-        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 07:16:10 -0700 (PDT)
+        with ESMTP id S233251AbjHGOWf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Aug 2023 10:22:35 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E5FE79
+        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 07:22:33 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9c55e0fbeso70554061fa.2
+        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 07:22:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691417769; x=1692022569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mVE/GJTe1IuiufpABjiYZn1olHI1ifx/I1TivYEBHQg=;
-        b=KDeUHSfDD3L4EI9ZDbXXnOCIgf36k4kTiyHRIIffaGRG3HCFl39GcfvKDi2APyBxt9
-         uIkOV41JjBWzvcfkl4hWbMoMF6B7yW2N6o4toZetNa+16q9cwIbk8dhp8WLMlbMnqtzs
-         lrCcsJN2ho/fqPCpmMmUqd/p18Lc2P1XhR9Zc=
+        d=joelfernandes.org; s=google; t=1691418152; x=1692022952;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uioNtx4EroIcX/K2i5v3FWGJAJa6qBczzHeCqVex0M0=;
+        b=wn4QJHa6FqcG4uZFr0bvoyDNBlp4d3cXL3b3MWhrie14GvPAr4ER4m7P7nR5ZwzLca
+         amYa6wUKby5A8vOaK+saK1K9IgAa96PGzuWnkPtl+23soJJDJbdRGfEjYw3jHdDyZDs9
+         IAtUAOp1IhzlddayftCKTLjXpMuiM17JSNOCQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691417769; x=1692022569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mVE/GJTe1IuiufpABjiYZn1olHI1ifx/I1TivYEBHQg=;
-        b=IS3QmPFXw92vpFpf+ZsVA/lByL/9MBX2C0l368xUHVNMIWcKc12IYn0kvmjN6OBQs4
-         A3gLbxn5aKj9GP32UAOhdzZSKXyzkgALDHoium00IE09/9ej9djB6ZAABDJiIP3FR9mc
-         ZHa5E0Hat0v1UrLyf9TYsnYiJPBKtcGTQb6ay+/R/YacNMQl03gqVid5JQxDjOqC995k
-         XmfL+92OaYoEv1FyA17QjHoo0VF/r6uUBQ/uZ0lOzElW68Sz5mqfNQ93vwEMK0n/7t59
-         6Je3gmrK4X0mxKKmTOPN5hBlNKKtO8ANK0f3JsT8yzxcY9N1/RALApkFhzV96ah/HRag
-         LH/w==
-X-Gm-Message-State: AOJu0Yz/MAwxsB6eTWHhEemCLD0y1Z+asPRswGr8fD7gqmdy1n5mBWEl
-        i45txSET7kmMqY0/mrl9XHIYXvmPXxunxniGEJ/qug==
-X-Google-Smtp-Source: AGHT+IGOrJUhdG+ahMA8bObfIwJouhmkY47ZzUfvTwinDgzhZuBpH+4Q7OaueJuZRAHK8xn8XVlTzjWWvAUYbt+ovvQ=
-X-Received: by 2002:a2e:b166:0:b0:2b9:dd3b:cf43 with SMTP id
- a6-20020a2eb166000000b002b9dd3bcf43mr6572529ljm.13.1691417768626; Mon, 07 Aug
- 2023 07:16:08 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691418152; x=1692022952;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uioNtx4EroIcX/K2i5v3FWGJAJa6qBczzHeCqVex0M0=;
+        b=FjynNZdnIqJ+hlN5+1SGYMmDzAhpQKpUX3m/xptMciC/ev08wT2uGShAxDTVkmyNPp
+         PgZoyqp3g19umF81FqCFM/YrOmns64Euz7vrfd1M1e2uHyIZHAGaSX+Xy7l16GPdHxyW
+         l2tOiYBxMMpzXOW1Dv87np4Q5WcKzFM91+bejzd93uWsH2BqRlq9g1+m6Ia+zON95tZg
+         zq14OivWgLnnBgN8S3JI/14dGUHDQN/Rk7+WwrJk2hER0R5zWXGrQhZHSnCnItmMZJFV
+         glhoefEJo1EmVwQwGf9YfeQ4K23LRon+oYEopLzmZB+DZmvayacH97XJhYzC6imBQLbr
+         YgAQ==
+X-Gm-Message-State: AOJu0Yz6xGaXtPkKRX24B1MXbYgJgKcsOvtY2ydlSYnhHV+yGp52L8z6
+        YcWR8cb8xEngX3ONHc8QeyymUFn4bqvVsRFD92v6Uf/pfGig0CKrasI=
+X-Google-Smtp-Source: AGHT+IHCz1lf7kKJA3m8osJvYJpEsuuPlfHAyKkPC6Nvpi0C7L8yi9sHGJEoAhNTcBjHOLdIVzF6AxNorUiRxvtT9Z4=
+X-Received: by 2002:a05:651c:101:b0:2b6:e623:7b57 with SMTP id
+ a1-20020a05651c010100b002b6e6237b57mr7218134ljb.25.1691418151758; Mon, 07 Aug
+ 2023 07:22:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com> <20230807110936.21819-19-zhengqi.arch@bytedance.com>
-In-Reply-To: <20230807110936.21819-19-zhengqi.arch@bytedance.com>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 7 Aug 2023 10:16:03 -0400
-Message-ID: <CAEXW_YTKHUeZHWtzeSG5Tt7MscNKjVTScBWkVDkC4Orisa7w=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 18/48] rcu: dynamically allocate the rcu-lazy shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, simon.horman@corigine.com,
-        dlemoal@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Date:   Mon, 7 Aug 2023 10:22:26 -0400
+Message-ID: <CAEXW_YTSX-eeFHBaodLSxmGZPoT1RBAb8mFu9oh-wm_fnYY29Q@mail.gmail.com>
+Subject: TREE04 and TREE07 failures on 5.15 stable
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        rcu <rcu@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 7:36=E2=80=AFAM Qi Zheng <zhengqi.arch@bytedance.com=
-> wrote:
->
-> Use new APIs to dynamically allocate the rcu-lazy shrinker.
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Hello, Frederick, all,
+TREE04 and TREE07 still fail on the 5.15 kernel.
 
-For RCU:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+The stutter patches helped 5.10, 6.1 and 6.4 but 5.15 still is
+troubled. Any thoughts?
 
-thanks,
+OTOH, I am not sure how many NO_HZ_FULL users are on the 5.15 kernel.
+Do you have any idea?
 
-- Joel
+Meanwhile I'll continue to debug it. Thank you!
 
-
-> ---
->  kernel/rcu/tree_nocb.h | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 5598212d1f27..e1c59c33738a 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1396,13 +1396,6 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, stru=
-ct shrink_control *sc)
->
->         return count ? count : SHRINK_STOP;
->  }
-> -
-> -static struct shrinker lazy_rcu_shrinker =3D {
-> -       .count_objects =3D lazy_rcu_shrink_count,
-> -       .scan_objects =3D lazy_rcu_shrink_scan,
-> -       .batch =3D 0,
-> -       .seeks =3D DEFAULT_SEEKS,
-> -};
->  #endif // #ifdef CONFIG_RCU_LAZY
->
->  void __init rcu_init_nohz(void)
-> @@ -1410,6 +1403,7 @@ void __init rcu_init_nohz(void)
->         int cpu;
->         struct rcu_data *rdp;
->         const struct cpumask *cpumask =3D NULL;
-> +       struct shrinker * __maybe_unused lazy_rcu_shrinker;
->
->  #if defined(CONFIG_NO_HZ_FULL)
->         if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask)=
-)
-> @@ -1436,8 +1430,16 @@ void __init rcu_init_nohz(void)
->                 return;
->
->  #ifdef CONFIG_RCU_LAZY
-> -       if (register_shrinker(&lazy_rcu_shrinker, "rcu-lazy"))
-> -               pr_err("Failed to register lazy_rcu shrinker!\n");
-> +       lazy_rcu_shrinker =3D shrinker_alloc(0, "rcu-lazy");
-> +       if (!lazy_rcu_shrinker) {
-> +               pr_err("Failed to allocate lazy_rcu shrinker!\n");
-> +       } else {
-> +               lazy_rcu_shrinker->count_objects =3D lazy_rcu_shrink_coun=
-t;
-> +               lazy_rcu_shrinker->scan_objects =3D lazy_rcu_shrink_scan;
-> +               lazy_rcu_shrinker->seeks =3D DEFAULT_SEEKS;
-> +
-> +               shrinker_register(lazy_rcu_shrinker);
-> +       }
->  #endif // #ifdef CONFIG_RCU_LAZY
->
->         if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
-> --
-> 2.30.2
->
+ --- Mon Aug  7 07:37:10 AM UTC 2023 Test summary:
+Results directory:
+/usr/local/google/home/joelaf/.jenkins/workspace/rcutorture_stable_linux-5.15.y/tools/testing/selftests/rcutorture/res/2023.08.07-04.01.19
+tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 48 --duration 60
+RUDE01 ------- 22984 GPs (6.38444/s) [tasks-rude: g0 f0x0 total-gps=0]
+SRCU-N ------- 318544 GPs (88.4844/s) [srcu: g4127136 f0x0 total-gps=4127136]
+SRCU-P ------- 268977 GPs (74.7158/s) [srcud: g2180244 f0x0 total-gps=2180244]
+SRCU-T ------- 497422 GPs (138.173/s) [srcu: g57760 f0x0 total-gps=57760]
+SRCU-U ------- 1152598 GPs (320.166/s) [srcud: g33534 f0x0 total-gps=33534]
+TASKS01 ------- 11516 GPs (3.19889/s) [tasks: g0 f0x0 total-gps=0]
+TASKS02 ------- 13407 GPs (3.72417/s) [tasks: g0 f0x0 total-gps=0]
+TASKS03 ------- 4598 GPs (1.27722/s) [tasks: g0 f0x0 total-gps=0]
+TINY01 ------- 422041 GPs (117.234/s) [rcu: g0 f0x0 total-gps=0]
+n_max_cbs: 77229
+TINY02 ------- 441676 GPs (122.688/s) [rcu: g0 f0x0 total-gps=0]
+n_max_cbs: 10691
+TRACE01 ------- 12593 GPs (3.49806/s) [tasks-tracing: g0 f0x0 total-gps=0]
+TRACE02 ------- 106606 GPs (29.6128/s) [tasks-tracing: g0 f0x0 total-gps=0]
+TREE01 ------- 42614 GPs (11.8372/s) [rcu: g346169 f0x0 total-gps=86809]
+TREE02 ------- 161421 GPs (44.8392/s) [rcu: g1356445 f0x0
+total-gps=339371] n_max_cbs: 177936
+TREE03 ------- 105074 GPs (29.1872/s) [rcu: g1699381 f0x2
+total-gps=425089] n_max_cbs: 631295
+TREE04 ------- 106036 GPs (29.4544/s) n_max_cbs: 550875
+QEMU killed
+TREE04 no success message, 222 successful version messages
+!!! PID 2616159 hung at 3780 vs. 3600 seconds Mon Aug  7 06:27:38 AM UTC 2023
+TREE05 ------- 132006 GPs (36.6683/s) [rcu: g1043673 f0x0
+total-gps=261183] n_max_cbs: 160463
+TREE07 ------- 52858 GPs (14.6828/s) n_max_cbs: 429828
+QEMU killed
+TREE07 no success message, 234 successful version messages
+ [033mWARNING:  [mAssertion failure in
+/usr/local/google/home/joelaf/.jenkins/workspace/rcutorture_stable_linux-5.15.y/tools/testing/selftests/rcutorture/res/2023.08.07-04.01.19/TREE07/console.log
+TREE07
+ [033mWARNING:  [mSummary: Call Traces: 6 Stalls: 5 Starves: 1
+!!! PID 473949 hung at 3790 vs. 3600 seconds Mon Aug  7 05:10:09 AM UTC 2023
+TREE09 ------- 346763 GPs (96.3231/s) [rcu: g5082937 f0x0
+total-gps=1271006] n_max_cbs: 697641
