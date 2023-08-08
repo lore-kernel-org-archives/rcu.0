@@ -2,224 +2,88 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECF28C001DB
-	for <rcu@archiver.kernel.org>; Tue,  8 Aug 2023 15:43:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 170F9C001B0
+	for <rcu@archiver.kernel.org>; Tue,  8 Aug 2023 16:29:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjHHPnI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 8 Aug 2023 11:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
+        id S229956AbjHHQ27 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 8 Aug 2023 12:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjHHPlp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 8 Aug 2023 11:41:45 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFA02680
-        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 20:34:50 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-63f80abbbb9so16075016d6.2
-        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 20:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691465689; x=1692070489;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hgjPfK9iSj5qP9Pn/1GaVHjb8yA45OkLIIyRtgXABLs=;
-        b=gEGkAgrxpBEhNrss4W+ni7VSr4kSot4ZClTlBOjb+hLcVrRCQLpdSDXkF66v8CnM4t
-         1O/bA33eB+sLQo+6Sct93gDyZ2ZS9oCdIOFnnmXYaTF2+PfigDIwhkq9K66wHhvzUFbR
-         JWIID+S3tX6Ju7cMSiNdxr9bRv7UPDZQH3Aj0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691465689; x=1692070489;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hgjPfK9iSj5qP9Pn/1GaVHjb8yA45OkLIIyRtgXABLs=;
-        b=Y+zB96dDKUxEXApfQ/f3BIkPD0PK9OkpTUmQYQMauRWMpVf5omTn8Kxki/ASYnD1Hz
-         VJ3Q/8uhzAzOfzILfLmVuXXX6BML17hVauirdA99qOg/0OYrjt3ctyVN/r1J/CL0JK31
-         sYGlHfkIerLld/ptVgjD43eedmlDhi9zj1QcY6CoXpCQc4rj7YUGt1B+ZkLvC4wbndlt
-         9ew/79byFWHiqMRJDK7ZosFSY7J6lMmnM//T25HmObpkZ/BKeEAwLAAwpippW1YkK+0V
-         XNJbO9jM7LNUpD+vzdhHBsUCpd0Z2MLPZeiP6ygP8eZuLsyHfpCFzVBbXlWIfdw0O7Vx
-         IEdw==
-X-Gm-Message-State: AOJu0YwUDofsGtzis+l61fRs5s0p0AEjcpyD84YU4B77vnMJIo2EWH40
-        /IkruIo3ipmMyZJmBlkMC/AZxVaOZ4YSesRKbP0=
-X-Google-Smtp-Source: AGHT+IGeKnOjttMA4G6epHQGenCg/2kgArfU1On58yYxol0fT0TM0cyao70SKjzOgCnMbDEdEUIkMw==
-X-Received: by 2002:a0c:b31e:0:b0:63f:9b36:3e05 with SMTP id s30-20020a0cb31e000000b0063f9b363e05mr1549568qve.10.1691465689446;
-        Mon, 07 Aug 2023 20:34:49 -0700 (PDT)
-Received: from smtpclient.apple ([45.85.144.222])
-        by smtp.gmail.com with ESMTPSA id h18-20020a0cf212000000b005dd8b9345b4sm3348806qvk.76.2023.08.07.20.34.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 20:34:48 -0700 (PDT)
+        with ESMTP id S232643AbjHHQ1Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 8 Aug 2023 12:27:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7303411F65;
+        Tue,  8 Aug 2023 08:50:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 46DE1623A9;
+        Tue,  8 Aug 2023 04:00:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C28C433C7;
+        Tue,  8 Aug 2023 04:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691467250;
+        bh=cXOL8xc0A6xcrLjiQsPiQrtWN20XM6CeBDpoGxgL8Qk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=o+z86DrLNP1vWk8LoTk/wc1ANBL99M0PKRR+UcOivvqI5LtL9A6Smraa0A7fptFev
+         ZlN3G2SgelsItMTBWfEuMKgd0HNzOa9AeFF0HJ74Z/jBDAAAmH36gGAKbb/HY9RqRf
+         lLo/1em7MTyv5d/rWEfNM86ruz7dXfN2mnPPHtKtjTjhWkQxCjFZvWb2et4QArfLR1
+         Dz4KMbciP+gma6aCCOAOZkFFVGifB3xptnoV9P2vRoURp+THmO7sIDruLl5gLmorcD
+         l4wpyICePvibViNeouqrXPU8mSJbAdy+bUf8fgUYp9dYsgmo2dWtHpJd7nXdZ1Fbmx
+         tM3RZPimzNgZg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6F43BCE075B; Mon,  7 Aug 2023 21:00:49 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 21:00:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     John Stultz <jstultz@google.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        kernel-team@android.com, Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [PATCH rcu 2/2] torture: Add lock_torture writer_fifo module
+ parameter
+Message-ID: <8ecb0ee9-cbe0-458d-930f-772ee7128003@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop>
+ <20230728032232.816584-2-paulmck@kernel.org>
+ <CANDhNCpCrwbMp8oTwvTab+-Q1b52zJvMuZiV9LW-bP2Zgqqyhg@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: TREE04 and TREE07 failures on 5.15 stable
-Date:   Mon, 7 Aug 2023 23:34:38 -0400
-Message-Id: <C01641C0-725A-45C4-AD7E-609EC3091636@joelfernandes.org>
-References: <CAABZP2zYXbSjPUyJd4X5r0wTdSQBLUEm_eGmqaYf2o3HVxVn9A@mail.gmail.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        rcu <rcu@vger.kernel.org>
-In-Reply-To: <CAABZP2zYXbSjPUyJd4X5r0wTdSQBLUEm_eGmqaYf2o3HVxVn9A@mail.gmail.com>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-X-Mailer: iPhone Mail (20B101)
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANDhNCpCrwbMp8oTwvTab+-Q1b52zJvMuZiV9LW-bP2Zgqqyhg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Mon, Aug 07, 2023 at 08:27:29PM -0700, John Stultz wrote:
+> On Thu, Jul 27, 2023 at 8:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> >
+> > This commit adds a module parameter that causes the locktorture writer
+> > to run at real-time priority.
+> >
+> > To use it:
+> > insmod /lib/modules/torture.ko random_shuffle=1
+> > insmod /lib/modules/locktorture.ko torture_type=mutex_lock rt_boost=1 rt_boost_factor=50 nested_locks=3 writer_fifo=1
+> >                                                                                                         ^^^^^^^^^^^^^
+> >
+> > A predecessor to this patch has been helpful to uncover issues with the
+> > proxy-execution series.
+> >
+> > [ paulmck: Remove locktorture-specific code from kernel/torture.c. ]
+> 
+> Thanks again for improving this!  I've switched over to your version
+> here in my test tree.
+> 
+> Acked-by: John Stultz <jstultz@google.com>
 
+Thank you both!  I will apply on my next rebase.
 
-> On Aug 7, 2023, at 10:06 PM, Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
->=20
-> =EF=BB=BFOn Tue, Aug 8, 2023 at 5:08=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gm=
-ail.com> wrote:
->>=20
->>> On Tue, Aug 8, 2023 at 12:56=E2=80=AFAM Joel Fernandes <joel@joelfernand=
-es.org> wrote:
->>>=20
->>> On Mon, Aug 7, 2023 at 11:47=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gmail.co=
-m> wrote:
->>>>=20
->>>> On Mon, Aug 7, 2023 at 11:38=E2=80=AFPM Joel Fernandes <joel@joelfernan=
-des.org> wrote:
->>>>>=20
->>>>> Btw full logs are here:
->>>>> http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15=
-.y/80/artifact/tools/testing/selftests/rcutorture/res/2023.08.07-04.01.19/
->>>>>=20
->>>>> And some more comments:
->>>>>=20
->>>>> On Mon, Aug 7, 2023 at 10:22=E2=80=AFAM Joel Fernandes <joel@joelferna=
-ndes.org> wrote:
->>>>>>=20
->>>>>> Hello, Frederick, all,
->>>>>> TREE04 and TREE07 still fail on the 5.15 kernel.
->>>>>>=20
->>>>>> The stutter patches helped 5.10, 6.1 and 6.4 but 5.15 still is
->>>>>> troubled. Any thoughts?
->>>>>>=20
->>>>>> OTOH, I am not sure how many NO_HZ_FULL users are on the 5.15 kernel.=
-
->>>>>> Do you have any idea?
->>>>>>=20
->>>>>> Meanwhile I'll continue to debug it. Thank you!
->>>>>>=20
->>>>>> --- Mon Aug  7 07:37:10 AM UTC 2023 Test summary:
->>>>>> Results directory:
->>>>>> /usr/local/google/home/joelaf/.jenkins/workspace/rcutorture_stable_li=
-nux-5.15.y/tools/testing/selftests/rcutorture/res/2023.08.07-04.01.19
->>>>>> tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 48 --duration 60=
-
->>>>>> RUDE01 ------- 22984 GPs (6.38444/s) [tasks-rude: g0 f0x0 total-gps=3D=
-0]
->>>>>> SRCU-N ------- 318544 GPs (88.4844/s) [srcu: g4127136 f0x0 total-gps=3D=
-4127136]
->>>>>> SRCU-P ------- 268977 GPs (74.7158/s) [srcud: g2180244 f0x0 total-gps=
-=3D2180244]
->>>>>> SRCU-T ------- 497422 GPs (138.173/s) [srcu: g57760 f0x0 total-gps=3D=
-57760]
->>>>>> SRCU-U ------- 1152598 GPs (320.166/s) [srcud: g33534 f0x0 total-gps=3D=
-33534]
->>>>>> TASKS01 ------- 11516 GPs (3.19889/s) [tasks: g0 f0x0 total-gps=3D0]
->>>>>> TASKS02 ------- 13407 GPs (3.72417/s) [tasks: g0 f0x0 total-gps=3D0]
->>>>>> TASKS03 ------- 4598 GPs (1.27722/s) [tasks: g0 f0x0 total-gps=3D0]
->>>>>> TINY01 ------- 422041 GPs (117.234/s) [rcu: g0 f0x0 total-gps=3D0]
->>>>>> n_max_cbs: 77229
->>>>>> TINY02 ------- 441676 GPs (122.688/s) [rcu: g0 f0x0 total-gps=3D0]
->>>>>> n_max_cbs: 10691
->>>>>> TRACE01 ------- 12593 GPs (3.49806/s) [tasks-tracing: g0 f0x0 total-g=
-ps=3D0]
->>>>>> TRACE02 ------- 106606 GPs (29.6128/s) [tasks-tracing: g0 f0x0 total-=
-gps=3D0]
->>>>>> TREE01 ------- 42614 GPs (11.8372/s) [rcu: g346169 f0x0 total-gps=3D8=
-6809]
->>>>>> TREE02 ------- 161421 GPs (44.8392/s) [rcu: g1356445 f0x0
->>>>>> total-gps=3D339371] n_max_cbs: 177936
->>>>>> TREE03 ------- 105074 GPs (29.1872/s) [rcu: g1699381 f0x2
->>>>>> total-gps=3D425089] n_max_cbs: 631295
->>>>>> TREE04 ------- 106036 GPs (29.4544/s) n_max_cbs: 550875
->>>>>> QEMU killed
->>>>>=20
->>>>> This seems hotplug related. Not sure.
->>>>>=20
->>>>>> TREE04 no success message, 222 successful version messages
->>>>>> !!! PID 2616159 hung at 3780 vs. 3600 seconds Mon Aug  7 06:27:38 AM U=
-TC 2023
->>>>>> TREE05 ------- 132006 GPs (36.6683/s) [rcu: g1043673 f0x0
->>>>>> total-gps=3D261183] n_max_cbs: 160463
->>>>>> TREE07 ------- 52858 GPs (14.6828/s) n_max_cbs: 429828
->>>>>> QEMU killed
->>>>>> TREE07 no success message, 234 successful version messages
->>>>>> [033mWARNING:  [mAssertion failure in
->>>>>> /usr/local/google/home/joelaf/.jenkins/workspace/rcutorture_stable_li=
-nux-5.15.y/tools/testing/selftests/rcutorture/res/2023.08.07-04.01.19/TREE07=
-/console.log
->>>>>> TREE07
->>>>>> [033mWARNING:  [mSummary: Call Traces: 6 Stalls: 5 Starves: 1
->>>>>=20
->>>>> Looks like this was because it is missing:
->>>>> lore.kernel.org/r/20230101061555.278129-1-joel@joelfernandes.org
->>>> 5.15.y (38d4ca22a528) is missing above patch. I started
->>>> tools/testing/selftests/rcutorture/bin/torture.sh on my  i7-12800H
->>>> nested kvm ubuntu environment just now, the test will last for about 7
->>>> hours.
->>>>=20
->>>> Hope I can be of some beneficial ;-)
->>>=20
->>> Thanks Zhouyi ;-)
->>>=20
->>> I am also doing a debug run to trackdown what's up with TREE04,  you
->>> can see the test running live here ;-)
->>> http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y=
-/83/console
->>>=20
->>> (in case you want to see the kvm.sh options I passed for tracing, take
->>> a look at the link).
->> Thank you Joel for your instruction.
->> I stopped torture.sh, and run the kvm.sh with the options above both
->> on my  i7-12800H and Dell PowerEdge R720 with two Intel(R) Xeon(R) CPU
->> E5-2660 (which I use to test [1]).
-> I can't reproduce the phenomenon in above environments, maybe the
-> hardware plays in important role in our scenery.
->=20
-> [ 7204.697370] mem_dump_obj() vmalloc test: rcu_torture_stats =3D
-> 0000000000000000, &rhp =3D ffffc9000036feb0, rhp =3D ffffc9000000c000
-> [ 7204.701895] mem_dump_obj(vmalloc ffffc9000000c000): 1-page vmalloc
-> region starting at 0xffffc9000000c000 allocated at
-> rcu_torture_cleanup.cold+0x218/c
-> [ 7204.707293] mem_dump_obj(vmalloc ffffc9000000c008): 1-page vmalloc
-> region starting at 0xffffc9000000c000 allocated at
-> rcu_torture_cleanup.cold+0x218/c
-> [ 7204.712755] rcu-torture: rtc: 0000000000000000 VER: 343876 tfle: 0
-> rta: 343876 rtaf: 0 rtf: 343865 rtmbe: 0 rtmbkf: 0/138644 rtbe: 0
-> rtbke: 0 rtbre: 0
-> [ 7204.723319] rcu-torture: Reader Pipe:  12958247071 489089 0 0 0 0 0 0 0=
- 0 0
-> [ 7204.726240] rcu-torture: Reader Batch:  12957121006 1615154 0 0 0 0 0 0=
- 0 0 0
-> [ 7204.729146] rcu-torture: Free-Block Circulation:  343875 343875
-> 343872 343871 343870 343869 343868 343867 343866 343865 0
-> [ 7204.733441] rcu-torture:--- End of test: SUCCESS: nreaders=3D7
-> nfakewriters=3D4 stat_interval=3D15 verbose=3D1 test_no_idle_hz=3D1
-> shuffle_interval=3D3 stutter=3D50
-> [ 7204.750432] platform platform-framebuffer.0: shutdown
->=20
-> I am very regret not able to help
-
-No regrets and thanks for checking. It could also be a host side issue in my=
- setup.
-
-I will keep digging, thanks.
-
-- Joel
-
-
->=20
-> Thanks
-> Zhouyi
->>=20
->> The tests seem to end after 7200 seconds, I will report to you after that=
-.
->>=20
->> Thanks
->> Zhouyi
->> [1] https://lore.kernel.org/all/CAABZP2wSoEzfMWRdxGb6TmWVeN4xDUu5qjnG0d8R=
-faO7AovGZQ@mail.gmail.com/
->>>=20
->>> - Joel
+							Thanx, Paul
