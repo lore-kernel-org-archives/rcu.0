@@ -2,57 +2,57 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B0EDEB64DD
-	for <rcu@archiver.kernel.org>; Tue,  8 Aug 2023 03:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BADB2C001DB
+	for <rcu@archiver.kernel.org>; Tue,  8 Aug 2023 03:28:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbjHHD23 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 7 Aug 2023 23:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S229850AbjHHD2p (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 7 Aug 2023 23:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjHHD2D (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 7 Aug 2023 23:28:03 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC50410D8
-        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 20:26:47 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so28425e9.1
-        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 20:26:47 -0700 (PDT)
+        with ESMTP id S230002AbjHHD2Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 7 Aug 2023 23:28:25 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8691BF1
+        for <rcu@vger.kernel.org>; Mon,  7 Aug 2023 20:27:42 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe1e44fd2bso29915e9.0
+        for <rcu@vger.kernel.org>; Mon, 07 Aug 2023 20:27:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691465206; x=1692070006;
+        d=google.com; s=20221208; t=1691465261; x=1692070061;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NuB7YbnqC7c4FNO5OdgtRU4+dJJH4sy8Gmu+1ZKvXqM=;
-        b=AXuZeK3ldhdaatptZvUTwjzjLSZQOp8LYNPZ048zPT9Hf00RmeqwuH31u02hhlA7+/
-         0YogXDwAehqv5uH0vl6LQ+skudap6jxdmQ5h3DIfM4068LJxMeJmvBpY98VQAWcXY7t3
-         aZp2GtRHhhcW7bnVUN5xOxYTVt81R/+nEpCFct1aLAjt7NL5aAJ5/4fobWiAnImBwukO
-         GrC7nUo86PX0TdDGiCqYXdJUZfr91na793dHAY3b6Y5zGfVpOC5JoCQM2uoPLRBWDCOo
-         OwYB7IzEfEFWJYsQIEsMR8qvlgaQJV3Q2BN7+Yt4mI/LkBOlrXwQgkjdr7iLrAlJgKVa
-         MKCA==
+        bh=tiGQp3FsAI04kcNtST/Tl1pJkj2vxq4v0LWaXPyZsOc=;
+        b=pTn2KPnbpACRR1QoEDcr3ERxsHMj/OGG5vXUuUYjUIU9vaSomJncuphTCfIQ+V2jnF
+         tuxaRrPri4lngxFMKN+lzupIJKyPzJY6nWDPXUBV3uZJyHiN061bifLJJKL1mEdh4Zc/
+         1ZZZfF3vN5E4yc269EtGzxSwcgvKeTBrxeUQoDw0m5pTsHk06h6+eeSczXGA3bnEew9v
+         Nh5ds2u/V4BlrnZURcfuVZBtEJpP1qpOo/czVYss5a/IuZ1SGP4k1se4KCifowq+EIOT
+         fEnIu8rxXpbrKg4BgZkCbUGUYIVm5vkOz5UeICXSIJN5mKqoA8F8hwA46l7UAQu6fidZ
+         6c5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691465206; x=1692070006;
+        d=1e100.net; s=20221208; t=1691465261; x=1692070061;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NuB7YbnqC7c4FNO5OdgtRU4+dJJH4sy8Gmu+1ZKvXqM=;
-        b=jgofXTomZuzmcfGIbpT1U6H6BTtcYxijK3GNHJiMCaB7mVw1NXFBVrIuMclvAUL5Zj
-         NmvkQhZ8dBtQ9FMXc5ZHhbnIsx0lnHIg1s9/fSedXSfv142iDeqB2px126rFwDBdWe1Z
-         mSZcLwSD3tzLbKCnlUHhMqFMLQHzKrV04ca7xwSZnG3KWxcx3Uztjy6P8bUplHz0UKi8
-         NerENY+CgYljNrIdEAHtVNFiVKQfa21/QI/a3fygyJ4zFw7R58+BIKNo68NAczdiae8U
-         17KgOTXql7Q1Lja9KM9MIFujmE0L5bl3S5jLW+DJKG6gSp2mEYBPQH0cJhtjvFsReGZw
-         zVDg==
-X-Gm-Message-State: AOJu0Yz4ca0GFxg1YfL3EtkXOvFVPoxiNUlscmoOQqQqzoBGKMR3FIDF
-        47rtd7MvhjIL0mNATE3PwO3n5PbN1G8JTCLeatFO
-X-Google-Smtp-Source: AGHT+IGRFITSpr6ACBR1/rbLIy0Cxs8MPgIs2YrgQ1eiCvqppxu+V90ISFxTnFmo2ezgQvxoUn7T+ud+gaxTCqzT7sI=
-X-Received: by 2002:a05:600c:4e4b:b0:3fd:e15:6d5 with SMTP id
- e11-20020a05600c4e4b00b003fd0e1506d5mr292786wmq.2.1691465206339; Mon, 07 Aug
- 2023 20:26:46 -0700 (PDT)
+        bh=tiGQp3FsAI04kcNtST/Tl1pJkj2vxq4v0LWaXPyZsOc=;
+        b=Z+wU1lXh/T5meCYZTAp+eI/hAS1BJi4od2QHvaBOH6Jh62iGgfVZgH4Th9IyBeY/4z
+         4EV2/+baulh+s78GKTGam8ogkGBu+gzpWsYK5/LExk7H/ksAPUvgEMy4PAtkZ418cFrb
+         ZHA5tqJj0VO0vmJqR2gs74HUIw2OtK3v58CTVSV36FqSEgtFzgaC8YcaY5vMSOSYXrT1
+         nc+pJbJ9Flv7XnCFiwJOnwjeFpqaA8pdwfsIaahk6Tcq/BCb83j4lIOqcUZwKoQzLmRz
+         sRLmTMdXGr8+zXFjjBeCqqPU2SWWbZqp3yxq/xt1PoE84rixrmImD7pnRbNNnp6bC4S5
+         OElg==
+X-Gm-Message-State: AOJu0YxB99jZ5qzJJLmcWX1i1BBDt5Ho9SVqjSF5snL7w5tK1dccPt9k
+        Kv3ChNppaPXgnMJkQfjMmpe+P8oAPK5NR8p+s2kMyywgNYttXcZgof/nVnU=
+X-Google-Smtp-Source: AGHT+IHNklvPNz0M4NW5KZIZXX2bW3bL4rd8brH9A51j5QvubhasYCcxYJoodGdcImm/oRHisG2hKp4tUyZlyR0ad8Q=
+X-Received: by 2002:a05:600c:1d88:b0:3f7:e463:a0d6 with SMTP id
+ p8-20020a05600c1d8800b003f7e463a0d6mr296502wms.0.1691465261438; Mon, 07 Aug
+ 2023 20:27:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop> <20230728032232.816584-1-paulmck@kernel.org>
-In-Reply-To: <20230728032232.816584-1-paulmck@kernel.org>
+References: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop> <20230728032232.816584-2-paulmck@kernel.org>
+In-Reply-To: <20230728032232.816584-2-paulmck@kernel.org>
 From:   John Stultz <jstultz@google.com>
-Date:   Mon, 7 Aug 2023 20:26:34 -0700
-Message-ID: <CANDhNCqTNNG=EVVgKruDEkbbSAArPP5=d=HsueYeScfyxQqXCA@mail.gmail.com>
-Subject: Re: [PATCH rcu 1/2] torture: Add a kthread-creation callback to _torture_create_kthread()
+Date:   Mon, 7 Aug 2023 20:27:29 -0700
+Message-ID: <CANDhNCpCrwbMp8oTwvTab+-Q1b52zJvMuZiV9LW-bP2Zgqqyhg@mail.gmail.com>
+Subject: Re: [PATCH rcu 2/2] torture: Add lock_torture writer_fifo module parameter
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@meta.com, rostedt@goodmis.org,
@@ -61,7 +61,7 @@ Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         Joel Fernandes <joel@joelfernandes.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Valentin Schneider <vschneid@redhat.com>,
-        kernel-team@android.com
+        kernel-team@android.com, Davidlohr Bueso <dave@stgolabs.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -71,22 +71,27 @@ X-Mailing-List: rcu@vger.kernel.org
 On Thu, Jul 27, 2023 at 8:22=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
 g> wrote:
 >
-> This commit adds a kthread-creation callback to the
-> _torture_create_kthread() function, which allows callers of a new
-> torture_create_kthread_cb() macro to specify a function to be invoked
-> after the kthread is created but before it is awakened for the first time=
-.
+> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
 >
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: John Stultz <jstultz@google.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: kernel-team@android.com
+> This commit adds a module parameter that causes the locktorture writer
+> to run at real-time priority.
+>
+> To use it:
+> insmod /lib/modules/torture.ko random_shuffle=3D1
+> insmod /lib/modules/locktorture.ko torture_type=3Dmutex_lock rt_boost=3D1=
+ rt_boost_factor=3D50 nested_locks=3D3 writer_fifo=3D1
+>                                                                          =
+                               ^^^^^^^^^^^^^
+>
+> A predecessor to this patch has been helpful to uncover issues with the
+> proxy-execution series.
+>
+> [ paulmck: Remove locktorture-specific code from kernel/torture.c. ]
 
-Thanks for improving the patch this way!
+Thanks again for improving this!  I've switched over to your version
+here in my test tree.
 
 Acked-by: John Stultz <jstultz@google.com>
+
+thanks
+-john
