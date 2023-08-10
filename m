@@ -2,50 +2,28 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D507DC001DE
-	for <rcu@archiver.kernel.org>; Thu, 10 Aug 2023 10:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEE00C001B0
+	for <rcu@archiver.kernel.org>; Thu, 10 Aug 2023 12:26:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234950AbjHJKbg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 10 Aug 2023 06:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S235093AbjHJM0I (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 10 Aug 2023 08:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235056AbjHJKbO (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:31:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCFC26B5;
-        Thu, 10 Aug 2023 03:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691663473; x=1723199473;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PMrRyI3wHHwgDhdj9UI4XGzA7mO9eIIOADBUbe4YCiA=;
-  b=OvvaML0AAZ0bwkp9fE9eMgaSigT/261NuR4emaggcRXldiU1NStygEWt
-   ulW5J9JV823LEAivsfCcL3T1YEOSdgyI+pxsPJlw4QJVhs8wWFrGHj7tp
-   jz22t5cDhGWA+b5qbF5VosX677/mXhct6HOthtlVzX4Z7+0/ppdR1xARF
-   Eoyl9TTazUCq+D/NavCKc2G85Mwr4ZMemvDFlY+q/x6ivxa3udWX3XjC5
-   alJLO2Kq6SEAJREdCiPrdjhN7X4fIi+cE4Xos+TKAA61+lB9sQ7LXNbyF
-   BlnQ5tOOXtE69FE09Vw+eHd23kLtMU8jCn6fHYkxlxXZ05lGhThhi3zOT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="375079307"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="375079307"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 03:31:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="732171552"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="732171552"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 10 Aug 2023 03:31:07 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qU2wd-0006vy-0t;
-        Thu, 10 Aug 2023 10:31:07 +0000
-Date:   Thu, 10 Aug 2023 18:30:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Huacai Chen <chenhuacai@loongson.cn>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+        with ESMTP id S235069AbjHJM0I (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 10 Aug 2023 08:26:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB2F2123;
+        Thu, 10 Aug 2023 05:26:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24B4365B2A;
+        Thu, 10 Aug 2023 12:26:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3169DC433C7;
+        Thu, 10 Aug 2023 12:26:00 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -55,189 +33,355 @@ To:     Huacai Chen <chenhuacai@loongson.cn>,
         Ingo Molnar <mingo@kernel.org>,
         John Stultz <jstultz@google.com>,
         Stephen Boyd <sboyd@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Steven Rostedt <rostedt@goodmis.org>,
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Zqiang <qiang.zhang1211@gmail.com>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         chenhuacai@kernel.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>
-Subject: Re: [PATCH V2 1/2] tick: Rename tick_do_update_jiffies64() and allow
- external usage
-Message-ID: <202308101853.wOMMd0Tf-lkp@intel.com>
-References: <20230810062527.3700080-1-chenhuacai@loongson.cn>
+Subject: [PATCH V3 1/2] tick: Rename tick_do_update_jiffies64() and allow external usage
+Date:   Thu, 10 Aug 2023 20:24:55 +0800
+Message-Id: <20230810122456.991421-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810062527.3700080-1-chenhuacai@loongson.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Huacai,
+Rename tick_do_update_jiffies64() to do_update_jiffies_64() and move it
+to jiffies.c. This keeps the same naming style in jiffies.c and allow it
+be used by external components. This patch is a preparation for the next
+one which attempts to avoid necessary rcu stall warnings.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+V2: Fix build.
+V3: Fix build again.
 
-[auto build test ERROR on paulmck-rcu/dev]
-[also build test ERROR on linus/master]
-[cannot apply to tip/timers/nohz]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+ include/linux/jiffies.h   |   2 +
+ kernel/time/jiffies.c     | 113 ++++++++++++++++++++++++++++++++++++-
+ kernel/time/tick-sched.c  | 115 ++------------------------------------
+ kernel/time/timekeeping.h |   1 +
+ 4 files changed, 118 insertions(+), 113 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Huacai-Chen/rcu-Update-jiffies-in-rcu_cpu_stall_reset/20230810-142629
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
-patch link:    https://lore.kernel.org/r/20230810062527.3700080-1-chenhuacai%40loongson.cn
-patch subject: [PATCH V2 1/2] tick: Rename tick_do_update_jiffies64() and allow external usage
-config: powerpc-randconfig-r013-20230809 (https://download.01.org/0day-ci/archive/20230810/202308101853.wOMMd0Tf-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230810/202308101853.wOMMd0Tf-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308101853.wOMMd0Tf-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/io.h:13:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      45 | DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      46 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:49:1: note: expanded from here
-      49 | __do_insw
-         | ^
-   arch/powerpc/include/asm/io.h:615:56: note: expanded from macro '__do_insw'
-     615 | #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
-         |                                        ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from kernel/time/tick-sched.c:14:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/powerpc/include/asm/hardirq.h:6:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      47 | DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      48 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:51:1: note: expanded from here
-      51 | __do_insl
-         | ^
-   arch/powerpc/include/asm/io.h:616:56: note: expanded from macro '__do_insl'
-     616 | #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
-         |                                        ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from kernel/time/tick-sched.c:14:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/powerpc/include/asm/hardirq.h:6:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      49 | DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      50 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:53:1: note: expanded from here
-      53 | __do_outsb
-         | ^
-   arch/powerpc/include/asm/io.h:617:58: note: expanded from macro '__do_outsb'
-     617 | #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
-         |                                         ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from kernel/time/tick-sched.c:14:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/powerpc/include/asm/hardirq.h:6:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      51 | DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      52 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:55:1: note: expanded from here
-      55 | __do_outsw
-         | ^
-   arch/powerpc/include/asm/io.h:618:58: note: expanded from macro '__do_outsw'
-     618 | #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
-         |                                         ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from kernel/time/tick-sched.c:14:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from arch/powerpc/include/asm/hardirq.h:6:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      53 | DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      54 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:57:1: note: expanded from here
-      57 | __do_outsl
-         | ^
-   arch/powerpc/include/asm/io.h:619:58: note: expanded from macro '__do_outsl'
-     619 | #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
-         |                                         ~~~~~~~~~~~~~~~~~~~~~^
->> kernel/time/tick-sched.c:114:4: error: call to undeclared function 'tick_do_update_jiffies_64'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     114 |                         tick_do_update_jiffies_64(now);
-         |                         ^
-   kernel/time/tick-sched.c:114:4: note: did you mean 'do_update_jiffies_64'?
-   include/linux/jiffies.h:91:6: note: 'do_update_jiffies_64' declared here
-      91 | void do_update_jiffies_64(s64 now); /* typedef s64 ktime_t */
-         |      ^
-   6 warnings and 1 error generated.
-
-
-vim +/tick_do_update_jiffies_64 +114 kernel/time/tick-sched.c
-
-   100	
-   101		/* Check, if the jiffies need an update */
-   102		if (tick_do_timer_cpu == cpu)
-   103			do_update_jiffies_64(now);
-   104	
-   105		/*
-   106		 * If jiffies update stalled for too long (timekeeper in stop_machine()
-   107		 * or VMEXIT'ed for several msecs), force an update.
-   108		 */
-   109		if (ts->last_tick_jiffies != jiffies) {
-   110			ts->stalled_jiffies = 0;
-   111			ts->last_tick_jiffies = READ_ONCE(jiffies);
-   112		} else {
-   113			if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
- > 114				tick_do_update_jiffies_64(now);
-   115				ts->stalled_jiffies = 0;
-   116				ts->last_tick_jiffies = READ_ONCE(jiffies);
-   117			}
-   118		}
-   119	
-   120		if (ts->inidle)
-   121			ts->got_idle_tick = 1;
-   122	}
-   123	
-
+diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
+index 5e13f801c902..48866314c68b 100644
+--- a/include/linux/jiffies.h
++++ b/include/linux/jiffies.h
+@@ -88,6 +88,8 @@ static inline u64 get_jiffies_64(void)
+ }
+ #endif
+ 
++void do_update_jiffies_64(s64 now); /* typedef s64 ktime_t */
++
+ /*
+  *	These inlines deal with timer wrapping correctly. You are 
+  *	strongly encouraged to use them
+diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+index bc4db9e5ab70..507a1e7e619e 100644
+--- a/kernel/time/jiffies.c
++++ b/kernel/time/jiffies.c
+@@ -5,14 +5,14 @@
+  * Copyright (C) 2004, 2005 IBM, John Stultz (johnstul@us.ibm.com)
+  */
+ #include <linux/clocksource.h>
++#include <linux/init.h>
+ #include <linux/jiffies.h>
+ #include <linux/module.h>
+-#include <linux/init.h>
++#include <linux/sched/loadavg.h>
+ 
+ #include "timekeeping.h"
+ #include "tick-internal.h"
+ 
+-
+ static u64 jiffies_read(struct clocksource *cs)
+ {
+ 	return (u64) jiffies;
+@@ -61,6 +61,115 @@ EXPORT_SYMBOL(get_jiffies_64);
+ 
+ EXPORT_SYMBOL(jiffies);
+ 
++/*
++ * The time, when the last jiffy update happened. Write access must hold
++ * jiffies_lock and jiffies_seq. Because tick_nohz_next_event() needs to
++ * get a consistent view of jiffies and last_jiffies_update.
++ */
++ktime_t last_jiffies_update;
++
++/*
++ * Must be called with interrupts disabled !
++ */
++void do_update_jiffies_64(ktime_t now)
++{
++#if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
++	unsigned long ticks = 1;
++	ktime_t delta, nextp;
++
++	/*
++	 * 64bit can do a quick check without holding jiffies lock and
++	 * without looking at the sequence count. The smp_load_acquire()
++	 * pairs with the update done later in this function.
++	 *
++	 * 32bit cannot do that because the store of tick_next_period
++	 * consists of two 32bit stores and the first store could move it
++	 * to a random point in the future.
++	 */
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
++			return;
++	} else {
++		unsigned int seq;
++
++		/*
++		 * Avoid contention on jiffies_lock and protect the quick
++		 * check with the sequence count.
++		 */
++		do {
++			seq = read_seqcount_begin(&jiffies_seq);
++			nextp = tick_next_period;
++		} while (read_seqcount_retry(&jiffies_seq, seq));
++
++		if (ktime_before(now, nextp))
++			return;
++	}
++
++	/* Quick check failed, i.e. update is required. */
++	raw_spin_lock(&jiffies_lock);
++	/*
++	 * Reevaluate with the lock held. Another CPU might have done the
++	 * update already.
++	 */
++	if (ktime_before(now, tick_next_period)) {
++		raw_spin_unlock(&jiffies_lock);
++		return;
++	}
++
++	write_seqcount_begin(&jiffies_seq);
++
++	delta = ktime_sub(now, tick_next_period);
++	if (unlikely(delta >= TICK_NSEC)) {
++		/* Slow path for long idle sleep times */
++		s64 incr = TICK_NSEC;
++
++		ticks += ktime_divns(delta, incr);
++
++		last_jiffies_update = ktime_add_ns(last_jiffies_update,
++						   incr * ticks);
++	} else {
++		last_jiffies_update = ktime_add_ns(last_jiffies_update,
++						   TICK_NSEC);
++	}
++
++	/* Advance jiffies to complete the jiffies_seq protected job */
++	jiffies_64 += ticks;
++
++	/*
++	 * Keep the tick_next_period variable up to date.
++	 */
++	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
++
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		/*
++		 * Pairs with smp_load_acquire() in the lockless quick
++		 * check above and ensures that the update to jiffies_64 is
++		 * not reordered vs. the store to tick_next_period, neither
++		 * by the compiler nor by the CPU.
++		 */
++		smp_store_release(&tick_next_period, nextp);
++	} else {
++		/*
++		 * A plain store is good enough on 32bit as the quick check
++		 * above is protected by the sequence count.
++		 */
++		tick_next_period = nextp;
++	}
++
++	/*
++	 * Release the sequence count. calc_global_load() below is not
++	 * protected by it, but jiffies_lock needs to be held to prevent
++	 * concurrent invocations.
++	 */
++	write_seqcount_end(&jiffies_seq);
++
++	calc_global_load();
++
++	raw_spin_unlock(&jiffies_lock);
++	update_wall_time();
++#endif
++}
++
+ static int __init init_jiffies_clocksource(void)
+ {
+ 	return __clocksource_register(&clocksource_jiffies);
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 4df14db4da49..c993c7dfe79d 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -44,113 +44,6 @@ struct tick_sched *tick_get_tick_sched(int cpu)
+ }
+ 
+ #if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
+-/*
+- * The time, when the last jiffy update happened. Write access must hold
+- * jiffies_lock and jiffies_seq. tick_nohz_next_event() needs to get a
+- * consistent view of jiffies and last_jiffies_update.
+- */
+-static ktime_t last_jiffies_update;
+-
+-/*
+- * Must be called with interrupts disabled !
+- */
+-static void tick_do_update_jiffies64(ktime_t now)
+-{
+-	unsigned long ticks = 1;
+-	ktime_t delta, nextp;
+-
+-	/*
+-	 * 64bit can do a quick check without holding jiffies lock and
+-	 * without looking at the sequence count. The smp_load_acquire()
+-	 * pairs with the update done later in this function.
+-	 *
+-	 * 32bit cannot do that because the store of tick_next_period
+-	 * consists of two 32bit stores and the first store could move it
+-	 * to a random point in the future.
+-	 */
+-	if (IS_ENABLED(CONFIG_64BIT)) {
+-		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
+-			return;
+-	} else {
+-		unsigned int seq;
+-
+-		/*
+-		 * Avoid contention on jiffies_lock and protect the quick
+-		 * check with the sequence count.
+-		 */
+-		do {
+-			seq = read_seqcount_begin(&jiffies_seq);
+-			nextp = tick_next_period;
+-		} while (read_seqcount_retry(&jiffies_seq, seq));
+-
+-		if (ktime_before(now, nextp))
+-			return;
+-	}
+-
+-	/* Quick check failed, i.e. update is required. */
+-	raw_spin_lock(&jiffies_lock);
+-	/*
+-	 * Reevaluate with the lock held. Another CPU might have done the
+-	 * update already.
+-	 */
+-	if (ktime_before(now, tick_next_period)) {
+-		raw_spin_unlock(&jiffies_lock);
+-		return;
+-	}
+-
+-	write_seqcount_begin(&jiffies_seq);
+-
+-	delta = ktime_sub(now, tick_next_period);
+-	if (unlikely(delta >= TICK_NSEC)) {
+-		/* Slow path for long idle sleep times */
+-		s64 incr = TICK_NSEC;
+-
+-		ticks += ktime_divns(delta, incr);
+-
+-		last_jiffies_update = ktime_add_ns(last_jiffies_update,
+-						   incr * ticks);
+-	} else {
+-		last_jiffies_update = ktime_add_ns(last_jiffies_update,
+-						   TICK_NSEC);
+-	}
+-
+-	/* Advance jiffies to complete the jiffies_seq protected job */
+-	jiffies_64 += ticks;
+-
+-	/*
+-	 * Keep the tick_next_period variable up to date.
+-	 */
+-	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
+-
+-	if (IS_ENABLED(CONFIG_64BIT)) {
+-		/*
+-		 * Pairs with smp_load_acquire() in the lockless quick
+-		 * check above and ensures that the update to jiffies_64 is
+-		 * not reordered vs. the store to tick_next_period, neither
+-		 * by the compiler nor by the CPU.
+-		 */
+-		smp_store_release(&tick_next_period, nextp);
+-	} else {
+-		/*
+-		 * A plain store is good enough on 32bit as the quick check
+-		 * above is protected by the sequence count.
+-		 */
+-		tick_next_period = nextp;
+-	}
+-
+-	/*
+-	 * Release the sequence count. calc_global_load() below is not
+-	 * protected by it, but jiffies_lock needs to be held to prevent
+-	 * concurrent invocations.
+-	 */
+-	write_seqcount_end(&jiffies_seq);
+-
+-	calc_global_load();
+-
+-	raw_spin_unlock(&jiffies_lock);
+-	update_wall_time();
+-}
+-
+ /*
+  * Initialize and return retrieve the jiffies update.
+  */
+@@ -207,7 +100,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 
+ 	/* Check, if the jiffies need an update */
+ 	if (tick_do_timer_cpu == cpu)
+-		tick_do_update_jiffies64(now);
++		do_update_jiffies_64(now);
+ 
+ 	/*
+ 	 * If jiffies update stalled for too long (timekeeper in stop_machine()
+@@ -218,7 +111,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 		ts->last_tick_jiffies = READ_ONCE(jiffies);
+ 	} else {
+ 		if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
+-			tick_do_update_jiffies64(now);
++			do_update_jiffies_64(now);
+ 			ts->stalled_jiffies = 0;
+ 			ts->last_tick_jiffies = READ_ONCE(jiffies);
+ 		}
+@@ -652,7 +545,7 @@ static void tick_nohz_update_jiffies(ktime_t now)
+ 	__this_cpu_write(tick_cpu_sched.idle_waketime, now);
+ 
+ 	local_irq_save(flags);
+-	tick_do_update_jiffies64(now);
++	do_update_jiffies_64(now);
+ 	local_irq_restore(flags);
+ 
+ 	touch_softlockup_watchdog_sched();
+@@ -975,7 +868,7 @@ static void tick_nohz_stop_sched_tick(struct tick_sched *ts, int cpu)
+ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
+ {
+ 	/* Update jiffies first */
+-	tick_do_update_jiffies64(now);
++	do_update_jiffies_64(now);
+ 
+ 	/*
+ 	 * Clear the timer idle flag, so we avoid IPIs on remote queueing and
+diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
+index 543beba096c7..21670f6c7421 100644
+--- a/kernel/time/timekeeping.h
++++ b/kernel/time/timekeeping.h
+@@ -28,6 +28,7 @@ extern void update_wall_time(void);
+ 
+ extern raw_spinlock_t jiffies_lock;
+ extern seqcount_raw_spinlock_t jiffies_seq;
++extern ktime_t last_jiffies_update;
+ 
+ #define CS_NAME_LEN	32
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
