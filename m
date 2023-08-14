@@ -2,390 +2,121 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAFC7C04A94
-	for <rcu@archiver.kernel.org>; Mon, 14 Aug 2023 02:02:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9B41C001DB
+	for <rcu@archiver.kernel.org>; Mon, 14 Aug 2023 07:26:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbjHNCCC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 13 Aug 2023 22:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
+        id S234045AbjHNHZa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 14 Aug 2023 03:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232471AbjHNCB1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 13 Aug 2023 22:01:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FB61702;
-        Sun, 13 Aug 2023 19:01:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E40B624AB;
-        Mon, 14 Aug 2023 02:01:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3E04C433C8;
-        Mon, 14 Aug 2023 02:01:07 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        chenhuacai@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V4 1/2] tick: Rename tick_do_update_jiffies64() and allow external usage
-Date:   Mon, 14 Aug 2023 10:00:44 +0800
-Message-Id: <20230814020045.51950-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+        with ESMTP id S234094AbjHNHY5 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 14 Aug 2023 03:24:57 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2C1E7E
+        for <rcu@vger.kernel.org>; Mon, 14 Aug 2023 00:24:56 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56d6dfa8b52so2830771eaf.3
+        for <rcu@vger.kernel.org>; Mon, 14 Aug 2023 00:24:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691997896; x=1692602696;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1NIpvt4nCqADNh0cqss2ffGGeYbGFw7fYt1kJmUbwbI=;
+        b=31OXeIf+mXMuFZp/BWOkz0flJ8KejbkRr6wUM0EaIWFsfCQ2zCsPBGNavW2kDotoRb
+         PsdgpoQL2gpaZ0ZXxpoLZllweTv3kJLm8VfWRPUbTrVZoBYG74ey9ou+i5DldGUtrvZj
+         jJo8ZTlGZFQdNoXY5rUkd1Dtmfa47V/md6csocIKsbUStnghTAD3XIMWY0LbcOKZVL8R
+         UKwErhue2XmH1yGzmSeWKwazVzfwuPeeEndpbu30PPUYDm1PkiRqb4L1jL+MuiOLySre
+         zsaUYQ2DFJEH6D56bGkqsrwwi4rw9bkrOJfrBGOe8CCOsCJd8M3TTqTmLu7vsFb8lZhj
+         caow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691997896; x=1692602696;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1NIpvt4nCqADNh0cqss2ffGGeYbGFw7fYt1kJmUbwbI=;
+        b=SIYhaYYdUGgSnWXfD6k7p+1CNejSiDpFoPVpXJSUgT6fafSZDwJW7Ui/U8l09UDeZY
+         Mub7ktoLvLEDo8aA5XFflEJcZNxAvr8WCiR6dJv2VsxiOMOYSp+HtXU1WzuuL5tqoGN+
+         CHgAzEq9UHsKxzuuDa1fefx+I6wVZFP21DDuZuvjoWzYIceFJEDnY8LHEhaOA2vb/2Ns
+         Rf577C1aFGzqrN8QZQHCc95hW8RnhPAiJ6U5rJjcXqHqi24KanZd/uM7ImBWi1V7SwtY
+         U4fRQYyZk/dfFkdBaX6/kuSd3L98IK4T4iBfERf9ZAsywl+471iXf+cz9xHwCDaNWcQK
+         SB9w==
+X-Gm-Message-State: AOJu0Yy+Pij16I3KkUcKO1XaYYqRqC08oG+WBz18NWKp3YEMJqOt3gCv
+        bd5Rh0NSNwg2UCg+ZUsFjlGEsiSnIadHkgOVKHSr6Q==
+X-Google-Smtp-Source: AGHT+IGt7CaB2ILiQcKO7hsqp/eT61SdPAyp3n2bOb0VW67EKt7879WD8gVGObg51YEytXyya1GU1zsdE1LQEwcxEjQ=
+X-Received: by 2002:a05:6358:5906:b0:134:c37f:4b5c with SMTP id
+ g6-20020a056358590600b00134c37f4b5cmr6968498rwf.22.1691997895708; Mon, 14 Aug
+ 2023 00:24:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230612090713.652690195@infradead.org> <20230612093537.614161713@infradead.org>
+In-Reply-To: <20230612093537.614161713@infradead.org>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 14 Aug 2023 09:24:44 +0200
+Message-ID: <CAMRc=MegBEQ1Anfh5UJe=OH0U_VX9ijMeh_hoWKxDyB511stsA@mail.gmail.com>
+Subject: Re: [PATCH v3 03/57] locking: Introduce __cleanup() based infrastructure
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     torvalds@linux-foundation.org, keescook@chromium.org,
+        gregkh@linuxfoundation.org, pbonzini@redhat.com,
+        masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        nicolas@fjasle.eu, catalin.marinas@arm.com, will@kernel.org,
+        vkoul@kernel.org, trix@redhat.com, ojeda@kernel.org,
+        mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
+        dennis@kernel.org, tj@kernel.org, cl@linux.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, paulmck@kernel.org,
+        frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rientjes@google.com, vbabka@suse.cz, roman.gushchin@linux.dev,
+        42.hyeyoo@gmail.com, apw@canonical.com, joe@perches.com,
+        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        john.johansen@canonical.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        llvm@lists.linux.dev, linux-perf-users@vger.kernel.org,
+        rcu@vger.kernel.org, linux-security-module@vger.kernel.org,
+        tglx@linutronix.de, ravi.bangoria@amd.com, error27@gmail.com,
+        luc.vanoostenryck@gmail.com, Yury Norov <yury.norov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Rename tick_do_update_jiffies64() to do_update_jiffies_64() and move it
-to jiffies.c. This keeps the same naming style in jiffies.c and allow it
-be used by external components. This patch is a preparation for the next
-one which attempts to avoid necessary rcu stall warnings.
+On Mon, Jun 12, 2023 at 11:56=E2=80=AFAM Peter Zijlstra <peterz@infradead.o=
+rg> wrote:
+>
 
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
-V2: Fix build.
-V3: Fix build again.
-V4: Define an empty version of do_update_jiffies_64() for periodic timer
-    ticks system.
+[snip]
 
- include/linux/jiffies.h   |   2 +
- kernel/time/jiffies.c     | 115 +++++++++++++++++++++++++++++++++++++-
- kernel/time/tick-sched.c  | 115 ++------------------------------------
- kernel/time/timekeeping.h |   1 +
- 4 files changed, 120 insertions(+), 113 deletions(-)
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -17,6 +17,7 @@
+>  #include <linux/types.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/percpu-refcount.h>
+> +#include <linux/cleanup.h>
+>
+>
+>  /*
+> @@ -211,6 +212,8 @@ void kfree(const void *objp);
+>  void kfree_sensitive(const void *objp);
+>  size_t __ksize(const void *objp);
+>
+> +DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
+> +
 
-diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
-index 5e13f801c902..48866314c68b 100644
---- a/include/linux/jiffies.h
-+++ b/include/linux/jiffies.h
-@@ -88,6 +88,8 @@ static inline u64 get_jiffies_64(void)
- }
- #endif
- 
-+void do_update_jiffies_64(s64 now); /* typedef s64 ktime_t */
-+
- /*
-  *	These inlines deal with timer wrapping correctly. You are 
-  *	strongly encouraged to use them
-diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-index bc4db9e5ab70..3c0a6092dbfb 100644
---- a/kernel/time/jiffies.c
-+++ b/kernel/time/jiffies.c
-@@ -5,14 +5,14 @@
-  * Copyright (C) 2004, 2005 IBM, John Stultz (johnstul@us.ibm.com)
-  */
- #include <linux/clocksource.h>
-+#include <linux/init.h>
- #include <linux/jiffies.h>
- #include <linux/module.h>
--#include <linux/init.h>
-+#include <linux/sched/loadavg.h>
- 
- #include "timekeeping.h"
- #include "tick-internal.h"
- 
--
- static u64 jiffies_read(struct clocksource *cs)
- {
- 	return (u64) jiffies;
-@@ -61,6 +61,117 @@ EXPORT_SYMBOL(get_jiffies_64);
- 
- EXPORT_SYMBOL(jiffies);
- 
-+/*
-+ * The time, when the last jiffy update happened. Write access must hold
-+ * jiffies_lock and jiffies_seq. Because tick_nohz_next_event() needs to
-+ * get a consistent view of jiffies and last_jiffies_update.
-+ */
-+ktime_t last_jiffies_update;
-+
-+/*
-+ * Must be called with interrupts disabled !
-+ */
-+#if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
-+void do_update_jiffies_64(ktime_t now)
-+{
-+	unsigned long ticks = 1;
-+	ktime_t delta, nextp;
-+
-+	/*
-+	 * 64bit can do a quick check without holding jiffies lock and
-+	 * without looking at the sequence count. The smp_load_acquire()
-+	 * pairs with the update done later in this function.
-+	 *
-+	 * 32bit cannot do that because the store of tick_next_period
-+	 * consists of two 32bit stores and the first store could move it
-+	 * to a random point in the future.
-+	 */
-+	if (IS_ENABLED(CONFIG_64BIT)) {
-+		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
-+			return;
-+	} else {
-+		unsigned int seq;
-+
-+		/*
-+		 * Avoid contention on jiffies_lock and protect the quick
-+		 * check with the sequence count.
-+		 */
-+		do {
-+			seq = read_seqcount_begin(&jiffies_seq);
-+			nextp = tick_next_period;
-+		} while (read_seqcount_retry(&jiffies_seq, seq));
-+
-+		if (ktime_before(now, nextp))
-+			return;
-+	}
-+
-+	/* Quick check failed, i.e. update is required. */
-+	raw_spin_lock(&jiffies_lock);
-+	/*
-+	 * Reevaluate with the lock held. Another CPU might have done the
-+	 * update already.
-+	 */
-+	if (ktime_before(now, tick_next_period)) {
-+		raw_spin_unlock(&jiffies_lock);
-+		return;
-+	}
-+
-+	write_seqcount_begin(&jiffies_seq);
-+
-+	delta = ktime_sub(now, tick_next_period);
-+	if (unlikely(delta >= TICK_NSEC)) {
-+		/* Slow path for long idle sleep times */
-+		s64 incr = TICK_NSEC;
-+
-+		ticks += ktime_divns(delta, incr);
-+
-+		last_jiffies_update = ktime_add_ns(last_jiffies_update,
-+						   incr * ticks);
-+	} else {
-+		last_jiffies_update = ktime_add_ns(last_jiffies_update,
-+						   TICK_NSEC);
-+	}
-+
-+	/* Advance jiffies to complete the jiffies_seq protected job */
-+	jiffies_64 += ticks;
-+
-+	/*
-+	 * Keep the tick_next_period variable up to date.
-+	 */
-+	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
-+
-+	if (IS_ENABLED(CONFIG_64BIT)) {
-+		/*
-+		 * Pairs with smp_load_acquire() in the lockless quick
-+		 * check above and ensures that the update to jiffies_64 is
-+		 * not reordered vs. the store to tick_next_period, neither
-+		 * by the compiler nor by the CPU.
-+		 */
-+		smp_store_release(&tick_next_period, nextp);
-+	} else {
-+		/*
-+		 * A plain store is good enough on 32bit as the quick check
-+		 * above is protected by the sequence count.
-+		 */
-+		tick_next_period = nextp;
-+	}
-+
-+	/*
-+	 * Release the sequence count. calc_global_load() below is not
-+	 * protected by it, but jiffies_lock needs to be held to prevent
-+	 * concurrent invocations.
-+	 */
-+	write_seqcount_end(&jiffies_seq);
-+
-+	calc_global_load();
-+
-+	raw_spin_unlock(&jiffies_lock);
-+	update_wall_time();
-+}
-+#else
-+void do_update_jiffies_64(ktime_t now) { }
-+#endif
-+
- static int __init init_jiffies_clocksource(void)
- {
- 	return __clocksource_register(&clocksource_jiffies);
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 4df14db4da49..e9dc4c81d69a 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -44,113 +44,6 @@ struct tick_sched *tick_get_tick_sched(int cpu)
- }
- 
- #if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
--/*
-- * The time, when the last jiffy update happened. Write access must hold
-- * jiffies_lock and jiffies_seq. tick_nohz_next_event() needs to get a
-- * consistent view of jiffies and last_jiffies_update.
-- */
--static ktime_t last_jiffies_update;
--
--/*
-- * Must be called with interrupts disabled !
-- */
--static void tick_do_update_jiffies64(ktime_t now)
--{
--	unsigned long ticks = 1;
--	ktime_t delta, nextp;
--
--	/*
--	 * 64bit can do a quick check without holding jiffies lock and
--	 * without looking at the sequence count. The smp_load_acquire()
--	 * pairs with the update done later in this function.
--	 *
--	 * 32bit cannot do that because the store of tick_next_period
--	 * consists of two 32bit stores and the first store could move it
--	 * to a random point in the future.
--	 */
--	if (IS_ENABLED(CONFIG_64BIT)) {
--		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
--			return;
--	} else {
--		unsigned int seq;
--
--		/*
--		 * Avoid contention on jiffies_lock and protect the quick
--		 * check with the sequence count.
--		 */
--		do {
--			seq = read_seqcount_begin(&jiffies_seq);
--			nextp = tick_next_period;
--		} while (read_seqcount_retry(&jiffies_seq, seq));
--
--		if (ktime_before(now, nextp))
--			return;
--	}
--
--	/* Quick check failed, i.e. update is required. */
--	raw_spin_lock(&jiffies_lock);
--	/*
--	 * Reevaluate with the lock held. Another CPU might have done the
--	 * update already.
--	 */
--	if (ktime_before(now, tick_next_period)) {
--		raw_spin_unlock(&jiffies_lock);
--		return;
--	}
--
--	write_seqcount_begin(&jiffies_seq);
--
--	delta = ktime_sub(now, tick_next_period);
--	if (unlikely(delta >= TICK_NSEC)) {
--		/* Slow path for long idle sleep times */
--		s64 incr = TICK_NSEC;
--
--		ticks += ktime_divns(delta, incr);
--
--		last_jiffies_update = ktime_add_ns(last_jiffies_update,
--						   incr * ticks);
--	} else {
--		last_jiffies_update = ktime_add_ns(last_jiffies_update,
--						   TICK_NSEC);
--	}
--
--	/* Advance jiffies to complete the jiffies_seq protected job */
--	jiffies_64 += ticks;
--
--	/*
--	 * Keep the tick_next_period variable up to date.
--	 */
--	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
--
--	if (IS_ENABLED(CONFIG_64BIT)) {
--		/*
--		 * Pairs with smp_load_acquire() in the lockless quick
--		 * check above and ensures that the update to jiffies_64 is
--		 * not reordered vs. the store to tick_next_period, neither
--		 * by the compiler nor by the CPU.
--		 */
--		smp_store_release(&tick_next_period, nextp);
--	} else {
--		/*
--		 * A plain store is good enough on 32bit as the quick check
--		 * above is protected by the sequence count.
--		 */
--		tick_next_period = nextp;
--	}
--
--	/*
--	 * Release the sequence count. calc_global_load() below is not
--	 * protected by it, but jiffies_lock needs to be held to prevent
--	 * concurrent invocations.
--	 */
--	write_seqcount_end(&jiffies_seq);
--
--	calc_global_load();
--
--	raw_spin_unlock(&jiffies_lock);
--	update_wall_time();
--}
--
- /*
-  * Initialize and return retrieve the jiffies update.
-  */
-@@ -207,7 +100,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
- 
- 	/* Check, if the jiffies need an update */
- 	if (tick_do_timer_cpu == cpu)
--		tick_do_update_jiffies64(now);
-+		do_update_jiffies_64(now);
- 
- 	/*
- 	 * If jiffies update stalled for too long (timekeeper in stop_machine()
-@@ -218,7 +111,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
- 		ts->last_tick_jiffies = READ_ONCE(jiffies);
- 	} else {
- 		if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
--			tick_do_update_jiffies64(now);
-+			do_update_jiffies_64(now);
- 			ts->stalled_jiffies = 0;
- 			ts->last_tick_jiffies = READ_ONCE(jiffies);
- 		}
-@@ -652,7 +545,7 @@ static void tick_nohz_update_jiffies(ktime_t now)
- 	__this_cpu_write(tick_cpu_sched.idle_waketime, now);
- 
- 	local_irq_save(flags);
--	tick_do_update_jiffies64(now);
-+	do_update_jiffies_64(now);
- 	local_irq_restore(flags);
- 
- 	touch_softlockup_watchdog_sched();
-@@ -975,7 +868,7 @@ static void tick_nohz_stop_sched_tick(struct tick_sched *ts, int cpu)
- static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
- {
- 	/* Update jiffies first */
--	tick_do_update_jiffies64(now);
-+	do_update_jiffies_64(now);
- 
- 	/*
- 	 * Clear the timer idle flag, so we avoid IPIs on remote queueing and
-diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
-index 543beba096c7..21670f6c7421 100644
---- a/kernel/time/timekeeping.h
-+++ b/kernel/time/timekeeping.h
-@@ -28,6 +28,7 @@ extern void update_wall_time(void);
- 
- extern raw_spinlock_t jiffies_lock;
- extern seqcount_raw_spinlock_t jiffies_seq;
-+extern ktime_t last_jiffies_update;
- 
- #define CS_NAME_LEN	32
- 
--- 
-2.39.3
+Peter,
 
+Yuri Norov pointed out to me (under a different cleanup patch) that
+kfree() handles NULL-pointers and there's no reason to check it again
+in DEFINE_FREE() macros. It seems right to me but I wanted to run it
+by you and check if there is maybe some reason I'm not seeing to doing
+it?
+
+Bartosz
+
+[snip]
