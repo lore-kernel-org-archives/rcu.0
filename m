@@ -2,39 +2,39 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F48FC04E69
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A5F4C001DE
 	for <rcu@archiver.kernel.org>; Tue, 15 Aug 2023 17:33:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238883AbjHORc6 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 15 Aug 2023 13:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S238962AbjHORc5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Aug 2023 13:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238892AbjHORcd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:32:33 -0400
+        with ESMTP id S238890AbjHORcZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Aug 2023 13:32:25 -0400
 Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D36A1BDC;
-        Tue, 15 Aug 2023 10:32:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343F61BD1;
+        Tue, 15 Aug 2023 10:32:24 -0700 (PDT)
 Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id D75C1FDFF;
-        Tue, 15 Aug 2023 20:32:30 +0300 (EEST)
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id CCE19FF88;
+        Tue, 15 Aug 2023 20:32:22 +0300 (EEST)
 Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id BEB30FF4A;
-        Tue, 15 Aug 2023 20:32:30 +0300 (EEST)
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id B5701FDF9;
+        Tue, 15 Aug 2023 20:32:22 +0300 (EEST)
 Received: from ja.ssi.bg (unknown [213.16.62.126])
-        by ink.ssi.bg (Postfix) with ESMTPSA id 896383C07C8;
-        Tue, 15 Aug 2023 20:32:16 +0300 (EEST)
+        by ink.ssi.bg (Postfix) with ESMTPSA id 1622A3C0442;
+        Tue, 15 Aug 2023 20:32:15 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-        t=1692120736; bh=P48NNIbmKmKcUAIbpzuvb8YDGYAzwDxo+kEi4DdF/5U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=vbBpwtdjeDK5byZZ4+xvrDb5EMI7c2hTio/JeihI4XY3rfIF7lq6AYiW7LV1DNzeS
-         bmeYGSbygNRvc9qYiDF4W+4TXvgVJw60FezAjOutdVfyr9fVYY5qdHdLpA9vmgIJ2M
-         SwuAAgKOZtBTgs/HnWbo8nqW7UVfFImFjCBqiL+Y=
+        t=1692120736; bh=ciWA8brsNRv34nXH41CnmPTsBdnHMooPT+UbIQizqUc=;
+        h=From:To:Cc:Subject:Date;
+        b=aFGrbT1aJwmJkeRUkMlRtAQTBv3jOJGta1Yht2evC39kygSg9KO/dj5cRnGY1vPV8
+         13kUHJ8OVOsd85UPzs+xRr2beKZp1b7B/uyiWgFPRdEsv2lA5RF/6ZRNozZFRVTtAw
+         K9mNty254iafFK+6rrLxJsKW/hGdHRMFOD/j64jo=
 Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 37FHWG6i168619;
-        Tue, 15 Aug 2023 20:32:16 +0300
+        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 37FHWFE3168605;
+        Tue, 15 Aug 2023 20:32:15 +0300
 Received: (from root@localhost)
-        by ja.home.ssi.bg (8.17.1/8.17.1/Submit) id 37FHWGLT168618;
-        Tue, 15 Aug 2023 20:32:16 +0300
+        by ja.home.ssi.bg (8.17.1/8.17.1/Submit) id 37FHWD5E168600;
+        Tue, 15 Aug 2023 20:32:13 +0300
 From:   Julian Anastasov <ja@ssi.bg>
 To:     Simon Horman <horms@verge.net.au>
 Cc:     lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
@@ -42,183 +42,141 @@ Cc:     lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
         rcu@vger.kernel.org, Dust Li <dust.li@linux.alibaba.com>,
         Jiejian Wu <jiejian@linux.alibaba.com>,
         Jiri Wiesner <jwiesner@suse.de>
-Subject: [PATCH RFC net-next 03/14] ipvs: some service readers can use RCU
-Date:   Tue, 15 Aug 2023 20:30:20 +0300
-Message-ID: <20230815173031.168344-4-ja@ssi.bg>
+Subject: [PATCH RFC net-next 00/14] ipvs: per-net tables and optimizations
+Date:   Tue, 15 Aug 2023 20:30:17 +0300
+Message-ID: <20230815173031.168344-1-ja@ssi.bg>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230815173031.168344-1-ja@ssi.bg>
-References: <20230815173031.168344-1-ja@ssi.bg>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Some places walk the services under mutex but they can just use RCU:
+	Hello,
 
-* ip_vs_dst_event() uses ip_vs_forget_dev() which uses its own lock
-  to modify dest
-* ip_vs_genl_dump_services(): ip_vs_genl_fill_service() just fills skb
-* ip_vs_genl_parse_service(): move RCU lock to callers
-  ip_vs_genl_set_cmd(), ip_vs_genl_dump_dests() and ip_vs_genl_get_cmd()
-* ip_vs_genl_dump_dests(): just fill skb
+	This patchset targets more netns isolation when IPVS
+is used in large setups and also includes some optimizations.
+This is a RFC submission to get wider review and comments.
 
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
----
- net/netfilter/ipvs/ip_vs_ctl.c | 47 +++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 24 deletions(-)
+	First patch adds useful wrappers to rculist_bl, the
+hlist_bl methods IPVS will use in the following patches. The other
+patches are IPVS-specific.
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index e5ae4fac8ec9..276fdc31e938 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -1758,23 +1758,21 @@ static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
- 	if (event != NETDEV_DOWN || !ipvs)
- 		return NOTIFY_DONE;
- 	IP_VS_DBG(3, "%s() dev=%s\n", __func__, dev->name);
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
- 	for (idx = 0; idx < IP_VS_SVC_TAB_SIZE; idx++) {
--		hlist_for_each_entry(svc, &ipvs->svc_table[idx], s_list) {
--			list_for_each_entry(dest, &svc->destinations,
--					    n_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_table[idx], s_list)
-+			list_for_each_entry_rcu(dest, &svc->destinations,
-+						n_list)
- 				ip_vs_forget_dev(dest, dev);
--			}
--		}
- 
--		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[idx], f_list) {
--			list_for_each_entry(dest, &svc->destinations,
--					    n_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[idx], f_list)
-+			list_for_each_entry_rcu(dest, &svc->destinations,
-+						n_list)
- 				ip_vs_forget_dev(dest, dev);
--			}
--		}
- 	}
-+	rcu_read_unlock();
- 
-+	mutex_lock(&ipvs->service_mutex);
- 	spin_lock_bh(&ipvs->dest_trash_lock);
- 	list_for_each_entry(dest, &ipvs->dest_trash, t_list) {
- 		ip_vs_forget_dev(dest, dev);
-@@ -3314,9 +3312,9 @@ static int ip_vs_genl_fill_service(struct sk_buff *skb,
- 			goto nla_put_failure;
- 	}
- 
--	sched = rcu_dereference_protected(svc->scheduler, 1);
-+	sched = rcu_dereference(svc->scheduler);
- 	sched_name = sched ? sched->name : "none";
--	pe = rcu_dereference_protected(svc->pe, 1);
-+	pe = rcu_dereference(svc->pe);
- 	if (nla_put_string(skb, IPVS_SVC_ATTR_SCHED_NAME, sched_name) ||
- 	    (pe && nla_put_string(skb, IPVS_SVC_ATTR_PE_NAME, pe->name)) ||
- 	    nla_put(skb, IPVS_SVC_ATTR_FLAGS, sizeof(flags), &flags) ||
-@@ -3370,9 +3368,9 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
- 	struct net *net = sock_net(skb->sk);
- 	struct netns_ipvs *ipvs = net_ipvs(net);
- 
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
- 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
--		hlist_for_each_entry(svc, &ipvs->svc_table[i], s_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_table[i], s_list) {
- 			if (++idx <= start)
- 				continue;
- 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
-@@ -3383,7 +3381,7 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
- 	}
- 
- 	for (i = 0; i < IP_VS_SVC_TAB_SIZE; i++) {
--		hlist_for_each_entry(svc, &ipvs->svc_fwm_table[i], f_list) {
-+		hlist_for_each_entry_rcu(svc, &ipvs->svc_fwm_table[i], f_list) {
- 			if (++idx <= start)
- 				continue;
- 			if (ip_vs_genl_dump_service(skb, svc, cb) < 0) {
-@@ -3394,7 +3392,7 @@ static int ip_vs_genl_dump_services(struct sk_buff *skb,
- 	}
- 
- nla_put_failure:
--	mutex_unlock(&ipvs->service_mutex);
-+	rcu_read_unlock();
- 	cb->args[0] = idx;
- 
- 	return skb->len;
-@@ -3450,13 +3448,11 @@ static int ip_vs_genl_parse_service(struct netns_ipvs *ipvs,
- 		usvc->fwmark = 0;
- 	}
- 
--	rcu_read_lock();
- 	if (usvc->fwmark)
- 		svc = __ip_vs_svc_fwm_find(ipvs, usvc->af, usvc->fwmark);
- 	else
- 		svc = __ip_vs_service_find(ipvs, usvc->af, usvc->protocol,
- 					   &usvc->addr, usvc->port);
--	rcu_read_unlock();
- 	*ret_svc = svc;
- 
- 	/* If a full entry was requested, check for the additional fields */
-@@ -3583,7 +3579,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
- 	struct net *net = sock_net(skb->sk);
- 	struct netns_ipvs *ipvs = net_ipvs(net);
- 
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
- 
- 	/* Try to find the service for which to dump destinations */
- 	if (nlmsg_parse_deprecated(cb->nlh, GENL_HDRLEN, attrs, IPVS_CMD_ATTR_MAX, ip_vs_cmd_policy, cb->extack))
-@@ -3595,7 +3591,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
- 		goto out_err;
- 
- 	/* Dump the destinations */
--	list_for_each_entry(dest, &svc->destinations, n_list) {
-+	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
- 		if (++idx <= start)
- 			continue;
- 		if (ip_vs_genl_dump_dest(skb, dest, cb) < 0) {
-@@ -3608,7 +3604,7 @@ static int ip_vs_genl_dump_dests(struct sk_buff *skb,
- 	cb->args[0] = idx;
- 
- out_err:
--	mutex_unlock(&ipvs->service_mutex);
-+	rcu_read_unlock();
- 
- 	return skb->len;
- }
-@@ -3914,9 +3910,12 @@ static int ip_vs_genl_set_cmd(struct sk_buff *skb, struct genl_info *info)
- 	if (cmd == IPVS_CMD_NEW_SERVICE || cmd == IPVS_CMD_SET_SERVICE)
- 		need_full_svc = true;
- 
-+	/* We use function that requires RCU lock */
-+	rcu_read_lock();
- 	ret = ip_vs_genl_parse_service(ipvs, &usvc,
- 				       info->attrs[IPVS_CMD_ATTR_SERVICE],
- 				       need_full_svc, &svc);
-+	rcu_read_unlock();
- 	if (ret)
- 		goto out;
- 
-@@ -4036,7 +4035,7 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
- 	if (!msg)
- 		return -ENOMEM;
- 
--	mutex_lock(&ipvs->service_mutex);
-+	rcu_read_lock();
- 
- 	reply = genlmsg_put_reply(msg, info, &ip_vs_genl_family, 0, reply_cmd);
- 	if (reply == NULL)
-@@ -4104,7 +4103,7 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
- out_err:
- 	nlmsg_free(msg);
- out:
--	mutex_unlock(&ipvs->service_mutex);
-+	rcu_read_unlock();
- 
- 	return ret;
- }
+	The following patches will:
+
+* Convert the global __ip_vs_mutex to per-net service_mutex and
+  switch the service tables to be per-net, cowork by Jiejian Wu and
+  Dust Li
+
+* Convert some code that walks the service lists to use RCU instead of
+  the service_mutex
+
+* We used two tables for services (non-fwmark and fwmark), merge them
+  into single svc_table
+
+* The list for unavailable destinations (dest_trash) holds dsts and
+  thus dev references causing extra work for the ip_vs_dst_event() dev
+  notifier handler. Change this by dropping the reference when dest
+  is removed and saved into dest_trash. The dest_trash will need more
+  changes to make it light for lookups. TODO.
+
+* On new connection we can do multiple lookups for services by tryng
+  different fallback options. Add more counters for service types, so
+  that we can avoid unneeded lookups for services.
+
+* Add infrastructure for resizable hash tables based on hlist_bl
+  which we will use for services and connections: hlists with
+  per-bucket bit lock in the heads. The resizing delays RCU lookups
+  on a bucket level with seqcounts which are protected with spin locks.
+
+* Change the 256-bucket service hash table to be resizable in the
+  range of 4..20 bits depending on the added services and use jhash
+  hashing to reduce the collisions.
+
+* Change the global connection table to be per-net and resizable
+  in the range of 256..ip_vs_conn_tab_size. As the connections are
+  hashed by using remote addresses and ports, use siphash instead
+  of jhash for better security.
+
+* As the connection table is not fixed size, show its current size
+  to user space
+
+* As the connection table is not global anymore, the no_cport and
+  dropentry counters can be per-net
+
+* Make the connection hashing more secure for setups with multiple
+  services. Hashing only by remote address and port (client info)
+  is not enough. To reduce the possible hash collisions add the
+  used virtual address/port (local info) into the hash and as a side
+  effect the MASQ connections will be double hashed into the
+  hash table to match the traffic from real servers:
+    OLD:
+    - all methods: c_list node: proto, caddr:cport
+    NEW:
+    - all methods: hn0 node (dir 0): proto, caddr:cport -> vaddr:vport
+    - MASQ method: hn1 node (dir 1): proto, daddr:dport -> caddr:cport
+
+* Add /proc/net/ip_vs_status to show current state of IPVS, per-net
+
+cat /proc/net/ip_vs_status
+Conns:	9401
+Conn buckets:	524288 (19 bits, lfactor 5)
+Conn buckets empty:	505633 (96%)
+Conn buckets len-1:	18322 (98%)
+Conn buckets len-2:	329 (1%)
+Conn buckets len-3:	3 (0%)
+Conn buckets len-4:	1 (0%)
+Services:	12
+Service buckets:	128 (7 bits, lfactor 3)
+Service buckets empty:	116 (90%)
+Service buckets len-1:	12 (100%)
+Stats thread slots:	1 (max 16)
+Stats chain max len:	16
+Stats thread ests:	38400
+
+It shows the table size, the load factor, how many are the empty
+buckets, with percents from the all buckets, the number of buckets
+with length 1..7 where len-7 catches all len>=7 (zero values are
+not shown). The len-N percents ignore the empty buckets, so they
+are relative among all len-N buckets. It shows that large lfactor
+is needed to achieve len-1 buckets to be ~98%. Only real tests can
+show if relying on len-1 buckets is a better option because the
+hash table becomes too large with multiple connections. And as
+every table uses random key, the services may not avoid collision
+in all cases.
+
+* add conn_lfactor and svc_lfactor sysctl vars, so that one can tune
+  the connection/service hash table sizing
+
+Jiejian Wu (1):
+  ipvs: make ip_vs_svc_table and ip_vs_svc_fwm_table per netns
+
+Julian Anastasov (13):
+  rculist_bl: add hlist_bl_for_each_entry_continue_rcu
+  ipvs: some service readers can use RCU
+  ipvs: use single svc table
+  ipvs: do not keep dest_dst after dest is removed
+  ipvs: use more counters to avoid service lookups
+  ipvs: add resizable hash tables
+  ipvs: use resizable hash table for services
+  ipvs: switch to per-net connection table
+  ipvs: show the current conn_tab size to users
+  ipvs: no_cport and dropentry counters can be per-net
+  ipvs: use more keys for connection hashing
+  ipvs: add ip_vs_status info
+  ipvs: add conn_lfactor and svc_lfactor sysctl vars
+
+ Documentation/networking/ipvs-sysctl.rst |   31 +
+ include/linux/rculist_bl.h               |   17 +
+ include/net/ip_vs.h                      |  395 ++++++-
+ net/netfilter/ipvs/ip_vs_conn.c          | 1079 ++++++++++++++-----
+ net/netfilter/ipvs/ip_vs_core.c          |  171 ++-
+ net/netfilter/ipvs/ip_vs_ctl.c           | 1233 ++++++++++++++++------
+ net/netfilter/ipvs/ip_vs_est.c           |   18 +-
+ net/netfilter/ipvs/ip_vs_pe_sip.c        |    4 +-
+ net/netfilter/ipvs/ip_vs_xmit.c          |   39 +-
+ 9 files changed, 2304 insertions(+), 683 deletions(-)
+
 -- 
 2.41.0
 
