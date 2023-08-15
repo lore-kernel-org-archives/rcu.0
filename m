@@ -2,223 +2,153 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 275E4C001B0
-	for <rcu@archiver.kernel.org>; Tue, 15 Aug 2023 02:15:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78DD0C0015E
+	for <rcu@archiver.kernel.org>; Tue, 15 Aug 2023 05:44:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbjHOCPQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 14 Aug 2023 22:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
+        id S234302AbjHOFoH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 15 Aug 2023 01:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbjHOCOn (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 14 Aug 2023 22:14:43 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290771705
-        for <rcu@vger.kernel.org>; Mon, 14 Aug 2023 19:14:41 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7914633a110so222324839f.0
-        for <rcu@vger.kernel.org>; Mon, 14 Aug 2023 19:14:41 -0700 (PDT)
+        with ESMTP id S234888AbjHOFmU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 15 Aug 2023 01:42:20 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6837E45
+        for <rcu@vger.kernel.org>; Mon, 14 Aug 2023 22:42:02 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6bd0a0a675dso4317935a34.2
+        for <rcu@vger.kernel.org>; Mon, 14 Aug 2023 22:42:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692065680; x=1692670480;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1FzNNwtEMI1ctcbSu9gtaMLkg80FqmdR5EYXg9JIFtg=;
-        b=xnZSPDZ8UDmDG+AiHYeSS1LeuPfpOuSrcndRPANwOUJt3OYtEODCYZp2Dxkk+OnxR8
-         CoXsPNRHEdgPz+lffz1vP/CLx83pVu40X0XRmr++k9bhC55jgSZ0N3V8V/evxz/0Cn4f
-         PSonUuTCx7For67KXJz5wGNDLmEsjPcf2eIlg=
+        d=gmail.com; s=20221208; t=1692078122; x=1692682922;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=euDlbME/xsJ/Q9L3D0lBoYvRI7PonDdG7EsC14A1HPI=;
+        b=aRDsZ9gnycYhYk96GEK45t6Bxj+btNTlxeT2yvgUrlJBE0udSVrl5R/0dH6JxqI7zz
+         X0n6Rpj6gMq11A2vpZUl92fiNbiEXME5JhR4ze6gJECsZ1lvtaDNwDYqVUrpRKgcYP88
+         iqVv63HfWAb9dk1rEbI3RoUtWXKXNYqT2VlwzR7su5kZZeVYH4tmggVDqrn7A4m8F26B
+         ucAnVWdkHV5Dmt2FSP5u6ub17RKtUq8bH2WkcSEk30MDRB5hgKalZ1GLxHFn1VYRGAK7
+         GksKBF67tzI5I80S4M5NqLtzHE17Z62Z2zMLCs+utrXTICqdl6uRiupffee4yLZ12V1B
+         3KPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692065680; x=1692670480;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1FzNNwtEMI1ctcbSu9gtaMLkg80FqmdR5EYXg9JIFtg=;
-        b=NQ0zNd3U5XDwV4Bn8VGjc6EFkk0qnSkXMKitBztDG2LCi41/xngTupL+b5+ARGOrV2
-         edpGD0+fhXedkK3sHCI74ivBmV0KjkPknSpHEew5XeEAUE7px1VFKMX6B38MpSKmko46
-         b+sSTp2QLqbc5F3TZO6nA6gpm/T/ZL+1ZSmxgLq9airmgb1/Y7MgsFqqzr0013c70QaF
-         G61fL0HYY03/lesoVgfYK6sHM6CLNxEcKdWzf+ytnTngb5bvDs3rlkMkkLDU92EDwkyG
-         Z7uAep09873xEhPWBFqG3oxBQcuTFfP/rnJjox0TEgjMB9xjvedycMIh7SceWZJdtHuG
-         5nlg==
-X-Gm-Message-State: AOJu0YzT8YD91qRkMe5EiGEz44+RXORNJOr3eB6cFdREN8OkQeFoOT94
-        9cDGheoaVeXDICYu4F3CtHr28g==
-X-Google-Smtp-Source: AGHT+IE52mS+ksJwzniELvA2SQYzEX5vpVK4FQh05SwiLQS3U1AdMZf58YQohMNFkK+sPEIGfwwxrg==
-X-Received: by 2002:a05:6602:2195:b0:783:572c:9caa with SMTP id b21-20020a056602219500b00783572c9caamr15332100iob.0.1692065680377;
-        Mon, 14 Aug 2023 19:14:40 -0700 (PDT)
-Received: from localhost (254.82.172.34.bc.googleusercontent.com. [34.172.82.254])
-        by smtp.gmail.com with ESMTPSA id d24-20020a056602229800b0077a1d1029fcsm3666568iod.28.2023.08.14.19.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 19:14:39 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 02:14:39 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Copy out ftrace into its own console file
-Message-ID: <20230815021439.GA2320449@google.com>
-References: <20230813203602.GA696907@google.com>
- <8f952ce7-2122-45a4-82a3-a4e4dcd85ff4@paulmck-laptop>
- <CAEXW_YSr2Pg8cw2zrYaoRn8DQgSzM=7DhsPeO8=MMdsA6tN0zg@mail.gmail.com>
- <5bc1a075-db78-4ecd-af06-77555f4184bc@paulmck-laptop>
+        d=1e100.net; s=20221208; t=1692078122; x=1692682922;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=euDlbME/xsJ/Q9L3D0lBoYvRI7PonDdG7EsC14A1HPI=;
+        b=dngqvIGofM+LYHHRziSog2vLAhn9w2L56A9R9cprL7FawmMnHQItT4B5T3FhnD1ZnQ
+         PpST+YqlnlQkKLL0glGBxMEqFdovFeG5GmjrWAF+tWjhF0HuWo131YLPCUZb/etttgCi
+         lY/wv51SjSVEdHkEk3tbqhIRGsSyZKC87+ILlACBNzkintCrWH0Fw7r4Zaaksgtk2AnG
+         eCmiut2/Ezaaj/Ul6ICo3Z0wsV7bIxOmd20ESzUbSDHuVpLhyZaMhJmBy4REAJb1abJa
+         LXjMqsTF4r9q49sq9XnJK4242O5ZAIo1kcsSgxu0jzB86DtnsPAdp+htr+A+sGPjL3mL
+         n2Dg==
+X-Gm-Message-State: AOJu0YxFy2U8t/rolOI2AJeSRFh3gj+HybGZ0lkZjfZSMmJdrT7T2Wmr
+        ZlIjl7jW1gENXD449KHP15hmZx9/1/2+QuWIvmg=
+X-Google-Smtp-Source: AGHT+IHRC4ybUP4GRBR6orV3FAe5KNvj7Rna3ZhttnDGAlzmoUuebDBlxz8dQkvsBk1ItqeS0iLW6GSdygJdY6vxLgE=
+X-Received: by 2002:a9d:6a10:0:b0:6bc:c9e6:30b7 with SMTP id
+ g16-20020a9d6a10000000b006bcc9e630b7mr11995664otn.26.1692078122031; Mon, 14
+ Aug 2023 22:42:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5bc1a075-db78-4ecd-af06-77555f4184bc@paulmck-laptop>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Tue, 15 Aug 2023 13:41:49 +0800
+Message-ID: <CALm+0cXrCHAPHEOrLyn6ms551mAo=RyHTLUhzOLfRK4ZVMp4jQ@mail.gmail.com>
+Subject: rcutorture: Sleeping function called from invalid context
+To:     "Paul E. McKenney" <paulmck@kernel.org>, thunder.leizhen@huawei.com
+Cc:     rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Paul,
+Hello, Paul
 
-On Mon, Aug 14, 2023 at 03:27:33PM -0700, Paul E. McKenney wrote:
-> On Mon, Aug 14, 2023 at 06:03:24PM -0400, Joel Fernandes wrote:
-> > On Mon, Aug 14, 2023 at 5:27 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Sun, Aug 13, 2023 at 08:36:02PM +0000, Joel Fernandes (Google) wrote:
-> > > > From: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > >
-> > > > Often times during debugging, it is difficult to jump to the ftrace dump
-> > > > in the console log and treat it independent of the result of the log file.
-> > > > Copy the contents of the buffers into its own file to make it easier to refer
-> > > > to the ftrace dump. The original ftrace dump is still available in the
-> > > > console log if it is desired to refer to it there.
-> > > >
-> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >
-> > > Queued, thank you!  I did the usual wordsmithing, please see below.
-> > >
-> > > I also fixed up the indentation and spacing.  I don't know about you,
-> > > but the initial format made that a bit hard for me to read.  ;-)
-> > >
-> > > If there are multiple ftrace dumps in a given console.log file, this
-> > > will concatenate them.  Is that the intent?
-> > 
-> > How would you have multiple dumps, do you mean from subsequent
-> > (re)boots? If so, yes I am OK with that. I usually look at the latest
-> > boot attempt.
-> 
-> Fair, but how would you separate out the ftrace dump for the most
-> recent kernel boot?  (Though please see below.)
+when running the rcutorture test with rcutorture.object_debug=1 in
+PREEMPT_RT kernel.
 
-It will print the same markers in console.log which can be used. I posted an
-updated diff below.
+BUG: sleeping function called from invalid context at
+kernel/locking/spinlock_rt.c:48
+[    3.116503] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid:
+1, name: swapper/0
+[    3.116503] preempt_count: 1, expected: 0
+[    3.116503] RCU nest depth: 1, expected: 1
+[    3.116503] 3 locks held by swapper/0/1:
+[    3.116503]  #0: ffffffff8f862d80 (fullstop_mutex){+.+.}-{4:4}, at:
+torture_init_begin+0x24/0xa0
+[    3.116503]  #1: ffffffff8f7b1400 (rcu_read_lock){....}-{1:3}, at:
+rcu_torture_init+0x20b9/0x2380
+[    3.116503]  #2: ffffffff8f89fa20 (vmap_area_lock){+.+.}-{3:3}, at:
+find_vmap_area+0x21/0x90
+[    3.116503] irq event stamp: 571506
+[    3.116503] hardirqs last  enabled at (571505):
+[<ffffffff8d422ff5>] __call_rcu_common+0x3a5/0xdc0
+[    3.116503] hardirqs last disabled at (571506):
+[<ffffffff900487f7>] rcu_torture_init+0x22b7/0x2380
+[    3.116503] softirqs last  enabled at (406916):
+[<ffffffff8d2e91f2>] __local_bh_enable_ip+0x132/0x170
+[    3.116503] softirqs last disabled at (406910):
+[<ffffffff8e658e79>] inet_register_protosw+0x9/0x190
+[    3.116503] Preemption disabled at:
+[    3.116503] [<ffffffff9004865a>] rcu_torture_init+0x211a/0x2380
+[    3.116503] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G        W
+   6.5.0-rc4-rt2-yocto-preempt-rt+ #7
+[    3.116503] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+[    3.116503] Call Trace:
+[    3.116503]  <TASK>
+[    3.116503]  dump_stack_lvl+0x68/0xb0
+[    3.116503]  dump_stack+0x14/0x20
+[    3.116503]  __might_resched+0x221/0x2f0
+[    3.116503]  rt_spin_lock+0x60/0x130
+[    3.116503]  ? find_vmap_area+0x21/0x90
+[    3.116503]  find_vmap_area+0x21/0x90
+[    3.116503]  vmalloc_dump_obj+0x25/0xa0
+[    3.116503]  mem_dump_obj+0x22/0x90
+[    3.116503]  __call_rcu_common+0x920/0xdc0
+[    3.116503]  ? __pfx_rcu_torture_err_cb+0x10/0x10
+[    3.116503]  ? __pfx___call_rcu_common+0x10/0x10
+[    3.116503]  ? rcu_torture_init+0x22b7/0x2380
+[    3.116503]  ? debug_smp_processor_id+0x1b/0x30
+[    3.116503]  ? rcu_is_watching+0x3e/0xc0
+[    3.116503]  call_rcu_hurry+0x14/0x20
+[    3.116503]  rcu_torture_init+0x2186/0x2380
+[    3.116503]  ? __pfx_rcu_torture_init+0x10/0x10
+[    3.116503]  ? __pfx_rt_mutex_slowunlock+0x10/0x10
+[    3.116503]  ? __pfx_irq_debugfs_init+0x10/0x10
+[    3.116503]  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+[    3.116503]  ? rt_spin_unlock+0x50/0xa0
+[    3.116503]  ? add_device_randomness+0xb1/0xe0
+[    3.116503]  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+[    3.116503]  ? __pfx_rcu_torture_init+0x10/0x10
+[    3.116503]  do_one_initcall+0xd8/0x430
+[    3.116503]  ? __pfx_do_one_initcall+0x10/0x10
+[    3.116503]  ? __kasan_check_read+0x15/0x20
+[    3.116503]  kernel_init_freeable+0x3a0/0x670
+[    3.116503]  ? rt_spin_unlock+0x50/0xa0
+[    3.116503]  ? __pfx_kernel_init+0x10/0x10
+[    3.116503]  kernel_init+0x23/0x160
+[    3.116503]  ? __pfx_kernel_init+0x10/0x10
+[    3.116503]  ret_from_fork+0x40/0x60
+[    3.116503]  ? __pfx_kernel_init+0x10/0x10
+[    3.116503]  ret_from_fork_asm+0x1b/0x30
+[    3.116503]  </TASK>
+[    3.116503]  non-slab/vmalloc memory
 
-> 
-> > I was also thinking of us stopping boot loops. For example, if there
-> > is a kernel issue and the system keeps rebooting, it will run forever
-> > in the boot loop silently. It would be good for monitoring of
-> > console.log and kill the test if the console.log is acting 'weird'.
-> > Also it would be good if the console.log had a huge timestamp gap in
-> > it like the TREE04 issue. Would such changes be good to make? I can
-> > attempt something.
-> 
-> Boot loops can indeed be irritating.  So I created this commit:
-> 
-> 10f84c2cfb50 ("torture: Avoid torture-test reboot loops")
-> 
-> This passes -no-reboot to qemu, which causes qemu to just stop when
-> it would otherwise reboot.  Much nicer!
-> 
-> The multiple-ftrace-dump issue could still appear should some torture
-> test decide to turn tracing back on at some point, perhaps in response
-> to a yet-as-unthought-of module parameter.
-> 
-> Should this ever be a problem, one approach would be to leave the
-> beginning/end markers and/or number them.
 
-Thanks for doing this! I'll add it to all my trees.
+as described by Lei Zhen:
 
-Also let us replace the diff with the below [3] to properly label potential
-multiple dumps?  Example for a file like [1], it will extract as [2].
+v2 --> v3:
+1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+   more than 97.5%, and vmalloc accounts for less than 1%. So change call
+   mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+   avoid the potential deadlock risk of vmalloc_dump_obj().
+-               mem_dump_obj(rhp);
++               if (kmem_valid_obj(rhp))
++                       kmem_dump_obj(rhp);
 
-[1]:
+   The discussion about vmap_area_lock deadlock in v2:
+   https://lkml.org/lkml/2022/11/11/493
 
-foo
-foo
-Dumping ftrace buffer:
----------------------------------
-blah
-blah
----------------------------------
-more
-bar
-baz
-Dumping ftrace buffer:
----------------------------------
-blah2
-blah2
----------------------------------
-bleh
-bleh
+so whether mem_dump_obj() should also be replaced by kmem_dump_obj() in
+__call_rcu_common(),  since the call_rcu() can be called in interrupt context,
+this may issue recursive spin vmap_area_lock  lock calls.
 
-[2]:
+Any thoughts ?
 
-Ftrace dump 1:
-blah
-blah
-
-Ftrace dump 2:
-blah2
-blah2
-
----8<-----------------------
-[3]
-
-diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-old mode 100644
-new mode 100755
-index b8e2ea23cb3f..a5c74e508e41
---- a/tools/testing/selftests/rcutorture/bin/functions.sh
-+++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-@@ -331,3 +331,30 @@ specify_qemu_net () {
- 		echo $1 -net none
- 	fi
- }
-+
-+# Extract the ftrace output from the console log output
-+# The ftrace output in the original logs look like:
-+# Dumping ftrace buffer:
-+# ---------------------------------
-+# [...]
-+# ---------------------------------
-+extract_ftrace_from_console() {
-+        awk '
-+        /Dumping ftrace buffer:/ {
-+        buffer_count++
-+        print "Ftrace dump " buffer_count ":"
-+        capture = 1
-+        next
-+    }
-+    /---------------------------------/ {
-+        if(capture == 1) {
-+            capture = 2
-+            next
-+        } else if(capture == 2) {
-+            capture = 0
-+            print ""
-+        }
-+    }
-+    capture == 2
-+    ' "$1";
-+}
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 9ab0f6bc172c..e3d2f69ec0fb 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -182,3 +182,10 @@ if ! test -s $file.diags
- then
- 	rm -f $file.diags
- fi
-+
-+# Call extract_ftrace_from_console function, if the output is empty,
-+# don't create $file.ftrace. Otherwise output the results to $file.ftrace
-+extract_ftrace_from_console $file > $file.ftrace
-+if [ ! -s $file.ftrace ]; then
-+	rm -f $file.ftrace
-+fi
--- 
-2.41.0.694.ge786442a9b-goog
-
+Thanks
+Zqiang
