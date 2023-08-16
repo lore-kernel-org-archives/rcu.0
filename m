@@ -2,207 +2,256 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3841EC04A6A
-	for <rcu@archiver.kernel.org>; Wed, 16 Aug 2023 16:03:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9CDAC001E0
+	for <rcu@archiver.kernel.org>; Wed, 16 Aug 2023 16:14:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbjHPQDT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 16 Aug 2023 12:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        id S1344538AbjHPQOG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 16 Aug 2023 12:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344402AbjHPQCu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:02:50 -0400
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB9010F0;
-        Wed, 16 Aug 2023 09:02:47 -0700 (PDT)
-Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id 033B717F61;
-        Wed, 16 Aug 2023 19:02:46 +0300 (EEST)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id DA33A17F5C;
-        Wed, 16 Aug 2023 19:02:45 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-        by ink.ssi.bg (Postfix) with ESMTPSA id A79913C0325;
-        Wed, 16 Aug 2023 19:02:42 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-        t=1692201763; bh=wAKYWlRT1Luq45cPjoozO/I4AAx4gv4ALqkvKffGThE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References;
-        b=dj8yEXAMRiBMPMkeE9+vyD55NUQnN7IoNPEztg+XovLAyqRLB2cqWx5Aj0Nj5xOw0
-         s6BKfx/xpIKln3Ye9k3uPi/WOJFIiV5653ZnCpYafiPXA435078ot4Z9gYHJ9d4JTX
-         7b+pLnCbGaExK+K/mILQuSieqJhrgBn7DjtJw82s=
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 37GG2djE170631;
-        Wed, 16 Aug 2023 19:02:39 +0300
-Date:   Wed, 16 Aug 2023 19:02:39 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-cc:     Simon Horman <horms@verge.net.au>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, Dust Li <dust.li@linux.alibaba.com>,
-        Jiejian Wu <jiejian@linux.alibaba.com>,
-        Jiri Wiesner <jwiesner@suse.de>
-Subject: Re: [PATCH RFC net-next 01/14] rculist_bl: add
- hlist_bl_for_each_entry_continue_rcu
-In-Reply-To: <958d687d-9f7f-4baf-af26-2ec351ef8699@paulmck-laptop>
-Message-ID: <a3bba801-5253-5ab1-4dce-43c5b7cb407c@ssi.bg>
-References: <20230815173031.168344-1-ja@ssi.bg> <20230815173031.168344-2-ja@ssi.bg> <958d687d-9f7f-4baf-af26-2ec351ef8699@paulmck-laptop>
+        with ESMTP id S1344537AbjHPQNq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 16 Aug 2023 12:13:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C0DC1;
+        Wed, 16 Aug 2023 09:13:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA43A668E6;
+        Wed, 16 Aug 2023 16:13:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D199C433CB;
+        Wed, 16 Aug 2023 16:13:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692202424;
+        bh=jQYkHke0soALnUJjyWhSomyPV+FCVP+1SeSCb3FbXOU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E95UyglSfjGh70zmgdrz9PuWxugktCPAibLPoeYD7HudlBxBHUVGconbZTClPaGQT
+         YiBbUSoS3HXz/UvzvZ0IQ7tU5X+8fyclyy7Jup/6xrQuP0fH9Pjil/uTumQ9YNVnrd
+         Yk91C0hybar5bRetasNsCH98BehTR1DnjCvmJ8T8E2x9fxNxs5QoR8rnqknYACirL6
+         /RgXbHwxzWY0IYrRnmT2+7uXvqk8/GmNY8FBp6nPNvv4b6v+ZDQdIZ/seR89h5A0C5
+         R6LD2QqOhF4DgHrpeeVnMGdpEmGH7pUeSaeXbrgtWQz451pjwF9W423Ausf2cv0/Co
+         1MJDM/CCRXbFQ==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so10852250e87.3;
+        Wed, 16 Aug 2023 09:13:44 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz0TgPgYNznEtZ2snLR+AlRdmOyyFN4FQ5osE2TOwL49SNpcBl2
+        zrIlT6z5GrJDmDzS1XdGYmpAXIBtRZbl215jHrU=
+X-Google-Smtp-Source: AGHT+IH2dhnFu0Q1LfTXp6RIYUoemBWEdNHjsqGUy3Y72+Q1zbElBwtqAk2WUeVzE/x67wGpArXmFqVhwYrSL0evH/o=
+X-Received: by 2002:ac2:58c9:0:b0:4fe:1dc8:7ec with SMTP id
+ u9-20020ac258c9000000b004fe1dc807ecmr1759609lfo.37.1692202422172; Wed, 16 Aug
+ 2023 09:13:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20230814020045.51950-1-chenhuacai@loongson.cn>
+ <20230814020045.51950-2-chenhuacai@loongson.cn> <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
+ <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
+ <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
+ <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com>
+ <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
+ <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
+ <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
+ <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com> <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
+In-Reply-To: <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 17 Aug 2023 00:13:29 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6XPmDFEKGwjcbv57jRwpUvZ76PcmJjxN50Dpbq+-QgKA@mail.gmail.com>
+Message-ID: <CAAhV-H6XPmDFEKGwjcbv57jRwpUvZ76PcmJjxN50Dpbq+-QgKA@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Z qiang <qiang.zhang1211@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Hi, Alan,
 
-	Hello,
+On Wed, Aug 16, 2023 at 11:57=E2=80=AFPM Alan Huang <mmpgouride@gmail.com> =
+wrote:
+>
+> >>>>>>>>>
+> >>>>>>>>> Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to =
+one check
+> >>>>>>>>> period later, i.e. jiffies + rcu_jiffies_till_stall_check(). Bu=
+t jiffies
+> >>>>>>>>> is only updated in the timer interrupt, so when kgdb_cpu_enter(=
+) begins
+> >>>>>>>>> to run there may already be nearly one rcu check period after j=
+iffies.
+> >>>>>>>>> Since all interrupts are disabled during kgdb_cpu_enter(), jiff=
+ies will
+> >>>>>>>>> not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffie=
+s_stall
+> >>>>>>>>> maybe already gets timeout.
+> >>>>>>>>>
+> >>>>>>>>> We can set rcu_state.jiffies_stall to two rcu check periods lat=
+er, e.g.
+> >>>>>>>>> jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall=
+_reset()
+> >>>>>>>>> to avoid this problem. But this isn't a complete solution becau=
+se kgdb
+> >>>>>>>>> may take a very long time in irq disabled context.
+> >>>>>>>>>
+> >>>>>>>>> Instead, update jiffies at the beginning of rcu_cpu_stall_reset=
+() can
+> >>>>>>>>> solve all kinds of problems.
+> >>>>>>>>
+> >>>>>>>> Would it make sense for there to be a kgdb_cpu_exit()?  In that =
+case,
+> >>>>>>>> the stalls could simply be suppressed at the beginning of the de=
+bug
+> >>>>>>>> session and re-enabled upon exit, as is currently done for sysrq=
+ output
+> >>>>>>>> via rcu_sysrq_start() and rcu_sysrq_end().
+> >>>>>>> Thank you for your advice, but that doesn't help. Because
+> >>>>>>> rcu_sysrq_start() and rcu_sysrq_end() try to suppress the warning=
+s
+> >>>>>>> during sysrq, but kgdb already has no warnings during kgdb_cpu_en=
+ter()
+> >>>>>>> since it is executed in irq disabled context. Instead, this patch
+> >>>>>>> wants to suppress the warnings *after* kgdb_cpu_enter() due to a =
+very
+> >>>>>>> old jiffies value.
+> >>>>>>>
+> >>>>>>
+> >>>>>> Hello, Huacai
+> >>>>>>
+> >>>>>> Is it possible to set  the rcu_cpu_stall_suppress is true in
+> >>>>>> dbg_touch_watchdogs()
+> >>>>>> and reset the rcu_cpu_stall_suppress at the beginning and end of t=
+he
+> >>>>>> RCU grace period?
+> >>>>> This is possible but not the best: 1, kgdb is not the only caller o=
+f
+> >>>>> rcu_cpu_stall_reset(); 2, it is difficult to find the "end" to rese=
+t
+> >>>>> rcu_cpu_stall_suppress.
+> >>>>>
+> >>>>
+> >>>> You can replace rcu_state.jiffies_stall update by setting rcu_cpu_st=
+all_suppress
+> >>>> in rcu_cpu_stall_reset(),  and reset rcu_cpu_stall_suppress in rcu_g=
+p_init() and
+> >>>> rcu_gp_cleanup().
+> >>> What's the advantage compared with updating jiffies? Updating jiffies
+> >>> seems more straight forward.
+> >>>
+> >>
+> >> In do_update_jiffies_64(), need to acquire jiffies_lock raw spinlock,
+> >> like you said, kgdb is not the only caller of rcu_cpu_stall_reset(),
+> >> the rcu_cpu_stall_reset() maybe invoke in NMI  (arch/x86/platform/uv/u=
+v_nmi.c)
+> > Reset rcu_cpu_stall_suppress in rcu_gp_init()/rcu_gp_cleanup() is
+> > still not so good to me, because it does a useless operation in most
+> > cases. Moreover, the rcu core is refactored again and again, something
+> > may be changed in future.
+> >
+> > If  do_update_jiffies_64() cannot be used in NMI context, can we
+>
+> What about updating jiffies in dbg_touch_watchdogs or adding a wrapper wh=
+ich updates
+> both jiffies and jiffies_stall?
+This can solve the kgdb problem, but I found that most callers of
+rcu_cpu_stall_reset() are in irq disabled context so they may meet
+similar problems. Modifying rcu_cpu_stall_reset() can solve all of
+them.
 
-On Tue, 15 Aug 2023, Paul E. McKenney wrote:
+But due to the NMI issue, from my point of view, setting jiffies_stall
+to jiffies + 300*HZ is the best solution now. :)
 
-> On Tue, Aug 15, 2023 at 08:30:18PM +0300, Julian Anastasov wrote:
-> > Add hlist_bl_for_each_entry_continue_rcu and hlist_bl_next_rcu
-> > 
-> > Signed-off-by: Julian Anastasov <ja@ssi.bg>
-> > ---
-> >  include/linux/rculist_bl.h | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> > 
-> > diff --git a/include/linux/rculist_bl.h b/include/linux/rculist_bl.h
-> > index 0b952d06eb0b..93a757793d83 100644
-> > --- a/include/linux/rculist_bl.h
-> > +++ b/include/linux/rculist_bl.h
-> > @@ -24,6 +24,10 @@ static inline struct hlist_bl_node *hlist_bl_first_rcu(struct hlist_bl_head *h)
-> >  		((unsigned long)rcu_dereference_check(h->first, hlist_bl_is_locked(h)) & ~LIST_BL_LOCKMASK);
-> >  }
-> >  
-> > +/* return the next element in an RCU protected list */
-> > +#define hlist_bl_next_rcu(node)	\
-> > +	(*((struct hlist_bl_node __rcu **)(&(node)->next)))
-> > +
-> >  /**
-> >   * hlist_bl_del_rcu - deletes entry from hash list without re-initialization
-> >   * @n: the element to delete from the hash list.
-> > @@ -98,4 +102,17 @@ static inline void hlist_bl_add_head_rcu(struct hlist_bl_node *n,
-> >  		({ tpos = hlist_bl_entry(pos, typeof(*tpos), member); 1; }); \
-> >  		pos = rcu_dereference_raw(pos->next))
-> >  
-> > +/**
-> > + * hlist_bl_for_each_entry_continue_rcu - iterate over a list continuing after
-> > + *   current point
-> 
-> Please add a comment to the effect that the element continued from
-> must have been either: (1) Iterated to within the same RCU read-side
-> critical section or (2) Nailed down using some lock, reference count,
-> or whatever suffices to keep the continued-from element from being freed
-> in the meantime.
-
-	I created 2nd version which has more changes. I'm not sure
-what are the desired steps for this patch, should I keep it as part
-of my patchset if accepted? Or should I post it separately? Here it
-is v2 for comments.
-
-[PATCHv2 RFC] rculist_bl: add hlist_bl_for_each_entry_continue_rcu
-
-Change the old hlist_bl_first_rcu to hlist_bl_first_rcu_dereference
-to indicate that it is a RCU dereference.
-
-Add hlist_bl_next_rcu and hlist_bl_first_rcu to use RCU pointers
-and use them to fix sparse warnings.
-
-Add hlist_bl_for_each_entry_continue_rcu.
-
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
----
- include/linux/rculist_bl.h | 49 +++++++++++++++++++++++++++++++-------
- 1 file changed, 40 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/rculist_bl.h b/include/linux/rculist_bl.h
-index 0b952d06eb0b..36363b876e53 100644
---- a/include/linux/rculist_bl.h
-+++ b/include/linux/rculist_bl.h
-@@ -8,21 +8,31 @@
- #include <linux/list_bl.h>
- #include <linux/rcupdate.h>
- 
-+/* return the first ptr or next element in an RCU protected list */
-+#define hlist_bl_first_rcu(head)	\
-+	(*((struct hlist_bl_node __rcu **)(&(head)->first)))
-+#define hlist_bl_next_rcu(node)	\
-+	(*((struct hlist_bl_node __rcu **)(&(node)->next)))
-+
- static inline void hlist_bl_set_first_rcu(struct hlist_bl_head *h,
- 					struct hlist_bl_node *n)
- {
- 	LIST_BL_BUG_ON((unsigned long)n & LIST_BL_LOCKMASK);
- 	LIST_BL_BUG_ON(((unsigned long)h->first & LIST_BL_LOCKMASK) !=
- 							LIST_BL_LOCKMASK);
--	rcu_assign_pointer(h->first,
-+	rcu_assign_pointer(hlist_bl_first_rcu(h),
- 		(struct hlist_bl_node *)((unsigned long)n | LIST_BL_LOCKMASK));
- }
- 
--static inline struct hlist_bl_node *hlist_bl_first_rcu(struct hlist_bl_head *h)
--{
--	return (struct hlist_bl_node *)
--		((unsigned long)rcu_dereference_check(h->first, hlist_bl_is_locked(h)) & ~LIST_BL_LOCKMASK);
--}
-+#define hlist_bl_first_rcu_dereference(head)				\
-+({									\
-+	struct hlist_bl_head *__head = (head);				\
-+									\
-+	(struct hlist_bl_node *)					\
-+	((unsigned long)rcu_dereference_check(hlist_bl_first_rcu(__head), \
-+					      hlist_bl_is_locked(__head)) & \
-+					      ~LIST_BL_LOCKMASK);	\
-+})
- 
- /**
-  * hlist_bl_del_rcu - deletes entry from hash list without re-initialization
-@@ -73,7 +83,7 @@ static inline void hlist_bl_add_head_rcu(struct hlist_bl_node *n,
- {
- 	struct hlist_bl_node *first;
- 
--	/* don't need hlist_bl_first_rcu because we're under lock */
-+	/* don't need hlist_bl_first_rcu* because we're under lock */
- 	first = hlist_bl_first(h);
- 
- 	n->next = first;
-@@ -93,9 +103,30 @@ static inline void hlist_bl_add_head_rcu(struct hlist_bl_node *n,
-  *
-  */
- #define hlist_bl_for_each_entry_rcu(tpos, pos, head, member)		\
--	for (pos = hlist_bl_first_rcu(head);				\
-+	for (pos = hlist_bl_first_rcu_dereference(head);		\
- 		pos &&							\
- 		({ tpos = hlist_bl_entry(pos, typeof(*tpos), member); 1; }); \
--		pos = rcu_dereference_raw(pos->next))
-+		pos = rcu_dereference_raw(hlist_bl_next_rcu(pos)))
-+
-+/**
-+ * hlist_bl_for_each_entry_continue_rcu - continue iteration over list of given
-+ *   type
-+ * @tpos:	the type * to use as a loop cursor.
-+ * @pos:	the &struct hlist_bl_node to use as a loop cursor.
-+ * @member:	the name of the hlist_bl_node within the struct.
-+ *
-+ * Continue to iterate over list of given type, continuing after
-+ * the current position which must have been in the list when the RCU read
-+ * lock was taken.
-+ * This would typically require either that you obtained the node from a
-+ * previous walk of the list in the same RCU read-side critical section, or
-+ * that you held some sort of non-RCU reference (such as a reference count)
-+ * to keep the node alive *and* in the list.
-+ */
-+#define hlist_bl_for_each_entry_continue_rcu(tpos, pos, member)		\
-+	for (pos = rcu_dereference_raw(hlist_bl_next_rcu(&(tpos)->member)); \
-+	     pos &&							\
-+	     ({ tpos = hlist_bl_entry(pos, typeof(*tpos), member); 1; }); \
-+	     pos = rcu_dereference_raw(hlist_bl_next_rcu(pos)))
- 
- #endif
--- 
-2.41.0
-
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
-
+Huacai
+>
+> > consider my old method [1]?
+> > https://lore.kernel.org/rcu/CAAhV-H7j9Y=3DVvRLm8thLw-EX1PGqBA9YfT4G1AN7=
+ucYS=3DiP+DQ@mail.gmail.com/T/#t
+> >
+> > Of course we should set rcu_state.jiffies_stall large enough, so we
+> > can do like this:
+> >
+> > void rcu_cpu_stall_reset(void)
+> > {
+> >  WRITE_ONCE(rcu_state.jiffies_stall,
+> > -   jiffies + rcu_jiffies_till_stall_check());
+> > +   jiffies + 300 * HZ);
+> > }
+> >
+> > 300s is the largest timeout value, and I think 300s is enough here in p=
+ractice.
+> >
+> > Huacai
+> >
+> >>
+> >> Thanks
+> >> Zqiang
+> >>
+> >>
+> >>> Huacai
+> >>>
+> >>>>
+> >>>> Thanks
+> >>>> Zqiang
+> >>>>
+> >>>>>
+> >>>>>> or set rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 in bootargs can
+> >>>>>> suppress RCU stall
+> >>>>>> in booting.
+> >>>>> This is also possible, but it suppresses all kinds of stall warning=
+s,
+> >>>>> which is not what we want.
+> >>>>>
+> >>>>> Huacai
+> >>>>>>
+> >>>>>>
+> >>>>>> Thanks
+> >>>>>> Zqiang
+> >>>>>>
+> >>>>>>
+> >>>>>>>
+> >>>>>>> Huacai
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>>                                                        Thanx, Pa=
+ul
+> >>>>>>>>
+> >>>>>>>>> Cc: stable@vger.kernel.org
+> >>>>>>>>> Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall =
+detection in rcu_cpu_stall_reset()")
+> >>>>>>>>> Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> >>>>>>>>> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> >>>>>>>>> ---
+> >>>>>>>>> kernel/rcu/tree_stall.h | 1 +
+> >>>>>>>>> 1 file changed, 1 insertion(+)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> >>>>>>>>> index b10b8349bb2a..1c7b540985bf 100644
+> >>>>>>>>> --- a/kernel/rcu/tree_stall.h
+> >>>>>>>>> +++ b/kernel/rcu/tree_stall.h
+> >>>>>>>>> @@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
+> >>>>>>>>>  */
+> >>>>>>>>> void rcu_cpu_stall_reset(void)
+> >>>>>>>>> {
+> >>>>>>>>> +     do_update_jiffies_64(ktime_get());
+> >>>>>>>>>      WRITE_ONCE(rcu_state.jiffies_stall,
+> >>>>>>>>>                 jiffies + rcu_jiffies_till_stall_check());
+> >>>>>>>>> }
+> >>>>>>>>> --
+> >>>>>>>>> 2.39.3
+>
+>
