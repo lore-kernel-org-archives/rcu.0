@@ -2,280 +2,187 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EEE6C2FC15
-	for <rcu@archiver.kernel.org>; Thu, 17 Aug 2023 04:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A6FC2FC14
+	for <rcu@archiver.kernel.org>; Thu, 17 Aug 2023 06:35:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347953AbjHQEFA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 17 Aug 2023 00:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35586 "EHLO
+        id S1348230AbjHQGfK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 17 Aug 2023 02:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347955AbjHQEE7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 17 Aug 2023 00:04:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD48271D;
-        Wed, 16 Aug 2023 21:04:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EC39D63827;
-        Thu, 17 Aug 2023 04:04:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2F9C433B6;
-        Thu, 17 Aug 2023 04:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692245097;
-        bh=n93Y+NvoiCdhzO7vgtSvAbVtJcBfReB5Q3BzTXShkwQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BIf+jhuUQeg4/1MhgIg4CpsmvhqewTlGzKp/7gEX/5xk+BQQQ4xdVvLii9VcQTMjt
-         UiqozUyWJhbWbKRJ37rwMGZzFO5oQY7KUT73GX1KEUCxYSteEqO0LEC/NuIz0OgHir
-         iHX5wwf1/0AtJivlFSv9aCcwW4VEsySrslDYcCU+yHMMjwiHGT9T06zXRuYXdDR9nq
-         O8HTG7QBLuYU7E3pfE22GqpCDNNzHaZGbpBzt2aaB8hOp80EgjqgHVXqiyqH8oWRPB
-         +lBosP5l5Cx6uhbob5wtDGXHziWEkFwkwPYmlYAlD/w1WeaYpl/Z+gZyzvzxcOS8h/
-         PQGjp+OfVSCyw==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5255da974c4so5637717a12.3;
-        Wed, 16 Aug 2023 21:04:57 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzRBKeg/NuqUpavhyBvC+BJ7uumYAlL9Vw9SPAnSSCyB5NHA6sp
-        /w0yvQVDZiGUNFM+N9xvIVyYAONWOHDcAOOLMN8=
-X-Google-Smtp-Source: AGHT+IHp+7TMt3Tj5/RPaWSXYWVOe5SbUojxP0adL9e0JxkaBOlBhmT7bkD3la7r7y1S8eA63rcp6wYS+uiFyY1ffsw=
-X-Received: by 2002:aa7:db45:0:b0:522:29ec:3e0a with SMTP id
- n5-20020aa7db45000000b0052229ec3e0amr3009174edt.28.1692245095417; Wed, 16 Aug
- 2023 21:04:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230814020045.51950-1-chenhuacai@loongson.cn>
- <20230814020045.51950-2-chenhuacai@loongson.cn> <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
- <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
- <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
- <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com>
- <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
- <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
- <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
- <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
- <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com> <CAAhV-H6XPmDFEKGwjcbv57jRwpUvZ76PcmJjxN50Dpbq+-QgKA@mail.gmail.com>
- <2EB2D2A7-7C69-4E75-BF62-92309121B0A5@gmail.com>
-In-Reply-To: <2EB2D2A7-7C69-4E75-BF62-92309121B0A5@gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 17 Aug 2023 12:04:42 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H49seuerPTqwh_KQxFBjSVAT6CjFE_8veifLyEZvvbTYg@mail.gmail.com>
-Message-ID: <CAAhV-H49seuerPTqwh_KQxFBjSVAT6CjFE_8veifLyEZvvbTYg@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Z qiang <qiang.zhang1211@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S1348240AbjHQGel (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 17 Aug 2023 02:34:41 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CE6270C
+        for <rcu@vger.kernel.org>; Wed, 16 Aug 2023 23:34:39 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bcad794ad4so49656955ad.3
+        for <rcu@vger.kernel.org>; Wed, 16 Aug 2023 23:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692254079; x=1692858879;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=seWaPkjdw5bzbt1+h4lounGPxoCAudeab6dYx4qXf0A=;
+        b=EwzrQ/vucv6FL28EVWMPbkB/aQzxpZ2bPi9lDcT5oEb6ymBIwHDqnBbuQ5SZ3qCEm8
+         BLMzoskBGgFpwDp4QrARJ6FGOMCXBO89Nvlq76Q+Z+9upDQZe9OYZ/2nzVH4AYRDQEZa
+         yVvK5gPxncAKXQ5W+uuU553UDGM33S/BJ59OwVXqyED2YGOb/nNlKR7+bui+5NHXAtvx
+         2WHPFJAsU0f0L6eZ8qCFm2yo4MBv3rRjOJ+p09hWIjUBQUGRSzGw+zFYVxJPpGS7fsB/
+         gdcwXJuXEAk3OeJb/iZsuVeLbI0uxyBSLI70+V2v+eTuTgpUltsp62J4IRDe0aOLcWmr
+         Lhgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692254079; x=1692858879;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=seWaPkjdw5bzbt1+h4lounGPxoCAudeab6dYx4qXf0A=;
+        b=eHtqHIolPGPe5ApNjbUEwxdKxgTgAXo1JoTkrZjPKal4XI2HWOfwQpnTrtMjHtYdf8
+         +4Zt23dRKIujapBshcQKsem69z0R0beZo4uP8xvGRofPU+/FWLyNHfx3OB7lqxncWaWB
+         Jgv1vG9HUc2sOxV++4Kqo89SxXBvcMAG8rJwv2iAp6PU4s1esobQUce3P5mB2a5coaSM
+         zDf6NMgXPY/SFY2beNIZjmRGpVaC13sG7pQgE1ktY5+aI1OKtyE/rSqpJtr6b6E+iqDC
+         eIIoTA7xSNYg8Nbc1R4E8mdT28nlV7T+g7UyyF8jBatp4zLa/WwxMaKCNu7Bc5sCYBzK
+         6Txw==
+X-Gm-Message-State: AOJu0YxNOMADj/th2Gg2ytA+9opg/ILJtxVgrtckwPb3e8xp30Qdxp8x
+        TZQrQkwJF4K4uZPMZ6cVvQQ=
+X-Google-Smtp-Source: AGHT+IGQXt/VsqZk/uOzeHj7LcKanGM6wfOIoL3OGOuYezGCRJKmLI8s2EBAplk1Mj07lwo4ikMi2Q==
+X-Received: by 2002:a17:902:da82:b0:1bc:9c70:b955 with SMTP id j2-20020a170902da8200b001bc9c70b955mr4882447plx.28.1692254079050;
+        Wed, 16 Aug 2023 23:34:39 -0700 (PDT)
+Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
+        by smtp.gmail.com with ESMTPSA id h17-20020a170902f7d100b001bc930d4517sm14301025plw.42.2023.08.16.23.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 23:34:38 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, qiang.zhang1211@gmail.com
+Subject: [PATCH] rcu: Drop vmalloc memory info dump when double call_rcu()
+Date:   Thu, 17 Aug 2023 14:34:29 +0800
+Message-Id: <20230817063429.31454-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi, Alan,
+Currently, for double invoke call_rcu(), will dump rcu_head objects
+memory info, if the objects is not allocated from the slab allocator,
+the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+need to be held, since the call_rcu() can be invoked in interrupt context,
+therefore, there is a possibility of spinlock deadlock scenarios.
 
-On Thu, Aug 17, 2023 at 12:52=E2=80=AFAM Alan Huang <mmpgouride@gmail.com> =
-wrote:
->
-> >>
-> >>>>>>>>>>>
-> >>>>>>>>>>> Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall t=
-o one check
-> >>>>>>>>>>> period later, i.e. jiffies + rcu_jiffies_till_stall_check(). =
-But jiffies
-> >>>>>>>>>>> is only updated in the timer interrupt, so when kgdb_cpu_ente=
-r() begins
-> >>>>>>>>>>> to run there may already be nearly one rcu check period after=
- jiffies.
-> >>>>>>>>>>> Since all interrupts are disabled during kgdb_cpu_enter(), ji=
-ffies will
-> >>>>>>>>>>> not be updated. When kgdb_cpu_enter() returns, rcu_state.jiff=
-ies_stall
-> >>>>>>>>>>> maybe already gets timeout.
-> >>>>>>>>>>>
-> >>>>>>>>>>> We can set rcu_state.jiffies_stall to two rcu check periods l=
-ater, e.g.
-> >>>>>>>>>>> jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_sta=
-ll_reset()
-> >>>>>>>>>>> to avoid this problem. But this isn't a complete solution bec=
-ause kgdb
-> >>>>>>>>>>> may take a very long time in irq disabled context.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Instead, update jiffies at the beginning of rcu_cpu_stall_res=
-et() can
-> >>>>>>>>>>> solve all kinds of problems.
-> >>>>>>>>>>
-> >>>>>>>>>> Would it make sense for there to be a kgdb_cpu_exit()?  In tha=
-t case,
-> >>>>>>>>>> the stalls could simply be suppressed at the beginning of the =
-debug
-> >>>>>>>>>> session and re-enabled upon exit, as is currently done for sys=
-rq output
-> >>>>>>>>>> via rcu_sysrq_start() and rcu_sysrq_end().
-> >>>>>>>>> Thank you for your advice, but that doesn't help. Because
-> >>>>>>>>> rcu_sysrq_start() and rcu_sysrq_end() try to suppress the warni=
-ngs
-> >>>>>>>>> during sysrq, but kgdb already has no warnings during kgdb_cpu_=
-enter()
-> >>>>>>>>> since it is executed in irq disabled context. Instead, this pat=
-ch
-> >>>>>>>>> wants to suppress the warnings *after* kgdb_cpu_enter() due to =
-a very
-> >>>>>>>>> old jiffies value.
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Hello, Huacai
-> >>>>>>>>
-> >>>>>>>> Is it possible to set  the rcu_cpu_stall_suppress is true in
-> >>>>>>>> dbg_touch_watchdogs()
-> >>>>>>>> and reset the rcu_cpu_stall_suppress at the beginning and end of=
- the
-> >>>>>>>> RCU grace period?
-> >>>>>>> This is possible but not the best: 1, kgdb is not the only caller=
- of
-> >>>>>>> rcu_cpu_stall_reset(); 2, it is difficult to find the "end" to re=
-set
-> >>>>>>> rcu_cpu_stall_suppress.
-> >>>>>>>
-> >>>>>>
-> >>>>>> You can replace rcu_state.jiffies_stall update by setting rcu_cpu_=
-stall_suppress
-> >>>>>> in rcu_cpu_stall_reset(),  and reset rcu_cpu_stall_suppress in rcu=
-_gp_init() and
-> >>>>>> rcu_gp_cleanup().
-> >>>>> What's the advantage compared with updating jiffies? Updating jiffi=
-es
-> >>>>> seems more straight forward.
-> >>>>>
-> >>>>
-> >>>> In do_update_jiffies_64(), need to acquire jiffies_lock raw spinlock=
-,
-> >>>> like you said, kgdb is not the only caller of rcu_cpu_stall_reset(),
-> >>>> the rcu_cpu_stall_reset() maybe invoke in NMI  (arch/x86/platform/uv=
-/uv_nmi.c)
-> >>> Reset rcu_cpu_stall_suppress in rcu_gp_init()/rcu_gp_cleanup() is
-> >>> still not so good to me, because it does a useless operation in most
-> >>> cases. Moreover, the rcu core is refactored again and again, somethin=
-g
-> >>> may be changed in future.
-> >>>
-> >>> If  do_update_jiffies_64() cannot be used in NMI context, can we
-> >>
-> >> What about updating jiffies in dbg_touch_watchdogs or adding a wrapper=
- which updates
-> >> both jiffies and jiffies_stall?
-> > This can solve the kgdb problem, but I found that most callers of
-> > rcu_cpu_stall_reset() are in irq disabled context so they may meet
->
-> The duration of other contexts where interrupts are disabled may not be a=
-s long as in the case of kgdb=EF=BC=9F
->
-> > similar problems. Modifying rcu_cpu_stall_reset() can solve all of
-> > them.
-> >
-> > But due to the NMI issue, from my point of view, setting jiffies_stall
-> > to jiffies + 300*HZ is the best solution now. :)
->
-> If I understand correctly, the NMI issue is the deadlock issue? If so, pl=
-us the short duration of other irq disabled
-> contexts, it=E2=80=99s ok just update jiffies in dbg_touch_watchdogs.
->
-> Please correct me if anything wrong. :)
-The timeout value can be configured as short as 3 seconds, in this
-case other callers may also have problems.
+And in Preempt-RT kernel, the rcutorture test also trigger the following
+lockdep warning:
 
-Huacai
->
-> >
-> > Huacai
-> >>
-> >>> consider my old method [1]?
-> >>> https://lore.kernel.org/rcu/CAAhV-H7j9Y=3DVvRLm8thLw-EX1PGqBA9YfT4G1A=
-N7ucYS=3DiP+DQ@mail.gmail.com/T/#t
-> >>>
-> >>> Of course we should set rcu_state.jiffies_stall large enough, so we
-> >>> can do like this:
-> >>>
-> >>> void rcu_cpu_stall_reset(void)
-> >>> {
-> >>> WRITE_ONCE(rcu_state.jiffies_stall,
-> >>> -   jiffies + rcu_jiffies_till_stall_check());
-> >>> +   jiffies + 300 * HZ);
-> >>> }
-> >>>
-> >>> 300s is the largest timeout value, and I think 300s is enough here in=
- practice.
-> >>>
-> >>> Huacai
-> >>>
-> >>>>
-> >>>> Thanks
-> >>>> Zqiang
-> >>>>
-> >>>>
-> >>>>> Huacai
-> >>>>>
-> >>>>>>
-> >>>>>> Thanks
-> >>>>>> Zqiang
-> >>>>>>
-> >>>>>>>
-> >>>>>>>> or set rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 in bootargs c=
-an
-> >>>>>>>> suppress RCU stall
-> >>>>>>>> in booting.
-> >>>>>>> This is also possible, but it suppresses all kinds of stall warni=
-ngs,
-> >>>>>>> which is not what we want.
-> >>>>>>>
-> >>>>>>> Huacai
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Thanks
-> >>>>>>>> Zqiang
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> Huacai
-> >>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>>                                                       Thanx, P=
-aul
-> >>>>>>>>>>
-> >>>>>>>>>>> Cc: stable@vger.kernel.org
-> >>>>>>>>>>> Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stal=
-l detection in rcu_cpu_stall_reset()")
-> >>>>>>>>>>> Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> >>>>>>>>>>> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> >>>>>>>>>>> ---
-> >>>>>>>>>>> kernel/rcu/tree_stall.h | 1 +
-> >>>>>>>>>>> 1 file changed, 1 insertion(+)
-> >>>>>>>>>>>
-> >>>>>>>>>>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.=
-h
-> >>>>>>>>>>> index b10b8349bb2a..1c7b540985bf 100644
-> >>>>>>>>>>> --- a/kernel/rcu/tree_stall.h
-> >>>>>>>>>>> +++ b/kernel/rcu/tree_stall.h
-> >>>>>>>>>>> @@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
-> >>>>>>>>>>> */
-> >>>>>>>>>>> void rcu_cpu_stall_reset(void)
-> >>>>>>>>>>> {
-> >>>>>>>>>>> +     do_update_jiffies_64(ktime_get());
-> >>>>>>>>>>>     WRITE_ONCE(rcu_state.jiffies_stall,
-> >>>>>>>>>>>                jiffies + rcu_jiffies_till_stall_check());
-> >>>>>>>>>>> }
-> >>>>>>>>>>> --
-> >>>>>>>>>>> 2.39.3
->
->
+BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+preempt_count: 1, expected: 0
+RCU nest depth: 1, expected: 1
+3 locks held by swapper/0/1:
+ #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
+ #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
+ #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
+irq event stamp: 565512
+hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
+hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
+softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
+softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
+Preemption disabled at:
+[<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
+CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x68/0xb0
+ dump_stack+0x14/0x20
+ __might_resched+0x1aa/0x280
+ ? __pfx_rcu_torture_err_cb+0x10/0x10
+ rt_spin_lock+0x53/0x130
+ ? find_vmap_area+0x1f/0x70
+ find_vmap_area+0x1f/0x70
+ vmalloc_dump_obj+0x20/0x60
+ mem_dump_obj+0x22/0x90
+ __call_rcu_common+0x5bf/0x940
+ ? debug_smp_processor_id+0x1b/0x30
+ call_rcu_hurry+0x14/0x20
+ rcu_torture_init+0x1f82/0x2370
+ ? __pfx_rcu_torture_leak_cb+0x10/0x10
+ ? __pfx_rcu_torture_leak_cb+0x10/0x10
+ ? __pfx_rcu_torture_init+0x10/0x10
+ do_one_initcall+0x6c/0x300
+ ? debug_smp_processor_id+0x1b/0x30
+ kernel_init_freeable+0x2b9/0x540
+ ? __pfx_kernel_init+0x10/0x10
+ kernel_init+0x1f/0x150
+ ret_from_fork+0x40/0x50
+ ? __pfx_kernel_init+0x10/0x10
+ ret_from_fork_asm+0x1b/0x30
+ </TASK>
+
+The statistics about the source of 'rhp', the kmem_valid_obj() accounts
+for more than 97.5%, and vmalloc accounts for less than 1%, this statistic
+comes from leizhen. this commit therefore drop vmalloc_dump_obj() from
+mem_dump_obj() and only check whether is vmalloc address.
+
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ include/linux/vmalloc.h |  5 -----
+ mm/util.c               |  7 +++----
+ mm/vmalloc.c            | 14 --------------
+ 3 files changed, 3 insertions(+), 23 deletions(-)
+
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index c720be70c8dd..d7c4e112a4ad 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -289,10 +289,5 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+ int register_vmap_purge_notifier(struct notifier_block *nb);
+ int unregister_vmap_purge_notifier(struct notifier_block *nb);
+ 
+-#if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
+-bool vmalloc_dump_obj(void *object);
+-#else
+-static inline bool vmalloc_dump_obj(void *object) { return false; }
+-#endif
+ 
+ #endif /* _LINUX_VMALLOC_H */
+diff --git a/mm/util.c b/mm/util.c
+index ddfbb22dc187..fbc007adc108 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -1066,10 +1066,9 @@ void mem_dump_obj(void *object)
+ 	if (kmem_dump_obj(object))
+ 		return;
+ 
+-	if (vmalloc_dump_obj(object))
+-		return;
+-
+-	if (virt_addr_valid(object))
++	if (is_vmalloc_addr(object))
++		type = "vmalloc memory";
++	else if (virt_addr_valid(object))
+ 		type = "non-slab/vmalloc memory";
+ 	else if (object == NULL)
+ 		type = "NULL pointer";
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 93cf99aba335..224af955bcb5 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -4271,20 +4271,6 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+ }
+ #endif	/* CONFIG_SMP */
+ 
+-#ifdef CONFIG_PRINTK
+-bool vmalloc_dump_obj(void *object)
+-{
+-	struct vm_struct *vm;
+-	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+-
+-	vm = find_vm_area(objp);
+-	if (!vm)
+-		return false;
+-	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+-		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
+-	return true;
+-}
+-#endif
+ 
+ #ifdef CONFIG_PROC_FS
+ static void *s_start(struct seq_file *m, loff_t *pos)
+-- 
+2.17.1
+
