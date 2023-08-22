@@ -2,218 +2,158 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10265EE49AC
-	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 13:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4E7BEE49A3
+	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 15:34:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbjHVN42 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Aug 2023 09:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        id S237125AbjHVPeU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Aug 2023 11:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236156AbjHVN41 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Aug 2023 09:56:27 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4D8199
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 06:56:24 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c5ee810e3so184733f8f.0
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 06:56:24 -0700 (PDT)
+        with ESMTP id S235936AbjHVPeT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Aug 2023 11:34:19 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48207CD1
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 08:34:18 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-790970a8706so166362739f.2
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 08:34:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1692712583; x=1693317383;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LXzMnEM8moHL5KfliVx5cD1lb3aAd5NGNjk14fqFYLY=;
-        b=OvQvaauBf9P71X6OM3iV6zJjVstVKwDXVeR2TcNPjDcJz2f399JP5BZxFUiXHkTWc/
-         r5lP7XQ7vkvpSMptW40PFm8KnzYip/IftCKI/V7U1LWv+OZcsOEZqcqKXDKRf7oBDJOP
-         RNOespNYAQNJ9FavrWx3YuWYiBeKAeIF+XsTA=
+        d=joelfernandes.org; s=google; t=1692718457; x=1693323257;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=23HZEtSy74oKRHG4dRJMMnNxq2Nhz1/Vw/8CyykmCFA=;
+        b=sy4v8ZilSundFmjh1wetcR8Cq484nYree/rTTCQXHX1HbVxrtmaDT+XSjMzjOsx7Ip
+         03VhBqHfzRlt7wI8RITAWh3v2kxBml8XLfjbBkObFoqrUSaux5+qwJ26bM2YiO54yiFu
+         vbj51a8T39bvpCTKbhZOI34cKH/I1j2PkfeEs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692712583; x=1693317383;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LXzMnEM8moHL5KfliVx5cD1lb3aAd5NGNjk14fqFYLY=;
-        b=hPM1xS/GxoVIKTML8zz7NHua9TYYkgV74X7x3+phnH0E1Rxsjm7A9UborTni/CG2px
-         IKa/iVG1KznvYhkqQoHoTFF0hXY/56fJHG8ntjqDbXJwXELeb5OY6gyWWA0uA4zZU3CE
-         FR6A5opDahYnrY6tntaBC06BAyBd+lJsXSlM2ztAzNK3misosFBVGBY8phNONdUlrocs
-         IhK0sDCkxvswzfytInkMVFI6LIO5Ge8c6InGyiRPKPubbcvQ7t3u2ZYxQenjkxJ/nEdA
-         LkaeXVmQryPcTF6Tt0e3Erlm3DCZg255lIxtJcVWaj04JZCtnUacaYhkluVq7AXTDxH7
-         lY/A==
-X-Gm-Message-State: AOJu0YzKEIquX53jZ56iI5lHmzrOucqh6sn1HdUv/ON3RaDd783pROSf
-        ak5NXnBAsQY/Vui+kVkG2We04g==
-X-Google-Smtp-Source: AGHT+IHJQrlSrCu8WgUX5s8XkdDm6/hR/jwfxds8mVBdQgFEL5tBYnuf/oIT+VMpj8Z6S8wRiH/+Kw==
-X-Received: by 2002:a5d:65c5:0:b0:319:8dcf:5c10 with SMTP id e5-20020a5d65c5000000b003198dcf5c10mr6979657wrw.6.1692712582669;
-        Tue, 22 Aug 2023 06:56:22 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u5-20020a05600c210500b003fc02e8ea68sm19456835wml.13.2023.08.22.06.56.21
+        d=1e100.net; s=20221208; t=1692718457; x=1693323257;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=23HZEtSy74oKRHG4dRJMMnNxq2Nhz1/Vw/8CyykmCFA=;
+        b=I587IPs7E4wOexBLEWdSigyseKjPxkh7ATT2XAeqj5KlWFlMMWqeAZEXYkOYVucTkD
+         I3HuOFMVBgs2TiVuVuuEDNvUWVPSOEiv1/0Py1KyETI8HfhRcbw6PhGcZ2zD820ZwXoC
+         AwWxc6OxrWh7q9Rbhk/x73xiCSFmjMQS5tiAxSO+s8h+0NTRlVPuVXd+577E25sZGQof
+         pJC3pNlxqafCZ1ee+GHFy5M7GS5TzR5iJc+EKT2rrCkRJ5tXrsu81EfFzQsbsAhCePU0
+         6iyyDEh7cfDBupZ4POHIx1a99NNVDT7X8z1zDHWWNAHn8a6u1oHxpgur3KdhX+qkW9q4
+         ld8w==
+X-Gm-Message-State: AOJu0YxonZY+tcZoF7afpvHYErndOjEXD86mKxPIm5NeJPOxHcA4lrNz
+        KbRtYKqBFLflxk6YXJBM319o5g==
+X-Google-Smtp-Source: AGHT+IHGD5ggcRJRfTk5XATu8k1Uz0pBZJzm3JpEKzEMirIhJduTlwj54ThHlo9nj2B2EDZdQpso8g==
+X-Received: by 2002:a5d:8550:0:b0:783:6272:afbb with SMTP id b16-20020a5d8550000000b007836272afbbmr63912ios.9.1692718457609;
+        Tue, 22 Aug 2023 08:34:17 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id g4-20020a02c544000000b0042b3ad1656bsm3163204jaj.45.2023.08.22.08.34.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 06:56:22 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 15:56:19 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, simon.horman@corigine.com,
-        dlemoal@kernel.org, kvm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org, x86@kernel.org,
-        cluster-devel@redhat.com, xen-devel@lists.xenproject.org,
-        linux-ext4@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-bcache@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        linux-raid@vger.kernel.org, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 43/48] drm/ttm: introduce pool_shrink_rwsem
-Message-ID: <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
-Mail-Followup-To: Qi Zheng <zhengqi.arch@bytedance.com>,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, simon.horman@corigine.com,
-        dlemoal@kernel.org, kvm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org, x86@kernel.org,
-        cluster-devel@redhat.com, xen-devel@lists.xenproject.org,
-        linux-ext4@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-bcache@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>, linux-raid@vger.kernel.org,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-btrfs@vger.kernel.org
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
- <20230807110936.21819-44-zhengqi.arch@bytedance.com>
+        Tue, 22 Aug 2023 08:34:16 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 15:34:16 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        chenhuacai@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: Re: [PATCH V3] rcu: Update jiffies locally in rcu_cpu_stall_reset()
+Message-ID: <20230822153416.GA72567@google.com>
+References: <20230822040248.329442-1-chenhuacai@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807110936.21819-44-zhengqi.arch@bytedance.com>
-X-Operating-System: Linux phenom 6.3.0-2-amd64 
+In-Reply-To: <20230822040248.329442-1-chenhuacai@loongson.cn>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 07:09:31PM +0800, Qi Zheng wrote:
-> Currently, the synchronize_shrinkers() is only used by TTM pool. It only
-> requires that no shrinkers run in parallel.
+On Tue, Aug 22, 2023 at 12:02:48PM +0800, Huacai Chen wrote:
+> The KGDB initial breakpoint gets an rcu stall warning after commit
+> a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
+> rcu_cpu_stall_reset()").
 > 
-> After we use RCU+refcount method to implement the lockless slab shrink,
-> we can not use shrinker_rwsem or synchronize_rcu() to guarantee that all
-> shrinker invocations have seen an update before freeing memory.
+> [   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
+[...]
 > 
-> So we introduce a new pool_shrink_rwsem to implement a private
-> synchronize_shrinkers(), so as to achieve the same purpose.
+> [1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@loongson.cn/T/#t
 > 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-
-On the 5 drm patches (I counted 2 ttm and 3 drivers) for merging through
-some other tree (since I'm assuming that's how this will land):
-
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
+> Cc: stable@vger.kernel.org
+> Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
+> Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 > ---
->  drivers/gpu/drm/ttm/ttm_pool.c | 15 +++++++++++++++
->  include/linux/shrinker.h       |  2 --
->  mm/shrinker.c                  | 15 ---------------
->  3 files changed, 15 insertions(+), 17 deletions(-)
+> V2: Use NMI safe functions.
+> V3: Add comments to explain why.
 > 
-> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
-> index c9c9618c0dce..38b4c280725c 100644
-> --- a/drivers/gpu/drm/ttm/ttm_pool.c
-> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
-> @@ -74,6 +74,7 @@ static struct ttm_pool_type global_dma32_uncached[MAX_ORDER + 1];
->  static spinlock_t shrinker_lock;
->  static struct list_head shrinker_list;
->  static struct shrinker *mm_shrinker;
-> +static DECLARE_RWSEM(pool_shrink_rwsem);
->  
->  /* Allocate pages of size 1 << order with the given gfp_flags */
->  static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
-> @@ -317,6 +318,7 @@ static unsigned int ttm_pool_shrink(void)
->  	unsigned int num_pages;
->  	struct page *p;
->  
-> +	down_read(&pool_shrink_rwsem);
->  	spin_lock(&shrinker_lock);
->  	pt = list_first_entry(&shrinker_list, typeof(*pt), shrinker_list);
->  	list_move_tail(&pt->shrinker_list, &shrinker_list);
-> @@ -329,6 +331,7 @@ static unsigned int ttm_pool_shrink(void)
->  	} else {
->  		num_pages = 0;
->  	}
-> +	up_read(&pool_shrink_rwsem);
->  
->  	return num_pages;
->  }
-> @@ -572,6 +575,18 @@ void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
->  }
->  EXPORT_SYMBOL(ttm_pool_init);
->  
-> +/**
-> + * synchronize_shrinkers - Wait for all running shrinkers to complete.
-> + *
-> + * This is useful to guarantee that all shrinker invocations have seen an
-> + * update, before freeing memory, similar to rcu.
-> + */
-> +static void synchronize_shrinkers(void)
-> +{
-> +	down_write(&pool_shrink_rwsem);
-> +	up_write(&pool_shrink_rwsem);
-> +}
-> +
->  /**
->   * ttm_pool_fini - Cleanup a pool
+>  kernel/rcu/tree_stall.h | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index b10b8349bb2a..e4e53113d062 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -150,11 +150,26 @@ static void panic_on_rcu_stall(void)
+>   * rcu_cpu_stall_reset - restart stall-warning timeout for current grace period
 >   *
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index c55c07c3f0cb..025c8070dd86 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -103,8 +103,6 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
->  void shrinker_register(struct shrinker *shrinker);
->  void shrinker_free(struct shrinker *shrinker);
->  
-> -extern void synchronize_shrinkers(void);
-> -
->  #ifdef CONFIG_SHRINKER_DEBUG
->  extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
->  						  const char *fmt, ...);
-> diff --git a/mm/shrinker.c b/mm/shrinker.c
-> index 3ab301ff122d..a27779ed3798 100644
-> --- a/mm/shrinker.c
-> +++ b/mm/shrinker.c
-> @@ -650,18 +650,3 @@ void shrinker_free(struct shrinker *shrinker)
->  	kfree(shrinker);
+>   * The caller must disable hard irqs.
+> + *
+> + * The jiffies updating may be delayed for a very long time due to tickless and
+> + * irq disabled, especially in the KGDB case, so we need to add the delayed time
+> + * (delta) to rcu_state.jiffies_stall.
+> + *
+> + * This function may be called in NMI context, so we cannot use ktime_get_ns()
+> + * and ktime_get_coarse_ns(). Instead, we use their inaccurate but safe friends
+> + * ktime_get_mono_fast_ns() and ktime_get_seconds() which will cause rcu_state.
+> + * jiffies_stall to be a little large than expected (harmless and safer).
+>   */
+>  void rcu_cpu_stall_reset(void)
+>  {
+> +	u64 curr, last, delta;
+> +
+> +	curr = ktime_get_mono_fast_ns();
+> +	last = ktime_get_seconds() * NSEC_PER_SEC;
+> +	delta = nsecs_to_jiffies(curr - last);
+> +
+>  	WRITE_ONCE(rcu_state.jiffies_stall,
+> -		   jiffies + rcu_jiffies_till_stall_check());
+> +		   jiffies + delta + rcu_jiffies_till_stall_check());
 >  }
->  EXPORT_SYMBOL_GPL(shrinker_free);
-> -
-> -/**
-> - * synchronize_shrinkers - Wait for all running shrinkers to complete.
-> - *
-> - * This is equivalent to calling unregister_shrink() and register_shrinker(),
-> - * but atomically and with less overhead. This is useful to guarantee that all
-> - * shrinker invocations have seen an update, before freeing memory, similar to
-> - * rcu.
-> - */
-> -void synchronize_shrinkers(void)
-> -{
-> -	down_write(&shrinker_rwsem);
-> -	up_write(&shrinker_rwsem);
-> -}
-> -EXPORT_SYMBOL(synchronize_shrinkers);
-> -- 
-> 2.30.2
-> 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I prefer the following diff on top of your patch to take advantage of UBSAN
+detecting overflows.
+
+If you take my diff, feel free to add:
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+---8<-----------------------
+
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 5e9e4779bdf1..3398cf2d19c5 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -162,14 +162,15 @@ static void panic_on_rcu_stall(void)
+  */
+ void rcu_cpu_stall_reset(void)
+ {
+-	u64 curr, last, delta;
++	ktime_t last, delta_ns;
++	u64 delta_jiff;
+ 
+-	curr = ktime_get_mono_fast_ns();
+ 	last = ktime_get_seconds() * NSEC_PER_SEC;
+-	delta = nsecs_to_jiffies(curr - last);
++	delta_ns = ktime_sub(ktime_get_mono_fast_ns(), last);
++	delta_jiff = nsecs_to_jiffies(delta_ns);
+ 
+ 	WRITE_ONCE(rcu_state.jiffies_stall,
+-		   jiffies + delta + rcu_jiffies_till_stall_check());
++		   jiffies + delta_jiff + rcu_jiffies_till_stall_check());
+ }
+ 
+ //////////////////////////////////////////////////////////////////////////////
