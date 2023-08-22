@@ -2,68 +2,96 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F99EEE4993
-	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 07:36:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 404E6EE4993
+	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 07:37:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjHVHgr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Aug 2023 03:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
+        id S233429AbjHVHhO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Aug 2023 03:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233492AbjHVHgl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:36:41 -0400
-X-Greylist: delayed 311 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Aug 2023 00:36:33 PDT
-Received: from mail.probizsolutions.pl (mail.probizsolutions.pl [31.14.133.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD07186
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 00:36:32 -0700 (PDT)
-Received: by mail.probizsolutions.pl (Postfix, from userid 1002)
-        id 448B18251D; Tue, 22 Aug 2023 09:31:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=probizsolutions.pl;
-        s=mail; t=1692689479;
-        bh=4lsWQ9V87RJGjfNJtkq6FGmhrY05dhKFNVRgzVMhrRc=;
-        h=Date:From:To:Subject:From;
-        b=lWM9MZdaVQ6or7DpgTKls7Ycdq0fMuJpLgaRCdKCLOWz3mKWzf8oDPmW9qdPKa6GZ
-         KuDmQPomVlow3RZONwxbYV8exvq+xQ7sUKFahedl/sK5zCM7Fi+KxpG9acMoqklk7y
-         xMFWgdTv3ROSzohAmtsExJfdqbbL37YOwihvwjJmJlJKRkk6gCCPYDf/RjdAuLTtsS
-         H1f+Ou10j0C953x1lDBQmaDGXIu6plCZmJC5hQcnRoMIIk8TolnbBfKCOoalWCdaiX
-         L3fj3HVwU3rm3aQ5+c/eKn4PJ3Ajr/2Lx73ePE0BoFpaf32Zp80IfSLLUhUDRtkQu/
-         krsoV+3iyT4/Q==
-Received: by mail.probizsolutions.pl for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 07:31:05 GMT
-Message-ID: <20230822084500-0.1.9.9er.0.iei1hjr0u7@probizsolutions.pl>
-Date:   Tue, 22 Aug 2023 07:31:05 GMT
-From:   "Karolina Hursowicz" <karolina.hursowicz@probizsolutions.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Pracownik sezonowy 
-X-Mailer: mail.probizsolutions.pl
+        with ESMTP id S229954AbjHVHhL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Aug 2023 03:37:11 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B677A13D;
+        Tue, 22 Aug 2023 00:37:09 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26b5e737191so2218189a91.2;
+        Tue, 22 Aug 2023 00:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692689829; x=1693294629;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CgjddeGwQJa4U0Oo393Y2//7tcfoJ9+Z/llPTxQolg0=;
+        b=J9RtoThF7Au9NMK9qLNwGbp3Q4tSeT0VINMoSZwFFuPzmDE8tJ2Oz0tOl/JO8nMTe8
+         vp/3ldJi84QOZsfMRpBUvzRATf3uuWP5to2scNpnL4OibDzA9GQ5Wghwdbb6y24E6G2B
+         XJXVNeKj7h+48TWkOiCEWKUfId1v7SNWcE8Gtd42rD2jUDJw+6Krh/K+JxhZs5q84bSv
+         wxQKFpXRj+qqjiPQZWj4Zdv/0Vj5YB/86VPvQ3pErps3Urgc6efCadOxhHhXMbsnCeFf
+         YQ9stKW/TqsVEibyeeTy3rpZ26bDhhwsZ4J7NFjLA48ZrkfIUY5BP9CdwmnGOx3Gx2vy
+         1YKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692689829; x=1693294629;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CgjddeGwQJa4U0Oo393Y2//7tcfoJ9+Z/llPTxQolg0=;
+        b=Nlk4fZbGMRWswStnsZZESEq4UMfDwGBd21tuhF68UZDGHKRjWsdXvPlXs7f6yqHAT8
+         03kVbslb4rvV7SdrAhw0f450BreRNSnuHPVIqpU05174uHQoLx8h/87p/W7KGkDb95oD
+         f8lkfirSAXn54fRFBLjgzupwuNDDmtvonjd0zEhTmMvPpoTioKVBZgujL45Bmzc++HrV
+         uz2l+2QWdMPAiaZfFgDLeYkrfHrj2F3PctVmRVBnweTAHrpuPa8z8QzfHLkuqEdiNcuJ
+         mD+JYTafMvABGUqBkBtJki8jWl9HBjLR4cbUoA+lg4SWY/Q/GXD1uHAUELiQxhMSyPHo
+         uebA==
+X-Gm-Message-State: AOJu0YzErMqQSRWrZaDlVaNouc21OhFL5wqIlpbNQkHb88kcJMwhPPDS
+        yMvPGyLs2vU0HxaqHf/d5m9nBMuil+rk/2fQNsh87C0KD3c=
+X-Google-Smtp-Source: AGHT+IEo5f8lIMjnOK3meeILSBg4zCgZNvOITDPY9BTB8do/yt51c+jcGuNDFiOGme3fZPIi24XeU93KZ9+IeCqu8P4=
+X-Received: by 2002:a17:90a:88:b0:26d:2086:8c96 with SMTP id
+ a8-20020a17090a008800b0026d20868c96mr5855867pja.43.1692689829054; Tue, 22 Aug
+ 2023 00:37:09 -0700 (PDT)
 MIME-Version: 1.0
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Tue, 22 Aug 2023 15:36:57 +0800
+Message-ID: <CALm+0cVvHb=Fe8kseVLesjS1d=579c7Bn5hxdiqyzBp5Z7SugA@mail.gmail.com>
+Subject: rcutorture: Can not Disable RT throttling
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,
+When running build-in rcutorture tests in 6.5.0-rc4-rt, and found that,
+although the value of /proc/sys/kernel/sched_rt_runtime_us is -1,
 
-czy potrzebuj=C4=85 Pa=C5=84stwo wsparcia dodatkowych pracownik=C3=B3w?
+cat /sys/kernel/debug/sched/debug
+....
+rt_rq[6]:
+  .rt_nr_running                 : 4
+  .rt_nr_migratory               : 0
+  .rt_throttled                  : 0
+  .rt_time                       : 0.000000
+  .rt_runtime                    : 950.000000
 
-Jako mi=C4=99dzynarodowa agencja pracy z 11 letnim do=C5=9Bwiadczeniem, m=
-o=C5=BCemy wydelegowa=C4=87 do Pa=C5=84stwa rzetelnych i gotowych pracown=
-ik=C3=B3w z Nepalu, Indii, Bangladeszu do zbior=C3=B3w sezonowych, prac p=
-rodukcyjnych, magazynowych, przetw=C3=B3rczych.
+but the rt_runtime still is 950.000000.
+set sysctl_sched_rt_runtime in rcu_torture_disable_rt_throttle()
+does not disable rt-throttling.
 
-Posiadamy najwi=C4=99ksz=C4=85 w Polsce, aktywn=C4=85 baz=C4=99 pracownik=
-=C3=B3w, dlatego jeste=C5=9Bmy w stanie szybko reagowa=C4=87 na Pa=C5=84s=
-twa zapotrzebowanie. Efektem naszych dzia=C5=82a=C5=84 jest 150 000 zatru=
-dnionych os=C3=B3b u naszych Partner=C3=B3w.
+Currently I'm testing this way to disable rt-throttling:
 
-Z naszego wsparcia korzysta blisko 870 firm, z bran=C5=BCy spo=C5=BCywcze=
-j, produkcyjnej, przetw=C3=B3rczej, rolniczej, transportowej, budowlanej,=
- kt=C3=B3re zyskuj=C4=85 wy=C5=BCsz=C4=85 produktywno=C5=9B=C4=87 i reduk=
-cj=C4=99 koszt=C3=B3w zatrudnienia.=20
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 338cd150973f..bb9fee51a476 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -22,7 +22,7 @@ unsigned int sysctl_sched_rt_period = 1000000;
+  * part of the period that we allow rt tasks to run in us.
+  * default: 0.95s
+  */
+-int sysctl_sched_rt_runtime = 950000;
++int sysctl_sched_rt_runtime = IS_BUILTIN(CONFIG_RCU_TORTURE_TEST) ?
+-1 : 950000;
 
-Je=C5=BCeli chcieliby Pa=C5=84stwo uzupe=C5=82ni=C4=87 sw=C3=B3j zesp=C3=B3=
-=C5=82 o min. 10 dodatkowych pracownik=C3=B3w, prosz=C4=99 o wiadomo=C5=9B=
-=C4=87.
+ #ifdef CONFIG_SYSCTL
+ static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
 
 
-Pozdrawiam
-Karolina Hursowicz
+Is there a better way to solve it?
+
+Thanks
+Zqiang
