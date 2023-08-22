@@ -2,188 +2,218 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44DB6EE4996
-	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 12:50:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10265EE49AC
+	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 13:56:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbjHVMuO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Aug 2023 08:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S234417AbjHVN42 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Aug 2023 09:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235838AbjHVMuN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:50:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1EFCD4
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 05:50:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03129655FE
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 12:50:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E07C433C8;
-        Tue, 22 Aug 2023 12:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692708599;
-        bh=nj/6UPMlw8kbhVJfKeIna5KCFHJw+Sbki7HT/Mmkcm4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MnHkhTYceuK+sDH88592W/TZuKHgKjvOiD1QvegJjsj1rvr+FPfGdNwo6q6S+W6DS
-         Uv14WAMVWAW18BlgMiZbqWRAxBLc7hUhiPBxGQiVR3Zjqlg7MgbRUm8SUhrjKxjIM0
-         aE07G4vS1+rBKIVcuN8uw35K1+vgs39ENvvETKL4L9BfflQIAF+LRFLUq93cKBK0d8
-         L+S38py9MSz/Zb4FZ7YOUS2G30S9qeTcXlmOuqEo9dink1CFxmQetTBpqNBTnypqR4
-         QNh5DELxY52Pkz3ohzDjdeDcMuUaiOX7kzjxYtlpgkAS3XwIEY3j2fqCCfhbvrzh4W
-         B3rwS84vHyB6g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D4D4BCE0885; Tue, 22 Aug 2023 05:49:58 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 05:49:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zqiang <qiang.zhang1211@gmail.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Drop vmalloc memory info dump when double call_rcu()
-Message-ID: <92857602-6314-4b81-ab37-ded05abdbad9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230817063429.31454-1-qiang.zhang1211@gmail.com>
+        with ESMTP id S236156AbjHVN41 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Aug 2023 09:56:27 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4D8199
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 06:56:24 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c5ee810e3so184733f8f.0
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 06:56:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1692712583; x=1693317383;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LXzMnEM8moHL5KfliVx5cD1lb3aAd5NGNjk14fqFYLY=;
+        b=OvQvaauBf9P71X6OM3iV6zJjVstVKwDXVeR2TcNPjDcJz2f399JP5BZxFUiXHkTWc/
+         r5lP7XQ7vkvpSMptW40PFm8KnzYip/IftCKI/V7U1LWv+OZcsOEZqcqKXDKRf7oBDJOP
+         RNOespNYAQNJ9FavrWx3YuWYiBeKAeIF+XsTA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692712583; x=1693317383;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LXzMnEM8moHL5KfliVx5cD1lb3aAd5NGNjk14fqFYLY=;
+        b=hPM1xS/GxoVIKTML8zz7NHua9TYYkgV74X7x3+phnH0E1Rxsjm7A9UborTni/CG2px
+         IKa/iVG1KznvYhkqQoHoTFF0hXY/56fJHG8ntjqDbXJwXELeb5OY6gyWWA0uA4zZU3CE
+         FR6A5opDahYnrY6tntaBC06BAyBd+lJsXSlM2ztAzNK3misosFBVGBY8phNONdUlrocs
+         IhK0sDCkxvswzfytInkMVFI6LIO5Ge8c6InGyiRPKPubbcvQ7t3u2ZYxQenjkxJ/nEdA
+         LkaeXVmQryPcTF6Tt0e3Erlm3DCZg255lIxtJcVWaj04JZCtnUacaYhkluVq7AXTDxH7
+         lY/A==
+X-Gm-Message-State: AOJu0YzKEIquX53jZ56iI5lHmzrOucqh6sn1HdUv/ON3RaDd783pROSf
+        ak5NXnBAsQY/Vui+kVkG2We04g==
+X-Google-Smtp-Source: AGHT+IHJQrlSrCu8WgUX5s8XkdDm6/hR/jwfxds8mVBdQgFEL5tBYnuf/oIT+VMpj8Z6S8wRiH/+Kw==
+X-Received: by 2002:a5d:65c5:0:b0:319:8dcf:5c10 with SMTP id e5-20020a5d65c5000000b003198dcf5c10mr6979657wrw.6.1692712582669;
+        Tue, 22 Aug 2023 06:56:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u5-20020a05600c210500b003fc02e8ea68sm19456835wml.13.2023.08.22.06.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 06:56:22 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 15:56:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, simon.horman@corigine.com,
+        dlemoal@kernel.org, kvm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org, x86@kernel.org,
+        cluster-devel@redhat.com, xen-devel@lists.xenproject.org,
+        linux-ext4@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-raid@vger.kernel.org, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 43/48] drm/ttm: introduce pool_shrink_rwsem
+Message-ID: <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
+Mail-Followup-To: Qi Zheng <zhengqi.arch@bytedance.com>,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, simon.horman@corigine.com,
+        dlemoal@kernel.org, kvm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org, x86@kernel.org,
+        cluster-devel@redhat.com, xen-devel@lists.xenproject.org,
+        linux-ext4@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>, linux-raid@vger.kernel.org,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-44-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230817063429.31454-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20230807110936.21819-44-zhengqi.arch@bytedance.com>
+X-Operating-System: Linux phenom 6.3.0-2-amd64 
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 02:34:29PM +0800, Zqiang wrote:
-> Currently, for double invoke call_rcu(), will dump rcu_head objects
-> memory info, if the objects is not allocated from the slab allocator,
-> the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-> need to be held, since the call_rcu() can be invoked in interrupt context,
-> therefore, there is a possibility of spinlock deadlock scenarios.
+On Mon, Aug 07, 2023 at 07:09:31PM +0800, Qi Zheng wrote:
+> Currently, the synchronize_shrinkers() is only used by TTM pool. It only
+> requires that no shrinkers run in parallel.
 > 
-> And in Preempt-RT kernel, the rcutorture test also trigger the following
-> lockdep warning:
+> After we use RCU+refcount method to implement the lockless slab shrink,
+> we can not use shrinker_rwsem or synchronize_rcu() to guarantee that all
+> shrinker invocations have seen an update before freeing memory.
 > 
-> BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-> preempt_count: 1, expected: 0
-> RCU nest depth: 1, expected: 1
-> 3 locks held by swapper/0/1:
->  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
->  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
->  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
-> irq event stamp: 565512
-> hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
-> hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
-> softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
-> softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
-> Preemption disabled at:
-> [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
-> CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x68/0xb0
->  dump_stack+0x14/0x20
->  __might_resched+0x1aa/0x280
->  ? __pfx_rcu_torture_err_cb+0x10/0x10
->  rt_spin_lock+0x53/0x130
->  ? find_vmap_area+0x1f/0x70
->  find_vmap_area+0x1f/0x70
->  vmalloc_dump_obj+0x20/0x60
->  mem_dump_obj+0x22/0x90
->  __call_rcu_common+0x5bf/0x940
->  ? debug_smp_processor_id+0x1b/0x30
->  call_rcu_hurry+0x14/0x20
->  rcu_torture_init+0x1f82/0x2370
->  ? __pfx_rcu_torture_leak_cb+0x10/0x10
->  ? __pfx_rcu_torture_leak_cb+0x10/0x10
->  ? __pfx_rcu_torture_init+0x10/0x10
->  do_one_initcall+0x6c/0x300
->  ? debug_smp_processor_id+0x1b/0x30
->  kernel_init_freeable+0x2b9/0x540
->  ? __pfx_kernel_init+0x10/0x10
->  kernel_init+0x1f/0x150
->  ret_from_fork+0x40/0x50
->  ? __pfx_kernel_init+0x10/0x10
->  ret_from_fork_asm+0x1b/0x30
->  </TASK>
+> So we introduce a new pool_shrink_rwsem to implement a private
+> synchronize_shrinkers(), so as to achieve the same purpose.
 > 
-> The statistics about the source of 'rhp', the kmem_valid_obj() accounts
-> for more than 97.5%, and vmalloc accounts for less than 1%, this statistic
-> comes from leizhen. this commit therefore drop vmalloc_dump_obj() from
-> mem_dump_obj() and only check whether is vmalloc address.
-> 
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-Hearing no objections, I pulled this into -rcu, but only for testing.
+On the 5 drm patches (I counted 2 ttm and 3 drivers) for merging through
+some other tree (since I'm assuming that's how this will land):
 
-It should either go up via mm or accumulate maintainer acks for me to
-take it, as the case may be.
-
-							Thanx, Paul
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
 > ---
->  include/linux/vmalloc.h |  5 -----
->  mm/util.c               |  7 +++----
->  mm/vmalloc.c            | 14 --------------
->  3 files changed, 3 insertions(+), 23 deletions(-)
+>  drivers/gpu/drm/ttm/ttm_pool.c | 15 +++++++++++++++
+>  include/linux/shrinker.h       |  2 --
+>  mm/shrinker.c                  | 15 ---------------
+>  3 files changed, 15 insertions(+), 17 deletions(-)
 > 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index c720be70c8dd..d7c4e112a4ad 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -289,10 +289,5 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
->  int register_vmap_purge_notifier(struct notifier_block *nb);
->  int unregister_vmap_purge_notifier(struct notifier_block *nb);
+> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+> index c9c9618c0dce..38b4c280725c 100644
+> --- a/drivers/gpu/drm/ttm/ttm_pool.c
+> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+> @@ -74,6 +74,7 @@ static struct ttm_pool_type global_dma32_uncached[MAX_ORDER + 1];
+>  static spinlock_t shrinker_lock;
+>  static struct list_head shrinker_list;
+>  static struct shrinker *mm_shrinker;
+> +static DECLARE_RWSEM(pool_shrink_rwsem);
 >  
-> -#if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
-> -bool vmalloc_dump_obj(void *object);
-> -#else
-> -static inline bool vmalloc_dump_obj(void *object) { return false; }
-> -#endif
+>  /* Allocate pages of size 1 << order with the given gfp_flags */
+>  static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+> @@ -317,6 +318,7 @@ static unsigned int ttm_pool_shrink(void)
+>  	unsigned int num_pages;
+>  	struct page *p;
 >  
->  #endif /* _LINUX_VMALLOC_H */
-> diff --git a/mm/util.c b/mm/util.c
-> index ddfbb22dc187..fbc007adc108 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -1066,10 +1066,9 @@ void mem_dump_obj(void *object)
->  	if (kmem_dump_obj(object))
->  		return;
+> +	down_read(&pool_shrink_rwsem);
+>  	spin_lock(&shrinker_lock);
+>  	pt = list_first_entry(&shrinker_list, typeof(*pt), shrinker_list);
+>  	list_move_tail(&pt->shrinker_list, &shrinker_list);
+> @@ -329,6 +331,7 @@ static unsigned int ttm_pool_shrink(void)
+>  	} else {
+>  		num_pages = 0;
+>  	}
+> +	up_read(&pool_shrink_rwsem);
 >  
-> -	if (vmalloc_dump_obj(object))
-> -		return;
-> -
-> -	if (virt_addr_valid(object))
-> +	if (is_vmalloc_addr(object))
-> +		type = "vmalloc memory";
-> +	else if (virt_addr_valid(object))
->  		type = "non-slab/vmalloc memory";
->  	else if (object == NULL)
->  		type = "NULL pointer";
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 93cf99aba335..224af955bcb5 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -4271,20 +4271,6 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+>  	return num_pages;
 >  }
->  #endif	/* CONFIG_SMP */
+> @@ -572,6 +575,18 @@ void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
+>  }
+>  EXPORT_SYMBOL(ttm_pool_init);
 >  
-> -#ifdef CONFIG_PRINTK
-> -bool vmalloc_dump_obj(void *object)
-> -{
-> -	struct vm_struct *vm;
-> -	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> +/**
+> + * synchronize_shrinkers - Wait for all running shrinkers to complete.
+> + *
+> + * This is useful to guarantee that all shrinker invocations have seen an
+> + * update, before freeing memory, similar to rcu.
+> + */
+> +static void synchronize_shrinkers(void)
+> +{
+> +	down_write(&pool_shrink_rwsem);
+> +	up_write(&pool_shrink_rwsem);
+> +}
+> +
+>  /**
+>   * ttm_pool_fini - Cleanup a pool
+>   *
+> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> index c55c07c3f0cb..025c8070dd86 100644
+> --- a/include/linux/shrinker.h
+> +++ b/include/linux/shrinker.h
+> @@ -103,8 +103,6 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
+>  void shrinker_register(struct shrinker *shrinker);
+>  void shrinker_free(struct shrinker *shrinker);
+>  
+> -extern void synchronize_shrinkers(void);
 > -
-> -	vm = find_vm_area(objp);
-> -	if (!vm)
-> -		return false;
-> -	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
-> -		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
-> -	return true;
+>  #ifdef CONFIG_SHRINKER_DEBUG
+>  extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
+>  						  const char *fmt, ...);
+> diff --git a/mm/shrinker.c b/mm/shrinker.c
+> index 3ab301ff122d..a27779ed3798 100644
+> --- a/mm/shrinker.c
+> +++ b/mm/shrinker.c
+> @@ -650,18 +650,3 @@ void shrinker_free(struct shrinker *shrinker)
+>  	kfree(shrinker);
+>  }
+>  EXPORT_SYMBOL_GPL(shrinker_free);
+> -
+> -/**
+> - * synchronize_shrinkers - Wait for all running shrinkers to complete.
+> - *
+> - * This is equivalent to calling unregister_shrink() and register_shrinker(),
+> - * but atomically and with less overhead. This is useful to guarantee that all
+> - * shrinker invocations have seen an update, before freeing memory, similar to
+> - * rcu.
+> - */
+> -void synchronize_shrinkers(void)
+> -{
+> -	down_write(&shrinker_rwsem);
+> -	up_write(&shrinker_rwsem);
 > -}
-> -#endif
->  
->  #ifdef CONFIG_PROC_FS
->  static void *s_start(struct seq_file *m, loff_t *pos)
+> -EXPORT_SYMBOL(synchronize_shrinkers);
 > -- 
-> 2.17.1
+> 2.30.2
 > 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
