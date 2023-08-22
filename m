@@ -2,198 +2,182 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42453EE4996
-	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 16:05:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2186DEE4993
+	for <rcu@archiver.kernel.org>; Tue, 22 Aug 2023 19:09:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237489AbjHVQFc (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Aug 2023 12:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
+        id S229579AbjHVTJQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Aug 2023 15:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbjHVQFc (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:05:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857BFCDA;
-        Tue, 22 Aug 2023 09:05:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21968624EB;
-        Tue, 22 Aug 2023 16:05:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82BEFC433D9;
-        Tue, 22 Aug 2023 16:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692720329;
-        bh=tWhfy2EssZhtWzUA5VH3oPmSbd0MeOMSxZ0xIoZ/uKU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jhwZTOuAvipIIqxz1Dvcg7dWvxwD2wDNfwuh2M4nQVwIk0O8eQEtCrVejRxzMaWCK
-         8COPm4hhFIKUHQHaxqfC2DAx6q2imHZE/JbzPiHAq0kqgh4YIjqc8h6YIsT5OdpLiN
-         4wkyp+aQ2xqSalEdHsejN6IWnIKdUtY89lprCPFv89MPEqpllgc73CfCFNRjHoG9qM
-         O1TnmOTgo4jkbH40hn/5kpnQtuDXY7bk6gPhfFPZa3Zx6n5TNWZaxm4t/mGk5wGdSi
-         R3A5onagobFj89zM8NdK/tQk2pwx444pIUWEhwtxMps8caLCFt20xPA+wQCXqtOkOi
-         Lb9v2Rfj1gYDQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99df11828c6so1193866966b.1;
-        Tue, 22 Aug 2023 09:05:29 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw6irgeu5gYEl8s8B5DcvMQaNx5N4/QT25H8MPBG8eVZa3DlZGp
-        K3xkGGfOl6HgKeJdKq5zIZEVHluNrfdANWsdKkA=
-X-Google-Smtp-Source: AGHT+IHcKeKtTZ+DuvQVitnpGF0Biz896SO1ObjTjaIEuf6oWTVVHiWuAWb9/IPTJbtxHdBNcZREuZF4DLKKDH4sMpk=
-X-Received: by 2002:a17:907:7804:b0:9a1:914e:491a with SMTP id
- la4-20020a170907780400b009a1914e491amr8243342ejc.3.1692720327658; Tue, 22 Aug
- 2023 09:05:27 -0700 (PDT)
+        with ESMTP id S229520AbjHVTJP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Aug 2023 15:09:15 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EDFCD1
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 12:09:13 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so34004221fa.0
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 12:09:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1692731352; x=1693336152;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ugo31HJfQ2MCk8T6vDJzVQwVL3LxRwm0hR3F8jGDKU=;
+        b=VJ3BOvFAr8g5Rhbg+cmcXD2vMXo896hS+UNR18eugEWpHwbw2yUvL29dqv/EDZZEov
+         AwjXrrme1nqYVnKqwVSr72HXY1KLBUHsLHtrZGykkOkImKDIpqUzQaQgnbKTtR0/1KDX
+         eZr7l5wxnXADZAcYbkzIs6h6EN62PRfDwN6Yc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692731352; x=1693336152;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4ugo31HJfQ2MCk8T6vDJzVQwVL3LxRwm0hR3F8jGDKU=;
+        b=XvCnSEOqpnkrlgu/+pXEWOsOiWRorvX4dzxxVQxNy4lX62n58TuhmlJDgBMHGsrXlm
+         eXifdpDSgeEoOPkpE1k4fm4SIIyv6gL3lP8r70IL4JAcGYpHKo9TDfHfQRH4KRzs3PkE
+         svQTEDKHb3yLzPw8AZ4PRUV7SZTukH0NdW54+R8DySQjhPX4eHqtf9qE/pDCMynQaV3B
+         dvrvAkijKT9XajURTZL+PvEpcJXSse/EyPCIpghQQkvp+Gy3AwlouunFO9LYzM+lZvHA
+         GLm/jkS52U8tKJsrevbEtDG1BhQDhTu/FjKcocT8hlwHEjISdxVq1+4XQCSBSfETLZGe
+         E0KA==
+X-Gm-Message-State: AOJu0YzvAvslnkVawMrox07tj6epPxHPxoXqHS789IlxZ3IFK/1bVDDD
+        Qas/iEjHIMpNuwu1VLB/BCojz1SlvSdU7Ovkm/35jH4Lv9oU318U5QI=
+X-Google-Smtp-Source: AGHT+IGF7EEz0TIGhWZ320R509QPVjINnbbkeCpD08ohMjxHBHWGxMdy/vcUNHMHsObrLKAgUC2/pdJei6qqKej0kRM=
+X-Received: by 2002:a2e:7e06:0:b0:2b9:b27c:f727 with SMTP id
+ z6-20020a2e7e06000000b002b9b27cf727mr7674500ljc.8.1692731351648; Tue, 22 Aug
+ 2023 12:09:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230822040248.329442-1-chenhuacai@loongson.cn>
- <20230822153416.GA72567@google.com> <CAAhV-H75vwt5RPeE2uh1eK=0osepStq+j88BM9iEspSC1CvZTg@mail.gmail.com>
- <CAEXW_YS8YQkTqJQ_DJzPLGcExOUU18esYXWPb9j81gS02uRLgw@mail.gmail.com>
-In-Reply-To: <CAEXW_YS8YQkTqJQ_DJzPLGcExOUU18esYXWPb9j81gS02uRLgw@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 23 Aug 2023 00:05:15 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5mePbbF8Y3t-JfV+PNP8BEcjKtX4UokzL_vDzyw+2BRg@mail.gmail.com>
-Message-ID: <CAAhV-H5mePbbF8Y3t-JfV+PNP8BEcjKtX4UokzL_vDzyw+2BRg@mail.gmail.com>
-Subject: Re: [PATCH V3] rcu: Update jiffies locally in rcu_cpu_stall_reset()
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+References: <20230817063429.31454-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20230817063429.31454-1-qiang.zhang1211@gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 22 Aug 2023 15:09:00 -0400
+Message-ID: <CAEXW_YRizVup2Q5FQfV0N_N57mpQCcj2qnJ4nX=MsqXO=YvegA@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Drop vmalloc memory info dump when double call_rcu()
+To:     Zqiang <qiang.zhang1211@gmail.com>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 11:58=E2=80=AFPM Joel Fernandes <joel@joelfernandes=
-.org> wrote:
+On Thu, Aug 17, 2023 at 2:34=E2=80=AFAM Zqiang <qiang.zhang1211@gmail.com> =
+wrote:
 >
-> On Tue, Aug 22, 2023 at 11:48=E2=80=AFAM Huacai Chen <chenhuacai@kernel.o=
-rg> wrote:
-> >
-> > Hi, Joel,
-> >
-> > On Tue, Aug 22, 2023 at 11:34=E2=80=AFPM Joel Fernandes <joel@joelferna=
-ndes.org> wrote:
-> > >
-> > > On Tue, Aug 22, 2023 at 12:02:48PM +0800, Huacai Chen wrote:
-> > > > The KGDB initial breakpoint gets an rcu stall warning after commit
-> > > > a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection i=
-n
-> > > > rcu_cpu_stall_reset()").
-> > > >
-> > > > [   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
-> > > [...]
-> > > >
-> > > > [1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@l=
-oongson.cn/T/#t
-> > > >
-> > > > Cc: stable@vger.kernel.org
-> > > > Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall dete=
-ction in rcu_cpu_stall_reset()")
-> > > > Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> > > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > > > ---
-> > > > V2: Use NMI safe functions.
-> > > > V3: Add comments to explain why.
-> > > >
-> > > >  kernel/rcu/tree_stall.h | 17 ++++++++++++++++-
-> > > >  1 file changed, 16 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > > > index b10b8349bb2a..e4e53113d062 100644
-> > > > --- a/kernel/rcu/tree_stall.h
-> > > > +++ b/kernel/rcu/tree_stall.h
-> > > > @@ -150,11 +150,26 @@ static void panic_on_rcu_stall(void)
-> > > >   * rcu_cpu_stall_reset - restart stall-warning timeout for current=
- grace period
-> > > >   *
-> > > >   * The caller must disable hard irqs.
-> > > > + *
-> > > > + * The jiffies updating may be delayed for a very long time due to=
- tickless and
-> > > > + * irq disabled, especially in the KGDB case, so we need to add th=
-e delayed time
-> > > > + * (delta) to rcu_state.jiffies_stall.
-> > > > + *
-> > > > + * This function may be called in NMI context, so we cannot use kt=
-ime_get_ns()
-> > > > + * and ktime_get_coarse_ns(). Instead, we use their inaccurate but=
- safe friends
-> > > > + * ktime_get_mono_fast_ns() and ktime_get_seconds() which will cau=
-se rcu_state.
-> > > > + * jiffies_stall to be a little large than expected (harmless and =
-safer).
-> > > >   */
-> > > >  void rcu_cpu_stall_reset(void)
-> > > >  {
-> > > > +     u64 curr, last, delta;
-> > > > +
-> > > > +     curr =3D ktime_get_mono_fast_ns();
-> > > > +     last =3D ktime_get_seconds() * NSEC_PER_SEC;
-> > > > +     delta =3D nsecs_to_jiffies(curr - last);
-> > > > +
-> > > >       WRITE_ONCE(rcu_state.jiffies_stall,
-> > > > -                jiffies + rcu_jiffies_till_stall_check());
-> > > > +                jiffies + delta + rcu_jiffies_till_stall_check());
-> > > >  }
-> > >
-> > > I prefer the following diff on top of your patch to take advantage of=
- UBSAN
-> > > detecting overflows.
-> > >
-> > > If you take my diff, feel free to add:
-> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >
-> > > ---8<-----------------------
-> > >
-> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > > index 5e9e4779bdf1..3398cf2d19c5 100644
-> > > --- a/kernel/rcu/tree_stall.h
-> > > +++ b/kernel/rcu/tree_stall.h
-> > > @@ -162,14 +162,15 @@ static void panic_on_rcu_stall(void)
-> > >   */
-> > >  void rcu_cpu_stall_reset(void)
-> > >  {
-> > > -       u64 curr, last, delta;
-> > > +       ktime_t last, delta_ns;
-> > > +       u64 delta_jiff;
-> > >
-> > > -       curr =3D ktime_get_mono_fast_ns();
-> > >         last =3D ktime_get_seconds() * NSEC_PER_SEC;
-> > > -       delta =3D nsecs_to_jiffies(curr - last);
-> > > +       delta_ns =3D ktime_sub(ktime_get_mono_fast_ns(), last);
-> > Though ktime_t is the same as s64/u64 now,
+> Currently, for double invoke call_rcu(), will dump rcu_head objects
+> memory info, if the objects is not allocated from the slab allocator,
+> the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+> need to be held, since the call_rcu() can be invoked in interrupt context=
+,
+> therefore, there is a possibility of spinlock deadlock scenarios.
 >
-> No, you are incorrect.  ktime_t is a signed int not u64. I prefer to
-> use types designed for a specific purpose where possible. It makes the
-> code safer.
-Yes ktime_t is s64 now, I said s64/u64 because there is some existing
-code to mix them (of course not very good).
+> And in Preempt-RT kernel, the rcutorture test also trigger the following
+> lockdep warning:
+>
+> BUG: sleeping function called from invalid context at kernel/locking/spin=
+lock_rt.c:48
+> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+[...]
+>
+> The statistics about the source of 'rhp', the kmem_valid_obj() accounts
+> for more than 97.5%, and vmalloc accounts for less than 1%, this statisti=
+c
+> comes from leizhen. this commit therefore drop vmalloc_dump_obj() from
+> mem_dump_obj() and only check whether is vmalloc address.
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>  include/linux/vmalloc.h |  5 -----
+>  mm/util.c               |  7 +++----
+>  mm/vmalloc.c            | 14 --------------
+>  3 files changed, 3 insertions(+), 23 deletions(-)
+>
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index c720be70c8dd..d7c4e112a4ad 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -289,10 +289,5 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vm=
+s)
+>  int register_vmap_purge_notifier(struct notifier_block *nb);
+>  int unregister_vmap_purge_notifier(struct notifier_block *nb);
+>
+> -#if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
+> -bool vmalloc_dump_obj(void *object);
+> -#else
+> -static inline bool vmalloc_dump_obj(void *object) { return false; }
+> -#endif
+>
+>  #endif /* _LINUX_VMALLOC_H */
+> diff --git a/mm/util.c b/mm/util.c
+> index ddfbb22dc187..fbc007adc108 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -1066,10 +1066,9 @@ void mem_dump_obj(void *object)
+>         if (kmem_dump_obj(object))
+>                 return;
+>
+> -       if (vmalloc_dump_obj(object))
+> -               return;
+> -
+> -       if (virt_addr_valid(object))
+> +       if (is_vmalloc_addr(object))
+> +               type =3D "vmalloc memory";
+> +       else if (virt_addr_valid(object))
+>                 type =3D "non-slab/vmalloc memory";
+>         else if (object =3D=3D NULL)
+>                 type =3D "NULL pointer";
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 93cf99aba335..224af955bcb5 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -4271,20 +4271,6 @@ void pcpu_free_vm_areas(struct vm_struct **vms, in=
+t nr_vms)
+>  }
+>  #endif /* CONFIG_SMP */
+>
+> -#ifdef CONFIG_PRINTK
+> -bool vmalloc_dump_obj(void *object)
+> -{
+> -       struct vm_struct *vm;
+> -       void *objp =3D (void *)PAGE_ALIGN((unsigned long)object);
+> -
+> -       vm =3D find_vm_area(objp);
 
->
-> > but I think we'd better to
-> > not mix them. Then, ktime_get() and ktime_get_coarse() return ktime_t;
-> > ktime_get_ns(), ktime_get_coarse_ns() and ktime_get_mono_fast_ns()
-> > return s64/u64 (means nanoseconds); ktime_get_seconds() returns
-> > seconds but ktime_get_seconds() * NSEC_PER_SEC is also nanoseconds.
-> > So, the type definition in your diff is not suitable,
-> > ktime_sub(ktime_get_mono_fast_ns(), last) is not suitable too.
-> >
->
-> Is there a technical reason for your concern? ktime_get_mono_fast_ns()
-> is assigned to ktime_t in other places. I am not seeing what the
-> problem is.
-My concern is ktime_t may not always be s64 in future, so there are
-ktime_to_ns() and some other similar APIs to convert from one to
-another.
+What about adding something like the following to vmalloc.c. Would it work?
 
-Huacai
->
-> Thanks.
++static struct vmap_area *find_vmap_area_trylock(unsigned long addr)
++{
++       struct vmap_area *va;
++
++       if (!spin_trylock(&vmap_area_lock))
++               return NULL;
++       va =3D __find_vmap_area(addr);
++       spin_unlock(&vmap_area_lock);
++
++       return va;
++}
+
+and call it from vmalloc_dump_obj():
+
+vm =3D find_vm_area_trylock(objp);
+
+And then keep the rest of your patch as it is but add back the call to
+vmalloc_dump_obj() in mem_dump_obj():
+
+       if (vmalloc_dump_obj(object))
+               return;
+
+ -       if (virt_addr_valid(object))
+ +       if (is_vmalloc_addr(object))
+ +               type =3D "vmalloc memory";
+ +       else if (virt_addr_valid(object))
+                 type =3D "non-slab/vmalloc memory";
+
+
+If that still throws "sleeping function called" type warnings, then
+that is a preempt RT issue because spin_trylock() on conversion to a
+sleeping lock should not be sleeping as it is uncontended.
+
+But I could be missing something and I'll look more later. But for now
+off to pick up a rental car here...
+
+thanks,
+
+  - Joel
