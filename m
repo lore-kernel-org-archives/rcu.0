@@ -2,46 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B7CC3DA6F
-	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 21:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 411D2C3DA66
+	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 22:04:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237535AbjHWVmP (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Aug 2023 17:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S235545AbjHWWDo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Aug 2023 18:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238600AbjHWVl5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:41:57 -0400
+        with ESMTP id S238450AbjHWWD3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Aug 2023 18:03:29 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A697510F1;
-        Wed, 23 Aug 2023 14:41:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD49E6D;
+        Wed, 23 Aug 2023 15:03:27 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692826911;
+        s=2020; t=1692828205;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PK5b0ivuEa/PS4x9NzJ6KdYooqZ+f0W8WnndXaZS2Pg=;
-        b=0sG4P5mw38zKQGTymLeRst1lf6lhNxBsE3iDIVkNr+37BtKsIfFQFM+CopGywwCD3xUQJ4
-        1PIv/plA79QOLO8n7mazzHjACREs6aQKFhnyjh8sLXl34RS00aBq0MlCF8re3fC9lDhTOp
-        mC3XrB8xF7EThDVKic9Z/NaH235RYOHTAuV+RqHIz3ilmlsTXFsJuxR0t941n1L8arv+fA
-        aPj2C0W189rQWyWYS1KL3wl4Fp8aWwbe1bt0y7543vJsJG819KxLac0gFDBBjcBi2YVqRU
-        PsHsfSiA2pEj6YzKy8kikGbs4JrRKg1IMufIBLjx3n/n93XB67w9MKPW2Jikow==
+        bh=Y/NSbqLkBcAVkR1qAY36zcRsKaJY0QWO48cvwI3jfDY=;
+        b=ztwmMeP/9aQCODsq7WUmsVCTa+n+ylmuicZXzJxuVnSSinQXhG6iXsRuRHPmzokznMfaAM
+        rw7D27568+nSskl1b+cuOkf/kHHWxSSDUM3cF44TyHbImhqZLNF3fWJSgynnTaDDSTf+/1
+        /mxc3pKe7ksKNv67fwnwmoy5h1+wTswVDovvt5sSwOOh1Z69XpDF6Q+4EMKLmMD+km757t
+        +9Zw8FtbP81rau3eoCwM9eoVk/tF3yJglgLsqZHrFnb9eaQp3Y0BS35hpQ7oWwtKCiVWDv
+        XCaUAu08SCMhFaHseuRDkVh53dDrg3hwqmCnKgBaF1NeMIahU6/lWpFcRsJiMw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692826911;
+        s=2020e; t=1692828205;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PK5b0ivuEa/PS4x9NzJ6KdYooqZ+f0W8WnndXaZS2Pg=;
-        b=d1l8+UuwBMa5UJJnhQuKOSVTgAefBI82ymLBTZhWjY1QwSv1QJfAy/qBxbL/niYnxwN6Iw
-        dw6MFIaRJIqGUMBA==
-To:     Alan Huang <mmpgouride@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     Z qiang <qiang.zhang1211@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+        bh=Y/NSbqLkBcAVkR1qAY36zcRsKaJY0QWO48cvwI3jfDY=;
+        b=2HX5OKtmZOUAQoSsbLqZmxLXrxZKOK65yYZ7oS0DRtKK5lQ4Q1o9jgyxLnnSV8EmAMRdZB
+        +yFIsGoQuIMah2Dg==
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     Z qiang <qiang.zhang1211@gmail.com>, paulmck@kernel.org,
         Huacai Chen <chenhuacai@loongson.cn>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Ingo Molnar <mingo@kernel.org>,
@@ -54,37 +54,74 @@ Cc:     Z qiang <qiang.zhang1211@gmail.com>,
         rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
 Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-In-Reply-To: <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
-References: <20230814020045.51950-1-chenhuacai@loongson.cn>
- <20230814020045.51950-2-chenhuacai@loongson.cn>
- <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
- <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
- <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
- <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com>
- <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
- <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
- <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
- <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
- <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
-Date:   Wed, 23 Aug 2023 23:41:50 +0200
-Message-ID: <87wmxlcu75.ffs@tglx>
+In-Reply-To: <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
+References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
+ <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org>
+ <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
+Date:   Thu, 24 Aug 2023 00:03:25 +0200
+Message-ID: <87ttspct76.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 16 2023 at 23:56, Alan Huang wrote:
->> If  do_update_jiffies_64() cannot be used in NMI context, can we
+On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
+> On Thu, Aug 17, 2023 at 3:27=E2=80=AFAM Joel Fernandes <joel@joelfernande=
+s.org> wrote:
+>> > If  do_update_jiffies_64() cannot be used in NMI context,
+>>
+>> Can you not make the jiffies update conditional on whether it is
+>> called within NMI context?
+
+Which solves what? If KGDB has a breakpoint in the jiffies lock held
+region then you still dead lock.
+
+>> I dislike that..
+> Is this acceptable?
 >
-> What about updating jiffies in dbg_touch_watchdogs or adding a wrapper which updates
-> both jiffies and jiffies_stall?
+> void rcu_cpu_stall_reset(void)
+> {
+>         unsigned long delta;
+>
+>         delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns()=
+);
+>
+>         WRITE_ONCE(rcu_state.jiffies_stall,
+>                    jiffies + delta + rcu_jiffies_till_stall_check());
+> }
+>
+> This can update jiffies_stall without updating jiffies (but has the
+> same effect).
 
-What makes dbg_touch_watchdogs() any different?
+Now you traded the potential dead lock on jiffies lock for a potential
+live lock vs. tk_core.seq. Not really an improvement, right?
 
-KGDB can pretty much have a breakpoint everywhere and therefore also
-within the jiffies lock held region.
+The only way you can do the above is something like the incomplete and
+uncompiled below. NMI safe and therefore livelock proof time interfaces
+exist for a reason.
 
 Thanks,
 
         tglx
+---
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
+  */
+ static ktime_t last_jiffies_update;
+=20
++unsigned long tick_estimate_stale_jiffies(void)
++{
++	ktime_t delta =3D ktime_get_mono_fast_ns() - READ_ONCE(last_jiffies_updat=
+e);
++
++	return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
++}
++
+ /*
+  * Must be called with interrupts disabled !
+  */
+
+
