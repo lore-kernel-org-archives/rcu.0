@@ -2,147 +2,143 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB75AC3DA66
-	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 21:08:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEC92C3DA66
+	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 21:16:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbjHWVIJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Aug 2023 17:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S237166AbjHWVPv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Aug 2023 17:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236964AbjHWVH7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:07:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AB010D8;
-        Wed, 23 Aug 2023 14:07:57 -0700 (PDT)
+        with ESMTP id S237232AbjHWVPq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Aug 2023 17:15:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070D710C8;
+        Wed, 23 Aug 2023 14:15:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DA1C62CDE;
-        Wed, 23 Aug 2023 21:07:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 335CBC433C7;
-        Wed, 23 Aug 2023 21:07:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 94C7361884;
+        Wed, 23 Aug 2023 21:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D360CC433C7;
+        Wed, 23 Aug 2023 21:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692824876;
-        bh=/PuuXO/QYD9GC1BSe9gvQM/Dq5frWY05/UE9gYxUQXU=;
+        s=k20201202; t=1692825343;
+        bh=83cGWpzHR0LN7okDD8huiRI2qWgS27/vhv1D1BC7qU0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=mfVNycNXBof/osoyaRgWxI/Tt0rulVbPmqSG0t5kiXk7KtVPr5GWVhl+067X9PQHR
-         FaSw6b09QLneiKJ3ByXhsXU2e/fU+DMnWoyOXVJwjZ46L1ax6+ljts5tNLIQOKFwch
-         DA0ML2/xiV0qRmskJq3Ap4j1X15Wnn/WIbxewgBMMeGkgAtcD85cYBaeQnJDZqAkgk
-         iT7Q1R9tHXXxRfB0eVrJU1t0JwGvsM9/eXwLn/B+A5Qci5BFLOrYNgMYj9JatBlsrK
-         ueBmS4YQnKNopdnHaKgFlPamf0U2KSl6v/evDgnkP8xOFYhQosBvCSettc9QRRT0+d
-         SvgvYDkENGQjQ==
+        b=AJyy1mueW4a+L9lGMDYgLeIxe5ylHp6p41op4lb2gWTT1mhu1wOM6bETXOxQN0HdX
+         Key/Cdo1Jy1gWAcgO8MjifnsACPnmEh+6aXXIr5oLw0o5Wlz9nm1vFFlDPpyfD96YN
+         3vUo3QfsMs6esK1RSk1ufMcUguWSvDP6RdfYVBcqeuJRNCrJ3tgl4/ok00xZgzYfX7
+         Xpv2AvZJdOYbObYwfrsYH5EVjf9PDNErQoIjylM8JRd2LNS9M3qwAmqpK9UvxL1VdS
+         BhENVI71JK1FsXv4gYyueaKbskbz/I3bX+cvDesc4kXZZMDntrjs/66kUEcAL+oP/R
+         fx3uCbaiTLv9w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C8E2CCE02EE; Wed, 23 Aug 2023 14:07:55 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 14:07:55 -0700
+        id 64C68CE02EE; Wed, 23 Aug 2023 14:15:43 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 14:15:43 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Replace schedule_timeout*() 1 jiffie waits
- with HZ/20
-Message-ID: <530be59f-96a9-4b2b-8be3-af837d7cbe3a@paulmck-laptop>
+To:     zhouzhouyi@gmail.com
+Cc:     rcu@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, lance@osuosl.org
+Subject: Re: [PATCH RFC] rcu: torture: shorten the time between
+ forward-progress tests
+Message-ID: <795ab1ed-de92-4f31-9483-b1800b597405@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230816204913.450457-1-joel@joelfernandes.org>
+References: <1683039962-15751-1-git-send-email-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230816204913.450457-1-joel@joelfernandes.org>
+In-Reply-To: <1683039962-15751-1-git-send-email-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 08:49:12PM +0000, Joel Fernandes (Google) wrote:
-> In the past, we see that spinning on schedule_timeout* with a wait of 1
-> jiffie can hang the kernel. See d52d3a2bf408 ("torture: Fix hang during
-> kthread shutdown phase").
+On Tue, May 02, 2023 at 11:06:02PM +0800, zhouzhouyi@gmail.com wrote:
+> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
 > 
-> Recently again it showed up in torture's stutter code as well. The behavior is
-> the the function may instantly return and never go to sleep preempting whatever
-> was running under it.
+> Currently, default time between rcu torture forward-progress tests is 60HZ,
+> Under this configuration, false positive caused by __stack_chk_fail [1] is
+> difficult to reproduce (needs average 5*420 seconds for SRCU-P),
+> which means one has to invoke [2] 5 times in average to make [1] appear.
 > 
-> To prevent future issues, apply the same fix mentioned in the above
-> commit d52d3a2bf408 to more places.
+> With time between rcu torture forward-progress tests be 1 HZ, above
+> phenomenon will be reproduced within 3 minutes, which means we can
+> reproduce [1] everytime we invoke [2].
 > 
-> I took care to only apply it to places where I thought it made sense.
+> Although [1] is a false positive, this change will make possible future
+> true bugs easier to be discovered.            
+>                    
+> [1] Link: https://lore.kernel.org/lkml/CAABZP2yS5=ZUwEZQ7iHkV0wDm_HgO8K-TeAhyJrZhavzKDa44Q@mail.gmail.com/T/
+> [2] tools/testing/selftests/rcutorture/bin/torture.sh
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Tested in PPC VM of Opensource Lab of Oregon State Univerisity.
+>         
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>        
 
-Hearing no objections, I applied this for further review and testing.
+Please accept my apologies for being ridiculously slow to reply!
 
-In the future, should some of these become hrtimers?
+In recent -rcu, module parameters such as this one that simply set a
+value can be overridden on the command line.  So you could get the effect
+(again, in recent kernels) in your testing by adding:
 
-						Thanx, Paul
+	--bootargs "rcutorture.fwd_progress_holdoff=1"
+
+The reason that I am reluctant to accept this patch is that we sometimes
+have trouble with this forward-progress testing exhausting memory, and
+making in happen could therefore cause trouble with generic rcutorture
+testing.
+
+Or am I missing the point of this change?
+
+							Thanx, Paul
 
 > ---
->  kernel/rcu/rcutorture.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot  | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot  | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot  | 1 +
+>  tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot  | 1 +
+>  5 files changed, 5 insertions(+)
 > 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 8dd52ea78b52..a31297f32a2a 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -1153,7 +1153,7 @@ static int rcu_torture_boost(void *arg)
->  				mutex_unlock(&boost_mutex);
->  				break;
->  			}
-> -			schedule_timeout_uninterruptible(1);
-> +			schedule_timeout_uninterruptible(HZ / 20);
->  		}
->  
->  		/* Go do the stutter. */
-> @@ -1164,7 +1164,7 @@ checkwait:	if (stutter_wait("rcu_torture_boost"))
->  	/* Clean up and exit. */
->  	while (!kthread_should_stop()) {
->  		torture_shutdown_absorb("rcu_torture_boost");
-> -		schedule_timeout_uninterruptible(1);
-> +		schedule_timeout_uninterruptible(HZ / 20);
->  	}
->  	torture_kthread_stopping("rcu_torture_boost");
->  	return 0;
-> @@ -1187,7 +1187,7 @@ rcu_torture_fqs(void *arg)
->  		fqs_resume_time = jiffies + fqs_stutter * HZ;
->  		while (time_before(jiffies, fqs_resume_time) &&
->  		       !kthread_should_stop()) {
-> -			schedule_timeout_interruptible(1);
-> +			schedule_timeout_interruptible(HZ / 20);
->  		}
->  		fqs_burst_remaining = fqs_duration;
->  		while (fqs_burst_remaining > 0 &&
-> @@ -2903,7 +2903,7 @@ static int rcu_torture_fwd_prog(void *args)
->  			WRITE_ONCE(rcu_fwd_seq, rcu_fwd_seq + 1);
->  		} else {
->  			while (READ_ONCE(rcu_fwd_seq) == oldseq && !torture_must_stop())
-> -				schedule_timeout_interruptible(1);
-> +				schedule_timeout_interruptible(HZ / 20);
->  			oldseq = READ_ONCE(rcu_fwd_seq);
->  		}
->  		pr_alert("%s: Starting forward-progress test %d\n", __func__, rfp->rcu_fwd_id);
-> @@ -3204,7 +3204,7 @@ static int rcu_torture_read_exit_child(void *trsp_in)
->  	set_user_nice(current, MAX_NICE);
->  	// Minimize time between reading and exiting.
->  	while (!kthread_should_stop())
-> -		schedule_timeout_uninterruptible(1);
-> +		schedule_timeout_uninterruptible(HZ / 20);
->  	(void)rcu_torture_one_read(trsp, -1);
->  	return 0;
->  }
-> @@ -3252,7 +3252,7 @@ static int rcu_torture_read_exit(void *unused)
->  	smp_mb(); // Store before wakeup.
->  	wake_up(&read_exit_wq);
->  	while (!torture_must_stop())
-> -		schedule_timeout_uninterruptible(1);
-> +		schedule_timeout_uninterruptible(HZ / 20);
->  	torture_kthread_stopping("rcu_torture_read_exit");
->  	return 0;
->  }
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+> index ce0694fd9b92..982582bff041 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot
+> @@ -1,2 +1,3 @@
+>  rcutorture.torture_type=srcu
+>  rcutorture.fwd_progress=3
+> +rcutorture.fwd_progress_holdoff=1
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+> index 2db39f298d18..18f5d7361d8a 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot
+> @@ -1,4 +1,5 @@
+>  rcutorture.torture_type=srcud
+>  rcupdate.rcu_self_test=1
+>  rcutorture.fwd_progress=3
+> +rcutorture.fwd_progress_holdoff=1
+>  srcutree.big_cpu_lim=5
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+> index c70b5db6c2ae..b86bc7df7603 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TRACE02.boot
+> @@ -1,2 +1,3 @@
+>  rcutorture.torture_type=tasks-tracing
+>  rcutorture.fwd_progress=2
+> +rcutorture.fwd_progress_holdoff=1
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+> index dd914fa8f690..933302f885df 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE02.boot
+> @@ -1 +1,2 @@
+>  rcutorture.fwd_progress=2
+> +rcutorture.fwd_progress_holdoff=1
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+> index dd914fa8f690..933302f885df 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10.boot
+> @@ -1 +1,2 @@
+>  rcutorture.fwd_progress=2
+> +rcutorture.fwd_progress_holdoff=1
 > -- 
-> 2.41.0.694.ge786442a9b-goog
+> 2.34.1
 > 
