@@ -2,47 +2,46 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1A66C27C40
-	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 21:32:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5454FC88CB2
+	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 21:37:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbjHWVcC (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Aug 2023 17:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        id S238073AbjHWVgy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Aug 2023 17:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237962AbjHWVbk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:31:40 -0400
+        with ESMTP id S238348AbjHWVgr (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Aug 2023 17:36:47 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E9A10C8;
-        Wed, 23 Aug 2023 14:31:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F49CEE;
+        Wed, 23 Aug 2023 14:36:46 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692826296;
+        s=2020; t=1692826605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HPNLuFyljtF80rs9wSEgNXw5HUmiaqTMGsJLglSyspc=;
-        b=invKgWOI0aPSlw+LAlV8DcoyVQ5Fzn4Hg/mrr76xPFz4sZhWNkpOS6EemSU4E1W96DmrlK
-        Ma/o7BWo9TlNAL7bDiGPwpldQXNrEl0bpiHovvHph1c8nliec7Hmw0Q2qeBa8z/MevS2EJ
-        2GEOGADZARsl5plR9UZO6b1qGRjE4xa7szgEauc14Of52BeyAIAVEdfw/i49XiNO9OR1tj
-        PddlcczTUzzh2MeGQHP4daFQ/vv/NDoQVSE4Ugon+GC68/nqY6CUnzDTrtpyY6A99zrE8g
-        JYrQ2hRWCuU75/IvxrcdAWgqXZpUrZ9X8ED/Xs/ZQ4KBHFfSXEM+QxJnGeDt4A==
+        bh=rtsxkwGtRkAmOuDbF4foPUA+AgAwg49723n1s+jEHk0=;
+        b=tBvQH3iWzoLnJl5d6KXcCRwbsT5gP7zMmgb9l+7f84HhvkCymIyY1rqEWTux8uShn075vs
+        GzXa8KUY3nNbOyV+iajEina6MhS2VEnb8GSYg63cjGfcr/lNXkcPN/6GZpAPdCg+2H22Be
+        olmM0m9Rk7Tg4D399QC9Vv71tfxJaYyYPmIvGBDyCMoFkfb3ducV3wtEIE4Rc/wYWzyVor
+        LSx5rU5C11tI/tbzVoBnP6YFGoXtit4Aa7VgU6ZvewBRmyLmXavN4Yx9Qs37GCan3zCADw
+        aOHyTm1X13UzPA5sWsoHycH3DA+tLZIyESFnsncTrYHmphRPlkv1D9Zg0TxUrg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692826296;
+        s=2020e; t=1692826605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HPNLuFyljtF80rs9wSEgNXw5HUmiaqTMGsJLglSyspc=;
-        b=YqYaeYSdFr7WT0TMk5o7nopPzQN9UpsGUWbv8wDPVMNrbbRLJ3mKE4Vg2tCC7iqhpTfc14
-        hzSUbvXt/8fXEsDg==
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Alan Huang <mmpgouride@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+        bh=rtsxkwGtRkAmOuDbF4foPUA+AgAwg49723n1s+jEHk0=;
+        b=XTMqosZGH4WzSVs1ls3ih8XgKu25/HPqldJMApBQYV1KTgZC02V9vUfOm3SXrhS+MFl0V6
+        js2D5Z3Ac0G8N0BA==
+To:     Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     paulmck@kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Ingo Molnar <mingo@kernel.org>,
@@ -51,17 +50,22 @@ Cc:     Alan Huang <mmpgouride@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 1/2] tick: Rename tick_do_update_jiffies64() and
- allow external usage
-In-Reply-To: <CAAhV-H7Wy5T9iPoJBKrH9pU7oLtC0wfc+dr1-Wqu2y38BsFfDw@mail.gmail.com>
-References: <CAAhV-H6a_7trQ09evcNrc1ePxdnu=Ms2jA6=gO_hG0042KUA=Q@mail.gmail.com>
- <63CC12AF-9703-4C52-8C61-2EB4764196B6@joelfernandes.org>
- <CAAhV-H7Wy5T9iPoJBKrH9pU7oLtC0wfc+dr1-Wqu2y38BsFfDw@mail.gmail.com>
-Date:   Wed, 23 Aug 2023 23:31:36 +0200
-Message-ID: <873509e98n.ffs@tglx>
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+In-Reply-To: <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
+References: <20230814020045.51950-1-chenhuacai@loongson.cn>
+ <20230814020045.51950-2-chenhuacai@loongson.cn>
+ <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
+ <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
+ <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
+ <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com>
+ <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
+ <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
+ <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
+Date:   Wed, 23 Aug 2023 23:36:44 +0200
+Message-ID: <87zg2hcufn.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -69,45 +73,27 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, Aug 13 2023 at 21:22, Huacai Chen wrote:
-> On Sun, Aug 13, 2023 at 10:07=E2=80=AFAM Joel Fernandes <joel@joelfernand=
-es.org> wrote:
->> For the RCU part, looks fine to me.
+On Wed, Aug 16 2023 at 18:06, Z. qiang wrote:
+>> On Wed, Aug 16, 2023 at 1:09=E2=80=AFPM Z qiang <qiang.zhang1211@gmail.c=
+om> wrote:
+>> > You can replace rcu_state.jiffies_stall update by setting rcu_cpu_stal=
+l_suppress
+>> > in rcu_cpu_stall_reset(),  and reset rcu_cpu_stall_suppress in rcu_gp_=
+init() and
+>> > rcu_gp_cleanup().
+>> What's the advantage compared with updating jiffies? Updating jiffies
+>> seems more straight forward.
 >>
->> Another option for the jiffies update part is to just expose a wrapper
->> around the main update function and use that wrapper.
->> That way you do not need to move a lot of code and that keeps git
->> blame intact.
 >
-> Thank you for your review. But since tick_do_update_jiffies64() is
-> static and tick-sched.c itself is conditionally compiled. It seems
-> impossible to make a wrapper without touching the original function.
+> In do_update_jiffies_64(), need to acquire jiffies_lock raw spinlock,
+> like you said, kgdb is not the only caller of rcu_cpu_stall_reset(),
+> the rcu_cpu_stall_reset() maybe invoke in NMI  (arch/x86/platform/uv/uv_n=
+mi.c)
 
-That's just wrong.
-
-tick-sched.o depends on CONFIG_TICK_ONESHOT
-
-do_update_jiffies_64() is only doing anything when
-
-  CONFIG_NO_HZ_COMMON=3Dy or CONFIG_HIGH_RES_TIMERS=3Dy
-
-CONFIG_NO_HZ_COMMON selects CONFIG_TICK_ONESHOT
-CONFIG_HIGH_RES_TIMERS selects CONFIG_TICK_ONESHOT
-
-So what is that code move solving?
-
-Absolutely nothing, because when CONFIG_TICK_ONESHOT is not set, then
-neither CONFIG_NO_HZ_COMMON nor CONFIG_HIGH_RES_TIMERS is set and the
-invocation of tick_do_update_jiffies64() is just a NOOP.
-
-So the code stays where it is and all it takes is to remove the static
-and to provide a stub inline function for the CONFIG_TICK_ONESHOT=3Dn
-case, no?
+What's worse is that KGDB can set breakpoints pretty much everywhere and
+there is no guarantee that the jiffies lock is not held when a
+breakpoint hits.
 
 Thanks,
 
         tglx
-
-
-
-
