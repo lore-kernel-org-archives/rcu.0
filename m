@@ -2,240 +2,211 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF1E2EE49A3
-	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 02:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F11DCEE49A5
+	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 03:00:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbjHWC1l (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Aug 2023 22:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
+        id S232387AbjHWDAS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 22 Aug 2023 23:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjHWC1k (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Aug 2023 22:27:40 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FD2FB
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 19:27:38 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-26b3f4d3372so2848737a91.3
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 19:27:38 -0700 (PDT)
+        with ESMTP id S232370AbjHWDAQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 22 Aug 2023 23:00:16 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2ECCE8
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1befe39630bso9174905ad.0
+        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692757657; x=1693362457;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZkVNEqSfBDUwXt3WOcaA7XBJ9eTOVIiwYeI/cHVAXtc=;
-        b=KYVqmNb2e251z7SK7zqA5HwuaUXE/MX/PdnjdpURJxdHRgj9TW1D/3P1mK8xzffbwG
-         US67Nbz+Gl1o6G7DOxhWYaLFYzldz3yeyRlLdtq3O1+umBOY08MYWOm9dLVwTny7Whbl
-         jhH2VibH883v4G0CFZAi0/6IT1gHDLg3GXi50DgGKgasUVnHyl5RlUhtWHJRPG4Doqhc
-         KW8kGiw1UiYJGpCDwWxR8A/HIPhNAnk/B9r6O1J5dHMTqowO1fYw/zWsFtPraTJT6bz0
-         1aadmzbW2UI2Ki953T6vhK6BmhIOpbLDrZv8h1t/yUdtcDL7HCpuu6q7OvR3dXeIbCQZ
-         z5xQ==
+        d=bytedance.com; s=google; t=1692759588; x=1693364388;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bhgEqLuvf9ApSnTvUwn1L76c2o2W1Ei/QD6yE6yt7Vo=;
+        b=RzbIwpF/0rWWCHIbil/kmvbYsiH+zzV8cteo0NeX4iqS5Th3aMObOrBBZ5QIYYiYNO
+         EzLvxXnwaU3C6HJ66DVx0SYeH6DBUUXE/parOT0tZRTGaLZHY6BYCVv0BWvKsae2+Z4V
+         HEkSBtQA++hJt6hjIX8coUzQJXYdSMU0EhPZnC3wJk9rsU5aMcdQM2J2gdrxRnnAl7ZG
+         8NIlks8SUC7HZyd+TSNVs6GUNYerNVLSzTLDuAq02G7Vh6n7NQtQV5W2S/tTxnIxqdnK
+         Yk0AUrfOj+V8sxulrYV9L4sfBNDgKCkzUecP9KTfiIS3EGmzpdtRXoZ4mpHHvApm3vtv
+         04iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692757657; x=1693362457;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZkVNEqSfBDUwXt3WOcaA7XBJ9eTOVIiwYeI/cHVAXtc=;
-        b=CLMIwuy2dADbGSRefK0EJMKIPeUFowJi7cX9OBPCxYlXjXP+E7B8B3GQUNtKfBJmHB
-         V0HdcWVlQVyHDx06YHRcO/+hl44FKQVU+w8yrenuxtxhrbmy0qLTYgqjebU1I8bFa2sq
-         yTo/wOcDtyd+IKDJufw0VQtR9PAyM0Pl8JcOpNx4e/mzVvzFUb5z3OZGcoCvg6Wv2kqi
-         r8fu71jgh2EhZ6bWfi30eNZFqcaoSdvy6z5xmm08Il6xtKh3wricqTnMOTMTBlgLmaDy
-         kqQLVTPsvu0gTcuYmS7WV6M+6NM+P/AALdOl0RNHcGxE0DJSlQW2M4c4pu7d1FJLgJAJ
-         6TeA==
-X-Gm-Message-State: AOJu0YwqCFux+gJ4oXKXtJKaI+1pjNsm5yVNvjQI7kc5gfJxW4nwNkDv
-        b100sW4bUbu0NabH6ed50bBexCFzZAop3Ns9HRQ=
-X-Google-Smtp-Source: AGHT+IGVVTl67l02YsuQvNTjgIZDWv8RUvsnwKgwa84vjZFrmf+r4fLjB2gJ4yl3Izw3qcB7WqFjq67oE2tjduibQBU=
-X-Received: by 2002:a17:90a:674d:b0:26b:1364:e784 with SMTP id
- c13-20020a17090a674d00b0026b1364e784mr8119007pjm.0.1692757657515; Tue, 22 Aug
- 2023 19:27:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692759588; x=1693364388;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhgEqLuvf9ApSnTvUwn1L76c2o2W1Ei/QD6yE6yt7Vo=;
+        b=Ej0l9PjPC+54oz8TYv/tuWHHpBfJsie0RkakRSg2gJBfKwdPyX+USmnQnVSwngzu+c
+         Iar/nQoRsUfs6Ke7OO1FNgbK5+NHhY3ckrpC4WoBbbsPgJGRZQKbzbNmtjk5Flh90TP8
+         PBW6/uJ6WnsAnmCBCuObhoS52r7bQI1WzeO8WhMKeFf8wujocE7QfAZsqnrqmIddR2IP
+         ieupvb6YjXIksJ3c8rjCbLYa8y2guZ7BoHJJVRa11WZ1WKHAO5zdrxIZuglMjqnMFRx2
+         5hK/qSnaHHyXKIwdKh4dYdMkTHnI6cH2PGHJxumPl9d/HM/A8CeZXMpOm2q5jsWoaMoH
+         1B+A==
+X-Gm-Message-State: AOJu0YxjuGCHyHGJtnq/6KT/Sfa0u3L7jiFEf/llXXuOQTVjJ7iWEUe3
+        NaSFeu0pVpWwZ1Qh0phcKi5X1g==
+X-Google-Smtp-Source: AGHT+IEfrTZGJtg+pRH2EfLUkWhGiT4SJbELosEEcEbXeeoUMWHqtsVXqJsCto+j1ri8qfTaL4v/sQ==
+X-Received: by 2002:a17:90a:2f41:b0:26d:4ade:fcf0 with SMTP id s59-20020a17090a2f4100b0026d4adefcf0mr10521410pjd.4.1692759588304;
+        Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([2408:8000:b001:1:1f:58ff:f102:103])
+        by smtp.gmail.com with ESMTPSA id z2-20020a17090a1fc200b00262ca945cecsm11045048pjz.54.2023.08.22.19.59.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 19:59:47 -0700 (PDT)
+Message-ID: <63dc1d86-2a15-6b7e-f63a-63fccb25eae2@bytedance.com>
+Date:   Wed, 23 Aug 2023 10:59:34 +0800
 MIME-Version: 1.0
-References: <20230817063429.31454-1-qiang.zhang1211@gmail.com> <CAEXW_YRizVup2Q5FQfV0N_N57mpQCcj2qnJ4nX=MsqXO=YvegA@mail.gmail.com>
-In-Reply-To: <CAEXW_YRizVup2Q5FQfV0N_N57mpQCcj2qnJ4nX=MsqXO=YvegA@mail.gmail.com>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Wed, 23 Aug 2023 10:27:25 +0800
-Message-ID: <CALm+0cXVGwXNgeGasVguqk0NCNAbRn6C8FHUFvs2a-SKwsSb=w@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Drop vmalloc memory info dump when double call_rcu()
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 43/48] drm/ttm: introduce pool_shrink_rwsem
+Content-Language: en-US
+To:     daniel@ffwll.ch
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-44-zhengqi.arch@bytedance.com>
+ <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, simon.horman@corigine.com,
+        dlemoal@kernel.org, kvm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org, x86@kernel.org,
+        cluster-devel@redhat.com, xen-devel@lists.xenproject.org,
+        linux-ext4@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-bcache@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        linux-raid@vger.kernel.org, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org, daniel.vetter@ffwll.ch
+In-Reply-To: <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->
-> On Thu, Aug 17, 2023 at 2:34=E2=80=AFAM Zqiang <qiang.zhang1211@gmail.com=
-> wrote:
-> >
-> > Currently, for double invoke call_rcu(), will dump rcu_head objects
-> > memory info, if the objects is not allocated from the slab allocator,
-> > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-> > need to be held, since the call_rcu() can be invoked in interrupt conte=
-xt,
-> > therefore, there is a possibility of spinlock deadlock scenarios.
-> >
-> > And in Preempt-RT kernel, the rcutorture test also trigger the followin=
-g
-> > lockdep warning:
-> >
-> > BUG: sleeping function called from invalid context at kernel/locking/sp=
-inlock_rt.c:48
-> > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper=
-/0
-> [...]
-> >
-> > The statistics about the source of 'rhp', the kmem_valid_obj() accounts
-> > for more than 97.5%, and vmalloc accounts for less than 1%, this statis=
-tic
-> > comes from leizhen. this commit therefore drop vmalloc_dump_obj() from
-> > mem_dump_obj() and only check whether is vmalloc address.
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  include/linux/vmalloc.h |  5 -----
-> >  mm/util.c               |  7 +++----
-> >  mm/vmalloc.c            | 14 --------------
-> >  3 files changed, 3 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> > index c720be70c8dd..d7c4e112a4ad 100644
-> > --- a/include/linux/vmalloc.h
-> > +++ b/include/linux/vmalloc.h
-> > @@ -289,10 +289,5 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_=
-vms)
-> >  int register_vmap_purge_notifier(struct notifier_block *nb);
-> >  int unregister_vmap_purge_notifier(struct notifier_block *nb);
-> >
-> > -#if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
-> > -bool vmalloc_dump_obj(void *object);
-> > -#else
-> > -static inline bool vmalloc_dump_obj(void *object) { return false; }
-> > -#endif
-> >
-> >  #endif /* _LINUX_VMALLOC_H */
-> > diff --git a/mm/util.c b/mm/util.c
-> > index ddfbb22dc187..fbc007adc108 100644
-> > --- a/mm/util.c
-> > +++ b/mm/util.c
-> > @@ -1066,10 +1066,9 @@ void mem_dump_obj(void *object)
-> >         if (kmem_dump_obj(object))
-> >                 return;
-> >
-> > -       if (vmalloc_dump_obj(object))
-> > -               return;
-> > -
-> > -       if (virt_addr_valid(object))
-> > +       if (is_vmalloc_addr(object))
-> > +               type =3D "vmalloc memory";
-> > +       else if (virt_addr_valid(object))
-> >                 type =3D "non-slab/vmalloc memory";
-> >         else if (object =3D=3D NULL)
-> >                 type =3D "NULL pointer";
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 93cf99aba335..224af955bcb5 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -4271,20 +4271,6 @@ void pcpu_free_vm_areas(struct vm_struct **vms, =
-int nr_vms)
-> >  }
-> >  #endif /* CONFIG_SMP */
-> >
-> > -#ifdef CONFIG_PRINTK
-> > -bool vmalloc_dump_obj(void *object)
-> > -{
-> > -       struct vm_struct *vm;
-> > -       void *objp =3D (void *)PAGE_ALIGN((unsigned long)object);
-> > -
-> > -       vm =3D find_vm_area(objp);
->
-> What about adding something like the following to vmalloc.c. Would it wor=
-k?
->
-> +static struct vmap_area *find_vmap_area_trylock(unsigned long addr)
-> +{
-> +       struct vmap_area *va;
-> +
-> +       if (!spin_trylock(&vmap_area_lock))
-> +               return NULL;
-> +       va =3D __find_vmap_area(addr);
-> +       spin_unlock(&vmap_area_lock);
-> +
-> +       return va;
-> +}
->
-> and call it from vmalloc_dump_obj():
->
-> vm =3D find_vm_area_trylock(objp);
->
-> And then keep the rest of your patch as it is but add back the call to
-> vmalloc_dump_obj() in mem_dump_obj():
->
->        if (vmalloc_dump_obj(object))
->                return;
->
->  -       if (virt_addr_valid(object))
->  +       if (is_vmalloc_addr(object))
->  +               type =3D "vmalloc memory";
->  +       else if (virt_addr_valid(object))
->                  type =3D "non-slab/vmalloc memory";
->
->
-> If that still throws "sleeping function called" type warnings, then
-> that is a preempt RT issue because spin_trylock() on conversion to a
-> sleeping lock should not be sleeping as it is uncontended.
->
+Hi Daniel,
 
-Hello, Joel
+On 2023/8/22 21:56, Daniel Vetter wrote:
+> On Mon, Aug 07, 2023 at 07:09:31PM +0800, Qi Zheng wrote:
+>> Currently, the synchronize_shrinkers() is only used by TTM pool. It only
+>> requires that no shrinkers run in parallel.
+>>
+>> After we use RCU+refcount method to implement the lockless slab shrink,
+>> we can not use shrinker_rwsem or synchronize_rcu() to guarantee that all
+>> shrinker invocations have seen an update before freeing memory.
+>>
+>> So we introduce a new pool_shrink_rwsem to implement a private
+>> synchronize_shrinkers(), so as to achieve the same purpose.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> On the 5 drm patches (I counted 2 ttm and 3 drivers) for merging through
+> some other tree (since I'm assuming that's how this will land):
 
-I did a test in the RT kernel with the following modifications, and
-didn't trigger
-sleeping function called warning.
+Yeah, there are 5 drm patches: PATCH v4 07/48 23/48 24/48 25/48 43/48.
 
+> 
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 93cf99aba335..e07b0e34249b 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -4272,12 +4272,24 @@ void pcpu_free_vm_areas(struct vm_struct
-**vms, int nr_vms)
- #endif /* CONFIG_SMP */
+Thanks for your review!
 
- #ifdef CONFIG_PRINTK
-+static struct vm_struct *find_vmap_area_trylock(unsigned long addr)
-+{
-+       struct vmap_area *va;
-+
-+       if (!spin_trylock(&vmap_area_lock))
-+               return NULL;
-+       va =3D __find_vmap_area(addr, &vmap_area_root);
-+       spin_unlock(&vmap_area_lock);
-+
-+       return va ? va->vm : NULL;
-+}
-+
- bool vmalloc_dump_obj(void *object)
- {
-        struct vm_struct *vm;
-        void *objp =3D (void *)PAGE_ALIGN((unsigned long)object);
+Qi
 
--       vm =3D find_vm_area(objp);
-+       vm =3D find_vmap_area_trylock((unsigned long)objp);
-        if (!vm)
-                return false;
-        pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\=
-n",
-
-
-If double call_rcu() appears in different threads at the same time,
-It is possible to dump only one of the vmalloc information.
-
-
-Thanks
-Zqiang
-
-
->
-> But I could be missing something and I'll look more later. But for now
-> off to pick up a rental car here...
->
-> thanks,
->
->   - Joel
+> 
+>> ---
+>>   drivers/gpu/drm/ttm/ttm_pool.c | 15 +++++++++++++++
+>>   include/linux/shrinker.h       |  2 --
+>>   mm/shrinker.c                  | 15 ---------------
+>>   3 files changed, 15 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+>> index c9c9618c0dce..38b4c280725c 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_pool.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+>> @@ -74,6 +74,7 @@ static struct ttm_pool_type global_dma32_uncached[MAX_ORDER + 1];
+>>   static spinlock_t shrinker_lock;
+>>   static struct list_head shrinker_list;
+>>   static struct shrinker *mm_shrinker;
+>> +static DECLARE_RWSEM(pool_shrink_rwsem);
+>>   
+>>   /* Allocate pages of size 1 << order with the given gfp_flags */
+>>   static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+>> @@ -317,6 +318,7 @@ static unsigned int ttm_pool_shrink(void)
+>>   	unsigned int num_pages;
+>>   	struct page *p;
+>>   
+>> +	down_read(&pool_shrink_rwsem);
+>>   	spin_lock(&shrinker_lock);
+>>   	pt = list_first_entry(&shrinker_list, typeof(*pt), shrinker_list);
+>>   	list_move_tail(&pt->shrinker_list, &shrinker_list);
+>> @@ -329,6 +331,7 @@ static unsigned int ttm_pool_shrink(void)
+>>   	} else {
+>>   		num_pages = 0;
+>>   	}
+>> +	up_read(&pool_shrink_rwsem);
+>>   
+>>   	return num_pages;
+>>   }
+>> @@ -572,6 +575,18 @@ void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
+>>   }
+>>   EXPORT_SYMBOL(ttm_pool_init);
+>>   
+>> +/**
+>> + * synchronize_shrinkers - Wait for all running shrinkers to complete.
+>> + *
+>> + * This is useful to guarantee that all shrinker invocations have seen an
+>> + * update, before freeing memory, similar to rcu.
+>> + */
+>> +static void synchronize_shrinkers(void)
+>> +{
+>> +	down_write(&pool_shrink_rwsem);
+>> +	up_write(&pool_shrink_rwsem);
+>> +}
+>> +
+>>   /**
+>>    * ttm_pool_fini - Cleanup a pool
+>>    *
+>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>> index c55c07c3f0cb..025c8070dd86 100644
+>> --- a/include/linux/shrinker.h
+>> +++ b/include/linux/shrinker.h
+>> @@ -103,8 +103,6 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
+>>   void shrinker_register(struct shrinker *shrinker);
+>>   void shrinker_free(struct shrinker *shrinker);
+>>   
+>> -extern void synchronize_shrinkers(void);
+>> -
+>>   #ifdef CONFIG_SHRINKER_DEBUG
+>>   extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
+>>   						  const char *fmt, ...);
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index 3ab301ff122d..a27779ed3798 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -650,18 +650,3 @@ void shrinker_free(struct shrinker *shrinker)
+>>   	kfree(shrinker);
+>>   }
+>>   EXPORT_SYMBOL_GPL(shrinker_free);
+>> -
+>> -/**
+>> - * synchronize_shrinkers - Wait for all running shrinkers to complete.
+>> - *
+>> - * This is equivalent to calling unregister_shrink() and register_shrinker(),
+>> - * but atomically and with less overhead. This is useful to guarantee that all
+>> - * shrinker invocations have seen an update, before freeing memory, similar to
+>> - * rcu.
+>> - */
+>> -void synchronize_shrinkers(void)
+>> -{
+>> -	down_write(&shrinker_rwsem);
+>> -	up_write(&shrinker_rwsem);
+>> -}
+>> -EXPORT_SYMBOL(synchronize_shrinkers);
+>> -- 
+>> 2.30.2
+>>
+> 
