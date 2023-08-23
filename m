@@ -2,77 +2,191 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BEDBEE49A0
-	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 03:36:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C0CBEE4993
+	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 13:22:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbjHWDgg (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 22 Aug 2023 23:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S234630AbjHWNWC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Aug 2023 09:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbjHWDgf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 22 Aug 2023 23:36:35 -0400
-Received: from symantec4.comsats.net.pk (symantec4.comsats.net.pk [203.124.41.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EDCCF2
-        for <rcu@vger.kernel.org>; Tue, 22 Aug 2023 20:36:28 -0700 (PDT)
-X-AuditID: cb7c291e-06dff70000002aeb-2e-64e569d4637c
-Received: from iesco.comsatshosting.com (iesco.comsatshosting.com [210.56.28.11])
-        (using TLS with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        by symantec4.comsats.net.pk (Symantec Messaging Gateway) with SMTP id 66.00.10987.4D965E46; Wed, 23 Aug 2023 07:07:16 +0500 (PKT)
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns;
-        d=iesco.com.pk; s=default;
-        h=received:content-type:mime-version:content-transfer-encoding
-          :content-description:subject:to:from:date:reply-to;
-        b=h9yriN6Jk2Sx7BuByjImrwFZ1dM4PEHyfZgqsw66hQnTuOhvI8DWKjLA5x6LstlZ9
-          5sDEmLjUKs5m46IdOhTpEzWxl29rueLPLsxlcvtrWJRl6xaKpg6KnM3l+pp8hCm1L
-          yVMsEpIlPDQSIAgeKUZNkccclaOEOW2UpgZ1opVK0=
+        with ESMTP id S235099AbjHWNWB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Aug 2023 09:22:01 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD110CEA
+        for <rcu@vger.kernel.org>; Wed, 23 Aug 2023 06:21:35 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so85832511fa.1
+        for <rcu@vger.kernel.org>; Wed, 23 Aug 2023 06:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iesco.com.pk; s=default;
-        h=reply-to:date:from:to:subject:content-description
-          :content-transfer-encoding:mime-version:content-type;
-        bh=GMzYzcyTxDsE6wX/XHG6MHqAdAiHrhqbmmLQ/TZ1QnQ=;
-        b=LBgBvC2GGYy3ALuIU5M5gka6jsUbTF9ZfrM3L062fAE44OUX2nZ+j//lhFPYxEESE
-          A3bXDwJPN4wg6DW6nVGr52CiE3LlzPxfvghU2Sd72+34QBvFi7lk95a00zWSvr1+S
-          dudGZfHHAnyCIIVmhhwd0IGWCx6NVIWHDBQnG5bJc=
-Received: from [94.156.6.90] (UnknownHost [94.156.6.90]) by iesco.comsatshosting.com with SMTP;
-   Wed, 23 Aug 2023 06:25:31 +0500
-Message-ID: <66.00.10987.4D965E46@symantec4.comsats.net.pk>
-Content-Type: text/plain; charset="iso-8859-1"
+        d=joelfernandes.org; s=google; t=1692796837; x=1693401637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8XkEjDAKSn5+dfOXNGlCtoCcAlW6lZFvfxb3mOVLv/E=;
+        b=qa52udMWKviTeRqL2eJySgrpxKmyqfy5onwNaOAVzKHV+gXO6GU0B5mvAjUuTlT0cJ
+         Woel2WQxbuifJPDn8yQbjxko2IRXmRDc5ZK6TWambnve7gdLHJ2RDDNbJF8YFyDz+42h
+         av2vddJ31yHWrExGP0mCeAH6fk5INvuV3D8H0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692796837; x=1693401637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8XkEjDAKSn5+dfOXNGlCtoCcAlW6lZFvfxb3mOVLv/E=;
+        b=RaQ1Qze30bpB8DpTTpVGz+JbptV9OQvha1UGgc+AK259H76qaY98nlB5tDb6FP6YEt
+         jGiS8+vVd/CugviAVJotlxPYu4GGN/KKrI3CfzRQ5cz3JWFvq2G7pNkfAz43KciSwC+3
+         A0MnE7RQMSku39Ie6p7mRzTgKcOrOm1LyS8kXeINSBIMP/FOquBc47kCO9ZVQ+bxef71
+         wZ2trwVGrwjJIDe/HPqtCTAJ+3+aZBMLiFAtlXEY/m0iFwZx4SJTLuYb2iHVJD56sJVh
+         OtmLv+jExpf/4m7mtUTCZnLrzoWlE1+pnAS5dWOvdDb568o1xVA7yzhtfNk1kZIFWYwB
+         7grg==
+X-Gm-Message-State: AOJu0YyN/Gflvx+ragdrYPV2OLVo+blBXLw5WnfY+5dLfo/3VK9yFK9K
+        cL+HUpawubtPrhDlMN8z1Dp5sbcmvxz3bYB+nsS9CQ==
+X-Google-Smtp-Source: AGHT+IHiku0K9t8cE8WJF41+09dPt5KyLamAzs+QsVZ6ezZLvl1dSz2ajq8dUmG0z+eo/MloukBgfQwPNVK09jJrdwU=
+X-Received: by 2002:a2e:3314:0:b0:2b9:e9c8:cb1 with SMTP id
+ d20-20020a2e3314000000b002b9e9c80cb1mr9693536ljc.48.1692796836589; Wed, 23
+ Aug 2023 06:20:36 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230817063429.31454-1-qiang.zhang1211@gmail.com>
+ <CAEXW_YRizVup2Q5FQfV0N_N57mpQCcj2qnJ4nX=MsqXO=YvegA@mail.gmail.com> <CALm+0cXVGwXNgeGasVguqk0NCNAbRn6C8FHUFvs2a-SKwsSb=w@mail.gmail.com>
+In-Reply-To: <CALm+0cXVGwXNgeGasVguqk0NCNAbRn6C8FHUFvs2a-SKwsSb=w@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 23 Aug 2023 09:20:25 -0400
+Message-ID: <CAEXW_YREgW5T-yWSCqNnawqsrM32HGksOFWm9iGGR2XS1RLAWQ@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Drop vmalloc memory info dump when double call_rcu()
+To:     Z qiang <qiang.zhang1211@gmail.com>
+Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
+        rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Re; Interest,
-To:     rcu@vger.kernel.org
-From:   "Chen Yun" <pso.chairmanbod@iesco.com.pk>
-Date:   Tue, 22 Aug 2023 18:25:45 -0700
-Reply-To: chnyne@gmail.com
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLLMWRmVeSWpSXmKPExsVyyUKGW/dK5tMUgxmbNS3Ozj7H6sDo8XmT
-        XABjFJdNSmpOZllqkb5dAlfGknUXWAp2M1e09S9iaWB8zNTFyMkhIWAiMX3WBMYuRi4OIYE9
-        TBKTV91mBnFYBFYzS3yZ/g3KecgscW7TGiaIsmZGiYdbvrCA9PMKWEu83N0OZjML6EncmDqF
-        DSIuKHFy5hOouLbEsoWvgSZxANlqEl+7SkDCwgJiEp+mLWMHsUUExCX2vV0IVs4moC+x4msz
-        I4jNIqAq8eDMa7AaIQEpiY1X1rNNYOSfhWTbLCTbZiHZNgth2wJGllWMEsWVuYnAYEs20UvO
-        zy1OLCnWy0st0SvI3sQIDMTTNZpyOxiXXko8xCjAwajEw/tz3ZMUIdbEMqCuQ4wSHMxKIrzS
-        3x+mCPGmJFZWpRblxxeV5qQWH2KU5mBREue1FXqWLCSQnliSmp2aWpBaBJNl4uCUamDkbP70
-        dJPepqMxrz5LGAntz/P2Pe32/Uv400YJhcrFD8siH/ZeiP2r41gguFBpGvPxb5tYzl9mT2Nl
-        tbcJFq7ex3Biqsmkm8FzFkYwh/6Lz4uZ+van5fUdl/XjN4u/2Rstqche8L79h6bUGu4yvS9f
-        fXj1ni5X+hj9WnK7zts72ypCfXbZrpurxFKckWioxVxUnAgAlOp6rEACAAA=
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Re; Interest,
+On Tue, Aug 22, 2023 at 10:27=E2=80=AFPM Z qiang <qiang.zhang1211@gmail.com=
+> wrote:
+>
+> >
+> > On Thu, Aug 17, 2023 at 2:34=E2=80=AFAM Zqiang <qiang.zhang1211@gmail.c=
+om> wrote:
+> > >
+> > > Currently, for double invoke call_rcu(), will dump rcu_head objects
+> > > memory info, if the objects is not allocated from the slab allocator,
+> > > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+> > > need to be held, since the call_rcu() can be invoked in interrupt con=
+text,
+> > > therefore, there is a possibility of spinlock deadlock scenarios.
+[..]
+> > > -
+> > > -       if (virt_addr_valid(object))
+> > > +       if (is_vmalloc_addr(object))
+> > > +               type =3D "vmalloc memory";
+> > > +       else if (virt_addr_valid(object))
+> > >                 type =3D "non-slab/vmalloc memory";
+> > >         else if (object =3D=3D NULL)
+> > >                 type =3D "NULL pointer";
+> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > index 93cf99aba335..224af955bcb5 100644
+> > > --- a/mm/vmalloc.c
+> > > +++ b/mm/vmalloc.c
+> > > @@ -4271,20 +4271,6 @@ void pcpu_free_vm_areas(struct vm_struct **vms=
+, int nr_vms)
+> > >  }
+> > >  #endif /* CONFIG_SMP */
+> > >
+> > > -#ifdef CONFIG_PRINTK
+> > > -bool vmalloc_dump_obj(void *object)
+> > > -{
+> > > -       struct vm_struct *vm;
+> > > -       void *objp =3D (void *)PAGE_ALIGN((unsigned long)object);
+> > > -
+> > > -       vm =3D find_vm_area(objp);
+> >
+> > What about adding something like the following to vmalloc.c. Would it w=
+ork?
+> >
+> > +static struct vmap_area *find_vmap_area_trylock(unsigned long addr)
+> > +{
+> > +       struct vmap_area *va;
+> > +
+> > +       if (!spin_trylock(&vmap_area_lock))
+> > +               return NULL;
+> > +       va =3D __find_vmap_area(addr);
+> > +       spin_unlock(&vmap_area_lock);
+> > +
+> > +       return va;
+> > +}
+> >
+> > and call it from vmalloc_dump_obj():
+> >
+> > vm =3D find_vm_area_trylock(objp);
+> >
+> > And then keep the rest of your patch as it is but add back the call to
+> > vmalloc_dump_obj() in mem_dump_obj():
+> >
+> >        if (vmalloc_dump_obj(object))
+> >                return;
+> >
+> >  -       if (virt_addr_valid(object))
+> >  +       if (is_vmalloc_addr(object))
+> >  +               type =3D "vmalloc memory";
+> >  +       else if (virt_addr_valid(object))
+> >                  type =3D "non-slab/vmalloc memory";
+> >
+> >
+> > If that still throws "sleeping function called" type warnings, then
+> > that is a preempt RT issue because spin_trylock() on conversion to a
+> > sleeping lock should not be sleeping as it is uncontended.
+> >
+>
+> Hello, Joel
+>
+> I did a test in the RT kernel with the following modifications, and
+> didn't trigger
+> sleeping function called warning.
+>
+>
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 93cf99aba335..e07b0e34249b 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -4272,12 +4272,24 @@ void pcpu_free_vm_areas(struct vm_struct
+> **vms, int nr_vms)
+>  #endif /* CONFIG_SMP */
+>
+>  #ifdef CONFIG_PRINTK
+> +static struct vm_struct *find_vmap_area_trylock(unsigned long addr)
+> +{
+> +       struct vmap_area *va;
+> +
+> +       if (!spin_trylock(&vmap_area_lock))
+> +               return NULL;
+> +       va =3D __find_vmap_area(addr, &vmap_area_root);
+> +       spin_unlock(&vmap_area_lock);
+> +
+> +       return va ? va->vm : NULL;
+> +}
+> +
+>  bool vmalloc_dump_obj(void *object)
+>  {
+>         struct vm_struct *vm;
+>         void *objp =3D (void *)PAGE_ALIGN((unsigned long)object);
+>
+> -       vm =3D find_vm_area(objp);
+> +       vm =3D find_vmap_area_trylock((unsigned long)objp);
+>         if (!vm)
+>                 return false;
+>         pr_cont(" %u-page vmalloc region starting at %#lx allocated at %p=
+S\n",
+>
+>
+> If double call_rcu() appears in different threads at the same time,
+> It is possible to dump only one of the vmalloc information.
 
-I am interested in discussing the Investment proposal as I explained
-in my previous mail. May you let me know your interest and the
-possibility of a cooperation aimed for mutual interest.
+Great to hear and thanks for checking! So what I'll do is create 2
+patches -- one for the vmalloc change, and one for the patch you
+submitted to use the vmalloc change. For the second patch, I'll keep
+your authorship for attribution.  I'll also queue it on my staging
+trees for further testing. Let me know if that does not sound okay.
 
-Looking forward to your mail for further discussion.
+Today is a lighter work day for me, but allow me 1-2 days for sending
+this out for review. Thanks,
 
-Regards
-
-------
-Chen Yun - Chairman of CREC
-China Railway Engineering Corporation - CRECG
-China Railway Plaza, No.69 Fuxing Road, Haidian District, Beijing, P.R.
-China
-
+ - Joel
