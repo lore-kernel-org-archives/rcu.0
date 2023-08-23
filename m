@@ -2,43 +2,44 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 411D2C3DA66
-	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 22:04:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DB8EC3DA6F
+	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 22:42:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235545AbjHWWDo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Aug 2023 18:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
+        id S238718AbjHWWl7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Aug 2023 18:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238450AbjHWWD3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Aug 2023 18:03:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD49E6D;
-        Wed, 23 Aug 2023 15:03:27 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692828205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y/NSbqLkBcAVkR1qAY36zcRsKaJY0QWO48cvwI3jfDY=;
-        b=ztwmMeP/9aQCODsq7WUmsVCTa+n+ylmuicZXzJxuVnSSinQXhG6iXsRuRHPmzokznMfaAM
-        rw7D27568+nSskl1b+cuOkf/kHHWxSSDUM3cF44TyHbImhqZLNF3fWJSgynnTaDDSTf+/1
-        /mxc3pKe7ksKNv67fwnwmoy5h1+wTswVDovvt5sSwOOh1Z69XpDF6Q+4EMKLmMD+km757t
-        +9Zw8FtbP81rau3eoCwM9eoVk/tF3yJglgLsqZHrFnb9eaQp3Y0BS35hpQ7oWwtKCiVWDv
-        XCaUAu08SCMhFaHseuRDkVh53dDrg3hwqmCnKgBaF1NeMIahU6/lWpFcRsJiMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692828205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y/NSbqLkBcAVkR1qAY36zcRsKaJY0QWO48cvwI3jfDY=;
-        b=2HX5OKtmZOUAQoSsbLqZmxLXrxZKOK65yYZ7oS0DRtKK5lQ4Q1o9jgyxLnnSV8EmAMRdZB
-        +yFIsGoQuIMah2Dg==
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Z qiang <qiang.zhang1211@gmail.com>, paulmck@kernel.org,
+        with ESMTP id S238732AbjHWWly (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Aug 2023 18:41:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1224A8;
+        Wed, 23 Aug 2023 15:41:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 68977639B7;
+        Wed, 23 Aug 2023 22:41:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87774C433C7;
+        Wed, 23 Aug 2023 22:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692830511;
+        bh=cpYns5b/CYfIc8QySiU/wyHC3JAZ3tIGEtbjDhJvsIg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hKpSYu6Oss1EQCWNhJzlhEeCSr58X84DlBgFgZ5Mlv3FZOwTdNOT38ju05QJuthqB
+         TszbAeK4k67oezIaMaOH8X7WWUvM4R7IPQ8+2EC/o1zRWOZs/niQ4hyKevIvIDd1Iq
+         A2OW50mZDccVPmm1ZGmxkbkohr6ttPFm3Exw5BxGZncrv7hE/T8WPExX6I+pr70dvb
+         9LsQTzhQvIZqYqjwQ1InGuzv4TMXy/PI1xBkXis+hJy9+K9/uJDXEU5bwJIADUZSLJ
+         XWdRNsZNKcltP1kEFJn66c/cgM6fnk4TCoMtSaIUDeh/IFKilgh9O9eKHfI9H1mjFf
+         He9sSFt1rCoKQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 10FECCE02EE; Wed, 23 Aug 2023 15:41:51 -0700 (PDT)
+Date:   Wed, 23 Aug 2023 15:41:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Z qiang <qiang.zhang1211@gmail.com>,
         Huacai Chen <chenhuacai@loongson.cn>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -54,74 +55,90 @@ Cc:     Z qiang <qiang.zhang1211@gmail.com>, paulmck@kernel.org,
         rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
 Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-In-Reply-To: <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
+Message-ID: <03fe7084-0509-45fa-87ee-8f8705a221a6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
  <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org>
  <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
-Date:   Thu, 24 Aug 2023 00:03:25 +0200
-Message-ID: <87ttspct76.ffs@tglx>
+ <87ttspct76.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87ttspct76.ffs@tglx>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
-> On Thu, Aug 17, 2023 at 3:27=E2=80=AFAM Joel Fernandes <joel@joelfernande=
-s.org> wrote:
->> > If  do_update_jiffies_64() cannot be used in NMI context,
->>
->> Can you not make the jiffies update conditional on whether it is
->> called within NMI context?
+On Thu, Aug 24, 2023 at 12:03:25AM +0200, Thomas Gleixner wrote:
+> On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
+> > On Thu, Aug 17, 2023 at 3:27 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> >> > If  do_update_jiffies_64() cannot be used in NMI context,
+> >>
+> >> Can you not make the jiffies update conditional on whether it is
+> >> called within NMI context?
+> 
+> Which solves what? If KGDB has a breakpoint in the jiffies lock held
+> region then you still dead lock.
+> 
+> >> I dislike that..
+> > Is this acceptable?
+> >
+> > void rcu_cpu_stall_reset(void)
+> > {
+> >         unsigned long delta;
+> >
+> >         delta = nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
+> >
+> >         WRITE_ONCE(rcu_state.jiffies_stall,
+> >                    jiffies + delta + rcu_jiffies_till_stall_check());
+> > }
+> >
+> > This can update jiffies_stall without updating jiffies (but has the
+> > same effect).
+> 
+> Now you traded the potential dead lock on jiffies lock for a potential
+> live lock vs. tk_core.seq. Not really an improvement, right?
+> 
+> The only way you can do the above is something like the incomplete and
+> uncompiled below. NMI safe and therefore livelock proof time interfaces
+> exist for a reason.
 
-Which solves what? If KGDB has a breakpoint in the jiffies lock held
-region then you still dead lock.
+Just for completeness, another approach, with its own advantages
+and disadvantage, is to add something like ULONG_MAX/4 to
+rcu_state.jiffies_stall, but also set a counter indicating that this
+has been done.  Then RCU's force-quiescent processing could decrement
+that counter (if non-zero) and reset rcu_state.jiffies_stall when it
+does reach zero.
 
->> I dislike that..
-> Is this acceptable?
->
-> void rcu_cpu_stall_reset(void)
-> {
->         unsigned long delta;
->
->         delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns()=
-);
->
->         WRITE_ONCE(rcu_state.jiffies_stall,
->                    jiffies + delta + rcu_jiffies_till_stall_check());
-> }
->
-> This can update jiffies_stall without updating jiffies (but has the
-> same effect).
+Setting the counter to three should cover most cases, but "live by the
+heuristic, die by the heuristic".  ;-)
 
-Now you traded the potential dead lock on jiffies lock for a potential
-live lock vs. tk_core.seq. Not really an improvement, right?
+It would be good to have some indication when gdb exited, but things
+like the gdb "next" command can make that "interesting" when applied to
+a long-running function.
 
-The only way you can do the above is something like the incomplete and
-uncompiled below. NMI safe and therefore livelock proof time interfaces
-exist for a reason.
+ 							Thanx, Paul
 
-Thanks,
-
-        tglx
----
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
-  */
- static ktime_t last_jiffies_update;
-=20
-+unsigned long tick_estimate_stale_jiffies(void)
-+{
-+	ktime_t delta =3D ktime_get_mono_fast_ns() - READ_ONCE(last_jiffies_updat=
-e);
-+
-+	return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
-+}
-+
- /*
-  * Must be called with interrupts disabled !
-  */
-
-
+> Thanks,
+> 
+>         tglx
+> ---
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
+>   */
+>  static ktime_t last_jiffies_update;
+>  
+> +unsigned long tick_estimate_stale_jiffies(void)
+> +{
+> +	ktime_t delta = ktime_get_mono_fast_ns() - READ_ONCE(last_jiffies_update);
+> +
+> +	return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
+> +}
+> +
+>  /*
+>   * Must be called with interrupts disabled !
+>   */
+> 
+> 
