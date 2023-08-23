@@ -2,147 +2,112 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B18BC3DA66
-	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 21:23:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1A66C27C40
+	for <rcu@archiver.kernel.org>; Wed, 23 Aug 2023 21:32:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237366AbjHWVWw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Aug 2023 17:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S237751AbjHWVcC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Aug 2023 17:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237502AbjHWVW1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Aug 2023 17:22:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADAC10DD
-        for <rcu@vger.kernel.org>; Wed, 23 Aug 2023 14:22:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 02A9665851
-        for <rcu@vger.kernel.org>; Wed, 23 Aug 2023 21:22:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39CC5C433C8;
-        Wed, 23 Aug 2023 21:22:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692825742;
-        bh=Q1R+RGB0IhrJB6NbIFmV1MDAlfXY2ePcA4m95KC5IoU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kcwoxU56T70Sovyw2MeNztdJi6Tuivca46exJx3UOtntt7Tnr9daVAGooemyv7tYs
-         zJOrNqFvkJ1OjCc6FRHEpsZc/X0ZntBjgpFxIofxGgXhWPfNktc021iaMN+swLyCEY
-         MfWj6Yj9zhjzVZywsqscJBzgDhus9jeVeMUyUFEqgHLRkBWBeoEcWOZIgvF1WIJlWB
-         xI5R27isHqniSyYX3xZioBbgJOXYvzysrhc34q6qucIM4SYq7g+/UPXDZQO/5CmAH3
-         Q3E7nZOBdDwFWJ6YAYQnES5kBZMLc/vOo+KUp/4cgWzRWFUn1xIWFtkIz5r1rRXKa/
-         wZL1lXYrJJ3jg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CD10CCE02EE; Wed, 23 Aug 2023 14:22:21 -0700 (PDT)
-Date:   Wed, 23 Aug 2023 14:22:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Describe listRCU read-side guarantees
-Message-ID: <77c1847d-4744-4d16-bdd4-ae59a9afe9d6@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230822200402.159177-1-willy@infradead.org>
- <CAEXW_YQ=-EqhuR-B8gqRzKxiwYNjayCwhNmE270OyXEaxDLhqQ@mail.gmail.com>
- <ZOVKmIDCcHGT8haM@casper.infradead.org>
- <CAEXW_YRcEE5v+6=NWUE8aEVQA+m0aXvjVNtRNc5U28gHxDSTAA@mail.gmail.com>
+        with ESMTP id S237962AbjHWVbk (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Aug 2023 17:31:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E9A10C8;
+        Wed, 23 Aug 2023 14:31:38 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692826296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HPNLuFyljtF80rs9wSEgNXw5HUmiaqTMGsJLglSyspc=;
+        b=invKgWOI0aPSlw+LAlV8DcoyVQ5Fzn4Hg/mrr76xPFz4sZhWNkpOS6EemSU4E1W96DmrlK
+        Ma/o7BWo9TlNAL7bDiGPwpldQXNrEl0bpiHovvHph1c8nliec7Hmw0Q2qeBa8z/MevS2EJ
+        2GEOGADZARsl5plR9UZO6b1qGRjE4xa7szgEauc14Of52BeyAIAVEdfw/i49XiNO9OR1tj
+        PddlcczTUzzh2MeGQHP4daFQ/vv/NDoQVSE4Ugon+GC68/nqY6CUnzDTrtpyY6A99zrE8g
+        JYrQ2hRWCuU75/IvxrcdAWgqXZpUrZ9X8ED/Xs/ZQ4KBHFfSXEM+QxJnGeDt4A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692826296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HPNLuFyljtF80rs9wSEgNXw5HUmiaqTMGsJLglSyspc=;
+        b=YqYaeYSdFr7WT0TMk5o7nopPzQN9UpsGUWbv8wDPVMNrbbRLJ3mKE4Vg2tCC7iqhpTfc14
+        hzSUbvXt/8fXEsDg==
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     Alan Huang <mmpgouride@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 1/2] tick: Rename tick_do_update_jiffies64() and
+ allow external usage
+In-Reply-To: <CAAhV-H7Wy5T9iPoJBKrH9pU7oLtC0wfc+dr1-Wqu2y38BsFfDw@mail.gmail.com>
+References: <CAAhV-H6a_7trQ09evcNrc1ePxdnu=Ms2jA6=gO_hG0042KUA=Q@mail.gmail.com>
+ <63CC12AF-9703-4C52-8C61-2EB4764196B6@joelfernandes.org>
+ <CAAhV-H7Wy5T9iPoJBKrH9pU7oLtC0wfc+dr1-Wqu2y38BsFfDw@mail.gmail.com>
+Date:   Wed, 23 Aug 2023 23:31:36 +0200
+Message-ID: <873509e98n.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YRcEE5v+6=NWUE8aEVQA+m0aXvjVNtRNc5U28gHxDSTAA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 23, 2023 at 09:24:21AM -0400, Joel Fernandes wrote:
-> On Tue, Aug 22, 2023 at 7:54 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Aug 22, 2023 at 07:28:34PM -0400, Joel Fernandes wrote:
-> > > On Tue, Aug 22, 2023 at 4:04 PM Matthew Wilcox (Oracle)
-> > > <willy@infradead.org> wrote:
-> > > >
-> > > > More explicitly state what is, and what is not guaranteed to those
-> > > > who iterate a list while protected by RCU.
-> > > >
-> > > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > > ---
-> > > >  Documentation/RCU/listRCU.rst | 12 ++++++++++++
-> > > >  1 file changed, 12 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-> > > > index bdc4bcc5289f..aff1394f6d93 100644
-> > > > --- a/Documentation/RCU/listRCU.rst
-> > > > +++ b/Documentation/RCU/listRCU.rst
-> > > > @@ -8,6 +8,18 @@ One of the most common uses of RCU is protecting read-mostly linked lists
-> > > >  that all of the required memory ordering is provided by the list macros.
-> > > >  This document describes several list-based RCU use cases.
-> > > >
-> > > > +When iterating a list while holding the rcu_read_lock(), writers may
-> > > > +modify the list.  The reader is guaranteed to see all of the elements
-> > > > +which were added to the list before they acquired the rcu_read_lock()
-> > > > +and are still on the list when they drop the rcu_read_unlock().
-> > > > +Elements which are added to, or removed from the list may or may not
-> > > > +be seen.  If the writer calls list_replace_rcu(), the reader may see
-> > > > +either the old element or the new element; they will not see both,
-> > > > +nor will they see neither.
-> > >
-> > > Until here,
-> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >
-> > > > +There is no equivalent of list_for_each_entry_reverse(); RCU lists
-> > > > +may only be walked forwards.
-> > > > +
-> > >
-> > > Is there a need to mention that? If it changes in the future then the
-> > > docs go stale.
-> >
-> > I don't know if there's a need to mention it.  It was something I noticed
-> > while reviewing the code that I didn't see documented anywhere.
-> >
-> > I don't really care; happy to send a v2 without it, or you can just
-> > apply the first paragraph.
-> 
-> That sounds good to me, Paul do you want to apply it with my Review
-> tag and without the last para?
+On Sun, Aug 13 2023 at 21:22, Huacai Chen wrote:
+> On Sun, Aug 13, 2023 at 10:07=E2=80=AFAM Joel Fernandes <joel@joelfernand=
+es.org> wrote:
+>> For the RCU part, looks fine to me.
+>>
+>> Another option for the jiffies update part is to just expose a wrapper
+>> around the main update function and use that wrapper.
+>> That way you do not need to move a lot of code and that keeps git
+>> blame intact.
+>
+> Thank you for your review. But since tick_do_update_jiffies64() is
+> static and tick-sched.c itself is conditionally compiled. It seems
+> impossible to make a wrapper without touching the original function.
 
-Here you two go, and thank you both!
+That's just wrong.
 
-							Thanx, Paul
+tick-sched.o depends on CONFIG_TICK_ONESHOT
 
-------------------------------------------------------------------------
+do_update_jiffies_64() is only doing anything when
 
-commit 06f9695d1b62163036581722f29fef2d93aa7909
-Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-Date:   Tue Aug 22 21:04:02 2023 +0100
+  CONFIG_NO_HZ_COMMON=3Dy or CONFIG_HIGH_RES_TIMERS=3Dy
 
-    rcu: Describe listRCU read-side guarantees
-    
-    More explicitly state what is, and what is not guaranteed to those
-    who iterate a list while protected by RCU.
-    
-    [ paulmck: Apply Joel Fernandes feedback. ]
-    
-    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-    Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+CONFIG_NO_HZ_COMMON selects CONFIG_TICK_ONESHOT
+CONFIG_HIGH_RES_TIMERS selects CONFIG_TICK_ONESHOT
 
-diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-index bdc4bcc5289f..ed5c9d8c9afe 100644
---- a/Documentation/RCU/listRCU.rst
-+++ b/Documentation/RCU/listRCU.rst
-@@ -8,6 +8,15 @@ One of the most common uses of RCU is protecting read-mostly linked lists
- that all of the required memory ordering is provided by the list macros.
- This document describes several list-based RCU use cases.
- 
-+When iterating a list while holding the rcu_read_lock(), writers may
-+modify the list.  The reader is guaranteed to see all of the elements
-+which were added to the list before they acquired the rcu_read_lock()
-+and are still on the list when they drop the rcu_read_unlock().
-+Elements which are added to, or removed from the list may or may not
-+be seen.  If the writer calls list_replace_rcu(), the reader may see
-+either the old element or the new element; they will not see both,
-+nor will they see neither.
-+
- 
- Example 1: Read-mostly list: Deferred Destruction
- -------------------------------------------------
+So what is that code move solving?
+
+Absolutely nothing, because when CONFIG_TICK_ONESHOT is not set, then
+neither CONFIG_NO_HZ_COMMON nor CONFIG_HIGH_RES_TIMERS is set and the
+invocation of tick_do_update_jiffies64() is just a NOOP.
+
+So the code stays where it is and all it takes is to remove the static
+and to provide a stub inline function for the CONFIG_TICK_ONESHOT=3Dn
+case, no?
+
+Thanks,
+
+        tglx
+
+
+
+
