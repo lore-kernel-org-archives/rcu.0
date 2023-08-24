@@ -2,119 +2,144 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB72C3DA6F
-	for <rcu@archiver.kernel.org>; Thu, 24 Aug 2023 02:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8D98C3DA66
+	for <rcu@archiver.kernel.org>; Thu, 24 Aug 2023 02:48:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239483AbjHXCbU (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 23 Aug 2023 22:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
+        id S239201AbjHXCsI (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 23 Aug 2023 22:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239495AbjHXCaw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 23 Aug 2023 22:30:52 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE6510E5;
-        Wed, 23 Aug 2023 19:30:49 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26d60f27491so2915836a91.1;
-        Wed, 23 Aug 2023 19:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692844248; x=1693449048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZXV0FqCm9bu5AEOC96cbW8cXHv67KP0cqZLLFhbEfYw=;
-        b=sWKYtitE38vH0TOa0fmHdt4mqQ6u8jm50+Gp1cs47szbrU4Ap1WEVh7xhGWusOWoeC
-         bsz4q5MK5t1FIfI44ZPxgYD2sKarPSR4wJnnLL5QuO5yqAWNcXq85vYN0cXDEEBASg3u
-         1aY2Arl7c4m35N6ZJ5Ek2YtfijLul6QNLC8QLK5G0IYrgP4lI+11hdKDlrRqZ3FuThPp
-         8O7V2gtGGc3lBZZDWHgk9KqWOoVu+1fbKIu5EQQTm8/DwzXFAr0Kvm1nXyztRt47B2Sg
-         QJnim0M4eEX3aT82IOJ4Y5E40dMGM2c7tTWQhnSooycC5ohM3JDmVbjTYlaAVvw9ByQY
-         QRSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692844248; x=1693449048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZXV0FqCm9bu5AEOC96cbW8cXHv67KP0cqZLLFhbEfYw=;
-        b=AdIPJCgQqkm6PSWWWmsaxH7oJCAIeW/qRfJhj6lVKnwIgEpwYJUeSYmHdw6o5olpy0
-         ukHH/EztsshgVsnlxMnjA73NSwryqzwkQ5jbK5zyDS0pRoMZNtVS1KUPLDZq3axcMVwK
-         4nd3PSg7ORfoIpXb2Lr8Of398m8Sliw8uePHhVIO9sAP+GI2NelKHPktykkmYMS0rLMQ
-         Gn1kq/thBEaTeF9OKaj1+SELzjkM0BnIeLJMLouuVeerElLKGsJ7KoUOma9+R+/Fq8VZ
-         hfU/RGNH+xxaHk9NcvZEyh7rrENWSXhBi+j/QlU7LLapKd5IvVj9/cZwTCtGqq6q4cd6
-         REEw==
-X-Gm-Message-State: AOJu0YxJfoowUTeIP7qNgeDn4q9H8CZUQIkpQWbR22pJ+r+zEzsRDUx5
-        pshd9ulcBUapr1NBKp1Td8I+JMSGfEBL0yUXN5zbczEK1o0=
-X-Google-Smtp-Source: AGHT+IExN5gutxIbu6IZtzcE5CQMwX876Au1J1N/Tt5sXri66AS4E9vDNB1wPGyvxIREPL9GvSUhcToBOs4z3ug0jC8=
-X-Received: by 2002:a17:90b:1082:b0:26d:4ab3:fe11 with SMTP id
- gj2-20020a17090b108200b0026d4ab3fe11mr10027538pjb.24.1692844248428; Wed, 23
- Aug 2023 19:30:48 -0700 (PDT)
+        with ESMTP id S239366AbjHXCrt (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 23 Aug 2023 22:47:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43079198;
+        Wed, 23 Aug 2023 19:47:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D628F632E9;
+        Thu, 24 Aug 2023 02:47:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D01EC433C9;
+        Thu, 24 Aug 2023 02:47:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692845265;
+        bh=7PBy+Refm2RRnKJWoTExxPu62p0WpFG8uVlZZkXh0xI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SInx7YxBx2W+8zAR+OJPWRrvknl/TERlYQH6atyjZN8Ip2rJjL6ManClVGh/JGPlZ
+         FJD0q4ZrcXF9dzRHjQvLrINfIrLg6R2LXhCR/tRzIrX7jvlB0TnDmBiOMVFfEUH3ZF
+         BX45B9IIOHVcy1/RznJGW/0QJr7e+Y3lFmlt380LSsRBxqVKXYMZ1CdktrdOqhIK60
+         NorsfON4QhicAJ3dfH0k20dsZjgVNjKThmOFAp9KaxyBntBfSmkLcgD39DXhRUKGkU
+         BZzApGCmZ6Jfr9dlQ9K4Qf3Y1n/A05+sTTxF3bY5QOTGxXC6ZQgKj79af+41ZRe0MS
+         bzAR0QKhyEWxg==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so7937998a12.1;
+        Wed, 23 Aug 2023 19:47:45 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyiE+FAmOCfhM8OTu6kJXT55HU4SzR4FQ18JAFPY2MOR60CvXdF
+        g7+ryYZZFL4lQUTxTfjJa7aQFFFYASikd21zSrM=
+X-Google-Smtp-Source: AGHT+IGLUmJER6JZOQSpI2I0qEDDzfzobopyBbxWbOGHFMuP7AHCYWCbJytSAiU4IWsDI7i52Oyiq/R7ETxEuMkarNg=
+X-Received: by 2002:a05:6402:2051:b0:525:469a:fc49 with SMTP id
+ bc17-20020a056402205100b00525469afc49mr10849489edb.17.1692845263397; Wed, 23
+ Aug 2023 19:47:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <CALm+0cVvHb=Fe8kseVLesjS1d=579c7Bn5hxdiqyzBp5Z7SugA@mail.gmail.com>
- <CAEXW_YScFnFG0Y1NgFS7KGS6s9CoXJ3ZQB++6udyK38mcJ=1xg@mail.gmail.com> <600e1ab4-059b-4b4e-9db2-2c56ac557d3b@paulmck-laptop>
-In-Reply-To: <600e1ab4-059b-4b4e-9db2-2c56ac557d3b@paulmck-laptop>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Thu, 24 Aug 2023 10:30:37 +0800
-Message-ID: <CALm+0cUrwYAQ=frj+S=N8s8Q4KYV6JWoU0+2E-NvaqEoFcMC7g@mail.gmail.com>
-Subject: Re: rcutorture: Can not Disable RT throttling
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
+ <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org> <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
+ <87ttspct76.ffs@tglx>
+In-Reply-To: <87ttspct76.ffs@tglx>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 24 Aug 2023 10:47:30 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7o+SK__ySWQRkbB4B-LTBFS-ryosqH_r53ZrZ+W1ZE-A@mail.gmail.com>
+Message-ID: <CAAhV-H7o+SK__ySWQRkbB4B-LTBFS-ryosqH_r53ZrZ+W1ZE-A@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Z qiang <qiang.zhang1211@gmail.com>, paulmck@kernel.org,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+Hi, Thomas,
+
+On Thu, Aug 24, 2023 at 6:03=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
 >
-> On Wed, Aug 23, 2023 at 09:50:37AM -0400, Joel Fernandes wrote:
-> > On Tue, Aug 22, 2023 at 3:37=E2=80=AFAM Z qiang <qiang.zhang1211@gmail.=
-com> wrote:
-> > >
-> > > When running build-in rcutorture tests in 6.5.0-rc4-rt, and found tha=
-t,
-> > > although the value of /proc/sys/kernel/sched_rt_runtime_us is -1,
-> > >
-> > > cat /sys/kernel/debug/sched/debug
-> > > ....
-> > > rt_rq[6]:
-> > >   .rt_nr_running                 : 4
-> > >   .rt_nr_migratory               : 0
-> > >   .rt_throttled                  : 0
-> > >   .rt_time                       : 0.000000
-> > >   .rt_runtime                    : 950.000000
-> > >
-> > > but the rt_runtime still is 950.000000.
-> > > set sysctl_sched_rt_runtime in rcu_torture_disable_rt_throttle()
-> > > does not disable rt-throttling.
+> On Thu, Aug 17 2023 at 16:06, Huacai Chen wrote:
+> > On Thu, Aug 17, 2023 at 3:27=E2=80=AFAM Joel Fernandes <joel@joelfernan=
+des.org> wrote:
+> >> > If  do_update_jiffies_64() cannot be used in NMI context,
+> >>
+> >> Can you not make the jiffies update conditional on whether it is
+> >> called within NMI context?
+>
+> Which solves what? If KGDB has a breakpoint in the jiffies lock held
+> region then you still dead lock.
+>
+> >> I dislike that..
+> > Is this acceptable?
 > >
-> > I think you have hit a bug. I think the problem is
-> > rcu_torture_disable_rt_throttle() modifies the sysctl knobs, but does
-> > not change def_rt_bandwidth and reinitialize the rt_rq. I think we
-> > need to call sched_rt_do_global() like the sysfs handler does, or
-> > change the sysctl knobs to be earlier in the boot process before the
-> > rt_rq are initialized.
-
-I've thought about something like this before, call the sched_rt*() in
-the sched_rt_handler(),
-this requires exporting these functions.
-
+> > void rcu_cpu_stall_reset(void)
+> > {
+> >         unsigned long delta;
 > >
-> > Or better yet (not sure if it is possible) trigger the sysctl change
-> > via the sysctl layer and let it do the same logic.
-
-This is good, but I haven't found it yet
-
+> >         delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns=
+());
+> >
+> >         WRITE_ONCE(rcu_state.jiffies_stall,
+> >                    jiffies + delta + rcu_jiffies_till_stall_check());
+> > }
+> >
+> > This can update jiffies_stall without updating jiffies (but has the
+> > same effect).
 >
-> That would be difficult in built-in rcutorture testing due to the fact
-> that there is not much in the way of userspace.  I suppose we could
-> invoke the sysfs handler so as to mock up a userspace access, but that
-> might not be the most robust approach.
-
-Does it mean to use filp_open() to open sched_rt_runtime_us file and
-write -1 through kernel_write() ?
-
-
+> Now you traded the potential dead lock on jiffies lock for a potential
+> live lock vs. tk_core.seq. Not really an improvement, right?
 >
-> Another way is to disable preemption in the real-time kthreads.  Which
-> might need careful implementation to avoid "scheduling while atomic"
-> and friends.
+> The only way you can do the above is something like the incomplete and
+> uncompiled below. NMI safe and therefore livelock proof time interfaces
+> exist for a reason.
 >
->                                                         Thanx, Paul
+> Thanks,
+>
+>         tglx
+> ---
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -51,6 +51,13 @@ struct tick_sched *tick_get_tick_sched(i
+>   */
+>  static ktime_t last_jiffies_update;
+>
+> +unsigned long tick_estimate_stale_jiffies(void)
+> +{
+> +       ktime_t delta =3D ktime_get_mono_fast_ns() - READ_ONCE(last_jiffi=
+es_update);
+> +
+> +       return delta < 0 ? 0 : div_s64(delta, TICK_NSEC);
+> +}
+> +
+>  /*
+>   * Must be called with interrupts disabled !
+>   */
+Thank you for your advice, now the latest proposal is here [1], this
+is very similar to your diff, please take a look.
+
+[1] https://lore.kernel.org/rcu/CAAhV-H5mePbbF8Y3t-JfV+PNP8BEcjKtX4UokzL_vD=
+zyw+2BRg@mail.gmail.com/T/#t
+
+Huacai
+>
+>
