@@ -2,58 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89501C27C40
-	for <rcu@archiver.kernel.org>; Thu, 24 Aug 2023 08:43:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10C81C71145
+	for <rcu@archiver.kernel.org>; Thu, 24 Aug 2023 08:43:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjHXIma (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        id S235705AbjHXIma (ORCPT <rfc822;rcu@archiver.kernel.org>);
         Thu, 24 Aug 2023 04:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40710 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235045AbjHXImC (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Aug 2023 04:42:02 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED051709;
-        Thu, 24 Aug 2023 01:42:00 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26f3e26e55aso2931655a91.3;
-        Thu, 24 Aug 2023 01:42:00 -0700 (PDT)
+        with ESMTP id S235444AbjHXImR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 24 Aug 2023 04:42:17 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1601727;
+        Thu, 24 Aug 2023 01:42:16 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bf11b1c7d0so4902865ad.0;
+        Thu, 24 Aug 2023 01:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692866519; x=1693471319;
+        d=gmail.com; s=20221208; t=1692866535; x=1693471335;
         h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
         bh=MZW4K+Cn+SXlhogHR/A6HeXM5kEvI/OHjyj47UoaxmE=;
-        b=lxd7+41A9xrJ/bPvXOGOsy6CupHrmM1aZkoSs5csmsn8A6ogFRsaSEgPljZFx/cLUY
-         e41F/4tJlr7ijNe0MED4UvSxNPU8oDvX9GDrw/QdcBbHVlOpHE6e9Q6by5zSf/KQXQlC
-         ZawYUa+e/jUP6JzuKsDNGiuujWnPbzjkPMoanBJ+T9EM8pcDo0btLM5GGFvVUNMJFfPL
-         FKvcsfhmhaceIXP3qQU3PSTxxCfSTzu+bZIC7yAHqXsMrXdH4whyYMETThBrMlL/gEzd
-         ZkB5Xdr2nUNmA9K+RSKaSVv3sDTmJIyKD8hOMhqTMjLQdurivi69WKMVuVXs4zpuG2+m
-         CE6g==
+        b=sgtCVZIWEtnaOo4eOhwY11PpHNqik88C9UasICytmNlR3WEJV/KaqMV8EgVAUCZd6+
+         LRrvd6n3ku66aOz/dSd3Sa9OSKr+XvPtnQ+dP4yE9wsE9/+EIVZ1jMojjWwtDL93WsQ8
+         inYemJbJKMhADFOPWeNj9Hr5fhOuaKsaa0mAIGdQfhPOCSpHB4p1WjiYM+M5Z8sLtKGV
+         pClk5YJHd1aOoZTR3TdhFAfvpY3/LVQudHKG0VIGMSOYjpmxj+BXk6P/Fupna6RurPxM
+         ZQpyXXxzMeIRalzwV+acXewlXlhG921CUNa/1SW9Uhok0bkt/05XaPeeOUCdDquBHuQq
+         i9qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692866519; x=1693471319;
+        d=1e100.net; s=20221208; t=1692866535; x=1693471335;
         h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
         bh=MZW4K+Cn+SXlhogHR/A6HeXM5kEvI/OHjyj47UoaxmE=;
-        b=mIp7EAfzZPTiIpymx/w9w7YrQTJzbNAiwthmtpkDaOQ8czb7ZJ8I+FOwzuUa3wbanL
-         2aM2StNcLV7ms3yY+3d2VQmw4SMQVM+2JMcZ9pVrSTPJK5TpHrmdzc75BVP1bwMjbW69
-         jCAjhj3PPl17dyJjO1X1SWBpBaI8bHmozaBTdVo+zBagz/f1iaQeutogNVRgH9qTVNWm
-         UzMQyjznOlDqW7oZmn2KW99uIB6yx1RsLv31ZRHQvBEz3YE4sjdQfO+fm4cB1GX84gV/
-         rKeQItYZLv/8giiyYnAgHim3llRxnKU4yba1Bt7kDjpQsKRGuLLCK/bYvvvHEgMJ7jSJ
-         kqkg==
-X-Gm-Message-State: AOJu0Ywr4WhoAJuYDwkBc5yhe5YZrfrXUqBA9Aud/NbYmhekyb0uqDDQ
-        vudn7Euqqpz0hua4SZXdbntqk4A+xfA=
-X-Google-Smtp-Source: AGHT+IFKtsyAGaWHI9nSg2J8KHxznkSRbLVtB1mvkDRNX9qFRISnftw2qFs/l8qbMuKD7drkXryg9A==
-X-Received: by 2002:a17:90a:318c:b0:26d:20ef:1d32 with SMTP id j12-20020a17090a318c00b0026d20ef1d32mr12046994pjb.38.1692866519231;
-        Thu, 24 Aug 2023 01:41:59 -0700 (PDT)
+        b=A78pjbZEdbtjmzPZK0c+HxgGXH66Gx6yin2Fikvqf3J3L0MaymS4nHhHXWgrJlFptC
+         mHQlerPlxMSzvADF5V00Q1TlqQg6E2JO2rmCEiKngIoGR4iwr6dmjQBl+D9GZr59rsNF
+         YII5Y/sq99cwUxNrsuKRA5w7mmMx9pB1ga9OFnRfZavcMJyZhqeBWPeghn9bq8XoCVlv
+         0wd8oTmNs1klInHLEAHZX6qUIgnDy4UE24ZYilamGr+PdUfcOE2Y8kl5uwlzutUprI4U
+         dbD1kzEms33TV1/dXqUsOS2Js+7dy9esoxGbxCvbkPzChE2w77XqACO8yyYeb3nq5B8r
+         dZ1A==
+X-Gm-Message-State: AOJu0YzIiIw0aM5ft5G5BGGiCvedpX4jCp/lM0LIATDyDK8i5mR6KEX/
+        tGcXiotwExf30gwLvh/ACgA=
+X-Google-Smtp-Source: AGHT+IFRUPVHXpJIwydNFdm20M4RZt6uBv2PNN/uGKndM8AjSd837AO6nVnB8UQbd7G5jkUPNjBPRQ==
+X-Received: by 2002:a17:903:1109:b0:1b0:3ab6:5140 with SMTP id n9-20020a170903110900b001b03ab65140mr23217888plh.4.1692866535519;
+        Thu, 24 Aug 2023 01:42:15 -0700 (PDT)
 Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
-        by smtp.gmail.com with ESMTPSA id 17-20020a17090a019100b0026b0b4ed7b1sm1131078pjc.15.2023.08.24.01.41.56
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001bbab888ba0sm12270452plg.138.2023.08.24.01.42.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 01:41:58 -0700 (PDT)
+        Thu, 24 Aug 2023 01:42:15 -0700 (PDT)
 From:   Zqiang <qiang.zhang1211@gmail.com>
 To:     paulmck@kernel.org, joel@joelfernandes.org
 Cc:     qiang.zhang1211@gmail.com, linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org
 Subject: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
-Date:   Thu, 24 Aug 2023 16:41:49 +0800
-Message-Id: <20230824084149.21692-1-qiang.zhang1211@gmail.com>
+Date:   Thu, 24 Aug 2023 16:42:06 +0800
+Message-Id: <20230824084206.22844-1-qiang.zhang1211@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
