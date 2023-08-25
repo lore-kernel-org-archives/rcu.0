@@ -2,83 +2,97 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 589A6C6FA8F
-	for <rcu@archiver.kernel.org>; Fri, 25 Aug 2023 02:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A80C7EE2C
+	for <rcu@archiver.kernel.org>; Fri, 25 Aug 2023 02:56:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242150AbjHYCuy (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 24 Aug 2023 22:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
+        id S231487AbjHYC4O (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 24 Aug 2023 22:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236088AbjHYCuW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:50:22 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EEA1FCB
-        for <rcu@vger.kernel.org>; Thu, 24 Aug 2023 19:50:20 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-34ca22e3b3dso1609985ab.3
-        for <rcu@vger.kernel.org>; Thu, 24 Aug 2023 19:50:20 -0700 (PDT)
+        with ESMTP id S237465AbjHYCzp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 24 Aug 2023 22:55:45 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC1C1997
+        for <rcu@vger.kernel.org>; Thu, 24 Aug 2023 19:55:39 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-792707f78b5so18661839f.1
+        for <rcu@vger.kernel.org>; Thu, 24 Aug 2023 19:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692931819; x=1693536619;
+        d=joelfernandes.org; s=google; t=1692932139; x=1693536939;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y07oxKzyD6NouQNFuvP7iMeRumD3C6SmckUNPVdKHuI=;
-        b=Uvn0tCpDS7x4CpqXBSraVlmBEZseQr0pQXSHG+VSJNKTtYYykh44u0IY4cI18f+6iO
-         ET2BOvuye9QdRqesi7FAufkxT4FYMQNd28iDXCMStKdSD8p1MLO91HNiAlQwGf2IstLQ
-         8dObiLX1f/R57wEuNHjH6805Jt9ZXvPv6EmVw=
+        bh=+bzcizTeL9qFuQdDsAhAqqZhe0DCOQOHLGs+p18EceI=;
+        b=tpF2VKjfwyKSG8Hqt9xqjhRXKYIoACT0VJ9CnXuRLLohyGD5QOGqWhEXgcqK8UQLtZ
+         e5UHrt1LEZboTIFFg3YckjL2wONPAjH6+sBomEbo8szTqsgzeHCYNb/njFYpnET/3n2t
+         r/H3PiXpfeqc8m58uX+pinN/NW1EPIix6FjOk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692931819; x=1693536619;
+        d=1e100.net; s=20221208; t=1692932139; x=1693536939;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y07oxKzyD6NouQNFuvP7iMeRumD3C6SmckUNPVdKHuI=;
-        b=bc3R/oY2KILmeKEO6mT/p7uMhk9C/z9yx25ELWN7AnowI2WW2scoQwlpiWd3a9eHNu
-         YVHp3ppN8PcLYRLL31RgCbLRVgaJvjLk8KqOpYb5UQewCNq6XWNZSXQaeYPpWdW+pFI+
-         kd9jyVt8fPtYwr1mOpdPxvXQ1by7HaRQ2Y2ZDfpcD12r7WtP2+L9g6+lxzk7IJN4QuLq
-         gI1x50flQq+3U+GT8BQqm2ZzdgdPrUqLhNlkSveBZrlIpnJV1IKAtWvfeNWHyBbYe5ey
-         6OiG7u6k4uLJxhY0ZbVDzMcK6YSJSkLS+PT61VNNOL/yF9ap3izow4bhJFkwPncX0qOX
-         8wKw==
-X-Gm-Message-State: AOJu0YwLCjFb4j+Xn8AqkAMelm3/IpitU40C4gwzT9g7IQ5sNcyBBi1J
-        OkGJSIH1oLlsclPfjsAnqyB9SohguOgmkaWWpfU=
-X-Google-Smtp-Source: AGHT+IG1y7uufh0ZqghTjwd9fOJmupY196QtHzD1FH3ku/72RUHiNwHSxQVydE0d+2Mb92Q7YhpX8w==
-X-Received: by 2002:a05:6e02:c74:b0:34c:b3aa:b0aa with SMTP id f20-20020a056e020c7400b0034cb3aab0aamr6926435ilj.23.1692931819566;
-        Thu, 24 Aug 2023 19:50:19 -0700 (PDT)
+        bh=+bzcizTeL9qFuQdDsAhAqqZhe0DCOQOHLGs+p18EceI=;
+        b=lUTGzfKhWy2c73M94MaEEjUz90UFYhHsSYRVk/N3L/mkS8V0zNTLM0959/cR+pfnqh
+         ZpRm5OS0yjtP9sj34+DY7cEJU9SYynzXqfpwvCJoiA9N7BjXnI3HA9ooljc5nDQ2eJr5
+         qvj1xftHtIpZYZQHWAGXjJVmrtuWsGFOITzJkfsH9qCJpxAr/nH17+qNY0Vt8vzG4F5B
+         zRNSLnQDivz7fsbM/UMbqcataWnNhF8gDK1cGwxO3jtNY67OgXgfJw+cFmO9KOTyfQAe
+         54UsGXlA2cu8//VRGpZEJiQwl/Id7xjzg+MxR2ZidnlpfWExYdodg6J28bpe0aY0a8g8
+         ynUA==
+X-Gm-Message-State: AOJu0Yx6IIn1Ysobar2nMhMp8bVHB3qT13dM0T5PJkux+BfasBEvvFwt
+        4q79PI2Dwxdi8AFEjf8WfIYvsg==
+X-Google-Smtp-Source: AGHT+IG9l3ghffEmYX1qaa3yg2PijOUFAak7ccGKAPahce4ViUcuvLYC0k9cofKLnwBwwpKxvvWljg==
+X-Received: by 2002:a6b:dd16:0:b0:786:7100:72de with SMTP id f22-20020a6bdd16000000b00786710072demr8297660ioc.16.1692932139244;
+        Thu, 24 Aug 2023 19:55:39 -0700 (PDT)
 Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id go7-20020a0566382c8700b0042ad887f705sm249214jab.143.2023.08.24.19.50.18
+        by smtp.gmail.com with ESMTPSA id v15-20020a5ec10f000000b0076373f90e46sm194535iol.33.2023.08.24.19.55.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 19:50:19 -0700 (PDT)
-Date:   Fri, 25 Aug 2023 02:50:18 +0000
+        Thu, 24 Aug 2023 19:55:38 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 02:55:38 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: rcutorture: Can not Disable RT throttling
-Message-ID: <20230825025018.GE4008060@google.com>
-References: <CALm+0cVvHb=Fe8kseVLesjS1d=579c7Bn5hxdiqyzBp5Z7SugA@mail.gmail.com>
- <CAEXW_YScFnFG0Y1NgFS7KGS6s9CoXJ3ZQB++6udyK38mcJ=1xg@mail.gmail.com>
- <600e1ab4-059b-4b4e-9db2-2c56ac557d3b@paulmck-laptop>
- <CALm+0cUrwYAQ=frj+S=N8s8Q4KYV6JWoU0+2E-NvaqEoFcMC7g@mail.gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Replace schedule_timeout*() 1 jiffie waits
+ with HZ/20
+Message-ID: <20230825025538.GF4008060@google.com>
+References: <20230816204913.450457-1-joel@joelfernandes.org>
+ <530be59f-96a9-4b2b-8be3-af837d7cbe3a@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALm+0cUrwYAQ=frj+S=N8s8Q4KYV6JWoU0+2E-NvaqEoFcMC7g@mail.gmail.com>
+In-Reply-To: <530be59f-96a9-4b2b-8be3-af837d7cbe3a@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 10:30:37AM +0800, Z qiang wrote:
-[..]
-> > That would be difficult in built-in rcutorture testing due to the fact
-> > that there is not much in the way of userspace.  I suppose we could
-> > invoke the sysfs handler so as to mock up a userspace access, but that
-> > might not be the most robust approach.
+On Wed, Aug 23, 2023 at 02:07:55PM -0700, Paul E. McKenney wrote:
+> On Wed, Aug 16, 2023 at 08:49:12PM +0000, Joel Fernandes (Google) wrote:
+> > In the past, we see that spinning on schedule_timeout* with a wait of 1
+> > jiffie can hang the kernel. See d52d3a2bf408 ("torture: Fix hang during
+> > kthread shutdown phase").
+> > 
+> > Recently again it showed up in torture's stutter code as well. The behavior is
+> > the the function may instantly return and never go to sleep preempting whatever
+> > was running under it.
+> > 
+> > To prevent future issues, apply the same fix mentioned in the above
+> > commit d52d3a2bf408 to more places.
+> > 
+> > I took care to only apply it to places where I thought it made sense.
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Hearing no objections, I applied this for further review and testing.
+> 
+> In the future, should some of these become hrtimers?
 
-Yes.
-
-> Does it mean to use filp_open() to open sched_rt_runtime_us file and
-> write -1 through kernel_write() ?
-
-I am afraid so but that might become hard to maintain in the long run. I
-prefer exporting the necessary functions from RT to the kernel and just
-calling those.
+Yes they certainly could be but we don't need these ones to be high
+resolution AFAICS and the jiffie granularity should be good.
 
 thanks,
 
