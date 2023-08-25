@@ -2,112 +2,85 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D615CEE49A0
-	for <rcu@archiver.kernel.org>; Fri, 25 Aug 2023 02:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 589A6C6FA8F
+	for <rcu@archiver.kernel.org>; Fri, 25 Aug 2023 02:51:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239147AbjHYC3C (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 24 Aug 2023 22:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        id S242150AbjHYCuy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 24 Aug 2023 22:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241053AbjHYC2w (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 24 Aug 2023 22:28:52 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DE01BFB;
-        Thu, 24 Aug 2023 19:28:49 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-26f3e26e55aso277471a91.3;
-        Thu, 24 Aug 2023 19:28:49 -0700 (PDT)
+        with ESMTP id S236088AbjHYCuW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 24 Aug 2023 22:50:22 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EEA1FCB
+        for <rcu@vger.kernel.org>; Thu, 24 Aug 2023 19:50:20 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-34ca22e3b3dso1609985ab.3
+        for <rcu@vger.kernel.org>; Thu, 24 Aug 2023 19:50:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692930529; x=1693535329;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WsvObY4iMN9Z9CsQkQU8ffng3Vh8WH9nCAEFkBwr4JQ=;
-        b=Nd7ubQ3FdVgQGi399mXi5aT635L7Jk+fOOzeoM650+n0Ql6L0crbAQI0yhGfY7Ma4R
-         b2OS/Jg82swq3khYZDantj/XmCzJI7NZ710YG/b5DY7hgSVlRVdoo8V22cpJ8xl17vTY
-         2MySIpsrss/dr09dyIY7jgXR8rfIMCIOY6cUZb6ddyPl8viAJxhJOdvbG/Eo2aB/6Aru
-         LDRFaTQlpQLrCFrgznHFj/4sG7t7Jd5y66YuVw3XrsHke/ib1dHBJQ7Zwn3YT/7ddaWG
-         k1fKTaQcd2abHcs41B3cTzURty0uN61gDDKA+kAFzKUFfq0mELuo4J8N7Nbtr74HGEEQ
-         ufFA==
+        d=joelfernandes.org; s=google; t=1692931819; x=1693536619;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y07oxKzyD6NouQNFuvP7iMeRumD3C6SmckUNPVdKHuI=;
+        b=Uvn0tCpDS7x4CpqXBSraVlmBEZseQr0pQXSHG+VSJNKTtYYykh44u0IY4cI18f+6iO
+         ET2BOvuye9QdRqesi7FAufkxT4FYMQNd28iDXCMStKdSD8p1MLO91HNiAlQwGf2IstLQ
+         8dObiLX1f/R57wEuNHjH6805Jt9ZXvPv6EmVw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692930529; x=1693535329;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WsvObY4iMN9Z9CsQkQU8ffng3Vh8WH9nCAEFkBwr4JQ=;
-        b=SJk6bV0BonZ25SbtIOj5oaDzQNNiXJBEUobVAF0S7EkHnPPr1QQDccW70eJTEhccsV
-         t84DodWjVxxbNx9SDj6u5RBIe4Hf8P11RcfuCSWyKP4s4NbpCNQ+l7PYkRf0zB7J0ZSc
-         JWQeGZFemWyGTxIp7es6WDKumhd95fxFMq1y7sqNmtY9aVpsAnd2edvZHPyZCrv33DeM
-         vABGQJ0Msm7W8NYlFUgjueyJoWV5ZCR9jmN5fn7wMmoOCd2pMdLcU4iDtbIzISml2a5y
-         rDAMZnORS5o9Tsk1IcCIs9ptJYvykFY5gd63AUuCS6IREqWSfWrQmR/Qd5hI17Qe1G8F
-         UbtQ==
-X-Gm-Message-State: AOJu0YzOS+h/C4c5Sc2ca3+G4LZrorBF+UuluUxIwpm0z+TjiuvmPz/A
-        30iAJxnGgcCsm9RLwMveCvvz5ghZI6N5Vntzfguhie9TZhQ=
-X-Google-Smtp-Source: AGHT+IEPY8RDYBubCSP19QfmpP0539Pm+06ocq19gbo2bV1/lYdpFOTQ2hf+0P/TS5KOTWnx01wj2qrkdxwBjZaOSCI=
-X-Received: by 2002:a17:90b:1081:b0:267:717f:2f91 with SMTP id
- gj1-20020a17090b108100b00267717f2f91mr13521657pjb.40.1692930529127; Thu, 24
- Aug 2023 19:28:49 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692931819; x=1693536619;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y07oxKzyD6NouQNFuvP7iMeRumD3C6SmckUNPVdKHuI=;
+        b=bc3R/oY2KILmeKEO6mT/p7uMhk9C/z9yx25ELWN7AnowI2WW2scoQwlpiWd3a9eHNu
+         YVHp3ppN8PcLYRLL31RgCbLRVgaJvjLk8KqOpYb5UQewCNq6XWNZSXQaeYPpWdW+pFI+
+         kd9jyVt8fPtYwr1mOpdPxvXQ1by7HaRQ2Y2ZDfpcD12r7WtP2+L9g6+lxzk7IJN4QuLq
+         gI1x50flQq+3U+GT8BQqm2ZzdgdPrUqLhNlkSveBZrlIpnJV1IKAtWvfeNWHyBbYe5ey
+         6OiG7u6k4uLJxhY0ZbVDzMcK6YSJSkLS+PT61VNNOL/yF9ap3izow4bhJFkwPncX0qOX
+         8wKw==
+X-Gm-Message-State: AOJu0YwLCjFb4j+Xn8AqkAMelm3/IpitU40C4gwzT9g7IQ5sNcyBBi1J
+        OkGJSIH1oLlsclPfjsAnqyB9SohguOgmkaWWpfU=
+X-Google-Smtp-Source: AGHT+IG1y7uufh0ZqghTjwd9fOJmupY196QtHzD1FH3ku/72RUHiNwHSxQVydE0d+2Mb92Q7YhpX8w==
+X-Received: by 2002:a05:6e02:c74:b0:34c:b3aa:b0aa with SMTP id f20-20020a056e020c7400b0034cb3aab0aamr6926435ilj.23.1692931819566;
+        Thu, 24 Aug 2023 19:50:19 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id go7-20020a0566382c8700b0042ad887f705sm249214jab.143.2023.08.24.19.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Aug 2023 19:50:19 -0700 (PDT)
+Date:   Fri, 25 Aug 2023 02:50:18 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Z qiang <qiang.zhang1211@gmail.com>
+Cc:     paulmck@kernel.org, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: rcutorture: Can not Disable RT throttling
+Message-ID: <20230825025018.GE4008060@google.com>
+References: <CALm+0cVvHb=Fe8kseVLesjS1d=579c7Bn5hxdiqyzBp5Z7SugA@mail.gmail.com>
+ <CAEXW_YScFnFG0Y1NgFS7KGS6s9CoXJ3ZQB++6udyK38mcJ=1xg@mail.gmail.com>
+ <600e1ab4-059b-4b4e-9db2-2c56ac557d3b@paulmck-laptop>
+ <CALm+0cUrwYAQ=frj+S=N8s8Q4KYV6JWoU0+2E-NvaqEoFcMC7g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230824084206.22844-1-qiang.zhang1211@gmail.com> <162989fe-5ed8-4d1f-8c99-144e2de532f5@paulmck-laptop>
-In-Reply-To: <162989fe-5ed8-4d1f-8c99-144e2de532f5@paulmck-laptop>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Fri, 25 Aug 2023 10:28:37 +0800
-Message-ID: <CALm+0cVgg9u1-E+XrnbEyD75a_H3ifN9oB9j6xx0=cm8kuXE-Q@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
-To:     paulmck@kernel.org
-Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALm+0cUrwYAQ=frj+S=N8s8Q4KYV6JWoU0+2E-NvaqEoFcMC7g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->
-> On Thu, Aug 24, 2023 at 04:42:06PM +0800, Zqiang wrote:
-> > Currently, the maxcpu is set by traversing online CPUs, however, if
-> > the rcutorture.onoff_holdoff is set zero and onoff_interval is set
-> > non-zero, and the some CPUs with larger cpuid has been offline before
-> > setting maxcpu, for these CPUs, even if they are online again, also
-> > cannot be offload or deoffload.
-> >
-> > This commit therefore use for_each_possible_cpu() instead of
-> > for_each_online_cpu() in rcu_nocb_toggle().
-> >
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  kernel/rcu/rcutorture.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index a58372bdf0c1..b75d0fe558ce 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -2131,7 +2131,7 @@ static int rcu_nocb_toggle(void *arg)
-> >       VERBOSE_TOROUT_STRING("rcu_nocb_toggle task started");
-> >       while (!rcu_inkernel_boot_has_ended())
-> >               schedule_timeout_interruptible(HZ / 10);
-> > -     for_each_online_cpu(cpu)
-> > +     for_each_possible_cpu(cpu)
->
-> Last I checked, bad things could happen if the code attempted to
-> nocb_toggle a CPU that had not yet come online.  Has that changed?
+On Thu, Aug 24, 2023 at 10:30:37AM +0800, Z qiang wrote:
+[..]
+> > That would be difficult in built-in rcutorture testing due to the fact
+> > that there is not much in the way of userspace.  I suppose we could
+> > invoke the sysfs handler so as to mock up a userspace access, but that
+> > might not be the most robust approach.
 
-For example, there are 8 online CPUs in the system, before we traversing online
-CPUs and set maxcpu,  CPU7 has been offline, this causes us to miss nocb_toggle
-for CPU7(maxcpu=6)
+Yes.
 
-Even though we still use for_each_online_cpu(), the things described
-above also happen.  before we toggle the CPU, this CPU has been offline.
+> Does it mean to use filp_open() to open sched_rt_runtime_us file and
+> write -1 through kernel_write() ?
 
+I am afraid so but that might become hard to maintain in the long run. I
+prefer exporting the necessary functions from RT to the kernel and just
+calling those.
 
-Thanks
-Zqiang
+thanks,
 
+ - Joel
 
->
->                                                         Thanx, Paul
->
-> >               maxcpu = cpu;
-> >       WARN_ON(maxcpu < 0);
-> >       if (toggle_interval > ULONG_MAX)
-> > --
-> > 2.17.1
-> >
