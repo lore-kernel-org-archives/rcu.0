@@ -2,62 +2,64 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15952C83F10
-	for <rcu@archiver.kernel.org>; Sun, 27 Aug 2023 21:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10A1FC83F15
+	for <rcu@archiver.kernel.org>; Sun, 27 Aug 2023 21:58:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjH0V5w (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 27 Aug 2023 17:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
+        id S230407AbjH0V6X (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 27 Aug 2023 17:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbjH0V5v (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 27 Aug 2023 17:57:51 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D8A11D
-        for <rcu@vger.kernel.org>; Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34cb5c41777so8035485ab.1
-        for <rcu@vger.kernel.org>; Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
+        with ESMTP id S230399AbjH0V5x (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 27 Aug 2023 17:57:53 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D441912E
+        for <rcu@vger.kernel.org>; Sun, 27 Aug 2023 14:57:48 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34cb35dfb00so10484945ab.2
+        for <rcu@vger.kernel.org>; Sun, 27 Aug 2023 14:57:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693173467; x=1693778267;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tMLyT+uZwYb4Deta17XMTPAVJ7dCE9N9HyBB8/EDtN8=;
-        b=wBMOSUUs9xF3PVGUmoVRyMRXL8VFPR6zsl0Eff0da4ImM8InJzsyvNwJMLypNeAwEK
-         23kWGuVo/y2LG0dVyyiNG0wrMYXevKy5YOtIBBOvf40XDwao6TNKIZhRlmWsOrz5zoA4
-         bRbdFrx79sNawzdu1ZCLfcvCKVHDONZL35o/Q=
+        d=joelfernandes.org; s=google; t=1693173468; x=1693778268;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tpwry7cZckhaZOVm86wEaftE2qjDhkYwPPejvoB+vIs=;
+        b=TavA5FViEbC3XFaeegx94HW3K8aYY1Yqkph5Kla7avQofEC4I+Atumu0xokEq1Kotg
+         nEJBjamcdAJSQDXrnxxfs61dRt99fRg2YPYw2W1p4dmlz/JtwMZ2TTdxDd0aAwatczxu
+         V9feqxzi2diiX1Sm2CsbCwCYchtGCDtUMEDWc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693173467; x=1693778267;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tMLyT+uZwYb4Deta17XMTPAVJ7dCE9N9HyBB8/EDtN8=;
-        b=dRVhaz7StK26znUPIr6PeUvD5DCuErtmjaDQ/miUKp3ecVMGU3D8IQNCdPwYgHfU+5
-         IIouhOc1i9bfFgMQN9KggNdkYv2JsXuUcl8crAIl4oo/ybU7o+DNDHDfYdgNaZNIzF11
-         w6SsICbUHGuWflP8cn56h/ofE2kYUL8Vh7I4wzne0RiBMBr5zjcD9eU6ZiLTNAJrkCmW
-         VAvHv1t4256VsFD8vYkkUJbU++I7mx465MgBoKd4Avj6feKnL1FpnYzgFfSXC5P1sduO
-         HkukGLBXV2N+OrHFz4NKUVehehEgJ9+Uw1WGDKTEcsa9n5PDf2aSRc3OSd9Y34pAvvUK
-         +9LQ==
-X-Gm-Message-State: AOJu0Yy9M6X7QjPCIp1MuoiJmsPtEGT67vj01IVGZxsIcN2NCrA26b6u
-        whYiMpsra6QMYPE3UgqreMwpSA==
-X-Google-Smtp-Source: AGHT+IEEjxh4GT5vEG0rUWZyQ66spPnr+ZYJKNPTafYEmf0NGvM7lZHG6N9E0BM7FIIVhHSidzxkwA==
-X-Received: by 2002:a05:6e02:12e2:b0:34c:ecc8:98e0 with SMTP id l2-20020a056e0212e200b0034cecc898e0mr4228111iln.11.1693173467084;
-        Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693173468; x=1693778268;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tpwry7cZckhaZOVm86wEaftE2qjDhkYwPPejvoB+vIs=;
+        b=XihSkOtHoTmZqP3yX1y3rkk+6TOAhxUZ60PPw/Tp9Sh6EjZqQxK4RD1G28md8ge/Ws
+         S78T6+sfIQluisgAF4843VCkbUwp+delaf+G5+OrrzuzJ8Xv9cpg7A/UyPGcxvIxLuc2
+         vcvz3v33EypNNGj/qiHBnhKsUToIX7ue+rwLA8A6O7Lp42Eml9Ht4A0LemHCGflVPw1E
+         e5GttoWnPOQiJkpcnpLejIluiBdu35pB4CA5K2VL1Jh+RLZlrwekmtK9Fn49tz7hpho8
+         hpKA5zMuGLIMeXFljbPGexZA5/dc+GowUdPYdHO+cTrCqaFcTjEruenMSVJbPNyBrG/h
+         UnqA==
+X-Gm-Message-State: AOJu0YxozMbc2zIJJ6O5G0oqFZUSSc0FauBuqbkJX62YUUjwmwBujb1r
+        zUifi6RKnMk3gsacfxpTHhttrg==
+X-Google-Smtp-Source: AGHT+IFPi/2W1na5QzhWbnb/XTWv0JvVtQaaGHgMi+F+0VcYbsWna3rQGZgh0fnRH0iBAnEgZ1Ohpg==
+X-Received: by 2002:a05:6e02:1212:b0:349:849d:bdf7 with SMTP id a18-20020a056e02121200b00349849dbdf7mr14904424ilq.17.1693173468226;
+        Sun, 27 Aug 2023 14:57:48 -0700 (PDT)
 Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id bp7-20020a056e02348700b0034ce78e2450sm1304854ilb.39.2023.08.27.14.57.46
+        by smtp.gmail.com with ESMTPSA id bp7-20020a056e02348700b0034ce78e2450sm1304854ilb.39.2023.08.27.14.57.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Aug 2023 14:57:46 -0700 (PDT)
+        Sun, 27 Aug 2023 14:57:47 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.15 1/2] torture: Avoid torture-test reboot loops
-Date:   Sun, 27 Aug 2023 21:57:39 +0000
-Message-ID: <20230827215741.246948-1-joel@joelfernandes.org>
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 5.15 2/2] rcu: Prevent expedited GP from enabling tick on offline CPU
+Date:   Sun, 27 Aug 2023 21:57:40 +0000
+Message-ID: <20230827215741.246948-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+In-Reply-To: <20230827215741.246948-1-joel@joelfernandes.org>
+References: <20230827215741.246948-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -66,47 +68,82 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit 10f84c2cfb5045e37d78cb5d4c8e8321e06ae18f ]
+[ Upstream commit 147f04b14adde831eb4a0a1e378667429732f9e8 ]
 
-Currently, the various torture tests sometimes react to an early-boot
-bug by rebooting.  This is almost always counterproductive, needlessly
-consuming CPU time and bloating the console log.  This commit therefore
-adds the "-no-reboot" argument to qemu so that reboot requests will
-cause qemu to exit.
+If an RCU expedited grace period starts just when a CPU is in the process
+of going offline, so that the outgoing CPU has completed its pass through
+stop-machine but has not yet completed its final dive into the idle loop,
+RCU will attempt to enable that CPU's scheduling-clock tick via a call
+to tick_dep_set_cpu().  For this to happen, that CPU has to have been
+online when the expedited grace period completed its CPU-selection phase.
+
+This is pointless:  The outgoing CPU has interrupts disabled, so it cannot
+take a scheduling-clock tick anyway.  In addition, the tick_dep_set_cpu()
+function's eventual call to irq_work_queue_on() will splat as follows:
+
+smpboot: CPU 1 is now offline
+WARNING: CPU: 6 PID: 124 at kernel/irq_work.c:95
++irq_work_queue_on+0x57/0x60
+Modules linked in:
+CPU: 6 PID: 124 Comm: kworker/6:2 Not tainted 5.15.0-rc1+ #3
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
++rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+Workqueue: rcu_gp wait_rcu_exp_gp
+RIP: 0010:irq_work_queue_on+0x57/0x60
+Code: 8b 05 1d c7 ea 62 a9 00 00 f0 00 75 21 4c 89 ce 44 89 c7 e8
++9b 37 fa ff ba 01 00 00 00 89 d0 c3 4c 89 cf e8 3b ff ff ff eb ee <0f> 0b eb b7
++0f 0b eb db 90 48 c7 c0 98 2a 02 00 65 48 03 05 91
+ 6f
+RSP: 0000:ffffb12cc038fe48 EFLAGS: 00010282
+RAX: 0000000000000001 RBX: 0000000000005208 RCX: 0000000000000020
+RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9ad01f45a680
+RBP: 000000000004c990 R08: 0000000000000001 R09: ffff9ad01f45a680
+R10: ffffb12cc0317db0 R11: 0000000000000001 R12: 00000000fffecee8
+R13: 0000000000000001 R14: 0000000000026980 R15: ffffffff9e53ae00
+FS:  0000000000000000(0000) GS:ffff9ad01f580000(0000)
++knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000de0c000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ tick_nohz_dep_set_cpu+0x59/0x70
+ rcu_exp_wait_wake+0x54e/0x870
+ ? sync_rcu_exp_select_cpus+0x1fc/0x390
+ process_one_work+0x1ef/0x3c0
+ ? process_one_work+0x3c0/0x3c0
+ worker_thread+0x28/0x3c0
+ ? process_one_work+0x3c0/0x3c0
+ kthread+0x115/0x140
+ ? set_kthread_struct+0x40/0x40
+ ret_from_fork+0x22/0x30
+---[ end trace c5bf75eb6aa80bc6 ]---
+
+This commit therefore avoids invoking tick_dep_set_cpu() on offlined
+CPUs to limit both futility and false-positive splats.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/rcu/tree_exp.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index f4c8055dbf7a..c57be9563214 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -9,9 +9,10 @@
- #
- # Usage: kvm-test-1-run.sh config resdir seconds qemu-args boot_args_in
- #
--# qemu-args defaults to "-enable-kvm -nographic", along with arguments
--#			specifying the number of CPUs and other options
--#			generated from the underlying CPU architecture.
-+# qemu-args defaults to "-enable-kvm -nographic -no-reboot", along with
-+#			arguments specifying the number of CPUs and
-+#			other options generated from the underlying
-+#			CPU architecture.
- # boot_args_in defaults to value returned by the per_version_boot_params
- #			shell function.
- #
-@@ -141,7 +142,7 @@ then
- fi
- 
- # Generate -smp qemu argument.
--qemu_args="-enable-kvm -nographic $qemu_args"
-+qemu_args="-enable-kvm -nographic -no-reboot $qemu_args"
- cpu_count=`configNR_CPUS.sh $resdir/ConfigFragment`
- cpu_count=`configfrag_boot_cpus "$boot_args_in" "$config_template" "$cpu_count"`
- if test "$cpu_count" -gt "$TORTURE_ALLOTED_CPUS"
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index f46c0c1a5eb3..407941a2903b 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -507,7 +507,10 @@ static void synchronize_rcu_expedited_wait(void)
+ 				if (rdp->rcu_forced_tick_exp)
+ 					continue;
+ 				rdp->rcu_forced_tick_exp = true;
+-				tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
++				preempt_disable();
++				if (cpu_online(cpu))
++					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
++				preempt_enable();
+ 			}
+ 		}
+ 		j = READ_ONCE(jiffies_till_first_fqs);
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
