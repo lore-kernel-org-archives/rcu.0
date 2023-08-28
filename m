@@ -2,60 +2,75 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FCC4C71153
-	for <rcu@archiver.kernel.org>; Mon, 28 Aug 2023 07:38:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6602C83F13
+	for <rcu@archiver.kernel.org>; Mon, 28 Aug 2023 09:57:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbjH1HiQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Aug 2023 03:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
+        id S230232AbjH1J5P (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Aug 2023 05:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjH1Hht (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Aug 2023 03:37:49 -0400
-Received: from mail.socialglobal.pl (mail.socialglobal.pl [51.195.90.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C03100
-        for <rcu@vger.kernel.org>; Mon, 28 Aug 2023 00:37:45 -0700 (PDT)
-Received: by mail.socialglobal.pl (Postfix, from userid 1002)
-        id 18ABD2279E; Mon, 28 Aug 2023 07:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=socialglobal.pl;
-        s=mail; t=1693208236;
-        bh=XwhyqI/moZPDJ7KCfcA6Gip8fA7ZKcg5SWsKuF/26zk=;
-        h=Date:From:To:Subject:From;
-        b=FsCUvZgJ650YOSymeWA6DTtbs6jjQARPOZExr03TMM1WgFHV7VuyDKlph9AnbIWla
-         MhRZBWg01cRKvSihGrL0JK8yfPFOTmyV169xdEBZ9OkRrJ4CuAOajdRqQ/wCCNm8b0
-         UxHhHxlRUfdKDnd5IZcmj4PYRkKIOCcITo8sah0cVmgnQHP3h/Iy+5sKPBTtvLR4D+
-         gmlLQxYW5EaYVPYNvn12vz8JW4BAQQWnQWh4bXpV5cnPcbqPbo37WrJrFYIoTokjK4
-         5sIBZEDNLWniI++SVdO7UbhmeLTvzMGSLEe8AwdUFmI12/kx1sGRfK04q14bGAp9G+
-         f75rg4V2E30wQ==
-Received: by mail.socialglobal.pl for <rcu@vger.kernel.org>; Mon, 28 Aug 2023 07:35:36 GMT
-Message-ID: <20230828064500-0.1.80.2om0c.0.njrqvwhsjl@socialglobal.pl>
-Date:   Mon, 28 Aug 2023 07:35:36 GMT
-From:   "Dominik Perkowski" <dominik.perkowski@socialglobal.pl>
-To:     <rcu@vger.kernel.org>
-Subject: Pozycjonowanie- informacja
-X-Mailer: mail.socialglobal.pl
+        with ESMTP id S230240AbjH1J4v (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Aug 2023 05:56:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F1010C;
+        Mon, 28 Aug 2023 02:56:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04B156362B;
+        Mon, 28 Aug 2023 09:56:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7562C433C7;
+        Mon, 28 Aug 2023 09:56:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693216608;
+        bh=n3ZveLCRiywPM51R3UgAxLkq2oP2wEOsDu10F1AptNA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JNLHP+peq8UXHf72xcyBxH4HegIk/sP6rv57/7Opan+gvE4Or3ydfBSwPLVxN0Zf8
+         Rt0CCHHaW0aZsoHKtXJVIOsjzuZaTyRGXEiDYltL/WzfGxRPrQ7Hm149KkGX57uDDn
+         +lkKhnNOL4TdS3hKKD4gg7Tq+9FpzZUpRAIR1c1M=
+Date:   Mon, 28 Aug 2023 11:56:40 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5.15 1/2] torture: Avoid torture-test reboot loops
+Message-ID: <2023082815-job-hull-9b54@gregkh>
+References: <20230827215741.246948-1-joel@joelfernandes.org>
+ <2023082812-pampers-uptown-69a2@gregkh>
+ <CAEXW_YTP9mm2f5YEL=Dbr399KomN6jd8Rwx+N1MXOuefs-vzoA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YTP9mm2f5YEL=Dbr399KomN6jd8Rwx+N1MXOuefs-vzoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+On Sun, Aug 27, 2023 at 06:31:55PM -0400, Joel Fernandes wrote:
+> On Sun, Aug 27, 2023 at 6:27 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sun, Aug 27, 2023 at 09:57:39PM +0000, Joel Fernandes (Google) wrote:
+> > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > >
+> > > [ Upstream commit 10f84c2cfb5045e37d78cb5d4c8e8321e06ae18f ]
+> >
+> > I don't see this commit in Linus's tree, am I just missing it somewhere?
+> >
+> 
+> Ah, this particular patch might not be in Linus's tree yet. It is in
+> Paul's tree. Feel free to ignore it for now if you want and I'll
+> resend it later (and likewise for the 5.10 one).
 
-jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
-j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
-e Google.=20
+Yeah, please just send it later, once it has landed in a -rc release
+otherwise there's nothing we can do with it now, sorry.
 
-Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
-=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
-w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
-owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
-dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
+thanks,
 
-Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
-edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
-edstawi=C4=87 ofert=C4=99?=20
-
-
-Pozdrawiam serdecznie,
-Dominik Perkowski
+greg k-h
