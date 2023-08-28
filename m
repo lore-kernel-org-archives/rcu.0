@@ -2,145 +2,173 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD5B4C83F11
-	for <rcu@archiver.kernel.org>; Mon, 28 Aug 2023 20:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50787C83F12
+	for <rcu@archiver.kernel.org>; Mon, 28 Aug 2023 21:52:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjH1Ux0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Aug 2023 16:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
+        id S229491AbjH1Vvh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 28 Aug 2023 17:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232734AbjH1UxI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Aug 2023 16:53:08 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D37A110
-        for <rcu@vger.kernel.org>; Mon, 28 Aug 2023 13:53:06 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34baf19955cso11287045ab.2
-        for <rcu@vger.kernel.org>; Mon, 28 Aug 2023 13:53:06 -0700 (PDT)
+        with ESMTP id S230234AbjH1VvZ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 28 Aug 2023 17:51:25 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B363DF9
+        for <rcu@vger.kernel.org>; Mon, 28 Aug 2023 14:51:22 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76dc7b0da9fso211479185a.1
+        for <rcu@vger.kernel.org>; Mon, 28 Aug 2023 14:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693255986; x=1693860786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6EHvhYNt+YdRhsmSbNDmpyOVgrF3DogD6lN7EDypwxg=;
-        b=fUyGPpig19ciAcQynM5TiTE3a40epaqfni/gNELFb5tc1i1ZByAz4rt/CujuRxITrX
-         uEOxX8K4G5OFl2xChFLTHWX/obMq4aUWF77Bp6CWd4plBSLrkymkEEfauakLysTCH1Xn
-         vcYGEALttnHeWZhI0/UmxNrXf3IOAeAKlFbn8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693255986; x=1693860786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=joelfernandes.org; s=google; t=1693259482; x=1693864282;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6EHvhYNt+YdRhsmSbNDmpyOVgrF3DogD6lN7EDypwxg=;
-        b=PAT2iGsZ3onLBG7sadbiTtV2OH5C951AypLo7aHMqmIjPJw4baYQ54g1115eXGH/ZB
-         zUPfbHmMxn62sg49VN75I66u6+A+7nRn18ju4jnQryDysUoH46eHhkDjQEIiH3li4dAn
-         +xzS5QaXcRTiWHkqjOCT+K+aWoussN0r5aDU2K49SrFsMITs5oziIevue53GnuX1OaH8
-         3puVyAyWeNcH6ZBqqu8C8luUQkeWuR0dbhnrxnrgvuCrO7AP+l7iT2LBDY4TLwCpdXHQ
-         5SmpZC7mByBkcSqZB00OwYWjuKBh6qc8TxRYRclPn7NWf3x6pqXM2o3v3/W30a+42iID
-         DxTw==
-X-Gm-Message-State: AOJu0YxLdJQKgp3u+QKuMkhmJ+r8Wvzw2kpj6ZiVoQ2gX97QOUTgsUi6
-        1Fhy9tPsilbnmCn2/pzDvkhktw==
-X-Google-Smtp-Source: AGHT+IFKePN5jQUllnPWZpOthmuFkVluxrH6XoeS0AmoQO9fLpkllywkeTVAIWDXE5M2PoyafqTulA==
-X-Received: by 2002:a92:caca:0:b0:34a:c61f:9e99 with SMTP id m10-20020a92caca000000b0034ac61f9e99mr17646978ilq.9.1693255985709;
-        Mon, 28 Aug 2023 13:53:05 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
-        by smtp.gmail.com with ESMTPSA id i15-20020a02cc4f000000b0039deb26853csm2744432jaq.10.2023.08.28.13.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Aug 2023 13:53:05 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.10] rcu: Prevent expedited GP from enabling tick on offline CPU
-Date:   Mon, 28 Aug 2023 20:53:01 +0000
-Message-ID: <20230828205302.1660666-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        bh=RIqTNAjPY+VUAW068eZyQLaVcp03kXm2oJePXL8lR2M=;
+        b=wJ9jthLeE7iqKkgn1gR4y/Yy5/VpVlUYX4w22c6E/sQJpl1dtuZUbkjV+x8YaBt2y0
+         R/Pcx0Hp+aLdoEbs9VkCPii1d1Vabx0f+GC+uaQSr8jVb+1uIz+12D2yzx93XSp+n73x
+         /ok191HfnJ9KwctVq/RbcGRzrhwQOU+t/FbCQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693259482; x=1693864282;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RIqTNAjPY+VUAW068eZyQLaVcp03kXm2oJePXL8lR2M=;
+        b=VTFdTmYDrE4Jg+qKX1Zivr5KAZwRXgLIIcpj3PcCUPLbf5YQN1PoibrwBn9QTf+9da
+         qXMZapkJOKrY/qoOo4Wn+G7a7y3Fj1coxjF5BcEjhYGouAUZMh09+vytkd60RXzTZ4Nd
+         uvqbflTRxKWgBvkmuPvHyCd56oWj2iddu5QMUwBPG/FcxmS+jCNFClvkhyBKnhSHqDJL
+         bhIpCxl1FgJSRZ0uG4q5NG/MiXwzp+UjSS6Lu0Aj4kRdNlgNWxzd6QzDCiDdqYp/B/nQ
+         SkFS7XM0WMxBbKx6Q2qrM+ANf2NN3YonFdxPUQcj1f8ttO2HiqaFoc2dSGHJVl75rz0h
+         R+RQ==
+X-Gm-Message-State: AOJu0YyFJLE0bChYiai/TXdZ4+gggeM6FWujdoz0b8ydt+WfbOGFa2vs
+        vEehU8yK70NImKeGArLTeMdnkA==
+X-Google-Smtp-Source: AGHT+IEYyt30w6LDneVAxBk4QX8458Yg5unSYCV7cmDLaEknIzlk1isDcR+TLgYJrzjU3hJ6oHOtww==
+X-Received: by 2002:a05:620a:11b6:b0:76f:4:c9ed with SMTP id c22-20020a05620a11b600b0076f0004c9edmr7491659qkk.40.1693259481736;
+        Mon, 28 Aug 2023 14:51:21 -0700 (PDT)
+Received: from smtpclient.apple ([45.85.144.224])
+        by smtp.gmail.com with ESMTPSA id i5-20020a05620a074500b00767c961eb47sm2557927qki.43.2023.08.28.14.51.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Aug 2023 14:51:20 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
+Date:   Mon, 28 Aug 2023 17:51:09 -0400
+Message-Id: <16F11103-75C4-4DCE-8272-D619ECAA96BD@joelfernandes.org>
+References: <ZOy6mfw5Yr7hsi3i@2a01cb09806c67d6fe4a366cc09da8f8.ipv6.abo.wanadoo.fr>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+In-Reply-To: <ZOy6mfw5Yr7hsi3i@2a01cb09806c67d6fe4a366cc09da8f8.ipv6.abo.wanadoo.fr>
+To:     Frederic Weisbecker <frederic@kernel.org>
+X-Mailer: iPhone Mail (20B101)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit 147f04b14adde831eb4a0a1e378667429732f9e8 ]
 
-If an RCU expedited grace period starts just when a CPU is in the process
-of going offline, so that the outgoing CPU has completed its pass through
-stop-machine but has not yet completed its final dive into the idle loop,
-RCU will attempt to enable that CPU's scheduling-clock tick via a call
-to tick_dep_set_cpu().  For this to happen, that CPU has to have been
-online when the expedited grace period completed its CPU-selection phase.
+> On Aug 28, 2023, at 11:17 AM, Frederic Weisbecker <frederic@kernel.org> wr=
+ote:
+>=20
+> =EF=BB=BFLe Sat, Aug 26, 2023 at 06:06:20AM -0700, Paul E. McKenney a =C3=A9=
+crit :
+>> On Sat, Aug 26, 2023 at 02:13:39PM +0800, Z qiang wrote:
+>>>>=20
+>>>> On Fri, Aug 25, 2023 at 10:28:37AM +0800, Z qiang wrote:
+>>>>>>=20
+>>>>>>> On Thu, Aug 24, 2023 at 04:42:06PM +0800, Zqiang wrote:
+>>>>>>>> Currently, the maxcpu is set by traversing online CPUs, however, if=
 
-This is pointless:  The outgoing CPU has interrupts disabled, so it cannot
-take a scheduling-clock tick anyway.  In addition, the tick_dep_set_cpu()
-function's eventual call to irq_work_queue_on() will splat as follows:
+>>>>>>>> the rcutorture.onoff_holdoff is set zero and onoff_interval is set
+>>>>>>>> non-zero, and the some CPUs with larger cpuid has been offline befo=
+re
+>>>>>>>> setting maxcpu, for these CPUs, even if they are online again, also=
 
-smpboot: CPU 1 is now offline
-WARNING: CPU: 6 PID: 124 at kernel/irq_work.c:95
-+irq_work_queue_on+0x57/0x60
-Modules linked in:
-CPU: 6 PID: 124 Comm: kworker/6:2 Not tainted 5.15.0-rc1+ #3
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-+rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-Workqueue: rcu_gp wait_rcu_exp_gp
-RIP: 0010:irq_work_queue_on+0x57/0x60
-Code: 8b 05 1d c7 ea 62 a9 00 00 f0 00 75 21 4c 89 ce 44 89 c7 e8
-+9b 37 fa ff ba 01 00 00 00 89 d0 c3 4c 89 cf e8 3b ff ff ff eb ee <0f> 0b eb b7
-+0f 0b eb db 90 48 c7 c0 98 2a 02 00 65 48 03 05 91
- 6f
-RSP: 0000:ffffb12cc038fe48 EFLAGS: 00010282
-RAX: 0000000000000001 RBX: 0000000000005208 RCX: 0000000000000020
-RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9ad01f45a680
-RBP: 000000000004c990 R08: 0000000000000001 R09: ffff9ad01f45a680
-R10: ffffb12cc0317db0 R11: 0000000000000001 R12: 00000000fffecee8
-R13: 0000000000000001 R14: 0000000000026980 R15: ffffffff9e53ae00
-FS:  0000000000000000(0000) GS:ffff9ad01f580000(0000)
-+knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000000de0c000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- tick_nohz_dep_set_cpu+0x59/0x70
- rcu_exp_wait_wake+0x54e/0x870
- ? sync_rcu_exp_select_cpus+0x1fc/0x390
- process_one_work+0x1ef/0x3c0
- ? process_one_work+0x3c0/0x3c0
- worker_thread+0x28/0x3c0
- ? process_one_work+0x3c0/0x3c0
- kthread+0x115/0x140
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x22/0x30
----[ end trace c5bf75eb6aa80bc6 ]---
+>>>>>>>> cannot be offload or deoffload.
+>>>>>>>>=20
+>>>>>>>> This commit therefore use for_each_possible_cpu() instead of
+>>>>>>>> for_each_online_cpu() in rcu_nocb_toggle().
+>>>>>>>>=20
+>>>>>>>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>>>>>>>> ---
+>>>>>>>> kernel/rcu/rcutorture.c | 2 +-
+>>>>>>>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>=20
+>>>>>>>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+>>>>>>>> index a58372bdf0c1..b75d0fe558ce 100644
+>>>>>>>> --- a/kernel/rcu/rcutorture.c
+>>>>>>>> +++ b/kernel/rcu/rcutorture.c
+>>>>>>>> @@ -2131,7 +2131,7 @@ static int rcu_nocb_toggle(void *arg)
+>>>>>>>>      VERBOSE_TOROUT_STRING("rcu_nocb_toggle task started");
+>>>>>>>>      while (!rcu_inkernel_boot_has_ended())
+>>>>>>>>              schedule_timeout_interruptible(HZ / 10);
+>>>>>>>> -     for_each_online_cpu(cpu)
+>>>>>>>> +     for_each_possible_cpu(cpu)
+>>>>>>>=20
+>>>>>>> Last I checked, bad things could happen if the code attempted to
+>>>>>>> nocb_toggle a CPU that had not yet come online.  Has that changed?
+>>>>>>=20
+>>>>>> For example, there are 8 online CPUs in the system, before we travers=
+ing online
+>>>>>> CPUs and set maxcpu,  CPU7 has been offline, this causes us to miss n=
+ocb_toggle
+>>>>>> for CPU7(maxcpu=3D6)
+>>>>>>=20
+>>>>>> Even though we still use for_each_online_cpu(), the things described
+>>>>>> above also happen.  before we toggle the CPU, this CPU has been offli=
+ne.
+>>>>>=20
+>>>>> Suppose we have a system whose possible CPUs are 0, 1, 2, and 3.  Howe=
+ver,
+>>>>> only 0 and 1 are present in this system, and until some manual action i=
+s
+>>>>> taken, only 0 and 1 will ever be online.  (Yes, this really can happen=
+!)
+>>>>> In that state, won't toggling CPU 2 and 3 result in failures?
+>>>>>=20
+>>>=20
+>>> Agree.
+>>> As long as we enabled rcutorture.onoff_interval,  regardless of whether w=
+e use
+>>> online CPUs or possible CPUs to set maxcpu,  It is all possible to
+>>> toggling the CPUs failure
+>>> and print "NOCB: Cannot CB-offload offline CPU" log. but the failures
+>>> due to CPU offline are acceptable.
+>>>=20
+>>> but at least the toggling operation on CPU7 will not be missed. when
+>>> CPU7 comes online again.
+>>>=20
+>>> Would it be better to use for_each_present_cpu() ?
+>>=20
+>> The problem we face is that RCU and rcutorture have no reasonable way
+>> of knowing when the boot-time CPU bringup has completed.  If there was a
+>> way of knowing that, then my approach would be to make rcutorture react
+>> to a holdoff of zero by waiting for all the CPUs to come online.
+>>=20
+>> Failing that, for_each_present_cpu() with a holdoff of zero will likely
+>> get us transient failures between the time rcutorture starts and the
+>> last CPU has come online.
+>>=20
+>> Or is there now a way for in-kernel code know when boot-time CPU onlining=
 
-This commit therefore avoids invoking tick_dep_set_cpu() on offlined
-CPUs to limit both futility and false-positive splats.
+>> has completed?
+>=20
+> We don't need to wait for all CPUs to be online though. Toggling
+> already handles well failures due to offline CPUs and since toggling
+> happens concurrently with offlining in rcutorture, we already see lots
+> of failures reported in the logs.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree_exp.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I think the issue is the loop later in the function does
+not try to toggle cpus that came online too late.
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 401c1f331caf..07a284a18645 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -507,7 +507,10 @@ static void synchronize_rcu_expedited_wait(void)
- 				if (rdp->rcu_forced_tick_exp)
- 					continue;
- 				rdp->rcu_forced_tick_exp = true;
--				tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+				preempt_disable();
-+				if (cpu_online(cpu))
-+					tick_dep_set_cpu(cpu, TICK_DEP_BIT_RCU_EXP);
-+				preempt_enable();
- 			}
- 		}
- 		j = READ_ONCE(jiffies_till_first_fqs);
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+So it does not test offloading on all CPUs just because max got updated too l=
+ate.
 
+One fix could be to periodically check in the loop if a new cpu at maxcpu + 1=
+
+ever got onlined. If it did, update the maxcpu.
+
+Thanks.
+
+
+>=20
+> Thanks.
