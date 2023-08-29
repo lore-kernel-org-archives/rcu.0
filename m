@@ -2,69 +2,132 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAA3FC83F15
-	for <rcu@archiver.kernel.org>; Mon, 28 Aug 2023 22:16:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E8A4C71153
+	for <rcu@archiver.kernel.org>; Tue, 29 Aug 2023 04:08:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbjH1WQG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 28 Aug 2023 18:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
+        id S234219AbjH2EIM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Aug 2023 00:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234158AbjH1WPz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 28 Aug 2023 18:15:55 -0400
+        with ESMTP id S233981AbjH2EIE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Aug 2023 00:08:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECAB129;
-        Mon, 28 Aug 2023 15:15:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1400BD;
+        Mon, 28 Aug 2023 21:08:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 744A66178B;
-        Mon, 28 Aug 2023 22:15:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DC3ECC433C8;
-        Mon, 28 Aug 2023 22:15:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43CAB617C9;
+        Tue, 29 Aug 2023 04:08:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4E79C433CB;
+        Tue, 29 Aug 2023 04:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693260951;
-        bh=vfkqjeYQjwQs+qnBGnyYwwBwu1XP4xdkEzztNGmHz10=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=jL+G4+6P0BfY+iK3ELrryGZG2VxoasVT4jIyxvzdybNlCDZVEiLeayLN5sf0MRnlY
-         m4GX6MGn6OTzDz1w+L8SJKECNjCneDXfVjbeM+yxLeWRbtA28YUrrPxYOqy/LwpjtS
-         6/1plztCLe2PvHEl14gvQIqMi3sljfBPF0nM4BpHHUN6foAsEl4h2EPQ5u1pG0s5iK
-         1GXHGYOg/z1Id6TKqpR+vgrj6QsHxnm2SwiMA38NS7/S0LhkMU0t+R40Ts+jFKfrhE
-         3RKvJaskQOvbwj4llvnPY27Nz+5ZE9JCET3rtHwSVtHW04AZLgmipIC4sKSGDqk/DW
-         Y14E71GAkJrgA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BEFF3C3959E;
-        Mon, 28 Aug 2023 22:15:51 +0000 (UTC)
-Subject: Re: [GIT PULL] RCU changes for v6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <222d7653-b6c8-4132-863d-94c04c781f1d@paulmck-laptop>
-References: <222d7653-b6c8-4132-863d-94c04c781f1d@paulmck-laptop>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <222d7653-b6c8-4132-863d-94c04c781f1d@paulmck-laptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu.2023.08.21a
-X-PR-Tracked-Commit-Id: fe24a0b63278808013e1756e235e0e17e8bae281
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 68cadad11fe2ddd126b37a8fba3726be7fa0f5c6
-Message-Id: <169326095177.8741.1343363078300881244.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Aug 2023 22:15:51 +0000
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rcu@vger.kernel.org, mingo@kernel.org,
-        tglx@linutronix.de
+        s=k20201202; t=1693282080;
+        bh=Yo/1OpFbUF2M6wOhA1RLEhxC+KWTlVLoD+XnYgqbHYg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=irN+3jF9LN2VUTDfjRyJsZJNR0Zu97FSoQOK+RwPIFARRzYrh9ZYSdRUWtwjxRDvs
+         bvhQrohaQbNkFywM7W15EIaCOlxHDKP9hcKPB3CrbysUzRRWI1GaeOoWmHsWAr3/h/
+         YOSEz18RxFS76mVAbxF7VUFVdEem341+E7HFjlKOlh17DdN0e2C0Y84B9+5lg19UNL
+         N4eGz3EP/8qRIBN2McJCiyY2LnGuR17YO4MLieJrYDiQ7BwBV+Q1koguBSCLsASYdj
+         7Bq0B5VAVCkkVbvWHnsAKbyvAS9eZB8HzOw6iT5ZvCLtRUDXvtRzSN3Y2jqhUbkhY2
+         IQEI5L2SD9+Lg==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso502058266b.1;
+        Mon, 28 Aug 2023 21:08:00 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyNjU3w+CIYrv5wghGEUwFdFNPpnqh/IU0H95nKRi0KkkBvnWHT
+        hG6f6oMknpBxLoO2JyW3zf89NyJPb9Ts+1kc+pk=
+X-Google-Smtp-Source: AGHT+IEugUtZjdtVJqio2CQ6W8LQxEzy3rliFmZBmcTMUiA+b2EuJxvBrnP8kCbFz5qSTtDne3bEtoonIchoCdctQv0=
+X-Received: by 2002:a17:906:7395:b0:9a1:f73b:90ce with SMTP id
+ f21-20020a170906739500b009a1f73b90cemr12929181ejl.54.1693282078841; Mon, 28
+ Aug 2023 21:07:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop>
+ <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
+ <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop> <CAAhV-H5pfDG_tsRDL4dUYykaQ1ZwQYRDrQccpULBM5+kF4i2fA@mail.gmail.com>
+ <20230825232807.GA97898@google.com> <CAEXW_YSock304V471X_A7WrxCWtHJGx3APmSy0k7Lc0o69D9Hg@mail.gmail.com>
+ <CAAhV-H6PM_KZj4_h-SdJAaseMDK2nMqqJWL8fWHhL4vUA50bQg@mail.gmail.com>
+ <CAEXW_YS5dVVOQvO6tWwF7mrgtHiYgVKP_TAipzBNiaFqWDzdeQ@mail.gmail.com>
+ <2681134d-cc88-49a0-a1bc-4ec0816288f6@paulmck-laptop> <20230828133348.GA1553000@google.com>
+ <142b4bff-6a2e-4ea0-928c-3cfe9befa403@paulmck-laptop> <CAAhV-H4MrUm2xZdZyAALV-r+aKMRQ50v6me6hybpR1pRijirqw@mail.gmail.com>
+ <CAEXW_YT-z6s+4MnxTnwFk2-mPba65dbnZogdPDSr14LmOW-h-g@mail.gmail.com>
+ <CAAhV-H5tYV=ezPY_O7c=sd3DULB6BjoiYnw9nE2EzDFaBHcKPw@mail.gmail.com> <CAEXW_YTfV1NVb3tOhunHZK_6oeUHxz_azv6uVq3k0O2UEAX5OQ@mail.gmail.com>
+In-Reply-To: <CAEXW_YTfV1NVb3tOhunHZK_6oeUHxz_azv6uVq3k0O2UEAX5OQ@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 29 Aug 2023 12:07:46 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6oN69rV2OyGzUganRv4KbS7a3_gNyWhCqVp51Ay9Q_=g@mail.gmail.com>
+Message-ID: <CAAhV-H6oN69rV2OyGzUganRv4KbS7a3_gNyWhCqVp51Ay9Q_=g@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     paulmck@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The pull request you sent on Thu, 24 Aug 2023 14:58:46 -0700:
+Hi, Joel,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tags/rcu.2023.08.21a
+On Tue, Aug 29, 2023 at 4:47=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+>
+> Hi Huacai,
+>
+> On Mon, Aug 28, 2023 at 11:13=E2=80=AFAM Huacai Chen <chenhuacai@kernel.o=
+rg> wrote:
+> >
+> [...]
+> > >
+> > > > [Huacai]
+> > > > I also think the original patch should be OK, but I have another
+> > > > question: what will happen if the current GP ends before
+> > > > nr_fqs_jiffies_stall reaches zero?
+> > >
+> > > Nothing should happen. Stall detection only happens when a GP is in
+> > > progress. If a new GP starts, it resets nr_fqs_jiffies_stall.
+> > >
+> > > Or can you elaborate your concern more?
+> > OK, I will test your patch these days. Maybe putting
+> > nr_fqs_jiffies_stall before jiffies_force_qs is better, because I
+> > think putting an 'int' between two 'long' is wasting space. :)
+>
+> That's a good point and I'll look into that.
+Another point, is it better to replace ULONG_MAX with ULONG_MAX/4 as
+Paul suggested?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/68cadad11fe2ddd126b37a8fba3726be7fa0f5c6
+>
+> Meanwhile I pushed the patch out to my 6.4 stable tree for testing on my =
+fleet.
+>
+> Ideally, I'd like to change the stall detection test in the rcutorture
+> to actually fail rcutorture if stalls don't happen in time. But at
+> least I verified this manually using rcutorture.
+>
+> I should also add a documentation patch for stallwarn.rst to document
+> the understandable sensitivity of RCU stall detection to jiffies
+> updates (or lack thereof). Or if you have time, I'd appreciate support
+> on such a patch (not mandatory but I thought it would not hurt to
+> ask).
+>
+> Looking forward to how your testing goes as well!
+I have tested, it works for KGDB.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Huacai
+>
+> thanks,
+>
+>  - Joel
