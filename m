@@ -2,144 +2,141 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ACAFC83F14
-	for <rcu@archiver.kernel.org>; Tue, 29 Aug 2023 14:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65C03C83F18
+	for <rcu@archiver.kernel.org>; Tue, 29 Aug 2023 14:47:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbjH2Opi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Aug 2023 10:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44286 "EHLO
+        id S235101AbjH2OrP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Aug 2023 10:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjH2OpP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Aug 2023 10:45:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32C1E1;
-        Tue, 29 Aug 2023 07:45:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A7A165B78;
-        Tue, 29 Aug 2023 14:45:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70EC9C433C7;
-        Tue, 29 Aug 2023 14:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693320311;
-        bh=ER9Gz9SFdmE/umOJVmlcEIl/MKJJYC+R+B+etHYGKBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UTk0+OKvpRNKz85bTnMceJIK19J273fWUdGO/uFnpQO91jEe+m3zn58H4ezGGMoXt
-         cnl9HqbY0nyTzHTUgHJ7oBTtUT2AfEK3mjQPjHAEt/7v/N1lmYTIsO4QGKrP40tfl8
-         24QTcY1f1GmxScb0wHqL9mz4I1DQjrojcRYCim1s5P8/N/Ju2EM+wzX1KtpkaGrl21
-         nCb2+hsJGsbQIGQQbMq2pwEKQmRNZEe5R1gTSoMekZUnWeMMfWqCNNag/y+t+tXv2j
-         HHNUlWmvAMX9kMOPCvGv4p/OKYtDQ09Jt+fvlQD+5rFdfBPv3Z1GXROg8qSkLvirq2
-         vDJcv08nkKwvA==
-Date:   Tue, 29 Aug 2023 16:45:08 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        paulmck@kernel.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        with ESMTP id S237008AbjH2Oqv (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Aug 2023 10:46:51 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266B6139
+        for <rcu@vger.kernel.org>; Tue, 29 Aug 2023 07:46:48 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bceb02fd2bso66536831fa.1
+        for <rcu@vger.kernel.org>; Tue, 29 Aug 2023 07:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693320406; x=1693925206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WnQJ5RlFnma/9gchBlknmNpXDI6oKIUQEmJTsZOL0fk=;
+        b=Lc3sdSLR154c/3Hz6IykxmZeUtriOVuO8zdwMjCZdu6tQVuq6JcvdP8P2c4fSG/vyb
+         AMlmRh2yPXwJLZNVekbmX3JJjVt++10/HBLlE8sf4e1Evns0URcH0YxXKI3gtRR+TClG
+         Te+WsJ55fkmBkOJ0DEhmRqNYfKVho8GMM78OE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693320406; x=1693925206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WnQJ5RlFnma/9gchBlknmNpXDI6oKIUQEmJTsZOL0fk=;
+        b=MMDcZ1Gt7tZaoeunsEOi0a8jrE6VdInomw8Fqs1fUH1XPSke2dKVaIzMH0Rheot7ic
+         WE2tWyoVgMeH6/LTPFQqMgNauBdjsv0l2XLnYAgPUZ+ii6eSpekcSfI4Gh7tibsLgJFa
+         TW5bUYGcIxk0dVMQmI+mXQziZb/yq/uWaiM5qN+/FBNNch4erAUbswROIoP+FoETGLnP
+         ljlfwLQVvt/jokBQ6Aa9QBWjhR4a3sVX/CPgzQuPOs60RrYgXSTIvTbJmMSSw7/XzMQa
+         BpQN/f1n1YC/QDNPt9jHtNvQFDHXEaBNK0GqnKF7b4doh7sZRUXGUc1lDZfejGwIi2By
+         W58g==
+X-Gm-Message-State: AOJu0YwBwjxES3Wl7QmFUaHZvpp9vTDSRZLFpsHcQCTYShJZKuxP4KMK
+        9QL2fSQSH+k4gBSj4c2KftDL1aNKZSoov+4mmpDDHw==
+X-Google-Smtp-Source: AGHT+IHFIIs+B47JJP4BF26EqCYwygNc1qnS3IfDxU8w1ctm6bZur28At4kLq+yymeZAa0CznER413+aFnR+mTcnjew=
+X-Received: by 2002:a2e:9649:0:b0:2bc:c28c:a2b8 with SMTP id
+ z9-20020a2e9649000000b002bcc28ca2b8mr16902909ljh.27.1693320406233; Tue, 29
+ Aug 2023 07:46:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <8792da20-a58e-4cc0-b3d2-231d5ade2242@paulmck-laptop>
+ <CAAhV-H5BNPX8Eo3Xdy-jcYY97=xazGU+VVqoDy7qEH+VpVWFJA@mail.gmail.com>
+ <24e34f50-32d2-4b67-8ec0-1034c984d035@paulmck-laptop> <CAAhV-H5pfDG_tsRDL4dUYykaQ1ZwQYRDrQccpULBM5+kF4i2fA@mail.gmail.com>
+ <20230825232807.GA97898@google.com> <CAEXW_YSock304V471X_A7WrxCWtHJGx3APmSy0k7Lc0o69D9Hg@mail.gmail.com>
+ <CAAhV-H6PM_KZj4_h-SdJAaseMDK2nMqqJWL8fWHhL4vUA50bQg@mail.gmail.com>
+ <CAEXW_YS5dVVOQvO6tWwF7mrgtHiYgVKP_TAipzBNiaFqWDzdeQ@mail.gmail.com>
+ <2681134d-cc88-49a0-a1bc-4ec0816288f6@paulmck-laptop> <20230828133348.GA1553000@google.com>
+ <142b4bff-6a2e-4ea0-928c-3cfe9befa403@paulmck-laptop> <CAAhV-H4MrUm2xZdZyAALV-r+aKMRQ50v6me6hybpR1pRijirqw@mail.gmail.com>
+ <CAEXW_YT-z6s+4MnxTnwFk2-mPba65dbnZogdPDSr14LmOW-h-g@mail.gmail.com>
+ <CAAhV-H5tYV=ezPY_O7c=sd3DULB6BjoiYnw9nE2EzDFaBHcKPw@mail.gmail.com>
+ <CAEXW_YTfV1NVb3tOhunHZK_6oeUHxz_azv6uVq3k0O2UEAX5OQ@mail.gmail.com> <CAAhV-H6oN69rV2OyGzUganRv4KbS7a3_gNyWhCqVp51Ay9Q_=g@mail.gmail.com>
+In-Reply-To: <CAAhV-H6oN69rV2OyGzUganRv4KbS7a3_gNyWhCqVp51Ay9Q_=g@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 29 Aug 2023 10:46:34 -0400
+Message-ID: <CAEXW_YRpT8wcLmsaHA6yMQ-ZCNYG7v4b4m-qvLHVxcbOJJcrPg@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     paulmck@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 4/5] tree/nocb: Improve readability of nocb_gp_wait()
-Message-ID: <ZO4EdIM/JtelKHFH@lothringen>
-References: <20230729142738.222208-1-joel@joelfernandes.org>
- <20230729142738.222208-5-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230729142738.222208-5-joel@joelfernandes.org>
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 02:27:34PM +0000, Joel Fernandes (Google) wrote:
->  /*
->   * No-CBs GP kthreads come here to wait for additional callbacks to show up
->   * or for grace periods to end.
->   */
->  static void nocb_gp_wait(struct rcu_data *my_rdp)
->  {
-> -	bool bypass = false;
->  	int __maybe_unused cpu = my_rdp->cpu;
->  	unsigned long cur_gp_seq;
->  	unsigned long flags;
->  	bool gotcbs = false;
-> -	unsigned long j = jiffies;
-> -	bool lazy = false;
->  	bool needwait_gp = false; // This prevents actual uninitialized use.
->  	bool needwake;
->  	bool needwake_gp;
-> +	int defer_wake_type = RCU_NOCB_WAKE_NOT;
->  	struct rcu_data *rdp, *rdp_toggling = NULL;
->  	struct rcu_node *rnp;
->  	unsigned long wait_gp_seq = 0; // Suppress "use uninitialized" warning.
-> @@ -712,44 +758,24 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  	 * won't be ignored for long.
->  	 */
->  	list_for_each_entry(rdp, &my_rdp->nocb_head_rdp, nocb_entry_rdp) {
-> -		long bypass_ncbs;
-> -		bool flush_bypass = false;
-> -		long lazy_ncbs;
-> +		int defer_wake_type_one = RCU_NOCB_WAKE_NOT;
+On Tue, Aug 29, 2023 at 12:08=E2=80=AFAM Huacai Chen <chenhuacai@kernel.org=
+> wrote:
+>
+> Hi, Joel,
+>
+> On Tue, Aug 29, 2023 at 4:47=E2=80=AFAM Joel Fernandes <joel@joelfernande=
+s.org> wrote:
+> >
+> > Hi Huacai,
+> >
+> > On Mon, Aug 28, 2023 at 11:13=E2=80=AFAM Huacai Chen <chenhuacai@kernel=
+.org> wrote:
+> > >
+> > [...]
+> > > >
+> > > > > [Huacai]
+> > > > > I also think the original patch should be OK, but I have another
+> > > > > question: what will happen if the current GP ends before
+> > > > > nr_fqs_jiffies_stall reaches zero?
+> > > >
+> > > > Nothing should happen. Stall detection only happens when a GP is in
+> > > > progress. If a new GP starts, it resets nr_fqs_jiffies_stall.
+> > > >
+> > > > Or can you elaborate your concern more?
+> > > OK, I will test your patch these days. Maybe putting
+> > > nr_fqs_jiffies_stall before jiffies_force_qs is better, because I
+> > > think putting an 'int' between two 'long' is wasting space. :)
+> >
+> > That's a good point and I'll look into that.
+> Another point, is it better to replace ULONG_MAX with ULONG_MAX/4 as
+> Paul suggested?
+>
 
-No need to initialize it, nocb_gp_flush_wake() always returns a value, and
-it will avoid mistakes in the future if nocb_gp_flush_wake() is moved and
-accidentally not called.
+I could do that but I don't feel too strongly about it. I will keep it
+at ULONG_MAX if it's OK with everyone.
 
-> +		bool flushed;
-> +		bool empty;
->  
-> -		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
->  		rcu_nocb_lock_irqsave(rdp, flags);
-> -		lockdep_assert_held(&rdp->nocb_lock);
-> -		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-> -		lazy_ncbs = READ_ONCE(rdp->lazy_len);
-> +		defer_wake_type_one = nocb_gp_flush_wake(rdp, &empty, &flushed);
->  
-> -		if (bypass_ncbs && (lazy_ncbs == bypass_ncbs) &&
-> -		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + jiffies_till_flush) ||
-> -		     bypass_ncbs > 2 * qhimark)) {
-> -			flush_bypass = true;
-> -		} else if (bypass_ncbs && (lazy_ncbs != bypass_ncbs) &&
-> -		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
-> -		     bypass_ncbs > 2 * qhimark)) {
-> -			flush_bypass = true;
-> -		} else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cblist)) {
-> -			rcu_nocb_unlock_irqrestore(rdp, flags);
-> -			continue; /* No callbacks here, try next. */
-> -		}
-> +		// We may need to do a deferred wakeup later for bypass/lazy
-> +		// So note down what we learnt from the rdp.
-> +		defer_wake_type = max(defer_wake_type_one, defer_wake_type);
->  
-> -		if (flush_bypass) {
-> -			// Bypass full or old, so flush it.
-> -			(void)rcu_nocb_try_flush_bypass(rdp, j);
-> -			bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
-> -			lazy_ncbs = READ_ONCE(rdp->lazy_len);
-> +		// Did we make any updates to main cblist? If not, no
-> +		// non-deferred wake up to do for this rdp.
-> +		if (!flushed && empty) {
+> > Meanwhile I pushed the patch out to my 6.4 stable tree for testing on m=
+y fleet.
+> >
+> > Ideally, I'd like to change the stall detection test in the rcutorture
+> > to actually fail rcutorture if stalls don't happen in time. But at
+> > least I verified this manually using rcutorture.
+> >
+> > I should also add a documentation patch for stallwarn.rst to document
+> > the understandable sensitivity of RCU stall detection to jiffies
+> > updates (or lack thereof). Or if you have time, I'd appreciate support
+> > on such a patch (not mandatory but I thought it would not hurt to
+> > ask).
+> >
+> > Looking forward to how your testing goes as well!
+> I have tested, it works for KGDB.
 
-Can you ever have (flushed && empty) ? If not you should be able to remove the
-flushed parameter.
+Thanks! If you don't mind, I will add your Tested-by tag to the patch
+and send it out soon. My tests also look good!
 
-Thanks.
 
-> +			rcu_nocb_unlock_irqrestore(rdp, flags);
-> +			continue;
->  		}
->  
-> -		if (bypass_ncbs) {
-> -			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
-> -					    bypass_ncbs == lazy_ncbs ? TPS("Lazy") : TPS("Bypass"));
-> -			if (bypass_ncbs == lazy_ncbs)
-> -				lazy = true;
-> -			else
-> -				bypass = true;
-> -		}
->  		rnp = rdp->mynode;
->  
+ - Joel
