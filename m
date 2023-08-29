@@ -2,107 +2,88 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53DC6C83F16
-	for <rcu@archiver.kernel.org>; Tue, 29 Aug 2023 10:13:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04BFFC83F14
+	for <rcu@archiver.kernel.org>; Tue, 29 Aug 2023 10:54:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbjH2KNV (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 29 Aug 2023 06:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
+        id S235325AbjH2Kxz (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 29 Aug 2023 06:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234921AbjH2KMy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 29 Aug 2023 06:12:54 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF09129
-        for <rcu@vger.kernel.org>; Tue, 29 Aug 2023 03:12:48 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4103fdba0fbso23865751cf.3
-        for <rcu@vger.kernel.org>; Tue, 29 Aug 2023 03:12:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693303967; x=1693908767;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f3U7w7Dxv0aMNSqkqHyETmyZKkPYclhc4evSzr8ifFs=;
-        b=jdlvcZWEok692A9iQ9+qmfAm3k7qCYat9eF1bXFp3fEQ+4j25X4UOa7oJP6BGevYIM
-         it0nLAmGWroG/4wZUyOlR7ogL5WkoFEk4vuZNL4b3ngHPYHOK5U/Vfzb5adgNhGT2NHy
-         5DVMaVD2QTIBsx0biBk05aVWebB9F9JrXsaMU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693303967; x=1693908767;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f3U7w7Dxv0aMNSqkqHyETmyZKkPYclhc4evSzr8ifFs=;
-        b=HwivB/Bq+6kMD7slFClEOcYlEWb6fGn5K4U2N9Sh0D8nfQx2GPN/0PjZPXCyCO1fIR
-         oWsHUBwcuwh+DJqss8hO1iy3Wk1JD7oFUJFO6298bgmxc//Dvdn5tkxIzai4RGgYcucb
-         vM2m0hkCmoSyHzvnVIWwzsAxJZ/Iv1109UqldaMPCAAUy0Zw8De2zgtZKkbUp0lRnE5K
-         HOuyUH7ntBNRlIhlUb7n99E8ULG/fbXWv3NX7T7XlHz+0EqtYeYpUIxk5/H47oBCujkG
-         E/BNZjreYQf6pruwWJnha+hdGm6wD3eeqwGHp/NvCw+G3SQ+FEzLBzEPQqX1Ldbf0doB
-         SrvQ==
-X-Gm-Message-State: AOJu0Yxdw8S8Rfis0CknTAPDo+rLrg7C9KoPDlFO0d51Yof26g/iNLFn
-        2OyNCyU2zFsUUrKy7zsa0MvYNT3KbvY9p1OII24=
-X-Google-Smtp-Source: AGHT+IEVqgTNW06+UI1f1xfAQUCG/TUuimalKVqTc0ftOoXMoENg9h8R5usdIgj3KVXW0k9a4L1CRA==
-X-Received: by 2002:a05:622a:1013:b0:403:f42a:95bc with SMTP id d19-20020a05622a101300b00403f42a95bcmr32558121qte.28.1693303967586;
-        Tue, 29 Aug 2023 03:12:47 -0700 (PDT)
-Received: from smtpclient.apple ([45.88.220.64])
-        by smtp.gmail.com with ESMTPSA id kc5-20020a05622a44c500b00411f7da6e1bsm2888781qtb.60.2023.08.29.03.12.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 03:12:46 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
-Date:   Tue, 29 Aug 2023 06:12:35 -0400
-Message-Id: <D98FE55B-C379-4C24-B4DD-4E02A1E2AB79@joelfernandes.org>
-References: <ZO25SDat3cd6opQ7@lothringen>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Z qiang <qiang.zhang1211@gmail.com>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-In-Reply-To: <ZO25SDat3cd6opQ7@lothringen>
-To:     Frederic Weisbecker <frederic@kernel.org>
-X-Mailer: iPhone Mail (20B101)
+        with ESMTP id S233523AbjH2Kx1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 29 Aug 2023 06:53:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34311AD;
+        Tue, 29 Aug 2023 03:53:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 36C076549D;
+        Tue, 29 Aug 2023 10:53:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F02AC433CA;
+        Tue, 29 Aug 2023 10:53:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693306403;
+        bh=Shsj+vPzu/D2j5Y+GxlorxF1u84+Dwugwd6FWmNj63U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m9hoWJSJY1mz3pLb8V9jQNig/TJu9aFLXi2oC1NqPy/HLp6cWNJTwIhOcfyKL/zpz
+         D1TEo+zfG38H99g+0Wdh4U2l6b/Smp/G4m7IAKuPs76+LFguQX72m7eoDm9v8mkgvk
+         OxZW/pPJJ4AqdtW68+gnOyWx4Rbi5TTpqbxP8AtVsQstkaRZmffSDBUCu3POif59fr
+         1ggsAxZIxRYdsQZI7lieQESxFqUkmx9eDIfISPsDNAr+8QyOzH6nUN9Z4nCgcT4Dw+
+         1Sy4htezlnhqrNLGV5PPrWIyvGP23o7xOTrk1P/H7PT69HzQIoqnajvgksezWxwm0k
+         V3wT3trXTGLpA==
+Date:   Tue, 29 Aug 2023 12:53:20 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        paulmck@kernel.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 3/5] tree/nocb: Adjust RCU_NOCB_WAKE_* macros from
+ weaker to stronger
+Message-ID: <ZO3OIBYSYx/jBv7s@lothringen>
+References: <20230729142738.222208-1-joel@joelfernandes.org>
+ <20230729142738.222208-4-joel@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230729142738.222208-4-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Sat, Jul 29, 2023 at 02:27:33PM +0000, Joel Fernandes (Google) wrote:
+> This is needed to make the next patch work correctly as we rely on the
+> strength of the wakeup when comparing deferred-wakeup types across
+> different CPUs.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  kernel/rcu/tree.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index 192536916f9a..0f40a9c2b78d 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -288,8 +288,8 @@ struct rcu_data {
+>  
+>  /* Values for nocb_defer_wakeup field in struct rcu_data. */
+>  #define RCU_NOCB_WAKE_NOT	0
+> -#define RCU_NOCB_WAKE_BYPASS	1
+> -#define RCU_NOCB_WAKE_LAZY	2
+> +#define RCU_NOCB_WAKE_LAZY	1
+> +#define RCU_NOCB_WAKE_BYPASS	2
+>  #define RCU_NOCB_WAKE		3
+>  #define RCU_NOCB_WAKE_FORCE	4
 
+Good change but make sure to audit all the occurences of
+RCU_NOCB_WAKE_LAZY and RCU_NOCB_WAKE_BYPASS. For example this breaks
+do_nocb_deferred_wakeup_timer() that will now ignore RCU_NOCB_WAKE_LAZY
+timers.
 
-> On Aug 29, 2023, at 5:24 AM, Frederic Weisbecker <frederic@kernel.org> wro=
-te:
->=20
-> =EF=BB=BFOn Mon, Aug 28, 2023 at 05:51:09PM -0400, Joel Fernandes wrote:
->> I think the issue is the loop later in the function does
->> not try to toggle cpus that came online too late.
->>=20
->> So it does not test offloading on all CPUs just because max got updated t=
-oo
->> late.
->=20
-> Right, and therefore for_each_possible_cpu() or for_each_present_cpu()
-> should be fine to iterate since it's ok to try to toggle an offline CPU.
-
-Ah I see what you mean, sounds good.
-
->=20
->>=20
->> One fix could be to periodically check in the loop if a new cpu at maxcpu=
- + 1
->> ever got onlined. If it did, update the maxcpu.
->=20
-> Is it worth the complication though?
-
-Probably not and so your suggestion sounds fine.
-
-Thanks!
-
- - Joel
-
-
->=20
-> Thanks.
->=20
->>=20
->> Thanks.
->>=20
->>=20
->>>=20
->>> Thanks.
+Thanks.
