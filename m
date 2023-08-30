@@ -2,116 +2,110 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D688BC83F01
-	for <rcu@archiver.kernel.org>; Wed, 30 Aug 2023 20:32:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FFC4C83F14
+	for <rcu@archiver.kernel.org>; Wed, 30 Aug 2023 21:15:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240077AbjH3Ucl (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Aug 2023 16:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        id S240934AbjH3VPU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Aug 2023 17:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240105AbjH3Uc1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Aug 2023 16:32:27 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73FA76ECD
-        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 12:34:00 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34ca1aadce9so430855ab.1
-        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 12:34:00 -0700 (PDT)
+        with ESMTP id S240931AbjH3VPU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Aug 2023 17:15:20 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D8FCF3
+        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 14:14:46 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bcc331f942so1384741fa.0
+        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 14:14:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693423985; x=1694028785; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6AM0RaalyZCOyT9irqgr/tdxWag/TXwHth0rD06/c0Q=;
-        b=QD9BQbXsiu/prZd89FH6cxM5nVDdT0GnJvalXQQj/92kP1swtj1ylkZ26jKtR1SoUx
-         gzt2mRC+rCEsYwBSzmHQnToUBOQNhi4CsUklAGm9Jv9uTfcm2wJA/mA1BRxTKMj9+r3+
-         saAswtR3vCnmUWKlbshrV+Eein6yJYKdSvInI=
+        d=joelfernandes.org; s=google; t=1693430002; x=1694034802; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eY7URIkYjAa6hii1lsMsDxwJkJeyWJi57od1/dC4yUQ=;
+        b=gDg/76N/e/gcIrll7UiEmeKXWSCXmXZz3hzkO7w+yB/J4P8PSjM98LaqWvI4khN1HL
+         hfbqKnbmPArPxyTQ5hVtkOMRFOkIcuvE2gWkypeXDAQEe7iQCMLRLdSCrKI0nzAzRtVG
+         CWn95A2lRfIBrGAkpNe2YhU9E7xySPSJJZiRw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693423985; x=1694028785;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6AM0RaalyZCOyT9irqgr/tdxWag/TXwHth0rD06/c0Q=;
-        b=MLTYnB4eyK0WB0UJK+b9jmSR7l76CyHKIqhmJFqs+vBJQ3t2U+tSPjsGWL5Co/J+uH
-         CgfA33zJDLJNmEmVuqOw4jnvHLZOXmKQc9BboxQZZ1ql6c4qwpN1j7+ftksczmMmGkV3
-         iXd5m/peF0PeUtPtua+21dyQ64iPdtdJM5WsFXlazFTA/fpCg56GlpdA3DeXiow7pIk8
-         KFxO5/HqWG47x+VaK26fopH2kWFtEMzkwh/9KkaaZMzD5ZxsGeIk5TQCspWgafWxsugG
-         apWzLUVC3r0aJIlXltfpA/cF6Hu9S9lM7GsF18lU9aOiW2oaxMogNBZ/YI13qneSR74R
-         XULw==
-X-Gm-Message-State: AOJu0YyoS5A/TIuR2Stk8d1D4jKGDsclXN5QxfAFdlGpnOG9rpiKtCL4
-        J1EXaHr2Xyu/q5S8O4mBILRD/Ul1ylhMhpXsm+0=
-X-Google-Smtp-Source: AGHT+IGxkSbGQLY4iqpxplaZ/GXhsovf4KbCXfsTsDJmJgykjeTt1iPwAMkVMWL7WkRd0Ll6YJ/lhg==
-X-Received: by 2002:a05:6e02:130e:b0:349:862e:a863 with SMTP id g14-20020a056e02130e00b00349862ea863mr3487515ilr.15.1693423984677;
-        Wed, 30 Aug 2023 12:33:04 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id b7-20020a056e02048700b00348cb9adb38sm3635267ils.7.2023.08.30.12.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 12:33:04 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 19:33:03 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     stable@vger.kernel.org
-Cc:     gregkh@linux-foundation.org, paulmck@kernel.org,
-        rcu@vger.kernel.org
-Subject: Please apply the following rcu-tasks fixes to 5.10 and 5.15 stable
- kernels
-Message-ID: <20230830193303.GA623680@google.com>
+        d=1e100.net; s=20221208; t=1693430002; x=1694034802;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eY7URIkYjAa6hii1lsMsDxwJkJeyWJi57od1/dC4yUQ=;
+        b=QW1Ii32BlHyzljPPVgreQJwBj0lD1Mf0XGbQZ2QKMx445ecQzPmBoaMZplvXjYWRW7
+         aybaLBGX1BnEffdETEViyefmCnVicumhKs2nnhYNTBRYCfbTxsqkvQlzyB89o+NGJpkD
+         JOZQdZ/3GRUoDvIosbqLoX57z4NjDVnIvrzjC2DVN//Jevh8+uExTtPfsDbSz9K+f+mj
+         10SYLLZk842jBTmMapmsuIMvzi89BSTn+0bpdKNA6ad3GQlLpCxl4BrD+NR9gvp61wEu
+         hlXZW6K+mPhLmI5KeGFZMm199+9m6lJfPyXNfmfAC2PaEjX6dI3pQZtEWitgxlyhlM8j
+         RY2A==
+X-Gm-Message-State: AOJu0YwSztBcG/oWXhOnvvI1GusgS1VjbDFxTkbrqaWn/c5mvT2C9gM0
+        eP2jmSGZLZqElrAJhhnj6cUu4k3Tk6zQ0QLKH5WLXQ==
+X-Google-Smtp-Source: AGHT+IGq2luy7KEgQ/NwcveOKBmXPoSNX0r81/OelxAZbI1Ln1ZbRcykJQOAk1LkuTBHQEhYqu/O+srsajWB1sTL3P4=
+X-Received: by 2002:a05:651c:10b0:b0:2bc:c655:6f8f with SMTP id
+ k16-20020a05651c10b000b002bcc6556f8fmr274175ljn.10.1693430002171; Wed, 30 Aug
+ 2023 14:13:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20230729142738.222208-1-joel@joelfernandes.org>
+ <20230729142738.222208-4-joel@joelfernandes.org> <ZO3OIBYSYx/jBv7s@lothringen>
+In-Reply-To: <ZO3OIBYSYx/jBv7s@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 30 Aug 2023 17:13:13 -0400
+Message-ID: <CAEXW_YSfJHt+hUYzPWs4BAvi0JL2UzHzLxKwb3=aRt9V7aQ4QQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] tree/nocb: Adjust RCU_NOCB_WAKE_* macros from
+ weaker to stronger
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        paulmck@kernel.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Greg, Stable team,
+On Tue, Aug 29, 2023 at 6:53=E2=80=AFAM Frederic Weisbecker <frederic@kerne=
+l.org> wrote:
+>
+> On Sat, Jul 29, 2023 at 02:27:33PM +0000, Joel Fernandes (Google) wrote:
+> > This is needed to make the next patch work correctly as we rely on the
+> > strength of the wakeup when comparing deferred-wakeup types across
+> > different CPUs.
+> >
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/rcu/tree.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> > index 192536916f9a..0f40a9c2b78d 100644
+> > --- a/kernel/rcu/tree.h
+> > +++ b/kernel/rcu/tree.h
+> > @@ -288,8 +288,8 @@ struct rcu_data {
+> >
+> >  /* Values for nocb_defer_wakeup field in struct rcu_data. */
+> >  #define RCU_NOCB_WAKE_NOT    0
+> > -#define RCU_NOCB_WAKE_BYPASS 1
+> > -#define RCU_NOCB_WAKE_LAZY   2
+> > +#define RCU_NOCB_WAKE_LAZY   1
+> > +#define RCU_NOCB_WAKE_BYPASS 2
+> >  #define RCU_NOCB_WAKE                3
+> >  #define RCU_NOCB_WAKE_FORCE  4
+>
+> Good change but make sure to audit all the occurences of
+> RCU_NOCB_WAKE_LAZY and RCU_NOCB_WAKE_BYPASS. For example this breaks
+> do_nocb_deferred_wakeup_timer() that will now ignore RCU_NOCB_WAKE_LAZY
+> timers.
+>
 
-Please apply the following rcu-tasks fixes to 5.10 and 5.15 stable kernel.
-They cleanly apply and are required to fix a warning [1] that shows up
-during rcutorture testing and are all bug fixes merged into Linus tree.
+Ah I did do an audit, but missed this one. So then I think
+do_nocb_deferred_wakeup_timer() should pass the weakest one
+(RCU_NOCB_WAKE_LAZY) to do_nocb_deferred_wakeup_common().
 
-I have verified them on the latest 5.10 and 5.15 stable kernels.
-
-commit 46aa886c483f57ef13cd5ea0a85e70b93eb1d381
-rcu-tasks: Fix IPI failure handling in trc_wait_for_one_reader
-
-commit cbe0d8d91415c9692fe88191940d98952b6855d9
-rcu-tasks: Wait for trc_read_check_handler() IPIs
-
-commit 18f08e758f34e6dfe0668bee51bd2af7adacf381
-rcu-tasks: Add trc_inspect_reader() checks for exiting critical section
-
-thanks,
+Thanks a lot Frederic! I will take a deeper dive into this and author
+users of RCU_NOCB_WAKE* and repost soon.
 
  - Joel
-[1] Snippet of dmesg showing warning:
-
-[ 2701.802174] WARNING: CPU: 0 PID: 11 at kernel/rcu/tasks.h:978 rcu_tasks_trace_pregp_step+0x46/0x50
-[ 2701.820952] Modules linked in:
-[ 2701.827014] CPU: 0 PID: 11 Comm: rcu_tasks_trace Not tainted 5.10.193-rc1+ #531
-[ 2701.858299] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[ 2701.876050] RIP: 0010:rcu_tasks_trace_pregp_step+0x46/0x50
-[ 2701.907104] Code: 48 8b 04 c5 e0 56 c1 b3 80 3c 18 00 75 1c 48 c7 c6 10 37 07 b4 e8 7a fb 38 00 3b 05 a8 bc 99 01 89 c7 72 d9 5b e9 ea 56 f9 ff <0f> 0b eb e0 66 0f 1f 44 00 00 55 53 48 89 fb 48 89 77 08 48 c7 07
-[ 2701.967363] RSP: 0018:ffffbd5540063e40 EFLAGS: 00010202
-[ 2701.977403] RAX: ffffa426df580000 RBX: 000000000001fa40 RCX: 0000000000000000
-[ 2702.007399] RDX: 000000000000000f RSI: 0000000000000000 RDI: 0000000000000003
-[ 2702.070872] RBP: ffffbd5540063e60 R08: 0000000000000000 R09: ffffffffb4073710
-[ 2702.104722] R10: 0000000000000001 R11: 0000000000000001 R12: ffffa426c1069e60
-[ 2702.136555] R13: ffffffffb3f32ae0 R14: ffffffffb3f32af0 R15: ffffa426c1178dc0
-[ 2702.183571] FS:  0000000000000000(0000) GS:ffffa426df400000(0000) knlGS:0000000000000000
-[ 2702.239210] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2702.326861] CR2: 0000000000402000 CR3: 00000000020e0000 CR4: 00000000000006f0
-[ 2702.353000] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 2702.363008] smpboot: CPU 3 is now offline
-[ 2702.386004] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 2702.386007] Call Trace:
-[ 2702.386580]  ? __warn+0x7c/0x100
-[ 2702.386588]  ? rcu_tasks_trace_pregp_step+0x46/0x50
-[ 2702.386725]  ? report_bug+0x99/0xc0
-[ 2702.386916]  ? handle_bug+0x41/0x80
-[ 2702.387021]  ? exc_invalid_op+0x13/0x60
-[ 2702.387048]  ? asm_exc_invalid_op+0x12/0x20
-[ 2702.387054]  ? rcu_tasks_trace_pregp_step+0x46/0x50
-[ 2702.387057]  rcu_tasks_wait_gp+0x4b/0x260
-[ 2702.387059]  ? schedule_timeout+0x9a/0x150
-[ 2702.387062]  rcu_tasks_kthread+0xf4/0x1d0
-[ 2702.387065]  ? wait_woken+0x80/0x80
-[ 2702.387067]  ? rcu_barrier_tasks_trace+0xa0/0xa0
-[ 2702.387071]  kthread+0x137/0x160
-[ 2702.387140]  ? __kthread_bind_mask+0x60/0x60
-[ 2702.387158]  ret_from_fork+0x22/0x30
