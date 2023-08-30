@@ -2,68 +2,151 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 082F0C6FA8F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40BDEC83F20
 	for <rcu@archiver.kernel.org>; Wed, 30 Aug 2023 18:48:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242948AbjH3Srw (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
+        id S243342AbjH3Sry (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243890AbjH3MIG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Aug 2023 08:08:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35861A1;
-        Wed, 30 Aug 2023 05:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/gWxFPnB15/xfwVvJEhax18cVn+NYcCgEBxnuE+iV9g=; b=Hs41N30Kv8sSbfJi+YT0uWbRj5
-        F11cs93nDxxSZLeXUJhh5W+KgL/ashc3+bTesuZuTvCOTj92JWV3CGQZPX4Nfbq3pcXlmse63pZQT
-        jbKI9xAFE8xZO/Zm9SlaCxSgrFDgXbQ0UWbLhof3JiOzDLvJaB3wwPr/yOCizWVmJ/pvT2auXLVjJ
-        cy9UUhu/MwQ63b/EVnmEFp7NpdSEpEImV6mz2Tra85/P+wmmFX4C1985DcQ0LBO9lNekpScz8cSsN
-        tabnVcb2EGsxCgpB1gBruRBM5EKsDqF6q+Z1aVocbKRvcWiRgfUzE/Meab5ivwHto0jWqPc5ePWQH
-        6x6+b0eA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qbJzJ-00Cebn-Eb; Wed, 30 Aug 2023 12:07:57 +0000
-Date:   Wed, 30 Aug 2023 13:07:57 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Zqiang <qiang.zhang1211@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] mm/vmalloc: Add a safer version of find_vm_area()
- for debug
-Message-ID: <ZO8xHT5HUDTSVUai@casper.infradead.org>
-References: <20230830110402.386898-1-joel@joelfernandes.org>
+        with ESMTP id S243198AbjH3KSi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Aug 2023 06:18:38 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6921B3
+        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 03:18:35 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-794cd987ea6so105066139f.2
+        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 03:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693390715; x=1693995515; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OP1LgWzoGhEjsjDMUhRzMucVKH/U+zqBw+ArzgUhqBs=;
+        b=EI/w92x72VOPT4SZD/7eh/4otRlHkg81LbDubr4RBX+fJ5tA8GkEcJLpYZFTr4LBSF
+         48AouyCjnhXWClT8R9566ieZ9TUy8olFxfEqKXWb7WhInSfDp7BVkPCObbRhh44tPr9O
+         SmibuHnFjmH20RO/+m/97G9gYv2RLMDaCNd4A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693390715; x=1693995515;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OP1LgWzoGhEjsjDMUhRzMucVKH/U+zqBw+ArzgUhqBs=;
+        b=kX5Y/gkxQHotjCQJz9SM+cEmKwVGv+5BEaIijboTkaYUry6V+zCJ1zeJjw8iPN/lZK
+         pV3hG8aaUD7D/SBXySEtC96C/McSa14tLgdR4cGNImPhzRAnxI9KnHBkZl+I1HCbLnw8
+         NtPlLIAnKvLPhzt+ikXa/4jkHcvkMpw0SWlbDFw+htTD0wO8t9YQ0KdiXr9gFKawFI9i
+         +NIM9u/+ylUKrRVKn0WmRTE8qSdgCd/eA+MD+Kkk0wjNI2mVT33MdjTrAGHamlHkSXi6
+         RXIqalYMFqPQfpOC+w4pU+MOwvdPTi6P0YCJtB6x1r/LxMkrq05kDvWltN4OjvyF2tY1
+         GkqA==
+X-Gm-Message-State: AOJu0YyonJZK6MISrJoTBwSe8pzvGj5q6VvfrMFL14/PdaW8zC/+p9AG
+        dM1etEG0oD+m2JL4CytBP76WAg==
+X-Google-Smtp-Source: AGHT+IG3k2+yMtXHAP9nLcsR9EPP888/ZCoqSPE1tFAcn3dj8YgJkcEF/dU7zXKS4kNi7fSDVC2vRw==
+X-Received: by 2002:a05:6602:19da:b0:786:71d0:ff9b with SMTP id ba26-20020a05660219da00b0078671d0ff9bmr2199117iob.10.1693390714826;
+        Wed, 30 Aug 2023 03:18:34 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id i15-20020a02cc4f000000b0039deb26853csm3800016jaq.10.2023.08.30.03.18.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 03:18:34 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 10:18:33 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     paulmck@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Z qiang <qiang.zhang1211@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+Message-ID: <20230830101833.GA310377@google.com>
+References: <2681134d-cc88-49a0-a1bc-4ec0816288f6@paulmck-laptop>
+ <20230828133348.GA1553000@google.com>
+ <142b4bff-6a2e-4ea0-928c-3cfe9befa403@paulmck-laptop>
+ <CAAhV-H4MrUm2xZdZyAALV-r+aKMRQ50v6me6hybpR1pRijirqw@mail.gmail.com>
+ <CAEXW_YT-z6s+4MnxTnwFk2-mPba65dbnZogdPDSr14LmOW-h-g@mail.gmail.com>
+ <CAAhV-H5tYV=ezPY_O7c=sd3DULB6BjoiYnw9nE2EzDFaBHcKPw@mail.gmail.com>
+ <CAEXW_YTfV1NVb3tOhunHZK_6oeUHxz_azv6uVq3k0O2UEAX5OQ@mail.gmail.com>
+ <CAAhV-H6oN69rV2OyGzUganRv4KbS7a3_gNyWhCqVp51Ay9Q_=g@mail.gmail.com>
+ <CAEXW_YRpT8wcLmsaHA6yMQ-ZCNYG7v4b4m-qvLHVxcbOJJcrPg@mail.gmail.com>
+ <CAAhV-H62o96sgwWK7JAh+GOP=KNtZGS0HjVgHR19jJS1ONJW2Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230830110402.386898-1-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAhV-H62o96sgwWK7JAh+GOP=KNtZGS0HjVgHR19jJS1ONJW2Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 11:03:59AM +0000, Joel Fernandes (Google) wrote:
-> It is unsafe to dump vmalloc area information when trying to do so from
-> some contexts. Add a safer trylock version of the same function to do a
-> best-effort VMA finding and use it from vmalloc_dump_obj().
-> 
-> Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: rcu@vger.kernel.org
-> Cc: Zqiang <qiang.zhang1211@gmail.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Wed, Aug 30, 2023 at 12:25:56PM +0800, Huacai Chen wrote:
+> On Tue, Aug 29, 2023 at 10:46 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > On Tue, Aug 29, 2023 at 12:08 AM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > >
+> > > Hi, Joel,
+> > >
+> > > On Tue, Aug 29, 2023 at 4:47 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > >
+> > > > Hi Huacai,
+> > > >
+> > > > On Mon, Aug 28, 2023 at 11:13 AM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > > > >
+> > > > [...]
+> > > > > >
+> > > > > > > [Huacai]
+> > > > > > > I also think the original patch should be OK, but I have another
+> > > > > > > question: what will happen if the current GP ends before
+> > > > > > > nr_fqs_jiffies_stall reaches zero?
+> > > > > >
+> > > > > > Nothing should happen. Stall detection only happens when a GP is in
+> > > > > > progress. If a new GP starts, it resets nr_fqs_jiffies_stall.
+> > > > > >
+> > > > > > Or can you elaborate your concern more?
+> > > > > OK, I will test your patch these days. Maybe putting
+> > > > > nr_fqs_jiffies_stall before jiffies_force_qs is better, because I
+> > > > > think putting an 'int' between two 'long' is wasting space. :)
+> > > >
+> > > > That's a good point and I'll look into that.
+> > > Another point, is it better to replace ULONG_MAX with ULONG_MAX/4 as
+> > > Paul suggested?
+> > >
+> >
+> > I could do that but I don't feel too strongly about it. I will keep it
+> > at ULONG_MAX if it's OK with everyone.
+> >
+> > > > Meanwhile I pushed the patch out to my 6.4 stable tree for testing on my fleet.
+> > > >
+> > > > Ideally, I'd like to change the stall detection test in the rcutorture
+> > > > to actually fail rcutorture if stalls don't happen in time. But at
+> > > > least I verified this manually using rcutorture.
+> > > >
+> > > > I should also add a documentation patch for stallwarn.rst to document
+> > > > the understandable sensitivity of RCU stall detection to jiffies
+> > > > updates (or lack thereof). Or if you have time, I'd appreciate support
+> > > > on such a patch (not mandatory but I thought it would not hurt to
+> > > > ask).
+> > > >
+> > > > Looking forward to how your testing goes as well!
+> > > I have tested, it works for KGDB.
+> >
+> > Thanks! If you don't mind, I will add your Tested-by tag to the patch
+> > and send it out soon. My tests also look good!
+>
+> You can add my Tested-by, but Reported-by should be "Binbin Zhou
+> <zhoubinbin@loongson.cn>"
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Thanks, if/when Paul takes it, he could kindly change the Reported-by, or I
+could.
 
-I once started writing something similar, but got distracted and the
-immediate problem got solved a different way.
+thanks,
 
-It does make me wonder if we couldn't make this tree RCU-safe, but
-that's obviously a much larger job.
+ - Joel
+
