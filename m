@@ -2,175 +2,168 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5E46C83F14
-	for <rcu@archiver.kernel.org>; Wed, 30 Aug 2023 21:41:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 705CEC83F01
+	for <rcu@archiver.kernel.org>; Thu, 31 Aug 2023 01:23:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242100AbjH3Vlo (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 30 Aug 2023 17:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
+        id S240930AbjHaBXP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 30 Aug 2023 21:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242094AbjH3Vlo (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 30 Aug 2023 17:41:44 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0618E10D4
-        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 14:41:16 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50078e52537so506915e87.1
-        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 14:41:15 -0700 (PDT)
+        with ESMTP id S239069AbjHaBXO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 30 Aug 2023 21:23:14 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C41CC2
+        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 18:23:06 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34dea77cbe6so1209475ab.2
+        for <rcu@vger.kernel.org>; Wed, 30 Aug 2023 18:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693431600; x=1694036400; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O5DJzy56A/nwYm3Fh8L0N2T0VZK9ewMIuVyotil1TqE=;
-        b=aqnOLvCws+ZIXNGtjpG9FHpHcxFrRDz2iC9EcqiSMaLyVVNw4EIYAxRnztu5BgRT6v
-         ZchWw9DbaYuBI5QeU7zvdjFG3ZlD7EXbtNaFtCt49MHLUVuQuw9+7UGkoTUgTtmzGJR5
-         XJcKwu3bfYOflPF/0uw1aveUPCDfFUjDuhYe8=
+        d=joelfernandes.org; s=google; t=1693444986; x=1694049786; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mfrpiacLG55EsVroukdPrDZnWpVBbqJS76x8bQJH6GM=;
+        b=powRNzSMcXSudHcuFZg2l7VNytBKYmm0sZTRiZr3uxfIXXNtc6G1fDoSmMl2vbToOs
+         /YEAwyxkIuEantRnnOXT4W43ygJOuPdWkrQB/Ag5hYv9evUrFGQT3Ds0ZkNZcnvR2O7r
+         xa7EKpWob/gL6dq9XbHFQL8FdkPBcmJxNYoxc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693431600; x=1694036400;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O5DJzy56A/nwYm3Fh8L0N2T0VZK9ewMIuVyotil1TqE=;
-        b=kNVlLvAqTkFWG3L7JiRQ3DY118ZnEe1eDOdBLioWR7dLOYdd1BThEMr6jRJB6x5qAX
-         82npyFOm0tg6LNnuAx0j/46kKnRp3kw+0Y0pHmDDJi0VUMhbg61fy8AKxT11V50mO4Fs
-         krATe6+xJqmQozma8dJ9TyxhX4OVFsgIj22b+C8NG1VFnOMNN8Y76oBMWPAarEsAZGRc
-         Qwf9wboQAwNDTTPhYx01hLX2Bo8i1PQXPkZrDGOtzyIKPRA/+clTa2+TlriYEkfMaVx6
-         vEEzUH0i6Abyf5cVnyxw24D+GwcB9xrH2tJODJ7o0Zjx1kqXijTJY2+HxNHQV5F1QwfB
-         EIzQ==
-X-Gm-Message-State: AOJu0YxwJxSNb0HpaBq5FgovVflZHs+w/Nc2XEiThE+xGrZzdrPP+xX5
-        kVs+840oUAFRKqUYaKcsKOmcgvtm3rcQ7tE1V4NeZBaQyAYgAwK7zbE=
-X-Google-Smtp-Source: AGHT+IH0q0mDwWYyHqx0XTJ/0WX+KbgZ/mMfiBziyqml/CVcnPVo81k3hfHqZRcz7ObX/cg2PXCEUpH12fZr0OZ+f+Q=
-X-Received: by 2002:a2e:b6c2:0:b0:2bb:9781:1a4c with SMTP id
- m2-20020a2eb6c2000000b002bb97811a4cmr3108409ljo.27.1693430871551; Wed, 30 Aug
- 2023 14:27:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230729142738.222208-1-joel@joelfernandes.org>
- <20230729142738.222208-5-joel@joelfernandes.org> <ZO4EdIM/JtelKHFH@lothringen>
-In-Reply-To: <ZO4EdIM/JtelKHFH@lothringen>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 30 Aug 2023 17:27:43 -0400
-Message-ID: <CAEXW_YS-0X7TEr0n4p1VYx0VvqVWVWRrm45ydaQkrcHhQ0uM2w@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] tree/nocb: Improve readability of nocb_gp_wait()
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        paulmck@kernel.org, Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        d=1e100.net; s=20221208; t=1693444986; x=1694049786;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mfrpiacLG55EsVroukdPrDZnWpVBbqJS76x8bQJH6GM=;
+        b=Rom6VMTfdTieYkU/4VLp0jl8/OTnP9pV53jaT9sZrFdFXqYLRgt1AOf5qD6aWYtBs/
+         wU1dg/5I8aqBsaXlwHoxEXk5i4JMPHk2NsDvhvggtpmEBMa8BFScY4186tkeIZ1MmFcj
+         fZBhaBDy9dQs79vrCee7tTNkueqHDkcasJGYNQ1t0e0bIM5IsN2kDUY27+Z8TtQS87oE
+         MKfWIJZ7G0W7+cP+9n+oO1u2NukGzlkmGwADh/uc2bP7ifG4nhUEcrOTe5U2hd9R6BL5
+         Zgn41p+TJ+oKffxuBNppN8BHLin2b547tHm38qJh9cq8WJX+UyEPsFworo2BeyZUZUJr
+         SRQQ==
+X-Gm-Message-State: AOJu0YwR/Cl9JSDjhmunDJzU0EEtajPaRqliMxPa0aDzCwD6FwNsuM2n
+        Scsh2hDcwqF5os2wOXHZvHgyEw==
+X-Google-Smtp-Source: AGHT+IHaENoXtnzrr7fuZXKqz4/lq4K9G/ULxNDoBvb1t6a4EdSA66et5IkDOMzgcfQi70UU5Bsisg==
+X-Received: by 2002:a05:6e02:dc7:b0:342:655f:6f25 with SMTP id l7-20020a056e020dc700b00342655f6f25mr3841501ilj.31.1693444986205;
+        Wed, 30 Aug 2023 18:23:06 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id k9-20020a02c769000000b0042b2e309f97sm99572jao.177.2023.08.30.18.23.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 18:23:05 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Shuah Khan <shuah@kernel.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH] rcu/torture: Improve badness extraction from console logs
+Date:   Thu, 31 Aug 2023 01:22:56 +0000
+Message-ID: <20230831012257.1189964-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 10:45=E2=80=AFAM Frederic Weisbecker
-<frederic@kernel.org> wrote:
->
-> On Sat, Jul 29, 2023 at 02:27:34PM +0000, Joel Fernandes (Google) wrote:
-> >  /*
-> >   * No-CBs GP kthreads come here to wait for additional callbacks to sh=
-ow up
-> >   * or for grace periods to end.
-> >   */
-> >  static void nocb_gp_wait(struct rcu_data *my_rdp)
-> >  {
-> > -     bool bypass =3D false;
-> >       int __maybe_unused cpu =3D my_rdp->cpu;
-> >       unsigned long cur_gp_seq;
-> >       unsigned long flags;
-> >       bool gotcbs =3D false;
-> > -     unsigned long j =3D jiffies;
-> > -     bool lazy =3D false;
-> >       bool needwait_gp =3D false; // This prevents actual uninitialized=
- use.
-> >       bool needwake;
-> >       bool needwake_gp;
-> > +     int defer_wake_type =3D RCU_NOCB_WAKE_NOT;
-> >       struct rcu_data *rdp, *rdp_toggling =3D NULL;
-> >       struct rcu_node *rnp;
-> >       unsigned long wait_gp_seq =3D 0; // Suppress "use uninitialized" =
-warning.
-> > @@ -712,44 +758,24 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
-> >        * won't be ignored for long.
-> >        */
-> >       list_for_each_entry(rdp, &my_rdp->nocb_head_rdp, nocb_entry_rdp) =
-{
-> > -             long bypass_ncbs;
-> > -             bool flush_bypass =3D false;
-> > -             long lazy_ncbs;
-> > +             int defer_wake_type_one =3D RCU_NOCB_WAKE_NOT;
->
-> No need to initialize it, nocb_gp_flush_wake() always returns a value, an=
-d
-> it will avoid mistakes in the future if nocb_gp_flush_wake() is moved and
-> accidentally not called.
+Currently console.log.diags contains an output like follows:
+[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.542385] Call Trace:
 
-Compiler does not like that if it is not initialized:
-tree_nocb.h:821:51: error: =E2=80=98defer_wake_type=E2=80=99 is used uninit=
-ialized
-[-Werror=3Duninitialized]
+This is not very useful and the Call trace is desired. Improve the
+script by Extracting more lines after each grep match.
 
-> > +             bool flushed;
-> > +             bool empty;
-> >
-> > -             trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"=
-));
-> >               rcu_nocb_lock_irqsave(rdp, flags);
-> > -             lockdep_assert_held(&rdp->nocb_lock);
-> > -             bypass_ncbs =3D rcu_cblist_n_cbs(&rdp->nocb_bypass);
-> > -             lazy_ncbs =3D READ_ONCE(rdp->lazy_len);
-> > +             defer_wake_type_one =3D nocb_gp_flush_wake(rdp, &empty, &=
-flushed);
-> >
-> > -             if (bypass_ncbs && (lazy_ncbs =3D=3D bypass_ncbs) &&
-> > -                 (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + ji=
-ffies_till_flush) ||
-> > -                  bypass_ncbs > 2 * qhimark)) {
-> > -                     flush_bypass =3D true;
-> > -             } else if (bypass_ncbs && (lazy_ncbs !=3D bypass_ncbs) &&
-> > -                 (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1)=
- ||
-> > -                  bypass_ncbs > 2 * qhimark)) {
-> > -                     flush_bypass =3D true;
-> > -             } else if (!bypass_ncbs && rcu_segcblist_empty(&rdp->cbli=
-st)) {
-> > -                     rcu_nocb_unlock_irqrestore(rdp, flags);
-> > -                     continue; /* No callbacks here, try next. */
-> > -             }
-> > +             // We may need to do a deferred wakeup later for bypass/l=
-azy
-> > +             // So note down what we learnt from the rdp.
-> > +             defer_wake_type =3D max(defer_wake_type_one, defer_wake_t=
-ype);
-> >
-> > -             if (flush_bypass) {
-> > -                     // Bypass full or old, so flush it.
-> > -                     (void)rcu_nocb_try_flush_bypass(rdp, j);
-> > -                     bypass_ncbs =3D rcu_cblist_n_cbs(&rdp->nocb_bypas=
-s);
-> > -                     lazy_ncbs =3D READ_ONCE(rdp->lazy_len);
-> > +             // Did we make any updates to main cblist? If not, no
-> > +             // non-deferred wake up to do for this rdp.
-> > +             if (!flushed && empty) {
->
-> Can you ever have (flushed && empty) ? If not you should be able to remov=
-e the
-> flushed parameter.
+With this the above becomes:
 
-We can return 3 different states from the new nocb_gp_flush_wake():
-1. flushed =3D true and empty =3D false
-2. flushed =3D false and empty =3D true
-3. flushed =3D false and empty =3D false
+Issue 1:
+[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.326661] Modules linked in:
+[ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.128+ #381
+[ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.386691] Code: 48 63 c7 48 8b 0
+[ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
+[ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 0000000000000003
+[ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 0000000000000003
+[ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000001
+[ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: ffff8db902d87f40
+[ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: ffff8db9011a3200
+[ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000) knlGS:0000000000000000
+[ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 00000000000006e0
+[ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 2457.542385] Call Trace:
+[ 2457.546756]  <TASK>
+[ 2457.550349]  ? __warn+0x7b/0x100
+[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+-------------------------------------
+Issue 2:
+[ 2457.542385] Call Trace:
+[ 2457.546756]  <TASK>
+[ 2457.550349]  ? __warn+0x7b/0x100
+[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.574948]  ? report_bug+0x99/0xc0
+[ 2457.593824]  ? handle_bug+0x3c/0x70
+[ 2457.599534]  ? exc_invalid_op+0x13/0x60
+[ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
+[ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
+[ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
+[ 2457.705658]  rcu_tasks_kthread+0x114/0x200
+[ 2457.712450]  ? wait_woken+0x70/0x70
+[ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
+[ 2457.746221]  kthread+0x130/0x160
+[ 2457.751487]  ? set_kthread_struct+0x40/0x40
+[ 2457.758178]  ret_from_fork+0x22/0x30
+[ 2457.763909]  </TASK>
+[ 2457.767546] irq event stamp: 29544441
+[ 2457.773344] hardirqs last  enabled at (29544451): [<ffffffffaace6cbd>] __up_console_sem+0x4d/0x60
+[ 2457.786967] hardirqs last disabled at (29544460): [<ffffffffaace6ca2>] __up_console_sem+0x32/0x60
+-------------------------------------
 
-I guess you mean, we don't care about case #1 and #3 ?
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ .../rcutorture/bin/console-badness.sh         | 24 ++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-That's a good point. What I will do then is pass a single bool
-"wakeup" and and set it for case #2 from within the
-nocb_gp_flush_wake().
+diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+index aad51e7c0183..d28efcd86b64 100755
+--- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
++++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+@@ -9,10 +9,32 @@
+ # Copyright (C) 2020 Facebook, Inc.
+ #
+ # Authors: Paul E. McKenney <paulmck@kernel.org>
++INPUT_DATA=$(< /dev/stdin)
+ 
+-grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
++# Get the line numbers for all the grep matches
++GREP_LINES="$(echo "$INPUT_DATA" |
++grep -n -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
+ grep -v 'ODEBUG: ' |
+ grep -v 'This means that this is a DEBUG kernel and it is' |
+ grep -v 'Warning: unable to open an initial console' |
+ grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr.*the init process!' |
+ grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
++)"
++
++# Exit if no grep matches
++if [ ! -n "$GREP_LINES" ]; then exit 0; fi
++
++# Go through each line of GREP_LINES, extract the line number and then
++# print from that line and 20 lines after that line. Do that for each
++# grep match.
++issue_num=1
++while IFS= read -r line; do
++    # Extract the line number from the line
++    num=$(echo "$line" | awk -F: '{print $1}')
++    # Print 20 lines after the matched line
++    echo "Issue $issue_num:"
++    issue_num="$(($issue_num + 1))"
++    echo "$INPUT_DATA" | sed -n "${num},$(($num + 20))p"
++    echo "-------------------------------------"
++done <<< "$GREP_LINES"
++
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
-Thanks!
-
- - Joel
