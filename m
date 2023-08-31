@@ -2,60 +2,67 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3572DC83F12
-	for <rcu@archiver.kernel.org>; Thu, 31 Aug 2023 10:49:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ABADC83F12
+	for <rcu@archiver.kernel.org>; Thu, 31 Aug 2023 10:54:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbjHaKtr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Aug 2023 06:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
+        id S244813AbjHaKyk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 31 Aug 2023 06:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243350AbjHaKtq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 31 Aug 2023 06:49:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712F6CFA;
-        Thu, 31 Aug 2023 03:49:14 -0700 (PDT)
+        with ESMTP id S1345876AbjHaKy1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 31 Aug 2023 06:54:27 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6343CE48;
+        Thu, 31 Aug 2023 03:54:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1321663A6D;
-        Thu, 31 Aug 2023 10:48:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7FEFC433C8;
-        Thu, 31 Aug 2023 10:48:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693478882;
-        bh=AQD/orLvRRyisseXxWhgMZiD+m3m1zMD8acDys72ZRE=;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 15C68B81FF4;
+        Thu, 31 Aug 2023 10:54:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CC34C433C7;
+        Thu, 31 Aug 2023 10:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1693479261;
+        bh=uZNAfnVHICuCi5/0/OxlLVh8T/eGCQKs+HT9Bz2ea6E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ue65KvaM0rlhbq6ousHqUTrmkoMR+Vr0W3e5J46tWHGF97DmZUUc5VPj2DEbkdcj1
-         8clCMo26mrNjWn9bP+HWf3D8AnhQkPUYl7/jqSt/HA/yygt/4CEWtB1gN+ryd1Utw2
-         Qd6weghX6f35FADAJLCNNW4PInUbUhggdzCY7cbw=
-Date:   Thu, 31 Aug 2023 12:47:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.10] rcu: Prevent expedited GP from enabling tick on
- offline CPU
-Message-ID: <2023083150-shrimp-bunion-626b@gregkh>
-References: <20230828205302.1660666-1-joel@joelfernandes.org>
+        b=QxNoVYwl9WPr76BV2UUrX1ODQgN0sRbALiLEIsEMSbk6N83CKxIx23W+eZzr2BoXH
+         kIFBFvrjMjBXir2/2xP504Pg4BhvmVBGjLNCcql7E/Ih42A9Cul6iTprcDRzXb9Fgh
+         8jspXZ0vsgAEG+i6onCSicSNDWOgZXCLJ+Wn0vGo=
+Date:   Thu, 31 Aug 2023 12:54:15 +0200
+From:   Greg KH <gregkh@linux-foundation.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     stable@vger.kernel.org, paulmck@kernel.org, rcu@vger.kernel.org
+Subject: Re: Please apply the following rcu-tasks fixes to 5.10 and 5.15
+ stable kernels
+Message-ID: <2023083108-envelope-cavity-06ca@gregkh>
+References: <20230830193303.GA623680@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230828205302.1660666-1-joel@joelfernandes.org>
+In-Reply-To: <20230830193303.GA623680@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 08:53:01PM +0000, Joel Fernandes (Google) wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Wed, Aug 30, 2023 at 07:33:03PM +0000, Joel Fernandes wrote:
+> Hi Greg, Stable team,
 > 
-> [ Upstream commit 147f04b14adde831eb4a0a1e378667429732f9e8 ]
+> Please apply the following rcu-tasks fixes to 5.10 and 5.15 stable kernel.
+> They cleanly apply and are required to fix a warning [1] that shows up
+> during rcutorture testing and are all bug fixes merged into Linus tree.
 > 
+> I have verified them on the latest 5.10 and 5.15 stable kernels.
+> 
+> commit 46aa886c483f57ef13cd5ea0a85e70b93eb1d381
+> rcu-tasks: Fix IPI failure handling in trc_wait_for_one_reader
+> 
+> commit cbe0d8d91415c9692fe88191940d98952b6855d9
+> rcu-tasks: Wait for trc_read_check_handler() IPIs
+> 
+> commit 18f08e758f34e6dfe0668bee51bd2af7adacf381
+> rcu-tasks: Add trc_inspect_reader() checks for exiting critical section
 
-Both backports now queued up, thanks.
+All now queued up, thanks.
 
 greg k-h
