@@ -2,83 +2,69 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD0BCA0FE2
-	for <rcu@archiver.kernel.org>; Fri,  1 Sep 2023 02:41:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21267CA0FE1
+	for <rcu@archiver.kernel.org>; Fri,  1 Sep 2023 09:59:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbjIAClN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 31 Aug 2023 22:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
+        id S236565AbjIAJ7Z (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 1 Sep 2023 05:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238172AbjIAClN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 31 Aug 2023 22:41:13 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1656110C4
-        for <rcu@vger.kernel.org>; Thu, 31 Aug 2023 19:41:06 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-77a62a84855so59093439f.1
-        for <rcu@vger.kernel.org>; Thu, 31 Aug 2023 19:41:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693536065; x=1694140865; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6tUOs8hDMMZksGN7f6i5Wg/MdXXuZZQ/eBmMDOHEw4U=;
-        b=KaKAPnSGfvfMeE9JSyDBeAjv7JkhPpHwxpP1fb4wxalPaK38qyjjIG1qkF6uT4iiPn
-         C/NNhbFu5+4D08e8dX2AJGOZ3aYe0CuOiFoYR8dqnU7xJE3BXPGhLXUL1Rh3HLYHztbZ
-         FuLTYLzVBoTX6jfMOaZPW1ye4P9TqWpQBlegw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693536065; x=1694140865;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6tUOs8hDMMZksGN7f6i5Wg/MdXXuZZQ/eBmMDOHEw4U=;
-        b=HLc6TebuMp2kntq7QhCTSgB4h5D94nLhj5HKzBqFGOrYIji9L2aAZUZ7osJLR+pJR+
-         bP5eGJMa8InZWaNzzKGmAqKWAe4IxYdzUTEgp0ysORGJArx30Fn5tyzfUsqgWfPyaHia
-         ubwEcqveUz6UkkgjIZJwyayx2j+OH27/Cm8rj5LxmkQGSdBW02ILUSLq85GCObP6O0MP
-         Vw837SAEc4QFxLpPbOzXgcyjNMDxxJDpkUVoqXAY+TAjEUN37plFZJfB+lptI+tqNCpM
-         29nDIHcpUiPaszooikjHhWFmh5vMvUy1aypp9J2hXYRcqyjTQn59CtF4c1NiGs/dI6Vo
-         zntg==
-X-Gm-Message-State: AOJu0YwG/aYnJY/CEE3pO2cRrGleJuLNef3kGucZStaOZgIoLx1bIFjO
-        L3FSOB5jpDh/PryT2OOmI4rqSP7oj5TQ+kaCyPM=
-X-Google-Smtp-Source: AGHT+IHE993Za+B/8lxV42y4X0hWTgiiDpAkz4AmxKSMOxpxJim5ey9l7gyWltDjMwVKPs5DBA5ODg==
-X-Received: by 2002:a05:6e02:1186:b0:349:326:e2bd with SMTP id y6-20020a056e02118600b003490326e2bdmr1243322ili.24.1693536064950;
-        Thu, 31 Aug 2023 19:41:04 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id gm16-20020a0566382b9000b0042b3e04510asm742688jab.98.2023.08.31.19.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 19:41:04 -0700 (PDT)
-Date:   Fri, 1 Sep 2023 02:41:03 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     rcu@vger.kernel.org
-Cc:     paulmck@vger.kernel.org
-Subject: [BUG] Boost failure on stable kernel 6.5.y-rc1
-Message-ID: <20230901024103.GA3750199@google.com>
+        with ESMTP id S229616AbjIAJ7Z (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 1 Sep 2023 05:59:25 -0400
+X-Greylist: delayed 335 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Sep 2023 02:59:20 PDT
+Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F61EE8;
+        Fri,  1 Sep 2023 02:59:20 -0700 (PDT)
+From:   Denis Arefev <arefev@swemel.ru>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
+        t=1693562021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Hr0rWrRcMOc45DfkLdu7Gn8kpROrMCZyZeFDlPq3jhs=;
+        b=rFNurcQ7n6Y9YeLxX32EtW9enrQ00xaZSfMXqU8+DfCTs0ITfze0akVncy4hk2FUlvUnho
+        n0M3wuSltqL231DpIgXpsyt2Mn4v3WKb5xuc9y8kWhHbhRVXLznFb1lnil3M3uwohKUk+w
+        NbpGDu/oplxpcDLReAKmqFx4kSK+ljQ=
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, lvc-project@linuxtesting.org,
+        linux-kernel@vger.kernel.org, trufanov@swemel.ru, vfh@swemel.ru
+Subject: [PATCH] srcu: The value may overflow
+Date:   Fri,  1 Sep 2023 12:53:41 +0300
+Message-Id: <20230901095341.55857-1-arefev@swemel.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-I got a boost failure that looks like the following. The Reader pipe counts
-look good to me but there seem to be boost failures.
+The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+is subject to overflow due to a failure to cast operands to a larger
+data type before performing arithmetic
 
-FWIW, I have seen this occasionally on older kernels but it was not at all
-consistently reproducible. I am archiving it here for future reference:
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-BUG: TREE03 FAILURE, 0 instances
-[ 1523.216753] rcu-torture: !!! 
-[ 1523.225344] WARNING: CPU: 5 PID: 170 at kernel/rcu/rcutorture.c:2227 rcu_torture_stats_print+0x5b2/0x620
-[ 1523.365730] Call Trace:
-[ 1538.579852] rcu-torture: !!! Reader Pipe:  3676261572 201726 0 0 0 0 0 0 0 0 0
-[ 1554.053752] rcu-torture: !!! Reader Pipe:  3714202738 203792 0 0 0 0 0 0 0 0 0
-[ 1569.304750] rcu-torture: !!! Reader Pipe:  3750940990 205374 0 0 0 0 0 0 0 0 0
-[ 1587.205665] rcu-torture: !!! Reader Pipe:  3783052619 207952 0 0 0 0 0 0 0 0 0
-[ 1602.581730] rcu-torture: !!! Reader Pipe:  3815601996 209733 0 0 0 0 0 0 0 0 0
-[ 1617.935231] rcu-torture: !!! Reader Pipe:  3851086565 211846 0 0 0 0 0 0 0 0 0
-[ 1633.300072] rcu-torture: !!! Reader Pipe:  3903324168 213499 0 0 0 0 0 0 0 0 0
+Signed-off-by: Denis Arefev <arefev@swemel.ru>
+---
+ kernel/rcu/srcutree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Full torture test directory on this failure is at:
-http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-6.5.y/2/artifact/tools/testing/selftests/rcutorture/res/2023.08.31-21.44.10/TREE03/
-
-thanks,
-
- - Joel
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 20d7a238d675..e14b74fb1ba0 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+ 				snp->grplo = cpu;
+ 			snp->grphi = cpu;
+ 		}
+-		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
++		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+ 	}
+ 	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+ 	return true;
+-- 
+2.25.1
 
