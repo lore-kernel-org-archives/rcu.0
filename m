@@ -2,75 +2,60 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACA88C83F2C
-	for <rcu@archiver.kernel.org>; Sun,  3 Sep 2023 03:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE404C83F2D
+	for <rcu@archiver.kernel.org>; Sun,  3 Sep 2023 10:45:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbjICDaA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sat, 2 Sep 2023 23:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
+        id S236446AbjICKp4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 3 Sep 2023 06:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235657AbjICD37 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sat, 2 Sep 2023 23:29:59 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8660A18C
-        for <rcu@vger.kernel.org>; Sat,  2 Sep 2023 20:29:56 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-ccc462deca6so375726276.0
-        for <rcu@vger.kernel.org>; Sat, 02 Sep 2023 20:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693711796; x=1694316596; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1SlPD/HlZl3/ApL2bHNmig99TpQMcnUsVn2m8D0Vgg=;
-        b=WpRR5frdEXxh01O09bk3FcE2FMTPRjAxz35m0yDr+YghiEjvvxR6Fx6WbwfxibUggJ
-         slW5SNqqKoS+frbGutIKr3X/TVFKiuTo12puLoo46bln3MPSPgrHcleqFc3zNxLV28GJ
-         rvfIAmvKf9G2sPWuYUcCE1+Vl/U6/O4j7eRRu5NqEV2TperIYVa+MxrItAwVFfRC9pDg
-         pkfV+ayR9CjA3d/U50TvROMPt87c5dOvqrH9MmCjB0JMofyqlwjLLwW6qyUzDVzkbh0r
-         vskLscmQutR7zLXGRi9kMHXaGRZsXh+xpdKsfIstcX/pDKHvt6IhhiNzjXaZ/0Z6B6n+
-         5/uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693711796; x=1694316596;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1SlPD/HlZl3/ApL2bHNmig99TpQMcnUsVn2m8D0Vgg=;
-        b=FcsS7UT8cVXVI/vMtYE9Y8vODaYQCQpFviZ6KYZ9R9B/reHhLX1UZJGRdgnCCGV/6E
-         CjSogJ3nmUZv9euqbCL2Pz3HHPzS5X/fZCDSJlk6oReIlalGdYxZDMlVN2E6SL0EfHCL
-         F53Zi9E0WOVp4E9A9iH9Rcctp4zwfKitnHqYXyaZvloSDVsOhM1td3Z2ziBBItfv/R/y
-         0u2vfeoEawAolGeUXqxkA6sGjtKNhTRIL809hsxnPWpEhRBeGjnFRde9Mdd558KE/LB2
-         TC1KXb/p4864FW/cLg6o9kZAwWWhm3eFSlpd70+WPL6JbCj+8/QI+rS4T5uEglruz/j8
-         qASg==
-X-Gm-Message-State: AOJu0Yzfwx4iSAEIsEvWt6E15bff2X0SQFzJvulRlDMNSX9tEid5alY7
-        rhUo0fVPY3gxLp7FoQZVDVuhUHmha2lnnGj44AGeOA==
-X-Google-Smtp-Source: AGHT+IGndHoq+5l4aEFGeXil4nuAmF24mwgZ/R2voWQcfpcvYa+TQsPZaW1RHIgPYVQ6+7sXrw2xOw==
-X-Received: by 2002:a0d:d90e:0:b0:579:e8de:3580 with SMTP id b14-20020a0dd90e000000b00579e8de3580mr7343592ywe.9.1693711795653;
-        Sat, 02 Sep 2023 20:29:55 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id p189-20020a815bc6000000b0054bfc94a10dsm1954015ywb.47.2023.09.02.20.29.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 20:29:55 -0700 (PDT)
-Date:   Sat, 2 Sep 2023 20:29:46 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
+        with ESMTP id S235800AbjICKp4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 3 Sep 2023 06:45:56 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5158F120;
+        Sun,  3 Sep 2023 03:45:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id A8D8ACE09B6;
+        Sun,  3 Sep 2023 10:45:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA10C433C8;
+        Sun,  3 Sep 2023 10:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693737948;
+        bh=FtW4elepbA3dl8TVrQJUZMvhrxmha+pYiCSF4zMey1s=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EFATlrKLyAsiiuAuOzeNMPH1zcZQvILtwKIJGszRr0hM7i6glk0zBfBRnIKTCLM2n
+         /P0XK78fBmvRUdN5A5QorA+8xxjV2TYPwqM6sbiEG4PCfa7IHyaOlQYyipjrO2++TX
+         o8efnD+pj/W84tgKcnQ/gkwfrirzSVH/8RGRpG+9Q02H8s6y9BY3zyATWKTv788mpG
+         6Eooeo3xQF5MYKFsgl7gYQqOxA68ra+XYJ3Hlhu2lsQDxnxrmhE/8j2xqts+jn0IWp
+         jPyfXAsVsXB3SteVmoRKTHgP0nOUPZGf2r41haFmn6zru7DA9Q5aaAzxJ6l7f50ZPe
+         JuZrCNDBR+nKA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6DB44CE0C90; Sun,  3 Sep 2023 03:45:48 -0700 (PDT)
+Date:   Sun, 3 Sep 2023 03:45:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Bagas Sanjaya <bagasdotme@gmail.com>
-cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Ziwei Dai <ziwei.dai@unisoc.com>,
-        Hugh Dickins <hughd@google.com>,
+Cc:     Ziwei Dai <ziwei.dai@unisoc.com>, Hugh Dickins <hughd@google.com>,
         Marcus Seyfarth <m.seyfarth@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Regressions <regressions@lists.linux.dev>,
-        Linux RCU <rcu@vger.kernel.org>
-Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP:
- kvfree_rcu_bulk)
-In-Reply-To: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
-Message-ID: <c9893a21-5873-7f26-7bed-79f5cd441e82@google.com>
+        Linux RCU <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
+Message-ID: <bbbb0bdf-553e-4fde-90d6-446e920b357e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sun, 3 Sep 2023, Bagas Sanjaya wrote:
-
+On Sun, Sep 03, 2023 at 08:34:44AM +0700, Bagas Sanjaya wrote:
 > Hi,
 > 
 > I notice a regression report on Bugzilla [1]. Quoting from it:
@@ -78,6 +63,9 @@ On Sun, 3 Sep 2023, Bagas Sanjaya wrote:
 > > I've just made the transition from 6.4.14 to 6.5.1 and my Haswell-EP X99 machine took way longer to boot (55 seconds instead of 16 seconds). The following trace was seen in dmesg which was also not present on 6.4.14 (and might be the cause for the long boot time); this is on bare metal.
 > > 
 > > [  +0,000021] CPU: 13 PID: 338 Comm: kworker/13:1 Not tainted 6.5.1-3.1-cachyos-lto #1 c414458bd5e5db6e6f9addca639c3a78811b24e7
+
+This looks like part of the splat was omitted.
+
 > > [  +0,000003] Hardware name: LENOVO GAMING TF/X99-TF Gaming, BIOS CX99DE26 10/10/2020
 > > [  +0,000002] Workqueue: events kfree_rcu_work
 > > [  +0,000004] RIP: 0010:kvfree_rcu_bulk+0x13b/0x160
@@ -120,6 +108,21 @@ On Sun, 3 Sep 2023, Bagas Sanjaya wrote:
 > > 
 > > [  +0,000227] ------------[ cut here ]------------
 > > [  +0,000002] WARNING: CPU: 21 PID: 345 at kernel/rcu/tree.c:2952 kvfree_rcu_bulk+0x13b/0x160
+
+In -stable v6.5.1, this line is the following:
+
+	rcu_lock_acquire(&rcu_callback_map);
+
+None of the patches in the github URL listed in the full version of that
+bugzilla comment affect this file, but some of them could potentially
+produce a slowdown.
+
+Nevertheless adding Uladzislau on CC for his thoughts.
+
+In the meantime, I echo Artem S. Tashkinov's suggestion of bisection.
+
+							Thanx, Paul
+
 > > [  +0,000011] Modules linked in: pkcs8_key_parser crypto_user fuse loop zram bpf_preload ip_tables x_tables ext4 crc32c_generic mbcache crc16 jbd2 usbhid amdgpu mfd_core drm_buddy drm_suballoc_helper crc32c_i>
 > > [  +0,000027] CPU: 21 PID: 345 Comm: kworker/21:1 Not tainted 6.5.1-3.1-cachyos-lto #1 de6495663682da00bbe0d80bdc163dd768b25681
 > > [  +0,000004] Hardware name: LENOVO GAMING TF/X99-TF Gaming, BIOS CX99DE26 10/10/2020
@@ -166,21 +169,6 @@ On Sun, 3 Sep 2023, Bagas Sanjaya wrote:
 > Thanks.
 > 
 > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217864
-
-Sorry, please delete me from this thread: I'm no expert on system
-slowdowns or cachyos or kvfree_rcu_bulk(), and have to stick to those
-things which I might be able to help with.
-
-IIRC sometimes slowdowns like that come from an area of uncached memory
-getting to be used by mistake; and presumably two bisections of 6.4->6.5
-on that machine would help identify where the slowdown and the warning
-come in - but I shall not be participating.
-
-The 6.6 patch of mine which Marcus applied is not wrong on 6.5, but not
-helpful there either; and not relevant to whatever is going on here.
-
-He shows it as "changing" a warning with the first few lines left out
-to a warning with the first few lines included i.e. no change,
-so no need for me to get involved.
-
-Hugh
+> 
+> -- 
+> An old man doll... just what I always wanted! - Clara
