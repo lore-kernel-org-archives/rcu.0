@@ -2,155 +2,153 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5D74C71153
-	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 13:58:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B937C71153
+	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 15:06:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbjIDN6N (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Sep 2023 09:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
+        id S1353171AbjIDPGN (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Sep 2023 11:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjIDN6N (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:58:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2299FCD7;
-        Mon,  4 Sep 2023 06:58:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A59B861772;
-        Mon,  4 Sep 2023 13:58:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11538C433C7;
-        Mon,  4 Sep 2023 13:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693835888;
-        bh=Xmt5MQmExYsuinsLeYQbE2KBIh/St74DYmxoosZ1jLQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fhDeo3gOzqU4OFKcwKNkrKOmS3RQKUaJnlzmpg+4Pb3HkTwfEveRNbznbW3c+lkhl
-         DTXLNZabNrbxDSqme6B/dZonaOY4id7UbsTjXkN6dtP3uSmJ6ONEJQga+nVkvImFbY
-         cSbF62H/a46nQQEHap2ZTU4EE/CtulVinBDf5NtukhJ3JJji9Wy/0/yQ5eXAZzn/3c
-         F2rYLFIXgrNUjxkQ729/lQJPknE2cPnboIm/3JnLdgkNYrwQrHPABN8K39rqpNGLXt
-         BBJ1YiaGCHpVF3Lv5KF51S86GRlQScqoK7HKOeJbTKfi3Q5kE02W6iU6VGB4CY2WOM
-         LvqMUAtkrtmdA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 96602CE02BC; Mon,  4 Sep 2023 06:58:07 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 06:58:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
-        trufanov@swemel.ru, vfh@swemel.ru,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
- systems
-Message-ID: <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230904122114.66757-1-arefev@swemel.ru>
- <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
- <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
+        with ESMTP id S1353169AbjIDPGM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Sep 2023 11:06:12 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D98E6A;
+        Mon,  4 Sep 2023 08:05:58 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-501b9f27eb2so112346e87.0;
+        Mon, 04 Sep 2023 08:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693839956; x=1694444756; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+acTzGByTLofF9KOT2foqN1JjhesUR0PHzzKgg9AhiA=;
+        b=Cw0XwXYrvyymSnmRSznBzi3KBKVFQ8cpPz6aNIhW1E8xziexeT0vjZ+VZ61ypQx4y4
+         2LzFfUP0AdEDQq/hku1BPsu9lIPd8PJT1fiuepvma5jANemtsM4726OBgUl33yByQdXV
+         qYPMC+K3QDGR/p1OzzHWwERjCGauZHjwBmJs5tku7kL5iPo78CdZ53FGRFzeJ3Q4aGra
+         /5wZlnti95TYDOgzP4jgT6n2ROyXIYZdXvT5yYNkZ91Y4e01/tqmTvLFE2ldltPb7UBu
+         9ahTzBNAFZeoV4h/IqBopi7HVS++y/mc/RbgUKVR7k8qVGef9kD7avkeBqcBSjtyL4gy
+         z1cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693839956; x=1694444756;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+acTzGByTLofF9KOT2foqN1JjhesUR0PHzzKgg9AhiA=;
+        b=W+PMyzGEEsHrtbR6F8hp3q6iXYebb3PTo+IHtxa7HPOEFO0Cv/JXY8ucAJ4VSYCvtn
+         X0e3P0ySlZN61wmzxiuXrzZrr0mb9+VURp9OCduZjBCN2nsu+iu1b6aO18R1HnUUqqxX
+         Y2u5AttVBeIIcjqzvcJtzI1r4GxqSHfoOHBAWq+Ww3B4ROT/ayPZu4schF/ZY3yBi8wk
+         Vb3M/9PhigCoU7sSrgZKkGl8hiDWWzf/tt9s3NKG0aljIYskj4InDD8cMrY0W4jNNvTd
+         aRA9lk6x3WBsFJx0rtbJLwIO8y8vKirVQ0X9PkOyON4xdFQ25hEYFVhCqgQRU86Zu9dL
+         wz2w==
+X-Gm-Message-State: AOJu0Ywm72SqG5DbQzK0w15dQI61eA92USh/JtOO2/mVOlUd0ah0v+u1
+        fX1kgcOdZ+3U5LlvYkJQdlE=
+X-Google-Smtp-Source: AGHT+IE1qMmDVcIiUewEPY+74JKOpupd3qUwZ3PpKYiCnMEmd/xY3dtMTFUw7seZlGt8TptDJSFvHw==
+X-Received: by 2002:a05:6512:a92:b0:4f8:6831:fd70 with SMTP id m18-20020a0565120a9200b004f86831fd70mr3750538lfu.3.1693839956049;
+        Mon, 04 Sep 2023 08:05:56 -0700 (PDT)
+Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
+        by smtp.gmail.com with ESMTPSA id b25-20020a056512025900b004fbb69d8791sm1760362lfo.79.2023.09.04.08.05.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 08:05:55 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 4 Sep 2023 17:05:53 +0200
+To:     Marcus Seyfarth <m.seyfarth@gmail.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
+Message-ID: <ZPXyUTteVxXtqiEo@pc636>
+References: <CA+FbhJOSfqcb3=ecL-y=13j81b1Ts13wHpzBSURyCRQUvd2NWQ@mail.gmail.com>
+ <c054b588-b029-4380-9ec5-4ae50ee37d08@paulmck-laptop>
+ <CA+FbhJO1FbOvP=GmUse-r8Yma1tSv6iqppDhz9Ut1JKpjN49qQ@mail.gmail.com>
+ <CA+FbhJPOkV4Xa7ZJ4QF2y_-5i24F+TkhByr=LzMPt9iy9EshSQ@mail.gmail.com>
+ <4009a6e0-198c-4f25-8e34-4774dcd8c537@paulmck-laptop>
+ <CA+FbhJPxU+QKf1tTBd8XcKcSsTeRmJ=ji_L4QYiad--hGqRB5w@mail.gmail.com>
+ <bb603efb-654f-4686-bad9-0bb5379745c0@paulmck-laptop>
+ <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
+ <ZPW+KJCIAvFzZHl8@pc636>
+ <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
+In-Reply-To: <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 08:58:48AM -0400, Mathieu Desnoyers wrote:
-> On 9/4/23 08:42, Mathieu Desnoyers wrote:
-> > On 9/4/23 08:21, Denis Arefev wrote:
-> > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
-> > > is subject to overflow due to a failure to cast operands to a larger
-> > > data type before performing arithmetic.
-> > > 
-> > > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > > which can indeed cause the signed 32-bit integer literal ("1") to
-> > > overflow
-> > > when shifted by any value greater than 31.
-> > 
-> > We could expand on this:
-> > 
-> > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > which can indeed cause the signed 32-bit integer literal ("1") to overflow
-> > when shifted by any value greater than 31 on a 64-bit system.
-> > 
-> > Moreover, when the subtraction value is 31, the 1 << 31 expression results
-> > in 0xffffffff80000000 when the signed integer is promoted to unsigned long
-> > on 64-bit systems due to type promotion rules, which is certainly not the
-> > intended result.
+>     Could you please clarify some items:
+> 
+>     1.
+>     <snip>
+>     if (!WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&bnode->gp_snap))) {
+>     Â  Â  Â  Â  debug_rcu_bhead_unqueue(bnode);
+>     Â  Â  Â  Â  rcu_lock_acquire(&rcu_callback_map);
+>     <snip>
+> 
+>     Do you see this warning? I mean the one that is in the if()?
+> 
+> 
+> Hi! From my limited understanding, the warning points to that snippet: [ Â 
+> Â 7.108424] WARNING: CPU: 13 PID: 338 at kernel/rcu/tree.c:2952
+> kvfree_rcu_bulk+0x13b/0x160
+> 
+OK. Since you have a compiled vmlinux. Just to be sure, could you please
+perform below steps:
 
-Thank you both!  Could you please also add something to the effect of:
-"Given default Kconfig options, this bug affects only systems with more
-than 512 CPUs."?
+<snip>
+urezki@pc638:~/data/raid0/coding/linux.git$ gdb ./vmlinux
+GNU gdb (Debian 10.1-1.7) 10.1.90.20210103-git
+Copyright (C) 2021 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
 
-							Thanx, Paul
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./vmlinux...
+(gdb) l *kvfree_rcu_bulk+0x13b
+<snip>
 
-> > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > 
-> > With the commit message updated with my comment above, please also add:
-> > 
-> > Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures
-> > containing callbacks")
-> > Cc: <stable@vger.kernel.org> # v4.11
+and post the output here?
+
+>
+> I also don't get that warning any longer in my experiments when overwriting /
+> kernel/rcu/tree.c with the file from 6.4.14.
+> Â 
+The 6.4 does not have such warnings, therefore you do not see it :)
+
 > 
-> Sorry, the line above should read:
+>     2. Please provide a full .config file.
+>     3. Could you please also to be more specific how to reproduce a boot delay
+>     and the warning you see?
+>     4. Please provide your full dmesg.
 > 
-> Cc: <stable@vger.kernel.org> # v4.11+
 > 
-> Thanks,
+> The boot delay and warnings happen with both my self-compiled 6.5.1 and the
+> CachyOS default Kernel 6.5.0-2. Reproducing is as simple as booting into that
+> system and open up dmesg after the task bar eventually shows up (which takes 10
+> - 20 seconds longer than normal). The warning goes away when overwriting /
+> kernel/rcu/tree.c with the file from 6.4.14. But the slow boot, task bar and
+> the shutdown/reboot problem remained. Journalctl signals some failures with
+> powerdevil that do not happen with the older Kernel installed.
 > 
-> Mathieu
+Let's focus on your own self compiled kernel. As for the 6.5.1 kernel,
+could you please point your SHA1 so i can take a vanilla kernel and base
+my testing on exactly the same baseline?
+
+
+> I've attached the files to this mail for convenience.Â 
 > 
-> > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > 
-> > Thanks!
-> > 
-> > Mathieu
-> > 
-> > > 
-> > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> > > ---
-> > > v3: Changed the name of the patch, as suggested by
-> > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
-> > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > >   kernel/rcu/srcutree.c | 4 ++--
-> > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > index 20d7a238d675..6c18e6005ae1 100644
-> > > --- a/kernel/rcu/srcutree.c
-> > > +++ b/kernel/rcu/srcutree.c
-> > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct
-> > > srcu_struct *ssp, gfp_t gfp_flags)
-> > >                   snp->grplo = cpu;
-> > >               snp->grphi = cpu;
-> > >           }
-> > > -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> > > +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
-> > >       }
-> > >       smp_store_release(&ssp->srcu_sup->srcu_size_state,
-> > > SRCU_SIZE_WAIT_BARRIER);
-> > >       return true;
-> > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct
-> > > srcu_struct *ssp, struct srcu_node *snp
-> > >       int cpu;
-> > >       for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> > > -        if (!(mask & (1 << (cpu - snp->grplo))))
-> > > +        if (!(mask & (1UL << (cpu - snp->grplo))))
-> > >               continue;
-> > >           srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> > >       }
-> > 
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+Appreciate and thank you for the help!
+
+--
+Uladzislau Rezki
