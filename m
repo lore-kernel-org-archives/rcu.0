@@ -2,66 +2,64 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B937C71153
-	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 15:06:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE47AC83F2C
+	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 16:53:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353171AbjIDPGN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Sep 2023 11:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        id S233620AbjIDQx4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Sep 2023 12:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353169AbjIDPGM (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:06:12 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D98E6A;
-        Mon,  4 Sep 2023 08:05:58 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-501b9f27eb2so112346e87.0;
-        Mon, 04 Sep 2023 08:05:58 -0700 (PDT)
+        with ESMTP id S229463AbjIDQxz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Sep 2023 12:53:55 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDE3CC5;
+        Mon,  4 Sep 2023 09:53:51 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b974031aeaso27514361fa.0;
+        Mon, 04 Sep 2023 09:53:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693839956; x=1694444756; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693846430; x=1694451230; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=+acTzGByTLofF9KOT2foqN1JjhesUR0PHzzKgg9AhiA=;
-        b=Cw0XwXYrvyymSnmRSznBzi3KBKVFQ8cpPz6aNIhW1E8xziexeT0vjZ+VZ61ypQx4y4
-         2LzFfUP0AdEDQq/hku1BPsu9lIPd8PJT1fiuepvma5jANemtsM4726OBgUl33yByQdXV
-         qYPMC+K3QDGR/p1OzzHWwERjCGauZHjwBmJs5tku7kL5iPo78CdZ53FGRFzeJ3Q4aGra
-         /5wZlnti95TYDOgzP4jgT6n2ROyXIYZdXvT5yYNkZ91Y4e01/tqmTvLFE2ldltPb7UBu
-         9ahTzBNAFZeoV4h/IqBopi7HVS++y/mc/RbgUKVR7k8qVGef9kD7avkeBqcBSjtyL4gy
-         z1cg==
+        bh=tabLz2qlILUUiJwdP7M/Z8VGI+/MqtB6WYxoDuen/JM=;
+        b=Ad+FLJZpHtsZ7cx1/O906Vhfooe6C+u2qPQoARRuOKeCEBaesblScNweHaoPD2BCLg
+         wtSBgAn5lMTtgQdZnqA87hcuhF9RuSKzUBqPyCRmLLUsJZJo07qusD92PJSHFReLhss4
+         9N/wTe1c0Q2ccnWv7jFRApb4Cw27Xoj5Y68IbTuOp/JtJyppwTleWT+8K2rkk1/DUF8D
+         S+GhKQ76X1mpn9oc+yrqkzUey9+z6e9MNMt+g7IV3YAO0Yc6NH9MlAuzVj362NjfGsRW
+         RCB4HS/HpzIzplUTDxFOBdrUeV/XDldVmj1Cp6BfjfXZ78xhfRu3TheIFAopYEkCY8nG
+         QF0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693839956; x=1694444756;
+        d=1e100.net; s=20221208; t=1693846430; x=1694451230;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+acTzGByTLofF9KOT2foqN1JjhesUR0PHzzKgg9AhiA=;
-        b=W+PMyzGEEsHrtbR6F8hp3q6iXYebb3PTo+IHtxa7HPOEFO0Cv/JXY8ucAJ4VSYCvtn
-         X0e3P0ySlZN61wmzxiuXrzZrr0mb9+VURp9OCduZjBCN2nsu+iu1b6aO18R1HnUUqqxX
-         Y2u5AttVBeIIcjqzvcJtzI1r4GxqSHfoOHBAWq+Ww3B4ROT/ayPZu4schF/ZY3yBi8wk
-         Vb3M/9PhigCoU7sSrgZKkGl8hiDWWzf/tt9s3NKG0aljIYskj4InDD8cMrY0W4jNNvTd
-         aRA9lk6x3WBsFJx0rtbJLwIO8y8vKirVQ0X9PkOyON4xdFQ25hEYFVhCqgQRU86Zu9dL
-         wz2w==
-X-Gm-Message-State: AOJu0Ywm72SqG5DbQzK0w15dQI61eA92USh/JtOO2/mVOlUd0ah0v+u1
-        fX1kgcOdZ+3U5LlvYkJQdlE=
-X-Google-Smtp-Source: AGHT+IE1qMmDVcIiUewEPY+74JKOpupd3qUwZ3PpKYiCnMEmd/xY3dtMTFUw7seZlGt8TptDJSFvHw==
-X-Received: by 2002:a05:6512:a92:b0:4f8:6831:fd70 with SMTP id m18-20020a0565120a9200b004f86831fd70mr3750538lfu.3.1693839956049;
-        Mon, 04 Sep 2023 08:05:56 -0700 (PDT)
+        bh=tabLz2qlILUUiJwdP7M/Z8VGI+/MqtB6WYxoDuen/JM=;
+        b=B1Tm+32RAaGE4yW1ZO4X2FcL0bUhYxG/zdbDF6zjtYFbYRyfSe9HKR+Pf1Val/yuRY
+         YBcjyaE9rqjNuMyvzIWfA8y7O2ABq78JIUHPKr8TYJcTOSn7BlaU4btmGY3JJpPvfuyk
+         jBtwpcePZ5iaMT4aIH8iWl8GyA/plTPLFjNG+amMKXQsaXaRVAvSy+aIAFzwljbwvxGF
+         Yzt1kJcy66KKgr46mnyrabligyoWRJu8tDPBUBOvb6Oh2ouN4HMV03qpssnvP/siYzU1
+         r3EMKseb1vJhx2cy9ScEc0AwQ80J1fgmnlzeCGtNx88pLDP8ownn2nhXAgFZND75csfu
+         achQ==
+X-Gm-Message-State: AOJu0Yy9gyFu+p3YK4Mo5KeojHCH2n3ref4DCqpJh8mbStxK/1jxUA1x
+        teZzuCxJhWviH0BHDbNqXbUX+/wT4T8=
+X-Google-Smtp-Source: AGHT+IEpqtsasNYqPkHkwNrhu90q7GeSVQEOz4fGwqZM7IEzf6yH1Ym7bKtpe8LHoCY1IlaX7SW4sA==
+X-Received: by 2002:a2e:740b:0:b0:2b6:d6e1:a191 with SMTP id p11-20020a2e740b000000b002b6d6e1a191mr6990277ljc.23.1693846429800;
+        Mon, 04 Sep 2023 09:53:49 -0700 (PDT)
 Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
-        by smtp.gmail.com with ESMTPSA id b25-20020a056512025900b004fbb69d8791sm1760362lfo.79.2023.09.04.08.05.55
+        by smtp.gmail.com with ESMTPSA id w15-20020a2e300f000000b002b6ce8b0dd6sm2250014ljw.75.2023.09.04.09.53.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 08:05:55 -0700 (PDT)
+        Mon, 04 Sep 2023 09:53:49 -0700 (PDT)
 From:   Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 4 Sep 2023 17:05:53 +0200
+Date:   Mon, 4 Sep 2023 18:53:46 +0200
 To:     Marcus Seyfarth <m.seyfarth@gmail.com>
 Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
         Bagas Sanjaya <bagasdotme@gmail.com>,
         Ziwei Dai <ziwei.dai@unisoc.com>, linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org
 Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
-Message-ID: <ZPXyUTteVxXtqiEo@pc636>
-References: <CA+FbhJOSfqcb3=ecL-y=13j81b1Ts13wHpzBSURyCRQUvd2NWQ@mail.gmail.com>
- <c054b588-b029-4380-9ec5-4ae50ee37d08@paulmck-laptop>
- <CA+FbhJO1FbOvP=GmUse-r8Yma1tSv6iqppDhz9Ut1JKpjN49qQ@mail.gmail.com>
+Message-ID: <ZPYLmm3ih7u95l1a@pc636>
+References: <CA+FbhJO1FbOvP=GmUse-r8Yma1tSv6iqppDhz9Ut1JKpjN49qQ@mail.gmail.com>
  <CA+FbhJPOkV4Xa7ZJ4QF2y_-5i24F+TkhByr=LzMPt9iy9EshSQ@mail.gmail.com>
  <4009a6e0-198c-4f25-8e34-4774dcd8c537@paulmck-laptop>
  <CA+FbhJPxU+QKf1tTBd8XcKcSsTeRmJ=ji_L4QYiad--hGqRB5w@mail.gmail.com>
@@ -69,86 +67,80 @@ References: <CA+FbhJOSfqcb3=ecL-y=13j81b1Ts13wHpzBSURyCRQUvd2NWQ@mail.gmail.com>
  <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
  <ZPW+KJCIAvFzZHl8@pc636>
  <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
+ <ZPXyUTteVxXtqiEo@pc636>
+ <CA+FbhJMr6LzmOpVNkYyiSERAsNEqqvQwQ7SwJK=CmwvV9d2Z-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
+In-Reply-To: <CA+FbhJMr6LzmOpVNkYyiSERAsNEqqvQwQ7SwJK=CmwvV9d2Z-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->     Could you please clarify some items:
 > 
->     1.
+>     >     Could you please clarify some items:
+>     >
+>     >     1.
+>     >     <snip>
+>     >     if (!WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&bnode->gp_snap)))
+>     {
+>     >             debug_rcu_bhead_unqueue(bnode);
+>     >             rcu_lock_acquire(&rcu_callback_map);
+>     >     <snip>
+>     >
+>     >     Do you see this warning? I mean the one that is in the if()?
+>     >
+>     >
+>     > Hi! From my limited understanding, the warning points to that snippet: [
+>      
+>     >  7.108424] WARNING: CPU: 13 PID: 338 at kernel/rcu/tree.c:2952
+>     > kvfree_rcu_bulk+0x13b/0x160
+>     >
+>     OK. Since you have a compiled vmlinux. Just to be sure, could you please
+>     perform below steps:
+> 
 >     <snip>
->     if (!WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&bnode->gp_snap))) {
->             debug_rcu_bhead_unqueue(bnode);
->             rcu_lock_acquire(&rcu_callback_map);
+>     urezki@pc638:~/data/raid0/coding/linux.git$ gdb ./vmlinux
+>     GNU gdb (Debian 10.1-1.7) 10.1.90.20210103-git
+>     Copyright (C) 2021 Free Software Foundation, Inc.
+>     License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/
+>     gpl.html>
+>     This is free software: you are free to change and redistribute it.
+>     There is NO WARRANTY, to the extent permitted by law.
+>     Type "show copying" and "show warranty" for details.
+>     This GDB was configured as "x86_64-linux-gnu".
+>     Type "show configuration" for configuration details.
+>     For bug reporting instructions, please see:
+>     <https://www.gnu.org/software/gdb/bugs/>.
+>     Find the GDB manual and other documentation resources online at:
+>         <http://www.gnu.org/software/gdb/documentation/>.
+> 
+>     For help, type "help".
+>     Type "apropos word" to search for commands related to "word"...
+>     Reading symbols from ./vmlinux...
+>     (gdb) l *kvfree_rcu_bulk+0x13b
 >     <snip>
 > 
->     Do you see this warning? I mean the one that is in the if()?
+>     and post the output here?
 > 
 > 
-> Hi! From my limited understanding, the warning points to that snippet: [  
->  7.108424] WARNING: CPU: 13 PID: 338 at kernel/rcu/tree.c:2952
-> kvfree_rcu_bulk+0x13b/0x160
+> I guess that is with my self-compiled 6.5.1 installed, right? I might come back
+> to this task with the asked data later, but as that machine is used in
+> production for daily tasks this might take a couple of days.
 > 
-OK. Since you have a compiled vmlinux. Just to be sure, could you please
-perform below steps:
+Yes, please.
 
-<snip>
-urezki@pc638:~/data/raid0/coding/linux.git$ gdb ./vmlinux
-GNU gdb (Debian 10.1-1.7) 10.1.90.20210103-git
-Copyright (C) 2021 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-Type "show copying" and "show warranty" for details.
-This GDB was configured as "x86_64-linux-gnu".
-Type "show configuration" for configuration details.
-For bug reporting instructions, please see:
-<https://www.gnu.org/software/gdb/bugs/>.
-Find the GDB manual and other documentation resources online at:
-    <http://www.gnu.org/software/gdb/documentation/>.
-
-For help, type "help".
-Type "apropos word" to search for commands related to "word"...
-Reading symbols from ./vmlinux...
-(gdb) l *kvfree_rcu_bulk+0x13b
-<snip>
-
-and post the output here?
-
+> 
+> I don't have an SHA1 but you can take the vanilla 6.5.1 kernel and apply all
+> seven 0001-*.patch files from my repo that are available here: https://
+> github.com/ms178/archpkgbuilds/tree/main/packages/linux-cachyos to get it into
+> the same state.
 >
-> I also don't get that warning any longer in my experiments when overwriting /
-> kernel/rcu/tree.c with the file from 6.4.14.
->  
-The 6.4 does not have such warnings, therefore you do not see it :)
+Sounds good. I will try my best to reproduce it locally with set of
+extra patches + your .config + 6.5.1 kernel.
 
-> 
->     2. Please provide a full .config file.
->     3. Could you please also to be more specific how to reproduce a boot delay
->     and the warning you see?
->     4. Please provide your full dmesg.
-> 
-> 
-> The boot delay and warnings happen with both my self-compiled 6.5.1 and the
-> CachyOS default Kernel 6.5.0-2. Reproducing is as simple as booting into that
-> system and open up dmesg after the task bar eventually shows up (which takes 10
-> - 20 seconds longer than normal). The warning goes away when overwriting /
-> kernel/rcu/tree.c with the file from 6.4.14. But the slow boot, task bar and
-> the shutdown/reboot problem remained. Journalctl signals some failures with
-> powerdevil that do not happen with the older Kernel installed.
-> 
-Let's focus on your own self compiled kernel. As for the 6.5.1 kernel,
-could you please point your SHA1 so i can take a vanilla kernel and base
-my testing on exactly the same baseline?
-
-
-> I've attached the files to this mail for convenience. 
-> 
-Appreciate and thank you for the help!
+Thank you for the help to debug it!
 
 --
 Uladzislau Rezki
