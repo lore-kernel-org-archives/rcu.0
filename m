@@ -2,145 +2,131 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE47AC83F2C
-	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 16:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD4DCC83F3F
+	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 18:08:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbjIDQx4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Sep 2023 12:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        id S1343686AbjIDSIO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Sep 2023 14:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjIDQxz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Sep 2023 12:53:55 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDE3CC5;
-        Mon,  4 Sep 2023 09:53:51 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b974031aeaso27514361fa.0;
-        Mon, 04 Sep 2023 09:53:51 -0700 (PDT)
+        with ESMTP id S243473AbjIDSIN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Sep 2023 14:08:13 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1D8E6
+        for <rcu@vger.kernel.org>; Mon,  4 Sep 2023 11:08:10 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34e15f33a72so5241315ab.3
+        for <rcu@vger.kernel.org>; Mon, 04 Sep 2023 11:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693846430; x=1694451230; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tabLz2qlILUUiJwdP7M/Z8VGI+/MqtB6WYxoDuen/JM=;
-        b=Ad+FLJZpHtsZ7cx1/O906Vhfooe6C+u2qPQoARRuOKeCEBaesblScNweHaoPD2BCLg
-         wtSBgAn5lMTtgQdZnqA87hcuhF9RuSKzUBqPyCRmLLUsJZJo07qusD92PJSHFReLhss4
-         9N/wTe1c0Q2ccnWv7jFRApb4Cw27Xoj5Y68IbTuOp/JtJyppwTleWT+8K2rkk1/DUF8D
-         S+GhKQ76X1mpn9oc+yrqkzUey9+z6e9MNMt+g7IV3YAO0Yc6NH9MlAuzVj362NjfGsRW
-         RCB4HS/HpzIzplUTDxFOBdrUeV/XDldVmj1Cp6BfjfXZ78xhfRu3TheIFAopYEkCY8nG
-         QF0Q==
+        d=joelfernandes.org; s=google; t=1693850890; x=1694455690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zr3sV+XQtYagsN7Oqrbp+58+EQW5Ic/xyDIjYG4JLi4=;
+        b=wu0/UY692LRIqexHVpewnKeH3ODnHZPiZarbI9nRtFjwhqZWEorAW2YMIjHDL70FF9
+         KeHeSJ9YelYck0j8A9FZ5+D60L9SGX4enUT3KCuvbpMLEvwUt2bMxvpXLG2F65PKXu4O
+         vS6pf8RdiFlW0pJDsMvLokkTXqoncECmwO9os=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693846430; x=1694451230;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tabLz2qlILUUiJwdP7M/Z8VGI+/MqtB6WYxoDuen/JM=;
-        b=B1Tm+32RAaGE4yW1ZO4X2FcL0bUhYxG/zdbDF6zjtYFbYRyfSe9HKR+Pf1Val/yuRY
-         YBcjyaE9rqjNuMyvzIWfA8y7O2ABq78JIUHPKr8TYJcTOSn7BlaU4btmGY3JJpPvfuyk
-         jBtwpcePZ5iaMT4aIH8iWl8GyA/plTPLFjNG+amMKXQsaXaRVAvSy+aIAFzwljbwvxGF
-         Yzt1kJcy66KKgr46mnyrabligyoWRJu8tDPBUBOvb6Oh2ouN4HMV03qpssnvP/siYzU1
-         r3EMKseb1vJhx2cy9ScEc0AwQ80J1fgmnlzeCGtNx88pLDP8ownn2nhXAgFZND75csfu
-         achQ==
-X-Gm-Message-State: AOJu0Yy9gyFu+p3YK4Mo5KeojHCH2n3ref4DCqpJh8mbStxK/1jxUA1x
-        teZzuCxJhWviH0BHDbNqXbUX+/wT4T8=
-X-Google-Smtp-Source: AGHT+IEpqtsasNYqPkHkwNrhu90q7GeSVQEOz4fGwqZM7IEzf6yH1Ym7bKtpe8LHoCY1IlaX7SW4sA==
-X-Received: by 2002:a2e:740b:0:b0:2b6:d6e1:a191 with SMTP id p11-20020a2e740b000000b002b6d6e1a191mr6990277ljc.23.1693846429800;
-        Mon, 04 Sep 2023 09:53:49 -0700 (PDT)
-Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
-        by smtp.gmail.com with ESMTPSA id w15-20020a2e300f000000b002b6ce8b0dd6sm2250014ljw.75.2023.09.04.09.53.48
+        d=1e100.net; s=20221208; t=1693850890; x=1694455690;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zr3sV+XQtYagsN7Oqrbp+58+EQW5Ic/xyDIjYG4JLi4=;
+        b=aWLncHooy+Et9j+wCuKGvEr6qLgCCblOOVmDg/BL2AD74sIEjeJTwIFQlp8V3IWibS
+         gNKz2QqtQQ3B9qFqCz7WUFUTS9l+VhAcyN0hyPYUw8fXvVfTZ4imJROQIhdxmPs54jGx
+         Z8DdBdAGgmnLBs4YVGCDVU+YK0E/MN6T10VkYFTrmNDj6rOmJtDxODnLjReCMdnqDFaR
+         flJ0qPMJ1beoHlcI3VpRhiBW1pSv1mzEQOHr5atCXhPak5oodDP0eFaSxnkWN1aQwS+P
+         4pMUibajovK2xs/HWw0XqZ4/GqjwOXRBFv3Uw+Quonq/C0GaxejTsv4xo2FWitkvHpGj
+         ohVA==
+X-Gm-Message-State: AOJu0YxXz5lGtnZqhLWgBly3vSijEyV8nm1E9wsrKlg82zcvuhq6ZfHG
+        7yQEYr665P2oHXoioRdwmjE2GQ==
+X-Google-Smtp-Source: AGHT+IFbD+DaAQ3YbgG2+T0I0C6EZ5+DKMrgMuUdKzBowVD9B/0AeNCAjrN71tih8W71+pJaIVm+PA==
+X-Received: by 2002:a92:d90b:0:b0:34c:e5c2:918b with SMTP id s11-20020a92d90b000000b0034ce5c2918bmr11118950iln.13.1693850890063;
+        Mon, 04 Sep 2023 11:08:10 -0700 (PDT)
+Received: from joelboxx5.corp.google.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id g15-20020a02b70f000000b0042bb13cb80fsm3520216jam.120.2023.09.04.11.08.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 09:53:49 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 4 Sep 2023 18:53:46 +0200
-To:     Marcus Seyfarth <m.seyfarth@gmail.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
-Message-ID: <ZPYLmm3ih7u95l1a@pc636>
-References: <CA+FbhJO1FbOvP=GmUse-r8Yma1tSv6iqppDhz9Ut1JKpjN49qQ@mail.gmail.com>
- <CA+FbhJPOkV4Xa7ZJ4QF2y_-5i24F+TkhByr=LzMPt9iy9EshSQ@mail.gmail.com>
- <4009a6e0-198c-4f25-8e34-4774dcd8c537@paulmck-laptop>
- <CA+FbhJPxU+QKf1tTBd8XcKcSsTeRmJ=ji_L4QYiad--hGqRB5w@mail.gmail.com>
- <bb603efb-654f-4686-bad9-0bb5379745c0@paulmck-laptop>
- <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
- <ZPW+KJCIAvFzZHl8@pc636>
- <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
- <ZPXyUTteVxXtqiEo@pc636>
- <CA+FbhJMr6LzmOpVNkYyiSERAsNEqqvQwQ7SwJK=CmwvV9d2Z-A@mail.gmail.com>
+        Mon, 04 Sep 2023 11:08:09 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
+        stable@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area() for debug
+Date:   Mon,  4 Sep 2023 18:08:04 +0000
+Message-ID: <20230904180806.1002832-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+FbhJMr6LzmOpVNkYyiSERAsNEqqvQwQ7SwJK=CmwvV9d2Z-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> 
->     >     Could you please clarify some items:
->     >
->     >     1.
->     >     <snip>
->     >     if (!WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&bnode->gp_snap)))
->     {
->     >             debug_rcu_bhead_unqueue(bnode);
->     >             rcu_lock_acquire(&rcu_callback_map);
->     >     <snip>
->     >
->     >     Do you see this warning? I mean the one that is in the if()?
->     >
->     >
->     > Hi! From my limited understanding, the warning points to that snippet: [
->      
->     >  7.108424] WARNING: CPU: 13 PID: 338 at kernel/rcu/tree.c:2952
->     > kvfree_rcu_bulk+0x13b/0x160
->     >
->     OK. Since you have a compiled vmlinux. Just to be sure, could you please
->     perform below steps:
-> 
->     <snip>
->     urezki@pc638:~/data/raid0/coding/linux.git$ gdb ./vmlinux
->     GNU gdb (Debian 10.1-1.7) 10.1.90.20210103-git
->     Copyright (C) 2021 Free Software Foundation, Inc.
->     License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/
->     gpl.html>
->     This is free software: you are free to change and redistribute it.
->     There is NO WARRANTY, to the extent permitted by law.
->     Type "show copying" and "show warranty" for details.
->     This GDB was configured as "x86_64-linux-gnu".
->     Type "show configuration" for configuration details.
->     For bug reporting instructions, please see:
->     <https://www.gnu.org/software/gdb/bugs/>.
->     Find the GDB manual and other documentation resources online at:
->         <http://www.gnu.org/software/gdb/documentation/>.
-> 
->     For help, type "help".
->     Type "apropos word" to search for commands related to "word"...
->     Reading symbols from ./vmlinux...
->     (gdb) l *kvfree_rcu_bulk+0x13b
->     <snip>
-> 
->     and post the output here?
-> 
-> 
-> I guess that is with my self-compiled 6.5.1 installed, right? I might come back
-> to this task with the asked data later, but as that machine is used in
-> production for daily tasks this might take a couple of days.
-> 
-Yes, please.
+It is unsafe to dump vmalloc area information when trying to do so from
+some contexts. Add a safer trylock version of the same function to do a
+best-effort VMA finding and use it from vmalloc_dump_obj().
 
-> 
-> I don't have an SHA1 but you can take the vanilla 6.5.1 kernel and apply all
-> seven 0001-*.patch files from my repo that are available here: https://
-> github.com/ms178/archpkgbuilds/tree/main/packages/linux-cachyos to get it into
-> the same state.
->
-Sounds good. I will try my best to reproduce it locally with set of
-extra patches + your .config + 6.5.1 kernel.
+[applied test robot feedback on unused function fix.]
+[applied Uladzislau feedback on locking.]
 
-Thank you for the help to debug it!
+Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org
+Cc: Zqiang <qiang.zhang1211@gmail.com>
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+Cc: stable@vger.kernel.org
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ mm/vmalloc.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
---
-Uladzislau Rezki
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 93cf99aba335..2c6a0e2ff404 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+ #ifdef CONFIG_PRINTK
+ bool vmalloc_dump_obj(void *object)
+ {
+-	struct vm_struct *vm;
+ 	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
++	const void *caller;
++	struct vm_struct *vm;
++	struct vmap_area *va;
++	unsigned long addr;
++	unsigned int nr_pages;
+ 
+-	vm = find_vm_area(objp);
+-	if (!vm)
++	if (!spin_trylock(&vmap_area_lock))
++		return false;
++	va = __find_vmap_area((unsigned long)objp, &vmap_area_root);
++	if (!va) {
++		spin_unlock(&vmap_area_lock);
+ 		return false;
++	}
++
++	vm = va->vm;
++	if (!vm) {
++		spin_unlock(&vmap_area_lock);
++		return false;
++	}
++	addr = (unsigned long)vm->addr;
++	caller = vm->caller;
++	nr_pages = vm->nr_pages;
++	spin_unlock(&vmap_area_lock);
+ 	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+-		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
++		nr_pages, addr, caller);
+ 	return true;
+ }
+ #endif
+-- 
+2.42.0.283.g2d96d420d3-goog
+
