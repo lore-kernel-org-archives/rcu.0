@@ -2,90 +2,143 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22AA8C71153
-	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 19:13:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C382C83F3E
+	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 21:23:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241373AbjIDTNr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Sep 2023 15:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
+        id S234684AbjIDVXF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Sep 2023 17:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjIDTNr (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Sep 2023 15:13:47 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C601189;
-        Mon,  4 Sep 2023 12:13:44 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcc4347d2dso25547861fa.0;
-        Mon, 04 Sep 2023 12:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693854822; x=1694459622; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B6wmCakRtewm2+bJdkn7kR1fHTbKa9QWEP3nUsfbTj4=;
-        b=X90fTleoastJiprldBmvC1o9dUu9tgrXxGpLrePj4jvcCsC1N0veYkB6d78R6aEy7i
-         jP3UE1cASPxqmGnapiCyiigoU+P2RnJjHasogS5WV3E3xk350zaOKLjcqg2hAyPwTAbY
-         M4l5DHfPVks//12Qgu0e9vdawe3UTojV5bGn7/fagf2bZIF8E5vlA3w16FUIoWomVugz
-         f6wGsnWswmbmrdD7CygyOdv/vYuxq+z3DaG0uf18WMh+rgQQrArkQAc8ySPxfxx6hf0j
-         qOeS+8hpj6w1h9gISQM9IlJEJ92/a1KvnAm6XxmsUCVQYQ2/o2257S3eb4wVJgwnpXZ+
-         n3Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693854822; x=1694459622;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B6wmCakRtewm2+bJdkn7kR1fHTbKa9QWEP3nUsfbTj4=;
-        b=IN6WthRXJ5eG8JBAmTJRO8+3EXXyvL6V7mAgldScR8tM93HD2zNAVO14JIjV6/ILgA
-         NTtpFkHANSBLaTCOQyta9e9LaxCTaDae2hLU+xS7rh3k/lb+tTn1S/jPArfIwO7x1S6Y
-         dK3sxzRA45PwOqIxg0XlQNQjbDFXO72cb63EZR2CjVRqAgZDgtGysz5Hqu61zZ84pzkl
-         vo6aR1Kx71ajFvU3fkiC6BKM035++s8htzv6YJUsz70H6sKFIBDVaHGgzZEXOCJbUkYa
-         m93x0EdinnGMolgeTow5DZ7oEYtkqphctVGcF7fsX7s4elmOE9LVww9ZsFjhzpoW2IHV
-         rvbg==
-X-Gm-Message-State: AOJu0Yya5ziL632IJVXaU5wFhsu9BhHoj/Cln9AxtuSVmE2Pl9sF7rBN
-        mV9jc2bdDmDituxHxYADCC4=
-X-Google-Smtp-Source: AGHT+IGSL8PEvYnkWc7GpXRT5MkYfVr5Xn5yQrvz9Pz9JNs6xBuJcq20GtuuK2hqtbLYW3Eul85wSw==
-X-Received: by 2002:a2e:888f:0:b0:2b6:de52:357 with SMTP id k15-20020a2e888f000000b002b6de520357mr7955436lji.40.1693854822205;
-        Mon, 04 Sep 2023 12:13:42 -0700 (PDT)
-Received: from pc636 ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id 18-20020a05651c00d200b002b9f4f3e16dsm2329255ljr.85.2023.09.04.12.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 12:13:41 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 4 Sep 2023 21:13:39 +0200
-To:     Marcus Seyfarth <m.seyfarth@gmail.com>
-Cc:     Marcus Seyfarth <m.seyfarth@gmail.com>, paulmck@kernel.org,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
-Message-ID: <ZPYsY2HEjySkq/NR@pc636>
-References: <CA+FbhJPOkV4Xa7ZJ4QF2y_-5i24F+TkhByr=LzMPt9iy9EshSQ@mail.gmail.com>
- <4009a6e0-198c-4f25-8e34-4774dcd8c537@paulmck-laptop>
- <CA+FbhJPxU+QKf1tTBd8XcKcSsTeRmJ=ji_L4QYiad--hGqRB5w@mail.gmail.com>
- <bb603efb-654f-4686-bad9-0bb5379745c0@paulmck-laptop>
- <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
- <ZPW+KJCIAvFzZHl8@pc636>
- <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
- <ZPXyUTteVxXtqiEo@pc636>
- <CA+FbhJMr6LzmOpVNkYyiSERAsNEqqvQwQ7SwJK=CmwvV9d2Z-A@mail.gmail.com>
- <ZPYLmm3ih7u95l1a@pc636>
+        with ESMTP id S234248AbjIDVXE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Sep 2023 17:23:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2114E127
+        for <rcu@vger.kernel.org>; Mon,  4 Sep 2023 14:23:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 981BB61371
+        for <rcu@vger.kernel.org>; Mon,  4 Sep 2023 21:23:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD244C433C7;
+        Mon,  4 Sep 2023 21:22:58 +0000 (UTC)
+Date:   Mon, 4 Sep 2023 22:22:56 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Christoph Paasch <cpaasch@apple.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
+Subject: Re: kmemleak handling of kfree_rcu
+Message-ID: <ZPZKsJUPVeHCsLQB@arm.com>
+References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZPYLmm3ih7u95l1a@pc636>
+In-Reply-To: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->> https://github.com/ms178/archpkgbuilds/tree/main/packages/linux-cachyos
-0001-EEVDF-cachy.patch
-0001-arch-x86-Makefile.patch
-0001-bore-eevdf.patch
-0001-cachyos-base-all.patch
-0001-lrng.patch
-0001-makefile-clang-ms178.patch
-0001-ms178.patch
+Hi Christoph,
 
-Is sequence of applying important or there is no dependency?
+Please try not to send html, many servers block such emails.
 
---
-Uladzislau Rezki
+Also adding the RCU list.
+
+On Wed, Aug 30, 2023 at 09:37:23AM -0700, Christoph Paasch wrote:
+> for the MPTCP upstream project, we are running syzkaller [1] continuously to
+> qualify our kernel changes.
+> 
+> We found one issue with kmemleak and its handling of kfree_rcu.
+> 
+> Specifically, it looks like kmemleak falsely reports memory-leaks when the
+> object is being freed by kfree_rcu after a certain grace-period.
+> 
+> For example, https://github.com/multipath-tcp/mptcp_net-next/issues/398#
+> issuecomment-1584819482 shows how the syzkaller program reliably produces a
+> kmemleak report, although the object is not leaked (we confirmed that by simply
+> increasing MSECS_MIN_AGE to something larger than the grace-period).
+
+Not sure which RCU variant you are using but most likely the false
+positives are caused by the original reference to the object being lost
+and the pointer added to a new location that kmemleak does not track
+(e.g. bnode->records[] in the tree-based variant).
+
+A quick attempt (untested, not even compiled):
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1449cb69a0e0..681a1eb7560a 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -53,6 +53,7 @@
+ #include <linux/sysrq.h>
+ #include <linux/kprobes.h>
+ #include <linux/gfp.h>
++#include <linux/kmemleak.h>
+ #include <linux/oom.h>
+ #include <linux/smpboot.h>
+ #include <linux/jiffies.h>
+@@ -2934,6 +2935,7 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
+ 
+ 	llist_for_each_safe(pos, n, page_list) {
+ 		free_page((unsigned long)pos);
++		kmemleak_free(pos);
+ 		freed++;
+ 	}
+ 
+@@ -2962,8 +2964,16 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+ 					rcu_state.name, bnode->records[i], 0);
+ 
+ 				vfree(bnode->records[i]);
++				/* avoid false negatives */
++				kmemleak_erase(&bnode->records[i]);
+ 			}
+ 		}
++		/*
++		 * Avoid kmemleak false negatives when such pointers are later
++		 * re-allocated.
++		 */
++		for (i = 0; i < bnode->nr_records; i++)
++			kmemleak_erase(&bnode->records[i]);
+ 		rcu_lock_release(&rcu_callback_map);
+ 	}
+ 
+@@ -2972,8 +2982,10 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+ 		bnode = NULL;
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 
+-	if (bnode)
++	if (bnode) {
+ 		free_page((unsigned long) bnode);
++		kmemleak_free(bnode);
++	}
+ 
+ 	cond_resched_tasks_rcu_qs();
+ }
+@@ -3241,6 +3253,12 @@ static void fill_page_cache_func(struct work_struct *work)
+ 			free_page((unsigned long) bnode);
+ 			break;
+ 		}
++
++		/*
++		 * Scan the bnode->records[] array until the objects are
++		 * actually freed.
++		 */
++		kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
+ 	}
+ 
+ 	atomic_set(&krcp->work_in_progress, 0);
+@@ -3308,6 +3326,11 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 			// scenarios.
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+ 				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
++			/*
++			 * Scan the bnode->records[] array until the objects are
++			 * actually freed.
++			 */
++			kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
+ 			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
+ 		}
+ 
+
+-- 
+Catalin
