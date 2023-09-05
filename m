@@ -2,243 +2,169 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1E0FCA1003
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E492CA0FF8
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351870AbjIEQ0T (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S1351875AbjIEQ0V (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354742AbjIEOAU (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:00:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A02C9;
-        Tue,  5 Sep 2023 07:00:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04AD360A05;
-        Tue,  5 Sep 2023 14:00:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5931DC433C8;
-        Tue,  5 Sep 2023 14:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693922415;
-        bh=764yMbuNMe5JetI5MaMMRQb1mxEqxLpU0jdCUiYvO2w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pcJUcT6A1q+IhvNaKBGuS9tB/gTtXUinjnY0zK98Lc08Eq4tFiS2LRoCEeHFKlj7d
-         vxZbhDMM63vF+tNq2YKA/0FRk1KAgTcSLrqftS4PtfB3M0lpO1JcqQJgKqo4yol6vR
-         oNh/XUI/gs0795wz3iJ+kPWe+ba12B+RzzD08vpd01C4YJRVZX/HOuYgQ6WroLadK1
-         1nX/1tA5k5GTEEqhMogAUdNpIat6kidxD0gy5vizMmVOJBa9EEfw4o/TJbwAjW4sL/
-         Efsx6n6UqqlIh8dryApUAG90RvtSRqhYRKSOL2XjBm8IWo2zfGf5FaT7YLYVPTNa8U
-         KMWUmiznTNDlQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EECEACE0CF9; Tue,  5 Sep 2023 07:00:14 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 07:00:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
-        trufanov@swemel.ru, vfh@swemel.ru,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
- systems
-Message-ID: <ba1292b4-8feb-4359-9bfc-120082359a17@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230904122114.66757-1-arefev@swemel.ru>
- <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
- <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
- <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
- <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
- <98c676a6-3c11-48f1-b7cb-81356c362680@paulmck-laptop>
- <2613d958-8e8a-c302-8779-8719a10c82e5@efficios.com>
+        with ESMTP id S1353642AbjIEHAx (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 03:00:53 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931AB1B4;
+        Tue,  5 Sep 2023 00:00:48 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31977ace1c8so1906759f8f.1;
+        Tue, 05 Sep 2023 00:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693897247; x=1694502047; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PXyDlNAn3aTmEsTW95GvcdGMYos2arUzMqrBn1clqqU=;
+        b=jNNWHI3DOC7sP3Ti/qBCBMv8WTmQOsm30oiRcxojWhKMNoOXsbz+kcXnay28kNcE9q
+         NjUqlLkCyTDhCAkHW+I0oVi/3/+fdV22OFwoMvz8WICuwnVm4mt11RR+uZLRFg5uQROu
+         YqfItgXxV0bZdBiixPLaQStdw3nlgHQbYH64Gl/jKcZyMni0i4r+X3y4oXGdLlUFBruW
+         Ig6Cr87bYy9SmvU0RCpKpvBCqjC+ravdsTMSrAt3quj0+oO+NXdMHSrTKojgP7DPAzta
+         x2EU2AcFec3qxl8rBf//1vNFy+7iG9XY0ZCIP9rXp4LTKWIssCL4CNJE6M0QADjWKK0L
+         xMxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693897247; x=1694502047;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PXyDlNAn3aTmEsTW95GvcdGMYos2arUzMqrBn1clqqU=;
+        b=Y0KWU6v52mwr6ScBOPvGB/Wpu2rI2tUSgtQzwV7G/CBg6DP9KEODK3me2BROwJdpwL
+         6mB7Gz3R0vnLzsFyl6xT8Cy6JhZGUXZW2reL/pZtAbJEJKnrnAM2fLOyhGX2ACdtzplb
+         pAb8CwKSVIcMf/lmJNtj4tsElUhv4Sjc7EuVDs6eEtA/0lKzNXwIifKlytqJN32WVHdA
+         VX5c8JwbcW8ucs2ERuy4jOT0bihROLDUl8CXJvgr+64Lgu7T/dNaFb98niKXlONTwphF
+         QpbAPhDszXy3Io4faUHVAanIDqdERIYHCo1cobdyZoQmVsrnQboa84N/KaUdfNdvLjpW
+         cJJA==
+X-Gm-Message-State: AOJu0YxgtdcbBDJgANQtgzVv0EeJoriEXSZHRc2pUE88b/hqAAbria+w
+        OweL7WqQksKSGxrvOAHGdlsIYMLRlyY=
+X-Google-Smtp-Source: AGHT+IEKEbKZfrPdCfjnpm+31/ypyN57DgQ4HIlr4pBsGEOmUoh+hYLzMpfl8Lvumz9Ie9xQTh6RQQ==
+X-Received: by 2002:a5d:4d49:0:b0:319:6ce2:e5a3 with SMTP id a9-20020a5d4d49000000b003196ce2e5a3mr8470261wru.26.1693897246723;
+        Tue, 05 Sep 2023 00:00:46 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id r5-20020adfe685000000b003143867d2ebsm16569287wrm.63.2023.09.05.00.00.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 00:00:45 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 08:00:44 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        stable@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
+Message-ID: <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
+References: <20230904180806.1002832-1-joel@joelfernandes.org>
+ <20230904180806.1002832-2-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2613d958-8e8a-c302-8779-8719a10c82e5@efficios.com>
+In-Reply-To: <20230904180806.1002832-2-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 09:43:04AM -0400, Mathieu Desnoyers wrote:
-> On 9/5/23 09:38, Paul E. McKenney wrote:
-> > On Tue, Sep 05, 2023 at 08:57:53AM -0400, Mathieu Desnoyers wrote:
-> > > On 9/4/23 09:58, Paul E. McKenney wrote:
-> > > > On Mon, Sep 04, 2023 at 08:58:48AM -0400, Mathieu Desnoyers wrote:
-> > > > > On 9/4/23 08:42, Mathieu Desnoyers wrote:
-> > > > > > On 9/4/23 08:21, Denis Arefev wrote:
-> > > > > > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
-> > > > > > > is subject to overflow due to a failure to cast operands to a larger
-> > > > > > > data type before performing arithmetic.
-> > > > > > > 
-> > > > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > > > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > > > > > > which can indeed cause the signed 32-bit integer literal ("1") to
-> > > > > > > overflow
-> > > > > > > when shifted by any value greater than 31.
-> > > > > > 
-> > > > > > We could expand on this:
-> > > > > > 
-> > > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > > > > > which can indeed cause the signed 32-bit integer literal ("1") to overflow
-> > > > > > when shifted by any value greater than 31 on a 64-bit system.
-> > > > > > 
-> > > > > > Moreover, when the subtraction value is 31, the 1 << 31 expression results
-> > > > > > in 0xffffffff80000000 when the signed integer is promoted to unsigned long
-> > > > > > on 64-bit systems due to type promotion rules, which is certainly not the
-> > > > > > intended result.
-> > > > 
-> > > > Thank you both!  Could you please also add something to the effect of:
-> > > > "Given default Kconfig options, this bug affects only systems with more
-> > > > than 512 CPUs."?
-> > > 
-> > > Hi Paul,
-> > > 
-> > > I'm trying to understand this "NR_CPUS > 512 CPUs" default Kconfig lower
-> > > bound from kernel/rcu/Kconfig and rcu_node_tree.h. Is that on a 32-bit or
-> > > 64-bit architecture ? Also, I suspect that something like x86-64 MAXSMP (or
-> > > an explicit NR_CPUS) needs to be selected over a default Kconfig to support
-> > > that many CPUs.
-> > 
-> > 64-bit only.  I believe that 32-bit kernels are unaffected by this bug.
-> > 
-> > The trick is that RCU reshapes the rcu_node tree in rcu_init_geometry(),
-> > which is invoked during early boot from rcu_init().  This reshaping is
-> > based on nr_cpu_ids.  So if NR_CPUS is (say) 4096, there will be enough
-> > rcu_node structures allocated at build time to accommodate 4096 CPUs
-> > (259 of them, 256 leaf nodes, four internal nodes, and one root node),
-> > but only assuming dense numbering of CPUs.  If rcu_init_geometry() sees
-> > that nr_cpu_ids is (say) 64, it will use only five of them, that is,
-> > four leaf nodes and one root node.  The leaf nodes will need to shift
-> > by at most 16, and the root node by at most 4.
-> > 
-> > But the possibility of sparse CPU numbering (perhaps to your point)
-> > means that the bug can occur in 64-bit kernels booted on systems with
-> > 512 CPUs or fewer if that system has sparse CPU IDs.  For example,
-> > there have been systems that disable all but one hardware thread per
-> > core, but leave places in the CPU numbering for those disabled threads.
-> > Such a system with four hardware threads per core could have a CPU 516
-> > (and thus be affected by this bug) with as few as 129 CPUs.
-> > 
-> > So a better request would be for something like: "Given default Kconfig
-> > options, this bug affects only 64-bit systems having at least one CPU
-> > for which smp_processor_id() returns 512 or greater."
-> > 
-> > Does that help, or am I missing your point?
-> 
-> This is a good point, although not the one I was trying to make. See my
-> explanation about impact of having exactly 512 wrt signed integer type
-> promotion in a separate email. So your last phrasing "returns 512 or
-> greater" is better. Previously it appeared that only systems with _more
-> than_ 512 cpus were affected, which was off-by-one considering that systems
-> with exactly 512 cpus are an issue as well.
+On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
+> From: Zqiang <qiang.zhang1211@gmail.com>
+>
+> Currently, for double invoke call_rcu(), will dump rcu_head objects
+> memory info, if the objects is not allocated from the slab allocator,
+> the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+> need to be held, since the call_rcu() can be invoked in interrupt context,
+> therefore, there is a possibility of spinlock deadlock scenarios.
+>
+> And in Preempt-RT kernel, the rcutorture test also trigger the following
+> lockdep warning:
+>
+> BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+> preempt_count: 1, expected: 0
+> RCU nest depth: 1, expected: 1
+> 3 locks held by swapper/0/1:
+>  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
+>  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
+>  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
+> irq event stamp: 565512
+> hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
+> hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
+> softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
+> softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
+> Preemption disabled at:
+> [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
+> CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  <TASK>
+>  dump_stack_lvl+0x68/0xb0
+>  dump_stack+0x14/0x20
+>  __might_resched+0x1aa/0x280
+>  ? __pfx_rcu_torture_err_cb+0x10/0x10
+>  rt_spin_lock+0x53/0x130
+>  ? find_vmap_area+0x1f/0x70
+>  find_vmap_area+0x1f/0x70
+>  vmalloc_dump_obj+0x20/0x60
+>  mem_dump_obj+0x22/0x90
+>  __call_rcu_common+0x5bf/0x940
+>  ? debug_smp_processor_id+0x1b/0x30
+>  call_rcu_hurry+0x14/0x20
+>  rcu_torture_init+0x1f82/0x2370
+>  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+>  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+>  ? __pfx_rcu_torture_init+0x10/0x10
+>  do_one_initcall+0x6c/0x300
+>  ? debug_smp_processor_id+0x1b/0x30
+>  kernel_init_freeable+0x2b9/0x540
+>  ? __pfx_kernel_init+0x10/0x10
+>  kernel_init+0x1f/0x150
+>  ret_from_fork+0x40/0x50
+>  ? __pfx_kernel_init+0x10/0x10
+>  ret_from_fork_asm+0x1b/0x30
+>  </TASK>
+>
+> The previous patch fixes this by using the deadlock-safe best-effort
+> version of find_vm_area. However, in case of failure print the fact that
+> the pointer was a vmalloc pointer so that we print at least something.
+>
+> Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: rcu@vger.kernel.org
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  mm/util.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/util.c b/mm/util.c
+> index dd12b9531ac4..406634f26918 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
+>  	if (vmalloc_dump_obj(object))
+>  		return;
+>
+> -	if (virt_addr_valid(object))
+> +	if (is_vmalloc_addr(object))
+> +		type = "vmalloc memory";
+> +	else if (virt_addr_valid(object))
+>  		type = "non-slab/vmalloc memory";
 
-If 512 CPUs is an issue, then so also is 497 CPUs.  Both result in a
-32-bit shift.  If having the upper 33 bits act as a unit is OK (and I
-*think* that it is), then you need that 513th CPU (or, better, a CPU
-whose smp_processor_id() return value is at least 513) to make something
-bad happen.
+I think you should update this to say non-slab/non-vmalloc memory (as much
+as that description sucks!) as this phrasing in the past meant to say
+'non-slab or vmalloc memory' (already confusing phrasing) so better to be
+clear.
 
-I would also be OK with noting that with 497 or more CPUs, strange
-things start happening.  My intent was definitely that there only be
-a single bit set in sdp->grpmask, after all!  The fact that it might
-(or might not) happen to work notwithstanding.  ;-)
-
-							Thanx, Paul
-
-> Thanks,
-> 
-> Mathieu
-> 
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> > > Thanks,
-> > > 
-> > > Mathieu
-> > > 
-> > > 
-> > > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > > > > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > > > > > 
-> > > > > > With the commit message updated with my comment above, please also add:
-> > > > > > 
-> > > > > > Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures
-> > > > > > containing callbacks")
-> > > > > > Cc: <stable@vger.kernel.org> # v4.11
-> > > > > 
-> > > > > Sorry, the line above should read:
-> > > > > 
-> > > > > Cc: <stable@vger.kernel.org> # v4.11+
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > Mathieu
-> > > > > 
-> > > > > > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > > 
-> > > > > > Thanks!
-> > > > > > 
-> > > > > > Mathieu
-> > > > > > 
-> > > > > > > 
-> > > > > > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> > > > > > > ---
-> > > > > > > v3: Changed the name of the patch, as suggested by
-> > > > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
-> > > > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > > >     kernel/rcu/srcutree.c | 4 ++--
-> > > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > > > > index 20d7a238d675..6c18e6005ae1 100644
-> > > > > > > --- a/kernel/rcu/srcutree.c
-> > > > > > > +++ b/kernel/rcu/srcutree.c
-> > > > > > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct
-> > > > > > > srcu_struct *ssp, gfp_t gfp_flags)
-> > > > > > >                     snp->grplo = cpu;
-> > > > > > >                 snp->grphi = cpu;
-> > > > > > >             }
-> > > > > > > -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> > > > > > > +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
-> > > > > > >         }
-> > > > > > >         smp_store_release(&ssp->srcu_sup->srcu_size_state,
-> > > > > > > SRCU_SIZE_WAIT_BARRIER);
-> > > > > > >         return true;
-> > > > > > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct
-> > > > > > > srcu_struct *ssp, struct srcu_node *snp
-> > > > > > >         int cpu;
-> > > > > > >         for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> > > > > > > -        if (!(mask & (1 << (cpu - snp->grplo))))
-> > > > > > > +        if (!(mask & (1UL << (cpu - snp->grplo))))
-> > > > > > >                 continue;
-> > > > > > >             srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> > > > > > >         }
-> > > > > > 
-> > > > > 
-> > > > > -- 
-> > > > > Mathieu Desnoyers
-> > > > > EfficiOS Inc.
-> > > > > https://www.efficios.com
-> > > > > 
-> > > 
-> > > -- 
-> > > Mathieu Desnoyers
-> > > EfficiOS Inc.
-> > > https://www.efficios.com
-> > > 
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+>  	else if (object == NULL)
+>  		type = "NULL pointer";
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
