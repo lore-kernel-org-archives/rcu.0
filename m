@@ -2,167 +2,229 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C24EDCA100C
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 20:56:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E337DCA101D
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 22:22:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242985AbjIEU4f (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 16:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42888 "EHLO
+        id S234591AbjIEWW2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 18:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240915AbjIEU4e (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:56:34 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49B613E
-        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 13:56:25 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so46673641fa.3
-        for <rcu@vger.kernel.org>; Tue, 05 Sep 2023 13:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693947384; x=1694552184; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9diK8PcHgpyU+i311Vkwvacj1OZq+KDSvCqh6K53Ntw=;
-        b=J2PXZ57Exa3e3ftGJLJsjdiHAcCj2+F0V+KFdYhZm6HCrdsUxP2vdQS4LbP+cFy1JR
-         8pCIeD0Aqd8fzIm526EI4TcFzRGJJCcdaFzYktNJ6iLWhBzIZliETltDWsT6mbkK4qvt
-         8OOgthlHp7RTTAezJ0mzJa/7hMO7waGNVvDPU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693947384; x=1694552184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9diK8PcHgpyU+i311Vkwvacj1OZq+KDSvCqh6K53Ntw=;
-        b=FORgvP5XiiwU4SNs9jj8MKXJIV3wWGVfhGJR0/cQGD7WuWrAa3nhFeSbqjp0jUBlLp
-         GGwVtkPDDV/WfBDs6wNRCiLrf4xHhn4kh56CnVwlEc9Ae0Zm2zc6JqU4pa0AMVNGWPjL
-         X7kfnbQG4W/2aSNDeZOauItR4fI7/+QjOvW1yruR+PGCNIcHGBr2H+m9nVa1WqeaZMWP
-         9C0G2od2tgVBkAqlCcZEhnL32P0v62bbkWGJQIgxsSQTJYBV1EfBLHzk+FD5L5IXYgKP
-         sgwRkwPcqHKNTC6dT4O3Ssss9uOMjRdQ92nBfAnVUwKBN/W1252KK1NraWoZFTFwYNkZ
-         SZ2A==
-X-Gm-Message-State: AOJu0Ywc/+GsW/Zs27p/43Zq5foLqCPDyuDNWzD6Jg6L1LvIazeqpDHf
-        P1hgA7vjC4sWp6f6KSJa4YhNufZb+6uW7anhSYHPWQ==
-X-Google-Smtp-Source: AGHT+IH7F1r/gNPC69vO2am/Jp4XAKZERI9nP33sqw6EPdbN0utatfTsHoMRZaYPC3kDLL58ZVoMRMigLaaIJsH1uKI=
-X-Received: by 2002:a2e:9047:0:b0:2b6:df23:2117 with SMTP id
- n7-20020a2e9047000000b002b6df232117mr666823ljg.43.1693947383760; Tue, 05 Sep
- 2023 13:56:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
- <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com> <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
- <c312066b2cc44919bd11b6cd938cb05f@AcuMS.aculab.com> <ce51b768-9988-197c-0c35-7574aba77810@efficios.com>
- <abe14f37-ec05-48c3-87fc-9294848d221f@paulmck-laptop> <83422425-0534-4b12-a6e4-8068b7164a17@paulmck-laptop>
- <d2a3456b-aee9-f5b0-f8e4-5c5030c3217f@efficios.com> <b561c3a9-dc70-4c3d-b561-3f24398b01d8@paulmck-laptop>
- <CAEXW_YSe=s9S8OirDJARPvOrGUNXVPBkhucx5iKysjVk=AcLYg@mail.gmail.com> <a51db423-722c-43ab-9182-00f64c460043@paulmck-laptop>
-In-Reply-To: <a51db423-722c-43ab-9182-00f64c460043@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 5 Sep 2023 16:56:12 -0400
-Message-ID: <CAEXW_YQW_0RD5mmtwnzwik9Q9K9XL9rxHUyb98SLqCJ-840xOQ@mail.gmail.com>
-Subject: Re: [PATCH v2] The value may overflow
-To:     paulmck@kernel.org
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Laight <David.Laight@aculab.com>,
-        Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>, ldufour@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229771AbjIEWW1 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 18:22:27 -0400
+X-Greylist: delayed 3600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 15:22:24 PDT
+Received: from rn-mailsvcp-mx-lapp01.apple.com (rn-mailsvcp-mx-lapp01.apple.com [17.179.253.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33892137
+        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 15:22:24 -0700 (PDT)
+Received: from rn-mailsvcp-mta-lapp04.rno.apple.com
+ (rn-mailsvcp-mta-lapp04.rno.apple.com [10.225.203.152])
+ by rn-mailsvcp-mx-lapp01.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) with ESMTPS id <0S0J002BQ7DBR320@rn-mailsvcp-mx-lapp01.rno.apple.com>
+ for rcu@vger.kernel.org; Tue, 05 Sep 2023 14:22:24 -0700 (PDT)
+X-Proofpoint-ORIG-GUID: zgM-JZwIdtm_HClIBeMdrDlLQrFDSdml
+X-Proofpoint-GUID: zgM-JZwIdtm_HClIBeMdrDlLQrFDSdml
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.601,18.0.957
+ definitions=2023-09-05_13:2023-09-05,2023-09-05 signatures=0
+X-Proofpoint-Spam-Details: rule=interactive_user_notspam
+ policy=interactive_user score=0 phishscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 adultscore=0 suspectscore=0 bulkscore=0 mlxlogscore=641
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309050185
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com;
+ h=content-type : mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=20180706;
+ bh=cZ1LWYLgMKgWWUz1B4qqzprrusC2rKom94gBIR8IGcc=;
+ b=M18mFSoDuGsc32XJKVEIcX/HSTiNvddVnd0eOdbA+4tGQdyudVuEz3UmUJhCZ3FV9xOm
+ YxMThm5DPIkgXPzJltUW51x+wS2tqk33bFnuOMzB9fRdISYplKOGwnGHKpahVxgsKq87
+ bG8GFA/OclRoIF7StL8YQfINGX9Gm3i6jhE9mGi/P3V7bRnZ+JX4gWCSzKRElTKBu09k
+ VX5DPDao+XOEf0p+9PuxjHBTLIWIXqT9XawQ3N57LhZdOqijN0a/2mFVC7V96rq1Pt8O
+ bU7U3mYEo/rB9L9SWij01qV86NiK8uXzyQHEB4V4esTiMbsIJkKVMo8V19x0OSQP5obr tg==
+Received: from rn-mailsvcp-mmp-lapp04.rno.apple.com
+ (rn-mailsvcp-mmp-lapp04.rno.apple.com [17.179.253.17])
+ by rn-mailsvcp-mta-lapp04.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) with ESMTPS id <0S0J00S6M7DA2TF0@rn-mailsvcp-mta-lapp04.rno.apple.com>;
+ Tue, 05 Sep 2023 14:22:22 -0700 (PDT)
+Received: from process_milters-daemon.rn-mailsvcp-mmp-lapp04.rno.apple.com by
+ rn-mailsvcp-mmp-lapp04.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) id <0S0J00B0072CTF00@rn-mailsvcp-mmp-lapp04.rno.apple.com>; Tue,
+ 05 Sep 2023 14:22:22 -0700 (PDT)
+X-Va-A: 
+X-Va-T-CD: de104c1c1a6dd307621bf9e83f97afa5
+X-Va-E-CD: 2b3483cc51d778a83b3be5915b056b7f
+X-Va-R-CD: 0eef42286f64395431e9696be9476630
+X-Va-ID: 7eb63d4d-13ba-4bec-8a9c-4f1cebb9b4ef
+X-Va-CD: 0
+X-V-A:  
+X-V-T-CD: de104c1c1a6dd307621bf9e83f97afa5
+X-V-E-CD: 2b3483cc51d778a83b3be5915b056b7f
+X-V-R-CD: 0eef42286f64395431e9696be9476630
+X-V-ID: ba938645-e90d-4088-b04b-3b2383f25a5e
+X-V-CD: 0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.601,18.0.957
+ definitions=2023-09-05_13:2023-09-05,2023-09-05 signatures=0
+Received: from smtpclient.apple ([17.192.155.113])
+ by rn-mailsvcp-mmp-lapp04.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023))
+ with ESMTPSA id <0S0J00JHB7DAK200@rn-mailsvcp-mmp-lapp04.rno.apple.com>; Tue,
+ 05 Sep 2023 14:22:22 -0700 (PDT)
+Content-type: text/plain; charset=utf-8
+MIME-version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.2\))
+Subject: Re: kmemleak handling of kfree_rcu
+From:   Christoph Paasch <cpaasch@apple.com>
+In-reply-to: <ZPZKsJUPVeHCsLQB@arm.com>
+Date:   Tue, 05 Sep 2023 14:22:13 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
+Content-transfer-encoding: quoted-printable
+Message-id: <EDE8FE3D-043D-4A14-ACF6-71FF786C0D32@apple.com>
+References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
+ <ZPZKsJUPVeHCsLQB@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+X-Mailer: Apple Mail (2.3774.100.2.1.2)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 4:52=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> On Tue, Sep 05, 2023 at 04:40:46PM -0400, Joel Fernandes wrote:
-[...]
-> > > > > > So this bug appears to have no effect for default RCU setups, e=
-ven on very
-> > > > > > large 64-bit systems, which is consistent with field experience=
-.  Even if
-> > > > > > this is the case, it still should be fixed, to avoid confusion =
-if nothing
-> > > > > > else.  Or just in case someone decides to set CONFIG_RCU_FANOUT=
-_LEAF=3D32.
-> > > > > > Which actually happened the other day due to someone trusting C=
-hatGPT's
-> > > > > > opinion about RCU Kconfig options...
-> > > > >
-> > > > > And I therefore queued Denis's v3 patch with an edited commit log=
-.
-> > > > > Of course, if anyone sees some other way that the bug could manif=
-est
-> > > > > other than in a 64-bit kernel built with CONFIG_RCU_FANOUT_LEAF g=
-reater
-> > > > > than 30 on a system with at least 31 CPUs, please let me know so =
-that
-> > > > > I can adjust.
-> > > > >
-> > > > >                                                     Thanx, Paul
-> > > > >
-> > > > > -----------------------------------------------------------------=
--------
-> > > > >
-> > > > > commit ed083b0e22f1396dee3599896249a3f218845298
-> > > > > Author: Denis Arefev <arefev@swemel.ru>
-> > > > > Date:   Mon Sep 4 15:21:14 2023 +0300
-> > > > >
-> > > > >      Fix srcu_struct node grpmask overflow on 64-bit systems
-> > > > >      The value of an arithmetic expression 1 << (cpu - sdp->mynod=
-e->grplo)
-> > > >
-> > > > AFAIU, the overflow resides in the "bitwise expression" and not
-> > > > the arithmetic expression.
-> > >
-> > > Rather than quibble about exactly what constitutes arithmetic, I
-> > > updated the first paragraph and added your Reviewed-by as shown
-> > > below.  ;-)
-> > >
-> > > > Other than this, please add my
-> > > >
-> > > > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > >
-> > > Thank you all!!!
-> > >
-> > > ---------------------------------------------------------------------=
----
-> > >
-> > > commit 50477ff756ab99402b1523b7c6be8b5d790d05e7
-> > > Author: Denis Arefev <arefev@swemel.ru>
-> > > Date:   Mon Sep 4 15:21:14 2023 +0300
-> > >
-> > >     Fix srcu_struct node grpmask overflow on 64-bit systems
-> > >
-> > >     The value of a bitwise expression 1 << (cpu - sdp->mynode->grplo)
-> > >     is subject to overflow due to a failure to cast operands to a lar=
-ger
-> > >     data type before performing the bitwise operation.
-> > >
-> > >     The maximum result of this subtraction is defined by the RCU_FANO=
-UT_LEAF
-> > >     Kconfig option, which on 64-bit systems defaults to 16 (resulting=
- in a
-> > >     maximum shift of 15), but which can be set up as high as 64 (resu=
-lting
-> > >     in a maximum shift of 63).  A value of 31 can result in sign exte=
-nsion,
-> > >     resulting in 0xffffffff80000000 instead of the desired 0x80000000=
-.
-> > >     A value of 31 or greater triggers undefined behavior per the C st=
-andard.
-> >
-> > Do you mean here "A value of 32 or greater"?
-> >
-> > Only N >=3D 32 throws warning for:
-> > unsigned long foo =3D (1 << N);
-> >
-> > N=3D31 does undesirable sign extension but no warning.
->
-> Good catch, thank you, and I will update this on my next rebase.
+Hello Catalin,
 
-Thanks, and with that the patch looks good to me:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> On Sep 4, 2023, at 2:22=E2=80=AFPM, Catalin Marinas =
+<catalin.marinas@arm.com> wrote:
+>=20
+> Hi Christoph,
+>=20
+> Please try not to send html, many servers block such emails.
 
- - Joel
+Sorry for that=E2=80=A6 wasn=E2=80=99t expecting my mail-client to come =
+into my way...
+
+>=20
+> Also adding the RCU list.
+>=20
+> On Wed, Aug 30, 2023 at 09:37:23AM -0700, Christoph Paasch wrote:
+>> for the MPTCP upstream project, we are running syzkaller [1] =
+continuously to
+>> qualify our kernel changes.
+>>=20
+>> We found one issue with kmemleak and its handling of kfree_rcu.
+>>=20
+>> Specifically, it looks like kmemleak falsely reports memory-leaks =
+when the
+>> object is being freed by kfree_rcu after a certain grace-period.
+>>=20
+>> For example, =
+https://github.com/multipath-tcp/mptcp_net-next/issues/398#
+>> issuecomment-1584819482 shows how the syzkaller program reliably =
+produces a
+>> kmemleak report, although the object is not leaked (we confirmed that =
+by simply
+>> increasing MSECS_MIN_AGE to something larger than the grace-period).
+>=20
+> Not sure which RCU variant you are using but most likely the false
+> positives are caused by the original reference to the object being =
+lost
+> and the pointer added to a new location that kmemleak does not track
+> (e.g. bnode->records[] in the tree-based variant).
+>=20
+> A quick attempt (untested, not even compiled):
+
+I tried out your patch. It does resolve the false positive !
+
+However, I am occasionally getting a report of a single object being =
+leaked. When I try to visualize it with `cat =
+/sys/kernel/debug/kmemleak`, the object does not show up anymore=E2=80=A6
+
+So, something else seems to be going on here as well now.
+
+
+If you have an updated patch, let me know. I can test it.
+
+
+Thanks,
+Christoph
+
+>=20
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 1449cb69a0e0..681a1eb7560a 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -53,6 +53,7 @@
+> #include <linux/sysrq.h>
+> #include <linux/kprobes.h>
+> #include <linux/gfp.h>
+> +#include <linux/kmemleak.h>
+> #include <linux/oom.h>
+> #include <linux/smpboot.h>
+> #include <linux/jiffies.h>
+> @@ -2934,6 +2935,7 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
+>=20
+> llist_for_each_safe(pos, n, page_list) {
+> free_page((unsigned long)pos);
+> + kmemleak_free(pos);
+> freed++;
+> }
+>=20
+> @@ -2962,8 +2964,16 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+> rcu_state.name, bnode->records[i], 0);
+>=20
+> vfree(bnode->records[i]);
+> + /* avoid false negatives */
+> + kmemleak_erase(&bnode->records[i]);
+> }
+> }
+> + /*
+> + * Avoid kmemleak false negatives when such pointers are later
+> + * re-allocated.
+> + */
+> + for (i =3D 0; i < bnode->nr_records; i++)
+> + kmemleak_erase(&bnode->records[i]);
+> rcu_lock_release(&rcu_callback_map);
+> }
+>=20
+> @@ -2972,8 +2982,10 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+> bnode =3D NULL;
+> raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>=20
+> - if (bnode)
+> + if (bnode) {
+> free_page((unsigned long) bnode);
+> + kmemleak_free(bnode);
+> + }
+>=20
+> cond_resched_tasks_rcu_qs();
+> }
+> @@ -3241,6 +3253,12 @@ static void fill_page_cache_func(struct =
+work_struct *work)
+> free_page((unsigned long) bnode);
+> break;
+> }
+> +
+> + /*
+> + * Scan the bnode->records[] array until the objects are
+> + * actually freed.
+> + */
+> + kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
+> }
+>=20
+> atomic_set(&krcp->work_in_progress, 0);
+> @@ -3308,6 +3326,11 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu =
+**krcp,
+> // scenarios.
+> bnode =3D (struct kvfree_rcu_bulk_data *)
+> __get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | =
+__GFP_NOWARN);
+> + /*
+> + * Scan the bnode->records[] array until the objects are
+> + * actually freed.
+> + */
+> + kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
+> raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
+> }
+>=20
+>=20
+> --=20
+> Catalin
+>=20
+
