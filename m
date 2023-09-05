@@ -2,101 +2,194 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6968CA0FF8
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC41CCA0FE2
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352089AbjIEQ0c (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S1352129AbjIEQ0d (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354055AbjIEJcA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:32:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E481A7
-        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 02:31:54 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-245-ommP8AmzMiq0pu9qgEv8Hw-1; Tue, 05 Sep 2023 10:31:51 +0100
-X-MC-Unique: ommP8AmzMiq0pu9qgEv8Hw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 5 Sep
- 2023 10:31:48 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 5 Sep 2023 10:31:48 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mathieu Desnoyers' <mathieu.desnoyers@efficios.com>,
-        Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-CC:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>
-Subject: RE: [PATCH v2] The value may overflow
-Thread-Topic: [PATCH v2] The value may overflow
-Thread-Index: AQHZ3xnFNLjoHgiM306HccvtrgnILrAL+Rdg
-Date:   Tue, 5 Sep 2023 09:31:48 +0000
-Message-ID: <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
-References: <20230904094251.64022-1-arefev@swemel.ru>
- <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
-In-Reply-To: <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S1354391AbjIELRa (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 07:17:30 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C591AB
+        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 04:17:26 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-792623074edso64995339f.1
+        for <rcu@vger.kernel.org>; Tue, 05 Sep 2023 04:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693912646; x=1694517446; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QFr3guuenGyb3Qn0aVjZt6j2hEqhzlyTzGXreRyxiz4=;
+        b=F+ZMvUZBpiWyG3uIEkTZKCpeg9BCtLmVqUhKHkL7cTgtT51N8qAehYKwrPQtzJN24D
+         myZuG3l62veFZWZF2vkS/sz3bpIgAJKoLJ4MTuQ/fcvI3tG8qaQ7p5wITayKlisWUqWN
+         D+osdDQWVIuxTiJe/7QL84DRKBOKFvfJg6xWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693912646; x=1694517446;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QFr3guuenGyb3Qn0aVjZt6j2hEqhzlyTzGXreRyxiz4=;
+        b=j7+2tAp12/vUYmTk5aLOnDoES94dUmMvvn80z2T+MEvEyT/iHLB8//aoQIwG6GnRrb
+         NiHvSs8T54h6VI9htghxGz88CLzvji+E1Yf12VxkR2qvpe/J1VT/t/kgvCGSStJXSI+U
+         M689jRPBOgq1WGfm9+xbb4b7QbLdMRDbSRCeFw1o9Psxb9UmI26ia68zctBIPFz+O/2T
+         pX30c5zCBO5WAJ9NApbpDKXm798ig7EJVvdi//qzFvPHYYDCdDzb3mvnXy3KWfexJgyV
+         dXDE1FVUfqaJQcHr0YGB3ctsxtPiVPEfxcocx9vS/9Baq3YswanBEm0tZbt4RpY8jlsq
+         PQUA==
+X-Gm-Message-State: AOJu0YwAozJdBftqIvHtNHVbaqpRFqG57g4E7Nn8u8TROdcyewEJzKjr
+        DjYESLqvaMUmDpkR6mFqqkLI73t3/kmPm9eLXWs=
+X-Google-Smtp-Source: AGHT+IH6ATLWvEQISqMYhYAvtisc3efnqHLoJKTqFihvNieOXuIdabwt3JbtmE5N7gFtoTpoNI0Ylw==
+X-Received: by 2002:a05:6602:19c5:b0:794:eb37:b0da with SMTP id ba5-20020a05660219c500b00794eb37b0damr10714307iob.2.1693912645977;
+        Tue, 05 Sep 2023 04:17:25 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id n7-20020a6b7207000000b0077e3acd5ea1sm4221764ioc.53.2023.09.05.04.17.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 04:17:25 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 11:17:25 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Christoph Paasch <cpaasch@apple.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
+Subject: Re: kmemleak handling of kfree_rcu
+Message-ID: <20230905111725.GA3737639@google.com>
+References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
+ <ZPZKsJUPVeHCsLQB@arm.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPZKsJUPVeHCsLQB@arm.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-RnJvbTogTWF0aGlldSBEZXNub3llcnMNCj4gU2VudDogMDQgU2VwdGVtYmVyIDIwMjMgMTE6MjQN
-Cj4gDQo+IE9uIDkvNC8yMyAwNTo0MiwgRGVuaXMgQXJlZmV2IHdyb3RlOg0KPiA+IFRoZSB2YWx1
-ZSBvZiBhbiBhcml0aG1ldGljIGV4cHJlc3Npb24gMSA8PCAoY3B1IC0gc2RwLT5teW5vZGUtPmdy
-cGxvKQ0KPiA+IGlzIHN1YmplY3QgdG8gb3ZlcmZsb3cgZHVlIHRvIGEgZmFpbHVyZSB0byBjYXN0
-IG9wZXJhbmRzIHRvIGEgbGFyZ2VyDQo+ID4gZGF0YSB0eXBlIGJlZm9yZSBwZXJmb3JtaW5nIGFy
-aXRobWV0aWMNCj4gDQo+IFRoZSBwYXRjaCB0aXRsZSBzaG91bGQgaWRlbnRpZnkgbW9yZSBwcmVj
-aXNlbHkgaXRzIGNvbnRleHQsIGUuZy46DQo+IA0KPiAic3JjdTogRml4IHNyY3Vfc3RydWN0IG5v
-ZGUgZ3JwbWFzayBvdmVyZmxvdyBvbiA2NC1iaXQgc3lzdGVtcyINCj4gDQo+IEFsc28sIGFzIEkg
-c3RhdGVkIGluIG15IHJlcGx5IHRvIHRoZSBwcmV2aW91cyB2ZXJzaW9uLCB0aGUgcGF0Y2ggY29t
-bWl0DQo+IG1lc3NhZ2Ugc2hvdWxkIGRlc2NyaWJlIHRoZSBpbXBhY3Qgb2YgdGhlIGJ1ZyBpdCBm
-aXhlcy4NCg0KQW5kIGlzIHRoZSBhbmFseXNpcyBjb21wbGV0ZT8NCklzIDFVTCByaWdodCBmb3Ig
-MzJiaXQgYXJjaHM/Pw0KSXMgNjQgYml0cyBldmVuIGVub3VnaD8/DQoNCglEYXZpZA0KDQo+IA0K
-PiBUaGFua3MsDQo+IA0KPiBNYXRoaWV1DQo+IA0KPiANCj4gPg0KPiA+IEZvdW5kIGJ5IExpbnV4
-IFZlcmlmaWNhdGlvbiBDZW50ZXIgKGxpbnV4dGVzdGluZy5vcmcpIHdpdGggU1ZBQ0UuDQo+ID4N
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEZW5pcyBBcmVmZXYgPGFyZWZldkBzd2VtZWwucnU+DQo+ID4g
-LS0tDQo+ID4gdjI6IEFkZGVkIGZpeGVzIHRvIHRoZSBzcmN1X3NjaGVkdWxlX2Nic19zbnAgZnVu
-Y3Rpb24gYXMgc3VnZ2VzdGVkIGJ5DQo+ID4gTWF0aGlldSBEZXNub3llcnMgPG1hdGhpZXUuZGVz
-bm95ZXJzQGVmZmljaW9zLmNvbT4NCj4gPiAgIGtlcm5lbC9yY3Uvc3JjdXRyZWUuYyB8IDQgKyst
-LQ0KPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkN
-Cj4gPg0KPiA+IGRpZmYgLS1naXQgYS9rZXJuZWwvcmN1L3NyY3V0cmVlLmMgYi9rZXJuZWwvcmN1
-L3NyY3V0cmVlLmMNCj4gPiBpbmRleCAyMGQ3YTIzOGQ2NzUuLjZjMThlNjAwNWFlMSAxMDA2NDQN
-Cj4gPiAtLS0gYS9rZXJuZWwvcmN1L3NyY3V0cmVlLmMNCj4gPiArKysgYi9rZXJuZWwvcmN1L3Ny
-Y3V0cmVlLmMNCj4gPiBAQCAtMjIzLDcgKzIyMyw3IEBAIHN0YXRpYyBib29sIGluaXRfc3JjdV9z
-dHJ1Y3Rfbm9kZXMoc3RydWN0IHNyY3Vfc3RydWN0ICpzc3AsIGdmcF90IGdmcF9mbGFncykNCj4g
-PiAgIAkJCQlzbnAtPmdycGxvID0gY3B1Ow0KPiA+ICAgCQkJc25wLT5ncnBoaSA9IGNwdTsNCj4g
-PiAgIAkJfQ0KPiA+IC0JCXNkcC0+Z3JwbWFzayA9IDEgPDwgKGNwdSAtIHNkcC0+bXlub2RlLT5n
-cnBsbyk7DQo+ID4gKwkJc2RwLT5ncnBtYXNrID0gMVVMIDw8IChjcHUgLSBzZHAtPm15bm9kZS0+
-Z3JwbG8pOw0KPiA+ICAgCX0NCj4gPiAgIAlzbXBfc3RvcmVfcmVsZWFzZSgmc3NwLT5zcmN1X3N1
-cC0+c3JjdV9zaXplX3N0YXRlLCBTUkNVX1NJWkVfV0FJVF9CQVJSSUVSKTsNCj4gPiAgIAlyZXR1
-cm4gdHJ1ZTsNCj4gPiBAQCAtODMzLDcgKzgzMyw3IEBAIHN0YXRpYyB2b2lkIHNyY3Vfc2NoZWR1
-bGVfY2JzX3NucChzdHJ1Y3Qgc3JjdV9zdHJ1Y3QgKnNzcCwgc3RydWN0IHNyY3Vfbm9kZSAqc25w
-DQo+ID4gICAJaW50IGNwdTsNCj4gPg0KPiA+ICAgCWZvciAoY3B1ID0gc25wLT5ncnBsbzsgY3B1
-IDw9IHNucC0+Z3JwaGk7IGNwdSsrKSB7DQo+ID4gLQkJaWYgKCEobWFzayAmICgxIDw8IChjcHUg
-LSBzbnAtPmdycGxvKSkpKQ0KPiA+ICsJCWlmICghKG1hc2sgJiAoMVVMIDw8IChjcHUgLSBzbnAt
-PmdycGxvKSkpKQ0KPiA+ICAgCQkJY29udGludWU7DQo+ID4gICAJCXNyY3Vfc2NoZWR1bGVfY2Jz
-X3NkcChwZXJfY3B1X3B0cihzc3AtPnNkYSwgY3B1KSwgZGVsYXkpOw0KPiA+ICAgCX0NCj4gDQo+
-IC0tDQo+IE1hdGhpZXUgRGVzbm95ZXJzDQo+IEVmZmljaU9TIEluYy4NCj4gaHR0cHM6Ly93d3cu
-ZWZmaWNpb3MuY29tDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBS
-b2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9u
-IE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Mon, Sep 04, 2023 at 10:22:56PM +0100, Catalin Marinas wrote:
+> Hi Christoph,
+> 
+> Please try not to send html, many servers block such emails.
+> 
+> Also adding the RCU list.
+> 
+> On Wed, Aug 30, 2023 at 09:37:23AM -0700, Christoph Paasch wrote:
+> > for the MPTCP upstream project, we are running syzkaller [1] continuously to
+> > qualify our kernel changes.
+> > 
+> > We found one issue with kmemleak and its handling of kfree_rcu.
+> > 
+> > Specifically, it looks like kmemleak falsely reports memory-leaks when the
+> > object is being freed by kfree_rcu after a certain grace-period.
+> > 
+> > For example, https://github.com/multipath-tcp/mptcp_net-next/issues/398#
+> > issuecomment-1584819482 shows how the syzkaller program reliably produces a
+> > kmemleak report, although the object is not leaked (we confirmed that by simply
+> > increasing MSECS_MIN_AGE to something larger than the grace-period).
+> 
+> Not sure which RCU variant you are using but most likely the false
+> positives are caused by the original reference to the object being lost
+> and the pointer added to a new location that kmemleak does not track
+> (e.g. bnode->records[] in the tree-based variant).
+> 
+> A quick attempt (untested, not even compiled):
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
 
+I am not sure if that works. Correct me if I'm wrong but the issue is that
+the allocated pointer being RCU-freed is no longer reachable by kmemleak (it
+is scanned but not reachable), however it might still be reachable via an
+RCU reader. In such a situation, it is a false-positive.
+
+The correct fix then should probably be to mark the object as
+kmemleak_not_leak() until a grace period elapses. This will cause the object
+to not be reported but still be scanned until eventually the lower layers
+will remove the object from kmemleak-tracking after the grace period. Per the
+docs also, that API is used to prevent false-positives.
+
+Instead what the below diff appears to do is to mark the bnode cache as a
+kmemleak object itself, which smells a bit wrong. The bnode is not an
+allocated object in the traditional sense, it is simple an internal data
+structure. That may not solve the issue as the false-positive unreachable
+object is still unreachable.
+
+Or did I misunderstand how kmemleak works? (Quite possible).
+
+thanks,
+
+ - Joel
+
+
+> index 1449cb69a0e0..681a1eb7560a 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -53,6 +53,7 @@
+>  #include <linux/sysrq.h>
+>  #include <linux/kprobes.h>
+>  #include <linux/gfp.h>
+> +#include <linux/kmemleak.h>
+>  #include <linux/oom.h>
+>  #include <linux/smpboot.h>
+>  #include <linux/jiffies.h>
+> @@ -2934,6 +2935,7 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
+>  
+>  	llist_for_each_safe(pos, n, page_list) {
+>  		free_page((unsigned long)pos);
+> +		kmemleak_free(pos);
+>  		freed++;
+>  	}
+>  
+> @@ -2962,8 +2964,16 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+>  					rcu_state.name, bnode->records[i], 0);
+>  
+>  				vfree(bnode->records[i]);
+> +				/* avoid false negatives */
+> +				kmemleak_erase(&bnode->records[i]);
+>  			}
+>  		}
+> +		/*
+> +		 * Avoid kmemleak false negatives when such pointers are later
+> +		 * re-allocated.
+> +		 */
+> +		for (i = 0; i < bnode->nr_records; i++)
+> +			kmemleak_erase(&bnode->records[i]);
+>  		rcu_lock_release(&rcu_callback_map);
+>  	}
+>  
+> @@ -2972,8 +2982,10 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+>  		bnode = NULL;
+>  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  
+> -	if (bnode)
+> +	if (bnode) {
+>  		free_page((unsigned long) bnode);
+> +		kmemleak_free(bnode);
+> +	}
+>  
+>  	cond_resched_tasks_rcu_qs();
+>  }
+> @@ -3241,6 +3253,12 @@ static void fill_page_cache_func(struct work_struct *work)
+>  			free_page((unsigned long) bnode);
+>  			break;
+>  		}
+> +
+> +		/*
+> +		 * Scan the bnode->records[] array until the objects are
+> +		 * actually freed.
+> +		 */
+> +		kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
+>  	}
+>  
+>  	atomic_set(&krcp->work_in_progress, 0);
+> @@ -3308,6 +3326,11 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+>  			// scenarios.
+>  			bnode = (struct kvfree_rcu_bulk_data *)
+>  				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+> +			/*
+> +			 * Scan the bnode->records[] array until the objects are
+> +			 * actually freed.
+> +			 */
+> +			kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
+>  			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
+>  		}
+>  
+> 
+> -- 
+> Catalin
