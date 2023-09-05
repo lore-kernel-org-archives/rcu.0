@@ -2,202 +2,243 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C10C71153
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 00:02:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1E0FCA1003
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239922AbjIEACQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Sep 2023 20:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        id S1351870AbjIEQ0T (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbjIEACQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Sep 2023 20:02:16 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B26CC7
-        for <rcu@vger.kernel.org>; Mon,  4 Sep 2023 17:02:13 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34ccedcc584so3929275ab.0
-        for <rcu@vger.kernel.org>; Mon, 04 Sep 2023 17:02:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693872132; x=1694476932; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GlBYOF6u/mdf36N6D7elzHkBQlDyUtI/oY1jZl3KZRw=;
-        b=lso8FFNOwenzi8jdannppRJpElxhrrrwZCqvnuNYE/P/6ZCwqpFHqIfy3gJDTjKKTO
-         0x1GolEb8nPdxHHDx+p5sRb31b5xoZwxrImgst2hpUaGOEETZWUw9cvyqDYDr3MF+QfL
-         GsOBLIX+wp70gjHl/R4vofxOaG/Sa8e4kiaaI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693872132; x=1694476932;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GlBYOF6u/mdf36N6D7elzHkBQlDyUtI/oY1jZl3KZRw=;
-        b=R/ufB5ArxYFM6YOR4gFTDqSEmaPWRW+cscKv3LGWKe0/Eu/D1aCyECl4UIwq1YAWeL
-         tLQKbx894RrEBI/RBysAVeZ27aPDnxJHz4Pcnned1OoOtv7A2eKKCZlSoGiMKQQsAYtJ
-         e5lzmEU1oeWzErcdJ0n98f2Wl2M/JmQUyZCe9ivDeNkvGdNG9wu2n811BmZ2qoeANQLx
-         h7QLXVWBEjrx5dZBDT/hjZfwLYUtQLtaQPr+nT630oNXYZ8SxnX3JTJviBxPDHeLwRmk
-         5lhR/amudIFXkeZdFB/Qp26AHFIXV3VS8ZdCKaHlCo8LqkeTgMfEcXK6RArT5blRcL6r
-         U4/w==
-X-Gm-Message-State: AOJu0YzCTS3K1fr9NoEmRWsK3txXdJLLKeoI64hcOOds72N+rvmduYzh
-        9kQw/fEHD1k+v8OM9usX2ZqTtQ==
-X-Google-Smtp-Source: AGHT+IFTWyG0rlnsRL2o0q71kyMBo01mmj1YkHJX+kGGJSUgfy5U9D4OMjULDE7jQRAQRy3IVwWLKg==
-X-Received: by 2002:a92:1a0d:0:b0:34f:20d9:74a9 with SMTP id a13-20020a921a0d000000b0034f20d974a9mr695693ila.11.1693872132348;
-        Mon, 04 Sep 2023 17:02:12 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id f30-20020a02cade000000b0042b394eb984sm3758694jap.105.2023.09.04.17.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 17:02:11 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 00:02:11 +0000
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        with ESMTP id S1354742AbjIEOAU (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 10:00:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A02C9;
+        Tue,  5 Sep 2023 07:00:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04AD360A05;
+        Tue,  5 Sep 2023 14:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5931DC433C8;
+        Tue,  5 Sep 2023 14:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693922415;
+        bh=764yMbuNMe5JetI5MaMMRQb1mxEqxLpU0jdCUiYvO2w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pcJUcT6A1q+IhvNaKBGuS9tB/gTtXUinjnY0zK98Lc08Eq4tFiS2LRoCEeHFKlj7d
+         vxZbhDMM63vF+tNq2YKA/0FRk1KAgTcSLrqftS4PtfB3M0lpO1JcqQJgKqo4yol6vR
+         oNh/XUI/gs0795wz3iJ+kPWe+ba12B+RzzD08vpd01C4YJRVZX/HOuYgQ6WroLadK1
+         1nX/1tA5k5GTEEqhMogAUdNpIat6kidxD0gy5vizMmVOJBa9EEfw4o/TJbwAjW4sL/
+         Efsx6n6UqqlIh8dryApUAG90RvtSRqhYRKSOL2XjBm8IWo2zfGf5FaT7YLYVPTNa8U
+         KMWUmiznTNDlQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id EECEACE0CF9; Tue,  5 Sep 2023 07:00:14 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 07:00:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Denis Arefev <arefev@swemel.ru>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: [PATCH v2] rcu/tree: Defer setting of jiffies during stall reset
-Message-ID: <20230905000211.GA1104186@google.com>
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
+        trufanov@swemel.ru, vfh@swemel.ru,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
+ systems
+Message-ID: <ba1292b4-8feb-4359-9bfc-120082359a17@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230904122114.66757-1-arefev@swemel.ru>
+ <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
+ <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
+ <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
+ <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
+ <98c676a6-3c11-48f1-b7cb-81356c362680@paulmck-laptop>
+ <2613d958-8e8a-c302-8779-8719a10c82e5@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2613d958-8e8a-c302-8779-8719a10c82e5@efficios.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-There are instances where rcu_cpu_stall_reset() is called when jiffies
-did not get a chance to update for a long time. Before jiffies is
-updated, the CPU stall detector can go off triggering false-positives
-where a just-started grace period appears to be ages old. In the past,
-we disabled stall detection in rcu_cpu_stall_reset() however this got
-changed [1]. This is resulting in false-positives in KGDB usecase [2].
+On Tue, Sep 05, 2023 at 09:43:04AM -0400, Mathieu Desnoyers wrote:
+> On 9/5/23 09:38, Paul E. McKenney wrote:
+> > On Tue, Sep 05, 2023 at 08:57:53AM -0400, Mathieu Desnoyers wrote:
+> > > On 9/4/23 09:58, Paul E. McKenney wrote:
+> > > > On Mon, Sep 04, 2023 at 08:58:48AM -0400, Mathieu Desnoyers wrote:
+> > > > > On 9/4/23 08:42, Mathieu Desnoyers wrote:
+> > > > > > On 9/4/23 08:21, Denis Arefev wrote:
+> > > > > > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+> > > > > > > is subject to overflow due to a failure to cast operands to a larger
+> > > > > > > data type before performing arithmetic.
+> > > > > > > 
+> > > > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
+> > > > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
+> > > > > > > which can indeed cause the signed 32-bit integer literal ("1") to
+> > > > > > > overflow
+> > > > > > > when shifted by any value greater than 31.
+> > > > > > 
+> > > > > > We could expand on this:
+> > > > > > 
+> > > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
+> > > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
+> > > > > > which can indeed cause the signed 32-bit integer literal ("1") to overflow
+> > > > > > when shifted by any value greater than 31 on a 64-bit system.
+> > > > > > 
+> > > > > > Moreover, when the subtraction value is 31, the 1 << 31 expression results
+> > > > > > in 0xffffffff80000000 when the signed integer is promoted to unsigned long
+> > > > > > on 64-bit systems due to type promotion rules, which is certainly not the
+> > > > > > intended result.
+> > > > 
+> > > > Thank you both!  Could you please also add something to the effect of:
+> > > > "Given default Kconfig options, this bug affects only systems with more
+> > > > than 512 CPUs."?
+> > > 
+> > > Hi Paul,
+> > > 
+> > > I'm trying to understand this "NR_CPUS > 512 CPUs" default Kconfig lower
+> > > bound from kernel/rcu/Kconfig and rcu_node_tree.h. Is that on a 32-bit or
+> > > 64-bit architecture ? Also, I suspect that something like x86-64 MAXSMP (or
+> > > an explicit NR_CPUS) needs to be selected over a default Kconfig to support
+> > > that many CPUs.
+> > 
+> > 64-bit only.  I believe that 32-bit kernels are unaffected by this bug.
+> > 
+> > The trick is that RCU reshapes the rcu_node tree in rcu_init_geometry(),
+> > which is invoked during early boot from rcu_init().  This reshaping is
+> > based on nr_cpu_ids.  So if NR_CPUS is (say) 4096, there will be enough
+> > rcu_node structures allocated at build time to accommodate 4096 CPUs
+> > (259 of them, 256 leaf nodes, four internal nodes, and one root node),
+> > but only assuming dense numbering of CPUs.  If rcu_init_geometry() sees
+> > that nr_cpu_ids is (say) 64, it will use only five of them, that is,
+> > four leaf nodes and one root node.  The leaf nodes will need to shift
+> > by at most 16, and the root node by at most 4.
+> > 
+> > But the possibility of sparse CPU numbering (perhaps to your point)
+> > means that the bug can occur in 64-bit kernels booted on systems with
+> > 512 CPUs or fewer if that system has sparse CPU IDs.  For example,
+> > there have been systems that disable all but one hardware thread per
+> > core, but leave places in the CPU numbering for those disabled threads.
+> > Such a system with four hardware threads per core could have a CPU 516
+> > (and thus be affected by this bug) with as few as 129 CPUs.
+> > 
+> > So a better request would be for something like: "Given default Kconfig
+> > options, this bug affects only 64-bit systems having at least one CPU
+> > for which smp_processor_id() returns 512 or greater."
+> > 
+> > Does that help, or am I missing your point?
+> 
+> This is a good point, although not the one I was trying to make. See my
+> explanation about impact of having exactly 512 wrt signed integer type
+> promotion in a separate email. So your last phrasing "returns 512 or
+> greater" is better. Previously it appeared that only systems with _more
+> than_ 512 cpus were affected, which was off-by-one considering that systems
+> with exactly 512 cpus are an issue as well.
 
-Fix this by deferring the update of jiffies to the third run of the FQS
-loop. This is more robust, as, even if rcu_cpu_stall_reset() is called
-just before jiffies is read, we would end up pushing out the jiffies
-read by 3 more FQS loops. Meanwhile the CPU stall detection will be
-delayed and we will not get any false positives.
+If 512 CPUs is an issue, then so also is 497 CPUs.  Both result in a
+32-bit shift.  If having the upper 33 bits act as a unit is OK (and I
+*think* that it is), then you need that 513th CPU (or, better, a CPU
+whose smp_processor_id() return value is at least 513) to make something
+bad happen.
 
-[1] https://lore.kernel.org/all/20210521155624.174524-2-senozhatsky@chromium.org/
-[2] https://lore.kernel.org/all/20230814020045.51950-2-chenhuacai@loongson.cn/
+I would also be OK with noting that with 497 or more CPUs, strange
+things start happening.  My intent was definitely that there only be
+a single bit set in sdp->grpmask, after all!  The fact that it might
+(or might not) happen to work notwithstanding.  ;-)
 
-Tested with rcutorture.cpu_stall option as well to verify stall behavior
-with/without patch.
+							Thanx, Paul
 
-Tested-by: Huacai Chen <chenhuacai@loongson.cn>
-Reported-by: Binbin Zhou <zhoubinbin@loongson.cn>
-Closes: https://lore.kernel.org/all/20230814020045.51950-2-chenhuacai@loongson.cn/
-Suggested-by: Paul  McKenney <paulmck@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Fixes: a80be428fbc1 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
-v1->v2: Just a resend with reported-by fixed.
-
- kernel/rcu/tree.c       | 12 ++++++++++++
- kernel/rcu/tree.h       |  4 ++++
- kernel/rcu/tree_stall.h | 20 ++++++++++++++++++--
- 3 files changed, 34 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1449cb69a0e0..b695c0eb515a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1552,10 +1552,22 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
-  */
- static void rcu_gp_fqs(bool first_time)
- {
-+	int nr_fqs = READ_ONCE(rcu_state.nr_fqs_jiffies_stall);
- 	struct rcu_node *rnp = rcu_get_root();
- 
- 	WRITE_ONCE(rcu_state.gp_activity, jiffies);
- 	WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
-+
-+	WARN_ON_ONCE(nr_fqs > 3);
-+	/* Only countdown nr_fqs for stall purposes if jiffies moves. */
-+	if (nr_fqs) {
-+		if (nr_fqs == 1) {
-+			WRITE_ONCE(rcu_state.jiffies_stall,
-+				   jiffies + rcu_jiffies_till_stall_check());
-+		}
-+		WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, --nr_fqs);
-+	}
-+
- 	if (first_time) {
- 		/* Collect dyntick-idle snapshots. */
- 		force_qs_rnp(dyntick_save_progress_counter);
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 192536916f9a..e9821a8422db 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -386,6 +386,10 @@ struct rcu_state {
- 						/*  in jiffies. */
- 	unsigned long jiffies_stall;		/* Time at which to check */
- 						/*  for CPU stalls. */
-+	int nr_fqs_jiffies_stall;		/* Number of fqs loops after
-+						 * which read jiffies and set
-+						 * jiffies_stall. Stall
-+						 * warnings disabled if !0. */
- 	unsigned long jiffies_resched;		/* Time at which to resched */
- 						/*  a reluctant CPU. */
- 	unsigned long n_force_qs_gpstart;	/* Snapshot of n_force_qs at */
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b10b8349bb2a..a2fa6b22e248 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -149,12 +149,17 @@ static void panic_on_rcu_stall(void)
- /**
-  * rcu_cpu_stall_reset - restart stall-warning timeout for current grace period
-  *
-+ * To perform the reset request from the caller, disable stall detection until
-+ * 3 fqs loops have passed. This is required to ensure a fresh jiffies is
-+ * loaded.  It should be safe to do from the fqs loop as enough timer
-+ * interrupts and context switches should have passed.
-+ *
-  * The caller must disable hard irqs.
-  */
- void rcu_cpu_stall_reset(void)
- {
--	WRITE_ONCE(rcu_state.jiffies_stall,
--		   jiffies + rcu_jiffies_till_stall_check());
-+	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 3);
-+	WRITE_ONCE(rcu_state.jiffies_stall, ULONG_MAX);
- }
- 
- //////////////////////////////////////////////////////////////////////////////
-@@ -170,6 +175,7 @@ static void record_gp_stall_check_time(void)
- 	WRITE_ONCE(rcu_state.gp_start, j);
- 	j1 = rcu_jiffies_till_stall_check();
- 	smp_mb(); // ->gp_start before ->jiffies_stall and caller's ->gp_seq.
-+	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 0);
- 	WRITE_ONCE(rcu_state.jiffies_stall, j + j1);
- 	rcu_state.jiffies_resched = j + j1 / 2;
- 	rcu_state.n_force_qs_gpstart = READ_ONCE(rcu_state.n_force_qs);
-@@ -725,6 +731,16 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	    !rcu_gp_in_progress())
- 		return;
- 	rcu_stall_kick_kthreads();
-+
-+	/*
-+	 * Check if it was requested (via rcu_cpu_stall_reset()) that the FQS
-+	 * loop has to set jiffies to ensure a non-stale jiffies value. This
-+	 * is required to have good jiffies value after coming out of long
-+	 * breaks of jiffies updates. Not doing so can cause false positives.
-+	 */
-+	if (READ_ONCE(rcu_state.nr_fqs_jiffies_stall) > 0)
-+		return;
-+
- 	j = jiffies;
- 
- 	/*
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
+> Thanks,
+> 
+> Mathieu
+> 
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > Thanks,
+> > > 
+> > > Mathieu
+> > > 
+> > > 
+> > > > 
+> > > > 							Thanx, Paul
+> > > > 
+> > > > > > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> > > > > > 
+> > > > > > With the commit message updated with my comment above, please also add:
+> > > > > > 
+> > > > > > Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures
+> > > > > > containing callbacks")
+> > > > > > Cc: <stable@vger.kernel.org> # v4.11
+> > > > > 
+> > > > > Sorry, the line above should read:
+> > > > > 
+> > > > > Cc: <stable@vger.kernel.org> # v4.11+
+> > > > > 
+> > > > > Thanks,
+> > > > > 
+> > > > > Mathieu
+> > > > > 
+> > > > > > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > > 
+> > > > > > Thanks!
+> > > > > > 
+> > > > > > Mathieu
+> > > > > > 
+> > > > > > > 
+> > > > > > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> > > > > > > ---
+> > > > > > > v3: Changed the name of the patch, as suggested by
+> > > > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+> > > > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > > >     kernel/rcu/srcutree.c | 4 ++--
+> > > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > > > > index 20d7a238d675..6c18e6005ae1 100644
+> > > > > > > --- a/kernel/rcu/srcutree.c
+> > > > > > > +++ b/kernel/rcu/srcutree.c
+> > > > > > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct
+> > > > > > > srcu_struct *ssp, gfp_t gfp_flags)
+> > > > > > >                     snp->grplo = cpu;
+> > > > > > >                 snp->grphi = cpu;
+> > > > > > >             }
+> > > > > > > -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> > > > > > > +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+> > > > > > >         }
+> > > > > > >         smp_store_release(&ssp->srcu_sup->srcu_size_state,
+> > > > > > > SRCU_SIZE_WAIT_BARRIER);
+> > > > > > >         return true;
+> > > > > > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct
+> > > > > > > srcu_struct *ssp, struct srcu_node *snp
+> > > > > > >         int cpu;
+> > > > > > >         for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+> > > > > > > -        if (!(mask & (1 << (cpu - snp->grplo))))
+> > > > > > > +        if (!(mask & (1UL << (cpu - snp->grplo))))
+> > > > > > >                 continue;
+> > > > > > >             srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+> > > > > > >         }
+> > > > > > 
+> > > > > 
+> > > > > -- 
+> > > > > Mathieu Desnoyers
+> > > > > EfficiOS Inc.
+> > > > > https://www.efficios.com
+> > > > > 
+> > > 
+> > > -- 
+> > > Mathieu Desnoyers
+> > > EfficiOS Inc.
+> > > https://www.efficios.com
+> > > 
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+> 
