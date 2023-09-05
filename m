@@ -2,84 +2,145 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC3B2CA0FFE
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:27:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F27B6CA0FF8
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:27:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243531AbjIEQ0y (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
+        id S243529AbjIEQ1D (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354321AbjIEKmB (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:42:01 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0826199;
-        Tue,  5 Sep 2023 03:41:57 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so36027991fa.2;
-        Tue, 05 Sep 2023 03:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693910516; x=1694515316; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VB/9cNvOGhv5c3NUZyMsbBoZmZ2eYSe7kvAqrZUWzlk=;
-        b=ijrAr59+35locDJkR2k8hCb341F5DBM9RHkhvRD8K94i5k3ScAxOYmLTDle55AL3da
-         w7srFqTtpuy4Ly3zqmsELippP7srk7QxzcdvDJFglOZJ6Mz2dXq3v5eItSEm2REyr0d1
-         zXavYhp57uH7hjnm0tPiNaMx1FHKv9wryVtu4SqBSu2Q+lckDfOWzV5t/1qT1nY/0A7+
-         62wzZa+ad/p0DjInqXFJY9eB8QYzAFhZE2n4MJ26ZS3rCY3rEsegWD8izKoUhoLcX/yi
-         b8hzolILxOI4YVb1vorN0aCPwJvql6XC445V8IESFOhnRmGslYoO9zNubQbqK13x7kX0
-         h6yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693910516; x=1694515316;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VB/9cNvOGhv5c3NUZyMsbBoZmZ2eYSe7kvAqrZUWzlk=;
-        b=Vz3G8lCTTM4nryqPUl87phE2dwBWM/XroCWz6k0BETEftd31FNOl0BinER9E4thoBW
-         /glhsGxGrA/uyf+CORggPmGUXLxwpzHXdbgpNesNA3HpBnR9fsQSKuvHc+YB5eXvH+Z8
-         Yzfp0H0Hwdzy9rmZRgPUlbaTjVtwZpIHv3ihHEgjvE206ITTw/Cd9VdSHXjQS+c+Se5X
-         HydTUh3YmLeyu/dXALn4SMNFsk9I9zWBmrCQakxjmyHOk6sVrshju7Ak2VSpJsqMlNb5
-         fqeFR6xVKyRdnu7m6EHwdUYaiJjZ3IfvsR3sdfxVMAbOm+wkEvM4MRaitVKG8A0U9Xfk
-         p4lA==
-X-Gm-Message-State: AOJu0YxzVeRDgGJdCSNaCDAi0bi3e8OH16RcXQlQUdM1CEagKuPSw4wm
-        L+ofm8nZ4Sxf2mnpaZc+0Ps=
-X-Google-Smtp-Source: AGHT+IE/snxwuH+65B33xT1AlIo4pHbfnCw2nQotBmme5dmGs1e+Oekn2HzbtEwM8Vq5u0bFL59skw==
-X-Received: by 2002:a2e:984f:0:b0:2bc:ffec:742 with SMTP id e15-20020a2e984f000000b002bcffec0742mr8317510ljj.49.1693910515888;
-        Tue, 05 Sep 2023 03:41:55 -0700 (PDT)
-Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
-        by smtp.gmail.com with ESMTPSA id w7-20020a2e9bc7000000b002b9ef00b10csm2850226ljj.2.2023.09.05.03.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 03:41:55 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 5 Sep 2023 12:41:53 +0200
-To:     Marcus Seyfarth <m.seyfarth@gmail.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
-Message-ID: <ZPcF8YLo9tJqYX8Y@pc636>
-References: <bb603efb-654f-4686-bad9-0bb5379745c0@paulmck-laptop>
- <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
- <ZPW+KJCIAvFzZHl8@pc636>
- <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
- <ZPXyUTteVxXtqiEo@pc636>
- <CA+FbhJMr6LzmOpVNkYyiSERAsNEqqvQwQ7SwJK=CmwvV9d2Z-A@mail.gmail.com>
- <ZPYLmm3ih7u95l1a@pc636>
- <ZPYsY2HEjySkq/NR@pc636>
- <CA+FbhJPNK=4s8J5OqOBaDC8EDNQzevQMQ+fwZnfxG92ReabQOA@mail.gmail.com>
- <CA+FbhJMEqLycroz=J6VvC=4OBaJSwz8K+K6Zgki80M-5YdYp6A@mail.gmail.com>
+        with ESMTP id S1354539AbjIEMZm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 08:25:42 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C3A1A8;
+        Tue,  5 Sep 2023 05:25:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693916735;
+        bh=CPBdmsVi+RC8AZkE/89HdSzguIfSlQf/+GkllycK6Lo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RJcgXDpdCUilrU70w2ztD+Aqbe4WFPwMiS7gS3VQZkcqmxUeLdoJ+ujNMxc+5WJZP
+         2Z8ig75ftP+Pqcg06lZpFAKWqPs4V29AvJIJWZ8wYHQxhkOSi/FTIYLBp48+uplUux
+         3DhB+Ue5SnFudd6moHRjytH53ff1fyg+6I8rb1G+rECM8JHnOyyNTt/AGetfjp4hG2
+         7FAT/UZZi6U5g2Xm3PmJkD77xIcTSnmvf9G/m2Nn5P0OffxYdHUnMt46egYrqJG84L
+         osugeOPdywqRKOw5OV0qr/6QIYC7x5oPO0+eikMkqi9OTvWZbL5eYUgtx9cb4UQISc
+         t0+hA2cSdGBZg==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rg4Tq2KcMz1NMR;
+        Tue,  5 Sep 2023 08:25:35 -0400 (EDT)
+Message-ID: <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
+Date:   Tue, 5 Sep 2023 08:26:51 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+FbhJMEqLycroz=J6VvC=4OBaJSwz8K+K6Zgki80M-5YdYp6A@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] The value may overflow
+Content-Language: en-US
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trufanov@swemel.ru" <trufanov@swemel.ru>,
+        "vfh@swemel.ru" <vfh@swemel.ru>
+References: <20230904094251.64022-1-arefev@swemel.ru>
+ <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
+ <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->
-> For a comparison, I've attached a journalctl log for my custom 6.4.14 Kernel.
+On 9/5/23 05:31, David Laight wrote:
+> From: Mathieu Desnoyers
+>> Sent: 04 September 2023 11:24
+>>
+>> On 9/4/23 05:42, Denis Arefev wrote:
+>>> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+>>> is subject to overflow due to a failure to cast operands to a larger
+>>> data type before performing arithmetic
+>>
+>> The patch title should identify more precisely its context, e.g.:
+>>
+>> "srcu: Fix srcu_struct node grpmask overflow on 64-bit systems"
+>>
+>> Also, as I stated in my reply to the previous version, the patch commit
+>> message should describe the impact of the bug it fixes.
 > 
-Thank you!
+> And is the analysis complete?
+> Is 1UL right for 32bit archs??
+> Is 64 bits even enough??
 
---
-Uladzislau Rezki
+I understand from include/linux/rcu_node_tree.h and kernel/rcu/Kconfig 
+RCU_FANOUT and RCU_FANOUT_LEAF ranges that a 32-bit integer is 
+sufficient to hold the mask on 32-bit architectures, and a 64-bit 
+integer is enough on 64-bit architectures given the current implementation.
+
+At least this appears to be the intent. I did not do a thorough analysis 
+of the various parameter limits.
+
+Thanks,
+
+Mathieu
+
+> 
+> 	David
+> 
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>>
+>>>
+>>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>>
+>>> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+>>> ---
+>>> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+>>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>    kernel/rcu/srcutree.c | 4 ++--
+>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>>> index 20d7a238d675..6c18e6005ae1 100644
+>>> --- a/kernel/rcu/srcutree.c
+>>> +++ b/kernel/rcu/srcutree.c
+>>> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+>>>    				snp->grplo = cpu;
+>>>    			snp->grphi = cpu;
+>>>    		}
+>>> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+>>> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+>>>    	}
+>>>    	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+>>>    	return true;
+>>> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
+>>>    	int cpu;
+>>>
+>>>    	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+>>> -		if (!(mask & (1 << (cpu - snp->grplo))))
+>>> +		if (!(mask & (1UL << (cpu - snp->grplo))))
+>>>    			continue;
+>>>    		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+>>>    	}
+>>
+>> --
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
