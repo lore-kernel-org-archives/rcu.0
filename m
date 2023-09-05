@@ -2,43 +2,43 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F27B6CA0FF8
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9013BCA0FE2
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:27:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243529AbjIEQ1D (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S244042AbjIEQ1F (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354539AbjIEMZm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:25:42 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C3A1A8;
-        Tue,  5 Sep 2023 05:25:36 -0700 (PDT)
+        with ESMTP id S1354806AbjIEOdd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 10:33:33 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164D5189;
+        Tue,  5 Sep 2023 07:33:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1693916735;
-        bh=CPBdmsVi+RC8AZkE/89HdSzguIfSlQf/+GkllycK6Lo=;
+        s=smtpout1; t=1693924408;
+        bh=ordSnKWniOg5QofBVlOHY0C9oBsPdwAbutimcBxg4Vo=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=RJcgXDpdCUilrU70w2ztD+Aqbe4WFPwMiS7gS3VQZkcqmxUeLdoJ+ujNMxc+5WJZP
-         2Z8ig75ftP+Pqcg06lZpFAKWqPs4V29AvJIJWZ8wYHQxhkOSi/FTIYLBp48+uplUux
-         3DhB+Ue5SnFudd6moHRjytH53ff1fyg+6I8rb1G+rECM8JHnOyyNTt/AGetfjp4hG2
-         7FAT/UZZi6U5g2Xm3PmJkD77xIcTSnmvf9G/m2Nn5P0OffxYdHUnMt46egYrqJG84L
-         osugeOPdywqRKOw5OV0qr/6QIYC7x5oPO0+eikMkqi9OTvWZbL5eYUgtx9cb4UQISc
-         t0+hA2cSdGBZg==
+        b=sy44lC1YUpbTcAElhCYrv5wU2ma1r7qN3+ezGOT0whislGxf2y3MWE0kmDtf3LO2l
+         2SuwcV98oPi6xOlm7KTVUv3eS0/peDetcuxM78QpdAefCxWT5tgjquKd7DHthuiKCj
+         M/rvSOhyvXMfeg5KqCuzslNvd1BGttviJzIR810vLNXZpu5jKrYPqjZOHcoo+ArG3/
+         UxppeoxJ1MW7lvof+fYTx+XOkUM8QJFsv8oMezkpH9c8RfcEH6JhofL144YgdY8eJb
+         yGBWQAfYPOkqX6KXuheD9V6ErmbtPuyKejKlgXR76h6tA+xeEYHFUqjdl0G/k3ViWH
+         Q1lNw36+6Hf1w==
 Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rg4Tq2KcMz1NMR;
-        Tue,  5 Sep 2023 08:25:35 -0400 (EDT)
-Message-ID: <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
-Date:   Tue, 5 Sep 2023 08:26:51 -0400
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rg7KN0lVLz1NXg;
+        Tue,  5 Sep 2023 10:33:28 -0400 (EDT)
+Message-ID: <ce51b768-9988-197c-0c35-7574aba77810@efficios.com>
+Date:   Tue, 5 Sep 2023 10:34:43 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
 Subject: Re: [PATCH v2] The value may overflow
 Content-Language: en-US
 To:     David Laight <David.Laight@ACULAB.COM>,
-        Denis Arefev <arefev@swemel.ru>,
+        "'paulmck@kernel.org'" <paulmck@kernel.org>
+Cc:     Denis Arefev <arefev@swemel.ru>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
         "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
@@ -48,96 +48,70 @@ Cc:     Josh Triplett <josh@joshtriplett.org>,
 References: <20230904094251.64022-1-arefev@swemel.ru>
  <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
  <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+ <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
+ <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
+ <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com>
+ <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
+ <c312066b2cc44919bd11b6cd938cb05f@AcuMS.aculab.com>
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+In-Reply-To: <c312066b2cc44919bd11b6cd938cb05f@AcuMS.aculab.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 9/5/23 05:31, David Laight wrote:
-> From: Mathieu Desnoyers
->> Sent: 04 September 2023 11:24
->>
->> On 9/4/23 05:42, Denis Arefev wrote:
->>> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
->>> is subject to overflow due to a failure to cast operands to a larger
->>> data type before performing arithmetic
->>
->> The patch title should identify more precisely its context, e.g.:
->>
->> "srcu: Fix srcu_struct node grpmask overflow on 64-bit systems"
->>
->> Also, as I stated in my reply to the previous version, the patch commit
->> message should describe the impact of the bug it fixes.
+On 9/5/23 10:15, David Laight wrote:
+> ...
+>> That would instead be more than 512-16=496 CPUs, correct?  496 CPUs would
+>> only require a 31-bit shift, which should be OK, but 497 would require
+>> a 32-bit shift, which would result in sign extension.  If it turns out
+>> that sign extension is OK, then we should get in trouble at 513 CPUs,
+>> which would result in a 33-bit shift (and is that even defined in C?).
 > 
-> And is the analysis complete?
-> Is 1UL right for 32bit archs??
-> Is 64 bits even enough??
+> Not quite right :-)
+> 
+> (1 << 31) is int and negative, that gets sign extended before
+> being converted to 'unsigned long' - so has the top 33 bits set.
+> 
+> (1 << 32) is undefined, the current x86 cpu ignore the high
+> shift bits so it is (1 << 0).
 
-I understand from include/linux/rcu_node_tree.h and kernel/rcu/Kconfig 
-RCU_FANOUT and RCU_FANOUT_LEAF ranges that a 32-bit integer is 
-sufficient to hold the mask on 32-bit architectures, and a 64-bit 
-integer is enough on 64-bit architectures given the current implementation.
+Yes, I was about to reply the same thing. A shift of 31 is buggy,
+because shifting 1 << 31 raises the sign bit, which sets the top 33
+bits when cast to unsigned long. A shift of 1 << 32 is undefined,
+with for instance x86 choosing to ignore the top bit.
 
-At least this appears to be the intent. I did not do a thorough analysis 
-of the various parameter limits.
+But in order to have a 1 << 31 shift from this expression:
+
+                 sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+
+I *think* we need the group to have 32 cpus or more (indexed within
+the group from grplo to grplo + 31 (both inclusive)).
+
+So as soon as we have one group with 32 cpus, the problem should show
+up. With FANOUT_LEAF=16, we can have 15 groups of 31 cpus and 1
+group of 32 cpus, for:
+
+   15*31 + 32 = 497 cpus.
+
+AFAIU, this would be the minimum value for smp_processor_id()+1 which
+triggers this issue.
 
 Thanks,
 
 Mathieu
 
 > 
-> 	David
+> If the mask is being used to optimise a search the code might
+> just happen to work!
 > 
->>
->> Thanks,
->>
->> Mathieu
->>
->>
->>>
->>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>>
->>> Signed-off-by: Denis Arefev <arefev@swemel.ru>
->>> ---
->>> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
->>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>>    kernel/rcu/srcutree.c | 4 ++--
->>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->>> index 20d7a238d675..6c18e6005ae1 100644
->>> --- a/kernel/rcu/srcutree.c
->>> +++ b/kernel/rcu/srcutree.c
->>> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
->>>    				snp->grplo = cpu;
->>>    			snp->grphi = cpu;
->>>    		}
->>> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
->>> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
->>>    	}
->>>    	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
->>>    	return true;
->>> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
->>>    	int cpu;
->>>
->>>    	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
->>> -		if (!(mask & (1 << (cpu - snp->grplo))))
->>> +		if (!(mask & (1UL << (cpu - snp->grplo))))
->>>    			continue;
->>>    		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
->>>    	}
->>
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
+> 	David
 > 
 > -
 > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
 > Registration No: 1397386 (Wales)
+> 
 
 -- 
 Mathieu Desnoyers
