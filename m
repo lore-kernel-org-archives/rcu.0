@@ -2,168 +2,213 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51DE1CA0FF8
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D87AC83F3E
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352249AbjIEQ0j (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
+        id S1352334AbjIEQ0m (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354456AbjIELsq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:48:46 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAAB1AB
-        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 04:48:43 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-795547f055fso95388539f.0
-        for <rcu@vger.kernel.org>; Tue, 05 Sep 2023 04:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693914523; x=1694519323; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=agO0bHd7pavHNlvZnzfpEMuMb6kyNAGPWGDG3TstaRk=;
-        b=BMnedrUKJkafG+VL3zj5iBtyMGwwWUrf4sttSYxerstNqnzdIZP7MZ2GWOFdA9UCSR
-         ajsqHB6RChYUjcdM6mxW4fRC+2vQxr7ymTabwfzLbSwhPctC5sWOtzEFrKsVe3GXHOis
-         2oer4moz18SxerOGsExx4aXzW0d4cdbydsATI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693914523; x=1694519323;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=agO0bHd7pavHNlvZnzfpEMuMb6kyNAGPWGDG3TstaRk=;
-        b=jdobl+eQh5femivaUTfvy+LiVDvvZ/Ek4d2CNgBmKLwdJl7JcpZMeFKs6RVZvgz1ws
-         RESFkagmYC1f2BbQA+exHoTj5Eve/BuVV5Kct08okBPWldL+Vo7gsffWhRpenGONG00b
-         6/VXn9me3gIaclcVMEjYXpGYYyQLPuv8MSbJsfhhnGFjra1UZwJ0W3I8cmTjI5/9yKV8
-         6SeDxPz++I4FFOzP8CWmC1sDnjTusv+fHHHxoZICnwVKFmj0wmQ4qW4XYdYClP/07UJt
-         zgSqiTQjSyrqGmKfNS0hdQyxsPxS+c04E31bCUpjaP1CH6VTZzhIY8sO9ffTu+OPBD0I
-         rGTQ==
-X-Gm-Message-State: AOJu0YxF6BIEgWBioT7BxOJbG4THVStaRB9N9K3diyfzzTh5t++AtMTv
-        FAjAifMjdGAed5HbfQgJiTbfNg==
-X-Google-Smtp-Source: AGHT+IHZEE0cD6pV/j4gqBPlwyHlFkqwQgME+6G/X3QKzwQ+iv+FZgNev0P/vstjQ/+aqRZo0bg65w==
-X-Received: by 2002:a6b:6406:0:b0:790:9728:4014 with SMTP id t6-20020a6b6406000000b0079097284014mr14044851iog.11.1693914522842;
-        Tue, 05 Sep 2023 04:48:42 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id w11-20020a5d844b000000b0076ffebfc9fasm4207490ior.47.2023.09.05.04.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 04:48:42 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 11:48:41 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
-Message-ID: <20230905114841.GB3881391@google.com>
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <20230904180806.1002832-2-joel@joelfernandes.org>
- <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
+        with ESMTP id S1354738AbjIEN42 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 09:56:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C730197;
+        Tue,  5 Sep 2023 06:56:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C05B60919;
+        Tue,  5 Sep 2023 13:56:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A22FC433C8;
+        Tue,  5 Sep 2023 13:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693922183;
+        bh=Xn2TNzoAqHCc/VCubFybeQ4GKXdnUAY+NOzSC+boj54=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QIfknY6ay35rE0l2lHjnQXu1AvRjm2hY9agcf1DPGOYK7B5GcloA4OIkh+nCSxxHI
+         bsZT6RKXO5UIGM3MmJjS+OTegVEh2l2gBkoIG1oVfDc+u4WFxWUi50DF/Xn/r3XTfW
+         mFY5LMMsk3rUFtBdIFuHQO67EcOIedkeVgg7VqgjAWe8tJ3df5+lLAcrdhzP8uZTin
+         ehzTBKtIHgE5aUgfx6fn6IfEvrlnGSpEQZrc/Rl5JMQSXxVg4OYD3Q3+nY9GYGtMmv
+         4bFKuSh8Q8afV8CvcjxVvaLpWWjB6UUNnql6hAxT/YprmQYepn/w2c9N/4blK5ywZc
+         KQUPqR9CeATHQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0456FCE0CF9; Tue,  5 Sep 2023 06:56:23 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 06:56:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trufanov@swemel.ru" <trufanov@swemel.ru>,
+        "vfh@swemel.ru" <vfh@swemel.ru>
+Subject: Re: [PATCH v2] The value may overflow
+Message-ID: <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230904094251.64022-1-arefev@swemel.ru>
+ <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
+ <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+ <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
+ <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
+ <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
+In-Reply-To: <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:00:44AM +0100, Lorenzo Stoakes wrote:
-> On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
-> > From: Zqiang <qiang.zhang1211@gmail.com>
-> >
-> > Currently, for double invoke call_rcu(), will dump rcu_head objects
-> > memory info, if the objects is not allocated from the slab allocator,
-> > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-> > need to be held, since the call_rcu() can be invoked in interrupt context,
-> > therefore, there is a possibility of spinlock deadlock scenarios.
-> >
-> > And in Preempt-RT kernel, the rcutorture test also trigger the following
-> > lockdep warning:
-> >
-> > BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-> > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-> > preempt_count: 1, expected: 0
-> > RCU nest depth: 1, expected: 1
-> > 3 locks held by swapper/0/1:
-> >  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
-> >  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
-> >  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
-> > irq event stamp: 565512
-> > hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
-> > hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
-> > softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
-> > softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
-> > Preemption disabled at:
-> > [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
-> > CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-> > Call Trace:
-> >  <TASK>
-> >  dump_stack_lvl+0x68/0xb0
-> >  dump_stack+0x14/0x20
-> >  __might_resched+0x1aa/0x280
-> >  ? __pfx_rcu_torture_err_cb+0x10/0x10
-> >  rt_spin_lock+0x53/0x130
-> >  ? find_vmap_area+0x1f/0x70
-> >  find_vmap_area+0x1f/0x70
-> >  vmalloc_dump_obj+0x20/0x60
-> >  mem_dump_obj+0x22/0x90
-> >  __call_rcu_common+0x5bf/0x940
-> >  ? debug_smp_processor_id+0x1b/0x30
-> >  call_rcu_hurry+0x14/0x20
-> >  rcu_torture_init+0x1f82/0x2370
-> >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
-> >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
-> >  ? __pfx_rcu_torture_init+0x10/0x10
-> >  do_one_initcall+0x6c/0x300
-> >  ? debug_smp_processor_id+0x1b/0x30
-> >  kernel_init_freeable+0x2b9/0x540
-> >  ? __pfx_kernel_init+0x10/0x10
-> >  kernel_init+0x1f/0x150
-> >  ret_from_fork+0x40/0x50
-> >  ? __pfx_kernel_init+0x10/0x10
-> >  ret_from_fork_asm+0x1b/0x30
-> >  </TASK>
-> >
-> > The previous patch fixes this by using the deadlock-safe best-effort
-> > version of find_vm_area. However, in case of failure print the fact that
-> > the pointer was a vmalloc pointer so that we print at least something.
-> >
-> > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: rcu@vger.kernel.org
-> > Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  mm/util.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mm/util.c b/mm/util.c
-> > index dd12b9531ac4..406634f26918 100644
-> > --- a/mm/util.c
-> > +++ b/mm/util.c
-> > @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
-> >  	if (vmalloc_dump_obj(object))
-> >  		return;
-> >
-> > -	if (virt_addr_valid(object))
-> > +	if (is_vmalloc_addr(object))
-> > +		type = "vmalloc memory";
-> > +	else if (virt_addr_valid(object))
-> >  		type = "non-slab/vmalloc memory";
+On Tue, Sep 05, 2023 at 09:34:45AM -0400, Mathieu Desnoyers wrote:
+> On 9/5/23 09:26, Paul E. McKenney wrote:
+> > On Tue, Sep 05, 2023 at 08:26:51AM -0400, Mathieu Desnoyers wrote:
+> > > On 9/5/23 05:31, David Laight wrote:
+> > > > From: Mathieu Desnoyers
+> > > > > Sent: 04 September 2023 11:24
+> > > > > 
+> > > > > On 9/4/23 05:42, Denis Arefev wrote:
+> > > > > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+> > > > > > is subject to overflow due to a failure to cast operands to a larger
+> > > > > > data type before performing arithmetic
+> > > > > 
+> > > > > The patch title should identify more precisely its context, e.g.:
+> > > > > 
+> > > > > "srcu: Fix srcu_struct node grpmask overflow on 64-bit systems"
+> > > > > 
+> > > > > Also, as I stated in my reply to the previous version, the patch commit
+> > > > > message should describe the impact of the bug it fixes.
+> > > > 
+> > > > And is the analysis complete?
+> > > > Is 1UL right for 32bit archs??
+> > > > Is 64 bits even enough??
+> > > 
+> > > I understand from include/linux/rcu_node_tree.h and kernel/rcu/Kconfig
+> > > RCU_FANOUT and RCU_FANOUT_LEAF ranges that a 32-bit integer is sufficient to
+> > > hold the mask on 32-bit architectures, and a 64-bit integer is enough on
+> > > 64-bit architectures given the current implementation.
+> > > 
+> > > At least this appears to be the intent. I did not do a thorough analysis of
+> > > the various parameter limits.
+> > 
+> > Mathieu has it right.
+> > 
+> > 32-bit kernels are unaffected by this bug.
+> > 
+> > RCU_FANOUT_LEAF defaults to 16, which means that a 64-bit kernel would
+> > need more than 32 leaf rcu_node structures for the parent rcu_node
+> > structure to need more than 32 bit to track its children.  This means
+> > that more than 32*16=512 CPUs are required for this bug to affect 64-bit
+> > systems.  And there really are systems this big, so I am surprised that
+> > this has not shown up long ago.  But it would not be the first time that
+> > objective reality surprised me.  ;-)
 > 
-> I think you should update this to say non-slab/non-vmalloc memory (as much
-> as that description sucks!) as this phrasing in the past meant to say
-> 'non-slab or vmalloc memory' (already confusing phrasing) so better to be
-> clear.
+> So with a 64-bit kernel, RCU_FANOUT_LEAF=16, if we have exactly 32 leaf
+> rcu_node structures (exactly 512 CPUs), we end up in the situation where the
+> type promotion from signed integer (32-bit) to unsigned long will carry the
+> sign, and thus create a mask of 0xffffffff80000000.
 
-True, though the issue you mentioned it is in existing code, a respin of this
-patch could update it to say non-vmalloc. Good point, thanks for reviewing!
+If there is someplace that does a shift of 1UL, yes, this would be a
+problem.  I don't see one, but I might have missed something.  If all
+the shifts are from 1, then the top 33 bits would be always set and
+cleared as a unit, as if they were one bit.
 
- - Joel
+> So if this weird mask is indeed an issue we should state that configurations
+> _starting from 512 CPUs_ are affected, not just those with more than 512
+> CPUs.
 
+That would instead be more than 512-16=496 CPUs, correct?  496 CPUs would
+only require a 31-bit shift, which should be OK, but 497 would require
+a 32-bit shift, which would result in sign extension.  If it turns out
+that sign extension is OK, then we should get in trouble at 513 CPUs,
+which would result in a 33-bit shift (and is that even defined in C?).
+
+But this can be tested.  Let's try setting RCU_FANOUT_LEAF to 2.  Then we
+"only" need 64 (maybe 62) CPUs to trigger the bug.  And I happen to
+have access to a system with 80 CPUs.  (Those with smaller systems can
+try to trigger this bug by changing the current "1 <<" to (say) "4 <<",
+which should trigger it on 16-CPU systems.)
+
+I just fired off an 80-CPU test with CONFIG_RCU_FANOUT_LEAF=2 and will
+let you know how it goes.
+
+							Thanx, Paul
+
+> Thanks,
+> 
+> Mathieu
+> 
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > Thanks,
+> > > 
+> > > Mathieu
+> > > 
+> > > > 
+> > > > 	David
+> > > > 
+> > > > > 
+> > > > > Thanks,
+> > > > > 
+> > > > > Mathieu
+> > > > > 
+> > > > > 
+> > > > > > 
+> > > > > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> > > > > > 
+> > > > > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> > > > > > ---
+> > > > > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+> > > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > >     kernel/rcu/srcutree.c | 4 ++--
+> > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > > > index 20d7a238d675..6c18e6005ae1 100644
+> > > > > > --- a/kernel/rcu/srcutree.c
+> > > > > > +++ b/kernel/rcu/srcutree.c
+> > > > > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+> > > > > >     				snp->grplo = cpu;
+> > > > > >     			snp->grphi = cpu;
+> > > > > >     		}
+> > > > > > -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> > > > > > +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+> > > > > >     	}
+> > > > > >     	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+> > > > > >     	return true;
+> > > > > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
+> > > > > >     	int cpu;
+> > > > > > 
+> > > > > >     	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+> > > > > > -		if (!(mask & (1 << (cpu - snp->grplo))))
+> > > > > > +		if (!(mask & (1UL << (cpu - snp->grplo))))
+> > > > > >     			continue;
+> > > > > >     		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+> > > > > >     	}
+> > > > > 
+> > > > > --
+> > > > > Mathieu Desnoyers
+> > > > > EfficiOS Inc.
+> > > > > https://www.efficios.com
+> > > > 
+> > > > -
+> > > > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> > > > Registration No: 1397386 (Wales)
+> > > 
+> > > -- 
+> > > Mathieu Desnoyers
+> > > EfficiOS Inc.
+> > > https://www.efficios.com
+> > > 
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+> 
