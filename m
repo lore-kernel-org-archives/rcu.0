@@ -2,169 +2,118 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E492CA0FF8
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B4BCCA0FFB
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351875AbjIEQ0V (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
+        id S1351885AbjIEQ0W (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353642AbjIEHAx (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:00:53 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931AB1B4;
-        Tue,  5 Sep 2023 00:00:48 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31977ace1c8so1906759f8f.1;
-        Tue, 05 Sep 2023 00:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693897247; x=1694502047; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PXyDlNAn3aTmEsTW95GvcdGMYos2arUzMqrBn1clqqU=;
-        b=jNNWHI3DOC7sP3Ti/qBCBMv8WTmQOsm30oiRcxojWhKMNoOXsbz+kcXnay28kNcE9q
-         NjUqlLkCyTDhCAkHW+I0oVi/3/+fdV22OFwoMvz8WICuwnVm4mt11RR+uZLRFg5uQROu
-         YqfItgXxV0bZdBiixPLaQStdw3nlgHQbYH64Gl/jKcZyMni0i4r+X3y4oXGdLlUFBruW
-         Ig6Cr87bYy9SmvU0RCpKpvBCqjC+ravdsTMSrAt3quj0+oO+NXdMHSrTKojgP7DPAzta
-         x2EU2AcFec3qxl8rBf//1vNFy+7iG9XY0ZCIP9rXp4LTKWIssCL4CNJE6M0QADjWKK0L
-         xMxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693897247; x=1694502047;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PXyDlNAn3aTmEsTW95GvcdGMYos2arUzMqrBn1clqqU=;
-        b=Y0KWU6v52mwr6ScBOPvGB/Wpu2rI2tUSgtQzwV7G/CBg6DP9KEODK3me2BROwJdpwL
-         6mB7Gz3R0vnLzsFyl6xT8Cy6JhZGUXZW2reL/pZtAbJEJKnrnAM2fLOyhGX2ACdtzplb
-         pAb8CwKSVIcMf/lmJNtj4tsElUhv4Sjc7EuVDs6eEtA/0lKzNXwIifKlytqJN32WVHdA
-         VX5c8JwbcW8ucs2ERuy4jOT0bihROLDUl8CXJvgr+64Lgu7T/dNaFb98niKXlONTwphF
-         QpbAPhDszXy3Io4faUHVAanIDqdERIYHCo1cobdyZoQmVsrnQboa84N/KaUdfNdvLjpW
-         cJJA==
-X-Gm-Message-State: AOJu0YxgtdcbBDJgANQtgzVv0EeJoriEXSZHRc2pUE88b/hqAAbria+w
-        OweL7WqQksKSGxrvOAHGdlsIYMLRlyY=
-X-Google-Smtp-Source: AGHT+IEKEbKZfrPdCfjnpm+31/ypyN57DgQ4HIlr4pBsGEOmUoh+hYLzMpfl8Lvumz9Ie9xQTh6RQQ==
-X-Received: by 2002:a5d:4d49:0:b0:319:6ce2:e5a3 with SMTP id a9-20020a5d4d49000000b003196ce2e5a3mr8470261wru.26.1693897246723;
-        Tue, 05 Sep 2023 00:00:46 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id r5-20020adfe685000000b003143867d2ebsm16569287wrm.63.2023.09.05.00.00.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 00:00:45 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 08:00:44 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
-Message-ID: <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <20230904180806.1002832-2-joel@joelfernandes.org>
+        with ESMTP id S1354815AbjIEOln (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 10:41:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55A518C
+        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 07:41:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 79F2B60919
+        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 14:41:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45910C433C7;
+        Tue,  5 Sep 2023 14:41:35 +0000 (UTC)
+Date:   Tue, 5 Sep 2023 15:41:32 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Christoph Paasch <cpaasch@apple.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
+Subject: Re: kmemleak handling of kfree_rcu
+Message-ID: <ZPc+HGjmY2ZC4WO3@arm.com>
+References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
+ <ZPZKsJUPVeHCsLQB@arm.com>
+ <20230905111725.GA3737639@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904180806.1002832-2-joel@joelfernandes.org>
+In-Reply-To: <20230905111725.GA3737639@google.com>
+X-TUID: JtodgA1Ocs8V
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
-> From: Zqiang <qiang.zhang1211@gmail.com>
->
-> Currently, for double invoke call_rcu(), will dump rcu_head objects
-> memory info, if the objects is not allocated from the slab allocator,
-> the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-> need to be held, since the call_rcu() can be invoked in interrupt context,
-> therefore, there is a possibility of spinlock deadlock scenarios.
->
-> And in Preempt-RT kernel, the rcutorture test also trigger the following
-> lockdep warning:
->
-> BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-> preempt_count: 1, expected: 0
-> RCU nest depth: 1, expected: 1
-> 3 locks held by swapper/0/1:
->  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
->  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
->  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
-> irq event stamp: 565512
-> hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
-> hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
-> softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
-> softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
-> Preemption disabled at:
-> [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
-> CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x68/0xb0
->  dump_stack+0x14/0x20
->  __might_resched+0x1aa/0x280
->  ? __pfx_rcu_torture_err_cb+0x10/0x10
->  rt_spin_lock+0x53/0x130
->  ? find_vmap_area+0x1f/0x70
->  find_vmap_area+0x1f/0x70
->  vmalloc_dump_obj+0x20/0x60
->  mem_dump_obj+0x22/0x90
->  __call_rcu_common+0x5bf/0x940
->  ? debug_smp_processor_id+0x1b/0x30
->  call_rcu_hurry+0x14/0x20
->  rcu_torture_init+0x1f82/0x2370
->  ? __pfx_rcu_torture_leak_cb+0x10/0x10
->  ? __pfx_rcu_torture_leak_cb+0x10/0x10
->  ? __pfx_rcu_torture_init+0x10/0x10
->  do_one_initcall+0x6c/0x300
->  ? debug_smp_processor_id+0x1b/0x30
->  kernel_init_freeable+0x2b9/0x540
->  ? __pfx_kernel_init+0x10/0x10
->  kernel_init+0x1f/0x150
->  ret_from_fork+0x40/0x50
->  ? __pfx_kernel_init+0x10/0x10
->  ret_from_fork_asm+0x1b/0x30
->  </TASK>
->
-> The previous patch fixes this by using the deadlock-safe best-effort
-> version of find_vm_area. However, in case of failure print the fact that
-> the pointer was a vmalloc pointer so that we print at least something.
->
-> Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: rcu@vger.kernel.org
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  mm/util.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/util.c b/mm/util.c
-> index dd12b9531ac4..406634f26918 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
->  	if (vmalloc_dump_obj(object))
->  		return;
->
-> -	if (virt_addr_valid(object))
-> +	if (is_vmalloc_addr(object))
-> +		type = "vmalloc memory";
-> +	else if (virt_addr_valid(object))
->  		type = "non-slab/vmalloc memory";
+On Tue, Sep 05, 2023 at 11:17:25AM +0000, Joel Fernandes wrote:
+> On Mon, Sep 04, 2023 at 10:22:56PM +0100, Catalin Marinas wrote:
+> > On Wed, Aug 30, 2023 at 09:37:23AM -0700, Christoph Paasch wrote:
+> > > for the MPTCP upstream project, we are running syzkaller [1] continuously to
+> > > qualify our kernel changes.
+> > > 
+> > > We found one issue with kmemleak and its handling of kfree_rcu.
+> > > 
+> > > Specifically, it looks like kmemleak falsely reports memory-leaks when the
+> > > object is being freed by kfree_rcu after a certain grace-period.
+> > > 
+> > > For example, https://github.com/multipath-tcp/mptcp_net-next/issues/398#
+> > > issuecomment-1584819482 shows how the syzkaller program reliably produces a
+> > > kmemleak report, although the object is not leaked (we confirmed that by simply
+> > > increasing MSECS_MIN_AGE to something larger than the grace-period).
+> > 
+> > Not sure which RCU variant you are using but most likely the false
+> > positives are caused by the original reference to the object being lost
+> > and the pointer added to a new location that kmemleak does not track
+> > (e.g. bnode->records[] in the tree-based variant).
+> > 
+> > A quick attempt (untested, not even compiled):
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> 
+> I am not sure if that works. Correct me if I'm wrong but the issue is that
+> the allocated pointer being RCU-freed is no longer reachable by kmemleak (it
+> is scanned but not reachable), however it might still be reachable via an
+> RCU reader. In such a situation, it is a false-positive.
 
-I think you should update this to say non-slab/non-vmalloc memory (as much
-as that description sucks!) as this phrasing in the past meant to say
-'non-slab or vmalloc memory' (already confusing phrasing) so better to be
-clear.
+Yes, with a small correction that the object being RCU-freed is not
+scanned if it cannot be reached by kmemleak (unless explicitly marked as
+not a leak).
 
->  	else if (object == NULL)
->  		type = "NULL pointer";
-> --
-> 2.42.0.283.g2d96d420d3-goog
->
+> The correct fix then should probably be to mark the object as
+> kmemleak_not_leak() until a grace period elapses. This will cause the object
+> to not be reported but still be scanned until eventually the lower layers
+> will remove the object from kmemleak-tracking after the grace period. Per the
+> docs also, that API is used to prevent false-positives.
+
+This should work as well but I'd use kmemleak_ignore() instead of
+kmemleak_not_leak(). The former, apart from masking the false positive,
+also tells kmemleak not to scan the object. After a kvfree_rcu(), the
+object shouldn't have any valid references to other objects, so not
+worth scanning.
+
+> Instead what the below diff appears to do is to mark the bnode cache as a
+> kmemleak object itself, which smells a bit wrong. The bnode is not an
+> allocated object in the traditional sense, it is simple an internal data
+> structure.
+
+We do this in other places for objects containing pointers and which
+aren't tracked by kmemleak (it doesn't track page allocations as there
+would be too many leading to lots of false positives or overlapping
+objects - the slab itself uses the page allocator). An example where we
+do something similar is alloc_large_system_hash(). We could add a
+wrapper API if kmemleak_alloc() feels wrong but underlying in kmemleak
+it would use the same mechanism for recording and scanning the bnode.
+
+> That may not solve the issue as the false-positive unreachable
+> object is still unreachable.
+
+It should solve the issue as long as the bnode is reachable from the
+root objects (e.g. the data/bss sections; I think it is via the
+per_cpu_ptr(&krc, cpu)->bkvcache llist_head). When the bnode is scanned,
+it will find the pointer to the RCU-freed object and mark it as
+referenced (not a leak).
+
+Anyway, as we trust the RCU freeing implementation not to leak data, we
+can go with your simpler suggestion of a kmemleak_ignore() call on the
+kvfree_rcu() path. Probably even better as the object pending to be
+freed will no longer be scanned.
+
+-- 
+Catalin
