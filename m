@@ -2,143 +2,202 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C382C83F3E
-	for <rcu@archiver.kernel.org>; Mon,  4 Sep 2023 21:23:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C10C71153
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 00:02:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjIDVXF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 4 Sep 2023 17:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
+        id S239922AbjIEACQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 4 Sep 2023 20:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbjIDVXE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 4 Sep 2023 17:23:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2114E127
-        for <rcu@vger.kernel.org>; Mon,  4 Sep 2023 14:23:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 981BB61371
-        for <rcu@vger.kernel.org>; Mon,  4 Sep 2023 21:23:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD244C433C7;
-        Mon,  4 Sep 2023 21:22:58 +0000 (UTC)
-Date:   Mon, 4 Sep 2023 22:22:56 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Christoph Paasch <cpaasch@apple.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
-Subject: Re: kmemleak handling of kfree_rcu
-Message-ID: <ZPZKsJUPVeHCsLQB@arm.com>
-References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
+        with ESMTP id S230416AbjIEACQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 4 Sep 2023 20:02:16 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B26CC7
+        for <rcu@vger.kernel.org>; Mon,  4 Sep 2023 17:02:13 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34ccedcc584so3929275ab.0
+        for <rcu@vger.kernel.org>; Mon, 04 Sep 2023 17:02:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693872132; x=1694476932; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GlBYOF6u/mdf36N6D7elzHkBQlDyUtI/oY1jZl3KZRw=;
+        b=lso8FFNOwenzi8jdannppRJpElxhrrrwZCqvnuNYE/P/6ZCwqpFHqIfy3gJDTjKKTO
+         0x1GolEb8nPdxHHDx+p5sRb31b5xoZwxrImgst2hpUaGOEETZWUw9cvyqDYDr3MF+QfL
+         GsOBLIX+wp70gjHl/R4vofxOaG/Sa8e4kiaaI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693872132; x=1694476932;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GlBYOF6u/mdf36N6D7elzHkBQlDyUtI/oY1jZl3KZRw=;
+        b=R/ufB5ArxYFM6YOR4gFTDqSEmaPWRW+cscKv3LGWKe0/Eu/D1aCyECl4UIwq1YAWeL
+         tLQKbx894RrEBI/RBysAVeZ27aPDnxJHz4Pcnned1OoOtv7A2eKKCZlSoGiMKQQsAYtJ
+         e5lzmEU1oeWzErcdJ0n98f2Wl2M/JmQUyZCe9ivDeNkvGdNG9wu2n811BmZ2qoeANQLx
+         h7QLXVWBEjrx5dZBDT/hjZfwLYUtQLtaQPr+nT630oNXYZ8SxnX3JTJviBxPDHeLwRmk
+         5lhR/amudIFXkeZdFB/Qp26AHFIXV3VS8ZdCKaHlCo8LqkeTgMfEcXK6RArT5blRcL6r
+         U4/w==
+X-Gm-Message-State: AOJu0YzCTS3K1fr9NoEmRWsK3txXdJLLKeoI64hcOOds72N+rvmduYzh
+        9kQw/fEHD1k+v8OM9usX2ZqTtQ==
+X-Google-Smtp-Source: AGHT+IFTWyG0rlnsRL2o0q71kyMBo01mmj1YkHJX+kGGJSUgfy5U9D4OMjULDE7jQRAQRy3IVwWLKg==
+X-Received: by 2002:a92:1a0d:0:b0:34f:20d9:74a9 with SMTP id a13-20020a921a0d000000b0034f20d974a9mr695693ila.11.1693872132348;
+        Mon, 04 Sep 2023 17:02:12 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id f30-20020a02cade000000b0042b394eb984sm3758694jap.105.2023.09.04.17.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 17:02:11 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 00:02:11 +0000
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: [PATCH v2] rcu/tree: Defer setting of jiffies during stall reset
+Message-ID: <20230905000211.GA1104186@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Christoph,
+There are instances where rcu_cpu_stall_reset() is called when jiffies
+did not get a chance to update for a long time. Before jiffies is
+updated, the CPU stall detector can go off triggering false-positives
+where a just-started grace period appears to be ages old. In the past,
+we disabled stall detection in rcu_cpu_stall_reset() however this got
+changed [1]. This is resulting in false-positives in KGDB usecase [2].
 
-Please try not to send html, many servers block such emails.
+Fix this by deferring the update of jiffies to the third run of the FQS
+loop. This is more robust, as, even if rcu_cpu_stall_reset() is called
+just before jiffies is read, we would end up pushing out the jiffies
+read by 3 more FQS loops. Meanwhile the CPU stall detection will be
+delayed and we will not get any false positives.
 
-Also adding the RCU list.
+[1] https://lore.kernel.org/all/20210521155624.174524-2-senozhatsky@chromium.org/
+[2] https://lore.kernel.org/all/20230814020045.51950-2-chenhuacai@loongson.cn/
 
-On Wed, Aug 30, 2023 at 09:37:23AM -0700, Christoph Paasch wrote:
-> for the MPTCP upstream project, we are running syzkaller [1] continuously to
-> qualify our kernel changes.
-> 
-> We found one issue with kmemleak and its handling of kfree_rcu.
-> 
-> Specifically, it looks like kmemleak falsely reports memory-leaks when the
-> object is being freed by kfree_rcu after a certain grace-period.
-> 
-> For example, https://github.com/multipath-tcp/mptcp_net-next/issues/398#
-> issuecomment-1584819482 shows how the syzkaller program reliably produces a
-> kmemleak report, although the object is not leaked (we confirmed that by simply
-> increasing MSECS_MIN_AGE to something larger than the grace-period).
+Tested with rcutorture.cpu_stall option as well to verify stall behavior
+with/without patch.
 
-Not sure which RCU variant you are using but most likely the false
-positives are caused by the original reference to the object being lost
-and the pointer added to a new location that kmemleak does not track
-(e.g. bnode->records[] in the tree-based variant).
+Tested-by: Huacai Chen <chenhuacai@loongson.cn>
+Reported-by: Binbin Zhou <zhoubinbin@loongson.cn>
+Closes: https://lore.kernel.org/all/20230814020045.51950-2-chenhuacai@loongson.cn/
+Suggested-by: Paul  McKenney <paulmck@kernel.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Fixes: a80be428fbc1 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Just a resend with reported-by fixed.
 
-A quick attempt (untested, not even compiled):
+ kernel/rcu/tree.c       | 12 ++++++++++++
+ kernel/rcu/tree.h       |  4 ++++
+ kernel/rcu/tree_stall.h | 20 ++++++++++++++++++--
+ 3 files changed, 34 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1449cb69a0e0..681a1eb7560a 100644
+index 1449cb69a0e0..b695c0eb515a 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -53,6 +53,7 @@
- #include <linux/sysrq.h>
- #include <linux/kprobes.h>
- #include <linux/gfp.h>
-+#include <linux/kmemleak.h>
- #include <linux/oom.h>
- #include <linux/smpboot.h>
- #include <linux/jiffies.h>
-@@ -2934,6 +2935,7 @@ drain_page_cache(struct kfree_rcu_cpu *krcp)
+@@ -1552,10 +1552,22 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
+  */
+ static void rcu_gp_fqs(bool first_time)
+ {
++	int nr_fqs = READ_ONCE(rcu_state.nr_fqs_jiffies_stall);
+ 	struct rcu_node *rnp = rcu_get_root();
  
- 	llist_for_each_safe(pos, n, page_list) {
- 		free_page((unsigned long)pos);
-+		kmemleak_free(pos);
- 		freed++;
- 	}
- 
-@@ -2962,8 +2964,16 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
- 					rcu_state.name, bnode->records[i], 0);
- 
- 				vfree(bnode->records[i]);
-+				/* avoid false negatives */
-+				kmemleak_erase(&bnode->records[i]);
- 			}
- 		}
-+		/*
-+		 * Avoid kmemleak false negatives when such pointers are later
-+		 * re-allocated.
-+		 */
-+		for (i = 0; i < bnode->nr_records; i++)
-+			kmemleak_erase(&bnode->records[i]);
- 		rcu_lock_release(&rcu_callback_map);
- 	}
- 
-@@ -2972,8 +2982,10 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
- 		bnode = NULL;
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 
--	if (bnode)
-+	if (bnode) {
- 		free_page((unsigned long) bnode);
-+		kmemleak_free(bnode);
-+	}
- 
- 	cond_resched_tasks_rcu_qs();
- }
-@@ -3241,6 +3253,12 @@ static void fill_page_cache_func(struct work_struct *work)
- 			free_page((unsigned long) bnode);
- 			break;
- 		}
+ 	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+ 	WRITE_ONCE(rcu_state.n_force_qs, rcu_state.n_force_qs + 1);
 +
-+		/*
-+		 * Scan the bnode->records[] array until the objects are
-+		 * actually freed.
-+		 */
-+		kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
- 	}
++	WARN_ON_ONCE(nr_fqs > 3);
++	/* Only countdown nr_fqs for stall purposes if jiffies moves. */
++	if (nr_fqs) {
++		if (nr_fqs == 1) {
++			WRITE_ONCE(rcu_state.jiffies_stall,
++				   jiffies + rcu_jiffies_till_stall_check());
++		}
++		WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, --nr_fqs);
++	}
++
+ 	if (first_time) {
+ 		/* Collect dyntick-idle snapshots. */
+ 		force_qs_rnp(dyntick_save_progress_counter);
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 192536916f9a..e9821a8422db 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -386,6 +386,10 @@ struct rcu_state {
+ 						/*  in jiffies. */
+ 	unsigned long jiffies_stall;		/* Time at which to check */
+ 						/*  for CPU stalls. */
++	int nr_fqs_jiffies_stall;		/* Number of fqs loops after
++						 * which read jiffies and set
++						 * jiffies_stall. Stall
++						 * warnings disabled if !0. */
+ 	unsigned long jiffies_resched;		/* Time at which to resched */
+ 						/*  a reluctant CPU. */
+ 	unsigned long n_force_qs_gpstart;	/* Snapshot of n_force_qs at */
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b10b8349bb2a..a2fa6b22e248 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -149,12 +149,17 @@ static void panic_on_rcu_stall(void)
+ /**
+  * rcu_cpu_stall_reset - restart stall-warning timeout for current grace period
+  *
++ * To perform the reset request from the caller, disable stall detection until
++ * 3 fqs loops have passed. This is required to ensure a fresh jiffies is
++ * loaded.  It should be safe to do from the fqs loop as enough timer
++ * interrupts and context switches should have passed.
++ *
+  * The caller must disable hard irqs.
+  */
+ void rcu_cpu_stall_reset(void)
+ {
+-	WRITE_ONCE(rcu_state.jiffies_stall,
+-		   jiffies + rcu_jiffies_till_stall_check());
++	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 3);
++	WRITE_ONCE(rcu_state.jiffies_stall, ULONG_MAX);
+ }
  
- 	atomic_set(&krcp->work_in_progress, 0);
-@@ -3308,6 +3326,11 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 			// scenarios.
- 			bnode = (struct kvfree_rcu_bulk_data *)
- 				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-+			/*
-+			 * Scan the bnode->records[] array until the objects are
-+			 * actually freed.
-+			 */
-+			kmemleak_alloc(bnode, PAGE_SIZE, 0, GFP_KERNEL);
- 			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
- 		}
+ //////////////////////////////////////////////////////////////////////////////
+@@ -170,6 +175,7 @@ static void record_gp_stall_check_time(void)
+ 	WRITE_ONCE(rcu_state.gp_start, j);
+ 	j1 = rcu_jiffies_till_stall_check();
+ 	smp_mb(); // ->gp_start before ->jiffies_stall and caller's ->gp_seq.
++	WRITE_ONCE(rcu_state.nr_fqs_jiffies_stall, 0);
+ 	WRITE_ONCE(rcu_state.jiffies_stall, j + j1);
+ 	rcu_state.jiffies_resched = j + j1 / 2;
+ 	rcu_state.n_force_qs_gpstart = READ_ONCE(rcu_state.n_force_qs);
+@@ -725,6 +731,16 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	    !rcu_gp_in_progress())
+ 		return;
+ 	rcu_stall_kick_kthreads();
++
++	/*
++	 * Check if it was requested (via rcu_cpu_stall_reset()) that the FQS
++	 * loop has to set jiffies to ensure a non-stale jiffies value. This
++	 * is required to have good jiffies value after coming out of long
++	 * breaks of jiffies updates. Not doing so can cause false positives.
++	 */
++	if (READ_ONCE(rcu_state.nr_fqs_jiffies_stall) > 0)
++		return;
++
+ 	j = jiffies;
  
-
+ 	/*
 -- 
-Catalin
+2.42.0.rc2.253.gd59a3bf2b4-goog
+
