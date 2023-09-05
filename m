@@ -2,207 +2,84 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21F7DCA0FFD
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC3B2CA0FFE
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:27:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352348AbjIEQ0r (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
+        id S243531AbjIEQ0y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354704AbjIENiK (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:38:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F5F191;
-        Tue,  5 Sep 2023 06:38:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DD857B810B5;
-        Tue,  5 Sep 2023 13:38:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E9EC433C8;
-        Tue,  5 Sep 2023 13:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693921083;
-        bh=GP737J1srpQ4kz3nu8M7l1IjptSuNU5aoFj2UR81F78=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=p7PNs2oCy5PK6thQg+MML7g9h+Qze+jXnCaKB4s0YxAq9xoaVBJOZUmlFH7Q1Ki78
-         6h2hYRoUE1Wei70OYk0CucVSfZ+sw/BEwTKCD8kTPYeqGBNBMEQyRXKk1lBtISK9AT
-         +Z8DowqF513Jpq69vmerwgb8e2GD4zQ2A2sLyo7iEiuvzfn0/twqlQY07isxWT8h2b
-         wcMQgSlJCNlpZtfBbyPfzRVQbA0nIxuAxlCXHlciqH+LlXZynX9Rjn595lt8Ny2Xjt
-         Z2/O0APiee24eihN2UCPSYeNCuNtik0f2VVm9cLa/XcAMC2if2vmIbHiuYmwZ+j1Il
-         xCIAYPoSxb0nQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3110ACE0CF9; Tue,  5 Sep 2023 06:38:03 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 06:38:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
-        trufanov@swemel.ru, vfh@swemel.ru,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
- systems
-Message-ID: <98c676a6-3c11-48f1-b7cb-81356c362680@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230904122114.66757-1-arefev@swemel.ru>
- <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
- <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
- <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
- <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
+        with ESMTP id S1354321AbjIEKmB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 06:42:01 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0826199;
+        Tue,  5 Sep 2023 03:41:57 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so36027991fa.2;
+        Tue, 05 Sep 2023 03:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693910516; x=1694515316; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VB/9cNvOGhv5c3NUZyMsbBoZmZ2eYSe7kvAqrZUWzlk=;
+        b=ijrAr59+35locDJkR2k8hCb341F5DBM9RHkhvRD8K94i5k3ScAxOYmLTDle55AL3da
+         w7srFqTtpuy4Ly3zqmsELippP7srk7QxzcdvDJFglOZJ6Mz2dXq3v5eItSEm2REyr0d1
+         zXavYhp57uH7hjnm0tPiNaMx1FHKv9wryVtu4SqBSu2Q+lckDfOWzV5t/1qT1nY/0A7+
+         62wzZa+ad/p0DjInqXFJY9eB8QYzAFhZE2n4MJ26ZS3rCY3rEsegWD8izKoUhoLcX/yi
+         b8hzolILxOI4YVb1vorN0aCPwJvql6XC445V8IESFOhnRmGslYoO9zNubQbqK13x7kX0
+         h6yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693910516; x=1694515316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VB/9cNvOGhv5c3NUZyMsbBoZmZ2eYSe7kvAqrZUWzlk=;
+        b=Vz3G8lCTTM4nryqPUl87phE2dwBWM/XroCWz6k0BETEftd31FNOl0BinER9E4thoBW
+         /glhsGxGrA/uyf+CORggPmGUXLxwpzHXdbgpNesNA3HpBnR9fsQSKuvHc+YB5eXvH+Z8
+         Yzfp0H0Hwdzy9rmZRgPUlbaTjVtwZpIHv3ihHEgjvE206ITTw/Cd9VdSHXjQS+c+Se5X
+         HydTUh3YmLeyu/dXALn4SMNFsk9I9zWBmrCQakxjmyHOk6sVrshju7Ak2VSpJsqMlNb5
+         fqeFR6xVKyRdnu7m6EHwdUYaiJjZ3IfvsR3sdfxVMAbOm+wkEvM4MRaitVKG8A0U9Xfk
+         p4lA==
+X-Gm-Message-State: AOJu0YxzVeRDgGJdCSNaCDAi0bi3e8OH16RcXQlQUdM1CEagKuPSw4wm
+        L+ofm8nZ4Sxf2mnpaZc+0Ps=
+X-Google-Smtp-Source: AGHT+IE/snxwuH+65B33xT1AlIo4pHbfnCw2nQotBmme5dmGs1e+Oekn2HzbtEwM8Vq5u0bFL59skw==
+X-Received: by 2002:a2e:984f:0:b0:2bc:ffec:742 with SMTP id e15-20020a2e984f000000b002bcffec0742mr8317510ljj.49.1693910515888;
+        Tue, 05 Sep 2023 03:41:55 -0700 (PDT)
+Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
+        by smtp.gmail.com with ESMTPSA id w7-20020a2e9bc7000000b002b9ef00b10csm2850226ljj.2.2023.09.05.03.41.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 03:41:55 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 5 Sep 2023 12:41:53 +0200
+To:     Marcus Seyfarth <m.seyfarth@gmail.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
+Message-ID: <ZPcF8YLo9tJqYX8Y@pc636>
+References: <bb603efb-654f-4686-bad9-0bb5379745c0@paulmck-laptop>
+ <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
+ <ZPW+KJCIAvFzZHl8@pc636>
+ <CA+FbhJPNZ-E3e7WBH_jAvi3Rn-2gV4TVk9S9qmheXkqXw+Sakg@mail.gmail.com>
+ <ZPXyUTteVxXtqiEo@pc636>
+ <CA+FbhJMr6LzmOpVNkYyiSERAsNEqqvQwQ7SwJK=CmwvV9d2Z-A@mail.gmail.com>
+ <ZPYLmm3ih7u95l1a@pc636>
+ <ZPYsY2HEjySkq/NR@pc636>
+ <CA+FbhJPNK=4s8J5OqOBaDC8EDNQzevQMQ+fwZnfxG92ReabQOA@mail.gmail.com>
+ <CA+FbhJMEqLycroz=J6VvC=4OBaJSwz8K+K6Zgki80M-5YdYp6A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
+In-Reply-To: <CA+FbhJMEqLycroz=J6VvC=4OBaJSwz8K+K6Zgki80M-5YdYp6A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:57:53AM -0400, Mathieu Desnoyers wrote:
-> On 9/4/23 09:58, Paul E. McKenney wrote:
-> > On Mon, Sep 04, 2023 at 08:58:48AM -0400, Mathieu Desnoyers wrote:
-> > > On 9/4/23 08:42, Mathieu Desnoyers wrote:
-> > > > On 9/4/23 08:21, Denis Arefev wrote:
-> > > > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
-> > > > > is subject to overflow due to a failure to cast operands to a larger
-> > > > > data type before performing arithmetic.
-> > > > > 
-> > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > > > > which can indeed cause the signed 32-bit integer literal ("1") to
-> > > > > overflow
-> > > > > when shifted by any value greater than 31.
-> > > > 
-> > > > We could expand on this:
-> > > > 
-> > > > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > > > which can indeed cause the signed 32-bit integer literal ("1") to overflow
-> > > > when shifted by any value greater than 31 on a 64-bit system.
-> > > > 
-> > > > Moreover, when the subtraction value is 31, the 1 << 31 expression results
-> > > > in 0xffffffff80000000 when the signed integer is promoted to unsigned long
-> > > > on 64-bit systems due to type promotion rules, which is certainly not the
-> > > > intended result.
-> > 
-> > Thank you both!  Could you please also add something to the effect of:
-> > "Given default Kconfig options, this bug affects only systems with more
-> > than 512 CPUs."?
+>
+> For a comparison, I've attached a journalctl log for my custom 6.4.14 Kernel.
 > 
-> Hi Paul,
-> 
-> I'm trying to understand this "NR_CPUS > 512 CPUs" default Kconfig lower
-> bound from kernel/rcu/Kconfig and rcu_node_tree.h. Is that on a 32-bit or
-> 64-bit architecture ? Also, I suspect that something like x86-64 MAXSMP (or
-> an explicit NR_CPUS) needs to be selected over a default Kconfig to support
-> that many CPUs.
+Thank you!
 
-64-bit only.  I believe that 32-bit kernels are unaffected by this bug.
-
-The trick is that RCU reshapes the rcu_node tree in rcu_init_geometry(),
-which is invoked during early boot from rcu_init().  This reshaping is
-based on nr_cpu_ids.  So if NR_CPUS is (say) 4096, there will be enough
-rcu_node structures allocated at build time to accommodate 4096 CPUs
-(259 of them, 256 leaf nodes, four internal nodes, and one root node),
-but only assuming dense numbering of CPUs.  If rcu_init_geometry() sees
-that nr_cpu_ids is (say) 64, it will use only five of them, that is,
-four leaf nodes and one root node.  The leaf nodes will need to shift
-by at most 16, and the root node by at most 4.
-
-But the possibility of sparse CPU numbering (perhaps to your point)
-means that the bug can occur in 64-bit kernels booted on systems with
-512 CPUs or fewer if that system has sparse CPU IDs.  For example,
-there have been systems that disable all but one hardware thread per
-core, but leave places in the CPU numbering for those disabled threads.
-Such a system with four hardware threads per core could have a CPU 516
-(and thus be affected by this bug) with as few as 129 CPUs.
-
-So a better request would be for something like: "Given default Kconfig
-options, this bug affects only 64-bit systems having at least one CPU
-for which smp_processor_id() returns 512 or greater."
-
-Does that help, or am I missing your point?
-
-							Thanx, Paul
-
-> Thanks,
-> 
-> Mathieu
-> 
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> > > > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > > > 
-> > > > With the commit message updated with my comment above, please also add:
-> > > > 
-> > > > Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures
-> > > > containing callbacks")
-> > > > Cc: <stable@vger.kernel.org> # v4.11
-> > > 
-> > > Sorry, the line above should read:
-> > > 
-> > > Cc: <stable@vger.kernel.org> # v4.11+
-> > > 
-> > > Thanks,
-> > > 
-> > > Mathieu
-> > > 
-> > > > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > 
-> > > > Thanks!
-> > > > 
-> > > > Mathieu
-> > > > 
-> > > > > 
-> > > > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> > > > > ---
-> > > > > v3: Changed the name of the patch, as suggested by
-> > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
-> > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > >    kernel/rcu/srcutree.c | 4 ++--
-> > > > >    1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > > index 20d7a238d675..6c18e6005ae1 100644
-> > > > > --- a/kernel/rcu/srcutree.c
-> > > > > +++ b/kernel/rcu/srcutree.c
-> > > > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct
-> > > > > srcu_struct *ssp, gfp_t gfp_flags)
-> > > > >                    snp->grplo = cpu;
-> > > > >                snp->grphi = cpu;
-> > > > >            }
-> > > > > -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> > > > > +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
-> > > > >        }
-> > > > >        smp_store_release(&ssp->srcu_sup->srcu_size_state,
-> > > > > SRCU_SIZE_WAIT_BARRIER);
-> > > > >        return true;
-> > > > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct
-> > > > > srcu_struct *ssp, struct srcu_node *snp
-> > > > >        int cpu;
-> > > > >        for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> > > > > -        if (!(mask & (1 << (cpu - snp->grplo))))
-> > > > > +        if (!(mask & (1UL << (cpu - snp->grplo))))
-> > > > >                continue;
-> > > > >            srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> > > > >        }
-> > > > 
-> > > 
-> > > -- 
-> > > Mathieu Desnoyers
-> > > EfficiOS Inc.
-> > > https://www.efficios.com
-> > > 
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+--
+Uladzislau Rezki
