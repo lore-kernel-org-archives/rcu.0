@@ -2,174 +2,168 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF7B9C83F2C
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51DE1CA0FF8
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352324AbjIEQ0l (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S1352249AbjIEQ0j (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354452AbjIELrQ (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:47:16 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740DA1AE
-        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 04:47:11 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79266c8617eso96640139f.3
-        for <rcu@vger.kernel.org>; Tue, 05 Sep 2023 04:47:11 -0700 (PDT)
+        with ESMTP id S1354456AbjIELsq (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 07:48:46 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAAB1AB
+        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 04:48:43 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-795547f055fso95388539f.0
+        for <rcu@vger.kernel.org>; Tue, 05 Sep 2023 04:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693914430; x=1694519230; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1693914523; x=1694519323; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+kMHasHVGTn26MkV0Q3sK5DIWqCalskCsDPU3m7M6q0=;
-        b=LC+h8u6cF0c0fLz/EIVeetNf8OEC2QS079RJZ8N9WcXC6VmZ2pYTkzD7WOafMP7Fn+
-         GJ6sG4Q66AxRqaNEOAgonm8+2zQAZtlo+QaO2Rk+535guRHEdPp5r4h+jJo8ME0JkFvv
-         h52rJZiAXrwfDr7Gnlzg8XeyArkWE02SjP4bU=
+        bh=agO0bHd7pavHNlvZnzfpEMuMb6kyNAGPWGDG3TstaRk=;
+        b=BMnedrUKJkafG+VL3zj5iBtyMGwwWUrf4sttSYxerstNqnzdIZP7MZ2GWOFdA9UCSR
+         ajsqHB6RChYUjcdM6mxW4fRC+2vQxr7ymTabwfzLbSwhPctC5sWOtzEFrKsVe3GXHOis
+         2oer4moz18SxerOGsExx4aXzW0d4cdbydsATI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693914430; x=1694519230;
+        d=1e100.net; s=20221208; t=1693914523; x=1694519323;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+kMHasHVGTn26MkV0Q3sK5DIWqCalskCsDPU3m7M6q0=;
-        b=IOeEQkHHAZGeKfhCCNsWGoYNa2AxgVeyK7oh9tDDwG2eLcEUGNXXNcHMFey560od2y
-         Bt4RlEHfbWPmPDgLpV0IZSCLN/WFAJ3ZT5dUlCpsSCCOU9Cu/MPI+XxuXPic2xSLB27E
-         6sjglcsUNXB4kApqRlwuC9SvBlTYt6MrRKEHfhIzQDkEMUvZ0hAB7ODXo6Bysa8Fmh/1
-         bVtwUj7P79CUgg1X6BIRN65/7hr8C4u/inXqOZd0j6erY3bIAcpv9fLuWL0FeCFsInWp
-         +g6SDLe+leJaBeq21wQRneVJ8jyk3iT9CZsL8F8QHVHkwX1l5KuSRHDRKR+vVCvlX0Ch
-         fHZg==
-X-Gm-Message-State: AOJu0YyqnQMfgsQKiCFYxA1CCtx6T4GCDwMzmVIVoAhivQFi2tahwAzI
-        fTa0V9C6QwKu/10nopykReNwxA==
-X-Google-Smtp-Source: AGHT+IHDwYBN4jbjbJ2InS/JWRLSveg7Bkkv+CFcAJjUWQW7JPDz2+SoDzDcEpMiiPdIjwRdBiw2KQ==
-X-Received: by 2002:a5e:dc49:0:b0:785:5917:a35f with SMTP id s9-20020a5edc49000000b007855917a35fmr14731736iop.8.1693914430477;
-        Tue, 05 Sep 2023 04:47:10 -0700 (PDT)
+        bh=agO0bHd7pavHNlvZnzfpEMuMb6kyNAGPWGDG3TstaRk=;
+        b=jdobl+eQh5femivaUTfvy+LiVDvvZ/Ek4d2CNgBmKLwdJl7JcpZMeFKs6RVZvgz1ws
+         RESFkagmYC1f2BbQA+exHoTj5Eve/BuVV5Kct08okBPWldL+Vo7gsffWhRpenGONG00b
+         6/VXn9me3gIaclcVMEjYXpGYYyQLPuv8MSbJsfhhnGFjra1UZwJ0W3I8cmTjI5/9yKV8
+         6SeDxPz++I4FFOzP8CWmC1sDnjTusv+fHHHxoZICnwVKFmj0wmQ4qW4XYdYClP/07UJt
+         zgSqiTQjSyrqGmKfNS0hdQyxsPxS+c04E31bCUpjaP1CH6VTZzhIY8sO9ffTu+OPBD0I
+         rGTQ==
+X-Gm-Message-State: AOJu0YxF6BIEgWBioT7BxOJbG4THVStaRB9N9K3diyfzzTh5t++AtMTv
+        FAjAifMjdGAed5HbfQgJiTbfNg==
+X-Google-Smtp-Source: AGHT+IHZEE0cD6pV/j4gqBPlwyHlFkqwQgME+6G/X3QKzwQ+iv+FZgNev0P/vstjQ/+aqRZo0bg65w==
+X-Received: by 2002:a6b:6406:0:b0:790:9728:4014 with SMTP id t6-20020a6b6406000000b0079097284014mr14044851iog.11.1693914522842;
+        Tue, 05 Sep 2023 04:48:42 -0700 (PDT)
 Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id k26-20020a6b401a000000b0077e3566a801sm4266287ioa.29.2023.09.05.04.47.09
+        by smtp.gmail.com with ESMTPSA id w11-20020a5d844b000000b0076ffebfc9fasm4207490ior.47.2023.09.05.04.48.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 04:47:09 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 11:47:09 +0000
+        Tue, 05 Sep 2023 04:48:42 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 11:48:41 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Lorenzo Stoakes <lstoakes@gmail.com>
 Cc:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Vlastimil Babka <vbabka@suse.cz>,
+        Zqiang <qiang.zhang1211@gmail.com>,
         Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
+        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
         stable@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
- for debug
-Message-ID: <20230905114709.GA3881391@google.com>
+Subject: Re: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
+Message-ID: <20230905114841.GB3881391@google.com>
 References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
+ <20230904180806.1002832-2-joel@joelfernandes.org>
+ <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
+In-Reply-To: <9e329429-73a5-4926-af4f-edcf9e547101@lucifer.local>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
-> On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
-> > It is unsafe to dump vmalloc area information when trying to do so from
-> > some contexts. Add a safer trylock version of the same function to do a
-> > best-effort VMA finding and use it from vmalloc_dump_obj().
-> 
-> It'd be nice to have more details as to precisely which contexts and what this
-> resolves.
-
-True. I was hoping the 'trylock' mention would be sufficient (example hardirq
-context interrupting a lock-held region) but you're right.
-
-> > [applied test robot feedback on unused function fix.]
-> > [applied Uladzislau feedback on locking.]
+On Tue, Sep 05, 2023 at 08:00:44AM +0100, Lorenzo Stoakes wrote:
+> On Mon, Sep 04, 2023 at 06:08:05PM +0000, Joel Fernandes (Google) wrote:
+> > From: Zqiang <qiang.zhang1211@gmail.com>
+> >
+> > Currently, for double invoke call_rcu(), will dump rcu_head objects
+> > memory info, if the objects is not allocated from the slab allocator,
+> > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+> > need to be held, since the call_rcu() can be invoked in interrupt context,
+> > therefore, there is a possibility of spinlock deadlock scenarios.
+> >
+> > And in Preempt-RT kernel, the rcutorture test also trigger the following
+> > lockdep warning:
+> >
+> > BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
+> > in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+> > preempt_count: 1, expected: 0
+> > RCU nest depth: 1, expected: 1
+> > 3 locks held by swapper/0/1:
+> >  #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
+> >  #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
+> >  #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
+> > irq event stamp: 565512
+> > hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
+> > hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
+> > softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
+> > softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
+> > Preemption disabled at:
+> > [<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
+> > CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  dump_stack_lvl+0x68/0xb0
+> >  dump_stack+0x14/0x20
+> >  __might_resched+0x1aa/0x280
+> >  ? __pfx_rcu_torture_err_cb+0x10/0x10
+> >  rt_spin_lock+0x53/0x130
+> >  ? find_vmap_area+0x1f/0x70
+> >  find_vmap_area+0x1f/0x70
+> >  vmalloc_dump_obj+0x20/0x60
+> >  mem_dump_obj+0x22/0x90
+> >  __call_rcu_common+0x5bf/0x940
+> >  ? debug_smp_processor_id+0x1b/0x30
+> >  call_rcu_hurry+0x14/0x20
+> >  rcu_torture_init+0x1f82/0x2370
+> >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+> >  ? __pfx_rcu_torture_leak_cb+0x10/0x10
+> >  ? __pfx_rcu_torture_init+0x10/0x10
+> >  do_one_initcall+0x6c/0x300
+> >  ? debug_smp_processor_id+0x1b/0x30
+> >  kernel_init_freeable+0x2b9/0x540
+> >  ? __pfx_kernel_init+0x10/0x10
+> >  kernel_init+0x1f/0x150
+> >  ret_from_fork+0x40/0x50
+> >  ? __pfx_kernel_init+0x10/0x10
+> >  ret_from_fork_asm+0x1b/0x30
+> >  </TASK>
+> >
+> > The previous patch fixes this by using the deadlock-safe best-effort
+> > version of find_vm_area. However, in case of failure print the fact that
+> > the pointer was a vmalloc pointer so that we print at least something.
 > >
 > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
 > > Cc: Paul E. McKenney <paulmck@kernel.org>
 > > Cc: rcu@vger.kernel.org
-> > Cc: Zqiang <qiang.zhang1211@gmail.com>
-> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
 > > Cc: stable@vger.kernel.org
+> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > > ---
-> >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
-> >  1 file changed, 22 insertions(+), 4 deletions(-)
+> >  mm/util.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 93cf99aba335..2c6a0e2ff404 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> >  #ifdef CONFIG_PRINTK
-> >  bool vmalloc_dump_obj(void *object)
-> >  {
-> > -	struct vm_struct *vm;
-> >  	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> > +	const void *caller;
-> > +	struct vm_struct *vm;
-> > +	struct vmap_area *va;
-> > +	unsigned long addr;
-> > +	unsigned int nr_pages;
+> > diff --git a/mm/util.c b/mm/util.c
+> > index dd12b9531ac4..406634f26918 100644
+> > --- a/mm/util.c
+> > +++ b/mm/util.c
+> > @@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
+> >  	if (vmalloc_dump_obj(object))
+> >  		return;
 > >
-> > -	vm = find_vm_area(objp);
-> > -	if (!vm)
-> > +	if (!spin_trylock(&vmap_area_lock))
-> > +		return false;
+> > -	if (virt_addr_valid(object))
+> > +	if (is_vmalloc_addr(object))
+> > +		type = "vmalloc memory";
+> > +	else if (virt_addr_valid(object))
+> >  		type = "non-slab/vmalloc memory";
 > 
-> It'd be good to have a comment here explaining why we must trylock here. I am
-> also concerned that in the past this function would return false only if the
-> address was not a vmalloc one, but now it might just return false due to lock
-> contention and the user has no idea which it is?
-> 
-> I'd want to at least output "vmalloc region cannot lookup lock contention"
-> vs. the below cannot find case.
+> I think you should update this to say non-slab/non-vmalloc memory (as much
+> as that description sucks!) as this phrasing in the past meant to say
+> 'non-slab or vmalloc memory' (already confusing phrasing) so better to be
+> clear.
 
-In the patch 2/2 we do print if the address looks like a vmalloc address even
-if the vmalloc look up fails.
-
-Also the reporter's usecase is not a common one. We only attempt to dump
-information if there was a debug objects failure (example if somebody did a
-double call_rcu). In such a situation, the patch will prevent a deadlock and
-still print something about the address.
-
-> Under heavy lock contention aren't you potentially breaking the ability to
-> introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
-> contexts under which acquiring this spinlock is not appropriate?
-
-Yes this is a good point, but there's another case as well: PREEMPT_RT can
-sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
-call_rcu() as it may be called in contexts that cannot sleep. So we handle
-that also using trylock.
-
-Thanks for the review!
+True, though the issue you mentioned it is in existing code, a respin of this
+patch could update it to say non-vmalloc. Good point, thanks for reviewing!
 
  - Joel
 
-
-> 
-> > +	va = __find_vmap_area((unsigned long)objp, &vmap_area_root);
-> > +	if (!va) {
-> > +		spin_unlock(&vmap_area_lock);
-> >  		return false;
-> > +	}
-> > +
-> > +	vm = va->vm;
-> > +	if (!vm) {
-> > +		spin_unlock(&vmap_area_lock);
-> > +		return false;
-> > +	}
-> > +	addr = (unsigned long)vm->addr;
-> > +	caller = vm->caller;
-> > +	nr_pages = vm->nr_pages;
-> > +	spin_unlock(&vmap_area_lock);
-> >  	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
-> > -		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
-> > +		nr_pages, addr, caller);
-> >  	return true;
-> >  }
-> >  #endif
-> > --
-> > 2.42.0.283.g2d96d420d3-goog
-> >
