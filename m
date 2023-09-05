@@ -2,166 +2,174 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D6ACCA0FF3
-	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF7B9C83F2C
+	for <rcu@archiver.kernel.org>; Tue,  5 Sep 2023 16:26:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352192AbjIEQ0e (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
+        id S1352324AbjIEQ0l (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354672AbjIEN0R (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:26:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDCA12A;
-        Tue,  5 Sep 2023 06:26:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 971F5604EF;
-        Tue,  5 Sep 2023 13:26:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00599C433C7;
-        Tue,  5 Sep 2023 13:26:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693920372;
-        bh=uR1L60tg6Q3zWpMHCV8Bm73uXv8eg6vy7Ps7U/amzzc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NPS4Ps0Jjf3g66RB02FzeG7tDhrB6k5drTaDLuokDSYwYj8zh4yoli6valfAnhojH
-         YumrNDuWH2EHNRtRD5r3HkhkriTS1gylhLDejwgIey/j5DBH8D1Hk1rp+JzhTu4Fek
-         geZ0ImNBFZHoUt3uDIvo3WqqXcHurXt/tf9lwSJat1K/Ocbwj/PlUiVdC4EJwPuvRU
-         t+Mm66Z6YHQ7wbQE0lM22evYS2N6pUvU8pKvu3ZugVkLYs0ebaXLvX//V1hTbAQB+W
-         II6yRKGMG0Ee51xSk46ZL0eTsQy2i0hu5v0J0hf31KFW8ujVBZDKMRXQyJgD4lF4UR
-         JbT+g8N4ffaLQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 81B6ECE0CF9; Tue,  5 Sep 2023 06:26:11 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 06:26:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>
-Subject: Re: [PATCH v2] The value may overflow
-Message-ID: <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230904094251.64022-1-arefev@swemel.ru>
- <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
- <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
- <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
+        with ESMTP id S1354452AbjIELrQ (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 5 Sep 2023 07:47:16 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740DA1AE
+        for <rcu@vger.kernel.org>; Tue,  5 Sep 2023 04:47:11 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79266c8617eso96640139f.3
+        for <rcu@vger.kernel.org>; Tue, 05 Sep 2023 04:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693914430; x=1694519230; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+kMHasHVGTn26MkV0Q3sK5DIWqCalskCsDPU3m7M6q0=;
+        b=LC+h8u6cF0c0fLz/EIVeetNf8OEC2QS079RJZ8N9WcXC6VmZ2pYTkzD7WOafMP7Fn+
+         GJ6sG4Q66AxRqaNEOAgonm8+2zQAZtlo+QaO2Rk+535guRHEdPp5r4h+jJo8ME0JkFvv
+         h52rJZiAXrwfDr7Gnlzg8XeyArkWE02SjP4bU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693914430; x=1694519230;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+kMHasHVGTn26MkV0Q3sK5DIWqCalskCsDPU3m7M6q0=;
+        b=IOeEQkHHAZGeKfhCCNsWGoYNa2AxgVeyK7oh9tDDwG2eLcEUGNXXNcHMFey560od2y
+         Bt4RlEHfbWPmPDgLpV0IZSCLN/WFAJ3ZT5dUlCpsSCCOU9Cu/MPI+XxuXPic2xSLB27E
+         6sjglcsUNXB4kApqRlwuC9SvBlTYt6MrRKEHfhIzQDkEMUvZ0hAB7ODXo6Bysa8Fmh/1
+         bVtwUj7P79CUgg1X6BIRN65/7hr8C4u/inXqOZd0j6erY3bIAcpv9fLuWL0FeCFsInWp
+         +g6SDLe+leJaBeq21wQRneVJ8jyk3iT9CZsL8F8QHVHkwX1l5KuSRHDRKR+vVCvlX0Ch
+         fHZg==
+X-Gm-Message-State: AOJu0YyqnQMfgsQKiCFYxA1CCtx6T4GCDwMzmVIVoAhivQFi2tahwAzI
+        fTa0V9C6QwKu/10nopykReNwxA==
+X-Google-Smtp-Source: AGHT+IHDwYBN4jbjbJ2InS/JWRLSveg7Bkkv+CFcAJjUWQW7JPDz2+SoDzDcEpMiiPdIjwRdBiw2KQ==
+X-Received: by 2002:a5e:dc49:0:b0:785:5917:a35f with SMTP id s9-20020a5edc49000000b007855917a35fmr14731736iop.8.1693914430477;
+        Tue, 05 Sep 2023 04:47:10 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id k26-20020a6b401a000000b0077e3566a801sm4266287ioa.29.2023.09.05.04.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 04:47:09 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 11:47:09 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
+        stable@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
+ for debug
+Message-ID: <20230905114709.GA3881391@google.com>
+References: <20230904180806.1002832-1-joel@joelfernandes.org>
+ <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
+In-Reply-To: <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:26:51AM -0400, Mathieu Desnoyers wrote:
-> On 9/5/23 05:31, David Laight wrote:
-> > From: Mathieu Desnoyers
-> > > Sent: 04 September 2023 11:24
-> > > 
-> > > On 9/4/23 05:42, Denis Arefev wrote:
-> > > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
-> > > > is subject to overflow due to a failure to cast operands to a larger
-> > > > data type before performing arithmetic
-> > > 
-> > > The patch title should identify more precisely its context, e.g.:
-> > > 
-> > > "srcu: Fix srcu_struct node grpmask overflow on 64-bit systems"
-> > > 
-> > > Also, as I stated in my reply to the previous version, the patch commit
-> > > message should describe the impact of the bug it fixes.
-> > 
-> > And is the analysis complete?
-> > Is 1UL right for 32bit archs??
-> > Is 64 bits even enough??
+On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
+> On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
+> > It is unsafe to dump vmalloc area information when trying to do so from
+> > some contexts. Add a safer trylock version of the same function to do a
+> > best-effort VMA finding and use it from vmalloc_dump_obj().
 > 
-> I understand from include/linux/rcu_node_tree.h and kernel/rcu/Kconfig
-> RCU_FANOUT and RCU_FANOUT_LEAF ranges that a 32-bit integer is sufficient to
-> hold the mask on 32-bit architectures, and a 64-bit integer is enough on
-> 64-bit architectures given the current implementation.
-> 
-> At least this appears to be the intent. I did not do a thorough analysis of
-> the various parameter limits.
+> It'd be nice to have more details as to precisely which contexts and what this
+> resolves.
 
-Mathieu has it right.
+True. I was hoping the 'trylock' mention would be sufficient (example hardirq
+context interrupting a lock-held region) but you're right.
 
-32-bit kernels are unaffected by this bug.
+> > [applied test robot feedback on unused function fix.]
+> > [applied Uladzislau feedback on locking.]
+> >
+> > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: rcu@vger.kernel.org
+> > Cc: Zqiang <qiang.zhang1211@gmail.com>
+> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
+> >  1 file changed, 22 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 93cf99aba335..2c6a0e2ff404 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> >  #ifdef CONFIG_PRINTK
+> >  bool vmalloc_dump_obj(void *object)
+> >  {
+> > -	struct vm_struct *vm;
+> >  	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> > +	const void *caller;
+> > +	struct vm_struct *vm;
+> > +	struct vmap_area *va;
+> > +	unsigned long addr;
+> > +	unsigned int nr_pages;
+> >
+> > -	vm = find_vm_area(objp);
+> > -	if (!vm)
+> > +	if (!spin_trylock(&vmap_area_lock))
+> > +		return false;
+> 
+> It'd be good to have a comment here explaining why we must trylock here. I am
+> also concerned that in the past this function would return false only if the
+> address was not a vmalloc one, but now it might just return false due to lock
+> contention and the user has no idea which it is?
+> 
+> I'd want to at least output "vmalloc region cannot lookup lock contention"
+> vs. the below cannot find case.
 
-RCU_FANOUT_LEAF defaults to 16, which means that a 64-bit kernel would
-need more than 32 leaf rcu_node structures for the parent rcu_node
-structure to need more than 32 bit to track its children.  This means
-that more than 32*16=512 CPUs are required for this bug to affect 64-bit
-systems.  And there really are systems this big, so I am surprised that
-this has not shown up long ago.  But it would not be the first time that
-objective reality surprised me.  ;-)
+In the patch 2/2 we do print if the address looks like a vmalloc address even
+if the vmalloc look up fails.
 
-							Thanx, Paul
+Also the reporter's usecase is not a common one. We only attempt to dump
+information if there was a debug objects failure (example if somebody did a
+double call_rcu). In such a situation, the patch will prevent a deadlock and
+still print something about the address.
 
-> Thanks,
+> Under heavy lock contention aren't you potentially breaking the ability to
+> introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
+> contexts under which acquiring this spinlock is not appropriate?
+
+Yes this is a good point, but there's another case as well: PREEMPT_RT can
+sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
+call_rcu() as it may be called in contexts that cannot sleep. So we handle
+that also using trylock.
+
+Thanks for the review!
+
+ - Joel
+
+
 > 
-> Mathieu
-> 
-> > 
-> > 	David
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > Mathieu
-> > > 
-> > > 
-> > > > 
-> > > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > > > 
-> > > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> > > > ---
-> > > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
-> > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > >    kernel/rcu/srcutree.c | 4 ++--
-> > > >    1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > index 20d7a238d675..6c18e6005ae1 100644
-> > > > --- a/kernel/rcu/srcutree.c
-> > > > +++ b/kernel/rcu/srcutree.c
-> > > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
-> > > >    				snp->grplo = cpu;
-> > > >    			snp->grphi = cpu;
-> > > >    		}
-> > > > -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> > > > +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
-> > > >    	}
-> > > >    	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
-> > > >    	return true;
-> > > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
-> > > >    	int cpu;
-> > > > 
-> > > >    	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> > > > -		if (!(mask & (1 << (cpu - snp->grplo))))
-> > > > +		if (!(mask & (1UL << (cpu - snp->grplo))))
-> > > >    			continue;
-> > > >    		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> > > >    	}
-> > > 
-> > > --
-> > > Mathieu Desnoyers
-> > > EfficiOS Inc.
-> > > https://www.efficios.com
-> > 
-> > -
-> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> > Registration No: 1397386 (Wales)
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+> > +	va = __find_vmap_area((unsigned long)objp, &vmap_area_root);
+> > +	if (!va) {
+> > +		spin_unlock(&vmap_area_lock);
+> >  		return false;
+> > +	}
+> > +
+> > +	vm = va->vm;
+> > +	if (!vm) {
+> > +		spin_unlock(&vmap_area_lock);
+> > +		return false;
+> > +	}
+> > +	addr = (unsigned long)vm->addr;
+> > +	caller = vm->caller;
+> > +	nr_pages = vm->nr_pages;
+> > +	spin_unlock(&vmap_area_lock);
+> >  	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+> > -		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
+> > +		nr_pages, addr, caller);
+> >  	return true;
+> >  }
+> >  #endif
+> > --
+> > 2.42.0.283.g2d96d420d3-goog
+> >
