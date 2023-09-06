@@ -2,128 +2,213 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A032CEE14C3
-	for <rcu@archiver.kernel.org>; Wed,  6 Sep 2023 22:03:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A6C7EE14AA
+	for <rcu@archiver.kernel.org>; Wed,  6 Sep 2023 22:46:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbjIFWDF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 6 Sep 2023 18:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
+        id S244095AbjIFWqP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 6 Sep 2023 18:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237554AbjIFWDF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 6 Sep 2023 18:03:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD94619AF
-        for <rcu@vger.kernel.org>; Wed,  6 Sep 2023 15:02:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7480CC433C8;
-        Wed,  6 Sep 2023 22:02:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694037766;
-        bh=kFVb7Ya7mZu6YAwWZYiOa2Mon2Xj7zjlLogJ9/b7Fw4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=r+AcwTCrW+OGMSNDOC6cmW3UG1bMPI49QOpOqUWAc6G/dxHbehY6j6CZ8bSBXhrya
-         XaPNpbV0DHYMLp75oMdkCmG+T0gURHuP8cI6XZZDPVn/K7S8FjqYtXlcd32X0/HylF
-         aK+8yTefPL6M96t1u+I62A65G/IFWaR9GOCvSO+1Rn3nI4C9vILNjS4O7JL0icI5vN
-         0dD5JsBWCy3/fkpF5qbiXfpIKVFzOGuwRLUiSzzL67KwD5iGRdUc72Ca7qpFwu+GFE
-         sYXFhGoRLnx/kOsyVOeK3vtE+6uX3n7LTsWyWcSMGMj9nJq9jP9Bd0CYVwQWzCHFia
-         NwHN/U8NasfZQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EFE6ECE0809; Wed,  6 Sep 2023 15:02:45 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 15:02:45 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org,
-        urezki@gmail.com
-Subject: Re: kmemleak handling of kfree_rcu
-Message-ID: <38f21251-4911-4300-9b53-e390e621e68a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
- <ZPZKsJUPVeHCsLQB@arm.com>
- <20230905111725.GA3737639@google.com>
- <ZPc+HGjmY2ZC4WO3@arm.com>
- <20230906143529.GB1127143@google.com>
- <ZPizxVT5s9JA5MPw@arm.com>
- <24f3d4fc-56c0-46bd-8e5b-af57f09fa777@paulmck-laptop>
- <ZPjxJJjuHJbPVyfT@arm.com>
+        with ESMTP id S236306AbjIFWqO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 6 Sep 2023 18:46:14 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EF519B5
+        for <rcu@vger.kernel.org>; Wed,  6 Sep 2023 15:46:10 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7926b7f8636so8097039f.1
+        for <rcu@vger.kernel.org>; Wed, 06 Sep 2023 15:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1694040370; x=1694645170; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Omk8h6qAI8/QBggIcV1LJ4IashJ7NgP8xYw8aRJySEM=;
+        b=wBLGQYfYnStAMjWybLWIuTKmyEVxrVrNb+Fu4BQt7bOBO27XqhdYLEzaG1dH/nMGgE
+         GAMYU7fvyM0cdp2c/ByVRaWGXCwps83zryfdwaa8a/3c4T3iyMjLRtUgyodQRq2RG9Ff
+         iMdvUrRRu8NQKLFwEU1DDw/TKZlVOe6rvonkE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694040370; x=1694645170;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Omk8h6qAI8/QBggIcV1LJ4IashJ7NgP8xYw8aRJySEM=;
+        b=IIXLA6pmv9CtS59j5kQ76B4MkdEeZpT6ZWsX51n2nvH5ogpYook/l88at9vNLYO1SJ
+         QXd7PvaQxuriBAa8JJZKququo+AjcVjeONBCMj4Z4CQqhB3wZAFjLw9BhjE+6r3vD8ip
+         FVz8yR5vg65U21WTmxd91zaBV6Lswhez4MNblqqrO4M4zZ9e3NHkhgGZIntMiq3yQaLU
+         q56nJjlqsj1JKI4f8p8RoBgX3MhG8IBG5c2oUl1F+stvoaDZFjSzhCSTacGw92kHgkkY
+         qRv7AFdlnyIW12xqjwPtgTydHx79QVxiH3HGU/si4Yyl4vHZiguKE6vNC5ULHwKtoKM+
+         qy3Q==
+X-Gm-Message-State: AOJu0YwqCPAxe4vZlem1D+ee2b45R+r8ZsfLXh7VqstGWl9A0wFkmVHo
+        bOKiGQ3j5urvQI0s5oTpUimqxQ==
+X-Google-Smtp-Source: AGHT+IHp8evXSLOC7rntt6cZ3sHD+jrdtq6uVSsSZMx3E8qry9hjqQhqNWKp8kFBoRxi1VB+KVux7w==
+X-Received: by 2002:a05:6602:70f:b0:790:aed5:d0b0 with SMTP id f15-20020a056602070f00b00790aed5d0b0mr1178474iox.0.1694040370078;
+        Wed, 06 Sep 2023 15:46:10 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id s17-20020a6bd311000000b00790d72848efsm5210392iob.15.2023.09.06.15.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 15:46:09 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 22:46:08 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
+        stable@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
+ for debug
+Message-ID: <20230906224608.GB1646335@google.com>
+References: <20230904180806.1002832-1-joel@joelfernandes.org>
+ <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
+ <20230905114709.GA3881391@google.com>
+ <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZPjxJJjuHJbPVyfT@arm.com>
+In-Reply-To: <CAA5enKbvrvTx=d6MgLZjupnsEuoCnRN8e9p+ffnJV1rJS+HkXA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 10:37:40PM +0100, Catalin Marinas wrote:
-> On Wed, Sep 06, 2023 at 12:11:12PM -0700, Paul E. McKenney wrote:
-> > On Wed, Sep 06, 2023 at 06:15:49PM +0100, Catalin Marinas wrote:
-> > > On Wed, Sep 06, 2023 at 02:35:29PM +0000, Joel Fernandes wrote:
-> > > > On Tue, Sep 05, 2023 at 03:41:32PM +0100, Catalin Marinas wrote:
-> > > > > On Tue, Sep 05, 2023 at 11:17:25AM +0000, Joel Fernandes wrote:
-> > > > > > The correct fix then should probably be to mark the object as
-> > > > > > kmemleak_not_leak() until a grace period elapses. This will cause the object
-> > > > > > to not be reported but still be scanned until eventually the lower layers
-> > > > > > will remove the object from kmemleak-tracking after the grace period. Per the
-> > > > > > docs also, that API is used to prevent false-positives.
-> > > > > 
-> > > > > This should work as well but I'd use kmemleak_ignore() instead of
-> > > > > kmemleak_not_leak(). The former, apart from masking the false positive,
-> > > > > also tells kmemleak not to scan the object. After a kvfree_rcu(), the
-> > > > > object shouldn't have any valid references to other objects, so not
-> > > > > worth scanning.
-> > > > 
-> > > > Yes I am also OK with that, however to me I consider the object as alive as
-> > > > long as the grace period does not end. But I agree with you and it may not be
-> > > > worth tracking them or scanning them.
-> > > 
-> > > I guess from an RCU perspective, the object is still alive. From the
-> > > kvfree_rcu() caller perspective though, it can disappear at any point
-> > > after the grace period, so it shouldn't rely on its content being valid
-> > > and referencing other objects (other than transiently e.g. in RCU list
-> > > traversal).
-> > > 
-> > > It probably only matters if we have some very long grace periods (I'm
-> > > not up to date with the recent RCU developments). In such cases, the
-> > > object still being scanned could introduce false negatives. That's my
-> > > reasoning for suggesting kmemleak_ignore() rather than
-> > > kmemleak_not_leak().
-> > 
-> > Very long RCU readers still result in very long RCU grace periods.  And,
-> > after some tens of seconds, RCU CPU stall warnings.  So don't let your
-> > RCU readers run for that long.  But you knew that already.  ;-)
+On Wed, Sep 06, 2023 at 08:23:18PM +0100, Lorenzo Stoakes wrote:
+> On Tue, 5 Sept 2023 at 12:47, Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
+> > > On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
+> > > > It is unsafe to dump vmalloc area information when trying to do so from
+> > > > some contexts. Add a safer trylock version of the same function to do a
+> > > > best-effort VMA finding and use it from vmalloc_dump_obj().
+> > >
+> > > It'd be nice to have more details as to precisely which contexts and what this
+> > > resolves.
+> >
+> > True. I was hoping the 'trylock' mention would be sufficient (example hardirq
+> > context interrupting a lock-held region) but you're right.
+> >
+> > > > [applied test robot feedback on unused function fix.]
+> > > > [applied Uladzislau feedback on locking.]
+> > > >
+> > > > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: rcu@vger.kernel.org
+> > > > Cc: Zqiang <qiang.zhang1211@gmail.com>
+> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > ---
+> > > >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
+> > > >  1 file changed, 22 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > index 93cf99aba335..2c6a0e2ff404 100644
+> > > > --- a/mm/vmalloc.c
+> > > > +++ b/mm/vmalloc.c
+> > > > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> > > >  #ifdef CONFIG_PRINTK
+> > > >  bool vmalloc_dump_obj(void *object)
+> > > >  {
+> > > > -   struct vm_struct *vm;
+> > > >     void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> > > > +   const void *caller;
+> > > > +   struct vm_struct *vm;
+> > > > +   struct vmap_area *va;
+> > > > +   unsigned long addr;
+> > > > +   unsigned int nr_pages;
+> > > >
+> > > > -   vm = find_vm_area(objp);
+> > > > -   if (!vm)
+> > > > +   if (!spin_trylock(&vmap_area_lock))
+> > > > +           return false;
+> > >
+> > > It'd be good to have a comment here explaining why we must trylock here. I am
+> > > also concerned that in the past this function would return false only if the
+> > > address was not a vmalloc one, but now it might just return false due to lock
+> > > contention and the user has no idea which it is?
+> > >
+> > > I'd want to at least output "vmalloc region cannot lookup lock contention"
+> > > vs. the below cannot find case.
+> >
+> > In the patch 2/2 we do print if the address looks like a vmalloc address even
+> > if the vmalloc look up fails.
 > 
-> That's still ok. I was more thinking of deferred freeing well past the
-> RCU readers completing.
+> No, you output exactly what was output before, only changing what it
+> means and in no way differentiating between couldn't find vmalloc
+> area/couldn't get lock.
 
-Ah, that can happen.  Some kernels are built with CONFIG_RCU_LAZY=y, which
-delays freeing in order to reduce power consumption.  And kfree_rcu()
-will also delay for a bit.  But in both cases, a flood of callbacks
-should get things going again.
+2/2 does this:
+                         -     if (virt_addr_valid(object))
+                         +     if (is_vmalloc_addr(object))
+                         +             type = "vmalloc memory";
+                         +     else if (virt_addr_valid(object))
+                                       type = "non-slab/vmalloc memory";
 
-But an isolated kfree_rcu() might well see a few seconds delay.
-Saving your battery!  ;-)
+This code is executed only if vmalloc_dump_obj() returns false. The
+is_vmalloc_addr() was added by 2/2 which is newly added right?
 
-> > > @@ -3388,6 +3389,14 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-> > >  		success = true;
-> > >  	}
-> > >  
-> > > +	/*
-> > > +	 * The kvfree_rcu() caller considers the pointer freed at this point
-> > > +	 * and likely removes any references to it. Since the the actual slab
-> > > +	 * freeing (and kmemleak_free()) is deferred, tell kmemleak to ignore
-> > > +	 * this object (no scanning or false positives reporting).
-> > > +	 */
-> > > +	kmemleak_ignore(ptr);
-> > 
-> > Do we want to un-ignore it at the end of the grace period?  Or will that
-> > happen automatically when it is passed to kfree()?  (My guess is that
-> > the answer to both questions is "yes", but I figured that I should ask.)
+You are right we are not differentiating between trylock failure and failure to
+find the vmalloc area. I was just saying, even though we don't differentiate,
+we do print "vmalloc memory" right? That wasn't being printed before.
+
+> > Also the reporter's usecase is not a common one. We only attempt to dump
+> > information if there was a debug objects failure (example if somebody did a
+> > double call_rcu). In such a situation, the patch will prevent a deadlock and
+> > still print something about the address.
 > 
-> No need to un-ignore. This function only tells kmemleak it's not a
-> leak and doesn't have any interesting data to scan. Kmemleak still keeps
-> track of it until properly freed.
+> Right, but the function still purports to do X but does Y.
+> 
+> >
+> > > Under heavy lock contention aren't you potentially breaking the ability to
+> > > introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
+> > > contexts under which acquiring this spinlock is not appropriate?
+> >
+> > Yes this is a good point, but there's another case as well: PREEMPT_RT can
+> > sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
+> > call_rcu() as it may be called in contexts that cannot sleep. So we handle
+> > that also using trylock.
+> 
+> Right so somebody now has to find this email to realise that. I hate
+> implicit knowledge like this, it needs a comment. It also furthers the
+> point that it'd be useful to differentiate between the two.
 
-Got it, thank you!
+This is a valid point, and I acknowledged it in last email. A code comment could
+indeed be useful.
 
-							Thanx, Paul
+So I guess from an agreement standpoint, I agree:
+
+1/2 could use an additional comment explaining why we need trylock (sighting
+the RT sleeping lock issue).
+
+2/2 could update the existing code to convert "non-slab/vmalloc" to
+"non-slab/non-vmalloc". Note: that's an *existing* issue.
+
+The issue in 2/2 is not a new one so that can certainly be a separate patch.
+And while at it, we could update the comment in that patch as well.
+
+But the whole differentiating between trylock vs vmalloc area lookup failure
+is not that useful -- just my opinion fwiw! I honestly feel differentiating
+between trylock vs vmalloc area lookup failure complicates the code because
+it will require passing this information down from vmalloc_dump_obj() to the
+caller AFAICS and I am not sure if the person reading the debug will really
+care much. But I am OK with whatever the -mm community wants and I am happy
+to send out a new patch on top with the above that I agree on since Andrew
+took these 2 (but for the stuff I don't agree, I would appreciate if you
+could send a patch for review and I am happy to review it!).
+
+As you mentioned, this series is a stability fix and we can put touch-ups on
+top of it if needed, and there is also plenty of time till the next merge
+window. Allow me a few days and I'll do the new patch on top (I'd say dont
+bother to spend your time on it, I'll do it).
+
+thanks,
+
+ - Joel
+
+
+> 
+> 
+> -- 
+> Lorenzo Stoakes
+> https://ljs.io
