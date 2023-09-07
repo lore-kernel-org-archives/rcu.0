@@ -2,85 +2,152 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4248BEC8738
-	for <rcu@archiver.kernel.org>; Thu,  7 Sep 2023 16:17:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35D2BEC873F
+	for <rcu@archiver.kernel.org>; Thu,  7 Sep 2023 16:21:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239445AbjIGQR1 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 7 Sep 2023 12:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
+        id S239343AbjIGQVW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 7 Sep 2023 12:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239790AbjIGQQ7 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 7 Sep 2023 12:16:59 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2301526AF
-        for <rcu@vger.kernel.org>; Thu,  7 Sep 2023 09:07:23 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68e4700c931so300683b3a.3
-        for <rcu@vger.kernel.org>; Thu, 07 Sep 2023 09:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694102777; x=1694707577; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=r6n7B65MZY+NEYtpII6NMfxvbqb6oukije8HHCi5Tx8=;
-        b=l+WiKDfGJA4hnd7yT1ejuglXLh29fFKApE0aUoa6cypppxwJX31V96hXaRQPWKp9h4
-         faPBW7Q+nZvhUp/0YsUmORC5QsbVRN+jQpP5dLBfVWQLoNDB/2PLoznhmH/lGq8SuOKY
-         ezfQ95nqRp+Dm+i+zClEOeyy9qNyxSeRd31WvMbMoeo6bjCd74pzgqzZ4kQkfv3URP/t
-         ZT9qid6vpNCwAMZ2uHVWTTLkLL/Jg8E8eStFHVhdZ6ZWx0dXdwsN5g+Uc3duLiFJ+C39
-         ql0bzFJMSOFr8J3aeHjfw1z9J9I+80FJc6fi4Om62yMpv7goiTEvWLWLRMrM24uagfg0
-         Yg6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694102777; x=1694707577;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=r6n7B65MZY+NEYtpII6NMfxvbqb6oukije8HHCi5Tx8=;
-        b=GKjvZBV3gyRg7gVeWBFk/w0vnvxIGbtQqAuGlFeggVaD6OBy0rlL6RNFVHcciTD8jI
-         PF5vHI0DvegNU7OWyKWgzbLrqV37NhQV2+w0uq4bZ1Kh6h+obYKdnuzorU0/zQNF8gHr
-         TSD/rKJaksGEY/fTzliWe0lD8PEuo3ApW85Ldz4Lzx9ZMuzxXE03S6LfknKE1ERhtkQO
-         lNx4JvP8l2hCaHltNT5t2g+YyLX3S7D609bq7u5A44AcmpxhI5wTOGtFYky+mNX3hcWu
-         EVrl/dJ5EEIO3Jtox4TEJsBdHMMoxstZCAzB4k7MHZiZO4pqmuqPf9HilmIr/CK7gGmj
-         3+iw==
-X-Gm-Message-State: AOJu0Yy+cx/nlc4IAWVabC042GwUKryUoeRfYYC+6Dfbj8d27NeM03eM
-        wEFgxwgpvb9ibDpBZ+GFKRpHx+y4A12CMaPkTG3PueQr1h1fmYFIcyMRjPvt
-X-Google-Smtp-Source: AGHT+IEOWnsZ9JeUOEbgfkdxUiQXF+Lys1hlRY83rq3C5ypKQ1H/IIZFLywETHMuDzO+NBLqPhnJGwU9tC5UCR7P3Ds=
-X-Received: by 2002:a17:90a:5785:b0:263:f435:ef2d with SMTP id
- g5-20020a17090a578500b00263f435ef2dmr14982611pji.10.1694092646138; Thu, 07
- Sep 2023 06:17:26 -0700 (PDT)
+        with ESMTP id S241914AbjIGQVE (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 7 Sep 2023 12:21:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5286B6A59;
+        Thu,  7 Sep 2023 09:17:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 84A5E2185A;
+        Thu,  7 Sep 2023 06:53:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694069595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JftswgzMi1yTthK09YjvkREc+mptG29T3G2e3TGgDE4=;
+        b=kJqlzL9IxHHlFpgqGzCQAkKVpNMWEPdMi/9IGRgS4jRjb/fUf1NNaKhMiJvUkzgLkS9vaT
+        +G5yS0ORsUL7K8FL8X/aUIZiznw8eUPN1p408P/a9JbTZ8GjA2Yq8Td0UfZtuuHd0urrJJ
+        ZUki1w6+YKbBfcUFjWrcrrGkp95bC3Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694069595;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JftswgzMi1yTthK09YjvkREc+mptG29T3G2e3TGgDE4=;
+        b=SxMHmyMT1ihgn5YPNa64XVJGnNxHRuAFWX8DeGPEKYxW4TpVZEaE6O+aZKm0oncN+KWQvj
+        sUoxgnv6PACUsWDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C5611358B;
+        Thu,  7 Sep 2023 06:53:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tKHvEVtz+WR0fAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 07 Sep 2023 06:53:15 +0000
+Message-ID: <49ff5505-5a4a-1ad5-8552-6e79a91ee8c9@suse.cz>
+Date:   Thu, 7 Sep 2023 08:53:14 +0200
 MIME-Version: 1.0
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Thu, 7 Sep 2023 09:17:15 -0400
-Message-ID: <CAJWu+ooLBjAhZbHa+64egmh53-n7qc_o+PvsfSt2hzQNrVhdqw@mail.gmail.com>
-Subject: [BUG] TREE04 hang on 6.5.y stable: Writer stall state RTWS_COND_SYNC_FULL
-To:     rcu@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
+ for debug
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huaweicloud.com>, rcu@vger.kernel.org,
+        Zqiang <qiang.zhang1211@gmail.com>, stable@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230904180806.1002832-1-joel@joelfernandes.org>
+Content-Language: en-US
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230904180806.1002832-1-joel@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 Hi,
-Just started seeing this on 6.5 stable. It is new and first occurrence:
 
-TREE04 no success message, 234 successful version messages
- [033mWARNING:  [mTREE04 GP HANG at 14 torture stat 2
-[   38.371120] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g1253
-f0x0 ->state 0x2 cpu 6
-[   38.388342] Call Trace:
-[   53.741039] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g3637
-f0x2 ->state 0x2 cpu 6
-[   69.093462] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g5501
-f0x0 ->state 0x2 cpu 6
-[   84.450028] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g10505
-f0x0 ->state 0x2 cpu 6
-[   99.815871] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g13781
-f0x0 ->state 0x2 cpu 6
-[  115.166476] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g16544
-f0x0 ->state 0x2 cpu 6
-[  130.550116] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g18941
-f0x0 ->state 0x2 cpu 6
-[..]
+On 9/4/23 20:08, Joel Fernandes (Google) wrote:
+> It is unsafe to dump vmalloc area information when trying to do so from
+> some contexts. Add a safer trylock version of the same function to do a
+> best-effort VMA finding and use it from vmalloc_dump_obj().
 
-All logs:
-http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-6.5.y/17/artifact/tools/testing/selftests/rcutorture/res/2023.09.07-04.10.25/TREE04/
+I was a bit confused by the subject which suggests a new function is added,
+but it seems open-coded in its only caller. I assume it's due to evolution
+of the series. Something like:
 
-thanks,
+mm/vmalloc: use trylock for vmap_area_lock in vmalloc_dump_obj()
 
- - Joel
+?
+
+I also notice it's trying hard to copy everything from "vm" to temporary
+variables before unlocking, presumably to prevent use-after-free, so should
+that be also mentioned in the changelog?
+
+> [applied test robot feedback on unused function fix.]
+> [applied Uladzislau feedback on locking.]
+> 
+> Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: rcu@vger.kernel.org
+> Cc: Zqiang <qiang.zhang1211@gmail.com>
+> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  mm/vmalloc.c | 26 ++++++++++++++++++++++----
+>  1 file changed, 22 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 93cf99aba335..2c6a0e2ff404 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+>  #ifdef CONFIG_PRINTK
+>  bool vmalloc_dump_obj(void *object)
+>  {
+> -	struct vm_struct *vm;
+>  	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> +	const void *caller;
+> +	struct vm_struct *vm;
+> +	struct vmap_area *va;
+> +	unsigned long addr;
+> +	unsigned int nr_pages;
+>  
+> -	vm = find_vm_area(objp);
+> -	if (!vm)
+> +	if (!spin_trylock(&vmap_area_lock))
+> +		return false;
+> +	va = __find_vmap_area((unsigned long)objp, &vmap_area_root);
+> +	if (!va) {
+> +		spin_unlock(&vmap_area_lock);
+>  		return false;
+> +	}
+> +
+> +	vm = va->vm;
+> +	if (!vm) {
+> +		spin_unlock(&vmap_area_lock);
+> +		return false;
+> +	}
+> +	addr = (unsigned long)vm->addr;
+> +	caller = vm->caller;
+> +	nr_pages = vm->nr_pages;
+> +	spin_unlock(&vmap_area_lock);
+>  	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+> -		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
+> +		nr_pages, addr, caller);
+>  	return true;
+>  }
+>  #endif
+
