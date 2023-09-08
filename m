@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34964EEB560
-	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 18:00:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E262DEEB560
+	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 18:01:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235377AbjIHSAT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Sep 2023 14:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        id S240925AbjIHSB4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Sep 2023 14:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245495AbjIHSAS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:00:18 -0400
+        with ESMTP id S232514AbjIHSBy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Sep 2023 14:01:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B4D1FE0;
-        Fri,  8 Sep 2023 11:00:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F9C5C433CC;
-        Fri,  8 Sep 2023 18:00:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C952125;
+        Fri,  8 Sep 2023 11:01:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59930C433CC;
+        Fri,  8 Sep 2023 18:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196012;
+        s=k20201202; t=1694196078;
         bh=jFszu+GdYVWhOXqtYg5GeDOnqj7QIpD2eZMemC9VqFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LTg6nMT0hmSrntTMsf9vTuD5OxNZz5VAIdQ7Roo34raAVlAwqssh5tyP8qCdRGRii
-         ihMtKnOcB0n1pS2YYKncqGFxlsWXOIFSrVfogiv6lG6hUT0gpSbZZmy49ntnrI8mkw
-         asB/j0xiVDjG2zeBbKHB6KudJ9Au2BlWq8tmDooGocYJs3RqEoWcQXDqEv3hNuIjd4
-         CyzaMGTNn9IVj+epCfU5Ggncvo1LG0GQvcoALzdihNZktKvYsByDHnPw2bbRDYbZfI
-         XDjfoDSbwQYeaBIL3eOf/kpMb12srfmvUp77fWPUxADPGFTzQvWWKjPKtDD1es4WZx
-         Gomnf4sB8vKMA==
+        b=D/TqLOy7Vicx8nBtMJFWlP83jmIlg73TLP8o+++lV1apjJp2Ea190yz/AFrZtY6rz
+         S5Ihyewa7jjSPMuBjfSV+NdhySpVQYw6CTex021JcdavtsFf73lLhEi5pCtZsrh0Pn
+         e5SU8Q3CfI8lz5WX2/LxiDJGwtwTp2CWpciPaw6LbKkCoLAYmXgwwWK9uF7+wgiP3x
+         /3dYSapluSaWvYMHSGcUW9usKbKGhM3stY3V4kVhpOnbrkAikQnR/+xPKXOcHgS6tC
+         7yBcphQdQNYUKo+zAkLSNLTG/gObjvdES5KqOyNpBfq1Jjf1MnvzgX/f3KW8ao26oq
+         DcEXeJXUJLiXA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zqiang <qiang.zhang1211@gmail.com>,
@@ -34,16 +34,16 @@ Cc:     Zqiang <qiang.zhang1211@gmail.com>,
         josh@joshtriplett.org, frederic@kernel.org,
         quic_neeraju@quicinc.com, joel@joelfernandes.org,
         boqun.feng@gmail.com, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 03/16] rcuscale: Move rcu_scale_writer() schedule_timeout_uninterruptible() to _idle()
-Date:   Fri,  8 Sep 2023 13:59:40 -0400
-Message-Id: <20230908175953.3457942-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 03/13] rcuscale: Move rcu_scale_writer() schedule_timeout_uninterruptible() to _idle()
+Date:   Fri,  8 Sep 2023 14:00:49 -0400
+Message-Id: <20230908180100.3458151-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908175953.3457942-1-sashal@kernel.org>
-References: <20230908175953.3457942-1-sashal@kernel.org>
+In-Reply-To: <20230908180100.3458151-1-sashal@kernel.org>
+References: <20230908180100.3458151-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.2
+X-stable-base: Linux 6.4.15
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
