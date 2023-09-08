@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E03EEB566
-	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 18:15:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5C0DEEB560
+	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 18:16:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243498AbjIHSPr (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Sep 2023 14:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
+        id S245071AbjIHSQM (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Sep 2023 14:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236666AbjIHSPq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:15:46 -0400
+        with ESMTP id S239618AbjIHSQL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Sep 2023 14:16:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112CA1FF3;
-        Fri,  8 Sep 2023 11:15:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 684ECC433C9;
-        Fri,  8 Sep 2023 18:02:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD8B1FF9;
+        Fri,  8 Sep 2023 11:15:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2CF6C433BF;
+        Fri,  8 Sep 2023 18:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196136;
-        bh=8Snju43aOXr8/PKdQcXJQDe/ddRqFWZm312fkwvcD5E=;
+        s=k20201202; t=1694196212;
+        bh=HhWUwEdsg2b6uJbdXtwyVBiqwyeaWbTJV1DNjSY1nFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=alyh1x8GDmHnWTa0e6hx+Lj8w2DpCNabzl5WP7FIl3/0r2TI5/gl1IgfbgpymkhiX
-         /YGiov/B27Vqq86+mzHc9qHIhi4ND1i035el7aOd3CquJ+pfpwGdvIS3G5hpMJYdj5
-         N8QXOZBnrP56XHgjlt4SChNR0oA20yV6hc93lCLrSkHkjKQlHPvJl43NbwSeo5fJVp
-         A0ZIH89yysvt6SqPmpnttqndf2QVY2B55Z1ZdtCsydKt0Q8XdcSYPG66YoMJS8G5RT
-         NXA1EvkRTTcYGWenZBQ85C/gGUpUVSnSY3RLl7fKHJajfbZMpyzBU5tgu5zWaj17Py
-         1RZ52D3PfFS/Q==
+        b=SigM5evV6tlpEql6eFyx7ti02kTFemvBK+DZJ1i253XDBRtdISp8BCPRxJ3U6hC51
+         PpSx9UpfKVrKDnIrAeStPF0ZSlNXZTBREFeCWKYnctnq9QwGubD5/Um46BdGQREbHe
+         Cl3OZBnsBtPoPBETCzk7CM/l3RIWZL/Ok5qZmA8ZKQ1lIO9GU8obsHGIiUrRXBpy4W
+         raKPZ5PpLRFW7jiCLeQ3IknAG8i8WJCUdQkEU+tJ4iPNCTc2q4YgN29zP6myhc0Mk+
+         9204uLtTtLfME4bEyhC383PM1tVZQoMK6y7ivj+geGuC/i7Hfa7FXlbZWmu08GWIDo
+         lhzccD75pFwvQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zqiang <qiang.zhang1211@gmail.com>,
@@ -34,16 +34,16 @@ Cc:     Zqiang <qiang.zhang1211@gmail.com>,
         josh@joshtriplett.org, frederic@kernel.org,
         quic_neeraju@quicinc.com, joel@joelfernandes.org,
         boqun.feng@gmail.com, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 03/10] rcuscale: Move rcu_scale_writer() schedule_timeout_uninterruptible() to _idle()
-Date:   Fri,  8 Sep 2023 14:01:55 -0400
-Message-Id: <20230908180203.3458330-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 3/8] rcuscale: Move rcu_scale_writer() schedule_timeout_uninterruptible() to _idle()
+Date:   Fri,  8 Sep 2023 14:03:14 -0400
+Message-Id: <20230908180320.3458596-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908180203.3458330-1-sashal@kernel.org>
-References: <20230908180203.3458330-1-sashal@kernel.org>
+In-Reply-To: <20230908180320.3458596-1-sashal@kernel.org>
+References: <20230908180320.3458596-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.52
+X-stable-base: Linux 5.10.194
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
@@ -99,10 +99,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 7854dc3226e1b..0b88d96511adc 100644
+index 6c05365ed80fc..3b9783eda6796 100644
 --- a/kernel/rcu/rcuscale.c
 +++ b/kernel/rcu/rcuscale.c
-@@ -423,7 +423,7 @@ rcu_scale_writer(void *arg)
+@@ -372,7 +372,7 @@ rcu_scale_writer(void *arg)
  	sched_set_fifo_low(current);
  
  	if (holdoff)
