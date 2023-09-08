@@ -2,115 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5C0DEEB560
-	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 18:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 460E4EEB56F
+	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 20:36:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245071AbjIHSQM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Sep 2023 14:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
+        id S231809AbjIHUgR (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 8 Sep 2023 16:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239618AbjIHSQL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Sep 2023 14:16:11 -0400
+        with ESMTP id S233048AbjIHUgR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 8 Sep 2023 16:36:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD8B1FF9;
-        Fri,  8 Sep 2023 11:15:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2CF6C433BF;
-        Fri,  8 Sep 2023 18:03:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF9EA3;
+        Fri,  8 Sep 2023 13:36:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAABDC433C8;
+        Fri,  8 Sep 2023 20:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694196212;
-        bh=HhWUwEdsg2b6uJbdXtwyVBiqwyeaWbTJV1DNjSY1nFc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SigM5evV6tlpEql6eFyx7ti02kTFemvBK+DZJ1i253XDBRtdISp8BCPRxJ3U6hC51
-         PpSx9UpfKVrKDnIrAeStPF0ZSlNXZTBREFeCWKYnctnq9QwGubD5/Um46BdGQREbHe
-         Cl3OZBnsBtPoPBETCzk7CM/l3RIWZL/Ok5qZmA8ZKQ1lIO9GU8obsHGIiUrRXBpy4W
-         raKPZ5PpLRFW7jiCLeQ3IknAG8i8WJCUdQkEU+tJ4iPNCTc2q4YgN29zP6myhc0Mk+
-         9204uLtTtLfME4bEyhC383PM1tVZQoMK6y7ivj+geGuC/i7Hfa7FXlbZWmu08GWIDo
-         lhzccD75pFwvQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zqiang <qiang.zhang1211@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, dave@stgolabs.net,
-        josh@joshtriplett.org, frederic@kernel.org,
-        quic_neeraju@quicinc.com, joel@joelfernandes.org,
-        boqun.feng@gmail.com, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 3/8] rcuscale: Move rcu_scale_writer() schedule_timeout_uninterruptible() to _idle()
-Date:   Fri,  8 Sep 2023 14:03:14 -0400
-Message-Id: <20230908180320.3458596-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230908180320.3458596-1-sashal@kernel.org>
-References: <20230908180320.3458596-1-sashal@kernel.org>
+        s=k20201202; t=1694205372;
+        bh=TIEmpsAKURry6qJEscQuFYmrXAfV6S/0QPa4RuI6qLg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HDrzRLwDEnvL2EhqTnttOS8Tjo/ynYGrbq80SVAFCNVdAp5A+YGjm4eyInzAI/RU+
+         zF79o0S5sKeKYnSdc9OnOlrUR7zxVE2lw+t/kPytTFtBSepcDUofzVsLsX+5B6dA3h
+         fTvXbthUmPL/NAgt5qty5vsCKKgd0rRKY9TkFu+6w08PlIErUouwUVY/46hGNqounL
+         Kz+x0ry1NCcckkU8GjxP1qtae3AM2vYDYAFnBKtn5NWqDoRrnFbZ1p7JYW4HYKeuWu
+         OuN7PAtj0i14eQEHRo+H8nZ4yTzH3EDJkOK7Lhyy2P8om+e3cmuTuqadg8Ux52aU3a
+         6OU5TprpEZoNg==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        rcu <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH 00/10] rcu cleanups
+Date:   Fri,  8 Sep 2023 22:35:53 +0200
+Message-ID: <20230908203603.5865-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.194
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+Hi,
 
-[ Upstream commit e60c122a1614b4f65b29a7bef9d83b9fd30e937a ]
+Here is a bunch of accumulated cleanups. Many of them are trivial but
+beware some tricky ordering changes in the middle :-)
 
-The rcuscale.holdoff module parameter can be used to delay the start
-of rcu_scale_writer() kthread.  However, the hung-task timeout will
-trigger when the timeout specified by rcuscale.holdoff is greater than
-hung_task_timeout_secs:
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	rcu/dev
 
-runqemu kvm nographic slirp qemuparams="-smp 4 -m 2048M"
-bootparams="rcuscale.shutdown=0 rcuscale.holdoff=300"
+HEAD: 43d6b973aeb7459d29cd52054142291b099bf8ad
 
-[  247.071753] INFO: task rcu_scale_write:59 blocked for more than 122 seconds.
-[  247.072529]       Not tainted 6.4.0-rc1-00134-gb9ed6de8d4ff #7
-[  247.073400] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  247.074331] task:rcu_scale_write state:D stack:30144 pid:59    ppid:2      flags:0x00004000
-[  247.075346] Call Trace:
-[  247.075660]  <TASK>
-[  247.075965]  __schedule+0x635/0x1280
-[  247.076448]  ? __pfx___schedule+0x10/0x10
-[  247.076967]  ? schedule_timeout+0x2dc/0x4d0
-[  247.077471]  ? __pfx_lock_release+0x10/0x10
-[  247.078018]  ? enqueue_timer+0xe2/0x220
-[  247.078522]  schedule+0x84/0x120
-[  247.078957]  schedule_timeout+0x2e1/0x4d0
-[  247.079447]  ? __pfx_schedule_timeout+0x10/0x10
-[  247.080032]  ? __pfx_rcu_scale_writer+0x10/0x10
-[  247.080591]  ? __pfx_process_timeout+0x10/0x10
-[  247.081163]  ? __pfx_sched_set_fifo_low+0x10/0x10
-[  247.081760]  ? __pfx_rcu_scale_writer+0x10/0x10
-[  247.082287]  rcu_scale_writer+0x6b1/0x7f0
-[  247.082773]  ? mark_held_locks+0x29/0xa0
-[  247.083252]  ? __pfx_rcu_scale_writer+0x10/0x10
-[  247.083865]  ? __pfx_rcu_scale_writer+0x10/0x10
-[  247.084412]  kthread+0x179/0x1c0
-[  247.084759]  ? __pfx_kthread+0x10/0x10
-[  247.085098]  ret_from_fork+0x2c/0x50
-[  247.085433]  </TASK>
-
-This commit therefore replaces schedule_timeout_uninterruptible() with
-schedule_timeout_idle().
-
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Thanks,
+	Frederic
 ---
- kernel/rcu/rcuscale.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 6c05365ed80fc..3b9783eda6796 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -372,7 +372,7 @@ rcu_scale_writer(void *arg)
- 	sched_set_fifo_low(current);
- 
- 	if (holdoff)
--		schedule_timeout_uninterruptible(holdoff * HZ);
-+		schedule_timeout_idle(holdoff * HZ);
- 
- 	/*
- 	 * Wait until rcu_end_inkernel_boot() is called for normal GP tests
--- 
-2.40.1
+Frederic Weisbecker (10):
+      rcu: Use rcu_segcblist_segempty() instead of open coding it
+      rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+      rcu/nocb: Remove needless LOAD-ACQUIRE
+      rcu/nocb: Remove needless full barrier after callback advancing
+      rcu: Assume IRQS disabled from rcu_report_dead()
+      rcu: Assume rcu_report_dead() is always called locally
+      rcu: Conditionally build CPU-hotplug teardown callbacks
+      rcu: Standardize explicit CPU-hotplug calls
+      rcu: Remove references to rcu_migrate_callbacks() from diagrams
+      rcu: Comment why callbacks migration can't wait for CPUHP_RCUTREE_PREP
 
+
+ .../Expedited-Grace-Periods.rst                    |   2 +-
+ .../Memory-Ordering/TreeRCU-callback-registry.svg  |   9 --
+ .../RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg  |   4 +-
+ .../RCU/Design/Memory-Ordering/TreeRCU-gp.svg      |  13 +-
+ .../RCU/Design/Memory-Ordering/TreeRCU-hotplug.svg |   4 +-
+ .../RCU/Design/Requirements/Requirements.rst       |   4 +-
+ arch/arm64/kernel/smp.c                            |   4 +-
+ arch/powerpc/kernel/smp.c                          |   2 +-
+ arch/s390/kernel/smp.c                             |   2 +-
+ arch/x86/kernel/smpboot.c                          |   2 +-
+ include/linux/interrupt.h                          |   2 +-
+ include/linux/rcupdate.h                           |   2 -
+ include/linux/rcutiny.h                            |   2 +-
+ include/linux/rcutree.h                            |  16 ++-
+ kernel/cpu.c                                       |  13 +-
+ kernel/rcu/rcu.h                                   |   8 +-
+ kernel/rcu/rcu_segcblist.c                         |   4 +-
+ kernel/rcu/rcuscale.c                              |   6 +-
+ kernel/rcu/tree.c                                  | 138 ++++++++++-----------
+ kernel/rcu/tree_nocb.h                             |  24 ++--
+ 20 files changed, 129 insertions(+), 132 deletions(-)
