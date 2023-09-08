@@ -2,115 +2,195 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85D1AEB8FB1
-	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 00:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D60C8EE14C3
+	for <rcu@archiver.kernel.org>; Fri,  8 Sep 2023 03:30:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjIHAwB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 7 Sep 2023 20:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
+        id S233764AbjIHDa7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 7 Sep 2023 23:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237885AbjIHAwA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 7 Sep 2023 20:52:00 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844791BD7
-        for <rcu@vger.kernel.org>; Thu,  7 Sep 2023 17:51:56 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcfd3220d3so25494321fa.2
-        for <rcu@vger.kernel.org>; Thu, 07 Sep 2023 17:51:56 -0700 (PDT)
+        with ESMTP id S230302AbjIHDa6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 7 Sep 2023 23:30:58 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128781BDA
+        for <rcu@vger.kernel.org>; Thu,  7 Sep 2023 20:30:54 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7926a450a0aso62389939f.3
+        for <rcu@vger.kernel.org>; Thu, 07 Sep 2023 20:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694134315; x=1694739115; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b7OMMPDW+mI4K+YJ8JDZ71Y9UC9WBZXlcaElTclcn6I=;
-        b=MJPB0fKTCSfbzirO661fogjSr+0vcwZ95RT7/1FTaCch/vjSdAXkO3fLdMLFsZq699
-         yl2J+pe+lfGIW42jGu5ueFIF3YNnDxqkGsYVc24RvB6pdTIXiuzFZ+GL7LNG918ezR+n
-         8Dq2l3rHf90M1QScM0Njr5UzF8KSzptNCOajs=
+        d=joelfernandes.org; s=google; t=1694143853; x=1694748653; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tj245XZ8CauE5qKj7xtiqPrqhkxTcUOOShvoy4GdJho=;
+        b=fODtyEfz7lZlEIcuz8mH0qhV4FtCav2zhKatfJXUrBPO9XSbQsAyz+VujMr3H5VIfs
+         eZgopgfqiBPgbY+mOD4MWUB6hkJ8qt60mzHdmnSkwJUyx035mIO3LZAFL0IBQT56/d3P
+         wI+9Wu1pQEoCNCFZOsAIcdYX3zncCI3Gwt8ds=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694134315; x=1694739115;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b7OMMPDW+mI4K+YJ8JDZ71Y9UC9WBZXlcaElTclcn6I=;
-        b=dtNL51D57jDekStY0zJhf29JRp0iPVU3EJy1JDundeq68PqgYFKUvikwUwUru2o1Z3
-         328ywP9ogm12kM6ZkCSJ4n+whm4r/MNbuhS1YXk4mNllcD0V8LgjHQph/QL2XfZiL3lq
-         s2HhB5WdD1uJrw4ff1TXzvT1OhchitZKH0ig99ASqpAU7iSVV1kEmZi48hUhFz1aP1gw
-         kVuuFiU8kk6LbjJfBBeW4P/hNKmmmPc+Y7VUpEBHb2ptfb8QDrhP8z0JBrLV1UoH33+o
-         ELR4QECXuzTQi5Y7pt21/a6pPax21I7ALbZI1sQxEYI3+eMU+t61PSN6Wwp/6Z9cylyN
-         w/Iw==
-X-Gm-Message-State: AOJu0YwXghQro2dlDhnbwO0zXCKZrhO1ojSSaDfaz2l3N439QhULNuI4
-        +1W51ynSM/VxFMv7z8wL7bKKVm1UuIYmACkj7JelSj3LLOY34/Bp
-X-Google-Smtp-Source: AGHT+IF7MLWXXtTIMex2bGfLcDq6C5PlAxBzP5GWQkuHb+yxE7tZVnGTOPewsiI6+1528hxvqNkk0pGw0KAsAS5hcIQ=
-X-Received: by 2002:a2e:8950:0:b0:2bc:dcdb:b5dc with SMTP id
- b16-20020a2e8950000000b002bcdcdbb5dcmr651443ljk.39.1694134314592; Thu, 07 Sep
- 2023 17:51:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694143853; x=1694748653;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tj245XZ8CauE5qKj7xtiqPrqhkxTcUOOShvoy4GdJho=;
+        b=wcmVIjkujwJKwJz3BRl58zeSdzJ4KimHss6inDBHfeJpRzfJDipMalBsYxj3HsW9ZE
+         YYlCQDQT01mMXbAUJOro0hoNWX8SOrQfwZx+krdsPXtcOWMmHcGGORI0TA7XmmstMcTc
+         y3Bn8eEM+CgquHQWLTWtiqAjYnLkMVXmocrg//aJIWfGk14hKIibjBcu+UNUTrVnKHdB
+         PNjB4ZkNj6ZNjNIWcqFdHJSv2XG45lOUw8wYzk8Cu2uQDxo5MGA6otOnwghUDL2SIjvr
+         2vRJ3ObcqB6L5YeVVvNSsDROlFvH0AIWFkWXhnaM5WwMUeuBEZo8qhw3Rd0LRozNynVW
+         mIkw==
+X-Gm-Message-State: AOJu0YyVMNo3mwALWiks2kNoXVzUFk6SEdjZQIPxmYnbBs2wlmjyVsyY
+        BgDyHdDC2Mc/pRCiUId5So+tWQ==
+X-Google-Smtp-Source: AGHT+IEnXbYBOb+I0Vl6c/EfAQx4znTnnjDDlmOdDXJfKFbcxhloccAyLlXtSpuGSo/9mYLyRbzO+A==
+X-Received: by 2002:a6b:a0d:0:b0:792:9406:a453 with SMTP id z13-20020a6b0a0d000000b007929406a453mr1755264ioi.14.1694143853353;
+        Thu, 07 Sep 2023 20:30:53 -0700 (PDT)
+Received: from joelboxx5.corp.google.com (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
+        by smtp.gmail.com with ESMTPSA id m12-20020a6bf30c000000b0079263d9b6a8sm245028ioh.11.2023.09.07.20.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 20:30:52 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2] rcu/torture: Improve badness extraction from console logs
+Date:   Fri,  8 Sep 2023 03:30:46 +0000
+Message-ID: <20230908033047.2537010-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-References: <208d035b-a411-40d0-bb5e-59deb6a785e6@paulmck-laptop> <FFC37117-94F4-49EC-86D7-508753C48A11@joelfernandes.org>
-In-Reply-To: <FFC37117-94F4-49EC-86D7-508753C48A11@joelfernandes.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 7 Sep 2023 20:51:43 -0400
-Message-ID: <CAEXW_YStFf6Lt43GiLMCO5wBwCJU3aWcv5GvX0_8xaeZTFKMkA@mail.gmail.com>
-Subject: Re: [BUG] TREE04 hang on 6.5.y stable: Writer stall state RTWS_COND_SYNC_FULL
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joelaf@google.com>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 7, 2023 at 4:03=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
-rg> wrote:
->
->
->
-> > On Sep 7, 2023, at 12:23 PM, Paul E. McKenney <paulmck@kernel.org> wrot=
-e:
-> >
-> > =EF=BB=BFOn Thu, Sep 07, 2023 at 09:17:15AM -0400, Joel Fernandes wrote=
-:
-> >> Hi,
-> >> Just started seeing this on 6.5 stable. It is new and first occurrence=
-:
-> >>
-> >> TREE04 no success message, 234 successful version messages
-> >> [033mWARNING:  [mTREE04 GP HANG at 14 torture stat 2
-> >> [   38.371120] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g1253
-> >> f0x0 ->state 0x2 cpu 6
-> >> [   38.388342] Call Trace:
-> >> [   53.741039] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g3637
-> >> f0x2 ->state 0x2 cpu 6
-> >> [   69.093462] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g5501
-> >> f0x0 ->state 0x2 cpu 6
-> >> [   84.450028] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g10505
-> >> f0x0 ->state 0x2 cpu 6
-> >> [   99.815871] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g13781
-> >> f0x0 ->state 0x2 cpu 6
-> >> [  115.166476] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g16544
-> >> f0x0 ->state 0x2 cpu 6
-> >> [  130.550116] ??? Writer stall state RTWS_COND_SYNC_FULL(10) g18941
-> >> f0x0 ->state 0x2 cpu 6
-> >> [..]
-> >>
-> >> All logs:
-> >> http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-6.5.=
-y/17/artifact/tools/testing/selftests/rcutorture/res/2023.09.07-04.10.25/TR=
-EE04/
-> >
-> > Huh.  Does this happen for you in v6.5 mainline?
-> >
-> > Both the code under test (full-state polled grace periods) and the
-> > rcutorture test code are fairly new, so there is some reason for genera=
-l
-> > suspicion.  ;-)
->
-> Ah. I never saw it on either 6.5 mainline or stable till today. Even on s=
-table
-> I only ever saw it this once. On mainline I have not seen it yet but I do=
- test
-> stable much more since I have been on stable maintenance duty ;-).
+Currently console.log.diags contains an output like follows:
+[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.542385] Call Trace:
 
-I did a couple of long runs and I am not able to reproduce it anymore. :-/
+This is not very useful and easier access to the call trace is desired.
+Improve the script by extracting more lines after each grep match.
+Provide a summary in the beginning like before, but also include details
+below. Limit the total number of issues to a maximum of 10. And limit
+the lines included after each issue to a maximum of 20.
 
-thanks,
+With these changes the output becomes:
 
- - Joel
+Issues found:
+Line 6228: [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+Line 6245: [ 2457.542385] Call Trace:
+
+Details of each issue:
+Issue 1 (line 6228):
+[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.326661] Modules linked in:
+[ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.128+ #381
+[ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
+[...]
+[ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
+[ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 0000000000000003
+[ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 0000000000000003
+[ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000001
+[ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: ffff8db902d87f40
+[ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: ffff8db9011a3200
+[ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000) knlGS:0000000000000000
+[ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 00000000000006e0
+[ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 2457.542385] Call Trace:
+[ 2457.546756]  <TASK>
+[ 2457.550349]  ? __warn+0x7b/0x100
+[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+-------------------------------------
+Issue 2 (line 6245):
+[ 2457.542385] Call Trace:
+[ 2457.546756]  <TASK>
+[ 2457.550349]  ? __warn+0x7b/0x100
+[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.574948]  ? report_bug+0x99/0xc0
+[ 2457.593824]  ? handle_bug+0x3c/0x70
+[ 2457.599534]  ? exc_invalid_op+0x13/0x60
+[ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
+[ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+[ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
+[ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
+[ 2457.705658]  rcu_tasks_kthread+0x114/0x200
+[ 2457.712450]  ? wait_woken+0x70/0x70
+[ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
+[ 2457.746221]  kthread+0x130/0x160
+[ 2457.751487]  ? set_kthread_struct+0x40/0x40
+[ 2457.758178]  ret_from_fork+0x22/0x30
+[ 2457.763909]  </TASK>
+[ 2457.767546] irq event stamp: 29544441
+[ 2457.773344] hardirqs last  enabled at (29544451): [<ffffffffaace6cbd>] __up_console_sem+0x4d/0x60
+[ 2457.786967] hardirqs last disabled at (29544460): [<ffffffffaace6ca2>] __up_console_sem+0x32/0x60
+
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Limit number of issues reported and include summary on the top.
+
+ .../rcutorture/bin/console-badness.sh         | 42 ++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+index aad51e7c0183..2612a4931723 100755
+--- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
++++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+@@ -9,10 +9,50 @@
+ # Copyright (C) 2020 Facebook, Inc.
+ #
+ # Authors: Paul E. McKenney <paulmck@kernel.org>
++INPUT_DATA=$(< /dev/stdin)
++MAX_NR_ISSUES=10
+ 
+-grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
++# Get the line numbers for all the grep matches
++GREP_LINES="$(echo "$INPUT_DATA" |
++grep -n -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
+ grep -v 'ODEBUG: ' |
+ grep -v 'This means that this is a DEBUG kernel and it is' |
+ grep -v 'Warning: unable to open an initial console' |
+ grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr.*the init process!' |
+ grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
++)"
++
++# Exit if no grep matches
++if [ ! -n "$GREP_LINES" ]; then exit 0; fi
++
++# Print first MAX_NR_ISSUES grepped lines
++echo "Issues found:"
++issue_num=1
++while IFS= read -r line; do
++    # Extract the line number from the line
++    num=$(echo "$line" | awk -F: '{print $1}')
++    # Extract the rest of the line
++    line_rest=$(echo "$line" | cut -d: -f2-)
++    echo "Line $num: $line_rest"
++    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
++    issue_num="$(($issue_num + 1))"
++done <<< "$GREP_LINES"
++echo ""
++
++# Print details of each issue
++#
++# Go through each line of GREP_LINES, extract the line number and then
++# print from that line and 20 lines after that line. Do that for each
++# grep match upto MAX_NR_ISSUES of them.
++echo "Details of each issue:"
++issue_num=1
++while IFS= read -r line; do
++    # Extract the line number from the line
++    num=$(echo "$line" | awk -F: '{print $1}')
++    # Print 20 lines after the matched line
++    echo "Issue $issue_num (line $num):"
++    echo "$INPUT_DATA" | sed -n "${num},$(($num + 20))p"
++    echo "-------------------------------------"
++    if [ "$issue_num" -eq "$MAX_NR_ISSUES" ]; then break; fi
++    issue_num="$(($issue_num + 1))"
++done <<< "$GREP_LINES"
+-- 
+2.42.0.283.g2d96d420d3-goog
+
