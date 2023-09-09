@@ -2,74 +2,160 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 844D0EEB57C
-	for <rcu@archiver.kernel.org>; Sat,  9 Sep 2023 01:51:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0063EEB580
+	for <rcu@archiver.kernel.org>; Sat,  9 Sep 2023 04:31:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjIIBvS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 8 Sep 2023 21:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
+        id S236011AbjIIEbb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sat, 9 Sep 2023 00:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241453AbjIIBvR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 8 Sep 2023 21:51:17 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604051716
-        for <rcu@vger.kernel.org>; Fri,  8 Sep 2023 18:51:12 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bcc4347d2dso43708751fa.0
-        for <rcu@vger.kernel.org>; Fri, 08 Sep 2023 18:51:12 -0700 (PDT)
+        with ESMTP id S229486AbjIIEba (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sat, 9 Sep 2023 00:31:30 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAA81FC0
+        for <rcu@vger.kernel.org>; Fri,  8 Sep 2023 21:31:26 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-34ca860051fso9494965ab.2
+        for <rcu@vger.kernel.org>; Fri, 08 Sep 2023 21:31:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694224270; x=1694829070; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PrToj7FeDRLWjKBQmt7EM4KaQEIvjVbVJx9Xts6lKOU=;
-        b=FU/jo9CmBRp87h5YF6u89FZLl2nXROKCYBvuMKyMAErvenw/EmaHq2zB+mVe/jwnRD
-         8ZQKCwQdtQLlSxbor6OVKMAbpJ/YQMqGQK/CEpJOy2nWZhNCLpH+LPALfrEbd3W32at2
-         Dr/5/RieJNlZLmjOKE+ji3rdDPyO5d/PWa1OQ=
+        d=joelfernandes.org; s=google; t=1694233886; x=1694838686; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jq94CIuMJv6Et1Il9g8VDV8VFH4r8Hlwhfq/jJyTJ34=;
+        b=osaSxQoaew6rFtBNvW1hEveP866DayosSnPh71qkCcpYPYba1xjDvTZ+HEYT6I4A9Z
+         +Z+2tWocXo+ypZ83QiHKREWMfWtTgyPEUmi3ZEjYfq81NXOJq6XaSJ67JpMbJ8okZSyJ
+         fDIZeqpUYpagnZGWQ7fwC0+WSBpYKkFRPW2dA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694224270; x=1694829070;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PrToj7FeDRLWjKBQmt7EM4KaQEIvjVbVJx9Xts6lKOU=;
-        b=uwspVnjRmdflzT0iNvNUOHaapBtzYdGmgsb6MRUHvyTQoAKRqzzE6+5gX7sFfBuYsy
-         oi83mKhFFRnwS+w6Fy4Bxuil4IFFkRiIN7Yl/VfVMvjtIfG+A5MiVYZeUjXmTRJqZ6xG
-         vJunnPOdpGsyySHgjIzl7cWk3zNeru5nY8A3jCfNeWG8RYPJNfxQt1tovlBGtexCLELt
-         HcLwl8LULoASTXXjfaihykGmH23NDtqX/hwJ2tvUVBV1X2eYGJHYnt7/JL8Ooitftb3f
-         uGGL4IWQ0KUwMXp+jFu+6pCrRYmc7yUA7ZwEb3amnjFAOHGgxiIJ8+lO6Ibqmh2vbQSw
-         iAYw==
-X-Gm-Message-State: AOJu0YxxLBRmFdm6w/McOx8uQadXAha2xNhO+SKB4J27XV7zlDDF5N5b
-        xr9PLeV9k9uEWa2Ci2pYCw+1OEimTA/8lijwkmxjVA==
-X-Google-Smtp-Source: AGHT+IHOIuHOCzsUY5H2PPqv3Yp9QbQ2cgHuTrW+0DRaNEAH0oKwk+XmuIxDsdNpVRHw7osDHATTPHsIdwdlvW4jllM=
-X-Received: by 2002:a2e:9b5a:0:b0:2bc:c51d:da9e with SMTP id
- o26-20020a2e9b5a000000b002bcc51dda9emr3351866ljj.21.1694224270514; Fri, 08
- Sep 2023 18:51:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230908203603.5865-1-frederic@kernel.org> <20230908203603.5865-4-frederic@kernel.org>
- <CAEXW_YTxSft0cZkq6UOsdkDxLCjMZfqqK3fBVz6He0UebCqS+g@mail.gmail.com>
-In-Reply-To: <CAEXW_YTxSft0cZkq6UOsdkDxLCjMZfqqK3fBVz6He0UebCqS+g@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1694233886; x=1694838686;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jq94CIuMJv6Et1Il9g8VDV8VFH4r8Hlwhfq/jJyTJ34=;
+        b=qyKtcPaNI3AvfaKamAXs6FsLx6b/f0pmdlrjkkNzVYKel7FJdW4DpE+oTeGsZj1xQd
+         cgV0URbt1dj9M3Vnq0JASRXmJb/xjtqdOPqW9uU3b9XlLLFvnWFv3ItXRFdWXK1k3VrS
+         eDA2bq/faH/1fNcrBUri/nC/AaIA3N6zeCzYH3LeaW7poGCkJmOqgGTni+si4QTesSFP
+         scSanJDlIGIsEI8XzKPn5f+94LOd49oo0NC5gDMpu/kCnKN1SIBgxBUO52/7d6rRKL3U
+         /uNjfw+nPu6kpqSGVqNFciTKHvZjcwey4jihBSGhg23kKWOtKtETT97nfMsQothOfJvz
+         GeQg==
+X-Gm-Message-State: AOJu0YzSbE8zjCOMM8wksboFUfCmxQTerw6p12gSOuqlOiGS9TVcnirS
+        tBs8b15dQgLxfxwqnRD/R2EWOg==
+X-Google-Smtp-Source: AGHT+IHBEThR5AoYD2dYCcq0kdnKKq3t3O8tICSv2OoKS2ptkz/FAP9j3nQ+I5R798vdDgKk4cUj2w==
+X-Received: by 2002:a05:6e02:1d1e:b0:349:927a:5d85 with SMTP id i30-20020a056e021d1e00b00349927a5d85mr5818792ila.22.1694233886254;
+        Fri, 08 Sep 2023 21:31:26 -0700 (PDT)
+Received: from localhost (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
+        by smtp.gmail.com with ESMTPSA id fn2-20020a056638640200b0042aec33bc26sm880864jab.18.2023.09.08.21.31.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Sep 2023 21:31:25 -0700 (PDT)
+Date:   Sat, 9 Sep 2023 04:31:25 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 8 Sep 2023 21:50:59 -0400
-Message-ID: <CAEXW_YQec-aUxMQ_tGx9N6_pF=K9vhWZEPT6JGKcemcBXOM+7g@mail.gmail.com>
-Subject: Re: [PATCH 03/10] rcu/nocb: Remove needless LOAD-ACQUIRE
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Boqun Feng <boqun.feng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 04/10] rcu/nocb: Remove needless full barrier after
+ callback advancing
+Message-ID: <20230909043125.GA3920383@google.com>
+References: <20230908203603.5865-1-frederic@kernel.org>
+ <20230908203603.5865-5-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908203603.5865-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-> > * Callbacks can be concurrently advanced between the LOAD-ACQUIRE on
-> >   ->nocb_cb_sleep and the call to rcu_segcblist_extract_done_cbs() in
-> >   rcu_do_batch(), making any ordering based on ->nocb_cb_sleep broken.
->
-> If you don't mind, could you elaborate more?
+On Fri, Sep 08, 2023 at 10:35:57PM +0200, Frederic Weisbecker wrote:
+> A full barrier is issued from nocb_gp_wait() upon callbacks advancing
+> to order grace period completion with callbacks execution.
+> 
+> However these two events are already ordered by the
+> smp_mb__after_unlock_lock() barrier within the call to
+> raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
+> happen.
+> 
+> The following litmus test shows the kind of guarantee that this barrier
+> provides:
+> 
+> 	C smp_mb__after_unlock_lock
+> 
+> 	{}
+> 
+> 	// rcu_gp_cleanup()
+> 	P0(spinlock_t *rnp_lock, int *gpnum)
+> 	{
+> 		// Grace period cleanup increase gp sequence number
+> 		spin_lock(rnp_lock);
+> 		WRITE_ONCE(*gpnum, 1);
+> 		spin_unlock(rnp_lock);
+> 	}
+> 
+> 	// nocb_gp_wait()
+> 	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
+> 	{
+> 		int r1;
+> 
+> 		// Call rcu_advance_cbs() from nocb_gp_wait()
+> 		spin_lock(nocb_lock);
+> 		spin_lock(rnp_lock);
+> 		smp_mb__after_unlock_lock();
+> 		r1 = READ_ONCE(*gpnum);
+> 		WRITE_ONCE(*cb_ready, 1);
+> 		spin_unlock(rnp_lock);
+> 		spin_unlock(nocb_lock);
+> 	}
+> 
+> 	// nocb_cb_wait()
+> 	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
+> 	{
+> 		int r2;
+> 
+> 		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
+> 		spin_lock(nocb_lock);
+> 		r2 = READ_ONCE(*cb_ready);
+> 		spin_unlock(nocb_lock);
+> 
+> 		// Actual callback execution
+> 		WRITE_ONCE(*cb_executed, 1);
 
-Ah, I see you deleted the counterpart memory barrier in the next
-patch. I was reading the patches in order, so I did not notice. I'll
-go read that as well. It might make sense to combine this and the next
-patch, not sure.
+So related to this something in the docs caught my attention under "Callback
+Invocation" [1]
+
+<quote>
+However, if the callback function communicates to other CPUs, for example,
+doing a wakeup, then it is that function's responsibility to maintain
+ordering. For example, if the callback function wakes up a task that runs on
+some other CPU, proper ordering must in place in both the callback function
+and the task being awakened. To see why this is important, consider the top
+half of the grace-period cleanup diagram. The callback might be running on a
+CPU corresponding to the leftmost leaf rcu_node structure, and awaken a task
+that is to run on a CPU corresponding to the rightmost leaf rcu_node
+structure, and the grace-period kernel thread might not yet have reached the
+rightmost leaf. In this case, the grace period's memory ordering might not
+yet have reached that CPU, so again the callback function and the awakened
+task must supply proper ordering.
+</quote>
+
+I believe this text is for non-nocb but if we apply that to the nocb case,
+lets see what happens.
+
+In the litmus, he rcu_advance_cbs() happened on P1, however the callback is
+executing on P2. That sounds very similar to the non-nocb world described in
+the text where a callback tries to wake something up on a different CPU and
+needs to take care of all the ordering.
+
+So unless I'm missing something (quite possible), P2 must see the update to
+gpnum as well. However, per your limus test, the only thing P2  does is
+acquire the nocb_lock. I don't see how it is guaranteed to see gpnum == 1.
+I am curious what happens in your litmus if you read gpnum in a register and
+checked for it.
+
+So maybe the memory barriers you are deleting need to be kept in place? Idk.
+
+thanks,
 
  - Joel
+
+[1] https://docs.kernel.org/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.html#callback-invocation
+
