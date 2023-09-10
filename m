@@ -2,77 +2,128 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA7FDEEB57E
-	for <rcu@archiver.kernel.org>; Sun, 10 Sep 2023 23:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49C05C71153
+	for <rcu@archiver.kernel.org>; Sun, 10 Sep 2023 23:37:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjIJXKf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 10 Sep 2023 19:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        id S229967AbjIJXhb (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 10 Sep 2023 19:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbjIJXKe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 10 Sep 2023 19:10:34 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D253184
-        for <rcu@vger.kernel.org>; Sun, 10 Sep 2023 16:10:28 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bd0d135ca3so66667751fa.3
-        for <rcu@vger.kernel.org>; Sun, 10 Sep 2023 16:10:28 -0700 (PDT)
+        with ESMTP id S229687AbjIJXhb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 10 Sep 2023 19:37:31 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959CB184
+        for <rcu@vger.kernel.org>; Sun, 10 Sep 2023 16:37:26 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bccda76fb1so65564091fa.2
+        for <rcu@vger.kernel.org>; Sun, 10 Sep 2023 16:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694387426; x=1694992226; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1694389045; x=1694993845; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=70Wla2Jr3IBJ9uGTryWFTukL34Oe/jHfMXRm6usu/EM=;
-        b=iGa9emb6ZEC9WcB70oBijP2LI/LWZYqQblVnH6+sazvVLQoxkY5Ce7LlU81MnL6Lg/
-         McjTdtO/scKpKFodBPXcOUpb6sDKOWPEjfl5C1Ks0ZXM+2ucNNMTyiN9pTKcApRoouTR
-         EyRkA0pcjzzGtF/iQqdDlbFDVSqtYdDMF+Mxg=
+        bh=kSP1NDs3QipD9uIbW1N2zisvRfqt3t2DXhFPMioJlTw=;
+        b=He9WpydxbKBHZMDUz0qeQCAYdyPfavypIpS02ygL7ECFKIyZhLSRL1X+39Fe99UOZK
+         0e30v9d+uW5xskAosSvGDnJwPmWgS7aYbV8YuIC7zMkxKtIq725Mf+RPaBN3l6hrD8zS
+         4nb2zLpEUQUchxUdYy01NsZLLQRsyF+I8d/MM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694387426; x=1694992226;
+        d=1e100.net; s=20230601; t=1694389045; x=1694993845;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=70Wla2Jr3IBJ9uGTryWFTukL34Oe/jHfMXRm6usu/EM=;
-        b=vCdJrUHQNBF9KUsRy5DnHUVn+yFd89ETJAP1kfgY14s4rQf8ijQGUnrq++2S1m36Jw
-         /98vItIxw88PBNYW9fCveznFdLzAtSSKQYLZvTfwStfNINSrxQYJFuUOsRnBk7gNABfZ
-         yP7edyehituh2CYqM6kjCmpXxfwrrhL7wrZeWDTjDhaqntQjQsZTjVhqc74F00cTgj5T
-         I1aJ2/76iFWOmnHVMvBd+uBCVpTPoDzD60kIViA0Xp97XbJIhUn4SDu43Ex1WNV/xXB8
-         /Xxqk0FFsVF4+Fn7smBuolOw8yNWB+5H/xXbdviAaOX7Q8tdr42Lpjds7vovrEnuKKo8
-         LdnA==
-X-Gm-Message-State: AOJu0YzN/qOY34SoXz18pbqsPbtIB+wrerSF3YUGNAFe5c93R6gnKAMv
-        jsPt6WJn7ZqU4KqZkRASTmk0hxcDHYdefqgeLDSxvltB9nTDgECJ3BA=
-X-Google-Smtp-Source: AGHT+IFcRi9xf1a6sFEVOCtJ72EqRmPYlmptPZ9zVodgRg0sL1Mvl1Aq2N5Aw475MUcbdGt9JzSTMNqD99R/KLPKqYs=
-X-Received: by 2002:a2e:9c06:0:b0:2bb:bf81:70f8 with SMTP id
- s6-20020a2e9c06000000b002bbbf8170f8mr5807451lji.48.1694387425698; Sun, 10 Sep
- 2023 16:10:25 -0700 (PDT)
+        bh=kSP1NDs3QipD9uIbW1N2zisvRfqt3t2DXhFPMioJlTw=;
+        b=J7Fc/xxeLKK5LNrwhQU3Tb1Es5vgsx10TbkiKNVoDC29l1wsdnRDzC9KjUfVwPlLdj
+         pzQs5TGo8H0WjhJeFV2+KQWNKgnMtL4dwi7ERx10jL5LHPZnNGVd2Jxg6jj7ckTllap3
+         ENPIRJmOg/wiWsVjBshUYG9cQFilaNOmdeXcHfA/fEFtBQl2yNSqU5kkTPy8g5X4GYap
+         SBhtCDYDBt2eUT5PXB8bDyQLQTS7tLpsF+o1SnbddNB5nEmTiR1sR3bJbqI7yvnv+/j8
+         dDH8IPBv7s+AEzhWIGkO5dSZPg9YxoTNElc9L+/WQQ5tJY8UIMWZeD3aKleuDN3uSeJ6
+         GTQA==
+X-Gm-Message-State: AOJu0YyepRkKM5/1lL1Til4NSPQtC3Jb98uOlUGfLxtnUOaA9w/IMeFF
+        6reNWCerq/CjJ5ZhcBuyhUwCPcaXasNjZy0aDBi4YbRYfE0IYTJg
+X-Google-Smtp-Source: AGHT+IFhhyxnzSWQYFPRUPcywyQOoYh7zGqB/wl79SK3UKdwQUE/yjMWziKbrpapsH3pqu1TxB1IFu7Hi8xXpxtYd2c=
+X-Received: by 2002:a2e:9197:0:b0:2bc:c11c:4471 with SMTP id
+ f23-20020a2e9197000000b002bcc11c4471mr6920047ljg.21.1694389044772; Sun, 10
+ Sep 2023 16:37:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
- <ZPZKsJUPVeHCsLQB@arm.com> <EDE8FE3D-043D-4A14-ACF6-71FF786C0D32@apple.com> <ZPi1LvrcGcSKBLqR@arm.com>
-In-Reply-To: <ZPi1LvrcGcSKBLqR@arm.com>
+References: <20230910201445.GA1605059@google.com> <a2518e2d-14ba-4965-8775-f6f3054b7522@paulmck-laptop>
+In-Reply-To: <a2518e2d-14ba-4965-8775-f6f3054b7522@paulmck-laptop>
 From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Sun, 10 Sep 2023 19:10:14 -0400
-Message-ID: <CAEXW_YTxLRAKCpFdKOdegj0gZdBb0OH+BnJf9FGTGfPtwiPkiw@mail.gmail.com>
-Subject: Re: kmemleak handling of kfree_rcu
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Christoph Paasch <cpaasch@apple.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
+Date:   Sun, 10 Sep 2023 19:37:13 -0400
+Message-ID: <CAEXW_YRMQx8AGoshpW6xLGsmN4fZ34T3Xy5H1-iN8p2Ho5-jEg@mail.gmail.com>
+Subject: Re: [BUG] Random intermittent boost failures (Was Re: [BUG] TREE04..)
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hi Christoph,
-
-On Wed, Sep 6, 2023 at 1:21=E2=80=AFPM Catalin Marinas <catalin.marinas@arm=
-.com> wrote:
+On Sun, Sep 10, 2023 at 5:16=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
 >
-> On Tue, Sep 05, 2023 at 02:22:13PM -0700, Christoph Paasch wrote:
-[..]
-> > If you have an updated patch, let me know. I can test it.
+> On Sun, Sep 10, 2023 at 08:14:45PM +0000, Joel Fernandes wrote:
+[...]
+> > >  I have been running into another intermittent one as well which
+> > > is the boost failure and that happens once in 10-15 runs or so.
+> > >
+> > > I was thinking of running the following configuration on an automated
+> > > regular basis to at least provide a better clue on the lucky run that
+> > > catches an issue. But then the issue is it would change timing enough
+> > > to maybe hide bugs. I could also make it submit logs automatically to
+> > > the list on such occurrences, but one step at a time and all that.  I
+> > > do need to add (hopefully less noisy) tick/timer related trace events=
+.
+> > >
+> > > # Define the bootargs array
+> > > bootargs=3D(
+> > >     "ftrace_dump_on_oops"
+> > >     "panic_on_warn=3D1"
+> > >     "sysctl.kernel.panic_on_rcu_stall=3D1"
+> > >     "sysctl.kernel.max_rcu_stall_to_panic=3D1"
+> > >     "trace_buf_size=3D10K"
+> > >     "traceoff_on_warning=3D1"
+> > >     "panic_print=3D0x1f"      # To dump held locks, mem and other inf=
+o.
+> > > )
+> > > # Define the trace events array passed to bootargs.
+> > > trace_events=3D(
+> > >     "sched:sched_switch"
+> > >     "sched:sched_waking"
+> > >     "rcu:rcu_callback"
+> > >     "rcu:rcu_fqs"
+> > >     "rcu:rcu_quiescent_state_report"
+> > >     "rcu:rcu_grace_period"
+> > > )
+> >
+> > So some insight on this boost failure. Just before the boost failures a=
+re
+> > reported, I see the migration thread interferring with the rcu_preempt =
+thread
+> > (aka GP kthread). See trace below. Of note is that the rcu_preempt thre=
+ad is
+> > runnable while context switching, which means its execution is interfer=
+red.
+> > The rcu_preempt thread is at RT prio 2 as can be seen.
+> >
+> > So some open-ended questions: what exactly does the migration thread wa=
+nt,
+> > this is something related to CPU hotplug? And if the migration thread h=
+ad to
+> > run, why did the rcu_preempt thread not get pushed to another CPU by th=
+e
+> > scheduler? We have 16 vCPUs for this test.
 >
-> I sent it in reply to Joel.
+> Maybe we need a cpus_read_lock() before doing a given boost-test interval
+> and a cpus_read_unlock() after finishing one?  But much depends on
+> exactly what is starting those migration threads.
 
-Just checking if you got a chance to try Catalin's patch?
+But in the field, a real RT task can preempt a reader without doing
+cpus_read_lock() and may run into a similar boost issue?
+
+> Then again, TREE03 is pretty aggressive about doing CPU hotplug.
+
+Ok. I put a trace_printk() in the stopper thread to see what the
+->fn() is. I'm doing another run to see what falls out.
 
 thanks,
 
