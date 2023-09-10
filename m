@@ -2,78 +2,199 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD7EEE14D8
-	for <rcu@archiver.kernel.org>; Sun, 10 Sep 2023 10:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C151EE14D8
+	for <rcu@archiver.kernel.org>; Sun, 10 Sep 2023 10:23:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236094AbjIJKVm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 10 Sep 2023 06:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        id S241513AbjIJKXD (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 10 Sep 2023 06:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbjIJKVk (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 10 Sep 2023 06:21:40 -0400
+        with ESMTP id S231314AbjIJKXD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 10 Sep 2023 06:23:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D545CCC
-        for <rcu@vger.kernel.org>; Sun, 10 Sep 2023 03:21:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 139BFC433C7;
-        Sun, 10 Sep 2023 10:21:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76C2CCC;
+        Sun, 10 Sep 2023 03:22:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75E09C433C7;
+        Sun, 10 Sep 2023 10:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694341295;
-        bh=4J5tbOuxzAGX0AoX5APcjTA31FGv7zak57vbv73lxc4=;
+        s=k20201202; t=1694341378;
+        bh=21hq7RbQ9RzoMcSnEyECe577YZG2+AwiaJOi/Lu2oiQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eYwdyMcN2UiDmm5KaDlR8oREeKEnu2Nafwj6ixIkd777NjrLNu6+cPBMPti8ScqWH
-         oiC44XqeZLygIXhd7cI+IKf++iSt9pMo6xWJyhE1vN3+BWxP8aS6PmsNHZfiNqFofY
-         4VJgxDiJ9m8f8RAXG5I8TcDCBuDPWd3YBTRdN+LChZqi/zclMIjdU2Tts7UWqSelFP
-         VSuT4UZP49Q5wj3+MKevPHHlNRCvuzMz4pbL1FIlcg6BGNQKvbjlvcfp5k/Y6VGOpP
-         N/5LF9UugX1pHgZY26a260AF3QRTiuOk4WiuwQqqeTeJDPNTnkSq/cnxEe+VZoU6ag
-         pbCBsfx4EV0uw==
+        b=baAaNQycJWBnn7U+kheCUCJS8LCDjlPoS2APe6DnLw0nduJoi4slyhoEf9u72mvs4
+         6uEeoJfNfIJ7TT8JvI+MI1xL8XmWjZlFWxbVkLo1s/3K68kP+kO8wUEtyhLQM7S9+e
+         XL/HnTFUafp1yHW56AtNeECFtz65uEaK2j3VdFr/15Iyodzttzoz/cr6f5jR70MUvx
+         sVEejB/QdoMfIC8EqZg6Bd3tJFRsFgAo87njFWtGJ3VtQVXRMHh6FcAalkZD0Sxjfw
+         eEojl0xCIOXkfP3EP7+4jGsvF/Sivc5Uymf6CEHWRP1+zuAn9/aqihXXJsLfKL6BRA
+         QMv7Yrloehhng==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 972B8CE080A; Sun, 10 Sep 2023 03:21:33 -0700 (PDT)
-Date:   Sun, 10 Sep 2023 03:21:33 -0700
+        id 1BD84CE080A; Sun, 10 Sep 2023 03:22:58 -0700 (PDT)
+Date:   Sun, 10 Sep 2023 03:22:58 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        rcu <rcu@vger.kernel.org>
-Subject: Re: [BUG] NOHZ tick-stop error: local softirq work is pending
-Message-ID: <4673a906-1baa-41cf-8fd3-7d28fdd0a820@paulmck-laptop>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>
+Subject: Re: [PATCH 04/10] rcu/nocb: Remove needless full barrier after
+ callback advancing
+Message-ID: <5bb46b87-963a-4e6d-a689-dee59db7025f@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <CAEXW_YTMCsaaZtyG46tjLv6En7Br0J6SD3WuLCZGhF=tSva26g@mail.gmail.com>
+References: <20230908203603.5865-1-frederic@kernel.org>
+ <20230908203603.5865-5-frederic@kernel.org>
+ <20230909043125.GA3920383@google.com>
+ <ZPy3-MS7uOJfmJhs@boqun-archlinux>
+ <20230910040923.GA762577@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YTMCsaaZtyG46tjLv6En7Br0J6SD3WuLCZGhF=tSva26g@mail.gmail.com>
+In-Reply-To: <20230910040923.GA762577@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Sep 09, 2023 at 10:28:36PM -0400, Joel Fernandes wrote:
-> Hi Paul, Frederic, ever since this recent patch got merged into all
-> recent stables:
-> https://lore.kernel.org/all/20230818200757.1808398-1-paul.gortmaker@windriver.com/
->  ..
+On Sun, Sep 10, 2023 at 12:09:23AM -0400, Joel Fernandes wrote:
+> On Sat, Sep 09, 2023 at 11:22:48AM -0700, Boqun Feng wrote:
+> > On Sat, Sep 09, 2023 at 04:31:25AM +0000, Joel Fernandes wrote:
+> > > On Fri, Sep 08, 2023 at 10:35:57PM +0200, Frederic Weisbecker wrote:
+> > > > A full barrier is issued from nocb_gp_wait() upon callbacks advancing
+> > > > to order grace period completion with callbacks execution.
+> > > > 
+> > > > However these two events are already ordered by the
+> > > > smp_mb__after_unlock_lock() barrier within the call to
+> > > > raw_spin_lock_rcu_node() that is necessary for callbacks advancing to
+> > > > happen.
+> > > > 
+> > > > The following litmus test shows the kind of guarantee that this barrier
+> > > > provides:
+> > > > 
+> > > > 	C smp_mb__after_unlock_lock
+> > > > 
+> > > > 	{}
+> > > > 
+> > > > 	// rcu_gp_cleanup()
+> > > > 	P0(spinlock_t *rnp_lock, int *gpnum)
+> > > > 	{
+> > > > 		// Grace period cleanup increase gp sequence number
+> > > > 		spin_lock(rnp_lock);
+> > > > 		WRITE_ONCE(*gpnum, 1);
+> > > > 		spin_unlock(rnp_lock);
+> > > > 	}
+> > > > 
+> > > > 	// nocb_gp_wait()
+> > > > 	P1(spinlock_t *rnp_lock, spinlock_t *nocb_lock, int *gpnum, int *cb_ready)
+> > > > 	{
+> > > > 		int r1;
+> > > > 
+> > > > 		// Call rcu_advance_cbs() from nocb_gp_wait()
+> > > > 		spin_lock(nocb_lock);
+> > > > 		spin_lock(rnp_lock);
+> > > > 		smp_mb__after_unlock_lock();
+> > > > 		r1 = READ_ONCE(*gpnum);
+> > > > 		WRITE_ONCE(*cb_ready, 1);
+> > > > 		spin_unlock(rnp_lock);
+> > > > 		spin_unlock(nocb_lock);
+> > > > 	}
+> > > > 
+> > > > 	// nocb_cb_wait()
+> > > > 	P2(spinlock_t *nocb_lock, int *cb_ready, int *cb_executed)
+> > > > 	{
+> > > > 		int r2;
+> > > > 
+> > > > 		// rcu_do_batch() -> rcu_segcblist_extract_done_cbs()
+> > > > 		spin_lock(nocb_lock);
+> > > > 		r2 = READ_ONCE(*cb_ready);
+> > > > 		spin_unlock(nocb_lock);
+> > > > 
+> > > > 		// Actual callback execution
+> > > > 		WRITE_ONCE(*cb_executed, 1);
+> > > 
+> > > So related to this something in the docs caught my attention under "Callback
+> > > Invocation" [1]
+> > > 
+> > > <quote>
+> > > However, if the callback function communicates to other CPUs, for example,
+> > > doing a wakeup, then it is that function's responsibility to maintain
+> > > ordering. For example, if the callback function wakes up a task that runs on
+> > > some other CPU, proper ordering must in place in both the callback function
+> > > and the task being awakened. To see why this is important, consider the top
+> > > half of the grace-period cleanup diagram. The callback might be running on a
+> > > CPU corresponding to the leftmost leaf rcu_node structure, and awaken a task
+> > > that is to run on a CPU corresponding to the rightmost leaf rcu_node
+> > > structure, and the grace-period kernel thread might not yet have reached the
+> > > rightmost leaf. In this case, the grace period's memory ordering might not
+> > > yet have reached that CPU, so again the callback function and the awakened
+> > > task must supply proper ordering.
+> > > </quote>
+> > > 
+> > > I believe this text is for non-nocb but if we apply that to the nocb case,
+> > > lets see what happens.
+> > > 
+> > > In the litmus, he rcu_advance_cbs() happened on P1, however the callback is
+> > > executing on P2. That sounds very similar to the non-nocb world described in
+> > > the text where a callback tries to wake something up on a different CPU and
+> > > needs to take care of all the ordering.
+> > > 
+> > > So unless I'm missing something (quite possible), P2 must see the update to
+> > > gpnum as well. However, per your limus test, the only thing P2  does is
+> > > acquire the nocb_lock. I don't see how it is guaranteed to see gpnum == 1.
+> > 
+> > Because P1 writes cb_ready under nocb_lock, and P2 reads cb_ready under
+> > nocb_lock as well and if P2 read P1's write, then we know the serialized
+> > order of locking is P1 first (i.e. the spin_lock(nocb_lock) on P2 reads
+> > from the spin_unlock(nocb_lock) on P1), in other words:
+> > 
+> > (fact #1)
+> > 
+> > 	unlock(nocb_lock) // on P1
+> > 	->rfe
+> > 	lock(nocb_lock) // on P2
+> > 
+> > so if P1 reads P0's write on gpnum
+> > 
+> > (assumption #1)
+> > 
+> > 	W(gpnum)=1 // on P0
+> > 	->rfe
+> > 	R(gpnum)=1 // on P1
+> > 
+> > and we have
+> > 
+> > (fact #2)
+> > 
+> > 	R(gpnum)=1 // on P1
+> > 	->(po; [UL])
+> > 	unlock(nocb_lock) // on P1
+> > 
+> > combine them you get
+> > 
+> > 	W(gpnum)=1 // on P0
+> > 	->rfe           // fact #1
+> > 	->(po; [UL])    // fact #2
+> > 	->rfe           // assumption #1
+> > 	lock(nocb_lock) // on P2
+> > 	->([LKR]; po)
+> > 	M // any access on P2 after spin_lock(nocb_lock);
+> > 
+> > so
+> > 	W(gpnum)=1 // on P0
+> > 	->rfe ->po-unlock-lock-po
+> > 	M // on P2
+> > 
+> > and po-unlock-lock-po is A-culum, hence "->rfe ->po-unlock-lock-po" or
+> > "rfe; po-unlock-lock-po" is culum-fence, hence it's a ->prop, which
+> > means the write of gpnum on P0 propagates to P2 before any memory
+> > accesses after spin_lock(nocb_lock)?
 > 
-> .. I am seeing this happen a lot now causing rcutorture failures:
-> "NOHZ tick-stop error: local softirq work is pending"
+> You and Frederic are right. I confirmed this by running herd7 as well.
 > 
-> It looks like the "tick-stop error" as local_bh_blocked always returns
-> false on !PREEMPT_RT, so that patch itself seems correct.
+> Also he adds a ->co between P2 and P3, so that's why the
+> smp_mb__after_lock_unlock() helps to keep the propogation intact. Its pretty
+> much the R-pattern extended across 4 CPUs.
 > 
-> However, it appears the string in console-badness.sh is different:
-> 
-> console-badness.sh:grep -v 'NOHZ tick-stop error: Non-RCU local
-> softirq work is pending, handler'
-> 
-> So the string in the script needs an update?
+> We should probably document these in the RCU memory ordering docs.
 
-Looks like it, though I believe that there is a fix in the offing,
-at which point that "grep -v" should just be removed.  Depending on
-timing, of course.
-
-> Also, considering that it is being grep -v'ed out, any background on
-> why this message is not bad and any history? Why is softirq work
-> pending when the tick is stopped?
-
-That was so long back that it is pretty hazy.  I vaguely recall that
-this was considered to be in need of fixing, but a false positive from
-a torture-test perspective.
+I never have heard of R showing up in real code before, so that is
+worth a few words in the documentation as well.  ;-)
 
 							Thanx, Paul
