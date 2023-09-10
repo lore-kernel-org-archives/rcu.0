@@ -2,142 +2,79 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17619EE49A4
-	for <rcu@archiver.kernel.org>; Sun, 10 Sep 2023 21:17:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 970BEC71153
+	for <rcu@archiver.kernel.org>; Sun, 10 Sep 2023 21:48:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbjIJVRY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 10 Sep 2023 17:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        id S229551AbjIJVs4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 10 Sep 2023 17:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjIJVRY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 10 Sep 2023 17:17:24 -0400
+        with ESMTP id S229518AbjIJVsz (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 10 Sep 2023 17:48:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D8B188;
-        Sun, 10 Sep 2023 14:17:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D964C433D9;
-        Sun, 10 Sep 2023 21:17:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A9DCC5
+        for <rcu@vger.kernel.org>; Sun, 10 Sep 2023 14:48:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 686FCC433C8;
+        Sun, 10 Sep 2023 21:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694380639;
-        bh=6y+5JQAtoGDJPQ/gP5gfj0PWf74JgBdlv8t1BNLkVE0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=COS/NHZcGSjCvRXnU3GiksfbUQjnoh4ljDeKs750yu1CKMi1XnLFQQ9az5wrawzaX
-         otVZGXNA+xVEUK38InHmchqV8BSLMqqzDr+5LwqINuh4htX3m6+iF6sqOeD+MO+B/f
-         a8nL+ZoX/vjA9eshIYAQgykoL3qVo420ZNf2pzWw6LblMt8KXW/Mb//EU9XBvyTFMh
-         QcfoueaxwZgViYFAI9XTJUXTqyDMyUmA5uXxBz9Ha41jBAC9b1j2EVTcaCtb1OXX9e
-         Bp+92wYmC7pmV6HAQodn9sCgwvhTrIPpSgGa3ZDg5uZQHQKVMXAAZO7YjpvsItVAA2
-         ada7cPoJ9i52g==
-Date:   Sun, 10 Sep 2023 23:17:16 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH 03/10] rcu/nocb: Remove needless LOAD-ACQUIRE
-Message-ID: <ZP4yXP1LQkTfqrHg@localhost.localdomain>
-References: <20230908203603.5865-1-frederic@kernel.org>
- <20230908203603.5865-4-frederic@kernel.org>
- <CAEXW_YTxSft0cZkq6UOsdkDxLCjMZfqqK3fBVz6He0UebCqS+g@mail.gmail.com>
+        s=k20201202; t=1694382526;
+        bh=J15kuB0W4e6FZ42Hmjbt4WHjVwbPn7u2a0UF7aP3e/w=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=g9xPZou5rP2cMSXLPQmuw16RslGXeg9zEJkUJB9/M57FBCRH6vNd/5g1B2XybH7xd
+         PSUZxNeZKzb/oC897YajWrSxL1TV30iNHHkWexw/RbTd2R9cfpdP/erl80KHx+SowO
+         bl0cs2Ozgs6sTBgbvKeABev+JfqUYTpSHjP2Bg8njjE+luB2kP9RcYaucL4Vl67eUN
+         HufJFH4U+GLTjLSjNnhjPfep5jr4LFByvlhtbjWegp3hbpaNRqNic51FclvOnr22r/
+         enH56BZP2hkPBA9YD2/BfaYZw6cnBEeiOa9uGsGZbB14XY8TUVUQASegU3wSTWoNVn
+         emW5HeosEGREg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 01ECECE080C; Sun, 10 Sep 2023 14:48:45 -0700 (PDT)
+Date:   Sun, 10 Sep 2023 14:48:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu <rcu@vger.kernel.org>
+Subject: Re: [BUG] NOHZ tick-stop error: local softirq work is pending
+Message-ID: <65cfb329-e6b4-4bba-8718-7888c9249830@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CAEXW_YTMCsaaZtyG46tjLv6En7Br0J6SD3WuLCZGhF=tSva26g@mail.gmail.com>
+ <4673a906-1baa-41cf-8fd3-7d28fdd0a820@paulmck-laptop>
+ <ZP4mRzlA4uCs6-Tk@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YTxSft0cZkq6UOsdkDxLCjMZfqqK3fBVz6He0UebCqS+g@mail.gmail.com>
+In-Reply-To: <ZP4mRzlA4uCs6-Tk@localhost.localdomain>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Fri, Sep 08, 2023 at 09:48:44PM -0400, Joel Fernandes a écrit :
-> On Fri, Sep 8, 2023 at 4:36 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> >
-> > The LOAD-ACQUIRE access performed on rdp->nocb_cb_sleep advertizes
-> > ordering callback execution against grace period completion. However
-> > this is contradicted by the following:
-> >
-> > * This LOAD-ACQUIRE doesn't pair with anything. The only counterpart
-> >   barrier that can be found is the smp_mb() placed after callbacks
-> >   advancing in nocb_gp_wait(). However the barrier is placed _after_
-> >   ->nocb_cb_sleep write.
+On Sun, Sep 10, 2023 at 10:25:43PM +0200, Frederic Weisbecker wrote:
+> Le Sun, Sep 10, 2023 at 03:21:33AM -0700, Paul E. McKenney a �crit :
+> > On Sat, Sep 09, 2023 at 10:28:36PM -0400, Joel Fernandes wrote:
+> > > Hi Paul, Frederic, ever since this recent patch got merged into all
+> > > recent stables:
+> > > https://lore.kernel.org/all/20230818200757.1808398-1-paul.gortmaker@windriver.com/
+> > >  ..
+> > > 
+> > > .. I am seeing this happen a lot now causing rcutorture failures:
+> > > "NOHZ tick-stop error: local softirq work is pending"
+> > > 
+> > > It looks like the "tick-stop error" as local_bh_blocked always returns
+> > > false on !PREEMPT_RT, so that patch itself seems correct.
+> > > 
+> > > However, it appears the string in console-badness.sh is different:
+> > > 
+> > > console-badness.sh:grep -v 'NOHZ tick-stop error: Non-RCU local
+> > > softirq work is pending, handler'
+> > > 
+> > > So the string in the script needs an update?
+> > 
+> > Looks like it, though I believe that there is a fix in the offing,
+> > at which point that "grep -v" should just be removed.  Depending on
+> > timing, of course.
 > 
-> Hmm, on one side you have:
-> 
-> WRITE_ONCE(rdp->nocb_cb_sleep, false);
-> smp_mb();
-> swake_up_one(&rdp->nocb_cb_wq);   /* wakeup -- consider this to be a STORE */
-> 
-> And on another side you have:
-> swait_event_interruptible_exclusive(rdp->nocb_cb_wq, ..cond..) /*
-> consider this to be a LOAD */
-> smp_load_acquire(&rdp->nocb_cb_sleep)
-> /* exec CBs (LOAD operations) */
-> 
-> So there seems to be pairing AFAICS.
+> Yep I have a pending fix for that, will post soonish. The grep will still
+> make sense afterward though.
 
-I must be confused, that would give such pattern:
+So I do nothing?  I can do that!  ;-)
 
-         WRITE X                LOAD Y
-         smp_mb()
-         WRITE Y                smp_load_acquire(X)
-
-How does this pair?
-
-> 
-> But maybe you are referring to pairing between advancing the callbacks
-> and storing to nocb_cb_sleep. In this case, the RELEASE of the nocb
-> unlock operation just after advancing should be providing the
-> ordering
-
-Right.
-
-> but we still need the acquire this patch deletes.
-
-Why?
-
-> 
-> > * Callbacks can be concurrently advanced between the LOAD-ACQUIRE on
-> >   ->nocb_cb_sleep and the call to rcu_segcblist_extract_done_cbs() in
-> >   rcu_do_batch(), making any ordering based on ->nocb_cb_sleep broken.
-> 
-> If you don't mind, could you elaborate more?
-
-So imagine:
-
-1) Some callbacks are pending
-2) A grace period completes, nocb_gp_wait() advance some callbacks to DONE and
-   some callbacks to WAIT, another grace period starts to handle the latter.
-3) Because some callbacks are ready to invoke, nocb_gp_wait() sets
-   rdp->nocb_cb_sleep to false and wakes up nocb_cb_wait()
-4) nocb_cb_wait() does smp_load_acquire(rdp->nocb_cb_sleep) and proceeds
-   with rcu_do_batch() but it gets preempted right before.
-5) The new grace period completes.
-6) nocb_gp_wait() does one more round and advances the WAIT callbacks to the
-   non-empty DONE segment. Also it doesn't need to wake up nocb_cb_wait()
-   since it's pending and ->nocb_cb_sleep is still false but it force writes
-   again ->nocb_cb_sleep to false.
-7) nocb_cb_wait() resumes and calls rcu_do_batch() without doing a new
-   load-acquire on ->nocb_cb_sleep, this means the ordering only applies to the
-   callbacks that were moved to DONE on step 2) but not to those moved to DONE
-   on step 6).
-
-> 
-> > * Both rcu_segcblist_extract_done_cbs() and rcu_advance_cbs() are called
-> >   under the nocb_lock, the latter hereby providing already the desired
-> >   ACQUIRE semantics.
-> 
-> The acquire orders loads to nocb_cb_sleep with all later loads/stores.
-> I am not sure how nocb_lock gives that same behavior since that's
-> doing ACQUIRE on the lock access itself and not on nocb_cb_sleep
-> access, I'd appreciate it if we can debate this out.
-
-Well, the nocb_lock releases not only the write to nocb_cb_sleep but also
-everything that precedes it. So it plays the same role and, most importantly,
-it's acquired before calling rcu_segcblist_extract_done_cbs().
-
-> 
-> Every few months I need a memory-ordering workout so this can be that.
-> ;-) You could be onto something.
-
-No worries, I have some more headaches upcoming for all of us on the plate  ;-)
-
-Thanks.
+							Thanx, Paul
