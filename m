@@ -2,133 +2,120 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB47CA0EC7
-	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 22:00:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5956ACA0EDE
+	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 22:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240441AbjIKV6i (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Sep 2023 17:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37128 "EHLO
+        id S237428AbjIKV6m (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Sep 2023 17:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235979AbjIKJr4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:47:56 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB50116
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 02:47:31 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c3c4eafe95so465985ad.1
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 02:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425651; x=1695030451; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ig/SU8otDOD6RD9FAzIUrJXv86Es+SJs+TyE8glTevc=;
-        b=NEUmRffRhJaSTKXqZCM78mZ4dMBvqfR9KeknpYAgTEREv+TRYLiPKZJmR7aGmfFtJw
-         lA59Bjsg5SzSwzFrVxGPWMBjMMEySoPECKsYU3wBFAzF8c3UKOcvCQ45D5Ufk8I5ddoz
-         AnjnmQGkqsjefSc2q7X+LMUF1a2JGByUSm0bKiMLb0MdZ+dpXjr9CNa5+uoX06+RkRky
-         aj8NXVADZTjHHo37DDGVBnma+NOkXMCbbzhwRBM/LHGYsLYpg3owvb8fCEeWIcgB3nEq
-         xeNqwZtudadfyaYUr3xwHvLs86zt/DwobyjxcosNgVbm8uLs3HIonBE/lbFnuyN0R34a
-         +7Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425651; x=1695030451;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ig/SU8otDOD6RD9FAzIUrJXv86Es+SJs+TyE8glTevc=;
-        b=xCgc4jsdrw8nNN1cvsaQ2fC1izC0w1ZYGwiu4iqkjysuWpMjtOcyIt0RKwCd5gYEfY
-         nCrbSDxjvgjiF2h/xxQ+s6WQku0BblzTLKxD4nlTYVepd41xEfFg3pzQyjA62d1SJ7IJ
-         ATgdRs+2gSoV+ZvoQmn3I0QrjJp6mHY/myD7dig4BPnWvhWZOvQk3UtMgvt/jSrdLb0L
-         rUbyDfFScprJe0/TYd83CGR+SYwyiaKDHJylDkfmflrZbmpvvAS4FT7cpSYi+YicdSrI
-         jhE5oUYXR2Uh03ExduZmfZeHq3+c/koZxIdm4yOCxSjuM1iPa2vZsYzb4DUvAinkITY+
-         IqIw==
-X-Gm-Message-State: AOJu0Yy/3LG3RlBSmVnwDsni19TmNRqllPpODlkvv1LEwzmvBLJVoYgN
-        kKDpePpitte+kcHzgAnNa0apHg==
-X-Google-Smtp-Source: AGHT+IEl2mpYTODnECMCuBDNAite2AZ131Yxo4SMEA3+9uaLlCuqsjdY37DnC78Awa2ltcDCzu5lqA==
-X-Received: by 2002:a17:902:d4c3:b0:1c3:411c:9b98 with SMTP id o3-20020a170902d4c300b001c3411c9b98mr11085339plg.3.1694425650814;
-        Mon, 11 Sep 2023 02:47:30 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:47:30 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Muchun Song <songmuchun@bytedance.com>, rcu@vger.kernel.org
-Subject: [PATCH v6 16/45] rcu: dynamically allocate the rcu-kfree shrinker
-Date:   Mon, 11 Sep 2023 17:44:15 +0800
-Message-Id: <20230911094444.68966-17-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
-References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S243766AbjIKRlb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Sep 2023 13:41:31 -0400
+Received: from rn-mailsvcp-mx-lapp01.apple.com (rn-mailsvcp-mx-lapp01.apple.com [17.179.253.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E529CC5
+        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 10:41:26 -0700 (PDT)
+Received: from rn-mailsvcp-mta-lapp01.rno.apple.com
+ (rn-mailsvcp-mta-lapp01.rno.apple.com [10.225.203.149])
+ by rn-mailsvcp-mx-lapp01.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) with ESMTPS id <0S0U007WI151U830@rn-mailsvcp-mx-lapp01.rno.apple.com>
+ for rcu@vger.kernel.org; Mon, 11 Sep 2023 10:41:26 -0700 (PDT)
+X-Proofpoint-ORIG-GUID: AxE00cqSYTcr41q9ILrvttKtKORNHET4
+X-Proofpoint-GUID: AxE00cqSYTcr41q9ILrvttKtKORNHET4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.601,18.0.957
+ definitions=2023-09-11_13:2023-09-05,2023-09-11 signatures=0
+X-Proofpoint-Spam-Details: rule=interactive_user_notspam
+ policy=interactive_user score=0 mlxscore=0 mlxlogscore=432 phishscore=0
+ suspectscore=0 malwarescore=0 spamscore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309110161
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com;
+ h=content-type : mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=20180706;
+ bh=/UmKWMEBZ8YoIn4Prq5QVdDMPky+8pQEkn1Nazk9DFo=;
+ b=fQwtBZEt6NeHDFHoOrbkNVfYJFLhUipcK1KGG61WN4/oxc2pYFu/2BrzShuduSmCXwoO
+ 8Fgtw7fNGE5jsdlRFhZ1VXx0MohXzoIJlw+w5+/Pvq2AytpyXIadtp9bZ6OjxreOVvd7
+ muqozt6xqtBa4DO0coZFlEMY6Vx+fUBPDYXlthd0Uv/yWvur26bwDheUjk1733tDM6nv
+ qedrIYvbYLuUZvshEjuRSBAZNX1MWBlK09KtXHbvcICBrzm2EKDxBeXphiveIDbA7Yli
+ rgqAU876Fv/ME9td1SsqPbjDe0O0T3Dp9HP1rEMe16EJKGExuEa+85pIahEj2Ou7KTbB rQ==
+Received: from rn-mailsvcp-mmp-lapp02.rno.apple.com
+ (rn-mailsvcp-mmp-lapp02.rno.apple.com [17.179.253.15])
+ by rn-mailsvcp-mta-lapp01.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) with ESMTPS id <0S0U00KPX15226N0@rn-mailsvcp-mta-lapp01.rno.apple.com>;
+ Mon, 11 Sep 2023 10:41:26 -0700 (PDT)
+Received: from process_milters-daemon.rn-mailsvcp-mmp-lapp02.rno.apple.com by
+ rn-mailsvcp-mmp-lapp02.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023)) id <0S0U010000JMDQ00@rn-mailsvcp-mmp-lapp02.rno.apple.com>; Mon,
+ 11 Sep 2023 10:41:26 -0700 (PDT)
+X-Va-A: 
+X-Va-T-CD: 62d7da425da0fb25eb2c6e85f2f966df
+X-Va-E-CD: 2b3483cc51d778a83b3be5915b056b7f
+X-Va-R-CD: 0eef42286f64395431e9696be9476630
+X-Va-ID: daf03f73-4073-45cc-b467-f9fce56a1f6b
+X-Va-CD: 0
+X-V-A:  
+X-V-T-CD: 62d7da425da0fb25eb2c6e85f2f966df
+X-V-E-CD: 2b3483cc51d778a83b3be5915b056b7f
+X-V-R-CD: 0eef42286f64395431e9696be9476630
+X-V-ID: 4176f744-5b3c-4770-bd89-f4f26dea2cf8
+X-V-CD: 0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.601,18.0.957
+ definitions=2023-09-11_13:2023-09-05,2023-09-11 signatures=0
+Received: from smtpclient.apple ([17.192.155.113])
+ by rn-mailsvcp-mmp-lapp02.rno.apple.com
+ (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
+ 2023))
+ with ESMTPSA id <0S0U00W081514M10@rn-mailsvcp-mmp-lapp02.rno.apple.com>; Mon,
+ 11 Sep 2023 10:41:26 -0700 (PDT)
+Content-type: text/plain; charset=utf-8
+MIME-version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.2\))
+Subject: Re: kmemleak handling of kfree_rcu
+From:   Christoph Paasch <cpaasch@apple.com>
+In-reply-to: <CAEXW_YTxLRAKCpFdKOdegj0gZdBb0OH+BnJf9FGTGfPtwiPkiw@mail.gmail.com>
+Date:   Mon, 11 Sep 2023 10:41:15 -0700
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
+Content-transfer-encoding: quoted-printable
+Message-id: <26A7E7B0-8B40-465C-9FC6-6F3D6529A591@apple.com>
+References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
+ <ZPZKsJUPVeHCsLQB@arm.com> <EDE8FE3D-043D-4A14-ACF6-71FF786C0D32@apple.com>
+ <ZPi1LvrcGcSKBLqR@arm.com>
+ <CAEXW_YTxLRAKCpFdKOdegj0gZdBb0OH+BnJf9FGTGfPtwiPkiw@mail.gmail.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+X-Mailer: Apple Mail (2.3774.100.2.1.2)
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Use new APIs to dynamically allocate the rcu-kfree shrinker.
+Hello,
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-CC: rcu@vger.kernel.org
----
- kernel/rcu/tree.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+> On Sep 10, 2023, at 4:10=E2=80=AFPM, Joel Fernandes =
+<joel@joelfernandes.org> wrote:
+>=20
+> Hi Christoph,
+>=20
+> On Wed, Sep 6, 2023 at 1:21=E2=80=AFPM Catalin Marinas =
+<catalin.marinas@arm.com> wrote:
+>>=20
+>> On Tue, Sep 05, 2023 at 02:22:13PM -0700, Christoph Paasch wrote:
+> [..]
+>>> If you have an updated patch, let me know. I can test it.
+>>=20
+>> I sent it in reply to Joel.
+>=20
+> Just checking if you got a chance to try Catalin's patch?
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cb1caefa8bd0..06e2ed495c02 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3449,13 +3449,6 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 	return freed == 0 ? SHRINK_STOP : freed;
- }
- 
--static struct shrinker kfree_rcu_shrinker = {
--	.count_objects = kfree_rcu_shrink_count,
--	.scan_objects = kfree_rcu_shrink_scan,
--	.batch = 0,
--	.seeks = DEFAULT_SEEKS,
--};
--
- void __init kfree_rcu_scheduler_running(void)
- {
- 	int cpu;
-@@ -4931,6 +4924,7 @@ static void __init kfree_rcu_batch_init(void)
- {
- 	int cpu;
- 	int i, j;
-+	struct shrinker *kfree_rcu_shrinker;
- 
- 	/* Clamp it to [0:100] seconds interval. */
- 	if (rcu_delay_page_cache_fill_msec < 0 ||
-@@ -4962,8 +4956,17 @@ static void __init kfree_rcu_batch_init(void)
- 		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
- 		krcp->initialized = true;
- 	}
--	if (register_shrinker(&kfree_rcu_shrinker, "rcu-kfree"))
--		pr_err("Failed to register kfree_rcu() shrinker!\n");
-+
-+	kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
-+	if (!kfree_rcu_shrinker) {
-+		pr_err("Failed to allocate kfree_rcu() shrinker!\n");
-+		return;
-+	}
-+
-+	kfree_rcu_shrinker->count_objects = kfree_rcu_shrink_count;
-+	kfree_rcu_shrinker->scan_objects = kfree_rcu_shrink_scan;
-+
-+	shrinker_register(kfree_rcu_shrinker);
- }
- 
- void __init rcu_init(void)
--- 
-2.30.2
+sorry for the delay! Yes, I tested it and it works!
+
+ Thanks,
+Christoph
+
+>=20
+> thanks,
+>=20
+> - Joel
+>=20
 
