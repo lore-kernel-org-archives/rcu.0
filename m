@@ -2,140 +2,105 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06469EE57DF
-	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 08:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD457CA0ECE
+	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 21:59:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233916AbjIKIQs (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Sep 2023 04:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
+        id S236662AbjIKV6O (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Sep 2023 17:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232106AbjIKIQ2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:16:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43755FC
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 01:16:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5917C433C9;
-        Mon, 11 Sep 2023 08:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694420181;
-        bh=JOvntofYBT8O4LvR3Gv4bbSTvE/DMVei5LuO1MZgMz4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Vm0uoDFTwfXNSj44sHwwMWiqsJR7cXkQhA4vgxCTPLBR/72OT40iXMP7cszet15n2
-         gSlWXjqCsd9cP4TS85GRdOscdm110262omQJHRHRA+2OU34FudpfF82dzw/+dsdnOR
-         aBlFl7lNiNZR2erqUXPGwLXSPN+5moSQv5pM0jPBZYk+pFuc6cs741Vx9ZV9bSBE+b
-         AFnrRNvuM6UDMY2Ru5Mwa0vZ/cs+ar9uTiinGpjq3mTyURalVH/nEVr/SWQ/KlCABn
-         004xFQrTrg+HI2ccNqrEUtRjnpFP715FEA/kZh388IkT5bRKWVF08yw5y9F+6LKKZL
-         Nkuzcr95fthmQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 70292CE0899; Mon, 11 Sep 2023 01:16:21 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 01:16:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
-Subject: Re: [BUG] Random intermittent boost failures (Was Re: [BUG] TREE04..)
-Message-ID: <1f12ffe6-4cb0-4364-8c4c-3393ca5368c2@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230910201445.GA1605059@google.com>
- <a2518e2d-14ba-4965-8775-f6f3054b7522@paulmck-laptop>
- <CAEXW_YRMQx8AGoshpW6xLGsmN4fZ34T3Xy5H1-iN8p2Ho5-jEg@mail.gmail.com>
- <20230911022725.GA2542634@google.com>
+        with ESMTP id S237957AbjIKNZO (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Sep 2023 09:25:14 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EA512A;
+        Mon, 11 Sep 2023 06:25:10 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c39f2b4f5aso8328345ad.0;
+        Mon, 11 Sep 2023 06:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694438710; x=1695043510; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QYHU7Pr5BT6VuKyWwYsKCnfhHtSEOeezKltwZKlqIuc=;
+        b=mPsR1l7BC+ezfDzPVIAZIxB74/sJctQAd/5Jzl83wtPC1k2qaJRhAqgZfan96zOB/k
+         xO0orfueKBGHJIr3mH2yLpnbJK7BkFDl98tee2UgyqHwed7UPLovO0R3vLICgy7LaCSn
+         RG2G1voHutkYR0sbsTwTWka3zzELDEHN0/DcNtN5kcg6DibWium9F8go+CWxlhndoM/l
+         ErCSzO9r2A+lwDjdKuTFWhE4KbuK2cmSNLTuvNZ+ZsWDqy7vkSabUrUxsc74K1M808r5
+         cMe/XzmsuwgcLHYym+4l1yrS0prjrUhN8G3SpEIxNNr6Y6htVYHUF47l3CC6ZU+Ooh7c
+         D9aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694438710; x=1695043510;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QYHU7Pr5BT6VuKyWwYsKCnfhHtSEOeezKltwZKlqIuc=;
+        b=wxlCzYYa08rNLa+lRefiwsSihlo1RqtnwH7CWm+Hd8oOg6XI8UOWKberGe5qkLLmlD
+         G2p0LMycnEhTjdoxDaEJUtjRjzhTnhsf8cMPmu1f1QKVQrBlEfg+FX3lBjcoTTwOmzBc
+         XC436+xyDmyzhI2F63rq+ARzrTXr1b2gLGs7lA10ILkxY26vHP+poWQxv0f1/RJ4LLFk
+         nd3DiLZFg/EzZ/3LzmyrnmfmAw4hwBf+/JZCi/khYv2HGBy4US73UDqtrD+iw1M8r2qR
+         41SxseSLqXGOoeLhvAmAUiO5TLRigk39j7Uwhwd9ip9Ka7Daxc2i+axdmVr6JxkhgEls
+         ikGA==
+X-Gm-Message-State: AOJu0YwjkbimchyKEsoidykSyZfrio4kXylBPwRPLk6i44PGMAgSjjl+
+        nnoDqiddpLyRDNcLKYJ+N/M=
+X-Google-Smtp-Source: AGHT+IEJEL7EHKSeeQ7nq+bwwXxX1Oa8Pfic+9143Y1UPQHFbmXr9cdymEVXn43t1L8MasQzFBMDhg==
+X-Received: by 2002:a17:902:b18c:b0:1b2:1b22:196 with SMTP id s12-20020a170902b18c00b001b21b220196mr7887196plr.48.1694438709821;
+        Mon, 11 Sep 2023 06:25:09 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id b12-20020a170903228c00b001c3c68747a3sm885152plh.260.2023.09.11.06.25.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 06:25:09 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 9B2CF83061A0; Mon, 11 Sep 2023 20:25:03 +0700 (WIB)
+Date:   Mon, 11 Sep 2023 20:25:03 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Ziwei Dai <ziwei.dai@unisoc.com>,
+        Hugh Dickins <hughd@google.com>,
+        Marcus Seyfarth <m.seyfarth@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RCU <rcu@vger.kernel.org>
+Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
+Message-ID: <ZP8VL77rs0Pejgo6@debian.me>
+References: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/mcgnXAVZFgB+P+T"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230911022725.GA2542634@google.com>
+In-Reply-To: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 02:27:25AM +0000, Joel Fernandes wrote:
-> On Sun, Sep 10, 2023 at 07:37:13PM -0400, Joel Fernandes wrote:
-> > On Sun, Sep 10, 2023 at 5:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Sun, Sep 10, 2023 at 08:14:45PM +0000, Joel Fernandes wrote:
-> > [...]
-> > > > >  I have been running into another intermittent one as well which
-> > > > > is the boost failure and that happens once in 10-15 runs or so.
-> > > > >
-> > > > > I was thinking of running the following configuration on an automated
-> > > > > regular basis to at least provide a better clue on the lucky run that
-> > > > > catches an issue. But then the issue is it would change timing enough
-> > > > > to maybe hide bugs. I could also make it submit logs automatically to
-> > > > > the list on such occurrences, but one step at a time and all that.  I
-> > > > > do need to add (hopefully less noisy) tick/timer related trace events.
-> > > > >
-> > > > > # Define the bootargs array
-> > > > > bootargs=(
-> > > > >     "ftrace_dump_on_oops"
-> > > > >     "panic_on_warn=1"
-> > > > >     "sysctl.kernel.panic_on_rcu_stall=1"
-> > > > >     "sysctl.kernel.max_rcu_stall_to_panic=1"
-> > > > >     "trace_buf_size=10K"
-> > > > >     "traceoff_on_warning=1"
-> > > > >     "panic_print=0x1f"      # To dump held locks, mem and other info.
-> > > > > )
-> > > > > # Define the trace events array passed to bootargs.
-> > > > > trace_events=(
-> > > > >     "sched:sched_switch"
-> > > > >     "sched:sched_waking"
-> > > > >     "rcu:rcu_callback"
-> > > > >     "rcu:rcu_fqs"
-> > > > >     "rcu:rcu_quiescent_state_report"
-> > > > >     "rcu:rcu_grace_period"
-> > > > > )
-> > > >
-> > > > So some insight on this boost failure. Just before the boost failures are
-> > > > reported, I see the migration thread interferring with the rcu_preempt thread
-> > > > (aka GP kthread). See trace below. Of note is that the rcu_preempt thread is
-> > > > runnable while context switching, which means its execution is interferred.
-> > > > The rcu_preempt thread is at RT prio 2 as can be seen.
-> > > >
-> > > > So some open-ended questions: what exactly does the migration thread want,
-> > > > this is something related to CPU hotplug? And if the migration thread had to
-> > > > run, why did the rcu_preempt thread not get pushed to another CPU by the
-> > > > scheduler? We have 16 vCPUs for this test.
-> > >
-> > > Maybe we need a cpus_read_lock() before doing a given boost-test interval
-> > > and a cpus_read_unlock() after finishing one?  But much depends on
-> > > exactly what is starting those migration threads.
-> > 
-> > But in the field, a real RT task can preempt a reader without doing
-> > cpus_read_lock() and may run into a similar boost issue?
 
-The sysctl_sched_rt_runtime should prevent a livelock in most
-configurations.  Here, rcutorture explicitly disables this.
+--/mcgnXAVZFgB+P+T
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > Then again, TREE03 is pretty aggressive about doing CPU hotplug.
-> > 
-> > Ok. I put a trace_printk() in the stopper thread to see what the
-> > ->fn() is. I'm doing another run to see what falls out.
-> 
-> I think I am getting somewhere, It looks like the migration thread tries to
-> push the task out due to __balance_push_cpu_stop. Clearly it fails because
-> the rcu_preempt task is still on CPU 3. And the whole thing is live locked
-> retrying the same.
-> 
-> I am not sure if the migration thread is trying to migrate rcu_preempt
-> because the CPU is going down or because a higher priority RT task is
-> running.
-> 
-> rcu_pree-13        3d..4. 2936723336us : sched_waking: comm=migration/3 pid=34 prio=0 target_cpu=003
-> rcu_pree-13        3d..2. 2936723338us : sched_switch: prev_comm=rcu_preempt prev_pid=13 prev_prio=97 prev_state=R ==> next_comm=migration/3 next_pid=34 next_prio=0
-> migratio-34        3..... 2936723341us : cpu_stopper_thread: cpu_stop: caller=balance_push+0xc9/0x150 fn=__balance_push_cpu_stop+0x0/0x1c0 on cpu 3
-> migratio-34        3d..2. 2936723345us : sched_switch: prev_comm=migration/3 prev_pid=34 prev_prio=0 prev_state=S ==> next_comm=swapper/3 next_pid=0 next_prio=120
-> <idle>-0         3d..2. 2936723676us : sched_switch: prev_comm=swapper/3 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=rcu_preempt next_pid=13 next_prio=97
-> rcu_pree-13        3d..4. 2936723678us : sched_waking: comm=migration/3 pid=34 prio=0 target_cpu=003
-> rcu_pree-13        3d..2. 2936723680us : sched_switch: prev_comm=rcu_preempt prev_pid=13 prev_prio=97 prev_state=R ==> next_comm=migration/3 next_pid=34 next_prio=0
-> migratio-34        3..... 2936723683us : cpu_stopper_thread: cpu_stop: caller=balance_push+0xc9/0x150 fn=__balance_push_cpu_stop+0x0/0x1c0 on cpu 3
-> 
-> I am digging deeper to see why the rcu_preempt thread cannot be pushed out
-> and then I'll also look at why is it being pushed out in the first place.
-> 
-> At least I have a strong repro now running 5 instances of TREE03 in parallel
-> for several hours.
+On Sun, Sep 03, 2023 at 08:34:44AM +0700, Bagas Sanjaya wrote:
+> #regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?=
+id=3D217864
+>=20
 
-Very good!  Then why not boot with rcutorture.onoff_interval=0 and see if
-the problem still occurs?  If yes, then there is definitely some reason
-other than CPU hotplug that makes this happen.
+As requested by the reporter,
 
-							Thanx, Paul
+#regzbot dup-of: https://lore.kernel.org/lkml/5011708f-b0ae-2853-0f87-a3b59=
+845a2cc@gmail.com/
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--/mcgnXAVZFgB+P+T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZP8VKQAKCRD2uYlJVVFO
+o+5dAQD3M3npMQfvuZUrqvb2a+tpF6PCUeIXRjjKL6786yTJcwEAuQQTsAsPnR4z
+ZgRXKw8JbrZf6fHwI6+q1dMyw6TSlwk=
+=Y/X5
+-----END PGP SIGNATURE-----
+
+--/mcgnXAVZFgB+P+T--
