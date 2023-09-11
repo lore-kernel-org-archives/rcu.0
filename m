@@ -2,120 +2,151 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5956ACA0EDE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75C75CA0EDF
 	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 22:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237428AbjIKV6m (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Sep 2023 17:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        id S240806AbjIKV6r (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Sep 2023 17:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243766AbjIKRlb (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:41:31 -0400
-Received: from rn-mailsvcp-mx-lapp01.apple.com (rn-mailsvcp-mx-lapp01.apple.com [17.179.253.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E529CC5
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 10:41:26 -0700 (PDT)
-Received: from rn-mailsvcp-mta-lapp01.rno.apple.com
- (rn-mailsvcp-mta-lapp01.rno.apple.com [10.225.203.149])
- by rn-mailsvcp-mx-lapp01.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) with ESMTPS id <0S0U007WI151U830@rn-mailsvcp-mx-lapp01.rno.apple.com>
- for rcu@vger.kernel.org; Mon, 11 Sep 2023 10:41:26 -0700 (PDT)
-X-Proofpoint-ORIG-GUID: AxE00cqSYTcr41q9ILrvttKtKORNHET4
-X-Proofpoint-GUID: AxE00cqSYTcr41q9ILrvttKtKORNHET4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.601,18.0.957
- definitions=2023-09-11_13:2023-09-05,2023-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=interactive_user_notspam
- policy=interactive_user score=0 mlxscore=0 mlxlogscore=432 phishscore=0
- suspectscore=0 malwarescore=0 spamscore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309110161
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com;
- h=content-type : mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=20180706;
- bh=/UmKWMEBZ8YoIn4Prq5QVdDMPky+8pQEkn1Nazk9DFo=;
- b=fQwtBZEt6NeHDFHoOrbkNVfYJFLhUipcK1KGG61WN4/oxc2pYFu/2BrzShuduSmCXwoO
- 8Fgtw7fNGE5jsdlRFhZ1VXx0MohXzoIJlw+w5+/Pvq2AytpyXIadtp9bZ6OjxreOVvd7
- muqozt6xqtBa4DO0coZFlEMY6Vx+fUBPDYXlthd0Uv/yWvur26bwDheUjk1733tDM6nv
- qedrIYvbYLuUZvshEjuRSBAZNX1MWBlK09KtXHbvcICBrzm2EKDxBeXphiveIDbA7Yli
- rgqAU876Fv/ME9td1SsqPbjDe0O0T3Dp9HP1rEMe16EJKGExuEa+85pIahEj2Ou7KTbB rQ==
-Received: from rn-mailsvcp-mmp-lapp02.rno.apple.com
- (rn-mailsvcp-mmp-lapp02.rno.apple.com [17.179.253.15])
- by rn-mailsvcp-mta-lapp01.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) with ESMTPS id <0S0U00KPX15226N0@rn-mailsvcp-mta-lapp01.rno.apple.com>;
- Mon, 11 Sep 2023 10:41:26 -0700 (PDT)
-Received: from process_milters-daemon.rn-mailsvcp-mmp-lapp02.rno.apple.com by
- rn-mailsvcp-mmp-lapp02.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023)) id <0S0U010000JMDQ00@rn-mailsvcp-mmp-lapp02.rno.apple.com>; Mon,
- 11 Sep 2023 10:41:26 -0700 (PDT)
-X-Va-A: 
-X-Va-T-CD: 62d7da425da0fb25eb2c6e85f2f966df
-X-Va-E-CD: 2b3483cc51d778a83b3be5915b056b7f
-X-Va-R-CD: 0eef42286f64395431e9696be9476630
-X-Va-ID: daf03f73-4073-45cc-b467-f9fce56a1f6b
-X-Va-CD: 0
-X-V-A:  
-X-V-T-CD: 62d7da425da0fb25eb2c6e85f2f966df
-X-V-E-CD: 2b3483cc51d778a83b3be5915b056b7f
-X-V-R-CD: 0eef42286f64395431e9696be9476630
-X-V-ID: 4176f744-5b3c-4770-bd89-f4f26dea2cf8
-X-V-CD: 0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.601,18.0.957
- definitions=2023-09-11_13:2023-09-05,2023-09-11 signatures=0
-Received: from smtpclient.apple ([17.192.155.113])
- by rn-mailsvcp-mmp-lapp02.rno.apple.com
- (Oracle Communications Messaging Server 8.1.0.23.20230328 64bit (built Mar 28
- 2023))
- with ESMTPSA id <0S0U00W081514M10@rn-mailsvcp-mmp-lapp02.rno.apple.com>; Mon,
- 11 Sep 2023 10:41:26 -0700 (PDT)
-Content-type: text/plain; charset=utf-8
-MIME-version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.2\))
-Subject: Re: kmemleak handling of kfree_rcu
-From:   Christoph Paasch <cpaasch@apple.com>
-In-reply-to: <CAEXW_YTxLRAKCpFdKOdegj0gZdBb0OH+BnJf9FGTGfPtwiPkiw@mail.gmail.com>
-Date:   Mon, 11 Sep 2023 10:41:15 -0700
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
-Content-transfer-encoding: quoted-printable
-Message-id: <26A7E7B0-8B40-465C-9FC6-6F3D6529A591@apple.com>
-References: <F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com>
- <ZPZKsJUPVeHCsLQB@arm.com> <EDE8FE3D-043D-4A14-ACF6-71FF786C0D32@apple.com>
- <ZPi1LvrcGcSKBLqR@arm.com>
- <CAEXW_YTxLRAKCpFdKOdegj0gZdBb0OH+BnJf9FGTGfPtwiPkiw@mail.gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-X-Mailer: Apple Mail (2.3774.100.2.1.2)
+        with ESMTP id S242778AbjIKQSd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Sep 2023 12:18:33 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBCFCC3
+        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 09:18:29 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso75802621fa.1
+        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 09:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1694449107; x=1695053907; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VxqkzXGdJRSSdKxmHrLYYUfH6sMkTrkETk9cQkFIOkI=;
+        b=v+NYd/JPusmqByEtgvSocOIoJNDWBN92Orz/me+deUq56N/OMdJKbWmHvkgJRb8gsy
+         XenBA7PnndeK4wxFtlSC4x4Zx/SbsU3au0gfG2f1Fjd7Ma/nhVNqcPp3kQzxib/uabIb
+         s5ynKunEJv5vLJOkBE5Mv57rmgFrN1lj7bKNI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694449107; x=1695053907;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VxqkzXGdJRSSdKxmHrLYYUfH6sMkTrkETk9cQkFIOkI=;
+        b=YEcEFwXGsmP9akvZBsCTM/ERiSrQXAZK12pMr9aQvbvlNH4xoAovjlhuM1OvP3r+p4
+         Cl7MJNDKa28ThwWLYE9D/3Bk37e/RNwuHBfLQGCNXKNVeP/1HsGiLO+arEMZNOTyL8Lb
+         Jw7hoZkJTmMPtEAyJRsnIPM7zsfbujGmYObo5dQRknS5OATov/diePB5b01NGmepCu3N
+         CyZ0+0iR/HYEoBS5coKeqkD3OMzs6NznRKLR/uhV80q3c0nlhOJ0Uohb4PS5klpuSwrz
+         o3eHKyINhxBPTbLdVHGanPR/S6s3VtfvhiwG+sMGGV6UwHzJWWbPGcRLPFIRpZaF4WkD
+         kCZw==
+X-Gm-Message-State: AOJu0YyYVI4uInhiH5suNHmPg9MKE6USHydFvR01EIMP7l1pLu/1JZEu
+        8lxayKLxHY/gtayE5snDg7Duq5ZIXF4LwDaxxxR2Zg==
+X-Google-Smtp-Source: AGHT+IFZvmefUkG8Hg5A3gLjEuzm9CK876JACqnLSYrJQofROH+X81JIX6p/UzD1F3pmKCXk/x9sILhiqlv9AjEwvCA=
+X-Received: by 2002:a05:651c:1994:b0:2bf:789e:b5dd with SMTP id
+ bx20-20020a05651c199400b002bf789eb5ddmr6647548ljb.53.1694449107110; Mon, 11
+ Sep 2023 09:18:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230910201445.GA1605059@google.com> <a2518e2d-14ba-4965-8775-f6f3054b7522@paulmck-laptop>
+ <CAEXW_YRMQx8AGoshpW6xLGsmN4fZ34T3Xy5H1-iN8p2Ho5-jEg@mail.gmail.com>
+ <20230911022725.GA2542634@google.com> <1f12ffe6-4cb0-4364-8c4c-3393ca5368c2@paulmck-laptop>
+ <20230911131730.GA2291108@google.com> <8abef7d3-db8f-4a18-a72d-d23c1adb310d@paulmck-laptop>
+In-Reply-To: <8abef7d3-db8f-4a18-a72d-d23c1adb310d@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 11 Sep 2023 12:18:16 -0400
+Message-ID: <CAEXW_YSoy38WOxySWn=n_bx=T9MdBsRTx2myuRohm2h70ac9Gg@mail.gmail.com>
+Subject: Re: [BUG] Random intermittent boost failures (Was Re: [BUG] TREE04..)
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello,
+On Mon, Sep 11, 2023 at 9:49=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Mon, Sep 11, 2023 at 01:17:30PM +0000, Joel Fernandes wrote:
+> > On Mon, Sep 11, 2023 at 01:16:21AM -0700, Paul E. McKenney wrote:
+> > > On Mon, Sep 11, 2023 at 02:27:25AM +0000, Joel Fernandes wrote:
+> > > > On Sun, Sep 10, 2023 at 07:37:13PM -0400, Joel Fernandes wrote:
+> > > > > On Sun, Sep 10, 2023 at 5:16=E2=80=AFPM Paul E. McKenney <paulmck=
+@kernel.org> wrote:
+> > > > > >
+> > > > > > On Sun, Sep 10, 2023 at 08:14:45PM +0000, Joel Fernandes wrote:
+> > > > > [...]
+> > > > > > > >  I have been running into another intermittent one as well =
+which
+> > > > > > > > is the boost failure and that happens once in 10-15 runs or=
+ so.
+> > > > > > > >
+> > > > > > > > I was thinking of running the following configuration on an=
+ automated
+> > > > > > > > regular basis to at least provide a better clue on the luck=
+y run that
+> > > > > > > > catches an issue. But then the issue is it would change tim=
+ing enough
+> > > > > > > > to maybe hide bugs. I could also make it submit logs automa=
+tically to
+> > > > > > > > the list on such occurrences, but one step at a time and al=
+l that.  I
+> > > > > > > > do need to add (hopefully less noisy) tick/timer related tr=
+ace events.
+> > > > > > > >
+> > > > > > > > # Define the bootargs array
+> > > > > > > > bootargs=3D(
+[...]
+> > > > > > > So some insight on this boost failure. Just before the boost =
+failures are
+> > > > > > > reported, I see the migration thread interferring with the rc=
+u_preempt thread
+> > > > > > > (aka GP kthread). See trace below. Of note is that the rcu_pr=
+eempt thread is
+> > > > > > > runnable while context switching, which means its execution i=
+s interferred.
+> > > > > > > The rcu_preempt thread is at RT prio 2 as can be seen.
+> > > > > > >
+> > > > > > > So some open-ended questions: what exactly does the migration=
+ thread want,
+> > > > > > > this is something related to CPU hotplug? And if the migratio=
+n thread had to
+> > > > > > > run, why did the rcu_preempt thread not get pushed to another=
+ CPU by the
+> > > > > > > scheduler? We have 16 vCPUs for this test.
+> > > > > >
+> > > > > > Maybe we need a cpus_read_lock() before doing a given boost-tes=
+t interval
+> > > > > > and a cpus_read_unlock() after finishing one?  But much depends=
+ on
+> > > > > > exactly what is starting those migration threads.
+> > > > >
+> > > > > But in the field, a real RT task can preempt a reader without doi=
+ng
+> > > > > cpus_read_lock() and may run into a similar boost issue?
+> > >
+> > > The sysctl_sched_rt_runtime should prevent a livelock in most
+> > > configurations.  Here, rcutorture explicitly disables this.
+> >
+> > I see. Though RT throttling will actually stall the rcu_preempt thread =
+as
+> > well in the real world. RT throttling is a bit broken and we're trying =
+to fix
+> > it in scheduler land. Even if there are idle CPUs, RT throttling will s=
+tarve
+> > not just the offending RT task, but all of them essentially causing a
+> > priority inversion between running RT and CFS tasks.
+>
+> Fair point.  But that requires that the offending runaway RT task hit bot=
+h
+> a reader and the grace-period kthread.  Keeping in mind that rcutorture
+> is provisioning one runaway RT task per CPU, which in the real world is
+> hopefully quite rare.  Hopefully.  ;-)
 
-> On Sep 10, 2023, at 4:10=E2=80=AFPM, Joel Fernandes =
-<joel@joelfernandes.org> wrote:
->=20
-> Hi Christoph,
->=20
-> On Wed, Sep 6, 2023 at 1:21=E2=80=AFPM Catalin Marinas =
-<catalin.marinas@arm.com> wrote:
->>=20
->> On Tue, Sep 05, 2023 at 02:22:13PM -0700, Christoph Paasch wrote:
-> [..]
->>> If you have an updated patch, let me know. I can test it.
->>=20
->> I sent it in reply to Joel.
->=20
-> Just checking if you got a chance to try Catalin's patch?
+You are right, I exaggerated a bit. Indeed in the real world, RT
+throttling can cause a prio inversion with CFS only if all other CPUs
+are also RT throttled. Otherwise it tries to migrate the RT task to
+another CPU. That's a very great point.
 
-sorry for the delay! Yes, I tested it and it works!
+> Sounds like good progress!  Please let me know how it goes!!!
 
- Thanks,
-Christoph
+Thanks! Will do,
 
->=20
-> thanks,
->=20
-> - Joel
->=20
-
+ - Joel
