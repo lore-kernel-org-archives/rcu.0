@@ -2,129 +2,174 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF445CA0EC9
-	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 22:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AC1FCA0ED7
+	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 22:00:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238864AbjIKV63 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Sep 2023 17:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
+        id S235964AbjIKV6b (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 11 Sep 2023 17:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235975AbjIKJrs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:47:48 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385D9E4A
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 02:47:23 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c0efe0c4acso7086885ad.0
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 02:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425642; x=1695030442; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nO5XG1oNP6pUjS3WN2+RrRDElLAKlnsgenuSaZhp694=;
-        b=CwGNapEsGEKLOP1WtNH0uwIv9Lr9oKEL35X/KtieiyH9m5IoCCEMLpq2cAk5aBg9wa
-         K5Ycps6CA2+bGZuUNVF93Vjtx1PyH2OyaHPcSMsfJfZ8XxVfhcmsHf4xVMkfLfjwtKGc
-         /L3HcDLGW2qEUyYkyxNjql2X8XBxk4dW6MppiV+JNYEo2AwcB+DYWtFt4wWNmz2YLKYK
-         4UKN5C1e6q0tSUQxE0RQymndbGMCVN9sL4toX1mVbAht8dsRIhuFcF9IH47NvACTC/TY
-         IEZxV2scnE31dCjQqTOjdN8Jk3KWmlzjeJeNyKqhUzZIf0nfDNXZEyjyc3t0XbE7GqbC
-         DyPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425642; x=1695030442;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nO5XG1oNP6pUjS3WN2+RrRDElLAKlnsgenuSaZhp694=;
-        b=Mbl///ZLKliwnASR0A7WSLq7HF3f890liZqmX2QYMzns9DEs+bj9MiQbds9ngHXXjc
-         6kHIP45N1BkhYa0fTqn0o7+5LefQ8rt67ql9vJeFjyE0n7Y/An0aH2MkluhxLVWMsZDz
-         H95WqheKhIvJARN2F/s2+dBjZ+p0cOiad5cqfZUlAPyTNoRnQGum6DhNm6JvLn5IGx6+
-         u+FZ3UNIOxDIwSo94WzNky9U4RJSJ61vLkOVqX3k71Un3FNYQNSm/UASvhYda3mkjC7R
-         OEyfBl9symM2AAMOKTySmdliuL2ACJtl77Ec0ezryFzd3lVcz7a3VSDldPvogxpapPxJ
-         xxKA==
-X-Gm-Message-State: AOJu0Yybx4khP0legqpn0DM0WC2AJNG5XH7RWJt+Act+01jfKEwph18s
-        rJrgkShp844UkOg0hkfIQIpAlg==
-X-Google-Smtp-Source: AGHT+IGU0jWm5aUKgo65aoc1FmWqzP1rWPbNbFl1TEnUeGhWf2rII1K9xqSMkpAW8Vpnx3sOpXBIKg==
-X-Received: by 2002:a05:6a21:a594:b0:13e:1d49:7249 with SMTP id gd20-20020a056a21a59400b0013e1d497249mr13273426pzc.2.1694425642605;
-        Mon, 11 Sep 2023 02:47:22 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:47:22 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH v6 15/45] rcu: dynamically allocate the rcu-lazy shrinker
-Date:   Mon, 11 Sep 2023 17:44:14 +0800
-Message-Id: <20230911094444.68966-16-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
-References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
+        with ESMTP id S238207AbjIKNuA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 11 Sep 2023 09:50:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBF7F5
+        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 06:49:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F3A9C433C8;
+        Mon, 11 Sep 2023 13:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694440195;
+        bh=XW50/CMZK2XC6wE4ivUFndNOJ953cKnvY6VVNKnc1jc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KtYbPuZKMDbKYikdFCOud2nj6RpEofGWGo0L5WwO4rGwvd0BLJSxILga8VQPkNlqB
+         VVMtYNzHHboJlD8dCBpVPz/BdBkZkblpXzGZshyHTDRrQ3aN41iztqpv5/UbpMH/7F
+         KpLPBL1e0N/9Gxhdxl7g8uQL0KMDVgF2lnvJaABrLzDSF0G1iFSKZx1h5hkiPc68xe
+         bxB7zoB13ZYYs0dNhIchELk9VLHLwnP+bfkzeVQQbh8GpGbEUys5ayT3DfgG4L87dz
+         6EvV7ss2SSjKAnOLOGsvHC1N1phHU6ik93gDEMVRUwHZ7LT9G20Wjs4hNBXSyGFVHX
+         7IZloMAQdPT8g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B7E7CCE089A; Mon, 11 Sep 2023 06:49:54 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 06:49:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
+Subject: Re: [BUG] Random intermittent boost failures (Was Re: [BUG] TREE04..)
+Message-ID: <8abef7d3-db8f-4a18-a72d-d23c1adb310d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230910201445.GA1605059@google.com>
+ <a2518e2d-14ba-4965-8775-f6f3054b7522@paulmck-laptop>
+ <CAEXW_YRMQx8AGoshpW6xLGsmN4fZ34T3Xy5H1-iN8p2Ho5-jEg@mail.gmail.com>
+ <20230911022725.GA2542634@google.com>
+ <1f12ffe6-4cb0-4364-8c4c-3393ca5368c2@paulmck-laptop>
+ <20230911131730.GA2291108@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230911131730.GA2291108@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Use new APIs to dynamically allocate the rcu-lazy shrinker.
+On Mon, Sep 11, 2023 at 01:17:30PM +0000, Joel Fernandes wrote:
+> On Mon, Sep 11, 2023 at 01:16:21AM -0700, Paul E. McKenney wrote:
+> > On Mon, Sep 11, 2023 at 02:27:25AM +0000, Joel Fernandes wrote:
+> > > On Sun, Sep 10, 2023 at 07:37:13PM -0400, Joel Fernandes wrote:
+> > > > On Sun, Sep 10, 2023 at 5:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > >
+> > > > > On Sun, Sep 10, 2023 at 08:14:45PM +0000, Joel Fernandes wrote:
+> > > > [...]
+> > > > > > >  I have been running into another intermittent one as well which
+> > > > > > > is the boost failure and that happens once in 10-15 runs or so.
+> > > > > > >
+> > > > > > > I was thinking of running the following configuration on an automated
+> > > > > > > regular basis to at least provide a better clue on the lucky run that
+> > > > > > > catches an issue. But then the issue is it would change timing enough
+> > > > > > > to maybe hide bugs. I could also make it submit logs automatically to
+> > > > > > > the list on such occurrences, but one step at a time and all that.  I
+> > > > > > > do need to add (hopefully less noisy) tick/timer related trace events.
+> > > > > > >
+> > > > > > > # Define the bootargs array
+> > > > > > > bootargs=(
+> > > > > > >     "ftrace_dump_on_oops"
+> > > > > > >     "panic_on_warn=1"
+> > > > > > >     "sysctl.kernel.panic_on_rcu_stall=1"
+> > > > > > >     "sysctl.kernel.max_rcu_stall_to_panic=1"
+> > > > > > >     "trace_buf_size=10K"
+> > > > > > >     "traceoff_on_warning=1"
+> > > > > > >     "panic_print=0x1f"      # To dump held locks, mem and other info.
+> > > > > > > )
+> > > > > > > # Define the trace events array passed to bootargs.
+> > > > > > > trace_events=(
+> > > > > > >     "sched:sched_switch"
+> > > > > > >     "sched:sched_waking"
+> > > > > > >     "rcu:rcu_callback"
+> > > > > > >     "rcu:rcu_fqs"
+> > > > > > >     "rcu:rcu_quiescent_state_report"
+> > > > > > >     "rcu:rcu_grace_period"
+> > > > > > > )
+> > > > > >
+> > > > > > So some insight on this boost failure. Just before the boost failures are
+> > > > > > reported, I see the migration thread interferring with the rcu_preempt thread
+> > > > > > (aka GP kthread). See trace below. Of note is that the rcu_preempt thread is
+> > > > > > runnable while context switching, which means its execution is interferred.
+> > > > > > The rcu_preempt thread is at RT prio 2 as can be seen.
+> > > > > >
+> > > > > > So some open-ended questions: what exactly does the migration thread want,
+> > > > > > this is something related to CPU hotplug? And if the migration thread had to
+> > > > > > run, why did the rcu_preempt thread not get pushed to another CPU by the
+> > > > > > scheduler? We have 16 vCPUs for this test.
+> > > > >
+> > > > > Maybe we need a cpus_read_lock() before doing a given boost-test interval
+> > > > > and a cpus_read_unlock() after finishing one?  But much depends on
+> > > > > exactly what is starting those migration threads.
+> > > > 
+> > > > But in the field, a real RT task can preempt a reader without doing
+> > > > cpus_read_lock() and may run into a similar boost issue?
+> > 
+> > The sysctl_sched_rt_runtime should prevent a livelock in most
+> > configurations.  Here, rcutorture explicitly disables this.
+> 
+> I see. Though RT throttling will actually stall the rcu_preempt thread as
+> well in the real world. RT throttling is a bit broken and we're trying to fix
+> it in scheduler land. Even if there are idle CPUs, RT throttling will starve
+> not just the offending RT task, but all of them essentially causing a
+> priority inversion between running RT and CFS tasks.
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-CC: rcu@vger.kernel.org
----
- kernel/rcu/tree_nocb.h | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+Fair point.  But that requires that the offending runaway RT task hit both
+a reader and the grace-period kthread.  Keeping in mind that rcutorture
+is provisioning one runaway RT task per CPU, which in the real world is
+hopefully quite rare.  Hopefully.  ;-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 5598212d1f27..4efbf7333d4e 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1396,13 +1396,6 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 
- 	return count ? count : SHRINK_STOP;
- }
--
--static struct shrinker lazy_rcu_shrinker = {
--	.count_objects = lazy_rcu_shrink_count,
--	.scan_objects = lazy_rcu_shrink_scan,
--	.batch = 0,
--	.seeks = DEFAULT_SEEKS,
--};
- #endif // #ifdef CONFIG_RCU_LAZY
- 
- void __init rcu_init_nohz(void)
-@@ -1410,6 +1403,7 @@ void __init rcu_init_nohz(void)
- 	int cpu;
- 	struct rcu_data *rdp;
- 	const struct cpumask *cpumask = NULL;
-+	struct shrinker * __maybe_unused lazy_rcu_shrinker;
- 
- #if defined(CONFIG_NO_HZ_FULL)
- 	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-@@ -1436,8 +1430,15 @@ void __init rcu_init_nohz(void)
- 		return;
- 
- #ifdef CONFIG_RCU_LAZY
--	if (register_shrinker(&lazy_rcu_shrinker, "rcu-lazy"))
--		pr_err("Failed to register lazy_rcu shrinker!\n");
-+	lazy_rcu_shrinker = shrinker_alloc(0, "rcu-lazy");
-+	if (!lazy_rcu_shrinker) {
-+		pr_err("Failed to allocate lazy_rcu shrinker!\n");
-+	} else {
-+		lazy_rcu_shrinker->count_objects = lazy_rcu_shrink_count;
-+		lazy_rcu_shrinker->scan_objects = lazy_rcu_shrink_scan;
-+
-+		shrinker_register(lazy_rcu_shrinker);
-+	}
- #endif // #ifdef CONFIG_RCU_LAZY
- 
- 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
--- 
-2.30.2
+> > > > > Then again, TREE03 is pretty aggressive about doing CPU hotplug.
+> > > > 
+> > > > Ok. I put a trace_printk() in the stopper thread to see what the
+> > > > ->fn() is. I'm doing another run to see what falls out.
+> > > 
+> > > I think I am getting somewhere, It looks like the migration thread tries to
+> > > push the task out due to __balance_push_cpu_stop. Clearly it fails because
+> > > the rcu_preempt task is still on CPU 3. And the whole thing is live locked
+> > > retrying the same.
+> > > 
+> > > I am not sure if the migration thread is trying to migrate rcu_preempt
+> > > because the CPU is going down or because a higher priority RT task is
+> > > running.
+> > > 
+> > > rcu_pree-13        3d..4. 2936723336us : sched_waking: comm=migration/3 pid=34 prio=0 target_cpu=003
+> > > rcu_pree-13        3d..2. 2936723338us : sched_switch: prev_comm=rcu_preempt prev_pid=13 prev_prio=97 prev_state=R ==> next_comm=migration/3 next_pid=34 next_prio=0
+> > > migratio-34        3..... 2936723341us : cpu_stopper_thread: cpu_stop: caller=balance_push+0xc9/0x150 fn=__balance_push_cpu_stop+0x0/0x1c0 on cpu 3
+> > > migratio-34        3d..2. 2936723345us : sched_switch: prev_comm=migration/3 prev_pid=34 prev_prio=0 prev_state=S ==> next_comm=swapper/3 next_pid=0 next_prio=120
+> > > <idle>-0         3d..2. 2936723676us : sched_switch: prev_comm=swapper/3 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=rcu_preempt next_pid=13 next_prio=97
+> > > rcu_pree-13        3d..4. 2936723678us : sched_waking: comm=migration/3 pid=34 prio=0 target_cpu=003
+> > > rcu_pree-13        3d..2. 2936723680us : sched_switch: prev_comm=rcu_preempt prev_pid=13 prev_prio=97 prev_state=R ==> next_comm=migration/3 next_pid=34 next_prio=0
+> > > migratio-34        3..... 2936723683us : cpu_stopper_thread: cpu_stop: caller=balance_push+0xc9/0x150 fn=__balance_push_cpu_stop+0x0/0x1c0 on cpu 3
+> > > 
+> > > I am digging deeper to see why the rcu_preempt thread cannot be pushed out
+> > > and then I'll also look at why is it being pushed out in the first place.
+> > > 
+> > > At least I have a strong repro now running 5 instances of TREE03 in parallel
+> > > for several hours.
+> > 
+> > Very good!  Then why not boot with rcutorture.onoff_interval=0 and see if
+> > the problem still occurs?  If yes, then there is definitely some reason
+> > other than CPU hotplug that makes this happen.
+> 
+> Sure, I'll do this now. If that disappears, I'll do the cpu_read_lock()
+> suggestion you mentioned. IMHO this is increasingly looking like a scheduling
+> issue with RT and too many RT tasks running at the same time where the
+> rcu_preempt thread migrates around looking for a CPU than it does any work.
+> 
+> Today morning's traces show that __balance_push_cpu_stop() actually
+> successfully moves the rcu_preempt task out of the CPU. But a few ms later,
+> it is back on the same CPU again only to have the migration thread try to
+> move it out again. Maybe the cpuhp threads are fighting with it. There's also
+> all the rcutorture boost kthreads that are all running at the same time
+> during the failure but those are lower priority than the rcu_preempt thread
+> in this test.
+> 
+> Also I am switching to some day job things while the onoff_interval=0 test
+> runs, thanks a lot Paul for your help!  I'll continue to look at this as I
+> can.
 
+Sounds like good progress!  Please let me know how it goes!!!
+
+							Thanx, Paul
