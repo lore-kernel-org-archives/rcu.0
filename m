@@ -2,151 +2,83 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75C75CA0EDF
-	for <rcu@archiver.kernel.org>; Mon, 11 Sep 2023 22:00:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78000CA0ECE
+	for <rcu@archiver.kernel.org>; Tue, 12 Sep 2023 04:17:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240806AbjIKV6r (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 11 Sep 2023 17:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
+        id S230490AbjILERF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 12 Sep 2023 00:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242778AbjIKQSd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:18:33 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBCFCC3
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 09:18:29 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso75802621fa.1
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 09:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694449107; x=1695053907; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VxqkzXGdJRSSdKxmHrLYYUfH6sMkTrkETk9cQkFIOkI=;
-        b=v+NYd/JPusmqByEtgvSocOIoJNDWBN92Orz/me+deUq56N/OMdJKbWmHvkgJRb8gsy
-         XenBA7PnndeK4wxFtlSC4x4Zx/SbsU3au0gfG2f1Fjd7Ma/nhVNqcPp3kQzxib/uabIb
-         s5ynKunEJv5vLJOkBE5Mv57rmgFrN1lj7bKNI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694449107; x=1695053907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VxqkzXGdJRSSdKxmHrLYYUfH6sMkTrkETk9cQkFIOkI=;
-        b=YEcEFwXGsmP9akvZBsCTM/ERiSrQXAZK12pMr9aQvbvlNH4xoAovjlhuM1OvP3r+p4
-         Cl7MJNDKa28ThwWLYE9D/3Bk37e/RNwuHBfLQGCNXKNVeP/1HsGiLO+arEMZNOTyL8Lb
-         Jw7hoZkJTmMPtEAyJRsnIPM7zsfbujGmYObo5dQRknS5OATov/diePB5b01NGmepCu3N
-         CyZ0+0iR/HYEoBS5coKeqkD3OMzs6NznRKLR/uhV80q3c0nlhOJ0Uohb4PS5klpuSwrz
-         o3eHKyINhxBPTbLdVHGanPR/S6s3VtfvhiwG+sMGGV6UwHzJWWbPGcRLPFIRpZaF4WkD
-         kCZw==
-X-Gm-Message-State: AOJu0YyYVI4uInhiH5suNHmPg9MKE6USHydFvR01EIMP7l1pLu/1JZEu
-        8lxayKLxHY/gtayE5snDg7Duq5ZIXF4LwDaxxxR2Zg==
-X-Google-Smtp-Source: AGHT+IFZvmefUkG8Hg5A3gLjEuzm9CK876JACqnLSYrJQofROH+X81JIX6p/UzD1F3pmKCXk/x9sILhiqlv9AjEwvCA=
-X-Received: by 2002:a05:651c:1994:b0:2bf:789e:b5dd with SMTP id
- bx20-20020a05651c199400b002bf789eb5ddmr6647548ljb.53.1694449107110; Mon, 11
- Sep 2023 09:18:27 -0700 (PDT)
+        with ESMTP id S234051AbjILEQy (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 12 Sep 2023 00:16:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E08222635
+        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 19:07:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C455C433BB;
+        Mon, 11 Sep 2023 21:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694467400;
+        bh=c8Lxf1xjedd4q1/EQup3iByFiSaU3t2orukkeNNSk88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dvASHrQWhd4gQujWdVz9Em06/9NvrQcIkqpW8xoLXUZ15pf2B3H6ASM1ZMMWfwnAW
+         3qQ33D11ZbCIYEu6clpbUUc9mWXJlGqMlSccSLdIT72l+zX3X5BnEtvVEo/l5mYpsF
+         5lwpvZDAQiWBEfSqOG2kEHqGI/z7/tMSi1rxcsRgmVRgphFwI5JEmh/97nK40FqhAB
+         u++BEFqABPXT76GpEbinEEV5mMROxCBg4ty+9OZWMd25kD7I+aqpfcxRHhZzivKoSQ
+         OrC1m+MXPmvbbVCUJfa0ICYFfFFRhIP+IxnY0JTRW8CF+PeXQyAx6KjmLR4A263U+d
+         kbdDLajPODTuw==
+Date:   Mon, 11 Sep 2023 23:23:17 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>
+Subject: Re: [BUG] NOHZ tick-stop error: local softirq work is pending
+Message-ID: <ZP-FRbgjye3evLbt@localhost.localdomain>
+References: <CAEXW_YTMCsaaZtyG46tjLv6En7Br0J6SD3WuLCZGhF=tSva26g@mail.gmail.com>
+ <4673a906-1baa-41cf-8fd3-7d28fdd0a820@paulmck-laptop>
+ <ZP4mRzlA4uCs6-Tk@localhost.localdomain>
+ <20230910230209.GA1832306@google.com>
 MIME-Version: 1.0
-References: <20230910201445.GA1605059@google.com> <a2518e2d-14ba-4965-8775-f6f3054b7522@paulmck-laptop>
- <CAEXW_YRMQx8AGoshpW6xLGsmN4fZ34T3Xy5H1-iN8p2Ho5-jEg@mail.gmail.com>
- <20230911022725.GA2542634@google.com> <1f12ffe6-4cb0-4364-8c4c-3393ca5368c2@paulmck-laptop>
- <20230911131730.GA2291108@google.com> <8abef7d3-db8f-4a18-a72d-d23c1adb310d@paulmck-laptop>
-In-Reply-To: <8abef7d3-db8f-4a18-a72d-d23c1adb310d@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 11 Sep 2023 12:18:16 -0400
-Message-ID: <CAEXW_YSoy38WOxySWn=n_bx=T9MdBsRTx2myuRohm2h70ac9Gg@mail.gmail.com>
-Subject: Re: [BUG] Random intermittent boost failures (Was Re: [BUG] TREE04..)
-To:     paulmck@kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230910230209.GA1832306@google.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 9:49=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Mon, Sep 11, 2023 at 01:17:30PM +0000, Joel Fernandes wrote:
-> > On Mon, Sep 11, 2023 at 01:16:21AM -0700, Paul E. McKenney wrote:
-> > > On Mon, Sep 11, 2023 at 02:27:25AM +0000, Joel Fernandes wrote:
-> > > > On Sun, Sep 10, 2023 at 07:37:13PM -0400, Joel Fernandes wrote:
-> > > > > On Sun, Sep 10, 2023 at 5:16=E2=80=AFPM Paul E. McKenney <paulmck=
-@kernel.org> wrote:
-> > > > > >
-> > > > > > On Sun, Sep 10, 2023 at 08:14:45PM +0000, Joel Fernandes wrote:
-> > > > > [...]
-> > > > > > > >  I have been running into another intermittent one as well =
-which
-> > > > > > > > is the boost failure and that happens once in 10-15 runs or=
- so.
-> > > > > > > >
-> > > > > > > > I was thinking of running the following configuration on an=
- automated
-> > > > > > > > regular basis to at least provide a better clue on the luck=
-y run that
-> > > > > > > > catches an issue. But then the issue is it would change tim=
-ing enough
-> > > > > > > > to maybe hide bugs. I could also make it submit logs automa=
-tically to
-> > > > > > > > the list on such occurrences, but one step at a time and al=
-l that.  I
-> > > > > > > > do need to add (hopefully less noisy) tick/timer related tr=
-ace events.
-> > > > > > > >
-> > > > > > > > # Define the bootargs array
-> > > > > > > > bootargs=3D(
-[...]
-> > > > > > > So some insight on this boost failure. Just before the boost =
-failures are
-> > > > > > > reported, I see the migration thread interferring with the rc=
-u_preempt thread
-> > > > > > > (aka GP kthread). See trace below. Of note is that the rcu_pr=
-eempt thread is
-> > > > > > > runnable while context switching, which means its execution i=
-s interferred.
-> > > > > > > The rcu_preempt thread is at RT prio 2 as can be seen.
-> > > > > > >
-> > > > > > > So some open-ended questions: what exactly does the migration=
- thread want,
-> > > > > > > this is something related to CPU hotplug? And if the migratio=
-n thread had to
-> > > > > > > run, why did the rcu_preempt thread not get pushed to another=
- CPU by the
-> > > > > > > scheduler? We have 16 vCPUs for this test.
-> > > > > >
-> > > > > > Maybe we need a cpus_read_lock() before doing a given boost-tes=
-t interval
-> > > > > > and a cpus_read_unlock() after finishing one?  But much depends=
- on
-> > > > > > exactly what is starting those migration threads.
-> > > > >
-> > > > > But in the field, a real RT task can preempt a reader without doi=
-ng
-> > > > > cpus_read_lock() and may run into a similar boost issue?
-> > >
-> > > The sysctl_sched_rt_runtime should prevent a livelock in most
-> > > configurations.  Here, rcutorture explicitly disables this.
-> >
-> > I see. Though RT throttling will actually stall the rcu_preempt thread =
-as
-> > well in the real world. RT throttling is a bit broken and we're trying =
-to fix
-> > it in scheduler land. Even if there are idle CPUs, RT throttling will s=
-tarve
-> > not just the offending RT task, but all of them essentially causing a
-> > priority inversion between running RT and CFS tasks.
->
-> Fair point.  But that requires that the offending runaway RT task hit bot=
-h
-> a reader and the grace-period kthread.  Keeping in mind that rcutorture
-> is provisioning one runaway RT task per CPU, which in the real world is
-> hopefully quite rare.  Hopefully.  ;-)
+Le Sun, Sep 10, 2023 at 11:02:09PM +0000, Joel Fernandes a écrit :
+> On Sun, Sep 10, 2023 at 10:25:43PM +0200, Frederic Weisbecker wrote:
+> > Le Sun, Sep 10, 2023 at 03:21:33AM -0700, Paul E. McKenney a écrit :
+> > > On Sat, Sep 09, 2023 at 10:28:36PM -0400, Joel Fernandes wrote:
+> > > > Hi Paul, Frederic, ever since this recent patch got merged into all
+> > > > recent stables:
+> > > > https://lore.kernel.org/all/20230818200757.1808398-1-paul.gortmaker@windriver.com/
+> > > >  ..
+> > > > 
+> > > > .. I am seeing this happen a lot now causing rcutorture failures:
+> > > > "NOHZ tick-stop error: local softirq work is pending"
+> > > > 
+> > > > It looks like the "tick-stop error" as local_bh_blocked always returns
+> > > > false on !PREEMPT_RT, so that patch itself seems correct.
+> > > > 
+> > > > However, it appears the string in console-badness.sh is different:
+> > > > 
+> > > > console-badness.sh:grep -v 'NOHZ tick-stop error: Non-RCU local
+> > > > softirq work is pending, handler'
+> > > > 
+> > > > So the string in the script needs an update?
+> > > 
+> > > Looks like it, though I believe that there is a fix in the offing,
+> > > at which point that "grep -v" should just be removed.  Depending on
+> > > timing, of course.
+> > 
+> > Yep I have a pending fix for that, will post soonish. The grep will still
+> > make sense afterward though.
+> 
+> I was wondering why the grep -v will still make sense if the pending fix
+> works. Or is there another legitimate reason for the string to appear?
 
-You are right, I exaggerated a bit. Indeed in the real world, RT
-throttling can cause a prio inversion with CFS only if all other CPUs
-are also RT throttled. Otherwise it tries to migrate the RT task to
-another CPU. That's a very great point.
+Because my fix will only take out (hr)timer softirqs out of the report. The
+others will still be considered buggy if pending while the CPU goes down.
+Anyway, cooking the timer patchset to post.
 
-> Sounds like good progress!  Please let me know how it goes!!!
-
-Thanks! Will do,
-
- - Joel
+Thanks.
