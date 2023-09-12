@@ -2,83 +2,140 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78000CA0ECE
-	for <rcu@archiver.kernel.org>; Tue, 12 Sep 2023 04:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09A04CA0ECA
+	for <rcu@archiver.kernel.org>; Tue, 12 Sep 2023 07:30:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbjILERF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 12 Sep 2023 00:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        id S229981AbjILHa5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 12 Sep 2023 03:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234051AbjILEQy (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 12 Sep 2023 00:16:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E08222635
-        for <rcu@vger.kernel.org>; Mon, 11 Sep 2023 19:07:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C455C433BB;
-        Mon, 11 Sep 2023 21:23:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694467400;
-        bh=c8Lxf1xjedd4q1/EQup3iByFiSaU3t2orukkeNNSk88=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dvASHrQWhd4gQujWdVz9Em06/9NvrQcIkqpW8xoLXUZ15pf2B3H6ASM1ZMMWfwnAW
-         3qQ33D11ZbCIYEu6clpbUUc9mWXJlGqMlSccSLdIT72l+zX3X5BnEtvVEo/l5mYpsF
-         5lwpvZDAQiWBEfSqOG2kEHqGI/z7/tMSi1rxcsRgmVRgphFwI5JEmh/97nK40FqhAB
-         u++BEFqABPXT76GpEbinEEV5mMROxCBg4ty+9OZWMd25kD7I+aqpfcxRHhZzivKoSQ
-         OrC1m+MXPmvbbVCUJfa0ICYFfFFRhIP+IxnY0JTRW8CF+PeXQyAx6KjmLR4A263U+d
-         kbdDLajPODTuw==
-Date:   Mon, 11 Sep 2023 23:23:17 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>
-Subject: Re: [BUG] NOHZ tick-stop error: local softirq work is pending
-Message-ID: <ZP-FRbgjye3evLbt@localhost.localdomain>
-References: <CAEXW_YTMCsaaZtyG46tjLv6En7Br0J6SD3WuLCZGhF=tSva26g@mail.gmail.com>
- <4673a906-1baa-41cf-8fd3-7d28fdd0a820@paulmck-laptop>
- <ZP4mRzlA4uCs6-Tk@localhost.localdomain>
- <20230910230209.GA1832306@google.com>
+        with ESMTP id S229766AbjILHa4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 12 Sep 2023 03:30:56 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAD8B9;
+        Tue, 12 Sep 2023 00:30:52 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so8985464e87.1;
+        Tue, 12 Sep 2023 00:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694503851; x=1695108651; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9TtWYBN3Js8MaUa6ket6IpV+Bas2UrWYZ7r9GmcPHzk=;
+        b=hfrgKc2d/H+2ZgjCxefyl2sIKXbzgm82nTyZkli6YkCg4OgM6QxNfia8EQXQ63ds7s
+         RJTAyUCJ7VdaDV7ff6djKs7rhs7S5ruCz8hIjFW7gZHq9FLSC/D3oCWYXcre4HbFbXD2
+         ZhuQFKIWjVjHffh1Ne4359y9XmtB6OFBitFp8ihcDyncPueAci/4w72vkHF3SUi0fAtR
+         XtEdpmJIGKWDZuHSNewV1SZyIIMqFmqLCZUJ3WCC+XDwdVHfpQ10oYEkUm+8VgPE481l
+         GxAO8/O2/utRE+Q5zVwe8lauG15FDyeGrfCbNw9/aB7P30BeAFzRSlBnxKpyzjQ6iZQV
+         SpNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694503851; x=1695108651;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9TtWYBN3Js8MaUa6ket6IpV+Bas2UrWYZ7r9GmcPHzk=;
+        b=wXrPmXOwUMGtpwdS7WEj95yQlPRtJC+jv9gINOIqe+HhInojcJQhX+dy80lG7B81tg
+         gX7aAoyLhg/nf1Vu2l4kxslrFA1iqgfo1R42wDcyeqeqJO6Ayfo5syaIxVvSHg9+ncns
+         q2a9acx8aIwV8MDMw3j3JOmNA4r8o9z5O9LhjnghnalyOQ6KKQAJpQmwk5zXKVHuAu9F
+         /OQNYQjvyeRZWofXDtcVvOV6NRcn+634B49n9T2aSKaVy4frdAAyNlqvY1VXIccmQ8V/
+         uUKu1LAwT3XvN45gQWVDp67sDRHGE9try4YQQX6aqKgxHAqXe8CIOprDBNYUVPwmc63C
+         oaNQ==
+X-Gm-Message-State: AOJu0YxDtR37cBofQ05yjSJ4Zl++RkYn5g5CjW6RJ6jXaKfYgTbs1csG
+        rFkgfwKnwULrChww6A6W5VI=
+X-Google-Smtp-Source: AGHT+IFRU1BCT1/fxyolNXviRB2kjmrF3gbcVkz2ZdPqlwGiM/W8fLNYBMB1va+dE1XIWrPYf8LuHQ==
+X-Received: by 2002:a05:6512:15a3:b0:4fb:7cea:882a with SMTP id bp35-20020a05651215a300b004fb7cea882amr11611840lfb.3.1694503850597;
+        Tue, 12 Sep 2023 00:30:50 -0700 (PDT)
+Received: from pc636 ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id d25-20020ac244d9000000b004ff947bea2asm1653864lfm.54.2023.09.12.00.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 00:30:50 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 12 Sep 2023 09:30:47 +0200
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Muchun Song <songmuchun@bytedance.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH v6 16/45] rcu: dynamically allocate the rcu-kfree shrinker
+Message-ID: <ZQATp6yFd/GXY9hN@pc636>
+References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
+ <20230911094444.68966-17-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230910230209.GA1832306@google.com>
+In-Reply-To: <20230911094444.68966-17-zhengqi.arch@bytedance.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Sun, Sep 10, 2023 at 11:02:09PM +0000, Joel Fernandes a écrit :
-> On Sun, Sep 10, 2023 at 10:25:43PM +0200, Frederic Weisbecker wrote:
-> > Le Sun, Sep 10, 2023 at 03:21:33AM -0700, Paul E. McKenney a écrit :
-> > > On Sat, Sep 09, 2023 at 10:28:36PM -0400, Joel Fernandes wrote:
-> > > > Hi Paul, Frederic, ever since this recent patch got merged into all
-> > > > recent stables:
-> > > > https://lore.kernel.org/all/20230818200757.1808398-1-paul.gortmaker@windriver.com/
-> > > >  ..
-> > > > 
-> > > > .. I am seeing this happen a lot now causing rcutorture failures:
-> > > > "NOHZ tick-stop error: local softirq work is pending"
-> > > > 
-> > > > It looks like the "tick-stop error" as local_bh_blocked always returns
-> > > > false on !PREEMPT_RT, so that patch itself seems correct.
-> > > > 
-> > > > However, it appears the string in console-badness.sh is different:
-> > > > 
-> > > > console-badness.sh:grep -v 'NOHZ tick-stop error: Non-RCU local
-> > > > softirq work is pending, handler'
-> > > > 
-> > > > So the string in the script needs an update?
-> > > 
-> > > Looks like it, though I believe that there is a fix in the offing,
-> > > at which point that "grep -v" should just be removed.  Depending on
-> > > timing, of course.
-> > 
-> > Yep I have a pending fix for that, will post soonish. The grep will still
-> > make sense afterward though.
+On Mon, Sep 11, 2023 at 05:44:15PM +0800, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the rcu-kfree shrinker.
 > 
-> I was wondering why the grep -v will still make sense if the pending fix
-> works. Or is there another legitimate reason for the string to appear?
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> CC: rcu@vger.kernel.org
+> ---
+>  kernel/rcu/tree.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index cb1caefa8bd0..06e2ed495c02 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3449,13 +3449,6 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  	return freed == 0 ? SHRINK_STOP : freed;
+>  }
+>  
+> -static struct shrinker kfree_rcu_shrinker = {
+> -	.count_objects = kfree_rcu_shrink_count,
+> -	.scan_objects = kfree_rcu_shrink_scan,
+> -	.batch = 0,
+> -	.seeks = DEFAULT_SEEKS,
+> -};
+> -
+>  void __init kfree_rcu_scheduler_running(void)
+>  {
+>  	int cpu;
+> @@ -4931,6 +4924,7 @@ static void __init kfree_rcu_batch_init(void)
+>  {
+>  	int cpu;
+>  	int i, j;
+> +	struct shrinker *kfree_rcu_shrinker;
+>  
+>  	/* Clamp it to [0:100] seconds interval. */
+>  	if (rcu_delay_page_cache_fill_msec < 0 ||
+> @@ -4962,8 +4956,17 @@ static void __init kfree_rcu_batch_init(void)
+>  		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+>  		krcp->initialized = true;
+>  	}
+> -	if (register_shrinker(&kfree_rcu_shrinker, "rcu-kfree"))
+> -		pr_err("Failed to register kfree_rcu() shrinker!\n");
+> +
+> +	kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
+> +	if (!kfree_rcu_shrinker) {
+> +		pr_err("Failed to allocate kfree_rcu() shrinker!\n");
+> +		return;
+> +	}
+> +
+> +	kfree_rcu_shrinker->count_objects = kfree_rcu_shrink_count;
+> +	kfree_rcu_shrinker->scan_objects = kfree_rcu_shrink_scan;
+> +
+> +	shrinker_register(kfree_rcu_shrinker);
+>  }
+>  
+>  void __init rcu_init(void)
+> -- 
+> 2.30.2
+> 
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Because my fix will only take out (hr)timer softirqs out of the report. The
-others will still be considered buggy if pending while the CPU goes down.
-Anyway, cooking the timer patchset to post.
+Makes sense to me. Thank you for improving it.
 
-Thanks.
+--
+Uladzislau Rezki
