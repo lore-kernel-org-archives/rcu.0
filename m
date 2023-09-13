@@ -2,160 +2,93 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEA4BCA0ECA
-	for <rcu@archiver.kernel.org>; Tue, 12 Sep 2023 13:34:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E804AEE020C
+	for <rcu@archiver.kernel.org>; Wed, 13 Sep 2023 20:30:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbjILNeD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 12 Sep 2023 09:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
+        id S232101AbjIMUal (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 13 Sep 2023 16:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235503AbjILNdw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:33:52 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D903A1FFF
-        for <rcu@vger.kernel.org>; Tue, 12 Sep 2023 06:32:58 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-76dc77fd024so355556185a.3
-        for <rcu@vger.kernel.org>; Tue, 12 Sep 2023 06:32:58 -0700 (PDT)
+        with ESMTP id S231648AbjIMUak (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 13 Sep 2023 16:30:40 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD01A170F
+        for <rcu@vger.kernel.org>; Wed, 13 Sep 2023 13:30:35 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bf78950354so3606711fa.1
+        for <rcu@vger.kernel.org>; Wed, 13 Sep 2023 13:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1694525578; x=1695130378; darn=vger.kernel.org;
-        h=to:references:message-id:date:cc:in-reply-to:from:subject
-         :mime-version:content-transfer-encoding:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1694637034; x=1695241834; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=svmbrtqWlENrRfjFLkk8+XzIqzX9R6UBCXGlZ2j0y4U=;
-        b=STqINg1Bp3Dt3huRvyxqS8cTEdTqba814q1oe78CwMuMwNgY6oyPPO5DIckuhTv1ju
-         fqIT00I/oDghb8xFp5wCpxdkxkt/NjU1BbeLmDU90QIOUFEc1xmICUo7QW1P6LePtW/O
-         o32axdlGZhric9VfMCSukFEFhIJ1HRANk4NN4=
+        bh=Cm9W9+MOPpsrXLX2zq8bB4NC8aKbORqa0kjC5pLMzHU=;
+        b=X5ws/RRaL+neEyZVMOSCp6CPnWm/mfdtdyVgIK55LGncGqaUWICfiInBFiAzInjhYd
+         5YBlcuP5zMfmVM4WJI7UBoI9FpnUZ9rCwWytjpafp8Pe20QICubd1EiuZAPyYucMypAV
+         S6hoSdHfHVLrvZD6VQX1V1xICHDX0Nnd6NBm0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694525578; x=1695130378;
-        h=to:references:message-id:date:cc:in-reply-to:from:subject
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=svmbrtqWlENrRfjFLkk8+XzIqzX9R6UBCXGlZ2j0y4U=;
-        b=l9/enImyNeucQElEq9X22r4Gki8P9dDHQ4sU1ZvIAvlwA+cIN5um2modf6PveYoaI/
-         vbk7q+xAIOtm5PtlygDYJg/3V8AKjFKDU3t1hd2Ka8Pzw258C4+RsE0y/zlvdZZT56pM
-         S9JlM4/xrRft5EbEHf5QbA+WYeHj3rKcuYtwn8KZsW+KaKFgWNpDc1N1ritods/c62yF
-         2UaMI4Y9uXR/XPrmMh1xKhpanHr6TWHoaAzRIpB0C5WAwiHHpkF02rQsEf+IDRYK1cpB
-         RI+fkTOuUkTMDMBmQ4w3lF5g3pelt9q850FnrnOtxKcmKmuklVJqDctleI7HkKzlgeDh
-         P7Cw==
-X-Gm-Message-State: AOJu0YxNySkJHb1daRWM2UqavkQYv1AADtHq4fQInpm2eZR0S7Y8xAte
-        DklvIKDvTfgVvxtan+fdrhkIsA==
-X-Google-Smtp-Source: AGHT+IEWmiZ0EGY1O/9xetI5jQSsVfvw8K2frb4QEsfc2ct2W79miQrJDwoAIrb/amscRDLXZA6ZgQ==
-X-Received: by 2002:a05:620a:19a7:b0:76e:fd91:5f6f with SMTP id bm39-20020a05620a19a700b0076efd915f6fmr14641824qkb.37.1694525577897;
-        Tue, 12 Sep 2023 06:32:57 -0700 (PDT)
-Received: from smtpclient.apple ([45.88.220.69])
-        by smtp.gmail.com with ESMTPSA id pj24-20020a05620a1d9800b0076e1e2d6496sm3203685qkn.104.2023.09.12.06.32.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 06:32:56 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: Re: kmemleak handling of kfree_rcu
+        d=1e100.net; s=20230601; t=1694637034; x=1695241834;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cm9W9+MOPpsrXLX2zq8bB4NC8aKbORqa0kjC5pLMzHU=;
+        b=pT+O3qBXCX8NR8uugK6mdz+++IjnLvZx+uLJgERTpW8ueu6Fc+il4DO7HhwcKEyXCn
+         ecuOAFAmfR4PvxKxKOeBbSjt+9i93zXgZCg1XWSHvfVZDPzriYYaxUoAVNkSriO13seV
+         J0tA+OZ+9iPh1EjfEbAdan66eaT4q+sI4HUKJNbbYg9zcNVgjVjhRJ23ry7n2m36r3ew
+         wFUtBWocvZ2Ewj+4xwsqu+E8gt1+MC0i1mCXwE3v6+HYxkEpp9QK1H5k/vgyXfmhitWf
+         g7GDuF1JN9UuJXMtxMGv7G2WxRaMTsBmWTSZ3Ky9CAPuxXefH+Eg3X5WCtbVyMN96r71
+         TXDQ==
+X-Gm-Message-State: AOJu0YzAl85APWu7l2kZbaCgTWss4KgTzyRVGWbsXoqQUTi/904/u40f
+        PVO1r8v/CkslWuBhpw3pC3hdLidopDcQi9hc8eMdKQ==
+X-Google-Smtp-Source: AGHT+IGfpwVx3aDNVu5TXqQqy6KFi9TGSSVydc9fdXPB3vlgvyyUzGhiQl2qGP3tNqhp5bNlIO6alBgBd/AGTyz1sX8=
+X-Received: by 2002:a2e:948a:0:b0:2b9:b4eb:c39c with SMTP id
+ c10-20020a2e948a000000b002b9b4ebc39cmr2824889ljh.8.1694637031032; Wed, 13 Sep
+ 2023 13:30:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230910201445.GA1605059@google.com> <a2518e2d-14ba-4965-8775-f6f3054b7522@paulmck-laptop>
+ <CAEXW_YRMQx8AGoshpW6xLGsmN4fZ34T3Xy5H1-iN8p2Ho5-jEg@mail.gmail.com>
+ <20230911022725.GA2542634@google.com> <1f12ffe6-4cb0-4364-8c4c-3393ca5368c2@paulmck-laptop>
+In-Reply-To: <1f12ffe6-4cb0-4364-8c4c-3393ca5368c2@paulmck-laptop>
 From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <6bd9f6cc-84d0-4f6a-bfd7-912dcb8e476a@tessares.net>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Paasch <cpaasch@apple.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        MPTCP Upstream <mptcp@lists.linux.dev>, rcu@vger.kernel.org
-Date:   Tue, 12 Sep 2023 09:32:46 -0400
-Message-Id: <5FAC49DB-0849-4F83-9802-571E62819ACC@joelfernandes.org>
-References: <6bd9f6cc-84d0-4f6a-bfd7-912dcb8e476a@tessares.net>
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-X-Mailer: iPhone Mail (20B101)
+Date:   Wed, 13 Sep 2023 16:30:20 -0400
+Message-ID: <CAEXW_YQpgjXexpHfGGJS5_VoVUvb+ZXp7pkOdm8NGo+Z4iJAKA@mail.gmail.com>
+Subject: Re: [BUG] Random intermittent boost failures (Was Re: [BUG] TREE04..)
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
+On Mon, Sep 11, 2023 at 4:16=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+[..]
+> > I am digging deeper to see why the rcu_preempt thread cannot be pushed =
+out
+> > and then I'll also look at why is it being pushed out in the first plac=
+e.
+> >
+> > At least I have a strong repro now running 5 instances of TREE03 in par=
+allel
+> > for several hours.
+>
+> Very good!  Then why not boot with rcutorture.onoff_interval=3D0 and see =
+if
+> the problem still occurs?  If yes, then there is definitely some reason
+> other than CPU hotplug that makes this happen.
 
+Hi Paul,
+So looks so far like onoff_interval=3D0 makes the issue disappear. So
+likely hotplug related. I am ok with doing the cpus_read_lock during
+boost testing and seeing if that fixes it. If it does, I can move on
+to the next thing in my backlog.
 
-> On Sep 12, 2023, at 9:15 AM, Matthieu Baerts <matthieu.baerts@tessares.net=
-> wrote:
-> =EF=BB=BFHi Catalin,
->=20
-> On 06/09/2023 19:15, Catalin Marinas wrote:
->=20
-> (...)
->=20
->> I had a patch already but got distracted by a few (real) leaks reported
->> while testing it. Feel free to pick it up and change _ignore to
->> _not_leak if you find that more suitable. Well, it would be good for
->> Christoph to test it as I haven't managed to reproduce the false
->> positive.
->=20
-> Thank you for the patch!
->=20
->> ----------------------8<--------------------------
->> =46rom b25350cb6f8a906a6164b625bfd57021190cb105 Mon Sep 17 00:00:00 2001
->> From: Catalin Marinas <catalin.marinas@arm.com>
->> Date: Wed, 6 Sep 2023 17:52:45 +0100
->> Subject: [PATCH] rcu: kmemleak: Ignore kmemleak false positives when
->> RCU-freeing objects
->>=20
->> Since the actual slab freeing is deferred when calling kvfree_rcu(), so
->> is the kmemleak_free() callback informing kmemleak of the object
->> deletion. =46rom the perspective of the kvfree_rcu() caller, the object i=
-s
->> freed and it may remove any references to it. Since kmemleak does not
->> scan the tree RCU internal data storing the pointer, it will report such
->> objects as leaks during the grace period.
->>=20
->> Tell kmemleak to ignore such objects on the kvfree_call_rcu() path. Note
->> that the tiny RCU implementation does not have such issue since the
->> objects can be tracked from the rcu_ctrlblk structure.
->>=20
->> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
->> Reported-by: Christoph Paasch <cpaasch@apple.com>
->> ---
->> kernel/rcu/tree.c | 9 +++++++++
->> 1 file changed, 9 insertions(+)
->>=20
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index cb1caefa8bd0..2ac39b5705df 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -31,6 +31,7 @@
->> #include <linux/bitops.h>
->> #include <linux/export.h>
->> #include <linux/completion.h>
->> +#include <linux/kmemleak.h>
->> #include <linux/moduleparam.h>
->> #include <linux/panic.h>
->> #include <linux/panic_notifier.h>
->> @@ -3388,6 +3389,14 @@ void kvfree_call_rcu(struct rcu_head *head, void *=
-ptr)
->>        success =3D true;
->>    }
->>=20
->> +    /*
->> +     * The kvfree_rcu() caller considers the pointer freed at this point=
+What do you think? Or should I spend more time root-causing it? It is
+most like runaway RT threads combined with the CPU hotplug threads,
+making scheduling of the rcu_preempt thread not happen. But I can't
+say for sure without more/better tracing (Speaking of better tracing,
+I am adding core-dump support to rcutorture, but it is not there yet).
 
->> +     * and likely removes any references to it. Since the the actual sla=
-b
->=20
-> Just in case you didn't send this patch, checkpatch.pl noticed that the
-> word "the" was repeated in the comment here above ("Since the the actual")=
-.
-
-Sounds like you detected a leak in the word the. :-)
-
-(Sorry could not resist).
+thanks,
 
  - Joel
-
-
->=20
-> Cheers,
-> Matt
->=20
->> +     * freeing (and kmemleak_free()) is deferred, tell kmemleak to ignor=
-e
->> +     * this object (no scanning or false positives reporting).
->> +     */
->> +    kmemleak_ignore(ptr);
->> +
->>    // Set timer to drain after KFREE_DRAIN_JIFFIES.
->>    if (rcu_scheduler_active =3D=3D RCU_SCHEDULER_RUNNING)
->>        schedule_delayed_monitor_work(krcp);
->=20
-> --=20
-> Tessares | Belgium | Hybrid Access Solutions
-> www.tessares.net
