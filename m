@@ -2,125 +2,162 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4260CCE79A9
-	for <rcu@archiver.kernel.org>; Tue, 19 Sep 2023 19:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAF6ACE79A8
+	for <rcu@archiver.kernel.org>; Tue, 19 Sep 2023 23:09:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbjISTtY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Sep 2023 15:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S233253AbjISXJQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 19 Sep 2023 19:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233023AbjISTtW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Sep 2023 15:49:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774658F
-        for <rcu@vger.kernel.org>; Tue, 19 Sep 2023 12:48:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695152915;
+        with ESMTP id S229853AbjISXJP (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 19 Sep 2023 19:09:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7081C5;
+        Tue, 19 Sep 2023 16:09:09 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695164945;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=JECWNYIgvDcn1uBT/2hzcwjhsT52lJUN8GmMJpDdnx8=;
-        b=ZCU50j2GupRCQM7aYWl9ijrdvuZZKhiu6Umju8eYwo0QuO82pz1EZKxj3OMs4jA7kLBmkK
-        W8FP6KKvdMjANf+cJtqAUQyPSow01B4KjkAMpsjx7ik/fGqfnd8xGd3JBq9Cs53+OoE/23
-        w6WvFfd1P5CZUlcJRNV/AQ+vMS1cerQ=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-300-YUoXb8yNPYCDOmqkDgCstA-1; Tue, 19 Sep 2023 15:48:33 -0400
-X-MC-Unique: YUoXb8yNPYCDOmqkDgCstA-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-502d8606cebso1385204e87.1
-        for <rcu@vger.kernel.org>; Tue, 19 Sep 2023 12:48:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695152912; x=1695757712;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JECWNYIgvDcn1uBT/2hzcwjhsT52lJUN8GmMJpDdnx8=;
-        b=eR6mIxEcKCWpBW1arepRwcr/jP8KnMuwVM7g4bmCyh8O9zF+XX09+MrNjWbqG8pcpj
-         m6IJ7B2WQGZe9HXsB7ZEIxkjyVFf9K1W1F9uGgNgwWfQyBnirIie+P85wOvzOLG2LQ35
-         IoEjgnVzLaV86eMzOm5vQPtZJJA7/1vcIaWl3jNZOpgd1Kp+O1c1BhIvE5zSkqPzJJm9
-         haQuI4x77ZXKeigYlEzgxYt/mmpZa0DDeucIyJuwzMhsl+E9Qzd8a2Ia7J23RzKrOxoz
-         F/DHEuFTED6KPQJmq7auY+4MRKfVLY3E4l+VcXJiQH3U62TMxlRqwq5DPGUK9bROJrRr
-         Ev9w==
-X-Gm-Message-State: AOJu0Yz8yI6Zo2EA8qaOg3kO/gDawVIVtFXR8OIwzeJv2SacX313/tEj
-        HcOkgn+Zj4UoIdpt+hhygTlznia0bwTcYt+e4iZJ3Ev1mxEhk3fMNtG3A8NaF3uNQBDGtkJxu7p
-        j5MWFOWVM7har
-X-Received: by 2002:ac2:548b:0:b0:502:dbd0:6bc0 with SMTP id t11-20020ac2548b000000b00502dbd06bc0mr366653lfk.5.1695152912334;
-        Tue, 19 Sep 2023 12:48:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH7qCya6snF1XTMXLcBghcUd2E27xCSmtuh+zfOUuwITlCDoFsmvDQ/5bhi93AsTouFLj6RWw==
-X-Received: by 2002:ac2:548b:0:b0:502:dbd0:6bc0 with SMTP id t11-20020ac2548b000000b00502dbd06bc0mr366645lfk.5.1695152911914;
-        Tue, 19 Sep 2023 12:48:31 -0700 (PDT)
-Received: from fedorinator.fritz.box ([2001:9e8:32ec:5700:c2e1:19c3:93f2:42ac])
-        by smtp.gmail.com with ESMTPSA id cq8-20020a056402220800b00532d2b5126bsm875426edb.94.2023.09.19.12.48.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 12:48:31 -0700 (PDT)
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        bh=nzxvbCzxz7qN1cIIZLKetlqtaurCcasvn+7mrQhoMjQ=;
+        b=Wje53M876JfN5LLQw13s9jsLTYcM2iz2WsfsaJu1W25CEL3pj+JTS+9I8pptJ91VghY1TB
+        /BpZQTyJqSG/SmIN4XwVWp318BLJLsiLHhzgwA9xdiKfQI6Dk/r3sqeQ25f5Xmzj8nCItS
+        e4E5j/0yFp2hZ5uWd7zkbRKxZauodtkxwqWqzaA0jySwiAeyHvsatXijBiGKTBtiINwMdI
+        da0JT2/GWnckhmZW/P/DLSz0YFTPZc8y02wBFckUDlL9NwSTkxeKOMPQYgZinC4L3Ym20H
+        tCU0rKNLcUwdxTx9RR41zPkcNx9lZOtmC1UrPZ32IZCLXsdJl+9VdoEK9xaU7A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695164945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nzxvbCzxz7qN1cIIZLKetlqtaurCcasvn+7mrQhoMjQ=;
+        b=DdRh7TWdKUGH21ctW9qq2wUhtGIl/XOtFOH2ddBrMZl2ejFzOfgrzYJ6MsZ3hQsFEyrBk0
+        KH+1iKo400MLNqAA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Philipp Stanner <pstanner@redhat.com>
-Subject: [PATCH] rculist.h: docu: fix wrong function name
-Date:   Tue, 19 Sep 2023 21:47:55 +0200
-Message-ID: <20230919194754.20574-2-pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH printk v2 00/11] wire up nbcon atomic printing
+Date:   Wed, 20 Sep 2023 01:14:45 +0206
+Message-Id: <20230919230856.661435-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The header contains a comment that details why the functions
-list_empty_rcu() and list_first_entry_rcu() don't exist. It explains
-that they don't exist because standard list_empty() can be used just as
-well, but one can not expect sane results from a subsequent, quote,
-"list_first_entry_rcu()".
+Hi,
 
-This function (obviously) does not exist. What the comment's author
-actually meant was the standard list-function list_first_entry().
+This is v2 of a series to wire up the nbcon consoles so that
+they actually perform atomic printing. This series is only a
+subset of the original v1 [0]. In particular, this series
+represents patches 14 and 16-18 of the v1 series. For
+information about the motivation of the atomic consoles,
+please read the cover letter of v1.
 
-Change the function name in that comment from list_first_entry_rcu() to
-list_first_entry().
+This series focuses on providing the functionality and marking
+of atomic printing sections as well as wiring up the nbcon
+atomic printing to the general console_flush_all() function.
+This series does _not_ include threaded printing or nbcon
+drivers. Those features will be added in separate follow-up
+series.
 
-Additionally, add the parenthesis to list_first_or_null_rcu to be congruent
-with that entire comment's style.
+Note that the behavior of atomic printing in priority-elevated
+atomic printing sections differs from the legacy consoles. With
+atomic printing, the full set of urgent messages
+(WARN/OOPS/PANIC) are first stored into the ringbuffer and then
+afterwards flushed. This makes sure the full backtraces are
+available in the ringbuffer, even if they do not make it out to
+the console(s). This is in accordance with what was discussed
+at LPC 2022 [1].
 
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
-Hi!
-I hope this helps.
-I wasn't 100.000000% sure if that's correct, but I thought asking is for
-free 8-)
+A lot has changed since v1 and the patches no longer correlate
+1:1. Here is an attempt to list the changes:
 
-Regards,
-P.
----
- include/linux/rculist.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+- Rather than flushing the full ringbuffer with one nbcon
+  console before moving to the next nbcon console, adapt the
+  same flushing strategy as the legacy consoles: rotation
+  through the consoles, one record at a time.
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index d29740be4833..4837d8892691 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -331,9 +331,9 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
-  * rcu_dereference() is not needed), which means that list_empty() can be
-  * used anywhere you would want to use list_empty_rcu().  Just don't
-  * expect anything useful to happen if you do a subsequent lockless
-- * call to list_first_entry_rcu()!!!
-+ * call to list_first_entry()!!!
-  *
-- * See list_first_or_null_rcu for an alternative.
-+ * See list_first_or_null_rcu() for an alternative.
-  */
- 
- /**
+- Introduce nbcon_atomic_emit_one() to perform the "lock, emit
+  one record, unlock" pattern. (This is only a helper
+  function.)
+
+- Introduce nbcon_console_emit_next_record() to act as the
+  nbcon variant of console_emit_next_record(). This allows
+  straight forward integration of nbcon consoles into
+  console_flush_all().
+
+- nbcon_atomic_flush() no longer takes any arguments. These
+  were awkward for the caller. The context object is now
+  hidden from the caller.
+
+- Introduce __nbcon_atomic_flush_all() as an internal helper
+  function in order to hide the ability to attempt unsafe
+  hostile takeovers from outside nbcon.c.
+
+- For printk_trigger_flush(), migration is disabled instead of
+  preemption.
+
+- Add atomic write enforcement to oops and lockdep.
+
+- Comments and kerneldoc updated.
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/20230302195618.156940-1-john.ogness@linutronix.de
+
+[1] https://lore.kernel.org/lkml/875yheqh6v.fsf@jogness.linutronix.de
+
+John Ogness (7):
+  printk: Make console_is_usable() available to nbcon
+  printk: Let console_is_usable() handle nbcon
+  printk: Add @flags argument for console_is_usable()
+  printk: nbcon: Wire up nbcon into console_flush_all()
+  panic: Add atomic write enforcement to oops
+  rcu: Add atomic write enforcement for rcu stalls
+  lockdep: Add atomic write enforcement for lockdep splats
+
+Thomas Gleixner (4):
+  printk: nbcon: Provide functions to mark atomic write sections
+  printk: nbcon: Provide function for atomic flushing
+  printk: nbcon: Wire up nbcon console atomic flushing
+  panic: Add atomic write enforcement to warn/panic
+
+ include/linux/console.h  |   4 +
+ include/linux/printk.h   |   6 +
+ kernel/locking/lockdep.c |   7 ++
+ kernel/panic.c           |  66 +++++++++++
+ kernel/printk/internal.h |  37 ++++++
+ kernel/printk/nbcon.c    | 246 ++++++++++++++++++++++++++++++++++++++-
+ kernel/printk/printk.c   |  67 +++++------
+ kernel/rcu/tree_stall.h  |   6 +
+ 8 files changed, 396 insertions(+), 43 deletions(-)
+
+
+base-commit: 9757acd0a700ba4a0d16dde4ba820eb052aba1a7
 -- 
-2.41.0
+2.39.2
 
