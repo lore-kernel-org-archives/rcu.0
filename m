@@ -2,213 +2,197 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51EA2CE79CF
-	for <rcu@archiver.kernel.org>; Wed, 20 Sep 2023 13:00:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CF8DCE79DA
+	for <rcu@archiver.kernel.org>; Wed, 20 Sep 2023 14:32:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235281AbjITNAG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 20 Sep 2023 09:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        id S234572AbjITOc7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 20 Sep 2023 10:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236232AbjITNAD (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 20 Sep 2023 09:00:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A162C135
-        for <rcu@vger.kernel.org>; Wed, 20 Sep 2023 05:59:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695214740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IB5ZIQc2cKPD403czWBLbEjCZuGs9WsxBdWgpieqM34=;
-        b=N8fn8PKe+zyp6BBJFVgQ2M5zlNjtRhXEnvpb2Nvi04+CyI6a6n5zwb1mZvmtR8mEPX180E
-        O2wznRrUwBXOivycEVFOAOtQJT11sMRPrGWfimk7ok+/NboWQUuhXC3G056dVLBWRgjy9s
-        NstaH7XhfOyAAxXgg0DnWzn8Nvgywyw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-142-NEoQVg0hOZaq9D3I6v-zUQ-1; Wed, 20 Sep 2023 08:58:59 -0400
-X-MC-Unique: NEoQVg0hOZaq9D3I6v-zUQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a9cd336c9cso155349166b.1
-        for <rcu@vger.kernel.org>; Wed, 20 Sep 2023 05:58:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695214738; x=1695819538;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IB5ZIQc2cKPD403czWBLbEjCZuGs9WsxBdWgpieqM34=;
-        b=bTYGPvYNPZZ7hPwZwgbgcacXxcUHE5iqcwgb4mKO8MQSedRAbu8wkDdarqEWV015yz
-         7UHagKs+ZLq8GWv1LniEUKFbsbAWh2GAz67WsJc16OAQ8Evay7Xd+f2A2xc1hqJcvr5Z
-         G292DCXKoFKGnjkgzvV9sS84t6YIOJX2PF5didkmO1cv5XVskYJzZhoVO4utjlyej9xd
-         NEDkx2MUehI7eKoBVawiAWc3KP9k+SHjSGxVThfHD16OwwB2EtLlklODOajlwk9t3XeR
-         CQGryFRlhKsNHOBCE+TRr6SCE1Is63IqpoOI1pK991wYLtmtAhiqYfjyrLrZK34Tq7ch
-         eiIQ==
-X-Gm-Message-State: AOJu0YzRhPMG/vAg4UStbWCQJkNSDNoFFQU5zdMLckZX1gyCL/4eEHhW
-        3/yq5gJK7s2Fhu7oivZqm4tp5wetopOHEzulHZZ8QzFEqG4+K4SPDoaTJnS+aD0toeZjLKw06Fm
-        WnAj4LSyP7B62PG2JxGbRBNM=
-X-Received: by 2002:a17:907:9512:b0:9ae:4492:df34 with SMTP id ew18-20020a170907951200b009ae4492df34mr1475143ejc.6.1695214737873;
-        Wed, 20 Sep 2023 05:58:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEyqwNmbkZEDyjkcZHdkDeRwAw5EgPqm5zJnPl6/XMznfBnmEs30U+2P1hzBTCGlfRYX4ZcYQ==
-X-Received: by 2002:a17:907:9512:b0:9ae:4492:df34 with SMTP id ew18-20020a170907951200b009ae4492df34mr1475125ejc.6.1695214737455;
-        Wed, 20 Sep 2023 05:58:57 -0700 (PDT)
-Received: from ?IPv6:2a01:599:906:7772:a505:d891:dcff:9565? ([2a01:599:906:7772:a505:d891:dcff:9565])
-        by smtp.gmail.com with ESMTPSA id rn5-20020a170906d92500b0099bd5d28dc4sm9283591ejb.195.2023.09.20.05.58.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 05:58:56 -0700 (PDT)
-Message-ID: <79e83b07045c35527f0b91fa5ba36d9c501cd8af.camel@redhat.com>
-Subject: Re: [PATCH] rculist.h: docu: fix wrong function name
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     paulmck@kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
+        with ESMTP id S232318AbjITOc6 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 20 Sep 2023 10:32:58 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18676AD;
+        Wed, 20 Sep 2023 07:32:52 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D61631FB;
+        Wed, 20 Sep 2023 07:33:28 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.27.185])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89A723F5A1;
+        Wed, 20 Sep 2023 07:32:49 -0700 (PDT)
+Date:   Wed, 20 Sep 2023 15:32:47 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     LTP List <ltp@lists.linux.it>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        rcu <rcu@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        chrubis <chrubis@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 20 Sep 2023 14:58:55 +0200
-In-Reply-To: <db6bc865-199d-4784-a509-5b0c80c0501c@paulmck-laptop>
-References: <20230919194754.20574-2-pstanner@redhat.com>
-         <db6bc865-199d-4784-a509-5b0c80c0501c@paulmck-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: arm64: Unable to handle kernel execute from non-executable
+ memory at virtual address ffff8000834c13a0
+Message-ID: <ZQsCj997AW8Tz27W@FVFF77S0Q05N.cambridge.arm.com>
+References: <CA+G9fYtqLarsezP_-6iQqonh8M4Q6McUCEBM9gFv+GU-zZRHAQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtqLarsezP_-6iQqonh8M4Q6McUCEBM9gFv+GU-zZRHAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, 2023-09-20 at 03:53 -0700, Paul E. McKenney wrote:
-> On Tue, Sep 19, 2023 at 09:47:55PM +0200, Philipp Stanner wrote:
-> > The header contains a comment that details why the functions
-> > list_empty_rcu() and list_first_entry_rcu() don't exist. It
-> > explains
-> > that they don't exist because standard list_empty() can be used
-> > just as
-> > well, but one can not expect sane results from a subsequent, quote,
-> > "list_first_entry_rcu()".
-> >=20
-> > This function (obviously) does not exist. What the comment's author
-> > actually meant was the standard list-function list_first_entry().
-> >=20
-> > Change the function name in that comment from
-> > list_first_entry_rcu() to
-> > list_first_entry().
-> >=20
-> > Additionally, add the parenthesis to list_first_or_null_rcu to be
-> > congruent
-> > with that entire comment's style.
-> >=20
-> > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> > ---
-> > Hi!
-> > I hope this helps.
-> > I wasn't 100.000000% sure if that's correct, but I thought asking
-> > is for
-> > free 8-)
-> >=20
-> > Regards,
-> > P.
->=20
-> Thank you for sending this!=C2=A0 Please see below.
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Thanx, Paul
->=20
-> > ---
-> > =C2=A0include/linux/rculist.h | 4 ++--
-> > =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> > index d29740be4833..4837d8892691 100644
-> > --- a/include/linux/rculist.h
-> > +++ b/include/linux/rculist.h
-> > @@ -331,9 +331,9 @@ static inline void
-> > list_splice_tail_init_rcu(struct list_head *list,
-> > =C2=A0 * rcu_dereference() is not needed), which means that list_empty(=
-)
-> > can be
-> > =C2=A0 * used anywhere you would want to use list_empty_rcu().=C2=A0 Ju=
-st
-> > don't
-> > =C2=A0 * expect anything useful to happen if you do a subsequent
-> > lockless
-> > - * call to list_first_entry_rcu()!!!
-> > + * call to list_first_entry()!!!
->=20
-> You are quite correct that the original is incorrect, given that it
-> does
-> not exist, but a better change would be to list_entry_rcu().
+Hi Naresh,
 
-Hm, are you sure that's what we want there?
-list_entry_rcu() does not take care of actually getting the list_head
-to begin with. The caller would have to provide it. The question is how
-would he do that? The goal in the purposefully broken example's code
-is: Get this list's first entry, if it exists.
+On Wed, Sep 20, 2023 at 11:29:12AM +0200, Naresh Kamboju wrote:
+> [ my two cents ]
+> While running LTP pty07 test cases on arm64 juno-r2 with Linux next-20230919
+> the following kernel crash was noticed.
+> 
+> I have been noticing this issue intermittently on Juno-r2 for more than a month.
+> Anyone have noticed this crash ?
 
-Do we agree that the example as is is maybe a bit out of place in the
-first place, because it could always cause in a fault when the list got
-empty since the check, thus, resulting in us trying to dereference the
-list-head?
-If that's the case, maybe we should also change the wording "don't
-expect anything useful to happen" to something like "don't expect
-anything useful to happen (i.e., your code could fault)".
-"Not useful" doesn't sound like "can crash", that's my point.
+How intermittent is this? 1/2, 1/10, 1/100, rarer still?
 
+Are you running *just* the pty07 test, or are you running a whole LTP suite and
+the issue first occurs around pty07?
 
-I suppose a working broken example might be:
+Given you've been hitting this for a month, have you tried testing mainline? Do
+you have a known-good kernel that we can start a bisect from?
 
-if (!list_empty(mylist)) {
-	first_head =3D READ_ONCE(mylist->next);
-	first_member =3D list_entry_rcu(first_head, ...) // <- could fault!
-}
+Do you *only* see this on Juno-r2 and are you testing on other hardware?
 
-?
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> [    0.000000] Linux version 6.6.0-rc2-next-20230919 (tuxmake@tuxmake)
+> (aarch64-linux-gnu-gcc (Debian 13.2.0-2) 13.2.0, GNU ld (GNU Binutils
+> for Debian) 2.41) #1 SMP PREEMPT @1695107157
+> [    0.000000] KASLR disabled due to lack of seed
+> [    0.000000] Machine model: ARM Juno development board (r2)
+> ...
+> LTP running pty
+> ...
+> 
+> pty07.c:92: TINFO: Saving active console 1
+> ../../../include/tst_fuzzy_sync.h:640: TINFO: Stopped sampling at 552
+> (out of 1024) samples, sampling time reached 50% of the total time
+> limit
+> ../../../include/tst_fuzzy_sync.h:307: TINFO: loop = 552, delay_bias = 0
+> ../../../include/tst_fuzzy_sync.h:295: TINFO: start_a - start_b: { avg
+> =   127ns, avg_dev =    84ns, dev_ratio = 0.66 }
+> ../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - start_a  : { avg
+> = 17296156ns, avg_dev = 5155058ns, dev_ratio = 0.30 }
+> ../../../include/tst_fuzzy_sync.h:295: TINFO: end_b - start_b  : { avg
+> = 101202336ns, avg_dev = 6689286ns, dev_ratio = 0.07 }
+> ../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - end_b    : { avg
+> = -83906064ns, avg_dev = 10230694ns, dev_ratio = 0.12 }
+> ../../../include/tst_fuzzy_sync.h:295: TINFO: spins            : { avg
+> = 2765565  , avg_dev = 339285  , dev_ratio = 0.12 }
+> [  384.133538] Unable to handle kernel execute from non-executable
+> memory at virtual address ffff8000834c13a0
+> [  384.133559] Mem abort info:
+> [  384.133568]   ESR = 0x000000008600000f
+> [  384.133578]   EC = 0x21: IABT (current EL), IL = 32 bits
+> [  384.133590]   SET = 0, FnV = 0
+> [  384.133600]   EA = 0, S1PTW = 0
+> [  384.133610]   FSC = 0x0f: level 3 permission fault
+> [  384.133621] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000082375000
+> [  384.133634] [ffff8000834c13a0] pgd=10000009fffff003,
+> p4d=10000009fffff003, pud=10000009ffffe003, pmd=10000009ffff8003,
+> pte=00780000836c1703
+> [  384.133697] Internal error: Oops: 000000008600000f [#1] PREEMPT SMP
+> [  384.133707] Modules linked in: tda998x onboard_usb_hub cec hdlcd
+> crct10dif_ce drm_dma_helper drm_kms_helper fuse drm backlight dm_mod
+> ip_tables x_tables
+> [  384.133767] CPU: 3 PID: 589 Comm: (udev-worker) Not tainted
+> 6.6.0-rc2-next-20230919 #1
+> [  384.133779] Hardware name: ARM Juno development board (r2) (DT)
+> [  384.133784] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [  384.133796] pc : in_lookup_hashtable+0x178/0x2000
 
->  The reason
-> being that list_first_entry() does not have READ_ONCE(), allowing the
-> compiler to play all sorts of games (see
-> https://lwn.net/Articles/793253
+This indicates that the faulting address ffff8000834c13a0 is
+in_lookup_hashtable+0x178/0x2000, which would been we've somehow marked the
+kernel text as non-executable, which we never do intentionally.
 
-Yup, I know that article.
-I'm frequently astonished how difficult the situation has become. I was
-at times wondering if things were better were C (or a hypothetical
-successor language) designed to take parallelism into account in the
-language's core.
+I suspect that implies memory corruption. Have you tried running this with
+KASAN enabled?
 
+> [  384.133818] lr : rcu_core (arch/arm64/include/asm/preempt.h:13
+> (discriminator 1) kernel/rcu/tree.c:2146 (discriminator 1)
+> kernel/rcu/tree.c:2403 (discriminator 1))
+> [  384.133832] sp : ffff800083533e60
+> [  384.133836] x29: ffff800083533e60 x28: ffff0008008a6180 x27: 000000000000000a
+> [  384.133854] x26: 0000000000000000 x25: 0000000000000000 x24: ffff800083533f10
+> [  384.133871] x23: ffff800082404008 x22: ffff800082ebea80 x21: ffff800082f55940
+> [  384.133889] x20: ffff00097ed75440 x19: 0000000000000001 x18: 0000000000000000
+> [  384.133905] x17: ffff8008fc95c000 x16: ffff800083530000 x15: 00003d0900000000
+> [  384.133922] x14: 0000000000030d40 x13: 0000000000000000 x12: 003d090000000000
+> [  384.133939] x11: 0000000000000000 x10: 0000000000000008 x9 : ffff80008015b05c
+> [  384.133955] x8 : ffff800083533da8 x7 : 0000000000000000 x6 : 0000000000000100
+> [  384.133971] x5 : ffff800082ebf000 x4 : ffff800082ebf2e8 x3 : 0000000000000000
+> [  384.133987] x2 : ffff000825bf8618 x1 : ffff8000834c13a0 x0 : ffff00082b6d7170
+> [  384.134005] Call trace:
+> [  384.134009] in_lookup_hashtable+0x178/0x2000
+> [  384.134022] rcu_core_si (kernel/rcu/tree.c:2421)
+> [  384.134035] __do_softirq (arch/arm64/include/asm/jump_label.h:21
+> include/linux/jump_label.h:207 include/trace/events/irq.h:142
+> kernel/softirq.c:554)
+> [  384.134046] ____do_softirq (arch/arm64/kernel/irq.c:81)
+> [  384.134058] call_on_irq_stack (arch/arm64/kernel/entry.S:888)
+> [  384.134070] do_softirq_own_stack (arch/arm64/kernel/irq.c:86)
+> [  384.134082] irq_exit_rcu (arch/arm64/include/asm/percpu.h:44
+> kernel/softirq.c:612 kernel/softirq.c:634 kernel/softirq.c:644)
+> [  384.134094] el0_interrupt (arch/arm64/include/asm/daifflags.h:28
+> arch/arm64/kernel/entry-common.c:133
+> arch/arm64/kernel/entry-common.c:144
+> arch/arm64/kernel/entry-common.c:763)
+> [  384.134110] __el0_irq_handler_common (arch/arm64/kernel/entry-common.c:769)
+> [  384.134124] el0t_64_irq_handler (arch/arm64/kernel/entry-common.c:774)
+> [  384.134137] el0t_64_irq (arch/arm64/kernel/entry.S:592)
+> [ 384.134153] Code: 00000000 00000000 00000000 00000000 (2b6d7170)
+> All code
+> ========
+> ...
+>   10: 70 71                jo     0x83
+>   12: 6d                    insl   (%dx),%es:(%rdi)
+>   13: 2b                    .byte 0x2b
+> 
+> Code starting with the faulting instruction
+> ===========================================
+>    0: 70 71                jo     0x73
+>    2: 6d                    insl   (%dx),%es:(%rdi)
+>    3: 2b                    .byte 0x2b
 
-> for some examples).
->=20
-> > =C2=A0 *
-> > - * See list_first_or_null_rcu for an alternative.
-> > + * See list_first_or_null_rcu() for an alternative.
->=20
-> Good catch!
->=20
-> Please do feel free to send an update.
+As a general thing, can you *please* fix this code dump to decode arm64 as
+arm64?
 
-Sure, will do once we agreed on the best wording :)
+Given the instructions before this are all UDF #0, I suspect the page table
+entry has been corrupted and this is pointing at entirely the wrong page.
 
-P.
+Thanks,
+Mark.
 
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Thanx, Paul
->=20
-> > =C2=A0 */
-> > =C2=A0
-> > =C2=A0/**
-> > --=20
-> > 2.41.0
-> >=20
->=20
-
+> [  384.134161] ---[ end trace 0000000000000000 ]---
+> [  384.134168] Kernel panic - not syncing: Oops: Fatal exception in interrupt
+> [  384.134173] SMP: stopping secondary CPUs
+> [  384.134184] Kernel Offset: disabled
+> [  384.134187] CPU features: 0x8000020c,3c020000,0000421b
+> [  384.134194] Memory Limit: none
+> 
+> Links:
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230919/testrun/20054202/suite/log-parser-test/tests/
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230919/testrun/20054202/suite/log-parser-test/test/check-kernel-oops/log
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VbZdpWwncUx8oSxsSXCWV3N5DH/
+>  - https://lkft.validation.linaro.org/scheduler/job/6666807#L2461
+> 
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
