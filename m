@@ -2,117 +2,105 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88FEDCE79A9
-	for <rcu@archiver.kernel.org>; Tue, 19 Sep 2023 23:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06DF3CE79AC
+	for <rcu@archiver.kernel.org>; Wed, 20 Sep 2023 09:24:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbjISXJe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 19 Sep 2023 19:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
+        id S234044AbjITJYK (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 20 Sep 2023 05:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbjISXJ2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 19 Sep 2023 19:09:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3817F9;
-        Tue, 19 Sep 2023 16:09:19 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695164957;
+        with ESMTP id S233914AbjITJYB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 20 Sep 2023 05:24:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3971AB
+        for <rcu@vger.kernel.org>; Wed, 20 Sep 2023 02:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695201785;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ayShZA5Y6+vqpU4ni2cr8EGVcvIF6GWDCtcZG+RumvA=;
-        b=qWi4MpNE17XSTOZC15znu3okHtAskd1+gALDOCzTERnor7ZLmT4BWOTJ3SSSZacqDGfiOR
-        cUYZw1W1x/dKVngg0utCkfIoE2HXz0xvGerwCc1bZkXBztclbspNQFbye0EHFyqn5q9emC
-        DLqD5mEO2SkvCkj1goTYsLV0as0CCSyZ85xlxLCEO9cL6IOR+LMQxJv/M9T7PfhphXQjPS
-        dmFqj/KfCTonrYTNj2gcEpjlHU0TAKebq5Opb9Y4rv+upIs/HzvcyhQ4K4DOJK1zyCSeWK
-        jQLdDV04pCBe6+pHsDre7Bq+V5+/U1ZkkTYjAEMYlqqZL4wwdPGScwGttJdYDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695164957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ayShZA5Y6+vqpU4ni2cr8EGVcvIF6GWDCtcZG+RumvA=;
-        b=1RJuv2+vauyF4pdXRf65q7Di4PvGlO48NYMcr4OCbk3zNzp+SBuVjXBekdVfdWPEbzx6t4
-        +dOdJccxuO8tY1DQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rIy294xxcRG5X8mamyGReIFpqhnDJXgcIMqu9YASlB8=;
+        b=KFSwJulw7wPIgWSaJ66ZfwLH6ol9Odck8K/PzapHaO141jIUPGRqAZICiSfl3ivRWAaUOJ
+        /PA02CK+YhhB+ffUemJnTB4NQsbOKInT+AUnYPccWvUao6I82xTcUqi/2LhePLzajaLrlP
+        Gc5jKl/Dc1cHyJvQoRfJhTDvrvcV4JM=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-178-XBEMuqS3MbKiE8UDlmiBNw-1; Wed, 20 Sep 2023 05:23:03 -0400
+X-MC-Unique: XBEMuqS3MbKiE8UDlmiBNw-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5031c8d5589so673915e87.0
+        for <rcu@vger.kernel.org>; Wed, 20 Sep 2023 02:23:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695201782; x=1695806582;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rIy294xxcRG5X8mamyGReIFpqhnDJXgcIMqu9YASlB8=;
+        b=hzjj0MnYBFG2h+6IHISzCIfpfmsUtKpa8i2n2+w3exec4eorptpVR6VRr22fj3vgIB
+         2lyqinBquuzky9hR2ifvh8JMbx8GfcLq5esn56w5ZFSKIkqoGAaAI/Zc8OLqlPr9CSzL
+         s21K/k9LguNeiipjkHhNHkOS8Vs4UgVoVFrHtWfCknCD6r5JpcOPeZAUiiQAbSUyqz1E
+         wfDVGeeDusJY2MQ6nXmlyk9T/LO34Fdk4jWZ20l5i+tu24oVJNd/qUxj2DXfEgMyRbYy
+         52vd0/LxZFdJzA93xLJMTjmhlpEQAHC3YNnipr9Ku+8tTtaokNBMNaHXSeeqe9zvr5z1
+         1rgQ==
+X-Gm-Message-State: AOJu0Yx5S3gnMXTznQTe+JCZ3yKGbSrJzJBFatd/NnNCmkIo327d4Hs9
+        9KsqoJFOj430olkNk0pZPPH3C0/ZH1kxovQw899eMrrh6Yvz5TyFZrRyKM0TcxSP7KqylASbVeK
+        7IdJrmihBNfyY
+X-Received: by 2002:ac2:593c:0:b0:503:2dcd:30ed with SMTP id v28-20020ac2593c000000b005032dcd30edmr1841819lfi.0.1695201782300;
+        Wed, 20 Sep 2023 02:23:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHIkxZsQBqiHyOJWqxF75XqAGlu1IOGH4PxAL385CxSZ1sXj3qO4M67md1rS1PUK28mcHvZDw==
+X-Received: by 2002:ac2:593c:0:b0:503:2dcd:30ed with SMTP id v28-20020ac2593c000000b005032dcd30edmr1841799lfi.0.1695201781897;
+        Wed, 20 Sep 2023 02:23:01 -0700 (PDT)
+Received: from fedorinator.. ([2a01:599:906:7772:a505:d891:dcff:9565])
+        by smtp.gmail.com with ESMTPSA id n23-20020aa7c697000000b0052e2472f884sm8544689edq.21.2023.09.20.02.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Sep 2023 02:23:01 -0700 (PDT)
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: [PATCH printk v2 10/11] rcu: Add atomic write enforcement for rcu stalls
-Date:   Wed, 20 Sep 2023 01:14:55 +0206
-Message-Id: <20230919230856.661435-11-john.ogness@linutronix.de>
-In-Reply-To: <20230919230856.661435-1-john.ogness@linutronix.de>
-References: <20230919230856.661435-1-john.ogness@linutronix.de>
+        Zqiang <qiang.zhang1211@gmail.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Philipp Stanner <pstanner@redhat.com>
+Subject: [PATCH] rculist.h: docu: fix wrong function summary
+Date:   Wed, 20 Sep 2023 11:22:12 +0200
+Message-ID: <20230920092211.11371-2-pstanner@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Invoke the atomic write enforcement functions for rcu stalls to
-ensure that the information gets out to the consoles.
+The brief summary in the docstring for function list_next_or_null_rcu()
+states that the function is supposed to provide the "first" member of a
+list, whereas in truth it returns the next member.
 
-It is important to note that if there are any legacy consoles
-registered, they will be attempting to directly print from the
-printk-caller context, which may jeopardize the reliability of
-the atomic consoles. Optimally there should be no legacy
-consoles registered.
+Change the docstring so it describes what the function actually does.
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 ---
- kernel/rcu/tree_stall.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/rculist.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 6f06dc12904a..0a58f8b233d8 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -8,6 +8,7 @@
-  */
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index 4837d8892691..fd0ed1550a7c 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -355,7 +355,7 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+ })
  
- #include <linux/kvm_para.h>
-+#include <linux/console.h>
- 
- //////////////////////////////////////////////////////////////////////////////
- //
-@@ -582,6 +583,7 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
- 
- static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- {
-+	enum nbcon_prio prev_prio;
- 	int cpu;
- 	unsigned long flags;
- 	unsigned long gpa;
-@@ -597,6 +599,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	if (rcu_stall_is_suppressed())
- 		return;
- 
-+	prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
-+
- 	/*
- 	 * OK, time to rat on our buddy...
- 	 * See Documentation/RCU/stallwarn.rst for info on how to debug
-@@ -651,6 +655,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	panic_on_rcu_stall();
- 
- 	rcu_force_quiescent_state();  /* Kick them all. */
-+
-+	nbcon_atomic_exit(NBCON_PRIO_EMERGENCY, prev_prio);
- }
- 
- static void print_cpu_stall(unsigned long gps)
+ /**
+- * list_next_or_null_rcu - get the first element from a list
++ * list_next_or_null_rcu - get the next element from a list
+  * @head:	the head for the list.
+  * @ptr:        the list head to take the next element from.
+  * @type:       the type of the struct this is embedded in.
 -- 
-2.39.2
+2.41.0
 
