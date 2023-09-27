@@ -2,192 +2,141 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F27DCCD4F5B
-	for <rcu@archiver.kernel.org>; Fri, 22 Sep 2023 11:22:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0904FE82CA7
+	for <rcu@archiver.kernel.org>; Wed, 27 Sep 2023 15:00:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbjIVLWN (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 22 Sep 2023 07:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S232268AbjI0PAa (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 27 Sep 2023 11:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbjIVLWN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 22 Sep 2023 07:22:13 -0400
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E24AC;
-        Fri, 22 Sep 2023 04:22:03 -0700 (PDT)
-Received: from [192.168.1.215] (unknown [122.172.83.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 15E33161CB4;
-        Fri, 22 Sep 2023 13:21:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1695381720; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S232067AbjI0PA3 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 27 Sep 2023 11:00:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB095F4;
+        Wed, 27 Sep 2023 08:00:27 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3FC1D21871;
+        Wed, 27 Sep 2023 15:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695826826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Ojj9etzDaC5EV1Z4YZ0pUkwqSiZRleEiS16sMRmYFpM=;
-        b=e94AlDA0DDtl9tfN8qv7+o85cWHA9Y3eJwGIxAvh47xgSV11AZPJxLCnc2ZET77BZm6qYv
-        xlrhZt6E5c2yqednC60JhaKBtBWmJijyOkojhzhJlRr+/Z9OqZuyNnQOdrNPeMBBEqphZw
-        7CaDNGZDYXHO2/58vV++WvscGPpg4M4=
-Message-ID: <2467f0fa-94ec-4449-8d7d-765e996dece7@ixit.cz>
-Date:   Fri, 22 Sep 2023 16:51:52 +0530
+        bh=ntrsNhAyOOgMXZMp6zh4HTN0Tx78MaxJouIAxQNAnI8=;
+        b=Ti6s3RfzLpsWtNcGRLkWU78lEcclV7iQ8fZ8Sk/gHgmoL6gZikY8cEs53gy2XRqaXyBkeR
+        yg+hVf19WoF2a/z52qzb9MDxryiWrtARId2lzxKiHdIQHNziR3jx9Nvnj9SsefNuSGmuHd
+        N6G/151E9e0jDELXUPhczncG47APK6M=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id DC3842C145;
+        Wed, 27 Sep 2023 15:00:24 +0000 (UTC)
+Date:   Wed, 27 Sep 2023 17:00:24 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v2 10/11] rcu: Add atomic write enforcement for
+ rcu stalls
+Message-ID: <ZRRDiAUJMHAgiDnD@alley>
+References: <20230919230856.661435-1-john.ogness@linutronix.de>
+ <20230919230856.661435-11-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     paulmck@kernel.org
-Cc:     ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        dan.carpenter@linaro.org, gregkh@linuxfoundation.org,
-        jbaron@akamai.com, jpoimboe@kernel.org, jstancek@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lkft-triage@lists.linaro.org, ltp@lists.linux.it,
-        mark.rutland@arm.com, peterz@infradead.org, rcu@vger.kernel.org,
-        robin.murphy@arm.com, rostedt@goodmis.org, will@kernel.org
-References: <6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop>
-Subject: Re: [LTP] arm64: Unable to handle kernel execute from non-executable
- memory at virtual address ffff8000834c13a0
-Content-Language: en-US
-Reply-To: 6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop
-From:   David <david@ixit.cz>
-In-Reply-To: <6e2ee0ca-cf37-42ec-8dc6-593d831eb262@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919230856.661435-11-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hello,
+On Wed 2023-09-20 01:14:55, John Ogness wrote:
+> Invoke the atomic write enforcement functions for rcu stalls to
+> ensure that the information gets out to the consoles.
+> 
+> It is important to note that if there are any legacy consoles
+> registered, they will be attempting to directly print from the
+> printk-caller context, which may jeopardize the reliability of
+> the atomic consoles. Optimally there should be no legacy
+> consoles registered.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  kernel/rcu/tree_stall.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 6f06dc12904a..0a58f8b233d8 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -8,6 +8,7 @@
+>   */
+>  
+>  #include <linux/kvm_para.h>
+> +#include <linux/console.h>
+>  
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
+> @@ -582,6 +583,7 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
+>  
+>  static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  {
+> +	enum nbcon_prio prev_prio;
+>  	int cpu;
+>  	unsigned long flags;
+>  	unsigned long gpa;
+> @@ -597,6 +599,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	if (rcu_stall_is_suppressed())
+>  		return;
+>  
+> +	prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
+> +
+>  	/*
+>  	 * OK, time to rat on our buddy...
+>  	 * See Documentation/RCU/stallwarn.rst for info on how to debug
+> @@ -651,6 +655,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	panic_on_rcu_stall();
+>  
+>  	rcu_force_quiescent_state();  /* Kick them all. */
+> +
+> +	nbcon_atomic_exit(NBCON_PRIO_EMERGENCY, prev_prio);
 
-On sdm845 cheza board, with 6.5.4 (before running 6.4.x), I saw this 
-issue too. Happened only once, but I can try stress-test it how often it 
-pops up.
-Whole log is here [1]. Used kernel is referenced from full log, kernel 
-extra patches [2].
+The locations looks reasonable to me. I just hope that we would
+use another API: nbcon_emergency_enter()/exit() in the end.
 
-...
-23-09-22 10:48:53 R SERIAL-CPU> deviceName: Turnip Adreno (TM) 630
-23-09-22 10:48:55 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:48:57 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:49:00 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:49:03 R SERIAL-CPU> Running dEQP on 8 threads in 188-test groups
-23-09-22 10:49:05 R SERIAL-CPU> Running dEQP on 8 threads in 10-test groups
-23-09-22 10:49:08 R SERIAL-CPU> Running dEQP on 8 threads in 378-test groups
-23-09-22 10:49:10 R SERIAL-CPU> Running dEQP on 8 threads in 500-test groups
-23-09-22 10:49:10 R SERIAL-CPU> Pass: 0, Duration: 0
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     In file 
-../src/compiler/spirv/spirv_to_nir.c:1492
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     Image Type 
-operand of OpTypeSampledImage should not have a Dim of Buffer.
-23-09-22 10:49:28 R SERIAL-CPU> ERROR - dEQP error:     456 bytes into 
-the SPIR-V binary
-23-09-22 10:49:28 R SERIAL-CPU> Pass: 222, Skip: 278, Duration: 17, 
-Remaining: 46:28
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     In file 
-../src/compiler/spirv/spirv_to_nir.c:4772
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: Unsupported SPIR-V 
-capability: SpvCapabilityUniformAndStorageBuffer16BitAccess (4434)
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     36 bytes into 
-the SPIR-V binary
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: SPIR-V WARNING:
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     In file 
-../src/compiler/spirv/spirv_to_nir.c:4772
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error: Unsupported SPIR-V 
-capability: SpvCapabilityUniformAndStorageBuffer16BitAccess (4434)
-23-09-22 10:49:43 R SERIAL-CPU> ERROR - dEQP error:     36 bytes into 
-the SPIR-V binary
-23-09-22 10:49:43 R SERIAL-CPU> Pass: 1949, Skip: 2551, Duration: 32, 
-Remaining: 9:15
-23-09-22 10:49:44 R SERIAL-CPU> [   73.300176] Unable to handle kernel 
-execute from non-executable memory at virtual address ffffaa213674cd88
-23-09-22 10:49:44 R SERIAL-CPU> [   73.310124] Mem abort info:
-23-09-22 10:49:44 R SERIAL-CPU> [   73.313003]   ESR = 0x000000008600000f
-23-09-22 10:49:44 R SERIAL-CPU> [   73.316859]   EC = 0x21: IABT 
-(current EL), IL = 32 bits
-23-09-22 10:49:44 R SERIAL-CPU> [   73.322318]   SET = 0, FnV = 0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.325464]   EA = 0, S1PTW = 0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.328703]   FSC = 0x0f: level 3 
-permission fault
-23-09-22 10:49:44 R SERIAL-CPU> [   73.333628] swapper pgtable: 4k 
-pages, 48-bit VAs, pgdp=0000000081b1c000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.340513] [ffffaa213674cd88] 
-pgd=100000027ffff003, p4d=100000027ffff003, pud=100000027fffe003, 
-pmd=100000027fff9003, pte=007800008274cf03
-23-09-22 10:49:44 R SERIAL-CPU> [   73.353372] Internal error: Oops: 
-000000008600000f [#1] PREEMPT SMP
-23-09-22 10:49:44 R SERIAL-CPU> [   73.359808] Modules linked in:
-23-09-22 10:49:44 R SERIAL-CPU> [   73.362954] CPU: 1 PID: 0 Comm: 
-swapper/1 Tainted: G        W          6.5.4-g8a16969a8434 #1
-23-09-22 10:49:44 R SERIAL-CPU> [   73.371705] Hardware name: Google 
-Cheza (rev3+) (DT)
-23-09-22 10:49:44 R SERIAL-CPU> [   73.376801] pstate: 20400009 (nzCv 
-daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-23-09-22 10:49:44 R SERIAL-CPU> [   73.383944] pc : 
-in_lookup_hashtable+0x538/0x2000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.388787] lr : rcu_core+0x250/0x640
-23-09-22 10:49:44 R SERIAL-CPU> [   73.392559] sp : ffff80008000bec0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.395962] x29: ffff80008000bec0 
-x28: ffffaa2134116b28 x27: ffffaa2136381840
-23-09-22 10:49:44 R SERIAL-CPU> [   73.403289] x26: 000000000000000a 
-x25: ffff266077371b38 x24: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.410614] x23: 0000000000000003 
-x22: ffff80008000bf30 x21: ffff266077371ac0
-23-09-22 10:49:44 R SERIAL-CPU> [   73.417940] x20: ffff265f00190000 
-x19: 0000000000000004 x18: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.425266] x17: ffff7c3f416ea000 
-x16: ffff800080008000 x15: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.432593] x14: 0000000000000000 
-x13: 0000000000000078 x12: 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.439920] x11: 0000000000000000 
-x10: 0000000000000001 x9 : 0000000000000000
-23-09-22 10:49:44 R SERIAL-CPU> [   73.447245] x8 : ffff80008000be50 x7 
-: 0000000000000000 x6 : ffff266077371b48
-23-09-22 10:49:44 R SERIAL-CPU> [   73.454571] x5 : ffffaa2134216444 x4 
-: fffffc99800bcb20 x3 : ffffaa2135c8be78
-23-09-22 10:49:45 R SERIAL-CPU> [   73.461902] x2 : ffff265f5d7ca700 x1 
-: ffffaa213674cd88 x0 : ffff265f0773e3b0
-23-09-22 10:49:45 R SERIAL-CPU> [   73.469231] Call trace:
-23-09-22 10:49:45 R SERIAL-CPU> [   73.471751] 
-in_lookup_hashtable+0x538/0x2000
-23-09-22 10:49:45 R SERIAL-CPU> [   73.476235] rcu_core_si+0x10/0x1c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.479739] __do_softirq+0x10c/0x284
-23-09-22 10:49:45 R SERIAL-CPU> [   73.483508] ____do_softirq+0x10/0x1c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.487276] call_on_irq_stack+0x24/0x4c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.491310] 
-do_softirq_own_stack+0x1c/0x28
-23-09-22 10:49:45 R SERIAL-CPU> [   73.495609] irq_exit_rcu+0xd8/0xf4
-23-09-22 10:49:45 R SERIAL-CPU> [   73.499197] el1_interrupt+0x38/0x68
-23-09-22 10:49:45 R SERIAL-CPU> [   73.502871] el1h_64_irq_handler+0x18/0x24
-23-09-22 10:49:45 R SERIAL-CPU> [   73.507086] el1h_64_irq+0x64/0x68
-23-09-22 10:49:45 R SERIAL-CPU> [   73.510587] 
-cpuidle_enter_state+0x134/0x2e0
-23-09-22 10:49:45 R SERIAL-CPU> [   73.514973] cpuidle_enter+0x38/0x50
-23-09-22 10:49:45 R SERIAL-CPU> [   73.518648] do_idle+0x1f4/0x264
-23-09-22 10:49:45 R SERIAL-CPU> [   73.521970] cpu_startup_entry+0x28/0x2c
-23-09-22 10:49:45 R SERIAL-CPU> [   73.526005] 
-secondary_start_kernel+0x130/0x150
-23-09-22 10:49:45 R SERIAL-CPU> [   73.530660] 
-__secondary_switched+0xb8/0xbc
-23-09-22 10:49:45 R SERIAL-CPU> [   73.534965] Code: 00000000 00000000 
-00000000 00000000 (0773e3b0)
-23-09-22 10:49:45 R SERIAL-CPU> [   73.541226] ---[ end trace 
-0000000000000000 ]---
-23-09-22 10:49:45 R SERIAL-CPU> [   73.545975] Kernel panic - not 
-syncing: Oops: Fatal exception in interrupt
-23-09-22 10:49:45 R SERIAL-CPU> [   73.553032] SMP: stopping secondary CPUs
-23-09-22 10:49:45 R SERIAL-CPU> [   73.557142] Kernel Offset: 
-0x2a20b4000000 from 0xffff800080000000
-23-09-22 10:49:45 R SERIAL-CPU> [   73.563396] PHYS_OFFSET: 
-0xffffd9a200000000
-23-09-22 10:49:45 R SERIAL-CPU> [   73.567687] CPU features: 
-0x00000000,800140a1,8800721b
-23-09-22 10:49:45 R SERIAL-CPU> [   73.572962] Memory Limit: none
-23-09-22 10:49:45 R SERIAL-CPU> [   73.576106] ---[ end Kernel panic - 
-not syncing: Oops: Fatal exception in interrupt ]---
+Note that the new API it would allow to flush the messages in
+the emergency context immediately from printk().
 
-David
+In that case, we would to handle nmi_trigger_cpumask_backtrace()
+some special way.
 
-[1] https://gitlab.freedesktop.org/mesa/mesa/-/jobs/49333832
+This function would be called from the emergency context but
+the nmi_cpu_backtrace() callbacks would be called on other
+CPUs in normal context.
 
-[2] https://gitlab.freedesktop.org/gfx-ci/linux/-/commits/v6.5-for-mesa-ci/
+For this case I would add something like:
 
+void nbcon_flush_all_emergency(void)
+{
+	emum nbcon_prio = nbcon_get_default_prio();
+
+	if (nbcon_prio >= NBCON_PRIO_EMERGENCY)
+		nbcon_flush_all();
+}
+
+, where the POC of nbcon_get_default_prio() and nbcon_flush_all()
+was in the replay to the 7th patch, see
+https://lore.kernel.org/all/ZRLBxsXPCym2NC5Q@alley/
+
+
+Best Regards,
+Petr
