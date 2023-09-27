@@ -2,141 +2,146 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0904FE82CA7
-	for <rcu@archiver.kernel.org>; Wed, 27 Sep 2023 15:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A28CE82CAA
+	for <rcu@archiver.kernel.org>; Wed, 27 Sep 2023 16:03:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbjI0PAa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 27 Sep 2023 11:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
+        id S232050AbjI0QDZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 27 Sep 2023 12:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjI0PA3 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:00:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB095F4;
-        Wed, 27 Sep 2023 08:00:27 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3FC1D21871;
-        Wed, 27 Sep 2023 15:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1695826826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ntrsNhAyOOgMXZMp6zh4HTN0Tx78MaxJouIAxQNAnI8=;
-        b=Ti6s3RfzLpsWtNcGRLkWU78lEcclV7iQ8fZ8Sk/gHgmoL6gZikY8cEs53gy2XRqaXyBkeR
-        yg+hVf19WoF2a/z52qzb9MDxryiWrtARId2lzxKiHdIQHNziR3jx9Nvnj9SsefNuSGmuHd
-        N6G/151E9e0jDELXUPhczncG47APK6M=
-Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DC3842C145;
-        Wed, 27 Sep 2023 15:00:24 +0000 (UTC)
-Date:   Wed, 27 Sep 2023 17:00:24 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        with ESMTP id S232838AbjI0QDM (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 27 Sep 2023 12:03:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B7C121;
+        Wed, 27 Sep 2023 09:02:35 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 18:02:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695830553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EdCiO/WzKECbYs7KtcCYhKCOSLS8gRQvCAW/vFRb9F4=;
+        b=gA8E7/z/ye+UWQvTptCUxfM7HS3iYd/tK9vXkmkbp6ehYQxjZfhSnwUbo4yeTQVXJ9IyaK
+        8wwAtn2uo82b34MM6QBT6xBYWLHHZHhUQxGiLRWHByNXFKXmbA2NGgWBwPixIIC7qn67Q0
+        rXHrEqx5L933ymrrywoXolbIUbAnG0yGsz7c0XyJmjfTWkMe8gKDoTyWp+Q9+TsYh6mrfE
+        ZNxJCnQvTyxZ13dpeZ7/wj6oYmTKRHzkxrouy8xoZEUrQ6rMcvQcIQGGMWXBr8+Rz1ibrB
+        q0E2C/9dyj2TETBAiMJrYc13NWVAl8mzXrUff1NU3ponoQLgs3BldvxYTFfGrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695830553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EdCiO/WzKECbYs7KtcCYhKCOSLS8gRQvCAW/vFRb9F4=;
+        b=YReDyt9JG3c9HFVm3jjR59KBPrudAz6g1lOu804uGt8ruhv64qozjuWhLyNqZHyepfHAYV
+        cCC1Rw8pXSmPDmAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH printk v2 10/11] rcu: Add atomic write enforcement for
- rcu stalls
-Message-ID: <ZRRDiAUJMHAgiDnD@alley>
-References: <20230919230856.661435-1-john.ogness@linutronix.de>
- <20230919230856.661435-11-john.ogness@linutronix.de>
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
+ access.
+Message-ID: <20230927160231.XRCDDSK4@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230919230856.661435-11-john.ogness@linutronix.de>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed 2023-09-20 01:14:55, John Ogness wrote:
-> Invoke the atomic write enforcement functions for rcu stalls to
-> ensure that the information gets out to the consoles.
-> 
-> It is important to note that if there are any legacy consoles
-> registered, they will be attempting to directly print from the
-> printk-caller context, which may jeopardize the reliability of
-> the atomic consoles. Optimally there should be no legacy
-> consoles registered.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  kernel/rcu/tree_stall.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 6f06dc12904a..0a58f8b233d8 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -8,6 +8,7 @@
->   */
->  
->  #include <linux/kvm_para.h>
-> +#include <linux/console.h>
->  
->  //////////////////////////////////////////////////////////////////////////////
->  //
-> @@ -582,6 +583,7 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
->  
->  static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
->  {
-> +	enum nbcon_prio prev_prio;
->  	int cpu;
->  	unsigned long flags;
->  	unsigned long gpa;
-> @@ -597,6 +599,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
->  	if (rcu_stall_is_suppressed())
->  		return;
->  
-> +	prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
-> +
->  	/*
->  	 * OK, time to rat on our buddy...
->  	 * See Documentation/RCU/stallwarn.rst for info on how to debug
-> @@ -651,6 +655,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
->  	panic_on_rcu_stall();
->  
->  	rcu_force_quiescent_state();  /* Kick them all. */
-> +
-> +	nbcon_atomic_exit(NBCON_PRIO_EMERGENCY, prev_prio);
+It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
+triggers a lockdep if used from NMI because lockdep expects a deadlock
+since nothing disables NMIs while the lock is acquired.
 
-The locations looks reasonable to me. I just hope that we would
-use another API: nbcon_emergency_enter()/exit() in the end.
+Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
+complains if used from NMI.
 
-Note that the new API it would allow to flush the messages in
-the emergency context immediately from printk().
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
 
-In that case, we would to handle nmi_trigger_cpumask_backtrace()
-some special way.
+The splat:
+| =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+| WARNING: inconsistent lock state
+| 6.6.0-rc3-rt5+ #85 Not tainted
+| --------------------------------
+| inconsistent {INITIAL USE} -> {IN-NMI} usage.
+| swapper/0/0 [HC1[1]:SC0[0]:HE0:SE1] takes:
+| ffffffff828e6c90 (console_srcu){....}-{0:0}, at: console_srcu_read_lock+0=
+x3a/0x50
+| {INITIAL USE} state was registered at:
+=E2=80=A6
+|        CPU0
+|        ----
+|   lock(console_srcu);
+|   <Interrupt>
+|     lock(console_srcu);
+|
+|  *** DEADLOCK ***
+|
 
-This function would be called from the emergency context but
-the nmi_cpu_backtrace() callbacks would be called on other
-CPUs in normal context.
+My guess is that trylock annotation should not apply to
+rcu_lock_acquire(). This would distinguish it from from non-NMI safe
+srcu_read_lock_nmisafe() and NMI check in rcu_read_unlock() is only
+there to survive if accidentally used in-NMI.
 
-For this case I would add something like:
+ include/linux/rcupdate.h | 6 ++++++
+ include/linux/srcu.h     | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-void nbcon_flush_all_emergency(void)
-{
-	emum nbcon_prio = nbcon_get_default_prio();
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 5e5f920ade909..44aab5c0bd2c1 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -303,6 +303,11 @@ static inline void rcu_lock_acquire(struct lockdep_map=
+ *map)
+ 	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+ }
+=20
++static inline void rcu_try_lock_acquire(struct lockdep_map *map)
++{
++	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
++}
++
+ static inline void rcu_lock_release(struct lockdep_map *map)
+ {
+ 	lock_release(map, _THIS_IP_);
+@@ -317,6 +322,7 @@ int rcu_read_lock_any_held(void);
+ #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+=20
+ # define rcu_lock_acquire(a)		do { } while (0)
++# define rcu_try_lock_acquire(a)	do { } while (0)
+ # define rcu_lock_release(a)		do { } while (0)
+=20
+ static inline int rcu_read_lock_held(void)
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 127ef3b2e6073..236610e4a8fa5 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_st=
+ruct *ssp) __acquires(ssp
+=20
+ 	srcu_check_nmi_safety(ssp, true);
+ 	retval =3D __srcu_read_lock_nmisafe(ssp);
+-	rcu_lock_acquire(&ssp->dep_map);
++	rcu_try_lock_acquire(&ssp->dep_map);
+ 	return retval;
+ }
+=20
+--=20
+2.40.1
 
-	if (nbcon_prio >= NBCON_PRIO_EMERGENCY)
-		nbcon_flush_all();
-}
-
-, where the POC of nbcon_get_default_prio() and nbcon_flush_all()
-was in the replay to the 7th patch, see
-https://lore.kernel.org/all/ZRLBxsXPCym2NC5Q@alley/
-
-
-Best Regards,
-Petr
