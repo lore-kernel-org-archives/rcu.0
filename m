@@ -2,37 +2,82 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2826E732E6
-	for <rcu@archiver.kernel.org>; Thu, 28 Sep 2023 15:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43719E732FE
+	for <rcu@archiver.kernel.org>; Thu, 28 Sep 2023 17:10:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbjI1PaA (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 28 Sep 2023 11:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S231524AbjI1RKW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 28 Sep 2023 13:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbjI1P37 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:29:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D27B7;
-        Thu, 28 Sep 2023 08:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jd8dYp7Pt8k7CilbcSNgX/vhKFjZi5YS/kaYrGpcaOg=; b=Tho9mKtJbnXYlt4hSYEACcM56G
-        q45VTY9HK9+1l97sJufYzPbUu6F26LTsmKIlv02ZgfCOTqDNynlWvidyGUafGQfqxp3OIhR61LmWx
-        9tbndOmSa2gdFN5XG8O01QNBbVRo68zOUf98BfbZxLCZHCz4t3pHsOpZxgtDKyWAV0p6YZBdvfN/q
-        QSAvWJENsjxFyojQAK1eobn6RjO+jkz0eb3KQe/lGS0e+/9EDiHcxiSNoJxoEiO/KbZ6ogx3JKneS
-        QeSQZ9xW0tj5fZNxSh0/7TxWKUvYkdn5KxPNckXqmJ2KDMGAXmEyODk9iE2vlUVmC14OV3PAGHCJM
-        kRGDIkLQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qlsxR-0058br-2J;
-        Thu, 28 Sep 2023 15:29:43 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CEEC63002E3; Thu, 28 Sep 2023 17:29:42 +0200 (CEST)
-Date:   Thu, 28 Sep 2023 17:29:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
+        with ESMTP id S232009AbjI1RKK (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 28 Sep 2023 13:10:10 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B2ECD0;
+        Thu, 28 Sep 2023 10:10:08 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6c63117a659so372135a34.0;
+        Thu, 28 Sep 2023 10:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695921007; x=1696525807; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WRE3ONenBcWJeFQYyX4IKWQ+NRnbxcCB20M0YVKhOZ0=;
+        b=DWR77XWe55ygTxuB+y2b/UBYuD9YWBTgUr6DJ08OAFA1gGn7gNWI3oDvxn2den/UiH
+         gaR2BoSORvdWLMrYJhrMVGOk+vmJ1kk/MedpY031YnFLr0vDPZE5nD5yBae0KPupkK/2
+         Uj7eTlZsTVREVzhetJKqACh3RLCsngLxukTzgkJydLnl5F1AbnzGu/z2w8QJI6lH7xBH
+         6Zt3rGddbTr6xP3EoS00LR8I5fsMd4+baFTcBPRV4/bdQprPdV8cv+Kkg6kFl97HU5UX
+         aQyn3f9C9794Zn5O0KxG5RJGmldTmVGyAprig9Da0KzKXyvDzZWxFHwQfuR+IyLjmmcb
+         isaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695921007; x=1696525807;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WRE3ONenBcWJeFQYyX4IKWQ+NRnbxcCB20M0YVKhOZ0=;
+        b=FDQL8n7gnmVKjR6SD2EF18Es81sZjp3a5zUUxIARNP3BEXE4k72mogWgFQuc4nOko5
+         RvxAOjyhEpmIALKgEsv7H5B/M2Zxq8zxMgKP7yQQQp9N/blopOykjhqQD/u3tSi8qrqq
+         zlF6ATR3wx5lXArXRMNJT/fitln1FSD2SVsZwQEsyd4KbnW6Xev3QTvgoJPte1G3Sbka
+         SVQsrNuI0pTlBwrs/0kvey48T8RNQQujFkBKpgSk92txEmxH37HGlkFZIYaQdbqUqeC3
+         ZubNYIOZ2r06YN7DmWU6rXYQ01Ar7wCIdi3PsgC/FFQJCnoIvbHT1t6g5a8TpGcRKtxF
+         1kLQ==
+X-Gm-Message-State: AOJu0YzDp/QuOyMWYhB3vEFd6t2wYoIcona7vzuwIMteoOwpiGwoYdmC
+        ZFaa1LpMYA0dtt9Y3tG2JuS8XNPdgtA=
+X-Google-Smtp-Source: AGHT+IGpoNwRCja3vQJyPkeAWQOjNJF4gjQdXPln1c4Aa51njZlyMbZsJHSZzfWXyaOFsFT1fg0PxQ==
+X-Received: by 2002:a9d:61da:0:b0:6b9:8feb:8337 with SMTP id h26-20020a9d61da000000b006b98feb8337mr1826391otk.9.1695921007317;
+        Thu, 28 Sep 2023 10:10:07 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id w6-20020a056830060600b006b9848f8aa7sm2848085oti.45.2023.09.28.10.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 10:10:06 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id CF13B27C0064;
+        Thu, 28 Sep 2023 13:10:04 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 28 Sep 2023 13:10:04 -0400
+X-ME-Sender: <xms:bLMVZXAsIOspV9QnAM-PHMatOsy3DLmNZYdfO9uAZ8f5ShvHBGK0dg>
+    <xme:bLMVZdin1WPPIiOVfCIdCzZG95Vs9PHbqtOm29E7eaqNJm5t8qbQpBcCHRH0l2iwv
+    uaU4WADArsNo-yxOA>
+X-ME-Received: <xmr:bLMVZSnfRHn1sKDqntY5Kgf4dHw0SgrvUl_WXNuvzrWXXp2F7MDzBiFX_1o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdejlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:bLMVZZxGgQ-hWWjkqs5FK41UyvHjbH_WlpojV6pSfk_hNQG7t7xx7w>
+    <xmx:bLMVZcT8jluuzfhMUHuGIBtK7RwYXZDqiCCVHsjJ9153e2hjaDpvAw>
+    <xmx:bLMVZcZTkPBEyK8HMfRx03Q68joZHLwye18A4Y02Zd3LOvpl12p09g>
+    <xmx:bLMVZeFuUMJEoW1jRvWRU_BsjQl8X-6sF6X2OjXv6nf5Z-FlRYTZkQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 28 Sep 2023 13:10:02 -0400 (EDT)
+Date:   Thu, 28 Sep 2023 10:09:23 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -51,47 +96,58 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Zqiang <qiang.zhang1211@gmail.com>
 Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
  access.
-Message-ID: <20230928152942.GE27245@noisy.programming.kicks-ass.net>
+Message-ID: <ZRWzQ5Fiav8aCYhj@boqun-archlinux>
 References: <20230927160231.XRCDDSK4@linutronix.de>
  <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
  <20230928080900.GF9829@noisy.programming.kicks-ass.net>
  <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
+ <20230928152942.GE27245@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
+In-Reply-To: <20230928152942.GE27245@noisy.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 07:54:10AM -0700, Boqun Feng wrote:
-> On Thu, Sep 28, 2023 at 10:09:00AM +0200, Peter Zijlstra wrote:
-> > On Wed, Sep 27, 2023 at 11:06:09PM -0700, Boqun Feng wrote:
+On Thu, Sep 28, 2023 at 05:29:42PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 28, 2023 at 07:54:10AM -0700, Boqun Feng wrote:
+> > On Thu, Sep 28, 2023 at 10:09:00AM +0200, Peter Zijlstra wrote:
+> > > On Wed, Sep 27, 2023 at 11:06:09PM -0700, Boqun Feng wrote:
+> > > 
+> > > > I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
+> > > > SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
+> > > > the checking for NMI lock usages, the logic is that
+> > > 
+> > > I think I'm having a problem with this commit -- that is, by adding
+> > > lockdep you're adding tracepoint, which rely on RCU being active.
+> > > 
+> > > The result is that SRCU is now no longer usable from !RCU regions.
+> > > 
 > > 
-> > > I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
-> > > SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
-> > > the checking for NMI lock usages, the logic is that
+> > Interesting
 > > 
-> > I think I'm having a problem with this commit -- that is, by adding
-> > lockdep you're adding tracepoint, which rely on RCU being active.
+> > > Was this considered and intended?
+> > > 
 > > 
-> > The result is that SRCU is now no longer usable from !RCU regions.
-> > 
+> > No, I don't think I have considered this before, I think I may still
+> > miss something here, maybe you or Paul can provide an example for such
+> > a case?
 > 
-> Interesting
+> The whole trace_.*_rcuidle() machinery. Which I thought I had fully
+> eradicated, but apparently still exists (with *one* user) :-/
 > 
-> > Was this considered and intended?
-> > 
+> Search for rcuidle in include/linux/tracepoint.h
 > 
-> No, I don't think I have considered this before, I think I may still
-> miss something here, maybe you or Paul can provide an example for such
-> a case?
+> Also, git grep trace_.*_rcuidle
+> 
 
-The whole trace_.*_rcuidle() machinery. Which I thought I had fully
-eradicated, but apparently still exists (with *one* user) :-/
+Thanks! But as I mentioned in the IRC, trace_.*_rcuidle() call the
+special APIs srcu_read_{un,}lock_notrace(), and these won't call lockdep
+annotation functions. And what the commit did was only changing the
+lockdep annotation of srcu_read_{un,}lock(), so we are still fine here?
 
-Search for rcuidle in include/linux/tracepoint.h
+Regards,
+Boqun
 
-Also, git grep trace_.*_rcuidle
-
-
+> 
