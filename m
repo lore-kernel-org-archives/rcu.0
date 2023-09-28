@@ -2,82 +2,37 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0790AE732DF
-	for <rcu@archiver.kernel.org>; Thu, 28 Sep 2023 14:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2826E732E6
+	for <rcu@archiver.kernel.org>; Thu, 28 Sep 2023 15:30:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjI1OyS (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 28 Sep 2023 10:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        id S231488AbjI1PaA (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 28 Sep 2023 11:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjI1OyR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:54:17 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46EAF9;
-        Thu, 28 Sep 2023 07:54:15 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6c4d625da40so6149467a34.1;
-        Thu, 28 Sep 2023 07:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695912855; x=1696517655; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iS2kv7BAsbZD2ZX4Mq9AGaJQ8pugaCatVESsia7nc7Y=;
-        b=YMCGR7mYwOutvi2Yd1kt3q+EPOP8wKBI69x//NgW+97jiM9o3d1hJYxxHx50BeB8nW
-         yyJ2CCZoehpxik8qCSNKWepojzyBmnGZXKWrk3HmNdbjizD/95Z2+7NuhRVX0XfRbQa9
-         F8Ola2VDsddKsdXd9Qjdvm2Cq691Jr/bkk8XPIg+Bu+l+Sgnf8s+aF5lHpqMTIZ29OTP
-         Q/tQ60rubSr5buGuQRuV+ciRg2ugk8fyaX+GHjmqBCFSbwXlX6b2IxmqaUX2pXfKFMgh
-         L4pmNtHUPWavWU/RfCDihuwtG3pEJuEL74no90d6FX0PbnzZ0/RpELcP4LSN3RRD8MQe
-         rkQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695912855; x=1696517655;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iS2kv7BAsbZD2ZX4Mq9AGaJQ8pugaCatVESsia7nc7Y=;
-        b=mLmdrr0idkb1D6kd5jyLp0RdhDaLeTDgtpHA0HvPmSlseB4EVOluwpHcVI4tWYW4nl
-         +wxpWdj0CEEpHDrL6ao+tM3C1M9qmq/LCN5UNC+77iCkr5Hv4GArPvR4Qr2i4e+R6q97
-         fTsKdutuKaqudWkK6hL4zUhTnXRFk64i9qflAUgxfT1v/CFiZ8Q/z+ZDLkGese9ULvAo
-         Xnpat0JAHE1RJQrnlzjj1H6jvAss9Klpogo7x087BCJbGfyJ8UqzLM6bFG/+C274WKQB
-         UR6YfAhghFn0GQYufZi5wslUbWT4VWQbk+5uKymDsU/DZyIE63dp9+jcivsviejvoPdd
-         g9aw==
-X-Gm-Message-State: AOJu0Yw5/XLeMrl8y4rPKfOREaHa9SaLYKUMVUSwrkPuce6zcOp2PfNj
-        q0Pn7Xja6vRWSl/5Is3IJI8=
-X-Google-Smtp-Source: AGHT+IE4NpmFgaCPOKloaywslGsTuQr+IyiBNAZyGEiFubiz0BvLChalGbhx7FMi2wIiHiW+J6Bc8Q==
-X-Received: by 2002:a9d:7b57:0:b0:6bd:7252:9db1 with SMTP id f23-20020a9d7b57000000b006bd72529db1mr1562554oto.11.1695912854903;
-        Thu, 28 Sep 2023 07:54:14 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id az3-20020a056830458300b006b89596bc61sm2287880otb.61.2023.09.28.07.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 07:54:14 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id AA2BB27C005C;
-        Thu, 28 Sep 2023 10:54:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 28 Sep 2023 10:54:12 -0400
-X-ME-Sender: <xms:lJMVZdBv4otvSsWMZUpfUuE116qjXNKPuoxsuevbMqYUD0zLjkHtoA>
-    <xme:lJMVZbiXlLsFKM2pjGTNbDtE7zoFFMR8cTUZDvd_O8hs0698PWNdOzJr2cZlX0_PW
-    v9rpyYvhXVQcl_PTw>
-X-ME-Received: <xmr:lJMVZYlBlMO5bopXvTMT1y0umYhSj3roXmID_MyJZFVUQSS6rwunq1Dnvm0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdehfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
-    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:lJMVZXxpMPaxolvqzQm1MILdMsQZ0szCDwYRYBclKf_okRw5ZyhLRA>
-    <xmx:lJMVZSQW9lOU5ZKvIJJr4FFyi4llzH3EqIpWVYpyLfy0R2jzyJ2rkQ>
-    <xmx:lJMVZaZhwvll23vS9yKNtI8YEdZD2_jhvRi229J7Zo47j4kk7i-0fQ>
-    <xmx:lJMVZcGF0g0u-zEYprLpwTxUowGc1fh2m37-gsTeiZPCsHVf_Zbt8Q>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 28 Sep 2023 10:54:11 -0400 (EDT)
-Date:   Thu, 28 Sep 2023 07:54:10 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
+        with ESMTP id S231384AbjI1P37 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 28 Sep 2023 11:29:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D27B7;
+        Thu, 28 Sep 2023 08:29:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jd8dYp7Pt8k7CilbcSNgX/vhKFjZi5YS/kaYrGpcaOg=; b=Tho9mKtJbnXYlt4hSYEACcM56G
+        q45VTY9HK9+1l97sJufYzPbUu6F26LTsmKIlv02ZgfCOTqDNynlWvidyGUafGQfqxp3OIhR61LmWx
+        9tbndOmSa2gdFN5XG8O01QNBbVRo68zOUf98BfbZxLCZHCz4t3pHsOpZxgtDKyWAV0p6YZBdvfN/q
+        QSAvWJENsjxFyojQAK1eobn6RjO+jkz0eb3KQe/lGS0e+/9EDiHcxiSNoJxoEiO/KbZ6ogx3JKneS
+        QeSQZ9xW0tj5fZNxSh0/7TxWKUvYkdn5KxPNckXqmJ2KDMGAXmEyODk9iE2vlUVmC14OV3PAGHCJM
+        kRGDIkLQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qlsxR-0058br-2J;
+        Thu, 28 Sep 2023 15:29:43 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CEEC63002E3; Thu, 28 Sep 2023 17:29:42 +0200 (CEST)
+Date:   Thu, 28 Sep 2023 17:29:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
 Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         "Paul E. McKenney" <paulmck@kernel.org>,
@@ -96,43 +51,47 @@ Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Zqiang <qiang.zhang1211@gmail.com>
 Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
  access.
-Message-ID: <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
+Message-ID: <20230928152942.GE27245@noisy.programming.kicks-ass.net>
 References: <20230927160231.XRCDDSK4@linutronix.de>
  <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
  <20230928080900.GF9829@noisy.programming.kicks-ass.net>
+ <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928080900.GF9829@noisy.programming.kicks-ass.net>
+In-Reply-To: <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 10:09:00AM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 27, 2023 at 11:06:09PM -0700, Boqun Feng wrote:
+On Thu, Sep 28, 2023 at 07:54:10AM -0700, Boqun Feng wrote:
+> On Thu, Sep 28, 2023 at 10:09:00AM +0200, Peter Zijlstra wrote:
+> > On Wed, Sep 27, 2023 at 11:06:09PM -0700, Boqun Feng wrote:
+> > 
+> > > I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
+> > > SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
+> > > the checking for NMI lock usages, the logic is that
+> > 
+> > I think I'm having a problem with this commit -- that is, by adding
+> > lockdep you're adding tracepoint, which rely on RCU being active.
+> > 
+> > The result is that SRCU is now no longer usable from !RCU regions.
+> > 
 > 
-> > I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
-> > SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
-> > the checking for NMI lock usages, the logic is that
+> Interesting
 > 
-> I think I'm having a problem with this commit -- that is, by adding
-> lockdep you're adding tracepoint, which rely on RCU being active.
+> > Was this considered and intended?
+> > 
 > 
-> The result is that SRCU is now no longer usable from !RCU regions.
-> 
+> No, I don't think I have considered this before, I think I may still
+> miss something here, maybe you or Paul can provide an example for such
+> a case?
 
-Interesting
+The whole trace_.*_rcuidle() machinery. Which I thought I had fully
+eradicated, but apparently still exists (with *one* user) :-/
 
-> Was this considered and intended?
-> 
+Search for rcuidle in include/linux/tracepoint.h
 
-No, I don't think I have considered this before, I think I may still
-miss something here, maybe you or Paul can provide an example for such
-a case?
+Also, git grep trace_.*_rcuidle
 
-One thing though, before the commit, srcu_read_lock() already has an
-rcu_lock_acquire() annotation which eventually calls lock_acquire()
-which has a tracepoint in it.
 
-Regards,
-Boqun
