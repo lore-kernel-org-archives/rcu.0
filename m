@@ -2,67 +2,70 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25BE2E743C5
-	for <rcu@archiver.kernel.org>; Thu, 28 Sep 2023 21:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B65AE743D5
+	for <rcu@archiver.kernel.org>; Fri, 29 Sep 2023 01:50:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbjI1Vke (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 28 Sep 2023 17:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S229799AbjI2Bui (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 28 Sep 2023 21:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjI1Vkd (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:40:33 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605FA19F
-        for <rcu@vger.kernel.org>; Thu, 28 Sep 2023 14:40:30 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c131ddfeb8so206712211fa.3
-        for <rcu@vger.kernel.org>; Thu, 28 Sep 2023 14:40:30 -0700 (PDT)
+        with ESMTP id S229653AbjI2Buh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 28 Sep 2023 21:50:37 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950AB19C
+        for <rcu@vger.kernel.org>; Thu, 28 Sep 2023 18:50:35 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c49f781855so7809551a34.3
+        for <rcu@vger.kernel.org>; Thu, 28 Sep 2023 18:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1695937228; x=1696542028; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695952235; x=1696557035; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uGD2NoZ6i40TmYLJm/J59VqUkOIj30C1QWeWEDrNrt0=;
-        b=QKVq3iBqxK5DntOetgmY6ioTTVrXbZLdKHYcpXnCqolZVkEwmoClq3WaYHlEWMYOc6
-         1rbeYiNgznM+f80XYfNTlKCD0c8GCqg5SF/x6z34VVeKx8+GdlZSp3WHe8OiSQm9wnDB
-         4D+XiSuC5ienyNjB4OfusMcUcrC9ev8gH43rI=
+        bh=rEm0VdVK9zPc5NSAgw5SYND4pjPpWBb334+9HMpWgA4=;
+        b=Y50677C36uvVFPKJIe7MPjOq+S6h/IwLccNAE34bnLdGyNuexfLSK1pZ3X9lmhZl9U
+         qMo8CdDQ8rAmNZmMFFD5xnip3V2Pp9eTiCfsal8kpG9y27xnxdkztuRUhr5A11w+hKBL
+         8J737pgIIiLSrG3IpTCeSGkIsd8KPZnUVWa+h2oV3+PO+HEkGv2BRpOF+5+a431NV1o+
+         c2S28dE198TjEIzeM3gwdZXB7fTJBonBenBO7emGIyXcEep2niMMczFKTfmjim0q6OV5
+         XJwEueUnR+dN4t8x3DCvRypvL2SZVYFt46nMwPOTCWqTu92pkKpJKnxE5ZgPNLialjLS
+         NC9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695937228; x=1696542028;
+        d=1e100.net; s=20230601; t=1695952235; x=1696557035;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uGD2NoZ6i40TmYLJm/J59VqUkOIj30C1QWeWEDrNrt0=;
-        b=ub3Mi5eHq1uDp9/9jfSHUeVdweeb5pDyf+GwQZ7M2shNdigD93V8UflseppDWQi5O4
-         STbHHXOPaZOPebhWCnssjtFScq/RfjW0iK23owAQzC11LpATZwVMNx3+yLDnu7nuc9kZ
-         B0yhCFLeuuXU3IEXRjR8kzlUidd349sayYZgWMKdNc4yO0jfx0nOvw/8bvT9/fvmxGwK
-         974iYcVGTz7A1c/yWbC1KrFrH46+dew+hE8Nd1XszhN4aywOkSQ4R0yaya0gLZoYnUnu
-         CBSoit1go3ok92WAuJQYicCkYR2uEbbYYmegidVw8n0JUlWn6Y9gh7v2ZZGL/clpIfhi
-         cXMQ==
-X-Gm-Message-State: AOJu0YxiQejYb/whForTAZ4A7pyPRWpX/R7Bf5beoXqPlFbRGHmbNlP3
-        FkbKhZi8IiB8Q7dHKHveq9LndS7TybuH4AY1QrSgkw==
-X-Google-Smtp-Source: AGHT+IGLhIe+5Brglx9ZvddZTFIkCHBoEvamEOMsNU15xPUraOo+aJCiibkAnPAoH4/5oqJgj2Qslci0dojtxqntw5w=
-X-Received: by 2002:a2e:9883:0:b0:2c0:d21:39de with SMTP id
- b3-20020a2e9883000000b002c00d2139demr2417343ljj.42.1695937228627; Thu, 28 Sep
- 2023 14:40:28 -0700 (PDT)
+        bh=rEm0VdVK9zPc5NSAgw5SYND4pjPpWBb334+9HMpWgA4=;
+        b=GR5EelFg10hCehMik2MmnLjEyPujVHXUAareeIaLkzmPaqXGFQjV3OIzxqLBCHorD2
+         f7masLmquEm/5+tuOcGRrLBMT+VxmKhz4e0vU1jGpVZONhygBjbIgsywB5KeH/it5Q7b
+         hTdXs73QKgTLYWNxxCTuH8PbuuV/cE8f6Sb2zNfpC7H2INfHaY8+lNNTb2hXweTzEaLu
+         +ZRsdeOOsXISYLJ+hnYKaGmPhgkmYTIEMdVk4Cvn1nqsenMPj9Ac4X+BwUoNlRX2ue7q
+         dk6PgXnsFi0P15/7DAU3awHGFoYsu2FlSQGQGzLCoSTpucLXu6ZrzhIQ8+oAvbIbyfHd
+         CcwA==
+X-Gm-Message-State: AOJu0Yxovrb1THZhi+3yV6E6zsDUMAYBnLVbkAMfpsTnfT5145m6Krda
+        +3SzycJSVJwSGyUKxUuv79Wee+DWYRCCn/zV7f0=
+X-Google-Smtp-Source: AGHT+IHVMbCIaAsI/0MEMfbDOsHUNq+BQiyKtEjn9rz3X7Il/BSAqO7FHfC5AjS3kX6tY1uLp+yXKP+Azi6kcjhE9WU=
+X-Received: by 2002:a05:6830:139a:b0:6b9:6481:8e33 with SMTP id
+ d26-20020a056830139a00b006b964818e33mr2975728otq.13.1695952234676; Thu, 28
+ Sep 2023 18:50:34 -0700 (PDT)
 MIME-Version: 1.0
 References: <CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com>
  <CAEXW_YSLTaagos86FnPjcfMOUjZA6zadTCaizQwsh6E38zN3eA@mail.gmail.com>
 In-Reply-To: <CAEXW_YSLTaagos86FnPjcfMOUjZA6zadTCaizQwsh6E38zN3eA@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 28 Sep 2023 17:40:17 -0400
-Message-ID: <CAEXW_YTc6B4biPx1=mtTtvcJpX7JoB30RYZ3R2iQ6w=An-W07w@mail.gmail.com>
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Fri, 29 Sep 2023 09:50:23 +0800
+Message-ID: <CAABZP2y07HaayoDo_o-DgbTTRR8NZrcpCvQi9-omq-catu3RLQ@mail.gmail.com>
 Subject: Re: SRCU: kworker hung in synchronize_srcu
-To:     zhuangel570 <zhuangel570@gmail.com>
-Cc:     paulmck@kernel.org, rcu@vger.kernel.org, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, like.xu.linux@gmail.com,
-        linussli@tencent.com, foxywang@tencent.com
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     zhuangel570 <zhuangel570@gmail.com>, paulmck@kernel.org,
+        rcu@vger.kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        like.xu.linux@gmail.com, linussli@tencent.com, foxywang@tencent.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 5:39=E2=80=AFPM Joel Fernandes <joel@joelfernandes.=
+On Fri, Sep 29, 2023 at 6:05=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
 org> wrote:
 >
 > Hello,
@@ -306,15 +309,19 @@ GP,
 > I wonder if you would consider trying to reproduce it with the
 > rcutorture module's SRCU testing in the chance that it occurs with it
 > on your setup.
+As an enthusiast, I have an idea, could we use the ftrace mechanism to
+log ftrace just before the stall for more detailed analysis.
+Recently I used the cyclictest --tracemark option to analyze the
+ftrace of the system just before the cyclictest's -b latency is
+exceeded. [1]
+
+Thanks
+Zhouyi
+[1] https://man.archlinux.org/man/cyclictest.8.en
 >
 > thanks,
 >
 >  - Joel
-
-As a note, I had additional comments below but I accidentally signed
-my name a bit earlier - fyi. Thanks. -Joel
-
-
 >
 >
 > >                                                       /* [GP2][CPU-017]=
