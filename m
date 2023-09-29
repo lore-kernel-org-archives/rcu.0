@@ -2,395 +2,290 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B65AE743D5
-	for <rcu@archiver.kernel.org>; Fri, 29 Sep 2023 01:50:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E8FEE743EF
+	for <rcu@archiver.kernel.org>; Fri, 29 Sep 2023 07:19:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjI2Bui (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 28 Sep 2023 21:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
+        id S232672AbjI2HTt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 29 Sep 2023 03:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjI2Buh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 28 Sep 2023 21:50:37 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950AB19C
-        for <rcu@vger.kernel.org>; Thu, 28 Sep 2023 18:50:35 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c49f781855so7809551a34.3
-        for <rcu@vger.kernel.org>; Thu, 28 Sep 2023 18:50:35 -0700 (PDT)
+        with ESMTP id S232663AbjI2HTs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 29 Sep 2023 03:19:48 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102CA199;
+        Fri, 29 Sep 2023 00:19:46 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-27740ce6c76so6914095a91.0;
+        Fri, 29 Sep 2023 00:19:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695952235; x=1696557035; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695971985; x=1696576785; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rEm0VdVK9zPc5NSAgw5SYND4pjPpWBb334+9HMpWgA4=;
-        b=Y50677C36uvVFPKJIe7MPjOq+S6h/IwLccNAE34bnLdGyNuexfLSK1pZ3X9lmhZl9U
-         qMo8CdDQ8rAmNZmMFFD5xnip3V2Pp9eTiCfsal8kpG9y27xnxdkztuRUhr5A11w+hKBL
-         8J737pgIIiLSrG3IpTCeSGkIsd8KPZnUVWa+h2oV3+PO+HEkGv2BRpOF+5+a431NV1o+
-         c2S28dE198TjEIzeM3gwdZXB7fTJBonBenBO7emGIyXcEep2niMMczFKTfmjim0q6OV5
-         XJwEueUnR+dN4t8x3DCvRypvL2SZVYFt46nMwPOTCWqTu92pkKpJKnxE5ZgPNLialjLS
-         NC9g==
+        bh=U/yQogWhePVc0xd3M0EsdYeQWpzQqK9uNx5gstxkkto=;
+        b=gCTZfqOvY8opdiBSoQBMXj9uNSN8xMj5+ZIopBf5ceTkvG7WbJzoMxOwNI3O9rcOaQ
+         oCJUq0WQsUIlqPMpeO5c1UeY6MVmsWp237jUfTRlV9DK+qBrIAhh1sTqk+m3dlM3xA/Z
+         KLxd5mPr83JFDMw9B+XeH6eL15KtBjWDaQUHMs5gV1tirVbOpbHP+GZVmW/IAdXDyEkO
+         Ld4NIwQOWHOt2Ld0URlLSf3c6s0FhoADT34G2ESddm6ISf1Uy1A0C21dxmlVebDDv+Ix
+         jRmq0aj/XkhB8/kX2Uvs4E2Trev9MEuwZMsgd6u/Z5Z0D2Feo/uLNvFLlLV65HFKwy1t
+         bdUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695952235; x=1696557035;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rEm0VdVK9zPc5NSAgw5SYND4pjPpWBb334+9HMpWgA4=;
-        b=GR5EelFg10hCehMik2MmnLjEyPujVHXUAareeIaLkzmPaqXGFQjV3OIzxqLBCHorD2
-         f7masLmquEm/5+tuOcGRrLBMT+VxmKhz4e0vU1jGpVZONhygBjbIgsywB5KeH/it5Q7b
-         hTdXs73QKgTLYWNxxCTuH8PbuuV/cE8f6Sb2zNfpC7H2INfHaY8+lNNTb2hXweTzEaLu
-         +ZRsdeOOsXISYLJ+hnYKaGmPhgkmYTIEMdVk4Cvn1nqsenMPj9Ac4X+BwUoNlRX2ue7q
-         dk6PgXnsFi0P15/7DAU3awHGFoYsu2FlSQGQGzLCoSTpucLXu6ZrzhIQ8+oAvbIbyfHd
-         CcwA==
-X-Gm-Message-State: AOJu0Yxovrb1THZhi+3yV6E6zsDUMAYBnLVbkAMfpsTnfT5145m6Krda
-        +3SzycJSVJwSGyUKxUuv79Wee+DWYRCCn/zV7f0=
-X-Google-Smtp-Source: AGHT+IHVMbCIaAsI/0MEMfbDOsHUNq+BQiyKtEjn9rz3X7Il/BSAqO7FHfC5AjS3kX6tY1uLp+yXKP+Azi6kcjhE9WU=
-X-Received: by 2002:a05:6830:139a:b0:6b9:6481:8e33 with SMTP id
- d26-20020a056830139a00b006b964818e33mr2975728otq.13.1695952234676; Thu, 28
- Sep 2023 18:50:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695971985; x=1696576785;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=U/yQogWhePVc0xd3M0EsdYeQWpzQqK9uNx5gstxkkto=;
+        b=pNR4UjGlKQmbbBTAnz0ETkJ+ckmnhtuJH4iBxYOnsQmawsdWAC0WrNIt0HCMqg5sCE
+         cE+hAVwn8ufksJhqinBU4OWFNij2WKoNSgn47btohsuo3NFc0tRQJag4JXoRaLJmQfYA
+         e6T2JOcoBArceLEP/1diOhqfBk3DftpnxbS7DYv7FcgDiLKIkDDqhwBCfhFKeLp5XA6d
+         Kgnzz4zMZEHYnfkfKqTxBQu0EwNyMZadKeyu2rk2/C+YppDZCl3lXOodhTc07KqTdZvr
+         w+O78q9pYJrXMH9vgMcnZPleMR0tm2K6q7SIpRNJk0S4nZ6PmCzNEWHaBqYT9/BDDEoI
+         o7nw==
+X-Gm-Message-State: AOJu0YykWq2Trxxx42XDE9qQHJgztUsCacxM9dBxerjdqs0XtafOy3qS
+        kbbgkLW1qp4A0GQKg896oa5ll8c4UiE=
+X-Google-Smtp-Source: AGHT+IF3UFKf/vyWWaSko/vCpdpuaf40RHXfsD9wScT3PQIWQHc73d1dORDwAx5QNtGZbCtqPaziCg==
+X-Received: by 2002:a17:90a:9c08:b0:277:522d:11e5 with SMTP id h8-20020a17090a9c0800b00277522d11e5mr3188344pjp.2.1695971985296;
+        Fri, 29 Sep 2023 00:19:45 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id fv21-20020a17090b0e9500b002775281b9easm727668pjb.50.2023.09.29.00.19.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 00:19:44 -0700 (PDT)
+Message-ID: <8461340f-c7c8-4e1e-b7fa-a0e4b9a6c2a8@gmail.com>
+Date:   Fri, 29 Sep 2023 14:19:36 +0700
 MIME-Version: 1.0
-References: <CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com>
- <CAEXW_YSLTaagos86FnPjcfMOUjZA6zadTCaizQwsh6E38zN3eA@mail.gmail.com>
-In-Reply-To: <CAEXW_YSLTaagos86FnPjcfMOUjZA6zadTCaizQwsh6E38zN3eA@mail.gmail.com>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Fri, 29 Sep 2023 09:50:23 +0800
-Message-ID: <CAABZP2y07HaayoDo_o-DgbTTRR8NZrcpCvQi9-omq-catu3RLQ@mail.gmail.com>
-Subject: Re: SRCU: kworker hung in synchronize_srcu
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     zhuangel570 <zhuangel570@gmail.com>, paulmck@kernel.org,
-        rcu@vger.kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        like.xu.linux@gmail.com, linussli@tencent.com, foxywang@tencent.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Marcus Seyfarth <m.seyfarth@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux RCU <rcu@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: [6.5.5] System slowdown during compilation workload and RIP:
+ lazy_rcu_shrink_scan
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 6:05=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
-org> wrote:
->
-> Hello,
-> Firstly, kudos to the detailed report and analysis. Rare failures are
-> hard and your usage crash/kdump is awesome to dig deeper into the
-> issue..
->
-> On Thu, Sep 28, 2023 at 3:59=E2=80=AFAM zhuangel570 <zhuangel570@gmail.co=
-m> wrote:
-> >
-> > Hi,
-> >
-> > We encounter SRCU hung issue in stable tree 5.4.203, we are running VM =
-create
-> > and destroy concurrent test, the issue happens after several weeks. Now=
- we
-> > didn't have a way to reproduce this issue, the issue happens randomly, =
-this
-> > is the second time we found it in this year.
-> >
-> > We did some investigation with crash tools, hope to get some useful clu=
-es
-> > about the issue, try to find root cause of the issue (further find a wa=
-y to
-> > fix or workaround it), here is some of our investigation, hope to get
-> > feedback from SRCU experts.
-> >
-> > [3144162.608392] INFO: task kworker/136:12:252684 blocked for more
-> > than 122 seconds.
-> > [3144162.615986]       Tainted: G           O  K   5.4.203-1-tlinux4-00=
-11.1 #1
-> > [3144162.623053] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> > disables this message.
-> > [3144162.631162] kworker/136:12  D    0 252684      2 0x90004000
-> > [3144162.631189] Workqueue: kvm-irqfd-cleanup irqfd_shutdown [kvm]
-> > [3144162.631192] Call Trace:
-> > [3144162.631202]  __schedule+0x2ee/0x660
-> > [3144162.631206]  schedule+0x33/0xa0
-> > [3144162.631209]  schedule_timeout+0x1c4/0x340
-> > [3144162.631214]  ? update_load_avg+0x82/0x660
-> > [3144162.631217]  ? raw_spin_rq_lock_nested+0x1f/0x30
-> > [3144162.631218]  wait_for_completion+0x119/0x180
-> > [3144162.631220]  ? wake_up_q+0x80/0x80
-> > [3144162.631224]  __synchronize_srcu.part.19+0x81/0xb0
-> > [3144162.631226]  ? __bpf_trace_rcu_utilization+0x10/0x10
-> > [3144162.631227]  synchronize_srcu+0x5f/0xc0
-> > [3144162.631236]  irqfd_shutdown+0x3c/0xb0 [kvm]
-> > [3144162.631239]  ? __schedule+0x2f6/0x660
-> > [3144162.631243]  process_one_work+0x19a/0x3a0
-> > [3144162.631244]  worker_thread+0x37/0x3a0
-> > [3144162.631247]  kthread+0x117/0x140
-> > [3144162.631247]  ? process_one_work+0x3a0/0x3a0
-> > [3144162.631248]  ? __kthread_cancel_work+0x40/0x40
-> > [3144162.631250]  ret_from_fork+0x1f/0x30
-> >
-> > Test workload:
-> > - Repeated concurrency testing, include Create VM, service probe, destr=
-oy VM.
-> > - VM using virito device, so kvm->irq_srcu is using frequently.
-> > - x86_64 Machine with 191 core.
-> >
-> > Crash analysis clues:
-> > - The hung task is run on CPU 136, waiting synchronize_srcu to be compl=
-eted.
-> > - The current GP of SRCU struct is 304 (srcu_gp_seq and srcu_gp_seq_nee=
-ded).
-> > - The SNP (node) of SRCU struct has 2 levels.
-> > - The SNP (node) of SRCU struct show all SNP now in GP 304 (srcu_have_c=
-bs).
-> > - The SNP (node) of SRCU struct show CPU 136 belongs to group [128,143]=
-.
-> > - The SDP (per-cpu) of SRCU struct show lock and unlock matches.
-> > - The SDP (per-cpu) of CPU 136 segcblist has one entry in pending list.
-> > - The pending entry is just the calling entry of hung kwoker task.
-> > - The SDP (per-cpu) of CPU 136 is waiting GP 288, gp_seq of segcblist i=
-s 296.
-> > - The SDP (per-cpu) of CPU 136 segcblist has no entry in DONE list.
-> > - The work-queue of SRCU and SDP of CPU 136 is idle.
-> > - More details could be found via reference at the end of this mail.
-> >
-> > crash> struct srcu_struct.srcu_idx,srcu_gp_seq,srcu_gp_seq_needed,srcu_=
-gp_seq_needed_exp,sda
-> > 0xffffc900f100e878
-> >         srcu_idx =3D 76
-> >         srcu_gp_seq =3D 304
-> >         srcu_gp_seq_needed =3D 304
-> >         srcu_gp_seq_needed_exp =3D 304
-> >         sda =3D 0x5fff9ac17800
-> >
-> > crash> struct srcu_data 0x5fff9ac17800:136
-> > [136]: ffffe8bee9817800
-> > ...
-> >   srcu_cblist =3D {
-> >     head =3D 0xffffc900e8413dd0,
-> >     tails =3D {0xffffe8bee9817848, 0xffffc900e8413dd0,
-> > 0xffffc900e8413dd0, 0xffffc900e8413dd0},
-> >     gp_seq =3D {0, 296, 296, 0},
->
-> I am actually a bit puzzled why the DONE segment count is 0. I would
-> have expected it to be >=3D 296 in this situation.
->
-> >     len =3D 1,
-> >     len_lazy =3D 0,
-> >     enabled =3D 1 '\001',
-> >     offloaded =3D 0 '\000'
-> >   },
-> >   srcu_gp_seq_needed =3D 288,
-> >   srcu_gp_seq_needed_exp =3D 0,
-> >   srcu_cblist_invoking =3D false,
-> > ...
-> >
-> > Root cause (we can't reproduce the issue, so the result is base on cras=
-h
-> > analysis and code analysis):
-> > - The leaked entry on segcblist has incorrect gp_seq (SDP is waiting 28=
-8).
-> > - The leaked entry on segcblist seems has been "accelerated".
-> > - The incorrect accelerate maybe caused by srcu_invoke_callbacks, becau=
-se
-> >   srcu_invoke_callbacks may be using incorrect GP seq doing accelerate.
-> > - Here are two emulated case may cause the "accelerate issue":
-> >
-> >
-> > CASE1: entry of CPU 136 belongs to GP 288 was accelerated to GP 292
-> > - [CPU 136] [GP 280-284] finished, yet not enter srcu_invoke_callbacks.
-> > - [CPU 136] [GP 284-288] starting, new synchronize_srcu request, queue =
-entry
-> >   to SDP.
-> > - [CPU 041] [GP 284-288] starting, new synchronize_srcu request, worklo=
-ad run
-> >   faster than CPU 136, start GP, set rcu_seq_start.
-> > - [CPU 136] [GP 284-288] starting, call srcu_funnel_gp_start, found no =
-need
-> >   to start GP.
-> > - [CPU 136] [GP 280-284] finished, start to run srcu_invoke_callbacks,
-> >   "accelerate" the seq of new added entry to 292 (it should be 288).
->
-> But srcu_gp_seq is at 304 right now. How does it matter that the CB is
-> marked for 292? It should be ready to execute anyway even at 292. Note
-> the meaning of "acceleration", the idea is to start conservatively and
-> move the callbacks forward as more accurate information is available.
-> Considering this, 292 initially should be OK IMHO (that's just more
-> conservative than 288)..
->
-> > CASE2: entry of CPU 136 belongs to GP 288 was accelerated to GP 296
-> > - [CPU 136] [GP 280-284] finished, yet not enter srcu_invoke_callbacks.
-> > - [CPU 136] [GP 284-288] starting, new synchronize_srcu request, queue =
-entry
-> >   to SDP.
-> > - [CPU 041] [GP 284-288] starting, new synchronize_srcu request, worklo=
-ad run
-> >   faster than CPU 136, start GP.
-> > - [CPU 041] [GP 284-288] finished, workload run faster, finish GP.
-> > - [CPU 136] [GP 284-288] starting, call srcu_funnel_gp_start, found no =
-need
-> >   to start GP.
-> > - [CPU 017] [GP 288-292] starting, new synchronize_srcu request, start =
-GP,
-> >   set rcu_seq_start.
-> > - [CPU 136] [GP 280-284] finished, start to run srcu_invoke_callbacks,
-> >   "accelerate" new added entry to 296 (it should be 288).
->
-> I had the same analysis here.
->
-> > /*
-> >  * CASE1
-> >  * - entry of CPU 136 expecting GP 288 was accelerated to GP 292
-> >  * - GP0: 280-284, GP1: 284-288.
-> >  */
-> >
-> > /* [GP0][CPU-136] */
-> > process_srcu {
-> >  srcu_gp_end
-> > }
-> >                 /* [GP1][CPU-136] */
-> >                 synchronize_srcu {
-> >                  __call_srcu {
-> >                   rcu_segcblist_enqueue
-> >                                          /* [GP1][CPU-041] */
-> >                                          synchronize_srcu {
-> >                                           __call_srcu {
-> >                                            srcu_funnel_gp_start
-> >                                             srcu_gp_start
-> >                                              rcu_seq_start
-> >                                           }
-> >                                          }
-> >                 /* [GP1][CPU-136] */
-> >                   srcu_funnel_gp_start
-> >                  }
-> >                 }
-> > /* [GP0][CPU-136] */
-> > srcu_invoke_callbacks {
-> >  rcu_segcblist_accelerate
-> > }
-> >
-> >
-> > /*
-> >  * CASE2
-> >  * - entry of CPU 136 belongs to GP 288 was accelerated to GP 296.
-> >  * - GP0: 280-284, GP1: 284-288, GP2: 288-292.
-> >  */
-> >
-> > /* [GP0][CPU-136] */
-> > process_srcu {
-> >  srcu_gp_end
-> > }
-> >
-> >                   /* [GP1][CPU-136] */
-> >                   synchronize_srcu {
-> >                    __call_srcu {
-> >                     rcu_segcblist_enqueue
-> >                                            /* [GP1][CPU-041] */
-> >                                            synchronize_srcu {
-> >                                             __call_srcu {
-> >                                              srcu_funnel_gp_start
-> >                                               srcu_gp_start
-> >                                             }
-> >                                            }
-> >                                            process_srcu {
-> >                                             srcu_gp_end
-> >                                              rcu_seq_end
-> >                                            }
-> >                   /* [GP1][CPU-136] */
-> >                     srcu_funnel_gp_start
-> >                    }
-> >                   }
-> > /* [GP0][CPU-136] */
-> > srcu_invoke_callbacks {
->
-> If srcu_invoke_callbacks() was really called for the rdp, I would have
-> expected rcu_segcblist_advance() to advance all those pending
-> callbacks to 304.
->
-> I posit that probably srcu_invoke_callbacks() is not even being called
-> in the first place, otherwise why is the DONE segment count still 0?
-> DONE should not be 0, otherwise callbacks will not run. The segcblist
-> of the rdp seems out of date perhaps due to rcu_invoke_callbacks() not
-> being called due to some other bug (or a workqueue/timer issue causing
-> the srcu_invoke_callbacks() to not run?).
->
-> I wonder if you would consider trying to reproduce it with the
-> rcutorture module's SRCU testing in the chance that it occurs with it
-> on your setup.
-As an enthusiast, I have an idea, could we use the ftrace mechanism to
-log ftrace just before the stall for more detailed analysis.
-Recently I used the cyclictest --tracemark option to analyze the
-ftrace of the system just before the cyclictest's -b latency is
-exceeded. [1]
+Hi,
 
-Thanks
-Zhouyi
-[1] https://man.archlinux.org/man/cyclictest.8.en
->
-> thanks,
->
->  - Joel
->
->
-> >                                                       /* [GP2][CPU-017]=
- */
-> >                                                       synchronize_srcu =
-{
-> >                                                        __call_srcu {
-> >                                                         srcu_funnel_gp_=
-start
-> >                                                          srcu_gp_start
-> >                                                           rcu_seq_start
-> >                                                        }
-> >                                                       }
-> > /* [GP0][CPU-136] */
-> >  rcu_segcblist_accelerate
-> > }
-> >
-> >
-> > Potential fix:
-> > We shouldn't accelerate the segcblist in srcu_invoke_callbacks base sna=
-pshot
-> > of current gp seq of SRCU struct, how about accelerate the sda base
-> > sdp->srcu_gp_seq_needed, maybe like this:
-> >
-> >
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 21115ffb6c44..ff8579abc924 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -1197,7 +1197,7 @@ static void srcu_invoke_callbacks(struct
-> > work_struct *work)
-> >         spin_lock_irq_rcu_node(sdp);
-> >         rcu_segcblist_insert_count(&sdp->srcu_cblist, &ready_cbs);
-> >         (void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> > -                                      rcu_seq_snap(&ssp->srcu_gp_seq))=
-;
-> > +                                      rcu_seq_snap(&sdp->srcu_gp_seq_n=
-eeded));
-> >         sdp->srcu_cblist_invoking =3D false;
-> >         more =3D rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
-> >         spin_unlock_irq_rcu_node(sdp);
->
-> I think "rcu_seq_snap(&ssp->srcu_gp_seq))" is correct IMHO,
-> rcu_seq_snap() says which what's the gp_seq at which a full GP has
-> passed from the moment rcu_seq_snap() is called. That's precisely when
-> it is safe to call all those non-accelerated callbacks.
->
-> Basically, if any of the bits are set in the state portion of the
-> sequence of the gp_seq number, then it returns (COUNTER_PORTION + 2)
-> << RCU_SEQ_CTR_SHIFT.
-> Otherwise, it returns (COUNTER_PORTION + 1) << RCU_SEQ_CTR_SHIFT.
->
->
->
->
->
-> >
-> >
-> > Thanks for reading!
-> >
-> >
-> > Reference detail log of crash dump information:
-> > https://raw.githubusercontent.com/zhuangel/misc/main/debug/srcu_hung/bt=
-.f.252684.log
-> > https://raw.githubusercontent.com/zhuangel/misc/main/debug/srcu_hung/ir=
-q_srcu.partial.log
-> > https://raw.githubusercontent.com/zhuangel/misc/main/debug/srcu_hung/ir=
-q_srcu.raw.log
-> > https://raw.githubusercontent.com/zhuangel/misc/main/debug/srcu_hung/ir=
-q_srcu.sda.lock.log
-> > https://raw.githubusercontent.com/zhuangel/misc/main/debug/srcu_hung/ir=
-q_srcu.sda.raw.log
+I notice a bug report on Bugzilla [1]. Quoting from it:
+
+> ith Kernel 6.5.5, I've noticed a sudden system slowdown during a heavy compilation workload even though plenty of free RAM still available (only around 9 GB used out of 48 GB RAM in total). I first thought of being OOM, but as stated, plenty of free RAM was still available. The system freezed for a couple of seconds, became responsive again for some seconds but this cycle repeated itself until rebooting the system. While the compilation workload could finish (albeit slowly), the system became next to unusable for anything else.
+> 
+> In the logs, I've seen the following: 
+> 
+> [ 4394.309138] ------------[ cut here ]------------
+> [ 4394.309141] ------------[ cut here ]------------
+> [ 4394.309143] WARNING: CPU: 11 PID: 436221 at kernel/rcu/tree_nocb.h:124 call_rcu+0xa85/0x14e0
+> [ 4394.309142] WARNING: CPU: 8 PID: 366 at kernel/rcu/tree_nocb.h:104 lazy_rcu_shrink_scan+0x311/0x340
+> [ 4394.309150] Modules linked in:
+> [ 4394.309151] Modules linked in:
+> [ 4394.309151]  vfat
+> [ 4394.309152]  vfat
+> [ 4394.309153]  fat
+> [ 4394.309153]  fat
+> [ 4394.309155]  snd_hda_codec_realtek
+> [ 4394.309155]  snd_hda_codec_realtek
+> [ 4394.309156]  snd_hda_codec_generic
+> [ 4394.309156]  snd_hda_codec_generic ledtrig_audio
+> [ 4394.309158]  ledtrig_audio intel_rapl_msr
+> [ 4394.309159]  intel_rapl_msr
+> [ 4394.309160]  snd_hda_codec_hdmi
+> [ 4394.309160]  snd_hda_codec_hdmi
+> [ 4394.309162]  intel_rapl_common
+> [ 4394.309162]  intel_rapl_common
+> [ 4394.309163]  sb_edac
+> [ 4394.309163]  sb_edac x86_pkg_temp_thermal
+> [ 4394.309165]  x86_pkg_temp_thermal intel_powerclamp
+> [ 4394.309166]  intel_powerclamp snd_hda_intel
+> [ 4394.309167]  snd_hda_intel snd_intel_dspcfg
+> [ 4394.309168]  snd_intel_dspcfg snd_hda_codec
+> [ 4394.309170]  snd_hda_codec snd_hwdep
+> [ 4394.309171]  snd_hwdep
+> [ 4394.309172]  coretemp
+> [ 4394.309172]  coretemp
+> [ 4394.309173]  crct10dif_pclmul
+> [ 4394.309173]  crct10dif_pclmul snd_hda_core
+> [ 4394.309174]  snd_hda_core crc32_pclmul
+> [ 4394.309175]  crc32_pclmul
+> [ 4394.309177]  polyval_clmulni
+> [ 4394.309177]  polyval_clmulni polyval_generic
+> [ 4394.309178]  polyval_generic gf128mul
+> [ 4394.309179]  gf128mul
+> [ 4394.309180]  ghash_clmulni_intel
+> [ 4394.309180]  ghash_clmulni_intel sha512_ssse3
+> [ 4394.309181]  sha512_ssse3 snd_pcm
+> [ 4394.309182]  snd_pcm
+> [ 4394.309184]  sha256_ssse3
+> [ 4394.309184]  sha256_ssse3
+> [ 4394.309185]  sha1_ssse3
+> [ 4394.309185]  sha1_ssse3
+> [ 4394.309186]  aesni_intel
+> [ 4394.309186]  aesni_intel
+> [ 4394.309188]  snd_timer
+> [ 4394.309188]  snd_timer crypto_simd
+> [ 4394.309189]  crypto_simd cryptd
+> [ 4394.309190]  cryptd i2c_i801
+> [ 4394.309191]  i2c_i801 acpi_cpufreq
+> [ 4394.309192]  acpi_cpufreq i2c_smbus
+> [ 4394.309194]  i2c_smbus snd
+> [ 4394.309195]  snd igb
+> [ 4394.309196]  igb lpc_ich
+> [ 4394.309197]  lpc_ich
+> [ 4394.309198]  soundcore mei_wdt
+> [ 4394.309199]  soundcore mei_wdt
+> [ 4394.309200]  razerkbd(O)
+> [ 4394.309201]  razerkbd(O)
+> [ 4394.309201]  mousedev sch_fq_codel
+> [ 4394.309202]  mousedev sch_fq_codel
+> [ 4394.309203]  usbip_host usbip_core
+> [ 4394.309204]  usbip_host usbip_core
+> [ 4394.309206]  pkcs8_key_parser crypto_user
+> [ 4394.309207]  pkcs8_key_parser crypto_user
+> [ 4394.309208]  fuse loop
+> [ 4394.309209]  fuse
+> [ 4394.309210]  zram
+> [ 4394.309210]  loop zram
+> [ 4394.309211]  bpf_preload ip_tables
+> [ 4394.309212]  bpf_preload
+> [ 4394.309214]  x_tables
+> [ 4394.309214]  ip_tables x_tables
+> [ 4394.309215]  ext4
+> [ 4394.309216]  ext4
+> [ 4394.309216]  crc32c_generic mbcache
+> [ 4394.309218]  crc32c_generic mbcache
+> [ 4394.309219]  crc16
+> [ 4394.309220]  crc16
+> [ 4394.309220]  jbd2 usbhid
+> [ 4394.309221]  jbd2 usbhid
+> [ 4394.309222]  amdgpu mfd_core
+> [ 4394.309223]  amdgpu
+> [ 4394.309224]  drm_buddy drm_suballoc_helper
+> [ 4394.309225]  mfd_core
+> [ 4394.309226]  crc32c_intel
+> [ 4394.309226]  drm_buddy drm_suballoc_helper
+> [ 4394.309227]  video drm_ttm_helper
+> [ 4394.309228]  crc32c_intel
+> [ 4394.309229]  ttm i2c_algo_bit
+> [ 4394.309230]  video drm_ttm_helper
+> [ 4394.309231]  drm_display_helper cec
+> [ 4394.309232]  ttm i2c_algo_bit
+> [ 4394.309234]  xhci_pci gpu_sched
+> [ 4394.309235]  drm_display_helper
+> [ 4394.309236]  xhci_pci_renesas
+> [ 4394.309236]  cec xhci_pci
+> [ 4394.309237]  amdxcp wmi
+> [ 4394.309238]  gpu_sched xhci_pci_renesas
+> 
+> [ 4394.309240]  amdxcp wmi
+> [ 4394.309240] CPU: 8 PID: 366 Comm: kswapd0 Tainted: G           O       6.5.5-2.1-cachyos-lto #1 cc6c6175d85fa32a794326555b105a9657ffd076
+> [ 4394.309244] Hardware name: LENOVO GAMING TF/X99-TF Gaming, BIOS CX99DE26 10/10/2020
+> [ 4394.309242] CPU: 11 PID: 436221 Comm: cc1plus Tainted: G           O       6.5.5-2.1-cachyos-lto #1 cc6c6175d85fa32a794326555b105a9657ffd076
+> [ 4394.309245] RIP: 0010:lazy_rcu_shrink_scan+0x311/0x340
+> [ 4394.309246] Hardware name: LENOVO GAMING TF/X99-TF Gaming, BIOS CX99DE26 10/10/2020
+> [ 4394.309248] Code: 03 00 00 75 25 4c 89 e7 e8 ac 81 87 00 f0 41 ff 8e 74 01 00 00 41 f6 86 e8 00 00 00 04 0f 85 1a fe ff ff 0f 0b e9 13 fe ff ff <0f> 0b eb d7 48 c7 c7 20 ff ec 9c e8 ff d1 86 00 31 c0 49 83 fd 01
+> [ 4394.309248] RIP: 0010:call_rcu+0xa85/0x14e0
+> [ 4394.309250] RSP: 0000:ffff8e82a3fdba88 EFLAGS: 00010093
+> [ 4394.309251] Code: 02 00 00 00 0f 85 f0 00 00 00 f6 83 e8 00 00 00 01 74 ac 48 8b 83 80 00 00 00 48 83 38 00 0f 94 c0 89 44 24 08 e9 06 f9 ff ff <0f> 0b 0f ae e8 e9 d3 f6 ff ff 0f 0b e9 cc f6 ff ff 4c 89 ef e8 62
+> 
+> [ 4394.309253] RAX: 0000000000000008 RBX: 000000000000000b RCX: 0000000000000000
+> [ 4394.309254] RSP: 0000:ffff8e7a8a033388 EFLAGS: 00010002
+> [ 4394.309255] RDX: ffff8e84cf8b0148 RSI: 0000000000000286 RDI: ffff8e84cf8f0140
+> 
+> [ 4394.309257] RBP: 0000000000000001 R08: ffff8e84cf82c540 R09: 0000000000000094
+> [ 4394.309258] RAX: 000000000000000b RBX: ffff8e84cf8eff40 RCX: 0000000000001388
+> [ 4394.309258] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8e84cf8f0140
+> [ 4394.309260] RDX: 40000077ed480115 RSI: ffff8e84cf8effb8 RDI: ffff8e7db6814da8
+> [ 4394.309260] R13: 0000000000000006 R14: ffff8e84cf8eff40 R15: 0000000000000202
+> [ 4394.309262] FS:  0000000000000000(0000) GS:ffff8e84cf800000(0000) knlGS:0000000000000000
+> [ 4394.309262] RBP: 0000000000000002 R08: 0000000000000040 R09: ffff8e7db6814d90
+> [ 4394.309264] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 4394.309264] R10: 000000000000000c R11: ffff8e843519d4f0 R12: ffff8e84cf8f0148
+> [ 4394.309266] CR2: 00007f86c9ef0000 CR3: 0000000163681001 CR4: 00000000001706e0
+> [ 4394.309266] R13: 0000000000000002 R14: 0000000000000000 R15: ffff8e7db6814da8
+> [ 4394.309268] Call Trace:
+> [ 4394.309268] FS:  00007f1566065b40(0000) GS:ffff8e84cf8c0000(0000) knlGS:0000000000000000
+> [ 4394.309270] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 4394.309271]  <TASK>
+> [ 4394.309272] CR2: 00007f1548773000 CR3: 00000007a5401003 CR4: 00000000001706e0
+> [ 4394.309274] Call Trace:
+> [ 4394.309276]  <TASK>
+> [ 4394.309274]  ? __warn+0x9e/0x160
+> [ 4394.309278]  ? lazy_rcu_shrink_scan+0x311/0x340
+> [ 4394.309278]  ? __warn+0x9e/0x160
+> [ 4394.309282]  ? call_rcu+0xa85/0x14e0
+> [ 4394.309281]  ? report_bug+0x147/0x180
+> [ 4394.309284]  ? handle_bug+0x48/0x80
+> [ 4394.309285]  ? report_bug+0x147/0x180
+> [ 4394.309287]  ? exc_invalid_op+0x16/0x40
+> [ 4394.309289]  ? handle_bug+0x48/0x80
+> [ 4394.309290]  ? asm_exc_invalid_op+0x16/0x20
+> [ 4394.309292]  ? exc_invalid_op+0x16/0x40
+> [ 4394.309294]  ? lazy_rcu_shrink_scan+0x311/0x340
+> [ 4394.309295]  ? asm_exc_invalid_op+0x16/0x20
+> [ 4394.309297]  ? lazy_rcu_shrink_scan+0x10e/0x340
+> [ 4394.309299]  shrink_slab+0x95a/0xae0
+> [ 4394.309300]  ? call_rcu+0xa85/0x14e0
+> [ 4394.309303]  shrink_node+0x1b48/0x29c0
+> [ 4394.309303]  ? sysvec_apic_timer_interrupt+0x11/0x80
+> [ 4394.309308]  kswapd+0x9fd/0x13e0
+> [ 4394.309307]  xas_store+0xb7a/0x1480
+> [ 4394.309311]  ? schedule+0x61a/0x1d20
+> [ 4394.309313]  shadow_lru_isolate+0x103/0x1c0
+> [ 4394.309314]  kthread+0x1bd/0x260
+> [ 4394.309317]  ? check_move_unevictable_folios+0x4a0/0x4a0
+> [ 4394.309318]  ? xas_store+0x1480/0x1480
+> [ 4394.309321]  ? count_shadow_nodes+0x460/0x460
+> [ 4394.309321]  ? __blk_mq_get_driver_tag+0x180/0x180
+> [ 4394.309325]  ret_from_fork+0x30/0x40
+> [ 4394.309324]  __list_lru_walk_one+0x10f/0x1c0
+> [ 4394.309328]  ? __blk_mq_get_driver_tag+0x180/0x180
+> [ 4394.309331]  ret_from_fork_asm+0x11/0x20
+> [ 4394.309331]  ? count_shadow_nodes+0x460/0x460
+> [ 4394.309334]  </TASK>
+> [ 4394.309334]  list_lru_walk_one_irq+0x53/0x80
+> [ 4394.309335] ---[ end trace 0000000000000000 ]---
+> [ 4394.309338]  shrink_slab+0x95a/0xae0
+> [ 4394.309341]  shrink_node+0x1b48/0x29c0
+> [ 4394.309344]  ? __rmqueue_pcplist+0x2e4/0x1660
+> [ 4394.309350]  do_try_to_free_pages+0x21b/0x700
+> [ 4394.309355]  try_to_free_pages+0x193/0xb80
+> [ 4394.309361]  __folio_alloc+0xa65/0x6e80
+> [ 4394.309364]  ? __alloc_pages+0x19b/0x3580
+> [ 4394.309370]  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
+> [ 4394.309374]  ? __pte_offset_map_lock+0x143/0x200
+> [ 4394.309379]  do_pte_missing+0x647/0x2da0
+> [ 4394.309385]  ? task_tick_fair+0x745/0x2880
+> [ 4394.309390]  handle_mm_fault+0x97d/0xdc0
+> [ 4394.309395]  do_user_addr_fault+0x66a/0x2f80
+> [ 4394.309401]  exc_page_fault+0x66/0x160
+> [ 4394.309405]  asm_exc_page_fault+0x22/0x30
+> [ 4394.309408] RIP: 0033:0x7f1560da1c5d
+> [ 4394.309425] Code: 4c 17 f0 c3 66 0f 1f 84 00 00 00 00 00 48 8b 4c 16 f8 48 8b 36 48 89 37 48 89 4c 17 f8 c3 c5 fe 6f 54 16 e0 c5 fe 6f 5c 16 c0 <c5> fe 7f 07 c5 fe 7f 4f 20 c5 fe 7f 54 17 e0 c5 fe 7f 5c 17 c0 c5
+> [ 4394.309426] RSP: 002b:00007ffcbe93e318 EFLAGS: 00010246
+> [ 4394.309428] RAX: 00007f1548773000 RBX: 00007f1548773000 RCX: 000000000000001f
+> [ 4394.309430] RDX: 0000000000000080 RSI: 00007f155c0dc880 RDI: 00007f1548773000
+> [ 4394.309431] RBP: 00007ffcbe93e370 R08: 0000000000000000 R09: 00000007f1548773
+> [ 4394.309433] R10: 00007f1548773000 R11: 000000000000a795 R12: 00007f155c0dc880
+> [ 4394.309434] R13: 0000000000000026 R14: 0000000000000026 R15: 0000000000000003
+> [ 4394.309437]  </TASK>
+> [ 4394.309438] ---[ end trace 0000000000000000 ]---
+
+See Bugzilla for the full thread and attached full dmesg output.
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217948
+
+-- 
+An old man doll... just what I always wanted! - Clara
