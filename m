@@ -2,114 +2,143 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47D71E74919
-	for <rcu@archiver.kernel.org>; Mon,  2 Oct 2023 20:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C676E776C2
+	for <rcu@archiver.kernel.org>; Mon,  2 Oct 2023 21:09:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjJBULf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Oct 2023 16:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
+        id S229744AbjJBVJp (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 Oct 2023 17:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjJBULf (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:11:35 -0400
+        with ESMTP id S229671AbjJBVJp (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 Oct 2023 17:09:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1B3AC;
-        Mon,  2 Oct 2023 13:11:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2590C433C8;
-        Mon,  2 Oct 2023 20:11:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC50F8E
+        for <rcu@vger.kernel.org>; Mon,  2 Oct 2023 14:09:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D73C9C433C8;
+        Mon,  2 Oct 2023 21:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696277491;
-        bh=ncy0wGCJ2hjg3VoApdm7ly5waa7mSKZO5dkfG6H7ffI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tv8Bnt3SwTOSbyTlHiMANimfqbRCq6Iq097sOUqA/sdsvl/arSp0xe0lJJTMwtmbd
-         4aMIzPWq8A48XMFBGBlfmjB6sfxVB0Bh4vpgi4sEiMvdVyHhBn44XYAXgbUGnHVqP2
-         rDgAsPXhfES5zGuSjE9b3Xf5ppqYRBDPixp8BToTXmOKaF9YM8jpCGWqxe8iBts4jH
-         0km++HpV8WqwlwmsDG0Z34Uv8Sgae6KRMpAIYVV0XNApAJCoY/U0YvN5+5SHccZGs5
-         sVPTpW7bljjoJJyxpwpsngRfwCkJdVunVJKL9jNXoO8wPyNgPdNwYcwxYiASnpEacy
-         DQUALCusRN7sg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4417ECE0591; Mon,  2 Oct 2023 13:11:31 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 13:11:31 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Paasch <cpaasch@apple.com>, stable@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: kmemleak: Ignore kmemleak false positives when
- RCU-freeing objects
-Message-ID: <e715c26a-61b9-4815-8cb6-d18839cd98f5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230930174657.800551-1-joel@joelfernandes.org>
+        s=k20201202; t=1696280982;
+        bh=OECyARqsjMUXPxTHbJkS/wyXgvJpyp6sFzlVSpSAlLs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f3m3jVVlCvWV0MAdd6R8NV9Bw6srySBvLiL1Q/d0+0aViVerpPspivCeCbOkRP8Rs
+         LhRkhrS3jqVIw/ar2U7euQR3keo+p2w6Ts190VczueOFOuqlRHfcDjYw1GdwE3Kpiy
+         HHkxqzxECdPCPh4zpXEkVvv2soRzBG6VPsOIHZqjl9L9L/Y4XZ6T5ePqHr11YDhkbO
+         jsDUHcnhE2JMmehLyv8pQw2DDreeDjuliOn6K5fLFYLl6XT8pA4ncfsuKSpow8Fmkr
+         x7JuzJipCM6jKSyNMjVnb/aw1dulEmuB8L0GaW+7QEzvy1usmebaJueHI5fcqf+JaU
+         j2QtFPM4Oz94g==
+Date:   Mon, 2 Oct 2023 23:09:39 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        zhuangel570 <zhuangel570@gmail.com>, paulmck@kernel.org,
+        rcu@vger.kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        like.xu.linux@gmail.com, linussli@tencent.com, foxywang@tencent.com
+Subject: Re: SRCU: kworker hung in synchronize_srcu
+Message-ID: <ZRsxk_fZZoUGJ_my@localhost.localdomain>
+References: <CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com>
+ <CAEXW_YSLTaagos86FnPjcfMOUjZA6zadTCaizQwsh6E38zN3eA@mail.gmail.com>
+ <CAFwiDX_db+WGuJvR-hvQCfGSoLw+E0nzzbn+nTvrhc4Pz2GbmA@mail.gmail.com>
+ <CAEXW_YSTbtk9MtQ0mhCn+yYduyNu1CHzDgvyOKwrOY19xUwqag@mail.gmail.com>
+ <CAFwiDX8FVzo3M9LORPbMK2XST8LqyoGO_YAo+kJekBO80m3PJg@mail.gmail.com>
+ <ZRnziciQQLdgYJNx@localhost.localdomain>
+ <CAFwiDX9NBdPy-CZA6i9XEd5jM+j9e57zMoW2AwAoNtzDt+8qbw@mail.gmail.com>
+ <ZRqeZ31cLs8bocBo@lothringen>
+ <CAFwiDX9TMNqG7h-FbzBYu04ew7-6x_-TinzCW6ta+7NX-BRO1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230930174657.800551-1-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFwiDX9TMNqG7h-FbzBYu04ew7-6x_-TinzCW6ta+7NX-BRO1Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 05:46:56PM +0000, Joel Fernandes (Google) wrote:
-> From: Catalin Marinas <catalin.marinas@arm.com>
+Le Mon, Oct 02, 2023 at 06:52:27PM +0530, Neeraj upadhyay a écrit :
+> On Mon, Oct 2, 2023 at 4:11 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> > Also the role of the remaining advance in srcu_gp_start() is unclear to me...
+> >
 > 
-> Since the actual slab freeing is deferred when calling kvfree_rcu(), so
-> is the kmemleak_free() callback informing kmemleak of the object
-> deletion. From the perspective of the kvfree_rcu() caller, the object is
-> freed and it may remove any references to it. Since kmemleak does not
-> scan RCU internal data storing the pointer, it will report such objects
-> as leaks during the grace period.
-> 
-> Tell kmemleak to ignore such objects on the kvfree_call_rcu() path. Note
-> that the tiny RCU implementation does not have such issue since the
-> objects can be tracked from the rcu_ctrlblk structure.
-> 
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reported-by: Christoph Paasch <cpaasch@apple.com>
-> Closes: https://lore.kernel.org/all/F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com/
-> Cc: <stable@vger.kernel.org>
-> Tested-by: Christoph Paasch <cpaasch@apple.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> As far as I understand, the advance call before accelerate is to make
+> space in one of WAIT
+> or NEXT_READY tail for acceleration. So, it can be removed.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Sounds good. Will remove that.
 
-> ---
->  kernel/rcu/tree.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cb1caefa8bd0..24423877962c 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -31,6 +31,7 @@
->  #include <linux/bitops.h>
->  #include <linux/export.h>
->  #include <linux/completion.h>
-> +#include <linux/kmemleak.h>
->  #include <linux/moduleparam.h>
->  #include <linux/panic.h>
->  #include <linux/panic_notifier.h>
-> @@ -3388,6 +3389,14 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  		success = true;
->  	}
->  
-> +	/*
-> +	 * The kvfree_rcu() caller considers the pointer freed at this point
-> +	 * and likely removes any references to it. Since the actual slab
-> +	 * freeing (and kmemleak_free()) is deferred, tell kmemleak to ignore
-> +	 * this object (no scanning or false positives reporting).
-> +	 */
-> +	kmemleak_ignore(ptr);
-> +
->  	// Set timer to drain after KFREE_DRAIN_JIFFIES.
->  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
->  		schedule_delayed_monitor_work(krcp);
-> -- 
-> 2.42.0.582.g8ccd20d70d-goog
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 20d7a238d675..5ac81ca10ec8 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -782,8 +782,6 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+> >         spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
+> >         rcu_segcblist_advance(&sdp->srcu_cblist,
+> >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> > -       (void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+> > -                                      rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
 > 
+> Deletion is ok; alternatively, we could have used
+> WARN_ON_ONCE(rcu_segcblist_accelerate(...))
+> in all places other than enqueue time for few cycles to be on safer side.
+
+How about WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL)) ?
+
+> 
+> >         spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
+> >         WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
+> >         WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
+> > @@ -1245,7 +1243,18 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+> >         rcu_segcblist_advance(&sdp->srcu_cblist,
+> >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> >         s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
+> > -       (void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
+> > +       /*
+> > +        * Acceleration might fail if the preceding call to
+> > +        * rcu_segcblist_advance() also failed due to a prior grace
+> > +        * period seen incomplete before rcu_seq_snap(). If so then a new
+> > +        * call to advance will see the completed grace period and fix
+> > +        * the situation.
+> > +        */
+> > +       if (!rcu_segcblist_accelerate(&sdp->srcu_cblist, s)) {
+> 
+> We can add below also? Here old and new are rcu_seq_current() values used in
+> the 2 calls to rcu_segcblist_advance().
+> 
+> WARN_ON_ONCE(!(rcu_seq_completed_gp(old, new) && rcu_seq_new_gp(old, new)));
+
+Very good point! "new" should be exactly one and a half grace period away from
+"old", will add that.
+
+Cooking proper patches now.
+
+Thanks.
+
+> 
+> 
+> Thanks
+> Neeraj
+> 
+> > +               rcu_segcblist_advance(&sdp->srcu_cblist,
+> > +                                     rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> > +               WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
+> > +       }
+> >         if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+> >                 sdp->srcu_gp_seq_needed = s;
+> >                 needgp = true;
+> > @@ -1692,6 +1701,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+> >         ssp = sdp->ssp;
+> >         rcu_cblist_init(&ready_cbs);
+> >         spin_lock_irq_rcu_node(sdp);
+> > +       WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+> >         rcu_segcblist_advance(&sdp->srcu_cblist,
+> >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> >         if (sdp->srcu_cblist_invoking ||
+> > @@ -1720,8 +1730,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+> >          */
+> >         spin_lock_irq_rcu_node(sdp);
+> >         rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+> > -       (void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+> > -                                      rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+> >         sdp->srcu_cblist_invoking = false;
+> >         more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
+> >         spin_unlock_irq_rcu_node(sdp);
