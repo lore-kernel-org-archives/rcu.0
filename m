@@ -2,108 +2,114 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB9EBE784BF
-	for <rcu@archiver.kernel.org>; Mon,  2 Oct 2023 15:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47D71E74919
+	for <rcu@archiver.kernel.org>; Mon,  2 Oct 2023 20:11:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238229AbjJBPw4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Oct 2023 11:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
+        id S229748AbjJBULf (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 Oct 2023 16:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238221AbjJBPw4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:52:56 -0400
+        with ESMTP id S229714AbjJBULf (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 Oct 2023 16:11:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892CCA4;
-        Mon,  2 Oct 2023 08:52:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2950AC433C7;
-        Mon,  2 Oct 2023 15:52:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1B3AC;
+        Mon,  2 Oct 2023 13:11:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2590C433C8;
+        Mon,  2 Oct 2023 20:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696261973;
-        bh=BLn9k0L62+HGyPFeeEZoLWnsVu0FYOcMpCWCctqTOCo=;
+        s=k20201202; t=1696277491;
+        bh=ncy0wGCJ2hjg3VoApdm7ly5waa7mSKZO5dkfG6H7ffI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HAHJdZPwRrkPtZrhxb2JtnbIyWwVtenYCeeIVV1vJubJa3vjW4dJKFPiMevXNBOTm
-         2YeT+78d1HHv+AS7MmeIiRXR7/Km4jnvdaQ1w+yPhQ7p8290Pg2xTSYw4nOk9O+TiG
-         yW8Bw+Frx69pioCCIXjsT7gnYR6LgeIW8PTQTey34/y8FWQQr9H1ILMrx7KVl1a3ZM
-         WfeV324HjCspmNSjaJjtWCABoz2H1mhGoQTGHcVOFcFtWjrHDfMLl+ZIyAAB2f3Y9g
-         zUbSo9iJCt2fSdK/P8z9mLUtxoYWWLkyg/PYRwbSVLopd6JEQdiOGjoDkPWLfvN3V0
-         5Mg+Jmxipl8EQ==
+        b=tv8Bnt3SwTOSbyTlHiMANimfqbRCq6Iq097sOUqA/sdsvl/arSp0xe0lJJTMwtmbd
+         4aMIzPWq8A48XMFBGBlfmjB6sfxVB0Bh4vpgi4sEiMvdVyHhBn44XYAXgbUGnHVqP2
+         rDgAsPXhfES5zGuSjE9b3Xf5ppqYRBDPixp8BToTXmOKaF9YM8jpCGWqxe8iBts4jH
+         0km++HpV8WqwlwmsDG0Z34Uv8Sgae6KRMpAIYVV0XNApAJCoY/U0YvN5+5SHccZGs5
+         sVPTpW7bljjoJJyxpwpsngRfwCkJdVunVJKL9jNXoO8wPyNgPdNwYcwxYiASnpEacy
+         DQUALCusRN7sg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B4AF5CE0CCF; Mon,  2 Oct 2023 08:52:52 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 08:52:52 -0700
+        id 4417ECE0591; Mon,  2 Oct 2023 13:11:31 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 13:11:31 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 09/10] rcu: Remove references to rcu_migrate_callbacks()
- from diagrams
-Message-ID: <bbae8cc2-5c9f-4772-870c-be81748500e0@paulmck-laptop>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Paasch <cpaasch@apple.com>, stable@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: kmemleak: Ignore kmemleak false positives when
+ RCU-freeing objects
+Message-ID: <e715c26a-61b9-4815-8cb6-d18839cd98f5@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20230908203603.5865-1-frederic@kernel.org>
- <20230908203603.5865-10-frederic@kernel.org>
+References: <20230930174657.800551-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230908203603.5865-10-frederic@kernel.org>
+In-Reply-To: <20230930174657.800551-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 10:36:02PM +0200, Frederic Weisbecker wrote:
-> This function is gone since:
+On Sat, Sep 30, 2023 at 05:46:56PM +0000, Joel Fernandes (Google) wrote:
+> From: Catalin Marinas <catalin.marinas@arm.com>
 > 
-> 	53b46303da84 (rcu: Remove rsp parameter from rcu_boot_init_percpu_data() and friends)
+> Since the actual slab freeing is deferred when calling kvfree_rcu(), so
+> is the kmemleak_free() callback informing kmemleak of the object
+> deletion. From the perspective of the kvfree_rcu() caller, the object is
+> freed and it may remove any references to it. Since kmemleak does not
+> scan RCU internal data storing the pointer, it will report such objects
+> as leaks during the grace period.
 > 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Tell kmemleak to ignore such objects on the kvfree_call_rcu() path. Note
+> that the tiny RCU implementation does not have such issue since the
+> objects can be tracked from the rcu_ctrlblk structure.
+> 
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reported-by: Christoph Paasch <cpaasch@apple.com>
+> Closes: https://lore.kernel.org/all/F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com/
+> Cc: <stable@vger.kernel.org>
+> Tested-by: Christoph Paasch <cpaasch@apple.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
 > ---
->  .../Design/Memory-Ordering/TreeRCU-callback-registry.svg | 9 ---------
->  Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg  | 9 ---------
->  2 files changed, 18 deletions(-)
+>  kernel/rcu/tree.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg
-> index 7ac6f9269806..63eff867175a 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg
-> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg
-> @@ -564,15 +564,6 @@
->         font-size="192"
->         id="text202-7-9-6"
->         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcutree_migrate_callbacks()</text>
-> -    <text
-> -       xml:space="preserve"
-> -       x="8335.4873"
-> -       y="5357.1006"
-> -       font-style="normal"
-> -       font-weight="bold"
-> -       font-size="192"
-> -       id="text202-7-9-6-0"
-> -       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_migrate_callbacks()</text>
->      <text
->         xml:space="preserve"
->         x="8768.4678"
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> index 6e690a3be161..53e0dc2a2c79 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> @@ -1446,15 +1446,6 @@
->         font-size="192"
->         id="text202-7-9-6"
->         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcutree_migrate_callbacks()</text>
-> -    <text
-> -       xml:space="preserve"
-> -       x="8335.4873"
-> -       y="5357.1006"
-> -       font-style="normal"
-> -       font-weight="bold"
-> -       font-size="192"
-> -       id="text202-7-9-6-0"
-> -       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_migrate_callbacks()</text>
->      <text
->         xml:space="preserve"
->         x="8768.4678"
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index cb1caefa8bd0..24423877962c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/export.h>
+>  #include <linux/completion.h>
+> +#include <linux/kmemleak.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/panic.h>
+>  #include <linux/panic_notifier.h>
+> @@ -3388,6 +3389,14 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+>  		success = true;
+>  	}
+>  
+> +	/*
+> +	 * The kvfree_rcu() caller considers the pointer freed at this point
+> +	 * and likely removes any references to it. Since the actual slab
+> +	 * freeing (and kmemleak_free()) is deferred, tell kmemleak to ignore
+> +	 * this object (no scanning or false positives reporting).
+> +	 */
+> +	kmemleak_ignore(ptr);
+> +
+>  	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+>  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
+>  		schedule_delayed_monitor_work(krcp);
 > -- 
-> 2.41.0
+> 2.42.0.582.g8ccd20d70d-goog
 > 
