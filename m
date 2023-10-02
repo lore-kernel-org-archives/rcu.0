@@ -2,89 +2,113 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 328D3E784BE
-	for <rcu@archiver.kernel.org>; Mon,  2 Oct 2023 15:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE37CE748E9
+	for <rcu@archiver.kernel.org>; Mon,  2 Oct 2023 15:41:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238086AbjJBPiQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Oct 2023 11:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
+        id S238166AbjJBPlj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 2 Oct 2023 11:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237903AbjJBPiP (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:38:15 -0400
+        with ESMTP id S238170AbjJBPli (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 2 Oct 2023 11:41:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C3793;
-        Mon,  2 Oct 2023 08:38:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 391E1C433C7;
-        Mon,  2 Oct 2023 15:38:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B93B8;
+        Mon,  2 Oct 2023 08:41:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 521EAC433C8;
+        Mon,  2 Oct 2023 15:41:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696261092;
-        bh=zkVDhHmdG/HenpAh9KSbmzG6yizVpjgt+Q9FTI3CzxA=;
+        s=k20201202; t=1696261295;
+        bh=OIxjPCr9wkZbCOoxXWBU/u5qVifWIFEkIOgrP/+zrzg=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DIHu2sKIpFWyW99niQioOPuOxRZTzm8CdaTpxDYdgbEHOz76PWGg76/9oK36p6w2+
-         ooKzkeyWiENKOcIxg/upZ0hc/2Dg2uXrPTv4/o+cbfICm6HlMI5qXTE5Rpqs3W907S
-         fmYiJx4SSXuWII46frnnKLWlQzIT3bLFEZJb5iYJkHiD7Blnx5zbKzF+NvH9H6mgCc
-         dAnJdKbN+JiaN1bSIzwjyz8OPM86YoJnJuaBy+2CARcJfYDzp1gqsP9Jy6JSF7JdAI
-         q0ngD8myDXCKNTIn/KAZPuHGzu8b0g+esEOpdZwzmZzbN5SZFXkTSVbnt2LjpPdyo4
-         PZXrzwXWSvflQ==
+        b=bs7VDzIxp3PxLyxrVFfEnB2W6cL3823xMsPOR9+MVtzOSpvvQmKWsz32La4mqW3Ip
+         FSXsrDi6V8bNib4o/jQ1sxuht04cRXiRD+sxRpStg08EIz8RzQ2/dVmKqQ5TFyh/Mf
+         s+hPEn8B6fX+63vfYq4hw22sb1Z5x8RY00DpaKtD6MXAGNe9TX99t9xPoSwwq8j7lN
+         VG0DKF28gE2HUG4uR/jUBjf1IsyQ86R0Yz/ltfJw1JPrsqi7Ouh1ReJtgzuvRG5N3/
+         vO/bpeJfN3Ve6OluWOHBUmRFiceaTkHbC5kSzKrNgSv6Y0XXanzVET85Qja4EtA/8f
+         qx4X8EB8XJZcA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BF8D8CE0CCF; Mon,  2 Oct 2023 08:38:11 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 08:38:11 -0700
+        id C70CFCE0CCF; Mon,  2 Oct 2023 08:41:34 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 08:41:34 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
         Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 01/10] rcu: Use rcu_segcblist_segempty() instead of open
- coding it
-Message-ID: <9f42c0ad-80ab-442a-9d10-1b09597f2078@paulmck-laptop>
+Subject: Re: [PATCH 05/10] rcu: Assume IRQS disabled from rcu_report_dead()
+Message-ID: <d8c5364e-45ed-47bf-afe3-25cd17ec2f08@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20230908203603.5865-1-frederic@kernel.org>
- <20230908203603.5865-2-frederic@kernel.org>
+ <20230908203603.5865-6-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230908203603.5865-2-frederic@kernel.org>
+In-Reply-To: <20230908203603.5865-6-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 10:35:54PM +0200, Frederic Weisbecker wrote:
-> This makes the code more readable.
+On Fri, Sep 08, 2023 at 10:35:58PM +0200, Frederic Weisbecker wrote:
+> rcu_report_dead() is the last RCU word from the CPU down through the
+> hotplug path. It is called in the idle loop right before the CPU shuts
+> down for good. Because it removes the CPU from the grace period state
+> machine and reports an ultimate quiescent state if necessary, no further
+> use of RCU is allowed. Therefore it is expected that IRQs are disabled
+> upon calling this function and are not to be re-enabled again until the
+> CPU shuts down.
 > 
-> Reviewed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Remove the IRQs disablement from that function and verify instead that
+> it is actually called with IRQs disabled as it is expected at that
+> special point in the idle path.
+> 
 > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
 > ---
->  kernel/rcu/rcu_segcblist.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  kernel/rcu/tree.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index f71fac422c8f..1693ea22ef1b 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -368,7 +368,7 @@ bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
->  	smp_mb(); /* Ensure counts are updated before callback is entrained. */
->  	rhp->next = NULL;
->  	for (i = RCU_NEXT_TAIL; i > RCU_DONE_TAIL; i--)
-> -		if (rsclp->tails[i] != rsclp->tails[i - 1])
-> +		if (!rcu_segcblist_segempty(rsclp, i))
->  			break;
->  	rcu_segcblist_inc_seglen(rsclp, i);
->  	WRITE_ONCE(*rsclp->tails[i], rhp);
-> @@ -551,7 +551,7 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
->  	 * as their ->gp_seq[] grace-period completion sequence number.
->  	 */
->  	for (i = RCU_NEXT_READY_TAIL; i > RCU_DONE_TAIL; i--)
-> -		if (rsclp->tails[i] != rsclp->tails[i - 1] &&
-> +		if (!rcu_segcblist_segempty(rsclp, i) &&
->  		    ULONG_CMP_LT(rsclp->gp_seq[i], seq))
->  			break;
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index a83ecab77917..8b5ebef32e17 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4553,11 +4553,16 @@ void rcu_cpu_starting(unsigned int cpu)
+>   */
+>  void rcu_report_dead(unsigned int cpu)
+>  {
+> -	unsigned long flags, seq_flags;
+> +	unsigned long flags;
+>  	unsigned long mask;
+>  	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+>  	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+>  
+> +	/*
+> +	 * IRQS must be disabled from now on and until the CPU dies, or an interrupt
+> +	 * may introduce a new READ-side while it is actually off the QS masks.
+> +	 */
+> +	lockdep_assert_irqs_disabled();
+>  	// Do any dangling deferred wakeups.
+>  	do_nocb_deferred_wakeup(rdp);
+>  
+> @@ -4565,7 +4570,6 @@ void rcu_report_dead(unsigned int cpu)
+>  
+>  	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
+>  	mask = rdp->grpmask;
+> -	local_irq_save(seq_flags);
+>  	arch_spin_lock(&rcu_state.ofl_lock);
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
+>  	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+> @@ -4579,8 +4583,6 @@ void rcu_report_dead(unsigned int cpu)
+>  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
+>  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  	arch_spin_unlock(&rcu_state.ofl_lock);
+> -	local_irq_restore(seq_flags);
+> -
+>  	rdp->cpu_started = false;
+>  }
 >  
 > -- 
 > 2.41.0
