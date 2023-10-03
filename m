@@ -2,89 +2,96 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8FB1E776CE
-	for <rcu@archiver.kernel.org>; Mon,  2 Oct 2023 22:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36FF1E75424
+	for <rcu@archiver.kernel.org>; Tue,  3 Oct 2023 05:44:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjJBWqm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 2 Oct 2023 18:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
+        id S230064AbjJCFoy (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Oct 2023 01:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbjJBWqm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 2 Oct 2023 18:46:42 -0400
+        with ESMTP id S229920AbjJCFox (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Oct 2023 01:44:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EC493
-        for <rcu@vger.kernel.org>; Mon,  2 Oct 2023 15:46:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7173AC433C7;
-        Mon,  2 Oct 2023 22:46:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FDBB3;
+        Mon,  2 Oct 2023 22:44:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29246C433C7;
+        Tue,  3 Oct 2023 05:44:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696286798;
-        bh=6uxLXn2eoLVyGqYt2DJ+Syy39/MpG5Mf9aQIry0lVM0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ot1iFZwKfnldThvAiOqO7ZEBbnUlCPIblqg7xsUX5eok5WHmhKT2uY7a4DGfiG9cl
-         blk/VkcRnE7raBpQolg7g4jL94Zm12r+fSlF2C1/1x4NuYnO4cJYUN6ihVYLHQqJSD
-         muUR38rJHXIkvxcZBpsyjeOjYPnohC9kW9fsBpYq5n5dSc9FcBrH1bMbh7VD/gxtQX
-         y9t+PGRSJKMxKm+9hyRaL74Sa00KaEFQrvJdkxoC0In+sCRm3jrwDu/OJhG/MsKEmi
-         wmk7RXS2ogWv4kIWJyP22Xqa8rF7HY3yal9PXawjDd/Q1Ewi0G2VJoaDCkiLbMUHO8
-         MzNySKGMji9Xg==
-Date:   Tue, 3 Oct 2023 00:46:35 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        zhuangel570 <zhuangel570@gmail.com>, paulmck@kernel.org,
-        rcu@vger.kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        like.xu.linux@gmail.com, linussli@tencent.com, foxywang@tencent.com
-Subject: Re: SRCU: kworker hung in synchronize_srcu
-Message-ID: <ZRtIS-8NPKHdY0Ym@localhost.localdomain>
-References: <CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com>
- <CAEXW_YSLTaagos86FnPjcfMOUjZA6zadTCaizQwsh6E38zN3eA@mail.gmail.com>
- <CAFwiDX_db+WGuJvR-hvQCfGSoLw+E0nzzbn+nTvrhc4Pz2GbmA@mail.gmail.com>
- <CAEXW_YSTbtk9MtQ0mhCn+yYduyNu1CHzDgvyOKwrOY19xUwqag@mail.gmail.com>
- <CAFwiDX8FVzo3M9LORPbMK2XST8LqyoGO_YAo+kJekBO80m3PJg@mail.gmail.com>
- <ZRnziciQQLdgYJNx@localhost.localdomain>
- <ZRn1PU8enLoM8u1T@localhost.localdomain>
- <CAFwiDX_RxMQ1SgG8Wc+JWB_9i-i90Qmxuei_Yk2yJ7ohTOHjLg@mail.gmail.com>
+        s=k20201202; t=1696311890;
+        bh=TaZguEXQKjSyHnAA74xfdT5k4Fyw6T4I2L535UsMZOQ=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=Oh8mIWoYdcBvLrHp+irD9zsUljjwD3BOI5QjL/ZqAV6DWIHPKSRsG0CWXO3492MrJ
+         WwR5pZBA5YgtC/KfkEF8sIqz1I3K0IUlEyLmVNaf40Y8DrhCrbDEFG4oaXgdic4DGg
+         dxPK83/RQWn5CrN+/HVyKDpXQH7tkXaK3LoCOzm2A20eENtKr+6SaWMirT1wRXpw5+
+         whladzHvzb4Qb+eaE+YzLiBLCzg7gDV8UdMbg7Dxc0Vq1M/ku8id4II+QEKo9WPOvS
+         dL0yg7YJ4Do9t/MBPiV+IJEIrrWRTGU9ooSmKIYCVzqTVPVx+VR2J4n0OiQkBa9rpy
+         p1F7oVYVdttdg==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     enc0der <enc0der@gmail.com>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux USB <linux-usb@vger.kernel.org>,
+        Linux RCU <rcu@vger.kernel.org>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Simon Horman <horms@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Andrew Gaul <gaul@gaul.org>,
+        =?utf-8?Q?Bj?= =?utf-8?Q?=C3=B8rn?= Mork <bjorn@mork.no>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: rt8000usb driver issue (maybe interaction with other drivers)
+References: <CAEXpi5Rd6Y4umKOWRsCjX0kit=W5ZrVhn=MuRkyvJPwmjjDVnA@mail.gmail.com>
+        <ZRj_ovMi-Xbb8i-D@debian.me>
+        <CAEXpi5RiLbma5cb-ctEvvb7LGRn78VTOh5HDmreC2hYgtBEQog@mail.gmail.com>
+        <3d246a72-2755-484f-8274-0c61fc185592@gmail.com>
+Date:   Tue, 03 Oct 2023 08:47:00 +0300
+In-Reply-To: <3d246a72-2755-484f-8274-0c61fc185592@gmail.com> (Bagas Sanjaya's
+        message of "Sun, 1 Oct 2023 12:53:22 +0700")
+Message-ID: <878r8ki7fv.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFwiDX_RxMQ1SgG8Wc+JWB_9i-i90Qmxuei_Yk2yJ7ohTOHjLg@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Mon, Oct 02, 2023 at 07:51:10AM +0530, Neeraj upadhyay a écrit :
-> > And if this works, can we then remove srcu_invoke_callbacks() self-requeue?
-> > If queued several times before it actually fires, it will catch the latest
-> > grace period's end. And if queued while the callback runs, it will re-run.
-> >
-> 
-> This makes sense, but not sure for non-wq context which  link [1] mentions,
-> whether it needs it.
-> 
-> > Also why do we have sdp->srcu_invoke_callbacks ? Is that workqueue re-entrant?
-> >
-> I think you mean sdp->srcu_cblist_invoking ?
-> 
-> There was a prior discussion on this [1], where Paul mentions about
-> non-wq context.
+Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
-Actually I realize that if we remove that, then two srcu_invoke_callbacks()
-can race in such a way that an srcu barrier callback may execute before the
-callbacks it is supposed to follow. And if we must keep
-sdp->srcu_cblist_invoking then we must also keep self-requeuing.
+>> These are the drivers being loaded:
+>> 
+>> rt2800usb              36864  0
+>> rt2x00usb              24576  1 rt2800usb
+>> rt2800lib             122880  1 rt2800usb
+>> rt2x00lib              77824  3 rt2800usb,rt2x00usb,rt2800lib
+>> mac80211              811008  3 rt2x00lib,rt2x00usb,rt2800lib
+>> cfg80211              724992  2 rt2x00lib,mac80211
+>> 
+>
+> I don't see rt2800usb module in the mainline kernel. Is it out-of-tree?
+> (no wonder why it taints your kernel)
 
-I'll add a comment about that instead of removing.
+I'm guessing it's this driver:
 
-Thanks.
+drivers/net/wireless/ralink/rt2x00/Makefile:obj-$(CONFIG_RT2800USB)                     += rt2800usb.o
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> 
-> 
-> 
-> Thanks
-> Neeraj
-> 
-> [1] https://lkml.org/lkml/2020/11/19/1065
-> 
-> > Thanks.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
