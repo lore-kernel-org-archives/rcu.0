@@ -2,119 +2,113 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B539CE75453
-	for <rcu@archiver.kernel.org>; Tue,  3 Oct 2023 12:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A08EE7AD4F
+	for <rcu@archiver.kernel.org>; Tue,  3 Oct 2023 13:52:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbjJCMWI (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Oct 2023 08:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S232284AbjJCNwv (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Oct 2023 09:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjJCMWH (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:22:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989C0AC
-        for <rcu@vger.kernel.org>; Tue,  3 Oct 2023 05:22:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBAD3C433C7;
-        Tue,  3 Oct 2023 12:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696335724;
-        bh=SjeALn1CbFzpGi0pBG+GYoZ1jLvUXLHPt4ojKqH4uDg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=an5cDcl9z00PivbI9ay0ZkSbZHs1Ofor5iymtEUzk/CxSNt4jOIjuiixyPTDjzJgU
-         0WVXAi/tooARJL7wP8ZT9XoGXARCeMP+aIDNS7orA/vQwfOfnP487jke6fwY/xbLBc
-         56mCfnTn+ovoWr03rQD3zAbGrRQpV11ni+LV6Q1Z8k+cIgzq377rFpOvqi5tARfisr
-         KICRpMi4flpIZ+d1BZLsgcussJmEyl3cHWHwqPBuEQrnjLKrvW03odXeE7JNTP/c3s
-         xG/Khva0qW60zyLBeulz/aXBsYQgPyN7+FxtoaLQlD13sa+GdhnD6UQRMn6By0WYoM
-         1DfqY5gINSv3g==
-Date:   Tue, 3 Oct 2023 14:22:01 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        zhuangel570 <zhuangel570@gmail.com>, paulmck@kernel.org,
-        rcu@vger.kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        like.xu.linux@gmail.com, linussli@tencent.com, foxywang@tencent.com
-Subject: Re: SRCU: kworker hung in synchronize_srcu
-Message-ID: <ZRwHadV/p6f7RzGn@lothringen>
-References: <CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com>
- <CAEXW_YSLTaagos86FnPjcfMOUjZA6zadTCaizQwsh6E38zN3eA@mail.gmail.com>
- <CAFwiDX_db+WGuJvR-hvQCfGSoLw+E0nzzbn+nTvrhc4Pz2GbmA@mail.gmail.com>
- <CAEXW_YSTbtk9MtQ0mhCn+yYduyNu1CHzDgvyOKwrOY19xUwqag@mail.gmail.com>
- <CAFwiDX8FVzo3M9LORPbMK2XST8LqyoGO_YAo+kJekBO80m3PJg@mail.gmail.com>
- <ZRnziciQQLdgYJNx@localhost.localdomain>
- <CAFwiDX9NBdPy-CZA6i9XEd5jM+j9e57zMoW2AwAoNtzDt+8qbw@mail.gmail.com>
- <ZRqeZ31cLs8bocBo@lothringen>
- <CAFwiDX9TMNqG7h-FbzBYu04ew7-6x_-TinzCW6ta+7NX-BRO1Q@mail.gmail.com>
- <ZRsxk_fZZoUGJ_my@localhost.localdomain>
+        with ESMTP id S232068AbjJCNwu (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Oct 2023 09:52:50 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F555A9;
+        Tue,  3 Oct 2023 06:52:43 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so1607257a12.1;
+        Tue, 03 Oct 2023 06:52:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696341161; x=1696945961;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbhD19S6zLeOtT2FNUeshWF95fV8Y1/bPKyfIl12gP0=;
+        b=YT0XI35Z4m+v3MsnQ+bYMJfWA8a9DJJw56nZcLT23qRV0p1ldrx7nAap67AvoZCGQt
+         sun3MVpvWCCnVAOSrYZu0af0Jsoq92WT4QQJle692N+1YAjvUoJ+EoyNjw0HdddlfBSp
+         +yjQwdex+RmhMg9cu/dp6oADfa4sjNsT+IU7a2QIBZOreU1hv4iMVgj7BNq5eXBgY62+
+         bJVRcaf2YRRUCcTKc6J1/kvgfNFbYKZ7n0/UBHYaAjt16qNEuUrZxzrZ0RL6UWCfj9b2
+         sgVQsAYPGXBNLArENQiWgX+jH/2NDfiXdt2kbXlwwTkCo7xOqVCzywGTVJT4SqHuKfH5
+         WS9w==
+X-Gm-Message-State: AOJu0YyxQp7Wp+7bKIOwk4Dq9giyYzp34n9jQQZ8zplwTcxieKldO0Q9
+        B1JhdYwAtisJei1KT21uGvhOEWg9VTU=
+X-Google-Smtp-Source: AGHT+IFAGpUa7LltnP297SnJgjG9wRsCbtvps1bDOeBiWN2XiNo4p9pu/ruLocu0YnYfIcTd2D2GJg==
+X-Received: by 2002:a17:906:5393:b0:9ae:3fdd:4dd with SMTP id g19-20020a170906539300b009ae3fdd04ddmr12445147ejo.24.1696341160973;
+        Tue, 03 Oct 2023 06:52:40 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-120.fbsv.net. [2a03:2880:31ff:78::face:b00c])
+        by smtp.gmail.com with ESMTPSA id d10-20020a170906344a00b00992b71d8f19sm1100772ejb.133.2023.10.03.06.52.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 06:52:40 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 06:52:38 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Cc:     rcu@vger.kernel.org, rbc@meta.com
+Subject: kvm/x86: perf: Softlockup issue
+Message-ID: <ZRwcpki67uhpAUKi@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZRsxk_fZZoUGJ_my@localhost.localdomain>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 11:09:39PM +0200, Frederic Weisbecker wrote:
-> > >         spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
-> > >         WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
-> > >         WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
-> > > @@ -1245,7 +1243,18 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> > >         rcu_segcblist_advance(&sdp->srcu_cblist,
-> > >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-> > >         s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
-> > > -       (void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
-> > > +       /*
-> > > +        * Acceleration might fail if the preceding call to
-> > > +        * rcu_segcblist_advance() also failed due to a prior grace
-> > > +        * period seen incomplete before rcu_seq_snap(). If so then a new
-> > > +        * call to advance will see the completed grace period and fix
-> > > +        * the situation.
-> > > +        */
-> > > +       if (!rcu_segcblist_accelerate(&sdp->srcu_cblist, s)) {
-> > 
-> > We can add below also? Here old and new are rcu_seq_current() values used in
-> > the 2 calls to rcu_segcblist_advance().
-> > 
-> > WARN_ON_ONCE(!(rcu_seq_completed_gp(old, new) && rcu_seq_new_gp(old, new)));
-> 
-> Very good point! "new" should be exactly one and a half grace period away from
-> "old", will add that.
-> 
-> Cooking proper patches now.
+I've been pursuing a bug in a virtual machine (KVM) that I would like to share
+in here. The VM gets stuck when running perf in a VM and getting soft lockups.
 
-Actually this more simple fix below. rcu_seq_snap() can be called before
-rcu_segcblist_advance() after all. The only side effect is that callbacks
-advancing is then _after_ the full barrier in rcu_seq_snap(). I don't see
-an obvious problem with that as that barrier only cares about:
+The bug happens upstream (Linux 6.6-rc4 - 8a749fd1a8720d461). The same kernel
+is being used in the host and in the guest.
 
-1) Ordering accesses of the update side before call_srcu() so they don't bleed
-2) See all the accesses prior to the grace period of the current gp_num
+The problem only happens in a very specific circumstances:
 
-The only things callbacks advancing need to be ordered against are carried by
-snp locking.
+1) PMU needs to be enabled in the guest
 
-I still remove the accelerations elsewhere and advancing in srcu_gp_start() in
-further patches. I'll also avoid advancing and acceleration in
-srcu_gp_start_if_needed if there is no callback to queue.
+2) Libvirt/QEMU needs to use a custom CPU:
+	* Here is the qemu line:
+		-cpu Skylake-Server,kvm-pv-eoi=on,pmu=on
+	* Any other CPU seems to hit the problem
+		* Even using Skylake-Server on a Skylake server
+	* Using CPU passthrough workaround the problem
 
-The point is also that this simple fix alone can be easily backported and
-the rest can come as cleanups.
+3) You need to use 6 or more events in perf.
+	* This is a line that reproduces the problem:
+	  # perf stat -e cpu-clock -e context-switches -e cpu-migrations  -e page-faults -e cycles -e instructions  -e branches ls
+	* Removing any of these events (totaling 5 events) makes `perf` work again
+
+4) This problem happens on upstream, 6.4 and 5.19
+	* This problem doesn't seem to happen on 5.12
+
+Problem
+========
+
+When running perf in the circumstances above, the VM is stuck, with a lot of
+stack traces. This is some messages:
+
+	 kernel:[  400.314381] watchdog: BUG: soft lockup - CPU#3 stuck for 26s! [kworker/u68:11:6853]
+	 kernel:[  400.324380] watchdog: BUG: soft lockup - CPU#8 stuck for 26s! [dynoKernelMon:9781]
+	 kernel:[  404.368380] watchdog: BUG: soft lockup - CPU#30 stuck for 22s! [kworker/30:2:1326]
+
+Here is part of the stack. The full stack is in the pastebin below:
+
+	 nmi_cpu_backtrace (lib/nmi_backtrace.c:115)
+	 nmi_cpu_backtrace_handler (arch/x86/kernel/apic/hw_nmi.c:47)
+	 nmi_handle (arch/x86/kernel/nmi.c:149)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 default_do_nmi (arch/x86/kernel/nmi.c:347)
+	 exc_nmi (arch/x86/kernel/nmi.c:543)
+	 end_repeat_nmi (arch/x86/entry/entry_64.S:1471)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
 
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 5602042856b1..8b09fb37dbf3 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1244,10 +1244,10 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 	spin_lock_irqsave_sdp_contention(sdp, &flags);
- 	if (rhp)
- 		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-+	s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
--	s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
--	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
-+	WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s) && rhp);
- 	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
- 		sdp->srcu_gp_seq_needed = s;
- 		needgp = true;
+
+More info
+=========
+
+Soft lockup messages in the guest:
+	https://paste.debian.net/1293888/
+Full log from the guest:
+	https://paste.debian.net/1293891/
+vCPU stacks dumped from the host (cat /proc/<vcpu>/stack):
+	https://paste.debian.net/1293887/
+Qemu (version 7.1.0) command line
+	https://paste.debian.net/1293894/
