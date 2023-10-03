@@ -2,113 +2,77 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A08EE7AD4F
-	for <rcu@archiver.kernel.org>; Tue,  3 Oct 2023 13:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49AD8E7AD58
+	for <rcu@archiver.kernel.org>; Tue,  3 Oct 2023 14:37:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbjJCNwv (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Oct 2023 09:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        id S240044AbjJCOhP (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Oct 2023 10:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjJCNwu (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:52:50 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F555A9;
-        Tue,  3 Oct 2023 06:52:43 -0700 (PDT)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so1607257a12.1;
-        Tue, 03 Oct 2023 06:52:43 -0700 (PDT)
+        with ESMTP id S240147AbjJCOhN (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Oct 2023 10:37:13 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B3BB4
+        for <rcu@vger.kernel.org>; Tue,  3 Oct 2023 07:37:05 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso11392a12.1
+        for <rcu@vger.kernel.org>; Tue, 03 Oct 2023 07:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696343823; x=1696948623; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3H71Ddp0doyGgICoMWyxNf2GnEn07JdKBfrTYW/a2tY=;
+        b=DHY/802L91Y3bsbXfEh4FN5smepxNvCcp0/hs4yiqKQB6i88Oo2ZeXqrQZDX3BlwfE
+         51tqquR1UvGRAiR3n6X/s2ZSxok+tB8MokJIqda8j8ARfuYJ15XAqL4wFuaS0ivAyHRk
+         qOZ/OiSEGINuKHTFYUdqOSWWufiyOcWQTFcVCIeESWc0kPHDIwk35IV/tR5YokRSci2y
+         5xLuOwiRuYGfIOOnf3XUNdEEIKaxYwMr3Nyqgxyw9swii7lPxWV0FcAyDO1zso5YnMts
+         hacaY6IkFSkOd/GNdAgj7Zfvve4BD1IdYptjoz3DCjQxZ/l314z6Sau0FVIMjm/Y0szA
+         UVvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696341161; x=1696945961;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qbhD19S6zLeOtT2FNUeshWF95fV8Y1/bPKyfIl12gP0=;
-        b=YT0XI35Z4m+v3MsnQ+bYMJfWA8a9DJJw56nZcLT23qRV0p1ldrx7nAap67AvoZCGQt
-         sun3MVpvWCCnVAOSrYZu0af0Jsoq92WT4QQJle692N+1YAjvUoJ+EoyNjw0HdddlfBSp
-         +yjQwdex+RmhMg9cu/dp6oADfa4sjNsT+IU7a2QIBZOreU1hv4iMVgj7BNq5eXBgY62+
-         bJVRcaf2YRRUCcTKc6J1/kvgfNFbYKZ7n0/UBHYaAjt16qNEuUrZxzrZ0RL6UWCfj9b2
-         sgVQsAYPGXBNLArENQiWgX+jH/2NDfiXdt2kbXlwwTkCo7xOqVCzywGTVJT4SqHuKfH5
-         WS9w==
-X-Gm-Message-State: AOJu0YyxQp7Wp+7bKIOwk4Dq9giyYzp34n9jQQZ8zplwTcxieKldO0Q9
-        B1JhdYwAtisJei1KT21uGvhOEWg9VTU=
-X-Google-Smtp-Source: AGHT+IFAGpUa7LltnP297SnJgjG9wRsCbtvps1bDOeBiWN2XiNo4p9pu/ruLocu0YnYfIcTd2D2GJg==
-X-Received: by 2002:a17:906:5393:b0:9ae:3fdd:4dd with SMTP id g19-20020a170906539300b009ae3fdd04ddmr12445147ejo.24.1696341160973;
-        Tue, 03 Oct 2023 06:52:40 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-120.fbsv.net. [2a03:2880:31ff:78::face:b00c])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170906344a00b00992b71d8f19sm1100772ejb.133.2023.10.03.06.52.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 06:52:40 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 06:52:38 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Cc:     rcu@vger.kernel.org, rbc@meta.com
-Subject: kvm/x86: perf: Softlockup issue
-Message-ID: <ZRwcpki67uhpAUKi@gmail.com>
+        d=1e100.net; s=20230601; t=1696343823; x=1696948623;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3H71Ddp0doyGgICoMWyxNf2GnEn07JdKBfrTYW/a2tY=;
+        b=bt+l00C8UYOO4uk1GCxrZUH3fwgzpioI+kzy0WMN+HHRDLQr3aq+11n5cjVZEfF2Ba
+         oCaBmLtF/0uLosnxfuo1NFREHio47KqJrSwZh/GXsYtoEt3pTzECv9gWWZ15GKvDPrqr
+         r1uQ0iWajHQPdIVrsaMKtUAOnp82wkjAOr72Ng2WmjqkHMhyTUDHZNXbHfTMCWJ97qy7
+         cnMp7e7MOgtDO9KCmJDKfQtx8QBrCcalIFvQUHpsAqYHw6+y202R5Ht7ojm3SW08JgTz
+         g60VR0wOP4nGIAtKwMGfp0GZhELsSMrMD0FtJ+vHDyL5dvvvlw94Mn2q/cQ9p/bYjaXY
+         t+wQ==
+X-Gm-Message-State: AOJu0Yx6URCYungMg88/YBOMRakprL+tNDrB8HysEuWra6wt7qi6u+qM
+        YHyTnPcJTzuEo43fVuoSnWzCtNP4s7uzHmRyU2KmuA==
+X-Google-Smtp-Source: AGHT+IHXc3WAfKlNdinaDDcPUvQoOeQzdqAXe81rxIcxpa0Ed7oQHIWBrnmmMckOGzulalTSLX6S1L1E64CkioL5uRo=
+X-Received: by 2002:a50:d09e:0:b0:52f:2f32:e76c with SMTP id
+ v30-20020a50d09e000000b0052f2f32e76cmr137455edd.2.1696343823200; Tue, 03 Oct
+ 2023 07:37:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <ZRwcpki67uhpAUKi@gmail.com>
+In-Reply-To: <ZRwcpki67uhpAUKi@gmail.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 3 Oct 2023 07:36:48 -0700
+Message-ID: <CALMp9eSozxk-nuwWF3Xvg7fqC5doHKc5-6Nh40EnmzVRX+EQ4Q@mail.gmail.com>
+Subject: Re: kvm/x86: perf: Softlockup issue
+To:     Breno Leitao <leitao@debian.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, rcu@vger.kernel.org, rbc@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-I've been pursuing a bug in a virtual machine (KVM) that I would like to share
-in here. The VM gets stuck when running perf in a VM and getting soft lockups.
+On Tue, Oct 3, 2023 at 6:52=E2=80=AFAM Breno Leitao <leitao@debian.org> wro=
+te:
+>
+> I've been pursuing a bug in a virtual machine (KVM) that I would like to =
+share
+> in here. The VM gets stuck when running perf in a VM and getting soft loc=
+kups.
+>
+> The bug happens upstream (Linux 6.6-rc4 - 8a749fd1a8720d461). The same ke=
+rnel
+> is being used in the host and in the guest.
 
-The bug happens upstream (Linux 6.6-rc4 - 8a749fd1a8720d461). The same kernel
-is being used in the host and in the guest.
-
-The problem only happens in a very specific circumstances:
-
-1) PMU needs to be enabled in the guest
-
-2) Libvirt/QEMU needs to use a custom CPU:
-	* Here is the qemu line:
-		-cpu Skylake-Server,kvm-pv-eoi=on,pmu=on
-	* Any other CPU seems to hit the problem
-		* Even using Skylake-Server on a Skylake server
-	* Using CPU passthrough workaround the problem
-
-3) You need to use 6 or more events in perf.
-	* This is a line that reproduces the problem:
-	  # perf stat -e cpu-clock -e context-switches -e cpu-migrations  -e page-faults -e cycles -e instructions  -e branches ls
-	* Removing any of these events (totaling 5 events) makes `perf` work again
-
-4) This problem happens on upstream, 6.4 and 5.19
-	* This problem doesn't seem to happen on 5.12
-
-Problem
-========
-
-When running perf in the circumstances above, the VM is stuck, with a lot of
-stack traces. This is some messages:
-
-	 kernel:[  400.314381] watchdog: BUG: soft lockup - CPU#3 stuck for 26s! [kworker/u68:11:6853]
-	 kernel:[  400.324380] watchdog: BUG: soft lockup - CPU#8 stuck for 26s! [dynoKernelMon:9781]
-	 kernel:[  404.368380] watchdog: BUG: soft lockup - CPU#30 stuck for 22s! [kworker/30:2:1326]
-
-Here is part of the stack. The full stack is in the pastebin below:
-
-	 nmi_cpu_backtrace (lib/nmi_backtrace.c:115)
-	 nmi_cpu_backtrace_handler (arch/x86/kernel/apic/hw_nmi.c:47)
-	 nmi_handle (arch/x86/kernel/nmi.c:149)
-	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
-	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
-	 default_do_nmi (arch/x86/kernel/nmi.c:347)
-	 exc_nmi (arch/x86/kernel/nmi.c:543)
-	 end_repeat_nmi (arch/x86/entry/entry_64.S:1471)
-	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
-	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
-	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
-
-
-
-More info
-=========
-
-Soft lockup messages in the guest:
-	https://paste.debian.net/1293888/
-Full log from the guest:
-	https://paste.debian.net/1293891/
-vCPU stacks dumped from the host (cat /proc/<vcpu>/stack):
-	https://paste.debian.net/1293887/
-Qemu (version 7.1.0) command line
-	https://paste.debian.net/1293894/
+Have you tried https://lore.kernel.org/kvm/169567819674.170423.438485398062=
+9356216.b4-ty@google.com/?
