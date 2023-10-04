@@ -2,35 +2,33 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA548E8FDC3
-	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 03:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04808E7B5E1
+	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 09:25:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjJDDau (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Oct 2023 23:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S232947AbjJDJZm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Oct 2023 05:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbjJDDat (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Oct 2023 23:30:49 -0400
+        with ESMTP id S241784AbjJDJZm (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Oct 2023 05:25:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6212ABB;
-        Tue,  3 Oct 2023 20:30:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4803C433C8;
-        Wed,  4 Oct 2023 03:30:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05026AB;
+        Wed,  4 Oct 2023 02:25:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EC61C433C8;
+        Wed,  4 Oct 2023 09:25:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696390246;
-        bh=ZJV26I3OfMh+CmPLvclEZyyKMf9/0YGwgBVF1Wyp/ak=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=C+XLGSTRm1recRu4TbPznvRvGc7Fj0UcnBH4OY8nurLd/jSOGTvwgcvsxPPEz5ymJ
-         sUxzyFkaBFw0uW94CoQNqt6Dg5+bgLHuRqa0wj8N53OwLSYyxN+vbJifQ1jTG+EVNr
-         86MVNHejx5KCQclsOQqUKglyLXqwo+ki0pEBSFRU9gxeZ2ZI+zTijhaW1dJy9zD9MI
-         mueO6MqNBREI/Uwg+5F7WBOkl9ntTrm+Xo06psh2apsI6WDhx9OxuviJpPvuh+3xTL
-         eFo24Yd4GIaxf5Qt7aDukXh1hflmf4wHj7wTjQnCtNWisM7YXagJmxcfH8eu3jx+/2
-         NMImfjiOUYRzQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 70C46CE0D14; Tue,  3 Oct 2023 20:30:45 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 20:30:45 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
+        s=k20201202; t=1696411536;
+        bh=ZzTWSABeD4wFE2m9mjmYRRB/7+UvIZBGEIN6sgQ0kb4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SvXVBh51nCLP8HhQ7mLu03TGsMQLe1lTiMyPIJXL2ED7e7tHUGkGWCZn4B2RRkEcj
+         mfjs8Y+5HnQ79cWOddLLyDLVw/I0YpoYiqkvaoMVDrS4O8eIvlbeM+iOJvPL/fj2fV
+         Ay2+TGteENtSmTN3aduCBaE3yQBT8H+2yKs0+UZZYByBcIfkDpZ9jNtop3lEb0Dkck
+         yxFVlQBqJxdS5vBKpMITUE3zFCpHVyzDAZS6IJYFrc7bcXKFRSNAODn3fDi1TxoNF/
+         s9DEBErlkSZ4HmDSXRAPPVb/VMRv1nsFYROjvqgvOX4mCKbxpdtDk/gJiXcdPz/RK7
+         rxdDmcMli831A==
+Date:   Wed, 4 Oct 2023 11:25:33 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Yong He <zhuangel570@gmail.com>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
@@ -38,87 +36,101 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
 Subject: Re: [PATCH 0/5] srcu fixes
-Message-ID: <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <ZR0vjdp+BNiFm46+@lothringen>
 References: <20231003232903.7109-1-frederic@kernel.org>
  <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
- <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
+In-Reply-To: <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 08:21:42PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
-> > On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
-> > > Hi,
-> > > 
-> > > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
-> > > 
-> > > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
-> > > 
-> > > And a few cleanups.
-> > > 
-> > > Passed 50 hours of SRCU-P and SRCU-N.
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> > > 	srcu/fixes
-> > > 
-> > > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
-> > > 
-> > > Thanks,
-> > > 	Frederic
+On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
+> > Hi,
 > > 
-> > Very good, and a big "Thank You!!!" to all of you!
+> > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
 > > 
-> > I queued this series for testing purposes, and have started a bunch of
-> > SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
-> > SRCU-N on another system, but with both scenarios resized to 40 CPU each.
-
-The 200*1h of SRCU-N and the 100*1h of SRCU-p passed other than the usual
-tick-stop errors.  (Is there a patch for that one?)  The 40-CPU SRCU-N
-run was fine, but the 40-CPU SRCU-P run failed due to the fanouts setting
-a maximum of 16 CPUs.  So I started a 10-hour 40-CPU SRCU-P and a pair
-of 10-hour 16-CPU SRCU-N runs on one system, and 200*10h of SRCU-N and
-100*10h of SRCU-P.
-
-I will let you know how it goes.
-
-							Thanx, Paul
-
-> > While that is in flight, a few questions:
+> > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
 > > 
-> > o	Please check the Co-developed-by rules.  Last I knew, it was
-> > 	necessary to have a Signed-off-by after each Co-developed-by.
+> > And a few cleanups.
 > > 
-> > o	Is it possible to get a Tested-by from the original reporter?
-> > 	Or is this not reproducible?
+> > Passed 50 hours of SRCU-P and SRCU-N.
 > > 
-> > o	Is it possible to convince rcutorture to find this sort of
-> > 	bug?  Seems like it should be, but easy to say...
+> > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > 	srcu/fixes
+> > 
+> > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
+> > 
+> > Thanks,
+> > 	Frederic
 > 
-> And one other thing...
+> Very good, and a big "Thank You!!!" to all of you!
 > 
-> o	What other bugs like this one are hiding elsewhere
-> 	in RCU?
+> I queued this series for testing purposes, and have started a bunch of
+> SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
+> SRCU-N on another system, but with both scenarios resized to 40 CPU each.
 > 
-> > o	Frederic, would you like to include this in your upcoming
-> > 	pull request?  Or does it need more time?
+> While that is in flight, a few questions:
+> 
+> o	Please check the Co-developed-by rules.  Last I knew, it was
+> 	necessary to have a Signed-off-by after each Co-developed-by.
+
+Indeed! I'll try to collect the three of them within a few days. If some
+are missing, I'll put a Reported-by instead.
+
+> 
+> o	Is it possible to get a Tested-by from the original reporter?
+> 	Or is this not reproducible?
+
+It seems that the issue would trigger rarely. But I hope we can get one.
+
+> 
+> o	Is it possible to convince rcutorture to find this sort of
+> 	bug?  Seems like it should be, but easy to say...
+
+So at least the part where advance/accelerate fail is observed from time
+to time. But then we must meet two more rare events:
+
+1) The CPU failing to ACC/ADV must also fail to start the grace period because
+  another CPU was faster.
+
+2) The callbacks invocation must not run until that grace period has ended (even
+  though we had a previous one completed with callbacks ready).
+
+  Or it can run after all but at least the acceleration part of it has to
+  happen after the end of the new grace period.
+
+Perhaps all these conditions can me met more often if we overcommit the number
+of vCPU. For example run 10 SRCU-P instances within 3 real CPUs. This could
+introduce random breaks within the torture writers...
+
+Just an idea...
+
+> 
+> o	Frederic, would you like to include this in your upcoming
+> 	pull request?  Or does it need more time?
+
+At least the first patch yes. It should be easily backported and
+it should be enough to solve the race. I'll just wait a bit to collect
+more tags.
+
+Thanks!
+
 > 
 > 						Thanx, Paul
 > 
-> > > ---
-> > > 
-> > > Frederic Weisbecker (5):
-> > >       srcu: Fix callbacks acceleration mishandling
-> > >       srcu: Only accelerate on enqueue time
-> > >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
-> > >       srcu: No need to advance/accelerate if no callback enqueued
-> > >       srcu: Explain why callbacks invocations can't run concurrently
-> > > 
-> > > 
-> > >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
-> > >  1 file changed, 39 insertions(+), 16 deletions(-)
+> > ---
+> > 
+> > Frederic Weisbecker (5):
+> >       srcu: Fix callbacks acceleration mishandling
+> >       srcu: Only accelerate on enqueue time
+> >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
+> >       srcu: No need to advance/accelerate if no callback enqueued
+> >       srcu: Explain why callbacks invocations can't run concurrently
+> > 
+> > 
+> >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
+> >  1 file changed, 39 insertions(+), 16 deletions(-)
