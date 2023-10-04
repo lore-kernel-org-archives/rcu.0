@@ -2,31 +2,31 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04808E7B5E1
-	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 09:25:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38018E7B5E0
+	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 09:35:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbjJDJZm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Oct 2023 05:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
+        id S241908AbjJDJfo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Oct 2023 05:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241784AbjJDJZm (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:25:42 -0400
+        with ESMTP id S232951AbjJDJfo (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Oct 2023 05:35:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05026AB;
-        Wed,  4 Oct 2023 02:25:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EC61C433C8;
-        Wed,  4 Oct 2023 09:25:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5379DAF;
+        Wed,  4 Oct 2023 02:35:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD13C433C7;
+        Wed,  4 Oct 2023 09:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696411536;
-        bh=ZzTWSABeD4wFE2m9mjmYRRB/7+UvIZBGEIN6sgQ0kb4=;
+        s=k20201202; t=1696412139;
+        bh=1R9YOdaJktjKuIY0sIzrtibQpIhkJLVi71eZB9MeRoQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SvXVBh51nCLP8HhQ7mLu03TGsMQLe1lTiMyPIJXL2ED7e7tHUGkGWCZn4B2RRkEcj
-         mfjs8Y+5HnQ79cWOddLLyDLVw/I0YpoYiqkvaoMVDrS4O8eIvlbeM+iOJvPL/fj2fV
-         Ay2+TGteENtSmTN3aduCBaE3yQBT8H+2yKs0+UZZYByBcIfkDpZ9jNtop3lEb0Dkck
-         yxFVlQBqJxdS5vBKpMITUE3zFCpHVyzDAZS6IJYFrc7bcXKFRSNAODn3fDi1TxoNF/
-         s9DEBErlkSZ4HmDSXRAPPVb/VMRv1nsFYROjvqgvOX4mCKbxpdtDk/gJiXcdPz/RK7
-         rxdDmcMli831A==
-Date:   Wed, 4 Oct 2023 11:25:33 +0200
+        b=kriT3b7GrQIO2kqlaSBdwUndtbVFlihm8jcYQZ4ZxHHDbCH6zPwJsQ4yam0Zgj4bo
+         R1XxoBoawvue2kagsNOIwWrobqkfj7VCsaRqXmZR+LaMV0RTqqtAEt67HS4XVMUsQF
+         um0z42AgZgxrAeEHdQ/JNmrmy4fQ+ICBBpyH4KIlkB+nHwElLhhW/9RFLKamlZX4So
+         lZMEZC+iEZqszL6yaejOw6AbtB4dhCT8F1wJtTy8fLhwKqAy0tCSPMP8gRrE1EPeuF
+         DAf1wFGFUhVgbXiOmToF5Xqc25t5C7libtA6t1sAvRy2tYkIJgmtdNOJVNYUjsULUT
+         /U+hBYGHehYDw==
+Date:   Wed, 4 Oct 2023 11:35:36 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -36,101 +36,81 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
 Subject: Re: [PATCH 0/5] srcu fixes
-Message-ID: <ZR0vjdp+BNiFm46+@lothringen>
+Message-ID: <ZR0x6NK03A5F1yNW@lothringen>
 References: <20231003232903.7109-1-frederic@kernel.org>
  <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+ <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+In-Reply-To: <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
-> On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
-> > Hi,
+On Tue, Oct 03, 2023 at 08:21:42PM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
+> > On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
+> > > Hi,
+> > > 
+> > > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
+> > > 
+> > > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
+> > > 
+> > > And a few cleanups.
+> > > 
+> > > Passed 50 hours of SRCU-P and SRCU-N.
+> > > 
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > > 	srcu/fixes
+> > > 
+> > > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
+> > > 
+> > > Thanks,
+> > > 	Frederic
 > > 
-> > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
+> > Very good, and a big "Thank You!!!" to all of you!
 > > 
-> > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
+> > I queued this series for testing purposes, and have started a bunch of
+> > SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
+> > SRCU-N on another system, but with both scenarios resized to 40 CPU each.
 > > 
-> > And a few cleanups.
+> > While that is in flight, a few questions:
 > > 
-> > Passed 50 hours of SRCU-P and SRCU-N.
+> > o	Please check the Co-developed-by rules.  Last I knew, it was
+> > 	necessary to have a Signed-off-by after each Co-developed-by.
 > > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> > 	srcu/fixes
+> > o	Is it possible to get a Tested-by from the original reporter?
+> > 	Or is this not reproducible?
 > > 
-> > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
-> > 
-> > Thanks,
-> > 	Frederic
+> > o	Is it possible to convince rcutorture to find this sort of
+> > 	bug?  Seems like it should be, but easy to say...
 > 
-> Very good, and a big "Thank You!!!" to all of you!
+> And one other thing...
 > 
-> I queued this series for testing purposes, and have started a bunch of
-> SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
-> SRCU-N on another system, but with both scenarios resized to 40 CPU each.
-> 
-> While that is in flight, a few questions:
-> 
-> o	Please check the Co-developed-by rules.  Last I knew, it was
-> 	necessary to have a Signed-off-by after each Co-developed-by.
+> o	What other bugs like this one are hiding elsewhere
+> 	in RCU?
 
-Indeed! I'll try to collect the three of them within a few days. If some
-are missing, I'll put a Reported-by instead.
+Hmm, yesterday I thought RCU would be fine because it has a tick polling
+on callbacks anyway. But I'm not so sure, I'll check for real...
 
-> 
-> o	Is it possible to get a Tested-by from the original reporter?
-> 	Or is this not reproducible?
-
-It seems that the issue would trigger rarely. But I hope we can get one.
-
-> 
-> o	Is it possible to convince rcutorture to find this sort of
-> 	bug?  Seems like it should be, but easy to say...
-
-So at least the part where advance/accelerate fail is observed from time
-to time. But then we must meet two more rare events:
-
-1) The CPU failing to ACC/ADV must also fail to start the grace period because
-  another CPU was faster.
-
-2) The callbacks invocation must not run until that grace period has ended (even
-  though we had a previous one completed with callbacks ready).
-
-  Or it can run after all but at least the acceleration part of it has to
-  happen after the end of the new grace period.
-
-Perhaps all these conditions can me met more often if we overcommit the number
-of vCPU. For example run 10 SRCU-P instances within 3 real CPUs. This could
-introduce random breaks within the torture writers...
-
-Just an idea...
+Thanks.
 
 > 
-> o	Frederic, would you like to include this in your upcoming
-> 	pull request?  Or does it need more time?
-
-At least the first patch yes. It should be easily backported and
-it should be enough to solve the race. I'll just wait a bit to collect
-more tags.
-
-Thanks!
-
+> > o	Frederic, would you like to include this in your upcoming
+> > 	pull request?  Or does it need more time?
 > 
 > 						Thanx, Paul
 > 
-> > ---
-> > 
-> > Frederic Weisbecker (5):
-> >       srcu: Fix callbacks acceleration mishandling
-> >       srcu: Only accelerate on enqueue time
-> >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
-> >       srcu: No need to advance/accelerate if no callback enqueued
-> >       srcu: Explain why callbacks invocations can't run concurrently
-> > 
-> > 
-> >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
-> >  1 file changed, 39 insertions(+), 16 deletions(-)
+> > > ---
+> > > 
+> > > Frederic Weisbecker (5):
+> > >       srcu: Fix callbacks acceleration mishandling
+> > >       srcu: Only accelerate on enqueue time
+> > >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
+> > >       srcu: No need to advance/accelerate if no callback enqueued
+> > >       srcu: Explain why callbacks invocations can't run concurrently
+> > > 
+> > > 
+> > >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
+> > >  1 file changed, 39 insertions(+), 16 deletions(-)
