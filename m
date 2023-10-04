@@ -2,128 +2,75 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24B2DE7B5E0
-	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 09:36:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1615E7B5E5
+	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 10:09:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbjJDJgz (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Oct 2023 05:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
+        id S242095AbjJDKJF (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Oct 2023 06:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232956AbjJDJgz (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Oct 2023 05:36:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B5AAC;
-        Wed,  4 Oct 2023 02:36:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D508C433C9;
-        Wed,  4 Oct 2023 09:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696412211;
-        bh=mFEKlHahuJsICiDMySGxK7ORPKhGXJhp560qFnvIK6A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ab4/sxLDgwGHrrYBzlGL/GS5cDksAXca8QM+qTGrIRk1Plg9ZId5Cqh2N9pkr2yWp
-         Vy+GCThHWMHC8ESG5ZWF7H8gP6Qvy5ZjsmRyqpYUX5XdCWKu+PEqaT6wcvtPFKVatU
-         julVxL4cUaOcLSij4F/iyAM8wYsq6iDNn9vCE3mFno+i/eS/nE5XJt2s91o5YXViT3
-         H/qeKch+XDbFz+H2RdJJK5SEIs/RW5bBLGUECBYXpyHOyPJC7VXEkWnWTQoO1q6wln
-         aI57YFsff1izAk8sxqfB5alrWjIWY7oo8wtIEdxkheVsMjS0jPkftqI174JrC5c3rK
-         84EuFm6NAW2UQ==
-Date:   Wed, 4 Oct 2023 11:36:49 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Yong He <zhuangel570@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/5] srcu fixes
-Message-ID: <ZR0yMdyoA5biYYxg@lothringen>
-References: <20231003232903.7109-1-frederic@kernel.org>
- <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
- <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
- <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
+        with ESMTP id S242121AbjJDKJD (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Oct 2023 06:09:03 -0400
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED65FDC;
+        Wed,  4 Oct 2023 03:08:58 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso362456066b.3;
+        Wed, 04 Oct 2023 03:08:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696414137; x=1697018937;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QhjphZjPQubNUMGliWIijAtmmqyU7MZs7rGN2jMrbGo=;
+        b=qQj8HJ70nvTp1NF0Lo4VPcuYJjfhTWMbzzYlmnNFilkXrjQvf1lEWKo77L4Oloyc5F
+         ACmrtPx7ImYr2ANJMvpxJdYH2dkFhxB2xefg0CgHb0mzILh4TTJV53QiqiypkHk9PtqG
+         AiHEJj42x/Q6XFIBlgeegHjU1iUjqV3XNzoEztULCdHFWj5iFzd7veOBbhSiLzf7M0Cq
+         t3Zuu+IH3JwPvA5slZeZpWUxBbLtnYIxo7dB4fIb3NnEBVti3VXx1PZAZVploZOZl2WH
+         AsNhdZHgndV+WhX+8KDIAQv+XdYbjcmFWCljl/uaSmPxWr8oNlhQ4xk3Xu3U6wAJ8xjN
+         ApZA==
+X-Gm-Message-State: AOJu0YwGpnNFfRfbrxJCiF5EHZZVa6+XpixKv4GZcCYDebsM+B702ZKB
+        g7VuwWH6RgszRsh7w4jsOYE=
+X-Google-Smtp-Source: AGHT+IHZ8RqXxikCuvn30AHVy3FvECZfZbdOBi/tpHCARpYUK7L9+TwTOGSlAS5+WsKPD82tRm2JXg==
+X-Received: by 2002:a17:906:3ca1:b0:9a1:891b:6eed with SMTP id b1-20020a1709063ca100b009a1891b6eedmr1398348ejh.76.1696414137075;
+        Wed, 04 Oct 2023 03:08:57 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-023.fbsv.net. [2a03:2880:31ff:17::face:b00c])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170906594c00b00997e99a662bsm2534599ejr.20.2023.10.04.03.08.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Oct 2023 03:08:56 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 03:08:54 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, rcu@vger.kernel.org, rbc@meta.com
+Subject: Re: kvm/x86: perf: Softlockup issue
+Message-ID: <ZR05tlRqF9c09/l6@gmail.com>
+References: <ZRwcpki67uhpAUKi@gmail.com>
+ <CALMp9eSozxk-nuwWF3Xvg7fqC5doHKc5-6Nh40EnmzVRX+EQ4Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALMp9eSozxk-nuwWF3Xvg7fqC5doHKc5-6Nh40EnmzVRX+EQ4Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 08:30:45PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 03, 2023 at 08:21:42PM -0700, Paul E. McKenney wrote:
-> > On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
-> > > On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
-> > > > Hi,
-> > > > 
-> > > > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
-> > > > 
-> > > > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
-> > > > 
-> > > > And a few cleanups.
-> > > > 
-> > > > Passed 50 hours of SRCU-P and SRCU-N.
-> > > > 
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> > > > 	srcu/fixes
-> > > > 
-> > > > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
-> > > > 
-> > > > Thanks,
-> > > > 	Frederic
-> > > 
-> > > Very good, and a big "Thank You!!!" to all of you!
-> > > 
-> > > I queued this series for testing purposes, and have started a bunch of
-> > > SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
-> > > SRCU-N on another system, but with both scenarios resized to 40 CPU each.
+Hello Jim,
+
+On Tue, Oct 03, 2023 at 07:36:48AM -0700, Jim Mattson wrote:
+> On Tue, Oct 3, 2023 at 6:52 AM Breno Leitao <leitao@debian.org> wrote:
+> >
+> > I've been pursuing a bug in a virtual machine (KVM) that I would like to share
+> > in here. The VM gets stuck when running perf in a VM and getting soft lockups.
+> >
+> > The bug happens upstream (Linux 6.6-rc4 - 8a749fd1a8720d461). The same kernel
+> > is being used in the host and in the guest.
 > 
-> The 200*1h of SRCU-N and the 100*1h of SRCU-p passed other than the usual
-> tick-stop errors.  (Is there a patch for that one?)  The 40-CPU SRCU-N
-> run was fine, but the 40-CPU SRCU-P run failed due to the fanouts setting
-> a maximum of 16 CPUs.  So I started a 10-hour 40-CPU SRCU-P and a pair
-> of 10-hour 16-CPU SRCU-N runs on one system, and 200*10h of SRCU-N and
-> 100*10h of SRCU-P.
-> 
-> I will let you know how it goes.
+> Have you tried https://lore.kernel.org/kvm/169567819674.170423.4384853980629356216.b4-ty@google.com/?
 
-Very nice! It might be worth testing the first patch alone as
-well if we backport only this one.
+Thanks for the heads-up. These two patches indeed fix the problem.
+Thanks for getting the problem fixed.
 
-Thanks!
+Tested-by: Breno Leitao <leitao@debian.org>
 
-
-> 							Thanx, Paul
-> 
-> > > While that is in flight, a few questions:
-> > > 
-> > > o	Please check the Co-developed-by rules.  Last I knew, it was
-> > > 	necessary to have a Signed-off-by after each Co-developed-by.
-> > > 
-> > > o	Is it possible to get a Tested-by from the original reporter?
-> > > 	Or is this not reproducible?
-> > > 
-> > > o	Is it possible to convince rcutorture to find this sort of
-> > > 	bug?  Seems like it should be, but easy to say...
-> > 
-> > And one other thing...
-> > 
-> > o	What other bugs like this one are hiding elsewhere
-> > 	in RCU?
-> > 
-> > > o	Frederic, would you like to include this in your upcoming
-> > > 	pull request?  Or does it need more time?
-> > 
-> > 						Thanx, Paul
-> > 
-> > > > ---
-> > > > 
-> > > > Frederic Weisbecker (5):
-> > > >       srcu: Fix callbacks acceleration mishandling
-> > > >       srcu: Only accelerate on enqueue time
-> > > >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
-> > > >       srcu: No need to advance/accelerate if no callback enqueued
-> > > >       srcu: Explain why callbacks invocations can't run concurrently
-> > > > 
-> > > > 
-> > > >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
-> > > >  1 file changed, 39 insertions(+), 16 deletions(-)
+Breno
