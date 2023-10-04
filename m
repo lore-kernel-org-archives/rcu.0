@@ -2,163 +2,151 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6062FE7C4DA
-	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 16:07:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C723E7C4E3
+	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 16:47:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbjJDQHm (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 4 Oct 2023 12:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        id S243494AbjJDQrJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 4 Oct 2023 12:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbjJDQHl (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 4 Oct 2023 12:07:41 -0400
+        with ESMTP id S243466AbjJDQrI (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 4 Oct 2023 12:47:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7056CBF;
-        Wed,  4 Oct 2023 09:07:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A20EC433C8;
-        Wed,  4 Oct 2023 16:07:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3147E95;
+        Wed,  4 Oct 2023 09:47:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFFD0C433D9;
+        Wed,  4 Oct 2023 16:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696435658;
-        bh=DG5kmJPMAG7FTCxpW1gx9gwEc3eV4IdxNWEhFO4azLc=;
+        s=k20201202; t=1696438024;
+        bh=RT/buoCnqKiQFFs0wSmwszkWdjujY7F+tyPnNiRjfGQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Jf0zSMAVb0zYBr9+wMaUcuPwbdv7CNpucXw/Ya6PaPovfy1JkLC1seuaSyHRSuAtw
-         6Sg5STEqvFfn9RE8s3mkznMFOCm36dheY2SLyX5mZ8vqBw+cXRqnyQCWUMRjiG3rdQ
-         9tprsPJ2lJ1C4aSpPJUooYfm0waY7xuIn3bnc+E36IXSAKJ62XK3r98EfPKW2dmshC
-         hiG03QBbNF8TX4uvvXK0WrXN+O8h3+a4MaCbPh+Q6ZrFhCcpdrG8nO6CU8G1JFfZcL
-         KpRlQDA7yOpm/PZ3DK7RzOtDjeOFKvZ4tJyJaxmSeDbYWs3WRABKTmj4/UQ5Mnfxcz
-         fWzuTSx5OsNSQ==
+        b=EcUSpvkLtrNPD26xzRalzcfFSEULDnAvHSwSacHE7j1Y2VCBo4c9L80cJHOARPFmN
+         QyoeMhAU3441U+8qFbUe/BNbYcB7QZzhPVJIwExZqdMBRvW6fBZAsPTuqOpv85rexq
+         RqLSLs/y4OtjvLgzQK0Oql288TO13iUhYLiSlxyszYVEMBGjwVOgtgkhA7W+WiKVqz
+         ALYXDXb01MMAzL1rHCvSCRp6ogYJOC4+0FojR68O/hNI9sKgUzFjduNv5wEhynwsDY
+         3NI2qhs6MmE6Qeu4dVUZEn79LkvDOCxWWq3GNCAq47RTbyDjROINpo+ZVyCH3ViRWX
+         a8uGU7cVOR81A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A9C90CE04F2; Wed,  4 Oct 2023 09:07:37 -0700 (PDT)
-Date:   Wed, 4 Oct 2023 09:07:37 -0700
+        id 25B47CE0B71; Wed,  4 Oct 2023 09:47:04 -0700 (PDT)
+Date:   Wed, 4 Oct 2023 09:47:04 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     RCU <rcu@vger.kernel.org>, quic_neeraju@quicinc.com,
-        Boqun Feng <boqun.feng@gmail.com>,
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Yong He <zhuangel570@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 1/1] rcu: Reduce synchronize_rcu() waiting time
-Message-ID: <387528a7-42b3-4576-a03a-448c1a90f9df@paulmck-laptop>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/5] srcu fixes
+Message-ID: <02d3ae63-8e52-4931-acf6-32ef69a6511a@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20231003180403.58576-1-urezki@gmail.com>
- <c22dfd1e-a0e5-4b86-8eac-e5a3d74d714e@paulmck-laptop>
- <ZR2EPBHgidvTFjuU@pc636>
+References: <20231003232903.7109-1-frederic@kernel.org>
+ <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+ <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
+ <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
+ <ZR0yMdyoA5biYYxg@lothringen>
+ <77322b72-1d95-46c6-9837-1d811b36336c@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZR2EPBHgidvTFjuU@pc636>
+In-Reply-To: <77322b72-1d95-46c6-9837-1d811b36336c@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 05:26:52PM +0200, Uladzislau Rezki wrote:
-> On Wed, Oct 04, 2023 at 08:24:35AM -0700, Paul E. McKenney wrote:
-> > On Tue, Oct 03, 2023 at 08:04:03PM +0200, Uladzislau Rezki (Sony) wrote:
-> > > A call to a synchronize_rcu() can be optimized from time point of
-> > > view. Different workloads can be affected by this especially the
-> > > ones which use this API in its time critical sections.
+On Wed, Oct 04, 2023 at 07:06:58AM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 04, 2023 at 11:36:49AM +0200, Frederic Weisbecker wrote:
+> > On Tue, Oct 03, 2023 at 08:30:45PM -0700, Paul E. McKenney wrote:
+> > > On Tue, Oct 03, 2023 at 08:21:42PM -0700, Paul E. McKenney wrote:
+> > > > On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
+> > > > > On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
+> > > > > > Hi,
+> > > > > > 
+> > > > > > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
+> > > > > > 
+> > > > > > 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
+> > > > > > 
+> > > > > > And a few cleanups.
+> > > > > > 
+> > > > > > Passed 50 hours of SRCU-P and SRCU-N.
+> > > > > > 
+> > > > > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > > > > > 	srcu/fixes
+> > > > > > 
+> > > > > > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
+> > > > > > 
+> > > > > > Thanks,
+> > > > > > 	Frederic
+> > > > > 
+> > > > > Very good, and a big "Thank You!!!" to all of you!
+> > > > > 
+> > > > > I queued this series for testing purposes, and have started a bunch of
+> > > > > SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
+> > > > > SRCU-N on another system, but with both scenarios resized to 40 CPU each.
 > > > 
-> > > For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
-> > > callback can be delayed and such delay depends on where in a nocb
-> > > list it is located.
+> > > The 200*1h of SRCU-N and the 100*1h of SRCU-p passed other than the usual
+> > > tick-stop errors.  (Is there a patch for that one?)  The 40-CPU SRCU-N
+> > > run was fine, but the 40-CPU SRCU-P run failed due to the fanouts setting
+> > > a maximum of 16 CPUs.  So I started a 10-hour 40-CPU SRCU-P and a pair
+> > > of 10-hour 16-CPU SRCU-N runs on one system, and 200*10h of SRCU-N and
+> > > 100*10h of SRCU-P.
 > > > 
-> > > 1. On our Android devices i can easily trigger the scenario when
-> > > it is a last in the list out of ~3600 callbacks:
-> > > 
-> > > <snip>
-> > >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> > > ...
-> > >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-> > >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-> > >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> > > <snip>
-> > > 
-> > > 2. On our Android devices we use cpuset/cgroup to classify tasks
-> > > and assign them into different cgroups. For example "backgrond"
-> > > group which binds tasks only to little CPUs or "foreground" that
-> > > binds to all CPUs, i.e. tasks can be migrated between groups.
-> > > 
-> > > See below an example of how "surfaceflinger" task is migrated.
-> > > Initially it is located in the "system-background" cgroup which
-> > > allows to run only on little cores. In order to speedup it up
-> > > it can be temporary moved into "foreground" cgroup which allows
-> > > to use big CPUs:
-> > > 
-> > > cgroup_attach_task():
-> > >  -> cgroup_migrate_execute()
-> > >    -> cpuset_can_attach()
-> > >      -> percpu_down_write()
-> > >        -> rcu_sync_enter()
-> > >          -> synchronize_rcu()
-> > >    -> now move tasks to the new cgroup.
-> > >  -> cgroup_migrate_finish()
-> > > 
-> > > <snip>
-> > >          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
-> > >     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
-> > >     PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
-> > >    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-> > > <snip>
-> > > 
-> > > from this example it is clear that "a moving time" also depends
-> > > on how fast synchronize_rcu() completes.
-> > > 
-> > > 3. This patch improves the synchronize_rcu() approximately by 30%-50%
-> > > on synthetic tests. Apart of that i have tested app launch of camera
-> > > app where i also see better perf. figures:
-> > > 
-> > > 542 vs 489 diff: 9%
-> > > 540 vs 466 diff: 13%
-> > > 518 vs 468 diff: 9%
-> > > 531 vs 457 diff: 13%
-> > > 548 vs 475 diff: 13%
-> > > 509 vs 484 diff: 4%
-> > > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > ---
-> > >  kernel/rcu/tree.c     | 151 +++++++++++++++++++++++++++++++++++++++++-
-> > >  kernel/rcu/tree_exp.h |   2 +-
-> > >  2 files changed, 151 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 78554e7181dd..a347c1f98f11 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -1384,6 +1384,122 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
-> > >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> > >  }
-> > >  
-> > > +/*
-> > > + * There are three lists for handling synchronize_rcu() users.
-> > > + * A first list corresponds to new coming users, second for users
-> > > + * which wait for a grace period and third is for which a grace
-> > > + * period is passed.
-> > > + */
-> > > +static struct sr_normal_state {
-> > > +	struct llist_head curr;	/* request a GP users. */
-> > > +	struct llist_head wait;	/* wait for GP users. */
-> > > +	struct llist_head done;	/* ready for GP users. */
-> > > +	struct llist_node *curr_tail;
-> > > +	struct llist_node *wait_tail;
-> > > +	atomic_t active;
-> > > +} sr;
-> > > +
-> > > +/* Enable it by default. */
-> > > +static int rcu_normal_wake_from_gp = 1;
-> > > +module_param(rcu_normal_wake_from_gp, int, 0644);
+> > > I will let you know how it goes.
 > > 
-> > Nice!
-> > 
-> > But could you please make this default to zero in order to avoid
-> > surprising people for whom the old way works better?
-> > 
-> Yep, that i can do. If people prefer a slower version of it :)
+> > Very nice! It might be worth testing the first patch alone as
+> > well if we backport only this one.
+> 
+> The 10-hour 40-CPU SRCU-P run and pair of 10-hour 16-CPU SRCU-N runs
+> completed without failure.  The others had some failures, but I need
+> to look and see if any were unexpected.  In the meantime, I started a
+> two-hour 40-CPU SRCU-P run and a pair of one-hour 16-CPU SRCU-N runs on
+> just that first commit.  Also servicing SIGSHOWER and SIGFOOD.  ;-)
 
-Keeping in mind that "slower" often means more updates to spread the
-grace-period overhead across, thus lower per-update RCU overhead.  ;-)
+And the two-hour 40-CPU SRCU-P run and a pair of two-hour 16-CPU SRCU-N
+runs (on only the first commit) completed without incident.
+
+The other set of overnight full-stack runs had only tick-stop errors,
+so I started a two-hour set on the first commit.
+
+So far so good!
 
 							Thanx, Paul
+
+> > Thanks!
+> > 
+> > 
+> > > 							Thanx, Paul
+> > > 
+> > > > > While that is in flight, a few questions:
+> > > > > 
+> > > > > o	Please check the Co-developed-by rules.  Last I knew, it was
+> > > > > 	necessary to have a Signed-off-by after each Co-developed-by.
+> > > > > 
+> > > > > o	Is it possible to get a Tested-by from the original reporter?
+> > > > > 	Or is this not reproducible?
+> > > > > 
+> > > > > o	Is it possible to convince rcutorture to find this sort of
+> > > > > 	bug?  Seems like it should be, but easy to say...
+> > > > 
+> > > > And one other thing...
+> > > > 
+> > > > o	What other bugs like this one are hiding elsewhere
+> > > > 	in RCU?
+> > > > 
+> > > > > o	Frederic, would you like to include this in your upcoming
+> > > > > 	pull request?  Or does it need more time?
+> > > > 
+> > > > 						Thanx, Paul
+> > > > 
+> > > > > > ---
+> > > > > > 
+> > > > > > Frederic Weisbecker (5):
+> > > > > >       srcu: Fix callbacks acceleration mishandling
+> > > > > >       srcu: Only accelerate on enqueue time
+> > > > > >       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
+> > > > > >       srcu: No need to advance/accelerate if no callback enqueued
+> > > > > >       srcu: Explain why callbacks invocations can't run concurrently
+> > > > > > 
+> > > > > > 
+> > > > > >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
+> > > > > >  1 file changed, 39 insertions(+), 16 deletions(-)
