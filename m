@@ -2,85 +2,103 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D43B2E8FDC0
-	for <rcu@archiver.kernel.org>; Tue,  3 Oct 2023 23:29:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D71EDE8FDBF
+	for <rcu@archiver.kernel.org>; Wed,  4 Oct 2023 00:35:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236839AbjJCX3e (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 3 Oct 2023 19:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
+        id S231517AbjJDAfg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 3 Oct 2023 20:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236767AbjJCX33 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:29:29 -0400
+        with ESMTP id S229794AbjJDAfg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 3 Oct 2023 20:35:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F92F0;
-        Tue,  3 Oct 2023 16:29:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33129C433CA;
-        Tue,  3 Oct 2023 23:29:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28EDA6;
+        Tue,  3 Oct 2023 17:35:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3898AC433C7;
+        Wed,  4 Oct 2023 00:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696375764;
-        bh=0rRo8FAmb5oxl6EZiJPhw9pHIJx5I2TobFmAd6Jx3js=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ckZ84jL+5znrqWKHYEA+9b1Rw3RT0Gi+UXmpmDTGlZhoPinert8WUNxoDLU4o56nk
-         dmedaAxQJKrj7ntNQVKbPtnO2xlcoeh9TptXuh3uHCcLUzchAgQQSAxWftjDL7dHI4
-         F0GlfzowXeBcgPjhVYmPfr5Vtqv1pKYzqUVAEbkdOOLw4rADsiMRppbrszlTsiYIXp
-         najipfPoK5n//X9Kg/cvv3L1npieqZqr+QdozUZ9ALZVuzsIdeTaN32AS/NkaSNHQV
-         vrd4UXNW8B3aGZGyz0IN4a6Eb7zGdywILKMBiwNxLEtYz+WsYVe5USMhK4ClYS+sxK
-         PV7LRnOBhW8iw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
+        s=k20201202; t=1696379732;
+        bh=xTLf60xl9ywLlbfDNQmvd8IqUlwOS3SJ+u4eCvgHsog=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=atW2Z6340QtMCKI8qMfcwBjRgADGd6qTVXy/dhms8Ls1XdIgOn3N/arWd2e/DQ911
+         B1CWAHHGhiXlgoN9VZE5Db35fX8hxXkoyg+apqoOG7pu8GWyaM3SJ6aD/q05+0Ub0R
+         HMQc7qACPaNrexqyobcJW1NUry3Cuz3yiUceT5J2brb9Bx4XDYz286PxoOWRYpKEOm
+         EBs7DGlNZ6ilJH00w19sQ2krB+Hn0UqcQh0Z1EAd9pNVNDFqFLVynJJM8woXSTOYCs
+         sHxLVG7H0wHoSeJMrowr5J0ireJ8kxKAuRKPXF2ko30ED8Dp0iDLQ/Wf/Bu3Incxop
+         ih8GREYNELj1Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C6B74CE09E4; Tue,  3 Oct 2023 17:35:31 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 17:35:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
         Yong He <zhuangel570@gmail.com>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
-Subject: [PATCH 5/5] srcu: Explain why callbacks invocations can't run concurrently
-Date:   Wed,  4 Oct 2023 01:29:03 +0200
-Message-ID: <20231003232903.7109-6-frederic@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231003232903.7109-1-frederic@kernel.org>
+Subject: Re: [PATCH 0/5] srcu fixes
+Message-ID: <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20231003232903.7109-1-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003232903.7109-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-If an SRCU barrier is queued while callbacks are running and a new
-callbacks invocator for the same sdp were to run concurrently, the
-RCU barrier might execute too early. As this requirement is non-obvious,
-make sure to keep a record.
+On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
+> Hi,
+> 
+> This contains a fix for "SRCU: kworker hung in synchronize_srcu":
+> 
+> 	http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
+> 
+> And a few cleanups.
+> 
+> Passed 50 hours of SRCU-P and SRCU-N.
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> 	srcu/fixes
+> 
+> HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
+> 
+> Thanks,
+> 	Frederic
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/srcutree.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Very good, and a big "Thank You!!!" to all of you!
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 2bfc8ed1eed2..0351a4e83529 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1715,6 +1715,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-+	/*
-+	 * Although this function is theoretically re-entrant, concurrent
-+	 * callbacks invocation is disallowed to avoid executing an SRCU barrier
-+	 * too early.
-+	 */
- 	if (sdp->srcu_cblist_invoking ||
- 	    !rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
- 		spin_unlock_irq_rcu_node(sdp);
-@@ -1745,6 +1750,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	sdp->srcu_cblist_invoking = false;
- 	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
- 	spin_unlock_irq_rcu_node(sdp);
-+	/* An SRCU barrier or callbacks from previous nesting work pending */
- 	if (more)
- 		srcu_schedule_cbs_sdp(sdp, 0);
- }
--- 
-2.41.0
+I queued this series for testing purposes, and have started a bunch of
+SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
+SRCU-N on another system, but with both scenarios resized to 40 CPU each.
 
+While that is in flight, a few questions:
+
+o	Please check the Co-developed-by rules.  Last I knew, it was
+	necessary to have a Signed-off-by after each Co-developed-by.
+
+o	Is it possible to get a Tested-by from the original reporter?
+	Or is this not reproducible?
+
+o	Is it possible to convince rcutorture to find this sort of
+	bug?  Seems like it should be, but easy to say...
+
+o	Frederic, would you like to include this in your upcoming
+	pull request?  Or does it need more time?
+
+						Thanx, Paul
+
+> ---
+> 
+> Frederic Weisbecker (5):
+>       srcu: Fix callbacks acceleration mishandling
+>       srcu: Only accelerate on enqueue time
+>       srcu: Remove superfluous callbacks advancing from srcu_start_gp()
+>       srcu: No need to advance/accelerate if no callback enqueued
+>       srcu: Explain why callbacks invocations can't run concurrently
+> 
+> 
+>  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 39 insertions(+), 16 deletions(-)
