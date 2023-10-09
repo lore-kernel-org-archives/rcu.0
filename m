@@ -2,225 +2,156 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B25CBE95A8E
-	for <rcu@archiver.kernel.org>; Mon,  9 Oct 2023 01:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CE92CD610B
+	for <rcu@archiver.kernel.org>; Mon,  9 Oct 2023 16:41:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbjJIBU5 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 8 Oct 2023 21:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
+        id S1377292AbjJIQlY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 9 Oct 2023 12:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjJIBU4 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 8 Oct 2023 21:20:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF84A8F;
-        Sun,  8 Oct 2023 18:20:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66436C433C8;
-        Mon,  9 Oct 2023 01:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696814454;
-        bh=7gAv73UahqlRDkAdV7zG6Yav5Q15X8TM/NpqO7VNnhE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EvKVKXNNS2VxXvTN0u+KzRfdpZH+3KoHZnBhPWtwExP2kHbWO71x3TweOgAEPbvsu
-         P47iB4YhzAQCyscj9RVpaN3+2fVrvGop84tmpTVG0xHggK5L1nAipbsKAJbx+6Pvhi
-         68sy3AHmTP1aOfJrrpyVG4XzcpPW1VIqJq103ZuEJxEdl3JMYbla0H/i3TCEiHaqE+
-         KrucU1g2+6r6fxacFMUbOziIgBVi57TsgKnBcx85srekaNKs0EoazStSyc/UEJa1HV
-         FUHlZBDSQv82DRxIPv1KiFhYbBysRkujeq2wwddysvlH8dvdssoBZKM0QhN9FqRQ/E
-         Xf/OXcQDqNdxA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E88ADCE0831; Sun,  8 Oct 2023 18:20:53 -0700 (PDT)
-Date:   Sun, 8 Oct 2023 18:20:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
+        with ESMTP id S1376275AbjJIQlX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 9 Oct 2023 12:41:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194969C
+        for <rcu@vger.kernel.org>; Mon,  9 Oct 2023 09:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696869640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+YpXHXo6RBy8CnTiTObZdU28mMjUq9Z4XmoNn8CdwOg=;
+        b=izkoud+QpX748T7/mkz9Fwemjuho6JiQbQTwlidhNng8cvVlg+bTtMJOPuNTHikOxKyh8s
+        gXLKkmfi4IQN7DUOe3TAz++jxjGaaOcL2AAXJQ+pPIBtFvxA1vmaGT72qF/9CH+YRqoZak
+        rNuqz3hqNZI8+b9NFEvooqWMFGGlNiU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-_JZOasHtPZ-nAmJ4PwQ6rQ-1; Mon, 09 Oct 2023 12:40:39 -0400
+X-MC-Unique: _JZOasHtPZ-nAmJ4PwQ6rQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so30410245e9.3
+        for <rcu@vger.kernel.org>; Mon, 09 Oct 2023 09:40:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696869638; x=1697474438;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+YpXHXo6RBy8CnTiTObZdU28mMjUq9Z4XmoNn8CdwOg=;
+        b=WGhbChEK6TdqAgVjyaGhh/W+NyGW9gpvbcy08jZkxHsR7PfuVlwJ2Hj3P9bZlPWdfP
+         BzDJ5s9FfpDqdWwowJ1G+rB3Rx8EH7+f6tbwtCQWa46yejRLJYN9V25/mhsV1KntuwAb
+         Ra6WTWExBG8qnIxU8gBtftd343vGqMOUVjyRMY3t2lIGHQTAYhVKAX5IdBke/uXAYmwE
+         xBSoVaHyWfvgamIfSKjthWvKxp3JnzWbMGVldf5UgWbl4TJtEmFJE/C6aqWRaj127885
+         r+3zUV1QrI8CXY9MXZWTgs63OpA9jC43EyU+5N9mPl8Ao6wkft/V3NvsykBuqbO0DMbV
+         Iylw==
+X-Gm-Message-State: AOJu0YyMqZ1ckajTN2O26rpbYQjT6ZGMNnm2iVDpEDhvdVG9KFkt6UU/
+        29BTXtapax5BJBT88CyaHFJc1VEOmfiI0FKGAGd2httMluwSGmh2mceBXw1sUW7OfQXYdvtQa0a
+        L9FAzKf2cDbla
+X-Received: by 2002:a05:600c:2949:b0:405:82c0:d9d9 with SMTP id n9-20020a05600c294900b0040582c0d9d9mr14896212wmd.41.1696869638576;
+        Mon, 09 Oct 2023 09:40:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEMgAs2OFs3TPKIXUcqwEYEgUj8NhgbOlPIyIMA79idAa9Hjf42+dP6kuPpgcF+X3v1F7p9tg==
+X-Received: by 2002:a05:600c:2949:b0:405:82c0:d9d9 with SMTP id n9-20020a05600c294900b0040582c0d9d9mr14896162wmd.41.1696869638060;
+        Mon, 09 Oct 2023 09:40:38 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id bd5-20020a05600c1f0500b004030e8ff964sm14033430wmb.34.2023.10.09.09.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 09:40:37 -0700 (PDT)
+Message-ID: <907b351fee183609891a4d0cfb0a79bad85577a0.camel@redhat.com>
+Subject: Re: [RFC PATCH v2 14/20] x86/kvm: Make kvm_async_pf_enabled
+ __ro_after_init
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>,
-        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
-Message-ID: <9470dab6-dee5-4505-95a2-f6782b648726@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231004175203.943277832@linuxfoundation.org>
- <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
- <20231006162038.d3q7sl34b4ouvjxf@revolver>
- <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
- <20231006175714.begtgj6wrs46ukmo@revolver>
- <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
- <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Date:   Mon, 09 Oct 2023 19:40:31 +0300
+In-Reply-To: <20230720163056.2564824-15-vschneid@redhat.com>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+         <20230720163056.2564824-15-vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 09:22:55PM -0400, Joel Fernandes wrote:
-> On Fri, Oct 6, 2023 at 2:20 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Oct 06, 2023 at 01:57:14PM -0400, Liam R. Howlett wrote:
-> > > * Paul E. McKenney <paulmck@kernel.org> [231006 12:47]:
-> > > > On Fri, Oct 06, 2023 at 12:20:38PM -0400, Liam R. Howlett wrote:
-> > > > > * Naresh Kamboju <naresh.kamboju@linaro.org> [231005 13:49]:
-> > > > > > On Wed, 4 Oct 2023 at 23:33, Greg Kroah-Hartman
-> > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > >
-> > > > > > > This is the start of the stable review cycle for the 5.15.134 release.
-> > > > > > > There are 183 patches in this series, all will be posted as a response
-> > > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > > let me know.
-> > > > > > >
-> > > > > > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
-> > > > > > > Anything received after that time might be too late.
-> > > > > > >
-> > > > > > > The whole patch series can be found in one patch at:
-> > > > > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.134-rc1.gz
-> > > > > > > or in the git tree and branch at:
-> > > > > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > > > > > > and the diffstat can be found below.
-> > > > > > >
-> > > > > > > thanks,
-> > > > > > >
-> > > > > > > greg k-h
-> > > > > >
-> > > > > > Results from Linaro’s test farm.
-> > > > > > Regressions on x86.
-> > > > > >
-> > > > > > Following kernel warning noticed on x86 while booting stable-rc 5.15.134-rc1
-> > > > > > with selftest merge config built kernel.
-> > > > > >
-> > > > > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > > > >
-> > > > > > Anyone noticed this kernel warning ?
-> > > > > >
-> > > > > > This is always reproducible while booting x86 with a given config.
-> > > > >
-> > > > > >From that config:
-> > > > > #
-> > > > > # RCU Subsystem
-> > > > > #
-> > > > > CONFIG_TREE_RCU=y
-> > > > > # CONFIG_RCU_EXPERT is not set
-> > > > > CONFIG_SRCU=y
-> > > > > CONFIG_TREE_SRCU=y
-> > > > > CONFIG_TASKS_RCU_GENERIC=y
-> > > > > CONFIG_TASKS_RUDE_RCU=y
-> > > > > CONFIG_TASKS_TRACE_RCU=y
-> > > > > CONFIG_RCU_STALL_COMMON=y
-> > > > > CONFIG_RCU_NEED_SEGCBLIST=y
-> > > > > # end of RCU Subsystem
-> > > > >
-> > > > > #
-> > > > > # RCU Debugging
-> > > > > #
-> > > > > CONFIG_PROVE_RCU=y
-> > > > > # CONFIG_RCU_SCALE_TEST is not set
-> > > > > # CONFIG_RCU_TORTURE_TEST is not set
-> > > > > # CONFIG_RCU_REF_SCALE_TEST is not set
-> > > > > CONFIG_RCU_CPU_STALL_TIMEOUT=21
-> > > > > CONFIG_RCU_TRACE=y
-> > > > > # CONFIG_RCU_EQS_DEBUG is not set
-> > > > > # end of RCU Debugging
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > x86 boot log:
-> > > > > > -----
-> > > > > > [    0.000000] Linux version 5.15.134-rc1 (tuxmake@tuxmake)
-> > > > > > (x86_64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils
-> > > > > > for Debian) 2.40) #1 SMP @1696443178
-> > > > > > ...
-> > > > > > [    1.480701] ------------[ cut here ]------------
-> > > > > > [    1.481296] WARNING: CPU: 0 PID: 13 at kernel/rcu/tasks.h:958
-> > > > > > trc_inspect_reader+0x80/0xb0
-> > > > > > [    1.481296] Modules linked in:
-> > > > > > [    1.481296] CPU: 0 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.134-rc1 #1
-> > > > > > [    1.481296] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> > > > > > 2.5 11/26/2020
-> > > > > > [    1.481296] RIP: 0010:trc_inspect_reader+0x80/0xb0
-> > > > >
-> > > > > This function has changed a lot, including the dropping of this
-> > > > > WARN_ON_ONCE().  The warning was replaced in 897ba84dc5aa ("rcu-tasks:
-> > > > > Handle idle tasks for recently offlined CPUs") with something that looks
-> > > > > equivalent so I'm not sure why it would not trigger in newer revisions.
-> > > > >
-> > > > > Obviously the behaviour I changed was the test for the task being idle.
-> > > > > I am not sure how best to short-circuit that test from happening during
-> > > > > boot as I am not familiar with the RCU code.
-> > > >
-> > > > The usual test for RCU's notion of early boot being completed is
-> > > > (rcu_scheduler_active != RCU_SCHEDULER_INIT).
-> > > >
-> > > > Except that "ofl" should always be false that early in boot, at least
-> > > > in mainline.
-> > >
-> > > Is this still true in the final version of the patch where we set the
-> > > boot task as !idle until just before the early boot is finished?  I
-> > > wouldn't think of this as 'early in boot' anymore as much as the entire
-> > > kernel setup.  Maybe we need to shorten the time we stay in !idle mode
-> > > for earlier kernels?
-> >
-> > In mainline, the ofl variable is defined as cpu_is_offline(cpu), and
-> > during boot, the boot CPU is guaranteed to be online.  (As opposed to
-> > the boot CPU's idle-task state.)
-> >
-> > > How frequent is this function called?  We could check something for
-> > > early boot... or track down where the cpu is put online and restore idle
-> > > before that happens?
-> >
-> > Once per RCU Tasks Trace grace period per reader seen to be blocking
-> > that grace period.  Its performance is as issue, but not to anywhere
-> > near the same extent as (say) rcu_read_lock_trace().
-> >
-> > > > > It's also worth noting that the bug this fixes wasn't exposed until the
-> > > > > maple tree (added in v6.1) was used for the IRQ descriptors (added in
-> > > > > v6.5).
-> > > >
-> > > > Lots of latent bugs, to be sure, even with rcutorture.  :-/
-> > >
-> > > The Right Thing is to fix the bug all the way back to the introduction,
-> > > but what fallout makes the backport less desirable than living with the
-> > > unexposed bug?
-> >
-> > You are quite right that it is possible for the risk of a backport to
-> > exceed the risk of the original bug.
-> >
-> > I defer to Joel (CCed) on how best to resolve this in -stable.
+У чт, 2023-07-20 у 17:30 +0100, Valentin Schneider пише:
+> objtool now warns about it:
 > 
-> Maybe I am missing something but this issue should also be happening
-> in mainline right?
+>   vmlinux.o: warning: objtool: exc_page_fault+0x2a: Non __ro_after_init static key "kvm_async_pf_enabled" in .noinstr section
 > 
-> Even though mainline has 897ba84dc5aa ("rcu-tasks: Handle idle tasks
-> for recently offlined CPUs") , the warning should still be happening
-> due to Liam's "kernel/sched: Modify initial boot task idle setup"
-> because the warning is just rearranged a bit but essentially the same.
+> The key can only be enabled (and not disabled) in the __init function
+> kvm_guest_init(), so mark it as __ro_after_init.
 > 
-> IMHO, the right thing to do then is to drop Liam's patch from 5.15 and
-> fix it in mainline (using the ideas described in this thread), then
-> backport both that new fix and Liam's patch to 5.15.
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> ---
+>  arch/x86/kernel/kvm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Or is there a reason this warning does not show up on the mainline?
-> 
-> My impression is that dropping Liam's patch for the stable release and
-> revisiting it later is a better approach since tiny RCU is used way
-> less in the wild than tree/tasks RCU. Thoughts?
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index 1cceac5984daa..319460090a836 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -44,7 +44,7 @@
+>  #include <asm/svm.h>
+>  #include <asm/e820/api.h>
+>  
+> -DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
+> +DEFINE_STATIC_KEY_FALSE_RO(kvm_async_pf_enabled);
+>  
+>  static int kvmapf = 1;
+>  
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-I think that this one is strange enough that we need to write down the
-situation in detail, make sure we have all the corner cases covered in
-both mainline and -stable, and decide what to do from there.
+Best regards,
+	Maxim Levitsky
 
-Yes, I know, this email thread contains much of this information, but
-a little organizing of it would be good.
-
-Would you like to put that together, or should I?  If me, I will get
-a draft out by the end of this coming Tuesday, Pacific Time.
-
-							Thanx, Paul
