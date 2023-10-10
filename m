@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7D93CD80B9
-	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 12:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17CEECD80B0
+	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 12:00:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbjJJMAe (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Oct 2023 08:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        id S231709AbjJJMAm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Oct 2023 08:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbjJJMAI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:00:08 -0400
+        with ESMTP id S231793AbjJJMA0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Oct 2023 08:00:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBBFFE;
-        Tue, 10 Oct 2023 05:00:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50140C433CB;
-        Tue, 10 Oct 2023 11:59:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B99DA;
+        Tue, 10 Oct 2023 05:00:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0773C433C7;
+        Tue, 10 Oct 2023 12:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696939199;
-        bh=FNbwODmxQo3GGwEsJGLAfDuk3+x/AsZx/VjeIBG8CLg=;
+        s=k20201202; t=1696939205;
+        bh=z/6W7Sq91lXYiT+T8Ou3AD0oMBmwnQ8VicZ7CbcAyQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sK6DBDEVVhoqBkJgXSl3qNZo8EM8D6CcrGeHQ2X9GCDvOcEs4adIYpAKzQfKBjt+r
-         dvVxr90w/XTErnjE8nxOIYby/Niy5k9z2Fanlc7ZH0yjJ1l4Z3wV+mYcAenu8Qjl7E
-         TVovnSyrtaplpTAIWhVCRx9BwiiRu97x973I2lbgsVUsl99XNH73hrpMRYYrEkgGZY
-         WgBVeP58vtD6Xy3DRlNBWNKS8UnAcGdwAU4JkB//mVWxbxKufsN/rQlRBoLj09xpd9
-         VKsGKRHBRfBDLOXI/x6zY1/4MLSiC4bSpPrlihFzU1LNG+1uWgAX/Jpi07pck7dEqT
-         UfAdLRI0aFRIA==
+        b=F3s41Ps24rSzylBKXRoRs6u5kl4sd3f8NZJIl5j5mVH5Gmqz50IGYmpv12lWlAIan
+         fjA2A+cQQ6APRxtB6LiEJW6a7oOw5epFCfXB8lLYSSzp2JYhhQZt2QroGVjXkcMbQm
+         febf1QkZU8CY1lwxKMIvLx3KlaifAIadxhaxlYF455QGYHHJ0j8YwFkpphSz6skX+B
+         ffCQxP2N8CVjqzEPKd7wFcb2nKudj5JoE2gI4dw6ZbXarzLNYcUHwaLX/pDAadc9yC
+         akasjg8jn+AAfK3oV/9fomzq+4OJmVdJ9fLtSLJXQbKULPVUg3q1fZTt4v/zh71uto
+         rr2vO3+TPBcTg==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 09/23] locktorture: Alphabetize torture_param() entries
-Date:   Tue, 10 Oct 2023 13:59:07 +0200
-Message-Id: <20231010115921.988766-10-frederic@kernel.org>
+Subject: [PATCH 11/23] locktorture: Add acq_writer_lim to complain about long acquistion times
+Date:   Tue, 10 Oct 2023 13:59:09 +0200
+Message-Id: <20231010115921.988766-12-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231010115921.988766-1-frederic@kernel.org>
 References: <20231010115921.988766-1-frederic@kernel.org>
@@ -51,47 +51,68 @@ X-Mailing-List: rcu@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-There are getting to be too many module parameters for a random list to be
-comfortable, so this commit alphabetizes the list.  Strictly code motion.
+This commit adds a locktorture.acq_writer_lim module parameter that
+specifies the maximum number of jiffies that is expected to be consumed
+by write-side lock acquisition.  If this limit is exceeded, a WARN_ONCE()
+causes a splat.  Note that this limit applies to the main lock acquisition
+only, not to any nested acquisitions.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/locking/locktorture.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/locking/locktorture.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 441866259278..57ee16cf879d 100644
+index c8c322e69a90..296815ef67ae 100644
 --- a/kernel/locking/locktorture.c
 +++ b/kernel/locking/locktorture.c
-@@ -33,21 +33,21 @@
+@@ -33,6 +33,7 @@
  MODULE_LICENSE("GPL");
  MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
  
--torture_param(int, nwriters_stress, -1, "Number of write-locking stress-test threads");
--torture_param(int, nreaders_stress, -1, "Number of read-locking stress-test threads");
++torture_param(int, acq_writer_lim, 0, "Write_acquisition time limit (jiffies).");
  torture_param(int, long_hold, 100, "Do occasional long hold of lock (ms), 0=disable");
-+torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
-+torture_param(int, nreaders_stress, -1, "Number of read-locking stress-test threads");
-+torture_param(int, nwriters_stress, -1, "Number of write-locking stress-test threads");
- torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
- torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (s), 0=disable");
-+torture_param(int, rt_boost, 2,
-+		   "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
-+torture_param(int, rt_boost_factor, 50, "A factor determining how often rt-boost happens.");
- torture_param(int, shuffle_interval, 3, "Number of jiffies between shuffles, 0=disable");
- torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
- torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
- torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
--torture_param(int, rt_boost, 2,
--		   "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
--torture_param(int, rt_boost_factor, 50, "A factor determining how often rt-boost happens.");
- torture_param(int, writer_fifo, 0, "Run writers at sched_set_fifo() priority");
- torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
--torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
- /* Going much higher trips "BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!" errors */
- #define MAX_NESTED_LOCKS 8
+ torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
+ torture_param(int, nreaders_stress, -1, "Number of read-locking stress-test threads");
+@@ -852,11 +853,13 @@ static struct lock_torture_ops percpu_rwsem_lock_ops = {
+  */
+ static int lock_torture_writer(void *arg)
+ {
+-	struct lock_stress_stats *lwsp = arg;
+-	int tid = lwsp - cxt.lwsa;
+-	DEFINE_TORTURE_RANDOM(rand);
++	unsigned long j;
++	unsigned long j1;
+ 	u32 lockset_mask;
++	struct lock_stress_stats *lwsp = arg;
++	DEFINE_TORTURE_RANDOM(rand);
+ 	bool skip_main_lock;
++	int tid = lwsp - cxt.lwsa;
  
+ 	VERBOSE_TOROUT_STRING("lock_torture_writer task started");
+ 	if (!rt_task(current))
+@@ -883,12 +886,20 @@ static int lock_torture_writer(void *arg)
+ 			cxt.cur_ops->nested_lock(tid, lockset_mask);
+ 
+ 		if (!skip_main_lock) {
++			if (acq_writer_lim > 0)
++				j = jiffies;
+ 			cxt.cur_ops->writelock(tid);
+ 			if (WARN_ON_ONCE(lock_is_write_held))
+ 				lwsp->n_lock_fail++;
+ 			lock_is_write_held = true;
+ 			if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
+ 				lwsp->n_lock_fail++; /* rare, but... */
++			if (acq_writer_lim > 0) {
++				j1 = jiffies;
++				WARN_ONCE(time_after(j1, j + acq_writer_lim),
++					  "%s: Lock acquisition took %lu jiffies.\n",
++					  __func__, j1 - j);
++			}
+ 			lwsp->n_lock_acquired++;
+ 
+ 			cxt.cur_ops->write_delay(&rand);
 -- 
 2.34.1
 
