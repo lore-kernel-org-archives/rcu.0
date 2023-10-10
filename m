@@ -2,205 +2,103 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4B80CD80B7
-	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 12:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EBC3CD80CD
+	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 13:21:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbjJJMHi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Oct 2023 08:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
+        id S231580AbjJJNVB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Oct 2023 09:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbjJJMHg (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:07:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96603D77;
-        Tue, 10 Oct 2023 05:00:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3287C43391;
-        Tue, 10 Oct 2023 12:00:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696939219;
-        bh=uIpDokdeZURQXHGW68Zdq69flN3tCoi7qF+XGqyqLDk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oh12frYctjf0MvTV6Z1i0VfqWBFdmGREItA2W6VcaDgCFdEI5/i1srDWjTf2ADG6U
-         LBKQIlECQE4aqLaH37V7Nwzrl/ro2C4CZfeZRvAHYjBAxT5w0HF16OmHhMLJc/9u+G
-         vh71HEpALHjYHoq98Je16TUmpHJdhLvYJmWznbC9BKUyQy1XQ9mxsB1qs3E5HXfnDS
-         bGQjbqFV5BgyiRKUClcKPqhUFT79lwhcpLvcqetuX+5A5ob6h2O7u7/Wne29bXjRww
-         LvvMYsEgvIT2rb6t7BeRduGo38lw8u3HPaUN2tjgFHhlfidCKsIu36pGOilIdcRFV2
-         8G5i6LnMfkVOQ==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 16/23] locktorture: Add call_rcu_chains module parameter
-Date:   Tue, 10 Oct 2023 13:59:14 +0200
-Message-Id: <20231010115921.988766-17-frederic@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231010115921.988766-1-frederic@kernel.org>
-References: <20231010115921.988766-1-frederic@kernel.org>
+        with ESMTP id S231400AbjJJNVA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Oct 2023 09:21:00 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB3991;
+        Tue, 10 Oct 2023 06:20:58 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2799b7280d1so3570046a91.1;
+        Tue, 10 Oct 2023 06:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696944058; x=1697548858; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zby/4uZ4iToEHOr+VEOppCbzLD2G246ojA6jq62b6h4=;
+        b=g6lpBclrO+f/cwaFwYg+MVVCCjUp2AgW/I20Ju7dTMgU4PN5UoQgqQTqTmsh+0ppzh
+         XC6Xqu3zNdA5BVImLrw3ZdcW8I8qnjLQVNymAkGhT9Y387zhfoJ4hyGuz5edIpyFUlZk
+         9R4XMmpnok/UUUelGBaMR+Q7ACOK+nfJwK7kkCt9y4SSjm3T98zmUFQzzu49mUfPb5pQ
+         RxZbFSUOrT8dSsJWWI7StRo79jKhS5PNE/YYzvSz29AG1nmWJ/0ZB4FoSiQ+Vpt52DOP
+         bcCBj8YkAFCCGCWStdxNkkdK8rIHPbi+bIfQ2E1iJOpsJ87hY1qxOC2x08o7gnZPHfKU
+         8Zdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696944058; x=1697548858;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zby/4uZ4iToEHOr+VEOppCbzLD2G246ojA6jq62b6h4=;
+        b=CPc4swUV4mKk9ISx2iYLYW2NFS0G2S3AQx0cZUMcf67wBqzwNSW0hCtenHTuFXvxAW
+         YKA3350gr7j/jZEV0BX6aSm1TdMgh21aIP/0GHvCfYZAOyACIaY22c9WL7u0kHeMKWsR
+         85uojpLjet9nmemcfnwHceK5pInnfOCub4GOMTsOw2znzIJ8E4PN6JjfA3hJsklcV0UE
+         hhEWI7zb6qWy/zAKHo7+G92+cRHFjbn4juVD32IzihUfnmB8l3kg9NRvYu4fktWu39Zw
+         aP5a9tFy0iqhf9KmHbnApaKqhGi68bgXHASHkNqtD6F5wf8OUP4oNGAffZpZfh9B4bBk
+         cpvQ==
+X-Gm-Message-State: AOJu0YxKPYRjwWkVpvoEvRKLSICj6E6xR2VnqIVZVf59ZmKcEhX9Sx1s
+        +7Dttgk0fvnv/TKJaBRHr+ZPaAxkoQ5zimfCP5krMeZ1yu1BXtT3
+X-Google-Smtp-Source: AGHT+IEnAxtcOezHyL8o3NDV+w8PdRT+OmDj7+RidTHyk9CgHtjixqmD8bvNNK5yp1ArkXweqya/3d0utB6LLrRmTJw=
+X-Received: by 2002:a17:90b:e11:b0:27c:f1f8:261f with SMTP id
+ ge17-20020a17090b0e1100b0027cf1f8261fmr1017670pjb.20.1696944058235; Tue, 10
+ Oct 2023 06:20:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231003232903.7109-1-frederic@kernel.org> <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+ <ZR0vjdp+BNiFm46+@lothringen> <CANZk6aQG4Lqyk8JkT_my3dwub4jGpn31wYRoCwW4oSH1x=sJ1A@mail.gmail.com>
+ <ZSU1NeV/Z65ph/RC@lothringen>
+In-Reply-To: <ZSU1NeV/Z65ph/RC@lothringen>
+From:   zhuangel570 <zhuangel570@gmail.com>
+Date:   Tue, 10 Oct 2023 21:20:46 +0800
+Message-ID: <CANZk6aTCfNQFX5jCdyEi-yUmTOtKPb0TYOPUs+1LSjF+5=HSNA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] srcu fixes
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Tue, Oct 10, 2023 at 7:27=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
+l.org> wrote:
+>
+> On Sat, Oct 07, 2023 at 06:24:53PM +0800, zhuangel570 wrote:
+> > On Wed, Oct 4, 2023 at 5:25=E2=80=AFPM Frederic Weisbecker <frederic@ke=
+rnel.org> wrote:
+> > There is currently no way to reproduce this problem in our environment.
+> > The problem has appeared on 2 machines, and each time it occurred, the
+> > test had been running for more than a month.
+> >
+> > BTW, I will run tests with these patches in our environment.
+>
+> Ok, let us know if it ever triggers after this series.
 
-When running locktorture on large systems, there will normally be
-enough RCU activity to ensure that there is a grace period in flight
-at all times.  However, on smaller systems, RCU might well be idle the
-majority of the time.  This situation can be inconvenient in cases where
-the RCU CPU stall warning is part of the debugging process.
+Sure, I have ported the patch set to our test environment, now 2 machines
+already run test for 3 days, everything looks fine.
 
-This commit therefore adds an call_rcu_chains module parameter to
-locktorture, allowing the user to specify the desired number of
-self-propagating call_rcu() chains.  For good measure, immediately
-before invoking call_rcu(), the self-propagating RCU callback invokes
-start_poll_synchronize_rcu() to force the immediate start of a grace
-period, with the call_rcu() forcing another to start shortly thereafter.
+The patch set is very elegant and completely eliminates the possibility of
+unexpected accelerations in our analysis. I am very confident in fixing our
+problem.
 
-Booting with locktorture.call_rcu_chains=2 increases the probability
-of a stuck locking primitive resulting in an RCU CPU stall warning from
-about 25% to nearly 100%.
+>
+> Since I added you in the Co-developed-by: tags, I will need to
+> also add your Signed-off-by: tag.
+>
+> Is that ok for you?
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- .../admin-guide/kernel-parameters.txt         |  7 +++
- kernel/locking/locktorture.c                  | 62 ++++++++++++++++++-
- 2 files changed, 67 insertions(+), 2 deletions(-)
+Sure. Big thanks!
+If possible, would you please change my "Signed-off-by" into:
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0a1731a0f0ef..300e2c30986c 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2913,6 +2913,13 @@
- 			to extract confidential information from the kernel
- 			are also disabled.
- 
-+	locktorture.call_rcu_chains= [KNL]
-+			Specify the number of self-propagating call_rcu()
-+			chains to set up.  These are used to ensure that
-+			there is a high probability of an RCU grace period
-+			in progress at any given time.	Defaults to 0,
-+			which disables these call_rcu() chains.
-+
- 	locktorture.nreaders_stress= [KNL]
- 			Set the number of locking read-acquisition kthreads.
- 			Defaults to being automatically set based on the
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index d2a3a8cc1902..01d56e6c44d7 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -34,6 +34,7 @@ MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
- 
- torture_param(int, acq_writer_lim, 0, "Write_acquisition time limit (jiffies).");
-+torture_param(int, call_rcu_chains, 0, "Self-propagate call_rcu() chains during test (0=disable).");
- torture_param(int, long_hold, 100, "Do occasional long hold of lock (ms), 0=disable");
- torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
- torture_param(int, nreaders_stress, -1, "Number of read-locking stress-test threads");
-@@ -119,6 +120,12 @@ struct lock_stress_stats {
- 	long n_lock_acquired;
- };
- 
-+struct call_rcu_chain {
-+	struct rcu_head crc_rh;
-+	bool crc_stop;
-+};
-+struct call_rcu_chain *call_rcu_chain;
-+
- /* Forward reference. */
- static void lock_torture_cleanup(void);
- 
-@@ -1037,15 +1044,60 @@ lock_torture_print_module_parms(struct lock_torture_ops *cur_ops,
- 
- 	cpumask_setall(&cpumask_all);
- 	pr_alert("%s" TORTURE_FLAG
--		 "--- %s%s: acq_writer_lim=%d long_hold=%d nested_locks=%d nreaders_stress=%d nwriters_stress=%d onoff_holdoff=%d onoff_interval=%d rt_boost=%d rt_boost_factor=%d shuffle_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d verbose=%d writer_fifo=%d readers_bind=%*pbl writers_bind=%*pbl\n",
-+		 "--- %s%s: acq_writer_lim=%d call_rcu_chains=%d long_hold=%d nested_locks=%d nreaders_stress=%d nwriters_stress=%d onoff_holdoff=%d onoff_interval=%d rt_boost=%d rt_boost_factor=%d shuffle_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d verbose=%d writer_fifo=%d readers_bind=%*pbl writers_bind=%*pbl\n",
- 		 torture_type, tag, cxt.debug_lock ? " [debug]": "",
--		 acq_writer_lim, long_hold, nested_locks, cxt.nrealreaders_stress,
-+		 acq_writer_lim, call_rcu_chains, long_hold, nested_locks, cxt.nrealreaders_stress,
- 		 cxt.nrealwriters_stress, onoff_holdoff, onoff_interval, rt_boost,
- 		 rt_boost_factor, shuffle_interval, shutdown_secs, stat_interval, stutter,
- 		 verbose, writer_fifo,
- 		 cpumask_pr_args(rcmp), cpumask_pr_args(wcmp));
- }
- 
-+// If requested, maintain call_rcu() chains to keep a grace period always
-+// in flight.  These increase the probability of getting an RCU CPU stall
-+// warning and associated diagnostics when a locking primitive stalls.
-+
-+static void call_rcu_chain_cb(struct rcu_head *rhp)
-+{
-+	struct call_rcu_chain *crcp = container_of(rhp, struct call_rcu_chain, crc_rh);
-+
-+	if (!smp_load_acquire(&crcp->crc_stop)) {
-+		(void)start_poll_synchronize_rcu(); // Start one grace period...
-+		call_rcu(&crcp->crc_rh, call_rcu_chain_cb); // ... and later start another.
-+	}
-+}
-+
-+// Start the requested number of call_rcu() chains.
-+static int call_rcu_chain_init(void)
-+{
-+	int i;
-+
-+	if (call_rcu_chains <= 0)
-+		return 0;
-+	call_rcu_chain = kcalloc(call_rcu_chains, sizeof(*call_rcu_chain), GFP_KERNEL);
-+	if (!call_rcu_chains)
-+		return -ENOMEM;
-+	for (i = 0; i < call_rcu_chains; i++) {
-+		call_rcu_chain[i].crc_stop = false;
-+		call_rcu(&call_rcu_chain[i].crc_rh, call_rcu_chain_cb);
-+	}
-+	return 0;
-+}
-+
-+// Stop all of the call_rcu() chains.
-+static void call_rcu_chain_cleanup(void)
-+{
-+	int i;
-+
-+	if (!call_rcu_chain)
-+		return;
-+	for (i = 0; i < call_rcu_chains; i++)
-+		smp_store_release(&call_rcu_chain[i].crc_stop, true);
-+	rcu_barrier();
-+	kfree(call_rcu_chain);
-+	call_rcu_chain = NULL;
-+}
-+
- static void lock_torture_cleanup(void)
- {
- 	int i;
-@@ -1096,6 +1148,8 @@ static void lock_torture_cleanup(void)
- 	kfree(cxt.lrsa);
- 	cxt.lrsa = NULL;
- 
-+	call_rcu_chain_cleanup();
-+
- end:
- 	if (cxt.init_called) {
- 		if (cxt.cur_ops->exit)
-@@ -1225,6 +1279,10 @@ static int __init lock_torture_init(void)
- 		}
- 	}
- 
-+	firsterr = call_rcu_chain_init();
-+	if (torture_init_error(firsterr))
-+		goto unwind;
-+
- 	lock_torture_print_module_parms(cxt.cur_ops, "Start of test");
- 
- 	/* Prepare torture context. */
--- 
-2.34.1
+Signed-off-by: Yong He <alexyonghe@tencent.com>
 
+>
+> Thanks.
