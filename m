@@ -2,133 +2,70 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A41FECD68ED
-	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 06:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E086DCD80A3
+	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 11:11:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442267AbjJJGqj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Oct 2023 02:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        id S230369AbjJJLLC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Oct 2023 07:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442156AbjJJGqi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:46:38 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908F69E;
-        Mon,  9 Oct 2023 23:46:36 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-584a761b301so3997977a12.3;
-        Mon, 09 Oct 2023 23:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696920396; x=1697525196; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
-        b=Krzx7F3UWnarFXdch25s+60KRril5Vacoel+aYFVR21jBennHk8AmFtbuey6jruKKX
-         Y8eykzJsDqtpoEiJN0pAyRG54JfplpvgOK8grqp/9Eigi8dJDx2Fz7f4CB/mh15MW+Nz
-         f/az8B61oXVhtvV91C45PR208vSLTqT+RY4gSdw3utGOgyHs/I9Lz4tfky+F634a2Gd9
-         eRNM/IDoDQmxtqVpz9HtpkALkDKON+bZMcw/Xk0E+xaLSBQNN6EJOFrXz4xtOQ7JF3ov
-         eztvaNYob0DRovRayWwhdq220bC+F/g0G3cQCUOvzvrKFE5IuHkIuHGhuzt+84qMhtc9
-         gq8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696920396; x=1697525196;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
-        b=bM+4+Bl4miAnYgVKWMEVi0xGw76mAxB+RmOx0nRRwoIzQ/JOeL7dIlghQmv30f7sv3
-         g5Q0kHNrn1fWJS1DpLhdctLaHVQa71CRbTUiVo8dzX8Z95+9n6M2IB/vFeqR0NK1Vn1y
-         xYkhvdqctsvHxJysjqRXBIqVwdTvbvPtsCYDHxXkUUcbh/ChWtiDPnF3g4kx4FYNo/in
-         cSa0fXBCQO9wnDvWsTaeUb+KurnFJ6Dm4uTluF/QN7TWjErndbmKm0hm8LkQ3oss7/n1
-         IqKkpXqfGzDfkUv0vU4OL4GKc2dDXZNQ5qobrgAXAePbjh/VPXTgJBkEiLkfbTQhsNR6
-         653g==
-X-Gm-Message-State: AOJu0YzyWbtzouJRfJN+dURCgLzgwbMidgiOnNfQKexfvWaBIOPX4slQ
-        47C0p044mgguT7ucOeqIGvQ=
-X-Google-Smtp-Source: AGHT+IGl9lZn6Seoy30vrb0vHHbDaZ4cyNJ61UCdkTmIVLIqmmehlduoneDc8bAWXdYi7VPayrdlRA==
-X-Received: by 2002:a05:6a20:7286:b0:15e:7323:5c0f with SMTP id o6-20020a056a20728600b0015e73235c0fmr21811247pzk.16.1696920395939;
-        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id g18-20020aa78752000000b00692cb1224casm7504782pfo.183.2023.10.09.23.46.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
-Message-ID: <5144fd23-e737-f23c-ce66-58d58ba13757@gmail.com>
-Date:   Tue, 10 Oct 2023 14:46:27 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH 2/5] srcu: Only accelerate on enqueue time
-Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        with ESMTP id S231281AbjJJLLB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Oct 2023 07:11:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801F5B4;
+        Tue, 10 Oct 2023 04:11:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9943DC433C8;
+        Tue, 10 Oct 2023 11:10:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696936260;
+        bh=7E3Mgn8qXJeUH1aP4ft2CNwb5IC4XU/kYtU/S6Xhah8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RA2YvVxnqYDvDbjK5OZy+HU268qwocPitmuvZWLnXB9r9rOnzJDD+PhMjdNac5Df3
+         KUgg2S+lXTcfLqhQsH9DutNN6BGPbG6FmnfEhxeVsSnstik+dkaoNcXWa8Z8QWKuzp
+         I5ck1rUR2RqGiuFl5CzIgFBQUMSch8DCiYSPyT/6OSlW73pFyNXfr0lTCprWvY3Rjw
+         spjjrDOA9yqRGKsqf9DXnuF72pjYzI5ikGTelwkkzPhkCjezMO1VzLxk16xn9ggbsf
+         0QoLINdzCFfxrx16eH2KvxsdqjlpgqoaRoYjn+ZQlYjnhGqC+kJFfSMQ8BUCU4RcYq
+         cDYioGYa6vcCQ==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        Yong He <zhuangel570@gmail.com>
-References: <20231003232903.7109-1-frederic@kernel.org>
- <20231003232903.7109-3-frederic@kernel.org>
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <20231003232903.7109-3-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: [PATCH 0/3] RCU docs updates for v6.7
+Date:   Tue, 10 Oct 2023 13:10:50 +0200
+Message-Id: <20231010111053.986507-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 4/10/2023 7:29 am, Frederic Weisbecker wrote:
-> Acceleration in SRCU happens on enqueue time for each new callback. This
-> operation is expected not to fail and therefore any similar attempt
-> from other places shouldn't find any remaining callbacks to accelerate.
-> 
-> Moreover accelerations performed beyond enqueue time are error prone
-> because rcu_seq_snap() then may return the snapshot for a new grace
-> period that is not going to be started.
-> 
-> Remove these dangerous and needless accelerations and introduce instead
-> assertions reporting leaking unaccelerated callbacks beyond enqueue
-> time.
-> 
-> Co-developed-by: Yong He <zhuangel570@gmail.com>
-> Co-developed-by: Joel Fernandes <joel@joelfernandes.org>
-> Co-developed-by: Neeraj upadhyay <neeraj.iitr10@gmail.com>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->   kernel/rcu/srcutree.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 9fab9ac36996..560e99ec5333 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -784,8 +784,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
->   	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
->   	rcu_segcblist_advance(&sdp->srcu_cblist,
->   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
-> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
->   	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
->   	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
->   	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
-> @@ -1721,6 +1720,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
->   	ssp = sdp->ssp;
->   	rcu_cblist_init(&ready_cbs);
->   	spin_lock_irq_rcu_node(sdp);
-> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
->   	rcu_segcblist_advance(&sdp->srcu_cblist,
->   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
->   	if (sdp->srcu_cblist_invoking ||
-> @@ -1750,8 +1750,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
->   	 */
->   	spin_lock_irq_rcu_node(sdp);
->   	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
-> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+Hello,
 
-We did observe such issues at our farm and the same diff was applied,
-thus this fix is especially appreciated. Thanks.
+This series contains RCU documentation updates:
 
-Reviewed-by: Like Xu <likexu@tencent.com>
+1. RCU: Fix section numbers after adding Section 7 in whatisRCU.rst
 
->   	sdp->srcu_cblist_invoking = false;
->   	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
->   	spin_unlock_irq_rcu_node(sdp);
+2. Describe listRCU read-side guarantees
+
+3. Remove references to rcu_migrate_callbacks() from diagrams
+
+Thanks,
+        Frederic.
+
+ .../Design/Memory-Ordering/TreeRCU-callback-registry.svg | 9 ---------
+ Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg  | 9 ---------
+ Documentation/RCU/listRCU.rst                            | 9 +++++++++
+ Documentation/RCU/whatisRCU.rst                          | 4 ++--
+ 4 files changed, 11 insertions(+), 20 deletions(-)
+
+-- 
+2.34.1
+
