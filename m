@@ -2,91 +2,67 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD2EECD80A8
-	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 11:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DA6CCD80A9
+	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 11:27:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjJJLXG (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Oct 2023 07:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S230272AbjJJL1y (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Oct 2023 07:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjJJLXF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:23:05 -0400
+        with ESMTP id S230223AbjJJL1y (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Oct 2023 07:27:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E1693;
-        Tue, 10 Oct 2023 04:23:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D5F8C433C8;
-        Tue, 10 Oct 2023 11:23:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD739E;
+        Tue, 10 Oct 2023 04:27:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0B7BC433CB;
+        Tue, 10 Oct 2023 11:27:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696936984;
-        bh=1J6gu5kW3DbwI0FpSQCZzBm2PXMVcfvVI3Q0lV4Dx/k=;
+        s=k20201202; t=1696937272;
+        bh=dtIQTDwVuag5MMahnmM7/RPqc9HUv7RP2UIAvmElWJA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LCSu6UorJ3VPK8eWT5ib55ErSdXVFUMr7d8PchJY0pog7nVRnIdZ9thT82fXx8kGU
-         zIWLzBtO20IgurmylvCzNvm2kkFMhxqp442I4UmnP+Wm2t1yoaekQWwDcqPXposarG
-         151VThtzPUSToFy1y2jgLVJNt7BTmax4pWAnlRVou5ROVV0Z8uCVpB4eHxHnjQfZjl
-         cBkJqhadxtEFXN5TN51MCIzUstTBtM96sLW0Luy1VLpNGVMi3BAL0uLzJRnqEzrkWW
-         4YOTCSLOw8uXAJ4D6r+gs4kxUf17PplZaCZBNKK/NwCCHYfi157ghffopJYnIAPPne
-         tho5ApmlaGzHw==
-Date:   Tue, 10 Oct 2023 13:23:01 +0200
+        b=PlLsRHRMYGdugdo8mpcaqXpbhLp8hmL86LfnEzRbynQFv2E0hhbfg+54a0iQsWAKj
+         0sJKpgcOvDhhIZGa0uLNoKHEL9TdGbsGdWIKNiXafi3zsTAtIS6bV0EuF0Y8ZeCF9w
+         NRZGmWomjJE0rP9w8p49Uog6mlDDNjPOKIq09/uTXw0qr8AzIzZmUg+zPg+MIuTyZ0
+         XkAJ1KaVWHypTOLmKkuS/sXmDSnCBs487QxvDonQMbdp48mBQOnXb2H6pLL2XDlVjL
+         n2yXEZTBvIGSkJP+3Y7U0iwDpBbPeniih1HKLeHVKxnzi7iMTWKzGWRPoINTwzU472
+         Kyi0vwmWTsRmw==
+Date:   Tue, 10 Oct 2023 13:27:49 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Yong He <zhuangel570@gmail.com>,
+To:     zhuangel570 <zhuangel570@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
 Subject: Re: [PATCH 0/5] srcu fixes
-Message-ID: <ZSU0FUYCLTKPLMks@lothringen>
+Message-ID: <ZSU1NeV/Z65ph/RC@lothringen>
 References: <20231003232903.7109-1-frederic@kernel.org>
  <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
- <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
- <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
- <ZR0yMdyoA5biYYxg@lothringen>
- <77322b72-1d95-46c6-9837-1d811b36336c@paulmck-laptop>
- <02d3ae63-8e52-4931-acf6-32ef69a6511a@paulmck-laptop>
- <ZR3YwR4FriKP_Pab@localhost.localdomain>
- <b8f2e454-f188-4603-b410-9b28fcbb148c@paulmck-laptop>
- <5a37a92f-2f3c-467a-83db-b2e2df22557b@paulmck-laptop>
+ <ZR0vjdp+BNiFm46+@lothringen>
+ <CANZk6aQG4Lqyk8JkT_my3dwub4jGpn31wYRoCwW4oSH1x=sJ1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5a37a92f-2f3c-467a-83db-b2e2df22557b@paulmck-laptop>
+In-Reply-To: <CANZk6aQG4Lqyk8JkT_my3dwub4jGpn31wYRoCwW4oSH1x=sJ1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 09:54:12AM -0700, Paul E. McKenney wrote:
-> On Wed, Oct 04, 2023 at 02:54:57PM -0700, Paul E. McKenney wrote:
-> > On Wed, Oct 04, 2023 at 11:27:29PM +0200, Frederic Weisbecker wrote:
-> > > Le Wed, Oct 04, 2023 at 09:47:04AM -0700, Paul E. McKenney a écrit :
-> > > > > The 10-hour 40-CPU SRCU-P run and pair of 10-hour 16-CPU SRCU-N runs
-> > > > > completed without failure.  The others had some failures, but I need
-> > > > > to look and see if any were unexpected.  In the meantime, I started a
-> > > > > two-hour 40-CPU SRCU-P run and a pair of one-hour 16-CPU SRCU-N runs on
-> > > > > just that first commit.  Also servicing SIGSHOWER and SIGFOOD.  ;-)
-> > > > 
-> > > > And the two-hour 40-CPU SRCU-P run and a pair of two-hour 16-CPU SRCU-N
-> > > > runs (on only the first commit) completed without incident.
-> > > > 
-> > > > The other set of overnight full-stack runs had only tick-stop errors,
-> > > > so I started a two-hour set on the first commit.
-> > > > 
-> > > > So far so good!
-> > > 
-> > > Very nice!
-> > > 
-> > > As for the tick-stop error, see the upstream fix:
-> > > 
-> > >    1a6a46477494 ("timers: Tag (hr)timer softirq as hotplug safe")
-> > 
-> > Got it, thank you!
-> > 
-> > And the two-hour set of 200*SRCU-N and 100*SRCU-P had only tick-stop
-> > errors.  I am refreshing the test grid, and will run overnight.
+On Sat, Oct 07, 2023 at 06:24:53PM +0800, zhuangel570 wrote:
+> On Wed, Oct 4, 2023 at 5:25â€¯PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> There is currently no way to reproduce this problem in our environment.
+> The problem has appeared on 2 machines, and each time it occurred, the
+> test had been running for more than a month.
 > 
-> And the ten-hour test passed with only the tick-stop errors, representing
-> 2000 hours of SRCU-N and 1000 hours of SRCU-P.  (I ran the exact same
-> stack, without the rebased fix you call out above.)
+> BTW, I will run tests with these patches in our environment.
 
-Thanks a lot!
+Ok, let us know if it ever triggers after this series.
+
+Since I added you in the Co-developed-by: tags, I will need to
+also add your Signed-off-by: tag.
+
+Is that ok for you?
+
+Thanks.
