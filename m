@@ -2,104 +2,91 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E087CD80A6
-	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 11:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD2EECD80A8
+	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 11:23:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbjJJLLO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 10 Oct 2023 07:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
+        id S231228AbjJJLXG (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Oct 2023 07:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjJJLLN (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:11:13 -0400
+        with ESMTP id S230223AbjJJLXF (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Oct 2023 07:23:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402E8D8;
-        Tue, 10 Oct 2023 04:11:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA21C433C8;
-        Tue, 10 Oct 2023 11:11:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E1693;
+        Tue, 10 Oct 2023 04:23:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D5F8C433C8;
+        Tue, 10 Oct 2023 11:23:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696936268;
-        bh=kMT6jsRDW5u1mR0slm226cMQVQUPEUfKxZwIN7nWu/k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gNWw///zb6m3i8LiU9IxCovbVxgx2Janpc3MBuSLTcBmgINbbOWyYXNF4jLz8GN36
-         aaQ3TeIM+/feLx9MIOFmHK9c4Pvi/H591MQZ8e32kIliqegyGtm/0z4QtrTBTL5vMI
-         vNp3xmegu1KCJOgyINVfT28WThykKiWf8bzrbfth3P7e58rHL+P+x641MMG89Ir42j
-         q5xAqZRsN4cje1m0Rwg+3jpmVxXsgvBtzkyFavCT5+ZY0+biSIoh4ljqhVjda2kBQk
-         HIcaCasYvHvAs/1ay5V7ldyNlxJ2rzTxEvOgl6HBAD9bNfqDr59jRXjtC4pGeSFWzs
-         4QftQvyxiNq2Q==
+        s=k20201202; t=1696936984;
+        bh=1J6gu5kW3DbwI0FpSQCZzBm2PXMVcfvVI3Q0lV4Dx/k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LCSu6UorJ3VPK8eWT5ib55ErSdXVFUMr7d8PchJY0pog7nVRnIdZ9thT82fXx8kGU
+         zIWLzBtO20IgurmylvCzNvm2kkFMhxqp442I4UmnP+Wm2t1yoaekQWwDcqPXposarG
+         151VThtzPUSToFy1y2jgLVJNt7BTmax4pWAnlRVou5ROVV0Z8uCVpB4eHxHnjQfZjl
+         cBkJqhadxtEFXN5TN51MCIzUstTBtM96sLW0Luy1VLpNGVMi3BAL0uLzJRnqEzrkWW
+         4YOTCSLOw8uXAJ4D6r+gs4kxUf17PplZaCZBNKK/NwCCHYfi157ghffopJYnIAPPne
+         tho5ApmlaGzHw==
+Date:   Tue, 10 Oct 2023 13:23:01 +0200
 From:   Frederic Weisbecker <frederic@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Yong He <zhuangel570@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: [PATCH 3/3] rcu: Remove references to rcu_migrate_callbacks() from diagrams
-Date:   Tue, 10 Oct 2023 13:10:53 +0200
-Message-Id: <20231010111053.986507-4-frederic@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231010111053.986507-1-frederic@kernel.org>
-References: <20231010111053.986507-1-frederic@kernel.org>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/5] srcu fixes
+Message-ID: <ZSU0FUYCLTKPLMks@lothringen>
+References: <20231003232903.7109-1-frederic@kernel.org>
+ <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+ <1d21ceee-56d3-4784-9e6f-0a766c773833@paulmck-laptop>
+ <811d08e3-efb8-4398-8fbc-6b5d030afb15@paulmck-laptop>
+ <ZR0yMdyoA5biYYxg@lothringen>
+ <77322b72-1d95-46c6-9837-1d811b36336c@paulmck-laptop>
+ <02d3ae63-8e52-4931-acf6-32ef69a6511a@paulmck-laptop>
+ <ZR3YwR4FriKP_Pab@localhost.localdomain>
+ <b8f2e454-f188-4603-b410-9b28fcbb148c@paulmck-laptop>
+ <5a37a92f-2f3c-467a-83db-b2e2df22557b@paulmck-laptop>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a37a92f-2f3c-467a-83db-b2e2df22557b@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This function is gone since:
+On Thu, Oct 05, 2023 at 09:54:12AM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 04, 2023 at 02:54:57PM -0700, Paul E. McKenney wrote:
+> > On Wed, Oct 04, 2023 at 11:27:29PM +0200, Frederic Weisbecker wrote:
+> > > Le Wed, Oct 04, 2023 at 09:47:04AM -0700, Paul E. McKenney a écrit :
+> > > > > The 10-hour 40-CPU SRCU-P run and pair of 10-hour 16-CPU SRCU-N runs
+> > > > > completed without failure.  The others had some failures, but I need
+> > > > > to look and see if any were unexpected.  In the meantime, I started a
+> > > > > two-hour 40-CPU SRCU-P run and a pair of one-hour 16-CPU SRCU-N runs on
+> > > > > just that first commit.  Also servicing SIGSHOWER and SIGFOOD.  ;-)
+> > > > 
+> > > > And the two-hour 40-CPU SRCU-P run and a pair of two-hour 16-CPU SRCU-N
+> > > > runs (on only the first commit) completed without incident.
+> > > > 
+> > > > The other set of overnight full-stack runs had only tick-stop errors,
+> > > > so I started a two-hour set on the first commit.
+> > > > 
+> > > > So far so good!
+> > > 
+> > > Very nice!
+> > > 
+> > > As for the tick-stop error, see the upstream fix:
+> > > 
+> > >    1a6a46477494 ("timers: Tag (hr)timer softirq as hotplug safe")
+> > 
+> > Got it, thank you!
+> > 
+> > And the two-hour set of 200*SRCU-N and 100*SRCU-P had only tick-stop
+> > errors.  I am refreshing the test grid, and will run overnight.
+> 
+> And the ten-hour test passed with only the tick-stop errors, representing
+> 2000 hours of SRCU-N and 1000 hours of SRCU-P.  (I ran the exact same
+> stack, without the rebased fix you call out above.)
 
-	53b46303da84 (rcu: Remove rsp parameter from rcu_boot_init_percpu_data() and friends)
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- .../Design/Memory-Ordering/TreeRCU-callback-registry.svg | 9 ---------
- Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg  | 9 ---------
- 2 files changed, 18 deletions(-)
-
-diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg
-index 7ac6f9269806..63eff867175a 100644
---- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg
-+++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-callback-registry.svg
-@@ -564,15 +564,6 @@
-        font-size="192"
-        id="text202-7-9-6"
-        style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcutree_migrate_callbacks()</text>
--    <text
--       xml:space="preserve"
--       x="8335.4873"
--       y="5357.1006"
--       font-style="normal"
--       font-weight="bold"
--       font-size="192"
--       id="text202-7-9-6-0"
--       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_migrate_callbacks()</text>
-     <text
-        xml:space="preserve"
-        x="8768.4678"
-diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-index 069f6f8371c2..e4a66f8e92c5 100644
---- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-+++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-@@ -1446,15 +1446,6 @@
-        font-size="192"
-        id="text202-7-9-6"
-        style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcutree_migrate_callbacks()</text>
--    <text
--       xml:space="preserve"
--       x="8335.4873"
--       y="5357.1006"
--       font-style="normal"
--       font-weight="bold"
--       font-size="192"
--       id="text202-7-9-6-0"
--       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_migrate_callbacks()</text>
-     <text
-        xml:space="preserve"
-        x="8768.4678"
--- 
-2.34.1
-
+Thanks a lot!
