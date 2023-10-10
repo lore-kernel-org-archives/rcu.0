@@ -2,156 +2,133 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CE92CD610B
-	for <rcu@archiver.kernel.org>; Mon,  9 Oct 2023 16:41:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A41FECD68ED
+	for <rcu@archiver.kernel.org>; Tue, 10 Oct 2023 06:46:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377292AbjJIQlY (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 9 Oct 2023 12:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
+        id S1442267AbjJJGqj (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 10 Oct 2023 02:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376275AbjJIQlX (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:41:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194969C
-        for <rcu@vger.kernel.org>; Mon,  9 Oct 2023 09:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696869640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+YpXHXo6RBy8CnTiTObZdU28mMjUq9Z4XmoNn8CdwOg=;
-        b=izkoud+QpX748T7/mkz9Fwemjuho6JiQbQTwlidhNng8cvVlg+bTtMJOPuNTHikOxKyh8s
-        gXLKkmfi4IQN7DUOe3TAz++jxjGaaOcL2AAXJQ+pPIBtFvxA1vmaGT72qF/9CH+YRqoZak
-        rNuqz3hqNZI8+b9NFEvooqWMFGGlNiU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-583-_JZOasHtPZ-nAmJ4PwQ6rQ-1; Mon, 09 Oct 2023 12:40:39 -0400
-X-MC-Unique: _JZOasHtPZ-nAmJ4PwQ6rQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so30410245e9.3
-        for <rcu@vger.kernel.org>; Mon, 09 Oct 2023 09:40:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696869638; x=1697474438;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        with ESMTP id S1442156AbjJJGqi (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 10 Oct 2023 02:46:38 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908F69E;
+        Mon,  9 Oct 2023 23:46:36 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-584a761b301so3997977a12.3;
+        Mon, 09 Oct 2023 23:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696920396; x=1697525196; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+YpXHXo6RBy8CnTiTObZdU28mMjUq9Z4XmoNn8CdwOg=;
-        b=WGhbChEK6TdqAgVjyaGhh/W+NyGW9gpvbcy08jZkxHsR7PfuVlwJ2Hj3P9bZlPWdfP
-         BzDJ5s9FfpDqdWwowJ1G+rB3Rx8EH7+f6tbwtCQWa46yejRLJYN9V25/mhsV1KntuwAb
-         Ra6WTWExBG8qnIxU8gBtftd343vGqMOUVjyRMY3t2lIGHQTAYhVKAX5IdBke/uXAYmwE
-         xBSoVaHyWfvgamIfSKjthWvKxp3JnzWbMGVldf5UgWbl4TJtEmFJE/C6aqWRaj127885
-         r+3zUV1QrI8CXY9MXZWTgs63OpA9jC43EyU+5N9mPl8Ao6wkft/V3NvsykBuqbO0DMbV
-         Iylw==
-X-Gm-Message-State: AOJu0YyMqZ1ckajTN2O26rpbYQjT6ZGMNnm2iVDpEDhvdVG9KFkt6UU/
-        29BTXtapax5BJBT88CyaHFJc1VEOmfiI0FKGAGd2httMluwSGmh2mceBXw1sUW7OfQXYdvtQa0a
-        L9FAzKf2cDbla
-X-Received: by 2002:a05:600c:2949:b0:405:82c0:d9d9 with SMTP id n9-20020a05600c294900b0040582c0d9d9mr14896212wmd.41.1696869638576;
-        Mon, 09 Oct 2023 09:40:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEMgAs2OFs3TPKIXUcqwEYEgUj8NhgbOlPIyIMA79idAa9Hjf42+dP6kuPpgcF+X3v1F7p9tg==
-X-Received: by 2002:a05:600c:2949:b0:405:82c0:d9d9 with SMTP id n9-20020a05600c294900b0040582c0d9d9mr14896162wmd.41.1696869638060;
-        Mon, 09 Oct 2023 09:40:38 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id bd5-20020a05600c1f0500b004030e8ff964sm14033430wmb.34.2023.10.09.09.40.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 09:40:37 -0700 (PDT)
-Message-ID: <907b351fee183609891a4d0cfb0a79bad85577a0.camel@redhat.com>
-Subject: Re: [RFC PATCH v2 14/20] x86/kvm: Make kvm_async_pf_enabled
- __ro_after_init
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Date:   Mon, 09 Oct 2023 19:40:31 +0300
-In-Reply-To: <20230720163056.2564824-15-vschneid@redhat.com>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
-         <20230720163056.2564824-15-vschneid@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
+        b=Krzx7F3UWnarFXdch25s+60KRril5Vacoel+aYFVR21jBennHk8AmFtbuey6jruKKX
+         Y8eykzJsDqtpoEiJN0pAyRG54JfplpvgOK8grqp/9Eigi8dJDx2Fz7f4CB/mh15MW+Nz
+         f/az8B61oXVhtvV91C45PR208vSLTqT+RY4gSdw3utGOgyHs/I9Lz4tfky+F634a2Gd9
+         eRNM/IDoDQmxtqVpz9HtpkALkDKON+bZMcw/Xk0E+xaLSBQNN6EJOFrXz4xtOQ7JF3ov
+         eztvaNYob0DRovRayWwhdq220bC+F/g0G3cQCUOvzvrKFE5IuHkIuHGhuzt+84qMhtc9
+         gq8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696920396; x=1697525196;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
+        b=bM+4+Bl4miAnYgVKWMEVi0xGw76mAxB+RmOx0nRRwoIzQ/JOeL7dIlghQmv30f7sv3
+         g5Q0kHNrn1fWJS1DpLhdctLaHVQa71CRbTUiVo8dzX8Z95+9n6M2IB/vFeqR0NK1Vn1y
+         xYkhvdqctsvHxJysjqRXBIqVwdTvbvPtsCYDHxXkUUcbh/ChWtiDPnF3g4kx4FYNo/in
+         cSa0fXBCQO9wnDvWsTaeUb+KurnFJ6Dm4uTluF/QN7TWjErndbmKm0hm8LkQ3oss7/n1
+         IqKkpXqfGzDfkUv0vU4OL4GKc2dDXZNQ5qobrgAXAePbjh/VPXTgJBkEiLkfbTQhsNR6
+         653g==
+X-Gm-Message-State: AOJu0YzyWbtzouJRfJN+dURCgLzgwbMidgiOnNfQKexfvWaBIOPX4slQ
+        47C0p044mgguT7ucOeqIGvQ=
+X-Google-Smtp-Source: AGHT+IGl9lZn6Seoy30vrb0vHHbDaZ4cyNJ61UCdkTmIVLIqmmehlduoneDc8bAWXdYi7VPayrdlRA==
+X-Received: by 2002:a05:6a20:7286:b0:15e:7323:5c0f with SMTP id o6-20020a056a20728600b0015e73235c0fmr21811247pzk.16.1696920395939;
+        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id g18-20020aa78752000000b00692cb1224casm7504782pfo.183.2023.10.09.23.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
+Message-ID: <5144fd23-e737-f23c-ce66-58d58ba13757@gmail.com>
+Date:   Tue, 10 Oct 2023 14:46:27 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH 2/5] srcu: Only accelerate on enqueue time
+Content-Language: en-US
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Yong He <zhuangel570@gmail.com>
+References: <20231003232903.7109-1-frederic@kernel.org>
+ <20231003232903.7109-3-frederic@kernel.org>
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <20231003232903.7109-3-frederic@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-У чт, 2023-07-20 у 17:30 +0100, Valentin Schneider пише:
-> objtool now warns about it:
+On 4/10/2023 7:29 am, Frederic Weisbecker wrote:
+> Acceleration in SRCU happens on enqueue time for each new callback. This
+> operation is expected not to fail and therefore any similar attempt
+> from other places shouldn't find any remaining callbacks to accelerate.
 > 
->   vmlinux.o: warning: objtool: exc_page_fault+0x2a: Non __ro_after_init static key "kvm_async_pf_enabled" in .noinstr section
+> Moreover accelerations performed beyond enqueue time are error prone
+> because rcu_seq_snap() then may return the snapshot for a new grace
+> period that is not going to be started.
 > 
-> The key can only be enabled (and not disabled) in the __init function
-> kvm_guest_init(), so mark it as __ro_after_init.
+> Remove these dangerous and needless accelerations and introduce instead
+> assertions reporting leaking unaccelerated callbacks beyond enqueue
+> time.
 > 
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> Co-developed-by: Yong He <zhuangel570@gmail.com>
+> Co-developed-by: Joel Fernandes <joel@joelfernandes.org>
+> Co-developed-by: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > ---
->  arch/x86/kernel/kvm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   kernel/rcu/srcutree.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 1cceac5984daa..319460090a836 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -44,7 +44,7 @@
->  #include <asm/svm.h>
->  #include <asm/e820/api.h>
->  
-> -DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
-> +DEFINE_STATIC_KEY_FALSE_RO(kvm_async_pf_enabled);
->  
->  static int kvmapf = 1;
->  
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 9fab9ac36996..560e99ec5333 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -784,8 +784,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+>   	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
+>   	rcu_segcblist_advance(&sdp->srcu_cblist,
+>   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+>   	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
+>   	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
+>   	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
+> @@ -1721,6 +1720,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>   	ssp = sdp->ssp;
+>   	rcu_cblist_init(&ready_cbs);
+>   	spin_lock_irq_rcu_node(sdp);
+> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+>   	rcu_segcblist_advance(&sdp->srcu_cblist,
+>   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+>   	if (sdp->srcu_cblist_invoking ||
+> @@ -1750,8 +1750,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>   	 */
+>   	spin_lock_irq_rcu_node(sdp);
+>   	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
 
-Best regards,
-	Maxim Levitsky
+We did observe such issues at our farm and the same diff was applied,
+thus this fix is especially appreciated. Thanks.
 
+Reviewed-by: Like Xu <likexu@tencent.com>
+
+>   	sdp->srcu_cblist_invoking = false;
+>   	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
+>   	spin_unlock_irq_rcu_node(sdp);
