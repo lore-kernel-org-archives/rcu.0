@@ -2,175 +2,117 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A77BDCD98C7
-	for <rcu@archiver.kernel.org>; Wed, 11 Oct 2023 05:05:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DB61CD98C7
+	for <rcu@archiver.kernel.org>; Wed, 11 Oct 2023 06:46:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbjJKFFJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Oct 2023 01:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
+        id S1344090AbjJKGqd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 11 Oct 2023 02:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjJKFFI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:05:08 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCD898
-        for <rcu@vger.kernel.org>; Tue, 10 Oct 2023 22:05:06 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-79fa425855cso249462639f.2
-        for <rcu@vger.kernel.org>; Tue, 10 Oct 2023 22:05:06 -0700 (PDT)
+        with ESMTP id S1344423AbjJKGqb (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 11 Oct 2023 02:46:31 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26E093
+        for <rcu@vger.kernel.org>; Tue, 10 Oct 2023 23:46:29 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40651a72807so62433475e9.1
+        for <rcu@vger.kernel.org>; Tue, 10 Oct 2023 23:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1697000705; x=1697605505; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1697006788; x=1697611588; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WxTb+tzaW80rCd53UmA2HdlmPdirZzFTdr3/d2GhRv0=;
-        b=NIvEbTzeRoUZGJ+s5QD52YqMFlgDbLKjEAv8AVBD6UHZNY9HeFXHuuSHKaYpCt91tq
-         g5K7asLLhH90l1V8aebrpjxZNyFXmCM4+FpcDTyrTnUtUwlouJwKakKakQjiADUDBVwE
-         6VfWPlivqeUv/xe3ddYE/qpbNxHeJhVpjpcdo=
+        bh=CwtA+hno23ELHNqbl06IpWLX/dKD8muoo0IC8mLLZDs=;
+        b=Wh7jt5OVdvndEZDab8c4hvet/m6H+0ISHUosEUx5BPk+QN11+DYeYxqg6jX8AeugsZ
+         0E2rSJiFspE4Nn7U80wbUWk2MVjo77j2xRHQbdaONBMQqcAx1IqBrEZ3eWtgcgzrpnEU
+         2e7p1bYrLGMwMWePLTBtnoL82BdPrQY+lsvf/WB9FE092EFjHGbGu2i2CCIWIjThRoQo
+         2K1Y3KWGC053qyB92of10nf2pvixAKQ52uUmOEKpBF/4vLz1vhn6fms4h9mdD9XOO8s/
+         jkq0kbq7s+vRmjKV5dPWGekMxYH1QYqd2aHF/4IjkZzhdbPh+hRFz+cz/LZL3CFFKF7x
+         2MFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697000705; x=1697605505;
+        d=1e100.net; s=20230601; t=1697006788; x=1697611588;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WxTb+tzaW80rCd53UmA2HdlmPdirZzFTdr3/d2GhRv0=;
-        b=wcbqNDPKlVpd4sCylqwtz1aAuRETqfFPBXIaaS8pOcTEbFRdYQKvvCv5DRVb5+5kSm
-         TIHyYqgyOWFTULyYv+5lJc/ND7xucR73amI2SLdikT7/yPpwzaW4AzqJaFBKgRxlx/4n
-         4pDQkcXjvISb8PzVi31z0J9cWzmNUUKn1jnRn3KKcqpK2E4KdWvtTD2WIRZdT3oTEFio
-         NyUaL72PH107c0h0/49JLXOXCbBnpoydeo7d6h6mcOWCmfTMSb+WuV54clOpNTZaAHim
-         tm0NzyGcLblFz+ZXnVhI853hyrKuYn6qFkf0SFnet2OIYhhCEVsj0CuGmJjkYE2f4bhN
-         d65A==
-X-Gm-Message-State: AOJu0Yz6jwUDqsC5B1qRpQw8OCsqceljb0vyqERu2luohbQM3J3ZZdaf
-        y+6UTjKA3m5UgEVqI36t8IFHwg==
-X-Google-Smtp-Source: AGHT+IFy03G2cJuFBIp6FGEixKXoqXrVTKJalXLWgyRWJ4CG+YpsKoYUI6z524T5aX5M2yqvkC+r0w==
-X-Received: by 2002:a5d:9954:0:b0:786:f4a0:d37e with SMTP id v20-20020a5d9954000000b00786f4a0d37emr19775042ios.4.1697000705583;
-        Tue, 10 Oct 2023 22:05:05 -0700 (PDT)
-Received: from localhost (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id m11-20020a02c88b000000b0042b35e163besm3195221jao.88.2023.10.10.22.05.04
+        bh=CwtA+hno23ELHNqbl06IpWLX/dKD8muoo0IC8mLLZDs=;
+        b=fbeSUdlWNawwpv1BQgfCk3NQdTGdYf6nB0ouJLjdaRWCOj+huZn0kkrKiN1VXhIiW0
+         Naz2OLTKENVuAqOooliUkU68DNL2X0/kjWF4Nxr3T0PBtdGQTpnb9K4/2uOMFG/nwuiz
+         O0KOrnRpZB7FI70r7C8CtjfyP+lotXwysPqeMSCAzlCMiH0ZgKtcmFww0MPoB8cE3gU3
+         Sw4RkktTPKCszCoZlaqMqojDbsFM1H708gbPJX4leHOR2PYeFGs0s1bIdXndVASD/Oc7
+         Cuq+PDmdqohcYS3HX1fb3R8jiT2tbb54sNA+1+Eeo+/cgvCp1dqHRanDiyFB7oLYuPOl
+         /X6A==
+X-Gm-Message-State: AOJu0YypX9JqCgX05zx6b2cWvvn6RIA+flXH8tSY3A2KzEVJBprAdtod
+        +s16ucAtyal8oaAz35jhGwkWHw==
+X-Google-Smtp-Source: AGHT+IHtG1J0pnk8vZPG9hX8u9FSMJhnkn+xltJNAMEP8s/F+e1JBZ/5ajTduYL0g1GbkEHXfdywfw==
+X-Received: by 2002:a5d:4f8a:0:b0:319:7722:30c with SMTP id d10-20020a5d4f8a000000b003197722030cmr16162137wru.22.1697006788180;
+        Tue, 10 Oct 2023 23:46:28 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id v26-20020a5d591a000000b0030ada01ca78sm14485129wrd.10.2023.10.10.23.46.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 22:05:05 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 05:05:04 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
+        Tue, 10 Oct 2023 23:46:27 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 09:46:25 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>,
-        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
-Message-ID: <20231011050504.GA201855@google.com>
-References: <20231004175203.943277832@linuxfoundation.org>
- <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
- <20231006162038.d3q7sl34b4ouvjxf@revolver>
- <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
- <20231006175714.begtgj6wrs46ukmo@revolver>
- <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
- <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
- <9470dab6-dee5-4505-95a2-f6782b648726@paulmck-laptop>
- <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 23/23] locktorture: Check the correct variable for
+ allocation failure
+Message-ID: <029de83a-dcf1-439d-8d6b-7267d2636e37@kadam.mountain>
+References: <20231010115921.988766-1-frederic@kernel.org>
+ <20231010115921.988766-24-frederic@kernel.org>
+ <97ecfb49-e500-45f4-86bb-769b2d32e91c@paulmck-laptop>
+ <beaba092-8545-43c9-9b65-6386f718cb01@kadam.mountain>
+ <b9a976f6-c002-4e3d-8c6d-cef3953bd3a7@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
+In-Reply-To: <b9a976f6-c002-4e3d-8c6d-cef3953bd3a7@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 06:34:35PM -0700, Paul E. McKenney wrote:
-[...]
-> > > > > > > It's also worth noting that the bug this fixes wasn't exposed until the
-> > > > > > > maple tree (added in v6.1) was used for the IRQ descriptors (added in
-> > > > > > > v6.5).
-> > > > > >
-> > > > > > Lots of latent bugs, to be sure, even with rcutorture.  :-/
-> > > > >
-> > > > > The Right Thing is to fix the bug all the way back to the introduction,
-> > > > > but what fallout makes the backport less desirable than living with the
-> > > > > unexposed bug?
-> > > >
-> > > > You are quite right that it is possible for the risk of a backport to
-> > > > exceed the risk of the original bug.
-> > > >
-> > > > I defer to Joel (CCed) on how best to resolve this in -stable.
+On Tue, Oct 10, 2023 at 08:53:36AM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 10, 2023 at 05:07:00PM +0300, Dan Carpenter wrote:
+> > On Tue, Oct 10, 2023 at 06:55:40AM -0700, Paul E. McKenney wrote:
+> > > On Tue, Oct 10, 2023 at 01:59:21PM +0200, Frederic Weisbecker wrote:
+> > > > From: Dan Carpenter <dan.carpenter@linaro.org>
+> > > > 
+> > > > There is a typo so this checks the wrong variable.  "chains" plural vs
+> > > > "chain" singular.  We already know that "chains" is non-zero.
+> > > > 
+> > > > Fixes: 7f993623e9eb ("locktorture: Add call_rcu_chains module parameter")
+> > > > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > > > 
-> > > Maybe I am missing something but this issue should also be happening
-> > > in mainline right?
+> > > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 > > > 
-> > > Even though mainline has 897ba84dc5aa ("rcu-tasks: Handle idle tasks
-> > > for recently offlined CPUs") , the warning should still be happening
-> > > due to Liam's "kernel/sched: Modify initial boot task idle setup"
-> > > because the warning is just rearranged a bit but essentially the same.
-> > > 
-> > > IMHO, the right thing to do then is to drop Liam's patch from 5.15 and
-> > > fix it in mainline (using the ideas described in this thread), then
-> > > backport both that new fix and Liam's patch to 5.15.
-> > > 
-> > > Or is there a reason this warning does not show up on the mainline?
+> > > A name change to increase the Hamming distance would of course also be
+> > > good, though less urgent.  ;-)
+> > 
+> > "Hamming distance" is such a great phrase.  I'm going to use that every
+> > time I complain about confusingly similar variable names going forward.
 > 
-> There is not a whole lot of commonality between the v5.15.134 version of
-> RCU Tasks Trace and that of mainline.  In theory, in mainline, CPU hotplug
-> is supposed to be disabled across all calls to trc_inspect_reader(),
-> which means that there would not be any CPU coming or going.
+> Glad you like it!
 > 
-> But there could potentially be some time between when a CPU was
-> marked as online and its idle task was marked PF_IDLE.  And in
-> fact x86 start_secondary() invokes set_cpu_online() before it calls
-> cpu_startup_entry(), and it is the latter than sets PF_IDLE.
+> But the horrible thing is that I first heard that phrase back in
+> the 1970s, and I am the guilty party who created these particular
+> too-similar variable names.  (Why has the phrase fallen out of favor?
+> No idea, really, but one guess has to do with the fact that current
+> error-correcting codes must deal with different probabilities of different
+> bits flipping in different directions, so you would instead needs a
+> weirdly weighted variant of Hamming distance to accomplish anything with
+> modern error-correcting codes.)
 > 
-> The same is true of alpha, arc, arm, arm64, csky, ia64, loongarch, mips,
-> openrisc, parisc, powerpc, riscv, s390, sh, sparc32, sparc64, x86 xen,
-> and xtensa, which is everybody.
+> But how about something like the following?
 > 
-> One reason why my testing did not reproduce this is because I was running
-> against v6.6-rc1, and cff9b2332ab7 ("kernel/sched: Modify initial boot
-> task idle setup") went into v6.6-rc3.  An initial run merging in current
-> mainline also failed to reproduce this, but I am running overnight.
-> If that doesn't reproduce, I will try inserting delays between the
-> set_cpu_online() and the cpu_startup_entry().
 
-I thought the warning happens before set_cpu_online() is even called, because
-under such situation, ofl == true and the task is not set to PF_IDLE yet:
+Looks good!
 
-                  WARN_ON_ONCE(ofl && task_curr(t) && !is_idle_task(t));
-
-> If this problem is real, fixes include:
-> 
-> o	Revert Liam's patch and make Tiny RCU's call_rcu() deal with
-> 	the problem.  This is overhead and non-tinyness, but to Joel's
-> 	point, it might be best.
-> 
-> o	Go back to something more like Liam's original patch, which
-> 	cleared PF_IDLE only for the boot CPU.
-> 
-> o	Set PF_IDLE before calling set_cpu_online().  This would work,
-> 	but it would also be rather ugly, reaching into each and every
-> 	architecture.
-> 
-> o	Move the call to set_cpu_online() into cpu_startup_entry().
-> 	This would require some serious inspection to prove that it is
-> 	safe, assuming that it is in fact safe.
-> 
-> o	Drop the WARN_ON_ONCE() from trc_inspect_reader().  Not all
-> 	that excited by losing this diagnostic, but then again it
-> 	has been awhile since it has caught anything.
-> 
-> o	Make the WARN_ON_ONCE() condition in trc_inspect_reader() instead
-> 	to a "return false" to retry later.  Ditto, also not liking the
-> 	possibility of indefinite deferral with no warning.
-
-Just for completeness, 
-
- o      Since it just a warning, checking for task_struct::pid == 0 instead of is_idle_task()?
-        Though PF_IDLE is also set in play_idle_precise().
-
- o	Change warning to:
-                  WARN_ON_ONCE(ofl && task_curr(t) && (!is_idle_task(t) && t->pid != 0));
-
-thanks,
-
- - Joel
+regards,
+dan carpenter
 
