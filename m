@@ -2,30 +2,30 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CB69CDB47E
-	for <rcu@archiver.kernel.org>; Fri, 13 Oct 2023 12:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE757CDB482
+	for <rcu@archiver.kernel.org>; Fri, 13 Oct 2023 12:00:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjJMMAh (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Oct 2023 08:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
+        id S231522AbjJMMAo (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Oct 2023 08:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjJMMAL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Oct 2023 08:00:11 -0400
+        with ESMTP id S231817AbjJMMAW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Oct 2023 08:00:22 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F151707;
-        Fri, 13 Oct 2023 04:59:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E05E9C433C8;
-        Fri, 13 Oct 2023 11:59:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE7812C;
+        Fri, 13 Oct 2023 04:59:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DEBBC433CC;
+        Fri, 13 Oct 2023 11:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697198389;
-        bh=gBu5d6YUhfCKIA13MA7EoAu72nhKwN2C8OoerYKkJQw=;
+        s=k20201202; t=1697198397;
+        bh=AMBt1y3lKatePr7xoPrSZmw3+JE1L37mMKzOn8P1rJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S+XhprrZuKYQhkPOGnbJV7Ei0BptNRQ+kTCnTCtt9/Qt2cgIRP/nJg8PQwfnqXsFV
-         wHtVcbS9955Q+UReAhH2yh7NIeWCN2xIhdSFZ9saUh2//i+b49fa4KxTfe5IyniKoc
-         PkIs7JyzhXHkK8tLBxkRoCloMCGDPiNMMtCeY9LoyEX1ft5mzp69oNmghN5mELrQt4
-         e1LYsvvdtMu6XhFsvWfG9zl8tsK/T9+h8Jm5l7bpaKtARXcZfmB+vaPsseGlD93KEF
-         nq47VSSNuWPeqGiBSub3PxkKul9UHyw3xBpxQwI0SOE/IODa9HtCWtPAUbJ+lxfEke
-         mdvcK8rP8F/jQ==
+        b=XAMCSnHc8BABPiBf4YyY9SOO0j3o28PibPn7C8SuTA+E7kolYFPWq2KPSAVjCJHk3
+         iJZYIiJK/iKYAoNBdYvk0DwrXra6Y0b+C8UmlPCjKjAd3UJUQgsqD+G3GbzublBt/Y
+         uLoTzS1WQnPWo5veQOX+ztFFPw1QPuMrSqtFaANUOPbcsZFgAHA6AvPMBOcFzcaZuz
+         e72d3JWmxcNomWn9KUyYzczGWMJdZ6xx71EHlNgmK2kReD722gOLJ3M/d8ewqfcWMl
+         1YoHJGzPDYVR4yf+qwlyFL+V+Lz+BSYCamYS8hBjBtp/IAehYSTUJ1vHO7x+jhwgd3
+         U4SrcqdceMgFg==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
@@ -36,10 +36,12 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: [PATCH 14/18] rcu: Conditionally build CPU-hotplug teardown callbacks
-Date:   Fri, 13 Oct 2023 13:58:58 +0200
-Message-Id: <20231013115902.1059735-15-frederic@kernel.org>
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Yong He <alexyonghe@tencent.com>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: [PATCH 17/18] srcu: Fix callbacks acceleration mishandling
+Date:   Fri, 13 Oct 2023 13:59:01 +0200
+Message-Id: <20231013115902.1059735-18-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231013115902.1059735-1-frederic@kernel.org>
 References: <20231013115902.1059735-1-frederic@kernel.org>
@@ -49,189 +51,151 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Among the three CPU-hotplug teardown RCU callbacks, two of them early
-exit if CONFIG_HOTPLUG_CPU=n, and one is left unchanged. In any case
-all of them have an implementation when CONFIG_HOTPLUG_CPU=n.
+SRCU callbacks acceleration might fail if the preceding callbacks
+advance also fails. This can happen when the following steps are met:
 
-Align instead with the common way to deal with CPU-hotplug teardown
-callbacks and provide a proper stub when they are not supported.
+1) The RCU_WAIT_TAIL segment has callbacks (say for gp_num 8) and the
+   RCU_NEXT_READY_TAIL also has callbacks (say for gp_num 12).
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+2) The grace period for RCU_WAIT_TAIL is observed as started but not yet
+   completed so rcu_seq_current() returns 4 + SRCU_STATE_SCAN1 = 5.
+
+3) This value is passed to rcu_segcblist_advance() which can't move
+   any segment forward and fails.
+
+4) srcu_gp_start_if_needed() still proceeds with callback acceleration.
+   But then the call to rcu_seq_snap() observes the grace period for the
+   RCU_WAIT_TAIL segment (gp_num 8) as completed and the subsequent one
+   for the RCU_NEXT_READY_TAIL segment as started
+   (ie: 8 + SRCU_STATE_SCAN1 = 9) so it returns a snapshot of the
+   next grace period, which is 16.
+
+5) The value of 16 is passed to rcu_segcblist_accelerate() but the
+   freshly enqueued callback in RCU_NEXT_TAIL can't move to
+   RCU_NEXT_READY_TAIL which already has callbacks for a previous grace
+   period (gp_num = 12). So acceleration fails.
+
+6) Note in all these steps, srcu_invoke_callbacks() hadn't had a chance
+   to run srcu_invoke_callbacks().
+
+Then some very bad outcome may happen if the following happens:
+
+7) Some other CPU races and starts the grace period number 16 before the
+   CPU handling previous steps had a chance. Therefore srcu_gp_start()
+   isn't called on the latter sdp to fix the acceleration leak from
+   previous steps with a new pair of call to advance/accelerate.
+
+8) The grace period 16 completes and srcu_invoke_callbacks() is finally
+   called. All the callbacks from previous grace periods (8 and 12) are
+   correctly advanced and executed but callbacks in RCU_NEXT_READY_TAIL
+   still remain. Then rcu_segcblist_accelerate() is called with a
+   snaphot of 20.
+
+9) Since nothing started the grace period number 20, callbacks stay
+   unhandled.
+
+This has been reported in real load:
+
+	[3144162.608392] INFO: task kworker/136:12:252684 blocked for more
+	than 122 seconds.
+	[3144162.615986]       Tainted: G           O  K   5.4.203-1-tlinux4-0011.1 #1
+	[3144162.623053] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+	disables this message.
+	[3144162.631162] kworker/136:12  D    0 252684      2 0x90004000
+	[3144162.631189] Workqueue: kvm-irqfd-cleanup irqfd_shutdown [kvm]
+	[3144162.631192] Call Trace:
+	[3144162.631202]  __schedule+0x2ee/0x660
+	[3144162.631206]  schedule+0x33/0xa0
+	[3144162.631209]  schedule_timeout+0x1c4/0x340
+	[3144162.631214]  ? update_load_avg+0x82/0x660
+	[3144162.631217]  ? raw_spin_rq_lock_nested+0x1f/0x30
+	[3144162.631218]  wait_for_completion+0x119/0x180
+	[3144162.631220]  ? wake_up_q+0x80/0x80
+	[3144162.631224]  __synchronize_srcu.part.19+0x81/0xb0
+	[3144162.631226]  ? __bpf_trace_rcu_utilization+0x10/0x10
+	[3144162.631227]  synchronize_srcu+0x5f/0xc0
+	[3144162.631236]  irqfd_shutdown+0x3c/0xb0 [kvm]
+	[3144162.631239]  ? __schedule+0x2f6/0x660
+	[3144162.631243]  process_one_work+0x19a/0x3a0
+	[3144162.631244]  worker_thread+0x37/0x3a0
+	[3144162.631247]  kthread+0x117/0x140
+	[3144162.631247]  ? process_one_work+0x3a0/0x3a0
+	[3144162.631248]  ? __kthread_cancel_work+0x40/0x40
+	[3144162.631250]  ret_from_fork+0x1f/0x30
+
+Fix this with taking the snapshot for acceleration _before_ the read
+of the current grace period number.
+
+The only side effect of this solution is that callbacks advancing happen
+then _after_ the full barrier in rcu_seq_snap(). This is not a problem
+because that barrier only cares about:
+
+1) Ordering accesses of the update side before call_srcu() so they don't
+   bleed.
+2) See all the accesses prior to the grace period of the current gp_num
+
+The only things callbacks advancing need to be ordered against are
+carried by snp locking.
+
+Reported-by: Yong He <alexyonghe@tencent.com>
+Co-developed-by:: Yong He <alexyonghe@tencent.com>
+Signed-off-by: Yong He <alexyonghe@tencent.com>
+Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by:  Joel Fernandes (Google) <joel@joelfernandes.org>
+Co-developed-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
+Signed-off-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
+Link: http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=xXMB401g@mail.gmail.com
+Fixes: da915ad5cf25 ("srcu: Parallelize callback handling")
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/rcutree.h |  11 +++-
- kernel/rcu/tree.c       | 114 +++++++++++++++++++---------------------
- 2 files changed, 63 insertions(+), 62 deletions(-)
+ kernel/rcu/srcutree.c | 33 ++++++++++++++++++++++++++++++---
+ 1 file changed, 30 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 153cfc7bbffd..46875c4e9f56 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -110,9 +110,16 @@ void rcu_all_qs(void);
- /* RCUtree hotplug events */
- int rcutree_prepare_cpu(unsigned int cpu);
- int rcutree_online_cpu(unsigned int cpu);
--int rcutree_offline_cpu(unsigned int cpu);
-+void rcu_cpu_starting(unsigned int cpu);
-+
-+#ifdef CONFIG_HOTPLUG_CPU
- int rcutree_dead_cpu(unsigned int cpu);
- int rcutree_dying_cpu(unsigned int cpu);
--void rcu_cpu_starting(unsigned int cpu);
-+int rcutree_offline_cpu(unsigned int cpu);
-+#else
-+#define rcutree_dead_cpu NULL
-+#define rcutree_dying_cpu NULL
-+#define rcutree_offline_cpu NULL
-+#endif
- 
- #endif /* __LINUX_RCUTREE_H */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2e1e7eadf2cc..f9c6b2680cbb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4237,25 +4237,6 @@ static bool rcu_init_invoked(void)
- 	return !!rcu_state.n_online_cpus;
- }
- 
--/*
-- * Near the end of the offline process.  Trace the fact that this CPU
-- * is going offline.
-- */
--int rcutree_dying_cpu(unsigned int cpu)
--{
--	bool blkd;
--	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp = rdp->mynode;
--
--	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
--		return 0;
--
--	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
--	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
--			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
--	return 0;
--}
--
- /*
-  * All CPUs for the specified rcu_node structure have gone offline,
-  * and all tasks that were preempted within an RCU read-side critical
-@@ -4301,23 +4282,6 @@ static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf)
- 	}
- }
- 
--/*
-- * The CPU has been completely removed, and some other CPU is reporting
-- * this fact from process context.  Do the remainder of the cleanup.
-- * There can only be one CPU hotplug operation at a time, so no need for
-- * explicit locking.
-- */
--int rcutree_dead_cpu(unsigned int cpu)
--{
--	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
--		return 0;
--
--	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
--	// Stop-machine done, so allow nohz_full to disable tick.
--	tick_dep_clear(TICK_DEP_BIT_RCU);
--	return 0;
--}
--
- /*
-  * Propagate ->qsinitmask bits up the rcu_node tree to account for the
-  * first CPU in a given leaf rcu_node structure coming online.  The caller
-@@ -4470,29 +4434,6 @@ int rcutree_online_cpu(unsigned int cpu)
- 	return 0;
- }
- 
--/*
-- * Near the beginning of the process.  The CPU is still very much alive
-- * with pretty much all services enabled.
-- */
--int rcutree_offline_cpu(unsigned int cpu)
--{
--	unsigned long flags;
--	struct rcu_data *rdp;
--	struct rcu_node *rnp;
--
--	rdp = per_cpu_ptr(&rcu_data, cpu);
--	rnp = rdp->mynode;
--	raw_spin_lock_irqsave_rcu_node(rnp, flags);
--	rnp->ffmask &= ~rdp->grpmask;
--	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--
--	rcutree_affinity_setting(cpu, cpu);
--
--	// nohz_full CPUs need the tick for stop-machine to work quickly
--	tick_dep_set(TICK_DEP_BIT_RCU);
--	return 0;
--}
--
- /*
-  * Mark the specified CPU as being online so that subsequent grace periods
-  * (both expedited and normal) will wait on it.  Note that this means that
-@@ -4646,7 +4587,60 @@ void rcutree_migrate_callbacks(int cpu)
- 		  cpu, rcu_segcblist_n_cbs(&rdp->cblist),
- 		  rcu_segcblist_first_cb(&rdp->cblist));
- }
--#endif
-+
-+/*
-+ * The CPU has been completely removed, and some other CPU is reporting
-+ * this fact from process context.  Do the remainder of the cleanup.
-+ * There can only be one CPU hotplug operation at a time, so no need for
-+ * explicit locking.
-+ */
-+int rcutree_dead_cpu(unsigned int cpu)
-+{
-+	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
-+	// Stop-machine done, so allow nohz_full to disable tick.
-+	tick_dep_clear(TICK_DEP_BIT_RCU);
-+	return 0;
-+}
-+
-+/*
-+ * Near the end of the offline process.  Trace the fact that this CPU
-+ * is going offline.
-+ */
-+int rcutree_dying_cpu(unsigned int cpu)
-+{
-+	bool blkd;
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+	struct rcu_node *rnp = rdp->mynode;
-+
-+	blkd = !!(READ_ONCE(rnp->qsmask) & rdp->grpmask);
-+	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
-+			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
-+	return 0;
-+}
-+
-+/*
-+ * Near the beginning of the process.  The CPU is still very much alive
-+ * with pretty much all services enabled.
-+ */
-+int rcutree_offline_cpu(unsigned int cpu)
-+{
-+	unsigned long flags;
-+	struct rcu_data *rdp;
-+	struct rcu_node *rnp;
-+
-+	rdp = per_cpu_ptr(&rcu_data, cpu);
-+	rnp = rdp->mynode;
-+	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	rnp->ffmask &= ~rdp->grpmask;
-+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+
-+	rcutree_affinity_setting(cpu, cpu);
-+
-+	// nohz_full CPUs need the tick for stop-machine to work quickly
-+	tick_dep_set(TICK_DEP_BIT_RCU);
-+	return 0;
-+}
-+#endif /* #ifdef CONFIG_HOTPLUG_CPU */
- 
- /*
-  * On non-huge systems, use expedited RCU grace periods to make suspend
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 5602042856b1..9fab9ac36996 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1244,10 +1244,37 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+ 	spin_lock_irqsave_sdp_contention(sdp, &flags);
+ 	if (rhp)
+ 		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+-	rcu_segcblist_advance(&sdp->srcu_cblist,
+-			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
++	/*
++	 * The snapshot for acceleration must be taken _before_ the read of the
++	 * current gp sequence used for advancing, otherwise advancing may fail
++	 * and acceleration may then fail too.
++	 *
++	 * This could happen if:
++	 *
++	 *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num = X + 4) and the
++	 *     RCU_NEXT_READY_TAIL also has callbacks (gp_num = X + 8).
++	 *
++	 *  2) The grace period for RCU_WAIT_TAIL is seen as started but not
++	 *     completed so rcu_seq_current() returns X + SRCU_STATE_SCAN1.
++	 *
++	 *  3) This value is passed to rcu_segcblist_advance() which can't move
++	 *     any segment forward and fails.
++	 *
++	 *  4) srcu_gp_start_if_needed() still proceeds with callback acceleration.
++	 *     But then the call to rcu_seq_snap() observes the grace period for the
++	 *     RCU_WAIT_TAIL segment as completed and the subsequent one for the
++	 *     RCU_NEXT_READY_TAIL segment as started (ie: X + 4 + SRCU_STATE_SCAN1)
++	 *     so it returns a snapshot of the next grace period, which is X + 12.
++	 *
++	 *  5) The value of X + 12 is passed to rcu_segcblist_accelerate() but the
++	 *     freshly enqueued callback in RCU_NEXT_TAIL can't move to
++	 *     RCU_NEXT_READY_TAIL which already has callbacks for a previous grace
++	 *     period (gp_num = X + 8). So acceleration fails.
++	 */
+ 	s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
+-	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
++	rcu_segcblist_advance(&sdp->srcu_cblist,
++			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
++	WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s) && rhp);
+ 	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+ 		sdp->srcu_gp_seq_needed = s;
+ 		needgp = true;
 -- 
 2.34.1
 
