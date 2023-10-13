@@ -2,165 +2,116 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48F05CDB464
-	for <rcu@archiver.kernel.org>; Wed, 11 Oct 2023 16:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9723CDB47E
+	for <rcu@archiver.kernel.org>; Fri, 13 Oct 2023 11:59:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbjJKQbj (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 11 Oct 2023 12:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        id S231310AbjJML7K (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 13 Oct 2023 07:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbjJKQbi (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:31:38 -0400
+        with ESMTP id S231368AbjJML7K (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 13 Oct 2023 07:59:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A583691;
-        Wed, 11 Oct 2023 09:31:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43952C433CA;
-        Wed, 11 Oct 2023 16:31:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1E7CA;
+        Fri, 13 Oct 2023 04:59:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E96DC433C7;
+        Fri, 13 Oct 2023 11:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697041896;
-        bh=FGA8gM4FeYE4IWyx429Dya7HEFgaNp50J+X1XqE49q8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VGLoGxYihF/YYfew9Ft1kVSjBHObtFNw5bKvSrYo98+Qn+61pehsVyPIUnOEwN0hS
-         EwAD2BQWoOzwjuwQGShhSeizFMKMyLNXFwxtwN6I9nPnMIR2wRxk83BoTTXHVUSv6e
-         AOhNH8xNcRKEoULOJe5HnJt+KvSLrBC0csomVujidH1b+6pfMVhsSGtY28Ll8PDjk1
-         ik33X3N0RSINRmps91GGkcxrcsJLizPNhDf7eTKMezNOnm0IrumVHabo7dd0BSph3O
-         RjeqEBIKaxn85DieIibabR+HwOndWQrXIgbu/aoi31pbuOPe/kwxSa+q6P0KCoedQW
-         r53uBsdnIY7SA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E681ECE0AD4; Wed, 11 Oct 2023 09:31:35 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 09:31:35 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>,
-        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
-Message-ID: <273869c3-ba4b-4173-a14e-bd201d900079@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231004175203.943277832@linuxfoundation.org>
- <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
- <20231006162038.d3q7sl34b4ouvjxf@revolver>
- <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
- <20231006175714.begtgj6wrs46ukmo@revolver>
- <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
- <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
- <9470dab6-dee5-4505-95a2-f6782b648726@paulmck-laptop>
- <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
- <ZSana69n6RWgCnqi@localhost.localdomain>
+        s=k20201202; t=1697198348;
+        bh=mdyvAP957loI8J8QOxKdfswgmuSBf12C4pS3V4YG9sU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pBISt8PuC4Qco3NADCdhtqPjh8dL/EGmsyK4MpMEaCOQGER+N58KwVTqtvk4Vz7yY
+         rfPBy11nvSgnf2hGZ65acpV1yi67Fj2TzCrlLJqlNMNBi4T9N9ncqoWPeJn4BGIpmW
+         Pa99/cUGBkYtiIru0Tujlu9afRUtEG62O1oIizKQgI4jpccT2OcexRg3XECNMLJ54U
+         2WIqP8De3l43jf/b6bdxERbTuci/Wj2h5N+yrLoXxttJadTjYuQnFVbELVZ07X0kQ4
+         ehhPif6PypewPdFE3DOSgzhqUthvsGbPqt13MY6YlO0wfvG676ak723kwMQY2XVQku
+         +LXrt303Qa/jQ==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: [PATCH 00/18] RCU fixes for v6.7
+Date:   Fri, 13 Oct 2023 13:58:44 +0200
+Message-Id: <20231013115902.1059735-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZSana69n6RWgCnqi@localhost.localdomain>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 03:47:23PM +0200, Frederic Weisbecker wrote:
-> Le Tue, Oct 10, 2023 at 06:34:35PM -0700, Paul E. McKenney a écrit :
-> > If this problem is real, fixes include:
-> > 
-> > o	Revert Liam's patch and make Tiny RCU's call_rcu() deal with
-> > 	the problem.  This is overhead and non-tinyness, but to Joel's
-> > 	point, it might be best.
-> 
-> But what is calling call_rcu() or start_poll_synchronize_rcu() so
-> early that the CPU is not even online? (that's before boot_cpu_init() !)
-> 
-> Deferring PF_IDLE setting might pave the way for more issues like this one,
-> present or future. Though is_idle_task() returning true when the task is not
-> in the idle loop but is playing the init/0 role is debatable.
-> 
-> An alternative for tiny RCU is to force waking up ksoftirqd when call_rcu()
-> is in the idle task. Since rcu_qs() during the context switch raises a softirq
-> anyway. It's more overhead for start_poll_synchronize_rcu() though but do we
-> expect much RCU polling in idle?
+Hello,
 
-Nice!!!
+Please find below the general (S)RCU fixes:
 
-This does solve the original problem with little or no additional overhead
-(perhaps even with decreased overhead), and avoids the other RCU Tasks
-issues.
+Catalin Marinas (1):
+  rcu: kmemleak: Ignore kmemleak false positives when RCU-freeing
+    objects
 
-						Thanx, Paul
+Denis Arefev (1):
+  srcu: Fix srcu_struct node grpmask overflow on 64-bit systems
 
-> diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-> index a92bce40b04b..6ab15233e2be 100644
-> --- a/include/linux/interrupt.h
-> +++ b/include/linux/interrupt.h
-> @@ -604,6 +604,7 @@ extern void __raise_softirq_irqoff(unsigned int nr);
->  
->  extern void raise_softirq_irqoff(unsigned int nr);
->  extern void raise_softirq(unsigned int nr);
-> +extern void raise_ksoftirqd_irqsoff(unsigned int nr);
->  
->  DECLARE_PER_CPU(struct task_struct *, ksoftirqd);
->  
-> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> index 42f7589e51e0..872dab8b8b53 100644
-> --- a/kernel/rcu/tiny.c
-> +++ b/kernel/rcu/tiny.c
-> @@ -189,12 +189,12 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
->  	local_irq_save(flags);
->  	*rcu_ctrlblk.curtail = head;
->  	rcu_ctrlblk.curtail = &head->next;
-> -	local_irq_restore(flags);
->  
->  	if (unlikely(is_idle_task(current))) {
->  		/* force scheduling for rcu_qs() */
-> -		resched_cpu(0);
-> +		raise_ksoftirqd_irqsoff(RCU_SOFTIRQ);
->  	}
-> +	local_irq_restore(flags);
->  }
->  EXPORT_SYMBOL_GPL(call_rcu);
->  
-> @@ -225,10 +225,13 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
->  unsigned long start_poll_synchronize_rcu(void)
->  {
->  	unsigned long gp_seq = get_state_synchronize_rcu();
-> +	unsigned long flags;
->  
->  	if (unlikely(is_idle_task(current))) {
-> +		local_irq_save(flags);
->  		/* force scheduling for rcu_qs() */
-> -		resched_cpu(0);
-> +		raise_ksoftirqd_irqsoff(RCU_SOFTIRQ);
-> +		local_irq_restore(flags);
->  	}
->  	return gp_seq;
->  }
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index 210cf5f8d92c..ef105cbdc705 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -695,6 +695,14 @@ void __raise_softirq_irqoff(unsigned int nr)
->  	or_softirq_pending(1UL << nr);
->  }
->  
-> +#ifdef CONFIG_RCU_TINY
-> +void raise_ksoftirqd(unsigned int nr)
-> +{
-> +	__raise_softirq_irqoff(nr);
-> +	wakeup_softirqd();
-> +}
-> +#endif
-> +
->  void open_softirq(int nr, void (*action)(struct softirq_action *))
->  {
->  	softirq_vec[nr].action = action;
-> 
-> 
-> 
-> 
+Frederic Weisbecker (8):
+  rcu: Use rcu_segcblist_segempty() instead of open coding it
+  rcu: Assume IRQS disabled from rcu_report_dead()
+  rcu: Assume rcu_report_dead() is always called locally
+  rcu: Conditionally build CPU-hotplug teardown callbacks
+  rcu: Standardize explicit CPU-hotplug calls
+  rcu: Comment why callbacks migration can't wait for CPUHP_RCUTREE_PREP
+  srcu: Fix callbacks acceleration mishandling
+  srcu: Only accelerate on enqueue time
+
+Joel Fernandes (Google) (3):
+  Revert "checkpatch: Error out if deprecated RCU API used"
+  srcu: Fix error handling in init_srcu_struct_fields()
+  rcu/tree: Remove superfluous return from void call_rcu* functions
+
+Paul E. McKenney (2):
+  rcu: Add sysfs to provide throttled access to rcu_barrier()
+  rcu: Eliminate rcu_gp_slow_unregister() false positive
+
+Yue Haibing (1):
+  rcu: Remove unused function declaration rcu_eqs_special_set()
+
+Zhen Lei (2):
+  mm: Remove kmem_valid_obj()
+  rcu: Dump memory object info if callback function is invalid
+
+ .../Expedited-Grace-Periods.rst               |   2 +-
+ .../Design/Memory-Ordering/TreeRCU-gp-fqs.svg |   4 +-
+ .../RCU/Design/Memory-Ordering/TreeRCU-gp.svg |   4 +-
+ .../Memory-Ordering/TreeRCU-hotplug.svg       |   4 +-
+ .../RCU/Design/Requirements/Requirements.rst  |   4 +-
+ .../admin-guide/kernel-parameters.txt         |   7 +
+ arch/arm64/kernel/smp.c                       |   4 +-
+ arch/powerpc/kernel/smp.c                     |   2 +-
+ arch/s390/kernel/smp.c                        |   2 +-
+ arch/x86/kernel/smpboot.c                     |   2 +-
+ include/linux/interrupt.h                     |   2 +-
+ include/linux/rcupdate.h                      |   2 -
+ include/linux/rcutiny.h                       |   2 +-
+ include/linux/rcutree.h                       |  17 +-
+ include/linux/slab.h                          |   5 +-
+ kernel/cpu.c                                  |  13 +-
+ kernel/rcu/rcu.h                              |   7 +
+ kernel/rcu/rcu_segcblist.c                    |   4 +-
+ kernel/rcu/srcutiny.c                         |   1 +
+ kernel/rcu/srcutree.c                         |  76 ++++--
+ kernel/rcu/tasks.h                            |   1 +
+ kernel/rcu/tiny.c                             |   1 +
+ kernel/rcu/tree.c                             | 230 ++++++++++++------
+ mm/slab_common.c                              |  41 +---
+ mm/util.c                                     |   4 +-
+ scripts/checkpatch.pl                         |   9 -
+ 26 files changed, 284 insertions(+), 166 deletions(-)
+
+-- 
+2.34.1
+
