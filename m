@@ -2,138 +2,80 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC30DCDB47E
-	for <rcu@archiver.kernel.org>; Fri, 13 Oct 2023 14:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F8F8CDB47E
+	for <rcu@archiver.kernel.org>; Sun, 15 Oct 2023 22:25:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjJMOLi (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 13 Oct 2023 10:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        id S229765AbjJOWZ2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Sun, 15 Oct 2023 18:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbjJMOLh (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 13 Oct 2023 10:11:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC68B95;
-        Fri, 13 Oct 2023 07:11:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB5DAC433C7;
-        Fri, 13 Oct 2023 14:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697206295;
-        bh=+PECLI9eBN9g/xFj5AEB+74Ye35V4f2WaKGkW1ZEKKQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BnsSZunhbumt27t6QNpFdC+OC2qbIq/aHnuBErdQSipTrEhM3wnp5vEEH8dW4vjhy
-         Mf/rU6G+T9Pxcq65tlehM4fmxOjG5p2QiDsiXecCwrjSCpEgZwYglQcZSWcKOXT+NP
-         vimcoNn8kNsT+3FeIcBpN7xtFOotJ8QKOuKFxLf//xeG/y4WaiB5gSHuL1bn2uuUac
-         JjQAkE5vX5FTTtyFGZf1XqKayxWYbrDyG/iYD9xGJ9GyORi3IIuJQKff8zDj1uhv86
-         zcsmrRjH+8W7NFWJTX2NI5u+ZV7ddg2A5VSN/wfwjlrV/OsvnfFdvnAO2fyooD23f/
-         VMqnihC89mqFQ==
-Date:   Fri, 13 Oct 2023 16:11:32 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Denis Arefev <arefev@swemel.ru>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 09/18] srcu: Fix srcu_struct node grpmask overflow on
- 64-bit systems
-Message-ID: <ZSlQFGIyQGoYETzV@lothringen>
-References: <20231013115902.1059735-1-frederic@kernel.org>
- <20231013115902.1059735-10-frederic@kernel.org>
- <f6cc79b13ccf471aa275bee88559b6bd@AcuMS.aculab.com>
+        with ESMTP id S229500AbjJOWZ2 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Sun, 15 Oct 2023 18:25:28 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A96FC1;
+        Sun, 15 Oct 2023 15:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1697408724;
+        bh=z5KXjjPVrLjRebSzXXdn6DFLWUKznuVXuDGh7BkTaQM=;
+        h=From:Date:Subject:To:Cc:From;
+        b=gRkST88HLzafee30Sfe4sNkU5qdDyRymPoayJRt6pZkztLNWms8JtDkynPcUDOYz+
+         vIXr63Qf9Hk9Gz63CZiA4MOYigfHg9elucheXqNV69e3SKRFTkgbziZertXw7muEIP
+         j5fMQP1VsrHMqkASk3IdyGEkOCPGeLAM59ZpddTg=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Mon, 16 Oct 2023 00:25:14 +0200
+Subject: [PATCH] rcutorture: add nolibc init support for mips, ppc and rv64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6cc79b13ccf471aa275bee88559b6bd@AcuMS.aculab.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231016-rcu-nolibc-arch-v1-1-391af51b129b@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAMlmLGUC/x3MSQqAMAxA0auUrA10UBdeRVx0iBqQKimKIN7d4
+ vIt/n+gkDAVGNQDQhcX3nOFaRTE1eeFkFM1WG2d0aZHiSfmfeMQ0UtckVIyKWjXda2HWh1CM9/
+ /cZze9wOHkAjxYQAAAA==
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Willy Tarreau <w@1wt.eu>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697408724; l=1257;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=z5KXjjPVrLjRebSzXXdn6DFLWUKznuVXuDGh7BkTaQM=;
+ b=HrVnh6LrdqOofTiC7I1zFYHe9Olvgc1I9UJMSNMqxll6F13tg6HjEmvEff/8C+hhzlB0tuvrL
+ yk5KEi5sJdFDb235pedugKYwemyuBHknOMAdKbFr/Z/ix8H1GG5DPpC
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:54:32PM +0000, David Laight wrote:
-> From: Frederic Weisbecker
-> > Sent: 13 October 2023 12:59
-> > 
-> > The value of a bitwise expression 1 << (cpu - sdp->mynode->grplo)
-> > is subject to overflow due to a failure to cast operands to a larger
-> > data type before performing the bitwise operation.
-> > 
-> > The maximum result of this subtraction is defined by the RCU_FANOUT_LEAF
-> > Kconfig option, which on 64-bit systems defaults to 16 (resulting in a
-> > maximum shift of 15), but which can be set up as high as 64 (resulting
-> > in a maximum shift of 63).  A value of 31 can result in sign extension,
-> > resulting in 0xffffffff80000000 instead of the desired 0x80000000.
-> > A value of 32 or greater triggers undefined behavior per the C standard.
-> > 
-> > This bug has not been known to cause issues because almost all kernels
-> > take the default CONFIG_RCU_FANOUT_LEAF=16.  Furthermore, as long as a
-> > given compiler gives a deterministic non-zero result for 1<<N for N>=32,
-> > the code correctly invokes all SRCU callbacks, albeit wasting CPU time
-> > along the way.
-> > 
-> > This commit therefore substitutes the correct 1UL for the buggy 1.
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > 
-> > Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Cc: David Laight <David.Laight@aculab.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > ---
-> >  kernel/rcu/srcutree.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 833a8f848a90..5602042856b1 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
-> >  				snp->grplo = cpu;
-> >  			snp->grphi = cpu;
-> >  		}
-> > -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> > +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
-> >  	}
-> >  	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
-> >  	return true;
-> > @@ -835,7 +835,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
-> >  	int cpu;
-> > 
-> >  	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> > -		if (!(mask & (1 << (cpu - snp->grplo))))
-> > +		if (!(mask & (1UL << (cpu - snp->grplo))))
-> >  			continue;
-> >  		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> >  	}
-> 
-> That loop is entirely horrid.
-> The compiler almost certainly has to reload snp->grphi every iteration.
-> Also it looks as though the bottom bit of mask is checked first.
-> So how about:
-> 	grphi = snp->grphi;
-> 	for (cpu = snp->grplo; cpu <= grphi; cpu++, mask >>= 1) {
-> 		if (!(mask & 1))
-> 			continue;
-> 		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> 	}
+Use nolibc for all support architectures.
 
-Well, it's cache-hot and RCU update side is not really a fast-path.
-Not sure it's worth optimizing...
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Thanks.
+diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+index 212c52ca90b5..f3f867129560 100755
+--- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
++++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+@@ -67,7 +67,10 @@ ___EOF___
+ # build using nolibc on supported archs (smaller executable) and fall
+ # back to regular glibc on other ones.
+ if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
+-	   "||__ARM_EABI__||__aarch64__||__s390x__||__loongarch__\nyes\n#endif" \
++	   "||__ARM_EABI__||__aarch64__||(__mips__ && _ABIO32)" \
++	   "||__powerpc__||(__riscv && __riscv_xlen == 64)" \
++	   "||__s390x__||__loongarch__" \
++	   "\nyes\n#endif" \
+    | ${CROSS_COMPILE}gcc -E -nostdlib -xc - \
+    | grep -q '^yes'; then
+ 	# architecture supported by nolibc
 
-> 
-> 	David		
-> 
-> > --
-> > 2.34.1
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+---
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+change-id: 20231016-rcu-nolibc-arch-edd1db03554a
+
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
+
