@@ -2,80 +2,86 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F8F8CDB47E
-	for <rcu@archiver.kernel.org>; Sun, 15 Oct 2023 22:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D114BCDB474
+	for <rcu@archiver.kernel.org>; Mon, 16 Oct 2023 04:09:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjJOWZ2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Sun, 15 Oct 2023 18:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
+        id S229600AbjJPEJC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 16 Oct 2023 00:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJOWZ2 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Sun, 15 Oct 2023 18:25:28 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A96FC1;
-        Sun, 15 Oct 2023 15:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1697408724;
-        bh=z5KXjjPVrLjRebSzXXdn6DFLWUKznuVXuDGh7BkTaQM=;
-        h=From:Date:Subject:To:Cc:From;
-        b=gRkST88HLzafee30Sfe4sNkU5qdDyRymPoayJRt6pZkztLNWms8JtDkynPcUDOYz+
-         vIXr63Qf9Hk9Gz63CZiA4MOYigfHg9elucheXqNV69e3SKRFTkgbziZertXw7muEIP
-         j5fMQP1VsrHMqkASk3IdyGEkOCPGeLAM59ZpddTg=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Mon, 16 Oct 2023 00:25:14 +0200
-Subject: [PATCH] rcutorture: add nolibc init support for mips, ppc and rv64
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231016-rcu-nolibc-arch-v1-1-391af51b129b@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAMlmLGUC/x3MSQqAMAxA0auUrA10UBdeRVx0iBqQKimKIN7d4
- vIt/n+gkDAVGNQDQhcX3nOFaRTE1eeFkFM1WG2d0aZHiSfmfeMQ0UtckVIyKWjXda2HWh1CM9/
- /cZze9wOHkAjxYQAAAA==
-To:     "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S229478AbjJPEJB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 16 Oct 2023 00:09:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC331C1;
+        Sun, 15 Oct 2023 21:08:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9052BC433C8;
+        Mon, 16 Oct 2023 04:08:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697429339;
+        bh=bvZr4jk4NKVc1U+NKKntLqYXoaaClbnClTIHwv+im3I=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HXNbqQ54BakkL7JQdFAoUIZKRm6ZP0RDL7SRPD3TzjHy9+tqe8mGj0IT6M0pKWhuL
+         jSOFeE5xRN69RwVXNC3mSOE13dQ5RY8dVFK8NJv14OR2lMCRMjygaqZOylK/thkAZ/
+         mT10M44l9e9oXC6b1J8oERUsU4pd4gnIl5KosmrL3q7PkiCim0zy4tEiNUZMTOMNI/
+         TqP9pOpMifMmK23aeRgD+HGY8u2OVcw18jz7kH1iMnM7yFTAPmK/J+wQ4jELUKkOo1
+         r2IbncD0X7gdViFOFA2hlhoijBOQIOhSgyxLXPOokcb/Pft12xOfvd1Z5FEu8weaQx
+         eQzvNvlIDMYqQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 32D5CCE0593; Sun, 15 Oct 2023 21:08:59 -0700 (PDT)
+Date:   Sun, 15 Oct 2023 21:08:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
 Cc:     Willy Tarreau <w@1wt.eu>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697408724; l=1257;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=z5KXjjPVrLjRebSzXXdn6DFLWUKznuVXuDGh7BkTaQM=;
- b=HrVnh6LrdqOofTiC7I1zFYHe9Olvgc1I9UJMSNMqxll6F13tg6HjEmvEff/8C+hhzlB0tuvrL
- yk5KEi5sJdFDb235pedugKYwemyuBHknOMAdKbFr/Z/ix8H1GG5DPpC
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: add nolibc init support for mips, ppc and
+ rv64
+Message-ID: <d41e7924-f497-4517-87c8-1961434d72dd@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231016-rcu-nolibc-arch-v1-1-391af51b129b@weissschuh.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231016-rcu-nolibc-arch-v1-1-391af51b129b@weissschuh.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Use nolibc for all support architectures.
+On Mon, Oct 16, 2023 at 12:25:14AM +0200, Thomas Weiﬂschuh wrote:
+> Use nolibc for all support architectures.
+> 
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
-Signed-off-by: Thomas Wei√üschuh <linux@weissschuh.net>
----
- tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Queued and pushed, thank you!
 
-diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-index 212c52ca90b5..f3f867129560 100755
---- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-+++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-@@ -67,7 +67,10 @@ ___EOF___
- # build using nolibc on supported archs (smaller executable) and fall
- # back to regular glibc on other ones.
- if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
--	   "||__ARM_EABI__||__aarch64__||__s390x__||__loongarch__\nyes\n#endif" \
-+	   "||__ARM_EABI__||__aarch64__||(__mips__ && _ABIO32)" \
-+	   "||__powerpc__||(__riscv && __riscv_xlen == 64)" \
-+	   "||__s390x__||__loongarch__" \
-+	   "\nyes\n#endif" \
-    | ${CROSS_COMPILE}gcc -E -nostdlib -xc - \
-    | grep -q '^yes'; then
- 	# architecture supported by nolibc
+							Thanx, Paul
 
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231016-rcu-nolibc-arch-edd1db03554a
-
-Best regards,
--- 
-Thomas Wei√üschuh <linux@weissschuh.net>
-
+> ---
+>  tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+> index 212c52ca90b5..f3f867129560 100755
+> --- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
+> @@ -67,7 +67,10 @@ ___EOF___
+>  # build using nolibc on supported archs (smaller executable) and fall
+>  # back to regular glibc on other ones.
+>  if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
+> -	   "||__ARM_EABI__||__aarch64__||__s390x__||__loongarch__\nyes\n#endif" \
+> +	   "||__ARM_EABI__||__aarch64__||(__mips__ && _ABIO32)" \
+> +	   "||__powerpc__||(__riscv && __riscv_xlen == 64)" \
+> +	   "||__s390x__||__loongarch__" \
+> +	   "\nyes\n#endif" \
+>     | ${CROSS_COMPILE}gcc -E -nostdlib -xc - \
+>     | grep -q '^yes'; then
+>  	# architecture supported by nolibc
+> 
+> ---
+> base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+> change-id: 20231016-rcu-nolibc-arch-edd1db03554a
+> 
+> Best regards,
+> -- 
+> Thomas Weiﬂschuh <linux@weissschuh.net>
+> 
