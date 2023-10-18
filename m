@@ -2,119 +2,137 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B6CCDB483
-	for <rcu@archiver.kernel.org>; Wed, 18 Oct 2023 14:34:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98828CDB482
+	for <rcu@archiver.kernel.org>; Wed, 18 Oct 2023 17:37:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345741AbjJROex (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 18 Oct 2023 10:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
+        id S231848AbjJRRhs (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 18 Oct 2023 13:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346184AbjJROeY (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:34:24 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F804681
-        for <rcu@vger.kernel.org>; Wed, 18 Oct 2023 07:32:36 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c50cd16f3bso71476071fa.2
-        for <rcu@vger.kernel.org>; Wed, 18 Oct 2023 07:32:36 -0700 (PDT)
+        with ESMTP id S231327AbjJRRhh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 18 Oct 2023 13:37:37 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B221731;
+        Wed, 18 Oct 2023 10:36:12 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c50cf61f6dso77264451fa.2;
+        Wed, 18 Oct 2023 10:36:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1697639555; x=1698244355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VrViw8EcPVAfO6aNLjjt2oTpTxgN2CS759uONYxwgI4=;
-        b=KILze/neQr3IJu0UagVJuF2dBE/rPc2lx+55r0iNexoLXEG7M4UhYG4TQjR54G6nz/
-         Vi2aYHdNS8pVDaXUJ+vWVHNP5Yeo0dQ3x+F19S4CJYX7hJMlxI8hM3V92D9oeDU5qvyz
-         HecSl73k+/cdXEnq2ppsmQKAiBsENabDoIXBs=
+        d=gmail.com; s=20230601; t=1697650571; x=1698255371; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3zNWTtFsvzJ0eNT/uIt33iHUybx+dKwdPOpAnNRdODg=;
+        b=l5Mqk/umuELxSTC+mpKTL7xGC7u24NsL8/ImB4/daJFFc+mkDpk1lC999kKr2jgk+4
+         WlE56zEJALvVLtWztkiOcwINn+68swbemyT9/6d4nEODepkrfscpOIvFUhIci2gux9TD
+         X8w8ngQaOy3LcKnZEABMqxGG1uAkHUJbJ3UbgYPKQzNmva8ZSndvauC4YMqY6B0zgYbj
+         vAtGY3KopiyxcxLo3Jx3+KP0/CbOeXkkqv+d1pu55vvpUX45DoKYPmtKNAYgSLlcyFi4
+         u5Nivtw4XAekwTYOUCtNEpcF/YKfVQV72Nvd6PzUt63lupYVYosAfE3Uyw0KZ0sqdPue
+         gVjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697639555; x=1698244355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VrViw8EcPVAfO6aNLjjt2oTpTxgN2CS759uONYxwgI4=;
-        b=d7pZmlEM3h4pwb1GZ5xXkU65RVKi2P8E2buhHQ7/J58Jtxe1FdcbI5TlFsrv4OFR+a
-         3e7UV5HEnDEChBcJ3luvqXPIPloqAk2Mt4756gkoE2vxIv/Emsd4UELVRyMbdf0IpFmJ
-         HYbfDjxFzYF2+uh3MX4AaSWWOzHwy1ko+MV1AfOdQZEm9JNbr6UYOAax6UdJBoUBnvb2
-         M49HJfIclO96ZvRzSnUElP5rgKarxKTvzwBMUqRjb4uHY/CCuAy+nmMsG4bq1xfbSMh/
-         eXYLJpuS5IVGP/90Rc2YpzhLlWTehgbBM5tZOyqMdMxEdo7A3qJDcAbAHRrpZWBLcDxi
-         Q2Fw==
-X-Gm-Message-State: AOJu0Yw0V/4zWVtnzysETRAGcJsp2NKBmrVzPkXVjrRoSV3jx5bGhx7/
-        85RfvXGuYB/jdck4Oz02H4sdK1rFT/TgCbOtrGAznQ==
-X-Google-Smtp-Source: AGHT+IEhBZkHoObeKA6gBsXSZrhq4Ye8cUfsfIyb4HEkD0Ex39NGlK1sSNdjvlW2RTMMwJOqTCUfhIWLbDTdbYVXTYw=
-X-Received: by 2002:a05:651c:504:b0:2c5:cf0:74e9 with SMTP id
- o4-20020a05651c050400b002c50cf074e9mr4295422ljp.14.1697639554674; Wed, 18 Oct
- 2023 07:32:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231016173004.14148-1-urezki@gmail.com> <CAEXW_YRfuXqnBFN=DpOLio74j8fX3eEDSFCH8LXyavuHDdYysA@mail.gmail.com>
- <ZS6U5SgvGcmdE_DA@pc636>
-In-Reply-To: <ZS6U5SgvGcmdE_DA@pc636>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 18 Oct 2023 10:32:22 -0400
-Message-ID: <CAEXW_YT5+ginWcAM-Bxk7tDcGxOgn-6cuTamBJOzr8ta6_jf+g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] rcu: Reduce synchronize_rcu() waiting time
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        d=1e100.net; s=20230601; t=1697650571; x=1698255371;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3zNWTtFsvzJ0eNT/uIt33iHUybx+dKwdPOpAnNRdODg=;
+        b=MIpg5jccsLOYH27InGilQ76QYy22gyID5w4fcdWonbLHCVT+US2Q2/mCimGsJfozAt
+         zNT9Lt2jJwyQ4Q0qcjsNliJiR01032Dr9EJ7ij5DZZngxdJBZuws8nfnWmOFhPXTfhzy
+         igNX8YAetxmzTDJGFtJEy9Bo+z2h3qOwmot4kTwCiD8efPJd/LOwDuF7PZ2jNI/0TKbU
+         Q7vItf4Vp34ta+E/ixeK/W1TyhKAnhGT7NHgLVOCoWkt1XbsQeq+DodEf1gvUtZxs119
+         uS1HL9qSgpe8WGOXBIw2cFZGuIfo5u2gaY3ul4er0C9W76P+3ksGeOZizSmdqCF8jeJZ
+         +qKA==
+X-Gm-Message-State: AOJu0Yy5KF8iwdP7z83FiNxk2HVimuFHnmcxKr/IjKHsBf3cBgj9NdEV
+        zu0h9hW+oHSWtNsjsGiNcE4=
+X-Google-Smtp-Source: AGHT+IGVQtL8EluxnF0x/e8D/MLdBDQhng6Owp44Md2QV0nA6QS92mV/0/de3DP2RdtvenoFpguhjg==
+X-Received: by 2002:a2e:bc12:0:b0:2c5:9a5:a1c2 with SMTP id b18-20020a2ebc12000000b002c509a5a1c2mr7171059ljf.30.1697650570471;
+        Wed, 18 Oct 2023 10:36:10 -0700 (PDT)
+Received: from pc636 (host-90-233-215-212.mobileonline.telia.com. [90.233.215.212])
+        by smtp.gmail.com with ESMTPSA id v14-20020a2e990e000000b002c00e475e23sm780606lji.131.2023.10.18.10.36.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Oct 2023 10:36:10 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 18 Oct 2023 19:36:07 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         RCU <rcu@vger.kernel.org>,
         Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 1/1] rcu: Reduce synchronize_rcu() waiting time
+Message-ID: <ZTAXh1ifgAAF0GsW@pc636>
+References: <20231016173004.14148-1-urezki@gmail.com>
+ <CAEXW_YRfuXqnBFN=DpOLio74j8fX3eEDSFCH8LXyavuHDdYysA@mail.gmail.com>
+ <ZS6U5SgvGcmdE_DA@pc636>
+ <CAEXW_YT5+ginWcAM-Bxk7tDcGxOgn-6cuTamBJOzr8ta6_jf+g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YT5+ginWcAM-Bxk7tDcGxOgn-6cuTamBJOzr8ta6_jf+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 17, 2023 at 10:06=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com=
-> wrote:
-[...]
-> > > +
-> > > +       /* Finally. */
-> > > +       complete(&rs->completion);
-> > > +}
-> > > +
-> > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > +{
-> > > +       struct llist_node *done, *rcu, *next;
-> > > +
-> > > +       done =3D llist_del_all(&sr.done);
-> > > +       if (!done)
-> > > +               return;
-> > > +
-> > > +       llist_for_each_safe(rcu, next, done)
-> > > +               rcu_sr_normal_complete(rcu);
-> > > +}
-> > [...]
-> > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> > > +{
-> > > +       atomic_inc(&sr.active);
-> > > +       if (llist_add((struct llist_node *) &rs->head, &sr.curr))
-> > > +               /* Set the tail. Only first and one user can do that.=
- */
-> > > +               WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->h=
-ead);
-> > > +       atomic_dec(&sr.active);
-> >
-> > Here there is no memory ordering provided by the atomic ops. Is that re=
-ally Ok?
-> >
-> This needs to be reworked since there is no ordering guaranteed. I think
-> there is a version of "atomic_inc_something" that guarantees it?
+On Wed, Oct 18, 2023 at 10:32:22AM -0400, Joel Fernandes wrote:
+> On Tue, Oct 17, 2023 at 10:06 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> [...]
+> > > > +
+> > > > +       /* Finally. */
+> > > > +       complete(&rs->completion);
+> > > > +}
+> > > > +
+> > > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> > > > +{
+> > > > +       struct llist_node *done, *rcu, *next;
+> > > > +
+> > > > +       done = llist_del_all(&sr.done);
+> > > > +       if (!done)
+> > > > +               return;
+> > > > +
+> > > > +       llist_for_each_safe(rcu, next, done)
+> > > > +               rcu_sr_normal_complete(rcu);
+> > > > +}
+> > > [...]
+> > > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> > > > +{
+> > > > +       atomic_inc(&sr.active);
+> > > > +       if (llist_add((struct llist_node *) &rs->head, &sr.curr))
+> > > > +               /* Set the tail. Only first and one user can do that. */
+> > > > +               WRITE_ONCE(sr.curr_tail, (struct llist_node *) &rs->head);
+> > > > +       atomic_dec(&sr.active);
+> > >
+> > > Here there is no memory ordering provided by the atomic ops. Is that really Ok?
+> > >
+> > This needs to be reworked since there is no ordering guaranteed. I think
+> > there is a version of "atomic_inc_something" that guarantees it?
+> 
+> Yeah there is atomic_fetch_{inc,dec}{_acquire,_release}()
+> 
+> Or:
+>   atomic_inc(&sr.active);
+>   smp_mb__after_atomic();
+> 
+>   smp_mb__before_atomic();
+>   atomic_dec(&sr.active);
+> 
+> ?
+>
+> That's probably better because we don't need ordering before the inc
+> or after the dec, AFAICS.
+> 
+There are two variants, atomic_inc_return() and atomic_dec_return()
+which are fully ordered. Any thoughts about them? One line instead of
+two as in your case.
 
-Yeah there is atomic_fetch_{inc,dec}{_acquire,_release}()
+Your concern is about, that atomic_inc() can be reodered? There is a
+llist_add() that has inside the try_cmpxchg() that should have barrier.
 
-Or:
-  atomic_inc(&sr.active);
-  smp_mb__after_atomic();
+Any thoughts?
 
-  smp_mb__before_atomic();
-  atomic_dec(&sr.active);
+Thank you for the review and help, Joel!
 
-?
-
-That's probably better because we don't need ordering before the inc
-or after the dec, AFAICS.
-
-I am actually a bit surprised there is no atomic_inc_acquire() yet. :-)
-
-Thanks.
+--
+Uladzislau Rezki
