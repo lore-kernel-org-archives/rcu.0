@@ -2,34 +2,36 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8C85C001E0
-	for <rcu@archiver.kernel.org>; Fri, 20 Oct 2023 00:49:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90377C001DF
+	for <rcu@archiver.kernel.org>; Fri, 20 Oct 2023 08:26:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346786AbjJTAtF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 19 Oct 2023 20:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
+        id S1376458AbjJTI0s (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Oct 2023 04:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346767AbjJTAtF (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:49:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6EEFA;
-        Thu, 19 Oct 2023 17:49:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CEF9C433C9;
-        Fri, 20 Oct 2023 00:49:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697762943;
-        bh=9IPz2MmxCzAMUtqeAKQ6/4/VO68F8fYr09w07o8HlVk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BuQZ4T8WbnmiItxronuQk02qekF/N0iZ20hsL6StDD8S5qJITFUOPXkr2JVuJcsyU
-         pSeB/+Yr4PPRLN/B2TptPn/KkPpvPBuby3Jn03xgvXEDLm2D4+yUM4fqvj3ekO2s/J
-         /Y7F8xuI+qxA1UR7YXUl2jMLEgMzaXxPjBxCz3IGKf7PHuRfzwjmwfXSqrFHkCLagF
-         HNDAinJkl4KYZPmQhaAwinHLX2JBfbl+fUWn+3f6+/AU+AH58ZVrJAFdtWy2pp7/WS
-         mya3qaMHUiyq/o8UpWLf1Dax50kMAGJ8VG7cqldUPXYWwZxg0KNqPWIDX+zn7a3EMn
-         fwTNQ3gxE8ANA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1EA6BCE0DEA; Thu, 19 Oct 2023 17:49:03 -0700 (PDT)
-Date:   Thu, 19 Oct 2023 17:49:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S1376440AbjJTI0r (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Oct 2023 04:26:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BED119;
+        Fri, 20 Oct 2023 01:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=osKF5xTE5Os5a5WuR1qk2MjC7K8kkdHQ+IqvT4rA6Yw=; b=RRATIkQhj9m5LFwq5iYAbS63vW
+        z4aKuTIIYOZfs3dDKmQY0Y5/4Io9WB4Eul5JUY/3KNsQJeAEYD3pmG4Rffg2X676ZCwuaKtFIynyB
+        mnYgtC/DUJ/n9/X+Wsj0zgW9PK+RMLyeEfSxWWSMzGzuuqPNYD+jPr2UUFEOgv1HphaYEG/7Xnyxr
+        MEilGOpGwDNm6gnSI0af1NDmPlpxLHmpivXG+qNBmoQ/66M2+t/kP1zK8lDSIBh41dt6BivwaX4Wm
+        3PCcLw/FG06r5J9aE8QNrJLOFCp+QBEVYDyrMOycRKfedCdXeiKbjgVuHs+x6dAb9cDQhAM2Dq54i
+        CG6L7kTg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qtkp2-00AsVt-0q;
+        Fri, 20 Oct 2023 08:25:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E87B8300392; Fri, 20 Oct 2023 10:25:31 +0200 (CEST)
+Date:   Fri, 20 Oct 2023 10:25:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
@@ -37,122 +39,68 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         Zqiang <qiang.zhang1211@gmail.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         Sebastian Siewior <bigeasy@linutronix.de>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 3/4] rcu: Make tiny RCU use ksoftirqd to trigger a QS
- from idle
-Message-ID: <d81f562a-f3d1-44f8-9bbd-a026aaa529ee@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Subject: Re: [PATCH 4/4] Revert "kernel/sched: Modify initial boot task idle
+ setup"
+Message-ID: <20231020082531.GS33217@noisy.programming.kicks-ass.net>
 References: <20231019233543.1243121-1-frederic@kernel.org>
- <20231019233543.1243121-4-frederic@kernel.org>
+ <20231019233543.1243121-5-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019233543.1243121-4-frederic@kernel.org>
+In-Reply-To: <20231019233543.1243121-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 01:35:42AM +0200, Frederic Weisbecker wrote:
-> The commit:
+On Fri, Oct 20, 2023 at 01:35:43AM +0200, Frederic Weisbecker wrote:
+> Now that rcutiny can deal with early boot PF_IDLE setting, revert
+> commit cff9b2332ab762b7e0586c793c431a8f2ea4db04.
 > 
-> 	cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
+> This fixes several subtle issues introduced on RCU-tasks(-trace):
 > 
-> fixed an issue where rcutiny would request a quiescent state with
-> setting TIF_NEED_RESCHED in early boot when init/0 has the PF_IDLE flag
-> set but interrupts aren't enabled yet. A subsequent call to
-> cond_resched() would then enable IRQs too early.
+> 1) RCU-tasks stalls when:
 > 
-> When callbacks are enqueued in idle, RCU currently performs the
-> following:
+>    1.1 Grace period is started before init/0 had a chance to set PF_IDLE,
+>        keeping it stuck in the holdout list until idle ever schedules.
 > 
-> 1) Call resched_cpu() to trigger exit from idle and go through the
->    scheduler to call rcu_note_context_switch() -> rcu_qs()
+>    1.2 Grace period is started when some possible CPUs have never been
+>        online, keeping their idle tasks stuck in the holdout list until
+>        the CPU ever boots up.
 > 
-> 2) rcu_qs() notes the quiescent state and raises RCU_SOFTIRQ if there
->    is a callback, waking up ksoftirqd since it isn't called from an
->    interrupt.
+>    1.3 Similar to 1.1 but with secondary CPUs: Grace period is started
+>        concurrently with secondary CPU booting, putting its idle task in
+>        the holdout list because PF_IDLE isn't yet observed on it. It
+>        stays then stuck in the holdout list until that CPU ever
+>        schedules. The effect is mitigated here by all the smpboot
+>        kthreads and the hotplug AP thread that must run to bring the
+>        CPU up.
 > 
-> However the call to resched_cpu() can opportunistically be replaced and
-> optimized with raising RCU_SOFTIRQ and forcing ksoftirqd wakeup instead.
+> 2) Spurious warning on RCU task trace that assumes offline CPU's idle
+>    task is always PF_IDLE.
 > 
-> It's worth noting that RCU grace period polling while idle is then
-> suboptimized but such a usecase can be considered very rare or even
-> non-existent.
+> More issues have been found in RCU-tasks related to PF_IDLE which should
+> be fixed with later changes as those are not regressions:
 > 
-> The advantage of this optimization is that it also works if PF_IDLE is
-> set early because ksoftirqd is created way after IRQs are enabled on
-> boot and it can't be awaken before its creation. If
-> raise_ksoftirqd_irqoff() is called after the first scheduling point
-> but before kostfirqd is created, nearby voluntary schedule calls are
-> expected to provide the desired quiescent state and in the worst case
-> the first launch of ksoftirqd is close enough on the first initcalls.
+> 3) The RCU-Tasks semantics consider the idle loop as a quiescent state,
+>    however:
 > 
-> Fixes: cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
-> Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Sebastian Siewior <bigeasy@linutronix.de>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+>    3.1 The boot code preceding the idle entry is included in this
+>        quiescent state. Especially after the completion of kthreadd_done
+>        after which init/1 can launch userspace concurrently. The window
+>        is tiny before PF_IDLE is set but it exists.
+> 
+>    3.2 Similarly, the boot code preceding the idle entry on secondary
+>        CPUs is wrongly accounted as RCU tasks quiescent state.
+> 
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-I did a touch-test of the series, and have started overnight testing.
-
-							Thanx, Paul
-
-> ---
->  kernel/rcu/tiny.c | 21 ++++++++++++++++-----
->  1 file changed, 16 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> index fec804b79080..9460e4e9d84c 100644
-> --- a/kernel/rcu/tiny.c
-> +++ b/kernel/rcu/tiny.c
-> @@ -190,12 +190,15 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
->  	local_irq_save(flags);
->  	*rcu_ctrlblk.curtail = head;
->  	rcu_ctrlblk.curtail = &head->next;
-> -	local_irq_restore(flags);
->  
->  	if (unlikely(is_idle_task(current))) {
-> -		/* force scheduling for rcu_qs() */
-> -		resched_cpu(0);
-> +		/*
-> +		 * Force resched to trigger a QS and handle callbacks right after.
-> +		 * This also takes care of avoiding too early rescheduling on boot.
-> +		 */
-> +		raise_ksoftirqd_irqoff(RCU_SOFTIRQ);
->  	}
-> +	local_irq_restore(flags);
->  }
->  EXPORT_SYMBOL_GPL(call_rcu);
->  
-> @@ -228,8 +231,16 @@ unsigned long start_poll_synchronize_rcu(void)
->  	unsigned long gp_seq = get_state_synchronize_rcu();
->  
->  	if (unlikely(is_idle_task(current))) {
-> -		/* force scheduling for rcu_qs() */
-> -		resched_cpu(0);
-> +		unsigned long flags;
-> +
-> +		/*
-> +		 * Force resched to trigger a QS. This also takes care of avoiding
-> +		 * too early rescheduling on boot. It's suboptimized but GP
-> +		 * polling on idle isn't expected much as a usecase.
-> +		 */
-> +		local_irq_save(flags);
-> +		raise_ksoftirqd_irqoff(RCU_SOFTIRQ);
-> +		local_irq_restore(flags);
->  	}
->  	return gp_seq;
->  }
-> -- 
-> 2.34.1
-> 
+Urgh... so the plan is to fix RCU-tasks for all of the above to not rely
+on PF_IDLE ? Because I rather like the more strict PF_IDLE and
+subsequently don't much like this revert.
