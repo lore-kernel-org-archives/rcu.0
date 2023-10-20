@@ -2,98 +2,89 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8870CDB474
-	for <rcu@archiver.kernel.org>; Fri, 20 Oct 2023 17:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96488C0032E
+	for <rcu@archiver.kernel.org>; Fri, 20 Oct 2023 19:22:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbjJTRaX (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Oct 2023 13:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S229554AbjJTTWO (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 20 Oct 2023 15:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbjJTRaW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:30:22 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74755A3;
-        Fri, 20 Oct 2023 10:30:20 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso793618f8f.0;
-        Fri, 20 Oct 2023 10:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697823019; x=1698427819; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NxpOXyb87A9tg1EnyFOnn6XQcp6Ef9sPYFZmIQknO/4=;
-        b=Cw1zd9eltba6besS6mIeJCLCvQnxEceYYk6FIzDMRjGcA2svzj8TW2qZ2CeLgoV2yp
-         2wdVGQ5a++UOKvKgJnJIfd3/tFBuOSeeaNM0c5/TqzuAGZrsl8Bz/9iKcBlvXZFottCf
-         RVQuoX1pFEHAKOrMzyry3yBs4f5Fl1hZ/DSbo2tCZ20D1NzhqIMWjK7i6mVJmGJvvciv
-         iY/r+ZUXjYegu+g+KXiHZcEwQbPP1AlBcp6VGZ+gst+l9nQ0hQKEY7zTN41jdylWHfMf
-         B01H7qZjSs30XEorE8Pid3G02/CZKacoH8V9+dRKuScnWTw/H/1b+Accu4uAdyUx5ojZ
-         /Sfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697823019; x=1698427819;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NxpOXyb87A9tg1EnyFOnn6XQcp6Ef9sPYFZmIQknO/4=;
-        b=ZgjixgPWHxMCRIqc67JCCmTUuT0ZdE+FBA/N7gdblvTWhJLR7cwogt8LaNUDQzaCn/
-         COcuqhGUhWjSNLkCSYKtgjf4Ob6iP7ez4D/RokGnlY7rOzP4zbiKesE6FTHK5nUvfURf
-         LfDdjNDVdVKgbnfl8lzEqCR2uaJ1M2kF8u7+CXvv0axsobGdUwuPnIFpiG+PB9Jrho2/
-         MPqtp00s9hfVGp6SzgjXJow0jhbpPmIfIUrgHYV6K2iqGfBXFhifwVW16Z4uLjNDP5pc
-         GEV9uJIHwVX4QxDuOb5exT5jwiswZeRqZOeDo3Zz0GshctBcrAEjY9ghCLoWwmwdjx/S
-         DtxA==
-X-Gm-Message-State: AOJu0YyDOY9W0+7FXXkw9SXRWmvRbceMwAnoOOoMa3JK0+asrvSc2onB
-        32D8xfSWUM3KwNV3ESGbytc=
-X-Google-Smtp-Source: AGHT+IHKMIMV/P7s2BKrgigGnTNV6sABljrLOhvsv462uIs/FRCd8uGfJnqGkQ+ETWSbQNPsKW/kyQ==
-X-Received: by 2002:a5d:5b1c:0:b0:32d:a61a:85cc with SMTP id bx28-20020a5d5b1c000000b0032da61a85ccmr3083519wrb.8.1697823018563;
-        Fri, 20 Oct 2023 10:30:18 -0700 (PDT)
-Received: from PC-PEDRO-ARCH.lan ([2001:8a0:7280:5801:9441:3dce:686c:bfc7])
-        by smtp.gmail.com with ESMTPSA id r6-20020a5d6946000000b00318147fd2d3sm2102854wrw.41.2023.10.20.10.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 10:30:18 -0700 (PDT)
-From:   Pedro Falcato <pedro.falcato@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        with ESMTP id S229812AbjJTTWL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 20 Oct 2023 15:22:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0A4D41;
+        Fri, 20 Oct 2023 12:22:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FC81C433C8;
+        Fri, 20 Oct 2023 19:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697829729;
+        bh=tURciTQclBfgEIbO47BJ7qrPj5Gyb3NVEPoOlslHMzM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=odQm5THCIczSy3qQHKgscLkiFBw00Ekbo2mzdQf96X5KdbdJUMbO0AtEIVwMiCTcr
+         B1PMTsYqwd2tGwRK/8pO3c8GHlFJFQbC9HWxogQtxKO7r+0T+eaB046bTk+5+dRzpA
+         f+Lk3+WmFrbVqcy9qM/++UYniBvi+Bh5kRZ3QIBP/hLmfTlJSWUUIF3pBrrU4lczSt
+         /Pt/Ew3srWcfzUA+/1RSfDuUnE/QUnC/7zawcQfFvBS8TR/FmffXaKVuZzqCcklZeW
+         /fE2eQSQlYCU2jJvsw4Xpn0TbYZYzaC4/RYwL8rTmXIPIc8TCdqd5BiVdPAg0gNy1p
+         B9Mg3zerYd2jQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A8904CE0AE2; Fri, 20 Oct 2023 12:22:08 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 12:22:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Pedro Falcato <pedro.falcato@gmail.com>
+Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-        Pedro Falcato <pedro.falcato@gmail.com>
-Subject: [PATCH] rcu: Remove unused macros from rcupdate.h
-Date:   Fri, 20 Oct 2023 18:30:15 +0100
-Message-ID: <20231020173015.30509-1-pedro.falcato@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Remove unused macros from rcupdate.h
+Message-ID: <b2a15247-fbe6-47bd-9857-5d5163834dfc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231020173015.30509-1-pedro.falcato@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020173015.30509-1-pedro.falcato@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-ulong2long, USHORT_CMP_GE and USHORT_CMP_LT are redundant and have been
-unused for quite a few releases.
+On Fri, Oct 20, 2023 at 06:30:15PM +0100, Pedro Falcato wrote:
+> ulong2long, USHORT_CMP_GE and USHORT_CMP_LT are redundant and have been
+> unused for quite a few releases.
+> 
+> Signed-off-by: Pedro Falcato <pedro.falcato@gmail.com>
+> ---
+> Just a boring chore patch that cleans up a few unused macros.
+> 
+> I'm *very* interested in knowing how that ulong2long macro came along,
+> though. What was wrong with '(long) a'?
 
-Signed-off-by: Pedro Falcato <pedro.falcato@gmail.com>
----
-Just a boring chore patch that cleans up a few unused macros.
+Signed integer overflow, if I remember correctly.  But the Linux-kernel
+build process forced signed integer overflow to be defined.
 
-I'm *very* interested in knowing how that ulong2long macro came along,
-though. What was wrong with '(long) a'?
- include/linux/rcupdate.h | 3 ---
- 1 file changed, 3 deletions(-)
+Queued for v6.8, thank you!
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 5e5f920ade9..b9b6b828115 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -34,9 +34,6 @@
- 
- #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
- #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
--#define ulong2long(a)		(*(long *)(&(a)))
--#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
--#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
- 
- /* Exported common interfaces */
- void call_rcu(struct rcu_head *head, rcu_callback_t func);
--- 
-2.42.0
+							Thanx, Paul
 
+>  include/linux/rcupdate.h | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 5e5f920ade9..b9b6b828115 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -34,9 +34,6 @@
+>  
+>  #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
+>  #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
+> -#define ulong2long(a)		(*(long *)(&(a)))
+> -#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
+> -#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
+>  
+>  /* Exported common interfaces */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func);
+> -- 
+> 2.42.0
+> 
