@@ -2,89 +2,75 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96488C0032E
-	for <rcu@archiver.kernel.org>; Fri, 20 Oct 2023 19:22:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37E3CC07545
+	for <rcu@archiver.kernel.org>; Tue, 24 Oct 2023 21:46:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjJTTWO (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 20 Oct 2023 15:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
+        id S1344398AbjJXVqg (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 24 Oct 2023 17:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjJTTWL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:22:11 -0400
+        with ESMTP id S1344380AbjJXVqg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 24 Oct 2023 17:46:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0A4D41;
-        Fri, 20 Oct 2023 12:22:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FC81C433C8;
-        Fri, 20 Oct 2023 19:22:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF2FE8;
+        Tue, 24 Oct 2023 14:46:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F533C433C8;
+        Tue, 24 Oct 2023 21:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697829729;
-        bh=tURciTQclBfgEIbO47BJ7qrPj5Gyb3NVEPoOlslHMzM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=odQm5THCIczSy3qQHKgscLkiFBw00Ekbo2mzdQf96X5KdbdJUMbO0AtEIVwMiCTcr
-         B1PMTsYqwd2tGwRK/8pO3c8GHlFJFQbC9HWxogQtxKO7r+0T+eaB046bTk+5+dRzpA
-         f+Lk3+WmFrbVqcy9qM/++UYniBvi+Bh5kRZ3QIBP/hLmfTlJSWUUIF3pBrrU4lczSt
-         /Pt/Ew3srWcfzUA+/1RSfDuUnE/QUnC/7zawcQfFvBS8TR/FmffXaKVuZzqCcklZeW
-         /fE2eQSQlYCU2jJvsw4Xpn0TbYZYzaC4/RYwL8rTmXIPIc8TCdqd5BiVdPAg0gNy1p
-         B9Mg3zerYd2jQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A8904CE0AE2; Fri, 20 Oct 2023 12:22:08 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 12:22:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pedro Falcato <pedro.falcato@gmail.com>
-Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
+        s=k20201202; t=1698183994;
+        bh=yHSm2YM/bMQkAnbmpHj+BQijT/wk2j7ErJc48tU8SPo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tLccx/3EY+Moi4YGUpshCDMQO45hBfs9xgyAkvQGsPrridNrqRMnPfmAUc3YBChZg
+         LjAwkkG3W+kBMV0YDLKC/UViCQN1vlDCWRRwSay+Vjsq5RdhXf5EbLCVCwJGJFWALq
+         tkOt17wt3Nns9/Lfgbf2oq1gOin78wctBTNVGOpsfjOZmMCH5C/0nghz36lnUjnHeq
+         HsrXV/2C6PACjRx7U4UFtTtGL0pJsT2AOpl/F88C0Iz+2Vbz039Doh6oYaSNfXVYJD
+         B1K+2uDwA8ELfBnfCWd0sJLpRS30uNOm3J7k97VrRn5N4Ho/JY0uszNFqxkaOC1ovZ
+         p4kl/Ja14CDPQ==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Remove unused macros from rcupdate.h
-Message-ID: <b2a15247-fbe6-47bd-9857-5d5163834dfc@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231020173015.30509-1-pedro.falcato@gmail.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 0/4] rcu: Fix PF_IDLE related issues v2
+Date:   Tue, 24 Oct 2023 23:46:21 +0200
+Message-ID: <20231024214625.6483-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020173015.30509-1-pedro.falcato@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 06:30:15PM +0100, Pedro Falcato wrote:
-> ulong2long, USHORT_CMP_GE and USHORT_CMP_LT are redundant and have been
-> unused for quite a few releases.
-> 
-> Signed-off-by: Pedro Falcato <pedro.falcato@gmail.com>
-> ---
-> Just a boring chore patch that cleans up a few unused macros.
-> 
-> I'm *very* interested in knowing how that ulong2long macro came along,
-> though. What was wrong with '(long) a'?
+The modification of PF_IDLE semantics lately to fix a bug in rcutiny
+eventually introduced new bugs in RCU-tasks. In this v2, this series
+propose to fix these issues without reverting:
 
-Signed integer overflow, if I remember correctly.  But the Linux-kernel
-build process forced signed integer overflow to be defined.
+	cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
 
-Queued for v6.8, thank you!
+Frederic Weisbecker (4):
+  rcu: Introduce rcu_cpu_online()
+  rcu/tasks: Handle new PF_IDLE semantics
+  rcu/tasks-trace: Handle new PF_IDLE semantics
+  sched: Exclude CPU boot code from PF_IDLE area
 
-							Thanx, Paul
+ include/linux/sched.h |  2 +-
+ kernel/cpu.c          |  4 ++++
+ kernel/rcu/rcu.h      |  2 ++
+ kernel/rcu/tasks.h    | 33 ++++++++++++++++++++++++++++++---
+ kernel/rcu/tree.c     |  7 +++++++
+ kernel/sched/idle.c   |  1 -
+ 6 files changed, 44 insertions(+), 5 deletions(-)
 
->  include/linux/rcupdate.h | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 5e5f920ade9..b9b6b828115 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -34,9 +34,6 @@
->  
->  #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
->  #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
-> -#define ulong2long(a)		(*(long *)(&(a)))
-> -#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
-> -#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
->  
->  /* Exported common interfaces */
->  void call_rcu(struct rcu_head *head, rcu_callback_t func);
-> -- 
-> 2.42.0
-> 
+-- 
+2.41.0
+
