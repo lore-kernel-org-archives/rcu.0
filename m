@@ -2,33 +2,58 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16466C25B6B
-	for <rcu@archiver.kernel.org>; Tue, 24 Oct 2023 21:46:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99525C25B48
+	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 02:30:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344474AbjJXVq4 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 24 Oct 2023 17:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        id S231552AbjJYCaB (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 24 Oct 2023 22:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344477AbjJXVqw (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:46:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C101AE8;
-        Tue, 24 Oct 2023 14:46:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE75DC433C7;
-        Tue, 24 Oct 2023 21:46:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698184009;
-        bh=AqHnLeB5xem2kiRsFLowge6w/ot0AAmqtV9xGzicirc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDaO3ZmCJO3fKoF+gIfWqQroBqbgxx5f8hX2+JrCOc4JsdJNI38tcDbzDbxDd9IiD
-         lQQjafqLkkawzo6WRYBYq6iBDRLc6rw/K82bL4QufhCMuuMtuiIDHLj1HTZLkWwhv0
-         Y7mPAxMD5NRzchUhYgtYdpyVNGyV6qMUsXDOOPc0ShJDQv6YARd0YrIOFvg4uFaCm6
-         1ngaB9X+/AarJdFS3TRUPmWau++XTxbJE6uZMiH0YYWipraB8z3fgsqMiLJkFXYbza
-         ZaAmHAP183sCvV3XzoyR81WsOfdotWNwXasO1UWQeKF/ElKrOC4OzjJFDnqlnpa/LJ
-         dKFkktu+IKyVw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        with ESMTP id S229548AbjJYCaA (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 24 Oct 2023 22:30:00 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB169C;
+        Tue, 24 Oct 2023 19:29:58 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5b8f68ba4e5so789760a12.1;
+        Tue, 24 Oct 2023 19:29:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698200998; x=1698805798; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UBs7BhHj7osv0k6psRfJTocN6ObSQb2o0iZG5n+6D9E=;
+        b=CPfyJ9S/JKi9ygb+bH1zPZa4AqNQ+W8Aqs6GqccQvsjIZ4rO1peFaOGFlXwGA3fS7l
+         1EHQOFdZo5Gfv36SHVCf4aczT/qRqfWtcl5Yid8hB2f327rU2/p3SQXYju8XpVICTiGb
+         KbFoHSQAcsgYPGzleAFhBSifGrLrTmZOeHPiYff+7Whq60FryI++qnUR1pWpqe2dNEVf
+         XPXcR29K+il6KqrPMUyEuAyqrqsF5OGsiJFHE/J3X6eI0ND/+DDYwbbVFwwzraIgVxNS
+         HQifI4FyxyQjsymyM2pp17oqpfLlNg0muBiEKTPBTAYBhr8zPrWyvaXBf6BayjXfjvOo
+         SBiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698200998; x=1698805798;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UBs7BhHj7osv0k6psRfJTocN6ObSQb2o0iZG5n+6D9E=;
+        b=Kq5FPnzy3TAi+FC6jiDnyKZVqXGy3xto5Sp0ruMkZewQJ6O1nC72RmaWayOsTqmAo9
+         e7TEet08KbpSJ44x4wmIJCbyJoRbAKi+5ogjxerk1eujk3S5QaLFT/SlAV3qlnOidKS3
+         7XjK+u+ua6930Ai/b3GRU40I2QyztmCjxfNMcJi5pKW1FWQ7AC7CwWIxd5GXWAza9OwE
+         YCeLdYpelCX0hmEBqI4V4IdHqnOJZrsdNzUycAwI3umw+gXbcGRcjYg1h7MOrOlQwX6F
+         xe7M+NGazEobkerRwKmxgC3yjfAR3moqwfw8EK81o++xkE3c/DBm904C+Au518cWWeaC
+         UtXw==
+X-Gm-Message-State: AOJu0YzZQ2g5UphUBoSYT6RaZpef5jttsPOZNRjOWwVqyb1xdyC6FXHk
+        3ApS9ez2zjOV61URmHEjK0H8ymS8VLz0ub3xrbM=
+X-Google-Smtp-Source: AGHT+IHNAVwtfMn/MXAQZV4LGATKDVSqX0E8w/yecWgJbGg3prk+XMIh/QjpOshbqJrTlw3AA2EY4YZz6I89PBQ1Jig=
+X-Received: by 2002:a17:90b:3949:b0:27c:ef18:d270 with SMTP id
+ oe9-20020a17090b394900b0027cef18d270mr10698424pjb.20.1698200997712; Tue, 24
+ Oct 2023 19:29:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231024214625.6483-1-frederic@kernel.org> <20231024214625.6483-2-frederic@kernel.org>
+In-Reply-To: <20231024214625.6483-2-frederic@kernel.org>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Wed, 25 Oct 2023 10:29:46 +0800
+Message-ID: <CALm+0cVP+4ogirqUYMXp63vb7yisXCB0xpq+DSX9kqth0BpW6g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] rcu: Introduce rcu_cpu_online()
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
@@ -37,93 +62,77 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         "Liam R . Howlett" <Liam.Howlett@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 4/4] sched: Exclude CPU boot code from PF_IDLE area
-Date:   Tue, 24 Oct 2023 23:46:25 +0200
-Message-ID: <20231024214625.6483-5-frederic@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231024214625.6483-1-frederic@kernel.org>
-References: <20231024214625.6483-1-frederic@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-The commit:
+>
+> Export the RCU point of view as to when a CPU is considered offline
+> (ie: when does RCU consider that a CPU is sufficiently down in the
+> hotplug process to not feature any possible read side).
+>
+> This will be used by RCU-tasks whose vision of an offline CPU should
+> reasonably match the one of RCU core.
+>
+> Fixes: cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/rcu.h  | 2 ++
+>  kernel/rcu/tree.c | 7 +++++++
+>  2 files changed, 9 insertions(+)
+>
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 0d866eaa4cc8..b531c33e9545 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -500,6 +500,7 @@ static inline void rcu_expedite_gp(void) { }
+>  static inline void rcu_unexpedite_gp(void) { }
+>  static inline void rcu_async_hurry(void) { }
+>  static inline void rcu_async_relax(void) { }
+> +static inline bool rcu_cpu_online(int cpu) { return true; }
+>  #else /* #ifdef CONFIG_TINY_RCU */
+>  bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+>  bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+> @@ -509,6 +510,7 @@ void rcu_unexpedite_gp(void);
+>  void rcu_async_hurry(void);
+>  void rcu_async_relax(void);
+>  void rcupdate_announce_bootup_oddness(void);
+> +bool rcu_cpu_online(int cpu);
+>  #ifdef CONFIG_TASKS_RCU_GENERIC
+>  void show_rcu_tasks_gp_kthreads(void);
+>  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 700524726079..fd21c1506092 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4202,6 +4202,13 @@ static bool rcu_rdp_cpu_online(struct rcu_data *rdp)
+>         return !!(rdp->grpmask & rcu_rnp_online_cpus(rdp->mynode));
+>  }
+>
+> +bool rcu_cpu_online(int cpu)
+> +{
+> +       struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>
+>
 
-	cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
+Should 'struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu)' be used ?
 
-has changed the semantics of what is to be considered an idle task in
-such a way that only the actual idle loop is accounted as PF_IDLE. The
-intent is to exclude the CPU boot code from that coverage.
+Thanks
+Zqiang
 
-However this doesn't clear the flag when the CPU goes down. Therefore
-when the CPU goes up again, its boot code is part of the PF_IDLE zone.
 
-Make sure this flag behave consistently and clear the flag when a CPU
-exits from the idle loop. If anything, RCU-tasks relies on it to exclude
-CPU boot code from its quiescent states.
-
-Fixes: cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- include/linux/sched.h | 2 +-
- kernel/cpu.c          | 4 ++++
- kernel/sched/idle.c   | 1 -
- 3 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 8885be2c143e..ad18962b921d 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1945,7 +1945,7 @@ extern struct task_struct *idle_task(int cpu);
-  */
- static __always_inline bool is_idle_task(const struct task_struct *p)
- {
--	return !!(p->flags & PF_IDLE);
-+	return !!(READ_ONCE(p->flags) & PF_IDLE);
- }
- 
- extern struct task_struct *curr_task(int cpu);
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 3b9d5c7eb4a2..3a1991010f4e 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1394,7 +1394,9 @@ void cpuhp_report_idle_dead(void)
- {
- 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
- 
-+	WRITE_ONCE(current->flags, current->flags & ~PF_IDLE);
- 	BUG_ON(st->state != CPUHP_AP_OFFLINE);
-+
- 	rcutree_report_cpu_dead();
- 	st->state = CPUHP_AP_IDLE_DEAD;
- 	/*
-@@ -1642,6 +1644,8 @@ void cpuhp_online_idle(enum cpuhp_state state)
- {
- 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
- 
-+	WRITE_ONCE(current->flags, current->flags | PF_IDLE);
-+
- 	/* Happens for the boot cpu */
- 	if (state != CPUHP_AP_ONLINE_IDLE)
- 		return;
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 5007b25c5bc6..342f58a329f5 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -373,7 +373,6 @@ EXPORT_SYMBOL_GPL(play_idle_precise);
- 
- void cpu_startup_entry(enum cpuhp_state state)
- {
--	current->flags |= PF_IDLE;
- 	arch_cpu_idle_prepare();
- 	cpuhp_online_idle(state);
- 	while (1)
--- 
-2.41.0
-
+>
+> +
+> +       return rcu_rdp_cpu_online(rdp);
+> +}
+> +
+>  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_HOTPLUG_CPU)
+>
+>  /*
+> --
+> 2.41.0
+>
