@@ -2,151 +2,97 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F849C25B6F
-	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 14:09:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 943BDC0032E
+	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 15:13:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344817AbjJYOJ2 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Oct 2023 10:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
+        id S1344470AbjJYPNk (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 25 Oct 2023 11:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344802AbjJYOJ1 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:09:27 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354DD99;
-        Wed, 25 Oct 2023 07:09:22 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50802148be9so3291544e87.2;
-        Wed, 25 Oct 2023 07:09:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698242960; x=1698847760; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bHDEJ3lmtmiX3laFHnI04RPu1+R3BEM2SvSjdFI6IHw=;
-        b=bV+G90lwvN9BcfEZj224zGCwJFYBE24UNYELzszmLEq8mkLEjp4zimKfkDI9yTeKV9
-         tHvowpymvKUbzs823PhvQUIl3TmN9qD9h+ztXhz9fWWtU6NXMt6YaAjxnMW7CJlB4z0H
-         hl+KEfxUgkkav6B1ZH+8I0oxwAmGOeGw6AM1pwBzh85kqK+h7o6K9ZSM+XDZQQEXL2Tj
-         9+f1nvk5q6NqczyiNqxhc85n6a+xVWtJv3SOxHUuaoZiIWUCaXPVsNnLeQCtbmcmSO45
-         H/EQx7XtOYK7SZGulI0qq/67QqhYp83hptZsVk7z4TnWBB1zOUbHQ3Sx1jGGQR7TXzp6
-         en+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698242960; x=1698847760;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bHDEJ3lmtmiX3laFHnI04RPu1+R3BEM2SvSjdFI6IHw=;
-        b=EbTKbBkCf122pqXBmq5wkr+QbSWGeKnjLrP0zRRglMEnqAmUo5o2Isvx+np45rgbPO
-         jEreXTQqGj5uq+EIoMIOSDzzhHt3wPFzV0GivUXwrbAmfNLYVPTX8jCSs8VIX+1+trrr
-         0wxvNGvGBYcaKPd+N6Scs/wovw5ATQSwJUqYsBon+aQu04HAf25hvzI4NvPt3c89WWFe
-         +s9Z7sHKpRVIu4EAbcie+0ML1elSExjPgTrId1bClxFFnBZf8wLeQwOSLPGsrctCc9+G
-         c3ZgvpIlL9Thvl6WKYyPihVIf+vV8KHGwVXicD+l4zZ/B2PxZSDSlHcUSdoDX58+hnR/
-         L7DA==
-X-Gm-Message-State: AOJu0Yx6gbZS2odTjBR+RV5WT0C48QL+RBctIewMdcQC1dSs8sdHdoFQ
-        f+NPw7TKyI1webz9bEoaMgw=
-X-Google-Smtp-Source: AGHT+IF2a2BcuDMUvcqqW4DjSHl+OiEP9LhpdbWw0DDHKhuwwlmc2ueRJ6LI0qhlK5xn/914byNmjQ==
-X-Received: by 2002:a19:ee16:0:b0:507:a5e7:724 with SMTP id g22-20020a19ee16000000b00507a5e70724mr10723334lfb.38.1698242960027;
-        Wed, 25 Oct 2023 07:09:20 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id o8-20020ac24e88000000b00507977e9a38sm2555680lfr.35.2023.10.25.07.09.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 07:09:19 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     RCU <rcu@vger.kernel.org>,
+        with ESMTP id S1344496AbjJYPNg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 25 Oct 2023 11:13:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FDBD42;
+        Wed, 25 Oct 2023 08:13:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7291EC433C8;
+        Wed, 25 Oct 2023 15:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698246810;
+        bh=BoLlPz5gkAu/xRvuEzDPa0TMWiFLeA8SCGHV/kEncmE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UTIWkabIrDQ+RRNndW3Ff9MBbxXmD0+xAjJGrsY/fQolECJIsQVv99FP/DZ0uLC3h
+         vZcaXvC0J7iKmdujSabgt1bClVAyhwAfrDN3ipo8Zgp654GPhvWyRiE9DLOPR2Nz49
+         cW/xAEKtr66MZA5x+i6Qk94KKiIlmVYlpVH9sMVft1Y2LS4igh3wmG8s4ZsldYyGOR
+         +NT6darX0zSQ6fq08SMEcYdmncQQ7v9RUH0MQZRDlN/Sme8tKMbEePHZ165S8amLtS
+         22/pYg9pdZMXkYSgIbliArPeiDfXSo+YW3u8kZ3k1Q/hC1mBMe27QnhsjQB+ZPb7As
+         kUYCvPFmPJZCA==
+Date:   Wed, 25 Oct 2023 17:13:27 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        RCU <rcu@vger.kernel.org>,
         Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Hillf Danton <hdanton@sina.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 2/3] rcu: Add a trace event for synchronize_rcu_normal()
-Date:   Wed, 25 Oct 2023 16:09:14 +0200
-Message-Id: <20231025140915.590390-3-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231025140915.590390-1-urezki@gmail.com>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 1/3] rcu: Reduce synchronize_rcu() waiting time
+Message-ID: <ZTkwl0bzTTCy8g5N@localhost.localdomain>
 References: <20231025140915.590390-1-urezki@gmail.com>
+ <20231025140915.590390-2-urezki@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231025140915.590390-2-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Add an rcu_sr_normal() trace event. It takes three arguments
-first one is the name of RCU flavour, second one is a user id
-which triggeres synchronize_rcu_normal() and last one is an
-event.
+Le Wed, Oct 25, 2023 at 04:09:13PM +0200, Uladzislau Rezki (Sony) a écrit :
+> +/*
+> + * Helper function for rcu_gp_cleanup().
+> + */
+> +static void rcu_sr_normal_gp_cleanup(void)
+> +{
+> +	struct llist_node *head, *tail, *pos;
+> +	int i = 0;
+> +
+> +	tail = READ_ONCE(sr.wait_tail);
+> +	head = llist_del_all(&sr.wait);
 
-There are two traces in the synchronize_rcu_normal(). On entry,
-when a new request is registered and on exit point when request
-is completed.
+This could be llist_empty() first to do a quick
+cheap check. And then __llist_del_all() here because
+it appears nothing else than gp kthread can touch sr.wait.
 
-Please note, CONFIG_RCU_TRACE=y is required to activate traces.
+> +
+> +	llist_for_each_safe(pos, head, head) {
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- include/trace/events/rcu.h | 27 +++++++++++++++++++++++++++
- kernel/rcu/tree.c          |  2 ++
- 2 files changed, 29 insertions(+)
+Two times head intended here? There should be some
+temporary storage in the middle.
 
-diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-index 2ef9c719772a..31b3e0d3e65f 100644
---- a/include/trace/events/rcu.h
-+++ b/include/trace/events/rcu.h
-@@ -707,6 +707,33 @@ TRACE_EVENT_RCU(rcu_invoke_kfree_bulk_callback,
- 		__entry->rcuname, __entry->p, __entry->nr_records)
- );
- 
-+/*
-+ * Tracepoint for a normal synchronize_rcu() states. The first argument
-+ * is the RCU flavor, the second argument is a pointer to rcu_head the
-+ * last one is an event.
-+ */
-+TRACE_EVENT_RCU(rcu_sr_normal,
-+
-+	TP_PROTO(const char *rcuname, struct rcu_head *rhp, const char *srevent),
-+
-+	TP_ARGS(rcuname, rhp, srevent),
-+
-+	TP_STRUCT__entry(
-+		__field(const char *, rcuname)
-+		__field(void *, rhp)
-+		__field(const char *, srevent)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->rcuname = rcuname;
-+		__entry->rhp = rhp;
-+		__entry->srevent = srevent;
-+	),
-+
-+	TP_printk("%s rhp=0x%p event=%s",
-+		__entry->rcuname, __entry->rhp, __entry->srevent)
-+);
-+
- /*
-  * Tracepoint for exiting rcu_do_batch after RCU callbacks have been
-  * invoked.  The first argument is the name of the RCU flavor,
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 63e46a8f3e60..25c7618b4533 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3626,6 +3626,7 @@ static void synchronize_rcu_normal(void)
- {
- 	struct rcu_synchronize rs;
- 
-+	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
- 	if (READ_ONCE(rcu_normal_wake_from_gp)) {
- 		init_rcu_head_on_stack(&rs.head);
- 		init_completion(&rs.completion);
-@@ -3646,6 +3647,7 @@ static void synchronize_rcu_normal(void)
- 	} else {
- 		wait_rcu_gp(call_rcu_hurry);
- 	}
-+	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("complete"));
- }
- 
- /**
--- 
-2.30.2
+> +		rcu_sr_normal_complete(pos);
+> +
+> +		if (++i == MAX_SR_WAKE_FROM_GP) {
+> +			/* If last, process it also. */
+> +			if (head && !head->next)
+> +				continue;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (head) {
+> +		/* Can be not empty. */
+> +		llist_add_batch(head, tail, &sr.done);
+> +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
 
+So you can have:
+
+* Queue to sr.curr is atomic fully ordered
+* Check and move from sr.curr to sr.wait is atomic fully ordered
+* Check from sr.wait can have a quick unatomic unordered
+  llist_empty() check. Then extract unatomic unordered as well.
+* If too many, move atomic/ordered to sr.done.
+
+Am I missing something?
