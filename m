@@ -2,118 +2,94 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51837C25B47
-	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 11:25:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAF33C0032E
+	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 14:09:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbjJYLZT (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Oct 2023 07:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        id S1344543AbjJYOJZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 25 Oct 2023 10:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjJYLZS (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:25:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C7FE8;
-        Wed, 25 Oct 2023 04:25:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00141C433C8;
-        Wed, 25 Oct 2023 11:25:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698233116;
-        bh=5uusWVbXG7Uj0EgQfGTXqjuq5lmrkasn/FKrRVX44Xg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZGt+g5V3Zl8EzuEQB/2XMI1bQKtETncmWYWEUQ0FEpbBG6M2SijVhsO2PvAkKhwlh
-         C9u2aW5XQdYwdOAeTVnpZKWV2b+HQlyB8z6ZD42jahfYo9+5KniKu7rW8+0XaetlRK
-         y/b7ioD3YA+om5644/nJ3XRucMPIdgFrvJJ5FFRtrkoQjDRIFsD7n1HBEntjfACtVS
-         Ns5lgeoxDXnBaJWEAiFZsihJr4Y1hkTrmfJasFa1UK85QLYk5hANmnW1E/TbC3o4nR
-         vZGjtttm66STNLOb9yhA6eVArcSoSFwhsUCTC/WDgirZDEWPBEGW/YqwjTOO+k47F2
-         3YBp932cghCCA==
-Date:   Wed, 25 Oct 2023 13:25:13 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        with ESMTP id S1344597AbjJYOJX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 25 Oct 2023 10:09:23 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78261133;
+        Wed, 25 Oct 2023 07:09:20 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507b9408c61so7837219e87.0;
+        Wed, 25 Oct 2023 07:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698242959; x=1698847759; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wmEvOZOZBOhclOxlPn09a+GCZzFmuG5NCdmw689iQU8=;
+        b=eRPhSbEum2efFyRJsgKMGShGE3R7z/5EpI9qTfVvkk+gmh8vLfuyzJHOQu18qrjmYG
+         IeXCOqa0eTdBxhPlCTRgepLi6Oe/KZAXU09+h/Einzj+okTwej/y0onp4HZIlZfQkFG/
+         F3n8CxNfSDGBkFlhngrVQF54ouGqvydXSU+zQRfqk+VRAvc9ZFt/NXSZ+GMDEx+ZkHJz
+         Xb1xKZRoSrMo37ssHyOJljs7SBGQVrJZhJY4e8slCqD3BhDsz97+IGJxDoHhMgMeCfC1
+         TMNE4Nx8RDZCTdB/0eZNZHJ94MhoULtpyp+U+im5MHkNBdjrtQNsnGP4sPKSRltaZQ7E
+         O3ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698242959; x=1698847759;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wmEvOZOZBOhclOxlPn09a+GCZzFmuG5NCdmw689iQU8=;
+        b=hRHoaqQyKttM3vmZJAg6rL07j3slei3xsZ7RmSJtflwGmIFisZTGJoqfIAe6DQvUOk
+         e6+lP4JITr5jkELAhoNjuAryIMdQEdViFdjgrgfo86Q+WRmYD66jhVfCbPjTy71I+2qI
+         uRt/qZHCDUBXrTmTH2tPmHRv9qwb7nMJ64qCZqGd0XuxZho/korCgoHXBN/WqZWdPG99
+         8JPiwzfrhbLF4GbRq3BFy28o9VAF8hXgXf6Jh5xwQtnkA0oJ415c0NGGH8l74iycTbBk
+         zHc5HqoKGOv5rqmilyo9mIwbbfolY1+6VpWyIVdK19YqVaZ19FvdHzwKsMR/62GNeVPW
+         EMjw==
+X-Gm-Message-State: AOJu0YzvOL50ZV/D16ZYEOWRkyHVxxaZF719Qld2wBkDWZrTm8TBoh/C
+        RuUlK4JQjqKGO2OkO+JDPHo=
+X-Google-Smtp-Source: AGHT+IEx8rlub2pACfZdENkdmtdDFZnd+a/ebbeVKAXNHLNyyW+sVcoYmrefelECGF9yPq67dldxQw==
+X-Received: by 2002:ac2:5470:0:b0:500:a6c1:36f7 with SMTP id e16-20020ac25470000000b00500a6c136f7mr11596559lfn.3.1698242958398;
+        Wed, 25 Oct 2023 07:09:18 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id o8-20020ac24e88000000b00507977e9a38sm2555680lfr.35.2023.10.25.07.09.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 07:09:17 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>
-Subject: Re: [PATCH 4/4] sched: Exclude CPU boot code from PF_IDLE area
-Message-ID: <ZTj7GYUcU950X-Mc@localhost.localdomain>
-References: <20231024214625.6483-1-frederic@kernel.org>
- <20231024214625.6483-5-frederic@kernel.org>
- <20231025084833.GE37471@noisy.programming.kicks-ass.net>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 0/3] reduce latency of synchronize_rcu()
+Date:   Wed, 25 Oct 2023 16:09:12 +0200
+Message-Id: <20231025140915.590390-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231025084833.GE37471@noisy.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Le Wed, Oct 25, 2023 at 10:48:33AM +0200, Peter Zijlstra a écrit :
-> On Tue, Oct 24, 2023 at 11:46:25PM +0200, Frederic Weisbecker wrote:
-> 
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 8885be2c143e..ad18962b921d 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1945,7 +1945,7 @@ extern struct task_struct *idle_task(int cpu);
-> >   */
-> >  static __always_inline bool is_idle_task(const struct task_struct *p)
-> >  {
-> > -	return !!(p->flags & PF_IDLE);
-> > +	return !!(READ_ONCE(p->flags) & PF_IDLE);
-> >  }
-> >  
-> >  extern struct task_struct *curr_task(int cpu);
-> > diff --git a/kernel/cpu.c b/kernel/cpu.c
-> > index 3b9d5c7eb4a2..3a1991010f4e 100644
-> > --- a/kernel/cpu.c
-> > +++ b/kernel/cpu.c
-> > @@ -1394,7 +1394,9 @@ void cpuhp_report_idle_dead(void)
-> >  {
-> >  	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
-> >  
-> > +	WRITE_ONCE(current->flags, current->flags & ~PF_IDLE);
-> >  	BUG_ON(st->state != CPUHP_AP_OFFLINE);
-> > +
-> >  	rcutree_report_cpu_dead();
-> >  	st->state = CPUHP_AP_IDLE_DEAD;
-> >  	/*
-> > @@ -1642,6 +1644,8 @@ void cpuhp_online_idle(enum cpuhp_state state)
-> >  {
-> >  	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
-> >  
-> > +	WRITE_ONCE(current->flags, current->flags | PF_IDLE);
-> > +
-> >  	/* Happens for the boot cpu */
-> >  	if (state != CPUHP_AP_ONLINE_IDLE)
-> >  		return;
-> 
-> Without changing *ALL* ->flags stores to WRITE_ONCE() I don't see the
-> point of this. Also, since we only care about a single bit, how does
-> store tearing affect things?
-> 
-> Not to mention if we're really paranoid, what are the SMP ordering
-> considerations :-)
-> 
-> [ also, PF_ is used for Protocol Family, Page Flag and Process Flag,
->   grepping is a pain in the arse :-( ]
+Here is a small series that tends to reduce a waiting time of
+synchronize_rcu() call. Please note, this is only limited to
+a "normal" version.
 
-Indeed. Also cpuhp_online_idle() is called with preemption disabled
-and cpuhp_report_idle_dead() with interrupts disabled. As for idle
-injection in play_idle_precise(), the flag is set and cleared with
-preemption disabled.
+As for performance figures, i used real test cases and a synthetic.
+For example
+ - camera app launch time on our Android device is reduced by 9-13 percent;
+ - loading 100 kernel modules also get improved by 10-12 percent;
+ - synthetic gives 30 and higher percentage of boost.
 
-This means that all writes are in an RCU read side critical section
-that RCU-tasks pre-gp's synchronize_rcu() waits for. So I don't think
-we need those WRITE_ONCE/READ_ONCE.
+Uladzislau Rezki (Sony) (3):
+  rcu: Reduce synchronize_rcu() waiting time
+  rcu: Add a trace event for synchronize_rcu_normal()
+  doc: Add rcutree.rcu_normal_wake_from_gp to kernel-parameters.txt
 
-Paul are you ok with that?
+ .../admin-guide/kernel-parameters.txt         |  12 ++
+ include/trace/events/rcu.h                    |  27 ++++
+ kernel/rcu/tree.c                             | 152 +++++++++++++++++-
+ kernel/rcu/tree_exp.h                         |   2 +-
+ 4 files changed, 191 insertions(+), 2 deletions(-)
 
-Thanks.
+-- 
+2.30.2
+
