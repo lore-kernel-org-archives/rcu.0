@@ -2,303 +2,277 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4107C07545
-	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 17:18:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 910ABC0032E
+	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 18:15:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjJYRSL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Oct 2023 13:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
+        id S230135AbjJYSPL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 25 Oct 2023 14:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjJYRSL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:18:11 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5FE111;
-        Wed, 25 Oct 2023 10:18:08 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7b91faf40so57005167b3.1;
-        Wed, 25 Oct 2023 10:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698254288; x=1698859088; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F/uvOkwhxlEpkzDdPFhQxDSAIbTgXyeILVNw+kxFwq4=;
-        b=UP6pDkdCV4was2SvMGbiTefza9yZ5KcGarGRScycs/w04j54BFI1DWgyqlWTr1oWba
-         mciGjNvHezQ5YxYVBktmo+Nbr9+I+GpDzA52xx+uVifbeSGlAoPdfnwQT3IQhU0e9eZp
-         knva3sh04M1oDEgpvt4AapfaMR3FXWswRp8zq7gy0dJYIkChAOM4Ky4LusUXBXZMvIKz
-         qF3Zh5c+9T9M12QuVcRLrWx/1WB6W8IOvj48L0yt2g3RxjAvADZApyXkPTh9bpNlOhqJ
-         X7htJkhMozGvlbgcKIFhSBF1BqYR9fAwPH7x88JcBPJKZFvm1NaeFH7RzpCDZx2mdBNu
-         6p4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698254288; x=1698859088;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F/uvOkwhxlEpkzDdPFhQxDSAIbTgXyeILVNw+kxFwq4=;
-        b=rnuOwjSerxgn7JxWpONgkDXdXE9V9NdGJa/uHxI+j2++r9i7UP+WyTdSNwlMyTyUDa
-         C7+56vaO4UMNIv9+808I5srFUb+Mo/tbL0NvdrkFjRsBNWww/SlF3/nicIs6KNVw5UFB
-         9Ob0fmN/Axn5lynew4xhgFmT/ageUqagOCP1iEvHp5iBK45lONkopiZhhpVdBMYr0xED
-         +/YBpKbcY1sjYKYYDLMyIHwa1HX4ZlSjc305BS7LcEivQYdq8zVuw+2CyiAXCSQTFQJd
-         g2wbGve3E7r/3wIW/Tti2mOZwWOfae6kZzZcyJI09STBB+dfY8eCC/4vpUc9/WAfNdaT
-         k9PA==
-X-Gm-Message-State: AOJu0YyIJscQzYrCP8wg5wnipAWfFBT+hgB8UjQxDUKeookAGWlnM66n
-        xFDF9u3m4YW6Mm8ZqdhfrLA=
-X-Google-Smtp-Source: AGHT+IGgtUBJjDpdcpn94j2EDhiGSURlNcjaDyIDVmNUdwVVea2/754GCkqaKNr0vxpI0nr3Cz+c7g==
-X-Received: by 2002:a25:d68c:0:b0:d9a:60c8:c5ff with SMTP id n134-20020a25d68c000000b00d9a60c8c5ffmr15314241ybg.65.1698254287660;
-        Wed, 25 Oct 2023 10:18:07 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id p20-20020a257414000000b00d9cb16d7749sm4587420ybc.21.2023.10.25.10.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 10:18:07 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 8F4C527C0054;
-        Wed, 25 Oct 2023 13:18:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 25 Oct 2023 13:18:06 -0400
-X-ME-Sender: <xms:zU05ZWbsFnlpkY4KFibxZDFs-r_x1VAjT9RgFb3VlVQhcP4QjVfZ7Q>
-    <xme:zU05ZZZnJNGfh-wHgECw4WXHLvfFWl4JatXMbF9rP5SjWbtDB39W4gGDr3a2RsZN-
-    IY5RJII5H-K5og7QA>
-X-ME-Received: <xmr:zU05ZQ83OUv7VLixvcvI9Hw1u9NdBZ5RpHqjXtxqOU6gjqVT0ynbS4E3uPM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdduuddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:zU05ZYpXi3eU_u35nadjKbyQPkB5r-CprRF04-3PyQnYChI-wiQyfg>
-    <xmx:zU05ZRoGdrJ711ynPXw464RpTS46WNs_Rg9u19tNNlz8ALVpOtH5kg>
-    <xmx:zU05ZWSRmrINNmfSqk9ytvjlxlS6wkSeTs0MWwJVwui3h7HR1V__NA>
-    <xmx:zk05ZVcBcFYPR74NDKjUDgjwmUxcLTSLFpWrrQYmVoY3-uy0EcjEqA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Oct 2023 13:18:05 -0400 (EDT)
-Date:   Wed, 25 Oct 2023 10:17:22 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 1/3] rcu: Reduce synchronize_rcu() waiting time
-Message-ID: <ZTlNogQ_nWUzVJ9M@boqun-archlinux>
-References: <20231025140915.590390-1-urezki@gmail.com>
- <20231025140915.590390-2-urezki@gmail.com>
+        with ESMTP id S230091AbjJYSPL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 25 Oct 2023 14:15:11 -0400
+X-Greylist: delayed 377 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 11:15:08 PDT
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43C693
+        for <rcu@vger.kernel.org>; Wed, 25 Oct 2023 11:15:08 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 14:08:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698257329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CZTl21BN1alzLn7qAdWExIV6MEwxBnoUCe7NRgZuavY=;
+        b=r1+AYMGE/is5Lo0jTucIjnkQelnR9HlOOO4+ncPhpVzpQT3tlNaoUo9K2CnTDR8/BrkR0m
+        c2kpxhokFHsiQZ3JHYANxZpTQUnRg4nmF0f3cvp2qwFasrwt3TBXM0yZnCLr9yboiOp2z5
+        Aq3qef/ap20+LhCy3BkI7ZqXK4XUcA4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-bcachefs@vger.kernel.org, linux-next@vger.kernel.org,
+        Daniel J Blueman <daniel@quora.org>
+Subject: Re: bcachefs RCU warnings
+Message-ID: <20231025180845.sq6tpl6c4hefdbg7@moria.home.lan>
+References: <CAMVG2su2RvAaTAyj8kFtUZcRfcZuKncxqhL3h-Ag8JQeSR=jxw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231025140915.590390-2-urezki@gmail.com>
+In-Reply-To: <CAMVG2su2RvAaTAyj8kFtUZcRfcZuKncxqhL3h-Ag8JQeSR=jxw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 04:09:13PM +0200, Uladzislau Rezki (Sony) wrote:
-> A call to a synchronize_rcu() can be optimized from time point of
-> view. Different workloads can be affected by this especially the
-> ones which use this API in its time critical sections.
-> 
-> For example if CONFIG_RCU_NOCB_CPU is set, the wakeme_after_rcu()
-> callback can be delayed and such delay depends on:
-> 
-> - where in a nocb list it is located;
-> - how fast previous callbacks completed.
-> 
-> 1. On our Android devices i can easily trigger the scenario when
-> it is a last in the list out of ~3600 callbacks:
-> 
+Hey Paul, RCU folks :)
 
-I wonder how many of the callbacks are queued via call_rcu_hurry()? If
-not a lot, I wonder whether we can resolve the problem differently, see
-below:
+I've got no idea what these warnings mean and haven't seen them before,
+do you suppose one of you could point me in the right direction?
 
-> <snip>
->   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> ...
->   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
->   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> <snip>
+On Wed, Oct 25, 2023 at 09:28:09PM +0800, Daniel J Blueman wrote:
+> Hi Kent et al,
 > 
-> 2. We use cpuset/cgroup to classify tasks and assign them into
-> different cgroups. For example "backgrond" group which binds tasks
-> only to little CPUs or "foreground" which makes use of all CPUs.
-> Tasks can be migrated between groups by a request if an acceleration
-> is needed.
+> On 6.6.0-rc7-next-20231024 with my bcachefs exerciser [1], I was able
+> to reproduce three related kernel warnings due to RCU grace period
+> counts being zero, ie WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0).
 > 
-> See below an example how "surfaceflinger" task gets migrated.
-> Initially it is located in the "system-background" cgroup which
-> allows to run only on little cores. In order to speed it up it
-> can be temporary moved into "foreground" cgroup which allows
-> to use big/all CPUs:
+> If this is something of interest, I'll find a minimal reproducer.
+> These warnings aside, bcachefs is looking really solid.
 > 
-> cgroup_attach_task():
->  -> cgroup_migrate_execute()
->    -> cpuset_can_attach()
->      -> percpu_down_write()
->        -> rcu_sync_enter()
->          -> synchronize_rcu()
->    -> now move tasks to the new cgroup.
->  -> cgroup_migrate_finish()
+> Thanks,
+>   Daniel
 > 
-> <snip>
->          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
->     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
->     PERFD-SERVER-1855    [000] d..1.  7030.530383: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
->    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-> <snip>
+> -- [1] https://github.com/dblueman/bcachefs-gym
 > 
-> "A moving time" depends on how fast synchronize_rcu() completes. See
-> the first trace line. The migration has not occurred until the sync
-> was done first. Please note, number of different callbacks to be
-> invoked can be thousands.
+> -- [2]
 > 
-> 3. To address this drawback, maintain a separate track that consists
-> of synchronize_rcu() callers only. The GP-kthread, that drivers a GP
-> either wake-ups a worker to drain all list or directly wakes-up end
-> user if it is one in the drain list.
+> WARNING: CPU: 15 PID: 259240 at kernel/rcu/sync.c:171 rcu_sync_exit+0xe3/0xf0
+> Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
+> amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
+> rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
+> ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
+> dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet m
+> ii btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
+> async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
+> multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
+> polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
+> sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
+> nvme_core tg3 l
+> ibahci xhci_pci i2c_piix4 xhci_pci_renesas wmi aesni_intel crypto_simd
+> cryptd [last unloaded: brd]
+> CPU: 15 PID: 259240 Comm: bch-data/3edb8b Tainted: G W
+> 6.6.0-rc7-next-20231024 #1
+> Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
+> RIP: 0010:rcu_sync_exit+0xe3/0xf0
+> Code: c6 e0 06 c7 b2 e8 dd 0e 01 00 4c 89 e7 e8 b5 54 91 01 5b 41 5c
+> 41 5d 5d 31 c0 31 f6 31 ff e9 8f 35 a9 01 0f 0b e9 3d ff ff ff <0f> 0b
+> e9 4d ff ff ff 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90
+> RSP: 0018:ffffc90024127b60 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: ffff8883b7383740 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffffc90024127b78 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883b7383798
+> R13: ffff8883b7383744 R14: ffff8883b7383740 R15: ffff8883b7380498
+> FS: 0000000000000000(0000) GS:ffff88bf0e780000(0000) knlGS:0000000000000000
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fea708bae00 CR3: 000000034b860003 CR4: 0000000000770ef0
+> PKRU: 55555554
+> Call Trace:
+> <TASK>
+> ? show_regs+0x6c/0x80
+> ? __warn+0xa4/0x1c0
+> ? rcu_sync_exit+0xe3/0xf0
+> ? report_bug+0x1bc/0x1f0
+> ? handle_bug+0x46/0x90
+> ? exc_invalid_op+0x18/0x50
+> ? asm_exc_invalid_op+0x1b/0x20
+> ? rcu_sync_exit+0xe3/0xf0
+> percpu_up_write+0x4d/0x60
+> bch2_replicas_gc_end+0x60/0x110
+> bch2_journal_flush_device_pins+0x2d7/0x4b0
+> ? __entry_text_end+0x102619/0x10261d
+> ? __pfx_bch2_journal_flush_device_pins+0x10/0x10
+> ? __pfx_scnprintf+0x10/0x10
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? raw_spin_rq_unlock+0x17/0x70
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? finish_task_switch.isra.0+0xc1/0x410
+> ? __switch_to+0x281/0x6d0
+> bch2_data_job+0x1fb/0x500
+> ? __pfx_bch2_data_job+0x10/0x10
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? try_to_wake_up+0x4b1/0xca0
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? __pfx_bch2_data_thread+0x10/0x10
+> bch2_data_thread+0x60/0xa0
+> kthread+0x188/0x1d0
+> ? __pfx_kthread+0x10/0x10
+> ret_from_fork+0x47/0x80
+> ? __pfx_kthread+0x10/0x10
+> ret_from_fork_asm+0x1a/0x30
+> </TASK>
 > 
-
-Late to the party, but I kinda wonder whether we can resolve it by:
-
-1) either introduce a separate seglist that only contains callbacks
-queued by call_rcu_hurry(), and whenever after an GP and callbacks are
-ready, call_rcu_hurry() callbacks will be called first.
-
-2) or make call_rcu_hurry() callbacks always inserted at the head of the
-NEXT list instead of the tail, e.g. (untested code):
-
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index f71fac422c8f..89a875f8ecc7 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -338,13 +338,21 @@ bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp)
-  * absolutely not OK for it to ever miss posting a callback.
-  */
- void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
--			   struct rcu_head *rhp)
-+			   struct rcu_head *rhp,
-+			   bool is_lazy)
- {
- 	rcu_segcblist_inc_len(rsclp);
- 	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
--	rhp->next = NULL;
--	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
--	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-+	/* If hurry and the list is not empty, put it in the front */
-+	if (!is_lazy && rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL) > 1) {
-+		// hurry callback, queued at front
-+		rhp->next = READ_ONCE(*rsclp->tails[RCU_NEXT_READY_TAIL]);
-+		WRITE_ONCE(*rsclp->tails[RCU_NEXT_READY_TAIL], rhp);
-+	} else {
-+		rhp->next = NULL;
-+		WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
-+		WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-+	}
- }
- 
- /*
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 4fe877f5f654..459475bb8df9 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -136,7 +136,8 @@ struct rcu_head *rcu_segcblist_first_cb(struct rcu_segcblist *rsclp);
- struct rcu_head *rcu_segcblist_first_pend_cb(struct rcu_segcblist *rsclp);
- bool rcu_segcblist_nextgp(struct rcu_segcblist *rsclp, unsigned long *lp);
- void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
--			   struct rcu_head *rhp);
-+			   struct rcu_head *rhp,
-+			   bool is_lazy);
- bool rcu_segcblist_entrain(struct rcu_segcblist *rsclp,
- 			   struct rcu_head *rhp);
- void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 20d7a238d675..53adf5ab9c9f 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1241,7 +1241,7 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
- 		sdp = raw_cpu_ptr(ssp->sda);
- 	spin_lock_irqsave_sdp_contention(sdp, &flags);
- 	if (rhp)
--		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-+		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp, true);
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
- 	s = rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq);
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 8d65f7d576a3..7dec7c68f88f 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -362,7 +362,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
- 	}
- 	if (needwake)
- 		rtpcp->urgent_gp = 3;
--	rcu_segcblist_enqueue(&rtpcp->cblist, rhp);
-+	rcu_segcblist_enqueue(&rtpcp->cblist, rhp, true);
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
- 	if (unlikely(needadjust)) {
- 		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cb1caefa8bd0..e05cbff40dc7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2670,7 +2670,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
- 	if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
- 		return; // Enqueued onto ->nocb_bypass, so just leave.
- 	// If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb_lock.
--	rcu_segcblist_enqueue(&rdp->cblist, head);
-+	rcu_segcblist_enqueue(&rdp->cblist, head, lazy_in);
- 	if (__is_kvfree_rcu_offset((unsigned long)func))
- 		trace_rcu_kvfree_callback(rcu_state.name, head,
- 					 (unsigned long)func,
-
-Sure, there may be some corner cases I'm missing, but I think overall
-this is better than (sorta) duplicating the logic of seglist (the llist
-in sr_normal_state) or the logic of wake_rcu_gp()
-(synchronize_rcu_normal).
-
-Anyway, these are just if-you-have-time-to-try options ;-)
-
-Regards,
-Boqun
-
-> 4. This patch improves the performance of synchronize_rcu() approximately
-> by ~30% on synthetic tests. The real test case, camera launch time, shows
-> below figures(time is in milliseconds):
+> WARNING: CPU: 15 PID: 259240 at kernel/rcu/sync.c:129 rcu_sync_enter+0x1d6/0x200
+> Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
+> amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
+> rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
+> ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
+> dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet m
+> ii btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
+> async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
+> multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
+> polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
+> sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
+> nvme_core tg3 l
+> ibahci xhci_pci i2c_piix4 xhci_pci_renesas wmi aesni_intel crypto_simd
+> cryptd [last unloaded: brd]
+> CPU: 15 PID: 259240 Comm: bch-data/3edb8b Tainted: G W
+> 6.6.0-rc7-next-20231024 #1
+> Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
+> RIP: 0010:rcu_sync_enter+0x1d6/0x200
+> Code: 89 ef e8 2d fb f9 ff 48 89 df e8 35 45 3f 00 8b 03 83 f8 01 7e
+> d8 48 8d b5 68 ff ff ff 4c 89 ef e8 6f c1 f9 ff e9 0b ff ff ff <0f> 0b
+> 4c 89 ff 41 83 c6 01 e8 ec 45 3f 00 44 89 73 04 4c 89 ef e8
+> RSP: 0018:ffffc90024127b00 EFLAGS: 00010086
+> RAX: 0000000000000000 RBX: ffff8883b7383740 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffffc90024127bc8 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: 1ffff92004824f60
+> R13: ffff8883b7383748 R14: 00000000ffffffff R15: ffff8883b7383744
+> FS: 0000000000000000(0000) GS:ffff88bf0e780000(0000) knlGS:0000000000000000
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fea708bae00 CR3: 000000034b860003 CR4: 0000000000770ef0
+> PKRU: 55555554
+> Call Trace:
+> <TASK>
+> ? show_regs+0x6c/0x80
+> ? __warn+0xa4/0x1c0
+> ? rcu_sync_enter+0x1d6/0x200
+> ? report_bug+0x1bc/0x1f0
+> ? handle_bug+0x46/0x90
+> ? exc_invalid_op+0x18/0x50
+> ? asm_exc_invalid_op+0x1b/0x20
+> ? rcu_sync_enter+0x1d6/0x200
+> ? __pfx_rcu_sync_enter+0x10/0x10
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? __kasan_check_write+0x14/0x30
+> percpu_down_write+0x2f/0x2b0
+> ? bch2_replicas_gc2+0x122/0x6f0
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? __kmalloc+0x61/0xf0
+> bch2_replicas_gc2+0x155/0x6f0
+> ? __pfx_bch2_replicas_gc2+0x10/0x10
+> ? raw_spin_rq_unlock+0x17/0x70
+> ? finish_task_switch.isra.0+0xc1/0x410
+> ? __switch_to+0x281/0x6d0
+> bch2_data_job+0x298/0x500
+> ? __pfx_bch2_data_job+0x10/0x10
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? try_to_wake_up+0x4b1/0xca0
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? __pfx_bch2_data_thread+0x10/0x10
+> bch2_data_thread+0x60/0xa0
+> kthread+0x188/0x1d0
+> ? __pfx_kthread+0x10/0x10
+> ret_from_fork+0x47/0x80
+> ? __pfx_kthread+0x10/0x10
+> ret_from_fork_asm+0x1a/0x30
+> </TASK>
 > 
-> 542 vs 489 diff: 9%
-> 540 vs 466 diff: 13%
-> 518 vs 468 diff: 9%
-> 531 vs 457 diff: 13%
-> 548 vs 475 diff: 13%
-> 509 vs 484 diff: 4%
-> 
-> Synthetic test:
-> 
-> Hardware: x86_64 64 CPUs, 64GB of memory
-> 
-> - 60.000 tasks(simultaneous);
-> - each task does(1000 loops)
->      synchronize_rcu();
->      kfree(p);
-> 
-> default: CONFIG_RCU_NOCB_CPU: takes 323 seconds to complete all users;
-> patch: CONFIG_RCU_NOCB_CPU: takes 240 seconds to complete all users.
-> 
-> Please note, by default this functionality is OFF and the old way is
-> still used instead, In order to activate it, please do:
-> 
-> echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
-[...]
+> WARNING: CPU: 38 PID: 262351 at kernel/rcu/sync.c:193 rcu_sync_dtor+0x96/0xb0
+> Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
+> amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
+> rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
+> ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
+> dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet mii
+> btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
+> async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
+> multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
+> polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
+> sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
+> nvme_core tg3 libahci xhci_pci i2c_piix4 xhci_pci_renesas wmi
+> aesni_intel crypto_simd cryptd [last unloaded: brd]
+> CPU: 38 PID: 262351 Comm: umount Tainted: G W 6.6.0-rc7-next-20231024 #1
+> Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
+> RIP: 0010:rcu_sync_dtor+0x96/0xb0
+> Code: e8 4f 44 3f 00 c7 03 03 00 00 00 4c 89 e7 e8 01 54 91 01 e8 fc
+> 80 00 00 48 89 df e8 54 43 3f 00 8b 03 85 c0 74 c8 0f 0b eb c4 <0f> 0b
+> 48 89 df e8 40 43 3f 00 8b 03 83 f8 02 75 89 0f 0b eb 85 cc
+> RSP: 0018:ffffc9000d35fc60 EFLAGS: 00010286
+> RAX: 00000000ffffffff RBX: ffff8883b7383740 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffffc9000d35fc78 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883b7383770
+> R13: ffff8883b7380040 R14: ffff8883b7380000 R15: 0000000000000000
+> FS: 00007f2033aef800(0000) GS:ffff88bf0f300000(0000) knlGS:0000000000000000
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fea708bae00 CR3: 000000042bf7e005 CR4: 0000000000770ef0
+> PKRU: 55555554
+> Call Trace:
+> <TASK>
+> ? show_regs+0x6c/0x80
+> ? __warn+0xa4/0x1c0
+> ? rcu_sync_dtor+0x96/0xb0
+> ? report_bug+0x1bc/0x1f0
+> ? handle_bug+0x46/0x90
+> ? exc_invalid_op+0x18/0x50
+> ? asm_exc_invalid_op+0x1b/0x20
+> ? rcu_sync_dtor+0x96/0xb0
+> percpu_free_rwsem+0x2a/0x60
+> bch2_fs_release+0x131/0x340
+> kobject_put+0x103/0x250
+> bch2_fs_free+0x144/0x190
+> bch2_kill_sb+0x50/0x70
+> deactivate_locked_super+0x69/0x110
+> deactivate_super+0x64/0x80
+> cleanup_mnt+0x141/0x220
+> __cleanup_mnt+0x12/0x20
+> task_work_run+0x10b/0x190
+> ? __pfx_task_work_run+0x10/0x10
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? __x64_sys_umount+0xff/0x110
+> exit_to_user_mode_prepare+0x169/0x190
+> syscall_exit_to_user_mode+0x28/0x60
+> do_syscall_64+0x6b/0xf0
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? syscall_exit_to_user_mode+0x36/0x60
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? do_syscall_64+0x6b/0xf0
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? irqentry_exit_to_user_mode+0x17/0x20
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? irqentry_exit+0x43/0x50
+> ? srso_alias_return_thunk+0x5/0xfbef5
+> ? sysvec_call_function+0x48/0xd0
+> entry_SYSCALL_64_after_hwframe+0x6c/0x74
+> RIP: 0033:0x7f203391ee5b
+> Code: c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 31 f6
+> e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d
+> 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 8b 15 89 6f 0d 00 f7 d8
+> RSP: 002b:00007ffcadb990e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> RAX: 0000000000000000 RBX: 0000560145c5a5c0 RCX: 00007f203391ee5b
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560145c5e820
+> RBP: 0000560145c5a6d8 R08: 0000000000000073 R09: 00007ffcadb98031
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 0000560145c5e820 R14: 0000560145c5e7f0 R15: 0000560145c5a5c0
+> </TASK>
+> -- 
+> Daniel J Blueman
