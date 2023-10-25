@@ -2,56 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99525C25B48
-	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 02:30:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4516C25B47
+	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 08:40:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbjJYCaB (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 24 Oct 2023 22:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
+        id S232807AbjJYIkY (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 25 Oct 2023 04:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjJYCaA (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 24 Oct 2023 22:30:00 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB169C;
-        Tue, 24 Oct 2023 19:29:58 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5b8f68ba4e5so789760a12.1;
-        Tue, 24 Oct 2023 19:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698200998; x=1698805798; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UBs7BhHj7osv0k6psRfJTocN6ObSQb2o0iZG5n+6D9E=;
-        b=CPfyJ9S/JKi9ygb+bH1zPZa4AqNQ+W8Aqs6GqccQvsjIZ4rO1peFaOGFlXwGA3fS7l
-         1EHQOFdZo5Gfv36SHVCf4aczT/qRqfWtcl5Yid8hB2f327rU2/p3SQXYju8XpVICTiGb
-         KbFoHSQAcsgYPGzleAFhBSifGrLrTmZOeHPiYff+7Whq60FryI++qnUR1pWpqe2dNEVf
-         XPXcR29K+il6KqrPMUyEuAyqrqsF5OGsiJFHE/J3X6eI0ND/+DDYwbbVFwwzraIgVxNS
-         HQifI4FyxyQjsymyM2pp17oqpfLlNg0muBiEKTPBTAYBhr8zPrWyvaXBf6BayjXfjvOo
-         SBiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698200998; x=1698805798;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UBs7BhHj7osv0k6psRfJTocN6ObSQb2o0iZG5n+6D9E=;
-        b=Kq5FPnzy3TAi+FC6jiDnyKZVqXGy3xto5Sp0ruMkZewQJ6O1nC72RmaWayOsTqmAo9
-         e7TEet08KbpSJ44x4wmIJCbyJoRbAKi+5ogjxerk1eujk3S5QaLFT/SlAV3qlnOidKS3
-         7XjK+u+ua6930Ai/b3GRU40I2QyztmCjxfNMcJi5pKW1FWQ7AC7CwWIxd5GXWAza9OwE
-         YCeLdYpelCX0hmEBqI4V4IdHqnOJZrsdNzUycAwI3umw+gXbcGRcjYg1h7MOrOlQwX6F
-         xe7M+NGazEobkerRwKmxgC3yjfAR3moqwfw8EK81o++xkE3c/DBm904C+Au518cWWeaC
-         UtXw==
-X-Gm-Message-State: AOJu0YzZQ2g5UphUBoSYT6RaZpef5jttsPOZNRjOWwVqyb1xdyC6FXHk
-        3ApS9ez2zjOV61URmHEjK0H8ymS8VLz0ub3xrbM=
-X-Google-Smtp-Source: AGHT+IHNAVwtfMn/MXAQZV4LGATKDVSqX0E8w/yecWgJbGg3prk+XMIh/QjpOshbqJrTlw3AA2EY4YZz6I89PBQ1Jig=
-X-Received: by 2002:a17:90b:3949:b0:27c:ef18:d270 with SMTP id
- oe9-20020a17090b394900b0027cef18d270mr10698424pjb.20.1698200997712; Tue, 24
- Oct 2023 19:29:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231024214625.6483-1-frederic@kernel.org> <20231024214625.6483-2-frederic@kernel.org>
-In-Reply-To: <20231024214625.6483-2-frederic@kernel.org>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Wed, 25 Oct 2023 10:29:46 +0800
-Message-ID: <CALm+0cVP+4ogirqUYMXp63vb7yisXCB0xpq+DSX9kqth0BpW6g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] rcu: Introduce rcu_cpu_online()
+        with ESMTP id S230217AbjJYIkX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 25 Oct 2023 04:40:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F174C9C;
+        Wed, 25 Oct 2023 01:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Cmhzrcr2aexRDjzc8+5eXPBKn4AD9mODxCPylln8cA0=; b=mns5c3NoOnkS1gg2eE5RNVE/61
+        +Ph6EQnBrGVGKlvxFgwIfKZtWvzk3fUem5fnCUECH1qdFPmJicVrDjNO/KeIj+0rGCFpxE9f+489K
+        pn0yPAtw2+Ykq4LWkveMIkXu3ratPbqjZn1hJCl2B3A/eFoPfLmOHxtzBMp0RS6Fp/yI+GUaQNg+/
+        8VlmoeLa+nMTSuB9yzBMh1iWmKwWoXhg6AfcEXoVHEy19HeQ47UOAuVdEfXZM4txjujZlNrG0u5S7
+        nJcGh0wZuYv5NUh7xF7ktIQ6x4NoxTlEahsGjywsc1Dail7cFAKNrydFutWEi8G4l+czGg1EKQX4N
+        8PdPzSiw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qvZQu-007i90-Vz; Wed, 25 Oct 2023 08:40:09 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A6BFB30047C; Wed, 25 Oct 2023 10:40:08 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 10:40:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
@@ -62,77 +41,61 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+Message-ID: <20231025084008.GD37471@noisy.programming.kicks-ass.net>
+References: <20231024214625.6483-1-frederic@kernel.org>
+ <20231024214625.6483-3-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024214625.6483-3-frederic@kernel.org>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->
-> Export the RCU point of view as to when a CPU is considered offline
-> (ie: when does RCU consider that a CPU is sufficiently down in the
-> hotplug process to not feature any possible read side).
->
-> This will be used by RCU-tasks whose vision of an offline CPU should
-> reasonably match the one of RCU core.
->
-> Fixes: cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  kernel/rcu/rcu.h  | 2 ++
->  kernel/rcu/tree.c | 7 +++++++
->  2 files changed, 9 insertions(+)
->
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index 0d866eaa4cc8..b531c33e9545 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -500,6 +500,7 @@ static inline void rcu_expedite_gp(void) { }
->  static inline void rcu_unexpedite_gp(void) { }
->  static inline void rcu_async_hurry(void) { }
->  static inline void rcu_async_relax(void) { }
-> +static inline bool rcu_cpu_online(int cpu) { return true; }
->  #else /* #ifdef CONFIG_TINY_RCU */
->  bool rcu_gp_is_normal(void);     /* Internal RCU use. */
->  bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
-> @@ -509,6 +510,7 @@ void rcu_unexpedite_gp(void);
->  void rcu_async_hurry(void);
->  void rcu_async_relax(void);
->  void rcupdate_announce_bootup_oddness(void);
-> +bool rcu_cpu_online(int cpu);
->  #ifdef CONFIG_TASKS_RCU_GENERIC
->  void show_rcu_tasks_gp_kthreads(void);
->  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 700524726079..fd21c1506092 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4202,6 +4202,13 @@ static bool rcu_rdp_cpu_online(struct rcu_data *rdp)
->         return !!(rdp->grpmask & rcu_rnp_online_cpus(rdp->mynode));
->  }
->
-> +bool rcu_cpu_online(int cpu)
+On Tue, Oct 24, 2023 at 11:46:23PM +0200, Frederic Weisbecker wrote:
+
+> +/* Check for quiescent states since the pregp's synchronize_rcu() */
+> +static bool rcu_tasks_is_holdout(struct task_struct *t)
 > +{
-> +       struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
->
->
-
-Should 'struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu)' be used ?
-
-Thanks
-Zqiang
-
-
->
+> +	int cpu;
 > +
-> +       return rcu_rdp_cpu_online(rdp);
+> +	/* Has the task been seen voluntarily sleeping? */
+> +	if (!READ_ONCE(t->on_rq))
+> +		return false;
+> +
+> +	cpu = task_cpu(t);
+> +
+> +	/*
+> +	 * Idle tasks within the idle loop or offline CPUs are RCU-tasks
+> +	 * quiescent states. But CPU boot code performed by the idle task
+> +	 * isn't a quiescent state.
+> +	 */
+> +	if (t == idle_task(cpu)) {
+> +		if (is_idle_task(t))
+> +			return false;
+> +
+> +		if (!rcu_cpu_online(cpu))
+> +			return false;
+> +	}
+
+Hmm, why is this guarded by t == idle_task() ?
+
+Notably, there is the idle-injection thing that uses FIFO tasks to run
+'idle', see play_idle_precise(). This will (temporarily) get PF_IDLE on
+tasks that are not idle_task().
+
+> +
+> +	return true;
 > +}
 > +
->  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_HOTPLUG_CPU)
->
->  /*
-> --
-> 2.41.0
->
+>  /* Per-task initial processing. */
+>  static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
+>  {
+> -	if (t != current && READ_ONCE(t->on_rq) && !is_idle_task(t)) {
+> +	if (t != current && rcu_tasks_is_holdout(t)) {
+
+
