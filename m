@@ -2,142 +2,145 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37CDBC25B48
-	for <rcu@archiver.kernel.org>; Thu, 26 Oct 2023 12:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A49E5C25B67
+	for <rcu@archiver.kernel.org>; Thu, 26 Oct 2023 13:00:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjJZMPt (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 26 Oct 2023 08:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        id S1344950AbjJZNAd (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 26 Oct 2023 09:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjJZMPs (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 26 Oct 2023 08:15:48 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25095B9;
-        Thu, 26 Oct 2023 05:15:45 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c87a85332bso6860255ad.2;
-        Thu, 26 Oct 2023 05:15:45 -0700 (PDT)
+        with ESMTP id S230177AbjJZNAd (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 26 Oct 2023 09:00:33 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B4512A;
+        Thu, 26 Oct 2023 06:00:30 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507cd62472dso2330116e87.0;
+        Thu, 26 Oct 2023 06:00:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698322544; x=1698927344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tXTt+TBzmX3Sm+AergVCPro5no45uF28IOJmLAgrl2Y=;
-        b=QyYyI/aq7To7Dl6mE92Oiyu21ljttE6cvzMRDChnrOgtap+F2rn75H9ICu86BV+aAr
-         +dHsyYmwnoBRS+Oje6p5iOPJn19hPpFkYQBg80yIzdzuseGCt/6zC/iwWaeayxTYKat2
-         O8d9PCJLhmx6t6Ty87Bj5kMJRWXzw4dz7Ltb9sPD+IvmOVr0+EbNa4O0egZvFXt2FeLS
-         Pq1dgpLa2wpcTi0nMzCilvmEZRKeNGgGGDwNPwSYTqlzsyxQIcX/t/PsE2/hhj1fFyiq
-         A6kAQne1OUp1eR2IG2AoCYNJklw3FK2GQ3hvm2vM/E531cQMqwrpPGk3EtPmL4RYHXHb
-         tLGg==
+        d=gmail.com; s=20230601; t=1698325229; x=1698930029; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1FJ+d0g9WKmWzmLDpzY4/SwDygYny0dVwrh16DQQLso=;
+        b=ErXOM6BSslu9If+SeJBGMGDgxDMSmolOMAQE8sUqkLzPgv/ZzxAV4RJE3gUDYA9L/F
+         tvq9Qz/WdTO3nbZe86jYuExEBJu6jV9VXMrjOQUzY5pvElBwLgOJUfTzvPtyQ192xXcU
+         rl/AoIvD3yBPDWohydlj14mpSAlN7/OpJfg5lZjgn7kd2k35KiHlq5LEZh7BrQGAfZyq
+         HVqpmK5/pGQdGzDD5lUST6HcFKqFMAxB8rbrH4eeW6j9oq5v3ARpS0kIIs5TXycKl9su
+         gUAV1TmvNuF1UK+QBtOV+MAaf3G2pJFdfjA3rSRz1k+B4DuQpxV6nNWFnx1Y9qz5N1r8
+         65Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698322544; x=1698927344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tXTt+TBzmX3Sm+AergVCPro5no45uF28IOJmLAgrl2Y=;
-        b=XDvlAplOKQlFDuXgiDp5KnK+vUlBd1iLVUUarN9tUs9IUXoPQAJC7UjUulknqVi7Bn
-         xc2L+Ji8kubND5x9VCl2j5azmDnF84KMPLpzEmfelHsSjJq1riBTFKCceyVtRm25LG0y
-         QXXZM+vP4zCTeVpdNl72yZATblneb1jaQT48cfdkzMqZVCLr5A7HpHWAL1JAuwwWWytR
-         JM3Jfx0PKb+sKBSVxtLgbwu0KCJH/F4fouetNGnCLTJp6kGc4H2wHCGuUjtgS0n6SX3m
-         SxCRbbEz1ItzFiLO3XOtdDP71b16FYystsiPR7ly1DlwewTTuKlbHMGWgrIqRK1/d0q2
-         7v+Q==
-X-Gm-Message-State: AOJu0YwJYHDLKFWgYSEHS5A8t1+nakPfSXI4Zpk5ESU7hh+p8dDfVHkZ
-        nZd2pFKPBZfl5qJAR8Yom1TlURREfLaUizHtQE4=
-X-Google-Smtp-Source: AGHT+IF0d7sGTx1Y47dcctpEAb9wgAeZVvefSK5hdD1HkQl50sgfjLT0V4k8kvMvJUAlja7yWblux+TIFGMs/She1oI=
-X-Received: by 2002:a17:90b:4b47:b0:27d:298e:ec4f with SMTP id
- mi7-20020a17090b4b4700b0027d298eec4fmr17343076pjb.4.1698322544571; Thu, 26
- Oct 2023 05:15:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231024214625.6483-1-frederic@kernel.org> <20231024214625.6483-3-frederic@kernel.org>
- <20231025084008.GD37471@noisy.programming.kicks-ass.net> <ZTjudk5mV8PVYsS-@localhost.localdomain>
-In-Reply-To: <ZTjudk5mV8PVYsS-@localhost.localdomain>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Thu, 26 Oct 2023 20:15:33 +0800
-Message-ID: <CALm+0cW0ZEX_G9WcJx-i3b5SCLECWfeKG+ikdXfXzNsM-XSM8w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+        d=1e100.net; s=20230601; t=1698325229; x=1698930029;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1FJ+d0g9WKmWzmLDpzY4/SwDygYny0dVwrh16DQQLso=;
+        b=JOTg0IJcoW3z7RlhSJZJZRs1C4IHBivW7ySy3LLlkPOzmlsplFpYAAbf3FP6NSQ3+M
+         sCBmYgArOcyNdJCmN7Mvz/MEWMZTML70zrRCLyNNZv0sAZ2ZdH6UC6GhKA0S1vAtgUsT
+         JMvGo3dfrECbeYt4zP1ChXID/8JLRg8CZFvMDVAvdesggH3vkJ42c6gRMg1ZTmD3qwoH
+         b0lgESTuhnVWL9u+Wiwa+KU5XK1yFun7VekM0b/XFde27Xj2DEKG5umj9v61YE+oDPmn
+         g+ZlGVYcuUvsE4KPAWZax7aPIaoibRsy5V2Ro/Jo26oX8AZuBQi1unRktSrnlKV5Yx2c
+         D/GA==
+X-Gm-Message-State: AOJu0YxKQqk4ApncJHghvdpFqLZ8ADn0PzjVzSGlr6jcXhkJb+1Kf7z2
+        2dGX354wRrRkIPrTXhKt6lQ=
+X-Google-Smtp-Source: AGHT+IGBIofRmeNzSWP4ypEAoHZp8jMWkD7Nd93LrAtANLqerrDEELi2L8AwGzU64g7eOsa9+YTF0g==
+X-Received: by 2002:ac2:47ec:0:b0:507:9a87:289b with SMTP id b12-20020ac247ec000000b005079a87289bmr938808lfp.10.1698325228460;
+        Thu, 26 Oct 2023 06:00:28 -0700 (PDT)
+Received: from pc636 (host-90-235-24-197.mobileonline.telia.com. [90.235.24.197])
+        by smtp.gmail.com with ESMTPSA id t10-20020a19910a000000b005079fe27ec8sm3025800lfd.85.2023.10.26.06.00.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 06:00:28 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 26 Oct 2023 15:00:25 +0200
 To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 1/3] rcu: Reduce synchronize_rcu() waiting time
+Message-ID: <ZTpi6diP4h84PtWE@pc636>
+References: <20231025140915.590390-1-urezki@gmail.com>
+ <20231025140915.590390-2-urezki@gmail.com>
+ <ZTkwl0bzTTCy8g5N@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZTkwl0bzTTCy8g5N@localhost.localdomain>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
->
-> Le Wed, Oct 25, 2023 at 10:40:08AM +0200, Peter Zijlstra a =C3=A9crit :
-> > On Tue, Oct 24, 2023 at 11:46:23PM +0200, Frederic Weisbecker wrote:
-> >
-> > > +/* Check for quiescent states since the pregp's synchronize_rcu() */
-> > > +static bool rcu_tasks_is_holdout(struct task_struct *t)
-> > > +{
-> > > +   int cpu;
-> > > +
-> > > +   /* Has the task been seen voluntarily sleeping? */
-> > > +   if (!READ_ONCE(t->on_rq))
-> > > +           return false;
-> > > +
-> > > +   cpu =3D task_cpu(t);
-> > > +
-> > > +   /*
-> > > +    * Idle tasks within the idle loop or offline CPUs are RCU-tasks
-> > > +    * quiescent states. But CPU boot code performed by the idle task
-> > > +    * isn't a quiescent state.
-> > > +    */
-> > > +   if (t =3D=3D idle_task(cpu)) {
-> > > +           if (is_idle_task(t))
-> > > +                   return false;
-> > > +
-> > > +           if (!rcu_cpu_online(cpu))
-> > > +                   return false;
-> > > +   }
-> >
-> > Hmm, why is this guarded by t =3D=3D idle_task() ?
-> >
-> > Notably, there is the idle-injection thing that uses FIFO tasks to run
-> > 'idle', see play_idle_precise(). This will (temporarily) get PF_IDLE on
-> > tasks that are not idle_task().
->
-> Ah good point. So indeed the is_idle_task() test doesn't musn't be
-> guarded by t =3D=3D idle_task(cpu). But rcu_cpu_online() has to, otherwis=
-e
-> if it's not an idle task, there is a risk that the task gets migrated out
-> by the time we observe the old CPU offline.
->
+On Wed, Oct 25, 2023 at 05:13:27PM +0200, Frederic Weisbecker wrote:
+> Le Wed, Oct 25, 2023 at 04:09:13PM +0200, Uladzislau Rezki (Sony) a écrit :
+> > +/*
+> > + * Helper function for rcu_gp_cleanup().
+> > + */
+> > +static void rcu_sr_normal_gp_cleanup(void)
+> > +{
+> > +	struct llist_node *head, *tail, *pos;
+> > +	int i = 0;
+> > +
+> > +	tail = READ_ONCE(sr.wait_tail);
+> > +	head = llist_del_all(&sr.wait);
+> 
+> This could be llist_empty() first to do a quick
+> cheap check. And then __llist_del_all() here because
+> it appears nothing else than gp kthread can touch sr.wait.
+> 
+No problem i can fix it. Initially i had a check first!
 
-If a fifo-tasks use play_idle_precise() to run idle and invoke
-do_idle(), may cause
-rcu-tasks to falsely report a rcu-tasks QS , when rcu_is_cpu_rrupt_from_idl=
-e()
-return true in rcu_sched_clock_irq(), so should we also add a check for
-"current =3D=3D idle_task(task_cpu(current))" in the rcu_is_cpu_rrupt_from_=
-idle() ?
+> > +
+> > +	llist_for_each_safe(pos, head, head) {
+> 
+> Two times head intended here? There should be some
+> temporary storage in the middle.
+> 
+Yes. It is intentially done. The head is updated, i.e. shifted to a next,
+because we directly process users from a GP. The number is limited to 5
+all the rest is deferred.
 
-Thanks
-Zqiang
-
-
-> Thanks.
+> > +		rcu_sr_normal_complete(pos);
+> > +
+> > +		if (++i == MAX_SR_WAKE_FROM_GP) {
+> > +			/* If last, process it also. */
+> > +			if (head && !head->next)
+> > +				continue;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	if (head) {
+> > +		/* Can be not empty. */
+> > +		llist_add_batch(head, tail, &sr.done);
+> > +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+> 
+> So you can have:
+> 
+> * Queue to sr.curr is atomic fully ordered
+> * Check and move from sr.curr to sr.wait is atomic fully ordered
+> * Check from sr.wait can have a quick unatomic unordered
+>   llist_empty() check. Then extract unatomic unordered as well.
+> * If too many, move atomic/ordered to sr.done.
+> 
+> Am I missing something?
 >
-> >
-> > > +
-> > > +   return true;
-> > > +}
-> > > +
-> > >  /* Per-task initial processing. */
-> > >  static void rcu_tasks_pertask(struct task_struct *t, struct list_hea=
-d *hop)
-> > >  {
-> > > -   if (t !=3D current && READ_ONCE(t->on_rq) && !is_idle_task(t)) {
-> > > +   if (t !=3D current && rcu_tasks_is_holdout(t)) {
-> >
-> >
+If too many move to done and kick the helper. The sr.wait can not
+be touched until the rcu_sr_normal_gp_cleanup() is completed, i.e.:
+
+<snip>
+GP-kthread(same and one task context):
+    rcu_sr_normal_gp_cleanup();
+    wait for a grace period;
+    rcu_sr_normal_gp_cleanup();
+<snip>
+
+Am i missing your point?
+
+--
+Uladzislau Rezki
