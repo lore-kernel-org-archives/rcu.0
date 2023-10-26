@@ -2,121 +2,130 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FBF7C25B48
-	for <rcu@archiver.kernel.org>; Thu, 26 Oct 2023 14:34:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8625CC25B48
+	for <rcu@archiver.kernel.org>; Thu, 26 Oct 2023 15:14:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234902AbjJZOee (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 26 Oct 2023 10:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
+        id S231347AbjJZPOZ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 26 Oct 2023 11:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbjJZOee (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:34:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C3B1A2;
-        Thu, 26 Oct 2023 07:34:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58E81C433C7;
-        Thu, 26 Oct 2023 14:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698330871;
-        bh=rKDtDZQL7IF9MPNckBpYcUD5NDFOua3I/T1b8Be9sxU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IiZqL9LeNrTScCl6FAaz9v8ysyES8KP4YtIPM7CSNn90UciwCG0q+ticfFl6GV24b
-         FqFLTSHUjaf8luzv56MNL541GlmMLsfNzrHGDXS1Z9yB6APSdrVN0kNv67HKkZEKB+
-         Mroz1RcEYusxO65SMoY+bvXOpFXw4zEOcqWlYuWMCPII71bd2qFHfBqJPqT8se415k
-         T55W72cY4WdWX5iySJhqy+jBrDNTSSyLfP/A7TGDcdJ9BNRVCHyJnHwYMZUJVTXnCc
-         eMdzivwdlNa/X8XE7MOTzgn3MqgbmSYneDUUuYGHPEeLN+USmK8uG/k8JWLH1rEF1Q
-         NVDiqzxxd6BhA==
-Date:   Thu, 26 Oct 2023 16:34:28 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        with ESMTP id S231679AbjJZPOX (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 26 Oct 2023 11:14:23 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5611AE;
+        Thu, 26 Oct 2023 08:14:20 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507c1936fd5so2482062e87.1;
+        Thu, 26 Oct 2023 08:14:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698333259; x=1698938059; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xsnTLczFUHE++C7PelWfuJ8ZbjXsk0ne1xpTGFO0AQQ=;
+        b=NRaJ0S2RIHfYa5NRPXUGkFCnIt8W/V6gprxbUoW5FIWu3nPe5Ib+M3JvgKJjT8KOxs
+         t2YK6TEHfjczFwoIKbckqZiIlpcAErZJgQjBPpYUWq8YmG20J1vE1fMWFKhohhjVP9hl
+         8p4Kb24N5FXq2q1yWzdNifiK+oxhhoFOmQzVODQvwDYd1U7nl0dtPhM/fQPFqShzr9jq
+         SnysjOqNHAiZ24lPsknWQUrztxoiIHfkpf2frFwOaCIrkRC7YFyIBeV6UbHqQatpfA4X
+         KOXXg+QwBXG9tMfPTDnzoKULzDQcmS89MvZ7ihGx+8xlz5RJA2cwfwez7Df0XDPCi8vI
+         vXoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698333259; x=1698938059;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xsnTLczFUHE++C7PelWfuJ8ZbjXsk0ne1xpTGFO0AQQ=;
+        b=FsPf6F5PYhmgiXcgclTTfEQEvfor9aIOriuvpC2jg92u/qg5qVjPGihQ+UeVoXqLzY
+         FTVHLYI2y4JOHf+cDyT2X1LsEAPiu4cr87/87STazraqWXKCitgAVVqNo4hYVBsCCFKp
+         SDMbgoHaF0yBJnZ4cx6dXfDfj0syGRGgb7rIaFnQrDjL7R0WCyL2rWW8WtsL9pVGaVoc
+         RzcDZj2B5GO7J6z0GrMJ3xMnIR+GNJEKeD+nelyl6NqgLhJxOtFv8OrTPSkJodsx8pRj
+         3bnLUxGRm3KxCQOLW3Sth7+zBz7+3alES9619trMuhxZ4D6zzyUklrgyzXRGt0z097uJ
+         F5RQ==
+X-Gm-Message-State: AOJu0YxyCnkGK+BrdLWQjsg3xbKLhN1277R1pOKlg0nTAYPi7N5W9OyR
+        89ulBH0g2Ul6DFHzsGGnN9w=
+X-Google-Smtp-Source: AGHT+IGj5FLFaR8N0Yl2QkzNrQwymcxdYetc0DTI2/Cjc8YDxC2mTp58qHvsXIciK7YRh+Yw989wrA==
+X-Received: by 2002:a05:6512:2526:b0:503:2879:567 with SMTP id be38-20020a056512252600b0050328790567mr14166lfb.28.1698333258444;
+        Thu, 26 Oct 2023 08:14:18 -0700 (PDT)
+Received: from pc636 ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id y1-20020a056512044100b00507d478c211sm3029020lfk.76.2023.10.26.08.14.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 08:14:17 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 26 Oct 2023 17:14:16 +0200
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>
-Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-Message-ID: <ZTp49M8EskD5JJwA@lothringen>
-References: <20231024214625.6483-1-frederic@kernel.org>
- <20231024214625.6483-3-frederic@kernel.org>
- <20231025084008.GD37471@noisy.programming.kicks-ass.net>
- <ZTjudk5mV8PVYsS-@localhost.localdomain>
- <CALm+0cW0ZEX_G9WcJx-i3b5SCLECWfeKG+ikdXfXzNsM-XSM8w@mail.gmail.com>
+        RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 1/3] rcu: Reduce synchronize_rcu() waiting time
+Message-ID: <ZTqCSOD5BlfZYh4T@pc636>
+References: <20231025140915.590390-1-urezki@gmail.com>
+ <20231025140915.590390-2-urezki@gmail.com>
+ <ZTkwl0bzTTCy8g5N@localhost.localdomain>
+ <ZTpi6diP4h84PtWE@pc636>
+ <ZTp2Ge2ILOJ4VbYZ@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALm+0cW0ZEX_G9WcJx-i3b5SCLECWfeKG+ikdXfXzNsM-XSM8w@mail.gmail.com>
+In-Reply-To: <ZTp2Ge2ILOJ4VbYZ@lothringen>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 08:15:33PM +0800, Z qiang wrote:
-> >
-> > Le Wed, Oct 25, 2023 at 10:40:08AM +0200, Peter Zijlstra a écrit :
-> > > On Tue, Oct 24, 2023 at 11:46:23PM +0200, Frederic Weisbecker wrote:
-> > >
-> > > > +/* Check for quiescent states since the pregp's synchronize_rcu() */
-> > > > +static bool rcu_tasks_is_holdout(struct task_struct *t)
-> > > > +{
-> > > > +   int cpu;
-> > > > +
-> > > > +   /* Has the task been seen voluntarily sleeping? */
-> > > > +   if (!READ_ONCE(t->on_rq))
-> > > > +           return false;
-> > > > +
-> > > > +   cpu = task_cpu(t);
-> > > > +
-> > > > +   /*
-> > > > +    * Idle tasks within the idle loop or offline CPUs are RCU-tasks
-> > > > +    * quiescent states. But CPU boot code performed by the idle task
-> > > > +    * isn't a quiescent state.
-> > > > +    */
-> > > > +   if (t == idle_task(cpu)) {
-> > > > +           if (is_idle_task(t))
-> > > > +                   return false;
-> > > > +
-> > > > +           if (!rcu_cpu_online(cpu))
-> > > > +                   return false;
-> > > > +   }
-> > >
-> > > Hmm, why is this guarded by t == idle_task() ?
-> > >
-> > > Notably, there is the idle-injection thing that uses FIFO tasks to run
-> > > 'idle', see play_idle_precise(). This will (temporarily) get PF_IDLE on
-> > > tasks that are not idle_task().
-> >
-> > Ah good point. So indeed the is_idle_task() test doesn't musn't be
-> > guarded by t == idle_task(cpu). But rcu_cpu_online() has to, otherwise
-> > if it's not an idle task, there is a risk that the task gets migrated out
-> > by the time we observe the old CPU offline.
-> >
+On Thu, Oct 26, 2023 at 04:22:17PM +0200, Frederic Weisbecker wrote:
+> On Thu, Oct 26, 2023 at 03:00:25PM +0200, Uladzislau Rezki wrote:
+> > On Wed, Oct 25, 2023 at 05:13:27PM +0200, Frederic Weisbecker wrote:
+> > > > +	llist_for_each_safe(pos, head, head) {
+> > > 
+> > > Two times head intended here? There should be some
+> > > temporary storage in the middle.
+> > > 
+> > Yes. It is intentially done. The head is updated, i.e. shifted to a next,
+> > because we directly process users from a GP. The number is limited to 5
+> > all the rest is deferred.
 > 
-> If a fifo-tasks use play_idle_precise() to run idle and invoke
-> do_idle(), may cause
-> rcu-tasks to falsely report a rcu-tasks QS
+> Ah ok.
+> 
+> > > So you can have:
+> > > 
+> > > * Queue to sr.curr is atomic fully ordered
+> > > * Check and move from sr.curr to sr.wait is atomic fully ordered
+> > > * Check from sr.wait can have a quick unatomic unordered
+> > >   llist_empty() check. Then extract unatomic unordered as well.
+> > > * If too many, move atomic/ordered to sr.done.
+> > > 
+> > > Am I missing something?
+> > >
+> > If too many move to done and kick the helper. The sr.wait can not
+> > be touched until the rcu_sr_normal_gp_cleanup() is completed, i.e.:
+> > 
+> > <snip>
+> > GP-kthread(same and one task context):
+> >     rcu_sr_normal_gp_cleanup();
+> >     wait for a grace period;
+> >     rcu_sr_normal_gp_cleanup();
+> > <snip>
+> > 
+> > Am i missing your point?
+> 
+> Yeah got it. My point was just that any manipulation of sr.wait can be
+> done without atomic/ordered operations. Such as using __list_empty() and
+> __llist_del_all().
+> 
+> Ah there is also the line:
+> 
+>    llist_add_batch(head, tail, &sr.wait);
+> 
+> in rcu_sr_normal_gp_init() that can be turned into __llist_add_batch()
+> 
+Thank you for the good input. Indeed we can manipulate sr.wait using
+__llist* functions. I will update it accordingly. So, see your point.
 
-Well, there can be a debate here: should we consider an idle injector as a real
-task that we must wait for a voluntary schedule or should we treat it just like
-an idle task?
+Appreciate for your review!
 
-Having that whole idle task quiescent state in RCU-tasks is quite a strange
-semantic anyway. And in the long run, the purpose is to unify RCU-tasks and
-RCU-tasks-RUDE with relying on ct_dynticks for idle quiescent states.
-
-> , when rcu_is_cpu_rrupt_from_idle()
-> return true in rcu_sched_clock_irq(), so should we also add a check for
-> "current == idle_task(task_cpu(current))" in the rcu_is_cpu_rrupt_from_idle()
-> ?
-
-That looks fine OTOH. Whether idle injection or real idle,
-rcu_is_cpu_rrupt_from_idle() is always a quiescent state in real RCU. Because
-we know we have no RCU reader between ct_idle_enter() and ct_idle_exit().
-
-Thanks.
+--
+Uladzislau Rezki
