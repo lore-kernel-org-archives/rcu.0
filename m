@@ -2,277 +2,142 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 910ABC0032E
-	for <rcu@archiver.kernel.org>; Wed, 25 Oct 2023 18:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37CDBC25B48
+	for <rcu@archiver.kernel.org>; Thu, 26 Oct 2023 12:15:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbjJYSPL (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 25 Oct 2023 14:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S229647AbjJZMPt (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 26 Oct 2023 08:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjJYSPL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:15:11 -0400
-X-Greylist: delayed 377 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 11:15:08 PDT
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43C693
-        for <rcu@vger.kernel.org>; Wed, 25 Oct 2023 11:15:08 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 14:08:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698257329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CZTl21BN1alzLn7qAdWExIV6MEwxBnoUCe7NRgZuavY=;
-        b=r1+AYMGE/is5Lo0jTucIjnkQelnR9HlOOO4+ncPhpVzpQT3tlNaoUo9K2CnTDR8/BrkR0m
-        c2kpxhokFHsiQZ3JHYANxZpTQUnRg4nmF0f3cvp2qwFasrwt3TBXM0yZnCLr9yboiOp2z5
-        Aq3qef/ap20+LhCy3BkI7ZqXK4XUcA4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     linux-bcachefs@vger.kernel.org, linux-next@vger.kernel.org,
-        Daniel J Blueman <daniel@quora.org>
-Subject: Re: bcachefs RCU warnings
-Message-ID: <20231025180845.sq6tpl6c4hefdbg7@moria.home.lan>
-References: <CAMVG2su2RvAaTAyj8kFtUZcRfcZuKncxqhL3h-Ag8JQeSR=jxw@mail.gmail.com>
+        with ESMTP id S229642AbjJZMPs (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 26 Oct 2023 08:15:48 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25095B9;
+        Thu, 26 Oct 2023 05:15:45 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c87a85332bso6860255ad.2;
+        Thu, 26 Oct 2023 05:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698322544; x=1698927344; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tXTt+TBzmX3Sm+AergVCPro5no45uF28IOJmLAgrl2Y=;
+        b=QyYyI/aq7To7Dl6mE92Oiyu21ljttE6cvzMRDChnrOgtap+F2rn75H9ICu86BV+aAr
+         +dHsyYmwnoBRS+Oje6p5iOPJn19hPpFkYQBg80yIzdzuseGCt/6zC/iwWaeayxTYKat2
+         O8d9PCJLhmx6t6Ty87Bj5kMJRWXzw4dz7Ltb9sPD+IvmOVr0+EbNa4O0egZvFXt2FeLS
+         Pq1dgpLa2wpcTi0nMzCilvmEZRKeNGgGGDwNPwSYTqlzsyxQIcX/t/PsE2/hhj1fFyiq
+         A6kAQne1OUp1eR2IG2AoCYNJklw3FK2GQ3hvm2vM/E531cQMqwrpPGk3EtPmL4RYHXHb
+         tLGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698322544; x=1698927344;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tXTt+TBzmX3Sm+AergVCPro5no45uF28IOJmLAgrl2Y=;
+        b=XDvlAplOKQlFDuXgiDp5KnK+vUlBd1iLVUUarN9tUs9IUXoPQAJC7UjUulknqVi7Bn
+         xc2L+Ji8kubND5x9VCl2j5azmDnF84KMPLpzEmfelHsSjJq1riBTFKCceyVtRm25LG0y
+         QXXZM+vP4zCTeVpdNl72yZATblneb1jaQT48cfdkzMqZVCLr5A7HpHWAL1JAuwwWWytR
+         JM3Jfx0PKb+sKBSVxtLgbwu0KCJH/F4fouetNGnCLTJp6kGc4H2wHCGuUjtgS0n6SX3m
+         SxCRbbEz1ItzFiLO3XOtdDP71b16FYystsiPR7ly1DlwewTTuKlbHMGWgrIqRK1/d0q2
+         7v+Q==
+X-Gm-Message-State: AOJu0YwJYHDLKFWgYSEHS5A8t1+nakPfSXI4Zpk5ESU7hh+p8dDfVHkZ
+        nZd2pFKPBZfl5qJAR8Yom1TlURREfLaUizHtQE4=
+X-Google-Smtp-Source: AGHT+IF0d7sGTx1Y47dcctpEAb9wgAeZVvefSK5hdD1HkQl50sgfjLT0V4k8kvMvJUAlja7yWblux+TIFGMs/She1oI=
+X-Received: by 2002:a17:90b:4b47:b0:27d:298e:ec4f with SMTP id
+ mi7-20020a17090b4b4700b0027d298eec4fmr17343076pjb.4.1698322544571; Thu, 26
+ Oct 2023 05:15:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMVG2su2RvAaTAyj8kFtUZcRfcZuKncxqhL3h-Ag8JQeSR=jxw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20231024214625.6483-1-frederic@kernel.org> <20231024214625.6483-3-frederic@kernel.org>
+ <20231025084008.GD37471@noisy.programming.kicks-ass.net> <ZTjudk5mV8PVYsS-@localhost.localdomain>
+In-Reply-To: <ZTjudk5mV8PVYsS-@localhost.localdomain>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Thu, 26 Oct 2023 20:15:33 +0800
+Message-ID: <CALm+0cW0ZEX_G9WcJx-i3b5SCLECWfeKG+ikdXfXzNsM-XSM8w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Hey Paul, RCU folks :)
+>
+> Le Wed, Oct 25, 2023 at 10:40:08AM +0200, Peter Zijlstra a =C3=A9crit :
+> > On Tue, Oct 24, 2023 at 11:46:23PM +0200, Frederic Weisbecker wrote:
+> >
+> > > +/* Check for quiescent states since the pregp's synchronize_rcu() */
+> > > +static bool rcu_tasks_is_holdout(struct task_struct *t)
+> > > +{
+> > > +   int cpu;
+> > > +
+> > > +   /* Has the task been seen voluntarily sleeping? */
+> > > +   if (!READ_ONCE(t->on_rq))
+> > > +           return false;
+> > > +
+> > > +   cpu =3D task_cpu(t);
+> > > +
+> > > +   /*
+> > > +    * Idle tasks within the idle loop or offline CPUs are RCU-tasks
+> > > +    * quiescent states. But CPU boot code performed by the idle task
+> > > +    * isn't a quiescent state.
+> > > +    */
+> > > +   if (t =3D=3D idle_task(cpu)) {
+> > > +           if (is_idle_task(t))
+> > > +                   return false;
+> > > +
+> > > +           if (!rcu_cpu_online(cpu))
+> > > +                   return false;
+> > > +   }
+> >
+> > Hmm, why is this guarded by t =3D=3D idle_task() ?
+> >
+> > Notably, there is the idle-injection thing that uses FIFO tasks to run
+> > 'idle', see play_idle_precise(). This will (temporarily) get PF_IDLE on
+> > tasks that are not idle_task().
+>
+> Ah good point. So indeed the is_idle_task() test doesn't musn't be
+> guarded by t =3D=3D idle_task(cpu). But rcu_cpu_online() has to, otherwis=
+e
+> if it's not an idle task, there is a risk that the task gets migrated out
+> by the time we observe the old CPU offline.
+>
 
-I've got no idea what these warnings mean and haven't seen them before,
-do you suppose one of you could point me in the right direction?
+If a fifo-tasks use play_idle_precise() to run idle and invoke
+do_idle(), may cause
+rcu-tasks to falsely report a rcu-tasks QS , when rcu_is_cpu_rrupt_from_idl=
+e()
+return true in rcu_sched_clock_irq(), so should we also add a check for
+"current =3D=3D idle_task(task_cpu(current))" in the rcu_is_cpu_rrupt_from_=
+idle() ?
 
-On Wed, Oct 25, 2023 at 09:28:09PM +0800, Daniel J Blueman wrote:
-> Hi Kent et al,
-> 
-> On 6.6.0-rc7-next-20231024 with my bcachefs exerciser [1], I was able
-> to reproduce three related kernel warnings due to RCU grace period
-> counts being zero, ie WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0).
-> 
-> If this is something of interest, I'll find a minimal reproducer.
-> These warnings aside, bcachefs is looking really solid.
-> 
-> Thanks,
->   Daniel
-> 
-> -- [1] https://github.com/dblueman/bcachefs-gym
-> 
-> -- [2]
-> 
-> WARNING: CPU: 15 PID: 259240 at kernel/rcu/sync.c:171 rcu_sync_exit+0xe3/0xf0
-> Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
-> amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
-> rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
-> ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
-> dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet m
-> ii btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
-> async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
-> multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
-> polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
-> sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
-> nvme_core tg3 l
-> ibahci xhci_pci i2c_piix4 xhci_pci_renesas wmi aesni_intel crypto_simd
-> cryptd [last unloaded: brd]
-> CPU: 15 PID: 259240 Comm: bch-data/3edb8b Tainted: G W
-> 6.6.0-rc7-next-20231024 #1
-> Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
-> RIP: 0010:rcu_sync_exit+0xe3/0xf0
-> Code: c6 e0 06 c7 b2 e8 dd 0e 01 00 4c 89 e7 e8 b5 54 91 01 5b 41 5c
-> 41 5d 5d 31 c0 31 f6 31 ff e9 8f 35 a9 01 0f 0b e9 3d ff ff ff <0f> 0b
-> e9 4d ff ff ff 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90
-> RSP: 0018:ffffc90024127b60 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff8883b7383740 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffffc90024127b78 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883b7383798
-> R13: ffff8883b7383744 R14: ffff8883b7383740 R15: ffff8883b7380498
-> FS: 0000000000000000(0000) GS:ffff88bf0e780000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fea708bae00 CR3: 000000034b860003 CR4: 0000000000770ef0
-> PKRU: 55555554
-> Call Trace:
-> <TASK>
-> ? show_regs+0x6c/0x80
-> ? __warn+0xa4/0x1c0
-> ? rcu_sync_exit+0xe3/0xf0
-> ? report_bug+0x1bc/0x1f0
-> ? handle_bug+0x46/0x90
-> ? exc_invalid_op+0x18/0x50
-> ? asm_exc_invalid_op+0x1b/0x20
-> ? rcu_sync_exit+0xe3/0xf0
-> percpu_up_write+0x4d/0x60
-> bch2_replicas_gc_end+0x60/0x110
-> bch2_journal_flush_device_pins+0x2d7/0x4b0
-> ? __entry_text_end+0x102619/0x10261d
-> ? __pfx_bch2_journal_flush_device_pins+0x10/0x10
-> ? __pfx_scnprintf+0x10/0x10
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? raw_spin_rq_unlock+0x17/0x70
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? finish_task_switch.isra.0+0xc1/0x410
-> ? __switch_to+0x281/0x6d0
-> bch2_data_job+0x1fb/0x500
-> ? __pfx_bch2_data_job+0x10/0x10
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? try_to_wake_up+0x4b1/0xca0
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? __pfx_bch2_data_thread+0x10/0x10
-> bch2_data_thread+0x60/0xa0
-> kthread+0x188/0x1d0
-> ? __pfx_kthread+0x10/0x10
-> ret_from_fork+0x47/0x80
-> ? __pfx_kthread+0x10/0x10
-> ret_from_fork_asm+0x1a/0x30
-> </TASK>
-> 
-> WARNING: CPU: 15 PID: 259240 at kernel/rcu/sync.c:129 rcu_sync_enter+0x1d6/0x200
-> Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
-> amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
-> rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
-> ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
-> dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet m
-> ii btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
-> async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
-> multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
-> polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
-> sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
-> nvme_core tg3 l
-> ibahci xhci_pci i2c_piix4 xhci_pci_renesas wmi aesni_intel crypto_simd
-> cryptd [last unloaded: brd]
-> CPU: 15 PID: 259240 Comm: bch-data/3edb8b Tainted: G W
-> 6.6.0-rc7-next-20231024 #1
-> Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
-> RIP: 0010:rcu_sync_enter+0x1d6/0x200
-> Code: 89 ef e8 2d fb f9 ff 48 89 df e8 35 45 3f 00 8b 03 83 f8 01 7e
-> d8 48 8d b5 68 ff ff ff 4c 89 ef e8 6f c1 f9 ff e9 0b ff ff ff <0f> 0b
-> 4c 89 ff 41 83 c6 01 e8 ec 45 3f 00 44 89 73 04 4c 89 ef e8
-> RSP: 0018:ffffc90024127b00 EFLAGS: 00010086
-> RAX: 0000000000000000 RBX: ffff8883b7383740 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffffc90024127bc8 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 1ffff92004824f60
-> R13: ffff8883b7383748 R14: 00000000ffffffff R15: ffff8883b7383744
-> FS: 0000000000000000(0000) GS:ffff88bf0e780000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fea708bae00 CR3: 000000034b860003 CR4: 0000000000770ef0
-> PKRU: 55555554
-> Call Trace:
-> <TASK>
-> ? show_regs+0x6c/0x80
-> ? __warn+0xa4/0x1c0
-> ? rcu_sync_enter+0x1d6/0x200
-> ? report_bug+0x1bc/0x1f0
-> ? handle_bug+0x46/0x90
-> ? exc_invalid_op+0x18/0x50
-> ? asm_exc_invalid_op+0x1b/0x20
-> ? rcu_sync_enter+0x1d6/0x200
-> ? __pfx_rcu_sync_enter+0x10/0x10
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? __kasan_check_write+0x14/0x30
-> percpu_down_write+0x2f/0x2b0
-> ? bch2_replicas_gc2+0x122/0x6f0
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? __kmalloc+0x61/0xf0
-> bch2_replicas_gc2+0x155/0x6f0
-> ? __pfx_bch2_replicas_gc2+0x10/0x10
-> ? raw_spin_rq_unlock+0x17/0x70
-> ? finish_task_switch.isra.0+0xc1/0x410
-> ? __switch_to+0x281/0x6d0
-> bch2_data_job+0x298/0x500
-> ? __pfx_bch2_data_job+0x10/0x10
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? try_to_wake_up+0x4b1/0xca0
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? __pfx_bch2_data_thread+0x10/0x10
-> bch2_data_thread+0x60/0xa0
-> kthread+0x188/0x1d0
-> ? __pfx_kthread+0x10/0x10
-> ret_from_fork+0x47/0x80
-> ? __pfx_kthread+0x10/0x10
-> ret_from_fork_asm+0x1a/0x30
-> </TASK>
-> 
-> WARNING: CPU: 38 PID: 262351 at kernel/rcu/sync.c:193 rcu_sync_dtor+0x96/0xb0
-> Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
-> amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
-> rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
-> ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
-> dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet mii
-> btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
-> async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
-> multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
-> polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
-> sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
-> nvme_core tg3 libahci xhci_pci i2c_piix4 xhci_pci_renesas wmi
-> aesni_intel crypto_simd cryptd [last unloaded: brd]
-> CPU: 38 PID: 262351 Comm: umount Tainted: G W 6.6.0-rc7-next-20231024 #1
-> Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
-> RIP: 0010:rcu_sync_dtor+0x96/0xb0
-> Code: e8 4f 44 3f 00 c7 03 03 00 00 00 4c 89 e7 e8 01 54 91 01 e8 fc
-> 80 00 00 48 89 df e8 54 43 3f 00 8b 03 85 c0 74 c8 0f 0b eb c4 <0f> 0b
-> 48 89 df e8 40 43 3f 00 8b 03 83 f8 02 75 89 0f 0b eb 85 cc
-> RSP: 0018:ffffc9000d35fc60 EFLAGS: 00010286
-> RAX: 00000000ffffffff RBX: ffff8883b7383740 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffffc9000d35fc78 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883b7383770
-> R13: ffff8883b7380040 R14: ffff8883b7380000 R15: 0000000000000000
-> FS: 00007f2033aef800(0000) GS:ffff88bf0f300000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fea708bae00 CR3: 000000042bf7e005 CR4: 0000000000770ef0
-> PKRU: 55555554
-> Call Trace:
-> <TASK>
-> ? show_regs+0x6c/0x80
-> ? __warn+0xa4/0x1c0
-> ? rcu_sync_dtor+0x96/0xb0
-> ? report_bug+0x1bc/0x1f0
-> ? handle_bug+0x46/0x90
-> ? exc_invalid_op+0x18/0x50
-> ? asm_exc_invalid_op+0x1b/0x20
-> ? rcu_sync_dtor+0x96/0xb0
-> percpu_free_rwsem+0x2a/0x60
-> bch2_fs_release+0x131/0x340
-> kobject_put+0x103/0x250
-> bch2_fs_free+0x144/0x190
-> bch2_kill_sb+0x50/0x70
-> deactivate_locked_super+0x69/0x110
-> deactivate_super+0x64/0x80
-> cleanup_mnt+0x141/0x220
-> __cleanup_mnt+0x12/0x20
-> task_work_run+0x10b/0x190
-> ? __pfx_task_work_run+0x10/0x10
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? __x64_sys_umount+0xff/0x110
-> exit_to_user_mode_prepare+0x169/0x190
-> syscall_exit_to_user_mode+0x28/0x60
-> do_syscall_64+0x6b/0xf0
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? syscall_exit_to_user_mode+0x36/0x60
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? do_syscall_64+0x6b/0xf0
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? irqentry_exit_to_user_mode+0x17/0x20
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? irqentry_exit+0x43/0x50
-> ? srso_alias_return_thunk+0x5/0xfbef5
-> ? sysvec_call_function+0x48/0xd0
-> entry_SYSCALL_64_after_hwframe+0x6c/0x74
-> RIP: 0033:0x7f203391ee5b
-> Code: c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 31 f6
-> e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d
-> 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 8b 15 89 6f 0d 00 f7 d8
-> RSP: 002b:00007ffcadb990e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> RAX: 0000000000000000 RBX: 0000560145c5a5c0 RCX: 00007f203391ee5b
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000560145c5e820
-> RBP: 0000560145c5a6d8 R08: 0000000000000073 R09: 00007ffcadb98031
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000560145c5e820 R14: 0000560145c5e7f0 R15: 0000560145c5a5c0
-> </TASK>
-> -- 
-> Daniel J Blueman
+Thanks
+Zqiang
+
+
+> Thanks.
+>
+> >
+> > > +
+> > > +   return true;
+> > > +}
+> > > +
+> > >  /* Per-task initial processing. */
+> > >  static void rcu_tasks_pertask(struct task_struct *t, struct list_hea=
+d *hop)
+> > >  {
+> > > -   if (t !=3D current && READ_ONCE(t->on_rq) && !is_idle_task(t)) {
+> > > +   if (t !=3D current && rcu_tasks_is_holdout(t)) {
+> >
+> >
