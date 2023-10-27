@@ -2,125 +2,54 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F39F4C25B47
-	for <rcu@archiver.kernel.org>; Fri, 27 Oct 2023 03:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A26C25B67
+	for <rcu@archiver.kernel.org>; Fri, 27 Oct 2023 08:16:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjJ0DTf (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Thu, 26 Oct 2023 23:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
+        id S229503AbjJ0IQL (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 27 Oct 2023 04:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJ0DTe (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Thu, 26 Oct 2023 23:19:34 -0400
-X-Greylist: delayed 326 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Oct 2023 20:19:31 PDT
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FB5B4
-        for <rcu@vger.kernel.org>; Thu, 26 Oct 2023 20:19:31 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 23:13:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698376442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CbMorbQVwFRre8b9OrSrVHjRrCPalqwbSn1gKiEYWf0=;
-        b=i4hxtFhbdg+K/Du15hotGG9gEkB80Dml2N1BSksDEqGzKE1FERxnJ4gWmH+KfbR+B+r2cZ
-        /4CvnavT1bRkgMUI0eKGvzmfAAg8GlzUYMmRcAc5CjXrWIBg9ozMu64r80a0m5SfpppH15
-        FQr5+KW5CNxh+rMmuwxvqdgi7kAB+4Q=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-next@vger.kernel.org, Daniel J Blueman <daniel@quora.org>
-Subject: Re: bcachefs RCU warnings
-Message-ID: <20231027031358.fw6goxp3b6gfapwm@moria.home.lan>
-References: <CAMVG2su2RvAaTAyj8kFtUZcRfcZuKncxqhL3h-Ag8JQeSR=jxw@mail.gmail.com>
- <20231025180845.sq6tpl6c4hefdbg7@moria.home.lan>
- <5a94d7fd-9e0a-4e3b-b95c-23e5c77bfee1@paulmck-laptop>
+        with ESMTP id S229478AbjJ0IQL (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 27 Oct 2023 04:16:11 -0400
+Received: from mail.citycodes.pl (mail.citycodes.pl [158.255.215.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8C1FA
+        for <rcu@vger.kernel.org>; Fri, 27 Oct 2023 01:16:07 -0700 (PDT)
+Received: by mail.citycodes.pl (Postfix, from userid 1001)
+        id 8BFEF218ED; Fri, 27 Oct 2023 10:15:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=citycodes.pl; s=mail;
+        t=1698394565; bh=fClkhHu/p6gIm8tbpvFwCqGX3kXIMdqjiuDdSiYGEkk=;
+        h=Date:From:To:Subject:From;
+        b=Gh+OfBsXkf/4ynGuo36y0qfDwLIW21lVlGiEOXtLMeP9AAZpDijouy0G+w3NlFHgF
+         ITVQq6E4uyllmxUHpy+/hseha/W94t4I6oTiEXxNvCCoBqomFUwsMq9+biTs1IHjCT
+         bcNu9ZWAtghGY0C4aKODgEPgRRTPKN+W3+VkV7jDGz+BqJxo/iOY9IAZzDkfyMoVMl
+         Bzw/8wZ1+BpwnUS7rHmgY4M+KvXldLJiOHt+/5bkMve4keDQGLCXK8nySQYvytVx6C
+         /K4Xofwy3p2bMoTt3jDgoceRYeeNI2D56mOJs2Bzt0vAXADVmKtkremVDtcNvk9Zt2
+         1LyTRkNhmOfIw==
+Received: by mail.citycodes.pl for <rcu@vger.kernel.org>; Fri, 27 Oct 2023 08:15:39 GMT
+Message-ID: <20231027084500-0.1.8d.lr30.0.dfmeaag5wx@citycodes.pl>
+Date:   Fri, 27 Oct 2023 08:15:39 GMT
+From:   "Kamil Lasek" <kamil.lasek@citycodes.pl>
+To:     <rcu@vger.kernel.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.citycodes.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a94d7fd-9e0a-4e3b-b95c-23e5c77bfee1@paulmck-laptop>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 07:35:56PM -0700, Paul E. McKenney wrote:
-> On Wed, Oct 25, 2023 at 02:08:45PM -0400, Kent Overstreet wrote:
-> > Hey Paul, RCU folks :)
-> > 
-> > I've got no idea what these warnings mean and haven't seen them before,
-> > do you suppose one of you could point me in the right direction?
-> > 
-> > On Wed, Oct 25, 2023 at 09:28:09PM +0800, Daniel J Blueman wrote:
-> > > Hi Kent et al,
-> > > 
-> > > On 6.6.0-rc7-next-20231024 with my bcachefs exerciser [1], I was able
-> > > to reproduce three related kernel warnings due to RCU grace period
-> > > counts being zero, ie WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0).
-> > > 
-> > > If this is something of interest, I'll find a minimal reproducer.
-> > > These warnings aside, bcachefs is looking really solid.
-> > > 
-> > > Thanks,
-> > >   Daniel
-> > > 
-> > > -- [1] https://github.com/dblueman/bcachefs-gym
-> > > 
-> > > -- [2]
-> > > 
-> > > WARNING: CPU: 15 PID: 259240 at kernel/rcu/sync.c:171 rcu_sync_exit+0xe3/0xf0
-> 
-> The usual cause would be mismatched rcu_sync_enter() and rcu_sync_exit(),
-> as in one more rcu_sync_exit() than rcu_sync_enter()...
-> 
-> > > Modules linked in: brd tls cfg80211 intel_rapl_msr intel_rapl_common
-> > > amd64_edac edac_mce_amd kvm_amd binfmt_misc kvm irqbypass ipmi_ssif
-> > > rapl wmi_bmof nls_iso8859_1 ccp ptdma k10temp acpi_ipmi ipmi_si
-> > > ipmi_devintf ipmi_msghandler input_leds joydev mac_hid efi_pstore
-> > > dmi_sysfs ip_tables x_tables autofs4 rndis_host cdc_ether usbnet m
-> > > ii btrfs blake2b_generic hid_generic usbhid raid10 hid raid456
-> > > async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0
-> > > multipath linear crct10dif_pclmul crc32_pclmul ast polyval_clmulni
-> > > polyval_generic i2c_algo_bit ghash_clmulni_intel drm_shmem_helper
-> > > sha512_ssse3 drm_kms_helper sha256_ssse3 sha1_ssse3 nvme ahci drm
-> > > nvme_core tg3 l
-> > > ibahci xhci_pci i2c_piix4 xhci_pci_renesas wmi aesni_intel crypto_simd
-> > > cryptd [last unloaded: brd]
-> > > CPU: 15 PID: 259240 Comm: bch-data/3edb8b Tainted: G W
-> > > 6.6.0-rc7-next-20231024 #1
-> > > Hardware name: Supermicro AS -3014TS-i/H12SSL-i, BIOS 2.5 09/08/2022
-> > > RIP: 0010:rcu_sync_exit+0xe3/0xf0
-> > > Code: c6 e0 06 c7 b2 e8 dd 0e 01 00 4c 89 e7 e8 b5 54 91 01 5b 41 5c
-> > > 41 5d 5d 31 c0 31 f6 31 ff e9 8f 35 a9 01 0f 0b e9 3d ff ff ff <0f> 0b
-> > > e9 4d ff ff ff 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90
-> > > RSP: 0018:ffffc90024127b60 EFLAGS: 00010246
-> > > RAX: 0000000000000000 RBX: ffff8883b7383740 RCX: 0000000000000000
-> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> > > RBP: ffffc90024127b78 R08: 0000000000000000 R09: 0000000000000000
-> > > R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883b7383798
-> > > R13: ffff8883b7383744 R14: ffff8883b7383740 R15: ffff8883b7380498
-> > > FS: 0000000000000000(0000) GS:ffff88bf0e780000(0000) knlGS:0000000000000000
-> > > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 00007fea708bae00 CR3: 000000034b860003 CR4: 0000000000770ef0
-> > > PKRU: 55555554
-> > > Call Trace:
-> > > <TASK>
-> > > ? show_regs+0x6c/0x80
-> > > ? __warn+0xa4/0x1c0
-> > > ? rcu_sync_exit+0xe3/0xf0
-> > > ? report_bug+0x1bc/0x1f0
-> > > ? handle_bug+0x46/0x90
-> > > ? exc_invalid_op+0x18/0x50
-> > > ? asm_exc_invalid_op+0x1b/0x20
-> > > ? rcu_sync_exit+0xe3/0xf0
-> > > percpu_up_write+0x4d/0x60
-> 
-> ...correspond to one more percpu_up_write() than percpu_down_write().
-> 
-> If it is possible to reproduce this easily, one way to get more
-> information would be to run with lockdep.
+Dzie=C5=84 dobry,
 
-Thanks, that was exactly it :)
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
 
-Daniel, the fix is in my -testing branch (and will shortly be in
-master), can you confirm?
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej.
+
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
+
+
+Pozdrawiam,
+Kamil Lasek
