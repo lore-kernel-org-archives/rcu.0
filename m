@@ -2,109 +2,112 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DA61C001B0
-	for <rcu@archiver.kernel.org>; Mon, 30 Oct 2023 13:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DD1BC4332F
+	for <rcu@archiver.kernel.org>; Mon, 30 Oct 2023 17:04:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbjJ3NNF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Oct 2023 09:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38106 "EHLO
+        id S229883AbjJ3REm (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 Oct 2023 13:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233298AbjJ3NND (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Oct 2023 09:13:03 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400C5C2;
-        Mon, 30 Oct 2023 06:13:01 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c595f5dc84so61743431fa.0;
-        Mon, 30 Oct 2023 06:13:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698671579; x=1699276379; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VxNONTjcbTR5IGf7JU34sfB7ky/8i9fS4GX+806ft28=;
-        b=MM3j685o6j72EYnhokLAiokb2UgwhxyZ38xqmPUknazr26XvB3prqGKHPajD9GSKh9
-         PO4+QfXV/0Q176xkKR0tUVptlSM/XLIjedETd7LCrKJN0YqtsVCGwaDI16rA6kz/rUsY
-         qx7caQcq+pSyxnT4t+Rr9sKb+WmQ5nxq392gCUgxc+XNzT8IxQoq1glxNdAX9htyhjRH
-         N5sOZ3QQT6p7Iv0yqIwHWp2KOuyODnQv4ySZIKQCC3f1hc2mywYrS4RRomx6pLSvfvB6
-         3ZSR/bAyn2d/X6IqKESWpMz1Gd19+5UddwYwo3Fof6azrd1b1T1TBXTl9Uz+b1IaaKyN
-         zt6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698671579; x=1699276379;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VxNONTjcbTR5IGf7JU34sfB7ky/8i9fS4GX+806ft28=;
-        b=nP9oVv26wN93wui5n3ewZcHLwo0NhDGo8AnsN52ADKo7Je07ts6zebujkiJAys73RM
-         xci6/V1odl6DYKES2keOjrC7n0cwdmc7ny0XknRohAIyFFiWNhIh6n9SNa2K0Y1UOPPl
-         3OTnUM++ESEhfmg5hPxGeof2lld7AZL10PK98iAEy9a/8I/qCT5wxbr0Jj8NpdEwM6li
-         AbcqHr5GFsTKwQSDaGMdg1C040YQ92DTy+SkfpagSYZUrILcBVh2J4GCSklscGd6eTzl
-         vRw4msg8peue9ubPFbrGkgFwmPx7RGymi7UcXf7I5EQEjYdTxFHkDKD6Y8wdRUzBlz4m
-         ODHQ==
-X-Gm-Message-State: AOJu0Yx1eou0ubCt+IxckJrGN+9GA8F+uCmJs7SLO4lskps9ja38Eoi1
-        geTTieNw6po/LKtq+xgPj3w=
-X-Google-Smtp-Source: AGHT+IGZIU3+zcqRFcycB/zEZR9+2Pt8egGj4lqIF5eegoShcZC5Ho+G2EIZrrc7iIn7RimDSj+zDg==
-X-Received: by 2002:a05:6512:ea5:b0:501:ba04:f352 with SMTP id bi37-20020a0565120ea500b00501ba04f352mr4713662lfb.1.1698671579336;
-        Mon, 30 Oct 2023 06:12:59 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id q11-20020ac2510b000000b005079691360csm1431887lfb.49.2023.10.30.06.12.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 06:12:58 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
+        with ESMTP id S232428AbjJ3REl (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 Oct 2023 13:04:41 -0400
+X-Greylist: delayed 486 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Oct 2023 10:04:17 PDT
+Received: from relay.mailchannels.net (gt-egress-001.relay.mailchannels.net [199.10.31.235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4986A9;
+        Mon, 30 Oct 2023 10:04:14 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 89E3C4C3D18;
+        Mon, 30 Oct 2023 16:55:49 +0000 (UTC)
+Received: from pdx1-sub0-mail-a298.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 1079B4C3BE3;
+        Mon, 30 Oct 2023 16:55:22 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1698684943; a=rsa-sha256;
+        cv=none;
+        b=2CXHmmycSwYVIhoJzBRjEghs5y4qN+dM+Esljemt1HIPg5/6I7WtTltVbs6NmjVPk6KiU0
+        FpFnyrNvWMin1OV7lBQBNyjygUbMJMhZH7byDu2D3P06ZwyZumMwPmP/K2C6zLwJt6RS5Z
+        1si2APyxQws2ZdRGYQu7mCAaxod+NvUiwDJurXw23eGh06YL/Qe9iVEvduztm4SScbLTWJ
+        te8By5di/55RgEiUoy4ZRLTMbXegZ+5KcdsyGR2pNSrVpZg7F1QEPz4xv1RFYJ7HWNrHIm
+        EeXzem74Cd5sjbEhrzM4r0IsT5a18GXhrPP9T1q5GCUz+nNbluVKoGq2NAuYFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1698684943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=yeWInyf9RC5QASJ328kWPFhyjq9Bvnkp3cAVgJZB9XM=;
+        b=q6WEpp+HPm1nyOwEL5zJH/EPuhKjtBP9XM4SO/KxnjmI/ibWaIA4tQEIUkv+cpDktIEmv1
+        7vTmp+v+/AwQdBoHxAldinWD2GuKa+XbPX4rAe73+0Ok3pEsyZ1LK2Xt1xOI1QxLshW4XT
+        yG4cpfHfQLIi34TGL4TpAcRZSTF+geXOmULwIubOdxERq7htiTp3laa6yMxaFnuvz1Wh+a
+        NhpN1tssF4S/AKjCLAQ/xRIRPixgF7Rq9l3uLWYQ0H8CuyeURtrwSzNjBcy8ao8pBdsUTr
+        u5Ov/MJCBqRslElp8iC6F32hfbRsc6FmFvvX1cf9cqg7B+5JNXuqSCuXGh/9tw==
+ARC-Authentication-Results: i=1;
+        rspamd-86646d89b6-ckfgs;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Bottle-Whispering: 4ae5ec7e59508ca9_1698684944770_746902069
+X-MC-Loop-Signature: 1698684944770:32499628
+X-MC-Ingress-Time: 1698684944770
+Received: from pdx1-sub0-mail-a298.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.112.232.215 (trex/6.9.2);
+        Mon, 30 Oct 2023 16:55:43 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dave@stgolabs.net)
+        by pdx1-sub0-mail-a298.dreamhost.com (Postfix) with ESMTPSA id 4SJzsg06S8z11v;
+        Mon, 30 Oct 2023 09:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+        s=dreamhost; t=1698684919;
+        bh=yeWInyf9RC5QASJ328kWPFhyjq9Bvnkp3cAVgJZB9XM=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=Z+JbvFkyQRZtyUncgVFxZMNUs9G45Y4IMC9OkchLlhWLFRHpHfzFrxjMlM+iX9mCt
+         B1QXY243c8l2p9L+OFF/lDNRBYjqvhFj73XrZ92no/zJypywl94LdRbIUdtZCAmmQn
+         d3y3H409U8ZrylXdcuilycy9CmJqGDEXqsPI68D0qWSQRtd7QPWYosTxVQE5u98Rfy
+         wm/1IqZTjZDIDO3VI3UcAIrnlomveWiommV2zTGV+oIKH77b1J4oEOmgizpOrqfmv7
+         0bEbZECPLe8ocxLKZfTWZOMNP15S2WTJustjcw0mxLizFNoxQELjq3qI/KlGg6Vrec
+         oGL6ETX4BDaZQ==
+Date:   Mon, 30 Oct 2023 09:55:16 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH v2 3/3] doc: Add rcutree.rcu_normal_wake_from_gp to kernel-parameters.txt
-Date:   Mon, 30 Oct 2023 14:12:54 +0100
-Message-Id: <20231030131254.488186-4-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231030131254.488186-1-urezki@gmail.com>
-References: <20231030131254.488186-1-urezki@gmail.com>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] refscale: Optimize process_durations()
+Message-ID: <ozbrmbywamyfkv3amsf2dfdacwmi25serwhc75h6fpsahklsmo@rm43srgxumef>
+References: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
+User-Agent: NeoMutt/20231006
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-This commit adds rcutree.rcu_normal_wake_from_gp description
-to the kernel-parameters.txt file.
+On Sat, 28 Oct 2023, Christophe JAILLET wrote:
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+>process_durations() is not a hot path, but there is no good reason to
+>iterate over and over the data already in 'buf'.
+>
+>Using a seq_buf saves some useless strcat() and the need of a temp buffer.
+>Data is written directly at the correct place.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 03a4bdb7512b..a9681d2492d3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5009,6 +5009,20 @@
- 			this kernel boot parameter, forcibly setting it
- 			to zero.
- 
-+	rcutree.rcu_normal_wake_from_gp= [KNL]
-+			Reduces a latency of synchronize_rcu() call. This approach
-+			maintains its own track of synchronize_rcu() callers, so it
-+			does not interact with regular callbacks because it does not
-+			use a call_rcu[_hurry]() path. Please note, this is for a
-+			normal grace period.
-+
-+			How to enable it:
-+
-+			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-+			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
-+
-+			Default is 0.
-+
- 	rcuscale.gp_async= [KNL]
- 			Measure performance of asynchronous
- 			grace-period primitives such as call_rcu().
--- 
-2.30.2
+Makes sense.
 
+Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
