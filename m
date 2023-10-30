@@ -2,110 +2,95 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC99C4332F
-	for <rcu@archiver.kernel.org>; Mon, 30 Oct 2023 08:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7491EC4167B
+	for <rcu@archiver.kernel.org>; Mon, 30 Oct 2023 13:13:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbjJ3IWF (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 30 Oct 2023 04:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S232938AbjJ3NNC (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 30 Oct 2023 09:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjJ3IWE (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 30 Oct 2023 04:22:04 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88253B7;
-        Mon, 30 Oct 2023 01:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kDKxxnzVZmqzIlKHKmpetQtvZhyxQKRAZf7DQJ/StCQ=; b=jbomUBUfLw04yZTYClORA4MD4j
-        IPn4d98b1RSNbDQB3QTafmbWE/3UzHsm0rCvpTM1+s35H4v4xSxq5N1iOU4kzbJuz2tgWCQZVO6G1
-        NNW2hWYdzEAnz+Am8oAzC7jYxI4KzKanqjMfPFolF8y/cW6SLks0E0mmgzlHOCmL+BDnL5TADpYGw
-        +nHDURgceBRdkqq21/+BsGZFvQTkeMtsWAPz9VzgsOHkmgWL56K5G4XZgszFTJBhNqhOlxHXQdht7
-        ffrbfKAMM2jzLbD4K0pGeejYhVL3EBQR0o8jiIo9PJnJzbORk8xPwIuyf7TvULbPMwvoia3xeSBBI
-        TD0y3KyQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qxNWk-003kD5-31;
-        Mon, 30 Oct 2023 08:21:39 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 979BB300478; Mon, 30 Oct 2023 09:21:38 +0100 (CET)
-Date:   Mon, 30 Oct 2023 09:21:38 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        with ESMTP id S232176AbjJ3NNB (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 30 Oct 2023 09:13:01 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15288C2;
+        Mon, 30 Oct 2023 06:12:59 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5090cc340a3so2974192e87.2;
+        Mon, 30 Oct 2023 06:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698671577; x=1699276377; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s4Pi+7ZSljwaGLX14je8j3CR4U+NnbeoJUamT2Tf16E=;
+        b=QnkCBvl0N4dt2T4TihkSGdW+vL0z6EaxVR5pXYYwDn+G+OJbfDskxcq16vGPCdVASg
+         Q+RLfkBXKXZMXAM8mULbOfly2KhR3UHVXYfonSFYqFyeXbtxrBNPSxGFlM5+4KvwaInp
+         xp7L2r8nVlmYTra7JiUQreRu0yDf73mocF5WeFB8npbuSLVd1iuJ+CH4kKZMNv2VoXCq
+         fkDS/roqKjBSezTccjmZBl+xPQn99/neYkYLjGNkvJRhlWjx9LHoxGqHjAIItqeZXaQt
+         b5vC3T1GId1PFL81/HpTjnzPKZIrFLniDPQIkuMtL253TQMqTRSeMZg0tz7Zw5C2fxPc
+         Xnsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698671577; x=1699276377;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s4Pi+7ZSljwaGLX14je8j3CR4U+NnbeoJUamT2Tf16E=;
+        b=VEPu+8o3PniqpCukQfvf+B542GZ0VkPBRNMCmvJTf+Mm1xZlSNYh9pmC4SfmJj7H90
+         ahnymWOrhCKtmbt4Nh5pUEBWcak6BuXW5BabmgGhQJQsPxqm2uzQauaCGEkoA81sgT9H
+         g+qbVVoIeF1JSHytAKB7bqUYPGyHTo1H0ZAFMmuEG9FINAN/eNtVDEA/1b7qoPXcNxg+
+         0FHluHPrn6LE+VxEj1QkkhjFz8z0RjOGqPg174F0139hhcejWYF6De/Ls+JySxIeCMj6
+         QmLIggYJStKw7DtVQx2i0KW4IZYjJRHc4WrcKBm8wbqQVOWP43WAo3O9sV9S9hGy60Kf
+         PM4g==
+X-Gm-Message-State: AOJu0YyPDwXYqclVFaPs13Ce8FaBVZZSfbXWfon+iS9gvpmbCBOZzaqM
+        qOtDYTfQTEwCMLmftOa7I7UmQYasSH8=
+X-Google-Smtp-Source: AGHT+IH3to0MuEjxmaHZTv664Kkk0XYYFkt76exPdvz0hLEVxlslVIimWj9wWqHKEih0nzmhx+cNwQ==
+X-Received: by 2002:a05:6512:709:b0:503:3281:2ffd with SMTP id b9-20020a056512070900b0050332812ffdmr6618321lfs.41.1698671576878;
+        Mon, 30 Oct 2023 06:12:56 -0700 (PDT)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id q11-20020ac2510b000000b005079691360csm1431887lfb.49.2023.10.30.06.12.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 06:12:56 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>
-Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-Message-ID: <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
-References: <20231027144050.110601-1-frederic@kernel.org>
- <20231027144050.110601-3-frederic@kernel.org>
- <20231027192026.GG26550@noisy.programming.kicks-ass.net>
- <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop>
- <20231027224628.GI26550@noisy.programming.kicks-ass.net>
- <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH v2 0/3] reduce latency of normal synchronize_rcu() v2
+Date:   Mon, 30 Oct 2023 14:12:51 +0100
+Message-Id: <20231030131254.488186-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 04:41:30PM -0700, Paul E. McKenney wrote:
-> On Sat, Oct 28, 2023 at 12:46:28AM +0200, Peter Zijlstra wrote:
+v1 is here https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
 
-> > Nah, this is more or less what I feared. I just worry people will come
-> > around and put WRITE_ONCE() on the other end. I don't think that'll buy
-> > us much. Nor do I think the current READ_ONCE()s actually matter.
-> 
-> My friend, you trust compilers more than I ever will.  ;-)
+The delta v1 -> v2:
+- rework a commit message;
+- use non-ordered __llist* API for a wait list manipulation.
 
-Well, we only use the values {0,1,2}, that's contained in the first
-byte. Are we saying compiler will not only byte-split but also
-bit-split the loads?
+The aim of this series is to reduce a latency, make synchronize_rcu()
+more generic, unify it. Because currently a behavior depends much on
+RCU kconfig combinations, like, CONFIG_RCU_NOCB_CPU, CONFIG_RCU_LAZY.
+For example we have a soft-irq/ksoftirqd context or a regular kthread. 
 
-But again, lacking the WRITE_ONCE() counterpart, this READ_ONCE() isn't
-getting you anything, and if you really worried about it, shouldn't you
-have proposed a patch making it all WRITE_ONCE() back when you did this
-tasks-rcu stuff?
+Uladzislau Rezki (Sony) (3):
+  rcu: Reduce synchronize_rcu() latency
+  rcu: Add a trace event for synchronize_rcu_normal()
+  doc: Add rcutree.rcu_normal_wake_from_gp to kernel-parameters.txt
 
-> > But perhaps put a comment there, that we don't care for the races and
-> > only need to observe a 0 once or something.
-> 
-> There are these two passagers in the big lock comment preceding the
-> RCU Tasks code:
+ .../admin-guide/kernel-parameters.txt         |  14 ++
+ include/trace/events/rcu.h                    |  27 +++
+ kernel/rcu/tree.c                             | 156 +++++++++++++++++-
+ kernel/rcu/tree_exp.h                         |   2 +-
+ 4 files changed, 197 insertions(+), 2 deletions(-)
 
-> // rcu_tasks_pregp_step():
-> //      Invokes synchronize_rcu() in order to wait for all in-flight
-> //      t->on_rq and t->nvcsw transitions to complete.  This works because
-> //      all such transitions are carried out with interrupts disabled.
+-- 
+2.30.2
 
-> Does that suffice, or should we add more?
-
-Probably sufficient. If one were to have used the search option :-)
-
-Anyway, this brings me to nvcsw, exact same problem there, except
-possibly worse, because now we actually do care about the full word.
-
-No WRITE_ONCE() write side, so the READ_ONCE() don't help against
-store-tearing (however unlikely that actually is in this case).
-
-Also, I'm not entirely sure I see why you need on_rq and nvcsw. Would
-not nvcsw increasing be enough to know it passed through a quiescent
-state? Are you trying to say that if nvcsw hasn't advanced but on_rq is
-still 0, nothing has changed and you can proceed?
-
-Or rather, looking at the code it seems use the inverse, if on_rq, nvcsw
-must change.
-
-Makes sense I suppose, no point waiting for nvcsw to change if the task
-never did anything.
