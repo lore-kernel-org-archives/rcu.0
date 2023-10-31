@@ -2,109 +2,72 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52429C4332F
-	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 18:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85ED9C4332F
+	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 18:21:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbjJaSMH (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Oct 2023 14:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
+        id S229881AbjJaSVS (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Oct 2023 14:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbjJaSMG (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Oct 2023 14:12:06 -0400
+        with ESMTP id S229672AbjJaSVR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Oct 2023 14:21:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B441DA2;
-        Tue, 31 Oct 2023 11:12:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F2FC433C8;
-        Tue, 31 Oct 2023 18:12:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AB5A6;
+        Tue, 31 Oct 2023 11:21:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02E71C433C8;
+        Tue, 31 Oct 2023 18:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698775922;
-        bh=9Jf3KU3ADv1NIFoN1APkqO365A/HCOvTo+JR2JcocMY=;
+        s=k20201202; t=1698776475;
+        bh=o18vwaeO2R36/vbyGopKWMEkawn3UVBm6qFsz82W5YI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=m1gSkGf+mN9nCYslCyx8aeuQNeOTNjEp13rhkxSfnXOxiAlTZpNI+17No1M4HTmSr
-         1VDU1rskOdb2pb/n57E2y4O9KHsS4gLtIjifqOj3cPkRgVljsY0MRgQM0MQmRkClF1
-         4ohlthrUN+MFeDQH9ZBmwxBzPdsuCaku+dM1CeY4Bk5/wZpsxpFTKWYu5SJdC+2mf5
-         UP9F/ua0/3jY80iNpM7ImM7kHKoqg2Nwe7yJKJmAf68TAvXcYjavDdSaKw+ykncFLy
-         hEZjc+Klg0lZoDBhTLyzXCHM5g/wyWBPgoudZp0T0AlEAIbgj5SBbMmG7w7dN5E7wO
-         sEPfk7YalbQtQ==
+        b=I8MBAcAJPkzoHLFjXMEloJwiM/7wimzAfmbxD83KW+cC7avlJB9q4JQuHfg5LhPyT
+         anBo1h+8CEJJ5qgX0UsK0FgrbQF0r7XJprBgsCoLm531DVwCe4WRYfto6u5jWZiZL7
+         aT3z17ps/46SatgUYjIMd8jPRJe8ZfcAen/zMThUhyb/SlmtcxeTyw9NDm6vDtz29D
+         dZQgq6sS5wlJxs6QgdzepKEu/nnTnJCu2dseeZ62PbXKVHobmrzfMdTqjssa3wytZl
+         NCbW8foBsRd4QEzc42BrgihiaW/LsntsTG+2GiFFxWlB541tE1ZztVaL2QxBdg9h9E
+         GTSytXb6asd9w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C9039CE0B77; Tue, 31 Oct 2023 11:12:01 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 11:12:01 -0700
+        id 92E30CE0B77; Tue, 31 Oct 2023 11:21:14 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 11:21:14 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>, matz@suse.de,
-        ubizjak@gmail.com
-Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-Message-ID: <e4896e0b-eacc-45a2-a7a8-de2280a51ecc@paulmck-laptop>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] refscale: Optimize process_durations()
+Message-ID: <bcd6bfe1-9891-4f22-86ad-361330e47e9d@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20231027144050.110601-3-frederic@kernel.org>
- <20231027192026.GG26550@noisy.programming.kicks-ass.net>
- <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop>
- <20231027224628.GI26550@noisy.programming.kicks-ass.net>
- <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
- <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
- <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop>
- <20231031095202.GC35651@noisy.programming.kicks-ass.net>
- <58c82a9d-f796-4585-b392-401b8b9dbc2e@paulmck-laptop>
- <20231031152033.GC15024@noisy.programming.kicks-ass.net>
+References: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
+ <ozbrmbywamyfkv3amsf2dfdacwmi25serwhc75h6fpsahklsmo@rm43srgxumef>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031152033.GC15024@noisy.programming.kicks-ass.net>
+In-Reply-To: <ozbrmbywamyfkv3amsf2dfdacwmi25serwhc75h6fpsahklsmo@rm43srgxumef>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:20:33PM +0100, Peter Zijlstra wrote:
-> On Tue, Oct 31, 2023 at 07:24:13AM -0700, Paul E. McKenney wrote:
+On Mon, Oct 30, 2023 at 09:55:16AM -0700, Davidlohr Bueso wrote:
+> On Sat, 28 Oct 2023, Christophe JAILLET wrote:
 > 
-> > So, at least until GCC catches up to clang's code generation, I take it
-> > that you don't want WRITE_ONCE() for that ->nvcsw increment.  Thoughts on
-> > ->on_rq?
+> > process_durations() is not a hot path, but there is no good reason to
+> > iterate over and over the data already in 'buf'.
+> > 
+> > Using a seq_buf saves some useless strcat() and the need of a temp buffer.
+> > Data is written directly at the correct place.
 > 
-> I've not done the patch yet, but I suspect those would be fine, those
-> are straight up stores, hard to get wrong (famous last words).
+> Makes sense.
+> 
+> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
 
-Assuming that the reads are already either marked with READ_ONCE() or
-are under appropriate locks, my immediate thought would be something
-like the all-too-lightly tested patch shown below.
-
-The ASSERT_EXCLUSIVE_WRITER() causes KCSAN to complain if there is a
-concurrent store of any kind to the location.
-
-Of course, please feel free to ignore.  Thoughts?
+Queued and pushed, thank you all!
 
 							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 81885748871d..aeace19ad7f5 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2124,12 +2124,14 @@ void activate_task(struct rq *rq, struct task_struct *p, int flags)
- 
- 	enqueue_task(rq, p, flags);
- 
--	p->on_rq = TASK_ON_RQ_QUEUED;
-+	WRITE_ONCE(p->on_rq, TASK_ON_RQ_QUEUED);
-+	ASSERT_EXCLUSIVE_WRITER(p->on_rq);
- }
- 
- void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
- {
--	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
-+	WRITE_ONCE(p->on_rq, (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING);
-+	ASSERT_EXCLUSIVE_WRITER(p->on_rq);
- 
- 	dequeue_task(rq, p, flags);
- }
