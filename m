@@ -2,36 +2,38 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F4C3C4332F
-	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 14:43:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C591FC4332F
+	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 15:18:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344323AbjJaOnW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Oct 2023 10:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
+        id S1344396AbjJaPSh (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Oct 2023 11:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344322AbjJaOnW (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:43:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B094FC;
-        Tue, 31 Oct 2023 07:43:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9EB0C433C7;
-        Tue, 31 Oct 2023 14:43:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698763398;
-        bh=66H98ojSE2UwXLJ24lU6oCRIUNq2Jb+IHbwCuZbB8TY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eGR5BWYv6XFZNxTD5fRj3kTzBpnaoPAJ/PTVG0FFXt+YYXsKJo1wgK1PN41f1Le1i
-         x/842rZAkDr/D7vTwTRr4kAeJNM9wU09m//BHCh+7RP/DeXUpgAOFgfXrK6gOdLWb7
-         +IXYhCcKqjlNYG32xrmzqmi4LuAsdnBxttv5OXKMxfufuNSSxTBredT/+6/4dK7Bdb
-         JNuyoOCqI99bYOi5mZqfKOTFtaAD3er27HBTAldfdsEDUO6PKwy+zMQNkOqMBMQPuR
-         DM60W7qPoTvtMs4xMx4LQYaVnmljoseZSitkQUJ9loR+fn32v9ZMjUV884acgfRXOy
-         stbGC7DEEAoQg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6B32DCE0DD0; Tue, 31 Oct 2023 07:43:18 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 07:43:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        with ESMTP id S1344229AbjJaPSg (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Oct 2023 11:18:36 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7C2D42;
+        Tue, 31 Oct 2023 08:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LiGcsZom1SDIM8uQ4Ed6vqC5uJcrUXeqZ5iXIeC2l7o=; b=Ml3LC6caKciiFHyY6MmqiBqFHs
+        bhw7TUF04hGZjiUrRva9q7Irr+byF9CA/JF7tb26o1gDHhQwwtle3FZGMIgOm8C+B4Nvbrq42OmMP
+        B20iF5kpj1IY6vgyEB7e2h5e3GwAmBLofTowO0GeyCIxXRgOSuYro7NQgFPGswNPfm7AQbr8GPIF1
+        NqMoRjcoxwvOh17LPcGlqI2rnlSaYKL52nijAD0l9keKRYaC/4+CGWfqkLyAhsDRvhFLl9GQA9CIB
+        DQgbVeKRqDzhpzXRMI+YGce8/TbOTCfRJAxYmi/zqzRhJplkMupWtZ4Y+LfzMh6CXWRcynfAOO6Zx
+        YlV7vpsA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qxqU2-004tmF-1S;
+        Tue, 31 Oct 2023 15:16:46 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 191FB300478; Tue, 31 Oct 2023 16:16:46 +0100 (CET)
+Date:   Tue, 31 Oct 2023 16:16:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Michael Matz <matz@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
@@ -44,8 +46,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Zqiang <qiang.zhang1211@gmail.com>,
         "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
 Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-Message-ID: <a3a2015f-7610-45f7-87af-f8b4fdfc7e24@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <20231031151645.GB15024@noisy.programming.kicks-ass.net>
 References: <20231027144050.110601-1-frederic@kernel.org>
  <20231027144050.110601-3-frederic@kernel.org>
  <20231027192026.GG26550@noisy.programming.kicks-ass.net>
@@ -65,16 +66,7 @@ List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
 On Tue, Oct 31, 2023 at 02:16:34PM +0000, Michael Matz wrote:
-> Hello,
-> 
-> On Tue, 31 Oct 2023, Peter Zijlstra wrote:
-> 
-> (I can't say anything about the WRITE_ONCE/rcu code, just about the below 
-> codegen part)
-> 
-> > Welcome is not the right word. What bugs me most is that this was never
-> > raised when this code was written :/
-> > 
+
 > > Mostly my problem is that GCC generates such utter shite when you
 > > mention volatile. See, the below patch changes the perfectly fine and
 > > non-broken:
@@ -91,7 +83,10 @@ On Tue, Oct 31, 2023 at 02:16:34PM +0000, Michael Matz wrote:
 > 
 > ... broken here?  (Sure code size and additional register use, but I don't 
 > think you mean this with broken).
-> 
+
+The point was that the code was perfectly fine without adding the
+volatile, and adding volatile makes it worse.
+
 > > For absolutely no reason :-(
 > 
 > The reason is simple (and should be obvious): to adhere to the abstract 
@@ -114,8 +109,20 @@ On Tue, Oct 31, 2023 at 02:16:34PM +0000, Michael Matz wrote:
 > much more interested in correct code (even from a abstract machine 
 > perspective) than micro optimizations.
 
-I suspect that Peter cares because the code in question is on a fast
-path within the scheduler.
+There's a pile of situations where a RmW instruction is actively
+different vs a load-store split, esp for volatile variables that are
+explicitly expected to change asynchronously.
+
+The original RmW instruction is IRQ-safe, while the load-store version
+is not. If an interrupt lands in between the load and store and also
+modifies the variable then the store after interrupt-return will
+over-write said modification.
+
+These are not equivalent.
+
+In this case that's not relevant because the increment happens to happen
+with IRQs disabled. But the point is that these forms are very much not
+equivalent.
 
 > > At least clang doesn't do this, it stays:
 > > 
@@ -126,13 +133,33 @@ path within the scheduler.
 > And, are you 100% sure that this is correct?  Even for x86 CPU 
 > pipeline implementations that you aren't intimately knowing about? ;-)
 
-Me, I am not even sure that the load-increment-store is always faithfully
-executed by the hardware.  ;-)
+It so happens that the x86 architecture does guarantee RmW ops are
+IRQ-safe or locally atomic. SMP/concurrent loads will observe either
+pre or post but no intermediate state as well.
 
 > But all that seems to be a side-track anyway, what's your real worry with  
 > the code sequence generated by GCC?
 
-Again, my guess is that Peter cares deeply about the speed of the fast
-path on which this increment occurs.
+In this case it's sub-optimal code, both larger and possibly slower for
+having two memops.
 
-							Thanx, Paul
+The reason to have volatile is because that's what Linux uses to
+dis-allow store-tearing, something that doesn't happen in this case. A
+suitably insane but conforming compiler could compile a non-volatile
+memory increment into something insane like:
+
+	load byte-0, r1
+	increment r1
+	store r1, byte-0
+	jno done
+	load byte-1, r1
+	increment ri
+	store r1, byte 1
+	jno done
+	...
+done:
+
+We want to explicitly dis-allow this.
+
+I know C has recently (2011) grown this _Atomic thing, but that has
+other problems.
