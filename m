@@ -2,36 +2,37 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9498C4332F
-	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 14:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F4C3C4332F
+	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 14:43:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbjJaOYR (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Oct 2023 10:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        id S1344323AbjJaOnW (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Oct 2023 10:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbjJaOYR (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Oct 2023 10:24:17 -0400
+        with ESMTP id S1344322AbjJaOnW (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Oct 2023 10:43:22 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E08BD;
-        Tue, 31 Oct 2023 07:24:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AF1BC433C7;
-        Tue, 31 Oct 2023 14:24:14 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B094FC;
+        Tue, 31 Oct 2023 07:43:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9EB0C433C7;
+        Tue, 31 Oct 2023 14:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698762254;
-        bh=89Fae0SNhNHqIKHuHuB/vvLwUt7yUY10CvB4uoTXl5g=;
+        s=k20201202; t=1698763398;
+        bh=66H98ojSE2UwXLJ24lU6oCRIUNq2Jb+IHbwCuZbB8TY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=iMGsqVHE0MhndMpV9MXwWWCcBv7Z8Zc3RsRFKxNLGHciTiE85hnCbvPomf1sAvIyu
-         6gwTnOk1GxR4nKRsw3sXJPoeCraXS/zTJvWdjWEa9hW2oW/Nh/1oe5SrH9PmRVHQYX
-         umtH5OIn0y+S6YgrQj9SB1o2BIWY80KEfFQZbMd3wjKbQrnpGA5N03+UMx5n9EUTw5
-         yWb29n1tyahtDwPBw7yIohlYh3trmB+sh3CWYSb3OfkIqONHnDYGQTvyY3OHcCS5v+
-         kZNFhgAJIc0UULYHPIibmsRGx24R8JegOIXAcQB65fAubBd//Hh5amxkpoynp0pbUj
-         fx2bJmCj97KRw==
+        b=eGR5BWYv6XFZNxTD5fRj3kTzBpnaoPAJ/PTVG0FFXt+YYXsKJo1wgK1PN41f1Le1i
+         x/842rZAkDr/D7vTwTRr4kAeJNM9wU09m//BHCh+7RP/DeXUpgAOFgfXrK6gOdLWb7
+         +IXYhCcKqjlNYG32xrmzqmi4LuAsdnBxttv5OXKMxfufuNSSxTBredT/+6/4dK7Bdb
+         JNuyoOCqI99bYOi5mZqfKOTFtaAD3er27HBTAldfdsEDUO6PKwy+zMQNkOqMBMQPuR
+         DM60W7qPoTvtMs4xMx4LQYaVnmljoseZSitkQUJ9loR+fn32v9ZMjUV884acgfRXOy
+         stbGC7DEEAoQg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 28A56CE0DD0; Tue, 31 Oct 2023 07:24:13 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 07:24:13 -0700
+        id 6B32DCE0DD0; Tue, 31 Oct 2023 07:43:18 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 07:43:18 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+To:     Michael Matz <matz@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -41,10 +42,9 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         Zqiang <qiang.zhang1211@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>, matz@suse.de,
-        ubizjak@gmail.com
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
 Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-Message-ID: <58c82a9d-f796-4585-b392-401b8b9dbc2e@paulmck-laptop>
+Message-ID: <a3a2015f-7610-45f7-87af-f8b4fdfc7e24@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20231027144050.110601-1-frederic@kernel.org>
  <20231027144050.110601-3-frederic@kernel.org>
@@ -55,112 +55,84 @@ References: <20231027144050.110601-1-frederic@kernel.org>
  <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
  <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop>
  <20231031095202.GC35651@noisy.programming.kicks-ass.net>
+ <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231031095202.GC35651@noisy.programming.kicks-ass.net>
+In-Reply-To: <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 10:52:02AM +0100, Peter Zijlstra wrote:
-> On Mon, Oct 30, 2023 at 01:11:41PM -0700, Paul E. McKenney wrote:
-> > On Mon, Oct 30, 2023 at 09:21:38AM +0100, Peter Zijlstra wrote:
-> > > On Fri, Oct 27, 2023 at 04:41:30PM -0700, Paul E. McKenney wrote:
-> > > > On Sat, Oct 28, 2023 at 12:46:28AM +0200, Peter Zijlstra wrote:
-> > > 
-> > > > > Nah, this is more or less what I feared. I just worry people will come
-> > > > > around and put WRITE_ONCE() on the other end. I don't think that'll buy
-> > > > > us much. Nor do I think the current READ_ONCE()s actually matter.
-> > > > 
-> > > > My friend, you trust compilers more than I ever will.  ;-)
-> > > 
-> > > Well, we only use the values {0,1,2}, that's contained in the first
-> > > byte. Are we saying compiler will not only byte-split but also
-> > > bit-split the loads?
-> > > 
-> > > But again, lacking the WRITE_ONCE() counterpart, this READ_ONCE() isn't
-> > > getting you anything, and if you really worried about it, shouldn't you
-> > > have proposed a patch making it all WRITE_ONCE() back when you did this
-> > > tasks-rcu stuff?
+On Tue, Oct 31, 2023 at 02:16:34PM +0000, Michael Matz wrote:
+> Hello,
+> 
+> On Tue, 31 Oct 2023, Peter Zijlstra wrote:
+> 
+> (I can't say anything about the WRITE_ONCE/rcu code, just about the below 
+> codegen part)
+> 
+> > Welcome is not the right word. What bugs me most is that this was never
+> > raised when this code was written :/
 > > 
-> > There are not all that many of them.  If such a WRITE_ONCE() patch would
-> > be welcome, I would be happy to put it together.
+> > Mostly my problem is that GCC generates such utter shite when you
+> > mention volatile. See, the below patch changes the perfectly fine and
+> > non-broken:
 > > 
-> > > > > But perhaps put a comment there, that we don't care for the races and
-> > > > > only need to observe a 0 once or something.
-> > > > 
-> > > > There are these two passagers in the big lock comment preceding the
-> > > > RCU Tasks code:
-> > > 
-> > > > // rcu_tasks_pregp_step():
-> > > > //      Invokes synchronize_rcu() in order to wait for all in-flight
-> > > > //      t->on_rq and t->nvcsw transitions to complete.  This works because
-> > > > //      all such transitions are carried out with interrupts disabled.
-> > > 
-> > > > Does that suffice, or should we add more?
-> > > 
-> > > Probably sufficient. If one were to have used the search option :-)
-> > > 
-> > > Anyway, this brings me to nvcsw, exact same problem there, except
-> > > possibly worse, because now we actually do care about the full word.
-> > > 
-> > > No WRITE_ONCE() write side, so the READ_ONCE() don't help against
-> > > store-tearing (however unlikely that actually is in this case).
+> > 0148  1d8:      49 83 06 01             addq   $0x1,(%r14)
+> 
+> What is non-broken here that is ...
+> 
+> > into:
 > > 
-> > Again, if such a WRITE_ONCE() patch would be welcome, I would be happy
-> > to put it together.
+> > 0148  1d8:	49 8b 06             	mov    (%r14),%rax
+> > 014b  1db:	48 83 c0 01          	add    $0x1,%rax
+> > 014f  1df:	49 89 06             	mov    %rax,(%r14)
 > 
-> Welcome is not the right word. What bugs me most is that this was never
-> raised when this code was written :/
+> ... broken here?  (Sure code size and additional register use, but I don't 
+> think you mean this with broken).
+> 
+> > For absolutely no reason :-(
+> 
+> The reason is simple (and should be obvious): to adhere to the abstract 
+> machine regarding volatile.  When x is volatile then x++ consists of a 
+> read and a write, in this order.  The easiest way to ensure this is to 
+> actually generate a read and a write instruction.  Anything else is an 
+> optimization, and for each such optimization you need to actively find an 
+> argument why this optimization is correct to start with (and then if it's 
+> an optimization at all).  In this case the argument needs to somehow 
+> involve arguing that an rmw instruction on x86 is in fact completely 
+> equivalent to the separate instructions, from read cycle to write cycle 
+> over all pipeline stages, on all implementations of x86.  I.e. that a rmw 
+> instruction is spec'ed to be equivalent.
+> 
+> You most probably can make that argument in this specific case, I'll give 
+> you that.  But why bother to start with, in a piece of software that is 
+> already fairly complex (the compiler)?  It's much easier to just not do 
+> much anything with volatile accesses at all and be guaranteed correct.
+> Even more so as the software author, when using volatile, most likely is 
+> much more interested in correct code (even from a abstract machine 
+> perspective) than micro optimizations.
 
-Me, I consider those READ_ONCE() calls to be documentation as well as
-defense against overly enthusiastic optimizers.  "This access is racy."
+I suspect that Peter cares because the code in question is on a fast
+path within the scheduler.
 
-> Mostly my problem is that GCC generates such utter shite when you
-> mention volatile. See, the below patch changes the perfectly fine and
-> non-broken:
+> > At least clang doesn't do this, it stays:
+> > 
+> > 0403  413:      49 ff 45 00             incq   0x0(%r13)
+> > 
+> > irrespective of the volatile.
 > 
-> 0148  1d8:      49 83 06 01             addq   $0x1,(%r14)
-> 
-> into:
-> 
-> 0148  1d8:	49 8b 06             	mov    (%r14),%rax
-> 014b  1db:	48 83 c0 01          	add    $0x1,%rax
-> 014f  1df:	49 89 06             	mov    %rax,(%r14)
-> 
-> For absolutely no reason :-(
-> 
-> At least clang doesn't do this, it stays:
-> 
-> 0403  413:      49 ff 45 00             incq   0x0(%r13)
-> 
-> irrespective of the volatile.
+> And, are you 100% sure that this is correct?  Even for x86 CPU 
+> pipeline implementations that you aren't intimately knowing about? ;-)
 
-Sounds like a bug in GCC, perhaps depending on the microarchitecture
-in question.  And it was in fact reported in the past, but closed as
-not-a-bug.  Perhaps clang's fix for this will help GCC along.
+Me, I am not even sure that the load-increment-store is always faithfully
+executed by the hardware.  ;-)
 
-And yes, I do see that ++*switch_count in __schedule().
+> But all that seems to be a side-track anyway, what's your real worry with  
+> the code sequence generated by GCC?
 
-So, at least until GCC catches up to clang's code generation, I take it
-that you don't want WRITE_ONCE() for that ->nvcsw increment.  Thoughts on
-->on_rq?
+Again, my guess is that Peter cares deeply about the speed of the fast
+path on which this increment occurs.
 
 							Thanx, Paul
-
-> ---
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 802551e0009b..d616211b9151 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6575,8 +6575,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->   */
->  static void __sched notrace __schedule(unsigned int sched_mode)
->  {
->  	struct task_struct *prev, *next;
-> -	unsigned long *switch_count;
-> +	volatile unsigned long *switch_count;
->  	unsigned long prev_state;
->  	struct rq_flags rf;
->  	struct rq *rq;
