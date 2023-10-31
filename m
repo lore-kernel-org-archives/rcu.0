@@ -2,37 +2,36 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81D86C4167B
-	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 17:10:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52429C4332F
+	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 18:12:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbjJaRK7 (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Oct 2023 13:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S231915AbjJaSMH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Oct 2023 14:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233230AbjJaRK5 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Oct 2023 13:10:57 -0400
+        with ESMTP id S230455AbjJaSMG (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Oct 2023 14:12:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7085283;
-        Tue, 31 Oct 2023 10:10:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12165C433C7;
-        Tue, 31 Oct 2023 17:10:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B441DA2;
+        Tue, 31 Oct 2023 11:12:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F2FC433C8;
+        Tue, 31 Oct 2023 18:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698772255;
-        bh=Th4ywlyLRr/0sxbHZGZwsaz5cKdSrO4tkd9cgckdNZE=;
+        s=k20201202; t=1698775922;
+        bh=9Jf3KU3ADv1NIFoN1APkqO365A/HCOvTo+JR2JcocMY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eiySwqxXDBXb8eJrdT0Q907b8uHZJAClu3lLh+zZsE1Tr3tTgOKNkoDeK7v0eS03Q
-         v1S5D6/F1Ar93gX0LVDM9JrfcuHe02duLFNplSZdvtotNL3bYg9a6cBnzvUevdXRpQ
-         gfrNCReNjaTx/VnPThSzB+G2HwHG+pWLn+bQQJsoW3LOIxc6dAeOMaDGAbJeER9Ir8
-         HV7LIQRYYXDn3ohi4joM8cQ2FRSUp58TDFvrd/40MIX1q5oetrhsINOE2WWkWw6JOA
-         2K0CeqC5CskInyezSg9LmIiE6wFQnmQsYBUcGAVqfPnYwxlZ8cL5gpHvoGpIABSh70
-         6hBwp8irRMg2A==
+        b=m1gSkGf+mN9nCYslCyx8aeuQNeOTNjEp13rhkxSfnXOxiAlTZpNI+17No1M4HTmSr
+         1VDU1rskOdb2pb/n57E2y4O9KHsS4gLtIjifqOj3cPkRgVljsY0MRgQM0MQmRkClF1
+         4ohlthrUN+MFeDQH9ZBmwxBzPdsuCaku+dM1CeY4Bk5/wZpsxpFTKWYu5SJdC+2mf5
+         UP9F/ua0/3jY80iNpM7ImM7kHKoqg2Nwe7yJKJmAf68TAvXcYjavDdSaKw+ykncFLy
+         hEZjc+Klg0lZoDBhTLyzXCHM5g/wyWBPgoudZp0T0AlEAIbgj5SBbMmG7w7dN5E7wO
+         sEPfk7YalbQtQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A7223CE0B6B; Tue, 31 Oct 2023 10:10:54 -0700 (PDT)
-Date:   Tue, 31 Oct 2023 10:10:54 -0700
+        id C9039CE0B77; Tue, 31 Oct 2023 11:12:01 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 11:12:01 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michael Matz <matz@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
@@ -42,118 +41,70 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         Zqiang <qiang.zhang1211@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>, ubizjak@gmail.com
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>, matz@suse.de,
+        ubizjak@gmail.com
 Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
-Message-ID: <e59205b8-d12c-42ba-b0c8-55103a42e917@paulmck-laptop>
+Message-ID: <e4896e0b-eacc-45a2-a7a8-de2280a51ecc@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20231027224628.GI26550@noisy.programming.kicks-ass.net>
+References: <20231027144050.110601-3-frederic@kernel.org>
+ <20231027192026.GG26550@noisy.programming.kicks-ass.net>
+ <2a0d52a5-5c28-498a-8df7-789f020e36ed@paulmck-laptop>
+ <20231027224628.GI26550@noisy.programming.kicks-ass.net>
  <200c57ce-90a7-418b-9527-602dbf64231f@paulmck-laptop>
  <20231030082138.GJ26550@noisy.programming.kicks-ass.net>
  <622438a5-4d20-4bc9-86b9-f3de55ca6cda@paulmck-laptop>
  <20231031095202.GC35651@noisy.programming.kicks-ass.net>
- <alpine.LSU.2.20.2310311357450.15233@wotan.suse.de>
- <20231031151645.GB15024@noisy.programming.kicks-ass.net>
- <alpine.LSU.2.20.2310311523290.15233@wotan.suse.de>
- <20231031162353.GF15024@noisy.programming.kicks-ass.net>
- <alpine.LSU.2.20.2310311624500.15233@wotan.suse.de>
+ <58c82a9d-f796-4585-b392-401b8b9dbc2e@paulmck-laptop>
+ <20231031152033.GC15024@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.20.2310311624500.15233@wotan.suse.de>
+In-Reply-To: <20231031152033.GC15024@noisy.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:49:56PM +0000, Michael Matz wrote:
-> Hey,
+On Tue, Oct 31, 2023 at 04:20:33PM +0100, Peter Zijlstra wrote:
+> On Tue, Oct 31, 2023 at 07:24:13AM -0700, Paul E. McKenney wrote:
 > 
-> On Tue, 31 Oct 2023, Peter Zijlstra wrote:
+> > So, at least until GCC catches up to clang's code generation, I take it
+> > that you don't want WRITE_ONCE() for that ->nvcsw increment.  Thoughts on
+> > ->on_rq?
 > 
-> > > equivalent to that, then it can't be used in this situation.  If you 
-> > > _have_ to use a RmW for other reasons like interrupt safety, then a 
-> > > volatile variable is not the way to force this, as C simply doesn't have 
-> > > that concept and hence can't talk about it.  (Of course it can't, as not 
-> > > all architectures could implement such, if it were required).
-> > 
-> > Yeah, RISC archs typically lack the RmW ops. I can understand C not
-> > mandating their use. However, on architectures that do have them, using
-> > them makes a ton of sense.
-> > 
-> > For us living in the real world, this C abstract machine is mostly a
-> > pain in the arse :-)
-> 
-> Believe me, without it you would live in a world where only languages like 
-> ECMA script or Rust existed, without any reliable spec at all ("it's 
-> obvious, the language should behave like this-and-that compiler from 2010 
-> implements it! Or was it 2012?").  Even if it sometimes would make life 
-> easier without (also for compilers!), at least you _have_ an arse to feel 
-> pain in! :-)  Ahem.
+> I've not done the patch yet, but I suspect those would be fine, those
+> are straight up stores, hard to get wrong (famous last words).
 
-You mean like Rust volatiles considering conflicting accesses to be
-data races?  That certainly leads me to wonder how a Rust-language device
-driver is supposed to interoperate with Rust-language device firmware.
+Assuming that the reads are already either marked with READ_ONCE() or
+are under appropriate locks, my immediate thought would be something
+like the all-too-lightly tested patch shown below.
 
-They currently propose atomics and things like the barrier() asm to make
-that work, and their definition of atomic might just allow it.
+The ASSERT_EXCLUSIVE_WRITER() causes KCSAN to complain if there is a
+concurrent store of any kind to the location.
 
-> > > So, hmm, I don't quite know what to say, you're between a rock and a hard 
-> > > place, I guess.  You have to use volatile for its effects but then are 
-> > > unhappy about its effects :)
-> > 
-> > Notably, Linux uses a *ton* of volatile and there has historically been
-> > a lot of grumbling about the GCC stance of 'stupid' codegen the moment
-> > it sees volatile.
-> > 
-> > It really would help us (the Linux community) if GCC were to be less
-> > offended by the whole volatile thing and would try to generate better
-> > code.
-> > 
-> > Paul has been on the C/C++ committee meetings and keeps telling me them
-> > folks hate volatile with a passion up to the point of proposing to
-> > remove it from the language or somesuch. But the reality is that Linux
-> > very heavily relies on it and _Atomic simply cannot replace it.
-> 
-> Oh yeah, I agree.  People trying to get rid of volatile are misguided.  
-> Of course one can try to capture all the individual aspects of it, and 
-> make individual language constructs for them (_Atomic is one).  It makes 
-> arguing about and precisely specifying the aspects much easier.  But it 
-> also makes the feature-interoperability matrix explode and the language 
-> more complicated in areas that were already arcane to start with.
-
-Agreed, and I have personally witnessed some primal-scream therapy
-undertaken in response to attempts to better define volatile.
-
-> But it's precisely _because_ of the large-scale feature set of volatile 
-> and the compilers wish to cater for the real world, that it's mostly left 
-> alone, as is, as written by the author.  Sure, one can wish for better 
-> codegen related to volatile.  But it's a slippery slope: "here I have 
-> volatile, because I don't want optimizations to happen." - "but here I 
-> want a little optimization to happen" - "but not these" - ... It's ... not 
-> so easy :)
-
-And to your point, there really have been optimization bugs that have
-broken volatile.  So I do very much appreciate your careful attention
-to this matter.
-
-> In this specific case I think we have now sufficiently argued that 
-> "load-modify-store --> rmw" on x86 even for volatile accesses is a correct 
-> transformation (and one that has sufficiently local effects that our heads 
-> don't explode while thinking about all consequences).  You'd have to do 
-> that for each and every transformation where volatile stuff is involved, 
-> just so to not throw out the baby with the water.
-
-Understood!
-
-> > > If you can confirm the above about validity of the optimization, then at 
-> > > least there'd by a point for adding a peephole in GCC for this, even if 
-> > > current codegen isn't a bug, but I still wouldn't hold my breath.  
-> > > volatile is so ... ewww, it's best left alone.
-> > 
-> > Confirmed, and please, your SMP computer only works becuase of volatile,
-> > it *is* important.
-> 
-> Agreed.
-
-Good to hear!!!
+Of course, please feel free to ignore.  Thoughts?
 
 							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 81885748871d..aeace19ad7f5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2124,12 +2124,14 @@ void activate_task(struct rq *rq, struct task_struct *p, int flags)
+ 
+ 	enqueue_task(rq, p, flags);
+ 
+-	p->on_rq = TASK_ON_RQ_QUEUED;
++	WRITE_ONCE(p->on_rq, TASK_ON_RQ_QUEUED);
++	ASSERT_EXCLUSIVE_WRITER(p->on_rq);
+ }
+ 
+ void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
+ {
+-	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
++	WRITE_ONCE(p->on_rq, (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING);
++	ASSERT_EXCLUSIVE_WRITER(p->on_rq);
+ 
+ 	dequeue_task(rq, p, flags);
+ }
