@@ -2,33 +2,33 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E2C8C4167D
-	for <rcu@archiver.kernel.org>; Wed,  1 Nov 2023 17:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F8B9C4332F
+	for <rcu@archiver.kernel.org>; Wed,  1 Nov 2023 17:40:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344602AbjKARNM (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Nov 2023 13:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        id S231974AbjKARkU (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Nov 2023 13:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344598AbjKARNL (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Nov 2023 13:13:11 -0400
+        with ESMTP id S231233AbjKARkT (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Nov 2023 13:40:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3720010E;
-        Wed,  1 Nov 2023 10:13:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB57BC433C8;
-        Wed,  1 Nov 2023 17:13:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9AAED;
+        Wed,  1 Nov 2023 10:40:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83300C433C7;
+        Wed,  1 Nov 2023 17:40:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698858788;
-        bh=FSBuDV3vn5ABFwCq/Fw5E+UxUcGXr0n01nZQCGovems=;
+        s=k20201202; t=1698860414;
+        bh=a6W3IlblsIT8EDDhgTVDxrMWX5YkV60VTCvGI//nKvQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=k+uuAch9XlzhQ6zX3uH+i4yKj/TY1VgTdvuHDW2BWMAgvlR/MNCLqoKsfkNVFrOB9
-         BM8+qaMam0gvD9emFXsJ0kUvmwYFaIjLkbjrgeMfzzWKjnOqTfr6+/0v8o/v4/UICB
-         nTTe9F7PW2/oUCJbHtpDv88UfPxYkusD8iNAHGrcyPAoZHxA83Hl9QI9MWe7ALvaLu
-         IGHVpJQBkN6xpJYa0lJXysvTIjhDWvL20iE5YkQnLm7lhq/nBsZtC9AkB9PYgx3nlX
-         H4Hzlhb9HGw581IFptvys8kTiz6B2aDKhvq3Z2nGFHNfjrMM3ql9kUSJ/99t93hdwm
-         4ODVtWtRQ0LZw==
+        b=mXkQHR2eAmvKVo+G4Y9+a/+qFEOqK7eJ8jmOMxxQHG+vnVnXP3MQcJYpbiIy7b8Bt
+         K4E9v2+qjGJI+L69cXX0oSI6bHMNqygOoWqdh/+sfXbrMaEpqw1G4qe7fV2bi/WlUB
+         prC0jDazB2FAptjTu423XE3JqPQbt/XEjaT5UKS7y8thUBBpramPuzov2qZ5YWWn1x
+         MtWvAofLN/smhz9DHJLLfT6ooICS5t4W0W2cvAuxpIIEEc7p/+ue3FOW7vCsoLk8hE
+         WP+pA3gSH8e0auPrQ4xT+n4OfP+SIR4HUo+XkKSpMfufkrGzXLFJT2vX1cH/q/8XbN
+         Y4j9Pt5LHFloQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6705ACE09BE; Wed,  1 Nov 2023 10:13:08 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 10:13:08 -0700
+        id 2052ECE09BE; Wed,  1 Nov 2023 10:40:14 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 10:40:14 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
@@ -40,7 +40,7 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Z qiang <qiang.zhang1211@gmail.com>
 Subject: Re: [GIT PULL] RCU changes for v6.7
-Message-ID: <5e797896-6c0b-4686-98b7-d66bcdb10d0a@paulmck-laptop>
+Message-ID: <c83bea5c-b577-4b6a-bf41-6ac7433f15bc@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <ZTuf+xNrfqGjHFDK@lothringen>
  <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
@@ -48,39 +48,101 @@ References: <ZTuf+xNrfqGjHFDK@lothringen>
  <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
  <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
  <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+ <CAHk-=wiZZB_P57xUPqUg5j7Toany0FNaWO3Ht+Sks7J=XkYnfA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+In-Reply-To: <CAHk-=wiZZB_P57xUPqUg5j7Toany0FNaWO3Ht+Sks7J=XkYnfA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 06:07:57PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 31, 2023 at 01:06:44PM -1000, Linus Torvalds wrote:
+On Wed, Nov 01, 2023 at 07:11:54AM -1000, Linus Torvalds wrote:
+> On Tue, 31 Oct 2023 at 15:08, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Here are the ways forward I can see:
+> >
+> > 1.      Status quo.  This has all the issues that you call out.
+> >         People will hurt themselves with it and consume time and effort.
+> >         So let's not do this.
+> 
+> Well, at a *minimum*, I really want that notifier chain call to be
+> done *after* the core printk's.
+> 
+> That way, if it deadlocks or does something else stupid, at least the
+> core printouts make it out.
+> 
+> IOW, I think the notifier should be done perhaps just before the
+> "panic_on_rcu_stall()" call, not at the top before you've even
+> reported any stall conditions at all.
 
-[ . . . ]
+Understood.  But my problem is that the core printk()s destroy the state
+that the notifier is trying to output.
 
-> > I really think that we should *never* have any kind of notifiers for
-> > kernel bugs. They cause problems. The *one* exception is an actual
-> > honest-to-goodness kernel debugger, and then it should literally
-> > *only* be the debugger that can register a notifier, so that you are
-> > *never* in the situation that a kernel without a debugger will just
-> > hang because of some bogus debug notifier.
+> And yes, I think the trace_rcu_stall_warning() might be better off
+> later too, but at least trace events are things that get regular
+> testing in nasty conditions (including NMI etc), so I'm *much* less
+> worried about those than about "random developers who think they know
+> what they do and add a notifier".
 
-Here you might have been suggesting that I use gdb and just set a
-breakpoint in check_cpu_stall(), and then use gdb commands to read out
-the state.  And yes, this work well in some situations.  In fact, there
-is a --gdb parameter to the rcutorture scripting for just this purpose.
+Agreed, this is a special debug facility, not something that anyone
+should use in production.  And also not something that should be used
+where gdb would do the job.
 
-Except that I normally run a few hundred rcutorture guest OSes spread
-across 20 systems, and sometimes more than a thousand guest OSes across
-50 systems for hard-to-reproduce bugs.  In my experience, managing that
-many remote gdb sessions is cranky and unreliable, which is not helpful
-when debugging.  Writing a few tens of lines of C code in the kernel is
-much simpler and more reliable.
+> And yes, I do think the notifier should be narrowed down a lot, if you
+> actually want to keep it.
 
-Assuming of course that I avoid the traps you point out.  Which I have
-done thus far.  (Famous last words...)
+Understood, thus a new default-disabled Kconfig option that depends on
+RCU_EXPERT and DEBUG_KERNEL, along with a default-disabled kernel
+boot parameter, both of which have to be selected to make anything
+happen.
+
+> I did not actually hear you say that there is a good use-case for it.
+> I only saw you say "Those of us who need this", without showing *any*
+> kind of indication of why anybody would use it in reality.
+> 
+> Why the secrecy? There is certainly no current user, nor any
+> description of what a user would be and what makes that notifier
+> useful.
+> 
+> The commit message also just says "It is sometimes helpful" and some
+> strange reference to "the subsystem causing the stall to dump its
+> state". It all sounds very fishy. Why would anybody ever have a known
+> subsystem causing RCU stalls? Except, of course, for the rcutorture
+> testing.
+
+One use case is dumping out the qspinlock state for an extremely
+rare lockup.  If you even look at the system cross-eyed, the lockup
+goes away.  And yes, I should have mentioned this in the commit
+log, and I apologize for having failed to do so.  I do not expect
+that the state-dump code would ever be appropriate for mainline.
+
+> Anyway, that all absolutely SCREAMS to me "this is not something
+> useful in any normal kernel", and so yes:
+
+Agreed, definitely not for any normal kernel!
+
+> > 3.      Add a default-n Kconfig option that depends on RCU_EXPERT
+> >         and KEBUG_KERNEL, so that these problems can only arise in
+> >         specially built kernels.
+> >
+> > 4.      Same as #3, but use a kernel boot parameter instead of a
+> >         Kconfig option.
+> 
+> let's make it clear that this is *not* something that any upstream
+> kernel would ever do, and the *only* possible use for it is some kind
+> of external temporary debug patch.
+> 
+> See why I so hate things like this? Let's head off any crazy use long
+> *long* before somebody decides that "Oh, I want to use this".
+
+You are absolutely right, a debug tool with this many sharp edges should
+definitely not be default-enabled.  And needs some scary words in the
+Kconfig help text.  And a boot-time splat to make people think twice
+before using it.
+
+Apologies for not having thought this through!
+
+I will send a fixup patch before the end of today.
 
 							Thanx, Paul
