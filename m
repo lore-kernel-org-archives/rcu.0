@@ -2,65 +2,35 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DA34C4332F
-	for <rcu@archiver.kernel.org>; Tue, 31 Oct 2023 23:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FB5CC4332F
+	for <rcu@archiver.kernel.org>; Wed,  1 Nov 2023 01:08:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376477AbjJaXHJ (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Oct 2023 19:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+        id S1347111AbjKABID (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 31 Oct 2023 21:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376467AbjJaXHI (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Oct 2023 19:07:08 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469BAE4
-        for <rcu@vger.kernel.org>; Tue, 31 Oct 2023 16:07:05 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so10793534a12.1
-        for <rcu@vger.kernel.org>; Tue, 31 Oct 2023 16:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698793623; x=1699398423; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0wUvOEnKmTi8WEvQZdsskLf9E1FQBX1NqUbV0gaScgU=;
-        b=H5bkq0jagJFW0iE3xOfnkj+r6I8OlwKpqSqHGBa/gZxnRdiX0dYJeAZ8/UGJn4sKOc
-         RLSB2L1XwKOhdQj4pkQLbKLtBRF0LrDbnRg7DoQRx6hsUFky88pSvLVMwRGSCRlqJiZZ
-         2BdJpWgPqOydcfAWZml4z2WtAiXciX8JqWTbI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698793623; x=1699398423;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0wUvOEnKmTi8WEvQZdsskLf9E1FQBX1NqUbV0gaScgU=;
-        b=pbAvQZD30xwvI5Hgoef0IJb66WVTXyWhLiffxUlQ6J5wDReNcBtjaQoTMyIO0e9Adp
-         PpBMZMgCTGnsvQN32+1B5N4UXWvRpTRizUpsSjje5Lwqgo5uwUsz4I5NgkPwXiy+/LGO
-         9jj+OJiDa5IxMuQk2yGOr/BiCpwVCDWd5iucpNukK2zEUY5xl93vA2klaNvRieL1r7Cc
-         n69kIjtOO/1anXyaqKAuvcAluU1YVBmjqmSPVwBgy0WFujOIi+X7voNhajVJfjtoheTI
-         thi2qiYFLVHx5uOHKo+v/BnkY0FSWdbDnVrT0r0hPnkKkJm/PpeCHimZPV79etCh9BCJ
-         coDA==
-X-Gm-Message-State: AOJu0Yx8S5NZ9XvqLQvb7NbD9WbJipOZkK1OVdIdxHvJBjvE02jwR5Hz
-        yMmhpZz3FzE0n8I4yS4z0L9/Wf2TU3fUYQAfuqPNeWzf
-X-Google-Smtp-Source: AGHT+IHzYAkr5ThgydHrDIFIJ6eHAFHUMOhqhKxAsEu6/jp/FK04QXBCnSyCBVcoHVpBQ4wEHdqIiQ==
-X-Received: by 2002:a50:8e58:0:b0:543:3df8:cc95 with SMTP id 24-20020a508e58000000b005433df8cc95mr4930224edx.9.1698793623687;
-        Tue, 31 Oct 2023 16:07:03 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id n1-20020a509341000000b0053ed70ebd7csm233046eda.31.2023.10.31.16.07.01
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 16:07:01 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso880680766b.0
-        for <rcu@vger.kernel.org>; Tue, 31 Oct 2023 16:07:01 -0700 (PDT)
-X-Received: by 2002:a17:906:ef0e:b0:9c7:4d3e:1e50 with SMTP id
- f14-20020a170906ef0e00b009c74d3e1e50mr631104ejs.76.1698793621035; Tue, 31 Oct
- 2023 16:07:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZTuf+xNrfqGjHFDK@lothringen> <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
- <ZUDUlQq6hEEPBiCR@lothringen> <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
-In-Reply-To: <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 31 Oct 2023 13:06:44 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
-Message-ID: <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
-Subject: Re: [GIT PULL] RCU changes for v6.7
-To:     paulmck@kernel.org
+        with ESMTP id S1345068AbjKABIC (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 31 Oct 2023 21:08:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6FA10A;
+        Tue, 31 Oct 2023 18:07:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5307BC433C7;
+        Wed,  1 Nov 2023 01:07:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698800878;
+        bh=fpTEmkkF4yZhyMprjFhI57WfkYZd8fsZre7kHOFJmZs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KF6Idb0NZxDfq7CM5a1oAAhtupxfy9QC2ADZ8ONZDg1EuAMd0IhLDPjPVh9ojCHz/
+         MqPtIDZaD4zuHpmM+zHwQ7ElbTCJN/arfzZ3mGOxewmorU/ZUvsSSZSh71hXGlsC5d
+         p0BmmyiXY/i1HvfcDReyqpJwSEadxmPjbLNXbnU0x1A8ZYbKfulzHMBGo2lQi2BiOq
+         56O1ipaZWJzBsSOg2b87JDg/E445DdeFKu3VUPrHvwfS86FirSvr0Oj76ngNKwJ9tE
+         XOu0Cod0V79t2T6whQ6s0WJuVkRXakWqZAdqmu+qZ50GzUZMkSEnfGaESza4ouXL9d
+         vXV7oNdlEShWQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D2845CE0B77; Tue, 31 Oct 2023 18:07:57 -0700 (PDT)
+Date:   Tue, 31 Oct 2023 18:07:57 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
         linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, rcu@vger.kernel.org,
@@ -69,52 +39,93 @@ Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
         Uladzislau Rezki <urezki@gmail.com>,
         Z qiang <qiang.zhang1211@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [GIT PULL] RCU changes for v6.7
+Message-ID: <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZTuf+xNrfqGjHFDK@lothringen>
+ <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
+ <ZUDUlQq6hEEPBiCR@lothringen>
+ <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
+ <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, 31 Oct 2023 at 03:57, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Would it help if we make rcu_stall_chain_notifier_register() print a
-> suitably obnoxious message saying that future RCU CPU stall warnings
-> might be unreliable?
+On Tue, Oct 31, 2023 at 01:06:44PM -1000, Linus Torvalds wrote:
+> On Tue, 31 Oct 2023 at 03:57, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Would it help if we make rcu_stall_chain_notifier_register() print a
+> > suitably obnoxious message saying that future RCU CPU stall warnings
+> > might be unreliable?
+> 
+> It's not the future stall warnings I worry about.
+> 
+> It's literally things like somebody thinking they are being clever,
+> registering a rcu stall notifier that prints out extra information in
+> order to be helpful, and in the process takes a spinlock or something
+> without thinking about it.
+> 
+> And that spinlock might be the *reason* for the RCU stall in the first place.
+> 
+> So now the RCU stall code prints out NOTHING AT ALL, because now the
+> stall notifier itself has deadlocked.
+> 
+> This is *exactly* what has happened before with these kinds of
+> "helpful" exception case notifiers. Because they never trigger in
+> normal loads, they get basically zero testing - and then when bad
+> things happen, it turns out that the "helpful" debug code actually
+> just makes things worse.
+> 
+> Or, if they get testing, they get tested in artificial bad cases (eg
+> "let's just write a busy loop that hangs for 30 seconds to trigger a
+> RCU stall"), which doesn't show any of the issues, because they aren't
+> real bugs with real existing deadlocks.
+> 
+> See what I'm saying? Having notifiers for "sh*t happened" is
+> fundmanetally questionable to begin with, because they get no testing.
+> 
+> And then calling said notifiers *before* you even have the core
+> printout for "Look, things are going down hill quickly", now you've
+> turned a bad situation even worse.
+> 
+> I really think that we should *never* have any kind of notifiers for
+> kernel bugs. They cause problems. The *one* exception is an actual
+> honest-to-goodness kernel debugger, and then it should literally
+> *only* be the debugger that can register a notifier, so that you are
+> *never* in the situation that a kernel without a debugger will just
+> hang because of some bogus debug notifier.
 
-It's not the future stall warnings I worry about.
+All fair points.
 
-It's literally things like somebody thinking they are being clever,
-registering a rcu stall notifier that prints out extra information in
-order to be helpful, and in the process takes a spinlock or something
-without thinking about it.
+Here are the ways forward I can see:
 
-And that spinlock might be the *reason* for the RCU stall in the first place.
+1.	Status quo.  This has all the issues that you call out.
+	People will hurt themselves with it and consume time and effort.
+	So let's not do this.
 
-So now the RCU stall code prints out NOTHING AT ALL, because now the
-stall notifier itself has deadlocked.
+2.	I send you a pure revert.  Those of us who need this keep the
+	patches around and apply them when we need them.  This avoids
+	the problems you point out, but makes it harder to use this
+	where it is needed and useful.
 
-This is *exactly* what has happened before with these kinds of
-"helpful" exception case notifiers. Because they never trigger in
-normal loads, they get basically zero testing - and then when bad
-things happen, it turns out that the "helpful" debug code actually
-just makes things worse.
+3.	Add a default-n Kconfig option that depends on RCU_EXPERT
+	and KEBUG_KERNEL, so that these problems can only arise in
+	specially built kernels.
 
-Or, if they get testing, they get tested in artificial bad cases (eg
-"let's just write a busy loop that hangs for 30 seconds to trigger a
-RCU stall"), which doesn't show any of the issues, because they aren't
-real bugs with real existing deadlocks.
+4.	Same as #3, but use a kernel boot parameter instead of a
+	Kconfig option.
 
-See what I'm saying? Having notifiers for "sh*t happened" is
-fundmanetally questionable to begin with, because they get no testing.
+5.	One of the above other than #2, but complaining (maybe a WARN_ON()
+	or maybe just a printk() at rcu_stall_chain_notifier_register()
+	time, but before the call to atomic_notifier_chain_register().
+	This would mean that the complaint ("hey, you are asking for
+	something that might be dangerous") appears before any RCU CPU
+	stall warning that could possibly trigger a notifier.
 
-And then calling said notifiers *before* you even have the core
-printout for "Look, things are going down hill quickly", now you've
-turned a bad situation even worse.
+Are there any other ways forward?  Either way, which would you prefer?
 
-I really think that we should *never* have any kind of notifiers for
-kernel bugs. They cause problems. The *one* exception is an actual
-honest-to-goodness kernel debugger, and then it should literally
-*only* be the debugger that can register a notifier, so that you are
-*never* in the situation that a kernel without a debugger will just
-hang because of some bogus debug notifier.
-
-              Linus
+							Thanx, Paul
