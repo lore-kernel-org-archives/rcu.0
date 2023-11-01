@@ -2,91 +2,109 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1537AC4332F
-	for <rcu@archiver.kernel.org>; Wed,  1 Nov 2023 03:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7563C4332F
+	for <rcu@archiver.kernel.org>; Wed,  1 Nov 2023 07:49:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjKADfW (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 31 Oct 2023 23:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        id S231600AbjKAHtT (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 1 Nov 2023 03:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231924AbjKADfV (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 31 Oct 2023 23:35:21 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63E7A4;
-        Tue, 31 Oct 2023 20:35:19 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso369224b3a.1;
-        Tue, 31 Oct 2023 20:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698809719; x=1699414519; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4AYaAfrBQMEF3rm9agZrtQ/weHtjQJC7TH+07CV4Lio=;
-        b=hNiJFe2hWRWqcT8E4Pfk7GdFEFHdYU9ZVQqN5thpreM9DQsxXGBilzSmRdaTaFtnnp
-         MHCTyw0fptKGNQVvDeq0PbLyMldSduERS2vOgptZ2GitMcle0rFisJOnhP2pdlXDgnPt
-         74OpzzvWEi5akJyJd4uuXixsGiChIsdQI/IuLanuZ8f+OByL1068QwH6iiJD5qAxJ1fR
-         pIqbCa9F7yUk1SZ3mYgxOmYCavPEn5pOOCDZnE7Er+325fsHXobORPekHooW/MUK5mZq
-         E4nIl3w9HxNWylXZT82DYc8nbw5SI4jffYKzmFJWJsvwoy0NGO+PUhFdK2l7N2RgXWWG
-         LCwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698809719; x=1699414519;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4AYaAfrBQMEF3rm9agZrtQ/weHtjQJC7TH+07CV4Lio=;
-        b=Piy4V/ZkZ1TlVkDW0SrEXunr/nJM226/wBalUgkPhHWF8UaXLjcY6GSeEMHnU1o+eU
-         nhwVyWyl9kiBCvyaShGJRKcXfn3GxEwPVJlB0URwyQSncBXlKZEC9QU5m9NwBJpa0Q+M
-         EzrYFYbgSNdw2tObT8XTq27MaQ0Rmv0QQW9D5pYa7cD6HSoTVEAD8yK8V503IJMKN/8S
-         Ggp3avSnacxgI5nlvGuBstct0477HYJ2fYwbETXkEx3F1oa+PbpBSSQaZ402auiuyhYN
-         Io0iY446j3q2n90744x4payvPqyg3Qcuwpr7ZTmkSMVyTGwM+kIND55JOGCzgn4IonZL
-         IwVA==
-X-Gm-Message-State: AOJu0YysQ9FF2aNMbMWvnJB0FPck91kcGRNcW6IVx7Mf2SZLkHECtkj6
-        M6pQUmVDzM1FVHQSh15bdaM=
-X-Google-Smtp-Source: AGHT+IF3mX4zc556RUaR2jgd8ySpk0ygG0OmR8sbEjicvUr/Sl3cBWGb4IqIu4oDakMCiTY66/B9fQ==
-X-Received: by 2002:a05:6a00:6ca1:b0:6c2:e263:5c3d with SMTP id jc33-20020a056a006ca100b006c2e2635c3dmr1528475pfb.0.1698809719082;
-        Tue, 31 Oct 2023 20:35:19 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
-        by smtp.gmail.com with ESMTPSA id z3-20020aa785c3000000b0069ea08a2a99sm318749pfn.211.2023.10.31.20.35.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 20:35:18 -0700 (PDT)
-From:   Zqiang <qiang.zhang1211@gmail.com>
-To:     paulmck@kernel.org, frederic@kernel.org, joel@joelfernandes.org,
-        boqun.feng@gmail.com
-Cc:     qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu: Force quiescent states only for ongoing grace period
-Date:   Wed,  1 Nov 2023 11:35:07 +0800
-Message-Id: <20231101033507.21651-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S231889AbjKAHtR (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 1 Nov 2023 03:49:17 -0400
+X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Nov 2023 00:49:14 PDT
+Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E28B5FC
+        for <rcu@vger.kernel.org>; Wed,  1 Nov 2023 00:49:14 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id y5rAqxjn51jHcy5rAqb1Lk; Wed, 01 Nov 2023 08:41:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698824503;
+        bh=W0JdcYadX1Uj/95T3fXcyVaHAA0+IQtzR59DL7bY2cg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=k05IFa8GzXylwHKRm10nhBZrgD7pVppqAA7dozugSEw0Fy+64nxdUFNGBCOXE9MVM
+         fa6D/XqpE2vvTEtMUs8821cAnm1QP0K6Vw7ns9Naih7xVsoN+YAygefGd6CExXUTlN
+         Py7BKtTktPAF+9X+Qab78w2BNEUH1d76TfhGxGW60ubrsuqRCN+TyWi/xwquuSdK9s
+         7G7lOyLXOWWQkXeqI+U6OdduGHER7avOFjXT1brQvNRTPyqzBN/pOjqHzWe4bOG1Q5
+         TTUWZ3OVcOPTesfZLtw1fSCDSISILZLqFhaEntd+01EGHmsZT1e0LZexXbtCprNi14
+         OEecP7VhLj3Pw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 01 Nov 2023 08:41:43 +0100
+X-ME-IP: 86.243.2.178
+Message-ID: <37ab9219-a049-4a43-b555-83b1629e5a48@wanadoo.fr>
+Date:   Wed, 1 Nov 2023 08:41:39 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] refscale: Optimize process_durations()
+To:     paulmck@kernel.org
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, rcu@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+References: <bbbab32e3e104bdc2238724a6a4a85e539f49ddd.1698512661.git.christophe.jaillet@wanadoo.fr>
+ <ozbrmbywamyfkv3amsf2dfdacwmi25serwhc75h6fpsahklsmo@rm43srgxumef>
+ <bcd6bfe1-9891-4f22-86ad-361330e47e9d@paulmck-laptop>
+ <a6943003-da31-4ac7-8944-c7dc06381148@paulmck-laptop>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <a6943003-da31-4ac7-8944-c7dc06381148@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-Currently, when running the rcutorture testing, if the fqs_task
-kthread was created, the periodic fqs operations will be performed,
-regardless of whether the grace-period is ongoing. however, if there
-is no ongoing grace-period, invoke the rcu_force_quiescent_state() has
-no effect, because when the new grace-period starting, will clear all
-flags int rcu_state.gp_flags in rcu_gp_init(). this commit therefore add
-rcu_gp_in_progress() check in rcu_force_quiescent_state(), if there is
-no ongoing grace-period, return directly.
+Le 31/10/2023 à 23:47, Paul E. McKenney a écrit :
+> On Tue, Oct 31, 2023 at 11:21:14AM -0700, Paul E. McKenney wrote:
+>> On Mon, Oct 30, 2023 at 09:55:16AM -0700, Davidlohr Bueso wrote:
+>>> On Sat, 28 Oct 2023, Christophe JAILLET wrote:
+>>>
+>>>> process_durations() is not a hot path, but there is no good reason to
+>>>> iterate over and over the data already in 'buf'.
+>>>>
+>>>> Using a seq_buf saves some useless strcat() and the need of a temp buffer.
+>>>> Data is written directly at the correct place.
+>>>
+>>> Makes sense.
+>>>
+>>> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+>>
+>> Queued and pushed, thank you all!
+> 
+> But an allmodconfig build complains about seq_buf_putc() being undefined,
+> that is, not exported.  I suspect that other seq_buf_*() functions in
+> this patch might also be complained about.
+> 
+> I am dropping this for the moment.  Please make it pass an allmodconfig
+> build so that I can pull it in again.  Please see below for the commit.
+> 
+> 							Thanx, Paul
+> 
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/rcu/tree.c | 2 ++
- 1 file changed, 2 insertions(+)
+Ouch!
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index aa4c808978b8..5b4279ef66da 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2338,6 +2338,8 @@ void rcu_force_quiescent_state(void)
- 	struct rcu_node *rnp;
- 	struct rcu_node *rnp_old = NULL;
- 
-+	if (!rcu_gp_in_progress())
-+		return;
- 	/* Funnel through hierarchy to reduce memory contention. */
- 	rnp = raw_cpu_read(rcu_data.mynode);
- 	for (; rnp != NULL; rnp = rnp->parent) {
--- 
-2.17.1
+seq_buf_init(), seq_buf_terminate(), seq_buf_clear() are inlined 
+functions in a .h file, so shouldn't be a problem.
+
+seq_buf_printf() is exported, but seq_buf_putc() is not!
+Really odd to me.
+
+Kees Cook (added in cc) suggests to use this API (see [1]) to avoid some 
+potential issues and ease the management of NULL terminated strings in 
+buffers. (#LinuxHardening).
+
+I'll propose to add the missing EXPORT_SYMBOL_GPL.
+
+CJ
+
+[1]: https://lore.kernel.org/all/202310241629.0A4206316F@keescook/
 
