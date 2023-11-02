@@ -2,397 +2,438 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44CD0C4332F
-	for <rcu@archiver.kernel.org>; Thu,  2 Nov 2023 02:14:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A89CFC4332F
+	for <rcu@archiver.kernel.org>; Thu,  2 Nov 2023 04:35:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348035AbjKBCOD (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Wed, 1 Nov 2023 22:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
+        id S1348268AbjKBEfi (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Thu, 2 Nov 2023 00:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348243AbjKBCN6 (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Wed, 1 Nov 2023 22:13:58 -0400
+        with ESMTP id S1348449AbjKBEfh (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Thu, 2 Nov 2023 00:35:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A112E4;
-        Wed,  1 Nov 2023 19:13:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A2DC433C7;
-        Thu,  2 Nov 2023 02:13:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C1FDC;
+        Wed,  1 Nov 2023 21:35:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC06AC433C7;
+        Thu,  2 Nov 2023 04:35:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698891234;
-        bh=jkIUDeI3F1knwhVBheCexdakRtFmIGMWWw95Tu7GYEg=;
+        s=k20201202; t=1698899730;
+        bh=vkP5ILlDUKxsuCRGEjX+vb+IPKR8azlx5GzsKQin1A0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PGPLfFfwlo6ec/TSxNPVHhpbmSUp3enjOqgmuJupirjQfUEUjMRwhpkRo3JTlsG1v
-         o6tvpTGEImzG3kFfJOP8lKDQm8Ja03TwTOvEWijB0T+32nglYUAiHDlTOPOq+PoNZl
-         T+y1Wz7CgC3PDcvDTjDKINNJo3vuXFkUZPXonrUwEEDncj/U6ZktXI2uszv+CIU5lO
-         Ux2gzRYCKjhegZnZBF8iaGuBj+VBv1xAqxuU5LnJdlqNDqLIZ5UjLLS64prd3u0zqR
-         bTNR5QczQfbow6BhhwoN7O4n9CDXCsJ5QsIYtN552qGPfYOoRS4Zo+shPAj71qYG6J
-         S+oIRJSmOlsyg==
+        b=Kfr7SLgMpSnCbA6c1D4ztUZlyTDIdKZq9BUmoirFgF95kf3EdiLtzKk2bPjtt5ZPj
+         BgOgPdslW84YYPo9EPdHeD12nJRjm0/YFjOF2d1WC8PW4/+4L/oyIRZWwLc0XQwfzF
+         2jT2v1PkluQpQtIrmHYUNRQ8HLnCJ8FW7tvCCtkiugBqw6YrE6a6w12z/iMnPvMUaj
+         lYxqZgjjTzlKL38VoHX0+yw6HYFavwXm8Cn50GZXDXfML8WHEoJ8hk1vBXrud2DAUA
+         n8YnoUiGLiWmUJxif1k9NU4i0t16YW39mR5cYP+HIFBRhm2S1aE5x/PN/zon1XDulp
+         hy+6NYc7UiYvw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9E7FECE091E; Wed,  1 Nov 2023 19:13:53 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 19:13:53 -0700
+        id 4AEBFCE091E; Wed,  1 Nov 2023 21:35:30 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 21:35:30 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, rcu@vger.kernel.org,
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
         Boqun Feng <boqun.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Z qiang <qiang.zhang1211@gmail.com>
-Subject: Re: [GIT PULL] RCU changes for v6.7
-Message-ID: <3e7dd918-7dd5-4d0f-88b5-f11636164a0f@paulmck-laptop>
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v2 1/3] rcu: Reduce synchronize_rcu() latency
+Message-ID: <70578164-6c12-47ca-9528-163b688c1b47@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <ZTuf+xNrfqGjHFDK@lothringen>
- <CAHk-=wjEtLocCnMzPx8ofQ=H538uKXSfn+3iZ5zaU7-+3YdjXA@mail.gmail.com>
- <ZUDUlQq6hEEPBiCR@lothringen>
- <78b18304-c6a5-4ea1-a603-8c8f1d79cc1a@paulmck-laptop>
- <CAHk-=whNWmVnH_b++g5kjT9jKFNwPcx81hxez=pkrozpXoqVvA@mail.gmail.com>
- <7416f684-37e7-4355-a5a0-2b1b5ef1b4d7@paulmck-laptop>
- <CAHk-=wiZZB_P57xUPqUg5j7Toany0FNaWO3Ht+Sks7J=XkYnfA@mail.gmail.com>
- <c83bea5c-b577-4b6a-bf41-6ac7433f15bc@paulmck-laptop>
+References: <20231030131254.488186-1-urezki@gmail.com>
+ <20231030131254.488186-2-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c83bea5c-b577-4b6a-bf41-6ac7433f15bc@paulmck-laptop>
+In-Reply-To: <20231030131254.488186-2-urezki@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 10:40:14AM -0700, Paul E. McKenney wrote:
-> On Wed, Nov 01, 2023 at 07:11:54AM -1000, Linus Torvalds wrote:
-> > On Tue, 31 Oct 2023 at 15:08, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > Here are the ways forward I can see:
-> > >
-> > > 1.      Status quo.  This has all the issues that you call out.
-> > >         People will hurt themselves with it and consume time and effort.
-> > >         So let's not do this.
-> > 
-> > Well, at a *minimum*, I really want that notifier chain call to be
-> > done *after* the core printk's.
-> > 
-> > That way, if it deadlocks or does something else stupid, at least the
-> > core printouts make it out.
-> > 
-> > IOW, I think the notifier should be done perhaps just before the
-> > "panic_on_rcu_stall()" call, not at the top before you've even
-> > reported any stall conditions at all.
+On Mon, Oct 30, 2023 at 02:12:52PM +0100, Uladzislau Rezki (Sony) wrote:
+> A call to a synchronize_rcu() can be optimized from a latency
+> point of view. Workloads which depend on this can benefit of it.
 > 
-> Understood.  But my problem is that the core printk()s destroy the state
-> that the notifier is trying to output.
+> The delay of wakeme_after_rcu() callback, which unblocks a waiter,
+> depends on several factors:
 > 
-> > And yes, I think the trace_rcu_stall_warning() might be better off
-> > later too, but at least trace events are things that get regular
-> > testing in nasty conditions (including NMI etc), so I'm *much* less
-> > worried about those than about "random developers who think they know
-> > what they do and add a notifier".
+> - how fast a process of offloading is started. Combination of:
+>     - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
+>     - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
+>     - other.
+> - when started, invoking path is interrupted due to:
+>     - time limit;
+>     - need_resched();
+>     - if limit is reached.
+> - where in a nocb list it is located;
+> - how fast previous callbacks completed;
 > 
-> Agreed, this is a special debug facility, not something that anyone
-> should use in production.  And also not something that should be used
-> where gdb would do the job.
+> Example:
 > 
-> > And yes, I do think the notifier should be narrowed down a lot, if you
-> > actually want to keep it.
+> 1. On our embedded devices i can easily trigger the scenario when
+> it is a last in the list out of ~3600 callbacks:
 > 
-> Understood, thus a new default-disabled Kconfig option that depends on
-> RCU_EXPERT and DEBUG_KERNEL, along with a default-disabled kernel
-> boot parameter, both of which have to be selected to make anything
-> happen.
+> <snip>
+>   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
+> ...
+>   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
+>   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
+>   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
+> <snip>
 > 
-> > I did not actually hear you say that there is a good use-case for it.
-> > I only saw you say "Those of us who need this", without showing *any*
-> > kind of indication of why anybody would use it in reality.
-> > 
-> > Why the secrecy? There is certainly no current user, nor any
-> > description of what a user would be and what makes that notifier
-> > useful.
-> > 
-> > The commit message also just says "It is sometimes helpful" and some
-> > strange reference to "the subsystem causing the stall to dump its
-> > state". It all sounds very fishy. Why would anybody ever have a known
-> > subsystem causing RCU stalls? Except, of course, for the rcutorture
-> > testing.
+> 2. We use cpuset/cgroup to classify tasks and assign them into
+> different cgroups. For example "backgrond" group which binds tasks
+> only to little CPUs or "foreground" which makes use of all CPUs.
+> Tasks can be migrated between groups by a request if an acceleration
+> is needed.
 > 
-> One use case is dumping out the qspinlock state for an extremely
-> rare lockup.  If you even look at the system cross-eyed, the lockup
-> goes away.  And yes, I should have mentioned this in the commit
-> log, and I apologize for having failed to do so.  I do not expect
-> that the state-dump code would ever be appropriate for mainline.
+> See below an example how "surfaceflinger" task gets migrated.
+> Initially it is located in the "system-background" cgroup which
+> allows to run only on little cores. In order to speed it up it
+> can be temporary moved into "foreground" cgroup which allows
+> to use big/all CPUs:
 > 
-> > Anyway, that all absolutely SCREAMS to me "this is not something
-> > useful in any normal kernel", and so yes:
+> cgroup_attach_task():
+>  -> cgroup_migrate_execute()
+>    -> cpuset_can_attach()
+>      -> percpu_down_write()
+>        -> rcu_sync_enter()
+>          -> synchronize_rcu()
+>    -> now move tasks to the new cgroup.
+>  -> cgroup_migrate_finish()
 > 
-> Agreed, definitely not for any normal kernel!
+> <snip>
+>          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
+>     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
+>    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
+> <snip>
 > 
-> > > 3.      Add a default-n Kconfig option that depends on RCU_EXPERT
-> > >         and KEBUG_KERNEL, so that these problems can only arise in
-> > >         specially built kernels.
-> > >
-> > > 4.      Same as #3, but use a kernel boot parameter instead of a
-> > >         Kconfig option.
-> > 
-> > let's make it clear that this is *not* something that any upstream
-> > kernel would ever do, and the *only* possible use for it is some kind
-> > of external temporary debug patch.
-> > 
-> > See why I so hate things like this? Let's head off any crazy use long
-> > *long* before somebody decides that "Oh, I want to use this".
+> "Boosting a task" depends on synchronize_rcu() latency:
 > 
-> You are absolutely right, a debug tool with this many sharp edges should
-> definitely not be default-enabled.  And needs some scary words in the
-> Kconfig help text.  And a boot-time splat to make people think twice
-> before using it.
+> - first trace shows a completion of synchronize_rcu();
+> - second shows attaching a task to a new group;
+> - last shows a final step when migration occurs.
 > 
-> Apologies for not having thought this through!
+> 3. To address this drawback, maintain a separate track that consists
+> of synchronize_rcu() callers only. After completion of a grace period
+> users are awaken directly, it is limited by allowed threshold, others
+> are deferred(if still exist) to a worker to complete the rest.
 > 
-> I will send a fixup patch before the end of today.
+> 4. This patch reduces the latency of synchronize_rcu() approximately
+> by ~30-40% on synthetic tests. The real test case, camera launch time,
+> shows(time is in milliseconds):
+> 
+> 1-run 542 vs 489 improvement 9%
+> 2-run 540 vs 466 improvement 13%
+> 3-run 518 vs 468 improvement 9%
+> 4-run 531 vs 457 improvement 13%
+> 5-run 548 vs 475 improvement 13%
+> 6-run 509 vs 484 improvement 4%
+> 
+> Synthetic test:
+> 
+> Hardware: x86_64 64 CPUs, 64GB of memory
+> 
+> - 60K tasks(simultaneous);
+> - each task does(1000 loops)
+>      synchronize_rcu();
+>      kfree(p);
+> 
+> default: CONFIG_RCU_NOCB_CPU: takes 323 seconds to complete all users;
+> patch: CONFIG_RCU_NOCB_CPU: takes 240 seconds to complete all users.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-And here is a lightly tested first cut.
+This looks pretty close!  Some questions and comments below, much of
+which being what I managed not to write down in earlier discussions.  :-/
 
-This still invokes the notifier before the stall warning prints.
-If you are absolutely against that approach, then we should just revert.
-In that case, there would be no useful intersection between "acceptable in
-mainline" and "useful in testing involving persistent transient states".
-Hey, worse things could happen.  ;-)
+> ---
+>  kernel/rcu/tree.c     | 154 +++++++++++++++++++++++++++++++++++++++++-
+>  kernel/rcu/tree_exp.h |   2 +-
+>  2 files changed, 154 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 78554e7181dd..f04846b543de 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1384,6 +1384,125 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  }
+>  
+> +/*
+> + * There are three lists for handling synchronize_rcu() users.
+> + * A first list corresponds to new coming users, second for users
+> + * which wait for a grace period and third is for which a grace
+> + * period is passed.
+> + */
+> +static struct sr_normal_state {
+> +	struct llist_head srs_next;	/* request a GP users. */
+> +	struct llist_head srs_wait;	/* wait for GP users. */
+> +	struct llist_head srs_done;	/* ready for GP users. */
+> +
+> +	/*
+> +	 * In order to add a batch of nodes to already
+> +	 * existing srs-done-list, a tail of srs-wait-list
+> +	 * is maintained.
+> +	 */
+> +	struct llist_node *srs_wait_tail;
+> +} sr;
 
-With that, please see below.
+It would be good to put these fields into the rcu_state structure.
+Unlike kfree_rcu(), I have no ambitions for the mm guys ever taking
+this one.  ;-)
 
-Oh, and the rcutorture changes are needed to avoid an unsolicited
-splat during the usual rcutorture testing.
+> +/* Disabled by default. */
+> +static int rcu_normal_wake_from_gp;
+> +module_param(rcu_normal_wake_from_gp, int, 0644);
+> +
+> +static void rcu_sr_normal_complete(struct llist_node *node)
+> +{
+> +	struct rcu_synchronize *rs = container_of(
+> +		(struct rcu_head *) node, struct rcu_synchronize, head);
+> +	unsigned long oldstate = (unsigned long) rs->head.func;
+> +
+> +	WARN_ONCE(!poll_state_synchronize_rcu(oldstate),
+> +		"A full grace period is not passed yet: %lu",
+> +		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
 
-Thoughts?
+This needs to either:
 
-							Thanx, Paul
+1.	Use poll_state_synchronize_rcu_full(), or
 
-------------------------------------------------------------------------
+2.	Avoid firing unless expedited grace periods have been disabled.
+	Note that forcing synchronize_rcu() to synchronize_rcu_expedited()
+	does not help because there might still be call_rcu() invocations
+	advancing normal grace periods.
 
-commit fd4a4cfd0c085c70c76f9b667a001d05462983d7
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed Nov 1 18:28:38 2023 -0700
+As it stands, you can have false-positive WARN_ONCE()s.  These can happen
+when a normal and an expedited grace period overlap in time.
 
-    rcu: Restrict access to RCU CPU stall notifiers
-    
-    Although the RCU CPU stall notifiers can be useful for dumping state when
-    tracking down delicate forward-progress bugs where NUMA effects cause
-    cache lines to be delivered to a given CPU regularly, but always in a
-    state that prevents that CPU from making forward progress.  These bugs can
-    be detected by the RCU CPU stall-warning mechanism, but in some cases,
-    the stall-warnings printk()s disrupt the forward-progress bug before
-    any useful state can be obtained.
-    
-    Unfortunately, the notifier mechanism added by 5b404fdabacf ("rcu: Add RCU
-    CPU stall notifier") can make matters worse if used at all carelessly.
-    For example, if the stall warning was caused by a lock not being
-    released, then any attempt to acquire that lock in the notifier will hang.
-    This will prevent not only the notifier from producing any useful output,
-    but it will also prevent the stall-warning message from ever appearing.
-    
-    This commit therefore hides this new RCU CPU stall notifier
-    mechanism under a new RCU_CPU_STALL_NOTIFIER Kconfig option that
-    depends on both DEBUG_KERNEL and RCU_EXPERT.  In addition, the
-    rcupdate.rcu_cpu_stall_notifiers=1 kernel boot parameter must also
-    be specified.  The RCU_CPU_STALL_NOTIFIER Kconfig option's help text
-    contains a warning and explains the dangers of careless use, recommending
-    lockless notifier code.  In addition, a WARN() is triggered each time
-    that an attempt is made to register a stall-warning notifier in kernels
-    built with CONFIG_RCU_CPU_STALL_NOTIFIER=y.
-    
-    This combination of measures will keep use of this mechanism confined to
-    debug kernels and away from routine deployments.
-    
-    Fixes: 5b404fdabacf ("rcu: Add RCU CPU stall notifier")
-    Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> +	/* Finally. */
+> +	complete(&rs->completion);
+> +}
+> +
+> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> +{
+> +	struct llist_node *done, *rcu, *next;
+> +
+> +	done = llist_del_all(&sr.srs_done);
+> +	if (!done)
+> +		return;
+> +
+> +	llist_for_each_safe(rcu, next, done)
+> +		rcu_sr_normal_complete(rcu);
+> +}
+> +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
+> +
+> +/*
+> + * This is hard-coded and it is a maximum number of
+> + * synchronize_rcu() users(might be +1 extra), which
+> + * are awaken directly by the rcu_gp_kthread(). The
+> + * reset is deferred to a dedicated worker.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index dca212b6adfbb..fbf249ca7b229 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5289,6 +5289,12 @@
- 			Dump ftrace buffer after reporting RCU CPU
- 			stall warning.
- 
-+	rcupdate.rcu_cpu_stall_notifiers= [KNL]
-+			Provide RCU CPU stall notifiers, but see the
-+			warnings in the RCU_CPU_STALL_NOTIFIER Kconfig
-+			option's help text.  TL;DR:  You almost certainly
-+			do not want rcupdate.rcu_cpu_stall_notifiers.
-+
- 	rcupdate.rcu_cpu_stall_suppress= [KNL]
- 			Suppress RCU CPU stall warning messages.
- 
-diff --git a/include/linux/rcu_notifier.h b/include/linux/rcu_notifier.h
-index ebf371364581d..5640f024773b3 100644
---- a/include/linux/rcu_notifier.h
-+++ b/include/linux/rcu_notifier.h
-@@ -13,7 +13,7 @@
- #define RCU_STALL_NOTIFY_NORM	1
- #define RCU_STALL_NOTIFY_EXP	2
- 
--#ifdef CONFIG_RCU_STALL_COMMON
-+#if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
- 
- #include <linux/notifier.h>
- #include <linux/types.h>
-@@ -21,12 +21,12 @@
- int rcu_stall_chain_notifier_register(struct notifier_block *n);
- int rcu_stall_chain_notifier_unregister(struct notifier_block *n);
- 
--#else // #ifdef CONFIG_RCU_STALL_COMMON
-+#else // #if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
- 
- // No RCU CPU stall warnings in Tiny RCU.
- static inline int rcu_stall_chain_notifier_register(struct notifier_block *n) { return -EEXIST; }
- static inline int rcu_stall_chain_notifier_unregister(struct notifier_block *n) { return -ENOENT; }
- 
--#endif // #else // #ifdef CONFIG_RCU_STALL_COMMON
-+#endif // #else // #if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
- 
- #endif /* __LINUX_RCU_NOTIFIER_H */
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 2984de629f749..9b0b52e1836fa 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -105,6 +105,31 @@ config RCU_CPU_STALL_CPUTIME
- 	  The boot option rcupdate.rcu_cpu_stall_cputime has the same function
- 	  as this one, but will override this if it exists.
- 
-+config RCU_CPU_STALL_NOTIFIER
-+	bool "Provide RCU CPU-stall notifiers"
-+	depends on RCU_STALL_COMMON
-+	depends on DEBUG_KERNEL
-+	depends on RCU_EXPERT
-+	default n
-+	help
-+	  WARNING:  You almost certainly do not want this!!!
-+
-+	  Enable RCU CPU-stall notifiers, which are invoked just before
-+	  printing the RCU CPU stall warning.  As such, bugs in notifier
-+	  callbacks can prevent stall warnings from being printed.
-+	  And the whole reason that a stall warning is being printed is
-+	  that something is hung up somewhere.	Therefore, the notifier
-+	  callbacks must be written extremely carefully, preferably
-+	  containing only lockless code.  After all, it is quite possible
-+	  that the whole reason that the RCU CPU stall is happening in
-+	  the first place is that someone forgot to release whatever lock
-+	  that you are thinking of acquiring.  In which case, having your
-+	  notifier callback acquire that lock will hang, preventing the
-+	  RCU CPU stall warning from appearing.
-+
-+	  Say Y here if you want RCU CPU stall notifiers (you don't want them)
-+	  Say N if you are unsure.
-+
- config RCU_TRACE
- 	bool "Enable tracing for RCU"
- 	depends on DEBUG_KERNEL
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index b531c33e9545b..3a2f8c5b60318 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -265,6 +265,7 @@ static inline bool rcu_stall_is_suppressed_at_boot(void)
- #ifdef CONFIG_RCU_STALL_COMMON
- 
- extern int rcu_cpu_stall_ftrace_dump;
-+extern int rcu_cpu_stall_notifiers;
- extern int rcu_cpu_stall_suppress;
- extern int rcu_cpu_stall_timeout;
- extern int rcu_exp_cpu_stall_timeout;
-@@ -659,10 +660,10 @@ static inline bool rcu_cpu_beenfullyonline(int cpu) { return true; }
- bool rcu_cpu_beenfullyonline(int cpu);
- #endif
- 
--#ifdef CONFIG_RCU_STALL_COMMON
-+#if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
- int rcu_stall_notifier_call_chain(unsigned long val, void *v);
--#else // #ifdef CONFIG_RCU_STALL_COMMON
-+#else // #if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
- static inline int rcu_stall_notifier_call_chain(unsigned long val, void *v) { return NOTIFY_DONE; }
--#endif // #else // #ifdef CONFIG_RCU_STALL_COMMON
-+#endif // #else // #if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
- 
- #endif /* __LINUX_RCU_H */
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 30fc9d34e3297..f486ce7a26017 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2450,10 +2450,12 @@ static int rcu_torture_stall(void *args)
- 	unsigned long stop_at;
- 
- 	VERBOSE_TOROUT_STRING("rcu_torture_stall task started");
--	ret = rcu_stall_chain_notifier_register(&rcu_torture_stall_block);
--	if (ret)
--		pr_info("%s: rcu_stall_chain_notifier_register() returned %d, %sexpected.\n",
--			__func__, ret, !IS_ENABLED(CONFIG_RCU_STALL_COMMON) ? "un" : "");
-+	if (rcu_cpu_stall_notifiers) {
-+		ret = rcu_stall_chain_notifier_register(&rcu_torture_stall_block);
-+		if (ret)
-+			pr_info("%s: rcu_stall_chain_notifier_register() returned %d, %sexpected.\n",
-+				__func__, ret, !IS_ENABLED(CONFIG_RCU_STALL_COMMON) ? "un" : "");
-+	}
- 	if (stall_cpu_holdoff > 0) {
- 		VERBOSE_TOROUT_STRING("rcu_torture_stall begin holdoff");
- 		schedule_timeout_interruptible(stall_cpu_holdoff * HZ);
-@@ -2498,9 +2500,11 @@ static int rcu_torture_stall(void *args)
- 	}
- 	pr_alert("%s end.\n", __func__);
- 	if (!ret) {
--		ret = rcu_stall_chain_notifier_unregister(&rcu_torture_stall_block);
--		if (ret)
--			pr_info("%s: rcu_stall_chain_notifier_unregister() returned %d.\n", __func__, ret);
-+		if (rcu_cpu_stall_notifiers) {
-+			ret = rcu_stall_chain_notifier_unregister(&rcu_torture_stall_block);
-+			if (ret)
-+				pr_info("%s: rcu_stall_chain_notifier_unregister() returned %d.\n", __func__, ret);
-+		}
- 	}
- 	torture_shutdown_absorb("rcu_torture_stall");
- 	while (!kthread_should_stop())
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index ac8e86babe449..5d666428546b0 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -1061,6 +1061,7 @@ static int __init rcu_sysrq_init(void)
- }
- early_initcall(rcu_sysrq_init);
- 
-+#ifdef CONFIG_RCU_CPU_STALL_NOTIFIER
- 
- //////////////////////////////////////////////////////////////////////////////
- //
-@@ -1081,7 +1082,13 @@ static ATOMIC_NOTIFIER_HEAD(rcu_cpu_stall_notifier_list);
-  */
- int rcu_stall_chain_notifier_register(struct notifier_block *n)
- {
--	return atomic_notifier_chain_register(&rcu_cpu_stall_notifier_list, n);
-+	int rcsn = rcu_cpu_stall_notifiers;
-+
-+	WARN(1, "Adding %pS() to RCU stall notifier list (%s).\n", n->notifier_call,
-+	     rcsn ? "possibly suppressing RCU CPU stall warnings" : "failed, so all is well");
-+	if (rcsn)
-+		return atomic_notifier_chain_register(&rcu_cpu_stall_notifier_list, n);
-+	return -EEXIST;
- }
- EXPORT_SYMBOL_GPL(rcu_stall_chain_notifier_register);
- 
-@@ -1115,3 +1122,5 @@ int rcu_stall_notifier_call_chain(unsigned long val, void *v)
- {
- 	return atomic_notifier_call_chain(&rcu_cpu_stall_notifier_list, val, v);
- }
-+
-+#endif // #ifdef CONFIG_RCU_CPU_STALL_NOTIFIER
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c534d6806d3d5..95d6738d70f63 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -541,6 +541,11 @@ EXPORT_SYMBOL_GPL(torture_sched_setaffinity);
- #ifdef CONFIG_RCU_STALL_COMMON
- int rcu_cpu_stall_ftrace_dump __read_mostly;
- module_param(rcu_cpu_stall_ftrace_dump, int, 0644);
-+int rcu_cpu_stall_notifiers __read_mostly; // !0 = provide stall notifiers (rarely useful)
-+EXPORT_SYMBOL_GPL(rcu_cpu_stall_notifiers);
-+#ifdef CONFIG_RCU_CPU_STALL_NOTIFIER
-+module_param(rcu_cpu_stall_notifiers, int, 0444);
-+#endif // #ifdef CONFIG_RCU_CPU_STALL_NOTIFIER
- int rcu_cpu_stall_suppress __read_mostly; // !0 = suppress stall warnings.
- EXPORT_SYMBOL_GPL(rcu_cpu_stall_suppress);
- module_param(rcu_cpu_stall_suppress, int, 0644);
+s/reset/rest/
+
+> + */
+> +#define MAX_SR_WAKE_FROM_GP 5
+> +
+> +/*
+> + * Helper function for rcu_gp_cleanup().
+> + */
+> +static void rcu_sr_normal_gp_cleanup(void)
+> +{
+> +	struct llist_node *head, *tail, *pos;
+> +	int i = 0;
+> +
+> +	if (llist_empty(&sr.srs_wait))
+> +		return;
+> +
+> +	tail = READ_ONCE(sr.srs_wait_tail);
+> +	head = __llist_del_all(&sr.srs_wait);
+> +
+> +	llist_for_each_safe(pos, head, head) {
+> +		rcu_sr_normal_complete(pos);
+> +
+> +		if (++i == MAX_SR_WAKE_FROM_GP) {
+> +			/* If last, process it also. */
+> +			if (head && !head->next)
+> +				continue;
+> +			break;
+
+Save a line this way?
+
+			if (!head || head->next)
+				break;
+
+> +		}
+> +	}
+> +
+> +	if (head) {
+> +		/* Can be not empty. */
+> +		llist_add_batch(head, tail, &sr.srs_done);
+> +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+> +	}
+> +}
+> +
+> +/*
+> + * Helper function for rcu_gp_init().
+> + */
+> +static void rcu_sr_normal_gp_init(void)
+> +{
+> +	struct llist_node *head, *tail;
+> +
+> +	if (llist_empty(&sr.srs_next))
+> +		return;
+> +
+> +	tail = llist_del_all(&sr.srs_next);
+> +	head = llist_reverse_order(tail);
+
+Hmmm...  I am not loving this list-reverse operation.  Once someone
+figures out how to generate a long list, it is going to hurt quite badly.
+
+Except...  Why do we need to reverse the list in the first place?
+It appears that one reason is to be able to get the tail of the list.
+Is it also necessary to do the wakeups in order, or could they be
+reversed?  It seems like they should -- the average latency would remain
+the same.  If so, couldn't we have a single llist with two pointers into
+it (more accurately, to its tail pointers), one for the first done item,
+and the other for the first item waiting on the current grace period?
+
+Then it would not be necessary to reverse the list, nor would it be
+necessary to move elemetns from one list to another.  Just copy one
+pointer to the next.
+
+If it ever becomes necessary to put extra elements back, which would be
+challenging if there were no other elements in the list.  The usual way
+to handle this is to have a dummy element to isolate the enqueuers from
+the requeuer.  The GP kthread then enqueues the dummy element if the
+list is empty, which means that enqueue and optimized wakeup are never
+looking at the same pointer.  Alternatively, just use dummy elements to
+mark the segments in the list, with the added pointers always referencing
+these dummy elements.  Might need a VC to make this make sense...
+
+Or is there some reason that this approach would break things?
+
+> +	/*
+> +	 * A waiting list of GP should be empty on this step,
+> +	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> +	 * rolls it over. If not, it is a BUG, warn a user.
+> +	 */
+> +	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
+> +
+> +	WRITE_ONCE(sr.srs_wait_tail, tail);
+> +	__llist_add_batch(head, tail, &sr.srs_wait);
+
+So sr.srs_wait_tail keeps a pointer into the list, and acts kind of like
+a rcu_segcblist tail pointer.
+
+> +}
+> +
+> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> +{
+> +	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
+
+s/&rs->head/&rs->head.next/?
+
+> +}
+> +
+>  /*
+>   * Initialize a new grace period.  Return false if no grace period required.
+>   */
+> @@ -1418,6 +1537,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+>  	/* Record GP times before starting GP, hence rcu_seq_start(). */
+>  	rcu_seq_start(&rcu_state.gp_seq);
+>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> +	rcu_sr_normal_gp_init();
+>  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+>  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+>  	raw_spin_unlock_irq_rcu_node(rnp);
+> @@ -1787,6 +1907,9 @@ static noinline void rcu_gp_cleanup(void)
+>  	}
+>  	raw_spin_unlock_irq_rcu_node(rnp);
+>  
+> +	// Make synchronize_rcu() users aware of the end of old grace period.
+> +	rcu_sr_normal_gp_cleanup();
+> +
+>  	// If strict, make all CPUs aware of the end of the old grace period.
+>  	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
+>  		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+> @@ -3500,6 +3623,35 @@ static int rcu_blocking_is_gp(void)
+>  	return true;
+>  }
+>  
+> +/*
+> + * Helper function for the synchronize_rcu() API.
+> + */
+> +static void synchronize_rcu_normal(void)
+> +{
+> +	struct rcu_synchronize rs;
+> +
+> +	if (READ_ONCE(rcu_normal_wake_from_gp)) {
+> +		init_rcu_head_on_stack(&rs.head);
+> +		init_completion(&rs.completion);
+> +
+> +		/*
+> +		 * This code might be preempted, therefore take a GP
+> +		 * snapshot before adding a request.
+> +		 */
+> +		rs.head.func = (void *) get_state_synchronize_rcu();
+> +		rcu_sr_normal_add_req(&rs);
+> +
+> +		/* Kick a GP and start waiting. */
+> +		(void) start_poll_synchronize_rcu();
+> +
+> +		/* Now we can wait. */
+> +		wait_for_completion(&rs.completion);
+> +		destroy_rcu_head_on_stack(&rs.head);
+> +	} else {
+> +		wait_rcu_gp(call_rcu_hurry);
+> +	}
+
+Please save some indentation as follows:
+
+	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
+		wait_rcu_gp(call_rcu_hurry);
+		return;
+	}
+	init_rcu_head_on_stack(&rs.head);
+	...
+
+Same number of lines.
+
+> +}
+> +
+>  /**
+>   * synchronize_rcu - wait until a grace period has elapsed.
+>   *
+> @@ -3551,7 +3703,7 @@ void synchronize_rcu(void)
+>  		if (rcu_gp_is_expedited())
+>  			synchronize_rcu_expedited();
+>  		else
+> -			wait_rcu_gp(call_rcu_hurry);
+> +			synchronize_rcu_normal();
+>  		return;
+>  	}
+>  
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index 6d7cea5d591f..279a37beb05a 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -987,7 +987,7 @@ void synchronize_rcu_expedited(void)
+>  
+>  	/* If expedited grace periods are prohibited, fall back to normal. */
+>  	if (rcu_gp_is_normal()) {
+> -		wait_rcu_gp(call_rcu_hurry);
+> +		synchronize_rcu_normal();
+>  		return;
+>  	}
+>  
+> -- 
+> 2.30.2
+> 
