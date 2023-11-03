@@ -2,110 +2,97 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BCFBC4332F
-	for <rcu@archiver.kernel.org>; Fri,  3 Nov 2023 18:06:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 025ADC4332F
+	for <rcu@archiver.kernel.org>; Fri,  3 Nov 2023 21:33:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjKCSGa (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Fri, 3 Nov 2023 14:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        id S231258AbjKCVdH (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Fri, 3 Nov 2023 17:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjKCSGa (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:06:30 -0400
+        with ESMTP id S230273AbjKCVdH (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Fri, 3 Nov 2023 17:33:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18FC1B9;
-        Fri,  3 Nov 2023 11:06:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F98BC433C8;
-        Fri,  3 Nov 2023 18:06:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995F11A8;
+        Fri,  3 Nov 2023 14:33:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97329C433C9;
+        Fri,  3 Nov 2023 21:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699034787;
-        bh=IFDcXU62Y6AY7KAbz4GH/eO1AKs/ZOiOmheqQ7Q3C1E=;
+        s=k20201202; t=1699045991;
+        bh=+Igi/lFwr57gBQvQdonrHcdpinPyg9JShPR8XF/aqCY=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pt93r4Xh2Uxy0VwYyvbPFkC9AdQxRrNNB9x0zkJLXhJ5wgP8xMDOecChJde5pgwgX
-         kDQOWtHylnwOBmM0CupcRMgHwT2OcYRvLxhtmMnE9XLwZMj2VMn6WXZXEdf+rquCNc
-         RNon4t/nPnLR8sLTeXjoAmciF+0klYR+929uMqDn8rry41BmcSAEizX5wRhk39R6IZ
-         /7UqEjuVQMl8AjnoCWrjZE4jN3iQlj4A9ztngPawb13rVjw/5rx8UVPA0zZwfU6F14
-         b8DKoSmhtP6FOb0oBztarLUT1UFa1MsvtNRrWjcN8qFijWEjMm+WA+2QrW5emFJchi
-         k7RMLA0NBM8eQ==
+        b=MRo4zvTlhjpcwyhHiYMFbi3T+LMghihO8qW21zwDiKZAKHv/+4W9hEuAR2GlPmbQK
+         2iVtRSvMrf5Q0E98DyQ5v8rPiPJL22ISoCr+dQnkH9NSVH7ASDOCyYdwVWQ1rOVgVX
+         m+RG+oQpvS081h5YIo52yqXQ3zKANORoiqXqeBeUC8Y7OkLgjLOGcUcN0vKyy1VK3V
+         6IkSTbWYuWDMgwdvOJxruUGk+f5r6JidYzlQMoCGdNmh9UEGfxZT7NawE5J9BaLLl6
+         +5RqzeKT5FtKf+d4qDu2e/SmJrI4Bq77fP1u5FtqJTgngykwvZCIUH/mq2uAchS8ly
+         r8xvtnFi9BW5Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E3624CE0D1D; Fri,  3 Nov 2023 11:06:26 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 11:06:26 -0700
+        id 359F6CE0E17; Fri,  3 Nov 2023 14:13:11 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 14:13:11 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     frederic@kernel.org, joel@joelfernandes.org, boqun.feng@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Force quiescent states only for ongoing grace period
-Message-ID: <b9b3502d-4b45-4bcd-b08a-a177bba80cca@paulmck-laptop>
+To:     Zqiang <qiang.zhang1211@gmail.com>
+Cc:     frederic@kernel.org, joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Add fqs_holdoff check before the fqs_task is
+ created
+Message-ID: <b8fdfee6-793b-4c88-9af4-152e4803f7b2@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20231101033507.21651-1-qiang.zhang1211@gmail.com>
- <9f15280f-45a3-4e3f-832d-cea5c77eb449@paulmck-laptop>
- <CALm+0cULD+R1EmWVRi1RZJJgD=CGb2oxxGMZojU7A9z8Wj_QVQ@mail.gmail.com>
+References: <20231103072639.11426-1-qiang.zhang1211@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALm+0cULD+R1EmWVRi1RZJJgD=CGb2oxxGMZojU7A9z8Wj_QVQ@mail.gmail.com>
+In-Reply-To: <20231103072639.11426-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 03:14:11PM +0800, Z qiang wrote:
-> >
-> > On Wed, Nov 01, 2023 at 11:35:07AM +0800, Zqiang wrote:
-> > > Currently, when running the rcutorture testing, if the fqs_task
-> > > kthread was created, the periodic fqs operations will be performed,
-> > > regardless of whether the grace-period is ongoing. however, if there
-> > > is no ongoing grace-period, invoke the rcu_force_quiescent_state() has
-> > > no effect, because when the new grace-period starting, will clear all
-> > > flags int rcu_state.gp_flags in rcu_gp_init(). this commit therefore add
-> > > rcu_gp_in_progress() check in rcu_force_quiescent_state(), if there is
-> > > no ongoing grace-period, return directly.
-> > >
-> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> >
-> > Nice optimization, but one question below.
-> >
-> >                                                 Thanx, Paul
-> >
-> > > ---
-> > >  kernel/rcu/tree.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index aa4c808978b8..5b4279ef66da 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2338,6 +2338,8 @@ void rcu_force_quiescent_state(void)
-> > >       struct rcu_node *rnp;
-> > >       struct rcu_node *rnp_old = NULL;
-> > >
-> > > +     if (!rcu_gp_in_progress())
-> > > +             return;
-> >
-> > Suppose that the grace period that was in progress above ends right
-> > at this point in the code.  We will still do the useless grace
-> > forcing of quiescent states.  Which means that this code path
-> > does need to be tested.
-> >
-> > So, when you run rcutorture with this change, how often has the
-> > grace period ended before this function returns?  If that happens
-> > reasonably often, say more than once per minute or so, then this
-> > works nicely.  If not, we do need to do something to make sure
-> > that that code path gets tested.
-> >
-> > Thoughts?
+On Fri, Nov 03, 2023 at 03:26:39PM +0800, Zqiang wrote:
+> For rcutorture tests that support fqs operations and set fqs_duration
+> greater than zero, the fqs_task kthread will be created. but if the
+> fqs_holdoff is not set, the default value is zero, this cause fqs_task
+> enter a long-term busy loop and won't voluntarily give up the CPU until
+> stopped by kthread_stop(). this commit therefore add for fqs_holdoff check
+> before the fqs_task is created, make sure the fqs_task is created when
+> the fqs_holdoff is also greater than zero.
 > 
-> Thanks for the suggestion, I will add some debug information to test again.
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 
-Very good, and I look forward to seeing what you come up with!
+Queued and pushed, thank you!
 
 							Thanx, Paul
 
-> Thanks
-> Zqiang
-> 
-> >
-> > >       /* Funnel through hierarchy to reduce memory contention. */
-> > >       rnp = raw_cpu_read(rcu_data.mynode);
-> > >       for (; rnp != NULL; rnp = rnp->parent) {
-> > > --
-> > > 2.17.1
-> > >
+------------------------------------------------------------------------
+
+commit 964f05cdec9f84be006fd836d64d04e79a50cb31
+Author: Zqiang <qiang.zhang1211@gmail.com>
+Date:   Fri Nov 3 15:26:39 2023 +0800
+
+    rcutorture: Add fqs_holdoff check before fqs_task is created
+    
+    For rcutorture tests on RCU implementations that support
+    force-quiescent-state operations and that set the fqs_duration module
+    parameter greater than zero, the fqs_task kthread will be created.
+    However, if the fqs_holdoff module parameter is not set, then its default
+    value of zero will cause fqs_task enter a long-term busy loop until
+    stopped by kthread_stop().  This commit therefore adds a fqs_holdoff
+    check before the fqs_task is created, making sure that whenever the
+    fqs_task is created, the fqs_holdoff will be greater than zero.
+    
+    Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 83999e57b3eaf..9f0e6c1cad443 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -3886,7 +3886,9 @@ rcu_torture_init(void)
+ 	}
+ 	if (fqs_duration < 0)
+ 		fqs_duration = 0;
+-	if (fqs_duration) {
++	if (fqs_holdoff < 0)
++		fqs_holdoff = 0;
++	if (fqs_duration && fqs_holdoff) {
+ 		/* Create the fqs thread */
+ 		firsterr = torture_create_kthread(rcu_torture_fqs, NULL,
+ 						  fqs_task);
