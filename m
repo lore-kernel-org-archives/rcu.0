@@ -2,43 +2,42 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C003CC0018C
-	for <rcu@archiver.kernel.org>; Mon,  6 Nov 2023 23:14:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5C77C4167B
+	for <rcu@archiver.kernel.org>; Mon,  6 Nov 2023 23:15:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbjKFXOq (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 6 Nov 2023 18:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
+        id S233575AbjKFXPQ (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Mon, 6 Nov 2023 18:15:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233419AbjKFXOp (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:14:45 -0500
+        with ESMTP id S233487AbjKFXO4 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Mon, 6 Nov 2023 18:14:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8D183;
-        Mon,  6 Nov 2023 15:14:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0327DC433C8;
-        Mon,  6 Nov 2023 23:14:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB7210CB;
+        Mon,  6 Nov 2023 15:14:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33A01C433CA;
+        Mon,  6 Nov 2023 23:14:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312482;
-        bh=KBys1jNrKX8/EucXe/ANwjitylh0JOMnhGByTfQ2CUk=;
+        s=k20201202; t=1699312492;
+        bh=nH7ua12l/437prLse1i5LGVQRNDMxr2wpXgADoEIiMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjaM5R/0Qr3dJj1NSZuLbp0gBrXfVaPL9oAl6boBS9B4crKdiRpj5Zu5kkI1NEVYQ
-         WvgDu/MuM67zXvvxtW30FnsHuifEB4KRHLkeqWra9l5wKNKZVQCfUK8twLcUuMRRs1
-         Ga0sprUj5nZ7O8YRO4WIj3FQbck8QwMG7U3ezjXMlmdVtaphXaz+sN6a1yGyZiK8ZG
-         8//17nfuP29UJ6ZJy59y0tKAeZEnqFPyDneX2JBLI9wp2kWRh2cwm8x/qqIXTUEnc8
-         89rV+uqqO3aIeRaExMMn4azKBkOG2NEEd6yRULCwVqaW60vJltaFBVTNaCgpuQTfv/
-         QaVJ+BfN5o/Bw==
+        b=OH3XpyGKEQCkz3GUQWdsz0Q963X30pE3GKywhh72U07FZKBatE3VXM7NzMHMvr+ev
+         mk7MIjjaOFdXfA+ehc04tH8AAcMMDGnu451KdCiOIWbzmQLpZvL8BHwYLDTVhnoFIx
+         vNNDXNjJkK0ALMNKJRnSo26uca6J8422Em70M3xshirNPL8oq4lkHR0PrScyescqId
+         csrWaZB/8uWaHfd6oz2ei9QvwHXECVL/UtmoNMTUH2XjR52RGWxUh2EAybTupPC6TM
+         QzxPkiRg0u0xpB+pIlNeU/Tj9oBhP+kt+NGh/g6HMNNU9S11N72CWpB6DiXfKOlx14
+         hiyjaCh329lXQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Denis Arefev <arefev@swemel.ru>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Yong He <alexyonghe@tencent.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        David Laight <David.Laight@aculab.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, jiangshanlai@gmail.com,
-        josh@joshtriplett.org, rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 03/13] srcu: Fix srcu_struct node grpmask overflow on 64-bit systems
-Date:   Mon,  6 Nov 2023 18:14:16 -0500
-Message-ID: <20231106231435.3734790-3-sashal@kernel.org>
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Like Xu <likexu@tencent.com>, Sasha Levin <sashal@kernel.org>,
+        jiangshanlai@gmail.com, paulmck@kernel.org, josh@joshtriplett.org,
+        rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 09/13] srcu: Only accelerate on enqueue time
+Date:   Mon,  6 Nov 2023 18:14:22 -0500
+Message-ID: <20231106231435.3734790-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106231435.3734790-1-sashal@kernel.org>
 References: <20231106231435.3734790-1-sashal@kernel.org>
@@ -51,64 +50,66 @@ Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-From: Denis Arefev <arefev@swemel.ru>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-[ Upstream commit d8d5b7bf6f2105883bbd91bbd4d5b67e4e3dff71 ]
+[ Upstream commit 8a77f38bcd28d3c22ab7dd8eff3f299d43c00411 ]
 
-The value of a bitwise expression 1 << (cpu - sdp->mynode->grplo)
-is subject to overflow due to a failure to cast operands to a larger
-data type before performing the bitwise operation.
+Acceleration in SRCU happens on enqueue time for each new callback. This
+operation is expected not to fail and therefore any similar attempt
+from other places shouldn't find any remaining callbacks to accelerate.
 
-The maximum result of this subtraction is defined by the RCU_FANOUT_LEAF
-Kconfig option, which on 64-bit systems defaults to 16 (resulting in a
-maximum shift of 15), but which can be set up as high as 64 (resulting
-in a maximum shift of 63).  A value of 31 can result in sign extension,
-resulting in 0xffffffff80000000 instead of the desired 0x80000000.
-A value of 32 or greater triggers undefined behavior per the C standard.
+Moreover accelerations performed beyond enqueue time are error prone
+because rcu_seq_snap() then may return the snapshot for a new grace
+period that is not going to be started.
 
-This bug has not been known to cause issues because almost all kernels
-take the default CONFIG_RCU_FANOUT_LEAF=16.  Furthermore, as long as a
-given compiler gives a deterministic non-zero result for 1<<N for N>=32,
-the code correctly invokes all SRCU callbacks, albeit wasting CPU time
-along the way.
+Remove these dangerous and needless accelerations and introduce instead
+assertions reporting leaking unaccelerated callbacks beyond enqueue
+time.
 
-This commit therefore substitutes the correct 1UL for the buggy 1.
-
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Signed-off-by: Denis Arefev <arefev@swemel.ru>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: David Laight <David.Laight@aculab.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Co-developed-by: Yong He <alexyonghe@tencent.com>
+Signed-off-by: Yong He <alexyonghe@tencent.com>
+Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Co-developed-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
+Signed-off-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
+Reviewed-by: Like Xu <likexu@tencent.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/srcutree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/srcutree.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index b3e9bc3b60f0b..a1fcb8566b2e3 100644
+index a1fcb8566b2e3..dbb5116bb0200 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
- 				snp->grplo = cpu;
- 			snp->grphi = cpu;
- 		}
--		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-+		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
- 	}
- 	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
- 	return true;
-@@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
- 	int cpu;
- 
- 	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
--		if (!(mask & (1 << (cpu - snp->grplo))))
-+		if (!(mask & (1UL << (cpu - snp->grplo))))
- 			continue;
- 		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
- 	}
+@@ -782,8 +782,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+ 	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
+ 	rcu_segcblist_advance(&sdp->srcu_cblist,
+ 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+-	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+-				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
++	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+ 	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
+ 	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
+ 	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
+@@ -1692,6 +1691,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+ 	ssp = sdp->ssp;
+ 	rcu_cblist_init(&ready_cbs);
+ 	spin_lock_irq_rcu_node(sdp);
++	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+ 	rcu_segcblist_advance(&sdp->srcu_cblist,
+ 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+ 	if (sdp->srcu_cblist_invoking ||
+@@ -1721,8 +1721,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+ 	 */
+ 	spin_lock_irq_rcu_node(sdp);
+ 	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+-	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+-				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+ 	sdp->srcu_cblist_invoking = false;
+ 	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
+ 	spin_unlock_irq_rcu_node(sdp);
 -- 
 2.42.0
 
