@@ -2,164 +2,136 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D98CAC4332F
-	for <rcu@archiver.kernel.org>; Wed,  8 Nov 2023 03:44:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D50C4167B
+	for <rcu@archiver.kernel.org>; Wed,  8 Nov 2023 10:57:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjKHDol (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Tue, 7 Nov 2023 22:44:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
+        id S235606AbjKHK5A (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Wed, 8 Nov 2023 05:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKHDol (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Tue, 7 Nov 2023 22:44:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B81711B
-        for <rcu@vger.kernel.org>; Tue,  7 Nov 2023 19:44:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB222C433C7;
-        Wed,  8 Nov 2023 03:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699415078;
-        bh=EXVY+vyy6pNqqXWsr2boeeF5VH7WMdQzL5DVRRoFOew=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hX1azFKqFO2HgsDK1Wcuw8Aeu8yAjlxvP9Gx4gYy3wue+mXDMVNlJQvi9Vxb6lmQm
-         5+BezVgSoqMr3osAx5i6f+etmLLxw2XsQ9AVdLhOEMrUe983B7eSADbMpi7po9Ui+E
-         qPZWlSdbDHguJeO9JlUzFQpVyyNyrfNB4pqVkeiY36Kxr0QkTHhdFuleYvKbLfUk/X
-         jcM75y8C0Hmr6LuCk55FT3ZyaTdbzqZ6qeIzRcYAFc+Cz0NAaTESiUopQvkhUgwLxr
-         VIM8lSXwbKH3FTYW6JJtvw21K30YNOf6wP1rMM7EgK3R8nMx5oHkEItSLzKLVTCl07
-         lTz8016VPg0fQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5EE23CE0B6B; Tue,  7 Nov 2023 19:44:37 -0800 (PST)
-Date:   Tue, 7 Nov 2023 19:44:37 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     rcu@vger.kernel.org
-Subject: Re: [bug report] rcu: Restrict access to RCU CPU stall notifiers
-Message-ID: <48a6763a-fe83-4d65-b99d-1ee79c1cb1db@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <5da8a140-8988-43e6-a2c9-31534b90ec01@moroto.mountain>
+        with ESMTP id S1344193AbjKHK4c (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Wed, 8 Nov 2023 05:56:32 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2154719B3;
+        Wed,  8 Nov 2023 02:56:30 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c6cb4a79deso7362971fa.1;
+        Wed, 08 Nov 2023 02:56:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699440988; x=1700045788; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mogb3IhGt4Q2N3obqjOBm5LdYq5oV+x18gHfAYgpPNk=;
+        b=RD2RE0iVUoFJPo33S4DqIS6GVUIYd5V9d8V8baW8q5QvyxQlzius10qGmw49Tf5rAa
+         tP6G8MBhCi/DvqnUmJReIoHxC3BxyuNWYfgJLOP+Ucx0Y/yuiP+45bsFHAij5u/cufRP
+         tDedE1hMfNlgfBY0lvEBv1IJ5oKr75g+w0lD6bZQIPVj1Us95NpUIwT53jgFXi7w7MMf
+         W9e1HupkO40SHQlWmyPdWU0W9kIJhpf+npw1b+1eOhAk27PEVD356Oy7TRviSeUOMgfC
+         ytEoeVQgGgcUSh03kiVlchcEX1hAzfdHPVsE8eX40G7IFMEzsa/oOwN+GHhzZXrq8Uws
+         p0RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699440988; x=1700045788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mogb3IhGt4Q2N3obqjOBm5LdYq5oV+x18gHfAYgpPNk=;
+        b=wfqUBIjcDPRLxZQTZqFGAdSLTpHbo7+wI0b5l+DarKIyF5/rLlZOVP/SscbhjfGXnO
+         a1kY3e9p2cM8KQSCurSX5x5yvKJB0Ex7rb2qE4Q6TbpWczgw6UCn+eQSg2eIFRZdfbkJ
+         u2uq2EaOpCvndue04s5w06w8AmTtlvkKhf8tY7b9SX1bguSUYVrWBSDLL0T3L7eY9IlK
+         ptfWkxSejLqF5DcSzoaB2OYcFpg6/66rl5TSUimMWiOg7rPuAAPuOfvabp/CiV372kmt
+         Nrw2TFBXq1vOJicEU3mf6kHm6HPA0ynJ3Gv9rsObJno8ZjS/bTBcolXIWJlKTDQmmLfC
+         zN/w==
+X-Gm-Message-State: AOJu0Yzdyjx+tuKTZr/AlHj5IvkKmYz578FkgI/SnqI56IivXv8moM3/
+        p73iAYGzIWGFLCi6sFXLE4I=
+X-Google-Smtp-Source: AGHT+IEVyArZPgncj1YKFJ3k7sVO9cmkBEulfPZ4Grh0yx492fXesW0whNpmZqqjPLub18SygXbpbw==
+X-Received: by 2002:a2e:2f10:0:b0:2c5:332:f18d with SMTP id v16-20020a2e2f10000000b002c50332f18dmr1920319ljv.2.1699440987967;
+        Wed, 08 Nov 2023 02:56:27 -0800 (PST)
+Received: from pc636 (host-90-233-220-95.mobileonline.telia.com. [90.233.220.95])
+        by smtp.gmail.com with ESMTPSA id 13-20020a2e164d000000b002bce3123639sm1879274ljw.98.2023.11.08.02.56.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 02:56:27 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 8 Nov 2023 11:56:25 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v2 1/3] rcu: Reduce synchronize_rcu() latency
+Message-ID: <ZUtpWbUfdesFWvDw@pc636>
+References: <20231030131254.488186-1-urezki@gmail.com>
+ <20231030131254.488186-2-urezki@gmail.com>
+ <70578164-6c12-47ca-9528-163b688c1b47@paulmck-laptop>
+ <ZUjWWpqOQObm8yaz@pc636>
+ <988c2023-f97b-4706-8a97-e829bc030245@paulmck-laptop>
+ <ZUpH7BqS3PldQf5K@pc636>
+ <9cd799fd-e4e9-4a24-9e91-0443592b2960@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5da8a140-8988-43e6-a2c9-31534b90ec01@moroto.mountain>
+In-Reply-To: <9cd799fd-e4e9-4a24-9e91-0443592b2960@paulmck-laptop>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 06:19:37PM +0300, Dan Carpenter wrote:
-> Hello Paul E. McKenney,
+> > 
+> > Do you have something that can easily trigger it? I mean some proposal
+> > or steps to test. Probably i should try what you wrote, regarding
+> > toggling from user space.
+> > 
+> > > I can imagine ways around this, but they are a bit ugly.  They end
+> > > up being things like recording a timestamp on every sysfs change to
+> > > rcu_normal, and then using that timestamp to deduce whether there could
+> > > possibly have been sysfs activity on rcu_normal in the meantime.
+> > > 
+> > > It feels like it should be so easy...  ;-)
+> > > 
+> > Hmm.. Yes it requires more deep analysis :)
 > 
-> The patch 7939f0d7b28c: "rcu: Restrict access to RCU CPU stall
-> notifiers" from Nov 1, 2023 (linux-next), leads to the following
-> Smatch static checker warning:
+> Maybe make that WARN_ONCE() condition also test a separate Kconfig
+> option that depends on both DEBUG_KERNEL and RCU_EXPERT?
 > 
-> 	kernel/rcu/rcutorture.c:2502 rcu_torture_stall()
-> 	error: uninitialized symbol 'ret'.
-> 
-> kernel/rcu/rcutorture.c
->     2446 static int rcu_torture_stall(void *args)
->     2447 {
->     2448         int idx;
->     2449         int ret;
->     2450         unsigned long stop_at;
->     2451 
->     2452         VERBOSE_TOROUT_STRING("rcu_torture_stall task started");
->     2453         if (rcu_cpu_stall_notifiers) {
->     2454                 ret = rcu_stall_chain_notifier_register(&rcu_torture_stall_block);
->     2455                 if (ret)
->     2456                         pr_info("%s: rcu_stall_chain_notifier_register() returned %d, %sexpected.\n",
->     2457                                 __func__, ret, !IS_ENABLED(CONFIG_RCU_STALL_COMMON) ? "un" : "");
-> 
-> ret is only initialized if rcu_cpu_stall_notifiers is true.
-> 
->     2458         }
->     2459         if (stall_cpu_holdoff > 0) {
->     2460                 VERBOSE_TOROUT_STRING("rcu_torture_stall begin holdoff");
->     2461                 schedule_timeout_interruptible(stall_cpu_holdoff * HZ);
->     2462                 VERBOSE_TOROUT_STRING("rcu_torture_stall end holdoff");
->     2463         }
->     2464         if (!kthread_should_stop() && stall_gp_kthread > 0) {
->     2465                 VERBOSE_TOROUT_STRING("rcu_torture_stall begin GP stall");
->     2466                 rcu_gp_set_torture_wait(stall_gp_kthread * HZ);
->     2467                 for (idx = 0; idx < stall_gp_kthread + 2; idx++) {
->     2468                         if (kthread_should_stop())
->     2469                                 break;
->     2470                         schedule_timeout_uninterruptible(HZ);
->     2471                 }
->     2472         }
->     2473         if (!kthread_should_stop() && stall_cpu > 0) {
->     2474                 VERBOSE_TOROUT_STRING("rcu_torture_stall begin CPU stall");
->     2475                 stop_at = ktime_get_seconds() + stall_cpu;
->     2476                 /* RCU CPU stall is expected behavior in following code. */
->     2477                 idx = cur_ops->readlock();
->     2478                 if (stall_cpu_irqsoff)
->     2479                         local_irq_disable();
->     2480                 else if (!stall_cpu_block)
->     2481                         preempt_disable();
->     2482                 pr_alert("%s start on CPU %d.\n",
->     2483                           __func__, raw_smp_processor_id());
->     2484                 while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
->     2485                                     stop_at))
->     2486                         if (stall_cpu_block) {
->     2487 #ifdef CONFIG_PREEMPTION
->     2488                                 preempt_schedule();
->     2489 #else
->     2490                                 schedule_timeout_uninterruptible(HZ);
->     2491 #endif
->     2492                         } else if (stall_no_softlockup) {
->     2493                                 touch_softlockup_watchdog();
->     2494                         }
->     2495                 if (stall_cpu_irqsoff)
->     2496                         local_irq_enable();
->     2497                 else if (!stall_cpu_block)
->     2498                         preempt_enable();
->     2499                 cur_ops->readunlock(idx);
->     2500         }
->     2501         pr_alert("%s end.\n", __func__);
-> --> 2502         if (!ret) {
-> 
-> Uninitialized here
+Do you mean to introduce a new Kconfig? For example CONFIG_DEBUG_SRS:
 
-Good catch, thank you!!!
+<snip>
+config DEBUG_SRS
+        bool "Provide debugging asserts for normal synchronize_rcu() call"
+        depends on DEBUG_KERNEL && RCU_EXPERT
+        help
+	   ...
+<snip>
 
->     2503                 if (rcu_cpu_stall_notifiers) {
+> > > > I was thinking about read_lock()/write_lock() since we have many readers
+> > > > and only one writer. But i do not really like it either.
+> > > 
+> > > This might be a hint that we should have multiple lists, perhaps one
+> > > per CPU.  Or lock contention could be used to trigger the transition
+> > > from a single list to multiple lists. as is done in SRCU and tasks RCU.
+> > >
+> > I do not consider to be a sync call as heavily used as other callbacks
+> > which require several workers to handle, IMHO. From the other hand my
+> > experiments show that to handle 60K-100K by NOCB gives even worse results.
+> > 
+> > > 
+> > > But I bet that there are several ways to make things work.
+> > > 
+> > Right. The main concern with read_lock()/write_lock() is a PREEMPT_RT
+> > kernels where it is a rt-mutex. It would be good to avoid of using any
+> > blocking in the gp-kthread since it is a gp driver.
 > 
-> But maybe we can just reverse the tests or delete one of the conditions?
+> RCU is pretty low-level, so it is OK with a raw spinlock for the list
+> manipulation.  But only the list manipulation itself.  Perhaps you are
+> worried about lock contention, but in that case, there is also the issue
+> of memory contention for the llist code.
 > 
->     2504                         ret = rcu_stall_chain_notifier_unregister(&rcu_torture_stall_block);
->     2505                         if (ret)
->     2506                                 pr_info("%s: rcu_stall_chain_notifier_unregister() returned %d.\n", __func__, ret);
->     2507                 }
->     2508         }
->     2509         torture_shutdown_absorb("rcu_torture_stall");
->     2510         while (!kthread_should_stop())
->     2511                 schedule_timeout_interruptible(10 * HZ);
->     2512         return 0;
->     2513 }
+I do not consider a lock nor memory contention as an issue here. Whereas
+blocking on rt-mutex in the gp-kthread i consider as "not good to go with".
+raw-spinlocks are OK, but it is a per-cpu or per-node approach which i tend
+to avoid, if not, then probably per-cpu-or-node and merge everything into
+one llist to offload by one worker.
 
-How does the following patch look, to be folded into the original with
-attribution?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 9f0e6c1cad443..50ac86a348768 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2503,12 +2503,10 @@ static int rcu_torture_stall(void *args)
- 		cur_ops->readunlock(idx);
- 	}
- 	pr_alert("%s end.\n", __func__);
--	if (!ret) {
--		if (rcu_cpu_stall_notifiers) {
--			ret = rcu_stall_chain_notifier_unregister(&rcu_torture_stall_block);
--			if (ret)
--				pr_info("%s: rcu_stall_chain_notifier_unregister() returned %d.\n", __func__, ret);
--		}
-+	if (rcu_cpu_stall_notifiers && !ret) {
-+		ret = rcu_stall_chain_notifier_unregister(&rcu_torture_stall_block);
-+		if (ret)
-+			pr_info("%s: rcu_stall_chain_notifier_unregister() returned %d.\n", __func__, ret);
- 	}
- 	torture_shutdown_absorb("rcu_torture_stall");
- 	while (!kthread_should_stop())
+--
+Uladzislau Rezki
