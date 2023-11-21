@@ -2,66 +2,121 @@ Return-Path: <rcu-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAE2AC5AD4C
-	for <rcu@archiver.kernel.org>; Mon, 20 Nov 2023 14:30:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20F56C61D92
+	for <rcu@archiver.kernel.org>; Tue, 21 Nov 2023 12:33:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbjKTOar (ORCPT <rfc822;rcu@archiver.kernel.org>);
-        Mon, 20 Nov 2023 09:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        id S231360AbjKUMd0 (ORCPT <rfc822;rcu@archiver.kernel.org>);
+        Tue, 21 Nov 2023 07:33:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233653AbjKTOaq (ORCPT <rfc822;rcu@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:30:46 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2108136;
-        Mon, 20 Nov 2023 06:30:42 -0800 (PST)
-Date:   Mon, 20 Nov 2023 15:30:39 +0100
+        with ESMTP id S229954AbjKUMd0 (ORCPT <rfc822;rcu@vger.kernel.org>);
+        Tue, 21 Nov 2023 07:33:26 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9459C11C;
+        Tue, 21 Nov 2023 04:33:19 -0800 (PST)
+Date:   Tue, 21 Nov 2023 13:33:15 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1700490640;
+        s=2020; t=1700569997;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pzHlHnI4SFnhkGX3Kin1WzRbq9IYRqP2MnYzoUAaEKI=;
-        b=n+fIfGfZPUT6M5QKQE1AvyjiYdgDNROHEOMoqYVQDqSWlTVGf8c+hCpeEvPYQII+vROy4H
-        UCyUspWnYDhs9jAJ/DQMOf6IBTBOKik1VbqvPkHmVDEnaYoy0RGKuh10rnf9PKibhjdhOI
-        x0dImiE3CAYVImJ+UFNHNVOaj6VXNn4+OYAC15zPQTF0kY1jOlnGHLNUMklqbpPJaiDkq+
-        hUbp0NgPh38H/91Jsa/HFM/1WW9tkqKVgZdBppc7p6xPsHikXqIz8UGnUc8CoSBH+hP/hL
-        aNMTt2xuaLKvKcRpoeD23+xM9NGgiBU5+8Dvi12zlnSLrT5F8uKM2Fx2vKo0xw==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Fh9e3GaErBHGJCOCbK/EGCyKE1R80+6heNDm0N0TMWA=;
+        b=wRATZsQk4Ria7Rl7ltcBbbJTT3Ilc9PeqBCPZJtujOZ9ckY4Js7fjsSeJU9HwCP6aSCSh2
+        Lz+cmtIpDw014hyQGiwFtek83644Yn9ATk2kff11HAdoTCSi9jjk9ZEnksd+0cew2jHMzO
+        omoQiROzwzTLF9lpFXV1K6OGM8qB3U5BN4i2ndTscIr5ATXpb4ZK3cK0oFZs+eh/KESx+J
+        Le/+rhkhh5EbMxWAVS45j7aAJ4vl/CDvxzLlBi6FpXdnNa7J9pojdjVjhrukpu0G21zKx3
+        AithaSGpHvriir/YVHTnrGR4PuURPQrb08QoYGGVTeUyMip7oO03TlImdsv34g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1700490640;
+        s=2020e; t=1700569997;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pzHlHnI4SFnhkGX3Kin1WzRbq9IYRqP2MnYzoUAaEKI=;
-        b=5/kzGng8ya+jY75vHP7fb2OixYhDJ/zjc6Q5INIdUJ9WDiHs3wHPTRiI53zK5Gz41N9VVi
-        Ucst14fkHxRZ5rAA==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Fh9e3GaErBHGJCOCbK/EGCyKE1R80+6heNDm0N0TMWA=;
+        b=x+PC4P4BkaQPUae8UReQEYwUBsiT86OWBEWK14JS9Wj7In+IcXfjZsDaduUOuer4mu7mdd
+        SuLm2Cxb4bdaQnCA==
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [rt-devel:linux-6.6.y-rt] [printk]  78f4b59c6f:
- BUG:kernel_failed_in_early-boot_stage,last_printk:early_console_in_setup_code
-Message-ID: <20231120143039.HvK0o_uj@linutronix.de>
-References: <202311161555.3ee16fc9-oliver.sang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: [REPOST PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
+ access.
+Message-ID: <20231121123315.egrgopGN@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202311161555.3ee16fc9-oliver.sang@intel.com>
 Precedence: bulk
 List-ID: <rcu.vger.kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 
-On 2023-11-16 15:43:38 [+0800], kernel test robot wrote:
-> Hello,
-Hi,
+It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
+triggers a lockdep if used from NMI because lockdep expects a deadlock
+since nothing disables NMIs while the lock is acquired.
 
-> kernel test robot noticed "BUG:kernel_failed_in_early-boot_stage,last_printk:early_console_in_setup_code" on:
-> 
-> commit: 78f4b59c6faa7afe24b973210151d4a82b5669eb ("printk: Update the printk series.")
-> https://git.kernel.org/cgit/linux/kernel/git/rt/linux-rt-devel.git linux-6.6.y-rt
+Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
+complains if used from NMI.
 
-as in the previous report, it is the 32bit printk issue. Will be fixed
-in next update.
-Thank you.
+Fixes: f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
+Link: https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
 
-Sebastian
+This is a repost of
+	https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
+
+Based on the discussion there I *think* this is preferred over the NMI
+check in lock_acquire().
+But then PeterZ also pointed out that he has a problem with
+	f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
+
+because trace_.*_rcuidle machinery. This looks okay because the _rcuidle
+part is using SRCU and the rcu_dereference_raw() tracepoint_func is
+using RCU + SRCU in its free part.
+
+ include/linux/rcupdate.h |    6 ++++++
+ include/linux/srcu.h     |    2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -301,6 +301,11 @@ static inline void rcu_lock_acquire(stru
+ 	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+ }
+ 
++static inline void rcu_try_lock_acquire(struct lockdep_map *map)
++{
++	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
++}
++
+ static inline void rcu_lock_release(struct lockdep_map *map)
+ {
+ 	lock_release(map, _THIS_IP_);
+@@ -315,6 +320,7 @@ int rcu_read_lock_any_held(void);
+ #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+ 
+ # define rcu_lock_acquire(a)		do { } while (0)
++# define rcu_try_lock_acquire(a)	do { } while (0)
+ # define rcu_lock_release(a)		do { } while (0)
+ 
+ static inline int rcu_read_lock_held(void)
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe
+ 
+ 	srcu_check_nmi_safety(ssp, true);
+ 	retval = __srcu_read_lock_nmisafe(ssp);
+-	rcu_lock_acquire(&ssp->dep_map);
++	rcu_try_lock_acquire(&ssp->dep_map);
+ 	return retval;
+ }
+ 
