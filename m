@@ -1,44 +1,184 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F43D17FA
-	for <rcu@vger.kernel.org>; Thu, 23 Nov 2023 02:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="A1hi1EX0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B217EC433C7;
-	Thu, 23 Nov 2023 02:47:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700707665;
-	bh=rRbIXqjq8DKBA6vW+7glleky65j8TQodsqrm6IeWtY0=;
-	h=Date:From:To:Subject:From;
-	b=A1hi1EX0h5fEjOBb74Wjx+JglaZ4ErNKzTR0lHyT4lsPefGvN0EtcCWYweK71QmTT
-	 cDes1HERJKQm0WBWVDwzOYcYmr8zkEEQjvltv7BY7/75tG/JgDd6cbOjJV8fQvslfJ
-	 mAu4NhRmnKt1Xe6WkYLPVjG6D2S1NbWyBmhU83wY=
-Date: Wed, 22 Nov 2023 21:47:44 -0500
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: rcu@vger.kernel.org
-Subject: PSA: this list has moved to new vger infra (no action required)
-Message-ID: <20231122-mutant-lyrebird-of-stamina-728016@nitro>
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="qTD1Lomg"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2188DA2
+	for <rcu@vger.kernel.org>; Wed, 22 Nov 2023 22:28:54 -0800 (PST)
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 868223F18D
+	for <rcu@vger.kernel.org>; Thu, 23 Nov 2023 06:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1700720932;
+	bh=KDCZsrpFj7eJm5TsscoUxhvwf8t1zu/BgHh2L9uW6fQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=qTD1LomgZ2KXILT42+wTdLmfHkqjUEb5tic1+a2bAIyyr48LbNTCwmZOaPWnPhBF0
+	 eI7pep0Ju9SIt1D1drWLotg8KkXKFgfd3/e3r1Fk1gimdCIJbkQa71Ork5GJHnfXml
+	 M/5v6CNgrb/Y3nWZ59PQvlI0IJb1bskt6XWq1+CyQKM6IRTNdeqjICZGfGlTufSXC9
+	 AO255R2fX1sMTBTbOvnBf77DzQawz/+7ZDyVE6CtP4avONmXq0s9mLII+QlwPQLIbR
+	 jqEMbcUnUOeT5BxDNexWoDQSpoeED4MtISfI/YnCcKVmOQ5XDKDmKyON8CycMS+7nn
+	 +8mdVrOClzFNA==
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c50ef18b04so4910441fa.1
+        for <rcu@vger.kernel.org>; Wed, 22 Nov 2023 22:28:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700720932; x=1701325732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KDCZsrpFj7eJm5TsscoUxhvwf8t1zu/BgHh2L9uW6fQ=;
+        b=Oz9geVmsNNTY4SvpIqlEbK2xXrg+rKVJsN6vDRwTWnO1gCHU8g7usmE+yMqfS8xxW5
+         cvX/4mj7CCQEwJ875g5I1eNDcCMAPHcyS8J4zZSBPZo9q2WynocVpjvtoErrxr1YfKRn
+         xs+vQ74HrCV054FG6dTveXFC84sdDHiB9KBAp09ikKPd0eEsg+EtVYmz1nrscBqtnPZi
+         tEmMJhKpZrHIBw5m+EzioGFn29w/I4wCXpH0f4wpwcpgUHKEdOUp8jEdOH7U3ARtBTi/
+         B6WlsQEC0qIzBcC7IM/W9VmZnCkKd/M7hqzGcHqOGlNSRrGDhHMONLPnE31H/fQQErQm
+         /l9A==
+X-Gm-Message-State: AOJu0Yzp0I5UTsMxJH2Y1yLKzsOZdW2ayeBolhUzG4pW4PHzgBixUQgq
+	aHYx5/zHIi+BSqW+m7Onp8foSveqRFn74JAMhtiAaE1YPrsV3Aw1i2MDGPWQzQ2JcJ+lAz/Wf0B
+	/B0UKtxbdG/3SDKcmeROfKImGRfMBKw==
+X-Received: by 2002:a2e:8095:0:b0:2c2:c450:c2d0 with SMTP id i21-20020a2e8095000000b002c2c450c2d0mr3086710ljg.24.1700720931781;
+        Wed, 22 Nov 2023 22:28:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFeapI2zr/lkHVWEAuf15/aw5+xLb5nbTdIJh1ap18WkP3QVTzHdOPCwXTHdl2XzfqhlnLIQg==
+X-Received: by 2002:a2e:8095:0:b0:2c2:c450:c2d0 with SMTP id i21-20020a2e8095000000b002c2c450c2d0mr3086697ljg.24.1700720931407;
+        Wed, 22 Nov 2023 22:28:51 -0800 (PST)
+Received: from localhost (host-79-54-179-199.retail.telecomitalia.it. [79.54.179.199])
+        by smtp.gmail.com with ESMTPSA id my47-20020a1709065a6f00b009920a690cd9sm366280ejc.59.2023.11.22.22.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 22:28:51 -0800 (PST)
+Date: Thu, 23 Nov 2023 07:28:50 +0100
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Qais Yousef <qyousef@layalina.io>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Provide a boot time parameter to enable lazy RCU
+Message-ID: <ZV7xIjSq1l1q7gRI@gpd>
+References: <20231121205304.315146-1-qyousef@layalina.io>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231121205304.315146-1-qyousef@layalina.io>
 
-Hello, all:
+On Tue, Nov 21, 2023 at 08:53:04PM +0000, Qais Yousef wrote:
+> To allow more flexible opt-in arrangements while still provide a single
+> kernel for distros, provide a boot time parameter to enable lazy RCU.
+> 
+> Specify:
+> 
+> 	rcutree.enable_rcu_lazy
+> 
+> Which also requires
+> 
+> 	rcu_nocbs=all
+> 
+> at boot time to enable lazy RCU assuming CONFIG_RCU_LAZY=y. The
+> parameter will be ignored if CONFIG_RCU_LAZY is not set.
+> 
+> With this change now lazy RCU is disabled by default if the boot
+> parameter is not set even when CONFIG_RCU_LAZY is enabled.
 
-This list has been migrated to the new vger infrastructure. No action is
-required on your part and there should be no change in how you interact with
-this list.
+I'm wondering if we should make this enabled by default if
+CONFIG_RCU_LAZY=y, so we don't break the previous behavior, and those
+who want it disabled (despite having CONFIG_RCU_LAZY=y in their .config)
+can add rcutree.enable_rcu_lazy=0 to the boot options.
 
-This message acts as a verification test that the archives are properly
-updating.
+Thanks for working on this!
+-Andrea
 
-If something isn't working or looking right, please reach out to
-helpdesk@kernel.org.
-
-Best regards,
--K
+> 
+> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> ---
+> 
+> Makes sense to remove the CONFIG_RCU_LAZY now we have a boot time param?
+> 
+> We can make it a static key too if it *really* matters.
+> 
+> Thanks to Joel for helping initially in reviewing this patch which was intended
+> originally for Android.
+> 
+> I got some requests to make this a runtime modifiable for init scripts; but
+> Paul suggested there shall be dragons. So RO it is.
+> 
+> 
+>  .../admin-guide/kernel-parameters.txt         |  5 ++++
+>  kernel/rcu/tree.c                             | 26 ++++++++++++++++++-
+>  2 files changed, 30 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..2f0386a12aa7 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5021,6 +5021,11 @@
+>  			this kernel boot parameter, forcibly setting it
+>  			to zero.
+>  
+> +	rcutree.enable_rcu_lazy= [KNL]
+> +			To save power, batch RCU callbacks and flush after
+> +			delay, memory pressure or callback list growing too
+> +			big.
+> +
+>  	rcuscale.gp_async= [KNL]
+>  			Measure performance of asynchronous
+>  			grace-period primitives such as call_rcu().
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 3ac3c846105f..e0885905b3f6 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2718,7 +2718,30 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+>  	}
+>  }
+>  
+> +static bool enable_rcu_lazy;
+>  #ifdef CONFIG_RCU_LAZY
+> +/* Enable lazy rcu at boot time */
+> +static int param_set_rcu_lazy(const char *val, const struct kernel_param *kp)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * Make sure a grace period has passed before and after flipping the
+> +	 * switch.
+> +	 */
+> +	rcu_barrier();
+> +	ret = param_set_bool(val, kp);
+> +	rcu_barrier();
+> +
+> +	return ret;
+> +}
+> +static const struct kernel_param_ops rcu_lazy_ops = {
+> +	.flags = KERNEL_PARAM_OPS_FL_NOARG,
+> +	.set = param_set_rcu_lazy,
+> +	.get = param_get_bool,
+> +};
+> +module_param_cb(enable_rcu_lazy, &rcu_lazy_ops, &enable_rcu_lazy, 0444);
+> +
+>  /**
+>   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+>   * flush all lazy callbacks (including the new one) to the main ->cblist while
+> @@ -2792,7 +2815,8 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+>   */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  {
+> -	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> +	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY) &&
+> +			  READ_ONCE(enable_rcu_lazy));
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu);
+>  
+> -- 
+> 2.34.1
