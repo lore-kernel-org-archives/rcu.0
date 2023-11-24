@@ -1,87 +1,116 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E42A4B5D6
-	for <rcu@vger.kernel.org>; Thu, 23 Nov 2023 18:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5cE95NO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4F37C433C7;
-	Thu, 23 Nov 2023 18:28:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700764122;
-	bh=juVhUro89Fo8QDxH3ZtHvI4AUpp8fiX7rwhPxMpfQ9Q=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=D5cE95NOndOrBzIL+r2Cvf2QRI0uPZVCdp/5RDWgxw3/IlUmcIbIWomUE+mMEWums
-	 FBGq+f7G7N1kL2ZuobMQ3HouxWeB5C39J1bVeLYo/I0LAM3K5cE/KZLmFpl6G/k3p/
-	 5YJ2wMsV7VRaaASHNN/ShdWvp/1fLrlcD6L8x9/eUHm47Bvg6PEUy3Q016tEFvPV8j
-	 Ai7xasWcKLcO0h5e6hEHSCPN1pWo5q+8A1/N5vqIOU2qPYU1NXnv/qX5TSrjBUYKmS
-	 GS+z8pZOev9INpb7gnBi/jOCDR2NPsTxdWBNVjucri5PChFMyXln9ovrFqh0ULayY9
-	 fLRpBac4UPomA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 33D67CE0D0D; Thu, 23 Nov 2023 10:28:42 -0800 (PST)
-Date: Thu, 23 Nov 2023 10:28:42 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Qais Yousef <qyousef@layalina.io>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrea Righi <andrea.righi@canonical.com>,
-	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Provide a boot time parameter to enable lazy RCU
-Message-ID: <29158f4d-f278-4344-9def-a10f728fa67a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231121205304.315146-1-qyousef@layalina.io>
- <811b2157-1009-4339-8ff2-0433512f3094@paulmck-laptop>
- <20231121214415.ovoskvbjarzpxi6e@airbuntu>
- <8ad4e628-7a88-490c-a54d-df09f851f189@paulmck-laptop>
- <20231121221556.vtpmboamgszbt3jf@airbuntu>
- <4ec83bf4-4c56-4f47-8473-151b57b80840@paulmck-laptop>
- <ZV-UEjyjjOHaRVPh@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mN0Tsh3/"
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CFF2D65
+	for <rcu@vger.kernel.org>; Fri, 24 Nov 2023 11:06:00 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7c451cc7fe8so1327400241.0
+        for <rcu@vger.kernel.org>; Fri, 24 Nov 2023 11:06:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700852759; x=1701457559; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YNyfHMRrBzIt574Bt9GDCoLKWnWTa1vAH4W/mLYLces=;
+        b=mN0Tsh3/XHYL1XKmGy0x6MsXPgIJ7gy3XSWbEF6OOXa8gtc5zQmYRZQkJyv7R8tvRH
+         /ILNU5zDg4se6Njd7GigErtLRLlguXSyQEBmSbtm8WDSUOb+Y3ySwHn5JSfJ8tVBEcb+
+         4GYg6S2WeuKjeFx20rCkZQ8KHP4Xp2EzOjWCDQKkh29S7TIuXmZUW47+SmX73yKv+E5O
+         EopplRtHh6vPkniijB/CT5KM1fMtP1dLN7Z1/yXOVzNrukK/YmyU7VKcRi7ndZeSSL0M
+         eT0pUfx5u+JcqJkAI8I17rHwXzmJqalO9OJ25W1vla860ol0vmsvgjBw/eIB3IXse9Ha
+         +ucw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700852759; x=1701457559;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YNyfHMRrBzIt574Bt9GDCoLKWnWTa1vAH4W/mLYLces=;
+        b=NTP6eSgUJXgQp8lca1Iskr5mVBtLI97d3z4lGV4zAQFeJiCATQCOilsEB4xbY7df0x
+         vTqTh7lxqagoqmKTuj7oCRcnpUfE1QB/uRWNRkIPZDSvyQc3ex5ubiS4wXN5gq8ds9pv
+         XT6RgI/P80N4QZNEv13mfuUaIJbg8NPgGIjyYOM5s0jVVvQsIuOl2k01VlX8NISFSnS9
+         dUSLWl/Zt4QitYUQzzR15yTNK8j81pvI5TDCsER/d0sfGqjRcOw8ilO8plnzAq8WJSL6
+         5Uxe7A6NAIpAt+CpdZ6OfJH6YAwuU8ThXh5ASP8QhkEX6BXlk2jnCJCfFMZ0cgM3wqLh
+         dMyQ==
+X-Gm-Message-State: AOJu0YyM2jcA4ntssU80JQEpHS2gZEiUt1wGc86IMuxjWRk6ynPSljXY
+	dHiGjDMpkdsZTALrxkPq3eg+ZepMyFHshoWyBsoECg==
+X-Google-Smtp-Source: AGHT+IGgEKPztEosXm9/H1kGq+JZEFdW00hbUz3Qf/fuM0hwoW0eNL4uztgDJFSz9DPS80w+JweeHhkk5qO8D0/fxFk=
+X-Received: by 2002:a1f:4845:0:b0:49a:9855:2fbb with SMTP id
+ v66-20020a1f4845000000b0049a98552fbbmr4456731vka.5.1700852759253; Fri, 24 Nov
+ 2023 11:05:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZV-UEjyjjOHaRVPh@localhost.localdomain>
+References: <20231124172028.107505484@linuxfoundation.org>
+In-Reply-To: <20231124172028.107505484@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Sat, 25 Nov 2023 00:35:47 +0530
+Message-ID: <CA+G9fYtrUpJ_+-k6dBaX0yZX-dkkrz3Qg-1FRwkG83pZvN44ow@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/530] 6.6.3-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Zhen Lei <thunder.leizhen@huawei.com>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Nov 23, 2023 at 07:04:02PM +0100, Frederic Weisbecker wrote:
-> Le Thu, Nov 23, 2023 at 09:42:12AM -0800, Paul E. McKenney a écrit :
-> > On Tue, Nov 21, 2023 at 10:15:56PM +0000, Qais Yousef wrote:
-> > > On 11/22/23 15:26, Paul E. McKenney wrote:
-> > > 
-> > > > > Either way; I'll follow what the crowd wants too :-)
-> > > > 
-> > > > Usually a wise choice.  ;-)
-> > > > 
-> > > > But I must defer to the people using it.
-> > > 
-> > > >From Android PoV I'd like to be able to boot with default disabled and allow
-> > > people to opt-in. At least for the time being until we have confidence no one
-> > > is caught with surprise if this caused unexpected problems.
-> > > 
-> > > In the future it might default to on once it gets wider usage and testing.
-> > > 
-> > > So having a new Kconfig to DEFAULT_OFF sounds good to me to enable a compile
-> > > time switch to pick the default with a boot time to further control.
-> > > 
-> > > Which would be my plan for v2 unless I hear another suggestion in the coming
-> > > week (where I hope people would have had a chance to look and think about it).
-> > 
-> > Sounds good to me!  Silence will be interpreted as assent.  ;-)
-> 
-> Silence sounds good to me :-)
+On Fri, 24 Nov 2023 at 23:34, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.3 release.
+> There are 530 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 26 Nov 2023 17:19:17 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.3-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This reply intentionally left content-free to preserve the silence.  ;-)
 
-							Thanx, Paul
+
+> Zhen Lei <thunder.leizhen@huawei.com>
+>     rcu: Dump memory object info if callback function is invalid
+
+
+Following build warnings / errors noticed while building the
+arm64 tinyconfig on stable-rc linux-6.6.y.
+
+
+kernel/rcu/update.c:49:
+kernel/rcu/rcu.h: In function 'debug_rcu_head_callback':
+kernel/rcu/rcu.h:255:17: error: implicit declaration of function
+'kmem_dump_obj'; did you mean 'mem_dump_obj'?
+[-Werror=implicit-function-declaration]
+  255 |                 kmem_dump_obj(rhp);
+      |                 ^~~~~~~~~~~~~
+      |                 mem_dump_obj
+cc1: some warnings being treated as errors
+
+
+rcu: Dump memory object info if callback function is invalid
+[ Upstream commit 2cbc482d325ee58001472c4359b311958c4efdd1 ]
+
+Steps to reproduce:
+$ tuxmake --runtime podman --target-arch arm64 --toolchain gcc-11
+--kconfig tinyconfig config debugkernel dtbs kernel modules xipkernel
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Links:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2YdN5Tb5NAFPo7H9WWQd0APrWu1/
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
