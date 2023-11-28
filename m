@@ -1,62 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E459F63F
-	for <rcu@vger.kernel.org>; Tue, 28 Nov 2023 05:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R1dMQ082"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50BD8C433C8;
-	Tue, 28 Nov 2023 05:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701147957;
-	bh=ZG13VLtBikWYAuMXjxCGyIuIfO5LfJqKfZbdqISB90w=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=R1dMQ0829mRuy2Ze0/JX5fDmJQmMJHt267zyNioq4ZUQx9+/en7LCcVJFMgIMujn8
-	 0scqCQJazeMCCv9wDYEvmEJ+K+WvNBpeicU+XY620mr2jK18BJJyxXZ8J40te/gICC
-	 vYFT/5MEXTv16B4TwbjlrJcfIrL150A/1lIwU7KmDsNA8a78ABg3nJGblBAIPkOps6
-	 9pPkehOdKRUFvuh6x3D/HID+EnUywmTxgAxxJF/lSiXVDckh9wPFyerTAOtCKmNcb2
-	 boEn50fkkYUQ0O4l2/3+JhBILEvdp0REpAOKN1FMvHtkp9suYoilVC7mEmUhJ1wvHa
-	 4kJ1rSr6FRvYA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A4EFACE1140; Mon, 27 Nov 2023 21:05:56 -0800 (PST)
-Date: Mon, 27 Nov 2023 21:05:56 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: rcu@vger.kernel.org, frederic@kernel.org, neeraj.iitr10@gmail.com,
-	urezki@gmail.com, joel@joelfernandes.org, boqun.feng@gmail.com
-Subject: Re: Neeraj will be doing RCU PR for v6.8 merge window
-Message-ID: <f54b3cbe-181e-48b1-bd68-3eae64940046@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <6a6d4007-e783-4dee-9f0d-6a1d2525a766@paulmck-laptop>
- <d9bab0d0-02a4-4220-88b0-3f9a86512bf8@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zw6ht3lu"
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E90398;
+	Tue, 28 Nov 2023 00:00:38 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507bd19eac8so7027545e87.0;
+        Tue, 28 Nov 2023 00:00:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701158436; x=1701763236; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sXgkabWPWWrKEjUt/Yjs0Jzo4D39WGJcrPl/SCiu+wc=;
+        b=Zw6ht3lus9WVxj4EReCZmfDJqDM4ooR9PKj7RnPPBmWPHgooU8vWxpfJU9pEsnjnSb
+         zcAX319/wVETTECjWlp4/yR6GBkwoF/vPkGNep6BRVy+0awCCtVbr0GiLtu/SigDUKvB
+         1oQ2uAQskQFESmkXUZ02x6cTZ1mLRxC8H35gMM5LfOiTOk2x3ThNAEnYpX3mjaD+XpDQ
+         3FJhl2X/Ga9Z64ONSF/TNATX+qqj/19mtLyASWjvxJlTAt/yZzNbLhMguDnVJgyTLujx
+         MZUt11p1nSuVgNpugOJUyfodKeQB7qPj4qynRp36Kcw+qbW5tTbkO6L6KQyXK7GZ2kJE
+         S36A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701158436; x=1701763236;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sXgkabWPWWrKEjUt/Yjs0Jzo4D39WGJcrPl/SCiu+wc=;
+        b=n63toIpkWwNc0QadVMd88oLXYoR6/tmldWv+czfifj2WqHCUcsxdlQNrC7aOEMkgQw
+         mW9J7Ijxkat1sPInilLCE+useYSdeFNW+I+sRqZg0aKisNOcoCgc1EmFa3yLaSRIlV7T
+         O1GKHC88D3Yl1iFkl6X6EK+Ol4j2+HN6ri3UKtLwjxBua7ijNUwS6YcgNrl4FTaohbtV
+         dZSHe3nNLhFVCeLvcssFF6fx41M/4x6VNKTrl4CZ/wnA/UF1u4ltdTc7tT/sXqiBXsNw
+         xpJxvIY/6O/Hm3ugOx+soropJZPMo/qDBNo7e9QfnFpAE0H8GMk9TdJb1mYLXcY6bhJd
+         tnPw==
+X-Gm-Message-State: AOJu0YwkZr5W8pEUCS0d+Fc06iIgK5AD5d4qW7fK7AhRXPcbVYmfC157
+	dX/ljUMe+5T5ksM1RnIse+4=
+X-Google-Smtp-Source: AGHT+IFPGqGXyxIsJsMGqCg5E9k06g+0nGsGq4x6FZaIx6u8EFCe6tESJcWwYAbvyBgGi4rwwvES4A==
+X-Received: by 2002:ac2:44b2:0:b0:50b:c027:70f with SMTP id c18-20020ac244b2000000b0050bc027070fmr7lfm.21.1701158435942;
+        Tue, 28 Nov 2023 00:00:35 -0800 (PST)
+Received: from pc638.lan ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id o16-20020ac24bd0000000b004fe202a5c7csm1765501lfq.135.2023.11.28.00.00.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 00:00:35 -0800 (PST)
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH v3 0/7] Reduce synchronize_rcu() latency(V3)
+Date: Tue, 28 Nov 2023 09:00:26 +0100
+Message-Id: <20231128080033.288050-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d9bab0d0-02a4-4220-88b0-3f9a86512bf8@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
 
-And this time using Neeraj's new email address, apologies for my
-having failed to update it.  (Neeraj changed jobs recently, hence
-the old email no longer works.)
+This is V3.
 
-							Thanx, Paul
+V2 -> V3:
+ - use dummy wait node to eliminate cache misses during a full llist
+   scan to obtain a tail node;
+ - add CONFIG_RCU_SR_NORMAL_DEBUG_GP Kconfig for a GP incomplete debug;
+ - move synchronize_rcu()'s main control data under the rcu_state struct;
+ - add rcutree.rcu_normal_wake_from_gp parameter description to the
+   kernel-parameters.txt file;
+ - split functionality into several patches.
 
-On Mon, Nov 27, 2023 at 09:03:43PM -0800, Paul E. McKenney wrote:
-> Hello, Linus,
-> 
-> This time, Neeraj Upadhyay will be handling the RCU commits for the
-> upcoming v6.8 merge window.  This is once again a practice exercise, and
-> I will likely be returning for the v6.9 merge window.  (Yes, I suggested
-> that I would be doing v6.8, but Neeraj was willing to give it a go,
-> so why not?)
-> 
-> This yet again covers only RCU, so I will be sending pull requests as
-> needed for the other topics.
-> 
-> And yet again, please let me know of any concerns or issues with this.
-> 
-> 							Thanx, Paul
+V2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
+V1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
+
+Neeraj Upadhyay (1):
+  rcu: Improve handling of synchronize_rcu() users
+
+Uladzislau Rezki (Sony) (6):
+  rcu: Reduce synchronize_rcu() latency
+  rcu: Add a trace event for synchronize_rcu_normal()
+  doc: Add rcutree.rcu_normal_wake_from_gp to kernel-parameters.txt
+  rcu: Support direct wake-up of synchronize_rcu() users
+  rcu: Move sync related data to rcu_state structure
+  rcu: Add CONFIG_RCU_SR_NORMAL_DEBUG_GP
+
+ .../admin-guide/kernel-parameters.txt         |  14 +
+ include/trace/events/rcu.h                    |  27 ++
+ kernel/rcu/Kconfig.debug                      |  12 +
+ kernel/rcu/tree.c                             | 354 +++++++++++++++++-
+ kernel/rcu/tree.h                             |  19 +
+ kernel/rcu/tree_exp.h                         |   2 +-
+ 6 files changed, 426 insertions(+), 2 deletions(-)
+
+-- 
+2.39.2
+
