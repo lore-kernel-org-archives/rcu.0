@@ -1,124 +1,123 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W/PgcouF"
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3883BCB;
-	Tue, 28 Nov 2023 00:00:44 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50abb83866bso6933036e87.3;
-        Tue, 28 Nov 2023 00:00:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701158442; x=1701763242; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QQVOvwrmfo1nPfUgIyQbOVsMWsIZrJImgM152q/sqUE=;
-        b=W/PgcouFN/Z8pHWi5vDSGdOT1N5xbMMpc+cYROJFFgVtTK/TtpHatoK3A8HuGvSaSz
-         UHiZCaRUUKegN4wsUoFPGtYo7xXlKolFOtJc0BoQ01aLah0HZCeEyO0Vp+jCcnv8k1Df
-         vwOGTSMTVJjEDS8dz8N90ovwdbMdqHckOJnAIeQKjiQzLLJmbfMzPXvVo9tNWAiHY9qr
-         ryHVY277Dg7evEmo1KConVX6ew7bmAAezkeG7EGxIDSLtJH4tgA5v5G8KHimunS/wyij
-         b0nkPB7WsPFZT+nobrcficgZ/rwcWm7NX+RAqyhzJStnotTOMKS97OT1d/Np9tLafqEZ
-         U6IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701158442; x=1701763242;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QQVOvwrmfo1nPfUgIyQbOVsMWsIZrJImgM152q/sqUE=;
-        b=Et/VHFtJzCerm5EgrTn05ATQ5LOHhiXd33ql4/YyvleEn2Tbmypp3+mIizrGXdKZLn
-         +SQY1WoEAUvt/wGiRwJ7a0oAK5AVssHkU0mImXDsmmJZILhTTYIv6ms7JWBhFK1uzQt6
-         MwgV/+o5G7Q3gERQS54EOV9r2CadaRvZOthBTVpN8fnWtE6vhxsnqke+hO/XMXwnh7Sf
-         OlfukZ01N7kJ/B+IEEjTzJZxVPLoPyCFvmYtBgHOLtor9NiSHDGebe8aFaEMuOzkBDT8
-         TN4sQncb69IOUCGRYrsV0gDpeCTFW8XiUNJv+7OgiPkMKjo+6coo/TN597oPe9YHcYva
-         AQNw==
-X-Gm-Message-State: AOJu0Yx0KlAT1C4TKMZSGsOn9kLTw+reYOHT9RqOE3wu4/2DxliT0tPC
-	nu7QHy2lFZMf/+U0CaisV7s=
-X-Google-Smtp-Source: AGHT+IGpGnDLULRUYULHIiEqENx6drVMGcTjDMRTQ69MqVN/chnP9zQSnV1eWsGowYbRCIcIp5MNkQ==
-X-Received: by 2002:a19:5506:0:b0:500:b53f:fbc2 with SMTP id n6-20020a195506000000b00500b53ffbc2mr8986246lfe.26.1701158442372;
-        Tue, 28 Nov 2023 00:00:42 -0800 (PST)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id o16-20020ac24bd0000000b004fe202a5c7csm1765501lfq.135.2023.11.28.00.00.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:00:42 -0800 (PST)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>
-Cc: RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Hillf Danton <hdanton@sina.com>,
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="41jNNMnH";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2KYyMwc2"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CE999;
+	Thu, 30 Nov 2023 05:27:33 -0800 (PST)
+Date: Thu, 30 Nov 2023 14:27:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1701350850;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qdri7M8cZwmmxj44/up6D+Gy+1F00rDNzTB9GeEu0HE=;
+	b=41jNNMnHU+E+y5VkeBh3gn0gu3VGhCmUdhi32wfcmJtVqGBgo8YC8Wsqhv3JzME0/vbQa5
+	Pbg20X1N8aXvdVkYUVU7ZbhVCUzzESpyUiFzTG6ztx5qxgQciUUCZqQ92Wu3/FH0mzBI0i
+	3ehFeLsyenoFwu487bQBmSUfw5XVvmr14YICRAbTZd1xsy2WKRbvQKiomhoh0sTx1D8nK+
+	tObrmEAvRTonyQGPcc9dF5HlVlEgIhoTeSAIgUWmohMs3CeVCJTaGYTdmLPqHhX3itWZZ+
+	dF9iuRtmQbrCAC0afosB+AjfZbEBchmjkqNeEvJHHRcx85a70r0vYYI0MTH+/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1701350850;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qdri7M8cZwmmxj44/up6D+Gy+1F00rDNzTB9GeEu0HE=;
+	b=2KYyMwc2gGnf3SLL8kQG3kOMzJ2bdiXpBeX4KUeBQXp/yCsR9/Km5TqD6CA/OHC7uczcLd
+	BFsDGfDI7B1/kKAg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH v3 7/7] rcu: Add CONFIG_RCU_SR_NORMAL_DEBUG_GP
-Date: Tue, 28 Nov 2023 09:00:33 +0100
-Message-Id: <20231128080033.288050-8-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231128080033.288050-1-urezki@gmail.com>
-References: <20231128080033.288050-1-urezki@gmail.com>
+	John Ogness <john.ogness@linutronix.de>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH v2] srcu: Use try-lock lockdep annotation for NMI-safe access.
+Message-ID: <20231130132729.niM5FJPc@linutronix.de>
+References: <20231121123315.egrgopGN@linutronix.de>
+ <ZV5Dhjcb9Jd_lk0O@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZV5Dhjcb9Jd_lk0O@boqun-archlinux>
 
-This option enables additional debugging for detecting a grace
-period incompletion for synchronize_rcu() users. If a GP is not
-fully passed for any user, the warning message is emitted.
+It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
+triggers a lockdep if used from NMI because lockdep expects a deadlock
+since nothing disables NMIs while the lock is acquired.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+This is because commit f0f44752f5f61 ("rcu: Annotate SRCU's update-side
+lockdep dependencies") annotates synchronize_srcu() as a write lock
+usage. This helps to detect a deadlocks such as
+	srcu_read_lock();
+	synchronize_srcu();
+	srcu_read_unlock();
+
+The side effect is that the lock srcu_struct now has a USED usage in normal
+contexts, so it conflicts with a USED_READ usage in NMI. But this shouldn't
+cause a real deadlock because the write lock usage from synchronize_srcu() is a
+fake one and only used for read/write deadlock detection.
+
+Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
+complains if used from NMI.
+
+Fixes: f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
+Link: https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/rcu/Kconfig.debug | 12 ++++++++++++
- kernel/rcu/tree.c        |  7 +++++--
- 2 files changed, 17 insertions(+), 2 deletions(-)
+ include/linux/rcupdate.h | 6 ++++++
+ include/linux/srcu.h     | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 2984de629f74..3d44106ca1f0 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -143,4 +143,16 @@ config RCU_STRICT_GRACE_PERIOD
- 	  when looking for certain types of RCU usage bugs, for example,
- 	  too-short RCU read-side critical sections.
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index f7206b2623c98..31d523c4e0893 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -301,6 +301,11 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
+ 	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+ }
  
-+config RCU_SR_NORMAL_DEBUG_GP
-+	bool "Debug synchronize_rcu() callers for a grace period completion"
-+	depends on DEBUG_KERNEL && RCU_EXPERT
-+	default n
-+	help
-+	  This option enables additional debugging for detecting a grace
-+	  period incompletion for synchronize_rcu() users. If a GP is not
-+	  fully passed for any user, the warning message is emitted.
++static inline void rcu_try_lock_acquire(struct lockdep_map *map)
++{
++	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
++}
 +
-+	  Say Y here if you want to enable such debugging
-+	  Say N if you are unsure.
-+
- endmenu # "RCU Debugging"
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c0d3e46730e8..421bce4b8dd7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1547,7 +1547,8 @@ static void rcu_sr_normal_complete(struct llist_node *node)
- 		(struct rcu_head *) node, struct rcu_synchronize, head);
- 	unsigned long oldstate = (unsigned long) rs->head.func;
+ static inline void rcu_lock_release(struct lockdep_map *map)
+ {
+ 	lock_release(map, _THIS_IP_);
+@@ -315,6 +320,7 @@ int rcu_read_lock_any_held(void);
+ #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
  
--	WARN_ONCE(!rcu_gp_is_expedited() && !poll_state_synchronize_rcu(oldstate),
-+	WARN_ONCE(IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP) &&
-+		!poll_state_synchronize_rcu(oldstate),
- 		"A full grace period is not passed yet: %lu",
- 		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
+ # define rcu_lock_acquire(a)		do { } while (0)
++# define rcu_try_lock_acquire(a)	do { } while (0)
+ # define rcu_lock_release(a)		do { } while (0)
  
-@@ -3822,7 +3823,9 @@ static void synchronize_rcu_normal(void)
- 	 * This code might be preempted, therefore take a GP
- 	 * snapshot before adding a request.
- 	 */
--	rs.head.func = (void *) get_state_synchronize_rcu();
-+	if (IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP))
-+		rs.head.func = (void *) get_state_synchronize_rcu();
-+
- 	rcu_sr_normal_add_req(&rs);
+ static inline int rcu_read_lock_held(void)
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 127ef3b2e6073..236610e4a8fa5 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
  
- 	/* Kick a GP and start waiting. */
+ 	srcu_check_nmi_safety(ssp, true);
+ 	retval = __srcu_read_lock_nmisafe(ssp);
+-	rcu_lock_acquire(&ssp->dep_map);
++	rcu_try_lock_acquire(&ssp->dep_map);
+ 	return retval;
+ }
+ 
 -- 
-2.39.2
-
+2.43.0
