@@ -1,123 +1,106 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="41jNNMnH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2KYyMwc2"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CE999;
-	Thu, 30 Nov 2023 05:27:33 -0800 (PST)
-Date: Thu, 30 Nov 2023 14:27:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1701350850;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qdri7M8cZwmmxj44/up6D+Gy+1F00rDNzTB9GeEu0HE=;
-	b=41jNNMnHU+E+y5VkeBh3gn0gu3VGhCmUdhi32wfcmJtVqGBgo8YC8Wsqhv3JzME0/vbQa5
-	Pbg20X1N8aXvdVkYUVU7ZbhVCUzzESpyUiFzTG6ztx5qxgQciUUCZqQ92Wu3/FH0mzBI0i
-	3ehFeLsyenoFwu487bQBmSUfw5XVvmr14YICRAbTZd1xsy2WKRbvQKiomhoh0sTx1D8nK+
-	tObrmEAvRTonyQGPcc9dF5HlVlEgIhoTeSAIgUWmohMs3CeVCJTaGYTdmLPqHhX3itWZZ+
-	dF9iuRtmQbrCAC0afosB+AjfZbEBchmjkqNeEvJHHRcx85a70r0vYYI0MTH+/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1701350850;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qdri7M8cZwmmxj44/up6D+Gy+1F00rDNzTB9GeEu0HE=;
-	b=2KYyMwc2gGnf3SLL8kQG3kOMzJ2bdiXpBeX4KUeBQXp/yCsR9/Km5TqD6CA/OHC7uczcLd
-	BFsDGfDI7B1/kKAg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v2] srcu: Use try-lock lockdep annotation for NMI-safe access.
-Message-ID: <20231130132729.niM5FJPc@linutronix.de>
-References: <20231121123315.egrgopGN@linutronix.de>
- <ZV5Dhjcb9Jd_lk0O@boqun-archlinux>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB1B1BDC7
+	for <rcu@vger.kernel.org>; Fri,  1 Dec 2023 20:49:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ECFFC433C7;
+	Fri,  1 Dec 2023 20:49:10 +0000 (UTC)
+Date: Fri, 1 Dec 2023 15:49:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org, Frederic
+ Weisbecker <fweisbec@gmail.com>, Joel Fernandes <joel@joelfernandes.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [RCU] rcu_tasks_trace_qs(): trc_reader_special.b.need_qs value
+ incorrect likely()?
+Message-ID: <20231201154932.468d088b@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZV5Dhjcb9Jd_lk0O@boqun-archlinux>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
-triggers a lockdep if used from NMI because lockdep expects a deadlock
-since nothing disables NMIs while the lock is acquired.
+Paul,
 
-This is because commit f0f44752f5f61 ("rcu: Annotate SRCU's update-side
-lockdep dependencies") annotates synchronize_srcu() as a write lock
-usage. This helps to detect a deadlocks such as
-	srcu_read_lock();
-	synchronize_srcu();
-	srcu_read_unlock();
+I just started running my branch tracer (that checks all branches and also
+gives likely and unlikely correctness). And I found this:
 
-The side effect is that the lock srcu_struct now has a USED usage in normal
-contexts, so it conflicts with a USED_READ usage in NMI. But this shouldn't
-cause a real deadlock because the write lock usage from synchronize_srcu() is a
-fake one and only used for read/write deadlock detection.
+ correct incorrect  %        Function                  File              Line
+ ------- ---------  -        --------                  ----              ----
+       0  1217713 100 rcu_softirq_qs                 tree.c               247
 
-Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
-complains if used from NMI.
+Which comes down to this:
 
-Fixes: f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
-Link: https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/rcupdate.h | 6 ++++++
- include/linux/srcu.h     | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index f7206b2623c98..31d523c4e0893 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -301,6 +301,11 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
- 	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
- }
- 
-+static inline void rcu_try_lock_acquire(struct lockdep_map *map)
-+{
-+	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
-+}
-+
- static inline void rcu_lock_release(struct lockdep_map *map)
- {
- 	lock_release(map, _THIS_IP_);
-@@ -315,6 +320,7 @@ int rcu_read_lock_any_held(void);
- #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- 
- # define rcu_lock_acquire(a)		do { } while (0)
-+# define rcu_try_lock_acquire(a)	do { } while (0)
- # define rcu_lock_release(a)		do { } while (0)
- 
- static inline int rcu_read_lock_held(void)
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 127ef3b2e6073..236610e4a8fa5 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
- 
- 	srcu_check_nmi_safety(ssp, true);
- 	retval = __srcu_read_lock_nmisafe(ssp);
--	rcu_lock_acquire(&ssp->dep_map);
-+	rcu_try_lock_acquire(&ssp->dep_map);
- 	return retval;
- }
- 
--- 
-2.43.0
+# define rcu_tasks_trace_qs(t)							\
+	do {									\
+		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
+										\
+		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
+		    likely(!___rttq_nesting)) {					\
+			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
+		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
+			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
+			rcu_tasks_trace_qs_blkd(t);				\
+		}								\
+	} while (0)
+
+
+I added just before the likely/unlikely to my test box and I see this:
+
+		trace_printk("need qs? %d %d\n", READ_ONCE((t)->trc_reader_special.b.need_qs), ___rttq_nesting); \
+
+          <idle>-0       [005] d.h1.     2.482412: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [002] d.h1.     2.482464: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [000] d.h1.     2.482766: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [001] d.h1.     2.482951: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [007] d.h1.     2.482958: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [005] d.h1.     2.483600: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [002] d.h1.     2.483624: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [000] d.h1.     2.483927: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [007] d.h1.     2.484068: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [001] d.h1.     2.484127: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [002] d.h1.     2.484723: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [005] d.h1.     2.484745: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [000] d.h1.     2.485015: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [007] d.h1.     2.485202: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [001] d.h1.     2.485258: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [002] d.h1.     2.485818: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [005] d.h1.     2.485929: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [000] d.h1.     2.486224: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [007] d.h1.     2.486370: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [001] d.h1.     2.486399: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [002] d.h1.     2.486895: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [005] d.h1.     2.487049: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [000] d.h1.     2.487318: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [007] d.h1.     2.487472: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [001] d.h1.     2.487522: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [002] d.h1.     2.488034: rcu_sched_clock_irq: need qs? 2 0
+          <idle>-0       [005] d.h1.     2.488220: rcu_sched_clock_irq: need qs? 2 0
+
+
+Note, that "2" is the READ_ONCE() without the "!" to it. Thus:
+
+		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
+
+Is unlikely to be true.
+
+Was this supposed to be:
+
+		if (!likely(READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
+
+Or could it be converted to:
+
+		if (unlikely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
+
+?
+
+Note, the unlikely tracing is running on my production server v6.6.3.
+
+The above trace is from my test box with latest Linus's tree.
+
+-- Steve
