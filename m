@@ -1,69 +1,36 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="odqrkkPO"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F39184
-	for <rcu@vger.kernel.org>; Sun,  3 Dec 2023 05:18:24 -0800 (PST)
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A32253F322
-	for <rcu@vger.kernel.org>; Sun,  3 Dec 2023 13:18:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1701609502;
-	bh=HHmlffykkOJ0/mztigbZgIMRb64RNyQwKkrsR2WWoBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=odqrkkPOfA2hY4agb9CGyTHn1K2SUxWeLt0k8YpiCqxIAvcq+C/XfhyyEftc+pvl8
-	 RKb/VxnXZboQNWKiQnWNu1iZt+pMtoRcShPGdrPasiegEXAeG3TCFAsp/4h/OIHaYa
-	 g+LTPDn2ZHE1CfQTgCf1Rl0BRuKYIS9fnXylxpwU2+JjTIM3NubEM+cz2N4lp4ikrc
-	 79Qco/b1aGotLzoA4Jt+EaAozxGZ1G/PK4C/e+Ugh54k5nFyTo9DTR3LDGYN/oknxe
-	 tCEG/kGC6fKUl2TLmWREPLMHZf1IfrzbuB20KsCCSvHKlNYkbfnXcv8aOSp/NQ76qz
-	 inDKWdpfsF4qQ==
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c09873c81so2950725e9.3
-        for <rcu@vger.kernel.org>; Sun, 03 Dec 2023 05:18:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701609502; x=1702214302;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HHmlffykkOJ0/mztigbZgIMRb64RNyQwKkrsR2WWoBM=;
-        b=cmXejx0fNBZ7iYUcMnLbM3ctDG7onynW3SuAMN7AKBlkucnDf8I/MeaS1M1gxXh0Vb
-         m+LONYRftaq9OHDQ5nwtOwGLIdkmPtWdTeGactmesUSK1L5+n0fKd1iazwhVMPpErew0
-         JLSTA8XPx7eKSJLlTzxY1Y6DFfTBgJt6GrKRoA9aHvQTvasj0Dz57hVpvO3ES9Ognbro
-         Mb5mIjyoAsIvkObL0FPSxBWvs8K0Ura9g53Ww8quVjL//SuyJtz/4eQcVE6dFb9bSxVs
-         C/We8IpwvY0rE9gQw+ssjQpYj+uM/Q39gux3clItWzkK5r1RmtUDP8sQCTPXVQXf8p/K
-         Eezg==
-X-Gm-Message-State: AOJu0YzjHAOqDSTqDBGyWv+67dcDuWYS3nmBjhONlRuTp74eVSP8rI6X
-	Ozetc7iHj8VM/S0NIddKTuCIxz8gCcpRNWtvs+IZjhuNmgt8gPVbO6/cN4BqPdsltig2GBN/Wde
-	6yt3Z1hXWjFKm/5e0i4gnlgLCd/DQug/e6y/BoFSi
-X-Received: by 2002:a05:600c:548c:b0:40b:5e21:bdc9 with SMTP id iv12-20020a05600c548c00b0040b5e21bdc9mr1533775wmb.88.1701609502083;
-        Sun, 03 Dec 2023 05:18:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEVYa5ls19mDZQ6yIBuaFYXzF2OGg7dLouI1dHA9+Yq2fZmaG26r57u7Bya+m2hSG6ybaXvQQ==
-X-Received: by 2002:a05:600c:548c:b0:40b:5e21:bdc9 with SMTP id iv12-20020a05600c548c00b0040b5e21bdc9mr1533753wmb.88.1701609501096;
-        Sun, 03 Dec 2023 05:18:21 -0800 (PST)
-Received: from localhost (host-79-35-130-102.retail.telecomitalia.it. [79.35.130.102])
-        by smtp.gmail.com with ESMTPSA id hd37-20020a17090796a500b009c503bf61c9sm4083032ejc.165.2023.12.03.05.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 05:18:20 -0800 (PST)
-Date: Sun, 3 Dec 2023 14:18:19 +0100
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Qais Yousef <qyousef@layalina.io>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160CDCA57
+	for <rcu@vger.kernel.org>; Tue,  5 Dec 2023 04:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CW8Sr/MJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B55C433C8;
+	Tue,  5 Dec 2023 04:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701750056;
+	bh=cYXfgEUnHpMfmOckZEUuZ8xDn9DXcjOAm8MCEgy+tNk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=CW8Sr/MJ5RZoHCQ69JfRgub52iftgGV0NccVxjHMH1NdUJviX1oxsNV2rBy8vCfJF
+	 BZdSvhZ3Iiu4V9RPdIZyJJT51QYBCdmtHd04F9U9PNwuOxecdFzGS5y9IXBPtjPac2
+	 5be745ra4n/uiCk4pWM4iAeST+lZsg1WP/QvLPr3OxsySx3tqReE9IuwCA9J7PNTH8
+	 NqmlvkgDexMz1PzM5jgV7dFTyDgdiX5YoaV2anBwxbU9qxRfBzNZB0DVN2PQXEQ6uF
+	 FBOXAvrNXqxSXSYEq/W8b0PJgJ12bZ57AuXmu/QkvaUoO1tZg6mJktQE5xK1uC9f5P
+	 U8GP4La+svnHQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 12376CE1147; Mon,  4 Dec 2023 20:20:56 -0800 (PST)
+Date: Mon, 4 Dec 2023 20:20:56 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-Message-ID: <ZWyAG145F+JWzg7u@gpd>
-References: <20231203011252.233748-1-qyousef@layalina.io>
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/3] rcu/nocb updates v2
+Message-ID: <08b4d5bf-800b-4696-8c4d-fc86af741849@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231115191128.15615-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -72,123 +39,35 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231203011252.233748-1-qyousef@layalina.io>
+In-Reply-To: <20231115191128.15615-1-frederic@kernel.org>
 
-On Sun, Dec 03, 2023 at 01:12:52AM +0000, Qais Yousef wrote:
-> To allow more flexible arrangements while still provide a single kernel
-> for distros, provide a boot time parameter to enable/disable lazy RCU.
+On Wed, Nov 15, 2023 at 02:11:25PM -0500, Frederic Weisbecker wrote:
+> Hi,
 > 
-> Specify:
+> Here is a re-issue of some leftovers from a previous patchset.
+> Changes since last time:
 > 
-> 	rcutree.enable_rcu_lazy=[y|1|n|0]
-> 
-> Which also requires
-> 
-> 	rcu_nocbs=all
-> 
-> at boot time to enable/disable lazy RCU.
-> 
-> To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
-> CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
-> 
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> 1) Use rcu_get_jiffies_lazy_flush() instead of the raw variable (thanks Joel)
+> 2) Further comment ordering expectations between grace period end and
+>    callbacks execution.
 
-Thanks! Everything looks good to me and I also verified that
-rcutree.enable_rcu_lazy is enforcing the proper behavior.
+Hearing no objections, I have queued these for further review and testing.
 
-FWIW:
+							Thanx, Paul
 
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
-
-> ---
+> Thanks.
 > 
-> Changes since v1:
+> Frederic Weisbecker (3):
+>   rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+>   rcu/nocb: Remove needless LOAD-ACQUIRE
+>   rcu/nocb: Remove needless full barrier after callback advancing
 > 
-> 	* Use module_param() instead of module_param_cb()
-> 	* Add new CONFIG_RCU_LAZY_DEFAULT_OFF to force default off.
-> 	* Remove unnecessary READ_ONCE()
+>  kernel/rcu/rcu.h       |  8 ++++----
+>  kernel/rcu/rcuscale.c  |  6 +++---
+>  kernel/rcu/tree.c      |  6 ++++++
+>  kernel/rcu/tree_nocb.h | 26 ++++++++++++--------------
+>  4 files changed, 25 insertions(+), 21 deletions(-)
 > 
-> Tested on qemu only this time with various config/boot configuration to ensure
-> expected values are in sysfs.
-> 
-> Did a bunch of build tests against various configs/archs.
-> 
->  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
->  kernel/rcu/Kconfig                              | 13 +++++++++++++
->  kernel/rcu/tree.c                               |  7 ++++++-
->  3 files changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 65731b060e3f..2f0386a12aa7 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5021,6 +5021,11 @@
->  			this kernel boot parameter, forcibly setting it
->  			to zero.
->  
-> +	rcutree.enable_rcu_lazy= [KNL]
-> +			To save power, batch RCU callbacks and flush after
-> +			delay, memory pressure or callback list growing too
-> +			big.
-> +
->  	rcuscale.gp_async= [KNL]
->  			Measure performance of asynchronous
->  			grace-period primitives such as call_rcu().
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index bdd7eadb33d8..e7d2dd267593 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -314,6 +314,19 @@ config RCU_LAZY
->  	  To save power, batch RCU callbacks and flush after delay, memory
->  	  pressure, or callback list growing too big.
->  
-> +	  Requires rcu_nocbs=all to be set.
-> +
-> +	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
-> +
-> +config RCU_LAZY_DEFAULT_OFF
-> +	bool "Turn RCU lazy invocation off by default"
-> +	depends on RCU_LAZY
-> +	default n
-> +	help
-> +	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
-> +	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
-> +	  it back on.
-> +
->  config RCU_DOUBLE_CHECK_CB_TIME
->  	bool "RCU callback-batch backup time check"
->  	depends on RCU_EXPERT
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 3ac3c846105f..8b7675624815 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
->  }
->  
->  #ifdef CONFIG_RCU_LAZY
-> +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
-> +module_param(enable_rcu_lazy, bool, 0444);
-> +
->  /**
->   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
->   * flush all lazy callbacks (including the new one) to the main ->cblist while
-> @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
->  	__call_rcu_common(head, func, false);
->  }
->  EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> +#else
-> +#define enable_rcu_lazy		false
->  #endif
->  
->  /**
-> @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
->   */
->  void call_rcu(struct rcu_head *head, rcu_callback_t func)
->  {
-> -	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-> +	__call_rcu_common(head, func, enable_rcu_lazy);
->  }
->  EXPORT_SYMBOL_GPL(call_rcu);
->  
 > -- 
-> 2.34.1
+> 2.42.1
+> 
