@@ -1,174 +1,80 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB196CA57
-	for <rcu@vger.kernel.org>; Tue,  5 Dec 2023 04:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hjtRZy08"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DD44C433C8;
-	Tue,  5 Dec 2023 04:27:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701750425;
-	bh=Etgekf0ZrWRy/UX6kYpcWzxJxhTWLWEmZUQoTp7t7+0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=hjtRZy08etGTrct5yZFp18b0ITpG0KrAxWOHT1LHT7ewS8IvwgRdYE3878TSwokib
-	 TXjGWublmQAqEbQl4ASY+Czp4rfXt02To7MKM2XaqVh0pmTrxlB+hoL1H9QA3iB2l5
-	 brvvVHYA9dv83u/Saf6s6ZKYrKPj/o8LKGgxqnSRGM6Sa58iZOie+owjcNLEP7dtvh
-	 HEHY2ml2saQPp6zK7jdHISQ8zb9q62+TQaqv8UpMe3cWAvwXnYAGcxeOChwyTqwhcU
-	 busNVg1+AzOt7Tg0MQvy+cSIHJxZDRSO71Eji6d3RE8Izr57VRvL57N0NcMG8daH5f
-	 IK7H5S3fGzrVA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B4DE4CE1147; Mon,  4 Dec 2023 20:27:04 -0800 (PST)
-Date: Mon, 4 Dec 2023 20:27:04 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-Message-ID: <eb1619f7-ad15-4c90-91fc-c4e2cee14053@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231203011252.233748-1-qyousef@layalina.io>
- <ZWyAG145F+JWzg7u@gpd>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ejVA3s9u"
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09474AA;
+	Tue,  5 Dec 2023 03:38:53 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-58d18c224c7so3357622eaf.2;
+        Tue, 05 Dec 2023 03:38:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701776333; x=1702381133; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6qxXMKWwt2qwPzzAZ0CM5xsYQyZ6d7IRS++BuZ2zfHg=;
+        b=ejVA3s9u0STvOov1xbNmTPeg7wMMeYTmo/2U/RI0UFoDv/msu37BZxBKmdQFblvKSm
+         Z7QOMl7bJCLK1dgPWjlFILlMGduEJ9QQtDmo9o9i5zFj4wR4FPe2RTbkjUw+uT7TV6yi
+         qTS6qq8moKHm+rO6eJ+FIyL8/WY4G/g8JUzBljWmnXUsdnTy+Rl/6hlzcJlVhPjTpCHH
+         sAhWNw8fSn3Ok40y5qUThqu9xA3XiyUfWYU1BnlH4HPsg7sad0k5PR9WiyEKZdlsmKgq
+         axDb6exlK5W5UBqw3Hrd2azAgSjUvSKI5zSD7zAx/doMrPegR3ChDkfHWG+gKPdIpViS
+         zj/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701776333; x=1702381133;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6qxXMKWwt2qwPzzAZ0CM5xsYQyZ6d7IRS++BuZ2zfHg=;
+        b=hh/ZOl49lfvJpDA5Ig02SwcUq/UkM3s1xNr5HAevCLJllrW1rXMz//YO1UMUDSPHwU
+         mGLQMxHwFENG+J0uSsSFde0ZZ/ZX5GweMz4hOf9dUsOLWZoZcedb93/R/GdX9xscCS3A
+         HdbJIo9YF+Key7B0taVdAdk6icx2ywuqj5175k/9NfS/C3NXo0Sl2aZsPMZT8L0qYtHm
+         XAtglWDjNcDrHiZKbLQEwHymVUsfQMTOlKhDP8DuJy1Lc5PfdPXnOvZTGCKdRuqDjhau
+         ZGno9ZhzVB8paWEx5pa2awpDw3JGbsJYGespobptPTWvzGfVtFUrNT8N5kKAtX3StKKg
+         0nqA==
+X-Gm-Message-State: AOJu0Yx7Zn4dmuzNJe16hK6yh3/RWvX8VyjrfAQznpv+jWql4IZ6hCUj
+	WnODOelGhwYj+b0FxY/pFNZHmlsYpH6alg==
+X-Google-Smtp-Source: AGHT+IH04sIHQa7UqXwyxQH4Ml2JB3Tbwvaq6P+EjXZfHoq/JEQH4R7JqHSL9Tc2XOUCn4gcn380ng==
+X-Received: by 2002:a05:6358:9196:b0:16d:fc28:6ef4 with SMTP id j22-20020a056358919600b0016dfc286ef4mr3492052rwa.25.1701776332996;
+        Tue, 05 Dec 2023 03:38:52 -0800 (PST)
+Received: from localhost.localdomain ([14.22.11.161])
+        by smtp.gmail.com with ESMTPSA id hq25-20020a056a00681900b0064fd4a6b306sm1350120pfb.76.2023.12.05.03.38.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 03:38:52 -0800 (PST)
+From: alexjlzheng@gmail.com
+X-Google-Original-From: alexjlzheng@tencent.com
+To: djwong@kernel.org,
+	bfoster@redhat.com,
+	david@fromorbit.com,
+	linux-xfs@vger.kernel.org,
+	raven@themaw.net,
+	rcu@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: About the conflict between XFS inode recycle and VFS rcu-walk
+Date: Tue,  5 Dec 2023 19:38:33 +0800
+Message-Id: <20231205113833.1187297-1-alexjlzheng@tencent.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWyAG145F+JWzg7u@gpd>
+Content-Transfer-Encoding: 8bit
 
-On Sun, Dec 03, 2023 at 02:18:19PM +0100, Andrea Righi wrote:
-> On Sun, Dec 03, 2023 at 01:12:52AM +0000, Qais Yousef wrote:
-> > To allow more flexible arrangements while still provide a single kernel
-> > for distros, provide a boot time parameter to enable/disable lazy RCU.
-> > 
-> > Specify:
-> > 
-> > 	rcutree.enable_rcu_lazy=[y|1|n|0]
-> > 
-> > Which also requires
-> > 
-> > 	rcu_nocbs=all
-> > 
-> > at boot time to enable/disable lazy RCU.
-> > 
-> > To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
-> > CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
-> > 
-> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> 
-> Thanks! Everything looks good to me and I also verified that
-> rcutree.enable_rcu_lazy is enforcing the proper behavior.
-> 
-> FWIW:
-> 
-> Tested-by: Andrea Righi <andrea.righi@canonical.com>
+Hi, all
 
-Queued for v6.9 and further testing and review, thank you!
+I would like to ask if the conflict between xfs inode recycle and vfs rcu-walk
+which can lead to null pointer references has been resolved?
 
-							Thanx, Paul
+I browsed through emails about the following patches and their discussions:
+- https://lore.kernel.org/linux-xfs/20220217172518.3842951-2-bfoster@redhat.com/
+- https://lore.kernel.org/linux-xfs/20220121142454.1994916-1-bfoster@redhat.com/
+- https://lore.kernel.org/linux-xfs/164180589176.86426.501271559065590169.stgit@mickey.themaw.net/
 
-> > ---
-> > 
-> > Changes since v1:
-> > 
-> > 	* Use module_param() instead of module_param_cb()
-> > 	* Add new CONFIG_RCU_LAZY_DEFAULT_OFF to force default off.
-> > 	* Remove unnecessary READ_ONCE()
-> > 
-> > Tested on qemu only this time with various config/boot configuration to ensure
-> > expected values are in sysfs.
-> > 
-> > Did a bunch of build tests against various configs/archs.
-> > 
-> >  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
-> >  kernel/rcu/Kconfig                              | 13 +++++++++++++
-> >  kernel/rcu/tree.c                               |  7 ++++++-
-> >  3 files changed, 24 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 65731b060e3f..2f0386a12aa7 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -5021,6 +5021,11 @@
-> >  			this kernel boot parameter, forcibly setting it
-> >  			to zero.
-> >  
-> > +	rcutree.enable_rcu_lazy= [KNL]
-> > +			To save power, batch RCU callbacks and flush after
-> > +			delay, memory pressure or callback list growing too
-> > +			big.
-> > +
-> >  	rcuscale.gp_async= [KNL]
-> >  			Measure performance of asynchronous
-> >  			grace-period primitives such as call_rcu().
-> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > index bdd7eadb33d8..e7d2dd267593 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -314,6 +314,19 @@ config RCU_LAZY
-> >  	  To save power, batch RCU callbacks and flush after delay, memory
-> >  	  pressure, or callback list growing too big.
-> >  
-> > +	  Requires rcu_nocbs=all to be set.
-> > +
-> > +	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
-> > +
-> > +config RCU_LAZY_DEFAULT_OFF
-> > +	bool "Turn RCU lazy invocation off by default"
-> > +	depends on RCU_LAZY
-> > +	default n
-> > +	help
-> > +	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
-> > +	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
-> > +	  it back on.
-> > +
-> >  config RCU_DOUBLE_CHECK_CB_TIME
-> >  	bool "RCU callback-batch backup time check"
-> >  	depends on RCU_EXPERT
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 3ac3c846105f..8b7675624815 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
-> >  }
-> >  
-> >  #ifdef CONFIG_RCU_LAZY
-> > +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
-> > +module_param(enable_rcu_lazy, bool, 0444);
-> > +
-> >  /**
-> >   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
-> >   * flush all lazy callbacks (including the new one) to the main ->cblist while
-> > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
-> >  	__call_rcu_common(head, func, false);
-> >  }
-> >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> > +#else
-> > +#define enable_rcu_lazy		false
-> >  #endif
-> >  
-> >  /**
-> > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> >   */
-> >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >  {
-> > -	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-> > +	__call_rcu_common(head, func, enable_rcu_lazy);
-> >  }
-> >  EXPORT_SYMBOL_GPL(call_rcu);
-> >  
-> > -- 
-> > 2.34.1
+And then came to the conclusion that this problem has not been solved, am I
+right? Did I miss some patch that could solve this problem?
+
+According to my understanding, the essence of this problem is that XFS reuses
+the inode evicted by VFS, but VFS rcu-walk assumes that this will not happen.
+Are there any recommended workarounds until an elegant and efficient solution
+can be proposed? After all, causing a crash is extremely unacceptable in a
+production environment.
+
+Thank you very much for your advice :)
+Jinliang Zheng
