@@ -1,48 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C1BD260
-	for <rcu@vger.kernel.org>; Tue,  5 Dec 2023 04:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB196CA57
+	for <rcu@vger.kernel.org>; Tue,  5 Dec 2023 04:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QXlXmQpE"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81833C433C8;
-	Tue,  5 Dec 2023 04:23:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hjtRZy08"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DD44C433C8;
+	Tue,  5 Dec 2023 04:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701750181;
-	bh=w/Bk/WJxSr5QEyyq9W+SD+SihawEDWaEohg5h1i0Keo=;
+	s=k20201202; t=1701750425;
+	bh=Etgekf0ZrWRy/UX6kYpcWzxJxhTWLWEmZUQoTp7t7+0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=QXlXmQpEo+Ca6kqEdj0E119zOei8gUzaGcyvM/woNAACeAgMFx1j8YPfzA88c+b8g
-	 vq8ChUgWgOWJgC4k3fH+i6G9Mhsllxtmv2d9KV38726HJgsgm0SfIu4PjbgKOpltLR
-	 cjlD+3/FD0oXuq/756f1M2DWWkm+uzUu1NGQaJjZYC13FURwHC8Lp6Ev/x6QqbmzyP
-	 nihuFqb+9BTzns40owbm2R6fAYgmWVmITsujhlm6Nuiar4JlOrY6QpoSnmItuKZlCF
-	 prZdQpz/dUtXD0bs3SZ+0r22y9m0Ise5qsLcmcq0gbQXMZrswjcxCwE/gQrcY3oxa8
-	 tArufEqBFyKfQ==
+	b=hjtRZy08etGTrct5yZFp18b0ITpG0KrAxWOHT1LHT7ewS8IvwgRdYE3878TSwokib
+	 TXjGWublmQAqEbQl4ASY+Czp4rfXt02To7MKM2XaqVh0pmTrxlB+hoL1H9QA3iB2l5
+	 brvvVHYA9dv83u/Saf6s6ZKYrKPj/o8LKGgxqnSRGM6Sa58iZOie+owjcNLEP7dtvh
+	 HEHY2ml2saQPp6zK7jdHISQ8zb9q62+TQaqv8UpMe3cWAvwXnYAGcxeOChwyTqwhcU
+	 busNVg1+AzOt7Tg0MQvy+cSIHJxZDRSO71Eji6d3RE8Izr57VRvL57N0NcMG8daH5f
+	 IK7H5S3fGzrVA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 14277CE1147; Mon,  4 Dec 2023 20:23:01 -0800 (PST)
-Date: Mon, 4 Dec 2023 20:23:01 -0800
+	id B4DE4CE1147; Mon,  4 Dec 2023 20:27:04 -0800 (PST)
+Date: Mon, 4 Dec 2023 20:27:04 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: Qais Yousef <qyousef@layalina.io>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2] srcu: Use try-lock lockdep annotation for NMI-safe
- access.
-Message-ID: <ff0b1784-f793-408f-b41c-e9521e9cb925@paulmck-laptop>
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Message-ID: <eb1619f7-ad15-4c90-91fc-c4e2cee14053@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20231121123315.egrgopGN@linutronix.de>
- <ZV5Dhjcb9Jd_lk0O@boqun-archlinux>
- <20231130132729.niM5FJPc@linutronix.de>
+References: <20231203011252.233748-1-qyousef@layalina.io>
+ <ZWyAG145F+JWzg7u@gpd>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -51,78 +47,128 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130132729.niM5FJPc@linutronix.de>
+In-Reply-To: <ZWyAG145F+JWzg7u@gpd>
 
-On Thu, Nov 30, 2023 at 02:27:29PM +0100, Sebastian Andrzej Siewior wrote:
-> It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
-> triggers a lockdep if used from NMI because lockdep expects a deadlock
-> since nothing disables NMIs while the lock is acquired.
+On Sun, Dec 03, 2023 at 02:18:19PM +0100, Andrea Righi wrote:
+> On Sun, Dec 03, 2023 at 01:12:52AM +0000, Qais Yousef wrote:
+> > To allow more flexible arrangements while still provide a single kernel
+> > for distros, provide a boot time parameter to enable/disable lazy RCU.
+> > 
+> > Specify:
+> > 
+> > 	rcutree.enable_rcu_lazy=[y|1|n|0]
+> > 
+> > Which also requires
+> > 
+> > 	rcu_nocbs=all
+> > 
+> > at boot time to enable/disable lazy RCU.
+> > 
+> > To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
+> > CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
+> > 
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 > 
-> This is because commit f0f44752f5f61 ("rcu: Annotate SRCU's update-side
-> lockdep dependencies") annotates synchronize_srcu() as a write lock
-> usage. This helps to detect a deadlocks such as
-> 	srcu_read_lock();
-> 	synchronize_srcu();
-> 	srcu_read_unlock();
+> Thanks! Everything looks good to me and I also verified that
+> rcutree.enable_rcu_lazy is enforcing the proper behavior.
 > 
-> The side effect is that the lock srcu_struct now has a USED usage in normal
-> contexts, so it conflicts with a USED_READ usage in NMI. But this shouldn't
-> cause a real deadlock because the write lock usage from synchronize_srcu() is a
-> fake one and only used for read/write deadlock detection.
+> FWIW:
 > 
-> Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
-> complains if used from NMI.
-> 
-> Fixes: f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
-> Link: https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
-> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Tested-by: Andrea Righi <andrea.righi@canonical.com>
 
-Queued for v6.9 along with further review and testing, thank you both!
+Queued for v6.9 and further testing and review, thank you!
 
 							Thanx, Paul
 
-> ---
->  include/linux/rcupdate.h | 6 ++++++
->  include/linux/srcu.h     | 2 +-
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index f7206b2623c98..31d523c4e0893 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -301,6 +301,11 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
->  	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
->  }
->  
-> +static inline void rcu_try_lock_acquire(struct lockdep_map *map)
-> +{
-> +	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
-> +}
-> +
->  static inline void rcu_lock_release(struct lockdep_map *map)
->  {
->  	lock_release(map, _THIS_IP_);
-> @@ -315,6 +320,7 @@ int rcu_read_lock_any_held(void);
->  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
->  
->  # define rcu_lock_acquire(a)		do { } while (0)
-> +# define rcu_try_lock_acquire(a)	do { } while (0)
->  # define rcu_lock_release(a)		do { } while (0)
->  
->  static inline int rcu_read_lock_held(void)
-> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> index 127ef3b2e6073..236610e4a8fa5 100644
-> --- a/include/linux/srcu.h
-> +++ b/include/linux/srcu.h
-> @@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
->  
->  	srcu_check_nmi_safety(ssp, true);
->  	retval = __srcu_read_lock_nmisafe(ssp);
-> -	rcu_lock_acquire(&ssp->dep_map);
-> +	rcu_try_lock_acquire(&ssp->dep_map);
->  	return retval;
->  }
->  
-> -- 
-> 2.43.0
+> > ---
+> > 
+> > Changes since v1:
+> > 
+> > 	* Use module_param() instead of module_param_cb()
+> > 	* Add new CONFIG_RCU_LAZY_DEFAULT_OFF to force default off.
+> > 	* Remove unnecessary READ_ONCE()
+> > 
+> > Tested on qemu only this time with various config/boot configuration to ensure
+> > expected values are in sysfs.
+> > 
+> > Did a bunch of build tests against various configs/archs.
+> > 
+> >  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
+> >  kernel/rcu/Kconfig                              | 13 +++++++++++++
+> >  kernel/rcu/tree.c                               |  7 ++++++-
+> >  3 files changed, 24 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 65731b060e3f..2f0386a12aa7 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -5021,6 +5021,11 @@
+> >  			this kernel boot parameter, forcibly setting it
+> >  			to zero.
+> >  
+> > +	rcutree.enable_rcu_lazy= [KNL]
+> > +			To save power, batch RCU callbacks and flush after
+> > +			delay, memory pressure or callback list growing too
+> > +			big.
+> > +
+> >  	rcuscale.gp_async= [KNL]
+> >  			Measure performance of asynchronous
+> >  			grace-period primitives such as call_rcu().
+> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > index bdd7eadb33d8..e7d2dd267593 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -314,6 +314,19 @@ config RCU_LAZY
+> >  	  To save power, batch RCU callbacks and flush after delay, memory
+> >  	  pressure, or callback list growing too big.
+> >  
+> > +	  Requires rcu_nocbs=all to be set.
+> > +
+> > +	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
+> > +
+> > +config RCU_LAZY_DEFAULT_OFF
+> > +	bool "Turn RCU lazy invocation off by default"
+> > +	depends on RCU_LAZY
+> > +	default n
+> > +	help
+> > +	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
+> > +	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
+> > +	  it back on.
+> > +
+> >  config RCU_DOUBLE_CHECK_CB_TIME
+> >  	bool "RCU callback-batch backup time check"
+> >  	depends on RCU_EXPERT
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 3ac3c846105f..8b7675624815 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+> >  }
+> >  
+> >  #ifdef CONFIG_RCU_LAZY
+> > +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
+> > +module_param(enable_rcu_lazy, bool, 0444);
+> > +
+> >  /**
+> >   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+> >   * flush all lazy callbacks (including the new one) to the main ->cblist while
+> > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+> >  	__call_rcu_common(head, func, false);
+> >  }
+> >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > +#else
+> > +#define enable_rcu_lazy		false
+> >  #endif
+> >  
+> >  /**
+> > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> >   */
+> >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  {
+> > -	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> > +	__call_rcu_common(head, func, enable_rcu_lazy);
+> >  }
+> >  EXPORT_SYMBOL_GPL(call_rcu);
+> >  
+> > -- 
+> > 2.34.1
